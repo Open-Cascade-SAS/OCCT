@@ -38,7 +38,7 @@ class IFSelect_SignMultiple : public IFSelect_Signature
 public:
   //! Creates an empty SignMultiple with a Name
   //! This name should take expected tabulations into account
-  Standard_EXPORT IFSelect_SignMultiple(const char* name);
+  Standard_EXPORT IFSelect_SignMultiple(const char* const name);
 
   //! Adds a Signature. Width, if given, gives the tabulation
   //! If <maxi> is True, it is a forced tabulation (overlength is

@@ -61,23 +61,23 @@ public:
   Standard_EXPORT Message_Msg(const Message_Msg& theMsg);
 
   //! Create a message using a corresponding entry in Message_MsgFile
-  Standard_EXPORT Message_Msg(const char* theKey);
+  Standard_EXPORT Message_Msg(const char* const theKey);
 
   //! Create a message using a corresponding entry in Message_MsgFile
   Standard_EXPORT Message_Msg(const TCollection_ExtendedString& theKey);
 
   //! Set a message body text -- can be used as alternative to
   //! using messages from resource file
-  Standard_EXPORT void Set(const char* theMsg);
+  Standard_EXPORT void Set(const char* const theMsg);
 
   //! Set a message body text -- can be used as alternative to
   //! using messages from resource file
   Standard_EXPORT void Set(const TCollection_ExtendedString& theMsg);
 
   //! Set a value for %..s conversion
-  Standard_EXPORT Message_Msg& Arg(const char* theString);
+  Standard_EXPORT Message_Msg& Arg(const char* const theString);
 
-  Message_Msg& operator<<(const char* theString) { return Arg(theString); }
+  Message_Msg& operator<<(const char* const theString) { return Arg(theString); }
 
   //! Set a value for %..s conversion
   Message_Msg& Arg(const TCollection_AsciiString& theString);

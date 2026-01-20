@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SignMultiple, IFSelect_Signature)
 
 static TCollection_AsciiString theval; // temporary to build Value
 
-IFSelect_SignMultiple::IFSelect_SignMultiple(const char* name)
+IFSelect_SignMultiple::IFSelect_SignMultiple(const char* const name)
     : IFSelect_Signature(name)
 {
 }

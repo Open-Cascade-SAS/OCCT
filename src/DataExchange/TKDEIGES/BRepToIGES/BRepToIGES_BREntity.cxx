@@ -192,7 +192,7 @@ occ::handle<IGESData_IGESEntity> BRepToIGES_BREntity::TransferShape(
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddFail(const TopoDS_Shape& start, const char* amess)
+void BRepToIGES_BREntity::AddFail(const TopoDS_Shape& start, const char* const amess)
 {
   occ::handle<TransferBRep_ShapeMapper> Mapper = new TransferBRep_ShapeMapper(start);
   TheMap->AddFail(Mapper, amess);
@@ -200,7 +200,7 @@ void BRepToIGES_BREntity::AddFail(const TopoDS_Shape& start, const char* amess)
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddWarning(const TopoDS_Shape& start, const char* amess)
+void BRepToIGES_BREntity::AddWarning(const TopoDS_Shape& start, const char* const amess)
 {
   occ::handle<TransferBRep_ShapeMapper> Mapper = new TransferBRep_ShapeMapper(start);
   TheMap->AddWarning(Mapper, amess);
@@ -208,7 +208,8 @@ void BRepToIGES_BREntity::AddWarning(const TopoDS_Shape& start, const char* ames
 
 //=================================================================================================
 
-void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start, const char* amess)
+void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start,
+                                  const char* const                      amess)
 {
   occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   TheMap->AddFail(Mapper, amess);
@@ -217,7 +218,7 @@ void BRepToIGES_BREntity::AddFail(const occ::handle<Standard_Transient>& start, 
 //=================================================================================================
 
 void BRepToIGES_BREntity::AddWarning(const occ::handle<Standard_Transient>& start,
-                                     const char*                            amess)
+                                     const char* const                      amess)
 {
   occ::handle<Transfer_TransientMapper> Mapper = new Transfer_TransientMapper(start);
   TheMap->AddWarning(Mapper, amess);

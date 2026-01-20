@@ -71,7 +71,7 @@ void Interface_Check::AddFail(const occ::handle<TCollection_HAsciiString>& mess,
 
 //=================================================================================================
 
-void Interface_Check::AddFail(const char* amess, const char* orig)
+void Interface_Check::AddFail(const char* const amess, const char* const orig)
 {
   if (amess[0] == '\0')
     return;
@@ -169,7 +169,7 @@ void Interface_Check::AddWarning(const occ::handle<TCollection_HAsciiString>& me
 
 //=================================================================================================
 
-void Interface_Check::AddWarning(const char* amess, const char* orig)
+void Interface_Check::AddWarning(const char* const amess, const char* const orig)
 {
   if (amess[0] == '\0')
     return;
@@ -489,7 +489,7 @@ bool Interface_Check::Remove(const occ::handle<TCollection_HAsciiString>& mess,
 
 //=================================================================================================
 
-bool Interface_Check::Mend(const char* pref, const int num)
+bool Interface_Check::Mend(const char* const pref, const int num)
 {
   int i, n1 = num, n2 = num;
   if (pref && pref[2] == '\0')

@@ -49,7 +49,7 @@ public:
   //! (Default from Creation is "%E")
   //! If <reset> is given True (default), this call clears effects
   //! of former calls to SetFormatForRange and SetZeroSuppress
-  Standard_EXPORT void SetFormat(const char* form, const bool reset = true);
+  Standard_EXPORT void SetFormat(const char* const form, const bool reset = true);
 
   //! Sets a secondary Format for Real, to be applied between R1 and
   //! R2 (in absolute values). A Call to SetRealForm cancels this
@@ -57,7 +57,7 @@ public:
   //! (Default from Creation is "%f" between 0.1 and 1000.)
   //! Warning : if the condition (0. <= R1 < R2) is not fulfilled, this
   //! secondary form is canceled.
-  Standard_EXPORT void SetFormatForRange(const char* form, const double R1, const double R2);
+  Standard_EXPORT void SetFormatForRange(const char* const form, const double R1, const double R2);
 
   //! Sets Sending Real Parameters to suppress trailing Zeros and
   //! Null Exponent ("E+00"), if <mode> is given True, Resets this
@@ -88,18 +88,18 @@ public:
   //! It calls the class method Convert.
   //! Warning : <text> is assumed to be wide enough (20-30 is correct)
   //! And, even if declared in, its content will be modified
-  Standard_EXPORT int Write(const double val, const char* text) const;
+  Standard_EXPORT int Write(const double val, const char* const text) const;
 
   //! This class method converts a Real Value to a string, given
   //! options given as arguments. It can be called independently.
   //! Warning : even if declared in, content of <text> will be modified
-  Standard_EXPORT static int Convert(const double val,
-                                     const char*  text,
-                                     const bool   zerosup,
-                                     const double Range1,
-                                     const double Range2,
-                                     const char*  mainform,
-                                     const char*  rangeform);
+  Standard_EXPORT static int Convert(const double      val,
+                                     const char* const text,
+                                     const bool        zerosup,
+                                     const double      Range1,
+                                     const double      Range2,
+                                     const char* const mainform,
+                                     const char* const rangeform);
 
 private:
   char   themainform[12];

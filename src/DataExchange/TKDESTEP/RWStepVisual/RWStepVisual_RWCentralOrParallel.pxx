@@ -41,7 +41,7 @@ inline const char* ConvertToString(const StepVisual_CentralOrParallel theSourceE
 //! @param theCentralOrParallelStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_CentralOrParallel value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char*                   theCentralOrParallelStr,
+inline bool ConvertToEnum(const char* const             theCentralOrParallelStr,
                           StepVisual_CentralOrParallel& theResultEnum)
 {
   if (IsEqual(theCentralOrParallelStr, copCentral))

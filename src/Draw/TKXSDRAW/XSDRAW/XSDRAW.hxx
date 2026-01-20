@@ -52,11 +52,11 @@ public:
   //! Changes the name under which a command of xstep is known by
   //! Draw. This allows to avoid collisions
   //! To be called before LoadDraw or any other xstep initialisation
-  Standard_EXPORT static void ChangeCommand(const char* oldname, const char* newname);
+  Standard_EXPORT static void ChangeCommand(const char* const oldname, const char* const newname);
 
   //! Removes a command from the interpretation list of Draw
   //! To be called before LoadDraw or any other xstep initialisation
-  Standard_EXPORT static void RemoveCommand(const char* oldname);
+  Standard_EXPORT static void RemoveCommand(const char* const oldname);
 
   //! Defines the basic context to work with a X-STEP Session :
   //! it performs the basic inits, also records the Controller
@@ -94,7 +94,7 @@ public:
   //! Form with a variable text part : add %s for the variable :
   //! Execute ("command args %s args..",var) [var is a CString]
   //! Returns the same value as returned by call from DRAW
-  Standard_EXPORT static int Execute(const char* command, const char* var = "");
+  Standard_EXPORT static int Execute(const char* const command, const char* const var = "");
 
   //! Returns the SessionPilot (can be used for direct call)
   Standard_EXPORT static occ::handle<IFSelect_SessionPilot> Pilot();
@@ -116,7 +116,7 @@ public:
 
   //! Sets a norm by its name (controller recorded as <normname> )
   //! Returns True if done, False if this norm is unknown
-  Standard_EXPORT static bool SetNorm(const char* normname);
+  Standard_EXPORT static bool SetNorm(const char* const normname);
 
   //! Returns the actually defined Protocol
   Standard_EXPORT static occ::handle<Interface_Protocol> Protocol();
@@ -127,7 +127,7 @@ public:
   //! Sets a Model in session (it is Session()->SetModel(model) )
   //! If <file> is defined, SetLoadedFile is also done
   Standard_EXPORT static void SetModel(const occ::handle<Interface_InterfaceModel>& model,
-                                       const char*                                  file = "");
+                                       const char* const                            file = "");
 
   //! Produces a new model (from the Controller), can be Null
   //! Does not set it in the session
@@ -170,11 +170,11 @@ public:
   //! name can be a label or a number (in alphanumeric), it is
   //! searched by NumberFromLabel from WorkSession.
   //! If <name> doesn't match en entity, a Null Handle is returned
-  Standard_EXPORT static occ::handle<Standard_Transient> GetEntity(const char* name = "");
+  Standard_EXPORT static occ::handle<Standard_Transient> GetEntity(const char* const name = "");
 
   //! Same as GetEntity, but returns the number in the model of the
   //! entity. Returns 0 for null handle
-  Standard_EXPORT static int GetEntityNumber(const char* name = "");
+  Standard_EXPORT static int GetEntityNumber(const char* const name = "");
 
   //! Evaluates and returns a list of entity, from :
   //! keyboard if <first> and <second> are empty, see below
@@ -184,7 +184,7 @@ public:
   //! second
   //! In case of failure, returns a Null Handle
   Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-    GetList(const char* first = "", const char* second = "");
+    GetList(const char* const first = "", const char* const second = "");
 
   //! Analyses given file name and variable name, with a default
   //! name for variables. Returns resulting file name and variable
@@ -197,9 +197,9 @@ public:
   //! If <var> is neither null nor empty, resvar = var
   //! Else, the root part of <resfile> is considered, if defined
   //! Else, <def> is taken
-  Standard_EXPORT static bool FileAndVar(const char*              file,
-                                         const char*              var,
-                                         const char*              def,
+  Standard_EXPORT static bool FileAndVar(const char* const        file,
+                                         const char* const        var,
+                                         const char* const        def,
                                          TCollection_AsciiString& resfile,
                                          TCollection_AsciiString& resvar);
 
@@ -214,7 +214,7 @@ public:
   //! completed (Append without Clear) by the Shapes found
   //! Returns 0 if no Shape could be found
   Standard_EXPORT static int MoreShapes(occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                                        const char*                                       name);
+                                        const char* const                                 name);
 
   //! Extracts length unit from the static interface or document.
   //! Document unit has the highest priority.

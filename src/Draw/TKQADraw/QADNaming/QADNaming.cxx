@@ -35,7 +35,7 @@
 
 //=================================================================================================
 
-void QADNaming::GetShape(const char*                     LabelName,
+void QADNaming::GetShape(const char* const               LabelName,
                          const occ::handle<TDF_Data>&    DF,
                          NCollection_List<TopoDS_Shape>& L)
 {
@@ -66,7 +66,7 @@ void QADNaming_BuildMap(NCollection_Map<TDF_Label>& Updated, const TDF_Label& La
 
 //=================================================================================================
 
-TopoDS_Shape QADNaming::CurrentShape(const char* LabelName, const occ::handle<TDF_Data>& DF)
+TopoDS_Shape QADNaming::CurrentShape(const char* const LabelName, const occ::handle<TDF_Data>& DF)
 {
   TopoDS_Shape S;
   TDF_Label    Label;

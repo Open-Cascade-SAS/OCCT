@@ -100,7 +100,7 @@ Resource_Manager::Resource_Manager(const TCollection_AsciiString& theName,
   }
 }
 
-Resource_Manager::Resource_Manager(const char* aName, const bool Verbose)
+Resource_Manager::Resource_Manager(const char* const aName, const bool Verbose)
     : myName(aName),
       myVerbose(Verbose),
       myInitialized(false)
@@ -399,7 +399,7 @@ bool Resource_Manager::Save() const
 // purpose  : Gets the value of an integer resource
 //=======================================================================
 
-int Resource_Manager::Integer(const char* aResourceName) const
+int Resource_Manager::Integer(const char* const aResourceName) const
 {
   TCollection_AsciiString Result = Value(aResourceName);
   if (!Result.IsIntegerValue())
@@ -417,7 +417,7 @@ int Resource_Manager::Integer(const char* aResourceName) const
 // purpose  : Gets the value of a real resource
 //=======================================================================
 
-double Resource_Manager::Real(const char* aResourceName) const
+double Resource_Manager::Real(const char* const aResourceName) const
 {
   TCollection_AsciiString Result = Value(aResourceName);
   if (!Result.IsRealValue())
@@ -435,7 +435,7 @@ double Resource_Manager::Real(const char* aResourceName) const
 // purpose  : Gets the value of a CString resource
 //=======================================================================
 
-const char* Resource_Manager::Value(const char* aResource) const
+const char* Resource_Manager::Value(const char* const aResource) const
 {
   TCollection_AsciiString Resource(aResource);
   if (myUserMap.IsBound(Resource))
@@ -450,7 +450,7 @@ const char* Resource_Manager::Value(const char* aResource) const
 // purpose  : Gets the value of a ExtString resource
 //=======================================================================
 
-const char16_t* Resource_Manager::ExtValue(const char* aResource)
+const char16_t* Resource_Manager::ExtValue(const char* const aResource)
 {
   TCollection_AsciiString Resource(aResource);
   if (myExtStrMap.IsBound(Resource))
@@ -470,7 +470,7 @@ const char16_t* Resource_Manager::ExtValue(const char* aResource)
 // purpose  : Sets the new value of an integer resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const char* aResourceName, const int aValue)
+void Resource_Manager::SetResource(const char* const aResourceName, const int aValue)
 {
   SetResource(aResourceName, TCollection_AsciiString(aValue).ToCString());
 }
@@ -480,7 +480,7 @@ void Resource_Manager::SetResource(const char* aResourceName, const int aValue)
 // purpose  : Sets the new value of a real resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const char* aResourceName, const double aValue)
+void Resource_Manager::SetResource(const char* const aResourceName, const double aValue)
 {
   SetResource(aResourceName, TCollection_AsciiString(aValue).ToCString());
 }
@@ -490,7 +490,7 @@ void Resource_Manager::SetResource(const char* aResourceName, const double aValu
 // purpose  : Sets the new value of ExtString resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const char* aResource, const char16_t* aValue)
+void Resource_Manager::SetResource(const char* const aResource, const char16_t* const aValue)
 {
   Standard_PCharacter        pStr;
   TCollection_AsciiString    Resource = aResource;
@@ -515,7 +515,7 @@ void Resource_Manager::SetResource(const char* aResource, const char16_t* aValue
 // purpose  : Sets the new value of an enum resource.
 //           If the resource does not exist, it is created.
 //=======================================================================
-void Resource_Manager::SetResource(const char* aResource, const char* aValue)
+void Resource_Manager::SetResource(const char* const aResource, const char* const aValue)
 {
   TCollection_AsciiString Resource = aResource;
   TCollection_AsciiString Value    = aValue;
@@ -527,7 +527,7 @@ void Resource_Manager::SetResource(const char* aResource, const char* aValue)
 // function : Find
 // purpose  : Tells if a resource exits.
 //=======================================================================
-bool Resource_Manager::Find(const char* aResource) const
+bool Resource_Manager::Find(const char* const aResource) const
 {
   TCollection_AsciiString Resource(aResource);
   return myUserMap.IsBound(Resource) || myRefMap.IsBound(Resource);
@@ -544,7 +544,7 @@ bool Resource_Manager::Find(const TCollection_AsciiString& theResource,
 //=================================================================================================
 
 void Resource_Manager::GetResourcePath(TCollection_AsciiString& aPath,
-                                       const char*              aName,
+                                       const char* const        aName,
                                        const bool               isUserDefaults)
 {
   aPath.Clear();

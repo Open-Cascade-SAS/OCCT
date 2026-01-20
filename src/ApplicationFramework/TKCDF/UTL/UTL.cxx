@@ -29,7 +29,7 @@
 #include <TCollection_ExtendedString.hxx>
 #include <UTL.hxx>
 
-TCollection_ExtendedString UTL::xgetenv(const char* aCString)
+TCollection_ExtendedString UTL::xgetenv(const char* const aCString)
 {
   TCollection_ExtendedString x;
   OSD_Environment            theEnv(aCString);

@@ -63,7 +63,7 @@ occ::handle<NCollection_HSequence<TCollection_AsciiString>> StepData_ECDescr::Ty
   return tl;
 }
 
-bool StepData_ECDescr::Matches(const char* name) const
+bool StepData_ECDescr::Matches(const char* const name) const
 {
   int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)

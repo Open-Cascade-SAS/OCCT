@@ -81,7 +81,7 @@ public:
 
   //! Creates a Reader from scratch, with a norm name which
   //! identifies a Controller
-  Standard_EXPORT XSControl_Reader(const char* norm);
+  Standard_EXPORT XSControl_Reader(const char* const norm);
 
   //! Creates a Reader from an already existing Session, with a
   //! Controller already set
@@ -94,7 +94,7 @@ public:
 
   //! Sets a specific norm to <me>
   //! Returns True if done, False if <norm> is not available
-  Standard_EXPORT bool SetNorm(const char* norm);
+  Standard_EXPORT bool SetNorm(const char* const norm);
 
   //! Sets a specific session to <me>
   Standard_EXPORT void SetWS(const occ::handle<XSControl_WorkSession>& WS,
@@ -105,11 +105,11 @@ public:
 
   //! Loads a file and returns the read status
   //! Zero for a Model which complies with the Controller
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* filename);
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadFile(const char* const filename);
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char*   theName,
-                                                           std::istream& theIStream);
+  Standard_EXPORT virtual IFSelect_ReturnStatus ReadStream(const char* const theName,
+                                                           std::istream&     theIStream);
 
   //! Returns the model. It can then be consulted (header, product)
   Standard_EXPORT occ::handle<Interface_InterfaceModel> Model() const;
@@ -142,8 +142,8 @@ public:
   //! Warning
   //! If the value given to second is incorrect, it will simply be ignored.
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveList(
-    const char* first  = "",
-    const char* second = "");
+    const char* const first  = "",
+    const char* const second = "");
 
   //! Computes a List of entities from the model as follows
   //! <first> being a Selection, <ent> being an entity or a list
@@ -151,7 +151,7 @@ public:
   //! the standard result of this selection applied to this list
   //! if <first> is erroneous, a null handle is returned
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveList(
-    const char*                            first,
+    const char* const                      first,
     const occ::handle<Standard_Transient>& ent);
 
   //! Determines the list of root entities which are candidate for

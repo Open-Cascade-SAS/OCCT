@@ -50,7 +50,7 @@ public:
   //! Sets Main Format to a new value
   //! Remark : SetFormat, SetZeroSuppress and SetFormatForRange are
   //! independent
-  Standard_EXPORT void SetFormat(const char* format = "%E");
+  Standard_EXPORT void SetFormat(const char* const format = "%E");
 
   //! Sets Format for Range to a new value with its range of
   //! application.
@@ -59,9 +59,9 @@ public:
   //! verified, this secondary format will be ignored.
   //! Moreover, this secondary format is intended to be used in a
   //! range around 1.
-  Standard_EXPORT void SetFormatForRange(const char*  format = "%f",
-                                         const double Rmin   = 0.1,
-                                         const double Rmax   = 1000.0);
+  Standard_EXPORT void SetFormatForRange(const char* const format = "%f",
+                                         const double      Rmin   = 0.1,
+                                         const double      Rmax   = 1000.0);
 
   //! Returns all recorded parameters :
   //! zerosup  : ZeroSuppress status

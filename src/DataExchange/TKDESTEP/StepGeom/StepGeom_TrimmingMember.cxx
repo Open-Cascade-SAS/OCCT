@@ -28,7 +28,7 @@ const char* StepGeom_TrimmingMember::Name() const
   return "PARAMETER_VALUE";
 }
 
-bool StepGeom_TrimmingMember::SetName(const char* /*name*/)
+bool StepGeom_TrimmingMember::SetName(const char* const /*name*/)
 {
   return true;
 }

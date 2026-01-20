@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_ParamEditor, IFSelect_Editor)
 
-IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* label)
+IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* const label)
     : IFSelect_Editor(nbmax),
       thelabel(label)
 {
@@ -33,15 +33,15 @@ IFSelect_ParamEditor::IFSelect_ParamEditor(const int nbmax, const char* label)
 }
 
 void IFSelect_ParamEditor::AddValue(const occ::handle<Interface_TypedValue>& val,
-                                    const char*                              shortname)
+                                    const char* const                        shortname)
 {
   SetNbValues(NbValues() + 1);
   SetValue(NbValues(), val, shortname);
 }
 
-void IFSelect_ParamEditor::AddConstantText(const char* val,
-                                           const char* shortname,
-                                           const char* longname)
+void IFSelect_ParamEditor::AddConstantText(const char* const val,
+                                           const char* const shortname,
+                                           const char* const longname)
 {
   occ::handle<Interface_TypedValue> tv =
     new Interface_TypedValue(longname[0] == '\0' ? shortname : longname);
@@ -92,7 +92,7 @@ bool IFSelect_ParamEditor::Apply(const occ::handle<IFSelect_EditForm>& form,
 
 occ::handle<IFSelect_ParamEditor> IFSelect_ParamEditor::StaticEditor(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& list,
-  const char*                                                                      label)
+  const char* const                                                                label)
 {
   occ::handle<IFSelect_ParamEditor> editor;
   if (list.IsNull())

@@ -38,7 +38,7 @@ class StepData_ESDescr : public StepData_EDescr
 
 public:
   //! Creates an ESDescr with a type name
-  Standard_EXPORT StepData_ESDescr(const char* name);
+  Standard_EXPORT StepData_ESDescr(const char* const name);
 
   //! Sets a new count of fields
   //! Each one is described by a PDescr
@@ -47,7 +47,7 @@ public:
   //! Sets a PDescr to describe a field
   //! A Field is designated by its rank and name
   Standard_EXPORT void SetField(const int                           num,
-                                const char*                         name,
+                                const char* const                   name,
                                 const occ::handle<StepData_PDescr>& descr);
 
   //! Sets an ESDescr as based on another one
@@ -78,7 +78,7 @@ public:
   Standard_EXPORT int NbFields() const;
 
   //! Returns the rank of a field from its name. 0 if unknown
-  Standard_EXPORT int Rank(const char* name) const;
+  Standard_EXPORT int Rank(const char* const name) const;
 
   //! Returns the name of a field from its rank. empty if outofrange
   Standard_EXPORT const char* Name(const int num) const;
@@ -87,10 +87,10 @@ public:
   Standard_EXPORT occ::handle<StepData_PDescr> Field(const int num) const;
 
   //! Returns the PDescr for the field named <name> (or Null)
-  Standard_EXPORT occ::handle<StepData_PDescr> NamedField(const char* name) const;
+  Standard_EXPORT occ::handle<StepData_PDescr> NamedField(const char* const name) const;
 
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT bool Matches(const char* steptype) const override;
+  Standard_EXPORT bool Matches(const char* const steptype) const override;
 
   //! Returns False
   Standard_EXPORT bool IsComplex() const override;

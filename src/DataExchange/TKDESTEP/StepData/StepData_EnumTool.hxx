@@ -59,46 +59,46 @@ public:
   //! A null definition can be input by given "$" :the corresponding
   //! position is attached to "null/undefined" value (as one
   //! particular item of the enumeration list)
-  Standard_EXPORT StepData_EnumTool(const char* e0  = "",
-                                    const char* e1  = "",
-                                    const char* e2  = "",
-                                    const char* e3  = "",
-                                    const char* e4  = "",
-                                    const char* e5  = "",
-                                    const char* e6  = "",
-                                    const char* e7  = "",
-                                    const char* e8  = "",
-                                    const char* e9  = "",
-                                    const char* e10 = "",
-                                    const char* e11 = "",
-                                    const char* e12 = "",
-                                    const char* e13 = "",
-                                    const char* e14 = "",
-                                    const char* e15 = "",
-                                    const char* e16 = "",
-                                    const char* e17 = "",
-                                    const char* e18 = "",
-                                    const char* e19 = "",
-                                    const char* e20 = "",
-                                    const char* e21 = "",
-                                    const char* e22 = "",
-                                    const char* e23 = "",
-                                    const char* e24 = "",
-                                    const char* e25 = "",
-                                    const char* e26 = "",
-                                    const char* e27 = "",
-                                    const char* e28 = "",
-                                    const char* e29 = "",
-                                    const char* e30 = "",
-                                    const char* e31 = "",
-                                    const char* e32 = "",
-                                    const char* e33 = "",
-                                    const char* e34 = "",
-                                    const char* e35 = "",
-                                    const char* e36 = "",
-                                    const char* e37 = "",
-                                    const char* e38 = "",
-                                    const char* e39 = "");
+  Standard_EXPORT StepData_EnumTool(const char* const e0  = "",
+                                    const char* const e1  = "",
+                                    const char* const e2  = "",
+                                    const char* const e3  = "",
+                                    const char* const e4  = "",
+                                    const char* const e5  = "",
+                                    const char* const e6  = "",
+                                    const char* const e7  = "",
+                                    const char* const e8  = "",
+                                    const char* const e9  = "",
+                                    const char* const e10 = "",
+                                    const char* const e11 = "",
+                                    const char* const e12 = "",
+                                    const char* const e13 = "",
+                                    const char* const e14 = "",
+                                    const char* const e15 = "",
+                                    const char* const e16 = "",
+                                    const char* const e17 = "",
+                                    const char* const e18 = "",
+                                    const char* const e19 = "",
+                                    const char* const e20 = "",
+                                    const char* const e21 = "",
+                                    const char* const e22 = "",
+                                    const char* const e23 = "",
+                                    const char* const e24 = "",
+                                    const char* const e25 = "",
+                                    const char* const e26 = "",
+                                    const char* const e27 = "",
+                                    const char* const e28 = "",
+                                    const char* const e29 = "",
+                                    const char* const e30 = "",
+                                    const char* const e31 = "",
+                                    const char* const e32 = "",
+                                    const char* const e33 = "",
+                                    const char* const e34 = "",
+                                    const char* const e35 = "",
+                                    const char* const e36 = "",
+                                    const char* const e37 = "",
+                                    const char* const e38 = "",
+                                    const char* const e39 = "");
 
   //! Processes a definition, splits it according blanks if any
   //! empty definitions are ignored
@@ -106,7 +106,7 @@ public:
   //! position is attached to "null/undefined" value (as one
   //! particular item of the enumeration list)
   //! See also IsSet
-  Standard_EXPORT void AddDefinition(const char* term);
+  Standard_EXPORT void AddDefinition(const char* const term);
 
   //! Returns True if at least one definition has been entered after
   //! creation time (i.e. by AddDefinition only)
@@ -145,7 +145,7 @@ public:
   //! Returns the numeric value found for a text
   //! The text must be in capitals and limited by dots
   //! A non-suitable text gives a negative value to be returned
-  Standard_EXPORT int Value(const char* txt) const;
+  Standard_EXPORT int Value(const char* const txt) const;
 
   //! Same as above but works on an AsciiString
   Standard_EXPORT int Value(const TCollection_AsciiString& txt) const;

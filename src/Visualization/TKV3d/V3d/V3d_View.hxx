@@ -200,7 +200,7 @@ public:
 
   //! Defines the background texture of the view by supplying the texture image file name
   //! and fill method (centered by default).
-  Standard_EXPORT void SetBackgroundImage(const char*             theFileName,
+  Standard_EXPORT void SetBackgroundImage(const char* const       theFileName,
                                           const Aspect_FillMethod theFillStyle = Aspect_FM_CENTERED,
                                           const bool              theToUpdate  = false);
 
@@ -920,7 +920,7 @@ public:
   //! .bmp, .jpg)
   //! @param theBufferType buffer to dump
   //! @return FALSE when the dump has failed
-  Standard_EXPORT bool Dump(const char*                 theFile,
+  Standard_EXPORT bool Dump(const char* const           theFile,
                             const Graphic3d_BufferType& theBufferType = Graphic3d_BT_RGB);
 
   //! Dumps the full contents of the view to a pixmap with specified parameters.
@@ -948,7 +948,7 @@ public:
                 const Graphic3d_ZLayerId    theTargetZLayerId = Graphic3d_ZLayerId_BotOSD,
                 const int                   theIsSingleLayer  = false,
                 const V3d_StereoDumpOptions theStereoOptions  = V3d_SDO_MONO,
-                const char*                 theLightName      = "")
+                const char* const           theLightName      = "")
   {
     V3d_ImageDumpOptions aParams;
     aParams.Width          = theWidth;

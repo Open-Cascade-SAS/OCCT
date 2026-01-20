@@ -53,7 +53,7 @@ public:
 public:
   //! Creates a writer object with the
   //! default unit (millimeters) and write mode (Face).
-  //! IGESControl_Writer (const char* unit,
+  //! IGESControl_Writer (const char* const unit,
   //! const int modecr = 0);
   Standard_EXPORT IGESControl_Writer();
 
@@ -64,7 +64,7 @@ public:
   //! theModecr defines the write mode and may be:
   //! - 0: Faces (default)
   //! - 1: BRep.
-  Standard_EXPORT IGESControl_Writer(const char* theUnit, const int theModecr = 0);
+  Standard_EXPORT IGESControl_Writer(const char* const theUnit, const int theModecr = 0);
 
   //! Creates a writer object with the
   //! prepared IGES model theModel in write mode.
@@ -111,7 +111,7 @@ public:
   //! Returns True if the operation was performed correctly and
   //! False if an error occurred (for instance,
   //! if the processor could not create the file).
-  Standard_EXPORT bool Write(const char* file, const bool fnes = false);
+  Standard_EXPORT bool Write(const char* const file, const bool fnes = false);
 
   //! Sets parameters for shape processing.
   //! @param theParameters the parameters for shape processing.

@@ -164,7 +164,9 @@ public:
   //! Note that if a count (not 1) is given, it is ignored
   //! If it is not an Integer, fills Check with a Fail (using mess)
   //! and returns False
-  Standard_EXPORT bool ReadInteger(const IGESData_ParamCursor& PC, const char* mess, int& val);
+  Standard_EXPORT bool ReadInteger(const IGESData_ParamCursor& PC,
+                                   const char* const           mess,
+                                   int&                        val);
 
   Standard_EXPORT bool ReadBoolean(const IGESData_ParamCursor& PC,
                                    const Message_Msg&          amsg,
@@ -180,7 +182,7 @@ public:
   //! In case of error (not an Integer, or not 0/1 and exact True),
   //! Check is filled with a Fail (using mess) and return is False
   Standard_EXPORT bool ReadBoolean(const IGESData_ParamCursor& PC,
-                                   const char*                 mess,
+                                   const char* const           mess,
                                    bool&                       val,
                                    const bool                  exact = true);
 
@@ -190,7 +192,9 @@ public:
   //! An Integer is accepted (Check is filled with a Warning
   //! message) and causes return to be True (as normal case)
   //! In other cases, Check is filled with a Fail and return is False
-  Standard_EXPORT bool ReadReal(const IGESData_ParamCursor& PC, const char* mess, double& val);
+  Standard_EXPORT bool ReadReal(const IGESData_ParamCursor& PC,
+                                const char* const           mess,
+                                double&                     val);
 
   Standard_EXPORT bool ReadXY(const IGESData_ParamCursor& PC, Message_Msg& amsg, gp_XY& val);
 
@@ -198,7 +202,7 @@ public:
   //! Integers are accepted (Check is filled with a Warning
   //! message) and cause return to be True (as normal case)
   //! In other cases, Check is filled with a Fail and return is False
-  Standard_EXPORT bool ReadXY(const IGESData_ParamCursor& PC, const char* mess, gp_XY& val);
+  Standard_EXPORT bool ReadXY(const IGESData_ParamCursor& PC, const char* const mess, gp_XY& val);
 
   Standard_EXPORT bool ReadXYZ(const IGESData_ParamCursor& PC, Message_Msg& amsg, gp_XYZ& val);
 
@@ -207,7 +211,7 @@ public:
   //! message) and cause return to be True (as normal case)
   //! In other cases, Check is filled with a Fail and return is False
   //! For Message
-  Standard_EXPORT bool ReadXYZ(const IGESData_ParamCursor& PC, const char* mess, gp_XYZ& val);
+  Standard_EXPORT bool ReadXYZ(const IGESData_ParamCursor& PC, const char* const mess, gp_XYZ& val);
 
   Standard_EXPORT bool ReadText(const IGESData_ParamCursor&            thePC,
                                 const Message_Msg&                     theMsg,
@@ -218,7 +222,7 @@ public:
   //! If it is not a String, fills Check with a Fail (using mess)
   //! and returns False
   Standard_EXPORT bool ReadText(const IGESData_ParamCursor&            PC,
-                                const char*                            mess,
+                                const char* const                      mess,
                                 occ::handle<TCollection_HAsciiString>& val);
 
   Standard_EXPORT bool ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
@@ -237,7 +241,7 @@ public:
   //! Check with a Fail (using mess) and returns False
   Standard_EXPORT bool ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
                                   const IGESData_ParamCursor&                 PC,
-                                  const char*                                 mess,
+                                  const char* const                           mess,
                                   occ::handle<IGESData_IGESEntity>&           val,
                                   const bool                                  canbenul = false);
 
@@ -270,7 +274,7 @@ public:
   //! (in such a case, returns False and givel <val> = Null)
   Standard_EXPORT bool ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
                                   const IGESData_ParamCursor&                 PC,
-                                  const char*                                 mess,
+                                  const char* const                           mess,
                                   const occ::handle<Standard_Type>&           type,
                                   occ::handle<IGESData_IGESEntity>&           val,
                                   const bool                                  canbenul = false);
@@ -279,7 +283,7 @@ public:
   template <class T>
   bool ReadEntity(const occ::handle<IGESData_IGESReaderData>& IR,
                   const IGESData_ParamCursor&                 PC,
-                  const char*                                 mess,
+                  const char* const                           mess,
                   const occ::handle<Standard_Type>&           type,
                   occ::handle<T>&                             val,
                   const bool                                  canbenul = false)
@@ -302,7 +306,7 @@ public:
   //! If all params are not Integer, Check is filled (using mess)
   //! and return value is False
   Standard_EXPORT bool ReadInts(const IGESData_ParamCursor&            PC,
-                                const char*                            mess,
+                                const char* const                      mess,
                                 occ::handle<NCollection_HArray1<int>>& val,
                                 const int                              index = 1);
 
@@ -318,7 +322,7 @@ public:
   //! If all params are neither Real nor Integer, Check is filled
   //! (using mess) and return value is False
   Standard_EXPORT bool ReadReals(const IGESData_ParamCursor&               PC,
-                                 const char*                               mess,
+                                 const char* const                         mess,
                                  occ::handle<NCollection_HArray1<double>>& val,
                                  const int                                 index = 1);
 
@@ -335,7 +339,7 @@ public:
   //! and return value is False
   Standard_EXPORT bool ReadTexts(
     const IGESData_ParamCursor&                                              PC,
-    const char*                                                              mess,
+    const char* const                                                        mess,
     occ::handle<NCollection_HArray1<occ::handle<TCollection_HAsciiString>>>& val,
     const int                                                                index = 1);
 
@@ -358,7 +362,7 @@ public:
   Standard_EXPORT bool ReadEnts(
     const occ::handle<IGESData_IGESReaderData>&                         IR,
     const IGESData_ParamCursor&                                         PC,
-    const char*                                                         mess,
+    const char* const                                                   mess,
     occ::handle<NCollection_HArray1<occ::handle<IGESData_IGESEntity>>>& val,
     const int                                                           index = 1);
 
@@ -380,7 +384,7 @@ public:
   //! Warning: Give "ord" to False ONLY if order is not significant
   Standard_EXPORT bool ReadEntList(const occ::handle<IGESData_IGESReaderData>& IR,
                                    const IGESData_ParamCursor&                 PC,
-                                   const char*                                 mess,
+                                   const char* const                           mess,
                                    Interface_EntityList&                       val,
                                    const bool                                  ord = true);
 
@@ -388,7 +392,7 @@ public:
 
   //! Routine which reads a Real parameter, given its number
   //! Same conditions as ReadReal for mess, val, and return value
-  Standard_EXPORT bool ReadingReal(const int num, const char* mess, double& val);
+  Standard_EXPORT bool ReadingReal(const int num, const char* const mess, double& val);
 
   Standard_EXPORT bool ReadingEntityNumber(const int num, int& val);
 
@@ -398,25 +402,25 @@ public:
   //! Same conditions as ReadEntity for mess, val, and return value
   //! In particular, returns True and val to zero means Null Entity,
   //! and val not zero means Entity read by BoundEntity
-  Standard_EXPORT bool ReadingEntityNumber(const int num, const char* mess, int& val);
+  Standard_EXPORT bool ReadingEntityNumber(const int num, const char* const mess, int& val);
 
   Standard_EXPORT void SendFail(const Message_Msg& amsg);
 
   Standard_EXPORT void SendWarning(const Message_Msg& amsg);
 
-  Standard_EXPORT void AddFail(const char* afail, const char* bfail = "");
+  Standard_EXPORT void AddFail(const char* const afail, const char* const bfail = "");
 
   //! feeds the Check with a new fail (as a String or as a CString)
   Standard_EXPORT void AddFail(const occ::handle<TCollection_HAsciiString>& af,
                                const occ::handle<TCollection_HAsciiString>& bf);
 
-  Standard_EXPORT void AddWarning(const char* awarn, const char* bwarn = "");
+  Standard_EXPORT void AddWarning(const char* const awarn, const char* const bwarn = "");
 
   //! feeds the Check with a new Warning message
   Standard_EXPORT void AddWarning(const occ::handle<TCollection_HAsciiString>& aw,
                                   const occ::handle<TCollection_HAsciiString>& bw);
 
-  Standard_EXPORT void Mend(const char* pref = "");
+  Standard_EXPORT void Mend(const char* const pref = "");
 
   //! says if fails have been recorded into the Check
   Standard_EXPORT bool HasFailed() const;
@@ -446,7 +450,7 @@ private:
   //! If one of above condition is not satisfied, a Fail Message is
   //! recorded into Check, using the root "mess" and return is False
   Standard_EXPORT bool PrepareRead(const IGESData_ParamCursor& PC,
-                                   const char*                 mess,
+                                   const char* const           mess,
                                    const bool                  several,
                                    const int                   size = 1);
 
@@ -464,25 +468,29 @@ private:
   //! identification "idm" and a diagnostic ("afail")
   //! Also feeds LastReadStatus
   //! <af> for final message, bf (can be different) for original
-  Standard_EXPORT void AddFail(const char*                                  idm,
+  Standard_EXPORT void AddFail(const char* const                            idm,
                                const occ::handle<TCollection_HAsciiString>& af,
                                const occ::handle<TCollection_HAsciiString>& bf);
 
   //! Same as above but with CString
   //! <bf> empty means = <af>
-  Standard_EXPORT void AddFail(const char* idm, const char* afail, const char* bfail);
+  Standard_EXPORT void AddFail(const char* const idm,
+                               const char* const afail,
+                               const char* const bfail);
 
   //! internal method which builds a Warning message from an
   //! identification "idm" and a diagnostic
   //! <aw> is final message, bw is original (can be different)
   //! Also feeds LastReadStatus
-  Standard_EXPORT void AddWarning(const char*                                  idm,
+  Standard_EXPORT void AddWarning(const char* const                            idm,
                                   const occ::handle<TCollection_HAsciiString>& aw,
                                   const occ::handle<TCollection_HAsciiString>& bw);
 
   //! Same as above but with CString
   //! <bw> empty means = <aw>
-  Standard_EXPORT void AddWarning(const char* idm, const char* aw, const char* bw);
+  Standard_EXPORT void AddWarning(const char* const idm,
+                                  const char* const aw,
+                                  const char* const bw);
 
   occ::handle<Interface_ParamList> theparams;
   occ::handle<Interface_Check>     thecheck;

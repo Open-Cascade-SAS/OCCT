@@ -22,7 +22,7 @@ IFSelect_IntParam::IFSelect_IntParam()
   theval = 0;
 }
 
-void IFSelect_IntParam::SetStaticName(const char* statname)
+void IFSelect_IntParam::SetStaticName(const char* const statname)
 {
   thestn.Clear();
   thestn.AssignCat(statname);

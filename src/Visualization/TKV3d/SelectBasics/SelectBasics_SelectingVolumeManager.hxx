@@ -180,6 +180,7 @@ public:
 
 public:
   Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
+
   bool Overlaps(const NCollection_Vec3<double>& theBoxMin,
                 const NCollection_Vec3<double>& theBoxMax,
                 SelectBasics_PickResult&        thePickResult) const
@@ -188,6 +189,7 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsBox()")
+
   bool Overlaps(const NCollection_Vec3<double>& theBoxMin,
                 const NCollection_Vec3<double>& theBoxMax,
                 bool*                           theInside = nullptr) const
@@ -196,12 +198,14 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
+
   bool Overlaps(const gp_Pnt& thePnt, SelectBasics_PickResult& thePickResult) const
   {
     return OverlapsPoint(thePnt, thePickResult);
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPoint()")
+
   bool Overlaps(const gp_Pnt& thePnt) const { return OverlapsPoint(thePnt); }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
@@ -210,6 +214,7 @@ public:
                                 SelectBasics_PickResult& thePickResult) const;
 
   Standard_DEPRECATED("Deprecated alias for OverlapsPolygon()")
+
   bool Overlaps(const NCollection_Array1<gp_Pnt>& theArrayOfPts,
                 int                               theSensType,
                 SelectBasics_PickResult&          thePickResult) const
@@ -218,6 +223,7 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsSegment()")
+
   bool Overlaps(const gp_Pnt&            thePnt1,
                 const gp_Pnt&            thePnt2,
                 SelectBasics_PickResult& thePickResult) const
@@ -226,6 +232,7 @@ public:
   }
 
   Standard_DEPRECATED("Deprecated alias for OverlapsTriangle()")
+
   bool Overlaps(const gp_Pnt&            thePnt1,
                 const gp_Pnt&            thePnt2,
                 const gp_Pnt&            thePnt3,

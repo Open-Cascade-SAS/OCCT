@@ -155,7 +155,7 @@ IFSelect_ReturnStatus STEPControl_Writer::Transfer(const TopoDS_Shape&          
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Writer::Write(const char* theFileName)
+IFSelect_ReturnStatus STEPControl_Writer::Write(const char* const theFileName)
 {
   occ::handle<StepData_StepModel> aModel = Model();
   if (aModel.IsNull())

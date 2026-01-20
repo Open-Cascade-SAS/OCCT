@@ -43,7 +43,7 @@ public:
   Standard_EXPORT TCollection_HAsciiString();
 
   //! Initializes a HAsciiString with a CString.
-  Standard_EXPORT TCollection_HAsciiString(const char* message);
+  Standard_EXPORT TCollection_HAsciiString(const char* const message);
 
   //! Initializes a HAsciiString with a single character.
   Standard_EXPORT TCollection_HAsciiString(const char aChar);
@@ -78,7 +78,7 @@ public:
                                            const char replaceNonAscii);
 
   //! Appends <other> to me.
-  void AssignCat(const char* other);
+  void AssignCat(const char* const other);
 
   //! Appends <other> to me.
   //! Example: aString = aString + anotherString
@@ -105,7 +105,7 @@ public:
   //! So the following example is WRONG !
   //! aString = "Hello " + "Dolly"  THIS IS NOT ALLOWED
   //! This rule is applicable to AssignCat (operator +=) too.
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> Cat(const char* other) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Cat(const char* const other) const;
 
   //! Creates a new string by concatenation of this
   //! ASCII string and the other ASCII string.
@@ -197,7 +197,7 @@ public:
   Standard_EXPORT void Insert(const int where, const char what);
 
   //! Insert a HAsciiString at position <where>.
-  Standard_EXPORT void Insert(const int where, const char* what);
+  Standard_EXPORT void Insert(const int where, const char* const what);
 
   //! Insert a HAsciiString at position <where>.
   Standard_EXPORT void Insert(const int where, const occ::handle<TCollection_HAsciiString>& what);
@@ -370,7 +370,7 @@ public:
   //! Example:
   //! aString contains "Sample single test"
   //! aString.Search("le") returns 5
-  Standard_EXPORT int Search(const char* what) const;
+  Standard_EXPORT int Search(const char* const what) const;
 
   //! Searches a String in <me> from the beginning
   //! and returns position of first item <what> matching.
@@ -383,7 +383,7 @@ public:
   //! Example:
   //! aString contains "Sample single test"
   //! aString.SearchFromEnd("le") returns 12
-  Standard_EXPORT int SearchFromEnd(const char* what) const;
+  Standard_EXPORT int SearchFromEnd(const char* const what) const;
 
   //! Searches a HAsciiString in another HAsciiString from the end
   //! and returns position of first item <what> matching.
@@ -404,7 +404,7 @@ public:
   //! Example:
   //! aString contains "Garbake"
   //! astring.Replace(6,'g')  gives <me> = "Garbage"
-  Standard_EXPORT void SetValue(const int where, const char* what);
+  Standard_EXPORT void SetValue(const int where, const char* const what);
 
   //! Replaces a part of <me> by another string.
   Standard_EXPORT void SetValue(const int where, const occ::handle<TCollection_HAsciiString>& what);
@@ -450,8 +450,8 @@ public:
   //! aString contains "1234; test:message   , value"
   //! aString.Token("; :,",4) returns "value"
   //! aString.Token("; :,",2) returns "test"
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> Token(const char* separators = " \t",
-                                                              const int   whichone   = 1) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> Token(const char* const separators = " \t",
+                                                              const int         whichone = 1) const;
 
   //! Truncates <me> to <ahowmany> characters.
   //! Example: me = "Hello Dolly" -> Trunc(3) -> me = "Hel"

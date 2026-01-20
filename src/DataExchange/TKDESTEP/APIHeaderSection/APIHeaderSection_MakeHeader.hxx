@@ -49,7 +49,7 @@ public:
 
   //! Cancels the former definition and gives a FileName
   //! To be used when a Model has no well defined Header
-  Standard_EXPORT void Init(const char* nameval);
+  Standard_EXPORT void Init(const char* const nameval);
 
   //! Returns True if all data have been defined (see also
   //! HasFn, HasFs, HasFd)

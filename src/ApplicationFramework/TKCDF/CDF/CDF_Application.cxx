@@ -212,7 +212,7 @@ const char16_t* CDF_Application::DefaultFolder()
 
 //=================================================================================================
 
-bool CDF_Application::SetDefaultFolder(const char16_t* aFolder)
+bool CDF_Application::SetDefaultFolder(const char16_t* const aFolder)
 {
   bool found = myMetaDataDriver->FindFolder(aFolder);
   if (found)

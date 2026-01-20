@@ -53,12 +53,12 @@ public:
                                           const bool                     Complain = true);
 
   Standard_EXPORT static bool Find(const occ::handle<TDocStd_Document>& Document,
-                                   const char*                          Entry,
+                                   const char* const                    Entry,
                                    TDF_Label&                           Label,
                                    const bool                           Complain = true);
 
   Standard_EXPORT static bool Find(const occ::handle<TDocStd_Document>& Document,
-                                   const char*                          Entry,
+                                   const char* const                    Entry,
                                    const Standard_GUID&                 ID,
                                    occ::handle<TDF_Attribute>&          A,
                                    const bool                           Complain = true);
@@ -66,7 +66,7 @@ public:
   //! Safe variant for arbitrary type of argument
   template <class T>
   static bool Find(const occ::handle<TDocStd_Document>& Document,
-                   const char*                          Entry,
+                   const char* const                    Entry,
                    const Standard_GUID&                 ID,
                    occ::handle<T>&                      A,
                    const bool                           Complain = true)

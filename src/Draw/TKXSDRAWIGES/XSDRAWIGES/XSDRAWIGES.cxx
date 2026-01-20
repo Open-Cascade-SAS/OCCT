@@ -88,7 +88,7 @@ TCollection_AsciiString XSDRAW_CommandPart(int argc, const char** argv, const in
 
 //=================================================================================================
 
-static int GiveEntityNumber(const occ::handle<XSControl_WorkSession>& WS, const char* name)
+static int GiveEntityNumber(const occ::handle<XSControl_WorkSession>& WS, const char* const name)
 {
   int num = 0;
   if (!name || name[0] == '\0')
@@ -111,9 +111,9 @@ static int GiveEntityNumber(const occ::handle<XSControl_WorkSession>& WS, const 
 //=================================================================================================
 
 bool FileAndVar(const occ::handle<XSControl_WorkSession>& session,
-                const char*                               file,
-                const char*                               var,
-                const char*                               def,
+                const char* const                         file,
+                const char* const                         var,
+                const char* const                         def,
                 TCollection_AsciiString&                  resfile,
                 TCollection_AsciiString&                  resvar)
 {
@@ -831,7 +831,7 @@ static int XSDRAWIGES_tplosttrim(Draw_Interpretor& theDI, int theNbArgs, const c
 static int XSDRAWIGES_TPSTAT(Draw_Interpretor& theDI, int theNbArgs, const char** theArgVec)
 {
   occ::handle<XSControl_WorkSession>            aWorkSession = XSDRAW::Session();
-  const char*                                   anArg1       = theArgVec[1];
+  const char* const                             anArg1       = theArgVec[1];
   const occ::handle<Transfer_TransientProcess>& aTransientProcess =
     aWorkSession->TransferReader()->TransientProcess();
   IGESControl_Reader                    aReader;

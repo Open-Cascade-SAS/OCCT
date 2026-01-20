@@ -272,7 +272,7 @@ occ::handle<IGESData_ColorEntity> IGESData_IGESEntity::Color() const
 
 //=================================================================================================
 
-bool IGESData_IGESEntity::CResValues(const char* res1, const char* res2) const
+bool IGESData_IGESEntity::CResValues(const char* const res1, const char* const res2) const
 {
   bool                res = false;
   Standard_PCharacter pres1, pres2;

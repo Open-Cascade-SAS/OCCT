@@ -54,7 +54,7 @@ public:
   //! num = FP->NextMappedWithAttribute(name,num) {
   //! .. process mapped item <num>
   //! }
-  Standard_EXPORT int NextMappedWithAttribute(const char* name, const int num0) const;
+  Standard_EXPORT int NextMappedWithAttribute(const char* const name, const int num0) const;
 
   //! Returns a TransientMapper for a given Transient Object
   //! Either <obj> is already mapped, then its Mapper is returned

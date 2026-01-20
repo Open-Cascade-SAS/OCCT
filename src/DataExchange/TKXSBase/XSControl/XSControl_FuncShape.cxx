@@ -56,9 +56,9 @@
 static IFSelect_ReturnStatus XSControl_tpdraw(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                                           argc = pilot->NbWords();
-  const char*                                   arg1 = pilot->Arg(1);
-  const char*                                   arg2 = pilot->Arg(2);
-  const char*                                   arg3 = pilot->Arg(3);
+  const char* const                             arg1 = pilot->Arg(1);
+  const char* const                             arg2 = pilot->Arg(2);
+  const char* const                             arg3 = pilot->Arg(3);
   const occ::handle<Transfer_TransientProcess>& TP =
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -327,7 +327,7 @@ static IFSelect_ReturnStatus XSControl_tpdraw(const occ::handle<IFSelect_Session
 static IFSelect_ReturnStatus XSControl_tpcompound(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                                           argc = pilot->NbWords();
-  const char*                                   arg1 = pilot->Arg(1);
+  const char* const                             arg1 = pilot->Arg(1);
   const occ::handle<Transfer_TransientProcess>& TP =
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -377,9 +377,9 @@ static IFSelect_ReturnStatus XSControl_tpcompound(const occ::handle<IFSelect_Ses
 
 static IFSelect_ReturnStatus XSControl_traccess(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
-  const char* arg2 = pilot->Arg(2);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
+  const char* const arg2 = pilot->Arg(2);
   //        ****    trdraw : TransferReader        **** 26
   //        ****    trsave : TransferReader        **** 27
   //        ****    trcomp  (comp -> DRAW)         **** 28
@@ -496,8 +496,8 @@ static bool XSControl_IsEqualSubShape(const TopoDS_Shape& Shape, TopoDS_Shape& s
 
 static IFSelect_ReturnStatus XSControl_fromshape(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    fromshape (tread)         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -706,8 +706,8 @@ static IFSelect_ReturnStatus XSControl_fromshape(const occ::handle<IFSelect_Sess
 static IFSelect_ReturnStatus XSControl_trconnexentities(
   const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    connected entities (last transfer)         ****
   const occ::handle<XSControl_TransferReader>& TR = XSControl::Session(pilot)->TransferReader();
   occ::handle<Transfer_TransientProcess>       TP;
@@ -766,9 +766,9 @@ static IFSelect_ReturnStatus XSControl_trimport(const occ::handle<IFSelect_Sessi
          << std::endl;
     return IFSelect_RetError;
   }
-  const char* arg1 = pilot->Arg(1);
-  const char* arg2 = pilot->Arg(2);
-  const char* arg3 = pilot->Arg(3);
+  const char* const arg1 = pilot->Arg(1);
+  const char* const arg2 = pilot->Arg(2);
+  const char* const arg3 = pilot->Arg(3);
 
   //  File Name and Variable (root) Name
 
@@ -892,8 +892,8 @@ static IFSelect_ReturnStatus XSControl_trimport(const occ::handle<IFSelect_Sessi
 
 static IFSelect_ReturnStatus XSControl_twrite(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    twrite         ****
   Message_Messenger::StreamBuffer       sout = Message::SendInfo();
   occ::handle<XSControl_TransferWriter> TW   = XSControl::Session(pilot)->TransferWriter();
@@ -1005,7 +1005,7 @@ void XSControl_FuncShape::Init()
 
 int XSControl_FuncShape::MoreShapes(const occ::handle<XSControl_WorkSession>&         session,
                                     occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                                    const char*                                       name)
+                                    const char* const                                 name)
 {
   //  name = un nom -> Draw
   //  name = "*"    -> tous les transferts RACINES du TP
@@ -1086,9 +1086,9 @@ int XSControl_FuncShape::MoreShapes(const occ::handle<XSControl_WorkSession>&   
 //=================================================================================================
 
 bool XSControl_FuncShape::FileAndVar(const occ::handle<XSControl_WorkSession>& session,
-                                     const char*                               file,
-                                     const char*                               var,
-                                     const char*                               def,
+                                     const char* const                         file,
+                                     const char* const                         var,
+                                     const char* const                         def,
                                      TCollection_AsciiString&                  resfile,
                                      TCollection_AsciiString&                  resvar)
 {

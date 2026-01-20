@@ -60,7 +60,7 @@ public:
   //! Returns True if success, False in case of fail
   Standard_EXPORT bool AddProp(const TopoDS_Shape&                             Shape,
                                const occ::handle<StepRepr_RepresentationItem>& Prop,
-                               const char*                                     Descr,
+                               const char* const                               Descr,
                                const bool                                      instance = false);
 
   //! General method for adding (writing) a validation property
@@ -70,7 +70,7 @@ public:
   Standard_EXPORT bool AddProp(const StepRepr_CharacterizedDefinition&            target,
                                const occ::handle<StepRepr_RepresentationContext>& Context,
                                const occ::handle<StepRepr_RepresentationItem>&    Prop,
-                               const char*                                        Descr);
+                               const char* const                                  Descr);
 
   //! Adds surface area property for given shape (already mapped).
   //! Returns True if success, False in case of fail

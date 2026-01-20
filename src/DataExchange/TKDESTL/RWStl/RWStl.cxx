@@ -144,7 +144,7 @@ private:
 
 //=================================================================================================
 
-occ::handle<Poly_Triangulation> RWStl::ReadFile(const char*                  theFile,
+occ::handle<Poly_Triangulation> RWStl::ReadFile(const char* const            theFile,
                                                 const double                 theMergeAngle,
                                                 const Message_ProgressRange& theProgress)
 {
@@ -158,7 +158,7 @@ occ::handle<Poly_Triangulation> RWStl::ReadFile(const char*                  the
 
 //=================================================================================================
 
-void RWStl::ReadFile(const char*                                            theFile,
+void RWStl::ReadFile(const char* const                                      theFile,
                      const double                                           theMergeAngle,
                      NCollection_Sequence<occ::handle<Poly_Triangulation>>& theTriangList,
                      const Message_ProgressRange&                           theProgress)

@@ -81,9 +81,9 @@ public:
   BinObjMgt_Persistent& operator<<(const float theValue) { return PutShortReal(theValue); }
 
   //! Offset in output buffer is not aligned
-  Standard_EXPORT BinObjMgt_Persistent& PutCString(const char* theValue);
+  Standard_EXPORT BinObjMgt_Persistent& PutCString(const char* const theValue);
 
-  BinObjMgt_Persistent& operator<<(const char* theValue) { return PutCString(theValue); }
+  BinObjMgt_Persistent& operator<<(const char* const theValue) { return PutCString(theValue); }
 
   //! Offset in output buffer is word-aligned
   Standard_EXPORT BinObjMgt_Persistent& PutAsciiString(const TCollection_AsciiString& theValue);

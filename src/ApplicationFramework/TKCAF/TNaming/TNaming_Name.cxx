@@ -96,7 +96,7 @@ void PrintEntries(const NCollection_Map<TDF_Label>& map)
 }
   #ifdef OCCT_DEBUG_DBGTOOLS_WRITE
 //=======================================================================
-static void DbgTools_Write(const TopoDS_Shape& shape, const char* filename)
+static void DbgTools_Write(const TopoDS_Shape& shape, const char* const filename)
 {
   char buf[256];
   if (strlen(filename) > 256)
@@ -120,7 +120,7 @@ static void DbgTools_Write(const TopoDS_Shape& shape, const char* filename)
 
 //=======================================================================
 static void DbgTools_Write(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS,
-                           const char* filename)
+                           const char* const filename)
 {
   if (!MS.IsEmpty())
   {
@@ -134,7 +134,8 @@ static void DbgTools_Write(const NCollection_IndexedMap<TopoDS_Shape, TopTools_S
 }
 
 //=======================================================================
-static void DbgTools_WriteNSOnLabel(const occ::handle<TNaming_NamedShape>& NS, const char* filename)
+static void DbgTools_WriteNSOnLabel(const occ::handle<TNaming_NamedShape>& NS,
+                                    const char* const                      filename)
 {
   if (!NS.IsNull() && !NS->IsEmpty())
   {

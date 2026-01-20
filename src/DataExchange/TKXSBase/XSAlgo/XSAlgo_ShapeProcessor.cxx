@@ -512,7 +512,7 @@ XSAlgo_ShapeProcessor::ProcessingData XSAlgo_ShapeProcessor::ReadProcessingData(
   const TCollection_AsciiString& theFileResourceName,
   const TCollection_AsciiString& theScopeResourceName)
 {
-  const char* aFileName = Interface_Static::CVal(theFileResourceName.ToCString());
+  const char* const aFileName = Interface_Static::CVal(theFileResourceName.ToCString());
   occ::handle<ShapeProcess_ShapeContext> aContext =
     new ShapeProcess_ShapeContext(TopoDS_Shape(), aFileName);
   if (!aContext->ResourceManager()->IsInitialized())

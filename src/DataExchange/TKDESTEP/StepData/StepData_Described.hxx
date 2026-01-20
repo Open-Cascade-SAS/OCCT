@@ -42,21 +42,21 @@ public:
   //! Tells if a step type is matched by <me>
   //! For a Simple Entity : own type or super type
   //! For a Complex Entity : one of the members
-  Standard_EXPORT virtual bool Matches(const char* steptype) const = 0;
+  Standard_EXPORT virtual bool Matches(const char* const steptype) const = 0;
 
   //! Returns a Simple Entity which matches with a Type in <me> :
   //! For a Simple Entity : me if it matches, else a null handle
   //! For a Complex Entity : the member which matches, else null
-  Standard_EXPORT virtual occ::handle<StepData_Simple> As(const char* steptype) const = 0;
+  Standard_EXPORT virtual occ::handle<StepData_Simple> As(const char* const steptype) const = 0;
 
   //! Tells if a Field brings a given name
-  Standard_EXPORT virtual bool HasField(const char* name) const = 0;
+  Standard_EXPORT virtual bool HasField(const char* const name) const = 0;
 
   //! Returns a Field from its name; read-only
-  Standard_EXPORT virtual const StepData_Field& Field(const char* name) const = 0;
+  Standard_EXPORT virtual const StepData_Field& Field(const char* const name) const = 0;
 
   //! Returns a Field from its name; read or write
-  Standard_EXPORT virtual StepData_Field& CField(const char* name) = 0;
+  Standard_EXPORT virtual StepData_Field& CField(const char* const name) = 0;
 
   //! Fills a Check by using its Description
   Standard_EXPORT virtual void Check(occ::handle<Interface_Check>& ach) const = 0;

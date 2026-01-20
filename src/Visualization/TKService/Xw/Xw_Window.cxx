@@ -33,7 +33,7 @@ IMPLEMENT_STANDARD_RTTIEXT(Xw_Window, Aspect_Window)
 //=================================================================================================
 
 Xw_Window::Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
-                     const char*                                  theTitle,
+                     const char* const                            theTitle,
                      const int                                    thePxLeft,
                      const int                                    thePxTop,
                      const int                                    thePxWidth,

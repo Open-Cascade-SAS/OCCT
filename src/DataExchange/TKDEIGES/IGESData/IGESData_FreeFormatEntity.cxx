@@ -92,7 +92,7 @@ void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType            
   UndefinedContent()->AddLiteral(ptype, val);
 }
 
-void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType ptype, const char* val)
+void IGESData_FreeFormatEntity::AddLiteral(const Interface_ParamType ptype, const char* const val)
 {
   UndefinedContent()->AddLiteral(ptype, new TCollection_HAsciiString(val));
 }

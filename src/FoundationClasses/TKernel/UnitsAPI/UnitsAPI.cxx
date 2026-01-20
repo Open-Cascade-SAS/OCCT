@@ -133,7 +133,7 @@ void UnitsAPI::CheckLoading(const UnitsAPI_SystemUnits aSystemUnits)
 
 //=================================================================================================
 
-double UnitsAPI::CurrentToLS(const double aData, const char* aQuantity)
+double UnitsAPI::CurrentToLS(const double aData, const char* const aQuantity)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -156,7 +156,7 @@ double UnitsAPI::CurrentToLS(const double aData, const char* aQuantity)
 
 //=================================================================================================
 
-double UnitsAPI::CurrentToSI(const double aData, const char* aQuantity)
+double UnitsAPI::CurrentToSI(const double aData, const char* const aQuantity)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -178,7 +178,7 @@ double UnitsAPI::CurrentToSI(const double aData, const char* aQuantity)
 
 //=================================================================================================
 
-double UnitsAPI::CurrentFromLS(const double aData, const char* aQuantity)
+double UnitsAPI::CurrentFromLS(const double aData, const char* const aQuantity)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -201,7 +201,7 @@ double UnitsAPI::CurrentFromLS(const double aData, const char* aQuantity)
 
 //=================================================================================================
 
-double UnitsAPI::CurrentFromSI(const double aData, const char* aQuantity)
+double UnitsAPI::CurrentFromSI(const double aData, const char* const aQuantity)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -223,7 +223,9 @@ double UnitsAPI::CurrentFromSI(const double aData, const char* aQuantity)
 
 //=================================================================================================
 
-double UnitsAPI::CurrentToAny(const double aData, const char* aQuantity, const char* aUnit)
+double UnitsAPI::CurrentToAny(const double      aData,
+                              const char* const aQuantity,
+                              const char* const aUnit)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -245,7 +247,9 @@ double UnitsAPI::CurrentToAny(const double aData, const char* aQuantity, const c
 
 //=================================================================================================
 
-double UnitsAPI::CurrentFromAny(const double aData, const char* aQuantity, const char* aUnit)
+double UnitsAPI::CurrentFromAny(const double      aData,
+                                const char* const aQuantity,
+                                const char* const aUnit)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -267,7 +271,7 @@ double UnitsAPI::CurrentFromAny(const double aData, const char* aQuantity, const
 
 //=================================================================================================
 
-double UnitsAPI::AnyToLS(const double aData, const char* aUnit)
+double UnitsAPI::AnyToLS(const double aData, const char* const aUnit)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -290,7 +294,9 @@ double UnitsAPI::AnyToLS(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyToLS(const double aData, const char* aUnit, occ::handle<Units_Dimensions>& aDim)
+double UnitsAPI::AnyToLS(const double                   aData,
+                         const char* const              aUnit,
+                         occ::handle<Units_Dimensions>& aDim)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -312,7 +318,7 @@ double UnitsAPI::AnyToLS(const double aData, const char* aUnit, occ::handle<Unit
 
 //=================================================================================================
 
-double UnitsAPI::AnyToSI(const double aData, const char* aUnit)
+double UnitsAPI::AnyToSI(const double aData, const char* const aUnit)
 {
   double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -322,7 +328,9 @@ double UnitsAPI::AnyToSI(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyToSI(const double aData, const char* aUnit, occ::handle<Units_Dimensions>& aDim)
+double UnitsAPI::AnyToSI(const double                   aData,
+                         const char* const              aUnit,
+                         occ::handle<Units_Dimensions>& aDim)
 {
   double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -332,7 +340,7 @@ double UnitsAPI::AnyToSI(const double aData, const char* aUnit, occ::handle<Unit
 
 //=================================================================================================
 
-double UnitsAPI::AnyFromLS(const double aData, const char* aUnit)
+double UnitsAPI::AnyFromLS(const double aData, const char* const aUnit)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -354,7 +362,7 @@ double UnitsAPI::AnyFromLS(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyFromSI(const double aData, const char* aUnit)
+double UnitsAPI::AnyFromSI(const double aData, const char* const aUnit)
 {
   double aValue;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -364,7 +372,7 @@ double UnitsAPI::AnyFromSI(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double UnitsAPI::AnyToAny(const double aData, const char* aUnit1, const char* aUnit2)
+double UnitsAPI::AnyToAny(const double aData, const char* const aUnit1, const char* const aUnit2)
 {
   double aValue = aData;
   CheckLoading(UnitsAPI_DEFAULT);
@@ -374,7 +382,7 @@ double UnitsAPI::AnyToAny(const double aData, const char* aUnit1, const char* aU
 
 //=================================================================================================
 
-double UnitsAPI::LSToSI(const double aData, const char* aQuantity)
+double UnitsAPI::LSToSI(const double aData, const char* const aQuantity)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -395,7 +403,7 @@ double UnitsAPI::LSToSI(const double aData, const char* aQuantity)
 
 //=================================================================================================
 
-double UnitsAPI::SIToLS(const double aData, const char* aQuantity)
+double UnitsAPI::SIToLS(const double aData, const char* const aQuantity)
 {
   double aValue = aData;
   CheckLoading(localSystem);
@@ -431,7 +439,7 @@ UnitsAPI_SystemUnits UnitsAPI::LocalSystem()
 
 //=================================================================================================
 
-void UnitsAPI::SetCurrentUnit(const char* aQuantity, const char* anUnit)
+void UnitsAPI::SetCurrentUnit(const char* const aQuantity, const char* const anUnit)
 {
   CheckLoading(localSystem);
   CurrentUnits->SetResource(aQuantity, anUnit);
@@ -457,7 +465,7 @@ void UnitsAPI::Reload()
 
 static TCollection_AsciiString astring;
 
-const char* UnitsAPI::CurrentUnit(const char* aQuantity)
+const char* UnitsAPI::CurrentUnit(const char* const aQuantity)
 {
   CheckLoading(localSystem);
   astring = CurrentUnits->Value(aQuantity);
@@ -466,7 +474,7 @@ const char* UnitsAPI::CurrentUnit(const char* aQuantity)
 
 //=================================================================================================
 
-occ::handle<Units_Dimensions> UnitsAPI::Dimensions(const char* aType)
+occ::handle<Units_Dimensions> UnitsAPI::Dimensions(const char* const aType)
 {
   return Units::Dimensions(aType);
 }
@@ -543,7 +551,7 @@ occ::handle<Units_Dimensions> UnitsAPI::DimensionSolidAngle()
 
 //=================================================================================================
 
-bool UnitsAPI::Check(const char* aQuantity, const char* /*aUnit*/)
+bool UnitsAPI::Check(const char* const aQuantity, const char* const /*aUnit*/)
 {
   bool status = false;
   CheckLoading(UnitsAPI_DEFAULT);

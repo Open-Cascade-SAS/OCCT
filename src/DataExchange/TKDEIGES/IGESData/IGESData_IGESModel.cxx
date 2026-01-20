@@ -35,7 +35,7 @@ static const char* voidline = "";
 // Internal routine used for VerifyCheck
 void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
                          occ::handle<Interface_Check>&                ach,
-                         const char*                                  mess);
+                         const char* const                            mess);
 
 //=================================================================================================
 
@@ -213,7 +213,7 @@ void IGESData_IGESModel::SetStartSection(
 
 //=================================================================================================
 
-void IGESData_IGESModel::AddStartLine(const char* line, const int atnum)
+void IGESData_IGESModel::AddStartLine(const char* const line, const int atnum)
 {
   if (atnum <= 0 || atnum > thestart->Length())
     thestart->Append(new TCollection_HAsciiString(line));
@@ -230,7 +230,7 @@ void IGESData_IGESModel::SetGlobalSection(const IGESData_GlobalSection& header)
 
 //=================================================================================================
 
-bool IGESData_IGESModel::ApplyStatic(const char* param)
+bool IGESData_IGESModel::ApplyStatic(const char* const param)
 {
   if (param[0] == '\0')
   {
@@ -501,7 +501,7 @@ void IGESData_IGESModel::VerifyCheck(occ::handle<Interface_Check>& ach) const
 
 void IGESData_VerifyDate(const occ::handle<TCollection_HAsciiString>& str,
                          occ::handle<Interface_Check>&                ach,
-                         const char*                                  mess)
+                         const char* const                            mess)
 {
   // MGE 23/07/98
   // =====================================

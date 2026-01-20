@@ -62,7 +62,7 @@ public:
   //! Changes names
   //! if a name is empty, the formerly set one remains
   //! Remark : Does not call Record or AutoRecord
-  Standard_EXPORT void SetNames(const char* theLongName, const char* theShortName);
+  Standard_EXPORT void SetNames(const char* const theLongName, const char* const theShortName);
 
   //! Records <me> is a general dictionary under Short and Long
   //! Names (see method Name)
@@ -74,11 +74,11 @@ public:
 
   //! Records <me> in a general dictionary under a name
   //! Error if <name> already used for another one
-  Standard_EXPORT void Record(const char* name) const;
+  Standard_EXPORT void Record(const char* const name) const;
 
   //! Returns the Controller attached to a given name
   //! Returns a Null Handle if <name> is unknown
-  Standard_EXPORT static occ::handle<XSControl_Controller> Recorded(const char* name);
+  Standard_EXPORT static occ::handle<XSControl_Controller> Recorded(const char* const name);
 
   //! Returns a name, as given when initializing :
   //! rsc = False (D) : True Name attached to the Norm (long name)
@@ -120,9 +120,9 @@ public:
   Standard_EXPORT void SetModeWrite(const int modemin, const int modemax, const bool shape = true);
 
   //! Attaches a short line of help to a value of modetrans (write)
-  Standard_EXPORT void SetModeWriteHelp(const int   modetrans,
-                                        const char* help,
-                                        const bool  shape = true);
+  Standard_EXPORT void SetModeWriteHelp(const int         modetrans,
+                                        const char* const help,
+                                        const bool        shape = true);
 
   //! Returns recorded min and max values for modetrans (write)
   //! Actually only for shapes
@@ -188,12 +188,12 @@ public:
   //! the recorded items will be used by Customise
   //! Warning : if <name> conflicts, the last recorded item is kept
   Standard_EXPORT void AddSessionItem(const occ::handle<Standard_Transient>& theItem,
-                                      const char*                            theName,
+                                      const char* const                      theName,
                                       const bool                             toApply = false);
 
   //! Returns an item given its name to record in a Session
   //! If <name> is unknown, returns a Null Handle
-  Standard_EXPORT occ::handle<Standard_Transient> SessionItem(const char* theName) const;
+  Standard_EXPORT occ::handle<Standard_Transient> SessionItem(const char* const theName) const;
 
   //! Customises a WorkSession, by adding to it the recorded items (by AddSessionItem)
   Standard_EXPORT virtual void Customise(occ::handle<XSControl_WorkSession>& WS);
@@ -210,10 +210,11 @@ protected:
   //! Initializing with names
   //! <theLongName>  is for the complete, official, long name
   //! <theShortName> is for the short name used for resources
-  Standard_EXPORT XSControl_Controller(const char* theLongName, const char* theShortName);
+  Standard_EXPORT XSControl_Controller(const char* const theLongName,
+                                       const char* const theShortName);
 
   //! Records the name of a Static to be traced for a given use
-  Standard_EXPORT void TraceStatic(const char* theName, const int theUse);
+  Standard_EXPORT void TraceStatic(const char* const theName, const int theUse);
 
   TCollection_AsciiString           myShortName;
   TCollection_AsciiString           myLongName;

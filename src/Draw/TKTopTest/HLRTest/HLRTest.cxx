@@ -38,7 +38,7 @@ Standard_IMPORT Draw_Viewer dout;
 
 //=================================================================================================
 
-void HLRTest::Set(const char* Name, const HLRAlgo_Projector& P)
+void HLRTest::Set(const char* const Name, const HLRAlgo_Projector& P)
 {
   Draw::Set(Name, new HLRTest_Projector(P));
 }
@@ -56,7 +56,7 @@ bool HLRTest::GetProjector(const char*& Name, HLRAlgo_Projector& P)
 
 //=================================================================================================
 
-void HLRTest::Set(const char* Name, const TopoDS_Shape& S)
+void HLRTest::Set(const char* const Name, const TopoDS_Shape& S)
 {
   Draw::Set(Name, new HLRTest_OutLiner(S));
 }

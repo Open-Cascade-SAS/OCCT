@@ -48,7 +48,7 @@ public:
   //! The option theDoAppend specifies whether file should be
   //! appended or rewritten.
   //! For specific file names (cout, cerr) standard streams are used
-  Standard_EXPORT Message_PrinterOStream(const char*           theFileName,
+  Standard_EXPORT Message_PrinterOStream(const char* const     theFileName,
                                          const bool            theDoAppend,
                                          const Message_Gravity theTraceLevel = Message_Info);
 

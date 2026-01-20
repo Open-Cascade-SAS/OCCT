@@ -50,7 +50,7 @@ void DrawDim::AllCommands(Draw_Interpretor& theCommands)
 
 //=================================================================================================
 
-void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const char* aname)
+void DrawDim::DrawShapeName(const TopoDS_Shape& ashape, const char* const aname)
 {
   gp_Pnt                  position;
   TCollection_AsciiString t(" ");

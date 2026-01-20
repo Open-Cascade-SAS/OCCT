@@ -119,7 +119,7 @@ inline const char* ConvertToString(const StepBasic_SiUnitName theNameEnum)
 //! @param theNameStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_SiUnitName value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* theNameStr, StepBasic_SiUnitName& theResultEnum)
+inline bool ConvertToEnum(const char* const theNameStr, StepBasic_SiUnitName& theResultEnum)
 {
   if (IsEqual(theNameStr, sunHertz))
   {

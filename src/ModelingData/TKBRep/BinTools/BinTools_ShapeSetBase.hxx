@@ -110,7 +110,7 @@ public:
   //! An empty virtual method for redefinition in shape-reader.
   Standard_EXPORT virtual void Read(Standard_IStream& /*theStream*/, TopoDS_Shape& /*theShape*/) {}
 
-  static const char* THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1];
+  static const char* const THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1];
 
 private:
   int  myFormatNb;

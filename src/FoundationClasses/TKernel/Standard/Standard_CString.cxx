@@ -68,7 +68,7 @@ double Atof(const char* theStr)
   return Strtod(theStr, nullptr);
 }
 
-int Printf(const char* theFormat, ...)
+int Printf(const char* const theFormat, ...)
 {
   SAVE_TL();
   va_list argp;

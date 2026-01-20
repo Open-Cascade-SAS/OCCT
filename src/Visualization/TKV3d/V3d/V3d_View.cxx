@@ -563,7 +563,7 @@ void V3d_View::SetBgGradientStyle(const Aspect_GradientFillMethod theFillStyle,
 
 //=================================================================================================
 
-void V3d_View::SetBackgroundImage(const char*             theFileName,
+void V3d_View::SetBackgroundImage(const char* const       theFileName,
                                   const Aspect_FillMethod theFillStyle,
                                   const bool              theToUpdate)
 {
@@ -2636,7 +2636,7 @@ void V3d_View::Init()
 
 //=================================================================================================
 
-bool V3d_View::Dump(const char* theFile, const Graphic3d_BufferType& theBufferType)
+bool V3d_View::Dump(const char* const theFile, const Graphic3d_BufferType& theBufferType)
 {
   int aWinWidth, aWinHeight;
   MyWindow->Size(aWinWidth, aWinHeight);
@@ -3577,7 +3577,7 @@ void V3d_View::DumpJson(Standard_OStream& theOStream, int theDepth) const
        anIterator.More();
        anIterator.Next())
   {
-    occ::handle<Graphic3d_CLight>& anActiveLight = anIterator.ChangeValue();
+    class occ::handle<Graphic3d_CLight>& anActiveLight = anIterator.ChangeValue();
     OCCT_DUMP_FIELD_VALUE_POINTER(theOStream, anActiveLight)
   }
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, &myDefaultViewAxis)

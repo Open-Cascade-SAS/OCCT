@@ -98,7 +98,7 @@ public:
                                   const occ::handle<TCollection_HAsciiString>& val);
 
   //! Adds a literal Parameter to the list (builds an HAsciiString)
-  Standard_EXPORT void AddLiteral(const Interface_ParamType ptype, const char* val);
+  Standard_EXPORT void AddLiteral(const Interface_ParamType ptype, const char* const val);
 
   //! Adds a Parameter which references an Entity. If the Entity is
   //! Null, the added parameter will define a "Null Pointer" (0)

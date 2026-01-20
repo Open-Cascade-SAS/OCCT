@@ -47,8 +47,8 @@ public:
 
   //! Creates and returns a new object of the registered type
   //! If the type is not registered, returns Null handle
-  static Standard_EXPORT occ::handle<TObj_Object> CreateNewObject(const char*      theType,
-                                                                  const TDF_Label& theLabel);
+  static Standard_EXPORT occ::handle<TObj_Object> CreateNewObject(const char* const theType,
+                                                                  const TDF_Label&  theLabel);
 
   //! Dumps names of all the types registered for persistence to the
   //! specified stream
@@ -60,7 +60,7 @@ protected:
    */
 
   //! The constructor registers the object
-  Standard_EXPORT TObj_Persistence(const char* theType);
+  Standard_EXPORT TObj_Persistence(const char* const theType);
 
   //! The destructor unregisters the object
   virtual Standard_EXPORT ~TObj_Persistence();

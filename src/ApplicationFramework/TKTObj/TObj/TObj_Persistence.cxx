@@ -34,7 +34,7 @@ NCollection_DataMap<TCollection_AsciiString, void*>& TObj_Persistence::getMapOfT
 // purpose  : Register the type for persistence
 //=======================================================================
 
-TObj_Persistence::TObj_Persistence(const char* theType)
+TObj_Persistence::TObj_Persistence(const char* const theType)
 {
   myType = theType;
   getMapOfTypes().Bind(theType, this);
@@ -49,8 +49,8 @@ TObj_Persistence::~TObj_Persistence()
 
 //=================================================================================================
 
-occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char*      theType,
-                                                           const TDF_Label& theLabel)
+occ::handle<TObj_Object> TObj_Persistence::CreateNewObject(const char* const theType,
+                                                           const TDF_Label&  theLabel)
 {
   if (getMapOfTypes().IsBound(theType))
   {

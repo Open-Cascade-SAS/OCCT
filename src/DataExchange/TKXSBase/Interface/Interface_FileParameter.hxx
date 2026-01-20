@@ -45,7 +45,7 @@ public:
   Standard_EXPORT void Init(const TCollection_AsciiString& val, const Interface_ParamType typ);
 
   //! Same as above, but builds the Value from a CString
-  Standard_EXPORT void Init(const char* val, const Interface_ParamType typ);
+  Standard_EXPORT void Init(const char* const val, const Interface_ParamType typ);
 
   //! Same as above, but as a CString (for immediate exploitation)
   //! was C++ : return const

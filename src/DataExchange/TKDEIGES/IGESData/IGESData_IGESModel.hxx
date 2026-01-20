@@ -82,7 +82,7 @@ public:
   //! Adds a new string to the existing
   //! Start section at the end if atnum is 0 or not given, or before
   //! atnumth line.
-  Standard_EXPORT void AddStartLine(const char* line, const int atnum = 0);
+  Standard_EXPORT void AddStartLine(const char* const line, const int atnum = 0);
 
   //! Returns the Global section of the IGES file.
   const IGESData_GlobalSection& GlobalSection() const { return theheader; }
@@ -103,7 +103,7 @@ public:
   //! Returns True when done and if param is given, False if param is
   //! unknown or empty. Note: Set the unit in the IGES
   //! file Global section via IGESData_BasicEditor class.
-  Standard_EXPORT bool ApplyStatic(const char* param = "");
+  Standard_EXPORT bool ApplyStatic(const char* const param = "");
 
   //! Returns an IGES entity given by its rank number.
   Standard_EXPORT occ::handle<IGESData_IGESEntity> Entity(const int num) const;

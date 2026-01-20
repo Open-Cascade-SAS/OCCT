@@ -83,7 +83,7 @@ inline const char* ConvertToString(const StepBasic_SiPrefix theSourceEnum)
 //! @param thePrefixStr The string to convert
 //! @param theResultEnum The corresponding StepBasic_SiPrefix value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* thePrefixStr, StepBasic_SiPrefix& theResultEnum)
+inline bool ConvertToEnum(const char* const thePrefixStr, StepBasic_SiPrefix& theResultEnum)
 {
   if (IsEqual(thePrefixStr, spExa))
   {

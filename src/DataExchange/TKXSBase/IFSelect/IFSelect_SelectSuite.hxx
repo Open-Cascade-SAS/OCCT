@@ -73,7 +73,7 @@ public:
   Standard_EXPORT occ::handle<IFSelect_SelectDeduct> Item(const int num) const;
 
   //! Sets a value for the Label
-  Standard_EXPORT void SetLabel(const char* lab);
+  Standard_EXPORT void SetLabel(const char* const lab);
 
   //! Returns the list of selected entities
   //! To do this, once InputResult has been taken (if Input or

@@ -24,9 +24,9 @@
 #include <TCollection_AsciiString.hxx>
 #include <TCollection_ExtendedString.hxx>
 
-static const char* MAGICNUMBER                 = "FSDFILE";
-static const char* ENDOFNORMALEXTENDEDSECTION  = "BEGIN_REF_SECTION";
-static const int   SIZEOFNORMALEXTENDEDSECTION = 16;
+const char* const MAGICNUMBER                 = "FSDFILE";
+const char* const ENDOFNORMALEXTENDEDSECTION  = "BEGIN_REF_SECTION";
+static const int  SIZEOFNORMALEXTENDEDSECTION = 16;
 
 #define USEOSDREAL 1
 
@@ -375,7 +375,7 @@ void FSD_File::ReadWord(TCollection_AsciiString& buffer)
 
 //=================================================================================================
 
-Storage_Error FSD_File::FindTag(const char* aTag)
+Storage_Error FSD_File::FindTag(const char* const aTag)
 {
   TCollection_AsciiString l;
 

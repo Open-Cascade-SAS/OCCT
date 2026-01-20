@@ -39,7 +39,7 @@ IFSelect_PacketList::IFSelect_PacketList(const occ::handle<Interface_InterfaceMo
   theflags.Init(0);
 }
 
-void IFSelect_PacketList::SetName(const char* name)
+void IFSelect_PacketList::SetName(const char* const name)
 {
   thename.Clear();
   thename.AssignCat(name);

@@ -148,7 +148,7 @@ public:
   Standard_EXPORT void SendComment(const occ::handle<TCollection_HAsciiString>& text);
 
   //! same as above but accepts a CString (ex.: "..." directly)
-  Standard_EXPORT void SendComment(const char* text);
+  Standard_EXPORT void SendComment(const char* const text);
 
   //! sets entity's StepType, opens brackets, starts param no to 0
   //! params are separated by comma
@@ -191,7 +191,7 @@ public:
   Standard_EXPORT void OpenSub();
 
   //! open a sublist with its type then a '('
-  Standard_EXPORT void OpenTypedSub(const char* subtype);
+  Standard_EXPORT void OpenTypedSub(const char* const subtype);
 
   //! closes a sublist by a ')'
   Standard_EXPORT void CloseSub();
@@ -228,7 +228,7 @@ public:
   Standard_EXPORT void SendString(const TCollection_AsciiString& val);
 
   //! sends a string exactly as it is given
-  Standard_EXPORT void SendString(const char* val);
+  Standard_EXPORT void SendString(const char* const val);
 
   //! sends an enum given by String (literal expression)
   //! adds '.' around it if not done
@@ -238,7 +238,7 @@ public:
 
   //! sends an enum given by String (literal expression)
   //! adds '.' around it if not done
-  Standard_EXPORT void SendEnum(const char* val);
+  Standard_EXPORT void SendEnum(const char* const val);
 
   //! sends an array of real
   Standard_EXPORT void SendArrReal(const occ::handle<NCollection_HArray1<double>>& anArr);
@@ -308,7 +308,7 @@ private:
   Standard_EXPORT void AddString(const TCollection_AsciiString& str, const int more = 0);
 
   //! Same as above, but the string is given by CString + Length
-  Standard_EXPORT void AddString(const char* str, const int lnstr, const int more = 0);
+  Standard_EXPORT void AddString(const char* const str, const int lnstr, const int more = 0);
 
   occ::handle<StepData_StepModel>                                           themodel;
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> thefile;

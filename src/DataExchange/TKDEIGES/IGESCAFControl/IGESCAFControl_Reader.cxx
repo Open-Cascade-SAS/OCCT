@@ -374,7 +374,7 @@ bool IGESCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
 
 //=================================================================================================
 
-bool IGESCAFControl_Reader::Perform(const char*                          filename,
+bool IGESCAFControl_Reader::Perform(const char* const                    filename,
                                     const occ::handle<TDocStd_Document>& doc,
                                     const Message_ProgressRange&         theProgress)
 {

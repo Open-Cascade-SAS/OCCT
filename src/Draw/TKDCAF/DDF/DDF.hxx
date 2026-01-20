@@ -45,7 +45,7 @@ public:
   //! <Entry>. returns <True> if found. In that case
   //! <Label> is set.
   Standard_EXPORT static bool FindLabel(const occ::handle<TDF_Data>& DF,
-                                        const char*                  Entry,
+                                        const char* const            Entry,
                                         TDF_Label&                   Label,
                                         const bool                   Complain = true);
 
@@ -53,14 +53,14 @@ public:
   //! <Entry>. if label doesn't exist, create and add
   //! the Label in <DF>. In that case return True.
   Standard_EXPORT static bool AddLabel(const occ::handle<TDF_Data>& DF,
-                                       const char*                  Entry,
+                                       const char* const            Entry,
                                        TDF_Label&                   Label);
 
   //! Search in <DF> the attribute identified by its
   //! <ID> and its <entry>. returns <True> if found. In
   //! that case A is set.
   Standard_EXPORT static bool Find(const occ::handle<TDF_Data>& DF,
-                                   const char*                  Entry,
+                                   const char* const            Entry,
                                    const Standard_GUID&         ID,
                                    occ::handle<TDF_Attribute>&  A,
                                    const bool                   Complain = true);
@@ -68,7 +68,7 @@ public:
   //! Safe variant for arbitrary type of argument
   template <class T>
   static bool Find(const occ::handle<TDF_Data>& DF,
-                   const char*                  Entry,
+                   const char* const            Entry,
                    const Standard_GUID&         ID,
                    occ::handle<T>&              A,
                    const bool                   Complain = true)

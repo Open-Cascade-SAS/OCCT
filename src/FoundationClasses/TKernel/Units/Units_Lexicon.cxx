@@ -121,7 +121,7 @@ void Units_Lexicon::Creates()
 
 //=================================================================================================
 
-void Units_Lexicon::AddToken(const char* aword, const char* amean, const double avalue)
+void Units_Lexicon::AddToken(const char* const aword, const char* const amean, const double avalue)
 {
   occ::handle<Units_Token> token;
   occ::handle<Units_Token> referencetoken;

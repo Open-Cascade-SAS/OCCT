@@ -45,7 +45,7 @@ public:
 
   //! Sets the type of an entity
   //! For a complex one, the type of this member
-  Standard_EXPORT void SetStepType(const char* typenam);
+  Standard_EXPORT void SetStepType(const char* const typenam);
 
   //! Returns the recorded StepType
   //! For a complex one, the type of this member
@@ -68,7 +68,7 @@ public:
 
   //! Returns the member of a FreeFormEntity of which the type name
   //! is given (exact match, no sub-type)
-  Standard_EXPORT occ::handle<StepData_FreeFormEntity> Typed(const char* typenam) const;
+  Standard_EXPORT occ::handle<StepData_FreeFormEntity> Typed(const char* const typenam) const;
 
   //! Returns the list of types (one type for a simple entity),
   //! as is (non reordered)

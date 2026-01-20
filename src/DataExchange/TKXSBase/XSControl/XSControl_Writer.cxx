@@ -24,7 +24,7 @@ XSControl_Writer::XSControl_Writer()
   SetWS(new XSControl_WorkSession);
 }
 
-XSControl_Writer::XSControl_Writer(const char* norm)
+XSControl_Writer::XSControl_Writer(const char* const norm)
 {
   SetNorm(norm);
 }
@@ -34,7 +34,7 @@ XSControl_Writer::XSControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
   SetWS(WS, scratch);
 }
 
-bool XSControl_Writer::SetNorm(const char* norm)
+bool XSControl_Writer::SetNorm(const char* const norm)
 {
   if (thesession.IsNull())
     SetWS(new XSControl_WorkSession);
@@ -72,7 +72,7 @@ IFSelect_ReturnStatus XSControl_Writer::TransferShape(const TopoDS_Shape&       
   return thesession->TransferWriteShape(sh, true, theProgress);
 }
 
-IFSelect_ReturnStatus XSControl_Writer::WriteFile(const char* filename)
+IFSelect_ReturnStatus XSControl_Writer::WriteFile(const char* const filename)
 {
   return thesession->SendAll(filename);
 }

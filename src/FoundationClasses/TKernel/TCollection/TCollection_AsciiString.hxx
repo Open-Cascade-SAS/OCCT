@@ -65,12 +65,12 @@ public:
 
   //! Initializes a AsciiString with a CString (null-terminated).
   //! @param[in] theMessage the C string to initialize from
-  inline TCollection_AsciiString(const char* theMessage);
+  inline TCollection_AsciiString(const char* const theMessage);
 
   //! Initializes a AsciiString with a CString and explicit length.
   //! @param[in] theMessage the C string to initialize from
   //! @param[in] theLength the length of the string
-  Standard_EXPORT TCollection_AsciiString(const char* theMessage, const int theLength);
+  Standard_EXPORT TCollection_AsciiString(const char* const theMessage, const int theLength);
 
   //! Initializes a AsciiString with a single character.
   //! @param[in] theChar the character to initialize from
@@ -110,7 +110,7 @@ public:
   //! @param[in] theString the string to copy
   //! @param[in] theMessage the C string to append
   Standard_EXPORT TCollection_AsciiString(const TCollection_AsciiString& theString,
-                                          const char*                    theMessage);
+                                          const char* const              theMessage);
 
   //! Initializes a AsciiString with copy of another AsciiString
   //! concatenated with the message string.
@@ -165,7 +165,7 @@ public:
   //! This is the primary implementation that all other AssignCat overloads redirect to.
   //! @param[in] theString pointer to the string to append
   //! @param[in] theLength length of the string to append
-  Standard_EXPORT void AssignCat(const char* theString, const int theLength);
+  Standard_EXPORT void AssignCat(const char* const theString, const int theLength);
 
   //! Appends other string to this string. This is an unary operator.
   //!
@@ -183,9 +183,9 @@ public:
 
   //! Appends C string to this ASCII string.
   //! @param[in] theCString the C string to append
-  inline void AssignCat(const char* theCString);
+  inline void AssignCat(const char* const theCString);
 
-  void operator+=(const char* theCString) { AssignCat(theCString); }
+  void operator+=(const char* const theCString) { AssignCat(theCString); }
 
 #if Standard_CPP17_OR_HIGHER
   //! Appends string view to this ASCII string. This is an unary operator.
@@ -229,7 +229,8 @@ public:
   //! @param[in] theString pointer to the string to append
   //! @param[in] theLength length of the string to append
   //! @return new string with the string appended
-  Standard_EXPORT TCollection_AsciiString Cat(const char* theString, const int theLength) const;
+  Standard_EXPORT TCollection_AsciiString Cat(const char* const theString,
+                                              const int         theLength) const;
 
   //! Appends other character to this string.
   //!
@@ -295,9 +296,9 @@ public:
   //! Appends C string to this ASCII string.
   //! @param[in] theCString the C string to append
   //! @return new string with C string appended
-  inline TCollection_AsciiString Cat(const char* theCString) const;
+  inline TCollection_AsciiString Cat(const char* const theCString) const;
 
-  inline TCollection_AsciiString operator+(const char* theCString) const;
+  inline TCollection_AsciiString operator+(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Appends string view to this ASCII string.
@@ -371,14 +372,14 @@ public:
   //! Used as operator =
   //! @param[in] theString pointer to the string to copy from
   //! @param[in] theLength length of the string to copy
-  Standard_EXPORT void Copy(const char* theString, const int theLength);
+  Standard_EXPORT void Copy(const char* const theString, const int theLength);
 
   //! Copy C string to this ASCII string.
   //! Used as operator =
   //! @param[in] theCString the C string to copy from
-  inline void Copy(const char* theCString);
+  inline void Copy(const char* const theCString);
 
-  void operator=(const char* theCString) { Copy(theCString); }
+  void operator=(const char* const theCString) { Copy(theCString); }
 
 #if Standard_CPP17_OR_HIGHER
   //! Copy string view to this ASCII string.
@@ -446,10 +447,10 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character found in set, or 0 if not found
-  Standard_EXPORT int FirstLocationInSet(const char* theSet,
-                                         const int   theSetLength,
-                                         const int   theFromIndex,
-                                         const int   theToIndex) const;
+  Standard_EXPORT int FirstLocationInSet(const char* const theSet,
+                                         const int         theSetLength,
+                                         const int         theFromIndex,
+                                         const int         theToIndex) const;
 
   //! Returns the index of the first character of this string that is
   //! present in Set.
@@ -504,10 +505,10 @@ public:
   //! @param[in] theFromIndex the starting index for search
   //! @param[in] theToIndex the ending index for search
   //! @return the index of first character not in set, or 0 if not found
-  Standard_EXPORT int FirstLocationNotInSet(const char* theSet,
-                                            const int   theSetLength,
-                                            const int   theFromIndex,
-                                            const int   theToIndex) const;
+  Standard_EXPORT int FirstLocationNotInSet(const char* const theSet,
+                                            const int         theSetLength,
+                                            const int         theFromIndex,
+                                            const int         theToIndex) const;
 
   //! Returns the index of the first character of this string
   //! that is not present in the set Set.
@@ -573,7 +574,7 @@ public:
   //! @param[in] theWhere position to insert at
   //! @param[in] theString pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void Insert(const int theWhere, const char* theString, const int theLength);
+  Standard_EXPORT void Insert(const int theWhere, const char* const theString, const int theLength);
 
   //! Inserts a AsciiString at position where.
   //! @param[in] theWhere the position to insert at
@@ -583,7 +584,7 @@ public:
   //! Inserts a C string at position theWhere.
   //! @param[in] theWhere position to insert at
   //! @param[in] theCString the C string to insert
-  inline void Insert(const int theWhere, const char* theCString);
+  inline void Insert(const int theWhere, const char* const theCString);
 
 #if Standard_CPP17_OR_HIGHER
   //! Inserts a string_view at position theWhere.
@@ -612,7 +613,9 @@ public:
   //! @param[in] theIndex the index to insert after
   //! @param[in] theString pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void InsertAfter(const int theIndex, const char* theString, const int theLength);
+  Standard_EXPORT void InsertAfter(const int         theIndex,
+                                   const char* const theString,
+                                   const int         theLength);
 
   //! Inserts an ASCII string after a specific index in this string.
   //! Raises an exception if index is out of bounds.
@@ -624,7 +627,7 @@ public:
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert after
   //! @param[in] theCString the C string to insert
-  inline void InsertAfter(const int theIndex, const char* theCString);
+  inline void InsertAfter(const int theIndex, const char* const theCString);
 
 #if Standard_CPP17_OR_HIGHER
   //! Inserts a string_view after a specific index in this string.
@@ -646,7 +649,9 @@ public:
   //! @param[in] theIndex the index to insert before
   //! @param[in] theString pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void InsertBefore(const int theIndex, const char* theString, const int theLength);
+  Standard_EXPORT void InsertBefore(const int         theIndex,
+                                    const char* const theString,
+                                    const int         theLength);
 
   //! Inserts an ASCII string before a specific index in this string.
   //! Raises an exception if index is out of bounds.
@@ -658,7 +663,7 @@ public:
   //! Raises an exception if index is out of bounds.
   //! @param[in] theIndex the index to insert before
   //! @param[in] theCString the C string to insert
-  inline void InsertBefore(const int theIndex, const char* theCString);
+  inline void InsertBefore(const int theIndex, const char* const theCString);
 
 #if Standard_CPP17_OR_HIGHER
   //! Inserts a string_view before a specific index in this string.
@@ -692,14 +697,14 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are equal, false otherwise
-  Standard_EXPORT bool IsEqual(const char* theString, const int theLength) const;
+  Standard_EXPORT bool IsEqual(const char* const theString, const int theLength) const;
 
   //! Returns true if the characters in this ASCII string are identical to the C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if strings are equal, false otherwise
-  inline bool IsEqual(const char* theCString) const;
+  inline bool IsEqual(const char* const theCString) const;
 
-  inline bool operator==(const char* theCString) const;
+  inline bool operator==(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns true if the characters in this ASCII string
@@ -743,14 +748,14 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are different, false otherwise
-  inline bool IsDifferent(const char* theString, const int theLength) const;
+  inline bool IsDifferent(const char* const theString, const int theLength) const;
 
   //! Returns true if there are differences between this ASCII string and C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if strings are different, false otherwise
-  inline bool IsDifferent(const char* theCString) const;
+  inline bool IsDifferent(const char* const theCString) const;
 
-  inline bool operator!=(const char* theCString) const;
+  inline bool operator!=(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns true if there are differences between the
@@ -777,7 +782,7 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if this string is lexicographically less than the given string
-  Standard_EXPORT bool IsLess(const char* theString, const int theLength) const;
+  Standard_EXPORT bool IsLess(const char* const theString, const int theLength) const;
 
   //! Returns TRUE if this string is 'ASCII' less than other.
   //! @param[in] theOther the ASCII string to compare with
@@ -789,9 +794,9 @@ public:
   //! Returns TRUE if this string is lexicographically less than C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if this string is lexicographically less than C string
-  inline bool IsLess(const char* theCString) const;
+  inline bool IsLess(const char* const theCString) const;
 
-  bool operator<(const char* theCString) const { return IsLess(theCString); }
+  bool operator<(const char* const theCString) const { return IsLess(theCString); }
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns TRUE if this ASCII string is lexicographically less than theStringView.
@@ -817,7 +822,7 @@ public:
   //! @param[in] theString pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if this string is lexicographically greater than the given string
-  Standard_EXPORT bool IsGreater(const char* theString, const int theLength) const;
+  Standard_EXPORT bool IsGreater(const char* const theString, const int theLength) const;
 
   //! Returns TRUE if this string is 'ASCII' greater than other.
   //! @param[in] theOther the ASCII string to compare with
@@ -829,9 +834,9 @@ public:
   //! Returns TRUE if this string is lexicographically greater than C string.
   //! @param[in] theCString the C string to compare with
   //! @return true if this string is lexicographically greater than C string
-  inline bool IsGreater(const char* theCString) const;
+  inline bool IsGreater(const char* const theCString) const;
 
-  inline bool operator>(const char* theCString) const;
+  inline bool operator>(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns TRUE if this ASCII string is lexicographically greater than theStringView.
@@ -856,7 +861,7 @@ public:
   //! @param[in] theStartString pointer to the string to check for at the beginning
   //! @param[in] theStartLength length of the string to check for
   //! @return true if this string starts with theStartString
-  Standard_EXPORT bool StartsWith(const char* theStartString, const int theStartLength) const;
+  Standard_EXPORT bool StartsWith(const char* const theStartString, const int theStartLength) const;
 
   //! Determines whether the beginning of this string instance matches the specified string.
   //! @param[in] theStartString the string to check for at the beginning
@@ -866,7 +871,7 @@ public:
   //! Determines whether the beginning of this string matches the specified C string.
   //! @param[in] theCString the C string to check for at the beginning
   //! @return true if this string starts with theCString
-  inline bool StartsWith(const char* theCString) const;
+  inline bool StartsWith(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Determines whether the beginning of this string instance matches the specified string_view.
@@ -880,7 +885,7 @@ public:
   //! @param[in] theEndString pointer to the string to check for at the end
   //! @param[in] theEndLength length of the string to check for
   //! @return true if this string ends with theEndString
-  Standard_EXPORT bool EndsWith(const char* theEndString, const int theEndLength) const;
+  Standard_EXPORT bool EndsWith(const char* const theEndString, const int theEndLength) const;
 
   //! Determines whether the end of this string instance matches the specified string.
   //! @param[in] theEndString the string to check for at the end
@@ -1121,7 +1126,7 @@ public:
   //! @param[in] theWhat pointer to the string to search for
   //! @param[in] theWhatLength length of the string to search for
   //! @return the position of first match, or -1 if not found
-  Standard_EXPORT int Search(const char* theWhat, const int theWhatLength) const;
+  Standard_EXPORT int Search(const char* const theWhat, const int theWhatLength) const;
 
   //! Searches an AsciiString in this string from the beginning
   //! and returns position of first item what matching.
@@ -1133,7 +1138,7 @@ public:
   //! Searches a C string in this string from the beginning.
   //! @param[in] theCString the C string to search for
   //! @return the position of first match, or -1 if not found
-  inline int Search(const char* theCString) const;
+  inline int Search(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Searches a string_view in this string from the beginning
@@ -1156,7 +1161,7 @@ public:
   //! @param[in] theWhat pointer to the string to search for
   //! @param[in] theWhatLength length of the string to search for
   //! @return the position of first match from end, or -1 if not found
-  Standard_EXPORT int SearchFromEnd(const char* theWhat, const int theWhatLength) const;
+  Standard_EXPORT int SearchFromEnd(const char* const theWhat, const int theWhatLength) const;
 
   //! Searches a AsciiString in another AsciiString from the end
   //! and returns position of first item what matching.
@@ -1168,7 +1173,7 @@ public:
   //! Searches a C string in this string from the end.
   //! @param[in] theCString the C string to search for
   //! @return the position of first match from end, or -1 if not found
-  inline int SearchFromEnd(const char* theCString) const;
+  inline int SearchFromEnd(const char* const theCString) const;
 
 #if Standard_CPP17_OR_HIGHER
   //! Searches a string_view in this string from the end
@@ -1204,7 +1209,9 @@ public:
   //! @param[in] theWhere position to start replacement
   //! @param[in] theString pointer to the string to replace with
   //! @param[in] theLength length of the string to replace with
-  Standard_EXPORT void SetValue(const int theWhere, const char* theString, const int theLength);
+  Standard_EXPORT void SetValue(const int         theWhere,
+                                const char* const theString,
+                                const int         theLength);
 
   //! Replaces a part of this string by another AsciiString.
   //! @param[in] theWhere the position to start replacement
@@ -1214,7 +1221,7 @@ public:
   //! Replaces a part of this ASCII string with a C string.
   //! @param[in] theWhere position to start replacement
   //! @param[in] theCString the C string to replace with
-  inline void SetValue(const int theWhere, const char* theCString);
+  inline void SetValue(const int theWhere, const char* const theCString);
 
 #if Standard_CPP17_OR_HIGHER
   //! Replaces a part of this ASCII string with a string_view.
@@ -1295,8 +1302,8 @@ public:
   //! ```
   //! @param[in] theSeparators the separator characters
   //! @param[in] theWhichOne the token number to extract
-  Standard_EXPORT TCollection_AsciiString Token(const char* theSeparators = " \t",
-                                                const int   theWhichOne   = 1) const;
+  Standard_EXPORT TCollection_AsciiString Token(const char* const theSeparators = " \t",
+                                                const int         theWhichOne   = 1) const;
 
   //! Truncates this string to ahowmany characters.
   //!
@@ -1362,7 +1369,7 @@ public:
   //! @param[in] string1 first string to compare
   //! @param[in] string2 second C string to compare
   //! @return true if strings are equal
-  static bool IsEqual(const TCollection_AsciiString& string1, const char* string2);
+  static bool IsEqual(const TCollection_AsciiString& string1, const char* const string2);
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns True when the ASCII string and string_view are the same.
@@ -1391,11 +1398,11 @@ public:
   //! @param[in] theLength2 length of second string
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  Standard_EXPORT static bool IsSameString(const char* theString1,
-                                           const int   theLength1,
-                                           const char* theString2,
-                                           const int   theLength2,
-                                           const bool  theIsCaseSensitive);
+  Standard_EXPORT static bool IsSameString(const char* const theString1,
+                                           const int         theLength1,
+                                           const char* const theString2,
+                                           const int         theLength2,
+                                           const bool        theIsCaseSensitive);
 
   //! Returns True if the strings contain same characters.
   //! @param[in] theString1 first string to compare
@@ -1412,7 +1419,7 @@ public:
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
   inline static bool IsSameString(const TCollection_AsciiString& theString1,
-                                  const char*                    theCString,
+                                  const char* const              theCString,
                                   const bool                     theIsCaseSensitive);
 
   //! Returns True if the C string and string contain same characters.
@@ -1420,7 +1427,7 @@ public:
   //! @param[in] theString2 second string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  inline static bool IsSameString(const char*                    theCString,
+  inline static bool IsSameString(const char* const              theCString,
                                   const TCollection_AsciiString& theString2,
                                   const bool                     theIsCaseSensitive);
 
@@ -1449,9 +1456,9 @@ public:
   //! @param[in] theCString2 second C string to compare
   //! @param[in] theIsCaseSensitive flag indicating case sensitivity
   //! @return true if strings contain same characters
-  inline static bool IsSameString(const char* theCString1,
-                                  const char* theCString2,
-                                  const bool  theIsCaseSensitive);
+  inline static bool IsSameString(const char* const theCString1,
+                                  const char* const theCString2,
+                                  const bool        theIsCaseSensitive);
 
 #if Standard_CPP17_OR_HIGHER
   //! Returns True if the two string_views contain same characters.

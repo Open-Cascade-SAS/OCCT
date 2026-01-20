@@ -107,10 +107,10 @@ IGESSelect_Activator::IGESSelect_Activator()
 IFSelect_ReturnStatus IGESSelect_Activator::Do(const int                                 number,
                                                const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Word(1).ToCString();
-  const char* arg2 = pilot->Word(2).ToCString();
-  //  const char* arg3 = pilot->Word(3).ToCString();
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Word(1).ToCString();
+  const char* const arg2 = pilot->Word(2).ToCString();
+  //  const char* const arg3 = pilot->Word(3).ToCString();
   occ::handle<IFSelect_WorkSession> WS = pilot->Session();
 
   switch (number)

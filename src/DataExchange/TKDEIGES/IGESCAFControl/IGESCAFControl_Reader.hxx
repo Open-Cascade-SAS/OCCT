@@ -82,7 +82,7 @@ public:
 
   //! Translate IGES file given by filename into the document
   //! Return True if succeeded, and False in case of fail
-  Standard_EXPORT bool Perform(const char*                          theFileName,
+  Standard_EXPORT bool Perform(const char* const                    theFileName,
                                const occ::handle<TDocStd_Document>& theDoc,
                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 

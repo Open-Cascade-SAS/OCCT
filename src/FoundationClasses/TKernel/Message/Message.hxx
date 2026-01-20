@@ -117,7 +117,8 @@ public:
   //! @param theString string identifier
   //! @param theType detected type of metric
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool MetricFromString(const char* theString, Message_MetricType& theType);
+  Standard_EXPORT static bool MetricFromString(const char* const   theString,
+                                               Message_MetricType& theType);
 
   //! Returns the string name for a given metric type.
   //! @param theType metric type
@@ -127,7 +128,7 @@ public:
   //! Returns the metric type from the given string identifier.
   //! @param theString string identifier
   //! @return metric type or Message_MetricType_None if string identifier is invalid
-  static Message_MetricType MetricFromString(const char* theString)
+  static Message_MetricType MetricFromString(const char* const theString)
   {
     Message_MetricType aMetric = Message_MetricType_None;
     MetricFromString(theString, aMetric);

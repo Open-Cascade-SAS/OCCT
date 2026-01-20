@@ -146,7 +146,7 @@ public:
   //! comparison).
   //! @param theOrientationString string identifier
   //! @return shape orientation or TopAbs_FORWARD if string identifier is invalid
-  static TopAbs_Orientation ShapeOrientationFromString(const char* theOrientationString)
+  static TopAbs_Orientation ShapeOrientationFromString(const char* const theOrientationString)
   {
     TopAbs_Orientation aType = TopAbs_FORWARD;
     ShapeOrientationFromString(theOrientationString, aType);
@@ -158,7 +158,7 @@ public:
   //! @param theOrientationString string identifier
   //! @param theOrientation detected shape orientation
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool ShapeOrientationFromString(const char*         theOrientationString,
+  Standard_EXPORT static bool ShapeOrientationFromString(const char* const   theOrientationString,
                                                          TopAbs_Orientation& theOrientation);
 };
 

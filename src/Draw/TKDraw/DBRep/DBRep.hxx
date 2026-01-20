@@ -36,7 +36,7 @@ public:
   //! Implements ProgressIndicator for DRAW
   //! Sets <S> in the variable <Name>.
   //! Overwrite the variable if already set.
-  Standard_EXPORT static void Set(const char* Name, const TopoDS_Shape& S);
+  Standard_EXPORT static void Set(const char* const Name, const TopoDS_Shape& S);
 
   //! Returns the shape in the variable.
   //! @param[in][out] theName   variable name, or "." to pick up shape interactively (the picked

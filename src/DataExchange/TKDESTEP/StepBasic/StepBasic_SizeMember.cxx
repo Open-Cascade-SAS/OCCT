@@ -28,7 +28,7 @@ const char* StepBasic_SizeMember::Name() const
   return "POSITIVE_LENGTH_MEASURE";
 }
 
-bool StepBasic_SizeMember::SetName(const char* /*name*/)
+bool StepBasic_SizeMember::SetName(const char* const /*name*/)
 {
   return true;
 }

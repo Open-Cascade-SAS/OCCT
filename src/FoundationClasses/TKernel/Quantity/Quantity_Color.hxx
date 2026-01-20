@@ -181,14 +181,14 @@ public:
   //! Finds color from predefined names.
   //! For example, the name of the color which corresponds to "BLACK" is Quantity_NOC_BLACK.
   //! Returns FALSE if name is unknown.
-  Standard_EXPORT static bool ColorFromName(const char*           theName,
+  Standard_EXPORT static bool ColorFromName(const char* const     theName,
                                             Quantity_NameOfColor& theColor) noexcept;
 
   //! Finds color from predefined names.
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
-  static bool ColorFromName(const char* theColorNameString, Quantity_Color& theColor) noexcept
+  static bool ColorFromName(const char* const theColorNameString, Quantity_Color& theColor) noexcept
   {
     Quantity_NameOfColor aColorName = Quantity_NOC_BLACK;
     if (!ColorFromName(theColorNameString, aColorName))
@@ -207,7 +207,8 @@ public:
   //! @param theHexColorString the string to be parsed
   //! @param theColor a color that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
-  Standard_EXPORT static bool ColorFromHex(const char* theHexColorString, Quantity_Color& theColor);
+  Standard_EXPORT static bool ColorFromHex(const char* const theHexColorString,
+                                           Quantity_Color&   theColor);
 
   //! Returns hex sRGB string in format "#FFAAFF".
   static TCollection_AsciiString ColorToHex(const Quantity_Color& theColor,

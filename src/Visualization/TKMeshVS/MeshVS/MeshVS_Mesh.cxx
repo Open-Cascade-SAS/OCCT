@@ -1201,7 +1201,7 @@ void MeshVS_Mesh::ClearSelected()
 
 //=================================================================================================
 
-occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::FindBuilder(const char* theTypeName) const
+occ::handle<MeshVS_PrsBuilder> MeshVS_Mesh::FindBuilder(const char* const theTypeName) const
 {
   for (const occ::handle<MeshVS_PrsBuilder>& aBuilder : myBuilders)
   {

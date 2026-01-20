@@ -81,7 +81,7 @@ public:
   }
 
   //! Modifies the font.
-  void SetFont(const char* theFont) { SetFont(TCollection_AsciiString(theFont)); }
+  void SetFont(const char* const theFont) { SetFont(TCollection_AsciiString(theFont)); }
 
   //! Return the text style.
   Aspect_TypeOfStyleText Style() const { return myTextStyle; }

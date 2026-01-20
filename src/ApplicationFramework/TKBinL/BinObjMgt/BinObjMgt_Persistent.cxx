@@ -319,7 +319,7 @@ BinObjMgt_Persistent& BinObjMgt_Persistent::PutShortReal(const float theValue)
 // purpose  : Offset in output buffer is not aligned
 //=======================================================================
 
-BinObjMgt_Persistent& BinObjMgt_Persistent::PutCString(const char* theValue)
+BinObjMgt_Persistent& BinObjMgt_Persistent::PutCString(const char* const theValue)
 {
   alignOffset(1);
   int aSize = (int)(strlen(theValue) + 1);

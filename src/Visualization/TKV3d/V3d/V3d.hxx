@@ -148,7 +148,7 @@ public:
   //! @param theTypeString string identifier
   //! @param theType detected shape type
   //! @return TRUE if string identifier is known
-  Standard_EXPORT static bool TypeOfOrientationFromString(const char*            theTypeString,
+  Standard_EXPORT static bool TypeOfOrientationFromString(const char* const      theTypeString,
                                                           V3d_TypeOfOrientation& theType);
 };
 

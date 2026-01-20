@@ -179,7 +179,7 @@ public:
 
   Standard_EXPORT const char16_t* DefaultFolder();
 
-  Standard_EXPORT bool SetDefaultFolder(const char16_t* aFolder);
+  Standard_EXPORT bool SetDefaultFolder(const char16_t* const aFolder);
 
   //! returns MetaDatdDriver of this application
   Standard_EXPORT occ::handle<CDF_MetaDataDriver> MetaDataDriver() const;

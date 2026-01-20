@@ -37,7 +37,7 @@ public:
   //! Creates a XLib window defined by his position and size in pixels.
   //! Throws exception if window can not be created or Display do not support GLX extension.
   Standard_EXPORT Xw_Window(const occ::handle<Aspect_DisplayConnection>& theXDisplay,
-                            const char*                                  theTitle,
+                            const char* const                            theTitle,
                             const int                                    thePxLeft,
                             const int                                    thePxTop,
                             const int                                    thePxWidth,

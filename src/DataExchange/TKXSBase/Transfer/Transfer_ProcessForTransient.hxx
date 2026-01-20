@@ -161,13 +161,13 @@ public:
   //! Adds an Error message to a starting entity (to the check of
   //! its Binder of category 0, as a Fail)
   Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start,
-                               const char*                            mess,
-                               const char*                            orig = "");
+                               const char* const                      mess,
+                               const char* const                      orig = "");
 
   //! (other name of AddFail, maintained for compatibility)
   Standard_EXPORT void AddError(const occ::handle<Standard_Transient>& start,
-                                const char*                            mess,
-                                const char*                            orig = "");
+                                const char* const                      mess,
+                                const char* const                      orig = "");
 
   //! Adds an Error Message to a starting entity from the definition
   //! of a Msg (Original+Value)
@@ -177,15 +177,16 @@ public:
   //! Adds a Warning message to a starting entity (to the check of
   //! its Binder of category 0)
   Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start,
-                                  const char*                            mess,
-                                  const char*                            orig = "");
+                                  const char* const                      mess,
+                                  const char* const                      orig = "");
 
   //! Adds a Warning Message to a starting entity from the definition
   //! of a Msg (Original+Value)
   Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start,
                                   const Message_Msg&                     amsg);
 
-  Standard_EXPORT void Mend(const occ::handle<Standard_Transient>& start, const char* pref = "");
+  Standard_EXPORT void Mend(const occ::handle<Standard_Transient>& start,
+                            const char* const                      pref = "");
 
   //! Returns the Check attached to a starting entity. If <start>
   //! is unknown, returns an empty Check

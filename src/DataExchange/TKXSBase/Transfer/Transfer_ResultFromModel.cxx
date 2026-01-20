@@ -36,7 +36,7 @@ void Transfer_ResultFromModel::SetModel(const occ::handle<Interface_InterfaceMod
   themodel = model;
 }
 
-void Transfer_ResultFromModel::SetFileName(const char* filename)
+void Transfer_ResultFromModel::SetFileName(const char* const filename)
 {
   thename.Clear();
   thename.AssignCat(filename);

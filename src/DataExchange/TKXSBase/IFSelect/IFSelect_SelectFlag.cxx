@@ -21,7 +21,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectFlag, IFSelect_SelectExtract)
 
-IFSelect_SelectFlag::IFSelect_SelectFlag(const char* flagname)
+IFSelect_SelectFlag::IFSelect_SelectFlag(const char* const flagname)
     : thename(flagname)
 {
 }

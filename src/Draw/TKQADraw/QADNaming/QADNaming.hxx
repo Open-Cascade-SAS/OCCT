@@ -36,10 +36,10 @@ class QADNaming
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static TopoDS_Shape CurrentShape(const char*                  ShapeEntry,
+  Standard_EXPORT static TopoDS_Shape CurrentShape(const char* const            ShapeEntry,
                                                    const occ::handle<TDF_Data>& Data);
 
-  Standard_EXPORT static void GetShape(const char*                     ShapeEntry,
+  Standard_EXPORT static void GetShape(const char* const               ShapeEntry,
                                        const occ::handle<TDF_Data>&    Data,
                                        NCollection_List<TopoDS_Shape>& Shapes);
 

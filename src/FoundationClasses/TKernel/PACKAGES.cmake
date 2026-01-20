@@ -10,6 +10,7 @@ set(OCCT_TKernel_LIST_OF_PACKAGES
   Storage
   TColStd
   TCollection
+  TShort
   Units
   UnitsAPI
   UnitsMethods

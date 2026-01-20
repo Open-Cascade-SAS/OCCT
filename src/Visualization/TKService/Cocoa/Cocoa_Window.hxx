@@ -65,11 +65,11 @@ public:
 
 public:
   //! Creates a NSWindow and NSView defined by his position and size in pixels
-  Standard_EXPORT Cocoa_Window(const char* theTitle,
-                               const int   thePxLeft,
-                               const int   thePxTop,
-                               const int   thePxWidth,
-                               const int   thePxHeight);
+  Standard_EXPORT Cocoa_Window(const char* const theTitle,
+                               const int         thePxLeft,
+                               const int         thePxTop,
+                               const int         thePxWidth,
+                               const int         thePxHeight);
 
 #if defined(TARGET_OS_IPHONE) && TARGET_OS_IPHONE
   //! Creates a wrapper over existing UIView handle

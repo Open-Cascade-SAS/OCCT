@@ -106,7 +106,7 @@ public:
 
   //! Records a new Category defined by its names, produces a number
   //! New if not yet recorded
-  Standard_EXPORT static int AddCategory(const char* theName);
+  Standard_EXPORT static int AddCategory(const char* const theName);
 
   //! Returns the count of recorded categories
   Standard_EXPORT static int NbCategories();
@@ -115,7 +115,7 @@ public:
   Standard_EXPORT static const char* Name(const int theNum);
 
   //! Returns the number of a category, according to its name
-  Standard_EXPORT static int Number(const char* theName);
+  Standard_EXPORT static int Number(const char* const theName);
 
   //! Default initialisation
   //! (protected against several calls : passes only once)

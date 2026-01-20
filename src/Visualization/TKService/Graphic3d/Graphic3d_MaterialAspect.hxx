@@ -49,12 +49,12 @@ public:
   //! @param[in] theName   name to find
   //! @param[out] theMat   found material
   //! @return FALSE if name was unrecognized
-  Standard_EXPORT static bool MaterialFromName(const char*               theName,
+  Standard_EXPORT static bool MaterialFromName(const char* const         theName,
                                                Graphic3d_NameOfMaterial& theMat);
 
   //! Returns the material for specified name or Graphic3d_NameOfMaterial_DEFAULT if name is
   //! unknown.
-  static Graphic3d_NameOfMaterial MaterialFromName(const char* theName)
+  static Graphic3d_NameOfMaterial MaterialFromName(const char* const theName)
   {
     Graphic3d_NameOfMaterial aMat = Graphic3d_NameOfMaterial_DEFAULT;
     MaterialFromName(theName, aMat);

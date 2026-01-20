@@ -18,7 +18,7 @@
 // static MoniTool_Stat Statact ("");
 // not Used
 // static const char* voidname = "";
-MoniTool_Stat::MoniTool_Stat(const char* title)
+MoniTool_Stat::MoniTool_Stat(const char* const title)
 {
   thetit = new TCollection_HAsciiString(title);
   thelev = 0;

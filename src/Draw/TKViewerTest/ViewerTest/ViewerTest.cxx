@@ -92,7 +92,7 @@ extern int ViewerMainLoop(int argc, const char** argv);
 // purpose  : get the Quantity_NameOfColor from a string
 //=======================================================================
 
-Quantity_NameOfColor ViewerTest::GetColorFromName(const char* theName)
+Quantity_NameOfColor ViewerTest::GetColorFromName(const char* const theName)
 {
   Quantity_NameOfColor aColor = DEFAULT_COLOR;
   Quantity_Color::ColorFromName(theName, aColor);

@@ -50,7 +50,7 @@ public:
   Standard_EXPORT IFSelect_EditForm(const occ::handle<IFSelect_Editor>& editor,
                                     const bool                          readonly,
                                     const bool                          undoable,
-                                    const char*                         label = "");
+                                    const char* const                   label = "");
 
   //! Creates an extracted EditForm from an Editor, limited to
   //! the values identified in <nums>
@@ -59,7 +59,7 @@ public:
                                     const NCollection_Sequence<int>&    nums,
                                     const bool                          readonly,
                                     const bool                          undoable,
-                                    const char*                         label = "");
+                                    const char* const                   label = "");
 
   //! Returns and may change the keep status on modif
   //! It starts as False
@@ -120,12 +120,12 @@ public:
   //! of EditForm
   //! If it is not complete, for a recorded (in the Editor) but
   //! non-loaded name, returns negative value (- number)
-  Standard_EXPORT int NameNumber(const char* name) const;
+  Standard_EXPORT int NameNumber(const char* const name) const;
 
   //! Returns the Rank of Value in the EditForm for a given Name
   //! i.e. if it is not complete, for a recorded (in the Editor) but
   //! non-loaded name, returns 0
-  Standard_EXPORT int NameRank(const char* name) const;
+  Standard_EXPORT int NameRank(const char* const name) const;
 
   //! For a read-write undoable EditForm, loads original values
   //! from defaults stored in the Editor

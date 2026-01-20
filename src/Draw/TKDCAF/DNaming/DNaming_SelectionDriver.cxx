@@ -55,7 +55,7 @@ bool DNaming_SelectionDriver::MustExecute(const occ::handle<TFunction_Logbook>&)
 #ifdef OCCT_DEBUG
   #include <BRepTools.hxx>
 
-static void Write(const TopoDS_Shape& shape, const char* filename)
+static void Write(const TopoDS_Shape& shape, const char* const filename)
 {
   std::ofstream save;
   save.open(filename);

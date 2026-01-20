@@ -113,13 +113,13 @@ public:
   //! Converts the shape aShape to
   //! VRML format of the passed version and writes it to the file identified by aFile.
   Standard_EXPORT bool Write(const TopoDS_Shape& aShape,
-                             const char*         aFile,
+                             const char* const   aFile,
                              const int           aVersion = 2) const;
 
   //! Converts the document to VRML format of the passed version
   //! and writes it to the file identified by aFile.
   Standard_EXPORT bool WriteDoc(const occ::handle<TDocStd_Document>& theDoc,
-                                const char*                          theFile,
+                                const char* const                    theFile,
                                 const double                         theScale) const;
 
   //! Converts the shape aShape to

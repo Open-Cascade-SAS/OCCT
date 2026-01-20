@@ -48,7 +48,7 @@ inline const char* ConvertToString(const StepVisual_TextPath theSourceEnum)
 //! @param thePathStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_TextPath value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* thePathStr, StepVisual_TextPath& theResultEnum)
+inline bool ConvertToEnum(const char* const thePathStr, StepVisual_TextPath& theResultEnum)
 {
   if (IsEqual(thePathStr, tpUp))
   {

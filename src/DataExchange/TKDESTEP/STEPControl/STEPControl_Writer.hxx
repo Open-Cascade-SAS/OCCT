@@ -103,7 +103,7 @@ public:
              const Message_ProgressRange&    theProgress = Message_ProgressRange());
 
   //! Writes a STEP model in the file identified by filename.
-  Standard_EXPORT IFSelect_ReturnStatus Write(const char* theFileName);
+  Standard_EXPORT IFSelect_ReturnStatus Write(const char* const theFileName);
 
   //! Writes a STEP model in the std::ostream.
   Standard_EXPORT IFSelect_ReturnStatus WriteStream(std::ostream& theOStream);

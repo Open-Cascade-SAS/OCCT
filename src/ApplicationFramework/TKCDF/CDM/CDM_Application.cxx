@@ -58,7 +58,7 @@ occ::handle<Message_Messenger> CDM_Application::MessageDriver()
 
 //=================================================================================================
 
-void CDM_Application::Write(const char16_t* aString)
+void CDM_Application::Write(const char16_t* const aString)
 {
   MessageDriver()->Send(aString);
 }

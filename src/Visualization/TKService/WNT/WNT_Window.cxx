@@ -140,7 +140,7 @@ private:
 
 //=================================================================================================
 
-WNT_Window::WNT_Window(const char*                    theTitle,
+WNT_Window::WNT_Window(const char* const              theTitle,
                        const occ::handle<WNT_WClass>& theClass,
                        const WNT_Dword&               theStyle,
                        const int                      thePxLeft,

@@ -461,7 +461,7 @@ void TDF_Tool::Label(const occ::handle<TDF_Data>&   aDF,
 //=======================================================================
 
 void TDF_Tool::Label(const occ::handle<TDF_Data>& aDF,
-                     const char*                  anEntry,
+                     const char* const            anEntry,
                      TDF_Label&                   aLabel,
                      const bool                   create)
 {

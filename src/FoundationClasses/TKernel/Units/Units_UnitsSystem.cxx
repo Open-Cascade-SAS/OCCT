@@ -46,7 +46,7 @@ Units_UnitsSystem::Units_UnitsSystem()
 
 //=================================================================================================
 
-Units_UnitsSystem::Units_UnitsSystem(const char* aName, const bool Verbose)
+Units_UnitsSystem::Units_UnitsSystem(const char* const aName, const bool Verbose)
 {
   occ::handle<Resource_Manager> themanager = new Resource_Manager(aName, Verbose);
 
@@ -71,7 +71,7 @@ occ::handle<NCollection_HSequence<int>> Units_UnitsSystem::ActiveUnitsSequence()
 
 //=================================================================================================
 
-void Units_UnitsSystem::Specify(const char* aquantity, const char* aunit)
+void Units_UnitsSystem::Specify(const char* const aquantity, const char* const aunit)
 {
   int                                                             index;
   occ::handle<Units_Unit>                                         unit;
@@ -135,7 +135,7 @@ void Units_UnitsSystem::Specify(const char* aquantity, const char* aunit)
 
 //=================================================================================================
 
-void Units_UnitsSystem::Remove(const char* aquantity, const char* aunit)
+void Units_UnitsSystem::Remove(const char* const aquantity, const char* const aunit)
 {
   int                                                         index1, index2;
   occ::handle<Units_Unit>                                     unit;
@@ -183,7 +183,7 @@ void Units_UnitsSystem::Remove(const char* aquantity, const char* aunit)
 
 //=================================================================================================
 
-void Units_UnitsSystem::Activate(const char* aquantity, const char* aunit)
+void Units_UnitsSystem::Activate(const char* const aquantity, const char* const aunit)
 {
   int                                                         index1, index2;
   occ::handle<Units_Unit>                                     unit;
@@ -233,7 +233,7 @@ void Units_UnitsSystem::Activates()
 
 //=================================================================================================
 
-TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const char* aquantity) const
+TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const char* const aquantity) const
 {
   int                                                         index1, index2;
   occ::handle<Units_Unit>                                     unit;
@@ -264,9 +264,9 @@ TCollection_AsciiString Units_UnitsSystem::ActiveUnit(const char* aquantity) con
 
 //=================================================================================================
 
-double Units_UnitsSystem::ConvertValueToUserSystem(const char*  aquantity,
-                                                   const double avalue,
-                                                   const char*  aunit) const
+double Units_UnitsSystem::ConvertValueToUserSystem(const char* const aquantity,
+                                                   const double      avalue,
+                                                   const char* const aunit) const
 {
   Units_UnitSentence unitsentence(aunit);
   if (!unitsentence.IsDone())
@@ -280,8 +280,8 @@ double Units_UnitsSystem::ConvertValueToUserSystem(const char*  aquantity,
 
 //=================================================================================================
 
-double Units_UnitsSystem::ConvertSIValueToUserSystem(const char*  aquantity,
-                                                     const double avalue) const
+double Units_UnitsSystem::ConvertSIValueToUserSystem(const char* const aquantity,
+                                                     const double      avalue) const
 {
   int                                                             index, activeunit;
   occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>     unitssequence;
@@ -330,8 +330,8 @@ double Units_UnitsSystem::ConvertSIValueToUserSystem(const char*  aquantity,
 
 //=================================================================================================
 
-double Units_UnitsSystem::ConvertUserSystemValueToSI(const char*  aquantity,
-                                                     const double avalue) const
+double Units_UnitsSystem::ConvertUserSystemValueToSI(const char* const aquantity,
+                                                     const double      avalue) const
 {
   int                                                             index, activeunit;
   occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>     unitssequence;

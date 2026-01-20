@@ -125,7 +125,7 @@ IGESToBRep_Reader::IGESToBRep_Reader()
 
 //=============================================================================
 
-int IGESToBRep_Reader::LoadFile(const char* filename)
+int IGESToBRep_Reader::LoadFile(const char* const filename)
 {
   if (theProc.IsNull())
     theProc = new Transfer_TransientProcess;

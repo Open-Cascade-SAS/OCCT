@@ -42,7 +42,7 @@ Units_Token::Units_Token()
 
 //=================================================================================================
 
-Units_Token::Units_Token(const char* aword)
+Units_Token::Units_Token(const char* const aword)
 {
   theword       = aword;
   themean       = " ";
@@ -52,7 +52,7 @@ Units_Token::Units_Token(const char* aword)
 
 //=================================================================================================
 
-Units_Token::Units_Token(const char* aword, const char* amean)
+Units_Token::Units_Token(const char* const aword, const char* const amean)
 {
   theword       = aword;
   themean       = amean;
@@ -62,7 +62,7 @@ Units_Token::Units_Token(const char* aword, const char* amean)
 
 //=================================================================================================
 
-Units_Token::Units_Token(const char* aword, const char* amean, const double avalue)
+Units_Token::Units_Token(const char* const aword, const char* const amean, const double avalue)
 {
   theword       = aword;
   themean       = amean;
@@ -72,8 +72,8 @@ Units_Token::Units_Token(const char* aword, const char* amean, const double aval
 
 //=================================================================================================
 
-Units_Token::Units_Token(const char*                          aword,
-                         const char*                          amean,
+Units_Token::Units_Token(const char* const                    aword,
+                         const char* const                    amean,
                          const double                         avalue,
                          const occ::handle<Units_Dimensions>& adimensions)
 {
@@ -140,7 +140,7 @@ Units_Token::Units_Token(const occ::handle<Units_Token>& atoken)
 
 //=================================================================================================
 
-void Units_Token::Update(const char* amean)
+void Units_Token::Update(const char* const amean)
 {
   TCollection_AsciiString string = Mean();
   if (string.Search(amean) != -1)
@@ -266,7 +266,7 @@ occ::handle<Units_Token> Units_Token::Power(const double anexponent) const
 
 //=================================================================================================
 
-bool Units_Token::IsEqual(const char* astring) const
+bool Units_Token::IsEqual(const char* const astring) const
 {
   TCollection_AsciiString string = Word();
 #ifdef UNX
@@ -391,7 +391,7 @@ occ::handle<Units_Token> pow(const occ::handle<Units_Token>& atoken, const doubl
 // purpose  :
 //=======================================================================
 
-bool operator==(const occ::handle<Units_Token>& atoken, const char* astring)
+bool operator==(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsEqual(astring);
 }
@@ -412,7 +412,7 @@ bool operator==(const occ::handle<Units_Token>& atoken, const char* astring)
 // purpose  :
 //=======================================================================
 
-bool operator!=(const occ::handle<Units_Token>& atoken, const char* astring)
+bool operator!=(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsNotEqual(astring);
 }
@@ -433,7 +433,7 @@ bool operator!=(const occ::handle<Units_Token>& atoken, const char* astring)
 // purpose  :
 //=======================================================================
 
-bool operator<=(const occ::handle<Units_Token>& atoken, const char* astring)
+bool operator<=(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsLessOrEqual(astring);
 }
@@ -443,7 +443,7 @@ bool operator<=(const occ::handle<Units_Token>& atoken, const char* astring)
 // purpose  :
 //=======================================================================
 
-bool operator>(const occ::handle<Units_Token>& atoken, const char* astring)
+bool operator>(const occ::handle<Units_Token>& atoken, const char* const astring)
 {
   return atoken->IsGreater(astring);
 }

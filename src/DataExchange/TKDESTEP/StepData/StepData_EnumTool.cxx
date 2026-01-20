@@ -14,46 +14,46 @@
 #include <StepData_EnumTool.hxx>
 #include <TCollection_AsciiString.hxx>
 
-StepData_EnumTool::StepData_EnumTool(const char* e0,
-                                     const char* e1,
-                                     const char* e2,
-                                     const char* e3,
-                                     const char* e4,
-                                     const char* e5,
-                                     const char* e6,
-                                     const char* e7,
-                                     const char* e8,
-                                     const char* e9,
-                                     const char* e10,
-                                     const char* e11,
-                                     const char* e12,
-                                     const char* e13,
-                                     const char* e14,
-                                     const char* e15,
-                                     const char* e16,
-                                     const char* e17,
-                                     const char* e18,
-                                     const char* e19,
-                                     const char* e20,
-                                     const char* e21,
-                                     const char* e22,
-                                     const char* e23,
-                                     const char* e24,
-                                     const char* e25,
-                                     const char* e26,
-                                     const char* e27,
-                                     const char* e28,
-                                     const char* e29,
-                                     const char* e30,
-                                     const char* e31,
-                                     const char* e32,
-                                     const char* e33,
-                                     const char* e34,
-                                     const char* e35,
-                                     const char* e36,
-                                     const char* e37,
-                                     const char* e38,
-                                     const char* e39)
+StepData_EnumTool::StepData_EnumTool(const char* const e0,
+                                     const char* const e1,
+                                     const char* const e2,
+                                     const char* const e3,
+                                     const char* const e4,
+                                     const char* const e5,
+                                     const char* const e6,
+                                     const char* const e7,
+                                     const char* const e8,
+                                     const char* const e9,
+                                     const char* const e10,
+                                     const char* const e11,
+                                     const char* const e12,
+                                     const char* const e13,
+                                     const char* const e14,
+                                     const char* const e15,
+                                     const char* const e16,
+                                     const char* const e17,
+                                     const char* const e18,
+                                     const char* const e19,
+                                     const char* const e20,
+                                     const char* const e21,
+                                     const char* const e22,
+                                     const char* const e23,
+                                     const char* const e24,
+                                     const char* const e25,
+                                     const char* const e26,
+                                     const char* const e27,
+                                     const char* const e28,
+                                     const char* const e29,
+                                     const char* const e30,
+                                     const char* const e31,
+                                     const char* const e32,
+                                     const char* const e33,
+                                     const char* const e34,
+                                     const char* const e35,
+                                     const char* const e36,
+                                     const char* const e37,
+                                     const char* const e38,
+                                     const char* const e39)
 {
   AddDefinition(e0);
   AddDefinition(e1);
@@ -99,7 +99,7 @@ StepData_EnumTool::StepData_EnumTool(const char* e0,
   theopt  = true;
 }
 
-void StepData_EnumTool::AddDefinition(const char* term)
+void StepData_EnumTool::AddDefinition(const char* const term)
 {
   char text[80];
   if (!term)
@@ -178,7 +178,7 @@ const TCollection_AsciiString& StepData_EnumTool::Text(const int num) const
   return thetexts.Value(num + 1);
 }
 
-int StepData_EnumTool::Value(const char* txt) const
+int StepData_EnumTool::Value(const char* const txt) const
 {
   int nb = thetexts.Length();
   for (int i = 1; i <= nb; i++)

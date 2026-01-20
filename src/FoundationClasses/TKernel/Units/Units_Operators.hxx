@@ -19,9 +19,9 @@
 #include <Units_Token.hxx>
 #include <Units_Quantity.hxx>
 
-Standard_EXPORT bool operator==(const occ::handle<Units_Quantity>&, const char*);
-Standard_EXPORT bool operator==(const occ::handle<Units_Token>&, const char*);
-Standard_EXPORT bool operator==(const occ::handle<Units_Unit>&, const char*);
+Standard_EXPORT bool operator==(const occ::handle<Units_Quantity>&, const char* const);
+Standard_EXPORT bool operator==(const occ::handle<Units_Token>&, const char* const);
+Standard_EXPORT bool operator==(const occ::handle<Units_Unit>&, const char* const);
 
 Standard_EXPORT occ::handle<Units_Dimensions> operator*(const occ::handle<Units_Dimensions>&,
                                                         const occ::handle<Units_Dimensions>&);
@@ -44,9 +44,9 @@ Standard_EXPORT occ::handle<Units_Token> operator*(const occ::handle<Units_Token
 Standard_EXPORT occ::handle<Units_Token> operator/(const occ::handle<Units_Token>&,
                                                    const occ::handle<Units_Token>&);
 
-Standard_EXPORT bool operator!=(const occ::handle<Units_Token>&, const char*);
-Standard_EXPORT bool operator<=(const occ::handle<Units_Token>&, const char*);
-Standard_EXPORT bool operator>(const occ::handle<Units_Token>&, const char*);
+Standard_EXPORT bool operator!=(const occ::handle<Units_Token>&, const char* const);
+Standard_EXPORT bool operator<=(const occ::handle<Units_Token>&, const char* const);
+Standard_EXPORT bool operator>(const occ::handle<Units_Token>&, const char* const);
 Standard_EXPORT bool operator>(const occ::handle<Units_Token>&, const occ::handle<Units_Token>&);
 Standard_EXPORT bool operator>=(const occ::handle<Units_Token>&, const occ::handle<Units_Token>&);
 

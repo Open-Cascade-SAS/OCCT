@@ -88,19 +88,19 @@ public:
 
   Standard_EXPORT void DrawMarker(const gp_Pnt2d& pt, const Draw_MarkerShape S, const double Size);
 
-  Standard_EXPORT void DrawString(const gp_Pnt& pt, const char* S);
+  Standard_EXPORT void DrawString(const gp_Pnt& pt, const char* const S);
 
-  Standard_EXPORT void DrawString(const gp_Pnt2d& pt, const char* S);
+  Standard_EXPORT void DrawString(const gp_Pnt2d& pt, const char* const S);
 
-  Standard_EXPORT void DrawString(const gp_Pnt& pt,
-                                  const char*   S,
-                                  const double  moveX,
-                                  const double  moveY);
+  Standard_EXPORT void DrawString(const gp_Pnt&     pt,
+                                  const char* const S,
+                                  const double      moveX,
+                                  const double      moveY);
 
-  Standard_EXPORT void DrawString(const gp_Pnt2d& pt,
-                                  const char*     S,
-                                  const double    moveX,
-                                  const double    moveY);
+  Standard_EXPORT void DrawString(const gp_Pnt2d&   pt,
+                                  const char* const S,
+                                  const double      moveX,
+                                  const double      moveY);
 
   //! Returns the 2D projection of a 3D point.
   Standard_EXPORT gp_Pnt2d Project(const gp_Pnt& pt) const;

@@ -46,7 +46,7 @@ public:
   //! $CSF_`aName`GroupDefaults/.aName
   //! $CSF_`aName`UserDefaults/.aName
   //! See : Resource_Manager for the description of this file.
-  Standard_EXPORT Units_UnitsSystem(const char* aName, const bool Verbose = false);
+  Standard_EXPORT Units_UnitsSystem(const char* const aName, const bool Verbose = false);
 
   //! Returns the sequence of refined quantities.
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>
@@ -59,38 +59,38 @@ public:
   Standard_EXPORT occ::handle<NCollection_HSequence<int>> ActiveUnitsSequence() const;
 
   //! Specifies for <aquantity> the unit <aunit> used.
-  Standard_EXPORT void Specify(const char* aquantity, const char* aunit);
+  Standard_EXPORT void Specify(const char* const aquantity, const char* const aunit);
 
   //! Removes for <aquantity> the unit <aunit> used.
-  Standard_EXPORT void Remove(const char* aquantity, const char* aunit);
+  Standard_EXPORT void Remove(const char* const aquantity, const char* const aunit);
 
   //! Specifies for <aquantity> the unit <aunit> used.
-  Standard_EXPORT void Activate(const char* aquantity, const char* aunit);
+  Standard_EXPORT void Activate(const char* const aquantity, const char* const aunit);
 
   //! Activates the first unit of all defined system quantities
   Standard_EXPORT void Activates();
 
   //! Returns for <aquantity> the active unit.
-  Standard_EXPORT TCollection_AsciiString ActiveUnit(const char* aquantity) const;
+  Standard_EXPORT TCollection_AsciiString ActiveUnit(const char* const aquantity) const;
 
   //! Converts a real value <avalue> from the unit <aunit>
   //! belonging to the physical dimensions <aquantity> to
   //! the corresponding unit of the user system.
-  Standard_EXPORT double ConvertValueToUserSystem(const char*  aquantity,
-                                                  const double avalue,
-                                                  const char*  aunit) const;
+  Standard_EXPORT double ConvertValueToUserSystem(const char* const aquantity,
+                                                  const double      avalue,
+                                                  const char* const aunit) const;
 
   //! Converts the real value <avalue> from the S.I. system
   //! of units to the user system of units. <aquantity> is
   //! the physical dimensions of the measurement.
-  Standard_EXPORT double ConvertSIValueToUserSystem(const char*  aquantity,
-                                                    const double avalue) const;
+  Standard_EXPORT double ConvertSIValueToUserSystem(const char* const aquantity,
+                                                    const double      avalue) const;
 
   //! Converts the real value <avalue> from the user system
   //! of units to the S.I. system of units. <aquantity> is
   //! the physical dimensions of the measurement.
-  Standard_EXPORT double ConvertUserSystemValueToSI(const char*  aquantity,
-                                                    const double avalue) const;
+  Standard_EXPORT double ConvertUserSystemValueToSI(const char* const aquantity,
+                                                    const double      avalue) const;
 
   Standard_EXPORT void Dump() const;
 

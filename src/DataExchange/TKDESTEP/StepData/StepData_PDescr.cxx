@@ -37,7 +37,7 @@ StepData_PDescr::StepData_PDescr()
 {
 }
 
-void StepData_PDescr::SetName(const char* name)
+void StepData_PDescr::SetName(const char* const name)
 {
   thename.Clear();
   thename.AssignCat(name);
@@ -76,7 +76,7 @@ void StepData_PDescr::AddMember(const occ::handle<StepData_PDescr>& member)
     thesel = 2;
 }
 
-void StepData_PDescr::SetMemberName(const char* memname)
+void StepData_PDescr::SetMemberName(const char* const memname)
 {
   thesnam.Clear();
   thesnam.AssignCat(memname);
@@ -112,7 +112,7 @@ void StepData_PDescr::SetEnum()
   thekind = KindEnum;
 }
 
-void StepData_PDescr::AddEnumDef(const char* enumdef)
+void StepData_PDescr::AddEnumDef(const char* const enumdef)
 {
   theenum.AddDefinition(enumdef);
 }
@@ -124,7 +124,7 @@ void StepData_PDescr::SetType(const occ::handle<Standard_Type>& atype)
   thednam.Clear();
 }
 
-void StepData_PDescr::SetDescr(const char* dscnam)
+void StepData_PDescr::SetDescr(const char* const dscnam)
 {
   thekind = KindEntity;
   thetype.Nullify();
@@ -171,7 +171,7 @@ void StepData_PDescr::SetDerived(const bool der)
   theder = der;
 }
 
-void StepData_PDescr::SetField(const char* name, const int rank)
+void StepData_PDescr::SetField(const char* const name, const int rank)
 {
   thefnam.Clear();
   thefnam.AssignCat(name);
@@ -187,7 +187,7 @@ bool StepData_PDescr::IsSelect() const
   return (thesel > 0);
 }
 
-occ::handle<StepData_PDescr> StepData_PDescr::Member(const char* name) const
+occ::handle<StepData_PDescr> StepData_PDescr::Member(const char* const name) const
 {
   if (!thefrom.IsNull())
     return thefrom->Member(name);
@@ -234,7 +234,7 @@ int StepData_PDescr::EnumMax() const
   return theenum.MaxValue();
 }
 
-int StepData_PDescr::EnumValue(const char* name) const
+int StepData_PDescr::EnumValue(const char* const name) const
 {
   return theenum.Value(name);
 }

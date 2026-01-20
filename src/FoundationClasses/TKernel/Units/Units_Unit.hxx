@@ -40,25 +40,25 @@ public:
   //! the unit, <asymbol> is the usual abbreviation of the
   //! unit, and <avalue> is the value in relation to the
   //! International System of Units.
-  Standard_EXPORT Units_Unit(const char*                        aname,
-                             const char*                        asymbol,
+  Standard_EXPORT Units_Unit(const char* const                  aname,
+                             const char* const                  asymbol,
                              const double                       avalue,
                              const occ::handle<Units_Quantity>& aquantity);
 
   //! Creates and returns a unit. <aname> is the name of
   //! the unit, <asymbol> is the usual abbreviation of the
   //! unit.
-  Standard_EXPORT Units_Unit(const char* aname, const char* asymbol);
+  Standard_EXPORT Units_Unit(const char* const aname, const char* const asymbol);
 
   //! Creates and returns a unit. <aname> is the name of
   //! the unit.
-  Standard_EXPORT Units_Unit(const char* aname);
+  Standard_EXPORT Units_Unit(const char* const aname);
 
   //! Returns the name of the unit <thename>
   TCollection_AsciiString Name() const;
 
   //! Adds a new symbol <asymbol> attached to <me>.
-  Standard_EXPORT void Symbol(const char* asymbol);
+  Standard_EXPORT void Symbol(const char* const asymbol);
 
   //! Returns the value in relation with the International
   //! System of Units.
@@ -82,7 +82,7 @@ public:
   //! Compares all the symbols linked within <me> with the
   //! name of <atoken>, and returns True if there is one
   //! symbol equal to the name, False otherwise.
-  Standard_EXPORT bool IsEqual(const char* astring) const;
+  Standard_EXPORT bool IsEqual(const char* const astring) const;
 
   //! Useful for debugging
   Standard_EXPORT virtual void Dump(const int ashift, const int alevel) const;

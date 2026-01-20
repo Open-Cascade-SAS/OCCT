@@ -521,9 +521,9 @@ occ::handle<TCollection_HAsciiString> STEPConstruct_ExternRefs::Format(const int
 
 //=================================================================================================
 
-int STEPConstruct_ExternRefs::AddExternRef(const char*                                     filename,
+int STEPConstruct_ExternRefs::AddExternRef(const char* const                               filename,
                                            const occ::handle<StepBasic_ProductDefinition>& PD,
-                                           const char*                                     format)
+                                           const char* const                               format)
 {
   occ::handle<TCollection_HAsciiString> EmptyString = new TCollection_HAsciiString("");
   occ::handle<TCollection_HAsciiString> fmt         = new TCollection_HAsciiString(format);
@@ -841,7 +841,7 @@ bool STEPConstruct_ExternRefs::addAP214ExterRef(
   const occ::handle<StepAP214_AppliedDocumentReference>& ADR,
   const occ::handle<StepBasic_ProductDefinition>&        PD,
   const occ::handle<StepBasic_DocumentFile>&             DF,
-  const char*                                            filename)
+  const char* const                                      filename)
 {
   occ::handle<NCollection_HArray1<StepAP214_DocumentReferenceItem>> DRIs =
     new NCollection_HArray1<StepAP214_DocumentReferenceItem>(1, 1);

@@ -55,7 +55,7 @@ typedef enum
 //           theDirName may be represented as list: "/dirA/dirB /dirA/dirC"
 //=======================================================================
 
-bool Message_MsgFile::Load(const char* theDirName, const char* theFileName)
+bool Message_MsgFile::Load(const char* const theDirName, const char* const theFileName)
 {
   if (!theDirName || !theFileName)
     return false;
@@ -241,7 +241,7 @@ static int GetFileSize(FILE* theFile)
 // purpose  : Load the list of messages from a file
 //=======================================================================
 
-bool Message_MsgFile::LoadFile(const char* theFileName)
+bool Message_MsgFile::LoadFile(const char* const theFileName)
 {
   if (theFileName == nullptr || *theFileName == '\0')
     return false;
@@ -299,9 +299,9 @@ bool Message_MsgFile::LoadFile(const char* theFileName)
 
 //=================================================================================================
 
-bool Message_MsgFile::LoadFromEnv(const char* theEnvName,
-                                  const char* theFileName,
-                                  const char* theLangExt)
+bool Message_MsgFile::LoadFromEnv(const char* const theEnvName,
+                                  const char* const theFileName,
+                                  const char* const theLangExt)
 {
   TCollection_AsciiString aLangExt(theLangExt != nullptr ? theLangExt : "");
   if (aLangExt.IsEmpty())
@@ -340,7 +340,7 @@ bool Message_MsgFile::LoadFromEnv(const char* theEnvName,
 
 //=================================================================================================
 
-bool Message_MsgFile::LoadFromString(const char* theContent, const int theLength)
+bool Message_MsgFile::LoadFromString(const char* const theContent, const int theLength)
 {
   int                aStringSize = theLength >= 0 ? theLength : (int)strlen(theContent);
   NCollection_Buffer aBuffer(NCollection_BaseAllocator::CommonBaseAllocator());
@@ -375,7 +375,7 @@ bool Message_MsgFile::AddMsg(const TCollection_AsciiString&    theKeyword,
 // function : getMsg
 // purpose  : retrieve the message previously defined for the given keyword
 //=======================================================================
-const TCollection_ExtendedString& Message_MsgFile::Msg(const char* theKeyword)
+const TCollection_ExtendedString& Message_MsgFile::Msg(const char* const theKeyword)
 {
   TCollection_AsciiString aKey(theKeyword);
   return Msg(aKey);

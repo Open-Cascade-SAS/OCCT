@@ -286,7 +286,7 @@ Interface_CheckIterator IFSelect_ModelCopier::Sending(
 //  .... SendAll : Data to transfer in G, no split, file sending
 
 Interface_CheckIterator IFSelect_ModelCopier::SendAll(
-  const char*                              filename,
+  const char* const                        filename,
   const Interface_Graph&                   G,
   const occ::handle<IFSelect_WorkLibrary>& WL,
   const occ::handle<Interface_Protocol>&   protocol)
@@ -336,7 +336,7 @@ Interface_CheckIterator IFSelect_ModelCopier::SendAll(
 //       no split, file sending
 
 Interface_CheckIterator IFSelect_ModelCopier::SendSelected(
-  const char*                              filename,
+  const char* const                        filename,
   const Interface_Graph&                   G,
   const occ::handle<IFSelect_WorkLibrary>& WL,
   const occ::handle<Interface_Protocol>&   protocol,
@@ -622,7 +622,7 @@ void IFSelect_ModelCopier::BeginSentFiles(const occ::handle<IFSelect_ShareOut>& 
   sho->SetLastRun(lastrun); // we are only interested in the numbers
 }
 
-void IFSelect_ModelCopier::AddSentFile(const char* filename)
+void IFSelect_ModelCopier::AddSentFile(const char* const filename)
 {
   if (!thesentfiles.IsNull())
     thesentfiles->Append(new TCollection_HAsciiString(filename));

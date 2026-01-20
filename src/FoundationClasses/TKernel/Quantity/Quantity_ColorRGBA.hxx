@@ -113,7 +113,8 @@ public:
   //! @param theColorNameString the color name
   //! @param theColor a found color
   //! @return false if the color name is unknown, or true if the search by color name was successful
-  static bool ColorFromName(const char* theColorNameString, Quantity_ColorRGBA& theColor) noexcept
+  static bool ColorFromName(const char* const   theColorNameString,
+                            Quantity_ColorRGBA& theColor) noexcept
   {
     Quantity_ColorRGBA aColor;
     if (!Quantity_Color::ColorFromName(theColorNameString, aColor.ChangeRGB()))

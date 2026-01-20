@@ -33,7 +33,7 @@ public:
   //! File is written in binary if aAsciiMode is False otherwise it is written in Ascii (by
   //! default).
   Standard_EXPORT static bool Write(const TopoDS_Shape& theShape,
-                                    const char*         theFile,
+                                    const char* const   theFile,
                                     const bool          theAsciiMode = true);
 
   //! Legacy interface.
@@ -41,7 +41,7 @@ public:
   //! This approach is very inefficient, especially for large files.
   //! Consider reading STL file to Poly_Triangulation object instead (see class RWStl).
   Standard_DEPRECATED("This method is very inefficient; see RWStl class for better alternative")
-  Standard_EXPORT static bool Read(TopoDS_Shape& theShape, const char* aFile);
+  Standard_EXPORT static bool Read(TopoDS_Shape& theShape, const char* const aFile);
 };
 
 #endif // _StlAPI_HeaderFile

@@ -93,7 +93,7 @@ occ::handle<StepData_StepModel> STEPControl_Reader::StepModel() const
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* filename)
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* const filename)
 {
   occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
   occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
@@ -136,7 +136,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* filename)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*              filename,
+IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char* const        filename,
                                                    const DESTEP_Parameters& theParams)
 {
   occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
@@ -180,7 +180,8 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadFile(const char*              file
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName, std::istream& theIStream)
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* const theName,
+                                                     std::istream&     theIStream)
 {
   occ::handle<IFSelect_WorkLibrary> aLibrary  = WS()->WorkLibrary();
   occ::handle<Interface_Protocol>   aProtocol = WS()->Protocol();
@@ -223,7 +224,7 @@ IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* theName, std::i
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char*              theName,
+IFSelect_ReturnStatus STEPControl_Reader::ReadStream(const char* const        theName,
                                                      const DESTEP_Parameters& theParams,
                                                      std::istream&            theIStream)
 {

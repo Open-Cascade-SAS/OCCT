@@ -137,7 +137,7 @@ void BOPTest::ReportAlerts(const occ::handle<Message_Report>& theReport)
 
 //=================================================================================================
 
-BOPAlgo_Operation BOPTest::GetOperationType(const char* theOp)
+BOPAlgo_Operation BOPTest::GetOperationType(const char* const theOp)
 {
   TCollection_AsciiString anOp(theOp);
   anOp.LowerCase();

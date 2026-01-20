@@ -73,7 +73,7 @@
 // }
 //=================================================================================================
 
-void DNaming::GetShape(const char*                     LabelName,
+void DNaming::GetShape(const char* const               LabelName,
                        const occ::handle<TDF_Data>&    DF,
                        NCollection_List<TopoDS_Shape>& L)
 {
@@ -104,7 +104,7 @@ void DNaming_BuildMap(NCollection_Map<TDF_Label>& Updated, const TDF_Label& Lab)
 
 //=================================================================================================
 
-TopoDS_Shape DNaming::CurrentShape(const char* LabelName, const occ::handle<TDF_Data>& DF)
+TopoDS_Shape DNaming::CurrentShape(const char* const LabelName, const occ::handle<TDF_Data>& DF)
 {
   TopoDS_Shape S;
   TDF_Label    Label;

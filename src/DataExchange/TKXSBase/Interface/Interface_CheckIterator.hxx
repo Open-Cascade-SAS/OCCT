@@ -50,10 +50,10 @@ public:
 
   //! Creates a CheckIterator with a name (displayed by Print as a
   //! title)
-  Standard_EXPORT Interface_CheckIterator(const char* name);
+  Standard_EXPORT Interface_CheckIterator(const char* const name);
 
   //! Sets / Changes the name
-  Standard_EXPORT void SetName(const char* name);
+  Standard_EXPORT void SetName(const char* const name);
 
   //! Returns the recorded name (can be empty)
   Standard_EXPORT const char* Name() const;
@@ -131,7 +131,7 @@ public:
   //! resp. Warning or Check messages. for CheckAny, considers all
   //! other values are ignored (answer will be false)
   //! Each Check which complies is entirely taken
-  Standard_EXPORT Interface_CheckIterator Extract(const char*                 mess,
+  Standard_EXPORT Interface_CheckIterator Extract(const char* const           mess,
                                                   const int                   incl,
                                                   const Interface_CheckStatus status) const;
 
@@ -143,7 +143,9 @@ public:
   //! resp. Warning or Check messages. for CheckAny, considers all
   //! other values are ignored (nothing is done)
   //! Returns True if at least one message has been removed, False else
-  Standard_EXPORT bool Remove(const char* mess, const int incl, const Interface_CheckStatus status);
+  Standard_EXPORT bool Remove(const char* const           mess,
+                              const int                   incl,
+                              const Interface_CheckStatus status);
 
   //! Returns the list of entities concerned by a Check
   //! Only fails if <failsonly> is True, else all non-empty checks

@@ -44,7 +44,8 @@ inline const char* ConvertToString(const StepGeom_TrimmingPreference theSourceEn
 //! @param thePreferenceStr The string to convert
 //! @param theResultEnum The corresponding StepGeom_TrimmingPreference value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* thePreferenceStr, StepGeom_TrimmingPreference& theResultEnum)
+inline bool ConvertToEnum(const char* const            thePreferenceStr,
+                          StepGeom_TrimmingPreference& theResultEnum)
 {
   if (IsEqual(thePreferenceStr, tpParameter))
   {

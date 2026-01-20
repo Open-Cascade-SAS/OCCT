@@ -95,7 +95,7 @@ public:
   //! @param[in] theFile   the path to file to output shape into
   //! @param theRange      the range of progress indicator to fill in
   static bool Write(const TopoDS_Shape&          theShape,
-                    const char*                  theFile,
+                    const char* const            theFile,
                     const Message_ProgressRange& theRange = Message_ProgressRange())
   {
     return Write(theShape, theFile, true, false, BinTools_FormatVersion_CURRENT, theRange);
@@ -114,7 +114,7 @@ public:
   //! @param theRange              the range of progress indicator to fill in
   Standard_EXPORT static bool Write(
     const TopoDS_Shape&          theShape,
-    const char*                  theFile,
+    const char* const            theFile,
     const bool                   theWithTriangles,
     const bool                   theWithNormals,
     const BinTools_FormatVersion theVersion,
@@ -122,7 +122,7 @@ public:
 
   //! Reads a shape from <theFile> and returns it in <theShape>.
   Standard_EXPORT static bool Read(TopoDS_Shape&                theShape,
-                                   const char*                  theFile,
+                                   const char* const            theFile,
                                    const Message_ProgressRange& theRange = Message_ProgressRange());
 };
 

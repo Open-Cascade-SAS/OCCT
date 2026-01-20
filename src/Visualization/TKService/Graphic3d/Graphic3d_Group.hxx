@@ -206,7 +206,7 @@ public:
   //! (with respect to the horizontal).
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
-  Standard_EXPORT virtual void Text(const char*                             AText,
+  Standard_EXPORT virtual void Text(const char* const                       AText,
                                     const Graphic3d_Vertex&                 APoint,
                                     const double                            AHeight,
                                     const double                            AAngle,
@@ -230,7 +230,7 @@ public:
   //! AVta    : VTA_BOTTOM
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
-  Standard_EXPORT void Text(const char*             AText,
+  Standard_EXPORT void Text(const char* const       AText,
                             const Graphic3d_Vertex& APoint,
                             const double            AHeight,
                             const bool              EvalMinMax = true);
@@ -279,7 +279,7 @@ public:
   //! Creates the string <theText> at orientation <theOrientation> in 3D space.
   Standard_DEPRECATED(
     "Deprecated method Text() with obsolete arguments, use AddText() instead of it")
-  Standard_EXPORT virtual void Text(const char*                             theTextUtf,
+  Standard_EXPORT virtual void Text(const char* const                       theTextUtf,
                                     const gp_Ax2&                           theOrientation,
                                     const double                            theHeight,
                                     const double                            theAngle,

@@ -20,7 +20,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_ESDescr, StepData_EDescr)
 
-StepData_ESDescr::StepData_ESDescr(const char* name)
+StepData_ESDescr::StepData_ESDescr(const char* const name)
     : thenom(name)
 {
   // Constructor for Simple Entity Descriptor with the given type name
@@ -56,7 +56,7 @@ void StepData_ESDescr::SetNbFields(const int nb)
 }
 
 void StepData_ESDescr::SetField(const int                           num,
-                                const char*                         name,
+                                const char* const                   name,
                                 const occ::handle<StepData_PDescr>& descr)
 {
   // Set field descriptor at specified position with given name and parameter descriptor
@@ -130,7 +130,7 @@ int StepData_ESDescr::NbFields() const
   return (thedescr.IsNull() ? 0 : thedescr->Length());
 }
 
-int StepData_ESDescr::Rank(const char* name) const
+int StepData_ESDescr::Rank(const char* const name) const
 {
   int rank;
   if (!thenames.Find(name, rank))
@@ -153,7 +153,7 @@ occ::handle<StepData_PDescr> StepData_ESDescr::Field(const int num) const
   return GetCasted(StepData_PDescr, thedescr->Value(num));
 }
 
-occ::handle<StepData_PDescr> StepData_ESDescr::NamedField(const char* name) const
+occ::handle<StepData_PDescr> StepData_ESDescr::NamedField(const char* const name) const
 {
   occ::handle<StepData_PDescr> pde;
   int                          rank = Rank(name);
@@ -162,7 +162,7 @@ occ::handle<StepData_PDescr> StepData_ESDescr::NamedField(const char* name) cons
   return pde;
 }
 
-bool StepData_ESDescr::Matches(const char* name) const
+bool StepData_ESDescr::Matches(const char* const name) const
 {
   // Check if this descriptor matches the given type name (including inheritance)
   if (thenom.IsEqual(name))

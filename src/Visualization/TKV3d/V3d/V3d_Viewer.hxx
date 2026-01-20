@@ -457,18 +457,22 @@ public: //! @name grid management
 public: //! @name deprecated methods
   //! Returns true if a grid is activated in <me>.
   Standard_DEPRECATED("Deprecated method - IsGridActive() should be used instead")
+
   bool IsActive() { return IsGridActive(); }
 
   //! Initializes an internal iterator on the active views.
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
+
   void InitActiveViews() { myActiveViewsIterator.Initialize(myActiveViews); }
 
   //! Returns true if there are more active view(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
+
   bool MoreActiveViews() const { return myActiveViewsIterator.More(); }
 
   //! Go to the next active view (if there is not, ActiveView will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
+
   void NextActiveViews()
   {
     if (!myActiveViews.IsEmpty())
@@ -476,18 +480,22 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - ActiveViews() should be used instead")
+
   const occ::handle<V3d_View>& ActiveView() const { return myActiveViewsIterator.Value(); }
 
   //! Initializes an internal iterator on the Defined views.
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
+
   void InitDefinedViews() { myDefinedViewsIterator.Initialize(myDefinedViews); }
 
   //! returns true if there are more Defined view(s) to return.
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
+
   bool MoreDefinedViews() const { return myDefinedViewsIterator.More(); }
 
   //! Go to the next Defined view (if there is not, DefinedView will raise an exception)
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
+
   void NextDefinedViews()
   {
     if (!myDefinedViews.IsEmpty())
@@ -495,33 +503,41 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedViews() should be used instead")
+
   const occ::handle<V3d_View>& DefinedView() const { return myDefinedViewsIterator.Value(); }
 
   //! Initializes an internal iteratator on the active Lights.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
+
   void InitActiveLights() { myActiveLightsIterator.Initialize(myActiveLights); }
 
   //! returns true if there are more active Light(s) to return.
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
+
   bool MoreActiveLights() const { return myActiveLightsIterator.More(); }
 
   //! Go to the next active Light (if there is not, ActiveLight() will raise an exception)
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
+
   void NextActiveLights() { myActiveLightsIterator.Next(); }
 
   Standard_DEPRECATED("Deprecated method - ActiveLights() should be used instead")
+
   const occ::handle<V3d_Light>& ActiveLight() const { return myActiveLightsIterator.Value(); }
 
   //! Initializes an internal iterattor on the Defined Lights.
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
+
   void InitDefinedLights() { myDefinedLightsIterator.Initialize(myDefinedLights); }
 
   //! Returns true if there are more Defined Light(s) to return.
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
+
   bool MoreDefinedLights() const { return myDefinedLightsIterator.More(); }
 
   //! Go to the next Defined Light (if there is not, DefinedLight() will raise an exception)
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
+
   void NextDefinedLights()
   {
     if (!myDefinedLights.IsEmpty())
@@ -529,6 +545,7 @@ public: //! @name deprecated methods
   }
 
   Standard_DEPRECATED("Deprecated method - DefinedLights() should be used instead")
+
   const occ::handle<V3d_Light>& DefinedLight() const { return myDefinedLightsIterator.Value(); }
 
   //! Dumps the content of me into the stream

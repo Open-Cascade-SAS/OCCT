@@ -15,7 +15,7 @@
 #include <BinTools_ShapeSetBase.hxx>
 #include <TopoDS_Shape.hxx>
 
-const char* BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1] = {
+const char* const BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_FormatVersion_UPPER + 1] = {
   "",
   "Open CASCADE Topology V1 (c)",
   "Open CASCADE Topology V2 (c)",

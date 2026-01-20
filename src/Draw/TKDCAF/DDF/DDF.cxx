@@ -31,7 +31,7 @@
 
 bool DDF::AddLabel
 
-  (const occ::handle<TDF_Data>& DF, const char* Entry, TDF_Label& Label)
+  (const occ::handle<TDF_Data>& DF, const char* const Entry, TDF_Label& Label)
 {
   TDF_Tool::Label(DF, Entry, Label, true);
   return true;
@@ -40,7 +40,7 @@ bool DDF::AddLabel
 //=================================================================================================
 
 bool DDF::FindLabel(const occ::handle<TDF_Data>& DF,
-                    const char*                  Entry,
+                    const char* const            Entry,
                     TDF_Label&                   Label,
                     const bool                   Complain)
 {
@@ -71,7 +71,7 @@ bool DDF::GetDF(const char*& Name, occ::handle<TDF_Data>& DF, const bool Complai
 //=================================================================================================
 
 bool DDF::Find(const occ::handle<TDF_Data>& DF,
-               const char*                  Entry,
+               const char* const            Entry,
                const Standard_GUID&         ID,
                occ::handle<TDF_Attribute>&  A,
                const bool                   Complain)

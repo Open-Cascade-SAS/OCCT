@@ -12,6 +12,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//============================================================================
+//==== Title: Standard_Character.hxx
+//==== Role : The header file of primitive type "Character" from package "Standard"
+//====
+//==== Implementation:  This is a primitive type implemented as typedef
+//====        typedef char Standard_Character
+//============================================================================
+
 #ifndef _Standard_Character_HeaderFile
 #define _Standard_Character_HeaderFile
 
@@ -22,7 +30,7 @@
 // ------------------------------------------------------------------
 // IsEqual : Returns Standard_True if two characters have the same value
 // ------------------------------------------------------------------
-constexpr bool IsEqual(const char One, const char Two)
+constexpr Standard_Boolean IsEqual(const Standard_Character One, const Standard_Character Two)
 {
   return One == Two;
 }
@@ -45,7 +53,7 @@ constexpr bool IsEqual(const char One, const char Two)
 // ==================================================================
 // IsAlphabetic : Returns Standard_True if a character is alphabetic
 // ==================================================================
-inline bool IsAlphabetic(const char me)
+inline Standard_Boolean IsAlphabetic(const Standard_Character me)
 {
   return std::isalpha((unsigned char)me) != 0;
 }
@@ -53,7 +61,7 @@ inline bool IsAlphabetic(const char me)
 // ==================================================================
 // IsDigit : Returns Standard_True if a character is a digit
 // ==================================================================
-inline bool IsDigit(const char me)
+inline Standard_Boolean IsDigit(const Standard_Character me)
 {
   return std::isdigit((unsigned char)me) != 0;
 }
@@ -61,7 +69,7 @@ inline bool IsDigit(const char me)
 // ==================================================================
 // IsXDigit : Returns Standard_True if a character is a digit
 // ==================================================================
-inline bool IsXDigit(const char me)
+inline Standard_Boolean IsXDigit(const Standard_Character me)
 {
   return std::isxdigit((unsigned char)me) != 0;
 }
@@ -69,7 +77,7 @@ inline bool IsXDigit(const char me)
 // ==================================================================
 // IsAlphanumeric : Returns Standard_True if a character is alphanumeric
 // ==================================================================
-inline bool IsAlphanumeric(const char me)
+inline Standard_Boolean IsAlphanumeric(const Standard_Character me)
 {
   return (IsAlphabetic(me) || IsDigit(me));
 }
@@ -77,7 +85,7 @@ inline bool IsAlphanumeric(const char me)
 // ==================================================================
 // IsControl : Returns Standard_True if a character  is a control character
 // ==================================================================
-inline bool IsControl(const char me)
+inline Standard_Boolean IsControl(const Standard_Character me)
 {
   return std::iscntrl((unsigned char)me) != 0;
 }
@@ -85,7 +93,7 @@ inline bool IsControl(const char me)
 // ==================================================================
 // IsGraphic : Returns Standard_True if a character is graphic
 // ==================================================================
-inline bool IsGraphic(const char me)
+inline Standard_Boolean IsGraphic(const Standard_Character me)
 {
   return std::isgraph((unsigned char)me) != 0;
 }
@@ -93,7 +101,7 @@ inline bool IsGraphic(const char me)
 // ==================================================================
 // IsLowerCase : Returns Standard_True if a character is lowercase
 // ==================================================================
-inline bool IsLowerCase(const char me)
+inline Standard_Boolean IsLowerCase(const Standard_Character me)
 {
   return std::islower((unsigned char)me) != 0;
 }
@@ -101,7 +109,7 @@ inline bool IsLowerCase(const char me)
 // ==================================================================
 // IsPrintable : Returns Standard_True if a character is printable
 // ==================================================================
-inline bool IsPrintable(const char me)
+inline Standard_Boolean IsPrintable(const Standard_Character me)
 {
   return std::isprint((unsigned char)me) != 0;
 }
@@ -110,7 +118,7 @@ inline bool IsPrintable(const char me)
 // IsPunctuation : Returns Standard_True if a character is a graphic and
 //                 not a alphanumeric character
 // ==================================================================
-inline bool IsPunctuation(const char me)
+inline Standard_Boolean IsPunctuation(const Standard_Character me)
 {
   return (IsGraphic(me) && !IsAlphanumeric(me));
 }
@@ -118,7 +126,7 @@ inline bool IsPunctuation(const char me)
 // ==================================================================
 // IsSpace : Returns Standard_True if a character is a space
 // ==================================================================
-inline bool IsSpace(const char me)
+inline Standard_Boolean IsSpace(const Standard_Character me)
 {
   return std::isspace((unsigned char)me) != 0;
 }
@@ -126,7 +134,7 @@ inline bool IsSpace(const char me)
 // ==================================================================
 // IsUppercase : Returns Standard_True if a character is uppercase
 // ==================================================================
-inline bool IsUpperCase(const char me)
+inline Standard_Boolean IsUpperCase(const Standard_Character me)
 {
   return std::isupper((unsigned char)me) != 0;
 }
@@ -134,17 +142,17 @@ inline bool IsUpperCase(const char me)
 // ==================================================================
 // LowerCase : Returns a lowercase character
 // ==================================================================
-inline char LowerCase(const char me)
+inline Standard_Character LowerCase(const Standard_Character me)
 {
-  return (char)(unsigned char)std::tolower((unsigned char)me);
+  return (Standard_Character)(unsigned char)std::tolower((unsigned char)me);
 }
 
 // ==================================================================
 // UpperCase : Returns a uppercase character
 // ==================================================================
-inline char UpperCase(const char me)
+inline Standard_Character UpperCase(const Standard_Character me)
 {
-  return (char)(unsigned char)std::toupper((unsigned char)me);
+  return (Standard_Character)(unsigned char)std::toupper((unsigned char)me);
 }
 
 #endif

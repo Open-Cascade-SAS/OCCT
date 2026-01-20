@@ -630,7 +630,7 @@ static int d2transform(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char* theName, const gp_Pnt& thePoint)
+void DrawTrSurf::Set(const char* const theName, const gp_Pnt& thePoint)
 {
   DrawTrSurf_Params&            aParams = DrawTrSurf::Parameters();
   occ::handle<DrawTrSurf_Point> aDrawPoint =
@@ -640,7 +640,7 @@ void DrawTrSurf::Set(const char* theName, const gp_Pnt& thePoint)
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char* theName, const gp_Pnt2d& thePoint)
+void DrawTrSurf::Set(const char* const theName, const gp_Pnt2d& thePoint)
 {
   DrawTrSurf_Params&            aParams = DrawTrSurf::Parameters();
   occ::handle<DrawTrSurf_Point> aDrawPoint =
@@ -650,7 +650,7 @@ void DrawTrSurf::Set(const char* theName, const gp_Pnt2d& thePoint)
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char*                       theName,
+void DrawTrSurf::Set(const char* const                 theName,
                      const occ::handle<Geom_Geometry>& theGeometry,
                      const bool                        isSenseMarker)
 {
@@ -758,7 +758,7 @@ void DrawTrSurf::Set(const char*                       theName,
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char*                      theName,
+void DrawTrSurf::Set(const char* const                theName,
                      const occ::handle<Geom2d_Curve>& theCurve,
                      const bool                       isSenseMarker)
 {
@@ -795,7 +795,7 @@ void DrawTrSurf::Set(const char*                      theName,
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char* Name, const occ::handle<Poly_Triangulation>& T)
+void DrawTrSurf::Set(const char* const Name, const occ::handle<Poly_Triangulation>& T)
 {
   occ::handle<DrawTrSurf_Triangulation> D = new DrawTrSurf_Triangulation(T);
   Draw::Set(Name, D);
@@ -803,7 +803,7 @@ void DrawTrSurf::Set(const char* Name, const occ::handle<Poly_Triangulation>& T)
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char* Name, const occ::handle<Poly_Polygon3D>& P)
+void DrawTrSurf::Set(const char* const Name, const occ::handle<Poly_Polygon3D>& P)
 {
   occ::handle<DrawTrSurf_Polygon3D> D = new DrawTrSurf_Polygon3D(P);
   Draw::Set(Name, D);
@@ -811,7 +811,7 @@ void DrawTrSurf::Set(const char* Name, const occ::handle<Poly_Polygon3D>& P)
 
 //=================================================================================================
 
-void DrawTrSurf::Set(const char* Name, const occ::handle<Poly_Polygon2D>& P)
+void DrawTrSurf::Set(const char* const Name, const occ::handle<Poly_Polygon2D>& P)
 {
   occ::handle<DrawTrSurf_Polygon2D> D = new DrawTrSurf_Polygon2D(P);
   Draw::Set(Name, D);

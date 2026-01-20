@@ -52,13 +52,13 @@ public:
   //! the UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
   Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsSystem>& aunitssystem,
-                                 const char*                           aquantity);
+                                 const char* const                     aquantity);
 
   //! Creates a new instance of the class, initialized with
   //! the UnitsDictionary <aunitsdictionary> and positioned
   //! at the quantity <aquantity>.
   Standard_EXPORT Units_Explorer(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
-                                 const char*                               aquantity);
+                                 const char* const                         aquantity);
 
   //! Initializes the instance of the class with the
   //! UnitsSystem <aunitssystem>.
@@ -72,13 +72,13 @@ public:
   //! UnitsSystem <aunitssystem> and positioned at the
   //! quantity <aquantity>.
   Standard_EXPORT void Init(const occ::handle<Units_UnitsSystem>& aunitssystem,
-                            const char*                           aquantity);
+                            const char* const                     aquantity);
 
   //! Initializes the instance of the class with the
   //! UnitsDictionary <aunitsdictionary> and positioned at
   //! the quantity <aquantity>.
   Standard_EXPORT void Init(const occ::handle<Units_UnitsDictionary>& aunitsdictionary,
-                            const char*                               aquantity);
+                            const char* const                         aquantity);
 
   //! Returns True if there is another Quantity to explore,
   //! False otherwise.

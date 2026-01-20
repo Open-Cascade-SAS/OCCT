@@ -97,7 +97,7 @@ void Interface_BitMap::SetLength(const int nbitems)
   thenbwords = nbw;
 }
 
-int Interface_BitMap::AddFlag(const char* name)
+int Interface_BitMap::AddFlag(const char* const name)
 {
   Reservate(1);
   int deja = 0;
@@ -144,7 +144,7 @@ bool Interface_BitMap::RemoveFlag(const int num)
   return true;
 }
 
-bool Interface_BitMap::SetFlagName(const int num, const char* name)
+bool Interface_BitMap::SetFlagName(const int num, const char* const name)
 {
   if (num < 1 || num > thenames->Length())
     return false;
@@ -174,7 +174,7 @@ const char* Interface_BitMap::FlagName(const int num) const
   return thenames->Value(num).ToCString();
 }
 
-int Interface_BitMap::FlagNumber(const char* name) const
+int Interface_BitMap::FlagNumber(const char* const name) const
 {
   if (name[0] == '\0')
     return 0;

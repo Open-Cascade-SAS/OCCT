@@ -63,7 +63,7 @@ const char* TopAbs::ShapeOrientationToString(TopAbs_Orientation theOrientation)
 
 //=================================================================================================
 
-bool TopAbs::ShapeOrientationFromString(const char*         theOrientationString,
+bool TopAbs::ShapeOrientationFromString(const char* const   theOrientationString,
                                         TopAbs_Orientation& theOrientation)
 {
   TCollection_AsciiString aName(theOrientationString);
@@ -130,6 +130,6 @@ TopAbs_Orientation TopAbs::Complement(const TopAbs_Orientation Ori)
 
 Standard_OStream& TopAbs::Print(const TopAbs_State st, Standard_OStream& s)
 {
-  static const char* TopAbs_Table_PrintState[4] = {"ON", "IN", "OUT", "UNKNOWN"};
+  static const char* const TopAbs_Table_PrintState[4] = {"ON", "IN", "OUT", "UNKNOWN"};
   return (s << TopAbs_Table_PrintState[(int)st]);
 }

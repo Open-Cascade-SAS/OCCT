@@ -669,7 +669,7 @@ static int lastrep(Draw_Interpretor& di, int n, const char** a)
 
 //=================================================================================================
 
-void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D)
+void Draw::Set(const char* const name, const occ::handle<Draw_Drawable3D>& D)
 {
   Draw::Set(name, D, autodisp);
 }
@@ -715,7 +715,7 @@ static char* tracevar(ClientData CD, Tcl_Interp*, const char* name, const char*,
 
 //=================================================================================================
 
-void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D, const bool displ)
+void Draw::Set(const char* const name, const occ::handle<Draw_Drawable3D>& D, const bool displ)
 {
   Draw_Interpretor& aCommands = Draw::GetInterpretor();
 
@@ -773,7 +773,7 @@ void Draw::Set(const char* name, const occ::handle<Draw_Drawable3D>& D, const bo
 
 //=================================================================================================
 
-void Draw::Set(const char* theName, const double theValue)
+void Draw::Set(const char* const theName, const double theValue)
 {
   if (occ::handle<Draw_Number> aNumber = occ::down_cast<Draw_Number>(Draw::GetExisting(theName)))
   {
@@ -819,7 +819,7 @@ occ::handle<Draw_Drawable3D> Draw::getDrawable(const char*& theName, bool theToA
 
 //=================================================================================================
 
-bool Draw::Get(const char* theName, double& theValue)
+bool Draw::Get(const char* const theName, double& theValue)
 {
   if (occ::handle<Draw_Number> aNumber = occ::down_cast<Draw_Number>(Draw::GetExisting(theName)))
   {
@@ -1121,7 +1121,7 @@ static double Parse(char*& name)
 
 //=================================================================================================
 
-double Draw::Atof(const char* theName)
+double Draw::Atof(const char* const theName)
 {
   // copy the string
   NCollection_Array1<char> aBuff(0, (int)strlen(theName));
@@ -1138,7 +1138,7 @@ double Draw::Atof(const char* theName)
 
 //=================================================================================================
 
-bool Draw::ParseReal(const char* theExpressionString, double& theParsedRealValue)
+bool Draw::ParseReal(const char* const theExpressionString, double& theParsedRealValue)
 {
   const double aParsedRealValue = Atof(theExpressionString);
   if (Draw_ParseFailed)
@@ -1152,14 +1152,14 @@ bool Draw::ParseReal(const char* theExpressionString, double& theParsedRealValue
 
 //=================================================================================================
 
-int Draw::Atoi(const char* name)
+int Draw::Atoi(const char* const name)
 {
   return (int)Draw::Atof(name);
 }
 
 //=================================================================================================
 
-bool Draw::ParseInteger(const char* theExpressionString, int& theParsedIntegerValue)
+bool Draw::ParseInteger(const char* const theExpressionString, int& theParsedIntegerValue)
 {
   double aParsedRealValue = 0.0;
   if (!ParseReal(theExpressionString, aParsedRealValue))
@@ -1177,7 +1177,7 @@ bool Draw::ParseInteger(const char* theExpressionString, int& theParsedIntegerVa
 
 //=================================================================================================
 
-void Draw::Set(const char* Name, const char* val)
+void Draw::Set(const char* const Name, const char* const val)
 {
   Standard_PCharacter pName, pVal;
   //

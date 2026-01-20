@@ -15,7 +15,7 @@
 
 //=================================================================================================
 
-inline MoniTool_TimerSentry::MoniTool_TimerSentry(const char* cname)
+inline MoniTool_TimerSentry::MoniTool_TimerSentry(const char* const cname)
     : myTimer(MoniTool_Timer::Timer(cname))
 {
   myTimer->Start();

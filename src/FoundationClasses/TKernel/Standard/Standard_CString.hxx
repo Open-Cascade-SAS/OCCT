@@ -39,7 +39,7 @@
   #include <Standard_TypeDef.hxx>
 
 //! Returns Standard_True if two strings are equal
-inline bool IsEqual(const char* theOne, const char* theTwo)
+inline Standard_Boolean IsEqual(const Standard_CString theOne, const Standard_CString theTwo)
 {
   return strcmp(theOne, theTwo) == 0;
 }

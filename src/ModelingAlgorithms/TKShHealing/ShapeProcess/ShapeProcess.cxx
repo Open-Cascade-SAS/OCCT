@@ -56,7 +56,8 @@ private:
 
 //=================================================================================================
 
-bool ShapeProcess::RegisterOperator(const char* name, const occ::handle<ShapeProcess_Operator>& op)
+bool ShapeProcess::RegisterOperator(const char* const                         name,
+                                    const occ::handle<ShapeProcess_Operator>& op)
 {
   if (aMapOfOperators.IsBound(name))
   {
@@ -71,7 +72,7 @@ bool ShapeProcess::RegisterOperator(const char* name, const occ::handle<ShapePro
 
 //=================================================================================================
 
-bool ShapeProcess::FindOperator(const char* name, occ::handle<ShapeProcess_Operator>& op)
+bool ShapeProcess::FindOperator(const char* const name, occ::handle<ShapeProcess_Operator>& op)
 {
   if (!aMapOfOperators.IsBound(name))
   {
@@ -87,7 +88,7 @@ bool ShapeProcess::FindOperator(const char* name, occ::handle<ShapeProcess_Opera
 //=================================================================================================
 
 bool ShapeProcess::Perform(const occ::handle<ShapeProcess_Context>& context,
-                           const char*                              seq,
+                           const char* const                        seq,
                            const Message_ProgressRange&             theProgress)
 {
   ScopeLock aSequenceScope(*context, seq);

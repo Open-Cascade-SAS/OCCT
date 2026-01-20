@@ -99,7 +99,7 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Signature>& matcher,
-                                                   const char*                            signtext,
+                                                   const char* const                      signtext,
                                                    const bool                             exact)
     : thematcher(matcher),
       thesigntext(signtext),
@@ -110,8 +110,8 @@ IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_Si
 }
 
 IFSelect_SelectSignature::IFSelect_SelectSignature(const occ::handle<IFSelect_SignCounter>& counter,
-                                                   const char* signtext,
-                                                   const bool  exact)
+                                                   const char* const signtext,
+                                                   const bool        exact)
     : thecounter(counter),
       thesigntext(signtext),
       theexact(exact ? -1 : 0)

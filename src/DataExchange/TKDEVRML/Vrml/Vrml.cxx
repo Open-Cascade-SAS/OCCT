@@ -24,7 +24,7 @@ Standard_OStream& Vrml::VrmlHeaderWriter(Standard_OStream& anOStream)
   return anOStream;
 }
 
-Standard_OStream& Vrml::CommentWriter(const char* aComment, Standard_OStream& anOStream)
+Standard_OStream& Vrml::CommentWriter(const char* const aComment, Standard_OStream& anOStream)
 {
   anOStream << "# " << aComment << "\n";
   return anOStream;

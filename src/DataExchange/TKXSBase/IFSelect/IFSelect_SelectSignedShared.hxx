@@ -38,7 +38,7 @@ public:
   //! Creates a SelectSignedShared, defaulted for any level
   //! with a given Signature and text to match
   Standard_EXPORT IFSelect_SelectSignedShared(const occ::handle<IFSelect_Signature>& matcher,
-                                              const char*                            signtext,
+                                              const char* const                      signtext,
                                               const bool                             exact = true,
                                               const int                              level = 0);
 

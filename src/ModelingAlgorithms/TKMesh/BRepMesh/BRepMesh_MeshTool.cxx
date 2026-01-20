@@ -301,7 +301,7 @@ Handle(IMeshData::MapOfInteger) BRepMesh_MeshTool::GetEdgesByType(
 
 //=================================================================================================
 
-void BRepMesh_MeshTool::DumpTriangles(const char*              theFileName,
+void BRepMesh_MeshTool::DumpTriangles(const char* const        theFileName,
                                       IMeshData::MapOfInteger* theTriangles)
 {
   BRep_Builder    aBuilder;

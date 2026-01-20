@@ -60,7 +60,7 @@ occ::handle<IFSelect_SelectDeduct> IFSelect_SelectSuite::Item(const int num) con
   return occ::down_cast<IFSelect_SelectDeduct>(thesel.Value(num));
 }
 
-void IFSelect_SelectSuite::SetLabel(const char* lab)
+void IFSelect_SelectSuite::SetLabel(const char* const lab)
 {
   thelab.Clear();
   thelab.AssignCat(lab);

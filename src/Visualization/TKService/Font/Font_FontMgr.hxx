@@ -135,7 +135,7 @@ public:
                                  const TCollection_AsciiString& theFontPath) const;
 
   //! Read font file and retrieve information from it.
-  Standard_EXPORT occ::handle<Font_SystemFont> CheckFont(const char* theFontPath) const;
+  Standard_EXPORT occ::handle<Font_SystemFont> CheckFont(const char* const theFontPath) const;
 
   //! Register new font.
   //! If there is existing entity with the same name and properties but different path

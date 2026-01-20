@@ -84,7 +84,7 @@ bool DDocStd::GetDocument(const char*&                   Name,
 //=======================================================================
 
 bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
-                   const char*                          Entry,
+                   const char* const                    Entry,
                    TDF_Label&                           Label,
                    const bool                           Complain)
 {
@@ -101,7 +101,7 @@ bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
 //=======================================================================
 
 bool DDocStd::Find(const occ::handle<TDocStd_Document>& D,
-                   const char*                          Entry,
+                   const char* const                    Entry,
                    const Standard_GUID&                 ID,
                    occ::handle<TDF_Attribute>&          A,
                    const bool                           Complain)

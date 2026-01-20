@@ -41,7 +41,7 @@ Message_Msg::Message_Msg(const Message_Msg& theMsg)
 
 //=================================================================================================
 
-Message_Msg::Message_Msg(const char* theMsgCode)
+Message_Msg::Message_Msg(const char* const theMsgCode)
 {
   TCollection_AsciiString aKey((char*)theMsgCode);
   Set(Message_MsgFile::Msg(aKey));
@@ -56,7 +56,7 @@ Message_Msg::Message_Msg(const TCollection_ExtendedString& theMsgCode)
 
 //=================================================================================================
 
-void Message_Msg::Set(const char* theMsg)
+void Message_Msg::Set(const char* const theMsg)
 {
   TCollection_AsciiString aMsg((char*)theMsg);
   Set(aMsg);
@@ -68,8 +68,8 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
 {
   myMessageBody = theMsg;
 
-  const char16_t* anExtString = myMessageBody.ToExtString();
-  int             anMsgLength = myMessageBody.Length();
+  const char16_t* const anExtString = myMessageBody.ToExtString();
+  int                   anMsgLength = myMessageBody.Length();
   for (int i = 0; i < anMsgLength; i++)
   {
     //  Search for '%' character starting a format specification
@@ -134,7 +134,7 @@ void Message_Msg::Set(const TCollection_ExtendedString& theMsg)
 
 //=================================================================================================
 
-Message_Msg& Message_Msg::Arg(const char* theString)
+Message_Msg& Message_Msg::Arg(const char* const theString)
 {
   // get location and format
   TCollection_AsciiString aFormat;

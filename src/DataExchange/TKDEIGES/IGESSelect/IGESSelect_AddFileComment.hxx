@@ -45,7 +45,7 @@ public:
   //! Adds a line for file comment
   //! Remark: Lines are limited to 72 useful chars. A line of more than
   //! 72 chars will be split into several ones of 72 max each.
-  Standard_EXPORT void AddLine(const char* line);
+  Standard_EXPORT void AddLine(const char* const line);
 
   //! Adds a list of lines for file comment
   //! Each of them must comply with demand of AddLine

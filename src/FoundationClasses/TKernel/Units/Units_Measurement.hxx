@@ -41,13 +41,13 @@ public:
   //! Returns an instance of this class. <avalue> defines
   //! the measurement, and <aunit> the unit used,
   //! described in natural language.
-  Standard_EXPORT Units_Measurement(const double avalue, const char* aunit);
+  Standard_EXPORT Units_Measurement(const double avalue, const char* const aunit);
 
   //! Converts (if possible) the measurement object into
   //! another unit. <aunit> must have the same
   //! dimensionality as the unit contained in the token
   //! <thetoken>.
-  Standard_EXPORT void Convert(const char* aunit);
+  Standard_EXPORT void Convert(const char* const aunit);
 
   //! Returns a Measurement object with the integer value of
   //! the measurement contained in <me>.

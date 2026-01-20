@@ -40,7 +40,7 @@
 
 //=================================================================================================
 
-static void Display(const char* Name, const TopoDS_Shape& S)
+static void Display(const char* const Name, const TopoDS_Shape& S)
 {
   // char* name = Name;
   static int    nbIsos  = 2;

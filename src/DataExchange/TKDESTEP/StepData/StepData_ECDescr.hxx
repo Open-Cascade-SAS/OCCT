@@ -52,7 +52,7 @@ public:
   Standard_EXPORT occ::handle<NCollection_HSequence<TCollection_AsciiString>> TypeList() const;
 
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT bool Matches(const char* steptype) const override;
+  Standard_EXPORT bool Matches(const char* const steptype) const override;
 
   //! Returns True
   Standard_EXPORT bool IsComplex() const override;

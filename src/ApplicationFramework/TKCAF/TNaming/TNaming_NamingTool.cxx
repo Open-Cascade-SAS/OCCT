@@ -28,7 +28,7 @@
   #include <TDF_Tool.hxx>
   #include <BRepTools.hxx>
 
-static void WriteS(const TopoDS_Shape& shape, const char* filename)
+static void WriteS(const TopoDS_Shape& shape, const char* const filename)
 {
   char buf[256];
   if (strlen(filename) > 255)

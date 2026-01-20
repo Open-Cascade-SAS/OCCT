@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-bool StlAPI_Reader::Read(TopoDS_Shape& theShape, const char* theFileName)
+bool StlAPI_Reader::Read(TopoDS_Shape& theShape, const char* const theFileName)
 {
   occ::handle<Poly_Triangulation> aMesh = RWStl::ReadFile(theFileName);
   if (aMesh.IsNull())

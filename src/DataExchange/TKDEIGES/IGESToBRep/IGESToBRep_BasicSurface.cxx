@@ -912,8 +912,8 @@ occ::handle<Geom_BSplineSurface> IGESToBRep_BasicSurface::TransferBSplineSurface
     }
     if (polynomial)
     {
-      Message_Msg msg1220("IGES_1220");
-      const char* surface("surface");
+      Message_Msg       msg1220("IGES_1220");
+      const char* const surface("surface");
       msg1220.Arg(surface);
       SendWarning(start, msg1220);
     }

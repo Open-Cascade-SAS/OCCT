@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-Units_MathSentence::Units_MathSentence(const char* astring)
+Units_MathSentence::Units_MathSentence(const char* const astring)
     : Units_Sentence(Units::LexiconFormula(), astring)
 {
   SetConstants();

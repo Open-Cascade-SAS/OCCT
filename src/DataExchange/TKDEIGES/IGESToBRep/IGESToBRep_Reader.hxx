@@ -48,7 +48,7 @@ public:
   //! Loads a Model from a file.Returns 0 if success.
   //! returns 1 if the file could not be opened,
   //! returns -1 if an error occurred while the file was being loaded.
-  Standard_EXPORT int LoadFile(const char* filename);
+  Standard_EXPORT int LoadFile(const char* const filename);
 
   //! Specifies a Model to work on
   //! Also clears the result and Done status, sets TransientProcess

@@ -593,7 +593,7 @@ static void* CpuFunc(void* /*threadarg*/)
 // Returns time in seconds defined by the argument string,
 // multiplied by factor defined in environment variable
 // CSF_CPULIMIT_FACTOR (if it exists, 1 otherwise)
-static clock_t GetCpuLimit(const char* theParam)
+static clock_t GetCpuLimit(const char* const theParam)
 {
   clock_t aValue = Draw::Atoi(theParam);
 

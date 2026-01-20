@@ -47,16 +47,16 @@ public:
 
 public: //! @name Tcl variables management tools
   //! Sets a variable. Display it if <Disp> is true.
-  Standard_EXPORT static void Set(const char*                         Name,
+  Standard_EXPORT static void Set(const char* const                   Name,
                                   const occ::handle<Draw_Drawable3D>& D,
                                   const bool                          Disp);
 
   //! Sets a variable, a null handle clear the
   //! vartiable. Automatic display is context driven.
-  Standard_EXPORT static void Set(const char* Name, const occ::handle<Draw_Drawable3D>& D);
+  Standard_EXPORT static void Set(const char* const Name, const occ::handle<Draw_Drawable3D>& D);
 
   //! Sets a numeric variable.
-  Standard_EXPORT static void Set(const char* Name, const double val);
+  Standard_EXPORT static void Set(const char* const Name, const double val);
 
   //! Returns main DRAW interpreter.
   Standard_EXPORT static Draw_Interpretor& GetInterpretor();
@@ -70,7 +70,7 @@ public: //! @name Tcl variables management tools
   }
 
   //! Returns a variable value.
-  static occ::handle<Draw_Drawable3D> GetExisting(const char*& theName)
+  static occ::handle<Draw_Drawable3D> GetExisting(const char* const& theName)
   {
     const char* aName = theName;
     return getDrawable(aName, false);
@@ -78,10 +78,10 @@ public: //! @name Tcl variables management tools
 
   //! Gets a numeric variable. Returns True if the
   //! variable exist.
-  Standard_EXPORT static bool Get(const char* Name, double& val);
+  Standard_EXPORT static bool Get(const char* const Name, double& val);
 
   //! Sets a TCL string variable
-  Standard_EXPORT static void Set(const char* Name, const char* val);
+  Standard_EXPORT static void Set(const char* const Name, const char* const val);
 
   //! Returns a map of Draw_Drawable3D variables.
   Standard_EXPORT static const NCollection_Map<occ::handle<Draw_Drawable3D>>& Drawables();
@@ -89,28 +89,28 @@ public: //! @name Tcl variables management tools
 public: //! @name argument parsing tools
   //! Converts numeric expression, that can involve DRAW
   //! variables, to real value.
-  Standard_EXPORT static double Atof(const char* Name);
+  Standard_EXPORT static double Atof(const char* const Name);
 
   //! Converts the numeric expression, that can involve DRAW variables, to a real value
   //! @param theExpressionString the strings that contains the expression involving DRAW variables
   //! to be parsed
   //! @param theParsedRealValue a real value that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
-  Standard_EXPORT static bool ParseReal(const char* theExpressionString,
-                                        double&     theParsedRealValue);
+  Standard_EXPORT static bool ParseReal(const char* const theExpressionString,
+                                        double&           theParsedRealValue);
 
   //! Converts numeric expression, that can involve DRAW
   //! variables, to integer value.
   //! Implemented as cast of Atof() to integer.
-  Standard_EXPORT static int Atoi(const char* Name);
+  Standard_EXPORT static int Atoi(const char* const Name);
 
   //! Converts the numeric expression, that can involve DRAW variables, to an integer value
   //! @param theExpressionString the strings that contains the expression involving DRAW variables
   //! to be parsed
   //! @param theParsedIntegerValue an integer value that is a result of parsing
   //! @return true if parsing was successful, or false otherwise
-  Standard_EXPORT static bool ParseInteger(const char* theExpressionString,
-                                           int&        theParsedIntegerValue);
+  Standard_EXPORT static bool ParseInteger(const char* const theExpressionString,
+                                           int&              theParsedIntegerValue);
 
   //! Parses RGB(A) color argument(s) specified within theArgVec[0], theArgVec[1], theArgVec[2] and
   //! theArgVec[3]. Handles either color specified by name (single argument) or by RGB(A) components

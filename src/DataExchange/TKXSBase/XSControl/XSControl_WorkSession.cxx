@@ -78,7 +78,7 @@ void XSControl_WorkSession::ClearData(const int mode)
 
 //=================================================================================================
 
-bool XSControl_WorkSession::SelectNorm(const char* normname)
+bool XSControl_WorkSession::SelectNorm(const char* const normname)
 {
   const std::lock_guard<std::mutex> aLock(GetGlobalMutex());
   // Old norm and results

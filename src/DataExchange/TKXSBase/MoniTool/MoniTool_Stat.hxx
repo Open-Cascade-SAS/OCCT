@@ -70,7 +70,7 @@ public:
   //! with one default step. Then, it suffises to start with a
   //! count of items (and cycles if several) then record items,
   //! to have a queryable report.
-  Standard_EXPORT MoniTool_Stat(const char* title = "");
+  Standard_EXPORT MoniTool_Stat(const char* const title = "");
 
   //! used when starting
   Standard_EXPORT MoniTool_Stat(const MoniTool_Stat& other);

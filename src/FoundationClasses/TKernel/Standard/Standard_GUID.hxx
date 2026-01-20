@@ -53,13 +53,13 @@ public:
   //! following format:
   //! Length : 36 char
   //! "00000000-0000-0000-0000-000000000000"
-  Standard_EXPORT Standard_GUID(const char* aGuid);
+  Standard_EXPORT Standard_GUID(const char* const aGuid);
 
   //! build a GUID from an unicode string with the
   //! following format:
   //!
   //! "00000000-0000-0000-0000-000000000000"
-  Standard_EXPORT Standard_GUID(const char16_t* aGuid);
+  Standard_EXPORT Standard_GUID(const char16_t* const aGuid);
 
   //! Creates a GUID from the given components.
   constexpr Standard_GUID(const int      a32b,
@@ -197,7 +197,7 @@ public:
 
   //! Check the format of a GUID string.
   //! It checks the size, the position of the '-' and the correct size of fields.
-  Standard_EXPORT static bool CheckGUIDFormat(const char* aGuid);
+  Standard_EXPORT static bool CheckGUIDFormat(const char* const aGuid);
 
   template <class T>
   friend struct std::hash;

@@ -300,11 +300,11 @@ void Draw_Interpretor::SetToColorize(bool theToColorize)
 
 //=================================================================================================
 
-void Draw_Interpretor::add(const char*                     theCommandName,
-                           const char*                     theHelp,
-                           const char*                     theFileName,
+void Draw_Interpretor::add(const char* const               theCommandName,
+                           const char* const               theHelp,
+                           const char* const               theFileName,
                            Draw_Interpretor::CallBackData* theCallback,
-                           const char*                     theGroup)
+                           const char* const               theGroup)
 {
   Standard_ASSERT_RAISE(myInterp != nullptr, "Attempt to add command to Null interpreter");
 
@@ -373,7 +373,7 @@ void Draw_Interpretor::Reset()
 
 //=================================================================================================
 
-Draw_Interpretor& Draw_Interpretor::Append(const char* s)
+Draw_Interpretor& Draw_Interpretor::Append(const char* const s)
 {
   Tcl_AppendResult(myInterp, s, (const char*)nullptr);
   return *this;
@@ -433,35 +433,35 @@ Draw_Interpretor& Draw_Interpretor::Append(const Standard_SStream& s)
 
 //=================================================================================================
 
-void Draw_Interpretor::AppendElement(const char* s)
+void Draw_Interpretor::AppendElement(const char* const s)
 {
   Tcl_AppendElement(myInterp, s);
 }
 
 //=================================================================================================
 
-int Draw_Interpretor::Eval(const char* line)
+int Draw_Interpretor::Eval(const char* const line)
 {
   return Tcl_Eval(myInterp, line);
 }
 
 //=================================================================================================
 
-int Draw_Interpretor::RecordAndEval(const char* line, const int flags)
+int Draw_Interpretor::RecordAndEval(const char* const line, const int flags)
 {
   return Tcl_RecordAndEval(myInterp, line, flags);
 }
 
 //=================================================================================================
 
-int Draw_Interpretor::EvalFile(const char* fname)
+int Draw_Interpretor::EvalFile(const char* const fname)
 {
   return Tcl_EvalFile(myInterp, fname);
 }
 
 //=================================================================================================
 
-int Draw_Interpretor::PrintHelp(const char* theCommandName)
+int Draw_Interpretor::PrintHelp(const char* const theCommandName)
 {
   TCollection_AsciiString aCmd     = TCollection_AsciiString("help ") + theCommandName;
   Standard_PCharacter     aLinePtr = (Standard_PCharacter)aCmd.ToCString();
@@ -470,7 +470,7 @@ int Draw_Interpretor::PrintHelp(const char* theCommandName)
 
 //=================================================================================================
 
-bool Draw_Interpretor::Complete(const char* line)
+bool Draw_Interpretor::Complete(const char* const line)
 {
   Standard_PCharacter pLine;
   //
@@ -596,7 +596,7 @@ void Draw_Interpretor::ResetLog()
   }
 }
 
-void Draw_Interpretor::AddLog(const char* theStr)
+void Draw_Interpretor::AddLog(const char* const theStr)
 {
   if (myFDLog < 0 || !theStr || !theStr[0])
     return;

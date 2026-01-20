@@ -42,8 +42,8 @@
 //=======================================================================
 static IFSelect_ReturnStatus XSControl_xinit(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    xinit        ****
   if (argc > 1)
     return (XSControl::Session(pilot)->SelectNorm(arg1) ? IFSelect_RetDone : IFSelect_RetFail);
@@ -57,8 +57,8 @@ static IFSelect_ReturnStatus XSControl_xinit(const occ::handle<IFSelect_SessionP
 //=======================================================================
 static IFSelect_ReturnStatus XSControl_xnorm(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    xnorm        ****
   occ::handle<XSControl_WorkSession> WS      = XSControl::Session(pilot);
   occ::handle<XSControl_Controller>  control = WS->NormAdaptor();
@@ -134,9 +134,9 @@ static IFSelect_ReturnStatus XSControl_tpclear(const occ::handle<IFSelect_Sessio
 //=======================================================================
 static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
-  // const char* arg2 = pilot->Arg(2);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
+  // const char* const arg2 = pilot->Arg(2);
   const occ::handle<Transfer_TransientProcess>& TP =
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -273,7 +273,7 @@ static IFSelect_ReturnStatus XSControl_tpstat(const occ::handle<IFSelect_Session
 static IFSelect_ReturnStatus XSControl_tpent(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                                           argc = pilot->NbWords();
-  const char*                                   arg1 = pilot->Arg(1);
+  const char* const                             arg1 = pilot->Arg(1);
   const occ::handle<Transfer_TransientProcess>& TP =
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   //        ****    tpent        ****
@@ -312,8 +312,8 @@ static IFSelect_ReturnStatus XSControl_tpent(const occ::handle<IFSelect_SessionP
 //=======================================================================
 static IFSelect_ReturnStatus XSControl_tpitem(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    tpitem/tproot/twitem/twroot        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -343,7 +343,7 @@ static IFSelect_ReturnStatus XSControl_tpitem(const occ::handle<IFSelect_Session
 static IFSelect_ReturnStatus XSControl_trecord(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                                           argc = pilot->NbWords();
-  const char*                                   arg1 = pilot->Arg(1);
+  const char* const                             arg1 = pilot->Arg(1);
   const occ::handle<Transfer_TransientProcess>& TP =
     XSControl::Session(pilot)->TransferReader()->TransientProcess();
   //        ****    trecord : TransferReader        ****
@@ -392,7 +392,7 @@ static IFSelect_ReturnStatus XSControl_trecord(const occ::handle<IFSelect_Sessio
 static IFSelect_ReturnStatus XSControl_trstat(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                             argc = pilot->NbWords();
-  const char*                     arg1 = pilot->Arg(1);
+  const char* const               arg1 = pilot->Arg(1);
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   //        ****    trstat : TransferReader        ****
   const occ::handle<XSControl_TransferReader>& TR = XSControl::Session(pilot)->TransferReader();
@@ -484,7 +484,7 @@ static IFSelect_ReturnStatus XSControl_trbegin(const occ::handle<IFSelect_Sessio
 static IFSelect_ReturnStatus XSControl_tread(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int argc = pilot->NbWords();
-  // const char* arg1 = pilot->Arg(1);
+  // const char* const arg1 = pilot->Arg(1);
   //         ****    tread : TransferReader        ****
   Message_Messenger::StreamBuffer              sout = Message::SendInfo();
   const occ::handle<XSControl_TransferReader>& TR   = XSControl::Session(pilot)->TransferReader();
@@ -553,8 +553,8 @@ static IFSelect_ReturnStatus XSControl_tptr(const occ::handle<IFSelect_SessionPi
 //=======================================================================
 static IFSelect_ReturnStatus XSControl_twmode(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    twmode         ****
   occ::handle<XSControl_TransferWriter> TW      = XSControl::Session(pilot)->TransferWriter();
   occ::handle<XSControl_Controller>     control = XSControl::Session(pilot)->NormAdaptor();
@@ -585,8 +585,8 @@ static IFSelect_ReturnStatus XSControl_twmode(const occ::handle<IFSelect_Session
 static IFSelect_ReturnStatus XSControl_twstat(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   // int argc = pilot->NbWords();
-  // const char* arg1 = pilot->Arg(1);
-  // const char* arg2 = pilot->Arg(2);
+  // const char* const arg1 = pilot->Arg(1);
+  // const char* const arg2 = pilot->Arg(2);
   const occ::handle<Transfer_FinderProcess>& FP =
     XSControl::Session(pilot)->TransferWriter()->FinderProcess();
   //        ****    twstat        ****

@@ -67,7 +67,7 @@ static char Draw_fontsizedefault[FONTLENGTH] = "150";
 // Graphic commands
 // *******************************************************************
 
-static int ViewId(const char* a)
+static int ViewId(const char* const a)
 {
   int id = Draw::Atoi(a);
   if ((id < 0) || (id >= MAXVIEW))

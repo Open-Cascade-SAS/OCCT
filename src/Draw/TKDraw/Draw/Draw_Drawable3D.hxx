@@ -36,14 +36,14 @@ public:
   //! Register factory for restoring drawable from stream (opposite to Draw_Drawable3D::Save()).
   //! @param[in] theType  class name
   //! @param[in] theFactory  factory function
-  Standard_EXPORT static void RegisterFactory(const char*              theType,
+  Standard_EXPORT static void RegisterFactory(const char* const        theType,
                                               const FactoryFunction_t& theFactory);
 
   //! Restore drawable from stream (opposite to Draw_Drawable3D::Save()).
   //! @param[in] theType  class name
   //! @param[in] theStream  input stream
   //! @return restored drawable or NULL if factory is undefined for specified class
-  Standard_EXPORT static occ::handle<Draw_Drawable3D> Restore(const char*       theType,
+  Standard_EXPORT static occ::handle<Draw_Drawable3D> Restore(const char* const theType,
                                                               Standard_IStream& theStream);
 
 //! @def Draw_Drawable3D_FACTORY
@@ -105,7 +105,7 @@ public:
 
   const char* Name() const { return myName; }
 
-  virtual void Name(const char* N) { myName = N; }
+  virtual void Name(const char* const N) { myName = N; }
 
 protected:
   Standard_EXPORT Draw_Drawable3D();

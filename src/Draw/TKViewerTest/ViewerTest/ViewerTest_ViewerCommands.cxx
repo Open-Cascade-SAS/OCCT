@@ -7980,7 +7980,7 @@ static int VTurnView(Draw_Interpretor& di, int argc, const char** argv)
 class OCC_TextureEnv : public Graphic3d_TextureEnv
 {
 public:
-  OCC_TextureEnv(const char* FileName);
+  OCC_TextureEnv(const char* const FileName);
   OCC_TextureEnv(const Graphic3d_NameOfTextureEnv aName);
   void SetTextureParameters(const bool                          theRepeatFlag,
                             const bool                          theModulateFlag,
@@ -7993,7 +7993,7 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(OCC_TextureEnv, Graphic3d_TextureEnv)
 };
 
-OCC_TextureEnv::OCC_TextureEnv(const char* theFileName)
+OCC_TextureEnv::OCC_TextureEnv(const char* const theFileName)
     : Graphic3d_TextureEnv(theFileName)
 {
 }

@@ -68,9 +68,9 @@ public:
   Standard_EXPORT bool SetFolder(const TCollection_ExtendedString& aFolder);
 
   //! defines the name under which the document should be stored.
-  Standard_EXPORT CDF_StoreSetNameStatus SetName(const char16_t* aName);
+  Standard_EXPORT CDF_StoreSetNameStatus SetName(const char16_t* const aName);
 
-  Standard_EXPORT void SetComment(const char16_t* aComment);
+  Standard_EXPORT void SetComment(const char16_t* const aComment);
 
   Standard_EXPORT occ::handle<TCollection_HExtendedString> Comment() const;
 
@@ -78,7 +78,7 @@ public:
   //! uses for example after modification of the folder.
   Standard_EXPORT CDF_StoreSetNameStatus RecheckName();
 
-  Standard_EXPORT bool SetPreviousVersion(const char16_t* aPreviousVersion);
+  Standard_EXPORT bool SetPreviousVersion(const char16_t* const aPreviousVersion);
 
   Standard_EXPORT void Realize(const Message_ProgressRange& theRange = Message_ProgressRange());
 
@@ -92,7 +92,7 @@ public:
   //! returns the description of the format of the main object.
   Standard_EXPORT occ::handle<TCollection_HExtendedString> Description() const;
 
-  Standard_EXPORT void SetCurrent(const char16_t* aPresentation);
+  Standard_EXPORT void SetCurrent(const char16_t* const aPresentation);
 
   //! the two following methods can be used just after
   //! Realize or Import -- method to know if
@@ -109,7 +109,7 @@ public:
   //! defines the folder in which the document should be
   //! stored. returns true if the Folder exists,
   //! false otherwise.
-  Standard_EXPORT bool SetFolder(const char16_t* aFolder);
+  Standard_EXPORT bool SetFolder(const char16_t* const aFolder);
 
 private:
   Standard_EXPORT CDF_Store();

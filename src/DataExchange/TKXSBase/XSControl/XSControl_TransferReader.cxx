@@ -99,7 +99,7 @@ void XSControl_TransferReader::SetGraph(const occ::handle<Interface_HGraph>& gra
 
 //=================================================================================================
 
-void XSControl_TransferReader::SetContext(const char*                            name,
+void XSControl_TransferReader::SetContext(const char* const                      name,
                                           const occ::handle<Standard_Transient>& ctx)
 {
   myContext.Bind(name, ctx);
@@ -107,7 +107,7 @@ void XSControl_TransferReader::SetContext(const char*                           
 
 //=================================================================================================
 
-bool XSControl_TransferReader::GetContext(const char*                       name,
+bool XSControl_TransferReader::GetContext(const char* const                 name,
                                           const occ::handle<Standard_Type>& type,
                                           occ::handle<Standard_Transient>&  ctx) const
 {
@@ -1173,7 +1173,7 @@ static int BinderStatus(const occ::handle<Transfer_Binder>& binder, char* mess)
 //=================================================================================================
 
 static void PrintPercent(const occ::handle<Message_Messenger>& sout,
-                         const char*                           mess,
+                         const char* const                     mess,
                          const int                             nb,
                          const int                             nl)
 {

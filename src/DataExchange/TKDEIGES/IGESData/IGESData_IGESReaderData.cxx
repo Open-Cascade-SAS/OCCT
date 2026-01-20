@@ -36,7 +36,7 @@ IGESData_IGESReaderData::IGESData_IGESReaderData(const int nbe, const int nbp)
   thechk  = new Interface_Check;
 }
 
-void IGESData_IGESReaderData::AddStartLine(const char* aval)
+void IGESData_IGESReaderData::AddStartLine(const char* const aval)
 {
   thestar->Append(new TCollection_HAsciiString(aval));
 }
@@ -47,7 +47,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESDa
   return thestar;
 }
 
-void IGESData_IGESReaderData::AddGlobal(const Interface_ParamType atype, const char* aval)
+void IGESData_IGESReaderData::AddGlobal(const Interface_ParamType atype, const char* const aval)
 {
   theparh->Append(aval, (int)strlen(aval), atype, 0);
 }
@@ -62,28 +62,28 @@ const IGESData_GlobalSection& IGESData_IGESReaderData::GlobalSection() const
   return thehead;
 }
 
-void IGESData_IGESReaderData::SetDirPart(const int   num,
-                                         const int   i1,
-                                         const int   i2,
-                                         const int   i3,
-                                         const int   i4,
-                                         const int   i5,
-                                         const int   i6,
-                                         const int   i7,
-                                         const int   i8,
-                                         const int   i9,
-                                         const int   i10,
-                                         const int   i11,
-                                         const int   i12,
-                                         const int   i13,
-                                         const int   i14,
-                                         const int   i15,
-                                         const int   i16,
-                                         const int   i17,
-                                         const char* res1,
-                                         const char* res2,
-                                         const char* label,
-                                         const char* subs)
+void IGESData_IGESReaderData::SetDirPart(const int         num,
+                                         const int         i1,
+                                         const int         i2,
+                                         const int         i3,
+                                         const int         i4,
+                                         const int         i5,
+                                         const int         i6,
+                                         const int         i7,
+                                         const int         i8,
+                                         const int         i9,
+                                         const int         i10,
+                                         const int         i11,
+                                         const int         i12,
+                                         const int         i13,
+                                         const int         i14,
+                                         const int         i15,
+                                         const int         i16,
+                                         const int         i17,
+                                         const char* const res1,
+                                         const char* const res2,
+                                         const char* const label,
+                                         const char* const subs)
 {
   IGESData_DirPart& DP = thedirs(num);
   DP.Init(i1,

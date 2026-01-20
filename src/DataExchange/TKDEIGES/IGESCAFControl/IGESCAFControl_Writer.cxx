@@ -134,7 +134,7 @@ IGESCAFControl_Writer::IGESCAFControl_Writer(const occ::handle<XSControl_WorkSes
 //=================================================================================================
 
 IGESCAFControl_Writer::IGESCAFControl_Writer(const occ::handle<XSControl_WorkSession>& WS,
-                                             const char*                               theUnit)
+                                             const char* const                         theUnit)
     : IGESControl_Writer(theUnit)
 {
 
@@ -209,7 +209,7 @@ bool IGESCAFControl_Writer::Transfer(const NCollection_Sequence<TDF_Label>& labe
 //=================================================================================================
 
 bool IGESCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& doc,
-                                    const char*                          filename,
+                                    const char* const                    filename,
                                     const Message_ProgressRange&         theProgress)
 {
   if (!Transfer(doc, theProgress))

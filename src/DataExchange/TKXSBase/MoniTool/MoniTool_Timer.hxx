@@ -72,13 +72,13 @@ public:
 
   //! Returns a timer from a dictionary by its name
   //! If timer not existed, creates a new one
-  Standard_EXPORT static occ::handle<MoniTool_Timer> Timer(const char* name);
+  Standard_EXPORT static occ::handle<MoniTool_Timer> Timer(const char* const name);
 
-  static void Start(const char* name);
+  static void Start(const char* const name);
 
   //! Inline methods to conveniently start/stop timer by name
   //! Shortcut to Timer(name)->Start/Stop()
-  static void Stop(const char* name);
+  static void Stop(const char* const name);
 
   //! Returns map of timers
   Standard_EXPORT static NCollection_DataMap<const char*,

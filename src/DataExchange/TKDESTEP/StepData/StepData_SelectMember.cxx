@@ -36,12 +36,12 @@ const char* StepData_SelectMember::Name() const
   return "";
 }
 
-bool StepData_SelectMember::SetName(const char* /*bid*/)
+bool StepData_SelectMember::SetName(const char* const /*bid*/)
 {
   return false;
 }
 
-bool StepData_SelectMember::Matches(const char* name) const
+bool StepData_SelectMember::Matches(const char* const name) const
 {
   return !strcmp(name, Name());
 }
@@ -133,7 +133,7 @@ const char* StepData_SelectMember::String() const
   return "";
 }
 
-void StepData_SelectMember::SetString(const char*) {}
+void StepData_SelectMember::SetString(const char* const) {}
 
 int StepData_SelectMember::Enum() const
 {
@@ -145,7 +145,7 @@ const char* StepData_SelectMember::EnumText() const
   return String();
 }
 
-void StepData_SelectMember::SetEnum(const int val, const char* text)
+void StepData_SelectMember::SetEnum(const int val, const char* const text)
 {
   SetKind(KindEnum);
   SetInt(val);
@@ -153,7 +153,7 @@ void StepData_SelectMember::SetEnum(const int val, const char* text)
     SetEnumText(val, text);
 }
 
-void StepData_SelectMember::SetEnumText(const int /*val*/, const char* text)
+void StepData_SelectMember::SetEnumText(const int /*val*/, const char* const text)
 {
   SetString(text);
 }

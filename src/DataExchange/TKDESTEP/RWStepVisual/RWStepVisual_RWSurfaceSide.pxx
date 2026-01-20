@@ -44,7 +44,7 @@ inline const char* ConvertToString(const StepVisual_SurfaceSide theSourceEnum)
 //! @param theSideStr The string to convert
 //! @param theResultEnum The corresponding StepVisual_SurfaceSide value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* theSideStr, StepVisual_SurfaceSide& theResultEnum)
+inline bool ConvertToEnum(const char* const theSideStr, StepVisual_SurfaceSide& theResultEnum)
 {
   if (IsEqual(theSideStr, ssNegative))
   {

@@ -51,7 +51,8 @@ public:
   //! Send a string message with specified trace level.
   //! The last Boolean argument is deprecated and unused.
   //! Default implementation redirects to send().
-  Standard_EXPORT virtual void Send(const char* theString, const Message_Gravity theGravity) const;
+  Standard_EXPORT virtual void Send(const char* const     theString,
+                                    const Message_Gravity theGravity) const;
 
   //! Send a string message with specified trace level.
   //! The last Boolean argument is deprecated and unused.

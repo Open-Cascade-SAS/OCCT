@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XSDRAW_Vars, XSControl_Vars)
 
 XSDRAW_Vars::XSDRAW_Vars() = default;
 
-void XSDRAW_Vars::Set(const char* name, const occ::handle<Standard_Transient>& val)
+void XSDRAW_Vars::Set(const char* const name, const occ::handle<Standard_Transient>& val)
 {
   // char* nam = name;
   // selon type
@@ -49,7 +49,7 @@ void XSDRAW_Vars::Set(const char* name, const occ::handle<Standard_Transient>& v
 }
 
 /*
-occ::handle<Standard_Transient>  XSDRAW_Vars::Get (const char* name) const
+occ::handle<Standard_Transient>  XSDRAW_Vars::Get (const char* const name) const
 {
   occ::handle<Standard_Transient> val;
   if (!thevars->GetItem (name,val)) val.Nullify();
@@ -77,7 +77,7 @@ occ::handle<Geom_Surface> XSDRAW_Vars::GetSurface(const char*& name) const
   return DrawTrSurf::GetSurface(name);
 }
 
-void XSDRAW_Vars::SetPoint(const char* name, const gp_Pnt& val)
+void XSDRAW_Vars::SetPoint(const char* const name, const gp_Pnt& val)
 {
   // char* nam = name;
   DrawTrSurf::Set(name, val);
@@ -88,7 +88,7 @@ bool XSDRAW_Vars::GetPoint(const char*& name, gp_Pnt& pnt) const
   return DrawTrSurf::GetPoint(name, pnt);
 }
 
-void XSDRAW_Vars::SetPoint2d(const char* name, const gp_Pnt2d& val)
+void XSDRAW_Vars::SetPoint2d(const char* const name, const gp_Pnt2d& val)
 {
   // char* nam = name;
   DrawTrSurf::Set(name, val);
@@ -100,7 +100,7 @@ bool XSDRAW_Vars::GetPoint2d(const char*& name, gp_Pnt2d& pnt) const
   return DrawTrSurf::GetPoint2d(name, pnt);
 }
 
-void XSDRAW_Vars::SetShape(const char* name, const TopoDS_Shape& val)
+void XSDRAW_Vars::SetShape(const char* const name, const TopoDS_Shape& val)
 {
   DBRep::Set(name, val);
 }

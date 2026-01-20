@@ -158,7 +158,7 @@ public:
   }
 
   Standard_EXPORT bool AddPersistent(const occ::handle<Standard_Persistent>& sp,
-                                     const char*                             tName) const;
+                                     const char* const                       tName) const;
 
   Standard_EXPORT bool PersistentToAdd(const occ::handle<Standard_Persistent>& sp) const;
 

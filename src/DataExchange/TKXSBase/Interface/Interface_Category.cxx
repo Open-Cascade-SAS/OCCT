@@ -89,7 +89,7 @@ int Interface_Category::Num(const int theNumEnt) const
 
 // List of Categories
 
-int Interface_Category::AddCategory(const char* theName)
+int Interface_Category::AddCategory(const char* const theName)
 {
   int aNum = Interface_Category::Number(theName);
   if (aNum > 0)
@@ -112,7 +112,7 @@ const char* Interface_Category::Name(const int theNum)
   return theCats().ChangeValue(theNum).ToCString();
 }
 
-int Interface_Category::Number(const char* theName)
+int Interface_Category::Number(const char* const theName)
 {
   int i;
   for (i = theCats().Lower(); i <= theCats().Upper(); i++)

@@ -491,7 +491,7 @@ Standard_OStream& TopOpeBRepDS_Check::PrintIntg(Standard_OStream& OS)
 
 Standard_OStream& TopOpeBRepDS_Check::PrintMap(
   NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>& MapStat,
-  const char*                                         eltstr,
+  const char* const                                   eltstr,
   Standard_OStream&                                   OS)
 {
   NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>::Iterator DMI(MapStat);

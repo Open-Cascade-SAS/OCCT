@@ -25,7 +25,7 @@ class Standard_DEPRECATED("Deprecated class, Message_ProgressScope should be use
 public:
   //! Deprecated constructor, Message_ProgressScope should be created instead.
   Message_ProgressSentry(const Message_ProgressRange& theRange,
-                         const char*                  theName,
+                         const char* const            theName,
                          const double                 theMin,
                          const double                 theMax,
                          const double                 theStep,
@@ -45,7 +45,7 @@ public:
 private:
   //! Message_ProgressRange should be passed to constructor instead of Message_ProgressIndicator.
   Message_ProgressSentry(const occ::handle<Message_ProgressIndicator>& theProgress,
-                         const char*                                   theName,
+                         const char* const                             theName,
                          const double                                  theMin,
                          const double                                  theMax,
                          const double                                  theStep,

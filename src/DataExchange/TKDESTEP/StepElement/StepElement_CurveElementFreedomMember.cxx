@@ -55,7 +55,7 @@ const char* StepElement_CurveElementFreedomMember::Name() const
 
 //=================================================================================================
 
-static int CompareNames(const char* name, int& /*numen*/)
+static int CompareNames(const char* const name, int& /*numen*/)
 {
   int thecase = 0;
   if (!name || name[0] == '\0')
@@ -74,7 +74,7 @@ static int CompareNames(const char* name, int& /*numen*/)
 
 //=================================================================================================
 
-bool StepElement_CurveElementFreedomMember::SetName(const char* name)
+bool StepElement_CurveElementFreedomMember::SetName(const char* const name)
 {
   int numit = 0;
   mycase    = CompareNames(name, numit);
@@ -85,7 +85,7 @@ bool StepElement_CurveElementFreedomMember::SetName(const char* name)
 
 //=================================================================================================
 
-bool StepElement_CurveElementFreedomMember::Matches(const char* name) const
+bool StepElement_CurveElementFreedomMember::Matches(const char* const name) const
 {
   int numit   = 0;
   int thecase = CompareNames(name, numit);

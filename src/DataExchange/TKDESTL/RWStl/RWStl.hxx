@@ -63,7 +63,7 @@ public:
   //! Read specified STL file and returns its content as triangulation.
   //! In case of error, returns Null handle.
   static occ::handle<Poly_Triangulation> ReadFile(
-    const char*                  theFile,
+    const char* const            theFile,
     const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
     return ReadFile(theFile, M_PI / 2.0, theProgress);
@@ -76,7 +76,7 @@ public:
   //! @param[in] theProgress progress indicator
   //! @return result triangulation or NULL in case of error
   Standard_EXPORT static occ::handle<Poly_Triangulation> ReadFile(
-    const char*                  theFile,
+    const char* const            theFile,
     const double                 theMergeAngle,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -87,7 +87,7 @@ public:
   //! @param[out] theTriangList triangulation list for multi-domain case
   //! @param[in] theProgress progress indicator
   Standard_EXPORT static void ReadFile(
-    const char*                                            theFile,
+    const char* const                                      theFile,
     const double                                           theMergeAngle,
     NCollection_Sequence<occ::handle<Poly_Triangulation>>& theTriangList,
     const Message_ProgressRange&                           theProgress = Message_ProgressRange());

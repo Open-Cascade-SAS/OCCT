@@ -19,7 +19,7 @@
 //=================================================================================================
 
 inline void Message_Algorithm::SetStatus(const Message_Status& theStat,
-                                         const char*           theStr,
+                                         const char* const     theStr,
                                          const bool            noRepetitions)
 {
   SetStatus(theStat, new TCollection_HExtendedString(theStr), noRepetitions);

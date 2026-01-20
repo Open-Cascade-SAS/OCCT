@@ -47,7 +47,7 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
                                              const double        size,
                                              const int           nbisos,
                                              const int           discret,
-                                             const char*         Text,
+                                             const char* const   Text,
                                              const Draw_Color&   TextColor)
     : DBRep_DrawableShape(aShape, FreeCol, ConnCol, EdgeCol, IsosCol, size, nbisos, discret)
 {
@@ -58,7 +58,7 @@ BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
 //=================================================================================================
 
 BOPTest_DrawableShape::BOPTest_DrawableShape(const TopoDS_Shape& aShape,
-                                             const char*         Text,
+                                             const char* const   Text,
                                              const Draw_Color&   TextColor)
     : DBRep_DrawableShape(aShape,
                           Draw_vert,

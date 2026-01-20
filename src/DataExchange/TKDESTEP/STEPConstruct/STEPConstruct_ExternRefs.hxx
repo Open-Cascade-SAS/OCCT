@@ -92,9 +92,9 @@ public:
   //! <format> can be Null string, in that case this information
   //! is not written. Else, it can be "STEP AP214" or "STEP AP203"
   //! Returns index of a new extern ref
-  Standard_EXPORT int AddExternRef(const char*                                     filename,
+  Standard_EXPORT int AddExternRef(const char* const                               filename,
                                    const occ::handle<StepBasic_ProductDefinition>& PD,
-                                   const char*                                     format);
+                                   const char* const                               format);
 
   //! Check (create if it is null) all shared entities for the model
   Standard_EXPORT void checkAP214Shared();
@@ -116,7 +116,7 @@ protected:
   Standard_EXPORT bool addAP214ExterRef(const occ::handle<StepAP214_AppliedDocumentReference>& ADR,
                                         const occ::handle<StepBasic_ProductDefinition>&        PD,
                                         const occ::handle<StepBasic_DocumentFile>&             DF,
-                                        const char* filename);
+                                        const char* const filename);
 
 private:
   NCollection_Sequence<occ::handle<Standard_Transient>> myAEIAs;

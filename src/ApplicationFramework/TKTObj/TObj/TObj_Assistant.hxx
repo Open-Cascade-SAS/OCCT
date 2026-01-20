@@ -40,7 +40,7 @@ public:
    */
 
   //! Finds model by name
-  static Standard_EXPORT occ::handle<TObj_Model> FindModel(const char* theName);
+  static Standard_EXPORT occ::handle<TObj_Model> FindModel(const char* const theName);
 
   //! Binds model to the map
   static Standard_EXPORT void BindModel(const occ::handle<TObj_Model>& theModel);

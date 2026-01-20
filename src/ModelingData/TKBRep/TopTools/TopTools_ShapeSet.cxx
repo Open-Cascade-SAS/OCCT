@@ -33,7 +33,7 @@
 
 #include <cstring>
 
-const char* TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] = {
+const char* const TopTools_ShapeSet::THE_ASCII_VERSIONS[TopTools_FormatVersion_UPPER + 1] = {
   "",
   "CASCADE Topology V1, (c) Matra-Datavision",
   "CASCADE Topology V2, (c) Matra-Datavision",

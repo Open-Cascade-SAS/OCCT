@@ -63,7 +63,7 @@ public:
   const TopoDS_Shape& Shape() const { return myResult; }
 
   //! Sets directory where the debug shapes will be saved
-  void SetTemporaryDirectory(const char*& thePath) { myDebugShapesPath = thePath; }
+  void SetTemporaryDirectory(const char* const& thePath) { myDebugShapesPath = thePath; }
 
   //! Sets/Unsets computation in parallel mode
   void SetParallelMode(const bool theVal) { myIsParallel = theVal; }

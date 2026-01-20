@@ -121,9 +121,11 @@ public:
   const occ::handle<NCollection_HArray1<double>>& Parameters() const { return myParameters; }
 
   Standard_DEPRECATED("Deprecated method, SetNode() should be used instead")
+
   NCollection_Array1<int>& ChangeNodes() { return myNodes; }
 
   Standard_DEPRECATED("Deprecated method, SetParameter() should be used instead")
+
   NCollection_Array1<double>& ChangeParameters() { return myParameters->ChangeArray1(); }
 
 private:

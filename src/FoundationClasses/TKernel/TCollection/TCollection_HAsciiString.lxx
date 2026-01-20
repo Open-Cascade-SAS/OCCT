@@ -14,7 +14,7 @@
 
 //=================================================================================================
 
-inline void TCollection_HAsciiString::AssignCat(const char* other)
+inline void TCollection_HAsciiString::AssignCat(const char* const other)
 {
   myString.AssignCat(other);
 }
