@@ -117,7 +117,7 @@ TCollection_ExtendedString::TCollection_ExtendedString() noexcept
 //==================================================================================================
 
 TCollection_ExtendedString::TCollection_ExtendedString(const char* const theString,
-                                                       const bool        isMultiByte)
+                                                       const bool        theIsMultiByte)
 {
   if (theString == nullptr)
   {
@@ -523,7 +523,7 @@ void TCollection_ExtendedString::Insert(const int       theWhere,
 
 //==================================================================================================
 
-static int ExtStrCmp(const char16_t* const theStr1, const char16_t* const theStr2)
+bool TCollection_ExtendedString::IsEqual(const char16_t* const theOther, const int theLength) const
 {
   if (theLength < 0)
   {

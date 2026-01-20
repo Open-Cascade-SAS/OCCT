@@ -40,7 +40,8 @@ Type Transformations:
 Special handling:
 - Function-style casts like Standard_CString(x) -> static_cast<const char*>(x)
 - Multi-token type casts like Standard_Utf8UChar(x) -> static_cast<unsigned char>(x)
-- const Standard_CString -> const char* (avoids 'const const char*')
+- const Standard_CString -> const char* const (preserves const pointer semantics)
+- const Standard_ExtString -> const char16_t* const (preserves const pointer semantics)
 
 Usage:
     python3 migrate_standard_types.py [options] <src_directory>
@@ -304,20 +305,23 @@ class StandardTypeMigrator:
                     counts['Standard_ExtString'] = counts.get('Standard_ExtString', 0) + extstring_cast_matches
                     modified_line = re.sub(extstring_cast_pattern, 'static_cast<const char16_t*>(', modified_line)
 
-            # Handle 'const Standard_CString' specially to avoid 'const const char*'
-            # Standard_CString is already 'const char*', so 'const Standard_CString' becomes just 'const char*'
+            # Handle 'const Standard_CString' specially
+            # Standard_CString is 'const char*' (pointer to const char)
+            # 'const Standard_CString' is 'const (const char*)' = 'const char* const' (const pointer to const char)
             const_cstring_pattern = r'\bconst\s+Standard_CString\b'
             if re.search(const_cstring_pattern, modified_line):
                 const_cstring_matches = len(re.findall(const_cstring_pattern, modified_line))
                 counts['Standard_CString'] = counts.get('Standard_CString', 0) + const_cstring_matches
-                modified_line = re.sub(const_cstring_pattern, 'const char*', modified_line)
+                modified_line = re.sub(const_cstring_pattern, 'const char* const', modified_line)
 
-            # Handle 'const Standard_ExtString' specially to avoid 'const const char16_t*'
+            # Handle 'const Standard_ExtString' specially
+            # Standard_ExtString is 'const char16_t*' (pointer to const char16_t)
+            # 'const Standard_ExtString' is 'const (const char16_t*)' = 'const char16_t* const' (const pointer to const char16_t)
             const_extstring_pattern = r'\bconst\s+Standard_ExtString\b'
             if re.search(const_extstring_pattern, modified_line):
                 const_extstring_matches = len(re.findall(const_extstring_pattern, modified_line))
                 counts['Standard_ExtString'] = counts.get('Standard_ExtString', 0) + const_extstring_matches
-                modified_line = re.sub(const_extstring_pattern, 'const char16_t*', modified_line)
+                modified_line = re.sub(const_extstring_pattern, 'const char16_t* const', modified_line)
 
             # Apply other type replacements
             for old_type, new_type in mappings.items():

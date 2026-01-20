@@ -53,40 +53,15 @@
   #include <inttypes.h>
 #endif
 
-#define Standard_False false
-#define Standard_True true
-
 #include <Standard_Macro.hxx>
 
-typedef int           Standard_Integer;
-typedef unsigned int  Standard_UInteger;
-typedef double        Standard_Real;
-typedef bool          Standard_Boolean;
-typedef float         Standard_ShortReal;
-typedef char          Standard_Character;
-typedef unsigned char Standard_Byte;
-typedef void*         Standard_Address;
-typedef size_t        Standard_Size;
-typedef std::time_t   Standard_Time;
+//! @deprecated Use 'false' directly instead.
+Standard_DEPRECATED("Standard_False is deprecated, use false directly")
+inline constexpr bool Standard_False = false;
 
-// Unicode primitives, char16_t, char32_t
-typedef char          Standard_Utf8Char;  //!< signed   UTF-8 char
-typedef unsigned char Standard_Utf8UChar; //!< unsigned UTF-8 char
-#if ((defined(__GNUC__) && !defined(__clang__)                                                     \
-      && ((__GNUC__ == 4 && __GNUC_MINOR__ <= 3) || __GNUC__ < 4))                                 \
-     || (defined(_MSC_VER) && (_MSC_VER < 1600)))
-// compatibility with old GCC and MSVC compilers
-typedef uint16_t Standard_ExtCharacter;
-typedef uint16_t Standard_Utf16Char;
-typedef uint32_t Standard_Utf32Char;
-#else
-typedef char16_t Standard_ExtCharacter;
-typedef char16_t Standard_Utf16Char; //!< UTF-16 char (always unsigned)
-typedef char32_t Standard_Utf32Char; //!< UTF-32 char (always unsigned)
-#endif
-// clang-format off
-typedef wchar_t       Standard_WideChar;     //!< wide char (unsigned UTF-16 on Windows platform and signed UTF-32 on Linux)
-// clang-format on
+//! @deprecated Use 'true' directly instead.
+Standard_DEPRECATED("Standard_True is deprecated, use true directly")
+inline constexpr bool Standard_True = true;
 
 //! @deprecated Use 'int' directly instead.
 Standard_DEPRECATED("Standard_Integer is deprecated, use int directly")

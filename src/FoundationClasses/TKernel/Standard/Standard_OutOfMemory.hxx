@@ -42,7 +42,8 @@
 class Standard_OutOfMemory : public Standard_ProgramError
 {
 public:
-  //! Constructor is kept public for backward compatibility
+  //! Constructor is kept public for backward compatibility.
+  //! @param theMessage optional error message
   Standard_EXPORT Standard_OutOfMemory(const char* const theMessage = nullptr);
 
   //! Returns error message (implements std::exception interface).

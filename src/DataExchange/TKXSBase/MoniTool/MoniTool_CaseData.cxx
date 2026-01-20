@@ -148,8 +148,7 @@ void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
   thesubst = 0;
 }
 
-void MoniTool_CaseData::AddRaised(const occ::handle<Standard_Failure>& theException,
-                                  const char* const                    name)
+void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const char* const name)
 {
   // Store exception type and message as text (since Standard_Failure is no longer
   // Standard_Transient)
