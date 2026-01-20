@@ -66,8 +66,8 @@
 
 static int edgesameparam(Draw_Interpretor& di, int argc, const char** argv)
 {
-  //  const char* arg1 = argv[1];
-  const char* arg2(argc > 2 ? argv[2] : nullptr);
+  //  const char* const arg1 = argv[1];
+  const char* const arg2(argc > 2 ? argv[2] : nullptr);
   //        ****    Edge:SameParameter         ****
   if (argc < 2)
   {

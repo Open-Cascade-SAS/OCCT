@@ -72,8 +72,8 @@ public:
 
 protected:
   Standard_EXPORT XmlMDF_ADriver(const occ::handle<Message_Messenger>& theMessageDriver,
-                                 const char*                           theNamespace,
-                                 const char*                           theName = nullptr);
+                                 const char* const                     theNamespace,
+                                 const char* const                     theName = nullptr);
 
   TCollection_AsciiString        myTypeName;
   TCollection_AsciiString        myNamespace;

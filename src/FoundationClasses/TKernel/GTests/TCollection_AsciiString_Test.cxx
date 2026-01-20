@@ -251,7 +251,7 @@ TEST(TCollection_AsciiStringTest, MemoryAllocation)
 TEST(TCollection_AsciiStringTest, LengthConstructor)
 {
   // Test constructor with string and maximum length
-  const char* aSourceString = "This is a very long string";
+  const char* const aSourceString = "This is a very long string";
 
   TCollection_AsciiString aString1(aSourceString, 4);
   EXPECT_EQ(4, aString1.Length());
@@ -285,7 +285,7 @@ TEST(TCollection_AsciiStringTest, NumericalConstructors)
 
   // Test real constructor
   TCollection_AsciiString aRealString(3.14);
-  const char*             aRealCStr = aRealString.ToCString();
+  const char* const       aRealCStr = aRealString.ToCString();
   EXPECT_TRUE(strstr(aRealCStr, "3.14") != nullptr);
 }
 
@@ -350,7 +350,7 @@ TEST(TCollection_AsciiStringTest, PaddingSafety)
     EXPECT_EQ(anIdx, aTestString.Length());
 
     // Verify null termination
-    const char* aCString = aTestString.ToCString();
+    const char* const aCString = aTestString.ToCString();
     EXPECT_EQ('\0', aCString[anIdx]);
 
     // Verify content
@@ -1381,7 +1381,7 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 
   // Build enum definition like MoniTool_TypedValue does
   aDef.AssignCat("Enum");
-  Sprintf(aMess, " [in %d-%d]", 0, 1);
+  sprintf(aMess, " [in %d-%d]", 0, 1);
   aDef.AssignCat(aMess);
 
   // Should be "Enum [in 0-1]" at this point
@@ -1391,7 +1391,7 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
   for (int i = 0; i <= 1; i++)
   {
     const char* anEnva = (i == 0) ? "Off" : "On";
-    Sprintf(aMess, " %d:%s", i, anEnva);
+    sprintf(aMess, " %d:%s", i, anEnva);
     aDef.AssignCat(aMess);
   }
 
@@ -1400,10 +1400,10 @@ TEST(TCollection_AsciiStringTest, AssignCat_MultipleInLoop)
 
   // Add alpha section
   aDef.AssignCat(" , alpha: ");
-  Sprintf(aMess, "On:%d ", 1);
+  sprintf(aMess, "On:%d ", 1);
   aDef.AssignCat("On");
   aDef.AssignCat(aMess);
-  Sprintf(aMess, "Off:%d ", 0);
+  sprintf(aMess, "Off:%d ", 0);
   aDef.AssignCat("Off");
   aDef.AssignCat(aMess);
 
@@ -1476,11 +1476,11 @@ TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
 
   for (int i = 0; i < 5; ++i)
   {
-    // TCollection_AsciiString(const char* astring)
+    // TCollection_AsciiString(const char* const astring)
     TCollection_AsciiString a(theStr + i);
     EXPECT_STREQ(theStr + i, a.ToCString());
 
-    // TCollection_AsciiString(const char* astring, const int aLen)
+    // TCollection_AsciiString(const char* const astring, const int aLen)
     TCollection_AsciiString b(theStr + i, 3);
     EXPECT_EQ(3, b.Length());
     EXPECT_EQ(0, strncmp(b.ToCString(), theStr + i, 3));

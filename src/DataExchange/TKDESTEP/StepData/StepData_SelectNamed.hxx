@@ -39,7 +39,7 @@ public:
 
   Standard_EXPORT const char* Name() const override;
 
-  Standard_EXPORT bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* const name) override;
 
   Standard_EXPORT const StepData_Field& Field() const;
 
@@ -63,7 +63,7 @@ public:
 
   Standard_EXPORT const char* String() const override;
 
-  Standard_EXPORT void SetString(const char* val) override;
+  Standard_EXPORT void SetString(const char* const val) override;
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectNamed, StepData_SelectMember)
 

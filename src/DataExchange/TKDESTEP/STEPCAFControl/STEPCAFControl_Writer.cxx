@@ -295,7 +295,7 @@ void STEPCAFControl_Writer::Init(const occ::handle<XSControl_WorkSession>& theWS
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPCAFControl_Writer::Write(const char* theFileName)
+IFSelect_ReturnStatus STEPCAFControl_Writer::Write(const char* const theFileName)
 {
   if (myIsCleanDuplicates)
   {
@@ -386,7 +386,7 @@ IFSelect_ReturnStatus STEPCAFControl_Writer::WriteStream(std::ostream& theStream
 
 bool STEPCAFControl_Writer::Transfer(const occ::handle<TDocStd_Document>& theDoc,
                                      const STEPControl_StepModelType      theMode,
-                                     const char*                          theMulti,
+                                     const char* const                    theMulti,
                                      const Message_ProgressRange&         theProgress)
 {
   const occ::handle<StepData_StepModel> aModel =
@@ -400,7 +400,7 @@ bool STEPCAFControl_Writer::Transfer(const occ::handle<TDocStd_Document>& theDoc
 bool STEPCAFControl_Writer::Transfer(const occ::handle<TDocStd_Document>& theDoc,
                                      const DESTEP_Parameters&             theParams,
                                      const STEPControl_StepModelType      theMode,
-                                     const char*                          theMulti,
+                                     const char* const                    theMulti,
                                      const Message_ProgressRange&         theProgress)
 {
   occ::handle<XCAFDoc_ShapeTool> aShTool = XCAFDoc_DocumentTool::ShapeTool(theDoc->Main());
@@ -421,7 +421,7 @@ bool STEPCAFControl_Writer::Transfer(const occ::handle<TDocStd_Document>& theDoc
 
 bool STEPCAFControl_Writer::Transfer(const TDF_Label&                theLabel,
                                      const STEPControl_StepModelType theMode,
-                                     const char*                     theIsMulti,
+                                     const char* const               theIsMulti,
                                      const Message_ProgressRange&    theProgress)
 {
   const occ::handle<StepData_StepModel> aModel =
@@ -435,7 +435,7 @@ bool STEPCAFControl_Writer::Transfer(const TDF_Label&                theLabel,
 bool STEPCAFControl_Writer::Transfer(const TDF_Label&                theLabel,
                                      const DESTEP_Parameters&        theParams,
                                      const STEPControl_StepModelType theMode,
-                                     const char*                     theIsMulti,
+                                     const char* const               theIsMulti,
                                      const Message_ProgressRange&    theProgress)
 {
   if (theLabel.IsNull())
@@ -456,7 +456,7 @@ bool STEPCAFControl_Writer::Transfer(const TDF_Label&                theLabel,
 
 bool STEPCAFControl_Writer::Transfer(const NCollection_Sequence<TDF_Label>& theLabels,
                                      const STEPControl_StepModelType        theMode,
-                                     const char*                            theIsMulti,
+                                     const char* const                      theIsMulti,
                                      const Message_ProgressRange&           theProgress)
 {
   const occ::handle<StepData_StepModel> aModel =
@@ -470,7 +470,7 @@ bool STEPCAFControl_Writer::Transfer(const NCollection_Sequence<TDF_Label>& theL
 bool STEPCAFControl_Writer::Transfer(const NCollection_Sequence<TDF_Label>& theLabels,
                                      const DESTEP_Parameters&               theParams,
                                      const STEPControl_StepModelType        theMode,
-                                     const char*                            theIsMulti,
+                                     const char* const                      theIsMulti,
                                      const Message_ProgressRange&           theProgress)
 {
   myRootLabels.Clear();
@@ -492,7 +492,7 @@ bool STEPCAFControl_Writer::Transfer(const NCollection_Sequence<TDF_Label>& theL
 //=================================================================================================
 
 bool STEPCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& theDoc,
-                                    const char*                          theFileName,
+                                    const char* const                    theFileName,
                                     const Message_ProgressRange&         theProgress)
 {
   if (!Transfer(theDoc, STEPControl_AsIs, nullptr, theProgress))
@@ -503,7 +503,7 @@ bool STEPCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& theDoc,
 //=================================================================================================
 
 bool STEPCAFControl_Writer::Perform(const occ::handle<TDocStd_Document>& theDoc,
-                                    const char*                          theFileName,
+                                    const char* const                    theFileName,
                                     const DESTEP_Parameters&             theParams,
                                     const Message_ProgressRange&         theProgress)
 {
@@ -537,7 +537,7 @@ bool STEPCAFControl_Writer::ExternFile(const TDF_Label&                        t
 
 //=================================================================================================
 
-bool STEPCAFControl_Writer::ExternFile(const char*                             theName,
+bool STEPCAFControl_Writer::ExternFile(const char* const                       theName,
                                        occ::handle<STEPCAFControl_ExternFile>& theExtFile) const
 {
   theExtFile.Nullify();
@@ -598,7 +598,7 @@ const XSAlgo_ShapeProcessor::ProcessingFlags& STEPCAFControl_Writer::GetShapePro
 bool STEPCAFControl_Writer::transfer(STEPControl_Writer&                    theWriter,
                                      const NCollection_Sequence<TDF_Label>& theLabels,
                                      const STEPControl_StepModelType        theMode,
-                                     const char*                            theIsMulti,
+                                     const char* const                      theIsMulti,
                                      const bool                             theIsExternFile,
                                      const Message_ProgressRange&           theProgress)
 {
@@ -841,7 +841,7 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label&        
                                                         const STEPControl_StepModelType  theMode,
                                                         NCollection_Sequence<TDF_Label>& theLabels,
                                                         const StepData_Factors& theLocalFactors,
-                                                        const char*             thePrefix,
+                                                        const char* const       thePrefix,
                                                         const Message_ProgressRange& theProgress)
 {
   // if label already translated, just return the shape
@@ -893,7 +893,7 @@ TopoDS_Shape STEPCAFControl_Writer::transferExternFiles(const TDF_Label&        
       aStepWriter.Model()->InternalParameters.WriteAssembly;
     aStepWriter.Model()->InternalParameters.WriteAssembly =
       DESTEP_Parameters::WriteMode_Assembly_Off;
-    const char* anIsMulti = nullptr;
+    const char* const anIsMulti = nullptr;
     anExtFile->SetTransferStatus(
       transfer(aStepWriter, aLabelSeq, theMode, anIsMulti, true, theProgress));
     aStepWriter.Model()->InternalParameters.WriteAssembly = anAssemblymode;
@@ -1837,7 +1837,7 @@ void STEPCAFControl_Writer::writeMetadataRepresentationItem(
 static bool WritePropsForLabel(const occ::handle<XSControl_WorkSession>&           theWS,
                                const NCollection_DataMap<TDF_Label, TopoDS_Shape>& theLabels,
                                const TDF_Label&                                    theLabel,
-                               const char*                                         theIsMulti)
+                               const char* const                                   theIsMulti)
 {
   if (theLabel.IsNull())
     return false;
@@ -1891,7 +1891,7 @@ static bool WritePropsForLabel(const occ::handle<XSControl_WorkSession>&        
 
 bool STEPCAFControl_Writer::writeValProps(const occ::handle<XSControl_WorkSession>& theWS,
                                           const NCollection_Sequence<TDF_Label>&    theLabels,
-                                          const char* theIsMulti) const
+                                          const char* const theIsMulti) const
 {
   if (theLabels.IsEmpty())
     return false;
@@ -2745,7 +2745,7 @@ static occ::handle<StepRepr_ReprItemAndMeasureWithUnit> CreateDimValue(
   const double                                              theValue,
   const StepBasic_Unit&                                     theUnit,
   const occ::handle<TCollection_HAsciiString>&              theName,
-  const char*                                               theMeasureName,
+  const char* const                                         theMeasureName,
   const bool                                                theIsAngle,
   const bool                                                theIsQualified = false,
   const occ::handle<StepShape_QualifiedRepresentationItem>& theQRI         = nullptr)

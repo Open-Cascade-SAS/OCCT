@@ -37,13 +37,13 @@ public:
 
   const char* Name() const override { return "NULL_STYLE"; }
 
-  bool SetName(const char* /*theName*/) override { return true; }
+  bool SetName(const char* const /*theName*/) override { return true; }
 
   int Kind() const override { return 4; }
 
   Standard_EXPORT const char* EnumText() const override;
 
-  Standard_EXPORT void SetEnumText(const int theValue, const char* theText) override;
+  Standard_EXPORT void SetEnumText(const int theValue, const char* const theText) override;
 
   Standard_EXPORT void SetValue(const StepVisual_NullStyle theValue);
 

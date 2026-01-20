@@ -116,8 +116,8 @@ TCollection_ExtendedString::TCollection_ExtendedString() noexcept
 
 //==================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString(const char* theString,
-                                                       const bool  theIsMultiByte)
+TCollection_ExtendedString::TCollection_ExtendedString(const char* const theString,
+                                                       const bool        isMultiByte)
 {
   if (theString == nullptr)
   {
@@ -146,7 +146,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char* theString,
 
 //==================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString(const char16_t* theString)
+TCollection_ExtendedString::TCollection_ExtendedString(const char16_t* const theString)
 {
   if (theString == nullptr)
   {
@@ -523,7 +523,7 @@ void TCollection_ExtendedString::Insert(const int       theWhere,
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::IsEqual(const char16_t* theOther, const int theLength) const
+static int ExtStrCmp(const char16_t* const theStr1, const char16_t* const theStr2)
 {
   if (theLength < 0)
   {

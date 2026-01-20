@@ -93,9 +93,7 @@
 //! Macro for marking variables / functions as possibly unused
 //! so that compiler will not emit redundant "unused" warnings.
 //!
-//! @deprecated Use C++17 "[[maybe_unused]]" directly instead (guaranteed in C++17).
-//! Note: [[maybe_unused]] has stricter placement rules than __attribute__((unused)),
-//! so manual migration may be needed for some usages.
+//! Expands to "__attribute__((unused))" on GCC and CLang.
 #if defined(__GNUC__) || defined(__clang__)
   #define Standard_UNUSED __attribute__((unused))
 #else
