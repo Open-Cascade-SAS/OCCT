@@ -89,7 +89,7 @@ public:
 
   //! Loads a file from stream and returns the read status
   Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const theName,
-                                                           std::istream&     theIStream) override;
+                                                   std::istream&     theIStream) override;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller

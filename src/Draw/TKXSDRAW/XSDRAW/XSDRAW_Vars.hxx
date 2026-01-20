@@ -38,7 +38,7 @@ public:
   Standard_EXPORT XSDRAW_Vars();
 
   Standard_EXPORT void Set(const char* const                      name,
-                                   const occ::handle<Standard_Transient>& val) override;
+                           const occ::handle<Standard_Transient>& val) override;
 
   Standard_EXPORT occ::handle<Geom_Geometry> GetGeom(const char*& name) const override;
 

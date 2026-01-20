@@ -317,7 +317,6 @@ public: //! @name object presence management (View affinity, Layer, Priority)
 
   Standard_DEPRECATED("Deprecated since OCCT7.7, Graphic3d_DisplayPriority should be passed "
                       "instead of integer number to SetDisplayPriority()")
-
   void SetDisplayPriority(const occ::handle<AIS_InteractiveObject>& theIObj, const int thePriority)
   {
     SetDisplayPriority(theIObj, (Graphic3d_DisplayPriority)thePriority);
@@ -575,7 +574,6 @@ public: //! @name Selection management
   Standard_EXPORT Bnd_Box BoundingBoxOfSelection(const occ::handle<V3d_View>& theView) const;
 
   Standard_DEPRECATED("BoundingBoxOfSelection() should be called with View argument")
-
   Bnd_Box BoundingBoxOfSelection() const { return BoundingBoxOfSelection(occ::handle<V3d_View>()); }
 
   //! Sets list of owner selected/deselected using specified selection scheme.
@@ -1241,7 +1239,6 @@ public: //! @name iso-line display attributes
 public:
   Standard_DEPRECATED("Deprecated method Display() with obsolete argument "
                       "theToAllowDecomposition")
-
   void Display(const occ::handle<AIS_InteractiveObject>& theIObj,
                const int                                 theDispMode,
                const int                                 theSelectionMode,
@@ -1255,7 +1252,6 @@ public:
 
   Standard_DEPRECATED("Deprecated method Load() with obsolete last argument "
                       "theToAllowDecomposition")
-
   void Load(const occ::handle<AIS_InteractiveObject>& theObj, int theSelectionMode, bool)
   {
     Load(theObj, theSelectionMode);
@@ -1265,7 +1261,6 @@ public:
   //! On dynamic detection by the mouse cursor, sensitive primitives are highlighted.
   //! The highlight color of entities detected by mouse movement is white by default.
   Standard_DEPRECATED("Deprecated method Hilight()")
-
   void Hilight(const occ::handle<AIS_InteractiveObject>& theObj, const bool theIsToUpdateViewer)
   {
     return HilightWithColor(theObj, myStyles[Prs3d_TypeOfHighlight_Dynamic], theIsToUpdateViewer);
@@ -1334,7 +1329,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void SetCurrentObject(const occ::handle<AIS_InteractiveObject>& theIObj,
                         const bool                                theToUpdateViewer)
   {
@@ -1347,7 +1341,6 @@ public:
   //! object, if 0 selection of the object is empty this method simply does nothing.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void AddOrRemoveCurrentObject(const occ::handle<AIS_InteractiveObject>& theObj,
                                 const bool                                theIsToUpdateViewer)
   {
@@ -1359,7 +1352,6 @@ public:
   //! current objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void UpdateCurrent() { UpdateSelected(true); }
 
   //! Returns true if there is a non-null interactive object in Neutral Point.
@@ -1367,7 +1359,6 @@ public:
   //! those selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   bool IsCurrent(const occ::handle<AIS_InteractiveObject>& theObject) const
   {
     return IsSelected(theObject);
@@ -1378,7 +1369,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void InitCurrent() { InitSelected(); }
 
   //! Returns true if there is another object found by the scan of the list of current objects.
@@ -1386,7 +1376,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   bool MoreCurrent() const { return MoreSelected(); }
 
   //! Continues the scan to the next object in the list of current objects.
@@ -1394,7 +1383,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void NextCurrent() { NextSelected(); }
 
   //! Returns the current interactive object.
@@ -1402,12 +1390,10 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   occ::handle<AIS_InteractiveObject> Current() const { return SelectedInteractive(); }
 
   Standard_DEPRECATED(
     "Local Context is deprecated - local selection should be used without Local Context")
-
   int NbCurrents() { return NbSelected(); }
 
   //! Highlights current objects.
@@ -1415,7 +1401,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void HilightCurrents(const bool theToUpdateViewer) { HilightSelected(theToUpdateViewer); }
 
   //! Removes highlighting from current objects.
@@ -1423,7 +1408,6 @@ public:
   //! selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void UnhilightCurrents(const bool theToUpdateViewer) { UnhilightSelected(theToUpdateViewer); }
 
   //! Empties previous current objects in order to get the current objects detected by the selector
@@ -1431,7 +1415,6 @@ public:
   //! objects; those selected in open local context, selected objects.
   Standard_DEPRECATED("Local Context is deprecated - local selection should be used without Local "
                       "Context")
-
   void ClearCurrents(const bool theToUpdateViewer) { ClearSelected(theToUpdateViewer); }
 
   //! @return current mouse-detected shape or empty (null) shape, if current interactive object

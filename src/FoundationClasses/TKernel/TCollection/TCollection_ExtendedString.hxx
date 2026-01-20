@@ -67,7 +67,7 @@ public:
   //! @param[in] theString the C string to convert
   //! @param[in] theIsMultiByte flag indicating UTF-8 coding
   Standard_EXPORT TCollection_ExtendedString(const char* const theString,
-                                             const bool  theIsMultiByte = false);
+                                             const bool        theIsMultiByte = false);
 
   //! Creation by converting an ExtString (char16_t*) to an extended string.
   //! @param[in] theString the char16_t string to copy
@@ -266,7 +266,7 @@ public:
   //! @param[in] theLength length of the string to append
   //! @return new string with theOther appended
   Standard_EXPORT TCollection_ExtendedString Cat(const char16_t* const theOther,
-                                                 const int       theLength) const;
+                                                 const int             theLength) const;
 
   //! Concatenates char16_t string and returns a new string.
   //! @param[in] theOther the null-terminated string to append
@@ -276,7 +276,10 @@ public:
     return Cat(theOther, extStringLen(theOther));
   }
 
-  TCollection_ExtendedString operator+(const char16_t* const theOther) const { return Cat(theOther); }
+  TCollection_ExtendedString operator+(const char16_t* const theOther) const
+  {
+    return Cat(theOther);
+  }
 
   //! Appends the other extended string to this string and returns a new string.
   //!
@@ -394,7 +397,9 @@ public:
   //! @param[in] theWhere the position to insert at (1-based)
   //! @param[in] theWhat pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void Insert(const int theWhere, const char16_t* const theWhat, const int theLength);
+  Standard_EXPORT void Insert(const int             theWhere,
+                              const char16_t* const theWhat,
+                              const int             theLength);
 
   //! Insert a char16_t string at position theWhere.
   //! @param[in] theWhere the position to insert at (1-based)
@@ -425,7 +430,10 @@ public:
   //! Note that this method is an alias of operator ==.
   //! @param[in] theOther the char16_t string to compare with
   //! @return true if strings are equal, false otherwise
-  bool IsEqual(const char16_t* const theOther) const { return IsEqual(theOther, extStringLen(theOther)); }
+  bool IsEqual(const char16_t* const theOther) const
+  {
+    return IsEqual(theOther, extStringLen(theOther));
+  }
 
   bool operator==(const char16_t* const theOther) const { return IsEqual(theOther); }
 
@@ -482,7 +490,10 @@ public:
   //! Returns TRUE if this string is lexicographically less than theOther.
   //! @param[in] theOther the char16_t string to compare with
   //! @return true if this string is less than theOther
-  bool IsLess(const char16_t* const theOther) const { return IsLess(theOther, extStringLen(theOther)); }
+  bool IsLess(const char16_t* const theOther) const
+  {
+    return IsLess(theOther, extStringLen(theOther));
+  }
 
   bool operator<(const char16_t* const theOther) const { return IsLess(theOther); }
 
@@ -660,7 +671,9 @@ public:
   //! @param[in] theWhere the position to start replacement (1-based)
   //! @param[in] theWhat pointer to the string to replace with
   //! @param[in] theLength length of the string to replace with
-  Standard_EXPORT void SetValue(const int theWhere, const char16_t* const theWhat, const int theLength);
+  Standard_EXPORT void SetValue(const int             theWhere,
+                                const char16_t* const theWhat,
+                                const int             theLength);
 
   //! Replaces a part of this string by a null-terminated char16_t string.
   //! @param[in] theWhere the position to start replacement (1-based)
@@ -739,7 +752,7 @@ public:
   //! @param[in] theWhichOne the token number to extract (1-based)
   //! @return the extracted token
   Standard_EXPORT TCollection_ExtendedString Token(const char16_t* const theSeparators,
-                                                   const int       theWhichOne = 1) const;
+                                                   const int             theWhichOne = 1) const;
 
   //! Returns pointer to ExtString (char16_t*).
   //! @return the char16_t string representation

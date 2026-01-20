@@ -326,15 +326,12 @@ public:
   Standard_EXPORT void SetNormals(const occ::handle<NCollection_HArray1<float>>& theNormals);
 
   Standard_DEPRECATED("Deprecated method, Triangle() should be used instead")
-
   const NCollection_Array1<Poly_Triangle>& Triangles() const { return myTriangles; }
 
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
-
   NCollection_Array1<Poly_Triangle>& ChangeTriangles() { return myTriangles; }
 
   Standard_DEPRECATED("Deprecated method, SetTriangle() should be used instead")
-
   Poly_Triangle& ChangeTriangle(const int theIndex) { return myTriangles.ChangeValue(theIndex); }
 
 public: //! @name late-load deferred data interface
