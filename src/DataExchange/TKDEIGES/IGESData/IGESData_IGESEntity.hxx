@@ -163,7 +163,7 @@ public:
   //! (remark : their content is changed)
   //! returned values are ended by null character in 9th
   //! returned Boolean is False if res1 and res2 are blank, true else
-  Standard_EXPORT bool CResValues(const char* const res1, const char* const res2) const;
+  Standard_EXPORT bool CResValues(char* res1, char* res2) const;
 
   //! Returns true if a short label is defined.
   //! A short label is a non-blank 8-character string.

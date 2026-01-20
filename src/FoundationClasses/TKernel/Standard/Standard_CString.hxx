@@ -58,7 +58,7 @@ extern "C"
   Standard_EXPORT double Strtod(const char* theStr, char** theNextPtr);
 
   //! Equivalent of standard C function printf() that always uses C locale
-  Standard_EXPORT int Printf(const char* theFormat, ...)
+  Standard_EXPORT int Printf(const char* const theFormat, ...)
 #ifdef __GNUC__
     __attribute__((format(printf, 1, 2)))
 #endif

@@ -276,8 +276,8 @@ void TCollection_AsciiString::AssignCat(const char* const theString, const int t
 
   // Check if theString points into our own buffer (self-assignment protection)
   // Use std::less for well-defined pointer comparison (avoids undefined behavior)
-  const bool isSelfReference = !std::less<const char* const>()(theString, myString)
-                               && std::less<const char* const>()(theString, myString + myLength);
+  const bool isSelfReference = !std::less<const char*>()(theString, myString)
+                               && std::less<const char*>()(theString, myString + myLength);
 
   if (isSelfReference)
   {
@@ -532,8 +532,8 @@ void TCollection_AsciiString::Insert(const int         theWhere,
 
   // Check if theString points into our own buffer (self-reference protection)
   // Use std::less for well-defined pointer comparison (avoids undefined behavior)
-  const bool isSelfReference = !std::less<const char* const>()(theString, myString)
-                               && std::less<const char* const>()(theString, myString + myLength);
+  const bool isSelfReference = !std::less<const char*>()(theString, myString)
+                               && std::less<const char*>()(theString, myString + myLength);
 
   if (isSelfReference)
   {

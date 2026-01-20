@@ -259,11 +259,11 @@ public:
   Standard_EXPORT void SetToColorize(bool theToColorize);
 
 protected:
-  Standard_EXPORT void add(const char*   theCommandName,
-                           const char*   theHelp,
-                           const char*   theFileName,
-                           CallBackData* theCallback,
-                           const char*   theGroup);
+  Standard_EXPORT void add(const char* const theCommandName,
+                           const char* const theHelp,
+                           const char* const theFileName,
+                           CallBackData*     theCallback,
+                           const char* const theGroup);
 
 private:
   Draw_PInterp myInterp;

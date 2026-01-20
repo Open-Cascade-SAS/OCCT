@@ -272,25 +272,20 @@ occ::handle<IGESData_ColorEntity> IGESData_IGESEntity::Color() const
 
 //=================================================================================================
 
-bool IGESData_IGESEntity::CResValues(const char* const res1, const char* const res2) const
+bool IGESData_IGESEntity::CResValues(char* res1, char* res2) const
 {
-  bool                res = false;
-  Standard_PCharacter pres1, pres2;
-  //
-  pres1 = (Standard_PCharacter)res1;
-  pres2 = (Standard_PCharacter)res2;
-  //
+  bool res = false;
   for (int i = 0; i < 8; i++)
   {
-    pres1[i] = theRes1[i];
-    pres2[i] = theRes2[i];
+    res1[i] = theRes1[i];
+    res2[i] = theRes2[i];
     if (theRes1[i] > ' ' || theRes2[i] > ' ')
     {
       res = true;
     }
   }
-  pres1[8] = '\0';
-  pres2[8] = '\0';
+  res1[8] = '\0';
+  res2[8] = '\0';
   //
   return res;
 }

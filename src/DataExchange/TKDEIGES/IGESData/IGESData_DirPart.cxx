@@ -73,35 +73,29 @@ void IGESData_DirPart::Init(const int         i1,
 
 //=================================================================================================
 
-void IGESData_DirPart::Values(int&              i1,
-                              int&              i2,
-                              int&              i3,
-                              int&              i4,
-                              int&              i5,
-                              int&              i6,
-                              int&              i7,
-                              int&              i8,
-                              int&              i9,
-                              int&              i10,
-                              int&              i11,
-                              int&              i12,
-                              int&              i13,
-                              int&              i14,
-                              int&              i15,
-                              int&              i16,
-                              int&              i17,
-                              const char* const res1,
-                              const char* const res2,
-                              const char* const label,
-                              const char* const subscript) const
+void IGESData_DirPart::Values(int&  i1,
+                              int&  i2,
+                              int&  i3,
+                              int&  i4,
+                              int&  i5,
+                              int&  i6,
+                              int&  i7,
+                              int&  i8,
+                              int&  i9,
+                              int&  i10,
+                              int&  i11,
+                              int&  i12,
+                              int&  i13,
+                              int&  i14,
+                              int&  i15,
+                              int&  i16,
+                              int&  i17,
+                              char* res1,
+                              char* res2,
+                              char* label,
+                              char* subscript) const
 {
-  Standard_PCharacter pres1, pres2, plabel, psubscript;
-  int                 i;
-  //
-  pres1      = (Standard_PCharacter)res1;
-  pres2      = (Standard_PCharacter)res2;
-  plabel     = (Standard_PCharacter)label;
-  psubscript = (Standard_PCharacter)subscript;
+  int i;
   //
   i1  = thevals[0];
   i2  = thevals[1];
@@ -122,15 +116,15 @@ void IGESData_DirPart::Values(int&              i1,
   i17 = thevals[16];
   for (i = 0; i < 8; ++i)
   {
-    pres1[i]      = theres1[i];
-    pres2[i]      = theres2[i];
-    plabel[i]     = thelabl[i];
-    psubscript[i] = thesubs[i];
+    res1[i]      = theres1[i];
+    res2[i]      = theres2[i];
+    label[i]     = thelabl[i];
+    subscript[i] = thesubs[i];
   }
-  pres1[8]      = '\0';
-  pres2[8]      = '\0';
-  plabel[8]     = '\0';
-  psubscript[8] = '\0';
+  res1[8]      = '\0';
+  res2[8]      = '\0';
+  label[8]     = '\0';
+  subscript[8] = '\0';
 }
 
 IGESData_IGESType IGESData_DirPart::Type() const

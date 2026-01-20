@@ -57,27 +57,27 @@ public:
 
   //! returns values recorded in DirPart
   //! (content of cstrings are modified)
-  Standard_EXPORT void Values(int&              i1,
-                              int&              i2,
-                              int&              i3,
-                              int&              i4,
-                              int&              i5,
-                              int&              i6,
-                              int&              i7,
-                              int&              i8,
-                              int&              i9,
-                              int&              i19,
-                              int&              i11,
-                              int&              i12,
-                              int&              i13,
-                              int&              i14,
-                              int&              i15,
-                              int&              i16,
-                              int&              i17,
-                              const char* const res1,
-                              const char* const res2,
-                              const char* const label,
-                              const char* const subscript) const;
+  Standard_EXPORT void Values(int&  i1,
+                              int&  i2,
+                              int&  i3,
+                              int&  i4,
+                              int&  i5,
+                              int&  i6,
+                              int&  i7,
+                              int&  i8,
+                              int&  i9,
+                              int&  i19,
+                              int&  i11,
+                              int&  i12,
+                              int&  i13,
+                              int&  i14,
+                              int&  i15,
+                              int&  i16,
+                              int&  i17,
+                              char* res1,
+                              char* res2,
+                              char* label,
+                              char* subscript) const;
 
   //! returns "type" and "form" info, used to recognize the entity
   Standard_EXPORT IGESData_IGESType Type() const;
