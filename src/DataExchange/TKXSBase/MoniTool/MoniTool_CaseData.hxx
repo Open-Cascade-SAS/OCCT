@@ -116,8 +116,7 @@ public:
                                const char* const                      name = "");
 
   //! Adds the currently caught exception
-  Standard_EXPORT void AddRaised(const Standard_Failure& theException,
-                                 const char* const                    name = "");
+  Standard_EXPORT void AddRaised(const Standard_Failure& theException, const char* const name = "");
 
   //! Adds a Shape (recorded as a HShape)
   Standard_EXPORT void AddShape(const TopoDS_Shape& sh, const char* const name = "");
