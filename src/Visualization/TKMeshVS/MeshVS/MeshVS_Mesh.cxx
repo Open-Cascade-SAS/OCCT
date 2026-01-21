@@ -53,7 +53,7 @@
 #include <StdSelect_BRepSelectionTool.hxx>
 #include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 class SelectMgr_EntityOwner;
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_Mesh, AIS_InteractiveObject)
@@ -221,7 +221,7 @@ void MeshVS_Mesh::scanFacesForSharedNodes(const TColStd_PackedMapOfInteger& theA
   int                        aNbNodes;
   MeshVS_Buffer              aCoordsBuf(3 * theNbMaxFaceNodes * sizeof(double));
   NCollection_Array1<double> aCoords(aCoordsBuf, 1, 3 * theNbMaxFaceNodes);
-  for (TColStd_MapIteratorOfPackedMapOfInteger aFaceIter(theAllElements); aFaceIter.More();
+  for (TColStd_PackedMapOfInteger::Iterator aFaceIter(theAllElements); aFaceIter.More();
        aFaceIter.Next())
   {
     const int aFaceIdx = aFaceIter.Key();
@@ -321,7 +321,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
     {
       case MeshVS_SMF_Node: {
         myNodeOwners.Clear();
-        for (TColStd_MapIteratorOfPackedMapOfInteger anIter(anAllNodesMap); anIter.More();
+        for (TColStd_PackedMapOfInteger::Iterator anIter(anAllNodesMap); anIter.More();
              anIter.Next())
         {
           const int         aKey     = anIter.Key();
@@ -383,7 +383,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
             // create sensitive entities for free edges, if there are any
             int               aNbNodes = 0;
             MeshVS_EntityType aType    = MeshVS_ET_NONE;
-            for (TColStd_MapIteratorOfPackedMapOfInteger anElemIter(anAllElementsMap);
+            for (TColStd_PackedMapOfInteger::Iterator anElemIter(anAllElementsMap);
                  anElemIter.More();
                  anElemIter.Next())
             {
@@ -426,7 +426,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
             }
 
             // create sensitive entities for free nodes, if there are any
-            for (TColStd_MapIteratorOfPackedMapOfInteger aNodesIter(anAllNodesMap);
+            for (TColStd_PackedMapOfInteger::Iterator aNodesIter(anAllNodesMap);
                  aNodesIter.More();
                  aNodesIter.Next())
             {
@@ -452,7 +452,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
         aSource->GetAllGroups(anAllGroupsMap);
 
         occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-        for (TColStd_MapIteratorOfPackedMapOfInteger anIter(anAllGroupsMap); anIter.More();
+        for (TColStd_PackedMapOfInteger::Iterator anIter(anAllGroupsMap); anIter.More();
              anIter.Next())
         {
           const int                  aKeyGroup  = anIter.Key();
@@ -493,7 +493,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
           bool              added    = false;
           int               aNbNodes = 0;
           MeshVS_EntityType aType    = MeshVS_ET_NONE;
-          for (TColStd_MapIteratorOfPackedMapOfInteger anIterMG(aGroupMap); anIterMG.More();
+          for (TColStd_PackedMapOfInteger::Iterator anIterMG(aGroupMap); anIterMG.More();
                anIterMG.Next())
           {
             int aKey = anIterMG.Key();
@@ -587,7 +587,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
 
         int               aNbNodes = 0;
         MeshVS_EntityType aType    = MeshVS_ET_NONE;
-        for (TColStd_MapIteratorOfPackedMapOfInteger anIterMV(anAllElementsMap); anIterMV.More();
+        for (TColStd_PackedMapOfInteger::Iterator anIterMV(anAllElementsMap); anIterMV.More();
              anIterMV.Next())
         {
           int aKey = anIterMV.Key();
@@ -967,13 +967,13 @@ void MeshVS_Mesh::HilightSelected(
         {
           if (aGroupType == MeshVS_ET_Node)
           {
-            for (TColStd_MapIteratorOfPackedMapOfInteger anIt(aGroupMap); anIt.More(); anIt.Next())
+            for (TColStd_PackedMapOfInteger::Iterator anIt(aGroupMap); anIt.More(); anIt.Next())
               if (IsSelectableNode /*!IsHiddenNode*/ (anIt.Key()))
                 aSelNodes.Add(anIt.Key());
           }
           else
           {
-            for (TColStd_MapIteratorOfPackedMapOfInteger anIt(aGroupMap); anIt.More(); anIt.Next())
+            for (TColStd_PackedMapOfInteger::Iterator anIt(aGroupMap); anIt.More(); anIt.Next())
               if (IsSelectableElem /*!IsHiddenElem*/ (anIt.Key()))
                 aSelElements.Add(anIt.Key());
           }
@@ -1004,7 +1004,7 @@ void MeshVS_Mesh::HilightSelected(
     // agv    else if( theOwners.Value ( i )==myWholeMeshOwner )
     else if (IsWholeMeshOwner(theOwners.Value(i)))
     {
-      TColStd_MapIteratorOfPackedMapOfInteger anIt(GetDataSource()->GetAllNodes());
+      TColStd_PackedMapOfInteger::Iterator anIt(GetDataSource()->GetAllNodes());
       for (; anIt.More(); anIt.Next())
         if (!IsHiddenNode(anIt.Key()))
           aSelNodes.Add(anIt.Key());
@@ -1310,7 +1310,7 @@ void MeshVS_Mesh::UpdateSelectableNodes()
   }
 
   // add all nodes belonging to non-hidden elements
-  TColStd_MapIteratorOfPackedMapOfInteger anIter(aSource->GetAllElements());
+  TColStd_PackedMapOfInteger::Iterator anIter(aSource->GetAllElements());
   for (; anIter.More(); anIter.Next())
   {
     int aKey = anIter.Key();

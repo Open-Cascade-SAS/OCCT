@@ -22,7 +22,7 @@
 #include <MeshVS_Tool.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_DataSource, Standard_Transient)
 
@@ -293,7 +293,7 @@ Bnd_Box MeshVS_DataSource::GetBoundingBox() const
     NCollection_Array1<double>              aCoords(*aCoordsBuf, 1, 3);
     int                                     nbNodes;
     MeshVS_EntityType                       aType;
-    TColStd_MapIteratorOfPackedMapOfInteger anIter(aNodes);
+    TColStd_PackedMapOfInteger::Iterator anIter(aNodes);
     for (; anIter.More(); anIter.Next())
     {
       int aKey = anIter.Key();

@@ -36,7 +36,7 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <NCollection_List.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
@@ -201,7 +201,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
   int                                     PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();

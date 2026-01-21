@@ -143,7 +143,7 @@ TColStd_PackedMapOfInteger& TColStd_PackedMapOfInteger::Assign(
           p = p->Next();
         }
       }
-      //       TColStd_MapIteratorOfPackedMapOfInteger anIt (theOther);
+      //       TColStd_PackedMapOfInteger::Iterator anIt (theOther);
       //       for (; anIt.More(); anIt.Next())
       //         Add (anIt.Key());
     }

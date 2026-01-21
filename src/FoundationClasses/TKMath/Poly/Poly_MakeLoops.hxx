@@ -18,7 +18,7 @@
 
 #include <NCollection_Sequence.hxx>
 #include <NCollection_IndexedMap.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <NCollection_IncAllocator.hxx>
 #include <NCollection_List.hxx>
 #include <NCollection_OccAllocator.hxx>
@@ -166,7 +166,7 @@ public:
 
   private:
     TColStd_PackedMapOfInteger              myMap;
-    TColStd_MapIteratorOfPackedMapOfInteger myIter;
+    TColStd_PackedMapOfInteger::Iterator myIter;
     bool                                    myIterReady;
   };
 

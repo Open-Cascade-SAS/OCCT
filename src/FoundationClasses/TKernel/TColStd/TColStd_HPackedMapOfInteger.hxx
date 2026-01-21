@@ -1,6 +1,4 @@
-// Created on: 2006-12-05
-// Created by: Sergey  KOCHETKOV
-// Copyright (c) 2006-2014 OPEN CASCADE SAS
+// Copyright (c) 2006-2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -16,32 +14,46 @@
 #ifndef _TColStd_HPackedMapOfInteger_HeaderFile
 #define _TColStd_HPackedMapOfInteger_HeaderFile
 
-#include <Standard.hxx>
-
+#include <NCollection_PackedMapOfInteger.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <Standard_Transient.hxx>
-#include <Standard_Integer.hxx>
 
-//! Extension of TColStd_PackedMapOfInteger class to be manipulated by handle.
+//! @deprecated This Handle wrapper class is deprecated.
+//! Use NCollection_PackedMapOfInteger directly instead.
 class TColStd_HPackedMapOfInteger : public Standard_Transient
 {
-
 public:
-  Standard_EXPORT TColStd_HPackedMapOfInteger(const int NbBuckets = 1);
+  //! Constructor of empty map.
+  //! @param theNbBuckets initial number of buckets
+  TColStd_HPackedMapOfInteger(const int theNbBuckets = 1)
+      : myMap(theNbBuckets)
+  {
+  }
 
-  Standard_EXPORT TColStd_HPackedMapOfInteger(const TColStd_PackedMapOfInteger& theOther);
+  //! Constructor from already existing map; performs copying.
+  //! @param theOther the map to copy
+  TColStd_HPackedMapOfInteger(const NCollection_PackedMapOfInteger& theOther)
+      : myMap(theOther)
+  {
+  }
 
-  const TColStd_PackedMapOfInteger& Map() const;
+  //! Constructor from already existing map; performs copying.
+  //! @param theOther the map to copy
+  TColStd_HPackedMapOfInteger(NCollection_PackedMapOfInteger&& theOther)
+      : myMap(std::move(theOther))
+  {
+  }
 
-  TColStd_PackedMapOfInteger& ChangeMap();
+  //! Returns const reference to the underlying map.
+  const NCollection_PackedMapOfInteger& Map() const { return myMap; }
 
-  DEFINE_STANDARD_RTTIEXT(TColStd_HPackedMapOfInteger, Standard_Transient)
+  //! Returns mutable reference to the underlying map.
+  NCollection_PackedMapOfInteger& ChangeMap() { return myMap; }
+
+  DEFINE_STANDARD_RTTI_INLINE(TColStd_HPackedMapOfInteger, Standard_Transient)
 
 private:
-  TColStd_PackedMapOfInteger myMap;
+  NCollection_PackedMapOfInteger myMap;
 };
-
-#include <TColStd_HPackedMapOfInteger.lxx>
 
 #endif // _TColStd_HPackedMapOfInteger_HeaderFile

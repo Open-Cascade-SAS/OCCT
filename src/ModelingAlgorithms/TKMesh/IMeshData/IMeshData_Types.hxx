@@ -24,7 +24,7 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_OccAllocator.hxx>
 #include <IMeshData_ParametersListArrayAdaptor.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <NCollection_EBTree.hxx>
 #include <Bnd_Box2d.hxx>
 #include <NCollection_CellFilter.hxx>
@@ -120,7 +120,7 @@ typedef NCollection_Shared<NCollection_List<gp_Pnt2d>>      ListOfPnt2d;
 typedef NCollection_Shared<NCollection_List<IPCurveHandle>> ListOfIPCurves;
 
 typedef NCollection_Shared<TColStd_PackedMapOfInteger> MapOfInteger;
-typedef TColStd_MapIteratorOfPackedMapOfInteger        IteratorOfMapOfInteger;
+typedef TColStd_PackedMapOfInteger::Iterator        IteratorOfMapOfInteger;
 
 typedef NCollection_CellFilter<BRepMesh_CircleInspector> CircleCellFilter;
 typedef NCollection_CellFilter<BRepMesh_VertexInspector> VertexCellFilter;

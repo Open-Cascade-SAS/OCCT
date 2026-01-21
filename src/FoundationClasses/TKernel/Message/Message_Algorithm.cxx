@@ -28,7 +28,7 @@
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_Algorithm, Standard_Transient)
 
@@ -352,7 +352,7 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const int                                       theMaxCount)
 {
   TCollection_ExtendedString              aNewReport;
-  TColStd_MapIteratorOfPackedMapOfInteger anIt(theMapError->Map());
+  TColStd_PackedMapOfInteger::Iterator anIt(theMapError->Map());
   int                                     nb = 1;
   for (; anIt.More() && nb <= theMaxCount; anIt.Next(), nb++)
   {

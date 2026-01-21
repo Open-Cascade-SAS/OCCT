@@ -18,6 +18,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_LocalArray_Test.cxx
   NCollection_Map_Test.cxx
   NCollection_OccAllocator_Test.cxx
+  NCollection_PackedMapOfInteger_Test.cxx
   NCollection_Sequence_Test.cxx
   NCollection_SparseArray_Test.cxx
   NCollection_Vec4_Test.cxx
