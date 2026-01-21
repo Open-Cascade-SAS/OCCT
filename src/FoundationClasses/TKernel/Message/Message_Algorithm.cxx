@@ -26,6 +26,7 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
@@ -299,7 +300,8 @@ void Message_Algorithm::AddStatus(const Message_ExecStatus&             theAllow
         aData = new TColStd_HPackedMapOfInteger;
 
       // add integer parameter for the status
-      occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap().Unite(aNumsOther->Map());
+      NCollection_PackedMapAlgo::Unite(occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap(),
+                                       aNumsOther->Map());
     }
     // b) strings
     occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> aStrsOther =

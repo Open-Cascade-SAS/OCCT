@@ -598,788 +598,63 @@ public:
     return aResult;
   }
 
-  //! Prints useful statistics about the map.
-  void Statistics(Standard_OStream& theStream) const
-  {
-    theStream << "\nMap Statistics\n---------------\n\n";
-    theStream << "This Map has " << myNbBuckets << " Buckets and " << myNbPackedMapNodes
-              << " Keys\n\n";
-    if (myNbPackedMapNodes == 0)
-    {
-      return;
-    }
-
-    NCollection_Array1<int> aSizes(0, myNbPackedMapNodes);
-    aSizes.Init(0);
-
-    theStream << "\nStatistics for the first Key\n";
-    int aNbNonEmpty = 0;
-    for (int aBucketIter = 0; aBucketIter <= myNbBuckets; ++aBucketIter)
-    {
-      PackedMapNode* aSubNodeIter = myData1[aBucketIter];
-      if (aSubNodeIter != nullptr)
-      {
-        ++aNbNonEmpty;
-      }
-
-      int aNbMapSubNodes = 0;
-      for (; aSubNodeIter != nullptr; aSubNodeIter = aSubNodeIter->Next())
-      {
-        ++aNbMapSubNodes;
-      }
-      ++aSizes[aNbMapSubNodes];
-    }
-
-    // display results
-    int aNbMapSubNodesTotal = 0;
-    for (int aNbMapSubNodes = 0; aNbMapSubNodes <= myNbPackedMapNodes; ++aNbMapSubNodes)
-    {
-      if (aSizes[aNbMapSubNodes] > 0)
-      {
-        aNbMapSubNodesTotal += aSizes[aNbMapSubNodes] * aNbMapSubNodes;
-        theStream << std::setw(5) << aSizes[aNbMapSubNodes] << " buckets of size " << aNbMapSubNodes
-                  << "\n";
-      }
-    }
-
-    const double aMean =
-      (static_cast<double>(aNbMapSubNodesTotal)) / (static_cast<double>(aNbNonEmpty));
-    theStream << "\n\nMean of length: " << aMean << "\n";
-  }
-
 public:
-  //!@name Boolean operations with maps as sets of integers
-  //!@{
+  //! @name Deprecated boolean operations (use NCollection_PackedMapAlgo instead)
 
-  //! Sets this Map to be the result of union (aka addition, fuse, merge, boolean OR) operation
-  //! between two given Maps. The new Map contains the values that are contained either in the first
-  //! map or in the second map or in both. All previous contents of this Map is cleared. This map
-  //! (result of the boolean operation) can also be passed as one of operands.
-  void Union(const NCollection_PackedMap& theMap1, const NCollection_PackedMap& theMap2)
-  {
-    if (theMap1.IsEmpty()) // 0 | B == B
-      Assign(theMap2);
-    else if (theMap2.IsEmpty()) // A | 0 == A
-      Assign(theMap1);
-    else if (myData1 == theMap1.myData1)
-      Unite(theMap2);
-    else if (myData1 == theMap2.myData1)
-      Unite(theMap1);
-    else
-    {
-      const int nBuckets1 = theMap1.myNbBuckets;
-      const int nBuckets2 = theMap2.myNbBuckets;
-      Clear();
-      // Iteration of the 1st map.
-      for (int i = 0; i <= nBuckets1; i++)
-      {
-        const PackedMapNode* p1 = theMap1.myData1[i];
-        while (p1 != nullptr)
-        {
-          const IntType   aKey     = p1->Key();
-          const IndexType aKeyInt  = packedKeyIndex(aKey);
-          IndexType       aNewMask = p1->Mask();
-          BlockType       aNewData = p1->Data();
-          size_t          nValues(p1->NbValues());
-          // Find the corresponding block in the 2nd map
-          const PackedMapNode* p2 = theMap2.myData1[hashCode(aKeyInt, nBuckets2)];
-          while (p2)
-          {
-            if (p2->IsEqual(aKeyInt))
-            {
-              aNewData |= p2->Data();
-              nValues = population(aNewMask, aNewData);
-              break;
-            }
-            p2 = p2->Next();
-          }
-          // Store the block - result of operation
-          if (Resizable())
-          {
-            ReSize(myNbPackedMapNodes);
-          }
-          const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-          myData1[aHashCode]     = new PackedMapNode(aNewMask, aNewData, myData1[aHashCode]);
-          ++myNbPackedMapNodes;
-          myExtent += nValues;
-          p1 = p1->Next();
-        }
-      }
-      // Iteration of the 2nd map.
-      for (int i = 0; i <= nBuckets2; i++)
-      {
-        const PackedMapNode* p2 = theMap2.myData1[i];
-        while (p2 != nullptr)
-        {
-          const IntType        aKey    = p2->Key();
-          const IndexType      aKeyInt = packedKeyIndex(aKey);
-          const PackedMapNode* p1      = theMap1.myData1[hashCode(aKeyInt, nBuckets1)];
-          while (p1)
-          {
-            if (p1->IsEqual(aKeyInt))
-              break;
-            p1 = p1->Next();
-          }
-          if (p1 == nullptr)
-          {
-            if (Resizable())
-            {
-              ReSize(myNbPackedMapNodes);
-            }
-            const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-            myData1[aHashCode]     = new PackedMapNode(p2->Mask(), p2->Data(), myData1[aHashCode]);
-            ++myNbPackedMapNodes;
-            myExtent += p2->NbValues();
-          }
-          p2 = p2->Next();
-        }
-      }
-    }
-  }
+  //! @deprecated Use NCollection_PackedMapAlgo::Union() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  void Union(const NCollection_PackedMap& theLeft, const NCollection_PackedMap& theRight);
 
-  //! Apply to this Map the boolean operation union (aka addition, fuse, merge, boolean OR) with
-  //! another (given) Map. The result contains the values that were previously contained in this map
-  //! or contained in the given (operand) map. This algorithm is similar to method Union().
-  //! @return True if content of this map is changed
-  bool Unite(const NCollection_PackedMap& theMap)
-  {
-    if (theMap.IsEmpty() || myData1 == theMap.myData1) // A | 0 == A | A == A
-      return false;
-    else if (IsEmpty())
-    { // 0 | B == B
-      Assign(theMap);
-      return true;
-    }
+  //! @deprecated Use NCollection_PackedMapAlgo::Unite() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool Unite(const NCollection_PackedMap& theOther);
 
-    size_t    aNewExtent(myExtent);
-    const int nBuckets2 = theMap.myNbBuckets;
+  //! @deprecated Use NCollection_PackedMapAlgo::Intersection() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  void Intersection(const NCollection_PackedMap& theLeft, const NCollection_PackedMap& theRight);
 
-    for (int i = 0; i <= nBuckets2; i++)
-    {
-      const PackedMapNode* p2 = theMap.myData1[i];
-      while (p2 != nullptr)
-      {
-        const IntType   aKey      = p2->Key();
-        const IndexType aKeyInt   = packedKeyIndex(aKey);
-        size_t          aHashCode = hashCode(aKeyInt, myNbBuckets);
-        PackedMapNode*  p1        = myData1[aHashCode];
-        while (p1)
-        {
-          if (p1->IsEqual(aKeyInt))
-          {
-            const size_t anOldPop = p1->NbValues();
-            BlockType    newData  = p1->Data() | p2->Data();
-            if (newData != p1->Data())
-            {
-              p1->ChangeData() = newData;
-              aNewExtent       = aNewExtent - anOldPop + population(p1->ChangeMask(), newData);
-            }
-            break;
-          }
-          p1 = p1->Next();
-        }
-        if (p1 == nullptr)
-        {
-          if (Resizable())
-          {
-            ReSize(myNbPackedMapNodes);
-            aHashCode = hashCode(aKeyInt, myNbBuckets);
-          }
-          myData1[aHashCode] = new PackedMapNode(p2->Mask(), p2->Data(), myData1[aHashCode]);
-          ++myNbPackedMapNodes;
-          aNewExtent += p2->NbValues();
-        }
-        p2 = p2->Next();
-      }
-    }
-    bool isChanged = (myExtent != aNewExtent);
-    myExtent       = aNewExtent;
-    return isChanged;
-  }
+  //! @deprecated Use NCollection_PackedMapAlgo::Intersect() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool Intersect(const NCollection_PackedMap& theOther);
 
-  //! Overloaded operator version of Unite().
-  NCollection_PackedMap& operator|=(const NCollection_PackedMap& MM)
-  {
-    Unite(MM);
-    return *this;
-  }
+  //! @deprecated Use NCollection_PackedMapAlgo::Subtraction() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  void Subtraction(const NCollection_PackedMap& theLeft, const NCollection_PackedMap& theRight);
 
-  //! Sets this Map to be the result of intersection (aka multiplication, common, boolean AND)
-  //! operation between two given Maps. The new Map contains only the values that are contained in
-  //! both map operands. All previous contents of this Map is cleared. This same map (result of the
-  //! boolean operation) can also be used as one of operands.
-  void Intersection(const NCollection_PackedMap& theMap1, const NCollection_PackedMap& theMap2)
-  {
-    if (theMap1.IsEmpty() || theMap2.IsEmpty()) // A & 0 == 0 & B == 0
-      Clear();
-    else if (myData1 == theMap1.myData1)
-      Intersect(theMap2);
-    else if (myData1 == theMap2.myData1)
-      Intersect(theMap1);
-    else
-    {
-      const PackedMapNode* const* aData1;
-      const PackedMapNode* const* aData2;
-      int                         nBuckets1, nBuckets2;
-      if (theMap1.Extent() < theMap2.Extent())
-      {
-        aData1    = theMap1.myData1;
-        aData2    = theMap2.myData1;
-        nBuckets1 = theMap1.myNbBuckets;
-        nBuckets2 = theMap2.myNbBuckets;
-      }
-      else
-      {
-        aData1    = theMap2.myData1;
-        aData2    = theMap1.myData1;
-        nBuckets1 = theMap2.myNbBuckets;
-        nBuckets2 = theMap1.myNbBuckets;
-      }
-      Clear();
+  //! @deprecated Use NCollection_PackedMapAlgo::Subtract() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool Subtract(const NCollection_PackedMap& theOther);
 
-      for (int i = 0; i <= nBuckets1; i++)
-      {
-        const PackedMapNode* p1 = aData1[i];
-        while (p1 != nullptr)
-        {
-          const IntType        aKey    = p1->Key();
-          const IndexType      aKeyInt = packedKeyIndex(aKey);
-          const PackedMapNode* p2      = aData2[hashCode(aKeyInt, nBuckets2)];
-          while (p2)
-          {
-            if (p2->IsEqual(aKeyInt))
-            {
-              const BlockType aNewData = p1->Data() & p2->Data();
-              if (aNewData)
-              {
-                if (Resizable())
-                {
-                  ReSize(myNbPackedMapNodes);
-                }
-                const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-                IndexType    aNewMask  = p1->Mask();
-                myExtent += population(aNewMask, aNewData);
-                myData1[aHashCode] = new PackedMapNode(aNewMask, aNewData, myData1[aHashCode]);
-                ++myNbPackedMapNodes;
-              }
-              break;
-            }
-            p2 = p2->Next();
-          }
-          p1 = p1->Next();
-        }
-      }
-    }
-  }
+  //! @deprecated Use NCollection_PackedMapAlgo::Difference() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  void Difference(const NCollection_PackedMap& theLeft, const NCollection_PackedMap& theRight);
 
-  //! Apply to this Map the intersection operation (aka multiplication, common, boolean AND) with
-  //! another (given) Map. The result contains only the values that are contained in both this and
-  //! the given maps. This algorithm is similar to method Intersection().
-  //! @return True if content of this map is changed
-  bool Intersect(const NCollection_PackedMap& theMap)
-  {
-    if (IsEmpty()) // 0 & B == 0
-      return false;
-    else if (theMap.IsEmpty())
-    { // A & 0 == 0
-      Clear();
-      return true;
-    }
-    else if (myData1 == theMap.myData1) // A & A == A
-      return false;
+  //! @deprecated Use NCollection_PackedMapAlgo::Differ() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool Differ(const NCollection_PackedMap& theOther);
 
-    size_t    aNewExtent(0);
-    const int nBuckets2 = theMap.myNbBuckets;
+  //! @deprecated Use NCollection_PackedMapAlgo::IsEqual() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool IsEqual(const NCollection_PackedMap& theOther) const;
 
-    for (int i = 0; i <= myNbBuckets; i++)
-    {
-      PackedMapNode* q  = nullptr;
-      PackedMapNode* p1 = myData1[i];
-      while (p1 != nullptr)
-      {
-        const IntType        aKey    = p1->Key();
-        const IndexType      aKeyInt = packedKeyIndex(aKey);
-        const PackedMapNode* p2      = theMap.myData1[hashCode(aKeyInt, nBuckets2)];
-        while (p2)
-        {
-          if (p2->IsEqual(aKeyInt))
-          {
-            const BlockType aNewData = p1->Data() & p2->Data();
-            if (aNewData == 0)
-              p2 = nullptr;
-            else
-            {
-              if (aNewData != p1->Data())
-                p1->ChangeData() = aNewData;
-              aNewExtent += population(p1->ChangeMask(), aNewData);
-            }
-            break;
-          }
-          p2 = p2->Next();
-        }
-        PackedMapNode* pNext = p1->Next();
-        if (p2)
-        {
-          q = p1;
-        }
-        else
-        {
-          --myNbPackedMapNodes;
-          if (q)
-            q->SetNext(pNext);
-          else
-            myData1[i] = pNext;
-          delete p1;
-        }
-        p1 = pNext;
-      }
-    }
-    bool isChanged = (myExtent != aNewExtent);
-    myExtent       = aNewExtent;
-    return isChanged;
-  }
+  //! @deprecated Use NCollection_PackedMapAlgo::IsSubset() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool IsSubset(const NCollection_PackedMap& theOther) const;
 
-  //! Overloaded operator version of Intersect().
-  NCollection_PackedMap& operator&=(const NCollection_PackedMap& MM)
-  {
-    Intersect(MM);
-    return *this;
-  }
-
-  //! Sets this Map to be the result of subtraction
-  //! (aka set-theoretic difference, relative complement, exclude, cut, boolean NOT) operation
-  //! between two given Maps. The new Map contains only the values that are contained in the first
-  //! map operands and not contained in the second one. All previous contents of this Map is
-  //! cleared. This map (result of the boolean operation) can also be used as the first operand.
-  void Subtraction(const NCollection_PackedMap& theMap1, const NCollection_PackedMap& theMap2)
-  {
-    if (theMap1.IsEmpty() || theMap2.myData1 == theMap1.myData1) // 0 \ A == A \ A == 0
-      Clear();
-    else if (theMap2.IsEmpty()) // A \ 0 == A
-      Assign(theMap1);
-    else if (myData1 == theMap1.myData1)
-      Subtract(theMap2);
-    else if (myData1 == theMap2.myData1)
-    {
-      NCollection_PackedMap aMap;
-      aMap.Subtraction(theMap1, theMap2);
-      Assign(aMap);
-    }
-    else
-    {
-      const int nBuckets1 = theMap1.myNbBuckets;
-      const int nBuckets2 = theMap2.myNbBuckets;
-      Clear();
-
-      for (int i = 0; i <= nBuckets1; i++)
-      {
-        const PackedMapNode* p1 = theMap1.myData1[i];
-        while (p1 != nullptr)
-        {
-          const IntType        aKey     = p1->Key();
-          const IndexType      aKeyInt  = packedKeyIndex(aKey);
-          IndexType            aNewMask = p1->Mask();
-          BlockType            aNewData = p1->Data();
-          size_t               nValues(p1->NbValues());
-          const PackedMapNode* p2 = theMap2.myData1[hashCode(aKeyInt, nBuckets2)];
-          while (p2)
-          {
-            if (p2->IsEqual(aKeyInt))
-            {
-              aNewData &= ~p2->Data();
-              nValues = population(aNewMask, aNewData);
-              break;
-            }
-            p2 = p2->Next();
-          }
-          if (aNewData)
-          {
-            if (Resizable())
-            {
-              ReSize(myNbPackedMapNodes);
-            }
-            const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-            myData1[aHashCode]     = new PackedMapNode(aNewMask, aNewData, myData1[aHashCode]);
-            ++myNbPackedMapNodes;
-            myExtent += nValues;
-          }
-          p1 = p1->Next();
-        }
-      }
-    }
-  }
-
-  //! Apply to this Map the subtraction (aka set-theoretic difference, relative complement, exclude,
-  //! cut, boolean NOT) operation with another (given) Map. The result contains only the values that
-  //! were previously contained in this map and not contained in this map. This algorithm is similar
-  //! to method Subtract() with two operands.
-  //! @return True if contents of this map is changed
-  bool Subtract(const NCollection_PackedMap& theMap)
-  {
-    if (IsEmpty() || theMap.IsEmpty()) // 0 \ B == 0; A \ 0 == A
-      return false;
-    else if (myData1 == theMap.myData1)
-    { // A \ A == 0
-      Clear();
-      return true;
-    }
-    else
-    {
-      size_t    aNewExtent(0);
-      const int nBuckets2 = theMap.myNbBuckets;
-      for (int i = 0; i <= myNbBuckets; i++)
-      {
-        PackedMapNode* q  = nullptr;
-        PackedMapNode* p1 = myData1[i];
-        while (p1 != nullptr)
-        {
-          const IntType        aKey    = p1->Key();
-          const IndexType      aKeyInt = packedKeyIndex(aKey);
-          PackedMapNode*       pNext   = p1->Next();
-          const PackedMapNode* p2      = theMap.myData1[hashCode(aKeyInt, nBuckets2)];
-          while (p2)
-          {
-            if (p2->IsEqual(aKeyInt))
-            {
-              const BlockType aNewData = p1->Data() & ~p2->Data();
-              if (aNewData == 0)
-              {
-                --myNbPackedMapNodes;
-                if (q)
-                  q->SetNext(pNext);
-                else
-                  myData1[i] = pNext;
-                delete p1;
-              }
-              else if (aNewData != p1->Data())
-              {
-                p1->ChangeData() = aNewData;
-                aNewExtent += population(p1->ChangeMask(), aNewData);
-                q = p1;
-              }
-              else
-              {
-                aNewExtent += p1->NbValues();
-                q = p1;
-              }
-              break;
-            }
-            p2 = p2->Next();
-          }
-          if (p2 == nullptr)
-          {
-            aNewExtent += p1->NbValues();
-            q = p1;
-          }
-          p1 = pNext;
-        }
-      }
-      bool isChanged = (myExtent != aNewExtent);
-      myExtent       = aNewExtent;
-      return isChanged;
-    }
-  }
-
-  //! Overloaded operator version of Subtract().
-  NCollection_PackedMap& operator-=(const NCollection_PackedMap& MM)
-  {
-    Subtract(MM);
-    return *this;
-  }
-
-  //! Sets this Map to be the result of symmetric difference (aka exclusive disjunction, boolean
-  //! XOR) operation between two given Maps. The new Map contains the values that are contained only
-  //! in the first or the second operand maps but not in both. All previous contents of this Map is
-  //! cleared. This map (result of the boolean operation) can also be used as one of operands.
-  void Difference(const NCollection_PackedMap& theMap1, const NCollection_PackedMap& theMap2)
-  {
-    if (theMap1.IsEmpty()) // 0 ^ B == B
-      Assign(theMap2);
-    else if (theMap2.IsEmpty()) // A ^ 0 == A
-      Assign(theMap1);
-    else if (myData1 == theMap1.myData1)
-      Differ(theMap2);
-    else if (myData1 == theMap2.myData1)
-      Differ(theMap1);
-    else
-    {
-      int       i;
-      const int nBuckets1 = theMap1.myNbBuckets;
-      const int nBuckets2 = theMap2.myNbBuckets;
-      Clear();
-
-      for (i = 0; i <= nBuckets1; i++)
-      {
-        const PackedMapNode* p1 = theMap1.myData1[i];
-        while (p1 != nullptr)
-        {
-          const IntType        aKey     = p1->Key();
-          const IndexType      aKeyInt  = packedKeyIndex(aKey);
-          IndexType            aNewMask = p1->Mask();
-          BlockType            aNewData = p1->Data();
-          size_t               nValues(p1->NbValues());
-          const PackedMapNode* p2 = theMap2.myData1[hashCode(aKeyInt, nBuckets2)];
-          while (p2)
-          {
-            if (p2->IsEqual(aKeyInt))
-            {
-              aNewData ^= p2->Data();
-              nValues = population(aNewMask, aNewData);
-              break;
-            }
-            p2 = p2->Next();
-          }
-          if (aNewData)
-          {
-            if (Resizable())
-            {
-              ReSize(myNbPackedMapNodes);
-            }
-            const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-            myData1[aHashCode]     = new PackedMapNode(aNewMask, aNewData, myData1[aHashCode]);
-            ++myNbPackedMapNodes;
-            myExtent += nValues;
-          }
-          p1 = p1->Next();
-        }
-      }
-
-      for (i = 0; i <= nBuckets2; i++)
-      {
-        const PackedMapNode* p2 = theMap2.myData1[i];
-        while (p2 != nullptr)
-        {
-          const IntType        aKey    = p2->Key();
-          const IndexType      aKeyInt = packedKeyIndex(aKey);
-          const PackedMapNode* p1      = theMap1.myData1[hashCode(aKeyInt, nBuckets1)];
-          while (p1)
-          {
-            if (p1->IsEqual(aKeyInt))
-              break;
-            p1 = p1->Next();
-          }
-          if (p1 == nullptr)
-          {
-            if (Resizable())
-            {
-              ReSize(myNbPackedMapNodes);
-            }
-            const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-            myData1[aHashCode]     = new PackedMapNode(p2->Mask(), p2->Data(), myData1[aHashCode]);
-            ++myNbPackedMapNodes;
-            myExtent += p2->NbValues();
-          }
-          p2 = p2->Next();
-        }
-      }
-    }
-  }
-
-  //! Apply to this Map the symmetric difference (aka exclusive disjunction, boolean XOR) operation
-  //! with another (given) Map. The result contains the values that are contained only in this or
-  //! the operand map, but not in both. This algorithm is similar to method Difference().
-  //! @return True if contents of this map is changed
-  bool Differ(const NCollection_PackedMap& theMap)
-  {
-    if (theMap.IsEmpty()) // A ^ 0 = A
-      return false;
-    else if (IsEmpty())
-    { // 0 ^ B = B
-      Assign(theMap);
-      return true;
-    }
-    else if (myData1 == theMap.myData1)
-    { // A ^ A == 0
-      Clear();
-      return true;
-    }
-
-    size_t    aNewExtent(0);
-    const int nBuckets2 = theMap.myNbBuckets;
-    bool      isChanged = false;
-    for (int i = 0; i <= nBuckets2; i++)
-    {
-      PackedMapNode*       q  = nullptr;
-      const PackedMapNode* p2 = theMap.myData1[i];
-      while (p2 != nullptr)
-      {
-        const IntType   aKey    = p2->Key();
-        const IndexType aKeyInt = packedKeyIndex(aKey);
-
-        PackedMapNode* p1    = myData1[hashCode(aKeyInt, myNbBuckets)];
-        PackedMapNode* pNext = p1 != nullptr ? p1->Next() : nullptr;
-        while (p1)
-        {
-          if (p1->IsEqual(aKeyInt))
-          {
-            const BlockType aNewData = p1->Data() ^ p2->Data();
-            if (aNewData == 0)
-            {
-              --myNbPackedMapNodes;
-              if (q)
-                q->SetNext(pNext);
-              else
-                myData1[i] = pNext;
-              delete p1;
-            }
-            else if (aNewData != p1->Data())
-            {
-              p1->ChangeData() = aNewData;
-              isChanged        = true;
-              aNewExtent += population(p1->ChangeMask(), aNewData);
-              q = p1;
-            }
-            break;
-          }
-          p1 = pNext;
-        }
-        if (p1 == nullptr)
-        {
-          if (Resizable())
-          {
-            ReSize(myNbPackedMapNodes);
-          }
-          const size_t aHashCode = hashCode(aKeyInt, myNbBuckets);
-          myData1[aHashCode]     = new PackedMapNode(p2->Mask(), p2->Data(), myData1[aHashCode]);
-          ++myNbPackedMapNodes;
-          aNewExtent += p2->NbValues();
-          isChanged = true;
-        }
-        p2 = p2->Next();
-      }
-    }
-    myExtent = aNewExtent;
-    return isChanged;
-  }
-
-  //! Overloaded operator version of Differ().
-  NCollection_PackedMap& operator^=(const NCollection_PackedMap& MM)
-  {
-    Differ(MM);
-    return *this;
-  }
-
-  //! Returns True if this map is equal to the given one, i.e. they contain the
-  //! same sets of elements
-  bool IsEqual(const NCollection_PackedMap& theMap) const
-  {
-    if (IsEmpty() && theMap.IsEmpty())
-      return true;
-    else if (Extent() != theMap.Extent())
-      return false;
-    else if (myData1 == theMap.myData1)
-      return true;
-
-    const int nBuckets2 = theMap.myNbBuckets;
-    for (int i = 0; i <= myNbBuckets; i++)
-    {
-      const PackedMapNode* p1 = myData1[i];
-      while (p1 != nullptr)
-      {
-        const IntType        aKey    = p1->Key();
-        const IndexType      aKeyInt = packedKeyIndex(aKey);
-        const PackedMapNode* p2      = theMap.myData1[hashCode(aKeyInt, nBuckets2)];
-        while (p2)
-        {
-          if (p2->IsEqual(aKeyInt))
-          {
-            if (p1->Data() != p2->Data())
-              return false;
-            break;
-          }
-          p2 = p2->Next();
-        }
-        if (p2 == nullptr)
-          return false;
-
-        p1 = p1->Next();
-      }
-    }
-    return true;
-  }
-
-  //! Overloaded operator version of IsEqual().
-  bool operator==(const NCollection_PackedMap& MM) const { return IsEqual(MM); }
-
-  //! Returns True if this map is subset of the given one, i.e. all elements
-  //! contained in this map is contained also in the operand map.
-  //! if this map is empty that this method returns true for any operand map.
-  bool IsSubset(const NCollection_PackedMap& theMap) const
-  {
-    if (IsEmpty()) // 0 <= A
-      return true;
-    else if (theMap.IsEmpty()) // ! ( A <= 0 )
-      return false;
-    else if (Extent() > theMap.Extent())
-      return false;
-    else if (myData1 == theMap.myData1)
-      return true;
-
-    const int nBuckets2 = theMap.myNbBuckets;
-    for (int i = 0; i <= myNbBuckets; i++)
-    {
-      const PackedMapNode* p1 = myData1[i];
-      while (p1 != nullptr)
-      {
-        const IntType        aKey    = p1->Key();
-        const IndexType      aKeyInt = packedKeyIndex(aKey);
-        const PackedMapNode* p2      = theMap.myData1[hashCode(aKeyInt, nBuckets2)];
-        if (!p2)
-          return false;
-        while (p2)
-        {
-          if (p2->IsEqual(aKeyInt))
-          {
-            if (p1->Data() & ~p2->Data())
-              return false;
-            break;
-          }
-          p2 = p2->Next();
-        }
-        p1 = p1->Next();
-      }
-    }
-    return true;
-  }
-
-  //! Overloaded operator version of IsSubset().
-  bool operator<=(const NCollection_PackedMap& MM) const { return IsSubset(MM); }
-
-  //! Returns True if this map has common items with the given one.
-  bool HasIntersection(const NCollection_PackedMap& theMap) const
-  {
-    if (IsEmpty() || theMap.IsEmpty()) // A * 0 == 0 * B == 0
-      return false;
-
-    if (myData1 == theMap.myData1)
-      return true;
-
-    const int nBuckets2 = theMap.myNbBuckets;
-    for (int i = 0; i <= myNbBuckets; i++)
-    {
-      const PackedMapNode* p1 = myData1[i];
-      while (p1 != nullptr)
-      {
-        const IntType        aKey    = p1->Key();
-        const IndexType      aKeyInt = packedKeyIndex(aKey);
-        const PackedMapNode* p2      = theMap.myData1[hashCode(aKeyInt, nBuckets2)];
-        while (p2)
-        {
-          if (p2->IsEqual(aKeyInt))
-          {
-            if (p1->Data() & p2->Data())
-              return true;
-            break;
-          }
-          p2 = p2->Next();
-        }
-        p1 = p1->Next();
-      }
-    }
-    return false;
-  }
-
-  //!@}
+  //! @deprecated Use NCollection_PackedMapAlgo::HasIntersection() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool HasIntersection(const NCollection_PackedMap& theOther) const;
 
 protected:
   //! Returns TRUE if resizing the map should be considered.
@@ -1545,5 +820,79 @@ private:
   int             myNbPackedMapNodes; //!< amount of packed map nodes
   size_t          myExtent;           //!< extent of this map (number of unpacked integer keys)
 };
+
+// Include algorithm header after class definition to avoid circular dependency
+#include <NCollection_PackedMapAlgo.hxx>
+
+// Implementation of deprecated methods
+template <typename IntType>
+void NCollection_PackedMap<IntType>::Union(const NCollection_PackedMap& theLeft,
+                                           const NCollection_PackedMap& theRight)
+{
+  NCollection_PackedMapAlgo::Union(*this, theLeft, theRight);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::Unite(const NCollection_PackedMap& theOther)
+{
+  return NCollection_PackedMapAlgo::Unite(*this, theOther);
+}
+
+template <typename IntType>
+void NCollection_PackedMap<IntType>::Intersection(const NCollection_PackedMap& theLeft,
+                                                  const NCollection_PackedMap& theRight)
+{
+  NCollection_PackedMapAlgo::Intersection(*this, theLeft, theRight);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::Intersect(const NCollection_PackedMap& theOther)
+{
+  return NCollection_PackedMapAlgo::Intersect(*this, theOther);
+}
+
+template <typename IntType>
+void NCollection_PackedMap<IntType>::Subtraction(const NCollection_PackedMap& theLeft,
+                                                 const NCollection_PackedMap& theRight)
+{
+  NCollection_PackedMapAlgo::Subtraction(*this, theLeft, theRight);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::Subtract(const NCollection_PackedMap& theOther)
+{
+  return NCollection_PackedMapAlgo::Subtract(*this, theOther);
+}
+
+template <typename IntType>
+void NCollection_PackedMap<IntType>::Difference(const NCollection_PackedMap& theLeft,
+                                                const NCollection_PackedMap& theRight)
+{
+  NCollection_PackedMapAlgo::Difference(*this, theLeft, theRight);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::Differ(const NCollection_PackedMap& theOther)
+{
+  return NCollection_PackedMapAlgo::Differ(*this, theOther);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::IsEqual(const NCollection_PackedMap& theOther) const
+{
+  return NCollection_PackedMapAlgo::IsEqual(*this, theOther);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::IsSubset(const NCollection_PackedMap& theOther) const
+{
+  return NCollection_PackedMapAlgo::IsSubset(*this, theOther);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::HasIntersection(const NCollection_PackedMap& theOther) const
+{
+  return NCollection_PackedMapAlgo::HasIntersection(*this, theOther);
+}
 
 #endif // NCollection_PackedMap_HeaderFile

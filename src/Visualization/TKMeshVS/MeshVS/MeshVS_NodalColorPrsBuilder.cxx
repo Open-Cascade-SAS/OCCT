@@ -46,6 +46,7 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
@@ -138,8 +139,8 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   anIDs.Assign(IDs);
   occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
   if (!aHiddenElems.IsNull())
-    anIDs.Subtract(aHiddenElems->Map());
-  anIDs.Subtract(IDsToExclude);
+    NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+  NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   bool IsReflect = false, IsMeshSmoothShading = false;
   aDrawer->GetBoolean(MeshVS_DA_ColorReflection, IsReflect);

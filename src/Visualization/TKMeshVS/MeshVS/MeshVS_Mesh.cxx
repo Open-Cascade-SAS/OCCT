@@ -54,6 +54,7 @@
 #include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 class SelectMgr_EntityOwner;
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_Mesh, AIS_InteractiveObject)
@@ -1306,7 +1307,9 @@ void MeshVS_Mesh::UpdateSelectableNodes()
   // by default (i.e. if myHiddenNodes.IsNull()) all nodes are hidden
   if (!myHiddenNodes.IsNull())
   {
-    mySelectableNodes->ChangeMap().Subtraction(aSource->GetAllNodes(), myHiddenNodes->Map());
+    NCollection_PackedMapAlgo::Subtraction(mySelectableNodes->ChangeMap(),
+                                           aSource->GetAllNodes(),
+                                           myHiddenNodes->Map());
   }
 
   // add all nodes belonging to non-hidden elements

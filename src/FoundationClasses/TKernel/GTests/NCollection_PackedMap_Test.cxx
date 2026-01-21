@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include <NCollection_PackedMap.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 
 #include <gtest/gtest.h>
 
@@ -313,7 +314,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Union)
   aMap2.Add(TypeParam(5));
 
   typename TestFixture::MapType aResult;
-  aResult.Union(aMap1, aMap2);
+  NCollection_PackedMapAlgo::Union(aResult, aMap1, aMap2);
 
   EXPECT_EQ(aResult.Extent(), 5);
   EXPECT_TRUE(aResult.Contains(TypeParam(1)));
@@ -335,7 +336,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Unite)
   aMap2.Add(TypeParam(4));
   aMap2.Add(TypeParam(5));
 
-  EXPECT_TRUE(aMap1.Unite(aMap2));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::Unite(aMap1, aMap2));
 
   EXPECT_EQ(aMap1.Extent(), 5);
   EXPECT_TRUE(aMap1.Contains(TypeParam(1)));
@@ -344,10 +345,10 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Unite)
   EXPECT_TRUE(aMap1.Contains(TypeParam(4)));
   EXPECT_TRUE(aMap1.Contains(TypeParam(5)));
 
-  EXPECT_FALSE(aMap1.Unite(aMap2));
+  EXPECT_FALSE(NCollection_PackedMapAlgo::Unite(aMap1, aMap2));
 }
 
-TYPED_TEST(NCollection_PackedMapTypedTest, UniteOperator)
+TYPED_TEST(NCollection_PackedMapTypedTest, UniteInPlace)
 {
   typename TestFixture::MapType aMap1;
   aMap1.Add(TypeParam(1));
@@ -357,7 +358,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, UniteOperator)
   aMap2.Add(TypeParam(2));
   aMap2.Add(TypeParam(3));
 
-  aMap1 |= aMap2;
+  NCollection_PackedMapAlgo::Unite(aMap1, aMap2);
 
   EXPECT_EQ(aMap1.Extent(), 3);
   EXPECT_TRUE(aMap1.Contains(TypeParam(1)));
@@ -384,7 +385,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Intersection)
   aMap2.Add(TypeParam(6));
 
   typename TestFixture::MapType aResult;
-  aResult.Intersection(aMap1, aMap2);
+  NCollection_PackedMapAlgo::Intersection(aResult, aMap1, aMap2);
 
   EXPECT_EQ(aResult.Extent(), 2);
   EXPECT_TRUE(aResult.Contains(TypeParam(2)));
@@ -406,14 +407,14 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Intersect)
   aMap2.Add(TypeParam(3));
   aMap2.Add(TypeParam(5));
 
-  EXPECT_TRUE(aMap1.Intersect(aMap2));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::Intersect(aMap1, aMap2));
 
   EXPECT_EQ(aMap1.Extent(), 2);
   EXPECT_TRUE(aMap1.Contains(TypeParam(2)));
   EXPECT_TRUE(aMap1.Contains(TypeParam(3)));
 }
 
-TYPED_TEST(NCollection_PackedMapTypedTest, IntersectOperator)
+TYPED_TEST(NCollection_PackedMapTypedTest, IntersectInPlace)
 {
   typename TestFixture::MapType aMap1;
   aMap1.Add(TypeParam(1));
@@ -425,7 +426,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IntersectOperator)
   aMap2.Add(TypeParam(3));
   aMap2.Add(TypeParam(4));
 
-  aMap1 &= aMap2;
+  NCollection_PackedMapAlgo::Intersect(aMap1, aMap2);
 
   EXPECT_EQ(aMap1.Extent(), 2);
   EXPECT_TRUE(aMap1.Contains(TypeParam(2)));
@@ -443,7 +444,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IntersectionDisjoint)
   aMap2.Add(TypeParam(4));
 
   typename TestFixture::MapType aResult;
-  aResult.Intersection(aMap1, aMap2);
+  NCollection_PackedMapAlgo::Intersection(aResult, aMap1, aMap2);
 
   EXPECT_TRUE(aResult.IsEmpty());
 }
@@ -466,7 +467,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Subtraction)
   aMap2.Add(TypeParam(5));
 
   typename TestFixture::MapType aResult;
-  aResult.Subtraction(aMap1, aMap2);
+  NCollection_PackedMapAlgo::Subtraction(aResult, aMap1, aMap2);
 
   EXPECT_EQ(aResult.Extent(), 2);
   EXPECT_TRUE(aResult.Contains(TypeParam(1)));
@@ -488,14 +489,14 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Subtract)
   aMap2.Add(TypeParam(3));
   aMap2.Add(TypeParam(5));
 
-  EXPECT_TRUE(aMap1.Subtract(aMap2));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::Subtract(aMap1, aMap2));
 
   EXPECT_EQ(aMap1.Extent(), 2);
   EXPECT_TRUE(aMap1.Contains(TypeParam(1)));
   EXPECT_TRUE(aMap1.Contains(TypeParam(4)));
 }
 
-TYPED_TEST(NCollection_PackedMapTypedTest, SubtractOperator)
+TYPED_TEST(NCollection_PackedMapTypedTest, SubtractInPlace)
 {
   typename TestFixture::MapType aMap1;
   aMap1.Add(TypeParam(1));
@@ -505,7 +506,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, SubtractOperator)
   typename TestFixture::MapType aMap2;
   aMap2.Add(TypeParam(2));
 
-  aMap1 -= aMap2;
+  NCollection_PackedMapAlgo::Subtract(aMap1, aMap2);
 
   EXPECT_EQ(aMap1.Extent(), 2);
   EXPECT_TRUE(aMap1.Contains(TypeParam(1)));
@@ -530,7 +531,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Difference)
   aMap2.Add(TypeParam(4));
 
   typename TestFixture::MapType aResult;
-  aResult.Difference(aMap1, aMap2);
+  NCollection_PackedMapAlgo::Difference(aResult, aMap1, aMap2);
 
   EXPECT_EQ(aResult.Extent(), 2);
   EXPECT_TRUE(aResult.Contains(TypeParam(1)));
@@ -551,14 +552,14 @@ TYPED_TEST(NCollection_PackedMapTypedTest, Differ)
   aMap2.Add(TypeParam(3));
   aMap2.Add(TypeParam(4));
 
-  EXPECT_TRUE(aMap1.Differ(aMap2));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::Differ(aMap1, aMap2));
 
   EXPECT_EQ(aMap1.Extent(), 2);
   EXPECT_TRUE(aMap1.Contains(TypeParam(1)));
   EXPECT_TRUE(aMap1.Contains(TypeParam(4)));
 }
 
-TYPED_TEST(NCollection_PackedMapTypedTest, DifferOperator)
+TYPED_TEST(NCollection_PackedMapTypedTest, DifferInPlace)
 {
   typename TestFixture::MapType aMap1;
   aMap1.Add(TypeParam(1));
@@ -568,7 +569,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, DifferOperator)
   aMap2.Add(TypeParam(2));
   aMap2.Add(TypeParam(3));
 
-  aMap1 ^= aMap2;
+  NCollection_PackedMapAlgo::Differ(aMap1, aMap2);
 
   EXPECT_EQ(aMap1.Extent(), 2);
   EXPECT_TRUE(aMap1.Contains(TypeParam(1)));
@@ -592,12 +593,10 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IsEqual)
   aMap2.Add(TypeParam(2));
   aMap2.Add(TypeParam(3));
 
-  EXPECT_TRUE(aMap1.IsEqual(aMap2));
-  EXPECT_TRUE(aMap1 == aMap2);
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsEqual(aMap1, aMap2));
 
   aMap2.Add(TypeParam(4));
-  EXPECT_FALSE(aMap1.IsEqual(aMap2));
-  EXPECT_FALSE(aMap1 == aMap2);
+  EXPECT_FALSE(NCollection_PackedMapAlgo::IsEqual(aMap1, aMap2));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IsEqualEmpty)
@@ -605,8 +604,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IsEqualEmpty)
   typename TestFixture::MapType aMap1;
   typename TestFixture::MapType aMap2;
 
-  EXPECT_TRUE(aMap1.IsEqual(aMap2));
-  EXPECT_TRUE(aMap1 == aMap2);
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsEqual(aMap1, aMap2));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IsSubset)
@@ -621,9 +619,8 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IsSubset)
   aMap2.Add(TypeParam(3));
   aMap2.Add(TypeParam(4));
 
-  EXPECT_TRUE(aMap1.IsSubset(aMap2));
-  EXPECT_TRUE(aMap1 <= aMap2);
-  EXPECT_FALSE(aMap2.IsSubset(aMap1));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsSubset(aMap1, aMap2));
+  EXPECT_FALSE(NCollection_PackedMapAlgo::IsSubset(aMap2, aMap1));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IsSubsetSame)
@@ -636,8 +633,8 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IsSubsetSame)
   aMap2.Add(TypeParam(1));
   aMap2.Add(TypeParam(2));
 
-  EXPECT_TRUE(aMap1.IsSubset(aMap2));
-  EXPECT_TRUE(aMap2.IsSubset(aMap1));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsSubset(aMap1, aMap2));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsSubset(aMap2, aMap1));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IsSubsetEmpty)
@@ -646,8 +643,8 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IsSubsetEmpty)
   typename TestFixture::MapType aMap;
   aMap.Add(TypeParam(1));
 
-  EXPECT_TRUE(aEmptyMap.IsSubset(aMap));
-  EXPECT_TRUE(aEmptyMap.IsSubset(aEmptyMap));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsSubset(aEmptyMap, aMap));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsSubset(aEmptyMap, aEmptyMap));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, HasIntersection)
@@ -662,13 +659,13 @@ TYPED_TEST(NCollection_PackedMapTypedTest, HasIntersection)
   aMap2.Add(TypeParam(4));
   aMap2.Add(TypeParam(5));
 
-  EXPECT_TRUE(aMap1.HasIntersection(aMap2));
+  EXPECT_TRUE(NCollection_PackedMapAlgo::HasIntersection(aMap1, aMap2));
 
   typename TestFixture::MapType aMap3;
   aMap3.Add(TypeParam(10));
   aMap3.Add(TypeParam(20));
 
-  EXPECT_FALSE(aMap1.HasIntersection(aMap3));
+  EXPECT_FALSE(NCollection_PackedMapAlgo::HasIntersection(aMap1, aMap3));
 }
 
 //==================================================================================================
@@ -809,10 +806,10 @@ TYPED_TEST(NCollection_PackedMapTypedTest, UnionWithSelf)
   aMap.Add(TypeParam(3));
 
   typename TestFixture::MapType aResult;
-  aResult.Union(aMap, aMap);
+  NCollection_PackedMapAlgo::Union(aResult, aMap, aMap);
 
   EXPECT_EQ(aResult.Extent(), 3);
-  EXPECT_TRUE(aResult == aMap);
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsEqual(aResult, aMap));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IntersectionWithSelf)
@@ -823,10 +820,10 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IntersectionWithSelf)
   aMap.Add(TypeParam(3));
 
   typename TestFixture::MapType aResult;
-  aResult.Intersection(aMap, aMap);
+  NCollection_PackedMapAlgo::Intersection(aResult, aMap, aMap);
 
   EXPECT_EQ(aResult.Extent(), 3);
-  EXPECT_TRUE(aResult == aMap);
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsEqual(aResult, aMap));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, SubtractionFromSelf)
@@ -837,7 +834,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, SubtractionFromSelf)
   aMap.Add(TypeParam(3));
 
   typename TestFixture::MapType aResult;
-  aResult.Subtraction(aMap, aMap);
+  NCollection_PackedMapAlgo::Subtraction(aResult, aMap, aMap);
 
   EXPECT_TRUE(aResult.IsEmpty());
 }
@@ -850,7 +847,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, DifferenceWithSelf)
   aMap.Add(TypeParam(3));
 
   typename TestFixture::MapType aResult;
-  aResult.Difference(aMap, aMap);
+  NCollection_PackedMapAlgo::Difference(aResult, aMap, aMap);
 
   EXPECT_TRUE(aResult.IsEmpty());
 }
@@ -868,9 +865,9 @@ TYPED_TEST(NCollection_PackedMapTypedTest, UnionWithEmpty)
   typename TestFixture::MapType aEmpty;
 
   typename TestFixture::MapType aResult;
-  aResult.Union(aMap, aEmpty);
+  NCollection_PackedMapAlgo::Union(aResult, aMap, aEmpty);
 
-  EXPECT_TRUE(aResult == aMap);
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsEqual(aResult, aMap));
 }
 
 TYPED_TEST(NCollection_PackedMapTypedTest, IntersectionWithEmpty)
@@ -882,7 +879,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, IntersectionWithEmpty)
   typename TestFixture::MapType aEmpty;
 
   typename TestFixture::MapType aResult;
-  aResult.Intersection(aMap, aEmpty);
+  NCollection_PackedMapAlgo::Intersection(aResult, aMap, aEmpty);
 
   EXPECT_TRUE(aResult.IsEmpty());
 }
@@ -896,12 +893,12 @@ TYPED_TEST(NCollection_PackedMapTypedTest, SubtractionEmpty)
   typename TestFixture::MapType aEmpty;
 
   typename TestFixture::MapType aResult;
-  aResult.Subtraction(aMap, aEmpty);
+  NCollection_PackedMapAlgo::Subtraction(aResult, aMap, aEmpty);
 
-  EXPECT_TRUE(aResult == aMap);
+  EXPECT_TRUE(NCollection_PackedMapAlgo::IsEqual(aResult, aMap));
 
   typename TestFixture::MapType aResult2;
-  aResult2.Subtraction(aEmpty, aMap);
+  NCollection_PackedMapAlgo::Subtraction(aResult2, aEmpty, aMap);
 
   EXPECT_TRUE(aResult2.IsEmpty());
 }

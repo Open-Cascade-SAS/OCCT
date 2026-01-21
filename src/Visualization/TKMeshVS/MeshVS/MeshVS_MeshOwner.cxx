@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
 
@@ -68,11 +69,11 @@ void MeshVS_MeshOwner::AddSelectedEntities(const occ::handle<TColStd_HPackedMapO
   if (mySelectedNodes.IsNull())
     mySelectedNodes = Nodes;
   else if (!Nodes.IsNull())
-    mySelectedNodes->ChangeMap().Unite(Nodes->Map());
+    NCollection_PackedMapAlgo::Unite(mySelectedNodes->ChangeMap(), Nodes->Map());
   if (mySelectedElems.IsNull())
     mySelectedElems = Elems;
   else if (!Elems.IsNull())
-    mySelectedElems->ChangeMap().Unite(Elems->Map());
+    NCollection_PackedMapAlgo::Unite(mySelectedElems->ChangeMap(), Elems->Map());
 }
 
 //=================================================================================================
