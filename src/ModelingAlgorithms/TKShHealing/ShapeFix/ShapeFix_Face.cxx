@@ -284,6 +284,9 @@ static bool SplitWire(const TopoDS_Face&                  face,
         double                    a1, b1, a2, b2;
         occ::handle<Geom2d_Curve> curve1 = BRep_Tool::CurveOnSurface(E1, face, a1, b1);
         occ::handle<Geom2d_Curve> curve2 = BRep_Tool::CurveOnSurface(E2, face, a2, b2);
+        if (curve1.IsNull() || curve2.IsNull())
+          continue;
+
         gp_Pnt2d                  v0, v1;
         if (E1.Orientation() == TopAbs_REVERSED)
           a1 = b1;
