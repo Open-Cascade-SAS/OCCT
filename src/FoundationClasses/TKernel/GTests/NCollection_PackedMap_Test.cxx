@@ -248,7 +248,7 @@ TYPED_TEST(NCollection_PackedMapTypedTest, BlockBoundary)
 {
   // Test values around block boundaries (31, 32, 33 for 32-bit, 63, 64, 65 for 64-bit)
   typename TestFixture::MapType aMap;
-  constexpr int                 aBitsPerBlock = NCollection_PackedMapTraits<TypeParam>::BitsPerBlock;
+  constexpr int                 aBitsPerBlock = NCollection_PackedMap<TypeParam>::BitsPerBlock;
 
   aMap.Add(static_cast<TypeParam>(aBitsPerBlock - 1));
   aMap.Add(static_cast<TypeParam>(aBitsPerBlock));
@@ -1026,22 +1026,22 @@ TEST(NCollection_PackedMap64BitTest, SizeTypeValues)
 }
 
 //==================================================================================================
-// Traits Verification Tests
+// Type Configuration Verification Tests
 //==================================================================================================
 
-TEST(NCollection_PackedMapTraitsTest, TraitsFor32BitTypes)
+TEST(NCollection_PackedMapConfigTest, ConfigFor32BitTypes)
 {
-  EXPECT_FALSE(NCollection_PackedMapTraits<int>::Is64Bit);
-  EXPECT_FALSE(NCollection_PackedMapTraits<unsigned int>::Is64Bit);
-  EXPECT_EQ(NCollection_PackedMapTraits<int>::BitsPerBlock, 32);
-  EXPECT_EQ(NCollection_PackedMapTraits<unsigned int>::BitsPerBlock, 32);
+  EXPECT_FALSE(NCollection_PackedMap<int>::Is64Bit);
+  EXPECT_FALSE(NCollection_PackedMap<unsigned int>::Is64Bit);
+  EXPECT_EQ(NCollection_PackedMap<int>::BitsPerBlock, 32);
+  EXPECT_EQ(NCollection_PackedMap<unsigned int>::BitsPerBlock, 32);
 }
 
-TEST(NCollection_PackedMapTraitsTest, TraitsFor64BitTypes)
+TEST(NCollection_PackedMapConfigTest, ConfigFor64BitTypes)
 {
-  EXPECT_TRUE(NCollection_PackedMapTraits<int64_t>::Is64Bit);
-  EXPECT_TRUE(NCollection_PackedMapTraits<uint64_t>::Is64Bit);
-  EXPECT_TRUE(NCollection_PackedMapTraits<size_t>::Is64Bit);
-  EXPECT_EQ(NCollection_PackedMapTraits<int64_t>::BitsPerBlock, 64);
-  EXPECT_EQ(NCollection_PackedMapTraits<size_t>::BitsPerBlock, 64);
+  EXPECT_TRUE(NCollection_PackedMap<int64_t>::Is64Bit);
+  EXPECT_TRUE(NCollection_PackedMap<uint64_t>::Is64Bit);
+  EXPECT_TRUE(NCollection_PackedMap<size_t>::Is64Bit);
+  EXPECT_EQ(NCollection_PackedMap<int64_t>::BitsPerBlock, 64);
+  EXPECT_EQ(NCollection_PackedMap<size_t>::BitsPerBlock, 64);
 }

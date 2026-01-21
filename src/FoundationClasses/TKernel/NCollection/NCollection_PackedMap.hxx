@@ -26,15 +26,22 @@
 #include <iomanip>
 #include <type_traits>
 
-//! @brief Traits class to configure block storage based on integer type size.
+//! @brief Optimized Map for integer values of various integral types.
 //!
-//! For 32-bit types (int, unsigned int): uses 32-bit blocks (32 values per node)
-//! For 64-bit types (int64_t, size_t, etc.): uses 64-bit blocks (64 values per node)
+//! This template class provides a memory-efficient storage for sets of integers.
+//! Each block of BitsPerBlock (32 or 64) consecutive integers is stored compactly
+//! using bit manipulation. The block size is automatically selected based on
+//! the integer type: 32 bits for int/unsigned, 64 bits for int64_t/size_t.
+//!
+//! @tparam IntType The integral type to store (int, unsigned int, int64_t, size_t, etc.)
 template <typename IntType>
-struct NCollection_PackedMapTraits
+class NCollection_PackedMap
 {
   static_assert(std::is_integral<IntType>::value,
                 "NCollection_PackedMap requires an integral type");
+
+public:
+  DEFINE_STANDARD_ALLOC
 
   //! True if the integer type is larger than 32 bits
   static constexpr bool Is64Bit = sizeof(IntType) > 4;
@@ -48,37 +55,12 @@ struct NCollection_PackedMapTraits
   //! Number of bits per block
   static constexpr int BitsPerBlock = Is64Bit ? 64 : 32;
 
+private:
   //! Number of low bits used for position within a block
   static constexpr int MaskLowBits = Is64Bit ? 6 : 5;
 
   //! Mask for low bits (position within block)
-  static constexpr BlockType MaskLow = (BlockType(1) << MaskLowBits) - 1;
-
-  //! Mask for high bits (block index)
-  static constexpr IndexType MaskHigh = ~static_cast<IndexType>(MaskLow);
-};
-
-//! @brief Optimized Map for integer values of various integral types.
-//!
-//! This template class provides a memory-efficient storage for sets of integers.
-//! Each block of BitsPerBlock (32 or 64) consecutive integers is stored compactly
-//! using bit manipulation. The block size is automatically selected based on
-//! the integer type: 32 bits for int/unsigned, 64 bits for int64_t/size_t.
-//!
-//! @tparam IntType The integral type to store (int, unsigned int, int64_t, size_t, etc.)
-template <typename IntType>
-class NCollection_PackedMap
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  using Traits    = NCollection_PackedMapTraits<IntType>;
-  using BlockType = typename Traits::BlockType;
-  using IndexType = typename Traits::IndexType;
-
-private:
-  //! Mask for low bits (position within block)
-  static constexpr IndexType MASK_LOW = static_cast<IndexType>(Traits::MaskLow);
+  static constexpr IndexType MASK_LOW = (IndexType(1) << MaskLowBits) - 1;
 
   //! Mask for high bits (block base address)
   static constexpr IndexType MASK_HIGH = ~MASK_LOW;
@@ -176,13 +158,13 @@ private:
     //! Support of Map interface.
     size_t HashCode(size_t theUpper) const
     {
-      return static_cast<size_t>(myMask >> Traits::MaskLowBits) % theUpper + 1;
+      return static_cast<size_t>(myMask >> MaskLowBits) % theUpper + 1;
     }
 
     //! Support of Map interface.
     bool IsEqual(IndexType theOther) const
     {
-      return (myMask >> Traits::MaskLowBits) == (static_cast<IndexType>(theOther));
+      return (myMask >> MaskLowBits) == (static_cast<IndexType>(theOther));
     }
 
   private:
@@ -1406,7 +1388,7 @@ protected:
   //! Return an integer index for specified key.
   static IndexType packedKeyIndex(IntType theKey)
   {
-    return static_cast<IndexType>(theKey) >> Traits::MaskLowBits;
+    return static_cast<IndexType>(theKey) >> MaskLowBits;
   }
 
   //! Compute hash code for a key index.
@@ -1419,7 +1401,7 @@ protected:
   //! The population is stored decremented as it is defined in PackedMapNode.
   static size_t population(IndexType& theMask, BlockType theData)
   {
-    if constexpr (Traits::Is64Bit)
+    if constexpr (Is64Bit)
     {
       // 64-bit population count
       uint64_t aRes = theData - ((theData >> 1) & 0x5555555555555555ULL);
@@ -1458,7 +1440,7 @@ protected:
     else
     {
       BlockType aMask = ~BlockType(0);
-      if constexpr (Traits::Is64Bit)
+      if constexpr (Is64Bit)
       {
         if ((val & 0x00000000ffffffffULL) == 0)
         {
@@ -1514,7 +1496,7 @@ protected:
     else
     {
       BlockType aMask = ~BlockType(0);
-      if constexpr (Traits::Is64Bit)
+      if constexpr (Is64Bit)
       {
         if ((val & 0xffffffff00000000ULL) == 0)
         {
@@ -1523,38 +1505,38 @@ protected:
           val <<= 32;
         }
       }
-      if ((val & BlockType(0xffff0000) << (Traits::Is64Bit ? 32 : 0)) == 0)
+      if ((val & BlockType(0xffff0000) << (Is64Bit ? 32 : 0)) == 0)
       {
         aMask >>= 16;
         nZeros += 16;
         val <<= 16;
       }
-      if ((val & BlockType(0xff000000) << (Traits::Is64Bit ? 32 : 0)) == 0)
+      if ((val & BlockType(0xff000000) << (Is64Bit ? 32 : 0)) == 0)
       {
         aMask >>= 8;
         nZeros += 8;
         val <<= 8;
       }
-      if ((val & BlockType(0xf0000000) << (Traits::Is64Bit ? 32 : 0)) == 0)
+      if ((val & BlockType(0xf0000000) << (Is64Bit ? 32 : 0)) == 0)
       {
         aMask >>= 4;
         nZeros += 4;
         val <<= 4;
       }
-      if ((val & BlockType(0xc0000000) << (Traits::Is64Bit ? 32 : 0)) == 0)
+      if ((val & BlockType(0xc0000000) << (Is64Bit ? 32 : 0)) == 0)
       {
         aMask >>= 2;
         nZeros += 2;
         val <<= 2;
       }
-      if ((val & BlockType(0x80000000) << (Traits::Is64Bit ? 32 : 0)) == 0)
+      if ((val & BlockType(0x80000000) << (Is64Bit ? 32 : 0)) == 0)
       {
         aMask >>= 1;
         nZeros++;
       }
       theMask = (aMask >> 1);
     }
-    return static_cast<IntType>((Traits::BitsPerBlock - 1) - nZeros) + theNode->Key();
+    return static_cast<IntType>((BitsPerBlock - 1) - nZeros) + theNode->Key();
   }
 
 private:
