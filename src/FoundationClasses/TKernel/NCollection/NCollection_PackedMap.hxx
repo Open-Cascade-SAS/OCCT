@@ -23,7 +23,6 @@
 
 #include <cstdint>
 #include <cstring>
-#include <iomanip>
 #include <type_traits>
 
 //! @brief Optimized Map for integer values of various integral types.
@@ -656,6 +655,11 @@ public:
                       "NCollection_PackedMapAlgo.hxx instead.")
   bool HasIntersection(const NCollection_PackedMap& theOther) const;
 
+  //! @deprecated Use NCollection_PackedMapAlgo::Contains() instead
+  Standard_DEPRECATED("This method will be removed after OCCT 7.9 release. Use methods from "
+                      "NCollection_PackedMapAlgo.hxx instead.")
+  bool Contains(const NCollection_PackedMap& theOther) const;
+
 protected:
   //! Returns TRUE if resizing the map should be considered.
   bool Resizable() const { return IsEmpty() || (myNbPackedMapNodes > myNbBuckets); }
@@ -893,6 +897,12 @@ template <typename IntType>
 bool NCollection_PackedMap<IntType>::HasIntersection(const NCollection_PackedMap& theOther) const
 {
   return NCollection_PackedMapAlgo::HasIntersection(*this, theOther);
+}
+
+template <typename IntType>
+bool NCollection_PackedMap<IntType>::Contains(const NCollection_PackedMap& theOther) const
+{
+  return NCollection_PackedMapAlgo::Contains(*this, theOther);
 }
 
 #endif // NCollection_PackedMap_HeaderFile
