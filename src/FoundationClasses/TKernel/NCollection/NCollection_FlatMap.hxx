@@ -1,4 +1,4 @@
-// Copyright (c) 2024 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -19,6 +19,7 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <new>
+#include <optional>
 #include <type_traits>
 #include <utility>
 
@@ -56,14 +57,25 @@ template <class TheKeyType, class Hasher = NCollection_DefaultHasher<TheKeyType>
 class NCollection_FlatMap
 {
 public:
-  //! STL-compliant typedef for key type
-  typedef TheKeyType key_type;
+  //! STL-compliant type alias for key type
+  using key_type = TheKeyType;
 
 private:
-  //! Slot state markers
-  static constexpr uint8_t SLOT_EMPTY   = 0;
-  static constexpr uint8_t SLOT_DELETED = 1;
-  static constexpr uint8_t SLOT_USED    = 2;
+  //! Default initial capacity (must be power of 2)
+  static constexpr size_t THE_DEFAULT_CAPACITY = 8;
+
+  //! Maximum allowed probe distance before throwing an exception.
+  //! This limit is sufficient for normal hash distributions with proper load factors.
+  static constexpr uint8_t THE_MAX_PROBE_DISTANCE = 250;
+
+  //! Slot state enumeration for hash table entries.
+  //! Uses Robin Hood hashing with backward shift deletion.
+  enum class SlotState : uint8_t
+  {
+    Empty,   //!< Slot has never been used; search can stop here
+    Deleted, //!< Slot was used but element was removed; search must continue past this
+    Used     //!< Slot contains a valid element
+  };
 
   //! Internal slot structure holding key and metadata
   struct Slot
@@ -71,13 +83,13 @@ private:
     TheKeyType myKey;
     size_t     myHash;          //!< Cached hash code
     uint8_t    myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
-    uint8_t    myState;         //!< SLOT_EMPTY, SLOT_DELETED, or SLOT_USED
+    SlotState  myState;         //!< Current state of this slot
 
     Slot() noexcept(std::is_nothrow_default_constructible<TheKeyType>::value)
         : myKey(),
           myHash(0),
           myProbeDistance(0),
-          myState(SLOT_EMPTY)
+          myState(SlotState::Empty)
     {
     }
   };
@@ -104,7 +116,7 @@ public:
           myIndex(0)
     {
       // Find first used slot
-      while (myIndex < myCapacity && mySlots[myIndex].myState != SLOT_USED)
+      while (myIndex < myCapacity && mySlots[myIndex].myState != SlotState::Used)
       {
         ++myIndex;
       }
@@ -117,7 +129,7 @@ public:
     void Next() noexcept
     {
       ++myIndex;
-      while (myIndex < myCapacity && mySlots[myIndex].myState != SLOT_USED)
+      while (myIndex < myCapacity && mySlots[myIndex].myState != SlotState::Used)
       {
         ++myIndex;
       }
@@ -174,12 +186,12 @@ public:
       reserve(theOther.myCapacity);
       for (size_t i = 0; i < theOther.myCapacity; ++i)
       {
-        if (theOther.mySlots[i].myState == SLOT_USED)
+        if (theOther.mySlots[i].myState == SlotState::Used)
         {
           new (&mySlots[i].myKey) TheKeyType(theOther.mySlots[i].myKey);
           mySlots[i].myHash          = theOther.mySlots[i].myHash;
           mySlots[i].myProbeDistance = theOther.mySlots[i].myProbeDistance;
-          mySlots[i].myState         = SLOT_USED;
+          mySlots[i].myState         = SlotState::Used;
         }
       }
       mySize = theOther.mySize;
@@ -212,12 +224,12 @@ public:
         reserve(theOther.myCapacity);
         for (size_t i = 0; i < theOther.myCapacity; ++i)
         {
-          if (theOther.mySlots[i].myState == SLOT_USED)
+          if (theOther.mySlots[i].myState == SlotState::Used)
           {
             new (&mySlots[i].myKey) TheKeyType(theOther.mySlots[i].myKey);
             mySlots[i].myHash          = theOther.mySlots[i].myHash;
             mySlots[i].myProbeDistance = theOther.mySlots[i].myProbeDistance;
-            mySlots[i].myState         = SLOT_USED;
+            mySlots[i].myState         = SlotState::Used;
           }
         }
         mySize = theOther.mySize;
@@ -263,8 +275,7 @@ public:
   {
     if (mySize == 0)
       return false;
-    size_t aIndex;
-    return findSlot(theKey, aIndex);
+    return findSlot(theKey).has_value();
   }
 
 public:
@@ -292,15 +303,17 @@ public:
     if (mySize == 0)
       return false;
 
-    size_t aIndex;
-    if (!findSlot(theKey, aIndex))
+    const std::optional<size_t> aFoundIndex = findSlot(theKey);
+    if (!aFoundIndex.has_value())
     {
       return false;
     }
 
+    const size_t aIndex = *aFoundIndex;
+
     // Destroy key
     mySlots[aIndex].myKey.~TheKeyType();
-    mySlots[aIndex].myState = SLOT_DELETED;
+    mySlots[aIndex].myState = SlotState::Deleted;
     --mySize;
 
     // Backward shift delete
@@ -316,14 +329,14 @@ public:
     {
       for (size_t i = 0; i < myCapacity; ++i)
       {
-        if (mySlots[i].myState == SLOT_USED)
+        if (mySlots[i].myState == SlotState::Used)
         {
           mySlots[i].myKey.~TheKeyType();
-          mySlots[i].myState = SLOT_EMPTY;
+          mySlots[i].myState = SlotState::Empty;
         }
-        else if (mySlots[i].myState == SLOT_DELETED)
+        else if (mySlots[i].myState == SlotState::Deleted)
         {
-          mySlots[i].myState = SLOT_EMPTY;
+          mySlots[i].myState = SlotState::Empty;
         }
       }
       mySize = 0;
@@ -373,7 +386,7 @@ private:
   static size_t nextPowerOf2(size_t n) noexcept
   {
     if (n == 0)
-      return 8;
+      return THE_DEFAULT_CAPACITY;
     --n;
     n |= n >> 1;
     n |= n >> 2;
@@ -389,9 +402,10 @@ private:
 
   void ensureCapacity()
   {
+    // Grow at ~87.5% load factor
     if (myCapacity == 0 || (mySize + 1) * 8 > myCapacity * 7)
     {
-      size_t aNewCapacity = myCapacity == 0 ? 8 : myCapacity * 2;
+      size_t aNewCapacity = myCapacity == 0 ? THE_DEFAULT_CAPACITY : myCapacity * 2;
       rehash(aNewCapacity);
     }
   }
@@ -413,7 +427,7 @@ private:
     {
       for (size_t i = 0; i < aOldCapacity; ++i)
       {
-        if (aOldSlots[i].myState == SLOT_USED)
+        if (aOldSlots[i].myState == SlotState::Used)
         {
           insertImpl(std::move(aOldSlots[i].myKey));
           aOldSlots[i].myKey.~TheKeyType();
@@ -423,7 +437,10 @@ private:
     }
   }
 
-  bool findSlot(const TheKeyType& theKey, size_t& theIndex) const
+  //! Find slot containing key.
+  //! @param theKey key to find
+  //! @return index of found slot, or std::nullopt if not found
+  std::optional<size_t> findSlot(const TheKeyType& theKey) const
   {
     const size_t aHash     = myHasher(theKey);
     const size_t aMask     = myCapacity - 1;
@@ -435,26 +452,27 @@ private:
     {
       const Slot& aSlot = mySlots[aIndex];
 
-      if (aSlot.myState == SLOT_EMPTY)
+      if (aSlot.myState == SlotState::Empty)
       {
-        return false;
+        return std::nullopt;
       }
 
-      if (aSlot.myState == SLOT_USED && aSlot.myHash == aHash && myHasher(aSlot.myKey, theKey))
+      if (aSlot.myState == SlotState::Used && aSlot.myHash == aHash
+          && myHasher(aSlot.myKey, theKey))
       {
-        theIndex = aIndex;
-        return true;
+        return aIndex;
       }
 
-      if (aSlot.myState == SLOT_USED && aProbe > aSlot.myProbeDistance)
+      // Robin Hood optimization: if current probe > slot's probe, key can't exist further
+      if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
       {
-        return false;
+        return std::nullopt;
       }
 
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
     }
-    return false;
+    return std::nullopt;
   }
 
   template <typename K>
@@ -472,23 +490,23 @@ private:
     {
       Slot& aSlot = mySlots[aIndex];
 
-      if (aSlot.myState == SLOT_EMPTY || aSlot.myState == SLOT_DELETED)
+      if (aSlot.myState == SlotState::Empty || aSlot.myState == SlotState::Deleted)
       {
         new (&aSlot.myKey) TheKeyType(std::move(aKeyToInsert));
         aSlot.myHash          = aHashToInsert;
         aSlot.myProbeDistance = aProbe;
-        aSlot.myState         = SLOT_USED;
+        aSlot.myState         = SlotState::Used;
         ++mySize;
         return true;
       }
 
-      if (aSlot.myState == SLOT_USED && aSlot.myHash == aHashToInsert
+      if (aSlot.myState == SlotState::Used && aSlot.myHash == aHashToInsert
           && myHasher(aSlot.myKey, aKeyToInsert))
       {
         return false; // Already exists
       }
 
-      if (aSlot.myState == SLOT_USED && aProbe > aSlot.myProbeDistance)
+      if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
       {
         std::swap(aKeyToInsert, aSlot.myKey);
         std::swap(aHashToInsert, aSlot.myHash);
@@ -500,7 +518,7 @@ private:
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
 
-      if (aProbe > 250)
+      if (aProbe > THE_MAX_PROBE_DISTANCE)
       {
         throw Standard_OutOfRange("NCollection_FlatMap: excessive probe length");
       }
@@ -513,20 +531,20 @@ private:
     size_t       aCurrent = theIndex;
     size_t       aNext    = (aCurrent + 1) & aMask;
 
-    while (mySlots[aNext].myState == SLOT_USED && mySlots[aNext].myProbeDistance > 0)
+    while (mySlots[aNext].myState == SlotState::Used && mySlots[aNext].myProbeDistance > 0)
     {
       mySlots[aCurrent].myKey           = std::move(mySlots[aNext].myKey);
       mySlots[aCurrent].myHash          = mySlots[aNext].myHash;
       mySlots[aCurrent].myProbeDistance = mySlots[aNext].myProbeDistance - 1;
-      mySlots[aCurrent].myState         = SLOT_USED;
+      mySlots[aCurrent].myState         = SlotState::Used;
 
-      mySlots[aNext].myState = SLOT_DELETED;
+      mySlots[aNext].myState = SlotState::Deleted;
 
       aCurrent = aNext;
       aNext    = (aNext + 1) & aMask;
     }
 
-    mySlots[aCurrent].myState = SLOT_EMPTY;
+    mySlots[aCurrent].myState = SlotState::Empty;
   }
 
 private:
