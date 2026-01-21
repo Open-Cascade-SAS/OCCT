@@ -208,8 +208,9 @@ void BRepTools_Modifier::Perform(const occ::handle<BRepTools_Modification>& M,
 
 void BRepTools_Modifier::Put(const TopoDS_Shape& S)
 {
-  if (myMap.Bind(S, TopoDS_Shape()))
+  if (!myMap.IsBound(S))
   {
+    myMap.Bind(S, TopoDS_Shape());
     for (TopoDS_Iterator theIterator(S, false); theIterator.More(); theIterator.Next())
     {
       Put(theIterator.Value());
