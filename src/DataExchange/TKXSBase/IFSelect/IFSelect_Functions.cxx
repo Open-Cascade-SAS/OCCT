@@ -72,7 +72,7 @@
 #include <cstdio>
 
 //  Decomposition of a file name in its parts : prefix, root, suffix
-static void SplitFileName(const char*              filename,
+static void SplitFileName(const char* const        filename,
                           TCollection_AsciiString& prefix,
                           TCollection_AsciiString& fileroot,
                           TCollection_AsciiString& suffix)
@@ -132,7 +132,7 @@ static IFSelect_ReturnStatus fun3(const occ::handle<IFSelect_SessionPilot>& pilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    XRead / Load         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -186,7 +186,7 @@ static IFSelect_ReturnStatus fun4(const occ::handle<IFSelect_SessionPilot>& pilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Write All         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -201,8 +201,8 @@ static IFSelect_ReturnStatus fun5(const occ::handle<IFSelect_SessionPilot>& pilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  //  const char* arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  //  const char* const arg2 = pilot->Arg(2);
   //        ****    Write Selected         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -228,7 +228,7 @@ static IFSelect_ReturnStatus fun6(const occ::handle<IFSelect_SessionPilot>& pilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Write Entite(s)         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -270,7 +270,7 @@ static IFSelect_ReturnStatus fun7(const occ::handle<IFSelect_SessionPilot>& pilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Entity Label       ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -299,7 +299,7 @@ static IFSelect_ReturnStatus fun8(const occ::handle<IFSelect_SessionPilot>& pilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Entity Number      ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -349,8 +349,8 @@ static IFSelect_ReturnStatus funcount(const occ::handle<IFSelect_SessionPilot>& 
 {
   occ::handle<IFSelect_WorkSession> WS       = pilot->Session();
   int                               argc     = pilot->NbWords();
-  const char*                       arg0     = pilot->Arg(0);
-  const char*                       arg1     = pilot->Arg(1);
+  const char* const                 arg0     = pilot->Arg(0);
+  const char* const                 arg1     = pilot->Arg(1);
   bool                              listmode = (arg0[0] == 'l');
   //        ****    List Counter         ****
 
@@ -438,7 +438,7 @@ static IFSelect_ReturnStatus funsigntype(const occ::handle<IFSelect_SessionPilot
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Sign Type              ****
   occ::handle<IFSelect_Signature> signtype = WS->SignType();
   Message_Messenger::StreamBuffer sout     = Message::SendInfo();
@@ -488,7 +488,7 @@ static IFSelect_ReturnStatus funsigntype(const occ::handle<IFSelect_SessionPilot
 static IFSelect_ReturnStatus funsigncase(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Sign Case              ****
   occ::handle<IFSelect_Signature> signcase = GetCasted(IFSelect_Signature, WS->NamedItem(arg1));
   Message_Messenger::StreamBuffer sout     = Message::SendInfo();
@@ -527,7 +527,7 @@ static IFSelect_ReturnStatus fun10(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Entity Status          ****
   int                             i, nb;
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -555,7 +555,7 @@ static IFSelect_ReturnStatus fun11(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS = pilot->Session();
   //  int argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  const char* const arg1 = pilot->Arg(1);
   //        ****    DumpModel (Data)  ****
   int niv = 0;
   //  char arg10 = arg1[0];
@@ -638,9 +638,9 @@ static IFSelect_ReturnStatus fundumpent(const occ::handle<IFSelect_SessionPilot>
     return IFSelect_RetError;
   }
 
-  const char* arg1 = pilot->Arg(1);
-  const char* arg2 = pilot->Arg(2);
-  int         num  = pilot->Number(arg1);
+  const char* const arg1 = pilot->Arg(1);
+  const char* const arg2 = pilot->Arg(2);
+  int               num  = pilot->Number(arg1);
   if (num == 0)
     return IFSelect_RetError;
   level = levdef;
@@ -670,8 +670,8 @@ static IFSelect_ReturnStatus funsign(const occ::handle<IFSelect_SessionPilot>& p
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   Message_Messenger::StreamBuffer   sout = Message::SendInfo();
   if (argc < 3)
   {
@@ -696,8 +696,8 @@ static IFSelect_ReturnStatus funqp(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   Message_Messenger::StreamBuffer   sout = Message::SendInfo();
   if (argc < 3)
   {
@@ -739,7 +739,7 @@ static IFSelect_ReturnStatus fun14(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    NewInt            ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 1)
@@ -757,8 +757,8 @@ static IFSelect_ReturnStatus fun15(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SetInt            ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -777,7 +777,7 @@ static IFSelect_ReturnStatus fun16(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    NewText           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 1)
@@ -795,8 +795,8 @@ static IFSelect_ReturnStatus fun17(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SetText           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -814,7 +814,7 @@ static IFSelect_ReturnStatus fun19(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    DumpSel           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -848,7 +848,7 @@ static IFSelect_ReturnStatus fun20(const occ::handle<IFSelect_SessionPilot>& pil
   occ::handle<IFSelect_SelectPointed> pnt;
   if (mode == 'm')
   {
-    const char*                     arg1 = pilot->Arg(1);
+    const char* const               arg1 = pilot->Arg(1);
     occ::handle<Standard_Transient> item = WS->NamedItem(arg1);
     pnt                                  = GetCasted(IFSelect_SelectPointed, item);
     if (!pnt.IsNull())
@@ -958,7 +958,7 @@ static IFSelect_ReturnStatus fun22(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    ClearData           ****
   int mode = -1;
   if (argc >= 2)
@@ -1033,7 +1033,7 @@ static IFSelect_ReturnStatus fun25(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Save (Dump)       ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1051,7 +1051,7 @@ static IFSelect_ReturnStatus fun26(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Restore (Dump)    ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1074,9 +1074,9 @@ static IFSelect_ReturnStatus fun27(const occ::handle<IFSelect_SessionPilot>& pil
 {
   int                               argc       = pilot->NbWords();
   occ::handle<IFSelect_WorkSession> WS         = pilot->Session();
-  const char*                       arg1       = pilot->Arg(1);
+  const char* const                 arg1       = pilot->Arg(1);
   const char*                       arg2       = pilot->Arg(2);
-  const char*                       anEmptyStr = "";
+  const char* const                 anEmptyStr = "";
   if (arg2 && strlen(arg2) == 2 && arg2[0] == '"' && arg2[1] == '"')
   {
     arg2 = anEmptyStr;
@@ -1187,7 +1187,7 @@ static IFSelect_ReturnStatus fun30(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    FilePrefix        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1207,7 +1207,7 @@ static IFSelect_ReturnStatus fun31(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    FileExtension     ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1227,8 +1227,8 @@ static IFSelect_ReturnStatus fun32(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    FileRoot          ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1255,7 +1255,7 @@ static IFSelect_ReturnStatus fun33(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Default File Root     ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1344,7 +1344,7 @@ static IFSelect_ReturnStatus fun37(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Remaining Data     ****
   char                mode  = '?';
   IFSelect_RemainMode numod = IFSelect_RemainDisplay;
@@ -1378,8 +1378,8 @@ static IFSelect_ReturnStatus fun38(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SetModelContent    ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -1430,7 +1430,7 @@ static IFSelect_ReturnStatus fun41(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Modifier           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1476,8 +1476,8 @@ static IFSelect_ReturnStatus fun42(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    ModifSel           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1511,8 +1511,8 @@ static IFSelect_ReturnStatus fun43(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SetAppliedModifier           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1549,7 +1549,7 @@ static IFSelect_ReturnStatus fun44(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    ResetApplied (modifier)    ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1572,9 +1572,9 @@ static IFSelect_ReturnStatus fun45(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
-  const char*                       arg3 = pilot->Arg(3);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
+  const char* const                 arg3 = pilot->Arg(3);
   //        ****    ModifMove         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 4)
@@ -1608,8 +1608,8 @@ static IFSelect_ReturnStatus fun51(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    DispSel           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -1654,7 +1654,7 @@ static IFSelect_ReturnStatus fun_dispcount(const occ::handle<IFSelect_SessionPil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    DispCount         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1677,7 +1677,7 @@ static IFSelect_ReturnStatus fun_dispfiles(const occ::handle<IFSelect_SessionPil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    DispFiles         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1700,7 +1700,7 @@ static IFSelect_ReturnStatus fun_dispsign(const occ::handle<IFSelect_SessionPilo
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    DispFiles         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1723,7 +1723,7 @@ static IFSelect_ReturnStatus fun56(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Dispatch           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1756,7 +1756,7 @@ static IFSelect_ReturnStatus fun57(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Remove           ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -1773,7 +1773,7 @@ static IFSelect_ReturnStatus fun58(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    EvalDisp          ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -1816,7 +1816,7 @@ static IFSelect_ReturnStatus fun_evaladisp(const occ::handle<IFSelect_SessionPil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    EvalADisp [GiveList]         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -1880,7 +1880,7 @@ static IFSelect_ReturnStatus fun_writedisp(const occ::handle<IFSelect_SessionPil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    EvalADisp [GiveList]         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -1952,7 +1952,7 @@ static IFSelect_ReturnStatus fun59(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    EvalComplete      ****
   int                             mode = 0;
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -1983,7 +1983,7 @@ static IFSelect_ReturnStatus fun61(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    RunTransformer    ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -2052,7 +2052,7 @@ static IFSelect_ReturnStatus fun6465(const occ::handle<IFSelect_SessionPilot>& p
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    Run Modifier avec Standard Copy     ****
   //        ****    Run Modifier avec OnTheSpot         ****
   bool runcopy = (pilot->Arg(0)[3] == 'c');
@@ -2146,7 +2146,7 @@ static IFSelect_ReturnStatus fun70(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    SelToggle         ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -2171,8 +2171,8 @@ static IFSelect_ReturnStatus fun71(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelInput          ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -2206,8 +2206,8 @@ static IFSelect_ReturnStatus fun73(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelRange          ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc >= 2 && arg1[0] == '?')
@@ -2283,8 +2283,8 @@ static IFSelect_ReturnStatus fun76(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelDiff           ****
   occ::handle<IFSelect_Selection> sel = new IFSelect_SelectDiff;
   if (sel.IsNull())
@@ -2307,8 +2307,8 @@ static IFSelect_ReturnStatus fun77(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelControlMain       ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -2328,8 +2328,8 @@ static IFSelect_ReturnStatus fun78(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelControlSecond       ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -2356,8 +2356,8 @@ static IFSelect_ReturnStatus fun80(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelCombAdd        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -2377,8 +2377,8 @@ static IFSelect_ReturnStatus fun81(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   //        ****    SelCombRem        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 3)
@@ -2398,7 +2398,7 @@ static IFSelect_ReturnStatus fun82(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    SelEntNumber      ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -2428,8 +2428,8 @@ static IFSelect_ReturnStatus fun84(const occ::handle<IFSelect_SessionPilot>& pil
 
 static IFSelect_ReturnStatus fun85(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    SelTextType Exact ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -2460,8 +2460,8 @@ static IFSelect_ReturnStatus fun88(const occ::handle<IFSelect_SessionPilot>& pil
 
 static IFSelect_ReturnStatus fun89(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
-  int         argc = pilot->NbWords();
-  const char* arg1 = pilot->Arg(1);
+  int               argc = pilot->NbWords();
+  const char* const arg1 = pilot->Arg(1);
   //        ****    SelTextType Contain **
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -2493,7 +2493,7 @@ static IFSelect_ReturnStatus fun91(const occ::handle<IFSelect_SessionPilot>& pil
 {
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   //        ****    SetPointed (edit) / SetList (edit)    ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   if (argc < 2)
@@ -2594,8 +2594,8 @@ static IFSelect_ReturnStatus fun92(const occ::handle<IFSelect_SessionPilot>& pil
 static IFSelect_ReturnStatus fun93(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   //        ****    SelSignature        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -2631,7 +2631,7 @@ static IFSelect_ReturnStatus fun93(const occ::handle<IFSelect_SessionPilot>& pil
 static IFSelect_ReturnStatus fun94(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   //        ****    SignCounter        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -2653,7 +2653,7 @@ static IFSelect_ReturnStatus fun94(const occ::handle<IFSelect_SessionPilot>& pil
 static IFSelect_ReturnStatus funbselected(const occ::handle<IFSelect_SessionPilot>& pilot)
 {
   int                               argc = pilot->NbWords();
-  const char*                       arg1 = pilot->Arg(1);
+  const char* const                 arg1 = pilot->Arg(1);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   //        ****    NbSelected = GraphCounter        ****
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
@@ -2686,8 +2686,8 @@ static IFSelect_ReturnStatus fun_editlist(const occ::handle<IFSelect_SessionPilo
     sout << "Give the name of an EditForm or an Editor" << std::endl;
     return IFSelect_RetError;
   }
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
 
   //  EditForm
@@ -2748,8 +2748,8 @@ static IFSelect_ReturnStatus fun_editvalue(const occ::handle<IFSelect_SessionPil
          << std::endl;
     return IFSelect_RetError;
   }
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
   if (edf.IsNull())
@@ -2802,7 +2802,7 @@ static IFSelect_ReturnStatus fun_editvalue(const occ::handle<IFSelect_SessionPil
   int numarg = 3;
   str.Nullify();
 
-  const char* argval = pilot->Arg(numarg);
+  const char* const argval = pilot->Arg(numarg);
   if (islist)
   {
     if (argval[0] == '?')
@@ -2879,8 +2879,8 @@ static IFSelect_ReturnStatus fun_editclear(const occ::handle<IFSelect_SessionPil
     sout << "Give the name of an EditForm [+ name of Value  else all]" << std::endl;
     return IFSelect_RetError;
   }
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
   if (edf.IsNull())
@@ -2922,8 +2922,8 @@ static IFSelect_ReturnStatus fun_editapply(const occ::handle<IFSelect_SessionPil
     sout << "Give the name of an EditForm [+ option keep to re-apply edited values]" << std::endl;
     return IFSelect_RetError;
   }
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
   if (edf.IsNull())
@@ -2977,8 +2977,8 @@ static IFSelect_ReturnStatus fun_editload(const occ::handle<IFSelect_SessionPilo
     sout << "Give the name of an EditForm [+ Entity-Ident]" << std::endl;
     return IFSelect_RetError;
   }
-  const char*                       arg1 = pilot->Arg(1);
-  const char*                       arg2 = pilot->Arg(2);
+  const char* const                 arg1 = pilot->Arg(1);
+  const char* const                 arg2 = pilot->Arg(2);
   occ::handle<IFSelect_WorkSession> WS   = pilot->Session();
   DeclareAndCast(IFSelect_EditForm, edf, WS->NamedItem(arg1));
   if (edf.IsNull())
@@ -3020,7 +3020,7 @@ static IFSelect_ReturnStatus fun_editload(const occ::handle<IFSelect_SessionPilo
 
 occ::handle<Standard_Transient> IFSelect_Functions::GiveEntity(
   const occ::handle<IFSelect_WorkSession>& WS,
-  const char*                              name)
+  const char* const                        name)
 {
   occ::handle<Standard_Transient> ent; // demarre a Null
   int                             num = GiveEntityNumber(WS, name);
@@ -3030,7 +3030,7 @@ occ::handle<Standard_Transient> IFSelect_Functions::GiveEntity(
 }
 
 int IFSelect_Functions::GiveEntityNumber(const occ::handle<IFSelect_WorkSession>& WS,
-                                         const char*                              name)
+                                         const char* const                        name)
 {
   int num = 0;
   if (!name || name[0] == '\0')
@@ -3052,8 +3052,8 @@ int IFSelect_Functions::GiveEntityNumber(const occ::handle<IFSelect_WorkSession>
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Functions::GiveList(
   const occ::handle<IFSelect_WorkSession>& WS,
-  const char*                              first,
-  const char*                              second)
+  const char* const                        first,
+  const char* const                        second)
 {
   return WS->GiveList(first, second);
 }
@@ -3067,7 +3067,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Fun
 
 occ::handle<IFSelect_Dispatch> IFSelect_Functions::GiveDispatch(
   const occ::handle<IFSelect_WorkSession>& WS,
-  const char*                              name,
+  const char* const                        name,
   const bool                               mode)
 {
   DeclareAndCast(IFSelect_Dispatch, disp, WS->NamedItem(name));

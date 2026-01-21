@@ -39,7 +39,7 @@ Units_Measurement::Units_Measurement(const double avalue, const occ::handle<Unit
 
 //=================================================================================================
 
-Units_Measurement::Units_Measurement(const double avalue, const char* aunit)
+Units_Measurement::Units_Measurement(const double avalue, const char* const aunit)
 {
   themeasurement = avalue;
   Units_UnitSentence unit(aunit);
@@ -61,7 +61,7 @@ Units_Measurement::Units_Measurement(const double avalue, const char* aunit)
 
 //=================================================================================================
 
-void Units_Measurement::Convert(const char* aunit)
+void Units_Measurement::Convert(const char* const aunit)
 {
   occ::handle<Units_Token> oldtoken = thetoken;
   Units_UnitSentence       newunit(aunit);

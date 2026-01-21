@@ -36,10 +36,10 @@ public:
   Standard_EXPORT OSD_SharedLibrary();
 
   //! Creates a SharedLibrary object with name aFilename.
-  Standard_EXPORT OSD_SharedLibrary(const char* aFilename);
+  Standard_EXPORT OSD_SharedLibrary(const char* const aFilename);
 
   //! Sets a name associated to the shared object.
-  Standard_EXPORT void SetName(const char* aName);
+  Standard_EXPORT void SetName(const char* const aName);
 
   //! Returns the name associated to the shared object.
   Standard_EXPORT const char* Name() const;
@@ -70,7 +70,7 @@ public:
   //! symbol name found in the shared library.
   //! If the symbol is not found, a NULL pointer is
   //! returned.
-  Standard_EXPORT OSD_Function DlSymb(const char* Name) const;
+  Standard_EXPORT OSD_Function DlSymb(const char* const Name) const;
 
   //! Deallocates the address space for the library
   //! corresponding to the shared object.

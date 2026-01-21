@@ -357,7 +357,7 @@ void Units_UnitsDictionary::Creates()
 
 //=================================================================================================
 
-TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const char* aquantity) const
+TCollection_AsciiString Units_UnitsDictionary::ActiveUnit(const char* const aquantity) const
 {
   int                                                         index1;
   occ::handle<Units_Unit>                                     unit;

@@ -27,7 +27,7 @@
 IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_InterfaceModel>&  model,
                                              const occ::handle<Interface_Protocol>&        proto,
                                              const occ::handle<IFSelect_AppliedModifiers>& applieds,
-                                             const char*                                   filename)
+                                             const char* const                             filename)
     : themodel(model),
       theproto(proto),
       thefile(filename),
@@ -43,7 +43,7 @@ IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_Interfa
 IFSelect_ContextWrite::IFSelect_ContextWrite(const occ::handle<Interface_HGraph>&          hgraph,
                                              const occ::handle<Interface_Protocol>&        proto,
                                              const occ::handle<IFSelect_AppliedModifiers>& applieds,
-                                             const char*                                   filename)
+                                             const char* const                             filename)
     : themodel(hgraph->Graph().Model()),
       theproto(proto),
       thefile(filename),
@@ -186,8 +186,8 @@ void IFSelect_ContextWrite::AddCheck(const occ::handle<Interface_Check>& check)
 //=================================================================================================
 
 void IFSelect_ContextWrite::AddWarning(const occ::handle<Standard_Transient>& start,
-                                       const char*                            mess,
-                                       const char*                            orig)
+                                       const char* const                      mess,
+                                       const char* const                      orig)
 {
   thecheck.CCheck(themodel->Number(start))->AddWarning(mess, orig);
 }
@@ -195,8 +195,8 @@ void IFSelect_ContextWrite::AddWarning(const occ::handle<Standard_Transient>& st
 //=================================================================================================
 
 void IFSelect_ContextWrite::AddFail(const occ::handle<Standard_Transient>& start,
-                                    const char*                            mess,
-                                    const char*                            orig)
+                                    const char* const                      mess,
+                                    const char* const                      orig)
 {
   thecheck.CCheck(themodel->Number(start))->AddFail(mess, orig);
 }

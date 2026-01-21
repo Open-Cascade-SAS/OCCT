@@ -146,7 +146,7 @@ public:
   //! remaining data, already sent files, etc. Applies the Model and
   //! File Modifiers.
   //! Returns True if well done, False else
-  Standard_EXPORT Interface_CheckIterator SendAll(const char*                              filename,
+  Standard_EXPORT Interface_CheckIterator SendAll(const char* const                        filename,
                                                   const Interface_Graph&                   G,
                                                   const occ::handle<IFSelect_WorkLibrary>& WL,
                                                   const occ::handle<Interface_Protocol>& protocol);
@@ -156,7 +156,7 @@ public:
   //! Remaining data are managed and can be later be worked on.
   //! Returns True if well done, False else
   Standard_EXPORT Interface_CheckIterator
-    SendSelected(const char*                              filename,
+    SendSelected(const char* const                        filename,
                  const Interface_Graph&                   G,
                  const occ::handle<IFSelect_WorkLibrary>& WL,
                  const occ::handle<Interface_Protocol>&   protocol,
@@ -211,7 +211,7 @@ public:
   //! Adds the name of a just sent file, if BeginSentFiles
   //! has commanded recording; else does nothing
   //! It is called by methods SendCopied Sending
-  Standard_EXPORT void AddSentFile(const char* filename);
+  Standard_EXPORT void AddSentFile(const char* const filename);
 
   //! Returns the list of recorded names of sent files. Can be empty
   //! (if no file has been sent). Returns a Null Handle if

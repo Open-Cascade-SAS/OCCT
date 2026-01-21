@@ -70,7 +70,7 @@ IGESSelect_WorkLibrary::IGESSelect_WorkLibrary(const bool modefnes)
   SetDumpHelp(6, "Complete + Transformed data");
 }
 
-int IGESSelect_WorkLibrary::ReadFile(const char*                            name,
+int IGESSelect_WorkLibrary::ReadFile(const char* const                      name,
                                      occ::handle<Interface_InterfaceModel>& model,
                                      const occ::handle<Interface_Protocol>& protocol) const
 {

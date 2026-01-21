@@ -487,7 +487,7 @@ void StepData_StepWriter::SendComment(const occ::handle<TCollection_HAsciiString
 
 //=================================================================================================
 
-void StepData_StepWriter::SendComment(const char* text)
+void StepData_StepWriter::SendComment(const char* const text)
 {
   if (!thecomm)
     throw Interface_InterfaceMismatch("StepWriter : Comment");
@@ -772,7 +772,7 @@ void StepData_StepWriter::OpenSub()
 
 //=================================================================================================
 
-void StepData_StepWriter::OpenTypedSub(const char* subtype)
+void StepData_StepWriter::OpenTypedSub(const char* const subtype)
 {
   AddParam();
   if (subtype[0] != '\0')
@@ -991,7 +991,7 @@ void StepData_StepWriter::SendString(const TCollection_AsciiString& val)
 
 //=================================================================================================
 
-void StepData_StepWriter::SendString(const char* val)
+void StepData_StepWriter::SendString(const char* const val)
 {
   AddParam();
   AddString(val, (int)strlen(val));
@@ -1021,7 +1021,7 @@ void StepData_StepWriter::SendEnum(const TCollection_AsciiString& val)
 
 //=================================================================================================
 
-void StepData_StepWriter::SendEnum(const char* val)
+void StepData_StepWriter::SendEnum(const char* const val)
 {
 
   if (val[0] == '$' && val[1] == '\0')
@@ -1106,7 +1106,7 @@ void StepData_StepWriter::AddString(const TCollection_AsciiString& astr, const i
 
 //=================================================================================================
 
-void StepData_StepWriter::AddString(const char* astr, const int lnstr, const int more)
+void StepData_StepWriter::AddString(const char* const astr, const int lnstr, const int more)
 {
   while (!thecurr.CanGet(lnstr + more))
   {

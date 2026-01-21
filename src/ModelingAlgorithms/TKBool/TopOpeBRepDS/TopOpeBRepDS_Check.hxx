@@ -89,7 +89,7 @@ public:
 private:
   Standard_EXPORT Standard_OStream& PrintMap(
     NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>& MapStat,
-    const char*                                         eltstr,
+    const char* const                                   eltstr,
     Standard_OStream&                                   S);
 
   Standard_EXPORT Standard_OStream& PrintElts(

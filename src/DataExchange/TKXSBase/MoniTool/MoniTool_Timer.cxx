@@ -61,7 +61,7 @@ NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHa
 // purpose  : Return handle for timer from map
 //=======================================================================
 
-occ::handle<MoniTool_Timer> MoniTool_Timer::Timer(const char* name)
+occ::handle<MoniTool_Timer> MoniTool_Timer::Timer(const char* const name)
 {
   //  AmendAccess();
   NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& dic =

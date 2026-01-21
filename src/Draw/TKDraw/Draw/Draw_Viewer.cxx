@@ -1247,10 +1247,10 @@ void Draw_Display::Flush() const
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt2d& ppt,
-                              const char*     S,
-                              const double    moveX,
-                              const double    moveY)
+void Draw_Display::DrawString(const gp_Pnt2d&   ppt,
+                              const char* const S,
+                              const double      moveX,
+                              const double      moveY)
 {
   if (Draw_Batch)
     return;
@@ -1303,7 +1303,7 @@ void Draw_Display::DrawString(const gp_Pnt2d& ppt,
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt2d& ppt, const char* S)
+void Draw_Display::DrawString(const gp_Pnt2d& ppt, const char* const S)
 {
   if (Draw_Batch)
     return;
@@ -1312,10 +1312,10 @@ void Draw_Display::DrawString(const gp_Pnt2d& ppt, const char* S)
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt& pt,
-                              const char*   S,
-                              const double  moveX,
-                              const double  moveY)
+void Draw_Display::DrawString(const gp_Pnt&     pt,
+                              const char* const S,
+                              const double      moveX,
+                              const double      moveY)
 {
   if (Draw_Batch)
     return;
@@ -1324,7 +1324,7 @@ void Draw_Display::DrawString(const gp_Pnt& pt,
 
 //=================================================================================================
 
-void Draw_Display::DrawString(const gp_Pnt& pt, const char* S)
+void Draw_Display::DrawString(const gp_Pnt& pt, const char* const S)
 {
   if (Draw_Batch)
     return;

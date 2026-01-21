@@ -111,11 +111,11 @@ public:
   //! It has same effect for TransferProcess as raising an exception
   //! during the operation of Transfer, except the Transfer tries to
   //! continue (as if ErrorHandle had been set)
-  Standard_EXPORT void AddFail(const char* mess, const char* orig = "");
+  Standard_EXPORT void AddFail(const char* const mess, const char* const orig = "");
 
   //! Used to attach a Warning Message to an individual Transfer
   //! It has no effect on the Status
-  Standard_EXPORT void AddWarning(const char* mess, const char* orig = "");
+  Standard_EXPORT void AddWarning(const char* const mess, const char* const orig = "");
 
   //! Returns Check which stores Fail messages
   //! Note that no Entity is associated in this Check

@@ -30,7 +30,7 @@ class StlAPI_Reader
 public:
   //! Reads STL file to the TopoDS_Shape (each triangle is converted to the face).
   //! @return True if reading is successful
-  Standard_EXPORT bool Read(TopoDS_Shape& theShape, const char* theFileName);
+  Standard_EXPORT bool Read(TopoDS_Shape& theShape, const char* const theFileName);
 
   //! Reads STL data from stream to the TopoDS_Shape (each triangle is converted to the face).
   //! @param theShape result shape

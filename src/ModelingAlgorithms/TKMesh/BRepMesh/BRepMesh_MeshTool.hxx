@@ -84,7 +84,7 @@ public:
   const occ::handle<BRepMesh_DataStructureOfDelaun>& GetStructure() const { return myStructure; }
 
   //! Dumps triangles to specified file.
-  void DumpTriangles(const char* theFileName, IMeshData::MapOfInteger* theTriangles);
+  void DumpTriangles(const char* const theFileName, IMeshData::MapOfInteger* theTriangles);
 
   //! Adds new triangle with specified nodes to mesh.
   //! Legalizes triangle in case if it violates circle criteria.

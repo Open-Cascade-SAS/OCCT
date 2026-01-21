@@ -60,28 +60,28 @@ public:
   //! 0: default mode; 1 : for xset
   Standard_EXPORT static void Adding(const occ::handle<IFSelect_Activator>& actor,
                                      const int                              number,
-                                     const char*                            command,
+                                     const char* const                      command,
                                      const int                              mode);
 
   //! Allows a self-definition by an Activator of the Commands it
   //! processes, call the class method Adding (mode 0)
-  Standard_EXPORT void Add(const int number, const char* command) const;
+  Standard_EXPORT void Add(const int number, const char* const command) const;
 
   //! Same as Add but specifies that this command is candidate for
   //! xset (creation of items, xset : named items; mode 1)
-  Standard_EXPORT void AddSet(const int number, const char* command) const;
+  Standard_EXPORT void AddSet(const int number, const char* const command) const;
 
   //! Removes a Command, if it is recorded (else, does nothing)
-  Standard_EXPORT static void Remove(const char* command);
+  Standard_EXPORT static void Remove(const char* const command);
 
   //! Selects, for a Command given by its title, an actor with its
   //! command number. Returns True if found, False else
-  Standard_EXPORT static bool Select(const char*                      command,
+  Standard_EXPORT static bool Select(const char* const                command,
                                      int&                             number,
                                      occ::handle<IFSelect_Activator>& actor);
 
   //! Returns mode recorded for a command. -1 if not found
-  Standard_EXPORT static int Mode(const char* command);
+  Standard_EXPORT static int Mode(const char* const command);
 
   //! Returns, for a root of command title, the list of possible
   //! commands.
@@ -89,8 +89,8 @@ public:
   //! -1 + command : about a Group , >= 0 see Adding
   //! By default, it returns the whole list of known commands.
   Standard_EXPORT static occ::handle<NCollection_HSequence<TCollection_AsciiString>> Commands(
-    const int   mode    = -1,
-    const char* command = "");
+    const int         mode    = -1,
+    const char* const command = "");
 
   //! Tries to execute a Command Line. <number> is the number of the
   //! command for this Activator. It Must forecast to record the
@@ -113,7 +113,7 @@ public:
   //! Group and SetGroup define a "Group of commands" which
   //! correspond to an Activator. Default is "XSTEP"
   //! Also a file may be attached
-  Standard_EXPORT void SetForGroup(const char* group, const char* file = "");
+  Standard_EXPORT void SetForGroup(const char* const group, const char* const file = "");
 
   DEFINE_STANDARD_RTTIEXT(IFSelect_Activator, Standard_Transient)
 

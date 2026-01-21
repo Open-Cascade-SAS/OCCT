@@ -366,9 +366,9 @@ StepData_StepReaderData::StepData_StepReaderData(const int                 nbhea
 
 //=================================================================================================
 
-void StepData_StepReaderData::SetRecord(const int   num,
-                                        const char* ident,
-                                        const char* type,
+void StepData_StepReaderData::SetRecord(const int         num,
+                                        const char* const ident,
+                                        const char* const type,
                                         const int /* nbpar */)
 {
   int numlst;
@@ -449,7 +449,7 @@ void StepData_StepReaderData::SetRecord(const int   num,
 //=================================================================================================
 
 void StepData_StepReaderData::AddStepParam(const int                 num,
-                                           const char*               aval,
+                                           const char* const         aval,
                                            const Interface_ParamType atype,
                                            const int                 nument)
 {
@@ -559,7 +559,7 @@ int StepData_StepReaderData::NextForComplex(const int num) const
 
 //=================================================================================================
 
-bool StepData_StepReaderData::NamedForComplex(const char*                   name,
+bool StepData_StepReaderData::NamedForComplex(const char* const             name,
                                               const int                     num0,
                                               int&                          num,
                                               occ::handle<Interface_Check>& ach) const
@@ -599,8 +599,8 @@ bool StepData_StepReaderData::NamedForComplex(const char*                   name
 
 //=================================================================================================
 
-bool StepData_StepReaderData::NamedForComplex(const char*                   theName,
-                                              const char*                   theShortName,
+bool StepData_StepReaderData::NamedForComplex(const char* const             theName,
+                                              const char* const             theShortName,
                                               const int                     num0,
                                               int&                          num,
                                               occ::handle<Interface_Check>& ach) const
@@ -645,7 +645,7 @@ bool StepData_StepReaderData::NamedForComplex(const char*                   theN
 bool StepData_StepReaderData::CheckNbParams(const int                     num,
                                             const int                     nbreq,
                                             occ::handle<Interface_Check>& ach,
-                                            const char*                   mess) const
+                                            const char* const             mess) const
 {
   if (NbParams(num) == nbreq)
     return true;
@@ -664,7 +664,7 @@ bool StepData_StepReaderData::CheckNbParams(const int                     num,
 
 bool StepData_StepReaderData::ReadSubList(const int                     num,
                                           const int                     nump,
-                                          const char*                   mess,
+                                          const char* const             mess,
                                           occ::handle<Interface_Check>& ach,
                                           int&                          numsub,
                                           const bool                    optional,
@@ -701,7 +701,7 @@ bool StepData_StepReaderData::ReadSubList(const int                     num,
 //=================================================================================================
 
 int StepData_StepReaderData::ReadSub(const int                           numsub,
-                                     const char*                         mess,
+                                     const char* const                   mess,
                                      occ::handle<Interface_Check>&       ach,
                                      const occ::handle<StepData_PDescr>& descr,
                                      occ::handle<Standard_Transient>&    val) const
@@ -996,7 +996,7 @@ int StepData_StepReaderData::ReadSub(const int                           numsub,
 
 bool StepData_StepReaderData::ReadMember(const int                           num,
                                          const int                           nump,
-                                         const char*                         mess,
+                                         const char* const                   mess,
                                          occ::handle<Interface_Check>&       ach,
                                          occ::handle<StepData_SelectMember>& val) const
 {
@@ -1022,7 +1022,7 @@ bool StepData_StepReaderData::ReadMember(const int                           num
 
 bool StepData_StepReaderData::ReadField(const int                           num,
                                         const int                           nump,
-                                        const char*                         mess,
+                                        const char* const                   mess,
                                         occ::handle<Interface_Check>&       ach,
                                         const occ::handle<StepData_PDescr>& descr,
                                         StepData_Field&                     fild) const
@@ -1121,7 +1121,7 @@ bool StepData_StepReaderData::ReadList(const int                            num,
 
 bool StepData_StepReaderData::ReadAny(const int                           num,
                                       const int                           nump,
-                                      const char*                         mess,
+                                      const char* const                   mess,
                                       occ::handle<Interface_Check>&       ach,
                                       const occ::handle<StepData_PDescr>& descr,
                                       occ::handle<Standard_Transient>&    val) const
@@ -1304,7 +1304,7 @@ bool StepData_StepReaderData::ReadAny(const int                           num,
 
 bool StepData_StepReaderData::ReadXY(const int                     num,
                                      const int                     nump,
-                                     const char*                   mess,
+                                     const char* const             mess,
                                      occ::handle<Interface_Check>& ach,
                                      double&                       X,
                                      double&                       Y) const
@@ -1346,7 +1346,7 @@ bool StepData_StepReaderData::ReadXY(const int                     num,
 
 bool StepData_StepReaderData::ReadXYZ(const int                     num,
                                       const int                     nump,
-                                      const char*                   mess,
+                                      const char* const             mess,
                                       occ::handle<Interface_Check>& ach,
                                       double&                       X,
                                       double&                       Y,
@@ -1395,7 +1395,7 @@ bool StepData_StepReaderData::ReadXYZ(const int                     num,
 
 bool StepData_StepReaderData::ReadReal(const int                     num,
                                        const int                     nump,
-                                       const char*                   mess,
+                                       const char* const             mess,
                                        occ::handle<Interface_Check>& ach,
                                        double&                       val) const
 {
@@ -1426,7 +1426,7 @@ bool StepData_StepReaderData::ReadReal(const int                     num,
 
 bool StepData_StepReaderData::ReadEntity(const int                         num,
                                          const int                         nump,
-                                         const char*                       mess,
+                                         const char* const                 mess,
                                          occ::handle<Interface_Check>&     ach,
                                          const occ::handle<Standard_Type>& atype,
                                          occ::handle<Standard_Transient>&  ent) const
@@ -1476,7 +1476,7 @@ bool StepData_StepReaderData::ReadEntity(const int                         num,
 
 bool StepData_StepReaderData::ReadEntity(const int                     num,
                                          const int                     nump,
-                                         const char*                   mess,
+                                         const char* const             mess,
                                          occ::handle<Interface_Check>& ach,
                                          StepData_SelectType&          sel) const
 {
@@ -1540,7 +1540,7 @@ bool StepData_StepReaderData::ReadEntity(const int                     num,
 
 bool StepData_StepReaderData::ReadInteger(const int                     num,
                                           const int                     nump,
-                                          const char*                   mess,
+                                          const char* const             mess,
                                           occ::handle<Interface_Check>& ach,
                                           int&                          val) const
 {
@@ -1574,7 +1574,7 @@ bool StepData_StepReaderData::ReadInteger(const int                     num,
 
 bool StepData_StepReaderData::ReadBoolean(const int                     num,
                                           const int                     nump,
-                                          const char*                   mess,
+                                          const char* const             mess,
                                           occ::handle<Interface_Check>& ach,
                                           bool&                         flag) const
 {
@@ -1612,7 +1612,7 @@ bool StepData_StepReaderData::ReadBoolean(const int                     num,
 
 bool StepData_StepReaderData::ReadLogical(const int                     num,
                                           const int                     nump,
-                                          const char*                   mess,
+                                          const char* const             mess,
                                           occ::handle<Interface_Check>& ach,
                                           StepData_Logical&             flag) const
 {
@@ -1651,7 +1651,7 @@ bool StepData_StepReaderData::ReadLogical(const int                     num,
 
 bool StepData_StepReaderData::ReadString(const int                              num,
                                          const int                              nump,
-                                         const char*                            mess,
+                                         const char* const                      mess,
                                          occ::handle<Interface_Check>&          ach,
                                          occ::handle<TCollection_HAsciiString>& val) const
 {
@@ -1692,7 +1692,7 @@ bool StepData_StepReaderData::ReadString(const int                              
 
 bool StepData_StepReaderData::ReadEnumParam(const int                     num,
                                             const int                     nump,
-                                            const char*                   mess,
+                                            const char* const             mess,
                                             occ::handle<Interface_Check>& ach,
                                             const char*&                  text) const
 {
@@ -1727,7 +1727,7 @@ bool StepData_StepReaderData::ReadEnumParam(const int                     num,
 
 void StepData_StepReaderData::FailEnumValue(const int /* num */,
                                             const int                     nump,
-                                            const char*                   mess,
+                                            const char* const             mess,
                                             occ::handle<Interface_Check>& ach) const
 {
   char        txtmes[200];
@@ -1740,7 +1740,7 @@ void StepData_StepReaderData::FailEnumValue(const int /* num */,
 
 bool StepData_StepReaderData::ReadEnum(const int                     num,
                                        const int                     nump,
-                                       const char*                   mess,
+                                       const char* const             mess,
                                        occ::handle<Interface_Check>& ach,
                                        const StepData_EnumTool&      enumtool,
                                        int&                          val) const
@@ -1784,7 +1784,7 @@ bool StepData_StepReaderData::ReadEnum(const int                     num,
 bool StepData_StepReaderData::ReadTypedParam(const int                     num,
                                              const int                     nump,
                                              const bool                    mustbetyped,
-                                             const char*                   mess,
+                                             const char* const             mess,
                                              occ::handle<Interface_Check>& ach,
                                              int&                          numr,
                                              int&                          numrp,
@@ -1830,7 +1830,7 @@ bool StepData_StepReaderData::ReadTypedParam(const int                     num,
 
 bool StepData_StepReaderData::CheckDerived(const int                     num,
                                            const int                     nump,
-                                           const char*                   mess,
+                                           const char* const             mess,
                                            occ::handle<Interface_Check>& ach,
                                            const bool                    errstat) const
 {

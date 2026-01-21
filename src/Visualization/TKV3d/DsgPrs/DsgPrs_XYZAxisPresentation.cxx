@@ -31,7 +31,7 @@ void DsgPrs_XYZAxisPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
                                      const occ::handle<Prs3d_LineAspect>&   aLineAspect,
                                      const gp_Dir&                          aDir,
                                      const double                           aVal,
-                                     const char*                            theText,
+                                     const char* const                      theText,
                                      const gp_Pnt&                          aPfirst,
                                      const gp_Pnt&                          aPlast)
 {
@@ -60,7 +60,7 @@ void DsgPrs_XYZAxisPresentation::Add(const occ::handle<Prs3d_Presentation>& aPre
                                      const occ::handle<Prs3d_TextAspect>&   aTextAspect,
                                      const gp_Dir&                          aDir,
                                      const double                           aVal,
-                                     const char*                            theText,
+                                     const char* const                      theText,
                                      const gp_Pnt&                          aPfirst,
                                      const gp_Pnt&                          aPlast)
 {

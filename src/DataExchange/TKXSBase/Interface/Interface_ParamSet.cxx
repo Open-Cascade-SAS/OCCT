@@ -35,7 +35,7 @@ Interface_ParamSet::Interface_ParamSet(const int nres, const int) // nst)
 //                just refers to it
 //  Otherwise, copy to a local page
 
-int Interface_ParamSet::Append(const char*               val,
+int Interface_ParamSet::Append(const char* const         val,
                                const int                 lnval,
                                const Interface_ParamType typ,
                                const int                 nument)

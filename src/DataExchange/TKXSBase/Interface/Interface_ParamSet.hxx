@@ -47,7 +47,7 @@ public:
   //! address is stored as such. Else, <val> is copied in a locally
   //! (quickly) managed Page of Characters
   //! Returns new count of recorded Parameters
-  Standard_EXPORT int Append(const char*               val,
+  Standard_EXPORT int Append(const char* const         val,
                              const int                 lnval,
                              const Interface_ParamType typ,
                              const int                 nument);

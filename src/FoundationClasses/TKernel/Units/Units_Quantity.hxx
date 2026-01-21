@@ -41,7 +41,7 @@ public:
   //! the name of the physical quantity, <adimensions> which
   //! is the physical dimensions, and <aunitssequence> which
   //! describes all the units known for this quantity.
-  Units_Quantity(const char*                                                        aname,
+  Units_Quantity(const char* const                                                  aname,
                  const occ::handle<Units_Dimensions>&                               adimensions,
                  const occ::handle<NCollection_HSequence<occ::handle<Units_Unit>>>& aunitssequence);
 
@@ -57,7 +57,7 @@ public:
 
   //! Returns True if the name of the Quantity <me> is equal
   //! to <astring>, False otherwise.
-  Standard_EXPORT bool IsEqual(const char* astring) const;
+  Standard_EXPORT bool IsEqual(const char* const astring) const;
 
   //! Useful for debugging.
   Standard_EXPORT void Dump(const int ashift, const int alevel) const;

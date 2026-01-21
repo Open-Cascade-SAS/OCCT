@@ -66,14 +66,14 @@ public:
   //!
   //! If SignOnly Mode is set, this work is replaced by just
   //! setting LastValue
-  Standard_EXPORT void Add(const occ::handle<Standard_Transient>& ent, const char* sign);
+  Standard_EXPORT void Add(const occ::handle<Standard_Transient>& ent, const char* const sign);
 
   //! Returns the last value recorded by Add (only if SignMode set)
   //! Cleared by Clear or Init
   Standard_EXPORT const char* LastValue() const;
 
   //! Acknowledges the list in once. Name identifies the Signature
-  Standard_EXPORT void Init(const char*                                                     name,
+  Standard_EXPORT void Init(const char* const                                               name,
                             const NCollection_IndexedDataMap<TCollection_AsciiString, int>& count,
                             const NCollection_IndexedDataMap<TCollection_AsciiString,
                                                              occ::handle<Standard_Transient>>& list,
@@ -85,7 +85,7 @@ public:
   //! If <root> is given non empty, for the signatures which
   //! begin by <root>
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> List(
-    const char* root = "") const;
+    const char* const root = "") const;
 
   //! Returns True if the list of Entities is acknowledged, else
   //! the method Entities will always return a Null Handle
@@ -96,16 +96,16 @@ public:
 
   //! Returns the number of times a signature was counted,
   //! 0 if it has not been recorded at all
-  Standard_EXPORT int NbTimes(const char* sign) const;
+  Standard_EXPORT int NbTimes(const char* const sign) const;
 
   //! Returns the list of entities attached to a signature
   //! It is empty if <sign> has not been recorded
   //! It is a Null Handle if the list of entities is not known
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> Entities(
-    const char* sign) const;
+    const char* const sign) const;
 
   //! Defines a name for a SignatureList (used to print it)
-  Standard_EXPORT void SetName(const char* name);
+  Standard_EXPORT void SetName(const char* const name);
 
   //! Returns the recorded Name.
   //! Remark : default is "..." (no SetName called)

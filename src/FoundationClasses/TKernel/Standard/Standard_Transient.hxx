@@ -82,7 +82,7 @@ public:
   Standard_EXPORT bool IsInstance(const opencascade::handle<Standard_Type>& theType) const;
 
   //! Returns a true value if this is an instance of TypeName.
-  Standard_EXPORT bool IsInstance(const char* theTypeName) const;
+  Standard_EXPORT bool IsInstance(const char* const theTypeName) const;
 
   //! Returns true if this is an instance of Type or an
   //! instance of any class that inherits from Type.
@@ -92,7 +92,7 @@ public:
   //! Returns true if this is an instance of TypeName or an
   //! instance of any class that inherits from TypeName.
   //! Note that multiple inheritance is not supported by OCCT RTTI mechanism.
-  Standard_EXPORT bool IsKind(const char* theTypeName) const;
+  Standard_EXPORT bool IsKind(const char* const theTypeName) const;
 
   //! Returns non-const pointer to this object (like const_cast).
   //! For protection against creating handle to objects allocated in stack

@@ -42,14 +42,14 @@
 
 static TCollection_AsciiString    bufasc;
 static TCollection_ExtendedString bufext;
-static const char16_t*            voidext = {nullptr};
+static const char16_t* const      voidext = {nullptr};
 
 XSControl_Utils::XSControl_Utils() = default;
 
 //  #########################################################
 //  #######           TRACE   Functions           #######
 
-void XSControl_Utils::TraceLine(const char* line) const
+void XSControl_Utils::TraceLine(const char* const line) const
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   sout << line << std::endl;
@@ -191,13 +191,13 @@ const char* XSControl_Utils::DateString(const int yy,
   return bufasc.ToCString();
 }
 
-void XSControl_Utils::DateValues(const char* text,
-                                 int&        yy,
-                                 int&        mm,
-                                 int&        dd,
-                                 int&        hh,
-                                 int&        mn,
-                                 int&        ss) const
+void XSControl_Utils::DateValues(const char* const text,
+                                 int&              yy,
+                                 int&              mm,
+                                 int&              dd,
+                                 int&              hh,
+                                 int&              mn,
+                                 int&              ss) const
 {
   Interface_MSG::NDate(text, yy, mm, dd, hh, mn, ss);
 }
@@ -218,12 +218,12 @@ const char* XSControl_Utils::ToCString(const TCollection_AsciiString& strval) co
   return strval.ToCString();
 }
 
-occ::handle<TCollection_HAsciiString> XSControl_Utils::ToHString(const char* strcon) const
+occ::handle<TCollection_HAsciiString> XSControl_Utils::ToHString(const char* const strcon) const
 {
   return new TCollection_HAsciiString(strcon);
 }
 
-TCollection_AsciiString XSControl_Utils::ToAString(const char* strcon) const
+TCollection_AsciiString XSControl_Utils::ToAString(const char* const strcon) const
 {
   return TCollection_AsciiString(strcon);
 }
@@ -241,33 +241,34 @@ const char16_t* XSControl_Utils::ToEString(const TCollection_ExtendedString& str
   return strval.ToExtString();
 }
 
-occ::handle<TCollection_HExtendedString> XSControl_Utils::ToHString(const char16_t* strcon) const
+occ::handle<TCollection_HExtendedString> XSControl_Utils::ToHString(
+  const char16_t* const strcon) const
 {
   return new TCollection_HExtendedString(strcon);
 }
 
-TCollection_ExtendedString XSControl_Utils::ToXString(const char16_t* strcon) const
+TCollection_ExtendedString XSControl_Utils::ToXString(const char16_t* const strcon) const
 {
   return TCollection_ExtendedString(strcon);
 }
 
 //  #######        STRING : Ascii <-> Extended        #######
 
-const char16_t* XSControl_Utils::AsciiToExtended(const char* str) const
+const char16_t* XSControl_Utils::AsciiToExtended(const char* const str) const
 {
   bufext.Clear();
   bufext = TCollection_ExtendedString(str);
   return bufext.ToExtString();
 }
 
-bool XSControl_Utils::IsAscii(const char16_t* str) const
+bool XSControl_Utils::IsAscii(const char16_t* const str) const
 {
   bufext.Clear();
   bufext.AssignCat(str);
   return bufext.IsAscii();
 }
 
-const char* XSControl_Utils::ExtendedToAscii(const char16_t* str) const
+const char* XSControl_Utils::ExtendedToAscii(const char16_t* const str) const
 {
   bufext.Clear();
   bufext.AssignCat(str);
@@ -371,7 +372,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> XSCont
 
 void XSControl_Utils::AppendCStr(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& seqval,
-  const char*                                                                      strval) const
+  const char* const                                                                strval) const
 {
   seqval->Append(new TCollection_HAsciiString(strval));
 }
@@ -384,7 +385,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> XSC
 
 void XSControl_Utils::AppendEStr(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>& seqval,
-  const char16_t*                                                                     strval) const
+  const char16_t* const                                                               strval) const
 {
   seqval->Append(new TCollection_HExtendedString(strval));
 }

@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Signature, Interface_SignType)
 // static const char* nulsign = "";
 static char intval[20];
 
-IFSelect_Signature::IFSelect_Signature(const char* name)
+IFSelect_Signature::IFSelect_Signature(const char* const name)
     : thename(name)
 {
   thecasi[0] = thecasi[1] = thecasi[2] = 0;
@@ -67,7 +67,7 @@ bool IFSelect_Signature::IsIntCase(bool& hasmin, int& valmin, bool& hasmax, int&
   return true;
 }
 
-void IFSelect_Signature::AddCase(const char* acase)
+void IFSelect_Signature::AddCase(const char* const acase)
 {
   if (thecasl.IsNull())
     thecasl = new NCollection_HSequence<TCollection_AsciiString>();
@@ -101,7 +101,7 @@ bool IFSelect_Signature::Matches(const occ::handle<Standard_Transient>&       en
   return IFSelect_Signature::MatchValue(Value(ent, model), text, exact);
 }
 
-bool IFSelect_Signature::MatchValue(const char*                    val,
+bool IFSelect_Signature::MatchValue(const char* const              val,
                                     const TCollection_AsciiString& text,
                                     const bool                     exact)
 {

@@ -151,7 +151,7 @@ public:
 
   //! From a CDL Type Name, returns the Class part (package dropped)
   //! WARNING : buffered, to be immediately copied or printed
-  Standard_EXPORT static const char* ClassName(const char* typnam);
+  Standard_EXPORT static const char* ClassName(const char* const typnam);
 
   //! Returns the State of an entity, given its number
   Standard_EXPORT Interface_DataState EntityState(const int num) const;
@@ -391,21 +391,21 @@ public:
   //!
   //! This method is virtual, hence it can be redefined for a more
   //! efficient search (if exact is true).
-  Standard_EXPORT virtual int NextNumberForLabel(const char* label,
-                                                 const int   lastnum = 0,
-                                                 const bool  exact   = true) const;
+  Standard_EXPORT virtual int NextNumberForLabel(const char* const label,
+                                                 const int         lastnum = 0,
+                                                 const bool        exact   = true) const;
 
   //! Returns true if a template is attached to a given name
-  Standard_EXPORT static bool HasTemplate(const char* name);
+  Standard_EXPORT static bool HasTemplate(const char* const name);
 
   //! Returns the template model attached to a name, or a Null Handle
-  Standard_EXPORT static occ::handle<Interface_InterfaceModel> Template(const char* name);
+  Standard_EXPORT static occ::handle<Interface_InterfaceModel> Template(const char* const name);
 
   //! Records a new template model with a name. If the name was
   //! already recorded, the corresponding template is replaced by
   //! the new one. Then, WARNING : test HasTemplate to avoid
   //! surprises
-  Standard_EXPORT static bool SetTemplate(const char*                                  name,
+  Standard_EXPORT static bool SetTemplate(const char* const                            name,
                                           const occ::handle<Interface_InterfaceModel>& model);
 
   //! Returns the complete list of names attached to template models

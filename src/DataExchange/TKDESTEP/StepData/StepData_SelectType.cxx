@@ -134,7 +134,7 @@ void StepData_SelectType::SetInt(const int val)
 //  **********   Types Immediats : Differents Cas  ***********
 
 static occ::handle<StepData_SelectMember> SelectVal(const occ::handle<Standard_Transient>& thevalue,
-                                                    const char*                            name,
+                                                    const char* const                      name,
                                                     const int                              mode)
 {
   DeclareAndCast(StepData_SelectMember, sm, thevalue);
@@ -168,7 +168,7 @@ int StepData_SelectType::Integer() const
   return sm->Integer();
 }
 
-void StepData_SelectType::SetInteger(const int val, const char* name)
+void StepData_SelectType::SetInteger(const int val, const char* const name)
 {
   occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 0);
   sm->SetInteger(val);
@@ -185,7 +185,7 @@ bool StepData_SelectType::Boolean() const
   return sm->Boolean();
 }
 
-void StepData_SelectType::SetBoolean(const bool val, const char* name)
+void StepData_SelectType::SetBoolean(const bool val, const char* const name)
 {
   occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 0);
   sm->SetBoolean(val);
@@ -202,7 +202,7 @@ StepData_Logical StepData_SelectType::Logical() const
   return sm->Logical();
 }
 
-void StepData_SelectType::SetLogical(const StepData_Logical val, const char* name)
+void StepData_SelectType::SetLogical(const StepData_Logical val, const char* const name)
 {
   occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 0);
   sm->SetLogical(val);
@@ -219,7 +219,7 @@ double StepData_SelectType::Real() const
   return sm->Real();
 }
 
-void StepData_SelectType::SetReal(const double val, const char* name)
+void StepData_SelectType::SetReal(const double val, const char* const name)
 {
   occ::handle<StepData_SelectMember> sm = SelectVal(thevalue, name, 1);
   sm->SetReal(val);

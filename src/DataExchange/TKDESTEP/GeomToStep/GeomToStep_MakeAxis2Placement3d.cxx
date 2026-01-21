@@ -27,11 +27,11 @@
 #include <StepGeom_Direction.hxx>
 #include <TCollection_HAsciiString.hxx>
 
-static occ::handle<StepGeom_Axis2Placement3d> MakeAxis2Placement3d(const gp_Pnt& O,
-                                                                   const gp_Dir& D,
-                                                                   const gp_Dir& X,
-                                                                   const char*   nom,
-                                                                   double        aFactor)
+static occ::handle<StepGeom_Axis2Placement3d> MakeAxis2Placement3d(const gp_Pnt&     O,
+                                                                   const gp_Dir&     D,
+                                                                   const gp_Dir&     X,
+                                                                   const char* const nom,
+                                                                   double            aFactor)
 {
   occ::handle<StepGeom_Axis2Placement3d> Axe;
   occ::handle<StepGeom_CartesianPoint>   P;

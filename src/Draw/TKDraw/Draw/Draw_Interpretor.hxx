@@ -151,7 +151,7 @@ public:
   }
 
   //! Removes <theCommandName>, returns true if success (the command existed).
-  Standard_EXPORT bool Remove(const char* theCommandName);
+  Standard_EXPORT bool Remove(const char* const theCommandName);
 
 public:
   Standard_EXPORT const char* Result() const;
@@ -160,9 +160,9 @@ public:
   Standard_EXPORT void Reset();
 
   //! Appends to the result
-  Standard_EXPORT Draw_Interpretor& Append(const char* theResult);
+  Standard_EXPORT Draw_Interpretor& Append(const char* const theResult);
 
-  inline Draw_Interpretor& operator<<(const char* theResult) { return Append(theResult); }
+  inline Draw_Interpretor& operator<<(const char* const theResult) { return Append(theResult); }
 
   //! Appends to the result
   Standard_EXPORT Draw_Interpretor& Append(const TCollection_AsciiString& theResult);
@@ -199,23 +199,23 @@ public:
   }
 
   //! Appends to the result the string as a list element
-  Standard_EXPORT void AppendElement(const char* theResult);
+  Standard_EXPORT void AppendElement(const char* const theResult);
 
   //! Eval the script and returns OK = 0, ERROR = 1
-  Standard_EXPORT int Eval(const char* theScript);
+  Standard_EXPORT int Eval(const char* const theScript);
 
   //! Eval the script and returns OK = 0, ERROR = 1
   //! Store the script in the history record.
-  Standard_EXPORT int RecordAndEval(const char* theScript, const int theFlags = 0);
+  Standard_EXPORT int RecordAndEval(const char* const theScript, const int theFlags = 0);
 
   //! Eval the content on the file and returns status
-  Standard_EXPORT int EvalFile(const char* theFileName);
+  Standard_EXPORT int EvalFile(const char* const theFileName);
 
   //! Eval the script "help command_name"
-  Standard_EXPORT int PrintHelp(const char* theCommandName);
+  Standard_EXPORT int PrintHelp(const char* const theCommandName);
 
   //! Returns True if the script is complete, no pending closing braces. (})
-  Standard_EXPORT static bool Complete(const char* theScript);
+  Standard_EXPORT static bool Complete(const char* const theScript);
 
 public:
   //! Destructor
@@ -244,7 +244,7 @@ public:
 
   //! Writes a text string to the log (if opened);
   //! end of line is not appended
-  Standard_EXPORT void AddLog(const char* theStr);
+  Standard_EXPORT void AddLog(const char* const theStr);
 
   //! Returns current content of the log file as a text string
   Standard_EXPORT TCollection_AsciiString GetLog();
@@ -259,11 +259,11 @@ public:
   Standard_EXPORT void SetToColorize(bool theToColorize);
 
 protected:
-  Standard_EXPORT void add(const char*   theCommandName,
-                           const char*   theHelp,
-                           const char*   theFileName,
-                           CallBackData* theCallback,
-                           const char*   theGroup);
+  Standard_EXPORT void add(const char* const theCommandName,
+                           const char* const theHelp,
+                           const char* const theFileName,
+                           CallBackData*     theCallback,
+                           const char* const theGroup);
 
 private:
   Draw_PInterp myInterp;

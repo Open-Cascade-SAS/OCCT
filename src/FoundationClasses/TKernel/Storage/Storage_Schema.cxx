@@ -644,7 +644,7 @@ occ::handle<Storage_CallBack> Storage_Schema::TypeBinding(
 //=================================================================================================
 
 bool Storage_Schema::AddPersistent(const occ::handle<Standard_Persistent>& sp,
-                                   const char*                             tName) const
+                                   const char* const                       tName) const
 {
   bool result = false;
 

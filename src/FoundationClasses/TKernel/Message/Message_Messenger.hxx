@@ -173,7 +173,7 @@ public:
   //! Dispatch a message to all the printers in the list.
   //! Three versions of string representations are accepted for
   //! convenience, by default all are converted to ExtendedString.
-  Standard_EXPORT void Send(const char*           theString,
+  Standard_EXPORT void Send(const char* const     theString,
                             const Message_Gravity theGravity = Message_Warning) const;
 
   //! See above

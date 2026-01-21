@@ -44,7 +44,7 @@ bool Standard_Transient::IsInstance(const Handle(Standard_Type)& AType) const
 
 //
 //
-bool Standard_Transient::IsInstance(const char* theTypeName) const
+bool Standard_Transient::IsInstance(const char* const theTypeName) const
 {
   return IsEqual(DynamicType()->Name(), theTypeName);
 }
@@ -58,7 +58,7 @@ bool Standard_Transient::IsKind(const Handle(Standard_Type)& aType) const
 
 //
 //
-bool Standard_Transient::IsKind(const char* theTypeName) const
+bool Standard_Transient::IsKind(const char* const theTypeName) const
 {
   return DynamicType()->SubType(theTypeName);
 }

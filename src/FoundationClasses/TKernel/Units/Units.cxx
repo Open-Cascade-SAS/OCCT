@@ -48,14 +48,14 @@ static double                        lastvalue, lastmove;
 
 //=================================================================================================
 
-void Units::UnitsFile(const char* afile)
+void Units::UnitsFile(const char* const afile)
 {
   unitsfile = TCollection_AsciiString(afile);
 }
 
 //=================================================================================================
 
-void Units::LexiconFile(const char* afile)
+void Units::LexiconFile(const char* const afile)
 {
   lexiconfile = TCollection_AsciiString(afile);
 }
@@ -81,7 +81,7 @@ occ::handle<Units_UnitsDictionary> Units::DictionaryOfUnits(const bool amode)
 
 //=================================================================================================
 
-occ::handle<Units_Quantity> Units::Quantity(const char* aquantity)
+occ::handle<Units_Quantity> Units::Quantity(const char* const aquantity)
 {
   int                                                             index;
   occ::handle<Units_Quantity>                                     quantity;
@@ -107,7 +107,7 @@ occ::handle<Units_Quantity> Units::Quantity(const char* aquantity)
 
 static TCollection_AsciiString symbol_string, quantity_string;
 
-const char* Units::FirstQuantity(const char* aunit)
+const char* Units::FirstQuantity(const char* const aunit)
 {
   int                                                                       i, j, k;
   occ::handle<Units_Quantity>                                               thequantity;
@@ -186,7 +186,9 @@ occ::handle<Units_Dimensions> Units::NullDimensions()
 
 //=================================================================================================
 
-double Units::Convert(const double avalue, const char* afirstunit, const char* asecondunit)
+double Units::Convert(const double      avalue,
+                      const char* const afirstunit,
+                      const char* const asecondunit)
 {
   Units_Measurement measurement(avalue, afirstunit);
   measurement.Convert(asecondunit);
@@ -195,7 +197,7 @@ double Units::Convert(const double avalue, const char* afirstunit, const char* a
 
 //=================================================================================================
 
-double Units::ToSI(const double aData, const char* aUnit)
+double Units::ToSI(const double aData, const char* const aUnit)
 {
 
   occ::handle<Units_Dimensions> aDimBid;
@@ -204,7 +206,7 @@ double Units::ToSI(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double Units::ToSI(const double aData, const char* aUnit, occ::handle<Units_Dimensions>& dim)
+double Units::ToSI(const double aData, const char* const aUnit, occ::handle<Units_Dimensions>& dim)
 {
   if (lastunit != aUnit)
   {
@@ -233,7 +235,7 @@ double Units::ToSI(const double aData, const char* aUnit, occ::handle<Units_Dime
 
 //=================================================================================================
 
-double Units::FromSI(const double aData, const char* aUnit)
+double Units::FromSI(const double aData, const char* const aUnit)
 {
   occ::handle<Units_Dimensions> aDimBid;
   return Units::FromSI(aData, aUnit, aDimBid);
@@ -241,7 +243,9 @@ double Units::FromSI(const double aData, const char* aUnit)
 
 //=================================================================================================
 
-double Units::FromSI(const double aData, const char* aUnit, occ::handle<Units_Dimensions>& dim)
+double Units::FromSI(const double                   aData,
+                     const char* const              aUnit,
+                     occ::handle<Units_Dimensions>& dim)
 {
   if (lastunit != aUnit)
   {
@@ -270,7 +274,7 @@ double Units::FromSI(const double aData, const char* aUnit, occ::handle<Units_Di
 
 //=================================================================================================
 
-occ::handle<Units_Dimensions> Units::Dimensions(const char* aType)
+occ::handle<Units_Dimensions> Units::Dimensions(const char* const aType)
 {
   if (aType)
   {

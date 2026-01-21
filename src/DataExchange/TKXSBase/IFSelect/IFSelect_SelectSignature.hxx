@@ -53,7 +53,7 @@ public:
   //! if False requires <signtext> to be contained in the Signature
   //! of the entity (default is "exact")
   Standard_EXPORT IFSelect_SelectSignature(const occ::handle<IFSelect_Signature>& matcher,
-                                           const char*                            signtext,
+                                           const char* const                      signtext,
                                            const bool                             exact = true);
 
   //! As above with an AsciiString
@@ -66,7 +66,7 @@ public:
   //! Value (by SignOnly Mode)
   //! Matching is the default provided by the class Signature
   Standard_EXPORT IFSelect_SelectSignature(const occ::handle<IFSelect_SignCounter>& matcher,
-                                           const char*                              signtext,
+                                           const char* const                        signtext,
                                            const bool                               exact = true);
 
   //! Returns the used Signature, then it is possible to access it,

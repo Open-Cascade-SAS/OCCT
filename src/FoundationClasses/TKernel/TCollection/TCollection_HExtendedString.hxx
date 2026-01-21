@@ -46,10 +46,10 @@ public:
   Standard_EXPORT TCollection_HExtendedString();
 
   //! Initializes a HExtendedString with a CString.
-  Standard_EXPORT TCollection_HExtendedString(const char* message);
+  Standard_EXPORT TCollection_HExtendedString(const char* const message);
 
   //! Initializes a HExtendedString with an ExtString.
-  Standard_EXPORT TCollection_HExtendedString(const char16_t* message);
+  Standard_EXPORT TCollection_HExtendedString(const char16_t* const message);
 
   //! Initializes a HExtendedString with a single character.
   Standard_EXPORT TCollection_HExtendedString(const char16_t aChar);
@@ -176,7 +176,7 @@ public:
   //! aString contains "1234; test:message   , value"
   //! aString.Token("; :,",4) returns "value"
   //! aString.Token("; :,",2) returns "test"
-  Standard_EXPORT occ::handle<TCollection_HExtendedString> Token(const char16_t* separators,
+  Standard_EXPORT occ::handle<TCollection_HExtendedString> Token(const char16_t* const separators,
                                                                  const int whichone = 1) const;
 
   //! Truncates <me> to <ahowmany> characters.

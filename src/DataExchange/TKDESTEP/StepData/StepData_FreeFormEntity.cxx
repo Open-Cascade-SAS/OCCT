@@ -19,7 +19,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(StepData_FreeFormEntity, Standard_Transient)
 
-void StepData_FreeFormEntity::SetStepType(const char* typenam)
+void StepData_FreeFormEntity::SetStepType(const char* const typenam)
 {
   // Set the STEP entity type name for this free-form entity
   thetype.Clear();
@@ -58,7 +58,7 @@ bool StepData_FreeFormEntity::IsComplex() const
   return (!thenext.IsNull());
 }
 
-occ::handle<StepData_FreeFormEntity> StepData_FreeFormEntity::Typed(const char* typenam) const
+occ::handle<StepData_FreeFormEntity> StepData_FreeFormEntity::Typed(const char* const typenam) const
 {
   occ::handle<StepData_FreeFormEntity> res;
   if (thetype.IsEqual(typenam))

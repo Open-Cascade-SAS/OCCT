@@ -57,7 +57,7 @@ const char* StepDimTol_SimpleDatumReferenceModifierMember::EnumText() const
 //=================================================================================================
 
 void StepDimTol_SimpleDatumReferenceModifierMember::SetEnumText(const int /*theValue*/,
-                                                                const char* theText)
+                                                                const char* const theText)
 {
   int aVal = tool.Value(theText);
   if (aVal >= 0)

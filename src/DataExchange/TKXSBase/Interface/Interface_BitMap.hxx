@@ -79,7 +79,7 @@ public:
   //! Adds a flag, a name can be attached to it
   //! Returns its flag number
   //! Makes required reservation
-  Standard_EXPORT int AddFlag(const char* name = "");
+  Standard_EXPORT int AddFlag(const char* const name = "");
 
   //! Adds several flags (<more>) with no name
   //! Returns the number of last added flag
@@ -93,7 +93,7 @@ public:
   //! name can be empty (to erase the name of a flag)
   //! Returns True if done, false if : num is out of range, or
   //! name non-empty already set to another flag
-  Standard_EXPORT bool SetFlagName(const int num, const char* name);
+  Standard_EXPORT bool SetFlagName(const int num, const char* const name);
 
   //! Returns the count of flags (flag 0 not included)
   Standard_EXPORT int NbFlags() const;
@@ -105,7 +105,7 @@ public:
   Standard_EXPORT const char* FlagName(const int num) const;
 
   //! Returns the number or a flag given its name, or zero
-  Standard_EXPORT int FlagNumber(const char* name) const;
+  Standard_EXPORT int FlagNumber(const char* const name) const;
 
   //! Returns the value (true/false) of a flag, from :
   //! - the number of the item

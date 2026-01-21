@@ -59,9 +59,9 @@ public:
   //!
   //! init gives an initial value. If it is not given, the
   //! TypedValue begins as "not set", its value is empty
-  Standard_EXPORT MoniTool_TypedValue(const char*              name,
+  Standard_EXPORT MoniTool_TypedValue(const char* const        name,
                                       const MoniTool_ValueType type = MoniTool_ValueText,
-                                      const char*              init = "");
+                                      const char* const        init = "");
 
   //! Creates a TypedValue from another one, by duplication
   Standard_EXPORT MoniTool_TypedValue(const occ::handle<MoniTool_TypedValue>& other);
@@ -84,7 +84,7 @@ public:
   Standard_EXPORT TCollection_AsciiString Definition() const;
 
   //! Enforces a Definition
-  Standard_EXPORT void SetDefinition(const char* deftext);
+  Standard_EXPORT void SetDefinition(const char* const deftext);
 
   //! Prints definition, specification, and actual status and value
   Standard_EXPORT virtual void Print(Standard_OStream& S) const;
@@ -106,10 +106,10 @@ public:
   //! eval text : add an enumerative value (increments max by 1)
   //! eval ??   : add a non-authorised enum value (to be skipped)
   //! tmax   l  : maximum length for a text
-  Standard_EXPORT bool AddDef(const char* initext);
+  Standard_EXPORT bool AddDef(const char* const initext);
 
   //! Sets a label, which can then be displayed
-  Standard_EXPORT void SetLabel(const char* label);
+  Standard_EXPORT void SetLabel(const char* const label);
 
   //! Returns the label, if set; else returns an empty string
   Standard_EXPORT const char* Label() const;
@@ -141,7 +141,7 @@ public:
   //! Sets (Clears if <def> empty) a unit definition, as an equation
   //! of dimensions. TypedValue just records this definition, does
   //! not exploit it, to be done as required by user applications
-  Standard_EXPORT void SetUnitDef(const char* def);
+  Standard_EXPORT void SetUnitDef(const char* const def);
 
   //! Returns the recorded unit definition, empty if not set
   Standard_EXPORT const char* UnitDef() const;
@@ -154,22 +154,22 @@ public:
   Standard_EXPORT void StartEnum(const int start = 0, const bool match = true);
 
   //! Adds enumerative definitions. For more than 10, several calls
-  Standard_EXPORT void AddEnum(const char* v1  = "",
-                               const char* v2  = "",
-                               const char* v3  = "",
-                               const char* v4  = "",
-                               const char* v5  = "",
-                               const char* v6  = "",
-                               const char* v7  = "",
-                               const char* v8  = "",
-                               const char* v9  = "",
-                               const char* v10 = "");
+  Standard_EXPORT void AddEnum(const char* const v1  = "",
+                               const char* const v2  = "",
+                               const char* const v3  = "",
+                               const char* const v4  = "",
+                               const char* const v5  = "",
+                               const char* const v6  = "",
+                               const char* const v7  = "",
+                               const char* const v8  = "",
+                               const char* const v9  = "",
+                               const char* const v10 = "");
 
   //! Adds an enumeration definition, by its string and numeric
   //! values. If it is the first setting for this value, it is
   //! recorded as main value. Else, it is recognized as alternate
   //! string for this numeric value
-  Standard_EXPORT void AddEnumValue(const char* val, const int num);
+  Standard_EXPORT void AddEnumValue(const char* const val, const int num);
 
   //! Gives the Enum definitions : start value, end value, match
   //! status. Returns True for an Enum, False else.
@@ -182,7 +182,7 @@ public:
   //! Returns the case number which corresponds to a string value
   //! Works with main and additional values
   //! Returns (StartEnum - 1) if not OK, -1 if not an Enum
-  Standard_EXPORT int EnumCase(const char* val) const;
+  Standard_EXPORT int EnumCase(const char* const val) const;
 
   //! Sets type of which an Object TypedValue must be kind of
   //! Error for a TypedValue not an Object (Entity)
@@ -203,7 +203,7 @@ public:
   //! already defined criteria
   //! It must match the form :
   //! satisfies (val : HAsciiString) returns Boolean
-  Standard_EXPORT void SetSatisfies(const MoniTool_ValueSatisfies func, const char* name);
+  Standard_EXPORT void SetSatisfies(const MoniTool_ValueSatisfies func, const char* const name);
 
   //! Returns name of specific satisfy, empty string if none
   Standard_EXPORT const char* SatisfiesName() const;
@@ -243,7 +243,7 @@ public:
   //! Returns False (and did not set) if the new value
   //! does not satisfy the specification
   //! Can be redefined to be managed (in a subclass)
-  Standard_EXPORT virtual bool SetCStringValue(const char* val);
+  Standard_EXPORT virtual bool SetCStringValue(const char* const val);
 
   //! Forces a new Handle for the Value
   //! It can be empty, else (if Type is not free Text), it must
@@ -302,16 +302,16 @@ public:
   //! If a TypedValue was already recorded under this name, it is
   //! replaced
   Standard_EXPORT static bool AddLib(const occ::handle<MoniTool_TypedValue>& tv,
-                                     const char*                             def = "");
+                                     const char* const                       def = "");
 
   //! Returns the TypedValue bound with a given Name
   //! Null Handle if none recorded
   //! Warning: it is the original, not duplicated
-  Standard_EXPORT static occ::handle<MoniTool_TypedValue> Lib(const char* def);
+  Standard_EXPORT static occ::handle<MoniTool_TypedValue> Lib(const char* const def);
 
   //! Returns a COPY of the TypedValue bound with a given Name
   //! Null Handle if none recorded
-  Standard_EXPORT static occ::handle<MoniTool_TypedValue> FromLib(const char* def);
+  Standard_EXPORT static occ::handle<MoniTool_TypedValue> FromLib(const char* const def);
 
   //! Returns the list of names of items of the Library of Types
   //! Library of TypedValue as Valued Parameters, accessed by
@@ -319,7 +319,7 @@ public:
   Standard_EXPORT static occ::handle<NCollection_HSequence<TCollection_AsciiString>> LibList();
 
   //! Returns a static value from its name, null if unknown
-  Standard_EXPORT static occ::handle<MoniTool_TypedValue> StaticValue(const char* name);
+  Standard_EXPORT static occ::handle<MoniTool_TypedValue> StaticValue(const char* const name);
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_TypedValue, Standard_Transient)
 

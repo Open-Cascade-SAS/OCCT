@@ -48,7 +48,7 @@ bool OSD::RealToCString(const double aReal, Standard_PCharacter& aString)
 
 // Make the RealToCString reciprocal conversion.
 
-bool OSD::CStringToReal(const char* aString, double& aReal)
+bool OSD::CStringToReal(const char* const aString, double& aReal)
 {
   char* endptr;
   aReal = Strtod(aString, &endptr);

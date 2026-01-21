@@ -135,7 +135,7 @@ public:
 
   //! Stores the filename used for read for setting the model
   //! It is cleared by SetModel and ClearData(1)
-  void SetLoadedFile(const char* theFileName) { theloaded = theFileName; }
+  void SetLoadedFile(const char* const theFileName) { theloaded = theFileName; }
 
   //! Returns the filename used to load current model
   //! empty if unknown
@@ -145,13 +145,14 @@ public:
   //! Returns a integer status which can be :
   //! RetDone if OK, RetVoid if no Protocol not defined,
   //! RetError for file not found, RetFail if fail during read
-  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* filename);
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* const filename);
 
   //! Reads a file from stream with the WorkLibrary (sets Model and LoadedFile)
   //! Returns a integer status which can be :
   //! RetDone if OK, RetVoid if no Protocol not defined,
   //! RetError for file not found, RetFail if fail during read
-  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* theName, std::istream& theIStream);
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const theName,
+                                                   std::istream&     theIStream);
 
   //! Returns the count of Entities stored in the Model, or 0
   Standard_EXPORT int NbStartingEntities() const;
@@ -173,7 +174,7 @@ public:
   //! Returns 0 if not found, < 0 if more than one found (first
   //! found in negative).
   //! If <val> just gives an integer value, returns it
-  Standard_EXPORT int NumberFromLabel(const char* val, const int afternum = 0) const;
+  Standard_EXPORT int NumberFromLabel(const char* const val, const int afternum = 0) const;
 
   //! Returns the label for <ent>, as the Model does
   //! If <ent> is not in the Model or if no Model is loaded, a Null
@@ -290,7 +291,7 @@ public:
   //! Returns the Item which corresponds to a Variable, given its
   //! Name (whatever the type of this Item).
   //! Returns a Null Handle if this Name is not recorded
-  Standard_EXPORT occ::handle<Standard_Transient> NamedItem(const char* name) const;
+  Standard_EXPORT occ::handle<Standard_Transient> NamedItem(const char* const name) const;
 
   //! Same as above, but <name> is given through a Handle
   //! Especially useful with methods SelectionNames, etc...
@@ -298,7 +299,7 @@ public:
     const occ::handle<TCollection_HAsciiString>& name) const;
 
   //! Returns the Ident attached to a Name, 0 if name not recorded
-  Standard_EXPORT int NameIdent(const char* name) const;
+  Standard_EXPORT int NameIdent(const char* const name) const;
 
   //! Returns True if an Item of the WorkSession has an attached Name
   Standard_EXPORT bool HasName(const occ::handle<Standard_Transient>& item) const;
@@ -324,7 +325,7 @@ public:
   //! If <item> is already known but with no attached Name, this
   //! method tries to attached a Name to it
   //! <active> if True commands call to SetActive (see below)
-  Standard_EXPORT int AddNamedItem(const char*                            name,
+  Standard_EXPORT int AddNamedItem(const char* const                      name,
                                    const occ::handle<Standard_Transient>& item,
                                    const bool                             active = true);
 
@@ -338,11 +339,11 @@ public:
   //! Removes an Item from the Session, given its Name
   //! Returns True if Done, False else (Name not recorded)
   //! (Applies only on Item which are Named)
-  Standard_EXPORT bool RemoveNamedItem(const char* name);
+  Standard_EXPORT bool RemoveNamedItem(const char* const name);
 
   //! Removes a Name without removing the Item
   //! Returns True if Done, False else (Name not recorded)
-  Standard_EXPORT bool RemoveName(const char* name);
+  Standard_EXPORT bool RemoveName(const char* const name);
 
   //! Removes an Item given its Ident. Returns False if <id> is
   //! attached to no Item in the WorkSession. For a Named Item,
@@ -381,7 +382,7 @@ public:
   //! Search mode is fixed to "contained"
   //! If <label> is empty, returns all Names
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
-                  ItemNamesForLabel(const char* label) const;
+                  ItemNamesForLabel(const char* const label) const;
 
   //! For query by Label with possible iterations
   //! Searches the Ident of which Item has a Label which matches a
@@ -398,15 +399,17 @@ public:
   //! - 1 : <label> must match the exact beginning (the end is free)
   //! - 2 : <label> must be at least once wherever in the Item Label
   //! - other values are ignored
-  Standard_EXPORT int NextIdentForLabel(const char* label, const int id, const int mode = 0) const;
+  Standard_EXPORT int NextIdentForLabel(const char* const label,
+                                        const int         id,
+                                        const int         mode = 0) const;
 
   //! Creates a parameter as being bound to a Static
   //! If the Static is Integer, this creates an IntParam bound to
   //! it by its name. Else this creates a String which is the value
   //! of the Static.
   //! Returns a null handle if <statname> is unknown as a Static
-  Standard_EXPORT occ::handle<Standard_Transient> NewParamFromStatic(const char* statname,
-                                                                     const char* name = "");
+  Standard_EXPORT occ::handle<Standard_Transient> NewParamFromStatic(const char* const statname,
+                                                                     const char* const name = "");
 
   //! Returns an IntParam, given its Ident in the Session
   //! Null result if <id> is not suitable for an IntParam
@@ -419,7 +422,7 @@ public:
   //! Creates a new IntParam. A Name can be set (Optional)
   //! Returns the created IntParam, or a Null Handle in case of
   //! Failure (see AddItem/AddNamedItem)
-  Standard_EXPORT occ::handle<IFSelect_IntParam> NewIntParam(const char* name = "");
+  Standard_EXPORT occ::handle<IFSelect_IntParam> NewIntParam(const char* const name = "");
 
   //! Changes the Integer Value of an IntParam
   //! Returns True if Done, False if <it> is not in the WorkSession
@@ -438,12 +441,12 @@ public:
   //! Creates a new (empty) TextParam. A Name can be set (Optional)
   //! Returns the created TextParam (as an HAsciiString), or a Null
   //! Handle in case of Failure (see AddItem/AddNamedItem)
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> NewTextParam(const char* name = "");
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> NewTextParam(const char* const name = "");
 
   //! Changes the Text Value of a TextParam (an HAsciiString)
   //! Returns True if Done, False if <it> is not in the WorkSession
   Standard_EXPORT bool SetTextValue(const occ::handle<TCollection_HAsciiString>& par,
-                                    const char*                                  val);
+                                    const char* const                            val);
 
   //! Returns a Signature, given its Ident in the Session
   //! Null result if <id> is not suitable for a Signature
@@ -674,8 +677,9 @@ public:
   //! Copy Option (True = Copy, False = On the Spot) and an
   //! optional name.
   //! To a TransformStandard, the method SetAppliedModifier applies
-  Standard_EXPORT occ::handle<IFSelect_Transformer> NewTransformStandard(const bool  copy,
-                                                                         const char* name = "");
+  Standard_EXPORT occ::handle<IFSelect_Transformer> NewTransformStandard(
+    const bool        copy,
+    const char* const name = "");
 
   //! Defines a new content from the former one
   //! If <keep> is True, it is given by entities selected by
@@ -703,29 +707,30 @@ public:
     const occ::handle<IFSelect_Dispatch>& disp) const;
 
   //! Defines a File Prefix
-  Standard_EXPORT void SetFilePrefix(const char* name);
+  Standard_EXPORT void SetFilePrefix(const char* const name);
 
   //! Defines a Default File Root Name. Clears it is <name> = ""
   //! Returns True if OK, False if <name> already set for a Dispatch
-  Standard_EXPORT bool SetDefaultFileRoot(const char* name);
+  Standard_EXPORT bool SetDefaultFileRoot(const char* const name);
 
   //! Defines a File Extension
-  Standard_EXPORT void SetFileExtension(const char* name);
+  Standard_EXPORT void SetFileExtension(const char* const name);
 
   //! Defines a Root for a Dispatch
   //! If <name> is empty, clears Root Name
   //! This has as effect to inhibit the production of File by <disp>
   //! Returns False if <disp> is not in the WorkSession or if a
   //! root name is already defined for it
-  Standard_EXPORT bool SetFileRoot(const occ::handle<IFSelect_Dispatch>& disp, const char* name);
+  Standard_EXPORT bool SetFileRoot(const occ::handle<IFSelect_Dispatch>& disp,
+                                   const char* const                     name);
 
   //! Extracts File Root Name from a given complete file name
   //! (uses OSD_Path)
-  Standard_EXPORT const char* GiveFileRoot(const char* file) const;
+  Standard_EXPORT const char* GiveFileRoot(const char* const file) const;
 
   //! Completes a file name as required, with Prefix and Extension
   //! (if defined; for a non-defined item, completes nothing)
-  Standard_EXPORT const char* GiveFileComplete(const char* file) const;
+  Standard_EXPORT const char* GiveFileComplete(const char* const file) const;
 
   //! Erases all stored data from the File Evaluation
   //! (i.e. ALL former naming information are lost)
@@ -827,8 +832,8 @@ public:
   //! Fail if exception during translation is raised
   //! Stop if no disk space or disk, file is write protected
   //! Fills LastRunCheckList
-  Standard_EXPORT IFSelect_ReturnStatus SendAll(const char* filename,
-                                                const bool  computegraph = false);
+  Standard_EXPORT IFSelect_ReturnStatus SendAll(const char* const filename,
+                                                const bool        computegraph = false);
 
   //! Sends a part of the starting Model into one file, without
   //! splitting. But remaining data are managed.
@@ -840,7 +845,7 @@ public:
   //! Returns a status : Done if OK, Fail if error during send,
   //! Error : WorkLibrary not defined, Void : selection list empty
   //! Fills LastRunCheckList
-  Standard_EXPORT IFSelect_ReturnStatus SendSelected(const char* filename,
+  Standard_EXPORT IFSelect_ReturnStatus SendSelected(const char* const filename,
                                                      const occ::handle<IFSelect_Selection>& sel,
                                                      const bool computegraph = false);
 
@@ -849,7 +854,7 @@ public:
   //! Done OK, Fail file could not be written, Error no norm is selected
   //! Remark : It is a simple, one-file writing, other operations are
   //! available (such as splitting ...) which calls SendAll
-  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* filename);
+  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* const filename);
 
   //! Writes a sub-part of the current Interface Model to a File,
   //! as defined by a Selection <sel>, recomputes the Graph, and
@@ -857,7 +862,7 @@ public:
   //! Done OK, Fail file could not be written, Error no norm is selected
   //! Remark : It is a simple, one-file writing, other operations are
   //! available (such as splitting ...) which calls SendSelected
-  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char*                            filename,
+  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* const                      filename,
                                                   const occ::handle<IFSelect_Selection>& sel);
 
   //! Returns the count of Input Selections known for a Selection,
@@ -917,7 +922,7 @@ public:
   //! starts with <list>. A name must be given (can be empty)
   Standard_EXPORT occ::handle<IFSelect_Selection> NewSelectPointed(
     const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-    const char*                                                                name);
+    const char* const                                                          name);
 
   //! Changes the content of a Selection of type SelectPointed
   //! According <mode> : 0 set <list> as new content (clear former)
@@ -935,7 +940,7 @@ public:
   //! Selection from this Signature
   //! - an entity or a list of entities : a new SelectPointed
   //! Else, returns a Null Handle
-  Standard_EXPORT occ::handle<IFSelect_Selection> GiveSelection(const char* selname) const;
+  Standard_EXPORT occ::handle<IFSelect_Selection> GiveSelection(const char* const selname) const;
 
   //! Determines a list of entities from an object :
   //! <obj> already HSequenceOfTransient : returned itself
@@ -959,8 +964,8 @@ public:
   //! - and so on (the "leftest minus one" is a selection, of which
   //! the input is given by the remaining ...)
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> GiveList(
-    const char* first,
-    const char* second = "") const;
+    const char* const first,
+    const char* const second = "") const;
 
   //! Computes a List of entities from the model as follows
   //! <first> being a Selection or a combination of Selections,
@@ -974,7 +979,7 @@ public:
   //! REMARK : selname is processed as <first second> of preceding
   //! GiveList
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
-    GiveListFromList(const char* selname, const occ::handle<Standard_Transient>& ent) const;
+    GiveListFromList(const char* const selname, const occ::handle<Standard_Transient>& ent) const;
 
   //! Combines two lists and returns the result, according to mode :
   //! <mode> < 0 : entities in <l1> AND NOT in <l2>
@@ -1039,7 +1044,7 @@ public:
 
   //! Lists the Labels of all Items of the WorkSession
   //! If <label> is defined, lists labels which contain it
-  Standard_EXPORT void ListItems(const char* label = "") const;
+  Standard_EXPORT void ListItems(const char* const label = "") const;
 
   //! Lists the Modifiers of the session (for each one, displays
   //! its Label). Listing is done following Ranks (Modifiers are

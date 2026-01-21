@@ -675,7 +675,7 @@ const char* Graphic3d_MaterialAspect::MaterialName(const int theRank)
 
 //=================================================================================================
 
-bool Graphic3d_MaterialAspect::MaterialFromName(const char*               theName,
+bool Graphic3d_MaterialAspect::MaterialFromName(const char* const         theName,
                                                 Graphic3d_NameOfMaterial& theMat)
 {
   TCollection_AsciiString aName(theName);

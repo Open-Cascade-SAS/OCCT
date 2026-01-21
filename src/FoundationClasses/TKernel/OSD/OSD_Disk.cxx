@@ -124,7 +124,7 @@ OSD_Disk::OSD_Disk(const OSD_Path& theName)
 #endif
 }
 
-OSD_Disk::OSD_Disk(const char* theName)
+OSD_Disk::OSD_Disk(const char* const theName)
     : myDiskName(theName)
 {
 #ifdef _WIN32

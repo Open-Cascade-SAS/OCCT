@@ -67,7 +67,7 @@ public:
 
   //! Returns operation type according to the given string.
   //! For numeric values, the number correspond to the order in enum.
-  Standard_EXPORT static BOPAlgo_Operation GetOperationType(const char* theOp);
+  Standard_EXPORT static BOPAlgo_Operation GetOperationType(const char* const theOp);
 };
 
 #endif // _BOPTest_HeaderFile

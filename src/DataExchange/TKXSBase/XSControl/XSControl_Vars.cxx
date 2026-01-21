@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XSControl_Vars, Standard_Transient)
 
 XSControl_Vars::XSControl_Vars() = default;
 
-void XSControl_Vars::Set(const char* name, const occ::handle<Standard_Transient>& val)
+void XSControl_Vars::Set(const char* const name, const occ::handle<Standard_Transient>& val)
 {
   thevars.Bind(name, val);
 }
@@ -62,7 +62,7 @@ occ::handle<Geom_Surface> XSControl_Vars::GetSurface(const char*& name) const
   return GetCasted(Geom_Surface, Get(name));
 }
 
-void XSControl_Vars::SetPoint(const char* name, const gp_Pnt& val)
+void XSControl_Vars::SetPoint(const char* const name, const gp_Pnt& val)
 {
   Set(name, new Geom_CartesianPoint(val));
 }
@@ -76,7 +76,7 @@ bool XSControl_Vars::GetPoint(const char*& name, gp_Pnt& pnt) const
   return true;
 }
 
-void XSControl_Vars::SetPoint2d(const char* name, const gp_Pnt2d& val)
+void XSControl_Vars::SetPoint2d(const char* const name, const gp_Pnt2d& val)
 {
   Set(name, new Geom2d_CartesianPoint(val));
 }
@@ -90,7 +90,7 @@ bool XSControl_Vars::GetPoint2d(const char*& name, gp_Pnt2d& pnt) const
   return true;
 }
 
-void XSControl_Vars::SetShape(const char* name, const TopoDS_Shape& val)
+void XSControl_Vars::SetShape(const char* const name, const TopoDS_Shape& val)
 {
   Set(name, new TopoDS_HShape(val));
 }

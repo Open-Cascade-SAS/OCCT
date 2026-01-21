@@ -30,7 +30,7 @@ class StepData_EDescr : public Standard_Transient
 
 public:
   //! Tells if a ESDescr matches a step type : exact or super type
-  Standard_EXPORT virtual bool Matches(const char* steptype) const = 0;
+  Standard_EXPORT virtual bool Matches(const char* const steptype) const = 0;
 
   //! Tells if a EDescr is complex (ECDescr) or simple (ESDescr)
   Standard_EXPORT virtual bool IsComplex() const = 0;

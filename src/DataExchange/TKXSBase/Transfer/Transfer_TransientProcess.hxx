@@ -64,12 +64,13 @@ public:
 
   //! Sets a Context : according to receiving appli, to be
   //! interpreted by the Actor
-  Standard_EXPORT void SetContext(const char* name, const occ::handle<Standard_Transient>& ctx);
+  Standard_EXPORT void SetContext(const char* const                      name,
+                                  const occ::handle<Standard_Transient>& ctx);
 
   //! Returns the Context attached to a name, if set and if it is
   //! Kind of the type, else a Null Handle
   //! Returns True if OK, False if no Context
-  Standard_EXPORT bool GetContext(const char*                       name,
+  Standard_EXPORT bool GetContext(const char* const                 name,
                                   const occ::handle<Standard_Type>& type,
                                   occ::handle<Standard_Transient>&  ctx) const;
 

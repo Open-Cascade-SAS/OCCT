@@ -37,10 +37,10 @@ public:
   Standard_EXPORT const char* Name() const override;
 
   //! Set name
-  Standard_EXPORT bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* const name) override;
 
   //! Tells if the name of a SelectMember matches a given one;
-  Standard_EXPORT bool Matches(const char* name) const override;
+  Standard_EXPORT bool Matches(const char* const name) const override;
 
   DEFINE_STANDARD_RTTIEXT(StepElement_SurfaceElementPurposeMember, StepData_SelectNamed)
 

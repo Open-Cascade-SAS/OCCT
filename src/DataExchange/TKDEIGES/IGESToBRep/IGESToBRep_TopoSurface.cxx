@@ -418,7 +418,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(
     if (shape1.IsNull())
     {
       Message_Msg                           msg1156("IGES_1156");
-      const char*                           typeName(igesCurve1->DynamicType()->Name());
+      const char* const                     typeName(igesCurve1->DynamicType()->Name());
       occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesCurve1);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
@@ -438,7 +438,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(
     //      shape1  = TC.TransferTopoCurve(igesCurve1);
     //      if (shape1.IsNull()) {
     //	Message_Msg msg1156("IGES_1156");
-    //	const char* typeName(igesCurve1->DynamicType()->Name());
+    //	const char* const typeName(igesCurve1->DynamicType()->Name());
     //	occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesCurve1);
     //	msg1156.Arg(typeName);
     //	msg1156.Arg(label);
@@ -495,7 +495,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(
     if (shape2.IsNull())
     {
       Message_Msg                           msg1156("IGES_1156");
-      const char*                           typeName(igesCurve2->DynamicType()->Name());
+      const char* const                     typeName(igesCurve2->DynamicType()->Name());
       occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesCurve2);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
@@ -725,7 +725,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferSurfaceOfRevolution(
   if (generatrix.IsNull())
   {
     Message_Msg                           msg1156("IGES_1156");
-    const char*                           typeName("generatrix");
+    const char* const                     typeName("generatrix");
     occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesGeneratrix);
     msg1156.Arg(typeName);
     msg1156.Arg(label);
@@ -890,7 +890,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTabulatedCylinder(
   if (directrix.IsNull())
   {
     Message_Msg                           msg1156("IGES_1156");
-    const char*                           typeName("directrix");
+    const char* const                     typeName("directrix");
     occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesDirectrix);
     msg1156.Arg(typeName);
     msg1156.Arg(label);
@@ -1044,7 +1044,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(
   if (igesShape.IsNull())
   {
     Message_Msg                           msg1156("IGES_1156");
-    const char*                           typeName("basis surface");
+    const char* const                     typeName("basis surface");
     occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
     msg1156.Arg(typeName);
     msg1156.Arg(label);
@@ -1072,7 +1072,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferOffsetSurface(
       [[fallthrough]];
     default: {
       Message_Msg                           msg1156("IGES_1156");
-      const char*                           typeName("basis surface");
+      const char* const                     typeName("basis surface");
       occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
@@ -1243,7 +1243,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
         if (nbfaces != 1)
         {
           Message_Msg                           msg1156("IGES_1156");
-          const char*                           typeName("basis surface");
+          const char* const                     typeName("basis surface");
           occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSurface);
           msg1156.Arg(typeName);
           msg1156.Arg(label);
@@ -1254,7 +1254,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferTrimmedSurface(
       break;
       default: {
         Message_Msg                           msg1156("IGES_1156");
-        const char*                           typeName("basis surface");
+        const char* const                     typeName("basis surface");
         occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSurface);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
@@ -1419,7 +1419,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
         if (nbfaces != 1)
         {
           Message_Msg                           msg1156("IGES_1156");
-          const char*                           typeName("basis surface");
+          const char* const                     typeName("basis surface");
           occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
           msg1156.Arg(typeName);
           msg1156.Arg(label);
@@ -1431,7 +1431,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferBoundedSurface(
       break;
       default: {
         Message_Msg                           msg1156("IGES_1156");
-        const char*                           typeName("basis surface");
+        const char* const                     typeName("basis surface");
         occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(igesSrf);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
@@ -1540,7 +1540,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPerforate(
     if (wire.ShapeType() != TopAbs_WIRE)
     {
       Message_Msg                           msg1156("IGES_1156");
-      const char*                           typeName("hole");
+      const char* const                     typeName("hole");
       occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(pi);
       msg1156.Arg(typeName);
       msg1156.Arg(label);
@@ -1677,7 +1677,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const occ::handle<IGESGe
             break;
             default: {
               Message_Msg                           msg1156("IGES_1156");
-              const char*                           typeName("Bounding curve");
+              const char* const                     typeName("Bounding curve");
               occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(crv);
               msg1156.Arg(typeName);
               msg1156.Arg(label);
@@ -1725,7 +1725,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferPlaneParts(const occ::handle<IGESGe
       else
       {
         Message_Msg                           msg1156("IGES_1156");
-        const char*                           typeName("Bounding curve");
+        const char* const                     typeName("Bounding curve");
         occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(crv);
         msg1156.Arg(typeName);
         msg1156.Arg(label);
@@ -1784,7 +1784,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::ParamSurface(const occ::handle<IGESData_IGE
       if (nbfaces != 1)
       {
         Message_Msg                           msg1156("IGES_1156");
-        const char*                           typeName("basis surface");
+        const char* const                     typeName("basis surface");
         occ::handle<TCollection_HAsciiString> label = GetModel()->StringLabel(st);
         msg1156.Arg(typeName);
         msg1156.Arg(label);

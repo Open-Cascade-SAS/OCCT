@@ -399,8 +399,8 @@ void Transfer_ProcessForFinder::SendMsg(const occ::handle<Transfer_Finder>& star
 //=================================================================================================
 
 void Transfer_ProcessForFinder::AddFail(const occ::handle<Transfer_Finder>& start,
-                                        const char*                         mess,
-                                        const char*                         orig)
+                                        const char* const                   mess,
+                                        const char* const                   orig)
 {
   occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
@@ -423,8 +423,8 @@ void Transfer_ProcessForFinder::AddFail(const occ::handle<Transfer_Finder>& star
 //=================================================================================================
 
 void Transfer_ProcessForFinder::AddError(const occ::handle<Transfer_Finder>& start,
-                                         const char*                         mess,
-                                         const char*                         orig)
+                                         const char* const                   mess,
+                                         const char* const                   orig)
 {
   AddFail(start, mess, orig);
 }
@@ -445,8 +445,8 @@ void Transfer_ProcessForFinder::AddFail(const occ::handle<Transfer_Finder>& star
 //=================================================================================================
 
 void Transfer_ProcessForFinder::AddWarning(const occ::handle<Transfer_Finder>& start,
-                                           const char*                         mess,
-                                           const char*                         orig)
+                                           const char* const                   mess,
+                                           const char* const                   orig)
 {
   occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
@@ -481,7 +481,8 @@ void Transfer_ProcessForFinder::AddWarning(const occ::handle<Transfer_Finder>& s
 
 //=================================================================================================
 
-void Transfer_ProcessForFinder::Mend(const occ::handle<Transfer_Finder>& start, const char* pref)
+void Transfer_ProcessForFinder::Mend(const occ::handle<Transfer_Finder>& start,
+                                     const char* const                   pref)
 {
   occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())

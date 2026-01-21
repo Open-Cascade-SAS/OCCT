@@ -47,12 +47,12 @@ public:
   //! If <name> doesn't match en entity, a Null Handle is returned
   Standard_EXPORT static occ::handle<Standard_Transient> GiveEntity(
     const occ::handle<IFSelect_WorkSession>& WS,
-    const char*                              name = "");
+    const char* const                        name = "");
 
   //! Same as GetEntity, but returns the number in the model of the
   //! entity. Returns 0 for null handle
   Standard_EXPORT static int GiveEntityNumber(const occ::handle<IFSelect_WorkSession>& WS,
-                                              const char*                              name = "");
+                                              const char* const                        name = "");
 
   //! Computes a List of entities from a WorkSession and two idents,
   //! first and second, as follows :
@@ -65,8 +65,8 @@ public:
   //! If <second> is erroneous, it is ignored
   Standard_EXPORT static occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>
     GiveList(const occ::handle<IFSelect_WorkSession>& WS,
-             const char*                              first  = "",
-             const char*                              second = "");
+             const char* const                        first  = "",
+             const char* const                        second = "");
 
   //! Evaluates and returns a Dispatch, from data of a WorkSession
   //! if <mode> is False, searches for exact name of Dispatch in WS
@@ -77,7 +77,7 @@ public:
   //! Returns Null Handle if not found not well evaluated
   Standard_EXPORT static occ::handle<IFSelect_Dispatch> GiveDispatch(
     const occ::handle<IFSelect_WorkSession>& WS,
-    const char*                              name,
+    const char* const                        name,
     const bool                               mode = true);
 
   //! Defines and loads all basic functions (as ActFunc)

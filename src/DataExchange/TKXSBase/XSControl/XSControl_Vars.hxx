@@ -47,7 +47,8 @@ class XSControl_Vars : public Standard_Transient
 public:
   Standard_EXPORT XSControl_Vars();
 
-  Standard_EXPORT virtual void Set(const char* name, const occ::handle<Standard_Transient>& val);
+  Standard_EXPORT virtual void Set(const char* const                      name,
+                                   const occ::handle<Standard_Transient>& val);
 
   Standard_EXPORT virtual occ::handle<Standard_Transient> Get(const char*& name) const;
 
@@ -59,15 +60,15 @@ public:
 
   Standard_EXPORT virtual occ::handle<Geom_Surface> GetSurface(const char*& name) const;
 
-  Standard_EXPORT virtual void SetPoint(const char* name, const gp_Pnt& val);
+  Standard_EXPORT virtual void SetPoint(const char* const name, const gp_Pnt& val);
 
-  Standard_EXPORT virtual void SetPoint2d(const char* name, const gp_Pnt2d& val);
+  Standard_EXPORT virtual void SetPoint2d(const char* const name, const gp_Pnt2d& val);
 
   Standard_EXPORT virtual bool GetPoint(const char*& name, gp_Pnt& pnt) const;
 
   Standard_EXPORT virtual bool GetPoint2d(const char*& name, gp_Pnt2d& pnt) const;
 
-  Standard_EXPORT virtual void SetShape(const char* name, const TopoDS_Shape& val);
+  Standard_EXPORT virtual void SetShape(const char* const name, const TopoDS_Shape& val);
 
   Standard_EXPORT virtual TopoDS_Shape GetShape(const char*& name) const;
 

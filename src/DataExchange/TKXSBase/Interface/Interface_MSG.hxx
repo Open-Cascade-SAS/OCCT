@@ -54,7 +54,7 @@ public:
   //!
   //! Interface_MSG("...mykey...") which returns a CString
   //! See also some help which follow
-  Standard_EXPORT Interface_MSG(const char* key);
+  Standard_EXPORT Interface_MSG(const char* const key);
 
   //! Translates a message which contains one integer variable
   //! It is just a help which avoid the following :
@@ -64,14 +64,14 @@ public:
   //!
   //! The basic message is intended to be in C-Sprintf format,
   //! with one %d form in it
-  Standard_EXPORT Interface_MSG(const char* key, const int i1);
+  Standard_EXPORT Interface_MSG(const char* const key, const int i1);
 
   //! Translates a message which contains two integer variables
   //! As for one integer, it is just a writing help
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with two %d forms in it
-  Standard_EXPORT Interface_MSG(const char* key, const int i1, const int i2);
+  Standard_EXPORT Interface_MSG(const char* const key, const int i1, const int i2);
 
   //! Translates a message which contains one real variable
   //! <intervals> if set, commands the variable to be rounded to an
@@ -80,14 +80,14 @@ public:
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with one %f form (or equivalent : %e etc) in it
-  Standard_EXPORT Interface_MSG(const char* key, const double r1, const int intervals = -1);
+  Standard_EXPORT Interface_MSG(const char* const key, const double r1, const int intervals = -1);
 
   //! Translates a message which contains one string variable
   //! As for one integer, it is just a writing help
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with one %s form in it
-  Standard_EXPORT Interface_MSG(const char* key, const char* str);
+  Standard_EXPORT Interface_MSG(const char* const key, const char* const str);
 
   //! Translates a message which contains one integer and one
   //! string variables
@@ -96,7 +96,7 @@ public:
   //!
   //! The basic message is intended to be in C-Sprintf format
   //! with one %d then one %s forms in it
-  Standard_EXPORT Interface_MSG(const char* key, const int ival, const char* str);
+  Standard_EXPORT Interface_MSG(const char* const key, const int ival, const char* const str);
 
   //! Optimised destructor (applies for additional forms of Create)
   Standard_EXPORT void Destroy();
@@ -114,28 +114,28 @@ public:
   Standard_EXPORT static int Read(Standard_IStream& S);
 
   //! Reads a list of messages from a file defined by its name
-  Standard_EXPORT static int Read(const char* file);
+  Standard_EXPORT static int Read(const char* const file);
 
   //! Writes the list of messages recorded to be translated, to a
   //! stream. Writes all the list (Default) or only keys which begin
   //! by <rootkey>. Returns the count of written messages
-  Standard_EXPORT static int Write(Standard_OStream& S, const char* rootkey = "");
+  Standard_EXPORT static int Write(Standard_OStream& S, const char* const rootkey = "");
 
   //! Returns True if a given message is surely a key
   //! (according to the form adopted for keys)
   //! (before activating messages, answer is false)
-  Standard_EXPORT static bool IsKey(const char* mess);
+  Standard_EXPORT static bool IsKey(const char* const mess);
 
   //! Returns the item recorded for a key.
   //! Returns the key itself if :
   //! - it is not recorded (then, the trace system is activated)
   //! - MSG has been required to be hung on
-  Standard_EXPORT static const char* Translated(const char* key);
+  Standard_EXPORT static const char* Translated(const char* const key);
 
   //! Fills the dictionary with a couple (key-item)
   //! If a key is already recorded, it is possible to :
   //! - keep the last definition, and activate the trace system
-  Standard_EXPORT static void Record(const char* key, const char* item);
+  Standard_EXPORT static void Record(const char* const key, const char* const item);
 
   //! Sets the trace system to work when activated, as follow :
   //! - if <toprint>  is True, print immediately on standard output
@@ -179,30 +179,30 @@ public:
   //! Another format can be provided, as follows :
   //! C:%d ...   C like format, preceded by C:
   //! S:...      format to call system (not yet implemented)
-  Standard_EXPORT static void TDate(const char* text,
-                                    const int   yy,
-                                    const int   mm,
-                                    const int   dd,
-                                    const int   hh,
-                                    const int   mn,
-                                    const int   ss,
-                                    const char* format = "");
+  Standard_EXPORT static void TDate(const char* const text,
+                                    const int         yy,
+                                    const int         mm,
+                                    const int         dd,
+                                    const int         hh,
+                                    const int         mn,
+                                    const int         ss,
+                                    const char* const format = "");
 
   //! Decodes a date to numeric integer values
   //! Returns True if OK, False if text does not fit with required
   //! format. Incomplete forms are allowed (for instance, for only
   //! YYYY-MM-DD, hour is zero)
-  Standard_EXPORT static bool NDate(const char* text,
-                                    int&        yy,
-                                    int&        mm,
-                                    int&        dd,
-                                    int&        hh,
-                                    int&        mn,
-                                    int&        ss);
+  Standard_EXPORT static bool NDate(const char* const text,
+                                    int&              yy,
+                                    int&              mm,
+                                    int&              dd,
+                                    int&              hh,
+                                    int&              mn,
+                                    int&              ss);
 
   //! Returns a value about comparison of two dates
   //! 0 : equal. <0 text1 anterior. >0 text1 posterior
-  Standard_EXPORT static int CDate(const char* text1, const char* text2);
+  Standard_EXPORT static int CDate(const char* const text1, const char* const text2);
 
   //! Returns a blank string, of length between 0 and <max>, to fill
   //! the printing of a numeric value <val>, i.e.
@@ -214,7 +214,7 @@ public:
   //! <max> characters:
   //! If strlen(val) is 0, max blanks
   //! If strlen(val) is 5, max-5 blanks etc...
-  Standard_EXPORT static const char* Blanks(const char* val, const int max);
+  Standard_EXPORT static const char* Blanks(const char* const val, const int max);
 
   //! Returns a blank string of <count> blanks (mini 0, maxi 76)
   Standard_EXPORT static const char* Blanks(const int count);
@@ -225,7 +225,7 @@ public:
   //! -1 (D) : left 0 : center 1 : right
   //! Maximum 76 characters
   Standard_EXPORT static void Print(Standard_OStream& S,
-                                    const char*       val,
+                                    const char* const val,
                                     const int         max,
                                     const int         just = -1);
 

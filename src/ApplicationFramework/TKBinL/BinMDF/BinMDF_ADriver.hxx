@@ -62,7 +62,7 @@ public:
 
 protected:
   Standard_EXPORT BinMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDriver,
-                                 const char*                           theName = nullptr);
+                                 const char* const                     theName = nullptr);
 
   TCollection_AsciiString myTypeName;
 

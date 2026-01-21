@@ -58,13 +58,15 @@ void StepSelect_FloatFormat::SetZeroSuppress(const bool mode)
   thezerosup = mode;
 }
 
-void StepSelect_FloatFormat::SetFormat(const char* format)
+void StepSelect_FloatFormat::SetFormat(const char* const format)
 {
   themainform.Clear();
   themainform.AssignCat(format);
 }
 
-void StepSelect_FloatFormat::SetFormatForRange(const char* form, const double R1, const double R2)
+void StepSelect_FloatFormat::SetFormatForRange(const char* const form,
+                                               const double      R1,
+                                               const double      R2)
 {
   theformrange.Clear();
   theformrange.AssignCat(form);

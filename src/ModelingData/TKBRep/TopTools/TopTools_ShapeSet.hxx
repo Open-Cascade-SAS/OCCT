@@ -182,7 +182,7 @@ public:
   Standard_EXPORT int NbShapes() const;
 
 public:
-  static const char* THE_ASCII_VERSIONS[TopTools_FormatVersion_VERSION_3 + 1];
+  static const char* const THE_ASCII_VERSIONS[TopTools_FormatVersion_VERSION_3 + 1];
 
 private:
   //! Reads from <IS> a shape and returns it in S.

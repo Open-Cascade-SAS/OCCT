@@ -48,7 +48,7 @@ void IFSelect_Editor::SetNbValues(const int nbval)
 
 void IFSelect_Editor::SetValue(const int                                num,
                                const occ::handle<Interface_TypedValue>& typval,
-                               const char*                              shortname,
+                               const char* const                        shortname,
                                const IFSelect_EditValue                 editmode)
 {
   if (num < 1 || num > thenbval)
@@ -232,7 +232,7 @@ int IFSelect_Editor::MaxNameLength(const int what) const
   return 0;
 }
 
-int IFSelect_Editor::NameNumber(const char* name) const
+int IFSelect_Editor::NameNumber(const char* const name) const
 {
   int res;
   if (thenames.Find(name, res))

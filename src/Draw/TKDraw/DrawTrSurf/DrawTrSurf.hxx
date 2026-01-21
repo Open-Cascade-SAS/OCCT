@@ -52,22 +52,22 @@ public:
 
   //! Sets <G> in the variable <Name>. Overwrite the
   //! variable if already set.
-  Standard_EXPORT static void Set(const char* Name, const gp_Pnt& G);
+  Standard_EXPORT static void Set(const char* const Name, const gp_Pnt& G);
 
   //! Sets <G> in the variable <Name>. Overwrite the
   //! variable if already set.
-  Standard_EXPORT static void Set(const char* Name, const gp_Pnt2d& G);
+  Standard_EXPORT static void Set(const char* const Name, const gp_Pnt2d& G);
 
   //! Sets <G> in the variable <Name>. Overwrite the
   //! variable if already set.
   //! isSenseMarker indicates whether to render the
   //! sense glyph (arrow) for curves or not
-  Standard_EXPORT static void Set(const char*                       Name,
+  Standard_EXPORT static void Set(const char* const                 Name,
                                   const occ::handle<Geom_Geometry>& G,
                                   const bool                        isSenseMarker = true);
 
   template <class T>
-  static void Set(const char*           Name,
+  static void Set(const char* const     Name,
                   const occ::handle<T>& Arg,
                   typename opencascade::std::enable_if<
                     opencascade::std::is_base_of<Geom_Geometry, T>::value>::type* = nullptr)
@@ -79,12 +79,12 @@ public:
   //! variable if already set.
   //! isSenseMarker indicates whether to render the
   //! sense glyph (arrow) for curves or not
-  Standard_EXPORT static void Set(const char*                      Name,
+  Standard_EXPORT static void Set(const char* const                Name,
                                   const occ::handle<Geom2d_Curve>& C,
                                   const bool                       isSenseMarker = true);
 
   template <class T>
-  static void Set(const char*           Name,
+  static void Set(const char* const     Name,
                   const occ::handle<T>& Arg,
                   typename opencascade::std::enable_if<
                     opencascade::std::is_base_of<Geom2d_Curve, T>::value>::type* = nullptr)
@@ -94,15 +94,15 @@ public:
 
   //! Sets <T> in the variable <Name>. Overwrite the
   //! variable if already set.
-  Standard_EXPORT static void Set(const char* Name, const occ::handle<Poly_Triangulation>& T);
+  Standard_EXPORT static void Set(const char* const Name, const occ::handle<Poly_Triangulation>& T);
 
   //! Sets <P> in the variable <Name>. Overwrite the
   //! variable if already set.
-  Standard_EXPORT static void Set(const char* Name, const occ::handle<Poly_Polygon3D>& P);
+  Standard_EXPORT static void Set(const char* const Name, const occ::handle<Poly_Polygon3D>& P);
 
   //! Sets <P> in the variable <Name>. Overwrite the
   //! variable if already set.
-  Standard_EXPORT static void Set(const char* Name, const occ::handle<Poly_Polygon2D>& P);
+  Standard_EXPORT static void Set(const char* const Name, const occ::handle<Poly_Polygon2D>& P);
   //! Getthe variable <S>. Returns a null handle if
   //!  none, and print a warning message.
   Standard_EXPORT static occ::handle<Geom_Geometry> Get(const char*& Name);

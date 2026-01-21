@@ -592,8 +592,8 @@ static void GetProblemShapes(const BRepCheck_Analyzer&                         A
 //=======================================================================
 void StructuralDump(Draw_Interpretor&         theCommands,
                     const BRepCheck_Analyzer& theAna,
-                    const char*               ShName,
-                    const char*               Pref,
+                    const char* const         ShName,
+                    const char* const         Pref,
                     const TopoDS_Shape&       theShape)
 {
   int i;

@@ -66,12 +66,12 @@ public:
   //! copied to ExtCharacter.
   //! @param[in] theString the C string to convert
   //! @param[in] theIsMultiByte flag indicating UTF-8 coding
-  Standard_EXPORT TCollection_ExtendedString(const char* theString,
-                                             const bool  theIsMultiByte = false);
+  Standard_EXPORT TCollection_ExtendedString(const char* const theString,
+                                             const bool        theIsMultiByte = false);
 
   //! Creation by converting an ExtString (char16_t*) to an extended string.
   //! @param[in] theString the char16_t string to copy
-  Standard_EXPORT TCollection_ExtendedString(const char16_t* theString);
+  Standard_EXPORT TCollection_ExtendedString(const char16_t* const theString);
 
 #if !defined(_MSC_VER) || defined(_NATIVE_WCHAR_T_DEFINED)
   //! Initialize from wide-char string considering it as Unicode string
@@ -124,7 +124,7 @@ public:
   //! Initializes an ExtendedString with a char16_t string and explicit length.
   //! @param[in] theString the char16_t string to initialize from
   //! @param[in] theLength the length of the string
-  Standard_EXPORT TCollection_ExtendedString(const char16_t* theString, const int theLength);
+  Standard_EXPORT TCollection_ExtendedString(const char16_t* const theString, const int theLength);
 
   //! Template constructor for char16_t string literals or arrays.
   //! For true string literals (const char16_t[N] in code), the size is computed at runtime
@@ -202,11 +202,11 @@ public:
   //! This is the primary implementation that all other AssignCat overloads redirect to.
   //! @param[in] theString pointer to the string to append
   //! @param[in] theLength length of the string to append
-  Standard_EXPORT void AssignCat(const char16_t* theString, const int theLength);
+  Standard_EXPORT void AssignCat(const char16_t* const theString, const int theLength);
 
   //! Appends the char16_t string to this extended string.
   //! @param[in] theString the string to append
-  inline void AssignCat(const char16_t* theString)
+  inline void AssignCat(const char16_t* const theString)
   {
     if (theString != nullptr)
     {
@@ -215,7 +215,7 @@ public:
   }
 
   //! Appends the char16_t string to this extended string (alias of AssignCat()).
-  void operator+=(const char16_t* theString) { AssignCat(theString); }
+  void operator+=(const char16_t* const theString) { AssignCat(theString); }
 
   //! Template method for appending char16_t string literals or arrays.
   //! For char arrays (like buffers), scans for null terminator to get actual length.
@@ -265,18 +265,21 @@ public:
   //! @param[in] theOther pointer to the string to append
   //! @param[in] theLength length of the string to append
   //! @return new string with theOther appended
-  Standard_EXPORT TCollection_ExtendedString Cat(const char16_t* theOther,
-                                                 const int       theLength) const;
+  Standard_EXPORT TCollection_ExtendedString Cat(const char16_t* const theOther,
+                                                 const int             theLength) const;
 
   //! Concatenates char16_t string and returns a new string.
   //! @param[in] theOther the null-terminated string to append
   //! @return new string with theOther appended
-  TCollection_ExtendedString Cat(const char16_t* theOther) const
+  TCollection_ExtendedString Cat(const char16_t* const theOther) const
   {
     return Cat(theOther, extStringLen(theOther));
   }
 
-  TCollection_ExtendedString operator+(const char16_t* theOther) const { return Cat(theOther); }
+  TCollection_ExtendedString operator+(const char16_t* const theOther) const
+  {
+    return Cat(theOther);
+  }
 
   //! Appends the other extended string to this string and returns a new string.
   //!
@@ -321,11 +324,11 @@ public:
   //! Core implementation: Copy from a char16_t pointer with explicit length.
   //! @param[in] theString pointer to the string to copy
   //! @param[in] theLength length of the string to copy
-  Standard_EXPORT void Copy(const char16_t* theString, const int theLength);
+  Standard_EXPORT void Copy(const char16_t* const theString, const int theLength);
 
   //! Copy from a char16_t pointer.
   //! @param[in] theString the null-terminated string to copy
-  void Copy(const char16_t* theString) { Copy(theString, extStringLen(theString)); }
+  void Copy(const char16_t* const theString) { Copy(theString, extStringLen(theString)); }
 
   //! Copy theFromWhere to this string.
   //! Used as operator =
@@ -354,7 +357,7 @@ public:
   }
 
   //! Assignment from char16_t pointer.
-  TCollection_ExtendedString& operator=(const char16_t* theString)
+  TCollection_ExtendedString& operator=(const char16_t* const theString)
   {
     Copy(theString);
     return *this;
@@ -394,12 +397,14 @@ public:
   //! @param[in] theWhere the position to insert at (1-based)
   //! @param[in] theWhat pointer to the string to insert
   //! @param[in] theLength length of the string to insert
-  Standard_EXPORT void Insert(const int theWhere, const char16_t* theWhat, const int theLength);
+  Standard_EXPORT void Insert(const int             theWhere,
+                              const char16_t* const theWhat,
+                              const int             theLength);
 
   //! Insert a char16_t string at position theWhere.
   //! @param[in] theWhere the position to insert at (1-based)
   //! @param[in] theWhat the null-terminated string to insert
-  void Insert(const int theWhere, const char16_t* theWhat)
+  void Insert(const int theWhere, const char16_t* const theWhat)
   {
     Insert(theWhere, theWhat, extStringLen(theWhat));
   }
@@ -419,15 +424,18 @@ public:
   //! @param[in] theOther pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are equal, false otherwise
-  Standard_EXPORT bool IsEqual(const char16_t* theOther, const int theLength) const;
+  Standard_EXPORT bool IsEqual(const char16_t* const theOther, const int theLength) const;
 
   //! Returns true if this string equals theOther null-terminated string.
   //! Note that this method is an alias of operator ==.
   //! @param[in] theOther the char16_t string to compare with
   //! @return true if strings are equal, false otherwise
-  bool IsEqual(const char16_t* theOther) const { return IsEqual(theOther, extStringLen(theOther)); }
+  bool IsEqual(const char16_t* const theOther) const
+  {
+    return IsEqual(theOther, extStringLen(theOther));
+  }
 
-  bool operator==(const char16_t* theOther) const { return IsEqual(theOther); }
+  bool operator==(const char16_t* const theOther) const { return IsEqual(theOther); }
 
   //! Returns true if the characters in this extended
   //! string are identical to the characters in theOther extended string.
@@ -445,18 +453,18 @@ public:
   //! @param[in] theOther pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if strings are different, false otherwise
-  Standard_EXPORT bool IsDifferent(const char16_t* theOther, const int theLength) const;
+  Standard_EXPORT bool IsDifferent(const char16_t* const theOther, const int theLength) const;
 
   //! Returns true if this string differs from theOther null-terminated string.
   //! Note that this method is an alias of operator !=.
   //! @param[in] theOther the char16_t string to compare with
   //! @return true if strings are different, false otherwise
-  bool IsDifferent(const char16_t* theOther) const
+  bool IsDifferent(const char16_t* const theOther) const
   {
     return IsDifferent(theOther, extStringLen(theOther));
   }
 
-  bool operator!=(const char16_t* theOther) const { return IsDifferent(theOther); }
+  bool operator!=(const char16_t* const theOther) const { return IsDifferent(theOther); }
 
   //! Returns true if there are differences between the
   //! characters in this extended string and theOther extended string.
@@ -477,14 +485,17 @@ public:
   //! @param[in] theOther pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if this string is less than theOther
-  Standard_EXPORT bool IsLess(const char16_t* theOther, const int theLength) const;
+  Standard_EXPORT bool IsLess(const char16_t* const theOther, const int theLength) const;
 
   //! Returns TRUE if this string is lexicographically less than theOther.
   //! @param[in] theOther the char16_t string to compare with
   //! @return true if this string is less than theOther
-  bool IsLess(const char16_t* theOther) const { return IsLess(theOther, extStringLen(theOther)); }
+  bool IsLess(const char16_t* const theOther) const
+  {
+    return IsLess(theOther, extStringLen(theOther));
+  }
 
-  bool operator<(const char16_t* theOther) const { return IsLess(theOther); }
+  bool operator<(const char16_t* const theOther) const { return IsLess(theOther); }
 
   //! Returns TRUE if this string is lexicographically less than theOther.
   //! @param[in] theOther the extended string to compare with
@@ -500,17 +511,17 @@ public:
   //! @param[in] theOther pointer to the string to compare with
   //! @param[in] theLength length of the string to compare with
   //! @return true if this string is greater than theOther
-  Standard_EXPORT bool IsGreater(const char16_t* theOther, const int theLength) const;
+  Standard_EXPORT bool IsGreater(const char16_t* const theOther, const int theLength) const;
 
   //! Returns TRUE if this string is lexicographically greater than theOther.
   //! @param[in] theOther the char16_t string to compare with
   //! @return true if this string is greater than theOther
-  bool IsGreater(const char16_t* theOther) const
+  bool IsGreater(const char16_t* const theOther) const
   {
     return IsGreater(theOther, extStringLen(theOther));
   }
 
-  bool operator>(const char16_t* theOther) const { return IsGreater(theOther); }
+  bool operator>(const char16_t* const theOther) const { return IsGreater(theOther); }
 
   //! Returns TRUE if this string is lexicographically greater than theOther.
   //! @param[in] theOther the extended string to compare with
@@ -526,12 +537,12 @@ public:
   //! @param[in] theStartString pointer to the string to check for
   //! @param[in] theLength length of the string to check for
   //! @return true if this string starts with theStartString
-  Standard_EXPORT bool StartsWith(const char16_t* theStartString, const int theLength) const;
+  Standard_EXPORT bool StartsWith(const char16_t* const theStartString, const int theLength) const;
 
   //! Determines whether this string starts with theStartString.
   //! @param[in] theStartString the null-terminated string to check for
   //! @return true if this string starts with theStartString
-  bool StartsWith(const char16_t* theStartString) const
+  bool StartsWith(const char16_t* const theStartString) const
   {
     return StartsWith(theStartString, extStringLen(theStartString));
   }
@@ -548,12 +559,12 @@ public:
   //! @param[in] theEndString pointer to the string to check for
   //! @param[in] theLength length of the string to check for
   //! @return true if this string ends with theEndString
-  Standard_EXPORT bool EndsWith(const char16_t* theEndString, const int theLength) const;
+  Standard_EXPORT bool EndsWith(const char16_t* const theEndString, const int theLength) const;
 
   //! Determines whether this string ends with theEndString.
   //! @param[in] theEndString the null-terminated string to check for
   //! @return true if this string ends with theEndString
-  bool EndsWith(const char16_t* theEndString) const
+  bool EndsWith(const char16_t* const theEndString) const
   {
     return EndsWith(theEndString, extStringLen(theEndString));
   }
@@ -601,12 +612,12 @@ public:
   //! @param[in] theWhat pointer to the string to search for
   //! @param[in] theLength length of the string to search for
   //! @return the position of first match (1-based), or -1 if not found
-  Standard_EXPORT int Search(const char16_t* theWhat, const int theLength) const;
+  Standard_EXPORT int Search(const char16_t* const theWhat, const int theLength) const;
 
   //! Searches for theWhat null-terminated string from the beginning.
   //! @param[in] theWhat the null-terminated string to search for
   //! @return the position of first match (1-based), or -1 if not found
-  int Search(const char16_t* theWhat) const { return Search(theWhat, extStringLen(theWhat)); }
+  int Search(const char16_t* const theWhat) const { return Search(theWhat, extStringLen(theWhat)); }
 
   //! Searches an ExtendedString in this string from the beginning
   //! and returns position of first item theWhat matching.
@@ -622,12 +633,12 @@ public:
   //! @param[in] theWhat pointer to the string to search for
   //! @param[in] theLength length of the string to search for
   //! @return the position of first match from end (1-based), or -1 if not found
-  Standard_EXPORT int SearchFromEnd(const char16_t* theWhat, const int theLength) const;
+  Standard_EXPORT int SearchFromEnd(const char16_t* const theWhat, const int theLength) const;
 
   //! Searches for theWhat null-terminated string from the end.
   //! @param[in] theWhat the null-terminated string to search for
   //! @return the position of first match from end (1-based), or -1 if not found
-  int SearchFromEnd(const char16_t* theWhat) const
+  int SearchFromEnd(const char16_t* const theWhat) const
   {
     return SearchFromEnd(theWhat, extStringLen(theWhat));
   }
@@ -660,12 +671,14 @@ public:
   //! @param[in] theWhere the position to start replacement (1-based)
   //! @param[in] theWhat pointer to the string to replace with
   //! @param[in] theLength length of the string to replace with
-  Standard_EXPORT void SetValue(const int theWhere, const char16_t* theWhat, const int theLength);
+  Standard_EXPORT void SetValue(const int             theWhere,
+                                const char16_t* const theWhat,
+                                const int             theLength);
 
   //! Replaces a part of this string by a null-terminated char16_t string.
   //! @param[in] theWhere the position to start replacement (1-based)
   //! @param[in] theWhat the null-terminated string to replace with
-  void SetValue(const int theWhere, const char16_t* theWhat)
+  void SetValue(const int theWhere, const char16_t* const theWhat)
   {
     SetValue(theWhere, theWhat, extStringLen(theWhat));
   }
@@ -738,8 +751,8 @@ public:
   //! @param[in] theSeparators the separator characters
   //! @param[in] theWhichOne the token number to extract (1-based)
   //! @return the extracted token
-  Standard_EXPORT TCollection_ExtendedString Token(const char16_t* theSeparators,
-                                                   const int       theWhichOne = 1) const;
+  Standard_EXPORT TCollection_ExtendedString Token(const char16_t* const theSeparators,
+                                                   const int             theWhichOne = 1) const;
 
   //! Returns pointer to ExtString (char16_t*).
   //! @return the char16_t string representation
@@ -869,11 +882,11 @@ public:
   //! Core implementation: Inserts char16_t string (pointer and length) at the beginning.
   //! @param[in] theOther pointer to the string to prepend
   //! @param[in] theLength length of the string to prepend
-  Standard_EXPORT void Prepend(const char16_t* theOther, const int theLength);
+  Standard_EXPORT void Prepend(const char16_t* const theOther, const int theLength);
 
   //! Inserts a null-terminated char16_t string at the beginning.
   //! @param[in] theOther the null-terminated string to prepend
-  void Prepend(const char16_t* theOther) { Prepend(theOther, extStringLen(theOther)); }
+  void Prepend(const char16_t* const theOther) { Prepend(theOther, extStringLen(theOther)); }
 
   //! Inserts the other extended string at the beginning of this string.
   //! @param[in] theOther the string to prepend
@@ -935,7 +948,7 @@ public:
 
 private:
   //! Returns true if the input CString was successfully converted to UTF8 coding.
-  bool ConvertToUnicode(const char* theString);
+  bool ConvertToUnicode(const char* const theString);
 
   //! Internal wrapper to allocate on stack or heap
   void allocate(const int theLength);
@@ -950,7 +963,7 @@ private:
   //! Scans for null terminator to find actual string length.
   //! @param[in] theString the char16_t string
   //! @return length of string (excluding null terminator)
-  static int extStringLen(const char16_t* theString)
+  static int extStringLen(const char16_t* const theString)
   {
     if (theString == nullptr)
     {

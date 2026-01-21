@@ -101,12 +101,12 @@ public:
   //! Returns a description according to its name
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
-  Standard_EXPORT occ::handle<StepData_EDescr> Descr(const char* name,
-                                                     const bool  anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_EDescr> Descr(const char* const name,
+                                                     const bool        anylevel = true) const;
 
   //! Idem as Descr but cast to simple description
-  Standard_EXPORT occ::handle<StepData_ESDescr> ESDescr(const char* name,
-                                                        const bool  anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_ESDescr> ESDescr(const char* const name,
+                                                        const bool        anylevel = true) const;
 
   //! Returns a complex description according to list of names
   //! <anylevel> True (D) : for <me> and its resources
@@ -121,8 +121,8 @@ public:
   //! Returns a parameter description according to its name
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
-  Standard_EXPORT occ::handle<StepData_PDescr> PDescr(const char* name,
-                                                      const bool  anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_PDescr> PDescr(const char* const name,
+                                                      const bool        anylevel = true) const;
 
   //! Records an ESDescr, intended to build complex descriptions
   Standard_EXPORT void AddBasicDescr(const occ::handle<StepData_ESDescr>& esdescr);
@@ -130,8 +130,8 @@ public:
   //! Returns a basic description according to its name
   //! <anylevel> True (D) : for <me> and its resources
   //! <anylevel> False : for <me> only
-  Standard_EXPORT occ::handle<StepData_EDescr> BasicDescr(const char* name,
-                                                          const bool  anylevel = true) const;
+  Standard_EXPORT occ::handle<StepData_EDescr> BasicDescr(const char* const name,
+                                                          const bool        anylevel = true) const;
 
   DEFINE_STANDARD_RTTIEXT(StepData_Protocol, Interface_Protocol)
 

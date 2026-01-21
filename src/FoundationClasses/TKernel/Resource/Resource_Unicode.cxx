@@ -43,7 +43,8 @@ static inline bool isshift(unsigned int c)
   return c >= 0x80 && c <= 0xff;
 }
 
-void Resource_Unicode::ConvertSJISToUnicode(const char* fromstr, TCollection_ExtendedString& tostr)
+void Resource_Unicode::ConvertSJISToUnicode(const char* const           fromstr,
+                                            TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
 
@@ -77,7 +78,8 @@ void Resource_Unicode::ConvertSJISToUnicode(const char* fromstr, TCollection_Ext
   }
 }
 
-void Resource_Unicode::ConvertEUCToUnicode(const char* fromstr, TCollection_ExtendedString& tostr)
+void Resource_Unicode::ConvertEUCToUnicode(const char* const           fromstr,
+                                           TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
 
@@ -111,7 +113,8 @@ void Resource_Unicode::ConvertEUCToUnicode(const char* fromstr, TCollection_Exte
   }
 }
 
-void Resource_Unicode::ConvertGBToUnicode(const char* fromstr, TCollection_ExtendedString& tostr)
+void Resource_Unicode::ConvertGBToUnicode(const char* const           fromstr,
+                                          TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
 
@@ -145,7 +148,8 @@ void Resource_Unicode::ConvertGBToUnicode(const char* fromstr, TCollection_Exten
   }
 }
 
-bool Resource_Unicode::ConvertGBKToUnicode(const char* fromstr, TCollection_ExtendedString& tostr)
+bool Resource_Unicode::ConvertGBKToUnicode(const char* const           fromstr,
+                                           TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
 
@@ -263,7 +267,8 @@ bool Resource_Unicode::ConvertGBKToUnicode(const char* fromstr, TCollection_Exte
   return true;
 }
 
-bool Resource_Unicode::ConvertBig5ToUnicode(const char* fromstr, TCollection_ExtendedString& tostr)
+bool Resource_Unicode::ConvertBig5ToUnicode(const char* const           fromstr,
+                                            TCollection_ExtendedString& tostr)
 {
   tostr.Clear();
 
@@ -633,7 +638,7 @@ void Resource_Unicode::ReadFormat()
 }
 
 void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFormat,
-                                              const char*                 theFromStr,
+                                              const char* const           theFromStr,
                                               TCollection_ExtendedString& theToStr)
 {
   switch (theFormat)
@@ -673,8 +678,8 @@ void Resource_Unicode::ConvertFormatToUnicode(const Resource_FormatType   theFor
     case Resource_FormatType_iso8859_8:
     case Resource_FormatType_iso8859_9:
     case Resource_FormatType_CP850: {
-      const int       aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
-      const char16_t* aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
+      const int             aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
+      const char16_t* const aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
       theToStr.Clear();
       for (const char* anInputPntr = theFromStr; *anInputPntr != '\0'; ++anInputPntr)
       {
@@ -751,8 +756,8 @@ bool Resource_Unicode::ConvertUnicodeToFormat(const Resource_FormatType         
       {
         return false;
       }
-      const int       aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
-      const char16_t* aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
+      const int             aCodePageIndex = (int)theFormat - (int)Resource_FormatType_CP1250;
+      const char16_t* const aCodePage      = THE_CODEPAGES_ANSI[aCodePageIndex];
       for (int aToCharInd = 0; aToCharInd < theMaxSize - 1; ++aToCharInd)
       {
         bool     isFind    = false;

@@ -40,7 +40,7 @@ class StepData_PDescr : public Standard_Transient
 public:
   Standard_EXPORT StepData_PDescr();
 
-  Standard_EXPORT void SetName(const char* name);
+  Standard_EXPORT void SetName(const char* const name);
 
   Standard_EXPORT const char* Name() const;
 
@@ -53,7 +53,7 @@ public:
 
   //! Sets a name for SELECT member. To be used if a member is for
   //! an immediate type
-  Standard_EXPORT void SetMemberName(const char* memname);
+  Standard_EXPORT void SetMemberName(const char* const memname);
 
   //! Sets <me> for an Integer value
   Standard_EXPORT void SetInteger();
@@ -75,14 +75,14 @@ public:
   Standard_EXPORT void SetEnum();
 
   //! Adds an enum value as a string
-  Standard_EXPORT void AddEnumDef(const char* enumdef);
+  Standard_EXPORT void AddEnumDef(const char* const enumdef);
 
   //! Sets <me> for an Entity which must match a Type (early-bound)
   Standard_EXPORT void SetType(const occ::handle<Standard_Type>& atype);
 
   //! Sets <me> for a Described Entity, whose Description must match
   //! the type name <dscnam>
-  Standard_EXPORT void SetDescr(const char* dscnam);
+  Standard_EXPORT void SetDescr(const char* const dscnam);
 
   //! Adds an arity count to <me>, by default 1
   //! 1 : a simple field passes to a LIST/ARRAY etc
@@ -108,7 +108,7 @@ public:
 
   //! Sets <me> to describe a field of an entity
   //! With a name and a rank
-  Standard_EXPORT void SetField(const char* name, const int rank);
+  Standard_EXPORT void SetField(const char* const name, const int rank);
 
   //! Tells if <me> is for a SELECT
   Standard_EXPORT bool IsSelect() const;
@@ -121,7 +121,7 @@ public:
   //! Hence, following IsInteger .. Enum* only apply on <me> and
   //! require Member
   //! While IsType applies on <me> and all Select Members
-  Standard_EXPORT occ::handle<StepData_PDescr> Member(const char* name) const;
+  Standard_EXPORT occ::handle<StepData_PDescr> Member(const char* const name) const;
 
   //! Tells if <me> is for an Integer
   Standard_EXPORT bool IsInteger() const;
@@ -149,7 +149,7 @@ public:
   //! Returns the numeric value found for an enum text
   //! The text must be in capitals and limited by dots
   //! A non-suitable text gives a negative value to be returned
-  Standard_EXPORT int EnumValue(const char* name) const;
+  Standard_EXPORT int EnumValue(const char* const name) const;
 
   //! Returns the text which corresponds to a numeric value,
   //! between 0 and EnumMax. It is limited by dots

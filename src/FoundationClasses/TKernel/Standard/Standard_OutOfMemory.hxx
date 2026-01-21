@@ -44,7 +44,7 @@ class Standard_OutOfMemory : public Standard_ProgramError
 public:
   //! Constructor is kept public for backward compatibility.
   //! @param theMessage optional error message
-  Standard_EXPORT Standard_OutOfMemory(const char* theMessage = nullptr);
+  Standard_EXPORT Standard_OutOfMemory(const char* const theMessage = nullptr);
 
   //! Returns error message (implements std::exception interface).
   Standard_EXPORT const char* what() const noexcept override;
@@ -54,7 +54,7 @@ public:
 
   //! Sets error message.
   //! @param theMessage error message (can be nullptr)
-  Standard_EXPORT void SetMessageString(const char* theMessage);
+  Standard_EXPORT void SetMessageString(const char* const theMessage);
 
 private:
   char myBuffer[1024];

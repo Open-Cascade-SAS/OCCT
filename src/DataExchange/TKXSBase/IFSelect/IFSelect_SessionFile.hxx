@@ -79,7 +79,7 @@ public:
   //! Then, IsDone acknowledges on the result of the Operation.
   //! But such a SessionFile may not Read a File to a WorkSession.
   Standard_EXPORT IFSelect_SessionFile(const occ::handle<IFSelect_WorkSession>& WS,
-                                       const char*                              filename);
+                                       const char* const                        filename);
 
   //! Clears the lines recorded whatever for writing or for reading
   Standard_EXPORT void ClearLines();
@@ -91,7 +91,7 @@ public:
   Standard_EXPORT const TCollection_AsciiString& Line(const int num) const;
 
   //! Adds a line to the list of recorded lines
-  Standard_EXPORT void AddLine(const char* line);
+  Standard_EXPORT void AddLine(const char* const line);
 
   //! Removes the last line. Can be called recursively.
   //! Does nothing if the list is empty
@@ -101,29 +101,29 @@ public:
   //! the list of lines.
   //! Returns False (with no clearing) if the file could not be
   //! created
-  Standard_EXPORT bool WriteFile(const char* name);
+  Standard_EXPORT bool WriteFile(const char* const name);
 
   //! Reads the recorded lines from a file named <name>, after
   //! having cleared the list (stops if RecognizeFile fails)
   //! Returns False (with no clearing) if the file could not be read
-  Standard_EXPORT bool ReadFile(const char* name);
+  Standard_EXPORT bool ReadFile(const char* const name);
 
   //! Recognizes the header line. returns True if OK, False else
-  Standard_EXPORT bool RecognizeFile(const char* headerline);
+  Standard_EXPORT bool RecognizeFile(const char* const headerline);
 
   //! Performs a Write Operation from a WorkSession to a File
   //! i.e. calls WriteSession then WriteEnd, and WriteFile
   //! Returned Value is : 0 for OK, -1 File could not be created,
   //! >0 Error during Write (see WriteSession)
   //! IsDone can be called too (will return True for OK)
-  Standard_EXPORT int Write(const char* filename);
+  Standard_EXPORT int Write(const char* const filename);
 
   //! Performs a Read Operation from a file to a WorkSession
   //! i.e. calls ReadFile, then ReadSession and ReadEnd
   //! Returned Value is : 0 for OK, -1 File could not be opened,
   //! >0 Error during Read (see WriteSession)
   //! IsDone can be called too (will return True for OK)
-  Standard_EXPORT int Read(const char* filename);
+  Standard_EXPORT int Read(const char* const filename);
 
   //! Prepares the Write operation from a WorkSession (IFSelect) to
   //! a File, i.e. fills the list of lines (the file itself remains
@@ -142,7 +142,7 @@ public:
 
   //! Writes a line to the File. If <follow> is given, it is added
   //! at the following of the line. '\n' must be added for the end.
-  Standard_EXPORT void WriteLine(const char* line, const char follow = 0);
+  Standard_EXPORT void WriteLine(const char* const line, const char follow = 0);
 
   //! Writes the Parameters own to each type of Item. Uses the
   //! Library of SessionDumpers
@@ -170,7 +170,7 @@ public:
 
   //! Internal routine which processes a line into words
   //! and prepares its exploration
-  Standard_EXPORT void SplitLine(const char* line);
+  Standard_EXPORT void SplitLine(const char* const line);
 
   //! Tries to Read an Item, by calling the Library of Dumpers
   //! Sets the list of parameters of the line to be read from the
@@ -223,7 +223,7 @@ public:
 
   //! During a Write action, commands to send a Text without
   //! interpretation. It will be sent as well
-  Standard_EXPORT void SendText(const char* text);
+  Standard_EXPORT void SendText(const char* const text);
 
   //! Sets the rank of Last General Parameter to a new value. It is
   //! followed by the Fist Own Parameter of the item.

@@ -49,7 +49,7 @@ void IFSelect_SignatureList::Clear()
   thediclist.Clear();
 }
 
-void IFSelect_SignatureList::Add(const occ::handle<Standard_Transient>& ent, const char* sign)
+void IFSelect_SignatureList::Add(const occ::handle<Standard_Transient>& ent, const char* const sign)
 {
   if (thesignonly)
   {
@@ -90,7 +90,7 @@ const char* IFSelect_SignatureList::LastValue() const
 }
 
 void IFSelect_SignatureList::Init(
-  const char*                                                     name,
+  const char* const                                               name,
   const NCollection_IndexedDataMap<TCollection_AsciiString, int>& theCount,
   const NCollection_IndexedDataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list,
   const int nbnuls)
@@ -105,7 +105,7 @@ void IFSelect_SignatureList::Init(
 }
 
 occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_SignatureList::
-  List(const char* root) const
+  List(const char* const root) const
 {
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =
     new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
@@ -131,7 +131,7 @@ int IFSelect_SignatureList::NbNulls() const
   return thenbnuls;
 }
 
-int IFSelect_SignatureList::NbTimes(const char* sign) const
+int IFSelect_SignatureList::NbTimes(const char* const sign) const
 {
   int nb = 0;
   thedicount.FindFromKey(sign, nb);
@@ -139,7 +139,7 @@ int IFSelect_SignatureList::NbTimes(const char* sign) const
 }
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_SignatureList::
-  Entities(const char* sign) const
+  Entities(const char* const sign) const
 {
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
   occ::handle<Standard_Transient>                                     aTList;
@@ -152,7 +152,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Sig
   return list;
 }
 
-void IFSelect_SignatureList::SetName(const char* name)
+void IFSelect_SignatureList::SetName(const char* const name)
 {
   thename = new TCollection_HAsciiString(name);
 }

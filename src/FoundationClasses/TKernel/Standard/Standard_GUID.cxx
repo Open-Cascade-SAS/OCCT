@@ -22,7 +22,7 @@
 
 //=================================================================================================
 
-int Standard_GUID_MatchChar(const char* buffer, const char aChar)
+int Standard_GUID_MatchChar(const char* const buffer, const char aChar)
 {
   const char* tmpbuffer = buffer;
   int         result    = -1;
@@ -96,7 +96,7 @@ Standard_PCharacter Standard_GUID_GetValue8(Standard_PCharacter tmpBuffer, uint8
 
 //=================================================================================================
 
-bool Standard_GUID::CheckGUIDFormat(const char* aGuid)
+bool Standard_GUID::CheckGUIDFormat(const char* const aGuid)
 {
   bool result = true;
 
@@ -167,7 +167,7 @@ bool Standard_GUID::CheckGUIDFormat(const char* aGuid)
 
 //=================================================================================================
 
-Standard_GUID::Standard_GUID(const char* aGuid)
+Standard_GUID::Standard_GUID(const char* const aGuid)
     : my32b(0),
       my16b1(0),
       my16b2(0),
@@ -200,7 +200,7 @@ Standard_GUID::Standard_GUID(const char* aGuid)
   Standard_GUID_GetValue8(tmpBuffer, my8b6);
 }
 
-Standard_GUID::Standard_GUID(const char16_t* aGuid)
+Standard_GUID::Standard_GUID(const char16_t* const aGuid)
     : my32b(0),
       my16b1(0),
       my16b2(0),

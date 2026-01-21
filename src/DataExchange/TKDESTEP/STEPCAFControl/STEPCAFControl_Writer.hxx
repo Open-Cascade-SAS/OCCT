@@ -80,7 +80,7 @@ public:
   //! filename will be a name of root file, all other files
   //! have names of corresponding parts
   //! Provided for use like single-file writer
-  Standard_EXPORT IFSelect_ReturnStatus Write(const char* theFileName);
+  Standard_EXPORT IFSelect_ReturnStatus Write(const char* const theFileName);
 
   //! Writes all the produced models into the stream.
   //! Provided for use like single-file writer
@@ -94,7 +94,7 @@ public:
   //! Returns True if translation is OK
   Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
                                 const STEPControl_StepModelType      theMode    = STEPControl_AsIs,
-                                const char*                          theIsMulti = nullptr,
+                                const char* const                    theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a document (or single label) to a STEP model
@@ -110,13 +110,13 @@ public:
   Standard_EXPORT bool Transfer(const occ::handle<TDocStd_Document>& theDoc,
                                 const DESTEP_Parameters&             theParams,
                                 const STEPControl_StepModelType      theMode    = STEPControl_AsIs,
-                                const char*                          theIsMulti = nullptr,
+                                const char* const                    theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to transfer part of the document specified by label
   Standard_EXPORT bool Transfer(const TDF_Label&                theLabel,
                                 const STEPControl_StepModelType theMode    = STEPControl_AsIs,
-                                const char*                     theIsMulti = nullptr,
+                                const char* const               theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to transfer part of the document specified by label
@@ -125,14 +125,14 @@ public:
   Standard_EXPORT bool Transfer(const TDF_Label&                theLabel,
                                 const DESTEP_Parameters&        theParams,
                                 const STEPControl_StepModelType theMode    = STEPControl_AsIs,
-                                const char*                     theIsMulti = nullptr,
+                                const char* const               theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to writing sequence of root assemblies
   //! or part of the file specified by use by one label
   Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& theLabelSeq,
                                 const STEPControl_StepModelType        theMode = STEPControl_AsIs,
-                                const char*                            theIsMulti = nullptr,
+                                const char* const                      theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Method to writing sequence of root assemblies
@@ -142,7 +142,7 @@ public:
   Standard_EXPORT bool Transfer(const NCollection_Sequence<TDF_Label>& theLabelSeq,
                                 const DESTEP_Parameters&               theParams,
                                 const STEPControl_StepModelType        theMode = STEPControl_AsIs,
-                                const char*                            theIsMulti = nullptr,
+                                const char* const                      theIsMulti = nullptr,
                                 const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
@@ -152,7 +152,7 @@ public:
   //! Transfers a document and writes it to a STEP file
   //! Returns True if translation is OK
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
-                               const char*                          theFileName,
+                               const char* const                    theFileName,
                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Transfers a document and writes it to a STEP file
@@ -160,7 +160,7 @@ public:
   //! initialization from Interface_Static
   //! Returns True if translation is OK
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& theDoc,
-                               const char*                          theFileName,
+                               const char* const                    theFileName,
                                const DESTEP_Parameters&             theParams,
                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
@@ -179,7 +179,7 @@ public:
 
   //! Returns data on external file by its name
   //! Returns False if no external file with given name is read
-  Standard_EXPORT bool ExternFile(const char*                             theName,
+  Standard_EXPORT bool ExternFile(const char* const                       theName,
                                   occ::handle<STEPCAFControl_ExternFile>& theExtFile) const;
 
   //! Returns basic reader for root file
@@ -288,7 +288,7 @@ protected:
   bool transfer(STEPControl_Writer&                    theWriter,
                 const NCollection_Sequence<TDF_Label>& theLabels,
                 const STEPControl_StepModelType        theMode      = STEPControl_AsIs,
-                const char*                            theIsMulti   = nullptr,
+                const char* const                      theIsMulti   = nullptr,
                 const bool                             isExternFile = false,
                 const Message_ProgressRange&           theProgress  = Message_ProgressRange());
 
@@ -303,7 +303,7 @@ protected:
     const STEPControl_StepModelType  theMode,
     NCollection_Sequence<TDF_Label>& theLabelSeq,
     const StepData_Factors&          theLocalFactors = StepData_Factors(),
-    const char*                      thePrefix       = "",
+    const char* const                thePrefix       = "",
     const Message_ProgressRange&     theProgress     = Message_ProgressRange());
 
   //! Write external references to STEP
@@ -357,7 +357,7 @@ protected:
   //! to STEP model
   bool writeValProps(const occ::handle<XSControl_WorkSession>& theWS,
                      const NCollection_Sequence<TDF_Label>&    theLabels,
-                     const char*                               theIsMulti) const;
+                     const char* const                         theIsMulti) const;
 
   //! Write layers assigned to specified labels, to STEP model
   bool writeLayers(const occ::handle<XSControl_WorkSession>& theWS,

@@ -43,7 +43,7 @@ public:
   //! Creates a status object of type "Failure" with message and stack trace.
   //! @param[in] theMessage    exception description
   //! @param[in] theStackTrace stack trace string
-  Standard_EXPORT Standard_Failure(const char* theMessage, const char* theStackTrace);
+  Standard_EXPORT Standard_Failure(const char* const theMessage, const char* const theStackTrace);
 
   //! Assignment operator
   Standard_EXPORT Standard_Failure& operator=(const Standard_Failure& theOther);

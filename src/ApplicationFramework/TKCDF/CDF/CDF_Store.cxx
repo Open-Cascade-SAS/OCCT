@@ -78,7 +78,7 @@ occ::handle<TCollection_HExtendedString> CDF_Store::Name() const
   return new TCollection_HExtendedString(myCurrentDocument->RequestedName());
 }
 
-bool CDF_Store::SetFolder(const char16_t* aFolder)
+bool CDF_Store::SetFolder(const char16_t* const aFolder)
 {
   TCollection_ExtendedString f(aFolder);
   return SetFolder(f);
@@ -135,7 +135,7 @@ CDF_StoreSetNameStatus CDF_Store::SetName(const TCollection_ExtendedString& aNam
   return CDF_SSNS_OK;
 }
 
-CDF_StoreSetNameStatus CDF_Store::SetName(const char16_t* aName)
+CDF_StoreSetNameStatus CDF_Store::SetName(const char16_t* const aName)
 {
   TCollection_ExtendedString theName(aName);
   return SetName(theName);
@@ -204,7 +204,7 @@ occ::handle<TCollection_HExtendedString> CDF_Store::PreviousVersion() const
   return blank;
 }
 
-bool CDF_Store::SetPreviousVersion(const char16_t* aPreviousVersion)
+bool CDF_Store::SetPreviousVersion(const char16_t* const aPreviousVersion)
 {
   if (theMetaDataDriver->HasVersionCapability())
   {
@@ -227,7 +227,7 @@ bool CDF_Store::SetPreviousVersion(const char16_t* aPreviousVersion)
   return true;
 }
 
-void CDF_Store::SetCurrent(const char16_t* /*aPresentation*/)
+void CDF_Store::SetCurrent(const char16_t* const /*aPresentation*/)
 {
   myIsMainDocument = myCurrentDocument == myMainDocument;
 }
@@ -264,7 +264,7 @@ void CDF_Store::FindDefault()
   }
 }
 
-void CDF_Store::SetComment(const char16_t* aComment)
+void CDF_Store::SetComment(const char16_t* const aComment)
 {
   myCurrentDocument->SetRequestedComment(aComment);
 }

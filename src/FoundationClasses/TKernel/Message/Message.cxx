@@ -81,7 +81,7 @@ const char* Message::MetricToString(const Message_MetricType theType)
 
 //=================================================================================================
 
-bool Message::MetricFromString(const char* theString, Message_MetricType& theGravity)
+bool Message::MetricFromString(const char* const theString, Message_MetricType& theGravity)
 {
   TCollection_AsciiString aName(theString);
   for (int aMetricIter = 0; aMetricIter <= Message_MetricType_MemHeapUsage; ++aMetricIter)

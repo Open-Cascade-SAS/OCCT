@@ -28,7 +28,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_EditForm, Standard_Transient)
 IFSelect_EditForm::IFSelect_EditForm(const occ::handle<IFSelect_Editor>& editor,
                                      const bool                          readonly,
                                      const bool                          undoable,
-                                     const char*                         label)
+                                     const char* const                   label)
     : thecomplete(true),
       theloaded(false),
       thekeepst(false),
@@ -46,7 +46,7 @@ IFSelect_EditForm::IFSelect_EditForm(const occ::handle<IFSelect_Editor>& editor,
                                      const NCollection_Sequence<int>&    nums,
                                      const bool                          readonly,
                                      const bool                          undoable,
-                                     const char*                         label)
+                                     const char* const                   label)
     : thecomplete(false),
       theloaded(false),
       thekeepst(false),
@@ -151,7 +151,7 @@ int IFSelect_EditForm::RankFromNumber(const int num) const
   return 0;
 }
 
-int IFSelect_EditForm::NameNumber(const char* name) const
+int IFSelect_EditForm::NameNumber(const char* const name) const
 {
   int res = theeditor->NameNumber(name);
   if (thecomplete || res == 0)
@@ -166,7 +166,7 @@ int IFSelect_EditForm::NameNumber(const char* name) const
   return -res;
 }
 
-int IFSelect_EditForm::NameRank(const char* name) const
+int IFSelect_EditForm::NameRank(const char* const name) const
 {
   int res = theeditor->NameNumber(name);
   if (thecomplete || res == 0)

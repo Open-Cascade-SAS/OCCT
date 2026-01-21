@@ -267,7 +267,7 @@ void StepData_Field::SetReal(const double val)
   thereal = val;
 }
 
-void StepData_Field::SetString(const char* val)
+void StepData_Field::SetString(const char* const val)
 {
   if (thekind == KindSelect)
   {
@@ -283,7 +283,7 @@ void StepData_Field::SetString(const char* val)
   theany = new TCollection_HAsciiString(val);
 }
 
-void StepData_Field::SetEnum(const int val, const char* text)
+void StepData_Field::SetEnum(const int val, const char* const text)
 {
   Clear(KindEnum);
   SetInt(val);
@@ -518,7 +518,7 @@ void StepData_Field::SetLogical(const int num, const StepData_Logical val)
     SetInt(num, 2, KindLogical);
 }
 
-void StepData_Field::SetEnum(const int num, const int val, const char* text)
+void StepData_Field::SetEnum(const int num, const int val, const char* const text)
 {
   DeclareAndCast(NCollection_HArray1<occ::handle<Standard_Transient>>, ht, theany);
   if (ht.IsNull())
@@ -558,7 +558,7 @@ void StepData_Field::SetReal(const int num, const double val)
   sm->SetReal(val);
 }
 
-void StepData_Field::SetString(const int num, const char* val)
+void StepData_Field::SetString(const int num, const char* const val)
 {
   DeclareAndCast(NCollection_HArray1<occ::handle<TCollection_HAsciiString>>, hs, theany);
   if (!hs.IsNull())

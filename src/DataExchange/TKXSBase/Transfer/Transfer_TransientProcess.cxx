@@ -78,7 +78,7 @@ const Interface_Graph& Transfer_TransientProcess::Graph() const
 
 //=================================================================================================
 
-void Transfer_TransientProcess::SetContext(const char*                            name,
+void Transfer_TransientProcess::SetContext(const char* const                      name,
                                            const occ::handle<Standard_Transient>& ctx)
 {
   thectx.Bind(name, ctx);
@@ -86,7 +86,7 @@ void Transfer_TransientProcess::SetContext(const char*                          
 
 //=================================================================================================
 
-bool Transfer_TransientProcess::GetContext(const char*                       name,
+bool Transfer_TransientProcess::GetContext(const char* const                 name,
                                            const occ::handle<Standard_Type>& type,
                                            occ::handle<Standard_Transient>&  ctx) const
 {

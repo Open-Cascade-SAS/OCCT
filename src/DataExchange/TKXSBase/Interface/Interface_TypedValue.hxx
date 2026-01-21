@@ -52,9 +52,9 @@ public:
   //!
   //! init gives an initial value. If it is not given, the
   //! TypedValue begins as "not set", its value is empty
-  Standard_EXPORT Interface_TypedValue(const char*               name,
+  Standard_EXPORT Interface_TypedValue(const char* const         name,
                                        const Interface_ParamType type = Interface_ParamText,
-                                       const char*               init = "");
+                                       const char* const         init = "");
 
   //! Returns the type
   //! I.E. calls ValueType then makes correspondence between

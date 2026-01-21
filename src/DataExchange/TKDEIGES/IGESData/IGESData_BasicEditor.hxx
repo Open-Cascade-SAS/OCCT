@@ -78,7 +78,7 @@ public:
   //! Returns True if done, False if <name> is incorrect
   //! Remark : if <flag> has been set to 3 (user defined), <name>
   //! is then free
-  Standard_EXPORT bool SetUnitName(const char* name);
+  Standard_EXPORT bool SetUnitName(const char* const name);
 
   //! Applies unit value to convert header data : Resolution,
   //! MaxCoord, MaxLineWeight
@@ -110,7 +110,7 @@ public:
 
   //! From the name of unit, computes flag number, 0 if incorrect
   //! (in this case, user defined entity remains possible)
-  Standard_EXPORT static int UnitNameFlag(const char* name);
+  Standard_EXPORT static int UnitNameFlag(const char* const name);
 
   //! From the flag of unit, determines value in MM, 0 if incorrect
   Standard_EXPORT static double UnitFlagValue(const int flag);

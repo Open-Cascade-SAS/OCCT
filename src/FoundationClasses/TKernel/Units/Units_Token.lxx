@@ -53,14 +53,14 @@ inline occ::handle<Units_Dimensions> Units_Token::Dimensions() const
 
 //=================================================================================================
 
-inline void Units_Token::Word(const char* aword)
+inline void Units_Token::Word(const char* const aword)
 {
   theword = aword;
 }
 
 //=================================================================================================
 
-inline void Units_Token::Mean(const char* amean)
+inline void Units_Token::Mean(const char* const amean)
 {
   themean = amean;
 }
@@ -74,7 +74,7 @@ inline void Units_Token::Value(const double avalue)
 
 //=================================================================================================
 
-inline bool Units_Token::IsNotEqual(const char* astring) const
+inline bool Units_Token::IsNotEqual(const char* const astring) const
 {
   TCollection_AsciiString string = Word();
   int                     length = string.Length();
@@ -99,7 +99,7 @@ inline bool Units_Token::IsNotEqual(const occ::handle<Units_Token>& atoken) cons
 
 //=================================================================================================
 
-inline bool Units_Token::IsLessOrEqual(const char* astring) const
+inline bool Units_Token::IsLessOrEqual(const char* const astring) const
 {
   TCollection_AsciiString string = Word();
   int                     length = string.Length();
@@ -111,7 +111,7 @@ inline bool Units_Token::IsLessOrEqual(const char* astring) const
 
 //=================================================================================================
 
-inline bool Units_Token::IsGreater(const char* astring) const
+inline bool Units_Token::IsGreater(const char* const astring) const
 {
   TCollection_AsciiString string = Word();
   int                     length = string.Length();

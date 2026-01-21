@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-Units_UnitSentence::Units_UnitSentence(const char* astring)
+Units_UnitSentence::Units_UnitSentence(const char* const astring)
     : Units_Sentence(Units::LexiconUnits(), astring)
 {
   Analyse();
@@ -38,7 +38,7 @@ Units_UnitSentence::Units_UnitSentence(const char* astring)
 //=================================================================================================
 
 Units_UnitSentence::Units_UnitSentence(
-  const char*                                                            astring,
+  const char* const                                                      astring,
   const occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>>& aquantitiessequence)
     : Units_Sentence(Units::LexiconUnits(false), astring)
 {

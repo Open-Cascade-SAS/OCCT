@@ -32,7 +32,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(IGESSelect_EditDirPart, IFSelect_Editor)
 
-static occ::handle<Interface_TypedValue> NewDefType(const char* name)
+static occ::handle<Interface_TypedValue> NewDefType(const char* const name)
 {
   occ::handle<Interface_TypedValue> deftype = new Interface_TypedValue(name, Interface_ParamEnum);
   deftype->StartEnum(0);
@@ -42,7 +42,7 @@ static occ::handle<Interface_TypedValue> NewDefType(const char* name)
   return deftype;
 }
 
-static occ::handle<Interface_TypedValue> NewDefList(const char* name)
+static occ::handle<Interface_TypedValue> NewDefList(const char* const name)
 {
   occ::handle<Interface_TypedValue> deftype = new Interface_TypedValue(name, Interface_ParamEnum);
   deftype->StartEnum(0);

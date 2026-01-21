@@ -274,7 +274,7 @@ void Graphic3d_Group::Marker(const Graphic3d_Vertex& thePoint, const bool theToE
 
 //=================================================================================================
 
-void Graphic3d_Group::Text(const char*             theText,
+void Graphic3d_Group::Text(const char* const       theText,
                            const Graphic3d_Vertex& thePoint,
                            const double            theHeight,
                            const double /*theAngle*/,
@@ -293,7 +293,7 @@ void Graphic3d_Group::Text(const char*             theText,
 
 //=================================================================================================
 
-void Graphic3d_Group::Text(const char*             theText,
+void Graphic3d_Group::Text(const char* const       theText,
                            const Graphic3d_Vertex& thePoint,
                            const double            theHeight,
                            const bool              theToEvalMinMax)
@@ -346,9 +346,9 @@ void Graphic3d_Group::Text(const TCollection_ExtendedString& theText,
 
 //=================================================================================================
 
-void Graphic3d_Group::Text(const char*   theText,
-                           const gp_Ax2& theOrientation,
-                           const double  theHeight,
+void Graphic3d_Group::Text(const char* const theText,
+                           const gp_Ax2&     theOrientation,
+                           const double      theHeight,
                            const double /*theAngle*/,
                            const Graphic3d_TextPath /*theTp*/,
                            const Graphic3d_HorizontalTextAlignment theHta,

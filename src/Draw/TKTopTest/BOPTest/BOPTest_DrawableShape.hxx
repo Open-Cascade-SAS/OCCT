@@ -38,11 +38,11 @@ public:
                                         const double        size,
                                         const int           nbisos,
                                         const int           discret,
-                                        const char*         Text,
+                                        const char* const   Text,
                                         const Draw_Color&   TextColor);
 
   Standard_EXPORT BOPTest_DrawableShape(const TopoDS_Shape& S,
-                                        const char*         Text,
+                                        const char* const   Text,
                                         const Draw_Color&   TextColor);
 
   Standard_EXPORT void DrawOn(Draw_Display& dis) const override;

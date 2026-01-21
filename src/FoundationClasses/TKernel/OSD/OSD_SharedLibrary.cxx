@@ -75,7 +75,7 @@ OSD_SharedLibrary::OSD_SharedLibrary()
 // name given as argument
 //
 // ----------------------------------------------------------------
-OSD_SharedLibrary::OSD_SharedLibrary(const char* aName)
+OSD_SharedLibrary::OSD_SharedLibrary(const char* const aName)
     : myHandle(nullptr)
 {
   if (aName != nullptr)
@@ -100,7 +100,7 @@ const char* OSD_SharedLibrary::Name() const
 // SetName: Sets a name to a shared library object
 //
 // ----------------------------------------------------------------
-void OSD_SharedLibrary::SetName(const char* aName)
+void OSD_SharedLibrary::SetName(const char* const aName)
 {
   if (aName != nullptr)
   {
@@ -154,7 +154,7 @@ bool OSD_SharedLibrary::DlOpen(const OSD_LoadMode aMode)
 // pointer is returned.
 //
 // ----------------------------------------------------------------
-OSD_Function OSD_SharedLibrary::DlSymb(const char* aName) const
+OSD_Function OSD_SharedLibrary::DlSymb(const char* const aName) const
 {
   void (*fp)();
   fp = (void (*)())dlsym(myHandle, aName);
@@ -237,7 +237,7 @@ OSD_SharedLibrary ::OSD_SharedLibrary()
 
 } // end constructor ( 1 )
 
-OSD_SharedLibrary ::OSD_SharedLibrary(const char* aFilename)
+OSD_SharedLibrary ::OSD_SharedLibrary(const char* const aFilename)
 {
 
   myHandle = NULL;
@@ -247,7 +247,7 @@ OSD_SharedLibrary ::OSD_SharedLibrary(const char* aFilename)
 
 } // end constructro ( 2 )
 
-void OSD_SharedLibrary ::SetName(const char* aName)
+void OSD_SharedLibrary ::SetName(const char* const aName)
 {
 
   OSD_Path                path(aName);
@@ -306,7 +306,7 @@ bool OSD_SharedLibrary ::DlOpen(const OSD_LoadMode /*Mode*/)
 
 } // end OSD_SharedLibrary :: DlOpen
 
-OSD_Function OSD_SharedLibrary ::DlSymb(const char* Name) const
+OSD_Function OSD_SharedLibrary ::DlSymb(const char* const Name) const
 {
 
   OSD_Function func = (OSD_Function)GetProcAddress((HMODULE)myHandle, Name);

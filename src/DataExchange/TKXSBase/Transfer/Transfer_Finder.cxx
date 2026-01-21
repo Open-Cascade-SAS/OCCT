@@ -44,19 +44,20 @@ const char* Transfer_Finder::ValueTypeName() const
 
 // Integer -> IntVal, Real -> Geom2d_CartesianPoint, CString -> HAsciiString
 
-void Transfer_Finder::SetAttribute(const char* name, const occ::handle<Standard_Transient>& val)
+void Transfer_Finder::SetAttribute(const char* const                      name,
+                                   const occ::handle<Standard_Transient>& val)
 {
   theattrib.Bind(name, val);
 }
 
-bool Transfer_Finder::RemoveAttribute(const char* name)
+bool Transfer_Finder::RemoveAttribute(const char* const name)
 {
   if (theattrib.IsEmpty())
     return false;
   return theattrib.UnBind(name);
 }
 
-bool Transfer_Finder::GetAttribute(const char*                       name,
+bool Transfer_Finder::GetAttribute(const char* const                 name,
                                    const occ::handle<Standard_Type>& type,
                                    occ::handle<Standard_Transient>&  val) const
 {
@@ -78,7 +79,7 @@ bool Transfer_Finder::GetAttribute(const char*                       name,
   return true;
 }
 
-occ::handle<Standard_Transient> Transfer_Finder::Attribute(const char* name) const
+occ::handle<Standard_Transient> Transfer_Finder::Attribute(const char* const name) const
 {
   occ::handle<Standard_Transient> atr;
   if (theattrib.IsEmpty())
@@ -88,7 +89,7 @@ occ::handle<Standard_Transient> Transfer_Finder::Attribute(const char* name) con
   return atr;
 }
 
-Interface_ParamType Transfer_Finder::AttributeType(const char* name) const
+Interface_ParamType Transfer_Finder::AttributeType(const char* const name) const
 {
   occ::handle<Standard_Transient> atr = Attribute(name);
   if (atr.IsNull())
@@ -102,14 +103,14 @@ Interface_ParamType Transfer_Finder::AttributeType(const char* name) const
   return Interface_ParamIdent;
 }
 
-void Transfer_Finder::SetIntegerAttribute(const char* name, const int val)
+void Transfer_Finder::SetIntegerAttribute(const char* const name, const int val)
 {
   occ::handle<Interface_IntVal> ival = new Interface_IntVal;
   ival->CValue()                     = val;
   SetAttribute(name, ival);
 }
 
-bool Transfer_Finder::GetIntegerAttribute(const char* name, int& val) const
+bool Transfer_Finder::GetIntegerAttribute(const char* const name, int& val) const
 {
   occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(Attribute(name));
   if (ival.IsNull())
@@ -121,7 +122,7 @@ bool Transfer_Finder::GetIntegerAttribute(const char* name, int& val) const
   return true;
 }
 
-int Transfer_Finder::IntegerAttribute(const char* name) const
+int Transfer_Finder::IntegerAttribute(const char* const name) const
 {
   occ::handle<Interface_IntVal> ival = occ::down_cast<Interface_IntVal>(Attribute(name));
   if (ival.IsNull())
@@ -129,13 +130,13 @@ int Transfer_Finder::IntegerAttribute(const char* name) const
   return ival->Value();
 }
 
-void Transfer_Finder::SetRealAttribute(const char* name, const double val)
+void Transfer_Finder::SetRealAttribute(const char* const name, const double val)
 {
   occ::handle<Geom2d_CartesianPoint> rval = new Geom2d_CartesianPoint(val, 0);
   SetAttribute(name, rval);
 }
 
-bool Transfer_Finder::GetRealAttribute(const char* name, double& val) const
+bool Transfer_Finder::GetRealAttribute(const char* const name, double& val) const
 {
   occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(Attribute(name));
   if (rval.IsNull())
@@ -147,7 +148,7 @@ bool Transfer_Finder::GetRealAttribute(const char* name, double& val) const
   return true;
 }
 
-double Transfer_Finder::RealAttribute(const char* name) const
+double Transfer_Finder::RealAttribute(const char* const name) const
 {
   occ::handle<Geom2d_CartesianPoint> rval = occ::down_cast<Geom2d_CartesianPoint>(Attribute(name));
   if (rval.IsNull())
@@ -155,13 +156,13 @@ double Transfer_Finder::RealAttribute(const char* name) const
   return rval->X();
 }
 
-void Transfer_Finder::SetStringAttribute(const char* name, const char* val)
+void Transfer_Finder::SetStringAttribute(const char* const name, const char* const val)
 {
   occ::handle<TCollection_HAsciiString> hval = new TCollection_HAsciiString(val);
   SetAttribute(name, hval);
 }
 
-bool Transfer_Finder::GetStringAttribute(const char* name, const char*& val) const
+bool Transfer_Finder::GetStringAttribute(const char* const name, const char*& val) const
 {
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
@@ -174,7 +175,7 @@ bool Transfer_Finder::GetStringAttribute(const char* name, const char*& val) con
   return true;
 }
 
-const char* Transfer_Finder::StringAttribute(const char* name) const
+const char* Transfer_Finder::StringAttribute(const char* const name) const
 {
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
@@ -196,7 +197,7 @@ void Transfer_Finder::SameAttributes(const occ::handle<Transfer_Finder>& other)
 }
 
 void Transfer_Finder::GetAttributes(const occ::handle<Transfer_Finder>& other,
-                                    const char*                         fromname,
+                                    const char* const                   fromname,
                                     const bool                          copied)
 {
   if (other.IsNull())

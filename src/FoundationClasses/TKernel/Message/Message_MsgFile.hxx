@@ -56,12 +56,12 @@ public:
 
   //! Load message file <theFileName> from directory <theDirName>
   //! or its sub-directory
-  Standard_EXPORT static bool Load(const char* theDirName, const char* theFileName);
+  Standard_EXPORT static bool Load(const char* const theDirName, const char* const theFileName);
 
   //! Load the messages from the given file, additive to any previously
   //! loaded messages. Messages with same keywords, if already present,
   //! are replaced with the new ones.
-  Standard_EXPORT static bool LoadFile(const char* theFName);
+  Standard_EXPORT static bool LoadFile(const char* const theFName);
 
   //! Loads the messages from the file with name (without extension) given by environment variable.
   //! Extension of the file name is given separately. If its not defined, it is taken:
@@ -71,15 +71,16 @@ public:
   //! @name theFileName file name without language suffix
   //! @name theLangExt  language file name extension
   //! @return TRUE on success
-  Standard_EXPORT static bool LoadFromEnv(const char* theEnvName,
-                                          const char* theFileName,
-                                          const char* theLangExt = "");
+  Standard_EXPORT static bool LoadFromEnv(const char* const theEnvName,
+                                          const char* const theFileName,
+                                          const char* const theLangExt = "");
 
   //! Loads the messages from the given text buffer.
   //! @param theContent string containing the messages
   //! @param theLength  length of the buffer;
   //!                   when -1 specified - theContent will be considered as NULL-terminated string
-  Standard_EXPORT static bool LoadFromString(const char* theContent, const int theLength = -1);
+  Standard_EXPORT static bool LoadFromString(const char* const theContent,
+                                             const int         theLength = -1);
 
   //! Adds new message to the map. Parameter <key> gives
   //! the key of the message, <text> defines the message itself.
@@ -91,7 +92,7 @@ public:
   //! Returns True if message with specified keyword is registered
   Standard_EXPORT static bool HasMsg(const TCollection_AsciiString& key);
 
-  Standard_EXPORT static const TCollection_ExtendedString& Msg(const char* key);
+  Standard_EXPORT static const TCollection_ExtendedString& Msg(const char* const key);
 
   //! Gives the text for the message identified by the keyword <key>.
   //! If there are no messages with such keyword defined, the error message is returned.

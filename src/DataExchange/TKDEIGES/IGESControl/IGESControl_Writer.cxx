@@ -65,7 +65,7 @@ IGESControl_Writer::IGESControl_Writer()
 
 //=============================================================================
 
-IGESControl_Writer::IGESControl_Writer(const char* theUnit, const int theModecr)
+IGESControl_Writer::IGESControl_Writer(const char* const theUnit, const int theModecr)
     : myTP(new Transfer_FinderProcess(10000)),
       myWriteMode(theModecr),
       myIsComputed(false)
@@ -266,7 +266,7 @@ bool IGESControl_Writer::Write(Standard_OStream& S, const bool fnes)
 
 //=============================================================================
 
-bool IGESControl_Writer::Write(const char* file, const bool fnes)
+bool IGESControl_Writer::Write(const char* const file, const bool fnes)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();
   std::shared_ptr<std::ostream>      aStream =

@@ -55,7 +55,7 @@ public:
   //! Value is known when starting
   //! For instance, for CDL types, rather do not fill this,
   //! but for a specific enumeration (such as a status), can be used
-  Standard_EXPORT void AddCase(const char* acase);
+  Standard_EXPORT void AddCase(const char* const acase);
 
   //! Returns the predefined list of possible cases, filled by AddCase
   //! Null Handle if no predefined list (hence, to be counted)
@@ -87,7 +87,7 @@ public:
   //! Default procedure to tell if a value <val> matches a text
   //! with a criterium <exact>. <exact> = True requires equality,
   //! else only contained (no reg-exp)
-  Standard_EXPORT static bool MatchValue(const char*                    val,
+  Standard_EXPORT static bool MatchValue(const char* const              val,
                                          const TCollection_AsciiString& text,
                                          const bool                     exact);
 
@@ -101,7 +101,7 @@ public:
 
 protected:
   //! Initializes a Signature with its name
-  Standard_EXPORT IFSelect_Signature(const char* name);
+  Standard_EXPORT IFSelect_Signature(const char* const name);
 
   TCollection_AsciiString thename;
 

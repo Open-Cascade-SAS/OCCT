@@ -99,7 +99,7 @@ int Message_Messenger::RemovePrinters(const occ::handle<Standard_Type>& theType)
 
 //=================================================================================================
 
-void Message_Messenger::Send(const char* theString, const Message_Gravity theGravity) const
+void Message_Messenger::Send(const char* const theString, const Message_Gravity theGravity) const
 {
   for (NCollection_Sequence<occ::handle<Message_Printer>>::Iterator aPrinterIter(myPrinters);
        aPrinterIter.More();

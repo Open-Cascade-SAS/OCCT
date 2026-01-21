@@ -58,7 +58,7 @@ int& TObj_Assistant::getVersion()
 
 //=================================================================================================
 
-occ::handle<TObj_Model> TObj_Assistant::FindModel(const char* theName)
+occ::handle<TObj_Model> TObj_Assistant::FindModel(const char* const theName)
 {
   TCollection_ExtendedString aName(theName, true);
   int                        i = getModels().Length();

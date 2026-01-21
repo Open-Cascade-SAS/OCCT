@@ -47,7 +47,7 @@ ShapeProcess_Context::ShapeProcess_Context()
 
 //=================================================================================================
 
-ShapeProcess_Context::ShapeProcess_Context(const char* file, const char* scope)
+ShapeProcess_Context::ShapeProcess_Context(const char* const file, const char* const scope)
 {
   Init(file, scope);
   myMessenger = Message::DefaultMessenger();
@@ -56,7 +56,7 @@ ShapeProcess_Context::ShapeProcess_Context(const char* file, const char* scope)
 
 //=================================================================================================
 
-bool ShapeProcess_Context::Init(const char* file, const char* scope)
+bool ShapeProcess_Context::Init(const char* const file, const char* const scope)
 {
   myScope.Nullify();
   if (file != nullptr && strlen(file) != 0)
@@ -76,7 +76,7 @@ bool ShapeProcess_Context::Init(const char* file, const char* scope)
 
 //=================================================================================================
 
-occ::handle<Resource_Manager> ShapeProcess_Context::LoadResourceManager(const char* name)
+occ::handle<Resource_Manager> ShapeProcess_Context::LoadResourceManager(const char* const name)
 {
   // Mutex is needed because we are initializing and changing static variables here, so
   // without mutex it leads to race condition.
@@ -153,7 +153,7 @@ const occ::handle<Resource_Manager>& ShapeProcess_Context::ResourceManager() con
 
 //=================================================================================================
 
-void ShapeProcess_Context::SetScope(const char* scope)
+void ShapeProcess_Context::SetScope(const char* const scope)
 {
   if (myScope.IsNull())
     myScope = new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>;
@@ -181,7 +181,7 @@ void ShapeProcess_Context::UnSetScope()
 
 static occ::handle<TCollection_HAsciiString> MakeName(
   const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& scope,
-  const char*                                                                      param)
+  const char* const                                                                param)
 {
   occ::handle<TCollection_HAsciiString> str;
   if (!scope.IsNull() && scope->Length() > 0)
@@ -195,14 +195,14 @@ static occ::handle<TCollection_HAsciiString> MakeName(
   return str;
 }
 
-bool ShapeProcess_Context::IsParamSet(const char* param) const
+bool ShapeProcess_Context::IsParamSet(const char* const param) const
 {
   return !myRC.IsNull() && myRC->Find(MakeName(myScope, param)->ToCString());
 }
 
 //=================================================================================================
 
-bool ShapeProcess_Context::GetString(const char* param, TCollection_AsciiString& str) const
+bool ShapeProcess_Context::GetString(const char* const param, TCollection_AsciiString& str) const
 {
   if (myRC.IsNull())
     return false;
@@ -221,7 +221,7 @@ bool ShapeProcess_Context::GetString(const char* param, TCollection_AsciiString&
 
 //=================================================================================================
 
-bool ShapeProcess_Context::GetReal(const char* param, double& val) const
+bool ShapeProcess_Context::GetReal(const char* const param, double& val) const
 {
   if (myRC.IsNull())
     return false;
@@ -267,7 +267,7 @@ bool ShapeProcess_Context::GetReal(const char* param, double& val) const
 
 //=================================================================================================
 
-bool ShapeProcess_Context::GetInteger(const char* param, int& val) const
+bool ShapeProcess_Context::GetInteger(const char* const param, int& val) const
 {
   if (myRC.IsNull())
     return false;
@@ -313,7 +313,7 @@ bool ShapeProcess_Context::GetInteger(const char* param, int& val) const
 
 //=================================================================================================
 
-bool ShapeProcess_Context::GetBoolean(const char* param, bool& val) const
+bool ShapeProcess_Context::GetBoolean(const char* const param, bool& val) const
 {
   if (myRC.IsNull())
     return false;
@@ -337,7 +337,7 @@ bool ShapeProcess_Context::GetBoolean(const char* param, bool& val) const
 
 //=================================================================================================
 
-double ShapeProcess_Context::RealVal(const char* param, const double def) const
+double ShapeProcess_Context::RealVal(const char* const param, const double def) const
 {
   double val;
   return GetReal(param, val) ? val : def;
@@ -345,7 +345,7 @@ double ShapeProcess_Context::RealVal(const char* param, const double def) const
 
 //=================================================================================================
 
-bool ShapeProcess_Context::BooleanVal(const char* param, const bool def) const
+bool ShapeProcess_Context::BooleanVal(const char* const param, const bool def) const
 {
   bool val;
   return GetBoolean(param, val) ? val : def;
@@ -353,7 +353,7 @@ bool ShapeProcess_Context::BooleanVal(const char* param, const bool def) const
 
 //=================================================================================================
 
-int ShapeProcess_Context::IntegerVal(const char* param, const int def) const
+int ShapeProcess_Context::IntegerVal(const char* const param, const int def) const
 {
   int val;
   return GetInteger(param, val) ? val : def;
@@ -361,7 +361,7 @@ int ShapeProcess_Context::IntegerVal(const char* param, const int def) const
 
 //=================================================================================================
 
-const char* ShapeProcess_Context::StringVal(const char* param, const char* def) const
+const char* ShapeProcess_Context::StringVal(const char* const param, const char* const def) const
 {
   if (myRC.IsNull())
     return def;

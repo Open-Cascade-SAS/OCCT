@@ -85,7 +85,7 @@ APIHeaderSection_MakeHeader::APIHeaderSection_MakeHeader(const int shapetype)
   }
 }
 
-void APIHeaderSection_MakeHeader::Init(const char* nameval)
+void APIHeaderSection_MakeHeader::Init(const char* const nameval)
 {
   done = true;
 

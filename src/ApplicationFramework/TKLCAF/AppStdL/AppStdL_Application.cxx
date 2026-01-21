@@ -24,7 +24,7 @@ IMPLEMENT_STANDARD_RTTIEXT(AppStdL_Application, TDocStd_Application)
 
 const char* AppStdL_Application::ResourcesName()
 {
-  const char* aRes = "StandardLite";
+  const char* const aRes = "StandardLite";
   return aRes;
 }
 

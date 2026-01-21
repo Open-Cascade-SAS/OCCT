@@ -170,7 +170,7 @@ void BinTools::Read(TopoDS_Shape&                theShape,
 //=================================================================================================
 
 bool BinTools::Write(const TopoDS_Shape&          theShape,
-                     const char*                  theFile,
+                     const char* const            theFile,
                      const bool                   theWithTriangles,
                      const bool                   theWithNormals,
                      const BinTools_FormatVersion theVersion,
@@ -191,7 +191,7 @@ bool BinTools::Write(const TopoDS_Shape&          theShape,
 //=================================================================================================
 
 bool BinTools::Read(TopoDS_Shape&                theShape,
-                    const char*                  theFile,
+                    const char* const            theFile,
                     const Message_ProgressRange& theRange)
 {
   const occ::handle<OSD_FileSystem>& aFileSystem = OSD_FileSystem::DefaultFileSystem();

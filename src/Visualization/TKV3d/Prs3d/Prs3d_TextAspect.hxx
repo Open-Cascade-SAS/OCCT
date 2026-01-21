@@ -37,7 +37,7 @@ public:
   void SetColor(const Quantity_Color& theColor) { myTextAspect->SetColor(theColor); }
 
   //! Sets the font used in text display.
-  void SetFont(const char* theFont) { myTextAspect->SetFont(theFont); }
+  void SetFont(const char* const theFont) { myTextAspect->SetFont(theFont); }
 
   //! Sets the height of the text.
   void SetHeight(const double theHeight) { myHeight = theHeight; }

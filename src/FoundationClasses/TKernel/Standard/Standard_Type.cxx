@@ -51,7 +51,7 @@ bool Standard_Type::SubType(const occ::handle<Standard_Type>& theOther) const
   return false;
 }
 
-bool Standard_Type::SubType(const char* theName) const
+bool Standard_Type::SubType(const char* const theName) const
 {
   if (!theName)
   {
@@ -83,13 +83,13 @@ namespace
 
 struct typeNameHasher
 {
-  size_t operator()(const char* theType) const noexcept
+  size_t operator()(const char* const theType) const noexcept
   {
     const int aLen = static_cast<int>(strlen(theType));
     return opencascade::hashBytes(theType, aLen);
   }
 
-  bool operator()(const char* theType1, const char* theType2) const noexcept
+  bool operator()(const char* const theType1, const char* const theType2) const noexcept
   {
     return strcmp(theType1, theType2) == 0;
   }

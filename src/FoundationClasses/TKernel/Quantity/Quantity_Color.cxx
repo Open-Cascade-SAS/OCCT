@@ -196,7 +196,8 @@ const char* Quantity_Color::StringName(const Quantity_NameOfColor theName) noexc
 
 //=================================================================================================
 
-bool Quantity_Color::ColorFromName(const char* theName, Quantity_NameOfColor& theColor) noexcept
+bool Quantity_Color::ColorFromName(const char* const     theName,
+                                   Quantity_NameOfColor& theColor) noexcept
 {
   TCollection_AsciiString aName(theName);
   aName.UpperCase();
@@ -274,7 +275,7 @@ bool Quantity_Color::ColorFromName(const char* theName, Quantity_NameOfColor& th
 
 //=================================================================================================
 
-bool Quantity_Color::ColorFromHex(const char* theHexColorString, Quantity_Color& theColor)
+bool Quantity_Color::ColorFromHex(const char* const theHexColorString, Quantity_Color& theColor)
 {
   Quantity_ColorRGBA aColorRGBA;
   if (!Quantity_ColorRGBA::ColorFromHex(theHexColorString, aColorRGBA, true))

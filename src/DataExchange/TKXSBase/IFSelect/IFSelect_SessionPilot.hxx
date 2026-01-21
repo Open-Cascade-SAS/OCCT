@@ -69,7 +69,7 @@ public:
   //! Creates an empty SessionPilot, with a prompt which will be
   //! displayed on querying commands. If not precised (""), this
   //! prompt is set to "Test-XSTEP>"
-  Standard_EXPORT IFSelect_SessionPilot(const char* prompt = "");
+  Standard_EXPORT IFSelect_SessionPilot(const char* const prompt = "");
 
   //! Returns the WorkSession which is worked on
   Standard_EXPORT occ::handle<IFSelect_WorkSession> Session() const;
@@ -146,7 +146,7 @@ public:
   //! either by command x or exit, or by reaching end of file
   //! Return Value follows the rules of Do : RetEnd for normal end,
   //! RetFail if script could not be opened
-  Standard_EXPORT IFSelect_ReturnStatus ReadScript(const char* file = "");
+  Standard_EXPORT IFSelect_ReturnStatus ReadScript(const char* const file = "");
 
   //! Executes the Command, itself (for built-in commands, which
   //! have priority) or by using the list of Activators.
@@ -183,7 +183,7 @@ public:
   //! if it gives an integer, returns its value
   //! else, considers it as ENtityLabel (preferably case sensitive)
   //! in case of failure, returns 0
-  Standard_EXPORT int Number(const char* val) const;
+  Standard_EXPORT int Number(const char* const val) const;
 
   //! Processes specific commands, which are :
   //! x or exit for end of session

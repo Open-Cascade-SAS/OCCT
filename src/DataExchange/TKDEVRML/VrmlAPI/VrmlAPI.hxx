@@ -33,7 +33,7 @@ public:
   //! Converts the shape aShape to VRML format of the passed version and writes it
   //! to the file identified by aFileName using default parameters.
   Standard_EXPORT static bool Write(const TopoDS_Shape& aShape,
-                                    const char*         aFileName,
+                                    const char* const   aFileName,
                                     const int           aVersion = 2);
 };
 

@@ -74,7 +74,7 @@ public:
   //! send comments in an IGES File (at beginning of the file).
   //! If the line is more than 72 chars long, it is split into
   //! as many lines as required to send it completely
-  Standard_EXPORT void SendStartLine(const char* startline);
+  Standard_EXPORT void SendStartLine(const char* const startline);
 
   //! Sends the complete IGESModel (Global Section, Entities as
   //! Directory Entries & Parameter Lists, etc...)
@@ -191,7 +191,7 @@ private:
   //! given, it is computed by strlen(val).
   //! <more>, if precised, requires that <more> characters will
   //! remain free on the current line once this AddString done
-  Standard_EXPORT void AddString(const char* val, const int lnval = 0, const int more = 0);
+  Standard_EXPORT void AddString(const char* const val, const int lnval = 0, const int more = 0);
 
   //! Adds a string defined as a single character (for instance, the
   //! parameter separator). Manages size limit

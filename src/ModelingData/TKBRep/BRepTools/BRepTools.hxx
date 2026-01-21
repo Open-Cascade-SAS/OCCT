@@ -321,7 +321,7 @@ public:
   //! @param[in] theFile   the path to file to output shape into
   //! @param theProgress the range of progress indicator to fill in
   static bool Write(const TopoDS_Shape&          theShape,
-                    const char*                  theFile,
+                    const char* const            theFile,
                     const Message_ProgressRange& theProgress = Message_ProgressRange())
   {
     return Write(theShape, theFile, true, false, TopTools_FormatVersion_CURRENT, theProgress);
@@ -340,7 +340,7 @@ public:
   //! @param theProgress the range of progress indicator to fill in
   Standard_EXPORT static bool Write(
     const TopoDS_Shape&          theShape,
-    const char*                  theFile,
+    const char* const            theFile,
     const bool                   theWithTriangles,
     const bool                   theWithNormals,
     const TopTools_FormatVersion theVersion,
@@ -350,7 +350,7 @@ public:
   //! <B> is used to build the shape.
   Standard_EXPORT static bool Read(
     TopoDS_Shape&                Sh,
-    const char*                  File,
+    const char* const            File,
     const BRep_Builder&          B,
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 

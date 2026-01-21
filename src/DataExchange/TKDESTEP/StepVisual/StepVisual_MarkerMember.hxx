@@ -36,11 +36,11 @@ public:
 
   Standard_EXPORT const char* Name() const override;
 
-  Standard_EXPORT bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* const name) override;
 
   Standard_EXPORT const char* EnumText() const override;
 
-  Standard_EXPORT void SetEnumText(const int val, const char* text) override;
+  Standard_EXPORT virtual void SetEnumText(const int val, const char* const text) override;
 
   Standard_EXPORT void SetValue(const StepVisual_MarkerType val);
 

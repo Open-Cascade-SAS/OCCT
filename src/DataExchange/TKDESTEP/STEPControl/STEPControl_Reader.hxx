@@ -85,19 +85,19 @@ public:
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* filename) override;
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* const filename) override;
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char*   theName,
-                                                   std::istream& theIStream) override;
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const theName,
+                                                   std::istream&     theIStream) override;
 
   //! Loads a file and returns the read status
   //! Zero for a Model which compies with the Controller
-  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char*              filename,
+  Standard_EXPORT IFSelect_ReturnStatus ReadFile(const char* const        filename,
                                                  const DESTEP_Parameters& theParams);
 
   //! Loads a file from stream and returns the read status
-  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char*              theName,
+  Standard_EXPORT IFSelect_ReturnStatus ReadStream(const char* const        theName,
                                                    const DESTEP_Parameters& theParams,
                                                    std::istream&            theIStream);
 

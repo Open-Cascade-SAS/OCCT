@@ -26,8 +26,8 @@
 
 //=================================================================================================
 
-ShapeProcessAPI_ApplySequence::ShapeProcessAPI_ApplySequence(const char* rscName,
-                                                             const char* seqName)
+ShapeProcessAPI_ApplySequence::ShapeProcessAPI_ApplySequence(const char* const rscName,
+                                                             const char* const seqName)
 {
 
   myContext = new ShapeProcess_ShapeContext(rscName);

@@ -43,8 +43,8 @@ public:
   //! For example Celsius degree of temperature is an
   //! instance of ShiftedUnit with <avalue> equal to 1.
   //! and <amove> equal to 273.15.
-  Standard_EXPORT Units_ShiftedUnit(const char*                        aname,
-                                    const char*                        asymbol,
+  Standard_EXPORT Units_ShiftedUnit(const char* const                  aname,
+                                    const char* const                  asymbol,
                                     const double                       avalue,
                                     const double                       amove,
                                     const occ::handle<Units_Quantity>& aquantity);
@@ -52,11 +52,11 @@ public:
   //! Creates and returns a unit. <aname> is the name of
   //! the unit, <asymbol> is the usual abbreviation of the
   //! unit.
-  Standard_EXPORT Units_ShiftedUnit(const char* aname, const char* asymbol);
+  Standard_EXPORT Units_ShiftedUnit(const char* const aname, const char* const asymbol);
 
   //! Creates and returns a unit. <aname> is the name of
   //! the unit.
-  Standard_EXPORT Units_ShiftedUnit(const char* aname);
+  Standard_EXPORT Units_ShiftedUnit(const char* const aname);
 
   //! Sets the field <themove> to <amove>
   Standard_EXPORT void Move(const double amove);

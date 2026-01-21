@@ -48,7 +48,7 @@ public:
                                   const occ::handle<Prs3d_LineAspect>&   anLineAspect,
                                   const gp_Dir&                          aDir,
                                   const double                           aVal,
-                                  const char*                            aText,
+                                  const char* const                      aText,
                                   const gp_Pnt&                          aPfirst,
                                   const gp_Pnt&                          aPlast);
 
@@ -59,7 +59,7 @@ public:
                                   const occ::handle<Prs3d_TextAspect>&   aTextAspect,
                                   const gp_Dir&                          aDir,
                                   const double                           aVal,
-                                  const char*                            aText,
+                                  const char* const                      aText,
                                   const gp_Pnt&                          aPfirst,
                                   const gp_Pnt&                          aPlast);
 };

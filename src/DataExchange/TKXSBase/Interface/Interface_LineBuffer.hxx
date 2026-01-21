@@ -79,10 +79,10 @@ public:
 
   //! Adds a text as a CString. Its Length is evaluated from the
   //! text (by C function strlen)
-  Standard_EXPORT void Add(const char* text);
+  Standard_EXPORT void Add(const char* const text);
 
   //! Adds a text as a CString. Its length is given as <lntext>
-  Standard_EXPORT void Add(const char* text, const int lntext);
+  Standard_EXPORT void Add(const char* const text, const int lntext);
 
   //! Adds a text as a AsciiString from TCollection
   Standard_EXPORT void Add(const TCollection_AsciiString& text);

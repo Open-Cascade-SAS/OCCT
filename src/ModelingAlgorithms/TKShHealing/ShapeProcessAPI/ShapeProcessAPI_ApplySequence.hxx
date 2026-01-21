@@ -40,7 +40,8 @@ public:
 
   //! Creates an object and loads resource file and sequence of
   //! operators given by their names.
-  Standard_EXPORT ShapeProcessAPI_ApplySequence(const char* rscName, const char* seqName = "");
+  Standard_EXPORT ShapeProcessAPI_ApplySequence(const char* const rscName,
+                                                const char* const seqName = "");
 
   //! Returns object for managing resource file and sequence of
   //! operators.

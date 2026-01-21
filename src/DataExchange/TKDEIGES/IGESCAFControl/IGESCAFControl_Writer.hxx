@@ -75,7 +75,7 @@ public:
   //! Clears the session if it was not yet set for IGES
   //! Sets target Unit for the writing process.
   Standard_EXPORT IGESCAFControl_Writer(const occ::handle<XSControl_WorkSession>& theWS,
-                                        const char*                               theUnit);
+                                        const char* const                         theUnit);
 
   //! Transfers a document to a IGES model
   //! Returns True if translation is OK
@@ -99,7 +99,7 @@ public:
   //! Transfers a document and writes it to a IGES file
   //! Returns True if translation is OK
   Standard_EXPORT bool Perform(const occ::handle<TDocStd_Document>& doc,
-                               const char*                          filename,
+                               const char* const                    filename,
                                const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Set ColorMode for indicate write Colors or not.

@@ -72,7 +72,7 @@ void Interface_FileReaderData::InitParams(const int num)
 }
 
 void Interface_FileReaderData::AddParam(const int /*num*/,
-                                        const char*               aval,
+                                        const char* const         aval,
                                         const Interface_ParamType atype,
                                         const int                 nument)
 {
@@ -272,7 +272,7 @@ void Interface_FileReaderData::BindEntity(const int num, const occ::handle<Stand
 
 void Interface_FileReaderData::Destroy() {}
 
-double Interface_FileReaderData::Fastof(const char* ligne)
+double Interface_FileReaderData::Fastof(const char* const ligne)
 {
   return Strtod(ligne, nullptr);
 }

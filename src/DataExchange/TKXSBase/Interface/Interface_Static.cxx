@@ -32,18 +32,18 @@ static char defmess[31];
 //   return apath.IsValid (TCollection_AsciiString(val->ToCString()));
 // }
 
-Interface_Static::Interface_Static(const char*               family,
-                                   const char*               name,
+Interface_Static::Interface_Static(const char* const         family,
+                                   const char* const         name,
                                    const Interface_ParamType type,
-                                   const char*               init)
+                                   const char* const         init)
     : Interface_TypedValue(name, type, init),
       thefamily(family),
       theupdate(true)
 {
 }
 
-Interface_Static::Interface_Static(const char*                          family,
-                                   const char*                          name,
+Interface_Static::Interface_Static(const char* const                    family,
+                                   const char* const                    name,
                                    const occ::handle<Interface_Static>& other)
     : Interface_TypedValue(name, other->Type(), ""),
       thefamily(family),
@@ -135,10 +135,10 @@ bool Interface_Static::UpdatedStatus() const
 //  #######################################################################
 //  #########    STATICS DICTIONARY (static on Static)    ##########
 
-bool Interface_Static::Init(const char*               family,
-                            const char*               name,
+bool Interface_Static::Init(const char* const         family,
+                            const char* const         name,
                             const Interface_ParamType type,
-                            const char*               init)
+                            const char* const         init)
 {
   if (name[0] == '\0')
     return false;
@@ -160,7 +160,10 @@ bool Interface_Static::Init(const char*               family,
   return true;
 }
 
-bool Interface_Static::Init(const char* family, const char* name, const char type, const char* init)
+bool Interface_Static::Init(const char* const family,
+                            const char* const name,
+                            const char        type,
+                            const char* const init)
 {
   Interface_ParamType epyt;
   switch (type)
@@ -232,19 +235,19 @@ bool Interface_Static::Init(const char* family, const char* name, const char typ
   return true;
 }
 
-occ::handle<Interface_Static> Interface_Static::Static(const char* name)
+occ::handle<Interface_Static> Interface_Static::Static(const char* const name)
 {
   occ::handle<Standard_Transient> result;
   MoniTool_TypedValue::Stats().Find(name, result);
   return occ::down_cast<Interface_Static>(result);
 }
 
-bool Interface_Static::IsPresent(const char* name)
+bool Interface_Static::IsPresent(const char* const name)
 {
   return MoniTool_TypedValue::Stats().IsBound(name);
 }
 
-const char* Interface_Static::CDef(const char* name, const char* part)
+const char* Interface_Static::CDef(const char* const name, const char* const part)
 {
   if (!part || part[0] == '\0')
     return "";
@@ -297,7 +300,7 @@ const char* Interface_Static::CDef(const char* name, const char* part)
   return "";
 }
 
-int Interface_Static::IDef(const char* name, const char* part)
+int Interface_Static::IDef(const char* const name, const char* const part)
 {
   if (!part || part[0] == '\0')
     return 0;
@@ -334,7 +337,7 @@ int Interface_Static::IDef(const char* name, const char* part)
 
 //  ##########  CURRENT VALUE  ###########
 
-bool Interface_Static::IsSet(const char* name, const bool proper)
+bool Interface_Static::IsSet(const char* const name, const bool proper)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -347,7 +350,7 @@ bool Interface_Static::IsSet(const char* name, const bool proper)
   return item->IsSetValue();
 }
 
-const char* Interface_Static::CVal(const char* name)
+const char* Interface_Static::CVal(const char* const name)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -360,7 +363,7 @@ const char* Interface_Static::CVal(const char* name)
   return item->CStringValue();
 }
 
-int Interface_Static::IVal(const char* name)
+int Interface_Static::IVal(const char* const name)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -373,7 +376,7 @@ int Interface_Static::IVal(const char* name)
   return item->IntegerValue();
 }
 
-double Interface_Static::RVal(const char* name)
+double Interface_Static::RVal(const char* const name)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -386,7 +389,7 @@ double Interface_Static::RVal(const char* name)
   return item->RealValue();
 }
 
-bool Interface_Static::SetCVal(const char* name, const char* val)
+bool Interface_Static::SetCVal(const char* const name, const char* const val)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -394,7 +397,7 @@ bool Interface_Static::SetCVal(const char* name, const char* val)
   return item->SetCStringValue(val);
 }
 
-bool Interface_Static::SetIVal(const char* name, const int val)
+bool Interface_Static::SetIVal(const char* const name, const int val)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -404,7 +407,7 @@ bool Interface_Static::SetIVal(const char* name, const int val)
   return true;
 }
 
-bool Interface_Static::SetRVal(const char* name, const double val)
+bool Interface_Static::SetRVal(const char* const name, const double val)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -414,7 +417,7 @@ bool Interface_Static::SetRVal(const char* name, const double val)
 
 //    UPDATE
 
-bool Interface_Static::Update(const char* name)
+bool Interface_Static::Update(const char* const name)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -423,7 +426,7 @@ bool Interface_Static::Update(const char* name)
   return true;
 }
 
-bool Interface_Static::IsUpdated(const char* name)
+bool Interface_Static::IsUpdated(const char* const name)
 {
   occ::handle<Interface_Static> item = Interface_Static::Static(name);
   if (item.IsNull())
@@ -432,8 +435,8 @@ bool Interface_Static::IsUpdated(const char* name)
 }
 
 occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> Interface_Static::Items(
-  const int   mode,
-  const char* criter)
+  const int         mode,
+  const char* const criter)
 {
   int modup = (mode / 100); // 0 any, 1 non-update, 2 update
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =

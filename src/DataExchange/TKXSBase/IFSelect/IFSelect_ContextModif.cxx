@@ -31,7 +31,7 @@
 
 IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph&    graph,
                                              const Interface_CopyTool& TC,
-                                             const char*               filename)
+                                             const char* const         filename)
     : thegraf(graph, false),
       thefile(filename),
       thelist(graph.Size(), ' ')
@@ -50,7 +50,8 @@ IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph&    graph,
 
 //=================================================================================================
 
-IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph, const char* filename)
+IFSelect_ContextModif::IFSelect_ContextModif(const Interface_Graph& graph,
+                                             const char* const      filename)
     : thegraf(graph, false),
       thefile(filename),
       thelist(graph.Size(), ' ')
@@ -315,7 +316,7 @@ void IFSelect_ContextModif::TraceModifier(const occ::handle<IFSelect_GeneralModi
 
 //=================================================================================================
 
-void IFSelect_ContextModif::Trace(const char* mess)
+void IFSelect_ContextModif::Trace(const char* const mess)
 {
   //  Trace courante
   if (thecurr <= 0)
@@ -346,8 +347,8 @@ void IFSelect_ContextModif::AddCheck(const occ::handle<Interface_Check>& check)
 //=================================================================================================
 
 void IFSelect_ContextModif::AddWarning(const occ::handle<Standard_Transient>& start,
-                                       const char*                            mess,
-                                       const char*                            orig)
+                                       const char* const                      mess,
+                                       const char* const                      orig)
 {
   thechek.CCheck(thegraf.EntityNumber(start))->AddWarning(mess, orig);
 }
@@ -355,8 +356,8 @@ void IFSelect_ContextModif::AddWarning(const occ::handle<Standard_Transient>& st
 //=================================================================================================
 
 void IFSelect_ContextModif::AddFail(const occ::handle<Standard_Transient>& start,
-                                    const char*                            mess,
-                                    const char*                            orig)
+                                    const char* const                      mess,
+                                    const char* const                      orig)
 {
   thechek.CCheck(thegraf.EntityNumber(start))->AddFail(mess, orig);
 }

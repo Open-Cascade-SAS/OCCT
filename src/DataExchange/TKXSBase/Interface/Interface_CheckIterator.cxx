@@ -34,7 +34,7 @@ Interface_CheckIterator::Interface_CheckIterator()
 
 //=================================================================================================
 
-Interface_CheckIterator::Interface_CheckIterator(const char* name)
+Interface_CheckIterator::Interface_CheckIterator(const char* const name)
     : thename(name)
 {
   Clear();
@@ -42,7 +42,7 @@ Interface_CheckIterator::Interface_CheckIterator(const char* name)
 
 //=================================================================================================
 
-void Interface_CheckIterator::SetName(const char* name)
+void Interface_CheckIterator::SetName(const char* const name)
 {
   thename.Clear();
   if (name[0] != '\0')
@@ -350,7 +350,7 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const Interface_CheckSt
 
 //=================================================================================================
 
-Interface_CheckIterator Interface_CheckIterator::Extract(const char*                 mess,
+Interface_CheckIterator Interface_CheckIterator::Extract(const char* const           mess,
                                                          const int                   incl,
                                                          const Interface_CheckStatus stat) const
 {
@@ -370,7 +370,7 @@ Interface_CheckIterator Interface_CheckIterator::Extract(const char*            
 
 //=================================================================================================
 
-bool Interface_CheckIterator::Remove(const char*                 mess,
+bool Interface_CheckIterator::Remove(const char* const           mess,
                                      const int                   incl,
                                      const Interface_CheckStatus stat)
 {

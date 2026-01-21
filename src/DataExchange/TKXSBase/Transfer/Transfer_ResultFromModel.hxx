@@ -57,7 +57,7 @@ public:
   Standard_EXPORT void SetModel(const occ::handle<Interface_InterfaceModel>& model);
 
   //! Sets starting File Name
-  Standard_EXPORT void SetFileName(const char* filename);
+  Standard_EXPORT void SetFileName(const char* const filename);
 
   //! Returns starting Model (null if not set)
   Standard_EXPORT occ::handle<Interface_InterfaceModel> Model() const;

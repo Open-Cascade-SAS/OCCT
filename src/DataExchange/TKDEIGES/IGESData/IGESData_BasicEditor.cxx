@@ -131,7 +131,7 @@ int IGESData_BasicEditor::GetFlagByValue(const double theValue)
 
 //=================================================================================================
 
-bool IGESData_BasicEditor::SetUnitName(const char* name)
+bool IGESData_BasicEditor::SetUnitName(const char* const name)
 {
   if (themodel.IsNull())
     return false;
@@ -375,7 +375,7 @@ int IGESData_BasicEditor::AutoCorrectModel()
 
 //=================================================================================================
 
-int IGESData_BasicEditor::UnitNameFlag(const char* name)
+int IGESData_BasicEditor::UnitNameFlag(const char* const name)
 {
   char* nam = (char*)&name[0];
   if (name[1] == 'H')

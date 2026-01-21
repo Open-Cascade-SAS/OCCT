@@ -19,7 +19,7 @@ static Interface_STAT statvoid("");
 static Interface_STAT statact("");
 static const char*    voidname = "";
 
-Interface_STAT::Interface_STAT(const char* title)
+Interface_STAT::Interface_STAT(const char* const title)
 {
   thetitle = new TCollection_HAsciiString(title);
   thetotal = 1.;
@@ -47,7 +47,7 @@ void Interface_STAT::Internals(occ::handle<TCollection_HAsciiString>&           
   stw   = thestw;
 }
 
-void Interface_STAT::AddPhase(const double weight, const char* name)
+void Interface_STAT::AddPhase(const double weight, const char* const name)
 {
   if (thephw.IsNull())
   {
@@ -180,7 +180,7 @@ void Interface_STAT::Start(const int items, const int cycles) const
   NextPhase(items, cycles);
 }
 
-void Interface_STAT::StartCount(const int items, const char* name)
+void Interface_STAT::StartCount(const int items, const char* const name)
 {
   Interface_STAT statcount(name);
   statcount.Start(items);

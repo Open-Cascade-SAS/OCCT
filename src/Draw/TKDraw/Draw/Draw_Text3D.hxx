@@ -29,10 +29,10 @@ class Draw_Text3D : public Draw_Drawable3D
 {
 
 public:
-  Standard_EXPORT Draw_Text3D(const gp_Pnt& p, const char* T, const Draw_Color& col);
+  Standard_EXPORT Draw_Text3D(const gp_Pnt& p, const char* const T, const Draw_Color& col);
 
   Standard_EXPORT Draw_Text3D(const gp_Pnt&     p,
-                              const char*       T,
+                              const char* const T,
                               const Draw_Color& col,
                               const double      moveX,
                               const double      moveY);

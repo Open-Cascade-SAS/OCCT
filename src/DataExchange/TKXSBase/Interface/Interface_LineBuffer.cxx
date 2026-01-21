@@ -179,12 +179,12 @@ occ::handle<TCollection_HAsciiString> Interface_LineBuffer::Moved()
 
 // ....                        AJOUTS                        ....
 
-void Interface_LineBuffer::Add(const char* theText)
+void Interface_LineBuffer::Add(const char* const theText)
 {
   Add(theText, (int)strlen(theText));
 }
 
-void Interface_LineBuffer::Add(const char* text, const int lntext)
+void Interface_LineBuffer::Add(const char* const text, const int lntext)
 {
   int lnt = (lntext > (myMax - myLen - myInit) ? (myMax - myLen - myInit) : lntext);
   for (int i = 1; i <= lnt; ++i)

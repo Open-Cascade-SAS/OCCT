@@ -40,7 +40,7 @@ public:
   //! Reads a IGES File and returns a IGES Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT int ReadFile(const char*                            name,
+  Standard_EXPORT int ReadFile(const char* const                      name,
                                occ::handle<Interface_InterfaceModel>& model,
                                const occ::handle<Interface_Protocol>& protocol) const override;
 

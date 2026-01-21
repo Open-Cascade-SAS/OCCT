@@ -42,7 +42,7 @@ static OSD_Timer& chrono()
   return chr;
 }
 
-MoniTool_CaseData::MoniTool_CaseData(const char* caseid, const char* name)
+MoniTool_CaseData::MoniTool_CaseData(const char* const caseid, const char* const name)
     : thesubst(0),
       thecase(caseid),
       thename(name)
@@ -50,7 +50,7 @@ MoniTool_CaseData::MoniTool_CaseData(const char* caseid, const char* name)
   thecheck = DefCheck(caseid);
 }
 
-void MoniTool_CaseData::SetCaseId(const char* caseid)
+void MoniTool_CaseData::SetCaseId(const char* const caseid)
 {
   thecase.Clear();
   thecase.AssignCat(caseid);
@@ -58,7 +58,7 @@ void MoniTool_CaseData::SetCaseId(const char* caseid)
   thesubst = 0;
 }
 
-void MoniTool_CaseData::SetName(const char* name)
+void MoniTool_CaseData::SetName(const char* const name)
 {
   thename.Clear();
   thename.AssignCat(name);
@@ -119,7 +119,7 @@ void MoniTool_CaseData::SetReplace(const int num)
 
 void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
                                 const int                              kind,
-                                const char*                            name)
+                                const char* const                      name)
 {
   TCollection_AsciiString aname(name);
   int                     subs = thesubst;
@@ -148,7 +148,7 @@ void MoniTool_CaseData::AddData(const occ::handle<Standard_Transient>& val,
   thesubst = 0;
 }
 
-void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const char* name)
+void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const char* const name)
 {
   // Store exception type and message as text (since Standard_Failure is no longer
   // Standard_Transient)
@@ -158,32 +158,32 @@ void MoniTool_CaseData::AddRaised(const Standard_Failure& theException, const ch
   AddText(aText.ToCString(), name);
 }
 
-void MoniTool_CaseData::AddShape(const TopoDS_Shape& sh, const char* name)
+void MoniTool_CaseData::AddShape(const TopoDS_Shape& sh, const char* const name)
 {
   AddData(new TopoDS_HShape(sh), 4, name);
 }
 
-void MoniTool_CaseData::AddXYZ(const gp_XYZ& aXYZ, const char* name)
+void MoniTool_CaseData::AddXYZ(const gp_XYZ& aXYZ, const char* const name)
 {
   AddData(new Geom_CartesianPoint(aXYZ), 5, name);
 }
 
-void MoniTool_CaseData::AddXY(const gp_XY& aXY, const char* name)
+void MoniTool_CaseData::AddXY(const gp_XY& aXY, const char* const name)
 {
   AddData(new Geom2d_CartesianPoint(aXY), 6, name);
 }
 
-void MoniTool_CaseData::AddReal(const double val, const char* name)
+void MoniTool_CaseData::AddReal(const double val, const char* const name)
 {
   AddData(new Geom2d_CartesianPoint(val, 0.), 8, name);
 }
 
-void MoniTool_CaseData::AddReals(const double v1, const double v2, const char* name)
+void MoniTool_CaseData::AddReals(const double v1, const double v2, const char* const name)
 {
   AddData(new Geom2d_CartesianPoint(v1, v2), 7, name);
 }
 
-void MoniTool_CaseData::AddCPU(const double lastCPU, const double curCPU, const char* name)
+void MoniTool_CaseData::AddCPU(const double lastCPU, const double curCPU, const char* const name)
 {
   double cpu = curCPU;
   if (cpu == 0.)
@@ -224,28 +224,29 @@ bool MoniTool_CaseData::LargeCPU(const double maxCPU,
   return (cpu >= maxCPU);
 }
 
-void MoniTool_CaseData::AddGeom(const occ::handle<Standard_Transient>& val, const char* name)
+void MoniTool_CaseData::AddGeom(const occ::handle<Standard_Transient>& val, const char* const name)
 {
   AddData(val, 3, name);
 }
 
-void MoniTool_CaseData::AddEntity(const occ::handle<Standard_Transient>& val, const char* name)
+void MoniTool_CaseData::AddEntity(const occ::handle<Standard_Transient>& val,
+                                  const char* const                      name)
 {
   AddData(val, 2, name);
 }
 
-void MoniTool_CaseData::AddText(const char* text, const char* name)
+void MoniTool_CaseData::AddText(const char* const text, const char* const name)
 {
   AddData(new TCollection_HAsciiString(text), 10, name);
 }
 
-void MoniTool_CaseData::AddInteger(const int val, const char* name)
+void MoniTool_CaseData::AddInteger(const int val, const char* const name)
 {
   double rval = val;
   AddData(new Geom2d_CartesianPoint(rval, 0.), 11, name);
 }
 
-void MoniTool_CaseData::AddAny(const occ::handle<Standard_Transient>& val, const char* name)
+void MoniTool_CaseData::AddAny(const occ::handle<Standard_Transient>& val, const char* const name)
 {
   AddData(val, 0, name);
 }
@@ -305,7 +306,7 @@ const TCollection_AsciiString& MoniTool_CaseData::Name(const int nd) const
   return thednam(nd);
 }
 
-static int NameKind(const char* name)
+static int NameKind(const char* const name)
 {
   char n0 = name[0];
   if (n0 == 'A' && name[1] == 'N' && name[2] == 'Y' && name[3] == '\0')
@@ -348,7 +349,7 @@ static int NameKind(const char* name)
   return 0;
 }
 
-static int NameRank(const char* name)
+static int NameRank(const char* const name)
 {
   for (int i = 0; name[i] != '\0'; i++)
   {
@@ -358,7 +359,7 @@ static int NameRank(const char* name)
   return 1;
 }
 
-int MoniTool_CaseData::NameNum(const char* name) const
+int MoniTool_CaseData::NameNum(const char* const name) const
 {
   if (!name || name[0] == '\0')
     return 0;
@@ -467,17 +468,17 @@ Message_Msg MoniTool_CaseData::Msg() const
   return mess;
 }
 
-void MoniTool_CaseData::SetDefWarning(const char* acode)
+void MoniTool_CaseData::SetDefWarning(const char* const acode)
 {
   defch.Bind(acode, 1);
 }
 
-void MoniTool_CaseData::SetDefFail(const char* acode)
+void MoniTool_CaseData::SetDefFail(const char* const acode)
 {
   defch.Bind(acode, 2);
 }
 
-int MoniTool_CaseData::DefCheck(const char* acode)
+int MoniTool_CaseData::DefCheck(const char* const acode)
 {
   int val;
   if (!defch.Find(acode, val))
@@ -485,13 +486,13 @@ int MoniTool_CaseData::DefCheck(const char* acode)
   return val;
 }
 
-void MoniTool_CaseData::SetDefMsg(const char* casecode, const char* mesdef)
+void MoniTool_CaseData::SetDefMsg(const char* const casecode, const char* const mesdef)
 {
   occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(mesdef);
   defms.Bind(casecode, str);
 }
 
-const char* MoniTool_CaseData::DefMsg(const char* casecode)
+const char* MoniTool_CaseData::DefMsg(const char* const casecode)
 {
   occ::handle<Standard_Transient> aTStr;
   if (!defms.Find(casecode, aTStr))

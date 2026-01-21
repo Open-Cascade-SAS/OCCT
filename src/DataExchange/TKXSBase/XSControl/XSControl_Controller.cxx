@@ -60,7 +60,8 @@ static NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transie
 
 //=================================================================================================
 
-XSControl_Controller::XSControl_Controller(const char* theLongName, const char* theShortName)
+XSControl_Controller::XSControl_Controller(const char* const theLongName,
+                                           const char* const theShortName)
     : myShortName(theShortName),
       myLongName(theLongName)
 {
@@ -74,7 +75,7 @@ XSControl_Controller::XSControl_Controller(const char* theLongName, const char* 
 
 //=================================================================================================
 
-void XSControl_Controller::TraceStatic(const char* theName, const int theUse)
+void XSControl_Controller::TraceStatic(const char* const theName, const int theUse)
 {
   occ::handle<Interface_Static> val = Interface_Static::Static(theName);
   if (val.IsNull())
@@ -85,7 +86,7 @@ void XSControl_Controller::TraceStatic(const char* theName, const int theUse)
 
 //=================================================================================================
 
-void XSControl_Controller::SetNames(const char* theLongName, const char* theShortName)
+void XSControl_Controller::SetNames(const char* const theLongName, const char* const theShortName)
 {
   if (theLongName && theLongName[0] != '\0')
   {
@@ -101,7 +102,7 @@ void XSControl_Controller::SetNames(const char* theLongName, const char* theShor
 
 //=================================================================================================
 
-void XSControl_Controller::Record(const char* theName) const
+void XSControl_Controller::Record(const char* const theName) const
 {
   if (listad.IsBound(theName))
   {
@@ -117,7 +118,7 @@ void XSControl_Controller::Record(const char* theName) const
 
 //=================================================================================================
 
-occ::handle<XSControl_Controller> XSControl_Controller::Recorded(const char* theName)
+occ::handle<XSControl_Controller> XSControl_Controller::Recorded(const char* const theName)
 {
   occ::handle<Standard_Transient> recorded;
   return (listad.Find(theName, recorded) ? occ::down_cast<XSControl_Controller>(recorded)
@@ -159,7 +160,7 @@ void XSControl_Controller::SetModeWrite(const int modemin, const int modemax, co
 
 //=================================================================================================
 
-void XSControl_Controller::SetModeWriteHelp(const int modetrans, const char* help, const bool)
+void XSControl_Controller::SetModeWriteHelp(const int modetrans, const char* const help, const bool)
 {
   if (myModeWriteShapeN.IsNull())
     return;
@@ -322,7 +323,7 @@ IFSelect_ReturnStatus XSControl_Controller::TransferWriteShape(
 //=================================================================================================
 
 void XSControl_Controller::AddSessionItem(const occ::handle<Standard_Transient>& theItem,
-                                          const char*                            theName,
+                                          const char* const                      theName,
                                           const bool                             toApply)
 {
   if (theItem.IsNull() || theName[0] == '\0')
@@ -334,7 +335,7 @@ void XSControl_Controller::AddSessionItem(const occ::handle<Standard_Transient>&
 
 //=================================================================================================
 
-occ::handle<Standard_Transient> XSControl_Controller::SessionItem(const char* theName) const
+occ::handle<Standard_Transient> XSControl_Controller::SessionItem(const char* const theName) const
 {
   occ::handle<Standard_Transient> item;
   if (!myAdaptorSession.IsEmpty())

@@ -38,13 +38,13 @@ class ShapeProcess_ShapeContext : public ShapeProcess_Context
 {
 
 public:
-  Standard_EXPORT ShapeProcess_ShapeContext(const char* file, const char* seq = "");
+  Standard_EXPORT ShapeProcess_ShapeContext(const char* const file, const char* const seq = "");
 
   //! Initializes a tool by resource file and shape
   //! to be processed
   Standard_EXPORT ShapeProcess_ShapeContext(const TopoDS_Shape& S,
-                                            const char*         file,
-                                            const char*         seq = "");
+                                            const char* const   file,
+                                            const char* const   seq = "");
 
   //! Initializes tool by a new shape and clears all results
   Standard_EXPORT void Init(const TopoDS_Shape& S);
@@ -119,12 +119,13 @@ public:
 
   //! Get value of parameter as being of the type GeomAbs_Shape
   //! Returns False if parameter is not defined or has a wrong type
-  Standard_EXPORT bool GetContinuity(const char* param, GeomAbs_Shape& val) const;
+  Standard_EXPORT bool GetContinuity(const char* const param, GeomAbs_Shape& val) const;
 
   //! Get value of parameter as being of the type GeomAbs_Shape
   //! If parameter is not defined or does not have expected
   //! type, returns default value as specified
-  Standard_EXPORT GeomAbs_Shape ContinuityVal(const char* param, const GeomAbs_Shape def) const;
+  Standard_EXPORT GeomAbs_Shape ContinuityVal(const char* const   param,
+                                              const GeomAbs_Shape def) const;
 
   //! Prints statistics on Shape Processing onto the current Messenger.
   Standard_EXPORT void PrintStatistics() const;

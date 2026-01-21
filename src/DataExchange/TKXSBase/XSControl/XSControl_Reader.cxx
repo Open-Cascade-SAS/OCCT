@@ -44,7 +44,7 @@ XSControl_Reader::XSControl_Reader()
 
 //=================================================================================================
 
-XSControl_Reader::XSControl_Reader(const char* norm)
+XSControl_Reader::XSControl_Reader(const char* const norm)
 {
   SetNorm(norm);
 }
@@ -58,7 +58,7 @@ XSControl_Reader::XSControl_Reader(const occ::handle<XSControl_WorkSession>& WS,
 
 //=================================================================================================
 
-bool XSControl_Reader::SetNorm(const char* norm)
+bool XSControl_Reader::SetNorm(const char* const norm)
 {
   if (thesession.IsNull())
     SetWS(new XSControl_WorkSession);
@@ -97,7 +97,7 @@ occ::handle<XSControl_WorkSession> XSControl_Reader::WS() const
 
 //=================================================================================================
 
-IFSelect_ReturnStatus XSControl_Reader::ReadFile(const char* filename)
+IFSelect_ReturnStatus XSControl_Reader::ReadFile(const char* const filename)
 {
   IFSelect_ReturnStatus stat = thesession->ReadFile(filename);
   thesession->InitTransferReader(4);
@@ -106,7 +106,8 @@ IFSelect_ReturnStatus XSControl_Reader::ReadFile(const char* filename)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus XSControl_Reader::ReadStream(const char* theName, std::istream& theIStream)
+IFSelect_ReturnStatus XSControl_Reader::ReadStream(const char* const theName,
+                                                   std::istream&     theIStream)
 {
   IFSelect_ReturnStatus stat = thesession->ReadStream(theName, theIStream);
   thesession->InitTransferReader(4);
@@ -123,8 +124,8 @@ occ::handle<Interface_InterfaceModel> XSControl_Reader::Model() const
 //=================================================================================================
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Reader::GiveList(
-  const char* first,
-  const char* second)
+  const char* const first,
+  const char* const second)
 {
   if (first && first[0] != '\0')
   {
@@ -142,7 +143,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Re
 //=================================================================================================
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Reader::GiveList(
-  const char*                            first,
+  const char* const                      first,
   const occ::handle<Standard_Transient>& list)
 {
   return thesession->GiveListFromList(first, list);

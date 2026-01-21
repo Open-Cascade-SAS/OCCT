@@ -20,7 +20,9 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_Act, IFSelect_Activator)
 
 static TCollection_AsciiString thedefgr, thedefil;
 
-IFSelect_Act::IFSelect_Act(const char* name, const char* help, const IFSelect_ActFunc func)
+IFSelect_Act::IFSelect_Act(const char* const      name,
+                           const char* const      help,
+                           const IFSelect_ActFunc func)
     : thename(name),
       thehelp(help),
       thefunc(func)
@@ -39,7 +41,7 @@ const char* IFSelect_Act::Help(const int) const
   return thehelp.ToCString();
 }
 
-void IFSelect_Act::SetGroup(const char* group, const char* file)
+void IFSelect_Act::SetGroup(const char* const group, const char* const file)
 {
   thedefgr.Clear();
   if (group[0] != '\0')
@@ -49,7 +51,9 @@ void IFSelect_Act::SetGroup(const char* group, const char* file)
     thedefil.AssignCat(file);
 }
 
-void IFSelect_Act::AddFunc(const char* name, const char* help, const IFSelect_ActFunc func)
+void IFSelect_Act::AddFunc(const char* const      name,
+                           const char* const      help,
+                           const IFSelect_ActFunc func)
 {
   occ::handle<IFSelect_Act> act = new IFSelect_Act(name, help, func);
   if (thedefgr.Length() > 0)
@@ -57,7 +61,9 @@ void IFSelect_Act::AddFunc(const char* name, const char* help, const IFSelect_Ac
   act->Add(1, name);
 }
 
-void IFSelect_Act::AddFSet(const char* name, const char* help, const IFSelect_ActFunc func)
+void IFSelect_Act::AddFSet(const char* const      name,
+                           const char* const      help,
+                           const IFSelect_ActFunc func)
 {
   occ::handle<IFSelect_Act> act = new IFSelect_Act(name, help, func);
   if (thedefgr.Length() > 0)

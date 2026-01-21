@@ -19,7 +19,7 @@
 
 //=================================================================================================
 
-bool StlAPI::Write(const TopoDS_Shape& theShape, const char* theFile, const bool theAsciiMode)
+bool StlAPI::Write(const TopoDS_Shape& theShape, const char* const theFile, const bool theAsciiMode)
 {
   StlAPI_Writer aWriter;
   aWriter.ASCIIMode() = theAsciiMode;
@@ -28,7 +28,7 @@ bool StlAPI::Write(const TopoDS_Shape& theShape, const char* theFile, const bool
 
 //=================================================================================================
 
-bool StlAPI::Read(TopoDS_Shape& theShape, const char* theFile)
+bool StlAPI::Read(TopoDS_Shape& theShape, const char* const theFile)
 {
   StlAPI_Reader aReader;
   return aReader.Read(theShape, theFile);

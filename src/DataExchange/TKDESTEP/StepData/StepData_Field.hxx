@@ -85,13 +85,13 @@ public:
 
   //! Sets a String Value (or predeclares a list as String)
   //! Does not redefine the Kind if it is already String or Enum
-  Standard_EXPORT void SetString(const char* val = "");
+  Standard_EXPORT void SetString(const char* const val = "");
 
   //! Sets an Enum Value (as its integer counterpart)
   //! (or predeclares a list as Enum)
   //! If <text> is given , also sets its textual expression
   //! <val> negative means unknown (known values begin at 0)
-  Standard_EXPORT void SetEnum(const int val = -1, const char* text = "");
+  Standard_EXPORT void SetEnum(const int val = -1, const char* const text = "");
 
   //! Sets a SelectMember (for Integer,Boolean,Enum,Real,Logical)
   //! Hence, the value of the field is accessed through this member
@@ -135,11 +135,11 @@ public:
 
   //! Sets an Enum Value (Integer counterpart), also its text
   //! expression if known (if list has been set as "any")
-  Standard_EXPORT void SetEnum(const int num, const int val, const char* text = "");
+  Standard_EXPORT void SetEnum(const int num, const int val, const char* const text = "");
 
   Standard_EXPORT void SetReal(const int num, const double val);
 
-  Standard_EXPORT void SetString(const int num, const char* val);
+  Standard_EXPORT void SetString(const int num, const char* const val);
 
   Standard_EXPORT void SetEntity(const int num, const occ::handle<Standard_Transient>& val);
 

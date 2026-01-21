@@ -98,7 +98,7 @@ static int getScreenBottom()
 
 //=================================================================================================
 
-Cocoa_Window::Cocoa_Window (const char* theTitle,
+Cocoa_Window::Cocoa_Window (const char* const theTitle,
                             const int thePxLeft,
                             const int thePxTop,
                             const int thePxWidth,

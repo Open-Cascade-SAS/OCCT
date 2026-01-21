@@ -248,7 +248,7 @@ const char* Interface_InterfaceModel::TypeName(const occ::handle<Standard_Transi
 
 //=================================================================================================
 
-const char* Interface_InterfaceModel::ClassName(const char* typnam)
+const char* Interface_InterfaceModel::ClassName(const char* const typnam)
 {
   return Interface_SignType::ClassName(typnam);
 }
@@ -849,9 +849,9 @@ void Interface_InterfaceModel::PrintToLog(const occ::handle<Standard_Transient>&
 
 //=================================================================================================
 
-int Interface_InterfaceModel::NextNumberForLabel(const char* label,
-                                                 const int   fromnum,
-                                                 const bool  exact) const
+int Interface_InterfaceModel::NextNumberForLabel(const char* const label,
+                                                 const int         fromnum,
+                                                 const bool        exact) const
 {
   int                                   n    = NbEntities();
   occ::handle<TCollection_HAsciiString> labs = new TCollection_HAsciiString(label);
@@ -892,14 +892,14 @@ int Interface_InterfaceModel::NextNumberForLabel(const char* label,
 
 //=================================================================================================
 
-bool Interface_InterfaceModel::HasTemplate(const char* name)
+bool Interface_InterfaceModel::HasTemplate(const char* const name)
 {
   return atemp.IsBound(name);
 }
 
 //=================================================================================================
 
-occ::handle<Interface_InterfaceModel> Interface_InterfaceModel::Template(const char* name)
+occ::handle<Interface_InterfaceModel> Interface_InterfaceModel::Template(const char* const name)
 {
   occ::handle<Interface_InterfaceModel> model, newmod;
   if (!HasTemplate(name))
@@ -912,7 +912,7 @@ occ::handle<Interface_InterfaceModel> Interface_InterfaceModel::Template(const c
 
 //=================================================================================================
 
-bool Interface_InterfaceModel::SetTemplate(const char*                                  name,
+bool Interface_InterfaceModel::SetTemplate(const char* const                            name,
                                            const occ::handle<Interface_InterfaceModel>& model)
 {
   return atemp.Bind(name, model);

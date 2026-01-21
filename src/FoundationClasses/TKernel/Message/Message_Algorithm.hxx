@@ -100,7 +100,7 @@ public:
   //! If noRepetitions is True, the parameter will be added only
   //! if it has not been yet recorded for the same status flag
   void SetStatus(const Message_Status& theStat,
-                 const char*           theStr,
+                 const char* const     theStr,
                  const bool            noRepetitions = true);
 
   //! Sets status with string parameter

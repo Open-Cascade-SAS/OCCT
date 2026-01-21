@@ -92,13 +92,13 @@ public:
 
   //! Sets a Context : according to receiving appli, to be
   //! interpreted by the Actor
-  Standard_EXPORT void SetContext(const char*                            theName,
+  Standard_EXPORT void SetContext(const char* const                      theName,
                                   const occ::handle<Standard_Transient>& theCtx);
 
   //! Returns the Context attached to a name, if set and if it is
   //! Kind of the type, else a Null Handle
   //! Returns True if OK, False if no Context
-  Standard_EXPORT bool GetContext(const char*                       theName,
+  Standard_EXPORT bool GetContext(const char* const                 theName,
                                   const occ::handle<Standard_Type>& theType,
                                   occ::handle<Standard_Transient>&  theCtx) const;
 
@@ -110,7 +110,7 @@ public:
   }
 
   //! Sets a new value for (loaded) file name
-  void SetFileName(const char* theName) { myFileName = theName; }
+  void SetFileName(const char* const theName) { myFileName = theName; }
 
   //! Returns actual value of file name
   const char* FileName() const { return myFileName.ToCString(); }

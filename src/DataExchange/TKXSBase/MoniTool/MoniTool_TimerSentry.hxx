@@ -35,7 +35,7 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor creates an instance and runs the corresponding timer
-  MoniTool_TimerSentry(const char* cname);
+  MoniTool_TimerSentry(const char* const cname);
 
   //! Constructor creates an instance and runs the corresponding timer
   MoniTool_TimerSentry(const occ::handle<MoniTool_Timer>& timer);

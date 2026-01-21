@@ -23,7 +23,7 @@ IMPLEMENT_STANDARD_RTTIEXT(IFSelect_SelectSignedShared, IFSelect_SelectExplore)
 
 IFSelect_SelectSignedShared::IFSelect_SelectSignedShared(
   const occ::handle<IFSelect_Signature>& matcher,
-  const char*                            signtext,
+  const char* const                      signtext,
   const bool                             exact,
   const int                              level)
     : IFSelect_SelectExplore(level),

@@ -125,7 +125,7 @@ public:
   //! no thousand separator and no grouping of digits into aReal.
   //!
   //! The conversion is independent from the current locale.
-  Standard_EXPORT static bool CStringToReal(const char* aString, double& aReal);
+  Standard_EXPORT static bool CStringToReal(const char* const aString, double& aReal);
 
   //! since Windows NT does not support 'SIGINT' signal like UNIX,
   //! then this method checks whether Ctrl-Break keystroke was or

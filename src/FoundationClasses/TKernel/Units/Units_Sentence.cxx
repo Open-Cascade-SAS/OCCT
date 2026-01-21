@@ -23,7 +23,7 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-static occ::handle<Units_Token> CreateTokenForNumber(const char* str)
+static occ::handle<Units_Token> CreateTokenForNumber(const char* const str)
 {
   TCollection_AsciiString tstr    = str[0];
   bool                    IsPoint = false;
@@ -48,7 +48,8 @@ static occ::handle<Units_Token> CreateTokenForNumber(const char* str)
 
 //=================================================================================================
 
-Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const char* astring)
+Units_Sentence::Units_Sentence(const occ::handle<Units_Lexicon>& alexicon,
+                               const char* const                 astring)
 {
   int                      index;
   size_t                   i, limchain;

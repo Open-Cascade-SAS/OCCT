@@ -169,7 +169,7 @@ void Transfer_Binder::SetStatusExec(const Transfer_StatusExec stat)
 
 //=================================================================================================
 
-void Transfer_Binder::AddFail(const char* mess, const char* orig)
+void Transfer_Binder::AddFail(const char* const mess, const char* const orig)
 {
   theexecst = Transfer_StatusError;
   thecheck->AddFail(mess, orig);
@@ -177,7 +177,7 @@ void Transfer_Binder::AddFail(const char* mess, const char* orig)
 
 //=================================================================================================
 
-void Transfer_Binder::AddWarning(const char* mess, const char* orig)
+void Transfer_Binder::AddWarning(const char* const mess, const char* const orig)
 {
   //  theexecst = Transfer_StatusError;
   thecheck->AddWarning(mess, orig);

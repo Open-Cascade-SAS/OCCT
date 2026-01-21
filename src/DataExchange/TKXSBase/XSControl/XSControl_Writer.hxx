@@ -43,7 +43,7 @@ public:
 
   //! Creates a Writer from scratch, with a norm name which
   //! identifie a Controller
-  Standard_EXPORT XSControl_Writer(const char* norm);
+  Standard_EXPORT XSControl_Writer(const char* const norm);
 
   //! Creates a Writer from an already existing Session
   //! If <scratch> is True (D), clears already recorded data
@@ -52,7 +52,7 @@ public:
 
   //! Sets a specific norm to <me>
   //! Returns True if done, False if <norm> is not available
-  Standard_EXPORT bool SetNorm(const char* norm);
+  Standard_EXPORT bool SetNorm(const char* const norm);
 
   //! Sets a specific session to <me>
   Standard_EXPORT void SetWS(const occ::handle<XSControl_WorkSession>& WS,
@@ -74,7 +74,7 @@ public:
                   const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Writes the produced model
-  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* filename);
+  Standard_EXPORT IFSelect_ReturnStatus WriteFile(const char* const filename);
 
   //! Prints Statistics about Transfer
   Standard_EXPORT void PrintStatsTransfer(const int what, const int mode = 0) const;

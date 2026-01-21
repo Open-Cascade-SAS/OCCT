@@ -1010,8 +1010,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
     int maxMult = (i == 1 || i == KnotIndex ? Degree + 1 : Degree);
     if (aMult > maxMult)
     {
-      Message_Msg msg1200("IGES_1200"); // #61 rln 05.01.99
-      const char* vide("");
+      Message_Msg       msg1200("IGES_1200"); // #61 rln 05.01.99
+      const char* const vide("");
       msg1200.Arg(vide);
       msg1200.Arg(vide);
       msg1200.Arg(vide);
@@ -1064,8 +1064,8 @@ occ::handle<Geom_Curve> IGESToBRep_BasicCurve::TransferBSplineCurve(
 
   if (!(SumOfMult == newNbPoles + Degree + 1))
   {
-    Message_Msg msg1210("IGES_1210");
-    const char* vide("");
+    Message_Msg       msg1210("IGES_1210");
+    const char* const vide("");
     msg1210.Arg(vide);
     msg1210.Arg(vide);
     SendWarning(start, msg1210);

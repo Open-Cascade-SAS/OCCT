@@ -48,8 +48,8 @@ public:
   //! numeric value of the dimension, <amove> is the gap,
   //! and <adimensions> is the dimension of the given word
   //! <aword>.
-  Standard_EXPORT Units_ShiftedToken(const char*                          aword,
-                                     const char*                          amean,
+  Standard_EXPORT Units_ShiftedToken(const char* const                    aword,
+                                     const char* const                    amean,
                                      const double                         avalue,
                                      const double                         amove,
                                      const occ::handle<Units_Dimensions>& adimensions);

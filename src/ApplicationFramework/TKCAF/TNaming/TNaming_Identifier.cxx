@@ -34,7 +34,7 @@
 
 // unreferenced function, commented
 /*static void ModDbgTools_Write(const TopoDS_Shape& shape,
-              const char* filename)
+              const char* const filename)
 {
   std::ofstream save;
   save.open(filename);

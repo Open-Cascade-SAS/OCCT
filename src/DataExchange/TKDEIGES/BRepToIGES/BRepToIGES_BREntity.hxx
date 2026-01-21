@@ -66,16 +66,18 @@ public:
     const Message_ProgressRange& theProgress = Message_ProgressRange());
 
   //! Records a new Fail message
-  Standard_EXPORT void AddFail(const TopoDS_Shape& start, const char* amess);
+  Standard_EXPORT void AddFail(const TopoDS_Shape& start, const char* const amess);
 
   //! Records a new Warning message
-  Standard_EXPORT void AddWarning(const TopoDS_Shape& start, const char* amess);
+  Standard_EXPORT void AddWarning(const TopoDS_Shape& start, const char* const amess);
 
   //! Records a new Fail message
-  Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start, const char* amess);
+  Standard_EXPORT void AddFail(const occ::handle<Standard_Transient>& start,
+                               const char* const                      amess);
 
   //! Records a new Warning message
-  Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start, const char* amess);
+  Standard_EXPORT void AddWarning(const occ::handle<Standard_Transient>& start,
+                                  const char* const                      amess);
 
   //! Returns True if start was already treated and has a result in "TheMap"
   //! else returns False.

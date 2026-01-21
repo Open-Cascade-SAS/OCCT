@@ -759,8 +759,8 @@ const float THE_MAX_REAL_COLOR_COMPONENT    = 1.0f;
 //! @param theColorComponentString the string representing the color component
 //! @param theIntegerColorComponent an integer color component that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
-static bool parseNumericalColorComponent(const char* theColorComponentString,
-                                         int&        theIntegerColorComponent)
+static bool parseNumericalColorComponent(const char* const theColorComponentString,
+                                         int&              theIntegerColorComponent)
 {
   int anIntegerColorComponent;
   if (!Draw::ParseInteger(theColorComponentString, anIntegerColorComponent))
@@ -780,8 +780,8 @@ static bool parseNumericalColorComponent(const char* theColorComponentString,
 //! @param theColorComponentString the string representing the color component
 //! @param theRealColorComponent a real color component that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
-static bool parseNumericalColorComponent(const char* theColorComponentString,
-                                         float&      theRealColorComponent)
+static bool parseNumericalColorComponent(const char* const theColorComponentString,
+                                         float&            theRealColorComponent)
 {
   double aRealColorComponent;
   if (!Draw::ParseReal(theColorComponentString, aRealColorComponent))
@@ -803,7 +803,7 @@ static bool parseNumericalColorComponent(const char* theColorComponentString,
 //! @param theColorComponentString the string representing the color component
 //! @param theColorComponent a color component that is a result of parsing
 //! @return true if parsing was successful, or false otherwise
-static bool parseColorComponent(const char* theColorComponentString, float& theColorComponent)
+static bool parseColorComponent(const char* const theColorComponentString, float& theColorComponent)
 {
   int anIntegerColorComponent;
   if (parseNumericalColorComponent(theColorComponentString, anIntegerColorComponent))
@@ -920,8 +920,8 @@ int Draw::parseColor(const int                theArgNb,
   {
     if (theArgNb >= 2 && theToParseAlpha)
     {
-      const char* anAlphaStr = theArgVec[1];
-      float       anAlphaComponent;
+      const char* const anAlphaStr = theArgVec[1];
+      float             anAlphaComponent;
       if (parseColorComponent(anAlphaStr, anAlphaComponent))
       {
         theColor.SetAlpha(anAlphaComponent);

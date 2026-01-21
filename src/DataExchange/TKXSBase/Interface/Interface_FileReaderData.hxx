@@ -74,7 +74,7 @@ public:
   //! copied. This gives a best speed : strings remain stored in
   //! pages of characters
   Standard_EXPORT void AddParam(const int                 num,
-                                const char*               aval,
+                                const char* const         aval,
                                 const Interface_ParamType atype,
                                 const int                 nument = 0);
 
@@ -169,7 +169,7 @@ public:
   ~Interface_FileReaderData() override { Destroy(); }
 
   //! Same spec.s as standard <atof> but 5 times faster
-  Standard_EXPORT static double Fastof(const char* str);
+  Standard_EXPORT static double Fastof(const char* const str);
 
   DEFINE_STANDARD_RTTIEXT(Interface_FileReaderData, Standard_Transient)
 

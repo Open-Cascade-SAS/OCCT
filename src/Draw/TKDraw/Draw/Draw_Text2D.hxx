@@ -30,10 +30,10 @@ class Draw_Text2D : public Draw_Drawable2D
 {
 
 public:
-  Standard_EXPORT Draw_Text2D(const gp_Pnt2d& p, const char* T, const Draw_Color& col);
+  Standard_EXPORT Draw_Text2D(const gp_Pnt2d& p, const char* const T, const Draw_Color& col);
 
   Standard_EXPORT Draw_Text2D(const gp_Pnt2d&   p,
-                              const char*       T,
+                              const char* const T,
                               const Draw_Color& col,
                               const int         moveX,
                               const int         moveY);

@@ -136,7 +136,7 @@ public:
   //! the label if it does not exist and if <create> is
   //! true.
   Standard_EXPORT static void Label(const occ::handle<TDF_Data>& aDF,
-                                    const char*                  anEntry,
+                                    const char* const            anEntry,
                                     TDF_Label&                   aLabel,
                                     const bool                   create = false);
 

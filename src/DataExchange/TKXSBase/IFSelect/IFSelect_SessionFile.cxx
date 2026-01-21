@@ -53,7 +53,7 @@ IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSessio
 }
 
 IFSelect_SessionFile::IFSelect_SessionFile(const occ::handle<IFSelect_WorkSession>& WS,
-                                           const char*                              filename)
+                                           const char* const                        filename)
 {
   ClearLines();
   themode = true;
@@ -86,7 +86,7 @@ const TCollection_AsciiString& IFSelect_SessionFile::Line(const int num) const
   return thelist.Value(num);
 }
 
-void IFSelect_SessionFile::AddLine(const char* line)
+void IFSelect_SessionFile::AddLine(const char* const line)
 {
   thelist.Append(TCollection_AsciiString(line));
 }
@@ -97,7 +97,7 @@ void IFSelect_SessionFile::RemoveLastLine()
     thelist.Remove(thelist.Length());
 }
 
-bool IFSelect_SessionFile::WriteFile(const char* filename)
+bool IFSelect_SessionFile::WriteFile(const char* const filename)
 {
   FILE* lefic = OSD_OpenFile(filename, "w");
   int   nbl   = thelist.Length();
@@ -108,7 +108,7 @@ bool IFSelect_SessionFile::WriteFile(const char* filename)
   return true;
 }
 
-bool IFSelect_SessionFile::ReadFile(const char* filename)
+bool IFSelect_SessionFile::ReadFile(const char* const filename)
 {
   char  ligne[201];
   FILE* lefic = OSD_OpenFile(filename, "r");
@@ -142,7 +142,7 @@ bool IFSelect_SessionFile::ReadFile(const char* filename)
   return header;
 }
 
-bool IFSelect_SessionFile::RecognizeFile(const char* headerline)
+bool IFSelect_SessionFile::RecognizeFile(const char* const headerline)
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
 
@@ -163,7 +163,7 @@ bool IFSelect_SessionFile::RecognizeFile(const char* headerline)
   return true;
 }
 
-int IFSelect_SessionFile::Write(const char* filename)
+int IFSelect_SessionFile::Write(const char* const filename)
 {
   thenewnum = 0;
   int stat  = WriteSession();
@@ -175,7 +175,7 @@ int IFSelect_SessionFile::Write(const char* filename)
   return (WriteFile(filename) ? 0 : -1);
 }
 
-int IFSelect_SessionFile::Read(const char* filename)
+int IFSelect_SessionFile::Read(const char* const filename)
 {
   if (!ReadFile(filename))
     return -1;
@@ -439,7 +439,7 @@ int IFSelect_SessionFile::WriteEnd()
   return 0;
 }
 
-void IFSelect_SessionFile::WriteLine(const char* line, const char follow)
+void IFSelect_SessionFile::WriteLine(const char* const line, const char follow)
 {
   if (line[0] != '\0')
     thebuff.AssignCat(line);
@@ -877,7 +877,7 @@ bool IFSelect_SessionFile::ReadLine()
   return true;
 }
 
-void IFSelect_SessionFile::SplitLine(const char* line)
+void IFSelect_SessionFile::SplitLine(const char* const line)
 {
   char mot[80];
   theline.Clear();
@@ -1020,7 +1020,7 @@ void IFSelect_SessionFile::SendItem(const occ::handle<Standard_Transient>& par)
   WriteLine(laligne);
 }
 
-void IFSelect_SessionFile::SendText(const char* text)
+void IFSelect_SessionFile::SendText(const char* const text)
 {
   char laligne[100];
   ////  if (theownflag) Sprintf(laligne," :%s",text);

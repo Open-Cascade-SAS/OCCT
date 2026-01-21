@@ -41,7 +41,7 @@ static int THE_IFSelect_SessionPilot_initactor = 0;
 
 // Max Nb of words : cf thewords and method SetCommandLine
 
-IFSelect_SessionPilot::IFSelect_SessionPilot(const char* prompt)
+IFSelect_SessionPilot::IFSelect_SessionPilot(const char* const prompt)
     : theprompt(prompt),
       thewords(0, MAXWORDS - 1),
       thewordeb(0, MAXWORDS - 1)
@@ -289,7 +289,7 @@ void IFSelect_SessionPilot::Clear()
 //  #######################################################################
 //  ########        EXECUTION CONTROL
 
-IFSelect_ReturnStatus IFSelect_SessionPilot::ReadScript(const char* file)
+IFSelect_ReturnStatus IFSelect_SessionPilot::ReadScript(const char* const file)
 {
   FILE* fic;
   int   lefic = 0;
@@ -430,7 +430,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::ExecuteCounter(
   return IFSelect_RetVoid;
 }
 
-int IFSelect_SessionPilot::Number(const char* val) const
+int IFSelect_SessionPilot::Number(const char* const val) const
 {
   int num = thesession->NumberFromLabel(val);
   if (num < 0)
@@ -450,7 +450,7 @@ IFSelect_ReturnStatus IFSelect_SessionPilot::Do(const int                       
   //                  Own Commands : x, exit, undo, redo, ?, help
   IFSelect_ReturnStatus stat    = IFSelect_RetVoid;
   int                   argc    = NbWords();
-  const char*           arg1    = Word(1).ToCString();
+  const char* const     arg1    = Word(1).ToCString();
   int                   modhelp = -1;
   switch (number)
   {

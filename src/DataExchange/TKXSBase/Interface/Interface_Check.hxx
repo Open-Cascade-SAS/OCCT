@@ -68,7 +68,7 @@ public:
   //! Records a new Fail message given as "error text" directly
   //! If <orig> is given, a distinct original form is recorded
   //! else (D), the original form equates <amess>
-  Standard_EXPORT void AddFail(const char* amess, const char* orig = "");
+  Standard_EXPORT void AddFail(const char* const amess, const char* const orig = "");
 
   //! Records a new Fail from the definition of a Msg (Original+Value)
   Standard_EXPORT void AddFail(const Message_Msg& amsg);
@@ -107,7 +107,7 @@ public:
   //! Records a Warning message given as "warning message" directly
   //! If <orig> is given, a distinct original form is recorded
   //! else (D), the original form equates <amess>
-  Standard_EXPORT void AddWarning(const char* amess, const char* orig = "");
+  Standard_EXPORT void AddWarning(const char* const amess, const char* const orig = "");
 
   //! Records a new Warning from the definition of a Msg (Original+Value)
   Standard_EXPORT void AddWarning(const Message_Msg& amsg);
@@ -217,7 +217,7 @@ public:
   //! "CF" : clears Fail(s)
   //! "CW" : clears Warning(s) : here, <num> refers to Warning list
   //! "CA" : clears all messages : here, <num> is ignored
-  Standard_EXPORT bool Mend(const char* pref, const int num = 0);
+  Standard_EXPORT bool Mend(const char* const pref, const int num = 0);
 
   //! Receives an entity result of a Transfer
   Standard_EXPORT void SetEntity(const occ::handle<Standard_Transient>& anentity);

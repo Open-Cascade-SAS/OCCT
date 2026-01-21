@@ -656,7 +656,7 @@ void OpenGl_GraphicDriver::SetBuffersNoSwap(const bool theIsNoSwap)
 //=================================================================================================
 
 void OpenGl_GraphicDriver::TextSize(const occ::handle<Graphic3d_CView>& theView,
-                                    const char*                         theText,
+                                    const char* const                   theText,
                                     const float                         theHeight,
                                     float&                              theWidth,
                                     float&                              theAscent,

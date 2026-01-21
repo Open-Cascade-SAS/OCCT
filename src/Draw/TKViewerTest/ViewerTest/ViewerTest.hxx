@@ -273,7 +273,7 @@ public: //! @name deprecated methods
   Standard_EXPORT static bool ParseOnOff(const char* theArg, bool& theIsOn);
 
   Standard_DEPRECATED("Method has been moved to Quantity_Color::ColorFromName()")
-  Standard_EXPORT static Quantity_NameOfColor GetColorFromName(const char* name);
+  Standard_EXPORT static Quantity_NameOfColor GetColorFromName(const char* const name);
 
 private:
   //! Parses ZLayer name.

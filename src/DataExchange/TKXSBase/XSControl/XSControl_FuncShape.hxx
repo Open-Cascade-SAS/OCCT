@@ -59,7 +59,7 @@ public:
   //! Returns 0 if no Shape could be found
   Standard_EXPORT static int MoreShapes(const occ::handle<XSControl_WorkSession>&         session,
                                         occ::handle<NCollection_HSequence<TopoDS_Shape>>& list,
-                                        const char*                                       name);
+                                        const char* const                                 name);
 
   //! Analyses given file name and variable name, with a default
   //! name for variables. Returns resulting file name and variable
@@ -73,9 +73,9 @@ public:
   //! Else, the root part of <resfile> is considered, if defined
   //! Else, <def> is taken
   Standard_EXPORT static bool FileAndVar(const occ::handle<XSControl_WorkSession>& session,
-                                         const char*                               file,
-                                         const char*                               var,
-                                         const char*                               def,
+                                         const char* const                         file,
+                                         const char* const                         var,
+                                         const char* const                         def,
                                          TCollection_AsciiString&                  resfile,
                                          TCollection_AsciiString&                  resvar);
 };

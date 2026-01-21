@@ -563,7 +563,7 @@ void V3d_View::SetBgGradientStyle(const Aspect_GradientFillMethod theFillStyle,
 
 //=================================================================================================
 
-void V3d_View::SetBackgroundImage(const char*             theFileName,
+void V3d_View::SetBackgroundImage(const char* const       theFileName,
                                   const Aspect_FillMethod theFillStyle,
                                   const bool              theToUpdate)
 {
@@ -2636,7 +2636,7 @@ void V3d_View::Init()
 
 //=================================================================================================
 
-bool V3d_View::Dump(const char* theFile, const Graphic3d_BufferType& theBufferType)
+bool V3d_View::Dump(const char* const theFile, const Graphic3d_BufferType& theBufferType)
 {
   int aWinWidth, aWinHeight;
   MyWindow->Size(aWinWidth, aWinHeight);

@@ -98,7 +98,7 @@ public:
 
 public:
   Standard_EXPORT void TextSize(const occ::handle<Graphic3d_CView>& theView,
-                                const char*                         theText,
+                                const char* const                   theText,
                                 const float                         theHeight,
                                 float&                              theWidth,
                                 float&                              theAscent,

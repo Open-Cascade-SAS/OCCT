@@ -56,11 +56,11 @@ public:
   //! Sets the name of a SelectMember, returns True if done, False
   //! if no name is allowed
   //! Default does nothing and returns False
-  Standard_EXPORT virtual bool SetName(const char* name);
+  Standard_EXPORT virtual bool SetName(const char* const name);
 
   //! Tells if the name of a SelectMember matches a given one
   //! By default, compares the strings, can be redefined (optimised)
-  Standard_EXPORT virtual bool Matches(const char* name) const;
+  Standard_EXPORT virtual bool Matches(const char* const name) const;
 
   Standard_EXPORT virtual int Kind() const;
 
@@ -97,15 +97,15 @@ public:
 
   Standard_EXPORT virtual const char* String() const;
 
-  Standard_EXPORT virtual void SetString(const char* val);
+  Standard_EXPORT virtual void SetString(const char* const val);
 
   Standard_EXPORT int Enum() const;
 
   Standard_EXPORT virtual const char* EnumText() const;
 
-  Standard_EXPORT void SetEnum(const int val, const char* text = "");
+  Standard_EXPORT void SetEnum(const int val, const char* const text = "");
 
-  Standard_EXPORT virtual void SetEnumText(const int val, const char* text);
+  Standard_EXPORT virtual void SetEnumText(const int val, const char* const text);
 
   DEFINE_STANDARD_RTTIEXT(StepData_SelectMember, Standard_Transient)
 };

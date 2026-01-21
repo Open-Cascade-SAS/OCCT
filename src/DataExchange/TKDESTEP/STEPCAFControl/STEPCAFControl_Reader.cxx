@@ -342,14 +342,14 @@ TCollection_ExtendedString STEPCAFControl_Reader::convertName(
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile(const char* theFileName)
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile(const char* const theFileName)
 {
   return myReader.ReadFile(theFileName);
 }
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile(const char*              theFileName,
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile(const char* const        theFileName,
                                                       const DESTEP_Parameters& theParams)
 {
   return myReader.ReadFile(theFileName, theParams);
@@ -357,8 +357,8 @@ IFSelect_ReturnStatus STEPCAFControl_Reader::ReadFile(const char*              t
 
 //=================================================================================================
 
-IFSelect_ReturnStatus STEPCAFControl_Reader::ReadStream(const char*   theName,
-                                                        std::istream& theIStream)
+IFSelect_ReturnStatus STEPCAFControl_Reader::ReadStream(const char* const theName,
+                                                        std::istream&     theIStream)
 {
   return myReader.ReadStream(theName, theIStream);
 }
@@ -391,7 +391,7 @@ bool STEPCAFControl_Reader::Transfer(const occ::handle<TDocStd_Document>& doc,
 
 //=================================================================================================
 
-bool STEPCAFControl_Reader::Perform(const char*                          filename,
+bool STEPCAFControl_Reader::Perform(const char* const                    filename,
                                     const occ::handle<TDocStd_Document>& doc,
                                     const Message_ProgressRange&         theProgress)
 {
@@ -404,7 +404,7 @@ bool STEPCAFControl_Reader::Perform(const char*                          filenam
 
 //=================================================================================================
 
-bool STEPCAFControl_Reader::Perform(const char*                          filename,
+bool STEPCAFControl_Reader::Perform(const char* const                    filename,
                                     const occ::handle<TDocStd_Document>& doc,
                                     const DESTEP_Parameters&             theParams,
                                     const Message_ProgressRange&         theProgress)
@@ -453,7 +453,7 @@ const NCollection_DataMap<TCollection_AsciiString, occ::handle<STEPCAFControl_Ex
 
 //=================================================================================================
 
-bool STEPCAFControl_Reader::ExternFile(const char*                             name,
+bool STEPCAFControl_Reader::ExternFile(const char* const                       name,
                                        occ::handle<STEPCAFControl_ExternFile>& ef) const
 {
   ef.Nullify();
@@ -661,7 +661,7 @@ bool STEPCAFControl_Reader::Transfer(STEPControl_Reader&                  reader
 #endif
 
     // get and check filename of the current extern ref
-    const char* filename = ExtRefs.FileName(i);
+    const char* const filename = ExtRefs.FileName(i);
 
 #ifdef OCCT_DEBUG
     std::cout << "filename=" << filename << std::endl;
@@ -906,8 +906,8 @@ TDF_Label STEPCAFControl_Reader::AddShape(
 //=================================================================================================
 
 occ::handle<STEPCAFControl_ExternFile> STEPCAFControl_Reader::ReadExternFile(
-  const char*                          file,
-  const char*                          fullname,
+  const char* const                    file,
+  const char* const                    fullname,
   const occ::handle<TDocStd_Document>& doc,
   const Message_ProgressRange&         theProgress)
 {

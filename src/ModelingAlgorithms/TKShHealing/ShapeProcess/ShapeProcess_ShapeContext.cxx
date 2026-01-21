@@ -29,7 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(ShapeProcess_ShapeContext, ShapeProcess_Context)
 
 //=================================================================================================
 
-ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* file, const char* seq)
+ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* const file, const char* const seq)
     : ShapeProcess_Context(file, seq),
       myUntil(TopAbs_FACE),
       myNonManifold(false)
@@ -39,8 +39,8 @@ ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const char* file, const cha
 //=================================================================================================
 
 ShapeProcess_ShapeContext::ShapeProcess_ShapeContext(const TopoDS_Shape& S,
-                                                     const char*         file,
-                                                     const char*         seq)
+                                                     const char* const   file,
+                                                     const char* const   seq)
     : ShapeProcess_Context(file, seq),
       myUntil(TopAbs_FACE),
       myNonManifold(false)
@@ -374,7 +374,7 @@ void ShapeProcess_ShapeContext::RecordModification(
 
 //=================================================================================================
 
-bool ShapeProcess_ShapeContext::GetContinuity(const char* param, GeomAbs_Shape& cont) const
+bool ShapeProcess_ShapeContext::GetContinuity(const char* const param, GeomAbs_Shape& cont) const
 {
   TCollection_AsciiString str;
   if (!GetString(param, str))
@@ -405,7 +405,7 @@ bool ShapeProcess_ShapeContext::GetContinuity(const char* param, GeomAbs_Shape& 
 
 //=================================================================================================
 
-GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const char*         param,
+GeomAbs_Shape ShapeProcess_ShapeContext::ContinuityVal(const char* const   param,
                                                        const GeomAbs_Shape def) const
 {
   GeomAbs_Shape val;

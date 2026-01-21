@@ -61,7 +61,7 @@ void PrintEntry(const TDF_Label& label, const bool allLevels)
 
   #include <BRepTools.hxx>
 
-static void Write(const TopoDS_Shape& shape, const char* filename)
+static void Write(const TopoDS_Shape& shape, const char* const filename)
 {
   char buf[256];
   if (strlen(filename) > 255)

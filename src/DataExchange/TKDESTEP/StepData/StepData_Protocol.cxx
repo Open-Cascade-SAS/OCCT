@@ -135,7 +135,8 @@ occ::handle<StepData_EDescr> StepData_Protocol::Descr(const int num) const
   return dsc;
 }
 
-occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* name, const bool anylevel) const
+occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* const name,
+                                                      const bool        anylevel) const
 {
   occ::handle<StepData_EDescr> sd;
   if (!thedscnam.IsEmpty())
@@ -160,8 +161,8 @@ occ::handle<StepData_EDescr> StepData_Protocol::Descr(const char* name, const bo
   return sd;
 }
 
-occ::handle<StepData_ESDescr> StepData_Protocol::ESDescr(const char* name,
-                                                         const bool  anylevel) const
+occ::handle<StepData_ESDescr> StepData_Protocol::ESDescr(const char* const name,
+                                                         const bool        anylevel) const
 {
   return occ::down_cast<StepData_ESDescr>(Descr(name, anylevel));
 }
@@ -214,7 +215,8 @@ void StepData_Protocol::AddPDescr(const occ::handle<StepData_PDescr>& pdescr)
   thepdescr.Bind(pdescr->Name(), pdescr);
 }
 
-occ::handle<StepData_PDescr> StepData_Protocol::PDescr(const char* name, const bool anylevel) const
+occ::handle<StepData_PDescr> StepData_Protocol::PDescr(const char* const name,
+                                                       const bool        anylevel) const
 {
   occ::handle<StepData_PDescr> sd;
   if (!thepdescr.IsEmpty())
@@ -244,8 +246,8 @@ void StepData_Protocol::AddBasicDescr(const occ::handle<StepData_ESDescr>& esdes
   thedscbas.Bind(esdescr->TypeName(), esdescr);
 }
 
-occ::handle<StepData_EDescr> StepData_Protocol::BasicDescr(const char* name,
-                                                           const bool  anylevel) const
+occ::handle<StepData_EDescr> StepData_Protocol::BasicDescr(const char* const name,
+                                                           const bool        anylevel) const
 {
   occ::handle<StepData_EDescr> sd;
   if (!thedscbas.IsEmpty())

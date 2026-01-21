@@ -53,7 +53,7 @@ public:
   //! Simply, 0 is for "Execution OK"
   //! The Protocol can be used to work (e.g. create the Model, read
   //! and recognize the Entities)
-  Standard_EXPORT virtual int ReadFile(const char*                            name,
+  Standard_EXPORT virtual int ReadFile(const char* const                      name,
                                        occ::handle<Interface_InterfaceModel>& model,
                                        const occ::handle<Interface_Protocol>& protocol) const = 0;
 
@@ -63,7 +63,7 @@ public:
   //! Return value is a status: 0 - OK, 1 - read failure, -1 - stream failure.
   //!
   //! Default implementation returns 1 (error).
-  Standard_EXPORT virtual int ReadStream(const char*                            theName,
+  Standard_EXPORT virtual int ReadStream(const char* const                      theName,
                                          std::istream&                          theIStream,
                                          occ::handle<Interface_InterfaceModel>& model,
                                          const occ::handle<Interface_Protocol>& protocol) const;
@@ -128,7 +128,7 @@ public:
   Standard_EXPORT void DumpLevels(int& def, int& max) const;
 
   //! Records a short line of help for a level (0 - max)
-  Standard_EXPORT void SetDumpHelp(const int level, const char* help);
+  Standard_EXPORT void SetDumpHelp(const int level, const char* const help);
 
   //! Returns the help line recorded for <level>, or an empty string
   Standard_EXPORT const char* DumpHelp(const int level) const;

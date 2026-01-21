@@ -34,7 +34,7 @@ void IGESSelect_AddFileComment::Clear()
   thelist->Clear();
 }
 
-void IGESSelect_AddFileComment::AddLine(const char* line)
+void IGESSelect_AddFileComment::AddLine(const char* const line)
 {
   thelist->Append(new TCollection_HAsciiString(line));
 }

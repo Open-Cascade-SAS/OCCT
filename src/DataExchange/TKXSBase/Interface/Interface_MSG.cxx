@@ -37,13 +37,13 @@ static char blank[] =
   "                                                                            ";
 static int maxblank = (int)strlen(blank);
 
-Interface_MSG::Interface_MSG(const char* key)
+Interface_MSG::Interface_MSG(const char* const key)
     : thekey(key),
       theval(nullptr)
 {
 }
 
-Interface_MSG::Interface_MSG(const char* key, const int i1)
+Interface_MSG::Interface_MSG(const char* const key, const int i1)
     : thekey(key),
       theval(nullptr)
 {
@@ -53,7 +53,7 @@ Interface_MSG::Interface_MSG(const char* key, const int i1)
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key, const int i1, const int i2)
+Interface_MSG::Interface_MSG(const char* const key, const int i1, const int i2)
     : thekey(key),
       theval(nullptr)
 {
@@ -63,7 +63,7 @@ Interface_MSG::Interface_MSG(const char* key, const int i1, const int i2)
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key, const double r1, const int intervals)
+Interface_MSG::Interface_MSG(const char* const key, const double r1, const int intervals)
     : thekey(key),
       theval(nullptr)
 {
@@ -75,7 +75,7 @@ Interface_MSG::Interface_MSG(const char* key, const double r1, const int interva
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key, const char* str)
+Interface_MSG::Interface_MSG(const char* const key, const char* const str)
     : thekey(key),
       theval(nullptr)
 {
@@ -85,7 +85,7 @@ Interface_MSG::Interface_MSG(const char* key, const char* str)
   strcpy(theval, mess);
 }
 
-Interface_MSG::Interface_MSG(const char* key, const int val, const char* str)
+Interface_MSG::Interface_MSG(const char* const key, const int val, const char* const str)
     : thekey(key),
       theval(nullptr)
 {
@@ -144,7 +144,7 @@ int Interface_MSG::Read(Standard_IStream& S)
   return nb;
 }
 
-int Interface_MSG::Read(const char* file)
+int Interface_MSG::Read(const char* const file)
 {
   std::ifstream S(file);
   if (!S)
@@ -152,7 +152,7 @@ int Interface_MSG::Read(const char* file)
   return Read(S);
 }
 
-int Interface_MSG::Write(Standard_OStream& S, const char* rootkey)
+int Interface_MSG::Write(Standard_OStream& S, const char* const rootkey)
 {
   int nb = 0;
   if (thedic.IsEmpty())
@@ -178,12 +178,12 @@ int Interface_MSG::Write(Standard_OStream& S, const char* rootkey)
 
 //  ###########   EXPLOITATION   ##########
 
-bool Interface_MSG::IsKey(const char* key)
+bool Interface_MSG::IsKey(const char* const key)
 {
   return (key[0] == '^');
 }
 
-const char* Interface_MSG::Translated(const char* key)
+const char* Interface_MSG::Translated(const char* const key)
 {
   if (!therun)
     return key;
@@ -209,7 +209,7 @@ const char* Interface_MSG::Translated(const char* key)
   return key;
 }
 
-void Interface_MSG::Record(const char* key, const char* item)
+void Interface_MSG::Record(const char* const key, const char* const item)
 {
   occ::handle<TCollection_HAsciiString> dup;
   occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(item);
@@ -376,14 +376,14 @@ double Interface_MSG::Intervalled(const double val, const int order, const bool 
 
 //  ###########    DATES    ############
 
-void Interface_MSG::TDate(const char* text,
-                          const int   yy,
-                          const int   mm,
-                          const int   dd,
-                          const int   hh,
-                          const int   mn,
-                          const int   ss,
-                          const char* format)
+void Interface_MSG::TDate(const char* const text,
+                          const int         yy,
+                          const int         mm,
+                          const int         dd,
+                          const int         hh,
+                          const int         mn,
+                          const int         ss,
+                          const char* const format)
 {
   //  null values : at the beginning (with at least one non-null, the last one)
   //  -> completed with current values (system date)
@@ -425,7 +425,13 @@ void Interface_MSG::TDate(const char* text,
     Sprintf(pText, &format[2], y2, m2, d2, h2, n2, s2);
 }
 
-bool Interface_MSG::NDate(const char* text, int& yy, int& mm, int& dd, int& hh, int& mn, int& ss)
+bool Interface_MSG::NDate(const char* const text,
+                          int&              yy,
+                          int&              mm,
+                          int&              dd,
+                          int&              hh,
+                          int&              mn,
+                          int&              ss)
 {
   int i, num = 1;
   for (i = 0; text[i] != '\0'; i++)
@@ -454,7 +460,7 @@ bool Interface_MSG::NDate(const char* text, int& yy, int& mm, int& dd, int& hh, 
   return (num > 0);
 }
 
-int Interface_MSG::CDate(const char* text1, const char* text2)
+int Interface_MSG::CDate(const char* const text1, const char* const text2)
 {
   int i1 = 0, i2 = 0, i3 = 0, i4 = 0, i5 = 0, i6 = 0, j1 = 0, j2 = 0, j3 = 0, j4 = 0, j5 = 0,
       j6 = 0;
@@ -520,7 +526,7 @@ const char* Interface_MSG::Blanks(const int val, const int max)
   return &blank[maxblank - count];
 }
 
-const char* Interface_MSG::Blanks(const char* val, const int max)
+const char* Interface_MSG::Blanks(const char* const val, const int max)
 {
   int lng = (int)strlen(val);
   if (lng > maxblank || lng > max)
@@ -537,7 +543,7 @@ const char* Interface_MSG::Blanks(const int count)
   return &blank[maxblank - count];
 }
 
-void Interface_MSG::Print(Standard_OStream& S, const char* val, const int max, const int just)
+void Interface_MSG::Print(Standard_OStream& S, const char* const val, const int max, const int just)
 {
   if (max > maxblank)
   {

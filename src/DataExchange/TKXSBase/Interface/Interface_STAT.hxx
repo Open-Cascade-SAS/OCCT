@@ -88,7 +88,7 @@ public:
   //! with one default step. Then, it suffises to start with a
   //! count of items (and cycles if several) then record items,
   //! to have a queryable report.
-  Standard_EXPORT Interface_STAT(const char* title = "");
+  Standard_EXPORT Interface_STAT(const char* const title = "");
 
   //! used when starting
   Standard_EXPORT Interface_STAT(const Interface_STAT& other);
@@ -112,7 +112,7 @@ public:
 
   //! Adds a new phase to the description.
   //! The first one after Create replaces the default unique one
-  Standard_EXPORT void AddPhase(const double weight, const char* name = "");
+  Standard_EXPORT void AddPhase(const double weight, const char* const name = "");
 
   //! Adds a new step for the last added phase, the default unique
   //! one if no AddPhase has already been added
@@ -150,7 +150,7 @@ public:
   //! count items.
   //! <items> gives the total count of items
   //! Hence, NextItem is available to directly count
-  Standard_EXPORT static void StartCount(const int items, const char* title = "");
+  Standard_EXPORT static void StartCount(const int items, const char* const title = "");
 
   //! Commands to resume the preceding phase and start a new one
   //! <items> and <cycles> as for Start, but for this new phase

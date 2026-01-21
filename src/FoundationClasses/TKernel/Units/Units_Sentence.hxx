@@ -37,7 +37,8 @@ public:
 
   //! Createsand returns a Sentence, by analyzing the
   //! string <astring> with the lexicon <alexicon>.
-  Standard_EXPORT Units_Sentence(const occ::handle<Units_Lexicon>& alexicon, const char* astring);
+  Standard_EXPORT Units_Sentence(const occ::handle<Units_Lexicon>& alexicon,
+                                 const char* const                 astring);
 
   //! For each constant encountered, sets the value.
   Standard_EXPORT void SetConstants();

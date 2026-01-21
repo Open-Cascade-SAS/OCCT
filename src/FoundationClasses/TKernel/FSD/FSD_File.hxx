@@ -244,7 +244,7 @@ protected:
 
   Standard_EXPORT virtual void FlushEndOfLine();
 
-  Standard_EXPORT virtual Storage_Error FindTag(const char* aTag);
+  Standard_EXPORT virtual Storage_Error FindTag(const char* const aTag);
 
 protected:
   FSD_FStream myStream;

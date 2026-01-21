@@ -116,8 +116,8 @@ TCollection_ExtendedString::TCollection_ExtendedString() noexcept
 
 //==================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString(const char* theString,
-                                                       const bool  theIsMultiByte)
+TCollection_ExtendedString::TCollection_ExtendedString(const char* const theString,
+                                                       const bool        theIsMultiByte)
 {
   if (theString == nullptr)
   {
@@ -146,7 +146,7 @@ TCollection_ExtendedString::TCollection_ExtendedString(const char* theString,
 
 //==================================================================================================
 
-TCollection_ExtendedString::TCollection_ExtendedString(const char16_t* theString)
+TCollection_ExtendedString::TCollection_ExtendedString(const char16_t* const theString)
 {
   if (theString == nullptr)
   {
@@ -523,7 +523,7 @@ void TCollection_ExtendedString::Insert(const int       theWhere,
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::IsEqual(const char16_t* theOther, const int theLength) const
+bool TCollection_ExtendedString::IsEqual(const char16_t* const theOther, const int theLength) const
 {
   if (theLength < 0)
   {
@@ -546,7 +546,8 @@ bool TCollection_ExtendedString::IsEqual(const char16_t* theOther, const int the
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::IsDifferent(const char16_t* theOther, const int theLength) const
+bool TCollection_ExtendedString::IsDifferent(const char16_t* const theOther,
+                                             const int             theLength) const
 {
   if (theLength < 0)
   {
@@ -569,7 +570,7 @@ bool TCollection_ExtendedString::IsDifferent(const char16_t* theOther, const int
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::IsLess(const char16_t* theOther, const int theLength) const
+bool TCollection_ExtendedString::IsLess(const char16_t* const theOther, const int theLength) const
 {
   if (theLength < 0)
   {
@@ -596,7 +597,8 @@ bool TCollection_ExtendedString::IsLess(const char16_t* theOther, const int theL
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::IsGreater(const char16_t* theOther, const int theLength) const
+bool TCollection_ExtendedString::IsGreater(const char16_t* const theOther,
+                                           const int             theLength) const
 {
   if (theLength < 0)
   {
@@ -623,8 +625,8 @@ bool TCollection_ExtendedString::IsGreater(const char16_t* theOther, const int t
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::StartsWith(const char16_t* theStartString,
-                                            const int       theLength) const
+bool TCollection_ExtendedString::StartsWith(const char16_t* const theStartString,
+                                            const int             theLength) const
 {
   if (theLength < 0)
   {
@@ -647,7 +649,8 @@ bool TCollection_ExtendedString::StartsWith(const char16_t* theStartString,
 
 //==================================================================================================
 
-bool TCollection_ExtendedString::EndsWith(const char16_t* theEndString, const int theLength) const
+bool TCollection_ExtendedString::EndsWith(const char16_t* const theEndString,
+                                          const int             theLength) const
 {
   if (theLength < 0)
   {
@@ -745,7 +748,7 @@ void TCollection_ExtendedString::Remove(const int theWhere, const int theHowMany
 
 //==================================================================================================
 
-int TCollection_ExtendedString::Search(const char16_t* theWhat, const int theLength) const
+int TCollection_ExtendedString::Search(const char16_t* const theWhat, const int theLength) const
 {
   if (theWhat == nullptr || theLength <= 0)
   {
@@ -780,7 +783,8 @@ int TCollection_ExtendedString::Search(const char16_t* theWhat, const int theLen
 
 //==================================================================================================
 
-int TCollection_ExtendedString::SearchFromEnd(const char16_t* theWhat, const int theLength) const
+int TCollection_ExtendedString::SearchFromEnd(const char16_t* const theWhat,
+                                              const int             theLength) const
 {
   if (theWhat == nullptr || theLength <= 0)
   {
@@ -829,9 +833,9 @@ void TCollection_ExtendedString::SetValue(const int theWhere, const char16_t the
 
 //==================================================================================================
 
-void TCollection_ExtendedString::SetValue(const int       theWhere,
-                                          const char16_t* theWhat,
-                                          const int       theLength)
+void TCollection_ExtendedString::SetValue(const int             theWhere,
+                                          const char16_t* const theWhat,
+                                          const int             theLength)
 {
   if (theWhere < 1 || theWhere > myLength + 1)
   {
@@ -890,8 +894,8 @@ TCollection_ExtendedString TCollection_ExtendedString::Split(const int theWhere)
 
 //==================================================================================================
 
-TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* theSeparators,
-                                                             const int       theWhichOne) const
+TCollection_ExtendedString TCollection_ExtendedString::Token(const char16_t* const theSeparators,
+                                                             const int theWhichOne) const
 {
   if (myLength == 0)
   {
@@ -1276,7 +1280,7 @@ void TCollection_ExtendedString::Capitalize()
 
 //==================================================================================================
 
-void TCollection_ExtendedString::Prepend(const char16_t* theOther, const int theLength)
+void TCollection_ExtendedString::Prepend(const char16_t* const theOther, const int theLength)
 {
   if (theOther == nullptr || theLength <= 0)
   {

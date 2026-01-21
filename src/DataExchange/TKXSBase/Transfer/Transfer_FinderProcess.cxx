@@ -33,7 +33,7 @@ occ::handle<Interface_InterfaceModel> Transfer_FinderProcess::Model() const
   return themodel;
 }
 
-int Transfer_FinderProcess::NextMappedWithAttribute(const char* name, const int num0) const
+int Transfer_FinderProcess::NextMappedWithAttribute(const char* const name, const int num0) const
 {
   int num, nb = NbMapped();
   for (num = num0 + 1; num <= nb; num++)

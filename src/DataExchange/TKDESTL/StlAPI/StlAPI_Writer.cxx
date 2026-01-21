@@ -34,7 +34,7 @@ StlAPI_Writer::StlAPI_Writer()
 //=================================================================================================
 
 bool StlAPI_Writer::Write(const TopoDS_Shape&          theShape,
-                          const char*                  theFileName,
+                          const char* const            theFileName,
                           const Message_ProgressRange& theProgress)
 {
   std::ofstream aStream(theFileName, myASCIIMode ? std::ios::out : std::ios::binary);

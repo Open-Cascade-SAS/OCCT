@@ -159,7 +159,7 @@ void IFSelect_WorkSession::SetModel(const occ::handle<Interface_InterfaceModel>&
 
 //=================================================================================================
 
-IFSelect_ReturnStatus IFSelect_WorkSession::ReadFile(const char* filename)
+IFSelect_ReturnStatus IFSelect_WorkSession::ReadFile(const char* const filename)
 {
   if (thelibrary.IsNull())
     return IFSelect_RetVoid;
@@ -197,8 +197,8 @@ IFSelect_ReturnStatus IFSelect_WorkSession::ReadFile(const char* filename)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus IFSelect_WorkSession::ReadStream(const char*   theName,
-                                                       std::istream& theIStream)
+IFSelect_ReturnStatus IFSelect_WorkSession::ReadStream(const char* const theName,
+                                                       std::istream&     theIStream)
 {
   if (thelibrary.IsNull())
     return IFSelect_RetVoid;
@@ -262,7 +262,7 @@ int IFSelect_WorkSession::StartingNumber(const occ::handle<Standard_Transient>& 
 
 //=================================================================================================
 
-int IFSelect_WorkSession::NumberFromLabel(const char* val, const int afternum) const
+int IFSelect_WorkSession::NumberFromLabel(const char* const val, const int afternum) const
 {
   int i, cnt = 0, num = atoi(val);
   if (num > 0 || myModel.IsNull())
@@ -632,7 +632,7 @@ int IFSelect_WorkSession::ItemIdent(const occ::handle<Standard_Transient>& item)
 
 //=================================================================================================
 
-occ::handle<Standard_Transient> IFSelect_WorkSession::NamedItem(const char* name) const
+occ::handle<Standard_Transient> IFSelect_WorkSession::NamedItem(const char* const name) const
 {
   occ::handle<Standard_Transient> res;
   if (name[0] == '\0')
@@ -660,7 +660,7 @@ occ::handle<Standard_Transient> IFSelect_WorkSession::NamedItem(
 
 //=================================================================================================
 
-int IFSelect_WorkSession::NameIdent(const char* name) const
+int IFSelect_WorkSession::NameIdent(const char* const name) const
 {
   occ::handle<Standard_Transient> res;
   if (name[0] == '\0')
@@ -729,7 +729,7 @@ int IFSelect_WorkSession::AddItem(const occ::handle<Standard_Transient>& item, c
 
 //=================================================================================================
 
-int IFSelect_WorkSession::AddNamedItem(const char*                            name,
+int IFSelect_WorkSession::AddNamedItem(const char* const                      name,
                                        const occ::handle<Standard_Transient>& item,
                                        const bool                             active)
 {
@@ -797,7 +797,7 @@ bool IFSelect_WorkSession::SetActive(const occ::handle<Standard_Transient>& item
 
 //=================================================================================================
 
-bool IFSelect_WorkSession::RemoveNamedItem(const char* name)
+bool IFSelect_WorkSession::RemoveNamedItem(const char* const name)
 {
   occ::handle<Standard_Transient> item = NamedItem(name);
   if (item.IsNull())
@@ -809,7 +809,7 @@ bool IFSelect_WorkSession::RemoveNamedItem(const char* name)
 
 //=================================================================================================
 
-bool IFSelect_WorkSession::RemoveName(const char* name)
+bool IFSelect_WorkSession::RemoveName(const char* const name)
 {
   occ::handle<Standard_Transient> item = NamedItem(name);
   if (item.IsNull())
@@ -977,7 +977,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSele
 //=================================================================================================
 
 occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSelect_WorkSession::
-  ItemNamesForLabel(const char* label) const
+  ItemNamesForLabel(const char* const label) const
 {
   occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> list =
     new NCollection_HSequence<occ::handle<TCollection_HAsciiString>>();
@@ -1006,7 +1006,9 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IFSele
 
 //=================================================================================================
 
-int IFSelect_WorkSession::NextIdentForLabel(const char* label, const int id, const int mode) const
+int IFSelect_WorkSession::NextIdentForLabel(const char* const label,
+                                            const int         id,
+                                            const int         mode) const
 {
   int nb = MaxIdent();
   for (int i = id + 1; i <= nb; i++)
@@ -1040,8 +1042,8 @@ int IFSelect_WorkSession::NextIdentForLabel(const char* label, const int id, con
 
 //=================================================================================================
 
-occ::handle<Standard_Transient> IFSelect_WorkSession::NewParamFromStatic(const char* statname,
-                                                                         const char* name)
+occ::handle<Standard_Transient> IFSelect_WorkSession::NewParamFromStatic(const char* const statname,
+                                                                         const char* const name)
 {
   occ::handle<Standard_Transient> param;
   occ::handle<Interface_Static>   stat = Interface_Static::Static(statname);
@@ -1083,7 +1085,7 @@ int IFSelect_WorkSession::IntValue(const occ::handle<IFSelect_IntParam>& par) co
 
 //=================================================================================================
 
-occ::handle<IFSelect_IntParam> IFSelect_WorkSession::NewIntParam(const char* name)
+occ::handle<IFSelect_IntParam> IFSelect_WorkSession::NewIntParam(const char* const name)
 {
   occ::handle<IFSelect_IntParam> intpar = new IFSelect_IntParam;
   if (AddNamedItem(name, intpar) == 0)
@@ -1119,7 +1121,7 @@ TCollection_AsciiString IFSelect_WorkSession::TextValue(
     return TCollection_AsciiString();
 }
 
-occ::handle<TCollection_HAsciiString> IFSelect_WorkSession::NewTextParam(const char* name)
+occ::handle<TCollection_HAsciiString> IFSelect_WorkSession::NewTextParam(const char* const name)
 {
   occ::handle<TCollection_HAsciiString> textpar = new TCollection_HAsciiString("");
   if (AddNamedItem(name, textpar) == 0)
@@ -1130,7 +1132,7 @@ occ::handle<TCollection_HAsciiString> IFSelect_WorkSession::NewTextParam(const c
 //=================================================================================================
 
 bool IFSelect_WorkSession::SetTextValue(const occ::handle<TCollection_HAsciiString>& par,
-                                        const char*                                  val)
+                                        const char* const                            val)
 {
   if (ItemIdent(par) == 0)
     return false;
@@ -1655,8 +1657,8 @@ int IFSelect_WorkSession::RunModifierSelected(const occ::handle<IFSelect_Modifie
 
 //=================================================================================================
 
-occ::handle<IFSelect_Transformer> IFSelect_WorkSession::NewTransformStandard(const bool  copy,
-                                                                             const char* name)
+occ::handle<IFSelect_Transformer> IFSelect_WorkSession::NewTransformStandard(const bool        copy,
+                                                                             const char* const name)
 {
   occ::handle<IFSelect_TransformStandard> stf = new IFSelect_TransformStandard;
   stf->SetCopyOption(copy);
@@ -1754,21 +1756,21 @@ occ::handle<TCollection_HAsciiString> IFSelect_WorkSession::FileRoot(
 
 //=================================================================================================
 
-void IFSelect_WorkSession::SetFilePrefix(const char* name)
+void IFSelect_WorkSession::SetFilePrefix(const char* const name)
 {
   theshareout->SetPrefix(new TCollection_HAsciiString(name));
 }
 
 //=================================================================================================
 
-void IFSelect_WorkSession::SetFileExtension(const char* name)
+void IFSelect_WorkSession::SetFileExtension(const char* const name)
 {
   theshareout->SetExtension(new TCollection_HAsciiString(name));
 }
 
 //=================================================================================================
 
-bool IFSelect_WorkSession::SetDefaultFileRoot(const char* name)
+bool IFSelect_WorkSession::SetDefaultFileRoot(const char* const name)
 {
   occ::handle<TCollection_HAsciiString> defrt;
   if (name[0] != '\0')
@@ -1779,7 +1781,7 @@ bool IFSelect_WorkSession::SetDefaultFileRoot(const char* name)
 //=================================================================================================
 
 bool IFSelect_WorkSession::SetFileRoot(const occ::handle<IFSelect_Dispatch>& disp,
-                                       const char*                           namefile)
+                                       const char* const                     namefile)
 {
   int id = ItemIdent(disp);
   if (id == 0)
@@ -1803,7 +1805,7 @@ bool IFSelect_WorkSession::SetFileRoot(const occ::handle<IFSelect_Dispatch>& dis
 
 //=================================================================================================
 
-const char* IFSelect_WorkSession::GiveFileRoot(const char* file) const
+const char* IFSelect_WorkSession::GiveFileRoot(const char* const file) const
 {
   OSD_Path path(file);
   if (!OSD_Path::IsValid(TCollection_AsciiString(file)))
@@ -1814,7 +1816,7 @@ const char* IFSelect_WorkSession::GiveFileRoot(const char* file) const
 
 //=================================================================================================
 
-const char* IFSelect_WorkSession::GiveFileComplete(const char* file) const
+const char* IFSelect_WorkSession::GiveFileComplete(const char* const file) const
 {
   //  add if needed: Prefix; Extension
   bufstr.Clear();
@@ -2191,7 +2193,8 @@ bool IFSelect_WorkSession::SetRemaining(const IFSelect_RemainMode mode)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(const char* filename, const bool computegraph)
+IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(const char* const filename,
+                                                    const bool        computegraph)
 {
   ////...
   Interface_CheckIterator checks;
@@ -2242,7 +2245,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendAll(const char* filename, const 
 
 //=================================================================================================
 
-IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected(const char* filename,
+IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected(const char* const filename,
                                                          const occ::handle<IFSelect_Selection>& sel,
                                                          const bool computegraph)
 {
@@ -2293,7 +2296,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::SendSelected(const char* filename,
 
 //=================================================================================================
 
-IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* filename)
+IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* const filename)
 {
   if (WorkLibrary().IsNull())
     return IFSelect_RetVoid;
@@ -2305,7 +2308,7 @@ IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* filename)
 
 //=================================================================================================
 
-IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* filename,
+IFSelect_ReturnStatus IFSelect_WorkSession::WriteFile(const char* const filename,
                                                       const occ::handle<IFSelect_Selection>& sel)
 {
   if (WorkLibrary().IsNull() || sel.IsNull())
@@ -2468,7 +2471,7 @@ bool IFSelect_WorkSession::CombineRemove(const occ::handle<IFSelect_Selection>& 
 
 occ::handle<IFSelect_Selection> IFSelect_WorkSession::NewSelectPointed(
   const occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>>& list,
-  const char*                                                                name)
+  const char* const                                                          name)
 {
   occ::handle<IFSelect_SelectPointed> sel = new IFSelect_SelectPointed;
   if (!list.IsNull())
@@ -2908,7 +2911,7 @@ void IFSelect_WorkSession::DumpShare() const
 
 //=================================================================================================
 
-void IFSelect_WorkSession::ListItems(const char* lab) const
+void IFSelect_WorkSession::ListItems(const char* const lab) const
 {
   Message_Messenger::StreamBuffer sout = Message::SendInfo();
   sout << "        **********  Items in Session  **********" << std::endl;
@@ -2998,7 +3001,7 @@ void IFSelect_WorkSession::DumpSelection(const occ::handle<IFSelect_Selection>& 
 
 //=================================================================================================
 
-occ::handle<IFSelect_Selection> IFSelect_WorkSession::GiveSelection(const char* selname) const
+occ::handle<IFSelect_Selection> IFSelect_WorkSession::GiveSelection(const char* const selname) const
 {
   char nomsel[500];
   int  np = -1, nf = -1, nivp = 0;
@@ -3110,8 +3113,8 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Wor
 //=================================================================================================
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_WorkSession::GiveList(
-  const char* first,
-  const char* second) const
+  const char* const first,
+  const char* const second) const
 {
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
   if (!first || first[0] == '\0')
@@ -3133,7 +3136,7 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_Wor
 //=================================================================================================
 
 occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> IFSelect_WorkSession::
-  GiveListFromList(const char* selname, const occ::handle<Standard_Transient>& ent) const
+  GiveListFromList(const char* const selname, const occ::handle<Standard_Transient>& ent) const
 {
   occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> list;
   int                                                                 num;

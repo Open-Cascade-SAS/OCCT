@@ -52,14 +52,14 @@ public:
   Standard_EXPORT IGESData_IGESReaderData(const int nbe, const int nbp);
 
   //! adds a start line to start section
-  Standard_EXPORT void AddStartLine(const char* aval);
+  Standard_EXPORT void AddStartLine(const char* const aval);
 
   //! Returns the Start Section in once
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>
                   StartSection() const;
 
   //! adds a parameter to global section's parameter list
-  Standard_EXPORT void AddGlobal(const Interface_ParamType atype, const char* aval);
+  Standard_EXPORT void AddGlobal(const Interface_ParamType atype, const char* const aval);
 
   //! reads header (as GlobalSection) content from the ParamSet
   //! after it has been filled by successive calls to AddGlobal
@@ -70,55 +70,55 @@ public:
 
   //! fills a DirPart, designated by its rank (that is, (N+1)/2 if N
   //! is its first number in section D)
-  Standard_EXPORT void SetDirPart(const int   num,
-                                  const int   i1,
-                                  const int   i2,
-                                  const int   i3,
-                                  const int   i4,
-                                  const int   i5,
-                                  const int   i6,
-                                  const int   i7,
-                                  const int   i8,
-                                  const int   i9,
-                                  const int   i10,
-                                  const int   i11,
-                                  const int   i12,
-                                  const int   i13,
-                                  const int   i14,
-                                  const int   i15,
-                                  const int   i16,
-                                  const int   i17,
-                                  const char* res1,
-                                  const char* res2,
-                                  const char* label,
-                                  const char* subs);
+  Standard_EXPORT void SetDirPart(const int         num,
+                                  const int         i1,
+                                  const int         i2,
+                                  const int         i3,
+                                  const int         i4,
+                                  const int         i5,
+                                  const int         i6,
+                                  const int         i7,
+                                  const int         i8,
+                                  const int         i9,
+                                  const int         i10,
+                                  const int         i11,
+                                  const int         i12,
+                                  const int         i13,
+                                  const int         i14,
+                                  const int         i15,
+                                  const int         i16,
+                                  const int         i17,
+                                  const char* const res1,
+                                  const char* const res2,
+                                  const char* const label,
+                                  const char* const subs);
 
   //! returns DirPart identified by record no (half Dsect number)
   Standard_EXPORT const IGESData_DirPart& DirPart(const int num) const;
 
   //! returns values recorded in directory part n0 <num>
-  Standard_EXPORT void DirValues(const int    num,
-                                 int&         i1,
-                                 int&         i2,
-                                 int&         i3,
-                                 int&         i4,
-                                 int&         i5,
-                                 int&         i6,
-                                 int&         i7,
-                                 int&         i8,
-                                 int&         i9,
-                                 int&         i10,
-                                 int&         i11,
-                                 int&         i12,
-                                 int&         i13,
-                                 int&         i14,
-                                 int&         i15,
-                                 int&         i16,
-                                 int&         i17,
-                                 const char*& res1,
-                                 const char*& res2,
-                                 const char*& label,
-                                 const char*& subs) const;
+  Standard_EXPORT void DirValues(const int num,
+                                 int&      i1,
+                                 int&      i2,
+                                 int&      i3,
+                                 int&      i4,
+                                 int&      i5,
+                                 int&      i6,
+                                 int&      i7,
+                                 int&      i8,
+                                 int&      i9,
+                                 int&      i10,
+                                 int&      i11,
+                                 int&      i12,
+                                 int&      i13,
+                                 int&      i14,
+                                 int&      i15,
+                                 int&      i16,
+                                 int&      i17,
+                                 char*     res1,
+                                 char*     res2,
+                                 char*     label,
+                                 char*     subs) const;
 
   //! returns "type" and "form" info from a directory part
   Standard_EXPORT IGESData_IGESType DirType(const int num) const;

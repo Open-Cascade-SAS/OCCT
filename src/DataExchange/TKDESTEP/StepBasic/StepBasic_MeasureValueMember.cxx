@@ -78,7 +78,7 @@ const char* StepBasic_MeasureValueMember::Name() const
 
 //=================================================================================================
 
-bool StepBasic_MeasureValueMember::SetName(const char* name)
+bool StepBasic_MeasureValueMember::SetName(const char* const name)
 {
   if (!name || name[0] == '\0')
     thecase = 0;

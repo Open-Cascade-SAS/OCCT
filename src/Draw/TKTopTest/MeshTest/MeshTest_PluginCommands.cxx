@@ -365,7 +365,7 @@ static int tricheck(Draw_Interpretor& di, int n, const char** a)
 
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aMapF;
   TopExp::MapShapes(shape, TopAbs_FACE, aMapF);
-  const char* name = ".";
+  const char* const name = ".";
 
   // execute check
   MeshTest_CheckTopology aCheck(shape);

@@ -397,8 +397,8 @@ void Transfer_ProcessForTransient::SendMsg(const occ::handle<Standard_Transient>
 //=================================================================================================
 
 void Transfer_ProcessForTransient::AddFail(const occ::handle<Standard_Transient>& start,
-                                           const char*                            mess,
-                                           const char*                            orig)
+                                           const char* const                      mess,
+                                           const char* const                      orig)
 {
   occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
@@ -421,8 +421,8 @@ void Transfer_ProcessForTransient::AddFail(const occ::handle<Standard_Transient>
 //=================================================================================================
 
 void Transfer_ProcessForTransient::AddError(const occ::handle<Standard_Transient>& start,
-                                            const char*                            mess,
-                                            const char*                            orig)
+                                            const char* const                      mess,
+                                            const char* const                      orig)
 {
   AddFail(start, mess, orig);
 }
@@ -443,8 +443,8 @@ void Transfer_ProcessForTransient::AddFail(const occ::handle<Standard_Transient>
 //=================================================================================================
 
 void Transfer_ProcessForTransient::AddWarning(const occ::handle<Standard_Transient>& start,
-                                              const char*                            mess,
-                                              const char*                            orig)
+                                              const char* const                      mess,
+                                              const char* const                      orig)
 {
   occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())
@@ -480,7 +480,7 @@ void Transfer_ProcessForTransient::AddWarning(const occ::handle<Standard_Transie
 //=================================================================================================
 
 void Transfer_ProcessForTransient::Mend(const occ::handle<Standard_Transient>& start,
-                                        const char*                            pref)
+                                        const char* const                      pref)
 {
   occ::handle<Transfer_Binder> binder = FindAndMask(start);
   if (binder.IsNull())

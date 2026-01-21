@@ -49,7 +49,7 @@ public:
 
   //! From a CDL Type Name, returns the Class part (package dropped)
   //! WARNING : buffered, to be immediately copied or printed
-  Standard_EXPORT static const char* ClassName(const char* typnam);
+  Standard_EXPORT static const char* ClassName(const char* const typnam);
 
   DEFINE_STANDARD_RTTIEXT(Interface_SignType, MoniTool_SignText)
 };

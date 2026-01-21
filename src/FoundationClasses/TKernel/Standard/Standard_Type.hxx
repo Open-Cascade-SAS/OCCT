@@ -138,7 +138,7 @@ public:
 
   //! Returns True if this type is the same as theOther, or inherits from theOther.
   //! Note that multiple inheritance is not supported.
-  Standard_EXPORT bool SubType(const char* theOther) const;
+  Standard_EXPORT bool SubType(const char* const theOther) const;
 
   //! Prints type (address of descriptor + name) to a stream
   Standard_EXPORT void Print(Standard_OStream& theStream) const;

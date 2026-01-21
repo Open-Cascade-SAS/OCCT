@@ -136,19 +136,19 @@ public:
   //! Sets a new Integer value, with an optional type name
   //! Warning : If a SelectMember is already set, works on it : value and
   //! name must then be accepted by this SelectMember
-  Standard_EXPORT void SetInteger(const int val, const char* name = "");
+  Standard_EXPORT void SetInteger(const int val, const char* const name = "");
 
   Standard_EXPORT bool Boolean() const;
 
-  Standard_EXPORT void SetBoolean(const bool val, const char* name = "");
+  Standard_EXPORT void SetBoolean(const bool val, const char* const name = "");
 
   Standard_EXPORT StepData_Logical Logical() const;
 
-  Standard_EXPORT void SetLogical(const StepData_Logical val, const char* name = "");
+  Standard_EXPORT void SetLogical(const StepData_Logical val, const char* const name = "");
 
   Standard_EXPORT double Real() const;
 
-  Standard_EXPORT void SetReal(const double val, const char* name = "");
+  Standard_EXPORT void SetReal(const double val, const char* const name = "");
 
   Standard_EXPORT virtual ~StepData_SelectType();
 

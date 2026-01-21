@@ -21,7 +21,7 @@
 
 //=================================================================================================
 
-Standard_OutOfMemory::Standard_OutOfMemory(const char* theMessage)
+Standard_OutOfMemory::Standard_OutOfMemory(const char* const theMessage)
 {
   myBuffer[0] = '\0';
   // call explicitly own method (non-virtual call)
@@ -37,7 +37,7 @@ const char* Standard_OutOfMemory::what() const noexcept
 
 //=================================================================================================
 
-void Standard_OutOfMemory::SetMessageString(const char* theMessage)
+void Standard_OutOfMemory::SetMessageString(const char* const theMessage)
 {
   // restrict length of the message by buffer size
   const size_t aLength = (theMessage ? std::min(std::strlen(theMessage), sizeof(myBuffer) - 1) : 0);

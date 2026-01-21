@@ -37,7 +37,7 @@ const char* StepVisual_MarkerMember::Name() const
   return "MARKER_TYPE";
 }
 
-bool StepVisual_MarkerMember::SetName(const char* /*name*/)
+bool StepVisual_MarkerMember::SetName(const char* const /*name*/)
 {
   return true;
 }
@@ -47,7 +47,7 @@ const char* StepVisual_MarkerMember::EnumText() const
   return tool.Text(Int()).ToCString();
 }
 
-void StepVisual_MarkerMember::SetEnumText(const int /*val*/, const char* text)
+void StepVisual_MarkerMember::SetEnumText(const int /*val*/, const char* const text)
 {
   int vl = tool.Value(text);
   if (vl >= 0)

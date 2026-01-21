@@ -112,7 +112,7 @@ Standard_Failure::Standard_Failure(const char* theMessage)
 
 //=================================================================================================
 
-Standard_Failure::Standard_Failure(const char* theMessage, const char* theStackTrace)
+Standard_Failure::Standard_Failure(const char* const theMessage, const char* const theStackTrace)
     : myMessage(nullptr),
       myStackTrace(nullptr)
 {

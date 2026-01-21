@@ -179,7 +179,8 @@ const char* V3d::TypeOfOrientationToString(V3d_TypeOfOrientation theType)
 
 //=================================================================================================
 
-bool V3d::TypeOfOrientationFromString(const char* theTypeString, V3d_TypeOfOrientation& theType)
+bool V3d::TypeOfOrientationFromString(const char* const      theTypeString,
+                                      V3d_TypeOfOrientation& theType)
 {
   TCollection_AsciiString aName(theTypeString);
   aName.UpperCase();

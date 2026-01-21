@@ -36,14 +36,15 @@ static NCollection_DataMap<const char*, Draw_Drawable3D::FactoryFunction_t, Stan
 
 //=================================================================================================
 
-void Draw_Drawable3D::RegisterFactory(const char* theType, const FactoryFunction_t& theFactory)
+void Draw_Drawable3D::RegisterFactory(const char* const        theType,
+                                      const FactoryFunction_t& theFactory)
 {
   getFactoryMap().Bind(theType, theFactory);
 }
 
 //=================================================================================================
 
-occ::handle<Draw_Drawable3D> Draw_Drawable3D::Restore(const char*       theType,
+occ::handle<Draw_Drawable3D> Draw_Drawable3D::Restore(const char* const theType,
                                                       Standard_IStream& theStream)
 {
   FactoryFunction_t aFactory = nullptr;

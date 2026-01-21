@@ -54,7 +54,7 @@ public:
   //! Creates a Window defined by his position and size in pixels from the Parent Window.
   //! Trigger: Raises WindowDefinitionError if the Position out of the Screen Space or the window
   //! creation failed.
-  Standard_EXPORT WNT_Window(const char*                    theTitle,
+  Standard_EXPORT WNT_Window(const char* const              theTitle,
                              const occ::handle<WNT_WClass>& theClass,
                              const WNT_Dword&               theStyle,
                              const int                      thePxLeft,

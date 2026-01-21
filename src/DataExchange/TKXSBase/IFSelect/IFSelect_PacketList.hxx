@@ -46,7 +46,7 @@ public:
 
   //! Sets a name to a packet list : this makes easier a general
   //! routine to print it. Default is "Packets"
-  Standard_EXPORT void SetName(const char* name);
+  Standard_EXPORT void SetName(const char* const name);
 
   //! Returns the recorded name for a packet list
   Standard_EXPORT const char* Name() const;

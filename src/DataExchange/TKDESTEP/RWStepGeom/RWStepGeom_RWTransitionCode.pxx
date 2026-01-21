@@ -47,7 +47,8 @@ inline const char* ConvertToString(const StepGeom_TransitionCode theTransitionCo
 //! @param theTransitionCodeStr The string to convert
 //! @param theResultEnum The corresponding StepGeom_TransitionCode value
 //! @return true if the conversion was successful, false otherwise
-inline bool ConvertToEnum(const char* theTransitionCodeStr, StepGeom_TransitionCode& theResultEnum)
+inline bool ConvertToEnum(const char* const        theTransitionCodeStr,
+                          StepGeom_TransitionCode& theResultEnum)
 {
   if (IsEqual(theTransitionCodeStr, tcDiscontinuous))
   {

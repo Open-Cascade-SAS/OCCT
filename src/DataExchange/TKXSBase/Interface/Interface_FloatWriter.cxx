@@ -22,7 +22,7 @@ Interface_FloatWriter::Interface_FloatWriter(const int chars)
 
 //  ....                Control of Float Transmission                ....
 
-void Interface_FloatWriter::SetFormat(const char* form, const bool reset)
+void Interface_FloatWriter::SetFormat(const char* const form, const bool reset)
 {
   strcpy(themainform, form);
   if (!reset)
@@ -31,7 +31,9 @@ void Interface_FloatWriter::SetFormat(const char* form, const bool reset)
   thezerosup            = false;
 }
 
-void Interface_FloatWriter::SetFormatForRange(const char* form, const double R1, const double R2)
+void Interface_FloatWriter::SetFormatForRange(const char* const form,
+                                              const double      R1,
+                                              const double      R2)
 {
   strcpy(therangeform, form);
   therange1 = R1;
@@ -72,34 +74,34 @@ void Interface_FloatWriter::Options(bool& zerosup, bool& range, double& R1, doub
 
 const char* Interface_FloatWriter::MainFormat() const
 {
-  const char* mainform = static_cast<const char*>(&themainform[0]);
+  const char* const mainform = static_cast<const char*>(&themainform[0]);
   return mainform;
 }
 
 const char* Interface_FloatWriter::FormatForRange() const
 {
-  const char* rangeform = static_cast<const char*>(&therangeform[0]);
+  const char* const rangeform = static_cast<const char*>(&therangeform[0]);
   return rangeform;
 }
 
 //  ########################################################################
 
-int Interface_FloatWriter::Write(const double val, const char* text) const
+int Interface_FloatWriter::Write(const double val, const char* const text) const
 {
-  const char* mainform  = static_cast<const char*>(themainform);
-  const char* rangeform = static_cast<const char*>(therangeform);
+  const char* const mainform  = static_cast<const char*>(themainform);
+  const char* const rangeform = static_cast<const char*>(therangeform);
   return Convert(val, text, thezerosup, therange1, therange2, mainform, rangeform);
 }
 
 //=================================================================================================
 
-int Interface_FloatWriter::Convert(const double val,
-                                   const char*  text,
-                                   const bool   zsup,
-                                   const double R1,
-                                   const double R2,
-                                   const char*  mainform,
-                                   const char*  rangeform)
+int Interface_FloatWriter::Convert(const double      val,
+                                   const char* const text,
+                                   const bool        zsup,
+                                   const double      R1,
+                                   const double      R2,
+                                   const char* const mainform,
+                                   const char* const rangeform)
 {
   //    Float value, purged of trailing "0000" and "E+00"
   const int anMasSize = 5; // change 6 to 5: index 5 is not used below

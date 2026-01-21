@@ -28,19 +28,20 @@ MoniTool_AttrList::MoniTool_AttrList(const MoniTool_AttrList& other)
 
 // Integer -> IntVal, Real -> RealVal, CString -> HAsciiString
 
-void MoniTool_AttrList::SetAttribute(const char* name, const occ::handle<Standard_Transient>& val)
+void MoniTool_AttrList::SetAttribute(const char* const                      name,
+                                     const occ::handle<Standard_Transient>& val)
 {
   theattrib.Bind(name, val);
 }
 
-bool MoniTool_AttrList::RemoveAttribute(const char* name)
+bool MoniTool_AttrList::RemoveAttribute(const char* const name)
 {
   if (theattrib.IsEmpty())
     return false;
   return theattrib.UnBind(name);
 }
 
-bool MoniTool_AttrList::GetAttribute(const char*                       name,
+bool MoniTool_AttrList::GetAttribute(const char* const                 name,
                                      const occ::handle<Standard_Type>& type,
                                      occ::handle<Standard_Transient>&  val) const
 {
@@ -62,7 +63,7 @@ bool MoniTool_AttrList::GetAttribute(const char*                       name,
   return true;
 }
 
-occ::handle<Standard_Transient> MoniTool_AttrList::Attribute(const char* name) const
+occ::handle<Standard_Transient> MoniTool_AttrList::Attribute(const char* const name) const
 {
   occ::handle<Standard_Transient> atr;
   if (theattrib.IsEmpty())
@@ -72,7 +73,7 @@ occ::handle<Standard_Transient> MoniTool_AttrList::Attribute(const char* name) c
   return atr;
 }
 
-MoniTool_ValueType MoniTool_AttrList::AttributeType(const char* name) const
+MoniTool_ValueType MoniTool_AttrList::AttributeType(const char* const name) const
 {
   occ::handle<Standard_Transient> atr = Attribute(name);
   if (atr.IsNull())
@@ -86,14 +87,14 @@ MoniTool_ValueType MoniTool_AttrList::AttributeType(const char* name) const
   return MoniTool_ValueIdent;
 }
 
-void MoniTool_AttrList::SetIntegerAttribute(const char* name, const int val)
+void MoniTool_AttrList::SetIntegerAttribute(const char* const name, const int val)
 {
   occ::handle<MoniTool_IntVal> ival = new MoniTool_IntVal;
   ival->CValue()                    = val;
   SetAttribute(name, ival);
 }
 
-bool MoniTool_AttrList::GetIntegerAttribute(const char* name, int& val) const
+bool MoniTool_AttrList::GetIntegerAttribute(const char* const name, int& val) const
 {
   occ::handle<MoniTool_IntVal> ival = occ::down_cast<MoniTool_IntVal>(Attribute(name));
   if (ival.IsNull())
@@ -105,7 +106,7 @@ bool MoniTool_AttrList::GetIntegerAttribute(const char* name, int& val) const
   return true;
 }
 
-int MoniTool_AttrList::IntegerAttribute(const char* name) const
+int MoniTool_AttrList::IntegerAttribute(const char* const name) const
 {
   occ::handle<MoniTool_IntVal> ival = occ::down_cast<MoniTool_IntVal>(Attribute(name));
   if (ival.IsNull())
@@ -113,14 +114,14 @@ int MoniTool_AttrList::IntegerAttribute(const char* name) const
   return ival->Value();
 }
 
-void MoniTool_AttrList::SetRealAttribute(const char* name, const double val)
+void MoniTool_AttrList::SetRealAttribute(const char* const name, const double val)
 {
   occ::handle<MoniTool_RealVal> rval = new MoniTool_RealVal;
   rval->CValue()                     = val;
   SetAttribute(name, rval);
 }
 
-bool MoniTool_AttrList::GetRealAttribute(const char* name, double& val) const
+bool MoniTool_AttrList::GetRealAttribute(const char* const name, double& val) const
 {
   occ::handle<MoniTool_RealVal> rval = occ::down_cast<MoniTool_RealVal>(Attribute(name));
   if (rval.IsNull())
@@ -132,7 +133,7 @@ bool MoniTool_AttrList::GetRealAttribute(const char* name, double& val) const
   return true;
 }
 
-double MoniTool_AttrList::RealAttribute(const char* name) const
+double MoniTool_AttrList::RealAttribute(const char* const name) const
 {
   occ::handle<MoniTool_RealVal> rval = occ::down_cast<MoniTool_RealVal>(Attribute(name));
   if (rval.IsNull())
@@ -140,13 +141,13 @@ double MoniTool_AttrList::RealAttribute(const char* name) const
   return rval->Value();
 }
 
-void MoniTool_AttrList::SetStringAttribute(const char* name, const char* val)
+void MoniTool_AttrList::SetStringAttribute(const char* const name, const char* const val)
 {
   occ::handle<TCollection_HAsciiString> hval = new TCollection_HAsciiString(val);
   SetAttribute(name, hval);
 }
 
-bool MoniTool_AttrList::GetStringAttribute(const char* name, const char*& val) const
+bool MoniTool_AttrList::GetStringAttribute(const char* const name, const char*& val) const
 {
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
@@ -159,7 +160,7 @@ bool MoniTool_AttrList::GetStringAttribute(const char* name, const char*& val) c
   return true;
 }
 
-const char* MoniTool_AttrList::StringAttribute(const char* name) const
+const char* MoniTool_AttrList::StringAttribute(const char* const name) const
 {
   occ::handle<TCollection_HAsciiString> hval =
     occ::down_cast<TCollection_HAsciiString>(Attribute(name));
@@ -180,7 +181,7 @@ void MoniTool_AttrList::SameAttributes(const MoniTool_AttrList& other)
 }
 
 void MoniTool_AttrList::GetAttributes(const MoniTool_AttrList& other,
-                                      const char*              fromname,
+                                      const char* const        fromname,
                                       const bool               copied)
 {
   const NCollection_DataMap<TCollection_AsciiString, occ::handle<Standard_Transient>>& list =

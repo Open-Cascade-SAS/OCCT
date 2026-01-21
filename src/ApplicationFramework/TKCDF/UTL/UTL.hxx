@@ -39,7 +39,7 @@ class UTL
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT static TCollection_ExtendedString xgetenv(const char* aCString);
+  Standard_EXPORT static TCollection_ExtendedString xgetenv(const char* const aCString);
 
   Standard_EXPORT static Storage_Error OpenFile(const occ::handle<Storage_BaseDriver>& aFile,
                                                 const TCollection_ExtendedString&      aName,

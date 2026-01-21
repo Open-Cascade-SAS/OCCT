@@ -18,7 +18,7 @@
 
 //=================================================================================================
 
-occ::handle<Poly_Triangulation> RWObj::ReadFile(const char*                  theFile,
+occ::handle<Poly_Triangulation> RWObj::ReadFile(const char* const            theFile,
                                                 const Message_ProgressRange& theProgress)
 {
   RWObj_TriangulationReader aReader;

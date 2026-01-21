@@ -39,7 +39,7 @@
   #include <Standard_TypeDef.hxx>
 
 //! Returns Standard_True if two strings are equal
-inline bool IsEqual(const char* theOne, const char* theTwo)
+inline bool IsEqual(const char* const theOne, const char* const theTwo)
 {
   return strcmp(theOne, theTwo) == 0;
 }
@@ -58,7 +58,7 @@ extern "C"
   Standard_EXPORT double Strtod(const char* theStr, char** theNextPtr);
 
   //! Equivalent of standard C function printf() that always uses C locale
-  Standard_EXPORT int Printf(const char* theFormat, ...)
+  Standard_EXPORT int Printf(const char* const theFormat, ...)
 #ifdef __GNUC__
     __attribute__((format(printf, 1, 2)))
 #endif

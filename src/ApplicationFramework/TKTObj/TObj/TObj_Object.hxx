@@ -175,7 +175,7 @@ public:
   Standard_EXPORT bool SetName(const occ::handle<TCollection_HAsciiString>& theName) const;
 
   //! Sets name of the object. Returns False if theName is not unique.
-  Standard_EXPORT bool SetName(const char* name) const;
+  Standard_EXPORT bool SetName(const char* const theName) const;
 
   //! Returns name for copy
   //! default implementation returns the same name

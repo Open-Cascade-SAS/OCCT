@@ -354,7 +354,7 @@ bool STEPConstruct_ValidationProps::AddProp(
   const StepRepr_CharacterizedDefinition&            target,
   const occ::handle<StepRepr_RepresentationContext>& Context,
   const occ::handle<StepRepr_RepresentationItem>&    Prop,
-  const char*                                        Descr)
+  const char* const                                  Descr)
 {
   // FINALLY, create a structure of 5 entities describing a link between a shape and its property
   occ::handle<TCollection_HAsciiString> PropDefName =
@@ -397,7 +397,7 @@ bool STEPConstruct_ValidationProps::AddProp(
 
 bool STEPConstruct_ValidationProps::AddProp(const TopoDS_Shape&                             Shape,
                                             const occ::handle<StepRepr_RepresentationItem>& Prop,
-                                            const char*                                     Descr,
+                                            const char* const                               Descr,
                                             const bool instance)
 {
   StepRepr_CharacterizedDefinition            target;

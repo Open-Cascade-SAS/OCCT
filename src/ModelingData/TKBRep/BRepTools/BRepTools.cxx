@@ -635,7 +635,7 @@ void BRepTools::Read(TopoDS_Shape&                Sh,
 //=================================================================================================
 
 bool BRepTools::Write(const TopoDS_Shape&          theShape,
-                      const char*                  theFile,
+                      const char* const            theFile,
                       const bool                   theWithTriangles,
                       const bool                   theWithNormals,
                       const TopTools_FormatVersion theVersion,
@@ -677,7 +677,7 @@ bool BRepTools::Write(const TopoDS_Shape&          theShape,
 //=================================================================================================
 
 bool BRepTools::Read(TopoDS_Shape&                Sh,
-                     const char*                  File,
+                     const char* const            File,
                      const BRep_Builder&          B,
                      const Message_ProgressRange& theProgress)
 {

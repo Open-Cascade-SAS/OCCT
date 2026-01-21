@@ -44,7 +44,7 @@ bool StepData_Plex::IsComplex() const
   return true;
 }
 
-bool StepData_Plex::Matches(const char* steptype) const
+bool StepData_Plex::Matches(const char* const steptype) const
 {
   int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
@@ -55,7 +55,7 @@ bool StepData_Plex::Matches(const char* steptype) const
   return false;
 }
 
-occ::handle<StepData_Simple> StepData_Plex::As(const char* steptype) const
+occ::handle<StepData_Simple> StepData_Plex::As(const char* const steptype) const
 {
   occ::handle<StepData_Simple> ent;
   int                          i, nb = NbMembers();
@@ -69,7 +69,7 @@ occ::handle<StepData_Simple> StepData_Plex::As(const char* steptype) const
   return ent;
 }
 
-bool StepData_Plex::HasField(const char* name) const
+bool StepData_Plex::HasField(const char* const name) const
 {
   int i, nb = NbMembers();
   for (i = 1; i <= nb; i++)
@@ -80,7 +80,7 @@ bool StepData_Plex::HasField(const char* name) const
   return false;
 }
 
-const StepData_Field& StepData_Plex::Field(const char* name) const
+const StepData_Field& StepData_Plex::Field(const char* const name) const
 {
   occ::handle<StepData_Simple> ent;
   int                          i, nb = NbMembers();
@@ -93,7 +93,7 @@ const StepData_Field& StepData_Plex::Field(const char* name) const
   throw Interface_InterfaceMismatch("StepData_Plex : Field");
 }
 
-StepData_Field& StepData_Plex::CField(const char* name)
+StepData_Field& StepData_Plex::CField(const char* const name)
 {
   occ::handle<StepData_Simple> ent;
   int                          i, nb = NbMembers();

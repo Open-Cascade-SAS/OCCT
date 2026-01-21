@@ -55,21 +55,21 @@ public:
   //! Tells if a step type is matched by <me>
   //! For a Simple Entity : own type or super type
   //! For a Complex Entity : one of the members
-  Standard_EXPORT bool Matches(const char* steptype) const override;
+  Standard_EXPORT bool Matches(const char* const steptype) const override;
 
   //! Returns a Simple Entity which matches with a Type in <me> :
   //! For a Simple Entity : me if it matches, else a null handle
   //! For a Complex Entity : the member which matches, else null
-  Standard_EXPORT occ::handle<StepData_Simple> As(const char* steptype) const override;
+  Standard_EXPORT occ::handle<StepData_Simple> As(const char* const steptype) const override;
 
   //! Tells if a Field brings a given name
-  Standard_EXPORT bool HasField(const char* name) const override;
+  Standard_EXPORT bool HasField(const char* const name) const override;
 
   //! Returns a Field from its name; read-only
-  Standard_EXPORT const StepData_Field& Field(const char* name) const override;
+  Standard_EXPORT const StepData_Field& Field(const char* const name) const override;
 
   //! Returns a Field from its name; read or write
-  Standard_EXPORT StepData_Field& CField(const char* name) override;
+  Standard_EXPORT StepData_Field& CField(const char* const name) override;
 
   //! Returns the count of simple members
   Standard_EXPORT int NbMembers() const;

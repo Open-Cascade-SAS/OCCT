@@ -42,7 +42,7 @@ public:
   //! Example : OSD_Disk myDisk ("/tmp")
   //! Initializes a disk object with the mounted
   //! file associated to /tmp.
-  Standard_EXPORT OSD_Disk(const char* PathName);
+  Standard_EXPORT OSD_Disk(const char* const PathName);
 
   //! Returns disk name of <me>.
   Standard_EXPORT OSD_Path Name() const;

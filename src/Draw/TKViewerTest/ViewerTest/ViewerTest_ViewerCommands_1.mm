@@ -313,7 +313,7 @@ static Aspect_VKeyFlags getMouseKeyFlags (NSEvent* theEvent)
   //NSString* aStringNs = [theEvent characters];
   //if (aStringNs != NULL && [aStringNs length] != 1)
   //{
-  //  const char* aString = [aStringNs UTF8String];
+  //  const char* const aString = [aStringNs UTF8String];
   //}
 }
 

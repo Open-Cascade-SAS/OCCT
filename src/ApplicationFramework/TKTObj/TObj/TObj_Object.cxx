@@ -198,7 +198,7 @@ occ::handle<TObj_ObjectIterator> TObj_Object::GetChildren(
 //=======================================================================
 
 #ifdef DFBROWSE
-static TDF_Label getLabelByRank(const TDF_Label& theL, const int theRank, const char* theName)
+static TDF_Label getLabelByRank(const TDF_Label& theL, const int theRank, const char* const theName)
 {
   TDF_Label L = theL.FindChild(theRank, false);
   if (L.IsNull())
@@ -276,7 +276,7 @@ bool TObj_Object::SetName(const occ::handle<TCollection_HAsciiString>& theName) 
 
 //=================================================================================================
 
-bool TObj_Object::SetName(const char* theName) const
+bool TObj_Object::SetName(const char* const theName) const
 {
   occ::handle<TCollection_HAsciiString> aName = new TCollection_HAsciiString(theName);
   return SetName(aName);

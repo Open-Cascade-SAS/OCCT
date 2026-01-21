@@ -51,7 +51,7 @@ void StepSelect_WorkLibrary::SetDumpLabel(const int mode)
   thelabmode = mode;
 }
 
-int StepSelect_WorkLibrary::ReadFile(const char*                            name,
+int StepSelect_WorkLibrary::ReadFile(const char* const                      name,
                                      occ::handle<Interface_InterfaceModel>& model,
                                      const occ::handle<Interface_Protocol>& protocol) const
 {
@@ -62,7 +62,7 @@ int StepSelect_WorkLibrary::ReadFile(const char*                            name
   return aStatus;
 }
 
-int StepSelect_WorkLibrary::ReadStream(const char*                            theName,
+int StepSelect_WorkLibrary::ReadStream(const char* const                      theName,
                                        std::istream&                          theIStream,
                                        occ::handle<Interface_InterfaceModel>& model,
                                        const occ::handle<Interface_Protocol>& protocol) const

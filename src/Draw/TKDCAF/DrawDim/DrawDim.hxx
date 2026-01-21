@@ -48,7 +48,7 @@ public:
 
   //! Commands
   //! ========
-  Standard_EXPORT static void DrawShapeName(const TopoDS_Shape& ashape, const char* aname);
+  Standard_EXPORT static void DrawShapeName(const TopoDS_Shape& ashape, const char* const aname);
 
   Standard_EXPORT static void AllCommands(Draw_Interpretor& I);
 

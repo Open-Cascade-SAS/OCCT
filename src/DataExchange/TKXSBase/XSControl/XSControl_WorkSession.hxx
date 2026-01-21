@@ -62,7 +62,7 @@ public:
   //! Returns True if done, False if <normname> is unknown
   //!
   //! The current Profile for this Norm is taken.
-  Standard_EXPORT bool SelectNorm(const char* theNormName);
+  Standard_EXPORT bool SelectNorm(const char* const theNormName);
 
   //! Selects a Norm defined by its Controller itself
   Standard_EXPORT void SetController(const occ::handle<XSControl_Controller>& theCtl);

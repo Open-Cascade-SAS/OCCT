@@ -41,11 +41,11 @@ public:
   //! Defines the location of the file containing all the
   //! information useful in creating the dictionary of all
   //! the units known to the system.
-  Standard_EXPORT static void UnitsFile(const char* afile);
+  Standard_EXPORT static void UnitsFile(const char* const afile);
 
   //! Defines the location of the file containing the lexicon
   //! useful in manipulating composite units.
-  Standard_EXPORT static void LexiconFile(const char* afile);
+  Standard_EXPORT static void LexiconFile(const char* const afile);
 
   //! Returns a unique instance of the dictionary of units.
   //! If <amode> is True, then it forces the recomputation of
@@ -54,10 +54,10 @@ public:
     const bool amode = false);
 
   //! Returns a unique quantity instance corresponding to <aquantity>.
-  Standard_EXPORT static occ::handle<Units_Quantity> Quantity(const char* aquantity);
+  Standard_EXPORT static occ::handle<Units_Quantity> Quantity(const char* const aquantity);
 
   //! Returns the first quantity string founded from the unit <aUnit>.
-  Standard_EXPORT static const char* FirstQuantity(const char* aunit);
+  Standard_EXPORT static const char* FirstQuantity(const char* const aunit);
 
   //! Returns a unique instance of the Units_Lexicon.
   //! If <amode> is True, it forces the recomputation of
@@ -72,24 +72,24 @@ public:
   Standard_EXPORT static occ::handle<Units_Dimensions> NullDimensions();
 
   //! Converts <avalue> expressed in <afirstunit> into the <asecondunit>.
-  Standard_EXPORT static double Convert(const double avalue,
-                                        const char*  afirstunit,
-                                        const char*  asecondunit);
+  Standard_EXPORT static double Convert(const double      avalue,
+                                        const char* const afirstunit,
+                                        const char* const asecondunit);
 
-  Standard_EXPORT static double ToSI(const double aData, const char* aUnit);
+  Standard_EXPORT static double ToSI(const double aData, const char* const aUnit);
 
   Standard_EXPORT static double ToSI(const double                   aData,
-                                     const char*                    aUnit,
+                                     const char* const              aUnit,
                                      occ::handle<Units_Dimensions>& aDim);
 
-  Standard_EXPORT static double FromSI(const double aData, const char* aUnit);
+  Standard_EXPORT static double FromSI(const double aData, const char* const aUnit);
 
   Standard_EXPORT static double FromSI(const double                   aData,
-                                       const char*                    aUnit,
+                                       const char* const              aUnit,
                                        occ::handle<Units_Dimensions>& aDim);
 
   //! return the dimension associated to the Type
-  Standard_EXPORT static occ::handle<Units_Dimensions> Dimensions(const char* aType);
+  Standard_EXPORT static occ::handle<Units_Dimensions> Dimensions(const char* const aType);
 };
 
 #endif // _Units_HeaderFile

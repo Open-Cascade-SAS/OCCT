@@ -53,7 +53,7 @@ public:
   //! Else, it is ignored
   //!
   //! If <statname> is empty, disconnects the IntParam from Static
-  Standard_EXPORT void SetStaticName(const char* statname);
+  Standard_EXPORT void SetStaticName(const char* const statname);
 
   //! Returns the name of static parameter to which this IntParam
   //! is bound, empty if none

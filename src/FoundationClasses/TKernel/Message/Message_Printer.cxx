@@ -30,7 +30,7 @@ Message_Printer::Message_Printer()
 
 //=================================================================================================
 
-void Message_Printer::Send(const char* theString, const Message_Gravity theGravity) const
+void Message_Printer::Send(const char* const theString, const Message_Gravity theGravity) const
 {
   if (theGravity >= myTraceLevel)
   {

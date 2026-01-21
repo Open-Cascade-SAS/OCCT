@@ -67,13 +67,13 @@ class MoniTool_CaseData : public Standard_Transient
 public:
   //! Creates a CaseData with a CaseId and a Name
   //! (by default not defined)
-  Standard_EXPORT MoniTool_CaseData(const char* caseid = "", const char* name = "");
+  Standard_EXPORT MoniTool_CaseData(const char* const caseid = "", const char* const name = "");
 
   //! Sets a CaseId
-  Standard_EXPORT void SetCaseId(const char* caseid);
+  Standard_EXPORT void SetCaseId(const char* const caseid);
 
   //! Sets a Name
-  Standard_EXPORT void SetName(const char* name);
+  Standard_EXPORT void SetName(const char* const name);
 
   //! Returns the CaseId
   Standard_EXPORT const char* CaseId() const;
@@ -113,32 +113,34 @@ public:
   //! Unitary adding a data; rather internal
   Standard_EXPORT void AddData(const occ::handle<Standard_Transient>& val,
                                const int                              kind,
-                               const char*                            name = "");
+                               const char* const                      name = "");
 
-  //! Adds the currently caught exception (stores exception type and message as text)
-  Standard_EXPORT void AddRaised(const Standard_Failure& theException, const char* name = "");
+  //! Adds the currently caught exception
+  Standard_EXPORT void AddRaised(const Standard_Failure& theException, const char* const name = "");
 
   //! Adds a Shape (recorded as a HShape)
-  Standard_EXPORT void AddShape(const TopoDS_Shape& sh, const char* name = "");
+  Standard_EXPORT void AddShape(const TopoDS_Shape& sh, const char* const name = "");
 
   //! Adds a XYZ
-  Standard_EXPORT void AddXYZ(const gp_XYZ& aXYZ, const char* name = "");
+  Standard_EXPORT void AddXYZ(const gp_XYZ& aXYZ, const char* const name = "");
 
   //! Adds a XY
-  Standard_EXPORT void AddXY(const gp_XY& aXY, const char* name = "");
+  Standard_EXPORT void AddXY(const gp_XY& aXY, const char* const name = "");
 
   //! Adds a Real
-  Standard_EXPORT void AddReal(const double val, const char* name = "");
+  Standard_EXPORT void AddReal(const double val, const char* const name = "");
 
   //! Adds two reals (for instance, two parameters)
-  Standard_EXPORT void AddReals(const double v1, const double v2, const char* name = "");
+  Standard_EXPORT void AddReals(const double v1, const double v2, const char* const name = "");
 
   //! Adds the CPU time between lastCPU and now
   //! if <curCPU> is given, the CPU amount is curCPU-lastCPU
   //! else it is currently measured CPU - lastCPU
   //! lastCPU has been read by call to GetCPU
   //! See GetCPU to get amount, and LargeCPU to test large amount
-  Standard_EXPORT void AddCPU(const double lastCPU, const double curCPU = 0, const char* name = "");
+  Standard_EXPORT void AddCPU(const double      lastCPU,
+                              const double      curCPU = 0,
+                              const char* const name   = "");
 
   //! Returns the current amount of CPU
   //! This allows to laterly test and record CPU amount
@@ -155,20 +157,23 @@ public:
                                 const double curCPU = 0) const;
 
   //! Adds a Geometric as a Transient (Curve, Surface ...)
-  Standard_EXPORT void AddGeom(const occ::handle<Standard_Transient>& geom, const char* name = "");
+  Standard_EXPORT void AddGeom(const occ::handle<Standard_Transient>& geom,
+                               const char* const                      name = "");
 
   //! Adds a Transient, as an Entity from an InterfaceModel for
   //! instance : it will then be printed with the help of a DBPE
-  Standard_EXPORT void AddEntity(const occ::handle<Standard_Transient>& ent, const char* name = "");
+  Standard_EXPORT void AddEntity(const occ::handle<Standard_Transient>& ent,
+                                 const char* const                      name = "");
 
   //! Adds a Text (as HAsciiString)
-  Standard_EXPORT void AddText(const char* text, const char* name = "");
+  Standard_EXPORT void AddText(const char* const text, const char* const name = "");
 
   //! Adds an Integer
-  Standard_EXPORT void AddInteger(const int val, const char* name = "");
+  Standard_EXPORT void AddInteger(const int val, const char* const name = "");
 
   //! Adds a Transient, with no more meaning
-  Standard_EXPORT void AddAny(const occ::handle<Standard_Transient>& val, const char* name = "");
+  Standard_EXPORT void AddAny(const occ::handle<Standard_Transient>& val,
+                              const char* const                      name = "");
 
   //! Removes a Data from its rank. Does nothing if out of range
   Standard_EXPORT void RemoveData(const int num);
@@ -217,7 +222,7 @@ public:
   //! Name = "TYPE" : search for the first item with this TYPE
   //! Name = "TYPE:nn" : search for the nn.th item with this TYPE
   //! See allowed values in method Kind
-  Standard_EXPORT int NameNum(const char* name) const;
+  Standard_EXPORT int NameNum(const char* const name) const;
 
   //! Returns a data as a shape, Null if not a shape
   Standard_EXPORT TopoDS_Shape Shape(const int nd) const;
@@ -252,10 +257,10 @@ public:
   Standard_EXPORT Message_Msg Msg() const;
 
   //! Sets a Code to give a Warning
-  Standard_EXPORT static void SetDefWarning(const char* acode);
+  Standard_EXPORT static void SetDefWarning(const char* const acode);
 
   //! Sets a Code to give a Fail
-  Standard_EXPORT static void SetDefFail(const char* acode);
+  Standard_EXPORT static void SetDefFail(const char* const acode);
 
   //! Returns Check Status for a Code : 0 non/info (default),
   //! 1 warning, 2 fail
@@ -263,17 +268,17 @@ public:
   //! Remark : DefCheck is used to set the check status of a
   //! CaseData when it is attached to a case code, it can be changed
   //! later (by SetFail, SetWarning, ResetCheck)
-  Standard_EXPORT static int DefCheck(const char* acode);
+  Standard_EXPORT static int DefCheck(const char* const acode);
 
   //! Attaches a message definition to a case code
   //! This definition includes the message code plus designation of
   //! items of the CaseData to be added to the message (this part
   //! not yet implemented)
-  Standard_EXPORT static void SetDefMsg(const char* casecode, const char* mesdef);
+  Standard_EXPORT static void SetDefMsg(const char* const casecode, const char* const mesdef);
 
   //! Returns the message definition for a case code
   //! Empty if no message attached
-  Standard_EXPORT static const char* DefMsg(const char* casecode);
+  Standard_EXPORT static const char* DefMsg(const char* const casecode);
 
   DEFINE_STANDARD_RTTIEXT(MoniTool_CaseData, Standard_Transient)
 

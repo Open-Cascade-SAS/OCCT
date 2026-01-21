@@ -45,7 +45,7 @@ void LPrintEntry(const TDF_Label& label)
   std::cout << "LabelEntry = " << entry << std::endl;
 }
 
-static void LWrite(const TopoDS_Shape& shape, const char* filename)
+static void LWrite(const TopoDS_Shape& shape, const char* const filename)
 {
   char buf[256];
   if (strlen(filename) > 256)
@@ -72,7 +72,7 @@ static void LWrite(const TopoDS_Shape& shape, const char* filename)
 }
 
 //=======================================================================
-static void LWriteNSOnLabel(const occ::handle<TNaming_NamedShape>& NS, const char* filename)
+static void LWriteNSOnLabel(const occ::handle<TNaming_NamedShape>& NS, const char* const filename)
 {
   if (!NS.IsNull() && !NS->IsEmpty())
   {

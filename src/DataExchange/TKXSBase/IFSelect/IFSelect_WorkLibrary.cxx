@@ -73,7 +73,7 @@ void IFSelect_WorkLibrary::DumpLevels(int& def, int& max) const
     max = thelevhlp->Upper();
 }
 
-void IFSelect_WorkLibrary::SetDumpHelp(const int level, const char* help)
+void IFSelect_WorkLibrary::SetDumpHelp(const int level, const char* const help)
 {
   if (thelevhlp.IsNull())
     return;
@@ -95,7 +95,7 @@ const char* IFSelect_WorkLibrary::DumpHelp(const int level) const
   return str->ToCString();
 }
 
-int IFSelect_WorkLibrary::ReadStream(const char* /*name*/,
+int IFSelect_WorkLibrary::ReadStream(const char* const /*name*/,
                                      std::istream& /*istream*/,
                                      occ::handle<Interface_InterfaceModel>& /*model*/,
                                      const occ::handle<Interface_Protocol>& /*protocol*/) const

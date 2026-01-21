@@ -93,7 +93,7 @@ int& IGESData_IGESWriter::WriteMode()
 
 //=================================================================================================
 
-void IGESData_IGESWriter::SendStartLine(const char* startline)
+void IGESData_IGESWriter::SendStartLine(const char* const startline)
 {
   Standard_PCharacter pstartline;
   //
@@ -408,7 +408,7 @@ void IGESData_IGESWriter::AddString(const occ::handle<TCollection_HAsciiString>&
   AddString(val->ToCString(), val->Length(), more);
 }
 
-void IGESData_IGESWriter::AddString(const char* val, const int lnval, const int more)
+void IGESData_IGESWriter::AddString(const char* const val, const int lnval, const int more)
 {
   int lnstr = lnval;
   if (lnstr <= 0)
@@ -542,7 +542,7 @@ occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>> IGESDa
   return res;
 }
 
-static void writefnes(Standard_OStream& S, const char* ligne)
+static void writefnes(Standard_OStream& S, const char* const ligne)
 {
   char val;
   for (int i = 0; i < 80; i++)

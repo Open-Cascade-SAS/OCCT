@@ -47,14 +47,14 @@ public:
   //! Reads a STEP File and returns a STEP Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT int ReadFile(const char*                            name,
+  Standard_EXPORT int ReadFile(const char* const                      name,
                                occ::handle<Interface_InterfaceModel>& model,
                                const occ::handle<Interface_Protocol>& protocol) const override;
 
   //! Reads a STEP File from stream and returns a STEP Model (into <mod>),
   //! or lets <mod> "Null" in case of Error
   //! Returns 0 if OK, 1 if Read Error, -1 if File not opened
-  Standard_EXPORT int ReadStream(const char*                            theName,
+  Standard_EXPORT int ReadStream(const char* const                      theName,
                                  std::istream&                          theIStream,
                                  occ::handle<Interface_InterfaceModel>& model,
                                  const occ::handle<Interface_Protocol>& protocol) const override;

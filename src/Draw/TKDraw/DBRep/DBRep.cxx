@@ -1417,7 +1417,7 @@ static int normals(Draw_Interpretor& theDI, int theArgNum, const char** theArgs)
 
 //=================================================================================================
 
-void DBRep::Set(const char* theName, const TopoDS_Shape& theShape)
+void DBRep::Set(const char* const theName, const TopoDS_Shape& theShape)
 {
   DBRep_Params&                    aParams    = DBRep::Parameters();
   occ::handle<DBRep_DrawableShape> aDrawShape = new DBRep_DrawableShape(theShape,

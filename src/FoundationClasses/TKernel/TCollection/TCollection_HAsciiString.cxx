@@ -29,7 +29,7 @@ TCollection_HAsciiString::TCollection_HAsciiString()
 
 //=================================================================================================
 
-TCollection_HAsciiString::TCollection_HAsciiString(const char* message)
+TCollection_HAsciiString::TCollection_HAsciiString(const char* const message)
     : myString(message)
 {
 }
@@ -95,7 +95,7 @@ void TCollection_HAsciiString::Capitalize()
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Cat(const char* other) const
+occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Cat(const char* const other) const
 {
   return new TCollection_HAsciiString(myString.Cat(other));
 }
@@ -169,7 +169,7 @@ void TCollection_HAsciiString::Insert(const int where, const char what)
 
 //=================================================================================================
 
-void TCollection_HAsciiString::Insert(const int where, const char* what)
+void TCollection_HAsciiString::Insert(const int where, const char* const what)
 {
   myString.Insert(where, what);
 }
@@ -399,7 +399,7 @@ void TCollection_HAsciiString::RightJustify(const int Width, const char Filler)
 
 //=================================================================================================
 
-int TCollection_HAsciiString::Search(const char* what) const
+int TCollection_HAsciiString::Search(const char* const what) const
 {
   return myString.Search(what);
 }
@@ -413,7 +413,7 @@ int TCollection_HAsciiString::Search(const occ::handle<TCollection_HAsciiString>
 
 //=================================================================================================
 
-int TCollection_HAsciiString::SearchFromEnd(const char* what) const
+int TCollection_HAsciiString::SearchFromEnd(const char* const what) const
 {
   return myString.SearchFromEnd(what);
 }
@@ -434,7 +434,7 @@ void TCollection_HAsciiString::SetValue(const int where, const char what)
 
 //=================================================================================================
 
-void TCollection_HAsciiString::SetValue(const int where, const char* what)
+void TCollection_HAsciiString::SetValue(const int where, const char* const what)
 {
   myString.SetValue(where, what);
 }
@@ -464,8 +464,8 @@ occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::SubString(const 
 
 //=================================================================================================
 
-occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Token(const char* separators,
-                                                                      const int   whichone) const
+occ::handle<TCollection_HAsciiString> TCollection_HAsciiString::Token(const char* const separators,
+                                                                      const int whichone) const
 {
   return new TCollection_HAsciiString(myString.Token(separators, whichone));
 }

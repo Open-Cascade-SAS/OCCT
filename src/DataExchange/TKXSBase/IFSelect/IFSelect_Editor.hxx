@@ -49,7 +49,7 @@ public:
   //! Edit Mode
   Standard_EXPORT void SetValue(const int                                num,
                                 const occ::handle<Interface_TypedValue>& typval,
-                                const char*                              shortname = "",
+                                const char* const                        shortname = "",
                                 const IFSelect_EditValue accessmode = IFSelect_Editable);
 
   //! Sets a parameter to be a List
@@ -81,7 +81,7 @@ public:
 
   //! Returns the number (ident) of a Value, from its name, short or
   //! complete. If not found, returns 0
-  Standard_EXPORT int NameNumber(const char* name) const;
+  Standard_EXPORT int NameNumber(const char* const name) const;
 
   Standard_EXPORT void PrintNames(Standard_OStream& S) const;
 

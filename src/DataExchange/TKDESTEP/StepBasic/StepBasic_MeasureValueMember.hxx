@@ -39,7 +39,7 @@ public:
 
   Standard_EXPORT const char* Name() const override;
 
-  Standard_EXPORT bool SetName(const char* name) override;
+  Standard_EXPORT bool SetName(const char* const name) override;
 
   DEFINE_STANDARD_RTTIEXT(StepBasic_MeasureValueMember, StepData_SelectReal)
 

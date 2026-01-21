@@ -60,7 +60,7 @@ public:
 
   //! Just prints a line into the current Trace File. This allows to
   //! better characterise the various trace outputs, as desired.
-  Standard_EXPORT void TraceLine(const char* line) const;
+  Standard_EXPORT void TraceLine(const char* const line) const;
 
   //! Just prints a line or a set of lines into the current Trace
   //! File. <lines> can be a HAscii/ExtendedString (produces a print
@@ -98,36 +98,37 @@ public:
                                          const int mn,
                                          const int ss) const;
 
-  Standard_EXPORT void DateValues(const char* text,
-                                  int&        yy,
-                                  int&        mm,
-                                  int&        dd,
-                                  int&        hh,
-                                  int&        mn,
-                                  int&        ss) const;
+  Standard_EXPORT void DateValues(const char* const text,
+                                  int&              yy,
+                                  int&              mm,
+                                  int&              dd,
+                                  int&              hh,
+                                  int&              mn,
+                                  int&              ss) const;
 
   Standard_EXPORT const char* ToCString(const occ::handle<TCollection_HAsciiString>& strval) const;
 
   Standard_EXPORT const char* ToCString(const TCollection_AsciiString& strval) const;
 
-  Standard_EXPORT occ::handle<TCollection_HAsciiString> ToHString(const char* strcon) const;
+  Standard_EXPORT occ::handle<TCollection_HAsciiString> ToHString(const char* const strcon) const;
 
-  Standard_EXPORT TCollection_AsciiString ToAString(const char* strcon) const;
+  Standard_EXPORT TCollection_AsciiString ToAString(const char* const strcon) const;
 
   Standard_EXPORT const char16_t* ToEString(
     const occ::handle<TCollection_HExtendedString>& strval) const;
 
   Standard_EXPORT const char16_t* ToEString(const TCollection_ExtendedString& strval) const;
 
-  Standard_EXPORT occ::handle<TCollection_HExtendedString> ToHString(const char16_t* strcon) const;
+  Standard_EXPORT occ::handle<TCollection_HExtendedString> ToHString(
+    const char16_t* const strcon) const;
 
-  Standard_EXPORT TCollection_ExtendedString ToXString(const char16_t* strcon) const;
+  Standard_EXPORT TCollection_ExtendedString ToXString(const char16_t* const strcon) const;
 
-  Standard_EXPORT const char16_t* AsciiToExtended(const char* str) const;
+  Standard_EXPORT const char16_t* AsciiToExtended(const char* const str) const;
 
-  Standard_EXPORT bool IsAscii(const char16_t* str) const;
+  Standard_EXPORT bool IsAscii(const char16_t* const str) const;
 
-  Standard_EXPORT const char* ExtendedToAscii(const char16_t* str) const;
+  Standard_EXPORT const char* ExtendedToAscii(const char16_t* const str) const;
 
   Standard_EXPORT const char* CStrValue(const occ::handle<Standard_Transient>& list,
                                         const int                              num) const;
@@ -140,14 +141,14 @@ public:
 
   Standard_EXPORT void AppendCStr(
     const occ::handle<NCollection_HSequence<occ::handle<TCollection_HAsciiString>>>& seqval,
-    const char*                                                                      strval) const;
+    const char* const                                                                strval) const;
 
   Standard_EXPORT occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>
                   NewSeqEStr() const;
 
   Standard_EXPORT void AppendEStr(
     const occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>>& seqval,
-    const char16_t* strval) const;
+    const char16_t* const strval) const;
 
   //! Converts a list of Shapes to a Compound (a kind of Shape)
   Standard_EXPORT TopoDS_Shape

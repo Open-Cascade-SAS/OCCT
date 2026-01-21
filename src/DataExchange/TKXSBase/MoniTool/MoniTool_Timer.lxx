@@ -97,14 +97,14 @@ inline double MoniTool_Timer::CPU()
 
 //=================================================================================================
 
-inline void MoniTool_Timer::Start(const char* name)
+inline void MoniTool_Timer::Start(const char* const name)
 {
   Timer(name)->Start();
 }
 
 //=================================================================================================
 
-inline void MoniTool_Timer::Stop(const char* name)
+inline void MoniTool_Timer::Stop(const char* const name)
 {
   Timer(name)->Stop();
 }

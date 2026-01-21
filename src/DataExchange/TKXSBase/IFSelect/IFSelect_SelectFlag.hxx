@@ -38,7 +38,7 @@ class IFSelect_SelectFlag : public IFSelect_SelectExtract
 
 public:
   //! Creates a Select Flag, to query a flag designated by its name
-  Standard_EXPORT IFSelect_SelectFlag(const char* flagname);
+  Standard_EXPORT IFSelect_SelectFlag(const char* const flagname);
 
   //! Returns the name of the flag
   Standard_EXPORT const char* FlagName() const;

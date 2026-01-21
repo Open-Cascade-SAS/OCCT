@@ -264,7 +264,7 @@ TEST(TCollection_ExtendedStringTest, NumericalConstructors)
   // Test real constructor
   TCollection_ExtendedString aRealString(3.14);
   TCollection_AsciiString    anAsciiFromReal(aRealString);
-  const char*                aRealCStr = anAsciiFromReal.ToCString();
+  const char* const          aRealCStr = anAsciiFromReal.ToCString();
   EXPECT_TRUE(strstr(aRealCStr, "3.14") != nullptr);
 }
 
@@ -338,7 +338,7 @@ TEST(TCollection_ExtendedStringTest, EmptyStringHandling)
 TEST(TCollection_ExtendedStringTest, ConversionRoundTrip)
 {
   // Test AsciiString <-> ExtendedString conversion
-  const char* anOriginalStr = "Test conversion with special chars: !@#$%";
+  const char* const anOriginalStr = "Test conversion with special chars: !@#$%";
 
   TCollection_AsciiString    anAsciiOriginal(anOriginalStr);
   TCollection_ExtendedString anExtendedConverted(anAsciiOriginal);
@@ -380,7 +380,7 @@ TEST(TCollection_ExtendedStringTest, MemoryAllocation)
 TEST(TCollection_ExtendedStringTest, MultiByteCString)
 {
   // Test constructor with multibyte flag
-  const char*                aMultiByteStr = "Multi-byte test";
+  const char* const          aMultiByteStr = "Multi-byte test";
   TCollection_ExtendedString aString(aMultiByteStr, true);
 
   EXPECT_GT(aString.Length(), 0);

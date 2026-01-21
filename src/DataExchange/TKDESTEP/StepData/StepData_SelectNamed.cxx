@@ -39,7 +39,7 @@ const char* StepData_SelectNamed::Name() const
   return thename.ToCString();
 }
 
-bool StepData_SelectNamed::SetName(const char* name)
+bool StepData_SelectNamed::SetName(const char* const name)
 {
   thename.Clear();
   thename.AssignCat(name);
@@ -91,7 +91,7 @@ const char* StepData_SelectNamed::String() const
   return theval.String();
 }
 
-void StepData_SelectNamed::SetString(const char* val)
+void StepData_SelectNamed::SetString(const char* const val)
 {
   theval.SetString(val);
 }

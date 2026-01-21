@@ -554,7 +554,7 @@ bool Font_FontMgr::CheckFont(NCollection_Sequence<occ::handle<Font_SystemFont>>&
 
 //=================================================================================================
 
-occ::handle<Font_SystemFont> Font_FontMgr::CheckFont(const char* theFontPath) const
+occ::handle<Font_SystemFont> Font_FontMgr::CheckFont(const char* const theFontPath) const
 {
   occ::handle<Font_FTLibrary>                        aFtLibrary = new Font_FTLibrary();
   NCollection_Sequence<occ::handle<Font_SystemFont>> aFonts;

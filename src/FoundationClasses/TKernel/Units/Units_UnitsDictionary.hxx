@@ -42,7 +42,7 @@ public:
   occ::handle<NCollection_HSequence<occ::handle<Units_Quantity>>> Sequence() const;
 
   //! Returns for <aquantity> the active unit.
-  Standard_EXPORT TCollection_AsciiString ActiveUnit(const char* aquantity) const;
+  Standard_EXPORT TCollection_AsciiString ActiveUnit(const char* const aquantity) const;
 
   //! Dumps only the sequence of quantities without the
   //! units if <alevel> is equal to zero, and for each
