@@ -287,7 +287,7 @@ static bool SplitWire(const TopoDS_Face&                  face,
         if (curve1.IsNull() || curve2.IsNull())
           continue;
 
-        gp_Pnt2d                  v0, v1;
+        gp_Pnt2d v0, v1;
         if (E1.Orientation() == TopAbs_REVERSED)
           a1 = b1;
         if (E2.Orientation() == TopAbs_REVERSED)
