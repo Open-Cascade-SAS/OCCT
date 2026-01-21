@@ -3821,7 +3821,8 @@ void ShapeFix_Wire::UpdateWire()
     // exponential edge explosion on Moebius strips where shared edges
     // accumulate cascading replacements across multiple faces.
     // The full chain resolution happens at final shell-level Apply().
-    TopoDS_Shape S = Context()->Value(E);
+    // Note: Now again we are using Apply() because using Value() breaks test de step_2 R7
+    TopoDS_Shape S = Context()->Apply(E);
     if (S == E)
       continue;
     // Skip if this edge was already expanded in this call to prevent duplicates

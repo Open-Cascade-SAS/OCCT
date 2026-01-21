@@ -107,16 +107,31 @@ public:
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
 
 private:
-  //! Visited map type (orientation-sensitive to allow proper processing
-  //! of shapes with different orientations).
-  using VisitedMap = NCollection_Map<TopoDS_Shape>;
+  // Class to detect loops during recursive shape processing.
+  class LoopDetector
+  {
+  private:
+    // Visited map type (orientation-sensitive to allow proper processing
+    // of shapes with different orientations).
+    // int is visit count.
+    using VisitedMap = NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>;
+
+  public:
+    LoopDetector() = default;
+
+    // Returns true if loop was not detected and processing can continue.
+    bool CanContinue(const TopoDS_Shape& theShape);
+
+  private:
+    VisitedMap myVisited;
+  };
 
   //! Internal recursive implementation of Apply.
   //! Uses visited map to prevent infinite recursion on shapes with shared
   //! sub-shapes (e.g., Moebius strip with shared edges).
   TopoDS_Shape applyImpl(const TopoDS_Shape&    theShape,
                          const TopAbs_ShapeEnum theUntil,
-                         VisitedMap&            theVisited);
+                         LoopDetector&          theVisited);
 };
 
 #endif // _ShapeBuild_ReShape_HeaderFile

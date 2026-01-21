@@ -165,7 +165,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    shape,
 TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    theShape,
                                        const TopAbs_ShapeEnum theUntil)
 {
-  VisitedMap aVisited;
+  LoopDetector aVisited;
   return applyImpl(theShape, theUntil, aVisited);
 }
 
@@ -173,7 +173,7 @@ TopoDS_Shape ShapeBuild_ReShape::Apply(const TopoDS_Shape&    theShape,
 
 TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&    theShape,
                                            const TopAbs_ShapeEnum theUntil,
-                                           VisitedMap&            theVisited)
+                                           LoopDetector&          theVisited)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   if (theShape.IsNull())
@@ -191,7 +191,7 @@ TopoDS_Shape ShapeBuild_ReShape::applyImpl(const TopoDS_Shape&    theShape,
 
   // Check if this shape was already visited to prevent infinite recursion
   // on shapes with shared sub-shapes (e.g., Moebius strip with shared edges).
-  if (!theVisited.Add(theShape))
+  if (!theVisited.CanContinue(theShape))
   {
     // Already processed this shape, return the replacement from map
     return aNewShape;
@@ -288,4 +288,24 @@ int ShapeBuild_ReShape::Status(const TopoDS_Shape& theShape,
 bool ShapeBuild_ReShape::Status(const ShapeExtend_Status theStatus) const
 {
   return ShapeExtend::DecodeStatus(myStatus, theStatus);
+}
+
+//=================================================================================================
+
+bool ShapeBuild_ReShape::LoopDetector::CanContinue(const TopoDS_Shape& theShape)
+{
+  int* aVisitCount = myVisited.ChangeSeek(theShape);
+  if (aVisitCount == nullptr)
+  {
+    // First visit
+    myVisited.Bind(theShape, 1);
+    return true;
+  }
+  else
+  {
+    // Allow to visit twice.
+    // If we allow only one visit, it breaks test heal fix_gaps B2.
+    // If we allow unlimited visits, it may lead to infinite loops.
+    return ++(*aVisitCount) < 3;
+  }
 }
