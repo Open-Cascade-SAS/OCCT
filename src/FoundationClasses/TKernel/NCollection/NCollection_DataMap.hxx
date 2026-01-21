@@ -91,7 +91,9 @@ public:
     //! Constructor with in-place value construction
     template <typename K, typename... Args>
     DataMapNode(K&& theKey, std::in_place_t, NCollection_ListNode* theNext, Args&&... theArgs)
-        : NCollection_TListNode<TheItemType>(std::in_place, theNext, std::forward<Args>(theArgs)...),
+        : NCollection_TListNode<TheItemType>(std::in_place,
+                                             theNext,
+                                             std::forward<Args>(theArgs)...),
           myKey(std::forward<K>(theKey))
     {
     }
@@ -278,7 +280,8 @@ public:
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return true if Key was not bound already
   bool Bind(const TheKeyType& theKey, const TheItemType& theItem)
   {
@@ -287,7 +290,8 @@ public:
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return true if Key was not bound already
   bool Bind(TheKeyType&& theKey, const TheItemType& theItem)
   {
@@ -296,7 +300,8 @@ public:
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return true if Key was not bound already
   bool Bind(const TheKeyType& theKey, TheItemType&& theItem)
   {
@@ -305,7 +310,8 @@ public:
 
   //! Bind binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return true if Key was not bound already
   bool Bind(TheKeyType&& theKey, TheItemType&& theItem)
   {
@@ -314,7 +320,8 @@ public:
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return pointer to modifiable Item
   TheItemType* Bound(const TheKeyType& theKey, const TheItemType& theItem)
   {
@@ -323,7 +330,8 @@ public:
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return pointer to modifiable Item
   TheItemType* Bound(TheKeyType&& theKey, const TheItemType& theItem)
   {
@@ -332,7 +340,8 @@ public:
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return pointer to modifiable Item
   TheItemType* Bound(const TheKeyType& theKey, TheItemType&& theItem)
   {
@@ -341,7 +350,8 @@ public:
 
   //! Bound binds Item to Key in map.
   //! @param theKey  key to add/update
-  //! @param theItem new item; overrides value previously bound to the key (uses destroy+reconstruct)
+  //! @param theItem new item; overrides value previously bound to the key (uses
+  //! destroy+reconstruct)
   //! @return pointer to modifiable Item
   TheItemType* Bound(TheKeyType&& theKey, TheItemType&& theItem)
   {
@@ -423,11 +433,15 @@ public:
   //! Emplace constructs value in-place; if key exists, destroys and reconstructs value.
   //! @param theKey  key to add/update
   //! @param theArgs arguments forwarded to value constructor
-  //! @return true if key was newly added, false if key already existed (and value was reconstructed)
+  //! @return true if key was newly added, false if key already existed (and value was
+  //! reconstructed)
   template <typename K, typename... Args>
   bool Emplace(K&& theKey, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey), std::false_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey),
+                       std::false_type{},
+                       std::false_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! Emplaced constructs value in-place; if key exists, destroys and reconstructs value.
@@ -437,7 +451,10 @@ public:
   template <typename K, typename... Args>
   TheItemType& Emplaced(K&& theKey, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey), std::false_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey),
+                       std::false_type{},
+                       std::true_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! TryEmplace constructs value in-place only if key not already bound.
@@ -447,7 +464,10 @@ public:
   template <typename K, typename... Args>
   bool TryEmplace(K&& theKey, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey), std::true_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey),
+                       std::true_type{},
+                       std::false_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! TryEmplaced constructs value in-place only if key not already bound.
@@ -457,7 +477,10 @@ public:
   template <typename K, typename... Args>
   TheItemType& TryEmplaced(K&& theKey, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey), std::true_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey),
+                       std::true_type{},
+                       std::true_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! IsBound
@@ -626,8 +649,10 @@ protected:
   //! @param theArgs arguments forwarded to value constructor
   //! @return bool or TheItemType& depending on ReturnRef
   template <typename K, bool IsTry, bool ReturnRef, typename... Args>
-  auto emplaceImpl(K&& theKey, std::bool_constant<IsTry>, std::bool_constant<ReturnRef>, Args&&... theArgs)
-    -> std::conditional_t<ReturnRef, TheItemType&, bool>
+  auto emplaceImpl(K&& theKey,
+                   std::bool_constant<IsTry>,
+                   std::bool_constant<ReturnRef>,
+                   Args&&... theArgs) -> std::conditional_t<ReturnRef, TheItemType&, bool>
   {
     if (Resizable())
       ReSize(Extent());
@@ -645,8 +670,10 @@ protected:
         return false;
     }
     DataMapNode** data = (DataMapNode**)myData1;
-    data[aHash] =
-      new (this->myAllocator) DataMapNode(std::forward<K>(theKey), std::in_place, data[aHash], std::forward<Args>(theArgs)...);
+    data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<K>(theKey),
+                                                      std::in_place,
+                                                      data[aHash],
+                                                      std::forward<Args>(theArgs)...);
     Increment();
     if constexpr (ReturnRef)
       return data[aHash]->ChangeValue();

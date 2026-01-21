@@ -594,7 +594,7 @@ TEST(NCollection_IndexedMapTest, Added_ExistingKey)
   // Added on existing key should return reference to existing key (not add duplicate)
   const int& aRef = aMap.Added(10);
   EXPECT_EQ(10, aRef);
-  EXPECT_EQ(1, aMap.Extent()); // Size should not change
+  EXPECT_EQ(1, aMap.Extent());      // Size should not change
   EXPECT_EQ(1, aMap.FindIndex(10)); // Index should be the same
 }
 
@@ -665,4 +665,3 @@ TEST(NCollection_IndexedMapTest, Emplaced_NewKey)
   EXPECT_TRUE(aRef.IsEqual("First"));
   EXPECT_EQ(1, aMap.Extent());
 }
-

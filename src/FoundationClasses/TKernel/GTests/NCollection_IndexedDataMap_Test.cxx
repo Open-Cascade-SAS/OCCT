@@ -853,10 +853,10 @@ TEST(NCollection_IndexedDataMapTest, Bind_ExistingKey)
 
   // Bind same key with different value - should overwrite and return false
   bool isNew = aMap.Bind(10, 999.0);
-  EXPECT_FALSE(isNew);                            // Key already existed
-  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(10));  // Value should be replaced
-  EXPECT_EQ(1, aMap.Extent());                    // Size should not change
-  EXPECT_EQ(1, aMap.FindIndex(10));               // Index should be the same
+  EXPECT_FALSE(isNew);                           // Key already existed
+  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(10)); // Value should be replaced
+  EXPECT_EQ(1, aMap.Extent());                   // Size should not change
+  EXPECT_EQ(1, aMap.FindIndex(10));              // Index should be the same
 }
 
 TEST(NCollection_IndexedDataMapTest, Bind_MoveSemantics)
@@ -871,9 +871,9 @@ TEST(NCollection_IndexedDataMapTest, Bind_MoveSemantics)
 
   // Test with existing key - should replace
   bool isNew2 = aMap.Bind(TCollection_AsciiString("Key1"), 999.0);
-  EXPECT_FALSE(isNew2);                                                        // Key existed
-  EXPECT_EQ(1, aMap.Extent());                                                 // Size should not change
-  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(TCollection_AsciiString("Key1")));  // Value replaced
+  EXPECT_FALSE(isNew2);        // Key existed
+  EXPECT_EQ(1, aMap.Extent()); // Size should not change
+  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(TCollection_AsciiString("Key1"))); // Value replaced
 }
 
 TEST(NCollection_IndexedDataMapTest, Bound_NewKey)
@@ -912,7 +912,7 @@ TEST(NCollection_IndexedDataMapTest, Bound_ExistingKey)
   // Bound on existing key should replace value and return pointer
   double* pVal = aMap.Bound(10, 999.0);
   EXPECT_NE(nullptr, pVal);
-  EXPECT_DOUBLE_EQ(999.0, *pVal);                 // Should be the new value
+  EXPECT_DOUBLE_EQ(999.0, *pVal);                // Should be the new value
   EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(10)); // Map should have new value
   EXPECT_EQ(1, aMap.Extent());                   // Size should not change
   EXPECT_EQ(1, aMap.FindIndex(10));              // Index should be the same
@@ -935,8 +935,8 @@ TEST(NCollection_IndexedDataMapTest, Bound_MoveSemantics)
   // Test with existing key - should replace
   double* pVal2 = aMap.Bound(TCollection_AsciiString("Key1"), 999.0);
   EXPECT_NE(nullptr, pVal2);
-  EXPECT_DOUBLE_EQ(999.0, *pVal2);  // Should return new value
-  EXPECT_EQ(1, aMap.Extent());      // Size should not change
+  EXPECT_DOUBLE_EQ(999.0, *pVal2); // Should return new value
+  EXPECT_EQ(1, aMap.Extent());     // Size should not change
 }
 
 TEST(NCollection_IndexedDataMapTest, Bind_Bound_VsAdd_Behavior)
@@ -950,19 +950,19 @@ TEST(NCollection_IndexedDataMapTest, Bind_Bound_VsAdd_Behavior)
 
   // Add same key - should NOT overwrite
   aMap.Add(10, 999.0);
-  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));  // Still 1.0
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10)); // Still 1.0
 
   // Bind same key - SHOULD overwrite
   aMap.Bind(10, 2.0);
-  EXPECT_DOUBLE_EQ(2.0, aMap.FindFromKey(10));  // Now 2.0
+  EXPECT_DOUBLE_EQ(2.0, aMap.FindFromKey(10)); // Now 2.0
 
   // Bound same key - SHOULD overwrite
   aMap.Bound(10, 3.0);
-  EXPECT_DOUBLE_EQ(3.0, aMap.FindFromKey(10));  // Now 3.0
+  EXPECT_DOUBLE_EQ(3.0, aMap.FindFromKey(10)); // Now 3.0
 
   // TryBound same key - should NOT overwrite
   aMap.TryBound(10, 999.0);
-  EXPECT_DOUBLE_EQ(3.0, aMap.FindFromKey(10));  // Still 3.0
+  EXPECT_DOUBLE_EQ(3.0, aMap.FindFromKey(10)); // Still 3.0
 }
 
 // Tests for Emplace methods

@@ -251,7 +251,10 @@ public:
 
   //! Added: add a new key if not yet in the map, and return
   //! reference to either newly added or previously existing object
-  const TheKeyType& Added(TheKeyType&& theKey) { return addImpl(std::move(theKey), std::true_type{}); }
+  const TheKeyType& Added(TheKeyType&& theKey)
+  {
+    return addImpl(std::move(theKey), std::true_type{});
+  }
 
   //! Emplace constructs key in-place; if key exists, destroys and reconstructs.
   //! @param theArgs arguments forwarded to key constructor
@@ -495,7 +498,8 @@ protected:
   //! @param theKey key to add
   //! @return bool (Add) or const TheKeyType& (Added)
   template <typename K, bool ReturnRef>
-  auto addImpl(K&& theKey, std::bool_constant<ReturnRef>) -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
+  auto addImpl(K&& theKey, std::bool_constant<ReturnRef>)
+    -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
   {
     if (Resizable())
       ReSize(Extent());

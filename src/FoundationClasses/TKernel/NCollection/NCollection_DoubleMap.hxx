@@ -97,12 +97,14 @@ public:
 
     //! Constructor with in-place Key2 construction
     template <typename K1, typename... Args2>
-    DoubleMapNode(K1&&                  theKey1,
+    DoubleMapNode(K1&& theKey1,
                   std::in_place_t,
                   NCollection_ListNode* theNext1,
                   NCollection_ListNode* theNext2,
-                  Args2&&...            theArgs2)
-        : NCollection_TListNode<TheKey2Type>(std::in_place, theNext1, std::forward<Args2>(theArgs2)...),
+                  Args2&&... theArgs2)
+        : NCollection_TListNode<TheKey2Type>(std::in_place,
+                                             theNext1,
+                                             std::forward<Args2>(theArgs2)...),
           myKey1(std::forward<K1>(theKey1)),
           myNext2((DoubleMapNode*)theNext2)
     {
@@ -671,7 +673,8 @@ protected:
   //! @tparam IsTry if true, returns false on existing key; if false, throws exception
   //! @param theKey1 first key to bind
   //! @param theKey2 second key to bind
-  //! @return true if pair was successfully bound, false if either key already exists (only for IsTry=true)
+  //! @return true if pair was successfully bound, false if either key already exists (only for
+  //! IsTry=true)
   template <typename K1, typename K2, bool IsTry>
   bool bindImpl(K1&& theKey1, K2&& theKey2, std::bool_constant<IsTry>)
   {
@@ -693,10 +696,12 @@ protected:
       else
         throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
     }
-    DoubleMapNode* pNode = new (this->myAllocator)
-      DoubleMapNode(std::forward<K1>(theKey1), std::forward<K2>(theKey2), myData1[iK1], myData2[iK2]);
-    myData1[iK1] = pNode;
-    myData2[iK2] = pNode;
+    DoubleMapNode* pNode = new (this->myAllocator) DoubleMapNode(std::forward<K1>(theKey1),
+                                                                 std::forward<K2>(theKey2),
+                                                                 myData1[iK1],
+                                                                 myData2[iK2]);
+    myData1[iK1]         = pNode;
+    myData2[iK2]         = pNode;
     Increment();
     return true;
   }

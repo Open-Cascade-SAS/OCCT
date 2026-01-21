@@ -99,9 +99,15 @@ private:
     {
     }
 
-    TheKeyType&        Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
-    const TheKeyType&  Key() const noexcept { return *reinterpret_cast<const TheKeyType*>(myKeyStorage); }
-    TheItemType&       Item() noexcept { return *reinterpret_cast<TheItemType*>(myItemStorage); }
+    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+
+    const TheKeyType& Key() const noexcept
+    {
+      return *reinterpret_cast<const TheKeyType*>(myKeyStorage);
+    }
+
+    TheItemType& Item() noexcept { return *reinterpret_cast<TheItemType*>(myItemStorage); }
+
     const TheItemType& Item() const noexcept
     {
       return *reinterpret_cast<const TheItemType*>(myItemStorage);

@@ -313,7 +313,7 @@ TEST_F(NCollection_DataMapTest, TryBind_MoveSemantics)
   NCollection_DataMap<int, TCollection_AsciiString> aMap;
 
   // Test with rvalue key
-  int aKey = 1;
+  int  aKey    = 1;
   bool aResult = aMap.TryBind(std::move(aKey), "One");
   EXPECT_TRUE(aResult);
   EXPECT_STREQ("One", aMap.Find(1).ToCString());
@@ -354,7 +354,7 @@ TEST_F(NCollection_DataMapTest, TryBound_ExistingKey)
 
   // TryBound on existing key should return reference to existing item (not replace)
   TCollection_AsciiString& aRef = aMap.TryBound(1, "New One");
-  EXPECT_STREQ("One", aRef.ToCString());       // Should be the original value
+  EXPECT_STREQ("One", aRef.ToCString());         // Should be the original value
   EXPECT_STREQ("One", aMap.Find(1).ToCString()); // Map should have original value
   EXPECT_EQ(1, aMap.Size());
 

@@ -82,7 +82,7 @@ private:
   struct Slot
   {
     alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)]; //!< Uninitialized key storage
-    size_t    myHash;          //!< Cached hash code
+    size_t    myHash;                                          //!< Cached hash code
     uint8_t   myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
     SlotState myState;         //!< Current state of this slot
 
@@ -95,7 +95,8 @@ private:
     }
 
     //! Access the key (only valid when myState == Used)
-    TheKeyType&       Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+
     const TheKeyType& Key() const noexcept
     {
       return *reinterpret_cast<const TheKeyType*>(myKeyStorage);
@@ -714,7 +715,8 @@ private:
       aNext    = (aNext + 1) & aMask;
     }
 
-    // Mark final slot as Empty (removes tombstone; either original deleted slot or last shifted-from slot)
+    // Mark final slot as Empty (removes tombstone; either original deleted slot or last
+    // shifted-from slot)
     mySlots[aCurrent].myState = SlotState::Empty;
   }
 

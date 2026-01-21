@@ -491,9 +491,9 @@ TEST(NCollection_DoubleMapTest, TryBind_ExistingKey1)
   // TryBind with existing Key1 should fail
   bool aResult = aMap.TryBind(10, 999.0);
   EXPECT_FALSE(aResult);
-  EXPECT_EQ(1, aMap.Extent());            // Size should not change
-  EXPECT_DOUBLE_EQ(1.0, aMap.Find1(10));  // Original binding should be unchanged
-  EXPECT_FALSE(aMap.IsBound2(999.0));     // New Key2 should not be added
+  EXPECT_EQ(1, aMap.Extent());           // Size should not change
+  EXPECT_DOUBLE_EQ(1.0, aMap.Find1(10)); // Original binding should be unchanged
+  EXPECT_FALSE(aMap.IsBound2(999.0));    // New Key2 should not be added
 }
 
 TEST(NCollection_DoubleMapTest, TryBind_ExistingKey2)
@@ -507,9 +507,9 @@ TEST(NCollection_DoubleMapTest, TryBind_ExistingKey2)
   // TryBind with existing Key2 should fail
   bool aResult = aMap.TryBind(999, 1.0);
   EXPECT_FALSE(aResult);
-  EXPECT_EQ(1, aMap.Extent());           // Size should not change
-  EXPECT_EQ(10, aMap.Find2(1.0));        // Original binding should be unchanged
-  EXPECT_FALSE(aMap.IsBound1(999));      // New Key1 should not be added
+  EXPECT_EQ(1, aMap.Extent());      // Size should not change
+  EXPECT_EQ(10, aMap.Find2(1.0));   // Original binding should be unchanged
+  EXPECT_FALSE(aMap.IsBound1(999)); // New Key1 should not be added
 }
 
 TEST(NCollection_DoubleMapTest, TryBind_BothKeysExist)

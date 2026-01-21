@@ -107,12 +107,14 @@ private:
 
     //! Constructor with in-place value construction
     template <typename K, typename... Args>
-    IndexedDataMapNode(K&&                   theKey1,
-                       const int             theIndex,
+    IndexedDataMapNode(K&&       theKey1,
+                       const int theIndex,
                        std::in_place_t,
                        NCollection_ListNode* theNext1,
-                       Args&&...             theArgs)
-        : NCollection_TListNode<TheItemType>(std::in_place, theNext1, std::forward<Args>(theArgs)...),
+                       Args&&... theArgs)
+        : NCollection_TListNode<TheItemType>(std::in_place,
+                                             theNext1,
+                                             std::forward<Args>(theArgs)...),
           myKey1(std::forward<K>(theKey1)),
           myIndex(theIndex)
     {
@@ -447,7 +449,10 @@ public:
   template <typename K, typename... Args>
   int Emplace(K&& theKey1, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey1), std::false_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::false_type{},
+                       std::false_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! Emplaced constructs value in-place; if key exists, destroys and reconstructs value.
@@ -457,7 +462,10 @@ public:
   template <typename K, typename... Args>
   TheItemType& Emplaced(K&& theKey1, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey1), std::false_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::false_type{},
+                       std::true_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! TryEmplace constructs value in-place only if key not already bound.
@@ -467,7 +475,10 @@ public:
   template <typename K, typename... Args>
   int TryEmplace(K&& theKey1, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey1), std::true_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::true_type{},
+                       std::false_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! TryEmplaced constructs value in-place only if key not already bound.
@@ -477,7 +488,10 @@ public:
   template <typename K, typename... Args>
   TheItemType& TryEmplaced(K&& theKey1, Args&&... theArgs)
   {
-    return emplaceImpl(std::forward<K>(theKey1), std::true_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::true_type{},
+                       std::true_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! Contains
@@ -790,9 +804,11 @@ protected:
     {
       return aNode->Index();
     }
-    const int aNewIndex = Extent() + 1;
-    aNode               = new (this->myAllocator)
-      IndexedDataMapNode(std::forward<K>(theKey1), aNewIndex, std::forward<V>(theItem), myData1[aHash]);
+    const int aNewIndex    = Extent() + 1;
+    aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
+                                                       aNewIndex,
+                                                       std::forward<V>(theItem),
+                                                       myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();
@@ -807,8 +823,10 @@ protected:
   //! @param theArgs arguments forwarded to value constructor
   //! @return int (index) or TheItemType& depending on ReturnRef
   template <typename K, bool IsTry, bool ReturnRef, typename... Args>
-  auto emplaceImpl(K&& theKey1, std::bool_constant<IsTry>, std::bool_constant<ReturnRef>, Args&&... theArgs)
-    -> std::conditional_t<ReturnRef, TheItemType&, int>
+  auto emplaceImpl(K&& theKey1,
+                   std::bool_constant<IsTry>,
+                   std::bool_constant<ReturnRef>,
+                   Args&&... theArgs) -> std::conditional_t<ReturnRef, TheItemType&, int>
   {
     if (Resizable())
       ReSize(Extent());
@@ -823,9 +841,12 @@ protected:
       else
         return aNode->Index();
     }
-    const int aNewIndex = Extent() + 1;
-    aNode               = new (this->myAllocator)
-      IndexedDataMapNode(std::forward<K>(theKey1), aNewIndex, std::in_place, myData1[aHash], std::forward<Args>(theArgs)...);
+    const int aNewIndex    = Extent() + 1;
+    aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
+                                                       aNewIndex,
+                                                       std::in_place,
+                                                       myData1[aHash],
+                                                       std::forward<Args>(theArgs)...);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();
@@ -858,9 +879,11 @@ protected:
       else
         return false;
     }
-    const int aNewIndex = Extent() + 1;
-    aNode               = new (this->myAllocator)
-      IndexedDataMapNode(std::forward<K>(theKey1), aNewIndex, std::forward<V>(theItem), myData1[aHash]);
+    const int aNewIndex    = Extent() + 1;
+    aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
+                                                       aNewIndex,
+                                                       std::forward<V>(theItem),
+                                                       myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();

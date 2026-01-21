@@ -323,4 +323,3 @@ TEST(NCollection_MapTest, EmplacedBasic)
   const TCollection_AsciiString& aKey2 = aMap.Emplaced("World");
   EXPECT_EQ(&aKey1, &aKey2); // Same reference (after reconstruction)
 }
-

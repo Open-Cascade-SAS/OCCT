@@ -65,8 +65,13 @@ protected:
 
     //! Constructor with in-place key construction
     template <typename... Args>
-    IndexedMapNode(std::in_place_t, const int theIndex, NCollection_ListNode* theNext1, Args&&... theArgs)
-        : NCollection_TListNode<TheKeyType>(std::in_place, theNext1, std::forward<Args>(theArgs)...),
+    IndexedMapNode(std::in_place_t,
+                   const int             theIndex,
+                   NCollection_ListNode* theNext1,
+                   Args&&... theArgs)
+        : NCollection_TListNode<TheKeyType>(std::in_place,
+                                            theNext1,
+                                            std::forward<Args>(theArgs)...),
           myIndex(theIndex)
     {
     }
@@ -271,7 +276,10 @@ public:
   //! reference to either newly added or previously existing key.
   //! @param theKey1 key to add
   //! @return const reference to the key in the map
-  const TheKeyType& Added(TheKeyType&& theKey1) { return addImpl(std::move(theKey1), std::true_type{}); }
+  const TheKeyType& Added(TheKeyType&& theKey1)
+  {
+    return addImpl(std::move(theKey1), std::true_type{});
+  }
 
   //! Emplace constructs key in-place; if key exists, destroys and reconstructs.
   //! @param theArgs arguments forwarded to key constructor
@@ -511,7 +519,8 @@ protected:
   //! @param theKey1 key to add
   //! @return int (Add) or const TheKeyType& (Added)
   template <typename K, bool ReturnRef>
-  auto addImpl(K&& theKey1, std::bool_constant<ReturnRef>) -> std::conditional_t<ReturnRef, const TheKeyType&, int>
+  auto addImpl(K&& theKey1, std::bool_constant<ReturnRef>)
+    -> std::conditional_t<ReturnRef, const TheKeyType&, int>
   {
     if (Resizable())
     {
@@ -527,8 +536,8 @@ protected:
         return aNode->Index();
     }
     const int aNewIndex = Extent() + 1;
-    aNode               = new (this->myAllocator)
-      IndexedMapNode(std::forward<K>(theKey1), aNewIndex, myData1[aHash]);
+    aNode =
+      new (this->myAllocator) IndexedMapNode(std::forward<K>(theKey1), aNewIndex, myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();
@@ -563,8 +572,7 @@ protected:
         return aNode->Index();
     }
     const int aNewIndex = Extent() + 1;
-    aNode               = new (this->myAllocator)
-      IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
+    aNode = new (this->myAllocator) IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();
