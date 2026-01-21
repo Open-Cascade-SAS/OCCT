@@ -161,3 +161,66 @@ TEST_F(NCollection_FlatMapTest, StringKeys)
   EXPECT_TRUE(aMap.Contains("Test"));
   EXPECT_FALSE(aMap.Contains("NotFound"));
 }
+
+// Tests for Added method
+TEST_F(NCollection_FlatMapTest, AddedNewKey)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+
+  const TCollection_AsciiString& aRef = aMap.Added("Hello");
+  EXPECT_TRUE(aRef.IsEqual("Hello"));
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_FlatMapTest, AddedExistingKey)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+  aMap.Add("Hello");
+
+  const TCollection_AsciiString& aRef = aMap.Added("Hello");
+  EXPECT_TRUE(aRef.IsEqual("Hello"));
+  EXPECT_EQ(1, aMap.Size()); // Size unchanged
+}
+
+// Tests for Emplace method
+TEST_F(NCollection_FlatMapTest, EmplaceNewKey)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+
+  // Emplace with new key
+  EXPECT_TRUE(aMap.Emplace("Hello"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_TRUE(aMap.Contains("Hello"));
+}
+
+TEST_F(NCollection_FlatMapTest, EmplaceExistingKey)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+  aMap.Add("Hello");
+
+  // Emplace on existing key - destroys and reconstructs
+  EXPECT_FALSE(aMap.Emplace("Hello"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_TRUE(aMap.Contains("Hello"));
+}
+
+// Tests for Emplaced method
+TEST_F(NCollection_FlatMapTest, EmplacedNewKey)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+
+  const TCollection_AsciiString& aRef = aMap.Emplaced("World");
+  EXPECT_TRUE(aRef.IsEqual("World"));
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_FlatMapTest, EmplacedExistingKey)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+  aMap.Add("World");
+
+  // Emplaced on existing - destroys and reconstructs
+  const TCollection_AsciiString& aRef = aMap.Emplaced("World");
+  EXPECT_TRUE(aRef.IsEqual("World"));
+  EXPECT_EQ(1, aMap.Size());
+}

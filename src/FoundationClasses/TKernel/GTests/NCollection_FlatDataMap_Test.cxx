@@ -351,3 +351,157 @@ TEST_F(NCollection_FlatDataMapTest, IntegerKeyIntegerValue)
   EXPECT_EQ(200, aMap(20));
   EXPECT_EQ(300, aMap(30));
 }
+
+// Tests for TryBind method
+TEST_F(NCollection_FlatDataMapTest, TryBindNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // TryBind on new key - should succeed
+  EXPECT_TRUE(aMap.TryBind(1, "One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_FlatDataMapTest, TryBindExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // TryBind on existing key - should NOT modify
+  EXPECT_FALSE(aMap.TryBind(1, "New One"));
+  EXPECT_STREQ("One", aMap.Find(1).ToCString()); // Original value preserved
+  EXPECT_EQ(1, aMap.Size());
+}
+
+// Tests for TryBound method
+TEST_F(NCollection_FlatDataMapTest, TryBoundNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // TryBound on new key - should return reference to new value
+  TCollection_AsciiString& aRef = aMap.TryBound(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_FlatDataMapTest, TryBoundExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // TryBound on existing key - should return existing without modification
+  TCollection_AsciiString& aRef = aMap.TryBound(1, "New One");
+  EXPECT_STREQ("One", aRef.ToCString()); // Original value preserved
+  EXPECT_EQ(1, aMap.Size());
+}
+
+// Tests for Bound method
+TEST_F(NCollection_FlatDataMapTest, BoundNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // Bound on new key
+  TCollection_AsciiString& aRef = aMap.Bound(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_FlatDataMapTest, BoundExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // Bound on existing key - should overwrite
+  TCollection_AsciiString& aRef = aMap.Bound(1, "New One");
+  EXPECT_STREQ("New One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+// Tests for Emplace method
+TEST_F(NCollection_FlatDataMapTest, EmplaceNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // Emplace with new key
+  EXPECT_TRUE(aMap.Emplace(1, "One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_FlatDataMapTest, EmplaceExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // Emplace on existing key - destroys and reconstructs value
+  EXPECT_FALSE(aMap.Emplace(1, "New One"));
+  EXPECT_STREQ("New One", aMap.Find(1).ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+// Tests for Emplaced method
+TEST_F(NCollection_FlatDataMapTest, EmplacedNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // Emplaced with new key
+  TCollection_AsciiString& aRef = aMap.Emplaced(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_FlatDataMapTest, EmplacedExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // Emplaced on existing - destroys and reconstructs
+  TCollection_AsciiString& aRef = aMap.Emplaced(1, "New One");
+  EXPECT_STREQ("New One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+// Tests for TryEmplace method
+TEST_F(NCollection_FlatDataMapTest, TryEmplaceNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // TryEmplace with new key
+  EXPECT_TRUE(aMap.TryEmplace(1, "One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_FlatDataMapTest, TryEmplaceExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // TryEmplace on existing - should NOT modify
+  EXPECT_FALSE(aMap.TryEmplace(1, "New One"));
+  EXPECT_STREQ("One", aMap.Find(1).ToCString()); // Original preserved
+  EXPECT_EQ(1, aMap.Size());
+}
+
+// Tests for TryEmplaced method
+TEST_F(NCollection_FlatDataMapTest, TryEmplacedNewKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+
+  // TryEmplaced with new key
+  TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_FlatDataMapTest, TryEmplacedExistingKey)
+{
+  NCollection_FlatDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // TryEmplaced on existing - should return existing without modification
+  TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "New One");
+  EXPECT_STREQ("One", aRef.ToCString()); // Original preserved
+  EXPECT_EQ(1, aMap.Size());
+}

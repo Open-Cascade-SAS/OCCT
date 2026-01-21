@@ -24,6 +24,7 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_OutOfRange.hxx>
+#include <type_traits>
 
 /**
  * Purpose:     An indexed map is used to  store  keys and to bind
@@ -58,6 +59,14 @@ protected:
     //! Constructor with 'Next'
     IndexedMapNode(TheKeyType&& theKey1, const int theIndex, NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheKeyType>(std::forward<TheKeyType>(theKey1), theNext1),
+          myIndex(theIndex)
+    {
+    }
+
+    //! Constructor with in-place key construction
+    template <typename... Args>
+    IndexedMapNode(std::in_place_t, const int theIndex, NCollection_ListNode* theNext1, Args&&... theArgs)
+        : NCollection_TListNode<TheKeyType>(std::in_place, theNext1, std::forward<Args>(theArgs)...),
           myIndex(theIndex)
     {
     }
@@ -242,45 +251,44 @@ public:
     }
   }
 
-  //! Add
-  int Add(const TheKeyType& theKey1)
+  //! Add adds a new key to the map.
+  //! @param theKey1 key to add
+  //! @return index of the key (new or existing)
+  int Add(const TheKeyType& theKey1) { return addImpl(theKey1, std::false_type{}); }
+
+  //! Add adds a new key to the map.
+  //! @param theKey1 key to add
+  //! @return index of the key (new or existing)
+  int Add(TheKeyType&& theKey1) { return addImpl(std::move(theKey1), std::false_type{}); }
+
+  //! Added: add a new key if not yet in the map, and return
+  //! reference to either newly added or previously existing key.
+  //! @param theKey1 key to add
+  //! @return const reference to the key in the map
+  const TheKeyType& Added(const TheKeyType& theKey1) { return addImpl(theKey1, std::true_type{}); }
+
+  //! Added: add a new key if not yet in the map, and return
+  //! reference to either newly added or previously existing key.
+  //! @param theKey1 key to add
+  //! @return const reference to the key in the map
+  const TheKeyType& Added(TheKeyType&& theKey1) { return addImpl(std::move(theKey1), std::true_type{}); }
+
+  //! Emplace constructs key in-place; if key exists, destroys and reconstructs.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return index of the key (new or existing)
+  template <typename... Args>
+  int Emplace(Args&&... theArgs)
   {
-    if (Resizable())
-    {
-      ReSize(Extent());
-    }
-    IndexedMapNode* aNode;
-    size_t          aHash;
-    if (lookup(theKey1, aNode, aHash))
-    {
-      return aNode->Index();
-    }
-    const int aNewIndex = Increment();
-    aNode          = new (this->myAllocator) IndexedMapNode(theKey1, aNewIndex, myData1[aHash]);
-    myData1[aHash] = aNode;
-    myData2[aNewIndex - 1] = aNode;
-    return aNewIndex;
+    return emplaceImpl(std::false_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
   }
 
-  //! Add
-  int Add(TheKeyType&& theKey1)
+  //! Emplaced constructs key in-place; if key exists, overwrites.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key in the map
+  template <typename... Args>
+  const TheKeyType& Emplaced(Args&&... theArgs)
   {
-    if (Resizable())
-    {
-      ReSize(Extent());
-    }
-    size_t          aHash;
-    IndexedMapNode* aNode;
-    if (lookup(theKey1, aNode, aHash))
-    {
-      return aNode->Index();
-    }
-    const int aNewIndex = Increment();
-    aNode               = new (this->myAllocator)
-      IndexedMapNode(std::forward<TheKeyType>(theKey1), aNewIndex, myData1[aHash]);
-    myData1[aHash]         = aNode;
-    myData2[aNewIndex - 1] = aNode;
-    return aNewIndex;
+    return emplaceImpl(std::false_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
   }
 
   //! Contains
@@ -495,6 +503,75 @@ protected:
   size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
+  }
+
+  //! Implementation helper for Add/Added (uses TryEmplace behavior - no modification on existing).
+  //! @tparam K forwarding reference type for key
+  //! @tparam ReturnRef if true, returns const reference to key; if false, returns int (index)
+  //! @param theKey1 key to add
+  //! @return int (Add) or const TheKeyType& (Added)
+  template <typename K, bool ReturnRef>
+  auto addImpl(K&& theKey1, std::bool_constant<ReturnRef>) -> std::conditional_t<ReturnRef, const TheKeyType&, int>
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedMapNode* aNode;
+    size_t          aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      if constexpr (ReturnRef)
+        return aNode->Key1();
+      else
+        return aNode->Index();
+    }
+    const int aNewIndex = Extent() + 1;
+    aNode               = new (this->myAllocator)
+      IndexedMapNode(std::forward<K>(theKey1), aNewIndex, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    Increment();
+    if constexpr (ReturnRef)
+      return aNode->Key1();
+    else
+      return aNewIndex;
+  }
+
+  //! Implementation helper for Emplace/Emplaced.
+  //! @tparam IsTry if true, does not modify existing; if false, overwrites
+  //! @tparam ReturnRef if true, returns const reference to key; if false, returns int (index)
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return int or const TheKeyType& depending on ReturnRef
+  template <bool IsTry, bool ReturnRef, typename... Args>
+  auto emplaceImpl(std::bool_constant<IsTry>, std::bool_constant<ReturnRef>, Args&&... theArgs)
+    -> std::conditional_t<ReturnRef, const TheKeyType&, int>
+  {
+    if (Resizable())
+      ReSize(Extent());
+    // First construct the key to compute hash and check for existence
+    TheKeyType      aTempKey(std::forward<Args>(theArgs)...);
+    IndexedMapNode* aNode;
+    size_t          aHash;
+    if (lookup(aTempKey, aNode, aHash))
+    {
+      if constexpr (!IsTry)
+        aNode->Key1() = std::move(aTempKey);
+      if constexpr (ReturnRef)
+        return aNode->Key1();
+      else
+        return aNode->Index();
+    }
+    const int aNewIndex = Extent() + 1;
+    aNode               = new (this->myAllocator)
+      IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    Increment();
+    if constexpr (ReturnRef)
+      return aNode->Key1();
+    else
+      return aNewIndex;
   }
 
 protected:

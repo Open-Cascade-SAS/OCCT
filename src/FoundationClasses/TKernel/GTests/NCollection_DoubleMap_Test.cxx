@@ -458,3 +458,127 @@ TEST(NCollection_DoubleMapTest, ComplexKeys)
   EXPECT_EQ(foundKey1.GetId(), 3);
   EXPECT_EQ(foundKey1.GetName(), "Three");
 }
+
+TEST(NCollection_DoubleMapTest, TryBind_NewKeys)
+{
+  NCollection_DoubleMap<int, double> aMap;
+
+  // TryBind on new keys should succeed
+  bool aResult = aMap.TryBind(10, 1.0);
+  EXPECT_TRUE(aResult);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_TRUE(aMap.IsBound1(10));
+  EXPECT_TRUE(aMap.IsBound2(1.0));
+  EXPECT_DOUBLE_EQ(1.0, aMap.Find1(10));
+  EXPECT_EQ(10, aMap.Find2(1.0));
+
+  // TryBind another pair of new keys
+  aResult = aMap.TryBind(20, 2.0);
+  EXPECT_TRUE(aResult);
+  EXPECT_EQ(2, aMap.Extent());
+  EXPECT_TRUE(aMap.IsBound1(20));
+  EXPECT_TRUE(aMap.IsBound2(2.0));
+}
+
+TEST(NCollection_DoubleMapTest, TryBind_ExistingKey1)
+{
+  NCollection_DoubleMap<int, double> aMap;
+
+  // First bind a pair
+  aMap.Bind(10, 1.0);
+  EXPECT_EQ(1, aMap.Extent());
+
+  // TryBind with existing Key1 should fail
+  bool aResult = aMap.TryBind(10, 999.0);
+  EXPECT_FALSE(aResult);
+  EXPECT_EQ(1, aMap.Extent());            // Size should not change
+  EXPECT_DOUBLE_EQ(1.0, aMap.Find1(10));  // Original binding should be unchanged
+  EXPECT_FALSE(aMap.IsBound2(999.0));     // New Key2 should not be added
+}
+
+TEST(NCollection_DoubleMapTest, TryBind_ExistingKey2)
+{
+  NCollection_DoubleMap<int, double> aMap;
+
+  // First bind a pair
+  aMap.Bind(10, 1.0);
+  EXPECT_EQ(1, aMap.Extent());
+
+  // TryBind with existing Key2 should fail
+  bool aResult = aMap.TryBind(999, 1.0);
+  EXPECT_FALSE(aResult);
+  EXPECT_EQ(1, aMap.Extent());           // Size should not change
+  EXPECT_EQ(10, aMap.Find2(1.0));        // Original binding should be unchanged
+  EXPECT_FALSE(aMap.IsBound1(999));      // New Key1 should not be added
+}
+
+TEST(NCollection_DoubleMapTest, TryBind_BothKeysExist)
+{
+  NCollection_DoubleMap<int, double> aMap;
+
+  // Bind two separate pairs
+  aMap.Bind(10, 1.0);
+  aMap.Bind(20, 2.0);
+  EXPECT_EQ(2, aMap.Extent());
+
+  // TryBind with Key1 from first pair and Key2 from second pair should fail
+  bool aResult = aMap.TryBind(10, 2.0);
+  EXPECT_FALSE(aResult);
+  EXPECT_EQ(2, aMap.Extent());           // Size should not change
+  EXPECT_DOUBLE_EQ(1.0, aMap.Find1(10)); // Original bindings unchanged
+  EXPECT_EQ(20, aMap.Find2(2.0));
+}
+
+TEST(NCollection_DoubleMapTest, TryBind_MoveSemantics)
+{
+  NCollection_DoubleMap<TCollection_AsciiString, TCollection_AsciiString> aMap;
+
+  // Test with rvalue Key1
+  bool aResult = aMap.TryBind(TCollection_AsciiString("Key1"), TCollection_AsciiString("Value1"));
+  EXPECT_TRUE(aResult);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_TRUE(aMap.Find1(TCollection_AsciiString("Key1")).IsEqual("Value1"));
+
+  // Test with existing keys - should not replace
+  aResult = aMap.TryBind(TCollection_AsciiString("Key1"), TCollection_AsciiString("NewValue"));
+  EXPECT_FALSE(aResult);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_TRUE(aMap.Find1(TCollection_AsciiString("Key1")).IsEqual("Value1")); // Original value
+}
+
+TEST(NCollection_DoubleMapTest, TryBind_VsBindException)
+{
+  NCollection_DoubleMap<int, double> aMap;
+
+  // Bind should throw on duplicate
+  aMap.Bind(10, 1.0);
+  EXPECT_THROW(aMap.Bind(10, 2.0), Standard_MultiplyDefined);
+  EXPECT_THROW(aMap.Bind(20, 1.0), Standard_MultiplyDefined);
+
+  // TryBind should not throw, just return false
+  EXPECT_FALSE(aMap.TryBind(10, 3.0));
+  EXPECT_FALSE(aMap.TryBind(30, 1.0));
+  EXPECT_EQ(1, aMap.Extent()); // No new bindings added
+}
+
+// Tests for TryEmplace methods
+TEST(NCollection_DoubleMapTest, TryEmplace_NewKey)
+{
+  NCollection_DoubleMap<int, double> aMap;
+
+  // TryEmplace with new keys should return true
+  EXPECT_TRUE(aMap.TryEmplace(10, 1.0));
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_DOUBLE_EQ(1.0, aMap.Find1(10));
+}
+
+TEST(NCollection_DoubleMapTest, TryEmplace_ExistingKey)
+{
+  NCollection_DoubleMap<int, double> aMap;
+  aMap.Bind(10, 1.0);
+
+  // TryEmplace on existing key should return false (no throw, no modification)
+  EXPECT_FALSE(aMap.TryEmplace(10, 2.0));
+  EXPECT_FALSE(aMap.TryEmplace(20, 1.0));
+  EXPECT_EQ(1, aMap.Extent());
+}

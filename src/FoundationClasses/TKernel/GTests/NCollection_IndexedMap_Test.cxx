@@ -563,3 +563,106 @@ TEST(NCollection_IndexedMapTest, STLAlgorithmCompatibility_Find)
   EXPECT_TRUE(aFoundStd != aVector.end());
   EXPECT_EQ(*aFoundOCCT, *aFoundStd);
 }
+
+TEST(NCollection_IndexedMapTest, Added_NewKey)
+{
+  NCollection_IndexedMap<int> aMap;
+
+  // Added on new key should add and return reference to the key in the map
+  const int& aRef1 = aMap.Added(10);
+  EXPECT_EQ(10, aRef1);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_TRUE(aMap.Contains(10));
+  EXPECT_EQ(1, aMap.FindIndex(10));
+
+  // Add another key
+  const int& aRef2 = aMap.Added(20);
+  EXPECT_EQ(20, aRef2);
+  EXPECT_EQ(2, aMap.Extent());
+  EXPECT_TRUE(aMap.Contains(20));
+  EXPECT_EQ(2, aMap.FindIndex(20));
+}
+
+TEST(NCollection_IndexedMapTest, Added_ExistingKey)
+{
+  NCollection_IndexedMap<int> aMap;
+
+  // First add a key
+  aMap.Add(10);
+  EXPECT_EQ(1, aMap.Extent());
+
+  // Added on existing key should return reference to existing key (not add duplicate)
+  const int& aRef = aMap.Added(10);
+  EXPECT_EQ(10, aRef);
+  EXPECT_EQ(1, aMap.Extent()); // Size should not change
+  EXPECT_EQ(1, aMap.FindIndex(10)); // Index should be the same
+}
+
+TEST(NCollection_IndexedMapTest, Added_MoveSemantics)
+{
+  NCollection_IndexedMap<TCollection_AsciiString> aMap;
+
+  // Test with rvalue
+  const TCollection_AsciiString& aRef1 = aMap.Added(TCollection_AsciiString("First"));
+  EXPECT_TRUE(aRef1.IsEqual("First"));
+  EXPECT_EQ(1, aMap.Extent());
+
+  // Test that existing key returns same reference (no duplicate)
+  const TCollection_AsciiString& aRef2 = aMap.Added(TCollection_AsciiString("First"));
+  EXPECT_TRUE(aRef2.IsEqual("First"));
+  EXPECT_EQ(1, aMap.Extent()); // Size should not change
+}
+
+TEST(NCollection_IndexedMapTest, Added_ReferenceValidity)
+{
+  NCollection_IndexedMap<int> aMap;
+
+  // Add multiple keys and verify references point to map contents
+  const int& aRef1 = aMap.Added(10);
+  const int& aRef2 = aMap.Added(20);
+  const int& aRef3 = aMap.Added(30);
+
+  // Verify values
+  EXPECT_EQ(10, aRef1);
+  EXPECT_EQ(20, aRef2);
+  EXPECT_EQ(30, aRef3);
+
+  // Verify references point to actual map keys
+  EXPECT_EQ(&aRef1, &aMap.FindKey(1));
+  EXPECT_EQ(&aRef2, &aMap.FindKey(2));
+  EXPECT_EQ(&aRef3, &aMap.FindKey(3));
+}
+
+// Tests for Emplace methods
+TEST(NCollection_IndexedMapTest, Emplace_NewKey)
+{
+  NCollection_IndexedMap<TCollection_AsciiString> aMap;
+
+  // Emplace with new key should return index
+  int aIdx = aMap.Emplace("First");
+  EXPECT_EQ(1, aIdx);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_TRUE(aMap.FindKey(1).IsEqual("First"));
+}
+
+TEST(NCollection_IndexedMapTest, Emplace_ExistingKey)
+{
+  NCollection_IndexedMap<TCollection_AsciiString> aMap;
+  aMap.Add("First");
+
+  // Emplace on existing key should destroy+reconstruct and return existing index
+  int aIdx = aMap.Emplace("First");
+  EXPECT_EQ(1, aIdx);
+  EXPECT_EQ(1, aMap.Extent());
+}
+
+TEST(NCollection_IndexedMapTest, Emplaced_NewKey)
+{
+  NCollection_IndexedMap<TCollection_AsciiString> aMap;
+
+  // Emplaced with new key should return reference to key
+  const TCollection_AsciiString& aRef = aMap.Emplaced("First");
+  EXPECT_TRUE(aRef.IsEqual("First"));
+  EXPECT_EQ(1, aMap.Extent());
+}
+

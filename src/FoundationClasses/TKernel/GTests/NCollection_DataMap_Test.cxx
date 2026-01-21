@@ -275,3 +275,194 @@ TEST_F(NCollection_DataMapTest, STLAlgorithmCompatibility_Find)
   auto aNotFound = std::find(aMap.cbegin(), aMap.cend(), 999);
   EXPECT_TRUE(aNotFound == aMap.cend());
 }
+
+TEST_F(NCollection_DataMapTest, TryBind_NewKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // TryBind on new key should succeed
+  bool aResult = aMap.TryBind(1, "One");
+  EXPECT_TRUE(aResult);
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+
+  // TryBind another new key
+  aResult = aMap.TryBind(2, "Two");
+  EXPECT_TRUE(aResult);
+  EXPECT_EQ(2, aMap.Size());
+  EXPECT_STREQ("Two", aMap.Find(2).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, TryBind_ExistingKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // First bind a key
+  aMap.Bind(1, "One");
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+
+  // TryBind on existing key should fail and NOT replace the value
+  bool aResult = aMap.TryBind(1, "New One");
+  EXPECT_FALSE(aResult);
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString()); // Value should be unchanged
+}
+
+TEST_F(NCollection_DataMapTest, TryBind_MoveSemantics)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // Test with rvalue key
+  int aKey = 1;
+  bool aResult = aMap.TryBind(std::move(aKey), "One");
+  EXPECT_TRUE(aResult);
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+
+  // Test with rvalue value
+  TCollection_AsciiString aValue("Two");
+  aResult = aMap.TryBind(2, std::move(aValue));
+  EXPECT_TRUE(aResult);
+  EXPECT_STREQ("Two", aMap.Find(2).ToCString());
+
+  // Test with both rvalues
+  aResult = aMap.TryBind(3, TCollection_AsciiString("Three"));
+  EXPECT_TRUE(aResult);
+  EXPECT_STREQ("Three", aMap.Find(3).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, TryBound_NewKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // TryBound on new key should add and return reference to new item
+  TCollection_AsciiString& aRef = aMap.TryBound(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+  EXPECT_EQ(1, aMap.Size());
+
+  // Modify through reference
+  aRef = "Modified One";
+  EXPECT_STREQ("Modified One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, TryBound_ExistingKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // First bind a key
+  aMap.Bind(1, "One");
+
+  // TryBound on existing key should return reference to existing item (not replace)
+  TCollection_AsciiString& aRef = aMap.TryBound(1, "New One");
+  EXPECT_STREQ("One", aRef.ToCString());       // Should be the original value
+  EXPECT_STREQ("One", aMap.Find(1).ToCString()); // Map should have original value
+  EXPECT_EQ(1, aMap.Size());
+
+  // Modify through reference
+  aRef = "Modified One";
+  EXPECT_STREQ("Modified One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, TryBound_MoveSemantics)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // Test with rvalue key
+  TCollection_AsciiString& aRef1 = aMap.TryBound(1, "One");
+  EXPECT_STREQ("One", aRef1.ToCString());
+
+  // Test with rvalue value on new key
+  TCollection_AsciiString& aRef2 = aMap.TryBound(2, TCollection_AsciiString("Two"));
+  EXPECT_STREQ("Two", aRef2.ToCString());
+
+  // Test with existing key - should not replace
+  TCollection_AsciiString& aRef3 = aMap.TryBound(1, TCollection_AsciiString("New One"));
+  EXPECT_STREQ("One", aRef3.ToCString()); // Should return original
+}
+
+// Tests for Emplace methods
+TEST_F(NCollection_DataMapTest, Emplace_NewKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // Emplace with new key should return true
+  EXPECT_TRUE(aMap.Emplace(1, "One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+
+  // Emplace another new key
+  EXPECT_TRUE(aMap.Emplace(2, "Two"));
+  EXPECT_EQ(2, aMap.Size());
+}
+
+TEST_F(NCollection_DataMapTest, Emplace_ExistingKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // Emplace on existing key should destroy and reconstruct (return false)
+  EXPECT_FALSE(aMap.Emplace(1, "New One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("New One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, Emplaced_NewKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // Emplaced with new key should return reference to new value
+  TCollection_AsciiString& aRef = aMap.Emplaced(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_DataMapTest, Emplaced_ExistingKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // Emplaced on existing key should destroy+reconstruct and return reference
+  TCollection_AsciiString& aRef = aMap.Emplaced(1, "New One");
+  EXPECT_STREQ("New One", aRef.ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, TryEmplace_NewKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // TryEmplace with new key should return true
+  EXPECT_TRUE(aMap.TryEmplace(1, "One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, TryEmplace_ExistingKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // TryEmplace on existing key should NOT modify (return false)
+  EXPECT_FALSE(aMap.TryEmplace(1, "New One"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString()); // Still original value
+}
+
+TEST_F(NCollection_DataMapTest, TryEmplaced_NewKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+
+  // TryEmplaced with new key should return reference to new value
+  TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST_F(NCollection_DataMapTest, TryEmplaced_ExistingKey)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+
+  // TryEmplaced on existing key should return reference to existing (no modification)
+  TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "New One");
+  EXPECT_STREQ("One", aRef.ToCString()); // Original value
+}
