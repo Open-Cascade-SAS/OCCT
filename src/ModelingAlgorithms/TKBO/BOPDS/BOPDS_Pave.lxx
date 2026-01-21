@@ -15,9 +15,16 @@
 //=================================================================================================
 
 inline BOPDS_Pave::BOPDS_Pave()
+    : myIndex(-1),
+      myParameter(99.)
 {
-  myIndex     = -1;
-  myParameter = 99.;
+}
+
+//==============================================================================================
+inline BOPDS_Pave::BOPDS_Pave(const int theIndex, const double theParameter)
+    : myIndex(theIndex),
+      myParameter(theParameter)
+{
 }
 
 //=================================================================================================
@@ -67,8 +74,5 @@ inline bool BOPDS_Pave::IsLess(const BOPDS_Pave& theOther) const
 
 inline bool BOPDS_Pave::IsEqual(const BOPDS_Pave& theOther) const
 {
-  bool bFlag;
-  //
-  bFlag = ((myIndex == theOther.myIndex) && (myParameter == theOther.myParameter));
-  return bFlag;
+  return myIndex == theOther.myIndex && myParameter == theOther.myParameter;
 }

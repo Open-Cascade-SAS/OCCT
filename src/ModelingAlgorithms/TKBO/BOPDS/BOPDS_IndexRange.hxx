@@ -31,6 +31,9 @@ public:
   //! Empty constructor
   BOPDS_IndexRange();
 
+  //! Constructor with initial indices
+  BOPDS_IndexRange(const int theI1, const int theI2);
+
   //! Modifier
   //! Sets the first index <theI1> of the range
   void SetFirst(const int theI1);
