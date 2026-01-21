@@ -300,8 +300,9 @@ void Message_Algorithm::AddStatus(const Message_ExecStatus&             theAllow
         aData = new TColStd_HPackedMapOfInteger;
 
       // add integer parameter for the status
-      NCollection_PackedMapAlgo::Unite(occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap(),
-                                       aNumsOther->Map());
+      NCollection_PackedMapAlgo::Unite(
+        occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap(),
+        aNumsOther->Map());
     }
     // b) strings
     occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> aStrsOther =
@@ -353,9 +354,9 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const occ::handle<TColStd_HPackedMapOfInteger>& theMapError,
   const int                                       theMaxCount)
 {
-  TCollection_ExtendedString              aNewReport;
+  TCollection_ExtendedString           aNewReport;
   TColStd_PackedMapOfInteger::Iterator anIt(theMapError->Map());
-  int                                     nb = 1;
+  int                                  nb = 1;
   for (; anIt.More() && nb <= theMaxCount; anIt.Next(), nb++)
   {
     if (nb > 1)

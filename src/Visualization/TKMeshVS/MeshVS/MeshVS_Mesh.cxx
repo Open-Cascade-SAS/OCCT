@@ -427,8 +427,7 @@ void MeshVS_Mesh::ComputeSelection(const occ::handle<SelectMgr_Selection>& theSe
             }
 
             // create sensitive entities for free nodes, if there are any
-            for (TColStd_PackedMapOfInteger::Iterator aNodesIter(anAllNodesMap);
-                 aNodesIter.More();
+            for (TColStd_PackedMapOfInteger::Iterator aNodesIter(anAllNodesMap); aNodesIter.More();
                  aNodesIter.Next())
             {
               const int aNodeIdx = aNodesIter.Key();

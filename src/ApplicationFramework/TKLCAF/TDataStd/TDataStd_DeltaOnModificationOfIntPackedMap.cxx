@@ -131,7 +131,7 @@ void TDataStd_DeltaOnModificationOfIntPackedMap::Apply()
 #ifdef OCCT_DEBUG_disable
   std::cout << " << Map Dump after Delta Apply >>" << std::endl;
   occ::handle<TColStd_HPackedMapOfInteger> aIntMap = aCurAtt->GetHMap();
-  TColStd_PackedMapOfInteger::Iterator  it(aIntMap->Map());
+  TColStd_PackedMapOfInteger::Iterator     it(aIntMap->Map());
   for (int i = 1; it.More() && i <= MAXUP; it.Next(), i++)
     std::cout << it.Key() << "  ";
   std::cout << std::endl;

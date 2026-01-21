@@ -17,7 +17,6 @@
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TDF_Attribute.hxx>
 #include <TDocStd_FormatVersion.hxx>

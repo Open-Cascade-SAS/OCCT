@@ -159,7 +159,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   // Calculate maximum possible number of vertices and bounds
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  int                                     PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
+  int                                  PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
   TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {

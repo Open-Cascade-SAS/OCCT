@@ -40,7 +40,6 @@
 #include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_PackedMapOfInteger.hxx>
 #include <NCollection_PackedMapAlgo.hxx>
 #include <NCollection_Sequence.hxx>
 
@@ -201,8 +200,8 @@ void MeshVS_MeshPrsBuilder::BuildNodes(const occ::handle<Prs3d_Presentation>& Pr
   if (upper <= 0)
     return;
 
-  occ::handle<Graphic3d_ArrayOfPoints>    aNodePoints = new Graphic3d_ArrayOfPoints(upper);
-  int                                     k           = 0;
+  occ::handle<Graphic3d_ArrayOfPoints> aNodePoints = new Graphic3d_ArrayOfPoints(upper);
+  int                                  k           = 0;
   TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {
@@ -295,7 +294,7 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
   NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  TColStd_PackedMapOfInteger::Iterator                     it(anIDs);
+  TColStd_PackedMapOfInteger::Iterator                        it(anIDs);
 
   bool showEdges = true;
   aDrawer->GetBoolean(MeshVS_DA_ShowEdges, showEdges);
@@ -623,8 +622,8 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
 
   // Hilight one element or node
   TColStd_PackedMapOfInteger::Iterator it(IDs);
-  int                                     ID = it.Key(), NbNodes;
-  MeshVS_EntityType                       aType;
+  int                                  ID = it.Key(), NbNodes;
+  MeshVS_EntityType                    aType;
 
   if (!aSource->GetGeom(ID, IsElement, aCoords, NbNodes, aType))
     return;

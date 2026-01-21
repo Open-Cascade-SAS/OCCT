@@ -479,7 +479,7 @@ void Poly_MakeLoops::showBoundaryBreaks() const
   }
 
   // check each node if the number of input and output links are equal
-  bool                                    isFirst = true;
+  bool                                 isFirst = true;
   TColStd_PackedMapOfInteger::Iterator it(aNodesMap);
   for (; it.More(); it.Next())
   {

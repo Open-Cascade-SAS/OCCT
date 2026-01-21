@@ -289,10 +289,10 @@ Bnd_Box MeshVS_DataSource::GetBoundingBox() const
   const TColStd_PackedMapOfInteger& aNodes = GetAllNodes();
   if (aNodes.Extent())
   {
-    double                                  aCoordsBuf[3];
-    NCollection_Array1<double>              aCoords(*aCoordsBuf, 1, 3);
-    int                                     nbNodes;
-    MeshVS_EntityType                       aType;
+    double                               aCoordsBuf[3];
+    NCollection_Array1<double>           aCoords(*aCoordsBuf, 1, 3);
+    int                                  nbNodes;
+    MeshVS_EntityType                    aType;
     TColStd_PackedMapOfInteger::Iterator anIter(aNodes);
     for (; anIter.More(); anIter.Next())
     {

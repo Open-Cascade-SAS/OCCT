@@ -165,9 +165,9 @@ public:
     }
 
   private:
-    TColStd_PackedMapOfInteger              myMap;
+    TColStd_PackedMapOfInteger           myMap;
     TColStd_PackedMapOfInteger::Iterator myIter;
-    bool                                    myIterReady;
+    bool                                 myIterReady;
   };
 
 public:

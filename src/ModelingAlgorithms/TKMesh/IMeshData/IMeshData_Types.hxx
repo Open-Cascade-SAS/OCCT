@@ -120,7 +120,7 @@ typedef NCollection_Shared<NCollection_List<gp_Pnt2d>>      ListOfPnt2d;
 typedef NCollection_Shared<NCollection_List<IPCurveHandle>> ListOfIPCurves;
 
 typedef NCollection_Shared<TColStd_PackedMapOfInteger> MapOfInteger;
-typedef TColStd_PackedMapOfInteger::Iterator        IteratorOfMapOfInteger;
+typedef TColStd_PackedMapOfInteger::Iterator           IteratorOfMapOfInteger;
 
 typedef NCollection_CellFilter<BRepMesh_CircleInspector> CircleCellFilter;
 typedef NCollection_CellFilter<BRepMesh_VertexInspector> VertexCellFilter;

@@ -100,8 +100,8 @@ bool Intersect(NCollection_PackedMap<IntType>&       theMap,
   else if (&theMap == &theOtherMap)
     return false;
 
-  const int                       anOldExtent = theMap.Extent();
-  NCollection_PackedMap<IntType>  aCopy;
+  const int                      anOldExtent = theMap.Extent();
+  NCollection_PackedMap<IntType> aCopy;
   for (typename NCollection_PackedMap<IntType>::Iterator anIter(theMap); anIter.More();
        anIter.Next())
   {
