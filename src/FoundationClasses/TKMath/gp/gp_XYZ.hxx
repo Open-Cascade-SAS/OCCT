@@ -22,6 +22,8 @@
 #include <Standard_OStream.hxx>
 #include <Standard_SStream.hxx>
 
+#include <cmath>
+
 //! This class describes a cartesian coordinate entity in
 //! 3D space {X,Y,Z}. This entity is used for algebraic
 //! calculation. This entity can be transformed
@@ -149,9 +151,9 @@ public:
   //! Returns the Z coordinate
   constexpr double Z() const noexcept { return z; }
 
-  //! computes std::sqrt(X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ
+  //! Computes std::sqrt(X*X + Y*Y + Z*Z) where X, Y and Z are the three coordinates of this XYZ
   //! object.
-  double Modulus() const { return sqrt(x * x + y * y + z * z); }
+  double Modulus() const { return std::sqrt(x * x + y * y + z * z); }
 
   //! Computes X*X + Y*Y + Z*Z where X, Y and Z are the three coordinates of this XYZ object.
   constexpr double SquareModulus() const noexcept { return (x * x + y * y + z * z); }
@@ -264,7 +266,7 @@ public:
     return Divided(theScalar);
   }
 
-  //! computes the scalar product between <me> and theOther
+  //! Computes the scalar product between <me> and theOther.
   constexpr double Dot(const gp_XYZ& theOther) const noexcept
   {
     return (x * theOther.x + y * theOther.y + z * theOther.z);
@@ -272,7 +274,7 @@ public:
 
   constexpr double operator*(const gp_XYZ& theOther) const noexcept { return Dot(theOther); }
 
-  //! computes the triple scalar product
+  //! Computes the triple scalar product.
   constexpr double DotCross(const gp_XYZ& theCoord1, const gp_XYZ& theCoord2) const noexcept;
 
   //! @code
@@ -603,19 +605,15 @@ inline void gp_XYZ::Normalize()
   z = z / aD;
 }
 
-//=======================================================================
-// function : operator*
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline constexpr gp_XYZ operator*(const gp_Mat& theMatrix, const gp_XYZ& theCoord1) noexcept
 {
   return theCoord1.Multiplied(theMatrix);
 }
 
-//=======================================================================
-// function : operator*
-// purpose :
-//=======================================================================
+//=================================================================================================
+
 inline constexpr gp_XYZ operator*(const double theScalar, const gp_XYZ& theCoord1) noexcept
 {
   return theCoord1.Multiplied(theScalar);

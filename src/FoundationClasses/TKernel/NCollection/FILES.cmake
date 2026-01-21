@@ -29,6 +29,8 @@ set(OCCT_NCollection_FILES
   NCollection_DoubleMap.hxx
   NCollection_DynamicArray.hxx
   NCollection_EBTree.hxx
+  NCollection_FlatDataMap.hxx
+  NCollection_FlatMap.hxx
   NCollection_Haft.h
   NCollection_Handle.hxx
   NCollection_HArray1.hxx

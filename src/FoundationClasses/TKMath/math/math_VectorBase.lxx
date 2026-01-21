@@ -101,24 +101,67 @@ void math_VectorBase<TheItemType>::SetLower(const int theLower)
 template <typename TheItemType>
 double math_VectorBase<TheItemType>::Norm() const
 {
-  double Result = 0;
-  for (int Index = Lower(); Index <= Upper(); Index++)
+  // 4-way unrolled accumulation for better vectorization
+  double aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
+  int    anIndex  = Lower();
+  int    anUpper  = Upper();
+  int    anUpper4 = anUpper - 3;
+
+  // Process 4 elements at a time
+  for (; anIndex <= anUpper4; anIndex += 4)
   {
-    Result = Result + Array(Index) * Array(Index);
+    const double aVal0 = static_cast<double>(Array(anIndex));
+    const double aVal1 = static_cast<double>(Array(anIndex + 1));
+    const double aVal2 = static_cast<double>(Array(anIndex + 2));
+    const double aVal3 = static_cast<double>(Array(anIndex + 3));
+    aSum1 += aVal0 * aVal0;
+    aSum2 += aVal1 * aVal1;
+    aSum3 += aVal2 * aVal2;
+    aSum4 += aVal3 * aVal3;
   }
-  return std::sqrt(Result);
+
+  // Process remaining elements
+  for (; anIndex <= anUpper; ++anIndex)
+  {
+    const double aVal = static_cast<double>(Array(anIndex));
+    aSum1 += aVal * aVal;
+  }
+
+  // Combine partial sums (pairwise for better numerical stability)
+  return std::sqrt((aSum1 + aSum2) + (aSum3 + aSum4));
 }
 
 template <typename TheItemType>
 double math_VectorBase<TheItemType>::Norm2() const
 {
-  double Result = 0;
+  // 4-way unrolled accumulation for better vectorization
+  double aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
+  int    anIndex  = Lower();
+  int    anUpper  = Upper();
+  int    anUpper4 = anUpper - 3;
 
-  for (int Index = Lower(); Index <= Upper(); Index++)
+  // Process 4 elements at a time
+  for (; anIndex <= anUpper4; anIndex += 4)
   {
-    Result = Result + Array(Index) * Array(Index);
+    const double aVal0 = static_cast<double>(Array(anIndex));
+    const double aVal1 = static_cast<double>(Array(anIndex + 1));
+    const double aVal2 = static_cast<double>(Array(anIndex + 2));
+    const double aVal3 = static_cast<double>(Array(anIndex + 3));
+    aSum1 += aVal0 * aVal0;
+    aSum2 += aVal1 * aVal1;
+    aSum3 += aVal2 * aVal2;
+    aSum4 += aVal3 * aVal3;
   }
-  return Result;
+
+  // Process remaining elements
+  for (; anIndex <= anUpper; ++anIndex)
+  {
+    const double aVal = static_cast<double>(Array(anIndex));
+    aSum1 += aVal * aVal;
+  }
+
+  // Combine partial sums (pairwise for better numerical stability)
+  return (aSum1 + aSum2) + (aSum3 + aSum4);
 }
 
 template <typename TheItemType>
