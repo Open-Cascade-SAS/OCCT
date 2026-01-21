@@ -53,8 +53,7 @@ set(OCCT_NCollection_FILES
   NCollection_Mat3.hxx
   NCollection_Mat4.hxx
   NCollection_OccAllocator.hxx
-  NCollection_PackedMapOfInteger.cxx
-  NCollection_PackedMapOfInteger.hxx
+  NCollection_PackedMap.hxx
   NCollection_Primes.cxx
   NCollection_Primes.hxx
   NCollection_Sequence.hxx

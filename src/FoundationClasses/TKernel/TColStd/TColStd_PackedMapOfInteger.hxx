@@ -16,10 +16,10 @@
 #ifndef TColStd_PackedMapOfInteger_HeaderFile
 #define TColStd_PackedMapOfInteger_HeaderFile
 
-#include <NCollection_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMap.hxx>
 #include <Standard_Macro.hxx>
 
 //! @deprecated Use NCollection_PackedMapOfInteger instead.
-typedef NCollection_PackedMapOfInteger TColStd_PackedMapOfInteger;
+typedef NCollection_PackedMap<int> TColStd_PackedMapOfInteger;
 
 #endif // TColStd_PackedMapOfInteger_HeaderFile

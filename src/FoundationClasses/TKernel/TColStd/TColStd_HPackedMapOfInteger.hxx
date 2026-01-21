@@ -14,12 +14,12 @@
 #ifndef _TColStd_HPackedMapOfInteger_HeaderFile
 #define _TColStd_HPackedMapOfInteger_HeaderFile
 
-#include <NCollection_PackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Transient.hxx>
 
 //! @deprecated This Handle wrapper class is deprecated.
-//! Use NCollection_PackedMapOfInteger directly instead.
+//! Use TColStd_PackedMapOfInteger directly instead.
 class TColStd_HPackedMapOfInteger : public Standard_Transient
 {
 public:
@@ -32,28 +32,28 @@ public:
 
   //! Constructor from already existing map; performs copying.
   //! @param theOther the map to copy
-  TColStd_HPackedMapOfInteger(const NCollection_PackedMapOfInteger& theOther)
+  TColStd_HPackedMapOfInteger(const TColStd_PackedMapOfInteger& theOther)
       : myMap(theOther)
   {
   }
 
   //! Constructor from already existing map; performs copying.
   //! @param theOther the map to copy
-  TColStd_HPackedMapOfInteger(NCollection_PackedMapOfInteger&& theOther)
+  TColStd_HPackedMapOfInteger(TColStd_PackedMapOfInteger&& theOther)
       : myMap(std::move(theOther))
   {
   }
 
   //! Returns const reference to the underlying map.
-  const NCollection_PackedMapOfInteger& Map() const { return myMap; }
+  const TColStd_PackedMapOfInteger& Map() const { return myMap; }
 
   //! Returns mutable reference to the underlying map.
-  NCollection_PackedMapOfInteger& ChangeMap() { return myMap; }
+  TColStd_PackedMapOfInteger& ChangeMap() { return myMap; }
 
   DEFINE_STANDARD_RTTI_INLINE(TColStd_HPackedMapOfInteger, Standard_Transient)
 
 private:
-  NCollection_PackedMapOfInteger myMap;
+  TColStd_PackedMapOfInteger myMap;
 };
 
 #endif // _TColStd_HPackedMapOfInteger_HeaderFile
