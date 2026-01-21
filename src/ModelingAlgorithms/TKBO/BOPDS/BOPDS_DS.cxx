@@ -51,6 +51,12 @@
 namespace
 {
 
+//! Initial increment for myLines container.
+//! This is an arbitrary large value to avoid multiple allocations during Init().
+//! Previous implementation calculated it as the count of unique shapes (including sub-shapes)
+//! multiplied by 2, but counting unique shapes causes significant overhead.
+constexpr int THE_INITIAL_LINES_INCREMENT = 500;
+
 //=================================================================================================
 
 // Computes the parameter of @p theVertex on @p theEdge.
@@ -285,13 +291,7 @@ void BOPDS_DS::Init(const double theFuzz)
     return;
   }
   myRanges.SetIncrement(myArguments.Size());
-
-  // Arbitrary large increment to avoid multiple allocations.
-  // Previous implementation calculated it as amount of unique shapes (i.e. including sub-shapes)
-  // in arguments multiplied by 2. But the act of counting unique shapes iself causes a significant
-  // overhead. Also it seems like unique shapes count * 2 is not enough in many cases and still
-  // leads to multiple allocations.
-  myLines.SetIncrement(500);
+  myLines.SetIncrement(THE_INITIAL_LINES_INCREMENT);
 
   int i1 = 0;
   for (const TopoDS_Shape& aShape : myArguments)
@@ -469,7 +469,9 @@ void BOPDS_DS::InitPaveBlocks(const int theEdgeIndex)
       else
         aPaveBlock->AppendExtPave(aPave);
 
-      // I'm not sure whats the purpose of this block. It looks like a hack for a specific case.
+      // Handle closed edges (seam edges) that have a single vertex shared by both ends.
+      // In this case, we need to add two paves: one for the start and one for the end
+      // of the edge, even though they reference the same vertex.
       if (aVertexIndices.Size() == 1)
       {
         aVertex.Reverse();
@@ -481,12 +483,12 @@ void BOPDS_DS::InitPaveBlocks(const int theEdgeIndex)
   {
     for (TopoDS_Iterator anEdgeIter(anEdge, false, true); anEdgeIter.More(); anEdgeIter.Next())
     {
-      const TopoDS_Vertex&   aVertex        = TopoDS::Vertex(anEdgeIter.Value());
-      const int              theVertexIndex = Index(aVertex);
-      const BOPDS_ShapeInfo& aVertexInfo    = ShapeInfo(theVertexIndex);
+      const TopoDS_Vertex&   aVertex      = TopoDS::Vertex(anEdgeIter.Value());
+      const int              aVertexIndex = Index(aVertex);
+      const BOPDS_ShapeInfo& aVertexInfo  = ShapeInfo(aVertexIndex);
       const double aVertexParam = aVertexInfo.HasFlag() ? ComputeParameter(aVertex, anEdge)
                                                         : BRep_Tool::Parameter(aVertex, anEdge);
-      aPaveBlock->AppendExtPave1(BOPDS_Pave(GetSameDomainIndex(theVertexIndex), aVertexParam));
+      aPaveBlock->AppendExtPave1(BOPDS_Pave(GetSameDomainIndex(aVertexIndex), aVertexParam));
     }
   }
 
