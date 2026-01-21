@@ -1010,7 +1010,7 @@ void MeshVS_Mesh::HilightSelected(
         if (!IsHiddenNode(anIt.Key()))
           aSelNodes.Add(anIt.Key());
 
-      anIt = TColStd_MapIteratorOfPackedMapOfInteger(GetDataSource()->GetAllElements());
+      anIt = TColStd_PackedMapOfInteger::Iterator(GetDataSource()->GetAllElements());
       for (; anIt.More(); anIt.Next())
         if (!IsHiddenElem(anIt.Key()))
           aSelElements.Add(anIt.Key());
