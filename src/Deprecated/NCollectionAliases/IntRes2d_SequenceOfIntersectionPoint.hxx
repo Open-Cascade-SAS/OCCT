@@ -23,9 +23,11 @@
 #include <IntRes2d_IntersectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntRes2d_SequenceOfIntersectionPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntRes2d_IntersectionPoint> directly.")
+Standard_HEADER_DEPRECATED("IntRes2d_SequenceOfIntersectionPoint.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Sequence<IntRes2d_IntersectionPoint> directly.")
 
-Standard_DEPRECATED("IntRes2d_SequenceOfIntersectionPoint is deprecated, use NCollection_Sequence<IntRes2d_IntersectionPoint> directly")
+  Standard_DEPRECATED("IntRes2d_SequenceOfIntersectionPoint is deprecated, use "
+                      "NCollection_Sequence<IntRes2d_IntersectionPoint> directly")
 typedef NCollection_Sequence<IntRes2d_IntersectionPoint> IntRes2d_SequenceOfIntersectionPoint;
 
 #endif // _IntRes2d_SequenceOfIntersectionPoint_hxx

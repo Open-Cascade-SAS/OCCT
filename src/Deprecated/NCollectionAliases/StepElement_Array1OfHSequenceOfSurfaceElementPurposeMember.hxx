@@ -14,7 +14,9 @@
 //! @file StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>> directly instead.
+//!             Use
+//!             NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>>
+//!             directly instead.
 
 #ifndef _StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember_hxx
 #define _StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember_hxx
@@ -23,9 +25,16 @@
 #include <StepElement_HSequenceOfSurfaceElementPurposeMember.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. "
+  "Use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>> "
+  "directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember is deprecated, use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>> directly")
-typedef NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>> StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember;
+  Standard_DEPRECATED(
+    "StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>> "
+    "directly")
+typedef NCollection_Array1<opencascade::handle<StepElement_HSequenceOfSurfaceElementPurposeMember>>
+  StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember;
 
 #endif // _StepElement_Array1OfHSequenceOfSurfaceElementPurposeMember_hxx

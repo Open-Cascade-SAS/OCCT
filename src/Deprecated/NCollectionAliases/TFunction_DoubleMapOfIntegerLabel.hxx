@@ -24,11 +24,15 @@
 #include <TDF_Label.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-Standard_HEADER_DEPRECATED("TFunction_DoubleMapOfIntegerLabel.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TFunction_DoubleMapOfIntegerLabel.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TFunction_DoubleMapOfIntegerLabel is deprecated, use NCollection_DoubleMap<int, TDF_Label> directly")
+  Standard_DEPRECATED("TFunction_DoubleMapOfIntegerLabel is deprecated, use "
+                      "NCollection_DoubleMap<int, TDF_Label> directly")
 typedef NCollection_DoubleMap<int, TDF_Label> TFunction_DoubleMapOfIntegerLabel;
-Standard_DEPRECATED("TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel is deprecated, use NCollection_DoubleMap<int, TDF_Label>::Iterator directly")
-typedef NCollection_DoubleMap<int, TDF_Label>::Iterator TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel;
+Standard_DEPRECATED("TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel is deprecated, use "
+                    "NCollection_DoubleMap<int, TDF_Label>::Iterator directly")
+typedef NCollection_DoubleMap<int, TDF_Label>::Iterator
+  TFunction_DoubleMapIteratorOfDoubleMapOfIntegerLabel;
 
 #endif // _TFunction_DoubleMapOfIntegerLabel_hxx

@@ -14,7 +14,8 @@
 //! @file VrmlData_DataMapOfShapeAppearance.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_DataMap<opencascade::handle<TopoDS_TShape>, opencascade::handle<VrmlData_Appearance>> directly instead.
+//!             Use NCollection_DataMap<opencascade::handle<TopoDS_TShape>,
+//!             opencascade::handle<VrmlData_Appearance>> directly instead.
 
 #ifndef _VrmlData_DataMapOfShapeAppearance_hxx
 #define _VrmlData_DataMapOfShapeAppearance_hxx
@@ -24,9 +25,15 @@
 #include <VrmlData_Appearance.hxx>
 #include <TopoDS_TShape.hxx>
 
-Standard_HEADER_DEPRECATED("VrmlData_DataMapOfShapeAppearance.hxx is deprecated since OCCT 8.0.0. Use NCollection_DataMap<opencascade::handle<TopoDS_TShape>, opencascade::handle<VrmlData_Appearance>> directly.")
+Standard_HEADER_DEPRECATED("VrmlData_DataMapOfShapeAppearance.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_DataMap<opencascade::handle<TopoDS_TShape>, "
+                           "opencascade::handle<VrmlData_Appearance>> directly.")
 
-Standard_DEPRECATED("VrmlData_DataMapOfShapeAppearance is deprecated, use NCollection_DataMap<opencascade::handle<TopoDS_TShape>, opencascade::handle<VrmlData_Appearance>> directly")
-typedef NCollection_DataMap<opencascade::handle<TopoDS_TShape>, opencascade::handle<VrmlData_Appearance>> VrmlData_DataMapOfShapeAppearance;
+  Standard_DEPRECATED("VrmlData_DataMapOfShapeAppearance is deprecated, use "
+                      "NCollection_DataMap<opencascade::handle<TopoDS_TShape>, "
+                      "opencascade::handle<VrmlData_Appearance>> directly")
+typedef NCollection_DataMap<opencascade::handle<TopoDS_TShape>,
+                            opencascade::handle<VrmlData_Appearance>>
+  VrmlData_DataMapOfShapeAppearance;
 
 #endif // _VrmlData_DataMapOfShapeAppearance_hxx

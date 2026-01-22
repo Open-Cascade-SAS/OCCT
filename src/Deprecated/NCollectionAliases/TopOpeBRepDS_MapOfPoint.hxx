@@ -24,11 +24,15 @@
 #include <TopOpeBRepDS_PointData.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_MapOfPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TopOpeBRepDS_MapOfPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_MapOfPoint is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_PointData> directly")
+  Standard_DEPRECATED("TopOpeBRepDS_MapOfPoint is deprecated, use NCollection_DataMap<int, "
+                      "TopOpeBRepDS_PointData> directly")
 typedef NCollection_DataMap<int, TopOpeBRepDS_PointData> TopOpeBRepDS_MapOfPoint;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfPoint is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_PointData>::Iterator directly")
-typedef NCollection_DataMap<int, TopOpeBRepDS_PointData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfPoint;
+Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfPoint is deprecated, use "
+                    "NCollection_DataMap<int, TopOpeBRepDS_PointData>::Iterator directly")
+typedef NCollection_DataMap<int, TopOpeBRepDS_PointData>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfMapOfPoint;
 
 #endif // _TopOpeBRepDS_MapOfPoint_hxx

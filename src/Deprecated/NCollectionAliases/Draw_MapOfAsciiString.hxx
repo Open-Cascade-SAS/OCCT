@@ -23,9 +23,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("Draw_MapOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<TCollection_AsciiString> directly.")
+Standard_HEADER_DEPRECATED("Draw_MapOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedMap<TCollection_AsciiString> directly.")
 
-Standard_DEPRECATED("Draw_MapOfAsciiString is deprecated, use NCollection_IndexedMap<TCollection_AsciiString> directly")
+  Standard_DEPRECATED("Draw_MapOfAsciiString is deprecated, use "
+                      "NCollection_IndexedMap<TCollection_AsciiString> directly")
 typedef NCollection_IndexedMap<TCollection_AsciiString> Draw_MapOfAsciiString;
 
 #endif // _Draw_MapOfAsciiString_hxx

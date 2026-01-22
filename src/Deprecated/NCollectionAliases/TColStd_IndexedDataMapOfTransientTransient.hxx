@@ -14,7 +14,8 @@
 //! @file TColStd_IndexedDataMapOfTransientTransient.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Standard_Transient>> directly instead.
+//!             Use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>,
+//!             opencascade::handle<Standard_Transient>> directly instead.
 
 #ifndef _TColStd_IndexedDataMapOfTransientTransient_hxx
 #define _TColStd_IndexedDataMapOfTransientTransient_hxx
@@ -23,9 +24,16 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_IndexedDataMapOfTransientTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Standard_Transient>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_IndexedDataMapOfTransientTransient.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
+  "opencascade::handle<Standard_Transient>> directly.")
 
-Standard_DEPRECATED("TColStd_IndexedDataMapOfTransientTransient is deprecated, use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Standard_Transient>> directly")
-typedef NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Standard_Transient>> TColStd_IndexedDataMapOfTransientTransient;
+  Standard_DEPRECATED("TColStd_IndexedDataMapOfTransientTransient is deprecated, use "
+                      "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
+                      "opencascade::handle<Standard_Transient>> directly")
+typedef NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>,
+                                   opencascade::handle<Standard_Transient>>
+  TColStd_IndexedDataMapOfTransientTransient;
 
 #endif // _TColStd_IndexedDataMapOfTransientTransient_hxx

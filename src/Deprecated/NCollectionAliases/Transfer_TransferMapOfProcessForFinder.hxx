@@ -14,7 +14,8 @@
 //! @file Transfer_TransferMapOfProcessForFinder.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly instead.
+//!             Use NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>,
+//!             opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly instead.
 
 #ifndef _Transfer_TransferMapOfProcessForFinder_hxx
 #define _Transfer_TransferMapOfProcessForFinder_hxx
@@ -25,9 +26,17 @@
 #include <Transfer_Finder.hxx>
 #include <Transfer_FindHasher.hxx>
 
-Standard_HEADER_DEPRECATED("Transfer_TransferMapOfProcessForFinder.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly.")
+Standard_HEADER_DEPRECATED(
+  "Transfer_TransferMapOfProcessForFinder.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, "
+  "opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly.")
 
-Standard_DEPRECATED("Transfer_TransferMapOfProcessForFinder is deprecated, use NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly")
-typedef NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, opencascade::handle<Transfer_Binder>, Transfer_FindHasher> Transfer_TransferMapOfProcessForFinder;
+  Standard_DEPRECATED("Transfer_TransferMapOfProcessForFinder is deprecated, use "
+                      "NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>, "
+                      "opencascade::handle<Transfer_Binder>, Transfer_FindHasher> directly")
+typedef NCollection_IndexedDataMap<opencascade::handle<Transfer_Finder>,
+                                   opencascade::handle<Transfer_Binder>,
+                                   Transfer_FindHasher>
+  Transfer_TransferMapOfProcessForFinder;
 
 #endif // _Transfer_TransferMapOfProcessForFinder_hxx

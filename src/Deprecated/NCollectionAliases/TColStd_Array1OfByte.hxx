@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_Array1OfByte.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<uint8_t> directly.")
+Standard_HEADER_DEPRECATED("TColStd_Array1OfByte.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<uint8_t> directly.")
 
-Standard_DEPRECATED("TColStd_Array1OfByte is deprecated, use NCollection_Array1<uint8_t> directly")
+  Standard_DEPRECATED(
+    "TColStd_Array1OfByte is deprecated, use NCollection_Array1<uint8_t> directly")
 typedef NCollection_Array1<uint8_t> TColStd_Array1OfByte;
 
 #endif // _TColStd_Array1OfByte_hxx

@@ -23,9 +23,13 @@
 #include <IGESDimen_GeneralNote.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDimen_Array1OfGeneralNote.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESDimen_GeneralNote>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDimen_Array1OfGeneralNote.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESDimen_GeneralNote>> directly.")
 
-Standard_DEPRECATED("IGESDimen_Array1OfGeneralNote is deprecated, use NCollection_Array1<opencascade::handle<IGESDimen_GeneralNote>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESDimen_GeneralNote>> IGESDimen_Array1OfGeneralNote;
+  Standard_DEPRECATED("IGESDimen_Array1OfGeneralNote is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESDimen_GeneralNote>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESDimen_GeneralNote>>
+  IGESDimen_Array1OfGeneralNote;
 
 #endif // _IGESDimen_Array1OfGeneralNote_hxx

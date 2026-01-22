@@ -23,9 +23,12 @@
 #include <AppParCurves_Array1OfConstraintCouple.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("AppParCurves_HArray1OfConstraintCouple.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<AppParCurves_ConstraintCouple> directly.")
+Standard_HEADER_DEPRECATED(
+  "AppParCurves_HArray1OfConstraintCouple.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<AppParCurves_ConstraintCouple> directly.")
 
-Standard_DEPRECATED("AppParCurves_HArray1OfConstraintCouple is deprecated, use NCollection_HArray1<AppParCurves_ConstraintCouple> directly")
+  Standard_DEPRECATED("AppParCurves_HArray1OfConstraintCouple is deprecated, use "
+                      "NCollection_HArray1<AppParCurves_ConstraintCouple> directly")
 typedef NCollection_HArray1<AppParCurves_ConstraintCouple> AppParCurves_HArray1OfConstraintCouple;
 
 #endif // _AppParCurves_HArray1OfConstraintCouple_hxx

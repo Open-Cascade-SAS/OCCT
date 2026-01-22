@@ -23,11 +23,17 @@
 #include <BRep_CurveRepresentation.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("BRep_ListOfCurveRepresentation.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRep_ListOfCurveRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("BRep_ListOfCurveRepresentation is deprecated, use NCollection_List<opencascade::handle<BRep_CurveRepresentation>> directly")
-typedef NCollection_List<opencascade::handle<BRep_CurveRepresentation>> BRep_ListOfCurveRepresentation;
-Standard_DEPRECATED("BRep_ListIteratorOfListOfCurveRepresentation is deprecated, use NCollection_List<opencascade::handle<BRep_CurveRepresentation>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<BRep_CurveRepresentation>>::Iterator BRep_ListIteratorOfListOfCurveRepresentation;
+  Standard_DEPRECATED("BRep_ListOfCurveRepresentation is deprecated, use "
+                      "NCollection_List<opencascade::handle<BRep_CurveRepresentation>> directly")
+typedef NCollection_List<opencascade::handle<BRep_CurveRepresentation>>
+  BRep_ListOfCurveRepresentation;
+Standard_DEPRECATED(
+  "BRep_ListIteratorOfListOfCurveRepresentation is deprecated, use "
+  "NCollection_List<opencascade::handle<BRep_CurveRepresentation>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<BRep_CurveRepresentation>>::Iterator
+  BRep_ListIteratorOfListOfCurveRepresentation;
 
 #endif // _BRep_ListOfCurveRepresentation_hxx

@@ -23,9 +23,13 @@
 #include <StepVisual_Array1OfBoxCharacteristicSelect.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_HArray1OfBoxCharacteristicSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepVisual_BoxCharacteristicSelect> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_HArray1OfBoxCharacteristicSelect.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepVisual_BoxCharacteristicSelect> directly.")
 
-Standard_DEPRECATED("StepVisual_HArray1OfBoxCharacteristicSelect is deprecated, use NCollection_HArray1<StepVisual_BoxCharacteristicSelect> directly")
-typedef NCollection_HArray1<StepVisual_BoxCharacteristicSelect> StepVisual_HArray1OfBoxCharacteristicSelect;
+  Standard_DEPRECATED("StepVisual_HArray1OfBoxCharacteristicSelect is deprecated, use "
+                      "NCollection_HArray1<StepVisual_BoxCharacteristicSelect> directly")
+typedef NCollection_HArray1<StepVisual_BoxCharacteristicSelect>
+  StepVisual_HArray1OfBoxCharacteristicSelect;
 
 #endif // _StepVisual_HArray1OfBoxCharacteristicSelect_hxx

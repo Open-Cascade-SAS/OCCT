@@ -23,9 +23,11 @@
 #include <Poly_Triangle.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Poly_Array1OfTriangle.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<Poly_Triangle> directly.")
+Standard_HEADER_DEPRECATED("Poly_Array1OfTriangle.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<Poly_Triangle> directly.")
 
-Standard_DEPRECATED("Poly_Array1OfTriangle is deprecated, use NCollection_Array1<Poly_Triangle> directly")
+  Standard_DEPRECATED(
+    "Poly_Array1OfTriangle is deprecated, use NCollection_Array1<Poly_Triangle> directly")
 typedef NCollection_Array1<Poly_Triangle> Poly_Array1OfTriangle;
 
 #endif // _Poly_Array1OfTriangle_hxx

@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_SequenceOfBoolean.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<bool> directly.")
+Standard_HEADER_DEPRECATED("TColStd_SequenceOfBoolean.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<bool> directly.")
 
-Standard_DEPRECATED("TColStd_SequenceOfBoolean is deprecated, use NCollection_Sequence<bool> directly")
+  Standard_DEPRECATED(
+    "TColStd_SequenceOfBoolean is deprecated, use NCollection_Sequence<bool> directly")
 typedef NCollection_Sequence<bool> TColStd_SequenceOfBoolean;
 
 #endif // _TColStd_SequenceOfBoolean_hxx

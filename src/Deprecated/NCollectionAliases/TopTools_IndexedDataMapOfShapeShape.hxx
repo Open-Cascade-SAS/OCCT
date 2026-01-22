@@ -14,7 +14,8 @@
 //! @file TopTools_IndexedDataMapOfShapeShape.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> directly instead.
+//!             Use NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
+//!             directly instead.
 
 #ifndef _TopTools_IndexedDataMapOfShapeShape_hxx
 #define _TopTools_IndexedDataMapOfShapeShape_hxx
@@ -24,9 +25,14 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_IndexedDataMapOfShapeShape.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> directly.")
+Standard_HEADER_DEPRECATED(
+  "TopTools_IndexedDataMapOfShapeShape.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> directly.")
 
-Standard_DEPRECATED("TopTools_IndexedDataMapOfShapeShape is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> directly")
-typedef NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> TopTools_IndexedDataMapOfShapeShape;
+  Standard_DEPRECATED(
+    "TopTools_IndexedDataMapOfShapeShape is deprecated, use "
+    "NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> directly")
+typedef NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>
+  TopTools_IndexedDataMapOfShapeShape;
 
 #endif // _TopTools_IndexedDataMapOfShapeShape_hxx

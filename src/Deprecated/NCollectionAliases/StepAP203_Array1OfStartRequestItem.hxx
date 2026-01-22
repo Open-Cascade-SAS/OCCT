@@ -23,9 +23,11 @@
 #include <StepAP203_StartRequestItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP203_Array1OfStartRequestItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepAP203_StartRequestItem> directly.")
+Standard_HEADER_DEPRECATED("StepAP203_Array1OfStartRequestItem.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepAP203_StartRequestItem> directly.")
 
-Standard_DEPRECATED("StepAP203_Array1OfStartRequestItem is deprecated, use NCollection_Array1<StepAP203_StartRequestItem> directly")
+  Standard_DEPRECATED("StepAP203_Array1OfStartRequestItem is deprecated, use "
+                      "NCollection_Array1<StepAP203_StartRequestItem> directly")
 typedef NCollection_Array1<StepAP203_StartRequestItem> StepAP203_Array1OfStartRequestItem;
 
 #endif // _StepAP203_Array1OfStartRequestItem_hxx

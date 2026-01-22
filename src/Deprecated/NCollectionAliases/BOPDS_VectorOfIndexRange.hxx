@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_IndexRange.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfIndexRange.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_IndexRange> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfIndexRange.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_IndexRange> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfIndexRange is deprecated, use NCollection_Vector<BOPDS_IndexRange> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfIndexRange is deprecated, use NCollection_Vector<BOPDS_IndexRange> directly")
 typedef NCollection_Vector<BOPDS_IndexRange> BOPDS_VectorOfIndexRange;
 
 #endif // _BOPDS_VectorOfIndexRange_hxx

@@ -23,9 +23,12 @@
 #include <Contap_ThePathPointOfTheSearch.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Contap_SequenceOfPathPointOfTheSearch.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Contap_ThePathPointOfTheSearch> directly.")
+Standard_HEADER_DEPRECATED(
+  "Contap_SequenceOfPathPointOfTheSearch.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<Contap_ThePathPointOfTheSearch> directly.")
 
-Standard_DEPRECATED("Contap_SequenceOfPathPointOfTheSearch is deprecated, use NCollection_Sequence<Contap_ThePathPointOfTheSearch> directly")
+  Standard_DEPRECATED("Contap_SequenceOfPathPointOfTheSearch is deprecated, use "
+                      "NCollection_Sequence<Contap_ThePathPointOfTheSearch> directly")
 typedef NCollection_Sequence<Contap_ThePathPointOfTheSearch> Contap_SequenceOfPathPointOfTheSearch;
 
 #endif // _Contap_SequenceOfPathPointOfTheSearch_hxx

@@ -23,11 +23,15 @@
 #include <IntTools_CurveRangeSample.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("IntTools_ListOfCurveRangeSample.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("IntTools_ListOfCurveRangeSample.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("IntTools_ListOfCurveRangeSample is deprecated, use NCollection_List<IntTools_CurveRangeSample> directly")
+  Standard_DEPRECATED("IntTools_ListOfCurveRangeSample is deprecated, use "
+                      "NCollection_List<IntTools_CurveRangeSample> directly")
 typedef NCollection_List<IntTools_CurveRangeSample> IntTools_ListOfCurveRangeSample;
-Standard_DEPRECATED("IntTools_ListIteratorOfListOfCurveRangeSample is deprecated, use NCollection_List<IntTools_CurveRangeSample>::Iterator directly")
-typedef NCollection_List<IntTools_CurveRangeSample>::Iterator IntTools_ListIteratorOfListOfCurveRangeSample;
+Standard_DEPRECATED("IntTools_ListIteratorOfListOfCurveRangeSample is deprecated, use "
+                    "NCollection_List<IntTools_CurveRangeSample>::Iterator directly")
+typedef NCollection_List<IntTools_CurveRangeSample>::Iterator
+  IntTools_ListIteratorOfListOfCurveRangeSample;
 
 #endif // _IntTools_ListOfCurveRangeSample_hxx

@@ -23,9 +23,13 @@
 #include <IGESGraph_TextFontDef.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESGraph_Array1OfTextFontDef.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESGraph_TextFontDef>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESGraph_Array1OfTextFontDef.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESGraph_TextFontDef>> directly.")
 
-Standard_DEPRECATED("IGESGraph_Array1OfTextFontDef is deprecated, use NCollection_Array1<opencascade::handle<IGESGraph_TextFontDef>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESGraph_TextFontDef>> IGESGraph_Array1OfTextFontDef;
+  Standard_DEPRECATED("IGESGraph_Array1OfTextFontDef is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESGraph_TextFontDef>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESGraph_TextFontDef>>
+  IGESGraph_Array1OfTextFontDef;
 
 #endif // _IGESGraph_Array1OfTextFontDef_hxx

@@ -23,9 +23,11 @@
 #include <IntCurveSurface_IntersectionSegment.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntCurveSurface_SequenceOfSeg.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntCurveSurface_IntersectionSegment> directly.")
+Standard_HEADER_DEPRECATED("IntCurveSurface_SequenceOfSeg.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<IntCurveSurface_IntersectionSegment> directly.")
 
-Standard_DEPRECATED("IntCurveSurface_SequenceOfSeg is deprecated, use NCollection_Sequence<IntCurveSurface_IntersectionSegment> directly")
+  Standard_DEPRECATED("IntCurveSurface_SequenceOfSeg is deprecated, use "
+                      "NCollection_Sequence<IntCurveSurface_IntersectionSegment> directly")
 typedef NCollection_Sequence<IntCurveSurface_IntersectionSegment> IntCurveSurface_SequenceOfSeg;
 
 #endif // _IntCurveSurface_SequenceOfSeg_hxx

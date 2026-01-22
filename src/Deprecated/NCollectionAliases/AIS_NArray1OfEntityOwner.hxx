@@ -23,9 +23,12 @@
 #include <NCollection_Array1.hxx>
 #include <SelectMgr_EntityOwner.hxx>
 
-Standard_HEADER_DEPRECATED("AIS_NArray1OfEntityOwner.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<SelectMgr_EntityOwner>> directly.")
+Standard_HEADER_DEPRECATED(
+  "AIS_NArray1OfEntityOwner.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<SelectMgr_EntityOwner>> directly.")
 
-Standard_DEPRECATED("AIS_NArray1OfEntityOwner is deprecated, use NCollection_Array1<opencascade::handle<SelectMgr_EntityOwner>> directly")
+  Standard_DEPRECATED("AIS_NArray1OfEntityOwner is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<SelectMgr_EntityOwner>> directly")
 typedef NCollection_Array1<opencascade::handle<SelectMgr_EntityOwner>> AIS_NArray1OfEntityOwner;
 
 #endif // _AIS_NArray1OfEntityOwner_hxx

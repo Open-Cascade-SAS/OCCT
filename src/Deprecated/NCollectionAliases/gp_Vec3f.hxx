@@ -22,9 +22,10 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Vec3.hxx>
 
-Standard_HEADER_DEPRECATED("gp_Vec3f.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vec3<float> directly.")
+Standard_HEADER_DEPRECATED(
+  "gp_Vec3f.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vec3<float> directly.")
 
-Standard_DEPRECATED("gp_Vec3f is deprecated, use NCollection_Vec3<float> directly")
+  Standard_DEPRECATED("gp_Vec3f is deprecated, use NCollection_Vec3<float> directly")
 typedef NCollection_Vec3<float> gp_Vec3f;
 
 #endif // _gp_Vec3f_hxx

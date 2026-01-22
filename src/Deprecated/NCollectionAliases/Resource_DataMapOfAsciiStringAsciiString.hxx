@@ -23,11 +23,18 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Resource_DataMapOfAsciiStringAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("Resource_DataMapOfAsciiStringAsciiString.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Resource_DataMapOfAsciiStringAsciiString is deprecated, use NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> directly")
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> Resource_DataMapOfAsciiStringAsciiString;
-Standard_DEPRECATED("Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString is deprecated, use NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString;
+  Standard_DEPRECATED(
+    "Resource_DataMapOfAsciiStringAsciiString is deprecated, use "
+    "NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString> directly")
+typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>
+  Resource_DataMapOfAsciiStringAsciiString;
+Standard_DEPRECATED(
+  "Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString is deprecated, use "
+  "NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString, TCollection_AsciiString>::Iterator
+  Resource_DataMapIteratorOfDataMapOfAsciiStringAsciiString;
 
 #endif // _Resource_DataMapOfAsciiStringAsciiString_hxx

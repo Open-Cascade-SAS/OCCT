@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_FaceInfo.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfFaceInfo.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_FaceInfo> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfFaceInfo.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_FaceInfo> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfFaceInfo is deprecated, use NCollection_Vector<BOPDS_FaceInfo> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfFaceInfo is deprecated, use NCollection_Vector<BOPDS_FaceInfo> directly")
 typedef NCollection_Vector<BOPDS_FaceInfo> BOPDS_VectorOfFaceInfo;
 
 #endif // _BOPDS_VectorOfFaceInfo_hxx

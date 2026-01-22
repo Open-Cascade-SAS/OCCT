@@ -23,9 +23,11 @@
 #include <MAT2d_Connexion.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("MAT2d_SequenceOfConnexion.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<MAT2d_Connexion>> directly.")
+Standard_HEADER_DEPRECATED("MAT2d_SequenceOfConnexion.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<MAT2d_Connexion>> directly.")
 
-Standard_DEPRECATED("MAT2d_SequenceOfConnexion is deprecated, use NCollection_Sequence<opencascade::handle<MAT2d_Connexion>> directly")
+  Standard_DEPRECATED("MAT2d_SequenceOfConnexion is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<MAT2d_Connexion>> directly")
 typedef NCollection_Sequence<opencascade::handle<MAT2d_Connexion>> MAT2d_SequenceOfConnexion;
 
 #endif // _MAT2d_SequenceOfConnexion_hxx

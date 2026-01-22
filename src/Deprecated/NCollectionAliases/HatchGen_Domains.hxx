@@ -23,9 +23,11 @@
 #include <HatchGen_Domain.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("HatchGen_Domains.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<HatchGen_Domain> directly.")
+Standard_HEADER_DEPRECATED("HatchGen_Domains.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<HatchGen_Domain> directly.")
 
-Standard_DEPRECATED("HatchGen_Domains is deprecated, use NCollection_Sequence<HatchGen_Domain> directly")
+  Standard_DEPRECATED(
+    "HatchGen_Domains is deprecated, use NCollection_Sequence<HatchGen_Domain> directly")
 typedef NCollection_Sequence<HatchGen_Domain> HatchGen_Domains;
 
 #endif // _HatchGen_Domains_hxx

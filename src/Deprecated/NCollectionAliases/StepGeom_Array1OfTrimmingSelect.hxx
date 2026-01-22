@@ -23,9 +23,11 @@
 #include <StepGeom_TrimmingSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_Array1OfTrimmingSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepGeom_TrimmingSelect> directly.")
+Standard_HEADER_DEPRECATED("StepGeom_Array1OfTrimmingSelect.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepGeom_TrimmingSelect> directly.")
 
-Standard_DEPRECATED("StepGeom_Array1OfTrimmingSelect is deprecated, use NCollection_Array1<StepGeom_TrimmingSelect> directly")
+  Standard_DEPRECATED("StepGeom_Array1OfTrimmingSelect is deprecated, use "
+                      "NCollection_Array1<StepGeom_TrimmingSelect> directly")
 typedef NCollection_Array1<StepGeom_TrimmingSelect> StepGeom_Array1OfTrimmingSelect;
 
 #endif // _StepGeom_Array1OfTrimmingSelect_hxx

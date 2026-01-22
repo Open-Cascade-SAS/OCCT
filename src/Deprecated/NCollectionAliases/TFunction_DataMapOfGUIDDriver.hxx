@@ -24,11 +24,18 @@
 #include <Standard_GUID.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TFunction_DataMapOfGUIDDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TFunction_DataMapOfGUIDDriver.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("TFunction_DataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>> directly")
-typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>> TFunction_DataMapOfGUIDDriver;
-Standard_DEPRECATED("TFunction_DataMapIteratorOfDataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>>::Iterator directly")
-typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>>::Iterator TFunction_DataMapIteratorOfDataMapOfGUIDDriver;
+  Standard_DEPRECATED(
+    "TFunction_DataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, "
+    "opencascade::handle<TFunction_Driver>> directly")
+typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>>
+  TFunction_DataMapOfGUIDDriver;
+Standard_DEPRECATED(
+  "TFunction_DataMapIteratorOfDataMapOfGUIDDriver is deprecated, use "
+  "NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>>::Iterator directly")
+typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TFunction_Driver>>::Iterator
+  TFunction_DataMapIteratorOfDataMapOfGUIDDriver;
 
 #endif // _TFunction_DataMapOfGUIDDriver_hxx

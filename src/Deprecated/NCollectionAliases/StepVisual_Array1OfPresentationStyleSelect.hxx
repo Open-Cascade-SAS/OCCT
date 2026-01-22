@@ -23,9 +23,13 @@
 #include <StepVisual_PresentationStyleSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfPresentationStyleSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepVisual_PresentationStyleSelect> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfPresentationStyleSelect.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepVisual_PresentationStyleSelect> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfPresentationStyleSelect is deprecated, use NCollection_Array1<StepVisual_PresentationStyleSelect> directly")
-typedef NCollection_Array1<StepVisual_PresentationStyleSelect> StepVisual_Array1OfPresentationStyleSelect;
+  Standard_DEPRECATED("StepVisual_Array1OfPresentationStyleSelect is deprecated, use "
+                      "NCollection_Array1<StepVisual_PresentationStyleSelect> directly")
+typedef NCollection_Array1<StepVisual_PresentationStyleSelect>
+  StepVisual_Array1OfPresentationStyleSelect;
 
 #endif // _StepVisual_Array1OfPresentationStyleSelect_hxx

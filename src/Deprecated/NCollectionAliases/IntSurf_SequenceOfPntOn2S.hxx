@@ -23,9 +23,11 @@
 #include <IntSurf_PntOn2S.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntSurf_SequenceOfPntOn2S.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntSurf_PntOn2S> directly.")
+Standard_HEADER_DEPRECATED("IntSurf_SequenceOfPntOn2S.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<IntSurf_PntOn2S> directly.")
 
-Standard_DEPRECATED("IntSurf_SequenceOfPntOn2S is deprecated, use NCollection_Sequence<IntSurf_PntOn2S> directly")
+  Standard_DEPRECATED(
+    "IntSurf_SequenceOfPntOn2S is deprecated, use NCollection_Sequence<IntSurf_PntOn2S> directly")
 typedef NCollection_Sequence<IntSurf_PntOn2S> IntSurf_SequenceOfPntOn2S;
 
 #endif // _IntSurf_SequenceOfPntOn2S_hxx

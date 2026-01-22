@@ -24,11 +24,16 @@
 #include <MAT_Bisector.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MAT_DataMapOfIntegerBisector.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MAT_DataMapOfIntegerBisector.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("MAT_DataMapOfIntegerBisector is deprecated, use NCollection_DataMap<int, opencascade::handle<MAT_Bisector>> directly")
+  Standard_DEPRECATED("MAT_DataMapOfIntegerBisector is deprecated, use NCollection_DataMap<int, "
+                      "opencascade::handle<MAT_Bisector>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<MAT_Bisector>> MAT_DataMapOfIntegerBisector;
-Standard_DEPRECATED("MAT_DataMapIteratorOfDataMapOfIntegerBisector is deprecated, use NCollection_DataMap<int, opencascade::handle<MAT_Bisector>>::Iterator directly")
-typedef NCollection_DataMap<int, opencascade::handle<MAT_Bisector>>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerBisector;
+Standard_DEPRECATED(
+  "MAT_DataMapIteratorOfDataMapOfIntegerBisector is deprecated, use NCollection_DataMap<int, "
+  "opencascade::handle<MAT_Bisector>>::Iterator directly")
+typedef NCollection_DataMap<int, opencascade::handle<MAT_Bisector>>::Iterator
+  MAT_DataMapIteratorOfDataMapOfIntegerBisector;
 
 #endif // _MAT_DataMapOfIntegerBisector_hxx

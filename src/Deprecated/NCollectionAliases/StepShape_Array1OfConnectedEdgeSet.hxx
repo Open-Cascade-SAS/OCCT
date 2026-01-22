@@ -14,7 +14,8 @@
 //! @file StepShape_Array1OfConnectedEdgeSet.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly
+//!             instead.
 
 #ifndef _StepShape_Array1OfConnectedEdgeSet_hxx
 #define _StepShape_Array1OfConnectedEdgeSet_hxx
@@ -23,9 +24,14 @@
 #include <StepShape_ConnectedEdgeSet.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepShape_Array1OfConnectedEdgeSet.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepShape_Array1OfConnectedEdgeSet.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly.")
 
-Standard_DEPRECATED("StepShape_Array1OfConnectedEdgeSet is deprecated, use NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly")
-typedef NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> StepShape_Array1OfConnectedEdgeSet;
+  Standard_DEPRECATED(
+    "StepShape_Array1OfConnectedEdgeSet is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>> directly")
+typedef NCollection_Array1<opencascade::handle<StepShape_ConnectedEdgeSet>>
+  StepShape_Array1OfConnectedEdgeSet;
 
 #endif // _StepShape_Array1OfConnectedEdgeSet_hxx

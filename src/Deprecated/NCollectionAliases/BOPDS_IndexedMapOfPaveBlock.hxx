@@ -23,9 +23,11 @@
 #include <NCollection_IndexedMap.hxx>
 #include <BOPDS_PaveBlock.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_IndexedMapOfPaveBlock.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<opencascade::handle<BOPDS_PaveBlock>> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_IndexedMapOfPaveBlock.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedMap<opencascade::handle<BOPDS_PaveBlock>> directly.")
 
-Standard_DEPRECATED("BOPDS_IndexedMapOfPaveBlock is deprecated, use NCollection_IndexedMap<opencascade::handle<BOPDS_PaveBlock>> directly")
+  Standard_DEPRECATED("BOPDS_IndexedMapOfPaveBlock is deprecated, use "
+                      "NCollection_IndexedMap<opencascade::handle<BOPDS_PaveBlock>> directly")
 typedef NCollection_IndexedMap<opencascade::handle<BOPDS_PaveBlock>> BOPDS_IndexedMapOfPaveBlock;
 
 #endif // _BOPDS_IndexedMapOfPaveBlock_hxx

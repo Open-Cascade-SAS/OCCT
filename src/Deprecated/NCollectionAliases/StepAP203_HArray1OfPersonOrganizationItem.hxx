@@ -23,9 +23,13 @@
 #include <StepAP203_Array1OfPersonOrganizationItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP203_HArray1OfPersonOrganizationItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP203_PersonOrganizationItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP203_HArray1OfPersonOrganizationItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepAP203_PersonOrganizationItem> directly.")
 
-Standard_DEPRECATED("StepAP203_HArray1OfPersonOrganizationItem is deprecated, use NCollection_HArray1<StepAP203_PersonOrganizationItem> directly")
-typedef NCollection_HArray1<StepAP203_PersonOrganizationItem> StepAP203_HArray1OfPersonOrganizationItem;
+  Standard_DEPRECATED("StepAP203_HArray1OfPersonOrganizationItem is deprecated, use "
+                      "NCollection_HArray1<StepAP203_PersonOrganizationItem> directly")
+typedef NCollection_HArray1<StepAP203_PersonOrganizationItem>
+  StepAP203_HArray1OfPersonOrganizationItem;
 
 #endif // _StepAP203_HArray1OfPersonOrganizationItem_hxx

@@ -24,11 +24,15 @@
 #include <MAT_Node.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MAT_DataMapOfIntegerNode.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "MAT_DataMapOfIntegerNode.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("MAT_DataMapOfIntegerNode is deprecated, use NCollection_DataMap<int, opencascade::handle<MAT_Node>> directly")
+  Standard_DEPRECATED("MAT_DataMapOfIntegerNode is deprecated, use NCollection_DataMap<int, "
+                      "opencascade::handle<MAT_Node>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<MAT_Node>> MAT_DataMapOfIntegerNode;
-Standard_DEPRECATED("MAT_DataMapIteratorOfDataMapOfIntegerNode is deprecated, use NCollection_DataMap<int, opencascade::handle<MAT_Node>>::Iterator directly")
-typedef NCollection_DataMap<int, opencascade::handle<MAT_Node>>::Iterator MAT_DataMapIteratorOfDataMapOfIntegerNode;
+Standard_DEPRECATED("MAT_DataMapIteratorOfDataMapOfIntegerNode is deprecated, use "
+                    "NCollection_DataMap<int, opencascade::handle<MAT_Node>>::Iterator directly")
+typedef NCollection_DataMap<int, opencascade::handle<MAT_Node>>::Iterator
+  MAT_DataMapIteratorOfDataMapOfIntegerNode;
 
 #endif // _MAT_DataMapOfIntegerNode_hxx

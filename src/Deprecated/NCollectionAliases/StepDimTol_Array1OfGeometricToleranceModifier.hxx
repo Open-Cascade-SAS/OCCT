@@ -23,9 +23,13 @@
 #include <StepDimTol_GeometricToleranceModifier.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepDimTol_Array1OfGeometricToleranceModifier.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepDimTol_GeometricToleranceModifier> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepDimTol_Array1OfGeometricToleranceModifier.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepDimTol_GeometricToleranceModifier> directly.")
 
-Standard_DEPRECATED("StepDimTol_Array1OfGeometricToleranceModifier is deprecated, use NCollection_Array1<StepDimTol_GeometricToleranceModifier> directly")
-typedef NCollection_Array1<StepDimTol_GeometricToleranceModifier> StepDimTol_Array1OfGeometricToleranceModifier;
+  Standard_DEPRECATED("StepDimTol_Array1OfGeometricToleranceModifier is deprecated, use "
+                      "NCollection_Array1<StepDimTol_GeometricToleranceModifier> directly")
+typedef NCollection_Array1<StepDimTol_GeometricToleranceModifier>
+  StepDimTol_Array1OfGeometricToleranceModifier;
 
 #endif // _StepDimTol_Array1OfGeometricToleranceModifier_hxx

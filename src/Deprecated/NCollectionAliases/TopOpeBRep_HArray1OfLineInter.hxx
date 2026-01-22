@@ -23,9 +23,11 @@
 #include <TopOpeBRep_Array1OfLineInter.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRep_HArray1OfLineInter.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<TopOpeBRep_LineInter> directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRep_HArray1OfLineInter.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<TopOpeBRep_LineInter> directly.")
 
-Standard_DEPRECATED("TopOpeBRep_HArray1OfLineInter is deprecated, use NCollection_HArray1<TopOpeBRep_LineInter> directly")
+  Standard_DEPRECATED("TopOpeBRep_HArray1OfLineInter is deprecated, use "
+                      "NCollection_HArray1<TopOpeBRep_LineInter> directly")
 typedef NCollection_HArray1<TopOpeBRep_LineInter> TopOpeBRep_HArray1OfLineInter;
 
 #endif // _TopOpeBRep_HArray1OfLineInter_hxx

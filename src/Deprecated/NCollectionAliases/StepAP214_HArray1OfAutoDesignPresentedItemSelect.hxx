@@ -23,9 +23,13 @@
 #include <StepAP214_Array1OfAutoDesignPresentedItemSelect.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_HArray1OfAutoDesignPresentedItemSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_HArray1OfAutoDesignPresentedItemSelect.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect> directly.")
 
-Standard_DEPRECATED("StepAP214_HArray1OfAutoDesignPresentedItemSelect is deprecated, use NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect> directly")
-typedef NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect> StepAP214_HArray1OfAutoDesignPresentedItemSelect;
+  Standard_DEPRECATED("StepAP214_HArray1OfAutoDesignPresentedItemSelect is deprecated, use "
+                      "NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect> directly")
+typedef NCollection_HArray1<StepAP214_AutoDesignPresentedItemSelect>
+  StepAP214_HArray1OfAutoDesignPresentedItemSelect;
 
 #endif // _StepAP214_HArray1OfAutoDesignPresentedItemSelect_hxx

@@ -23,9 +23,10 @@
 #include <gp_Lin.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Intf_Array1OfLin.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Lin> directly.")
+Standard_HEADER_DEPRECATED(
+  "Intf_Array1OfLin.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Lin> directly.")
 
-Standard_DEPRECATED("Intf_Array1OfLin is deprecated, use NCollection_Array1<gp_Lin> directly")
+  Standard_DEPRECATED("Intf_Array1OfLin is deprecated, use NCollection_Array1<gp_Lin> directly")
 typedef NCollection_Array1<gp_Lin> Intf_Array1OfLin;
 
 #endif // _Intf_Array1OfLin_hxx

@@ -23,9 +23,13 @@
 #include <StepAP214_Array1OfDocumentReferenceItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_HArray1OfDocumentReferenceItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP214_DocumentReferenceItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_HArray1OfDocumentReferenceItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepAP214_DocumentReferenceItem> directly.")
 
-Standard_DEPRECATED("StepAP214_HArray1OfDocumentReferenceItem is deprecated, use NCollection_HArray1<StepAP214_DocumentReferenceItem> directly")
-typedef NCollection_HArray1<StepAP214_DocumentReferenceItem> StepAP214_HArray1OfDocumentReferenceItem;
+  Standard_DEPRECATED("StepAP214_HArray1OfDocumentReferenceItem is deprecated, use "
+                      "NCollection_HArray1<StepAP214_DocumentReferenceItem> directly")
+typedef NCollection_HArray1<StepAP214_DocumentReferenceItem>
+  StepAP214_HArray1OfDocumentReferenceItem;
 
 #endif // _StepAP214_HArray1OfDocumentReferenceItem_hxx

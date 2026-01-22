@@ -14,7 +14,9 @@
 //! @file StepElement_HArray2OfSurfaceElementPurposeMember.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly instead.
+//!             Use
+//!             NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>>
+//!             directly instead.
 
 #ifndef _StepElement_HArray2OfSurfaceElementPurposeMember_hxx
 #define _StepElement_HArray2OfSurfaceElementPurposeMember_hxx
@@ -24,9 +26,14 @@
 #include <StepElement_Array2OfSurfaceElementPurposeMember.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_HArray2OfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_HArray2OfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly.")
 
-Standard_DEPRECATED("StepElement_HArray2OfSurfaceElementPurposeMember is deprecated, use NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly")
-typedef NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>> StepElement_HArray2OfSurfaceElementPurposeMember;
+  Standard_DEPRECATED(
+    "StepElement_HArray2OfSurfaceElementPurposeMember is deprecated, use "
+    "NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly")
+typedef NCollection_HArray2<opencascade::handle<StepElement_SurfaceElementPurposeMember>>
+  StepElement_HArray2OfSurfaceElementPurposeMember;
 
 #endif // _StepElement_HArray2OfSurfaceElementPurposeMember_hxx

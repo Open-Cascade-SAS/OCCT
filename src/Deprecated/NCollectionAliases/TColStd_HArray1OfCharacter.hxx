@@ -24,9 +24,11 @@
 #include <TColStd_Array1OfCharacter.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HArray1OfCharacter.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<char> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HArray1OfCharacter.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<char> directly.")
 
-Standard_DEPRECATED("TColStd_HArray1OfCharacter is deprecated, use NCollection_HArray1<char> directly")
+  Standard_DEPRECATED(
+    "TColStd_HArray1OfCharacter is deprecated, use NCollection_HArray1<char> directly")
 typedef NCollection_HArray1<char> TColStd_HArray1OfCharacter;
 
 #endif // _TColStd_HArray1OfCharacter_hxx

@@ -14,7 +14,8 @@
 //! @file TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> directly instead.
+//!             Use NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo,
+//!             TopTools_ShapeMapHasher> directly instead.
 
 #ifndef _TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo_hxx
 #define _TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo_hxx
@@ -25,9 +26,16 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo.hxx is deprecated "
+                           "since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, "
+                           "TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> directly.")
 
-Standard_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> directly")
-typedef NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, TopTools_ShapeMapHasher> TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo;
+  Standard_DEPRECATED("TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo is deprecated, use "
+                      "NCollection_IndexedDataMap<TopoDS_Shape, TopOpeBRepBuild_VertexInfo, "
+                      "TopTools_ShapeMapHasher> directly")
+typedef NCollection_IndexedDataMap<TopoDS_Shape,
+                                   TopOpeBRepBuild_VertexInfo,
+                                   TopTools_ShapeMapHasher>
+  TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo;
 
 #endif // _TopOpeBRepBuild_IndexedDataMapOfShapeVertexInfo_hxx

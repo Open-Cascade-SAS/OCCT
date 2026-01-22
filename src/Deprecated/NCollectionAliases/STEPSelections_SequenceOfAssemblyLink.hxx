@@ -14,7 +14,8 @@
 //! @file STEPSelections_SequenceOfAssemblyLink.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> directly
+//!             instead.
 
 #ifndef _STEPSelections_SequenceOfAssemblyLink_hxx
 #define _STEPSelections_SequenceOfAssemblyLink_hxx
@@ -23,9 +24,14 @@
 #include <STEPSelections_AssemblyLink.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("STEPSelections_SequenceOfAssemblyLink.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> directly.")
+Standard_HEADER_DEPRECATED(
+  "STEPSelections_SequenceOfAssemblyLink.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> directly.")
 
-Standard_DEPRECATED("STEPSelections_SequenceOfAssemblyLink is deprecated, use NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> directly")
-typedef NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> STEPSelections_SequenceOfAssemblyLink;
+  Standard_DEPRECATED(
+    "STEPSelections_SequenceOfAssemblyLink is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>> directly")
+typedef NCollection_Sequence<opencascade::handle<STEPSelections_AssemblyLink>>
+  STEPSelections_SequenceOfAssemblyLink;
 
 #endif // _STEPSelections_SequenceOfAssemblyLink_hxx

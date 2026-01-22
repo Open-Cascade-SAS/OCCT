@@ -24,9 +24,11 @@
 #include <TDF_AttributeArray1.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TDF_HAttributeArray1.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<TDF_Attribute>> directly.")
+Standard_HEADER_DEPRECATED("TDF_HAttributeArray1.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<TDF_Attribute>> directly.")
 
-Standard_DEPRECATED("TDF_HAttributeArray1 is deprecated, use NCollection_HArray1<opencascade::handle<TDF_Attribute>> directly")
+  Standard_DEPRECATED("TDF_HAttributeArray1 is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<TDF_Attribute>> directly")
 typedef NCollection_HArray1<opencascade::handle<TDF_Attribute>> TDF_HAttributeArray1;
 
 #endif // _TDF_HAttributeArray1_hxx

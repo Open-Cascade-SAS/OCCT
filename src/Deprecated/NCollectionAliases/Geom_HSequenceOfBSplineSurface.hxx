@@ -14,7 +14,8 @@
 //! @file Geom_HSequenceOfBSplineSurface.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> directly
+//!             instead.
 
 #ifndef _Geom_HSequenceOfBSplineSurface_hxx
 #define _Geom_HSequenceOfBSplineSurface_hxx
@@ -23,9 +24,13 @@
 #include <Geom_SequenceOfBSplineSurface.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("Geom_HSequenceOfBSplineSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Geom_HSequenceOfBSplineSurface.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> directly.")
 
-Standard_DEPRECATED("Geom_HSequenceOfBSplineSurface is deprecated, use NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> directly")
-typedef NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> Geom_HSequenceOfBSplineSurface;
+  Standard_DEPRECATED("Geom_HSequenceOfBSplineSurface is deprecated, use "
+                      "NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>> directly")
+typedef NCollection_HSequence<opencascade::handle<Geom_BSplineSurface>>
+  Geom_HSequenceOfBSplineSurface;
 
 #endif // _Geom_HSequenceOfBSplineSurface_hxx

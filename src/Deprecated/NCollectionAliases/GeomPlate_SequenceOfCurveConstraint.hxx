@@ -14,7 +14,8 @@
 //! @file GeomPlate_SequenceOfCurveConstraint.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> directly
+//!             instead.
 
 #ifndef _GeomPlate_SequenceOfCurveConstraint_hxx
 #define _GeomPlate_SequenceOfCurveConstraint_hxx
@@ -23,9 +24,14 @@
 #include <GeomPlate_CurveConstraint.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("GeomPlate_SequenceOfCurveConstraint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> directly.")
+Standard_HEADER_DEPRECATED(
+  "GeomPlate_SequenceOfCurveConstraint.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> directly.")
 
-Standard_DEPRECATED("GeomPlate_SequenceOfCurveConstraint is deprecated, use NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> directly")
-typedef NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> GeomPlate_SequenceOfCurveConstraint;
+  Standard_DEPRECATED(
+    "GeomPlate_SequenceOfCurveConstraint is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>> directly")
+typedef NCollection_Sequence<opencascade::handle<GeomPlate_CurveConstraint>>
+  GeomPlate_SequenceOfCurveConstraint;
 
 #endif // _GeomPlate_SequenceOfCurveConstraint_hxx

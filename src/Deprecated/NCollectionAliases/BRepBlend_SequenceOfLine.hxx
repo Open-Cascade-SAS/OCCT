@@ -23,9 +23,11 @@
 #include <BRepBlend_Line.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("BRepBlend_SequenceOfLine.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<BRepBlend_Line>> directly.")
+Standard_HEADER_DEPRECATED("BRepBlend_SequenceOfLine.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<BRepBlend_Line>> directly.")
 
-Standard_DEPRECATED("BRepBlend_SequenceOfLine is deprecated, use NCollection_Sequence<opencascade::handle<BRepBlend_Line>> directly")
+  Standard_DEPRECATED("BRepBlend_SequenceOfLine is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<BRepBlend_Line>> directly")
 typedef NCollection_Sequence<opencascade::handle<BRepBlend_Line>> BRepBlend_SequenceOfLine;
 
 #endif // _BRepBlend_SequenceOfLine_hxx

@@ -23,9 +23,13 @@
 #include <StepElement_VolumeElementPurpose.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfVolumeElementPurpose.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepElement_VolumeElementPurpose> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfVolumeElementPurpose.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepElement_VolumeElementPurpose> directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfVolumeElementPurpose is deprecated, use NCollection_Array1<StepElement_VolumeElementPurpose> directly")
-typedef NCollection_Array1<StepElement_VolumeElementPurpose> StepElement_Array1OfVolumeElementPurpose;
+  Standard_DEPRECATED("StepElement_Array1OfVolumeElementPurpose is deprecated, use "
+                      "NCollection_Array1<StepElement_VolumeElementPurpose> directly")
+typedef NCollection_Array1<StepElement_VolumeElementPurpose>
+  StepElement_Array1OfVolumeElementPurpose;
 
 #endif // _StepElement_Array1OfVolumeElementPurpose_hxx

@@ -14,7 +14,8 @@
 //! @file StepGeom_HArray1OfCompositeCurveSegment.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>>
+//!             directly instead.
 
 #ifndef _StepGeom_HArray1OfCompositeCurveSegment_hxx
 #define _StepGeom_HArray1OfCompositeCurveSegment_hxx
@@ -23,9 +24,14 @@
 #include <StepGeom_Array1OfCompositeCurveSegment.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_HArray1OfCompositeCurveSegment.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepGeom_HArray1OfCompositeCurveSegment.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>> directly.")
 
-Standard_DEPRECATED("StepGeom_HArray1OfCompositeCurveSegment is deprecated, use NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>> StepGeom_HArray1OfCompositeCurveSegment;
+  Standard_DEPRECATED(
+    "StepGeom_HArray1OfCompositeCurveSegment is deprecated, use "
+    "NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepGeom_CompositeCurveSegment>>
+  StepGeom_HArray1OfCompositeCurveSegment;
 
 #endif // _StepGeom_HArray1OfCompositeCurveSegment_hxx

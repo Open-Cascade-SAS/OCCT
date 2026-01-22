@@ -23,9 +23,11 @@
 #include <Plate_PinpointConstraint.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Plate_Array1OfPinpointConstraint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<Plate_PinpointConstraint> directly.")
+Standard_HEADER_DEPRECATED("Plate_Array1OfPinpointConstraint.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<Plate_PinpointConstraint> directly.")
 
-Standard_DEPRECATED("Plate_Array1OfPinpointConstraint is deprecated, use NCollection_Array1<Plate_PinpointConstraint> directly")
+  Standard_DEPRECATED("Plate_Array1OfPinpointConstraint is deprecated, use "
+                      "NCollection_Array1<Plate_PinpointConstraint> directly")
 typedef NCollection_Array1<Plate_PinpointConstraint> Plate_Array1OfPinpointConstraint;
 
 #endif // _Plate_Array1OfPinpointConstraint_hxx

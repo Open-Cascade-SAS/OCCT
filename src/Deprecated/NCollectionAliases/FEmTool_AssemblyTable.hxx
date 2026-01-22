@@ -14,7 +14,8 @@
 //! @file FEmTool_AssemblyTable.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly instead.
+//!             Use NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly
+//!             instead.
 
 #ifndef _FEmTool_AssemblyTable_hxx
 #define _FEmTool_AssemblyTable_hxx
@@ -23,9 +24,12 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <NCollection_Array2.hxx>
 
-Standard_HEADER_DEPRECATED("FEmTool_AssemblyTable.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly.")
+Standard_HEADER_DEPRECATED(
+  "FEmTool_AssemblyTable.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly.")
 
-Standard_DEPRECATED("FEmTool_AssemblyTable is deprecated, use NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly")
+  Standard_DEPRECATED("FEmTool_AssemblyTable is deprecated, use "
+                      "NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> directly")
 typedef NCollection_Array2<opencascade::handle<TColStd_HArray1OfInteger>> FEmTool_AssemblyTable;
 
 #endif // _FEmTool_AssemblyTable_hxx

@@ -14,7 +14,8 @@
 //! @file Expr_SequenceOfGeneralExpression.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> directly
+//!             instead.
 
 #ifndef _Expr_SequenceOfGeneralExpression_hxx
 #define _Expr_SequenceOfGeneralExpression_hxx
@@ -23,9 +24,13 @@
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Expr_SequenceOfGeneralExpression.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Expr_SequenceOfGeneralExpression.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> directly.")
 
-Standard_DEPRECATED("Expr_SequenceOfGeneralExpression is deprecated, use NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> directly")
-typedef NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> Expr_SequenceOfGeneralExpression;
+  Standard_DEPRECATED("Expr_SequenceOfGeneralExpression is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>> directly")
+typedef NCollection_Sequence<opencascade::handle<Expr_GeneralExpression>>
+  Expr_SequenceOfGeneralExpression;
 
 #endif // _Expr_SequenceOfGeneralExpression_hxx

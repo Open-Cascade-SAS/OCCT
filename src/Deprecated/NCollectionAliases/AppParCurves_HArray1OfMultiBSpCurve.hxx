@@ -24,9 +24,11 @@
 #include <AppParCurves_Array1OfMultiBSpCurve.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("AppParCurves_HArray1OfMultiBSpCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<AppParCurves_MultiBSpCurve> directly.")
+Standard_HEADER_DEPRECATED("AppParCurves_HArray1OfMultiBSpCurve.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_HArray1<AppParCurves_MultiBSpCurve> directly.")
 
-Standard_DEPRECATED("AppParCurves_HArray1OfMultiBSpCurve is deprecated, use NCollection_HArray1<AppParCurves_MultiBSpCurve> directly")
+  Standard_DEPRECATED("AppParCurves_HArray1OfMultiBSpCurve is deprecated, use "
+                      "NCollection_HArray1<AppParCurves_MultiBSpCurve> directly")
 typedef NCollection_HArray1<AppParCurves_MultiBSpCurve> AppParCurves_HArray1OfMultiBSpCurve;
 
 #endif // _AppParCurves_HArray1OfMultiBSpCurve_hxx

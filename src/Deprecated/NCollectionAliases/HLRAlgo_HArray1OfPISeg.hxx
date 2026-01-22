@@ -23,9 +23,11 @@
 #include <HLRAlgo_Array1OfPISeg.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("HLRAlgo_HArray1OfPISeg.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<HLRAlgo_PolyInternalSegment> directly.")
+Standard_HEADER_DEPRECATED("HLRAlgo_HArray1OfPISeg.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<HLRAlgo_PolyInternalSegment> directly.")
 
-Standard_DEPRECATED("HLRAlgo_HArray1OfPISeg is deprecated, use NCollection_HArray1<HLRAlgo_PolyInternalSegment> directly")
+  Standard_DEPRECATED("HLRAlgo_HArray1OfPISeg is deprecated, use "
+                      "NCollection_HArray1<HLRAlgo_PolyInternalSegment> directly")
 typedef NCollection_HArray1<HLRAlgo_PolyInternalSegment> HLRAlgo_HArray1OfPISeg;
 
 #endif // _HLRAlgo_HArray1OfPISeg_hxx

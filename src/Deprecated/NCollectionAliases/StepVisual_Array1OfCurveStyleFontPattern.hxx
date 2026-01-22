@@ -14,7 +14,8 @@
 //! @file StepVisual_Array1OfCurveStyleFontPattern.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>>
+//!             directly instead.
 
 #ifndef _StepVisual_Array1OfCurveStyleFontPattern_hxx
 #define _StepVisual_Array1OfCurveStyleFontPattern_hxx
@@ -23,9 +24,14 @@
 #include <StepVisual_CurveStyleFontPattern.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfCurveStyleFontPattern.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfCurveStyleFontPattern.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfCurveStyleFontPattern is deprecated, use NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly")
-typedef NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>> StepVisual_Array1OfCurveStyleFontPattern;
+  Standard_DEPRECATED(
+    "StepVisual_Array1OfCurveStyleFontPattern is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>> directly")
+typedef NCollection_Array1<opencascade::handle<StepVisual_CurveStyleFontPattern>>
+  StepVisual_Array1OfCurveStyleFontPattern;
 
 #endif // _StepVisual_Array1OfCurveStyleFontPattern_hxx

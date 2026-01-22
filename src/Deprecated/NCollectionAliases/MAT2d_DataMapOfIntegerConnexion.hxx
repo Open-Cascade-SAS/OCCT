@@ -24,11 +24,17 @@
 #include <MAT2d_Connexion.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MAT2d_DataMapOfIntegerConnexion.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MAT2d_DataMapOfIntegerConnexion.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("MAT2d_DataMapOfIntegerConnexion is deprecated, use NCollection_DataMap<int, opencascade::handle<MAT2d_Connexion>> directly")
-typedef NCollection_DataMap<int, opencascade::handle<MAT2d_Connexion>> MAT2d_DataMapOfIntegerConnexion;
-Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion is deprecated, use NCollection_DataMap<int, opencascade::handle<MAT2d_Connexion>>::Iterator directly")
-typedef NCollection_DataMap<int, opencascade::handle<MAT2d_Connexion>>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion;
+  Standard_DEPRECATED("MAT2d_DataMapOfIntegerConnexion is deprecated, use NCollection_DataMap<int, "
+                      "opencascade::handle<MAT2d_Connexion>> directly")
+typedef NCollection_DataMap<int, opencascade::handle<MAT2d_Connexion>>
+  MAT2d_DataMapOfIntegerConnexion;
+Standard_DEPRECATED(
+  "MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion is deprecated, use NCollection_DataMap<int, "
+  "opencascade::handle<MAT2d_Connexion>>::Iterator directly")
+typedef NCollection_DataMap<int, opencascade::handle<MAT2d_Connexion>>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfIntegerConnexion;
 
 #endif // _MAT2d_DataMapOfIntegerConnexion_hxx

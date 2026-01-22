@@ -23,9 +23,11 @@
 #include <Quantity_Color.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Aspect_SequenceOfColor.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Quantity_Color> directly.")
+Standard_HEADER_DEPRECATED("Aspect_SequenceOfColor.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Quantity_Color> directly.")
 
-Standard_DEPRECATED("Aspect_SequenceOfColor is deprecated, use NCollection_Sequence<Quantity_Color> directly")
+  Standard_DEPRECATED(
+    "Aspect_SequenceOfColor is deprecated, use NCollection_Sequence<Quantity_Color> directly")
 typedef NCollection_Sequence<Quantity_Color> Aspect_SequenceOfColor;
 
 #endif // _Aspect_SequenceOfColor_hxx

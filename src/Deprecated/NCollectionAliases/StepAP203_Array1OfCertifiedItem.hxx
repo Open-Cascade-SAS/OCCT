@@ -23,9 +23,11 @@
 #include <StepAP203_CertifiedItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP203_Array1OfCertifiedItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepAP203_CertifiedItem> directly.")
+Standard_HEADER_DEPRECATED("StepAP203_Array1OfCertifiedItem.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepAP203_CertifiedItem> directly.")
 
-Standard_DEPRECATED("StepAP203_Array1OfCertifiedItem is deprecated, use NCollection_Array1<StepAP203_CertifiedItem> directly")
+  Standard_DEPRECATED("StepAP203_Array1OfCertifiedItem is deprecated, use "
+                      "NCollection_Array1<StepAP203_CertifiedItem> directly")
 typedef NCollection_Array1<StepAP203_CertifiedItem> StepAP203_Array1OfCertifiedItem;
 
 #endif // _StepAP203_Array1OfCertifiedItem_hxx

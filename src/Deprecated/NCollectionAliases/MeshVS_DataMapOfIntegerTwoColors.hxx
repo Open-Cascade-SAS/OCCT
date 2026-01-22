@@ -24,11 +24,15 @@
 #include <MeshVS_TwoColors.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerTwoColors.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerTwoColors.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("MeshVS_DataMapOfIntegerTwoColors is deprecated, use NCollection_DataMap<int, MeshVS_TwoColors> directly")
+  Standard_DEPRECATED("MeshVS_DataMapOfIntegerTwoColors is deprecated, use "
+                      "NCollection_DataMap<int, MeshVS_TwoColors> directly")
 typedef NCollection_DataMap<int, MeshVS_TwoColors> MeshVS_DataMapOfIntegerTwoColors;
-Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors is deprecated, use NCollection_DataMap<int, MeshVS_TwoColors>::Iterator directly")
-typedef NCollection_DataMap<int, MeshVS_TwoColors>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors;
+Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors is deprecated, use "
+                    "NCollection_DataMap<int, MeshVS_TwoColors>::Iterator directly")
+typedef NCollection_DataMap<int, MeshVS_TwoColors>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfIntegerTwoColors;
 
 #endif // _MeshVS_DataMapOfIntegerTwoColors_hxx

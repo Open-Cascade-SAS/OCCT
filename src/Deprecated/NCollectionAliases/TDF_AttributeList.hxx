@@ -23,11 +23,15 @@
 #include <TDF_Attribute.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TDF_AttributeList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TDF_AttributeList.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TDF_AttributeList is deprecated, use NCollection_List<opencascade::handle<TDF_Attribute>> directly")
+  Standard_DEPRECATED("TDF_AttributeList is deprecated, use "
+                      "NCollection_List<opencascade::handle<TDF_Attribute>> directly")
 typedef NCollection_List<opencascade::handle<TDF_Attribute>> TDF_AttributeList;
-Standard_DEPRECATED("TDF_ListIteratorOfAttributeList is deprecated, use NCollection_List<opencascade::handle<TDF_Attribute>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<TDF_Attribute>>::Iterator TDF_ListIteratorOfAttributeList;
+Standard_DEPRECATED("TDF_ListIteratorOfAttributeList is deprecated, use "
+                    "NCollection_List<opencascade::handle<TDF_Attribute>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<TDF_Attribute>>::Iterator
+  TDF_ListIteratorOfAttributeList;
 
 #endif // _TDF_AttributeList_hxx

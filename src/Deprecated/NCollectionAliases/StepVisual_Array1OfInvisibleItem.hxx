@@ -23,9 +23,11 @@
 #include <StepVisual_InvisibleItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfInvisibleItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepVisual_InvisibleItem> directly.")
+Standard_HEADER_DEPRECATED("StepVisual_Array1OfInvisibleItem.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepVisual_InvisibleItem> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfInvisibleItem is deprecated, use NCollection_Array1<StepVisual_InvisibleItem> directly")
+  Standard_DEPRECATED("StepVisual_Array1OfInvisibleItem is deprecated, use "
+                      "NCollection_Array1<StepVisual_InvisibleItem> directly")
 typedef NCollection_Array1<StepVisual_InvisibleItem> StepVisual_Array1OfInvisibleItem;
 
 #endif // _StepVisual_Array1OfInvisibleItem_hxx

@@ -24,9 +24,11 @@
 #include <TColgp_SequenceOfVec.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_HSequenceOfVec.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<gp_Vec> directly.")
+Standard_HEADER_DEPRECATED("TColgp_HSequenceOfVec.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<gp_Vec> directly.")
 
-Standard_DEPRECATED("TColgp_HSequenceOfVec is deprecated, use NCollection_HSequence<gp_Vec> directly")
+  Standard_DEPRECATED(
+    "TColgp_HSequenceOfVec is deprecated, use NCollection_HSequence<gp_Vec> directly")
 typedef NCollection_HSequence<gp_Vec> TColgp_HSequenceOfVec;
 
 #endif // _TColgp_HSequenceOfVec_hxx

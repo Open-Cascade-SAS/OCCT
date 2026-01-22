@@ -23,9 +23,13 @@
 #include <NCollection_DataMap.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 
-Standard_HEADER_DEPRECATED("BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection_DataMap<int, TColStd_PackedMapOfInteger> directly.")
+Standard_HEADER_DEPRECATED(
+  "BRepExtrema_MapOfIntegerPackedMapOfInteger.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_DataMap<int, TColStd_PackedMapOfInteger> directly.")
 
-Standard_DEPRECATED("BRepExtrema_MapOfIntegerPackedMapOfInteger is deprecated, use NCollection_DataMap<int, TColStd_PackedMapOfInteger> directly")
-typedef NCollection_DataMap<int, TColStd_PackedMapOfInteger> BRepExtrema_MapOfIntegerPackedMapOfInteger;
+  Standard_DEPRECATED("BRepExtrema_MapOfIntegerPackedMapOfInteger is deprecated, use "
+                      "NCollection_DataMap<int, TColStd_PackedMapOfInteger> directly")
+typedef NCollection_DataMap<int, TColStd_PackedMapOfInteger>
+  BRepExtrema_MapOfIntegerPackedMapOfInteger;
 
 #endif // _BRepExtrema_MapOfIntegerPackedMapOfInteger_hxx

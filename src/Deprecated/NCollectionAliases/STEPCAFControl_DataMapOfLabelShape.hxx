@@ -24,11 +24,15 @@
 #include <TDF_Label.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfLabelShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfLabelShape.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("STEPCAFControl_DataMapOfLabelShape is deprecated, use NCollection_DataMap<TDF_Label, TopoDS_Shape> directly")
+  Standard_DEPRECATED("STEPCAFControl_DataMapOfLabelShape is deprecated, use "
+                      "NCollection_DataMap<TDF_Label, TopoDS_Shape> directly")
 typedef NCollection_DataMap<TDF_Label, TopoDS_Shape> STEPCAFControl_DataMapOfLabelShape;
-Standard_DEPRECATED("STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape is deprecated, use NCollection_DataMap<TDF_Label, TopoDS_Shape>::Iterator directly")
-typedef NCollection_DataMap<TDF_Label, TopoDS_Shape>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape;
+Standard_DEPRECATED("STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape is deprecated, use "
+                    "NCollection_DataMap<TDF_Label, TopoDS_Shape>::Iterator directly")
+typedef NCollection_DataMap<TDF_Label, TopoDS_Shape>::Iterator
+  STEPCAFControl_DataMapIteratorOfDataMapOfLabelShape;
 
 #endif // _STEPCAFControl_DataMapOfLabelShape_hxx

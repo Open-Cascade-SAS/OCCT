@@ -24,11 +24,18 @@
 #include <TPrsStd_Driver.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TPrsStd_DataMapOfGUIDDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TPrsStd_DataMapOfGUIDDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TPrsStd_DataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>> directly")
-typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>> TPrsStd_DataMapOfGUIDDriver;
-Standard_DEPRECATED("TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>>::Iterator directly")
-typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>>::Iterator TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver;
+  Standard_DEPRECATED(
+    "TPrsStd_DataMapOfGUIDDriver is deprecated, use NCollection_DataMap<Standard_GUID, "
+    "opencascade::handle<TPrsStd_Driver>> directly")
+typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>>
+  TPrsStd_DataMapOfGUIDDriver;
+Standard_DEPRECATED(
+  "TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver is deprecated, use "
+  "NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>>::Iterator directly")
+typedef NCollection_DataMap<Standard_GUID, opencascade::handle<TPrsStd_Driver>>::Iterator
+  TPrsStd_DataMapIteratorOfDataMapOfGUIDDriver;
 
 #endif // _TPrsStd_DataMapOfGUIDDriver_hxx

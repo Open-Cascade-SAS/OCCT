@@ -23,9 +23,11 @@
 #include <Adaptor3d_Curve.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("GeomPlate_Array1OfHCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Adaptor3d_Curve>> directly.")
+Standard_HEADER_DEPRECATED("GeomPlate_Array1OfHCurve.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<Adaptor3d_Curve>> directly.")
 
-Standard_DEPRECATED("GeomPlate_Array1OfHCurve is deprecated, use NCollection_Array1<opencascade::handle<Adaptor3d_Curve>> directly")
+  Standard_DEPRECATED("GeomPlate_Array1OfHCurve is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Adaptor3d_Curve>> directly")
 typedef NCollection_Array1<opencascade::handle<Adaptor3d_Curve>> GeomPlate_Array1OfHCurve;
 
 #endif // _GeomPlate_Array1OfHCurve_hxx

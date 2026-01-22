@@ -23,9 +23,11 @@
 #include <gp_Circ.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("LocOpe_SequenceOfCirc.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<gp_Circ> directly.")
+Standard_HEADER_DEPRECATED("LocOpe_SequenceOfCirc.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<gp_Circ> directly.")
 
-Standard_DEPRECATED("LocOpe_SequenceOfCirc is deprecated, use NCollection_Sequence<gp_Circ> directly")
+  Standard_DEPRECATED(
+    "LocOpe_SequenceOfCirc is deprecated, use NCollection_Sequence<gp_Circ> directly")
 typedef NCollection_Sequence<gp_Circ> LocOpe_SequenceOfCirc;
 
 #endif // _LocOpe_SequenceOfCirc_hxx

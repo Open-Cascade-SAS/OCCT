@@ -25,11 +25,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("HLRTopoBRep_MapOfShapeListOfVData.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("HLRTopoBRep_MapOfShapeListOfVData.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("HLRTopoBRep_MapOfShapeListOfVData is deprecated, use NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher> HLRTopoBRep_MapOfShapeListOfVData;
-Standard_DEPRECATED("HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData is deprecated, use NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher>::Iterator HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData;
+  Standard_DEPRECATED(
+    "HLRTopoBRep_MapOfShapeListOfVData is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher>
+  HLRTopoBRep_MapOfShapeListOfVData;
+Standard_DEPRECATED("HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, HLRTopoBRep_ListOfVData, TopTools_ShapeMapHasher>::
+  Iterator HLRTopoBRep_DataMapIteratorOfMapOfShapeListOfVData;
 
 #endif // _HLRTopoBRep_MapOfShapeListOfVData_hxx

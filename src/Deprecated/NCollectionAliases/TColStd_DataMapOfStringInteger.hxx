@@ -23,11 +23,15 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_DataMapOfStringInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TColStd_DataMapOfStringInteger.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_DataMapOfStringInteger is deprecated, use NCollection_DataMap<TCollection_ExtendedString, int> directly")
+  Standard_DEPRECATED("TColStd_DataMapOfStringInteger is deprecated, use "
+                      "NCollection_DataMap<TCollection_ExtendedString, int> directly")
 typedef NCollection_DataMap<TCollection_ExtendedString, int> TColStd_DataMapOfStringInteger;
-Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfStringInteger is deprecated, use NCollection_DataMap<TCollection_ExtendedString, int>::Iterator directly")
-typedef NCollection_DataMap<TCollection_ExtendedString, int>::Iterator TColStd_DataMapIteratorOfDataMapOfStringInteger;
+Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfStringInteger is deprecated, use "
+                    "NCollection_DataMap<TCollection_ExtendedString, int>::Iterator directly")
+typedef NCollection_DataMap<TCollection_ExtendedString, int>::Iterator
+  TColStd_DataMapIteratorOfDataMapOfStringInteger;
 
 #endif // _TColStd_DataMapOfStringInteger_hxx

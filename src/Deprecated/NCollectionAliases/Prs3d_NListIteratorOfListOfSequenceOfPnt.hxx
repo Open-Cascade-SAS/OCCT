@@ -14,7 +14,8 @@
 //! @file Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator directly instead.
+//!             Use NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator directly
+//!             instead.
 
 #ifndef _Prs3d_NListIteratorOfListOfSequenceOfPnt_hxx
 #define _Prs3d_NListIteratorOfListOfSequenceOfPnt_hxx
@@ -22,9 +23,14 @@
 #include <Standard_Macro.hxx>
 #include <Prs3d_NListOfSequenceOfPnt.hxx>
 
-Standard_HEADER_DEPRECATED("Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator directly.")
+Standard_HEADER_DEPRECATED(
+  "Prs3d_NListIteratorOfListOfSequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator directly.")
 
-Standard_DEPRECATED("Prs3d_NListIteratorOfListOfSequenceOfPnt is deprecated, use NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator Prs3d_NListIteratorOfListOfSequenceOfPnt;
+  Standard_DEPRECATED(
+    "Prs3d_NListIteratorOfListOfSequenceOfPnt is deprecated, use "
+    "NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>>::Iterator
+  Prs3d_NListIteratorOfListOfSequenceOfPnt;
 
 #endif // _Prs3d_NListIteratorOfListOfSequenceOfPnt_hxx

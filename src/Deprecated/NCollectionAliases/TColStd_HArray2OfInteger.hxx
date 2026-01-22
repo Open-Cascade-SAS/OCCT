@@ -24,9 +24,11 @@
 #include <TColStd_Array2OfInteger.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HArray2OfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<int> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HArray2OfInteger.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray2<int> directly.")
 
-Standard_DEPRECATED("TColStd_HArray2OfInteger is deprecated, use NCollection_HArray2<int> directly")
+  Standard_DEPRECATED(
+    "TColStd_HArray2OfInteger is deprecated, use NCollection_HArray2<int> directly")
 typedef NCollection_HArray2<int> TColStd_HArray2OfInteger;
 
 #endif // _TColStd_HArray2OfInteger_hxx

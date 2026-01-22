@@ -24,11 +24,19 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient.hxx is deprecated since "
+                           "OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Standard_Transient>> directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Standard_Transient>> STEPConstruct_DataMapOfAsciiStringTransient;
-Standard_DEPRECATED("STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Standard_Transient>>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Standard_Transient>>::Iterator STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient;
+  Standard_DEPRECATED("STEPConstruct_DataMapOfAsciiStringTransient is deprecated, use "
+                      "NCollection_DataMap<TCollection_AsciiString, "
+                      "opencascade::handle<Standard_Transient>> directly")
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Standard_Transient>>
+  STEPConstruct_DataMapOfAsciiStringTransient;
+Standard_DEPRECATED("STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient is deprecated, "
+                    "use NCollection_DataMap<TCollection_AsciiString, "
+                    "opencascade::handle<Standard_Transient>>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString,
+                            opencascade::handle<Standard_Transient>>::Iterator
+  STEPConstruct_DataMapIteratorOfDataMapOfAsciiStringTransient;
 
 #endif // _STEPConstruct_DataMapOfAsciiStringTransient_hxx

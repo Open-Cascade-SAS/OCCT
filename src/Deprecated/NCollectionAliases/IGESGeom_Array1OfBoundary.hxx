@@ -23,9 +23,11 @@
 #include <IGESGeom_Boundary.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESGeom_Array1OfBoundary.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESGeom_Boundary>> directly.")
+Standard_HEADER_DEPRECATED("IGESGeom_Array1OfBoundary.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<IGESGeom_Boundary>> directly.")
 
-Standard_DEPRECATED("IGESGeom_Array1OfBoundary is deprecated, use NCollection_Array1<opencascade::handle<IGESGeom_Boundary>> directly")
+  Standard_DEPRECATED("IGESGeom_Array1OfBoundary is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESGeom_Boundary>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESGeom_Boundary>> IGESGeom_Array1OfBoundary;
 
 #endif // _IGESGeom_Array1OfBoundary_hxx

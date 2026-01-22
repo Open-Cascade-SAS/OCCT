@@ -24,11 +24,16 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox is deprecated, use NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> directly")
-typedef NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> IntTools_DataMapOfSurfaceSampleBox;
-Standard_DEPRECATED("IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox is deprecated, use NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box>::Iterator directly")
-typedef NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box>::Iterator IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox;
+  Standard_DEPRECATED("IntTools_DataMapOfSurfaceSampleBox is deprecated, use "
+                      "NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box> directly")
+typedef NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box>
+  IntTools_DataMapOfSurfaceSampleBox;
+Standard_DEPRECATED("IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox is deprecated, use "
+                    "NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box>::Iterator directly")
+typedef NCollection_DataMap<IntTools_SurfaceRangeSample, Bnd_Box>::Iterator
+  IntTools_DataMapIteratorOfDataMapOfSurfaceSampleBox;
 
 #endif // _IntTools_DataMapOfSurfaceSampleBox_hxx

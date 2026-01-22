@@ -23,9 +23,11 @@
 #include <ChFiDS_Stripe.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiDS_StripeArray1.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> directly.")
+Standard_HEADER_DEPRECATED("ChFiDS_StripeArray1.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> directly.")
 
-Standard_DEPRECATED("ChFiDS_StripeArray1 is deprecated, use NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> directly")
+  Standard_DEPRECATED("ChFiDS_StripeArray1 is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> directly")
 typedef NCollection_Array1<opencascade::handle<ChFiDS_Stripe>> ChFiDS_StripeArray1;
 
 #endif // _ChFiDS_StripeArray1_hxx

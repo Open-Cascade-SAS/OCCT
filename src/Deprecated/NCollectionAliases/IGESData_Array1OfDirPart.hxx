@@ -23,9 +23,11 @@
 #include <IGESData_DirPart.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESData_Array1OfDirPart.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<IGESData_DirPart> directly.")
+Standard_HEADER_DEPRECATED("IGESData_Array1OfDirPart.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<IGESData_DirPart> directly.")
 
-Standard_DEPRECATED("IGESData_Array1OfDirPart is deprecated, use NCollection_Array1<IGESData_DirPart> directly")
+  Standard_DEPRECATED(
+    "IGESData_Array1OfDirPart is deprecated, use NCollection_Array1<IGESData_DirPart> directly")
 typedef NCollection_Array1<IGESData_DirPart> IGESData_Array1OfDirPart;
 
 #endif // _IGESData_Array1OfDirPart_hxx

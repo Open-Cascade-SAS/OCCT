@@ -23,9 +23,11 @@
 #include <TFunction_DataMapOfGUIDDriver.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TFunction_Array1OfDataMapOfGUIDDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TFunction_DataMapOfGUIDDriver> directly.")
+Standard_HEADER_DEPRECATED("TFunction_Array1OfDataMapOfGUIDDriver.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Array1<TFunction_DataMapOfGUIDDriver> directly.")
 
-Standard_DEPRECATED("TFunction_Array1OfDataMapOfGUIDDriver is deprecated, use NCollection_Array1<TFunction_DataMapOfGUIDDriver> directly")
+  Standard_DEPRECATED("TFunction_Array1OfDataMapOfGUIDDriver is deprecated, use "
+                      "NCollection_Array1<TFunction_DataMapOfGUIDDriver> directly")
 typedef NCollection_Array1<TFunction_DataMapOfGUIDDriver> TFunction_Array1OfDataMapOfGUIDDriver;
 
 #endif // _TFunction_Array1OfDataMapOfGUIDDriver_hxx

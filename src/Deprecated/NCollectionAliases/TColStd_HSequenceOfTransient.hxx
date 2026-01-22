@@ -24,9 +24,12 @@
 #include <TColStd_SequenceOfTransient.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HSequenceOfTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<Standard_Transient>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_HSequenceOfTransient.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<Standard_Transient>> directly.")
 
-Standard_DEPRECATED("TColStd_HSequenceOfTransient is deprecated, use NCollection_HSequence<opencascade::handle<Standard_Transient>> directly")
+  Standard_DEPRECATED("TColStd_HSequenceOfTransient is deprecated, use "
+                      "NCollection_HSequence<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_HSequence<opencascade::handle<Standard_Transient>> TColStd_HSequenceOfTransient;
 
 #endif // _TColStd_HSequenceOfTransient_hxx

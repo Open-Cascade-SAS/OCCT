@@ -14,7 +14,8 @@
 //! @file StepElement_HSequenceOfElementMaterial.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> directly
+//!             instead.
 
 #ifndef _StepElement_HSequenceOfElementMaterial_hxx
 #define _StepElement_HSequenceOfElementMaterial_hxx
@@ -23,9 +24,14 @@
 #include <StepElement_SequenceOfElementMaterial.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_HSequenceOfElementMaterial.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_HSequenceOfElementMaterial.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> directly.")
 
-Standard_DEPRECATED("StepElement_HSequenceOfElementMaterial is deprecated, use NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> directly")
-typedef NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> StepElement_HSequenceOfElementMaterial;
+  Standard_DEPRECATED(
+    "StepElement_HSequenceOfElementMaterial is deprecated, use "
+    "NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>> directly")
+typedef NCollection_HSequence<opencascade::handle<StepElement_ElementMaterial>>
+  StepElement_HSequenceOfElementMaterial;
 
 #endif // _StepElement_HSequenceOfElementMaterial_hxx

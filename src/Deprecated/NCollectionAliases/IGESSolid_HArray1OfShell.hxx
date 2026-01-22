@@ -23,9 +23,11 @@
 #include <IGESSolid_Array1OfShell.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESSolid_HArray1OfShell.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESSolid_Shell>> directly.")
+Standard_HEADER_DEPRECATED("IGESSolid_HArray1OfShell.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<IGESSolid_Shell>> directly.")
 
-Standard_DEPRECATED("IGESSolid_HArray1OfShell is deprecated, use NCollection_HArray1<opencascade::handle<IGESSolid_Shell>> directly")
+  Standard_DEPRECATED("IGESSolid_HArray1OfShell is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<IGESSolid_Shell>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESSolid_Shell>> IGESSolid_HArray1OfShell;
 
 #endif // _IGESSolid_HArray1OfShell_hxx

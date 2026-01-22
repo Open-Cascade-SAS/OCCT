@@ -23,11 +23,15 @@
 #include <TopBas_TestInterference.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TopBas_ListOfTestInterference.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopBas_ListOfTestInterference.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("TopBas_ListOfTestInterference is deprecated, use NCollection_List<TopBas_TestInterference> directly")
+  Standard_DEPRECATED("TopBas_ListOfTestInterference is deprecated, use "
+                      "NCollection_List<TopBas_TestInterference> directly")
 typedef NCollection_List<TopBas_TestInterference> TopBas_ListOfTestInterference;
-Standard_DEPRECATED("TopBas_ListIteratorOfListOfTestInterference is deprecated, use NCollection_List<TopBas_TestInterference>::Iterator directly")
-typedef NCollection_List<TopBas_TestInterference>::Iterator TopBas_ListIteratorOfListOfTestInterference;
+Standard_DEPRECATED("TopBas_ListIteratorOfListOfTestInterference is deprecated, use "
+                    "NCollection_List<TopBas_TestInterference>::Iterator directly")
+typedef NCollection_List<TopBas_TestInterference>::Iterator
+  TopBas_ListIteratorOfListOfTestInterference;
 
 #endif // _TopBas_ListOfTestInterference_hxx

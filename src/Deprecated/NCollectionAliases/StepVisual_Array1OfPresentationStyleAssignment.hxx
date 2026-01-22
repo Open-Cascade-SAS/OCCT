@@ -14,7 +14,8 @@
 //! @file StepVisual_Array1OfPresentationStyleAssignment.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>>
+//!             directly instead.
 
 #ifndef _StepVisual_Array1OfPresentationStyleAssignment_hxx
 #define _StepVisual_Array1OfPresentationStyleAssignment_hxx
@@ -23,9 +24,14 @@
 #include <StepVisual_PresentationStyleAssignment.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfPresentationStyleAssignment.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfPresentationStyleAssignment.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfPresentationStyleAssignment is deprecated, use NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly")
-typedef NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> StepVisual_Array1OfPresentationStyleAssignment;
+  Standard_DEPRECATED(
+    "StepVisual_Array1OfPresentationStyleAssignment is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>> directly")
+typedef NCollection_Array1<opencascade::handle<StepVisual_PresentationStyleAssignment>>
+  StepVisual_Array1OfPresentationStyleAssignment;
 
 #endif // _StepVisual_Array1OfPresentationStyleAssignment_hxx

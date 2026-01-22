@@ -23,9 +23,11 @@
 #include <BRepFill_EdgeFaceAndOrder.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("BRepFill_SequenceOfEdgeFaceAndOrder.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<BRepFill_EdgeFaceAndOrder> directly.")
+Standard_HEADER_DEPRECATED("BRepFill_SequenceOfEdgeFaceAndOrder.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Sequence<BRepFill_EdgeFaceAndOrder> directly.")
 
-Standard_DEPRECATED("BRepFill_SequenceOfEdgeFaceAndOrder is deprecated, use NCollection_Sequence<BRepFill_EdgeFaceAndOrder> directly")
+  Standard_DEPRECATED("BRepFill_SequenceOfEdgeFaceAndOrder is deprecated, use "
+                      "NCollection_Sequence<BRepFill_EdgeFaceAndOrder> directly")
 typedef NCollection_Sequence<BRepFill_EdgeFaceAndOrder> BRepFill_SequenceOfEdgeFaceAndOrder;
 
 #endif // _BRepFill_SequenceOfEdgeFaceAndOrder_hxx

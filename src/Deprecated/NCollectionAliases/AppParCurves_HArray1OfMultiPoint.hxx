@@ -24,9 +24,11 @@
 #include <AppParCurves_Array1OfMultiPoint.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("AppParCurves_HArray1OfMultiPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<AppParCurves_MultiPoint> directly.")
+Standard_HEADER_DEPRECATED("AppParCurves_HArray1OfMultiPoint.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_HArray1<AppParCurves_MultiPoint> directly.")
 
-Standard_DEPRECATED("AppParCurves_HArray1OfMultiPoint is deprecated, use NCollection_HArray1<AppParCurves_MultiPoint> directly")
+  Standard_DEPRECATED("AppParCurves_HArray1OfMultiPoint is deprecated, use "
+                      "NCollection_HArray1<AppParCurves_MultiPoint> directly")
 typedef NCollection_HArray1<AppParCurves_MultiPoint> AppParCurves_HArray1OfMultiPoint;
 
 #endif // _AppParCurves_HArray1OfMultiPoint_hxx

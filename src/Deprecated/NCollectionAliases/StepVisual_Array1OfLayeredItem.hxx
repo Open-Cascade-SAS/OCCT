@@ -23,9 +23,11 @@
 #include <StepVisual_LayeredItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfLayeredItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepVisual_LayeredItem> directly.")
+Standard_HEADER_DEPRECATED("StepVisual_Array1OfLayeredItem.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<StepVisual_LayeredItem> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfLayeredItem is deprecated, use NCollection_Array1<StepVisual_LayeredItem> directly")
+  Standard_DEPRECATED("StepVisual_Array1OfLayeredItem is deprecated, use "
+                      "NCollection_Array1<StepVisual_LayeredItem> directly")
 typedef NCollection_Array1<StepVisual_LayeredItem> StepVisual_Array1OfLayeredItem;
 
 #endif // _StepVisual_Array1OfLayeredItem_hxx

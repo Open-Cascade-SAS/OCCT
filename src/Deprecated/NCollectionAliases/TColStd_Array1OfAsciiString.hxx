@@ -23,9 +23,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_Array1OfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TCollection_AsciiString> directly.")
+Standard_HEADER_DEPRECATED("TColStd_Array1OfAsciiString.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<TCollection_AsciiString> directly.")
 
-Standard_DEPRECATED("TColStd_Array1OfAsciiString is deprecated, use NCollection_Array1<TCollection_AsciiString> directly")
+  Standard_DEPRECATED("TColStd_Array1OfAsciiString is deprecated, use "
+                      "NCollection_Array1<TCollection_AsciiString> directly")
 typedef NCollection_Array1<TCollection_AsciiString> TColStd_Array1OfAsciiString;
 
 #endif // _TColStd_Array1OfAsciiString_hxx

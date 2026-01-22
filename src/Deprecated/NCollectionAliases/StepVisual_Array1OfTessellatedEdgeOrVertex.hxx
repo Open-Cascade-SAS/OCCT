@@ -23,9 +23,13 @@
 #include <StepVisual_TessellatedEdgeOrVertex.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfTessellatedEdgeOrVertex.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepVisual_TessellatedEdgeOrVertex> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfTessellatedEdgeOrVertex.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepVisual_TessellatedEdgeOrVertex> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfTessellatedEdgeOrVertex is deprecated, use NCollection_Array1<StepVisual_TessellatedEdgeOrVertex> directly")
-typedef NCollection_Array1<StepVisual_TessellatedEdgeOrVertex> StepVisual_Array1OfTessellatedEdgeOrVertex;
+  Standard_DEPRECATED("StepVisual_Array1OfTessellatedEdgeOrVertex is deprecated, use "
+                      "NCollection_Array1<StepVisual_TessellatedEdgeOrVertex> directly")
+typedef NCollection_Array1<StepVisual_TessellatedEdgeOrVertex>
+  StepVisual_Array1OfTessellatedEdgeOrVertex;
 
 #endif // _StepVisual_Array1OfTessellatedEdgeOrVertex_hxx

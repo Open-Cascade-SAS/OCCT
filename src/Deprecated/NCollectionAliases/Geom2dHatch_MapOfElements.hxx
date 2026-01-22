@@ -23,11 +23,15 @@
 #include <Geom2dHatch_Element.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Geom2dHatch_MapOfElements.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "Geom2dHatch_MapOfElements.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Geom2dHatch_MapOfElements is deprecated, use NCollection_DataMap<int, Geom2dHatch_Element> directly")
+  Standard_DEPRECATED("Geom2dHatch_MapOfElements is deprecated, use NCollection_DataMap<int, "
+                      "Geom2dHatch_Element> directly")
 typedef NCollection_DataMap<int, Geom2dHatch_Element> Geom2dHatch_MapOfElements;
-Standard_DEPRECATED("Geom2dHatch_DataMapIteratorOfMapOfElements is deprecated, use NCollection_DataMap<int, Geom2dHatch_Element>::Iterator directly")
-typedef NCollection_DataMap<int, Geom2dHatch_Element>::Iterator Geom2dHatch_DataMapIteratorOfMapOfElements;
+Standard_DEPRECATED("Geom2dHatch_DataMapIteratorOfMapOfElements is deprecated, use "
+                    "NCollection_DataMap<int, Geom2dHatch_Element>::Iterator directly")
+typedef NCollection_DataMap<int, Geom2dHatch_Element>::Iterator
+  Geom2dHatch_DataMapIteratorOfMapOfElements;
 
 #endif // _Geom2dHatch_MapOfElements_hxx

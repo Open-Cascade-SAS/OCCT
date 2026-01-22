@@ -24,11 +24,20 @@
 #include <TColStd_HArray1OfInteger.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger is deprecated, use NCollection_DataMap<TCollection_ExtendedString, opencascade::handle<TColStd_HArray1OfInteger>> directly")
-typedef NCollection_DataMap<TCollection_ExtendedString, opencascade::handle<TColStd_HArray1OfInteger>> TDataStd_DataMapOfStringHArray1OfInteger;
-Standard_DEPRECATED("TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger is deprecated, use NCollection_DataMap<TCollection_ExtendedString, opencascade::handle<TColStd_HArray1OfInteger>>::Iterator directly")
-typedef NCollection_DataMap<TCollection_ExtendedString, opencascade::handle<TColStd_HArray1OfInteger>>::Iterator TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger;
+  Standard_DEPRECATED("TDataStd_DataMapOfStringHArray1OfInteger is deprecated, use "
+                      "NCollection_DataMap<TCollection_ExtendedString, "
+                      "opencascade::handle<TColStd_HArray1OfInteger>> directly")
+typedef NCollection_DataMap<TCollection_ExtendedString,
+                            opencascade::handle<TColStd_HArray1OfInteger>>
+  TDataStd_DataMapOfStringHArray1OfInteger;
+Standard_DEPRECATED("TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger is deprecated, use "
+                    "NCollection_DataMap<TCollection_ExtendedString, "
+                    "opencascade::handle<TColStd_HArray1OfInteger>>::Iterator directly")
+typedef NCollection_DataMap<TCollection_ExtendedString,
+                            opencascade::handle<TColStd_HArray1OfInteger>>::Iterator
+  TDataStd_DataMapIteratorOfDataMapOfStringHArray1OfInteger;
 
 #endif // _TDataStd_DataMapOfStringHArray1OfInteger_hxx

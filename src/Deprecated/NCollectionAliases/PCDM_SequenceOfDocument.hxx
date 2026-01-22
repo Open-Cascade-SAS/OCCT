@@ -23,9 +23,11 @@
 #include <PCDM_Document.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("PCDM_SequenceOfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<PCDM_Document>> directly.")
+Standard_HEADER_DEPRECATED("PCDM_SequenceOfDocument.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<PCDM_Document>> directly.")
 
-Standard_DEPRECATED("PCDM_SequenceOfDocument is deprecated, use NCollection_Sequence<opencascade::handle<PCDM_Document>> directly")
+  Standard_DEPRECATED("PCDM_SequenceOfDocument is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<PCDM_Document>> directly")
 typedef NCollection_Sequence<opencascade::handle<PCDM_Document>> PCDM_SequenceOfDocument;
 
 #endif // _PCDM_SequenceOfDocument_hxx

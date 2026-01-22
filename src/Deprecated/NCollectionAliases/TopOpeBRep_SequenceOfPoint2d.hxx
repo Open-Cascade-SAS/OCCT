@@ -23,9 +23,11 @@
 #include <TopOpeBRep_Point2d.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRep_SequenceOfPoint2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<TopOpeBRep_Point2d> directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRep_SequenceOfPoint2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<TopOpeBRep_Point2d> directly.")
 
-Standard_DEPRECATED("TopOpeBRep_SequenceOfPoint2d is deprecated, use NCollection_Sequence<TopOpeBRep_Point2d> directly")
+  Standard_DEPRECATED("TopOpeBRep_SequenceOfPoint2d is deprecated, use "
+                      "NCollection_Sequence<TopOpeBRep_Point2d> directly")
 typedef NCollection_Sequence<TopOpeBRep_Point2d> TopOpeBRep_SequenceOfPoint2d;
 
 #endif // _TopOpeBRep_SequenceOfPoint2d_hxx

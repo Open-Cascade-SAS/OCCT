@@ -23,11 +23,16 @@
 #include <AIS_InteractiveObject.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("AIS_ListOfInteractive.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "AIS_ListOfInteractive.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("AIS_ListOfInteractive is deprecated, use NCollection_List<opencascade::handle<AIS_InteractiveObject>> directly")
+  Standard_DEPRECATED("AIS_ListOfInteractive is deprecated, use "
+                      "NCollection_List<opencascade::handle<AIS_InteractiveObject>> directly")
 typedef NCollection_List<opencascade::handle<AIS_InteractiveObject>> AIS_ListOfInteractive;
-Standard_DEPRECATED("AIS_ListIteratorOfListOfInteractive is deprecated, use NCollection_List<opencascade::handle<AIS_InteractiveObject>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<AIS_InteractiveObject>>::Iterator AIS_ListIteratorOfListOfInteractive;
+Standard_DEPRECATED(
+  "AIS_ListIteratorOfListOfInteractive is deprecated, use "
+  "NCollection_List<opencascade::handle<AIS_InteractiveObject>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<AIS_InteractiveObject>>::Iterator
+  AIS_ListIteratorOfListOfInteractive;
 
 #endif // _AIS_ListOfInteractive_hxx

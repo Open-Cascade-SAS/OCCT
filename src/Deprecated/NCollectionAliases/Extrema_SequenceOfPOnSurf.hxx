@@ -23,9 +23,11 @@
 #include <Extrema_POnSurf.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Extrema_SequenceOfPOnSurf.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Extrema_POnSurf> directly.")
+Standard_HEADER_DEPRECATED("Extrema_SequenceOfPOnSurf.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Extrema_POnSurf> directly.")
 
-Standard_DEPRECATED("Extrema_SequenceOfPOnSurf is deprecated, use NCollection_Sequence<Extrema_POnSurf> directly")
+  Standard_DEPRECATED(
+    "Extrema_SequenceOfPOnSurf is deprecated, use NCollection_Sequence<Extrema_POnSurf> directly")
 typedef NCollection_Sequence<Extrema_POnSurf> Extrema_SequenceOfPOnSurf;
 
 #endif // _Extrema_SequenceOfPOnSurf_hxx

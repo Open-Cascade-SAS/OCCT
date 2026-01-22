@@ -23,9 +23,11 @@
 #include <Storage_CallBack.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Storage_ArrayOfCallBack.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Storage_CallBack>> directly.")
+Standard_HEADER_DEPRECATED("Storage_ArrayOfCallBack.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<Storage_CallBack>> directly.")
 
-Standard_DEPRECATED("Storage_ArrayOfCallBack is deprecated, use NCollection_Array1<opencascade::handle<Storage_CallBack>> directly")
+  Standard_DEPRECATED("Storage_ArrayOfCallBack is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Storage_CallBack>> directly")
 typedef NCollection_Array1<opencascade::handle<Storage_CallBack>> Storage_ArrayOfCallBack;
 
 #endif // _Storage_ArrayOfCallBack_hxx

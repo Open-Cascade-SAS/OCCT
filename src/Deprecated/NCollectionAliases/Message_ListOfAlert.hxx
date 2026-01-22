@@ -23,9 +23,11 @@
 #include <Message_Alert.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("Message_ListOfAlert.hxx is deprecated since OCCT 8.0.0. Use NCollection_List<opencascade::handle<Message_Alert>> directly.")
+Standard_HEADER_DEPRECATED("Message_ListOfAlert.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_List<opencascade::handle<Message_Alert>> directly.")
 
-Standard_DEPRECATED("Message_ListOfAlert is deprecated, use NCollection_List<opencascade::handle<Message_Alert>> directly")
+  Standard_DEPRECATED("Message_ListOfAlert is deprecated, use "
+                      "NCollection_List<opencascade::handle<Message_Alert>> directly")
 typedef NCollection_List<opencascade::handle<Message_Alert>> Message_ListOfAlert;
 
 #endif // _Message_ListOfAlert_hxx

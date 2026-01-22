@@ -14,7 +14,8 @@
 //! @file StepRepr_Array1OfRepresentationItem.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly
+//!             instead.
 
 #ifndef _StepRepr_Array1OfRepresentationItem_hxx
 #define _StepRepr_Array1OfRepresentationItem_hxx
@@ -23,9 +24,14 @@
 #include <StepRepr_RepresentationItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepRepr_Array1OfRepresentationItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepRepr_Array1OfRepresentationItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly.")
 
-Standard_DEPRECATED("StepRepr_Array1OfRepresentationItem is deprecated, use NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly")
-typedef NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> StepRepr_Array1OfRepresentationItem;
+  Standard_DEPRECATED(
+    "StepRepr_Array1OfRepresentationItem is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>> directly")
+typedef NCollection_Array1<opencascade::handle<StepRepr_RepresentationItem>>
+  StepRepr_Array1OfRepresentationItem;
 
 #endif // _StepRepr_Array1OfRepresentationItem_hxx

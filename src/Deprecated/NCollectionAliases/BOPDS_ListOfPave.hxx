@@ -23,11 +23,13 @@
 #include <NCollection_List.hxx>
 #include <BOPDS_Pave.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_ListOfPave.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BOPDS_ListOfPave.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPDS_ListOfPave is deprecated, use NCollection_List<BOPDS_Pave> directly")
+  Standard_DEPRECATED("BOPDS_ListOfPave is deprecated, use NCollection_List<BOPDS_Pave> directly")
 typedef NCollection_List<BOPDS_Pave> BOPDS_ListOfPave;
-Standard_DEPRECATED("BOPDS_ListIteratorOfListOfPave is deprecated, use NCollection_List<BOPDS_Pave>::Iterator directly")
+Standard_DEPRECATED("BOPDS_ListIteratorOfListOfPave is deprecated, use "
+                    "NCollection_List<BOPDS_Pave>::Iterator directly")
 typedef NCollection_List<BOPDS_Pave>::Iterator BOPDS_ListIteratorOfListOfPave;
 
 #endif // _BOPDS_ListOfPave_hxx

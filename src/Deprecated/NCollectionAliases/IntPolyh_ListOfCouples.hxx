@@ -23,11 +23,14 @@
 #include <NCollection_List.hxx>
 #include <IntPolyh_Couple.hxx>
 
-Standard_HEADER_DEPRECATED("IntPolyh_ListOfCouples.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "IntPolyh_ListOfCouples.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("IntPolyh_ListOfCouples is deprecated, use NCollection_List<IntPolyh_Couple> directly")
+  Standard_DEPRECATED(
+    "IntPolyh_ListOfCouples is deprecated, use NCollection_List<IntPolyh_Couple> directly")
 typedef NCollection_List<IntPolyh_Couple> IntPolyh_ListOfCouples;
-Standard_DEPRECATED("IntPolyh_ListIteratorOfListOfCouples is deprecated, use NCollection_List<IntPolyh_Couple>::Iterator directly")
+Standard_DEPRECATED("IntPolyh_ListIteratorOfListOfCouples is deprecated, use "
+                    "NCollection_List<IntPolyh_Couple>::Iterator directly")
 typedef NCollection_List<IntPolyh_Couple>::Iterator IntPolyh_ListIteratorOfListOfCouples;
 
 #endif // _IntPolyh_ListOfCouples_hxx

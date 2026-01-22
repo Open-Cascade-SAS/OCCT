@@ -24,9 +24,13 @@
 #include <StepElement_Array2OfSurfaceElementPurpose.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_HArray2OfSurfaceElementPurpose.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<StepElement_SurfaceElementPurpose> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_HArray2OfSurfaceElementPurpose.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray2<StepElement_SurfaceElementPurpose> directly.")
 
-Standard_DEPRECATED("StepElement_HArray2OfSurfaceElementPurpose is deprecated, use NCollection_HArray2<StepElement_SurfaceElementPurpose> directly")
-typedef NCollection_HArray2<StepElement_SurfaceElementPurpose> StepElement_HArray2OfSurfaceElementPurpose;
+  Standard_DEPRECATED("StepElement_HArray2OfSurfaceElementPurpose is deprecated, use "
+                      "NCollection_HArray2<StepElement_SurfaceElementPurpose> directly")
+typedef NCollection_HArray2<StepElement_SurfaceElementPurpose>
+  StepElement_HArray2OfSurfaceElementPurpose;
 
 #endif // _StepElement_HArray2OfSurfaceElementPurpose_hxx

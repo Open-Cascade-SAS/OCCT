@@ -24,11 +24,15 @@
 #include <TopOpeBRepDS_SurfaceData.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_MapOfSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TopOpeBRepDS_MapOfSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_MapOfSurface is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_SurfaceData> directly")
+  Standard_DEPRECATED("TopOpeBRepDS_MapOfSurface is deprecated, use NCollection_DataMap<int, "
+                      "TopOpeBRepDS_SurfaceData> directly")
 typedef NCollection_DataMap<int, TopOpeBRepDS_SurfaceData> TopOpeBRepDS_MapOfSurface;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfSurface is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_SurfaceData>::Iterator directly")
-typedef NCollection_DataMap<int, TopOpeBRepDS_SurfaceData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfSurface;
+Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfSurface is deprecated, use "
+                    "NCollection_DataMap<int, TopOpeBRepDS_SurfaceData>::Iterator directly")
+typedef NCollection_DataMap<int, TopOpeBRepDS_SurfaceData>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfMapOfSurface;
 
 #endif // _TopOpeBRepDS_MapOfSurface_hxx

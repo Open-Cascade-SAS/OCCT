@@ -14,7 +14,8 @@
 //! @file StepGeom_HArray1OfBoundaryCurve.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> directly
+//!             instead.
 
 #ifndef _StepGeom_HArray1OfBoundaryCurve_hxx
 #define _StepGeom_HArray1OfBoundaryCurve_hxx
@@ -24,9 +25,13 @@
 #include <StepGeom_Array1OfBoundaryCurve.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_HArray1OfBoundaryCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepGeom_HArray1OfBoundaryCurve.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> directly.")
 
-Standard_DEPRECATED("StepGeom_HArray1OfBoundaryCurve is deprecated, use NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> StepGeom_HArray1OfBoundaryCurve;
+  Standard_DEPRECATED("StepGeom_HArray1OfBoundaryCurve is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepGeom_BoundaryCurve>>
+  StepGeom_HArray1OfBoundaryCurve;
 
 #endif // _StepGeom_HArray1OfBoundaryCurve_hxx

@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TShort_Array1OfShortReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<float> directly.")
+Standard_HEADER_DEPRECATED("TShort_Array1OfShortReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<float> directly.")
 
-Standard_DEPRECATED("TShort_Array1OfShortReal is deprecated, use NCollection_Array1<float> directly")
+  Standard_DEPRECATED(
+    "TShort_Array1OfShortReal is deprecated, use NCollection_Array1<float> directly")
 typedef NCollection_Array1<float> TShort_Array1OfShortReal;
 
 #endif // _TShort_Array1OfShortReal_hxx

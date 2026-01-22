@@ -24,11 +24,15 @@
 #include <TDF_IDMap.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TDocStd_LabelIDMapDataMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TDocStd_LabelIDMapDataMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TDocStd_LabelIDMapDataMap is deprecated, use NCollection_DataMap<TDF_Label, TDF_IDMap> directly")
+  Standard_DEPRECATED("TDocStd_LabelIDMapDataMap is deprecated, use NCollection_DataMap<TDF_Label, "
+                      "TDF_IDMap> directly")
 typedef NCollection_DataMap<TDF_Label, TDF_IDMap> TDocStd_LabelIDMapDataMap;
-Standard_DEPRECATED("TDocStd_DataMapIteratorOfLabelIDMapDataMap is deprecated, use NCollection_DataMap<TDF_Label, TDF_IDMap>::Iterator directly")
-typedef NCollection_DataMap<TDF_Label, TDF_IDMap>::Iterator TDocStd_DataMapIteratorOfLabelIDMapDataMap;
+Standard_DEPRECATED("TDocStd_DataMapIteratorOfLabelIDMapDataMap is deprecated, use "
+                    "NCollection_DataMap<TDF_Label, TDF_IDMap>::Iterator directly")
+typedef NCollection_DataMap<TDF_Label, TDF_IDMap>::Iterator
+  TDocStd_DataMapIteratorOfLabelIDMapDataMap;
 
 #endif // _TDocStd_LabelIDMapDataMap_hxx

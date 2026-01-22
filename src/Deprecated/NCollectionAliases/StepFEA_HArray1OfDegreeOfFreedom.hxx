@@ -23,9 +23,11 @@
 #include <StepFEA_Array1OfDegreeOfFreedom.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepFEA_HArray1OfDegreeOfFreedom.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepFEA_DegreeOfFreedom> directly.")
+Standard_HEADER_DEPRECATED("StepFEA_HArray1OfDegreeOfFreedom.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_HArray1<StepFEA_DegreeOfFreedom> directly.")
 
-Standard_DEPRECATED("StepFEA_HArray1OfDegreeOfFreedom is deprecated, use NCollection_HArray1<StepFEA_DegreeOfFreedom> directly")
+  Standard_DEPRECATED("StepFEA_HArray1OfDegreeOfFreedom is deprecated, use "
+                      "NCollection_HArray1<StepFEA_DegreeOfFreedom> directly")
 typedef NCollection_HArray1<StepFEA_DegreeOfFreedom> StepFEA_HArray1OfDegreeOfFreedom;
 
 #endif // _StepFEA_HArray1OfDegreeOfFreedom_hxx

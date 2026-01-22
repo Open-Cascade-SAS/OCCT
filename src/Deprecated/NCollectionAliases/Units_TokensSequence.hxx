@@ -23,9 +23,11 @@
 #include <Units_TksSequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("Units_TokensSequence.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<Units_Token>> directly.")
+Standard_HEADER_DEPRECATED("Units_TokensSequence.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<opencascade::handle<Units_Token>> directly.")
 
-Standard_DEPRECATED("Units_TokensSequence is deprecated, use NCollection_HSequence<opencascade::handle<Units_Token>> directly")
+  Standard_DEPRECATED("Units_TokensSequence is deprecated, use "
+                      "NCollection_HSequence<opencascade::handle<Units_Token>> directly")
 typedef NCollection_HSequence<opencascade::handle<Units_Token>> Units_TokensSequence;
 
 #endif // _Units_TokensSequence_hxx

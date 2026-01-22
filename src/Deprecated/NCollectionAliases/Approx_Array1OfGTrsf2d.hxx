@@ -23,9 +23,11 @@
 #include <NCollection_Array1.hxx>
 #include <gp_GTrsf2d.hxx>
 
-Standard_HEADER_DEPRECATED("Approx_Array1OfGTrsf2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_GTrsf2d> directly.")
+Standard_HEADER_DEPRECATED("Approx_Array1OfGTrsf2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<gp_GTrsf2d> directly.")
 
-Standard_DEPRECATED("Approx_Array1OfGTrsf2d is deprecated, use NCollection_Array1<gp_GTrsf2d> directly")
+  Standard_DEPRECATED(
+    "Approx_Array1OfGTrsf2d is deprecated, use NCollection_Array1<gp_GTrsf2d> directly")
 typedef NCollection_Array1<gp_GTrsf2d> Approx_Array1OfGTrsf2d;
 
 #endif // _Approx_Array1OfGTrsf2d_hxx

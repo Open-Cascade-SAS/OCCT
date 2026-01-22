@@ -23,9 +23,13 @@
 #include <StepAP214_AutoDesignDateAndPersonItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_Array1OfAutoDesignDateAndPersonItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_Array1OfAutoDesignDateAndPersonItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem> directly.")
 
-Standard_DEPRECATED("StepAP214_Array1OfAutoDesignDateAndPersonItem is deprecated, use NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem> directly")
-typedef NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem> StepAP214_Array1OfAutoDesignDateAndPersonItem;
+  Standard_DEPRECATED("StepAP214_Array1OfAutoDesignDateAndPersonItem is deprecated, use "
+                      "NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem> directly")
+typedef NCollection_Array1<StepAP214_AutoDesignDateAndPersonItem>
+  StepAP214_Array1OfAutoDesignDateAndPersonItem;
 
 #endif // _StepAP214_Array1OfAutoDesignDateAndPersonItem_hxx

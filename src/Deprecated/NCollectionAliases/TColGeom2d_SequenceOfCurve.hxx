@@ -23,9 +23,11 @@
 #include <Geom2d_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColGeom2d_SequenceOfCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Geom2d_Curve>> directly.")
+Standard_HEADER_DEPRECATED("TColGeom2d_SequenceOfCurve.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<Geom2d_Curve>> directly.")
 
-Standard_DEPRECATED("TColGeom2d_SequenceOfCurve is deprecated, use NCollection_Sequence<opencascade::handle<Geom2d_Curve>> directly")
+  Standard_DEPRECATED("TColGeom2d_SequenceOfCurve is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Geom2d_Curve>> directly")
 typedef NCollection_Sequence<opencascade::handle<Geom2d_Curve>> TColGeom2d_SequenceOfCurve;
 
 #endif // _TColGeom2d_SequenceOfCurve_hxx

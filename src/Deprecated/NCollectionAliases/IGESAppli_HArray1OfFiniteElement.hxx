@@ -14,7 +14,8 @@
 //! @file IGESAppli_HArray1OfFiniteElement.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> directly
+//!             instead.
 
 #ifndef _IGESAppli_HArray1OfFiniteElement_hxx
 #define _IGESAppli_HArray1OfFiniteElement_hxx
@@ -23,9 +24,13 @@
 #include <IGESAppli_Array1OfFiniteElement.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESAppli_HArray1OfFiniteElement.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESAppli_HArray1OfFiniteElement.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> directly.")
 
-Standard_DEPRECATED("IGESAppli_HArray1OfFiniteElement is deprecated, use NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> directly")
-typedef NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> IGESAppli_HArray1OfFiniteElement;
+  Standard_DEPRECATED("IGESAppli_HArray1OfFiniteElement is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>> directly")
+typedef NCollection_HArray1<opencascade::handle<IGESAppli_FiniteElement>>
+  IGESAppli_HArray1OfFiniteElement;
 
 #endif // _IGESAppli_HArray1OfFiniteElement_hxx

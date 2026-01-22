@@ -23,11 +23,15 @@
 #include <DDF_Transaction.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("DDF_TransactionStack.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "DDF_TransactionStack.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("DDF_TransactionStack is deprecated, use NCollection_List<opencascade::handle<DDF_Transaction>> directly")
+  Standard_DEPRECATED("DDF_TransactionStack is deprecated, use "
+                      "NCollection_List<opencascade::handle<DDF_Transaction>> directly")
 typedef NCollection_List<opencascade::handle<DDF_Transaction>> DDF_TransactionStack;
-Standard_DEPRECATED("DDF_ListIteratorOfTransactionStack is deprecated, use NCollection_List<opencascade::handle<DDF_Transaction>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<DDF_Transaction>>::Iterator DDF_ListIteratorOfTransactionStack;
+Standard_DEPRECATED("DDF_ListIteratorOfTransactionStack is deprecated, use "
+                    "NCollection_List<opencascade::handle<DDF_Transaction>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<DDF_Transaction>>::Iterator
+  DDF_ListIteratorOfTransactionStack;
 
 #endif // _DDF_TransactionStack_hxx

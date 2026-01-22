@@ -23,9 +23,11 @@
 #include <StepShape_Face.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepShape_Array1OfFace.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepShape_Face>> directly.")
+Standard_HEADER_DEPRECATED("StepShape_Array1OfFace.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<StepShape_Face>> directly.")
 
-Standard_DEPRECATED("StepShape_Array1OfFace is deprecated, use NCollection_Array1<opencascade::handle<StepShape_Face>> directly")
+  Standard_DEPRECATED("StepShape_Array1OfFace is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepShape_Face>> directly")
 typedef NCollection_Array1<opencascade::handle<StepShape_Face>> StepShape_Array1OfFace;
 
 #endif // _StepShape_Array1OfFace_hxx

@@ -22,11 +22,14 @@
 #include <Standard_Macro.hxx>
 #include <BOPAlgo_CheckResult.hxx>
 
-Standard_HEADER_DEPRECATED("BOPAlgo_ListOfCheckResult.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BOPAlgo_ListOfCheckResult.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPAlgo_ListOfCheckResult is deprecated, use NCollection_List<BOPAlgo_CheckResult> directly")
+  Standard_DEPRECATED(
+    "BOPAlgo_ListOfCheckResult is deprecated, use NCollection_List<BOPAlgo_CheckResult> directly")
 typedef NCollection_List<BOPAlgo_CheckResult> BOPAlgo_ListOfCheckResult;
-Standard_DEPRECATED("BOPAlgo_ListIteratorOfListOfCheckResult is deprecated, use NCollection_List<BOPAlgo_CheckResult>::Iterator directly")
+Standard_DEPRECATED("BOPAlgo_ListIteratorOfListOfCheckResult is deprecated, use "
+                    "NCollection_List<BOPAlgo_CheckResult>::Iterator directly")
 typedef NCollection_List<BOPAlgo_CheckResult>::Iterator BOPAlgo_ListIteratorOfListOfCheckResult;
 
 #endif // _BOPAlgo_ListOfCheckResult_hxx

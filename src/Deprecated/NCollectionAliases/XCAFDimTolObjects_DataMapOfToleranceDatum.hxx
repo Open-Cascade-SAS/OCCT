@@ -14,7 +14,8 @@
 //! @file XCAFDimTolObjects_DataMapOfToleranceDatum.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, opencascade::handle<XCAFDimTolObjects_DatumObject>> directly instead.
+//!             Use NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>,
+//!             opencascade::handle<XCAFDimTolObjects_DatumObject>> directly instead.
 
 #ifndef _XCAFDimTolObjects_DataMapOfToleranceDatum_hxx
 #define _XCAFDimTolObjects_DataMapOfToleranceDatum_hxx
@@ -24,9 +25,17 @@
 #include <XCAFDimTolObjects_GeomToleranceObject.hxx>
 #include <XCAFDimTolObjects_DatumObject.hxx>
 
-Standard_HEADER_DEPRECATED("XCAFDimTolObjects_DataMapOfToleranceDatum.hxx is deprecated since OCCT 8.0.0. Use NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, opencascade::handle<XCAFDimTolObjects_DatumObject>> directly.")
+Standard_HEADER_DEPRECATED(
+  "XCAFDimTolObjects_DataMapOfToleranceDatum.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, "
+  "opencascade::handle<XCAFDimTolObjects_DatumObject>> directly.")
 
-Standard_DEPRECATED("XCAFDimTolObjects_DataMapOfToleranceDatum is deprecated, use NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, opencascade::handle<XCAFDimTolObjects_DatumObject>> directly")
-typedef NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, opencascade::handle<XCAFDimTolObjects_DatumObject>> XCAFDimTolObjects_DataMapOfToleranceDatum;
+  Standard_DEPRECATED(
+    "XCAFDimTolObjects_DataMapOfToleranceDatum is deprecated, use "
+    "NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>, "
+    "opencascade::handle<XCAFDimTolObjects_DatumObject>> directly")
+typedef NCollection_DataMap<opencascade::handle<XCAFDimTolObjects_GeomToleranceObject>,
+                            opencascade::handle<XCAFDimTolObjects_DatumObject>>
+  XCAFDimTolObjects_DataMapOfToleranceDatum;
 
 #endif // _XCAFDimTolObjects_DataMapOfToleranceDatum_hxx

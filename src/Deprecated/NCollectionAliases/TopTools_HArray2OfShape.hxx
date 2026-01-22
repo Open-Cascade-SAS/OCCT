@@ -24,9 +24,11 @@
 #include <TopTools_Array2OfShape.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_HArray2OfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<TopoDS_Shape> directly.")
+Standard_HEADER_DEPRECATED("TopTools_HArray2OfShape.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray2<TopoDS_Shape> directly.")
 
-Standard_DEPRECATED("TopTools_HArray2OfShape is deprecated, use NCollection_HArray2<TopoDS_Shape> directly")
+  Standard_DEPRECATED(
+    "TopTools_HArray2OfShape is deprecated, use NCollection_HArray2<TopoDS_Shape> directly")
 typedef NCollection_HArray2<TopoDS_Shape> TopTools_HArray2OfShape;
 
 #endif // _TopTools_HArray2OfShape_hxx

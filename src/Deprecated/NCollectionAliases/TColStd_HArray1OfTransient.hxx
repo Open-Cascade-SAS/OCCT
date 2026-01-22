@@ -24,9 +24,11 @@
 #include <TColStd_Array1OfTransient.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HArray1OfTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<Standard_Transient>> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HArray1OfTransient.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<Standard_Transient>> directly.")
 
-Standard_DEPRECATED("TColStd_HArray1OfTransient is deprecated, use NCollection_HArray1<opencascade::handle<Standard_Transient>> directly")
+  Standard_DEPRECATED("TColStd_HArray1OfTransient is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_HArray1<opencascade::handle<Standard_Transient>> TColStd_HArray1OfTransient;
 
 #endif // _TColStd_HArray1OfTransient_hxx

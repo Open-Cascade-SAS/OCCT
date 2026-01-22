@@ -23,9 +23,11 @@
 #include <StepGeom_SurfaceBoundary.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_Array1OfSurfaceBoundary.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepGeom_SurfaceBoundary> directly.")
+Standard_HEADER_DEPRECATED("StepGeom_Array1OfSurfaceBoundary.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepGeom_SurfaceBoundary> directly.")
 
-Standard_DEPRECATED("StepGeom_Array1OfSurfaceBoundary is deprecated, use NCollection_Array1<StepGeom_SurfaceBoundary> directly")
+  Standard_DEPRECATED("StepGeom_Array1OfSurfaceBoundary is deprecated, use "
+                      "NCollection_Array1<StepGeom_SurfaceBoundary> directly")
 typedef NCollection_Array1<StepGeom_SurfaceBoundary> StepGeom_Array1OfSurfaceBoundary;
 
 #endif // _StepGeom_Array1OfSurfaceBoundary_hxx

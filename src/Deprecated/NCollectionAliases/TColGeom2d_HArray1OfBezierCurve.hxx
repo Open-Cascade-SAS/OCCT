@@ -24,9 +24,13 @@
 #include <TColGeom2d_Array1OfBezierCurve.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TColGeom2d_HArray1OfBezierCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<Geom2d_BezierCurve>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColGeom2d_HArray1OfBezierCurve.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<Geom2d_BezierCurve>> directly.")
 
-Standard_DEPRECATED("TColGeom2d_HArray1OfBezierCurve is deprecated, use NCollection_HArray1<opencascade::handle<Geom2d_BezierCurve>> directly")
-typedef NCollection_HArray1<opencascade::handle<Geom2d_BezierCurve>> TColGeom2d_HArray1OfBezierCurve;
+  Standard_DEPRECATED("TColGeom2d_HArray1OfBezierCurve is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<Geom2d_BezierCurve>> directly")
+typedef NCollection_HArray1<opencascade::handle<Geom2d_BezierCurve>>
+  TColGeom2d_HArray1OfBezierCurve;
 
 #endif // _TColGeom2d_HArray1OfBezierCurve_hxx

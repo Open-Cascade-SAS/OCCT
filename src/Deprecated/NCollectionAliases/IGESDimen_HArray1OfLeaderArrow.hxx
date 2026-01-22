@@ -14,7 +14,8 @@
 //! @file IGESDimen_HArray1OfLeaderArrow.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> directly
+//!             instead.
 
 #ifndef _IGESDimen_HArray1OfLeaderArrow_hxx
 #define _IGESDimen_HArray1OfLeaderArrow_hxx
@@ -23,9 +24,13 @@
 #include <IGESDimen_Array1OfLeaderArrow.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDimen_HArray1OfLeaderArrow.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDimen_HArray1OfLeaderArrow.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> directly.")
 
-Standard_DEPRECATED("IGESDimen_HArray1OfLeaderArrow is deprecated, use NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> directly")
-typedef NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> IGESDimen_HArray1OfLeaderArrow;
+  Standard_DEPRECATED("IGESDimen_HArray1OfLeaderArrow is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>> directly")
+typedef NCollection_HArray1<opencascade::handle<IGESDimen_LeaderArrow>>
+  IGESDimen_HArray1OfLeaderArrow;
 
 #endif // _IGESDimen_HArray1OfLeaderArrow_hxx

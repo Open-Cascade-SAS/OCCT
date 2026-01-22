@@ -14,7 +14,8 @@
 //! @file StepBasic_HArray1OfProductDefinition.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> directly
+//!             instead.
 
 #ifndef _StepBasic_HArray1OfProductDefinition_hxx
 #define _StepBasic_HArray1OfProductDefinition_hxx
@@ -24,9 +25,14 @@
 #include <StepBasic_Array1OfProductDefinition.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_HArray1OfProductDefinition.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepBasic_HArray1OfProductDefinition.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> directly.")
 
-Standard_DEPRECATED("StepBasic_HArray1OfProductDefinition is deprecated, use NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> StepBasic_HArray1OfProductDefinition;
+  Standard_DEPRECATED(
+    "StepBasic_HArray1OfProductDefinition is deprecated, use "
+    "NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepBasic_ProductDefinition>>
+  StepBasic_HArray1OfProductDefinition;
 
 #endif // _StepBasic_HArray1OfProductDefinition_hxx

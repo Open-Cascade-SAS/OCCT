@@ -23,11 +23,15 @@
 #include <NCollection_List.hxx>
 #include <BOPTools_ConnexityBlock.hxx>
 
-Standard_HEADER_DEPRECATED("BOPTools_ListOfConnexityBlock.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BOPTools_ListOfConnexityBlock.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("BOPTools_ListOfConnexityBlock is deprecated, use NCollection_List<BOPTools_ConnexityBlock> directly")
+  Standard_DEPRECATED("BOPTools_ListOfConnexityBlock is deprecated, use "
+                      "NCollection_List<BOPTools_ConnexityBlock> directly")
 typedef NCollection_List<BOPTools_ConnexityBlock> BOPTools_ListOfConnexityBlock;
-Standard_DEPRECATED("BOPTools_ListIteratorOfListOfConnexityBlock is deprecated, use NCollection_List<BOPTools_ConnexityBlock>::Iterator directly")
-typedef NCollection_List<BOPTools_ConnexityBlock>::Iterator BOPTools_ListIteratorOfListOfConnexityBlock;
+Standard_DEPRECATED("BOPTools_ListIteratorOfListOfConnexityBlock is deprecated, use "
+                    "NCollection_List<BOPTools_ConnexityBlock>::Iterator directly")
+typedef NCollection_List<BOPTools_ConnexityBlock>::Iterator
+  BOPTools_ListIteratorOfListOfConnexityBlock;
 
 #endif // _BOPTools_ListOfConnexityBlock_hxx

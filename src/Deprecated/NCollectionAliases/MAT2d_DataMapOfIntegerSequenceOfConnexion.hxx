@@ -24,11 +24,16 @@
 #include <MAT2d_SequenceOfConnexion.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion is deprecated, use NCollection_DataMap<int, MAT2d_SequenceOfConnexion> directly")
-typedef NCollection_DataMap<int, MAT2d_SequenceOfConnexion> MAT2d_DataMapOfIntegerSequenceOfConnexion;
-Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion is deprecated, use NCollection_DataMap<int, MAT2d_SequenceOfConnexion>::Iterator directly")
-typedef NCollection_DataMap<int, MAT2d_SequenceOfConnexion>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion;
+  Standard_DEPRECATED("MAT2d_DataMapOfIntegerSequenceOfConnexion is deprecated, use "
+                      "NCollection_DataMap<int, MAT2d_SequenceOfConnexion> directly")
+typedef NCollection_DataMap<int, MAT2d_SequenceOfConnexion>
+  MAT2d_DataMapOfIntegerSequenceOfConnexion;
+Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion is deprecated, use "
+                    "NCollection_DataMap<int, MAT2d_SequenceOfConnexion>::Iterator directly")
+typedef NCollection_DataMap<int, MAT2d_SequenceOfConnexion>::Iterator
+  MAT2d_DataMapIteratorOfDataMapOfIntegerSequenceOfConnexion;
 
 #endif // _MAT2d_DataMapOfIntegerSequenceOfConnexion_hxx

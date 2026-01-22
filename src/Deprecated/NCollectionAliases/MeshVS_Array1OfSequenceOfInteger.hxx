@@ -23,9 +23,11 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_Array1OfSequenceOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TColStd_SequenceOfInteger> directly.")
+Standard_HEADER_DEPRECATED("MeshVS_Array1OfSequenceOfInteger.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<TColStd_SequenceOfInteger> directly.")
 
-Standard_DEPRECATED("MeshVS_Array1OfSequenceOfInteger is deprecated, use NCollection_Array1<TColStd_SequenceOfInteger> directly")
+  Standard_DEPRECATED("MeshVS_Array1OfSequenceOfInteger is deprecated, use "
+                      "NCollection_Array1<TColStd_SequenceOfInteger> directly")
 typedef NCollection_Array1<TColStd_SequenceOfInteger> MeshVS_Array1OfSequenceOfInteger;
 
 #endif // _MeshVS_Array1OfSequenceOfInteger_hxx

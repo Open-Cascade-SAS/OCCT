@@ -24,9 +24,10 @@
 #include <TColgp_Array2OfXYZ.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_HArray2OfXYZ.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<gp_XYZ> directly.")
+Standard_HEADER_DEPRECATED("TColgp_HArray2OfXYZ.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray2<gp_XYZ> directly.")
 
-Standard_DEPRECATED("TColgp_HArray2OfXYZ is deprecated, use NCollection_HArray2<gp_XYZ> directly")
+  Standard_DEPRECATED("TColgp_HArray2OfXYZ is deprecated, use NCollection_HArray2<gp_XYZ> directly")
 typedef NCollection_HArray2<gp_XYZ> TColgp_HArray2OfXYZ;
 
 #endif // _TColgp_HArray2OfXYZ_hxx

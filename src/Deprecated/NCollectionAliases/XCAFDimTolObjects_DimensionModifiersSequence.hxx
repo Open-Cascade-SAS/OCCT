@@ -23,9 +23,13 @@
 #include <NCollection_Sequence.hxx>
 #include <XCAFDimTolObjects_DimensionModif.hxx>
 
-Standard_HEADER_DEPRECATED("XCAFDimTolObjects_DimensionModifiersSequence.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<XCAFDimTolObjects_DimensionModif> directly.")
+Standard_HEADER_DEPRECATED(
+  "XCAFDimTolObjects_DimensionModifiersSequence.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<XCAFDimTolObjects_DimensionModif> directly.")
 
-Standard_DEPRECATED("XCAFDimTolObjects_DimensionModifiersSequence is deprecated, use NCollection_Sequence<XCAFDimTolObjects_DimensionModif> directly")
-typedef NCollection_Sequence<XCAFDimTolObjects_DimensionModif> XCAFDimTolObjects_DimensionModifiersSequence;
+  Standard_DEPRECATED("XCAFDimTolObjects_DimensionModifiersSequence is deprecated, use "
+                      "NCollection_Sequence<XCAFDimTolObjects_DimensionModif> directly")
+typedef NCollection_Sequence<XCAFDimTolObjects_DimensionModif>
+  XCAFDimTolObjects_DimensionModifiersSequence;
 
 #endif // _XCAFDimTolObjects_DimensionModifiersSequence_hxx

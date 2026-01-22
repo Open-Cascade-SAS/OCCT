@@ -24,11 +24,18 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("XCAFPrs_DataMapOfStyleTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("XCAFPrs_DataMapOfStyleTransient.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("XCAFPrs_DataMapOfStyleTransient is deprecated, use NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>> directly")
-typedef NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>> XCAFPrs_DataMapOfStyleTransient;
-Standard_DEPRECATED("XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient is deprecated, use NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>>::Iterator directly")
-typedef NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>>::Iterator XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient;
+  Standard_DEPRECATED(
+    "XCAFPrs_DataMapOfStyleTransient is deprecated, use NCollection_DataMap<XCAFPrs_Style, "
+    "opencascade::handle<Standard_Transient>> directly")
+typedef NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>>
+  XCAFPrs_DataMapOfStyleTransient;
+Standard_DEPRECATED(
+  "XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient is deprecated, use "
+  "NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>>::Iterator directly")
+typedef NCollection_DataMap<XCAFPrs_Style, opencascade::handle<Standard_Transient>>::Iterator
+  XCAFPrs_DataMapIteratorOfDataMapOfStyleTransient;
 
 #endif // _XCAFPrs_DataMapOfStyleTransient_hxx

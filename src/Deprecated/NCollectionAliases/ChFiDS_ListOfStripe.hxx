@@ -23,11 +23,15 @@
 #include <ChFiDS_Stripe.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiDS_ListOfStripe.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "ChFiDS_ListOfStripe.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("ChFiDS_ListOfStripe is deprecated, use NCollection_List<opencascade::handle<ChFiDS_Stripe>> directly")
+  Standard_DEPRECATED("ChFiDS_ListOfStripe is deprecated, use "
+                      "NCollection_List<opencascade::handle<ChFiDS_Stripe>> directly")
 typedef NCollection_List<opencascade::handle<ChFiDS_Stripe>> ChFiDS_ListOfStripe;
-Standard_DEPRECATED("ChFiDS_ListIteratorOfListOfStripe is deprecated, use NCollection_List<opencascade::handle<ChFiDS_Stripe>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<ChFiDS_Stripe>>::Iterator ChFiDS_ListIteratorOfListOfStripe;
+Standard_DEPRECATED("ChFiDS_ListIteratorOfListOfStripe is deprecated, use "
+                    "NCollection_List<opencascade::handle<ChFiDS_Stripe>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<ChFiDS_Stripe>>::Iterator
+  ChFiDS_ListIteratorOfListOfStripe;
 
 #endif // _ChFiDS_ListOfStripe_hxx

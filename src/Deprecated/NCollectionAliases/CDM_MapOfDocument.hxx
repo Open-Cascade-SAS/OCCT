@@ -23,11 +23,14 @@
 #include <CDM_Document.hxx>
 #include <NCollection_Map.hxx>
 
-Standard_HEADER_DEPRECATED("CDM_MapOfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "CDM_MapOfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("CDM_MapOfDocument is deprecated, use NCollection_Map<opencascade::handle<CDM_Document>> directly")
+  Standard_DEPRECATED("CDM_MapOfDocument is deprecated, use "
+                      "NCollection_Map<opencascade::handle<CDM_Document>> directly")
 typedef NCollection_Map<opencascade::handle<CDM_Document>> CDM_MapOfDocument;
-Standard_DEPRECATED("CDM_MapIteratorOfMapOfDocument is deprecated, use NCollection_Map<opencascade::handle<CDM_Document>>::Iterator directly")
+Standard_DEPRECATED("CDM_MapIteratorOfMapOfDocument is deprecated, use "
+                    "NCollection_Map<opencascade::handle<CDM_Document>>::Iterator directly")
 typedef NCollection_Map<opencascade::handle<CDM_Document>>::Iterator CDM_MapIteratorOfMapOfDocument;
 
 #endif // _CDM_MapOfDocument_hxx

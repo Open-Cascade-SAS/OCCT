@@ -24,11 +24,17 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_DataMapOfIntegerTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TColStd_DataMapOfIntegerTransient.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_DataMapOfIntegerTransient is deprecated, use NCollection_DataMap<int, opencascade::handle<Standard_Transient>> directly")
-typedef NCollection_DataMap<int, opencascade::handle<Standard_Transient>> TColStd_DataMapOfIntegerTransient;
-Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfIntegerTransient is deprecated, use NCollection_DataMap<int, opencascade::handle<Standard_Transient>>::Iterator directly")
-typedef NCollection_DataMap<int, opencascade::handle<Standard_Transient>>::Iterator TColStd_DataMapIteratorOfDataMapOfIntegerTransient;
+  Standard_DEPRECATED("TColStd_DataMapOfIntegerTransient is deprecated, use "
+                      "NCollection_DataMap<int, opencascade::handle<Standard_Transient>> directly")
+typedef NCollection_DataMap<int, opencascade::handle<Standard_Transient>>
+  TColStd_DataMapOfIntegerTransient;
+Standard_DEPRECATED(
+  "TColStd_DataMapIteratorOfDataMapOfIntegerTransient is deprecated, use NCollection_DataMap<int, "
+  "opencascade::handle<Standard_Transient>>::Iterator directly")
+typedef NCollection_DataMap<int, opencascade::handle<Standard_Transient>>::Iterator
+  TColStd_DataMapIteratorOfDataMapOfIntegerTransient;
 
 #endif // _TColStd_DataMapOfIntegerTransient_hxx

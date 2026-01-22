@@ -23,15 +23,21 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TNaming_NCollections.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TNaming_NCollections.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TNaming_MapOfShape is deprecated, use NCollection_Map<TopoDS_Shape> directly")
+  Standard_DEPRECATED(
+    "TNaming_MapOfShape is deprecated, use NCollection_Map<TopoDS_Shape> directly")
 typedef NCollection_Map<TopoDS_Shape> TNaming_MapOfShape;
-Standard_DEPRECATED("TNaming_DataMapOfShapeMapOfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape> directly")
+Standard_DEPRECATED("TNaming_DataMapOfShapeMapOfShape is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape> TNaming_DataMapOfShapeMapOfShape;
-Standard_DEPRECATED("TNaming_MapIteratorOfMapOfShape is deprecated, use NCollection_Map<TopoDS_Shape>::Iterator directly")
+Standard_DEPRECATED("TNaming_MapIteratorOfMapOfShape is deprecated, use "
+                    "NCollection_Map<TopoDS_Shape>::Iterator directly")
 typedef NCollection_Map<TopoDS_Shape>::Iterator TNaming_MapIteratorOfMapOfShape;
-Standard_DEPRECATED("TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape>::Iterator TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape;
+Standard_DEPRECATED("TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TNaming_MapOfShape>::Iterator
+  TNaming_DataMapIteratorOfDataMapOfShapeMapOfShape;
 
 #endif // _TNaming_NCollections_hxx

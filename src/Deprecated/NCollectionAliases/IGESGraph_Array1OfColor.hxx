@@ -23,9 +23,11 @@
 #include <IGESGraph_Color.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESGraph_Array1OfColor.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESGraph_Color>> directly.")
+Standard_HEADER_DEPRECATED("IGESGraph_Array1OfColor.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<IGESGraph_Color>> directly.")
 
-Standard_DEPRECATED("IGESGraph_Array1OfColor is deprecated, use NCollection_Array1<opencascade::handle<IGESGraph_Color>> directly")
+  Standard_DEPRECATED("IGESGraph_Array1OfColor is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESGraph_Color>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESGraph_Color>> IGESGraph_Array1OfColor;
 
 #endif // _IGESGraph_Array1OfColor_hxx

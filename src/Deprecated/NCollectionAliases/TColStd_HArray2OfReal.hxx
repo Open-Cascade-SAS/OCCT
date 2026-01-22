@@ -23,9 +23,11 @@
 #include <TColStd_Array2OfReal.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HArray2OfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<double> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HArray2OfReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray2<double> directly.")
 
-Standard_DEPRECATED("TColStd_HArray2OfReal is deprecated, use NCollection_HArray2<double> directly")
+  Standard_DEPRECATED(
+    "TColStd_HArray2OfReal is deprecated, use NCollection_HArray2<double> directly")
 typedef NCollection_HArray2<double> TColStd_HArray2OfReal;
 
 #endif // _TColStd_HArray2OfReal_hxx

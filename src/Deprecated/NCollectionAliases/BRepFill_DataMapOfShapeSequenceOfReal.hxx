@@ -25,11 +25,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepFill_DataMapOfShapeSequenceOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRepFill_DataMapOfShapeSequenceOfReal.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepFill_DataMapOfShapeSequenceOfReal is deprecated, use NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher> BRepFill_DataMapOfShapeSequenceOfReal;
-Standard_DEPRECATED("BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal is deprecated, use NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher>::Iterator BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal;
+  Standard_DEPRECATED(
+    "BRepFill_DataMapOfShapeSequenceOfReal is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "TColStd_SequenceOfReal, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher>
+  BRepFill_DataMapOfShapeSequenceOfReal;
+Standard_DEPRECATED("BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TColStd_SequenceOfReal, TopTools_ShapeMapHasher>::Iterator
+  BRepFill_DataMapIteratorOfDataMapOfShapeSequenceOfReal;
 
 #endif // _BRepFill_DataMapOfShapeSequenceOfReal_hxx

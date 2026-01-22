@@ -23,9 +23,11 @@
 #include <TColGeom_Array1OfSurface.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TColGeom_HArray1OfSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<Geom_Surface>> directly.")
+Standard_HEADER_DEPRECATED("TColGeom_HArray1OfSurface.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<Geom_Surface>> directly.")
 
-Standard_DEPRECATED("TColGeom_HArray1OfSurface is deprecated, use NCollection_HArray1<opencascade::handle<Geom_Surface>> directly")
+  Standard_DEPRECATED("TColGeom_HArray1OfSurface is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<Geom_Surface>> directly")
 typedef NCollection_HArray1<opencascade::handle<Geom_Surface>> TColGeom_HArray1OfSurface;
 
 #endif // _TColGeom_HArray1OfSurface_hxx

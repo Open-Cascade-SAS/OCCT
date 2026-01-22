@@ -14,7 +14,8 @@
 //! @file StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>>
+//!             directly instead.
 
 #ifndef _StepBasic_Array1OfUncertaintyMeasureWithUnit_hxx
 #define _StepBasic_Array1OfUncertaintyMeasureWithUnit_hxx
@@ -23,9 +24,14 @@
 #include <StepBasic_UncertaintyMeasureWithUnit.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepBasic_Array1OfUncertaintyMeasureWithUnit.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly.")
 
-Standard_DEPRECATED("StepBasic_Array1OfUncertaintyMeasureWithUnit is deprecated, use NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly")
-typedef NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> StepBasic_Array1OfUncertaintyMeasureWithUnit;
+  Standard_DEPRECATED(
+    "StepBasic_Array1OfUncertaintyMeasureWithUnit is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>> directly")
+typedef NCollection_Array1<opencascade::handle<StepBasic_UncertaintyMeasureWithUnit>>
+  StepBasic_Array1OfUncertaintyMeasureWithUnit;
 
 #endif // _StepBasic_Array1OfUncertaintyMeasureWithUnit_hxx

@@ -14,7 +14,8 @@
 //! @file TDocStd_SequenceOfApplicationDelta.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly
+//!             instead.
 
 #ifndef _TDocStd_SequenceOfApplicationDelta_hxx
 #define _TDocStd_SequenceOfApplicationDelta_hxx
@@ -23,9 +24,14 @@
 #include <TDocStd_ApplicationDelta.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TDocStd_SequenceOfApplicationDelta.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TDocStd_SequenceOfApplicationDelta.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly.")
 
-Standard_DEPRECATED("TDocStd_SequenceOfApplicationDelta is deprecated, use NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly")
-typedef NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> TDocStd_SequenceOfApplicationDelta;
+  Standard_DEPRECATED(
+    "TDocStd_SequenceOfApplicationDelta is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>> directly")
+typedef NCollection_Sequence<opencascade::handle<TDocStd_ApplicationDelta>>
+  TDocStd_SequenceOfApplicationDelta;
 
 #endif // _TDocStd_SequenceOfApplicationDelta_hxx

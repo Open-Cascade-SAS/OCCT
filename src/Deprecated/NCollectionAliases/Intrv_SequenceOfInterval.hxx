@@ -23,9 +23,11 @@
 #include <Intrv_Interval.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Intrv_SequenceOfInterval.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Intrv_Interval> directly.")
+Standard_HEADER_DEPRECATED("Intrv_SequenceOfInterval.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Intrv_Interval> directly.")
 
-Standard_DEPRECATED("Intrv_SequenceOfInterval is deprecated, use NCollection_Sequence<Intrv_Interval> directly")
+  Standard_DEPRECATED(
+    "Intrv_SequenceOfInterval is deprecated, use NCollection_Sequence<Intrv_Interval> directly")
 typedef NCollection_Sequence<Intrv_Interval> Intrv_SequenceOfInterval;
 
 #endif // _Intrv_SequenceOfInterval_hxx

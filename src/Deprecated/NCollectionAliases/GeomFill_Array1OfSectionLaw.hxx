@@ -23,9 +23,11 @@
 #include <GeomFill_SectionLaw.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("GeomFill_Array1OfSectionLaw.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<GeomFill_SectionLaw>> directly.")
+Standard_HEADER_DEPRECATED("GeomFill_Array1OfSectionLaw.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<GeomFill_SectionLaw>> directly.")
 
-Standard_DEPRECATED("GeomFill_Array1OfSectionLaw is deprecated, use NCollection_Array1<opencascade::handle<GeomFill_SectionLaw>> directly")
+  Standard_DEPRECATED("GeomFill_Array1OfSectionLaw is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<GeomFill_SectionLaw>> directly")
 typedef NCollection_Array1<opencascade::handle<GeomFill_SectionLaw>> GeomFill_Array1OfSectionLaw;
 
 #endif // _GeomFill_Array1OfSectionLaw_hxx

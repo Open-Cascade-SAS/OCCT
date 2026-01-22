@@ -23,9 +23,11 @@
 #include <TopTools_SequenceOfShape.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<TopTools_SequenceOfShape> directly.")
+Standard_HEADER_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfShape.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Sequence<TopTools_SequenceOfShape> directly.")
 
-Standard_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfShape is deprecated, use NCollection_Sequence<TopTools_SequenceOfShape> directly")
+  Standard_DEPRECATED("BRepOffsetAPI_SequenceOfSequenceOfShape is deprecated, use "
+                      "NCollection_Sequence<TopTools_SequenceOfShape> directly")
 typedef NCollection_Sequence<TopTools_SequenceOfShape> BRepOffsetAPI_SequenceOfSequenceOfShape;
 
 #endif // _BRepOffsetAPI_SequenceOfSequenceOfShape_hxx

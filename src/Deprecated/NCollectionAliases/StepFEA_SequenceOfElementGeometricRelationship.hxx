@@ -14,7 +14,8 @@
 //! @file StepFEA_SequenceOfElementGeometricRelationship.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>>
+//!             directly instead.
 
 #ifndef _StepFEA_SequenceOfElementGeometricRelationship_hxx
 #define _StepFEA_SequenceOfElementGeometricRelationship_hxx
@@ -23,9 +24,14 @@
 #include <StepFEA_ElementGeometricRelationship.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("StepFEA_SequenceOfElementGeometricRelationship.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepFEA_SequenceOfElementGeometricRelationship.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>> directly.")
 
-Standard_DEPRECATED("StepFEA_SequenceOfElementGeometricRelationship is deprecated, use NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>> directly")
-typedef NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>> StepFEA_SequenceOfElementGeometricRelationship;
+  Standard_DEPRECATED(
+    "StepFEA_SequenceOfElementGeometricRelationship is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>> directly")
+typedef NCollection_Sequence<opencascade::handle<StepFEA_ElementGeometricRelationship>>
+  StepFEA_SequenceOfElementGeometricRelationship;
 
 #endif // _StepFEA_SequenceOfElementGeometricRelationship_hxx

@@ -24,11 +24,15 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString is deprecated, use NCollection_DataMap<int, TCollection_AsciiString> directly")
+  Standard_DEPRECATED("MeshVS_DataMapOfIntegerAsciiString is deprecated, use "
+                      "NCollection_DataMap<int, TCollection_AsciiString> directly")
 typedef NCollection_DataMap<int, TCollection_AsciiString> MeshVS_DataMapOfIntegerAsciiString;
-Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString is deprecated, use NCollection_DataMap<int, TCollection_AsciiString>::Iterator directly")
-typedef NCollection_DataMap<int, TCollection_AsciiString>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString;
+Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString is deprecated, use "
+                    "NCollection_DataMap<int, TCollection_AsciiString>::Iterator directly")
+typedef NCollection_DataMap<int, TCollection_AsciiString>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfIntegerAsciiString;
 
 #endif // _MeshVS_DataMapOfIntegerAsciiString_hxx

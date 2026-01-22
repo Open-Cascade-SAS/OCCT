@@ -23,9 +23,13 @@
 #include <StepAP214_Array1OfExternalIdentificationItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_HArray1OfExternalIdentificationItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP214_ExternalIdentificationItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_HArray1OfExternalIdentificationItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepAP214_ExternalIdentificationItem> directly.")
 
-Standard_DEPRECATED("StepAP214_HArray1OfExternalIdentificationItem is deprecated, use NCollection_HArray1<StepAP214_ExternalIdentificationItem> directly")
-typedef NCollection_HArray1<StepAP214_ExternalIdentificationItem> StepAP214_HArray1OfExternalIdentificationItem;
+  Standard_DEPRECATED("StepAP214_HArray1OfExternalIdentificationItem is deprecated, use "
+                      "NCollection_HArray1<StepAP214_ExternalIdentificationItem> directly")
+typedef NCollection_HArray1<StepAP214_ExternalIdentificationItem>
+  StepAP214_HArray1OfExternalIdentificationItem;
 
 #endif // _StepAP214_HArray1OfExternalIdentificationItem_hxx

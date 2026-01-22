@@ -14,7 +14,9 @@
 //! @file StepElement_Array1OfCurveElementEndReleasePacket.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly instead.
+//!             Use
+//!             NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>>
+//!             directly instead.
 
 #ifndef _StepElement_Array1OfCurveElementEndReleasePacket_hxx
 #define _StepElement_Array1OfCurveElementEndReleasePacket_hxx
@@ -23,9 +25,14 @@
 #include <StepElement_CurveElementEndReleasePacket.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfCurveElementEndReleasePacket.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfCurveElementEndReleasePacket.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfCurveElementEndReleasePacket is deprecated, use NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly")
-typedef NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> StepElement_Array1OfCurveElementEndReleasePacket;
+  Standard_DEPRECATED(
+    "StepElement_Array1OfCurveElementEndReleasePacket is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>> directly")
+typedef NCollection_Array1<opencascade::handle<StepElement_CurveElementEndReleasePacket>>
+  StepElement_Array1OfCurveElementEndReleasePacket;
 
 #endif // _StepElement_Array1OfCurveElementEndReleasePacket_hxx

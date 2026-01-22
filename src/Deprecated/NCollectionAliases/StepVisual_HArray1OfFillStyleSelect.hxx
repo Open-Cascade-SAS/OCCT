@@ -23,9 +23,11 @@
 #include <StepVisual_Array1OfFillStyleSelect.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_HArray1OfFillStyleSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepVisual_FillStyleSelect> directly.")
+Standard_HEADER_DEPRECATED("StepVisual_HArray1OfFillStyleSelect.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_HArray1<StepVisual_FillStyleSelect> directly.")
 
-Standard_DEPRECATED("StepVisual_HArray1OfFillStyleSelect is deprecated, use NCollection_HArray1<StepVisual_FillStyleSelect> directly")
+  Standard_DEPRECATED("StepVisual_HArray1OfFillStyleSelect is deprecated, use "
+                      "NCollection_HArray1<StepVisual_FillStyleSelect> directly")
 typedef NCollection_HArray1<StepVisual_FillStyleSelect> StepVisual_HArray1OfFillStyleSelect;
 
 #endif // _StepVisual_HArray1OfFillStyleSelect_hxx

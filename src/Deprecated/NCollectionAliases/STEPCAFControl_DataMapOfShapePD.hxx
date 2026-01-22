@@ -25,11 +25,23 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfShapePD.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfShapePD.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("STEPCAFControl_DataMapOfShapePD is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepBasic_ProductDefinition>, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepBasic_ProductDefinition>, TopTools_ShapeMapHasher> STEPCAFControl_DataMapOfShapePD;
-Standard_DEPRECATED("STEPCAFControl_DataMapIteratorOfDataMapOfShapePD is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepBasic_ProductDefinition>, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepBasic_ProductDefinition>, TopTools_ShapeMapHasher>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfShapePD;
+  Standard_DEPRECATED(
+    "STEPCAFControl_DataMapOfShapePD is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "opencascade::handle<StepBasic_ProductDefinition>, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<StepBasic_ProductDefinition>,
+                            TopTools_ShapeMapHasher>
+  STEPCAFControl_DataMapOfShapePD;
+Standard_DEPRECATED(
+  "STEPCAFControl_DataMapIteratorOfDataMapOfShapePD is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepBasic_ProductDefinition>, "
+  "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<StepBasic_ProductDefinition>,
+                            TopTools_ShapeMapHasher>::Iterator
+  STEPCAFControl_DataMapIteratorOfDataMapOfShapePD;
 
 #endif // _STEPCAFControl_DataMapOfShapePD_hxx

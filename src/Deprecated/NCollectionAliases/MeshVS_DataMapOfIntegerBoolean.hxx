@@ -23,11 +23,14 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerBoolean.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerBoolean.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("MeshVS_DataMapOfIntegerBoolean is deprecated, use NCollection_DataMap<int, bool> directly")
+  Standard_DEPRECATED(
+    "MeshVS_DataMapOfIntegerBoolean is deprecated, use NCollection_DataMap<int, bool> directly")
 typedef NCollection_DataMap<int, bool> MeshVS_DataMapOfIntegerBoolean;
-Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean is deprecated, use NCollection_DataMap<int, bool>::Iterator directly")
+Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean is deprecated, use "
+                    "NCollection_DataMap<int, bool>::Iterator directly")
 typedef NCollection_DataMap<int, bool>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerBoolean;
 
 #endif // _MeshVS_DataMapOfIntegerBoolean_hxx

@@ -14,7 +14,8 @@
 //! @file TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly instead.
+//!             Use NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly
+//!             instead.
 
 #ifndef _TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference_hxx
 #define _TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference_hxx
@@ -23,9 +24,14 @@
 #include <TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly.")
+Standard_HEADER_DEPRECATED(
+  "TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference is deprecated, use NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly")
-typedef NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference;
+  Standard_DEPRECATED(
+    "TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference is deprecated, use "
+    "NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference> directly")
+typedef NCollection_Array1<TopOpeBRepDS_DataMapOfIntegerListOfInterference>
+  TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference;
 
 #endif // _TopOpeBRepDS_Array1OfDataMapOfIntegerListOfInterference_hxx

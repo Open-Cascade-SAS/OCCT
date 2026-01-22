@@ -24,11 +24,18 @@
 #include <Message_ListOfMsg.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("ShapeExtend_DataMapOfTransientListOfMsg.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("ShapeExtend_DataMapOfTransientListOfMsg.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("ShapeExtend_DataMapOfTransientListOfMsg is deprecated, use NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg> directly")
-typedef NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg> ShapeExtend_DataMapOfTransientListOfMsg;
-Standard_DEPRECATED("ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg is deprecated, use NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg>::Iterator directly")
-typedef NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg>::Iterator ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg;
+  Standard_DEPRECATED(
+    "ShapeExtend_DataMapOfTransientListOfMsg is deprecated, use "
+    "NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg> directly")
+typedef NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg>
+  ShapeExtend_DataMapOfTransientListOfMsg;
+Standard_DEPRECATED("ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<Standard_Transient>, "
+                    "Message_ListOfMsg>::Iterator directly")
+typedef NCollection_DataMap<opencascade::handle<Standard_Transient>, Message_ListOfMsg>::Iterator
+  ShapeExtend_DataMapIteratorOfDataMapOfTransientListOfMsg;
 
 #endif // _ShapeExtend_DataMapOfTransientListOfMsg_hxx

@@ -23,9 +23,11 @@
 #include <IGESAppli_Flow.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESAppli_Array1OfFlow.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESAppli_Flow>> directly.")
+Standard_HEADER_DEPRECATED("IGESAppli_Array1OfFlow.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<IGESAppli_Flow>> directly.")
 
-Standard_DEPRECATED("IGESAppli_Array1OfFlow is deprecated, use NCollection_Array1<opencascade::handle<IGESAppli_Flow>> directly")
+  Standard_DEPRECATED("IGESAppli_Array1OfFlow is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESAppli_Flow>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESAppli_Flow>> IGESAppli_Array1OfFlow;
 
 #endif // _IGESAppli_Array1OfFlow_hxx

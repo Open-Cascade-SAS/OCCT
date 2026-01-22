@@ -23,9 +23,13 @@
 #include <StepAP214_PersonAndOrganizationItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_Array1OfPersonAndOrganizationItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepAP214_PersonAndOrganizationItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_Array1OfPersonAndOrganizationItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepAP214_PersonAndOrganizationItem> directly.")
 
-Standard_DEPRECATED("StepAP214_Array1OfPersonAndOrganizationItem is deprecated, use NCollection_Array1<StepAP214_PersonAndOrganizationItem> directly")
-typedef NCollection_Array1<StepAP214_PersonAndOrganizationItem> StepAP214_Array1OfPersonAndOrganizationItem;
+  Standard_DEPRECATED("StepAP214_Array1OfPersonAndOrganizationItem is deprecated, use "
+                      "NCollection_Array1<StepAP214_PersonAndOrganizationItem> directly")
+typedef NCollection_Array1<StepAP214_PersonAndOrganizationItem>
+  StepAP214_Array1OfPersonAndOrganizationItem;
 
 #endif // _StepAP214_Array1OfPersonAndOrganizationItem_hxx

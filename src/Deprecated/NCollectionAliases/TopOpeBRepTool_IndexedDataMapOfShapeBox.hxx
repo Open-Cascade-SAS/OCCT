@@ -24,9 +24,11 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfShapeBox.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfShapeBox.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> directly.")
 
-Standard_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfShapeBox is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> directly")
+  Standard_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfShapeBox is deprecated, use "
+                      "NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> directly")
 typedef NCollection_IndexedDataMap<TopoDS_Shape, Bnd_Box> TopOpeBRepTool_IndexedDataMapOfShapeBox;
 
 #endif // _TopOpeBRepTool_IndexedDataMapOfShapeBox_hxx

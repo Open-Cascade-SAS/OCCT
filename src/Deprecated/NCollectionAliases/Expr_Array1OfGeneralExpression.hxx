@@ -14,7 +14,8 @@
 //! @file Expr_Array1OfGeneralExpression.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> directly
+//!             instead.
 
 #ifndef _Expr_Array1OfGeneralExpression_hxx
 #define _Expr_Array1OfGeneralExpression_hxx
@@ -23,9 +24,13 @@
 #include <Expr_GeneralExpression.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Expr_Array1OfGeneralExpression.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Expr_Array1OfGeneralExpression.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> directly.")
 
-Standard_DEPRECATED("Expr_Array1OfGeneralExpression is deprecated, use NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> directly")
-typedef NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> Expr_Array1OfGeneralExpression;
+  Standard_DEPRECATED("Expr_Array1OfGeneralExpression is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Expr_GeneralExpression>> directly")
+typedef NCollection_Array1<opencascade::handle<Expr_GeneralExpression>>
+  Expr_Array1OfGeneralExpression;
 
 #endif // _Expr_Array1OfGeneralExpression_hxx

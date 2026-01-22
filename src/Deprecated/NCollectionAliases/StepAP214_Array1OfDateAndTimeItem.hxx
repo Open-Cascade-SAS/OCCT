@@ -23,9 +23,11 @@
 #include <StepAP214_DateAndTimeItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_Array1OfDateAndTimeItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepAP214_DateAndTimeItem> directly.")
+Standard_HEADER_DEPRECATED("StepAP214_Array1OfDateAndTimeItem.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepAP214_DateAndTimeItem> directly.")
 
-Standard_DEPRECATED("StepAP214_Array1OfDateAndTimeItem is deprecated, use NCollection_Array1<StepAP214_DateAndTimeItem> directly")
+  Standard_DEPRECATED("StepAP214_Array1OfDateAndTimeItem is deprecated, use "
+                      "NCollection_Array1<StepAP214_DateAndTimeItem> directly")
 typedef NCollection_Array1<StepAP214_DateAndTimeItem> StepAP214_Array1OfDateAndTimeItem;
 
 #endif // _StepAP214_Array1OfDateAndTimeItem_hxx

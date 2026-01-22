@@ -23,9 +23,11 @@
 #include <HLRBRep_ShapeBounds.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("HLRBRep_SeqOfShapeBounds.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<HLRBRep_ShapeBounds> directly.")
+Standard_HEADER_DEPRECATED("HLRBRep_SeqOfShapeBounds.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<HLRBRep_ShapeBounds> directly.")
 
-Standard_DEPRECATED("HLRBRep_SeqOfShapeBounds is deprecated, use NCollection_Sequence<HLRBRep_ShapeBounds> directly")
+  Standard_DEPRECATED("HLRBRep_SeqOfShapeBounds is deprecated, use "
+                      "NCollection_Sequence<HLRBRep_ShapeBounds> directly")
 typedef NCollection_Sequence<HLRBRep_ShapeBounds> HLRBRep_SeqOfShapeBounds;
 
 #endif // _HLRBRep_SeqOfShapeBounds_hxx

@@ -25,11 +25,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepOffset_DataMapOfShapeOffset.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRepOffset_DataMapOfShapeOffset.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepOffset_DataMapOfShapeOffset is deprecated, use NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher> BRepOffset_DataMapOfShapeOffset;
-Standard_DEPRECATED("BRepOffset_DataMapIteratorOfDataMapOfShapeOffset is deprecated, use NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>::Iterator BRepOffset_DataMapIteratorOfDataMapOfShapeOffset;
+  Standard_DEPRECATED(
+    "BRepOffset_DataMapOfShapeOffset is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "BRepOffset_Offset, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>
+  BRepOffset_DataMapOfShapeOffset;
+Standard_DEPRECATED("BRepOffset_DataMapIteratorOfDataMapOfShapeOffset is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, BRepOffset_Offset, TopTools_ShapeMapHasher>::Iterator
+  BRepOffset_DataMapIteratorOfDataMapOfShapeOffset;
 
 #endif // _BRepOffset_DataMapOfShapeOffset_hxx

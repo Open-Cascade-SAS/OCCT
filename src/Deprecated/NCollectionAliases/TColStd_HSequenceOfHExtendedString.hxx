@@ -14,7 +14,8 @@
 //! @file TColStd_HSequenceOfHExtendedString.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly
+//!             instead.
 
 #ifndef _TColStd_HSequenceOfHExtendedString_hxx
 #define _TColStd_HSequenceOfHExtendedString_hxx
@@ -23,9 +24,14 @@
 #include <TColStd_SequenceOfHExtendedString.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HSequenceOfHExtendedString.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_HSequenceOfHExtendedString.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly.")
 
-Standard_DEPRECATED("TColStd_HSequenceOfHExtendedString is deprecated, use NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly")
-typedef NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> TColStd_HSequenceOfHExtendedString;
+  Standard_DEPRECATED(
+    "TColStd_HSequenceOfHExtendedString is deprecated, use "
+    "NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>> directly")
+typedef NCollection_HSequence<opencascade::handle<TCollection_HExtendedString>>
+  TColStd_HSequenceOfHExtendedString;
 
 #endif // _TColStd_HSequenceOfHExtendedString_hxx

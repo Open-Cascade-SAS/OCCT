@@ -23,11 +23,15 @@
 #include <TopOpeBRepDS_ShapeData.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_MapOfIntegerShapeData.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_MapOfIntegerShapeData.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_MapOfIntegerShapeData is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_ShapeData> directly")
+  Standard_DEPRECATED("TopOpeBRepDS_MapOfIntegerShapeData is deprecated, use "
+                      "NCollection_DataMap<int, TopOpeBRepDS_ShapeData> directly")
 typedef NCollection_DataMap<int, TopOpeBRepDS_ShapeData> TopOpeBRepDS_MapOfIntegerShapeData;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_ShapeData>::Iterator directly")
-typedef NCollection_DataMap<int, TopOpeBRepDS_ShapeData>::Iterator TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData;
+Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData is deprecated, use "
+                    "NCollection_DataMap<int, TopOpeBRepDS_ShapeData>::Iterator directly")
+typedef NCollection_DataMap<int, TopOpeBRepDS_ShapeData>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfMapOfIntegerShapeData;
 
 #endif // _TopOpeBRepDS_MapOfIntegerShapeData_hxx

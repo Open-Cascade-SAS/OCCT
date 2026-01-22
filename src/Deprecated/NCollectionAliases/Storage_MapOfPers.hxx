@@ -24,11 +24,18 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Storage_MapOfPers.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "Storage_MapOfPers.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Storage_MapOfPers is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>> directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>> Storage_MapOfPers;
-Standard_DEPRECATED("Storage_DataMapIteratorOfMapOfPers is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>>::Iterator Storage_DataMapIteratorOfMapOfPers;
+  Standard_DEPRECATED(
+    "Storage_MapOfPers is deprecated, use NCollection_DataMap<TCollection_AsciiString, "
+    "opencascade::handle<Storage_Root>> directly")
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>>
+  Storage_MapOfPers;
+Standard_DEPRECATED("Storage_DataMapIteratorOfMapOfPers is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, "
+                    "opencascade::handle<Storage_Root>>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_Root>>::Iterator
+  Storage_DataMapIteratorOfMapOfPers;
 
 #endif // _Storage_MapOfPers_hxx

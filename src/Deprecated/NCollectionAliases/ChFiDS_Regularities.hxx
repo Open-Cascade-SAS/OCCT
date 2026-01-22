@@ -23,11 +23,14 @@
 #include <ChFiDS_Regul.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiDS_Regularities.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "ChFiDS_Regularities.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("ChFiDS_Regularities is deprecated, use NCollection_List<ChFiDS_Regul> directly")
+  Standard_DEPRECATED(
+    "ChFiDS_Regularities is deprecated, use NCollection_List<ChFiDS_Regul> directly")
 typedef NCollection_List<ChFiDS_Regul> ChFiDS_Regularities;
-Standard_DEPRECATED("ChFiDS_ListIteratorOfRegularities is deprecated, use NCollection_List<ChFiDS_Regul>::Iterator directly")
+Standard_DEPRECATED("ChFiDS_ListIteratorOfRegularities is deprecated, use "
+                    "NCollection_List<ChFiDS_Regul>::Iterator directly")
 typedef NCollection_List<ChFiDS_Regul>::Iterator ChFiDS_ListIteratorOfRegularities;
 
 #endif // _ChFiDS_Regularities_hxx

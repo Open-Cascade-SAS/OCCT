@@ -24,11 +24,16 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DoubleMap.hxx>
 
-Standard_HEADER_DEPRECATED("TDF_GUIDProgIDMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TDF_GUIDProgIDMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TDF_GUIDProgIDMap is deprecated, use NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString> directly")
+  Standard_DEPRECATED("TDF_GUIDProgIDMap is deprecated, use NCollection_DoubleMap<Standard_GUID, "
+                      "TCollection_ExtendedString> directly")
 typedef NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString> TDF_GUIDProgIDMap;
-Standard_DEPRECATED("TDF_DoubleMapIteratorOfGUIDProgIDMap is deprecated, use NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString>::Iterator directly")
-typedef NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString>::Iterator TDF_DoubleMapIteratorOfGUIDProgIDMap;
+Standard_DEPRECATED(
+  "TDF_DoubleMapIteratorOfGUIDProgIDMap is deprecated, use NCollection_DoubleMap<Standard_GUID, "
+  "TCollection_ExtendedString>::Iterator directly")
+typedef NCollection_DoubleMap<Standard_GUID, TCollection_ExtendedString>::Iterator
+  TDF_DoubleMapIteratorOfGUIDProgIDMap;
 
 #endif // _TDF_GUIDProgIDMap_hxx

@@ -24,11 +24,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TNaming_DataMapOfShapeShapesSet.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TNaming_DataMapOfShapeShapesSet.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TNaming_DataMapOfShapeShapesSet is deprecated, use NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, TopTools_ShapeMapHasher> TNaming_DataMapOfShapeShapesSet;
-Standard_DEPRECATED("TNaming_DataMapIteratorOfDataMapOfShapeShapesSet is deprecated, use NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, TopTools_ShapeMapHasher>::Iterator TNaming_DataMapIteratorOfDataMapOfShapeShapesSet;
+  Standard_DEPRECATED(
+    "TNaming_DataMapOfShapeShapesSet is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "TNaming_ShapesSet, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, TopTools_ShapeMapHasher>
+  TNaming_DataMapOfShapeShapesSet;
+Standard_DEPRECATED("TNaming_DataMapIteratorOfDataMapOfShapeShapesSet is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TNaming_ShapesSet, TopTools_ShapeMapHasher>::Iterator
+  TNaming_DataMapIteratorOfDataMapOfShapeShapesSet;
 
 #endif // _TNaming_DataMapOfShapeShapesSet_hxx

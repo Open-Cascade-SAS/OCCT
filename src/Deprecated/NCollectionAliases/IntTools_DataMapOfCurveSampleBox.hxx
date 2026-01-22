@@ -24,11 +24,15 @@
 #include <Bnd_Box.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("IntTools_DataMapOfCurveSampleBox.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("IntTools_DataMapOfCurveSampleBox.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("IntTools_DataMapOfCurveSampleBox is deprecated, use NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box> directly")
+  Standard_DEPRECATED("IntTools_DataMapOfCurveSampleBox is deprecated, use "
+                      "NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box> directly")
 typedef NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box> IntTools_DataMapOfCurveSampleBox;
-Standard_DEPRECATED("IntTools_DataMapIteratorOfDataMapOfCurveSampleBox is deprecated, use NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box>::Iterator directly")
-typedef NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box>::Iterator IntTools_DataMapIteratorOfDataMapOfCurveSampleBox;
+Standard_DEPRECATED("IntTools_DataMapIteratorOfDataMapOfCurveSampleBox is deprecated, use "
+                    "NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box>::Iterator directly")
+typedef NCollection_DataMap<IntTools_CurveRangeSample, Bnd_Box>::Iterator
+  IntTools_DataMapIteratorOfDataMapOfCurveSampleBox;
 
 #endif // _IntTools_DataMapOfCurveSampleBox_hxx

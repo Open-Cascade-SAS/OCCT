@@ -14,7 +14,8 @@
 //! @file IFSelect_SequenceOfGeneralModifier.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly
+//!             instead.
 
 #ifndef _IFSelect_SequenceOfGeneralModifier_hxx
 #define _IFSelect_SequenceOfGeneralModifier_hxx
@@ -23,9 +24,14 @@
 #include <IFSelect_GeneralModifier.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IFSelect_SequenceOfGeneralModifier.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IFSelect_SequenceOfGeneralModifier.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly.")
 
-Standard_DEPRECATED("IFSelect_SequenceOfGeneralModifier is deprecated, use NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly")
-typedef NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> IFSelect_SequenceOfGeneralModifier;
+  Standard_DEPRECATED(
+    "IFSelect_SequenceOfGeneralModifier is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>> directly")
+typedef NCollection_Sequence<opencascade::handle<IFSelect_GeneralModifier>>
+  IFSelect_SequenceOfGeneralModifier;
 
 #endif // _IFSelect_SequenceOfGeneralModifier_hxx

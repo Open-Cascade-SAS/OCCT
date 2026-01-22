@@ -23,9 +23,11 @@
 #include <Aspect_Touch.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Aspect_TouchMap.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<size_t, Aspect_Touch> directly.")
+Standard_HEADER_DEPRECATED("Aspect_TouchMap.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedDataMap<size_t, Aspect_Touch> directly.")
 
-Standard_DEPRECATED("Aspect_TouchMap is deprecated, use NCollection_IndexedDataMap<size_t, Aspect_Touch> directly")
+  Standard_DEPRECATED(
+    "Aspect_TouchMap is deprecated, use NCollection_IndexedDataMap<size_t, Aspect_Touch> directly")
 typedef NCollection_IndexedDataMap<size_t, Aspect_Touch> Aspect_TouchMap;
 
 #endif // _Aspect_TouchMap_hxx

@@ -23,9 +23,11 @@
 #include <StepAP203_Array1OfWorkItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP203_HArray1OfWorkItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP203_WorkItem> directly.")
+Standard_HEADER_DEPRECATED("StepAP203_HArray1OfWorkItem.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<StepAP203_WorkItem> directly.")
 
-Standard_DEPRECATED("StepAP203_HArray1OfWorkItem is deprecated, use NCollection_HArray1<StepAP203_WorkItem> directly")
+  Standard_DEPRECATED("StepAP203_HArray1OfWorkItem is deprecated, use "
+                      "NCollection_HArray1<StepAP203_WorkItem> directly")
 typedef NCollection_HArray1<StepAP203_WorkItem> StepAP203_HArray1OfWorkItem;
 
 #endif // _StepAP203_HArray1OfWorkItem_hxx

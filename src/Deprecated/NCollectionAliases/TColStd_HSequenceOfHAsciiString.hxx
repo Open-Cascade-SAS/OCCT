@@ -14,7 +14,8 @@
 //! @file TColStd_HSequenceOfHAsciiString.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> directly
+//!             instead.
 
 #ifndef _TColStd_HSequenceOfHAsciiString_hxx
 #define _TColStd_HSequenceOfHAsciiString_hxx
@@ -23,9 +24,14 @@
 #include <TColStd_SequenceOfHAsciiString.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HSequenceOfHAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_HSequenceOfHAsciiString.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> directly.")
 
-Standard_DEPRECATED("TColStd_HSequenceOfHAsciiString is deprecated, use NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> directly")
-typedef NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> TColStd_HSequenceOfHAsciiString;
+  Standard_DEPRECATED(
+    "TColStd_HSequenceOfHAsciiString is deprecated, use "
+    "NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>> directly")
+typedef NCollection_HSequence<opencascade::handle<TCollection_HAsciiString>>
+  TColStd_HSequenceOfHAsciiString;
 
 #endif // _TColStd_HSequenceOfHAsciiString_hxx

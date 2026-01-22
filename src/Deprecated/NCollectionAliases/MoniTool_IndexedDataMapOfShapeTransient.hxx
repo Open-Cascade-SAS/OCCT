@@ -14,7 +14,8 @@
 //! @file MoniTool_IndexedDataMapOfShapeTransient.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly instead.
+//!             Use NCollection_IndexedDataMap<TopoDS_Shape,
+//!             opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly instead.
 
 #ifndef _MoniTool_IndexedDataMapOfShapeTransient_hxx
 #define _MoniTool_IndexedDataMapOfShapeTransient_hxx
@@ -24,9 +25,17 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MoniTool_IndexedDataMapOfShapeTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly.")
+Standard_HEADER_DEPRECATED(
+  "MoniTool_IndexedDataMapOfShapeTransient.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, "
+  "TopTools_ShapeMapHasher> directly.")
 
-Standard_DEPRECATED("MoniTool_IndexedDataMapOfShapeTransient is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly")
-typedef NCollection_IndexedDataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> MoniTool_IndexedDataMapOfShapeTransient;
+  Standard_DEPRECATED("MoniTool_IndexedDataMapOfShapeTransient is deprecated, use "
+                      "NCollection_IndexedDataMap<TopoDS_Shape, "
+                      "opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly")
+typedef NCollection_IndexedDataMap<TopoDS_Shape,
+                                   opencascade::handle<Standard_Transient>,
+                                   TopTools_ShapeMapHasher>
+  MoniTool_IndexedDataMapOfShapeTransient;
 
 #endif // _MoniTool_IndexedDataMapOfShapeTransient_hxx

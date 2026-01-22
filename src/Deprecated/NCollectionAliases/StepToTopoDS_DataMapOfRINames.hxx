@@ -24,11 +24,15 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("StepToTopoDS_DataMapOfRINames.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("StepToTopoDS_DataMapOfRINames.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("StepToTopoDS_DataMapOfRINames is deprecated, use NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> directly")
+  Standard_DEPRECATED("StepToTopoDS_DataMapOfRINames is deprecated, use "
+                      "NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape> StepToTopoDS_DataMapOfRINames;
-Standard_DEPRECATED("StepToTopoDS_DataMapIteratorOfDataMapOfRINames is deprecated, use NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>::Iterator StepToTopoDS_DataMapIteratorOfDataMapOfRINames;
+Standard_DEPRECATED("StepToTopoDS_DataMapIteratorOfDataMapOfRINames is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString, TopoDS_Shape>::Iterator
+  StepToTopoDS_DataMapIteratorOfDataMapOfRINames;
 
 #endif // _StepToTopoDS_DataMapOfRINames_hxx

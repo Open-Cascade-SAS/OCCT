@@ -23,9 +23,11 @@
 #include <gp_Ax2.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("GeomFill_SequenceOfAx2.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<gp_Ax2> directly.")
+Standard_HEADER_DEPRECATED("GeomFill_SequenceOfAx2.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<gp_Ax2> directly.")
 
-Standard_DEPRECATED("GeomFill_SequenceOfAx2 is deprecated, use NCollection_Sequence<gp_Ax2> directly")
+  Standard_DEPRECATED(
+    "GeomFill_SequenceOfAx2 is deprecated, use NCollection_Sequence<gp_Ax2> directly")
 typedef NCollection_Sequence<gp_Ax2> GeomFill_SequenceOfAx2;
 
 #endif // _GeomFill_SequenceOfAx2_hxx

@@ -25,11 +25,22 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MoniTool_DataMapOfShapeTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MoniTool_DataMapOfShapeTransient.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("MoniTool_DataMapOfShapeTransient is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> MoniTool_DataMapOfShapeTransient;
-Standard_DEPRECATED("MoniTool_DataMapIteratorOfDataMapOfShapeTransient is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher>::Iterator MoniTool_DataMapIteratorOfDataMapOfShapeTransient;
+  Standard_DEPRECATED(
+    "MoniTool_DataMapOfShapeTransient is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "opencascade::handle<Standard_Transient>, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<Standard_Transient>,
+                            TopTools_ShapeMapHasher>
+  MoniTool_DataMapOfShapeTransient;
+Standard_DEPRECATED("MoniTool_DataMapIteratorOfDataMapOfShapeTransient is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, opencascade::handle<Standard_Transient>, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<Standard_Transient>,
+                            TopTools_ShapeMapHasher>::Iterator
+  MoniTool_DataMapIteratorOfDataMapOfShapeTransient;
 
 #endif // _MoniTool_DataMapOfShapeTransient_hxx

@@ -23,9 +23,11 @@
 #include <IGESAppli_Array1OfNode.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESAppli_HArray1OfNode.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESAppli_Node>> directly.")
+Standard_HEADER_DEPRECATED("IGESAppli_HArray1OfNode.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<IGESAppli_Node>> directly.")
 
-Standard_DEPRECATED("IGESAppli_HArray1OfNode is deprecated, use NCollection_HArray1<opencascade::handle<IGESAppli_Node>> directly")
+  Standard_DEPRECATED("IGESAppli_HArray1OfNode is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<IGESAppli_Node>> directly")
 typedef NCollection_HArray1<opencascade::handle<IGESAppli_Node>> IGESAppli_HArray1OfNode;
 
 #endif // _IGESAppli_HArray1OfNode_hxx

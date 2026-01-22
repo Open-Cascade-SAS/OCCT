@@ -14,7 +14,9 @@
 //! @file StepElement_Array1OfCurveElementSectionDefinition.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>> directly instead.
+//!             Use
+//!             NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>>
+//!             directly instead.
 
 #ifndef _StepElement_Array1OfCurveElementSectionDefinition_hxx
 #define _StepElement_Array1OfCurveElementSectionDefinition_hxx
@@ -23,9 +25,14 @@
 #include <StepElement_CurveElementSectionDefinition.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfCurveElementSectionDefinition.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfCurveElementSectionDefinition.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>> directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfCurveElementSectionDefinition is deprecated, use NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>> directly")
-typedef NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>> StepElement_Array1OfCurveElementSectionDefinition;
+  Standard_DEPRECATED(
+    "StepElement_Array1OfCurveElementSectionDefinition is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>> directly")
+typedef NCollection_Array1<opencascade::handle<StepElement_CurveElementSectionDefinition>>
+  StepElement_Array1OfCurveElementSectionDefinition;
 
 #endif // _StepElement_Array1OfCurveElementSectionDefinition_hxx

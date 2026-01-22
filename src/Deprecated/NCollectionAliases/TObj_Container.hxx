@@ -26,13 +26,22 @@
 #include <TDF_Label.hxx>
 #include <TObj_SequenceOfObject.hxx>
 
-Standard_HEADER_DEPRECATED("TObj_Container.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TObj_Container.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TObj_DataMapOfNameLabel is deprecated, use NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label> directly")
-typedef NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label> TObj_DataMapOfNameLabel;
-Standard_DEPRECATED("TObj_DataMapOfObjectHSequenceOcafObjects is deprecated, use NCollection_DataMap<opencascade::handle<TObj_Object>, opencascade::handle<TObj_HSequenceOfObject>> directly")
-typedef NCollection_DataMap<opencascade::handle<TObj_Object>, opencascade::handle<TObj_HSequenceOfObject>> TObj_DataMapOfObjectHSequenceOcafObjects;
-Standard_DEPRECATED("TObj_DataMapOfStringPointer is deprecated, use NCollection_DataMap<TCollection_AsciiString, void*> directly")
+  Standard_DEPRECATED(
+    "TObj_DataMapOfNameLabel is deprecated, use "
+    "NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label> directly")
+typedef NCollection_DataMap<opencascade::handle<TCollection_HExtendedString>, TDF_Label>
+  TObj_DataMapOfNameLabel;
+Standard_DEPRECATED("TObj_DataMapOfObjectHSequenceOcafObjects is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<TObj_Object>, "
+                    "opencascade::handle<TObj_HSequenceOfObject>> directly")
+typedef NCollection_DataMap<opencascade::handle<TObj_Object>,
+                            opencascade::handle<TObj_HSequenceOfObject>>
+  TObj_DataMapOfObjectHSequenceOcafObjects;
+Standard_DEPRECATED("TObj_DataMapOfStringPointer is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, void*> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, void*> TObj_DataMapOfStringPointer;
 
 #endif // _TObj_Container_hxx

@@ -23,11 +23,15 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TDataStd_ListOfExtendedString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TDataStd_ListOfExtendedString.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("TDataStd_ListOfExtendedString is deprecated, use NCollection_List<TCollection_ExtendedString> directly")
+  Standard_DEPRECATED("TDataStd_ListOfExtendedString is deprecated, use "
+                      "NCollection_List<TCollection_ExtendedString> directly")
 typedef NCollection_List<TCollection_ExtendedString> TDataStd_ListOfExtendedString;
-Standard_DEPRECATED("TDataStd_ListIteratorOfListOfExtendedString is deprecated, use NCollection_List<TCollection_ExtendedString>::Iterator directly")
-typedef NCollection_List<TCollection_ExtendedString>::Iterator TDataStd_ListIteratorOfListOfExtendedString;
+Standard_DEPRECATED("TDataStd_ListIteratorOfListOfExtendedString is deprecated, use "
+                    "NCollection_List<TCollection_ExtendedString>::Iterator directly")
+typedef NCollection_List<TCollection_ExtendedString>::Iterator
+  TDataStd_ListIteratorOfListOfExtendedString;
 
 #endif // _TDataStd_ListOfExtendedString_hxx

@@ -24,9 +24,13 @@
 #include <TColGeom_SequenceOfBoundedCurve.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColGeom_HSequenceOfBoundedCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<Geom_BoundedCurve>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColGeom_HSequenceOfBoundedCurve.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<Geom_BoundedCurve>> directly.")
 
-Standard_DEPRECATED("TColGeom_HSequenceOfBoundedCurve is deprecated, use NCollection_HSequence<opencascade::handle<Geom_BoundedCurve>> directly")
-typedef NCollection_HSequence<opencascade::handle<Geom_BoundedCurve>> TColGeom_HSequenceOfBoundedCurve;
+  Standard_DEPRECATED("TColGeom_HSequenceOfBoundedCurve is deprecated, use "
+                      "NCollection_HSequence<opencascade::handle<Geom_BoundedCurve>> directly")
+typedef NCollection_HSequence<opencascade::handle<Geom_BoundedCurve>>
+  TColGeom_HSequenceOfBoundedCurve;
 
 #endif // _TColGeom_HSequenceOfBoundedCurve_hxx

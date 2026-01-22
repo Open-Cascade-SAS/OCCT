@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_Curve.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_Curve> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfCurve.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_Curve> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfCurve is deprecated, use NCollection_Vector<BOPDS_Curve> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfCurve is deprecated, use NCollection_Vector<BOPDS_Curve> directly")
 typedef NCollection_Vector<BOPDS_Curve> BOPDS_VectorOfCurve;
 
 #endif // _BOPDS_VectorOfCurve_hxx

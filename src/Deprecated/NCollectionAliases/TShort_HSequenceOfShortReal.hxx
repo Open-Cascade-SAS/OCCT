@@ -24,9 +24,11 @@
 #include <TShort_SequenceOfShortReal.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TShort_HSequenceOfShortReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<float> directly.")
+Standard_HEADER_DEPRECATED("TShort_HSequenceOfShortReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<float> directly.")
 
-Standard_DEPRECATED("TShort_HSequenceOfShortReal is deprecated, use NCollection_HSequence<float> directly")
+  Standard_DEPRECATED(
+    "TShort_HSequenceOfShortReal is deprecated, use NCollection_HSequence<float> directly")
 typedef NCollection_HSequence<float> TShort_HSequenceOfShortReal;
 
 #endif // _TShort_HSequenceOfShortReal_hxx

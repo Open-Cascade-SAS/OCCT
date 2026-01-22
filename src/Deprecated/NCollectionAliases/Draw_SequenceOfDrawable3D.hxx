@@ -23,9 +23,11 @@
 #include <Draw_Drawable3D.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Draw_SequenceOfDrawable3D.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Draw_Drawable3D>> directly.")
+Standard_HEADER_DEPRECATED("Draw_SequenceOfDrawable3D.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<Draw_Drawable3D>> directly.")
 
-Standard_DEPRECATED("Draw_SequenceOfDrawable3D is deprecated, use NCollection_Sequence<opencascade::handle<Draw_Drawable3D>> directly")
+  Standard_DEPRECATED("Draw_SequenceOfDrawable3D is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Draw_Drawable3D>> directly")
 typedef NCollection_Sequence<opencascade::handle<Draw_Drawable3D>> Draw_SequenceOfDrawable3D;
 
 #endif // _Draw_SequenceOfDrawable3D_hxx

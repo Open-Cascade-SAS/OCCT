@@ -24,11 +24,16 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepClass3d_MapOfInter.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BRepClass3d_MapOfInter.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepClass3d_MapOfInter is deprecated, use NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> directly")
+  Standard_DEPRECATED("BRepClass3d_MapOfInter is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+                      "void*, TopTools_ShapeMapHasher> directly")
 typedef NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher> BRepClass3d_MapOfInter;
-Standard_DEPRECATED("BRepClass3d_DataMapIteratorOfMapOfInter is deprecated, use NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher>::Iterator BRepClass3d_DataMapIteratorOfMapOfInter;
+Standard_DEPRECATED(
+  "BRepClass3d_DataMapIteratorOfMapOfInter is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "void*, TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher>::Iterator
+  BRepClass3d_DataMapIteratorOfMapOfInter;
 
 #endif // _BRepClass3d_MapOfInter_hxx

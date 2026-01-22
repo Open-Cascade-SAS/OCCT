@@ -23,11 +23,15 @@
 #include <Standard_Transient.hxx>
 #include <NCollection_Map.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_MapOfTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_MapOfTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_MapOfTransient is deprecated, use NCollection_Map<opencascade::handle<Standard_Transient>> directly")
+  Standard_DEPRECATED("TColStd_MapOfTransient is deprecated, use "
+                      "NCollection_Map<opencascade::handle<Standard_Transient>> directly")
 typedef NCollection_Map<opencascade::handle<Standard_Transient>> TColStd_MapOfTransient;
-Standard_DEPRECATED("TColStd_MapIteratorOfMapOfTransient is deprecated, use NCollection_Map<opencascade::handle<Standard_Transient>>::Iterator directly")
-typedef NCollection_Map<opencascade::handle<Standard_Transient>>::Iterator TColStd_MapIteratorOfMapOfTransient;
+Standard_DEPRECATED("TColStd_MapIteratorOfMapOfTransient is deprecated, use "
+                    "NCollection_Map<opencascade::handle<Standard_Transient>>::Iterator directly")
+typedef NCollection_Map<opencascade::handle<Standard_Transient>>::Iterator
+  TColStd_MapIteratorOfMapOfTransient;
 
 #endif // _TColStd_MapOfTransient_hxx

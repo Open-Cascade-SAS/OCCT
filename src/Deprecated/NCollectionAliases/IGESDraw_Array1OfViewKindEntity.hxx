@@ -14,7 +14,8 @@
 //! @file IGESDraw_Array1OfViewKindEntity.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> directly
+//!             instead.
 
 #ifndef _IGESDraw_Array1OfViewKindEntity_hxx
 #define _IGESDraw_Array1OfViewKindEntity_hxx
@@ -23,9 +24,13 @@
 #include <IGESData_ViewKindEntity.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDraw_Array1OfViewKindEntity.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDraw_Array1OfViewKindEntity.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> directly.")
 
-Standard_DEPRECATED("IGESDraw_Array1OfViewKindEntity is deprecated, use NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> IGESDraw_Array1OfViewKindEntity;
+  Standard_DEPRECATED("IGESDraw_Array1OfViewKindEntity is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESData_ViewKindEntity>>
+  IGESDraw_Array1OfViewKindEntity;
 
 #endif // _IGESDraw_Array1OfViewKindEntity_hxx

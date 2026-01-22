@@ -14,7 +14,8 @@
 //! @file Transfer_TransferMapOfProcessForTransient.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Transfer_Binder>> directly instead.
+//!             Use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>,
+//!             opencascade::handle<Transfer_Binder>> directly instead.
 
 #ifndef _Transfer_TransferMapOfProcessForTransient_hxx
 #define _Transfer_TransferMapOfProcessForTransient_hxx
@@ -23,9 +24,16 @@
 #include <NCollection_IndexedDataMap.hxx>
 #include <Transfer_Binder.hxx>
 
-Standard_HEADER_DEPRECATED("Transfer_TransferMapOfProcessForTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Transfer_Binder>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Transfer_TransferMapOfProcessForTransient.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
+  "opencascade::handle<Transfer_Binder>> directly.")
 
-Standard_DEPRECATED("Transfer_TransferMapOfProcessForTransient is deprecated, use NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Transfer_Binder>> directly")
-typedef NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, opencascade::handle<Transfer_Binder>> Transfer_TransferMapOfProcessForTransient;
+  Standard_DEPRECATED("Transfer_TransferMapOfProcessForTransient is deprecated, use "
+                      "NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>, "
+                      "opencascade::handle<Transfer_Binder>> directly")
+typedef NCollection_IndexedDataMap<opencascade::handle<Standard_Transient>,
+                                   opencascade::handle<Transfer_Binder>>
+  Transfer_TransferMapOfProcessForTransient;
 
 #endif // _Transfer_TransferMapOfProcessForTransient_hxx

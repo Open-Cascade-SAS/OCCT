@@ -23,9 +23,11 @@
 #include <Contap_Line.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Contap_TheSequenceOfLine.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Contap_Line> directly.")
+Standard_HEADER_DEPRECATED("Contap_TheSequenceOfLine.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Contap_Line> directly.")
 
-Standard_DEPRECATED("Contap_TheSequenceOfLine is deprecated, use NCollection_Sequence<Contap_Line> directly")
+  Standard_DEPRECATED(
+    "Contap_TheSequenceOfLine is deprecated, use NCollection_Sequence<Contap_Line> directly")
 typedef NCollection_Sequence<Contap_Line> Contap_TheSequenceOfLine;
 
 #endif // _Contap_TheSequenceOfLine_hxx

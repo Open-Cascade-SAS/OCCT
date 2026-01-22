@@ -23,9 +23,11 @@
 #include <Storage_ArrayOfSchema.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("Storage_HArrayOfSchema.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<Storage_Schema>> directly.")
+Standard_HEADER_DEPRECATED("Storage_HArrayOfSchema.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<Storage_Schema>> directly.")
 
-Standard_DEPRECATED("Storage_HArrayOfSchema is deprecated, use NCollection_HArray1<opencascade::handle<Storage_Schema>> directly")
+  Standard_DEPRECATED("Storage_HArrayOfSchema is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<Storage_Schema>> directly")
 typedef NCollection_HArray1<opencascade::handle<Storage_Schema>> Storage_HArrayOfSchema;
 
 #endif // _Storage_HArrayOfSchema_hxx

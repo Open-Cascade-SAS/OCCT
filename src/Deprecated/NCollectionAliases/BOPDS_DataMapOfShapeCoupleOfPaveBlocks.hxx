@@ -24,11 +24,18 @@
 #include <NCollection_DataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_DataMapOfShapeCoupleOfPaveBlocks.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BOPDS_DataMapOfShapeCoupleOfPaveBlocks.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPDS_DataMapOfShapeCoupleOfPaveBlocks is deprecated, use NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> BOPDS_DataMapOfShapeCoupleOfPaveBlocks;
-Standard_DEPRECATED("BOPDS_DataMapIteratorOfDataMapOfShapeCoupleOfPaveBlocks is deprecated, use NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>::Iterator BOPDS_DataMapIteratorOfDataMapOfShapeCoupleOfPaveBlocks;
+  Standard_DEPRECATED(
+    "BOPDS_DataMapOfShapeCoupleOfPaveBlocks is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
+  BOPDS_DataMapOfShapeCoupleOfPaveBlocks;
+Standard_DEPRECATED("BOPDS_DataMapIteratorOfDataMapOfShapeCoupleOfPaveBlocks is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>::
+  Iterator BOPDS_DataMapIteratorOfDataMapOfShapeCoupleOfPaveBlocks;
 
 #endif // _BOPDS_DataMapOfShapeCoupleOfPaveBlocks_hxx

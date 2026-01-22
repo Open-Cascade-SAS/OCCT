@@ -23,11 +23,18 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TDataStd_DataMapOfStringString.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("TDataStd_DataMapOfStringString is deprecated, use NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> directly")
-typedef NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> TDataStd_DataMapOfStringString;
-Standard_DEPRECATED("TDataStd_DataMapIteratorOfDataMapOfStringString is deprecated, use NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator directly")
-typedef NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator TDataStd_DataMapIteratorOfDataMapOfStringString;
+  Standard_DEPRECATED(
+    "TDataStd_DataMapOfStringString is deprecated, use "
+    "NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString> directly")
+typedef NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>
+  TDataStd_DataMapOfStringString;
+Standard_DEPRECATED(
+  "TDataStd_DataMapIteratorOfDataMapOfStringString is deprecated, use "
+  "NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator directly")
+typedef NCollection_DataMap<TCollection_ExtendedString, TCollection_ExtendedString>::Iterator
+  TDataStd_DataMapIteratorOfDataMapOfStringString;
 
 #endif // _TDataStd_DataMapOfStringString_hxx

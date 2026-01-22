@@ -22,9 +22,10 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Array2.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_Array2OfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array2<double> directly.")
+Standard_HEADER_DEPRECATED("TColStd_Array2OfReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array2<double> directly.")
 
-Standard_DEPRECATED("TColStd_Array2OfReal is deprecated, use NCollection_Array2<double> directly")
+  Standard_DEPRECATED("TColStd_Array2OfReal is deprecated, use NCollection_Array2<double> directly")
 typedef NCollection_Array2<double> TColStd_Array2OfReal;
 
 #endif // _TColStd_Array2OfReal_hxx

@@ -25,11 +25,20 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State.hxx is deprecated since "
+                           "OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State is deprecated, use NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher> TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State is deprecated, use NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State;
+  Standard_DEPRECATED("TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State is deprecated, use "
+                      "NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, "
+                      "TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>
+  TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State;
+Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State is "
+                    "deprecated, use NCollection_DataMap<TopoDS_Shape, "
+                    "TopOpeBRepDS_ListOfShapeOn1State, TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            TopOpeBRepDS_ListOfShapeOn1State,
+                            TopTools_ShapeMapHasher>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfDataMapOfShapeListOfShapeOn1State;
 
 #endif // _TopOpeBRepDS_DataMapOfShapeListOfShapeOn1State_hxx

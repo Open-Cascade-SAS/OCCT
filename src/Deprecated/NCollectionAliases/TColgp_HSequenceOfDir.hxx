@@ -24,9 +24,11 @@
 #include <TColgp_SequenceOfDir.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_HSequenceOfDir.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<gp_Dir> directly.")
+Standard_HEADER_DEPRECATED("TColgp_HSequenceOfDir.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<gp_Dir> directly.")
 
-Standard_DEPRECATED("TColgp_HSequenceOfDir is deprecated, use NCollection_HSequence<gp_Dir> directly")
+  Standard_DEPRECATED(
+    "TColgp_HSequenceOfDir is deprecated, use NCollection_HSequence<gp_Dir> directly")
 typedef NCollection_HSequence<gp_Dir> TColgp_HSequenceOfDir;
 
 #endif // _TColgp_HSequenceOfDir_hxx

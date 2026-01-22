@@ -14,7 +14,8 @@
 //! @file BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, BOPDS_ListOfPaveBlock> directly instead.
+//!             Use NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>,
+//!             BOPDS_ListOfPaveBlock> directly instead.
 
 #ifndef _BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock_hxx
 #define _BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock_hxx
@@ -24,9 +25,15 @@
 #include <BOPDS_PaveBlock.hxx>
 #include <BOPDS_ListOfPaveBlock.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, BOPDS_ListOfPaveBlock> directly.")
+Standard_HEADER_DEPRECATED(
+  "BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, BOPDS_ListOfPaveBlock> "
+  "directly.")
 
-Standard_DEPRECATED("BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock is deprecated, use NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, BOPDS_ListOfPaveBlock> directly")
-typedef NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, BOPDS_ListOfPaveBlock> BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock;
+  Standard_DEPRECATED("BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock is deprecated, use "
+                      "NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, "
+                      "BOPDS_ListOfPaveBlock> directly")
+typedef NCollection_IndexedDataMap<opencascade::handle<BOPDS_PaveBlock>, BOPDS_ListOfPaveBlock>
+  BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock;
 
 #endif // _BOPDS_IndexedDataMapOfPaveBlockListOfPaveBlock_hxx

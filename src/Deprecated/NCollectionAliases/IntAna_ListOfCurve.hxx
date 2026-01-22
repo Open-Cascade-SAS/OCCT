@@ -23,11 +23,14 @@
 #include <IntAna_Curve.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("IntAna_ListOfCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "IntAna_ListOfCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("IntAna_ListOfCurve is deprecated, use NCollection_List<IntAna_Curve> directly")
+  Standard_DEPRECATED(
+    "IntAna_ListOfCurve is deprecated, use NCollection_List<IntAna_Curve> directly")
 typedef NCollection_List<IntAna_Curve> IntAna_ListOfCurve;
-Standard_DEPRECATED("IntAna_ListIteratorOfListOfCurve is deprecated, use NCollection_List<IntAna_Curve>::Iterator directly")
+Standard_DEPRECATED("IntAna_ListIteratorOfListOfCurve is deprecated, use "
+                    "NCollection_List<IntAna_Curve>::Iterator directly")
 typedef NCollection_List<IntAna_Curve>::Iterator IntAna_ListIteratorOfListOfCurve;
 
 #endif // _IntAna_ListOfCurve_hxx

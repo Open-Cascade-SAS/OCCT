@@ -23,9 +23,10 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_Array1OfPnt.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Pnt> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColgp_Array1OfPnt.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Pnt> directly.")
 
-Standard_DEPRECATED("TColgp_Array1OfPnt is deprecated, use NCollection_Array1<gp_Pnt> directly")
+  Standard_DEPRECATED("TColgp_Array1OfPnt is deprecated, use NCollection_Array1<gp_Pnt> directly")
 typedef NCollection_Array1<gp_Pnt> TColgp_Array1OfPnt;
 
 #endif // _TColgp_Array1OfPnt_hxx

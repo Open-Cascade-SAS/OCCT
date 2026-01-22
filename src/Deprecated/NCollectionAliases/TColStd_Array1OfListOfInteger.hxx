@@ -23,9 +23,11 @@
 #include <TColStd_ListOfInteger.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_Array1OfListOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TColStd_ListOfInteger> directly.")
+Standard_HEADER_DEPRECATED("TColStd_Array1OfListOfInteger.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<TColStd_ListOfInteger> directly.")
 
-Standard_DEPRECATED("TColStd_Array1OfListOfInteger is deprecated, use NCollection_Array1<TColStd_ListOfInteger> directly")
+  Standard_DEPRECATED("TColStd_Array1OfListOfInteger is deprecated, use "
+                      "NCollection_Array1<TColStd_ListOfInteger> directly")
 typedef NCollection_Array1<TColStd_ListOfInteger> TColStd_Array1OfListOfInteger;
 
 #endif // _TColStd_Array1OfListOfInteger_hxx

@@ -24,11 +24,18 @@
 #include <XmlMDF_ADriver.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("XmlMDF_MapOfDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "XmlMDF_MapOfDriver.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("XmlMDF_MapOfDriver is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<XmlMDF_ADriver>> directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<XmlMDF_ADriver>> XmlMDF_MapOfDriver;
-Standard_DEPRECATED("XmlMDF_DataMapIteratorOfMapOfDriver is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<XmlMDF_ADriver>>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<XmlMDF_ADriver>>::Iterator XmlMDF_DataMapIteratorOfMapOfDriver;
+  Standard_DEPRECATED(
+    "XmlMDF_MapOfDriver is deprecated, use NCollection_DataMap<TCollection_AsciiString, "
+    "opencascade::handle<XmlMDF_ADriver>> directly")
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<XmlMDF_ADriver>>
+  XmlMDF_MapOfDriver;
+Standard_DEPRECATED("XmlMDF_DataMapIteratorOfMapOfDriver is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, "
+                    "opencascade::handle<XmlMDF_ADriver>>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<XmlMDF_ADriver>>::Iterator
+  XmlMDF_DataMapIteratorOfMapOfDriver;
 
 #endif // _XmlMDF_MapOfDriver_hxx

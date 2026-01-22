@@ -14,7 +14,8 @@
 //! @file IGESDimen_HArray1OfGeneralNote.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly
+//!             instead.
 
 #ifndef _IGESDimen_HArray1OfGeneralNote_hxx
 #define _IGESDimen_HArray1OfGeneralNote_hxx
@@ -23,9 +24,13 @@
 #include <IGESDimen_Array1OfGeneralNote.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDimen_HArray1OfGeneralNote.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDimen_HArray1OfGeneralNote.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly.")
 
-Standard_DEPRECATED("IGESDimen_HArray1OfGeneralNote is deprecated, use NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly")
-typedef NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> IGESDimen_HArray1OfGeneralNote;
+  Standard_DEPRECATED("IGESDimen_HArray1OfGeneralNote is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>> directly")
+typedef NCollection_HArray1<opencascade::handle<IGESDimen_GeneralNote>>
+  IGESDimen_HArray1OfGeneralNote;
 
 #endif // _IGESDimen_HArray1OfGeneralNote_hxx

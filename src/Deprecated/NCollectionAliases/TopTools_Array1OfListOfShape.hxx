@@ -23,9 +23,11 @@
 #include <TopTools_ListOfShape.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_Array1OfListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TopTools_ListOfShape> directly.")
+Standard_HEADER_DEPRECATED("TopTools_Array1OfListOfShape.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<TopTools_ListOfShape> directly.")
 
-Standard_DEPRECATED("TopTools_Array1OfListOfShape is deprecated, use NCollection_Array1<TopTools_ListOfShape> directly")
+  Standard_DEPRECATED("TopTools_Array1OfListOfShape is deprecated, use "
+                      "NCollection_Array1<TopTools_ListOfShape> directly")
 typedef NCollection_Array1<TopTools_ListOfShape> TopTools_Array1OfListOfShape;
 
 #endif // _TopTools_Array1OfListOfShape_hxx

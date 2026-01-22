@@ -23,9 +23,11 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_IndexedMapOfOrientedShape.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<TopoDS_Shape> directly.")
+Standard_HEADER_DEPRECATED("TopTools_IndexedMapOfOrientedShape.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_IndexedMap<TopoDS_Shape> directly.")
 
-Standard_DEPRECATED("TopTools_IndexedMapOfOrientedShape is deprecated, use NCollection_IndexedMap<TopoDS_Shape> directly")
+  Standard_DEPRECATED("TopTools_IndexedMapOfOrientedShape is deprecated, use "
+                      "NCollection_IndexedMap<TopoDS_Shape> directly")
 typedef NCollection_IndexedMap<TopoDS_Shape> TopTools_IndexedMapOfOrientedShape;
 
 #endif // _TopTools_IndexedMapOfOrientedShape_hxx

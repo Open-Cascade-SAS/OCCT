@@ -14,7 +14,9 @@
 //! @file StepElement_Array1OfHSequenceOfCurveElementPurposeMember.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> directly instead.
+//!             Use
+//!             NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>>
+//!             directly instead.
 
 #ifndef _StepElement_Array1OfHSequenceOfCurveElementPurposeMember_hxx
 #define _StepElement_Array1OfHSequenceOfCurveElementPurposeMember_hxx
@@ -23,9 +25,15 @@
 #include <StepElement_HSequenceOfCurveElementPurposeMember.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfHSequenceOfCurveElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfHSequenceOfCurveElementPurposeMember.hxx is deprecated since OCCT 8.0.0. "
+  "Use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> "
+  "directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfHSequenceOfCurveElementPurposeMember is deprecated, use NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> directly")
-typedef NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>> StepElement_Array1OfHSequenceOfCurveElementPurposeMember;
+  Standard_DEPRECATED("StepElement_Array1OfHSequenceOfCurveElementPurposeMember is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepElement_"
+                      "HSequenceOfCurveElementPurposeMember>> directly")
+typedef NCollection_Array1<opencascade::handle<StepElement_HSequenceOfCurveElementPurposeMember>>
+  StepElement_Array1OfHSequenceOfCurveElementPurposeMember;
 
 #endif // _StepElement_Array1OfHSequenceOfCurveElementPurposeMember_hxx

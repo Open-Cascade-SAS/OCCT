@@ -14,7 +14,8 @@
 //! @file ShapeAnalysis_HSequenceOfFreeBounds.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> directly
+//!             instead.
 
 #ifndef _ShapeAnalysis_HSequenceOfFreeBounds_hxx
 #define _ShapeAnalysis_HSequenceOfFreeBounds_hxx
@@ -23,9 +24,14 @@
 #include <ShapeAnalysis_SequenceOfFreeBounds.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("ShapeAnalysis_HSequenceOfFreeBounds.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> directly.")
+Standard_HEADER_DEPRECATED(
+  "ShapeAnalysis_HSequenceOfFreeBounds.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> directly.")
 
-Standard_DEPRECATED("ShapeAnalysis_HSequenceOfFreeBounds is deprecated, use NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> directly")
-typedef NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> ShapeAnalysis_HSequenceOfFreeBounds;
+  Standard_DEPRECATED(
+    "ShapeAnalysis_HSequenceOfFreeBounds is deprecated, use "
+    "NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>> directly")
+typedef NCollection_HSequence<opencascade::handle<ShapeAnalysis_FreeBoundData>>
+  ShapeAnalysis_HSequenceOfFreeBounds;
 
 #endif // _ShapeAnalysis_HSequenceOfFreeBounds_hxx

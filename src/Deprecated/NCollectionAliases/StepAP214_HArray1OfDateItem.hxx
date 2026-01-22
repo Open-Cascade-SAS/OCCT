@@ -23,9 +23,11 @@
 #include <StepAP214_Array1OfDateItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_HArray1OfDateItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP214_DateItem> directly.")
+Standard_HEADER_DEPRECATED("StepAP214_HArray1OfDateItem.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<StepAP214_DateItem> directly.")
 
-Standard_DEPRECATED("StepAP214_HArray1OfDateItem is deprecated, use NCollection_HArray1<StepAP214_DateItem> directly")
+  Standard_DEPRECATED("StepAP214_HArray1OfDateItem is deprecated, use "
+                      "NCollection_HArray1<StepAP214_DateItem> directly")
 typedef NCollection_HArray1<StepAP214_DateItem> StepAP214_HArray1OfDateItem;
 
 #endif // _StepAP214_HArray1OfDateItem_hxx

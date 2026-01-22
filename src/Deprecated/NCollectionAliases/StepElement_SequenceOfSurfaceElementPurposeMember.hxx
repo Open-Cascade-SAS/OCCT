@@ -14,7 +14,9 @@
 //! @file StepElement_SequenceOfSurfaceElementPurposeMember.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly instead.
+//!             Use
+//!             NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>>
+//!             directly instead.
 
 #ifndef _StepElement_SequenceOfSurfaceElementPurposeMember_hxx
 #define _StepElement_SequenceOfSurfaceElementPurposeMember_hxx
@@ -23,9 +25,14 @@
 #include <StepElement_SurfaceElementPurposeMember.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_SequenceOfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_SequenceOfSurfaceElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly.")
 
-Standard_DEPRECATED("StepElement_SequenceOfSurfaceElementPurposeMember is deprecated, use NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly")
-typedef NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> StepElement_SequenceOfSurfaceElementPurposeMember;
+  Standard_DEPRECATED(
+    "StepElement_SequenceOfSurfaceElementPurposeMember is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>> directly")
+typedef NCollection_Sequence<opencascade::handle<StepElement_SurfaceElementPurposeMember>>
+  StepElement_SequenceOfSurfaceElementPurposeMember;
 
 #endif // _StepElement_SequenceOfSurfaceElementPurposeMember_hxx

@@ -24,9 +24,11 @@
 #include <TColStd_SequenceOfExtendedString.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HSequenceOfExtendedString.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<TCollection_ExtendedString> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HSequenceOfExtendedString.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_HSequence<TCollection_ExtendedString> directly.")
 
-Standard_DEPRECATED("TColStd_HSequenceOfExtendedString is deprecated, use NCollection_HSequence<TCollection_ExtendedString> directly")
+  Standard_DEPRECATED("TColStd_HSequenceOfExtendedString is deprecated, use "
+                      "NCollection_HSequence<TCollection_ExtendedString> directly")
 typedef NCollection_HSequence<TCollection_ExtendedString> TColStd_HSequenceOfExtendedString;
 
 #endif // _TColStd_HSequenceOfExtendedString_hxx

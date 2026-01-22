@@ -24,11 +24,15 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_DataMapOfAsciiStringInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TColStd_DataMapOfAsciiStringInteger.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_DataMapOfAsciiStringInteger is deprecated, use NCollection_DataMap<TCollection_AsciiString, int> directly")
+  Standard_DEPRECATED("TColStd_DataMapOfAsciiStringInteger is deprecated, use "
+                      "NCollection_DataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, int> TColStd_DataMapOfAsciiStringInteger;
-Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger is deprecated, use NCollection_DataMap<TCollection_AsciiString, int>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, int>::Iterator TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger;
+Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, int>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString, int>::Iterator
+  TColStd_DataMapIteratorOfDataMapOfAsciiStringInteger;
 
 #endif // _TColStd_DataMapOfAsciiStringInteger_hxx

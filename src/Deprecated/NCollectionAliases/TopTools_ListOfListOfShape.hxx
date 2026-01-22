@@ -22,11 +22,14 @@
 #include <Standard_Macro.hxx>
 #include <TopTools_ListOfShape.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_ListOfListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TopTools_ListOfListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopTools_ListOfListOfShape is deprecated, use NCollection_List<TopTools_ListOfShape> directly")
+  Standard_DEPRECATED(
+    "TopTools_ListOfListOfShape is deprecated, use NCollection_List<TopTools_ListOfShape> directly")
 typedef NCollection_List<TopTools_ListOfShape> TopTools_ListOfListOfShape;
-Standard_DEPRECATED("TopTools_ListIteratorOfListOfListOfShape is deprecated, use NCollection_List<TopTools_ListOfShape>::Iterator directly")
+Standard_DEPRECATED("TopTools_ListIteratorOfListOfListOfShape is deprecated, use "
+                    "NCollection_List<TopTools_ListOfShape>::Iterator directly")
 typedef NCollection_List<TopTools_ListOfShape>::Iterator TopTools_ListIteratorOfListOfListOfShape;
 
 #endif // _TopTools_ListOfListOfShape_hxx

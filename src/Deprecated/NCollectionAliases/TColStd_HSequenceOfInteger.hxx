@@ -24,9 +24,11 @@
 #include <TColStd_SequenceOfInteger.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HSequenceOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<int> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HSequenceOfInteger.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<int> directly.")
 
-Standard_DEPRECATED("TColStd_HSequenceOfInteger is deprecated, use NCollection_HSequence<int> directly")
+  Standard_DEPRECATED(
+    "TColStd_HSequenceOfInteger is deprecated, use NCollection_HSequence<int> directly")
 typedef NCollection_HSequence<int> TColStd_HSequenceOfInteger;
 
 #endif // _TColStd_HSequenceOfInteger_hxx

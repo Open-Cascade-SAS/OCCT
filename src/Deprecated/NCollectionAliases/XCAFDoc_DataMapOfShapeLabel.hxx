@@ -24,11 +24,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("XCAFDoc_DataMapOfShapeLabel.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "XCAFDoc_DataMapOfShapeLabel.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("XCAFDoc_DataMapOfShapeLabel is deprecated, use NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher> XCAFDoc_DataMapOfShapeLabel;
-Standard_DEPRECATED("XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel is deprecated, use NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel;
+  Standard_DEPRECATED(
+    "XCAFDoc_DataMapOfShapeLabel is deprecated, use NCollection_DataMap<TopoDS_Shape, TDF_Label, "
+    "TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>
+  XCAFDoc_DataMapOfShapeLabel;
+Standard_DEPRECATED(
+  "XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TDF_Label, TopTools_ShapeMapHasher>::Iterator
+  XCAFDoc_DataMapIteratorOfDataMapOfShapeLabel;
 
 #endif // _XCAFDoc_DataMapOfShapeLabel_hxx

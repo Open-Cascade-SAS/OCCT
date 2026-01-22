@@ -14,7 +14,8 @@
 //! @file StepDimTol_Array1OfDatumReferenceCompartment.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>>
+//!             directly instead.
 
 #ifndef _StepDimTol_Array1OfDatumReferenceCompartment_hxx
 #define _StepDimTol_Array1OfDatumReferenceCompartment_hxx
@@ -23,9 +24,14 @@
 #include <StepDimTol_DatumReferenceCompartment.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepDimTol_Array1OfDatumReferenceCompartment.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepDimTol_Array1OfDatumReferenceCompartment.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>> directly.")
 
-Standard_DEPRECATED("StepDimTol_Array1OfDatumReferenceCompartment is deprecated, use NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>> directly")
-typedef NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>> StepDimTol_Array1OfDatumReferenceCompartment;
+  Standard_DEPRECATED(
+    "StepDimTol_Array1OfDatumReferenceCompartment is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>> directly")
+typedef NCollection_Array1<opencascade::handle<StepDimTol_DatumReferenceCompartment>>
+  StepDimTol_Array1OfDatumReferenceCompartment;
 
 #endif // _StepDimTol_Array1OfDatumReferenceCompartment_hxx

@@ -23,9 +23,11 @@
 #include <IGESSolid_Loop.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESSolid_Array1OfLoop.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESSolid_Loop>> directly.")
+Standard_HEADER_DEPRECATED("IGESSolid_Array1OfLoop.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<IGESSolid_Loop>> directly.")
 
-Standard_DEPRECATED("IGESSolid_Array1OfLoop is deprecated, use NCollection_Array1<opencascade::handle<IGESSolid_Loop>> directly")
+  Standard_DEPRECATED("IGESSolid_Array1OfLoop is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESSolid_Loop>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESSolid_Loop>> IGESSolid_Array1OfLoop;
 
 #endif // _IGESSolid_Array1OfLoop_hxx

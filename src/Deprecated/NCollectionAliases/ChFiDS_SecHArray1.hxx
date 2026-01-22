@@ -23,9 +23,11 @@
 #include <ChFiDS_SecArray1.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiDS_SecHArray1.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<ChFiDS_CircSection> directly.")
+Standard_HEADER_DEPRECATED("ChFiDS_SecHArray1.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<ChFiDS_CircSection> directly.")
 
-Standard_DEPRECATED("ChFiDS_SecHArray1 is deprecated, use NCollection_HArray1<ChFiDS_CircSection> directly")
+  Standard_DEPRECATED(
+    "ChFiDS_SecHArray1 is deprecated, use NCollection_HArray1<ChFiDS_CircSection> directly")
 typedef NCollection_HArray1<ChFiDS_CircSection> ChFiDS_SecHArray1;
 
 #endif // _ChFiDS_SecHArray1_hxx

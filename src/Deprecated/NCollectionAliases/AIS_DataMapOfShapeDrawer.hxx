@@ -14,7 +14,8 @@
 //! @file AIS_DataMapOfShapeDrawer.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_DataMap<TopoDS_Shape, opencascade::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> directly instead.
+//!             Use NCollection_DataMap<TopoDS_Shape, opencascade::handle<AIS_ColoredDrawer>,
+//!             TopTools_ShapeMapHasher> directly instead.
 
 #ifndef _AIS_DataMapOfShapeDrawer_hxx
 #define _AIS_DataMapOfShapeDrawer_hxx
@@ -24,9 +25,17 @@
 #include <NCollection_DataMap.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 
-Standard_HEADER_DEPRECATED("AIS_DataMapOfShapeDrawer.hxx is deprecated since OCCT 8.0.0. Use NCollection_DataMap<TopoDS_Shape, opencascade::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> directly.")
+Standard_HEADER_DEPRECATED(
+  "AIS_DataMapOfShapeDrawer.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_DataMap<TopoDS_Shape, opencascade::handle<AIS_ColoredDrawer>, "
+  "TopTools_ShapeMapHasher> directly.")
 
-Standard_DEPRECATED("AIS_DataMapOfShapeDrawer is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> AIS_DataMapOfShapeDrawer;
+  Standard_DEPRECATED(
+    "AIS_DataMapOfShapeDrawer is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "opencascade::handle<AIS_ColoredDrawer>, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<AIS_ColoredDrawer>,
+                            TopTools_ShapeMapHasher>
+  AIS_DataMapOfShapeDrawer;
 
 #endif // _AIS_DataMapOfShapeDrawer_hxx

@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_SequenceOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<double> directly.")
+Standard_HEADER_DEPRECATED("TColStd_SequenceOfReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<double> directly.")
 
-Standard_DEPRECATED("TColStd_SequenceOfReal is deprecated, use NCollection_Sequence<double> directly")
+  Standard_DEPRECATED(
+    "TColStd_SequenceOfReal is deprecated, use NCollection_Sequence<double> directly")
 typedef NCollection_Sequence<double> TColStd_SequenceOfReal;
 
 #endif // _TColStd_SequenceOfReal_hxx

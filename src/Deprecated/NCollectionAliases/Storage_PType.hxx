@@ -24,9 +24,11 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Storage_PType.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TCollection_AsciiString, int> directly.")
+Standard_HEADER_DEPRECATED("Storage_PType.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedDataMap<TCollection_AsciiString, int> directly.")
 
-Standard_DEPRECATED("Storage_PType is deprecated, use NCollection_IndexedDataMap<TCollection_AsciiString, int> directly")
+  Standard_DEPRECATED("Storage_PType is deprecated, use "
+                      "NCollection_IndexedDataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_IndexedDataMap<TCollection_AsciiString, int> Storage_PType;
 
 #endif // _Storage_PType_hxx

@@ -23,11 +23,14 @@
 #include <DBRep_HideData.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("DBRep_ListOfHideData.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "DBRep_ListOfHideData.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("DBRep_ListOfHideData is deprecated, use NCollection_List<DBRep_HideData> directly")
+  Standard_DEPRECATED(
+    "DBRep_ListOfHideData is deprecated, use NCollection_List<DBRep_HideData> directly")
 typedef NCollection_List<DBRep_HideData> DBRep_ListOfHideData;
-Standard_DEPRECATED("DBRep_ListIteratorOfListOfHideData is deprecated, use NCollection_List<DBRep_HideData>::Iterator directly")
+Standard_DEPRECATED("DBRep_ListIteratorOfListOfHideData is deprecated, use "
+                    "NCollection_List<DBRep_HideData>::Iterator directly")
 typedef NCollection_List<DBRep_HideData>::Iterator DBRep_ListIteratorOfListOfHideData;
 
 #endif // _DBRep_ListOfHideData_hxx

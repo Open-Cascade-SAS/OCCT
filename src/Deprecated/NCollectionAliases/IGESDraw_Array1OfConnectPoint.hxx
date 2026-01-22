@@ -23,9 +23,13 @@
 #include <IGESDraw_ConnectPoint.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDraw_Array1OfConnectPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESDraw_ConnectPoint>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDraw_Array1OfConnectPoint.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESDraw_ConnectPoint>> directly.")
 
-Standard_DEPRECATED("IGESDraw_Array1OfConnectPoint is deprecated, use NCollection_Array1<opencascade::handle<IGESDraw_ConnectPoint>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESDraw_ConnectPoint>> IGESDraw_Array1OfConnectPoint;
+  Standard_DEPRECATED("IGESDraw_Array1OfConnectPoint is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESDraw_ConnectPoint>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESDraw_ConnectPoint>>
+  IGESDraw_Array1OfConnectPoint;
 
 #endif // _IGESDraw_Array1OfConnectPoint_hxx

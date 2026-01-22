@@ -23,9 +23,11 @@
 #include <HLRAlgo_Array1OfPHDat.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("HLRAlgo_HArray1OfPHDat.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<HLRAlgo_PolyHidingData> directly.")
+Standard_HEADER_DEPRECATED("HLRAlgo_HArray1OfPHDat.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<HLRAlgo_PolyHidingData> directly.")
 
-Standard_DEPRECATED("HLRAlgo_HArray1OfPHDat is deprecated, use NCollection_HArray1<HLRAlgo_PolyHidingData> directly")
+  Standard_DEPRECATED("HLRAlgo_HArray1OfPHDat is deprecated, use "
+                      "NCollection_HArray1<HLRAlgo_PolyHidingData> directly")
 typedef NCollection_HArray1<HLRAlgo_PolyHidingData> HLRAlgo_HArray1OfPHDat;
 
 #endif // _HLRAlgo_HArray1OfPHDat_hxx

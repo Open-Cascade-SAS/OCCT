@@ -24,11 +24,16 @@
 #include <TopOpeBRepTool_C2DF.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepTool_DataMapOfOrientedShapeC2DF.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepTool_DataMapOfOrientedShapeC2DF.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepTool_DataMapOfOrientedShapeC2DF is deprecated, use NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF> TopOpeBRepTool_DataMapOfOrientedShapeC2DF;
-Standard_DEPRECATED("TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF is deprecated, use NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>::Iterator TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF;
+  Standard_DEPRECATED("TopOpeBRepTool_DataMapOfOrientedShapeC2DF is deprecated, use "
+                      "NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF> directly")
+typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>
+  TopOpeBRepTool_DataMapOfOrientedShapeC2DF;
+Standard_DEPRECATED("TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepTool_C2DF>::Iterator
+  TopOpeBRepTool_DataMapIteratorOfDataMapOfOrientedShapeC2DF;
 
 #endif // _TopOpeBRepTool_DataMapOfOrientedShapeC2DF_hxx

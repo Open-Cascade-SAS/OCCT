@@ -24,11 +24,17 @@
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference.hxx is deprecated "
+                           "since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference> directly")
-typedef NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference> TopOpeBRepDS_DataMapOfIntegerListOfInterference;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference>::Iterator directly")
-typedef NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference>::Iterator TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference;
+  Standard_DEPRECATED("TopOpeBRepDS_DataMapOfIntegerListOfInterference is deprecated, use "
+                      "NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference> directly")
+typedef NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference>
+  TopOpeBRepDS_DataMapOfIntegerListOfInterference;
+Standard_DEPRECATED(
+  "TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference is deprecated, use "
+  "NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference>::Iterator directly")
+typedef NCollection_DataMap<int, TopOpeBRepDS_ListOfInterference>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfDataMapOfIntegerListOfInterference;
 
 #endif // _TopOpeBRepDS_DataMapOfIntegerListOfInterference_hxx

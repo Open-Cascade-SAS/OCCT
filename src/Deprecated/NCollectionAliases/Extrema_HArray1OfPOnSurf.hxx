@@ -23,9 +23,11 @@
 #include <Extrema_Array1OfPOnSurf.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("Extrema_HArray1OfPOnSurf.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<Extrema_POnSurf> directly.")
+Standard_HEADER_DEPRECATED("Extrema_HArray1OfPOnSurf.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<Extrema_POnSurf> directly.")
 
-Standard_DEPRECATED("Extrema_HArray1OfPOnSurf is deprecated, use NCollection_HArray1<Extrema_POnSurf> directly")
+  Standard_DEPRECATED(
+    "Extrema_HArray1OfPOnSurf is deprecated, use NCollection_HArray1<Extrema_POnSurf> directly")
 typedef NCollection_HArray1<Extrema_POnSurf> Extrema_HArray1OfPOnSurf;
 
 #endif // _Extrema_HArray1OfPOnSurf_hxx

@@ -23,9 +23,11 @@
 #include <IntTools_Range.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntTools_SequenceOfRanges.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntTools_Range> directly.")
+Standard_HEADER_DEPRECATED("IntTools_SequenceOfRanges.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<IntTools_Range> directly.")
 
-Standard_DEPRECATED("IntTools_SequenceOfRanges is deprecated, use NCollection_Sequence<IntTools_Range> directly")
+  Standard_DEPRECATED(
+    "IntTools_SequenceOfRanges is deprecated, use NCollection_Sequence<IntTools_Range> directly")
 typedef NCollection_Sequence<IntTools_Range> IntTools_SequenceOfRanges;
 
 #endif // _IntTools_SequenceOfRanges_hxx

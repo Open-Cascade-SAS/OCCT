@@ -23,9 +23,11 @@
 #include <TColgp_HSequenceOfPnt.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("Prs3d_NListOfSequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>> directly.")
+Standard_HEADER_DEPRECATED("Prs3d_NListOfSequenceOfPnt.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>> directly.")
 
-Standard_DEPRECATED("Prs3d_NListOfSequenceOfPnt is deprecated, use NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>> directly")
+  Standard_DEPRECATED("Prs3d_NListOfSequenceOfPnt is deprecated, use "
+                      "NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>> directly")
 typedef NCollection_List<opencascade::handle<TColgp_HSequenceOfPnt>> Prs3d_NListOfSequenceOfPnt;
 
 #endif // _Prs3d_NListOfSequenceOfPnt_hxx

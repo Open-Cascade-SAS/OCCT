@@ -14,7 +14,8 @@
 //! @file IGESDraw_HArray1OfConnectPoint.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly
+//!             instead.
 
 #ifndef _IGESDraw_HArray1OfConnectPoint_hxx
 #define _IGESDraw_HArray1OfConnectPoint_hxx
@@ -23,9 +24,13 @@
 #include <IGESDraw_Array1OfConnectPoint.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDraw_HArray1OfConnectPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDraw_HArray1OfConnectPoint.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly.")
 
-Standard_DEPRECATED("IGESDraw_HArray1OfConnectPoint is deprecated, use NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly")
-typedef NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> IGESDraw_HArray1OfConnectPoint;
+  Standard_DEPRECATED("IGESDraw_HArray1OfConnectPoint is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>> directly")
+typedef NCollection_HArray1<opencascade::handle<IGESDraw_ConnectPoint>>
+  IGESDraw_HArray1OfConnectPoint;
 
 #endif // _IGESDraw_HArray1OfConnectPoint_hxx

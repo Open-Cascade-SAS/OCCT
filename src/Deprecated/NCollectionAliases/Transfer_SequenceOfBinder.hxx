@@ -23,9 +23,11 @@
 #include <Transfer_Binder.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Transfer_SequenceOfBinder.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Transfer_Binder>> directly.")
+Standard_HEADER_DEPRECATED("Transfer_SequenceOfBinder.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<Transfer_Binder>> directly.")
 
-Standard_DEPRECATED("Transfer_SequenceOfBinder is deprecated, use NCollection_Sequence<opencascade::handle<Transfer_Binder>> directly")
+  Standard_DEPRECATED("Transfer_SequenceOfBinder is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Transfer_Binder>> directly")
 typedef NCollection_Sequence<opencascade::handle<Transfer_Binder>> Transfer_SequenceOfBinder;
 
 #endif // _Transfer_SequenceOfBinder_hxx

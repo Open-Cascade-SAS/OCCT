@@ -23,9 +23,10 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_Array1OfVec.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Vec> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColgp_Array1OfVec.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Vec> directly.")
 
-Standard_DEPRECATED("TColgp_Array1OfVec is deprecated, use NCollection_Array1<gp_Vec> directly")
+  Standard_DEPRECATED("TColgp_Array1OfVec is deprecated, use NCollection_Array1<gp_Vec> directly")
 typedef NCollection_Array1<gp_Vec> TColgp_Array1OfVec;
 
 #endif // _TColgp_Array1OfVec_hxx

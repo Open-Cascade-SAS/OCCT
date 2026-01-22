@@ -23,9 +23,11 @@
 #include <IntPatch_Line.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntPatch_SequenceOfLine.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<IntPatch_Line>> directly.")
+Standard_HEADER_DEPRECATED("IntPatch_SequenceOfLine.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<IntPatch_Line>> directly.")
 
-Standard_DEPRECATED("IntPatch_SequenceOfLine is deprecated, use NCollection_Sequence<opencascade::handle<IntPatch_Line>> directly")
+  Standard_DEPRECATED("IntPatch_SequenceOfLine is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<IntPatch_Line>> directly")
 typedef NCollection_Sequence<opencascade::handle<IntPatch_Line>> IntPatch_SequenceOfLine;
 
 #endif // _IntPatch_SequenceOfLine_hxx

@@ -24,11 +24,18 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceShape.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceShape is deprecated, use NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape> directly")
-typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape> TopOpeBRepDS_DataMapOfInterferenceShape;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape is deprecated, use NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape>::Iterator directly")
-typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape>::Iterator TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape;
+  Standard_DEPRECATED(
+    "TopOpeBRepDS_DataMapOfInterferenceShape is deprecated, use "
+    "NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape> directly")
+typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape>
+  TopOpeBRepDS_DataMapOfInterferenceShape;
+Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, "
+                    "TopoDS_Shape>::Iterator directly")
+typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopoDS_Shape>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceShape;
 
 #endif // _TopOpeBRepDS_DataMapOfInterferenceShape_hxx

@@ -14,7 +14,8 @@
 //! @file StepElement_Array1OfVolumeElementPurposeMember.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>>
+//!             directly instead.
 
 #ifndef _StepElement_Array1OfVolumeElementPurposeMember_hxx
 #define _StepElement_Array1OfVolumeElementPurposeMember_hxx
@@ -23,9 +24,14 @@
 #include <StepElement_VolumeElementPurposeMember.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfVolumeElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfVolumeElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfVolumeElementPurposeMember is deprecated, use NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly")
-typedef NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> StepElement_Array1OfVolumeElementPurposeMember;
+  Standard_DEPRECATED(
+    "StepElement_Array1OfVolumeElementPurposeMember is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>> directly")
+typedef NCollection_Array1<opencascade::handle<StepElement_VolumeElementPurposeMember>>
+  StepElement_Array1OfVolumeElementPurposeMember;
 
 #endif // _StepElement_Array1OfVolumeElementPurposeMember_hxx

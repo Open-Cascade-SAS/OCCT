@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_Point.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_Point> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfPoint.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_Point> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfPoint is deprecated, use NCollection_Vector<BOPDS_Point> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfPoint is deprecated, use NCollection_Vector<BOPDS_Point> directly")
 typedef NCollection_Vector<BOPDS_Point> BOPDS_VectorOfPoint;
 
 #endif // _BOPDS_VectorOfPoint_hxx

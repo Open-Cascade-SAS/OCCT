@@ -23,9 +23,11 @@
 #include <StepBasic_Array1OfApproval.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_HArray1OfApproval.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepBasic_Approval>> directly.")
+Standard_HEADER_DEPRECATED("StepBasic_HArray1OfApproval.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<opencascade::handle<StepBasic_Approval>> directly.")
 
-Standard_DEPRECATED("StepBasic_HArray1OfApproval is deprecated, use NCollection_HArray1<opencascade::handle<StepBasic_Approval>> directly")
+  Standard_DEPRECATED("StepBasic_HArray1OfApproval is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<StepBasic_Approval>> directly")
 typedef NCollection_HArray1<opencascade::handle<StepBasic_Approval>> StepBasic_HArray1OfApproval;
 
 #endif // _StepBasic_HArray1OfApproval_hxx

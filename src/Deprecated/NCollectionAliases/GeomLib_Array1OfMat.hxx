@@ -23,9 +23,10 @@
 #include <gp_Mat.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("GeomLib_Array1OfMat.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Mat> directly.")
+Standard_HEADER_DEPRECATED("GeomLib_Array1OfMat.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<gp_Mat> directly.")
 
-Standard_DEPRECATED("GeomLib_Array1OfMat is deprecated, use NCollection_Array1<gp_Mat> directly")
+  Standard_DEPRECATED("GeomLib_Array1OfMat is deprecated, use NCollection_Array1<gp_Mat> directly")
 typedef NCollection_Array1<gp_Mat> GeomLib_Array1OfMat;
 
 #endif // _GeomLib_Array1OfMat_hxx

@@ -23,9 +23,11 @@
 #include <StepShape_Edge.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepShape_Array1OfEdge.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepShape_Edge>> directly.")
+Standard_HEADER_DEPRECATED("StepShape_Array1OfEdge.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<StepShape_Edge>> directly.")
 
-Standard_DEPRECATED("StepShape_Array1OfEdge is deprecated, use NCollection_Array1<opencascade::handle<StepShape_Edge>> directly")
+  Standard_DEPRECATED("StepShape_Array1OfEdge is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepShape_Edge>> directly")
 typedef NCollection_Array1<opencascade::handle<StepShape_Edge>> StepShape_Array1OfEdge;
 
 #endif // _StepShape_Array1OfEdge_hxx

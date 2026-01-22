@@ -23,11 +23,14 @@
 #include <BRepFill_OffsetWire.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("BRepFill_ListOfOffsetWire.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BRepFill_ListOfOffsetWire.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepFill_ListOfOffsetWire is deprecated, use NCollection_List<BRepFill_OffsetWire> directly")
+  Standard_DEPRECATED(
+    "BRepFill_ListOfOffsetWire is deprecated, use NCollection_List<BRepFill_OffsetWire> directly")
 typedef NCollection_List<BRepFill_OffsetWire> BRepFill_ListOfOffsetWire;
-Standard_DEPRECATED("BRepFill_ListIteratorOfListOfOffsetWire is deprecated, use NCollection_List<BRepFill_OffsetWire>::Iterator directly")
+Standard_DEPRECATED("BRepFill_ListIteratorOfListOfOffsetWire is deprecated, use "
+                    "NCollection_List<BRepFill_OffsetWire>::Iterator directly")
 typedef NCollection_List<BRepFill_OffsetWire>::Iterator BRepFill_ListIteratorOfListOfOffsetWire;
 
 #endif // _BRepFill_ListOfOffsetWire_hxx

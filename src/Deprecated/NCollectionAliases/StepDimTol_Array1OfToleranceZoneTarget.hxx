@@ -23,9 +23,12 @@
 #include <StepDimTol_ToleranceZoneTarget.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepDimTol_Array1OfToleranceZoneTarget.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepDimTol_ToleranceZoneTarget> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepDimTol_Array1OfToleranceZoneTarget.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepDimTol_ToleranceZoneTarget> directly.")
 
-Standard_DEPRECATED("StepDimTol_Array1OfToleranceZoneTarget is deprecated, use NCollection_Array1<StepDimTol_ToleranceZoneTarget> directly")
+  Standard_DEPRECATED("StepDimTol_Array1OfToleranceZoneTarget is deprecated, use "
+                      "NCollection_Array1<StepDimTol_ToleranceZoneTarget> directly")
 typedef NCollection_Array1<StepDimTol_ToleranceZoneTarget> StepDimTol_Array1OfToleranceZoneTarget;
 
 #endif // _StepDimTol_Array1OfToleranceZoneTarget_hxx

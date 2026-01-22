@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <Interface_FileParameter.hxx>
 
-Standard_HEADER_DEPRECATED("Interface_VectorOfFileParameter.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<Interface_FileParameter> directly.")
+Standard_HEADER_DEPRECATED("Interface_VectorOfFileParameter.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Vector<Interface_FileParameter> directly.")
 
-Standard_DEPRECATED("Interface_VectorOfFileParameter is deprecated, use NCollection_Vector<Interface_FileParameter> directly")
+  Standard_DEPRECATED("Interface_VectorOfFileParameter is deprecated, use "
+                      "NCollection_Vector<Interface_FileParameter> directly")
 typedef NCollection_Vector<Interface_FileParameter> Interface_VectorOfFileParameter;
 
 #endif // _Interface_VectorOfFileParameter_hxx

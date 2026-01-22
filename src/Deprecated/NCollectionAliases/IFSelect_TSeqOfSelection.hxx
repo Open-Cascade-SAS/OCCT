@@ -23,9 +23,12 @@
 #include <IFSelect_Selection.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IFSelect_TSeqOfSelection.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<IFSelect_Selection>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IFSelect_TSeqOfSelection.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<IFSelect_Selection>> directly.")
 
-Standard_DEPRECATED("IFSelect_TSeqOfSelection is deprecated, use NCollection_Sequence<opencascade::handle<IFSelect_Selection>> directly")
+  Standard_DEPRECATED("IFSelect_TSeqOfSelection is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<IFSelect_Selection>> directly")
 typedef NCollection_Sequence<opencascade::handle<IFSelect_Selection>> IFSelect_TSeqOfSelection;
 
 #endif // _IFSelect_TSeqOfSelection_hxx

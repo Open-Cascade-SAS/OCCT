@@ -23,9 +23,11 @@
 #include <HLRBRep_EdgeData.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("HLRBRep_Array1OfEData.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<HLRBRep_EdgeData> directly.")
+Standard_HEADER_DEPRECATED("HLRBRep_Array1OfEData.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<HLRBRep_EdgeData> directly.")
 
-Standard_DEPRECATED("HLRBRep_Array1OfEData is deprecated, use NCollection_Array1<HLRBRep_EdgeData> directly")
+  Standard_DEPRECATED(
+    "HLRBRep_Array1OfEData is deprecated, use NCollection_Array1<HLRBRep_EdgeData> directly")
 typedef NCollection_Array1<HLRBRep_EdgeData> HLRBRep_Array1OfEData;
 
 #endif // _HLRBRep_Array1OfEData_hxx

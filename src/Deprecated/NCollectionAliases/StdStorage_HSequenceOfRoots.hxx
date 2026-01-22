@@ -23,9 +23,11 @@
 #include <StdStorage_SequenceOfRoots.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("StdStorage_HSequenceOfRoots.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<StdStorage_Root>> directly.")
+Standard_HEADER_DEPRECATED("StdStorage_HSequenceOfRoots.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<opencascade::handle<StdStorage_Root>> directly.")
 
-Standard_DEPRECATED("StdStorage_HSequenceOfRoots is deprecated, use NCollection_HSequence<opencascade::handle<StdStorage_Root>> directly")
+  Standard_DEPRECATED("StdStorage_HSequenceOfRoots is deprecated, use "
+                      "NCollection_HSequence<opencascade::handle<StdStorage_Root>> directly")
 typedef NCollection_HSequence<opencascade::handle<StdStorage_Root>> StdStorage_HSequenceOfRoots;
 
 #endif // _StdStorage_HSequenceOfRoots_hxx

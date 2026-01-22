@@ -23,9 +23,11 @@
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_Array1OfExtendedString.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<TCollection_ExtendedString> directly.")
+Standard_HEADER_DEPRECATED("TColStd_Array1OfExtendedString.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<TCollection_ExtendedString> directly.")
 
-Standard_DEPRECATED("TColStd_Array1OfExtendedString is deprecated, use NCollection_Array1<TCollection_ExtendedString> directly")
+  Standard_DEPRECATED("TColStd_Array1OfExtendedString is deprecated, use "
+                      "NCollection_Array1<TCollection_ExtendedString> directly")
 typedef NCollection_Array1<TCollection_ExtendedString> TColStd_Array1OfExtendedString;
 
 #endif // _TColStd_Array1OfExtendedString_hxx

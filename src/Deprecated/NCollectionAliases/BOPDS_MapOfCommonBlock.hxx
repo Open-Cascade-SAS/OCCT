@@ -23,11 +23,15 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_CommonBlock.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_MapOfCommonBlock.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BOPDS_MapOfCommonBlock.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPDS_MapOfCommonBlock is deprecated, use NCollection_Map<opencascade::handle<BOPDS_CommonBlock>> directly")
+  Standard_DEPRECATED("BOPDS_MapOfCommonBlock is deprecated, use "
+                      "NCollection_Map<opencascade::handle<BOPDS_CommonBlock>> directly")
 typedef NCollection_Map<opencascade::handle<BOPDS_CommonBlock>> BOPDS_MapOfCommonBlock;
-Standard_DEPRECATED("BOPDS_MapIteratorOfMapOfCommonBlock is deprecated, use NCollection_Map<opencascade::handle<BOPDS_CommonBlock>>::Iterator directly")
-typedef NCollection_Map<opencascade::handle<BOPDS_CommonBlock>>::Iterator BOPDS_MapIteratorOfMapOfCommonBlock;
+Standard_DEPRECATED("BOPDS_MapIteratorOfMapOfCommonBlock is deprecated, use "
+                    "NCollection_Map<opencascade::handle<BOPDS_CommonBlock>>::Iterator directly")
+typedef NCollection_Map<opencascade::handle<BOPDS_CommonBlock>>::Iterator
+  BOPDS_MapIteratorOfMapOfCommonBlock;
 
 #endif // _BOPDS_MapOfCommonBlock_hxx

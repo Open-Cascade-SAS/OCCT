@@ -24,11 +24,15 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Plugin_MapOfFunctions.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "Plugin_MapOfFunctions.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Plugin_MapOfFunctions is deprecated, use NCollection_DataMap<TCollection_AsciiString, OSD_Function> directly")
+  Standard_DEPRECATED("Plugin_MapOfFunctions is deprecated, use "
+                      "NCollection_DataMap<TCollection_AsciiString, OSD_Function> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, OSD_Function> Plugin_MapOfFunctions;
-Standard_DEPRECATED("Plugin_DataMapIteratorOfMapOfFunctions is deprecated, use NCollection_DataMap<TCollection_AsciiString, OSD_Function>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, OSD_Function>::Iterator Plugin_DataMapIteratorOfMapOfFunctions;
+Standard_DEPRECATED("Plugin_DataMapIteratorOfMapOfFunctions is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, OSD_Function>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString, OSD_Function>::Iterator
+  Plugin_DataMapIteratorOfMapOfFunctions;
 
 #endif // _Plugin_MapOfFunctions_hxx

@@ -23,11 +23,17 @@
 #include <TopOpeBRepDS_Interference.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_ListOfInterference.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_ListOfInterference.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_ListOfInterference is deprecated, use NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>> directly")
-typedef NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>> TopOpeBRepDS_ListOfInterference;
-Standard_DEPRECATED("TopOpeBRepDS_ListIteratorOfListOfInterference is deprecated, use NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>>::Iterator TopOpeBRepDS_ListIteratorOfListOfInterference;
+  Standard_DEPRECATED("TopOpeBRepDS_ListOfInterference is deprecated, use "
+                      "NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>> directly")
+typedef NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>>
+  TopOpeBRepDS_ListOfInterference;
+Standard_DEPRECATED(
+  "TopOpeBRepDS_ListIteratorOfListOfInterference is deprecated, use "
+  "NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<TopOpeBRepDS_Interference>>::Iterator
+  TopOpeBRepDS_ListIteratorOfListOfInterference;
 
 #endif // _TopOpeBRepDS_ListOfInterference_hxx

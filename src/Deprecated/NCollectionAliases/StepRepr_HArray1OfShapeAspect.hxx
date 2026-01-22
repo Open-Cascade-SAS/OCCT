@@ -23,9 +23,13 @@
 #include <StepRepr_Array1OfShapeAspect.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepRepr_HArray1OfShapeAspect.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepRepr_ShapeAspect>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepRepr_HArray1OfShapeAspect.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepRepr_ShapeAspect>> directly.")
 
-Standard_DEPRECATED("StepRepr_HArray1OfShapeAspect is deprecated, use NCollection_HArray1<opencascade::handle<StepRepr_ShapeAspect>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepRepr_ShapeAspect>> StepRepr_HArray1OfShapeAspect;
+  Standard_DEPRECATED("StepRepr_HArray1OfShapeAspect is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<StepRepr_ShapeAspect>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepRepr_ShapeAspect>>
+  StepRepr_HArray1OfShapeAspect;
 
 #endif // _StepRepr_HArray1OfShapeAspect_hxx

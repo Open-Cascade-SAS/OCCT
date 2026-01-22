@@ -23,9 +23,13 @@
 #include <TColgp_HArray1OfPnt.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Convert_SequenceOfArray1OfPoles.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Convert_SequenceOfArray1OfPoles.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt>> directly.")
 
-Standard_DEPRECATED("Convert_SequenceOfArray1OfPoles is deprecated, use NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt>> directly")
-typedef NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt>> Convert_SequenceOfArray1OfPoles;
+  Standard_DEPRECATED("Convert_SequenceOfArray1OfPoles is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt>> directly")
+typedef NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt>>
+  Convert_SequenceOfArray1OfPoles;
 
 #endif // _Convert_SequenceOfArray1OfPoles_hxx

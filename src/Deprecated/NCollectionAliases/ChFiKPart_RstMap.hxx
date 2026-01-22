@@ -24,11 +24,15 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiKPart_RstMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "ChFiKPart_RstMap.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("ChFiKPart_RstMap is deprecated, use NCollection_DataMap<int, opencascade::handle<Adaptor2d_Curve2d>> directly")
+  Standard_DEPRECATED("ChFiKPart_RstMap is deprecated, use NCollection_DataMap<int, "
+                      "opencascade::handle<Adaptor2d_Curve2d>> directly")
 typedef NCollection_DataMap<int, opencascade::handle<Adaptor2d_Curve2d>> ChFiKPart_RstMap;
-Standard_DEPRECATED("ChFiKPart_DataMapIteratorOfRstMap is deprecated, use NCollection_DataMap<int, opencascade::handle<Adaptor2d_Curve2d>>::Iterator directly")
-typedef NCollection_DataMap<int, opencascade::handle<Adaptor2d_Curve2d>>::Iterator ChFiKPart_DataMapIteratorOfRstMap;
+Standard_DEPRECATED("ChFiKPart_DataMapIteratorOfRstMap is deprecated, use NCollection_DataMap<int, "
+                    "opencascade::handle<Adaptor2d_Curve2d>>::Iterator directly")
+typedef NCollection_DataMap<int, opencascade::handle<Adaptor2d_Curve2d>>::Iterator
+  ChFiKPart_DataMapIteratorOfRstMap;
 
 #endif // _ChFiKPart_RstMap_hxx

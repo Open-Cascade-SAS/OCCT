@@ -24,9 +24,11 @@
 #include <Extrema_Array2OfPOnCurv.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("Extrema_HArray2OfPOnCurv.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<Extrema_POnCurv> directly.")
+Standard_HEADER_DEPRECATED("Extrema_HArray2OfPOnCurv.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray2<Extrema_POnCurv> directly.")
 
-Standard_DEPRECATED("Extrema_HArray2OfPOnCurv is deprecated, use NCollection_HArray2<Extrema_POnCurv> directly")
+  Standard_DEPRECATED(
+    "Extrema_HArray2OfPOnCurv is deprecated, use NCollection_HArray2<Extrema_POnCurv> directly")
 typedef NCollection_HArray2<Extrema_POnCurv> Extrema_HArray2OfPOnCurv;
 
 #endif // _Extrema_HArray2OfPOnCurv_hxx

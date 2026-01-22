@@ -23,9 +23,13 @@
 #include <StepDimTol_Array1OfDatumSystemOrReference.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepDimTol_HArray1OfDatumSystemOrReference.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepDimTol_DatumSystemOrReference> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepDimTol_HArray1OfDatumSystemOrReference.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepDimTol_DatumSystemOrReference> directly.")
 
-Standard_DEPRECATED("StepDimTol_HArray1OfDatumSystemOrReference is deprecated, use NCollection_HArray1<StepDimTol_DatumSystemOrReference> directly")
-typedef NCollection_HArray1<StepDimTol_DatumSystemOrReference> StepDimTol_HArray1OfDatumSystemOrReference;
+  Standard_DEPRECATED("StepDimTol_HArray1OfDatumSystemOrReference is deprecated, use "
+                      "NCollection_HArray1<StepDimTol_DatumSystemOrReference> directly")
+typedef NCollection_HArray1<StepDimTol_DatumSystemOrReference>
+  StepDimTol_HArray1OfDatumSystemOrReference;
 
 #endif // _StepDimTol_HArray1OfDatumSystemOrReference_hxx

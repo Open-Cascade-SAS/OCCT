@@ -22,11 +22,13 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_ListOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_ListOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_ListOfReal is deprecated, use NCollection_List<double> directly")
+  Standard_DEPRECATED("TColStd_ListOfReal is deprecated, use NCollection_List<double> directly")
 typedef NCollection_List<double> TColStd_ListOfReal;
-Standard_DEPRECATED("TColStd_ListIteratorOfListOfReal is deprecated, use NCollection_List<double>::Iterator directly")
+Standard_DEPRECATED(
+  "TColStd_ListIteratorOfListOfReal is deprecated, use NCollection_List<double>::Iterator directly")
 typedef NCollection_List<double>::Iterator TColStd_ListIteratorOfListOfReal;
 
 #endif // _TColStd_ListOfReal_hxx

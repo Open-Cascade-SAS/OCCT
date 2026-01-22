@@ -23,11 +23,14 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_Map.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_MapOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_MapOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_MapOfAsciiString is deprecated, use NCollection_Map<TCollection_AsciiString> directly")
+  Standard_DEPRECATED(
+    "TColStd_MapOfAsciiString is deprecated, use NCollection_Map<TCollection_AsciiString> directly")
 typedef NCollection_Map<TCollection_AsciiString> TColStd_MapOfAsciiString;
-Standard_DEPRECATED("TColStd_MapIteratorOfMapOfAsciiString is deprecated, use NCollection_Map<TCollection_AsciiString>::Iterator directly")
+Standard_DEPRECATED("TColStd_MapIteratorOfMapOfAsciiString is deprecated, use "
+                    "NCollection_Map<TCollection_AsciiString>::Iterator directly")
 typedef NCollection_Map<TCollection_AsciiString>::Iterator TColStd_MapIteratorOfMapOfAsciiString;
 
 #endif // _TColStd_MapOfAsciiString_hxx

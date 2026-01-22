@@ -24,9 +24,11 @@
 #include <TColStd_Array2OfBoolean.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HArray2OfBoolean.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<bool> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HArray2OfBoolean.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray2<bool> directly.")
 
-Standard_DEPRECATED("TColStd_HArray2OfBoolean is deprecated, use NCollection_HArray2<bool> directly")
+  Standard_DEPRECATED(
+    "TColStd_HArray2OfBoolean is deprecated, use NCollection_HArray2<bool> directly")
 typedef NCollection_HArray2<bool> TColStd_HArray2OfBoolean;
 
 #endif // _TColStd_HArray2OfBoolean_hxx

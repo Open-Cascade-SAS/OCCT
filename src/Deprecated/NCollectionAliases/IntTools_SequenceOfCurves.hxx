@@ -23,9 +23,11 @@
 #include <IntTools_Curve.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntTools_SequenceOfCurves.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntTools_Curve> directly.")
+Standard_HEADER_DEPRECATED("IntTools_SequenceOfCurves.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<IntTools_Curve> directly.")
 
-Standard_DEPRECATED("IntTools_SequenceOfCurves is deprecated, use NCollection_Sequence<IntTools_Curve> directly")
+  Standard_DEPRECATED(
+    "IntTools_SequenceOfCurves is deprecated, use NCollection_Sequence<IntTools_Curve> directly")
 typedef NCollection_Sequence<IntTools_Curve> IntTools_SequenceOfCurves;
 
 #endif // _IntTools_SequenceOfCurves_hxx

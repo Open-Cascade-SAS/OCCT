@@ -23,9 +23,11 @@
 #include <StepBasic_Person.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_Array1OfPerson.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepBasic_Person>> directly.")
+Standard_HEADER_DEPRECATED("StepBasic_Array1OfPerson.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<StepBasic_Person>> directly.")
 
-Standard_DEPRECATED("StepBasic_Array1OfPerson is deprecated, use NCollection_Array1<opencascade::handle<StepBasic_Person>> directly")
+  Standard_DEPRECATED("StepBasic_Array1OfPerson is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepBasic_Person>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_Person>> StepBasic_Array1OfPerson;
 
 #endif // _StepBasic_Array1OfPerson_hxx

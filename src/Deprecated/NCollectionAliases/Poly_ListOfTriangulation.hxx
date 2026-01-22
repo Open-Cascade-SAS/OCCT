@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <Poly_Triangulation.hxx>
 
-Standard_HEADER_DEPRECATED("Poly_ListOfTriangulation.hxx is deprecated since OCCT 8.0.0. Use NCollection_List<opencascade::handle<Poly_Triangulation>> directly.")
+Standard_HEADER_DEPRECATED("Poly_ListOfTriangulation.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_List<opencascade::handle<Poly_Triangulation>> directly.")
 
-Standard_DEPRECATED("Poly_ListOfTriangulation is deprecated, use NCollection_List<opencascade::handle<Poly_Triangulation>> directly")
+  Standard_DEPRECATED("Poly_ListOfTriangulation is deprecated, use "
+                      "NCollection_List<opencascade::handle<Poly_Triangulation>> directly")
 typedef NCollection_List<opencascade::handle<Poly_Triangulation>> Poly_ListOfTriangulation;
 
 #endif // _Poly_ListOfTriangulation_hxx

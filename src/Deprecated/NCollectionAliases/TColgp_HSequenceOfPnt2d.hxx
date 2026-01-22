@@ -24,9 +24,11 @@
 #include <TColgp_SequenceOfPnt2d.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_HSequenceOfPnt2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<gp_Pnt2d> directly.")
+Standard_HEADER_DEPRECATED("TColgp_HSequenceOfPnt2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<gp_Pnt2d> directly.")
 
-Standard_DEPRECATED("TColgp_HSequenceOfPnt2d is deprecated, use NCollection_HSequence<gp_Pnt2d> directly")
+  Standard_DEPRECATED(
+    "TColgp_HSequenceOfPnt2d is deprecated, use NCollection_HSequence<gp_Pnt2d> directly")
 typedef NCollection_HSequence<gp_Pnt2d> TColgp_HSequenceOfPnt2d;
 
 #endif // _TColgp_HSequenceOfPnt2d_hxx

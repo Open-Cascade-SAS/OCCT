@@ -23,9 +23,13 @@
 #include <StepAP214_Array1OfAutoDesignGroupedItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_HArray1OfAutoDesignGroupedItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP214_AutoDesignGroupedItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_HArray1OfAutoDesignGroupedItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepAP214_AutoDesignGroupedItem> directly.")
 
-Standard_DEPRECATED("StepAP214_HArray1OfAutoDesignGroupedItem is deprecated, use NCollection_HArray1<StepAP214_AutoDesignGroupedItem> directly")
-typedef NCollection_HArray1<StepAP214_AutoDesignGroupedItem> StepAP214_HArray1OfAutoDesignGroupedItem;
+  Standard_DEPRECATED("StepAP214_HArray1OfAutoDesignGroupedItem is deprecated, use "
+                      "NCollection_HArray1<StepAP214_AutoDesignGroupedItem> directly")
+typedef NCollection_HArray1<StepAP214_AutoDesignGroupedItem>
+  StepAP214_HArray1OfAutoDesignGroupedItem;
 
 #endif // _StepAP214_HArray1OfAutoDesignGroupedItem_hxx

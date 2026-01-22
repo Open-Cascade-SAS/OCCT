@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <TColStd_DataMapOfAsciiStringInteger.hxx>
 
-Standard_HEADER_DEPRECATED("BinMDF_StringIdMap.hxx is deprecated since OCCT 8.0.0. Use NCollection_DataMap<TCollection_AsciiString, int> directly.")
+Standard_HEADER_DEPRECATED("BinMDF_StringIdMap.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_DataMap<TCollection_AsciiString, int> directly.")
 
-Standard_DEPRECATED("BinMDF_StringIdMap is deprecated, use NCollection_DataMap<TCollection_AsciiString, int> directly")
+  Standard_DEPRECATED("BinMDF_StringIdMap is deprecated, use "
+                      "NCollection_DataMap<TCollection_AsciiString, int> directly")
 typedef NCollection_DataMap<TCollection_AsciiString, int> BinMDF_StringIdMap;
 
 #endif // _BinMDF_StringIdMap_hxx

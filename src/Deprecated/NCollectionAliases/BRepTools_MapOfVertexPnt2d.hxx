@@ -24,11 +24,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepTools_MapOfVertexPnt2d.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BRepTools_MapOfVertexPnt2d.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepTools_MapOfVertexPnt2d is deprecated, use NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher> BRepTools_MapOfVertexPnt2d;
-Standard_DEPRECATED("BRepTools_DataMapIteratorOfMapOfVertexPnt2d is deprecated, use NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher>::Iterator BRepTools_DataMapIteratorOfMapOfVertexPnt2d;
+  Standard_DEPRECATED(
+    "BRepTools_MapOfVertexPnt2d is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher>
+  BRepTools_MapOfVertexPnt2d;
+Standard_DEPRECATED("BRepTools_DataMapIteratorOfMapOfVertexPnt2d is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TColgp_SequenceOfPnt2d, TopTools_ShapeMapHasher>::Iterator
+  BRepTools_DataMapIteratorOfMapOfVertexPnt2d;
 
 #endif // _BRepTools_MapOfVertexPnt2d_hxx

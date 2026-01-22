@@ -24,11 +24,22 @@
 #include <STEPCAFControl_ExternFile.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfSDRExternFile.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfSDRExternFile.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("STEPCAFControl_DataMapOfSDRExternFile is deprecated, use NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, opencascade::handle<STEPCAFControl_ExternFile>> directly")
-typedef NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, opencascade::handle<STEPCAFControl_ExternFile>> STEPCAFControl_DataMapOfSDRExternFile;
-Standard_DEPRECATED("STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile is deprecated, use NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, opencascade::handle<STEPCAFControl_ExternFile>>::Iterator directly")
-typedef NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, opencascade::handle<STEPCAFControl_ExternFile>>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile;
+  Standard_DEPRECATED(
+    "STEPCAFControl_DataMapOfSDRExternFile is deprecated, use "
+    "NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, "
+    "opencascade::handle<STEPCAFControl_ExternFile>> directly")
+typedef NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>,
+                            opencascade::handle<STEPCAFControl_ExternFile>>
+  STEPCAFControl_DataMapOfSDRExternFile;
+Standard_DEPRECATED(
+  "STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>, "
+  "opencascade::handle<STEPCAFControl_ExternFile>>::Iterator directly")
+typedef NCollection_DataMap<opencascade::handle<StepShape_ShapeDefinitionRepresentation>,
+                            opencascade::handle<STEPCAFControl_ExternFile>>::Iterator
+  STEPCAFControl_DataMapIteratorOfDataMapOfSDRExternFile;
 
 #endif // _STEPCAFControl_DataMapOfSDRExternFile_hxx

@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BinLDrivers_DocumentSection.hxx>
 
-Standard_HEADER_DEPRECATED("BinLDrivers_VectorOfDocumentSection.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BinLDrivers_DocumentSection> directly.")
+Standard_HEADER_DEPRECATED("BinLDrivers_VectorOfDocumentSection.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Vector<BinLDrivers_DocumentSection> directly.")
 
-Standard_DEPRECATED("BinLDrivers_VectorOfDocumentSection is deprecated, use NCollection_Vector<BinLDrivers_DocumentSection> directly")
+  Standard_DEPRECATED("BinLDrivers_VectorOfDocumentSection is deprecated, use "
+                      "NCollection_Vector<BinLDrivers_DocumentSection> directly")
 typedef NCollection_Vector<BinLDrivers_DocumentSection> BinLDrivers_VectorOfDocumentSection;
 
 #endif // _BinLDrivers_VectorOfDocumentSection_hxx

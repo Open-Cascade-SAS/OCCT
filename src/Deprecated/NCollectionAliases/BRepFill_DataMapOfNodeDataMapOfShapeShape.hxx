@@ -24,11 +24,18 @@
 #include <TopTools_DataMapOfShapeShape.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepFill_DataMapOfNodeDataMapOfShapeShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRepFill_DataMapOfNodeDataMapOfShapeShape.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepFill_DataMapOfNodeDataMapOfShapeShape is deprecated, use NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape> directly")
-typedef NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape> BRepFill_DataMapOfNodeDataMapOfShapeShape;
-Standard_DEPRECATED("BRepFill_DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape is deprecated, use NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape>::Iterator directly")
-typedef NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape>::Iterator BRepFill_DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape;
+  Standard_DEPRECATED(
+    "BRepFill_DataMapOfNodeDataMapOfShapeShape is deprecated, use "
+    "NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape> directly")
+typedef NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape>
+  BRepFill_DataMapOfNodeDataMapOfShapeShape;
+Standard_DEPRECATED("BRepFill_DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<MAT_Node>, "
+                    "TopTools_DataMapOfShapeShape>::Iterator directly")
+typedef NCollection_DataMap<opencascade::handle<MAT_Node>, TopTools_DataMapOfShapeShape>::Iterator
+  BRepFill_DataMapIteratorOfDataMapOfNodeDataMapOfShapeShape;
 
 #endif // _BRepFill_DataMapOfNodeDataMapOfShapeShape_hxx

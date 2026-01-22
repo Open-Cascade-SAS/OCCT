@@ -23,9 +23,11 @@
 #include <Expr_SingleRelation.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Expr_Array1OfSingleRelation.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Expr_SingleRelation>> directly.")
+Standard_HEADER_DEPRECATED("Expr_Array1OfSingleRelation.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<Expr_SingleRelation>> directly.")
 
-Standard_DEPRECATED("Expr_Array1OfSingleRelation is deprecated, use NCollection_Array1<opencascade::handle<Expr_SingleRelation>> directly")
+  Standard_DEPRECATED("Expr_Array1OfSingleRelation is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Expr_SingleRelation>> directly")
 typedef NCollection_Array1<opencascade::handle<Expr_SingleRelation>> Expr_Array1OfSingleRelation;
 
 #endif // _Expr_Array1OfSingleRelation_hxx

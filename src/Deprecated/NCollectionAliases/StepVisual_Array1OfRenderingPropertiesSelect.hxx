@@ -23,9 +23,13 @@
 #include <StepVisual_RenderingPropertiesSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfRenderingPropertiesSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepVisual_RenderingPropertiesSelect> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfRenderingPropertiesSelect.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepVisual_RenderingPropertiesSelect> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfRenderingPropertiesSelect is deprecated, use NCollection_Array1<StepVisual_RenderingPropertiesSelect> directly")
-typedef NCollection_Array1<StepVisual_RenderingPropertiesSelect> StepVisual_Array1OfRenderingPropertiesSelect;
+  Standard_DEPRECATED("StepVisual_Array1OfRenderingPropertiesSelect is deprecated, use "
+                      "NCollection_Array1<StepVisual_RenderingPropertiesSelect> directly")
+typedef NCollection_Array1<StepVisual_RenderingPropertiesSelect>
+  StepVisual_Array1OfRenderingPropertiesSelect;
 
 #endif // _StepVisual_Array1OfRenderingPropertiesSelect_hxx

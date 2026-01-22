@@ -23,9 +23,12 @@
 #include <Expr_NamedUnknown.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("Expr_MapOfNamedUnknown.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<opencascade::handle<Expr_NamedUnknown>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Expr_MapOfNamedUnknown.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedMap<opencascade::handle<Expr_NamedUnknown>> directly.")
 
-Standard_DEPRECATED("Expr_MapOfNamedUnknown is deprecated, use NCollection_IndexedMap<opencascade::handle<Expr_NamedUnknown>> directly")
+  Standard_DEPRECATED("Expr_MapOfNamedUnknown is deprecated, use "
+                      "NCollection_IndexedMap<opencascade::handle<Expr_NamedUnknown>> directly")
 typedef NCollection_IndexedMap<opencascade::handle<Expr_NamedUnknown>> Expr_MapOfNamedUnknown;
 
 #endif // _Expr_MapOfNamedUnknown_hxx

@@ -23,9 +23,11 @@
 #include <XmlLDrivers_NamespaceDef.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("XmlLDrivers_SequenceOfNamespaceDef.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<XmlLDrivers_NamespaceDef> directly.")
+Standard_HEADER_DEPRECATED("XmlLDrivers_SequenceOfNamespaceDef.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Sequence<XmlLDrivers_NamespaceDef> directly.")
 
-Standard_DEPRECATED("XmlLDrivers_SequenceOfNamespaceDef is deprecated, use NCollection_Sequence<XmlLDrivers_NamespaceDef> directly")
+  Standard_DEPRECATED("XmlLDrivers_SequenceOfNamespaceDef is deprecated, use "
+                      "NCollection_Sequence<XmlLDrivers_NamespaceDef> directly")
 typedef NCollection_Sequence<XmlLDrivers_NamespaceDef> XmlLDrivers_SequenceOfNamespaceDef;
 
 #endif // _XmlLDrivers_SequenceOfNamespaceDef_hxx

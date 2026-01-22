@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("TDF_LabelIndexedMap.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<TDF_Label> directly.")
+Standard_HEADER_DEPRECATED("TDF_LabelIndexedMap.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedMap<TDF_Label> directly.")
 
-Standard_DEPRECATED("TDF_LabelIndexedMap is deprecated, use NCollection_IndexedMap<TDF_Label> directly")
+  Standard_DEPRECATED(
+    "TDF_LabelIndexedMap is deprecated, use NCollection_IndexedMap<TDF_Label> directly")
 typedef NCollection_IndexedMap<TDF_Label> TDF_LabelIndexedMap;
 
 #endif // _TDF_LabelIndexedMap_hxx

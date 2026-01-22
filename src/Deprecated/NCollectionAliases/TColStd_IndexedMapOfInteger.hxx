@@ -23,9 +23,11 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_IndexedMapOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<int> directly.")
+Standard_HEADER_DEPRECATED("TColStd_IndexedMapOfInteger.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedMap<int> directly.")
 
-Standard_DEPRECATED("TColStd_IndexedMapOfInteger is deprecated, use NCollection_IndexedMap<int> directly")
+  Standard_DEPRECATED(
+    "TColStd_IndexedMapOfInteger is deprecated, use NCollection_IndexedMap<int> directly")
 typedef NCollection_IndexedMap<int> TColStd_IndexedMapOfInteger;
 
 #endif // _TColStd_IndexedMapOfInteger_hxx

@@ -26,11 +26,23 @@
 #include <NCollection_DataMap.hxx>
 #include <NCollection_Shared.hxx>
 
-Standard_HEADER_DEPRECATED("BRepCheck_DataMapOfShapeListOfStatus.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRepCheck_DataMapOfShapeListOfStatus.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepCheck_DataMapOfShapeListOfStatus is deprecated, use NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher> BRepCheck_DataMapOfShapeListOfStatus;
-Standard_DEPRECATED("BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus is deprecated, use NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher>::Iterator BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus;
+  Standard_DEPRECATED(
+    "BRepCheck_DataMapOfShapeListOfStatus is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "Handle(NCollection_Shared<BRepCheck_ListOfStatus>), TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            Handle(NCollection_Shared<BRepCheck_ListOfStatus>),
+                            TopTools_ShapeMapHasher>
+  BRepCheck_DataMapOfShapeListOfStatus;
+Standard_DEPRECATED(
+  "BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, Handle(NCollection_Shared<BRepCheck_ListOfStatus>), "
+  "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            Handle(NCollection_Shared<BRepCheck_ListOfStatus>),
+                            TopTools_ShapeMapHasher>::Iterator
+  BRepCheck_DataMapIteratorOfDataMapOfShapeListOfStatus;
 
 #endif // _BRepCheck_DataMapOfShapeListOfStatus_hxx

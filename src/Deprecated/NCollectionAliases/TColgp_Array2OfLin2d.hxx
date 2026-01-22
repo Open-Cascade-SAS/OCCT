@@ -23,9 +23,11 @@
 #include <gp_Lin2d.hxx>
 #include <NCollection_Array2.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_Array2OfLin2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array2<gp_Lin2d> directly.")
+Standard_HEADER_DEPRECATED("TColgp_Array2OfLin2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array2<gp_Lin2d> directly.")
 
-Standard_DEPRECATED("TColgp_Array2OfLin2d is deprecated, use NCollection_Array2<gp_Lin2d> directly")
+  Standard_DEPRECATED(
+    "TColgp_Array2OfLin2d is deprecated, use NCollection_Array2<gp_Lin2d> directly")
 typedef NCollection_Array2<gp_Lin2d> TColgp_Array2OfLin2d;
 
 #endif // _TColgp_Array2OfLin2d_hxx

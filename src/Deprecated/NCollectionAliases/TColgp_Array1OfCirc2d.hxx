@@ -23,9 +23,11 @@
 #include <gp_Circ2d.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_Array1OfCirc2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<gp_Circ2d> directly.")
+Standard_HEADER_DEPRECATED("TColgp_Array1OfCirc2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<gp_Circ2d> directly.")
 
-Standard_DEPRECATED("TColgp_Array1OfCirc2d is deprecated, use NCollection_Array1<gp_Circ2d> directly")
+  Standard_DEPRECATED(
+    "TColgp_Array1OfCirc2d is deprecated, use NCollection_Array1<gp_Circ2d> directly")
 typedef NCollection_Array1<gp_Circ2d> TColgp_Array1OfCirc2d;
 
 #endif // _TColgp_Array1OfCirc2d_hxx

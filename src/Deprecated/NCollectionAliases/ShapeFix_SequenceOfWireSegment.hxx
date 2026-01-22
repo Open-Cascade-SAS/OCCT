@@ -23,9 +23,11 @@
 #include <ShapeFix_WireSegment.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("ShapeFix_SequenceOfWireSegment.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<ShapeFix_WireSegment> directly.")
+Standard_HEADER_DEPRECATED("ShapeFix_SequenceOfWireSegment.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<ShapeFix_WireSegment> directly.")
 
-Standard_DEPRECATED("ShapeFix_SequenceOfWireSegment is deprecated, use NCollection_Sequence<ShapeFix_WireSegment> directly")
+  Standard_DEPRECATED("ShapeFix_SequenceOfWireSegment is deprecated, use "
+                      "NCollection_Sequence<ShapeFix_WireSegment> directly")
 typedef NCollection_Sequence<ShapeFix_WireSegment> ShapeFix_SequenceOfWireSegment;
 
 #endif // _ShapeFix_SequenceOfWireSegment_hxx

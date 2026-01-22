@@ -23,9 +23,13 @@
 #include <StepGeom_SurfacePatch.hxx>
 #include <NCollection_Array2.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_Array2OfSurfacePatch.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array2<opencascade::handle<StepGeom_SurfacePatch>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepGeom_Array2OfSurfacePatch.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array2<opencascade::handle<StepGeom_SurfacePatch>> directly.")
 
-Standard_DEPRECATED("StepGeom_Array2OfSurfacePatch is deprecated, use NCollection_Array2<opencascade::handle<StepGeom_SurfacePatch>> directly")
-typedef NCollection_Array2<opencascade::handle<StepGeom_SurfacePatch>> StepGeom_Array2OfSurfacePatch;
+  Standard_DEPRECATED("StepGeom_Array2OfSurfacePatch is deprecated, use "
+                      "NCollection_Array2<opencascade::handle<StepGeom_SurfacePatch>> directly")
+typedef NCollection_Array2<opencascade::handle<StepGeom_SurfacePatch>>
+  StepGeom_Array2OfSurfacePatch;
 
 #endif // _StepGeom_Array2OfSurfacePatch_hxx

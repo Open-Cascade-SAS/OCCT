@@ -25,9 +25,10 @@
 #include <NCollection_Vec3.hxx>
 #include <NCollection_Vec4.hxx>
 
-Standard_HEADER_DEPRECATED("SelectMgr_VectorTypes.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "SelectMgr_VectorTypes.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("SelectMgr_Vec3 is deprecated, use NCollection_Vec3<double> directly")
+  Standard_DEPRECATED("SelectMgr_Vec3 is deprecated, use NCollection_Vec3<double> directly")
 typedef NCollection_Vec3<double> SelectMgr_Vec3;
 Standard_DEPRECATED("SelectMgr_Vec4 is deprecated, use NCollection_Vec4<double> directly")
 typedef NCollection_Vec4<double> SelectMgr_Vec4;

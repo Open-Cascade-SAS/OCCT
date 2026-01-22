@@ -24,11 +24,24 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfShapeSDR.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("STEPCAFControl_DataMapOfShapeSDR.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("STEPCAFControl_DataMapOfShapeSDR is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepShape_ShapeDefinitionRepresentation>, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepShape_ShapeDefinitionRepresentation>, TopTools_ShapeMapHasher> STEPCAFControl_DataMapOfShapeSDR;
-Standard_DEPRECATED("STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepShape_ShapeDefinitionRepresentation>, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepShape_ShapeDefinitionRepresentation>, TopTools_ShapeMapHasher>::Iterator STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR;
+  Standard_DEPRECATED(
+    "STEPCAFControl_DataMapOfShapeSDR is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "opencascade::handle<StepShape_ShapeDefinitionRepresentation>, TopTools_ShapeMapHasher> "
+    "directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<StepShape_ShapeDefinitionRepresentation>,
+                            TopTools_ShapeMapHasher>
+  STEPCAFControl_DataMapOfShapeSDR;
+Standard_DEPRECATED(
+  "STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, opencascade::handle<StepShape_ShapeDefinitionRepresentation>, "
+  "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<StepShape_ShapeDefinitionRepresentation>,
+                            TopTools_ShapeMapHasher>::Iterator
+  STEPCAFControl_DataMapIteratorOfDataMapOfShapeSDR;
 
 #endif // _STEPCAFControl_DataMapOfShapeSDR_hxx

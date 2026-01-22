@@ -23,9 +23,11 @@
 #include <StepGeom_Curve.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_Array1OfCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepGeom_Curve>> directly.")
+Standard_HEADER_DEPRECATED("StepGeom_Array1OfCurve.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<StepGeom_Curve>> directly.")
 
-Standard_DEPRECATED("StepGeom_Array1OfCurve is deprecated, use NCollection_Array1<opencascade::handle<StepGeom_Curve>> directly")
+  Standard_DEPRECATED("StepGeom_Array1OfCurve is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepGeom_Curve>> directly")
 typedef NCollection_Array1<opencascade::handle<StepGeom_Curve>> StepGeom_Array1OfCurve;
 
 #endif // _StepGeom_Array1OfCurve_hxx

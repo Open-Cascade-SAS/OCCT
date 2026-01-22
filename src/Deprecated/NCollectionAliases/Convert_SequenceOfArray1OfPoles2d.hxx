@@ -14,7 +14,8 @@
 //! @file Convert_SequenceOfArray1OfPoles2d.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly
+//!             instead.
 
 #ifndef _Convert_SequenceOfArray1OfPoles2d_hxx
 #define _Convert_SequenceOfArray1OfPoles2d_hxx
@@ -22,9 +23,13 @@
 #include <Standard_Macro.hxx>
 #include <TColgp_SequenceOfArray1OfPnt2d.hxx>
 
-Standard_HEADER_DEPRECATED("Convert_SequenceOfArray1OfPoles2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Convert_SequenceOfArray1OfPoles2d.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly.")
 
-Standard_DEPRECATED("Convert_SequenceOfArray1OfPoles2d is deprecated, use NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly")
-typedef NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> Convert_SequenceOfArray1OfPoles2d;
+  Standard_DEPRECATED("Convert_SequenceOfArray1OfPoles2d is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>> directly")
+typedef NCollection_Sequence<opencascade::handle<TColgp_HArray1OfPnt2d>>
+  Convert_SequenceOfArray1OfPoles2d;
 
 #endif // _Convert_SequenceOfArray1OfPoles2d_hxx

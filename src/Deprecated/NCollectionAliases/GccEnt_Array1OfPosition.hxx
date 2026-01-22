@@ -23,9 +23,11 @@
 #include <GccEnt_Position.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("GccEnt_Array1OfPosition.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<GccEnt_Position> directly.")
+Standard_HEADER_DEPRECATED("GccEnt_Array1OfPosition.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<GccEnt_Position> directly.")
 
-Standard_DEPRECATED("GccEnt_Array1OfPosition is deprecated, use NCollection_Array1<GccEnt_Position> directly")
+  Standard_DEPRECATED(
+    "GccEnt_Array1OfPosition is deprecated, use NCollection_Array1<GccEnt_Position> directly")
 typedef NCollection_Array1<GccEnt_Position> GccEnt_Array1OfPosition;
 
 #endif // _GccEnt_Array1OfPosition_hxx

@@ -14,7 +14,8 @@
 //! @file StepBasic_HArray1OfDerivedUnitElement.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> directly
+//!             instead.
 
 #ifndef _StepBasic_HArray1OfDerivedUnitElement_hxx
 #define _StepBasic_HArray1OfDerivedUnitElement_hxx
@@ -23,9 +24,14 @@
 #include <StepBasic_Array1OfDerivedUnitElement.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_HArray1OfDerivedUnitElement.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepBasic_HArray1OfDerivedUnitElement.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> directly.")
 
-Standard_DEPRECATED("StepBasic_HArray1OfDerivedUnitElement is deprecated, use NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> StepBasic_HArray1OfDerivedUnitElement;
+  Standard_DEPRECATED(
+    "StepBasic_HArray1OfDerivedUnitElement is deprecated, use "
+    "NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepBasic_DerivedUnitElement>>
+  StepBasic_HArray1OfDerivedUnitElement;
 
 #endif // _StepBasic_HArray1OfDerivedUnitElement_hxx

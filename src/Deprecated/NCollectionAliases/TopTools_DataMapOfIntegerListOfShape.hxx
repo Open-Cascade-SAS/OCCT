@@ -24,11 +24,15 @@
 #include <TopTools_ListOfShape.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_DataMapOfIntegerListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopTools_DataMapOfIntegerListOfShape.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopTools_DataMapOfIntegerListOfShape is deprecated, use NCollection_DataMap<int, TopTools_ListOfShape> directly")
+  Standard_DEPRECATED("TopTools_DataMapOfIntegerListOfShape is deprecated, use "
+                      "NCollection_DataMap<int, TopTools_ListOfShape> directly")
 typedef NCollection_DataMap<int, TopTools_ListOfShape> TopTools_DataMapOfIntegerListOfShape;
-Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape is deprecated, use NCollection_DataMap<int, TopTools_ListOfShape>::Iterator directly")
-typedef NCollection_DataMap<int, TopTools_ListOfShape>::Iterator TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape;
+Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape is deprecated, use "
+                    "NCollection_DataMap<int, TopTools_ListOfShape>::Iterator directly")
+typedef NCollection_DataMap<int, TopTools_ListOfShape>::Iterator
+  TopTools_DataMapIteratorOfDataMapOfIntegerListOfShape;
 
 #endif // _TopTools_DataMapOfIntegerListOfShape_hxx

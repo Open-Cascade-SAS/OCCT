@@ -23,9 +23,11 @@
 #include <TColStd_Array1OfByte.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HArray1OfByte.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<uint8_t> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HArray1OfByte.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<uint8_t> directly.")
 
-Standard_DEPRECATED("TColStd_HArray1OfByte is deprecated, use NCollection_HArray1<uint8_t> directly")
+  Standard_DEPRECATED(
+    "TColStd_HArray1OfByte is deprecated, use NCollection_HArray1<uint8_t> directly")
 typedef NCollection_HArray1<uint8_t> TColStd_HArray1OfByte;
 
 #endif // _TColStd_HArray1OfByte_hxx

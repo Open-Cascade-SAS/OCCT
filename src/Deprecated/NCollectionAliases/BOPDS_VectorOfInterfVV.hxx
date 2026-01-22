@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_Interf.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfInterfVV.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_InterfVV> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfInterfVV.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_InterfVV> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfInterfVV is deprecated, use NCollection_Vector<BOPDS_InterfVV> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfInterfVV is deprecated, use NCollection_Vector<BOPDS_InterfVV> directly")
 typedef NCollection_Vector<BOPDS_InterfVV> BOPDS_VectorOfInterfVV;
 
 #endif // _BOPDS_VectorOfInterfVV_hxx

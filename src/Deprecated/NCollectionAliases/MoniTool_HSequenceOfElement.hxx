@@ -24,9 +24,11 @@
 #include <MoniTool_SequenceOfElement.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("MoniTool_HSequenceOfElement.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<MoniTool_Element>> directly.")
+Standard_HEADER_DEPRECATED("MoniTool_HSequenceOfElement.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<opencascade::handle<MoniTool_Element>> directly.")
 
-Standard_DEPRECATED("MoniTool_HSequenceOfElement is deprecated, use NCollection_HSequence<opencascade::handle<MoniTool_Element>> directly")
+  Standard_DEPRECATED("MoniTool_HSequenceOfElement is deprecated, use "
+                      "NCollection_HSequence<opencascade::handle<MoniTool_Element>> directly")
 typedef NCollection_HSequence<opencascade::handle<MoniTool_Element>> MoniTool_HSequenceOfElement;
 
 #endif // _MoniTool_HSequenceOfElement_hxx

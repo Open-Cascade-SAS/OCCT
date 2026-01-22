@@ -14,7 +14,8 @@
 //! @file ExprIntrp_SequenceOfNamedExpression.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly
+//!             instead.
 
 #ifndef _ExprIntrp_SequenceOfNamedExpression_hxx
 #define _ExprIntrp_SequenceOfNamedExpression_hxx
@@ -23,9 +24,13 @@
 #include <Expr_NamedExpression.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("ExprIntrp_SequenceOfNamedExpression.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly.")
+Standard_HEADER_DEPRECATED(
+  "ExprIntrp_SequenceOfNamedExpression.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly.")
 
-Standard_DEPRECATED("ExprIntrp_SequenceOfNamedExpression is deprecated, use NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly")
-typedef NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> ExprIntrp_SequenceOfNamedExpression;
+  Standard_DEPRECATED("ExprIntrp_SequenceOfNamedExpression is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Expr_NamedExpression>> directly")
+typedef NCollection_Sequence<opencascade::handle<Expr_NamedExpression>>
+  ExprIntrp_SequenceOfNamedExpression;
 
 #endif // _ExprIntrp_SequenceOfNamedExpression_hxx

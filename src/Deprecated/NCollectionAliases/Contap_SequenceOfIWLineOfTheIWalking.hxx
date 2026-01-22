@@ -14,7 +14,8 @@
 //! @file Contap_SequenceOfIWLineOfTheIWalking.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>>
+//!             directly instead.
 
 #ifndef _Contap_SequenceOfIWLineOfTheIWalking_hxx
 #define _Contap_SequenceOfIWLineOfTheIWalking_hxx
@@ -23,9 +24,14 @@
 #include <Contap_TheIWLineOfTheIWalking.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Contap_SequenceOfIWLineOfTheIWalking.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Contap_SequenceOfIWLineOfTheIWalking.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>> directly.")
 
-Standard_DEPRECATED("Contap_SequenceOfIWLineOfTheIWalking is deprecated, use NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>> directly")
-typedef NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>> Contap_SequenceOfIWLineOfTheIWalking;
+  Standard_DEPRECATED(
+    "Contap_SequenceOfIWLineOfTheIWalking is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>> directly")
+typedef NCollection_Sequence<opencascade::handle<Contap_TheIWLineOfTheIWalking>>
+  Contap_SequenceOfIWLineOfTheIWalking;
 
 #endif // _Contap_SequenceOfIWLineOfTheIWalking_hxx

@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_ShapeInfo.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfShapeInfo.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_ShapeInfo> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfShapeInfo.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_ShapeInfo> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfShapeInfo is deprecated, use NCollection_Vector<BOPDS_ShapeInfo> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfShapeInfo is deprecated, use NCollection_Vector<BOPDS_ShapeInfo> directly")
 typedef NCollection_Vector<BOPDS_ShapeInfo> BOPDS_VectorOfShapeInfo;
 
 #endif // _BOPDS_VectorOfShapeInfo_hxx

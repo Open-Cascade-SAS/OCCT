@@ -24,11 +24,15 @@
 #include <Graphic3d_MaterialAspect.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerMaterial.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerMaterial.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("MeshVS_DataMapOfIntegerMaterial is deprecated, use NCollection_DataMap<int, Graphic3d_MaterialAspect> directly")
+  Standard_DEPRECATED("MeshVS_DataMapOfIntegerMaterial is deprecated, use NCollection_DataMap<int, "
+                      "Graphic3d_MaterialAspect> directly")
 typedef NCollection_DataMap<int, Graphic3d_MaterialAspect> MeshVS_DataMapOfIntegerMaterial;
-Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial is deprecated, use NCollection_DataMap<int, Graphic3d_MaterialAspect>::Iterator directly")
-typedef NCollection_DataMap<int, Graphic3d_MaterialAspect>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial;
+Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial is deprecated, use "
+                    "NCollection_DataMap<int, Graphic3d_MaterialAspect>::Iterator directly")
+typedef NCollection_DataMap<int, Graphic3d_MaterialAspect>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfIntegerMaterial;
 
 #endif // _MeshVS_DataMapOfIntegerMaterial_hxx

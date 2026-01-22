@@ -23,9 +23,11 @@
 #include <gp_Lin.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("LocOpe_SequenceOfLin.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<gp_Lin> directly.")
+Standard_HEADER_DEPRECATED("LocOpe_SequenceOfLin.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<gp_Lin> directly.")
 
-Standard_DEPRECATED("LocOpe_SequenceOfLin is deprecated, use NCollection_Sequence<gp_Lin> directly")
+  Standard_DEPRECATED(
+    "LocOpe_SequenceOfLin is deprecated, use NCollection_Sequence<gp_Lin> directly")
 typedef NCollection_Sequence<gp_Lin> LocOpe_SequenceOfLin;
 
 #endif // _LocOpe_SequenceOfLin_hxx

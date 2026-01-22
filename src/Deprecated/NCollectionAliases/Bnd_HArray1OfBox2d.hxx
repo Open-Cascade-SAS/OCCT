@@ -23,9 +23,11 @@
 #include <Bnd_Array1OfBox2d.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("Bnd_HArray1OfBox2d.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<Bnd_Box2d> directly.")
+Standard_HEADER_DEPRECATED("Bnd_HArray1OfBox2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<Bnd_Box2d> directly.")
 
-Standard_DEPRECATED("Bnd_HArray1OfBox2d is deprecated, use NCollection_HArray1<Bnd_Box2d> directly")
+  Standard_DEPRECATED(
+    "Bnd_HArray1OfBox2d is deprecated, use NCollection_HArray1<Bnd_Box2d> directly")
 typedef NCollection_HArray1<Bnd_Box2d> Bnd_HArray1OfBox2d;
 
 #endif // _Bnd_HArray1OfBox2d_hxx

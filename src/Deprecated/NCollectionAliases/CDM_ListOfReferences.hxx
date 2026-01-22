@@ -23,11 +23,15 @@
 #include <CDM_Reference.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("CDM_ListOfReferences.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "CDM_ListOfReferences.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("CDM_ListOfReferences is deprecated, use NCollection_List<opencascade::handle<CDM_Reference>> directly")
+  Standard_DEPRECATED("CDM_ListOfReferences is deprecated, use "
+                      "NCollection_List<opencascade::handle<CDM_Reference>> directly")
 typedef NCollection_List<opencascade::handle<CDM_Reference>> CDM_ListOfReferences;
-Standard_DEPRECATED("CDM_ListIteratorOfListOfReferences is deprecated, use NCollection_List<opencascade::handle<CDM_Reference>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<CDM_Reference>>::Iterator CDM_ListIteratorOfListOfReferences;
+Standard_DEPRECATED("CDM_ListIteratorOfListOfReferences is deprecated, use "
+                    "NCollection_List<opencascade::handle<CDM_Reference>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<CDM_Reference>>::Iterator
+  CDM_ListIteratorOfListOfReferences;
 
 #endif // _CDM_ListOfReferences_hxx

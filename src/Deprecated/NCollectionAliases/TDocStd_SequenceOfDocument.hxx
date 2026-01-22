@@ -23,9 +23,11 @@
 #include <TDocStd_Document.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TDocStd_SequenceOfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<TDocStd_Document>> directly.")
+Standard_HEADER_DEPRECATED("TDocStd_SequenceOfDocument.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<TDocStd_Document>> directly.")
 
-Standard_DEPRECATED("TDocStd_SequenceOfDocument is deprecated, use NCollection_Sequence<opencascade::handle<TDocStd_Document>> directly")
+  Standard_DEPRECATED("TDocStd_SequenceOfDocument is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<TDocStd_Document>> directly")
 typedef NCollection_Sequence<opencascade::handle<TDocStd_Document>> TDocStd_SequenceOfDocument;
 
 #endif // _TDocStd_SequenceOfDocument_hxx

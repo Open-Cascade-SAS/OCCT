@@ -24,11 +24,19 @@
 #include <Storage_TypedCallBack.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("Storage_MapOfCallBack.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "Storage_MapOfCallBack.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Storage_MapOfCallBack is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>> directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>> Storage_MapOfCallBack;
-Standard_DEPRECATED("Storage_DataMapIteratorOfMapOfCallBack is deprecated, use NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>>::Iterator directly")
-typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>>::Iterator Storage_DataMapIteratorOfMapOfCallBack;
+  Standard_DEPRECATED(
+    "Storage_MapOfCallBack is deprecated, use NCollection_DataMap<TCollection_AsciiString, "
+    "opencascade::handle<Storage_TypedCallBack>> directly")
+typedef NCollection_DataMap<TCollection_AsciiString, opencascade::handle<Storage_TypedCallBack>>
+  Storage_MapOfCallBack;
+Standard_DEPRECATED("Storage_DataMapIteratorOfMapOfCallBack is deprecated, use "
+                    "NCollection_DataMap<TCollection_AsciiString, "
+                    "opencascade::handle<Storage_TypedCallBack>>::Iterator directly")
+typedef NCollection_DataMap<TCollection_AsciiString,
+                            opencascade::handle<Storage_TypedCallBack>>::Iterator
+  Storage_DataMapIteratorOfMapOfCallBack;
 
 #endif // _Storage_MapOfCallBack_hxx

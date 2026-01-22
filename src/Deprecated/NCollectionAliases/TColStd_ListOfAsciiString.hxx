@@ -23,11 +23,14 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_ListOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TColStd_ListOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_ListOfAsciiString is deprecated, use NCollection_List<TCollection_AsciiString> directly")
+  Standard_DEPRECATED("TColStd_ListOfAsciiString is deprecated, use "
+                      "NCollection_List<TCollection_AsciiString> directly")
 typedef NCollection_List<TCollection_AsciiString> TColStd_ListOfAsciiString;
-Standard_DEPRECATED("TColStd_ListIteratorOfListOfAsciiString is deprecated, use NCollection_List<TCollection_AsciiString>::Iterator directly")
+Standard_DEPRECATED("TColStd_ListIteratorOfListOfAsciiString is deprecated, use "
+                    "NCollection_List<TCollection_AsciiString>::Iterator directly")
 typedef NCollection_List<TCollection_AsciiString>::Iterator TColStd_ListIteratorOfListOfAsciiString;
 
 #endif // _TColStd_ListOfAsciiString_hxx

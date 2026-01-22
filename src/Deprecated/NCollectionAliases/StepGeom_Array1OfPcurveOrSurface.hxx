@@ -23,9 +23,11 @@
 #include <StepGeom_PcurveOrSurface.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepGeom_Array1OfPcurveOrSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepGeom_PcurveOrSurface> directly.")
+Standard_HEADER_DEPRECATED("StepGeom_Array1OfPcurveOrSurface.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepGeom_PcurveOrSurface> directly.")
 
-Standard_DEPRECATED("StepGeom_Array1OfPcurveOrSurface is deprecated, use NCollection_Array1<StepGeom_PcurveOrSurface> directly")
+  Standard_DEPRECATED("StepGeom_Array1OfPcurveOrSurface is deprecated, use "
+                      "NCollection_Array1<StepGeom_PcurveOrSurface> directly")
 typedef NCollection_Array1<StepGeom_PcurveOrSurface> StepGeom_Array1OfPcurveOrSurface;
 
 #endif // _StepGeom_Array1OfPcurveOrSurface_hxx

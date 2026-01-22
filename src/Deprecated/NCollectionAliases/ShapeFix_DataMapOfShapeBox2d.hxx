@@ -25,11 +25,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("ShapeFix_DataMapOfShapeBox2d.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("ShapeFix_DataMapOfShapeBox2d.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("ShapeFix_DataMapOfShapeBox2d is deprecated, use NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher> ShapeFix_DataMapOfShapeBox2d;
-Standard_DEPRECATED("ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d is deprecated, use NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>::Iterator ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d;
+  Standard_DEPRECATED(
+    "ShapeFix_DataMapOfShapeBox2d is deprecated, use NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, "
+    "TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>
+  ShapeFix_DataMapOfShapeBox2d;
+Standard_DEPRECATED(
+  "ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, Bnd_Box2d, TopTools_ShapeMapHasher>::Iterator
+  ShapeFix_DataMapIteratorOfDataMapOfShapeBox2d;
 
 #endif // _ShapeFix_DataMapOfShapeBox2d_hxx

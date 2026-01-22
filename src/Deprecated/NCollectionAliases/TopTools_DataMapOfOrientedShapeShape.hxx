@@ -23,11 +23,15 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_DataMapOfOrientedShapeShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopTools_DataMapOfOrientedShapeShape.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopTools_DataMapOfOrientedShapeShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TopoDS_Shape> directly")
+  Standard_DEPRECATED("TopTools_DataMapOfOrientedShapeShape is deprecated, use "
+                      "NCollection_DataMap<TopoDS_Shape, TopoDS_Shape> directly")
 typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape> TopTools_DataMapOfOrientedShapeShape;
-Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TopoDS_Shape>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape>::Iterator TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape;
+Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, TopoDS_Shape>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, TopoDS_Shape>::Iterator
+  TopTools_DataMapIteratorOfDataMapOfOrientedShapeShape;
 
 #endif // _TopTools_DataMapOfOrientedShapeShape_hxx

@@ -23,9 +23,11 @@
 #include <LocOpe_PntFace.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("LocOpe_SequenceOfPntFace.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<LocOpe_PntFace> directly.")
+Standard_HEADER_DEPRECATED("LocOpe_SequenceOfPntFace.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<LocOpe_PntFace> directly.")
 
-Standard_DEPRECATED("LocOpe_SequenceOfPntFace is deprecated, use NCollection_Sequence<LocOpe_PntFace> directly")
+  Standard_DEPRECATED(
+    "LocOpe_SequenceOfPntFace is deprecated, use NCollection_Sequence<LocOpe_PntFace> directly")
 typedef NCollection_Sequence<LocOpe_PntFace> LocOpe_SequenceOfPntFace;
 
 #endif // _LocOpe_SequenceOfPntFace_hxx

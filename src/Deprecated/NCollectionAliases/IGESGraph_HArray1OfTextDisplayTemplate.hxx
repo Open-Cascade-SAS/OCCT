@@ -14,7 +14,8 @@
 //! @file IGESGraph_HArray1OfTextDisplayTemplate.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly
+//!             instead.
 
 #ifndef _IGESGraph_HArray1OfTextDisplayTemplate_hxx
 #define _IGESGraph_HArray1OfTextDisplayTemplate_hxx
@@ -23,9 +24,14 @@
 #include <IGESGraph_Array1OfTextDisplayTemplate.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESGraph_HArray1OfTextDisplayTemplate.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESGraph_HArray1OfTextDisplayTemplate.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly.")
 
-Standard_DEPRECATED("IGESGraph_HArray1OfTextDisplayTemplate is deprecated, use NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly")
-typedef NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> IGESGraph_HArray1OfTextDisplayTemplate;
+  Standard_DEPRECATED(
+    "IGESGraph_HArray1OfTextDisplayTemplate is deprecated, use "
+    "NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>> directly")
+typedef NCollection_HArray1<opencascade::handle<IGESGraph_TextDisplayTemplate>>
+  IGESGraph_HArray1OfTextDisplayTemplate;
 
 #endif // _IGESGraph_HArray1OfTextDisplayTemplate_hxx

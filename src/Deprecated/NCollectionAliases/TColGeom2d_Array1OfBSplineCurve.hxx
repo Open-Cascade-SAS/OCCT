@@ -23,9 +23,13 @@
 #include <Geom2d_BSplineCurve.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("TColGeom2d_Array1OfBSplineCurve.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TColGeom2d_Array1OfBSplineCurve.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>> directly.")
 
-Standard_DEPRECATED("TColGeom2d_Array1OfBSplineCurve is deprecated, use NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>> directly")
-typedef NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>> TColGeom2d_Array1OfBSplineCurve;
+  Standard_DEPRECATED("TColGeom2d_Array1OfBSplineCurve is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>> directly")
+typedef NCollection_Array1<opencascade::handle<Geom2d_BSplineCurve>>
+  TColGeom2d_Array1OfBSplineCurve;
 
 #endif // _TColGeom2d_Array1OfBSplineCurve_hxx

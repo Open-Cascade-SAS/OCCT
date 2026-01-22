@@ -23,11 +23,15 @@
 #include <TNaming_NamedShape.hxx>
 #include <NCollection_Map.hxx>
 
-Standard_HEADER_DEPRECATED("TNaming_MapOfNamedShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TNaming_MapOfNamedShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TNaming_MapOfNamedShape is deprecated, use NCollection_Map<opencascade::handle<TNaming_NamedShape>> directly")
+  Standard_DEPRECATED("TNaming_MapOfNamedShape is deprecated, use "
+                      "NCollection_Map<opencascade::handle<TNaming_NamedShape>> directly")
 typedef NCollection_Map<opencascade::handle<TNaming_NamedShape>> TNaming_MapOfNamedShape;
-Standard_DEPRECATED("TNaming_MapIteratorOfMapOfNamedShape is deprecated, use NCollection_Map<opencascade::handle<TNaming_NamedShape>>::Iterator directly")
-typedef NCollection_Map<opencascade::handle<TNaming_NamedShape>>::Iterator TNaming_MapIteratorOfMapOfNamedShape;
+Standard_DEPRECATED("TNaming_MapIteratorOfMapOfNamedShape is deprecated, use "
+                    "NCollection_Map<opencascade::handle<TNaming_NamedShape>>::Iterator directly")
+typedef NCollection_Map<opencascade::handle<TNaming_NamedShape>>::Iterator
+  TNaming_MapIteratorOfMapOfNamedShape;
 
 #endif // _TNaming_MapOfNamedShape_hxx

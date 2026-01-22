@@ -23,11 +23,14 @@
 #include <HLRBRep_BiPoint.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("HLRBRep_ListOfBPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "HLRBRep_ListOfBPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("HLRBRep_ListOfBPoint is deprecated, use NCollection_List<HLRBRep_BiPoint> directly")
+  Standard_DEPRECATED(
+    "HLRBRep_ListOfBPoint is deprecated, use NCollection_List<HLRBRep_BiPoint> directly")
 typedef NCollection_List<HLRBRep_BiPoint> HLRBRep_ListOfBPoint;
-Standard_DEPRECATED("HLRBRep_ListIteratorOfListOfBPoint is deprecated, use NCollection_List<HLRBRep_BiPoint>::Iterator directly")
+Standard_DEPRECATED("HLRBRep_ListIteratorOfListOfBPoint is deprecated, use "
+                    "NCollection_List<HLRBRep_BiPoint>::Iterator directly")
 typedef NCollection_List<HLRBRep_BiPoint>::Iterator HLRBRep_ListIteratorOfListOfBPoint;
 
 #endif // _HLRBRep_ListOfBPoint_hxx

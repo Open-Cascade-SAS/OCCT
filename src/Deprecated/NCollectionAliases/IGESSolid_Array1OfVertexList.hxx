@@ -23,9 +23,12 @@
 #include <IGESSolid_VertexList.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESSolid_Array1OfVertexList.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESSolid_VertexList>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESSolid_Array1OfVertexList.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESSolid_VertexList>> directly.")
 
-Standard_DEPRECATED("IGESSolid_Array1OfVertexList is deprecated, use NCollection_Array1<opencascade::handle<IGESSolid_VertexList>> directly")
+  Standard_DEPRECATED("IGESSolid_Array1OfVertexList is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESSolid_VertexList>> directly")
 typedef NCollection_Array1<opencascade::handle<IGESSolid_VertexList>> IGESSolid_Array1OfVertexList;
 
 #endif // _IGESSolid_Array1OfVertexList_hxx

@@ -23,9 +23,11 @@
 #include <Adaptor3d_Surface.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Approx_Array1OfAdHSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Adaptor3d_Surface>> directly.")
+Standard_HEADER_DEPRECATED("Approx_Array1OfAdHSurface.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<Adaptor3d_Surface>> directly.")
 
-Standard_DEPRECATED("Approx_Array1OfAdHSurface is deprecated, use NCollection_Array1<opencascade::handle<Adaptor3d_Surface>> directly")
+  Standard_DEPRECATED("Approx_Array1OfAdHSurface is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Adaptor3d_Surface>> directly")
 typedef NCollection_Array1<opencascade::handle<Adaptor3d_Surface>> Approx_Array1OfAdHSurface;
 
 #endif // _Approx_Array1OfAdHSurface_hxx

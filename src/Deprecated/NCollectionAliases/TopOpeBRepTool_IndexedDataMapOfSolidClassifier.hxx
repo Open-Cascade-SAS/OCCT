@@ -14,7 +14,8 @@
 //! @file TopOpeBRepTool_IndexedDataMapOfSolidClassifier.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, TopTools_ShapeMapHasher> directly instead.
+//!             Use NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier,
+//!             TopTools_ShapeMapHasher> directly instead.
 
 #ifndef _TopOpeBRepTool_IndexedDataMapOfSolidClassifier_hxx
 #define _TopOpeBRepTool_IndexedDataMapOfSolidClassifier_hxx
@@ -24,9 +25,16 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, TopTools_ShapeMapHasher> directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier.hxx is deprecated since "
+                           "OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, "
+                           "BRepClass3d_SolidClassifier, TopTools_ShapeMapHasher> directly.")
 
-Standard_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, TopTools_ShapeMapHasher> directly")
-typedef NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, TopTools_ShapeMapHasher> TopOpeBRepTool_IndexedDataMapOfSolidClassifier;
+  Standard_DEPRECATED("TopOpeBRepTool_IndexedDataMapOfSolidClassifier is deprecated, use "
+                      "NCollection_IndexedDataMap<TopoDS_Shape, BRepClass3d_SolidClassifier, "
+                      "TopTools_ShapeMapHasher> directly")
+typedef NCollection_IndexedDataMap<TopoDS_Shape,
+                                   BRepClass3d_SolidClassifier,
+                                   TopTools_ShapeMapHasher>
+  TopOpeBRepTool_IndexedDataMapOfSolidClassifier;
 
 #endif // _TopOpeBRepTool_IndexedDataMapOfSolidClassifier_hxx

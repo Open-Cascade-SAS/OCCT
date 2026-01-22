@@ -23,11 +23,14 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_DataMapOfIntegerInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TColStd_DataMapOfIntegerInteger.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TColStd_DataMapOfIntegerInteger is deprecated, use NCollection_DataMap<int, int> directly")
+  Standard_DEPRECATED(
+    "TColStd_DataMapOfIntegerInteger is deprecated, use NCollection_DataMap<int, int> directly")
 typedef NCollection_DataMap<int, int> TColStd_DataMapOfIntegerInteger;
-Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfIntegerInteger is deprecated, use NCollection_DataMap<int, int>::Iterator directly")
+Standard_DEPRECATED("TColStd_DataMapIteratorOfDataMapOfIntegerInteger is deprecated, use "
+                    "NCollection_DataMap<int, int>::Iterator directly")
 typedef NCollection_DataMap<int, int>::Iterator TColStd_DataMapIteratorOfDataMapOfIntegerInteger;
 
 #endif // _TColStd_DataMapOfIntegerInteger_hxx

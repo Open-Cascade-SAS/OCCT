@@ -23,9 +23,11 @@
 #include <Blend_Point.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Blend_SequenceOfPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Blend_Point> directly.")
+Standard_HEADER_DEPRECATED("Blend_SequenceOfPoint.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Blend_Point> directly.")
 
-Standard_DEPRECATED("Blend_SequenceOfPoint is deprecated, use NCollection_Sequence<Blend_Point> directly")
+  Standard_DEPRECATED(
+    "Blend_SequenceOfPoint is deprecated, use NCollection_Sequence<Blend_Point> directly")
 typedef NCollection_Sequence<Blend_Point> Blend_SequenceOfPoint;
 
 #endif // _Blend_SequenceOfPoint_hxx

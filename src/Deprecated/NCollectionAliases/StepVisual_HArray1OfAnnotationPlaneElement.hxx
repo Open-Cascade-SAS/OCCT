@@ -23,9 +23,13 @@
 #include <StepVisual_Array1OfAnnotationPlaneElement.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_HArray1OfAnnotationPlaneElement.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_HArray1OfAnnotationPlaneElement.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly.")
 
-Standard_DEPRECATED("StepVisual_HArray1OfAnnotationPlaneElement is deprecated, use NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly")
-typedef NCollection_HArray1<StepVisual_AnnotationPlaneElement> StepVisual_HArray1OfAnnotationPlaneElement;
+  Standard_DEPRECATED("StepVisual_HArray1OfAnnotationPlaneElement is deprecated, use "
+                      "NCollection_HArray1<StepVisual_AnnotationPlaneElement> directly")
+typedef NCollection_HArray1<StepVisual_AnnotationPlaneElement>
+  StepVisual_HArray1OfAnnotationPlaneElement;
 
 #endif // _StepVisual_HArray1OfAnnotationPlaneElement_hxx

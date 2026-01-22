@@ -23,11 +23,21 @@
 #include <TopOpeBRepDS_ListOfInterference.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceListOfInterference.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceListOfInterference.hxx is deprecated "
+                           "since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceListOfInterference is deprecated, use NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopOpeBRepDS_ListOfInterference> directly")
-typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopOpeBRepDS_ListOfInterference> TopOpeBRepDS_DataMapOfInterferenceListOfInterference;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference is deprecated, use NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopOpeBRepDS_ListOfInterference>::Iterator directly")
-typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, TopOpeBRepDS_ListOfInterference>::Iterator TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference;
+  Standard_DEPRECATED("TopOpeBRepDS_DataMapOfInterferenceListOfInterference is deprecated, use "
+                      "NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, "
+                      "TopOpeBRepDS_ListOfInterference> directly")
+typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>,
+                            TopOpeBRepDS_ListOfInterference>
+  TopOpeBRepDS_DataMapOfInterferenceListOfInterference;
+Standard_DEPRECATED(
+  "TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference is deprecated, use "
+  "NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>, "
+  "TopOpeBRepDS_ListOfInterference>::Iterator directly")
+typedef NCollection_DataMap<opencascade::handle<TopOpeBRepDS_Interference>,
+                            TopOpeBRepDS_ListOfInterference>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfDataMapOfInterferenceListOfInterference;
 
 #endif // _TopOpeBRepDS_DataMapOfInterferenceListOfInterference_hxx

@@ -23,9 +23,10 @@
 #include <gp_XY.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColgp_SequenceOfXY.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<gp_XY> directly.")
+Standard_HEADER_DEPRECATED("TColgp_SequenceOfXY.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<gp_XY> directly.")
 
-Standard_DEPRECATED("TColgp_SequenceOfXY is deprecated, use NCollection_Sequence<gp_XY> directly")
+  Standard_DEPRECATED("TColgp_SequenceOfXY is deprecated, use NCollection_Sequence<gp_XY> directly")
 typedef NCollection_Sequence<gp_XY> TColgp_SequenceOfXY;
 
 #endif // _TColgp_SequenceOfXY_hxx

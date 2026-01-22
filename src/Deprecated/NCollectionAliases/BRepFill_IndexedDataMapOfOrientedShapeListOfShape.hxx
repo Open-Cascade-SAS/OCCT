@@ -24,9 +24,13 @@
 #include <TopTools_ListOfShape.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepFill_IndexedDataMapOfOrientedShapeListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Shape, TopTools_ListOfShape> directly.")
+Standard_HEADER_DEPRECATED(
+  "BRepFill_IndexedDataMapOfOrientedShapeListOfShape.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<TopoDS_Shape, TopTools_ListOfShape> directly.")
 
-Standard_DEPRECATED("BRepFill_IndexedDataMapOfOrientedShapeListOfShape is deprecated, use NCollection_IndexedDataMap<TopoDS_Shape, TopTools_ListOfShape> directly")
-typedef NCollection_IndexedDataMap<TopoDS_Shape, TopTools_ListOfShape> BRepFill_IndexedDataMapOfOrientedShapeListOfShape;
+  Standard_DEPRECATED("BRepFill_IndexedDataMapOfOrientedShapeListOfShape is deprecated, use "
+                      "NCollection_IndexedDataMap<TopoDS_Shape, TopTools_ListOfShape> directly")
+typedef NCollection_IndexedDataMap<TopoDS_Shape, TopTools_ListOfShape>
+  BRepFill_IndexedDataMapOfOrientedShapeListOfShape;
 
 #endif // _BRepFill_IndexedDataMapOfOrientedShapeListOfShape_hxx

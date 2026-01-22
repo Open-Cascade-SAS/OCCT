@@ -14,7 +14,8 @@
 //! @file IGESBasic_HArray2OfHArray1OfReal.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> directly instead.
+//!             Use NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> directly
+//!             instead.
 
 #ifndef _IGESBasic_HArray2OfHArray1OfReal_hxx
 #define _IGESBasic_HArray2OfHArray1OfReal_hxx
@@ -23,9 +24,13 @@
 #include <IGESBasic_Array2OfHArray1OfReal.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("IGESBasic_HArray2OfHArray1OfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESBasic_HArray2OfHArray1OfReal.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> directly.")
 
-Standard_DEPRECATED("IGESBasic_HArray2OfHArray1OfReal is deprecated, use NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> directly")
-typedef NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> IGESBasic_HArray2OfHArray1OfReal;
+  Standard_DEPRECATED("IGESBasic_HArray2OfHArray1OfReal is deprecated, use "
+                      "NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>> directly")
+typedef NCollection_HArray2<opencascade::handle<TColStd_HArray1OfReal>>
+  IGESBasic_HArray2OfHArray1OfReal;
 
 #endif // _IGESBasic_HArray2OfHArray1OfReal_hxx

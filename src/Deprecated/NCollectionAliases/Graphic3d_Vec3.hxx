@@ -23,9 +23,10 @@
 #include <NCollection_Vec3.hxx>
 #include <Standard_TypeDef.hxx>
 
-Standard_HEADER_DEPRECATED("Graphic3d_Vec3.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "Graphic3d_Vec3.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Graphic3d_Vec3 is deprecated, use NCollection_Vec3<float> directly")
+  Standard_DEPRECATED("Graphic3d_Vec3 is deprecated, use NCollection_Vec3<float> directly")
 typedef NCollection_Vec3<float> Graphic3d_Vec3;
 Standard_DEPRECATED("Graphic3d_Vec3d is deprecated, use NCollection_Vec3<double> directly")
 typedef NCollection_Vec3<double> Graphic3d_Vec3d;

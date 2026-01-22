@@ -14,7 +14,8 @@
 //! @file StepFEA_HArray1OfCurveElementEndOffset.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly
+//!             instead.
 
 #ifndef _StepFEA_HArray1OfCurveElementEndOffset_hxx
 #define _StepFEA_HArray1OfCurveElementEndOffset_hxx
@@ -23,9 +24,14 @@
 #include <StepFEA_Array1OfCurveElementEndOffset.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepFEA_HArray1OfCurveElementEndOffset.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepFEA_HArray1OfCurveElementEndOffset.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly.")
 
-Standard_DEPRECATED("StepFEA_HArray1OfCurveElementEndOffset is deprecated, use NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> StepFEA_HArray1OfCurveElementEndOffset;
+  Standard_DEPRECATED(
+    "StepFEA_HArray1OfCurveElementEndOffset is deprecated, use "
+    "NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepFEA_CurveElementEndOffset>>
+  StepFEA_HArray1OfCurveElementEndOffset;
 
 #endif // _StepFEA_HArray1OfCurveElementEndOffset_hxx

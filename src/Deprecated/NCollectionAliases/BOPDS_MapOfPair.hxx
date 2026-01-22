@@ -23,11 +23,13 @@
 #include <NCollection_Map.hxx>
 #include <BOPDS_Pair.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_MapOfPair.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BOPDS_MapOfPair.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPDS_MapOfPair is deprecated, use NCollection_Map<BOPDS_Pair> directly")
+  Standard_DEPRECATED("BOPDS_MapOfPair is deprecated, use NCollection_Map<BOPDS_Pair> directly")
 typedef NCollection_Map<BOPDS_Pair> BOPDS_MapOfPair;
-Standard_DEPRECATED("BOPDS_MapIteratorOfMapOfPair is deprecated, use NCollection_Map<BOPDS_Pair>::Iterator directly")
+Standard_DEPRECATED(
+  "BOPDS_MapIteratorOfMapOfPair is deprecated, use NCollection_Map<BOPDS_Pair>::Iterator directly")
 typedef NCollection_Map<BOPDS_Pair>::Iterator BOPDS_MapIteratorOfMapOfPair;
 
 #endif // _BOPDS_MapOfPair_hxx

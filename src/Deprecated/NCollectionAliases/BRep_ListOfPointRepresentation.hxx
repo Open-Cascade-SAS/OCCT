@@ -23,11 +23,17 @@
 #include <BRep_PointRepresentation.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("BRep_ListOfPointRepresentation.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRep_ListOfPointRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("BRep_ListOfPointRepresentation is deprecated, use NCollection_List<opencascade::handle<BRep_PointRepresentation>> directly")
-typedef NCollection_List<opencascade::handle<BRep_PointRepresentation>> BRep_ListOfPointRepresentation;
-Standard_DEPRECATED("BRep_ListIteratorOfListOfPointRepresentation is deprecated, use NCollection_List<opencascade::handle<BRep_PointRepresentation>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<BRep_PointRepresentation>>::Iterator BRep_ListIteratorOfListOfPointRepresentation;
+  Standard_DEPRECATED("BRep_ListOfPointRepresentation is deprecated, use "
+                      "NCollection_List<opencascade::handle<BRep_PointRepresentation>> directly")
+typedef NCollection_List<opencascade::handle<BRep_PointRepresentation>>
+  BRep_ListOfPointRepresentation;
+Standard_DEPRECATED(
+  "BRep_ListIteratorOfListOfPointRepresentation is deprecated, use "
+  "NCollection_List<opencascade::handle<BRep_PointRepresentation>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<BRep_PointRepresentation>>::Iterator
+  BRep_ListIteratorOfListOfPointRepresentation;
 
 #endif // _BRep_ListOfPointRepresentation_hxx

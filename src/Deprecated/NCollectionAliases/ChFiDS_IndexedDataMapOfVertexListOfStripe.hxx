@@ -14,7 +14,8 @@
 //! @file ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, TopTools_ShapeMapHasher> directly instead.
+//!             Use NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe,
+//!             TopTools_ShapeMapHasher> directly instead.
 
 #ifndef _ChFiDS_IndexedDataMapOfVertexListOfStripe_hxx
 #define _ChFiDS_IndexedDataMapOfVertexListOfStripe_hxx
@@ -25,9 +26,14 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, TopTools_ShapeMapHasher> directly.")
+Standard_HEADER_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_IndexedDataMap<TopoDS_Vertex, "
+                           "ChFiDS_ListOfStripe, TopTools_ShapeMapHasher> directly.")
 
-Standard_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe is deprecated, use NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, TopTools_ShapeMapHasher> directly")
-typedef NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, TopTools_ShapeMapHasher> ChFiDS_IndexedDataMapOfVertexListOfStripe;
+  Standard_DEPRECATED("ChFiDS_IndexedDataMapOfVertexListOfStripe is deprecated, use "
+                      "NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, "
+                      "TopTools_ShapeMapHasher> directly")
+typedef NCollection_IndexedDataMap<TopoDS_Vertex, ChFiDS_ListOfStripe, TopTools_ShapeMapHasher>
+  ChFiDS_IndexedDataMapOfVertexListOfStripe;
 
 #endif // _ChFiDS_IndexedDataMapOfVertexListOfStripe_hxx

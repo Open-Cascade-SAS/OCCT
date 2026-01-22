@@ -23,9 +23,11 @@
 #include <Extrema_POnCurv.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Extrema_SequenceOfPOnCurv.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Extrema_POnCurv> directly.")
+Standard_HEADER_DEPRECATED("Extrema_SequenceOfPOnCurv.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Extrema_POnCurv> directly.")
 
-Standard_DEPRECATED("Extrema_SequenceOfPOnCurv is deprecated, use NCollection_Sequence<Extrema_POnCurv> directly")
+  Standard_DEPRECATED(
+    "Extrema_SequenceOfPOnCurv is deprecated, use NCollection_Sequence<Extrema_POnCurv> directly")
 typedef NCollection_Sequence<Extrema_POnCurv> Extrema_SequenceOfPOnCurv;
 
 #endif // _Extrema_SequenceOfPOnCurv_hxx

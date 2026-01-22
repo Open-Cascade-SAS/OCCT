@@ -23,9 +23,11 @@
 #include <StepShape_ValueQualifier.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepShape_Array1OfValueQualifier.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepShape_ValueQualifier> directly.")
+Standard_HEADER_DEPRECATED("StepShape_Array1OfValueQualifier.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_Array1<StepShape_ValueQualifier> directly.")
 
-Standard_DEPRECATED("StepShape_Array1OfValueQualifier is deprecated, use NCollection_Array1<StepShape_ValueQualifier> directly")
+  Standard_DEPRECATED("StepShape_Array1OfValueQualifier is deprecated, use "
+                      "NCollection_Array1<StepShape_ValueQualifier> directly")
 typedef NCollection_Array1<StepShape_ValueQualifier> StepShape_Array1OfValueQualifier;
 
 #endif // _StepShape_Array1OfValueQualifier_hxx

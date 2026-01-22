@@ -24,11 +24,17 @@
 #include <SelectMgr_EntityOwner.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerOwner.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MeshVS_DataMapOfIntegerOwner.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("MeshVS_DataMapOfIntegerOwner is deprecated, use NCollection_DataMap<int, opencascade::handle<SelectMgr_EntityOwner>> directly")
-typedef NCollection_DataMap<int, opencascade::handle<SelectMgr_EntityOwner>> MeshVS_DataMapOfIntegerOwner;
-Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfIntegerOwner is deprecated, use NCollection_DataMap<int, opencascade::handle<SelectMgr_EntityOwner>>::Iterator directly")
-typedef NCollection_DataMap<int, opencascade::handle<SelectMgr_EntityOwner>>::Iterator MeshVS_DataMapIteratorOfDataMapOfIntegerOwner;
+  Standard_DEPRECATED("MeshVS_DataMapOfIntegerOwner is deprecated, use NCollection_DataMap<int, "
+                      "opencascade::handle<SelectMgr_EntityOwner>> directly")
+typedef NCollection_DataMap<int, opencascade::handle<SelectMgr_EntityOwner>>
+  MeshVS_DataMapOfIntegerOwner;
+Standard_DEPRECATED(
+  "MeshVS_DataMapIteratorOfDataMapOfIntegerOwner is deprecated, use NCollection_DataMap<int, "
+  "opencascade::handle<SelectMgr_EntityOwner>>::Iterator directly")
+typedef NCollection_DataMap<int, opencascade::handle<SelectMgr_EntityOwner>>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfIntegerOwner;
 
 #endif // _MeshVS_DataMapOfIntegerOwner_hxx

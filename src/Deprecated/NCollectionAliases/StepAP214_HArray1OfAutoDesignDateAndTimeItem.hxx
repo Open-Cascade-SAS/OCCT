@@ -23,9 +23,13 @@
 #include <StepAP214_Array1OfAutoDesignDateAndTimeItem.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_HArray1OfAutoDesignDateAndTimeItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepAP214_HArray1OfAutoDesignDateAndTimeItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem> directly.")
 
-Standard_DEPRECATED("StepAP214_HArray1OfAutoDesignDateAndTimeItem is deprecated, use NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem> directly")
-typedef NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem> StepAP214_HArray1OfAutoDesignDateAndTimeItem;
+  Standard_DEPRECATED("StepAP214_HArray1OfAutoDesignDateAndTimeItem is deprecated, use "
+                      "NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem> directly")
+typedef NCollection_HArray1<StepAP214_AutoDesignDateAndTimeItem>
+  StepAP214_HArray1OfAutoDesignDateAndTimeItem;
 
 #endif // _StepAP214_HArray1OfAutoDesignDateAndTimeItem_hxx

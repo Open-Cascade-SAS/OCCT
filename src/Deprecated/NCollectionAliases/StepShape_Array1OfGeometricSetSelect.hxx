@@ -23,9 +23,11 @@
 #include <StepShape_GeometricSetSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepShape_Array1OfGeometricSetSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepShape_GeometricSetSelect> directly.")
+Standard_HEADER_DEPRECATED("StepShape_Array1OfGeometricSetSelect.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Array1<StepShape_GeometricSetSelect> directly.")
 
-Standard_DEPRECATED("StepShape_Array1OfGeometricSetSelect is deprecated, use NCollection_Array1<StepShape_GeometricSetSelect> directly")
+  Standard_DEPRECATED("StepShape_Array1OfGeometricSetSelect is deprecated, use "
+                      "NCollection_Array1<StepShape_GeometricSetSelect> directly")
 typedef NCollection_Array1<StepShape_GeometricSetSelect> StepShape_Array1OfGeometricSetSelect;
 
 #endif // _StepShape_Array1OfGeometricSetSelect_hxx

@@ -23,9 +23,11 @@
 #include <NCollection_List.hxx>
 #include <Prs3d_Presentation.hxx>
 
-Standard_HEADER_DEPRECATED("PrsMgr_ListOfPresentations.hxx is deprecated since OCCT 8.0.0. Use NCollection_List<opencascade::handle<Prs3d_Presentation>> directly.")
+Standard_HEADER_DEPRECATED("PrsMgr_ListOfPresentations.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_List<opencascade::handle<Prs3d_Presentation>> directly.")
 
-Standard_DEPRECATED("PrsMgr_ListOfPresentations is deprecated, use NCollection_List<opencascade::handle<Prs3d_Presentation>> directly")
+  Standard_DEPRECATED("PrsMgr_ListOfPresentations is deprecated, use "
+                      "NCollection_List<opencascade::handle<Prs3d_Presentation>> directly")
 typedef NCollection_List<opencascade::handle<Prs3d_Presentation>> PrsMgr_ListOfPresentations;
 
 #endif // _PrsMgr_ListOfPresentations_hxx

@@ -23,9 +23,11 @@
 #include <Units_Unit.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Units_UtsSequence.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Units_Unit>> directly.")
+Standard_HEADER_DEPRECATED("Units_UtsSequence.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<Units_Unit>> directly.")
 
-Standard_DEPRECATED("Units_UtsSequence is deprecated, use NCollection_Sequence<opencascade::handle<Units_Unit>> directly")
+  Standard_DEPRECATED("Units_UtsSequence is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Units_Unit>> directly")
 typedef NCollection_Sequence<opencascade::handle<Units_Unit>> Units_UtsSequence;
 
 #endif // _Units_UtsSequence_hxx

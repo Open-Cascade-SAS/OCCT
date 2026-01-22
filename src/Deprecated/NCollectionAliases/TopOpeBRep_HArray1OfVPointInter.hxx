@@ -23,9 +23,11 @@
 #include <TopOpeBRep_Array1OfVPointInter.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRep_HArray1OfVPointInter.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<TopOpeBRep_VPointInter> directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRep_HArray1OfVPointInter.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_HArray1<TopOpeBRep_VPointInter> directly.")
 
-Standard_DEPRECATED("TopOpeBRep_HArray1OfVPointInter is deprecated, use NCollection_HArray1<TopOpeBRep_VPointInter> directly")
+  Standard_DEPRECATED("TopOpeBRep_HArray1OfVPointInter is deprecated, use "
+                      "NCollection_HArray1<TopOpeBRep_VPointInter> directly")
 typedef NCollection_HArray1<TopOpeBRep_VPointInter> TopOpeBRep_HArray1OfVPointInter;
 
 #endif // _TopOpeBRep_HArray1OfVPointInter_hxx

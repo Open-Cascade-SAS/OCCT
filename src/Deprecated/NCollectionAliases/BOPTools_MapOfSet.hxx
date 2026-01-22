@@ -23,11 +23,13 @@
 #include <BOPTools_Set.hxx>
 #include <NCollection_Map.hxx>
 
-Standard_HEADER_DEPRECATED("BOPTools_MapOfSet.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "BOPTools_MapOfSet.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPTools_MapOfSet is deprecated, use NCollection_Map<BOPTools_Set> directly")
+  Standard_DEPRECATED("BOPTools_MapOfSet is deprecated, use NCollection_Map<BOPTools_Set> directly")
 typedef NCollection_Map<BOPTools_Set> BOPTools_MapOfSet;
-Standard_DEPRECATED("BOPTools_MapIteratorOfMapOfSet is deprecated, use NCollection_Map<BOPTools_Set>::Iterator directly")
+Standard_DEPRECATED("BOPTools_MapIteratorOfMapOfSet is deprecated, use "
+                    "NCollection_Map<BOPTools_Set>::Iterator directly")
 typedef NCollection_Map<BOPTools_Set>::Iterator BOPTools_MapIteratorOfMapOfSet;
 
 #endif // _BOPTools_MapOfSet_hxx

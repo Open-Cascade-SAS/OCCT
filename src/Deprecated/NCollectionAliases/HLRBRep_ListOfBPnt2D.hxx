@@ -23,11 +23,14 @@
 #include <HLRBRep_BiPnt2D.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("HLRBRep_ListOfBPnt2D.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "HLRBRep_ListOfBPnt2D.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("HLRBRep_ListOfBPnt2D is deprecated, use NCollection_List<HLRBRep_BiPnt2D> directly")
+  Standard_DEPRECATED(
+    "HLRBRep_ListOfBPnt2D is deprecated, use NCollection_List<HLRBRep_BiPnt2D> directly")
 typedef NCollection_List<HLRBRep_BiPnt2D> HLRBRep_ListOfBPnt2D;
-Standard_DEPRECATED("HLRBRep_ListIteratorOfListOfBPnt2D is deprecated, use NCollection_List<HLRBRep_BiPnt2D>::Iterator directly")
+Standard_DEPRECATED("HLRBRep_ListIteratorOfListOfBPnt2D is deprecated, use "
+                    "NCollection_List<HLRBRep_BiPnt2D>::Iterator directly")
 typedef NCollection_List<HLRBRep_BiPnt2D>::Iterator HLRBRep_ListIteratorOfListOfBPnt2D;
 
 #endif // _HLRBRep_ListOfBPnt2D_hxx

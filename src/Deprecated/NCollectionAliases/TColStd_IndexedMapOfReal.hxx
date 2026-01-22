@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_IndexedMapOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<double> directly.")
+Standard_HEADER_DEPRECATED("TColStd_IndexedMapOfReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedMap<double> directly.")
 
-Standard_DEPRECATED("TColStd_IndexedMapOfReal is deprecated, use NCollection_IndexedMap<double> directly")
+  Standard_DEPRECATED(
+    "TColStd_IndexedMapOfReal is deprecated, use NCollection_IndexedMap<double> directly")
 typedef NCollection_IndexedMap<double> TColStd_IndexedMapOfReal;
 
 #endif // _TColStd_IndexedMapOfReal_hxx

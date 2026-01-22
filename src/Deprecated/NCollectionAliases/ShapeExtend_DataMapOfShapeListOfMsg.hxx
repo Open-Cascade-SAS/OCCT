@@ -25,11 +25,18 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("ShapeExtend_DataMapOfShapeListOfMsg.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("ShapeExtend_DataMapOfShapeListOfMsg.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("ShapeExtend_DataMapOfShapeListOfMsg is deprecated, use NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, TopTools_ShapeMapHasher> ShapeExtend_DataMapOfShapeListOfMsg;
-Standard_DEPRECATED("ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg is deprecated, use NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, TopTools_ShapeMapHasher>::Iterator ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg;
+  Standard_DEPRECATED(
+    "ShapeExtend_DataMapOfShapeListOfMsg is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "Message_ListOfMsg, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, TopTools_ShapeMapHasher>
+  ShapeExtend_DataMapOfShapeListOfMsg;
+Standard_DEPRECATED("ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg is deprecated, use "
+                    "NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, "
+                    "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape, Message_ListOfMsg, TopTools_ShapeMapHasher>::Iterator
+  ShapeExtend_DataMapIteratorOfDataMapOfShapeListOfMsg;
 
 #endif // _ShapeExtend_DataMapOfShapeListOfMsg_hxx

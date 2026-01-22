@@ -14,7 +14,8 @@
 //! @file StepBasic_HArray1OfOrganization.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray1<opencascade::handle<StepBasic_Organization>> directly instead.
+//!             Use NCollection_HArray1<opencascade::handle<StepBasic_Organization>> directly
+//!             instead.
 
 #ifndef _StepBasic_HArray1OfOrganization_hxx
 #define _StepBasic_HArray1OfOrganization_hxx
@@ -23,9 +24,13 @@
 #include <StepBasic_Array1OfOrganization.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_HArray1OfOrganization.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<opencascade::handle<StepBasic_Organization>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepBasic_HArray1OfOrganization.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray1<opencascade::handle<StepBasic_Organization>> directly.")
 
-Standard_DEPRECATED("StepBasic_HArray1OfOrganization is deprecated, use NCollection_HArray1<opencascade::handle<StepBasic_Organization>> directly")
-typedef NCollection_HArray1<opencascade::handle<StepBasic_Organization>> StepBasic_HArray1OfOrganization;
+  Standard_DEPRECATED("StepBasic_HArray1OfOrganization is deprecated, use "
+                      "NCollection_HArray1<opencascade::handle<StepBasic_Organization>> directly")
+typedef NCollection_HArray1<opencascade::handle<StepBasic_Organization>>
+  StepBasic_HArray1OfOrganization;
 
 #endif // _StepBasic_HArray1OfOrganization_hxx

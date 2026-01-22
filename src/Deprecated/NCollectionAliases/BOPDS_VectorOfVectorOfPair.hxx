@@ -23,9 +23,11 @@
 #include <NCollection_Vector.hxx>
 #include <BOPDS_VectorOfPair.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_VectorOfVectorOfPair.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<BOPDS_VectorOfPair> directly.")
+Standard_HEADER_DEPRECATED("BOPDS_VectorOfVectorOfPair.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<BOPDS_VectorOfPair> directly.")
 
-Standard_DEPRECATED("BOPDS_VectorOfVectorOfPair is deprecated, use NCollection_Vector<BOPDS_VectorOfPair> directly")
+  Standard_DEPRECATED(
+    "BOPDS_VectorOfVectorOfPair is deprecated, use NCollection_Vector<BOPDS_VectorOfPair> directly")
 typedef NCollection_Vector<BOPDS_VectorOfPair> BOPDS_VectorOfVectorOfPair;
 
 #endif // _BOPDS_VectorOfVectorOfPair_hxx

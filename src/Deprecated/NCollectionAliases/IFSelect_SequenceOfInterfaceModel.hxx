@@ -14,7 +14,8 @@
 //! @file IFSelect_SequenceOfInterfaceModel.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly
+//!             instead.
 
 #ifndef _IFSelect_SequenceOfInterfaceModel_hxx
 #define _IFSelect_SequenceOfInterfaceModel_hxx
@@ -23,9 +24,14 @@
 #include <Interface_InterfaceModel.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IFSelect_SequenceOfInterfaceModel.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IFSelect_SequenceOfInterfaceModel.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly.")
 
-Standard_DEPRECATED("IFSelect_SequenceOfInterfaceModel is deprecated, use NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly")
-typedef NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> IFSelect_SequenceOfInterfaceModel;
+  Standard_DEPRECATED(
+    "IFSelect_SequenceOfInterfaceModel is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>> directly")
+typedef NCollection_Sequence<opencascade::handle<Interface_InterfaceModel>>
+  IFSelect_SequenceOfInterfaceModel;
 
 #endif // _IFSelect_SequenceOfInterfaceModel_hxx

@@ -23,9 +23,11 @@
 #include <StepBasic_Document.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_Array1OfDocument.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepBasic_Document>> directly.")
+Standard_HEADER_DEPRECATED("StepBasic_Array1OfDocument.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<StepBasic_Document>> directly.")
 
-Standard_DEPRECATED("StepBasic_Array1OfDocument is deprecated, use NCollection_Array1<opencascade::handle<StepBasic_Document>> directly")
+  Standard_DEPRECATED("StepBasic_Array1OfDocument is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepBasic_Document>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_Document>> StepBasic_Array1OfDocument;
 
 #endif // _StepBasic_Array1OfDocument_hxx

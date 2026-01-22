@@ -23,9 +23,11 @@
 #include <Intf_SectionPoint.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Intf_SeqOfSectionPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Intf_SectionPoint> directly.")
+Standard_HEADER_DEPRECATED("Intf_SeqOfSectionPoint.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Intf_SectionPoint> directly.")
 
-Standard_DEPRECATED("Intf_SeqOfSectionPoint is deprecated, use NCollection_Sequence<Intf_SectionPoint> directly")
+  Standard_DEPRECATED(
+    "Intf_SeqOfSectionPoint is deprecated, use NCollection_Sequence<Intf_SectionPoint> directly")
 typedef NCollection_Sequence<Intf_SectionPoint> Intf_SeqOfSectionPoint;
 
 #endif // _Intf_SeqOfSectionPoint_hxx

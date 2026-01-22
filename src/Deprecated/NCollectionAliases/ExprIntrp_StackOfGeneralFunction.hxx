@@ -23,11 +23,17 @@
 #include <Expr_GeneralFunction.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("ExprIntrp_StackOfGeneralFunction.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("ExprIntrp_StackOfGeneralFunction.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("ExprIntrp_StackOfGeneralFunction is deprecated, use NCollection_List<opencascade::handle<Expr_GeneralFunction>> directly")
-typedef NCollection_List<opencascade::handle<Expr_GeneralFunction>> ExprIntrp_StackOfGeneralFunction;
-Standard_DEPRECATED("ExprIntrp_ListIteratorOfStackOfGeneralFunction is deprecated, use NCollection_List<opencascade::handle<Expr_GeneralFunction>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<Expr_GeneralFunction>>::Iterator ExprIntrp_ListIteratorOfStackOfGeneralFunction;
+  Standard_DEPRECATED("ExprIntrp_StackOfGeneralFunction is deprecated, use "
+                      "NCollection_List<opencascade::handle<Expr_GeneralFunction>> directly")
+typedef NCollection_List<opencascade::handle<Expr_GeneralFunction>>
+  ExprIntrp_StackOfGeneralFunction;
+Standard_DEPRECATED(
+  "ExprIntrp_ListIteratorOfStackOfGeneralFunction is deprecated, use "
+  "NCollection_List<opencascade::handle<Expr_GeneralFunction>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<Expr_GeneralFunction>>::Iterator
+  ExprIntrp_ListIteratorOfStackOfGeneralFunction;
 
 #endif // _ExprIntrp_StackOfGeneralFunction_hxx

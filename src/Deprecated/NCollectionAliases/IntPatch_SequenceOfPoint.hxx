@@ -23,9 +23,11 @@
 #include <IntPatch_Point.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntPatch_SequenceOfPoint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntPatch_Point> directly.")
+Standard_HEADER_DEPRECATED("IntPatch_SequenceOfPoint.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<IntPatch_Point> directly.")
 
-Standard_DEPRECATED("IntPatch_SequenceOfPoint is deprecated, use NCollection_Sequence<IntPatch_Point> directly")
+  Standard_DEPRECATED(
+    "IntPatch_SequenceOfPoint is deprecated, use NCollection_Sequence<IntPatch_Point> directly")
 typedef NCollection_Sequence<IntPatch_Point> IntPatch_SequenceOfPoint;
 
 #endif // _IntPatch_SequenceOfPoint_hxx

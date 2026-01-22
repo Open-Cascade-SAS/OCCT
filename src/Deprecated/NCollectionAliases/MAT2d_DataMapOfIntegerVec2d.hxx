@@ -24,11 +24,14 @@
 #include <gp_Vec2d.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MAT2d_DataMapOfIntegerVec2d.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "MAT2d_DataMapOfIntegerVec2d.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("MAT2d_DataMapOfIntegerVec2d is deprecated, use NCollection_DataMap<int, gp_Vec2d> directly")
+  Standard_DEPRECATED(
+    "MAT2d_DataMapOfIntegerVec2d is deprecated, use NCollection_DataMap<int, gp_Vec2d> directly")
 typedef NCollection_DataMap<int, gp_Vec2d> MAT2d_DataMapOfIntegerVec2d;
-Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerVec2d is deprecated, use NCollection_DataMap<int, gp_Vec2d>::Iterator directly")
+Standard_DEPRECATED("MAT2d_DataMapIteratorOfDataMapOfIntegerVec2d is deprecated, use "
+                    "NCollection_DataMap<int, gp_Vec2d>::Iterator directly")
 typedef NCollection_DataMap<int, gp_Vec2d>::Iterator MAT2d_DataMapIteratorOfDataMapOfIntegerVec2d;
 
 #endif // _MAT2d_DataMapOfIntegerVec2d_hxx

@@ -22,9 +22,11 @@
 #include <Standard_Macro.hxx>
 #include <BRepBuilderAPI_VertexInspector.hxx>
 
-Standard_HEADER_DEPRECATED("BRepBuilderAPI_CellFilter.hxx is deprecated since OCCT 8.0.0. Use NCollection_CellFilter<BRepBuilderAPI_VertexInspector> directly.")
+Standard_HEADER_DEPRECATED("BRepBuilderAPI_CellFilter.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_CellFilter<BRepBuilderAPI_VertexInspector> directly.")
 
-Standard_DEPRECATED("BRepBuilderAPI_CellFilter is deprecated, use NCollection_CellFilter<BRepBuilderAPI_VertexInspector> directly")
+  Standard_DEPRECATED("BRepBuilderAPI_CellFilter is deprecated, use "
+                      "NCollection_CellFilter<BRepBuilderAPI_VertexInspector> directly")
 typedef NCollection_CellFilter<BRepBuilderAPI_VertexInspector> BRepBuilderAPI_CellFilter;
 
 #endif // _BRepBuilderAPI_CellFilter_hxx

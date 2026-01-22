@@ -23,9 +23,11 @@
 #include <Standard_Persistent.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Storage_PArray.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<Standard_Persistent>> directly.")
+Standard_HEADER_DEPRECATED("Storage_PArray.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<Standard_Persistent>> directly.")
 
-Standard_DEPRECATED("Storage_PArray is deprecated, use NCollection_Array1<opencascade::handle<Standard_Persistent>> directly")
+  Standard_DEPRECATED("Storage_PArray is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<Standard_Persistent>> directly")
 typedef NCollection_Array1<opencascade::handle<Standard_Persistent>> Storage_PArray;
 
 #endif // _Storage_PArray_hxx

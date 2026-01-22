@@ -14,7 +14,8 @@
 //! @file StepRepr_HSequenceOfRepresentationItem.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> directly
+//!             instead.
 
 #ifndef _StepRepr_HSequenceOfRepresentationItem_hxx
 #define _StepRepr_HSequenceOfRepresentationItem_hxx
@@ -24,9 +25,14 @@
 #include <StepRepr_SequenceOfRepresentationItem.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("StepRepr_HSequenceOfRepresentationItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepRepr_HSequenceOfRepresentationItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> directly.")
 
-Standard_DEPRECATED("StepRepr_HSequenceOfRepresentationItem is deprecated, use NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> directly")
-typedef NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> StepRepr_HSequenceOfRepresentationItem;
+  Standard_DEPRECATED(
+    "StepRepr_HSequenceOfRepresentationItem is deprecated, use "
+    "NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>> directly")
+typedef NCollection_HSequence<opencascade::handle<StepRepr_RepresentationItem>>
+  StepRepr_HSequenceOfRepresentationItem;
 
 #endif // _StepRepr_HSequenceOfRepresentationItem_hxx

@@ -23,11 +23,16 @@
 #include <TopOpeBRepBuild_Pave.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepBuild_ListOfPave.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TopOpeBRepBuild_ListOfPave.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepBuild_ListOfPave is deprecated, use NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>> directly")
+  Standard_DEPRECATED("TopOpeBRepBuild_ListOfPave is deprecated, use "
+                      "NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>> directly")
 typedef NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>> TopOpeBRepBuild_ListOfPave;
-Standard_DEPRECATED("TopOpeBRepBuild_ListIteratorOfListOfPave is deprecated, use NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>>::Iterator TopOpeBRepBuild_ListIteratorOfListOfPave;
+Standard_DEPRECATED(
+  "TopOpeBRepBuild_ListIteratorOfListOfPave is deprecated, use "
+  "NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<TopOpeBRepBuild_Pave>>::Iterator
+  TopOpeBRepBuild_ListIteratorOfListOfPave;
 
 #endif // _TopOpeBRepBuild_ListOfPave_hxx

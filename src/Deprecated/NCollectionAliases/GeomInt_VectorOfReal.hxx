@@ -22,9 +22,10 @@
 #include <Standard_Macro.hxx>
 #include <NCollection_Vector.hxx>
 
-Standard_HEADER_DEPRECATED("GeomInt_VectorOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_Vector<double> directly.")
+Standard_HEADER_DEPRECATED("GeomInt_VectorOfReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Vector<double> directly.")
 
-Standard_DEPRECATED("GeomInt_VectorOfReal is deprecated, use NCollection_Vector<double> directly")
+  Standard_DEPRECATED("GeomInt_VectorOfReal is deprecated, use NCollection_Vector<double> directly")
 typedef NCollection_Vector<double> GeomInt_VectorOfReal;
 
 #endif // _GeomInt_VectorOfReal_hxx

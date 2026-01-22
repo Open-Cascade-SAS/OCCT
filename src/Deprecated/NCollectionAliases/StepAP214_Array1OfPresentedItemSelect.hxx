@@ -23,9 +23,11 @@
 #include <StepAP214_PresentedItemSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepAP214_Array1OfPresentedItemSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepAP214_PresentedItemSelect> directly.")
+Standard_HEADER_DEPRECATED("StepAP214_Array1OfPresentedItemSelect.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection_Array1<StepAP214_PresentedItemSelect> directly.")
 
-Standard_DEPRECATED("StepAP214_Array1OfPresentedItemSelect is deprecated, use NCollection_Array1<StepAP214_PresentedItemSelect> directly")
+  Standard_DEPRECATED("StepAP214_Array1OfPresentedItemSelect is deprecated, use "
+                      "NCollection_Array1<StepAP214_PresentedItemSelect> directly")
 typedef NCollection_Array1<StepAP214_PresentedItemSelect> StepAP214_Array1OfPresentedItemSelect;
 
 #endif // _StepAP214_Array1OfPresentedItemSelect_hxx

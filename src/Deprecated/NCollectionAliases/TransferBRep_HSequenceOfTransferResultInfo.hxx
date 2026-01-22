@@ -14,7 +14,8 @@
 //! @file TransferBRep_HSequenceOfTransferResultInfo.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly instead.
+//!             Use NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>>
+//!             directly instead.
 
 #ifndef _TransferBRep_HSequenceOfTransferResultInfo_hxx
 #define _TransferBRep_HSequenceOfTransferResultInfo_hxx
@@ -23,9 +24,14 @@
 #include <TransferBRep_SequenceOfTransferResultInfo.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TransferBRep_HSequenceOfTransferResultInfo.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly.")
+Standard_HEADER_DEPRECATED(
+  "TransferBRep_HSequenceOfTransferResultInfo.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly.")
 
-Standard_DEPRECATED("TransferBRep_HSequenceOfTransferResultInfo is deprecated, use NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly")
-typedef NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>> TransferBRep_HSequenceOfTransferResultInfo;
+  Standard_DEPRECATED(
+    "TransferBRep_HSequenceOfTransferResultInfo is deprecated, use "
+    "NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>> directly")
+typedef NCollection_HSequence<opencascade::handle<TransferBRep_TransferResultInfo>>
+  TransferBRep_HSequenceOfTransferResultInfo;
 
 #endif // _TransferBRep_HSequenceOfTransferResultInfo_hxx

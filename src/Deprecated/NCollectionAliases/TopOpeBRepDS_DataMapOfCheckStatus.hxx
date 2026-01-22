@@ -24,11 +24,15 @@
 #include <TopOpeBRepDS_CheckStatus.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfCheckStatus.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepDS_DataMapOfCheckStatus.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_DataMapOfCheckStatus is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> directly")
+  Standard_DEPRECATED("TopOpeBRepDS_DataMapOfCheckStatus is deprecated, use "
+                      "NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> directly")
 typedef NCollection_DataMap<int, TopOpeBRepDS_CheckStatus> TopOpeBRepDS_DataMapOfCheckStatus;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus is deprecated, use NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>::Iterator directly")
-typedef NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>::Iterator TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus;
+Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus is deprecated, use "
+                    "NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>::Iterator directly")
+typedef NCollection_DataMap<int, TopOpeBRepDS_CheckStatus>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfDataMapOfCheckStatus;
 
 #endif // _TopOpeBRepDS_DataMapOfCheckStatus_hxx

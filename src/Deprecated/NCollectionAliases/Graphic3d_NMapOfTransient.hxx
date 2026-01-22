@@ -24,9 +24,12 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_Shared.hxx>
 
-Standard_HEADER_DEPRECATED("Graphic3d_NMapOfTransient.hxx is deprecated since OCCT 8.0.0. Use NCollection_Shared<NCollection_Map<const Standard_Transient*>> directly.")
+Standard_HEADER_DEPRECATED(
+  "Graphic3d_NMapOfTransient.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Shared<NCollection_Map<const Standard_Transient*>> directly.")
 
-Standard_DEPRECATED("Graphic3d_NMapOfTransient is deprecated, use NCollection_Shared<NCollection_Map<const Standard_Transient*>> directly")
+  Standard_DEPRECATED("Graphic3d_NMapOfTransient is deprecated, use "
+                      "NCollection_Shared<NCollection_Map<const Standard_Transient*>> directly")
 typedef NCollection_Shared<NCollection_Map<const Standard_Transient*>> Graphic3d_NMapOfTransient;
 
 #endif // _Graphic3d_NMapOfTransient_hxx

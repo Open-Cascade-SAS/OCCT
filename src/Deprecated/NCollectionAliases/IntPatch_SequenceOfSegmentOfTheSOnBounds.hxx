@@ -23,9 +23,13 @@
 #include <IntPatch_TheSegmentOfTheSOnBounds.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntPatch_SequenceOfSegmentOfTheSOnBounds.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds> directly.")
+Standard_HEADER_DEPRECATED(
+  "IntPatch_SequenceOfSegmentOfTheSOnBounds.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds> directly.")
 
-Standard_DEPRECATED("IntPatch_SequenceOfSegmentOfTheSOnBounds is deprecated, use NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds> directly")
-typedef NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds> IntPatch_SequenceOfSegmentOfTheSOnBounds;
+  Standard_DEPRECATED("IntPatch_SequenceOfSegmentOfTheSOnBounds is deprecated, use "
+                      "NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds> directly")
+typedef NCollection_Sequence<IntPatch_TheSegmentOfTheSOnBounds>
+  IntPatch_SequenceOfSegmentOfTheSOnBounds;
 
 #endif // _IntPatch_SequenceOfSegmentOfTheSOnBounds_hxx

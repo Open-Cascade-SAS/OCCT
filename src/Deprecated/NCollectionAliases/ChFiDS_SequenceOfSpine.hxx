@@ -23,9 +23,11 @@
 #include <ChFiDS_Spine.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("ChFiDS_SequenceOfSpine.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<ChFiDS_Spine>> directly.")
+Standard_HEADER_DEPRECATED("ChFiDS_SequenceOfSpine.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<ChFiDS_Spine>> directly.")
 
-Standard_DEPRECATED("ChFiDS_SequenceOfSpine is deprecated, use NCollection_Sequence<opencascade::handle<ChFiDS_Spine>> directly")
+  Standard_DEPRECATED("ChFiDS_SequenceOfSpine is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<ChFiDS_Spine>> directly")
 typedef NCollection_Sequence<opencascade::handle<ChFiDS_Spine>> ChFiDS_SequenceOfSpine;
 
 #endif // _ChFiDS_SequenceOfSpine_hxx

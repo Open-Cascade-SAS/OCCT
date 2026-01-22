@@ -23,9 +23,11 @@
 #include <math_ValueAndWeight.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("math_Array1OfValueAndWeight.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<math_ValueAndWeight> directly.")
+Standard_HEADER_DEPRECATED("math_Array1OfValueAndWeight.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<math_ValueAndWeight> directly.")
 
-Standard_DEPRECATED("math_Array1OfValueAndWeight is deprecated, use NCollection_Array1<math_ValueAndWeight> directly")
+  Standard_DEPRECATED("math_Array1OfValueAndWeight is deprecated, use "
+                      "NCollection_Array1<math_ValueAndWeight> directly")
 typedef NCollection_Array1<math_ValueAndWeight> math_Array1OfValueAndWeight;
 
 #endif // _math_Array1OfValueAndWeight_hxx

@@ -23,9 +23,11 @@
 #include <Bnd_Sphere.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("Bnd_Array1OfSphere.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<Bnd_Sphere> directly.")
+Standard_HEADER_DEPRECATED("Bnd_Array1OfSphere.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<Bnd_Sphere> directly.")
 
-Standard_DEPRECATED("Bnd_Array1OfSphere is deprecated, use NCollection_Array1<Bnd_Sphere> directly")
+  Standard_DEPRECATED(
+    "Bnd_Array1OfSphere is deprecated, use NCollection_Array1<Bnd_Sphere> directly")
 typedef NCollection_Array1<Bnd_Sphere> Bnd_Array1OfSphere;
 
 #endif // _Bnd_Array1OfSphere_hxx

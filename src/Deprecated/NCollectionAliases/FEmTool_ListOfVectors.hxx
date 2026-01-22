@@ -23,11 +23,16 @@
 #include <TColStd_HArray1OfReal.hxx>
 #include <NCollection_List.hxx>
 
-Standard_HEADER_DEPRECATED("FEmTool_ListOfVectors.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "FEmTool_ListOfVectors.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("FEmTool_ListOfVectors is deprecated, use NCollection_List<opencascade::handle<TColStd_HArray1OfReal>> directly")
+  Standard_DEPRECATED("FEmTool_ListOfVectors is deprecated, use "
+                      "NCollection_List<opencascade::handle<TColStd_HArray1OfReal>> directly")
 typedef NCollection_List<opencascade::handle<TColStd_HArray1OfReal>> FEmTool_ListOfVectors;
-Standard_DEPRECATED("FEmTool_ListIteratorOfListOfVectors is deprecated, use NCollection_List<opencascade::handle<TColStd_HArray1OfReal>>::Iterator directly")
-typedef NCollection_List<opencascade::handle<TColStd_HArray1OfReal>>::Iterator FEmTool_ListIteratorOfListOfVectors;
+Standard_DEPRECATED(
+  "FEmTool_ListIteratorOfListOfVectors is deprecated, use "
+  "NCollection_List<opencascade::handle<TColStd_HArray1OfReal>>::Iterator directly")
+typedef NCollection_List<opencascade::handle<TColStd_HArray1OfReal>>::Iterator
+  FEmTool_ListIteratorOfListOfVectors;
 
 #endif // _FEmTool_ListOfVectors_hxx

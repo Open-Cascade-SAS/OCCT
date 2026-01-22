@@ -24,11 +24,15 @@
 #include <TopoDS_Shape.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopTools_DataMapOfIntegerShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopTools_DataMapOfIntegerShape.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection types directly.")
 
-Standard_DEPRECATED("TopTools_DataMapOfIntegerShape is deprecated, use NCollection_DataMap<int, TopoDS_Shape> directly")
+  Standard_DEPRECATED("TopTools_DataMapOfIntegerShape is deprecated, use NCollection_DataMap<int, "
+                      "TopoDS_Shape> directly")
 typedef NCollection_DataMap<int, TopoDS_Shape> TopTools_DataMapOfIntegerShape;
-Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfIntegerShape is deprecated, use NCollection_DataMap<int, TopoDS_Shape>::Iterator directly")
-typedef NCollection_DataMap<int, TopoDS_Shape>::Iterator TopTools_DataMapIteratorOfDataMapOfIntegerShape;
+Standard_DEPRECATED("TopTools_DataMapIteratorOfDataMapOfIntegerShape is deprecated, use "
+                    "NCollection_DataMap<int, TopoDS_Shape>::Iterator directly")
+typedef NCollection_DataMap<int, TopoDS_Shape>::Iterator
+  TopTools_DataMapIteratorOfDataMapOfIntegerShape;
 
 #endif // _TopTools_DataMapOfIntegerShape_hxx

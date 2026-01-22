@@ -23,9 +23,11 @@
 #include <StepData_Field.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepData_Array1OfField.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepData_Field> directly.")
+Standard_HEADER_DEPRECATED("StepData_Array1OfField.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<StepData_Field> directly.")
 
-Standard_DEPRECATED("StepData_Array1OfField is deprecated, use NCollection_Array1<StepData_Field> directly")
+  Standard_DEPRECATED(
+    "StepData_Array1OfField is deprecated, use NCollection_Array1<StepData_Field> directly")
 typedef NCollection_Array1<StepData_Field> StepData_Array1OfField;
 
 #endif // _StepData_Array1OfField_hxx

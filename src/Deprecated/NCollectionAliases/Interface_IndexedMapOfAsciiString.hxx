@@ -23,9 +23,11 @@
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("Interface_IndexedMapOfAsciiString.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<TCollection_AsciiString> directly.")
+Standard_HEADER_DEPRECATED("Interface_IndexedMapOfAsciiString.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection_IndexedMap<TCollection_AsciiString> directly.")
 
-Standard_DEPRECATED("Interface_IndexedMapOfAsciiString is deprecated, use NCollection_IndexedMap<TCollection_AsciiString> directly")
+  Standard_DEPRECATED("Interface_IndexedMapOfAsciiString is deprecated, use "
+                      "NCollection_IndexedMap<TCollection_AsciiString> directly")
 typedef NCollection_IndexedMap<TCollection_AsciiString> Interface_IndexedMapOfAsciiString;
 
 #endif // _Interface_IndexedMapOfAsciiString_hxx

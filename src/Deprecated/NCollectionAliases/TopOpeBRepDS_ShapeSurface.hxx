@@ -25,11 +25,22 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepDS_ShapeSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "TopOpeBRepDS_ShapeSurface.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepDS_ShapeSurface is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<Geom_Surface>, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<Geom_Surface>, TopTools_ShapeMapHasher> TopOpeBRepDS_ShapeSurface;
-Standard_DEPRECATED("TopOpeBRepDS_DataMapIteratorOfShapeSurface is deprecated, use NCollection_DataMap<TopoDS_Shape, opencascade::handle<Geom_Surface>, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, opencascade::handle<Geom_Surface>, TopTools_ShapeMapHasher>::Iterator TopOpeBRepDS_DataMapIteratorOfShapeSurface;
+  Standard_DEPRECATED(
+    "TopOpeBRepDS_ShapeSurface is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+    "opencascade::handle<Geom_Surface>, TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<Geom_Surface>,
+                            TopTools_ShapeMapHasher>
+  TopOpeBRepDS_ShapeSurface;
+Standard_DEPRECATED(
+  "TopOpeBRepDS_DataMapIteratorOfShapeSurface is deprecated, use NCollection_DataMap<TopoDS_Shape, "
+  "opencascade::handle<Geom_Surface>, TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            opencascade::handle<Geom_Surface>,
+                            TopTools_ShapeMapHasher>::Iterator
+  TopOpeBRepDS_DataMapIteratorOfShapeSurface;
 
 #endif // _TopOpeBRepDS_ShapeSurface_hxx

@@ -23,11 +23,20 @@
 #include <NCollection_DataMap.hxx>
 #include <BOPDS_CommonBlock.hxx>
 
-Standard_HEADER_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock.hxx is deprecated since OCCT "
+                           "8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock is deprecated, use NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, opencascade::handle<BOPDS_CommonBlock>> directly")
-typedef NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, opencascade::handle<BOPDS_CommonBlock>> BOPDS_DataMapOfPaveBlockCommonBlock;
-Standard_DEPRECATED("BOPDS_DataMapIteratorOfDataMapOfPaveBlockCommonBlock is deprecated, use NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, opencascade::handle<BOPDS_CommonBlock>>::Iterator directly")
-typedef NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, opencascade::handle<BOPDS_CommonBlock>>::Iterator BOPDS_DataMapIteratorOfDataMapOfPaveBlockCommonBlock;
+  Standard_DEPRECATED("BOPDS_DataMapOfPaveBlockCommonBlock is deprecated, use "
+                      "NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, "
+                      "opencascade::handle<BOPDS_CommonBlock>> directly")
+typedef NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>,
+                            opencascade::handle<BOPDS_CommonBlock>>
+  BOPDS_DataMapOfPaveBlockCommonBlock;
+Standard_DEPRECATED("BOPDS_DataMapIteratorOfDataMapOfPaveBlockCommonBlock is deprecated, use "
+                    "NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>, "
+                    "opencascade::handle<BOPDS_CommonBlock>>::Iterator directly")
+typedef NCollection_DataMap<opencascade::handle<BOPDS_PaveBlock>,
+                            opencascade::handle<BOPDS_CommonBlock>>::Iterator
+  BOPDS_DataMapIteratorOfDataMapOfPaveBlockCommonBlock;
 
 #endif // _BOPDS_DataMapOfPaveBlockCommonBlock_hxx

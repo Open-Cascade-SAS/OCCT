@@ -24,11 +24,15 @@
 #include <XCAFPrs_Style.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("XCAFPrs_DataMapOfStyleShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "XCAFPrs_DataMapOfStyleShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("XCAFPrs_DataMapOfStyleShape is deprecated, use NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape> directly")
+  Standard_DEPRECATED("XCAFPrs_DataMapOfStyleShape is deprecated, use "
+                      "NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape> directly")
 typedef NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape> XCAFPrs_DataMapOfStyleShape;
-Standard_DEPRECATED("XCAFPrs_DataMapIteratorOfDataMapOfStyleShape is deprecated, use NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape>::Iterator directly")
-typedef NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape>::Iterator XCAFPrs_DataMapIteratorOfDataMapOfStyleShape;
+Standard_DEPRECATED("XCAFPrs_DataMapIteratorOfDataMapOfStyleShape is deprecated, use "
+                    "NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape>::Iterator directly")
+typedef NCollection_DataMap<XCAFPrs_Style, TopoDS_Shape>::Iterator
+  XCAFPrs_DataMapIteratorOfDataMapOfStyleShape;
 
 #endif // _XCAFPrs_DataMapOfStyleShape_hxx

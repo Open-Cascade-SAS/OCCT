@@ -23,9 +23,11 @@
 #include <HatchGen_PointOnElement.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("HatchGen_PointsOnElement.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<HatchGen_PointOnElement> directly.")
+Standard_HEADER_DEPRECATED("HatchGen_PointsOnElement.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<HatchGen_PointOnElement> directly.")
 
-Standard_DEPRECATED("HatchGen_PointsOnElement is deprecated, use NCollection_Sequence<HatchGen_PointOnElement> directly")
+  Standard_DEPRECATED("HatchGen_PointsOnElement is deprecated, use "
+                      "NCollection_Sequence<HatchGen_PointOnElement> directly")
 typedef NCollection_Sequence<HatchGen_PointOnElement> HatchGen_PointsOnElement;
 
 #endif // _HatchGen_PointsOnElement_hxx

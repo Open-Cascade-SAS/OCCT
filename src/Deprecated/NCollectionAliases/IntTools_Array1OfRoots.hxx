@@ -23,9 +23,11 @@
 #include <IntTools_Root.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IntTools_Array1OfRoots.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<IntTools_Root> directly.")
+Standard_HEADER_DEPRECATED("IntTools_Array1OfRoots.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<IntTools_Root> directly.")
 
-Standard_DEPRECATED("IntTools_Array1OfRoots is deprecated, use NCollection_Array1<IntTools_Root> directly")
+  Standard_DEPRECATED(
+    "IntTools_Array1OfRoots is deprecated, use NCollection_Array1<IntTools_Root> directly")
 typedef NCollection_Array1<IntTools_Root> IntTools_Array1OfRoots;
 
 #endif // _IntTools_Array1OfRoots_hxx

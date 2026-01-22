@@ -23,9 +23,11 @@
 #include <NCollection_List.hxx>
 #include <VrmlData_Node.hxx>
 
-Standard_HEADER_DEPRECATED("VrmlData_ListOfNode.hxx is deprecated since OCCT 8.0.0. Use NCollection_List<opencascade::handle<VrmlData_Node>> directly.")
+Standard_HEADER_DEPRECATED("VrmlData_ListOfNode.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_List<opencascade::handle<VrmlData_Node>> directly.")
 
-Standard_DEPRECATED("VrmlData_ListOfNode is deprecated, use NCollection_List<opencascade::handle<VrmlData_Node>> directly")
+  Standard_DEPRECATED("VrmlData_ListOfNode is deprecated, use "
+                      "NCollection_List<opencascade::handle<VrmlData_Node>> directly")
 typedef NCollection_List<opencascade::handle<VrmlData_Node>> VrmlData_ListOfNode;
 
 #endif // _VrmlData_ListOfNode_hxx

@@ -23,9 +23,11 @@
 #include <TopLoc_Location.hxx>
 #include <NCollection_IndexedMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopLoc_IndexedMapOfLocation.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedMap<TopLoc_Location> directly.")
+Standard_HEADER_DEPRECATED("TopLoc_IndexedMapOfLocation.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_IndexedMap<TopLoc_Location> directly.")
 
-Standard_DEPRECATED("TopLoc_IndexedMapOfLocation is deprecated, use NCollection_IndexedMap<TopLoc_Location> directly")
+  Standard_DEPRECATED("TopLoc_IndexedMapOfLocation is deprecated, use "
+                      "NCollection_IndexedMap<TopLoc_Location> directly")
 typedef NCollection_IndexedMap<TopLoc_Location> TopLoc_IndexedMapOfLocation;
 
 #endif // _TopLoc_IndexedMapOfLocation_hxx

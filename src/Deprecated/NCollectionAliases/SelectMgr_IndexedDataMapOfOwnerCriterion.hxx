@@ -14,7 +14,8 @@
 //! @file SelectMgr_IndexedDataMapOfOwnerCriterion.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> directly instead.
+//!             Use NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>,
+//!             SelectMgr_SortCriterion> directly instead.
 
 #ifndef _SelectMgr_IndexedDataMapOfOwnerCriterion_hxx
 #define _SelectMgr_IndexedDataMapOfOwnerCriterion_hxx
@@ -24,9 +25,16 @@
 #include <SelectMgr_SortCriterion.hxx>
 #include <NCollection_IndexedDataMap.hxx>
 
-Standard_HEADER_DEPRECATED("SelectMgr_IndexedDataMapOfOwnerCriterion.hxx is deprecated since OCCT 8.0.0. Use NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> directly.")
+Standard_HEADER_DEPRECATED(
+  "SelectMgr_IndexedDataMapOfOwnerCriterion.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> "
+  "directly.")
 
-Standard_DEPRECATED("SelectMgr_IndexedDataMapOfOwnerCriterion is deprecated, use NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> directly")
-typedef NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, SelectMgr_SortCriterion> SelectMgr_IndexedDataMapOfOwnerCriterion;
+  Standard_DEPRECATED("SelectMgr_IndexedDataMapOfOwnerCriterion is deprecated, use "
+                      "NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>, "
+                      "SelectMgr_SortCriterion> directly")
+typedef NCollection_IndexedDataMap<opencascade::handle<SelectMgr_EntityOwner>,
+                                   SelectMgr_SortCriterion>
+  SelectMgr_IndexedDataMapOfOwnerCriterion;
 
 #endif // _SelectMgr_IndexedDataMapOfOwnerCriterion_hxx

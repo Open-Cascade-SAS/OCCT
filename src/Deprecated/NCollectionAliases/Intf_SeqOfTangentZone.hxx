@@ -23,9 +23,11 @@
 #include <Intf_TangentZone.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Intf_SeqOfTangentZone.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<Intf_TangentZone> directly.")
+Standard_HEADER_DEPRECATED("Intf_SeqOfTangentZone.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<Intf_TangentZone> directly.")
 
-Standard_DEPRECATED("Intf_SeqOfTangentZone is deprecated, use NCollection_Sequence<Intf_TangentZone> directly")
+  Standard_DEPRECATED(
+    "Intf_SeqOfTangentZone is deprecated, use NCollection_Sequence<Intf_TangentZone> directly")
 typedef NCollection_Sequence<Intf_TangentZone> Intf_SeqOfTangentZone;
 
 #endif // _Intf_SeqOfTangentZone_hxx

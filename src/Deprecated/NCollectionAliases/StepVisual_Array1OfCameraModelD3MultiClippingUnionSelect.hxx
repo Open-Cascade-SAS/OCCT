@@ -14,7 +14,8 @@
 //! @file StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly instead.
+//!             Use NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly
+//!             instead.
 
 #ifndef _StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect_hxx
 #define _StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect_hxx
@@ -23,9 +24,14 @@
 #include <StepVisual_CameraModelD3MultiClippingUnionSelect.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect.hxx is deprecated since OCCT 8.0.0. "
+  "Use NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect is deprecated, use NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly")
-typedef NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect;
+  Standard_DEPRECATED(
+    "StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect is deprecated, use "
+    "NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect> directly")
+typedef NCollection_Array1<StepVisual_CameraModelD3MultiClippingUnionSelect>
+  StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect;
 
 #endif // _StepVisual_Array1OfCameraModelD3MultiClippingUnionSelect_hxx

@@ -14,7 +14,8 @@
 //! @file IGESBasic_Array1OfLineFontEntity.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> directly
+//!             instead.
 
 #ifndef _IGESBasic_Array1OfLineFontEntity_hxx
 #define _IGESBasic_Array1OfLineFontEntity_hxx
@@ -23,9 +24,13 @@
 #include <IGESData_LineFontEntity.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESBasic_Array1OfLineFontEntity.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESBasic_Array1OfLineFontEntity.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> directly.")
 
-Standard_DEPRECATED("IGESBasic_Array1OfLineFontEntity is deprecated, use NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> IGESBasic_Array1OfLineFontEntity;
+  Standard_DEPRECATED("IGESBasic_Array1OfLineFontEntity is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESData_LineFontEntity>>
+  IGESBasic_Array1OfLineFontEntity;
 
 #endif // _IGESBasic_Array1OfLineFontEntity_hxx

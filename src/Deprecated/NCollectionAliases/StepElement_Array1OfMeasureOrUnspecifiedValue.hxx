@@ -23,9 +23,13 @@
 #include <StepElement_MeasureOrUnspecifiedValue.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfMeasureOrUnspecifiedValue.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<StepElement_MeasureOrUnspecifiedValue> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfMeasureOrUnspecifiedValue.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<StepElement_MeasureOrUnspecifiedValue> directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfMeasureOrUnspecifiedValue is deprecated, use NCollection_Array1<StepElement_MeasureOrUnspecifiedValue> directly")
-typedef NCollection_Array1<StepElement_MeasureOrUnspecifiedValue> StepElement_Array1OfMeasureOrUnspecifiedValue;
+  Standard_DEPRECATED("StepElement_Array1OfMeasureOrUnspecifiedValue is deprecated, use "
+                      "NCollection_Array1<StepElement_MeasureOrUnspecifiedValue> directly")
+typedef NCollection_Array1<StepElement_MeasureOrUnspecifiedValue>
+  StepElement_Array1OfMeasureOrUnspecifiedValue;
 
 #endif // _StepElement_Array1OfMeasureOrUnspecifiedValue_hxx

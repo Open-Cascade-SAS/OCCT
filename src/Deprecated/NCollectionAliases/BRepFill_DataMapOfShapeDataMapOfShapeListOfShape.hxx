@@ -25,11 +25,23 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("BRepFill_DataMapOfShapeDataMapOfShapeListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("BRepFill_DataMapOfShapeDataMapOfShapeListOfShape.hxx is deprecated "
+                           "since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("BRepFill_DataMapOfShapeDataMapOfShapeListOfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TopTools_DataMapOfShapeListOfShape, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopTools_DataMapOfShapeListOfShape, TopTools_ShapeMapHasher> BRepFill_DataMapOfShapeDataMapOfShapeListOfShape;
-Standard_DEPRECATED("BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TopTools_DataMapOfShapeListOfShape, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopTools_DataMapOfShapeListOfShape, TopTools_ShapeMapHasher>::Iterator BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape;
+  Standard_DEPRECATED("BRepFill_DataMapOfShapeDataMapOfShapeListOfShape is deprecated, use "
+                      "NCollection_DataMap<TopoDS_Shape, TopTools_DataMapOfShapeListOfShape, "
+                      "TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            TopTools_DataMapOfShapeListOfShape,
+                            TopTools_ShapeMapHasher>
+  BRepFill_DataMapOfShapeDataMapOfShapeListOfShape;
+Standard_DEPRECATED(
+  "BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, TopTools_DataMapOfShapeListOfShape, "
+  "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            TopTools_DataMapOfShapeListOfShape,
+                            TopTools_ShapeMapHasher>::Iterator
+  BRepFill_DataMapIteratorOfDataMapOfShapeDataMapOfShapeListOfShape;
 
 #endif // _BRepFill_DataMapOfShapeDataMapOfShapeListOfShape_hxx

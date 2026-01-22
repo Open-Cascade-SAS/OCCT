@@ -24,9 +24,11 @@
 #include <TDataXtd_Array1OfTrsf.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TDataXtd_HArray1OfTrsf.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<gp_Trsf> directly.")
+Standard_HEADER_DEPRECATED("TDataXtd_HArray1OfTrsf.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<gp_Trsf> directly.")
 
-Standard_DEPRECATED("TDataXtd_HArray1OfTrsf is deprecated, use NCollection_HArray1<gp_Trsf> directly")
+  Standard_DEPRECATED(
+    "TDataXtd_HArray1OfTrsf is deprecated, use NCollection_HArray1<gp_Trsf> directly")
 typedef NCollection_HArray1<gp_Trsf> TDataXtd_HArray1OfTrsf;
 
 #endif // _TDataXtd_HArray1OfTrsf_hxx

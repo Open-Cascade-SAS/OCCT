@@ -14,7 +14,9 @@
 //! @file StepRepr_SequenceOfMaterialPropertyRepresentation.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>> directly instead.
+//!             Use
+//!             NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>>
+//!             directly instead.
 
 #ifndef _StepRepr_SequenceOfMaterialPropertyRepresentation_hxx
 #define _StepRepr_SequenceOfMaterialPropertyRepresentation_hxx
@@ -23,9 +25,14 @@
 #include <StepRepr_MaterialPropertyRepresentation.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("StepRepr_SequenceOfMaterialPropertyRepresentation.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepRepr_SequenceOfMaterialPropertyRepresentation.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>> directly.")
 
-Standard_DEPRECATED("StepRepr_SequenceOfMaterialPropertyRepresentation is deprecated, use NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>> directly")
-typedef NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>> StepRepr_SequenceOfMaterialPropertyRepresentation;
+  Standard_DEPRECATED(
+    "StepRepr_SequenceOfMaterialPropertyRepresentation is deprecated, use "
+    "NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>> directly")
+typedef NCollection_Sequence<opencascade::handle<StepRepr_MaterialPropertyRepresentation>>
+  StepRepr_SequenceOfMaterialPropertyRepresentation;
 
 #endif // _StepRepr_SequenceOfMaterialPropertyRepresentation_hxx

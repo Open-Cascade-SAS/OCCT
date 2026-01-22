@@ -14,7 +14,8 @@
 //! @file StepElement_Array1OfSurfaceSection.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> directly
+//!             instead.
 
 #ifndef _StepElement_Array1OfSurfaceSection_hxx
 #define _StepElement_Array1OfSurfaceSection_hxx
@@ -23,9 +24,14 @@
 #include <StepElement_SurfaceSection.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_Array1OfSurfaceSection.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_Array1OfSurfaceSection.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> directly.")
 
-Standard_DEPRECATED("StepElement_Array1OfSurfaceSection is deprecated, use NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> directly")
-typedef NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> StepElement_Array1OfSurfaceSection;
+  Standard_DEPRECATED(
+    "StepElement_Array1OfSurfaceSection is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>> directly")
+typedef NCollection_Array1<opencascade::handle<StepElement_SurfaceSection>>
+  StepElement_Array1OfSurfaceSection;
 
 #endif // _StepElement_Array1OfSurfaceSection_hxx

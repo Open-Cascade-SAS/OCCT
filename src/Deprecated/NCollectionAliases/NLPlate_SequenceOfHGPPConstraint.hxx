@@ -14,7 +14,8 @@
 //! @file NLPlate_SequenceOfHGPPConstraint.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> directly instead.
+//!             Use NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> directly
+//!             instead.
 
 #ifndef _NLPlate_SequenceOfHGPPConstraint_hxx
 #define _NLPlate_SequenceOfHGPPConstraint_hxx
@@ -23,9 +24,13 @@
 #include <NLPlate_HGPPConstraint.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("NLPlate_SequenceOfHGPPConstraint.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> directly.")
+Standard_HEADER_DEPRECATED(
+  "NLPlate_SequenceOfHGPPConstraint.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> directly.")
 
-Standard_DEPRECATED("NLPlate_SequenceOfHGPPConstraint is deprecated, use NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> directly")
-typedef NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> NLPlate_SequenceOfHGPPConstraint;
+  Standard_DEPRECATED("NLPlate_SequenceOfHGPPConstraint is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>> directly")
+typedef NCollection_Sequence<opencascade::handle<NLPlate_HGPPConstraint>>
+  NLPlate_SequenceOfHGPPConstraint;
 
 #endif // _NLPlate_SequenceOfHGPPConstraint_hxx

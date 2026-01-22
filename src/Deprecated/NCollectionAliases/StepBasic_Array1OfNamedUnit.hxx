@@ -23,9 +23,11 @@
 #include <StepBasic_NamedUnit.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepBasic_Array1OfNamedUnit.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepBasic_NamedUnit>> directly.")
+Standard_HEADER_DEPRECATED("StepBasic_Array1OfNamedUnit.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Array1<opencascade::handle<StepBasic_NamedUnit>> directly.")
 
-Standard_DEPRECATED("StepBasic_Array1OfNamedUnit is deprecated, use NCollection_Array1<opencascade::handle<StepBasic_NamedUnit>> directly")
+  Standard_DEPRECATED("StepBasic_Array1OfNamedUnit is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<StepBasic_NamedUnit>> directly")
 typedef NCollection_Array1<opencascade::handle<StepBasic_NamedUnit>> StepBasic_Array1OfNamedUnit;
 
 #endif // _StepBasic_Array1OfNamedUnit_hxx

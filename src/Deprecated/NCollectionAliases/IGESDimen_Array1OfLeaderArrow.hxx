@@ -23,9 +23,13 @@
 #include <IGESDimen_LeaderArrow.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESDimen_Array1OfLeaderArrow.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESDimen_LeaderArrow>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESDimen_Array1OfLeaderArrow.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESDimen_LeaderArrow>> directly.")
 
-Standard_DEPRECATED("IGESDimen_Array1OfLeaderArrow is deprecated, use NCollection_Array1<opencascade::handle<IGESDimen_LeaderArrow>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESDimen_LeaderArrow>> IGESDimen_Array1OfLeaderArrow;
+  Standard_DEPRECATED("IGESDimen_Array1OfLeaderArrow is deprecated, use "
+                      "NCollection_Array1<opencascade::handle<IGESDimen_LeaderArrow>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESDimen_LeaderArrow>>
+  IGESDimen_Array1OfLeaderArrow;
 
 #endif // _IGESDimen_Array1OfLeaderArrow_hxx

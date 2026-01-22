@@ -24,9 +24,11 @@
 #include <StepShape_Array1OfShell.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("StepShape_HArray1OfShell.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<StepShape_Shell> directly.")
+Standard_HEADER_DEPRECATED("StepShape_HArray1OfShell.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<StepShape_Shell> directly.")
 
-Standard_DEPRECATED("StepShape_HArray1OfShell is deprecated, use NCollection_HArray1<StepShape_Shell> directly")
+  Standard_DEPRECATED(
+    "StepShape_HArray1OfShell is deprecated, use NCollection_HArray1<StepShape_Shell> directly")
 typedef NCollection_HArray1<StepShape_Shell> StepShape_HArray1OfShell;
 
 #endif // _StepShape_HArray1OfShell_hxx

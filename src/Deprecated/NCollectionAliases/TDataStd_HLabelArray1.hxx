@@ -24,9 +24,11 @@
 #include <TDataStd_LabelArray1.hxx>
 #include <NCollection_HArray1.hxx>
 
-Standard_HEADER_DEPRECATED("TDataStd_HLabelArray1.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray1<TDF_Label> directly.")
+Standard_HEADER_DEPRECATED("TDataStd_HLabelArray1.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HArray1<TDF_Label> directly.")
 
-Standard_DEPRECATED("TDataStd_HLabelArray1 is deprecated, use NCollection_HArray1<TDF_Label> directly")
+  Standard_DEPRECATED(
+    "TDataStd_HLabelArray1 is deprecated, use NCollection_HArray1<TDF_Label> directly")
 typedef NCollection_HArray1<TDF_Label> TDataStd_HLabelArray1;
 
 #endif // _TDataStd_HLabelArray1_hxx

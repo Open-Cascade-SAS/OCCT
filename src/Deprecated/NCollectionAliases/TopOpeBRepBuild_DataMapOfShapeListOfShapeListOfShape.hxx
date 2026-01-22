@@ -25,11 +25,23 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape.hxx is deprecated "
+                           "since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, TopTools_ShapeMapHasher> directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, TopTools_ShapeMapHasher> TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape;
-Standard_DEPRECATED("TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape is deprecated, use NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, TopTools_ShapeMapHasher>::Iterator directly")
-typedef NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, TopTools_ShapeMapHasher>::Iterator TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape;
+  Standard_DEPRECATED("TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape is deprecated, use "
+                      "NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, "
+                      "TopTools_ShapeMapHasher> directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            TopOpeBRepBuild_ListOfShapeListOfShape,
+                            TopTools_ShapeMapHasher>
+  TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape;
+Standard_DEPRECATED(
+  "TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape is deprecated, use "
+  "NCollection_DataMap<TopoDS_Shape, TopOpeBRepBuild_ListOfShapeListOfShape, "
+  "TopTools_ShapeMapHasher>::Iterator directly")
+typedef NCollection_DataMap<TopoDS_Shape,
+                            TopOpeBRepBuild_ListOfShapeListOfShape,
+                            TopTools_ShapeMapHasher>::Iterator
+  TopOpeBRepBuild_DataMapIteratorOfDataMapOfShapeListOfShapeListOfShape;
 
 #endif // _TopOpeBRepBuild_DataMapOfShapeListOfShapeListOfShape_hxx

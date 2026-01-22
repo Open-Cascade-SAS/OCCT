@@ -24,11 +24,15 @@
 #include <TColStd_MapOfInteger.hxx>
 #include <NCollection_DataMap.hxx>
 
-Standard_HEADER_DEPRECATED("MeshVS_DataMapOfColorMapOfInteger.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED("MeshVS_DataMapOfColorMapOfInteger.hxx is deprecated since OCCT 8.0.0. "
+                           "Use NCollection types directly.")
 
-Standard_DEPRECATED("MeshVS_DataMapOfColorMapOfInteger is deprecated, use NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger> directly")
+  Standard_DEPRECATED("MeshVS_DataMapOfColorMapOfInteger is deprecated, use "
+                      "NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger> directly")
 typedef NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger> MeshVS_DataMapOfColorMapOfInteger;
-Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger is deprecated, use NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger>::Iterator directly")
-typedef NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger>::Iterator MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger;
+Standard_DEPRECATED("MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger is deprecated, use "
+                    "NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger>::Iterator directly")
+typedef NCollection_DataMap<Quantity_Color, TColStd_MapOfInteger>::Iterator
+  MeshVS_DataMapIteratorOfDataMapOfColorMapOfInteger;
 
 #endif // _MeshVS_DataMapOfColorMapOfInteger_hxx

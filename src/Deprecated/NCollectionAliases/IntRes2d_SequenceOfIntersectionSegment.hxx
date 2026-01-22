@@ -23,9 +23,12 @@
 #include <IntRes2d_IntersectionSegment.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("IntRes2d_SequenceOfIntersectionSegment.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<IntRes2d_IntersectionSegment> directly.")
+Standard_HEADER_DEPRECATED(
+  "IntRes2d_SequenceOfIntersectionSegment.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Sequence<IntRes2d_IntersectionSegment> directly.")
 
-Standard_DEPRECATED("IntRes2d_SequenceOfIntersectionSegment is deprecated, use NCollection_Sequence<IntRes2d_IntersectionSegment> directly")
+  Standard_DEPRECATED("IntRes2d_SequenceOfIntersectionSegment is deprecated, use "
+                      "NCollection_Sequence<IntRes2d_IntersectionSegment> directly")
 typedef NCollection_Sequence<IntRes2d_IntersectionSegment> IntRes2d_SequenceOfIntersectionSegment;
 
 #endif // _IntRes2d_SequenceOfIntersectionSegment_hxx

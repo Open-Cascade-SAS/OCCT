@@ -14,7 +14,8 @@
 //! @file StepVisual_Array1OfTessellatedStructuredItem.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>>
+//!             directly instead.
 
 #ifndef _StepVisual_Array1OfTessellatedStructuredItem_hxx
 #define _StepVisual_Array1OfTessellatedStructuredItem_hxx
@@ -23,9 +24,14 @@
 #include <StepVisual_TessellatedStructuredItem.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("StepVisual_Array1OfTessellatedStructuredItem.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepVisual_Array1OfTessellatedStructuredItem.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly.")
 
-Standard_DEPRECATED("StepVisual_Array1OfTessellatedStructuredItem is deprecated, use NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly")
-typedef NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>> StepVisual_Array1OfTessellatedStructuredItem;
+  Standard_DEPRECATED(
+    "StepVisual_Array1OfTessellatedStructuredItem is deprecated, use "
+    "NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>> directly")
+typedef NCollection_Array1<opencascade::handle<StepVisual_TessellatedStructuredItem>>
+  StepVisual_Array1OfTessellatedStructuredItem;
 
 #endif // _StepVisual_Array1OfTessellatedStructuredItem_hxx

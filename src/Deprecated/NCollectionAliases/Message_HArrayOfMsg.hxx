@@ -24,11 +24,14 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Handle.hxx>
 
-Standard_HEADER_DEPRECATED("Message_HArrayOfMsg.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
+Standard_HEADER_DEPRECATED(
+  "Message_HArrayOfMsg.hxx is deprecated since OCCT 8.0.0. Use NCollection types directly.")
 
-Standard_DEPRECATED("Message_ArrayOfMsg is deprecated, use NCollection_Array1<NCollection_Handle<Message_Msg>> directly")
+  Standard_DEPRECATED("Message_ArrayOfMsg is deprecated, use "
+                      "NCollection_Array1<NCollection_Handle<Message_Msg>> directly")
 typedef NCollection_Array1<NCollection_Handle<Message_Msg>> Message_ArrayOfMsg;
-Standard_DEPRECATED("Message_HArrayOfMsg is deprecated, use NCollection_Handle<Message_ArrayOfMsg> directly")
+Standard_DEPRECATED(
+  "Message_HArrayOfMsg is deprecated, use NCollection_Handle<Message_ArrayOfMsg> directly")
 typedef NCollection_Handle<Message_ArrayOfMsg> Message_HArrayOfMsg;
 
 #endif // _Message_HArrayOfMsg_hxx

@@ -14,7 +14,8 @@
 //! @file StepElement_HArray2OfCurveElementPurposeMember.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>> directly instead.
+//!             Use NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>>
+//!             directly instead.
 
 #ifndef _StepElement_HArray2OfCurveElementPurposeMember_hxx
 #define _StepElement_HArray2OfCurveElementPurposeMember_hxx
@@ -24,9 +25,14 @@
 #include <StepElement_Array2OfCurveElementPurposeMember.hxx>
 #include <NCollection_HArray2.hxx>
 
-Standard_HEADER_DEPRECATED("StepElement_HArray2OfCurveElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>> directly.")
+Standard_HEADER_DEPRECATED(
+  "StepElement_HArray2OfCurveElementPurposeMember.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>> directly.")
 
-Standard_DEPRECATED("StepElement_HArray2OfCurveElementPurposeMember is deprecated, use NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>> directly")
-typedef NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>> StepElement_HArray2OfCurveElementPurposeMember;
+  Standard_DEPRECATED(
+    "StepElement_HArray2OfCurveElementPurposeMember is deprecated, use "
+    "NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>> directly")
+typedef NCollection_HArray2<opencascade::handle<StepElement_CurveElementPurposeMember>>
+  StepElement_HArray2OfCurveElementPurposeMember;
 
 #endif // _StepElement_HArray2OfCurveElementPurposeMember_hxx

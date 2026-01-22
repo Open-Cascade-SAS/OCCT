@@ -23,9 +23,11 @@
 #include <TColStd_SequenceOfReal.hxx>
 #include <NCollection_HSequence.hxx>
 
-Standard_HEADER_DEPRECATED("TColStd_HSequenceOfReal.hxx is deprecated since OCCT 8.0.0. Use NCollection_HSequence<double> directly.")
+Standard_HEADER_DEPRECATED("TColStd_HSequenceOfReal.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_HSequence<double> directly.")
 
-Standard_DEPRECATED("TColStd_HSequenceOfReal is deprecated, use NCollection_HSequence<double> directly")
+  Standard_DEPRECATED(
+    "TColStd_HSequenceOfReal is deprecated, use NCollection_HSequence<double> directly")
 typedef NCollection_HSequence<double> TColStd_HSequenceOfReal;
 
 #endif // _TColStd_HSequenceOfReal_hxx

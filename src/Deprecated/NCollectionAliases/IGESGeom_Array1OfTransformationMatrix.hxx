@@ -14,7 +14,8 @@
 //! @file IGESGeom_Array1OfTransformationMatrix.hxx
 //! @brief Deprecated typedef for backward compatibility.
 //! @deprecated This header is deprecated since OCCT 8.0.0.
-//!             Use NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> directly instead.
+//!             Use NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> directly
+//!             instead.
 
 #ifndef _IGESGeom_Array1OfTransformationMatrix_hxx
 #define _IGESGeom_Array1OfTransformationMatrix_hxx
@@ -23,9 +24,14 @@
 #include <IGESGeom_TransformationMatrix.hxx>
 #include <NCollection_Array1.hxx>
 
-Standard_HEADER_DEPRECATED("IGESGeom_Array1OfTransformationMatrix.hxx is deprecated since OCCT 8.0.0. Use NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> directly.")
+Standard_HEADER_DEPRECATED(
+  "IGESGeom_Array1OfTransformationMatrix.hxx is deprecated since OCCT 8.0.0. Use "
+  "NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> directly.")
 
-Standard_DEPRECATED("IGESGeom_Array1OfTransformationMatrix is deprecated, use NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> directly")
-typedef NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> IGESGeom_Array1OfTransformationMatrix;
+  Standard_DEPRECATED(
+    "IGESGeom_Array1OfTransformationMatrix is deprecated, use "
+    "NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>> directly")
+typedef NCollection_Array1<opencascade::handle<IGESGeom_TransformationMatrix>>
+  IGESGeom_Array1OfTransformationMatrix;
 
 #endif // _IGESGeom_Array1OfTransformationMatrix_hxx

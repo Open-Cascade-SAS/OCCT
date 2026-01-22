@@ -23,9 +23,11 @@
 #include <Message_Printer.hxx>
 #include <NCollection_Sequence.hxx>
 
-Standard_HEADER_DEPRECATED("Message_SequenceOfPrinters.hxx is deprecated since OCCT 8.0.0. Use NCollection_Sequence<opencascade::handle<Message_Printer>> directly.")
+Standard_HEADER_DEPRECATED("Message_SequenceOfPrinters.hxx is deprecated since OCCT 8.0.0. Use "
+                           "NCollection_Sequence<opencascade::handle<Message_Printer>> directly.")
 
-Standard_DEPRECATED("Message_SequenceOfPrinters is deprecated, use NCollection_Sequence<opencascade::handle<Message_Printer>> directly")
+  Standard_DEPRECATED("Message_SequenceOfPrinters is deprecated, use "
+                      "NCollection_Sequence<opencascade::handle<Message_Printer>> directly")
 typedef NCollection_Sequence<opencascade::handle<Message_Printer>> Message_SequenceOfPrinters;
 
 #endif // _Message_SequenceOfPrinters_hxx
