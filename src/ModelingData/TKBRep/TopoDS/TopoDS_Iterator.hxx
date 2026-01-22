@@ -20,6 +20,7 @@
 #include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopLoc_Location.hxx>
 
 class TopoDS_TShape;
@@ -42,7 +43,8 @@ public:
       : myTShape(nullptr),
         myIndex(0U),
         myNbChildren(0U),
-        myOrientation(TopAbs_FORWARD)
+        myOrientation(TopAbs_FORWARD),
+        myShapeType(TopAbs_SHAPE)
   {
   }
 
@@ -57,7 +59,8 @@ public:
       : myTShape(nullptr),
         myIndex(0U),
         myNbChildren(0U),
-        myOrientation(TopAbs_FORWARD)
+        myOrientation(TopAbs_FORWARD),
+        myShapeType(TopAbs_SHAPE)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -104,6 +107,7 @@ private:
   size_t             myNbChildren;  //!< Cached number of children
   TopAbs_Orientation myOrientation; //!< Cumulative orientation
   TopLoc_Location    myLocation;    //!< Cumulative location
+  TopAbs_ShapeEnum   myShapeType;   //!< Cached shape type for type-switch devirtualization
 };
 
 #endif // _TopoDS_Iterator_HeaderFile

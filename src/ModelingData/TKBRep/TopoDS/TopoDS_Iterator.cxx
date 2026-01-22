@@ -17,7 +17,7 @@
 #define No_Standard_NoSuchObject
 
 #include <TopoDS_Iterator.hxx>
-#include <TopoDS_TShape.hxx>
+#include <TopoDS_TShapeDispatch.hxx>
 
 //=================================================================================================
 
@@ -38,12 +38,16 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
     myTShape     = nullptr;
     myIndex      = 0U;
     myNbChildren = 0U;
+    myShapeType  = TopAbs_SHAPE;
   }
   else
   {
-    myTShape     = S.TShape().get();
-    myIndex      = 0U;
-    myNbChildren = static_cast<size_t>(myTShape->NbChildren());
+    myTShape    = S.TShape().get();
+    myShapeType = myTShape->ShapeType();
+    myIndex     = 0U;
+    // Use dispatch helper to get NbChildren through concrete type (devirtualized)
+    myNbChildren = static_cast<size_t>(
+        TopoDS_TShapeDispatch::Apply(myTShape, [](auto* theTyped) { return theTyped->NbChildren(); }));
   }
 
   if (More())
@@ -67,7 +71,9 @@ void TopoDS_Iterator::Next()
 
 void TopoDS_Iterator::updateCurrentShape()
 {
-  myShape = myTShape->GetChild(myIndex);
+  // Use dispatch helper with cached shape type for devirtualized GetChild() call
+  myShape = TopoDS_TShapeDispatch::ApplyWithType(
+      myTShape, myShapeType, [this](auto* theTyped) { return theTyped->GetChild(myIndex); });
   myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())
     myShape.Move(myLocation, false);

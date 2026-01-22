@@ -18,14 +18,7 @@
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_FrozenShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_TShape.hxx>
-#include <TopoDS_TEdge.hxx>
-#include <TopoDS_TWire.hxx>
-#include <TopoDS_TFace.hxx>
-#include <TopoDS_TShell.hxx>
-#include <TopoDS_TSolid.hxx>
-#include <TopoDS_TCompSolid.hxx>
-#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TShapeDispatch.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
 
 //=================================================================================================
@@ -87,37 +80,11 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
       if (!aLoc.IsIdentity())
         aChild.Move(aLoc.Inverted(), false);
 
-      // Add to the subshapes array based on shape type
+      // Add to the subshapes array using dispatch helper (devirtualized)
       TopoDS_TShape* aTShape = aShape.TShape().get();
-      switch (aTShape->ShapeType())
-      {
-        case TopAbs_EDGE:
-          static_cast<TopoDS_TEdge*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        case TopAbs_WIRE:
-          static_cast<TopoDS_TWire*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        case TopAbs_FACE:
-          static_cast<TopoDS_TFace*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        case TopAbs_SHELL:
-          static_cast<TopoDS_TShell*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        case TopAbs_SOLID:
-          static_cast<TopoDS_TSolid*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        case TopAbs_COMPSOLID:
-          static_cast<TopoDS_TCompSolid*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        case TopAbs_COMPOUND:
-          static_cast<TopoDS_TCompound*>(aTShape)->mySubShapes.Append(aChild);
-          break;
-        default:
-          break;
-      }
-
-      // Set the TShape as modified.
-      aShape.TShape()->Modified(true);
+      TopoDS_TShapeDispatch::Apply(aTShape,
+                                   [&aChild](auto* theTyped) { theTyped->mySubShapes.Append(aChild); });
+      aTShape->Modified(true);
     }
     else
     {
@@ -143,78 +110,25 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
     S.Reverse();
   S.Location(S.Location().Predivided(aShape.Location()), false);
 
-  TopoDS_TShape* aTShape     = aShape.TShape().get();
-  const int      aNbChildren = aTShape->NbChildren();
+  TopoDS_TShape* aTShape = aShape.TShape().get();
 
-  // Find and remove using swap-and-pop for efficiency
-  for (int i = 0; i < aNbChildren; ++i)
-  {
-    if (aTShape->GetChild(i) == S)
+  // Use dispatch helper to search and remove (devirtualized NbChildren/GetChild calls)
+  const bool aRemoved = TopoDS_TShapeDispatch::Apply(aTShape, [&S](auto* theTyped) -> bool {
+    const int aNb = theTyped->NbChildren();
+    for (int i = 0; i < aNb; ++i)
     {
-      // Swap with last element and erase last (O(1) removal)
-      switch (aTShape->ShapeType())
+      if (theTyped->GetChild(i) == S)
       {
-        case TopAbs_EDGE:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TEdge*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        case TopAbs_WIRE:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TWire*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        case TopAbs_FACE:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TFace*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        case TopAbs_SHELL:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TShell*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        case TopAbs_SOLID:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TSolid*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        case TopAbs_COMPSOLID:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TCompSolid*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        case TopAbs_COMPOUND:
-        {
-          auto& aSubShapes = static_cast<TopoDS_TCompound*>(aTShape)->mySubShapes;
-          if (i < aNbChildren - 1)
-            aSubShapes.ChangeValue(i) = aSubShapes.Value(aNbChildren - 1);
-          aSubShapes.EraseLast();
-          break;
-        }
-        default:
-          break;
+        // Swap with last element and erase last (O(1) removal)
+        if (i < aNb - 1)
+          theTyped->mySubShapes.ChangeValue(i) = theTyped->mySubShapes.Value(aNb - 1);
+        theTyped->mySubShapes.EraseLast();
+        return true;
       }
-      aTShape->Modified(true);
-      break;
     }
-  }
+    return false;
+  });
+
+  if (aRemoved)
+    aTShape->Modified(true);
 }
