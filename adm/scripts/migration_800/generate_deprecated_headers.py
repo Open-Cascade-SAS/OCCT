@@ -227,20 +227,14 @@ def generate_header_content(header_file: str, typedefs: List[Dict],
     lines.append(f"#define {guard_name}")
     lines.append("")
 
-    # Header deprecation warning
-    lines.append(f'Standard_HEADER_DEPRECATED("{filename} is deprecated since OCCT 8.0.0. '
-                f'Use {replacement} directly.")')
-    lines.append("")
-
-    # Include Standard_Macro for deprecation macros
+    # All includes together - Standard_Macro first, then others
     lines.append("#include <Standard_Macro.hxx>")
 
     if original_includes:
         # Use original includes from the source header (preferred)
-        # Filter out includes that are no longer needed (like NCollection_ specific headers)
         for inc in original_includes:
-            # Skip the header's own potential circular include
-            if inc != filename and not inc.endswith(filename):
+            # Skip the header's own potential circular include and Standard_Macro.hxx (already included)
+            if inc != filename and not inc.endswith(filename) and inc != 'Standard_Macro.hxx':
                 lines.append(f"#include <{inc}>")
     else:
         # Fallback: Include required NCollection headers based on typedef analysis
@@ -254,6 +248,12 @@ def generate_header_content(header_file: str, typedefs: List[Dict],
 
     lines.append("")
 
+    # Header deprecation warning (after all includes)
+    lines.append(f'Standard_HEADER_DEPRECATED("{filename} is deprecated since OCCT 8.0.0. '
+                f'Use {replacement} directly.")')
+
+    lines.append("")
+
     # Generate deprecated typedefs
     for td in typedefs:
         typedef_name = td['typedef_name']
@@ -261,13 +261,11 @@ def generate_header_content(header_file: str, typedefs: List[Dict],
         is_iterator = td.get('is_iterator', False)
 
         # Deprecation message
-        if is_iterator:
-            dep_msg = f"{typedef_name} is deprecated, use {full_type} directly"
-        else:
-            dep_msg = f"{typedef_name} is deprecated, use {full_type} directly"
+        dep_msg = f"{typedef_name} is deprecated, use {full_type} directly"
 
-        # Generate the typedef with deprecation attribute
-        lines.append(f'using {typedef_name} Standard_DEPRECATED("{dep_msg}") = {full_type};')
+        # Generate the typedef with deprecation attribute (original typedef syntax)
+        lines.append(f'Standard_DEPRECATED("{dep_msg}")')
+        lines.append(f'typedef {full_type} {typedef_name};')
 
     lines.append("")
     lines.append(f"#endif // {guard_name}")
