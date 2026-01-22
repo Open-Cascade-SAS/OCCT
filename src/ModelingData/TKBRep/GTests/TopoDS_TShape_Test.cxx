@@ -221,7 +221,7 @@ TEST(TopoDS_TShapeDispatch_Test, Apply_NbChildren)
   TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
 
   int aNbEdgeChildren =
-      TopoDS_TShapeDispatch::Apply(anEdge.TShape().get(), [](auto* t) { return t->NbChildren(); });
+    TopoDS_TShapeDispatch::Apply(anEdge.TShape().get(), [](auto* t) { return t->NbChildren(); });
   EXPECT_EQ(aNbEdgeChildren, 2);
 
   // Test with compound (5 vertices)
@@ -232,8 +232,8 @@ TEST(TopoDS_TShapeDispatch_Test, Apply_NbChildren)
     aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(i, 0, 0)));
   }
 
-  int aNbCompoundChildren = TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(),
-                                                         [](auto* t) { return t->NbChildren(); });
+  int aNbCompoundChildren =
+    TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(), [](auto* t) { return t->NbChildren(); });
   EXPECT_EQ(aNbCompoundChildren, 5);
 }
 
@@ -251,8 +251,8 @@ TEST(TopoDS_TShapeDispatch_Test, Apply_GetChild)
   aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0)));
 
   // Get first child using dispatch
-  TopoDS_Shape aChild = TopoDS_TShapeDispatch::Apply(
-      aCompound.TShape().get(), [](auto* t) { return t->GetChild(0); });
+  TopoDS_Shape aChild =
+    TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(), [](auto* t) { return t->GetChild(0); });
 
   EXPECT_EQ(aChild.ShapeType(), TopAbs_VERTEX);
 }
@@ -270,12 +270,12 @@ TEST(TopoDS_TShapeDispatch_Test, ApplyWithType)
   TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
   aBuilder.Add(aWire, anEdge);
 
-  TopoDS_TShape*   aTShape   = aWire.TShape().get();
-  TopAbs_ShapeEnum aType     = aTShape->ShapeType();
+  TopoDS_TShape*   aTShape = aWire.TShape().get();
+  TopAbs_ShapeEnum aType   = aTShape->ShapeType();
 
   // Use ApplyWithType with cached type
   int aNbChildren =
-      TopoDS_TShapeDispatch::ApplyWithType(aTShape, aType, [](auto* t) { return t->NbChildren(); });
+    TopoDS_TShapeDispatch::ApplyWithType(aTShape, aType, [](auto* t) { return t->NbChildren(); });
 
   EXPECT_EQ(aNbChildren, 1);
 }
@@ -291,8 +291,8 @@ TEST(TopoDS_TShapeDispatch_Test, AllShapeTypes)
   // Test Edge
   {
     TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
-    int         aNb = TopoDS_TShapeDispatch::Apply(anEdge.TShape().get(),
-                                           [](auto* t) { return t->NbChildren(); });
+    int         aNb =
+      TopoDS_TShapeDispatch::Apply(anEdge.TShape().get(), [](auto* t) { return t->NbChildren(); });
     EXPECT_EQ(aNb, 2);
   }
 
@@ -301,7 +301,7 @@ TEST(TopoDS_TShapeDispatch_Test, AllShapeTypes)
     TopoDS_Wire aWire;
     aBuilder.MakeWire(aWire);
     int aNb =
-        TopoDS_TShapeDispatch::Apply(aWire.TShape().get(), [](auto* t) { return t->NbChildren(); });
+      TopoDS_TShapeDispatch::Apply(aWire.TShape().get(), [](auto* t) { return t->NbChildren(); });
     EXPECT_EQ(aNb, 0);
   }
 
@@ -311,8 +311,8 @@ TEST(TopoDS_TShapeDispatch_Test, AllShapeTypes)
     for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next())
     {
       const TopoDS_Shape& aFace = anExp.Current();
-      int                 aNb   = TopoDS_TShapeDispatch::Apply(aFace.TShape().get(),
-                                              [](auto* t) { return t->NbChildren(); });
+      int                 aNb =
+        TopoDS_TShapeDispatch::Apply(aFace.TShape().get(), [](auto* t) { return t->NbChildren(); });
       EXPECT_GE(aNb, 1) << "Face should have at least 1 wire";
       break; // Just test one face
     }
@@ -322,8 +322,8 @@ TEST(TopoDS_TShapeDispatch_Test, AllShapeTypes)
   {
     TopoDS_Shell aShell;
     aBuilder.MakeShell(aShell);
-    int aNb = TopoDS_TShapeDispatch::Apply(aShell.TShape().get(),
-                                           [](auto* t) { return t->NbChildren(); });
+    int aNb =
+      TopoDS_TShapeDispatch::Apply(aShell.TShape().get(), [](auto* t) { return t->NbChildren(); });
     EXPECT_EQ(aNb, 0);
   }
 
@@ -331,8 +331,8 @@ TEST(TopoDS_TShapeDispatch_Test, AllShapeTypes)
   {
     TopoDS_Solid aSolid;
     aBuilder.MakeSolid(aSolid);
-    int aNb = TopoDS_TShapeDispatch::Apply(aSolid.TShape().get(),
-                                           [](auto* t) { return t->NbChildren(); });
+    int aNb =
+      TopoDS_TShapeDispatch::Apply(aSolid.TShape().get(), [](auto* t) { return t->NbChildren(); });
     EXPECT_EQ(aNb, 0);
   }
 
@@ -459,8 +459,8 @@ TEST(TopoDS_TShapeDispatch_Test, Apply_VertexReturnsDefault)
   TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
 
   // Dispatch on vertex should return default-constructed value (0 for int)
-  int aNb = TopoDS_TShapeDispatch::Apply(aVertex.TShape().get(),
-                                         [](auto* t) { return t->NbChildren(); });
+  int aNb =
+    TopoDS_TShapeDispatch::Apply(aVertex.TShape().get(), [](auto* t) { return t->NbChildren(); });
 
   // Vertex case falls through to default which returns ReturnType{} = 0
   EXPECT_EQ(aNb, 0);
@@ -557,7 +557,7 @@ TEST(TopoDS_TShapeDispatch_Test, ConsistencyWithDirectCall)
 
   // Get NbChildren via dispatch
   int aNbViaDispatch =
-      TopoDS_TShapeDispatch::Apply(aWire.TShape().get(), [](auto* t) { return t->NbChildren(); });
+    TopoDS_TShapeDispatch::Apply(aWire.TShape().get(), [](auto* t) { return t->NbChildren(); });
 
   // Get NbChildren via direct virtual call
   int aNbViaDirect = aWire.TShape()->NbChildren();

@@ -181,7 +181,8 @@ protected:
   }
 
 protected:
-  uint16_t myState; //!< Compact state: shape type (bits 0-3) + flags (bits 4-11) + reserved (bits 12-15)
+  uint16_t
+    myState; //!< Compact state: shape type (bits 0-3) + flags (bits 4-11) + reserved (bits 12-15)
 };
 
 #endif // _TopoDS_TShape_HeaderFile

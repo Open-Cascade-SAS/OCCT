@@ -51,7 +51,7 @@ public:
   //!       members (mySubShapes) that only exist in derived classes.
   template <typename Func>
   static auto Apply(TopoDS_TShape* theTShape, Func&& theFunc)
-      -> decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)))
+    -> decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)))
   {
     using ReturnType = decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)));
     switch (theTShape->ShapeType())
@@ -85,7 +85,7 @@ public:
   //! @return result of theFunc invocation
   template <typename Func>
   static auto ApplyWithType(TopoDS_TShape* theTShape, TopAbs_ShapeEnum theType, Func&& theFunc)
-      -> decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)))
+    -> decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)))
   {
     using ReturnType = decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)));
     switch (theType)

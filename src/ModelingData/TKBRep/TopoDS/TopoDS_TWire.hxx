@@ -56,7 +56,10 @@ public:
   //! Returns the child shape at the given index (0-based).
   //! @param theIndex the 0-based index of the child
   //! @return the child shape at the given index
-  const TopoDS_Shape& GetChild(size_t theIndex) const final { return mySubShapes.Value(static_cast<int>(theIndex)); }
+  const TopoDS_Shape& GetChild(size_t theIndex) const final
+  {
+    return mySubShapes.Value(static_cast<int>(theIndex));
+  }
 
   //! Returns an empty TWire.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;

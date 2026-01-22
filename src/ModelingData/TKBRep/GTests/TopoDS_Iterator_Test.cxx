@@ -352,7 +352,7 @@ TEST(TopoDS_Iterator_Test, CumulativeLocation)
 
   // Locations should differ
   EXPECT_NE(aChildLoc1.IsIdentity(), aChildLoc2.IsIdentity())
-      << "Cumulative location should affect child location";
+    << "Cumulative location should affect child location";
 }
 
 //=================================================================================================

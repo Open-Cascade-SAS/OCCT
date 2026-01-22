@@ -82,8 +82,9 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
 
       // Add to the subshapes array using dispatch helper (devirtualized)
       TopoDS_TShape* aTShape = aShape.TShape().get();
-      TopoDS_TShapeDispatch::Apply(aTShape,
-                                   [&aChild](auto* theTyped) { theTyped->mySubShapes.Append(aChild); });
+      TopoDS_TShapeDispatch::Apply(aTShape, [&aChild](auto* theTyped) {
+        theTyped->mySubShapes.Append(aChild);
+      });
       aTShape->Modified(true);
     }
     else
