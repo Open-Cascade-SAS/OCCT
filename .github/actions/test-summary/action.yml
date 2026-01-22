@@ -60,7 +60,7 @@ runs:
       run: |
         for platform in windows-x64 macos-x64 linux-clang-x64; do
           echo "Downloading results for $platform"
-          gh run download -n "results-$platform" -D "install/bin/results/current/"
+          gh run download ${{ github.run_id }} -n "results-$platform" -D "install/bin/results/current/"
         done
       shell: bash
 
