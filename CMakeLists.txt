@@ -1106,6 +1106,10 @@ COLLECT_AND_INSTALL_OCCT_HEADER_FILES ("${CMAKE_BINARY_DIR}" "${BUILD_TOOLKITS}"
 # Create and install Standard_Version.hxx
 CONFIGURE_AND_INSTALL_VERSION_HEADER()
 
+# Install deprecated NCollection alias headers for backward compatibility
+install(DIRECTORY src/Deprecated/NCollectionAliases/
+        DESTINATION "${INSTALL_DIR_INCLUDE}")
+
 string(TIMESTAMP CURRENT_TIME "%H:%M:%S")
 message (STATUS "Info: \(${CURRENT_TIME}\) End the collecting")
 

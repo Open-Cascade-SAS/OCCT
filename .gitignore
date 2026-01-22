@@ -42,6 +42,7 @@
 !/src/ModelingAlgorithms/
 !/src/ModelingData/
 !/src/Visualization/
+!/src/Deprecated/
 
 # ============================================================================
 # DEEPER LEVEL RULES (applied recursively within allowed directories above)
