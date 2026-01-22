@@ -745,3 +745,309 @@ TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_Find)
   auto aNotFound = std::find(aMap.cbegin(), aMap.cend(), 999);
   EXPECT_TRUE(aNotFound == aMap.cend());
 }
+
+TEST(NCollection_IndexedDataMapTest, TryBound_NewKey)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // TryBound on new key should add and return reference to new item
+  double& aRef1 = aMap.TryBound(10, 1.0);
+  EXPECT_DOUBLE_EQ(1.0, aRef1);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_EQ(1, aMap.FindIndex(10));
+
+  // Add another key
+  double& aRef2 = aMap.TryBound(20, 2.0);
+  EXPECT_DOUBLE_EQ(2.0, aRef2);
+  EXPECT_DOUBLE_EQ(2.0, aMap.FindFromKey(20));
+  EXPECT_EQ(2, aMap.Extent());
+  EXPECT_EQ(2, aMap.FindIndex(20));
+
+  // Modify through reference
+  aRef1 = 1.5;
+  EXPECT_DOUBLE_EQ(1.5, aMap.FindFromKey(10));
+}
+
+TEST(NCollection_IndexedDataMapTest, TryBound_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // First add a key
+  aMap.Add(10, 1.0);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+
+  // TryBound on existing key should return reference to existing item (not replace)
+  double& aRef = aMap.TryBound(10, 999.0);
+  EXPECT_DOUBLE_EQ(1.0, aRef);                 // Should be the original value
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10)); // Map should have original value
+  EXPECT_EQ(1, aMap.Extent());                 // Size should not change
+  EXPECT_EQ(1, aMap.FindIndex(10));            // Index should be the same
+
+  // Modify through reference
+  aRef = 1.5;
+  EXPECT_DOUBLE_EQ(1.5, aMap.FindFromKey(10));
+}
+
+TEST(NCollection_IndexedDataMapTest, TryBound_MoveSemantics)
+{
+  NCollection_IndexedDataMap<TCollection_AsciiString, double> aMap;
+
+  // Test with rvalue key
+  double& aRef1 = aMap.TryBound(TCollection_AsciiString("Key1"), 1.0);
+  EXPECT_DOUBLE_EQ(1.0, aRef1);
+  EXPECT_EQ(1, aMap.Extent());
+
+  // Test with existing key - should not replace
+  double& aRef2 = aMap.TryBound(TCollection_AsciiString("Key1"), 999.0);
+  EXPECT_DOUBLE_EQ(1.0, aRef2); // Should return original value
+  EXPECT_EQ(1, aMap.Extent());  // Size should not change
+}
+
+TEST(NCollection_IndexedDataMapTest, TryBound_ReferenceValidity)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // Add multiple keys and verify references point to map contents
+  double& aRef1 = aMap.TryBound(10, 1.0);
+  double& aRef2 = aMap.TryBound(20, 2.0);
+  double& aRef3 = aMap.TryBound(30, 3.0);
+
+  // Verify values
+  EXPECT_DOUBLE_EQ(1.0, aRef1);
+  EXPECT_DOUBLE_EQ(2.0, aRef2);
+  EXPECT_DOUBLE_EQ(3.0, aRef3);
+
+  // Verify references point to actual map values
+  EXPECT_EQ(&aRef1, &aMap.ChangeFromIndex(1));
+  EXPECT_EQ(&aRef2, &aMap.ChangeFromIndex(2));
+  EXPECT_EQ(&aRef3, &aMap.ChangeFromIndex(3));
+}
+
+TEST(NCollection_IndexedDataMapTest, Bind_NewKey)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // Bind new key should return true
+  bool isNew1 = aMap.Bind(10, 1.0);
+  EXPECT_TRUE(isNew1);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_EQ(1, aMap.FindIndex(10));
+
+  // Bind another new key
+  bool isNew2 = aMap.Bind(20, 2.0);
+  EXPECT_TRUE(isNew2);
+  EXPECT_DOUBLE_EQ(2.0, aMap.FindFromKey(20));
+  EXPECT_EQ(2, aMap.Extent());
+  EXPECT_EQ(2, aMap.FindIndex(20));
+}
+
+TEST(NCollection_IndexedDataMapTest, Bind_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // First bind a key
+  aMap.Bind(10, 1.0);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+
+  // Bind same key with different value - should overwrite and return false
+  bool isNew = aMap.Bind(10, 999.0);
+  EXPECT_FALSE(isNew);                           // Key already existed
+  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(10)); // Value should be replaced
+  EXPECT_EQ(1, aMap.Extent());                   // Size should not change
+  EXPECT_EQ(1, aMap.FindIndex(10));              // Index should be the same
+}
+
+TEST(NCollection_IndexedDataMapTest, Bind_MoveSemantics)
+{
+  NCollection_IndexedDataMap<TCollection_AsciiString, double> aMap;
+
+  // Test with rvalue key
+  bool isNew1 = aMap.Bind(TCollection_AsciiString("Key1"), 1.0);
+  EXPECT_TRUE(isNew1);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(TCollection_AsciiString("Key1")));
+
+  // Test with existing key - should replace
+  bool isNew2 = aMap.Bind(TCollection_AsciiString("Key1"), 999.0);
+  EXPECT_FALSE(isNew2);        // Key existed
+  EXPECT_EQ(1, aMap.Extent()); // Size should not change
+  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(TCollection_AsciiString("Key1"))); // Value replaced
+}
+
+TEST(NCollection_IndexedDataMapTest, Bound_NewKey)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // Bound on new key should add and return pointer to new item
+  double* pVal1 = aMap.Bound(10, 1.0);
+  EXPECT_NE(nullptr, pVal1);
+  EXPECT_DOUBLE_EQ(1.0, *pVal1);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_EQ(1, aMap.FindIndex(10));
+
+  // Add another key
+  double* pVal2 = aMap.Bound(20, 2.0);
+  EXPECT_NE(nullptr, pVal2);
+  EXPECT_DOUBLE_EQ(2.0, *pVal2);
+  EXPECT_DOUBLE_EQ(2.0, aMap.FindFromKey(20));
+  EXPECT_EQ(2, aMap.Extent());
+  EXPECT_EQ(2, aMap.FindIndex(20));
+
+  // Modify through pointer
+  *pVal1 = 1.5;
+  EXPECT_DOUBLE_EQ(1.5, aMap.FindFromKey(10));
+}
+
+TEST(NCollection_IndexedDataMapTest, Bound_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // First add a key
+  aMap.Add(10, 1.0);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+
+  // Bound on existing key should replace value and return pointer
+  double* pVal = aMap.Bound(10, 999.0);
+  EXPECT_NE(nullptr, pVal);
+  EXPECT_DOUBLE_EQ(999.0, *pVal);                // Should be the new value
+  EXPECT_DOUBLE_EQ(999.0, aMap.FindFromKey(10)); // Map should have new value
+  EXPECT_EQ(1, aMap.Extent());                   // Size should not change
+  EXPECT_EQ(1, aMap.FindIndex(10));              // Index should be the same
+
+  // Modify through pointer
+  *pVal = 1.5;
+  EXPECT_DOUBLE_EQ(1.5, aMap.FindFromKey(10));
+}
+
+TEST(NCollection_IndexedDataMapTest, Bound_MoveSemantics)
+{
+  NCollection_IndexedDataMap<TCollection_AsciiString, double> aMap;
+
+  // Test with rvalue key
+  double* pVal1 = aMap.Bound(TCollection_AsciiString("Key1"), 1.0);
+  EXPECT_NE(nullptr, pVal1);
+  EXPECT_DOUBLE_EQ(1.0, *pVal1);
+  EXPECT_EQ(1, aMap.Extent());
+
+  // Test with existing key - should replace
+  double* pVal2 = aMap.Bound(TCollection_AsciiString("Key1"), 999.0);
+  EXPECT_NE(nullptr, pVal2);
+  EXPECT_DOUBLE_EQ(999.0, *pVal2); // Should return new value
+  EXPECT_EQ(1, aMap.Extent());     // Size should not change
+}
+
+TEST(NCollection_IndexedDataMapTest, Bind_Bound_VsAdd_Behavior)
+{
+  // Test the difference between Add (no overwrite) vs Bind (overwrites)
+  NCollection_IndexedDataMap<int, double> aMap;
+
+  // Add initial value
+  aMap.Add(10, 1.0);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10));
+
+  // Add same key - should NOT overwrite
+  aMap.Add(10, 999.0);
+  EXPECT_DOUBLE_EQ(1.0, aMap.FindFromKey(10)); // Still 1.0
+
+  // Bind same key - SHOULD overwrite
+  aMap.Bind(10, 2.0);
+  EXPECT_DOUBLE_EQ(2.0, aMap.FindFromKey(10)); // Now 2.0
+
+  // Bound same key - SHOULD overwrite
+  aMap.Bound(10, 3.0);
+  EXPECT_DOUBLE_EQ(3.0, aMap.FindFromKey(10)); // Now 3.0
+
+  // TryBound same key - should NOT overwrite
+  aMap.TryBound(10, 999.0);
+  EXPECT_DOUBLE_EQ(3.0, aMap.FindFromKey(10)); // Still 3.0
+}
+
+// Tests for Emplace methods
+TEST(NCollection_IndexedDataMapTest, Emplace_NewKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+
+  // Emplace with new key should return index
+  int aIdx = aMap.Emplace(1, "One");
+  EXPECT_EQ(1, aIdx);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_STREQ("One", aMap.FindFromKey(1).ToCString());
+}
+
+TEST(NCollection_IndexedDataMapTest, Emplace_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+
+  // Emplace on existing key should destroy+reconstruct (return existing index)
+  int aIdx = aMap.Emplace(1, "New One");
+  EXPECT_EQ(1, aIdx);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_STREQ("New One", aMap.FindFromKey(1).ToCString());
+}
+
+TEST(NCollection_IndexedDataMapTest, Emplaced_NewKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+
+  // Emplaced with new key should return reference
+  TCollection_AsciiString& aRef = aMap.Emplaced(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Extent());
+}
+
+TEST(NCollection_IndexedDataMapTest, Emplaced_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+
+  // Emplaced on existing should destroy+reconstruct and return reference
+  TCollection_AsciiString& aRef = aMap.Emplaced(1, "New One");
+  EXPECT_STREQ("New One", aRef.ToCString());
+}
+
+TEST(NCollection_IndexedDataMapTest, TryEmplace_NewKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+
+  // TryEmplace with new key should return index
+  int aIdx = aMap.TryEmplace(1, "One");
+  EXPECT_EQ(1, aIdx);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_STREQ("One", aMap.FindFromKey(1).ToCString());
+}
+
+TEST(NCollection_IndexedDataMapTest, TryEmplace_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+
+  // TryEmplace on existing key should NOT modify (return existing index)
+  int aIdx = aMap.TryEmplace(1, "New One");
+  EXPECT_EQ(1, aIdx);
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_STREQ("One", aMap.FindFromKey(1).ToCString()); // Still original
+}
+
+TEST(NCollection_IndexedDataMapTest, TryEmplaced_NewKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+
+  // TryEmplaced with new key should return reference
+  TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "One");
+  EXPECT_STREQ("One", aRef.ToCString());
+  EXPECT_EQ(1, aMap.Extent());
+}
+
+TEST(NCollection_IndexedDataMapTest, TryEmplaced_ExistingKey)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+
+  // TryEmplaced on existing should return existing without modification
+  TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "New One");
+  EXPECT_STREQ("One", aRef.ToCString()); // Original value
+}

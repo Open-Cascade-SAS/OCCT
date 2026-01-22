@@ -82,23 +82,35 @@ private:
     Used     //!< Slot contains a valid element
   };
 
-  //! Internal slot structure holding key, value, and metadata
+  //! Internal slot structure holding key, value, and metadata.
+  //! Key and item storage is uninitialized until state becomes Used.
   struct Slot
   {
-    TheKeyType  myKey;
-    TheItemType myItem;
-    size_t      myHash;          //!< Cached hash code
-    uint8_t     myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
-    SlotState   myState;         //!< Current state of this slot
+    alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)];
+    alignas(TheItemType) char myItemStorage[sizeof(TheItemType)];
+    size_t    myHash;          //!< Cached hash code
+    uint8_t   myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
+    SlotState myState;         //!< Current state of this slot
 
-    Slot() noexcept(std::is_nothrow_default_constructible<TheKeyType>::value
-                    && std::is_nothrow_default_constructible<TheItemType>::value)
-        : myKey(),
-          myItem(),
-          myHash(0),
+    Slot() noexcept
+        : myHash(0),
           myProbeDistance(0),
           myState(SlotState::Empty)
     {
+    }
+
+    TheKeyType& Key() noexcept { return *reinterpret_cast<TheKeyType*>(myKeyStorage); }
+
+    const TheKeyType& Key() const noexcept
+    {
+      return *reinterpret_cast<const TheKeyType*>(myKeyStorage);
+    }
+
+    TheItemType& Item() noexcept { return *reinterpret_cast<TheItemType*>(myItemStorage); }
+
+    const TheItemType& Item() const noexcept
+    {
+      return *reinterpret_cast<const TheItemType*>(myItemStorage);
     }
   };
 
@@ -147,21 +159,21 @@ public:
     const TheKeyType& Key() const
     {
       Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatDataMap::Iterator::Key");
-      return mySlots[myIndex].myKey;
+      return mySlots[myIndex].Key();
     }
 
     //! Get current value (const)
     const TheItemType& Value() const
     {
       Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatDataMap::Iterator::Value");
-      return mySlots[myIndex].myItem;
+      return mySlots[myIndex].Item();
     }
 
     //! Get current value (mutable)
     TheItemType& ChangeValue() const
     {
       Standard_OutOfRange_Raise_if(!More(), "NCollection_FlatDataMap::Iterator::ChangeValue");
-      return const_cast<Slot*>(mySlots)[myIndex].myItem;
+      return const_cast<Slot*>(mySlots)[myIndex].Item();
     }
 
   private:
@@ -208,9 +220,8 @@ public:
       {
         if (theOther.mySlots[i].myState == SlotState::Used)
         {
-          // Copy key and value using copy constructor
-          new (&mySlots[i].myKey) TheKeyType(theOther.mySlots[i].myKey);
-          new (&mySlots[i].myItem) TheItemType(theOther.mySlots[i].myItem);
+          new (&mySlots[i].Key()) TheKeyType(theOther.mySlots[i].Key());
+          new (&mySlots[i].Item()) TheItemType(theOther.mySlots[i].Item());
           mySlots[i].myHash          = theOther.mySlots[i].myHash;
           mySlots[i].myProbeDistance = theOther.mySlots[i].myProbeDistance;
           mySlots[i].myState         = SlotState::Used;
@@ -248,8 +259,8 @@ public:
         {
           if (theOther.mySlots[i].myState == SlotState::Used)
           {
-            new (&mySlots[i].myKey) TheKeyType(theOther.mySlots[i].myKey);
-            new (&mySlots[i].myItem) TheItemType(theOther.mySlots[i].myItem);
+            new (&mySlots[i].Key()) TheKeyType(theOther.mySlots[i].Key());
+            new (&mySlots[i].Item()) TheItemType(theOther.mySlots[i].Item());
             mySlots[i].myHash          = theOther.mySlots[i].myHash;
             mySlots[i].myProbeDistance = theOther.mySlots[i].myProbeDistance;
             mySlots[i].myState         = SlotState::Used;
@@ -309,7 +320,7 @@ public:
     const std::optional<size_t> aFoundIndex = findSlot(theKey);
     if (aFoundIndex.has_value())
     {
-      return &mySlots[*aFoundIndex].myItem;
+      return &mySlots[*aFoundIndex].Item();
     }
     return nullptr;
   }
@@ -322,7 +333,7 @@ public:
     const std::optional<size_t> aFoundIndex = findSlot(theKey);
     if (aFoundIndex.has_value())
     {
-      return &mySlots[*aFoundIndex].myItem;
+      return &mySlots[*aFoundIndex].Item();
     }
     return nullptr;
   }
@@ -387,6 +398,143 @@ public:
     return insertImpl(std::forward<TheKeyType>(theKey), std::forward<TheItemType>(theItem));
   }
 
+  //! TryBind binds key to value only if key is not yet bound.
+  //! @param theKey key to add
+  //! @param theItem item to bind if key is not yet bound
+  //! @return true if key was newly added, false if key already existed
+  bool TryBind(const TheKeyType& theKey, const TheItemType& theItem)
+  {
+    ensureCapacity();
+    return tryInsertImpl(theKey, theItem);
+  }
+
+  //! TryBind binds key to value only if key is not yet bound.
+  bool TryBind(const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    ensureCapacity();
+    return tryInsertImpl(theKey, std::move(theItem));
+  }
+
+  //! TryBind binds key to value only if key is not yet bound.
+  bool TryBind(TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    ensureCapacity();
+    return tryInsertImpl(std::move(theKey), theItem);
+  }
+
+  //! TryBind binds key to value only if key is not yet bound.
+  bool TryBind(TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    ensureCapacity();
+    return tryInsertImpl(std::move(theKey), std::move(theItem));
+  }
+
+  //! Bound binds key to value and returns reference to the value.
+  //! @param theKey key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return reference to the value in the map
+  TheItemType& Bound(const TheKeyType& theKey, const TheItemType& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(theKey, theItem, std::false_type{});
+  }
+
+  //! Bound binds key to value and returns reference to the value.
+  TheItemType& Bound(const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(theKey, std::move(theItem), std::false_type{});
+  }
+
+  //! Bound binds key to value and returns reference to the value.
+  TheItemType& Bound(TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(std::move(theKey), theItem, std::false_type{});
+  }
+
+  //! Bound binds key to value and returns reference to the value.
+  TheItemType& Bound(TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(std::move(theKey), std::move(theItem), std::false_type{});
+  }
+
+  //! TryBound binds key to value only if key is not yet bound.
+  //! @param theKey key to add
+  //! @param theItem item to bind if key is not yet bound
+  //! @return reference to existing or newly bound value
+  TheItemType& TryBound(const TheKeyType& theKey, const TheItemType& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(theKey, theItem, std::true_type{});
+  }
+
+  //! TryBound binds key to value only if key is not yet bound.
+  TheItemType& TryBound(const TheKeyType& theKey, TheItemType&& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(theKey, std::move(theItem), std::true_type{});
+  }
+
+  //! TryBound binds key to value only if key is not yet bound.
+  TheItemType& TryBound(TheKeyType&& theKey, const TheItemType& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(std::move(theKey), theItem, std::true_type{});
+  }
+
+  //! TryBound binds key to value only if key is not yet bound.
+  TheItemType& TryBound(TheKeyType&& theKey, TheItemType&& theItem)
+  {
+    ensureCapacity();
+    return insertRefImpl(std::move(theKey), std::move(theItem), std::true_type{});
+  }
+
+  //! Emplace constructs value in-place; if key exists, updates the value.
+  //! @param theKey key to add/update
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return true if key was newly added, false if existing key was updated
+  template <typename K, typename... Args>
+  bool Emplace(K&& theKey, Args&&... theArgs)
+  {
+    ensureCapacity();
+    return emplaceImpl(std::forward<K>(theKey), std::false_type{}, std::forward<Args>(theArgs)...);
+  }
+
+  //! Emplaced constructs value in-place; if key exists, updates the value.
+  //! @param theKey key to add/update
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return reference to the value (existing updated or newly added)
+  template <typename K, typename... Args>
+  TheItemType& Emplaced(K&& theKey, Args&&... theArgs)
+  {
+    ensureCapacity();
+    return emplacedImpl(std::forward<K>(theKey), std::false_type{}, std::forward<Args>(theArgs)...);
+  }
+
+  //! TryEmplace constructs value in-place only if key not already bound.
+  //! @param theKey key to add
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return true if key was newly added, false if key already existed
+  template <typename K, typename... Args>
+  bool TryEmplace(K&& theKey, Args&&... theArgs)
+  {
+    ensureCapacity();
+    return emplaceImpl(std::forward<K>(theKey), std::true_type{}, std::forward<Args>(theArgs)...);
+  }
+
+  //! TryEmplaced constructs value in-place only if key not already bound.
+  //! @param theKey key to add
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return reference to the value (existing or newly added)
+  template <typename K, typename... Args>
+  TheItemType& TryEmplaced(K&& theKey, Args&&... theArgs)
+  {
+    ensureCapacity();
+    return emplacedImpl(std::forward<K>(theKey), std::true_type{}, std::forward<Args>(theArgs)...);
+  }
+
   //! Remove key from map
   //! @return true if key was found and removed
   bool UnBind(const TheKeyType& theKey)
@@ -402,13 +550,11 @@ public:
 
     const size_t aIndex = *aFoundIndex;
 
-    // Destroy key and value
-    mySlots[aIndex].myKey.~TheKeyType();
-    mySlots[aIndex].myItem.~TheItemType();
+    mySlots[aIndex].Key().~TheKeyType();
+    mySlots[aIndex].Item().~TheItemType();
     mySlots[aIndex].myState = SlotState::Deleted;
     --mySize;
 
-    // Backward shift delete to maintain Robin Hood invariant
     backwardShiftDelete(aIndex);
 
     return true;
@@ -420,13 +566,12 @@ public:
   {
     if (mySlots != nullptr)
     {
-      // Destroy all used slots
       for (size_t i = 0; i < myCapacity; ++i)
       {
         if (mySlots[i].myState == SlotState::Used)
         {
-          mySlots[i].myKey.~TheKeyType();
-          mySlots[i].myItem.~TheItemType();
+          mySlots[i].Key().~TheKeyType();
+          mySlots[i].Item().~TheItemType();
           mySlots[i].myState = SlotState::Empty;
         }
         else if (mySlots[i].myState == SlotState::Deleted)
@@ -526,16 +671,15 @@ private:
     myCapacity = theNewCapacity;
     mySize     = 0;
 
-    // Reinsert all elements from old buffer
     if (aOldSlots != nullptr)
     {
       for (size_t i = 0; i < aOldCapacity; ++i)
       {
         if (aOldSlots[i].myState == SlotState::Used)
         {
-          insertImpl(std::move(aOldSlots[i].myKey), std::move(aOldSlots[i].myItem));
-          aOldSlots[i].myKey.~TheKeyType();
-          aOldSlots[i].myItem.~TheItemType();
+          insertImpl(std::move(aOldSlots[i].Key()), std::move(aOldSlots[i].Item()));
+          aOldSlots[i].Key().~TheKeyType();
+          aOldSlots[i].Item().~TheItemType();
         }
       }
       Standard::Free(aOldSlots);
@@ -563,12 +707,11 @@ private:
       }
 
       if (aSlot.myState == SlotState::Used && aSlot.myHash == aHash
-          && myHasher(aSlot.myKey, theKey))
+          && myHasher(aSlot.Key(), theKey))
       {
         return aIndex;
       }
 
-      // Robin Hood optimization: if current probe > slot's probe, key can't exist further
       if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
       {
         return std::nullopt;
@@ -580,7 +723,6 @@ private:
     return std::nullopt;
   }
 
-  //! Insert key-value pair
   template <typename K, typename V>
   bool insertImpl(K&& theKey, V&& theItem)
   {
@@ -599,9 +741,8 @@ private:
 
       if (aSlot.myState == SlotState::Empty || aSlot.myState == SlotState::Deleted)
       {
-        // Found empty slot - insert here
-        new (&aSlot.myKey) TheKeyType(std::move(aKeyToInsert));
-        new (&aSlot.myItem) TheItemType(std::move(aItemToInsert));
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        new (&aSlot.Item()) TheItemType(std::move(aItemToInsert));
         aSlot.myHash          = aHashToInsert;
         aSlot.myProbeDistance = aProbe;
         aSlot.myState         = SlotState::Used;
@@ -610,18 +751,16 @@ private:
       }
 
       if (aSlot.myState == SlotState::Used && aSlot.myHash == aHashToInsert
-          && myHasher(aSlot.myKey, aKeyToInsert))
+          && myHasher(aSlot.Key(), aKeyToInsert))
       {
-        // Key exists - update value
-        aSlot.myItem = std::move(aItemToInsert);
+        aSlot.Item() = std::move(aItemToInsert);
         return false;
       }
 
-      // Robin Hood: if our probe distance > current slot's, swap and continue
       if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
       {
-        std::swap(aKeyToInsert, aSlot.myKey);
-        std::swap(aItemToInsert, aSlot.myItem);
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aItemToInsert, aSlot.Item());
         std::swap(aHashToInsert, aSlot.myHash);
         uint8_t aTmp          = aProbe;
         aProbe                = aSlot.myProbeDistance;
@@ -638,7 +777,302 @@ private:
     }
   }
 
-  //! Backward shift delete to maintain Robin Hood invariant
+  template <typename K, typename V>
+  bool tryInsertImpl(K&& theKey, V&& theItem)
+  {
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
+    uint8_t      aProbe = 0;
+
+    TheKeyType  aKeyToInsert  = std::forward<K>(theKey);
+    TheItemType aItemToInsert = std::forward<V>(theItem);
+    size_t      aHashToInsert = aHash;
+
+    while (true)
+    {
+      Slot& aSlot = mySlots[aIndex];
+
+      if (aSlot.myState == SlotState::Empty || aSlot.myState == SlotState::Deleted)
+      {
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        new (&aSlot.Item()) TheItemType(std::move(aItemToInsert));
+        aSlot.myHash          = aHashToInsert;
+        aSlot.myProbeDistance = aProbe;
+        aSlot.myState         = SlotState::Used;
+        ++mySize;
+        return true;
+      }
+
+      if (aSlot.myState == SlotState::Used && aSlot.myHash == aHashToInsert
+          && myHasher(aSlot.Key(), aKeyToInsert))
+      {
+        return false;
+      }
+
+      if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
+      {
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aItemToInsert, aSlot.Item());
+        std::swap(aHashToInsert, aSlot.myHash);
+        uint8_t aTmp          = aProbe;
+        aProbe                = aSlot.myProbeDistance;
+        aSlot.myProbeDistance = aTmp;
+      }
+
+      ++aProbe;
+      aIndex = (aIndex + 1) & aMask;
+
+      if (aProbe > THE_MAX_PROBE_DISTANCE)
+      {
+        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
+      }
+    }
+  }
+
+  template <typename K, typename V, bool IsTry>
+  TheItemType& insertRefImpl(K&& theKey, V&& theItem, std::bool_constant<IsTry>)
+  {
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
+    uint8_t      aProbe = 0;
+
+    TheKeyType  aKeyToInsert  = std::forward<K>(theKey);
+    TheItemType aItemToInsert = std::forward<V>(theItem);
+    size_t      aHashToInsert = aHash;
+
+    while (true)
+    {
+      Slot& aSlot = mySlots[aIndex];
+
+      if (aSlot.myState == SlotState::Empty || aSlot.myState == SlotState::Deleted)
+      {
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        new (&aSlot.Item()) TheItemType(std::move(aItemToInsert));
+        aSlot.myHash          = aHashToInsert;
+        aSlot.myProbeDistance = aProbe;
+        aSlot.myState         = SlotState::Used;
+        ++mySize;
+        return aSlot.Item();
+      }
+
+      if (aSlot.myState == SlotState::Used && aSlot.myHash == aHashToInsert
+          && myHasher(aSlot.Key(), aKeyToInsert))
+      {
+        if constexpr (!IsTry)
+          aSlot.Item() = std::move(aItemToInsert);
+        return aSlot.Item();
+      }
+
+      if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
+      {
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aItemToInsert, aSlot.Item());
+        std::swap(aHashToInsert, aSlot.myHash);
+        uint8_t aTmp          = aProbe;
+        aProbe                = aSlot.myProbeDistance;
+        aSlot.myProbeDistance = aTmp;
+      }
+
+      ++aProbe;
+      aIndex = (aIndex + 1) & aMask;
+
+      if (aProbe > THE_MAX_PROBE_DISTANCE)
+      {
+        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
+      }
+    }
+  }
+
+  template <typename K, bool IsTry, typename... Args>
+  bool emplaceImpl(K&& theKey, std::bool_constant<IsTry>, Args&&... theArgs)
+  {
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
+    uint8_t      aProbe = 0;
+
+    TheKeyType aKeyToInsert  = std::forward<K>(theKey);
+    size_t     aHashToInsert = aHash;
+
+    while (true)
+    {
+      Slot& aSlot = mySlots[aIndex];
+
+      if (aSlot.myState == SlotState::Empty || aSlot.myState == SlotState::Deleted)
+      {
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        new (&aSlot.Item()) TheItemType(std::forward<Args>(theArgs)...);
+        aSlot.myHash          = aHashToInsert;
+        aSlot.myProbeDistance = aProbe;
+        aSlot.myState         = SlotState::Used;
+        ++mySize;
+        return true;
+      }
+
+      if (aSlot.myState == SlotState::Used && aSlot.myHash == aHashToInsert
+          && myHasher(aSlot.Key(), aKeyToInsert))
+      {
+        if constexpr (!IsTry)
+          aSlot.Item() = TheItemType(std::forward<Args>(theArgs)...);
+        return false;
+      }
+
+      if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
+      {
+        TheItemType aItemToInsert(std::forward<Args>(theArgs)...);
+
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aItemToInsert, aSlot.Item());
+        std::swap(aHashToInsert, aSlot.myHash);
+        uint8_t aTmp          = aProbe;
+        aProbe                = aSlot.myProbeDistance;
+        aSlot.myProbeDistance = aTmp;
+
+        ++aProbe;
+        aIndex = (aIndex + 1) & aMask;
+
+        while (true)
+        {
+          Slot& aSlot2 = mySlots[aIndex];
+
+          if (aSlot2.myState == SlotState::Empty || aSlot2.myState == SlotState::Deleted)
+          {
+            new (&aSlot2.Key()) TheKeyType(std::move(aKeyToInsert));
+            new (&aSlot2.Item()) TheItemType(std::move(aItemToInsert));
+            aSlot2.myHash          = aHashToInsert;
+            aSlot2.myProbeDistance = aProbe;
+            aSlot2.myState         = SlotState::Used;
+            ++mySize;
+            return true;
+          }
+
+          if (aSlot2.myState == SlotState::Used && aProbe > aSlot2.myProbeDistance)
+          {
+            std::swap(aKeyToInsert, aSlot2.Key());
+            std::swap(aItemToInsert, aSlot2.Item());
+            std::swap(aHashToInsert, aSlot2.myHash);
+            uint8_t aTmp2          = aProbe;
+            aProbe                 = aSlot2.myProbeDistance;
+            aSlot2.myProbeDistance = aTmp2;
+          }
+
+          ++aProbe;
+          aIndex = (aIndex + 1) & aMask;
+
+          if (aProbe > THE_MAX_PROBE_DISTANCE)
+          {
+            throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
+          }
+        }
+      }
+
+      ++aProbe;
+      aIndex = (aIndex + 1) & aMask;
+
+      if (aProbe > THE_MAX_PROBE_DISTANCE)
+      {
+        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
+      }
+    }
+  }
+
+  template <typename K, bool IsTry, typename... Args>
+  TheItemType& emplacedImpl(K&& theKey, std::bool_constant<IsTry>, Args&&... theArgs)
+  {
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
+    uint8_t      aProbe = 0;
+
+    TheKeyType aKeyToInsert  = std::forward<K>(theKey);
+    size_t     aHashToInsert = aHash;
+
+    while (true)
+    {
+      Slot& aSlot = mySlots[aIndex];
+
+      if (aSlot.myState == SlotState::Empty || aSlot.myState == SlotState::Deleted)
+      {
+        new (&aSlot.Key()) TheKeyType(std::move(aKeyToInsert));
+        new (&aSlot.Item()) TheItemType(std::forward<Args>(theArgs)...);
+        aSlot.myHash          = aHashToInsert;
+        aSlot.myProbeDistance = aProbe;
+        aSlot.myState         = SlotState::Used;
+        ++mySize;
+        return aSlot.Item();
+      }
+
+      if (aSlot.myState == SlotState::Used && aSlot.myHash == aHashToInsert
+          && myHasher(aSlot.Key(), aKeyToInsert))
+      {
+        if constexpr (!IsTry)
+          aSlot.Item() = TheItemType(std::forward<Args>(theArgs)...);
+        return aSlot.Item();
+      }
+
+      if (aSlot.myState == SlotState::Used && aProbe > aSlot.myProbeDistance)
+      {
+        TheItemType aItemToInsert(std::forward<Args>(theArgs)...);
+
+        std::swap(aKeyToInsert, aSlot.Key());
+        std::swap(aItemToInsert, aSlot.Item());
+        std::swap(aHashToInsert, aSlot.myHash);
+        uint8_t aTmp          = aProbe;
+        aProbe                = aSlot.myProbeDistance;
+        aSlot.myProbeDistance = aTmp;
+
+        TheItemType& aResult = aSlot.Item();
+
+        ++aProbe;
+        aIndex = (aIndex + 1) & aMask;
+
+        while (true)
+        {
+          Slot& aSlot2 = mySlots[aIndex];
+
+          if (aSlot2.myState == SlotState::Empty || aSlot2.myState == SlotState::Deleted)
+          {
+            new (&aSlot2.Key()) TheKeyType(std::move(aKeyToInsert));
+            new (&aSlot2.Item()) TheItemType(std::move(aItemToInsert));
+            aSlot2.myHash          = aHashToInsert;
+            aSlot2.myProbeDistance = aProbe;
+            aSlot2.myState         = SlotState::Used;
+            ++mySize;
+            return aResult;
+          }
+
+          if (aSlot2.myState == SlotState::Used && aProbe > aSlot2.myProbeDistance)
+          {
+            std::swap(aKeyToInsert, aSlot2.Key());
+            std::swap(aItemToInsert, aSlot2.Item());
+            std::swap(aHashToInsert, aSlot2.myHash);
+            uint8_t aTmp2          = aProbe;
+            aProbe                 = aSlot2.myProbeDistance;
+            aSlot2.myProbeDistance = aTmp2;
+          }
+
+          ++aProbe;
+          aIndex = (aIndex + 1) & aMask;
+
+          if (aProbe > THE_MAX_PROBE_DISTANCE)
+          {
+            throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
+          }
+        }
+      }
+
+      ++aProbe;
+      aIndex = (aIndex + 1) & aMask;
+
+      if (aProbe > THE_MAX_PROBE_DISTANCE)
+      {
+        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
+      }
+    }
+  }
+
   void backwardShiftDelete(size_t theIndex)
   {
     const size_t aMask    = myCapacity - 1;
@@ -647,20 +1081,19 @@ private:
 
     while (mySlots[aNext].myState == SlotState::Used && mySlots[aNext].myProbeDistance > 0)
     {
-      // Move next slot backward
-      mySlots[aCurrent].myKey           = std::move(mySlots[aNext].myKey);
-      mySlots[aCurrent].myItem          = std::move(mySlots[aNext].myItem);
+      new (&mySlots[aCurrent].Key()) TheKeyType(std::move(mySlots[aNext].Key()));
+      new (&mySlots[aCurrent].Item()) TheItemType(std::move(mySlots[aNext].Item()));
       mySlots[aCurrent].myHash          = mySlots[aNext].myHash;
       mySlots[aCurrent].myProbeDistance = mySlots[aNext].myProbeDistance - 1;
       mySlots[aCurrent].myState         = SlotState::Used;
 
-      mySlots[aNext].myState = SlotState::Deleted;
+      mySlots[aNext].Key().~TheKeyType();
+      mySlots[aNext].Item().~TheItemType();
 
       aCurrent = aNext;
       aNext    = (aNext + 1) & aMask;
     }
 
-    // Final slot becomes empty (not deleted)
     mySlots[aCurrent].myState = SlotState::Empty;
   }
 

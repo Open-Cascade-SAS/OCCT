@@ -23,6 +23,7 @@
 #include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
 
+#include <type_traits>
 #include <utility>
 
 /**
@@ -75,6 +76,13 @@ public:
     //! Constructor with 'Next'
     MapNode(TheKeyType&& theKey, NCollection_ListNode* theNext)
         : NCollection_TListNode<TheKeyType>(std::forward<TheKeyType>(theKey), theNext)
+    {
+    }
+
+    //! Constructor with in-place key construction
+    template <typename... Args>
+    MapNode(std::in_place_t, NCollection_ListNode* theNext, Args&&... theArgs)
+        : NCollection_TListNode<TheKeyType>(std::in_place, theNext, std::forward<Args>(theArgs)...)
     {
     }
 
@@ -232,73 +240,38 @@ public:
   }
 
   //! Add
-  bool Add(const TheKeyType& theKey)
-  {
-    if (Resizable())
-      ReSize(Extent());
-    MapNode* aNode;
-    size_t   aHash;
-    if (lookup(theKey, aNode, aHash))
-    {
-      return false;
-    }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash]    = new (this->myAllocator) MapNode(theKey, data[aHash]);
-    Increment();
-    return true;
-  }
+  bool Add(const TheKeyType& theKey) { return addImpl(theKey, std::false_type{}); }
 
   //! Add
-  bool Add(TheKeyType&& theKey)
-  {
-    if (Resizable())
-      ReSize(Extent());
-    MapNode* aNode;
-    size_t   aHash;
-    if (lookup(theKey, aNode, aHash))
-    {
-      return false;
-    }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash]    = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey), data[aHash]);
-    Increment();
-    return true;
-  }
+  bool Add(TheKeyType&& theKey) { return addImpl(std::move(theKey), std::false_type{}); }
 
   //! Added: add a new key if not yet in the map, and return
   //! reference to either newly added or previously existing object
-  const TheKeyType& Added(const TheKeyType& theKey)
-  {
-    if (Resizable())
-      ReSize(Extent());
-    MapNode* aNode;
-    size_t   aHash;
-    if (lookup(theKey, aNode, aHash))
-    {
-      return aNode->Key();
-    }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash]    = new (this->myAllocator) MapNode(theKey, data[aHash]);
-    Increment();
-    return data[aHash]->Key();
-  }
+  const TheKeyType& Added(const TheKeyType& theKey) { return addImpl(theKey, std::true_type{}); }
 
   //! Added: add a new key if not yet in the map, and return
   //! reference to either newly added or previously existing object
   const TheKeyType& Added(TheKeyType&& theKey)
   {
-    if (Resizable())
-      ReSize(Extent());
-    MapNode* aNode;
-    size_t   aHash;
-    if (lookup(theKey, aNode, aHash))
-    {
-      return aNode->Key();
-    }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash]    = new (this->myAllocator) MapNode(std::forward<TheKeyType>(theKey), data[aHash]);
-    Increment();
-    return data[aHash]->Key();
+    return addImpl(std::move(theKey), std::true_type{});
+  }
+
+  //! Emplace constructs key in-place; if key exists, destroys and reconstructs.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return true if key was newly added, false if key already existed (and was reconstructed)
+  template <typename... Args>
+  bool Emplace(Args&&... theArgs)
+  {
+    return emplaceImpl(std::false_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+  }
+
+  //! Emplaced constructs key in-place; if key exists, destroys and reconstructs.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key in the map
+  template <typename... Args>
+  const TheKeyType& Emplaced(Args&&... theArgs)
+  {
+    return emplaceImpl(std::false_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
   }
 
   //! Contains
@@ -517,6 +490,72 @@ protected:
   size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
+  }
+
+  //! Implementation helper for Add/Added.
+  //! @tparam K forwarding reference type for key
+  //! @tparam ReturnRef if true, returns const reference to key; if false, returns bool
+  //! @param theKey key to add
+  //! @return bool (Add) or const TheKeyType& (Added)
+  template <typename K, bool ReturnRef>
+  auto addImpl(K&& theKey, std::bool_constant<ReturnRef>)
+    -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
+  {
+    if (Resizable())
+      ReSize(Extent());
+    MapNode* aNode;
+    size_t   aHash;
+    if (lookup(theKey, aNode, aHash))
+    {
+      if constexpr (ReturnRef)
+        return aNode->Key();
+      else
+        return false;
+    }
+    MapNode** data = (MapNode**)myData1;
+    data[aHash]    = new (this->myAllocator) MapNode(std::forward<K>(theKey), data[aHash]);
+    Increment();
+    if constexpr (ReturnRef)
+      return data[aHash]->Key();
+    else
+      return true;
+  }
+
+  //! Implementation helper for Emplace/TryEmplace/Emplaced/TryEmplaced.
+  //! @tparam IsTry if true, does not modify existing; if false, destroys and reconstructs
+  //! @tparam ReturnRef if true, returns const reference to key; if false, returns bool
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return bool or const TheKeyType& depending on ReturnRef
+  template <bool IsTry, bool ReturnRef, typename... Args>
+  auto emplaceImpl(std::bool_constant<IsTry>, std::bool_constant<ReturnRef>, Args&&... theArgs)
+    -> std::conditional_t<ReturnRef, const TheKeyType&, bool>
+  {
+    if (Resizable())
+      ReSize(Extent());
+    // First construct the key to compute hash and check for existence
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    MapNode*   aNode;
+    size_t     aHash;
+    if (lookup(aTempKey, aNode, aHash))
+    {
+      if constexpr (!IsTry)
+      {
+        // Destroy existing and reconstruct in-place
+        aNode->ChangeValue().~TheKeyType();
+        new (&aNode->ChangeValue()) TheKeyType(std::move(aTempKey));
+      }
+      if constexpr (ReturnRef)
+        return aNode->Key();
+      else
+        return false;
+    }
+    MapNode** data = (MapNode**)myData1;
+    data[aHash]    = new (this->myAllocator) MapNode(std::move(aTempKey), data[aHash]);
+    Increment();
+    if constexpr (ReturnRef)
+      return data[aHash]->Key();
+    else
+      return true;
   }
 
 protected:

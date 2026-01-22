@@ -294,3 +294,32 @@ TEST(NCollection_MapTest, OCC24271_BooleanOperations)
   }
   EXPECT_TRUE(aMapSect.IsEmpty());
 }
+
+// Tests for Emplace methods
+TEST(NCollection_MapTest, EmplaceBasic)
+{
+  NCollection_Map<TCollection_AsciiString> aMap;
+
+  // Test Emplace - should return true for new key
+  EXPECT_TRUE(aMap.Emplace("Hello"));
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_TRUE(aMap.Contains("Hello"));
+
+  // Test Emplace on existing key - destroys and reconstructs
+  EXPECT_FALSE(aMap.Emplace("Hello"));
+  EXPECT_EQ(1, aMap.Size());
+}
+
+TEST(NCollection_MapTest, EmplacedBasic)
+{
+  NCollection_Map<TCollection_AsciiString> aMap;
+
+  // Test Emplaced - should return reference to key
+  const TCollection_AsciiString& aKey1 = aMap.Emplaced("World");
+  EXPECT_TRUE(aKey1.IsEqual("World"));
+  EXPECT_EQ(1, aMap.Size());
+
+  // Test Emplaced on existing key - should return existing
+  const TCollection_AsciiString& aKey2 = aMap.Emplaced("World");
+  EXPECT_EQ(&aKey1, &aKey2); // Same reference (after reconstruction)
+}

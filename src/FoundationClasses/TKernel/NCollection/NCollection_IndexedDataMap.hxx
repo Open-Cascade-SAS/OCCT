@@ -24,6 +24,7 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_OutOfRange.hxx>
+#include <type_traits>
 #include <utility>
 
 /**
@@ -100,6 +101,21 @@ private:
                        NCollection_ListNode* theNext1)
         : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext1),
           myKey1(std::forward<TheKeyType>(theKey1)),
+          myIndex(theIndex)
+    {
+    }
+
+    //! Constructor with in-place value construction
+    template <typename K, typename... Args>
+    IndexedDataMapNode(K&&       theKey1,
+                       const int theIndex,
+                       std::in_place_t,
+                       NCollection_ListNode* theNext1,
+                       Args&&... theArgs)
+        : NCollection_TListNode<TheItemType>(std::in_place,
+                                             theNext1,
+                                             std::forward<Args>(theArgs)...),
+          myKey1(std::forward<K>(theKey1)),
           myIndex(theIndex)
     {
     }
@@ -315,21 +331,7 @@ public:
   //! @return index of Key
   int Add(const TheKeyType& theKey1, const TheItemType& theItem)
   {
-    if (Resizable())
-    {
-      ReSize(Extent());
-    }
-    IndexedDataMapNode* aNode;
-    size_t              aHash;
-    if (lookup(theKey1, aNode, aHash))
-    {
-      return aNode->Index();
-    }
-    const int aNewIndex = Increment();
-    aNode = new (this->myAllocator) IndexedDataMapNode(theKey1, aNewIndex, theItem, myData1[aHash]);
-    myData1[aHash]         = aNode;
-    myData2[aNewIndex - 1] = aNode;
-    return aNewIndex;
+    return addImpl(theKey1, theItem);
   }
 
   //! Returns the Index of already bound Key or appends new Key with specified Item value.
@@ -338,22 +340,7 @@ public:
   //! @return index of Key
   int Add(TheKeyType&& theKey1, const TheItemType& theItem)
   {
-    if (Resizable())
-    {
-      ReSize(Extent());
-    }
-    IndexedDataMapNode* aNode;
-    size_t              aHash;
-    if (lookup(theKey1, aNode, aHash))
-    {
-      return aNode->Index();
-    }
-    const int aNewIndex = Increment();
-    aNode               = new (this->myAllocator)
-      IndexedDataMapNode(std::forward<TheKeyType>(theKey1), aNewIndex, theItem, myData1[aHash]);
-    myData1[aHash]         = aNode;
-    myData2[aNewIndex - 1] = aNode;
-    return aNewIndex;
+    return addImpl(std::move(theKey1), theItem);
   }
 
   //! Returns the Index of already bound Key or appends new Key with specified Item value.
@@ -362,22 +349,7 @@ public:
   //! @return index of Key
   int Add(const TheKeyType& theKey1, TheItemType&& theItem)
   {
-    if (Resizable())
-    {
-      ReSize(Extent());
-    }
-    IndexedDataMapNode* aNode;
-    size_t              aHash;
-    if (lookup(theKey1, aNode, aHash))
-    {
-      return aNode->Index();
-    }
-    const int aNewIndex = Increment();
-    aNode               = new (this->myAllocator)
-      IndexedDataMapNode(theKey1, aNewIndex, std::forward<TheItemType>(theItem), myData1[aHash]);
-    myData1[aHash]         = aNode;
-    myData2[aNewIndex - 1] = aNode;
-    return aNewIndex;
+    return addImpl(theKey1, std::move(theItem));
   }
 
   //! Returns the Index of already bound Key or appends new Key with specified Item value.
@@ -386,24 +358,140 @@ public:
   //! @return index of Key
   int Add(TheKeyType&& theKey1, TheItemType&& theItem)
   {
-    if (Resizable())
-    {
-      ReSize(Extent());
-    }
-    IndexedDataMapNode* aNode;
-    size_t              aHash;
-    if (lookup(theKey1, aNode, aHash))
-    {
-      return aNode->Index();
-    }
-    const int aNewIndex = Increment();
-    aNode          = new (this->myAllocator) IndexedDataMapNode(std::forward<TheKeyType>(theKey1),
-                                                       aNewIndex,
-                                                       std::forward<TheItemType>(theItem),
-                                                       myData1[aHash]);
-    myData1[aHash] = aNode;
-    myData2[aNewIndex - 1] = aNode;
-    return aNewIndex;
+    return addImpl(std::move(theKey1), std::move(theItem));
+  }
+
+  //! TryBound binds Item to Key only if Key is not yet bound.
+  //! @param theKey1 key to add
+  //! @param theItem item to bind if Key is not yet bound
+  //! @return reference to existing or newly bound Item
+  TheItemType& TryBound(const TheKeyType& theKey1, const TheItemType& theItem)
+  {
+    return bindImpl(theKey1, theItem, std::true_type{}, std::true_type{});
+  }
+
+  //! TryBound binds Item to Key only if Key is not yet bound.
+  TheItemType& TryBound(TheKeyType&& theKey1, const TheItemType& theItem)
+  {
+    return bindImpl(std::move(theKey1), theItem, std::true_type{}, std::true_type{});
+  }
+
+  //! TryBound binds Item to Key only if Key is not yet bound.
+  TheItemType& TryBound(const TheKeyType& theKey1, TheItemType&& theItem)
+  {
+    return bindImpl(theKey1, std::move(theItem), std::true_type{}, std::true_type{});
+  }
+
+  //! TryBound binds Item to Key only if Key is not yet bound.
+  TheItemType& TryBound(TheKeyType&& theKey1, TheItemType&& theItem)
+  {
+    return bindImpl(std::move(theKey1), std::move(theItem), std::true_type{}, std::true_type{});
+  }
+
+  //! Bind binds Item to Key in map; overwrites value if Key already exists.
+  //! @param theKey1 key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return true if Key was not bound already
+  bool Bind(const TheKeyType& theKey1, const TheItemType& theItem)
+  {
+    return bindImpl(theKey1, theItem, std::false_type{}, std::false_type{});
+  }
+
+  //! Bind binds Item to Key in map; overwrites value if Key already exists.
+  bool Bind(TheKeyType&& theKey1, const TheItemType& theItem)
+  {
+    return bindImpl(std::move(theKey1), theItem, std::false_type{}, std::false_type{});
+  }
+
+  //! Bind binds Item to Key in map; overwrites value if Key already exists.
+  bool Bind(const TheKeyType& theKey1, TheItemType&& theItem)
+  {
+    return bindImpl(theKey1, std::move(theItem), std::false_type{}, std::false_type{});
+  }
+
+  //! Bind binds Item to Key in map; overwrites value if Key already exists.
+  bool Bind(TheKeyType&& theKey1, TheItemType&& theItem)
+  {
+    return bindImpl(std::move(theKey1), std::move(theItem), std::false_type{}, std::false_type{});
+  }
+
+  //! Bound binds Item to Key in map; overwrites value if Key already exists.
+  //! @param theKey1 key to add/update
+  //! @param theItem new item; overrides value previously bound to the key
+  //! @return pointer to modifiable Item
+  TheItemType* Bound(const TheKeyType& theKey1, const TheItemType& theItem)
+  {
+    return &bindImpl(theKey1, theItem, std::false_type{}, std::true_type{});
+  }
+
+  //! Bound binds Item to Key in map; overwrites value if Key already exists.
+  TheItemType* Bound(TheKeyType&& theKey1, const TheItemType& theItem)
+  {
+    return &bindImpl(std::move(theKey1), theItem, std::false_type{}, std::true_type{});
+  }
+
+  //! Bound binds Item to Key in map; overwrites value if Key already exists.
+  TheItemType* Bound(const TheKeyType& theKey1, TheItemType&& theItem)
+  {
+    return &bindImpl(theKey1, std::move(theItem), std::false_type{}, std::true_type{});
+  }
+
+  //! Bound binds Item to Key in map; overwrites value if Key already exists.
+  TheItemType* Bound(TheKeyType&& theKey1, TheItemType&& theItem)
+  {
+    return &bindImpl(std::move(theKey1), std::move(theItem), std::false_type{}, std::true_type{});
+  }
+
+  //! Emplace constructs value in-place; if key exists, overwrites value.
+  //! @param theKey1 key to add/update
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return index of the key (new or existing)
+  template <typename K, typename... Args>
+  int Emplace(K&& theKey1, Args&&... theArgs)
+  {
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::false_type{},
+                       std::false_type{},
+                       std::forward<Args>(theArgs)...);
+  }
+
+  //! Emplaced constructs value in-place; if key exists, destroys and reconstructs value.
+  //! @param theKey1 key to add/update
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return reference to the value (existing reconstructed or newly added)
+  template <typename K, typename... Args>
+  TheItemType& Emplaced(K&& theKey1, Args&&... theArgs)
+  {
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::false_type{},
+                       std::true_type{},
+                       std::forward<Args>(theArgs)...);
+  }
+
+  //! TryEmplace constructs value in-place only if key not already bound.
+  //! @param theKey1 key to add
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return index of the key (new or existing)
+  template <typename K, typename... Args>
+  int TryEmplace(K&& theKey1, Args&&... theArgs)
+  {
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::true_type{},
+                       std::false_type{},
+                       std::forward<Args>(theArgs)...);
+  }
+
+  //! TryEmplaced constructs value in-place only if key not already bound.
+  //! @param theKey1 key to add
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return reference to the value (existing or newly added)
+  template <typename K, typename... Args>
+  TheItemType& TryEmplaced(K&& theKey1, Args&&... theArgs)
+  {
+    return emplaceImpl(std::forward<K>(theKey1),
+                       std::true_type{},
+                       std::true_type{},
+                       std::forward<Args>(theArgs)...);
   }
 
   //! Contains
@@ -695,6 +783,114 @@ protected:
   size_t HashCode(const TheKeyType& theKey, const int theUpperBound) const
   {
     return myHasher(theKey) % theUpperBound + 1;
+  }
+
+  //! Implementation helper for Add (returns index).
+  //! @tparam K forwarding reference type for key
+  //! @tparam V forwarding reference type for value
+  //! @param theKey1 key to add
+  //! @param theItem item to bind
+  //! @return index of the key (new or existing)
+  template <typename K, typename V>
+  int addImpl(K&& theKey1, V&& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return aNode->Index();
+    }
+    const int aNewIndex    = Extent() + 1;
+    aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
+                                                       aNewIndex,
+                                                       std::forward<V>(theItem),
+                                                       myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    Increment();
+    return aNewIndex;
+  }
+
+  //! Implementation helper for Emplace/TryEmplace operations.
+  //! @tparam K forwarding reference type for key
+  //! @tparam IsTry if true, does not modify existing; if false, overwrites
+  //! @tparam ReturnRef if true, returns reference; if false, returns int (index)
+  //! @param theKey1 key to add/update
+  //! @param theArgs arguments forwarded to value constructor
+  //! @return int (index) or TheItemType& depending on ReturnRef
+  template <typename K, bool IsTry, bool ReturnRef, typename... Args>
+  auto emplaceImpl(K&& theKey1,
+                   std::bool_constant<IsTry>,
+                   std::bool_constant<ReturnRef>,
+                   Args&&... theArgs) -> std::conditional_t<ReturnRef, TheItemType&, int>
+  {
+    if (Resizable())
+      ReSize(Extent());
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      if constexpr (!IsTry)
+        aNode->ChangeValue() = TheItemType(std::forward<Args>(theArgs)...);
+      if constexpr (ReturnRef)
+        return aNode->ChangeValue();
+      else
+        return aNode->Index();
+    }
+    const int aNewIndex    = Extent() + 1;
+    aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
+                                                       aNewIndex,
+                                                       std::in_place,
+                                                       myData1[aHash],
+                                                       std::forward<Args>(theArgs)...);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    Increment();
+    if constexpr (ReturnRef)
+      return aNode->ChangeValue();
+    else
+      return aNewIndex;
+  }
+
+  //! Implementation helper for Bind/TryBind/Bound/TryBound operations.
+  //! @tparam K forwarding reference type for key
+  //! @tparam V forwarding reference type for value
+  //! @tparam IsTry if true, does not modify existing; if false, overwrites
+  //! @tparam ReturnRef if true, returns reference; if false, returns bool
+  //! @return bool or TheItemType& depending on ReturnRef
+  template <typename K, typename V, bool IsTry, bool ReturnRef>
+  auto bindImpl(K&& theKey1, V&& theItem, std::bool_constant<IsTry>, std::bool_constant<ReturnRef>)
+    -> std::conditional_t<ReturnRef, TheItemType&, bool>
+  {
+    if (Resizable())
+      ReSize(Extent());
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      if constexpr (!IsTry)
+        aNode->ChangeValue() = std::forward<V>(theItem);
+      if constexpr (ReturnRef)
+        return aNode->ChangeValue();
+      else
+        return false;
+    }
+    const int aNewIndex    = Extent() + 1;
+    aNode                  = new (this->myAllocator) IndexedDataMapNode(std::forward<K>(theKey1),
+                                                       aNewIndex,
+                                                       std::forward<V>(theItem),
+                                                       myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    Increment();
+    if constexpr (ReturnRef)
+      return aNode->ChangeValue();
+    else
+      return true;
   }
 
 protected:

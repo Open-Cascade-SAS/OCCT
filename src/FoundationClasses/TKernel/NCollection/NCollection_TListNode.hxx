@@ -40,6 +40,14 @@ public:
   {
   }
 
+  //! Constructor with in-place value construction
+  template <typename... Args>
+  NCollection_TListNode(std::in_place_t, NCollection_ListNode* theNext, Args&&... theArgs)
+      : NCollection_ListNode(theNext),
+        myValue(std::forward<Args>(theArgs)...)
+  {
+  }
+
   //! Constant value access
   const TheItemType& Value() const noexcept { return myValue; }
 
