@@ -16,16 +16,8 @@
 
 #include <Standard_Type.hxx>
 #include <TopoDS_TWire.hxx>
-#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TWire, TopoDS_TShape)
-
-//=================================================================================================
-
-TopAbs_ShapeEnum TopoDS_TWire::ShapeType() const
-{
-  return TopAbs_WIRE;
-}
 
 //=================================================================================================
 

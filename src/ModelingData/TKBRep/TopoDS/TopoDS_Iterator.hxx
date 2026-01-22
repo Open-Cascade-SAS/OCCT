@@ -19,16 +19,19 @@
 
 #include <Standard_NoSuchObject.hxx>
 #include <TopoDS_Shape.hxx>
-#include <NCollection_List.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
-class TopoDS_Shape;
+
+class TopoDS_TShape;
 
 //! Iterates on the underlying shape underlying a given
 //! TopoDS_Shape object, providing access to its
 //! component sub-shapes. Each component shape is
 //! returned as a TopoDS_Shape with an orientation,
 //! and a compound of the original values and the relative values.
+//!
+//! This iterator uses index-based access to child shapes
+//! stored in the TShape's dynamic array for optimal performance.
 class TopoDS_Iterator
 {
 public:
@@ -36,7 +39,10 @@ public:
 
   //! Creates an empty Iterator.
   TopoDS_Iterator()
-      : myOrientation(TopAbs_FORWARD)
+      : myTShape(nullptr),
+        myIndex(0U),
+        myNbChildren(0U),
+        myOrientation(TopAbs_FORWARD)
   {
   }
 
@@ -48,6 +54,10 @@ public:
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
   TopoDS_Iterator(const TopoDS_Shape& S, const bool cumOri = true, const bool cumLoc = true)
+      : myTShape(nullptr),
+        myIndex(0U),
+        myNbChildren(0U),
+        myOrientation(TopAbs_FORWARD)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -65,7 +75,7 @@ public:
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  bool More() const { return myShapes.More(); }
+  bool More() const { return myIndex < myNbChildren; }
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -84,10 +94,16 @@ public:
   }
 
 private:
-  TopoDS_Shape                             myShape;
-  NCollection_List<TopoDS_Shape>::Iterator myShapes;
-  TopAbs_Orientation                       myOrientation;
-  TopLoc_Location                          myLocation;
+  //! Updates myShape from the current child at myIndex.
+  void updateCurrentShape();
+
+private:
+  TopoDS_Shape       myShape;       //!< Current composed sub-shape
+  TopoDS_TShape*     myTShape;      //!< Pointer to parent TShape (non-owning)
+  size_t             myIndex;       //!< Current child index (0-based)
+  size_t             myNbChildren;  //!< Cached number of children
+  TopAbs_Orientation myOrientation; //!< Cumulative orientation
+  TopLoc_Location    myLocation;    //!< Cumulative location
 };
 
 #endif // _TopoDS_Iterator_HeaderFile

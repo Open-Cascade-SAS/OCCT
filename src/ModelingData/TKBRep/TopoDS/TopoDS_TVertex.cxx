@@ -18,10 +18,3 @@
 #include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
-
-//=================================================================================================
-
-TopAbs_ShapeEnum TopoDS_TVertex::ShapeType() const
-{
-  return TopAbs_VERTEX;
-}

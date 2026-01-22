@@ -19,7 +19,7 @@
 
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
-#include <NCollection_List.hxx>
+
 class TopoDS_Shape;
 
 // resolve name collisions with X11 headers
@@ -37,7 +37,7 @@ class TopoDS_Shape;
 //! TShapes are defined by their optional domain
 //! (geometry) and their components (other TShapes
 //! with Locations and Orientations). The components
-//! are stored in a List of Shapes.
+//! are stored in a dynamic array within each derived class.
 //!
 //! A TShape contains the following boolean flags:
 //!
@@ -48,84 +48,109 @@ class TopoDS_Shape;
 //! - Closed     : Is closed (note that only Wires and Shells may be closed).
 //! - Infinite   : Is infinite.
 //! - Convex     : Is convex.
+//! - Locked     : Is locked against modifications.
 //!
 //! Users have no direct access to the classes derived
 //! from TShape. They handle them with the classes
 //! derived from Shape.
 class TopoDS_TShape : public Standard_Transient
 {
+public:
+  //! Bit layout for compact state storage.
+  //! Bits 0-3 store the TopAbs_ShapeEnum value (0-8).
+  //! Bits 4-11 store boolean flags.
+  //! Bits 12-15 are reserved for future use.
+  enum BitLayout : uint16_t
+  {
+    Bits_ShapeType_Mask  = 0x000F, //!< bits 0-3: shape type mask
+    Bits_ShapeType_Shift = 0,      //!< shift for shape type
+    Bit_Free             = 0x0010, //!< bit 4: free flag
+    Bit_Modified         = 0x0020, //!< bit 5: modified flag
+    Bit_Checked          = 0x0040, //!< bit 6: checked flag
+    Bit_Orientable       = 0x0080, //!< bit 7: orientable flag
+    Bit_Closed           = 0x0100, //!< bit 8: closed flag
+    Bit_Infinite         = 0x0200, //!< bit 9: infinite flag
+    Bit_Convex           = 0x0400, //!< bit 10: convex flag
+    Bit_Locked           = 0x0800, //!< bit 11: locked flag
+    Bits_Reserved        = 0xF000  //!< bits 12-15: reserved
+  };
 
 public:
   //! Returns the free flag.
-  bool Free() const { return ((myFlags & TopoDS_TShape_Flags_Free) != 0); }
+  bool Free() const { return (myState & Bit_Free) != 0; }
 
   //! Sets the free flag.
-  void Free(bool theIsFree) { setFlag(TopoDS_TShape_Flags_Free, theIsFree); }
+  void Free(bool theIsFree) { setBit(Bit_Free, theIsFree); }
 
   //! Returns the locked flag.
-  bool Locked() const { return ((myFlags & TopoDS_TShape_Flags_Locked) != 0); }
+  bool Locked() const { return (myState & Bit_Locked) != 0; }
 
   //! Sets the locked flag.
-  void Locked(bool theIsLocked) { setFlag(TopoDS_TShape_Flags_Locked, theIsLocked); }
+  void Locked(bool theIsLocked) { setBit(Bit_Locked, theIsLocked); }
 
   //! Returns the modification flag.
-  bool Modified() const { return ((myFlags & TopoDS_TShape_Flags_Modified) != 0); }
+  bool Modified() const { return (myState & Bit_Modified) != 0; }
 
   //! Sets the modification flag.
   void Modified(bool theIsModified)
   {
-    setFlag(TopoDS_TShape_Flags_Modified, theIsModified);
+    setBit(Bit_Modified, theIsModified);
     if (theIsModified)
     {
-      // clang-format off
-      setFlag (TopoDS_TShape_Flags_Checked, false); // when a TShape is modified it is also unchecked
-      // clang-format on
+      // when a TShape is modified it is also unchecked
+      setBit(Bit_Checked, false);
     }
   }
 
   //! Returns the checked flag.
-  bool Checked() const { return ((myFlags & TopoDS_TShape_Flags_Checked) != 0); }
+  bool Checked() const { return (myState & Bit_Checked) != 0; }
 
   //! Sets the checked flag.
-  void Checked(bool theIsChecked) { setFlag(TopoDS_TShape_Flags_Checked, theIsChecked); }
+  void Checked(bool theIsChecked) { setBit(Bit_Checked, theIsChecked); }
 
   //! Returns the orientability flag.
-  bool Orientable() const { return ((myFlags & TopoDS_TShape_Flags_Orientable) != 0); }
+  bool Orientable() const { return (myState & Bit_Orientable) != 0; }
 
   //! Sets the orientability flag.
-  void Orientable(bool theIsOrientable)
-  {
-    setFlag(TopoDS_TShape_Flags_Orientable, theIsOrientable);
-  }
+  void Orientable(bool theIsOrientable) { setBit(Bit_Orientable, theIsOrientable); }
 
   //! Returns the closedness flag.
-  bool Closed() const { return ((myFlags & TopoDS_TShape_Flags_Closed) != 0); }
+  bool Closed() const { return (myState & Bit_Closed) != 0; }
 
   //! Sets the closedness flag.
-  void Closed(bool theIsClosed) { setFlag(TopoDS_TShape_Flags_Closed, theIsClosed); }
+  void Closed(bool theIsClosed) { setBit(Bit_Closed, theIsClosed); }
 
   //! Returns the infinity flag.
-  bool Infinite() const { return ((myFlags & TopoDS_TShape_Flags_Infinite) != 0); }
+  bool Infinite() const { return (myState & Bit_Infinite) != 0; }
 
   //! Sets the infinity flag.
-  void Infinite(bool theIsInfinite) { setFlag(TopoDS_TShape_Flags_Infinite, theIsInfinite); }
+  void Infinite(bool theIsInfinite) { setBit(Bit_Infinite, theIsInfinite); }
 
   //! Returns the convexness flag.
-  bool Convex() const { return ((myFlags & TopoDS_TShape_Flags_Convex) != 0); }
+  bool Convex() const { return (myState & Bit_Convex) != 0; }
 
   //! Sets the convexness flag.
-  void Convex(bool theIsConvex) { setFlag(TopoDS_TShape_Flags_Convex, theIsConvex); }
+  void Convex(bool theIsConvex) { setBit(Bit_Convex, theIsConvex); }
 
-  //! Returns the type as a term of the ShapeEnum enum :
-  //! VERTEX, EDGE, WIRE, FACE, ....
-  Standard_EXPORT virtual TopAbs_ShapeEnum ShapeType() const = 0;
+  //! Returns the type as a term of the ShapeEnum enum:
+  //! VERTEX, EDGE, WIRE, FACE, SHELL, SOLID, COMPSOLID, COMPOUND.
+  //! The type is embedded in the lower 4 bits of the state.
+  TopAbs_ShapeEnum ShapeType() const
+  {
+    return static_cast<TopAbs_ShapeEnum>(myState & Bits_ShapeType_Mask);
+  }
 
   //! Returns a copy of the TShape with no sub-shapes.
   Standard_EXPORT virtual occ::handle<TopoDS_TShape> EmptyCopy() const = 0;
 
   //! Returns the number of direct sub-shapes (children).
   //! @sa TopoDS_Iterator for accessing sub-shapes
-  int NbChildren() const { return myShapes.Size(); }
+  virtual int NbChildren() const = 0;
+
+  //! Returns the child shape at the given index (0-based).
+  //! @param theIndex the 0-based index of the child
+  //! @return the child shape at the given index
+  virtual const TopoDS_Shape& GetChild(size_t theIndex) const = 0;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -136,46 +161,27 @@ public:
   DEFINE_STANDARD_RTTIEXT(TopoDS_TShape, Standard_Transient)
 
 protected:
-  //! Constructs an empty TShape.
-  //! Free       : True
-  //! Modified   : True
-  //! Checked    : False
-  //! Orientable : True
-  //! Closed     : False
-  //! Infinite   : False
-  //! Convex     : False
-  TopoDS_TShape()
-      : myFlags(TopoDS_TShape_Flags_Free | TopoDS_TShape_Flags_Modified
-                | TopoDS_TShape_Flags_Orientable)
+  //! Constructs a TShape with the given shape type.
+  //! Default flags: Free = true, Modified = true, Orientable = true.
+  //! @param theType the shape type to embed in the state
+  TopoDS_TShape(TopAbs_ShapeEnum theType)
+      : myState(static_cast<uint16_t>(theType) | Bit_Free | Bit_Modified | Bit_Orientable)
   {
   }
 
-private:
-  // Defined mask values
-  enum TopoDS_TShape_Flags
-  {
-    TopoDS_TShape_Flags_Free       = 0x001,
-    TopoDS_TShape_Flags_Modified   = 0x002,
-    TopoDS_TShape_Flags_Checked    = 0x004,
-    TopoDS_TShape_Flags_Orientable = 0x008,
-    TopoDS_TShape_Flags_Closed     = 0x010,
-    TopoDS_TShape_Flags_Infinite   = 0x020,
-    TopoDS_TShape_Flags_Convex     = 0x040,
-    TopoDS_TShape_Flags_Locked     = 0x080
-  };
-
-  //! Set bit flag.
-  void setFlag(TopoDS_TShape_Flags theFlag, bool theIsOn)
+  //! Set a bit flag.
+  //! @param theBit the bit to set
+  //! @param theIsOn true to set, false to clear
+  void setBit(uint16_t theBit, bool theIsOn)
   {
     if (theIsOn)
-      myFlags |= (int)theFlag;
+      myState |= theBit;
     else
-      myFlags &= ~(int)theFlag;
+      myState &= ~theBit;
   }
 
-private:
-  NCollection_List<TopoDS_Shape> myShapes;
-  int                            myFlags;
+protected:
+  uint16_t myState; //!< Compact state: shape type (bits 0-3) + flags (bits 4-11) + reserved (bits 12-15)
 };
 
 #endif // _TopoDS_TShape_HeaderFile

@@ -16,16 +16,8 @@
 
 #include <Standard_Type.hxx>
 #include <TopoDS_TCompSolid.hxx>
-#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TCompSolid, TopoDS_TShape)
-
-//=================================================================================================
-
-TopAbs_ShapeEnum TopoDS_TCompSolid::ShapeType() const
-{
-  return TopAbs_COMPSOLID;
-}
 
 //=================================================================================================
 

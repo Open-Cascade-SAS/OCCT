@@ -19,27 +19,57 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 //! A topological part of a surface or of the 2D
 //! space. The boundary is a set of wires and
 //! vertices.
+//!
+//! Faces typically have 1-4 wires (outer + holes),
+//! so the default bucket size is 4.
 class TopoDS_TFace : public TopoDS_TShape
 {
 public:
-  //! Creates an empty TFace.
+  //! Default bucket size for faces.
+  //! Faces typically have 1-4 wires (outer + holes).
+  static constexpr int DefaultBucketSize = 4;
+
+  //! Creates an empty TFace with default bucket size.
   TopoDS_TFace()
+      : TopoDS_TShape(TopAbs_FACE),
+        mySubShapes(DefaultBucketSize)
+  {
+  }
 
-    = default;
+  //! Creates an empty TFace with specified bucket size.
+  //! @param theBucketSize the bucket size for internal storage
+  explicit TopoDS_TFace(const size_t theBucketSize)
+      : TopoDS_TShape(TopAbs_FACE),
+        mySubShapes(theBucketSize > 0 ? static_cast<int>(theBucketSize) : DefaultBucketSize)
+  {
+  }
 
-  //! returns FACE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  //! Returns the number of direct sub-shapes (children).
+  int NbChildren() const final { return mySubShapes.Size(); }
+
+  //! Returns the child shape at the given index (0-based).
+  //! @param theIndex the 0-based index of the child
+  //! @return the child shape at the given index
+  const TopoDS_Shape& GetChild(size_t theIndex) const final { return mySubShapes.Value(static_cast<int>(theIndex)); }
 
   //! Returns an empty TFace.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TFace, TopoDS_TShape)
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes; //!< Child shapes (wires, vertices)
 };
 
 #endif // _TopoDS_TFace_HeaderFile

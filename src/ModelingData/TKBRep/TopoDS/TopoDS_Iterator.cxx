@@ -17,6 +17,7 @@
 #define No_Standard_NoSuchObject
 
 #include <TopoDS_Iterator.hxx>
+#include <TopoDS_TShape.hxx>
 
 //=================================================================================================
 
@@ -26,22 +27,28 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
     myLocation = S.Location();
   else
     myLocation.Identity();
+
   if (cumOri)
     myOrientation = S.Orientation();
   else
     myOrientation = TopAbs_FORWARD;
 
   if (S.IsNull())
-    myShapes = NCollection_List<TopoDS_Shape>::Iterator();
+  {
+    myTShape     = nullptr;
+    myIndex      = 0U;
+    myNbChildren = 0U;
+  }
   else
-    myShapes.Initialize(S.TShape()->myShapes);
+  {
+    myTShape     = S.TShape().get();
+    myIndex      = 0U;
+    myNbChildren = static_cast<size_t>(myTShape->NbChildren());
+  }
 
   if (More())
   {
-    myShape = myShapes.Value();
-    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
-    if (!myLocation.IsIdentity())
-      myShape.Move(myLocation, false);
+    updateCurrentShape();
   }
 }
 
@@ -49,12 +56,19 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
 
 void TopoDS_Iterator::Next()
 {
-  myShapes.Next();
+  ++myIndex;
   if (More())
   {
-    myShape = myShapes.Value();
-    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
-    if (!myLocation.IsIdentity())
-      myShape.Move(myLocation, false);
+    updateCurrentShape();
   }
+}
+
+//=================================================================================================
+
+void TopoDS_Iterator::updateCurrentShape()
+{
+  myShape = myTShape->GetChild(myIndex);
+  myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
+  if (!myLocation.IsIdentity())
+    myShape.Move(myLocation, false);
 }
