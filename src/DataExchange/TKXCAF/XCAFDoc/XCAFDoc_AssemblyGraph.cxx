@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <Standard_NullObject.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_TreeNode.hxx>
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Tool.hxx>

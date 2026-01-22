@@ -20,7 +20,8 @@
 #include <SelectMgr_SelectableObject.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_MeshOwner, SelectMgr_EntityOwner)
 
@@ -68,11 +69,11 @@ void MeshVS_MeshOwner::AddSelectedEntities(const occ::handle<TColStd_HPackedMapO
   if (mySelectedNodes.IsNull())
     mySelectedNodes = Nodes;
   else if (!Nodes.IsNull())
-    mySelectedNodes->ChangeMap().Unite(Nodes->Map());
+    NCollection_PackedMapAlgo::Unite(mySelectedNodes->ChangeMap(), Nodes->Map());
   if (mySelectedElems.IsNull())
     mySelectedElems = Elems;
   else if (!Elems.IsNull())
-    mySelectedElems->ChangeMap().Unite(Elems->Map());
+    NCollection_PackedMapAlgo::Unite(mySelectedElems->ChangeMap(), Elems->Map());
 }
 
 //=================================================================================================
@@ -125,7 +126,7 @@ void MeshVS_MeshOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationMan
     occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
     if (!aNodes.IsNull() && aNodes->Map().Extent() == 1)
     {
-      TColStd_MapIteratorOfPackedMapOfInteger anIt(aNodes->Map());
+      TColStd_PackedMapOfInteger::Iterator anIt(aNodes->Map());
       if (myLastID != anIt.Key())
       {
         myLastID = anIt.Key();
@@ -133,7 +134,7 @@ void MeshVS_MeshOwner::HilightWithColor(const occ::handle<PrsMgr_PresentationMan
     }
     else if (!aElems.IsNull() && aElems->Map().Extent() == 1)
     {
-      TColStd_MapIteratorOfPackedMapOfInteger anIt(aElems->Map());
+      TColStd_PackedMapOfInteger::Iterator anIt(aElems->Map());
       if (myLastID != anIt.Key())
       {
         myLastID = anIt.Key();
@@ -170,7 +171,7 @@ bool MeshVS_MeshOwner::IsForcedHilight() const
     occ::handle<TColStd_HPackedMapOfInteger> aNodes = GetDetectedNodes();
     if (!aNodes.IsNull() && aNodes->Map().Extent() == 1)
     {
-      TColStd_MapIteratorOfPackedMapOfInteger anIt(aNodes->Map());
+      TColStd_PackedMapOfInteger::Iterator anIt(aNodes->Map());
       aKey = anIt.Key();
       if (myLastID == aKey)
       {
@@ -180,7 +181,7 @@ bool MeshVS_MeshOwner::IsForcedHilight() const
     occ::handle<TColStd_HPackedMapOfInteger> aElems = GetDetectedElements();
     if (!aElems.IsNull() && aElems->Map().Extent() == 1)
     {
-      TColStd_MapIteratorOfPackedMapOfInteger anIt(aElems->Map());
+      TColStd_PackedMapOfInteger::Iterator anIt(aElems->Map());
       aKey = anIt.Key();
       if (myLastID == aKey)
       {

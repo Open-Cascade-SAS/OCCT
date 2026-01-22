@@ -19,7 +19,6 @@
 #include <MeshVS_Drawer.hxx>
 #include <MeshVS_DrawerAttribute.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_CommonSensitiveEntity, Select3D_SensitiveSet)
 
@@ -44,7 +43,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
   {
     int                               aNbSelectableNodes = 0;
     const TColStd_PackedMapOfInteger& anAllNodesMap      = myDataSource->GetAllNodes();
-    for (TColStd_MapIteratorOfPackedMapOfInteger aNodesIter(anAllNodesMap); aNodesIter.More();
+    for (TColStd_PackedMapOfInteger::Iterator aNodesIter(anAllNodesMap); aNodesIter.More();
          aNodesIter.Next())
     {
       const int aNodeIdx = aNodesIter.Key();
@@ -65,7 +64,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
   else if (mySelMethod == MeshVS_MSM_PRECISE)
   {
     const TColStd_PackedMapOfInteger& anAllNodesMap = myDataSource->GetAllNodes();
-    for (TColStd_MapIteratorOfPackedMapOfInteger aNodesIter(anAllNodesMap); aNodesIter.More();
+    for (TColStd_PackedMapOfInteger::Iterator aNodesIter(anAllNodesMap); aNodesIter.More();
          aNodesIter.Next())
     {
       const int    aNodeIdx = aNodesIter.Key();
@@ -77,7 +76,7 @@ MeshVS_CommonSensitiveEntity::MeshVS_CommonSensitiveEntity(
 
     const TColStd_PackedMapOfInteger& anAllElementsMap = myDataSource->GetAllElements();
     MeshVS_EntityType                 aType            = MeshVS_ET_NONE;
-    for (TColStd_MapIteratorOfPackedMapOfInteger anElemIter(anAllElementsMap); anElemIter.More();
+    for (TColStd_PackedMapOfInteger::Iterator anElemIter(anAllElementsMap); anElemIter.More();
          anElemIter.Next())
     {
       const int anElemIdx = anElemIter.Key();

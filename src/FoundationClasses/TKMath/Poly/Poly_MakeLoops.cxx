@@ -195,7 +195,7 @@ int Poly_MakeLoops::Perform()
     if (aPassNum == 0)
     {
       // move hanging links to start indices to make the second pass
-      TColStd_MapIteratorOfPackedMapOfInteger it(myHangIndices);
+      TColStd_PackedMapOfInteger::Iterator it(myHangIndices);
       for (; it.More(); it.Next())
         myStartIndices.Add(it.Key());
     }
@@ -479,8 +479,8 @@ void Poly_MakeLoops::showBoundaryBreaks() const
   }
 
   // check each node if the number of input and output links are equal
-  bool                                    isFirst = true;
-  TColStd_MapIteratorOfPackedMapOfInteger it(aNodesMap);
+  bool                                 isFirst = true;
+  TColStd_PackedMapOfInteger::Iterator it(aNodesMap);
   for (; it.More(); it.Next())
   {
     int                                  aNode  = it.Key();
@@ -534,7 +534,7 @@ void Poly_MakeLoops::showBoundaryBreaks() const
 
 void Poly_MakeLoops::GetHangingLinks(ListOfLink& theLinks) const
 {
-  TColStd_MapIteratorOfPackedMapOfInteger it(myHangIndices);
+  TColStd_PackedMapOfInteger::Iterator it(myHangIndices);
   for (; it.More(); it.Next())
   {
     int  aIndexS = it.Key();

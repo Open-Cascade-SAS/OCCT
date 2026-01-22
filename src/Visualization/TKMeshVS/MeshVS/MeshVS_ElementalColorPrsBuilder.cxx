@@ -36,7 +36,7 @@
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <NCollection_List.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_ElementalColorPrsBuilder, MeshVS_PrsBuilder)
@@ -94,8 +94,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
   anIDs.Assign(IDs);
   occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
   if (!aHiddenElems.IsNull())
-    anIDs.Subtract(aHiddenElems->Map());
-  anIDs.Subtract(IDsToExclude);
+    NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+  NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   // STEP 0: We looking for two colored elements, who has equal two colors and move it
   // to map of elements with one assigned color
@@ -200,8 +200,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     aLineType = (Aspect_TypeOfLine)aLineInt;
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  int                                     PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  int                                  PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
+  TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();

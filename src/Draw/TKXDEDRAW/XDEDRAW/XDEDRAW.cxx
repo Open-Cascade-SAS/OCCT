@@ -39,7 +39,7 @@
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_AsciiString.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <TDataStd_Comment.hxx>
@@ -1606,7 +1606,7 @@ static int XDumpAssemblyGraph(Draw_Interpretor& di, int argc, const char** argv)
       const TColStd_PackedMapOfInteger*          aLinksPtr      = anAdjacencyMap.Seek(theNode);
       if (aLinksPtr != nullptr)
       {
-        for (TColStd_MapIteratorOfPackedMapOfInteger anIt1(*aLinksPtr); anIt1.More(); anIt1.Next())
+        for (TColStd_PackedMapOfInteger::Iterator anIt1(*aLinksPtr); anIt1.More(); anIt1.Next())
         {
           aSS << " " << anIt1.Key();
         }

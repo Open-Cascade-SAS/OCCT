@@ -16,7 +16,6 @@
 #include <Message_Messenger.hxx>
 #include <NCollection_LocalArray.hxx>
 #include <Standard_Type.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
 #include <TDataStd_IntPackedMap.hxx>
 #include <TDF_Attribute.hxx>
@@ -160,7 +159,7 @@ void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& the
     int                          iChar = 0;
     NCollection_LocalArray<char> str(12 * aSize + 1);
 
-    TColStd_MapIteratorOfPackedMapOfInteger anIt(aS->GetMap());
+    TColStd_PackedMapOfInteger::Iterator anIt(aS->GetMap());
     for (; anIt.More(); anIt.Next())
     {
       const int intValue = anIt.Key();

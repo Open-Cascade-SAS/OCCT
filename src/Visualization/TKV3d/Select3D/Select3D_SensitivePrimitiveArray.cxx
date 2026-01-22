@@ -15,6 +15,7 @@
 
 #include <Select3D_SensitivePrimitiveArray.hxx>
 
+#include <NCollection_PackedMapAlgo.hxx>
 #include <OSD_Parallel.hxx>
 
 #include <atomic>
@@ -906,11 +907,13 @@ bool Select3D_SensitivePrimitiveArray::Matches(SelectBasics_SelectingVolumeManag
       hasResults = true;
       if (!myDetectedElemMap.IsNull())
       {
-        myDetectedElemMap->ChangeMap().Unite(aChild->myDetectedElemMap->Map());
+        NCollection_PackedMapAlgo::Unite(myDetectedElemMap->ChangeMap(),
+                                         aChild->myDetectedElemMap->Map());
       }
       if (!myDetectedNodeMap.IsNull())
       {
-        myDetectedNodeMap->ChangeMap().Unite(aChild->myDetectedNodeMap->Map());
+        NCollection_PackedMapAlgo::Unite(myDetectedNodeMap->ChangeMap(),
+                                         aChild->myDetectedNodeMap->Map());
       }
       if (thePickResult.Depth() > aPickResult.Depth())
       {

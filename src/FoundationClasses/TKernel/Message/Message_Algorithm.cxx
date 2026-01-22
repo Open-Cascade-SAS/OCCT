@@ -26,9 +26,10 @@
 #include <TCollection_HAsciiString.hxx>
 #include <TCollection_HExtendedString.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Message_Algorithm, Standard_Transient)
 
@@ -299,7 +300,9 @@ void Message_Algorithm::AddStatus(const Message_ExecStatus&             theAllow
         aData = new TColStd_HPackedMapOfInteger;
 
       // add integer parameter for the status
-      occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap().Unite(aNumsOther->Map());
+      NCollection_PackedMapAlgo::Unite(
+        occ::down_cast<TColStd_HPackedMapOfInteger>(aData)->ChangeMap(),
+        aNumsOther->Map());
     }
     // b) strings
     occ::handle<NCollection_HSequence<occ::handle<TCollection_HExtendedString>>> aStrsOther =
@@ -351,9 +354,9 @@ TCollection_ExtendedString Message_Algorithm::PrepareReport(
   const occ::handle<TColStd_HPackedMapOfInteger>& theMapError,
   const int                                       theMaxCount)
 {
-  TCollection_ExtendedString              aNewReport;
-  TColStd_MapIteratorOfPackedMapOfInteger anIt(theMapError->Map());
-  int                                     nb = 1;
+  TCollection_ExtendedString           aNewReport;
+  TColStd_PackedMapOfInteger::Iterator anIt(theMapError->Map());
+  int                                  nb = 1;
   for (; anIt.More() && nb <= theMaxCount; anIt.Next(), nb++)
   {
     if (nb > 1)

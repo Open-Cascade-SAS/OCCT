@@ -39,8 +39,8 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 #include <NCollection_Sequence.hxx>
 
 #ifdef _WIN32
@@ -192,17 +192,17 @@ void MeshVS_MeshPrsBuilder::BuildNodes(const occ::handle<Prs3d_Presentation>& Pr
     // subtract the hidden nodes and ids to exclude (to minimize allocated memory)
     occ::handle<TColStd_HPackedMapOfInteger> aHiddenNodes = myParentMesh->GetHiddenNodes();
     if (!aHiddenNodes.IsNull())
-      anIDs.Subtract(aHiddenNodes->Map());
+      NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenNodes->Map());
   }
-  anIDs.Subtract(IDsToExclude);
+  NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   int upper = anIDs.Extent();
   if (upper <= 0)
     return;
 
-  occ::handle<Graphic3d_ArrayOfPoints>    aNodePoints = new Graphic3d_ArrayOfPoints(upper);
-  int                                     k           = 0;
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  occ::handle<Graphic3d_ArrayOfPoints> aNodePoints = new Graphic3d_ArrayOfPoints(upper);
+  int                                  k           = 0;
+  TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();
@@ -290,11 +290,11 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
   anIDs.Assign(IDs);
   occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
   if (!aHiddenElems.IsNull())
-    anIDs.Subtract(aHiddenElems->Map());
-  anIDs.Subtract(IDsToExclude);
+    NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+  NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  TColStd_MapIteratorOfPackedMapOfInteger                     it(anIDs);
+  TColStd_PackedMapOfInteger::Iterator                        it(anIDs);
 
   bool showEdges = true;
   aDrawer->GetBoolean(MeshVS_DA_ShowEdges, showEdges);
@@ -621,9 +621,9 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
   occ::handle<Graphic3d_AspectMarker3d> aNodeMark = MeshVS_Tool::CreateAspectMarker3d(GetDrawer());
 
   // Hilight one element or node
-  TColStd_MapIteratorOfPackedMapOfInteger it(IDs);
-  int                                     ID = it.Key(), NbNodes;
-  MeshVS_EntityType                       aType;
+  TColStd_PackedMapOfInteger::Iterator it(IDs);
+  int                                  ID = it.Key(), NbNodes;
+  MeshVS_EntityType                    aType;
 
   if (!aSource->GetGeom(ID, IsElement, aCoords, NbNodes, aType))
     return;

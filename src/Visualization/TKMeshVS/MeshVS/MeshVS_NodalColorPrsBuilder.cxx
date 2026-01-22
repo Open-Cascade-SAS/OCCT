@@ -45,7 +45,8 @@
 #include <Quantity_Color.hxx>
 #include <Standard_Type.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_NodalColorPrsBuilder, MeshVS_PrsBuilder)
 
@@ -138,8 +139,8 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   anIDs.Assign(IDs);
   occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
   if (!aHiddenElems.IsNull())
-    anIDs.Subtract(aHiddenElems->Map());
-  anIDs.Subtract(IDsToExclude);
+    NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
+  NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
   bool IsReflect = false, IsMeshSmoothShading = false;
   aDrawer->GetBoolean(MeshVS_DA_ColorReflection, IsReflect);
@@ -158,8 +159,8 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   // Calculate maximum possible number of vertices and bounds
   occ::handle<NCollection_HArray1<NCollection_Sequence<int>>> aTopo;
-  int                                     PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  int                                  PolygonVerticesFor3D = 0, PolygonBoundsFor3D = 0;
+  TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();

@@ -63,7 +63,6 @@
 #include <TDataStd_IntPackedMap.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
 #include <TColStd_PackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <NCollection_List.hxx>
 #include <TDataStd_ReferenceArray.hxx>
@@ -3088,8 +3087,8 @@ static int DDataStd_GetIntPackedMap(Draw_Interpretor& di, int nb, const char** a
       return 1;
     }
     //
-    const TColStd_PackedMapOfInteger&       aMap = anAtt->GetMap();
-    TColStd_MapIteratorOfPackedMapOfInteger itr(aMap);
+    const TColStd_PackedMapOfInteger&    aMap = anAtt->GetMap();
+    TColStd_PackedMapOfInteger::Iterator itr(aMap);
     for (int j = 1; itr.More(); itr.Next(), j++)
     {
       int aKey(itr.Key());

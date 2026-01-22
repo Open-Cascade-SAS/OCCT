@@ -29,7 +29,8 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <TColStd_HPackedMapOfInteger.hxx>
-#include <TColStd_MapIteratorOfPackedMapOfInteger.hxx>
+#include <TColStd_PackedMapOfInteger.hxx>
+#include <NCollection_PackedMapAlgo.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(MeshVS_VectorPrsBuilder, MeshVS_PrsBuilder)
 
@@ -225,11 +226,11 @@ void MeshVS_VectorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& Prs,
   {
     occ::handle<TColStd_HPackedMapOfInteger> aHiddenElems = myParentMesh->GetHiddenElems();
     if (!aHiddenElems.IsNull())
-      anIDs.Subtract(aHiddenElems->Map());
+      NCollection_PackedMapAlgo::Subtract(anIDs, aHiddenElems->Map());
   }
-  anIDs.Subtract(IDsToExclude);
+  NCollection_PackedMapAlgo::Subtract(anIDs, IDsToExclude);
 
-  TColStd_MapIteratorOfPackedMapOfInteger it(anIDs);
+  TColStd_PackedMapOfInteger::Iterator it(anIDs);
   for (; it.More(); it.Next())
   {
     int aKey = it.Key();
