@@ -776,10 +776,10 @@ bool Storage_Schema::CheckTypeMigration(const TCollection_AsciiString& oldName,
 
   if (aDMap.Extent())
   {
-    if (aDMap.IsBound(oldName))
+    const TCollection_AsciiString* pNewName = aDMap.Seek(oldName);
+    if (pNewName)
     {
-      newName.Clear();
-      newName    = aDMap.Find(oldName);
+      newName    = *pNewName;
       aMigration = true;
   #ifdef OCCT_DEBUG
       std::cout << " newName = " << newName << std::endl;

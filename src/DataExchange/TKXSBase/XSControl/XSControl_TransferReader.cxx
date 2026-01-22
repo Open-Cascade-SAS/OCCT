@@ -185,9 +185,10 @@ bool XSControl_TransferReader::IsRecorded(const occ::handle<Standard_Transient>&
   int num = myModel->Number(ent);
   if (num == 0)
     return false;
-  if (!myResults.IsBound(num))
+  const occ::handle<Standard_Transient>* pRes = myResults.Seek(num);
+  if (!pRes)
     return false;
-  return (myResults.Find(num)->DynamicType() == STANDARD_TYPE(Transfer_ResultFromModel));
+  return ((*pRes)->DynamicType() == STANDARD_TYPE(Transfer_ResultFromModel));
 }
 
 //=================================================================================================
@@ -199,9 +200,10 @@ bool XSControl_TransferReader::HasResult(const occ::handle<Standard_Transient>& 
   int num = myModel->Number(ent);
   if (num == 0)
     return false;
-  if (!myResults.IsBound(num))
+  const occ::handle<Standard_Transient>* pRes = myResults.Seek(num);
+  if (!pRes)
     return false;
-  DeclareAndCast(Transfer_ResultFromModel, fr, myResults.Find(num));
+  DeclareAndCast(Transfer_ResultFromModel, fr, *pRes);
   if (fr.IsNull())
     return false;
   return fr->HasResult();
@@ -219,9 +221,9 @@ occ::handle<NCollection_HSequence<occ::handle<Standard_Transient>>> XSControl_Tr
   int i, nb = myModel->NbEntities();
   for (i = 1; i <= nb; i++)
   {
-    if (myResults.IsBound(i))
-      if (!myResults.Find(i).IsNull())
-        li->Append(myModel->Value(i));
+    const occ::handle<Standard_Transient>* pRes = myResults.Seek(i);
+    if (pRes && !(*pRes).IsNull())
+      li->Append(myModel->Value(i));
   }
   return li;
 }
@@ -248,9 +250,10 @@ bool XSControl_TransferReader::IsSkipped(const occ::handle<Standard_Transient>& 
   int num = myModel->Number(ent);
   if (num == 0)
     return false;
-  if (!myResults.IsBound(num))
+  const occ::handle<Standard_Transient>* pRes = myResults.Seek(num);
+  if (!pRes)
     return false;
-  return (myResults.Find(num)->DynamicType() != STANDARD_TYPE(Transfer_ResultFromModel));
+  return ((*pRes)->DynamicType() != STANDARD_TYPE(Transfer_ResultFromModel));
 }
 
 //=================================================================================================
@@ -262,9 +265,8 @@ bool XSControl_TransferReader::IsMarked(const occ::handle<Standard_Transient>& e
   int num = myModel->Number(ent);
   if (num == 0)
     return false;
-  if (!myResults.IsBound(num))
-    return false;
-  if (myResults.Find(num).IsNull())
+  const occ::handle<Standard_Transient>* pRes = myResults.Seek(num);
+  if (!pRes || (*pRes).IsNull())
     return false;
   return true;
 }
@@ -282,9 +284,10 @@ occ::handle<Transfer_ResultFromModel> XSControl_TransferReader::FinalResult(
   int num = myModel->Number(ent);
   if (num == 0)
     return res;
-  if (!myResults.IsBound(num))
+  const occ::handle<Standard_Transient>* pRes = myResults.Seek(num);
+  if (!pRes)
     return res;
-  res = GetCasted(Transfer_ResultFromModel, myResults.Find(num));
+  res = GetCasted(Transfer_ResultFromModel, *pRes);
   return res;
 }
 
@@ -317,9 +320,10 @@ occ::handle<Transfer_ResultFromModel> XSControl_TransferReader::ResultFromNumber
   occ::handle<Transfer_ResultFromModel> res;
   if (num < 1 || num > myModel->NbEntities())
     return res;
-  if (!myResults.IsBound(num))
+  const occ::handle<Standard_Transient>* pRes = myResults.Seek(num);
+  if (!pRes)
     return res;
-  res = GetCasted(Transfer_ResultFromModel, myResults.Find(num));
+  res = GetCasted(Transfer_ResultFromModel, *pRes);
   return res;
 }
 
@@ -375,13 +379,14 @@ bool XSControl_TransferReader::ClearResult(const occ::handle<Standard_Transient>
   int num = myModel->Number(ent);
   if (num == 0)
     return false;
-  if (!myResults.IsBound(num))
+  occ::handle<Standard_Transient>* pRes = myResults.ChangeSeek(num);
+  if (!pRes)
     return false;
   if (mode < 0)
-    myResults.ChangeFind(num).Nullify();
+    pRes->Nullify();
   else
   {
-    DeclareAndCast(Transfer_ResultFromModel, resu, myResults.Find(num));
+    DeclareAndCast(Transfer_ResultFromModel, resu, *pRes);
     if (resu.IsNull())
       return false;
     resu->Strip(mode);

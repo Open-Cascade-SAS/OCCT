@@ -213,7 +213,6 @@ void BRepTools_Modifier::Put(const TopoDS_Shape& S)
     myMap.Bind(S, TopoDS_Shape());
     for (TopoDS_Iterator theIterator(S, false); theIterator.More(); theIterator.Next())
     {
-
       Put(theIterator.Value());
     }
   }

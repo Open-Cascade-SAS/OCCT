@@ -29,10 +29,7 @@ void Expr_UnknownIterator::Perform(const occ::handle<Expr_GeneralExpression>& ex
   if (exp->IsKind(STANDARD_TYPE(Expr_NamedUnknown)))
   {
     occ::handle<Expr_NamedUnknown> varexp = occ::down_cast<Expr_NamedUnknown>(exp);
-    if (!myMap.Contains(varexp))
-    {
-      myMap.Add(varexp);
-    }
+    myMap.Add(varexp);
   }
   int nbsub = exp->NbSubExpressions();
   for (int i = 1; i <= nbsub; i++)

@@ -197,12 +197,7 @@ const char* Interface_MSG::Translated(const char* const key)
     std::cout << " **  Interface_MSG:Translate ?? " << key << "  **" << std::endl;
   if (therec)
   {
-    if (thelist.IsBound(key))
-    {
-      thelist.ChangeFind(key)++;
-    }
-    else
-      thelist.Bind(key, 1);
+    (*thelist.TryBound(key, 0))++;
   }
   if (theraise)
     throw Standard_DomainError("Interface_MSG : Translate");
@@ -213,15 +208,8 @@ void Interface_MSG::Record(const char* const key, const char* const item)
 {
   occ::handle<TCollection_HAsciiString> dup;
   occ::handle<TCollection_HAsciiString> str = new TCollection_HAsciiString(item);
-  if (thedic.IsBound(key))
-  {
-    thedic.ChangeFind(key) = str;
-  }
-  else
-  {
-    thedic.Bind(key, str);
-    return;
-  }
+  if (thedic.Bind(key, str))
+    return; // newly added, skip the rest
   if (theprint)
     std::cout << " **  Interface_MSG:Record ?? " << key << " ** " << item << "  **" << std::endl;
   if (therec)

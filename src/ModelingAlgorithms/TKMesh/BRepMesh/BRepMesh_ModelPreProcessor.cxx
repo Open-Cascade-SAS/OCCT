@@ -323,28 +323,24 @@ bool BRepMesh_ModelPreProcessor::performInternal(const occ::handle<IMeshData_Mod
     {
       // Find adjacent outdated face.
       const IMeshData::IFaceHandle aDFace = aDEdge->GetPCurve(aPCurveIt)->GetFace();
-      if (!aUsedFaces.Contains(aDFace.get()))
+      if (aUsedFaces.Add(aDFace.get()) && aDFace->IsSet(IMeshData_Outdated))
       {
-        aUsedFaces.Add(aDFace.get());
-        if (aDFace->IsSet(IMeshData_Outdated))
+        TopLoc_Location                        aLoc;
+        const occ::handle<Poly_Triangulation>& aTriangulation =
+          BRep_Tool::Triangulation(aDFace->GetFace(), aLoc);
+
+        // Clean all edges of oudated face.
+        for (int aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
         {
-          TopLoc_Location                        aLoc;
-          const occ::handle<Poly_Triangulation>& aTriangulation =
-            BRep_Tool::Triangulation(aDFace->GetFace(), aLoc);
-
-          // Clean all edges of oudated face.
-          for (int aWireIt = 0; aWireIt < aDFace->WiresNb(); ++aWireIt)
+          const IMeshData::IWireHandle& aDWire = aDFace->GetWire(aWireIt);
+          for (int aWireEdgeIt = 0; aWireEdgeIt < aDWire->EdgesNb(); ++aWireEdgeIt)
           {
-            const IMeshData::IWireHandle& aDWire = aDFace->GetWire(aWireIt);
-            for (int aWireEdgeIt = 0; aWireEdgeIt < aDWire->EdgesNb(); ++aWireEdgeIt)
-            {
-              const IMeshData::IEdgeHandle aTmpDEdge = aDWire->GetEdge(aWireEdgeIt);
-              BRepMesh_ShapeTool::NullifyEdge(aTmpDEdge->GetEdge(), aTriangulation, aLoc);
-            }
+            const IMeshData::IEdgeHandle aTmpDEdge = aDWire->GetEdge(aWireEdgeIt);
+            BRepMesh_ShapeTool::NullifyEdge(aTmpDEdge->GetEdge(), aTriangulation, aLoc);
           }
-
-          BRepMesh_ShapeTool::NullifyFace(aDFace->GetFace());
         }
+
+        BRepMesh_ShapeTool::NullifyFace(aDFace->GetFace());
       }
     }
   }

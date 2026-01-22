@@ -745,3 +745,106 @@ TEST(NCollection_IndexedDataMapTest, STLAlgorithmCompatibility_Find)
   auto aNotFound = std::find(aMap.cbegin(), aMap.cend(), 999);
   EXPECT_TRUE(aNotFound == aMap.cend());
 }
+
+TEST(NCollection_IndexedDataMapTest, BoundNewKey)
+{
+  NCollection_IndexedDataMap<KeyType, ItemType> aMap;
+
+  // Test Bound with new key - should add and return pointer
+  ItemType* pItem1 = aMap.Bound(10, 1.0);
+  EXPECT_TRUE(pItem1 != nullptr);
+  EXPECT_DOUBLE_EQ(*pItem1, 1.0);
+  EXPECT_EQ(aMap.Extent(), 1);
+  EXPECT_TRUE(aMap.Contains(10));
+
+  ItemType* pItem2 = aMap.Bound(20, 2.0);
+  EXPECT_TRUE(pItem2 != nullptr);
+  EXPECT_DOUBLE_EQ(*pItem2, 2.0);
+  EXPECT_EQ(aMap.Extent(), 2);
+  EXPECT_TRUE(aMap.Contains(20));
+
+  // Verify values through standard access
+  EXPECT_DOUBLE_EQ(aMap.FindFromKey(10), 1.0);
+  EXPECT_DOUBLE_EQ(aMap.FindFromKey(20), 2.0);
+}
+
+TEST(NCollection_IndexedDataMapTest, BoundExistingKey)
+{
+  NCollection_IndexedDataMap<KeyType, ItemType> aMap;
+
+  // Add initial element
+  aMap.Add(10, 1.0);
+  EXPECT_EQ(aMap.Extent(), 1);
+  EXPECT_DOUBLE_EQ(aMap.FindFromKey(10), 1.0);
+
+  // Call Bound with existing key - should NOT overwrite the value
+  ItemType* pItem = aMap.Bound(10, 999.0);
+  EXPECT_TRUE(pItem != nullptr);
+  EXPECT_DOUBLE_EQ(*pItem, 1.0); // Original value preserved
+  EXPECT_EQ(aMap.Extent(), 1);   // Size unchanged
+
+  // Verify the returned pointer can be used to modify the value
+  *pItem = 1.5;
+  EXPECT_DOUBLE_EQ(aMap.FindFromKey(10), 1.5);
+}
+
+TEST(NCollection_IndexedDataMapTest, BoundMixedUsage)
+{
+  NCollection_IndexedDataMap<KeyType, ItemType> aMap;
+
+  // Use Bound for both new and existing keys
+  ItemType* p1 = aMap.Bound(10, 1.0); // New key
+  ItemType* p2 = aMap.Bound(20, 2.0); // New key
+  ItemType* p3 = aMap.Bound(10, 3.0); // Existing key - should return existing item
+
+  EXPECT_EQ(aMap.Extent(), 2);
+  EXPECT_DOUBLE_EQ(*p1, 1.0);
+  EXPECT_DOUBLE_EQ(*p2, 2.0);
+  EXPECT_DOUBLE_EQ(*p3, 1.0); // Original value, not 3.0
+  EXPECT_EQ(p1, p3);          // Same pointer for same key
+
+  // Verify indices
+  EXPECT_EQ(aMap.FindIndex(10), 1);
+  EXPECT_EQ(aMap.FindIndex(20), 2);
+}
+
+TEST(NCollection_IndexedDataMapTest, BoundVsAddSemantics)
+{
+  // Verify that Bound has the same semantics as Add for new keys
+  NCollection_IndexedDataMap<KeyType, ItemType> aMap1;
+  NCollection_IndexedDataMap<KeyType, ItemType> aMap2;
+
+  // Add using Add()
+  aMap1.Add(10, 1.0);
+  aMap1.Add(20, 2.0);
+  aMap1.Add(10, 3.0); // Duplicate - ignored
+
+  // Add using Bound()
+  aMap2.Bound(10, 1.0);
+  aMap2.Bound(20, 2.0);
+  aMap2.Bound(10, 3.0); // Duplicate - ignored
+
+  // Both maps should have identical content
+  EXPECT_EQ(aMap1.Extent(), aMap2.Extent());
+  EXPECT_DOUBLE_EQ(aMap1.FindFromKey(10), aMap2.FindFromKey(10));
+  EXPECT_DOUBLE_EQ(aMap1.FindFromKey(20), aMap2.FindFromKey(20));
+}
+
+TEST(NCollection_IndexedDataMapTest, BoundWithMoveSemantics)
+{
+  NCollection_IndexedDataMap<TCollection_AsciiString, TCollection_AsciiString> aMap;
+
+  // Test with rvalue key
+  TCollection_AsciiString* p1 =
+    aMap.Bound(TCollection_AsciiString("Key1"), TCollection_AsciiString("Value1"));
+  EXPECT_TRUE(p1 != nullptr);
+  EXPECT_TRUE(p1->IsEqual("Value1"));
+
+  // Test with rvalue item
+  TCollection_AsciiString  aKey2("Key2");
+  TCollection_AsciiString* p2 = aMap.Bound(aKey2, TCollection_AsciiString("Value2"));
+  EXPECT_TRUE(p2 != nullptr);
+  EXPECT_TRUE(p2->IsEqual("Value2"));
+
+  EXPECT_EQ(aMap.Extent(), 2);
+}

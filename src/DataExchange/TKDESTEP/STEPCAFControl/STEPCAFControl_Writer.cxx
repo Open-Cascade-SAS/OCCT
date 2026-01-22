@@ -965,9 +965,10 @@ bool STEPCAFControl_Writer::writeExternRefs(const occ::handle<XSControl_WorkSess
       continue; // should never be
 
     // find SDR
-    if (!myLabels.IsBound(aLab))
+    const TopoDS_Shape* pShape = myLabels.Seek(aLab);
+    if (!pShape)
       continue; // not recorded as translated, skip
-    TopoDS_Shape aShape = myLabels.Find(aLab);
+    TopoDS_Shape aShape = *pShape;
 
     occ::handle<StepShape_ShapeDefinitionRepresentation> aSDR;
     occ::handle<TransferBRep_ShapeMapper> mapper = TransferBRep::ShapeMapper(aFP, aShape);
@@ -1563,7 +1564,8 @@ bool STEPCAFControl_Writer::writeNames(const occ::handle<XSControl_WorkSession>&
   {
     const TDF_Label& aLabel = aLabelIter.Value();
     // find target STEP entity for the current shape
-    if (!myLabels.IsBound(aLabel))
+    const TopoDS_Shape* pShape = myLabels.Seek(aLabel);
+    if (!pShape)
       continue; // not recorded as translated, skip
     // get name
     occ::handle<TCollection_HAsciiString> aHName = new TCollection_HAsciiString;
@@ -1571,7 +1573,7 @@ bool STEPCAFControl_Writer::writeNames(const occ::handle<XSControl_WorkSession>&
     {
       continue;
     }
-    const TopoDS_Shape&                                        aShape = myLabels.Find(aLabel);
+    const TopoDS_Shape&                                        aShape = *pShape;
     occ::handle<StepShape_ShapeDefinitionRepresentation>       aSDR;
     occ::handle<StepShape_ContextDependentShapeRepresentation> aCDSR;
     bool isComponent = XCAFDoc_ShapeTool::IsComponent(aLabel) || myPureRefLabels.IsBound(aLabel);
@@ -1666,10 +1668,11 @@ bool STEPCAFControl_Writer::writeMetadataForLabel(const occ::handle<XSControl_Wo
     return false; // No metadata on this label
 
   // Find target STEP entity for the current shape:
-  if (!myLabels.IsBound(theLabel))
+  const TopoDS_Shape* pShape = myLabels.Seek(theLabel);
+  if (!pShape)
     return false; // Not recorded as translated, skip
 
-  const TopoDS_Shape&                                  aShape = myLabels.Find(theLabel);
+  const TopoDS_Shape&                                  aShape = *pShape;
   occ::handle<StepShape_ShapeDefinitionRepresentation> aSDR;
   const occ::handle<TransferBRep_ShapeMapper> aMapper = TransferBRep::ShapeMapper(aFP, aShape);
   if (!aFP->FindTypedTransient(aMapper,

@@ -137,17 +137,19 @@ bool XCAFDoc_ShapeTool::SearchUsingMap(const TopoDS_Shape& S,
                                        const bool          findSubShape) const
 {
 
-  if (myShapeLabels.IsBound(S))
+  const TDF_Label* pLabel = myShapeLabels.Seek(S);
+  if (pLabel)
   {
-    L = myShapeLabels.Find(S);
+    L = *pLabel;
     return true;
   }
   TopoDS_Shape    S0 = S;
   TopLoc_Location loc;
   S0.Location(loc);
-  if (myShapeLabels.IsBound(S0))
+  pLabel = myShapeLabels.Seek(S0);
+  if (pLabel)
   {
-    TDF_Label                       L1 = myShapeLabels.Find(S0);
+    TDF_Label                       L1 = *pLabel;
     NCollection_Sequence<TDF_Label> Labels;
     if (GetUsers(L1, Labels, true))
     {
@@ -170,14 +172,16 @@ bool XCAFDoc_ShapeTool::SearchUsingMap(const TopoDS_Shape& S,
 
   if (hasSimpleShapes)
   {
-    if (mySimpleShapes.IsBound(S))
+    pLabel = mySimpleShapes.Seek(S);
+    if (pLabel)
     {
-      L = mySimpleShapes.Find(S);
+      L = *pLabel;
       return true;
     }
-    if (mySimpleShapes.IsBound(S0))
+    pLabel = mySimpleShapes.Seek(S0);
+    if (pLabel)
     {
-      L = mySimpleShapes.Find(S0);
+      L = *pLabel;
       return true;
     }
   }
@@ -407,10 +411,7 @@ void XCAFDoc_ShapeTool::SetShape(const TDF_Label& L, const TopoDS_Shape& S)
   //  }
   A->SetShape(S);
 
-  if (!myShapeLabels.IsBound(S))
-  {
-    myShapeLabels.Bind(S, L);
-  }
+  myShapeLabels.TryBound(S, L);
 }
 
 //=================================================================================================
@@ -605,10 +606,7 @@ TDF_Label XCAFDoc_ShapeTool::AddShape(const TopoDS_Shape& theShape,
 
   TDF_Label L = addShape(S, makeAssembly);
 
-  if (!myShapeLabels.IsBound(S))
-  {
-    myShapeLabels.Bind(S, L);
-  }
+  myShapeLabels.TryBound(S, L);
 
   return L;
 
@@ -922,8 +920,7 @@ TDF_Label XCAFDoc_ShapeTool::AddComponent(const TDF_Label&       assembly,
   TopoDS_Shape aShape;
   if (GetShape(L, aShape))
   {
-    if (!myShapeLabels.IsBound(aShape))
-      myShapeLabels.Bind(aShape, L);
+    myShapeLabels.TryBound(aShape, L);
   }
 
   return L;
@@ -1120,10 +1117,8 @@ TDF_Label XCAFDoc_ShapeTool::FindMainShapeUsingMap(const TopoDS_Shape& sub) cons
   //   TDF_Label L = myNotAssemblies.Value(i);
   //   if(IsSubShape(L,sub)) return L;
   // }
-  if (mySubShapes.IsBound(sub))
-    return mySubShapes.Find(sub);
-  TDF_Label L0;
-  return L0;
+  const TDF_Label* pLabel = mySubShapes.Seek(sub);
+  return pLabel ? *pLabel : TDF_Label();
 }
 
 //=================================================================================================

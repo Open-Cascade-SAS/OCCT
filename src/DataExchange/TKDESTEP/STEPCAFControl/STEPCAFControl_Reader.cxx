@@ -888,10 +888,7 @@ TDF_Label STEPCAFControl_Reader::AddShape(
     if (!subL.IsNull())
     {
       TDF_Label instL = STool->AddComponent(L, subL, it.Value().Location());
-      if (!myMap.IsBound(it.Value()))
-      {
-        myMap.Bind(it.Value(), instL);
-      }
+      myMap.TryBound(it.Value(), instL);
     }
   }
   if (SHAS.Length() > 0)
@@ -5534,10 +5531,11 @@ void STEPCAFControl_Reader::ExpandSubShapes(
     if (aReprItems.Length() == 0)
       continue;
 
-    if (!myMap.IsBound(aRootShape))
+    const TDF_Label* pRootLab = myMap.Seek(aRootShape);
+    if (!pRootLab)
       continue;
 
-    TDF_Label aRootLab = myMap.Find(aRootShape);
+    TDF_Label aRootLab = *pRootLab;
     // Do not add subshapes to assembly,
     // they will be processed with corresponding Shape_Product_Definition of necessary part.
     if (ShapeTool->IsAssembly(aRootLab))

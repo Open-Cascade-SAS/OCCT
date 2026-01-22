@@ -66,8 +66,9 @@ occ::handle<MoniTool_Timer> MoniTool_Timer::Timer(const char* const name)
   //  AmendAccess();
   NCollection_DataMap<const char*, occ::handle<MoniTool_Timer>, Standard_CStringHasher>& dic =
     Dictionary();
-  if (dic.IsBound(name))
-    return dic.Find(name);
+  const occ::handle<MoniTool_Timer>* pTimer = dic.Seek(name);
+  if (pTimer)
+    return *pTimer;
   occ::handle<MoniTool_Timer> MT = new MoniTool_Timer;
   MT->Timer().Reset();
   dic.Bind(name, MT);

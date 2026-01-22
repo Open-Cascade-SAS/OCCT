@@ -241,17 +241,7 @@ void BOPAlgo_WireSplitter::SplitBlock(const TopoDS_Face&                   myFac
     for (; aIt.More(); aIt.Next())
     {
       const TopoDS_Shape& aE = aIt.Value();
-      if (!aMapEE.Contains(aE))
-      {
-        NCollection_List<TopoDS_Shape> aLEx;
-        aLEx.Append(aE);
-        aMapEE.Add(aE, aLEx);
-      }
-      else
-      {
-        NCollection_List<TopoDS_Shape>& aLEx = aMapEE.ChangeFromKey(aE);
-        aLEx.Append(aE);
-      }
+      aMapEE.Bound(aE, NCollection_List<TopoDS_Shape>())->Append(aE);
     }
     //
     bFlag    = true;

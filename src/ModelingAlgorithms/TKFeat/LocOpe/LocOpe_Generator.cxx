@@ -102,10 +102,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
     for (exp2.Init(edg, TopAbs_VERTEX); exp2.More(); exp2.Next())
     {
       const TopoDS_Vertex& vtx = TopoDS::Vertex(exp2.Current());
-      if (!GVtx.Contains(vtx))
-      {
-        GVtx.Add(vtx);
-      }
+      GVtx.Add(vtx);
     }
     for (exp2.Init(myShape, TopAbs_FACE); exp2.More(); exp2.Next())
     {
@@ -115,11 +112,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
         if (exp3.Current().IsSame(edg) && exp3.Current().Orientation() == edg.Orientation())
         {
           theLeft.Add(fac);
-          NCollection_List<TopoDS_Shape> emptylist;
-          if (!myModShapes.IsBound(fac))
-          {
-            myModShapes.Bind(fac, emptylist);
-          }
+          myModShapes.Bound(fac, NCollection_List<TopoDS_Shape>());
           break;
         }
       }
@@ -509,12 +502,7 @@ void LocOpe_Generator::Perform(const occ::handle<LocOpe_GeneratedShape>& G)
     }
     if (KeepNewEdge)
     {
-      NCollection_List<TopoDS_Shape> emptylist;
-      if (!myModShapes.IsBound(edg))
-      {
-        myModShapes.Bind(edg, emptylist);
-      }
-      myModShapes(edg).Append(newedg);
+      myModShapes.Bound(edg, NCollection_List<TopoDS_Shape>())->Append(newedg);
       toRemove.Add(edg);
     }
   }

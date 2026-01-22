@@ -406,6 +406,111 @@ public:
     return aNewIndex;
   }
 
+  //! Bound binds Key-Item pair with convenient syntax.
+  //! If Key is already bound, returns pointer to existing Item (Item argument is ignored).
+  //! If Key is not bound, binds it with provided Item and returns pointer to newly bound Item.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return pointer to Item (new or existing)
+  TheItemType* Bound(const TheKeyType& theKey1, const TheItemType& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    const int aNewIndex = Increment();
+    aNode = new (this->myAllocator) IndexedDataMapNode(theKey1, aNewIndex, theItem, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return &aNode->ChangeValue();
+  }
+
+  //! Bound binds Key-Item pair with convenient syntax.
+  //! If Key is already bound, returns pointer to existing Item (Item argument is ignored).
+  //! If Key is not bound, binds it with provided Item and returns pointer to newly bound Item.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return pointer to Item (new or existing)
+  TheItemType* Bound(TheKeyType&& theKey1, const TheItemType& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    const int aNewIndex = Increment();
+    aNode               = new (this->myAllocator)
+      IndexedDataMapNode(std::forward<TheKeyType>(theKey1), aNewIndex, theItem, myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return &aNode->ChangeValue();
+  }
+
+  //! Bound binds Key-Item pair with convenient syntax.
+  //! If Key is already bound, returns pointer to existing Item (Item argument is ignored).
+  //! If Key is not bound, binds it with provided Item and returns pointer to newly bound Item.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return pointer to Item (new or existing)
+  TheItemType* Bound(const TheKeyType& theKey1, TheItemType&& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    const int aNewIndex = Increment();
+    aNode               = new (this->myAllocator)
+      IndexedDataMapNode(theKey1, aNewIndex, std::forward<TheItemType>(theItem), myData1[aHash]);
+    myData1[aHash]         = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return &aNode->ChangeValue();
+  }
+
+  //! Bound binds Key-Item pair with convenient syntax.
+  //! If Key is already bound, returns pointer to existing Item (Item argument is ignored).
+  //! If Key is not bound, binds it with provided Item and returns pointer to newly bound Item.
+  //! @param theKey1 Key to search (and to bind, if it was not bound already)
+  //! @param theItem Item value to set for newly bound Key; ignored if Key was already bound
+  //! @return pointer to Item (new or existing)
+  TheItemType* Bound(TheKeyType&& theKey1, TheItemType&& theItem)
+  {
+    if (Resizable())
+    {
+      ReSize(Extent());
+    }
+    IndexedDataMapNode* aNode;
+    size_t              aHash;
+    if (lookup(theKey1, aNode, aHash))
+    {
+      return &aNode->ChangeValue();
+    }
+    const int aNewIndex = Increment();
+    aNode          = new (this->myAllocator) IndexedDataMapNode(std::forward<TheKeyType>(theKey1),
+                                                       aNewIndex,
+                                                       std::forward<TheItemType>(theItem),
+                                                       myData1[aHash]);
+    myData1[aHash] = aNode;
+    myData2[aNewIndex - 1] = aNode;
+    return &aNode->ChangeValue();
+  }
+
   //! Contains
   bool Contains(const TheKeyType& theKey1) const
   {

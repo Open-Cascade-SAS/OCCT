@@ -817,10 +817,7 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
             if (aPnt2d.Coord(anIdx) - aSurfFirstPar[anIdx - 1] < 0.0)
               aMapKey--;
 
-            if (aMap.IsBound(aMapKey))
-              aMap.ChangeFind(aMapKey)++;
-            else
-              aMap.Bind(aMapKey, 1);
+            (*aMap.TryBound(aMapKey, 0))++;
           }
         }
 

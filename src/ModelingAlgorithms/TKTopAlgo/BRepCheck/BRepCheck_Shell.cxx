@@ -138,15 +138,8 @@ void BRepCheck_Shell::Minimum()
       TopExp_Explorer expe;
       for (expe.Init(exp.Current(), TopAbs_EDGE); expe.More(); expe.Next())
       {
-        const TopoDS_Shape& edg   = expe.Current();
-        int                 index = myMapEF.FindIndex(edg);
-        if (index == 0)
-        {
-          NCollection_List<TopoDS_Shape> thelist1;
-          index = myMapEF.Add(edg, thelist1);
-        }
-
-        myMapEF(index).Append(exp.Current());
+        const TopoDS_Shape& edg = expe.Current();
+        myMapEF.Bound(edg, NCollection_List<TopoDS_Shape>())->Append(exp.Current());
       }
     } // for (; exp.More(); exp.Next())
 
@@ -282,7 +275,7 @@ BRepCheck_Status BRepCheck_Shell::Closed(const bool Update)
 
   myCstat = BRepCheck_NoError;
   //
-  int                                                           index, aNbF;
+  int                                                           aNbF;
   TopExp_Explorer                                               exp, ede;
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> mapS;
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>        aMEToAvoid;
@@ -338,16 +331,7 @@ BRepCheck_Status BRepCheck_Shell::Closed(const bool Update)
         // if (IsOriented(aE)) {
         if (!aMEToAvoid.Contains(aE))
         {
-          // modified by NIZNHY-PKV Mon Jun  4 14:08:01 2007
-          index = myMapEF.FindIndex(aE);
-
-          if (!index)
-          {
-            NCollection_List<TopoDS_Shape> thelist;
-            index = myMapEF.Add(aE, thelist);
-          }
-
-          myMapEF(index).Append(aF);
+          myMapEF.Bound(aE, NCollection_List<TopoDS_Shape>())->Append(aF);
         }
       }
     }

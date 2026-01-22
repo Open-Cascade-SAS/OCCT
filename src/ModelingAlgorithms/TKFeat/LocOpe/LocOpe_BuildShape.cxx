@@ -69,10 +69,13 @@ void LocOpe_BuildShape::Perform(const NCollection_List<TopoDS_Shape>& L)
 
   for (itl.Initialize(L); itl.More(); itl.Next())
   {
-    if (itl.Value().ShapeType() == TopAbs_FACE && !mapF.Contains(itl.Value()))
+    if (itl.Value().ShapeType() == TopAbs_FACE)
     {
-      mapF.Add(itl.Value());
-      B.Add(C, itl.Value());
+      const int aPrevExtent = mapF.Extent();
+      if (mapF.Add(itl.Value()) > aPrevExtent)
+      {
+        B.Add(C, itl.Value());
+      }
     }
   }
 
@@ -337,9 +340,9 @@ static void Add(const int                                                      i
   NCollection_List<TopoDS_Shape>::Iterator itl(mapEF(ind));
   for (; itl.More(); itl.Next())
   {
-    if (!mapF.Contains(itl.Value()))
+    const int aPrevExtent = mapF.Extent();
+    if (mapF.Add(itl.Value()) > aPrevExtent)
     {
-      mapF.Add(itl.Value());
       TopExp_Explorer exp;
       for (exp.Init(itl.Value(), TopAbs_EDGE);
            //      for (TopExp_Explorer exp(itl.Value(),TopAbs_EDGE);

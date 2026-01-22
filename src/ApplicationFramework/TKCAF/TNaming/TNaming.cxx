@@ -176,10 +176,10 @@ bool TNaming::SubstituteSShape(const TDF_Label& Lab, const TopoDS_Shape& From, T
   occ::handle<TNaming_UsedShapes> US;
   Lab.Root().FindAttribute(TNaming_UsedShapes::GetID(), US);
   NCollection_DataMap<TopoDS_Shape, TNaming_PtrRefShape, TopTools_ShapeMapHasher>& amap = US->Map();
-  if (!amap.IsBound(To))
+  TNaming_RefShape** pPos = amap.ChangeSeek(To);
+  if (!pPos)
     return false;
-  TNaming_RefShape* pos;
-  pos = amap.ChangeFind(To);
+  TNaming_RefShape* pos = *pPos;
   if (!amap.UnBind(To))
     return false;
   // update shape
@@ -421,15 +421,17 @@ static void Replace(
   {
     if (!it.OldShape().IsNull())
     {
-      OS = it.OldShape();
-      if (M.IsBound(OS))
-        OS = M(OS);
+      OS                           = it.OldShape();
+      const TopoDS_Shape* pMappedS = M.Seek(OS);
+      if (pMappedS)
+        OS = *pMappedS;
     }
     if (!it.NewShape().IsNull())
     {
-      NS = it.NewShape();
-      if (M.IsBound(NS))
-        NS = M(NS);
+      NS                           = it.NewShape();
+      const TopoDS_Shape* pMappedS = M.Seek(NS);
+      if (pMappedS)
+        NS = *pMappedS;
     }
     LoadNamedShape(B, Evol, OS, NS);
   }
@@ -528,8 +530,9 @@ static TopoDS_Shape ShapeCopy(
 {
   if (S.IsNull())
     return S;
-  if (M.IsBound(S))
-    return M(S);
+  const TopoDS_Shape* pMapped = M.Seek(S);
+  if (pMapped)
+    return *pMapped;
   //----------------------------
   // construction de la copie.
   // 1- copie des sous shapes.
@@ -844,9 +847,8 @@ TopoDS_Shape TNaming::FindUniqueContext(const TopoDS_Shape& Selection, const Top
               << " OR = " << it.Value().Orientation() << std::endl;
   }
 #endif
-  if (aMap.IsBound(Selection))
-    return aMap.Find(Selection);
-  return TopoDS_Shape();
+  const TopoDS_Shape* pResult = aMap.Seek(Selection);
+  return pResult ? *pResult : TopoDS_Shape();
 }
 
 //=======================================================================
@@ -876,8 +878,9 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection,
     if (aStopType == TopAbs_SHAPE)
       aStopType = Selection.ShapeType();
     BuildMap(Context, aStopType, aMap);
-    if (aMap.IsBound(Selection))
-      return aMap.Find(Selection);
+    const TopoDS_Shape* pSelResult = aMap.Seek(Selection);
+    if (pSelResult)
+      return *pSelResult;
     else if (Selection.ShapeType() == TopAbs_COMPOUND)
     {
       int             num1(0), num2(0);
@@ -888,16 +891,17 @@ TopoDS_Shape TNaming::FindUniqueContextSet(const TopoDS_Shape& Selection,
       NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aView;
       for (; it.More(); it.Next(), num1++)
       {
-        if (aMap.IsBound(it.Value()))
+        const TopoDS_Shape* pVal = aMap.Seek(it.Value());
+        if (pVal)
         {
-          if (aView.Add(aMap.Find(it.Value())))
+          if (aView.Add(*pVal))
           {
-            B.Add(CompShape, aMap.Find(it.Value()));
+            B.Add(CompShape, *pVal);
           }
           if (!Arr.IsNull())
-            Arr->SetValue(num1 + 1, aMap.Find(it.Value()));
+            Arr->SetValue(num1 + 1, *pVal);
 
-          if (aMap.Find(it.Value()) == Context)
+          if (*pVal == Context)
             num2++;
         }
       }

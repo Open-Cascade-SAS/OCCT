@@ -2034,7 +2034,8 @@ void OpenGl_Context::DiagnosticInformation(
 const occ::handle<OpenGl_Resource>& OpenGl_Context::GetResource(
   const TCollection_AsciiString& theKey) const
 {
-  return mySharedResources->IsBound(theKey) ? mySharedResources->Find(theKey) : NULL_GL_RESOURCE;
+  const occ::handle<OpenGl_Resource>* pRes = mySharedResources->Seek(theKey);
+  return pRes ? *pRes : NULL_GL_RESOURCE;
 }
 
 //=================================================================================================
@@ -2053,11 +2054,12 @@ bool OpenGl_Context::ShareResource(const TCollection_AsciiString&      theKey,
 
 void OpenGl_Context::ReleaseResource(const TCollection_AsciiString& theKey, const bool theToDelay)
 {
-  if (!mySharedResources->IsBound(theKey))
+  const occ::handle<OpenGl_Resource>* pRes = mySharedResources->Seek(theKey);
+  if (!pRes)
   {
     return;
   }
-  const occ::handle<OpenGl_Resource>& aRes = mySharedResources->Find(theKey);
+  const occ::handle<OpenGl_Resource>& aRes = *pRes;
   if (aRes->GetRefCount() > 1)
   {
     return;

@@ -254,9 +254,8 @@ void BRepMesh_MeshTool::collectTrianglesOnFreeLinksAroundNodesOf(
 
         for (int i = 0; i < 3; ++i)
         {
-          if (aEdges[i] != aLinkIndex && !aUsedLinks.Contains(aEdges[i]))
+          if (aEdges[i] != aLinkIndex && aUsedLinks.Add(aEdges[i]))
           {
-            aUsedLinks.Add(aEdges[i]);
             aStack.push(aEdges[i]);
           }
         }

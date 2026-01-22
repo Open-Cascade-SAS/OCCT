@@ -725,10 +725,7 @@ void XSAlgo_ShapeProcessor::SetShapeFixParameters(
        aParamIter.More();
        aParamIter.Next())
   {
-    if (!theTargetParameterMap.IsBound(aParamIter.Key()))
-    {
-      theTargetParameterMap.Bind(aParamIter.Key(), aParamIter.Value());
-    }
+    theTargetParameterMap.TryBound(aParamIter.Key(), aParamIter.Value());
   }
 }
 
@@ -770,10 +767,7 @@ void XSAlgo_ShapeProcessor::SetParameter(const char*                          th
   }
   else
   {
-    if (!theMap.IsBound(theKey))
-    {
-      theMap.Bind(theKey, theValue);
-    }
+    theMap.TryBound(theKey, theValue);
   }
 }
 

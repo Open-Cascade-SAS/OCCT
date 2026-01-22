@@ -305,9 +305,10 @@ void BRepFeat_Builder::RebuildFaces()
     {
       const TopoDS_Shape& aS = aSI.Shape();
       //
-      if (myImages.IsBound(aS))
+      NCollection_List<TopoDS_Shape>* pLIm = myImages.ChangeSeek(aS);
+      if (pLIm)
       {
-        NCollection_List<TopoDS_Shape>& aLIm = myImages.ChangeFind(aS);
+        NCollection_List<TopoDS_Shape>& aLIm = *pLIm;
         aItIm.Initialize(aLIm);
         for (; aItIm.More();)
         {
@@ -349,13 +350,14 @@ void BRepFeat_Builder::RebuildFaces()
     aExp.Init(aFF, TopAbs_EDGE);
     for (; aExp.More(); aExp.Next())
     {
-      const TopoDS_Edge& aE = (*(TopoDS_Edge*)(&aExp.Current()));
-      anOriE                = aE.Orientation();
-      bIsDegenerated        = BRep_Tool::Degenerated(aE);
-      bIsClosed             = BRep_Tool::IsClosed(aE, aF);
-      if (myImages.IsBound(aE))
+      const TopoDS_Edge& aE                 = (*(TopoDS_Edge*)(&aExp.Current()));
+      anOriE                                = aE.Orientation();
+      bIsDegenerated                        = BRep_Tool::Degenerated(aE);
+      bIsClosed                             = BRep_Tool::IsClosed(aE, aF);
+      NCollection_List<TopoDS_Shape>* pLEIm = myImages.ChangeSeek(aE);
+      if (pLEIm)
       {
-        NCollection_List<TopoDS_Shape>& aLEIm = myImages.ChangeFind(aE);
+        NCollection_List<TopoDS_Shape>& aLEIm = *pLEIm;
         //
         bRem = false;
         bIm  = false;

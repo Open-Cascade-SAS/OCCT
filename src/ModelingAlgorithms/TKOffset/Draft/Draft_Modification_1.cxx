@@ -442,26 +442,16 @@ bool Draft_Modification::Propagate()
     {
       E = TopoDS::Edge(editer.Current());
 
-      if (!myEMap.Contains(E))
-      {
-        Draft_EdgeInfo EInf(true);
-        myEMap.Add(E, EInf);
-      }
-      myEMap.ChangeFromKey(E).Add(Fc);
+      myEMap.Bound(E, Draft_EdgeInfo(true))->Add(Fc);
 
       // Exploration of the vertices of the edge
       vtiter.Init(E, TopAbs_VERTEX);
       while (vtiter.More())
       {
-        V = TopoDS::Vertex(vtiter.Current());
-        if (!myVMap.Contains(V))
-        {
-          Draft_VertexInfo VInf;
-          myVMap.Add(V, VInf);
-        }
-
-        myVMap.ChangeFromKey(V).Add(E);
-        myVMap.ChangeFromKey(V).ChangeParameter(E) = BRep_Tool::Parameter(V, E);
+        V                        = TopoDS::Vertex(vtiter.Current());
+        Draft_VertexInfo* aVInfo = myVMap.Bound(V, Draft_VertexInfo());
+        aVInfo->Add(E);
+        aVInfo->ChangeParameter(E) = BRep_Tool::Parameter(V, E);
         vtiter.Next();
       }
       editer.Next();
@@ -496,11 +486,7 @@ bool Draft_Modification::Propagate()
       }
       if (found)
       {
-        if (!myEMap.Contains(E))
-        {
-          Draft_EdgeInfo EInf(false);
-          myEMap.Add(E, EInf);
-        }
+        myEMap.Add(E, Draft_EdgeInfo(false));
         myVMap.ChangeFromKey(Vt).Add(E);
         myVMap.ChangeFromKey(Vt).ChangeParameter(E) = BRep_Tool::Parameter(Vt, E);
       }

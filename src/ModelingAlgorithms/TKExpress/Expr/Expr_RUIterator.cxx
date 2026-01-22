@@ -36,20 +36,14 @@ Expr_RUIterator::Expr_RUIterator(const occ::handle<Expr_GeneralRelation>& rel)
     {
       var = ui1.Value();
       ui1.Next();
-      if (!myMap.Contains(var))
-      {
-        myMap.Add(var);
-      }
+      myMap.Add(var);
     }
     Expr_UnknownIterator ui2(srel->SecondMember());
     while (ui2.More())
     {
       var = ui2.Value();
       ui2.Next();
-      if (!myMap.Contains(var))
-      {
-        myMap.Add(var);
-      }
+      myMap.Add(var);
     }
   }
 }

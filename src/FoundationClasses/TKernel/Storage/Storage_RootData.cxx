@@ -104,14 +104,8 @@ occ::handle<NCollection_HSequence<occ::handle<Storage_Root>>> Storage_RootData::
 
 occ::handle<Storage_Root> Storage_RootData::Find(const TCollection_AsciiString& aName) const
 {
-  occ::handle<Storage_Root> p;
-
-  if (myObjects.IsBound(aName))
-  {
-    p = myObjects.Find(aName);
-  }
-
-  return p;
+  const occ::handle<Storage_Root>* pRoot = myObjects.Seek(aName);
+  return pRoot ? *pRoot : occ::handle<Storage_Root>();
 }
 
 bool Storage_RootData::IsRoot(const TCollection_AsciiString& aName) const
@@ -130,9 +124,10 @@ void Storage_RootData::RemoveRoot(const TCollection_AsciiString& aName)
 void Storage_RootData::UpdateRoot(const TCollection_AsciiString&          aName,
                                   const occ::handle<Standard_Persistent>& aPers)
 {
-  if (myObjects.IsBound(aName))
+  occ::handle<Storage_Root>* pRoot = myObjects.ChangeSeek(aName);
+  if (pRoot)
   {
-    myObjects.ChangeFind(aName)->SetObject(aPers);
+    (*pRoot)->SetObject(aPers);
   }
   else
   {

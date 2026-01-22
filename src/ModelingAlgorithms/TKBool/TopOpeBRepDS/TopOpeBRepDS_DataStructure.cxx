@@ -335,10 +335,7 @@ void TopOpeBRepDS_DataStructure::InitSectionEdges()
 
 int TopOpeBRepDS_DataStructure::AddSectionEdge(const TopoDS_Edge& E)
 {
-  int iE = mySectionEdges.FindIndex(E);
-  if (iE == 0)
-    iE = mySectionEdges.Add(E);
-  return iE;
+  return mySectionEdges.Add(E);
 }
 
 //=================================================================================================

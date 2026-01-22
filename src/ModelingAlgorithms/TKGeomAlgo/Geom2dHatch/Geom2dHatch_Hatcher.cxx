@@ -67,11 +67,9 @@ void Geom2dHatch_Hatcher::Intersector(const Geom2dHatch_Intersector& Intersector
   myIntersector = Intersector;
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
-    {
-      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-      Hatching.ClrPoints();
-    }
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
+      pHatching->ClrPoints();
   }
 }
 
@@ -85,11 +83,9 @@ void Geom2dHatch_Hatcher::Confusion2d(const double Confusion)
   myConfusion2d = Confusion;
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
-    {
-      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-      Hatching.ClrPoints();
-    }
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
+      pHatching->ClrPoints();
   }
 }
 
@@ -103,11 +99,9 @@ void Geom2dHatch_Hatcher::Confusion3d(const double Confusion)
   myConfusion3d = Confusion;
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
-    {
-      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-      Hatching.ClrPoints();
-    }
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
+      pHatching->ClrPoints();
   }
 }
 
@@ -118,11 +112,9 @@ void Geom2dHatch_Hatcher::KeepPoints(const bool Keep)
   myKeepPoints = Keep;
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
-    {
-      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-      Hatching.ClrDomains();
-    }
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
+      pHatching->ClrDomains();
   }
 }
 
@@ -133,11 +125,9 @@ void Geom2dHatch_Hatcher::KeepSegments(const bool Keep)
   myKeepSegments = Keep;
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
-    {
-      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-      Hatching.ClrDomains();
-    }
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
+      pHatching->ClrDomains();
   }
 }
 
@@ -167,11 +157,9 @@ int Geom2dHatch_Hatcher::AddElement(const Geom2dAdaptor_Curve& Curve,
   myElements.Bind(IndE, Element);
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
-    {
-      Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-      Hatching.ClrPoints();
-    }
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
+      pHatching->ClrPoints();
   }
   return IndE;
 }
@@ -188,9 +176,10 @@ void Geom2dHatch_Hatcher::RemElement(const int IndE)
 #endif
   for (int IndH = 1; IndH <= myNbHatchings; IndH++)
   {
-    if (myHatchings.IsBound(IndH))
+    Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+    if (pHatching)
     {
-      Geom2dHatch_Hatching& Hatching       = myHatchings.ChangeFind(IndH);
+      Geom2dHatch_Hatching& Hatching       = *pHatching;
       bool                  DomainsToClear = false;
       for (int IPntH = Hatching.NbPoints(); IPntH > 0; IPntH--)
       {
@@ -228,11 +217,9 @@ void Geom2dHatch_Hatcher::ClrElements()
     {
       for (int IndH = 1; IndH <= myNbHatchings; IndH++)
       {
-        if (myHatchings.IsBound(IndH))
-        {
-          Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-          Hatching.ClrPoints();
-        }
+        Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+        if (pHatching)
+          pHatching->ClrPoints();
       }
     }
     myElements.Clear();
@@ -294,11 +281,9 @@ void Geom2dHatch_Hatcher::ClrHatchings()
   {
     for (int IndH = 1; IndH <= myNbHatchings; IndH++)
     {
-      if (myHatchings.IsBound(IndH))
-      {
-        Geom2dHatch_Hatching& Hatching = myHatchings.ChangeFind(IndH);
-        Hatching.ClrPoints();
-      }
+      Geom2dHatch_Hatching* pHatching = myHatchings.ChangeSeek(IndH);
+      if (pHatching)
+        pHatching->ClrPoints();
     }
     myHatchings.Clear();
     myNbHatchings = 0;

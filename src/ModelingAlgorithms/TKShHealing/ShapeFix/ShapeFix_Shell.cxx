@@ -254,9 +254,8 @@ static NCollection_List<NCollection_Sequence<TopoDS_Shape>> GetConnectedFaceGrou
             {
               const TopoDS_Face& aNeighborFace = aConnectedFaces.Value(aFaceIdx);
 
-              if (!aVisitedFaces.Contains(aNeighborFace))
+              if (aVisitedFaces.Add(aNeighborFace))
               {
-                aVisitedFaces.Add(aNeighborFace);
                 aStack.push(aNeighborFace);
               }
             }
@@ -747,12 +746,12 @@ static bool AddMultiConexityFaces(
     }
     for (NCollection_List<TopoDS_Shape>::Iterator aItl(lfaces); aItl.More(); aItl.Next())
     {
-      TopoDS_Shape aF = aItl.Value();
-      if (!aMapFaceShells.IsBound(aF))
+      TopoDS_Shape        aF          = aItl.Value();
+      const TopoDS_Shape* pOthershell = aMapFaceShells.Seek(aF);
+      if (!pOthershell)
         continue;
 
-      TopoDS_Shape aOthershell;
-      aOthershell = aMapFaceShells.Find(aF);
+      TopoDS_Shape aOthershell = *pOthershell;
       if (MapOtherShells.IsBound(aOthershell))
         continue;
       if (!NonManifold && BRep_Tool::IsClosed(aOthershell))
@@ -812,10 +811,11 @@ static bool AddMultiConexityFaces(
     int ind = 0;
     for (int l = 1; l <= SeqShells.Length(); l++)
     {
-      if (!MapOtherShells.IsBound(SeqShells.Value(l)))
+      const int* pIsRev = MapOtherShells.Seek(SeqShells.Value(l));
+      if (!pIsRev)
         continue;
       ind++;
-      int          isRev     = MapOtherShells.Find(SeqShells.Value(l));
+      int          isRev     = *pIsRev;
       TopoDS_Shape anewShape = (isRev ? aSh.Reversed() : aSh);
 
       BRep_Builder aB1;
@@ -1146,13 +1146,12 @@ static void CreateNonManifoldShells(
           arshell = ss;
         }
 
-        if (!mapmerge.Contains(arshell))
+        if (mapmerge.Add(arshell))
         {
           for (TopExp_Explorer aEf(arshell, TopAbs_FACE); aEf.More(); aEf.Next())
           {
             aB.Add(aNewShell, aEf.Current());
           }
-          mapmerge.Add(arshell);
         }
       }
       else
@@ -1172,13 +1171,12 @@ static void CreateNonManifoldShells(
 
           mapmerge.Add(arshell);
         }
-        else if (!mapmerge.Contains(arshell))
+        else if (mapmerge.Add(arshell))
         {
           for (TopExp_Explorer aEf(arshell, TopAbs_FACE); aEf.More(); aEf.Next())
           {
             aB.Add(aNewShell, aEf.Current());
           }
-          mapmerge.Add(arshell);
         }
       }
     }
