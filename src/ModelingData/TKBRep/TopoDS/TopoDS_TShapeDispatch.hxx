@@ -46,6 +46,9 @@ public:
   //! @param theTShape pointer to TShape (non-null)
   //! @param theFunc functor to apply, receives concrete type pointer
   //! @return result of theFunc invocation
+  //! @note TopoDS_TEdge* is used for return type deduction as a representative
+  //!       derived type. Cannot use base class since lambdas may access
+  //!       members (mySubShapes) that only exist in derived classes.
   template <typename Func>
   static auto Apply(TopoDS_TShape* theTShape, Func&& theFunc)
       -> decltype(theFunc(static_cast<TopoDS_TEdge*>(nullptr)))

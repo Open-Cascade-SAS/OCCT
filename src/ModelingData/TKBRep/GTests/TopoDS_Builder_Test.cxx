@@ -1,0 +1,490 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <gtest/gtest.h>
+
+#include <BRep_Builder.hxx>
+#include <BRepBuilderAPI_MakeEdge.hxx>
+#include <BRepBuilderAPI_MakeVertex.hxx>
+#include <TopoDS.hxx>
+#include <TopoDS_Builder.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_CompSolid.hxx>
+#include <TopoDS_Edge.hxx>
+#include <TopoDS_Iterator.hxx>
+#include <TopoDS_Shell.hxx>
+#include <TopoDS_Solid.hxx>
+#include <TopoDS_Vertex.hxx>
+#include <TopoDS_Wire.hxx>
+#include <gp_Pnt.hxx>
+
+//=================================================================================================
+// Test TopoDS_Builder::MakeWire with default bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, MakeWire_DefaultBucket)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Wire    aWire;
+
+  aBuilder.MakeWire(aWire);
+
+  EXPECT_FALSE(aWire.IsNull()) << "Wire should not be null after MakeWire";
+  EXPECT_EQ(aWire.ShapeType(), TopAbs_WIRE) << "Shape type should be WIRE";
+  EXPECT_TRUE(aWire.Free()) << "Newly created wire should be free";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::MakeWire with explicit bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, MakeWire_ExplicitBucket)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Wire    aWire;
+
+  // Create wire with large bucket size for many edges
+  aBuilder.MakeWire(aWire, 100);
+
+  EXPECT_FALSE(aWire.IsNull()) << "Wire should not be null";
+  EXPECT_EQ(aWire.ShapeType(), TopAbs_WIRE) << "Shape type should be WIRE";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::MakeShell with default and explicit bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, MakeShell_DefaultAndExplicit)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Shell   aShell1, aShell2;
+
+  aBuilder.MakeShell(aShell1);
+  aBuilder.MakeShell(aShell2, 50);
+
+  EXPECT_FALSE(aShell1.IsNull()) << "Shell1 should not be null";
+  EXPECT_FALSE(aShell2.IsNull()) << "Shell2 should not be null";
+  EXPECT_EQ(aShell1.ShapeType(), TopAbs_SHELL);
+  EXPECT_EQ(aShell2.ShapeType(), TopAbs_SHELL);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::MakeSolid with default and explicit bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, MakeSolid_DefaultAndExplicit)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Solid   aSolid1, aSolid2;
+
+  aBuilder.MakeSolid(aSolid1);
+  aBuilder.MakeSolid(aSolid2, 10);
+
+  EXPECT_FALSE(aSolid1.IsNull()) << "Solid1 should not be null";
+  EXPECT_FALSE(aSolid2.IsNull()) << "Solid2 should not be null";
+  EXPECT_EQ(aSolid1.ShapeType(), TopAbs_SOLID);
+  EXPECT_EQ(aSolid2.ShapeType(), TopAbs_SOLID);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::MakeCompSolid with default and explicit bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, MakeCompSolid_DefaultAndExplicit)
+{
+  TopoDS_Builder   aBuilder;
+  TopoDS_CompSolid aCompSolid1, aCompSolid2;
+
+  aBuilder.MakeCompSolid(aCompSolid1);
+  aBuilder.MakeCompSolid(aCompSolid2, 20);
+
+  EXPECT_FALSE(aCompSolid1.IsNull()) << "CompSolid1 should not be null";
+  EXPECT_FALSE(aCompSolid2.IsNull()) << "CompSolid2 should not be null";
+  EXPECT_EQ(aCompSolid1.ShapeType(), TopAbs_COMPSOLID);
+  EXPECT_EQ(aCompSolid2.ShapeType(), TopAbs_COMPSOLID);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::MakeCompound with default and explicit bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, MakeCompound_DefaultAndExplicit)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound1, aCompound2;
+
+  aBuilder.MakeCompound(aCompound1);
+  aBuilder.MakeCompound(aCompound2, 1000);
+
+  EXPECT_FALSE(aCompound1.IsNull()) << "Compound1 should not be null";
+  EXPECT_FALSE(aCompound2.IsNull()) << "Compound2 should not be null";
+  EXPECT_EQ(aCompound1.ShapeType(), TopAbs_COMPOUND);
+  EXPECT_EQ(aCompound2.ShapeType(), TopAbs_COMPOUND);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Add - add vertices to compound
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Add_VerticesToCompound)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Create and add vertices
+  TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+  TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+  TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 1, 0));
+
+  aBuilder.Add(aCompound, aV1);
+  aBuilder.Add(aCompound, aV2);
+  aBuilder.Add(aCompound, aV3);
+
+  // Count children using iterator
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aCompound); anIt.More(); anIt.Next())
+  {
+    ++aCount;
+  }
+
+  EXPECT_EQ(aCount, 3) << "Compound should have 3 vertices";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Add - add edges to wire
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Add_EdgesToWire)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Wire    aWire;
+  aBuilder.MakeWire(aWire);
+
+  // Create edges forming a triangle
+  TopoDS_Edge aE1 = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+  TopoDS_Edge aE2 = BRepBuilderAPI_MakeEdge(gp_Pnt(1, 0, 0), gp_Pnt(0.5, 1, 0));
+  TopoDS_Edge aE3 = BRepBuilderAPI_MakeEdge(gp_Pnt(0.5, 1, 0), gp_Pnt(0, 0, 0));
+
+  aBuilder.Add(aWire, aE1);
+  aBuilder.Add(aWire, aE2);
+  aBuilder.Add(aWire, aE3);
+
+  // Count children
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aWire); anIt.More(); anIt.Next())
+  {
+    EXPECT_EQ(anIt.Value().ShapeType(), TopAbs_EDGE);
+    ++aCount;
+  }
+
+  EXPECT_EQ(aCount, 3) << "Wire should have 3 edges";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Remove
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Remove_FromCompound)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Add vertices
+  TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+  TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+  TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 1, 0));
+
+  aBuilder.Add(aCompound, aV1);
+  aBuilder.Add(aCompound, aV2);
+  aBuilder.Add(aCompound, aV3);
+
+  // Remove middle vertex
+  aBuilder.Remove(aCompound, aV2);
+
+  // Count remaining children
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aCompound); anIt.More(); anIt.Next())
+  {
+    ++aCount;
+  }
+
+  EXPECT_EQ(aCount, 2) << "Compound should have 2 vertices after removal";
+}
+
+//=================================================================================================
+// Test adding many shapes to compound with large bucket size
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Add_ManyShapesToLargeBucket)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+
+  // Create compound with large bucket to avoid reallocations
+  aBuilder.MakeCompound(aCompound, 500);
+
+  // Add 500 vertices
+  for (int i = 0; i < 500; ++i)
+  {
+    TopoDS_Vertex aV = BRepBuilderAPI_MakeVertex(gp_Pnt(i, 0, 0));
+    aBuilder.Add(aCompound, aV);
+  }
+
+  // Verify count
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aCompound); anIt.More(); anIt.Next())
+  {
+    ++aCount;
+  }
+
+  EXPECT_EQ(aCount, 500) << "Compound should have 500 vertices";
+}
+
+//=================================================================================================
+// Test TShape flags through shape interface
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, TShapeFlags)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Test initial flags
+  EXPECT_TRUE(aCompound.Free()) << "New shape should be free";
+  EXPECT_TRUE(aCompound.Modified()) << "New shape should be modified";
+
+  // Test setting flags
+  aCompound.Checked(true);
+  EXPECT_TRUE(aCompound.Checked());
+
+  aCompound.Closed(true);
+  EXPECT_TRUE(aCompound.Closed());
+
+  aCompound.Infinite(true);
+  EXPECT_TRUE(aCompound.Infinite());
+
+  aCompound.Convex(true);
+  EXPECT_TRUE(aCompound.Convex());
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Remove first child
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Remove_FirstChild)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+  TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(2, 0, 0));
+  TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(3, 0, 0));
+
+  aBuilder.Add(aCompound, aV1);
+  aBuilder.Add(aCompound, aV2);
+  aBuilder.Add(aCompound, aV3);
+
+  // Remove first vertex
+  aBuilder.Remove(aCompound, aV1);
+
+  // Should have 2 remaining
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aCompound); anIt.More(); anIt.Next())
+  {
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Remove last child
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Remove_LastChild)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+  TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(2, 0, 0));
+  TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(3, 0, 0));
+
+  aBuilder.Add(aCompound, aV1);
+  aBuilder.Add(aCompound, aV2);
+  aBuilder.Add(aCompound, aV3);
+
+  // Remove last vertex
+  aBuilder.Remove(aCompound, aV3);
+
+  // Should have 2 remaining
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aCompound); anIt.More(); anIt.Next())
+  {
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Remove all children one by one
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Remove_AllChildren)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+  TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(2, 0, 0));
+  TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(3, 0, 0));
+
+  aBuilder.Add(aCompound, aV1);
+  aBuilder.Add(aCompound, aV2);
+  aBuilder.Add(aCompound, aV3);
+
+  // Remove all
+  aBuilder.Remove(aCompound, aV1);
+  aBuilder.Remove(aCompound, aV2);
+  aBuilder.Remove(aCompound, aV3);
+
+  // Should be empty
+  TopoDS_Iterator anIt(aCompound);
+  EXPECT_FALSE(anIt.More()) << "Compound should be empty after removing all children";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Remove from wire
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Remove_FromWire)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Wire    aWire;
+  aBuilder.MakeWire(aWire);
+
+  TopoDS_Edge aE1 = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+  TopoDS_Edge aE2 = BRepBuilderAPI_MakeEdge(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+  TopoDS_Edge aE3 = BRepBuilderAPI_MakeEdge(gp_Pnt(1, 1, 0), gp_Pnt(0, 0, 0));
+
+  aBuilder.Add(aWire, aE1);
+  aBuilder.Add(aWire, aE2);
+  aBuilder.Add(aWire, aE3);
+
+  // Remove middle edge
+  aBuilder.Remove(aWire, aE2);
+
+  // Should have 2 edges
+  int aCount = 0;
+  for (TopoDS_Iterator anIt(aWire); anIt.More(); anIt.Next())
+  {
+    ++aCount;
+  }
+  EXPECT_EQ(aCount, 2);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder with nested compounds
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, NestedCompounds)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aOuter, aInner;
+  aBuilder.MakeCompound(aOuter);
+  aBuilder.MakeCompound(aInner);
+
+  // Add vertices to inner
+  aBuilder.Add(aInner, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  aBuilder.Add(aInner, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0)));
+
+  // Add inner to outer
+  aBuilder.Add(aOuter, aInner);
+
+  // Outer should have 1 child (the inner compound)
+  int aOuterCount = 0;
+  for (TopoDS_Iterator anIt(aOuter); anIt.More(); anIt.Next())
+  {
+    EXPECT_EQ(anIt.Value().ShapeType(), TopAbs_COMPOUND);
+    ++aOuterCount;
+  }
+  EXPECT_EQ(aOuterCount, 1);
+
+  // Inner should still have 2 vertices
+  EXPECT_EQ(aInner.TShape()->NbChildren(), 2);
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Add sets Modified flag
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Add_SetsModifiedFlag)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Clear modified flag
+  aCompound.TShape()->Modified(false);
+  EXPECT_FALSE(aCompound.Modified());
+
+  // Add should set modified
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  EXPECT_TRUE(aCompound.Modified()) << "Add should set Modified flag";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder::Remove sets Modified flag
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, Remove_SetsModifiedFlag)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  TopoDS_Vertex aV = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+  aBuilder.Add(aCompound, aV);
+
+  // Clear modified flag
+  aCompound.TShape()->Modified(false);
+  EXPECT_FALSE(aCompound.Modified());
+
+  // Remove should set modified
+  aBuilder.Remove(aCompound, aV);
+  EXPECT_TRUE(aCompound.Modified()) << "Remove should set Modified flag";
+}
+
+//=================================================================================================
+// Test TopoDS_Builder with zero bucket size (should use default)
+//=================================================================================================
+
+TEST(TopoDS_Builder_Test, ZeroBucketSize_UsesDefault)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+
+  // Zero bucket size should fall back to default
+  aBuilder.MakeCompound(aCompound, 0);
+
+  EXPECT_FALSE(aCompound.IsNull());
+
+  // Should still work normally
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  EXPECT_EQ(aCompound.TShape()->NbChildren(), 1);
+}
