@@ -21,7 +21,7 @@ IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TEdge, TopoDS_TShape)
 
 //=================================================================================================
 
-TopAbs_ShapeEnum TopoDS_TEdge::ShapeType() const
+occ::handle<TopoDS_TShape> TopoDS_TEdge::EmptyCopy() const
 {
-  return TopAbs_EDGE;
+  return occ::handle<TopoDS_TEdge>(new TopoDS_TEdge());
 }

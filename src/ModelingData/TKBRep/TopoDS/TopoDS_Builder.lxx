@@ -25,7 +25,7 @@
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
 
-//=================================================================================================
+//==================================================================================================
 
 inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
 {
@@ -33,7 +33,7 @@ inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
   MakeShape(W, TW);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
 {
@@ -41,7 +41,7 @@ inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
   MakeShape(S, TS);
 }
 
-//=================================================================================================
+//==================================================================================================
 
 inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
 {
@@ -49,10 +49,7 @@ inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
   MakeShape(S, TS);
 }
 
-//=======================================================================
-// function : MakeCompSolid
-// purpose  : Make an empty CompSolid
-//=======================================================================
+//==================================================================================================
 
 inline void TopoDS_Builder::MakeCompSolid(TopoDS_CompSolid& C) const
 {
@@ -60,10 +57,7 @@ inline void TopoDS_Builder::MakeCompSolid(TopoDS_CompSolid& C) const
   MakeShape(C, TC);
 }
 
-//=======================================================================
-// function : MakeCompound
-// purpose  : Make an empty Compound
-//=======================================================================
+//==================================================================================================
 
 inline void TopoDS_Builder::MakeCompound(TopoDS_Compound& C) const
 {

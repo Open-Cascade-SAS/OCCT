@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 //! A set of edges connected by their vertices.
@@ -28,11 +27,9 @@ class TopoDS_TWire : public TopoDS_TShape
 public:
   //! Creates an empty TWire.
   TopoDS_TWire()
-
-    = default;
-
-  //! Returns WIRE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+      : TopoDS_TShape(TopAbs_WIRE)
+  {
+  }
 
   //! Returns an empty TWire.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;

@@ -18,7 +18,6 @@
 #define _TopoDS_TVertex_HeaderFile
 
 #include <Standard.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 // resolve name collisions with X11 headers
@@ -27,18 +26,16 @@
 #endif
 
 //! A Vertex is a topological point in two or three dimensions.
+//! TVertex has no children (sub-shapes).
 class TopoDS_TVertex : public TopoDS_TShape
 {
 public:
-  //! Returns VERTEX.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
-
   DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
 
 protected:
   //! Construct a vertex.
   TopoDS_TVertex()
-
+      : TopoDS_TShape(TopAbs_VERTEX)
   {
     Closed(true);
     Convex(true);

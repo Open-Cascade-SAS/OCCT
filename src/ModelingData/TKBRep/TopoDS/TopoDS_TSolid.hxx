@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 //! A Topological part of 3D space, bounded by shells,
@@ -28,10 +27,11 @@ class TopoDS_TSolid : public TopoDS_TShape
 {
 public:
   //! Creates an empty TSolid.
-  TopoDS_TSolid() { Orientable(false); }
-
-  //! returns SOLID.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  TopoDS_TSolid()
+      : TopoDS_TShape(TopAbs_SOLID)
+  {
+    Orientable(false);
+  }
 
   //! Returns an empty TSolid.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;

@@ -22,12 +22,9 @@
 #include <TopoDS_TShape.hxx>
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
-class TopoDS_Shape;
 
-//=======================================================================
-// function : MakeShape
-// purpose  : Make a Shape from a TShape
-//=======================================================================
+//==================================================================================================
+
 void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>& T) const
 {
   S.TShape(T);
@@ -35,10 +32,7 @@ void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>
   S.Orientation(TopAbs_FORWARD);
 }
 
-//=======================================================================
-// function : Add
-// purpose  : insert aComponent in aShape
-//=======================================================================
+//==================================================================================================
 
 void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
@@ -71,27 +65,27 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
         | (1 << ((unsigned int)TopAbs_FACE)) | (1 << ((unsigned int)TopAbs_EDGE)),
       // SHAPE to:
       0};
-    //
+
     const unsigned int iC = (unsigned int)aComponent.ShapeType();
     const unsigned int iS = (unsigned int)aShape.ShapeType();
-    //
+
     if ((aTb[iC] & (1 << iS)) != 0)
     {
-      NCollection_List<TopoDS_Shape>& L = aShape.TShape()->myShapes;
-      L.Append(aComponent);
-      TopoDS_Shape& S = L.Last();
-      //
+      TopoDS_Shape aChild = aComponent;
+
       // compute the relative Orientation
       if (aShape.Orientation() == TopAbs_REVERSED)
-        S.Reverse();
-      //
+        aChild.Reverse();
+
       // and the Relative Location
       const TopLoc_Location& aLoc = aShape.Location();
       if (!aLoc.IsIdentity())
-        S.Move(aLoc.Inverted(), false);
-      //
-      // Set the TShape as modified.
-      aShape.TShape()->Modified(true);
+        aChild.Move(aLoc.Inverted(), false);
+
+      // Add to the subshapes list
+      TopoDS_TShape* aTShape = aShape.TShape().get();
+      aTShape->myShapes.Append(aChild);
+      aTShape->Modified(true);
     }
     else
     {
@@ -104,14 +98,11 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   }
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : Remove a Shape from an other one
-//=======================================================================
+//==================================================================================================
 
 void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
-  // check  if aShape  is  not Frozen
+  // check if aShape is not Frozen
   TopoDS_FrozenShape_Raise_if(!aShape.Free(), "TopoDS_Builder::Remove");
 
   // compute the relative Orientation and Location of aComponent
@@ -120,16 +111,18 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
     S.Reverse();
   S.Location(S.Location().Predivided(aShape.Location()), false);
 
-  NCollection_List<TopoDS_Shape>&          L = aShape.TShape()->myShapes;
-  NCollection_List<TopoDS_Shape>::Iterator It(L);
-  while (It.More())
+  TopoDS_TShape*                           aTShape = aShape.TShape().get();
+  NCollection_List<TopoDS_Shape>&          aList   = aTShape->myShapes;
+  NCollection_List<TopoDS_Shape>::Iterator anIter(aList);
+
+  while (anIter.More())
   {
-    if (It.Value() == S)
+    if (anIter.Value() == S)
     {
-      L.Remove(It);
-      aShape.TShape()->Modified(true);
-      break;
+      aList.Remove(anIter);
+      aTShape->Modified(true);
+      return;
     }
-    It.Next();
+    anIter.Next();
   }
 }

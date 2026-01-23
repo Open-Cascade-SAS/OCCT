@@ -18,8 +18,6 @@
 #define _TopoDS_TEdge_HeaderFile
 
 #include <Standard.hxx>
-
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 //! A topological part of a curve in 2D or 3D, the
@@ -27,14 +25,17 @@
 class TopoDS_TEdge : public TopoDS_TShape
 {
 public:
-  //! Returns EDGE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+  //! Returns an empty TEdge.
+  Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TEdge, TopoDS_TShape)
 
 protected:
   //! Construct an edge.
-  TopoDS_TEdge() {}
+  TopoDS_TEdge()
+      : TopoDS_TShape(TopAbs_EDGE)
+  {
+  }
 };
 
 #endif // _TopoDS_TEdge_HeaderFile

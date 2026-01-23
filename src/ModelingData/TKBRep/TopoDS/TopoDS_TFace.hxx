@@ -19,22 +19,18 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 //! A topological part of a surface or of the 2D
-//! space. The boundary is a set of wires and
-//! vertices.
+//! space. The boundary is a set of wires and vertices.
 class TopoDS_TFace : public TopoDS_TShape
 {
 public:
   //! Creates an empty TFace.
   TopoDS_TFace()
-
-    = default;
-
-  //! returns FACE.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+      : TopoDS_TShape(TopAbs_FACE)
+  {
+  }
 
   //! Returns an empty TFace.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;

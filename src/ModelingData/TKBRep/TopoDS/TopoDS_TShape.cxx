@@ -32,9 +32,7 @@ void TopoDS_TShape::DumpJson(Standard_OStream& theOStream, int) const
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, ShapeType())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, NbChildren())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFlags)
-
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Free())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myState)
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Free())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, Locked())

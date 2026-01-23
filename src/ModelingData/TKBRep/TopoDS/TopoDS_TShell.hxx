@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 //! A set of faces connected by their edges.
@@ -28,11 +27,9 @@ class TopoDS_TShell : public TopoDS_TShape
 public:
   //! Creates an empty TShell.
   TopoDS_TShell()
-
-    = default;
-
-  //! Returns SHELL.
-  Standard_EXPORT TopAbs_ShapeEnum ShapeType() const override;
+      : TopoDS_TShape(TopAbs_SHELL)
+  {
+  }
 
   //! Returns an empty TShell.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
