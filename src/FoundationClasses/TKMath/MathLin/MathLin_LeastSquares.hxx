@@ -38,13 +38,13 @@ enum class LeastSquaresMethod
 //! Result for least squares problems.
 struct LeastSquaresResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Vector> Solution;   //!< Least squares solution x
   std::optional<double>      Residual;   //!< ||Ax - b||_2 (L2 norm of residual)
   std::optional<double>      ResidualSq; //!< ||Ax - b||_2^2 (squared residual)
   int                        Rank = 0;   //!< Numerical rank of A (for SVD)
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

@@ -30,13 +30,13 @@ using namespace MathUtils;
 //! Result for LU decomposition.
 struct LUResult
 {
-  Status                            Status = Status::NotConverged;
+  MathUtils::Status                 Status = MathUtils::Status::NotConverged;
   std::optional<math_Matrix>        LU;    //!< Combined L and U matrices
   std::optional<math_IntegerVector> Pivot; //!< Pivot indices
   std::optional<double>             Determinant;
   int                               Sign = 1; //!< Sign from row interchanges
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

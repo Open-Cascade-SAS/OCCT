@@ -29,7 +29,7 @@ using namespace MathUtils;
 //! Result for Uzawa constrained optimization.
 struct UzawaResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Vector> Solution;     //!< Solution vector X
   std::optional<math_Vector> Dual;         //!< Dual (Lagrange) variables
   std::optional<math_Vector> Error;        //!< X - X0 (difference from starting point)
@@ -37,7 +37,7 @@ struct UzawaResult
   std::optional<math_Matrix> InverseCTC;   //!< (C * C^T)^-1 for gradient computation
   int                        NbIterations = 0;
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

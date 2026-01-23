@@ -28,12 +28,12 @@ using namespace MathUtils;
 //! Result for eigenvalue decomposition of tridiagonal matrix.
 struct EigenResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Vector> EigenValues;  //!< Computed eigenvalues
   std::optional<math_Matrix> EigenVectors; //!< Eigenvectors as columns
   int                        Dimension = 0;
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

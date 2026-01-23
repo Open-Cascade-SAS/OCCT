@@ -42,14 +42,14 @@ using namespace MathUtils;
 //! Result of 2D Newton iteration.
 struct Newton2DResult
 {
-  Status Status = Status::NotConverged; //!< Computation status
-  double U      = 0.0;                  //!< Solution U coordinate
-  double V      = 0.0;                  //!< Solution V coordinate
-  size_t NbIter = 0;                    //!< Number of iterations performed
-  double FNorm  = 0.0;                  //!< Final |F| norm
+  MathUtils::Status Status = MathUtils::Status::NotConverged; //!< Computation status
+  double            U      = 0.0;                             //!< Solution U coordinate
+  double            V      = 0.0;                             //!< Solution V coordinate
+  size_t            NbIter = 0;                               //!< Number of iterations performed
+  double            FNorm  = 0.0;                             //!< Final |F| norm
 
   //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }

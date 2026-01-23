@@ -28,12 +28,12 @@ using namespace MathUtils;
 //! Result for QR decomposition using Householder reflections.
 struct QRResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Matrix> Q;        //!< Orthogonal matrix Q (m x m)
   std::optional<math_Matrix> R;        //!< Upper triangular matrix R (m x n)
   int                        Rank = 0; //!< Numerical rank
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };
