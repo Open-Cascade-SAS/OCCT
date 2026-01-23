@@ -120,9 +120,12 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
     {
       if (theTyped->GetChild(i) == S)
       {
-        // Swap with last element and erase last (O(1) removal)
-        if (i < aNb - 1)
-          theTyped->mySubShapes.ChangeValue(i) = theTyped->mySubShapes.Value(aNb - 1);
+        // Shift elements to preserve iteration order (matches original NCollection_List behavior)
+        for (int j = i; j < aNb - 1; ++j)
+        {
+          theTyped->mySubShapes.ChangeValue(j) =
+            std::move(theTyped->mySubShapes.ChangeValue(j + 1));
+        }
         theTyped->mySubShapes.EraseLast();
         return true;
       }
