@@ -240,8 +240,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_Parabola::EvaluateGridDN(
   NCollection_Array1<gp_Vec> aResult(1, aNb);
 
   const gp_Parab& aParab = myGeom->Parab();
-  const gp_Dir&   aXDir  = aParab.XAxis().Direction();
-  const gp_Dir&   aYDir  = aParab.YAxis().Direction();
+  const gp_Dir    aXDir  = aParab.XAxis().Direction();
+  const gp_Dir    aYDir  = aParab.YAxis().Direction();
   const double    aFocal = aParab.Focal();
 
   const double aXX = aXDir.X();
