@@ -11,15 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef TKDESTEP_PCH_H
-#define TKDESTEP_PCH_H
+#ifndef TKBOOL_PCH_H
+#define TKBOOL_PCH_H
 
-#include <Interface_EntityIterator.hxx>
-#include <StepData_StepReaderData.hxx>
-#include <StepData_StepWriter.hxx>
-#include <StepGeom_GeometricRepresentationItem.hxx>
-#include <StepKinematics_KinematicPair.hxx>
-#include <StepRepr_Representation.hxx>
-#include <StepRepr_RepresentationItem.hxx>
+#include <TopOpeBRepBuild_define.hxx>
+#include <TopOpeBRepDS_define.hxx>
+#include <TopOpeBRepTool_PROJECT.hxx>
 
-#endif // TKDESTEP_PCH_H
+#endif // TKBOOL_PCH_H

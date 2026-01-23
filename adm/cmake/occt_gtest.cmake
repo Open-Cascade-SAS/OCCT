@@ -29,6 +29,11 @@ function(OCCT_INIT_GTEST)
 
   target_compile_definitions(${TEST_PROJECT_NAME} PRIVATE GTEST_LINKED_AS_SHARED_LIBRARY=1)
 
+  # Configure precompiled headers for Google Test
+  if (BUILD_USE_PCH)
+    target_precompile_headers(${TEST_PROJECT_NAME} PRIVATE <gtest/gtest.h>)
+  endif()
+
   # Link with all active toolkits that are libraries
   foreach(TOOLKIT ${BUILD_TOOLKITS})
     if(TARGET ${TOOLKIT})
