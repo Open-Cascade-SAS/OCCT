@@ -67,13 +67,13 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
   if (S.IsNull())
   {
     mySubShapes = nullptr;
-    myIndex     = 0U;
+    myIndex     = 0;
   }
   else
   {
-    // Get direct pointer to child array (type-switch only once during init)
+    // Get array pointer (type-switch only once during init)
     mySubShapes = getSubShapesArray(S.TShape().get());
-    myIndex     = 0U;
+    myIndex     = 0;
   }
 
   if (More())
@@ -97,7 +97,6 @@ void TopoDS_Iterator::Next()
 
 void TopoDS_Iterator::updateCurrentShape()
 {
-  // Direct array access - no dispatch overhead
   myShape = mySubShapes->Value(static_cast<int>(myIndex));
   myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())

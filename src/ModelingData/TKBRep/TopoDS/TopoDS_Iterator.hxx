@@ -32,7 +32,7 @@ class TopoDS_TShape;
 //! and a compound of the original values and the relative values.
 //!
 //! This iterator uses index-based access to child shapes
-//! stored in the TShape's dynamic array for optimal performance.
+//! stored in the TShape's dynamic array.
 class TopoDS_Iterator
 {
 public:
@@ -41,7 +41,7 @@ public:
   //! Creates an empty Iterator.
   TopoDS_Iterator()
       : mySubShapes(nullptr),
-        myIndex(0U),
+        myIndex(0),
         myOrientation(TopAbs_FORWARD)
   {
   }
@@ -55,7 +55,7 @@ public:
   //! each sub-shape the transformation that is associated with S.
   TopoDS_Iterator(const TopoDS_Shape& S, const bool cumOri = true, const bool cumLoc = true)
       : mySubShapes(nullptr),
-        myIndex(0U),
+        myIndex(0),
         myOrientation(TopAbs_FORWARD)
   {
     Initialize(S, cumOri, cumLoc);
