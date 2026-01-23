@@ -261,7 +261,7 @@ TEST(TopoDS_Iterator_Test, ManyChildren)
 {
   TopoDS_Builder  aBuilder;
   TopoDS_Compound aCompound;
-  aBuilder.MakeCompound(aCompound, 1000); // Large bucket
+  aBuilder.MakeCompound(aCompound);
 
   const int aNbVertices = 1000;
 

@@ -18,55 +18,24 @@
 #define _TopoDS_TEdge_HeaderFile
 
 #include <Standard.hxx>
-#include <NCollection_DynamicArray.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
-#include <TopoDS_Shape.hxx>
 
 //! A topological part of a curve in 2D or 3D, the
 //! boundary is a set of oriented Vertices.
 class TopoDS_TEdge : public TopoDS_TShape
 {
 public:
-  //! Default bucket size for edges.
-  static constexpr int DefaultBucketSize = 2;
-
-  //! Returns the number of direct sub-shapes (children).
-  int NbChildren() const final { return mySubShapes.Size(); }
-
-  //! Returns the child shape at the given index (0-based).
-  //! @param theIndex the 0-based index of the child
-  //! @return the child shape at the given index
-  const TopoDS_Shape& GetChild(size_t theIndex) const final
-  {
-    return mySubShapes.Value(static_cast<int>(theIndex));
-  }
-
   //! Returns an empty TEdge.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TEdge, TopoDS_TShape)
 
 protected:
-  //! Construct an edge with default bucket size.
+  //! Construct an edge.
   TopoDS_TEdge()
-      : TopoDS_TShape(TopAbs_EDGE),
-        mySubShapes(DefaultBucketSize)
+      : TopoDS_TShape(TopAbs_EDGE)
   {
   }
-
-  //! Construct an edge with specified bucket size.
-  //! @param theBucketSize the bucket size for internal storage
-  explicit TopoDS_TEdge(const size_t theBucketSize)
-      : TopoDS_TShape(TopAbs_EDGE),
-        mySubShapes(theBucketSize > 0 ? static_cast<int>(theBucketSize) : DefaultBucketSize)
-  {
-  }
-
-  friend class TopoDS_Iterator;
-  friend class TopoDS_Builder;
-
-  NCollection_DynamicArray<TopoDS_Shape> mySubShapes; //!< Child shapes (vertices)
 };
 
 #endif // _TopoDS_TEdge_HeaderFile

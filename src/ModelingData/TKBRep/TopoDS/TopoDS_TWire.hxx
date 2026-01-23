@@ -19,54 +19,22 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
-#include <NCollection_DynamicArray.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
-#include <TopoDS_Shape.hxx>
 
 //! A set of edges connected by their vertices.
 class TopoDS_TWire : public TopoDS_TShape
 {
 public:
-  //! Default bucket size for wires.
-  static constexpr int DefaultBucketSize = 8;
-
-  //! Creates an empty TWire with default bucket size.
+  //! Creates an empty TWire.
   TopoDS_TWire()
-      : TopoDS_TShape(TopAbs_WIRE),
-        mySubShapes(DefaultBucketSize)
+      : TopoDS_TShape(TopAbs_WIRE)
   {
-  }
-
-  //! Creates an empty TWire with specified bucket size.
-  //! @param theBucketSize the bucket size for internal storage
-  explicit TopoDS_TWire(const size_t theBucketSize)
-      : TopoDS_TShape(TopAbs_WIRE),
-        mySubShapes(theBucketSize > 0 ? static_cast<int>(theBucketSize) : DefaultBucketSize)
-  {
-  }
-
-  //! Returns the number of direct sub-shapes (children).
-  int NbChildren() const final { return mySubShapes.Size(); }
-
-  //! Returns the child shape at the given index (0-based).
-  //! @param theIndex the 0-based index of the child
-  //! @return the child shape at the given index
-  const TopoDS_Shape& GetChild(size_t theIndex) const final
-  {
-    return mySubShapes.Value(static_cast<int>(theIndex));
   }
 
   //! Returns an empty TWire.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TWire, TopoDS_TShape)
-
-private:
-  friend class TopoDS_Iterator;
-  friend class TopoDS_Builder;
-
-  NCollection_DynamicArray<TopoDS_Shape> mySubShapes; //!< Child shapes (edges)
 };
 
 #endif // _TopoDS_TWire_HeaderFile
