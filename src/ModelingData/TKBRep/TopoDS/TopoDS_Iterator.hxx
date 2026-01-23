@@ -78,7 +78,13 @@ public:
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  bool More() const { return myIndex < myNbChildren; }
+  //! This method dynamically checks if more children were added
+  //! during iteration.
+  Standard_EXPORT bool More() const;
+
+  //! Refresh the cached number of children.
+  //! Call this method if children were added to the shape during iteration.
+  Standard_EXPORT void Refresh();
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -100,11 +106,14 @@ private:
   //! Updates myShape from the current child at myIndex.
   void updateCurrentShape();
 
+  //! Get current number of children using type-switch dispatch.
+  int getCurrentNbChildren() const;
+
 private:
   TopoDS_Shape       myShape;       //!< Current composed sub-shape
   TopoDS_TShape*     myTShape;      //!< Pointer to parent TShape (non-owning)
   size_t             myIndex;       //!< Current child index (0-based)
-  size_t             myNbChildren;  //!< Cached number of children
+  mutable size_t     myNbChildren;  //!< Cached number of children (mutable for More() const)
   TopAbs_Orientation myOrientation; //!< Cumulative orientation
   TopLoc_Location    myLocation;    //!< Cumulative location
   TopAbs_ShapeEnum   myShapeType;   //!< Cached shape type for type-switch devirtualization

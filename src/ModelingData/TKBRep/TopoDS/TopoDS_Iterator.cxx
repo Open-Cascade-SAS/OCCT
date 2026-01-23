@@ -19,6 +19,8 @@
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_TShapeDispatch.hxx>
 
+#include <Standard_Assert.hxx>
+
 //=================================================================================================
 
 void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const bool cumLoc)
@@ -59,6 +61,35 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
 
 //=================================================================================================
 
+void TopoDS_Iterator::Refresh()
+{
+  myNbChildren = static_cast<size_t>(getCurrentNbChildren());
+}
+
+//=================================================================================================
+
+bool TopoDS_Iterator::More() const
+{
+  if (myIndex < myNbChildren)
+  {
+    return true;
+  }
+  // Reached cached limit - check if more children were added
+  const int aCurrentNb = getCurrentNbChildren();
+#ifdef OCCT_DEBUG
+  Standard_ASSERT_RAISE(aCurrentNb >= static_cast<int>(myNbChildren),
+                        "TopoDS_Iterator: children were removed during iteration");
+#endif
+  if (aCurrentNb > static_cast<int>(myNbChildren))
+  {
+    myNbChildren = static_cast<size_t>(aCurrentNb);
+    return true;
+  }
+  return false;
+}
+
+//=================================================================================================
+
 void TopoDS_Iterator::Next()
 {
   ++myIndex;
@@ -79,4 +110,18 @@ void TopoDS_Iterator::updateCurrentShape()
   myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())
     myShape.Move(myLocation, false);
+}
+
+//=================================================================================================
+
+int TopoDS_Iterator::getCurrentNbChildren() const
+{
+  if (myTShape == nullptr)
+  {
+    return 0;
+  }
+  // Use dispatch helper with cached shape type for devirtualized NbChildren() call
+  return TopoDS_TShapeDispatch::ApplyWithType(myTShape, myShapeType, [](auto* theTyped) {
+    return theTyped->NbChildren();
+  });
 }
