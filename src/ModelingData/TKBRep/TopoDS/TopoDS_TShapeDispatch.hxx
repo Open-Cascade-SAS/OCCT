@@ -14,6 +14,8 @@
 #ifndef _TopoDS_TShapeDispatch_HeaderFile
 #define _TopoDS_TShapeDispatch_HeaderFile
 
+#include <type_traits>
+
 #include <TopoDS_TShape.hxx>
 #include <TopoDS_TEdge.hxx>
 #include <TopoDS_TWire.hxx>
@@ -71,8 +73,15 @@ public:
       case TopAbs_COMPOUND:
         return theFunc(static_cast<TopoDS_TCompound*>(theTShape));
       default:
-        // Vertex has no children - return default-constructed value
-        return ReturnType{};
+        // Vertex has no children - return default-constructed value or void
+        if constexpr (std::is_void_v<ReturnType>)
+        {
+          return;
+        }
+        else
+        {
+          return ReturnType{};
+        }
     }
   }
 
@@ -105,7 +114,14 @@ public:
       case TopAbs_COMPOUND:
         return theFunc(static_cast<TopoDS_TCompound*>(theTShape));
       default:
-        return ReturnType{};
+        if constexpr (std::is_void_v<ReturnType>)
+        {
+          return;
+        }
+        else
+        {
+          return ReturnType{};
+        }
     }
   }
 };
