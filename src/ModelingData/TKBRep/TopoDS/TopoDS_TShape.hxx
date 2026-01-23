@@ -181,10 +181,9 @@ protected:
       myState &= ~theBit;
   }
 
-protected:
+private:
   NCollection_List<TopoDS_Shape> myShapes; //!< Child shapes stored in a list
-  uint16_t
-    myState; //!< Compact state: shape type (bits 0-3) + flags (bits 4-11) + reserved (bits 12-15)
+  uint16_t myState; //!< Compact state: shape type(bits 0-3)+flags(bits 4-11)+reserved(bits 12-15)
 };
 
 #endif // _TopoDS_TShape_HeaderFile

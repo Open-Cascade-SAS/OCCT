@@ -16,6 +16,7 @@
 
 #include <Standard_Type.hxx>
 #include <TopoDS_TFace.hxx>
+#include <TopoDS_Shape.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TopoDS_TFace, TopoDS_TShape)
 
