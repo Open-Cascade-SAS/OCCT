@@ -139,6 +139,7 @@ jobs:
         build-opt-profile: 'Default'
         additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type -Wno-error=deprecated-declarations" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type -Wno-error=deprecated-declarations"'
         cmake-build-type: 'Debug'
+        build-parallel-jobs: '4'
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
   test-windows-x64:
