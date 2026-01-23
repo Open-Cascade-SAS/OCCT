@@ -63,7 +63,7 @@ jobs:
       - run-gtest-windows-x64
       - run-gtest-macos-x64
       - run-gtest-linux-clang-x64
-      - run-gtest-macos-clang-no-pch
+      - run-gtest-linux-gcc-no-pch
 
     steps:
     - name: Checkout repository
@@ -120,10 +120,10 @@ jobs:
         artifact-name: install-linux-clang-x64
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-  prepare-and-build-macos-clang-no-pch:
-    name: Prepare and Build on macOS with Clang (No PCH)
-    needs: prepare-and-build-macos-x64
-    runs-on: macos-15
+  prepare-and-build-linux-gcc-no-pch:
+    name: Prepare and Build on Ubuntu with GCC (No PCH)
+    needs: prepare-and-build-linux-clang-x64
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout repository
@@ -132,12 +132,12 @@ jobs:
     - name: Build OCCT
       uses: ./.github/actions/build-occt
       with:
-        platform: macos
-        compiler: clang
-        artifact-name: install-macos-clang-no-pch
+        platform: linux
+        compiler: gcc
+        artifact-name: install-linux-gcc-no-pch
         build-use-pch: 'false'
         build-opt-profile: 'Default'
-        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type-mismatch -Wno-error=deprecated-declarations" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type-mismatch -Wno-error=deprecated-declarations"'
+        additional-cmake-flags: '-D CMAKE_CXX_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type -Wno-error=deprecated-declarations" -D CMAKE_C_FLAGS="-Werror -Wall -Wextra -Wno-error=cast-function-type -Wno-error=deprecated-declarations"'
         cmake-build-type: 'Debug'
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
@@ -300,10 +300,10 @@ jobs:
         install-artifact-name: install-linux-clang-x64
         artifact-suffix: x64
 
-  run-gtest-macos-clang-no-pch:
-    name: Run GTest on macOS with Clang (No PCH, Debug)
-    needs: prepare-and-build-macos-clang-no-pch
-    runs-on: macos-15
+  run-gtest-linux-gcc-no-pch:
+    name: Run GTest on Ubuntu with GCC (No PCH, Debug)
+    needs: prepare-and-build-linux-gcc-no-pch
+    runs-on: ubuntu-24.04
 
     steps:
     - name: Checkout repository
@@ -312,9 +312,9 @@ jobs:
     - name: Run GTests
       uses: ./.github/actions/run-gtest
       with:
-        platform: macos
-        compiler: clang
-        install-artifact-name: install-macos-clang-no-pch
+        platform: linux
+        compiler: gcc
+        install-artifact-name: install-linux-gcc-no-pch
         artifact-suffix: no-pch
 
   test-summary:
