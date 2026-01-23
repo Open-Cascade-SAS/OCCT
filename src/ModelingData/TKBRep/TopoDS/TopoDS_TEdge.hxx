@@ -25,14 +25,10 @@
 
 //! A topological part of a curve in 2D or 3D, the
 //! boundary is a set of oriented Vertices.
-//!
-//! Edges typically have exactly 2 vertices (start and end),
-//! so the default bucket size is 2.
 class TopoDS_TEdge : public TopoDS_TShape
 {
 public:
   //! Default bucket size for edges.
-  //! Edges almost always have exactly 2 vertices.
   static constexpr int DefaultBucketSize = 2;
 
   //! Returns the number of direct sub-shapes (children).

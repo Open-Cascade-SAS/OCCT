@@ -25,14 +25,10 @@
 #include <TopoDS_Shape.hxx>
 
 //! A set of edges connected by their vertices.
-//!
-//! Wires typically have 3-20 edges (triangle=3, rectangle=4),
-//! so the default bucket size is 8.
 class TopoDS_TWire : public TopoDS_TShape
 {
 public:
   //! Default bucket size for wires.
-  //! Triangle=3, rectangle=4, typical wires 4-20 edges.
   static constexpr int DefaultBucketSize = 8;
 
   //! Creates an empty TWire with default bucket size.

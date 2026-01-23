@@ -25,16 +25,11 @@
 #include <TopoDS_Shape.hxx>
 
 //! A topological part of a surface or of the 2D
-//! space. The boundary is a set of wires and
-//! vertices.
-//!
-//! Faces typically have 1-4 wires (outer + holes),
-//! so the default bucket size is 4.
+//! space. The boundary is a set of wires and vertices.
 class TopoDS_TFace : public TopoDS_TShape
 {
 public:
   //! Default bucket size for faces.
-  //! Faces typically have 1-4 wires (outer + holes).
   static constexpr int DefaultBucketSize = 4;
 
   //! Creates an empty TFace with default bucket size.

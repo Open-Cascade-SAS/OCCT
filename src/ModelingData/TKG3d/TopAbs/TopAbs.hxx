@@ -66,10 +66,18 @@ public:
   //! EXTERNAL  | EXTERNAL EXTERNAL EXTERNAL EXTERNAL
   //! Note: The top corner in the table is the most important
   //! for the purposes of Open CASCADE topology and shape sharing.
-  Standard_EXPORT static TopAbs_Orientation Compose(const TopAbs_Orientation Or1,
-                                                    const TopAbs_Orientation Or2);
+  static TopAbs_Orientation Compose(const TopAbs_Orientation Or1,
+                                    const TopAbs_Orientation Or2) noexcept
+  {
+    static constexpr TopAbs_Orientation aTable[4][4] = {
+      {TopAbs_FORWARD, TopAbs_REVERSED, TopAbs_INTERNAL, TopAbs_EXTERNAL},
+      {TopAbs_REVERSED, TopAbs_FORWARD, TopAbs_INTERNAL, TopAbs_EXTERNAL},
+      {TopAbs_INTERNAL, TopAbs_INTERNAL, TopAbs_INTERNAL, TopAbs_INTERNAL},
+      {TopAbs_EXTERNAL, TopAbs_EXTERNAL, TopAbs_EXTERNAL, TopAbs_EXTERNAL}};
+    return aTable[static_cast<int>(Or2)][static_cast<int>(Or1)];
+  }
 
-  //! xchanges the interior/exterior status of the two
+  //! Exchanges the interior/exterior status of the two
   //! sides. This is what happens when the sense of
   //! direction is reversed. The following rules apply:
   //!
@@ -79,7 +87,14 @@ public:
   //! EXTERNAL         EXTERNAL
   //!
   //! Reverse exchange the material sides.
-  Standard_EXPORT static TopAbs_Orientation Reverse(const TopAbs_Orientation Or);
+  static TopAbs_Orientation Reverse(const TopAbs_Orientation Or) noexcept
+  {
+    static constexpr TopAbs_Orientation aTable[4] = {TopAbs_REVERSED,
+                                                     TopAbs_FORWARD,
+                                                     TopAbs_INTERNAL,
+                                                     TopAbs_EXTERNAL};
+    return aTable[static_cast<int>(Or)];
+  }
 
   //! Reverses the interior/exterior status of each side of
   //! the object. So, to take the complement of an object
@@ -94,7 +109,14 @@ public:
   //!
   //! Complement complements the material side.
   //! Inside becomes outside.
-  Standard_EXPORT static TopAbs_Orientation Complement(const TopAbs_Orientation Or);
+  static TopAbs_Orientation Complement(const TopAbs_Orientation Or) noexcept
+  {
+    static constexpr TopAbs_Orientation aTable[4] = {TopAbs_REVERSED,
+                                                     TopAbs_FORWARD,
+                                                     TopAbs_EXTERNAL,
+                                                     TopAbs_INTERNAL};
+    return aTable[static_cast<int>(Or)];
+  }
 
   //! Prints the name of Shape type as a String on the Stream.
   static Standard_OStream& Print(const TopAbs_ShapeEnum theShapeType, Standard_OStream& theStream)

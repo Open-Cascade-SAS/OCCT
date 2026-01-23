@@ -26,14 +26,10 @@
 
 //! A Topological part of 3D space, bounded by shells,
 //! edges and vertices.
-//!
-//! Solids typically have 1 shell, rarely voids (2-3 shells max),
-//! so the default bucket size is 4.
 class TopoDS_TSolid : public TopoDS_TShape
 {
 public:
   //! Default bucket size for solids.
-  //! Usually 1 shell, rarely voids (2-3 shells max).
   static constexpr int DefaultBucketSize = 4;
 
   //! Creates an empty TSolid with default bucket size.

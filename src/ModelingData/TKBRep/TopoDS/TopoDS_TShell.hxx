@@ -25,15 +25,11 @@
 #include <TopoDS_Shape.hxx>
 
 //! A set of faces connected by their edges.
-//!
-//! Shells typically have 4-12 faces (tetrahedron=4, box=6),
-//! so the default bucket size is 6.
 class TopoDS_TShell : public TopoDS_TShape
 {
 public:
   //! Default bucket size for shells.
-  //! Tetrahedron=4, box=6, typical shells 4-12 faces.
-  static constexpr int DefaultBucketSize = 6;
+  static constexpr int DefaultBucketSize = 8;
 
   //! Creates an empty TShell with default bucket size.
   TopoDS_TShell()

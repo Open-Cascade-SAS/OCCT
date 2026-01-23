@@ -25,14 +25,10 @@
 #include <TopoDS_Shape.hxx>
 
 //! A TCompound is an all-purpose set of Shapes.
-//!
-//! Compounds are general containers with highly variable content,
-//! so the default bucket size is 8.
 class TopoDS_TCompound : public TopoDS_TShape
 {
 public:
   //! Default bucket size for compounds.
-  //! General container, highly variable.
   static constexpr int DefaultBucketSize = 8;
 
   //! Creates an empty TCompound with default bucket size.

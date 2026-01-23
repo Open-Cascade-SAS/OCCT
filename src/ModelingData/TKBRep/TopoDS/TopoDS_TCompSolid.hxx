@@ -25,14 +25,10 @@
 #include <TopoDS_Shape.hxx>
 
 //! A set of solids connected by their faces.
-//!
-//! CompSolids typically have 2-8 solids,
-//! so the default bucket size is 8.
 class TopoDS_TCompSolid : public TopoDS_TShape
 {
 public:
   //! Default bucket size for composite solids.
-  //! Typically 2-8 solids.
   static constexpr int DefaultBucketSize = 8;
 
   //! Creates an empty TCompSolid with default bucket size.
