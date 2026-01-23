@@ -18,10 +18,10 @@
 #include <TopoDS_Builder.hxx>
 #include <TopoDS_FrozenShape.hxx>
 #include <TopoDS_Shape.hxx>
-#include <TopoDS_TShape.hxx>
+#include <TopoDS_TShapeDispatch.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>& T) const
 {
@@ -30,7 +30,7 @@ void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>
   S.Orientation(TopAbs_FORWARD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
@@ -80,9 +80,12 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
       if (!aLoc.IsIdentity())
         aChild.Move(aLoc.Inverted(), false);
 
-      // Add to the subshapes list
-      TopoDS_TShape* aTShape = aShape.TShape().get();
-      aTShape->myShapes.Append(aChild);
+      // Add to the subshapes array using dispatch helper with cached shape type (devirtualized)
+      TopoDS_TShape*         aTShape    = aShape.TShape().get();
+      const TopAbs_ShapeEnum aShapeType = static_cast<TopAbs_ShapeEnum>(iS);
+      TopoDS_TShapeDispatch::ApplyWithType(aTShape, aShapeType, [&aChild](auto* theTyped) {
+        theTyped->mySubShapes.Append(aChild);
+      });
       aTShape->Modified(true);
     }
     else
@@ -96,7 +99,7 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
@@ -109,18 +112,30 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
     S.Reverse();
   S.Location(S.Location().Predivided(aShape.Location()), false);
 
-  TopoDS_TShape*                           aTShape = aShape.TShape().get();
-  NCollection_List<TopoDS_Shape>&          aList   = aTShape->myShapes;
-  NCollection_List<TopoDS_Shape>::Iterator anIter(aList);
+  TopoDS_TShape*         aTShape    = aShape.TShape().get();
+  const TopAbs_ShapeEnum aShapeType = aTShape->ShapeType();
 
-  while (anIter.More())
-  {
-    if (anIter.Value() == S)
-    {
-      aList.Remove(anIter);
-      aTShape->Modified(true);
-      return;
-    }
-    anIter.Next();
-  }
+  // Use dispatch helper with cached shape type to search and remove (devirtualized calls)
+  const bool aRemoved =
+    TopoDS_TShapeDispatch::ApplyWithType(aTShape, aShapeType, [&S](auto* theTyped) -> bool {
+      const int aNb = theTyped->NbChildren();
+      for (int i = 0; i < aNb; ++i)
+      {
+        if (theTyped->GetChild(i) == S)
+        {
+          // Shift elements to preserve iteration order (matches original NCollection_List behavior)
+          for (int j = i; j < aNb - 1; ++j)
+          {
+            theTyped->mySubShapes.ChangeValue(j) =
+              std::move(theTyped->mySubShapes.ChangeValue(j + 1));
+          }
+          theTyped->mySubShapes.EraseLast();
+          return true;
+        }
+      }
+      return false;
+    });
+
+  if (aRemoved)
+    aTShape->Modified(true);
 }

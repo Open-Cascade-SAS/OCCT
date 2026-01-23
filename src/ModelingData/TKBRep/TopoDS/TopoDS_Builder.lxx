@@ -25,7 +25,7 @@
 #include <TopoDS_CompSolid.hxx>
 #include <TopoDS_Compound.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
 {
@@ -33,7 +33,15 @@ inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W) const
   MakeShape(W, TW);
 }
 
-//==================================================================================================
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeWire(TopoDS_Wire& W, const size_t theBucketSize) const
+{
+  occ::handle<TopoDS_TWire> TW = new TopoDS_TWire(theBucketSize);
+  MakeShape(W, TW);
+}
+
+//=================================================================================================
 
 inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
 {
@@ -41,7 +49,15 @@ inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S) const
   MakeShape(S, TS);
 }
 
-//==================================================================================================
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeShell(TopoDS_Shell& S, const size_t theBucketSize) const
+{
+  occ::handle<TopoDS_TShell> TS = new TopoDS_TShell(theBucketSize);
+  MakeShape(S, TS);
+}
+
+//=================================================================================================
 
 inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
 {
@@ -49,7 +65,15 @@ inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S) const
   MakeShape(S, TS);
 }
 
-//==================================================================================================
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeSolid(TopoDS_Solid& S, const size_t theBucketSize) const
+{
+  occ::handle<TopoDS_TSolid> TS = new TopoDS_TSolid(theBucketSize);
+  MakeShape(S, TS);
+}
+
+//=================================================================================================
 
 inline void TopoDS_Builder::MakeCompSolid(TopoDS_CompSolid& C) const
 {
@@ -57,10 +81,26 @@ inline void TopoDS_Builder::MakeCompSolid(TopoDS_CompSolid& C) const
   MakeShape(C, TC);
 }
 
-//==================================================================================================
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeCompSolid(TopoDS_CompSolid& C, const size_t theBucketSize) const
+{
+  occ::handle<TopoDS_TCompSolid> TC = new TopoDS_TCompSolid(theBucketSize);
+  MakeShape(C, TC);
+}
+
+//=================================================================================================
 
 inline void TopoDS_Builder::MakeCompound(TopoDS_Compound& C) const
 {
   occ::handle<TopoDS_TCompound> TC = new TopoDS_TCompound();
+  MakeShape(C, TC);
+}
+
+//=================================================================================================
+
+inline void TopoDS_Builder::MakeCompound(TopoDS_Compound& C, const size_t theBucketSize) const
+{
+  occ::handle<TopoDS_TCompound> TC = new TopoDS_TCompound(theBucketSize);
   MakeShape(C, TC);
 }

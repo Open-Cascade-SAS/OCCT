@@ -73,20 +73,45 @@ class TopoDS_Builder
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make an empty Wire.
+  //! Make an empty Wire with default bucket size.
   void MakeWire(TopoDS_Wire& W) const;
 
-  //! Make an empty Shell.
+  //! Make an empty Wire with specified bucket size.
+  //! @param W the wire to create
+  //! @param theBucketSize the bucket size for internal storage
+  void MakeWire(TopoDS_Wire& W, const size_t theBucketSize) const;
+
+  //! Make an empty Shell with default bucket size.
   void MakeShell(TopoDS_Shell& S) const;
 
-  //! Make a Solid covering the whole 3D space.
+  //! Make an empty Shell with specified bucket size.
+  //! @param S the shell to create
+  //! @param theBucketSize the bucket size for internal storage
+  void MakeShell(TopoDS_Shell& S, const size_t theBucketSize) const;
+
+  //! Make a Solid covering the whole 3D space with default bucket size.
   void MakeSolid(TopoDS_Solid& S) const;
 
-  //! Make an empty Composite Solid.
+  //! Make a Solid covering the whole 3D space with specified bucket size.
+  //! @param S the solid to create
+  //! @param theBucketSize the bucket size for internal storage
+  void MakeSolid(TopoDS_Solid& S, const size_t theBucketSize) const;
+
+  //! Make an empty Composite Solid with default bucket size.
   void MakeCompSolid(TopoDS_CompSolid& C) const;
 
-  //! Make an empty Compound.
+  //! Make an empty Composite Solid with specified bucket size.
+  //! @param C the composite solid to create
+  //! @param theBucketSize the bucket size for internal storage
+  void MakeCompSolid(TopoDS_CompSolid& C, const size_t theBucketSize) const;
+
+  //! Make an empty Compound with default bucket size.
   void MakeCompound(TopoDS_Compound& C) const;
+
+  //! Make an empty Compound with specified bucket size.
+  //! @param C the compound to create
+  //! @param theBucketSize the bucket size for internal storage
+  void MakeCompound(TopoDS_Compound& C, const size_t theBucketSize) const;
 
   //! Add the Shape C in the Shape S.
   //! Exceptions

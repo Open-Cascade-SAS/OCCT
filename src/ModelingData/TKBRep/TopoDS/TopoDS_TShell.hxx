@@ -19,22 +19,54 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 //! A set of faces connected by their edges.
 class TopoDS_TShell : public TopoDS_TShape
 {
 public:
-  //! Creates an empty TShell.
+  //! Default bucket size for shells.
+  static constexpr int DefaultBucketSize = 8;
+
+  //! Creates an empty TShell with default bucket size.
   TopoDS_TShell()
-      : TopoDS_TShape(TopAbs_SHELL)
+      : TopoDS_TShape(TopAbs_SHELL),
+        mySubShapes(DefaultBucketSize)
   {
+  }
+
+  //! Creates an empty TShell with specified bucket size.
+  //! @param theBucketSize the bucket size for internal storage
+  explicit TopoDS_TShell(const size_t theBucketSize)
+      : TopoDS_TShape(TopAbs_SHELL),
+        mySubShapes(theBucketSize > 0 ? static_cast<int>(theBucketSize) : DefaultBucketSize)
+  {
+  }
+
+  //! Returns the number of direct sub-shapes (children).
+  int NbChildren() const final { return mySubShapes.Size(); }
+
+  //! Returns the child shape at the given index (0-based).
+  //! @param theIndex the 0-based index of the child
+  //! @return the child shape at the given index
+  const TopoDS_Shape& GetChild(size_t theIndex) const final
+  {
+    return mySubShapes.Value(static_cast<int>(theIndex));
   }
 
   //! Returns an empty TShell.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TShell, TopoDS_TShape)
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes; //!< Child shapes (faces)
 };
 
 #endif // _TopoDS_TShell_HeaderFile

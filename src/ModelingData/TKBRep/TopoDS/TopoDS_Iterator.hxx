@@ -18,16 +18,21 @@
 #define _TopoDS_Iterator_HeaderFile
 
 #include <Standard_NoSuchObject.hxx>
-#include <NCollection_List.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
 #include <TopLoc_Location.hxx>
+
+class TopoDS_TShape;
 
 //! Iterates on the underlying shape underlying a given
 //! TopoDS_Shape object, providing access to its
 //! component sub-shapes. Each component shape is
 //! returned as a TopoDS_Shape with an orientation,
 //! and a compound of the original values and the relative values.
+//!
+//! This iterator uses index-based access to child shapes
+//! stored in the TShape's dynamic array.
 class TopoDS_Iterator
 {
 public:
@@ -35,7 +40,9 @@ public:
 
   //! Creates an empty Iterator.
   TopoDS_Iterator()
-      : myOrientation(TopAbs_FORWARD)
+      : mySubShapes(nullptr),
+        myIndex(0),
+        myOrientation(TopAbs_FORWARD)
   {
   }
 
@@ -47,7 +54,9 @@ public:
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
   TopoDS_Iterator(const TopoDS_Shape& S, const bool cumOri = true, const bool cumLoc = true)
-      : myOrientation(TopAbs_FORWARD)
+      : mySubShapes(nullptr),
+        myIndex(0),
+        myOrientation(TopAbs_FORWARD)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -65,7 +74,10 @@ public:
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  bool More() const { return myIterator.More(); }
+  bool More() const
+  {
+    return mySubShapes != nullptr && myIndex < static_cast<size_t>(mySubShapes->Size());
+  }
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -84,14 +96,20 @@ public:
   }
 
 private:
-  //! Updates myShape from the current iterator position.
+  //! Updates myShape from the current child at myIndex.
   void updateCurrentShape();
 
+  //! Helper to get pointer to mySubShapes array from TShape using type-switch.
+  //! Called once during Initialize() to cache the array pointer.
+  static NCollection_DynamicArray<TopoDS_Shape>* getSubShapesArray(TopoDS_TShape* theTShape);
+
 private:
-  TopoDS_Shape                             myShape;       //!< Current composed sub-shape
-  NCollection_List<TopoDS_Shape>::Iterator myIterator;    //!< Iterator over child shapes list
-  TopAbs_Orientation                       myOrientation; //!< Cumulative orientation
-  TopLoc_Location                          myLocation;    //!< Cumulative location
+  TopoDS_Shape myShape; //!< Current composed sub-shape
+  NCollection_DynamicArray<TopoDS_Shape>*
+                     mySubShapes;   //!< Direct pointer to child array (non-owning)
+  size_t             myIndex;       //!< Current child index (0-based)
+  TopAbs_Orientation myOrientation; //!< Cumulative orientation
+  TopLoc_Location    myLocation;    //!< Cumulative location
 };
 
 #endif // _TopoDS_Iterator_HeaderFile

@@ -17,9 +17,40 @@
 #define No_Standard_NoSuchObject
 
 #include <TopoDS_Iterator.hxx>
-#include <TopoDS_TShape.hxx>
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TCompSolid.hxx>
+#include <TopoDS_TEdge.hxx>
+#include <TopoDS_TFace.hxx>
+#include <TopoDS_TShell.hxx>
+#include <TopoDS_TSolid.hxx>
+#include <TopoDS_TWire.hxx>
 
-//==================================================================================================
+//=================================================================================================
+
+NCollection_DynamicArray<TopoDS_Shape>* TopoDS_Iterator::getSubShapesArray(TopoDS_TShape* theTShape)
+{
+  switch (theTShape->ShapeType())
+  {
+    case TopAbs_EDGE:
+      return &static_cast<TopoDS_TEdge*>(theTShape)->mySubShapes;
+    case TopAbs_WIRE:
+      return &static_cast<TopoDS_TWire*>(theTShape)->mySubShapes;
+    case TopAbs_FACE:
+      return &static_cast<TopoDS_TFace*>(theTShape)->mySubShapes;
+    case TopAbs_SHELL:
+      return &static_cast<TopoDS_TShell*>(theTShape)->mySubShapes;
+    case TopAbs_SOLID:
+      return &static_cast<TopoDS_TSolid*>(theTShape)->mySubShapes;
+    case TopAbs_COMPSOLID:
+      return &static_cast<TopoDS_TCompSolid*>(theTShape)->mySubShapes;
+    case TopAbs_COMPOUND:
+      return &static_cast<TopoDS_TCompound*>(theTShape)->mySubShapes;
+    default:
+      return nullptr; // Vertex has no children
+  }
+}
+
+//=================================================================================================
 
 void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const bool cumLoc)
 {
@@ -35,11 +66,14 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
 
   if (S.IsNull())
   {
-    myIterator = NCollection_List<TopoDS_Shape>::Iterator();
+    mySubShapes = nullptr;
+    myIndex     = 0;
   }
   else
   {
-    myIterator.Init(S.TShape()->myShapes);
+    // Get array pointer (type-switch only once during init)
+    mySubShapes = getSubShapesArray(S.TShape().get());
+    myIndex     = 0;
   }
 
   if (More())
@@ -48,22 +82,22 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Iterator::Next()
 {
-  myIterator.Next();
+  ++myIndex;
   if (More())
   {
     updateCurrentShape();
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Iterator::updateCurrentShape()
 {
-  myShape = myIterator.Value();
+  myShape = mySubShapes->Value(static_cast<int>(myIndex));
   myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())
     myShape.Move(myLocation, false);

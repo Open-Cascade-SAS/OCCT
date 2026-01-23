@@ -19,22 +19,54 @@
 
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
+#include <NCollection_DynamicArray.hxx>
+#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopoDS_Shape.hxx>
 
 //! A set of solids connected by their faces.
 class TopoDS_TCompSolid : public TopoDS_TShape
 {
 public:
-  //! Creates an empty TCompSolid.
+  //! Default bucket size for composite solids.
+  static constexpr int DefaultBucketSize = 8;
+
+  //! Creates an empty TCompSolid with default bucket size.
   TopoDS_TCompSolid()
-      : TopoDS_TShape(TopAbs_COMPSOLID)
+      : TopoDS_TShape(TopAbs_COMPSOLID),
+        mySubShapes(DefaultBucketSize)
   {
+  }
+
+  //! Creates an empty TCompSolid with specified bucket size.
+  //! @param theBucketSize the bucket size for internal storage
+  explicit TopoDS_TCompSolid(const size_t theBucketSize)
+      : TopoDS_TShape(TopAbs_COMPSOLID),
+        mySubShapes(theBucketSize > 0 ? static_cast<int>(theBucketSize) : DefaultBucketSize)
+  {
+  }
+
+  //! Returns the number of direct sub-shapes (children).
+  int NbChildren() const final { return mySubShapes.Size(); }
+
+  //! Returns the child shape at the given index (0-based).
+  //! @param theIndex the 0-based index of the child
+  //! @return the child shape at the given index
+  const TopoDS_Shape& GetChild(size_t theIndex) const final
+  {
+    return mySubShapes.Value(static_cast<int>(theIndex));
   }
 
   //! Returns an empty TCompSolid.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
   DEFINE_STANDARD_RTTIEXT(TopoDS_TCompSolid, TopoDS_TShape)
+
+private:
+  friend class TopoDS_Iterator;
+  friend class TopoDS_Builder;
+
+  NCollection_DynamicArray<TopoDS_Shape> mySubShapes; //!< Child shapes (solids)
 };
 
 #endif // _TopoDS_TCompSolid_HeaderFile

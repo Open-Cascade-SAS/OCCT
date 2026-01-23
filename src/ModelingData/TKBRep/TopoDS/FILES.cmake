@@ -34,6 +34,7 @@ set(OCCT_TopoDS_FILES
   TopoDS_TFace.hxx
   TopoDS_TShape.cxx
   TopoDS_TShape.hxx
+  TopoDS_TShapeDispatch.hxx
   TopoDS_TShell.cxx
   TopoDS_TShell.hxx
   TopoDS_TSolid.cxx

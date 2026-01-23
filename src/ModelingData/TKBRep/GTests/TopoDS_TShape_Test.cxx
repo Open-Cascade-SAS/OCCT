@@ -24,14 +24,15 @@
 #include <TopoDS_Shell.hxx>
 #include <TopoDS_Solid.hxx>
 #include <TopoDS_TShape.hxx>
+#include <TopoDS_TShapeDispatch.hxx>
 #include <TopoDS_Vertex.hxx>
 #include <TopoDS_Wire.hxx>
 #include <TopExp_Explorer.hxx>
 #include <gp_Pnt.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // Test TShape ShapeType() returns correct type for each shape kind
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, ShapeType_AllTypes)
 {
@@ -65,9 +66,9 @@ TEST(TopoDS_TShape_Test, ShapeType_AllTypes)
   EXPECT_EQ(aCompound.TShape()->ShapeType(), TopAbs_COMPOUND);
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test TShape flag setters and getters
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, FlagSettersGetters)
 {
@@ -122,9 +123,9 @@ TEST(TopoDS_TShape_Test, FlagSettersGetters)
   EXPECT_TRUE(aTShape->Locked());
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test TShape NbChildren() for various shapes
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, NbChildren)
 {
@@ -157,9 +158,206 @@ TEST(TopoDS_TShape_Test, NbChildren)
   EXPECT_EQ(aCompound.TShape()->NbChildren(), 10);
 }
 
-//==================================================================================================
+//=================================================================================================
+// Test TShape GetChild() for various shapes
+//=================================================================================================
+
+TEST(TopoDS_TShape_Test, GetChild)
+{
+  TopoDS_Builder aBuilder;
+
+  // Edge with 2 vertices
+  TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+
+  const TopoDS_Shape& aChild0 = anEdge.TShape()->GetChild(0);
+  const TopoDS_Shape& aChild1 = anEdge.TShape()->GetChild(1);
+
+  EXPECT_EQ(aChild0.ShapeType(), TopAbs_VERTEX);
+  EXPECT_EQ(aChild1.ShapeType(), TopAbs_VERTEX);
+
+  // Compound with known children
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  TopoDS_Vertex aV1 = BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0));
+  TopoDS_Vertex aV2 = BRepBuilderAPI_MakeVertex(gp_Pnt(2, 0, 0));
+  TopoDS_Vertex aV3 = BRepBuilderAPI_MakeVertex(gp_Pnt(3, 0, 0));
+
+  aBuilder.Add(aCompound, aV1);
+  aBuilder.Add(aCompound, aV2);
+  aBuilder.Add(aCompound, aV3);
+
+  EXPECT_EQ(aCompound.TShape()->NbChildren(), 3);
+
+  // Verify children are accessible
+  for (int i = 0; i < 3; ++i)
+  {
+    const TopoDS_Shape& aChild = aCompound.TShape()->GetChild(i);
+    EXPECT_EQ(aChild.ShapeType(), TopAbs_VERTEX);
+  }
+}
+
+//=================================================================================================
+// Test TShape GetChild() throws for vertex
+//=================================================================================================
+
+TEST(TopoDS_TShape_Test, GetChild_VertexThrows)
+{
+  TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+
+  // Vertex has no children, GetChild should throw
+  EXPECT_THROW(aVertex.TShape()->GetChild(0), Standard_OutOfRange);
+}
+
+//=================================================================================================
+// Test TopoDS_TShapeDispatch::Apply with NbChildren
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, Apply_NbChildren)
+{
+  TopoDS_Builder aBuilder;
+
+  // Test with edge (2 vertices)
+  TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+
+  int aNbEdgeChildren =
+    TopoDS_TShapeDispatch::Apply(anEdge.TShape().get(), [](auto* t) { return t->NbChildren(); });
+  EXPECT_EQ(aNbEdgeChildren, 2);
+
+  // Test with compound (5 vertices)
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+  for (int i = 0; i < 5; ++i)
+  {
+    aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(i, 0, 0)));
+  }
+
+  int aNbCompoundChildren =
+    TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(), [](auto* t) { return t->NbChildren(); });
+  EXPECT_EQ(aNbCompoundChildren, 5);
+}
+
+//=================================================================================================
+// Test TopoDS_TShapeDispatch::Apply with GetChild
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, Apply_GetChild)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0)));
+
+  // Get first child using dispatch
+  TopoDS_Shape aChild =
+    TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(), [](auto* t) { return t->GetChild(0); });
+
+  EXPECT_EQ(aChild.ShapeType(), TopAbs_VERTEX);
+}
+
+//=================================================================================================
+// Test TopoDS_TShapeDispatch::ApplyWithType
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, ApplyWithType)
+{
+  TopoDS_Builder aBuilder;
+  TopoDS_Wire    aWire;
+  aBuilder.MakeWire(aWire);
+
+  TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+  aBuilder.Add(aWire, anEdge);
+
+  TopoDS_TShape*   aTShape = aWire.TShape().get();
+  TopAbs_ShapeEnum aType   = aTShape->ShapeType();
+
+  // Use ApplyWithType with cached type
+  int aNbChildren =
+    TopoDS_TShapeDispatch::ApplyWithType(aTShape, aType, [](auto* t) { return t->NbChildren(); });
+
+  EXPECT_EQ(aNbChildren, 1);
+}
+
+//=================================================================================================
+// Test TopoDS_TShapeDispatch handles all shape types
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, AllShapeTypes)
+{
+  TopoDS_Builder aBuilder;
+
+  // Test Edge
+  {
+    TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
+    int         aNb =
+      TopoDS_TShapeDispatch::Apply(anEdge.TShape().get(), [](auto* t) { return t->NbChildren(); });
+    EXPECT_EQ(aNb, 2);
+  }
+
+  // Test Wire
+  {
+    TopoDS_Wire aWire;
+    aBuilder.MakeWire(aWire);
+    int aNb =
+      TopoDS_TShapeDispatch::Apply(aWire.TShape().get(), [](auto* t) { return t->NbChildren(); });
+    EXPECT_EQ(aNb, 0);
+  }
+
+  // Test Face (from box)
+  {
+    TopoDS_Shape aBox = BRepPrimAPI_MakeBox(1, 1, 1).Shape();
+    for (TopExp_Explorer anExp(aBox, TopAbs_FACE); anExp.More(); anExp.Next())
+    {
+      const TopoDS_Shape& aFace = anExp.Current();
+      int                 aNb =
+        TopoDS_TShapeDispatch::Apply(aFace.TShape().get(), [](auto* t) { return t->NbChildren(); });
+      EXPECT_GE(aNb, 1) << "Face should have at least 1 wire";
+      break; // Just test one face
+    }
+  }
+
+  // Test Shell
+  {
+    TopoDS_Shell aShell;
+    aBuilder.MakeShell(aShell);
+    int aNb =
+      TopoDS_TShapeDispatch::Apply(aShell.TShape().get(), [](auto* t) { return t->NbChildren(); });
+    EXPECT_EQ(aNb, 0);
+  }
+
+  // Test Solid
+  {
+    TopoDS_Solid aSolid;
+    aBuilder.MakeSolid(aSolid);
+    int aNb =
+      TopoDS_TShapeDispatch::Apply(aSolid.TShape().get(), [](auto* t) { return t->NbChildren(); });
+    EXPECT_EQ(aNb, 0);
+  }
+
+  // Test CompSolid
+  {
+    TopoDS_CompSolid aCompSolid;
+    aBuilder.MakeCompSolid(aCompSolid);
+    int aNb = TopoDS_TShapeDispatch::Apply(aCompSolid.TShape().get(),
+                                           [](auto* t) { return t->NbChildren(); });
+    EXPECT_EQ(aNb, 0);
+  }
+
+  // Test Compound
+  {
+    TopoDS_Compound aCompound;
+    aBuilder.MakeCompound(aCompound);
+    int aNb = TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(),
+                                           [](auto* t) { return t->NbChildren(); });
+    EXPECT_EQ(aNb, 0);
+  }
+}
+
+//=================================================================================================
 // Test TShape EmptyCopy creates same type with no children
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, EmptyCopy)
 {
@@ -180,9 +378,9 @@ TEST(TopoDS_TShape_Test, EmptyCopy)
   EXPECT_EQ(aCopy->NbChildren(), 0) << "EmptyCopy should have no children";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test TShape EmptyCopy for all shape types
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, EmptyCopy_AllTypes)
 {
@@ -229,9 +427,9 @@ TEST(TopoDS_TShape_Test, EmptyCopy_AllTypes)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test TShape Orientable flag for different shape types
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, Orientable_DifferentTypes)
 {
@@ -252,9 +450,46 @@ TEST(TopoDS_TShape_Test, Orientable_DifferentTypes)
   EXPECT_TRUE(aWire.TShape()->Orientable()) << "Wire should be orientable";
 }
 
-//==================================================================================================
+//=================================================================================================
+// Test TopoDS_TShapeDispatch::Apply returns default for vertex
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, Apply_VertexReturnsDefault)
+{
+  TopoDS_Vertex aVertex = BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0));
+
+  // Dispatch on vertex should return default-constructed value (0 for int)
+  int aNb =
+    TopoDS_TShapeDispatch::Apply(aVertex.TShape().get(), [](auto* t) { return t->NbChildren(); });
+
+  // Vertex case falls through to default which returns ReturnType{} = 0
+  EXPECT_EQ(aNb, 0);
+}
+
+//=================================================================================================
+// Test TopoDS_TShapeDispatch with void return type
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, Apply_VoidReturn)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  int aVisitCount = 0;
+
+  // Lambda with side effect, void return
+  TopoDS_TShapeDispatch::Apply(aCompound.TShape().get(), [&aVisitCount](auto* t) {
+    (void)t; // unused
+    ++aVisitCount;
+  });
+
+  EXPECT_EQ(aVisitCount, 1) << "Lambda should be called exactly once";
+}
+
+//=================================================================================================
 // Test TShape flags are independent
-//==================================================================================================
+//=================================================================================================
 
 TEST(TopoDS_TShape_Test, FlagsIndependent)
 {
@@ -284,11 +519,33 @@ TEST(TopoDS_TShape_Test, FlagsIndependent)
   EXPECT_TRUE(aTShape->Locked()) << "Clearing Closed should not affect Locked";
 }
 
-//==================================================================================================
-// Test NbChildren consistency with iterator
-//==================================================================================================
+//=================================================================================================
+// Test TShape GetChild out of range throws
+//=================================================================================================
 
-TEST(TopoDS_TShape_Test, NbChildren_ConsistencyWithIterator)
+#ifndef No_Exception
+TEST(TopoDS_TShape_Test, GetChild_OutOfRangeThrows)
+{
+  TopoDS_Builder  aBuilder;
+  TopoDS_Compound aCompound;
+  aBuilder.MakeCompound(aCompound);
+
+  // Add 2 children
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(0, 0, 0)));
+  aBuilder.Add(aCompound, BRepBuilderAPI_MakeVertex(gp_Pnt(1, 0, 0)));
+
+  EXPECT_EQ(aCompound.TShape()->NbChildren(), 2);
+
+  // Index 2 is out of range (valid: 0, 1)
+  EXPECT_THROW(aCompound.TShape()->GetChild(2), Standard_OutOfRange);
+}
+#endif
+
+//=================================================================================================
+// Test TopoDS_TShapeDispatch consistency with direct call
+//=================================================================================================
+
+TEST(TopoDS_TShapeDispatch_Test, ConsistencyWithDirectCall)
 {
   TopoDS_Builder aBuilder;
 
@@ -298,16 +555,13 @@ TEST(TopoDS_TShape_Test, NbChildren_ConsistencyWithIterator)
   TopoDS_Edge anEdge = BRepBuilderAPI_MakeEdge(gp_Pnt(0, 0, 0), gp_Pnt(1, 0, 0));
   aBuilder.Add(aWire, anEdge);
 
-  // Get NbChildren via TShape
-  int aNbViaTShape = aWire.TShape()->NbChildren();
+  // Get NbChildren via dispatch
+  int aNbViaDispatch =
+    TopoDS_TShapeDispatch::Apply(aWire.TShape().get(), [](auto* t) { return t->NbChildren(); });
 
-  // Count via iterator
-  int aNbViaIterator = 0;
-  for (TopoDS_Iterator anIt(aWire); anIt.More(); anIt.Next())
-  {
-    ++aNbViaIterator;
-  }
+  // Get NbChildren via direct virtual call
+  int aNbViaDirect = aWire.TShape()->NbChildren();
 
-  EXPECT_EQ(aNbViaTShape, aNbViaIterator) << "NbChildren should match iterator count";
-  EXPECT_EQ(aNbViaTShape, 1);
+  EXPECT_EQ(aNbViaDispatch, aNbViaDirect) << "Dispatch should return same result as direct call";
+  EXPECT_EQ(aNbViaDispatch, 1);
 }
