@@ -22,6 +22,7 @@
 #include <Standard_Transient.hxx>
 #include <Standard_Type.hxx>
 
+#include <NCollection_List.hxx>
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
@@ -42,7 +43,7 @@ class TopoDS_Shape;
 //! TShapes are defined by their optional domain
 //! (geometry) and their components (other TShapes
 //! with Locations and Orientations). The components
-//! are stored in a dynamic array within each derived class.
+//! are stored in a list in the base class.
 //!
 //! A TShape contains the following boolean flags:
 //!
@@ -150,12 +151,7 @@ public:
 
   //! Returns the number of direct sub-shapes (children).
   //! @sa TopoDS_Iterator for accessing sub-shapes
-  virtual int NbChildren() const = 0;
-
-  //! Returns the child shape at the given index (0-based).
-  //! @param theIndex the 0-based index of the child
-  //! @return the child shape at the given index
-  virtual const TopoDS_Shape& GetChild(size_t theIndex) const = 0;
+  int NbChildren() const { return myShapes.Size(); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;
@@ -186,6 +182,7 @@ protected:
   }
 
 protected:
+  NCollection_List<TopoDS_Shape> myShapes; //!< Child shapes stored in a list
   uint16_t
     myState; //!< Compact state: shape type (bits 0-3) + flags (bits 4-11) + reserved (bits 12-15)
 };

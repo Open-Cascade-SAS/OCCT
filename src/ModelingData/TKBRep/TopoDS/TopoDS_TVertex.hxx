@@ -18,8 +18,6 @@
 #define _TopoDS_TVertex_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_TShape.hxx>
 
 // resolve name collisions with X11 headers
@@ -32,20 +30,6 @@
 class TopoDS_TVertex : public TopoDS_TShape
 {
 public:
-  //! Returns the number of direct sub-shapes (children).
-  //! A vertex has no children, so this always returns 0.
-  int NbChildren() const final { return 0; }
-
-  //! Returns the child shape at the given index.
-  //! A vertex has no children, so this always throws Standard_OutOfRange.
-  //! @param theIndex the 0-based index (unused)
-  //! @return never returns, always throws
-  const TopoDS_Shape& GetChild(size_t theIndex) const final
-  {
-    (void)theIndex;
-    throw Standard_OutOfRange("TopoDS_TVertex::GetChild - vertex has no children");
-  }
-
   DEFINE_STANDARD_RTTIEXT(TopoDS_TVertex, TopoDS_TShape)
 
 protected:
