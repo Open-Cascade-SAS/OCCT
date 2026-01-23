@@ -17,9 +17,38 @@
 #define No_Standard_NoSuchObject
 
 #include <TopoDS_Iterator.hxx>
-#include <TopoDS_TShapeDispatch.hxx>
+#include <TopoDS_TCompound.hxx>
+#include <TopoDS_TCompSolid.hxx>
+#include <TopoDS_TEdge.hxx>
+#include <TopoDS_TFace.hxx>
+#include <TopoDS_TShell.hxx>
+#include <TopoDS_TSolid.hxx>
+#include <TopoDS_TWire.hxx>
 
-#include <Standard_Assert.hxx>
+//=================================================================================================
+
+NCollection_DynamicArray<TopoDS_Shape>* TopoDS_Iterator::getSubShapesArray(TopoDS_TShape* theTShape)
+{
+  switch (theTShape->ShapeType())
+  {
+    case TopAbs_EDGE:
+      return &static_cast<TopoDS_TEdge*>(theTShape)->mySubShapes;
+    case TopAbs_WIRE:
+      return &static_cast<TopoDS_TWire*>(theTShape)->mySubShapes;
+    case TopAbs_FACE:
+      return &static_cast<TopoDS_TFace*>(theTShape)->mySubShapes;
+    case TopAbs_SHELL:
+      return &static_cast<TopoDS_TShell*>(theTShape)->mySubShapes;
+    case TopAbs_SOLID:
+      return &static_cast<TopoDS_TSolid*>(theTShape)->mySubShapes;
+    case TopAbs_COMPSOLID:
+      return &static_cast<TopoDS_TCompSolid*>(theTShape)->mySubShapes;
+    case TopAbs_COMPOUND:
+      return &static_cast<TopoDS_TCompound*>(theTShape)->mySubShapes;
+    default:
+      return nullptr; // Vertex has no children
+  }
+}
 
 //=================================================================================================
 
@@ -37,55 +66,20 @@ void TopoDS_Iterator::Initialize(const TopoDS_Shape& S, const bool cumOri, const
 
   if (S.IsNull())
   {
-    myTShape     = nullptr;
-    myIndex      = 0U;
-    myNbChildren = 0U;
-    myShapeType  = TopAbs_SHAPE;
+    mySubShapes = nullptr;
+    myIndex     = 0U;
   }
   else
   {
-    myTShape    = S.TShape().get();
-    myShapeType = myTShape->ShapeType();
+    // Get direct pointer to child array (type-switch only once during init)
+    mySubShapes = getSubShapesArray(S.TShape().get());
     myIndex     = 0U;
-    // Use dispatch helper to get NbChildren through concrete type (devirtualized)
-    myNbChildren = static_cast<size_t>(TopoDS_TShapeDispatch::Apply(myTShape, [](auto* theTyped) {
-      return theTyped->NbChildren();
-    }));
   }
 
   if (More())
   {
     updateCurrentShape();
   }
-}
-
-//=================================================================================================
-
-void TopoDS_Iterator::Refresh()
-{
-  myNbChildren = static_cast<size_t>(getCurrentNbChildren());
-}
-
-//=================================================================================================
-
-bool TopoDS_Iterator::More() const
-{
-  if (myIndex < myNbChildren)
-  {
-    return true;
-  }
-  // Reached cached limit - check if more children were added
-  const int aCurrentNb = getCurrentNbChildren();
-#ifdef OCCT_DEBUG
-  Standard_ASSERT_RAISE(aCurrentNb >= static_cast<int>(myNbChildren),
-                        "TopoDS_Iterator: children were removed during iteration");
-#endif
-  if (aCurrentNb > static_cast<int>(myNbChildren))
-  {
-    myNbChildren = static_cast<size_t>(aCurrentNb);
-    return true;
-  }
-  return false;
 }
 
 //=================================================================================================
@@ -103,25 +97,9 @@ void TopoDS_Iterator::Next()
 
 void TopoDS_Iterator::updateCurrentShape()
 {
-  // Use dispatch helper with cached shape type for devirtualized GetChild() call
-  myShape = TopoDS_TShapeDispatch::ApplyWithType(myTShape, myShapeType, [this](auto* theTyped) {
-    return theTyped->GetChild(myIndex);
-  });
+  // Direct array access - no dispatch overhead
+  myShape = mySubShapes->Value(static_cast<int>(myIndex));
   myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())
     myShape.Move(myLocation, false);
-}
-
-//=================================================================================================
-
-int TopoDS_Iterator::getCurrentNbChildren() const
-{
-  if (myTShape == nullptr)
-  {
-    return 0;
-  }
-  // Use dispatch helper with cached shape type for devirtualized NbChildren() call
-  return TopoDS_TShapeDispatch::ApplyWithType(myTShape, myShapeType, [](auto* theTyped) {
-    return theTyped->NbChildren();
-  });
 }

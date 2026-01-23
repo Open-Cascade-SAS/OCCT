@@ -18,9 +18,9 @@
 #define _TopoDS_Iterator_HeaderFile
 
 #include <Standard_NoSuchObject.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopAbs_Orientation.hxx>
-#include <TopAbs_ShapeEnum.hxx>
 #include <TopLoc_Location.hxx>
 
 class TopoDS_TShape;
@@ -40,11 +40,9 @@ public:
 
   //! Creates an empty Iterator.
   TopoDS_Iterator()
-      : myTShape(nullptr),
+      : mySubShapes(nullptr),
         myIndex(0U),
-        myNbChildren(0U),
-        myOrientation(TopAbs_FORWARD),
-        myShapeType(TopAbs_SHAPE)
+        myOrientation(TopAbs_FORWARD)
   {
   }
 
@@ -56,11 +54,9 @@ public:
   //! sub-shapes by the location of S, i.e. it applies to
   //! each sub-shape the transformation that is associated with S.
   TopoDS_Iterator(const TopoDS_Shape& S, const bool cumOri = true, const bool cumLoc = true)
-      : myTShape(nullptr),
+      : mySubShapes(nullptr),
         myIndex(0U),
-        myNbChildren(0U),
-        myOrientation(TopAbs_FORWARD),
-        myShapeType(TopAbs_SHAPE)
+        myOrientation(TopAbs_FORWARD)
   {
     Initialize(S, cumOri, cumLoc);
   }
@@ -78,13 +74,10 @@ public:
 
   //! Returns true if there is another sub-shape in the
   //! shape which this iterator is scanning.
-  //! This method dynamically checks if more children were added
-  //! during iteration.
-  Standard_EXPORT bool More() const;
-
-  //! Refresh the cached number of children.
-  //! Call this method if children were added to the shape during iteration.
-  Standard_EXPORT void Refresh();
+  bool More() const
+  {
+    return mySubShapes != nullptr && myIndex < static_cast<size_t>(mySubShapes->Size());
+  }
 
   //! Moves on to the next sub-shape in the shape which
   //! this iterator is scanning.
@@ -106,17 +99,17 @@ private:
   //! Updates myShape from the current child at myIndex.
   void updateCurrentShape();
 
-  //! Get current number of children using type-switch dispatch.
-  int getCurrentNbChildren() const;
+  //! Helper to get pointer to mySubShapes array from TShape using type-switch.
+  //! Called once during Initialize() to cache the array pointer.
+  static NCollection_DynamicArray<TopoDS_Shape>* getSubShapesArray(TopoDS_TShape* theTShape);
 
 private:
-  TopoDS_Shape       myShape;       //!< Current composed sub-shape
-  TopoDS_TShape*     myTShape;      //!< Pointer to parent TShape (non-owning)
+  TopoDS_Shape myShape; //!< Current composed sub-shape
+  NCollection_DynamicArray<TopoDS_Shape>*
+                     mySubShapes;   //!< Direct pointer to child array (non-owning)
   size_t             myIndex;       //!< Current child index (0-based)
-  mutable size_t     myNbChildren;  //!< Cached number of children (mutable for More() const)
   TopAbs_Orientation myOrientation; //!< Cumulative orientation
   TopLoc_Location    myLocation;    //!< Cumulative location
-  TopAbs_ShapeEnum   myShapeType;   //!< Cached shape type for type-switch devirtualization
 };
 
 #endif // _TopoDS_Iterator_HeaderFile

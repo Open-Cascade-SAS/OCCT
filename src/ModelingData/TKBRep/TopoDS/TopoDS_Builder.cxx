@@ -80,9 +80,10 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
       if (!aLoc.IsIdentity())
         aChild.Move(aLoc.Inverted(), false);
 
-      // Add to the subshapes array using dispatch helper (devirtualized)
-      TopoDS_TShape* aTShape = aShape.TShape().get();
-      TopoDS_TShapeDispatch::Apply(aTShape, [&aChild](auto* theTyped) {
+      // Add to the subshapes array using dispatch helper with cached shape type (devirtualized)
+      TopoDS_TShape*         aTShape    = aShape.TShape().get();
+      const TopAbs_ShapeEnum aShapeType = static_cast<TopAbs_ShapeEnum>(iS);
+      TopoDS_TShapeDispatch::ApplyWithType(aTShape, aShapeType, [&aChild](auto* theTyped) {
         theTyped->mySubShapes.Append(aChild);
       });
       aTShape->Modified(true);
@@ -111,27 +112,29 @@ void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent
     S.Reverse();
   S.Location(S.Location().Predivided(aShape.Location()), false);
 
-  TopoDS_TShape* aTShape = aShape.TShape().get();
+  TopoDS_TShape*         aTShape    = aShape.TShape().get();
+  const TopAbs_ShapeEnum aShapeType = aTShape->ShapeType();
 
-  // Use dispatch helper to search and remove (devirtualized NbChildren/GetChild calls)
-  const bool aRemoved = TopoDS_TShapeDispatch::Apply(aTShape, [&S](auto* theTyped) -> bool {
-    const int aNb = theTyped->NbChildren();
-    for (int i = 0; i < aNb; ++i)
-    {
-      if (theTyped->GetChild(i) == S)
+  // Use dispatch helper with cached shape type to search and remove (devirtualized calls)
+  const bool aRemoved =
+    TopoDS_TShapeDispatch::ApplyWithType(aTShape, aShapeType, [&S](auto* theTyped) -> bool {
+      const int aNb = theTyped->NbChildren();
+      for (int i = 0; i < aNb; ++i)
       {
-        // Shift elements to preserve iteration order (matches original NCollection_List behavior)
-        for (int j = i; j < aNb - 1; ++j)
+        if (theTyped->GetChild(i) == S)
         {
-          theTyped->mySubShapes.ChangeValue(j) =
-            std::move(theTyped->mySubShapes.ChangeValue(j + 1));
+          // Shift elements to preserve iteration order (matches original NCollection_List behavior)
+          for (int j = i; j < aNb - 1; ++j)
+          {
+            theTyped->mySubShapes.ChangeValue(j) =
+              std::move(theTyped->mySubShapes.ChangeValue(j + 1));
+          }
+          theTyped->mySubShapes.EraseLast();
+          return true;
         }
-        theTyped->mySubShapes.EraseLast();
-        return true;
       }
-    }
-    return false;
-  });
+      return false;
+    });
 
   if (aRemoved)
     aTShape->Modified(true);
