@@ -17,6 +17,11 @@
 #ifndef _TopoDS_TShape_HeaderFile
 #define _TopoDS_TShape_HeaderFile
 
+#include <Standard.hxx>
+#include <Standard_Handle.hxx>
+#include <Standard_Transient.hxx>
+#include <Standard_Type.hxx>
+
 #include <TopAbs.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 
