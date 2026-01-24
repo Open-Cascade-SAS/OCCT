@@ -15,9 +15,9 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepGProp.hxx>
+#include <BRepMesh_DiscretAlgoFactory.hxx>
 #include <BRepMesh_DiscretFactory.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
-#include <BRepMesh_FactoryError.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <DBRep.hxx>
 #include <Draw.hxx>
@@ -48,9 +48,6 @@
 static int mpnames(Draw_Interpretor&, int, const char**);
 static int mpsetdefaultname(Draw_Interpretor&, int, const char**);
 static int mpgetdefaultname(Draw_Interpretor&, int, const char**);
-static int mpsetfunctionname(Draw_Interpretor&, int, const char**);
-static int mpgetfunctionname(Draw_Interpretor&, int, const char**);
-static int mperror(Draw_Interpretor&, int, const char**);
 static int mpincmesh(Draw_Interpretor&, int, const char**);
 static int mpparallel(Draw_Interpretor&, int, const char**);
 static int triarea(Draw_Interpretor&, int, const char**);
@@ -69,13 +66,18 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
   //
   const char* g = "Mesh Commands";
   // Commands
-  theCommands.Add("mpnames", "use mpnames", __FILE__, mpnames, g);
-  theCommands.Add("mpsetdefaultname", "use mpsetdefaultname", __FILE__, mpsetdefaultname, g);
-  theCommands.Add("mpgetdefaultname", "use mpgetdefaultname", __FILE__, mpgetdefaultname, g);
-  theCommands.Add("mpsetfunctionname", "use mpsetfunctionname", __FILE__, mpsetfunctionname, g);
-  theCommands.Add("mpgetfunctionname", "use mpgetfunctionname", __FILE__, mpgetfunctionname, g);
-  theCommands.Add("mperror", "use mperror", __FILE__, mperror, g);
-  theCommands.Add("mpincmesh", "use mpincmesh", __FILE__, mpincmesh, g);
+  theCommands.Add("mpnames", "mpnames : list available meshing algorithms", __FILE__, mpnames, g);
+  theCommands.Add("mpsetdefaultname",
+                  "mpsetdefaultname name : set default meshing algorithm",
+                  __FILE__,
+                  mpsetdefaultname,
+                  g);
+  theCommands.Add("mpgetdefaultname",
+                  "mpgetdefaultname : get default meshing algorithm name",
+                  __FILE__,
+                  mpgetdefaultname,
+                  g);
+  theCommands.Add("mpincmesh", "mpincmesh shape deflection [angle]", __FILE__, mpincmesh, g);
   theCommands.Add("mpparallel",
                   "mpparallel [toTurnOn] : show / set multi-threading flag for incremental mesh",
                   __FILE__,
@@ -98,31 +100,29 @@ void MeshTest::PluginCommands(Draw_Interpretor& theCommands)
 
 static int mpnames(Draw_Interpretor&, int n, const char**)
 {
-  int                                                aNb;
-  NCollection_Map<TCollection_AsciiString>::Iterator aIt;
-  //
   if (n != 1)
   {
     printf(" use mpnames\n");
     return 0;
   }
-  //
-  const NCollection_Map<TCollection_AsciiString>& aMN = BRepMesh_DiscretFactory::Get().Names();
-  aNb                                                 = aMN.Extent();
-  if (!aNb)
+
+  const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories =
+    BRepMesh_DiscretAlgoFactory::Factories();
+
+  if (aFactories.IsEmpty())
   {
-    printf(" *no names found\n");
+    printf(" *no algorithms registered\n");
     return 0;
   }
-  //
-  printf(" *available names:\n");
-  aIt.Initialize(aMN);
-  for (; aIt.More(); aIt.Next())
+
+  printf(" *available algorithms:\n");
+  for (NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>::Iterator anIter(aFactories);
+       anIter.More();
+       anIter.Next())
   {
-    const TCollection_AsciiString& aName = aIt.Key();
-    printf("  %s\n", aName.ToCString());
+    printf("  %s\n", anIter.Value()->Name().ToCString());
   }
-  //
+
   return 0;
 }
 
@@ -130,21 +130,22 @@ static int mpnames(Draw_Interpretor&, int n, const char**)
 
 static int mpsetdefaultname(Draw_Interpretor&, int n, const char** a)
 {
-  TCollection_AsciiString aName;
-  //
   if (n != 2)
   {
     printf(" use mpsetdefaultname name\n");
     return 0;
   }
-  //
-  aName = a[1];
-  //
+
+  TCollection_AsciiString aName = a[1];
   if (BRepMesh_DiscretFactory::Get().SetDefaultName(aName))
+  {
     printf(" *ready\n");
+  }
   else
-    printf(" *fault\n");
-  //
+  {
+    printf(" *algorithm '%s' not found\n", aName.ToCString());
+  }
+
   return 0;
 }
 
@@ -157,66 +158,10 @@ static int mpgetdefaultname(Draw_Interpretor&, int n, const char**)
     printf(" use mpgetdefaultname\n");
     return 0;
   }
-  //
+
   const TCollection_AsciiString& aName = BRepMesh_DiscretFactory::Get().DefaultName();
   printf(" *default name: %s\n", aName.ToCString());
-  //
-  return 0;
-}
 
-//=================================================================================================
-
-static int mpsetfunctionname(Draw_Interpretor&, int n, const char** a)
-{
-  TCollection_AsciiString aName;
-  //
-  if (n != 2)
-  {
-    printf(" use mpsetfunctionname name\n");
-    return 0;
-  }
-  //
-  aName = a[1];
-  //
-  if (BRepMesh_DiscretFactory::Get().SetFunctionName(aName))
-    printf(" *ready\n");
-  else
-    printf(" *fault\n");
-  //
-  return 0;
-}
-
-//=================================================================================================
-
-static int mpgetfunctionname(Draw_Interpretor&, int n, const char**)
-{
-  if (n != 1)
-  {
-    printf(" use mpgetfunctionname\n");
-    return 0;
-  }
-  //
-  const TCollection_AsciiString& aName = BRepMesh_DiscretFactory::Get().FunctionName();
-  printf(" *function name: %s\n", aName.ToCString());
-  //
-  return 0;
-}
-
-//=================================================================================================
-
-static int mperror(Draw_Interpretor&, int n, const char**)
-{
-  BRepMesh_FactoryError aErr;
-  //
-  if (n != 1)
-  {
-    printf(" use mperror\n");
-    return 0;
-  }
-  //
-  aErr = BRepMesh_DiscretFactory::Get().ErrorStatus();
-  printf(" *ErrorStatus: %d\n", (int)aErr);
-  //
   return 0;
 }
 
@@ -224,50 +169,41 @@ static int mperror(Draw_Interpretor&, int n, const char**)
 
 static int mpincmesh(Draw_Interpretor&, int n, const char** a)
 {
-  double       aDeflection, aAngle;
-  TopoDS_Shape aS;
-  //
   if (n < 3)
   {
-    printf(" use mpincmesh s deflection [angle]\n");
+    printf(" use mpincmesh shape deflection [angle]\n");
     return 0;
   }
-  //
-  aS = DBRep::Get(a[1]);
+
+  TopoDS_Shape aS = DBRep::Get(a[1]);
   if (aS.IsNull())
   {
-    printf(" null shapes is not allowed here\n");
+    printf(" null shape is not allowed here\n");
     return 0;
   }
-  //
-  aDeflection = Draw::Atof(a[2]);
-  aAngle      = 0.5;
+
+  double aDeflection = Draw::Atof(a[2]);
+  double aAngle      = 0.5;
   if (n > 3)
   {
     aAngle = Draw::Atof(a[3]);
   }
-  //
-  occ::handle<BRepMesh_DiscretRoot> aMeshAlgo =
+
+  Handle(BRepMesh_DiscretRoot) aMeshAlgo =
     BRepMesh_DiscretFactory::Get().Discret(aS, aDeflection, aAngle);
-  //
-  BRepMesh_FactoryError aErr = BRepMesh_DiscretFactory::Get().ErrorStatus();
-  if (aErr != BRepMesh_FE_NOERROR)
-  {
-    printf(" *Factory::Get().ErrorStatus()=%d\n", (int)aErr);
-  }
-  //
+
   if (aMeshAlgo.IsNull())
   {
-    printf(" *Can not create the algo\n");
+    printf(" *Cannot create the meshing algorithm\n");
     return 0;
   }
-  //
+
   aMeshAlgo->Perform();
   if (!aMeshAlgo->IsDone())
   {
-    printf(" *Not done\n");
+    printf(" *Meshing not done\n");
   }
-  //
+
   return 0;
 }
 
