@@ -14,6 +14,7 @@
 #include <GeomFill_CorrectedFrenet.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
@@ -146,8 +147,8 @@ TEST(GeomFill_CorrectedFrenet, ActualReproducerCase)
   ShapeExtend_WireData anExtend;
   for (int i = 2; i <= aPoints.Length(); i++)
   {
-    occ::handle<Geom_Curve> aCurve = GC_MakeSegment(aPoints(i - 1), aPoints(i)).Value();
-    TopoDS_Edge             anEdge = BRepBuilderAPI_MakeEdge(aCurve).Edge();
+    occ::handle<Geom_TrimmedCurve> aCurve = GC_MakeSegment(aPoints(i - 1), aPoints(i)).Value();
+    TopoDS_Edge                    anEdge = BRepBuilderAPI_MakeEdge(aCurve).Edge();
     anExtend.Add(anEdge);
   }
 

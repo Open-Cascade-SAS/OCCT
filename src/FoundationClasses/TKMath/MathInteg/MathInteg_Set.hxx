@@ -28,11 +28,11 @@ using namespace MathUtils;
 //! Result for vector function integration.
 struct SetResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Vector> Values; //!< Integral of each component
   int                        NbEquations = 0;
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

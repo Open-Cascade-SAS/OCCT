@@ -30,13 +30,13 @@ using namespace MathUtils;
 //! Specialized for symmetric matrices.
 struct CroutResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Matrix> L;           //!< Lower triangular matrix (unit diagonal)
   std::optional<math_Vector> D;           //!< Diagonal elements
   std::optional<math_Matrix> Inverse;     //!< Inverse matrix (lower triangle only)
   std::optional<double>      Determinant; //!< Matrix determinant
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

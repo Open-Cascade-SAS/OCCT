@@ -43,14 +43,14 @@ enum class Status
 //! Contains the found root/minimum location and diagnostic information.
 struct ScalarResult
 {
-  Status                Status       = Status::NotConverged; //!< Computation status
-  size_t                NbIterations = 0;                    //!< Number of iterations performed
-  std::optional<double> Root;                                //!< Found root or minimum location
-  std::optional<double> Value;                               //!< Function value at root/minimum
-  std::optional<double> Derivative;                          //!< Derivative at root (if computed)
+  MathUtils::Status     Status       = MathUtils::Status::NotConverged; //!< Computation status
+  size_t                NbIterations = 0; //!< Number of iterations performed
+  std::optional<double> Root;             //!< Found root or minimum location
+  std::optional<double> Value;            //!< Function value at root/minimum
+  std::optional<double> Derivative;       //!< Derivative at root (if computed)
 
   //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   //! Example: if (aResult) { use *aResult.Root; }
@@ -61,12 +61,12 @@ struct ScalarResult
 //! Supports up to 4 real roots (for quartic equations).
 struct PolyResult
 {
-  Status                Status  = Status::NotConverged; //!< Computation status
-  size_t                NbRoots = 0;                    //!< Number of real roots found
-  std::array<double, 4> Roots   = {0.0, 0.0, 0.0, 0.0}; //!< Array of real roots (sorted)
+  MathUtils::Status     Status  = MathUtils::Status::NotConverged; //!< Computation status
+  size_t                NbRoots = 0;                               //!< Number of real roots found
+  std::array<double, 4> Roots   = {0.0, 0.0, 0.0, 0.0};            //!< Array of real roots (sorted)
 
   //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -81,7 +81,7 @@ struct PolyResult
 //! Contains the solution vector and optional gradient/Jacobian information.
 struct VectorResult
 {
-  Status                     Status       = Status::NotConverged; //!< Computation status
+  MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
   size_t                     NbIterations = 0; //!< Number of iterations performed
   std::optional<math_Vector> Solution;         //!< Solution vector (set by solver on success)
   std::optional<double>      Value;            //!< Function value at solution (if computed)
@@ -89,7 +89,7 @@ struct VectorResult
   std::optional<math_Matrix> Jacobian;         //!< Jacobian at solution (if computed)
 
   //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -99,12 +99,12 @@ struct VectorResult
 //! Contains the solution vector and matrix determinant if computed.
 struct LinearResult
 {
-  Status                     Status = Status::NotConverged; //!< Computation status
+  MathUtils::Status          Status = MathUtils::Status::NotConverged; //!< Computation status
   std::optional<math_Vector> Solution;    //!< Solution vector X in AX = B (set by solver)
   std::optional<double>      Determinant; //!< Determinant of matrix (if computed)
 
   //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -114,13 +114,13 @@ struct LinearResult
 //! Contains eigenvalues and optionally eigenvectors.
 struct EigenResult
 {
-  Status                     Status       = Status::NotConverged; //!< Computation status
+  MathUtils::Status          Status       = MathUtils::Status::NotConverged; //!< Computation status
   size_t                     NbIterations = 0; //!< Number of iterations performed
   std::optional<math_Vector> EigenValues;      //!< Computed eigenvalues (set by solver)
   std::optional<math_Matrix> EigenVectors;     //!< Computed eigenvectors (set by solver)
 
   //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -130,14 +130,14 @@ struct EigenResult
 //! Structure depends on decomposition type.
 struct DecompResult
 {
-  Status                     Status = Status::NotConverged; //!< Computation status
+  MathUtils::Status          Status = MathUtils::Status::NotConverged; //!< Computation status
   std::optional<math_Matrix> L;           //!< Lower triangular (LU) or left singular vectors (SVD)
   std::optional<math_Matrix> U;           //!< Upper triangular (LU) or right singular vectors (SVD)
   std::optional<math_Vector> D;           //!< Diagonal elements or singular values
   std::optional<double>      Determinant; //!< Matrix determinant (if computed)
 
   //! Returns true if decomposition succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -147,15 +147,15 @@ struct DecompResult
 //! Contains integral value and error estimates.
 struct IntegResult
 {
-  Status                Status       = Status::NotConverged; //!< Computation status
-  size_t                NbIterations = 0;                    //!< Number of adaptive iterations
+  MathUtils::Status     Status       = MathUtils::Status::NotConverged; //!< Computation status
+  size_t                NbIterations = 0; //!< Number of adaptive iterations
   size_t                NbPoints     = 0; //!< Total number of quadrature points used
   std::optional<double> Value;            //!< Computed integral value
   std::optional<double> AbsoluteError;    //!< Estimated absolute error (if computed)
   std::optional<double> RelativeError;    //!< Estimated relative error (if computed)
 
   //! Returns true if integration succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -165,12 +165,12 @@ struct IntegResult
 //! Contains the inverse matrix if computation succeeded.
 struct InverseResult
 {
-  Status                     Status = Status::NotConverged; //!< Computation status
-  std::optional<math_Matrix> Inverse;                       //!< Computed inverse matrix
-  std::optional<double>      Determinant;                   //!< Determinant of matrix (if computed)
+  MathUtils::Status          Status = MathUtils::Status::NotConverged; //!< Computation status
+  std::optional<math_Matrix> Inverse;                                  //!< Computed inverse matrix
+  std::optional<double>      Determinant; //!< Determinant of matrix (if computed)
 
   //! Returns true if inversion succeeded.
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }

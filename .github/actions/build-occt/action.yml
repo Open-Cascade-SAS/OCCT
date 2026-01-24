@@ -31,6 +31,10 @@ inputs:
     description: 'CMake build type (Release, Debug, etc)'
     required: false
     default: 'Release'
+  build-parallel-jobs:
+    description: 'Number of parallel build jobs (empty for auto)'
+    required: false
+    default: ''
   github-token:
     description: 'GitHub token for vcpkg NuGet package access'
     required: true
@@ -75,7 +79,11 @@ runs:
       if: ${{ inputs.platform == 'linux' }}
       run: |
         cd build
-        cmake --build . --target install --config Release -- -j
+        if [ -n "${{ inputs.build-parallel-jobs }}" ]; then
+          cmake --build . --target install --config Release -- -j${{ inputs.build-parallel-jobs }}
+        else
+          cmake --build . --target install --config Release -- -j
+        fi
       shell: bash
 
     - name: Upload install directory

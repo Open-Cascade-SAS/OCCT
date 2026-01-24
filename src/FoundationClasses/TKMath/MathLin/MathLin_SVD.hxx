@@ -29,13 +29,13 @@ using namespace MathUtils;
 //! Result for SVD decomposition.
 struct SVDResult
 {
-  Status                     Status = Status::NotConverged;
+  MathUtils::Status          Status = MathUtils::Status::NotConverged;
   std::optional<math_Matrix> U;              //!< Left singular vectors (m x n)
   std::optional<math_Vector> SingularValues; //!< Singular values (n elements)
   std::optional<math_Matrix> V;              //!< Right singular vectors (n x n)
   int                        Rank = 0;       //!< Numerical rank
 
-  bool IsDone() const { return Status == Status::OK; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   explicit operator bool() const { return IsDone(); }
 };

@@ -1186,7 +1186,7 @@ TCollection_AsciiString StepData_StepWriter::CleanTextForSend(
         if (aThirdChar == '2' || aThirdChar == '4' || aThirdChar == '0')
         {
           anIsDirective    = true;
-          aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\
+          aDirectiveLength = 4; // Basic directive length: \X2\, \X4\, \X0\ (4 chars)
 
           // For \X2 and \X4, find the terminating \X0 sequence
           if (aThirdChar == '2' || aThirdChar == '4')
