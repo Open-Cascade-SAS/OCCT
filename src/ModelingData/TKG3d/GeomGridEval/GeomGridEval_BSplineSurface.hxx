@@ -27,9 +27,10 @@
 //! Stateless evaluator - constructor takes geometry, parameters passed to methods.
 //!
 //! Optimizes evaluation by:
-//! - Pre-computing span indices during evaluation
-//! - Sorting UV points by (USpan, VSpan, U) for cache-optimal iteration
-//! - Rebuilding cache only once per span block (not per point)
+//! - Pre-computing span indices for U and V parameters separately (O(aNbU + aNbV))
+//! - Grouping evaluation by (USpan, VSpan) for cache-optimal iteration
+//! - Rebuilding cache only once per span group (not per point)
+//! - Writing results directly to 2D output grid (no intermediate buffers)
 //!
 //! Usage:
 //! @code
@@ -108,28 +109,6 @@ public:
     const NCollection_Array1<double>& theVParams,
     int                               theNU,
     int                               theNV) const;
-
-private:
-  //! Private helper for grid D1 evaluation returning linear array.
-  NCollection_Array1<GeomGridEval::SurfD1> evaluateGridLinearD1(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams) const;
-
-  //! Private helper for grid D2 evaluation returning linear array.
-  NCollection_Array1<GeomGridEval::SurfD2> evaluateGridLinearD2(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams) const;
-
-  //! Private helper for grid D3 evaluation returning linear array.
-  NCollection_Array1<GeomGridEval::SurfD3> evaluateGridLinearD3(
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams) const;
-
-  //! Private helper for grid DN evaluation returning linear array.
-  NCollection_Array1<gp_Vec> evaluateGridLinearDN(const NCollection_Array1<double>& theUParams,
-                                                  const NCollection_Array1<double>& theVParams,
-                                                  int                               theNU,
-                                                  int                               theNV) const;
 
 private:
   occ::handle<Geom_BSplineSurface> myGeom;

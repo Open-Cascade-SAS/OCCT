@@ -85,20 +85,6 @@ struct SurfD3
   gp_Vec D3UVV;
 };
 
-//! UV point with span information for BSpline/Bezier grid optimization.
-//! Contains pre-computed span data for cache-optimal evaluation.
-//! The sorting by (USpanIdx, VSpanIdx, U) minimizes cache rebuilds during evaluation.
-struct UVPointWithSpan
-{
-  double U;         //!< U parameter value
-  double V;         //!< V parameter value
-  double LocalU;    //!< Pre-computed local U in [-1, 1] range for cache evaluation
-  double LocalV;    //!< Pre-computed local V in [-1, 1] range for cache evaluation
-  int    USpanIdx;  //!< U flat knot index identifying the span
-  int    VSpanIdx;  //!< V flat knot index identifying the span
-  int    OutputIdx; //!< Linear output index for result placement
-};
-
 //==================================================================================================
 // Template helpers for parametric surface evaluation.
 // These provide the iteration pattern, while the actual computation is delegated to a functor.
