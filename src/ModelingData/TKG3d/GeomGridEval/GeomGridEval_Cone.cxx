@@ -402,4 +402,3 @@ NCollection_Array2<gp_Vec> GeomGridEval_Cone::EvaluateGridDN(
 
   return aResult;
 }
-

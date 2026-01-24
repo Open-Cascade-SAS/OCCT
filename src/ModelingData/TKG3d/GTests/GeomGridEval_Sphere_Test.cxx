@@ -184,4 +184,3 @@ TEST(GeomGridEval_SphereTest, GridDerivativeDN)
     }
   }
 }
-

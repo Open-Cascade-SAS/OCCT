@@ -540,4 +540,3 @@ NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(
   }
   return aResult;
 }
-

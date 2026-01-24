@@ -261,4 +261,3 @@ NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(
 
   return aResult;
 }
-

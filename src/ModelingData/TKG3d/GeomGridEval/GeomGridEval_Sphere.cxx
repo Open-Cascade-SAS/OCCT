@@ -417,4 +417,3 @@ NCollection_Array2<gp_Vec> GeomGridEval_Sphere::EvaluateGridDN(
 
   return aResult;
 }
-

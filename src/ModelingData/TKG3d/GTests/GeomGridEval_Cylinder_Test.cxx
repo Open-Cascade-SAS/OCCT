@@ -184,4 +184,3 @@ TEST(GeomGridEval_CylinderTest, GridDerivativeDN)
     }
   }
 }
-
