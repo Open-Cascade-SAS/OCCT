@@ -2,6 +2,6 @@
 set(OCCT_XBRepMesh_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_XBRepMesh_FILES
-  XBRepMesh.cxx
-  XBRepMesh.hxx
+  XBRepMesh_Factory.cxx
+  XBRepMesh_Factory.hxx
 )

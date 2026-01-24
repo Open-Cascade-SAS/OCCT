@@ -34,10 +34,14 @@ set(OCCT_BRepMesh_FILES
   BRepMesh_DelaunayBaseMeshAlgo.hxx
   BRepMesh_DelaunayDeflectionControlMeshAlgo.hxx
   BRepMesh_DelaunayNodeInsertionMeshAlgo.hxx
+  BRepMesh_DiscretAlgoFactory.cxx
+  BRepMesh_DiscretAlgoFactory.hxx
   BRepMesh_DiscretFactory.cxx
   BRepMesh_DiscretFactory.hxx
   BRepMesh_DiscretRoot.cxx
   BRepMesh_DiscretRoot.hxx
+  BRepMesh_IncrementalMeshFactory.cxx
+  BRepMesh_IncrementalMeshFactory.hxx
   BRepMesh_Edge.hxx
   BRepMesh_EdgeDiscret.cxx
   BRepMesh_EdgeDiscret.hxx
@@ -50,7 +54,6 @@ set(OCCT_BRepMesh_FILES
   BRepMesh_FaceChecker.hxx
   BRepMesh_FaceDiscret.cxx
   BRepMesh_FaceDiscret.hxx
-  BRepMesh_FactoryError.hxx
   BRepMesh_FastDiscret.hxx
   BRepMesh_GeomTool.cxx
   BRepMesh_GeomTool.hxx
@@ -73,8 +76,6 @@ set(OCCT_BRepMesh_FILES
   BRepMesh_NodeInsertionMeshAlgo.hxx
   BRepMesh_OrientedEdge.hxx
   BRepMesh_PairOfIndex.hxx
-  BRepMesh_PluginEntryType.hxx
-  BRepMesh_PluginMacro.hxx
   BRepMesh_SelectorOfDataStructureOfDelaun.cxx
   BRepMesh_SelectorOfDataStructureOfDelaun.hxx
   BRepMesh_ShapeTool.cxx

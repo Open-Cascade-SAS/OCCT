@@ -16,7 +16,6 @@
 
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <BRepMesh_Context.hxx>
-#include <BRepMesh_PluginMacro.hxx>
 #include <IMeshData_Face.hxx>
 #include <IMeshData_Wire.hxx>
 #include <IMeshTools_MeshBuilder.hxx>
@@ -148,6 +147,3 @@ void BRepMesh_IncrementalMesh::SetParallelDefault(const bool theInParallel)
 {
   IS_IN_PARALLEL = theInParallel;
 }
-
-//! Export Mesh Plugin entry function
-DISCRETPLUGIN(BRepMesh_IncrementalMesh)

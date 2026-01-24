@@ -16,20 +16,17 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
-#include <Standard_Macro.hxx>
-#include <BRepMesh_PluginEntryType.hxx>
-#include <BRepMesh_FactoryError.hxx>
-#include <TCollection_AsciiString.hxx>
-#include <NCollection_Map.hxx>
-#include <OSD_Function.hxx>
-#include <NCollection_DataMap.hxx>
 #include <BRepMesh_DiscretRoot.hxx>
+#include <TCollection_AsciiString.hxx>
 
 class TopoDS_Shape;
 
-//! This class intended to setup / retrieve default triangulation algorithm.
+//! Factory for retrieving triangulation algorithms.
 //! Use BRepMesh_DiscretFactory::Get() static method to retrieve global Factory instance.
 //! Use BRepMesh_DiscretFactory::Discret() method to retrieve meshing tool.
+//!
+//! This class delegates to BRepMesh_DiscretAlgoFactory registry for algorithm creation.
+//! @sa BRepMesh_DiscretAlgoFactory
 class BRepMesh_DiscretFactory
 {
 public:
@@ -38,65 +35,29 @@ public:
   //! Returns the global factory instance.
   Standard_EXPORT static BRepMesh_DiscretFactory& Get();
 
-  //! Returns the list of registered meshing algorithms.
-  const NCollection_Map<TCollection_AsciiString>& Names() const { return myNames; }
-
   //! Setup meshing algorithm by name.
-  //! Returns TRUE if requested tool is available.
-  //! On fail Factory will continue to use previous algo.
-  bool SetDefaultName(const TCollection_AsciiString& theName)
-  {
-    return SetDefault(theName, myFunctionName);
-  }
+  //! Returns TRUE if requested algorithm is available.
+  //! On fail Factory will continue to use previous algorithm.
+  //! @param[in] theName name of the algorithm to use
+  Standard_EXPORT bool SetDefaultName(const TCollection_AsciiString& theName);
 
-  //! Returns name for current meshing algorithm.
+  //! Returns name of current meshing algorithm.
   const TCollection_AsciiString& DefaultName() const { return myDefaultName; }
 
-  //! Advanced function. Changes function name to retrieve from plugin.
-  //! Returns TRUE if requested tool is available.
-  //! On fail Factory will continue to use previous algo.
-  bool SetFunctionName(const TCollection_AsciiString& theFuncName)
-  {
-    return SetDefault(myDefaultName, theFuncName);
-  }
-
-  //! Returns function name that should be exported by plugin.
-  const TCollection_AsciiString& FunctionName() const { return myFunctionName; }
-
-  //! Returns error status for last meshing algorithm switch.
-  BRepMesh_FactoryError ErrorStatus() const { return myErrorStatus; }
-
-  //! Setup meshing algorithm that should be created by this Factory.
-  //! Returns TRUE if requested tool is available.
-  //! On fail Factory will continue to use previous algo.
-  //! Call ::ErrorStatus() method to retrieve fault reason.
-  Standard_EXPORT bool SetDefault(const TCollection_AsciiString& theName,
-                                  const TCollection_AsciiString& theFuncName = "DISCRETALGO");
-
   //! Returns triangulation algorithm instance.
-  //! @param theShape shape to be meshed.
-  //! @param theLinDeflection linear deflection to be used for meshing.
-  //! @param theAngDeflection angular deflection to be used for meshing.
+  //! @param[in] theShape         shape to be meshed
+  //! @param[in] theLinDeflection linear deflection to be used for meshing
+  //! @param[in] theAngDeflection angular deflection to be used for meshing
+  //! @return new meshing algorithm instance, or NULL if no algorithm available
   Standard_EXPORT occ::handle<BRepMesh_DiscretRoot> Discret(const TopoDS_Shape& theShape,
-                                                            const double        theLinDeflection,
-                                                            const double        theAngDeflection);
+                                                            double              theLinDeflection,
+                                                            double              theAngDeflection);
 
 protected:
   //! Constructor
-  Standard_EXPORT BRepMesh_DiscretFactory();
+  BRepMesh_DiscretFactory();
 
-  //! Destructor
-  Standard_EXPORT virtual ~BRepMesh_DiscretFactory();
-
-  //! Clears factory data.
-  Standard_EXPORT void clear();
-
-  BRepMesh_PluginEntryType                                   myPluginEntry;
-  BRepMesh_FactoryError                                      myErrorStatus;
-  NCollection_Map<TCollection_AsciiString>                   myNames;
-  TCollection_AsciiString                                    myDefaultName;
-  TCollection_AsciiString                                    myFunctionName;
-  NCollection_DataMap<TCollection_AsciiString, OSD_Function> myFactoryMethods;
+  TCollection_AsciiString myDefaultName;
 };
 
 #endif
