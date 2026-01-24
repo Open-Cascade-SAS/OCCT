@@ -28,7 +28,8 @@ static NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& getFactories()
 
 //==================================================================================================
 
-const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& BRepMesh_DiscretAlgoFactory::Factories()
+const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& BRepMesh_DiscretAlgoFactory::
+  Factories()
 {
   return getFactories();
 }
@@ -39,7 +40,7 @@ void BRepMesh_DiscretAlgoFactory::RegisterFactory(
   const Handle(BRepMesh_DiscretAlgoFactory)& theFactory,
   bool                                       theIsPreferred)
 {
-  const TCollection_AsciiString                        aName      = theFactory->Name();
+  const TCollection_AsciiString                          aName      = theFactory->Name();
   NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories = getFactories();
   if (theIsPreferred)
   {

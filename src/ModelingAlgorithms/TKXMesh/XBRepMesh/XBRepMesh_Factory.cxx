@@ -48,8 +48,8 @@ XBRepMesh_Factory::XBRepMesh_Factory()
 //==================================================================================================
 
 Handle(BRepMesh_DiscretRoot) XBRepMesh_Factory::CreateAlgorithm(const TopoDS_Shape& theShape,
-                                                                double              theLinDeflection,
-                                                                double              theAngDeflection)
+                                                                double theLinDeflection,
+                                                                double theAngDeflection)
 {
   Handle(BRepMesh_IncrementalMesh) anAlgo = new BRepMesh_IncrementalMesh();
   anAlgo->ChangeParameters().Deflection   = theLinDeflection;

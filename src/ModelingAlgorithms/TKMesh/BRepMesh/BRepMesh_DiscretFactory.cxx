@@ -52,9 +52,9 @@ Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(const TopoDS_Shape
                                                               double              theLinDeflection,
                                                               double              theAngDeflection)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory = myDefaultName.IsEmpty()
-                                                   ? BRepMesh_DiscretAlgoFactory::DefaultFactory()
-                                                   : BRepMesh_DiscretAlgoFactory::FindFactory(myDefaultName);
+  Handle(BRepMesh_DiscretAlgoFactory) aFactory =
+    myDefaultName.IsEmpty() ? BRepMesh_DiscretAlgoFactory::DefaultFactory()
+                            : BRepMesh_DiscretAlgoFactory::FindFactory(myDefaultName);
 
   if (aFactory.IsNull())
   {
