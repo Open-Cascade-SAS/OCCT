@@ -106,7 +106,7 @@ static int mpnames(Draw_Interpretor&, int n, const char**)
     return 0;
   }
 
-  const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories =
+  const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories =
     BRepMesh_DiscretAlgoFactory::Factories();
 
   if (aFactories.IsEmpty())
@@ -116,7 +116,7 @@ static int mpnames(Draw_Interpretor&, int n, const char**)
   }
 
   printf(" *available algorithms:\n");
-  for (NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>::Iterator anIter(aFactories);
+  for (NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>::Iterator anIter(aFactories);
        anIter.More();
        anIter.Next())
   {
@@ -189,7 +189,7 @@ static int mpincmesh(Draw_Interpretor&, int n, const char** a)
     aAngle = Draw::Atof(a[3]);
   }
 
-  Handle(BRepMesh_DiscretRoot) aMeshAlgo =
+  occ::handle<BRepMesh_DiscretRoot> aMeshAlgo =
     BRepMesh_DiscretFactory::Get().Discret(aS, aDeflection, aAngle);
 
   if (aMeshAlgo.IsNull())

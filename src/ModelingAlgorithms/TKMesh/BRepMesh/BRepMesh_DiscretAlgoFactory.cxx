@@ -19,16 +19,16 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_DiscretAlgoFactory, Standard_Transient)
 
 namespace
 {
-static NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& getFactories()
+static NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& getFactories()
 {
-  static NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)> TheFactories;
+  static NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>> TheFactories;
   return TheFactories;
 }
 } // namespace
 
 //==================================================================================================
 
-const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& BRepMesh_DiscretAlgoFactory::
+const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& BRepMesh_DiscretAlgoFactory::
   Factories()
 {
   return getFactories();
@@ -37,11 +37,11 @@ const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& BRepMesh_DiscretAlg
 //==================================================================================================
 
 void BRepMesh_DiscretAlgoFactory::RegisterFactory(
-  const Handle(BRepMesh_DiscretAlgoFactory)& theFactory,
-  bool                                       theIsPreferred)
+  const occ::handle<BRepMesh_DiscretAlgoFactory>& theFactory,
+  bool                                            theIsPreferred)
 {
-  const TCollection_AsciiString                          aName      = theFactory->Name();
-  NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories = getFactories();
+  const TCollection_AsciiString                               aName      = theFactory->Name();
+  NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories = getFactories();
   if (theIsPreferred)
   {
     UnregisterFactory(aName);
@@ -49,7 +49,7 @@ void BRepMesh_DiscretAlgoFactory::RegisterFactory(
     return;
   }
 
-  for (NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>::Iterator anIter(aFactories);
+  for (NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>::Iterator anIter(aFactories);
        anIter.More();
        anIter.Next())
   {
@@ -65,8 +65,8 @@ void BRepMesh_DiscretAlgoFactory::RegisterFactory(
 
 void BRepMesh_DiscretAlgoFactory::UnregisterFactory(const TCollection_AsciiString& theName)
 {
-  NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories = getFactories();
-  for (NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>::Iterator anIter(aFactories);
+  NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories = getFactories();
+  for (NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>::Iterator anIter(aFactories);
        anIter.More();)
   {
     if (TCollection_AsciiString::IsSameString(anIter.Value()->Name(), theName, false))
@@ -82,19 +82,19 @@ void BRepMesh_DiscretAlgoFactory::UnregisterFactory(const TCollection_AsciiStrin
 
 //==================================================================================================
 
-Handle(BRepMesh_DiscretAlgoFactory) BRepMesh_DiscretAlgoFactory::DefaultFactory()
+occ::handle<BRepMesh_DiscretAlgoFactory> BRepMesh_DiscretAlgoFactory::DefaultFactory()
 {
-  const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories = getFactories();
-  return !aFactories.IsEmpty() ? aFactories.First() : Handle(BRepMesh_DiscretAlgoFactory)();
+  const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories = getFactories();
+  return !aFactories.IsEmpty() ? aFactories.First() : occ::handle<BRepMesh_DiscretAlgoFactory>();
 }
 
 //==================================================================================================
 
-Handle(BRepMesh_DiscretAlgoFactory) BRepMesh_DiscretAlgoFactory::FindFactory(
+occ::handle<BRepMesh_DiscretAlgoFactory> BRepMesh_DiscretAlgoFactory::FindFactory(
   const TCollection_AsciiString& theName)
 {
-  const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories = getFactories();
-  for (NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>::Iterator anIter(aFactories);
+  const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories = getFactories();
+  for (NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>::Iterator anIter(aFactories);
        anIter.More();
        anIter.Next())
   {
@@ -103,7 +103,7 @@ Handle(BRepMesh_DiscretAlgoFactory) BRepMesh_DiscretAlgoFactory::FindFactory(
       return anIter.Value();
     }
   }
-  return Handle(BRepMesh_DiscretAlgoFactory)();
+  return occ::handle<BRepMesh_DiscretAlgoFactory>();
 }
 
 //==================================================================================================

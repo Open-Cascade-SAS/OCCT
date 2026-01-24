@@ -32,9 +32,10 @@ public:
   //! @param[in] theLinDeflection linear deflection for meshing
   //! @param[in] theAngDeflection angular deflection for meshing
   //! @return new meshing algorithm instance
-  Standard_EXPORT Handle(BRepMesh_DiscretRoot) CreateAlgorithm(const TopoDS_Shape& theShape,
-                                                               double              theLinDeflection,
-                                                               double theAngDeflection) override;
+  Standard_EXPORT occ::handle<BRepMesh_DiscretRoot> CreateAlgorithm(
+    const TopoDS_Shape& theShape,
+    double              theLinDeflection,
+    double              theAngDeflection) override;
 };
 
 #endif // _XBRepMesh_Factory_HeaderFile

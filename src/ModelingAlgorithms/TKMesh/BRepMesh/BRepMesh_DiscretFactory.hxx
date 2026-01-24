@@ -49,9 +49,9 @@ public:
   //! @param[in] theLinDeflection linear deflection to be used for meshing
   //! @param[in] theAngDeflection angular deflection to be used for meshing
   //! @return new meshing algorithm instance, or NULL if no algorithm available
-  Standard_EXPORT Handle(BRepMesh_DiscretRoot) Discret(const TopoDS_Shape& theShape,
-                                                       double              theLinDeflection,
-                                                       double              theAngDeflection);
+  Standard_EXPORT occ::handle<BRepMesh_DiscretRoot> Discret(const TopoDS_Shape& theShape,
+                                                            double              theLinDeflection,
+                                                            double              theAngDeflection);
 
 protected:
   //! Constructor

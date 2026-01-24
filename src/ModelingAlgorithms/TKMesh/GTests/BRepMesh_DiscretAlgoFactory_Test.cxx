@@ -37,7 +37,7 @@ protected:
 //! Test that at least one factory is registered (FastDiscret from BRepMesh_IncrementalMeshFactory)
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, Factories_AtLeastOneRegistered)
 {
-  const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories =
+  const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories =
     BRepMesh_DiscretAlgoFactory::Factories();
 
   EXPECT_FALSE(aFactories.IsEmpty()) << "No factories registered";
@@ -46,7 +46,7 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, Factories_AtLeastOneRegistered)
 //! Test that DefaultFactory returns a valid factory
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, DefaultFactory_ReturnsValid)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory = BRepMesh_DiscretAlgoFactory::DefaultFactory();
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory = BRepMesh_DiscretAlgoFactory::DefaultFactory();
 
   EXPECT_FALSE(aFactory.IsNull()) << "DefaultFactory returned null";
 }
@@ -54,7 +54,7 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, DefaultFactory_ReturnsValid)
 //! Test that FastDiscret factory is registered and can be found
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, FindFactory_FastDiscret)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory =
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory =
     BRepMesh_DiscretAlgoFactory::FindFactory("FastDiscret");
 
   EXPECT_FALSE(aFactory.IsNull()) << "FastDiscret factory not found";
@@ -67,7 +67,7 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, FindFactory_FastDiscret)
 //! Test that FindFactory returns null for non-existent factory
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, FindFactory_NonExistent_ReturnsNull)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory =
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory =
     BRepMesh_DiscretAlgoFactory::FindFactory("NonExistentFactory");
 
   EXPECT_TRUE(aFactory.IsNull()) << "FindFactory should return null for non-existent factory";
@@ -76,10 +76,10 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, FindFactory_NonExistent_ReturnsNull)
 //! Test that CreateAlgorithm creates a valid algorithm
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, CreateAlgorithm_ReturnsValid)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory = BRepMesh_DiscretAlgoFactory::DefaultFactory();
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory = BRepMesh_DiscretAlgoFactory::DefaultFactory();
   ASSERT_FALSE(aFactory.IsNull());
 
-  Handle(BRepMesh_DiscretRoot) anAlgo = aFactory->CreateAlgorithm(myBox, 0.1, 0.5);
+  occ::handle<BRepMesh_DiscretRoot> anAlgo = aFactory->CreateAlgorithm(myBox, 0.1, 0.5);
 
   EXPECT_FALSE(anAlgo.IsNull()) << "CreateAlgorithm returned null";
 }
@@ -87,10 +87,10 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, CreateAlgorithm_ReturnsValid)
 //! Test that created algorithm can mesh a shape
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, CreateAlgorithm_CanMesh)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory = BRepMesh_DiscretAlgoFactory::DefaultFactory();
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory = BRepMesh_DiscretAlgoFactory::DefaultFactory();
   ASSERT_FALSE(aFactory.IsNull());
 
-  Handle(BRepMesh_DiscretRoot) anAlgo = aFactory->CreateAlgorithm(myBox, 0.1, 0.5);
+  occ::handle<BRepMesh_DiscretRoot> anAlgo = aFactory->CreateAlgorithm(myBox, 0.1, 0.5);
   ASSERT_FALSE(anAlgo.IsNull());
 
   anAlgo->Perform();
@@ -103,7 +103,7 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, DiscretFactory_UsesRegistry)
 {
   BRepMesh_DiscretFactory& aFactory = BRepMesh_DiscretFactory::Get();
 
-  Handle(BRepMesh_DiscretRoot) anAlgo = aFactory.Discret(myBox, 0.1, 0.5);
+  occ::handle<BRepMesh_DiscretRoot> anAlgo = aFactory.Discret(myBox, 0.1, 0.5);
 
   EXPECT_FALSE(anAlgo.IsNull()) << "Discret returned null";
   if (!anAlgo.IsNull())
@@ -126,12 +126,12 @@ TEST_F(BRepMesh_DiscretAlgoFactoryTest, DiscretFactory_SetDefaultName)
 //! Test factory name uniqueness - registering same factory twice should not duplicate
 TEST_F(BRepMesh_DiscretAlgoFactoryTest, RegisterFactory_Uniqueness)
 {
-  const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& aFactories =
+  const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& aFactories =
     BRepMesh_DiscretAlgoFactory::Factories();
 
   // Count factories with name "FastDiscret"
   int aCount = 0;
-  for (NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>::Iterator anIter(aFactories);
+  for (NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>::Iterator anIter(aFactories);
        anIter.More();
        anIter.Next())
   {

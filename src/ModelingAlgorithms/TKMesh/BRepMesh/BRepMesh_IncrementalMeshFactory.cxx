@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepMesh_IncrementalMeshFactory, BRepMesh_DiscretAlgo
 namespace
 {
 //! Self-registering factory instance
-static Handle(BRepMesh_IncrementalMeshFactory) THE_FACTORY_INSTANCE;
+static occ::handle<BRepMesh_IncrementalMeshFactory> THE_FACTORY_INSTANCE;
 
 //! Initialization helper that registers the factory at startup
 struct FactoryInitializer
@@ -47,15 +47,15 @@ BRepMesh_IncrementalMeshFactory::BRepMesh_IncrementalMeshFactory()
 
 //==================================================================================================
 
-Handle(BRepMesh_DiscretRoot) BRepMesh_IncrementalMeshFactory::CreateAlgorithm(
+occ::handle<BRepMesh_DiscretRoot> BRepMesh_IncrementalMeshFactory::CreateAlgorithm(
   const TopoDS_Shape& theShape,
   double              theLinDeflection,
   double              theAngDeflection)
 {
-  Handle(BRepMesh_IncrementalMesh) anAlgo = new BRepMesh_IncrementalMesh();
-  anAlgo->ChangeParameters().Deflection   = theLinDeflection;
-  anAlgo->ChangeParameters().Angle        = theAngDeflection;
-  anAlgo->ChangeParameters().InParallel   = BRepMesh_IncrementalMesh::IsParallelDefault();
+  occ::handle<BRepMesh_IncrementalMesh> anAlgo = new BRepMesh_IncrementalMesh();
+  anAlgo->ChangeParameters().Deflection        = theLinDeflection;
+  anAlgo->ChangeParameters().Angle             = theAngDeflection;
+  anAlgo->ChangeParameters().InParallel        = BRepMesh_IncrementalMesh::IsParallelDefault();
   anAlgo->SetShape(theShape);
   return anAlgo;
 }

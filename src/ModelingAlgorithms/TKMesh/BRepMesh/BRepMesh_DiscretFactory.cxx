@@ -36,7 +36,8 @@ BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
 
 bool BRepMesh_DiscretFactory::SetDefaultName(const TCollection_AsciiString& theName)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory = BRepMesh_DiscretAlgoFactory::FindFactory(theName);
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory =
+    BRepMesh_DiscretAlgoFactory::FindFactory(theName);
   if (aFactory.IsNull())
   {
     return false;
@@ -48,17 +49,17 @@ bool BRepMesh_DiscretFactory::SetDefaultName(const TCollection_AsciiString& theN
 
 //==================================================================================================
 
-Handle(BRepMesh_DiscretRoot) BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
-                                                              double              theLinDeflection,
-                                                              double              theAngDeflection)
+occ::handle<BRepMesh_DiscretRoot> BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
+                                                                   double theLinDeflection,
+                                                                   double theAngDeflection)
 {
-  Handle(BRepMesh_DiscretAlgoFactory) aFactory =
+  occ::handle<BRepMesh_DiscretAlgoFactory> aFactory =
     myDefaultName.IsEmpty() ? BRepMesh_DiscretAlgoFactory::DefaultFactory()
                             : BRepMesh_DiscretAlgoFactory::FindFactory(myDefaultName);
 
   if (aFactory.IsNull())
   {
-    return Handle(BRepMesh_DiscretRoot)();
+    return occ::handle<BRepMesh_DiscretRoot>();
   }
 
   return aFactory->CreateAlgorithm(theShape, theLinDeflection, theAngDeflection);

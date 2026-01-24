@@ -20,7 +20,7 @@ IMPLEMENT_STANDARD_RTTIEXT(XBRepMesh_Factory, BRepMesh_DiscretAlgoFactory)
 namespace
 {
 //! Self-registering factory instance
-static Handle(XBRepMesh_Factory) THE_FACTORY_INSTANCE;
+static occ::handle<XBRepMesh_Factory> THE_FACTORY_INSTANCE;
 
 //! Initialization helper that registers the factory at startup
 struct FactoryInitializer
@@ -47,13 +47,13 @@ XBRepMesh_Factory::XBRepMesh_Factory()
 
 //==================================================================================================
 
-Handle(BRepMesh_DiscretRoot) XBRepMesh_Factory::CreateAlgorithm(const TopoDS_Shape& theShape,
-                                                                double theLinDeflection,
-                                                                double theAngDeflection)
+occ::handle<BRepMesh_DiscretRoot> XBRepMesh_Factory::CreateAlgorithm(const TopoDS_Shape& theShape,
+                                                                     double theLinDeflection,
+                                                                     double theAngDeflection)
 {
-  Handle(BRepMesh_IncrementalMesh) anAlgo = new BRepMesh_IncrementalMesh();
-  anAlgo->ChangeParameters().Deflection   = theLinDeflection;
-  anAlgo->ChangeParameters().Angle        = theAngDeflection;
+  occ::handle<BRepMesh_IncrementalMesh> anAlgo = new BRepMesh_IncrementalMesh();
+  anAlgo->ChangeParameters().Deflection        = theLinDeflection;
+  anAlgo->ChangeParameters().Angle             = theAngDeflection;
   anAlgo->SetShape(theShape);
   return anAlgo;
 }

@@ -15,6 +15,7 @@
 #define _BRepMesh_DiscretAlgoFactory_HeaderFile
 
 #include <NCollection_List.hxx>
+#include <Standard_Handle.hxx>
 #include <Standard_Type.hxx>
 #include <TCollection_AsciiString.hxx>
 
@@ -34,24 +35,26 @@ public:
   //! @param[in] theFactory     factory to register
   //! @param[in] theIsPreferred if TRUE, add to the beginning of the list (making it default),
   //!                           otherwise add to the end
-  Standard_EXPORT static void RegisterFactory(const Handle(BRepMesh_DiscretAlgoFactory)& theFactory,
-                                              bool theIsPreferred = false);
+  Standard_EXPORT static void RegisterFactory(
+    const occ::handle<BRepMesh_DiscretAlgoFactory>& theFactory,
+    bool                                            theIsPreferred = false);
 
   //! Unregisters a factory by name.
   //! @param[in] theName name of the factory to unregister
   Standard_EXPORT static void UnregisterFactory(const TCollection_AsciiString& theName);
 
   //! Returns the default (first registered) factory, or NULL if none registered.
-  Standard_EXPORT static Handle(BRepMesh_DiscretAlgoFactory) DefaultFactory();
+  Standard_EXPORT static occ::handle<BRepMesh_DiscretAlgoFactory> DefaultFactory();
 
   //! Finds a factory by name.
   //! @param[in] theName name of the factory to find
   //! @return factory handle, or NULL if not found
-  Standard_EXPORT static Handle(BRepMesh_DiscretAlgoFactory) FindFactory(
+  Standard_EXPORT static occ::handle<BRepMesh_DiscretAlgoFactory> FindFactory(
     const TCollection_AsciiString& theName);
 
   //! Returns the global list of registered factories.
-  Standard_EXPORT static const NCollection_List<Handle(BRepMesh_DiscretAlgoFactory)>& Factories();
+  Standard_EXPORT static const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>&
+    Factories();
 
 public:
   //! Creates a new meshing algorithm instance.
@@ -59,9 +62,9 @@ public:
   //! @param[in] theLinDeflection linear deflection for meshing
   //! @param[in] theAngDeflection angular deflection for meshing
   //! @return new meshing algorithm instance
-  virtual Handle(BRepMesh_DiscretRoot) CreateAlgorithm(const TopoDS_Shape& theShape,
-                                                       double              theLinDeflection,
-                                                       double              theAngDeflection) = 0;
+  virtual occ::handle<BRepMesh_DiscretRoot> CreateAlgorithm(const TopoDS_Shape& theShape,
+                                                            double              theLinDeflection,
+                                                            double theAngDeflection) = 0;
 
   //! Returns the factory name.
   const TCollection_AsciiString& Name() const { return myName; }
