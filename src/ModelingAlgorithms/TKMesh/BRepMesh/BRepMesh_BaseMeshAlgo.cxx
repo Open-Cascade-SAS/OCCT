@@ -106,7 +106,6 @@ bool BRepMesh_BaseMeshAlgo::initDataStructure()
                                               false);
 
           aPCurve->GetIndex(aPointIndex) = aNodeIndex;
-          myUsedNodes->Bind(aNodeIndex, aNodeIndex);
 
           if (aPrevNodeIndex != -1 && aPrevNodeIndex != aNodeIndex)
           {
@@ -142,6 +141,7 @@ int BRepMesh_BaseMeshAlgo::registerNode(const gp_Pnt&                  thePoint,
   if (aNodeIndex > myNodesMap->Size())
   {
     myNodesMap->Append(thePoint);
+    myUsedNodes->Bind(aNodeIndex, aNodeIndex);
   }
 
   return aNodeIndex;
