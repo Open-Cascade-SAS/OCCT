@@ -102,7 +102,7 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface* Surface,
                          static_cast<bool*>(C_MyIsOnBounds),
                          TheBnd);
 
-  double tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
+  double tol = PolyUtils::ComputeMaxDeflection(Surface->Surface(), *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
@@ -131,7 +131,7 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface*                  S
                             static_cast<bool*>(C_MyIsOnBounds),
                             TheBnd);
 
-  double tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
+  double tol = PolyUtils::ComputeMaxDeflection(Surface->Surface(), *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 

@@ -103,7 +103,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const occ::handle<Adaptor3d_Sur
                          static_cast<bool*>(C_MyIsOnBounds),
                          TheBnd);
 
-  double tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
+  double tol = PolyUtils::ComputeMaxDeflection(*Surface, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 
@@ -132,7 +132,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const occ::handle<Adaptor3d_Sur
                             static_cast<bool*>(C_MyIsOnBounds),
                             TheBnd);
 
-  double tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
+  double tol = PolyUtils::ComputeMaxDeflection(*Surface, *this, NbTriangles());
   DeflectionOverEstimation(tol * 1.2);
   FillBounding();
 

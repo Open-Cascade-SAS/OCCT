@@ -19,7 +19,6 @@
 #include <Geom_Curve.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <gp_Dir.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -110,44 +109,6 @@ public:
     const NCollection_Array1<double>& theVParams,
     int                               theNU,
     int                               theNV) const;
-
-  //! Evaluate points at arbitrary UV pairs.
-  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
-  //! @return array of evaluated points (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluatePoints(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate points with first partial derivatives at arbitrary UV pairs.
-  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
-  //! @return array of SurfD1 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate points with first and second partial derivatives at arbitrary UV pairs.
-  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
-  //! @return array of SurfD2 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD2> EvaluatePointsD2(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate points with derivatives up to third order at arbitrary UV pairs.
-  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
-  //! @return array of SurfD3 (1-based indexing),
-  //!         or empty array if geometry is null or no parameters set
-  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD3> EvaluatePointsD3(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate partial derivative at arbitrary UV pairs.
-  //! @param[in] theUVPairs array of UV coordinate pairs (U=X(), V=Y())
-  //! @param[in] theNU derivative order in U direction
-  //! @param[in] theNV derivative order in V direction
-  //! @return array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluatePointsDN(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs,
-    int                                 theNU,
-    int                                 theNV) const;
 
 private:
   occ::handle<Geom_SurfaceOfLinearExtrusion> myGeom;
