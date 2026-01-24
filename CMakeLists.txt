@@ -129,6 +129,16 @@ else()
   endif()
 endif()
 
+# Set library granularity option
+if (NOT BUILD_LIBRARY_GRANULARITY)
+  set (BUILD_LIBRARY_GRANULARITY "Toolkit" CACHE STRING "${BUILD_LIBRARY_GRANULARITY_DESCR}" FORCE)
+  SET_PROPERTY(CACHE BUILD_LIBRARY_GRANULARITY PROPERTY STRINGS Toolkit Module Monolithic)
+endif()
+
+if (NOT BUILD_LIBRARY_GRANULARITY MATCHES "^(Toolkit|Module|Monolithic)$")
+  message(FATAL_ERROR "BUILD_LIBRARY_GRANULARITY must be 'Toolkit', 'Module', or 'Monolithic'")
+endif()
+
 if (WIN32)
   add_definitions(-DUNICODE)
   add_definitions(-D_UNICODE)
@@ -464,6 +474,9 @@ list (REMOVE_DUPLICATES OCCT_FULL_LIST_OF_INCLUDES)
 set (BUILD_TOOLKITS ${RAW_BUILD_TOOLKITS})
 
 OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/3rdparty_macro")
+
+# Include granularity support module
+OCCT_INCLUDE_CMAKE_FILE ("adm/cmake/occt_granularity")
 
 # search for TKIVtk and TKIVtkDraw in BUILD_TOOLKITS
 list (FIND BUILD_TOOLKITS TKIVtk CAN_USE_VTK)
@@ -1333,9 +1346,68 @@ if (NOT "${BUILD_SHARED_LIBRARY_NAME_POSTFIX}" STREQUAL "")
   OCCT_UPDATE_DRAW_DEFAULT_FILE()
 endif()
 
+# Build merged libraries for Module or Monolithic granularity
+if (NOT "${BUILD_LIBRARY_GRANULARITY}" STREQUAL "Toolkit")
+  message(STATUS "Info: Building with library granularity: ${BUILD_LIBRARY_GRANULARITY}")
+
+  if ("${BUILD_LIBRARY_GRANULARITY}" STREQUAL "Module")
+    # Build merged library for each non-Draw module
+    foreach (OCCT_MODULE ${OCCT_MODULES})
+      if (NOT "${OCCT_MODULE}" STREQUAL "Draw" AND BUILD_MODULE_${OCCT_MODULE})
+        set(MODULE_TOOLKITS)
+        foreach(TK ${OCCT_${OCCT_MODULE}_LIST_OF_TOOLKITS})
+          list(FIND BUILD_TOOLKITS ${TK} _idx)
+          if(NOT _idx EQUAL -1)
+            # Skip plugin toolkits that must remain separate
+            OCCT_IS_SEPARATE_TOOLKIT(${TK} IS_SEPARATE)
+            if(NOT IS_SEPARATE)
+              list(APPEND MODULE_TOOLKITS ${TK})
+            endif()
+          endif()
+        endforeach()
+        if(MODULE_TOOLKITS)
+          OCCT_BUILD_MERGED_LIBRARY("TK${OCCT_MODULE}" "${MODULE_TOOLKITS}" "${OCCT_MODULE}")
+        endif()
+      endif()
+    endforeach()
+
+  elseif ("${BUILD_LIBRARY_GRANULARITY}" STREQUAL "Monolithic")
+    # Build single library for all non-Draw toolkits
+    set(ALL_CORE_TOOLKITS)
+    foreach (OCCT_MODULE ${OCCT_MODULES})
+      if (NOT "${OCCT_MODULE}" STREQUAL "Draw" AND BUILD_MODULE_${OCCT_MODULE})
+        foreach(TK ${OCCT_${OCCT_MODULE}_LIST_OF_TOOLKITS})
+          list(FIND BUILD_TOOLKITS ${TK} _idx)
+          if(NOT _idx EQUAL -1)
+            # Skip plugin toolkits that must remain separate
+            OCCT_IS_SEPARATE_TOOLKIT(${TK} IS_SEPARATE)
+            if(NOT IS_SEPARATE)
+              list(APPEND ALL_CORE_TOOLKITS ${TK})
+            endif()
+          endif()
+        endforeach()
+      endif()
+    endforeach()
+    if(ALL_CORE_TOOLKITS)
+      OCCT_BUILD_MERGED_LIBRARY("TKOpenCascade" "${ALL_CORE_TOOLKITS}" "FoundationClasses")
+    endif()
+  endif()
+endif()
+
 # include patched toolkit projects or original ones
 foreach (BUILD_TOOLKIT ${BUILD_TOOLKITS})
-  add_subdirectory ("${OCCT_${BUILD_TOOLKIT}_FILES_LOCATION}")
+  OCCT_IS_SEPARATE_TOOLKIT(${BUILD_TOOLKIT} IS_SEPARATE)
+
+  if ("${BUILD_LIBRARY_GRANULARITY}" STREQUAL "Toolkit" OR IS_SEPARATE)
+    # Build as individual library (default behavior, Draw plugins, or plugin toolkits)
+    add_subdirectory ("${OCCT_${BUILD_TOOLKIT}_FILES_LOCATION}")
+  else()
+    # Create ALIAS target for compatibility (toolkit is part of merged library)
+    OCCT_RESOLVE_TOOLKIT_LIBRARY(${BUILD_TOOLKIT} ACTUAL_LIB)
+    if (NOT TARGET ${BUILD_TOOLKIT} AND TARGET ${ACTUAL_LIB})
+      add_library(${BUILD_TOOLKIT} ALIAS ${ACTUAL_LIB})
+    endif()
+  endif()
 endforeach()
 
 # Setup Google Test integration if enabled
@@ -1388,12 +1460,34 @@ set (OCCT_LIBRARIES)
 set (SET_OpenCASCADE_MODULES_TOOLKITS "\n# List of available OpenCASCADE libraries for each module\n")
 set (OCCT_COMPILE_DEFINITIONS)
 
+# Collect merged libraries first (for Module/Monolithic granularity)
+if (NOT "${BUILD_LIBRARY_GRANULARITY}" STREQUAL "Toolkit")
+  OCCT_GET_MERGED_LIBRARIES(MERGED_LIBS)
+  foreach(MERGED_LIB ${MERGED_LIBS})
+    if (TARGET ${MERGED_LIB})
+      get_target_property (${MERGED_LIB}_TYPE ${MERGED_LIB} "TYPE")
+      if ("${${MERGED_LIB}_TYPE}" STREQUAL "STATIC_LIBRARY" OR "${${MERGED_LIB}_TYPE}" STREQUAL "SHARED_LIBRARY")
+        list (APPEND OCCT_LIBRARIES ${MERGED_LIB})
+
+        # get module
+        get_target_property (${MERGED_LIB}_MODULE ${MERGED_LIB} "MODULE")
+        list (APPEND OCCT_MODULES_ENABLED ${${MERGED_LIB}_MODULE})
+        list (APPEND OpenCASCADE_${${MERGED_LIB}_MODULE}_TOOLKITS ${MERGED_LIB})
+      endif()
+    endif()
+  endforeach()
+endif()
+
 foreach (OCCT_TOOLKIT ${BUILD_TOOLKITS})
   if (TARGET ${OCCT_TOOLKIT})
 
-    # get all libraries
+    # Check if this is an ALIAS target (ALIAS targets cannot be exported)
+    get_target_property (${OCCT_TOOLKIT}_ALIASED ${OCCT_TOOLKIT} "ALIASED_TARGET")
+
+    # get all libraries (skip ALIAS targets - they are already covered by merged libraries)
     get_target_property (${OCCT_TOOLKIT}_TYPE ${OCCT_TOOLKIT} "TYPE")
-    if ("${${OCCT_TOOLKIT}_TYPE}" STREQUAL "STATIC_LIBRARY" OR "${${OCCT_TOOLKIT}_TYPE}" STREQUAL "SHARED_LIBRARY" )
+    if (("${${OCCT_TOOLKIT}_TYPE}" STREQUAL "STATIC_LIBRARY" OR "${${OCCT_TOOLKIT}_TYPE}" STREQUAL "SHARED_LIBRARY")
+        AND NOT ${OCCT_TOOLKIT}_ALIASED)
       list (APPEND OCCT_LIBRARIES ${OCCT_TOOLKIT})
 
       # get all modules
@@ -1401,14 +1495,22 @@ foreach (OCCT_TOOLKIT ${BUILD_TOOLKITS})
       list (APPEND OCCT_MODULES_ENABLED ${${OCCT_TOOLKIT}_MODULE})
       list (APPEND OpenCASCADE_${${OCCT_TOOLKIT}_MODULE}_TOOLKITS ${OCCT_TOOLKIT})
 
-      # get compile definitions of target directory
-      get_directory_property (COMPILE_DEFINITIONS DIRECTORY "${${OCCT_TOOLKIT}_SOURCE_DIR}" "COMPILE_DEFINITIONS")
-      list (APPEND OCCT_COMPILE_DEFINITIONS ${COMPILE_DEFINITIONS})
+      # get compile definitions of target directory (only for non-merged libraries)
+      get_target_property(${OCCT_TOOLKIT}_SOURCE_DIR ${OCCT_TOOLKIT} SOURCE_DIR)
+      if(${OCCT_TOOLKIT}_SOURCE_DIR)
+        get_directory_property (COMPILE_DEFINITIONS DIRECTORY "${${OCCT_TOOLKIT}_SOURCE_DIR}" "COMPILE_DEFINITIONS")
+        list (APPEND OCCT_COMPILE_DEFINITIONS ${COMPILE_DEFINITIONS})
+      endif()
     endif()
   endif()
 endforeach()
+if(OCCT_LIBRARIES)
+  list (REMOVE_DUPLICATES OCCT_LIBRARIES)
+endif()
 list (REMOVE_DUPLICATES OCCT_MODULES_ENABLED)
-list (REMOVE_DUPLICATES OCCT_COMPILE_DEFINITIONS)
+if(OCCT_COMPILE_DEFINITIONS)
+  list (REMOVE_DUPLICATES OCCT_COMPILE_DEFINITIONS)
+endif()
 # these macros are defined for specific toolkits, not globalwise
 list (REMOVE_ITEM OCCT_COMPILE_DEFINITIONS HAVE_OPENGL)
 list (REMOVE_ITEM OCCT_COMPILE_DEFINITIONS HAVE_GLES2)
