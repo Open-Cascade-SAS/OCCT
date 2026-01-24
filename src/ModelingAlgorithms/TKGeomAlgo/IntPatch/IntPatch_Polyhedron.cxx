@@ -129,8 +129,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
     }
   }
 
-  // Compute max deflection using batch evaluation
-  double tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
+  // Compute max deflection using surface adaptor
+  double tol = PolyUtils::ComputeMaxDeflection(*Surface, *this, NbTriangles());
   tol *= DEFLECTION_COEFF;
 
   DeflectionOverEstimation(tol);
@@ -200,8 +200,8 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
     }
   }
 
-  // Compute max deflection using batch evaluation
-  double tol = PolyUtils::ComputeMaxDeflection(anEval, *this, NbTriangles());
+  // Compute max deflection using surface adaptor
+  double tol = PolyUtils::ComputeMaxDeflection(*Surface, *this, NbTriangles());
   tol *= DEFLECTION_COEFF;
 
   DeflectionOverEstimation(tol);

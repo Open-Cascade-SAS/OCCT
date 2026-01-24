@@ -233,49 +233,6 @@ void computeSpansAndSort(NCollection_Array1<GeomGridEval::UVPointWithSpan>& theU
   return aUVPoints;
 }
 
-//! Prepare UV points from pairs and sort for cache-optimal evaluation.
-//! @param theUVPairs array of UV coordinate pairs
-//! @param theUFlatKnots U direction flat knots
-//! @param theVFlatKnots V direction flat knots
-//! @param theUDegree U degree
-//! @param theVDegree V degree
-//! @param theIsUPeriodic true if U periodic
-//! @param theIsVPeriodic true if V periodic
-//! @return array of UV points with span info, sorted for cache-optimal evaluation
-[[nodiscard]] NCollection_Array1<GeomGridEval::UVPointWithSpan> preparePairPoints(
-  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
-  const NCollection_Array1<double>&   theUFlatKnots,
-  const NCollection_Array1<double>&   theVFlatKnots,
-  int                                 theUDegree,
-  int                                 theVDegree,
-  bool                                theIsUPeriodic,
-  bool                                theIsVPeriodic)
-{
-  const int aNbPairs = theUVPairs.IsEmpty() ? 0 : theUVPairs.Size();
-  if (aNbPairs == 0)
-  {
-    return NCollection_Array1<GeomGridEval::UVPointWithSpan>();
-  }
-
-  NCollection_Array1<GeomGridEval::UVPointWithSpan> aUVPoints(0, aNbPairs - 1);
-
-  const int aLower = theUVPairs.Lower();
-  for (int i = 0; i < aNbPairs; ++i)
-  {
-    const gp_Pnt2d& aUV = theUVPairs.Value(aLower + i);
-    aUVPoints.SetValue(i, GeomGridEval::UVPointWithSpan{aUV.X(), aUV.Y(), 0.0, 0.0, 0, 0, i});
-  }
-
-  computeSpansAndSort(aUVPoints,
-                      theUFlatKnots,
-                      theVFlatKnots,
-                      theUDegree,
-                      theVDegree,
-                      theIsUPeriodic,
-                      theIsVPeriodic);
-  return aUVPoints;
-}
-
 } // namespace
 
 //==================================================================================================
@@ -391,102 +348,6 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BSplineSurface::EvaluateGrid(
 
 //==================================================================================================
 
-NCollection_Array1<gp_Pnt> GeomGridEval_BSplineSurface::EvaluatePoints(
-  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
-{
-  if (myGeom.IsNull() || theUVPairs.IsEmpty())
-  {
-    return NCollection_Array1<gp_Pnt>();
-  }
-
-  // Get surface data from geometry
-  const occ::handle<NCollection_HArray1<double>>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const occ::handle<NCollection_HArray1<double>>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& aPolesHandle      = myGeom->HArrayPoles();
-
-  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
-  {
-    return NCollection_Array1<gp_Pnt>();
-  }
-
-  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const NCollection_Array2<gp_Pnt>& aPoles      = aPolesHandle->Array2();
-  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
-
-  // Get surface properties
-  const int  aUDegree    = myGeom->UDegree();
-  const int  aVDegree    = myGeom->VDegree();
-  const bool isUPeriodic = myGeom->IsUPeriodic();
-  const bool isVPeriodic = myGeom->IsVPeriodic();
-  const bool isURational = myGeom->IsURational();
-  const bool isVRational = myGeom->IsVRational();
-
-  // Prepare UV points and sort by span
-  NCollection_Array1<GeomGridEval::UVPointWithSpan> aUVPoints = preparePairPoints(theUVPairs,
-                                                                                  aUFlatKnots,
-                                                                                  aVFlatKnots,
-                                                                                  aUDegree,
-                                                                                  aVDegree,
-                                                                                  isUPeriodic,
-                                                                                  isVPeriodic);
-
-  const int aNbPoints = aUVPoints.Size();
-  if (aNbPoints == 0)
-  {
-    return NCollection_Array1<gp_Pnt>();
-  }
-
-  // Allocate result buffer (1-based indexing)
-  NCollection_Array1<gp_Pnt> aPoints(1, aNbPoints);
-
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
-
-  // Evaluate using sorted UV points
-  iterateSortedUVPoints(
-    aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
-    },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
-      gp_Pnt aPnt;
-      aCache->D0Local(thePt.LocalU, thePt.LocalV, aPnt);
-      aPoints.SetValue(thePt.OutputIdx + 1, aPnt);
-    },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
-      gp_Pnt aPnt;
-      BSplSLib::D0(thePt.U,
-                   thePt.V,
-                   thePt.USpanIdx,
-                   thePt.VSpanIdx,
-                   aPoles,
-                   aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
-                   nullptr,
-                   nullptr,
-                   aUDegree,
-                   aVDegree,
-                   isURational,
-                   isVRational,
-                   isUPeriodic,
-                   isVPeriodic,
-                   aPnt);
-      aPoints.SetValue(thePt.OutputIdx + 1, aPnt);
-    });
-
-  return aPoints;
-}
-
-//==================================================================================================
-
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
@@ -499,7 +360,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
 
-  NCollection_Array1<GeomGridEval::SurfD1> aLinearResult = EvaluatePointsD1(theUParams, theVParams);
+  NCollection_Array1<GeomGridEval::SurfD1> aLinearResult = evaluateGridLinearD1(theUParams, theVParams);
   if (aLinearResult.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD1>();
@@ -519,104 +380,6 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluateGr
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePointsD1(
-  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
-{
-  if (myGeom.IsNull() || theUVPairs.IsEmpty())
-  {
-    return NCollection_Array1<GeomGridEval::SurfD1>();
-  }
-
-  // Get surface data from geometry
-  const occ::handle<NCollection_HArray1<double>>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const occ::handle<NCollection_HArray1<double>>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& aPolesHandle      = myGeom->HArrayPoles();
-
-  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
-  {
-    return NCollection_Array1<GeomGridEval::SurfD1>();
-  }
-
-  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const NCollection_Array2<gp_Pnt>& aPoles      = aPolesHandle->Array2();
-  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
-
-  // Get surface properties
-  const int  aUDegree    = myGeom->UDegree();
-  const int  aVDegree    = myGeom->VDegree();
-  const bool isUPeriodic = myGeom->IsUPeriodic();
-  const bool isVPeriodic = myGeom->IsVPeriodic();
-  const bool isURational = myGeom->IsURational();
-  const bool isVRational = myGeom->IsVRational();
-
-  // Prepare UV points and sort by span
-  NCollection_Array1<GeomGridEval::UVPointWithSpan> aUVPoints = preparePairPoints(theUVPairs,
-                                                                                  aUFlatKnots,
-                                                                                  aVFlatKnots,
-                                                                                  aUDegree,
-                                                                                  aVDegree,
-                                                                                  isUPeriodic,
-                                                                                  isVPeriodic);
-
-  const int aNbPoints = aUVPoints.Size();
-  if (aNbPoints == 0)
-  {
-    return NCollection_Array1<GeomGridEval::SurfD1>();
-  }
-
-  NCollection_Array1<GeomGridEval::SurfD1> aResults(1, aNbPoints);
-
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
-
-  iterateSortedUVPoints(
-    aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
-    },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V;
-      aCache->D1Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V);
-      aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
-    },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V;
-      BSplSLib::D1(thePt.U,
-                   thePt.V,
-                   thePt.USpanIdx,
-                   thePt.VSpanIdx,
-                   aPoles,
-                   aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
-                   nullptr,
-                   nullptr,
-                   aUDegree,
-                   aVDegree,
-                   isURational,
-                   isVRational,
-                   isUPeriodic,
-                   isVPeriodic,
-                   aPoint,
-                   aD1U,
-                   aD1V);
-      aResults.SetValue(thePt.OutputIdx + 1, GeomGridEval::SurfD1{aPoint, aD1U, aD1V});
-    });
-
-  return aResults;
-}
-
-//==================================================================================================
-
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
@@ -629,7 +392,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
 
-  NCollection_Array1<GeomGridEval::SurfD2> aLinearResult = EvaluatePointsD2(theUParams, theVParams);
+  NCollection_Array1<GeomGridEval::SurfD2> aLinearResult = evaluateGridLinearD2(theUParams, theVParams);
   if (aLinearResult.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD2>();
@@ -649,109 +412,6 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluateGr
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePointsD2(
-  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
-{
-  if (myGeom.IsNull() || theUVPairs.IsEmpty())
-  {
-    return NCollection_Array1<GeomGridEval::SurfD2>();
-  }
-
-  // Get surface data from geometry
-  const occ::handle<NCollection_HArray1<double>>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const occ::handle<NCollection_HArray1<double>>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& aPolesHandle      = myGeom->HArrayPoles();
-
-  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
-  {
-    return NCollection_Array1<GeomGridEval::SurfD2>();
-  }
-
-  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const NCollection_Array2<gp_Pnt>& aPoles      = aPolesHandle->Array2();
-  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
-
-  // Get surface properties
-  const int  aUDegree    = myGeom->UDegree();
-  const int  aVDegree    = myGeom->VDegree();
-  const bool isUPeriodic = myGeom->IsUPeriodic();
-  const bool isVPeriodic = myGeom->IsVPeriodic();
-  const bool isURational = myGeom->IsURational();
-  const bool isVRational = myGeom->IsVRational();
-
-  // Prepare UV points and sort by span
-  NCollection_Array1<GeomGridEval::UVPointWithSpan> aUVPoints = preparePairPoints(theUVPairs,
-                                                                                  aUFlatKnots,
-                                                                                  aVFlatKnots,
-                                                                                  aUDegree,
-                                                                                  aVDegree,
-                                                                                  isUPeriodic,
-                                                                                  isVPeriodic);
-
-  const int aNbPoints = aUVPoints.Size();
-  if (aNbPoints == 0)
-  {
-    return NCollection_Array1<GeomGridEval::SurfD2>();
-  }
-
-  NCollection_Array1<GeomGridEval::SurfD2> aResults(1, aNbPoints);
-
-  // Create local cache for cache-based evaluation (only used for large span groups)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          isUPeriodic,
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          isVPeriodic,
-                                                          aVFlatKnots,
-                                                          aWeights);
-
-  iterateSortedUVPoints(
-    aUVPoints,
-    [&](double theU, double theV) {
-      aCache->BuildCache(theU, theV, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
-    },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      aCache->D2Local(thePt.LocalU, thePt.LocalV, aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV);
-      aResults.SetValue(thePt.OutputIdx + 1,
-                        GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
-    },
-    [&](const GeomGridEval::UVPointWithSpan& thePt) {
-      gp_Pnt aPoint;
-      gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
-      BSplSLib::D2(thePt.U,
-                   thePt.V,
-                   thePt.USpanIdx,
-                   thePt.VSpanIdx,
-                   aPoles,
-                   aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
-                   nullptr,
-                   nullptr,
-                   aUDegree,
-                   aVDegree,
-                   isURational,
-                   isVRational,
-                   isUPeriodic,
-                   isVPeriodic,
-                   aPoint,
-                   aD1U,
-                   aD1V,
-                   aD2U,
-                   aD2V,
-                   aD2UV);
-      aResults.SetValue(thePt.OutputIdx + 1,
-                        GeomGridEval::SurfD2{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV});
-    });
-
-  return aResults;
-}
-
-//==================================================================================================
-
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
@@ -764,7 +424,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
 
-  NCollection_Array1<GeomGridEval::SurfD3> aLinearResult = EvaluatePointsD3(theUParams, theVParams);
+  NCollection_Array1<GeomGridEval::SurfD3> aLinearResult = evaluateGridLinearD3(theUParams, theVParams);
   if (aLinearResult.IsEmpty())
   {
     return NCollection_Array2<GeomGridEval::SurfD3>();
@@ -784,97 +444,6 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluateGr
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePointsD3(
-  const NCollection_Array1<gp_Pnt2d>& theUVPairs) const
-{
-  if (myGeom.IsNull() || theUVPairs.IsEmpty())
-  {
-    return NCollection_Array1<GeomGridEval::SurfD3>();
-  }
-
-  // Get surface data from geometry
-  const occ::handle<NCollection_HArray1<double>>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const occ::handle<NCollection_HArray1<double>>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& aPolesHandle      = myGeom->HArrayPoles();
-
-  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
-  {
-    return NCollection_Array1<GeomGridEval::SurfD3>();
-  }
-
-  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const NCollection_Array2<gp_Pnt>& aPoles      = aPolesHandle->Array2();
-  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
-  const int                         aUDegree    = myGeom->UDegree();
-  const int                         aVDegree    = myGeom->VDegree();
-  const bool                        isURational = myGeom->IsURational();
-  const bool                        isVRational = myGeom->IsVRational();
-  const bool                        isUPeriodic = myGeom->IsUPeriodic();
-  const bool                        isVPeriodic = myGeom->IsVPeriodic();
-
-  // Prepare UV points and sort by span
-  NCollection_Array1<GeomGridEval::UVPointWithSpan> aUVPoints = preparePairPoints(theUVPairs,
-                                                                                  aUFlatKnots,
-                                                                                  aVFlatKnots,
-                                                                                  aUDegree,
-                                                                                  aVDegree,
-                                                                                  isUPeriodic,
-                                                                                  isVPeriodic);
-
-  const int aNbPoints = aUVPoints.Size();
-  if (aNbPoints == 0)
-  {
-    return NCollection_Array1<GeomGridEval::SurfD3>();
-  }
-
-  NCollection_Array1<GeomGridEval::SurfD3> aResults(1, aNbPoints);
-
-  // D3 uses direct BSplSLib::D3 - no cache available for third derivatives
-  for (int i = 0; i < aNbPoints; ++i)
-  {
-    const GeomGridEval::UVPointWithSpan& aPt = aUVPoints.Value(i);
-
-    gp_Pnt aPoint;
-    gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV;
-
-    BSplSLib::D3(aPt.U,
-                 aPt.V,
-                 aPt.USpanIdx,
-                 aPt.VSpanIdx,
-                 aPoles,
-                 aWeights,
-                 aUFlatKnots,
-                 aVFlatKnots,
-                 nullptr,
-                 nullptr,
-                 aUDegree,
-                 aVDegree,
-                 isURational,
-                 isVRational,
-                 isUPeriodic,
-                 isVPeriodic,
-                 aPoint,
-                 aD1U,
-                 aD1V,
-                 aD2U,
-                 aD2V,
-                 aD2UV,
-                 aD3U,
-                 aD3V,
-                 aD3UUV,
-                 aD3UVV);
-
-    aResults.SetValue(
-      aPt.OutputIdx + 1,
-      GeomGridEval::SurfD3{aPoint, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV});
-  }
-
-  return aResults;
-}
-
-//==================================================================================================
-
 NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams,
@@ -889,7 +458,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
   const int aNbU = theUParams.Size();
   const int aNbV = theVParams.Size();
 
-  NCollection_Array1<gp_Vec> aLinearResult = EvaluatePointsDN(theUParams, theVParams, theNU, theNV);
+  NCollection_Array1<gp_Vec> aLinearResult = evaluateGridLinearDN(theUParams, theVParams, theNU, theNV);
   if (aLinearResult.IsEmpty())
   {
     return NCollection_Array2<gp_Vec>();
@@ -909,103 +478,10 @@ NCollection_Array2<gp_Vec> GeomGridEval_BSplineSurface::EvaluateGridDN(
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::EvaluatePointsDN(
-  const NCollection_Array1<gp_Pnt2d>& theUVPairs,
-  int                                 theNU,
-  int                                 theNV) const
-{
-  if (myGeom.IsNull() || theUVPairs.IsEmpty() || theNU < 0 || theNV < 0 || (theNU + theNV) < 1)
-  {
-    return NCollection_Array1<gp_Vec>();
-  }
+// Private helper methods for grid evaluation (linear result arrays)
+// These allow EvaluateGridD* to evaluate using cache-optimal iteration
 
-  // Get surface data from geometry
-  const occ::handle<NCollection_HArray1<double>>& aUFlatKnotsHandle = myGeom->HArrayUFlatKnots();
-  const occ::handle<NCollection_HArray1<double>>& aVFlatKnotsHandle = myGeom->HArrayVFlatKnots();
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& aPolesHandle      = myGeom->HArrayPoles();
-
-  if (aUFlatKnotsHandle.IsNull() || aVFlatKnotsHandle.IsNull() || aPolesHandle.IsNull())
-  {
-    return NCollection_Array1<gp_Vec>();
-  }
-
-  const NCollection_Array1<double>& aUFlatKnots = aUFlatKnotsHandle->Array1();
-  const NCollection_Array1<double>& aVFlatKnots = aVFlatKnotsHandle->Array1();
-  const NCollection_Array2<gp_Pnt>& aPoles      = aPolesHandle->Array2();
-  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
-  const int                         aUDegree    = myGeom->UDegree();
-  const int                         aVDegree    = myGeom->VDegree();
-  const bool                        isURational = myGeom->IsURational();
-  const bool                        isVRational = myGeom->IsVRational();
-  const bool                        isUPeriodic = myGeom->IsUPeriodic();
-  const bool                        isVPeriodic = myGeom->IsVPeriodic();
-
-  // Prepare UV points and sort by span
-  NCollection_Array1<GeomGridEval::UVPointWithSpan> aUVPoints = preparePairPoints(theUVPairs,
-                                                                                  aUFlatKnots,
-                                                                                  aVFlatKnots,
-                                                                                  aUDegree,
-                                                                                  aVDegree,
-                                                                                  isUPeriodic,
-                                                                                  isVPeriodic);
-
-  const int aNbPoints = aUVPoints.Size();
-  if (aNbPoints == 0)
-  {
-    return NCollection_Array1<gp_Vec>();
-  }
-
-  NCollection_Array1<gp_Vec> aResults(1, aNbPoints);
-
-  // For B-spline surfaces, derivatives become zero when order exceeds degree in that direction
-  if (theNU > aUDegree || theNV > aVDegree)
-  {
-    const gp_Vec aZeroVec(0.0, 0.0, 0.0);
-    for (int i = 1; i <= aNbPoints; ++i)
-    {
-      aResults.SetValue(i, aZeroVec);
-    }
-    return aResults;
-  }
-
-  // Use BSplSLib::DN directly with pre-computed span indices
-  for (int i = 0; i < aNbPoints; ++i)
-  {
-    const GeomGridEval::UVPointWithSpan& aPt = aUVPoints.Value(i);
-
-    gp_Vec aDN;
-    BSplSLib::DN(aPt.U,
-                 aPt.V,
-                 theNU,
-                 theNV,
-                 aPt.USpanIdx,
-                 aPt.VSpanIdx,
-                 aPoles,
-                 aWeights,
-                 aUFlatKnots,
-                 aVFlatKnots,
-                 nullptr,
-                 nullptr,
-                 aUDegree,
-                 aVDegree,
-                 isURational,
-                 isVRational,
-                 isUPeriodic,
-                 isVPeriodic,
-                 aDN);
-
-    aResults.SetValue(aPt.OutputIdx + 1, aDN);
-  }
-
-  return aResults;
-}
-
-//==================================================================================================
-
-// Helper overloads for grid -> points conversion (D1, D2, D3, DN)
-// These allow EvaluateGridD* to call EvaluatePointsD* with grid parameters
-
-NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePointsD1(
+NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::evaluateGridLinearD1(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
 {
@@ -1105,7 +581,7 @@ NCollection_Array1<GeomGridEval::SurfD1> GeomGridEval_BSplineSurface::EvaluatePo
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePointsD2(
+NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::evaluateGridLinearD2(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
 {
@@ -1210,7 +686,7 @@ NCollection_Array1<GeomGridEval::SurfD2> GeomGridEval_BSplineSurface::EvaluatePo
 
 //==================================================================================================
 
-NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePointsD3(
+NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::evaluateGridLinearD3(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams) const
 {
@@ -1303,7 +779,7 @@ NCollection_Array1<GeomGridEval::SurfD3> GeomGridEval_BSplineSurface::EvaluatePo
 
 //==================================================================================================
 
-NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::EvaluatePointsDN(
+NCollection_Array1<gp_Vec> GeomGridEval_BSplineSurface::evaluateGridLinearDN(
   const NCollection_Array1<double>& theUParams,
   const NCollection_Array1<double>& theVParams,
   int                               theNU,

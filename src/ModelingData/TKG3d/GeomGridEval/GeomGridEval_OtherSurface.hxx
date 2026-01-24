@@ -17,7 +17,6 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Geom_Surface.hxx>
 #include <GeomGridEval.hxx>
-#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <Standard.hxx>
@@ -38,7 +37,6 @@
 //! @code
 //!   GeomGridEval_OtherSurface anEvaluator(&mySurfaceAdaptor);
 //!   NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(myUParams, myVParams);
-//!   NCollection_Array1<gp_Pnt> aPoints = anEvaluator.EvaluatePoints(myUVPairs);
 //! @endcode
 class GeomGridEval_OtherSurface
 {
@@ -108,40 +106,6 @@ public:
     const NCollection_Array1<double>& theVParams,
     int                               theNU,
     int                               theNV) const;
-
-  //! Evaluate points at arbitrary UV pairs.
-  //! @param theUVPairs array of UV coordinate pairs
-  //! @return 1D array of evaluated points (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Pnt> EvaluatePoints(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate points with first partial derivatives.
-  //! @param theUVPairs array of UV coordinate pairs
-  //! @return 1D array of SurfD1 (1-based indexing)
-  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD1> EvaluatePointsD1(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate points with first and second partial derivatives.
-  //! @param theUVPairs array of UV coordinate pairs
-  //! @return 1D array of SurfD2 (1-based indexing)
-  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD2> EvaluatePointsD2(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate points with derivatives up to third order.
-  //! @param theUVPairs array of UV coordinate pairs
-  //! @return 1D array of SurfD3 (1-based indexing)
-  Standard_EXPORT NCollection_Array1<GeomGridEval::SurfD3> EvaluatePointsD3(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs) const;
-
-  //! Evaluate partial derivative at all UV pairs.
-  //! @param theUVPairs array of UV coordinate pairs
-  //! @param theNU derivative order in U direction
-  //! @param theNV derivative order in V direction
-  //! @return 1D array of derivative vectors (1-based indexing)
-  Standard_EXPORT NCollection_Array1<gp_Vec> EvaluatePointsDN(
-    const NCollection_Array1<gp_Pnt2d>& theUVPairs,
-    int                                 theNU,
-    int                                 theNV) const;
 
 private:
   //! Evaluate D0 at given UV parameters.
