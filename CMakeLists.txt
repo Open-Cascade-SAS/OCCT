@@ -983,6 +983,11 @@ foreach (OCCT_3RDPARTY_LIST ${OCCT_3RDPARTY_CMAKE_LIST})
   OCCT_INCLUDE_CMAKE_FILE (${OCCT_3RDPARTY_LIST})
 endforeach()
 
+if (DEFINED VTK_USE_X AND NOT VTK_USE_X)
+    message (STATUS "Info: TKIVtkDraw toolkits excluded due to VTK has no glx support")
+    list (REMOVE_ITEM BUILD_TOOLKITS TKIVtkDraw)
+endif()
+
 if (USE_TK)
   add_definitions (-DHAVE_TK)
 else()
