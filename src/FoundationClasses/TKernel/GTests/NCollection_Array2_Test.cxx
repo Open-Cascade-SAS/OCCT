@@ -325,11 +325,13 @@ struct Array2MultiArgType
 {
   int    myA;
   double myB;
+
   Array2MultiArgType()
       : myA(0),
         myB(0.0)
   {
   }
+
   Array2MultiArgType(int theA, double theB)
       : myA(theA),
         myB(theB)

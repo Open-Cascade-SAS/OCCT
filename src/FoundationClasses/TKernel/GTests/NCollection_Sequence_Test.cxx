@@ -466,6 +466,7 @@ struct SeqMultiArgType
 {
   int    myA;
   double myB;
+
   SeqMultiArgType(int theA, double theB)
       : myA(theA),
         myB(theB)
@@ -477,21 +478,25 @@ struct SeqMultiArgType
 struct SeqMoveOnlyType
 {
   int myValue;
+
   explicit SeqMoveOnlyType(int theValue)
       : myValue(theValue)
   {
   }
+
   SeqMoveOnlyType(SeqMoveOnlyType&& theOther) noexcept
       : myValue(theOther.myValue)
   {
     theOther.myValue = 0;
   }
+
   SeqMoveOnlyType& operator=(SeqMoveOnlyType&& theOther) noexcept
   {
     myValue          = theOther.myValue;
     theOther.myValue = 0;
     return *this;
   }
+
   SeqMoveOnlyType(const SeqMoveOnlyType&)            = delete;
   SeqMoveOnlyType& operator=(const SeqMoveOnlyType&) = delete;
 };

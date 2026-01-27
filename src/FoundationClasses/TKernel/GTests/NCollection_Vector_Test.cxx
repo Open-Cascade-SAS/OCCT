@@ -473,11 +473,13 @@ struct VecMultiArgType
 {
   int    myA;
   double myB;
+
   VecMultiArgType()
       : myA(0),
         myB(0.0)
   {
   }
+
   VecMultiArgType(int theA, double theB)
       : myA(theA),
         myB(theB)
@@ -489,25 +491,30 @@ struct VecMultiArgType
 struct VecMoveOnlyType
 {
   int myValue;
+
   VecMoveOnlyType()
       : myValue(0)
   {
   }
+
   explicit VecMoveOnlyType(int theValue)
       : myValue(theValue)
   {
   }
+
   VecMoveOnlyType(VecMoveOnlyType&& theOther) noexcept
       : myValue(theOther.myValue)
   {
     theOther.myValue = 0;
   }
+
   VecMoveOnlyType& operator=(VecMoveOnlyType&& theOther) noexcept
   {
     myValue          = theOther.myValue;
     theOther.myValue = 0;
     return *this;
   }
+
   VecMoveOnlyType(const VecMoveOnlyType&)            = delete;
   VecMoveOnlyType& operator=(const VecMoveOnlyType&) = delete;
 };

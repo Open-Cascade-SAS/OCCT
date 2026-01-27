@@ -491,6 +491,7 @@ struct MultiArgType
 {
   int    myA;
   double myB;
+
   MultiArgType(int theA, double theB)
       : myA(theA),
         myB(theB)
@@ -502,21 +503,25 @@ struct MultiArgType
 struct MoveOnlyType
 {
   int myValue;
+
   explicit MoveOnlyType(int theValue)
       : myValue(theValue)
   {
   }
+
   MoveOnlyType(MoveOnlyType&& theOther) noexcept
       : myValue(theOther.myValue)
   {
     theOther.myValue = 0;
   }
+
   MoveOnlyType& operator=(MoveOnlyType&& theOther) noexcept
   {
     myValue          = theOther.myValue;
     theOther.myValue = 0;
     return *this;
   }
+
   MoveOnlyType(const MoveOnlyType&)            = delete;
   MoveOnlyType& operator=(const MoveOnlyType&) = delete;
 };
