@@ -173,7 +173,13 @@ private:
 };
 
 //! @deprecated Use std::shared_ptr<std::mutex> instead. Will be removed in OCCT 8.0.0.
+Standard_DISABLE_DEPRECATION_WARNINGS;
+
+Standard_DEPRECATED("Standard_HMutex is deprecated; use std::shared_ptr<std::mutex> instead. "
+                    "Will be removed in OCCT 8.0.0")
 typedef NCollection_Shared<Standard_Mutex> Standard_HMutex;
+
+Standard_ENABLE_DEPRECATION_WARNINGS;
 
 // Implementation of the method Unlock is inline, since it is
 // just a shortcut to system function
