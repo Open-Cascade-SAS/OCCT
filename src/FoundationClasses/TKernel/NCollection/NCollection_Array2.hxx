@@ -305,6 +305,22 @@ public:
     NCollection_Array1<TheItemType>::at(aPos) = std::forward<TheItemType>(theItem);
   }
 
+  //! Emplace value at the specified row and column, constructing it in-place
+  //! @param theRow row index at which to emplace the value
+  //! @param theCol column index at which to emplace the value
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  reference EmplaceValue(const int theRow, const int theCol, Args&&... theArgs)
+  {
+    const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
+    Standard_OutOfRange_Raise_if(aPos >= this->mySize, "NCollection_Array2::EmplaceValue");
+    pointer aPnt = this->myPointer + aPos;
+    this->myAllocator.destroy(aPnt);
+    this->myAllocator.construct(aPnt, std::forward<Args>(theArgs)...);
+    return *aPnt;
+  }
+
   //! Resizes the array to specified bounds.
   //! No re-allocation will be done if length of array does not change,
   //! but existing values will not be discarded if theToCopyData set to FALSE.

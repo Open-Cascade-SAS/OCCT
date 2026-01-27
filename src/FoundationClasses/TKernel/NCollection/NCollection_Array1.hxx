@@ -325,6 +325,21 @@ public:
     myPointer[aPos] = std::forward<value_type>(theItem);
   }
 
+  //! Emplace value at the specified index, constructing it in-place
+  //! @param theIndex index at which to emplace the value
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  reference EmplaceValue(const int theIndex, Args&&... theArgs)
+  {
+    const size_t aPos = theIndex - myLowerBound;
+    Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::EmplaceValue");
+    pointer aPnt = myPointer + aPos;
+    myAllocator.destroy(aPnt);
+    myAllocator.construct(aPnt, std::forward<Args>(theArgs)...);
+    return *aPnt;
+  }
+
   //! Changes the lowest bound. Do not move data
   void UpdateLowerBound(const int theLower) noexcept { myLowerBound = theLower; }
 

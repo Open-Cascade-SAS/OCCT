@@ -485,3 +485,143 @@ TEST_F(NCollection_ListTest, OCC25348_AssignDoesNotChangeAllocator)
     EXPECT_EQ(i, aList1.First());
   }
 }
+
+// Helper struct for testing in-place construction with multiple arguments
+struct MultiArgType
+{
+  int    myA;
+  double myB;
+  MultiArgType(int theA, double theB)
+      : myA(theA),
+        myB(theB)
+  {
+  }
+};
+
+// Helper struct for testing move-only types
+struct MoveOnlyType
+{
+  int myValue;
+  explicit MoveOnlyType(int theValue)
+      : myValue(theValue)
+  {
+  }
+  MoveOnlyType(MoveOnlyType&& theOther) noexcept
+      : myValue(theOther.myValue)
+  {
+    theOther.myValue = 0;
+  }
+  MoveOnlyType& operator=(MoveOnlyType&& theOther) noexcept
+  {
+    myValue          = theOther.myValue;
+    theOther.myValue = 0;
+    return *this;
+  }
+  MoveOnlyType(const MoveOnlyType&)            = delete;
+  MoveOnlyType& operator=(const MoveOnlyType&) = delete;
+};
+
+TEST_F(NCollection_ListTest, EmplaceAppend)
+{
+  NCollection_List<MultiArgType> aList;
+
+  // Test EmplaceAppend with multiple constructor arguments
+  MultiArgType& aRef1 = aList.EmplaceAppend(42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+  EXPECT_EQ(1, aList.Size());
+
+  MultiArgType& aRef2 = aList.EmplaceAppend(100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+  EXPECT_EQ(2, aList.Size());
+
+  // Verify the order
+  EXPECT_EQ(42, aList.First().myA);
+  EXPECT_EQ(100, aList.Last().myA);
+}
+
+TEST_F(NCollection_ListTest, EmplacePrepend)
+{
+  NCollection_List<MultiArgType> aList;
+
+  // Test EmplacePrepend with multiple constructor arguments
+  MultiArgType& aRef1 = aList.EmplacePrepend(42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+  EXPECT_EQ(1, aList.Size());
+
+  MultiArgType& aRef2 = aList.EmplacePrepend(100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+  EXPECT_EQ(2, aList.Size());
+
+  // Verify the order (prepended items should be at the front)
+  EXPECT_EQ(100, aList.First().myA);
+  EXPECT_EQ(42, aList.Last().myA);
+}
+
+TEST_F(NCollection_ListTest, EmplaceBefore)
+{
+  NCollection_List<MultiArgType> aList;
+  aList.EmplaceAppend(10, 1.0);
+  aList.EmplaceAppend(30, 3.0);
+
+  // Get iterator to second element
+  NCollection_List<MultiArgType>::Iterator anIter(aList);
+  anIter.Next();
+
+  // Emplace before the second element
+  MultiArgType& aRef = aList.EmplaceBefore(anIter, 20, 2.0);
+  EXPECT_EQ(20, aRef.myA);
+  EXPECT_NEAR(2.0, aRef.myB, 1e-10);
+
+  // Verify the order
+  EXPECT_EQ(3, aList.Size());
+  NCollection_List<MultiArgType>::Iterator aCheckIter(aList);
+  EXPECT_EQ(10, aCheckIter.Value().myA);
+  aCheckIter.Next();
+  EXPECT_EQ(20, aCheckIter.Value().myA);
+  aCheckIter.Next();
+  EXPECT_EQ(30, aCheckIter.Value().myA);
+}
+
+TEST_F(NCollection_ListTest, EmplaceAfter)
+{
+  NCollection_List<MultiArgType> aList;
+  aList.EmplaceAppend(10, 1.0);
+  aList.EmplaceAppend(30, 3.0);
+
+  // Get iterator to first element
+  NCollection_List<MultiArgType>::Iterator anIter(aList);
+
+  // Emplace after the first element
+  MultiArgType& aRef = aList.EmplaceAfter(anIter, 20, 2.0);
+  EXPECT_EQ(20, aRef.myA);
+  EXPECT_NEAR(2.0, aRef.myB, 1e-10);
+
+  // Verify the order
+  EXPECT_EQ(3, aList.Size());
+  NCollection_List<MultiArgType>::Iterator aCheckIter(aList);
+  EXPECT_EQ(10, aCheckIter.Value().myA);
+  aCheckIter.Next();
+  EXPECT_EQ(20, aCheckIter.Value().myA);
+  aCheckIter.Next();
+  EXPECT_EQ(30, aCheckIter.Value().myA);
+}
+
+TEST_F(NCollection_ListTest, EmplaceWithMoveOnlyType)
+{
+  NCollection_List<MoveOnlyType> aList;
+
+  // Test EmplaceAppend with move-only type
+  MoveOnlyType& aRef1 = aList.EmplaceAppend(42);
+  EXPECT_EQ(42, aRef1.myValue);
+
+  MoveOnlyType& aRef2 = aList.EmplacePrepend(100);
+  EXPECT_EQ(100, aRef2.myValue);
+
+  EXPECT_EQ(2, aList.Size());
+  EXPECT_EQ(100, aList.First().myValue);
+  EXPECT_EQ(42, aList.Last().myValue);
+}

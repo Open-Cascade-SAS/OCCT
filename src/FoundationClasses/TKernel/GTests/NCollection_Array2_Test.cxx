@@ -319,3 +319,64 @@ TEST(NCollection_Array2Test, ReIndex_Interference)
   // The total number of rows should never change during these operations.
   EXPECT_EQ(anInitialNbRows, anArray.NbRows());
 }
+
+// Helper struct for testing in-place construction with multiple arguments
+struct Array2MultiArgType
+{
+  int    myA;
+  double myB;
+  Array2MultiArgType()
+      : myA(0),
+        myB(0.0)
+  {
+  }
+  Array2MultiArgType(int theA, double theB)
+      : myA(theA),
+        myB(theB)
+  {
+  }
+};
+
+TEST(NCollection_Array2Test, EmplaceValue)
+{
+  NCollection_Array2<Array2MultiArgType> anArray(1, 3, 1, 4);
+
+  // Test EmplaceValue with multiple constructor arguments
+  Array2MultiArgType& aRef1 = anArray.EmplaceValue(1, 1, 42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+
+  Array2MultiArgType& aRef2 = anArray.EmplaceValue(2, 3, 100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+
+  // Verify the values are in the array
+  EXPECT_EQ(42, anArray(1, 1).myA);
+  EXPECT_EQ(100, anArray(2, 3).myA);
+
+  // Verify other elements are default-constructed
+  EXPECT_EQ(0, anArray(1, 2).myA);
+  EXPECT_EQ(0, anArray(3, 4).myA);
+}
+
+TEST(NCollection_Array2Test, EmplaceValue_ReplacesExisting)
+{
+  NCollection_Array2<Array2MultiArgType> anArray(1, 2, 1, 2);
+
+  // Set initial values
+  anArray.EmplaceValue(1, 1, 11, 1.1);
+  anArray.EmplaceValue(1, 2, 12, 1.2);
+  anArray.EmplaceValue(2, 1, 21, 2.1);
+  anArray.EmplaceValue(2, 2, 22, 2.2);
+
+  // Replace value at (1, 2)
+  Array2MultiArgType& aRef = anArray.EmplaceValue(1, 2, 120, 12.0);
+  EXPECT_EQ(120, aRef.myA);
+  EXPECT_NEAR(12.0, aRef.myB, 1e-10);
+
+  // Verify other values unchanged
+  EXPECT_EQ(11, anArray(1, 1).myA);
+  EXPECT_EQ(120, anArray(1, 2).myA);
+  EXPECT_EQ(21, anArray(2, 1).myA);
+  EXPECT_EQ(22, anArray(2, 2).myA);
+}

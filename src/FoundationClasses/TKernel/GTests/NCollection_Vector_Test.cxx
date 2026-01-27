@@ -467,3 +467,128 @@ TEST(NCollection_VectorTest, STLAlgorithmCompatibility_Sort)
 
   EXPECT_TRUE(std::equal(aVector.begin(), aVector.end(), aStdVector.begin()));
 }
+
+// Helper struct for testing in-place construction with multiple arguments
+struct VecMultiArgType
+{
+  int    myA;
+  double myB;
+  VecMultiArgType()
+      : myA(0),
+        myB(0.0)
+  {
+  }
+  VecMultiArgType(int theA, double theB)
+      : myA(theA),
+        myB(theB)
+  {
+  }
+};
+
+// Helper struct for testing move-only types
+struct VecMoveOnlyType
+{
+  int myValue;
+  VecMoveOnlyType()
+      : myValue(0)
+  {
+  }
+  explicit VecMoveOnlyType(int theValue)
+      : myValue(theValue)
+  {
+  }
+  VecMoveOnlyType(VecMoveOnlyType&& theOther) noexcept
+      : myValue(theOther.myValue)
+  {
+    theOther.myValue = 0;
+  }
+  VecMoveOnlyType& operator=(VecMoveOnlyType&& theOther) noexcept
+  {
+    myValue          = theOther.myValue;
+    theOther.myValue = 0;
+    return *this;
+  }
+  VecMoveOnlyType(const VecMoveOnlyType&)            = delete;
+  VecMoveOnlyType& operator=(const VecMoveOnlyType&) = delete;
+};
+
+TEST(NCollection_VectorTest, EmplaceAppend)
+{
+  NCollection_Vector<VecMultiArgType> aVector;
+
+  // Test EmplaceAppend with multiple constructor arguments
+  VecMultiArgType& aRef1 = aVector.EmplaceAppend(42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+  EXPECT_EQ(1, aVector.Length());
+
+  VecMultiArgType& aRef2 = aVector.EmplaceAppend(100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+  EXPECT_EQ(2, aVector.Length());
+
+  // Verify the order (0-based indexing)
+  EXPECT_EQ(42, aVector(0).myA);
+  EXPECT_EQ(100, aVector(1).myA);
+}
+
+TEST(NCollection_VectorTest, EmplaceValue)
+{
+  NCollection_Vector<VecMultiArgType> aVector;
+
+  // Test EmplaceValue at index 0
+  VecMultiArgType& aRef1 = aVector.EmplaceValue(0, 10, 1.0);
+  EXPECT_EQ(10, aRef1.myA);
+  EXPECT_NEAR(1.0, aRef1.myB, 1e-10);
+  EXPECT_EQ(1, aVector.Length());
+
+  // Test EmplaceValue at index beyond current size (should fill with default values)
+  VecMultiArgType& aRef2 = aVector.EmplaceValue(3, 40, 4.0);
+  EXPECT_EQ(40, aRef2.myA);
+  EXPECT_NEAR(4.0, aRef2.myB, 1e-10);
+  EXPECT_EQ(4, aVector.Length());
+
+  // Check that intermediate elements were default-constructed
+  EXPECT_EQ(0, aVector(1).myA);
+  EXPECT_NEAR(0.0, aVector(1).myB, 1e-10);
+  EXPECT_EQ(0, aVector(2).myA);
+  EXPECT_NEAR(0.0, aVector(2).myB, 1e-10);
+}
+
+TEST(NCollection_VectorTest, EmplaceWithMoveOnlyType)
+{
+  NCollection_Vector<VecMoveOnlyType> aVector;
+
+  // Test EmplaceAppend with move-only type
+  VecMoveOnlyType& aRef1 = aVector.EmplaceAppend(42);
+  EXPECT_EQ(42, aRef1.myValue);
+
+  VecMoveOnlyType& aRef2 = aVector.EmplaceAppend(100);
+  EXPECT_EQ(100, aRef2.myValue);
+
+  EXPECT_EQ(2, aVector.Length());
+  EXPECT_EQ(42, aVector(0).myValue);
+  EXPECT_EQ(100, aVector(1).myValue);
+}
+
+TEST(NCollection_VectorTest, EmplaceAppendMany)
+{
+  NCollection_Vector<VecMultiArgType> aVector;
+
+  // Test EmplaceAppend with many elements to trigger internal array expansion
+  for (int i = 0; i < 1000; i++)
+  {
+    VecMultiArgType& aRef = aVector.EmplaceAppend(i, static_cast<double>(i) * 0.1);
+    EXPECT_EQ(i, aRef.myA);
+    EXPECT_NEAR(static_cast<double>(i) * 0.1, aRef.myB, 1e-10);
+  }
+
+  EXPECT_EQ(1000, aVector.Length());
+
+  // Verify all values
+  for (int i = 0; i < 1000; i++)
+  {
+    EXPECT_EQ(i, aVector(i).myA);
+    EXPECT_NEAR(static_cast<double>(i) * 0.1, aVector(i).myB, 1e-10);
+  }
+}

@@ -53,6 +53,14 @@ public:
       myValue = std::forward<TheItemType>(theItem);
     }
 
+    //! Constructor with in-place value construction
+    template <typename... Args>
+    Node(std::in_place_t, Args&&... theArgs)
+        : NCollection_SeqNode(),
+          myValue(std::forward<Args>(theArgs)...)
+    {
+    }
+
     //! Constant value access
     const TheItemType& Value() const noexcept { return myValue; }
 
@@ -368,6 +376,64 @@ public:
     Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex > mySize,
                                  "NCollection_Sequence::InsertAfter");
     PInsertAfter(theIndex, new (this->myAllocator) Node(theItem));
+  }
+
+  //! Emplace one item at the end, constructing it in-place
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceAppend(Args&&... theArgs)
+  {
+    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    PAppend(pNew);
+    return ((Node*)myLastItem)->ChangeValue();
+  }
+
+  //! Emplace one item at the beginning, constructing it in-place
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplacePrepend(Args&&... theArgs)
+  {
+    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    PPrepend(pNew);
+    return ((Node*)myFirstItem)->ChangeValue();
+  }
+
+  //! Emplace one item after the position of iterator, constructing it in-place
+  //! @param thePosition iterator pointing to the position after which to insert
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceAfter(Iterator& thePosition, Args&&... theArgs)
+  {
+    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    PInsertAfter(thePosition, pNew);
+    return pNew->ChangeValue();
+  }
+
+  //! Emplace one item after the specified index, constructing it in-place
+  //! @param theIndex index after which to insert (0 means insert at beginning)
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceAfter(const int theIndex, Args&&... theArgs)
+  {
+    Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex > mySize,
+                                 "NCollection_Sequence::EmplaceAfter");
+    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    PInsertAfter(theIndex, pNew);
+    return pNew->ChangeValue();
+  }
+
+  //! Emplace one item before the specified index, constructing it in-place
+  //! @param theIndex index before which to insert
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceBefore(const int theIndex, Args&&... theArgs)
+  {
+    return EmplaceAfter(theIndex - 1, std::forward<Args>(theArgs)...);
   }
 
   //! Split in two sequences
