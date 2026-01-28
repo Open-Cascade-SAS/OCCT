@@ -257,6 +257,54 @@ public: //! @name public methods
     return *aPnt;
   }
 
+  //! Emplace one item at the end, constructing it in-place
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  reference EmplaceAppend(Args&&... theArgs)
+  {
+    if (myUsedSize >= availableSize())
+    {
+      expandArray();
+    }
+    pointer aPnt = &at(myUsedSize++);
+    myAlloc.construct(aPnt, std::forward<Args>(theArgs)...);
+    return *aPnt;
+  }
+
+  //! Emplace value at the specified index, constructing it in-place
+  //! If the index is beyond current size, default-constructs intermediate elements
+  //! @param theIndex index at which to emplace the value
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  reference EmplaceValue(const int theIndex, Args&&... theArgs)
+  {
+    const size_t aBlockInd = static_cast<size_t>(theIndex / myInternalSize);
+    const size_t anIndex   = static_cast<size_t>(theIndex);
+    for (size_t aInd = myContainer.Size(); aInd <= aBlockInd; aInd++)
+    {
+      expandArray();
+    }
+    const bool isExisting = anIndex < myUsedSize;
+    if (!isExisting)
+    {
+      for (; myUsedSize < anIndex; myUsedSize++)
+      {
+        pointer aPnt = &at(myUsedSize);
+        myAlloc.construct(aPnt);
+      }
+      myUsedSize++;
+    }
+    pointer aPnt = &at(anIndex);
+    if (isExisting)
+    {
+      myAlloc.destroy(aPnt);
+    }
+    myAlloc.construct(aPnt, std::forward<Args>(theArgs)...);
+    return *aPnt;
+  }
+
   //! Operator() - query the const value
   const_reference operator()(const int theIndex) const noexcept { return Value(theIndex); }
 
@@ -303,7 +351,8 @@ public: //! @name public methods
     {
       expandArray();
     }
-    if (myUsedSize <= anIndex)
+    const bool isExisting = anIndex < myUsedSize;
+    if (!isExisting)
     {
       for (; myUsedSize < anIndex; myUsedSize++)
       {
@@ -313,6 +362,10 @@ public: //! @name public methods
       myUsedSize++;
     }
     pointer aPnt = &at(anIndex);
+    if (isExisting)
+    {
+      myAlloc.destroy(aPnt);
+    }
     myAlloc.construct(aPnt, theValue);
     return *aPnt;
   }
@@ -326,7 +379,8 @@ public: //! @name public methods
     {
       expandArray();
     }
-    if (myUsedSize <= anIndex)
+    const bool isExisting = anIndex < myUsedSize;
+    if (!isExisting)
     {
       for (; myUsedSize < anIndex; myUsedSize++)
       {
@@ -336,6 +390,10 @@ public: //! @name public methods
       myUsedSize++;
     }
     pointer aPnt = &at(anIndex);
+    if (isExisting)
+    {
+      myAlloc.destroy(aPnt);
+    }
     myAlloc.construct(aPnt, std::forward<TheItemType>(theValue));
     return *aPnt;
   }

@@ -343,6 +343,56 @@ public:
     }
   }
 
+  //! Emplace one item at the end, constructing it in-place
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceAppend(Args&&... theArgs)
+  {
+    ListNode* pNew =
+      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    PAppend(pNew);
+    return ((ListNode*)PLast())->ChangeValue();
+  }
+
+  //! Emplace one item at the beginning, constructing it in-place
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplacePrepend(Args&&... theArgs)
+  {
+    ListNode* pNew =
+      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    PPrepend(pNew);
+    return ((ListNode*)PFirst())->ChangeValue();
+  }
+
+  //! Emplace one item before the iterator position, constructing it in-place
+  //! @param theIter iterator pointing to the position before which to insert
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceBefore(Iterator& theIter, Args&&... theArgs)
+  {
+    ListNode* pNew =
+      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    PInsertBefore(pNew, theIter);
+    return pNew->ChangeValue();
+  }
+
+  //! Emplace one item after the iterator position, constructing it in-place
+  //! @param theIter iterator pointing to the position after which to insert
+  //! @param theArgs arguments forwarded to TheItemType constructor
+  //! @return reference to the newly constructed item
+  template <typename... Args>
+  TheItemType& EmplaceAfter(Iterator& theIter, Args&&... theArgs)
+  {
+    ListNode* pNew =
+      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    PInsertAfter(pNew, theIter);
+    return pNew->ChangeValue();
+  }
+
   //! Reverse the list
   void Reverse() { PReverse(); }
 
