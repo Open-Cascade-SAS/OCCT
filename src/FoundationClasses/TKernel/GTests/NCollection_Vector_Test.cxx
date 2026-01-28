@@ -562,6 +562,29 @@ TEST(NCollection_VectorTest, EmplaceValue)
   EXPECT_NEAR(0.0, aVector(2).myB, 1e-10);
 }
 
+TEST(NCollection_VectorTest, EmplaceValue_ReplacesExisting)
+{
+  NCollection_Vector<VecMultiArgType> aVector;
+
+  // Set initial values
+  aVector.EmplaceValue(0, 10, 1.0);
+  aVector.EmplaceValue(1, 20, 2.0);
+  aVector.EmplaceValue(2, 30, 3.0);
+
+  EXPECT_EQ(3, aVector.Length());
+
+  // Replace value at index 1 (existing element)
+  VecMultiArgType& aRef = aVector.EmplaceValue(1, 200, 20.0);
+  EXPECT_EQ(200, aRef.myA);
+  EXPECT_NEAR(20.0, aRef.myB, 1e-10);
+
+  // Verify other values unchanged and size unchanged
+  EXPECT_EQ(3, aVector.Length());
+  EXPECT_EQ(10, aVector(0).myA);
+  EXPECT_EQ(200, aVector(1).myA);
+  EXPECT_EQ(30, aVector(2).myA);
+}
+
 TEST(NCollection_VectorTest, EmplaceWithMoveOnlyType)
 {
   NCollection_Vector<VecMoveOnlyType> aVector;
@@ -598,4 +621,27 @@ TEST(NCollection_VectorTest, EmplaceAppendMany)
     EXPECT_EQ(i, aVector(i).myA);
     EXPECT_NEAR(static_cast<double>(i) * 0.1, aVector(i).myB, 1e-10);
   }
+}
+
+TEST(NCollection_VectorTest, SetValue_ReplacesExisting)
+{
+  NCollection_Vector<VecMultiArgType> aVector;
+
+  // Set initial values
+  aVector.SetValue(0, VecMultiArgType(10, 1.0));
+  aVector.SetValue(1, VecMultiArgType(20, 2.0));
+  aVector.SetValue(2, VecMultiArgType(30, 3.0));
+
+  EXPECT_EQ(3, aVector.Length());
+
+  // Replace value at index 1 (existing element)
+  VecMultiArgType& aRef = aVector.SetValue(1, VecMultiArgType(200, 20.0));
+  EXPECT_EQ(200, aRef.myA);
+  EXPECT_NEAR(20.0, aRef.myB, 1e-10);
+
+  // Verify other values unchanged and size unchanged
+  EXPECT_EQ(3, aVector.Length());
+  EXPECT_EQ(10, aVector(0).myA);
+  EXPECT_EQ(200, aVector(1).myA);
+  EXPECT_EQ(30, aVector(2).myA);
 }
