@@ -201,12 +201,16 @@ private:
   //! Extractor for const key-value pairs
   struct ConstItemsExtractor
   {
-    static ConstKeyValueRef Extract(const Iterator& theIter) { return {theIter.Key(), theIter.Value()}; }
+    static ConstKeyValueRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.Value()};
+    }
   };
 
 public:
   //! View class for key-value pair iteration (mutable).
-  using ItemsView = NCollection_ItemsView::View<NCollection_DataMap, KeyValueRef, ItemsExtractor, false>;
+  using ItemsView =
+    NCollection_ItemsView::View<NCollection_DataMap, KeyValueRef, ItemsExtractor, false>;
 
   //! View class for key-value pair iteration (const).
   using ConstItemsView =

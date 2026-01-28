@@ -207,9 +207,10 @@ public:
   //! @param theHasher custom hasher instance
   //! @param theNbBuckets initial number of buckets
   //! @param theAllocator custom memory allocator
-  explicit NCollection_IndexedMap(const Hasher&                                 theHasher,
-                                  const int                                     theNbBuckets = 1,
-                                  const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+  explicit NCollection_IndexedMap(
+    const Hasher&                                 theHasher,
+    const int                                     theNbBuckets = 1,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myHasher(theHasher)
   {
@@ -219,9 +220,10 @@ public:
   //! @param theHasher custom hasher instance (moved)
   //! @param theNbBuckets initial number of buckets
   //! @param theAllocator custom memory allocator
-  explicit NCollection_IndexedMap(Hasher&&                                      theHasher,
-                                  const int                                     theNbBuckets = 1,
-                                  const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+  explicit NCollection_IndexedMap(
+    Hasher&&                                      theHasher,
+    const int                                     theNbBuckets = 1,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : NCollection_BaseMap(theNbBuckets, true, theAllocator),
         myHasher(std::move(theHasher))
   {

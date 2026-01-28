@@ -474,15 +474,18 @@ TEST_F(NCollection_DataMapTest, HasherConstructorCopy)
   struct StatefulHasher
   {
     int mySalt;
+
     StatefulHasher(int theSalt = 0)
         : mySalt(theSalt)
     {
     }
+
     size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
-    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
   };
 
-  StatefulHasher                                                aHasher(42);
+  StatefulHasher                                                    aHasher(42);
   NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap(aHasher, 10);
 
   aMap.Bind(1, "One");
@@ -502,12 +505,15 @@ TEST_F(NCollection_DataMapTest, HasherConstructorMove)
   struct StatefulHasher
   {
     int mySalt;
+
     StatefulHasher(int theSalt = 0)
         : mySalt(theSalt)
     {
     }
+
     size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
-    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
   };
 
   NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap(StatefulHasher(99), 10);
@@ -523,12 +529,15 @@ TEST_F(NCollection_DataMapTest, CopyConstructorPreservesHasher)
   struct StatefulHasher
   {
     int mySalt;
+
     StatefulHasher(int theSalt = 0)
         : mySalt(theSalt)
     {
     }
+
     size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
-    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
   };
 
   NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap1(StatefulHasher(123), 10);

@@ -234,7 +234,8 @@ public:
   using KeyValueIndexRef = NCollection_ItemsView::KeyValueIndexRef<TheKeyType, TheItemType, false>;
 
   //! Const key-value-index tuple reference for structured binding support.
-  using ConstKeyValueIndexRef = NCollection_ItemsView::KeyValueIndexRef<TheKeyType, TheItemType, true>;
+  using ConstKeyValueIndexRef =
+    NCollection_ItemsView::KeyValueIndexRef<TheKeyType, TheItemType, true>;
 
 private:
   //! Extractor for mutable key-value pairs
@@ -249,7 +250,10 @@ private:
   //! Extractor for const key-value pairs
   struct ConstItemsExtractor
   {
-    static ConstKeyValueRef Extract(const Iterator& theIter) { return {theIter.Key(), theIter.Value()}; }
+    static ConstKeyValueRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.Value()};
+    }
   };
 
   //! Extractor for mutable key-value-index tuples
@@ -276,18 +280,16 @@ public:
     NCollection_ItemsView::View<NCollection_IndexedDataMap, KeyValueRef, ItemsExtractor, false>;
 
   //! View class for key-value pair iteration (const).
-  using ConstItemsView =
-    NCollection_ItemsView::View<NCollection_IndexedDataMap, ConstKeyValueRef, ConstItemsExtractor, true>;
+  using ConstItemsView = NCollection_ItemsView::
+    View<NCollection_IndexedDataMap, ConstKeyValueRef, ConstItemsExtractor, true>;
 
   //! View class for key-value-index tuple iteration (mutable).
-  using IndexedItemsView =
-    NCollection_ItemsView::View<NCollection_IndexedDataMap, KeyValueIndexRef, IndexedItemsExtractor, false>;
+  using IndexedItemsView = NCollection_ItemsView::
+    View<NCollection_IndexedDataMap, KeyValueIndexRef, IndexedItemsExtractor, false>;
 
   //! View class for key-value-index tuple iteration (const).
-  using ConstIndexedItemsView = NCollection_ItemsView::View<NCollection_IndexedDataMap,
-                                                            ConstKeyValueIndexRef,
-                                                            ConstIndexedItemsExtractor,
-                                                            true>;
+  using ConstIndexedItemsView = NCollection_ItemsView::
+    View<NCollection_IndexedDataMap, ConstKeyValueIndexRef, ConstIndexedItemsExtractor, true>;
 
   //! Returns a view for key-value pair iteration.
   //! Usage: for (auto [aKey, aValue] : aMap.Items())

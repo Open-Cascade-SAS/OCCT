@@ -1059,15 +1059,18 @@ TEST(NCollection_IndexedDataMapTest, HasherConstructorCopy)
   struct StatefulHasher
   {
     int mySalt;
+
     StatefulHasher(int theSalt = 0)
         : mySalt(theSalt)
     {
     }
+
     size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
-    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
   };
 
-  StatefulHasher                                                       aHasher(42);
+  StatefulHasher                                                           aHasher(42);
   NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap(aHasher, 10);
 
   aMap.Add(1, "One");
@@ -1087,16 +1090,19 @@ TEST(NCollection_IndexedDataMapTest, HasherConstructorMove)
   struct StatefulHasher
   {
     int mySalt;
+
     StatefulHasher(int theSalt = 0)
         : mySalt(theSalt)
     {
     }
+
     size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
-    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
   };
 
   NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap(StatefulHasher(99),
-                                                                                   10);
+                                                                                10);
 
   aMap.Add(10, "Ten");
 
@@ -1109,12 +1115,15 @@ TEST(NCollection_IndexedDataMapTest, CopyConstructorPreservesHasher)
   struct StatefulHasher
   {
     int mySalt;
+
     StatefulHasher(int theSalt = 0)
         : mySalt(theSalt)
     {
     }
+
     size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
-    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
   };
 
   NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap1(
@@ -1218,7 +1227,7 @@ TEST(NCollection_IndexedDataMapTest, IndexedItemsIteration)
   aMap.Add(30, "Thirty");
 
   // Test IndexedItems() with key, value, and index
-  int aKeySum = 0;
+  int aKeySum   = 0;
   int aIndexSum = 0;
   for (auto [aKey, aValue, anIndex] : aMap.IndexedItems())
   {
@@ -1227,8 +1236,8 @@ TEST(NCollection_IndexedDataMapTest, IndexedItemsIteration)
     (void)aValue;
   }
 
-  EXPECT_EQ(60, aKeySum);      // 10 + 20 + 30
-  EXPECT_EQ(6, aIndexSum);     // 1 + 2 + 3 (1-based indices)
+  EXPECT_EQ(60, aKeySum);  // 10 + 20 + 30
+  EXPECT_EQ(6, aIndexSum); // 1 + 2 + 3 (1-based indices)
 }
 
 TEST(NCollection_IndexedDataMapTest, ConstIndexedItemsIteration)
