@@ -466,3 +466,198 @@ TEST_F(NCollection_DataMapTest, TryEmplaced_ExistingKey)
   TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "New One");
   EXPECT_STREQ("One", aRef.ToCString()); // Original value
 }
+
+// Tests for hasher constructor
+TEST_F(NCollection_DataMapTest, HasherConstructorCopy)
+{
+  // Custom hasher with state
+  struct StatefulHasher
+  {
+    int mySalt;
+
+    StatefulHasher(int theSalt = 0)
+        : mySalt(theSalt)
+    {
+    }
+
+    size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  StatefulHasher                                                    aHasher(42);
+  NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap(aHasher, 10);
+
+  aMap.Bind(1, "One");
+  aMap.Bind(2, "Two");
+
+  EXPECT_EQ(2, aMap.Size());
+  EXPECT_STREQ("One", aMap.Find(1).ToCString());
+  EXPECT_STREQ("Two", aMap.Find(2).ToCString());
+
+  // Verify hasher was copied
+  const StatefulHasher& aMapHasher = aMap.GetHasher();
+  EXPECT_EQ(42, aMapHasher.mySalt);
+}
+
+TEST_F(NCollection_DataMapTest, HasherConstructorMove)
+{
+  struct StatefulHasher
+  {
+    int mySalt;
+
+    StatefulHasher(int theSalt = 0)
+        : mySalt(theSalt)
+    {
+    }
+
+    size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap(StatefulHasher(99), 10);
+
+  aMap.Bind(10, "Ten");
+
+  EXPECT_EQ(1, aMap.Size());
+  EXPECT_EQ(99, aMap.GetHasher().mySalt);
+}
+
+TEST_F(NCollection_DataMapTest, CopyConstructorPreservesHasher)
+{
+  struct StatefulHasher
+  {
+    int mySalt;
+
+    StatefulHasher(int theSalt = 0)
+        : mySalt(theSalt)
+    {
+    }
+
+    size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap1(StatefulHasher(123), 10);
+  aMap1.Bind(1, "One");
+
+  // Copy construct
+  NCollection_DataMap<int, TCollection_AsciiString, StatefulHasher> aMap2(aMap1);
+
+  EXPECT_EQ(123, aMap2.GetHasher().mySalt);
+  EXPECT_EQ(1, aMap2.Size());
+  EXPECT_STREQ("One", aMap2.Find(1).ToCString());
+}
+
+// Tests for Items() key-value pair iteration
+TEST_F(NCollection_DataMapTest, ItemsIteration)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+  aMap.Bind(2, "Two");
+  aMap.Bind(3, "Three");
+
+  // Test Items() iteration
+  std::set<int>         aFoundKeys;
+  std::set<std::string> aFoundValues;
+  for (auto aKeyValue : aMap.Items())
+  {
+    aFoundKeys.insert(aKeyValue.Key);
+    aFoundValues.insert(aKeyValue.Value.ToCString());
+  }
+
+  EXPECT_EQ(3u, aFoundKeys.size());
+  EXPECT_TRUE(aFoundKeys.count(1) > 0);
+  EXPECT_TRUE(aFoundKeys.count(2) > 0);
+  EXPECT_TRUE(aFoundKeys.count(3) > 0);
+
+  EXPECT_EQ(3u, aFoundValues.size());
+  EXPECT_TRUE(aFoundValues.count("One") > 0);
+  EXPECT_TRUE(aFoundValues.count("Two") > 0);
+  EXPECT_TRUE(aFoundValues.count("Three") > 0);
+}
+
+TEST_F(NCollection_DataMapTest, ItemsStructuredBindings)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(10, "Ten");
+  aMap.Bind(20, "Twenty");
+
+  // Test structured bindings with Items()
+  int aSum = 0;
+  for (auto [aKey, aValue] : aMap.Items())
+  {
+    aSum += aKey;
+    (void)aValue; // Suppress unused warning
+  }
+
+  EXPECT_EQ(30, aSum);
+}
+
+TEST_F(NCollection_DataMapTest, ItemsModifyValue)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "Original");
+
+  // Test modifying values through Items()
+  for (auto [aKey, aValue] : aMap.Items())
+  {
+    (void)aKey;
+    aValue = "Modified";
+  }
+
+  EXPECT_STREQ("Modified", aMap.Find(1).ToCString());
+}
+
+TEST_F(NCollection_DataMapTest, ConstItemsIteration)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+  aMap.Bind(2, "Two");
+
+  const NCollection_DataMap<int, TCollection_AsciiString>& aConstMap = aMap;
+
+  // Test const Items() iteration
+  int aCount = 0;
+  for (const auto& [aKey, aValue] : aConstMap.Items())
+  {
+    (void)aKey;
+    (void)aValue;
+    ++aCount;
+  }
+
+  EXPECT_EQ(2, aCount);
+}
+
+// Test iterator equality for Items() view
+TEST_F(NCollection_DataMapTest, ItemsIteratorEquality)
+{
+  NCollection_DataMap<int, TCollection_AsciiString> aMap;
+  aMap.Bind(1, "One");
+  aMap.Bind(2, "Two");
+  aMap.Bind(3, "Three");
+
+  auto aView = aMap.Items();
+
+  // begin() should equal begin()
+  EXPECT_EQ(aView.begin(), aView.begin());
+
+  // end() should equal end()
+  EXPECT_EQ(aView.end(), aView.end());
+
+  // begin() should not equal end() when map is not empty
+  EXPECT_NE(aView.begin(), aView.end());
+
+  // Two iterators at different positions must NOT be equal
+  auto anIt1 = aView.begin();
+  auto anIt2 = aView.begin();
+  ++anIt2;
+  EXPECT_NE(anIt1, anIt2);
+
+  // Iterators at same position should be equal
+  auto anIt3 = aView.begin();
+  ++anIt3;
+  EXPECT_EQ(anIt2, anIt3);
+}

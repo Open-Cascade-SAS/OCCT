@@ -460,3 +460,156 @@ TEST(NCollection_SequenceTest, OCC26448_PrependEmptySequence)
   EXPECT_EQ(aTSeq1.Size(), 1);
   EXPECT_DOUBLE_EQ(aTSeq1.First(), 11.0);
 }
+
+// Helper struct for testing in-place construction with multiple arguments
+struct SeqMultiArgType
+{
+  int    myA;
+  double myB;
+
+  SeqMultiArgType(int theA, double theB)
+      : myA(theA),
+        myB(theB)
+  {
+  }
+};
+
+// Helper struct for testing move-only types
+struct SeqMoveOnlyType
+{
+  int myValue;
+
+  explicit SeqMoveOnlyType(int theValue)
+      : myValue(theValue)
+  {
+  }
+
+  SeqMoveOnlyType(SeqMoveOnlyType&& theOther) noexcept
+      : myValue(theOther.myValue)
+  {
+    theOther.myValue = 0;
+  }
+
+  SeqMoveOnlyType& operator=(SeqMoveOnlyType&& theOther) noexcept
+  {
+    myValue          = theOther.myValue;
+    theOther.myValue = 0;
+    return *this;
+  }
+
+  SeqMoveOnlyType(const SeqMoveOnlyType&)            = delete;
+  SeqMoveOnlyType& operator=(const SeqMoveOnlyType&) = delete;
+};
+
+TEST(NCollection_SequenceTest, EmplaceAppend)
+{
+  NCollection_Sequence<SeqMultiArgType> aSeq;
+
+  // Test EmplaceAppend with multiple constructor arguments
+  SeqMultiArgType& aRef1 = aSeq.EmplaceAppend(42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+  EXPECT_EQ(1, aSeq.Size());
+
+  SeqMultiArgType& aRef2 = aSeq.EmplaceAppend(100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+  EXPECT_EQ(2, aSeq.Size());
+
+  // Verify the order (1-based indexing)
+  EXPECT_EQ(42, aSeq(1).myA);
+  EXPECT_EQ(100, aSeq(2).myA);
+}
+
+TEST(NCollection_SequenceTest, EmplacePrepend)
+{
+  NCollection_Sequence<SeqMultiArgType> aSeq;
+
+  // Test EmplacePrepend with multiple constructor arguments
+  SeqMultiArgType& aRef1 = aSeq.EmplacePrepend(42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+  EXPECT_EQ(1, aSeq.Size());
+
+  SeqMultiArgType& aRef2 = aSeq.EmplacePrepend(100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+  EXPECT_EQ(2, aSeq.Size());
+
+  // Verify the order (prepended items should be at the front)
+  EXPECT_EQ(100, aSeq.First().myA);
+  EXPECT_EQ(42, aSeq.Last().myA);
+}
+
+TEST(NCollection_SequenceTest, EmplaceAfterIterator)
+{
+  NCollection_Sequence<SeqMultiArgType> aSeq;
+  aSeq.EmplaceAppend(10, 1.0);
+  aSeq.EmplaceAppend(30, 3.0);
+
+  // Get iterator to first element
+  NCollection_Sequence<SeqMultiArgType>::Iterator anIter(aSeq);
+
+  // Emplace after the first element
+  SeqMultiArgType& aRef = aSeq.EmplaceAfter(anIter, 20, 2.0);
+  EXPECT_EQ(20, aRef.myA);
+  EXPECT_NEAR(2.0, aRef.myB, 1e-10);
+
+  // Verify the order
+  EXPECT_EQ(3, aSeq.Size());
+  EXPECT_EQ(10, aSeq(1).myA);
+  EXPECT_EQ(20, aSeq(2).myA);
+  EXPECT_EQ(30, aSeq(3).myA);
+}
+
+TEST(NCollection_SequenceTest, EmplaceAfterIndex)
+{
+  NCollection_Sequence<SeqMultiArgType> aSeq;
+  aSeq.EmplaceAppend(10, 1.0);
+  aSeq.EmplaceAppend(30, 3.0);
+
+  // Emplace after index 1
+  SeqMultiArgType& aRef = aSeq.EmplaceAfter(1, 20, 2.0);
+  EXPECT_EQ(20, aRef.myA);
+  EXPECT_NEAR(2.0, aRef.myB, 1e-10);
+
+  // Verify the order
+  EXPECT_EQ(3, aSeq.Size());
+  EXPECT_EQ(10, aSeq(1).myA);
+  EXPECT_EQ(20, aSeq(2).myA);
+  EXPECT_EQ(30, aSeq(3).myA);
+}
+
+TEST(NCollection_SequenceTest, EmplaceBeforeIndex)
+{
+  NCollection_Sequence<SeqMultiArgType> aSeq;
+  aSeq.EmplaceAppend(10, 1.0);
+  aSeq.EmplaceAppend(30, 3.0);
+
+  // Emplace before index 2
+  SeqMultiArgType& aRef = aSeq.EmplaceBefore(2, 20, 2.0);
+  EXPECT_EQ(20, aRef.myA);
+  EXPECT_NEAR(2.0, aRef.myB, 1e-10);
+
+  // Verify the order
+  EXPECT_EQ(3, aSeq.Size());
+  EXPECT_EQ(10, aSeq(1).myA);
+  EXPECT_EQ(20, aSeq(2).myA);
+  EXPECT_EQ(30, aSeq(3).myA);
+}
+
+TEST(NCollection_SequenceTest, EmplaceWithMoveOnlyType)
+{
+  NCollection_Sequence<SeqMoveOnlyType> aSeq;
+
+  // Test EmplaceAppend with move-only type
+  SeqMoveOnlyType& aRef1 = aSeq.EmplaceAppend(42);
+  EXPECT_EQ(42, aRef1.myValue);
+
+  SeqMoveOnlyType& aRef2 = aSeq.EmplacePrepend(100);
+  EXPECT_EQ(100, aRef2.myValue);
+
+  EXPECT_EQ(2, aSeq.Size());
+  EXPECT_EQ(100, aSeq.First().myValue);
+  EXPECT_EQ(42, aSeq.Last().myValue);
+}

@@ -154,6 +154,12 @@ public:
     //! Get current value (alias for Key for compatibility)
     const TheKeyType& Value() const { return Key(); }
 
+    //! Performs comparison of two iterators.
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return mySlots == theOther.mySlots && myIndex == theOther.myIndex;
+    }
+
   private:
     const Slot* mySlots;
     size_t      myCapacity;
@@ -183,6 +189,36 @@ public:
     }
   }
 
+  //! Constructor with custom hasher (copy).
+  //! @param theHasher custom hasher instance
+  //! @param theNbBuckets initial capacity hint
+  explicit NCollection_FlatMap(const Hasher& theHasher, const int theNbBuckets = 0)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(theHasher)
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
+  //! Constructor with custom hasher (move).
+  //! @param theHasher custom hasher instance (moved)
+  //! @param theNbBuckets initial capacity hint
+  explicit NCollection_FlatMap(Hasher&& theHasher, const int theNbBuckets = 0)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(std::move(theHasher))
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
   //! Copy constructor
   NCollection_FlatMap(const NCollection_FlatMap& theOther)
       : mySlots(nullptr),
@@ -192,7 +228,14 @@ public:
   {
     if (theOther.mySize > 0)
     {
-      reserve(theOther.myCapacity);
+      // Allocate same capacity as the source (not through reserve which may change capacity)
+      mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+      for (size_t i = 0; i < theOther.myCapacity; ++i)
+      {
+        new (&mySlots[i]) Slot();
+      }
+      myCapacity = theOther.myCapacity;
+
       for (size_t i = 0; i < theOther.myCapacity; ++i)
       {
         if (theOther.mySlots[i].myState == SlotState::Used)
@@ -228,9 +271,17 @@ public:
     if (this != &theOther)
     {
       Clear(true);
+      myHasher = theOther.myHasher;
       if (theOther.mySize > 0)
       {
-        reserve(theOther.myCapacity);
+        // Allocate same capacity as the source (not through reserve which may change capacity)
+        mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+        for (size_t i = 0; i < theOther.myCapacity; ++i)
+        {
+          new (&mySlots[i]) Slot();
+        }
+        myCapacity = theOther.myCapacity;
+
         for (size_t i = 0; i < theOther.myCapacity; ++i)
         {
           if (theOther.mySlots[i].myState == SlotState::Used)
@@ -409,6 +460,9 @@ public:
     std::swap(mySize, theOther.mySize);
     std::swap(myHasher, theOther.myHasher);
   }
+
+  //! Returns const reference to the hasher.
+  const Hasher& GetHasher() const noexcept { return myHasher; }
 
   //! Reserve capacity for at least theN elements
   void reserve(size_t theN)

@@ -22,6 +22,7 @@
 #include <Standard_NoSuchObject.hxx>
 #include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
+#include <NCollection_ItemsView.hxx>
 
 #include <Standard_OutOfRange.hxx>
 #include <type_traits>
@@ -191,6 +192,9 @@ public:
       return myMap == theOther.myMap && myIndex == theOther.myIndex;
     }
 
+    //! Returns current index (1-based).
+    int Index() const noexcept { return myIndex; }
+
   private:
     NCollection_IndexedDataMap* myMap;   //!< Pointer to current node
     int                         myIndex; //!< Current index
@@ -216,6 +220,94 @@ public:
   const_iterator cend() const noexcept { return Iterator(); }
 
 public:
+  // **************** Key-value pair iteration support for structured bindings
+
+  //! Key-value pair reference for structured binding support.
+  //! Enables: for (auto [key, value] : map.Items())
+  using KeyValueRef = NCollection_ItemsView::KeyValueRef<TheKeyType, TheItemType, false>;
+
+  //! Const key-value pair reference for structured binding support.
+  using ConstKeyValueRef = NCollection_ItemsView::KeyValueRef<TheKeyType, TheItemType, true>;
+
+  //! Key-value-index tuple reference for structured binding support.
+  //! Enables: for (auto [key, value, index] : map.IndexedItems())
+  using KeyValueIndexRef = NCollection_ItemsView::KeyValueIndexRef<TheKeyType, TheItemType, false>;
+
+  //! Const key-value-index tuple reference for structured binding support.
+  using ConstKeyValueIndexRef =
+    NCollection_ItemsView::KeyValueIndexRef<TheKeyType, TheItemType, true>;
+
+private:
+  //! Extractor for mutable key-value pairs
+  struct ItemsExtractor
+  {
+    static KeyValueRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.ChangeValue()};
+    }
+  };
+
+  //! Extractor for const key-value pairs
+  struct ConstItemsExtractor
+  {
+    static ConstKeyValueRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.Value()};
+    }
+  };
+
+  //! Extractor for mutable key-value-index tuples
+  struct IndexedItemsExtractor
+  {
+    static KeyValueIndexRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.ChangeValue(), theIter.Index()};
+    }
+  };
+
+  //! Extractor for const key-value-index tuples
+  struct ConstIndexedItemsExtractor
+  {
+    static ConstKeyValueIndexRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.Value(), theIter.Index()};
+    }
+  };
+
+public:
+  //! View class for key-value pair iteration (mutable).
+  using ItemsView =
+    NCollection_ItemsView::View<NCollection_IndexedDataMap, KeyValueRef, ItemsExtractor, false>;
+
+  //! View class for key-value pair iteration (const).
+  using ConstItemsView = NCollection_ItemsView::
+    View<NCollection_IndexedDataMap, ConstKeyValueRef, ConstItemsExtractor, true>;
+
+  //! View class for key-value-index tuple iteration (mutable).
+  using IndexedItemsView = NCollection_ItemsView::
+    View<NCollection_IndexedDataMap, KeyValueIndexRef, IndexedItemsExtractor, false>;
+
+  //! View class for key-value-index tuple iteration (const).
+  using ConstIndexedItemsView = NCollection_ItemsView::
+    View<NCollection_IndexedDataMap, ConstKeyValueIndexRef, ConstIndexedItemsExtractor, true>;
+
+  //! Returns a view for key-value pair iteration.
+  //! Usage: for (auto [aKey, aValue] : aMap.Items())
+  ItemsView Items() { return ItemsView(*this); }
+
+  //! Returns a const view for key-value pair iteration.
+  //! Usage: for (const auto& [aKey, aValue] : aMap.Items())
+  ConstItemsView Items() const { return ConstItemsView(*this); }
+
+  //! Returns a view for key-value-index tuple iteration.
+  //! Usage: for (auto [aKey, aValue, anIndex] : aMap.IndexedItems())
+  IndexedItemsView IndexedItems() { return IndexedItemsView(*this); }
+
+  //! Returns a const view for key-value-index tuple iteration.
+  //! Usage: for (const auto& [aKey, aValue, anIndex] : aMap.IndexedItems())
+  ConstIndexedItemsView IndexedItems() const { return ConstIndexedItemsView(*this); }
+
+public:
   // ---------- PUBLIC METHODS ------------
 
   //! Empty constructor.
@@ -232,22 +324,57 @@ public:
   {
   }
 
+  //! Constructor with custom hasher (copy).
+  //! @param theHasher custom hasher instance
+  //! @param theNbBuckets initial number of buckets
+  //! @param theAllocator custom memory allocator
+  explicit NCollection_IndexedDataMap(
+    const Hasher&                                 theHasher,
+    const int                                     theNbBuckets = 1,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+        myHasher(theHasher)
+  {
+  }
+
+  //! Constructor with custom hasher (move).
+  //! @param theHasher custom hasher instance (moved)
+  //! @param theNbBuckets initial number of buckets
+  //! @param theAllocator custom memory allocator
+  explicit NCollection_IndexedDataMap(
+    Hasher&&                                      theHasher,
+    const int                                     theNbBuckets = 1,
+    const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
+      : NCollection_BaseMap(theNbBuckets, true, theAllocator),
+        myHasher(std::move(theHasher))
+  {
+  }
+
   //! Copy constructor
   NCollection_IndexedDataMap(const NCollection_IndexedDataMap& theOther)
-      : NCollection_BaseMap(theOther.NbBuckets(), true, theOther.myAllocator)
+      : NCollection_BaseMap(theOther.NbBuckets(), true, theOther.myAllocator),
+        myHasher(theOther.myHasher)
   {
     *this = theOther;
   }
 
   //! Move constructor
   NCollection_IndexedDataMap(NCollection_IndexedDataMap&& theOther) noexcept
-      : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther))
+      : NCollection_BaseMap(std::forward<NCollection_BaseMap>(theOther)),
+        myHasher(std::move(theOther.myHasher))
   {
   }
 
   //! Exchange the content of two maps without re-allocations.
   //! Notice that allocators will be swapped as well!
-  void Exchange(NCollection_IndexedDataMap& theOther) noexcept { this->exchangeMapsData(theOther); }
+  void Exchange(NCollection_IndexedDataMap& theOther) noexcept
+  {
+    this->exchangeMapsData(theOther);
+    std::swap(myHasher, theOther.myHasher);
+  }
+
+  //! Returns const reference to the hasher.
+  const Hasher& GetHasher() const noexcept { return myHasher; }
 
   //! Assignment.
   //! This method does not change the internal allocator.

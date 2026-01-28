@@ -413,3 +413,65 @@ TEST(NCollection_Array1Test, STLAlgorithmCompatibility_Sort)
 
   EXPECT_TRUE(std::equal(anArray.begin(), anArray.end(), aVector.begin()));
 }
+
+// Helper struct for testing in-place construction with multiple arguments
+struct Array1MultiArgType
+{
+  int    myA;
+  double myB;
+
+  Array1MultiArgType()
+      : myA(0),
+        myB(0.0)
+  {
+  }
+
+  Array1MultiArgType(int theA, double theB)
+      : myA(theA),
+        myB(theB)
+  {
+  }
+};
+
+TEST(NCollection_Array1Test, EmplaceValue)
+{
+  NCollection_Array1<Array1MultiArgType> anArray(1, 5);
+
+  // Test EmplaceValue with multiple constructor arguments
+  Array1MultiArgType& aRef1 = anArray.EmplaceValue(1, 42, 3.14);
+  EXPECT_EQ(42, aRef1.myA);
+  EXPECT_NEAR(3.14, aRef1.myB, 1e-10);
+
+  Array1MultiArgType& aRef2 = anArray.EmplaceValue(3, 100, 2.71);
+  EXPECT_EQ(100, aRef2.myA);
+  EXPECT_NEAR(2.71, aRef2.myB, 1e-10);
+
+  // Verify the values are in the array
+  EXPECT_EQ(42, anArray(1).myA);
+  EXPECT_EQ(100, anArray(3).myA);
+
+  // Verify other elements are default-constructed
+  EXPECT_EQ(0, anArray(2).myA);
+  EXPECT_EQ(0, anArray(4).myA);
+  EXPECT_EQ(0, anArray(5).myA);
+}
+
+TEST(NCollection_Array1Test, EmplaceValue_ReplacesExisting)
+{
+  NCollection_Array1<Array1MultiArgType> anArray(1, 3);
+
+  // Set initial values
+  anArray.EmplaceValue(1, 10, 1.0);
+  anArray.EmplaceValue(2, 20, 2.0);
+  anArray.EmplaceValue(3, 30, 3.0);
+
+  // Replace value at index 2
+  Array1MultiArgType& aRef = anArray.EmplaceValue(2, 200, 20.0);
+  EXPECT_EQ(200, aRef.myA);
+  EXPECT_NEAR(20.0, aRef.myB, 1e-10);
+
+  // Verify other values unchanged
+  EXPECT_EQ(10, anArray(1).myA);
+  EXPECT_EQ(200, anArray(2).myA);
+  EXPECT_EQ(30, anArray(3).myA);
+}
