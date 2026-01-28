@@ -284,7 +284,10 @@ static bool SplitWire(const TopoDS_Face&                  face,
         double                    a1, b1, a2, b2;
         occ::handle<Geom2d_Curve> curve1 = BRep_Tool::CurveOnSurface(E1, face, a1, b1);
         occ::handle<Geom2d_Curve> curve2 = BRep_Tool::CurveOnSurface(E2, face, a2, b2);
-        gp_Pnt2d                  v0, v1;
+        if (curve1.IsNull() || curve2.IsNull())
+          continue;
+
+        gp_Pnt2d v0, v1;
         if (E1.Orientation() == TopAbs_REVERSED)
           a1 = b1;
         if (E2.Orientation() == TopAbs_REVERSED)
@@ -316,7 +319,7 @@ static bool SplitWire(const TopoDS_Face&                  face,
 
 //=================================================================================================
 
-bool ShapeFix_Face::Perform()
+bool ShapeFix_Face::Perform(const Message_ProgressRange& theProgress)
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);
   myFixWire->SetContext(Context());
@@ -367,6 +370,7 @@ bool ShapeFix_Face::Perform()
     }
 
     isfixReorder = false;
+
     for (TopoDS_Iterator iter(S, false); iter.More(); iter.Next())
     {
       if (iter.Value().ShapeType() != TopAbs_WIRE)
@@ -387,7 +391,7 @@ bool ShapeFix_Face::Perform()
         }
         continue;
       }
-      if (theAdvFixWire->Perform())
+      if (theAdvFixWire->Perform(theProgress))
       {
         // fixed = true;
         isfixReorder  = (theAdvFixWire->StatusReorder(ShapeExtend_DONE) || isfixReorder);
