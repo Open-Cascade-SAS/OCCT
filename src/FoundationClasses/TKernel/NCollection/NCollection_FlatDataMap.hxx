@@ -18,6 +18,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <NCollection_DefaultHasher.hxx>
+#include <NCollection_ItemsView.hxx>
 
 #include <new>
 #include <optional>
@@ -176,6 +177,12 @@ public:
       return const_cast<Slot*>(mySlots)[myIndex].Item();
     }
 
+    //! Performs comparison of two iterators.
+    bool IsEqual(const Iterator& theOther) const noexcept
+    {
+      return mySlots == theOther.mySlots && myIndex == theOther.myIndex;
+    }
+
   private:
     const Slot* mySlots;
     size_t      myCapacity;
@@ -206,6 +213,36 @@ public:
     }
   }
 
+  //! Constructor with custom hasher (copy).
+  //! @param theHasher custom hasher instance
+  //! @param theNbBuckets initial capacity hint
+  explicit NCollection_FlatDataMap(const Hasher& theHasher, const int theNbBuckets = 0)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(theHasher)
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
+  //! Constructor with custom hasher (move).
+  //! @param theHasher custom hasher instance (moved)
+  //! @param theNbBuckets initial capacity hint
+  explicit NCollection_FlatDataMap(Hasher&& theHasher, const int theNbBuckets = 0)
+      : mySlots(nullptr),
+        myCapacity(0),
+        mySize(0),
+        myHasher(std::move(theHasher))
+  {
+    if (theNbBuckets > 0)
+    {
+      reserve(static_cast<size_t>(theNbBuckets));
+    }
+  }
+
   //! Copy constructor
   NCollection_FlatDataMap(const NCollection_FlatDataMap& theOther)
       : mySlots(nullptr),
@@ -215,7 +252,14 @@ public:
   {
     if (theOther.mySize > 0)
     {
-      reserve(theOther.myCapacity);
+      // Allocate same capacity as the source (not through reserve which may change capacity)
+      mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+      for (size_t i = 0; i < theOther.myCapacity; ++i)
+      {
+        new (&mySlots[i]) Slot();
+      }
+      myCapacity = theOther.myCapacity;
+
       for (size_t i = 0; i < theOther.myCapacity; ++i)
       {
         if (theOther.mySlots[i].myState == SlotState::Used)
@@ -252,9 +296,17 @@ public:
     if (this != &theOther)
     {
       Clear(true);
+      myHasher = theOther.myHasher;
       if (theOther.mySize > 0)
       {
-        reserve(theOther.myCapacity);
+        // Allocate same capacity as the source (not through reserve which may change capacity)
+        mySlots = static_cast<Slot*>(Standard::Allocate(theOther.myCapacity * sizeof(Slot)));
+        for (size_t i = 0; i < theOther.myCapacity; ++i)
+        {
+          new (&mySlots[i]) Slot();
+        }
+        myCapacity = theOther.myCapacity;
+
         for (size_t i = 0; i < theOther.myCapacity; ++i)
         {
           if (theOther.mySlots[i].myState == SlotState::Used)
@@ -599,6 +651,9 @@ public:
     std::swap(myHasher, theOther.myHasher);
   }
 
+  //! Returns const reference to the hasher.
+  const Hasher& GetHasher() const noexcept { return myHasher; }
+
   //! Reserve capacity for at least theN elements
   void reserve(size_t theN)
   {
@@ -623,6 +678,49 @@ public:
 
   //! Returns iterator past the end
   Iterator cend() const noexcept { return Iterator(); }
+
+public:
+  // **************** Key-value pair iteration support for structured bindings
+
+  //! Key-value pair reference for structured binding support.
+  //! Enables: for (auto [key, value] : map.Items())
+  using KeyValueRef = NCollection_ItemsView::KeyValueRef<TheKeyType, TheItemType, false>;
+
+  //! Const key-value pair reference for structured binding support.
+  using ConstKeyValueRef = NCollection_ItemsView::KeyValueRef<TheKeyType, TheItemType, true>;
+
+private:
+  //! Extractor for mutable key-value pairs
+  struct ItemsExtractor
+  {
+    static KeyValueRef Extract(const Iterator& theIter)
+    {
+      return {theIter.Key(), theIter.ChangeValue()};
+    }
+  };
+
+  //! Extractor for const key-value pairs
+  struct ConstItemsExtractor
+  {
+    static ConstKeyValueRef Extract(const Iterator& theIter) { return {theIter.Key(), theIter.Value()}; }
+  };
+
+public:
+  //! View class for key-value pair iteration (mutable).
+  using ItemsView =
+    NCollection_ItemsView::View<NCollection_FlatDataMap, KeyValueRef, ItemsExtractor, false>;
+
+  //! View class for key-value pair iteration (const).
+  using ConstItemsView =
+    NCollection_ItemsView::View<NCollection_FlatDataMap, ConstKeyValueRef, ConstItemsExtractor, true>;
+
+  //! Returns a view for key-value pair iteration.
+  //! Usage: for (auto [aKey, aValue] : aMap.Items())
+  ItemsView Items() { return ItemsView(*this); }
+
+  //! Returns a const view for key-value pair iteration.
+  //! Usage: for (const auto& [aKey, aValue] : aMap.Items())
+  ConstItemsView Items() const { return ConstItemsView(*this); }
 
 private:
   // **************** Internal implementation ****************

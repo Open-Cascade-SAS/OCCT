@@ -1051,3 +1051,233 @@ TEST(NCollection_IndexedDataMapTest, TryEmplaced_ExistingKey)
   TCollection_AsciiString& aRef = aMap.TryEmplaced(1, "New One");
   EXPECT_STREQ("One", aRef.ToCString()); // Original value
 }
+
+// Tests for hasher constructor
+TEST(NCollection_IndexedDataMapTest, HasherConstructorCopy)
+{
+  // Custom hasher with state
+  struct StatefulHasher
+  {
+    int mySalt;
+    StatefulHasher(int theSalt = 0)
+        : mySalt(theSalt)
+    {
+    }
+    size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
+    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  StatefulHasher                                                       aHasher(42);
+  NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap(aHasher, 10);
+
+  aMap.Add(1, "One");
+  aMap.Add(2, "Two");
+
+  EXPECT_EQ(2, aMap.Extent());
+  EXPECT_STREQ("One", aMap.FindFromIndex(1).ToCString());
+  EXPECT_STREQ("Two", aMap.FindFromIndex(2).ToCString());
+
+  // Verify hasher was copied
+  const StatefulHasher& aMapHasher = aMap.GetHasher();
+  EXPECT_EQ(42, aMapHasher.mySalt);
+}
+
+TEST(NCollection_IndexedDataMapTest, HasherConstructorMove)
+{
+  struct StatefulHasher
+  {
+    int mySalt;
+    StatefulHasher(int theSalt = 0)
+        : mySalt(theSalt)
+    {
+    }
+    size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
+    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap(StatefulHasher(99),
+                                                                                   10);
+
+  aMap.Add(10, "Ten");
+
+  EXPECT_EQ(1, aMap.Extent());
+  EXPECT_EQ(99, aMap.GetHasher().mySalt);
+}
+
+TEST(NCollection_IndexedDataMapTest, CopyConstructorPreservesHasher)
+{
+  struct StatefulHasher
+  {
+    int mySalt;
+    StatefulHasher(int theSalt = 0)
+        : mySalt(theSalt)
+    {
+    }
+    size_t operator()(int theKey) const { return std::hash<int>{}(theKey + mySalt); }
+    bool   operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap1(
+    StatefulHasher(123),
+    10);
+  aMap1.Add(1, "One");
+
+  // Copy construct
+  NCollection_IndexedDataMap<int, TCollection_AsciiString, StatefulHasher> aMap2(aMap1);
+
+  EXPECT_EQ(123, aMap2.GetHasher().mySalt);
+  EXPECT_EQ(1, aMap2.Extent());
+  EXPECT_STREQ("One", aMap2.FindFromIndex(1).ToCString());
+}
+
+// Tests for Items() key-value pair iteration
+TEST(NCollection_IndexedDataMapTest, ItemsIteration)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+  aMap.Add(2, "Two");
+  aMap.Add(3, "Three");
+
+  // Test Items() iteration
+  std::set<int>         aFoundKeys;
+  std::set<std::string> aFoundValues;
+  for (auto aKeyValue : aMap.Items())
+  {
+    aFoundKeys.insert(aKeyValue.Key);
+    aFoundValues.insert(aKeyValue.Value.ToCString());
+  }
+
+  EXPECT_EQ(3u, aFoundKeys.size());
+  EXPECT_TRUE(aFoundKeys.count(1) > 0);
+  EXPECT_TRUE(aFoundKeys.count(2) > 0);
+  EXPECT_TRUE(aFoundKeys.count(3) > 0);
+
+  EXPECT_EQ(3u, aFoundValues.size());
+  EXPECT_TRUE(aFoundValues.count("One") > 0);
+  EXPECT_TRUE(aFoundValues.count("Two") > 0);
+  EXPECT_TRUE(aFoundValues.count("Three") > 0);
+}
+
+TEST(NCollection_IndexedDataMapTest, ItemsStructuredBindings)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(10, "Ten");
+  aMap.Add(20, "Twenty");
+
+  // Test structured bindings with Items() - key and value only
+  int aSum = 0;
+  for (auto [aKey, aValue] : aMap.Items())
+  {
+    aSum += aKey;
+    (void)aValue;
+  }
+
+  EXPECT_EQ(30, aSum);
+}
+
+TEST(NCollection_IndexedDataMapTest, ItemsModifyValue)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "Original");
+
+  // Test modifying values through Items()
+  for (auto [aKey, aValue] : aMap.Items())
+  {
+    (void)aKey;
+    aValue = "Modified";
+  }
+
+  EXPECT_STREQ("Modified", aMap.FindFromIndex(1).ToCString());
+}
+
+TEST(NCollection_IndexedDataMapTest, ConstItemsIteration)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+  aMap.Add(2, "Two");
+
+  const NCollection_IndexedDataMap<int, TCollection_AsciiString>& aConstMap = aMap;
+
+  // Test const Items() iteration
+  int aCount = 0;
+  for (const auto& [aKey, aValue] : aConstMap.Items())
+  {
+    (void)aKey;
+    (void)aValue;
+    ++aCount;
+  }
+
+  EXPECT_EQ(2, aCount);
+}
+
+TEST(NCollection_IndexedDataMapTest, IndexedItemsIteration)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(10, "Ten");
+  aMap.Add(20, "Twenty");
+  aMap.Add(30, "Thirty");
+
+  // Test IndexedItems() with key, value, and index
+  int aKeySum = 0;
+  int aIndexSum = 0;
+  for (auto [aKey, aValue, anIndex] : aMap.IndexedItems())
+  {
+    aKeySum += aKey;
+    aIndexSum += anIndex;
+    (void)aValue;
+  }
+
+  EXPECT_EQ(60, aKeySum);      // 10 + 20 + 30
+  EXPECT_EQ(6, aIndexSum);     // 1 + 2 + 3 (1-based indices)
+}
+
+TEST(NCollection_IndexedDataMapTest, ConstIndexedItemsIteration)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+  aMap.Add(2, "Two");
+
+  const NCollection_IndexedDataMap<int, TCollection_AsciiString>& aConstMap = aMap;
+
+  // Test const IndexedItems() iteration with index
+  int aIndexSum = 0;
+  for (const auto& [aKey, aValue, anIndex] : aConstMap.IndexedItems())
+  {
+    (void)aKey;
+    (void)aValue;
+    aIndexSum += anIndex;
+  }
+
+  EXPECT_EQ(3, aIndexSum); // 1 + 2 = 3
+}
+
+// Test iterator equality for Items() view
+TEST(NCollection_IndexedDataMapTest, ItemsIteratorEquality)
+{
+  NCollection_IndexedDataMap<int, TCollection_AsciiString> aMap;
+  aMap.Add(1, "One");
+  aMap.Add(2, "Two");
+  aMap.Add(3, "Three");
+
+  auto aView = aMap.Items();
+
+  // begin() should equal begin()
+  EXPECT_EQ(aView.begin(), aView.begin());
+
+  // end() should equal end()
+  EXPECT_EQ(aView.end(), aView.end());
+
+  // begin() should not equal end() when map is not empty
+  EXPECT_NE(aView.begin(), aView.end());
+
+  // Two iterators at different positions must NOT be equal
+  auto anIt1 = aView.begin();
+  auto anIt2 = aView.begin();
+  ++anIt2;
+  EXPECT_NE(anIt1, anIt2);
+
+  // Iterators at same position should be equal
+  auto anIt3 = aView.begin();
+  ++anIt3;
+  EXPECT_EQ(anIt2, anIt3);
+}
