@@ -545,7 +545,10 @@ void PutPointsOnLine(const occ::handle<Adaptor3d_Surface>&                      
           //  Modified by skv - Thu Jan 15 15:57:15 2004 OCC4455 End
           gp_Pnt pointonarc;
           Vtgint.SetCoord(0, 0, 0);
-          double                   aVertTol = Tolarc;
+          // Use the computed tolerance which includes vertex resolution and geometric factors,
+          // not just Tolarc. This ensures boundary vertices have appropriate tolerances
+          // for later unification with vertices from other face-face intersections.
+          double                   aVertTol = std::max(Tolarc, tolerance);
           NCollection_List<double> aLParams;
           linefound = FindLine(Psurf,
                                slin,

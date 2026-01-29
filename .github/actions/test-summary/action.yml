@@ -70,7 +70,7 @@ runs:
         cd install/bin
         source env.sh
         for platform in windows-x64 macos-x64 linux-clang-x64; do
-          ./DRAWEXE -v -c testdiff "results/current/$platform" "results/master/$platform" &
+          ./DRAWEXE -v -c testdiff "results/current/$platform" "results/master/$platform" -status all &
         done
         wait
       shell: bash

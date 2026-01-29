@@ -41,12 +41,14 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <IntAna_QuadQuadGeo.hxx>
 #include <IntPatch_GLine.hxx>
+#include <IntTools_TopolTool.hxx>
 #include <IntPatch_RLine.hxx>
 #include <IntRes2d_Domain.hxx>
 #include <IntSurf_Quadric.hxx>
 #include <IntTools_Context.hxx>
 #include <IntTools_Tools.hxx>
-#include <IntTools_TopolTool.hxx>
+#include <BRepAdaptor_Surface.hxx>
+#include <BRepTopAdaptor_TopolTool.hxx>
 #include <IntTools_WLineTool.hxx>
 #include <ProjLib_Plane.hxx>
 #include <TopExp_Explorer.hxx>
@@ -54,6 +56,225 @@
 #include <TopoDS_Edge.hxx>
 #include <gp_Elips.hxx>
 #include <ApproxInt_KnotTools.hxx>
+
+namespace
+{
+
+//! Angular tolerance used for analytical intersection.
+constexpr double THE_TOLANG = 1.e-8;
+
+//! Maximum ratio between major and minor radii for ellipse intersection to be valid.
+constexpr double THE_MAX_ELLIPSE_RATIO = 100000.0;
+
+//! Extracts cylinder height from surface V-parameter bounds.
+//! @param[in]  theBAS    surface adaptor
+//! @param[out] theHeight computed height (VMax - VMin)
+//! @return false if V-bounds are infinite, true otherwise
+static bool getCylinderHeight(const BRepAdaptor_Surface& theBAS, double& theHeight)
+{
+  const double aVMin = theBAS.FirstVParameter();
+  const double aVMax = theBAS.LastVParameter();
+
+  if (Precision::IsNegativeInfinite(aVMin) || Precision::IsPositiveInfinite(aVMax))
+  {
+    return false;
+  }
+
+  theHeight = aVMax - aVMin;
+  return true;
+}
+
+//! Checks if plane-cylinder intersection should use analytical treatment.
+//! @param[in] thePlane    plane surface
+//! @param[in] theCylinder cylinder surface
+//! @param[in] theHeight   cylinder height
+//! @param[in] theTol      tolerance
+//! @return true if analytical treatment is appropriate
+static bool treatPlaneCylinder(const gp_Pln&      thePlane,
+                               const gp_Cylinder& theCylinder,
+                               const double       theHeight,
+                               const double       theTol)
+{
+  IntAna_QuadQuadGeo anInter;
+  anInter.Perform(thePlane, theCylinder, THE_TOLANG, theTol, theHeight);
+
+  if (anInter.TypeInter() == IntAna_Ellipse)
+  {
+    const gp_Elips anEllipse = anInter.Ellipse(1);
+    const double   aMajorR   = anEllipse.MajorRadius();
+    const double   aMinorR   = anEllipse.MinorRadius();
+
+    return (aMajorR < THE_MAX_ELLIPSE_RATIO * aMinorR);
+  }
+
+  return anInter.IsDone();
+}
+
+//! Computes distance from a point to an infinite line and returns the projection parameter.
+//! Line is defined as: theLoc + t * theDir
+//! @param[in]  thePoint point to compute distance from
+//! @param[in]  theLoc   point on the line (at t=0)
+//! @param[in]  theDir   direction of the line (unit vector)
+//! @param[out] theParam parameter t where the closest point on line is located
+//! @return distance from thePoint to the line
+static double distancePointToLine(const gp_Pnt& thePoint,
+                                  const gp_Pnt& theLoc,
+                                  const gp_Dir& theDir,
+                                  double&       theParam)
+{
+  const gp_Vec aVec(theLoc, thePoint);
+  theParam              = aVec.Dot(theDir);
+  const gp_Pnt aClosest = theLoc.Translated(gp_Vec(theDir) * theParam);
+  return thePoint.Distance(aClosest);
+}
+
+//! Checks if a boundary circle of one perpendicular cylinder touches the other cylinder's surface.
+//! For perpendicular cylinders: the boundary circle lies in a plane perpendicular to the first
+//! cylinder's axis. Since the axes are perpendicular, the second axis direction lies IN this plane.
+//! The boundary circle extends perpendicular to the direction towards the other axis, so it doesn't
+//! get any closer - the minimum distance from the circle to the other axis equals the distance
+//! from the circle's center (axis endpoint) to that axis.
+//! Touch occurs when this distance equals R2 (the other cylinder's radius).
+//! @param[in] theAxisPoint point on first cylinder's axis (at V-boundary) - center of boundary
+//! circle
+//! @param[in] theLoc2      location of second cylinder's axis (at V=0)
+//! @param[in] theDir2      direction of second cylinder's axis
+//! @param[in] theV2Min     minimum V parameter of second cylinder
+//! @param[in] theV2Max     maximum V parameter of second cylinder
+//! @param[in] theR2        radius of second cylinder (touch distance)
+//! @param[in] theTol       tolerance for touch detection
+//! @return true if boundary circle touches the other cylinder's surface
+static bool checkBoundaryTouch(const gp_Pnt& theAxisPoint,
+                               const gp_Pnt& theLoc2,
+                               const gp_Dir& theDir2,
+                               const double  theV2Min,
+                               const double  theV2Max,
+                               const double  theR2,
+                               const double  theTol)
+{
+  // Compute distance from axis endpoint to second cylinder's axis
+  double       aParam = 0.0;
+  const double aDist  = distancePointToLine(theAxisPoint, theLoc2, theDir2, aParam);
+
+  // Check if projection falls within second cylinder's V-bounds
+  if (aParam < theV2Min - theTol || aParam > theV2Max + theTol)
+  {
+    return false;
+  }
+
+  // For perpendicular cylinders: boundary circle touches when center is at distance R2 from axis
+  return std::abs(aDist - theR2) < theTol;
+}
+
+//! Checks if cylinder-cylinder intersection should use analytical treatment.
+//! Disables analytical treatment for perpendicular cylinders that touch (tangent case).
+//! Handles both interior touch and boundary touch cases.
+//! @param[in] theBAS1 first cylinder surface adaptor (with UV bounds)
+//! @param[in] theBAS2 second cylinder surface adaptor (with UV bounds)
+//! @param[in] theTol  tolerance
+//! @return true if analytical treatment is appropriate, false to disable it
+static bool treatCylinderCylinder(const BRepAdaptor_Surface& theBAS1,
+                                  const BRepAdaptor_Surface& theBAS2,
+                                  const double               theTol)
+{
+  const gp_Cylinder aCyl1 = theBAS1.Cylinder();
+  const gp_Cylinder aCyl2 = theBAS2.Cylinder();
+
+  const gp_Ax3& aPos1 = aCyl1.Position();
+  const gp_Ax3& aPos2 = aCyl2.Position();
+  const gp_Dir& aDir1 = aPos1.Direction();
+  const gp_Dir& aDir2 = aPos2.Direction();
+
+  // Check axis relationship using angular tolerance
+  const double aDot       = std::abs(aDir1.Dot(aDir2));
+  const bool   isParallel = (1.0 - aDot) < Precision::Angular();
+  const bool   isPerp     = aDot < Precision::Angular();
+
+  if (isParallel)
+  {
+    // Parallel cylinders - use default analytical treatment
+    return true;
+  }
+
+  if (!isPerp)
+  {
+    // Non-perpendicular, non-parallel - use analytical treatment
+    return true;
+  }
+
+  // Get V-parameter bounds (height along axis)
+  const double aV1Min = theBAS1.FirstVParameter();
+  const double aV1Max = theBAS1.LastVParameter();
+  const double aV2Min = theBAS2.FirstVParameter();
+  const double aV2Max = theBAS2.LastVParameter();
+
+  // Check for infinite bounds
+  if (Precision::IsNegativeInfinite(aV1Min) || Precision::IsPositiveInfinite(aV1Max)
+      || Precision::IsNegativeInfinite(aV2Min) || Precision::IsPositiveInfinite(aV2Max))
+  {
+    return true;
+  }
+
+  const double aR2 = aCyl2.Radius();
+
+  // Compute axis locations (at V=0)
+  const gp_Pnt& aLoc1 = aPos1.Location();
+  const gp_Pnt& aLoc2 = aPos2.Location();
+
+  // Compute axis segment endpoints
+  const gp_Pnt aP1Min = aLoc1.Translated(gp_Vec(aDir1) * aV1Min);
+  const gp_Pnt aP1Max = aLoc1.Translated(gp_Vec(aDir1) * aV1Max);
+
+  // Check boundary touch: endpoint of cylinder 1's axis touching cylinder 2's surface
+  if (checkBoundaryTouch(aP1Min, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol)
+      || checkBoundaryTouch(aP1Max, aLoc2, aDir2, aV2Min, aV2Max, aR2, theTol))
+  {
+    return false; // Touch detected - disable analytical
+  }
+
+  // No boundary touch detected - allow analytical treatment
+  return true;
+}
+
+//! Determines if analytical intersection treatment is appropriate for the given surfaces.
+//! @param[in] theBAS1 first surface adaptor
+//! @param[in] theBAS2 second surface adaptor
+//! @param[in] theTol  tolerance
+//! @return true if analytical treatment should be used
+static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
+                            const BRepAdaptor_Surface& theBAS2,
+                            const double               theTol)
+{
+  const GeomAbs_SurfaceType aType1 = theBAS1.GetType();
+  const GeomAbs_SurfaceType aType2 = theBAS2.GetType();
+
+  // Handle Plane-Cylinder case
+  if ((aType1 == GeomAbs_Plane && aType2 == GeomAbs_Cylinder)
+      || (aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Plane))
+  {
+    const BRepAdaptor_Surface& aPlaneAdaptor = (aType1 == GeomAbs_Plane) ? theBAS1 : theBAS2;
+    const BRepAdaptor_Surface& aCylAdaptor   = (aType1 == GeomAbs_Cylinder) ? theBAS1 : theBAS2;
+
+    double aHeight = 0.0;
+    if (!getCylinderHeight(aCylAdaptor, aHeight))
+    {
+      return true;
+    }
+
+    return treatPlaneCylinder(aPlaneAdaptor.Plane(), aCylAdaptor.Cylinder(), aHeight, theTol);
+  }
+
+  // Handle Cylinder-Cylinder case (including perpendicular touching)
+  if (aType1 == GeomAbs_Cylinder && aType2 == GeomAbs_Cylinder)
+  {
+    return treatCylinderCylinder(theBAS1, theBAS2, theTol * 10.);
+  }
+
+  // Default: use analytical treatment for unhandled cases
+  return true;
+}
+
+} // namespace
 
 static void Parameters(const occ::handle<GeomAdaptor_Surface>&,
                        const occ::handle<GeomAdaptor_Surface>&,
@@ -248,75 +469,6 @@ void IntTools_FaceFace::SetList(NCollection_List<IntSurf_PntOn2S>& aListOfPnts)
   myListOfPnts = aListOfPnts;
 }
 
-static bool isTreatAnalityc(const BRepAdaptor_Surface& theBAS1,
-                            const BRepAdaptor_Surface& theBAS2,
-                            const double               theTol)
-{
-  const double Tolang = 1.e-8;
-  double       aHigh  = 0.0;
-
-  const GeomAbs_SurfaceType aType1 = theBAS1.GetType();
-  const GeomAbs_SurfaceType aType2 = theBAS2.GetType();
-
-  gp_Pln      aS1;
-  gp_Cylinder aS2;
-  if (aType1 == GeomAbs_Plane)
-  {
-    aS1 = theBAS1.Plane();
-  }
-  else if (aType2 == GeomAbs_Plane)
-  {
-    aS1 = theBAS2.Plane();
-  }
-  else
-  {
-    return true;
-  }
-
-  if (aType1 == GeomAbs_Cylinder)
-  {
-    aS2               = theBAS1.Cylinder();
-    const double VMin = theBAS1.FirstVParameter();
-    const double VMax = theBAS1.LastVParameter();
-
-    if (Precision::IsNegativeInfinite(VMin) || Precision::IsPositiveInfinite(VMax))
-      return true;
-    else
-      aHigh = VMax - VMin;
-  }
-  else if (aType2 == GeomAbs_Cylinder)
-  {
-    aS2 = theBAS2.Cylinder();
-
-    const double VMin = theBAS2.FirstVParameter();
-    const double VMax = theBAS2.LastVParameter();
-
-    if (Precision::IsNegativeInfinite(VMin) || Precision::IsPositiveInfinite(VMax))
-      return true;
-    else
-      aHigh = VMax - VMin;
-  }
-  else
-  {
-    return true;
-  }
-
-  IntAna_QuadQuadGeo inter;
-  inter.Perform(aS1, aS2, Tolang, theTol, aHigh);
-  if (inter.TypeInter() == IntAna_Ellipse)
-  {
-    const gp_Elips anEl    = inter.Ellipse(1);
-    const double   aMajorR = anEl.MajorRadius();
-    const double   aMinorR = anEl.MinorRadius();
-
-    return (aMajorR < 100000.0 * aMinorR);
-  }
-  else
-  {
-    return inter.IsDone();
-  }
-}
-
 //=======================================================================
 // function : Perform
 // purpose  : intersect surfaces of the faces
@@ -466,8 +618,8 @@ void IntTools_FaceFace::Perform(const TopoDS_Face& aF1,
     myHS2->Load(S2, umin, umax, vmin, vmax);
   }
 
-  const occ::handle<IntTools_TopolTool> dom1 = new IntTools_TopolTool(myHS1);
-  const occ::handle<IntTools_TopolTool> dom2 = new IntTools_TopolTool(myHS2);
+  const occ::handle<Adaptor3d_TopolTool> dom1 = new IntTools_TopolTool(myHS1);
+  const occ::handle<Adaptor3d_TopolTool> dom2 = new IntTools_TopolTool(myHS2);
 
   myLConstruct.Load(dom1, dom2, myHS1, myHS2);
 
@@ -783,6 +935,25 @@ reapprox:;
       {
         newc = new Geom_Hyperbola(occ::down_cast<IntPatch_GLine>(L)->Hyperbola());
       }
+
+      // Compute maximum vertex tolerance from GLine vertices.
+      // This tolerance accounts for boundary intersection computation errors
+      // (e.g., pcurve-to-3D-curve deviation) and must be propagated to the curve
+      // to ensure vertices from different FF intersections can be unified.
+      double aMaxVertTol = 0.0;
+      if (myHS1->GetType() == GeomAbs_Cylinder || myHS2->GetType() == GeomAbs_Cylinder)
+      {
+        occ::handle<IntPatch_GLine> aGL    = occ::down_cast<IntPatch_GLine>(L);
+        int                         aNbVtx = aGL->NbVertex();
+        for (int iv = 1; iv <= aNbVtx; ++iv)
+        {
+          const IntPatch_Point& aVtx = aGL->Vertex(iv);
+          if (aVtx.Tolerance() > aMaxVertTol)
+          {
+            aMaxVertTol = aVtx.Tolerance();
+          }
+        }
+      }
       //
       aNbParts = myLConstruct.NbParts();
       for (i = 1; i <= aNbParts; i++)
@@ -813,7 +984,9 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS1->Surface(), newc, C2d);
 
             if (C2d.IsNull())
+            {
               continue;
+            }
 
             aCurve.SetFirstCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
           }
@@ -824,9 +997,16 @@ reapprox:;
             GeomInt_IntSS::BuildPCurves(fprm, lprm, Tolpc, myHS2->Surface(), newc, C2d);
 
             if (C2d.IsNull())
+            {
               continue;
+            }
 
             aCurve.SetSecondCurve2d(new Geom2d_TrimmedCurve(C2d, fprm, lprm));
+          }
+          // Ensure curve tolerance is at least the maximum vertex tolerance
+          if (aCurve.Tolerance() < aMaxVertTol)
+          {
+            aCurve.SetTolerance(aMaxVertTol);
           }
           //
           mySeqOfCurve.Append(aCurve);
@@ -861,7 +1041,12 @@ reapprox:;
               || typS2 == GeomAbs_OffsetSurface || typS2 == GeomAbs_SurfaceOfRevolution)
           {
             occ::handle<Geom2d_BSplineCurve> H1;
-            mySeqOfCurve.Append(IntTools_Curve(newc, H1, H1));
+            IntTools_Curve                   aCurve(newc, H1, H1);
+            if (aCurve.Tolerance() < aMaxVertTol)
+            {
+              aCurve.SetTolerance(aMaxVertTol);
+            }
+            mySeqOfCurve.Append(aCurve);
             continue;
           }
 
