@@ -21,6 +21,8 @@
 
 #include <Standard_NoSuchObject.hxx>
 
+#include <initializer_list>
+
 /**
  * Purpose:      Simple list to link  items together keeping the first
  *               and the last one.
@@ -45,10 +47,16 @@ public:
     const_iterator;
 
   //! Returns an iterator pointing to the first element in the list.
-  iterator begin() const noexcept { return Iterator(*this); }
+  iterator begin() noexcept { return Iterator(*this); }
 
   //! Returns an iterator referring to the past-the-end element in the list.
-  iterator end() const noexcept { return Iterator(); }
+  iterator end() noexcept { return Iterator(); }
+
+  //! Returns a const iterator pointing to the first element in the list.
+  const_iterator begin() const noexcept { return Iterator(*this); }
+
+  //! Returns a const iterator referring to the past-the-end element in the list.
+  const_iterator end() const noexcept { return Iterator(); }
 
   //! Returns a const iterator pointing to the first element in the list.
   const_iterator cbegin() const noexcept { return Iterator(*this); }
@@ -82,7 +90,21 @@ public:
   NCollection_List(NCollection_List&& theOther) noexcept
       : NCollection_BaseList(theOther.myAllocator)
   {
-    this->operator=(std::forward<NCollection_List>(theOther));
+    myFirst          = theOther.myFirst;
+    myLast           = theOther.myLast;
+    myLength         = theOther.myLength;
+    theOther.myFirst = theOther.myLast = nullptr;
+    theOther.myLength                  = 0;
+  }
+
+  //! Initializer list constructor
+  NCollection_List(std::initializer_list<TheItemType> theInitList)
+      : NCollection_BaseList(occ::handle<NCollection_BaseAllocator>())
+  {
+    for (const auto& anItem : theInitList)
+    {
+      Append(anItem);
+    }
   }
 
   //! Size - Number of items
@@ -394,7 +416,12 @@ public:
   }
 
   //! Reverse the list
-  void Reverse() { PReverse(); }
+  void Reverse() noexcept { PReverse(); }
+
+  //! Exchange the content of two lists without re-allocations.
+  //! Exchanges pointers, so all existing iterators will still be valid
+  //! but will point to another list.
+  void Exchange(NCollection_List& theOther) noexcept { PExchange(theOther); }
 
   //! Return true if object is stored in the list.
   template <typename TheValueType> // instantiate this method on first call only for types defining

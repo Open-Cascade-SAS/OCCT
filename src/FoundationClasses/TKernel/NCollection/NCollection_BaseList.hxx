@@ -29,6 +29,8 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_ListNode.hxx>
 
+#include <utility>
+
 typedef void (*NCollection_DelListNode)(NCollection_ListNode*,
                                         occ::handle<NCollection_BaseAllocator>& theAl);
 
@@ -186,6 +188,16 @@ protected:
   // ******** PReverse
   // Purpose: Reverse the list
   Standard_EXPORT void PReverse() noexcept;
+
+  // ******** PExchange
+  // Purpose: Exchange contents with another list
+  void PExchange(NCollection_BaseList& theOther) noexcept
+  {
+    std::swap(myAllocator, theOther.myAllocator);
+    std::swap(myFirst, theOther.myFirst);
+    std::swap(myLast, theOther.myLast);
+    std::swap(myLength, theOther.myLength);
+  }
 
 protected:
   // ------------ PROTECTED FIELDS ------------

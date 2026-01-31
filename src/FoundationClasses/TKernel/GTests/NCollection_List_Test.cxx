@@ -630,3 +630,141 @@ TEST_F(NCollection_ListTest, EmplaceWithMoveOnlyType)
   EXPECT_EQ(100, aList.First().myValue);
   EXPECT_EQ(42, aList.Last().myValue);
 }
+
+TEST_F(NCollection_ListTest, InitializerListConstructor)
+{
+  // Test initializer list constructor
+  NCollection_List<int> aList = {10, 20, 30, 40, 50};
+
+  EXPECT_EQ(5, aList.Size());
+  EXPECT_EQ(10, aList.First());
+  EXPECT_EQ(50, aList.Last());
+
+  // Verify all elements
+  int                             anExpected[] = {10, 20, 30, 40, 50};
+  NCollection_List<int>::Iterator anIter(aList);
+  for (int anIdx = 0; anIter.More(); anIter.Next(), ++anIdx)
+  {
+    EXPECT_EQ(anExpected[anIdx], anIter.Value());
+  }
+}
+
+TEST_F(NCollection_ListTest, InitializerListConstructorEmpty)
+{
+  // Test empty initializer list
+  NCollection_List<int> aList = {};
+
+  EXPECT_TRUE(aList.IsEmpty());
+  EXPECT_EQ(0, aList.Size());
+}
+
+TEST_F(NCollection_ListTest, Exchange)
+{
+  NCollection_List<int> aList1;
+  aList1.Append(10);
+  aList1.Append(20);
+
+  NCollection_List<int> aList2;
+  aList2.Append(30);
+  aList2.Append(40);
+  aList2.Append(50);
+
+  // Exchange the lists
+  aList1.Exchange(aList2);
+
+  // Verify aList1 now has aList2's content
+  EXPECT_EQ(3, aList1.Size());
+  EXPECT_EQ(30, aList1.First());
+  EXPECT_EQ(50, aList1.Last());
+
+  // Verify aList2 now has aList1's content
+  EXPECT_EQ(2, aList2.Size());
+  EXPECT_EQ(10, aList2.First());
+  EXPECT_EQ(20, aList2.Last());
+}
+
+TEST_F(NCollection_ListTest, ExchangeWithEmpty)
+{
+  NCollection_List<int> aList1;
+  aList1.Append(10);
+  aList1.Append(20);
+
+  NCollection_List<int> aList2;
+
+  // Exchange with empty list
+  aList1.Exchange(aList2);
+
+  EXPECT_TRUE(aList1.IsEmpty());
+  EXPECT_EQ(2, aList2.Size());
+  EXPECT_EQ(10, aList2.First());
+  EXPECT_EQ(20, aList2.Last());
+}
+
+TEST_F(NCollection_ListTest, MoveConstructor)
+{
+  NCollection_List<int> aList1;
+  aList1.Append(10);
+  aList1.Append(20);
+  aList1.Append(30);
+
+  // Move construct
+  NCollection_List<int> aList2(std::move(aList1));
+
+  // Verify aList2 has the content
+  EXPECT_EQ(3, aList2.Size());
+  EXPECT_EQ(10, aList2.First());
+  EXPECT_EQ(30, aList2.Last());
+
+  // Verify aList1 is empty after move
+  EXPECT_TRUE(aList1.IsEmpty());
+  EXPECT_EQ(0, aList1.Size());
+}
+
+TEST_F(NCollection_ListTest, MoveAssignment)
+{
+  NCollection_List<int> aList1;
+  aList1.Append(10);
+  aList1.Append(20);
+
+  NCollection_List<int> aList2;
+  aList2.Append(100); // Some initial content
+
+  // Move assign
+  aList2 = std::move(aList1);
+
+  // Verify aList2 has aList1's content
+  EXPECT_EQ(2, aList2.Size());
+  EXPECT_EQ(10, aList2.First());
+  EXPECT_EQ(20, aList2.Last());
+
+  // Verify aList1 is empty after move
+  EXPECT_TRUE(aList1.IsEmpty());
+}
+
+TEST_F(NCollection_ListTest, ConstIteratorFromConstList)
+{
+  NCollection_List<int> aList;
+  aList.Append(10);
+  aList.Append(20);
+  aList.Append(30);
+
+  // Get const reference to the list
+  const NCollection_List<int>& aConstList = aList;
+
+  // Iterate using const iterators
+  int anExpected[] = {10, 20, 30};
+  int anIdx        = 0;
+  for (auto anIt = aConstList.begin(); anIt != aConstList.end(); ++anIt, ++anIdx)
+  {
+    EXPECT_EQ(anExpected[anIdx], *anIt);
+  }
+  EXPECT_EQ(3, anIdx);
+
+  // Also test range-based for on const list
+  anIdx = 0;
+  for (const auto& aValue : aConstList)
+  {
+    EXPECT_EQ(anExpected[anIdx++], aValue);
+  }
+  EXPECT_EQ(3, anIdx);
+}
