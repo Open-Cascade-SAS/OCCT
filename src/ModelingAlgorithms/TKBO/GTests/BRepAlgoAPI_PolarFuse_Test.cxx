@@ -34,8 +34,8 @@ protected:
   {
     const gp_Ax2 aConeAxis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
     const double aBaseRadius = 6.0;
-    const double aTopRadius = 3.0;
-    const double aHeight = 40.0;
+    const double aTopRadius  = 3.0;
+    const double aHeight     = 40.0;
 
     BRepPrimAPI_MakeCone aConeMaker(aConeAxis, aBaseRadius, aTopRadius, aHeight);
     return aConeMaker.Shape();
@@ -49,7 +49,7 @@ protected:
       return false;
     }
 
-    STEPControl_Writer aWriter;
+    STEPControl_Writer    aWriter;
     IFSelect_ReturnStatus aStatus1 = aWriter.Transfer(theShape, STEPControl_AsIs);
     if (aStatus1 != IFSelect_RetDone)
     {
@@ -92,14 +92,14 @@ protected:
       return TopoDS_Shape();
     }
 
-    TopoDS_Shape aResult = aBaseShape;
+    TopoDS_Shape aResult     = aBaseShape;
     const double anAngleStep = 360.0 / theOccurrences;
 
     // Sequentially fuse rotated copies
     for (int i = 1; i < theOccurrences; ++i)
     {
       const TopoDS_Shape aRotated = BOPTest_Utilities::RotateZ(aBaseShape, anAngleStep * i);
-      BRepAlgoAPI_Fuse aFuser(aResult, aRotated);
+      BRepAlgoAPI_Fuse   aFuser(aResult, aRotated);
       if (!aFuser.IsDone())
         return TopoDS_Shape();
       aResult = aFuser.Shape();
@@ -118,12 +118,12 @@ const double EXPECTED_SURFACE_AREA_ONE_SHAPE = 1275.5214;
 TEST_F(BFusePolarPatternTest, OneOccurrences0Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(1);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
   EXPECT_NEAR(aSurfaceArea, EXPECTED_SURFACE_AREA_ONE_SHAPE, 1.0e-4);
 
@@ -138,12 +138,12 @@ TEST_F(BFusePolarPatternTest, OneOccurrences0Degrees)
 TEST_F(BFusePolarPatternTest, TwoOccurrences180Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(2);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
   // Two occurrences should have a higher surface area than one
   EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 1));
@@ -159,12 +159,12 @@ TEST_F(BFusePolarPatternTest, TwoOccurrences180Degrees)
 TEST_F(BFusePolarPatternTest, ThreeOccurrences120Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(3);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
   // Three occurrences should have a higher surface area than two
   EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 2));
@@ -180,15 +180,16 @@ TEST_F(BFusePolarPatternTest, ThreeOccurrences120Degrees)
 TEST_F(BFusePolarPatternTest, FourOccurrences90Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(4);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
-  // Four occurrences should have a higher surface area than three including some tolerance for fusion simplification
-  EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 3) * 0.80 );
+  // Four occurrences should have a higher surface area than three including some tolerance for
+  // fusion simplification
+  EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 3) * 0.80);
 
 #if (ENABLE_DEBUG_STEP_OUTPUT)
   const bool aExportSuccess = exportToSTEP(aResult, "PolarPattern_4occ_90deg.step");
@@ -201,15 +202,16 @@ TEST_F(BFusePolarPatternTest, FourOccurrences90Degrees)
 TEST_F(BFusePolarPatternTest, FiveOccurrences72Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(5);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
-  // Five occurrences should have a higher surface area than four including some tolerance for fusion simplification
-  EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 4) * 0.80 );
+  // Five occurrences should have a higher surface area than four including some tolerance for
+  // fusion simplification
+  EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 4) * 0.80);
 
 #if (ENABLE_DEBUG_STEP_OUTPUT)
   const bool aExportSuccess = exportToSTEP(aResult, "PolarPattern_5occ_72deg.step");
@@ -222,15 +224,16 @@ TEST_F(BFusePolarPatternTest, FiveOccurrences72Degrees)
 TEST_F(BFusePolarPatternTest, SixOccurrences60Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(6);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
-  // Six occurrences should have a higher surface area than five including some tolerance for fusion simplification
-  EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 5) * 0.80 );
+  // Six occurrences should have a higher surface area than five including some tolerance for fusion
+  // simplification
+  EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 5) * 0.80);
 
 #if (ENABLE_DEBUG_STEP_OUTPUT)
   const bool aExportSuccess = exportToSTEP(aResult, "PolarPattern_6occ_60deg.step");
@@ -243,14 +246,15 @@ TEST_F(BFusePolarPatternTest, SixOccurrences60Degrees)
 TEST_F(BFusePolarPatternTest, SevenOccurrences51Degrees)
 {
   const TopoDS_Shape aResult = createPatternResult(7);
-  
+
   EXPECT_FALSE(aResult.IsNull());
-  
+
   int aSolidCount = countSolids(aResult);
   EXPECT_EQ(1, aSolidCount);
-  
+
   double aSurfaceArea = getSurfaceArea(aResult);
-  // Seven occurrences should have a higher surface area than six including some tolerance for fusion simplification
+  // Seven occurrences should have a higher surface area than six including some tolerance for
+  // fusion simplification
   EXPECT_GT(aSurfaceArea, (EXPECTED_SURFACE_AREA_ONE_SHAPE * 6) * 0.80);
 
 #if (ENABLE_DEBUG_STEP_OUTPUT)
@@ -258,4 +262,3 @@ TEST_F(BFusePolarPatternTest, SevenOccurrences51Degrees)
   EXPECT_TRUE(aExportSuccess);
 #endif
 }
-
