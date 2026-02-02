@@ -122,7 +122,7 @@ public:
   //! the intersection.
   const TopoDS_Face& Face() const;
 
-  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& Puv) const;
+  Standard_EXPORT TopAbs_State ClassifyUVPoint(const gp_Pnt2d& Puv, double tol = 1e-7) const;
 
   Standard_EXPORT Bnd_Box Bounding() const;
 
@@ -139,7 +139,7 @@ private:
                                     const double                  pinf,
                                     const double                  psup);
 
-  occ::handle<BRepTopAdaptor_TopolTool>                   myTopolTool;
+  mutable occ::handle<BRepTopAdaptor_TopolTool>           myTopolTool;
   occ::handle<BRepAdaptor_Surface>                        Hsurface;
   double                                                  Tol;
   NCollection_Sequence<IntCurveSurface_IntersectionPoint> SeqPnt;
