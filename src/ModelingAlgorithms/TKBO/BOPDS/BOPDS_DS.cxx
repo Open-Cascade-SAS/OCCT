@@ -1080,14 +1080,14 @@ void BOPDS_DS::SubShapesOnIn(
   // Helper lambda to process pave blocks from a map
   auto processMap =
     [&thePBOnIn, &theMVOnIn](const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMap) {
-      for (int j = 1; j <= theMap.Size(); ++j)
+      for (int anIdx = 1; anIdx <= theMap.Size(); ++anIdx)
       {
-        const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(j);
+        const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(anIdx);
         thePBOnIn.Add(aPaveBlock);
-        int nV1, nV2;
-        aPaveBlock->Indices(nV1, nV2);
-        theMVOnIn.Add(nV1);
-        theMVOnIn.Add(nV2);
+        int aV1, aV2;
+        aPaveBlock->Indices(aV1, aV2);
+        theMVOnIn.Add(aV1);
+        theMVOnIn.Add(aV2);
       }
     };
 
@@ -1100,16 +1100,16 @@ void BOPDS_DS::SubShapesOnIn(
   // Find common pave blocks (those in Face1 that are also in Face2)
   auto findCommon = [&theCommonPaveBlocks, &theMVCommon, &aPBOn2, &aPBIn2](
                       const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMap) {
-    for (int j = 1; j <= theMap.Size(); ++j)
+    for (int anIdx = 1; anIdx <= theMap.Size(); ++anIdx)
     {
-      const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(j);
+      const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(anIdx);
       if (aPBOn2.Contains(aPaveBlock) || aPBIn2.Contains(aPaveBlock))
       {
         theCommonPaveBlocks.Add(aPaveBlock);
-        int nV1, nV2;
-        aPaveBlock->Indices(nV1, nV2);
-        theMVCommon.Add(nV1);
-        theMVCommon.Add(nV2);
+        int aV1, aV2;
+        aPaveBlock->Indices(aV1, aV2);
+        theMVCommon.Add(aV1);
+        theMVCommon.Add(aV2);
       }
     }
   };
