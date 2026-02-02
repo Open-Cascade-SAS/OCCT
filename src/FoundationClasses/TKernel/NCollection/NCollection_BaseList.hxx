@@ -190,7 +190,9 @@ protected:
   Standard_EXPORT void PReverse() noexcept;
 
   // ******** PExchange
-  // Purpose: Exchange contents with another list
+  // Purpose: Exchange contents with another list.
+  //          Swaps all internal state including allocators, ensuring that
+  //          nodes are always deallocated by their original allocator.
   void PExchange(NCollection_BaseList& theOther) noexcept
   {
     std::swap(myAllocator, theOther.myAllocator);

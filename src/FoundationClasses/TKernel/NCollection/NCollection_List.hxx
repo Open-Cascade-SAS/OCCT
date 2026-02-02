@@ -98,8 +98,12 @@ public:
   }
 
   //! Initializer list constructor
-  NCollection_List(std::initializer_list<TheItemType> theInitList)
-      : NCollection_BaseList(occ::handle<NCollection_BaseAllocator>())
+  //! @param theInitList initializer list of elements to populate the list
+  //! @param theAllocator optional allocator for memory management
+  NCollection_List(std::initializer_list<TheItemType>            theInitList,
+                   const occ::handle<NCollection_BaseAllocator>& theAllocator =
+                     occ::handle<NCollection_BaseAllocator>())
+      : NCollection_BaseList(theAllocator)
   {
     for (const auto& anItem : theInitList)
     {
@@ -419,8 +423,9 @@ public:
   void Reverse() noexcept { PReverse(); }
 
   //! Exchange the content of two lists without re-allocations.
-  //! Exchanges pointers, so all existing iterators will still be valid
-  //! but will point to another list.
+  //! Swaps all internal state including allocators, ensuring correct
+  //! deallocation. Existing iterators remain valid but will point to
+  //! the other list's elements.
   void Exchange(NCollection_List& theOther) noexcept { PExchange(theOther); }
 
   //! Return true if object is stored in the list.
