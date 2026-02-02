@@ -1067,38 +1067,55 @@ void BOPDS_DS::SubShapesOnIn(
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& thePBOnIn,
   NCollection_Map<occ::handle<BOPDS_PaveBlock>>&        theCommonPaveBlocks) const
 {
+  const BOPDS_FaceInfo& aFaceInfo1 = FaceInfo(theFaceIndex1);
+  const BOPDS_FaceInfo& aFaceInfo2 = FaceInfo(theFaceIndex2);
 
-  const BOPDS_FaceInfo&                                aFaceInfo1 = FaceInfo(theFaceIndex1);
-  const BOPDS_FaceInfo&                                aFaceInfo2 = FaceInfo(theFaceIndex2);
-  NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> pMPB[4];
-  pMPB[0] = aFaceInfo1.PaveBlocksOn();
-  pMPB[1] = aFaceInfo1.PaveBlocksIn();
-  pMPB[2] = aFaceInfo2.PaveBlocksOn();
-  pMPB[3] = aFaceInfo2.PaveBlocksIn();
+  // Use const references to avoid copying large IndexedMaps.
+  // Previous implementation copied 4 maps per call, causing significant memory overhead.
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aPBOn1 = aFaceInfo1.PaveBlocksOn();
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aPBIn1 = aFaceInfo1.PaveBlocksIn();
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aPBOn2 = aFaceInfo2.PaveBlocksOn();
+  const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& aPBIn2 = aFaceInfo2.PaveBlocksIn();
 
-  for (int i = 0; i < 4; ++i)
-  {
-    for (int j = 1; j <= pMPB[i].Size(); ++j)
-    {
-      const occ::handle<BOPDS_PaveBlock>& aPaveBlock = pMPB[i](j);
-      thePBOnIn.Add(aPaveBlock);
-      int nV1, nV2;
-      aPaveBlock->Indices(nV1, nV2);
-
-      theMVOnIn.Add(nV1);
-      theMVOnIn.Add(nV2);
-
-      if (i < 2)
+  // Helper lambda to process pave blocks from a map
+  auto processMap =
+    [&thePBOnIn, &theMVOnIn](const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMap) {
+      for (int j = 1; j <= theMap.Size(); ++j)
       {
-        if (pMPB[2].Contains(aPaveBlock) || pMPB[3].Contains(aPaveBlock))
-        {
-          theCommonPaveBlocks.Add(aPaveBlock);
-          theMVCommon.Add(nV1);
-          theMVCommon.Add(nV2);
-        }
+        const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(j);
+        thePBOnIn.Add(aPaveBlock);
+        int nV1, nV2;
+        aPaveBlock->Indices(nV1, nV2);
+        theMVOnIn.Add(nV1);
+        theMVOnIn.Add(nV2);
+      }
+    };
+
+  // Process all four maps
+  processMap(aPBOn1);
+  processMap(aPBIn1);
+  processMap(aPBOn2);
+  processMap(aPBIn2);
+
+  // Find common pave blocks (those in Face1 that are also in Face2)
+  auto findCommon = [&theCommonPaveBlocks, &theMVCommon, &aPBOn2, &aPBIn2](
+                      const NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>& theMap) {
+    for (int j = 1; j <= theMap.Size(); ++j)
+    {
+      const occ::handle<BOPDS_PaveBlock>& aPaveBlock = theMap(j);
+      if (aPBOn2.Contains(aPaveBlock) || aPBIn2.Contains(aPaveBlock))
+      {
+        theCommonPaveBlocks.Add(aPaveBlock);
+        int nV1, nV2;
+        aPaveBlock->Indices(nV1, nV2);
+        theMVCommon.Add(nV1);
+        theMVCommon.Add(nV2);
       }
     }
-  }
+  };
+
+  findCommon(aPBOn1);
+  findCommon(aPBIn1);
 
   const NCollection_Map<int>& aMVOn1 = aFaceInfo1.VerticesOn();
   const NCollection_Map<int>& aMVIn1 = aFaceInfo1.VerticesIn();
