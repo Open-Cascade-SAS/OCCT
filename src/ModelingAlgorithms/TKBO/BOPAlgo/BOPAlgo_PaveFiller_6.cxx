@@ -660,45 +660,59 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     return;
   }
   //
-  bool                                   bExist, bValid2D;
-  int                                    i, nF1, nF2, aNbC, aNbP, j;
-  int                                    nV1, nV2;
-  double                                 aT1, aT2;
+  bool   bExist, bValid2D;
+  int    i, nF1, nF2, aNbC, aNbP, j;
+  int    nV1, nV2;
+  double aT1, aT2;
+  // Main allocator for cross-iteration data (IncAllocator for performance)
   occ::handle<NCollection_BaseAllocator> aAllocator = new NCollection_IncAllocator;
   // Temporary allocator for per-iteration collections that are cleared each iteration.
-  // Using separate allocator allows to reclaim memory via Reset(false) at the start
-  // of each iteration, preventing memory accumulation in the main loop.
+  // Using separate allocator allows memory reuse via Reset(false) at each iteration.
+  // Collections are kept outside the loop to reuse their bucket arrays after Clear().
   occ::handle<NCollection_IncAllocator> aTmpAllocator = new NCollection_IncAllocator;
+  // Default allocator for collections that require proper Free() behavior (Remove/UnBind).
+  // IncAllocator::Free() is a no-op, so collections with Remove/UnBind must use default.
+  occ::handle<NCollection_BaseAllocator> aDefaultAllocator =
+    NCollection_BaseAllocator::CommonBaseAllocator();
   NCollection_List<occ::handle<BOPDS_PaveBlock>>::Iterator aItLPB;
   TopoDS_Edge                                              aES;
   occ::handle<BOPDS_PaveBlock>                             aPBOut;
   //
   //-----------------------------------------------------scope f
   //
-  // Per-iteration collections (use temporary allocator, reset each iteration)
-  NCollection_List<int> aLSE(aTmpAllocator), aLBV(aTmpAllocator);
-  NCollection_Map<int>  aMVOnIn(100, aTmpAllocator), aMVCommon(100, aTmpAllocator),
-    aMVStick(100, aTmpAllocator), aMVEF(100, aTmpAllocator), aMVBounds(100, aTmpAllocator);
+  // Per-iteration collections (use temporary allocator, cleared and reset each iteration).
+  // Kept outside loop to reuse bucket arrays - Clear() preserves allocated buckets.
+  NCollection_List<int>                                aLSE(aTmpAllocator);
+  NCollection_List<int>                                aLBV(aTmpAllocator);
+  NCollection_Map<int>                                 aMVOnIn(100, aTmpAllocator);
+  NCollection_Map<int>                                 aMVCommon(100, aTmpAllocator);
+  NCollection_Map<int>                                 aMVStick(100, aTmpAllocator);
+  NCollection_Map<int>                                 aMVEF(100, aTmpAllocator);
+  NCollection_Map<int>                                 aMVBounds(100, aTmpAllocator);
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBOnIn(100, aTmpAllocator);
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>        aMPBCommon;
-  NCollection_DataMap<int, double>                     aMVTol(100, aTmpAllocator);
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>>        aMPBCommon(100, aTmpAllocator);
   NCollection_DataMap<int, NCollection_List<int>>      aDMBV(100, aTmpAllocator);
+  // aMVTol has UnBind() operations - must use default allocator for proper Free()
+  NCollection_DataMap<int, double> aMVTol(100, aDefaultAllocator);
+  //
   // Cross-iteration collections (use main allocator, persist through entire loop)
-  NCollection_Map<int>                           aMI(100, aAllocator);
-  NCollection_Map<occ::handle<BOPDS_PaveBlock>>  aMPBAdd(100, aAllocator);
-  NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPB(aAllocator);
+  NCollection_Map<int>                          aMI(100, aAllocator);
+  NCollection_Map<occ::handle<BOPDS_PaveBlock>> aMPBAdd(100, aAllocator);
+  // aLPB has Remove() operations - must use default allocator for proper Free()
+  NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPB(aDefaultAllocator);
   NCollection_IndexedDataMap<TopoDS_Shape, BOPDS_CoupleOfPaveBlocks, TopTools_ShapeMapHasher>
                                                                   aMSCPB(100, aAllocator);
   NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher> aMVI(100, aAllocator);
   NCollection_DataMap<occ::handle<BOPDS_PaveBlock>, NCollection_List<occ::handle<BOPDS_PaveBlock>>>
-                                                                aDMExEdges(100, aAllocator);
-  NCollection_DataMap<int, int>                                 aDMNewSD(100, aAllocator);
-  NCollection_DataMap<int, NCollection_List<int>>               aDMVLV;
+                                aDMExEdges(100, aAllocator);
+  NCollection_DataMap<int, int> aDMNewSD(100, aAllocator);
+  // aDMVLV has UnBind() operations - must use default allocator for proper Free()
+  NCollection_DataMap<int, NCollection_List<int>>               aDMVLV(100, aDefaultAllocator);
   NCollection_DataMap<int, double>::Iterator                    aItMV;
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>>          aMicroPB(100, aAllocator);
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertsOnRejectedPB;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aVertsOnRejectedPB(100, aAllocator);
   // Map of PaveBlocks with the faces to which it has to be added
-  BOPAlgo_DataMapOfPaveBlockListOfInteger aPBFacesMap;
+  BOPAlgo_DataMapOfPaveBlockListOfInteger aPBFacesMap(100, aAllocator);
   //
   // The vector aFFToRecheck contains indices of potentially problematic Face-Face intersections
   NCollection_Vector<int> aFFToRecheck;
@@ -736,6 +750,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     BOPDS_FaceInfo& aFI1 = myDS->ChangeFaceInfo(nF1);
     BOPDS_FaceInfo& aFI2 = myDS->ChangeFaceInfo(nF2);
     //
+    // Clear per-iteration collections and reset allocator for memory reuse
     aMVOnIn.Clear();
     aMVCommon.Clear();
     aMPBOnIn.Clear();
