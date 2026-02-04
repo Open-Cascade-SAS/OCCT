@@ -793,7 +793,7 @@ void MakeInternalShells(const TopTools_IndexedMapOfShape& theMF, TopTools_ListOf
 
 Standard_Boolean IsHole(const TopoDS_Shape& theS2)
 {
-  TopoDS_Solid*                pS2   = (TopoDS_Solid*)&theS2;
+  TopoDS_Solid* pS2 = (TopoDS_Solid*)&theS2;
 
   BRepClass3d_SolidClassifier aClsf(*pS2);
   aClsf.PerformInfinitePoint(::RealSmall());
