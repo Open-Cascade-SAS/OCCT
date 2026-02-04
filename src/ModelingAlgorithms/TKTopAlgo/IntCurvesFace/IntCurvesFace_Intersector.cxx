@@ -135,7 +135,7 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
   BRepAdaptor_Surface surface;
   face = Face;
   surface.Initialize(Face, aRestr);
-  Hsurface    = new BRepAdaptor_Surface(surface);
+  Hsurface = new BRepAdaptor_Surface(surface);
 
   GeomAbs_SurfaceType SurfaceType = Adaptor3d_HSurfaceTool::GetType(Hsurface);
   if ((SurfaceType != GeomAbs_Plane) && (SurfaceType != GeomAbs_Cylinder)
@@ -150,8 +150,8 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face& Face,
     V1 = Hsurface->LastVParameter();
     //
     myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
-    nbsu = myTopolTool->NbSamplesU();
-    nbsv = myTopolTool->NbSamplesV();
+    nbsu        = myTopolTool->NbSamplesU();
+    nbsv        = myTopolTool->NbSamplesV();
     //
     double aURes = Hsurface->UResolution(1.0);
     double aVRes = Hsurface->VResolution(1.0);
@@ -539,7 +539,8 @@ Bnd_Box IntCurvesFace_Intersector::Bounding() const
   }
 }
 
-TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv, double tol) const
+TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv,
+                                                        double          tol) const
 {
   if (myTopolTool.IsNull())
   {
