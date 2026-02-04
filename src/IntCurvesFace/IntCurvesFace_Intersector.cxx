@@ -135,8 +135,7 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face&     Face
   BRepAdaptor_Surface surface;
   face = Face;
   surface.Initialize(Face, aRestr);
-  Hsurface    = new BRepAdaptor_Surface(surface);
-  myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
+  Hsurface = new BRepAdaptor_Surface(surface);
 
   GeomAbs_SurfaceType SurfaceType = Adaptor3d_HSurfaceTool::GetType(Hsurface);
   if ((SurfaceType != GeomAbs_Plane) && (SurfaceType != GeomAbs_Cylinder)
@@ -150,8 +149,9 @@ IntCurvesFace_Intersector::IntCurvesFace_Intersector(const TopoDS_Face&     Face
     V0 = Hsurface->FirstVParameter();
     V1 = Hsurface->LastVParameter();
     //
-    nbsu = myTopolTool->NbSamplesU();
-    nbsv = myTopolTool->NbSamplesV();
+    myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
+    nbsu        = myTopolTool->NbSamplesU();
+    nbsv        = myTopolTool->NbSamplesV();
     //
     Standard_Real aURes = Hsurface->UResolution(1.0);
     Standard_Real aVRes = Hsurface->VResolution(1.0);
@@ -243,8 +243,7 @@ void IntCurvesFace_Intersector::InternalCall(const IntCurveSurface_HInter& HICS,
       const IntCurveSurface_IntersectionPoint& HICSPointindex = HICS.Point(index);
       gp_Pnt2d                                 Puv(HICSPointindex.U(), HICSPointindex.V());
 
-      // TopAbs_State currentstate = myTopolTool->Classify(Puv,Tol);
-      TopAbs_State currentstate = myTopolTool->Classify(Puv, !myUseBoundTol ? 0 : mintol2d);
+      TopAbs_State currentstate = ClassifyUVPoint(Puv, !myUseBoundTol ? 0 : mintol2d);
       if (myUseBoundTol && currentstate == TopAbs_OUT && maxtol2d > mintol2d)
       {
         if (anAdditionalTool.IsNull())
@@ -510,10 +509,14 @@ Bnd_Box IntCurvesFace_Intersector::Bounding() const
   }
 }
 
-TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv) const
+TopAbs_State IntCurvesFace_Intersector::ClassifyUVPoint(const gp_Pnt2d& Puv,
+                                                        Standard_Real   tol) const
 {
-  TopAbs_State state = myTopolTool->Classify(Puv, 1e-7);
-  return state;
+  if (myTopolTool.IsNull())
+  {
+    myTopolTool = new BRepTopAdaptor_TopolTool(Hsurface);
+  }
+  return myTopolTool->Classify(Puv, tol);
 }
 
 void IntCurvesFace_Intersector::SetUseBoundToler(Standard_Boolean UseBToler)
