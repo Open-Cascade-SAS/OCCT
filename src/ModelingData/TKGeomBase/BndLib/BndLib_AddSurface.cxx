@@ -222,17 +222,17 @@ void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
                          int&                              theOutMaxIdx)
 {
   BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
-  theOutMinIdx = std::max(theOutMinIdx, theKnots.Lower());
+  theOutMinIdx = std::clamp(theOutMinIdx, theKnots.Lower(), theKnots.Upper());
 
   BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
   theOutMaxIdx++;
-  theOutMaxIdx = std::min(theOutMaxIdx, theKnots.Upper());
-  int mult     = theMults(theOutMaxIdx);
+  theOutMaxIdx   = std::clamp(theOutMaxIdx, theKnots.Lower(), theKnots.Upper());
+  const int aMultiplier = theMults(theOutMaxIdx);
 
   theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
   theOutMinIdx = std::max(theOutMinIdx, 1);
   theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
-  theOutMaxIdx += theDegree - mult;
+  theOutMaxIdx += theDegree - aMultiplier;
   if (!theIsPeriodic)
     theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
 }
