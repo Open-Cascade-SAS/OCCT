@@ -17,7 +17,6 @@
 #define NCollection_DataMap_HeaderFile
 
 #include <NCollection_BaseMap.hxx>
-#include <NCollection_TListNode.hxx>
 #include <NCollection_StlIterator.hxx>
 #include <NCollection_DefaultHasher.hxx>
 #include <NCollection_ItemsView.hxx>
@@ -57,50 +56,59 @@ public:
   typedef TheItemType value_type;
 
 public:
-  // **************** Adaptation of the TListNode to the DATAmap
-  class DataMapNode : public NCollection_TListNode<TheItemType>
+  // **************** Adaptation of the ListNode to the DATAmap
+  class DataMapNode : public NCollection_ListNode
   {
   public:
     //! Constructor with 'Next'
     DataMapNode(const TheKeyType& theKey, const TheItemType& theItem, NCollection_ListNode* theNext)
-        : NCollection_TListNode<TheItemType>(theItem, theNext),
-          myKey(theKey)
+        : NCollection_ListNode(theNext),
+          myKey(theKey),
+          myValue(theItem)
     {
     }
 
     //! Constructor with 'Next'
     DataMapNode(const TheKeyType& theKey, TheItemType&& theItem, NCollection_ListNode* theNext)
-        : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext),
-          myKey(theKey)
+        : NCollection_ListNode(theNext),
+          myKey(theKey),
+          myValue(std::forward<TheItemType>(theItem))
     {
     }
 
     //! Constructor with 'Next'
     DataMapNode(TheKeyType&& theKey, const TheItemType& theItem, NCollection_ListNode* theNext)
-        : NCollection_TListNode<TheItemType>(theItem, theNext),
-          myKey(std::forward<TheKeyType>(theKey))
+        : NCollection_ListNode(theNext),
+          myKey(std::forward<TheKeyType>(theKey)),
+          myValue(theItem)
     {
     }
 
     //! Constructor with 'Next'
     DataMapNode(TheKeyType&& theKey, TheItemType&& theItem, NCollection_ListNode* theNext)
-        : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext),
-          myKey(std::forward<TheKeyType>(theKey))
+        : NCollection_ListNode(theNext),
+          myKey(std::forward<TheKeyType>(theKey)),
+          myValue(std::forward<TheItemType>(theItem))
     {
     }
 
     //! Constructor with in-place value construction
     template <typename K, typename... Args>
     DataMapNode(K&& theKey, std::in_place_t, NCollection_ListNode* theNext, Args&&... theArgs)
-        : NCollection_TListNode<TheItemType>(std::in_place,
-                                             theNext,
-                                             std::forward<Args>(theArgs)...),
-          myKey(std::forward<K>(theKey))
+        : NCollection_ListNode(theNext),
+          myKey(std::forward<K>(theKey)),
+          myValue(std::forward<Args>(theArgs)...)
     {
     }
 
     //! Key
     const TheKeyType& Key() const noexcept { return myKey; }
+
+    //! Constant value access
+    const TheItemType& Value() const noexcept { return myValue; }
+
+    //! Variable value access
+    TheItemType& ChangeValue() noexcept { return myValue; }
 
     //! Static deleter to be passed to BaseMap
     static void delNode(NCollection_ListNode*                   theNode,
@@ -111,7 +119,8 @@ public:
     }
 
   private:
-    TheKeyType myKey;
+    TheKeyType  myKey;
+    TheItemType myValue;
   };
 
 public:
@@ -656,7 +665,7 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false) { Destroy(DataMapNode::delNode, doReleaseMemory); }
+  void Clear(const bool doReleaseMemory = false) { clearNodes<DataMapNode>(doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)
@@ -667,7 +676,7 @@ public:
   }
 
   //! Destructor
-  ~NCollection_DataMap() override { Clear(true); }
+  ~NCollection_DataMap() { Clear(true); }
 
   //! Size
   int Size() const noexcept { return Extent(); }

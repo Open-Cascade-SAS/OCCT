@@ -21,6 +21,9 @@
 #include <NCollection_DefineAlloc.hxx>
 #include <NCollection_ListNode.hxx>
 
+#include <cstring>
+#include <type_traits>
+
 typedef void (*NCollection_DelMapNode)(NCollection_ListNode*,
                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
@@ -146,6 +149,7 @@ public:
   bool IsEmpty() const noexcept { return mySize == 0; }
 
   //! Statistics
+  Standard_DEPRECATED("Statistics() is deprecated and will be removed.")
   Standard_EXPORT void Statistics(Standard_OStream& S) const;
 
   //! Returns attached allocator
@@ -184,7 +188,7 @@ protected:
   }
 
   //! Destructor
-  virtual ~NCollection_BaseMap() = default;
+  ~NCollection_BaseMap() = default;
 
   //! BeginResize
   Standard_EXPORT bool BeginResize(const int               NbBuckets,
@@ -209,6 +213,48 @@ protected:
 
   //! Destroy
   Standard_EXPORT void Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true);
+
+  //! Template-based clear for derived map classes.
+  //! Destroys all nodes inline (no function pointer indirection), skips
+  //! unnecessary zeroing on the release-memory path, and uses if constexpr
+  //! to skip destructor calls for trivially destructible node types.
+  //! @tparam NodeType the concrete node type used by the map
+  //! @param doReleaseMemory if true, free bucket arrays after clearing
+  template <class NodeType>
+  void clearNodes(const bool doReleaseMemory)
+  {
+    if (!IsEmpty())
+    {
+      const int aNbBuckets = NbBuckets();
+      for (int anInd = 0; anInd <= aNbBuckets; anInd++)
+      {
+        NCollection_ListNode* aCur = myData1[anInd];
+        while (aCur)
+        {
+          NCollection_ListNode* aNext = aCur->Next();
+          if constexpr (!std::is_trivially_destructible_v<NodeType>)
+            static_cast<NodeType*>(aCur)->~NodeType();
+          myAllocator->Free(aCur);
+          aCur = aNext;
+        }
+      }
+      if (!doReleaseMemory)
+      {
+        memset(myData1, 0, (aNbBuckets + 1) * sizeof(NCollection_ListNode*));
+        if (myData2)
+          memset(myData2, 0, (aNbBuckets + 1) * sizeof(NCollection_ListNode*));
+      }
+      mySize = 0;
+    }
+    if (doReleaseMemory)
+    {
+      if (myData1)
+        Standard::Free(myData1);
+      if (myData2)
+        Standard::Free(myData2);
+      myData1 = myData2 = nullptr;
+    }
+  }
 
   //! NextPrimeForMap
   Standard_EXPORT int NextPrimeForMap(const int N) const noexcept;

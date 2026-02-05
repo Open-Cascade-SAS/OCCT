@@ -17,7 +17,6 @@
 #define NCollection_IndexedDataMap_HeaderFile
 
 #include <NCollection_BaseMap.hxx>
-#include <NCollection_TListNode.hxx>
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <NCollection_StlIterator.hxx>
@@ -58,8 +57,8 @@ public:
   typedef Hasher      hasher;
 
 private:
-  //!    Adaptation of the TListNode to the INDEXEDDatamap
-  class IndexedDataMapNode : public NCollection_TListNode<TheItemType>
+  //!    Adaptation of the ListNode to the INDEXEDDatamap
+  class IndexedDataMapNode : public NCollection_ListNode
   {
   public:
     //! Constructor with 'Next'
@@ -67,9 +66,10 @@ private:
                        const int             theIndex,
                        const TheItemType&    theItem,
                        NCollection_ListNode* theNext1)
-        : NCollection_TListNode<TheItemType>(theItem, theNext1),
+        : NCollection_ListNode(theNext1),
           myKey1(theKey1),
-          myIndex(theIndex)
+          myIndex(theIndex),
+          myValue(theItem)
     {
     }
 
@@ -78,9 +78,10 @@ private:
                        const int             theIndex,
                        const TheItemType&    theItem,
                        NCollection_ListNode* theNext1)
-        : NCollection_TListNode<TheItemType>(theItem, theNext1),
+        : NCollection_ListNode(theNext1),
           myKey1(std::forward<TheKeyType>(theKey1)),
-          myIndex(theIndex)
+          myIndex(theIndex),
+          myValue(theItem)
     {
     }
 
@@ -89,9 +90,10 @@ private:
                        const int             theIndex,
                        TheItemType&&         theItem,
                        NCollection_ListNode* theNext1)
-        : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext1),
+        : NCollection_ListNode(theNext1),
           myKey1(theKey1),
-          myIndex(theIndex)
+          myIndex(theIndex),
+          myValue(std::forward<TheItemType>(theItem))
     {
     }
 
@@ -100,9 +102,10 @@ private:
                        const int             theIndex,
                        TheItemType&&         theItem,
                        NCollection_ListNode* theNext1)
-        : NCollection_TListNode<TheItemType>(std::forward<TheItemType>(theItem), theNext1),
+        : NCollection_ListNode(theNext1),
           myKey1(std::forward<TheKeyType>(theKey1)),
-          myIndex(theIndex)
+          myIndex(theIndex),
+          myValue(std::forward<TheItemType>(theItem))
     {
     }
 
@@ -113,11 +116,10 @@ private:
                        std::in_place_t,
                        NCollection_ListNode* theNext1,
                        Args&&... theArgs)
-        : NCollection_TListNode<TheItemType>(std::in_place,
-                                             theNext1,
-                                             std::forward<Args>(theArgs)...),
+        : NCollection_ListNode(theNext1),
           myKey1(std::forward<K>(theKey1)),
-          myIndex(theIndex)
+          myIndex(theIndex),
+          myValue(std::forward<Args>(theArgs)...)
     {
     }
 
@@ -126,6 +128,12 @@ private:
 
     //! Index
     int& Index() noexcept { return myIndex; }
+
+    //! Constant value access
+    const TheItemType& Value() const noexcept { return myValue; }
+
+    //! Variable value access
+    TheItemType& ChangeValue() noexcept { return myValue; }
 
     //! Static deleter to be passed to BaseList
     static void delNode(NCollection_ListNode*                   theNode,
@@ -136,8 +144,9 @@ private:
     }
 
   private:
-    TheKeyType myKey1;
-    int        myIndex;
+    TheKeyType  myKey1;
+    int         myIndex;
+    TheItemType myValue;
   };
 
 public:
@@ -846,7 +855,7 @@ public:
   //! buckets is not released and will be reused.
   void Clear(const bool doReleaseMemory = false)
   {
-    Destroy(IndexedDataMapNode::delNode, doReleaseMemory);
+    clearNodes<IndexedDataMapNode>(doReleaseMemory);
   }
 
   //! Clear data and reset allocator
@@ -858,7 +867,7 @@ public:
   }
 
   //! Destructor
-  ~NCollection_IndexedDataMap() override { Clear(true); }
+  ~NCollection_IndexedDataMap() { Clear(true); }
 
   //! Size
   int Size() const noexcept { return Extent(); }
