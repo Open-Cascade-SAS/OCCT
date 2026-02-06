@@ -23,12 +23,9 @@
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
 
-#include <Standard_Real.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Boolean.hxx>
-
 #include <algorithm>
 #include <cmath>
+#include <optional>
 
 class gp_Dir2d;
 class gp_Trsf2d;
@@ -169,6 +166,12 @@ public:
   //! Returns the Ymax value (IsOpenYmax() ? Precision::Infinite() : Ymax + GetGap()).
   [[nodiscard]] Standard_EXPORT double GetYMax() const;
 
+  //! Returns the center of this 2D bounding box. The gap is included.
+  //! If this bounding box is infinite (i.e. "open"), returned values
+  //! may be equal to +/- Precision::Infinite().
+  //! Returns std::nullopt if the box is void.
+  [[nodiscard]] Standard_EXPORT std::optional<gp_Pnt2d> Center() const;
+
   //! The Box will be infinitely long in the Xmin direction.
   void OpenXmin() noexcept { Flags |= XminMask; }
 
@@ -237,6 +240,15 @@ public:
 
   //! Returns True if <Box2d> is out <me>.
   [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_Box2d& Other) const;
+
+  //! Returns True if the 2d point is inside or on the boundary of this box.
+  [[nodiscard]] bool Contains(const gp_Pnt2d& theP) const { return !IsOut(theP); }
+
+  //! Returns True if the other 2d box intersects or is inside this box.
+  [[nodiscard]] bool Intersects(const Bnd_Box2d& theOther) const { return !IsOut(theOther); }
+
+  //! Computes the minimum distance between two 2D boxes.
+  [[nodiscard]] Standard_EXPORT double Distance(const Bnd_Box2d& theOther) const;
 
   //! Returns True if transformed <Box2d> is out <me>.
   [[nodiscard]] bool IsOut(const Bnd_Box2d& theOther, const gp_Trsf2d& theTrsf) const noexcept

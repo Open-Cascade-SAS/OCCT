@@ -18,6 +18,5 @@ set(OCCT_Bnd_FILES
   Bnd_Range.hxx
   Bnd_Sphere.cxx
   Bnd_Sphere.hxx
-  Bnd_Sphere.lxx
   Bnd_Tools.hxx
 )

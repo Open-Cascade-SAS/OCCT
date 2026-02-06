@@ -21,8 +21,6 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_XYZ.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 
 //! This class represents a bounding sphere of a geometric entity
 //! (triangle, segment of line or whatever else).
@@ -41,22 +39,22 @@ public:
                              const int     theV);
 
   //! Returns the U parameter on shape
-  int U() const;
+  int U() const noexcept { return myU; }
 
   //! Returns the V parameter on shape
-  int V() const;
+  int V() const noexcept { return myV; }
 
   //! Returns validity status, indicating that this
   //! sphere corresponds to a real entity
-  bool IsValid() const;
+  bool IsValid() const noexcept { return myIsValid; }
 
-  void SetValid(const bool isValid);
+  void SetValid(const bool isValid) noexcept { myIsValid = isValid; }
 
   //! Returns center of sphere object
-  const gp_XYZ& Center() const;
+  const gp_XYZ& Center() const noexcept { return myCenter; }
 
   //! Returns the radius value
-  double Radius() const;
+  double Radius() const noexcept { return myRadius; }
 
   //! Calculate and return minimal and maximal distance to sphere.
   //! NOTE: This function is tightly optimized; any modifications
@@ -94,7 +92,5 @@ private:
   int    myU;
   int    myV;
 };
-
-#include <Bnd_Sphere.lxx>
 
 #endif // _Bnd_Sphere_HeaderFile

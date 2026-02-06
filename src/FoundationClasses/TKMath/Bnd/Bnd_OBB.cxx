@@ -596,8 +596,19 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   aZAxis /= std::sqrt(aSqMod);
 
   gp_XYZ aXAxis[aNbAxes];
+  bool   aXAxisValid[aNbAxes];
   for (int i = 0; i < aNbAxes; i++)
-    aXAxis[i] = aYAxis[i].Crossed(aZAxis).Normalized();
+  {
+    const gp_XYZ aCross = aYAxis[i].Crossed(aZAxis);
+    const double aCrossSqMod = aCross.SquareModulus();
+    if (aCrossSqMod < Precision::SquareConfusion())
+    {
+      aXAxisValid[i] = false;
+      continue;
+    }
+    aXAxis[i]      = aCross / std::sqrt(aCrossSqMod);
+    aXAxisValid[i] = true;
+  }
 
   if (theIsBuiltTrg)
     FillToTriangle5(aZAxis, myLExtremalPoints[theIdx1]);
@@ -612,6 +623,9 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   int aMinIdx = -1;
   for (int anAxeInd = 0; anAxeInd < aNbAxes; anAxeInd++)
   {
+    if (!aXAxisValid[anAxeInd])
+      continue;
+
     const gp_XYZ& aAX = aXAxis[anAxeInd];
     // Compute params on XAxis
     FindMinMax(aAX, aParams[0], aParams[1]);
@@ -662,14 +676,14 @@ void OBBTool::ProcessDiTetrahedron()
     // Use the standard DiTo approach
     ProcessTriangle(myTriIdx[0], myTriIdx[1], myTriIdx[2], true);
 
-    if (myTriIdx[3] <= myNbExtremalPoints)
+    if (myTriIdx[3] < myNbExtremalPoints)
     {
       ProcessTriangle(myTriIdx[0], myTriIdx[1], myTriIdx[3], false);
       ProcessTriangle(myTriIdx[1], myTriIdx[2], myTriIdx[3], false);
       ProcessTriangle(myTriIdx[0], myTriIdx[2], myTriIdx[3], false);
     }
 
-    if (myTriIdx[4] <= myNbExtremalPoints)
+    if (myTriIdx[4] < myNbExtremalPoints)
     {
       ProcessTriangle(myTriIdx[0], myTriIdx[1], myTriIdx[4], false);
       ProcessTriangle(myTriIdx[1], myTriIdx[2], myTriIdx[4], false);
