@@ -277,7 +277,7 @@ TEST(Bnd_RangeTest, IsIntersected_Periodic_Outside)
 
 TEST(Bnd_RangeTest, Split_NoIntersection)
 {
-  Bnd_Range                aRange(3.0, 15.0);
+  Bnd_Range                   aRange(3.0, 15.0);
   NCollection_List<Bnd_Range> aList;
   aRange.Split(20.0, aList);
   EXPECT_EQ(aList.Size(), 1);
@@ -289,7 +289,7 @@ TEST(Bnd_RangeTest, Split_NoIntersection)
 
 TEST(Bnd_RangeTest, Split_AtInteriorPoint)
 {
-  Bnd_Range                aRange(3.0, 15.0);
+  Bnd_Range                   aRange(3.0, 15.0);
   NCollection_List<Bnd_Range> aList;
   aRange.Split(5.0, aList);
   EXPECT_EQ(aList.Size(), 2);
@@ -307,7 +307,7 @@ TEST(Bnd_RangeTest, Split_Periodic)
 {
   // Range [3, 15], split at val=5, period=4
   // Split points: 5, 9, 13 → sub-ranges: [3,5], [5,9], [9,13], [13,15]
-  Bnd_Range                aRange(3.0, 15.0);
+  Bnd_Range                   aRange(3.0, 15.0);
   NCollection_List<Bnd_Range> aList;
   aRange.Split(5.0, aList, 4.0);
   EXPECT_EQ(aList.Size(), 4);

@@ -52,10 +52,10 @@ TEST(Bnd_SphereTest, Validity)
 
 TEST(Bnd_SphereTest, Distance)
 {
-  const gp_XYZ  aCenter(0.0, 0.0, 0.0);
-  Bnd_Sphere    aSphere(aCenter, 1.0, 0, 0);
-  const gp_XYZ  aPoint(3.0, 4.0, 0.0);
-  const double  aDist = aSphere.Distance(aPoint);
+  const gp_XYZ aCenter(0.0, 0.0, 0.0);
+  Bnd_Sphere   aSphere(aCenter, 1.0, 0, 0);
+  const gp_XYZ aPoint(3.0, 4.0, 0.0);
+  const double aDist = aSphere.Distance(aPoint);
   EXPECT_DOUBLE_EQ(aDist, 5.0);
 }
 
@@ -147,9 +147,9 @@ TEST(Bnd_SphereTest, Project)
   Bnd_Sphere   aSphere(aCenter, 5.0, 0, 0);
   const gp_XYZ aNode(10.0, 20.0, 30.0);
   gp_XYZ       aProjNode;
-  double       aDist   = 0.0;
+  double       aDist    = 0.0;
   bool         anInside = false;
-  const bool   isOk    = aSphere.Project(aNode, aProjNode, aDist, anInside);
+  const bool   isOk     = aSphere.Project(aNode, aProjNode, aDist, anInside);
   EXPECT_TRUE(isOk);
   EXPECT_TRUE(anInside);
   EXPECT_DOUBLE_EQ(aProjNode.X(), aCenter.X());

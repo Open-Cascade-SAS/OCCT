@@ -287,7 +287,10 @@ public:
   [[nodiscard]] bool Contains(double theValue) const noexcept { return !IsOut(theValue); }
 
   //! Returns True if the given range intersects (overlaps with) this range.
-  [[nodiscard]] bool Intersects(const Bnd_Range& theRange) const noexcept { return !IsOut(theRange); }
+  [[nodiscard]] bool Intersects(const Bnd_Range& theRange) const noexcept
+  {
+    return !IsOut(theRange);
+  }
 
   //! Returns the MIN boundary of <this>.
   //! Returns std::nullopt if IsVoid().

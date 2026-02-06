@@ -599,7 +599,7 @@ void OBBTool::ProcessTriangle(const int  theIdx1,
   bool   aXAxisValid[aNbAxes];
   for (int i = 0; i < aNbAxes; i++)
   {
-    const gp_XYZ aCross = aYAxis[i].Crossed(aZAxis);
+    const gp_XYZ aCross      = aYAxis[i].Crossed(aZAxis);
     const double aCrossSqMod = aCross.SquareModulus();
     if (aCrossSqMod < Precision::SquareConfusion())
     {

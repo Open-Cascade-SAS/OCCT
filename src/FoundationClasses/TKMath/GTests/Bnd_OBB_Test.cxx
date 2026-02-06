@@ -90,7 +90,8 @@ TEST(Bnd_OBB_Test, Intersects_OBB)
 {
   Bnd_OBB anOBB1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
   Bnd_OBB anOBB2(gp_Pnt(8, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
-  Bnd_OBB anOBB3(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
+  Bnd_OBB
+    anOBB3(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
   EXPECT_TRUE(anOBB1.Intersects(anOBB2));
   EXPECT_FALSE(anOBB1.Intersects(anOBB3));
 }

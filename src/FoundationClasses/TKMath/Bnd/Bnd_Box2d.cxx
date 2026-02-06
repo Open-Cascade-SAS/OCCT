@@ -423,8 +423,7 @@ std::optional<gp_Pnt2d> Bnd_Box2d::Center() const
   {
     return std::nullopt;
   }
-  return gp_Pnt2d(0.5 * (GetXMin() + GetXMax()),
-                  0.5 * (GetYMin() + GetYMax()));
+  return gp_Pnt2d(0.5 * (GetXMin() + GetXMax()), 0.5 * (GetYMin() + GetYMax()));
 }
 
 //=================================================================================================
@@ -446,8 +445,7 @@ double Bnd_Box2d::Distance(const Bnd_Box2d& theOther) const
   auto distAxis = [](const double theMin1,
                      const double theMax1,
                      const double theMin2,
-                     const double theMax2) -> double
-  {
+                     const double theMax2) -> double {
     if (theMin1 > theMax2)
     {
       const double aD = theMin1 - theMax2;

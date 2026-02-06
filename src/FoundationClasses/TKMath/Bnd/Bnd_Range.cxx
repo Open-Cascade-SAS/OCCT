@@ -57,7 +57,7 @@ bool Bnd_Range::Union(const Bnd_Range& theOther)
 //=================================================================================================
 
 Bnd_Range::IntersectStatus Bnd_Range::IsIntersected(const double theVal,
-                                                     const double thePeriod) const
+                                                    const double thePeriod) const
 {
   if (IsVoid())
     return IntersectStatus_Out;

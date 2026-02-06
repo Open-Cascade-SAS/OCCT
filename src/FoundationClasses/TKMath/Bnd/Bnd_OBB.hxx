@@ -183,7 +183,10 @@ public:
   //! @code
   //!   auto [aHX, aHY, aHZ] = anOBB.GetHalfSizes();
   //! @endcode
-  [[nodiscard]] HalfSizes GetHalfSizes() const noexcept { return {myHDims[0], myHDims[1], myHDims[2]}; }
+  [[nodiscard]] HalfSizes GetHalfSizes() const noexcept
+  {
+    return {myHDims[0], myHDims[1], myHDims[2]};
+  }
 
   //! Checks if the box is empty.
   [[nodiscard]] bool IsVoid() const noexcept

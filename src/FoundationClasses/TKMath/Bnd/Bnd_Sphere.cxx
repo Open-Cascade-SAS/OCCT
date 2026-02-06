@@ -36,9 +36,9 @@ Bnd_Sphere::Bnd_Sphere(const gp_XYZ& theCenter,
 
 void Bnd_Sphere::SquareDistances(const gp_XYZ& theXYZ, double& theMin, double& theMax) const
 {
-  theMax = (theXYZ - myCenter).SquareModulus();
+  theMax              = (theXYZ - myCenter).SquareModulus();
   const double aRadSq = myRadius * myRadius;
-  theMin = (theMax < aRadSq ? 0.0 : theMax - aRadSq);
+  theMin              = (theMax < aRadSq ? 0.0 : theMax - aRadSq);
   theMax += aRadSq;
 }
 
