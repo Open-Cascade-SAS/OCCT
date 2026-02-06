@@ -18,14 +18,13 @@
 #define Convert_PolynomialCosAndSin_HeaderFile
 
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
 void BuildPolynomialCosAndSin(const double,
                               const double,
                               const int,
-                              occ::handle<NCollection_HArray1<double>>&,
-                              occ::handle<NCollection_HArray1<double>>&,
-                              occ::handle<NCollection_HArray1<double>>&);
+                              NCollection_Array1<double>&,
+                              NCollection_Array1<double>&,
+                              NCollection_Array1<double>&);
 
 #endif

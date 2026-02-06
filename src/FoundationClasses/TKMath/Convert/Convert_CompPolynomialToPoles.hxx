@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
@@ -109,26 +110,40 @@ public:
     const NCollection_Array1<double>& PolynomialIntervals,
     const NCollection_Array1<double>& TrueIntervals);
 
-  //! number of poles of the n-dimensional BSpline
-  Standard_EXPORT int NbPoles() const;
+  //! Returns the number of poles of the n-dimensional BSpline.
+  [[nodiscard]] Standard_EXPORT int NbPoles() const;
 
-  //! returns the poles of the n-dimensional BSpline
-  //! in the following format :
+  //! Returns the poles of the n-dimensional BSpline
+  //! in the following format:
   //! [1..NumPoles][1..Dimension]
-  Standard_EXPORT void Poles(occ::handle<NCollection_HArray2<double>>& Poles) const;
+  [[nodiscard]] Standard_EXPORT const NCollection_Array2<double>& Poles() const;
 
-  Standard_EXPORT int Degree() const;
+  //! Returns the poles of the n-dimensional BSpline via output parameter.
+  Standard_DEPRECATED("Use Poles() returning const reference instead")
+  Standard_EXPORT void Poles(occ::handle<NCollection_HArray2<double>>& thePoles) const;
 
-  //! Degree of the n-dimensional Bspline
-  Standard_EXPORT int NbKnots() const;
+  //! Returns the degree of the n-dimensional BSpline.
+  [[nodiscard]] Standard_EXPORT int Degree() const;
 
-  //! Knots of the n-dimensional Bspline
-  Standard_EXPORT void Knots(occ::handle<NCollection_HArray1<double>>& K) const;
+  //! Returns the number of knots of the n-dimensional BSpline.
+  [[nodiscard]] Standard_EXPORT int NbKnots() const;
 
-  //! Multiplicities of the knots in the BSpline
-  Standard_EXPORT void Multiplicities(occ::handle<NCollection_HArray1<int>>& M) const;
+  //! Returns the knots of the n-dimensional BSpline.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array1<double>& Knots() const;
 
-  Standard_EXPORT bool IsDone() const;
+  //! Returns the knots of the n-dimensional BSpline via output parameter.
+  Standard_DEPRECATED("Use Knots() returning const reference instead")
+  Standard_EXPORT void Knots(occ::handle<NCollection_HArray1<double>>& theKnots) const;
+
+  //! Returns the multiplicities of the knots in the BSpline.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array1<int>& Multiplicities() const;
+
+  //! Returns the multiplicities of the knots via output parameter.
+  Standard_DEPRECATED("Use Multiplicities() returning const reference instead")
+  Standard_EXPORT void Multiplicities(occ::handle<NCollection_HArray1<int>>& theMults) const;
+
+  //! Returns true if the conversion was successful.
+  [[nodiscard]] Standard_EXPORT bool IsDone() const;
 
 private:
   Standard_EXPORT void Perform(const int                         NumCurves,
@@ -139,12 +154,14 @@ private:
                                const NCollection_Array2<double>& PolynomialIntervals,
                                const NCollection_Array1<double>& TrueIntervals);
 
-  occ::handle<NCollection_HArray1<double>> myFlatKnots;
-  occ::handle<NCollection_HArray1<double>> myKnots;
-  occ::handle<NCollection_HArray1<int>>    myMults;
-  occ::handle<NCollection_HArray2<double>> myPoles;
-  int                                      myDegree;
-  bool                                     myDone;
+private:
+
+  NCollection_Array1<double> myFlatKnots;
+  NCollection_Array1<double> myKnots;
+  NCollection_Array1<int>    myMults;
+  NCollection_Array2<double> myPoles;
+  int                        myDegree;
+  bool                       myDone;
 };
 
 #endif // _Convert_CompPolynomialToPoles_HeaderFile

@@ -551,24 +551,25 @@ void AppDef_Variational::Approximate()
                                              IntervallesPtr);
     if (AConverter.IsDone())
     {
-      occ::handle<NCollection_HArray2<double>> PolesPtr;
       occ::handle<NCollection_HArray1<int>>    Mults;
       int                                      NbPoles = AConverter.NbPoles();
       //	int Deg=AConverter.Degree();
       NCollection_Array1<AppParCurves_MultiPoint> TabMU(1, NbPoles);
-      AConverter.Poles(PolesPtr);
+      const NCollection_Array2<double>& aPoles = AConverter.Poles();
+      Standard_DISABLE_DEPRECATION_WARNINGS
       AConverter.Knots(myKnots);
       AConverter.Multiplicities(Mults);
+      Standard_ENABLE_DEPRECATION_WARNINGS
 
-      for (ipole = PolesPtr->LowerRow(); ipole <= PolesPtr->UpperRow(); ipole++)
+      for (ipole = aPoles.LowerRow(); ipole <= aPoles.UpperRow(); ipole++)
       {
-        int index = PolesPtr->LowerCol();
+        int index = aPoles.LowerCol();
         /*	    if(myNbP2d !=0 )
         {
         for (jp2d=1;jp2d<=myNbP2d;jp2d++)
         {
-        P2d.SetX(PolesPtr->Value(ipole,index++));
-        P2d.SetY(PolesPtr->Value(ipole,index++));
+        P2d.SetX(aPoles.Value(ipole,index++));
+        P2d.SetY(aPoles.Value(ipole,index++));
         TabP2d.SetValue(jp2d,P2d);
         }
         }*/
@@ -577,14 +578,14 @@ void AppDef_Variational::Approximate()
           for (jp3d = 1; jp3d <= myNbP3d; jp3d++)
           {
             //                       std::cout << "\n Poles(ipole,1)" <<
-            //                       PolesPtr->Value(ipole,index);
-            P3d.SetX(PolesPtr->Value(ipole, index++));
+            //                       aPoles.Value(ipole,index);
+            P3d.SetX(aPoles.Value(ipole, index++));
             //                       std::cout << "\n Poles(ipole,1)" <<
-            //                       PolesPtr->Value(ipole,index);
-            P3d.SetY(PolesPtr->Value(ipole, index++));
+            //                       aPoles.Value(ipole,index);
+            P3d.SetY(aPoles.Value(ipole, index++));
             //                       std::cout << "\n Poles(ipole,1)" <<
-            //                       PolesPtr->Value(ipole,index);
-            P3d.SetZ(PolesPtr->Value(ipole, index++));
+            //                       aPoles.Value(ipole,index);
+            P3d.SetZ(aPoles.Value(ipole, index++));
             TabP3d.SetValue(jp3d, P3d);
           }
         }
@@ -592,8 +593,8 @@ void AppDef_Variational::Approximate()
         {
           for (jp2d = 1; jp2d <= myNbP2d; jp2d++)
           {
-            P2d.SetX(PolesPtr->Value(ipole, index++));
-            P2d.SetY(PolesPtr->Value(ipole, index++));
+            P2d.SetX(aPoles.Value(ipole, index++));
+            P2d.SetY(aPoles.Value(ipole, index++));
             TabP2d.SetValue(jp2d, P2d);
           }
         }

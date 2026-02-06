@@ -2,12 +2,15 @@
 set(OCCT_Convert_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Convert_FILES
+  Convert_BSplineCurveData.hxx
+  Convert_BSplineSurfaceData.hxx
   Convert_CircleToBSplineCurve.cxx
   Convert_CircleToBSplineCurve.hxx
   Convert_CompBezierCurves2dToBSplineCurve2d.cxx
   Convert_CompBezierCurves2dToBSplineCurve2d.hxx
   Convert_CompBezierCurvesToBSplineCurve.cxx
   Convert_CompBezierCurvesToBSplineCurve.hxx
+  Convert_CompBezierCurvesToBSplineCurveBase.hxx
   Convert_CompPolynomialToPoles.cxx
   Convert_CompPolynomialToPoles.hxx
   Convert_ConeToBSplineSurface.cxx

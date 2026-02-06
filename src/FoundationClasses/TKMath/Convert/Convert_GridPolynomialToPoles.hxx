@@ -81,6 +81,43 @@ public:
     const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
     const occ::handle<NCollection_HArray1<double>>& TrueVIntervals);
 
+  //! Returns the number of poles in the U parametric direction.
+  [[nodiscard]] Standard_EXPORT int NbUPoles() const;
+
+  //! Returns the number of poles in the V parametric direction.
+  [[nodiscard]] Standard_EXPORT int NbVPoles() const;
+
+  //! Returns the poles of the BSpline Surface.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array2<gp_Pnt>& Poles() const;
+
+  //! Returns the degree in the U parametric direction.
+  [[nodiscard]] Standard_EXPORT int UDegree() const;
+
+  //! Returns the degree in the V parametric direction.
+  [[nodiscard]] Standard_EXPORT int VDegree() const;
+
+  //! Returns the number of knots in the U parametric direction.
+  [[nodiscard]] Standard_EXPORT int NbUKnots() const;
+
+  //! Returns the number of knots in the V parametric direction.
+  [[nodiscard]] Standard_EXPORT int NbVKnots() const;
+
+  //! Returns the knots in the U direction.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array1<double>& UKnots() const;
+
+  //! Returns the knots in the V direction.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array1<double>& VKnots() const;
+
+  //! Returns the multiplicities of the knots in the U direction.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array1<int>& UMultiplicities() const;
+
+  //! Returns the multiplicities of the knots in the V direction.
+  [[nodiscard]] Standard_EXPORT const NCollection_Array1<int>& VMultiplicities() const;
+
+  //! Returns true if the conversion was successful.
+  [[nodiscard]] Standard_EXPORT bool IsDone() const;
+
+private:
   Standard_EXPORT void Perform(const int                                       UContinuity,
                                const int                                       VContinuity,
                                const int                                       MaxUDegree,
@@ -92,53 +129,25 @@ public:
                                const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
                                const occ::handle<NCollection_HArray1<double>>& TrueVIntervals);
 
-  Standard_EXPORT int NbUPoles() const;
-
-  Standard_EXPORT int NbVPoles() const;
-
-  //! returns the poles of the BSpline Surface
-  Standard_EXPORT const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles() const;
-
-  Standard_EXPORT int UDegree() const;
-
-  Standard_EXPORT int VDegree() const;
-
-  Standard_EXPORT int NbUKnots() const;
-
-  Standard_EXPORT int NbVKnots() const;
-
-  //! Knots in the U direction
-  Standard_EXPORT const occ::handle<NCollection_HArray1<double>>& UKnots() const;
-
-  //! Knots in the V direction
-  Standard_EXPORT const occ::handle<NCollection_HArray1<double>>& VKnots() const;
-
-  //! Multiplicities of the knots in the U direction
-  Standard_EXPORT const occ::handle<NCollection_HArray1<int>>& UMultiplicities() const;
-
-  //! Multiplicities of the knots in the V direction
-  Standard_EXPORT const occ::handle<NCollection_HArray1<int>>& VMultiplicities() const;
-
-  Standard_EXPORT bool IsDone() const;
+  Standard_EXPORT void BuildArray(const int                         Degree,
+                                  const NCollection_Array1<double>& Knots,
+                                  const int                         Continuty,
+                                  NCollection_Array1<double>&       FlatKnots,
+                                  NCollection_Array1<int>&          Mults,
+                                  NCollection_Array1<double>&       Parameters) const;
 
 private:
-  Standard_EXPORT void BuildArray(const int                                       Degree,
-                                  const occ::handle<NCollection_HArray1<double>>& Knots,
-                                  const int                                       Continuty,
-                                  occ::handle<NCollection_HArray1<double>>&       FlatKnots,
-                                  occ::handle<NCollection_HArray1<int>>&          Mults,
-                                  occ::handle<NCollection_HArray1<double>>&       Parameters) const;
 
-  occ::handle<NCollection_HArray1<double>> myUFlatKnots;
-  occ::handle<NCollection_HArray1<double>> myVFlatKnots;
-  occ::handle<NCollection_HArray1<double>> myUKnots;
-  occ::handle<NCollection_HArray1<double>> myVKnots;
-  occ::handle<NCollection_HArray1<int>>    myUMults;
-  occ::handle<NCollection_HArray1<int>>    myVMults;
-  occ::handle<NCollection_HArray2<gp_Pnt>> myPoles;
-  int                                      myUDegree;
-  int                                      myVDegree;
-  bool                                     myDone;
+  NCollection_Array1<double> myUFlatKnots;
+  NCollection_Array1<double> myVFlatKnots;
+  NCollection_Array1<double> myUKnots;
+  NCollection_Array1<double> myVKnots;
+  NCollection_Array1<int>    myUMults;
+  NCollection_Array1<int>    myVMults;
+  NCollection_Array2<gp_Pnt> myPoles;
+  int                        myUDegree;
+  int                        myVDegree;
+  bool                       myDone;
 };
 
 #endif // _Convert_GridPolynomialToPoles_HeaderFile

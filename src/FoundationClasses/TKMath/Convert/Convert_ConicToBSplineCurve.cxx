@@ -14,107 +14,133 @@
 
 // JCV 16/10/91
 
-#define No_Standard_OutOfRange
-
 #include <BSplCLib.hxx>
 #include <Convert_ConicToBSplineCurve.hxx>
 #include <Convert_CosAndSinEvalFunction.hxx>
 #include <Convert_PolynomialCosAndSin.hxx>
+#include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
+#include <NCollection_Array1.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_OutOfRange.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_OutOfRange.hxx>
 
-//=================================================================================================
+//==================================================================================================
 
-Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int NbPoles,
-                                                         const int NbKnots,
-                                                         const int Degree)
-    : degree(Degree),
-      nbPoles(NbPoles),
-      nbKnots(NbKnots),
-      isperiodic(false)
+Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int theNumberOfPoles,
+                                                         const int theNumberOfKnots,
+                                                         const int theDegree)
+    : myDegree(theDegree),
+      myNbPoles(theNumberOfPoles),
+      myNbKnots(theNumberOfKnots),
+      myIsPeriodic(false)
 
 {
-  if (NbPoles >= 2)
+  if (theNumberOfPoles >= 2)
   {
-    poles = new NCollection_HArray1<gp_Pnt2d>(1, NbPoles);
-
-    weights = new NCollection_HArray1<double>(1, NbPoles);
+    myPoles   = NCollection_Array1<gp_Pnt2d>(1, theNumberOfPoles);
+    myWeights = NCollection_Array1<double>(1, theNumberOfPoles);
   }
-  if (NbKnots >= 2)
+  if (theNumberOfKnots >= 2)
   {
-    knots = new NCollection_HArray1<double>(1, NbKnots);
-    mults = new NCollection_HArray1<int>(1, NbKnots);
+    myKnots = NCollection_Array1<double>(1, theNumberOfKnots);
+    myMults = NCollection_Array1<int>(1, theNumberOfKnots);
   }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 int Convert_ConicToBSplineCurve::Degree() const
 {
-  return degree;
+  return myDegree;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 int Convert_ConicToBSplineCurve::NbPoles() const
 {
-  return nbPoles;
+  return myNbPoles;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 int Convert_ConicToBSplineCurve::NbKnots() const
 {
-  return nbKnots;
+  return myNbKnots;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 bool Convert_ConicToBSplineCurve::IsPeriodic() const
 {
-  return isperiodic;
+  return myIsPeriodic;
 }
 
-//=================================================================================================
+//==================================================================================================
 
-gp_Pnt2d Convert_ConicToBSplineCurve::Pole(const int Index) const
+Standard_DISABLE_DEPRECATION_WARNINGS
+gp_Pnt2d Convert_ConicToBSplineCurve::Pole(const int theIndex) const
 {
-  if (Index < 1 || Index > nbPoles)
-    throw Standard_OutOfRange(" ");
-  return poles->Value(Index);
+  if (theIndex < 1 || theIndex > myNbPoles)
+    throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Pole: Index out of range");
+  return myPoles(theIndex);
 }
 
-//=================================================================================================
+//==================================================================================================
 
-double Convert_ConicToBSplineCurve::Weight(const int Index) const
+double Convert_ConicToBSplineCurve::Weight(const int theIndex) const
 {
-  if (Index < 1 || Index > nbPoles)
-    throw Standard_OutOfRange(" ");
-  return weights->Value(Index);
+  if (theIndex < 1 || theIndex > myNbPoles)
+    throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Weight: Index out of range");
+  return myWeights(theIndex);
 }
 
-//=================================================================================================
+//==================================================================================================
 
-double Convert_ConicToBSplineCurve::Knot(const int Index) const
+double Convert_ConicToBSplineCurve::Knot(const int theIndex) const
 {
-  if (Index < 1 || Index > nbKnots)
-    throw Standard_OutOfRange(" ");
-  return knots->Value(Index);
+  if (theIndex < 1 || theIndex > myNbKnots)
+    throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Knot: Index out of range");
+  return myKnots(theIndex);
 }
 
-//=================================================================================================
+//==================================================================================================
 
-int Convert_ConicToBSplineCurve::Multiplicity(const int Index) const
+int Convert_ConicToBSplineCurve::Multiplicity(const int theIndex) const
 {
-  if (Index < 1 || Index > nbKnots)
-    throw Standard_OutOfRange(" ");
-  return mults->Value(Index);
+  if (theIndex < 1 || theIndex > myNbKnots)
+    throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Multiplicity: Index out of range");
+  return myMults(theIndex);
+}
+Standard_ENABLE_DEPRECATION_WARNINGS
+
+//==================================================================================================
+
+const NCollection_Array1<gp_Pnt2d>& Convert_ConicToBSplineCurve::Poles() const
+{
+  return myPoles;
+}
+
+//==================================================================================================
+
+const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Weights() const
+{
+  return myWeights;
+}
+
+//==================================================================================================
+
+const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Knots() const
+{
+  return myKnots;
+}
+
+//==================================================================================================
+
+const NCollection_Array1<int>& Convert_ConicToBSplineCurve::Multiplicities() const
+{
+  return myMults;
 }
 
 //=======================================================================
@@ -126,7 +152,6 @@ int Convert_ConicToBSplineCurve::Multiplicity(const int Index) const
 //                      2      2
 //                     U   +  V
 //
-
 //                      2 * U*V
 //   sin (theta(t)) = ----------
 //                      2      2
@@ -136,12 +161,12 @@ int Convert_ConicToBSplineCurve::Multiplicity(const int Index) const
 //  with is helpful when having to make a C1 BSpline by merging two BSpline together
 //=======================================================================
 
-void CosAndSinRationalC1(double                              Parameter,
-                         const int                           EvalDegree,
-                         const NCollection_Array1<gp_Pnt2d>& EvalPoles,
-                         const NCollection_Array1<double>&   EvalKnots,
-                         const NCollection_Array1<int>*      EvalMults,
-                         double                              Result[2])
+static void CosAndSinRationalC1(double                              Parameter,
+                                const int                           EvalDegree,
+                                const NCollection_Array1<gp_Pnt2d>& EvalPoles,
+                                const NCollection_Array1<double>&   EvalKnots,
+                                const NCollection_Array1<int>*      EvalMults,
+                                double                              Result[2])
 {
   gp_Pnt2d a_point;
   BSplCLib::D0(Parameter,
@@ -166,50 +191,55 @@ void CosAndSinRationalC1(double                              Parameter,
 //                      2      2
 //                     U   +  V
 //
-
 //                      2 * U*V
 //   sin (theta(t)) = ----------
 //                      2      2
 //                     U   +  V
 //=======================================================================
 
-void CosAndSinQuasiAngular(double                              Parameter,
-                           const int                           EvalDegree,
-                           const NCollection_Array1<gp_Pnt2d>& EvalPoles,
-                           //			    const NCollection_Array1<double>&    EvalKnots,
-                           const NCollection_Array1<double>&,
-                           //			    const NCollection_Array1<int>& EvalMults,
-                           const NCollection_Array1<int>*,
-                           double Result[2])
+static void CosAndSinQuasiAngular(double                              Parameter,
+                                  const int                           EvalDegree,
+                                  const NCollection_Array1<gp_Pnt2d>& EvalPoles,
+                                  const NCollection_Array1<double>&,
+                                  const NCollection_Array1<int>*,
+                                  double Result[2])
 {
-  double param, *coeff;
-
-  coeff = (double*)&EvalPoles(EvalPoles.Lower());
+  // Extract coordinates from the first pole into a local array
+  // to safely pass to PLib::NoDerivativeEvalPolynomial.
+  const int                aNumCoords = (EvalDegree + 1) * 2;
+  NCollection_Array1<double> aCoeffs(0, aNumCoords - 1);
+  for (int i = EvalPoles.Lower(); i <= EvalPoles.Upper(); i++)
+  {
+    const int anIdx = (i - EvalPoles.Lower()) * 2;
+    aCoeffs(anIdx)     = EvalPoles(i).X();
+    aCoeffs(anIdx + 1) = EvalPoles(i).Y();
+  }
   //
   //   rational_function_coeff represent a rational approximation
   //   of U ---> cotan( PI * U /2) between [0 1]
   //   rational_function_coeff[i][0] is the denominator
   //   rational_function_coeff[i][1] is the numerator
   //
-  param = Parameter * 0.5e0;
-  PLib::NoDerivativeEvalPolynomial(param, EvalDegree, 2, EvalDegree << 1, coeff[0], Result[0]);
+  const double param = Parameter * 0.5e0;
+  PLib::NoDerivativeEvalPolynomial(param, EvalDegree, 2, EvalDegree << 1, aCoeffs(0), Result[0]);
 }
 
 //=======================================================================
-// function : function that build the Bspline Representation of
-// an algorithmic description of the function cos and sin
-// purpose  :
+// function : AlgorithmicCosAndSin
+// purpose  : Build the Bspline representation of
+//            an algorithmic description of the function cos and sin
 //=======================================================================
-void AlgorithmicCosAndSin(int                                 Degree,
-                          const NCollection_Array1<double>&   FlatKnots,
-                          const int                           EvalDegree,
-                          const NCollection_Array1<gp_Pnt2d>& EvalPoles,
-                          const NCollection_Array1<double>&   EvalKnots,
-                          const NCollection_Array1<int>*      EvalMults,
-                          Convert_CosAndSinEvalFunction       Evaluator,
-                          NCollection_Array1<double>&         CosNumerator,
-                          NCollection_Array1<double>&         SinNumerator,
-                          NCollection_Array1<double>&         Denominator)
+
+static void AlgorithmicCosAndSin(int                                 Degree,
+                                 const NCollection_Array1<double>&   FlatKnots,
+                                 const int                           EvalDegree,
+                                 const NCollection_Array1<gp_Pnt2d>& EvalPoles,
+                                 const NCollection_Array1<double>&   EvalKnots,
+                                 const NCollection_Array1<int>*      EvalMults,
+                                 Convert_CosAndSinEvalFunction       Evaluator,
+                                 NCollection_Array1<double>&         CosNumerator,
+                                 NCollection_Array1<double>&         SinNumerator,
+                                 NCollection_Array1<double>&         Denominator)
 {
   int order, num_poles, pivot_index_problem, ii;
 
@@ -251,18 +281,18 @@ void AlgorithmicCosAndSin(int                                 Degree,
   }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Convert_ConicToBSplineCurve::BuildCosAndSin(
-  const Convert_ParameterisationType        Parameterisation,
-  const double                              UFirst,
-  const double                              ULast,
-  occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
-  occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
-  occ::handle<NCollection_HArray1<double>>& DenominatorPtr,
-  int&                                      Degree,
-  occ::handle<NCollection_HArray1<double>>& KnotsPtr,
-  occ::handle<NCollection_HArray1<int>>&    MultsPtr) const
+  const Convert_ParameterisationType Parameterisation,
+  const double                       UFirst,
+  const double                       ULast,
+  NCollection_Array1<double>&        CosNumerator,
+  NCollection_Array1<double>&        SinNumerator,
+  NCollection_Array1<double>&        Denominator,
+  int&                               Degree,
+  NCollection_Array1<double>&        Knots,
+  NCollection_Array1<int>&           Mults) const
 {
   double delta = ULast - UFirst, direct, inverse, value1, value2, cos_beta, sin_beta, alpha = 0,
          alpha_2, alpha_4, tan_alpha_2, beta, p_param, q_param, param;
@@ -336,35 +366,35 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
     num_poles = 2 * num_spans + 1;
   }
 
-  CosNumeratorPtr = new NCollection_HArray1<double>(1, num_poles);
-  SinNumeratorPtr = new NCollection_HArray1<double>(1, num_poles);
-  DenominatorPtr  = new NCollection_HArray1<double>(1, num_poles);
-  KnotsPtr        = new NCollection_HArray1<double>(1, num_spans + 1);
-  MultsPtr        = new NCollection_HArray1<int>(1, num_spans + 1);
+  CosNumerator = NCollection_Array1<double>(1, num_poles);
+  SinNumerator = NCollection_Array1<double>(1, num_poles);
+  Denominator  = NCollection_Array1<double>(1, num_poles);
+  Knots        = NCollection_Array1<double>(1, num_spans + 1);
+  Mults        = NCollection_Array1<int>(1, num_spans + 1);
   if (tgt_theta_flag)
   {
 
     param = UFirst;
-    CosNumeratorPtr->SetValue(1, std::cos(UFirst));
-    SinNumeratorPtr->SetValue(1, std::sin(UFirst));
-    DenominatorPtr->SetValue(1, 1.0e0);
-    KnotsPtr->SetValue(1, param);
-    MultsPtr->SetValue(1, Degree + 1);
+    CosNumerator(1) = std::cos(UFirst);
+    SinNumerator(1) = std::sin(UFirst);
+    Denominator(1)  = 1.0e0;
+    Knots(1)        = param;
+    Mults(1)        = Degree + 1;
     direct  = std::cos(alpha);
     inverse = 1.0e0 / direct;
     for (ii = 1; ii <= num_spans; ii++)
     {
-      CosNumeratorPtr->SetValue(2 * ii, inverse * std::cos(param + alpha));
-      SinNumeratorPtr->SetValue(2 * ii, inverse * std::sin(param + alpha));
-      DenominatorPtr->SetValue(2 * ii, direct);
-      CosNumeratorPtr->SetValue(2 * ii + 1, std::cos(param + 2 * alpha));
-      SinNumeratorPtr->SetValue(2 * ii + 1, std::sin(param + 2 * alpha));
-      DenominatorPtr->SetValue(2 * ii + 1, 1.0e0);
-      KnotsPtr->SetValue(ii + 1, param + 2 * alpha);
-      MultsPtr->SetValue(ii + 1, 2);
+      CosNumerator(2 * ii)     = inverse * std::cos(param + alpha);
+      SinNumerator(2 * ii)     = inverse * std::sin(param + alpha);
+      Denominator(2 * ii)      = direct;
+      CosNumerator(2 * ii + 1) = std::cos(param + 2 * alpha);
+      SinNumerator(2 * ii + 1) = std::sin(param + 2 * alpha);
+      Denominator(2 * ii + 1)  = 1.0e0;
+      Knots(ii + 1)            = param + 2 * alpha;
+      Mults(ii + 1)            = 2;
       param += 2 * alpha;
     }
-    MultsPtr->SetValue(num_spans + 1, Degree + 1);
+    Mults(num_spans + 1) = Degree + 1;
   }
   else if (Parameterisation != Convert_Polynomial)
   {
@@ -389,10 +419,10 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
       flat_knots(ii)             = -alpha;
       flat_knots(ii + num_poles) = alpha;
     }
-    KnotsPtr->SetValue(1, UFirst);
-    KnotsPtr->SetValue(num_knots, ULast);
-    MultsPtr->SetValue(1, order);
-    MultsPtr->SetValue(num_knots, order);
+    Knots(1)         = UFirst;
+    Knots(num_knots) = ULast;
+    Mults(1)         = order;
+    Mults(num_knots) = order;
 
     switch (Parameterisation)
     {
@@ -458,8 +488,8 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
         {
           flat_knots(ii) = 0.0e0;
         }
-        KnotsPtr->SetValue(2, UFirst + alpha);
-        MultsPtr->SetValue(2, Degree - 1);
+        Knots(2) = UFirst + alpha;
+        Mults(2) = Degree - 1;
         temp_degree = 2;
         alpha_2     = alpha * 0.5e0;
         alpha_4     = alpha * 0.25e0;
@@ -494,48 +524,47 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
                          temp_knots,
                          &temp_mults,
                          *EvaluatorPtr,
-                         CosNumeratorPtr->ChangeArray1(),
-                         SinNumeratorPtr->ChangeArray1(),
-                         DenominatorPtr->ChangeArray1());
+                         CosNumerator,
+                         SinNumerator,
+                         Denominator);
 
     for (ii = 1; ii <= num_poles; ii++)
     {
-      value1 = cos_beta * CosNumeratorPtr->Value(ii) - sin_beta * SinNumeratorPtr->Value(ii);
-      value2 = sin_beta * CosNumeratorPtr->Value(ii) + cos_beta * SinNumeratorPtr->Value(ii);
-      CosNumeratorPtr->SetValue(ii, value1);
-      SinNumeratorPtr->SetValue(ii, value2);
+      value1           = cos_beta * CosNumerator(ii) - sin_beta * SinNumerator(ii);
+      value2           = sin_beta * CosNumerator(ii) + cos_beta * SinNumerator(ii);
+      CosNumerator(ii) = value1;
+      SinNumerator(ii) = value2;
     }
   }
   else
   { // Convert_Polynomial
 
-    KnotsPtr->SetValue(1, 0.);
-    KnotsPtr->SetValue(num_knots, 1.);
-    MultsPtr->SetValue(1, num_poles);
-    MultsPtr->SetValue(num_knots, num_poles);
+    Knots(1)         = 0.;
+    Knots(num_knots) = 1.;
+    Mults(1)         = num_poles;
+    Mults(num_knots) = num_poles;
 
     BuildPolynomialCosAndSin(UFirst,
                              ULast,
                              num_poles,
-                             CosNumeratorPtr,
-                             SinNumeratorPtr,
-                             DenominatorPtr);
+                             CosNumerator,
+                             SinNumerator,
+                             Denominator);
   }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 void Convert_ConicToBSplineCurve::BuildCosAndSin(
-  const Convert_ParameterisationType        Parameterisation,
-  occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
-  occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
-  occ::handle<NCollection_HArray1<double>>& DenominatorPtr,
-  int&                                      Degree,
-  occ::handle<NCollection_HArray1<double>>& KnotsPtr,
-  occ::handle<NCollection_HArray1<int>>&    MultsPtr) const
+  const Convert_ParameterisationType Parameterisation,
+  NCollection_Array1<double>&        CosNumerator,
+  NCollection_Array1<double>&        SinNumerator,
+  NCollection_Array1<double>&        Denominator,
+  int&                               Degree,
+  NCollection_Array1<double>&        Knots,
+  NCollection_Array1<int>&           Mults) const
 {
   double half_pi, param, first_param, last_param,
-    //  direct,
     inverse, value1, value2, value3;
 
   int ii, jj, index, num_poles, num_periodic_poles, temp_degree, pivot_index_problem,
@@ -545,32 +574,32 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   {
     throw Standard_ConstructionError();
   }
-  occ::handle<NCollection_HArray1<double>> temp_cos_ptr, temp_sin_ptr, temp_denominator_ptr,
-    temp_knots_ptr;
-  occ::handle<NCollection_HArray1<int>> temp_mults_ptr;
+  NCollection_Array1<double> temp_cos, temp_sin, temp_denominator,
+    temp_knots;
+  NCollection_Array1<int> temp_mults;
   if (Parameterisation == Convert_TgtThetaOver2)
   {
     BuildCosAndSin(Convert_TgtThetaOver2_3,
                    0.0e0,
                    2 * M_PI,
-                   temp_cos_ptr,
-                   temp_sin_ptr,
-                   temp_denominator_ptr,
+                   temp_cos,
+                   temp_sin,
+                   temp_denominator,
                    Degree,
-                   KnotsPtr,
-                   MultsPtr);
-    CosNumeratorPtr = new NCollection_HArray1<double>(1, temp_cos_ptr->Length() - 1);
-    SinNumeratorPtr = new NCollection_HArray1<double>(1, temp_cos_ptr->Length() - 1);
-    DenominatorPtr  = new NCollection_HArray1<double>(1, temp_cos_ptr->Length() - 1);
-    for (ii = temp_cos_ptr->Lower(); ii <= temp_cos_ptr->Upper() - 1; ii++)
+                   Knots,
+                   Mults);
+    CosNumerator = NCollection_Array1<double>(1, temp_cos.Length() - 1);
+    SinNumerator = NCollection_Array1<double>(1, temp_cos.Length() - 1);
+    Denominator  = NCollection_Array1<double>(1, temp_cos.Length() - 1);
+    for (ii = temp_cos.Lower(); ii <= temp_cos.Upper() - 1; ii++)
     {
-      CosNumeratorPtr->SetValue(ii, temp_cos_ptr->Value(ii));
-      SinNumeratorPtr->SetValue(ii, temp_sin_ptr->Value(ii));
-      DenominatorPtr->SetValue(ii, temp_denominator_ptr->Value(ii));
+      CosNumerator(ii) = temp_cos(ii);
+      SinNumerator(ii) = temp_sin(ii);
+      Denominator(ii)  = temp_denominator(ii);
     }
-    for (ii = MultsPtr->Lower(); ii <= MultsPtr->Upper(); ii++)
+    for (ii = Mults.Lower(); ii <= Mults.Upper(); ii++)
     {
-      MultsPtr->SetValue(ii, Degree);
+      Mults(ii) = Degree;
     }
   }
   else if (Parameterisation == Convert_RationalC1)
@@ -580,12 +609,12 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
     BuildCosAndSin(Convert_RationalC1,
                    first_param,
                    last_param,
-                   temp_cos_ptr,
-                   temp_sin_ptr,
-                   temp_denominator_ptr,
+                   temp_cos,
+                   temp_sin,
+                   temp_denominator,
                    temp_degree,
-                   temp_knots_ptr,
-                   temp_mults_ptr);
+                   temp_knots,
+                   temp_mults);
 
     Degree             = 4;
     num_knots          = 5;
@@ -593,9 +622,9 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
     num_poles          = num_flat_knots - Degree - 1;
     num_periodic_poles = num_poles - 2;
     NCollection_Array1<double> flat_knots(1, num_flat_knots);
-    CosNumeratorPtr = new NCollection_HArray1<double>(1, num_periodic_poles);
-    SinNumeratorPtr = new NCollection_HArray1<double>(1, num_periodic_poles);
-    DenominatorPtr  = new NCollection_HArray1<double>(1, num_periodic_poles);
+    CosNumerator = NCollection_Array1<double>(1, num_periodic_poles);
+    SinNumerator = NCollection_Array1<double>(1, num_periodic_poles);
+    Denominator  = NCollection_Array1<double>(1, num_periodic_poles);
 
     half_pi = M_PI * 0.5e0;
     index   = 1;
@@ -618,12 +647,12 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
       flat_knots(index) = 2 * M_PI + half_pi;
       index += 1;
     }
-    KnotsPtr = new NCollection_HArray1<double>(1, num_knots);
-    MultsPtr = new NCollection_HArray1<int>(1, num_knots);
+    Knots = NCollection_Array1<double>(1, num_knots);
+    Mults = NCollection_Array1<int>(1, num_knots);
     for (ii = 1; ii <= num_knots; ii++)
     {
-      KnotsPtr->SetValue(ii, (ii - 1) * half_pi);
-      MultsPtr->SetValue(ii, Degree - 1);
+      Knots(ii) = (ii - 1) * half_pi;
+      Mults(ii) = Degree - 1;
     }
 
     NCollection_Array1<double> parameters(1, num_poles);
@@ -643,29 +672,29 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
                    0,
                    temp_degree,
                    false,
-                   temp_cos_ptr->Array1(),
-                   &temp_denominator_ptr->Array1(),
-                   temp_knots_ptr->Array1(),
-                   &temp_mults_ptr->Array1(),
+                   temp_cos,
+                   &temp_denominator,
+                   temp_knots,
+                   &temp_mults,
                    value1);
 
       BSplCLib::D0(param,
                    0,
                    temp_degree,
                    false,
-                   temp_sin_ptr->Array1(),
-                   &temp_denominator_ptr->Array1(),
-                   temp_knots_ptr->Array1(),
-                   &temp_mults_ptr->Array1(),
+                   temp_sin,
+                   &temp_denominator,
+                   temp_knots,
+                   &temp_mults,
                    value2);
       BSplCLib::D0(param,
                    0,
                    temp_degree,
                    false,
-                   temp_denominator_ptr->Array1(),
+                   temp_denominator,
                    BSplCLib::NoWeights(),
-                   temp_knots_ptr->Array1(),
-                   &temp_mults_ptr->Array1(),
+                   temp_knots,
+                   &temp_mults,
                    value3);
       contact_order_array(ii) = 0;
 
@@ -681,10 +710,10 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
                           pivot_index_problem);
     for (ii = 1; ii <= num_periodic_poles; ii++)
     {
-      inverse                             = 1.0e0 / poles_array(ii).Coord(3);
-      CosNumeratorPtr->ChangeArray1()(ii) = poles_array(ii).Coord(1) * inverse;
-      SinNumeratorPtr->ChangeArray1()(ii) = poles_array(ii).Coord(2) * inverse;
-      DenominatorPtr->ChangeArray1()(ii)  = poles_array(ii).Coord(3);
+      inverse          = 1.0e0 / poles_array(ii).Coord(3);
+      CosNumerator(ii) = poles_array(ii).Coord(1) * inverse;
+      SinNumerator(ii) = poles_array(ii).Coord(2) * inverse;
+      Denominator(ii)  = poles_array(ii).Coord(3);
     }
   }
 }
