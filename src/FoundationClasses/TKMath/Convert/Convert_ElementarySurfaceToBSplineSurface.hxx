@@ -22,10 +22,7 @@
 #include <Standard_Handle.hxx>
 #include <Standard_Macro.hxx>
 
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
-#include <Standard_Integer.hxx>
+#include <BSplSLib_SurfaceData.hxx>
 
 //! Root class for algorithms which convert an elementary
 //! surface (cylinder, cone, sphere or torus) into a BSpline surface.
@@ -127,21 +124,11 @@ protected:
   Standard_EXPORT void Finalize();
 
 protected:
-
-  NCollection_Array2<gp_Pnt> myPoles;
-  NCollection_Array2<double> myWeights;
-  NCollection_Array1<double> myUKnots;
-  NCollection_Array1<int>    myUMults;
-  NCollection_Array1<double> myVKnots;
-  NCollection_Array1<int>    myVMults;
-  int                        myUDegree;
-  int                        myVDegree;
-  int                        myNbUPoles;
-  int                        myNbVPoles;
-  int                        myNbUKnots;
-  int                        myNbVKnots;
-  bool                       myIsUPeriodic;
-  bool                       myIsVPeriodic;
+  BSplSLib_SurfaceData myData;
+  int                  myNbUPoles;
+  int                  myNbVPoles;
+  int                  myNbUKnots;
+  int                  myNbVKnots;
 };
 
 #endif // _Convert_ElementarySurfaceToBSplineSurface_HeaderFile

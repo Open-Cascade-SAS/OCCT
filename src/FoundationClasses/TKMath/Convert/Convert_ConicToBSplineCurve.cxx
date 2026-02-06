@@ -31,21 +31,18 @@
 Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int theNumberOfPoles,
                                                          const int theNumberOfKnots,
                                                          const int theDegree)
-    : myDegree(theDegree),
-      myNbPoles(theNumberOfPoles),
-      myNbKnots(theNumberOfKnots),
-      myIsPeriodic(false)
-
 {
+  myData.Degree     = theDegree;
+  myData.IsPeriodic = false;
   if (theNumberOfPoles >= 2)
   {
-    myPoles   = NCollection_Array1<gp_Pnt2d>(1, theNumberOfPoles);
-    myWeights = NCollection_Array1<double>(1, theNumberOfPoles);
+    myData.Poles   = NCollection_Array1<gp_Pnt2d>(1, theNumberOfPoles);
+    myData.Weights = NCollection_Array1<double>(1, theNumberOfPoles);
   }
   if (theNumberOfKnots >= 2)
   {
-    myKnots = NCollection_Array1<double>(1, theNumberOfKnots);
-    myMults = NCollection_Array1<int>(1, theNumberOfKnots);
+    myData.Knots = NCollection_Array1<double>(1, theNumberOfKnots);
+    myData.Mults = NCollection_Array1<int>(1, theNumberOfKnots);
   }
 }
 
@@ -53,28 +50,28 @@ Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int theNumberOfPo
 
 int Convert_ConicToBSplineCurve::Degree() const
 {
-  return myDegree;
+  return myData.Degree;
 }
 
 //==================================================================================================
 
 int Convert_ConicToBSplineCurve::NbPoles() const
 {
-  return myNbPoles;
+  return myData.Poles.Length();
 }
 
 //==================================================================================================
 
 int Convert_ConicToBSplineCurve::NbKnots() const
 {
-  return myNbKnots;
+  return myData.Knots.Length();
 }
 
 //==================================================================================================
 
 bool Convert_ConicToBSplineCurve::IsPeriodic() const
 {
-  return myIsPeriodic;
+  return myData.IsPeriodic;
 }
 
 //==================================================================================================
@@ -82,36 +79,36 @@ bool Convert_ConicToBSplineCurve::IsPeriodic() const
 Standard_DISABLE_DEPRECATION_WARNINGS
 gp_Pnt2d Convert_ConicToBSplineCurve::Pole(const int theIndex) const
 {
-  if (theIndex < 1 || theIndex > myNbPoles)
+  if (theIndex < 1 || theIndex > myData.Poles.Length())
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Pole: Index out of range");
-  return myPoles(theIndex);
+  return myData.Poles(theIndex);
 }
 
 //==================================================================================================
 
 double Convert_ConicToBSplineCurve::Weight(const int theIndex) const
 {
-  if (theIndex < 1 || theIndex > myNbPoles)
+  if (theIndex < 1 || theIndex > myData.Poles.Length())
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Weight: Index out of range");
-  return myWeights(theIndex);
+  return myData.Weights(theIndex);
 }
 
 //==================================================================================================
 
 double Convert_ConicToBSplineCurve::Knot(const int theIndex) const
 {
-  if (theIndex < 1 || theIndex > myNbKnots)
+  if (theIndex < 1 || theIndex > myData.Knots.Length())
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Knot: Index out of range");
-  return myKnots(theIndex);
+  return myData.Knots(theIndex);
 }
 
 //==================================================================================================
 
 int Convert_ConicToBSplineCurve::Multiplicity(const int theIndex) const
 {
-  if (theIndex < 1 || theIndex > myNbKnots)
+  if (theIndex < 1 || theIndex > myData.Knots.Length())
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Multiplicity: Index out of range");
-  return myMults(theIndex);
+  return myData.Mults(theIndex);
 }
 Standard_ENABLE_DEPRECATION_WARNINGS
 
@@ -119,28 +116,28 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 const NCollection_Array1<gp_Pnt2d>& Convert_ConicToBSplineCurve::Poles() const
 {
-  return myPoles;
+  return myData.Poles;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Weights() const
 {
-  return myWeights;
+  return myData.Weights;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Knots() const
 {
-  return myKnots;
+  return myData.Knots;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<int>& Convert_ConicToBSplineCurve::Multiplicities() const
 {
-  return myMults;
+  return myData.Mults;
 }
 
 //=======================================================================

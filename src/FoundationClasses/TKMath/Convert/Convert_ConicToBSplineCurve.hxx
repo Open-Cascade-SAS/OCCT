@@ -22,9 +22,7 @@
 #include <Standard_Handle.hxx>
 #include <Standard_Macro.hxx>
 
-#include <gp_Pnt2d.hxx>
-#include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
+#include <BSplCLib_CurveData.hxx>
 #include <Convert_ParameterisationType.hxx>
 
 //! Root class for algorithms which convert a conic curve into
@@ -128,15 +126,7 @@ protected:
                                       NCollection_Array1<int>&           theMults) const;
 
 protected:
-
-  NCollection_Array1<gp_Pnt2d> myPoles;
-  NCollection_Array1<double>   myWeights;
-  NCollection_Array1<double>   myKnots;
-  NCollection_Array1<int>      myMults;
-  int                                        myDegree;
-  int                                        myNbPoles;
-  int                                        myNbKnots;
-  bool                                       myIsPeriodic;
+  BSplCLib_CurveData<gp_Pnt2d> myData;
 };
 
 #endif // _Convert_ConicToBSplineCurve_HeaderFile

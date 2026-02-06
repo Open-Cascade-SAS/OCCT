@@ -95,8 +95,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
                                   || (deltaU < 0.),
                                 "Convert_ConeToBSplineSurface");
 
-  myIsUPeriodic = false;
-  myIsVPeriodic = false;
+  myData.IsUPeriodic = false;
+  myData.IsVPeriodic = false;
 
   int i, j;
   // construction of cone in the reference mark xOy.
@@ -114,19 +114,19 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
   double R = C.RefRadius();
   double A = C.SemiAngle();
 
-  ComputePoles(R, A, U1, U2, V1, V2, myPoles);
+  ComputePoles(R, A, U1, U2, V1, V2, myData.Poles);
 
   for (i = 1; i <= myNbUKnots; i++)
   {
-    myUKnots(i) = U1 + (i - 1) * 2 * AlfaU;
-    myUMults(i) = 2;
+    myData.UKnots(i) = U1 + (i - 1) * 2 * AlfaU;
+    myData.UMults(i) = 2;
   }
-  myUMults(1)++;
-  myUMults(myNbUKnots)++;
-  myVKnots(1) = V1;
-  myVMults(1) = 2;
-  myVKnots(2) = V2;
-  myVMults(2) = 2;
+  myData.UMults(1)++;
+  myData.UMults(myNbUKnots)++;
+  myData.VKnots(1) = V1;
+  myData.VMults(1) = 2;
+  myData.VKnots(2) = V2;
+  myData.VMults(2) = 2;
 
   // Replace the bspline in the mark of the sphere.
   // and calculate the weight of the bspline.
@@ -143,8 +143,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
 
     for (j = 1; j <= myNbVPoles; j++)
     {
-      myWeights(i, j) = W1;
-      myPoles(i, j).Transform(Trsf);
+      myData.Weights(i, j) = W1;
+      myData.Poles(i, j).Transform(Trsf);
     }
   }
   Finalize();
@@ -167,15 +167,15 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
 
   int i, j;
 
-  myIsUPeriodic = true;
-  myIsVPeriodic = false;
+  myData.IsUPeriodic = true;
+  myData.IsVPeriodic = false;
 
   // construction of the cone in the reference mark xOy.
 
   double R = C.RefRadius();
   double A = C.SemiAngle();
 
-  ComputePoles(R, A, 0., 2. * M_PI, V1, V2, myPoles);
+  ComputePoles(R, A, 0., 2. * M_PI, V1, V2, myData.Poles);
 
   myNbUPoles = 6;
   myNbUKnots = 4;
@@ -184,13 +184,13 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
 
   for (i = 1; i <= myNbUKnots; i++)
   {
-    myUKnots(i) = (i - 1) * 2. * M_PI / 3.;
-    myUMults(i) = 2;
+    myData.UKnots(i) = (i - 1) * 2. * M_PI / 3.;
+    myData.UMults(i) = 2;
   }
-  myVKnots(1) = V1;
-  myVMults(1) = 2;
-  myVKnots(2) = V2;
-  myVMults(2) = 2;
+  myData.VKnots(1) = V1;
+  myData.VMults(1) = 2;
+  myData.VKnots(2) = V2;
+  myData.VMults(2) = 2;
 
   // replace bspline in the mark of the cone.
   // and calculate the weight of bspline.
@@ -207,8 +207,8 @@ Convert_ConeToBSplineSurface::Convert_ConeToBSplineSurface(const gp_Cone& C,
 
     for (j = 1; j <= myNbVPoles; j++)
     {
-      myWeights(i, j) = W;
-      myPoles(i, j).Transform(Trsf);
+      myData.Weights(i, j) = W;
+      myData.Poles(i, j).Transform(Trsf);
     }
   }
   Finalize();

@@ -18,8 +18,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray1.hxx>
-#include <NCollection_HArray2.hxx>
 
 namespace
 {
@@ -49,17 +47,10 @@ bool extractSurfaceData(const occ::handle<Geom_BSplineSurface>& theGeom, Surface
   if (theGeom.IsNull())
     return false;
 
-  const occ::handle<NCollection_HArray1<double>>& aUFK   = theGeom->HArrayUFlatKnots();
-  const occ::handle<NCollection_HArray1<double>>& aVFK   = theGeom->HArrayVFlatKnots();
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& aPoles = theGeom->HArrayPoles();
-
-  if (aUFK.IsNull() || aVFK.IsNull() || aPoles.IsNull())
-    return false;
-
-  theData.UFlatKnots  = &aUFK->Array1();
-  theData.VFlatKnots  = &aVFK->Array1();
-  theData.Poles       = &aPoles->Array2();
-  theData.Weights     = theGeom->Weights();
+  theData.UFlatKnots  = &theGeom->InternalUFlatKnots();
+  theData.VFlatKnots  = &theGeom->InternalVFlatKnots();
+  theData.Poles       = &theGeom->InternalPoles();
+  theData.Weights     = theGeom->InternalWeights();
   theData.UDegree     = theGeom->UDegree();
   theData.VDegree     = theGeom->VDegree();
   theData.IsUPeriodic = theGeom->IsUPeriodic();

@@ -20,15 +20,14 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
+#include <BSplCLib_CurveData.hxx>
 #include <Precision.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Geom_BoundedCurve.hxx>
-class gp_Pnt;
 class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
@@ -781,15 +780,15 @@ public:
   //! Returns the weights of the B-spline curve;
   Standard_EXPORT const NCollection_Array1<double>* Weights() const;
 
-  //! Returns handle to the array of poles for efficient grid evaluation.
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& HArrayPoles() const { return poles; }
+  //! Returns the array of poles for efficient grid evaluation.
+  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myData.Poles; }
 
-  //! Returns handle to the array of weights for efficient grid evaluation.
-  //! May be null for non-rational curves.
-  const occ::handle<NCollection_HArray1<double>>& HArrayWeights() const { return weights; }
+  //! Returns the array of weights for efficient grid evaluation.
+  //! Returns null pointer for non-rational curves.
+  const NCollection_Array1<double>* InternalWeights() const;
 
-  //! Returns handle to the flat knots array for efficient grid evaluation.
-  const occ::handle<NCollection_HArray1<double>>& HArrayFlatKnots() const { return flatknots; }
+  //! Returns the flat knots array for efficient grid evaluation.
+  const NCollection_Array1<double>& InternalFlatKnots() const { return myData.FlatKnots; }
 
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
@@ -822,18 +821,12 @@ private:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
-  bool                                     rational;
-  bool                                     periodic;
-  GeomAbs_BSplKnotDistribution             knotSet;
-  GeomAbs_Shape                            smooth;
-  int                                      deg;
-  occ::handle<NCollection_HArray1<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray1<double>> weights;
-  occ::handle<NCollection_HArray1<double>> flatknots;
-  occ::handle<NCollection_HArray1<double>> knots;
-  occ::handle<NCollection_HArray1<int>>    mults;
-  double                                   maxderivinv;
-  bool                                     maxderivinvok;
+  BSplCLib_CurveData3d             myData;
+  bool                             rational;
+  GeomAbs_BSplKnotDistribution     knotSet;
+  GeomAbs_Shape                    smooth;
+  double                           maxderivinv;
+  bool                             maxderivinvok;
 };
 
 #endif // _Geom_BSplineCurve_HeaderFile

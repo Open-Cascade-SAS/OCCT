@@ -26,11 +26,9 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
+#include <BSplSLib_SurfaceData.hxx>
 #include <Geom_BoundedSurface.hxx>
-class gp_Pnt;
 class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
@@ -1071,18 +1069,17 @@ public:
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
 
-  //! Returns handle to the poles array (direct access to internal storage).
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& HArrayPoles() const { return poles; }
+  //! Returns the internal poles array (non-handle).
+  const NCollection_Array2<gp_Pnt>& InternalPoles() const { return myData.Poles; }
 
-  //! Returns handle to the weights array.
-  //! Returns null handle for non-rational surfaces.
-  const occ::handle<NCollection_HArray2<double>>& HArrayWeights() const { return weights; }
+  //! Returns the internal weights array, or nullptr if non-rational.
+  Standard_EXPORT const NCollection_Array2<double>* InternalWeights() const;
 
-  //! Returns handle to the U flat knots sequence.
-  const occ::handle<NCollection_HArray1<double>>& HArrayUFlatKnots() const { return ufknots; }
+  //! Returns the internal U flat knots array (non-handle).
+  const NCollection_Array1<double>& InternalUFlatKnots() const { return myData.UFlatKnots; }
 
-  //! Returns handle to the V flat knots sequence.
-  const occ::handle<NCollection_HArray1<double>>& HArrayVFlatKnots() const { return vfknots; }
+  //! Returns the internal V flat knots array (non-handle).
+  const NCollection_Array1<double>& InternalVFlatKnots() const { return myData.VFlatKnots; }
 
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
@@ -1298,27 +1295,16 @@ private:
   //! continuity for V.
   Standard_EXPORT void UpdateVKnots();
 
-  bool                                     urational;
-  bool                                     vrational;
-  bool                                     uperiodic;
-  bool                                     vperiodic;
-  GeomAbs_BSplKnotDistribution             uknotSet;
-  GeomAbs_BSplKnotDistribution             vknotSet;
-  GeomAbs_Shape                            Usmooth;
-  GeomAbs_Shape                            Vsmooth;
-  int                                      udeg;
-  int                                      vdeg;
-  occ::handle<NCollection_HArray2<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray2<double>> weights;
-  occ::handle<NCollection_HArray1<double>> ufknots;
-  occ::handle<NCollection_HArray1<double>> vfknots;
-  occ::handle<NCollection_HArray1<double>> uknots;
-  occ::handle<NCollection_HArray1<double>> vknots;
-  occ::handle<NCollection_HArray1<int>>    umults;
-  occ::handle<NCollection_HArray1<int>>    vmults;
-  double                                   umaxderivinv;
-  double                                   vmaxderivinv;
-  bool                                     maxderivinvok;
+  BSplSLib_SurfaceData             myData;
+  bool                             urational;
+  bool                             vrational;
+  GeomAbs_BSplKnotDistribution     uknotSet;
+  GeomAbs_BSplKnotDistribution     vknotSet;
+  GeomAbs_Shape                    Usmooth;
+  GeomAbs_Shape                    Vsmooth;
+  double                           umaxderivinv;
+  double                           vmaxderivinv;
+  bool                             maxderivinvok;
 };
 
 #endif // _Geom_BSplineSurface_HeaderFile

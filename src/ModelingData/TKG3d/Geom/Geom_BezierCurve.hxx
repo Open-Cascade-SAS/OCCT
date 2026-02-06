@@ -19,9 +19,9 @@
 
 #include <Standard.hxx>
 
+#include <BSplCLib_CurveData.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Geom_BoundedCurve.hxx>
@@ -296,9 +296,7 @@ public:
   //! Returns all the weights of the curve.
   const NCollection_Array1<double>* Weights() const
   {
-    if (!weights.IsNull())
-      return &weights->Array1();
-    return BSplCLib::NoWeights();
+    return rational ? &myData.Weights : BSplCLib::NoWeights();
   }
 
   //! Applies the transformation T to this Bezier curve.
@@ -321,9 +319,25 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
+  //! Returns the array of poles for efficient grid evaluation.
+  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myData.Poles; }
+
+  //! Returns the array of weights for efficient grid evaluation.
+  //! Returns null pointer for non-rational curves.
+  const NCollection_Array1<double>* InternalWeights() const
+  {
+    return rational ? &myData.Weights : BSplCLib::NoWeights();
+  }
+
+  //! Returns the flat knots array for efficient grid evaluation.
+  const NCollection_Array1<double>& InternalFlatKnots() const { return myData.FlatKnots; }
+
   DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
 private:
+  //! Rebuilds the knot arrays (Knots, Mults, FlatKnots) from the current degree.
+  void updateKnots();
+
   //! Set poles to Poles, weights to Weights (not copied).
   //! If Weights is null the curve is non rational.
   //! Create the arrays of coefficients.
@@ -332,15 +346,14 @@ private:
   //! Update rational and closed.
   //!
   //! if nbpoles < 2 or nbboles > MaDegree + 1
-  void Init(const occ::handle<NCollection_HArray1<gp_Pnt>>& Poles,
-            const occ::handle<NCollection_HArray1<double>>& Weights);
+  void Init(const NCollection_Array1<gp_Pnt>& thePoles,
+            const NCollection_Array1<double>* theWeights);
 
-  bool                                     rational;
-  bool                                     closed;
-  occ::handle<NCollection_HArray1<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray1<double>> weights;
-  double                                   maxderivinv;
-  bool                                     maxderivinvok;
+  BSplCLib_CurveData3d myData;
+  bool                 rational;
+  bool                 closed;
+  double               maxderivinv;
+  bool                 maxderivinvok;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

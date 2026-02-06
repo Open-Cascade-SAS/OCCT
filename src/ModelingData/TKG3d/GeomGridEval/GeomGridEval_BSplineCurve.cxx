@@ -42,20 +42,9 @@ bool extractCurveData(const occ::handle<Geom_BSplineCurve>& theGeom, CurveData& 
   if (theGeom.IsNull())
     return false;
 
-  const occ::handle<NCollection_HArray1<double>>& aFlatKnots = theGeom->HArrayFlatKnots();
-  const occ::handle<NCollection_HArray1<gp_Pnt>>& aPoles     = theGeom->HArrayPoles();
-
-  if (aFlatKnots.IsNull() || aPoles.IsNull())
-    return false;
-
-  const bool                                      isRational = theGeom->IsRational();
-  const occ::handle<NCollection_HArray1<double>>& aWeights   = theGeom->HArrayWeights();
-  if (isRational && aWeights.IsNull())
-    return false;
-
-  theData.FlatKnots  = &aFlatKnots->Array1();
-  theData.Poles      = &aPoles->Array1();
-  theData.Weights    = isRational ? &aWeights->Array1() : nullptr;
+  theData.FlatKnots  = &theGeom->InternalFlatKnots();
+  theData.Poles      = &theGeom->InternalPoles();
+  theData.Weights    = theGeom->InternalWeights();
   theData.Knots      = &theGeom->Knots();
   theData.Mults      = &theGeom->Multiplicities();
   theData.Degree     = theGeom->Degree();

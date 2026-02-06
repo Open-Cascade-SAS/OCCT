@@ -23,75 +23,75 @@
 void Convert_ElementarySurfaceToBSplineSurface::Finalize()
 {
   // Resize poles array if dimensions don't match actual sizes.
-  if (myPoles.NbRows() != myNbUPoles || myPoles.NbColumns() != myNbVPoles)
+  if (myData.Poles.NbRows() != myNbUPoles || myData.Poles.NbColumns() != myNbVPoles)
   {
     NCollection_Array2<gp_Pnt> aNewPoles(1, myNbUPoles, 1, myNbVPoles);
     for (int i = 1; i <= myNbUPoles; i++)
     {
       for (int j = 1; j <= myNbVPoles; j++)
       {
-        aNewPoles(i, j) = myPoles(i, j);
+        aNewPoles(i, j) = myData.Poles(i, j);
       }
     }
-    myPoles = std::move(aNewPoles);
+    myData.Poles = std::move(aNewPoles);
   }
 
   // Resize weights array if dimensions don't match actual sizes.
-  if (myWeights.NbRows() != myNbUPoles || myWeights.NbColumns() != myNbVPoles)
+  if (myData.Weights.NbRows() != myNbUPoles || myData.Weights.NbColumns() != myNbVPoles)
   {
     NCollection_Array2<double> aNewWeights(1, myNbUPoles, 1, myNbVPoles);
     for (int i = 1; i <= myNbUPoles; i++)
     {
       for (int j = 1; j <= myNbVPoles; j++)
       {
-        aNewWeights(i, j) = myWeights(i, j);
+        aNewWeights(i, j) = myData.Weights(i, j);
       }
     }
-    myWeights = std::move(aNewWeights);
+    myData.Weights = std::move(aNewWeights);
   }
 
   // Resize U-knots array if length doesn't match actual size.
-  if (myUKnots.Length() != myNbUKnots)
+  if (myData.UKnots.Length() != myNbUKnots)
   {
     NCollection_Array1<double> aNewUKnots(1, myNbUKnots);
     for (int i = 1; i <= myNbUKnots; i++)
     {
-      aNewUKnots(i) = myUKnots(i);
+      aNewUKnots(i) = myData.UKnots(i);
     }
-    myUKnots = std::move(aNewUKnots);
+    myData.UKnots = std::move(aNewUKnots);
   }
 
   // Resize U-multiplicities array if length doesn't match actual size.
-  if (myUMults.Length() != myNbUKnots)
+  if (myData.UMults.Length() != myNbUKnots)
   {
     NCollection_Array1<int> aNewUMults(1, myNbUKnots);
     for (int i = 1; i <= myNbUKnots; i++)
     {
-      aNewUMults(i) = myUMults(i);
+      aNewUMults(i) = myData.UMults(i);
     }
-    myUMults = std::move(aNewUMults);
+    myData.UMults = std::move(aNewUMults);
   }
 
   // Resize V-knots array if length doesn't match actual size.
-  if (myVKnots.Length() != myNbVKnots)
+  if (myData.VKnots.Length() != myNbVKnots)
   {
     NCollection_Array1<double> aNewVKnots(1, myNbVKnots);
     for (int i = 1; i <= myNbVKnots; i++)
     {
-      aNewVKnots(i) = myVKnots(i);
+      aNewVKnots(i) = myData.VKnots(i);
     }
-    myVKnots = std::move(aNewVKnots);
+    myData.VKnots = std::move(aNewVKnots);
   }
 
   // Resize V-multiplicities array if length doesn't match actual size.
-  if (myVMults.Length() != myNbVKnots)
+  if (myData.VMults.Length() != myNbVKnots)
   {
     NCollection_Array1<int> aNewVMults(1, myNbVKnots);
     for (int i = 1; i <= myNbVKnots; i++)
     {
-      aNewVMults(i) = myVMults(i);
+      aNewVMults(i) = myData.VMults(i);
     }
-    myVMults = std::move(aNewVMults);
+    myData.VMults = std::move(aNewVMults);
   }
 }
 
@@ -104,35 +104,35 @@ Convert_ElementarySurfaceToBSplineSurface::Convert_ElementarySurfaceToBSplineSur
   const int theNbVKnots,
   const int theUDegree,
   const int theVDegree)
-    : myPoles(1, theNbUPoles, 1, theNbVPoles),
-      myWeights(1, theNbUPoles, 1, theNbVPoles),
-      myUKnots(1, theNbUKnots),
-      myUMults(1, theNbUKnots),
-      myVKnots(1, theNbVKnots),
-      myVMults(1, theNbVKnots),
-      myUDegree(theUDegree),
-      myVDegree(theVDegree),
-      myNbUPoles(theNbUPoles),
+    : myNbUPoles(theNbUPoles),
       myNbVPoles(theNbVPoles),
       myNbUKnots(theNbUKnots),
-      myNbVKnots(theNbVKnots),
-      myIsUPeriodic(false),
-      myIsVPeriodic(false)
+      myNbVKnots(theNbVKnots)
 {
+  myData.Poles   = NCollection_Array2<gp_Pnt>(1, theNbUPoles, 1, theNbVPoles);
+  myData.Weights = NCollection_Array2<double>(1, theNbUPoles, 1, theNbVPoles);
+  myData.UKnots  = NCollection_Array1<double>(1, theNbUKnots);
+  myData.UMults  = NCollection_Array1<int>(1, theNbUKnots);
+  myData.VKnots  = NCollection_Array1<double>(1, theNbVKnots);
+  myData.VMults  = NCollection_Array1<int>(1, theNbVKnots);
+  myData.UDegree     = theUDegree;
+  myData.VDegree     = theVDegree;
+  myData.IsUPeriodic = false;
+  myData.IsVPeriodic = false;
 }
 
 //==================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::UDegree() const
 {
-  return myUDegree;
+  return myData.UDegree;
 }
 
 //==================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::VDegree() const
 {
-  return myVDegree;
+  return myData.VDegree;
 }
 
 //==================================================================================================
@@ -167,14 +167,14 @@ int Convert_ElementarySurfaceToBSplineSurface::NbVKnots() const
 
 bool Convert_ElementarySurfaceToBSplineSurface::IsUPeriodic() const
 {
-  return myIsUPeriodic;
+  return myData.IsUPeriodic;
 }
 
 //==================================================================================================
 
 bool Convert_ElementarySurfaceToBSplineSurface::IsVPeriodic() const
 {
-  return myIsVPeriodic;
+  return myData.IsVPeriodic;
 }
 
 //==================================================================================================
@@ -185,7 +185,7 @@ gp_Pnt Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex, const i
   Standard_OutOfRange_Raise_if(
     UIndex < 1 || UIndex > myNbUPoles || VIndex < 1 || VIndex > myNbVPoles,
     "Convert_ElementarySurfaceToBSplineSurface::Pole: Index out of range");
-  return myPoles(UIndex, VIndex);
+  return myData.Poles(UIndex, VIndex);
 }
 
 //==================================================================================================
@@ -195,7 +195,7 @@ double Convert_ElementarySurfaceToBSplineSurface::Weight(const int UIndex, const
   Standard_OutOfRange_Raise_if(
     UIndex < 1 || UIndex > myNbUPoles || VIndex < 1 || VIndex > myNbVPoles,
     "Convert_ElementarySurfaceToBSplineSurface::Weight: Index out of range");
-  return myWeights(UIndex, VIndex);
+  return myData.Weights(UIndex, VIndex);
 }
 
 //==================================================================================================
@@ -205,7 +205,7 @@ double Convert_ElementarySurfaceToBSplineSurface::UKnot(const int UIndex) const
   Standard_OutOfRange_Raise_if(
     UIndex < 1 || UIndex > myNbUKnots,
     "Convert_ElementarySurfaceToBSplineSurface::UKnot: Index out of range");
-  return myUKnots(UIndex);
+  return myData.UKnots(UIndex);
 }
 
 //==================================================================================================
@@ -215,7 +215,7 @@ double Convert_ElementarySurfaceToBSplineSurface::VKnot(const int VIndex) const
   Standard_OutOfRange_Raise_if(
     VIndex < 1 || VIndex > myNbVKnots,
     "Convert_ElementarySurfaceToBSplineSurface::VKnot: Index out of range");
-  return myVKnots(VIndex);
+  return myData.VKnots(VIndex);
 }
 
 //==================================================================================================
@@ -225,7 +225,7 @@ int Convert_ElementarySurfaceToBSplineSurface::UMultiplicity(const int UIndex) c
   Standard_OutOfRange_Raise_if(
     UIndex < 1 || UIndex > myNbUKnots,
     "Convert_ElementarySurfaceToBSplineSurface::UMultiplicity: Index out of range");
-  return myUMults(UIndex);
+  return myData.UMults(UIndex);
 }
 
 //==================================================================================================
@@ -235,7 +235,7 @@ int Convert_ElementarySurfaceToBSplineSurface::VMultiplicity(const int VIndex) c
   Standard_OutOfRange_Raise_if(
     VIndex < 1 || VIndex > myNbVKnots,
     "Convert_ElementarySurfaceToBSplineSurface::VMultiplicity: Index out of range");
-  return myVMults(VIndex);
+  return myData.VMults(VIndex);
 }
 Standard_ENABLE_DEPRECATION_WARNINGS
 
@@ -243,40 +243,40 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 const NCollection_Array2<gp_Pnt>& Convert_ElementarySurfaceToBSplineSurface::Poles() const
 {
-  return myPoles;
+  return myData.Poles;
 }
 
 //==================================================================================================
 
 const NCollection_Array2<double>& Convert_ElementarySurfaceToBSplineSurface::Weights() const
 {
-  return myWeights;
+  return myData.Weights;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<double>& Convert_ElementarySurfaceToBSplineSurface::UKnots() const
 {
-  return myUKnots;
+  return myData.UKnots;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<double>& Convert_ElementarySurfaceToBSplineSurface::VKnots() const
 {
-  return myVKnots;
+  return myData.VKnots;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<int>& Convert_ElementarySurfaceToBSplineSurface::UMultiplicities() const
 {
-  return myUMults;
+  return myData.UMults;
 }
 
 //==================================================================================================
 
 const NCollection_Array1<int>& Convert_ElementarySurfaceToBSplineSurface::VMultiplicities() const
 {
-  return myVMults;
+  return myData.VMults;
 }

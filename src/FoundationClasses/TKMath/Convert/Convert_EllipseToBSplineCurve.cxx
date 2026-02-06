@@ -62,33 +62,30 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   {
     // If BuildCosAndSin cannot manage the periodicity
     // => trim on 0,2*PI
-    myIsPeriodic = false;
+    myData.IsPeriodic = false;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 0,
                                                 2 * M_PI,
                                                 CosNumerator,
                                                 SinNumerator,
-                                                myWeights,
-                                                myDegree,
-                                                myKnots,
-                                                myMults);
+                                                myData.Weights,
+                                                myData.Degree,
+                                                myData.Knots,
+                                                myData.Mults);
   }
   else
   {
-    myIsPeriodic = true;
+    myData.IsPeriodic = true;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 CosNumerator,
                                                 SinNumerator,
-                                                myWeights,
-                                                myDegree,
-                                                myKnots,
-                                                myMults);
+                                                myData.Weights,
+                                                myData.Degree,
+                                                myData.Knots,
+                                                myData.Mults);
   }
 
-  myNbPoles = CosNumerator.Length();
-  myNbKnots = myKnots.Length();
-
-  myPoles = NCollection_Array1<gp_Pnt2d>(1, myNbPoles);
+  myData.Poles = NCollection_Array1<gp_Pnt2d>(1, CosNumerator.Length());
 
   gp_Dir2d  Ox = E.XAxis().Direction();
   gp_Dir2d  Oy = E.YAxis().Direction();
@@ -106,11 +103,11 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   // Replace the bspline in the mark of the circle.
   // and calculate the weight of the bspline.
 
-  for (ii = 1; ii <= myNbPoles; ii++)
+  for (ii = 1; ii <= myData.Poles.Length(); ii++)
   {
-    myPoles(ii).SetCoord(1, R * CosNumerator(ii));
-    myPoles(ii).SetCoord(2, value * SinNumerator(ii));
-    myPoles(ii).Transform(Trsf);
+    myData.Poles(ii).SetCoord(1, R * CosNumerator(ii));
+    myData.Poles(ii).SetCoord(2, value * SinNumerator(ii));
+    myData.Poles(ii).Transform(Trsf);
   }
 }
 
@@ -139,21 +136,18 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   R = E.MajorRadius();
   r = E.MinorRadius();
 
-  myIsPeriodic = false;
+  myData.IsPeriodic = false;
   Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                               UFirst,
                                               ULast,
                                               CosNumerator,
                                               SinNumerator,
-                                              myWeights,
-                                              myDegree,
-                                              myKnots,
-                                              myMults);
+                                              myData.Weights,
+                                              myData.Degree,
+                                              myData.Knots,
+                                              myData.Mults);
 
-  myNbPoles = CosNumerator.Length();
-  myNbKnots = myKnots.Length();
-
-  myPoles = NCollection_Array1<gp_Pnt2d>(1, myNbPoles);
+  myData.Poles = NCollection_Array1<gp_Pnt2d>(1, CosNumerator.Length());
 
   gp_Dir2d  Ox = E.XAxis().Direction();
   gp_Dir2d  Oy = E.YAxis().Direction();
@@ -171,10 +165,10 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   // Replace the bspline in the mark of the circle.
   // and calculate the weight of the bspline.
 
-  for (ii = 1; ii <= myNbPoles; ii++)
+  for (ii = 1; ii <= myData.Poles.Length(); ii++)
   {
-    myPoles(ii).SetCoord(1, R * CosNumerator(ii));
-    myPoles(ii).SetCoord(2, value * SinNumerator(ii));
-    myPoles(ii).Transform(Trsf);
+    myData.Poles(ii).SetCoord(1, R * CosNumerator(ii));
+    myData.Poles(ii).SetCoord(2, value * SinNumerator(ii));
+    myData.Poles(ii).Transform(Trsf);
   }
 }

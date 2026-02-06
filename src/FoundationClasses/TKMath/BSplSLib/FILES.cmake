@@ -9,4 +9,5 @@ set(OCCT_BSplSLib_FILES
   BSplSLib_Cache.cxx
   BSplSLib_Cache.hxx
   BSplSLib_EvaluatorFunction.hxx
+  BSplSLib_SurfaceData.hxx
 )

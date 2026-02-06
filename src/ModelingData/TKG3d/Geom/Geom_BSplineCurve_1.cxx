@@ -27,9 +27,9 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_RangeError.hxx>
 
-#define POLES (poles->Array1())
-#define KNOTS (knots->Array1())
-#define FKNOTS (flatknots->Array1())
+#define POLES (myData.Poles)
+#define KNOTS (myData.Knots)
+#define FKNOTS (myData.FlatKnots)
 #define FMULTS (BSplCLib::NoMults())
 
 //=================================================================================================
@@ -54,10 +54,10 @@ bool Geom_BSplineCurve::IsCN(const int N) const
       return N <= 2;
     case GeomAbs_C3:
       return N <= 3 ? true
-                    : N <= deg
-                             - BSplCLib::MaxKnotMult(mults->Array1(),
-                                                     mults->Lower() + 1,
-                                                     mults->Upper() - 1);
+                    : N <= myData.Degree
+                             - BSplCLib::MaxKnotMult(myData.Mults,
+                                                     myData.Mults.Lower() + 1,
+                                                     myData.Mults.Upper() - 1);
     default:
       return false;
   }
@@ -145,7 +145,7 @@ bool Geom_BSplineCurve::IsClosed() const
 
 bool Geom_BSplineCurve::IsPeriodic() const
 {
-  return periodic;
+  return myData.IsPeriodic;
 }
 
 //=================================================================================================
@@ -159,7 +159,7 @@ GeomAbs_Shape Geom_BSplineCurve::Continuity() const
 
 int Geom_BSplineCurve::Degree() const
 {
-  return deg;
+  return myData.Degree;
 }
 
 //=================================================================================================
@@ -169,18 +169,18 @@ void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
   int    aSpanIndex = 0;
   double aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
-  if (aNewU < knots->Value(aSpanIndex))
+  BSplCLib::LocateParameter(myData.Degree, myData.Knots, &myData.Mults, U, myData.IsPeriodic, aSpanIndex, aNewU);
+  if (aNewU < myData.Knots(aSpanIndex))
     aSpanIndex--;
 
   BSplCLib::D0(aNewU,
                aSpanIndex,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               knots->Array1(),
-               &mults->Array1(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
+               myData.Knots,
+               &myData.Mults,
                P);
 }
 
@@ -191,18 +191,18 @@ void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
   int    aSpanIndex = 0;
   double aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
-  if (aNewU < knots->Value(aSpanIndex))
+  BSplCLib::LocateParameter(myData.Degree, myData.Knots, &myData.Mults, U, myData.IsPeriodic, aSpanIndex, aNewU);
+  if (aNewU < myData.Knots(aSpanIndex))
     aSpanIndex--;
 
   BSplCLib::D1(aNewU,
                aSpanIndex,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               knots->Array1(),
-               &mults->Array1(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
+               myData.Knots,
+               &myData.Mults,
                P,
                V1);
 }
@@ -214,18 +214,18 @@ void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
   int    aSpanIndex = 0;
   double aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
-  if (aNewU < knots->Value(aSpanIndex))
+  BSplCLib::LocateParameter(myData.Degree, myData.Knots, &myData.Mults, U, myData.IsPeriodic, aSpanIndex, aNewU);
+  if (aNewU < myData.Knots(aSpanIndex))
     aSpanIndex--;
 
   BSplCLib::D2(aNewU,
                aSpanIndex,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               knots->Array1(),
-               &mults->Array1(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
+               myData.Knots,
+               &myData.Mults,
                P,
                V1,
                V2);
@@ -238,18 +238,18 @@ void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
   int    aSpanIndex = 0;
   double aNewU(U);
   PeriodicNormalization(aNewU);
-  BSplCLib::LocateParameter(deg, knots->Array1(), &mults->Array1(), U, periodic, aSpanIndex, aNewU);
-  if (aNewU < knots->Value(aSpanIndex))
+  BSplCLib::LocateParameter(myData.Degree, myData.Knots, &myData.Mults, U, myData.IsPeriodic, aSpanIndex, aNewU);
+  if (aNewU < myData.Knots(aSpanIndex))
     aSpanIndex--;
 
   BSplCLib::D3(aNewU,
                aSpanIndex,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
-               knots->Array1(),
-               &mults->Array1(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
+               myData.Knots,
+               &myData.Mults,
                P,
                V1,
                V2,
@@ -264,10 +264,10 @@ gp_Vec Geom_BSplineCurve::DN(const double U, const int N) const
   BSplCLib::DN(U,
                N,
                0,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
                FKNOTS,
                FMULTS,
                V);
@@ -278,8 +278,8 @@ gp_Vec Geom_BSplineCurve::DN(const double U, const int N) const
 
 gp_Pnt Geom_BSplineCurve::EndPoint() const
 {
-  if (mults->Value(knots->Upper()) == deg + 1)
-    return poles->Value(poles->Upper());
+  if (myData.Mults(myData.Knots.Upper()) == myData.Degree + 1)
+    return myData.Poles(myData.Poles.Upper());
   else
     return Value(LastParameter());
 }
@@ -288,25 +288,25 @@ gp_Pnt Geom_BSplineCurve::EndPoint() const
 
 int Geom_BSplineCurve::FirstUKnotIndex() const
 {
-  if (periodic)
+  if (myData.IsPeriodic)
     return 1;
   else
-    return BSplCLib::FirstUKnotIndex(deg, mults->Array1());
+    return BSplCLib::FirstUKnotIndex(myData.Degree, myData.Mults);
 }
 
 //=================================================================================================
 
 double Geom_BSplineCurve::FirstParameter() const
 {
-  return flatknots->Value(deg + 1);
+  return myData.FlatKnots(myData.Degree + 1);
 }
 
 //=================================================================================================
 
 double Geom_BSplineCurve::Knot(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > knots->Length(), "Geom_BSplineCurve::Knot");
-  return knots->Value(Index);
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > myData.Knots.Length(), "Geom_BSplineCurve::Knot");
+  return myData.Knots(Index);
 }
 
 //=================================================================================================
@@ -320,47 +320,47 @@ GeomAbs_BSplKnotDistribution Geom_BSplineCurve::KnotDistribution() const
 
 void Geom_BSplineCurve::Knots(NCollection_Array1<double>& K) const
 {
-  Standard_DomainError_Raise_if(K.Lower() < knots->Lower() || K.Upper() > knots->Upper(),
+  Standard_DomainError_Raise_if(K.Lower() < myData.Knots.Lower() || K.Upper() > myData.Knots.Upper(),
                                 "Geom_BSplineCurve::Knots");
   for (int anIdx = K.Lower(); anIdx <= K.Upper(); anIdx++)
-    K(anIdx) = knots->Value(anIdx);
+    K(anIdx) = myData.Knots(anIdx);
 }
 
 const NCollection_Array1<double>& Geom_BSplineCurve::Knots() const
 {
-  return knots->Array1();
+  return myData.Knots;
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::KnotSequence(NCollection_Array1<double>& K) const
 {
-  Standard_DomainError_Raise_if(K.Lower() < flatknots->Lower() || K.Upper() > flatknots->Upper(),
+  Standard_DomainError_Raise_if(K.Lower() < myData.FlatKnots.Lower() || K.Upper() > myData.FlatKnots.Upper(),
                                 "Geom_BSplineCurve::KnotSequence");
   for (int anIdx = K.Lower(); anIdx <= K.Upper(); anIdx++)
-    K(anIdx) = flatknots->Value(anIdx);
+    K(anIdx) = myData.FlatKnots(anIdx);
 }
 
 const NCollection_Array1<double>& Geom_BSplineCurve::KnotSequence() const
 {
-  return flatknots->Array1();
+  return myData.FlatKnots;
 }
 
 //=================================================================================================
 
 int Geom_BSplineCurve::LastUKnotIndex() const
 {
-  if (periodic)
-    return knots->Length();
+  if (myData.IsPeriodic)
+    return myData.Knots.Length();
   else
-    return BSplCLib::LastUKnotIndex(deg, mults->Array1());
+    return BSplCLib::LastUKnotIndex(myData.Degree, myData.Mults);
 }
 
 //=================================================================================================
 
 double Geom_BSplineCurve::LastParameter() const
 {
-  return flatknots->Value(flatknots->Upper() - deg);
+  return myData.FlatKnots(myData.FlatKnots.Upper() - myData.Degree);
 }
 
 //=================================================================================================
@@ -380,14 +380,14 @@ void Geom_BSplineCurve::LocalD0(const double U, const int FromK1, const int ToK2
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
+  BSplCLib::LocateParameter(myData.Degree, FKNOTS, U, myData.IsPeriodic, FromK1, ToK2, index, u);
+  index = BSplCLib::FlatIndex(myData.Degree, index, myData.Mults, myData.IsPeriodic);
   BSplCLib::D0(u,
                index,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
                FKNOTS,
                FMULTS,
                P);
@@ -405,14 +405,14 @@ void Geom_BSplineCurve::LocalD1(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
+  BSplCLib::LocateParameter(myData.Degree, FKNOTS, U, myData.IsPeriodic, FromK1, ToK2, index, u);
+  index = BSplCLib::FlatIndex(myData.Degree, index, myData.Mults, myData.IsPeriodic);
   BSplCLib::D1(u,
                index,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
                FKNOTS,
                FMULTS,
                P,
@@ -432,14 +432,14 @@ void Geom_BSplineCurve::LocalD2(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
+  BSplCLib::LocateParameter(myData.Degree, FKNOTS, U, myData.IsPeriodic, FromK1, ToK2, index, u);
+  index = BSplCLib::FlatIndex(myData.Degree, index, myData.Mults, myData.IsPeriodic);
   BSplCLib::D2(u,
                index,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
                FKNOTS,
                FMULTS,
                P,
@@ -461,14 +461,14 @@ void Geom_BSplineCurve::LocalD3(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
+  BSplCLib::LocateParameter(myData.Degree, FKNOTS, U, myData.IsPeriodic, FromK1, ToK2, index, u);
+  index = BSplCLib::FlatIndex(myData.Degree, index, myData.Mults, myData.IsPeriodic);
   BSplCLib::D3(u,
                index,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
                FKNOTS,
                FMULTS,
                P,
@@ -488,17 +488,17 @@ gp_Vec Geom_BSplineCurve::LocalDN(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(deg, FKNOTS, U, periodic, FromK1, ToK2, index, u);
-  index = BSplCLib::FlatIndex(deg, index, mults->Array1(), periodic);
+  BSplCLib::LocateParameter(myData.Degree, FKNOTS, U, myData.IsPeriodic, FromK1, ToK2, index, u);
+  index = BSplCLib::FlatIndex(myData.Degree, index, myData.Mults, myData.IsPeriodic);
 
   gp_Vec V;
   BSplCLib::DN(u,
                N,
                index,
-               deg,
-               periodic,
+               myData.Degree,
+               myData.IsPeriodic,
                POLES,
-               rational ? &weights->Array1() : BSplCLib::NoWeights(),
+               rational ? &myData.Weights : BSplCLib::NoWeights(),
                FKNOTS,
                FMULTS,
                V);
@@ -509,66 +509,66 @@ gp_Vec Geom_BSplineCurve::LocalDN(const double U,
 
 int Geom_BSplineCurve::Multiplicity(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > mults->Length(),
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > myData.Mults.Length(),
                                "Geom_BSplineCurve::Multiplicity");
-  return mults->Value(Index);
+  return myData.Mults(Index);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::Multiplicities(NCollection_Array1<int>& M) const
 {
-  Standard_DimensionError_Raise_if(M.Length() != mults->Length(),
+  Standard_DimensionError_Raise_if(M.Length() != myData.Mults.Length(),
                                    "Geom_BSplineCurve::Multiplicities");
-  M = mults->Array1();
+  M = myData.Mults;
 }
 
 const NCollection_Array1<int>& Geom_BSplineCurve::Multiplicities() const
 {
-  return mults->Array1();
+  return myData.Mults;
 }
 
 //=================================================================================================
 
 int Geom_BSplineCurve::NbKnots() const
 {
-  return knots->Length();
+  return myData.Knots.Length();
 }
 
 //=================================================================================================
 
 int Geom_BSplineCurve::NbPoles() const
 {
-  return poles->Length();
+  return myData.Poles.Length();
 }
 
 //=================================================================================================
 
 const gp_Pnt& Geom_BSplineCurve::Pole(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > poles->Length(), "Geom_BSplineCurve::Pole");
-  return poles->Value(Index);
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > myData.Poles.Length(), "Geom_BSplineCurve::Pole");
+  return myData.Poles(Index);
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::Poles(NCollection_Array1<gp_Pnt>& P) const
 {
-  Standard_DimensionError_Raise_if(P.Length() != poles->Length(), "Geom_BSplineCurve::Poles");
-  P = poles->Array1();
+  Standard_DimensionError_Raise_if(P.Length() != myData.Poles.Length(), "Geom_BSplineCurve::Poles");
+  P = myData.Poles;
 }
 
 const NCollection_Array1<gp_Pnt>& Geom_BSplineCurve::Poles() const
 {
-  return poles->Array1();
+  return myData.Poles;
 }
 
 //=================================================================================================
 
 gp_Pnt Geom_BSplineCurve::StartPoint() const
 {
-  if (mults->Value(1) == deg + 1)
-    return poles->Value(1);
+  if (myData.Mults(1) == myData.Degree + 1)
+    return myData.Poles(1);
   else
     return Value(FirstParameter());
 }
@@ -577,9 +577,9 @@ gp_Pnt Geom_BSplineCurve::StartPoint() const
 
 double Geom_BSplineCurve::Weight(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > poles->Length(), "Geom_BSplineCurve::Weight");
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > myData.Poles.Length(), "Geom_BSplineCurve::Weight");
   if (IsRational())
-    return weights->Value(Index);
+    return myData.Weights(Index);
   else
     return 1.;
 }
@@ -588,9 +588,9 @@ double Geom_BSplineCurve::Weight(const int Index) const
 
 void Geom_BSplineCurve::Weights(NCollection_Array1<double>& W) const
 {
-  Standard_DimensionError_Raise_if(W.Length() != poles->Length(), "Geom_BSplineCurve::Weights");
+  Standard_DimensionError_Raise_if(W.Length() != myData.Poles.Length(), "Geom_BSplineCurve::Weights");
   if (IsRational())
-    W = weights->Array1();
+    W = myData.Weights;
   else
   {
     int i;
@@ -603,7 +603,7 @@ void Geom_BSplineCurve::Weights(NCollection_Array1<double>& W) const
 const NCollection_Array1<double>* Geom_BSplineCurve::Weights() const
 {
   if (IsRational())
-    return &weights->Array1();
+    return &myData.Weights;
   return BSplCLib::NoWeights();
 }
 
@@ -611,25 +611,28 @@ const NCollection_Array1<double>* Geom_BSplineCurve::Weights() const
 
 bool Geom_BSplineCurve::IsRational() const
 {
-  return !weights.IsNull();
+  return rational;
+}
+
+//=================================================================================================
+
+const NCollection_Array1<double>* Geom_BSplineCurve::InternalWeights() const
+{
+  if (rational)
+    return &myData.Weights;
+  return BSplCLib::NoWeights();
 }
 
 //=================================================================================================
 
 void Geom_BSplineCurve::Transform(const gp_Trsf& T)
 {
-  NCollection_Array1<gp_Pnt>& CPoles = poles->ChangeArray1();
-  for (int I = 1; I <= CPoles.Length(); I++)
-    CPoles(I).Transform(T);
+  for (int I = 1; I <= myData.Poles.Length(); I++)
+    myData.Poles.ChangeValue(I).Transform(T);
   maxderivinvok = false;
 }
 
-//=======================================================================
-// function : LocateU
-// purpose  :
-// pmn : 30/01/97 mise en conformite avec le cdl, lorsque U est un noeud
-// (PRO6988)
-//=======================================================================
+//=================================================================================================
 
 void Geom_BSplineCurve::LocateU(const double U,
                                 const double ParametricTolerance,
@@ -637,13 +640,8 @@ void Geom_BSplineCurve::LocateU(const double U,
                                 int&         I2,
                                 const bool   WithKnotRepetition) const
 {
-  double                                   NewU = U;
-  occ::handle<NCollection_HArray1<double>> TheKnots;
-  if (WithKnotRepetition)
-    TheKnots = flatknots;
-  else
-    TheKnots = knots;
-  const NCollection_Array1<double>& CKnots = TheKnots->Array1();
+  double                             NewU = U;
+  const NCollection_Array1<double>& CKnots = WithKnotRepetition ? myData.FlatKnots : myData.Knots;
 
   PeriodicNormalization(NewU); // Attention a la periode
 
@@ -694,38 +692,38 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
 {
   if (!maxderivinvok)
   {
-    if (periodic)
+    if (myData.IsPeriodic)
     {
       int NbKnots, NbPoles;
-      BSplCLib::PrepareUnperiodize(deg, mults->Array1(), NbKnots, NbPoles);
+      BSplCLib::PrepareUnperiodize(myData.Degree, myData.Mults, NbKnots, NbPoles);
       NCollection_Array1<gp_Pnt> new_poles(1, NbPoles);
       NCollection_Array1<double> new_weights(1, NbPoles);
       for (int ii = 1; ii <= NbPoles; ii++)
       {
-        new_poles(ii) = poles->Array1()((ii - 1) % poles->Length() + 1);
+        new_poles(ii) = myData.Poles((ii - 1) % myData.Poles.Length() + 1);
       }
       if (rational)
       {
         for (int ii = 1; ii <= NbPoles; ii++)
         {
-          new_weights(ii) = weights->Array1()((ii - 1) % poles->Length() + 1);
+          new_weights(ii) = myData.Weights((ii - 1) % myData.Poles.Length() + 1);
         }
       }
       BSplCLib::Resolution(new_poles,
                            rational ? &new_weights : BSplCLib::NoWeights(),
                            new_poles.Length(),
-                           flatknots->Array1(),
-                           deg,
+                           myData.FlatKnots,
+                           myData.Degree,
                            1.,
                            maxderivinv);
     }
     else
     {
-      BSplCLib::Resolution(poles->Array1(),
-                           rational ? &weights->Array1() : BSplCLib::NoWeights(),
-                           poles->Length(),
-                           flatknots->Array1(),
-                           deg,
+      BSplCLib::Resolution(myData.Poles,
+                           rational ? &myData.Weights : BSplCLib::NoWeights(),
+                           myData.Poles.Length(),
+                           myData.FlatKnots,
+                           myData.Degree,
                            1.,
                            maxderivinv);
     }
@@ -739,32 +737,32 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
 bool Geom_BSplineCurve::IsEqual(const occ::handle<Geom_BSplineCurve>& theOther,
                                 const double                          thePreci) const
 {
-  if (knots.IsNull() || poles.IsNull() || mults.IsNull())
+  if (myData.Knots.IsEmpty() || myData.Poles.IsEmpty() || myData.Mults.IsEmpty())
     return false;
-  if (deg != theOther->Degree())
+  if (myData.Degree != theOther->Degree())
     return false;
-  if (knots->Length() != theOther->NbKnots() || poles->Length() != theOther->NbPoles())
+  if (myData.Knots.Length() != theOther->NbKnots() || myData.Poles.Length() != theOther->NbPoles())
     return false;
 
   int i = 1;
-  for (i = 1; i <= poles->Length(); i++)
+  for (i = 1; i <= myData.Poles.Length(); i++)
   {
-    const gp_Pnt& aPole1 = poles->Value(i);
+    const gp_Pnt& aPole1 = myData.Poles(i);
     const gp_Pnt& aPole2 = theOther->Pole(i);
     if (fabs(aPole1.X() - aPole2.X()) > thePreci || fabs(aPole1.Y() - aPole2.Y()) > thePreci
         || fabs(aPole1.Z() - aPole2.Z()) > thePreci)
       return false;
   }
 
-  for (; i <= knots->Length(); i++)
+  for (; i <= myData.Knots.Length(); i++)
   {
-    if (fabs(knots->Value(i) - theOther->Knot(i)) > Precision::Parametric(thePreci))
+    if (fabs(myData.Knots(i) - theOther->Knot(i)) > Precision::Parametric(thePreci))
       return false;
   }
 
-  for (i = 1; i <= mults->Length(); i++)
+  for (i = 1; i <= myData.Mults.Length(); i++)
   {
-    if (mults->Value(i) != theOther->Multiplicity(i))
+    if (myData.Mults(i) != theOther->Multiplicity(i))
       return false;
   }
 
@@ -774,9 +772,9 @@ bool Geom_BSplineCurve::IsEqual(const occ::handle<Geom_BSplineCurve>& theOther,
   if (!rational)
     return true;
 
-  for (i = 1; i <= weights->Length(); i++)
+  for (i = 1; i <= myData.Weights.Length(); i++)
   {
-    if (fabs(double(weights->Value(i) - theOther->Weight(i))) > Epsilon(weights->Value(i)))
+    if (fabs(double(myData.Weights(i) - theOther->Weight(i))) > Epsilon(myData.Weights(i)))
       return false;
   }
   return true;

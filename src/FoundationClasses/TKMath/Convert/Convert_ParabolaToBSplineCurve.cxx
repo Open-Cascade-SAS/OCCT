@@ -41,31 +41,29 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&
 
   double p = Prb.Parameter();
 
-  myNbPoles                  = 3;
-  myNbKnots                  = 2;
-  myIsPeriodic               = false;
-  myKnots(1) = UF;
-  myMults(1) = 3;
-  myKnots(2) = UL;
-  myMults(2) = 3;
+  myData.IsPeriodic               = false;
+  myData.Knots(1) = UF;
+  myData.Mults(1) = 3;
+  myData.Knots(2) = UL;
+  myData.Mults(2) = 3;
 
-  myWeights(1) = 1.;
-  myWeights(2) = 1.;
-  myWeights(3) = 1.;
+  myData.Weights(1) = 1.;
+  myData.Weights(2) = 1.;
+  myData.Weights(3) = 1.;
 
   gp_Dir2d Ox = Prb.Axis().XDirection();
   gp_Dir2d Oy = Prb.Axis().YDirection();
   double   S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
 
   // poles expressed in the reference mark
-  myPoles(1) = gp_Pnt2d((UF * UF) / (2. * p), S * UF);
-  myPoles(2) = gp_Pnt2d((UF * UL) / (2. * p), S * (UF + UL) / 2.);
-  myPoles(3) = gp_Pnt2d((UL * UL) / (2. * p), S * UL);
+  myData.Poles(1) = gp_Pnt2d((UF * UF) / (2. * p), S * UF);
+  myData.Poles(2) = gp_Pnt2d((UF * UL) / (2. * p), S * (UF + UL) / 2.);
+  myData.Poles(3) = gp_Pnt2d((UL * UL) / (2. * p), S * UL);
 
   // replace the bspline in the mark of the parabola
   gp_Trsf2d Trsf;
   Trsf.SetTransformation(Prb.Axis().XAxis(), gp::OX2d());
-  myPoles(1).Transform(Trsf);
-  myPoles(2).Transform(Trsf);
-  myPoles(3).Transform(Trsf);
+  myData.Poles(1).Transform(Trsf);
+  myData.Poles(2).Transform(Trsf);
+  myData.Poles(3).Transform(Trsf);
 }

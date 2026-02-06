@@ -26,9 +26,8 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
+#include <BSplCLib_CurveData.hxx>
 #include <Geom2d_BoundedCurve.hxx>
-class gp_Pnt2d;
 class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
@@ -837,24 +836,27 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
+  //! Returns the internal poles array (non-handle).
+  const NCollection_Array1<gp_Pnt2d>& InternalPoles() const { return myData.Poles; }
+
+  //! Returns the internal weights array, or nullptr if non-rational.
+  Standard_EXPORT const NCollection_Array1<double>* InternalWeights() const;
+
+  //! Returns the internal flat knots array (non-handle).
+  const NCollection_Array1<double>& InternalFlatKnots() const { return myData.FlatKnots; }
+
   DEFINE_STANDARD_RTTIEXT(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 
 private:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
-  bool                                       rational;
-  bool                                       periodic;
-  GeomAbs_BSplKnotDistribution               knotSet;
-  GeomAbs_Shape                              smooth;
-  int                                        deg;
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> poles;
-  occ::handle<NCollection_HArray1<double>>   weights;
-  occ::handle<NCollection_HArray1<double>>   flatknots;
-  occ::handle<NCollection_HArray1<double>>   knots;
-  occ::handle<NCollection_HArray1<int>>      mults;
-  double                                     maxderivinv;
-  bool                                       maxderivinvok;
+  BSplCLib_CurveData2d             myData;
+  bool                             rational;
+  GeomAbs_BSplKnotDistribution     knotSet;
+  GeomAbs_Shape                    smooth;
+  double                           maxderivinv;
+  bool                             maxderivinvok;
 };
 
 #endif // _Geom2d_BSplineCurve_HeaderFile

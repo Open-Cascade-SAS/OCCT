@@ -18,14 +18,13 @@
 #define _Geom_BezierSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
+#include <BSplSLib_SurfaceData.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom_BoundedSurface.hxx>
-#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
 
@@ -500,7 +499,7 @@ public:
   Standard_EXPORT void Poles(NCollection_Array2<gp_Pnt>& P) const;
 
   //! Returns the poles of the Bezier surface.
-  const NCollection_Array2<gp_Pnt>& Poles() const { return poles->Array2(); }
+  const NCollection_Array2<gp_Pnt>& Poles() const { return myData.Poles; }
 
   //! Returns the degree of the surface in the U direction it is
   //! NbUPoles - 1
@@ -533,9 +532,7 @@ public:
   //! Returns the weights of the Bezier surface.
   const NCollection_Array2<double>* Weights() const
   {
-    if (!weights.IsNull())
-      return &weights->Array2();
-    return BSplSLib::NoWeights();
+    return (urational || vrational) ? &myData.Weights : BSplSLib::NoWeights();
   }
 
   //! Returns True if the first control points row and the
@@ -601,29 +598,44 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
+  //! Returns the internal poles array (non-handle).
+  const NCollection_Array2<gp_Pnt>& InternalPoles() const { return myData.Poles; }
+
+  //! Returns the internal weights array, or nullptr if non-rational.
+  const NCollection_Array2<double>* InternalWeights() const
+  {
+    return (urational || vrational) ? &myData.Weights : BSplSLib::NoWeights();
+  }
+
+  //! Returns the internal U flat knots array (non-handle).
+  const NCollection_Array1<double>& InternalUFlatKnots() const { return myData.UFlatKnots; }
+
+  //! Returns the internal V flat knots array (non-handle).
+  const NCollection_Array1<double>& InternalVFlatKnots() const { return myData.VFlatKnots; }
+
   DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
 private:
-  Geom_BezierSurface(const occ::handle<NCollection_HArray2<gp_Pnt>>& SurfacePoles,
-                     const occ::handle<NCollection_HArray2<double>>& PoleWeights,
-                     const bool                                      IsURational,
-                     const bool                                      IsVRational);
+  //! Rebuilds the U knot arrays (UKnots, UMults, UFlatKnots) from the current U degree.
+  void updateUKnots();
+
+  //! Rebuilds the V knot arrays (VKnots, VMults, VFlatKnots) from the current V degree.
+  void updateVKnots();
 
   //! Set poles to Poles, weights to Weights (not copied).
   //! Create the arrays of coefficients. Poles and Weights
   //! are assumed to have the first coefficient 1.
   //!
   //! if nbpoles < 2 or nbpoles > MaDegree
-  void Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles,
-            const occ::handle<NCollection_HArray2<double>>& Weights);
+  void Init(const NCollection_Array2<gp_Pnt>& thePoles,
+            const NCollection_Array2<double>* theWeights);
 
-  bool                                     urational;
-  bool                                     vrational;
-  occ::handle<NCollection_HArray2<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray2<double>> weights;
-  double                                   umaxderivinv;
-  double                                   vmaxderivinv;
-  bool                                     maxderivinvok;
+  BSplSLib_SurfaceData myData;
+  bool                 urational;
+  bool                 vrational;
+  double               umaxderivinv;
+  double               vmaxderivinv;
+  bool                 maxderivinvok;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile
