@@ -239,7 +239,7 @@ TEST(Bnd_Box2dTest, IsOut_Box_Separated)
 
 TEST(Bnd_Box2dTest, IsOut_Box_FastPath)
 {
-  // Both non-void, non-whole, non-open → fast path
+  // Both non-void, non-whole, non-open -> fast path
   Bnd_Box2d aBox1;
   aBox1.Update(0.0, 0.0, 10.0, 10.0);
   Bnd_Box2d aBox2;
@@ -260,14 +260,14 @@ TEST(Bnd_Box2dTest, IsOut_Box_FastPath_WithGap)
   Bnd_Box2d aBox2;
   aBox2.Update(6.0, 0.0, 10.0, 5.0);
   // Gap from box1 = 1.0, gap from box2 = 0.0, total = 1.0
-  // Xmin1 - Xmax2 = 0 - 10 = -10 (not > 1.0) → not out in X
-  // Xmin2 - Xmax1 = 6 - 5 = 1 (not > 1.0, equal) → not out
+  // Xmin1 - Xmax2 = 0 - 10 = -10 (not > 1.0) -> not out in X
+  // Xmin2 - Xmax1 = 6 - 5 = 1 (not > 1.0, equal) -> not out
   EXPECT_FALSE(aBox1.IsOut(aBox2));
 
   // Now increase separation
   Bnd_Box2d aBox3;
   aBox3.Update(7.0, 0.0, 10.0, 5.0);
-  // Xmin3 - Xmax1 = 7 - 5 = 2 > 1.0 → out
+  // Xmin3 - Xmax1 = 7 - 5 = 2 > 1.0 -> out
   EXPECT_TRUE(aBox1.IsOut(aBox3));
 }
 
@@ -350,7 +350,7 @@ TEST(Bnd_Box2dTest, SquareExtent)
 {
   Bnd_Box2d aBox;
   aBox.Update(0.0, 0.0, 3.0, 4.0);
-  // Diagonal² = 3² + 4² = 25
+  // Diagonal^2 = 3^2 + 4^2 = 25
   EXPECT_DOUBLE_EQ(aBox.SquareExtent(), 25.0);
 }
 

@@ -96,8 +96,8 @@ TEST(Bnd_SphereTest, SquareDistances_PointOutside)
   const gp_XYZ aPoint(5.0, 0.0, 0.0);
   double       aMin = 0.0, aMax = 0.0;
   aSphere.SquareDistances(aPoint, aMin, aMax);
-  // d² = 25, r² = 4
-  // min = d² - r² = 21, max = d² + r² = 29
+  // d^2 = 25, r^2 = 4
+  // min = d^2 - r^2 = 21, max = d^2 + r^2 = 29
   EXPECT_DOUBLE_EQ(aMin, 21.0);
   EXPECT_DOUBLE_EQ(aMax, 29.0);
 }
@@ -109,8 +109,8 @@ TEST(Bnd_SphereTest, SquareDistances_PointInside)
   const gp_XYZ aPoint(1.0, 0.0, 0.0);
   double       aMin = 0.0, aMax = 0.0;
   aSphere.SquareDistances(aPoint, aMin, aMax);
-  // d² = 1, r² = 25
-  // d² < r² → min = 0, max = d² + r² = 26
+  // d^2 = 1, r^2 = 25
+  // d^2 < r^2 -> min = 0, max = d^2 + r^2 = 26
   EXPECT_DOUBLE_EQ(aMin, 0.0);
   EXPECT_DOUBLE_EQ(aMax, 26.0);
 }
@@ -122,8 +122,8 @@ TEST(Bnd_SphereTest, SquareDistances_PointAtCenter)
   const gp_XYZ aPoint(0.0, 0.0, 0.0);
   double       aMin = 0.0, aMax = 0.0;
   aSphere.SquareDistances(aPoint, aMin, aMax);
-  // d² = 0, r² = 9
-  // d² < r² → min = 0, max = 0 + 9 = 9
+  // d^2 = 0, r^2 = 9
+  // d^2 < r^2 -> min = 0, max = 0 + 9 = 9
   EXPECT_DOUBLE_EQ(aMin, 0.0);
   EXPECT_DOUBLE_EQ(aMax, 9.0);
 }
@@ -135,8 +135,8 @@ TEST(Bnd_SphereTest, SquareDistances_PointOnSurface)
   const gp_XYZ aPoint(3.0, 0.0, 0.0);
   double       aMin = 0.0, aMax = 0.0;
   aSphere.SquareDistances(aPoint, aMin, aMax);
-  // d² = 9, r² = 9
-  // d² < r² is false (equal), so min = d² - r² = 0, max = d² + r² = 18
+  // d^2 = 9, r^2 = 9
+  // d^2 < r^2 is false (equal), so min = d^2 - r^2 = 0, max = d^2 + r^2 = 18
   EXPECT_DOUBLE_EQ(aMin, 0.0);
   EXPECT_DOUBLE_EQ(aMax, 18.0);
 }

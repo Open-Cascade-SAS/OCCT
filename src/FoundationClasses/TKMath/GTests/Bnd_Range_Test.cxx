@@ -255,14 +255,14 @@ TEST(Bnd_RangeTest, IsIntersected_Periodic_Contains)
 {
   // Range [3, 15], period 4, val 1
   // Check: val + k*period in [3, 15]
-  // k=1: 1+4=5, inside [3,15] → In
+  // k=1: 1+4=5, inside [3,15] -> In
   Bnd_Range aRange(3.0, 15.0);
   EXPECT_EQ(aRange.IsIntersected(1.0, 4.0), Bnd_Range::IntersectStatus_In);
 }
 
 TEST(Bnd_RangeTest, IsIntersected_Periodic_OnBoundary)
 {
-  // Range [3, 15], period 4, val 3 → val + 0*4 = 3 exactly
+  // Range [3, 15], period 4, val 3 -> val + 0*4 = 3 exactly
   Bnd_Range aRange(3.0, 15.0);
   EXPECT_EQ(aRange.IsIntersected(3.0, 4.0), Bnd_Range::IntersectStatus_Boundary);
 }
@@ -270,7 +270,7 @@ TEST(Bnd_RangeTest, IsIntersected_Periodic_OnBoundary)
 TEST(Bnd_RangeTest, IsIntersected_Periodic_Outside)
 {
   // Range [3.5, 3.9], period 4, val 0
-  // Check: 0 + k*4 in [3.5, 3.9] → k=1 gives 4.0, not in range
+  // Check: 0 + k*4 in [3.5, 3.9] -> k=1 gives 4.0, not in range
   Bnd_Range aRange(3.5, 3.9);
   EXPECT_EQ(aRange.IsIntersected(0.0, 4.0), Bnd_Range::IntersectStatus_Out);
 }
@@ -306,7 +306,7 @@ TEST(Bnd_RangeTest, Split_AtInteriorPoint)
 TEST(Bnd_RangeTest, Split_Periodic)
 {
   // Range [3, 15], split at val=5, period=4
-  // Split points: 5, 9, 13 → sub-ranges: [3,5], [5,9], [9,13], [13,15]
+  // Split points: 5, 9, 13 -> sub-ranges: [3,5], [5,9], [9,13], [13,15]
   Bnd_Range                   aRange(3.0, 15.0);
   NCollection_List<Bnd_Range> aList;
   aRange.Split(5.0, aList, 4.0);
