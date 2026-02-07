@@ -71,6 +71,8 @@ Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
       maxderivinv(theOther.maxderivinv),
       maxderivinvok(false)
 {
+  // Restore non-owning knot/mult/flatknot references to static data
+  updateKnots();
 }
 
 //=================================================================================================
@@ -130,6 +132,10 @@ void Geom_BezierCurve::Increase(const int Deg)
 
   NCollection_Array1<gp_Pnt> npoles(1, Deg + 1);
   NCollection_Array1<double> nweights(1, Deg + 1);
+  double                     aKnotsBuf[2];
+  int                        aMultsBuf[2];
+  NCollection_Array1<double> nknots(aKnotsBuf[0], 1, 2);
+  NCollection_Array1<int>    nmults(aMultsBuf[0], 1, 2);
 
   if (IsRational())
   {
@@ -142,8 +148,8 @@ void Geom_BezierCurve::Increase(const int Deg)
                              myData.Mults,
                              npoles,
                              &nweights,
-                             myData.Knots,
-                             myData.Mults);
+                             nknots,
+                             nmults);
     Init(npoles, &nweights);
   }
   else
@@ -157,8 +163,8 @@ void Geom_BezierCurve::Increase(const int Deg)
                              myData.Mults,
                              npoles,
                              BSplCLib::NoWeights(),
-                             myData.Knots,
-                             myData.Mults);
+                             nknots,
+                             nmults);
     Init(npoles, nullptr);
   }
 }

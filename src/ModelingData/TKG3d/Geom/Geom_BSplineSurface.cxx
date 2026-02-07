@@ -1076,7 +1076,8 @@ void Geom_BSplineSurface::UpdateUKnots()
 
   if (uknotSet == GeomAbs_Uniform && !myData.IsUPeriodic)
   {
-    myData.UFlatKnots = myData.UKnots;
+    myData.UFlatKnots.Resize(myData.UKnots.Lower(), myData.UKnots.Upper(), false);
+    myData.UFlatKnots.Assign(myData.UKnots);
   }
   else
   {
@@ -1131,7 +1132,8 @@ void Geom_BSplineSurface::UpdateVKnots()
 
   if (vknotSet == GeomAbs_Uniform && !myData.IsVPeriodic)
   {
-    myData.VFlatKnots = myData.VKnots;
+    myData.VFlatKnots.Resize(myData.VKnots.Lower(), myData.VKnots.Upper(), false);
+    myData.VFlatKnots.Assign(myData.VKnots);
   }
   else
   {

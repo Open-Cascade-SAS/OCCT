@@ -242,10 +242,7 @@ void Geom2d_BSplineCurve::IncreaseDegree(const int Degree)
 
   myData.Degree  = Degree;
   myData.Poles   = std::move(npoles);
-  if (rational)
-    myData.Weights = std::move(nweights);
-  else
-    myData.Weights = NCollection_Array1<double>();
+  myData.Weights = std::move(nweights);
   myData.Knots   = std::move(nknots);
   myData.Mults   = std::move(nmults);
   UpdateKnots();
@@ -321,19 +318,8 @@ void Geom2d_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
     return;
 
   NCollection_Array1<gp_Pnt2d> npoles(1, nbpoles);
-  NCollection_Array1<double>   nknots;
-  NCollection_Array1<int>      nmults;
-
-  if (nbknots != myData.Knots.Length())
-  {
-    nknots.Resize(1, nbknots, false);
-    nmults.Resize(1, nbknots, false);
-  }
-  else
-  {
-    nknots = myData.Knots;
-    nmults = myData.Mults;
-  }
+  NCollection_Array1<double>   nknots(1, nbknots);
+  NCollection_Array1<int>      nmults(1, nbknots);
 
   NCollection_Array1<double> nweights;
   if (rational)
@@ -355,13 +341,10 @@ void Geom2d_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
                         nmults,
                         Epsilon,
                         Add);
-  if (rational)
-    myData.Weights = std::move(nweights);
-  else
-    myData.Weights = NCollection_Array1<double>();
-  myData.Poles = std::move(npoles);
-  myData.Knots = std::move(nknots);
-  myData.Mults = std::move(nmults);
+  myData.Weights = std::move(nweights);
+  myData.Poles   = std::move(npoles);
+  myData.Knots   = std::move(nknots);
+  myData.Mults   = std::move(nmults);
   UpdateKnots();
 }
 
@@ -420,13 +403,10 @@ bool Geom2d_BSplineCurve::RemoveKnot(const int Index, const int M, const double 
     return false;
   }
 
-  if (rational)
-    myData.Weights = std::move(nweights);
-  else
-    myData.Weights = NCollection_Array1<double>();
-  myData.Poles = std::move(npoles);
-  myData.Knots = std::move(nknots);
-  myData.Mults = std::move(nmults);
+  myData.Weights = std::move(nweights);
+  myData.Poles   = std::move(npoles);
+  myData.Knots   = std::move(nknots);
+  myData.Mults   = std::move(nmults);
 
   UpdateKnots();
   maxderivinvok = false;
@@ -509,10 +489,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   }
 
   myData.Poles   = std::move(npoles);
-  if (rat)
-    myData.Weights = std::move(nweights);
-  else
-    myData.Weights = NCollection_Array1<double>();
+  myData.Weights = std::move(nweights);
   myData.Knots   = std::move(nknots);
   myData.Mults   = std::move(nmults);
   maxderivinvok  = false;
@@ -570,13 +547,10 @@ void Geom2d_BSplineCurve::RemovePole(const int Index)
       nweights(i) = myData.Weights.Value(i + 1);
   }
 
-  myData.Poles = std::move(npoles);
-  if (IsRational())
-    myData.Weights = std::move(nweights);
-  else
-    myData.Weights = NCollection_Array1<double>();
-  myData.Knots = std::move(nknots);
-  myData.Mults = std::move(nmults);
+  myData.Poles   = std::move(npoles);
+  myData.Weights = std::move(nweights);
+  myData.Knots   = std::move(nknots);
+  myData.Mults   = std::move(nmults);
   UpdateKnots();
 }
 
@@ -837,28 +811,23 @@ void Geom2d_BSplineCurve::SetPeriodic()
   int first = FirstUKnotIndex();
   int last  = LastUKnotIndex();
 
-  NCollection_Array1<double> cknots(myData.Knots(first), first, last);
-  myData.Knots.Resize(1, cknots.Length(), false);
-  myData.Knots.Assign(cknots);
+  NCollection_Array1<double> cknots(1, last - first + 1);
+  for (int k = first; k <= last; k++)
+    cknots(k - first + 1) = myData.Knots(k);
+  myData.Knots = std::move(cknots);
 
-  NCollection_Array1<int> cmults(myData.Mults(first), first, last);
-  cmults(first) = cmults(last) = std::min(myData.Degree, std::max(cmults(first), cmults(last)));
-  myData.Mults.Resize(1, cmults.Length(), false);
-  myData.Mults.Assign(cmults);
+  NCollection_Array1<int> cmults(1, last - first + 1);
+  for (int k = first; k <= last; k++)
+    cmults(k - first + 1) = myData.Mults(k);
+  cmults(1) = cmults(cmults.Upper()) = std::min(myData.Degree, std::max(cmults(1), cmults(cmults.Upper())));
+  myData.Mults = std::move(cmults);
 
   // compute new number of poles;
-  int nbp = BSplCLib::NbPoles(myData.Degree, true, cmults);
+  int nbp = BSplCLib::NbPoles(myData.Degree, true, myData.Mults);
 
-  NCollection_Array1<gp_Pnt2d> cpoles(myData.Poles(1), 1, nbp);
-  myData.Poles.Resize(1, nbp, false);
-  myData.Poles.Assign(cpoles);
-
+  myData.Poles.Resize(1, nbp, true);
   if (rational)
-  {
-    NCollection_Array1<double> cweights(myData.Weights(1), 1, nbp);
-    myData.Weights.Resize(1, nbp, false);
-    myData.Weights.Assign(cweights);
-  }
+    myData.Weights.Resize(1, nbp, true);
 
   myData.IsPeriodic = true;
 
@@ -981,11 +950,8 @@ void Geom2d_BSplineCurve::SetNotPeriodic()
                           nknots,
                           npoles,
                           rational ? &nweights : BSplCLib::NoWeights());
-    myData.Poles = std::move(npoles);
-    if (rational)
-      myData.Weights = std::move(nweights);
-    else
-      myData.Weights = NCollection_Array1<double>();
+    myData.Poles      = std::move(npoles);
+    myData.Weights    = std::move(nweights);
     myData.Mults      = std::move(nmults);
     myData.Knots      = std::move(nknots);
     myData.IsPeriodic = false;

@@ -27,7 +27,7 @@
 //! - Pre-computing span indices for input parameters (no runtime binary search)
 //! - Pre-grouping parameters by span for cache-optimal iteration
 //! - Rebuilding cache only once per span block (not per point)
-//! - Using HArrayFlatKnots() from Geom_BSplineCurve for direct flat knot access
+//! - Using InternalFlatKnots() from Geom_BSplineCurve for direct flat knot access
 //!
 //! Usage:
 //! @code

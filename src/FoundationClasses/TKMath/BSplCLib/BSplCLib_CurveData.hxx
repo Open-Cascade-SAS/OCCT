@@ -23,9 +23,6 @@
 template <typename PointType>
 struct BSplCLib_CurveData
 {
-  using CurveData2d = BSplCLib_CurveData<gp_Pnt2d>;
-  using CurveData3d = BSplCLib_CurveData<gp_Pnt>;
-
   NCollection_Array1<PointType> Poles;
   NCollection_Array1<double>    Weights;
   NCollection_Array1<double>    Knots;

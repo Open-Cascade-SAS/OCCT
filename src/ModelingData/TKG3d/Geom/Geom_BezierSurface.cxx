@@ -405,6 +405,9 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
       vmaxderivinv(theOther.vmaxderivinv),
       maxderivinvok(false)
 {
+  // Restore non-owning knot/mult/flatknot references to static data
+  updateUKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -560,6 +563,10 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
   if (IncUDeg > 0)
   {
     NCollection_Array2<gp_Pnt> npoles(1, UDeg + 1, 1, oldVDeg + 1);
+    double                     aKnotsBuf[2];
+    int                        aMultsBuf[2];
+    NCollection_Array1<double> nknots(aKnotsBuf[0], 1, 2);
+    NCollection_Array1<int>    nmults(aMultsBuf[0], 1, 2);
 
     if (urational || vrational)
     {
@@ -575,8 +582,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                myData.UMults,
                                npoles,
                                &nweights,
-                               myData.UKnots,
-                               myData.UMults);
+                               nknots,
+                               nmults);
       myData.Weights = std::move(nweights);
     }
     else
@@ -591,14 +598,18 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                myData.UMults,
                                npoles,
                                BSplSLib::NoWeights(),
-                               myData.UKnots,
-                               myData.UMults);
+                               nknots,
+                               nmults);
     }
     myData.Poles = std::move(npoles);
   }
   if (IncVDeg > 0)
   {
     NCollection_Array2<gp_Pnt> npoles(1, UDeg + 1, 1, VDeg + 1);
+    double                     aKnotsBuf[2];
+    int                        aMultsBuf[2];
+    NCollection_Array1<double> nknots(aKnotsBuf[0], 1, 2);
+    NCollection_Array1<int>    nmults(aMultsBuf[0], 1, 2);
 
     if (urational || vrational)
     {
@@ -614,8 +625,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                myData.VMults,
                                npoles,
                                &nweights,
-                               myData.VKnots,
-                               myData.VMults);
+                               nknots,
+                               nmults);
       myData.Weights = std::move(nweights);
     }
     else
@@ -630,8 +641,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                myData.VMults,
                                npoles,
                                BSplSLib::NoWeights(),
-                               myData.VKnots,
-                               myData.VMults);
+                               nknots,
+                               nmults);
     }
     myData.Poles = std::move(npoles);
   }
