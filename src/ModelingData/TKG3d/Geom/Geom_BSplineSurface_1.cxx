@@ -1055,7 +1055,10 @@ void Geom_BSplineSurface::SetUPeriodic()
   int nbp = BSplCLib::NbPoles(myData.UDegree, true, myData.UMults);
 
   myData.Poles.ResizeWithTrim(1, nbp, myData.Poles.LowerCol(), myData.Poles.UpperCol(), true);
-  myData.Weights.ResizeWithTrim(1, nbp, myData.Weights.LowerCol(), myData.Weights.UpperCol(), true);
+  if (urational || vrational)
+  {
+    myData.Weights.ResizeWithTrim(1, nbp, myData.Weights.LowerCol(), myData.Weights.UpperCol(), true);
+  }
 
   myData.IsUPeriodic = true;
 
@@ -1307,11 +1310,9 @@ void Geom_BSplineSurface::SetUNotPeriodic()
 
     NCollection_Array1<int> nmults(1, NbKnots);
 
-    NCollection_Array2<double> nweights(1, NbPoles, 1, myData.Poles.RowLength(), 0);
-
     if (urational || vrational)
     {
-
+      NCollection_Array2<double> nweights(1, NbPoles, 1, myData.Poles.RowLength(), 0);
       BSplSLib::Unperiodize(true,
                             myData.UDegree,
                             myData.UMults,
@@ -1322,10 +1323,10 @@ void Geom_BSplineSurface::SetUNotPeriodic()
                             nknots,
                             npoles,
                             &nweights);
+      myData.Weights = std::move(nweights);
     }
     else
     {
-
       BSplSLib::Unperiodize(true,
                             myData.UDegree,
                             myData.UMults,
@@ -1338,7 +1339,6 @@ void Geom_BSplineSurface::SetUNotPeriodic()
                             BSplSLib::NoWeights());
     }
     myData.Poles       = std::move(npoles);
-    myData.Weights     = std::move(nweights);
     myData.UMults      = std::move(nmults);
     myData.UKnots      = std::move(nknots);
     myData.IsUPeriodic = false;
@@ -1363,11 +1363,9 @@ void Geom_BSplineSurface::SetVNotPeriodic()
 
     NCollection_Array1<int> nmults(1, NbKnots);
 
-    NCollection_Array2<double> nweights(1, myData.Poles.ColLength(), 1, NbPoles, 0);
-
     if (urational || vrational)
     {
-
+      NCollection_Array2<double> nweights(1, myData.Poles.ColLength(), 1, NbPoles, 0);
       BSplSLib::Unperiodize(false,
                             myData.VDegree,
                             myData.VMults,
@@ -1378,10 +1376,10 @@ void Geom_BSplineSurface::SetVNotPeriodic()
                             nknots,
                             npoles,
                             &nweights);
+      myData.Weights = std::move(nweights);
     }
     else
     {
-
       BSplSLib::Unperiodize(false,
                             myData.VDegree,
                             myData.VMults,
@@ -1394,7 +1392,6 @@ void Geom_BSplineSurface::SetVNotPeriodic()
                             BSplSLib::NoWeights());
     }
     myData.Poles       = std::move(npoles);
-    myData.Weights     = std::move(nweights);
     myData.VMults      = std::move(nmults);
     myData.VKnots      = std::move(nknots);
     myData.IsVPeriodic = false;

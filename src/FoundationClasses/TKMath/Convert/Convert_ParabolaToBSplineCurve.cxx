@@ -23,9 +23,9 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 
-static int TheDegree  = 2;
-static int MaxNbKnots = 2;
-static int MaxNbPoles = 3;
+constexpr int TheDegree  = 2;
+constexpr int MaxNbKnots = 2;
+constexpr int MaxNbPoles = 3;
 
 //==================================================================================================
 

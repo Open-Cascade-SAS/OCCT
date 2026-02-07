@@ -173,9 +173,9 @@ static void AddRatPoleCol(const NCollection_Array2<gp_Pnt>& Poles,
     RowIndex = NewPoles.LowerRow();
     while (RowIndex <= NewPoles.UpperRow())
     {
-      NewPoles(RowIndex, ColIndex) = Poles(RowIndex, ColIndex - 1);
-      RowIndex++;
+      NewPoles(RowIndex, ColIndex)   = Poles(RowIndex, ColIndex - 1);
       NewWeights(RowIndex, ColIndex) = Weights(RowIndex, ColIndex - 1);
+      RowIndex++;
     }
     ColIndex++;
   }

@@ -1,5 +1,6 @@
 #include <gtest/gtest.h>
 
+#include <BSplSLib.hxx>
 #include <Convert_TorusToBSplineSurface.hxx>
 #include <gp_Torus.hxx>
 #include <gp_Ax3.hxx>
@@ -80,5 +81,44 @@ TEST(Convert_TorusToBSplineSurfaceTest, KnotsAreMonotonic)
   for (int i = 2; i <= aConv.NbVKnots(); ++i)
   {
     EXPECT_GT(aVKnots(i), aVKnots(i - 1));
+  }
+}
+
+TEST(Convert_TorusToBSplineSurfaceTest, GeometricVerification)
+{
+  const double aMajorRadius = 5.0;
+  const double aMinorRadius = 2.0;
+  const gp_Ax3 anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const gp_Torus aTorus(anAx3, aMajorRadius, aMinorRadius);
+  const Convert_TorusToBSplineSurface aConv(aTorus, 0.0, M_PI, 0.0, M_PI);
+
+  const double aTol = 1.0e-10;
+  const NCollection_Array1<double>& aUK = aConv.UKnots();
+  const NCollection_Array1<double>& aVK = aConv.VKnots();
+  const double aUMin = aUK(aUK.Lower()), aUMax = aUK(aUK.Upper());
+  const double aVMin = aVK(aVK.Lower()), aVMax = aVK(aVK.Upper());
+
+  for (int i = 0; i <= 4; ++i)
+  {
+    const double aU = aUMin + i * (aUMax - aUMin) / 4.0;
+    for (int j = 0; j <= 4; ++j)
+    {
+      const double aV = aVMin + j * (aVMax - aVMin) / 4.0;
+
+      gp_Pnt aPnt;
+      BSplSLib::D0(aU, aV, 0, 0,
+                   aConv.Poles(), &aConv.Weights(),
+                   aConv.UKnots(), aConv.VKnots(),
+                   &aConv.UMultiplicities(), &aConv.VMultiplicities(),
+                   aConv.UDegree(), aConv.VDegree(),
+                   true, true, false, false, aPnt);
+
+      // Verify the point lies on the torus:
+      // (sqrt(x^2 + y^2) - R_major)^2 + z^2 = R_minor^2
+      const double aRxy     = std::sqrt(aPnt.X() * aPnt.X() + aPnt.Y() * aPnt.Y());
+      const double aDistSq  = (aRxy - aMajorRadius) * (aRxy - aMajorRadius) + aPnt.Z() * aPnt.Z();
+      EXPECT_NEAR(aDistSq, aMinorRadius * aMinorRadius, aTol)
+        << "Point not on torus at U=" << aU << " V=" << aV;
+    }
   }
 }
