@@ -176,9 +176,6 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
   myData.Poles.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
   myData.Poles.Assign(Poles);
 
-  myData.Weights.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
-  myData.Weights.Init(1.0);
-
   myData.UKnots.Resize(1, UKnots.Length(), false);
   myData.UKnots.Assign(UKnots);
 
@@ -298,7 +295,9 @@ void Geom_BSplineSurface::ExchangeUV()
   }
   myData.Poles = std::move(npoles);
   if (urational || vrational)
+  {
     myData.Weights = std::move(nweights);
+  }
 
   std::swap(urational, vrational);
   std::swap(myData.IsUPeriodic, myData.IsVPeriodic);
@@ -1224,10 +1223,16 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
 {
   if (Weight <= gp::Resolution())
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeight: Weight too small");
-  if (UIndex < 1 || UIndex > myData.Weights.ColLength() || VIndex < 1
-      || VIndex > myData.Weights.RowLength())
+  if (UIndex < 1 || UIndex > myData.Poles.ColLength() || VIndex < 1
+      || VIndex > myData.Poles.RowLength())
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetWeight: Index and #pole mismatch");
+  }
+  if (myData.Weights.Size() == 0)
+  {
+    myData.Weights.Resize(myData.Poles.LowerRow(), myData.Poles.UpperRow(),
+                          myData.Poles.LowerCol(), myData.Poles.UpperCol(), false);
+    myData.Weights.Init(1.0);
   }
   myData.Weights(UIndex + myData.Weights.LowerRow() - 1,
                  VIndex + myData.Weights.LowerCol() - 1) = Weight;
@@ -1239,14 +1244,20 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
 void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
                                        const NCollection_Array1<double>& CPoleWeights)
 {
-  if (VIndex < 1 || VIndex > myData.Weights.RowLength())
+  if (VIndex < 1 || VIndex > myData.Poles.RowLength())
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetWeightCol: Index and #pole mismatch");
   }
-  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myData.Weights.ColLength()
-      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myData.Weights.ColLength())
+  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myData.Poles.ColLength()
+      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myData.Poles.ColLength())
   {
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightCol: invalid array dimension");
+  }
+  if (myData.Weights.Size() == 0)
+  {
+    myData.Weights.Resize(myData.Poles.LowerRow(), myData.Poles.UpperRow(),
+                          myData.Poles.LowerCol(), myData.Poles.UpperCol(), false);
+    myData.Weights.Init(1.0);
   }
   int I = CPoleWeights.Lower();
   while (I <= CPoleWeights.Upper())
@@ -1268,15 +1279,21 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
 void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
                                        const NCollection_Array1<double>& CPoleWeights)
 {
-  if (UIndex < 1 || UIndex > myData.Weights.ColLength())
+  if (UIndex < 1 || UIndex > myData.Poles.ColLength())
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetWeightRow: Index and #pole mismatch");
   }
-  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myData.Weights.RowLength()
-      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myData.Weights.RowLength())
+  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myData.Poles.RowLength()
+      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myData.Poles.RowLength())
   {
 
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightRow: invalid array dimension");
+  }
+  if (myData.Weights.Size() == 0)
+  {
+    myData.Weights.Resize(myData.Poles.LowerRow(), myData.Poles.UpperRow(),
+                          myData.Poles.LowerCol(), myData.Poles.UpperCol(), false);
+    myData.Weights.Init(1.0);
   }
   int I = CPoleWeights.Lower();
 

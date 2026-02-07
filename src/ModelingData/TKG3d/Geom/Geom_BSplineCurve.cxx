@@ -619,10 +619,13 @@ void Geom_BSplineCurve::Segment(const double U1, const double U2, const double t
   }
   //-- DBB
 
-  myData.Knots   = std::move(nknots);
-  myData.Mults   = std::move(nmults);
-  myData.Poles   = std::move(npoles);
-  myData.Weights = std::move(nweights);
+  myData.Knots = std::move(nknots);
+  myData.Mults = std::move(nmults);
+  myData.Poles = std::move(npoles);
+  if (rational)
+  {
+    myData.Weights = std::move(nweights);
+  }
 
   maxderivinvok = false;
   UpdateKnots();
@@ -754,11 +757,11 @@ void Geom_BSplineCurve::SetOrigin(const int Index)
 
   // set the poles and weights
   NCollection_Array1<gp_Pnt> newpoles(1, nbpoles);
-  NCollection_Array1<double> newweights(1, nbpoles);
   first = myData.Poles.Lower();
   last  = myData.Poles.Upper();
   if (rational)
   {
+    NCollection_Array1<double> newweights(1, nbpoles);
     k = 1;
     for (i = index; i <= last; i++)
     {
@@ -772,6 +775,7 @@ void Geom_BSplineCurve::SetOrigin(const int Index)
       newweights(k) = myData.Weights.Value(i);
       k++;
     }
+    myData.Weights = std::move(newweights);
   }
   else
   {
@@ -788,10 +792,9 @@ void Geom_BSplineCurve::SetOrigin(const int Index)
     }
   }
 
-  myData.Poles   = std::move(newpoles);
-  myData.Knots   = std::move(newknots);
-  myData.Mults   = std::move(newmults);
-  myData.Weights = std::move(newweights);
+  myData.Poles = std::move(newpoles);
+  myData.Knots = std::move(newknots);
+  myData.Mults = std::move(newmults);
   maxderivinvok = false;
   UpdateKnots();
 }

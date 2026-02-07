@@ -44,7 +44,7 @@
 #include <NCollection_Array1.hxx>
 
 #define POLES (myData.Poles)
-#define WEIGHTS (myData.Weights)
+#define WEIGHTS_PTR ((urational || vrational) ? &myData.Weights : BSplSLib::NoWeights())
 #define UKNOTS (myData.UKnots)
 #define VKNOTS (myData.VKnots)
 #define UFKNOTS (myData.UFlatKnots)
@@ -125,7 +125,7 @@ void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
                0,
                0,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -176,7 +176,7 @@ void Geom_BSplineSurface::D1(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -232,7 +232,7 @@ void Geom_BSplineSurface::D2(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -271,7 +271,7 @@ void Geom_BSplineSurface::D3(const double U,
                0,
                0,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -306,7 +306,7 @@ gp_Vec Geom_BSplineSurface::DN(const double U, const double V, const int Nu, con
                0,
                0,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -376,7 +376,7 @@ void Geom_BSplineSurface::LocalD0(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -433,7 +433,7 @@ void Geom_BSplineSurface::LocalD1(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -495,7 +495,7 @@ void Geom_BSplineSurface::LocalD2(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -564,7 +564,7 @@ void Geom_BSplineSurface::LocalD3(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -632,7 +632,7 @@ gp_Vec Geom_BSplineSurface::LocalDN(const double U,
                uindex,
                vindex,
                POLES,
-               &WEIGHTS,
+               WEIGHTS_PTR,
                UFKNOTS,
                VFKNOTS,
                FMULTS,
@@ -686,7 +686,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U) const
     BSplSLib::Iso(U,
                   true,
                   POLES,
-                  &WEIGHTS,
+                  WEIGHTS_PTR,
                   UFKNOTS,
                   FMULTS,
                   myData.UDegree,
@@ -736,7 +736,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U, const bool Che
     BSplSLib::Iso(U,
                   true,
                   POLES,
-                  &WEIGHTS,
+                  WEIGHTS_PTR,
                   UFKNOTS,
                   FMULTS,
                   myData.UDegree,
@@ -876,7 +876,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V) const
     BSplSLib::Iso(V,
                   false,
                   POLES,
-                  &WEIGHTS,
+                  WEIGHTS_PTR,
                   VFKNOTS,
                   FMULTS,
                   myData.VDegree,
@@ -926,7 +926,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V, const bool Che
     BSplSLib::Iso(V,
                   false,
                   POLES,
-                  &WEIGHTS,
+                  WEIGHTS_PTR,
                   VFKNOTS,
                   FMULTS,
                   myData.VDegree,
@@ -988,6 +988,8 @@ const NCollection_Array1<int>& Geom_BSplineSurface::VMultiplicities() const
 
 double Geom_BSplineSurface::Weight(const int UIndex, const int VIndex) const
 {
+  if (!(urational || vrational))
+    return 1.0;
   Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myData.Weights.ColLength() || VIndex < 1
                                  || VIndex > myData.Weights.RowLength(),
                                " ");
@@ -998,6 +1000,13 @@ double Geom_BSplineSurface::Weight(const int UIndex, const int VIndex) const
 
 void Geom_BSplineSurface::Weights(NCollection_Array2<double>& W) const
 {
+  if (!(urational || vrational))
+  {
+    W.Resize(myData.Poles.LowerRow(), myData.Poles.UpperRow(),
+             myData.Poles.LowerCol(), myData.Poles.UpperCol(), false);
+    W.Init(1.0);
+    return;
+  }
   Standard_DimensionError_Raise_if(W.ColLength() != myData.Weights.ColLength()
                                      || W.RowLength() != myData.Weights.RowLength(),
                                    " ");
@@ -1143,11 +1152,11 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
   // set the poles and weights
   int                        nbvp = myData.Poles.RowLength();
   NCollection_Array2<gp_Pnt> newpoles(1, nbpoles, 1, nbvp);
-  NCollection_Array2<double> newweights(1, nbpoles, 1, nbvp);
   first = myData.Poles.LowerRow();
   last  = myData.Poles.UpperRow();
   if (urational || vrational)
   {
+    NCollection_Array2<double> newweights(1, nbpoles, 1, nbvp);
     k = 1;
     for (i = index; i <= last; i++)
     {
@@ -1167,6 +1176,7 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
       }
       k++;
     }
+    myData.Weights = std::move(newweights);
   }
   else
   {
@@ -1192,8 +1202,6 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
   myData.Poles  = std::move(newpoles);
   myData.UKnots = std::move(newknots);
   myData.UMults = std::move(newmults);
-  if (urational || vrational)
-    myData.Weights = std::move(newweights);
   UpdateUKnots();
 }
 
@@ -1241,11 +1249,11 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
   // set the poles and weights
   int                        nbup = myData.Poles.ColLength();
   NCollection_Array2<gp_Pnt> newpoles(1, nbup, 1, nbpoles);
-  NCollection_Array2<double> newweights(1, nbup, 1, nbpoles);
   first = myData.Poles.LowerCol();
   last  = myData.Poles.UpperCol();
   if (urational || vrational)
   {
+    NCollection_Array2<double> newweights(1, nbup, 1, nbpoles);
     k = 1;
     for (j = index; j <= last; j++)
     {
@@ -1265,6 +1273,7 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
       }
       k++;
     }
+    myData.Weights = std::move(newweights);
   }
   else
   {
@@ -1290,8 +1299,6 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
   myData.Poles  = std::move(newpoles);
   myData.VKnots = std::move(newknots);
   myData.VMults = std::move(newmults);
-  if (urational || vrational)
-    myData.Weights = std::move(newweights);
   UpdateVKnots();
 }
 
@@ -1318,7 +1325,7 @@ void Geom_BSplineSurface::SetUNotPeriodic()
                             myData.UMults,
                             myData.UKnots,
                             myData.Poles,
-                            &myData.Weights,
+                            WEIGHTS_PTR,
                             nmults,
                             nknots,
                             npoles,
@@ -1371,7 +1378,7 @@ void Geom_BSplineSurface::SetVNotPeriodic()
                             myData.VMults,
                             myData.VKnots,
                             myData.Poles,
-                            &myData.Weights,
+                            WEIGHTS_PTR,
                             nmults,
                             nknots,
                             npoles,
@@ -1914,7 +1921,7 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
                           myData.UDegree,
                           myData.IsUPeriodic,
                           myData.Poles,
-                          &myData.Weights,
+                          WEIGHTS_PTR,
                           myData.UKnots,
                           myData.UMults,
                           Knots,
@@ -1988,7 +1995,7 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
                           myData.VDegree,
                           myData.IsVPeriodic,
                           myData.Poles,
-                          &myData.Weights,
+                          WEIGHTS_PTR,
                           myData.VKnots,
                           myData.VMults,
                           Knots,
@@ -2065,7 +2072,7 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
                               myData.UDegree,
                               myData.IsUPeriodic,
                               myData.Poles,
-                              &myData.Weights,
+                              WEIGHTS_PTR,
                               myData.UKnots,
                               myData.UMults,
                               npoles,
@@ -2143,7 +2150,7 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
                               myData.VDegree,
                               myData.IsVPeriodic,
                               myData.Poles,
-                              &myData.Weights,
+                              WEIGHTS_PTR,
                               myData.VKnots,
                               myData.VMults,
                               npoles,
@@ -2190,7 +2197,7 @@ void Geom_BSplineSurface::Resolution(const double Tolerance3D,
   if (!maxderivinvok)
   {
     BSplSLib::Resolution(myData.Poles,
-                         &myData.Weights,
+                         WEIGHTS_PTR,
                          myData.UKnots,
                          myData.VKnots,
                          myData.UMults,
