@@ -74,12 +74,24 @@ static occ::handle<Geom2d_BSplineCurve> BSplineCurveBuilder(
 {
 
   occ::handle<Geom2d_BSplineCurve> TheCurve;
-  TheCurve = new BSplineCurve(Convert.Poles(),
-                              Convert.Weights(),
-                              Convert.Knots(),
-                              Convert.Multiplicities(),
-                              Convert.Degree(),
-                              Convert.IsPeriodic());
+  int                              NbPoles = Convert.NbPoles();
+  int                              NbKnots = Convert.NbKnots();
+  Array1OfPnt2d                    Poles(1, NbPoles);
+  Array1OfReal                     Weights(1, NbPoles);
+  Array1OfReal                     Knots(1, NbKnots);
+  Array1OfInteger                  Mults(1, NbKnots);
+  int                              i;
+  for (i = 1; i <= NbPoles; i++)
+  {
+    Poles(i)   = Convert.Pole(i);
+    Weights(i) = Convert.Weight(i);
+  }
+  for (i = 1; i <= NbKnots; i++)
+  {
+    Knots(i) = Convert.Knot(i);
+    Mults(i) = Convert.Multiplicity(i);
+  }
+  TheCurve = new BSplineCurve(Poles, Weights, Knots, Mults, Convert.Degree(), Convert.IsPeriodic());
 
   gp_Ax22d Axis = TheConic->Position();
   if ((Axis.XDirection() ^ Axis.YDirection()) < 0.)

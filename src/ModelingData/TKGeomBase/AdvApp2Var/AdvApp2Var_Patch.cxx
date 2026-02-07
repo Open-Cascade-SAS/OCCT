@@ -1157,7 +1157,7 @@ occ::handle<NCollection_HArray2<gp_Pnt>> AdvApp2Var_Patch::Poles(
                                      Intervalle,
                                      Intervalle);
 
-  return new NCollection_HArray2<gp_Pnt>(Conv.Poles());
+  return Conv.Poles();
 }
 
 //============================================================================

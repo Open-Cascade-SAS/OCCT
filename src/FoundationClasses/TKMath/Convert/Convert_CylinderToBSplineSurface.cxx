@@ -84,8 +84,8 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
                                   || (deltaU < 0.),
                                 "Convert_CylinderToBSplineSurface");
 
-  myData.IsUPeriodic = false;
-  myData.IsVPeriodic = false;
+  isuperiodic = false;
+  isvperiodic = false;
 
   int i, j;
   // construction of the cylinder in the reference mark xOy.
@@ -94,27 +94,27 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
   double AlfaU    = deltaU / (nbUSpans * 2);
 
-  myNbUPoles = 2 * nbUSpans + 1;
-  myNbUKnots = nbUSpans + 1;
+  nbUPoles = 2 * nbUSpans + 1;
+  nbUKnots = nbUSpans + 1;
 
-  myNbVPoles = 2;
-  myNbVKnots = 2;
+  nbVPoles = 2;
+  nbVKnots = 2;
 
   double R = Cyl.Radius();
 
-  ComputePoles(R, U1, U2, V1, V2, myData.Poles);
+  ComputePoles(R, U1, U2, V1, V2, poles);
 
-  for (i = 1; i <= myNbUKnots; i++)
+  for (i = 1; i <= nbUKnots; i++)
   {
-    myData.UKnots(i) = U1 + (i - 1) * 2 * AlfaU;
-    myData.UMults(i) = 2;
+    uknots(i) = U1 + (i - 1) * 2 * AlfaU;
+    umults(i) = 2;
   }
-  myData.UMults(1)++;
-  myData.UMults(myNbUKnots)++;
-  myData.VKnots(1) = V1;
-  myData.VMults(1) = 2;
-  myData.VKnots(2) = V2;
-  myData.VMults(2) = 2;
+  umults(1)++;
+  umults(nbUKnots)++;
+  vknots(1) = V1;
+  vmults(1) = 2;
+  vknots(2) = V2;
+  vmults(2) = 2;
 
   // Replace bspline in the mark of the sphere.
   // and calculate the weight of the bspline.
@@ -122,20 +122,19 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   gp_Trsf Trsf;
   Trsf.SetTransformation(Cyl.Position(), gp::XOY());
 
-  for (i = 1; i <= myNbUPoles; i++)
+  for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
       W1 = std::cos(AlfaU);
     else
       W1 = 1.;
 
-    for (j = 1; j <= myNbVPoles; j++)
+    for (j = 1; j <= nbVPoles; j++)
     {
-      myData.Weights(i, j) = W1;
-      myData.Poles(i, j).Transform(Trsf);
+      weights(i, j) = W1;
+      poles(i, j).Transform(Trsf);
     }
   }
-  Finalize();
 }
 
 //=================================================================================================
@@ -155,29 +154,29 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
 
   int i, j;
 
-  myData.IsUPeriodic = true;
-  myData.IsVPeriodic = false;
+  isuperiodic = true;
+  isvperiodic = false;
 
   // construction of the cylinder in the reference mark xOy.
 
   double R = Cyl.Radius();
 
-  ComputePoles(R, 0., 2. * M_PI, V1, V2, myData.Poles);
+  ComputePoles(R, 0., 2. * M_PI, V1, V2, poles);
 
-  myNbUPoles = 6;
-  myNbUKnots = 4;
-  myNbVPoles = 2;
-  myNbVKnots = 2;
+  nbUPoles = 6;
+  nbUKnots = 4;
+  nbVPoles = 2;
+  nbVKnots = 2;
 
-  for (i = 1; i <= myNbUKnots; i++)
+  for (i = 1; i <= nbUKnots; i++)
   {
-    myData.UKnots(i) = (i - 1) * 2. * M_PI / 3.;
-    myData.UMults(i) = 2;
+    uknots(i) = (i - 1) * 2. * M_PI / 3.;
+    umults(i) = 2;
   }
-  myData.VKnots(1) = V1;
-  myData.VMults(1) = 2;
-  myData.VKnots(2) = V2;
-  myData.VMults(2) = 2;
+  vknots(1) = V1;
+  vmults(1) = 2;
+  vknots(2) = V2;
+  vmults(2) = 2;
 
   // Replace the bspline inn the mark of the cone.
   // and calculate the weight of the bspline.
@@ -185,18 +184,17 @@ Convert_CylinderToBSplineSurface::Convert_CylinderToBSplineSurface(const gp_Cyli
   gp_Trsf Trsf;
   Trsf.SetTransformation(Cyl.Position(), gp::XOY());
 
-  for (i = 1; i <= myNbUPoles; i++)
+  for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
       W = 0.5; // = std::cos(pi /3)
     else
       W = 1.;
 
-    for (j = 1; j <= myNbVPoles; j++)
+    for (j = 1; j <= nbVPoles; j++)
     {
-      myData.Weights(i, j) = W;
-      myData.Poles(i, j).Transform(Trsf);
+      weights(i, j) = W;
+      poles(i, j).Transform(Trsf);
     }
   }
-  Finalize();
 }

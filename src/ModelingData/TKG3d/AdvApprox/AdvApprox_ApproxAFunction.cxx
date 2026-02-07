@@ -34,7 +34,6 @@
 #include <PLib.hxx>
 #include <PLib_JacobiPolynomial.hxx>
 #include <Standard_ConstructionError.hxx>
-#include <Standard_Macro.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
@@ -845,23 +844,22 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
 
     if (AConverter.IsDone())
     {
-      const NCollection_Array2<double>& aPoles = AConverter.Poles();
-      Standard_DISABLE_DEPRECATION_WARNINGS
+      occ::handle<NCollection_HArray2<double>> PolesPtr;
+      AConverter.Poles(PolesPtr);
       AConverter.Knots(myKnots);
       AConverter.Multiplicities(myMults);
-      Standard_ENABLE_DEPRECATION_WARNINGS
       myDegree = AConverter.Degree();
       index    = 0;
       if (myNumSubSpaces[0] > 0)
       {
-        my1DPoles = new NCollection_HArray2<double>(1, aPoles.ColLength(), 1, myNumSubSpaces[0]);
+        my1DPoles = new NCollection_HArray2<double>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[0]);
         my1DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
         my1DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
-        for (ii = 1; ii <= aPoles.ColLength(); ii++)
+        for (ii = 1; ii <= PolesPtr->ColLength(); ii++)
         {
           for (jj = 1; jj <= myNumSubSpaces[0]; jj++)
           {
-            my1DPoles->SetValue(ii, jj, aPoles.Value(ii, jj));
+            my1DPoles->SetValue(ii, jj, PolesPtr->Value(ii, jj));
           }
         }
 
@@ -895,17 +893,17 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
       {
         gp_Pnt2d Point2d;
         my2DPoles =
-          new NCollection_HArray2<gp_Pnt2d>(1, aPoles.ColLength(), 1, myNumSubSpaces[1]);
+          new NCollection_HArray2<gp_Pnt2d>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[1]);
         my2DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
         my2DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
-        for (ii = 1; ii <= aPoles.ColLength(); ii++)
+        for (ii = 1; ii <= PolesPtr->ColLength(); ii++)
         {
           for (jj = 1; jj <= myNumSubSpaces[1]; jj++)
           {
             local_index = index + (jj - 1) * 2;
             for (kk = 1; kk <= 2; kk++)
             {
-              Point2d.SetCoord(kk, aPoles.Value(ii, local_index + kk));
+              Point2d.SetCoord(kk, PolesPtr->Value(ii, local_index + kk));
             }
             my2DPoles->SetValue(ii, jj, Point2d);
           }
@@ -940,17 +938,17 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
       if (myNumSubSpaces[2] > 0)
       {
         gp_Pnt Point;
-        my3DPoles = new NCollection_HArray2<gp_Pnt>(1, aPoles.ColLength(), 1, myNumSubSpaces[2]);
+        my3DPoles = new NCollection_HArray2<gp_Pnt>(1, PolesPtr->ColLength(), 1, myNumSubSpaces[2]);
         my3DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
         my3DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
-        for (ii = 1; ii <= aPoles.ColLength(); ii++)
+        for (ii = 1; ii <= PolesPtr->ColLength(); ii++)
         {
           for (jj = 1; jj <= myNumSubSpaces[2]; jj++)
           {
             local_index = dim_index + (jj - 1) * 3;
             for (kk = 1; kk <= 3; kk++)
             {
-              Point.SetCoord(kk, aPoles.Value(ii, local_index + kk));
+              Point.SetCoord(kk, PolesPtr->Value(ii, local_index + kk));
             }
             my3DPoles->SetValue(ii, jj, Point);
           }

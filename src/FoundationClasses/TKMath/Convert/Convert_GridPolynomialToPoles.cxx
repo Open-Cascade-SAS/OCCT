@@ -33,9 +33,7 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
   const occ::handle<NCollection_HArray1<double>>& Coefficients,
   const occ::handle<NCollection_HArray1<double>>& PolynomialUIntervals,
   const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals)
-    : myUDegree(0),
-      myVDegree(0),
-      myDone(false)
+    : myDone(false)
 {
   // Les Controles
   if ((NumCoeffPerSurface->Lower() != 1) || (NumCoeffPerSurface->Upper() != 2))
@@ -86,12 +84,13 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
   const occ::handle<NCollection_HArray1<double>>& PolynomialVIntervals,
   const occ::handle<NCollection_HArray1<double>>& TrueUIntervals,
   const occ::handle<NCollection_HArray1<double>>& TrueVIntervals)
-    : myUDegree(0),
-      myVDegree(0),
-      myDone(false)
+    : myDone(false)
 {
+  int ii;
   int RealUDegree = std::max(MaxUDegree, 2 * UContinuity + 1);
   int RealVDegree = std::max(MaxVDegree, 2 * VContinuity + 1);
+  myUDegree       = 0;
+  myVDegree       = 0;
 
   // Les controles
   if ((NumCoeffPerSurface->LowerRow() != 1)
@@ -109,7 +108,7 @@ Convert_GridPolynomialToPoles::Convert_GridPolynomialToPoles(
   }
 
   // Calcul des degree
-  for (int ii = 1; ii <= NbUSurfaces * NbVSurfaces; ii++)
+  for (ii = 1; ii <= NbUSurfaces * NbVSurfaces; ii++)
   {
     if (NumCoeffPerSurface->Value(ii, 1) > myUDegree + 1)
       myUDegree = NumCoeffPerSurface->Value(ii, 1) - 1;
@@ -147,9 +146,11 @@ void Convert_GridPolynomialToPoles::Perform(
   const occ::handle<NCollection_HArray1<double>>& TrueVIntervals)
 {
   // (1) Construction des Tables monodimensionnelles ----------------------------
-  NCollection_Array1<double> UParameters, VParameters;
-  myUKnots = NCollection_Array1<double>(TrueUIntervals->Array1());
-  myVKnots = NCollection_Array1<double>(TrueVIntervals->Array1());
+  occ::handle<NCollection_HArray1<double>> UParameters, VParameters;
+  myUKnots                 = new (NCollection_HArray1<double>)(1, TrueUIntervals->Length());
+  myUKnots->ChangeArray1() = TrueUIntervals->Array1();
+  myVKnots                 = new (NCollection_HArray1<double>)(1, TrueVIntervals->Length());
+  myVKnots->ChangeArray1() = TrueVIntervals->Array1();
 
   BuildArray(myUDegree, myUKnots, UContinuity, myUFlatKnots, myUMults, UParameters);
 
@@ -162,46 +163,46 @@ void Convert_GridPolynomialToPoles::Perform(
   double NValue, UValue, VValue;
   int    dimension = 3 * (myVDegree + 1);
   int    SizPatch  = 3 * (MaxUDegree + 1) * (MaxVDegree + 1);
-  myPoles = NCollection_Array2<gp_Pnt>(1, UParameters.Length(), 1, VParameters.Length());
+  myPoles = new (NCollection_HArray2<gp_Pnt>)(1, UParameters->Length(), 1, VParameters->Length());
 
   NCollection_Array1<double> Patch(1, (myUDegree + 1) * dimension);
   NCollection_Array1<double> Point(1, 3);
   double*                    Coeffs = (double*)&Patch.ChangeValue(1);
   double*                    Digit  = (double*)&Point.ChangeValue(1);
 
-  for (ii = 1, Uindex = 1; ii <= UParameters.Length(); ii++)
+  for (ii = 1, Uindex = 1; ii <= UParameters->Length(); ii++)
   {
 
-    while (UParameters.Value(ii) > TrueUIntervals->Value(Uindex + 1)
-           && Uindex < myUKnots.Length() - 1)
+    while (UParameters->Value(ii) > TrueUIntervals->Value(Uindex + 1)
+           && Uindex < myUKnots->Length() - 1)
     {
       Uindex++;
     }
 
-    NValue = (UParameters.Value(ii) - TrueUIntervals->Value(Uindex))
+    NValue = (UParameters->Value(ii) - TrueUIntervals->Value(Uindex))
              / (TrueUIntervals->Value(Uindex + 1) - TrueUIntervals->Value(Uindex));
     UValue =
       (1 - NValue) * PolynomialUIntervals->Value(1) + NValue * PolynomialUIntervals->Value(2);
 
-    for (jj = 1, Vindex = 1; jj <= VParameters.Length(); jj++)
+    for (jj = 1, Vindex = 1; jj <= VParameters->Length(); jj++)
     {
 
-      while (VParameters.Value(jj) > TrueVIntervals->Value(Vindex + 1)
-             && Vindex < myVKnots.Length() - 1)
+      while (VParameters->Value(jj) > TrueVIntervals->Value(Vindex + 1)
+             && Vindex < myVKnots->Length() - 1)
       {
         Vindex++;
       }
 
-      NValue = (VParameters.Value(jj) - TrueVIntervals->Value(Vindex))
+      NValue = (VParameters->Value(jj) - TrueVIntervals->Value(Vindex))
                / (TrueVIntervals->Value(Vindex + 1) - TrueVIntervals->Value(Vindex));
       VValue =
         (1 - NValue) * PolynomialVIntervals->Value(1) + NValue * PolynomialVIntervals->Value(2);
 
       // (2.1) Extraction du bon Patch
-      if (Patch_Indice != Uindex + (myUKnots.Length() - 1) * (Vindex - 1))
+      if (Patch_Indice != Uindex + (myUKnots->Length() - 1) * (Vindex - 1))
       {
         int k1, k2, pos, ll = 1;
-        Patch_Indice = Uindex + (myUKnots.Length() - 1) * (Vindex - 1);
+        Patch_Indice = Uindex + (myUKnots->Length() - 1) * (Vindex - 1);
         for (k1 = 1; k1 <= NumCoeffPerSurface->Value(Patch_Indice, 1); k1++)
         {
           pos = SizPatch * (Patch_Indice - 1) + 3 * (MaxVDegree + 1) * (k1 - 1) + 1;
@@ -226,7 +227,7 @@ void Convert_GridPolynomialToPoles::Perform(
                          Coeffs[0],
                          Digit[0]);
 
-      myPoles.SetValue(ii, jj, gp_Pnt(Digit[0], Digit[1], Digit[2]));
+      myPoles->SetValue(ii, jj, gp_Pnt(Digit[0], Digit[1], Digit[2]));
     }
   }
 
@@ -235,74 +236,72 @@ void Convert_GridPolynomialToPoles::Perform(
   int InversionProblem;
   BSplSLib::Interpolate(myUDegree,
                         myVDegree,
-                        myUFlatKnots,
-                        myVFlatKnots,
-                        UParameters,
-                        VParameters,
-                        myPoles,
+                        myUFlatKnots->Array1(),
+                        myVFlatKnots->Array1(),
+                        UParameters->Array1(),
+                        VParameters->Array1(),
+                        myPoles->ChangeArray2(),
                         InversionProblem);
   myDone = (InversionProblem == 0);
 }
 
-void Convert_GridPolynomialToPoles::BuildArray(const int                         Degree,
-                                               const NCollection_Array1<double>& Knots,
-                                               const int                         Continuity,
-                                               NCollection_Array1<double>&       FlatKnots,
-                                               NCollection_Array1<int>&          Mults,
-                                               NCollection_Array1<double>&       Parameters) const
+void Convert_GridPolynomialToPoles::BuildArray(
+  const int                                       Degree,
+  const occ::handle<NCollection_HArray1<double>>& Knots,
+  const int                                       Continuity,
+  occ::handle<NCollection_HArray1<double>>&       FlatKnots,
+  occ::handle<NCollection_HArray1<int>>&          Mults,
+  occ::handle<NCollection_HArray1<double>>&       Parameters) const
 {
-  const int NumCurves = Knots.Length() - 1;
+  int NumCurves = Knots->Length() - 1;
 
   // Calcul des Multiplicites
-  const int multiplicities = Degree - Continuity;
-  Mults                    = NCollection_Array1<int>(1, Knots.Length());
+  int ii;
+  int multiplicities = Degree - Continuity;
+  Mults              = new (NCollection_HArray1<int>)(1, Knots->Length());
 
-  for (int ii = 2; ii < Knots.Length(); ii++)
+  for (ii = 2; ii < Knots->Length(); ii++)
   {
-    Mults.SetValue(ii, multiplicities);
+    Mults->SetValue(ii, multiplicities);
   }
-  Mults.SetValue(1, Degree + 1);
-  Mults.SetValue(NumCurves + 1, Degree + 1);
+  Mults->SetValue(1, Degree + 1);
+  Mults->SetValue(NumCurves + 1, Degree + 1);
 
   // Calcul des Noeuds Plats
-  const int num_flat_knots = multiplicities * (NumCurves - 1) + 2 * Degree + 2;
-  FlatKnots                = NCollection_Array1<double>(1, num_flat_knots);
+  int num_flat_knots = multiplicities * (NumCurves - 1) + 2 * Degree + 2;
+  FlatKnots          = new NCollection_HArray1<double>(1, num_flat_knots);
 
-  BSplCLib::KnotSequence(Knots, Mults, Degree, false, FlatKnots);
+  BSplCLib::KnotSequence(Knots->Array1(),
+                         Mults->Array1(),
+                         Degree,
+                         false,
+                         FlatKnots->ChangeArray1());
 
   // Calcul du nombre de Poles
-  const int num_poles = num_flat_knots - Degree - 1;
+  int num_poles = num_flat_knots - Degree - 1;
 
   // Cacul des parametres d'interpolation
-  Parameters = NCollection_Array1<double>(1, num_poles);
-  BSplCLib::BuildSchoenbergPoints(Degree, FlatKnots, Parameters);
+  Parameters = new (NCollection_HArray1<double>)(1, num_poles);
+  BSplCLib::BuildSchoenbergPoints(Degree, FlatKnots->Array1(), Parameters->ChangeArray1());
 }
-
-//==================================================================================================
 
 int Convert_GridPolynomialToPoles::NbUPoles() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
-  return myPoles.ColLength();
+  return myPoles->ColLength();
 }
-
-//==================================================================================================
 
 int Convert_GridPolynomialToPoles::NbVPoles() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
-  return myPoles.RowLength();
+  return myPoles->RowLength();
 }
 
-//==================================================================================================
-
-const NCollection_Array2<gp_Pnt>& Convert_GridPolynomialToPoles::Poles() const
+const occ::handle<NCollection_HArray2<gp_Pnt>>& Convert_GridPolynomialToPoles::Poles() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
   return myPoles;
 }
-
-//==================================================================================================
 
 int Convert_GridPolynomialToPoles::UDegree() const
 {
@@ -310,63 +309,47 @@ int Convert_GridPolynomialToPoles::UDegree() const
   return myUDegree;
 }
 
-//==================================================================================================
-
 int Convert_GridPolynomialToPoles::VDegree() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
   return myVDegree;
 }
 
-//==================================================================================================
-
 int Convert_GridPolynomialToPoles::NbUKnots() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
-  return myUKnots.Length();
+  return myUKnots->Length();
 }
-
-//==================================================================================================
 
 int Convert_GridPolynomialToPoles::NbVKnots() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
-  return myVKnots.Length();
+  return myVKnots->Length();
 }
 
-//==================================================================================================
-
-const NCollection_Array1<double>& Convert_GridPolynomialToPoles::UKnots() const
+const occ::handle<NCollection_HArray1<double>>& Convert_GridPolynomialToPoles::UKnots() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
   return myUKnots;
 }
 
-//==================================================================================================
-
-const NCollection_Array1<double>& Convert_GridPolynomialToPoles::VKnots() const
+const occ::handle<NCollection_HArray1<double>>& Convert_GridPolynomialToPoles::VKnots() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
   return myVKnots;
 }
 
-//==================================================================================================
-
-const NCollection_Array1<int>& Convert_GridPolynomialToPoles::UMultiplicities() const
+const occ::handle<NCollection_HArray1<int>>& Convert_GridPolynomialToPoles::UMultiplicities() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
   return myUMults;
 }
 
-//==================================================================================================
-
-const NCollection_Array1<int>& Convert_GridPolynomialToPoles::VMultiplicities() const
+const occ::handle<NCollection_HArray1<int>>& Convert_GridPolynomialToPoles::VMultiplicities() const
 {
   StdFail_NotDone_Raise_if(!myDone, "GridPolynomialToPoles");
   return myVMults;
 }
-
-//==================================================================================================
 
 bool Convert_GridPolynomialToPoles::IsDone() const
 {

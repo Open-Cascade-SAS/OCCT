@@ -20,11 +20,9 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_XY.hxx>
 
-#include <BSplCLib.hxx>
 #include <gp.hxx>
 #include <Precision.hxx>
-
-#include <array>
+#include <BSplCLib.hxx>
 
 static double Locate(const double                        Angfin,
                      const NCollection_Array1<gp_Pnt2d>& TPoles,
@@ -61,12 +59,12 @@ static double Locate(const double                        Angfin,
   return (umin + umax) / 2.;
 }
 
-void BuildPolynomialCosAndSin(const double                UFirst,
-                              const double                ULast,
-                              const int                   num_poles,
-                              NCollection_Array1<double>& CosNumerator,
-                              NCollection_Array1<double>& SinNumerator,
-                              NCollection_Array1<double>& Denominator)
+void BuildPolynomialCosAndSin(const double                              UFirst,
+                              const double                              ULast,
+                              const int                                 num_poles,
+                              occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
+                              occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
+                              occ::handle<NCollection_HArray1<double>>& DenominatorPtr)
 {
 
   double Delta, locUFirst,
@@ -91,14 +89,16 @@ void BuildPolynomialCosAndSin(const double                UFirst,
   Delta  = ULast - UFirst;
   middle = 0.5e0 * Delta;
 
-  // Coincide the required bisector of the angular sector with
-  // axis -Ox. Definition of the circle in Bezier of degree 7 so that
-  // parameter 1/2 of Bezier is exactly a point of the bisectrix
+  // coincide the required bisector of the angular sector with
+  // axis -Ox definition of the circle in Bezier of degree 7 so that
+  // parametre 1/2 of Bezier was exactly a point of the bissectrice
   // of the required angular sector.
+  //
   Angle = middle - M_PI;
+  //
+  // Circle of radius 1. See Euclid
+  //
 
-  // Bezier control points for a unit circle (degree-7 polynomial approximation).
-  // Coefficients from Tiller's algorithm for polynomial cos/sin representation.
   NCollection_Array1<gp_Pnt2d> TPoles(1, 8), NewTPoles(1, 8);
   TPoles(1).SetCoord(1., 0.);
   TPoles(2).SetCoord(1., 1.013854);
@@ -128,8 +128,12 @@ void BuildPolynomialCosAndSin(const double                UFirst,
 
   trim_min = 1.0e0 - trim_max;
   //
-  std::array<double, 2> knot_array  = {0.0e0, 1.0e0};
-  std::array<int, 2>    mults_array = {degree + 1, degree + 1};
+  double knot_array[2];
+  int    mults_array[2];
+  knot_array[0]  = 0.0e0;
+  knot_array[1]  = 1.0e0;
+  mults_array[0] = degree + 1;
+  mults_array[1] = degree + 1;
 
   NCollection_Array1<double> the_knots(knot_array[0], 1, 2), the_new_knots(knot_array[0], 1, 2);
   NCollection_Array1<int>    the_mults(mults_array[0], 1, 2), the_new_mults(mults_array[0], 1, 2);
@@ -174,8 +178,109 @@ void BuildPolynomialCosAndSin(const double                UFirst,
 
   for (ii = 1; ii <= num_poles; ii++)
   {
-    CosNumerator(ii) = NewTPoles(ii).X();
-    SinNumerator(ii) = NewTPoles(ii).Y();
-    Denominator(ii)  = 1.;
+    CosNumeratorPtr->SetValue(ii, NewTPoles(ii).X());
+    SinNumeratorPtr->SetValue(ii, NewTPoles(ii).Y());
+    DenominatorPtr->SetValue(ii, 1.);
   }
 }
+
+/*
+void BuildHermitePolynomialCosAndSin
+  (const double UFirst,
+   const double ULast,
+   const int num_poles,
+   occ::handle<NCollection_HArray1<double>>& CosNumeratorPtr,
+   occ::handle<NCollection_HArray1<double>>& SinNumeratorPtr,
+   occ::handle<NCollection_HArray1<double>>& DenominatorPtr)
+{
+
+  if (num_poles%2 != 0) {
+    throw Standard_ConstructionError();
+  }
+  int ii;
+  int ordre_deriv = num_poles/2;
+  double ang = ULast - UFirst;
+  double Cd = std::cos(UFirst);
+  double Sd = std::sin(UFirst);
+  double Cf = std::cos(ULast);
+  double Sf = std::sin(ULast);
+
+  int Degree = num_poles-1;
+  NCollection_Array1<double> FlatKnots(1,2*num_poles);
+  NCollection_Array1<double> Parameters(1,num_poles);
+  NCollection_Array1<int> ContactOrderArray(1,num_poles);
+  NCollection_Array1<gp_Pnt2d> Poles(1,num_poles);
+  NCollection_Array1<gp_Pnt2d> TPoles(1,num_poles);
+
+  for (ii=1; ii<=num_poles; ii++) {
+    FlatKnots(ii) = 0.;
+    FlatKnots(ii+num_poles) = 1.;
+  }
+
+  double coef = 1.;
+  double xd,yd,xf,yf;
+
+  for (ii=1; ii<=ordre_deriv; ii++) {
+    Parameters(ii) = 0.;
+    Parameters(ii+ordre_deriv) = 1.;
+
+    ContactOrderArray(ii) = ContactOrderArray(num_poles-ii+1) = ii-1;
+
+    switch ((ii-1)%4) {
+    case 0:
+      {
+    xd = Cd*coef;
+    yd = Sd*coef;
+    xf = Cf*coef;
+    yf = Sf*coef;
+      }
+      break;
+    case 1:
+      {
+    xd = -Sd*coef;
+    yd =  Cd*coef;
+    xf = -Sf*coef;
+    yf =  Cf*coef;
+      }
+      break;
+    case 2:
+      {
+    xd = -Cd*coef;
+    yd = -Sd*coef;
+    xf = -Cf*coef;
+    yf = -Sf*coef;
+      }
+      break;
+    case 3:
+      {
+    xd =  Sd*coef;
+    yd = -Cd*coef;
+    xf =  Sf*coef;
+    yf = -Cf*coef;
+      }
+      break;
+    }
+
+    Poles(ii).SetX(xd);
+    Poles(ii).SetY(yd);
+    Poles(num_poles-ii+1).SetX(xf);
+    Poles(num_poles-ii+1).SetY(yf);
+
+    coef *= ang;
+  }
+
+  int InversionPb;
+  BSplCLib::Interpolate(Degree,FlatKnots,Parameters,
+            ContactOrderArray,Poles,InversionPb);
+
+  if (InversionPb !=0) {
+    throw Standard_ConstructionError();
+  }
+  for (ii=1; ii<=num_poles; ii++) {
+    CosNumeratorPtr->SetValue(ii,Poles(ii).X());
+    SinNumeratorPtr->SetValue(ii,Poles(ii).Y());
+    DenominatorPtr->SetValue(ii,1.);
+  }
+
+}
+*/

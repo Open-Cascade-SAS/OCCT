@@ -8,7 +8,6 @@ set(OCCT_Convert_FILES
   Convert_CompBezierCurves2dToBSplineCurve2d.hxx
   Convert_CompBezierCurvesToBSplineCurve.cxx
   Convert_CompBezierCurvesToBSplineCurve.hxx
-  Convert_CompBezierCurvesToBSplineCurveBase.hxx
   Convert_CompPolynomialToPoles.cxx
   Convert_CompPolynomialToPoles.hxx
   Convert_ConeToBSplineSurface.cxx

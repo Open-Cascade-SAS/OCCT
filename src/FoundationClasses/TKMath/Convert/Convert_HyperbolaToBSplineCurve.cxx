@@ -18,16 +18,17 @@
 #include <gp.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Hypr2d.hxx>
-#include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
+#include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
-constexpr int TheDegree  = 2;
-constexpr int MaxNbKnots = 2;
-constexpr int MaxNbPoles = 3;
+static int TheDegree  = 2;
+static int MaxNbKnots = 2;
+static int MaxNbPoles = 3;
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d& H,
                                                                  const double     U1,
@@ -35,16 +36,18 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
 
     : Convert_ConicToBSplineCurve(MaxNbPoles, MaxNbKnots, TheDegree)
 {
-  Standard_DomainError_Raise_if(std::abs(U2 - U1) < Epsilon(0.), "Convert_HyperbolaToBSplineCurve");
+  Standard_DomainError_Raise_if(std::abs(U2 - U1) < Epsilon(0.), "Convert_ParabolaToBSplineCurve");
 
   double UF = std::min(U1, U2);
   double UL = std::max(U1, U2);
 
-  myData.IsPeriodic               = false;
-  myData.Knots(1) = UF;
-  myData.Mults(1) = 3;
-  myData.Knots(2) = UL;
-  myData.Mults(2) = 3;
+  nbPoles                  = 3;
+  nbKnots                  = 2;
+  isperiodic               = false;
+  knots->ChangeArray1()(1) = UF;
+  mults->ChangeArray1()(1) = 3;
+  knots->ChangeArray1()(2) = UL;
+  mults->ChangeArray1()(2) = 3;
 
   // construction of hyperbola in the reference xOy.
 
@@ -59,21 +62,21 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
   // at points P(UF), P(UL)
   // the weight of this pole is equal to : std::cosh((UL-UF)/2)
 
-  myData.Weights(1) = 1.;
-  myData.Weights(2) = std::cosh((UL - UF) / 2);
-  myData.Weights(3) = 1.;
+  weights->ChangeArray1()(1) = 1.;
+  weights->ChangeArray1()(2) = std::cosh((UL - UF) / 2);
+  weights->ChangeArray1()(3) = 1.;
 
-  double delta               = std::sinh(UL - UF);
-  double x                   = R * (std::sinh(UL) - std::sinh(UF)) / delta;
-  double y                   = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
-  myData.Poles(1) = gp_Pnt2d(R * std::cosh(UF), S * r * std::sinh(UF));
-  myData.Poles(2) = gp_Pnt2d(x, y);
-  myData.Poles(3) = gp_Pnt2d(R * std::cosh(UL), S * r * std::sinh(UL));
+  double delta             = std::sinh(UL - UF);
+  double x                 = R * (std::sinh(UL) - std::sinh(UF)) / delta;
+  double y                 = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
+  poles->ChangeArray1()(1) = gp_Pnt2d(R * std::cosh(UF), S * r * std::sinh(UF));
+  poles->ChangeArray1()(2) = gp_Pnt2d(x, y);
+  poles->ChangeArray1()(3) = gp_Pnt2d(R * std::cosh(UL), S * r * std::sinh(UL));
 
   // replace the bspline in the mark of the hyperbola
   gp_Trsf2d Trsf;
   Trsf.SetTransformation(H.Axis().XAxis(), gp::OX2d());
-  myData.Poles(1).Transform(Trsf);
-  myData.Poles(2).Transform(Trsf);
-  myData.Poles(3).Transform(Trsf);
+  poles->ChangeArray1()(1).Transform(Trsf);
+  poles->ChangeArray1()(2).Transform(Trsf);
+  poles->ChangeArray1()(3).Transform(Trsf);
 }

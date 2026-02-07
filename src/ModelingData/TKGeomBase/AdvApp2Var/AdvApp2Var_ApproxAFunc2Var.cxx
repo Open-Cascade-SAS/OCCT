@@ -972,11 +972,11 @@ void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
     }
 
     // Conversion into BSpline
-    mySurfaces->ChangeValue(SSP) = new (Geom_BSplineSurface)(CvP.Poles(),
-                                                             CvP.UKnots(),
-                                                             CvP.VKnots(),
-                                                             CvP.UMultiplicities(),
-                                                             CvP.VMultiplicities(),
+    mySurfaces->ChangeValue(SSP) = new (Geom_BSplineSurface)(CvP.Poles()->Array2(),
+                                                             CvP.UKnots()->Array1(),
+                                                             CvP.VKnots()->Array1(),
+                                                             CvP.UMultiplicities()->Array1(),
+                                                             CvP.VMultiplicities()->Array1(),
                                                              CvP.UDegree(),
                                                              CvP.VDegree());
   }

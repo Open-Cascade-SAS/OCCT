@@ -20,8 +20,6 @@
 #include <gp_Trsf.hxx>
 #include <Standard_DomainError.hxx>
 
-#include <array>
-
 namespace
 {
 constexpr int TheUDegree  = 2;
@@ -53,8 +51,8 @@ static void ComputePoles(const double                R,
 
   int nbVP = 2 * nbVSpans + 1;
 
-  std::array<double, MaxNbVPoles> x;
-  std::array<double, MaxNbVPoles> z;
+  double x[MaxNbVPoles];
+  double z[MaxNbVPoles];
 
   x[0] = R + r * std::cos(V1);
   z[0] = r * std::sin(V1);
@@ -109,8 +107,8 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
                                   || (deltaV < 0.),
                                 "Convert_TorusToBSplineSurface");
 
-  myData.IsUPeriodic = false;
-  myData.IsVPeriodic = false;
+  isuperiodic = false;
+  isvperiodic = false;
 
   int i, j;
   // construction of the torus in the reference mark xOy.
@@ -121,30 +119,30 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
   double AlfaU    = deltaU / (nbUSpans * 2);
   double AlfaV    = deltaV / (nbVSpans * 2);
 
-  myNbUPoles = 2 * nbUSpans + 1;
-  myNbVPoles = 2 * nbVSpans + 1;
-  myNbUKnots = nbUSpans + 1;
-  myNbVKnots = nbVSpans + 1;
+  nbUPoles = 2 * nbUSpans + 1;
+  nbVPoles = 2 * nbVSpans + 1;
+  nbUKnots = nbUSpans + 1;
+  nbVKnots = nbVSpans + 1;
 
   double R = T.MajorRadius();
   double r = T.MinorRadius();
 
-  ComputePoles(R, r, U1, U2, V1, V2, myData.Poles);
+  ComputePoles(R, r, U1, U2, V1, V2, poles);
 
-  for (i = 1; i <= myNbUKnots; i++)
+  for (i = 1; i <= nbUKnots; i++)
   {
-    myData.UKnots(i) = U1 + (i - 1) * 2 * AlfaU;
-    myData.UMults(i) = 2;
+    uknots(i) = U1 + (i - 1) * 2 * AlfaU;
+    umults(i) = 2;
   }
-  myData.UMults(1)++;
-  myData.UMults(myNbUKnots)++;
-  for (i = 1; i <= myNbVKnots; i++)
+  umults(1)++;
+  umults(nbUKnots)++;
+  for (i = 1; i <= nbVKnots; i++)
   {
-    myData.VKnots(i) = V1 + (i - 1) * 2 * AlfaV;
-    myData.VMults(i) = 2;
+    vknots(i) = V1 + (i - 1) * 2 * AlfaV;
+    vmults(i) = 2;
   }
-  myData.VMults(1)++;
-  myData.VMults(myNbVKnots)++;
+  vmults(1)++;
+  vmults(nbVKnots)++;
 
   // Replace the bspline in the reference of the torus.
   // and calculate the weight of the bspline.
@@ -152,25 +150,24 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
   gp_Trsf Trsf;
   Trsf.SetTransformation(T.Position(), gp::XOY());
 
-  for (i = 1; i <= myNbUPoles; i++)
+  for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
       W1 = std::cos(AlfaU);
     else
       W1 = 1.;
 
-    for (j = 1; j <= myNbVPoles; j++)
+    for (j = 1; j <= nbVPoles; j++)
     {
       if (j % 2 == 0)
         W2 = std::cos(AlfaV);
       else
         W2 = 1.;
 
-      myData.Weights(i, j) = W1 * W2;
-      myData.Poles(i, j).Transform(Trsf);
+      weights(i, j) = W1 * W2;
+      poles(i, j).Transform(Trsf);
     }
   }
-  Finalize();
 }
 
 //=================================================================================================
@@ -195,68 +192,68 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
   int    i, j;
   double deltaU, deltaV;
 
-  myData.IsUPeriodic = !UTrim;
-  myData.IsVPeriodic = UTrim;
+  isuperiodic = !UTrim;
+  isvperiodic = UTrim;
 
   double R = T.MajorRadius();
   double r = T.MinorRadius();
 
   double W1, W2, CosU, CosV;
 
-  if (myData.IsUPeriodic)
+  if (isuperiodic)
   {
-    ComputePoles(R, r, 0, 2. * M_PI, Param1, Param2, myData.Poles);
+    ComputePoles(R, r, 0, 2. * M_PI, Param1, Param2, poles);
 
-    myNbUPoles = 6;
-    myNbUKnots = 4;
+    nbUPoles = 6;
+    nbUKnots = 4;
 
     deltaV          = Param2 - Param1;
     int    nbVSpans = (int)std::trunc(1.2 * deltaV / M_PI) + 1;
     double AlfaV    = deltaV / (nbVSpans * 2);
-    myNbVPoles      = 2 * nbVSpans + 1;
-    myNbVKnots      = nbVSpans + 1;
+    nbVPoles        = 2 * nbVSpans + 1;
+    nbVKnots        = nbVSpans + 1;
 
-    for (i = 1; i <= myNbUKnots; i++)
+    for (i = 1; i <= nbUKnots; i++)
     {
-      myData.UKnots(i) = (i - 1) * 2. * M_PI / 3.;
-      myData.UMults(i) = 2;
+      uknots(i) = (i - 1) * 2. * M_PI / 3.;
+      umults(i) = 2;
     }
-    for (i = 1; i <= myNbVKnots; i++)
+    for (i = 1; i <= nbVKnots; i++)
     {
-      myData.VKnots(i) = Param1 + (i - 1) * 2 * AlfaV;
-      myData.VMults(i) = 2;
+      vknots(i) = Param1 + (i - 1) * 2 * AlfaV;
+      vmults(i) = 2;
     }
-    myData.VMults(1)++;
-    myData.VMults(myNbVKnots)++;
+    vmults(1)++;
+    vmults(nbVKnots)++;
 
     CosU = 0.5; // = std::cos(pi /3)
     CosV = std::cos(AlfaV);
   }
   else
   {
-    ComputePoles(R, r, Param1, Param2, 0., 2. * M_PI, myData.Poles);
+    ComputePoles(R, r, Param1, Param2, 0., 2. * M_PI, poles);
 
-    myNbVPoles = 6;
-    myNbVKnots = 4;
+    nbVPoles = 6;
+    nbVKnots = 4;
 
     deltaU          = Param2 - Param1;
     int    nbUSpans = (int)std::trunc(1.2 * deltaU / M_PI) + 1;
     double AlfaU    = deltaU / (nbUSpans * 2);
-    myNbUPoles      = 2 * nbUSpans + 1;
-    myNbUKnots      = nbUSpans + 1;
+    nbUPoles        = 2 * nbUSpans + 1;
+    nbUKnots        = nbUSpans + 1;
 
-    for (i = 1; i <= myNbVKnots; i++)
+    for (i = 1; i <= nbVKnots; i++)
     {
-      myData.VKnots(i) = (i - 1) * 2. * M_PI / 3.;
-      myData.VMults(i) = 2;
+      vknots(i) = (i - 1) * 2. * M_PI / 3.;
+      vmults(i) = 2;
     }
-    for (i = 1; i <= myNbUKnots; i++)
+    for (i = 1; i <= nbUKnots; i++)
     {
-      myData.UKnots(i) = Param1 + (i - 1) * 2 * AlfaU;
-      myData.UMults(i) = 2;
+      uknots(i) = Param1 + (i - 1) * 2 * AlfaU;
+      umults(i) = 2;
     }
-    myData.UMults(1)++;
-    myData.UMults(myNbUKnots)++;
+    umults(1)++;
+    umults(nbUKnots)++;
 
     CosV = 0.5; // = std::cos(pi /3)
     CosU = std::cos(AlfaU);
@@ -267,25 +264,24 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T,
   gp_Trsf Trsf;
   Trsf.SetTransformation(T.Position(), gp::XOY());
 
-  for (i = 1; i <= myNbUPoles; i++)
+  for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
       W1 = CosU;
     else
       W1 = 1.;
 
-    for (j = 1; j <= myNbVPoles; j++)
+    for (j = 1; j <= nbVPoles; j++)
     {
       if (j % 2 == 0)
         W2 = CosV;
       else
         W2 = 1.;
 
-      myData.Weights(i, j) = W1 * W2;
-      myData.Poles(i, j).Transform(Trsf);
+      weights(i, j) = W1 * W2;
+      poles(i, j).Transform(Trsf);
     }
   }
-  Finalize();
 }
 
 //=================================================================================================
@@ -298,31 +294,31 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T)
                                                 TheUDegree,
                                                 TheVDegree)
 {
-  myData.IsUPeriodic = true;
-  myData.IsVPeriodic = true;
+  isuperiodic = true;
+  isvperiodic = true;
 
   double W1, W2;
   int    i, j;
 
-  myNbUPoles = 6;
-  myNbVPoles = 6;
-  myNbUKnots = 4;
-  myNbVKnots = 4;
+  nbUPoles = 6;
+  nbVPoles = 6;
+  nbUKnots = 4;
+  nbVKnots = 4;
 
   // Construction of the Torus in the reference mark xOy.
 
   double R = T.MajorRadius();
   double r = T.MinorRadius();
 
-  ComputePoles(R, r, 0., 2. * M_PI, 0., 2. * M_PI, myData.Poles);
+  ComputePoles(R, r, 0., 2. * M_PI, 0., 2. * M_PI, poles);
 
-  myData.UKnots(1) = myData.VKnots(1) = 0.;
-  myData.UKnots(2) = myData.VKnots(2) = 2. * M_PI / 3.;
-  myData.UKnots(3) = myData.VKnots(3) = 4. * M_PI / 3.;
-  myData.UKnots(4) = myData.VKnots(4) = 2. * M_PI;
+  uknots(1) = vknots(1) = 0.;
+  uknots(2) = vknots(2) = 2. * M_PI / 3.;
+  uknots(3) = vknots(3) = 4. * M_PI / 3.;
+  uknots(4) = vknots(4) = 2. * M_PI;
   for (i = 1; i <= 4; i++)
   {
-    myData.UMults(i) = myData.VMults(i) = 2;
+    umults(i) = vmults(i) = 2;
   }
 
   // Replace the bspline in the mark of the torus.
@@ -330,23 +326,22 @@ Convert_TorusToBSplineSurface::Convert_TorusToBSplineSurface(const gp_Torus& T)
   gp_Trsf Trsf;
   Trsf.SetTransformation(T.Position(), gp::XOY());
 
-  for (i = 1; i <= myNbUPoles; i++)
+  for (i = 1; i <= nbUPoles; i++)
   {
     if (i % 2 == 0)
       W1 = 0.5;
     else
       W1 = 1.;
 
-    for (j = 1; j <= myNbVPoles; j++)
+    for (j = 1; j <= nbVPoles; j++)
     {
       if (j % 2 == 0)
         W2 = 0.5;
       else
         W2 = 1.;
 
-      myData.Weights(i, j) = W1 * W2;
-      myData.Poles(i, j).Transform(Trsf);
+      weights(i, j) = W1 * W2;
+      poles(i, j).Transform(Trsf);
     }
   }
-  Finalize();
 }
