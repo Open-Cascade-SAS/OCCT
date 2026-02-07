@@ -13,7 +13,6 @@ set(OCCT_BSplCLib_FILES
   BSplCLib_Cache.hxx
   BSplCLib_CacheParams.hxx
   BSplCLib_CurveComputation.pxx
-  BSplCLib_CurveData.hxx
   BSplCLib_EvaluatorFunction.hxx
   BSplCLib_KnotDistribution.hxx
   BSplCLib_MultDistribution.hxx

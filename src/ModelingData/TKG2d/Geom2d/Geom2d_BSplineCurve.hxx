@@ -26,7 +26,6 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <BSplCLib_CurveData.hxx>
 #include <Geom2d_BoundedCurve.hxx>
 class gp_Vec2d;
 class gp_Trsf2d;
@@ -837,13 +836,16 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   //! Returns the internal poles array (non-handle).
-  const NCollection_Array1<gp_Pnt2d>& InternalPoles() const { return myData.Poles; }
+  const NCollection_Array1<gp_Pnt2d>& InternalPoles() const { return myPoles; }
 
   //! Returns the internal weights array, or nullptr if non-rational.
   Standard_EXPORT const NCollection_Array1<double>* InternalWeights() const;
 
   //! Returns the internal flat knots array (non-handle).
-  const NCollection_Array1<double>& InternalFlatKnots() const { return myData.FlatKnots; }
+  const NCollection_Array1<double>& InternalFlatKnots() const { return myFlatKnots; }
+
+  //! Returns pointer to weights array if rational, nullptr otherwise.
+  const NCollection_Array1<double>* WeightsPtr() const { return rational ? &myWeights : nullptr; }
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 
@@ -851,7 +853,13 @@ private:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
-  BSplCLib_CurveData2d             myData;
+  NCollection_Array1<gp_Pnt2d>     myPoles;
+  NCollection_Array1<double>       myWeights;
+  NCollection_Array1<double>       myKnots;
+  NCollection_Array1<double>       myFlatKnots;
+  NCollection_Array1<int>          myMults;
+  int                              myDeg = 0;
+  bool                             myPeriodic = false;
   bool                             rational;
   GeomAbs_BSplKnotDistribution     knotSet;
   GeomAbs_Shape                    smooth;

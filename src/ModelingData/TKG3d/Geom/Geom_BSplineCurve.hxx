@@ -20,7 +20,6 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <BSplCLib_CurveData.hxx>
 #include <Precision.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -781,14 +780,17 @@ public:
   Standard_EXPORT const NCollection_Array1<double>* Weights() const;
 
   //! Returns the array of poles for efficient grid evaluation.
-  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myData.Poles; }
+  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myPoles; }
 
   //! Returns the array of weights for efficient grid evaluation.
   //! Returns null pointer for non-rational curves.
   const NCollection_Array1<double>* InternalWeights() const;
 
   //! Returns the flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalFlatKnots() const { return myData.FlatKnots; }
+  const NCollection_Array1<double>& InternalFlatKnots() const { return myFlatKnots; }
+
+  //! Returns pointer to weights array if rational, nullptr otherwise.
+  const NCollection_Array1<double>* WeightsPtr() const { return rational ? &myWeights : nullptr; }
 
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
@@ -821,7 +823,13 @@ private:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
-  BSplCLib_CurveData3d             myData;
+  NCollection_Array1<gp_Pnt>       myPoles;
+  NCollection_Array1<double>       myWeights;
+  NCollection_Array1<double>       myKnots;
+  NCollection_Array1<double>       myFlatKnots;
+  NCollection_Array1<int>          myMults;
+  int                              myDeg = 0;
+  bool                             myPeriodic = false;
   bool                             rational;
   GeomAbs_BSplKnotDistribution     knotSet;
   GeomAbs_Shape                    smooth;

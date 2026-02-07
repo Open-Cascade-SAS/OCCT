@@ -27,7 +27,6 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
-#include <BSplSLib_SurfaceData.hxx>
 #include <Geom_BoundedSurface.hxx>
 class gp_Vec;
 class Geom_Curve;
@@ -1070,16 +1069,22 @@ public:
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
 
   //! Returns the internal poles array (non-handle).
-  const NCollection_Array2<gp_Pnt>& InternalPoles() const { return myData.Poles; }
+  const NCollection_Array2<gp_Pnt>& InternalPoles() const { return myPoles; }
 
   //! Returns the internal weights array, or nullptr if non-rational.
   Standard_EXPORT const NCollection_Array2<double>* InternalWeights() const;
 
   //! Returns the internal U flat knots array (non-handle).
-  const NCollection_Array1<double>& InternalUFlatKnots() const { return myData.UFlatKnots; }
+  const NCollection_Array1<double>& InternalUFlatKnots() const { return myUFlatKnots; }
 
   //! Returns the internal V flat knots array (non-handle).
-  const NCollection_Array1<double>& InternalVFlatKnots() const { return myData.VFlatKnots; }
+  const NCollection_Array1<double>& InternalVFlatKnots() const { return myVFlatKnots; }
+
+  //! Returns pointer to weights array if rational, nullptr otherwise.
+  const NCollection_Array2<double>* WeightsPtr() const
+  {
+    return (urational || vrational) ? &myWeights : nullptr;
+  }
 
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
@@ -1295,7 +1300,18 @@ private:
   //! continuity for V.
   Standard_EXPORT void UpdateVKnots();
 
-  BSplSLib_SurfaceData             myData;
+  NCollection_Array2<gp_Pnt>       myPoles;
+  NCollection_Array2<double>       myWeights;
+  NCollection_Array1<double>       myUKnots;
+  NCollection_Array1<double>       myVKnots;
+  NCollection_Array1<double>       myUFlatKnots;
+  NCollection_Array1<double>       myVFlatKnots;
+  NCollection_Array1<int>          myUMults;
+  NCollection_Array1<int>          myVMults;
+  int                              myUDeg = 0;
+  int                              myVDeg = 0;
+  bool                             myUPeriodic = false;
+  bool                             myVPeriodic = false;
   bool                             urational;
   bool                             vrational;
   GeomAbs_BSplKnotDistribution     uknotSet;

@@ -19,7 +19,6 @@
 
 #include <Standard.hxx>
 
-#include <BSplCLib_CurveData.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
@@ -296,7 +295,7 @@ public:
   //! Returns all the weights of the curve.
   const NCollection_Array1<double>* Weights() const
   {
-    return rational ? &myData.Weights : BSplCLib::NoWeights();
+    return rational ? &myWeights : BSplCLib::NoWeights();
   }
 
   //! Applies the transformation T to this Bezier curve.
@@ -320,24 +319,33 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
   //! Returns the array of poles for efficient grid evaluation.
-  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myData.Poles; }
+  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myPoles; }
 
   //! Returns the array of weights for efficient grid evaluation.
   //! Returns null pointer for non-rational curves.
   const NCollection_Array1<double>* InternalWeights() const
   {
-    return rational ? &myData.Weights : BSplCLib::NoWeights();
+    return rational ? &myWeights : BSplCLib::NoWeights();
   }
 
   //! Returns the flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalFlatKnots() const { return myData.FlatKnots; }
+  const NCollection_Array1<double>& InternalFlatKnots() const { return BezierFlatKnots(); }
+
+  //! Returns pointer to weights array if rational, nullptr otherwise.
+  const NCollection_Array1<double>* WeightsPtr() const { return rational ? &myWeights : nullptr; }
+
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& BezierKnots() const;
+
+  //! Returns Bezier multiplicities for the current degree.
+  Standard_EXPORT const NCollection_Array1<int>& BezierMults() const;
+
+  //! Returns Bezier flat knots for the current degree.
+  Standard_EXPORT const NCollection_Array1<double>& BezierFlatKnots() const;
 
   DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
 private:
-  //! Rebuilds the knot arrays (Knots, Mults, FlatKnots) from the current degree.
-  void updateKnots();
-
   //! Set poles to Poles, weights to Weights (not copied).
   //! If Weights is null the curve is non rational.
   //! Create the arrays of coefficients.
@@ -349,11 +357,12 @@ private:
   void Init(const NCollection_Array1<gp_Pnt>& thePoles,
             const NCollection_Array1<double>* theWeights);
 
-  BSplCLib_CurveData3d myData;
-  bool                 rational;
-  bool                 closed;
-  double               maxderivinv;
-  bool                 maxderivinvok;
+  NCollection_Array1<gp_Pnt>  myPoles;
+  NCollection_Array1<double>  myWeights;
+  bool                        rational;
+  bool                        closed;
+  double                      maxderivinv;
+  bool                        maxderivinvok;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

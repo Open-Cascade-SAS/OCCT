@@ -25,6 +25,8 @@
 
 
 
+#include <array>
+
 #include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
@@ -48,15 +50,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
-namespace
-{
-static const double THE_BEZIER_KNOTS[2] = {0.0, 1.0};
-static const int    THE_BEZIER_MULTS[26][2] = {
-  {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
-  {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
-  {15, 15}, {16, 16}, {17, 17}, {18, 18}, {19, 19}, {20, 20}, {21, 21},
-  {22, 22}, {23, 23}, {24, 24}, {25, 25}, {26, 26}};
-} // namespace
 
 //=======================================================================
 // function : Rational
@@ -368,47 +361,15 @@ static void DeleteRatPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
 
 //=================================================================================================
 
-void Geom_BezierSurface::updateUKnots()
-{
-  const int aDeg = myData.UDegree;
-  // Non-owning wrappers around static data — zero allocation
-  myData.UKnots     = NCollection_Array1<double>(THE_BEZIER_KNOTS[0], 1, 2);
-  myData.UMults     = NCollection_Array1<int>(THE_BEZIER_MULTS[aDeg][0], 1, 2);
-  myData.UFlatKnots = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
-  myData.IsUPeriodic = false;
-}
-
-//=================================================================================================
-
-void Geom_BezierSurface::updateVKnots()
-{
-  const int aDeg = myData.VDegree;
-  // Non-owning wrappers around static data — zero allocation
-  myData.VKnots     = NCollection_Array1<double>(THE_BEZIER_KNOTS[0], 1, 2);
-  myData.VMults     = NCollection_Array1<int>(THE_BEZIER_MULTS[aDeg][0], 1, 2);
-  myData.VFlatKnots = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(aDeg), 1, 2 * (aDeg + 1));
-  myData.IsVPeriodic = false;
-}
-
-//=================================================================================================
-
 Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
-    : urational(theOther.urational),
+    : myPoles(theOther.myPoles),
+      myWeights(theOther.myWeights),
+      urational(theOther.urational),
       vrational(theOther.vrational),
       umaxderivinv(theOther.umaxderivinv),
       vmaxderivinv(theOther.vmaxderivinv),
       maxderivinvok(false)
 {
-  // Copy only value arrays; skip UKnots/VKnots/UFlatKnots/VFlatKnots/UMults/VMults
-  // which are non-owning views into static data and will be set up by updateKnots().
-  myData.Poles       = NCollection_Array2<gp_Pnt>(theOther.myData.Poles);
-  myData.Weights     = NCollection_Array2<double>(theOther.myData.Weights);
-  myData.UDegree     = theOther.myData.UDegree;
-  myData.VDegree     = theOther.myData.VDegree;
-  myData.IsUPeriodic = theOther.myData.IsUPeriodic;
-  myData.IsVPeriodic = theOther.myData.IsVPeriodic;
-  updateUKnots();
-  updateVKnots();
 }
 
 //=================================================================================================
@@ -508,10 +469,10 @@ int Geom_BezierSurface::MaxDegree()
 
 void Geom_BezierSurface::ExchangeUV()
 {
-  int LR = myData.Poles.LowerRow();
-  int UR = myData.Poles.UpperRow();
-  int LC = myData.Poles.LowerCol();
-  int UC = myData.Poles.UpperCol();
+  int LR = myPoles.LowerRow();
+  int UR = myPoles.UpperRow();
+  int LC = myPoles.LowerCol();
+  int UC = myPoles.UpperCol();
 
   NCollection_Array2<gp_Pnt> npoles(LC, UC, LR, UR);
   NCollection_Array2<double> nweights;
@@ -525,23 +486,20 @@ void Geom_BezierSurface::ExchangeUV()
   {
     for (int j = LR; j <= UR; j++)
     {
-      npoles(i, j) = myData.Poles(j, i);
+      npoles(i, j) = myPoles(j, i);
       if (rat)
       {
-        nweights(i, j) = myData.Weights(j, i);
+        nweights(i, j) = myWeights(j, i);
       }
     }
   }
-  myData.Poles = std::move(npoles);
+  myPoles = std::move(npoles);
   if (rat)
   {
-    myData.Weights = std::move(nweights);
+    myWeights = std::move(nweights);
   }
 
   std::swap(urational, vrational);
-  std::swap(myData.UDegree, myData.VDegree);
-  updateUKnots();
-  updateVKnots();
 }
 
 //=================================================================================================
@@ -577,15 +535,15 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                oldUDeg,
                                UDeg,
                                false,
-                               myData.Poles,
-                               &myData.Weights,
-                               myData.UKnots,
-                               myData.UMults,
+                               myPoles,
+                               &myWeights,
+                               BezierKnots(),
+                               BezierUMults(),
                                npoles,
                                &nweights,
                                nknots,
                                nmults);
-      myData.Weights = std::move(nweights);
+      myWeights = std::move(nweights);
     }
     else
     {
@@ -593,16 +551,16 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                oldUDeg,
                                UDeg,
                                false,
-                               myData.Poles,
+                               myPoles,
                                BSplSLib::NoWeights(),
-                               myData.UKnots,
-                               myData.UMults,
+                               BezierKnots(),
+                               BezierUMults(),
                                npoles,
                                BSplSLib::NoWeights(),
                                nknots,
                                nmults);
     }
-    myData.Poles = std::move(npoles);
+    myPoles = std::move(npoles);
   }
   if (IncVDeg > 0)
   {
@@ -620,15 +578,15 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                oldVDeg,
                                VDeg,
                                false,
-                               myData.Poles,
-                               &myData.Weights,
-                               myData.VKnots,
-                               myData.VMults,
+                               myPoles,
+                               &myWeights,
+                               BezierKnots(),
+                               BezierVMults(),
                                npoles,
                                &nweights,
                                nknots,
                                nmults);
-      myData.Weights = std::move(nweights);
+      myWeights = std::move(nweights);
     }
     else
     {
@@ -636,18 +594,18 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                oldVDeg,
                                VDeg,
                                false,
-                               myData.Poles,
+                               myPoles,
                                BSplSLib::NoWeights(),
-                               myData.VKnots,
-                               myData.VMults,
+                               BezierKnots(),
+                               BezierVMults(),
                                npoles,
                                BSplSLib::NoWeights(),
                                nknots,
                                nmults);
     }
-    myData.Poles = std::move(npoles);
+    myPoles = std::move(npoles);
   }
-  Init(myData.Poles, (urational || vrational) ? &myData.Weights : nullptr);
+  Init(myPoles, (urational || vrational) ? &myWeights : nullptr);
 }
 
 //=================================================================================================
@@ -655,15 +613,15 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
 void Geom_BezierSurface::InsertPoleColAfter(const int                         VIndex,
                                             const NCollection_Array1<gp_Pnt>& CPoles)
 {
-  if (VIndex < 1 || VIndex > myData.Poles.RowLength())
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange();
-  if (CPoles.Length() != myData.Poles.ColLength())
+  if (CPoles.Length() != myPoles.ColLength())
   {
     throw Standard_ConstructionError();
   }
 
-  int NbUPoles = myData.Poles.ColLength();
-  int NbVPoles = myData.Poles.RowLength();
+  int NbUPoles = myPoles.ColLength();
+  int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles, 1, NbVPoles + 1);
 
   if (urational || vrational)
@@ -673,22 +631,20 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
     NCollection_Array1<double> CWeights(1, NbUPoles);
     CWeights.Init(1.);
 
-    AddRatPoleCol(myData.Poles,
-                  myData.Weights,
+    AddRatPoleCol(myPoles,
+                  myWeights,
                   CPoles,
                   CWeights,
                   VIndex,
                   npoles,
                   nweights);
-    myData.Weights = std::move(nweights);
+    myWeights = std::move(nweights);
   }
   else
   {
-    AddPoleCol(myData.Poles, CPoles, VIndex, npoles);
+    AddPoleCol(myPoles, CPoles, VIndex, npoles);
   }
-  myData.Poles = std::move(npoles);
-  myData.VDegree = myData.Poles.RowLength() - 1;
-  updateVKnots();
+  myPoles = std::move(npoles);
 }
 
 //=================================================================================================
@@ -697,9 +653,9 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
                                             const NCollection_Array1<gp_Pnt>& CPoles,
                                             const NCollection_Array1<double>& CPoleWeights)
 {
-  if (VIndex < 1 || VIndex > myData.Poles.RowLength())
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange();
-  if (CPoles.Length() != myData.Poles.ColLength() || CPoleWeights.Length() != CPoles.Length())
+  if (CPoles.Length() != myPoles.ColLength() || CPoleWeights.Length() != CPoles.Length())
   {
     throw Standard_ConstructionError();
   }
@@ -713,33 +669,31 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
     Index++;
   }
 
-  int NbUPoles = myData.Poles.ColLength();
-  int NbVPoles = myData.Poles.RowLength();
+  int NbUPoles = myPoles.ColLength();
+  int NbVPoles = myPoles.RowLength();
 
   // Ensure weights exist for rational insertion
   if (!(urational || vrational))
   {
-    myData.Weights.Resize(1, NbUPoles, 1, NbVPoles, false);
-    myData.Weights.Init(1.0);
+    myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
+    myWeights.Init(1.0);
   }
 
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles, 1, NbVPoles + 1);
   NCollection_Array2<double> nweights(1, NbUPoles, 1, NbVPoles + 1);
 
-  AddRatPoleCol(myData.Poles,
-                myData.Weights,
+  AddRatPoleCol(myPoles,
+                myWeights,
                 CPoles,
                 CPoleWeights,
                 VIndex,
                 npoles,
                 nweights);
 
-  myData.Poles = std::move(npoles);
-  myData.Weights = std::move(nweights);
+  myPoles = std::move(npoles);
+  myWeights = std::move(nweights);
 
-  Rational(myData.Weights, urational, vrational);
-  myData.VDegree = myData.Poles.RowLength() - 1;
-  updateVKnots();
+  Rational(myWeights, urational, vrational);
 }
 
 //=================================================================================================
@@ -764,15 +718,15 @@ void Geom_BezierSurface::InsertPoleColBefore(const int                         V
 void Geom_BezierSurface::InsertPoleRowAfter(const int                         UIndex,
                                             const NCollection_Array1<gp_Pnt>& CPoles)
 {
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
     throw Standard_OutOfRange();
-  if (CPoles.Length() != myData.Poles.RowLength())
+  if (CPoles.Length() != myPoles.RowLength())
   {
     throw Standard_ConstructionError();
   }
 
-  int NbUPoles = myData.Poles.ColLength();
-  int NbVPoles = myData.Poles.RowLength();
+  int NbUPoles = myPoles.ColLength();
+  int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles + 1, 1, NbVPoles);
 
   if (urational || vrational)
@@ -782,22 +736,20 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
     NCollection_Array1<double> CWeights(1, NbVPoles);
     CWeights.Init(1.0);
 
-    AddRatPoleRow(myData.Poles,
-                  myData.Weights,
+    AddRatPoleRow(myPoles,
+                  myWeights,
                   CPoles,
                   CWeights,
                   UIndex,
                   npoles,
                   nweights);
-    myData.Weights = std::move(nweights);
+    myWeights = std::move(nweights);
   }
   else
   {
-    AddPoleRow(myData.Poles, CPoles, UIndex, npoles);
+    AddPoleRow(myPoles, CPoles, UIndex, npoles);
   }
-  myData.Poles = std::move(npoles);
-  myData.UDegree = myData.Poles.ColLength() - 1;
-  updateUKnots();
+  myPoles = std::move(npoles);
 }
 
 //=================================================================================================
@@ -806,9 +758,9 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
                                             const NCollection_Array1<gp_Pnt>& CPoles,
                                             const NCollection_Array1<double>& CPoleWeights)
 {
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
     throw Standard_OutOfRange();
-  if (CPoles.Length() != myData.Poles.RowLength() || CPoleWeights.Length() != CPoles.Length())
+  if (CPoles.Length() != myPoles.RowLength() || CPoleWeights.Length() != CPoles.Length())
   {
     throw Standard_ConstructionError();
   }
@@ -822,33 +774,31 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
     Index++;
   }
 
-  int NbUPoles = myData.Poles.ColLength();
-  int NbVPoles = myData.Poles.RowLength();
+  int NbUPoles = myPoles.ColLength();
+  int NbVPoles = myPoles.RowLength();
 
   // Ensure weights exist for rational insertion
   if (!(urational || vrational))
   {
-    myData.Weights.Resize(1, NbUPoles, 1, NbVPoles, false);
-    myData.Weights.Init(1.0);
+    myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
+    myWeights.Init(1.0);
   }
 
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles + 1, 1, NbVPoles);
   NCollection_Array2<double> nweights(1, NbUPoles + 1, 1, NbVPoles);
 
-  AddRatPoleRow(myData.Poles,
-                myData.Weights,
+  AddRatPoleRow(myPoles,
+                myWeights,
                 CPoles,
                 CPoleWeights,
                 UIndex,
                 npoles,
                 nweights);
 
-  myData.Poles = std::move(npoles);
-  myData.Weights = std::move(nweights);
+  myPoles = std::move(npoles);
+  myWeights = std::move(nweights);
 
-  Rational(myData.Weights, urational, vrational);
-  myData.UDegree = myData.Poles.ColLength() - 1;
-  updateUKnots();
+  Rational(myWeights, urational, vrational);
 }
 
 //=================================================================================================
@@ -872,75 +822,71 @@ void Geom_BezierSurface::InsertPoleRowBefore(const int                         U
 
 void Geom_BezierSurface::RemovePoleCol(const int VIndex)
 {
-  if (VIndex < 1 || VIndex > myData.Poles.RowLength())
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange();
-  if (myData.Poles.RowLength() <= 2)
+  if (myPoles.RowLength() <= 2)
     throw Standard_ConstructionError();
 
-  int NbUPoles = myData.Poles.ColLength();
-  int NbVPoles = myData.Poles.RowLength();
+  int NbUPoles = myPoles.ColLength();
+  int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles, 1, NbVPoles - 1);
 
   if (urational || vrational)
   {
     NCollection_Array2<double> nweights(1, NbUPoles, 1, NbVPoles - 1);
 
-    DeleteRatPoleCol(myData.Poles,
-                     myData.Weights,
+    DeleteRatPoleCol(myPoles,
+                     myWeights,
                      VIndex,
                      npoles,
                      nweights);
     Rational(nweights, urational, vrational);
     if (urational || vrational)
-      myData.Weights = std::move(nweights);
+      myWeights = std::move(nweights);
     else
-      myData.Weights = NCollection_Array2<double>();
+      myWeights = NCollection_Array2<double>();
   }
   else
   {
-    DeletePoleCol(myData.Poles, VIndex, npoles);
+    DeletePoleCol(myPoles, VIndex, npoles);
   }
-  myData.Poles = std::move(npoles);
-  myData.VDegree = myData.Poles.RowLength() - 1;
-  updateVKnots();
+  myPoles = std::move(npoles);
 }
 
 //=================================================================================================
 
 void Geom_BezierSurface::RemovePoleRow(const int UIndex)
 {
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
     throw Standard_OutOfRange();
-  if (myData.Poles.ColLength() <= 2)
+  if (myPoles.ColLength() <= 2)
     throw Standard_ConstructionError();
 
-  int NbUPoles = myData.Poles.ColLength();
-  int NbVPoles = myData.Poles.RowLength();
+  int NbUPoles = myPoles.ColLength();
+  int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles - 1, 1, NbVPoles);
 
   if (urational || vrational)
   {
     NCollection_Array2<double> nweights(1, NbUPoles - 1, 1, NbVPoles);
 
-    DeleteRatPoleRow(myData.Poles,
-                     myData.Weights,
+    DeleteRatPoleRow(myPoles,
+                     myWeights,
                      UIndex,
                      npoles,
                      nweights);
 
     Rational(nweights, urational, vrational);
     if (urational || vrational)
-      myData.Weights = std::move(nweights);
+      myWeights = std::move(nweights);
     else
-      myData.Weights = NCollection_Array2<double>();
+      myWeights = NCollection_Array2<double>();
   }
   else
   {
-    DeletePoleRow(myData.Poles, UIndex, npoles);
+    DeletePoleRow(myPoles, UIndex, npoles);
   }
-  myData.Poles = std::move(npoles);
-  myData.UDegree = myData.Poles.ColLength() - 1;
-  updateUKnots();
+  myPoles = std::move(npoles);
 }
 
 //=================================================================================================
@@ -975,10 +921,10 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          VDegree(),
                          0,
                          0,
-                         myData.UFlatKnots,
-                         myData.VFlatKnots,
-                         myData.Poles,
-                         &myData.Weights,
+                         BezierUFlatKnots(),
+                         BezierVFlatKnots(),
+                         myPoles,
+                         &myWeights,
                          Coefs->ChangeArray2(),
                          &WCoefs->ChangeArray2());
   }
@@ -994,9 +940,9 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          VDegree(),
                          0,
                          0,
-                         myData.UFlatKnots,
-                         myData.VFlatKnots,
-                         myData.Poles,
+                         BezierUFlatKnots(),
+                         BezierVFlatKnots(),
+                         myPoles,
                          BSplSLib::NoWeights(),
                          Coefs->ChangeArray2(),
                          BSplSLib::NoWeights());
@@ -1034,8 +980,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
     PLib::VTrimming(vfirst, vlast, Coefs->ChangeArray2(), &WCoefs->ChangeArray2());
     PLib::CoefficientsPoles(Coefs->Array2(),
                             &WCoefs->Array2(),
-                            myData.Poles,
-                            &myData.Weights);
+                            myPoles,
+                            &myWeights);
   }
   else
   {
@@ -1043,7 +989,7 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
     PLib::VTrimming(vfirst, vlast, Coefs->ChangeArray2(), PLib::NoWeights2());
     PLib::CoefficientsPoles(Coefs->Array2(),
                             PLib::NoWeights2(),
-                            myData.Poles,
+                            myPoles,
                             PLib::NoWeights2());
   }
 }
@@ -1052,11 +998,11 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
 
 void Geom_BezierSurface::SetPole(const int UIndex, const int VIndex, const gp_Pnt& P)
 {
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength() || VIndex < 1
-      || VIndex > myData.Poles.RowLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1
+      || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange();
 
-  myData.Poles(UIndex, VIndex) = P;
+  myPoles(UIndex, VIndex) = P;
 }
 
 //=================================================================================================
@@ -1069,11 +1015,11 @@ void Geom_BezierSurface::SetPole(const int     UIndex,
 
   if (Weight <= gp::Resolution())
     throw Standard_ConstructionError("Geom_BezierSurface::SetPole");
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength() || VIndex < 1
-      || VIndex > myData.Poles.RowLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1
+      || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange("Geom_BezierSurface::SetPole");
 
-  myData.Poles(UIndex, VIndex) = P;
+  myPoles(UIndex, VIndex) = P;
 
   SetWeight(UIndex, VIndex, Weight);
 }
@@ -1084,11 +1030,11 @@ void Geom_BezierSurface::SetPoleCol(const int                         VIndex,
                                     const NCollection_Array1<gp_Pnt>& CPoles,
                                     const NCollection_Array1<double>& CPoleWeights)
 {
-  if (VIndex < 1 || VIndex > myData.Poles.RowLength())
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange();
 
-  if (CPoles.Lower() < 1 || CPoles.Lower() > myData.Poles.ColLength() || CPoles.Upper() < 1
-      || CPoles.Upper() > myData.Poles.ColLength() || CPoleWeights.Lower() != CPoles.Lower()
+  if (CPoles.Lower() < 1 || CPoles.Lower() > myPoles.ColLength() || CPoles.Upper() < 1
+      || CPoles.Upper() > myPoles.ColLength() || CPoleWeights.Lower() != CPoles.Lower()
       || CPoleWeights.Upper() != CPoles.Upper())
   {
     throw Standard_ConstructionError();
@@ -1097,7 +1043,7 @@ void Geom_BezierSurface::SetPoleCol(const int                         VIndex,
   int I;
   for (I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    myData.Poles(I, VIndex) = CPoles(I);
+    myPoles(I, VIndex) = CPoles(I);
   }
   SetWeightCol(VIndex, CPoleWeights);
 }
@@ -1106,17 +1052,17 @@ void Geom_BezierSurface::SetPoleCol(const int                         VIndex,
 
 void Geom_BezierSurface::SetPoleCol(const int VIndex, const NCollection_Array1<gp_Pnt>& CPoles)
 {
-  if (VIndex < 1 || VIndex > myData.Poles.RowLength())
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
     throw Standard_OutOfRange();
 
-  if (CPoles.Lower() < 1 || CPoles.Lower() > myData.Poles.ColLength() || CPoles.Upper() < 1
-      || CPoles.Upper() > myData.Poles.ColLength())
+  if (CPoles.Lower() < 1 || CPoles.Lower() > myPoles.ColLength() || CPoles.Upper() < 1
+      || CPoles.Upper() > myPoles.ColLength())
   {
     throw Standard_ConstructionError();
   }
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    myData.Poles(I, VIndex) = CPoles(I);
+    myPoles(I, VIndex) = CPoles(I);
   }
 }
 
@@ -1124,16 +1070,16 @@ void Geom_BezierSurface::SetPoleCol(const int VIndex, const NCollection_Array1<g
 
 void Geom_BezierSurface::SetPoleRow(const int UIndex, const NCollection_Array1<gp_Pnt>& CPoles)
 {
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
     throw Standard_OutOfRange();
 
-  if (CPoles.Lower() < 1 || CPoles.Lower() > myData.Poles.RowLength() || CPoles.Upper() < 1
-      || CPoles.Upper() > myData.Poles.RowLength())
+  if (CPoles.Lower() < 1 || CPoles.Lower() > myPoles.RowLength() || CPoles.Upper() < 1
+      || CPoles.Upper() > myPoles.RowLength())
     throw Standard_ConstructionError();
 
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    myData.Poles(UIndex, I) = CPoles(I);
+    myPoles(UIndex, I) = CPoles(I);
   }
 }
 
@@ -1143,11 +1089,11 @@ void Geom_BezierSurface::SetPoleRow(const int                         UIndex,
                                     const NCollection_Array1<gp_Pnt>& CPoles,
                                     const NCollection_Array1<double>& CPoleWeights)
 {
-  if (UIndex < 1 || UIndex > myData.Poles.ColLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
     throw Standard_OutOfRange();
 
-  if (CPoles.Lower() < 1 || CPoles.Lower() > myData.Poles.RowLength() || CPoles.Upper() < 1
-      || CPoles.Upper() > myData.Poles.RowLength() || CPoleWeights.Lower() != CPoles.Lower()
+  if (CPoles.Lower() < 1 || CPoles.Lower() > myPoles.RowLength() || CPoles.Upper() < 1
+      || CPoles.Upper() > myPoles.RowLength() || CPoleWeights.Lower() != CPoles.Lower()
       || CPoleWeights.Upper() != CPoles.Upper())
   {
     throw Standard_ConstructionError();
@@ -1157,7 +1103,7 @@ void Geom_BezierSurface::SetPoleRow(const int                         UIndex,
 
   for (I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    myData.Poles(UIndex, I) = CPoles(I);
+    myPoles(UIndex, I) = CPoles(I);
   }
 
   SetWeightRow(UIndex, CPoleWeights);
@@ -1176,24 +1122,24 @@ void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const dou
       return;
 
     // set weights of 1.
-    myData.Weights.Resize(1, myData.Poles.ColLength(), 1, myData.Poles.RowLength(), false);
-    myData.Weights.Init(1.);
+    myWeights.Resize(1, myPoles.ColLength(), 1, myPoles.RowLength(), false);
+    myWeights.Init(1.);
   }
 
   if (Weight <= gp::Resolution())
     throw Standard_ConstructionError("Geom_BezierSurface::SetWeight");
 
-  if (UIndex < 1 || UIndex > myData.Weights.ColLength() || VIndex < 1
-      || VIndex > myData.Weights.RowLength())
+  if (UIndex < 1 || UIndex > myWeights.ColLength() || VIndex < 1
+      || VIndex > myWeights.RowLength())
     throw Standard_OutOfRange();
 
-  if (std::abs(Weight - myData.Weights(UIndex, VIndex)) > gp::Resolution())
+  if (std::abs(Weight - myWeights(UIndex, VIndex)) > gp::Resolution())
   {
-    myData.Weights(UIndex, VIndex) = Weight;
-    Rational(myData.Weights, urational, vrational);
+    myWeights(UIndex, VIndex) = Weight;
+    Rational(myWeights, urational, vrational);
     if (!(urational || vrational))
     {
-      myData.Weights = NCollection_Array2<double>();
+      myWeights = NCollection_Array2<double>();
     }
   }
 }
@@ -1209,14 +1155,14 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
   if (!wasrat)
   {
     // set weights of 1.
-    myData.Weights.Resize(1, myData.Poles.ColLength(), 1, myData.Poles.RowLength(), false);
-    myData.Weights.Init(1.);
+    myWeights.Resize(1, myPoles.ColLength(), 1, myPoles.RowLength(), false);
+    myWeights.Init(1.);
   }
 
-  if (VIndex < 1 || VIndex > myData.Weights.RowLength())
+  if (VIndex < 1 || VIndex > myWeights.RowLength())
     throw Standard_OutOfRange();
 
-  if (CPoleWeights.Length() != myData.Weights.ColLength())
+  if (CPoleWeights.Length() != myWeights.ColLength())
   {
     throw Standard_ConstructionError("Geom_BezierSurface::SetWeightCol");
   }
@@ -1228,14 +1174,14 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
     {
       throw Standard_ConstructionError();
     }
-    myData.Weights(I, VIndex) = CPoleWeights(I);
+    myWeights(I, VIndex) = CPoleWeights(I);
     I++;
   }
 
-  Rational(myData.Weights, urational, vrational);
+  Rational(myWeights, urational, vrational);
   if (!(urational || vrational))
   {
-    myData.Weights = NCollection_Array2<double>();
+    myWeights = NCollection_Array2<double>();
   }
 }
 
@@ -1250,14 +1196,14 @@ void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
   if (!wasrat)
   {
     // set weights of 1.
-    myData.Weights.Resize(1, myData.Poles.ColLength(), 1, myData.Poles.RowLength(), false);
-    myData.Weights.Init(1.);
+    myWeights.Resize(1, myPoles.ColLength(), 1, myPoles.RowLength(), false);
+    myWeights.Init(1.);
   }
 
-  if (UIndex < 1 || UIndex > myData.Weights.ColLength())
+  if (UIndex < 1 || UIndex > myWeights.ColLength())
     throw Standard_OutOfRange("Geom_BezierSurface::SetWeightRow");
-  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myData.Weights.RowLength()
-      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myData.Weights.RowLength())
+  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myWeights.RowLength()
+      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myWeights.RowLength())
   {
     throw Standard_ConstructionError("Geom_BezierSurface::SetWeightRow");
   }
@@ -1269,14 +1215,14 @@ void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
     {
       throw Standard_ConstructionError();
     }
-    myData.Weights(UIndex, I) = CPoleWeights(I);
+    myWeights(UIndex, I) = CPoleWeights(I);
     I++;
   }
 
-  Rational(myData.Weights, urational, vrational);
+  Rational(myWeights, urational, vrational);
   if (!(urational || vrational))
   {
-    myData.Weights = NCollection_Array2<double>();
+    myWeights = NCollection_Array2<double>();
   }
 }
 
@@ -1286,8 +1232,8 @@ void Geom_BezierSurface::UReverse()
 {
   gp_Pnt Pol;
   int    Row, Col;
-  int    NbUPoles = myData.Poles.ColLength();
-  int    NbVPoles = myData.Poles.RowLength();
+  int    NbUPoles = myPoles.ColLength();
+  int    NbVPoles = myPoles.RowLength();
   if (urational || vrational)
   {
     double W;
@@ -1295,12 +1241,12 @@ void Geom_BezierSurface::UReverse()
     {
       for (Row = 1; Row <= NbUPoles / 2; Row++)
       {
-        W                                       = myData.Weights(Row, Col);
-        myData.Weights(Row, Col)                = myData.Weights(NbUPoles - Row + 1, Col);
-        myData.Weights(NbUPoles - Row + 1, Col) = W;
-        Pol                                     = myData.Poles(Row, Col);
-        myData.Poles(Row, Col)                   = myData.Poles(NbUPoles - Row + 1, Col);
-        myData.Poles(NbUPoles - Row + 1, Col)    = Pol;
+        W                                       = myWeights(Row, Col);
+        myWeights(Row, Col)                = myWeights(NbUPoles - Row + 1, Col);
+        myWeights(NbUPoles - Row + 1, Col) = W;
+        Pol                                     = myPoles(Row, Col);
+        myPoles(Row, Col)                   = myPoles(NbUPoles - Row + 1, Col);
+        myPoles(NbUPoles - Row + 1, Col)    = Pol;
       }
     }
   }
@@ -1310,9 +1256,9 @@ void Geom_BezierSurface::UReverse()
     {
       for (Row = 1; Row <= NbUPoles / 2; Row++)
       {
-        Pol                                   = myData.Poles(Row, Col);
-        myData.Poles(Row, Col)                = myData.Poles(NbUPoles - Row + 1, Col);
-        myData.Poles(NbUPoles - Row + 1, Col) = Pol;
+        Pol                                   = myPoles(Row, Col);
+        myPoles(Row, Col)                = myPoles(NbUPoles - Row + 1, Col);
+        myPoles(NbUPoles - Row + 1, Col) = Pol;
       }
     }
   }
@@ -1331,8 +1277,8 @@ void Geom_BezierSurface::VReverse()
 {
   gp_Pnt Pol;
   int    Row, Col;
-  int    NbUPoles = myData.Poles.ColLength();
-  int    NbVPoles = myData.Poles.RowLength();
+  int    NbUPoles = myPoles.ColLength();
+  int    NbVPoles = myPoles.RowLength();
   if (urational || vrational)
   {
     double W;
@@ -1340,12 +1286,12 @@ void Geom_BezierSurface::VReverse()
     {
       for (Col = 1; Col <= NbVPoles / 2; Col++)
       {
-        W                                       = myData.Weights(Row, Col);
-        myData.Weights(Row, Col)                = myData.Weights(Row, NbVPoles - Col + 1);
-        myData.Weights(Row, NbVPoles - Col + 1) = W;
-        Pol                                     = myData.Poles(Row, Col);
-        myData.Poles(Row, Col)                   = myData.Poles(Row, NbVPoles - Col + 1);
-        myData.Poles(Row, NbVPoles - Col + 1)    = Pol;
+        W                                       = myWeights(Row, Col);
+        myWeights(Row, Col)                = myWeights(Row, NbVPoles - Col + 1);
+        myWeights(Row, NbVPoles - Col + 1) = W;
+        Pol                                     = myPoles(Row, Col);
+        myPoles(Row, Col)                   = myPoles(Row, NbVPoles - Col + 1);
+        myPoles(Row, NbVPoles - Col + 1)    = Pol;
       }
     }
   }
@@ -1355,9 +1301,9 @@ void Geom_BezierSurface::VReverse()
     {
       for (Col = 1; Col <= NbVPoles / 2; Col++)
       {
-        Pol                                   = myData.Poles(Row, Col);
-        myData.Poles(Row, Col)                = myData.Poles(Row, NbVPoles - Col + 1);
-        myData.Poles(Row, NbVPoles - Col + 1) = Pol;
+        Pol                                   = myPoles(Row, Col);
+        myPoles(Row, Col)                = myPoles(Row, NbVPoles - Col + 1);
+        myPoles(Row, NbVPoles - Col + 1) = Pol;
       }
     }
   }
@@ -1397,14 +1343,14 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  V,
                  1,
                  1,
-                 myData.Poles,
-                 &myData.Weights,
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 myPoles,
+                 &myWeights,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1417,14 +1363,14 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  V,
                  1,
                  1,
-                 myData.Poles,
+                 myPoles,
                  BSplSLib::NoWeights(),
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1447,14 +1393,14 @@ void Geom_BezierSurface::D1(const double U,
                  V,
                  1,
                  1,
-                 myData.Poles,
-                 &myData.Weights,
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 myPoles,
+                 &myWeights,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1469,14 +1415,14 @@ void Geom_BezierSurface::D1(const double U,
                  V,
                  1,
                  1,
-                 myData.Poles,
+                 myPoles,
                  BSplSLib::NoWeights(),
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1505,14 +1451,14 @@ void Geom_BezierSurface::D2(const double U,
                  V,
                  1,
                  1,
-                 myData.Poles,
-                 &myData.Weights,
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 myPoles,
+                 &myWeights,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1531,14 +1477,14 @@ void Geom_BezierSurface::D2(const double U,
                  V,
                  1,
                  1,
-                 myData.Poles,
+                 myPoles,
                  BSplSLib::NoWeights(),
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1573,14 +1519,14 @@ void Geom_BezierSurface::D3(const double U,
                  V,
                  0,
                  0,
-                 myData.Poles,
-                 &myData.Weights,
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 myPoles,
+                 &myWeights,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1602,14 +1548,14 @@ void Geom_BezierSurface::D3(const double U,
                  V,
                  0,
                  0,
-                 myData.Poles,
+                 myPoles,
                  BSplSLib::NoWeights(),
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1641,14 +1587,14 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  Nv,
                  0,
                  0,
-                 myData.Poles,
-                 &myData.Weights,
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 myPoles,
+                 &myWeights,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1663,14 +1609,14 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  Nv,
                  0,
                  0,
-                 myData.Poles,
+                 myPoles,
                  BSplSLib::NoWeights(),
-                 myData.UKnots,
-                 myData.VKnots,
-                 &myData.UMults,
-                 &myData.VMults,
-                 myData.UDegree,
-                 myData.VDegree,
+                 BezierKnots(),
+                 BezierKnots(),
+                 &BezierUMults(),
+                 &BezierVMults(),
+                 (myPoles.ColLength() - 1),
+                 (myPoles.RowLength() - 1),
                  urational,
                  vrational,
                  false,
@@ -1684,41 +1630,41 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
 
 int Geom_BezierSurface::NbUPoles() const
 {
-  return myData.Poles.ColLength();
+  return myPoles.ColLength();
 }
 
 //=================================================================================================
 
 int Geom_BezierSurface::NbVPoles() const
 {
-  return myData.Poles.RowLength();
+  return myPoles.RowLength();
 }
 
 //=================================================================================================
 
 const gp_Pnt& Geom_BezierSurface::Pole(const int UIndex, const int VIndex) const
 {
-  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myData.Poles.ColLength() || VIndex < 1
-                                 || VIndex > myData.Poles.RowLength(),
+  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1
+                                 || VIndex > myPoles.RowLength(),
                                " ");
-  return myData.Poles(UIndex, VIndex);
+  return myPoles(UIndex, VIndex);
 }
 
 //=================================================================================================
 
 void Geom_BezierSurface::Poles(NCollection_Array2<gp_Pnt>& P) const
 {
-  Standard_DimensionError_Raise_if(P.RowLength() != myData.Poles.RowLength()
-                                     || P.ColLength() != myData.Poles.ColLength(),
+  Standard_DimensionError_Raise_if(P.RowLength() != myPoles.RowLength()
+                                     || P.ColLength() != myPoles.ColLength(),
                                    " ");
-  P = myData.Poles;
+  P = myPoles;
 }
 
 //=================================================================================================
 
 int Geom_BezierSurface::UDegree() const
 {
-  return myData.UDegree;
+  return (myPoles.ColLength() - 1);
 }
 
 //=================================================================================================
@@ -1726,17 +1672,17 @@ int Geom_BezierSurface::UDegree() const
 occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
 {
   occ::handle<Geom_BezierCurve>     UIsoCurve;
-  NCollection_Array1<gp_Pnt>        VCurvePoles(1, myData.Poles.RowLength());
+  NCollection_Array1<gp_Pnt>        VCurvePoles(1, myPoles.RowLength());
   if (urational || vrational)
   {
-    NCollection_Array1<double> VCurveWeights(1, myData.Poles.RowLength());
+    NCollection_Array1<double> VCurveWeights(1, myPoles.RowLength());
     BSplSLib::Iso(U,
                   true,
-                  myData.Poles,
-                  &myData.Weights,
-                  myData.UKnots,
-                  &myData.UMults,
-                  myData.UDegree,
+                  myPoles,
+                  &myWeights,
+                  BezierKnots(),
+                  &BezierUMults(),
+                  (myPoles.ColLength() - 1),
                   false,
                   VCurvePoles,
                   &VCurveWeights);
@@ -1749,11 +1695,11 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
   {
     BSplSLib::Iso(U,
                   true,
-                  myData.Poles,
+                  myPoles,
                   BSplSLib::NoWeights(),
-                  myData.UKnots,
-                  &myData.UMults,
-                  myData.UDegree,
+                  BezierKnots(),
+                  &BezierUMults(),
+                  (myPoles.ColLength() - 1),
                   false,
                   VCurvePoles,
                   PLib::NoWeights());
@@ -1766,7 +1712,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
 
 int Geom_BezierSurface::VDegree() const
 {
-  return myData.VDegree;
+  return (myPoles.RowLength() - 1);
 }
 
 //=================================================================================================
@@ -1774,17 +1720,17 @@ int Geom_BezierSurface::VDegree() const
 occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
 {
   occ::handle<Geom_BezierCurve>     VIsoCurve;
-  NCollection_Array1<gp_Pnt>        VCurvePoles(1, myData.Poles.ColLength());
+  NCollection_Array1<gp_Pnt>        VCurvePoles(1, myPoles.ColLength());
   if (vrational || urational)
   {
-    NCollection_Array1<double> VCurveWeights(1, myData.Poles.ColLength());
+    NCollection_Array1<double> VCurveWeights(1, myPoles.ColLength());
     BSplSLib::Iso(V,
                   false,
-                  myData.Poles,
-                  &myData.Weights,
-                  myData.VKnots,
-                  &myData.VMults,
-                  myData.VDegree,
+                  myPoles,
+                  &myWeights,
+                  BezierKnots(),
+                  &BezierVMults(),
+                  (myPoles.RowLength() - 1),
                   false,
                   VCurvePoles,
                   &VCurveWeights);
@@ -1797,11 +1743,11 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
   {
     BSplSLib::Iso(V,
                   false,
-                  myData.Poles,
+                  myPoles,
                   BSplSLib::NoWeights(),
-                  myData.VKnots,
-                  &myData.VMults,
-                  myData.VDegree,
+                  BezierKnots(),
+                  &BezierVMults(),
+                  (myPoles.RowLength() - 1),
                   false,
                   VCurvePoles,
                   PLib::NoWeights());
@@ -1814,12 +1760,12 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
 
 double Geom_BezierSurface::Weight(const int UIndex, const int VIndex) const
 {
-  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myData.Poles.ColLength() || VIndex < 1
-                                 || VIndex > myData.Poles.RowLength(),
+  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1
+                                 || VIndex > myPoles.RowLength(),
                                " ");
 
   if (urational || vrational)
-    return myData.Weights(UIndex, VIndex);
+    return myWeights(UIndex, VIndex);
   else
     return 1;
 }
@@ -1828,11 +1774,11 @@ double Geom_BezierSurface::Weight(const int UIndex, const int VIndex) const
 
 void Geom_BezierSurface::Weights(NCollection_Array2<double>& W) const
 {
-  Standard_DimensionError_Raise_if(W.RowLength() != myData.Poles.RowLength()
-                                     || W.ColLength() != myData.Poles.ColLength(),
+  Standard_DimensionError_Raise_if(W.RowLength() != myPoles.RowLength()
+                                     || W.ColLength() != myPoles.ColLength(),
                                    " ");
   if (urational || vrational)
-    W = myData.Weights;
+    W = myWeights;
   else
     W.Init(1.);
 }
@@ -1869,11 +1815,11 @@ bool Geom_BezierSurface::IsVRational() const
 
 void Geom_BezierSurface::Transform(const gp_Trsf& T)
 {
-  for (int I = 1; I <= myData.Poles.ColLength(); I++)
+  for (int I = 1; I <= myPoles.ColLength(); I++)
   {
-    for (int J = 1; J <= myData.Poles.RowLength(); J++)
+    for (int J = 1; J <= myPoles.RowLength(); J++)
     {
-      myData.Poles(I, J).Transform(T);
+      myPoles(I, J).Transform(T);
     }
   }
 }
@@ -1883,13 +1829,13 @@ void Geom_BezierSurface::Transform(const gp_Trsf& T)
 bool Geom_BezierSurface::IsUClosed() const
 {
   bool Closed = true;
-  int  Lower  = myData.Poles.LowerRow();
-  int  Upper  = myData.Poles.UpperRow();
-  int  j      = myData.Poles.LowerCol();
+  int  Lower  = myPoles.LowerRow();
+  int  Upper  = myPoles.UpperRow();
+  int  j      = myPoles.LowerCol();
 
-  while (Closed && j <= myData.Poles.UpperCol())
+  while (Closed && j <= myPoles.UpperCol())
   {
-    Closed = (myData.Poles(Lower, j).Distance(myData.Poles(Upper, j)) <= Precision::Confusion());
+    Closed = (myPoles(Lower, j).Distance(myPoles(Upper, j)) <= Precision::Confusion());
     j++;
   }
   return Closed;
@@ -1900,12 +1846,12 @@ bool Geom_BezierSurface::IsUClosed() const
 bool Geom_BezierSurface::IsVClosed() const
 {
   bool Closed = true;
-  int  Lower  = myData.Poles.LowerCol();
-  int  Upper  = myData.Poles.UpperCol();
-  int  i      = myData.Poles.LowerRow();
-  while (Closed && i <= myData.Poles.UpperRow())
+  int  Lower  = myPoles.LowerCol();
+  int  Upper  = myPoles.UpperCol();
+  int  i      = myPoles.LowerRow();
+  while (Closed && i <= myPoles.UpperRow())
   {
-    Closed = (myData.Poles(i, Lower).Distance(myData.Poles(i, Upper)) <= Precision::Confusion());
+    Closed = (myPoles(i, Lower).Distance(myPoles(i, Upper)) <= Precision::Confusion());
     i++;
   }
   return Closed;
@@ -1935,14 +1881,14 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
   {
     if (urational || vrational)
     {
-      BSplSLib::Resolution(myData.Poles,
-                           &myData.Weights,
-                           myData.UKnots,
-                           myData.VKnots,
-                           myData.UMults,
-                           myData.VMults,
-                           myData.UDegree,
-                           myData.VDegree,
+      BSplSLib::Resolution(myPoles,
+                           &myWeights,
+                           BezierKnots(),
+                           BezierKnots(),
+                           BezierUMults(),
+                           BezierVMults(),
+                           (myPoles.ColLength() - 1),
+                           (myPoles.RowLength() - 1),
                            urational,
                            vrational,
                            false,
@@ -1953,14 +1899,14 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
     }
     else
     {
-      BSplSLib::Resolution(myData.Poles,
+      BSplSLib::Resolution(myPoles,
                            BSplSLib::NoWeights(),
-                           myData.UKnots,
-                           myData.VKnots,
-                           myData.UMults,
-                           myData.VMults,
-                           myData.UDegree,
-                           myData.VDegree,
+                           BezierKnots(),
+                           BezierKnots(),
+                           BezierUMults(),
+                           BezierVMults(),
+                           (myPoles.ColLength() - 1),
+                           (myPoles.RowLength() - 1),
                            urational,
                            vrational,
                            false,
@@ -1990,27 +1936,21 @@ void Geom_BezierSurface::Init(const NCollection_Array2<gp_Pnt>& thePoles,
   int NbUPoles = thePoles.ColLength();
   int NbVPoles = thePoles.RowLength();
 
-  myData.Poles.Resize(1, NbUPoles, 1, NbVPoles, false);
-  myData.Poles = thePoles;
-
-  myData.UDegree = NbUPoles - 1;
-  myData.VDegree = NbVPoles - 1;
+  myPoles.Resize(1, NbUPoles, 1, NbVPoles, false);
+  myPoles = thePoles;
 
   if (urational || vrational)
   {
-    myData.Weights.Resize(1, NbUPoles, 1, NbVPoles, false);
+    myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
     if (theWeights != nullptr)
-      myData.Weights = *theWeights;
+      myWeights = *theWeights;
     else
-      myData.Weights.Init(1.0);
+      myWeights.Init(1.0);
   }
   else
   {
-    myData.Weights = NCollection_Array2<double>();
+    myWeights = NCollection_Array2<double>();
   }
-
-  updateUKnots();
-  updateVKnots();
 
   maxderivinvok = false;
 }
@@ -2025,10 +1965,81 @@ void Geom_BezierSurface::DumpJson(Standard_OStream& theOStream, int theDepth) co
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, urational)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, vrational)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myData.Poles.Size())
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
   if (urational || vrational)
-    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myData.Weights.Size())
+    OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Size())
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, umaxderivinv)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, vmaxderivinv)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, maxderivinvok)
+}
+
+//=================================================================================================
+
+const NCollection_Array1<double>& Geom_BezierSurface::BezierKnots() const
+{
+  static const double THE_DATA[2] = {0.0, 1.0};
+  static const NCollection_Array1<double> THE_KNOTS(THE_DATA[0], 1, 2);
+  return THE_KNOTS;
+}
+
+//=================================================================================================
+
+const NCollection_Array1<int>& Geom_BezierSurface::BezierUMults() const
+{
+  static const int THE_DATA[26][2] = {
+    {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
+    {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
+    {15, 15}, {16, 16}, {17, 17}, {18, 18}, {19, 19}, {20, 20}, {21, 21},
+    {22, 22}, {23, 23}, {24, 24}, {25, 25}, {26, 26}};
+  static const auto THE_MULTS = []() {
+    std::array<NCollection_Array1<int>, 26> anArr;
+    for (int i = 0; i < 26; ++i)
+      anArr[i] = NCollection_Array1<int>(THE_DATA[i][0], 1, 2);
+    return anArr;
+  }();
+  return THE_MULTS[myPoles.ColLength() - 1];
+}
+
+//=================================================================================================
+
+const NCollection_Array1<int>& Geom_BezierSurface::BezierVMults() const
+{
+  static const int THE_DATA[26][2] = {
+    {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
+    {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
+    {15, 15}, {16, 16}, {17, 17}, {18, 18}, {19, 19}, {20, 20}, {21, 21},
+    {22, 22}, {23, 23}, {24, 24}, {25, 25}, {26, 26}};
+  static const auto THE_MULTS = []() {
+    std::array<NCollection_Array1<int>, 26> anArr;
+    for (int i = 0; i < 26; ++i)
+      anArr[i] = NCollection_Array1<int>(THE_DATA[i][0], 1, 2);
+    return anArr;
+  }();
+  return THE_MULTS[myPoles.RowLength() - 1];
+}
+
+//=================================================================================================
+
+const NCollection_Array1<double>& Geom_BezierSurface::BezierUFlatKnots() const
+{
+  static const auto THE_FKNOTS = []() {
+    std::array<NCollection_Array1<double>, 26> anArr;
+    for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)
+      anArr[i] = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(i), 1, 2 * (i + 1));
+    return anArr;
+  }();
+  return THE_FKNOTS[myPoles.ColLength() - 1];
+}
+
+//=================================================================================================
+
+const NCollection_Array1<double>& Geom_BezierSurface::BezierVFlatKnots() const
+{
+  static const auto THE_FKNOTS = []() {
+    std::array<NCollection_Array1<double>, 26> anArr;
+    for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)
+      anArr[i] = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(i), 1, 2 * (i + 1));
+    return anArr;
+  }();
+  return THE_FKNOTS[myPoles.RowLength() - 1];
 }
