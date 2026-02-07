@@ -116,6 +116,7 @@ Geom_BSplineCurve::Geom_BSplineCurve(const NCollection_Array1<gp_Pnt>& Poles,
                                      const int                         Degree,
                                      const bool                        Periodic)
     : rational(false),
+      maxderivinv(0.0),
       maxderivinvok(false)
 {
   myData.Degree     = Degree;
@@ -149,8 +150,8 @@ Geom_BSplineCurve::Geom_BSplineCurve(const NCollection_Array1<gp_Pnt>& Poles,
                                      const bool                        Periodic,
                                      const bool                        CheckRational)
     : rational(true),
+      maxderivinv(0.0),
       maxderivinvok(false)
-
 {
   myData.Degree     = Degree;
   myData.IsPeriodic = Periodic;
@@ -916,7 +917,7 @@ void Geom_BSplineCurve::SetWeight(const int Index, const double W)
 
   if (rat)
   {
-    if (rat && !IsRational())
+    if (!IsRational())
     {
       myData.Weights.Resize(1, myData.Poles.Length(), false);
       myData.Weights.Init(1.);

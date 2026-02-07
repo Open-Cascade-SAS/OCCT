@@ -23,8 +23,7 @@
 //  RBD : 15/10/98 ; Le cache est desormais defini sur [-1,1] (pro15537).
 //  pmn : 10/12/98 ; Update de la methode segment (suite a la modif de cache).
 
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
+
 
 #include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -888,6 +887,8 @@ void Geom_BezierSurface::RemovePoleCol(const int VIndex)
     Rational(nweights, urational, vrational);
     if (urational || vrational)
       myData.Weights = std::move(nweights);
+    else
+      myData.Weights = NCollection_Array2<double>();
   }
   else
   {
@@ -924,6 +925,8 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
     Rational(nweights, urational, vrational);
     if (urational || vrational)
       myData.Weights = std::move(nweights);
+    else
+      myData.Weights = NCollection_Array2<double>();
   }
   else
   {

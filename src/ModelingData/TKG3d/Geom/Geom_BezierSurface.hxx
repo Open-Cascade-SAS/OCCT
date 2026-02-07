@@ -532,7 +532,7 @@ public:
   //! Returns the weights of the Bezier surface.
   const NCollection_Array2<double>* Weights() const
   {
-    return (urational || vrational) ? &myData.Weights : BSplSLib::NoWeights();
+    return (urational || vrational) ? &myData.Weights : nullptr;
   }
 
   //! Returns True if the first control points row and the
@@ -604,7 +604,7 @@ public:
   //! Returns the internal weights array, or nullptr if non-rational.
   const NCollection_Array2<double>* InternalWeights() const
   {
-    return (urational || vrational) ? &myData.Weights : BSplSLib::NoWeights();
+    return (urational || vrational) ? &myData.Weights : nullptr;
   }
 
   //! Returns the internal U flat knots array (non-handle).

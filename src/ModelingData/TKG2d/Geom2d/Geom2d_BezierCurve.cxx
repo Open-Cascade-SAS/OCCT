@@ -23,8 +23,7 @@
 // Revised RLE  Aug 19 1993
 // Suppressed Swaps, added Init, removed typedefs
 
-#define No_Standard_OutOfRange
-#define No_Standard_DimensionError
+
 
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_Geometry.hxx>
@@ -684,6 +683,7 @@ void Geom2d_BezierCurve::Init(const NCollection_Array1<gp_Pnt2d>& thePoles,
   }
 
   updateKnots();
+  maxderivinv   = 0.0;
   maxderivinvok = false;
 }
 

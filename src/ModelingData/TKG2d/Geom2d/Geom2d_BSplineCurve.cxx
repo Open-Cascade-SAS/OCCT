@@ -113,6 +113,7 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
                                          const int                           Degree,
                                          const bool                          Periodic)
     : rational(false),
+      maxderivinv(0.0),
       maxderivinvok(false)
 {
   myData.Degree     = Degree;
@@ -145,8 +146,8 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
                                          const int                           Degree,
                                          const bool                          Periodic)
     : rational(true),
+      maxderivinv(0.0),
       maxderivinvok(false)
-
 {
   myData.Degree     = Degree;
   myData.IsPeriodic = Periodic;
@@ -428,7 +429,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   NCollection_Array1<double> nknots(1, nbknots + 1);
 
   int i;
-  for (i = 1; i < nbknots; i++)
+  for (i = 1; i <= nbknots; i++)
   {
     nknots(i) = cknots(i);
   }
@@ -442,7 +443,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   for (i = 2; i <= nbknots; i++)
     nmults(i) = 1;
   nmults(1)           = cmults(1);
-  nmults(nbknots + 1) = cmults(nbknots + 1);
+  nmults(nbknots + 1) = cmults(nbknots);
 
   const NCollection_Array1<gp_Pnt2d>& cpoles  = myData.Poles;
   int                                  nbpoles = cpoles.Length();
@@ -528,7 +529,7 @@ void Geom2d_BSplineCurve::RemovePole(const int Index)
 
   for (i = 1; i < Index; i++)
     npoles(i) = myData.Poles.Value(i);
-  for (i = Index; i < npoles.Length(); i++)
+  for (i = Index; i <= npoles.Length(); i++)
     npoles(i) = myData.Poles.Value(i + 1);
 
   NCollection_Array1<double> nweights;
@@ -537,7 +538,7 @@ void Geom2d_BSplineCurve::RemovePole(const int Index)
     nweights.Resize(1, npoles.Length(), false);
     for (i = 1; i < Index; i++)
       nweights(i) = myData.Weights.Value(i);
-    for (i = Index; i < nweights.Length(); i++)
+    for (i = Index; i <= nweights.Length(); i++)
       nweights(i) = myData.Weights.Value(i + 1);
   }
 
@@ -871,11 +872,12 @@ void Geom2d_BSplineCurve::SetOrigin(const int Index)
 
   // set the poles and weights
   NCollection_Array1<gp_Pnt2d> npoles(1, nbpoles);
-  NCollection_Array1<double>   nweights(1, nbpoles);
+  NCollection_Array1<double>   nweights;
   first = myData.Poles.Lower();
   last  = myData.Poles.Upper();
   if (rational)
   {
+    nweights.Resize(1, nbpoles, false);
     k = 1;
     for (i = index; i <= last; i++)
     {
@@ -986,7 +988,7 @@ void Geom2d_BSplineCurve::SetWeight(const int Index, const double W)
 
   if (rat)
   {
-    if (rat && !IsRational())
+    if (!IsRational())
     {
       myData.Weights.Resize(1, myData.Poles.Length(), false);
       myData.Weights.Init(1.);

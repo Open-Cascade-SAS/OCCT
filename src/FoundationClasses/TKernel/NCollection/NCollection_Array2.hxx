@@ -392,12 +392,19 @@ protected:
   {
     Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
                                  "NCollection_Array2::Resize");
-    const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
-    const size_t aNewNbCols    = theColUpper - theColLower + 1;
+    const size_t aNewNbRows = theRowUpper - theRowLower + 1;
+    const size_t aNewNbCols = theColUpper - theColLower + 1;
     if (mySizeRow == aNewNbRows && mySizeCol == aNewNbCols)
     {
       myLowerRow = theRowLower;
       myLowerCol = theColLower;
+      NCollection_Array1<TheItemType>::UpdateLowerBound(
+        BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper));
+      return;
+    }
+    if (mySizeRow == 0 || mySizeCol == 0)
+    {
+      resizeNoData(theRowLower, theRowUpper, theColLower, theColUpper);
       return;
     }
     const size_t aNbRowsToCopy = (std::min)(mySizeRow, aNewNbRows);

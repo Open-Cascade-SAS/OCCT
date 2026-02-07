@@ -1240,6 +1240,8 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
   myData.Weights(UIndex + myData.Weights.LowerRow() - 1,
                  VIndex + myData.Weights.LowerCol() - 1) = Weight;
   Rational(myData.Weights, urational, vrational);
+  if (!urational && !vrational)
+    myData.Weights = NCollection_Array2<double>();
 }
 
 //=================================================================================================
@@ -1275,6 +1277,8 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
   }
   // Verifie si c'est rationnel
   Rational(myData.Weights, urational, vrational);
+  if (!urational && !vrational)
+    myData.Weights = NCollection_Array2<double>();
 }
 
 //=================================================================================================
@@ -1312,6 +1316,8 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
   }
   // Verifie si c'est rationnel
   Rational(myData.Weights, urational, vrational);
+  if (!urational && !vrational)
+    myData.Weights = NCollection_Array2<double>();
 }
 
 //=================================================================================================

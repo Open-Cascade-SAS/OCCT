@@ -393,6 +393,53 @@ TEST(NCollection_Array2Test, ResizeWithTrim_NonUnitLowerBounds)
   }
 }
 
+TEST(NCollection_Array2Test, Resize_FromEmpty)
+{
+  // Default-constructed (empty) array resized with data copy should not crash.
+  NCollection_Array2<int> anEmpty;
+  EXPECT_EQ(0, anEmpty.NbRows());
+  EXPECT_EQ(0, anEmpty.NbColumns());
+
+  // Resize with copy (from empty — nothing to copy, but must not dereference null).
+  anEmpty.Resize(1, 3, 1, 2, true);
+  EXPECT_EQ(3, anEmpty.NbRows());
+  EXPECT_EQ(2, anEmpty.NbColumns());
+
+  // ResizeWithTrim from empty.
+  NCollection_Array2<int> anEmpty2;
+  anEmpty2.ResizeWithTrim(1, 2, 1, 4, true);
+  EXPECT_EQ(2, anEmpty2.NbRows());
+  EXPECT_EQ(4, anEmpty2.NbColumns());
+}
+
+TEST(NCollection_Array2Test, Resize_SameSizeNewBounds)
+{
+  // When dimensions are unchanged but lower bounds change,
+  // the Array1 lower bound must also be updated.
+  NCollection_Array2<int> anArray(1, 3, 1, 3);
+  for (int aRow = 1; aRow <= 3; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 3; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 10 + aCol;
+    }
+  }
+
+  // Same 3x3 dimensions but shifted bounds: [5..7, 10..12].
+  anArray.ResizeWithTrim(5, 7, 10, 12, true);
+  EXPECT_EQ(3, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+
+  // Data should be preserved with new indices.
+  for (int aRow = 5; aRow <= 7; ++aRow)
+  {
+    for (int aCol = 10; aCol <= 12; ++aCol)
+    {
+      EXPECT_EQ((aRow - 4) * 10 + (aCol - 9), anArray(aRow, aCol));
+    }
+  }
+}
+
 TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 {
   // This test checks for data scrambling when resizing to a different shape
