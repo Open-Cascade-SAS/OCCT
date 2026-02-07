@@ -338,11 +338,9 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
 
     NCollection_Array1<int> nmults(1, nbknots);
 
-    NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength(), 1.);
-
     if (urational || vrational)
     {
-
+      NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength());
       BSplSLib::IncreaseDegree(true,
                                myData.UDegree,
                                UDegree,
@@ -355,10 +353,10 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
                                &nweights,
                                nknots,
                                nmults);
+      myData.Weights = std::move(nweights);
     }
     else
     {
-
       BSplSLib::IncreaseDegree(true,
                                myData.UDegree,
                                UDegree,
@@ -374,7 +372,6 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
     }
     myData.UDegree = UDegree;
     myData.Poles   = std::move(npoles);
-    myData.Weights = std::move(nweights);
     myData.UKnots  = std::move(nknots);
     myData.UMults  = std::move(nmults);
     UpdateUKnots();
@@ -404,11 +401,9 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
 
     NCollection_Array1<int> nmults(1, nbknots);
 
-    NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength(), 1.);
-
     if (urational || vrational)
     {
-
+      NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength());
       BSplSLib::IncreaseDegree(false,
                                myData.VDegree,
                                VDegree,
@@ -421,10 +416,10 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
                                &nweights,
                                nknots,
                                nmults);
+      myData.Weights = std::move(nweights);
     }
     else
     {
-
       BSplSLib::IncreaseDegree(false,
                                myData.VDegree,
                                VDegree,
@@ -440,7 +435,6 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
     }
     myData.VDegree = VDegree;
     myData.Poles   = std::move(npoles);
-    myData.Weights = std::move(nweights);
     myData.VKnots  = std::move(nknots);
     myData.VMults  = std::move(nmults);
     UpdateVKnots();
@@ -765,8 +759,6 @@ void Geom_BSplineSurface::segment(const double U1,
       }
       k++;
     }
-    myData.Weights =
-      NCollection_Array2<double>(1, npoles.ColLength(), 1, npoles.RowLength(), 1.0);
   }
 
   myData.UKnots = std::move(nuknots);

@@ -1904,12 +1904,12 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
     return;
 
   NCollection_Array2<gp_Pnt> npoles(1, nbpoles, 1, myData.Poles.RowLength());
-  NCollection_Array2<double> nweights(1, nbpoles, 1, myData.Poles.RowLength(), 1.0);
   NCollection_Array1<double> nknots(1, nbknots);
   NCollection_Array1<int>    nmults(1, nbknots);
 
   if (urational || vrational)
   {
+    NCollection_Array2<double> nweights(1, nbpoles, 1, myData.Poles.RowLength());
     BSplSLib::InsertKnots(true,
                           myData.UDegree,
                           myData.IsUPeriodic,
@@ -1925,6 +1925,7 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
                           nmults,
                           ParametricTolerance,
                           Add);
+    myData.Weights = std::move(nweights);
   }
   else
   {
@@ -1945,10 +1946,9 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
                           Add);
   }
 
-  myData.Poles   = std::move(npoles);
-  myData.Weights = std::move(nweights);
-  myData.UKnots  = std::move(nknots);
-  myData.UMults  = std::move(nmults);
+  myData.Poles  = std::move(npoles);
+  myData.UKnots = std::move(nknots);
+  myData.UMults = std::move(nmults);
   UpdateUKnots();
 }
 
@@ -1978,12 +1978,12 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
     return;
 
   NCollection_Array2<gp_Pnt> npoles(1, myData.Poles.ColLength(), 1, nbpoles);
-  NCollection_Array2<double> nweights(1, myData.Poles.ColLength(), 1, nbpoles, 1.0);
   NCollection_Array1<double> nknots(1, nbknots);
   NCollection_Array1<int>    nmults(1, nbknots);
 
   if (urational || vrational)
   {
+    NCollection_Array2<double> nweights(1, myData.Poles.ColLength(), 1, nbpoles);
     BSplSLib::InsertKnots(false,
                           myData.VDegree,
                           myData.IsVPeriodic,
@@ -1999,6 +1999,7 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
                           nmults,
                           ParametricTolerance,
                           Add);
+    myData.Weights = std::move(nweights);
   }
   else
   {
@@ -2019,10 +2020,9 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
                           Add);
   }
 
-  myData.Poles   = std::move(npoles);
-  myData.Weights = std::move(nweights);
-  myData.VKnots  = std::move(nknots);
-  myData.VMults  = std::move(nmults);
+  myData.Poles  = std::move(npoles);
+  myData.VKnots = std::move(nknots);
+  myData.VMults = std::move(nmults);
   UpdateVKnots();
 }
 
@@ -2056,10 +2056,9 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
   const int aNewUKnotLen = (M == 0) ? myData.UKnots.Length() - 1 : myData.UKnots.Length();
   NCollection_Array1<double> nknots(1, aNewUKnotLen);
   NCollection_Array1<int>    nmults(1, aNewUKnotLen);
-  NCollection_Array2<double> nweights;
   if (urational || vrational)
   {
-    nweights = NCollection_Array2<double>(1, npoles.ColLength(), 1, npoles.RowLength());
+    NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength());
     if (!BSplSLib::RemoveKnot(true,
                               Index,
                               M,
@@ -2075,13 +2074,10 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
                               nmults,
                               Tolerance))
       return false;
+    myData.Weights = std::move(nweights);
   }
   else
   {
-    //
-    // sync the size of the weights
-    //
-    nweights = NCollection_Array2<double>(1, npoles.ColLength(), 1, npoles.RowLength(), 1.0e0);
     if (!BSplSLib::RemoveKnot(true,
                               Index,
                               M,
@@ -2099,10 +2095,9 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
       return false;
   }
 
-  myData.Poles   = std::move(npoles);
-  myData.Weights = std::move(nweights);
-  myData.UKnots  = std::move(nknots);
-  myData.UMults  = std::move(nmults);
+  myData.Poles  = std::move(npoles);
+  myData.UKnots = std::move(nknots);
+  myData.UMults = std::move(nmults);
 
   maxderivinvok = false;
   UpdateUKnots();
@@ -2139,11 +2134,9 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
   const int aNewVKnotLen = (M == 0) ? myData.VKnots.Length() - 1 : myData.VKnots.Length();
   NCollection_Array1<double> nknots(1, aNewVKnotLen);
   NCollection_Array1<int>    nmults(1, aNewVKnotLen);
-  NCollection_Array2<double> nweights;
   if (urational || vrational)
   {
-    nweights = NCollection_Array2<double>(1, npoles.ColLength(), 1, npoles.RowLength());
-
+    NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength());
     if (!BSplSLib::RemoveKnot(false,
                               Index,
                               M,
@@ -2159,13 +2152,10 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
                               nmults,
                               Tolerance))
       return false;
+    myData.Weights = std::move(nweights);
   }
   else
   {
-    //
-    // sync the size of the weights array
-    //
-    nweights = NCollection_Array2<double>(1, npoles.ColLength(), 1, npoles.RowLength(), 1.0e0);
     if (!BSplSLib::RemoveKnot(false,
                               Index,
                               M,
@@ -2183,10 +2173,9 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
       return false;
   }
 
-  myData.Poles    = std::move(npoles);
-  myData.VKnots   = std::move(nknots);
-  myData.VMults   = std::move(nmults);
-  myData.Weights  = std::move(nweights);
+  myData.Poles  = std::move(npoles);
+  myData.VKnots = std::move(nknots);
+  myData.VMults = std::move(nmults);
   maxderivinvok   = false;
   UpdateVKnots();
   return true;
