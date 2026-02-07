@@ -233,11 +233,11 @@ void Geom_BSplineCurve::IncreaseDegree(const int Degree)
                            Degree,
                            myData.IsPeriodic,
                            myData.Poles,
-                           nweights.Size() > 0 ? &myData.Weights : BSplCLib::NoWeights(),
+                           rational ? &myData.Weights : BSplCLib::NoWeights(),
                            myData.Knots,
                            myData.Mults,
                            npoles,
-                           nweights.Size() > 0 ? &nweights : BSplCLib::NoWeights(),
+                           rational ? &nweights : BSplCLib::NoWeights(),
                            nknots,
                            nmults);
   myData.Degree  = Degree;
@@ -333,13 +333,13 @@ void Geom_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
   BSplCLib::InsertKnots(myData.Degree,
                         myData.IsPeriodic,
                         myData.Poles,
-                        nweights.Size() > 0 ? &myData.Weights : BSplCLib::NoWeights(),
+                        rational ? &myData.Weights : BSplCLib::NoWeights(),
                         myData.Knots,
                         myData.Mults,
                         Knots,
                         &Mults,
                         npoles,
-                        nweights.Size() > 0 ? &nweights : BSplCLib::NoWeights(),
+                        rational ? &nweights : BSplCLib::NoWeights(),
                         nknots,
                         nmults,
                         Epsilon,
@@ -392,11 +392,11 @@ bool Geom_BSplineCurve::RemoveKnot(const int Index, const int M, const double To
                             myData.Degree,
                             myData.IsPeriodic,
                             myData.Poles,
-                            nweights.Size() > 0 ? &myData.Weights : BSplCLib::NoWeights(),
+                            rational ? &myData.Weights : BSplCLib::NoWeights(),
                             myData.Knots,
                             myData.Mults,
                             npoles,
-                            nweights.Size() > 0 ? &nweights : BSplCLib::NoWeights(),
+                            rational ? &nweights : BSplCLib::NoWeights(),
                             nknots,
                             nmults,
                             Tolerance))
@@ -869,11 +869,11 @@ void Geom_BSplineCurve::SetNotPeriodic()
                           myData.Mults,
                           myData.Knots,
                           myData.Poles,
-                          nweights.Size() > 0 ? &myData.Weights : BSplCLib::NoWeights(),
+                          rational ? &myData.Weights : BSplCLib::NoWeights(),
                           nmults,
                           nknots,
                           npoles,
-                          nweights.Size() > 0 ? &nweights : BSplCLib::NoWeights());
+                          rational ? &nweights : BSplCLib::NoWeights());
     myData.Poles      = std::move(npoles);
     myData.Weights    = std::move(nweights);
     myData.Mults      = std::move(nmults);

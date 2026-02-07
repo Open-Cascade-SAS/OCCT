@@ -393,14 +393,20 @@ void Geom_BezierSurface::updateVKnots()
 //=================================================================================================
 
 Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
-    : myData(theOther.myData),
-      urational(theOther.urational),
+    : urational(theOther.urational),
       vrational(theOther.vrational),
       umaxderivinv(theOther.umaxderivinv),
       vmaxderivinv(theOther.vmaxderivinv),
       maxderivinvok(false)
 {
-  // Restore non-owning knot/mult/flatknot references to static data
+  // Copy only value arrays; skip UKnots/VKnots/UFlatKnots/VFlatKnots/UMults/VMults
+  // which are non-owning views into static data and will be set up by updateKnots().
+  myData.Poles       = NCollection_Array2<gp_Pnt>(theOther.myData.Poles);
+  myData.Weights     = NCollection_Array2<double>(theOther.myData.Weights);
+  myData.UDegree     = theOther.myData.UDegree;
+  myData.VDegree     = theOther.myData.VDegree;
+  myData.IsUPeriodic = theOther.myData.IsUPeriodic;
+  myData.IsVPeriodic = theOther.myData.IsVPeriodic;
   updateUKnots();
   updateVKnots();
 }

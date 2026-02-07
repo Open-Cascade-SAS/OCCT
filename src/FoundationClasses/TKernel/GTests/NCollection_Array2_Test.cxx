@@ -560,3 +560,86 @@ TEST(NCollection_Array2Test, EmplaceValue_ReplacesExisting)
   EXPECT_EQ(21, anArray(2, 1).myA);
   EXPECT_EQ(22, anArray(2, 2).myA);
 }
+
+TEST(NCollection_Array2Test, Resize_SameSizeNewBounds_Linear)
+{
+  // Test Resize() (linear copy) with same dimensions but shifted bounds.
+  NCollection_Array2<int> anArray(1, 3, 1, 3);
+  for (int aRow = 1; aRow <= 3; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 3; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 10 + aCol;
+    }
+  }
+
+  // Same 3x3 dimensions but shifted bounds: [5..7, 10..12].
+  anArray.Resize(5, 7, 10, 12, true);
+  EXPECT_EQ(3, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+
+  // Data should be preserved with new indices.
+  for (int aRow = 5; aRow <= 7; ++aRow)
+  {
+    for (int aCol = 10; aCol <= 12; ++aCol)
+    {
+      EXPECT_EQ((aRow - 4) * 10 + (aCol - 9), anArray(aRow, aCol));
+    }
+  }
+}
+
+TEST(NCollection_Array2Test, Resize_NoCopy)
+{
+  // Test Resize(..., false) re-allocates without copying data.
+  NCollection_Array2<int> anArray(1, 3, 1, 4);
+  anArray.Init(42);
+
+  // Resize without copy to different dimensions.
+  anArray.Resize(1, 5, 1, 2, false);
+  EXPECT_EQ(5, anArray.NbRows());
+  EXPECT_EQ(2, anArray.NbColumns());
+
+  // Resize without copy to same dimensions (no-op for allocation, but bounds may differ).
+  anArray.Init(7);
+  anArray.Resize(10, 14, 20, 21, false);
+  EXPECT_EQ(5, anArray.NbRows());
+  EXPECT_EQ(2, anArray.NbColumns());
+  EXPECT_EQ(10, anArray.LowerRow());
+  EXPECT_EQ(20, anArray.LowerCol());
+}
+
+TEST(NCollection_Array2Test, ResizeWithTrim_GrowVerifyDefaultInit)
+{
+  // Verify that newly grown regions are default-initialized.
+  NCollection_Array2<int> anArray(1, 2, 1, 2);
+  anArray.Init(99);
+
+  // Grow from 2x2 to 4x3.
+  anArray.ResizeWithTrim(1, 4, 1, 3, true);
+  EXPECT_EQ(4, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+
+  // Old 2x2 region should be preserved.
+  for (int aRow = 1; aRow <= 2; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 2; ++aCol)
+    {
+      EXPECT_EQ(99, anArray(aRow, aCol));
+    }
+  }
+
+  // New column (col=3) within old rows should be default-initialized (0 for int).
+  for (int aRow = 1; aRow <= 2; ++aRow)
+  {
+    EXPECT_EQ(0, anArray(aRow, 3));
+  }
+
+  // New rows (3-4) should be default-initialized.
+  for (int aRow = 3; aRow <= 4; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 3; ++aCol)
+    {
+      EXPECT_EQ(0, anArray(aRow, aCol));
+    }
+  }
+}

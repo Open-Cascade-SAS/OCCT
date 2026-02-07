@@ -64,13 +64,17 @@ static bool Rational(const NCollection_Array1<double>& W)
 //=================================================================================================
 
 Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
-    : myData(theOther.myData),
-      rational(theOther.rational),
+    : rational(theOther.rational),
       closed(theOther.closed),
       maxderivinv(theOther.maxderivinv),
       maxderivinvok(false)
 {
-  // Restore non-owning knot/mult/flatknot references to static data
+  // Copy only value arrays; skip Knots/FlatKnots/Mults which are non-owning
+  // views into static data and will be set up by updateKnots().
+  myData.Poles   = NCollection_Array1<gp_Pnt>(theOther.myData.Poles);
+  myData.Weights = NCollection_Array1<double>(theOther.myData.Weights);
+  myData.Degree     = theOther.myData.Degree;
+  myData.IsPeriodic = theOther.myData.IsPeriodic;
   updateKnots();
 }
 
