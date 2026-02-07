@@ -621,6 +621,7 @@ public:
   //!
   //! Raised K.Lower() is less than number of first knot or
   //! K.Upper() is more than number of last knot.
+  Standard_DEPRECATED("use Knots() returning const reference instead")
   Standard_EXPORT void Knots(NCollection_Array1<double>& K) const;
 
   //! returns the knot values of the B-spline curve;
@@ -683,6 +684,7 @@ public:
   //! Raised if K.Lower() is less than number of first knot
   //! in knot sequence with repetitions or K.Upper() is more
   //! than number of last knot in knot sequence with repetitions.
+  Standard_DEPRECATED("use KnotSequence() returning const reference instead")
   Standard_EXPORT void KnotSequence(NCollection_Array1<double>& K) const;
 
   //! returns the knots of the B-spline curve.
@@ -737,6 +739,7 @@ public:
   //! Returns the multiplicity of the knots of the curve.
   //!
   //! Raised if the length of M is not equal to NbKnots.
+  Standard_DEPRECATED("use Multiplicities() returning const reference instead")
   Standard_EXPORT void Multiplicities(NCollection_Array1<int>& M) const;
 
   //! returns the multiplicity of the knots of the curve.
@@ -756,6 +759,7 @@ public:
   //! Returns the poles of the B-spline curve;
   //!
   //! Raised if the length of P is not equal to the number of poles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt>& P) const;
 
   //! Returns the poles of the B-spline curve;
@@ -774,23 +778,14 @@ public:
   //! Returns the weights of the B-spline curve;
   //!
   //! Raised if the length of W is not equal to NbPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array1<double>& W) const;
 
   //! Returns the weights of the B-spline curve;
   Standard_EXPORT const NCollection_Array1<double>* Weights() const;
 
-  //! Returns the array of poles for efficient grid evaluation.
-  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myPoles; }
-
-  //! Returns the array of weights for efficient grid evaluation.
-  //! Returns null pointer for non-rational curves.
-  const NCollection_Array1<double>* InternalWeights() const;
-
   //! Returns the flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalFlatKnots() const { return myFlatKnots; }
-
-  //! Returns pointer to weights array if rational, nullptr otherwise.
-  const NCollection_Array1<double>* WeightsPtr() const { return rational ? &myWeights : nullptr; }
 
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;

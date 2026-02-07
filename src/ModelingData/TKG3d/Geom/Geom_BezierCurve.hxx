@@ -278,6 +278,7 @@ public:
   //! Returns all the poles of the curve.
   //!
   //! Raised if the length of P is not equal to the number of poles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt>& P) const;
 
   //! Returns all the poles of the curve.
@@ -290,6 +291,7 @@ public:
   //! Returns all the weights of the curve.
   //!
   //! Raised if the length of W is not equal to the number of poles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array1<double>& W) const;
 
   //! Returns all the weights of the curve.
@@ -318,22 +320,18 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
-  //! Returns the array of poles for efficient grid evaluation.
-  const NCollection_Array1<gp_Pnt>& InternalPoles() const { return myPoles; }
+  //! Returns the knots array for efficient grid evaluation.
+  const NCollection_Array1<double>& InternalKnots() const { return BezierKnots(); }
 
-  //! Returns the array of weights for efficient grid evaluation.
-  //! Returns null pointer for non-rational curves.
-  const NCollection_Array1<double>* InternalWeights() const
-  {
-    return rational ? &myWeights : BSplCLib::NoWeights();
-  }
+  //! Returns the multiplicities array for efficient grid evaluation.
+  const NCollection_Array1<int>& InternalMults() const { return BezierMults(); }
 
   //! Returns the flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalFlatKnots() const { return BezierFlatKnots(); }
 
-  //! Returns pointer to weights array if rational, nullptr otherwise.
-  const NCollection_Array1<double>* WeightsPtr() const { return rational ? &myWeights : nullptr; }
+  DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
+private:
   //! Returns Bezier knots {0.0, 1.0} as a static array.
   Standard_EXPORT const NCollection_Array1<double>& BezierKnots() const;
 
@@ -343,9 +341,6 @@ public:
   //! Returns Bezier flat knots for the current degree.
   Standard_EXPORT const NCollection_Array1<double>& BezierFlatKnots() const;
 
-  DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
-
-private:
   //! Set poles to Poles, weights to Weights (not copied).
   //! If Weights is null the curve is non rational.
   //! Create the arrays of coefficients.

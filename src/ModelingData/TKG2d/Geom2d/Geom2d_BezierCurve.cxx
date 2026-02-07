@@ -487,7 +487,7 @@ gp_Vec2d Geom2d_BezierCurve::DN(const double U, const int N) const
                Degree(),
                false,
                myPoles,
-               WeightsPtr(),
+               Weights(),
                BezierKnots(),
                &BezierMults(),
                V);
@@ -592,7 +592,7 @@ void Geom2d_BezierCurve::Resolution(const double ToleranceUV, double& UTolerance
   if (!maxderivinvok)
   {
     BSplCLib::Resolution(myPoles,
-                         WeightsPtr(),
+                         Weights(),
                          myPoles.Length(),
                          BezierFlatKnots(),
                          Degree(),

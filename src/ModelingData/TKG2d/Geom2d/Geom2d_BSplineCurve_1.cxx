@@ -178,7 +178,7 @@ void Geom2d_BSplineCurve::D0(const double U, gp_Pnt2d& P) const
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                myKnots,
                &myMults,
                P);
@@ -200,7 +200,7 @@ void Geom2d_BSplineCurve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                myKnots,
                &myMults,
                P,
@@ -223,7 +223,7 @@ void Geom2d_BSplineCurve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                myKnots,
                &myMults,
                P,
@@ -251,7 +251,7 @@ void Geom2d_BSplineCurve::D3(const double U,
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                myKnots,
                &myMults,
                P,
@@ -271,7 +271,7 @@ gp_Vec2d Geom2d_BSplineCurve::DN(const double U, const int N) const
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                FKNOTS,
                FMULTS,
                V);
@@ -395,7 +395,7 @@ void Geom2d_BSplineCurve::LocalD0(const double U,
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                FKNOTS,
                FMULTS,
                P);
@@ -421,7 +421,7 @@ void Geom2d_BSplineCurve::LocalD1(const double U,
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                FKNOTS,
                FMULTS,
                P,
@@ -449,7 +449,7 @@ void Geom2d_BSplineCurve::LocalD2(const double U,
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                FKNOTS,
                FMULTS,
                P,
@@ -479,7 +479,7 @@ void Geom2d_BSplineCurve::LocalD3(const double U,
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                FKNOTS,
                FMULTS,
                P,
@@ -509,7 +509,7 @@ gp_Vec2d Geom2d_BSplineCurve::LocalDN(const double U,
                myDeg,
                myPeriodic,
                POLES,
-               WeightsPtr(),
+               Weights(),
                FKNOTS,
                FMULTS,
                V);
@@ -722,7 +722,7 @@ void Geom2d_BSplineCurve::Resolution(const double ToleranceUV, double& UToleranc
     else
     {
       BSplCLib::Resolution(myPoles,
-                           WeightsPtr(),
+                           Weights(),
                            myPoles.Length(),
                            myFlatKnots,
                            myDeg,
@@ -732,13 +732,4 @@ void Geom2d_BSplineCurve::Resolution(const double ToleranceUV, double& UToleranc
     maxderivinvok = true;
   }
   UTolerance = ToleranceUV * maxderivinv;
-}
-
-//=================================================================================================
-
-const NCollection_Array1<double>* Geom2d_BSplineCurve::InternalWeights() const
-{
-  if (rational)
-    return &myWeights;
-  return nullptr;
 }

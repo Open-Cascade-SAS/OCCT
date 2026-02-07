@@ -495,6 +495,7 @@ public:
   //!
   //! Raised if the length of P in the U an V direction is not equal to
   //! NbUPoles and NbVPoles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array2<gp_Pnt>& P) const;
 
   //! Returns the poles of the Bezier surface.
@@ -526,6 +527,7 @@ public:
   //!
   //! Raised if the length of W in the U an V direction is not
   //! equal to NbUPoles and NbVPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array2<double>& W) const;
 
   //! Returns the weights of the Bezier surface.
@@ -597,27 +599,27 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
-  //! Returns the internal poles array (non-handle).
-  const NCollection_Array2<gp_Pnt>& InternalPoles() const { return myPoles; }
+  //! Returns the U knots array for efficient grid evaluation.
+  const NCollection_Array1<double>& InternalUKnots() const { return BezierKnots(); }
 
-  //! Returns the internal weights array, or nullptr if non-rational.
-  const NCollection_Array2<double>* InternalWeights() const
-  {
-    return (urational || vrational) ? &myWeights : nullptr;
-  }
+  //! Returns the V knots array for efficient grid evaluation.
+  const NCollection_Array1<double>& InternalVKnots() const { return BezierKnots(); }
 
-  //! Returns the internal U flat knots array (non-handle).
+  //! Returns the U multiplicities array for efficient grid evaluation.
+  const NCollection_Array1<int>& InternalUMults() const { return BezierUMults(); }
+
+  //! Returns the V multiplicities array for efficient grid evaluation.
+  const NCollection_Array1<int>& InternalVMults() const { return BezierVMults(); }
+
+  //! Returns the U flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalUFlatKnots() const { return BezierUFlatKnots(); }
 
-  //! Returns the internal V flat knots array (non-handle).
+  //! Returns the V flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalVFlatKnots() const { return BezierVFlatKnots(); }
 
-  //! Returns pointer to weights array if rational, nullptr otherwise.
-  const NCollection_Array2<double>* WeightsPtr() const
-  {
-    return (urational || vrational) ? &myWeights : nullptr;
-  }
+  DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
+private:
   //! Returns Bezier knots {0.0, 1.0} as a static array.
   Standard_EXPORT const NCollection_Array1<double>& BezierKnots() const;
 
@@ -633,9 +635,6 @@ public:
   //! Returns Bezier flat knots for the V degree.
   Standard_EXPORT const NCollection_Array1<double>& BezierVFlatKnots() const;
 
-  DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
-
-private:
   //! Set poles to Poles, weights to Weights (not copied).
   //! Create the arrays of coefficients. Poles and Weights
   //! are assumed to have the first coefficient 1.

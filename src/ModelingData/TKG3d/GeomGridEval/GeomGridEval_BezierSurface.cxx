@@ -35,8 +35,8 @@ occ::handle<BSplSLib_Cache> buildBezierCache(const occ::handle<Geom_BezierSurfac
 {
   const NCollection_Array1<double>& aUFlatKnots = theGeom->InternalUFlatKnots();
   const NCollection_Array1<double>& aVFlatKnots = theGeom->InternalVFlatKnots();
-  const NCollection_Array2<gp_Pnt>& aPoles      = theGeom->InternalPoles();
-  const NCollection_Array2<double>* aWeights    = theGeom->InternalWeights();
+  const NCollection_Array2<gp_Pnt>& aPoles      = theGeom->Poles();
+  const NCollection_Array2<double>* aWeights    = theGeom->Weights();
 
   occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(theGeom->UDegree(),
                                                           false,
@@ -210,8 +210,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   const int                          aVDegree    = myGeom->VDegree();
   const NCollection_Array1<double>&  aUFlatKnots = myGeom->InternalUFlatKnots();
   const NCollection_Array1<double>&  aVFlatKnots = myGeom->InternalVFlatKnots();
-  const NCollection_Array2<gp_Pnt>&  aPoles      = myGeom->InternalPoles();
-  const NCollection_Array2<double>*  aWeights    = myGeom->InternalWeights();
+  const NCollection_Array2<gp_Pnt>&  aPoles      = myGeom->Poles();
+  const NCollection_Array2<double>*  aWeights    = myGeom->Weights();
   const bool                         isRational  = (aWeights != nullptr);
 
   // D3 evaluation using BSplSLib::D3 directly
@@ -298,8 +298,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
   }
 
   // Get poles, weights, and flat knots from geometry
-  const NCollection_Array2<gp_Pnt>&  aPoles      = myGeom->InternalPoles();
-  const NCollection_Array2<double>*  aWeights    = myGeom->InternalWeights();
+  const NCollection_Array2<gp_Pnt>&  aPoles      = myGeom->Poles();
+  const NCollection_Array2<double>*  aWeights    = myGeom->Weights();
   const bool                         isRational  = (aWeights != nullptr);
   const NCollection_Array1<double>&  aUFlatKnots = myGeom->InternalUFlatKnots();
   const NCollection_Array1<double>&  aVFlatKnots = myGeom->InternalVFlatKnots();

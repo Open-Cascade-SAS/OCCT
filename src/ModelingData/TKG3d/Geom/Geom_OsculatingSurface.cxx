@@ -136,7 +136,6 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
       if (theBS->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
       {
         occ::handle<Geom_BezierSurface> BzS = occ::down_cast<Geom_BezierSurface>(theBS);
-        NCollection_Array2<gp_Pnt>      P(1, BzS->NbUPoles(), 1, BzS->NbVPoles());
         NCollection_Array1<double>      UKnots(1, 2);
         NCollection_Array1<double>      VKnots(1, 2);
         NCollection_Array1<int>         UMults(1, 2);
@@ -148,8 +147,7 @@ void Geom_OsculatingSurface::Init(const occ::handle<Geom_Surface>& theBS, double
           UMults.SetValue(i, BzS->UDegree() + 1);
           VMults.SetValue(i, BzS->VDegree() + 1);
         }
-        BzS->Poles(P);
-        InitSurf = new Geom_BSplineSurface(P,
+        InitSurf = new Geom_BSplineSurface(BzS->Poles(),
                                            UKnots,
                                            VKnots,
                                            UMults,
@@ -383,12 +381,10 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                          
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       occ::handle<Geom_BSplineSurface> BSur = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
-      NbUK                                  = BSur->NbUKnots();
-      NbVK                                  = BSur->NbVKnots();
-      NCollection_Array1<double> UKnots(1, NbUK);
-      NCollection_Array1<double> VKnots(1, NbVK);
-      BSur->UKnots(UKnots);
-      BSur->VKnots(VKnots);
+      NbUK                                          = BSur->NbUKnots();
+      NbVK                                          = BSur->NbVKnots();
+      const NCollection_Array1<double>& UKnots = BSur->UKnots();
+      const NCollection_Array1<double>& VKnots = BSur->VKnots();
       BSplCLib::Hunt(UKnots, theU, NU);
       BSplCLib::Hunt(VKnots, theV, NV);
       if (NU < 1)
@@ -445,12 +441,10 @@ bool Geom_OsculatingSurface::VOsculatingSurface(double                          
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
       occ::handle<Geom_BSplineSurface> BSur = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
-      NbUK                                  = BSur->NbUKnots();
-      NbVK                                  = BSur->NbVKnots();
-      NCollection_Array1<double> UKnots(1, NbUK);
-      NCollection_Array1<double> VKnots(1, NbVK);
-      BSur->UKnots(UKnots);
-      BSur->VKnots(VKnots);
+      NbUK                                          = BSur->NbUKnots();
+      NbVK                                          = BSur->NbVKnots();
+      const NCollection_Array1<double>& UKnots = BSur->UKnots();
+      const NCollection_Array1<double>& VKnots = BSur->VKnots();
       BSplCLib::Hunt(UKnots, theU, NU);
       BSplCLib::Hunt(VKnots, theV, NV);
       if (NV < 1)
@@ -572,32 +566,12 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
     //    end for polynomial grid
 
     //    building the cache
-    int                        ULocalIndex, VLocalIndex;
-    double                     ucacheparameter, vcacheparameter, uspanlength, vspanlength;
-    NCollection_Array2<gp_Pnt> NewPoles(1, theBS->NbUPoles(), 1, theBS->NbVPoles());
+    int    ULocalIndex, VLocalIndex;
+    double ucacheparameter, vcacheparameter, uspanlength, vspanlength;
 
-    int aUfKnotsLength = theBS->NbUPoles() + theBS->UDegree() + 1;
-    int aVfKnotsLength = theBS->NbVPoles() + theBS->VDegree() + 1;
-
-    if (theBS->IsUPeriodic())
-    {
-      NCollection_Array1<int> aMults(1, theBS->NbUKnots());
-      theBS->UMultiplicities(aMults);
-      aUfKnotsLength = BSplCLib::KnotSequenceLength(aMults, theBS->UDegree(), true);
-    }
-
-    if (theBS->IsVPeriodic())
-    {
-      NCollection_Array1<int> aMults(1, theBS->NbVKnots());
-      theBS->VMultiplicities(aMults);
-      aVfKnotsLength = BSplCLib::KnotSequenceLength(aMults, theBS->VDegree(), true);
-    }
-
-    NCollection_Array1<double> UFlatKnots(1, aUfKnotsLength);
-    NCollection_Array1<double> VFlatKnots(1, aVfKnotsLength);
-    theBS->Poles(NewPoles);
-    theBS->UKnotSequence(UFlatKnots);
-    theBS->VKnotSequence(VFlatKnots);
+    const NCollection_Array2<gp_Pnt>& aPoles     = theBS->Poles();
+    const NCollection_Array1<double>& aUFlatKnts = theBS->UKnotSequence();
+    const NCollection_Array1<double>& aVFlatKnts = theBS->VKnotSequence();
 
     VLocalIndex     = 0;
     ULocalIndex     = 0;
@@ -627,9 +601,9 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
                          theBS->VDegree(),
                          ULocalIndex,
                          VLocalIndex,
-                         UFlatKnots,
-                         VFlatKnots,
-                         NewPoles,
+                         aUFlatKnts,
+                         aVFlatKnts,
+                         aPoles,
                          BSplSLib::NoWeights(),
                          cachepoles,
                          BSplSLib::NoWeights());

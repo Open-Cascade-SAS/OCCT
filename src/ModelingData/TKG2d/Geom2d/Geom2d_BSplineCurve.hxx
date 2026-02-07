@@ -700,6 +700,7 @@ public:
   //!
   //! Raised K.Lower() is less than number of first knot or
   //! K.Upper() is more than number of last knot.
+  Standard_DEPRECATED("use Knots() returning const reference instead")
   Standard_EXPORT void Knots(NCollection_Array1<double>& K) const;
 
   //! returns the knot values of the B-spline curve;
@@ -714,6 +715,7 @@ public:
   //! Raised if K.Lower() is less than number of first knot
   //! in knot sequence with repetitions or K.Upper() is more
   //! than number of last knot in knot sequence with repetitions.
+  Standard_DEPRECATED("use KnotSequence() returning const reference instead")
   Standard_EXPORT void KnotSequence(NCollection_Array1<double>& K) const;
 
   //! Returns the knots sequence.
@@ -771,6 +773,7 @@ public:
   //! Returns the multiplicity of the knots of the curve.
   //!
   //! Raised if the length of M is not equal to NbKnots.
+  Standard_DEPRECATED("use Multiplicities() returning const reference instead")
   Standard_EXPORT void Multiplicities(NCollection_Array1<int>& M) const;
 
   //! returns the multiplicity of the knots of the curve.
@@ -790,6 +793,7 @@ public:
   //! Returns the poles of the B-spline curve;
   //!
   //! Raised if the length of P is not equal to the number of poles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt2d>& P) const;
 
   //! Returns the poles of the B-spline curve;
@@ -808,6 +812,7 @@ public:
   //! Returns the weights of the B-spline curve;
   //!
   //! Raised if the length of W is not equal to NbPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array1<double>& W) const;
 
   //! Returns the weights of the B-spline curve;
@@ -835,17 +840,8 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
-  //! Returns the internal poles array (non-handle).
-  const NCollection_Array1<gp_Pnt2d>& InternalPoles() const { return myPoles; }
-
-  //! Returns the internal weights array, or nullptr if non-rational.
-  Standard_EXPORT const NCollection_Array1<double>* InternalWeights() const;
-
-  //! Returns the internal flat knots array (non-handle).
+  //! Returns the flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalFlatKnots() const { return myFlatKnots; }
-
-  //! Returns pointer to weights array if rational, nullptr otherwise.
-  const NCollection_Array1<double>* WeightsPtr() const { return rational ? &myWeights : nullptr; }
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 

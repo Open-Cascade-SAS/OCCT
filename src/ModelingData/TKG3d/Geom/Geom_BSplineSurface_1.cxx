@@ -44,7 +44,7 @@
 #include <NCollection_Array1.hxx>
 
 #define POLES    (myPoles)
-#define WEIGHTS  (WeightsPtr())
+#define WEIGHTS  (Weights())
 #define UKNOTS   (myUKnots)
 #define VKNOTS   (myVKnots)
 #define UFKNOTS  (myUFlatKnots)
@@ -1019,15 +1019,6 @@ const NCollection_Array2<double>* Geom_BSplineSurface::Weights() const
   if (urational || vrational)
     return &myWeights;
   return BSplSLib::NoWeights();
-}
-
-//=================================================================================================
-
-const NCollection_Array2<double>* Geom_BSplineSurface::InternalWeights() const
-{
-  if (urational || vrational)
-    return &myWeights;
-  return nullptr;
 }
 
 //=================================================================================================

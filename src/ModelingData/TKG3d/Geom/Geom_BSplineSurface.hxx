@@ -923,6 +923,7 @@ public:
   //!
   //! Raised if the length of P in the U and V direction
   //! is not equal to NbUpoles and NbVPoles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array2<gp_Pnt>& P) const;
 
   //! Returns the poles of the B-spline surface.
@@ -955,6 +956,7 @@ public:
   //!
   //! Raised if the length of Ku is not equal to the number of knots
   //! in the U direction.
+  Standard_DEPRECATED("use UKnots() returning const reference instead")
   Standard_EXPORT void UKnots(NCollection_Array1<double>& Ku) const;
 
   //! Returns the knots in the U direction.
@@ -967,6 +969,7 @@ public:
   //! Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
   //!
   //! Raised if the length of Ku is not equal to NbUPoles + UDegree + 1
+  Standard_DEPRECATED("use UKnotSequence() returning const reference instead")
   Standard_EXPORT void UKnotSequence(NCollection_Array1<double>& Ku) const;
 
   //! Returns the uknots sequence.
@@ -985,6 +988,7 @@ public:
   //!
   //! Raised if the length of Mu is not equal to the number of
   //! knots in the U direction.
+  Standard_DEPRECATED("use UMultiplicities() returning const reference instead")
   Standard_EXPORT void UMultiplicities(NCollection_Array1<int>& Mu) const;
 
   //! Returns the multiplicities of the knots in the U direction.
@@ -1017,6 +1021,7 @@ public:
   //!
   //! Raised if the length of Kv is not equal to the number of
   //! knots in the V direction.
+  Standard_DEPRECATED("use VKnots() returning const reference instead")
   Standard_EXPORT void VKnots(NCollection_Array1<double>& Kv) const;
 
   //! Returns the knots in the V direction.
@@ -1029,6 +1034,7 @@ public:
   //! Kv = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
   //!
   //! Raised if the length of Kv is not equal to NbVPoles + VDegree + 1
+  Standard_DEPRECATED("use VKnotSequence() returning const reference instead")
   Standard_EXPORT void VKnotSequence(NCollection_Array1<double>& Kv) const;
 
   //! Returns the vknots sequence.
@@ -1047,6 +1053,7 @@ public:
   //!
   //! Raised if the length of Mv is not equal to the number of
   //! knots in the V direction.
+  Standard_DEPRECATED("use VMultiplicities() returning const reference instead")
   Standard_EXPORT void VMultiplicities(NCollection_Array1<int>& Mv) const;
 
   //! Returns the multiplicities of the knots in the V direction.
@@ -1062,29 +1069,18 @@ public:
   //!
   //! Raised if the length of W in the U and V direction is
   //! not equal to NbUPoles and NbVPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array2<double>& W) const;
 
   //! Returns the weights of the B-spline surface.
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
 
-  //! Returns the internal poles array (non-handle).
-  const NCollection_Array2<gp_Pnt>& InternalPoles() const { return myPoles; }
-
-  //! Returns the internal weights array, or nullptr if non-rational.
-  Standard_EXPORT const NCollection_Array2<double>* InternalWeights() const;
-
-  //! Returns the internal U flat knots array (non-handle).
+  //! Returns the U flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalUFlatKnots() const { return myUFlatKnots; }
 
-  //! Returns the internal V flat knots array (non-handle).
+  //! Returns the V flat knots array for efficient grid evaluation.
   const NCollection_Array1<double>& InternalVFlatKnots() const { return myVFlatKnots; }
-
-  //! Returns pointer to weights array if rational, nullptr otherwise.
-  const NCollection_Array2<double>* WeightsPtr() const
-  {
-    return (urational || vrational) ? &myWeights : nullptr;
-  }
 
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
