@@ -417,7 +417,10 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
 
   // is it turning into non rational
   if (wasrat && !Rational(myData.Weights))
+  {
     rational = false;
+    myData.Weights = NCollection_Array1<double>();
+  }
   else
     rational = true;
 }
@@ -702,6 +705,10 @@ void Geom_BezierCurve::Init(const NCollection_Array1<gp_Pnt>& thePoles,
   {
     myData.Weights.Resize(1, nbpoles, false);
     myData.Weights = *theWeights;
+  }
+  else
+  {
+    myData.Weights = NCollection_Array1<double>();
   }
 
   updateKnots();

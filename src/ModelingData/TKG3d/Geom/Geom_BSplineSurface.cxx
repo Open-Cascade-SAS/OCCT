@@ -247,8 +247,11 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
   myData.Poles.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
   myData.Poles.Assign(Poles);
 
-  myData.Weights.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
-  myData.Weights.Assign(Weights);
+  if (urational || vrational)
+  {
+    myData.Weights.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
+    myData.Weights.Assign(Weights);
+  }
 
   myData.UKnots.Resize(1, UKnots.Length(), false);
   myData.UKnots.Assign(UKnots);

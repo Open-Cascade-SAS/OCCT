@@ -1182,6 +1182,10 @@ void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const dou
   {
     myData.Weights(UIndex, VIndex) = Weight;
     Rational(myData.Weights, urational, vrational);
+    if (!(urational || vrational))
+    {
+      myData.Weights = NCollection_Array2<double>();
+    }
   }
 }
 
@@ -1220,6 +1224,10 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
   }
 
   Rational(myData.Weights, urational, vrational);
+  if (!(urational || vrational))
+  {
+    myData.Weights = NCollection_Array2<double>();
+  }
 }
 
 //=================================================================================================
@@ -1257,6 +1265,10 @@ void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
   }
 
   Rational(myData.Weights, urational, vrational);
+  if (!(urational || vrational))
+  {
+    myData.Weights = NCollection_Array2<double>();
+  }
 }
 
 //=================================================================================================
@@ -1982,6 +1994,10 @@ void Geom_BezierSurface::Init(const NCollection_Array2<gp_Pnt>& thePoles,
       myData.Weights = *theWeights;
     else
       myData.Weights.Init(1.0);
+  }
+  else
+  {
+    myData.Weights = NCollection_Array2<double>();
   }
 
   updateUKnots();

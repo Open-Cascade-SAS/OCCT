@@ -154,8 +154,6 @@ private:
                                const NCollection_Array2<double>& PolynomialIntervals,
                                const NCollection_Array1<double>& TrueIntervals);
 
-private:
-
   NCollection_Array1<double> myFlatKnots;
   NCollection_Array1<double> myKnots;
   NCollection_Array1<int>    myMults;

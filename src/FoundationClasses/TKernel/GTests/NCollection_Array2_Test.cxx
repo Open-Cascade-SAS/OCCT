@@ -335,6 +335,64 @@ TEST(NCollection_Array2Test, ResizeWithTrim_PreservesElementPositions)
   }
 }
 
+TEST(NCollection_Array2Test, ResizeWithTrim_NonUnitLowerBounds)
+{
+  // Array with non-1 lower bounds: rows [3..5], cols [10..12].
+  NCollection_Array2<int> anArray(3, 5, 10, 12);
+  for (int aRow = 3; aRow <= 5; ++aRow)
+  {
+    for (int aCol = 10; aCol <= 12; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 100 + aCol;
+    }
+  }
+
+  // Shrink rows, keep cols: [3..4, 10..12].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(3, 4, 10, 12, true);
+    EXPECT_EQ(2, aCopy.NbRows());
+    EXPECT_EQ(3, aCopy.NbColumns());
+    for (int aRow = 3; aRow <= 4; ++aRow)
+    {
+      for (int aCol = 10; aCol <= 12; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Grow both: [3..7, 10..14].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(3, 7, 10, 14, true);
+    EXPECT_EQ(5, aCopy.NbRows());
+    EXPECT_EQ(5, aCopy.NbColumns());
+    for (int aRow = 3; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 10; aCol <= 12; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Same dimensions (no-op optimization): [3..5, 10..12].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(3, 5, 10, 12, true);
+    EXPECT_EQ(3, aCopy.NbRows());
+    EXPECT_EQ(3, aCopy.NbColumns());
+    for (int aRow = 3; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 10; aCol <= 12; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+}
+
 TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 {
   // This test checks for data scrambling when resizing to a different shape

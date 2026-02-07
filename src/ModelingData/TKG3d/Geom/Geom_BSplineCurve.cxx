@@ -377,14 +377,8 @@ bool Geom_BSplineCurve::RemoveKnot(const int Index, const int M, const double To
 
   NCollection_Array1<gp_Pnt> npoles(1, oldpoles.Length() - step);
 
-  NCollection_Array1<double> nknots = myData.Knots;
-  NCollection_Array1<int>    nmults = myData.Mults;
-
-  if (M == 0)
-  {
-    nknots.Resize(1, myData.Knots.Length() - 1, false);
-    nmults.Resize(1, myData.Knots.Length() - 1, false);
-  }
+  NCollection_Array1<double> nknots(1, myData.Knots.Length() - (M == 0 ? 1 : 0));
+  NCollection_Array1<int>    nmults(1, myData.Mults.Length() - (M == 0 ? 1 : 0));
 
   NCollection_Array1<double> nweights;
   if (IsRational())

@@ -201,8 +201,10 @@ static void CosAndSinQuasiAngular(double                              Parameter,
                                   const NCollection_Array1<int>*,
                                   double Result[2])
 {
-  // Extract coordinates from the first pole into a local array
+  // Extract X,Y coordinates from all EvalPoles into a flat double array
   // to safely pass to PLib::NoDerivativeEvalPolynomial.
+  Standard_OutOfRange_Raise_if(EvalPoles.Length() != EvalDegree + 1,
+                               "CosAndSinQuasiAngular: EvalPoles size mismatch");
   const int                aNumCoords = (EvalDegree + 1) * 2;
   NCollection_Array1<double> aCoeffs(0, aNumCoords - 1);
   for (int i = EvalPoles.Lower(); i <= EvalPoles.Upper(); i++)

@@ -1002,8 +1002,9 @@ void Geom_BSplineSurface::Weights(NCollection_Array2<double>& W) const
 {
   if (!(urational || vrational))
   {
-    W.Resize(myData.Poles.LowerRow(), myData.Poles.UpperRow(),
-             myData.Poles.LowerCol(), myData.Poles.UpperCol(), false);
+    Standard_DimensionError_Raise_if(W.ColLength() != myData.Poles.ColLength()
+                                       || W.RowLength() != myData.Poles.RowLength(),
+                                     " ");
     W.Init(1.0);
     return;
   }

@@ -29,6 +29,7 @@
 #include <NCollection_HArray2.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
 
 //==================================================================================================
 
@@ -271,6 +272,7 @@ int Convert_CompPolynomialToPoles::NbPoles() const
 
 const NCollection_Array2<double>& Convert_CompPolynomialToPoles::Poles() const
 {
+  StdFail_NotDone_Raise_if(!myDone, "Convert_CompPolynomialToPoles::Poles");
   return myPoles;
 }
 
@@ -300,6 +302,7 @@ int Convert_CompPolynomialToPoles::NbKnots() const
 
 const NCollection_Array1<double>& Convert_CompPolynomialToPoles::Knots() const
 {
+  StdFail_NotDone_Raise_if(!myDone, "Convert_CompPolynomialToPoles::Knots");
   return myKnots;
 }
 
@@ -317,6 +320,7 @@ void Convert_CompPolynomialToPoles::Knots(occ::handle<NCollection_HArray1<double
 
 const NCollection_Array1<int>& Convert_CompPolynomialToPoles::Multiplicities() const
 {
+  StdFail_NotDone_Raise_if(!myDone, "Convert_CompPolynomialToPoles::Multiplicities");
   return myMults;
 }
 

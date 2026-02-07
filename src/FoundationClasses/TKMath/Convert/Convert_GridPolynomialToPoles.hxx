@@ -131,7 +131,7 @@ private:
 
   Standard_EXPORT void BuildArray(const int                         Degree,
                                   const NCollection_Array1<double>& Knots,
-                                  const int                         Continuty,
+                                  const int                         Continuity,
                                   NCollection_Array1<double>&       FlatKnots,
                                   NCollection_Array1<int>&          Mults,
                                   NCollection_Array1<double>&       Parameters) const;

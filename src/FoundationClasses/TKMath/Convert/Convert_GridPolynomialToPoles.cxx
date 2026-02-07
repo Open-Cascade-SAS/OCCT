@@ -148,10 +148,8 @@ void Convert_GridPolynomialToPoles::Perform(
 {
   // (1) Construction des Tables monodimensionnelles ----------------------------
   NCollection_Array1<double> UParameters, VParameters;
-  myUKnots = NCollection_Array1<double>(1, TrueUIntervals->Length());
-  myUKnots = TrueUIntervals->Array1();
-  myVKnots = NCollection_Array1<double>(1, TrueVIntervals->Length());
-  myVKnots = TrueVIntervals->Array1();
+  myUKnots = NCollection_Array1<double>(TrueUIntervals->Array1());
+  myVKnots = NCollection_Array1<double>(TrueVIntervals->Array1());
 
   BuildArray(myUDegree, myUKnots, UContinuity, myUFlatKnots, myUMults, UParameters);
 

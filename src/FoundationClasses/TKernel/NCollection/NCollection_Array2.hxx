@@ -322,9 +322,9 @@ public:
   }
 
   //! Resizes the array to specified bounds.
-  //! No re-allocation will be done if length of array does not change,
-  //! but existing values will not be discarded if theToCopyData set to FALSE.
+  //! When theToCopyData is false, the array is re-allocated without preserving data.
   //! When theToCopyData is true, copies elements in linear (row-major) order.
+  //! No re-allocation is done if dimensions are unchanged.
   //! @param theRowLower new lower Row of array
   //! @param theRowUpper new upper Row of array
   //! @param theColLower new lower Column of array
@@ -345,8 +345,10 @@ public:
   }
 
   //! Resizes the array preserving 2D element positions.
-  //! Copies the common sub-matrix intersection of old and new dimensions,
-  //! trimming rows and/or columns as needed.
+  //! When theToCopyData is false, the array is re-allocated without preserving data.
+  //! When theToCopyData is true, copies the common sub-matrix intersection of old
+  //! and new dimensions, preserving (row, col) positions, trimming as needed.
+  //! No re-allocation is done if dimensions are unchanged.
   //! @param theRowLower new lower Row of array
   //! @param theRowUpper new upper Row of array
   //! @param theColLower new lower Column of array
@@ -392,6 +394,12 @@ protected:
                                  "NCollection_Array2::Resize");
     const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
     const size_t aNewNbCols    = theColUpper - theColLower + 1;
+    if (mySizeRow == aNewNbRows && mySizeCol == aNewNbCols)
+    {
+      myLowerRow = theRowLower;
+      myLowerCol = theColLower;
+      return;
+    }
     const size_t aNbRowsToCopy = (std::min)(mySizeRow, aNewNbRows);
     const size_t aNbColsToCopy = (std::min)(mySizeCol, aNewNbCols);
     const size_t aOldStride    = thePreserve2D ? mySizeCol : aNbColsToCopy;
