@@ -262,6 +262,79 @@ TEST(NCollection_Array2Test, STLIteration)
   EXPECT_EQ(6, anIndex); // Ensure all elements were visited
 }
 
+TEST(NCollection_Array2Test, ResizeWithTrim_PreservesElementPositions)
+{
+  // Fill a 5x4 array with values encoding (row, col) position.
+  NCollection_Array2<int> anArray(1, 5, 1, 4);
+  for (int aRow = 1; aRow <= 5; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 4; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 100 + aCol;
+    }
+  }
+
+  // Shrink rows (5x4 -> 3x4): only rows 1-3 should be preserved.
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 3, 1, 4, true);
+    EXPECT_EQ(3, aCopy.NbRows());
+    EXPECT_EQ(4, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 3; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 4; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Shrink columns (5x4 -> 5x2): only cols 1-2 should be preserved.
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 5, 1, 2, true);
+    EXPECT_EQ(5, aCopy.NbRows());
+    EXPECT_EQ(2, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 2; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Shrink both (5x4 -> 3x2): common sub-matrix [1..3, 1..2].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 3, 1, 2, true);
+    EXPECT_EQ(3, aCopy.NbRows());
+    EXPECT_EQ(2, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 3; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 2; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Grow both (5x4 -> 7x6): original data preserved, new area is default.
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 7, 1, 6, true);
+    EXPECT_EQ(7, aCopy.NbRows());
+    EXPECT_EQ(6, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 4; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+}
+
 TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 {
   // This test checks for data scrambling when resizing to a different shape

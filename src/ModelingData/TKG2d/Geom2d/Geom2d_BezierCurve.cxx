@@ -64,6 +64,10 @@ static bool Rational(const NCollection_Array1<double>& W)
 
 Geom2d_BezierCurve::Geom2d_BezierCurve(const NCollection_Array1<gp_Pnt2d>& Poles)
 {
+  int nbpoles = Poles.Length();
+  if (nbpoles < 2 || nbpoles > (Geom2d_BezierCurve::MaxDegree() + 1))
+    throw Standard_ConstructionError();
+
   // Init non rational
   Init(Poles, nullptr);
 }
@@ -74,6 +78,8 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const NCollection_Array1<gp_Pnt2d>& Poles
                                        const NCollection_Array1<double>&   Weights)
 {
   int nbpoles = Poles.Length();
+  if (nbpoles < 2 || nbpoles > (Geom2d_BezierCurve::MaxDegree() + 1))
+    throw Standard_ConstructionError();
 
   if (Weights.Length() != nbpoles)
     throw Standard_ConstructionError();
@@ -121,7 +127,6 @@ void Geom2d_BezierCurve::Increase(const int Deg)
                                       "Geom2d_BezierCurve::Increase");
 
   NCollection_Array1<gp_Pnt2d> npoles(1, Deg + 1);
-  NCollection_Array1<double>   nweights(1, Deg + 1);
   double                       aKnotsBuf[2];
   int                          aMultsBuf[2];
   NCollection_Array1<double>   nknots(aKnotsBuf[0], 1, 2);
@@ -129,6 +134,7 @@ void Geom2d_BezierCurve::Increase(const int Deg)
 
   if (IsRational())
   {
+    NCollection_Array1<double> nweights(1, Deg + 1);
     BSplCLib::IncreaseDegree(Degree(),
                              Deg,
                              false,

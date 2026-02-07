@@ -22,76 +22,30 @@
 
 void Convert_ElementarySurfaceToBSplineSurface::Finalize()
 {
-  // Resize poles array if dimensions don't match actual sizes.
+  // Trim oversized arrays down to actual sizes, preserving 2D element positions.
   if (myData.Poles.NbRows() != myNbUPoles || myData.Poles.NbColumns() != myNbVPoles)
   {
-    NCollection_Array2<gp_Pnt> aNewPoles(1, myNbUPoles, 1, myNbVPoles);
-    for (int i = 1; i <= myNbUPoles; i++)
-    {
-      for (int j = 1; j <= myNbVPoles; j++)
-      {
-        aNewPoles(i, j) = myData.Poles(i, j);
-      }
-    }
-    myData.Poles = std::move(aNewPoles);
+    myData.Poles.ResizeWithTrim(1, myNbUPoles, 1, myNbVPoles, true);
   }
-
-  // Resize weights array if dimensions don't match actual sizes.
   if (myData.Weights.NbRows() != myNbUPoles || myData.Weights.NbColumns() != myNbVPoles)
   {
-    NCollection_Array2<double> aNewWeights(1, myNbUPoles, 1, myNbVPoles);
-    for (int i = 1; i <= myNbUPoles; i++)
-    {
-      for (int j = 1; j <= myNbVPoles; j++)
-      {
-        aNewWeights(i, j) = myData.Weights(i, j);
-      }
-    }
-    myData.Weights = std::move(aNewWeights);
+    myData.Weights.ResizeWithTrim(1, myNbUPoles, 1, myNbVPoles, true);
   }
-
-  // Resize U-knots array if length doesn't match actual size.
   if (myData.UKnots.Length() != myNbUKnots)
   {
-    NCollection_Array1<double> aNewUKnots(1, myNbUKnots);
-    for (int i = 1; i <= myNbUKnots; i++)
-    {
-      aNewUKnots(i) = myData.UKnots(i);
-    }
-    myData.UKnots = std::move(aNewUKnots);
+    myData.UKnots.Resize(1, myNbUKnots, true);
   }
-
-  // Resize U-multiplicities array if length doesn't match actual size.
   if (myData.UMults.Length() != myNbUKnots)
   {
-    NCollection_Array1<int> aNewUMults(1, myNbUKnots);
-    for (int i = 1; i <= myNbUKnots; i++)
-    {
-      aNewUMults(i) = myData.UMults(i);
-    }
-    myData.UMults = std::move(aNewUMults);
+    myData.UMults.Resize(1, myNbUKnots, true);
   }
-
-  // Resize V-knots array if length doesn't match actual size.
   if (myData.VKnots.Length() != myNbVKnots)
   {
-    NCollection_Array1<double> aNewVKnots(1, myNbVKnots);
-    for (int i = 1; i <= myNbVKnots; i++)
-    {
-      aNewVKnots(i) = myData.VKnots(i);
-    }
-    myData.VKnots = std::move(aNewVKnots);
+    myData.VKnots.Resize(1, myNbVKnots, true);
   }
-
-  // Resize V-multiplicities array if length doesn't match actual size.
   if (myData.VMults.Length() != myNbVKnots)
   {
-    NCollection_Array1<int> aNewVMults(1, myNbVKnots);
-    for (int i = 1; i <= myNbVKnots; i++)
-    {
-      aNewVMults(i) = myData.VMults(i);
-    }
-    myData.VMults = std::move(aNewVMults);
+    myData.VMults.Resize(1, myNbVKnots, true);
   }
 }
 

@@ -131,7 +131,6 @@ void Geom_BezierCurve::Increase(const int Deg)
     throw Standard_ConstructionError("Geom_BezierCurve::Increase");
 
   NCollection_Array1<gp_Pnt> npoles(1, Deg + 1);
-  NCollection_Array1<double> nweights(1, Deg + 1);
   double                     aKnotsBuf[2];
   int                        aMultsBuf[2];
   NCollection_Array1<double> nknots(aKnotsBuf[0], 1, 2);
@@ -139,6 +138,7 @@ void Geom_BezierCurve::Increase(const int Deg)
 
   if (IsRational())
   {
+    NCollection_Array1<double> nweights(1, Deg + 1);
     BSplCLib::IncreaseDegree(Degree(),
                              Deg,
                              false,
