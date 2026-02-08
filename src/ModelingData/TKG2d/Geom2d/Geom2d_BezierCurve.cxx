@@ -615,7 +615,7 @@ void Geom2d_BezierCurve::init(const NCollection_Array1<gp_Pnt2d>& thePoles,
   if (theWeights != nullptr)
   {
     myWeights.Resize(1, nbpoles, false);
-    myWeights = *theWeights;
+    myWeights  = *theWeights;
     myRational = Rational(myWeights);
     if (!myRational)
     {

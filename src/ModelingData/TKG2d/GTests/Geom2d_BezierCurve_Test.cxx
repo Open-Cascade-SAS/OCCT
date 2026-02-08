@@ -13,6 +13,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 #include <Geom2d_BezierCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
@@ -296,14 +298,14 @@ TEST_F(Geom2d_BezierCurve_Test, RationalCurveEvaluation)
 
   NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
-  aWeights(2) = 1.0 / sqrt(2.0);
+  aWeights(2) = 1.0 / std::sqrt(2.0);
   aWeights(3) = 1.0;
 
   occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
   EXPECT_TRUE(aCurve->IsRational());
 
   gp_Pnt2d aMid    = aCurve->Value(0.5);
-  double   aRadius = sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
+  double   aRadius = std::sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
   EXPECT_NEAR(aRadius, 1.0, 1e-6);
 }
 
@@ -365,7 +367,7 @@ TEST_F(Geom2d_BezierCurve_Test, RationalSegment)
 
   NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
-  aWeights(2) = 1.0 / sqrt(2.0);
+  aWeights(2) = 1.0 / std::sqrt(2.0);
   aWeights(3) = 1.0;
 
   occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);

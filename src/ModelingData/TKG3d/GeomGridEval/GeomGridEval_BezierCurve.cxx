@@ -24,8 +24,8 @@ namespace
 occ::handle<BSplCLib_Cache> CreateBezierCache(const occ::handle<Geom_BezierCurve>& theCurve)
 {
   const NCollection_Array1<double>& aKnotSequence = theCurve->KnotSequence();
-  const NCollection_Array1<gp_Pnt>& aPoles     = theCurve->Poles();
-  const NCollection_Array1<double>* aWeights   = theCurve->Weights();
+  const NCollection_Array1<gp_Pnt>& aPoles        = theCurve->Poles();
+  const NCollection_Array1<double>* aWeights      = theCurve->Weights();
 
   occ::handle<BSplCLib_Cache> aCache =
     new BSplCLib_Cache(theCurve->Degree(), false, aKnotSequence, aPoles, aWeights);
@@ -160,8 +160,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
   }
 
   // Get poles, weights, and flat knots from geometry
-  const NCollection_Array1<gp_Pnt>& aPoles     = myGeom->Poles();
-  const NCollection_Array1<double>* aWeights   = myGeom->Weights();
+  const NCollection_Array1<gp_Pnt>& aPoles        = myGeom->Poles();
+  const NCollection_Array1<double>* aWeights      = myGeom->Weights();
   const NCollection_Array1<double>& aKnotSequence = myGeom->KnotSequence();
 
   // Bezier has a single span (index 0 with flat knots), non-periodic

@@ -11,14 +11,16 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <gtest/gtest.h>
+
+#include <cmath>
+
 #include <Geom_BSplineCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
-
-#include <gtest/gtest.h>
 
 class Geom_BSplineCurve_Test : public ::testing::Test
 {
@@ -546,7 +548,7 @@ TEST_F(Geom_BSplineCurve_Test, RationalCurveSegment)
 
   NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
-  aWeights(2) = 1.0 / sqrt(2.0);
+  aWeights(2) = 1.0 / std::sqrt(2.0);
   aWeights(3) = 1.0;
 
   NCollection_Array1<double> aKnots(1, 2);

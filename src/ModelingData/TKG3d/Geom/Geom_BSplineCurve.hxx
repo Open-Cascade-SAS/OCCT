@@ -784,7 +784,6 @@ public:
   //! Returns the weights of the B-spline curve;
   Standard_EXPORT const NCollection_Array1<double>* Weights() const;
 
-
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
 

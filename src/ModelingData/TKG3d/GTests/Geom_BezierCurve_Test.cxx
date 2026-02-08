@@ -13,6 +13,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 #include <Geom_BezierCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -324,7 +326,7 @@ TEST_F(Geom_BezierCurve_Test, RationalCurveEvaluation)
 
   NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
-  aWeights(2) = 1.0 / sqrt(2.0);
+  aWeights(2) = 1.0 / std::sqrt(2.0);
   aWeights(3) = 1.0;
 
   occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
@@ -332,7 +334,7 @@ TEST_F(Geom_BezierCurve_Test, RationalCurveEvaluation)
 
   // At u=0.5, the rational curve should be close to the unit circle
   gp_Pnt aMid    = aCurve->Value(0.5);
-  double aRadius = sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
+  double aRadius = std::sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
   EXPECT_NEAR(aRadius, 1.0, 1e-6);
 }
 
@@ -401,7 +403,7 @@ TEST_F(Geom_BezierCurve_Test, RationalSegment)
 
   NCollection_Array1<double> aWeights(1, 3);
   aWeights(1) = 1.0;
-  aWeights(2) = 1.0 / sqrt(2.0);
+  aWeights(2) = 1.0 / std::sqrt(2.0);
   aWeights(3) = 1.0;
 
   occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);

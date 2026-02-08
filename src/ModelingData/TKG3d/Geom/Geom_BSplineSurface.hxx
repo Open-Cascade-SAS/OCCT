@@ -1076,7 +1076,6 @@ public:
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
 
-
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
   //! Raised if the continuity of the surface is not C1.

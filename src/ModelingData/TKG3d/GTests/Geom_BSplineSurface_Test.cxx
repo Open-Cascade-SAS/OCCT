@@ -13,6 +13,8 @@
 
 #include <gtest/gtest.h>
 
+#include <cmath>
+
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <gp_Pnt.hxx>
@@ -417,7 +419,7 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetUNotPeriodic)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles(i, j) =
-        gp_Pnt(cos(2.0 * M_PI * (i - 1) / 3.0), sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
+        gp_Pnt(std::cos(2.0 * M_PI * (i - 1) / 3.0), std::sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
 
   NCollection_Array1<double> anUKnots(1, 4);
   anUKnots(1) = 0.0;
@@ -454,7 +456,7 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetVNotPeriodic)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
       aPoles(i, j) =
-        gp_Pnt(i * 0.5, cos(2.0 * M_PI * (j - 1) / 3.0), sin(2.0 * M_PI * (j - 1) / 3.0));
+        gp_Pnt(i * 0.5, std::cos(2.0 * M_PI * (j - 1) / 3.0), std::sin(2.0 * M_PI * (j - 1) / 3.0));
 
   NCollection_Array1<double> anUKnots(1, 2);
   anUKnots(1) = 0.0;
@@ -701,7 +703,7 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_SetUNotPeriodic)
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j) =
-        gp_Pnt(cos(2.0 * M_PI * (i - 1) / 3.0), sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
+        gp_Pnt(std::cos(2.0 * M_PI * (i - 1) / 3.0), std::sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
       aWeights(i, j) = 1.0 + 0.5 * (i - 1);
     }
 
@@ -751,7 +753,7 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_SetVNotPeriodic)
     for (int j = 1; j <= 3; ++j)
     {
       aPoles(i, j) =
-        gp_Pnt(i * 0.5, cos(2.0 * M_PI * (j - 1) / 3.0), sin(2.0 * M_PI * (j - 1) / 3.0));
+        gp_Pnt(i * 0.5, std::cos(2.0 * M_PI * (j - 1) / 3.0), std::sin(2.0 * M_PI * (j - 1) / 3.0));
       aWeights(i, j) = 1.0 + 0.5 * (j - 1);
     }
 
