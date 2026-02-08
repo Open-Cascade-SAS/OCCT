@@ -143,7 +143,7 @@ Geom_BSplineCurve::Geom_BSplineCurve(const NCollection_Array1<gp_Pnt>& Poles,
   myMults.Resize(1, Mults.Length(), false);
   myMults.Assign(Mults);
 
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -196,7 +196,7 @@ Geom_BSplineCurve::Geom_BSplineCurve(const NCollection_Array1<gp_Pnt>& Poles,
   myMults.Resize(1, Mults.Length(), false);
   myMults.Assign(Mults);
 
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -251,7 +251,7 @@ void Geom_BSplineCurve::IncreaseDegree(const int Degree)
   myWeights = std::move(nweights);
   myKnots   = std::move(nknots);
   myMults   = std::move(nmults);
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -354,7 +354,7 @@ void Geom_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
   myPoles   = std::move(npoles);
   myKnots   = std::move(nknots);
   myMults   = std::move(nmults);
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -415,7 +415,7 @@ bool Geom_BSplineCurve::RemoveKnot(const int Index, const int M, const double To
   myKnots   = std::move(nknots);
   myMults   = std::move(nmults);
 
-  UpdateKnots();
+  updateKnots();
   myMaxDerivInvOk = false;
   return true;
 }
@@ -434,7 +434,7 @@ void Geom_BSplineCurve::Reverse()
   BSplCLib::Reverse(myPoles, last);
   if (myRational)
     BSplCLib::Reverse(myWeights, last);
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -613,7 +613,7 @@ void Geom_BSplineCurve::Segment(const double U1, const double U2, const double t
   }
 
   myMaxDerivInvOk = false;
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -646,7 +646,7 @@ void Geom_BSplineCurve::SetKnot(const int Index, const double K)
   {
     myKnots.SetValue(Index, K);
     myMaxDerivInvOk = false;
-    UpdateKnots();
+    updateKnots();
   }
 }
 
@@ -657,7 +657,7 @@ void Geom_BSplineCurve::SetKnots(const NCollection_Array1<double>& K)
   CheckCurveData(myPoles, K, myMults, myDeg, myPeriodic);
   myKnots         = K;
   myMaxDerivInvOk = false;
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -696,7 +696,7 @@ void Geom_BSplineCurve::SetPeriodic()
   myPeriodic = true;
 
   myMaxDerivInvOk = false;
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -781,7 +781,7 @@ void Geom_BSplineCurve::SetOrigin(const int Index)
   myKnots         = std::move(newknots);
   myMults         = std::move(newmults);
   myMaxDerivInvOk = false;
-  UpdateKnots();
+  updateKnots();
 }
 
 //=================================================================================================
@@ -808,7 +808,7 @@ void Geom_BSplineCurve::SetOrigin(const double U, const double Tol)
     {
       myKnots.ChangeValue(i) += delta;
     }
-    UpdateKnots();
+    updateKnots();
   }
   // For periodic curve, uf and ul represent the same point
   if (std::abs(U - uf) < Tol || std::abs(U - ul) < Tol)
@@ -871,7 +871,7 @@ void Geom_BSplineCurve::SetNotPeriodic()
     myPeriodic = false;
 
     myMaxDerivInvOk = false;
-    UpdateKnots();
+    updateKnots();
   }
 }
 
@@ -1012,7 +1012,7 @@ void Geom_BSplineCurve::MovePointAndTangent(const double  U,
 
 //=================================================================================================
 
-void Geom_BSplineCurve::UpdateKnots()
+void Geom_BSplineCurve::updateKnots()
 {
   myRational      = myWeights.Size() > 0;
   myMaxDerivInvOk = false;

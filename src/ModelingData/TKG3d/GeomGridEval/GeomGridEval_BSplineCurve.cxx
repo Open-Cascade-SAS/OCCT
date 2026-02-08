@@ -42,7 +42,7 @@ bool extractCurveData(const occ::handle<Geom_BSplineCurve>& theGeom, CurveData& 
   if (theGeom.IsNull())
     return false;
 
-  theData.FlatKnots  = &theGeom->InternalFlatKnots();
+  theData.FlatKnots  = &theGeom->KnotSequence();
   theData.Poles      = &theGeom->Poles();
   theData.Weights    = theGeom->Weights();
   theData.Knots      = &theGeom->Knots();

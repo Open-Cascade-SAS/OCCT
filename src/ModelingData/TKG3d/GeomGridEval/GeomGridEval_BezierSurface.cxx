@@ -33,19 +33,19 @@ constexpr int THE_ISOLINE_THRESHOLD = 8;
 //! @return the built cache
 occ::handle<BSplSLib_Cache> buildBezierCache(const occ::handle<Geom_BezierSurface>& theGeom)
 {
-  const NCollection_Array1<double>& aUFlatKnots = theGeom->InternalUFlatKnots();
-  const NCollection_Array1<double>& aVFlatKnots = theGeom->InternalVFlatKnots();
+  const NCollection_Array1<double>& aUKnotSequence = theGeom->UKnotSequence();
+  const NCollection_Array1<double>& aVKnotSequence = theGeom->VKnotSequence();
   const NCollection_Array2<gp_Pnt>& aPoles      = theGeom->Poles();
   const NCollection_Array2<double>* aWeights    = theGeom->Weights();
 
   occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(theGeom->UDegree(),
                                                           false,
-                                                          aUFlatKnots,
+                                                          aUKnotSequence,
                                                           theGeom->VDegree(),
                                                           false,
-                                                          aVFlatKnots,
+                                                          aVKnotSequence,
                                                           aWeights);
-  aCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+  aCache->BuildCache(0.5, 0.5, aUKnotSequence, aVKnotSequence, aPoles, aWeights);
   return aCache;
 }
 } // namespace
@@ -208,8 +208,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   // Get degrees, flat knots, poles, and weights from geometry
   const int                         aUDegree    = myGeom->UDegree();
   const int                         aVDegree    = myGeom->VDegree();
-  const NCollection_Array1<double>& aUFlatKnots = myGeom->InternalUFlatKnots();
-  const NCollection_Array1<double>& aVFlatKnots = myGeom->InternalVFlatKnots();
+  const NCollection_Array1<double>& aUKnotSequence = myGeom->UKnotSequence();
+  const NCollection_Array1<double>& aVKnotSequence = myGeom->VKnotSequence();
   const NCollection_Array2<gp_Pnt>& aPoles      = myGeom->Poles();
   const NCollection_Array2<double>* aWeights    = myGeom->Weights();
   const bool                        isRational  = (aWeights != nullptr);
@@ -230,8 +230,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
                    0, // V span index (single span for Bezier)
                    aPoles,
                    aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
+                   aUKnotSequence,
+                   aVKnotSequence,
                    nullptr, // U multiplicities (nullptr for flat knots)
                    nullptr, // V multiplicities (nullptr for flat knots)
                    aUDegree,
@@ -301,8 +301,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
   const NCollection_Array2<gp_Pnt>& aPoles      = myGeom->Poles();
   const NCollection_Array2<double>* aWeights    = myGeom->Weights();
   const bool                        isRational  = (aWeights != nullptr);
-  const NCollection_Array1<double>& aUFlatKnots = myGeom->InternalUFlatKnots();
-  const NCollection_Array1<double>& aVFlatKnots = myGeom->InternalVFlatKnots();
+  const NCollection_Array1<double>& aUKnotSequence = myGeom->UKnotSequence();
+  const NCollection_Array1<double>& aVKnotSequence = myGeom->VKnotSequence();
 
   // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = 0; i < aNbU; ++i)
@@ -319,8 +319,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
                    0, // V span index (single span for Bezier with flat knots)
                    aPoles,
                    aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
+                   aUKnotSequence,
+                   aVKnotSequence,
                    nullptr, // no U multiplicities with flat knots
                    nullptr, // no V multiplicities with flat knots
                    aUDegree,

@@ -383,8 +383,8 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
   myURational = false;
   myVRational = false;
 
-  // Init non rational
-  Init(SurfacePoles, nullptr);
+  // init non rational
+  init(SurfacePoles, nullptr);
 }
 
 //=================================================================================================
@@ -446,11 +446,11 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
 
   if (myURational || myVRational)
   {
-    Init(SurfacePoles, &PoleWeights);
+    init(SurfacePoles, &PoleWeights);
   }
   else
   {
-    Init(SurfacePoles, nullptr);
+    init(SurfacePoles, nullptr);
   }
 }
 
@@ -534,8 +534,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                false,
                                myPoles,
                                &myWeights,
-                               BezierKnots(),
-                               BezierUMults(),
+                               UKnots(),
+                               UMultiplicities(),
                                npoles,
                                &nweights,
                                nknots,
@@ -550,8 +550,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                false,
                                myPoles,
                                BSplSLib::NoWeights(),
-                               BezierKnots(),
-                               BezierUMults(),
+                               UKnots(),
+                               UMultiplicities(),
                                npoles,
                                BSplSLib::NoWeights(),
                                nknots,
@@ -577,8 +577,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                false,
                                myPoles,
                                &myWeights,
-                               BezierKnots(),
-                               BezierVMults(),
+                               UKnots(),
+                               VMultiplicities(),
                                npoles,
                                &nweights,
                                nknots,
@@ -593,8 +593,8 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
                                false,
                                myPoles,
                                BSplSLib::NoWeights(),
-                               BezierKnots(),
-                               BezierVMults(),
+                               UKnots(),
+                               VMultiplicities(),
                                npoles,
                                BSplSLib::NoWeights(),
                                nknots,
@@ -899,8 +899,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          VDegree(),
                          0,
                          0,
-                         BezierUFlatKnots(),
-                         BezierVFlatKnots(),
+                         UKnotSequence(),
+                         VKnotSequence(),
                          myPoles,
                          &myWeights,
                          aCoefs,
@@ -918,8 +918,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          VDegree(),
                          0,
                          0,
-                         BezierUFlatKnots(),
-                         BezierVFlatKnots(),
+                         UKnotSequence(),
+                         VKnotSequence(),
                          myPoles,
                          BSplSLib::NoWeights(),
                          aCoefs,
@@ -1320,10 +1320,10 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  1,
                  myPoles,
                  &myWeights,
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1340,10 +1340,10 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  1,
                  myPoles,
                  BSplSLib::NoWeights(),
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1370,10 +1370,10 @@ void Geom_BezierSurface::D1(const double U,
                  1,
                  myPoles,
                  &myWeights,
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1392,10 +1392,10 @@ void Geom_BezierSurface::D1(const double U,
                  1,
                  myPoles,
                  BSplSLib::NoWeights(),
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1428,10 +1428,10 @@ void Geom_BezierSurface::D2(const double U,
                  1,
                  myPoles,
                  &myWeights,
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1454,10 +1454,10 @@ void Geom_BezierSurface::D2(const double U,
                  1,
                  myPoles,
                  BSplSLib::NoWeights(),
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1496,10 +1496,10 @@ void Geom_BezierSurface::D3(const double U,
                  0,
                  myPoles,
                  &myWeights,
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1525,10 +1525,10 @@ void Geom_BezierSurface::D3(const double U,
                  0,
                  myPoles,
                  BSplSLib::NoWeights(),
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1564,10 +1564,10 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  0,
                  myPoles,
                  &myWeights,
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1586,10 +1586,10 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  0,
                  myPoles,
                  BSplSLib::NoWeights(),
-                 BezierKnots(),
-                 BezierKnots(),
-                 &BezierUMults(),
-                 &BezierVMults(),
+                 UKnots(),
+                 UKnots(),
+                 &UMultiplicities(),
+                 &VMultiplicities(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
                  myURational,
@@ -1655,8 +1655,8 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
                   true,
                   myPoles,
                   &myWeights,
-                  BezierKnots(),
-                  &BezierUMults(),
+                  UKnots(),
+                  &UMultiplicities(),
                   (myPoles.ColLength() - 1),
                   false,
                   VCurvePoles,
@@ -1672,8 +1672,8 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
                   true,
                   myPoles,
                   BSplSLib::NoWeights(),
-                  BezierKnots(),
-                  &BezierUMults(),
+                  UKnots(),
+                  &UMultiplicities(),
                   (myPoles.ColLength() - 1),
                   false,
                   VCurvePoles,
@@ -1703,8 +1703,8 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
                   false,
                   myPoles,
                   &myWeights,
-                  BezierKnots(),
-                  &BezierVMults(),
+                  UKnots(),
+                  &VMultiplicities(),
                   (myPoles.RowLength() - 1),
                   false,
                   VCurvePoles,
@@ -1720,8 +1720,8 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
                   false,
                   myPoles,
                   BSplSLib::NoWeights(),
-                  BezierKnots(),
-                  &BezierVMults(),
+                  UKnots(),
+                  &VMultiplicities(),
                   (myPoles.RowLength() - 1),
                   false,
                   VCurvePoles,
@@ -1859,10 +1859,10 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
     {
       BSplSLib::Resolution(myPoles,
                            &myWeights,
-                           BezierKnots(),
-                           BezierKnots(),
-                           BezierUMults(),
-                           BezierVMults(),
+                           UKnots(),
+                           UKnots(),
+                           UMultiplicities(),
+                           VMultiplicities(),
                            (myPoles.ColLength() - 1),
                            (myPoles.RowLength() - 1),
                            myURational,
@@ -1877,10 +1877,10 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
     {
       BSplSLib::Resolution(myPoles,
                            BSplSLib::NoWeights(),
-                           BezierKnots(),
-                           BezierKnots(),
-                           BezierUMults(),
-                           BezierVMults(),
+                           UKnots(),
+                           UKnots(),
+                           UMultiplicities(),
+                           VMultiplicities(),
                            (myPoles.ColLength() - 1),
                            (myPoles.RowLength() - 1),
                            myURational,
@@ -1906,7 +1906,7 @@ occ::handle<Geom_Geometry> Geom_BezierSurface::Copy() const
 
 //=================================================================================================
 
-void Geom_BezierSurface::Init(const NCollection_Array2<gp_Pnt>& thePoles,
+void Geom_BezierSurface::init(const NCollection_Array2<gp_Pnt>& thePoles,
                               const NCollection_Array2<double>* theWeights)
 {
   int NbUPoles = thePoles.ColLength();
@@ -1955,7 +1955,7 @@ void Geom_BezierSurface::DumpJson(Standard_OStream& theOStream, int theDepth) co
 
 //=================================================================================================
 
-const NCollection_Array1<double>& Geom_BezierSurface::BezierKnots() const
+const NCollection_Array1<double>& Geom_BezierSurface::UKnots() const
 {
   static const double                     THE_DATA[2] = {0.0, 1.0};
   static const NCollection_Array1<double> THE_KNOTS(THE_DATA[0], 1, 2);
@@ -1964,7 +1964,14 @@ const NCollection_Array1<double>& Geom_BezierSurface::BezierKnots() const
 
 //=================================================================================================
 
-const NCollection_Array1<int>& Geom_BezierSurface::BezierUMults() const
+const NCollection_Array1<double>& Geom_BezierSurface::VKnots() const
+{
+  return UKnots();
+}
+
+//=================================================================================================
+
+const NCollection_Array1<int>& Geom_BezierSurface::UMultiplicities() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
@@ -1985,7 +1992,7 @@ const NCollection_Array1<int>& Geom_BezierSurface::BezierUMults() const
 
 //=================================================================================================
 
-const NCollection_Array1<int>& Geom_BezierSurface::BezierVMults() const
+const NCollection_Array1<int>& Geom_BezierSurface::VMultiplicities() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
@@ -2006,7 +2013,7 @@ const NCollection_Array1<int>& Geom_BezierSurface::BezierVMults() const
 
 //=================================================================================================
 
-const NCollection_Array1<double>& Geom_BezierSurface::BezierUFlatKnots() const
+const NCollection_Array1<double>& Geom_BezierSurface::UKnotSequence() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
@@ -2021,7 +2028,7 @@ const NCollection_Array1<double>& Geom_BezierSurface::BezierUFlatKnots() const
 
 //=================================================================================================
 
-const NCollection_Array1<double>& Geom_BezierSurface::BezierVFlatKnots() const
+const NCollection_Array1<double>& Geom_BezierSurface::VKnotSequence() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;

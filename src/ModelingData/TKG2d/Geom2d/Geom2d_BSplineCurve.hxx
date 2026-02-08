@@ -840,15 +840,14 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
-  //! Returns the flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalFlatKnots() const { return myFlatKnots; }
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 
-private:
+protected:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
-  Standard_EXPORT void UpdateKnots();
+  void updateKnots();
 
+private:
   NCollection_Array1<gp_Pnt2d> myPoles;
   NCollection_Array1<double>   myWeights;
   NCollection_Array1<double>   myKnots;

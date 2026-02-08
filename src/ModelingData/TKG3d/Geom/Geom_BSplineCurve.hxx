@@ -784,8 +784,6 @@ public:
   //! Returns the weights of the B-spline curve;
   Standard_EXPORT const NCollection_Array1<double>* Weights() const;
 
-  //! Returns the flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalFlatKnots() const { return myFlatKnots; }
 
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;
@@ -814,10 +812,11 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Geom_BSplineCurve, Geom_BoundedCurve)
 
-private:
+protected:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
-  Standard_EXPORT void UpdateKnots();
+  void updateKnots();
 
+private:
   NCollection_Array1<gp_Pnt>   myPoles;
   NCollection_Array1<double>   myWeights;
   NCollection_Array1<double>   myKnots;

@@ -598,48 +598,34 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
-  //! Returns the U knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalUKnots() const { return BezierKnots(); }
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& UKnots() const;
 
-  //! Returns the V knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalVKnots() const { return BezierKnots(); }
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& VKnots() const;
 
-  //! Returns the U multiplicities array for efficient grid evaluation.
-  const NCollection_Array1<int>& InternalUMults() const { return BezierUMults(); }
+  //! Returns Bezier multiplicities for the U degree.
+  Standard_EXPORT const NCollection_Array1<int>& UMultiplicities() const;
 
-  //! Returns the V multiplicities array for efficient grid evaluation.
-  const NCollection_Array1<int>& InternalVMults() const { return BezierVMults(); }
+  //! Returns Bezier multiplicities for the V degree.
+  Standard_EXPORT const NCollection_Array1<int>& VMultiplicities() const;
 
-  //! Returns the U flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalUFlatKnots() const { return BezierUFlatKnots(); }
+  //! Returns Bezier flat knots for the U degree.
+  Standard_EXPORT const NCollection_Array1<double>& UKnotSequence() const;
 
-  //! Returns the V flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalVFlatKnots() const { return BezierVFlatKnots(); }
+  //! Returns Bezier flat knots for the V degree.
+  Standard_EXPORT const NCollection_Array1<double>& VKnotSequence() const;
 
   DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
-private:
-  //! Returns Bezier knots {0.0, 1.0} as a static array.
-  Standard_EXPORT const NCollection_Array1<double>& BezierKnots() const;
-
-  //! Returns Bezier multiplicities for the U degree.
-  Standard_EXPORT const NCollection_Array1<int>& BezierUMults() const;
-
-  //! Returns Bezier multiplicities for the V degree.
-  Standard_EXPORT const NCollection_Array1<int>& BezierVMults() const;
-
-  //! Returns Bezier flat knots for the U degree.
-  Standard_EXPORT const NCollection_Array1<double>& BezierUFlatKnots() const;
-
-  //! Returns Bezier flat knots for the V degree.
-  Standard_EXPORT const NCollection_Array1<double>& BezierVFlatKnots() const;
-
+protected:
   //! Set poles to thePoles, weights to theWeights.
   //! If theWeights is null the surface is non rational.
   //! Update rational flags.
-  void Init(const NCollection_Array2<gp_Pnt>& thePoles,
+  void init(const NCollection_Array2<gp_Pnt>& thePoles,
             const NCollection_Array2<double>* theWeights);
 
+private:
   NCollection_Array2<gp_Pnt> myPoles;
   NCollection_Array2<double> myWeights;
   bool                       myURational     = false;

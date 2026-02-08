@@ -302,33 +302,25 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
-  //! Returns the knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalKnots() const { return BezierKnots(); }
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& Knots() const;
 
-  //! Returns the multiplicities array for efficient grid evaluation.
-  const NCollection_Array1<int>& InternalMults() const { return BezierMults(); }
+  //! Returns Bezier multiplicities for the current degree.
+  Standard_EXPORT const NCollection_Array1<int>& Multiplicities() const;
 
-  //! Returns the flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalFlatKnots() const { return BezierFlatKnots(); }
+  //! Returns Bezier flat knots for the current degree.
+  Standard_EXPORT const NCollection_Array1<double>& KnotSequence() const;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_BezierCurve, Geom2d_BoundedCurve)
 
-private:
-  //! Returns Bezier knots {0.0, 1.0} as a static array.
-  Standard_EXPORT const NCollection_Array1<double>& BezierKnots() const;
-
-  //! Returns Bezier multiplicities for the current degree.
-  Standard_EXPORT const NCollection_Array1<int>& BezierMults() const;
-
-  //! Returns Bezier flat knots for the current degree.
-  Standard_EXPORT const NCollection_Array1<double>& BezierFlatKnots() const;
-
+protected:
   //! Set poles to thePoles, weights to theWeights.
   //! If theWeights is null the curve is non rational.
   //! Update rational and closed.
-  void Init(const NCollection_Array1<gp_Pnt2d>& thePoles,
+  void init(const NCollection_Array1<gp_Pnt2d>& thePoles,
             const NCollection_Array1<double>*   theWeights);
 
+private:
   NCollection_Array1<gp_Pnt2d> myPoles;
   NCollection_Array1<double>   myWeights;
   bool                         myRational      = false;

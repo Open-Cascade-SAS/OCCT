@@ -47,8 +47,8 @@ bool extractSurfaceData(const occ::handle<Geom_BSplineSurface>& theGeom, Surface
   if (theGeom.IsNull())
     return false;
 
-  theData.UFlatKnots  = &theGeom->InternalUFlatKnots();
-  theData.VFlatKnots  = &theGeom->InternalVFlatKnots();
+  theData.UFlatKnots  = &theGeom->UKnotSequence();
+  theData.VFlatKnots  = &theGeom->VKnotSequence();
   theData.Poles       = &theGeom->Poles();
   theData.Weights     = theGeom->Weights();
   theData.UDegree     = theGeom->UDegree();

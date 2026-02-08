@@ -938,7 +938,7 @@ void Geom_BSplineSurface::SetUPeriodic()
   myUPeriodic = true;
 
   myMaxDerivInvOk = false;
-  UpdateUKnots();
+  updateUKnots();
 }
 
 //=================================================================================================
@@ -972,7 +972,7 @@ void Geom_BSplineSurface::SetVPeriodic()
   myVPeriodic = true;
 
   myMaxDerivInvOk = false;
-  UpdateVKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -1069,7 +1069,7 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
   myPoles  = std::move(newpoles);
   myUKnots = std::move(newknots);
   myUMults = std::move(newmults);
-  UpdateUKnots();
+  updateUKnots();
 }
 
 //=================================================================================================
@@ -1166,7 +1166,7 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
   myPoles  = std::move(newpoles);
   myVKnots = std::move(newknots);
   myVMults = std::move(newmults);
-  UpdateVKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -1219,7 +1219,7 @@ void Geom_BSplineSurface::SetUNotPeriodic()
     myUPeriodic = false;
 
     myMaxDerivInvOk = false;
-    UpdateUKnots();
+    updateUKnots();
   }
 }
 
@@ -1273,7 +1273,7 @@ void Geom_BSplineSurface::SetVNotPeriodic()
     myVPeriodic = false;
 
     myMaxDerivInvOk = false;
-    UpdateVKnots();
+    updateVKnots();
   }
 }
 
@@ -1489,7 +1489,7 @@ void Geom_BSplineSurface::UReverse()
   BSplSLib::Reverse(myPoles, last, true);
   if (myURational || myVRational)
     BSplSLib::Reverse(myWeights, last, true);
-  UpdateUKnots();
+  updateUKnots();
 }
 
 //=================================================================================================
@@ -1513,7 +1513,7 @@ void Geom_BSplineSurface::VReverse()
   BSplSLib::Reverse(myPoles, last, false);
   if (myURational || myVRational)
     BSplSLib::Reverse(myWeights, last, false);
-  UpdateVKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -1821,7 +1821,7 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
   myPoles  = std::move(npoles);
   myUKnots = std::move(nknots);
   myUMults = std::move(nmults);
-  UpdateUKnots();
+  updateUKnots();
 }
 
 //=================================================================================================
@@ -1895,7 +1895,7 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
   myPoles  = std::move(npoles);
   myVKnots = std::move(nknots);
   myVMults = std::move(nmults);
-  UpdateVKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -1969,7 +1969,7 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
   myUMults = std::move(nmults);
 
   myMaxDerivInvOk = false;
-  UpdateUKnots();
+  updateUKnots();
   return true;
 }
 
@@ -2043,7 +2043,7 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
   myVKnots        = std::move(nknots);
   myVMults        = std::move(nmults);
   myMaxDerivInvOk = false;
-  UpdateVKnots();
+  updateVKnots();
   return true;
 }
 

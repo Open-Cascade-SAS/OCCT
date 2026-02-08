@@ -23,13 +23,13 @@ namespace
 //! @return initialized cache ready for evaluation
 occ::handle<BSplCLib_Cache> CreateBezierCache(const occ::handle<Geom_BezierCurve>& theCurve)
 {
-  const NCollection_Array1<double>& aFlatKnots = theCurve->InternalFlatKnots();
+  const NCollection_Array1<double>& aKnotSequence = theCurve->KnotSequence();
   const NCollection_Array1<gp_Pnt>& aPoles     = theCurve->Poles();
   const NCollection_Array1<double>* aWeights   = theCurve->Weights();
 
   occ::handle<BSplCLib_Cache> aCache =
-    new BSplCLib_Cache(theCurve->Degree(), false, aFlatKnots, aPoles, aWeights);
-  aCache->BuildCache(0.5, aFlatKnots, aPoles, aWeights);
+    new BSplCLib_Cache(theCurve->Degree(), false, aKnotSequence, aPoles, aWeights);
+  aCache->BuildCache(0.5, aKnotSequence, aPoles, aWeights);
   return aCache;
 }
 } // namespace
@@ -162,7 +162,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
   // Get poles, weights, and flat knots from geometry
   const NCollection_Array1<gp_Pnt>& aPoles     = myGeom->Poles();
   const NCollection_Array1<double>* aWeights   = myGeom->Weights();
-  const NCollection_Array1<double>& aFlatKnots = myGeom->InternalFlatKnots();
+  const NCollection_Array1<double>& aKnotSequence = myGeom->KnotSequence();
 
   // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
@@ -175,7 +175,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
                  false, // not periodic
                  aPoles,
                  aWeights,
-                 aFlatKnots,
+                 aKnotSequence,
                  nullptr, // no multiplicities with flat knots
                  aDN);
     aResult.SetValue(i - theParams.Lower() + 1, aDN);

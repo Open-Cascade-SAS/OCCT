@@ -78,8 +78,8 @@ Geom_BezierCurve::Geom_BezierCurve(const NCollection_Array1<gp_Pnt>& Poles)
   if (nbpoles < 2 || nbpoles > (Geom_BezierCurve::MaxDegree() + 1))
     throw Standard_ConstructionError();
 
-  // Init non rational
-  Init(Poles, nullptr);
+  // init non rational
+  init(Poles, nullptr);
 }
 
 //=================================================================================================
@@ -107,11 +107,11 @@ Geom_BezierCurve::Geom_BezierCurve(const NCollection_Array1<gp_Pnt>& Poles,
   // check really rational
   if (Rational(Weights))
   {
-    Init(Poles, &Weights);
+    init(Poles, &Weights);
   }
   else
   {
-    Init(Poles, nullptr);
+    init(Poles, nullptr);
   }
 }
 
@@ -141,13 +141,13 @@ void Geom_BezierCurve::Increase(const int Deg)
                              false,
                              myPoles,
                              &myWeights,
-                             BezierKnots(),
-                             BezierMults(),
+                             Knots(),
+                             Multiplicities(),
                              npoles,
                              &nweights,
                              nknots,
                              nmults);
-    Init(npoles, &nweights);
+    init(npoles, &nweights);
   }
   else
   {
@@ -156,13 +156,13 @@ void Geom_BezierCurve::Increase(const int Deg)
                              false,
                              myPoles,
                              BSplCLib::NoWeights(),
-                             BezierKnots(),
-                             BezierMults(),
+                             Knots(),
+                             Multiplicities(),
                              npoles,
                              BSplCLib::NoWeights(),
                              nknots,
                              nmults);
-    Init(npoles, nullptr);
+    init(npoles, nullptr);
   }
 }
 
@@ -226,11 +226,11 @@ void Geom_BezierCurve::InsertPoleAfter(const int Index, const gp_Pnt& P, const d
       else
         nweights(i + 1) = 1.;
 
-    Init(npoles, &nweights);
+    init(npoles, &nweights);
   }
   else
   {
-    Init(npoles, nullptr);
+    init(npoles, nullptr);
   }
 }
 
@@ -282,11 +282,11 @@ void Geom_BezierCurve::RemovePole(const int Index)
     for (i = Index + 1; i <= nbpoles; i++)
       nweights(i - 1) = myWeights(i);
 
-    Init(npoles, &nweights);
+    init(npoles, &nweights);
   }
   else
   {
-    Init(npoles, nullptr);
+    init(npoles, nullptr);
   }
 }
 
@@ -342,7 +342,7 @@ void Geom_BezierCurve::Segment(const double U1, const double U2)
                          1.0,
                          false,
                          aDeg,
-                         BezierFlatKnots(),
+                         KnotSequence(),
                          myPoles,
                          &myWeights,
                          coeffs,
@@ -356,7 +356,7 @@ void Geom_BezierCurve::Segment(const double U1, const double U2)
                          1.0,
                          false,
                          aDeg,
-                         BezierFlatKnots(),
+                         KnotSequence(),
                          myPoles,
                          BSplCLib::NoWeights(),
                          coeffs,
@@ -508,7 +508,7 @@ gp_Vec Geom_BezierCurve::DN(const double U, const int N) const
 
   const int aDeg = myPoles.Size() - 1;
 
-  BSplCLib::DN(U, N, 0, aDeg, false, myPoles, Weights(), BezierKnots(), &BezierMults(), V);
+  BSplCLib::DN(U, N, 0, aDeg, false, myPoles, Weights(), Knots(), &Multiplicities(), V);
   return V;
 }
 
@@ -622,7 +622,7 @@ void Geom_BezierCurve::Resolution(const double Tolerance3D, double& UTolerance)
     BSplCLib::Resolution(myPoles,
                          Weights(),
                          myPoles.Length(),
-                         BezierFlatKnots(),
+                         KnotSequence(),
                          aDeg,
                          1.,
                          myMaxDerivInv);
@@ -640,7 +640,7 @@ occ::handle<Geom_Geometry> Geom_BezierCurve::Copy() const
 
 //=================================================================================================
 
-void Geom_BezierCurve::Init(const NCollection_Array1<gp_Pnt>& thePoles,
+void Geom_BezierCurve::init(const NCollection_Array1<gp_Pnt>& thePoles,
                             const NCollection_Array1<double>* theWeights)
 {
   int nbpoles = thePoles.Length();
@@ -648,21 +648,24 @@ void Geom_BezierCurve::Init(const NCollection_Array1<gp_Pnt>& thePoles,
   myClosed =
     thePoles(thePoles.Lower()).Distance(thePoles(thePoles.Upper())) <= Precision::Confusion();
 
-  // rational
-  myRational = (theWeights != nullptr);
-
   // set fields
   myPoles.Resize(1, nbpoles, false);
   myPoles = thePoles;
 
-  if (myRational)
+  if (theWeights != nullptr)
   {
     myWeights.Resize(1, nbpoles, false);
     myWeights = *theWeights;
+    myRational = Rational(myWeights);
+    if (!myRational)
+    {
+      myWeights = NCollection_Array1<double>();
+    }
   }
   else
   {
-    myWeights = NCollection_Array1<double>();
+    myRational = false;
+    myWeights  = NCollection_Array1<double>();
   }
 
   myMaxDerivInv   = 0.0;
@@ -690,7 +693,7 @@ void Geom_BezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) cons
 
 //=================================================================================================
 
-const NCollection_Array1<double>& Geom_BezierCurve::BezierKnots() const
+const NCollection_Array1<double>& Geom_BezierCurve::Knots() const
 {
   static const double                     THE_DATA[2] = {0.0, 1.0};
   static const NCollection_Array1<double> THE_KNOTS(THE_DATA[0], 1, 2);
@@ -699,7 +702,7 @@ const NCollection_Array1<double>& Geom_BezierCurve::BezierKnots() const
 
 //=================================================================================================
 
-const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
+const NCollection_Array1<int>& Geom_BezierCurve::Multiplicities() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
   constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
@@ -720,7 +723,7 @@ const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
 
 //=================================================================================================
 
-const NCollection_Array1<double>& Geom_BezierCurve::BezierFlatKnots() const
+const NCollection_Array1<double>& Geom_BezierCurve::KnotSequence() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
   constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;

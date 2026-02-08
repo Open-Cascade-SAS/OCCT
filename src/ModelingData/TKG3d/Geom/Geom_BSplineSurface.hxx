@@ -1076,11 +1076,6 @@ public:
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
 
-  //! Returns the U flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalUFlatKnots() const { return myUFlatKnots; }
-
-  //! Returns the V flat knots array for efficient grid evaluation.
-  const NCollection_Array1<double>& InternalVFlatKnots() const { return myVFlatKnots; }
 
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
@@ -1287,15 +1282,14 @@ protected:
                const bool   SegmentInU,
                const bool   SegmentInV);
 
+protected:
+  //! Recompute the flatknots, the knotsdistribution, the continuity for U.
+  void updateUKnots();
+
+  //! Recompute the flatknots, the knotsdistribution, the continuity for V.
+  void updateVKnots();
+
 private:
-  //! Recompute the flatknots, the knotsdistribution, the
-  //! continuity for U.
-  Standard_EXPORT void UpdateUKnots();
-
-  //! Recompute the flatknots, the knotsdistribution, the
-  //! continuity for V.
-  Standard_EXPORT void UpdateVKnots();
-
   NCollection_Array2<gp_Pnt>   myPoles;
   NCollection_Array2<double>   myWeights;
   NCollection_Array1<double>   myUKnots;

@@ -199,8 +199,8 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
   myVMults.Resize(1, VMults.Length(), false);
   myVMults.Assign(VMults);
 
-  UpdateUKnots();
-  UpdateVKnots();
+  updateUKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -276,8 +276,8 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
   myVMults.Resize(1, VMults.Length(), false);
   myVMults.Assign(VMults);
 
-  UpdateUKnots();
-  UpdateVKnots();
+  updateUKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -319,8 +319,8 @@ void Geom_BSplineSurface::ExchangeUV()
   std::swap(myUKnots, myVKnots);
   std::swap(myUMults, myVMults);
 
-  UpdateUKnots();
-  UpdateVKnots();
+  updateUKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -384,7 +384,7 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
     myPoles  = std::move(npoles);
     myUKnots = std::move(nknots);
     myUMults = std::move(nmults);
-    UpdateUKnots();
+    updateUKnots();
   }
 
   if (VDegree != myVDeg)
@@ -444,7 +444,7 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
     myPoles  = std::move(npoles);
     myVKnots = std::move(nknots);
     myVMults = std::move(nmults);
-    UpdateVKnots();
+    updateVKnots();
   }
 }
 
@@ -775,8 +775,8 @@ void Geom_BSplineSurface::segment(const double U1,
   myPoles  = std::move(npoles);
 
   myMaxDerivInvOk = false;
-  UpdateUKnots();
-  UpdateVKnots();
+  updateUKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -862,7 +862,7 @@ void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K)
   {
     myUKnots.SetValue(NewIndex, K);
     myMaxDerivInvOk = false;
-    UpdateUKnots();
+    updateUKnots();
   }
 }
 
@@ -906,7 +906,7 @@ void Geom_BSplineSurface::SetUKnots(const NCollection_Array1<double>& UK)
   }
 
   myMaxDerivInvOk = false;
-  UpdateUKnots();
+  updateUKnots();
 }
 
 //=================================================================================================
@@ -951,7 +951,7 @@ void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K)
   {
     myVKnots.SetValue(NewIndex, K);
     myMaxDerivInvOk = false;
-    UpdateVKnots();
+    updateVKnots();
   }
 }
 
@@ -995,7 +995,7 @@ void Geom_BSplineSurface::SetVKnots(const NCollection_Array1<double>& VK)
   }
 
   myMaxDerivInvOk = false;
-  UpdateVKnots();
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -1058,7 +1058,7 @@ void Geom_BSplineSurface::IncrementVMultiplicity(const int FromI1, const int ToI
 
 //=================================================================================================
 
-void Geom_BSplineSurface::UpdateUKnots()
+void Geom_BSplineSurface::updateUKnots()
 {
   myMaxDerivInvOk = false;
 
@@ -1104,7 +1104,7 @@ void Geom_BSplineSurface::UpdateUKnots()
 
 //=================================================================================================
 
-void Geom_BSplineSurface::UpdateVKnots()
+void Geom_BSplineSurface::updateVKnots()
 {
   myMaxDerivInvOk = false;
 
