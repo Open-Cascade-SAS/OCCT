@@ -322,7 +322,7 @@ TEST_F(Geom_BSplineCurve_Test, Transform)
 TEST_F(Geom_BSplineCurve_Test, PeriodicCurve)
 {
   // Periodic BSpline: NbPoles = Sum(Mults) - Mults(last)
-  // 5 poles, degree 3, 6 knots of mult 1 → NbPoles = 1+4 = 5
+  // 5 poles, degree 3, 6 knots of mult 1 -> NbPoles = 1+4 = 5
   NCollection_Array1<gp_Pnt> aPoles(1, 5);
   aPoles(1) = gp_Pnt(1, 0, 0);
   aPoles(2) = gp_Pnt(0.309, 0.951, 0);
@@ -536,7 +536,7 @@ TEST_F(Geom_BSplineCurve_Test, IsEqual)
 TEST_F(Geom_BSplineCurve_Test, KnotDistribution)
 {
   GeomAbs_BSplKnotDistribution aDistr = myOriginalCurve->KnotDistribution();
-  // Single span with end mults = degree+1 → PiecewiseBezier
+  // Single span with end mults = degree+1 -> PiecewiseBezier
   EXPECT_EQ(aDistr, GeomAbs_PiecewiseBezier);
 }
 
@@ -625,7 +625,7 @@ TEST_F(Geom_BSplineCurve_Test, PeriodicCurve_SetOrigin)
   aCurve->SetOrigin(3);
   EXPECT_TRUE(aCurve->IsPeriodic());
 
-  // Curve shape unchanged, just reparameterized — can evaluate without crash
+  // Curve shape unchanged, just reparameterized -- can evaluate without crash
   gp_Pnt aVal2 = aCurve->Value(aCurve->FirstParameter());
   EXPECT_GT(aVal2.X() * aVal2.X() + aVal2.Y() * aVal2.Y(), 0.0);
 }

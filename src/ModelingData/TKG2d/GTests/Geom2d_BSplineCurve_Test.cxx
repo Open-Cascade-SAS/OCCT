@@ -266,7 +266,7 @@ TEST_F(Geom2d_BSplineCurve_Test, Transform)
 
 TEST_F(Geom2d_BSplineCurve_Test, PeriodicCurve)
 {
-  // Periodic BSpline: degree 3, 6 knots of mult 1 → NbPoles = 1+4 = 5
+  // Periodic BSpline: degree 3, 6 knots of mult 1 -> NbPoles = 1+4 = 5
   NCollection_Array1<gp_Pnt2d> aPoles(1, 5);
   aPoles(1) = gp_Pnt2d(1, 0);
   aPoles(2) = gp_Pnt2d(0.309, 0.951);

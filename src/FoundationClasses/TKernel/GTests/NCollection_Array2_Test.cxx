@@ -400,7 +400,7 @@ TEST(NCollection_Array2Test, Resize_FromEmpty)
   EXPECT_EQ(0, anEmpty.NbRows());
   EXPECT_EQ(0, anEmpty.NbColumns());
 
-  // Resize with copy (from empty — nothing to copy, but must not dereference null).
+  // Resize with copy (from empty -- nothing to copy, but must not dereference null).
   anEmpty.Resize(1, 3, 1, 2, true);
   EXPECT_EQ(3, anEmpty.NbRows());
   EXPECT_EQ(2, anEmpty.NbColumns());

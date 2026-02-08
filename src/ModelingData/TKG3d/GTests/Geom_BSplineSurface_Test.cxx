@@ -408,7 +408,7 @@ TEST_F(Geom_BSplineSurface_Test, WeightsAccess_NonRational)
 
 TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetUNotPeriodic)
 {
-  // U-periodic surface: degree 2, 4 U-knots of mult 1 → NbUPoles = 1+2 = 3
+  // U-periodic surface: degree 2, 4 U-knots of mult 1 -> NbUPoles = 1+2 = 3
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
@@ -446,7 +446,7 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetUNotPeriodic)
 
 TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetVNotPeriodic)
 {
-  // V-periodic surface: degree 2, 4 V-knots of mult 1 → NbVPoles = 1+2 = 3
+  // V-periodic surface: degree 2, 4 V-knots of mult 1 -> NbVPoles = 1+2 = 3
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)

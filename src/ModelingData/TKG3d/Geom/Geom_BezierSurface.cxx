@@ -605,7 +605,15 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     }
     myPoles = std::move(npoles);
   }
-  Init(myPoles, (myURational || myVRational) ? &myWeights : nullptr);
+  if (myURational || myVRational)
+  {
+    Rational(myWeights, myURational, myVRational);
+    if (!(myURational || myVRational))
+    {
+      myWeights = NCollection_Array2<double>();
+    }
+  }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================

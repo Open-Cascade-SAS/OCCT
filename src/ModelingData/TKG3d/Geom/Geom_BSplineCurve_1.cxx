@@ -728,45 +728,50 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
 bool Geom_BSplineCurve::IsEqual(const occ::handle<Geom_BSplineCurve>& theOther,
                                 const double                          thePreci) const
 {
-  if (myKnots.IsEmpty() || myPoles.IsEmpty() || myMults.IsEmpty())
-    return false;
-  if (myDeg != theOther->Degree())
-    return false;
-  if (myKnots.Length() != theOther->NbKnots() || myPoles.Length() != theOther->NbPoles())
-    return false;
-
-  int i = 1;
-  for (i = 1; i <= myPoles.Length(); i++)
+  if (myKnots.IsEmpty() || myPoles.IsEmpty() || myMults.IsEmpty()
+      || myDeg != theOther->Degree() || myRational != theOther->IsRational()
+      || myKnots.Length() != theOther->NbKnots() || myPoles.Length() != theOther->NbPoles())
   {
-    const gp_Pnt& aPole1 = myPoles(i);
-    const gp_Pnt& aPole2 = theOther->Pole(i);
+    return false;
+  }
+
+  for (int aPoleIter = 1; aPoleIter <= myPoles.Length(); ++aPoleIter)
+  {
+    const gp_Pnt& aPole1 = myPoles(aPoleIter);
+    const gp_Pnt& aPole2 = theOther->Pole(aPoleIter);
     if (fabs(aPole1.X() - aPole2.X()) > thePreci || fabs(aPole1.Y() - aPole2.Y()) > thePreci
         || fabs(aPole1.Z() - aPole2.Z()) > thePreci)
-      return false;
-  }
-
-  for (; i <= myKnots.Length(); i++)
   {
-    if (fabs(myKnots(i) - theOther->Knot(i)) > Precision::Parametric(thePreci))
       return false;
   }
+  }
 
-  for (i = 1; i <= myMults.Length(); i++)
+  for (int aKnotIter = 1; aKnotIter <= myKnots.Length(); ++aKnotIter)
   {
-    if (myMults(i) != theOther->Multiplicity(i))
+    if (fabs(myKnots(aKnotIter) - theOther->Knot(aKnotIter)) > Precision::Parametric(thePreci))
+    {
       return false;
+    }
   }
 
-  if (myRational != theOther->IsRational())
-    return false;
+  for (int aMultIter = 1; aMultIter <= myMults.Length(); ++aMultIter)
+  {
+    if (myMults(aMultIter) != theOther->Multiplicity(aMultIter))
+    {
+      return false;
+    }
+  }
 
   if (!myRational)
     return true;
 
-  for (i = 1; i <= myWeights.Length(); i++)
+  for (int aWeightIter = 1; aWeightIter <= myWeights.Length(); ++aWeightIter)
   {
-    if (fabs(double(myWeights(i) - theOther->Weight(i))) > Epsilon(myWeights(i)))
+    if (fabs(double(myWeights(aWeightIter) - theOther->Weight(aWeightIter)))
+        > Epsilon(myWeights(aWeightIter)))
+        {
       return false;
+        }
   }
   return true;
 }
