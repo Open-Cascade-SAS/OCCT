@@ -1308,15 +1308,15 @@ private:
   int                              myVDeg = 0;
   bool                             myUPeriodic = false;
   bool                             myVPeriodic = false;
-  bool                             urational;
-  bool                             vrational;
-  GeomAbs_BSplKnotDistribution     uknotSet;
-  GeomAbs_BSplKnotDistribution     vknotSet;
-  GeomAbs_Shape                    Usmooth;
-  GeomAbs_Shape                    Vsmooth;
-  double                           umaxderivinv;
-  double                           vmaxderivinv;
-  bool                             maxderivinvok;
+  bool                             myURational = false;
+  bool                             myVRational = false;
+  GeomAbs_BSplKnotDistribution     myUKnotSet = GeomAbs_NonUniform;
+  GeomAbs_BSplKnotDistribution     myVKnotSet = GeomAbs_NonUniform;
+  GeomAbs_Shape                    myUSmooth = GeomAbs_C0;
+  GeomAbs_Shape                    myVSmooth = GeomAbs_C0;
+  double                           myUMaxDerivInv = 0.0;
+  double                           myVMaxDerivInv = 0.0;
+  bool                             myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineSurface_HeaderFile

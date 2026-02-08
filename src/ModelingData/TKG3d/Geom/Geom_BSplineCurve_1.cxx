@@ -38,7 +38,7 @@ bool Geom_BSplineCurve::IsCN(const int N) const
 {
   Standard_RangeError_Raise_if(N < 0, "Geom_BSplineCurve::IsCN");
 
-  switch (smooth)
+  switch (mySmooth)
   {
     case GeomAbs_CN:
       return true;
@@ -152,7 +152,7 @@ bool Geom_BSplineCurve::IsPeriodic() const
 
 GeomAbs_Shape Geom_BSplineCurve::Continuity() const
 {
-  return smooth;
+  return mySmooth;
 }
 
 //=================================================================================================
@@ -313,7 +313,7 @@ double Geom_BSplineCurve::Knot(const int Index) const
 
 GeomAbs_BSplKnotDistribution Geom_BSplineCurve::KnotDistribution() const
 {
-  return knotSet;
+  return myKnotSet;
 }
 
 //=================================================================================================
@@ -611,7 +611,7 @@ const NCollection_Array1<double>* Geom_BSplineCurve::Weights() const
 
 bool Geom_BSplineCurve::IsRational() const
 {
-  return rational;
+  return myRational;
 }
 
 //=================================================================================================
@@ -620,7 +620,7 @@ void Geom_BSplineCurve::Transform(const gp_Trsf& T)
 {
   for (int I = 1; I <= myPoles.Length(); I++)
     myPoles.ChangeValue(I).Transform(T);
-  maxderivinvok = false;
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -681,7 +681,7 @@ void Geom_BSplineCurve::LocateU(const double U,
 
 void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
 {
-  if (!maxderivinvok)
+  if (!myMaxDerivInvOk)
   {
     if (myPeriodic)
     {
@@ -693,7 +693,7 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
       {
         new_poles(ii) = myPoles((ii - 1) % myPoles.Length() + 1);
       }
-      if (rational)
+      if (myRational)
       {
         for (int ii = 1; ii <= NbPoles; ii++)
         {
@@ -701,12 +701,12 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
         }
       }
       BSplCLib::Resolution(new_poles,
-                           rational ? &new_weights : BSplCLib::NoWeights(),
+                           myRational ? &new_weights : BSplCLib::NoWeights(),
                            new_poles.Length(),
                            myFlatKnots,
                            myDeg,
                            1.,
-                           maxderivinv);
+                           myMaxDerivInv);
     }
     else
     {
@@ -716,11 +716,11 @@ void Geom_BSplineCurve::Resolution(const double Tolerance3D, double& UTolerance)
                            myFlatKnots,
                            myDeg,
                            1.,
-                           maxderivinv);
+                           myMaxDerivInv);
     }
-    maxderivinvok = true;
+    myMaxDerivInvOk = true;
   }
-  UTolerance = Tolerance3D * maxderivinv;
+  UTolerance = Tolerance3D * myMaxDerivInv;
 }
 
 //=================================================================================================
@@ -757,10 +757,10 @@ bool Geom_BSplineCurve::IsEqual(const occ::handle<Geom_BSplineCurve>& theOther,
       return false;
   }
 
-  if (rational != theOther->IsRational())
+  if (myRational != theOther->IsRational())
     return false;
 
-  if (!rational)
+  if (!myRational)
     return true;
 
   for (i = 1; i <= myWeights.Length(); i++)

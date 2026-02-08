@@ -364,18 +364,18 @@ static void DeleteRatPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
 Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
     : myPoles(theOther.myPoles),
       myWeights(theOther.myWeights),
-      urational(theOther.urational),
-      vrational(theOther.vrational),
-      umaxderivinv(theOther.umaxderivinv),
-      vmaxderivinv(theOther.vmaxderivinv),
-      maxderivinvok(false)
+      myURational(theOther.myURational),
+      myVRational(theOther.myVRational),
+      myUMaxDerivInv(theOther.myUMaxDerivInv),
+      myVMaxDerivInv(theOther.myVMaxDerivInv),
+      myMaxDerivInvOk(false)
 {
 }
 
 //=================================================================================================
 
 Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& SurfacePoles)
-    : maxderivinvok(false)
+    : myMaxDerivInvOk(false)
 {
   int NbUPoles = SurfacePoles.ColLength();
   int NbVPoles = SurfacePoles.RowLength();
@@ -384,8 +384,8 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
     throw Standard_ConstructionError();
   }
 
-  urational = false;
-  vrational = false;
+  myURational = false;
+  myVRational = false;
 
   // Init non rational
   Init(SurfacePoles, nullptr);
@@ -395,7 +395,7 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
 
 Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& SurfacePoles,
                                        const NCollection_Array2<double>& PoleWeights)
-    : maxderivinvok(false)
+    : myMaxDerivInvOk(false)
 {
   int NbUPoles = SurfacePoles.ColLength();
   int NbVPoles = SurfacePoles.RowLength();
@@ -421,34 +421,34 @@ Geom_BezierSurface::Geom_BezierSurface(const NCollection_Array2<gp_Pnt>& Surface
   }
 
   int I, J;
-  urational = false;
-  vrational = false;
+  myURational = false;
+  myVRational = false;
   J         = PoleWeights.LowerCol();
-  while (!vrational && J <= PoleWeights.UpperCol())
+  while (!myVRational && J <= PoleWeights.UpperCol())
   {
     I = PoleWeights.LowerRow();
-    while (!vrational && I <= PoleWeights.UpperRow() - 1)
+    while (!myVRational && I <= PoleWeights.UpperRow() - 1)
     {
-      vrational = (std::abs(PoleWeights(I, J) - PoleWeights(I + 1, J))
+      myVRational = (std::abs(PoleWeights(I, J) - PoleWeights(I + 1, J))
                    > Epsilon(std::abs(PoleWeights(I, J))));
       I++;
     }
     J++;
   }
   I = PoleWeights.LowerRow();
-  while (!urational && I <= PoleWeights.UpperRow())
+  while (!myURational && I <= PoleWeights.UpperRow())
   {
     J = PoleWeights.LowerCol();
-    while (!urational && J <= PoleWeights.UpperCol() - 1)
+    while (!myURational && J <= PoleWeights.UpperCol() - 1)
     {
-      urational = (std::abs(PoleWeights(I, J) - PoleWeights(I, J + 1))
+      myURational = (std::abs(PoleWeights(I, J) - PoleWeights(I, J + 1))
                    > Epsilon(std::abs(PoleWeights(I, J))));
       J++;
     }
     I++;
   }
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     Init(SurfacePoles, &PoleWeights);
   }
@@ -476,7 +476,7 @@ void Geom_BezierSurface::ExchangeUV()
 
   NCollection_Array2<gp_Pnt> npoles(LC, UC, LR, UR);
   NCollection_Array2<double> nweights;
-  bool                       rat = (urational || vrational);
+  bool                       rat = (myURational || myVRational);
   if (rat)
   {
     nweights.Resize(LC, UC, LR, UR, false);
@@ -499,7 +499,8 @@ void Geom_BezierSurface::ExchangeUV()
     myWeights = std::move(nweights);
   }
 
-  std::swap(urational, vrational);
+  std::swap(myURational, myVRational);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -527,7 +528,7 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     NCollection_Array1<double> nknots(aKnotsBuf[0], 1, 2);
     NCollection_Array1<int>    nmults(aMultsBuf[0], 1, 2);
 
-    if (urational || vrational)
+    if (myURational || myVRational)
     {
       NCollection_Array2<double> nweights(1, UDeg + 1, 1, VDegree() + 1);
 
@@ -570,7 +571,7 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     NCollection_Array1<double> nknots(aKnotsBuf[0], 1, 2);
     NCollection_Array1<int>    nmults(aMultsBuf[0], 1, 2);
 
-    if (urational || vrational)
+    if (myURational || myVRational)
     {
       NCollection_Array2<double> nweights(1, UDeg + 1, 1, VDeg + 1);
 
@@ -605,7 +606,7 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
     }
     myPoles = std::move(npoles);
   }
-  Init(myPoles, (urational || vrational) ? &myWeights : nullptr);
+  Init(myPoles, (myURational || myVRational) ? &myWeights : nullptr);
 }
 
 //=================================================================================================
@@ -624,7 +625,7 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
   int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles, 1, NbVPoles + 1);
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     NCollection_Array2<double> nweights(1, NbUPoles, 1, NbVPoles + 1);
 
@@ -645,6 +646,7 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
     AddPoleCol(myPoles, CPoles, VIndex, npoles);
   }
   myPoles = std::move(npoles);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -673,7 +675,7 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
   int NbVPoles = myPoles.RowLength();
 
   // Ensure weights exist for rational insertion
-  if (!(urational || vrational))
+  if (!(myURational || myVRational))
   {
     myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
     myWeights.Init(1.0);
@@ -693,7 +695,8 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
   myPoles = std::move(npoles);
   myWeights = std::move(nweights);
 
-  Rational(myWeights, urational, vrational);
+  Rational(myWeights, myURational, myVRational);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -729,7 +732,7 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
   int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles + 1, 1, NbVPoles);
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     NCollection_Array2<double> nweights(1, NbUPoles + 1, 1, NbVPoles);
 
@@ -750,6 +753,7 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
     AddPoleRow(myPoles, CPoles, UIndex, npoles);
   }
   myPoles = std::move(npoles);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -778,7 +782,7 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
   int NbVPoles = myPoles.RowLength();
 
   // Ensure weights exist for rational insertion
-  if (!(urational || vrational))
+  if (!(myURational || myVRational))
   {
     myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
     myWeights.Init(1.0);
@@ -798,7 +802,8 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
   myPoles = std::move(npoles);
   myWeights = std::move(nweights);
 
-  Rational(myWeights, urational, vrational);
+  Rational(myWeights, myURational, myVRational);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -831,7 +836,7 @@ void Geom_BezierSurface::RemovePoleCol(const int VIndex)
   int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles, 1, NbVPoles - 1);
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     NCollection_Array2<double> nweights(1, NbUPoles, 1, NbVPoles - 1);
 
@@ -840,8 +845,8 @@ void Geom_BezierSurface::RemovePoleCol(const int VIndex)
                      VIndex,
                      npoles,
                      nweights);
-    Rational(nweights, urational, vrational);
-    if (urational || vrational)
+    Rational(nweights, myURational, myVRational);
+    if (myURational || myVRational)
       myWeights = std::move(nweights);
     else
       myWeights = NCollection_Array2<double>();
@@ -851,6 +856,7 @@ void Geom_BezierSurface::RemovePoleCol(const int VIndex)
     DeletePoleCol(myPoles, VIndex, npoles);
   }
   myPoles = std::move(npoles);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -866,7 +872,7 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
   int NbVPoles = myPoles.RowLength();
   NCollection_Array2<gp_Pnt> npoles(1, NbUPoles - 1, 1, NbVPoles);
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     NCollection_Array2<double> nweights(1, NbUPoles - 1, 1, NbVPoles);
 
@@ -876,8 +882,8 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
                      npoles,
                      nweights);
 
-    Rational(nweights, urational, vrational);
-    if (urational || vrational)
+    Rational(nweights, myURational, myVRational);
+    if (myURational || myVRational)
       myWeights = std::move(nweights);
     else
       myWeights = NCollection_Array2<double>();
@@ -887,13 +893,14 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
     DeletePoleRow(myPoles, UIndex, npoles);
   }
   myPoles = std::move(npoles);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
 
 void Geom_BezierSurface::Segment(const double U1, const double U2, const double V1, const double V2)
 {
-  bool rat = (urational || vrational);
+  bool rat = (myURational || myVRational);
 
   int aMinDegree = UDegree() <= VDegree() ? UDegree() : VDegree();
   int aMaxDegree = UDegree() > VDegree() ? UDegree() : VDegree();
@@ -992,6 +999,7 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                             myPoles,
                             PLib::NoWeights2());
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1003,6 +1011,7 @@ void Geom_BezierSurface::SetPole(const int UIndex, const int VIndex, const gp_Pn
     throw Standard_OutOfRange();
 
   myPoles(UIndex, VIndex) = P;
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1064,6 +1073,7 @@ void Geom_BezierSurface::SetPoleCol(const int VIndex, const NCollection_Array1<g
   {
     myPoles(I, VIndex) = CPoles(I);
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1081,6 +1091,7 @@ void Geom_BezierSurface::SetPoleRow(const int UIndex, const NCollection_Array1<g
   {
     myPoles(UIndex, I) = CPoles(I);
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1113,8 +1124,15 @@ void Geom_BezierSurface::SetPoleRow(const int                         UIndex,
 
 void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const double Weight)
 {
+  if (Weight <= gp::Resolution())
+    throw Standard_ConstructionError("Geom_BezierSurface::SetWeight");
+
+  if (UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1
+      || VIndex > myPoles.RowLength())
+    throw Standard_OutOfRange();
+
   // compute new rationality
-  bool wasrat = (urational || vrational);
+  bool wasrat = (myURational || myVRational);
   if (!wasrat)
   {
     // a weight of 1. does not turn to rational
@@ -1126,22 +1144,16 @@ void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const dou
     myWeights.Init(1.);
   }
 
-  if (Weight <= gp::Resolution())
-    throw Standard_ConstructionError("Geom_BezierSurface::SetWeight");
-
-  if (UIndex < 1 || UIndex > myWeights.ColLength() || VIndex < 1
-      || VIndex > myWeights.RowLength())
-    throw Standard_OutOfRange();
-
   if (std::abs(Weight - myWeights(UIndex, VIndex)) > gp::Resolution())
   {
     myWeights(UIndex, VIndex) = Weight;
-    Rational(myWeights, urational, vrational);
-    if (!(urational || vrational))
+    Rational(myWeights, myURational, myVRational);
+    if (!(myURational || myVRational))
     {
       myWeights = NCollection_Array2<double>();
     }
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1149,22 +1161,22 @@ void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const dou
 void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
                                       const NCollection_Array1<double>& CPoleWeights)
 {
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
+    throw Standard_OutOfRange();
+
+  if (CPoleWeights.Length() != myPoles.ColLength())
+  {
+    throw Standard_ConstructionError("Geom_BezierSurface::SetWeightCol");
+  }
+
   int I;
   // compute new rationality
-  bool wasrat = (urational || vrational);
+  bool wasrat = (myURational || myVRational);
   if (!wasrat)
   {
     // set weights of 1.
     myWeights.Resize(1, myPoles.ColLength(), 1, myPoles.RowLength(), false);
     myWeights.Init(1.);
-  }
-
-  if (VIndex < 1 || VIndex > myWeights.RowLength())
-    throw Standard_OutOfRange();
-
-  if (CPoleWeights.Length() != myWeights.ColLength())
-  {
-    throw Standard_ConstructionError("Geom_BezierSurface::SetWeightCol");
   }
 
   I = CPoleWeights.Lower();
@@ -1178,11 +1190,12 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
     I++;
   }
 
-  Rational(myWeights, urational, vrational);
-  if (!(urational || vrational))
+  Rational(myWeights, myURational, myVRational);
+  if (!(myURational || myVRational))
   {
     myWeights = NCollection_Array2<double>();
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1190,22 +1203,22 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
 void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
                                       const NCollection_Array1<double>& CPoleWeights)
 {
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
+    throw Standard_OutOfRange("Geom_BezierSurface::SetWeightRow");
+  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myPoles.RowLength()
+      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myPoles.RowLength())
+  {
+    throw Standard_ConstructionError("Geom_BezierSurface::SetWeightRow");
+  }
+
   int I;
   // compute new rationality
-  bool wasrat = (urational || vrational);
+  bool wasrat = (myURational || myVRational);
   if (!wasrat)
   {
     // set weights of 1.
     myWeights.Resize(1, myPoles.ColLength(), 1, myPoles.RowLength(), false);
     myWeights.Init(1.);
-  }
-
-  if (UIndex < 1 || UIndex > myWeights.ColLength())
-    throw Standard_OutOfRange("Geom_BezierSurface::SetWeightRow");
-  if (CPoleWeights.Lower() < 1 || CPoleWeights.Lower() > myWeights.RowLength()
-      || CPoleWeights.Upper() < 1 || CPoleWeights.Upper() > myWeights.RowLength())
-  {
-    throw Standard_ConstructionError("Geom_BezierSurface::SetWeightRow");
   }
 
   I = CPoleWeights.Lower();
@@ -1219,11 +1232,12 @@ void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
     I++;
   }
 
-  Rational(myWeights, urational, vrational);
-  if (!(urational || vrational))
+  Rational(myWeights, myURational, myVRational);
+  if (!(myURational || myVRational))
   {
     myWeights = NCollection_Array2<double>();
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1234,7 +1248,7 @@ void Geom_BezierSurface::UReverse()
   int    Row, Col;
   int    NbUPoles = myPoles.ColLength();
   int    NbVPoles = myPoles.RowLength();
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     double W;
     for (Col = 1; Col <= NbVPoles; Col++)
@@ -1262,6 +1276,7 @@ void Geom_BezierSurface::UReverse()
       }
     }
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1279,7 +1294,7 @@ void Geom_BezierSurface::VReverse()
   int    Row, Col;
   int    NbUPoles = myPoles.ColLength();
   int    NbVPoles = myPoles.RowLength();
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     double W;
     for (Row = 1; Row <= NbUPoles; Row++)
@@ -1307,6 +1322,7 @@ void Geom_BezierSurface::VReverse()
       }
     }
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1337,7 +1353,7 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     BSplSLib::D0(U,
                  V,
@@ -1351,8 +1367,8 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P);
@@ -1371,8 +1387,8 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P);
@@ -1387,7 +1403,7 @@ void Geom_BezierSurface::D1(const double U,
                             gp_Vec&      D1U,
                             gp_Vec&      D1V) const
 {
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     BSplSLib::D1(U,
                  V,
@@ -1401,8 +1417,8 @@ void Geom_BezierSurface::D1(const double U,
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P,
@@ -1423,8 +1439,8 @@ void Geom_BezierSurface::D1(const double U,
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P,
@@ -1444,7 +1460,7 @@ void Geom_BezierSurface::D2(const double U,
                             gp_Vec&      D2V,
                             gp_Vec&      D2UV) const
 {
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
     BSplSLib::D2(U,
@@ -1459,8 +1475,8 @@ void Geom_BezierSurface::D2(const double U,
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P,
@@ -1485,8 +1501,8 @@ void Geom_BezierSurface::D2(const double U,
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P,
@@ -1513,7 +1529,7 @@ void Geom_BezierSurface::D3(const double U,
                             gp_Vec&      D3UUV,
                             gp_Vec&      D3UVV) const
 {
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     BSplSLib::D3(U,
                  V,
@@ -1527,8 +1543,8 @@ void Geom_BezierSurface::D3(const double U,
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P,
@@ -1556,8 +1572,8 @@ void Geom_BezierSurface::D3(const double U,
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  P,
@@ -1579,7 +1595,7 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nv < 0 || Nu < 0, " ");
   gp_Vec Derivative;
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     BSplSLib::DN(U,
                  V,
@@ -1595,8 +1611,8 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  Derivative);
@@ -1617,8 +1633,8 @@ gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, cons
                  &BezierVMults(),
                  (myPoles.ColLength() - 1),
                  (myPoles.RowLength() - 1),
-                 urational,
-                 vrational,
+                 myURational,
+                 myVRational,
                  false,
                  false,
                  Derivative);
@@ -1673,7 +1689,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
 {
   occ::handle<Geom_BezierCurve>     UIsoCurve;
   NCollection_Array1<gp_Pnt>        VCurvePoles(1, myPoles.RowLength());
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
     NCollection_Array1<double> VCurveWeights(1, myPoles.RowLength());
     BSplSLib::Iso(U,
@@ -1686,7 +1702,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::UIso(const double U) const
                   false,
                   VCurvePoles,
                   &VCurveWeights);
-    if (urational)
+    if (myURational)
       UIsoCurve = new Geom_BezierCurve(VCurvePoles, VCurveWeights);
     else
       UIsoCurve = new Geom_BezierCurve(VCurvePoles);
@@ -1721,7 +1737,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
 {
   occ::handle<Geom_BezierCurve>     VIsoCurve;
   NCollection_Array1<gp_Pnt>        VCurvePoles(1, myPoles.ColLength());
-  if (vrational || urational)
+  if (myVRational || myURational)
   {
     NCollection_Array1<double> VCurveWeights(1, myPoles.ColLength());
     BSplSLib::Iso(V,
@@ -1734,7 +1750,7 @@ occ::handle<Geom_Curve> Geom_BezierSurface::VIso(const double V) const
                   false,
                   VCurvePoles,
                   &VCurveWeights);
-    if (vrational)
+    if (myVRational)
       VIsoCurve = new Geom_BezierCurve(VCurvePoles, VCurveWeights);
     else
       VIsoCurve = new Geom_BezierCurve(VCurvePoles);
@@ -1764,7 +1780,7 @@ double Geom_BezierSurface::Weight(const int UIndex, const int VIndex) const
                                  || VIndex > myPoles.RowLength(),
                                " ");
 
-  if (urational || vrational)
+  if (myURational || myVRational)
     return myWeights(UIndex, VIndex);
   else
     return 1;
@@ -1777,7 +1793,7 @@ void Geom_BezierSurface::Weights(NCollection_Array2<double>& W) const
   Standard_DimensionError_Raise_if(W.RowLength() != myPoles.RowLength()
                                      || W.ColLength() != myPoles.ColLength(),
                                    " ");
-  if (urational || vrational)
+  if (myURational || myVRational)
     W = myWeights;
   else
     W.Init(1.);
@@ -1801,14 +1817,14 @@ bool Geom_BezierSurface::IsCNv(const int) const
 
 bool Geom_BezierSurface::IsURational() const
 {
-  return urational;
+  return myURational;
 }
 
 //=================================================================================================
 
 bool Geom_BezierSurface::IsVRational() const
 {
-  return vrational;
+  return myVRational;
 }
 
 //=================================================================================================
@@ -1822,6 +1838,7 @@ void Geom_BezierSurface::Transform(const gp_Trsf& T)
       myPoles(I, J).Transform(T);
     }
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1877,9 +1894,9 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
                                     double&      UTolerance,
                                     double&      VTolerance)
 {
-  if (!maxderivinvok)
+  if (!myMaxDerivInvOk)
   {
-    if (urational || vrational)
+    if (myURational || myVRational)
     {
       BSplSLib::Resolution(myPoles,
                            &myWeights,
@@ -1889,13 +1906,13 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
                            BezierVMults(),
                            (myPoles.ColLength() - 1),
                            (myPoles.RowLength() - 1),
-                           urational,
-                           vrational,
+                           myURational,
+                           myVRational,
                            false,
                            false,
                            1.,
-                           umaxderivinv,
-                           vmaxderivinv);
+                           myUMaxDerivInv,
+                           myVMaxDerivInv);
     }
     else
     {
@@ -1907,18 +1924,18 @@ void Geom_BezierSurface::Resolution(const double Tolerance3D,
                            BezierVMults(),
                            (myPoles.ColLength() - 1),
                            (myPoles.RowLength() - 1),
-                           urational,
-                           vrational,
+                           myURational,
+                           myVRational,
                            false,
                            false,
                            1.,
-                           umaxderivinv,
-                           vmaxderivinv);
+                           myUMaxDerivInv,
+                           myVMaxDerivInv);
     }
-    maxderivinvok = true;
+    myMaxDerivInvOk = true;
   }
-  UTolerance = Tolerance3D * umaxderivinv;
-  VTolerance = Tolerance3D * vmaxderivinv;
+  UTolerance = Tolerance3D * myUMaxDerivInv;
+  VTolerance = Tolerance3D * myVMaxDerivInv;
 }
 
 //=================================================================================================
@@ -1939,20 +1956,24 @@ void Geom_BezierSurface::Init(const NCollection_Array2<gp_Pnt>& thePoles,
   myPoles.Resize(1, NbUPoles, 1, NbVPoles, false);
   myPoles = thePoles;
 
-  if (urational || vrational)
+  if (theWeights != nullptr)
   {
     myWeights.Resize(1, NbUPoles, 1, NbVPoles, false);
-    if (theWeights != nullptr)
-      myWeights = *theWeights;
-    else
-      myWeights.Init(1.0);
+    myWeights = *theWeights;
+    Rational(myWeights, myURational, myVRational);
+    if (!(myURational || myVRational))
+    {
+      myWeights = NCollection_Array2<double>();
+    }
   }
   else
   {
+    myURational = false;
+    myVRational = false;
     myWeights = NCollection_Array2<double>();
   }
 
-  maxderivinvok = false;
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1963,14 +1984,14 @@ void Geom_BezierSurface::DumpJson(Standard_OStream& theOStream, int theDepth) co
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_BoundedSurface)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, urational)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, vrational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myURational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myVRational)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
-  if (urational || vrational)
+  if (myURational || myVRational)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Size())
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, umaxderivinv)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, vmaxderivinv)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, maxderivinvok)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myUMaxDerivInv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myVMaxDerivInv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInvOk)
 }
 
 //=================================================================================================

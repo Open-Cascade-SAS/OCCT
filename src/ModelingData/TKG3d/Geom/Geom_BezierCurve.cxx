@@ -68,9 +68,9 @@ static bool Rational(const NCollection_Array1<double>& W)
 Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
       myWeights(theOther.myWeights),
-      rational(theOther.rational),
-      closed(theOther.closed),
-      maxderivinvok(false)
+      myRational(theOther.myRational),
+      myClosed(theOther.myClosed),
+      myMaxDerivInvOk(false)
 {
 }
 
@@ -320,6 +320,7 @@ void Geom_BezierCurve::Reverse()
       myWeights(nbpoles - i + 1) = w;
     }
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -333,7 +334,7 @@ double Geom_BezierCurve::ReversedParameter(const double U) const
 
 void Geom_BezierCurve::Segment(const double U1, const double U2)
 {
-  closed = (std::abs(Value(U1).Distance(Value(U2))) <= Precision::Confusion());
+  myClosed = (std::abs(Value(U1).Distance(Value(U2))) <= Precision::Confusion());
 
   const int aDeg = myPoles.Size() - 1;
 
@@ -367,6 +368,7 @@ void Geom_BezierCurve::Segment(const double U1, const double U2)
     PLib::Trimming(U1, U2, coeffs, PLib::NoWeights());
     PLib::CoefficientsPoles(coeffs, PLib::NoWeights(), myPoles, PLib::NoWeights());
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -380,8 +382,9 @@ void Geom_BezierCurve::SetPole(const int Index, const gp_Pnt& P)
 
   if (Index == 1 || Index == myPoles.Length())
   {
-    closed = (myPoles(1).Distance(myPoles(NbPoles())) <= Precision::Confusion());
+    myClosed = (myPoles(1).Distance(myPoles(NbPoles())) <= Precision::Confusion());
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -421,18 +424,19 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
   // is it turning into non rational
   if (wasrat && !Rational(myWeights))
   {
-    rational = false;
+    myRational = false;
     myWeights = NCollection_Array1<double>();
   }
   else
-    rational = true;
+    myRational = true;
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
 
 bool Geom_BezierCurve::IsClosed() const
 {
-  return closed;
+  return myClosed;
 }
 
 //=================================================================================================
@@ -453,7 +457,7 @@ bool Geom_BezierCurve::IsPeriodic() const
 
 bool Geom_BezierCurve::IsRational() const
 {
-  return rational;
+  return myRational;
 }
 
 //=================================================================================================
@@ -630,13 +634,14 @@ void Geom_BezierCurve::Transform(const gp_Trsf& T)
 
   for (int i = 1; i <= nbpoles; i++)
     myPoles(i).Transform(T);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
 
 void Geom_BezierCurve::Resolution(const double Tolerance3D, double& UTolerance)
 {
-  if (!maxderivinvok)
+  if (!myMaxDerivInvOk)
   {
     const int aDeg = myPoles.Size() - 1;
     if (IsRational())
@@ -647,7 +652,7 @@ void Geom_BezierCurve::Resolution(const double Tolerance3D, double& UTolerance)
                            BezierFlatKnots(),
                            aDeg,
                            1.,
-                           maxderivinv);
+                           myMaxDerivInv);
     }
     else
     {
@@ -657,11 +662,11 @@ void Geom_BezierCurve::Resolution(const double Tolerance3D, double& UTolerance)
                            BezierFlatKnots(),
                            aDeg,
                            1.,
-                           maxderivinv);
+                           myMaxDerivInv);
     }
-    maxderivinvok = true;
+    myMaxDerivInvOk = true;
   }
-  UTolerance = Tolerance3D * maxderivinv;
+  UTolerance = Tolerance3D * myMaxDerivInv;
 }
 
 //=================================================================================================
@@ -678,17 +683,17 @@ void Geom_BezierCurve::Init(const NCollection_Array1<gp_Pnt>& thePoles,
 {
   int nbpoles = thePoles.Length();
   // closed ?
-  closed =
+  myClosed =
     thePoles(thePoles.Lower()).Distance(thePoles(thePoles.Upper())) <= Precision::Confusion();
 
   // rational
-  rational = (theWeights != nullptr);
+  myRational = (theWeights != nullptr);
 
   // set fields
   myPoles.Resize(1, nbpoles, false);
   myPoles = thePoles;
 
-  if (rational)
+  if (myRational)
   {
     myWeights.Resize(1, nbpoles, false);
     myWeights = *theWeights;
@@ -698,8 +703,8 @@ void Geom_BezierCurve::Init(const NCollection_Array1<gp_Pnt>& thePoles,
     myWeights = NCollection_Array1<double>();
   }
 
-  maxderivinv   = 0.0;
-  maxderivinvok = false;
+  myMaxDerivInv   = 0.0;
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -710,15 +715,15 @@ void Geom_BezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) cons
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_BoundedCurve)
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, rational)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, closed)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myRational)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myClosed)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
 
-  if (rational)
+  if (myRational)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Size())
 
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, maxderivinv)
-  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, maxderivinvok)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInv)
+  OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myMaxDerivInvOk)
 }
 
 //=================================================================================================

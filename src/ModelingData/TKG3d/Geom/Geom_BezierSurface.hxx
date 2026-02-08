@@ -27,7 +27,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
 
-class gp_Pnt;
 class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
@@ -533,7 +532,7 @@ public:
   //! Returns the weights of the Bezier surface.
   const NCollection_Array2<double>* Weights() const
   {
-    return (urational || vrational) ? &myWeights : nullptr;
+    return (myURational || myVRational) ? &myWeights : BSplSLib::NoWeights();
   }
 
   //! Returns True if the first control points row and the
@@ -645,11 +644,11 @@ private:
 
   NCollection_Array2<gp_Pnt>  myPoles;
   NCollection_Array2<double>  myWeights;
-  bool                        urational;
-  bool                        vrational;
-  double                      umaxderivinv;
-  double                      vmaxderivinv;
-  bool                        maxderivinvok;
+  bool                        myURational = false;
+  bool                        myVRational = false;
+  double                      myUMaxDerivInv = 0.0;
+  double                      myVMaxDerivInv = 0.0;
+  bool                        myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

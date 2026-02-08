@@ -825,11 +825,11 @@ private:
   NCollection_Array1<int>          myMults;
   int                              myDeg = 0;
   bool                             myPeriodic = false;
-  bool                             rational;
-  GeomAbs_BSplKnotDistribution     knotSet;
-  GeomAbs_Shape                    smooth;
-  double                           maxderivinv;
-  bool                             maxderivinvok;
+  bool                             myRational = false;
+  GeomAbs_BSplKnotDistribution     myKnotSet = GeomAbs_NonUniform;
+  GeomAbs_Shape                    mySmooth = GeomAbs_C0;
+  double                           myMaxDerivInv = 0.0;
+  bool                             myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineCurve_HeaderFile

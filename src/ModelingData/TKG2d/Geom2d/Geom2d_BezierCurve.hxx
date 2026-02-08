@@ -27,7 +27,6 @@
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
-class gp_Pnt2d;
 class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
@@ -278,7 +277,7 @@ public:
   //! Returns all the weights of the curve.
   const NCollection_Array1<double>* Weights() const
   {
-    return rational ? &myWeights : BSplCLib::NoWeights();
+    return myRational ? &myWeights : BSplCLib::NoWeights();
   }
 
   //! Applies the transformation T to this Bezier curve.
@@ -338,10 +337,10 @@ private:
 
   NCollection_Array1<gp_Pnt2d> myPoles;
   NCollection_Array1<double>   myWeights;
-  bool                         rational;
-  bool                         closed;
-  double                       maxderivinv;
-  bool                         maxderivinvok;
+  bool                         myRational = false;
+  bool                         myClosed = false;
+  double                       myMaxDerivInv = 0.0;
+  bool                         myMaxDerivInvOk = false;
 };
 
 #endif // _Geom2d_BezierCurve_HeaderFile
