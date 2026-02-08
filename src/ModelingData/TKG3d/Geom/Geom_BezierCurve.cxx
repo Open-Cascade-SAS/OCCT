@@ -512,28 +512,7 @@ gp_Vec Geom_BezierCurve::DN(const double U, const int N) const
 
   const int aDeg = myPoles.Size() - 1;
 
-  if (IsRational())
-    BSplCLib::DN(U,
-                 N,
-                 0,
-                 aDeg,
-                 false,
-                 myPoles,
-                 &myWeights,
-                 BezierKnots(),
-                 &BezierMults(),
-                 V);
-  else
-    BSplCLib::DN(U,
-                 N,
-                 0,
-                 aDeg,
-                 false,
-                 myPoles,
-                 BSplCLib::NoWeights(),
-                 BezierKnots(),
-                 &BezierMults(),
-                 V);
+  BSplCLib::DN(U, N, 0, aDeg, false, myPoles, Weights(), BezierKnots(), &BezierMults(), V);
   return V;
 }
 
@@ -644,26 +623,13 @@ void Geom_BezierCurve::Resolution(const double Tolerance3D, double& UTolerance)
   if (!myMaxDerivInvOk)
   {
     const int aDeg = myPoles.Size() - 1;
-    if (IsRational())
-    {
-      BSplCLib::Resolution(myPoles,
-                           &myWeights,
-                           myPoles.Length(),
-                           BezierFlatKnots(),
-                           aDeg,
-                           1.,
-                           myMaxDerivInv);
-    }
-    else
-    {
-      BSplCLib::Resolution(myPoles,
-                           BSplCLib::NoWeights(),
-                           myPoles.Length(),
-                           BezierFlatKnots(),
-                           aDeg,
-                           1.,
-                           myMaxDerivInv);
-    }
+    BSplCLib::Resolution(myPoles,
+                         Weights(),
+                         myPoles.Length(),
+                         BezierFlatKnots(),
+                         aDeg,
+                         1.,
+                         myMaxDerivInv);
     myMaxDerivInvOk = true;
   }
   UTolerance = Tolerance3D * myMaxDerivInv;

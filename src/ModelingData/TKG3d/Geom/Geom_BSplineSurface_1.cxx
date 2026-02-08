@@ -1666,6 +1666,7 @@ void Geom_BSplineSurface::SetPoleCol(const int VIndex, const NCollection_Array1<
     myPoles(I + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1) =
       CPoles(I);
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1697,6 +1698,7 @@ void Geom_BSplineSurface::SetPoleRow(const int UIndex, const NCollection_Array1<
     myPoles(UIndex + myPoles.LowerRow() - 1, I + myPoles.LowerCol() - 1) =
       CPoles(I);
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1716,6 +1718,7 @@ void Geom_BSplineSurface::SetPole(const int UIndex, const int VIndex, const gp_P
   myPoles.SetValue(UIndex + myPoles.LowerRow() - 1,
                         VIndex + myPoles.LowerCol() - 1,
                         P);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================

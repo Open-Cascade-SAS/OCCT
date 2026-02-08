@@ -585,9 +585,7 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
 {
   if (aU2 < aU1)
     throw Standard_DomainError("Geom2d_BSplineCurve::Segment");
-  //
-  double AbsUMax = std::max(std::abs(FirstParameter()), std::abs(LastParameter()));
-  double Eps     = std::max(Epsilon(AbsUMax), theTolerance);
+
   double NewU1, NewU2;
   double U, DU = 0, aDDU = 0;
   int    i, k, index;
@@ -609,7 +607,7 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
       DU = Period;
     aDDU = DU;
   }
-  //
+
   index = 0;
   BSplCLib::LocateParameter(myDeg,
                             myKnots,
@@ -634,6 +632,10 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
   //-- DBB
   double aNu2 = NewU2;
   //-- DBB
+
+  double AbsUMax = std::max(std::abs(NewU1), std::abs(NewU2));
+  AbsUMax        = std::max(AbsUMax, std::max(std::abs(FirstParameter()), std::abs(LastParameter())));
+  double Eps     = std::max(Epsilon(AbsUMax), theTolerance);
 
   Knots(1) = std::min(NewU1, NewU2);
   Knots(2) = std::max(NewU1, NewU2);
