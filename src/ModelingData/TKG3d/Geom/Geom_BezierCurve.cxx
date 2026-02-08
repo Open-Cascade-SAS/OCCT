@@ -702,13 +702,16 @@ const NCollection_Array1<double>& Geom_BezierCurve::BezierKnots() const
 const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
-  static const int THE_DATA[26][2] = {
-    {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},   {8, 8},   {9, 9},
-    {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14}, {15, 15}, {16, 16}, {17, 17}, {18, 18},
-    {19, 19}, {20, 20}, {21, 21}, {22, 22}, {23, 23}, {24, 24}, {25, 25}, {26, 26}};
+  constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
+  static const auto THE_DATA     = []() {
+    std::array<std::array<int, 2>, THE_MAX_SIZE> anArr;
+    for (int i = 0; i < THE_MAX_SIZE; ++i)
+      anArr[i] = {i + 1, i + 1};
+    return anArr;
+  }();
   static const auto THE_MULTS = []() {
-    std::array<NCollection_Array1<int>, 26> anArr;
-    for (int i = 0; i < 26; ++i)
+    std::array<NCollection_Array1<int>, THE_MAX_SIZE> anArr;
+    for (int i = 0; i < THE_MAX_SIZE; ++i)
       anArr[i] = NCollection_Array1<int>(THE_DATA[i][0], 1, 2);
     return anArr;
   }();
@@ -720,8 +723,9 @@ const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
 const NCollection_Array1<double>& Geom_BezierCurve::BezierFlatKnots() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
-  static const auto THE_FKNOTS = []() {
-    std::array<NCollection_Array1<double>, 26> anArr;
+  constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
+  static const auto THE_FKNOTS   = []() {
+    std::array<NCollection_Array1<double>, THE_MAX_SIZE> anArr;
     for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)
       anArr[i] = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(i), 1, 2 * (i + 1));
     return anArr;
