@@ -27,11 +27,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_RangeError.hxx>
 
-#define POLES (myPoles)
-#define KNOTS (myKnots)
-#define FKNOTS (myFlatKnots)
-#define FMULTS (BSplCLib::NoMults())
-
 //=================================================================================================
 
 bool Geom_BSplineCurve::IsCN(const int N) const
@@ -172,7 +167,7 @@ void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
   if (aNewU < myKnots(aSpanIndex))
     aSpanIndex--;
 
-  BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, POLES, Weights(), myKnots, &myMults, P);
+  BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P);
 }
 
 //=================================================================================================
@@ -186,7 +181,7 @@ void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
   if (aNewU < myKnots(aSpanIndex))
     aSpanIndex--;
 
-  BSplCLib::D1(aNewU, aSpanIndex, myDeg, myPeriodic, POLES, Weights(), myKnots, &myMults, P, V1);
+  BSplCLib::D1(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P, V1);
 }
 
 //=================================================================================================
@@ -204,7 +199,7 @@ void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
                aSpanIndex,
                myDeg,
                myPeriodic,
-               POLES,
+               myPoles,
                Weights(),
                myKnots,
                &myMults,
@@ -228,7 +223,7 @@ void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
                aSpanIndex,
                myDeg,
                myPeriodic,
-               POLES,
+               myPoles,
                Weights(),
                myKnots,
                &myMults,
@@ -243,7 +238,7 @@ void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
 gp_Vec Geom_BSplineCurve::DN(const double U, const int N) const
 {
   gp_Vec V;
-  BSplCLib::DN(U, N, 0, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, V);
+  BSplCLib::DN(U, N, 0, myDeg, myPeriodic, myPoles, Weights(), myFlatKnots, BSplCLib::NoMults(), V);
   return V;
 }
 
@@ -353,9 +348,17 @@ void Geom_BSplineCurve::LocalD0(const double U, const int FromK1, const int ToK2
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
+  BSplCLib::LocateParameter(myDeg, myFlatKnots, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
-  BSplCLib::D0(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P);
+  BSplCLib::D0(u,
+               index,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               P);
 }
 
 //=================================================================================================
@@ -370,9 +373,18 @@ void Geom_BSplineCurve::LocalD1(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
+  BSplCLib::LocateParameter(myDeg, myFlatKnots, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
-  BSplCLib::D1(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P, V1);
+  BSplCLib::D1(u,
+               index,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               P,
+               V1);
 }
 
 //=================================================================================================
@@ -388,9 +400,19 @@ void Geom_BSplineCurve::LocalD2(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
+  BSplCLib::LocateParameter(myDeg, myFlatKnots, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
-  BSplCLib::D2(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P, V1, V2);
+  BSplCLib::D2(u,
+               index,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               P,
+               V1,
+               V2);
 }
 
 //=================================================================================================
@@ -407,9 +429,20 @@ void Geom_BSplineCurve::LocalD3(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
+  BSplCLib::LocateParameter(myDeg, myFlatKnots, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
-  BSplCLib::D3(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P, V1, V2, V3);
+  BSplCLib::D3(u,
+               index,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               P,
+               V1,
+               V2,
+               V3);
 }
 
 //=================================================================================================
@@ -423,11 +456,20 @@ gp_Vec Geom_BSplineCurve::LocalDN(const double U,
 
   double u     = U;
   int    index = 0;
-  BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
+  BSplCLib::LocateParameter(myDeg, myFlatKnots, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
 
   gp_Vec V;
-  BSplCLib::DN(u, N, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, V);
+  BSplCLib::DN(u,
+               N,
+               index,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myFlatKnots,
+               BSplCLib::NoMults(),
+               V);
   return V;
 }
 
