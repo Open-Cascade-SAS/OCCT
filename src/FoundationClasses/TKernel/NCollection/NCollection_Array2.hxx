@@ -344,10 +344,11 @@ public:
     resizeImpl<false>(theRowLower, theRowUpper, theColLower, theColUpper);
   }
 
-  //! Resizes the array preserving 2D element positions.
+  //! Resizes the array preserving 2D element layout.
   //! When theToCopyData is false, the array is re-allocated without preserving data.
-  //! When theToCopyData is true, copies the common sub-matrix intersection of old
-  //! and new dimensions, preserving (row, col) positions, trimming as needed.
+  //! When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols)
+  //! elements from the top-left corner of the old array to the top-left corner of the new,
+  //! preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed.
   //! No re-allocation is done if dimensions are unchanged.
   //! @param theRowLower new lower Row of array
   //! @param theRowUpper new upper Row of array
