@@ -1307,7 +1307,8 @@ void Geom_BSplineSurface::SetUNotPeriodic()
 
     if (myURational || myVRational)
     {
-      NCollection_Array2<double> nweights(1, NbPoles, 1, myPoles.RowLength(), 0);
+      NCollection_Array2<double> nweights(1, NbPoles, 1, myPoles.RowLength());
+      nweights.Init(0.0);
       BSplSLib::Unperiodize(true,
                             myUDeg,
                             myUMults,
@@ -1360,7 +1361,8 @@ void Geom_BSplineSurface::SetVNotPeriodic()
 
     if (myURational || myVRational)
     {
-      NCollection_Array2<double> nweights(1, myPoles.ColLength(), 1, NbPoles, 0);
+      NCollection_Array2<double> nweights(1, myPoles.ColLength(), 1, NbPoles);
+      nweights.Init(0.0);
       BSplSLib::Unperiodize(false,
                             myVDeg,
                             myVMults,
