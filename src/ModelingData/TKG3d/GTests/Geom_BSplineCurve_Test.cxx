@@ -337,8 +337,7 @@ TEST_F(Geom_BSplineCurve_Test, PeriodicCurve)
   NCollection_Array1<int> aMults(1, 6);
   aMults.Init(1);
 
-  occ::handle<Geom_BSplineCurve> aCurve =
-    new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
   EXPECT_TRUE(aCurve->IsPeriodic());
 
   gp_Pnt aVal1 = aCurve->Value(0.5);
@@ -372,8 +371,7 @@ TEST_F(Geom_BSplineCurve_Test, MultiKnotSpan)
   aMults(3) = 1;
   aMults(4) = 3;
 
-  occ::handle<Geom_BSplineCurve> aCurve =
-    new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   EXPECT_EQ(aCurve->NbKnots(), 4);
   EXPECT_EQ(aCurve->NbPoles(), 5);
 
@@ -489,8 +487,7 @@ TEST_F(Geom_BSplineCurve_Test, SetKnot)
   aMults(2) = 1;
   aMults(3) = 3;
 
-  occ::handle<Geom_BSplineCurve> aCurve =
-    new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
 
   aCurve->SetKnot(2, 0.6);
   EXPECT_DOUBLE_EQ(aCurve->Knot(2), 0.6);
@@ -506,7 +503,7 @@ TEST_F(Geom_BSplineCurve_Test, CopyIndependence)
 TEST_F(Geom_BSplineCurve_Test, MovePoint)
 {
   gp_Pnt aTarget(1.5, 0.8, 0);
-  int aFirst = 0, aLast = 0;
+  int    aFirst = 0, aLast = 0;
   myOriginalCurve->MovePoint(0.5, aTarget, 1, myOriginalCurve->NbPoles(), aFirst, aLast);
   EXPECT_GT(aFirst, 0);
   gp_Pnt aMoved = myOriginalCurve->Value(0.5);
@@ -618,8 +615,7 @@ TEST_F(Geom_BSplineCurve_Test, PeriodicCurve_SetOrigin)
   NCollection_Array1<int> aMults(1, 6);
   aMults.Init(1);
 
-  occ::handle<Geom_BSplineCurve> aCurve =
-    new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3, true);
   EXPECT_TRUE(aCurve->IsPeriodic());
 
   aCurve->SetOrigin(3);
@@ -664,8 +660,7 @@ TEST_F(Geom_BSplineCurve_Test, ClosedCurve)
   aMults(1) = 4;
   aMults(2) = 4;
 
-  occ::handle<Geom_BSplineCurve> aCurve =
-    new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
   EXPECT_TRUE(aCurve->IsClosed());
 }
 

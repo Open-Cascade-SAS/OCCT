@@ -27,10 +27,10 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_RangeError.hxx>
 
-#define POLES    (myPoles)
-#define KNOTS    (myKnots)
-#define FKNOTS   (myFlatKnots)
-#define FMULTS   (BSplCLib::NoMults())
+#define POLES (myPoles)
+#define KNOTS (myKnots)
+#define FKNOTS (myFlatKnots)
+#define FMULTS (BSplCLib::NoMults())
 
 //=================================================================================================
 
@@ -53,11 +53,10 @@ bool Geom2d_BSplineCurve::IsCN(const int N) const
     case GeomAbs_C2:
       return N <= 2;
     case GeomAbs_C3:
-      return N <= 3 ? true
-                    : N <= myDeg
-                             - BSplCLib::MaxKnotMult(myMults,
-                                                     myMults.Lower() + 1,
-                                                     myMults.Upper() - 1);
+      return N <= 3
+               ? true
+               : N <= myDeg
+                        - BSplCLib::MaxKnotMult(myMults, myMults.Lower() + 1, myMults.Upper() - 1);
     default:
       return false;
   }
@@ -173,15 +172,7 @@ void Geom2d_BSplineCurve::D0(const double U, gp_Pnt2d& P) const
   if (aNewU < myKnots.Value(aSpanIndex))
     aSpanIndex--;
 
-  BSplCLib::D0(aNewU,
-               aSpanIndex,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               myKnots,
-               &myMults,
-               P);
+  BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, POLES, Weights(), myKnots, &myMults, P);
 }
 
 //=================================================================================================
@@ -195,16 +186,7 @@ void Geom2d_BSplineCurve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const
   if (aNewU < myKnots.Value(aSpanIndex))
     aSpanIndex--;
 
-  BSplCLib::D1(aNewU,
-               aSpanIndex,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               myKnots,
-               &myMults,
-               P,
-               V1);
+  BSplCLib::D1(aNewU, aSpanIndex, myDeg, myPeriodic, POLES, Weights(), myKnots, &myMults, P, V1);
 }
 
 //=================================================================================================
@@ -265,16 +247,7 @@ void Geom2d_BSplineCurve::D3(const double U,
 gp_Vec2d Geom2d_BSplineCurve::DN(const double U, const int N) const
 {
   gp_Vec2d V;
-  BSplCLib::DN(U,
-               N,
-               0,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               FKNOTS,
-               FMULTS,
-               V);
+  BSplCLib::DN(U, N, 0, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, V);
   return V;
 }
 
@@ -390,15 +363,7 @@ void Geom2d_BSplineCurve::LocalD0(const double U,
   BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
 
-  BSplCLib::D0(u,
-               index,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               FKNOTS,
-               FMULTS,
-               P);
+  BSplCLib::D0(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P);
 }
 
 //=================================================================================================
@@ -416,16 +381,7 @@ void Geom2d_BSplineCurve::LocalD1(const double U,
   BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
 
-  BSplCLib::D1(u,
-               index,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               FKNOTS,
-               FMULTS,
-               P,
-               V1);
+  BSplCLib::D1(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P, V1);
 }
 
 //=================================================================================================
@@ -444,17 +400,7 @@ void Geom2d_BSplineCurve::LocalD2(const double U,
   BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
 
-  BSplCLib::D2(u,
-               index,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               FKNOTS,
-               FMULTS,
-               P,
-               V1,
-               V2);
+  BSplCLib::D2(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P, V1, V2);
 }
 
 //=================================================================================================
@@ -474,18 +420,7 @@ void Geom2d_BSplineCurve::LocalD3(const double U,
   BSplCLib::LocateParameter(myDeg, FKNOTS, U, myPeriodic, FromK1, ToK2, index, u);
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
 
-  BSplCLib::D3(u,
-               index,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               FKNOTS,
-               FMULTS,
-               P,
-               V1,
-               V2,
-               V3);
+  BSplCLib::D3(u, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, P, V1, V2, V3);
 }
 
 //=================================================================================================
@@ -503,16 +438,7 @@ gp_Vec2d Geom2d_BSplineCurve::LocalDN(const double U,
   index = BSplCLib::FlatIndex(myDeg, index, myMults, myPeriodic);
 
   gp_Vec2d V;
-  BSplCLib::DN(u,
-               N,
-               index,
-               myDeg,
-               myPeriodic,
-               POLES,
-               Weights(),
-               FKNOTS,
-               FMULTS,
-               V);
+  BSplCLib::DN(u, N, index, myDeg, myPeriodic, POLES, Weights(), FKNOTS, FMULTS, V);
   return V;
 }
 
@@ -588,7 +514,8 @@ gp_Pnt2d Geom2d_BSplineCurve::StartPoint() const
 
 double Geom2d_BSplineCurve::Weight(const int Index) const
 {
-  Standard_OutOfRange_Raise_if(Index < 1 || Index > myPoles.Length(), "Geom2d_BSplineCurve::Weight");
+  Standard_OutOfRange_Raise_if(Index < 1 || Index > myPoles.Length(),
+                               "Geom2d_BSplineCurve::Weight");
   if (IsRational())
     return myWeights.Value(Index);
   else

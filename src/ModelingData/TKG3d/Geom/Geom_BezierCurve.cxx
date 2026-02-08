@@ -23,8 +23,6 @@
 // Revised RLE  Aug 19 1993
 // Suppressed Swaps, added Init, removed typedefs
 
-
-
 #include <Geom_BezierCurve.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
@@ -302,7 +300,7 @@ void Geom_BezierCurve::Reverse()
   // reverse poles
   for (i = 1; i <= nbpoles / 2; i++)
   {
-    P                            = myPoles(i);
+    P                        = myPoles(i);
     myPoles(i)               = myPoles(nbpoles - i + 1);
     myPoles(nbpoles - i + 1) = P;
   }
@@ -313,7 +311,7 @@ void Geom_BezierCurve::Reverse()
     double w;
     for (i = 1; i <= nbpoles / 2; i++)
     {
-      w                              = myWeights(i);
+      w                          = myWeights(i);
       myWeights(i)               = myWeights(nbpoles - i + 1);
       myWeights(nbpoles - i + 1) = w;
     }
@@ -423,7 +421,7 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
   if (wasrat && !Rational(myWeights))
   {
     myRational = false;
-    myWeights = NCollection_Array1<double>();
+    myWeights  = NCollection_Array1<double>();
   }
   else
     myRational = true;
@@ -694,7 +692,7 @@ void Geom_BezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) cons
 
 const NCollection_Array1<double>& Geom_BezierCurve::BezierKnots() const
 {
-  static const double THE_DATA[2] = {0.0, 1.0};
+  static const double                     THE_DATA[2] = {0.0, 1.0};
   static const NCollection_Array1<double> THE_KNOTS(THE_DATA[0], 1, 2);
   return THE_KNOTS;
 }
@@ -705,10 +703,9 @@ const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
   static const int THE_DATA[26][2] = {
-    {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
-    {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
-    {15, 15}, {16, 16}, {17, 17}, {18, 18}, {19, 19}, {20, 20}, {21, 21},
-    {22, 22}, {23, 23}, {24, 24}, {25, 25}, {26, 26}};
+    {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},   {8, 8},   {9, 9},
+    {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14}, {15, 15}, {16, 16}, {17, 17}, {18, 18},
+    {19, 19}, {20, 20}, {21, 21}, {22, 22}, {23, 23}, {24, 24}, {25, 25}, {26, 26}};
   static const auto THE_MULTS = []() {
     std::array<NCollection_Array1<int>, 26> anArr;
     for (int i = 0; i < 26; ++i)

@@ -209,13 +209,17 @@ TEST_F(Geom_BezierSurface_Test, SetWeight)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 1.0;
-  aWeights(2, 1) = 1.0; aWeights(2, 2) = 1.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 1.0;
+  aWeights(2, 1) = 1.0;
+  aWeights(2, 2) = 1.0;
 
-  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
-  gp_Pnt aValBefore = aSurf->Value(0.5, 0.5);
+  occ::handle<Geom_BezierSurface> aSurf      = new Geom_BezierSurface(aPoles, aWeights);
+  gp_Pnt                          aValBefore = aSurf->Value(0.5, 0.5);
 
   aSurf->SetWeight(2, 2, 10.0);
   EXPECT_DOUBLE_EQ(aSurf->Weight(2, 2), 10.0);
@@ -248,8 +252,8 @@ TEST_F(Geom_BezierSurface_Test, Segment)
 TEST_F(Geom_BezierSurface_Test, ExchangeUV)
 {
   gp_Pnt aValBefore = myOriginalSurface->Value(0.3, 0.7);
-  int aUDeg = myOriginalSurface->UDegree();
-  int aVDeg = myOriginalSurface->VDegree();
+  int    aUDeg      = myOriginalSurface->UDegree();
+  int    aVDeg      = myOriginalSurface->VDegree();
 
   myOriginalSurface->ExchangeUV();
   EXPECT_EQ(myOriginalSurface->UDegree(), aVDeg);
@@ -425,10 +429,14 @@ TEST_F(Geom_BezierSurface_Test, RationalSurface_UIso)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0;
+  aWeights(2, 2) = 1.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 
@@ -448,8 +456,7 @@ TEST_F(Geom_BezierSurface_Test, Evaluation_D3)
   gp_Pnt aPnt;
   gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
   gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-  myOriginalSurface->D3(0.5, 0.5, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                        aD3U, aD3V, aD3UUV, aD3UVV);
+  myOriginalSurface->D3(0.5, 0.5, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
   // Degree 2: D3 should be zero
   EXPECT_NEAR(aD3U.Magnitude(), 0.0, 1e-10);
   EXPECT_NEAR(aD3V.Magnitude(), 0.0, 1e-10);
@@ -488,7 +495,7 @@ TEST_F(Geom_BezierSurface_Test, RationalSegment)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, (i + j) * 0.1);
+      aPoles(i, j)   = gp_Pnt(i, j, (i + j) * 0.1);
       aWeights(i, j) = 1.0 + 0.3 * ((i - 1) + (j - 1));
     }
 
@@ -505,13 +512,17 @@ TEST_F(Geom_BezierSurface_Test, RationalIncrease)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 1);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 1);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0;
+  aWeights(2, 2) = 1.0;
 
-  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
-  gp_Pnt aValBefore = aSurf->Value(0.5, 0.5);
+  occ::handle<Geom_BezierSurface> aSurf      = new Geom_BezierSurface(aPoles, aWeights);
+  gp_Pnt                          aValBefore = aSurf->Value(0.5, 0.5);
 
   aSurf->Increase(3, 3);
   EXPECT_EQ(aSurf->UDegree(), 3);
@@ -524,10 +535,14 @@ TEST_F(Geom_BezierSurface_Test, SetWeightRow)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 3.0; aWeights(2, 2) = 4.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 3.0;
+  aWeights(2, 2) = 4.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 
@@ -544,10 +559,14 @@ TEST_F(Geom_BezierSurface_Test, SetWeightCol)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 3.0; aWeights(2, 2) = 4.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 3.0;
+  aWeights(2, 2) = 4.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 
@@ -564,10 +583,14 @@ TEST_F(Geom_BezierSurface_Test, InsertPoleRowAfterWithWeights)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0;
+  aWeights(2, 2) = 1.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 
@@ -589,10 +612,14 @@ TEST_F(Geom_BezierSurface_Test, VIso_Rational)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0;
+  aWeights(2, 2) = 1.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 
@@ -611,10 +638,14 @@ TEST_F(Geom_BezierSurface_Test, SetPoleWithWeight)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 1.0;
-  aWeights(2, 1) = 1.0; aWeights(2, 2) = 2.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 1.0;
+  aWeights(2, 1) = 1.0;
+  aWeights(2, 2) = 2.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 
@@ -628,10 +659,14 @@ TEST_F(Geom_BezierSurface_Test, SetPoleColWithWeights)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeights(1, 2, 1, 2);
-  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
-  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
-  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
-  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0;
+  aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0;
+  aWeights(2, 2) = 1.0;
 
   occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
 

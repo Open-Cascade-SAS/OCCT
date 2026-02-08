@@ -160,8 +160,8 @@ NCollection_Array1<gp_Vec> GeomGridEval_BezierCurve::EvaluateGridDN(
   }
 
   // Get poles, weights, and flat knots from geometry
-  const NCollection_Array1<gp_Pnt>&  aPoles    = myGeom->Poles();
-  const NCollection_Array1<double>*  aWeights  = myGeom->Weights();
+  const NCollection_Array1<gp_Pnt>& aPoles     = myGeom->Poles();
+  const NCollection_Array1<double>* aWeights   = myGeom->Weights();
   const NCollection_Array1<double>& aFlatKnots = myGeom->InternalFlatKnots();
 
   // Bezier has a single span (index 0 with flat knots), non-periodic

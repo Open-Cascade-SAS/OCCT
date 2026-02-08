@@ -354,7 +354,7 @@ TEST_F(Geom2d_BSplineCurve_Test, SetWeight)
 TEST_F(Geom2d_BSplineCurve_Test, MovePoint)
 {
   gp_Pnt2d aTarget(1.5, 0.8);
-  int aFirst = 0, aLast = 0;
+  int      aFirst = 0, aLast = 0;
   myOriginalCurve->MovePoint(0.5, aTarget, 1, myOriginalCurve->NbPoles(), aFirst, aLast);
   EXPECT_GT(aFirst, 0);
   gp_Pnt2d aMoved = myOriginalCurve->Value(0.5);
@@ -428,8 +428,7 @@ TEST_F(Geom2d_BSplineCurve_Test, ClosedCurve)
   aMults(1) = 4;
   aMults(2) = 4;
 
-  occ::handle<Geom2d_BSplineCurve> aCurve =
-    new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+  occ::handle<Geom2d_BSplineCurve> aCurve = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
   EXPECT_TRUE(aCurve->IsClosed());
 }
 

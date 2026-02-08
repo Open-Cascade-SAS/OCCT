@@ -640,13 +640,13 @@ private:
   void Init(const NCollection_Array2<gp_Pnt>& thePoles,
             const NCollection_Array2<double>* theWeights);
 
-  NCollection_Array2<gp_Pnt>  myPoles;
-  NCollection_Array2<double>  myWeights;
-  bool                        myURational = false;
-  bool                        myVRational = false;
-  double                      myUMaxDerivInv = 0.0;
-  double                      myVMaxDerivInv = 0.0;
-  bool                        myMaxDerivInvOk = false;
+  NCollection_Array2<gp_Pnt> myPoles;
+  NCollection_Array2<double> myWeights;
+  bool                       myURational     = false;
+  bool                       myVRational     = false;
+  double                     myUMaxDerivInv  = 0.0;
+  double                     myVMaxDerivInv  = 0.0;
+  bool                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

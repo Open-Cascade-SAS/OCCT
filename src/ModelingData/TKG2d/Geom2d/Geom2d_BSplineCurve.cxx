@@ -122,7 +122,7 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
       myMaxDerivInv(0.0),
       myMaxDerivInvOk(false)
 {
-  myDeg     = Degree;
+  myDeg      = Degree;
   myPeriodic = Periodic;
 
   // check
@@ -155,7 +155,7 @@ Geom2d_BSplineCurve::Geom2d_BSplineCurve(const NCollection_Array1<gp_Pnt2d>& Pol
       myMaxDerivInv(0.0),
       myMaxDerivInvOk(false)
 {
-  myDeg     = Degree;
+  myDeg      = Degree;
   myPeriodic = Periodic;
 
   // check
@@ -247,7 +247,7 @@ void Geom2d_BSplineCurve::IncreaseDegree(const int Degree)
                            nknots,
                            nmults);
 
-  myDeg  = Degree;
+  myDeg     = Degree;
   myPoles   = std::move(npoles);
   myWeights = std::move(nweights);
   myKnots   = std::move(nknots);
@@ -452,7 +452,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   nmults(nbknots + 1) = cmults(nbknots);
 
   const NCollection_Array1<gp_Pnt2d>& cpoles  = myPoles;
-  int                                  nbpoles = cpoles.Length();
+  int                                 nbpoles = cpoles.Length();
   NCollection_Array1<gp_Pnt2d>        npoles(1, nbpoles + 1);
 
   // insert the pole
@@ -468,7 +468,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
   // Insert the weight
 
   NCollection_Array1<double> nweights;
-  bool rat = IsRational() || std::abs(Weight - 1.) > gp::Resolution();
+  bool                       rat = IsRational() || std::abs(Weight - 1.) > gp::Resolution();
 
   if (rat)
   {
@@ -489,11 +489,11 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
         nweights(i + 1) = 1.;
   }
 
-  myPoles   = std::move(npoles);
-  myWeights = std::move(nweights);
-  myKnots   = std::move(nknots);
-  myMults   = std::move(nmults);
-  myMaxDerivInvOk  = false;
+  myPoles         = std::move(npoles);
+  myWeights       = std::move(nweights);
+  myKnots         = std::move(nknots);
+  myMults         = std::move(nmults);
+  myMaxDerivInvOk = false;
   UpdateKnots();
 }
 
@@ -517,7 +517,7 @@ void Geom2d_BSplineCurve::RemovePole(const int Index)
   if (myKnotSet == GeomAbs_NonUniform || myKnotSet == GeomAbs_PiecewiseBezier)
     throw Standard_ConstructionError("BSpline curve: RemovePole: bad knotSet type");
 
-  int i;
+  int                        i;
   NCollection_Array1<double> nknots(1, myKnots.Length() - 1);
 
   NCollection_Array1<int> nmults(1, myMults.Length() - 1);
@@ -634,8 +634,8 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
   //-- DBB
 
   double AbsUMax = std::max(std::abs(NewU1), std::abs(NewU2));
-  AbsUMax        = std::max(AbsUMax, std::max(std::abs(FirstParameter()), std::abs(LastParameter())));
-  double Eps     = std::max(Epsilon(AbsUMax), theTolerance);
+  AbsUMax    = std::max(AbsUMax, std::max(std::abs(FirstParameter()), std::abs(LastParameter())));
+  double Eps = std::max(Epsilon(AbsUMax), theTolerance);
 
   Knots(1) = std::min(NewU1, NewU2);
   Knots(2) = std::max(NewU1, NewU2);
@@ -667,28 +667,12 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
   int index1 = 0, index2 = 0;
   int FromU1 = myKnots.Lower();
   int ToU2   = myKnots.Upper();
-  BSplCLib::LocateParameter(myDeg,
-                            myKnots,
-                            myMults,
-                            NewU1,
-                            myPeriodic,
-                            FromU1,
-                            ToU2,
-                            index1,
-                            U);
+  BSplCLib::LocateParameter(myDeg, myKnots, myMults, NewU1, myPeriodic, FromU1, ToU2, index1, U);
   if (std::abs(myKnots.Value(index1 + 1) - U) <= Eps)
   {
     index1++;
   }
-  BSplCLib::LocateParameter(myDeg,
-                            myKnots,
-                            myMults,
-                            NewU2,
-                            myPeriodic,
-                            FromU1,
-                            ToU2,
-                            index2,
-                            U);
+  BSplCLib::LocateParameter(myDeg, myKnots, myMults, NewU2, myPeriodic, FromU1, ToU2, index2, U);
   if (std::abs(myKnots.Value(index2 + 1) - U) <= Eps || index2 == index1)
   {
     index2++;
@@ -809,7 +793,7 @@ void Geom2d_BSplineCurve::SetKnot(const int Index, const double K)
 void Geom2d_BSplineCurve::SetKnots(const NCollection_Array1<double>& K)
 {
   CheckCurveData(myPoles, K, myMults, myDeg, myPeriodic);
-  myKnots  = K;
+  myKnots         = K;
   myMaxDerivInvOk = false;
   UpdateKnots();
 }
@@ -838,7 +822,7 @@ void Geom2d_BSplineCurve::SetPeriodic()
   for (int k = first; k <= last; k++)
     cmults(k - first + 1) = myMults(k);
   cmults(1) = cmults(cmults.Upper()) = std::min(myDeg, std::max(cmults(1), cmults(cmults.Upper())));
-  myMults = std::move(cmults);
+  myMults                            = std::move(cmults);
 
   // compute new number of poles;
   int nbp = BSplCLib::NbPoles(myDeg, true, myMults);
@@ -969,12 +953,12 @@ void Geom2d_BSplineCurve::SetNotPeriodic()
                           nknots,
                           npoles,
                           myRational ? &nweights : BSplCLib::NoWeights());
-    myPoles      = std::move(npoles);
-    myWeights    = std::move(nweights);
-    myMults      = std::move(nmults);
-    myKnots      = std::move(nknots);
-    myPeriodic = false;
-    myMaxDerivInvOk     = false;
+    myPoles         = std::move(npoles);
+    myWeights       = std::move(nweights);
+    myMults         = std::move(nmults);
+    myKnots         = std::move(nknots);
+    myPeriodic      = false;
+    myMaxDerivInvOk = false;
     UpdateKnots();
   }
 }
@@ -1064,7 +1048,7 @@ void Geom2d_BSplineCurve::MovePoint(const double    U,
                       npoles);
   if (FirstModifiedPole)
   {
-    myPoles  = std::move(npoles);
+    myPoles         = std::move(npoles);
     myMaxDerivInvOk = false;
   }
 }
@@ -1112,7 +1096,7 @@ void Geom2d_BSplineCurve::MovePointAndTangent(const double    U,
                                 ErrorStatus);
   if (!ErrorStatus)
   {
-    myPoles  = std::move(new_poles);
+    myPoles         = std::move(new_poles);
     myMaxDerivInvOk = false;
   }
 }
@@ -1134,15 +1118,9 @@ void Geom2d_BSplineCurve::UpdateKnots()
   }
   else
   {
-    myFlatKnots.Resize(1,
-                            BSplCLib::KnotSequenceLength(myMults, myDeg, myPeriodic),
-                            false);
+    myFlatKnots.Resize(1, BSplCLib::KnotSequenceLength(myMults, myDeg, myPeriodic), false);
 
-    BSplCLib::KnotSequence(myKnots,
-                           myMults,
-                           myDeg,
-                           myPeriodic,
-                           myFlatKnots);
+    BSplCLib::KnotSequence(myKnots, myMults, myDeg, myPeriodic, myFlatKnots);
   }
 
   if (MaxKnotMult == 0)
@@ -1178,8 +1156,7 @@ void Geom2d_BSplineCurve::PeriodicNormalization(double& Parameter) const
 
   if (myPeriodic)
   {
-    Period = myFlatKnots.Value(myFlatKnots.Upper() - myDeg)
-           - myFlatKnots.Value(myDeg + 1);
+    Period = myFlatKnots.Value(myFlatKnots.Upper() - myDeg) - myFlatKnots.Value(myDeg + 1);
     while (Parameter > myFlatKnots.Value(myFlatKnots.Upper() - myDeg))
     {
       Parameter -= Period;

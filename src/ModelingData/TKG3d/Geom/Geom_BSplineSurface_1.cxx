@@ -43,8 +43,8 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_Array1.hxx>
 
-#define WEIGHTS  (Weights())
-#define FMULTS   (BSplCLib::NoMults())
+#define WEIGHTS (Weights())
+#define FMULTS (BSplCLib::NoMults())
 
 //=================================================================================================
 
@@ -148,22 +148,10 @@ void Geom_BSplineSurface::D1(const double U,
 
   int uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUKnots,
-                            &myUMults,
-                            U,
-                            myUPeriodic,
-                            uindex,
-                            aNewU);
+  BSplCLib::LocateParameter(myUDeg, myUKnots, &myUMults, U, myUPeriodic, uindex, aNewU);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVKnots,
-                            &myVMults,
-                            V,
-                            myVPeriodic,
-                            vindex,
-                            aNewV);
+  BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D1(aNewU,
@@ -204,22 +192,10 @@ void Geom_BSplineSurface::D2(const double U,
 
   int uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUKnots,
-                            &myUMults,
-                            U,
-                            myUPeriodic,
-                            uindex,
-                            aNewU);
+  BSplCLib::LocateParameter(myUDeg, myUKnots, &myUMults, U, myUPeriodic, uindex, aNewU);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVKnots,
-                            &myVMults,
-                            V,
-                            myVPeriodic,
-                            vindex,
-                            aNewV);
+  BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D2(aNewU,
@@ -346,24 +322,10 @@ void Geom_BSplineSurface::LocalD0(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUFlatKnots,
-                            U,
-                            myUPeriodic,
-                            FromUK1,
-                            ToUK2,
-                            uindex,
-                            u);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVFlatKnots,
-                            V,
-                            myVPeriodic,
-                            FromVK1,
-                            ToVK2,
-                            vindex,
-                            v);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D0(u,
@@ -403,24 +365,10 @@ void Geom_BSplineSurface::LocalD1(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUFlatKnots,
-                            U,
-                            myUPeriodic,
-                            FromUK1,
-                            ToUK2,
-                            uindex,
-                            u);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVFlatKnots,
-                            V,
-                            myVPeriodic,
-                            FromVK1,
-                            ToVK2,
-                            vindex,
-                            v);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D1(u,
@@ -465,24 +413,10 @@ void Geom_BSplineSurface::LocalD2(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUFlatKnots,
-                            U,
-                            myUPeriodic,
-                            FromUK1,
-                            ToUK2,
-                            uindex,
-                            u);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVFlatKnots,
-                            V,
-                            myVPeriodic,
-                            FromVK1,
-                            ToVK2,
-                            vindex,
-                            v);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D2(u,
@@ -534,24 +468,10 @@ void Geom_BSplineSurface::LocalD3(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUFlatKnots,
-                            U,
-                            myUPeriodic,
-                            FromUK1,
-                            ToUK2,
-                            uindex,
-                            u);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVFlatKnots,
-                            V,
-                            myVPeriodic,
-                            FromVK1,
-                            ToVK2,
-                            vindex,
-                            v);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D3(u,
@@ -599,24 +519,10 @@ gp_Vec Geom_BSplineSurface::LocalDN(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(myUDeg,
-                            myUFlatKnots,
-                            U,
-                            myUPeriodic,
-                            FromUK1,
-                            ToUK2,
-                            uindex,
-                            u);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
   uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(myVDeg,
-                            myVFlatKnots,
-                            V,
-                            myVPeriodic,
-                            FromVK1,
-                            ToVK2,
-                            vindex,
-                            v);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   gp_Vec Vn;
@@ -688,12 +594,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U) const
                   myUPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles,
-                              cweights,
-                              myVKnots,
-                              myVMults,
-                              myVDeg,
-                              myVPeriodic);
+    C = new Geom_BSplineCurve(cpoles, cweights, myVKnots, myVMults, myVDeg, myVPeriodic);
   }
   else
   {
@@ -707,11 +608,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U) const
                   myUPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles,
-                              myVKnots,
-                              myVMults,
-                              myVDeg,
-                              myVPeriodic);
+    C = new Geom_BSplineCurve(cpoles, myVKnots, myVMults, myVDeg, myVPeriodic);
   }
 
   return C;
@@ -758,11 +655,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U, const bool Che
                   myUPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles,
-                              myVKnots,
-                              myVMults,
-                              myVDeg,
-                              myVPeriodic);
+    C = new Geom_BSplineCurve(cpoles, myVKnots, myVMults, myVDeg, myVPeriodic);
   }
 
   return C;
@@ -878,12 +771,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V) const
                   myVPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles,
-                              cweights,
-                              myUKnots,
-                              myUMults,
-                              myUDeg,
-                              myUPeriodic);
+    C = new Geom_BSplineCurve(cpoles, cweights, myUKnots, myUMults, myUDeg, myUPeriodic);
   }
   else
   {
@@ -897,11 +785,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V) const
                   myVPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles,
-                              myUKnots,
-                              myUMults,
-                              myUDeg,
-                              myUPeriodic);
+    C = new Geom_BSplineCurve(cpoles, myUKnots, myUMults, myUDeg, myUPeriodic);
   }
 
   return C;
@@ -948,11 +832,7 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V, const bool Che
                   myVPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles,
-                              myUKnots,
-                              myUMults,
-                              myUDeg,
-                              myUPeriodic);
+    C = new Geom_BSplineCurve(cpoles, myUKnots, myUMults, myUDeg, myUPeriodic);
   }
 
   return C;
@@ -1045,7 +925,8 @@ void Geom_BSplineSurface::SetUPeriodic()
   NCollection_Array1<int> cmults(1, last - first + 1);
   for (int k = first; k <= last; k++)
     cmults(k - first + 1) = myUMults(k);
-  cmults(1) = cmults(cmults.Upper()) = std::min(myUDeg, std::max(cmults(1), cmults(cmults.Upper())));
+  cmults(1) = cmults(cmults.Upper()) =
+    std::min(myUDeg, std::max(cmults(1), cmults(cmults.Upper())));
   myUMults = std::move(cmults);
 
   // compute new number of poles;
@@ -1078,7 +959,8 @@ void Geom_BSplineSurface::SetVPeriodic()
   NCollection_Array1<int> cmults(1, last - first + 1);
   for (int k = first; k <= last; k++)
     cmults(k - first + 1) = myVMults(k);
-  cmults(1) = cmults(cmults.Upper()) = std::min(myVDeg, std::max(cmults(1), cmults(cmults.Upper())));
+  cmults(1) = cmults(cmults.Upper()) =
+    std::min(myVDeg, std::max(cmults(1), cmults(cmults.Upper())));
   myVMults = std::move(cmults);
 
   // compute new number of poles;
@@ -1334,9 +1216,9 @@ void Geom_BSplineSurface::SetUNotPeriodic()
                             npoles,
                             BSplSLib::NoWeights());
     }
-    myPoles       = std::move(npoles);
-    myUMults      = std::move(nmults);
-    myUKnots      = std::move(nknots);
+    myPoles     = std::move(npoles);
+    myUMults    = std::move(nmults);
+    myUKnots    = std::move(nknots);
     myUPeriodic = false;
 
     myMaxDerivInvOk = false;
@@ -1388,9 +1270,9 @@ void Geom_BSplineSurface::SetVNotPeriodic()
                             npoles,
                             BSplSLib::NoWeights());
     }
-    myPoles       = std::move(npoles);
-    myVMults      = std::move(nmults);
-    myVKnots      = std::move(nknots);
+    myPoles     = std::move(npoles);
+    myVMults    = std::move(nmults);
+    myVKnots    = std::move(nknots);
     myVPeriodic = false;
 
     myMaxDerivInvOk = false;
@@ -1496,9 +1378,8 @@ void Geom_BSplineSurface::LocateU(const double U,
                                   int&         I2,
                                   const bool   WithKnotRepetition) const
 {
-  double NewU = U, vbid = myVKnots.Value(1);
-  const NCollection_Array1<double>& TheKnots =
-    WithKnotRepetition ? myUFlatKnots : myUKnots;
+  double                            NewU = U, vbid = myVKnots.Value(1);
+  const NCollection_Array1<double>& TheKnots = WithKnotRepetition ? myUFlatKnots : myUKnots;
 
   PeriodicNormalization(NewU, vbid); // Attention a la periode
 
@@ -1551,9 +1432,8 @@ void Geom_BSplineSurface::LocateV(const double V,
                                   int&         I2,
                                   const bool   WithKnotRepetition) const
 {
-  double NewV = V, ubid = myUKnots.Value(1);
-  const NCollection_Array1<double>& TheKnots =
-    WithKnotRepetition ? myVFlatKnots : myVKnots;
+  double                            NewV = V, ubid = myUKnots.Value(1);
+  const NCollection_Array1<double>& TheKnots = WithKnotRepetition ? myVFlatKnots : myVKnots;
 
   PeriodicNormalization(ubid, NewV); // Attention a la periode
 
@@ -1662,8 +1542,7 @@ void Geom_BSplineSurface::SetPoleCol(const int VIndex, const NCollection_Array1<
 
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    myPoles(I + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1) =
-      CPoles(I);
+    myPoles(I + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1) = CPoles(I);
   }
   myMaxDerivInvOk = false;
 }
@@ -1694,8 +1573,7 @@ void Geom_BSplineSurface::SetPoleRow(const int UIndex, const NCollection_Array1<
 
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    myPoles(UIndex + myPoles.LowerRow() - 1, I + myPoles.LowerCol() - 1) =
-      CPoles(I);
+    myPoles(UIndex + myPoles.LowerRow() - 1, I + myPoles.LowerCol() - 1) = CPoles(I);
   }
   myMaxDerivInvOk = false;
 }
@@ -1714,9 +1592,7 @@ void Geom_BSplineSurface::SetPoleRow(const int                         UIndex,
 
 void Geom_BSplineSurface::SetPole(const int UIndex, const int VIndex, const gp_Pnt& P)
 {
-  myPoles.SetValue(UIndex + myPoles.LowerRow() - 1,
-                        VIndex + myPoles.LowerCol() - 1,
-                        P);
+  myPoles.SetValue(UIndex + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1, P);
   myMaxDerivInvOk = false;
 }
 
@@ -1745,9 +1621,8 @@ void Geom_BSplineSurface::MovePoint(const double  U,
                                     int&          VFirstModifiedPole,
                                     int&          VLastmodifiedPole)
 {
-  if (UIndex1 < 1 || UIndex1 > myPoles.UpperRow() || UIndex2 < 1
-      || UIndex2 > myPoles.UpperRow() || UIndex1 > UIndex2 || VIndex1 < 1
-      || VIndex1 > myPoles.UpperCol() || VIndex2 < 1
+  if (UIndex1 < 1 || UIndex1 > myPoles.UpperRow() || UIndex2 < 1 || UIndex2 > myPoles.UpperRow()
+      || UIndex1 > UIndex2 || VIndex1 < 1 || VIndex1 > myPoles.UpperCol() || VIndex2 < 1
       || VIndex2 > myPoles.UpperCol() || VIndex1 > VIndex2)
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::MovePoint: Index and #pole mismatch");
@@ -2049,11 +1924,8 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
   if (step <= 0)
     return true;
 
-  NCollection_Array2<gp_Pnt> npoles(1,
-                                    myPoles.ColLength() - step,
-                                    1,
-                                    myPoles.RowLength());
-  const int aNewUKnotLen = (M == 0) ? myUKnots.Length() - 1 : myUKnots.Length();
+  NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength() - step, 1, myPoles.RowLength());
+  const int                  aNewUKnotLen = (M == 0) ? myUKnots.Length() - 1 : myUKnots.Length();
   NCollection_Array1<double> nknots(1, aNewUKnotLen);
   NCollection_Array1<int>    nmults(1, aNewUKnotLen);
   if (myURational || myVRational)
@@ -2127,11 +1999,8 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
   if (step <= 0)
     return true;
 
-  NCollection_Array2<gp_Pnt> npoles(1,
-                                    myPoles.ColLength(),
-                                    1,
-                                    myPoles.RowLength() - step);
-  const int aNewVKnotLen = (M == 0) ? myVKnots.Length() - 1 : myVKnots.Length();
+  NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength(), 1, myPoles.RowLength() - step);
+  const int                  aNewVKnotLen = (M == 0) ? myVKnots.Length() - 1 : myVKnots.Length();
   NCollection_Array1<double> nknots(1, aNewVKnotLen);
   NCollection_Array1<int>    nmults(1, aNewVKnotLen);
   if (myURational || myVRational)
@@ -2173,10 +2042,10 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
       return false;
   }
 
-  myPoles  = std::move(npoles);
-  myVKnots = std::move(nknots);
-  myVMults = std::move(nmults);
-  myMaxDerivInvOk   = false;
+  myPoles         = std::move(npoles);
+  myVKnots        = std::move(nknots);
+  myVMults        = std::move(nmults);
+  myMaxDerivInvOk = false;
   UpdateVKnots();
   return true;
 }

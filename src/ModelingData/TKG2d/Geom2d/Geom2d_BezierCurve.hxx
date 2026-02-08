@@ -331,9 +331,9 @@ private:
 
   NCollection_Array1<gp_Pnt2d> myPoles;
   NCollection_Array1<double>   myWeights;
-  bool                         myRational = false;
-  bool                         myClosed = false;
-  double                       myMaxDerivInv = 0.0;
+  bool                         myRational      = false;
+  bool                         myClosed        = false;
+  double                       myMaxDerivInv   = 0.0;
   bool                         myMaxDerivInvOk = false;
 };
 

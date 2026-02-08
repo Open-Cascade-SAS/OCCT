@@ -194,8 +194,8 @@ TEST_F(Geom2d_BezierCurve_Test, SetWeight)
   aWeights(2) = 1.0;
   aWeights(3) = 1.0;
 
-  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
-  gp_Pnt2d aMidBefore = aCurve->Value(0.5);
+  occ::handle<Geom2d_BezierCurve> aCurve     = new Geom2d_BezierCurve(aPoles, aWeights);
+  gp_Pnt2d                        aMidBefore = aCurve->Value(0.5);
 
   aCurve->SetWeight(2, 10.0);
   EXPECT_DOUBLE_EQ(aCurve->Weight(2), 10.0);
@@ -302,8 +302,8 @@ TEST_F(Geom2d_BezierCurve_Test, RationalCurveEvaluation)
   occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
   EXPECT_TRUE(aCurve->IsRational());
 
-  gp_Pnt2d aMid = aCurve->Value(0.5);
-  double aRadius = sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
+  gp_Pnt2d aMid    = aCurve->Value(0.5);
+  double   aRadius = sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
   EXPECT_NEAR(aRadius, 1.0, 1e-6);
 }
 
@@ -369,7 +369,7 @@ TEST_F(Geom2d_BezierCurve_Test, RationalSegment)
   aWeights(3) = 1.0;
 
   occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
-  gp_Pnt2d aMid = aCurve->Value(0.5);
+  gp_Pnt2d                        aMid   = aCurve->Value(0.5);
 
   aCurve->Segment(0.25, 0.75);
   gp_Pnt2d aMidAfter = aCurve->Value(0.5);
@@ -390,8 +390,8 @@ TEST_F(Geom2d_BezierCurve_Test, RationalReverse)
   aWeights(3) = 2.0;
 
   occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
-  gp_Pnt2d aStart = aCurve->StartPoint();
-  gp_Pnt2d anEnd  = aCurve->EndPoint();
+  gp_Pnt2d                        aStart = aCurve->StartPoint();
+  gp_Pnt2d                        anEnd  = aCurve->EndPoint();
 
   aCurve->Reverse();
   EXPECT_TRUE(aCurve->StartPoint().IsEqual(anEnd, 1e-10));
@@ -444,8 +444,8 @@ TEST_F(Geom2d_BezierCurve_Test, RationalIncrease)
   aWeights(2) = 2.0;
   aWeights(3) = 1.0;
 
-  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
-  gp_Pnt2d aValBefore = aCurve->Value(0.5);
+  occ::handle<Geom2d_BezierCurve> aCurve     = new Geom2d_BezierCurve(aPoles, aWeights);
+  gp_Pnt2d                        aValBefore = aCurve->Value(0.5);
 
   aCurve->Increase(5);
   EXPECT_EQ(aCurve->Degree(), 5);

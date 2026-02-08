@@ -222,19 +222,23 @@ TEST_F(Geom_BSplineSurface_Test, SetWeight)
   {
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
+      aPoles(i, j)   = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
       aWeights(i, j) = 1.0;
     }
   }
   aWeights(2, 2) = 2.0;
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0;
-  aVKnots(1) = 0.0;  aVKnots(2) = 1.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
+  aVKnots(1)  = 0.0;
+  aVKnots(2)  = 1.0;
 
   NCollection_Array1<int> anUMults(1, 2), aVMults(1, 2);
-  anUMults(1) = 3; anUMults(2) = 3;
-  aVMults(1) = 3;  aVMults(2) = 3;
+  anUMults(1) = 3;
+  anUMults(2) = 3;
+  aVMults(1)  = 3;
+  aVMults(2)  = 3;
 
   occ::handle<Geom_BSplineSurface> aSurf =
     new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults, 2, 2);
@@ -282,7 +286,7 @@ TEST_F(Geom_BSplineSurface_Test, RemoveUKnot)
   EXPECT_EQ(myOriginalSurface->NbUKnots(), 3);
 
   gp_Pnt aValBefore = myOriginalSurface->Value(0.25, 0.5);
-  bool isRemoved = myOriginalSurface->RemoveUKnot(2, 0, 1e-6);
+  bool   isRemoved  = myOriginalSurface->RemoveUKnot(2, 0, 1e-6);
   EXPECT_TRUE(isRemoved);
   EXPECT_EQ(myOriginalSurface->NbUKnots(), 2);
   gp_Pnt aValAfter = myOriginalSurface->Value(0.25, 0.5);
@@ -308,8 +312,8 @@ TEST_F(Geom_BSplineSurface_Test, Segment)
 TEST_F(Geom_BSplineSurface_Test, ExchangeUV)
 {
   gp_Pnt aValBefore = myOriginalSurface->Value(0.3, 0.7);
-  int aUDeg = myOriginalSurface->UDegree();
-  int aVDeg = myOriginalSurface->VDegree();
+  int    aUDeg      = myOriginalSurface->UDegree();
+  int    aVDeg      = myOriginalSurface->VDegree();
 
   myOriginalSurface->ExchangeUV();
   EXPECT_EQ(myOriginalSurface->UDegree(), aVDeg);
@@ -412,9 +416,8 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetUNotPeriodic)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
-      aPoles(i, j) = gp_Pnt(cos(2.0 * M_PI * (i - 1) / 3.0),
-                             sin(2.0 * M_PI * (i - 1) / 3.0),
-                             j * 0.5);
+      aPoles(i, j) =
+        gp_Pnt(cos(2.0 * M_PI * (i - 1) / 3.0), sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
 
   NCollection_Array1<double> anUKnots(1, 4);
   anUKnots(1) = 0.0;
@@ -450,9 +453,8 @@ TEST_F(Geom_BSplineSurface_Test, PeriodicSurface_SetVNotPeriodic)
   NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
-      aPoles(i, j) = gp_Pnt(i * 0.5,
-                             cos(2.0 * M_PI * (j - 1) / 3.0),
-                             sin(2.0 * M_PI * (j - 1) / 3.0));
+      aPoles(i, j) =
+        gp_Pnt(i * 0.5, cos(2.0 * M_PI * (j - 1) / 3.0), sin(2.0 * M_PI * (j - 1) / 3.0));
 
   NCollection_Array1<double> anUKnots(1, 2);
   anUKnots(1) = 0.0;
@@ -490,19 +492,23 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface)
   {
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, 0);
+      aPoles(i, j)   = gp_Pnt(i, j, 0);
       aWeights(i, j) = 1.0;
     }
   }
   aWeights(2, 2) = 3.0;
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0;
-  aVKnots(1) = 0.0;  aVKnots(2) = 1.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
+  aVKnots(1)  = 0.0;
+  aVKnots(2)  = 1.0;
 
   NCollection_Array1<int> anUMults(1, 2), aVMults(1, 2);
-  anUMults(1) = 3; anUMults(2) = 3;
-  aVMults(1) = 3;  aVMults(2) = 3;
+  anUMults(1) = 3;
+  anUMults(2) = 3;
+  aVMults(1)  = 3;
+  aVMults(2)  = 3;
 
   occ::handle<Geom_BSplineSurface> aSurf =
     new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults, 2, 2);
@@ -567,18 +573,22 @@ TEST_F(Geom_BSplineSurface_Test, SetWeightRow)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
+      aPoles(i, j)   = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
       aWeights(i, j) = 1.0;
     }
   aWeights(2, 2) = 2.0;
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0;
-  aVKnots(1) = 0.0;  aVKnots(2) = 1.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
+  aVKnots(1)  = 0.0;
+  aVKnots(2)  = 1.0;
 
   NCollection_Array1<int> anUMults(1, 2), aVMults(1, 2);
-  anUMults(1) = 3; anUMults(2) = 3;
-  aVMults(1) = 3;  aVMults(2) = 3;
+  anUMults(1) = 3;
+  anUMults(2) = 3;
+  aVMults(1)  = 3;
+  aVMults(2)  = 3;
 
   occ::handle<Geom_BSplineSurface> aSurf =
     new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults, 2, 2);
@@ -601,18 +611,22 @@ TEST_F(Geom_BSplineSurface_Test, SetWeightCol)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
+      aPoles(i, j)   = gp_Pnt(i, j, (i == 2 && j == 2) ? 1.0 : 0.0);
       aWeights(i, j) = 1.0;
     }
   aWeights(2, 2) = 2.0;
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0;
-  aVKnots(1) = 0.0;  aVKnots(2) = 1.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
+  aVKnots(1)  = 0.0;
+  aVKnots(2)  = 1.0;
 
   NCollection_Array1<int> anUMults(1, 2), aVMults(1, 2);
-  anUMults(1) = 3; anUMults(2) = 3;
-  aVMults(1) = 3;  aVMults(2) = 3;
+  anUMults(1) = 3;
+  anUMults(2) = 3;
+  aVMults(1)  = 3;
+  aVMults(2)  = 3;
 
   occ::handle<Geom_BSplineSurface> aSurf =
     new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults, 2, 2);
@@ -634,7 +648,7 @@ TEST_F(Geom_BSplineSurface_Test, RemoveVKnot)
   EXPECT_EQ(myOriginalSurface->NbVKnots(), 3);
 
   gp_Pnt aValBefore = myOriginalSurface->Value(0.5, 0.25);
-  bool isRemoved = myOriginalSurface->RemoveVKnot(2, 0, 1e-6);
+  bool   isRemoved  = myOriginalSurface->RemoveVKnot(2, 0, 1e-6);
   EXPECT_TRUE(isRemoved);
   EXPECT_EQ(myOriginalSurface->NbVKnots(), 2);
   gp_Pnt aValAfter = myOriginalSurface->Value(0.5, 0.25);
@@ -644,11 +658,18 @@ TEST_F(Geom_BSplineSurface_Test, RemoveVKnot)
 TEST_F(Geom_BSplineSurface_Test, MovePoint)
 {
   gp_Pnt aTarget(2, 2, 1);
-  int aUFirst = 0, aULast = 0, aVFirst = 0, aVLast = 0;
-  myOriginalSurface->MovePoint(0.5, 0.5, aTarget,
-                               1, myOriginalSurface->NbUPoles(),
-                               1, myOriginalSurface->NbVPoles(),
-                               aUFirst, aULast, aVFirst, aVLast);
+  int    aUFirst = 0, aULast = 0, aVFirst = 0, aVLast = 0;
+  myOriginalSurface->MovePoint(0.5,
+                               0.5,
+                               aTarget,
+                               1,
+                               myOriginalSurface->NbUPoles(),
+                               1,
+                               myOriginalSurface->NbVPoles(),
+                               aUFirst,
+                               aULast,
+                               aVFirst,
+                               aVLast);
   gp_Pnt aMoved = myOriginalSurface->Value(0.5, 0.5);
   EXPECT_TRUE(aMoved.IsEqual(aTarget, 1e-6));
 }
@@ -679,27 +700,38 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_SetUNotPeriodic)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(cos(2.0 * M_PI * (i - 1) / 3.0),
-                             sin(2.0 * M_PI * (i - 1) / 3.0),
-                             j * 0.5);
+      aPoles(i, j) =
+        gp_Pnt(cos(2.0 * M_PI * (i - 1) / 3.0), sin(2.0 * M_PI * (i - 1) / 3.0), j * 0.5);
       aWeights(i, j) = 1.0 + 0.5 * (i - 1);
     }
 
   NCollection_Array1<double> anUKnots(1, 4);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0; anUKnots(3) = 2.0; anUKnots(4) = 3.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
+  anUKnots(3) = 2.0;
+  anUKnots(4) = 3.0;
 
   NCollection_Array1<double> aVKnots(1, 2);
-  aVKnots(1) = 0.0; aVKnots(2) = 1.0;
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
 
   NCollection_Array1<int> anUMults(1, 4);
   anUMults.Init(1);
 
   NCollection_Array1<int> aVMults(1, 2);
-  aVMults(1) = 3; aVMults(2) = 3;
+  aVMults(1) = 3;
+  aVMults(2) = 3;
 
-  occ::handle<Geom_BSplineSurface> aSurf =
-    new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults,
-                            2, 2, true, false);
+  occ::handle<Geom_BSplineSurface> aSurf = new Geom_BSplineSurface(aPoles,
+                                                                   aWeights,
+                                                                   anUKnots,
+                                                                   aVKnots,
+                                                                   anUMults,
+                                                                   aVMults,
+                                                                   2,
+                                                                   2,
+                                                                   true,
+                                                                   false);
   EXPECT_TRUE(aSurf->IsUPeriodic());
   EXPECT_TRUE(aSurf->IsURational() || aSurf->IsVRational());
 
@@ -718,27 +750,38 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_SetVNotPeriodic)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i * 0.5,
-                             cos(2.0 * M_PI * (j - 1) / 3.0),
-                             sin(2.0 * M_PI * (j - 1) / 3.0));
+      aPoles(i, j) =
+        gp_Pnt(i * 0.5, cos(2.0 * M_PI * (j - 1) / 3.0), sin(2.0 * M_PI * (j - 1) / 3.0));
       aWeights(i, j) = 1.0 + 0.5 * (j - 1);
     }
 
   NCollection_Array1<double> anUKnots(1, 2);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
 
   NCollection_Array1<double> aVKnots(1, 4);
-  aVKnots(1) = 0.0; aVKnots(2) = 1.0; aVKnots(3) = 2.0; aVKnots(4) = 3.0;
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+  aVKnots(3) = 2.0;
+  aVKnots(4) = 3.0;
 
   NCollection_Array1<int> anUMults(1, 2);
-  anUMults(1) = 3; anUMults(2) = 3;
+  anUMults(1) = 3;
+  anUMults(2) = 3;
 
   NCollection_Array1<int> aVMults(1, 4);
   aVMults.Init(1);
 
-  occ::handle<Geom_BSplineSurface> aSurf =
-    new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults,
-                            2, 2, false, true);
+  occ::handle<Geom_BSplineSurface> aSurf = new Geom_BSplineSurface(aPoles,
+                                                                   aWeights,
+                                                                   anUKnots,
+                                                                   aVKnots,
+                                                                   anUMults,
+                                                                   aVMults,
+                                                                   2,
+                                                                   2,
+                                                                   false,
+                                                                   true);
   EXPECT_TRUE(aSurf->IsVPeriodic());
   EXPECT_TRUE(aSurf->IsURational() || aSurf->IsVRational());
 
@@ -754,8 +797,7 @@ TEST_F(Geom_BSplineSurface_Test, Evaluation_D3)
   gp_Pnt aPnt;
   gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
   gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-  myOriginalSurface->D3(0.5, 0.5, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
-                        aD3U, aD3V, aD3UUV, aD3UVV);
+  myOriginalSurface->D3(0.5, 0.5, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
   // Degree 2 surface: D3 should be zero
   EXPECT_NEAR(aD3U.Magnitude(), 0.0, 1e-10);
   EXPECT_NEAR(aD3V.Magnitude(), 0.0, 1e-10);
@@ -794,17 +836,21 @@ TEST_F(Geom_BSplineSurface_Test, RationalSurface_UIso)
   for (int i = 1; i <= 3; ++i)
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, (i + j) * 0.1);
+      aPoles(i, j)   = gp_Pnt(i, j, (i + j) * 0.1);
       aWeights(i, j) = 1.0 + 0.5 * ((i - 1) + (j - 1));
     }
 
   NCollection_Array1<double> anUKnots(1, 2), aVKnots(1, 2);
-  anUKnots(1) = 0.0; anUKnots(2) = 1.0;
-  aVKnots(1) = 0.0;  aVKnots(2) = 1.0;
+  anUKnots(1) = 0.0;
+  anUKnots(2) = 1.0;
+  aVKnots(1)  = 0.0;
+  aVKnots(2)  = 1.0;
 
   NCollection_Array1<int> anUMults(1, 2), aVMults(1, 2);
-  anUMults(1) = 3; anUMults(2) = 3;
-  aVMults(1) = 3;  aVMults(2) = 3;
+  anUMults(1) = 3;
+  anUMults(2) = 3;
+  aVMults(1)  = 3;
+  aVMults(2)  = 3;
 
   occ::handle<Geom_BSplineSurface> aSurf =
     new Geom_BSplineSurface(aPoles, aWeights, anUKnots, aVKnots, anUMults, aVMults, 2, 2);

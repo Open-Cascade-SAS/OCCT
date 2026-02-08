@@ -380,9 +380,9 @@ bool Geom_OsculatingSurface::UOsculatingSurface(double                          
     bool isToSkipSecond = false;
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
-      occ::handle<Geom_BSplineSurface> BSur = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
-      NbUK                                          = BSur->NbUKnots();
-      NbVK                                          = BSur->NbVKnots();
+      occ::handle<Geom_BSplineSurface> BSur    = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
+      NbUK                                     = BSur->NbUKnots();
+      NbVK                                     = BSur->NbVKnots();
       const NCollection_Array1<double>& UKnots = BSur->UKnots();
       const NCollection_Array1<double>& VKnots = BSur->VKnots();
       BSplCLib::Hunt(UKnots, theU, NU);
@@ -440,9 +440,9 @@ bool Geom_OsculatingSurface::VOsculatingSurface(double                          
     bool isToSkipSecond = false;
     if (myBasisSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface)))
     {
-      occ::handle<Geom_BSplineSurface> BSur = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
-      NbUK                                          = BSur->NbUKnots();
-      NbVK                                          = BSur->NbVKnots();
+      occ::handle<Geom_BSplineSurface> BSur    = occ::down_cast<Geom_BSplineSurface>(myBasisSurf);
+      NbUK                                     = BSur->NbUKnots();
+      NbVK                                     = BSur->NbVKnots();
       const NCollection_Array1<double>& UKnots = BSur->UKnots();
       const NCollection_Array1<double>& VKnots = BSur->VKnots();
       BSplCLib::Hunt(UKnots, theU, NU);

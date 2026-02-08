@@ -206,13 +206,13 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
   // Get degrees, flat knots, poles, and weights from geometry
-  const int                          aUDegree    = myGeom->UDegree();
-  const int                          aVDegree    = myGeom->VDegree();
-  const NCollection_Array1<double>&  aUFlatKnots = myGeom->InternalUFlatKnots();
-  const NCollection_Array1<double>&  aVFlatKnots = myGeom->InternalVFlatKnots();
-  const NCollection_Array2<gp_Pnt>&  aPoles      = myGeom->Poles();
-  const NCollection_Array2<double>*  aWeights    = myGeom->Weights();
-  const bool                         isRational  = (aWeights != nullptr);
+  const int                         aUDegree    = myGeom->UDegree();
+  const int                         aVDegree    = myGeom->VDegree();
+  const NCollection_Array1<double>& aUFlatKnots = myGeom->InternalUFlatKnots();
+  const NCollection_Array1<double>& aVFlatKnots = myGeom->InternalVFlatKnots();
+  const NCollection_Array2<gp_Pnt>& aPoles      = myGeom->Poles();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
+  const bool                        isRational  = (aWeights != nullptr);
 
   // D3 evaluation using BSplSLib::D3 directly
   // Bezier surface is single span (span index = 0), non-periodic
@@ -298,11 +298,11 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
   }
 
   // Get poles, weights, and flat knots from geometry
-  const NCollection_Array2<gp_Pnt>&  aPoles      = myGeom->Poles();
-  const NCollection_Array2<double>*  aWeights    = myGeom->Weights();
-  const bool                         isRational  = (aWeights != nullptr);
-  const NCollection_Array1<double>&  aUFlatKnots = myGeom->InternalUFlatKnots();
-  const NCollection_Array1<double>&  aVFlatKnots = myGeom->InternalVFlatKnots();
+  const NCollection_Array2<gp_Pnt>& aPoles      = myGeom->Poles();
+  const NCollection_Array2<double>* aWeights    = myGeom->Weights();
+  const bool                        isRational  = (aWeights != nullptr);
+  const NCollection_Array1<double>& aUFlatKnots = myGeom->InternalUFlatKnots();
+  const NCollection_Array1<double>& aVFlatKnots = myGeom->InternalVFlatKnots();
 
   // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = 0; i < aNbU; ++i)

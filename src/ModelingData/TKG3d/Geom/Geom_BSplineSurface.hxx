@@ -1296,27 +1296,27 @@ private:
   //! continuity for V.
   Standard_EXPORT void UpdateVKnots();
 
-  NCollection_Array2<gp_Pnt>       myPoles;
-  NCollection_Array2<double>       myWeights;
-  NCollection_Array1<double>       myUKnots;
-  NCollection_Array1<double>       myVKnots;
-  NCollection_Array1<double>       myUFlatKnots;
-  NCollection_Array1<double>       myVFlatKnots;
-  NCollection_Array1<int>          myUMults;
-  NCollection_Array1<int>          myVMults;
-  int                              myUDeg = 0;
-  int                              myVDeg = 0;
-  bool                             myUPeriodic = false;
-  bool                             myVPeriodic = false;
-  bool                             myURational = false;
-  bool                             myVRational = false;
-  GeomAbs_BSplKnotDistribution     myUKnotSet = GeomAbs_NonUniform;
-  GeomAbs_BSplKnotDistribution     myVKnotSet = GeomAbs_NonUniform;
-  GeomAbs_Shape                    myUSmooth = GeomAbs_C0;
-  GeomAbs_Shape                    myVSmooth = GeomAbs_C0;
-  double                           myUMaxDerivInv = 0.0;
-  double                           myVMaxDerivInv = 0.0;
-  bool                             myMaxDerivInvOk = false;
+  NCollection_Array2<gp_Pnt>   myPoles;
+  NCollection_Array2<double>   myWeights;
+  NCollection_Array1<double>   myUKnots;
+  NCollection_Array1<double>   myVKnots;
+  NCollection_Array1<double>   myUFlatKnots;
+  NCollection_Array1<double>   myVFlatKnots;
+  NCollection_Array1<int>      myUMults;
+  NCollection_Array1<int>      myVMults;
+  int                          myUDeg          = 0;
+  int                          myVDeg          = 0;
+  bool                         myUPeriodic     = false;
+  bool                         myVPeriodic     = false;
+  bool                         myURational     = false;
+  bool                         myVRational     = false;
+  GeomAbs_BSplKnotDistribution myUKnotSet      = GeomAbs_NonUniform;
+  GeomAbs_BSplKnotDistribution myVKnotSet      = GeomAbs_NonUniform;
+  GeomAbs_Shape                myUSmooth       = GeomAbs_C0;
+  GeomAbs_Shape                myVSmooth       = GeomAbs_C0;
+  double                       myUMaxDerivInv  = 0.0;
+  double                       myVMaxDerivInv  = 0.0;
+  bool                         myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineSurface_HeaderFile

@@ -346,12 +346,12 @@ private:
   void Init(const NCollection_Array1<gp_Pnt>& thePoles,
             const NCollection_Array1<double>* theWeights);
 
-  NCollection_Array1<gp_Pnt>  myPoles;
-  NCollection_Array1<double>  myWeights;
-  bool                        myRational = false;
-  bool                        myClosed = false;
-  double                      myMaxDerivInv = 0.0;
-  bool                        myMaxDerivInvOk = false;
+  NCollection_Array1<gp_Pnt> myPoles;
+  NCollection_Array1<double> myWeights;
+  bool                       myRational      = false;
+  bool                       myClosed        = false;
+  double                     myMaxDerivInv   = 0.0;
+  bool                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

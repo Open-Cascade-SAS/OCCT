@@ -211,8 +211,8 @@ TEST_F(Geom_BezierCurve_Test, SetWeight)
   aWeights(2) = 1.0;
   aWeights(3) = 1.0;
 
-  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
-  gp_Pnt aMidBefore = aCurve->Value(0.5);
+  occ::handle<Geom_BezierCurve> aCurve     = new Geom_BezierCurve(aPoles, aWeights);
+  gp_Pnt                        aMidBefore = aCurve->Value(0.5);
 
   aCurve->SetWeight(2, 10.0);
   EXPECT_DOUBLE_EQ(aCurve->Weight(2), 10.0);
@@ -225,7 +225,7 @@ TEST_F(Geom_BezierCurve_Test, SetWeight)
 
 TEST_F(Geom_BezierCurve_Test, InsertPoleAfter)
 {
-  int aNbBefore = myOriginalCurve->NbPoles();
+  int    aNbBefore = myOriginalCurve->NbPoles();
   gp_Pnt aNewPole(1.5, 2.0, 0);
   myOriginalCurve->InsertPoleAfter(2, aNewPole);
   EXPECT_EQ(myOriginalCurve->NbPoles(), aNbBefore + 1);
@@ -235,7 +235,7 @@ TEST_F(Geom_BezierCurve_Test, InsertPoleAfter)
 
 TEST_F(Geom_BezierCurve_Test, InsertPoleBefore)
 {
-  int aNbBefore = myOriginalCurve->NbPoles();
+  int    aNbBefore = myOriginalCurve->NbPoles();
   gp_Pnt aNewPole(0.5, 2.0, 0);
   myOriginalCurve->InsertPoleBefore(2, aNewPole);
   EXPECT_EQ(myOriginalCurve->NbPoles(), aNbBefore + 1);
@@ -331,7 +331,7 @@ TEST_F(Geom_BezierCurve_Test, RationalCurveEvaluation)
   EXPECT_TRUE(aCurve->IsRational());
 
   // At u=0.5, the rational curve should be close to the unit circle
-  gp_Pnt aMid = aCurve->Value(0.5);
+  gp_Pnt aMid    = aCurve->Value(0.5);
   double aRadius = sqrt(aMid.X() * aMid.X() + aMid.Y() * aMid.Y());
   EXPECT_NEAR(aRadius, 1.0, 1e-6);
 }
@@ -354,7 +354,7 @@ TEST_F(Geom_BezierCurve_Test, SetPoleWithWeight)
   aWeights(3) = 1.0;
 
   occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
-  gp_Pnt aNewPole(1, 2, 0);
+  gp_Pnt                        aNewPole(1, 2, 0);
   aCurve->SetPole(2, aNewPole, 5.0);
   EXPECT_TRUE(aCurve->Pole(2).IsEqual(aNewPole, 1e-10));
   EXPECT_DOUBLE_EQ(aCurve->Weight(2), 5.0);
@@ -405,7 +405,7 @@ TEST_F(Geom_BezierCurve_Test, RationalSegment)
   aWeights(3) = 1.0;
 
   occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
-  gp_Pnt aMid = aCurve->Value(0.5);
+  gp_Pnt                        aMid   = aCurve->Value(0.5);
 
   aCurve->Segment(0.25, 0.75);
   gp_Pnt aMidAfter = aCurve->Value(0.5);
@@ -425,8 +425,8 @@ TEST_F(Geom_BezierCurve_Test, RationalIncrease)
   aWeights(2) = 2.0;
   aWeights(3) = 1.0;
 
-  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
-  gp_Pnt aValBefore = aCurve->Value(0.5);
+  occ::handle<Geom_BezierCurve> aCurve     = new Geom_BezierCurve(aPoles, aWeights);
+  gp_Pnt                        aValBefore = aCurve->Value(0.5);
 
   aCurve->Increase(5);
   EXPECT_EQ(aCurve->Degree(), 5);
@@ -448,8 +448,8 @@ TEST_F(Geom_BezierCurve_Test, RationalReverse)
   aWeights(3) = 2.0;
 
   occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
-  gp_Pnt aStart = aCurve->StartPoint();
-  gp_Pnt anEnd  = aCurve->EndPoint();
+  gp_Pnt                        aStart = aCurve->StartPoint();
+  gp_Pnt                        anEnd  = aCurve->EndPoint();
 
   aCurve->Reverse();
   EXPECT_TRUE(aCurve->StartPoint().IsEqual(anEnd, 1e-10));

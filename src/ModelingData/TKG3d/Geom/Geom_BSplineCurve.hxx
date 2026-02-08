@@ -818,18 +818,18 @@ private:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
   Standard_EXPORT void UpdateKnots();
 
-  NCollection_Array1<gp_Pnt>       myPoles;
-  NCollection_Array1<double>       myWeights;
-  NCollection_Array1<double>       myKnots;
-  NCollection_Array1<double>       myFlatKnots;
-  NCollection_Array1<int>          myMults;
-  int                              myDeg = 0;
-  bool                             myPeriodic = false;
-  bool                             myRational = false;
-  GeomAbs_BSplKnotDistribution     myKnotSet = GeomAbs_NonUniform;
-  GeomAbs_Shape                    mySmooth = GeomAbs_C0;
-  double                           myMaxDerivInv = 0.0;
-  bool                             myMaxDerivInvOk = false;
+  NCollection_Array1<gp_Pnt>   myPoles;
+  NCollection_Array1<double>   myWeights;
+  NCollection_Array1<double>   myKnots;
+  NCollection_Array1<double>   myFlatKnots;
+  NCollection_Array1<int>      myMults;
+  int                          myDeg           = 0;
+  bool                         myPeriodic      = false;
+  bool                         myRational      = false;
+  GeomAbs_BSplKnotDistribution myKnotSet       = GeomAbs_NonUniform;
+  GeomAbs_Shape                mySmooth        = GeomAbs_C0;
+  double                       myMaxDerivInv   = 0.0;
+  bool                         myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineCurve_HeaderFile
