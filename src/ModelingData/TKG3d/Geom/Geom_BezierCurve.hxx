@@ -340,14 +340,9 @@ private:
   //! Returns Bezier flat knots for the current degree.
   Standard_EXPORT const NCollection_Array1<double>& BezierFlatKnots() const;
 
-  //! Set poles to Poles, weights to Weights (not copied).
-  //! If Weights is null the curve is non rational.
-  //! Create the arrays of coefficients.
-  //! Poles and Weights are assumed to have the first
-  //! coefficient 1.
+  //! Set poles to thePoles, weights to theWeights.
+  //! If theWeights is null the curve is non rational.
   //! Update rational and closed.
-  //!
-  //! if nbpoles < 2 or nbboles > MaDegree + 1
   void Init(const NCollection_Array1<gp_Pnt>& thePoles,
             const NCollection_Array1<double>* theWeights);
 

@@ -37,7 +37,6 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-#include <NCollection_HArray2.hxx>
 #include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -900,21 +899,20 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
 
 void Geom_BezierSurface::Segment(const double U1, const double U2, const double V1, const double V2)
 {
-  bool rat = (myURational || myVRational);
+  const bool rat = (myURational || myVRational);
 
-  int aMinDegree = UDegree() <= VDegree() ? UDegree() : VDegree();
-  int aMaxDegree = UDegree() > VDegree() ? UDegree() : VDegree();
+  const int aMinDegree = UDegree() <= VDegree() ? UDegree() : VDegree();
+  const int aMaxDegree = UDegree() > VDegree() ? UDegree() : VDegree();
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> Coefs =
-    new NCollection_HArray2<gp_Pnt>(1, aMaxDegree + 1, 1, aMinDegree + 1);
-  occ::handle<NCollection_HArray2<double>> WCoefs;
+  NCollection_Array2<gp_Pnt> aCoefs(1, aMaxDegree + 1, 1, aMinDegree + 1);
+  NCollection_Array2<double> aWCoefs;
   if (rat)
-    WCoefs = new NCollection_HArray2<double>(1, aMaxDegree + 1, 1, aMinDegree + 1);
+    aWCoefs.Resize(1, aMaxDegree + 1, 1, aMinDegree + 1, false);
 
-  double uparameter_11  = 0.5;
-  double uspanlenght_11 = 0.5;
-  double vparameter_11  = 0.5;
-  double vspanlenght_11 = 0.5;
+  const double uparameter_11  = 0.5;
+  const double uspanlenght_11 = 0.5;
+  const double vparameter_11  = 0.5;
+  const double vspanlenght_11 = 0.5;
 
   if (rat)
   {
@@ -932,8 +930,8 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          BezierVFlatKnots(),
                          myPoles,
                          &myWeights,
-                         Coefs->ChangeArray2(),
-                         &WCoefs->ChangeArray2());
+                         aCoefs,
+                         &aWCoefs);
   }
   else
   {
@@ -951,53 +949,44 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
                          BezierVFlatKnots(),
                          myPoles,
                          BSplSLib::NoWeights(),
-                         Coefs->ChangeArray2(),
+                         aCoefs,
                          BSplSLib::NoWeights());
   }
 
-  // Attention si udeg <= vdeg u et v sont intervertis
-  // dans les coeffs, il faut donc tout transposer.
+  // When udeg <= vdeg, u and v are interchanged in the coefficients,
+  // so everything needs to be transposed.
   if (UDegree() <= VDegree())
   {
-    occ::handle<NCollection_HArray2<gp_Pnt>> coeffs  = Coefs;
-    occ::handle<NCollection_HArray2<double>> wcoeffs = WCoefs;
-    int                                      ii, jj;
-    Coefs = new (NCollection_HArray2<gp_Pnt>)(1, UDegree() + 1, 1, VDegree() + 1);
+    NCollection_Array2<gp_Pnt> aTransposed(1, UDegree() + 1, 1, VDegree() + 1);
+    for (int ii = 1; ii <= UDegree() + 1; ii++)
+      for (int jj = 1; jj <= VDegree() + 1; jj++)
+        aTransposed(ii, jj) = aCoefs(jj, ii);
+    aCoefs = std::move(aTransposed);
+
     if (rat)
     {
-      WCoefs = new (NCollection_HArray2<double>)(1, UDegree() + 1, 1, VDegree() + 1);
+      NCollection_Array2<double> aWTransposed(1, UDegree() + 1, 1, VDegree() + 1);
+      for (int ii = 1; ii <= UDegree() + 1; ii++)
+        for (int jj = 1; jj <= VDegree() + 1; jj++)
+          aWTransposed(ii, jj) = aWCoefs(jj, ii);
+      aWCoefs = std::move(aWTransposed);
     }
-    for (ii = 1; ii <= UDegree() + 1; ii++)
-      for (jj = 1; jj <= VDegree() + 1; jj++)
-      {
-        Coefs->SetValue(ii, jj, coeffs->Value(jj, ii));
-        if (rat)
-          WCoefs->SetValue(ii, jj, wcoeffs->Value(jj, ii));
-      }
   }
 
-  // Trim dans la base cannonique et Update des Poles et Coeffs
-
-  // PMN : tranfo sur les parametres
-  double ufirst = 2 * (U1 - 0.5), ulast = 2 * (U2 - 0.5), vfirst = 2 * (V1 - 0.5),
-         vlast = 2 * (V2 - 0.5);
+  // Trim in the canonical basis and update Poles and Coefficients.
+  const double ufirst = 2 * (U1 - 0.5), ulast = 2 * (U2 - 0.5), vfirst = 2 * (V1 - 0.5),
+               vlast = 2 * (V2 - 0.5);
   if (rat)
   {
-    PLib::UTrimming(ufirst, ulast, Coefs->ChangeArray2(), &WCoefs->ChangeArray2());
-    PLib::VTrimming(vfirst, vlast, Coefs->ChangeArray2(), &WCoefs->ChangeArray2());
-    PLib::CoefficientsPoles(Coefs->Array2(),
-                            &WCoefs->Array2(),
-                            myPoles,
-                            &myWeights);
+    PLib::UTrimming(ufirst, ulast, aCoefs, &aWCoefs);
+    PLib::VTrimming(vfirst, vlast, aCoefs, &aWCoefs);
+    PLib::CoefficientsPoles(aCoefs, &aWCoefs, myPoles, &myWeights);
   }
   else
   {
-    PLib::UTrimming(ufirst, ulast, Coefs->ChangeArray2(), PLib::NoWeights2());
-    PLib::VTrimming(vfirst, vlast, Coefs->ChangeArray2(), PLib::NoWeights2());
-    PLib::CoefficientsPoles(Coefs->Array2(),
-                            PLib::NoWeights2(),
-                            myPoles,
-                            PLib::NoWeights2());
+    PLib::UTrimming(ufirst, ulast, aCoefs, PLib::NoWeights2());
+    PLib::VTrimming(vfirst, vlast, aCoefs, PLib::NoWeights2());
+    PLib::CoefficientsPoles(aCoefs, PLib::NoWeights2(), myPoles, PLib::NoWeights2());
   }
   myMaxDerivInvOk = false;
 }
@@ -2007,6 +1996,7 @@ const NCollection_Array1<double>& Geom_BezierSurface::BezierKnots() const
 
 const NCollection_Array1<int>& Geom_BezierSurface::BezierUMults() const
 {
+  Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   static const int THE_DATA[26][2] = {
     {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
     {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
@@ -2025,6 +2015,7 @@ const NCollection_Array1<int>& Geom_BezierSurface::BezierUMults() const
 
 const NCollection_Array1<int>& Geom_BezierSurface::BezierVMults() const
 {
+  Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   static const int THE_DATA[26][2] = {
     {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
     {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
@@ -2043,6 +2034,7 @@ const NCollection_Array1<int>& Geom_BezierSurface::BezierVMults() const
 
 const NCollection_Array1<double>& Geom_BezierSurface::BezierUFlatKnots() const
 {
+  Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   static const auto THE_FKNOTS = []() {
     std::array<NCollection_Array1<double>, 26> anArr;
     for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)
@@ -2056,6 +2048,7 @@ const NCollection_Array1<double>& Geom_BezierSurface::BezierUFlatKnots() const
 
 const NCollection_Array1<double>& Geom_BezierSurface::BezierVFlatKnots() const
 {
+  Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierSurface: empty poles");
   static const auto THE_FKNOTS = []() {
     std::array<NCollection_Array1<double>, 26> anArr;
     for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)

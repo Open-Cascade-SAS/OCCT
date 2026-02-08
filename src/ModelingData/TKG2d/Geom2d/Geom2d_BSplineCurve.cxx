@@ -766,6 +766,7 @@ void Geom2d_BSplineCurve::Segment(const double aU1, const double aU2, const doub
   {
     myWeights = std::move(nweights);
   }
+  myMaxDerivInvOk = false;
   UpdateKnots();
 }
 

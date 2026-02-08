@@ -46,10 +46,8 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
-//=======================================================================
-// function : Rational
-// purpose  : check rationality of an array of weights
-//=======================================================================
+//=================================================================================================
+
 static bool Rational(const NCollection_Array1<double>& W)
 {
   int  i, n = W.Length();
@@ -705,6 +703,7 @@ const NCollection_Array1<double>& Geom_BezierCurve::BezierKnots() const
 
 const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
 {
+  Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
   static const int THE_DATA[26][2] = {
     {1, 1},   {2, 2},   {3, 3},   {4, 4},   {5, 5},   {6, 6},   {7, 7},
     {8, 8},   {9, 9},   {10, 10}, {11, 11}, {12, 12}, {13, 13}, {14, 14},
@@ -723,6 +722,7 @@ const NCollection_Array1<int>& Geom_BezierCurve::BezierMults() const
 
 const NCollection_Array1<double>& Geom_BezierCurve::BezierFlatKnots() const
 {
+  Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom_BezierCurve: empty poles");
   static const auto THE_FKNOTS = []() {
     std::array<NCollection_Array1<double>, 26> anArr;
     for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)

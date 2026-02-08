@@ -634,11 +634,9 @@ private:
   //! Returns Bezier flat knots for the V degree.
   Standard_EXPORT const NCollection_Array1<double>& BezierVFlatKnots() const;
 
-  //! Set poles to Poles, weights to Weights (not copied).
-  //! Create the arrays of coefficients. Poles and Weights
-  //! are assumed to have the first coefficient 1.
-  //!
-  //! if nbpoles < 2 or nbpoles > MaDegree
+  //! Set poles to thePoles, weights to theWeights.
+  //! If theWeights is null the surface is non rational.
+  //! Update rational flags.
   void Init(const NCollection_Array2<gp_Pnt>& thePoles,
             const NCollection_Array2<double>* theWeights);
 
