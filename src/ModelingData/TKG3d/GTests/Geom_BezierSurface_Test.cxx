@@ -11,9 +11,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
+#include <gp_Trsf.hxx>
+#include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
+#include <Precision.hxx>
 
 #include <gtest/gtest.h>
 
@@ -133,4 +138,513 @@ TEST_F(Geom_BezierSurface_Test, CopyIndependence)
   // Verify the copied surface is not affected
   gp_Pnt anOrigPole = aCopiedSurface->Pole(2, 2);
   EXPECT_FALSE(anOrigPole.IsEqual(aNewPole, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, Evaluation_D0)
+{
+  gp_Pnt aPnt;
+  myOriginalSurface->D0(0.0, 0.0, aPnt);
+  EXPECT_TRUE(aPnt.IsEqual(gp_Pnt(1, 1, 0.2), 1e-10));
+  myOriginalSurface->D0(1.0, 1.0, aPnt);
+  EXPECT_TRUE(aPnt.IsEqual(gp_Pnt(3, 3, 0.6), 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, Evaluation_D1)
+{
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V;
+  myOriginalSurface->D1(0.5, 0.5, aPnt, aD1U, aD1V);
+  EXPECT_GT(aD1U.Magnitude(), 0.0);
+  EXPECT_GT(aD1V.Magnitude(), 0.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, Evaluation_D2)
+{
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+  myOriginalSurface->D2(0.5, 0.5, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV);
+  EXPECT_GT(aD1U.Magnitude(), 0.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, Evaluation_DN)
+{
+  gp_Vec aDN10 = myOriginalSurface->DN(0.5, 0.5, 1, 0);
+  EXPECT_GT(aDN10.Magnitude(), 0.0);
+  gp_Vec aDN01 = myOriginalSurface->DN(0.5, 0.5, 0, 1);
+  EXPECT_GT(aDN01.Magnitude(), 0.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, Properties)
+{
+  EXPECT_EQ(myOriginalSurface->UDegree(), 2);
+  EXPECT_EQ(myOriginalSurface->VDegree(), 2);
+  EXPECT_FALSE(myOriginalSurface->IsUPeriodic());
+  EXPECT_FALSE(myOriginalSurface->IsVPeriodic());
+  EXPECT_FALSE(myOriginalSurface->IsURational());
+  EXPECT_FALSE(myOriginalSurface->IsVRational());
+  EXPECT_EQ(myOriginalSurface->NbUPoles(), 3);
+  EXPECT_EQ(myOriginalSurface->NbVPoles(), 3);
+  EXPECT_TRUE(myOriginalSurface->IsCNu(100));
+  EXPECT_TRUE(myOriginalSurface->IsCNv(100));
+}
+
+TEST_F(Geom_BezierSurface_Test, Bounds)
+{
+  double aU1, aU2, aV1, aV2;
+  myOriginalSurface->Bounds(aU1, aU2, aV1, aV2);
+  EXPECT_DOUBLE_EQ(aU1, 0.0);
+  EXPECT_DOUBLE_EQ(aU2, 1.0);
+  EXPECT_DOUBLE_EQ(aV1, 0.0);
+  EXPECT_DOUBLE_EQ(aV2, 1.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, SetPole)
+{
+  gp_Pnt aNewPole(5, 5, 5);
+  myOriginalSurface->SetPole(2, 2, aNewPole);
+  EXPECT_TRUE(myOriginalSurface->Pole(2, 2).IsEqual(aNewPole, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, SetWeight)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 1.0;
+  aWeights(2, 1) = 1.0; aWeights(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+  gp_Pnt aValBefore = aSurf->Value(0.5, 0.5);
+
+  aSurf->SetWeight(2, 2, 10.0);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(2, 2), 10.0);
+  EXPECT_TRUE(aSurf->IsURational() || aSurf->IsVRational());
+
+  gp_Pnt aValAfter = aSurf->Value(0.5, 0.5);
+  EXPECT_FALSE(aValBefore.IsEqual(aValAfter, 1e-6));
+}
+
+TEST_F(Geom_BezierSurface_Test, Increase)
+{
+  gp_Pnt aValBefore = myOriginalSurface->Value(0.5, 0.5);
+  myOriginalSurface->Increase(4, 3);
+  EXPECT_EQ(myOriginalSurface->UDegree(), 4);
+  EXPECT_EQ(myOriginalSurface->VDegree(), 3);
+  EXPECT_EQ(myOriginalSurface->NbUPoles(), 5);
+  EXPECT_EQ(myOriginalSurface->NbVPoles(), 4);
+  gp_Pnt aValAfter = myOriginalSurface->Value(0.5, 0.5);
+  EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, Segment)
+{
+  gp_Pnt aPntBefore = myOriginalSurface->Value(0.5, 0.5);
+  myOriginalSurface->Segment(0.25, 0.75, 0.25, 0.75);
+
+  EXPECT_TRUE(myOriginalSurface->Value(0.5, 0.5).IsEqual(aPntBefore, 1e-6));
+}
+
+TEST_F(Geom_BezierSurface_Test, ExchangeUV)
+{
+  gp_Pnt aValBefore = myOriginalSurface->Value(0.3, 0.7);
+  int aUDeg = myOriginalSurface->UDegree();
+  int aVDeg = myOriginalSurface->VDegree();
+
+  myOriginalSurface->ExchangeUV();
+  EXPECT_EQ(myOriginalSurface->UDegree(), aVDeg);
+  EXPECT_EQ(myOriginalSurface->VDegree(), aUDeg);
+
+  gp_Pnt aValAfter = myOriginalSurface->Value(0.7, 0.3);
+  EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, UReverse)
+{
+  gp_Pnt aValBefore = myOriginalSurface->Value(0.3, 0.5);
+  myOriginalSurface->UReverse();
+  gp_Pnt aValAfter = myOriginalSurface->Value(0.7, 0.5);
+  EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, VReverse)
+{
+  gp_Pnt aValBefore = myOriginalSurface->Value(0.5, 0.3);
+  myOriginalSurface->VReverse();
+  gp_Pnt aValAfter = myOriginalSurface->Value(0.5, 0.7);
+  EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, UIso)
+{
+  occ::handle<Geom_Curve> anIso = myOriginalSurface->UIso(0.5);
+  EXPECT_FALSE(anIso.IsNull());
+
+  for (double v = 0.0; v <= 1.0; v += 0.25)
+  {
+    gp_Pnt aSurfPnt = myOriginalSurface->Value(0.5, v);
+    gp_Pnt anIsoPnt = anIso->Value(v);
+    EXPECT_TRUE(aSurfPnt.IsEqual(anIsoPnt, 1e-10));
+  }
+}
+
+TEST_F(Geom_BezierSurface_Test, VIso)
+{
+  occ::handle<Geom_Curve> anIso = myOriginalSurface->VIso(0.5);
+  EXPECT_FALSE(anIso.IsNull());
+
+  for (double u = 0.0; u <= 1.0; u += 0.25)
+  {
+    gp_Pnt aSurfPnt = myOriginalSurface->Value(u, 0.5);
+    gp_Pnt anIsoPnt = anIso->Value(u);
+    EXPECT_TRUE(aSurfPnt.IsEqual(anIsoPnt, 1e-10));
+  }
+}
+
+TEST_F(Geom_BezierSurface_Test, Resolution)
+{
+  double aUTol = 0.0, aVTol = 0.0;
+  myOriginalSurface->Resolution(1.0, aUTol, aVTol);
+  EXPECT_GT(aUTol, 0.0);
+  EXPECT_GT(aVTol, 0.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, Transform)
+{
+  gp_Trsf aTrsf;
+  aTrsf.SetTranslation(gp_Vec(10, 20, 30));
+  gp_Pnt aPtBefore = myOriginalSurface->Value(0.5, 0.5);
+  myOriginalSurface->Transform(aTrsf);
+  gp_Pnt aPtAfter = myOriginalSurface->Value(0.5, 0.5);
+  EXPECT_NEAR(aPtAfter.X(), aPtBefore.X() + 10.0, 1e-10);
+  EXPECT_NEAR(aPtAfter.Y(), aPtBefore.Y() + 20.0, 1e-10);
+  EXPECT_NEAR(aPtAfter.Z(), aPtBefore.Z() + 30.0, 1e-10);
+}
+
+TEST_F(Geom_BezierSurface_Test, InsertPoleRowAfter)
+{
+  NCollection_Array1<gp_Pnt> aNewRow(1, 3);
+  aNewRow(1) = gp_Pnt(1.5, 1, 0);
+  aNewRow(2) = gp_Pnt(1.5, 2, 0);
+  aNewRow(3) = gp_Pnt(1.5, 3, 0);
+
+  int aNbUBefore = myOriginalSurface->NbUPoles();
+  myOriginalSurface->InsertPoleRowAfter(1, aNewRow);
+  EXPECT_EQ(myOriginalSurface->NbUPoles(), aNbUBefore + 1);
+  EXPECT_EQ(myOriginalSurface->UDegree(), 3);
+}
+
+TEST_F(Geom_BezierSurface_Test, InsertPoleColAfter)
+{
+  NCollection_Array1<gp_Pnt> aNewCol(1, 3);
+  aNewCol(1) = gp_Pnt(1, 1.5, 0);
+  aNewCol(2) = gp_Pnt(2, 1.5, 0);
+  aNewCol(3) = gp_Pnt(3, 1.5, 0);
+
+  int aNbVBefore = myOriginalSurface->NbVPoles();
+  myOriginalSurface->InsertPoleColAfter(1, aNewCol);
+  EXPECT_EQ(myOriginalSurface->NbVPoles(), aNbVBefore + 1);
+  EXPECT_EQ(myOriginalSurface->VDegree(), 3);
+}
+
+TEST_F(Geom_BezierSurface_Test, RemovePoleRow)
+{
+  // Insert a row first so we have 4 rows (need at least 2 to remove)
+  NCollection_Array1<gp_Pnt> aNewRow(1, 3);
+  aNewRow(1) = gp_Pnt(1.5, 1, 0);
+  aNewRow(2) = gp_Pnt(1.5, 2, 0);
+  aNewRow(3) = gp_Pnt(1.5, 3, 0);
+  myOriginalSurface->InsertPoleRowAfter(1, aNewRow);
+  EXPECT_EQ(myOriginalSurface->NbUPoles(), 4);
+
+  myOriginalSurface->RemovePoleRow(2);
+  EXPECT_EQ(myOriginalSurface->NbUPoles(), 3);
+}
+
+TEST_F(Geom_BezierSurface_Test, RemovePoleCol)
+{
+  NCollection_Array1<gp_Pnt> aNewCol(1, 3);
+  aNewCol(1) = gp_Pnt(1, 1.5, 0);
+  aNewCol(2) = gp_Pnt(2, 1.5, 0);
+  aNewCol(3) = gp_Pnt(3, 1.5, 0);
+  myOriginalSurface->InsertPoleColAfter(1, aNewCol);
+  EXPECT_EQ(myOriginalSurface->NbVPoles(), 4);
+
+  myOriginalSurface->RemovePoleCol(2);
+  EXPECT_EQ(myOriginalSurface->NbVPoles(), 3);
+}
+
+TEST_F(Geom_BezierSurface_Test, SetPoleRow)
+{
+  NCollection_Array1<gp_Pnt> aNewRow(1, 3);
+  aNewRow(1) = gp_Pnt(10, 1, 0);
+  aNewRow(2) = gp_Pnt(10, 2, 0);
+  aNewRow(3) = gp_Pnt(10, 3, 0);
+
+  myOriginalSurface->SetPoleRow(2, aNewRow);
+  for (int j = 1; j <= 3; ++j)
+  {
+    EXPECT_NEAR(myOriginalSurface->Pole(2, j).X(), 10.0, 1e-10);
+  }
+}
+
+TEST_F(Geom_BezierSurface_Test, SetPoleCol)
+{
+  NCollection_Array1<gp_Pnt> aNewCol(1, 3);
+  aNewCol(1) = gp_Pnt(1, 10, 0);
+  aNewCol(2) = gp_Pnt(2, 10, 0);
+  aNewCol(3) = gp_Pnt(3, 10, 0);
+
+  myOriginalSurface->SetPoleCol(2, aNewCol);
+  for (int i = 1; i <= 3; ++i)
+  {
+    EXPECT_NEAR(myOriginalSurface->Pole(i, 2).Y(), 10.0, 1e-10);
+  }
+}
+
+TEST_F(Geom_BezierSurface_Test, WeightsAccess_NonRational)
+{
+  const NCollection_Array2<double>* aWeights = myOriginalSurface->Weights();
+  EXPECT_EQ(aWeights, nullptr);
+}
+
+TEST_F(Geom_BezierSurface_Test, PolesAccess)
+{
+  const NCollection_Array2<gp_Pnt>& aPoles = myOriginalSurface->Poles();
+  EXPECT_EQ(aPoles.ColLength(), 3);
+  EXPECT_EQ(aPoles.RowLength(), 3);
+  EXPECT_TRUE(aPoles(1, 1).IsEqual(gp_Pnt(1, 1, 0.2), 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, MaxDegree)
+{
+  EXPECT_GE(Geom_BezierSurface::MaxDegree(), 25);
+}
+
+TEST_F(Geom_BezierSurface_Test, RationalSurface_UIso)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  occ::handle<Geom_Curve> anIso = aSurf->UIso(0.5);
+  EXPECT_FALSE(anIso.IsNull());
+
+  for (double v = 0.0; v <= 1.0; v += 0.25)
+  {
+    gp_Pnt aSurfPnt = aSurf->Value(0.5, v);
+    gp_Pnt anIsoPnt = anIso->Value(v);
+    EXPECT_TRUE(aSurfPnt.IsEqual(anIsoPnt, 1e-10));
+  }
+}
+
+TEST_F(Geom_BezierSurface_Test, Evaluation_D3)
+{
+  gp_Pnt aPnt;
+  gp_Vec aD1U, aD1V, aD2U, aD2V, aD2UV;
+  gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
+  myOriginalSurface->D3(0.5, 0.5, aPnt, aD1U, aD1V, aD2U, aD2V, aD2UV,
+                        aD3U, aD3V, aD3UUV, aD3UVV);
+  // Degree 2: D3 should be zero
+  EXPECT_NEAR(aD3U.Magnitude(), 0.0, 1e-10);
+  EXPECT_NEAR(aD3V.Magnitude(), 0.0, 1e-10);
+}
+
+TEST_F(Geom_BezierSurface_Test, InsertPoleRowBefore)
+{
+  NCollection_Array1<gp_Pnt> aNewRow(1, 3);
+  aNewRow(1) = gp_Pnt(0.5, 1, 0);
+  aNewRow(2) = gp_Pnt(0.5, 2, 0);
+  aNewRow(3) = gp_Pnt(0.5, 3, 0);
+
+  int aNbUBefore = myOriginalSurface->NbUPoles();
+  myOriginalSurface->InsertPoleRowBefore(2, aNewRow);
+  EXPECT_EQ(myOriginalSurface->NbUPoles(), aNbUBefore + 1);
+  EXPECT_TRUE(myOriginalSurface->Pole(2, 1).IsEqual(gp_Pnt(0.5, 1, 0), 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, InsertPoleColBefore)
+{
+  NCollection_Array1<gp_Pnt> aNewCol(1, 3);
+  aNewCol(1) = gp_Pnt(1, 0.5, 0);
+  aNewCol(2) = gp_Pnt(2, 0.5, 0);
+  aNewCol(3) = gp_Pnt(3, 0.5, 0);
+
+  int aNbVBefore = myOriginalSurface->NbVPoles();
+  myOriginalSurface->InsertPoleColBefore(2, aNewCol);
+  EXPECT_EQ(myOriginalSurface->NbVPoles(), aNbVBefore + 1);
+  EXPECT_TRUE(myOriginalSurface->Pole(1, 2).IsEqual(gp_Pnt(1, 0.5, 0), 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, RationalSegment)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
+  for (int i = 1; i <= 3; ++i)
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles(i, j) = gp_Pnt(i, j, (i + j) * 0.1);
+      aWeights(i, j) = 1.0 + 0.3 * ((i - 1) + (j - 1));
+    }
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+  EXPECT_TRUE(aSurf->IsURational() || aSurf->IsVRational());
+
+  gp_Pnt aMid = aSurf->Value(0.5, 0.5);
+  aSurf->Segment(0.25, 0.75, 0.25, 0.75);
+  gp_Pnt aMidAfter = aSurf->Value(0.5, 0.5);
+  EXPECT_TRUE(aMid.IsEqual(aMidAfter, 1e-5));
+}
+
+TEST_F(Geom_BezierSurface_Test, RationalIncrease)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 1);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+  gp_Pnt aValBefore = aSurf->Value(0.5, 0.5);
+
+  aSurf->Increase(3, 3);
+  EXPECT_EQ(aSurf->UDegree(), 3);
+  EXPECT_EQ(aSurf->VDegree(), 3);
+  gp_Pnt aValAfter = aSurf->Value(0.5, 0.5);
+  EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
+}
+
+TEST_F(Geom_BezierSurface_Test, SetWeightRow)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 3.0; aWeights(2, 2) = 4.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  NCollection_Array1<double> aNewWeights(1, 2);
+  aNewWeights(1) = 5.0;
+  aNewWeights(2) = 6.0;
+
+  aSurf->SetWeightRow(1, aNewWeights);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(1, 1), 5.0);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(1, 2), 6.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, SetWeightCol)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 3.0; aWeights(2, 2) = 4.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  NCollection_Array1<double> aNewWeights(1, 2);
+  aNewWeights(1) = 7.0;
+  aNewWeights(2) = 8.0;
+
+  aSurf->SetWeightCol(1, aNewWeights);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(1, 1), 7.0);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(2, 1), 8.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, InsertPoleRowAfterWithWeights)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  NCollection_Array1<gp_Pnt> aNewRow(1, 2);
+  aNewRow(1) = gp_Pnt(0, 0.5, 0);
+  aNewRow(2) = gp_Pnt(1, 0.5, 0);
+
+  NCollection_Array1<double> aNewWeights(1, 2);
+  aNewWeights(1) = 3.0;
+  aNewWeights(2) = 4.0;
+
+  aSurf->InsertPoleRowAfter(1, aNewRow, aNewWeights);
+  EXPECT_EQ(aSurf->NbUPoles(), 3);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(2, 1), 3.0);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(2, 2), 4.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, VIso_Rational)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  occ::handle<Geom_Curve> anIso = aSurf->VIso(0.5);
+  EXPECT_FALSE(anIso.IsNull());
+
+  for (double u = 0.0; u <= 1.0; u += 0.25)
+  {
+    gp_Pnt aSurfPnt = aSurf->Value(u, 0.5);
+    gp_Pnt anIsoPnt = anIso->Value(u);
+    EXPECT_TRUE(aSurfPnt.IsEqual(anIsoPnt, 1e-10));
+  }
+}
+
+TEST_F(Geom_BezierSurface_Test, SetPoleWithWeight)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 1.0;
+  aWeights(2, 1) = 1.0; aWeights(2, 2) = 2.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  gp_Pnt aNewPole(0.5, 0.5, 1.0);
+  aSurf->SetPole(1, 1, aNewPole, 5.0);
+  EXPECT_TRUE(aSurf->Pole(1, 1).IsEqual(aNewPole, 1e-10));
+  EXPECT_DOUBLE_EQ(aSurf->Weight(1, 1), 5.0);
+}
+
+TEST_F(Geom_BezierSurface_Test, SetPoleColWithWeights)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeights(1, 2, 1, 2);
+  aPoles(1, 1) = gp_Pnt(0, 0, 0); aPoles(1, 2) = gp_Pnt(1, 0, 0);
+  aPoles(2, 1) = gp_Pnt(0, 1, 0); aPoles(2, 2) = gp_Pnt(1, 1, 0);
+  aWeights(1, 1) = 1.0; aWeights(1, 2) = 2.0;
+  aWeights(2, 1) = 2.0; aWeights(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aSurf = new Geom_BezierSurface(aPoles, aWeights);
+
+  NCollection_Array1<gp_Pnt> aNewCol(1, 2);
+  aNewCol(1) = gp_Pnt(5, 0, 0);
+  aNewCol(2) = gp_Pnt(5, 1, 0);
+
+  NCollection_Array1<double> aNewWeights(1, 2);
+  aNewWeights(1) = 3.0;
+  aNewWeights(2) = 4.0;
+
+  aSurf->SetPoleCol(2, aNewCol, aNewWeights);
+  EXPECT_TRUE(aSurf->Pole(1, 2).IsEqual(gp_Pnt(5, 0, 0), 1e-10));
+  EXPECT_DOUBLE_EQ(aSurf->Weight(1, 2), 3.0);
+  EXPECT_DOUBLE_EQ(aSurf->Weight(2, 2), 4.0);
 }
