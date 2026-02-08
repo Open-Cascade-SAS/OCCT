@@ -665,8 +665,8 @@ const NCollection_Array1<double>& Geom2d_BezierCurve::Knots() const
 const NCollection_Array1<int>& Geom2d_BezierCurve::Multiplicities() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom2d_BezierCurve: empty poles");
-  constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
-  static const auto THE_DATA     = []() {
+  static constexpr int THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
+  static const auto    THE_DATA     = []() {
     std::array<std::array<int, 2>, THE_MAX_SIZE> anArr;
     for (int i = 0; i < THE_MAX_SIZE; ++i)
       anArr[i] = {i + 1, i + 1};
@@ -686,8 +686,8 @@ const NCollection_Array1<int>& Geom2d_BezierCurve::Multiplicities() const
 const NCollection_Array1<double>& Geom2d_BezierCurve::KnotSequence() const
 {
   Standard_ProgramError_Raise_if(myPoles.IsEmpty(), "Geom2d_BezierCurve: empty poles");
-  constexpr int     THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
-  static const auto THE_FKNOTS   = []() {
+  static constexpr int THE_MAX_SIZE = BSplCLib::MaxDegree() + 1;
+  static const auto    THE_FKNOTS   = []() {
     std::array<NCollection_Array1<double>, THE_MAX_SIZE> anArr;
     for (int i = 1; i <= BSplCLib::MaxDegree(); ++i)
       anArr[i] = NCollection_Array1<double>(BSplCLib::FlatBezierKnots(i), 1, 2 * (i + 1));
