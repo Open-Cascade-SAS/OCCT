@@ -608,9 +608,11 @@ TEST(NCollection_Array2Test, Resize_NoCopy)
   EXPECT_EQ(20, anArray.LowerCol());
 }
 
-TEST(NCollection_Array2Test, ResizeWithTrim_GrowVerifyDefaultInit)
+TEST(NCollection_Array2Test, ResizeWithTrim_GrowPreservesOldRegion)
 {
-  // Verify that newly grown regions are default-initialized.
+  // Verify that the preserved sub-matrix is intact after growing.
+  // New (uncopied) elements are uninitialized for POD types, so only
+  // the old region is checked.
   NCollection_Array2<int> anArray(1, 2, 1, 2);
   anArray.Init(99);
 
@@ -625,21 +627,6 @@ TEST(NCollection_Array2Test, ResizeWithTrim_GrowVerifyDefaultInit)
     for (int aCol = 1; aCol <= 2; ++aCol)
     {
       EXPECT_EQ(99, anArray(aRow, aCol));
-    }
-  }
-
-  // New column (col=3) within old rows should be default-initialized (0 for int).
-  for (int aRow = 1; aRow <= 2; ++aRow)
-  {
-    EXPECT_EQ(0, anArray(aRow, 3));
-  }
-
-  // New rows (3-4) should be default-initialized.
-  for (int aRow = 3; aRow <= 4; ++aRow)
-  {
-    for (int aCol = 1; aCol <= 3; ++aCol)
-    {
-      EXPECT_EQ(0, anArray(aRow, aCol));
     }
   }
 }
