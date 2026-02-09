@@ -56,18 +56,16 @@ void GeomFill_Generator::Perform(const double PTol)
 
   KnotsAndMults(UKnots, UMults);
 
-  NCollection_Array1<gp_Pnt> Pole(1, NbUPoles);
-  NCollection_Array1<double> Weight(1, NbUPoles);
   for (j = 1; j <= NbVPoles; j++)
   {
-    occ::handle<Geom_BSplineCurve> Cj = occ::down_cast<Geom_BSplineCurve>(mySequence(j));
-    Cj->Poles(Pole);
-    Cj->Weights(Weight);
+    occ::handle<Geom_BSplineCurve>    Cj       = occ::down_cast<Geom_BSplineCurve>(mySequence(j));
+    const NCollection_Array1<gp_Pnt>& aPoles   = Cj->Poles();
+    const NCollection_Array1<double>& aWeights = Cj->WeightsArray();
     VKnots(j) = (double)(j - 1);
     for (i = 1; i <= NbUPoles; i++)
     {
-      Poles(i, j)   = Pole(i);
-      Weights(i, j) = Weight(i);
+      Poles(i, j)   = aPoles(i);
+      Weights(i, j) = aWeights(i);
     }
   }
 
