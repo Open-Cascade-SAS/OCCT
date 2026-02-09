@@ -58,21 +58,19 @@ Convert_ElementarySurfaceToBSplineSurface::Convert_ElementarySurfaceToBSplineSur
   const int theNbVKnots,
   const int theUDegree,
   const int theVDegree)
-    : myNbUPoles(theNbUPoles),
+    : myPoles(1, theNbUPoles, 1, theNbVPoles),
+      myWeights(1, theNbUPoles, 1, theNbVPoles),
+      myUKnots(1, theNbUKnots),
+      myVKnots(1, theNbVKnots),
+      myUMults(1, theNbUKnots),
+      myVMults(1, theNbVKnots),
+      myUDegree(theUDegree),
+      myVDegree(theVDegree),
+      myNbUPoles(theNbUPoles),
       myNbVPoles(theNbVPoles),
       myNbUKnots(theNbUKnots),
       myNbVKnots(theNbVKnots)
 {
-  myPoles   = NCollection_Array2<gp_Pnt>(1, theNbUPoles, 1, theNbVPoles);
-  myWeights = NCollection_Array2<double>(1, theNbUPoles, 1, theNbVPoles);
-  myUKnots  = NCollection_Array1<double>(1, theNbUKnots);
-  myUMults  = NCollection_Array1<int>(1, theNbUKnots);
-  myVKnots  = NCollection_Array1<double>(1, theNbVKnots);
-  myVMults  = NCollection_Array1<int>(1, theNbVKnots);
-  myUDegree     = theUDegree;
-  myVDegree     = theVDegree;
-  myIsUPeriodic = false;
-  myIsVPeriodic = false;
 }
 
 //==================================================================================================

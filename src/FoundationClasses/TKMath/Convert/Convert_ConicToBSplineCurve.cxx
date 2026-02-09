@@ -31,9 +31,8 @@
 Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int theNumberOfPoles,
                                                          const int theNumberOfKnots,
                                                          const int theDegree)
+    : myDegree(theDegree)
 {
-  myDegree     = theDegree;
-  myIsPeriodic = false;
   if (theNumberOfPoles >= 2)
   {
     myPoles   = NCollection_Array1<gp_Pnt2d>(1, theNumberOfPoles);

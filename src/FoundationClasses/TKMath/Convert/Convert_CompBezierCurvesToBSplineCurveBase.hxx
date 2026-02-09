@@ -38,8 +38,7 @@ public:
   //!            for checking tangent parallelism at junction points
   explicit Convert_CompBezierCurvesToBSplineCurveBase(const double theAngularTolerance = 1.0e-4)
       : myDegree(0),
-        myAngular(theAngularTolerance),
-        myDone(false)
+        myAngular(theAngularTolerance)
   {
   }
 
@@ -59,7 +58,6 @@ public:
         std::cout << "Convert_CompBezierCurvesToBSplineCurve::AddCurve" << std::endl;
 #endif
     }
-    myDone = false;
     mySequence.Append(thePoles);
   }
 
@@ -67,7 +65,6 @@ public:
   //! equivalent to the adjacent Bezier curve sequence.
   void Perform()
   {
-    myDone = true;
     myCurvePoles.Clear();
     myCurveKnots.Clear();
     myKnotsMults.Clear();
@@ -233,7 +230,6 @@ private:
   NCollection_Sequence<int>                                          myKnotsMults;
   int                                                                myDegree;
   double                                                             myAngular;
-  bool                                                               myDone;
 };
 
 #endif // _Convert_CompBezierCurvesToBSplineCurveBase_HeaderFile
