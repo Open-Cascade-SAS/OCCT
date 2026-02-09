@@ -133,38 +133,26 @@ static bool Arrange(const occ::handle<Geom_BSplineCurve>& C1,
 static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
                                occ::handle<Geom_BSplineCurve>& C2)
 {
-  int                        nbp1 = C1->NbPoles();
-  int                        nbk1 = C1->NbKnots();
-  NCollection_Array1<gp_Pnt> P1(1, nbp1);
-  NCollection_Array1<double> W1(1, nbp1);
+  NCollection_Array1<gp_Pnt> P1(C1->Poles());
+  NCollection_Array1<double> W1(1, C1->NbPoles());
   W1.Init(1.);
-  NCollection_Array1<double> K1(1, nbk1);
-  NCollection_Array1<int>    M1(1, nbk1);
+  if (const NCollection_Array1<double>* pW1 = C1->Weights())
+    W1 = *pW1;
+  NCollection_Array1<double> K1(C1->Knots());
+  NCollection_Array1<int>    M1(C1->Multiplicities());
 
-  C1->Poles(P1);
-  if (C1->IsRational())
-    C1->Weights(W1);
-  C1->Knots(K1);
-  C1->Multiplicities(M1);
-
-  int                        nbp2 = C2->NbPoles();
-  int                        nbk2 = C2->NbKnots();
-  NCollection_Array1<gp_Pnt> P2(1, nbp2);
-  NCollection_Array1<double> W2(1, nbp2);
+  NCollection_Array1<gp_Pnt> P2(C2->Poles());
+  NCollection_Array1<double> W2(1, C2->NbPoles());
   W2.Init(1.);
-  NCollection_Array1<double> K2(1, nbk2);
-  NCollection_Array1<int>    M2(1, nbk2);
-
-  C2->Poles(P2);
-  if (C2->IsRational())
-    C2->Weights(W2);
-  C2->Knots(K2);
-  C2->Multiplicities(M2);
+  if (const NCollection_Array1<double>* pW2 = C2->Weights())
+    W2 = *pW2;
+  NCollection_Array1<double> K2(C2->Knots());
+  NCollection_Array1<int>    M2(C2->Multiplicities());
 
   double K11 = K1(1);
-  double K12 = K1(nbk1);
+  double K12 = K1(K1.Upper());
   double K21 = K2(1);
-  double K22 = K2(nbk2);
+  double K22 = K2(K2.Upper());
 
   if ((K12 - K11) > (K22 - K21))
   {
@@ -330,14 +318,10 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
       throw Standard_ConstructionError("GeomFill_BSplineCurves: invalid filling style");
   }
 
-  NCollection_Array1<gp_Pnt> P1(1, NbUPoles);
-  NCollection_Array1<gp_Pnt> P2(1, NbVPoles);
-  NCollection_Array1<gp_Pnt> P3(1, NbUPoles);
-  NCollection_Array1<gp_Pnt> P4(1, NbVPoles);
-  CC1->Poles(P1);
-  CC2->Poles(P2);
-  CC3->Poles(P3);
-  CC4->Poles(P4);
+  const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
+  const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
+  const NCollection_Array1<gp_Pnt>& P3 = CC3->Poles();
+  const NCollection_Array1<gp_Pnt>& P4 = CC4->Poles();
 
   // Traitement des courbes rationelles
   bool isRat = (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
@@ -352,22 +336,14 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   W4.Init(1.);
   if (isRat)
   {
-    if (CC1->IsRational())
-    {
-      CC1->Weights(W1);
-    }
-    if (CC2->IsRational())
-    {
-      CC2->Weights(W2);
-    }
-    if (CC3->IsRational())
-    {
-      CC3->Weights(W3);
-    }
-    if (CC4->IsRational())
-    {
-      CC4->Weights(W4);
-    }
+    if (const NCollection_Array1<double>* pW1 = CC1->Weights())
+      W1 = *pW1;
+    if (const NCollection_Array1<double>* pW2 = CC2->Weights())
+      W2 = *pW2;
+    if (const NCollection_Array1<double>* pW3 = CC3->Weights())
+      W3 = *pW3;
+    if (const NCollection_Array1<double>* pW4 = CC4->Weights())
+      W4 = *pW4;
   }
 
   GeomFill_Filling Caro;
@@ -407,17 +383,11 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   NCollection_Array2<gp_Pnt> Poles(1, NbUPoles, 1, NbVPoles);
 
   // Creation de la surface
-  int                        NbUKnot = CC1->NbKnots();
-  NCollection_Array1<double> UKnots(1, NbUKnot);
-  NCollection_Array1<int>    UMults(1, NbUKnot);
-  CC1->Knots(UKnots);
-  CC1->Multiplicities(UMults);
+  const NCollection_Array1<double>& UKnots = CC1->Knots();
+  const NCollection_Array1<int>&    UMults = CC1->Multiplicities();
 
-  int                        NbVKnot = CC2->NbKnots();
-  NCollection_Array1<double> VKnots(1, NbVKnot);
-  NCollection_Array1<int>    VMults(1, NbVKnot);
-  CC2->Knots(VKnots);
-  CC2->Multiplicities(VMults);
+  const NCollection_Array1<double>& VKnots = CC2->Knots();
+  const NCollection_Array1<int>&    VMults = CC2->Multiplicities();
 
   Caro.Poles(Poles);
 
@@ -498,22 +468,17 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
 
     // Mise en conformite des distributions de noeuds
     int                        NbPoles = SetSameDistribution(CC1, CC2);
-    NCollection_Array2<gp_Pnt> Poles(1, NbPoles, 1, 2);
-    NCollection_Array1<gp_Pnt> P1(1, NbPoles);
-    NCollection_Array1<gp_Pnt> P2(1, NbPoles);
-    CC1->Poles(P1);
-    CC2->Poles(P2);
+    NCollection_Array2<gp_Pnt>        Poles(1, NbPoles, 1, 2);
+    const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
+    const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
     int i;
     for (i = 1; i <= NbPoles; i++)
     {
       Poles(i, 1) = P1(i);
       Poles(i, 2) = P2(i);
     }
-    int                        NbUKnots = CC1->NbKnots();
-    NCollection_Array1<double> UKnots(1, NbUKnots);
-    NCollection_Array1<int>    UMults(1, NbUKnots);
-    CC1->Knots(UKnots);
-    CC1->Multiplicities(UMults);
+    const NCollection_Array1<double>& UKnots = CC1->Knots();
+    const NCollection_Array1<int>&    UMults = CC1->Multiplicities();
     //    int NbVKnots = 2;
     NCollection_Array1<double> VKnots(1, 2);
     NCollection_Array1<int>    VMults(1, 2);
@@ -531,21 +496,14 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
       W1.Init(1.);
       W2.Init(1.);
 
-      if (isRat)
+      if (const NCollection_Array1<double>* pW1 = CC1->Weights())
+        W1 = *pW1;
+      if (const NCollection_Array1<double>* pW2 = CC2->Weights())
+        W2 = *pW2;
+      for (i = 1; i <= NbPoles; i++)
       {
-        if (CC1->IsRational())
-        {
-          CC1->Weights(W1);
-        }
-        if (CC2->IsRational())
-        {
-          CC2->Weights(W2);
-        }
-        for (i = 1; i <= NbPoles; i++)
-        {
-          Weights(i, 1) = W1(i);
-          Weights(i, 2) = W2(i);
-        }
+        Weights(i, 1) = W1(i);
+        Weights(i, 2) = W2(i);
       }
       mySurface = new Geom_BSplineSurface(Poles,
                                           Weights,
@@ -591,23 +549,15 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     if (!IsOK)
       throw Standard_OutOfRange("GeomFill_BSplineCurves: Courbes non jointives");
 
-    int                        NbUPoles = CC1->NbPoles();
-    int                        NbVPoles = CC2->NbPoles();
-    NCollection_Array1<gp_Pnt> P1(1, NbUPoles);
-    NCollection_Array1<gp_Pnt> P2(1, NbVPoles);
-    CC1->Poles(P1);
-    CC2->Poles(P2);
+    int                               NbUPoles = CC1->NbPoles();
+    int                               NbVPoles = CC2->NbPoles();
+    const NCollection_Array1<gp_Pnt>& P1       = CC1->Poles();
+    const NCollection_Array1<gp_Pnt>& P2       = CC2->Poles();
 
-    int                        NbUKnots = CC1->NbKnots();
-    int                        NbVKnots = CC2->NbKnots();
-    NCollection_Array1<double> UKnots(1, NbUKnots);
-    NCollection_Array1<double> VKnots(1, NbVKnots);
-    NCollection_Array1<int>    UMults(1, NbUKnots);
-    NCollection_Array1<int>    VMults(1, NbVKnots);
-    CC1->Knots(UKnots);
-    CC1->Multiplicities(UMults);
-    CC2->Knots(VKnots);
-    CC2->Multiplicities(VMults);
+    const NCollection_Array1<double>& UKnots = CC1->Knots();
+    const NCollection_Array1<int>&    UMults = CC1->Multiplicities();
+    const NCollection_Array1<double>& VKnots = CC2->Knots();
+    const NCollection_Array1<int>&    VMults = CC2->Multiplicities();
 
     NCollection_Array1<double> W1(1, NbUPoles);
     NCollection_Array1<double> W2(1, NbVPoles);
@@ -617,14 +567,10 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     GeomFill_Filling Caro;
     if (isRat)
     {
-      if (CC1->IsRational())
-      {
-        CC1->Weights(W1);
-      }
-      if (CC2->IsRational())
-      {
-        CC2->Weights(W2);
-      }
+      if (const NCollection_Array1<double>* pW1 = CC1->Weights())
+        W1 = *pW1;
+      if (const NCollection_Array1<double>* pW2 = CC2->Weights())
+        W2 = *pW2;
       Caro = GeomFill_Curved(P1, P2, W1, W2);
     }
     else

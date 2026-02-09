@@ -1348,8 +1348,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
                 || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
             {
 
-              NCollection_Array1<double> Knotbs2d(1, bs2d->NbKnots());
-              bs2d->Knots(Knotbs2d);
+              const NCollection_Array1<double>& Knotbs2d = bs2d->Knots();
 
               for (int Index = 1; Index <= bs2d->NbKnots(); Index++)
               {
@@ -1375,9 +1374,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
               double Tol2dbail = std::min(UResbail, VResbail);
               bs2d->D0(bs2d->FirstParameter(), OriginPoint);
 
-              int                          nbp = bs2d->NbPoles();
-              NCollection_Array1<gp_Pnt2d> poles(1, nbp);
-              bs2d->Poles(poles);
+              int                                nbp   = bs2d->NbPoles();
+              const NCollection_Array1<gp_Pnt2d>& poles = bs2d->Poles();
               gp_Pnt2d p = poles(1), p1;
               double   d = Precision::Infinite();
               for (int ip = 2; ip <= nbp; ip++)
@@ -1400,8 +1398,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
                     || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
                 {
 
-                  NCollection_Array1<double> Knotbs2d(1, bs2d->NbKnots());
-                  bs2d->Knots(Knotbs2d);
+                  const NCollection_Array1<double>& Knotbs2d = bs2d->Knots();
 
                   for (int Index = 1; Index <= bs2d->NbKnots(); Index++)
                   {
@@ -1431,9 +1428,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
           {
             if (repar)
             {
-              int                        NbKnots = bs2d->NbKnots();
-              NCollection_Array1<double> Knots(1, NbKnots);
-              bs2d->Knots(Knots);
+              NCollection_Array1<double> Knots(bs2d->Knots());
               //	    BSplCLib::Reparametrize(f3d,l3d,Knots);
               BSplCLib::Reparametrize(fC0, lC0, Knots);
               bs2d->SetKnots(Knots);
@@ -1463,9 +1458,8 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
 
             if (cont > GeomAbs_C0 && error > std::max(1.e-3, theTolerance))
             {
-              int                        NbKnots = bs2d->NbKnots();
-              NCollection_Array1<double> Knots(1, NbKnots);
-              bs2d->Knots(Knots);
+              int                              NbKnots = bs2d->NbKnots();
+              const NCollection_Array1<double>& Knots  = bs2d->Knots();
               double critratio = 10.;
               double dtprev = Knots(2) - Knots(1), dtratio = 1.;
               double dtmin = dtprev;
@@ -1522,9 +1516,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
                 if (std::abs(bs2d->FirstParameter() - fC0) > TolSameRange
                     || std::abs(bs2d->LastParameter() - lC0) > TolSameRange)
                 {
-                  int                        NbKnots = bs2d->NbKnots();
-                  NCollection_Array1<double> Knots(1, NbKnots);
-                  bs2d->Knots(Knots);
+                  NCollection_Array1<double> Knots(bs2d->Knots());
                   //		  BSplCLib::Reparametrize(f3d,l3d,Knots);
                   BSplCLib::Reparametrize(fC0, lC0, Knots);
                   bs2d->SetKnots(Knots);

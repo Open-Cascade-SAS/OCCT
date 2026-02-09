@@ -90,40 +90,32 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
       }
       break;
       case GeomAbs_BezierCurve: {
-        occ::handle<Geom2d_BezierCurve> BezProjc = Projc.Bezier();
-        NCollection_Array1<gp_Pnt2d>    TP(1, BezProjc->NbPoles());
-        if (BezProjc->IsRational())
+        occ::handle<Geom2d_BezierCurve>      BezProjc = Projc.Bezier();
+        const NCollection_Array1<gp_Pnt2d>&  TP       = BezProjc->Poles();
+        const NCollection_Array1<double>*    aWPtr    = BezProjc->Weights();
+        if (aWPtr != nullptr)
         {
-          NCollection_Array1<double> TW(1, BezProjc->NbPoles());
-          BezProjc->Poles(TP);
-          BezProjc->Weights(TW);
-          Pcurv = new Geom2d_BezierCurve(TP, TW);
+          Pcurv = new Geom2d_BezierCurve(TP, *aWPtr);
         }
         else
         {
-          BezProjc->Poles(TP);
           Pcurv = new Geom2d_BezierCurve(TP);
         }
       }
       break;
       case GeomAbs_BSplineCurve: {
-        occ::handle<Geom2d_BSplineCurve> BspProjc = Projc.BSpline();
-        NCollection_Array1<gp_Pnt2d>     TP(1, BspProjc->NbPoles());
-        NCollection_Array1<double>       TK(1, BspProjc->NbKnots());
-        NCollection_Array1<int>          TM(1, BspProjc->NbKnots());
+        occ::handle<Geom2d_BSplineCurve>    BspProjc = Projc.BSpline();
+        const NCollection_Array1<gp_Pnt2d>& TP       = BspProjc->Poles();
+        const NCollection_Array1<double>&   TK       = BspProjc->Knots();
+        const NCollection_Array1<int>&      TM       = BspProjc->Multiplicities();
 
-        BspProjc->Knots(TK);
-        BspProjc->Multiplicities(TM);
-        if (BspProjc->IsRational())
+        const NCollection_Array1<double>* aWPtr = BspProjc->Weights();
+        if (aWPtr != nullptr)
         {
-          NCollection_Array1<double> TW(1, BspProjc->NbPoles());
-          BspProjc->Poles(TP);
-          BspProjc->Weights(TW);
-          Pcurv = new Geom2d_BSplineCurve(TP, TW, TK, TM, BspProjc->Degree());
+          Pcurv = new Geom2d_BSplineCurve(TP, *aWPtr, TK, TM, BspProjc->Degree());
         }
         else
         {
-          BspProjc->Poles(TP);
           Pcurv = new Geom2d_BSplineCurve(TP, TK, TM, BspProjc->Degree());
         }
       }

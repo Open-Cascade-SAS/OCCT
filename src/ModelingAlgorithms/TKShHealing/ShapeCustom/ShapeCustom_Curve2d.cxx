@@ -115,10 +115,7 @@ occ::handle<Geom2d_Line> ShapeCustom_Curve2d::ConvertToLine2d(
   occ::handle<Geom2d_BSplineCurve> bsc = occ::down_cast<Geom2d_BSplineCurve>(theCurve);
   if (!bsc.IsNull())
   {
-    int                          nbPoles = bsc->NbPoles();
-    NCollection_Array1<gp_Pnt2d> Poles(1, nbPoles);
-    bsc->Poles(Poles);
-    if (!ShapeCustom_Curve2d::IsLinear(Poles, theTolerance, theDeviation))
+    if (!ShapeCustom_Curve2d::IsLinear(bsc->Poles(), theTolerance, theDeviation))
       return aLine2d; // non
     gp_Lin2d alin = GetLine(P1, P2, c1, cf, cl);
     aLine2d       = new Geom2d_Line(alin);
@@ -128,10 +125,7 @@ occ::handle<Geom2d_Line> ShapeCustom_Curve2d::ConvertToLine2d(
   occ::handle<Geom2d_BezierCurve> bzc = occ::down_cast<Geom2d_BezierCurve>(theCurve);
   if (!bzc.IsNull())
   {
-    int                          nbPoles = bzc->NbPoles();
-    NCollection_Array1<gp_Pnt2d> Poles(1, nbPoles);
-    bzc->Poles(Poles);
-    if (!ShapeCustom_Curve2d::IsLinear(Poles, theTolerance, theDeviation))
+    if (!ShapeCustom_Curve2d::IsLinear(bzc->Poles(), theTolerance, theDeviation))
       return aLine2d; // non
     gp_Lin2d alin = GetLine(P1, P2, c1, cf, cl);
     aLine2d       = new Geom2d_Line(alin);

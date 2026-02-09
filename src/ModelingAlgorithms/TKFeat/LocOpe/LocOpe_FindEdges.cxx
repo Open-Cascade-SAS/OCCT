@@ -253,9 +253,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
           if (IsSame)
           {
-            NCollection_Array1<gp_Pnt> Pf(1, nbpoles), Pt(1, nbpoles);
-            Bf->Poles(Pf);
-            Bt->Poles(Pt);
+            const NCollection_Array1<gp_Pnt>& Pf = Bf->Poles();
+            const NCollection_Array1<gp_Pnt>& Pt = Bt->Poles();
 
             double tol3d = BRep_Tool::Tolerance(edgt);
             for (int p = 1; p <= nbpoles; p++)
@@ -269,13 +268,11 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
             if (IsSame)
             {
-              NCollection_Array1<double> Kf(1, nbknots), Kt(1, nbknots);
-              Bf->Knots(Kf);
-              Bt->Knots(Kt);
+              const NCollection_Array1<double>& Kf = Bf->Knots();
+              const NCollection_Array1<double>& Kt = Bt->Knots();
 
-              NCollection_Array1<int> Mf(1, nbknots), Mt(1, nbknots);
-              Bf->Multiplicities(Mf);
-              Bt->Multiplicities(Mt);
+              const NCollection_Array1<int>& Mf = Bf->Multiplicities();
+              const NCollection_Array1<int>& Mt = Bt->Multiplicities();
 
               for (int k = 1; k <= nbknots; k++)
               {
@@ -308,9 +305,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
               if (IsSame && Bf->IsRational())
               {
-                NCollection_Array1<double> Wf(1, nbpoles), Wt(1, nbpoles);
-                Bf->Weights(Wf);
-                Bt->Weights(Wt);
+                const NCollection_Array1<double>& Wf = *Bf->Weights();
+                const NCollection_Array1<double>& Wt = *Bt->Weights();
 
                 for (int w = 1; w <= nbpoles; w++)
                 {
@@ -350,9 +346,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
         if (IsSame)
         {
-          NCollection_Array1<gp_Pnt> Pf(1, nbpoles), Pt(1, nbpoles);
-          Bf->Poles(Pf);
-          Bt->Poles(Pt);
+          const NCollection_Array1<gp_Pnt>& Pf = Bf->Poles();
+          const NCollection_Array1<gp_Pnt>& Pt = Bt->Poles();
 
           for (int p = 1; p <= nbpoles; p++)
           {
@@ -382,9 +377,8 @@ void LocOpe_FindEdges::Set(const TopoDS_Shape& FFrom, const TopoDS_Shape& FTo)
 
             if (IsSame && Bf->IsRational())
             {
-              NCollection_Array1<double> Wf(1, nbpoles), Wt(1, nbpoles);
-              Bf->Weights(Wf);
-              Bt->Weights(Wt);
+              const NCollection_Array1<double>& Wf = *Bf->Weights();
+              const NCollection_Array1<double>& Wt = *Bt->Weights();
 
               for (int w = 1; w <= nbpoles; w++)
               {

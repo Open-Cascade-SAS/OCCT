@@ -36,9 +36,13 @@
 static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_Array1<double>& TAB)
 
 {
-  NCollection_Array1<double> Knots(1, BS->NbKnots());
-  NCollection_Array1<double> Weights(1, BS->NbPoles());
-  NCollection_Array1<int>    Mults(1, BS->NbKnots());
+  NCollection_Array1<double>   Knots(BS->Knots());
+  NCollection_Array1<double>   Weights(1, BS->NbPoles());
+  if (const NCollection_Array1<double>* pW = BS->Weights())
+    Weights = *pW;
+  else
+    Weights.Init(1.0);
+  const NCollection_Array1<int>& Mults = BS->Multiplicities();
   // clang-format off
   int        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
   double           Denom0,Denom1,                            // denominator value for u=0 & u=1
@@ -46,10 +50,7 @@ static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_A
   // clang-format on
   bool Periodic;
 
-  BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
-  BS->Weights(Weights);
-  BS->Multiplicities(Mults);
   Degree   = BS->Degree();
   Periodic = BS->IsPeriodic();
   Index0   = BS->FirstUKnotIndex();
@@ -91,9 +92,13 @@ static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
                          NCollection_Array1<double>&             TAB)
 
 {
-  NCollection_Array1<double> Knots(1, BS->NbKnots());
-  NCollection_Array1<double> Weights(1, BS->NbPoles());
-  NCollection_Array1<int>    Mults(1, BS->NbKnots());
+  NCollection_Array1<double>   Knots(BS->Knots());
+  NCollection_Array1<double>   Weights(1, BS->NbPoles());
+  if (const NCollection_Array1<double>* pW = BS->Weights())
+    Weights = *pW;
+  else
+    Weights.Init(1.0);
+  const NCollection_Array1<int>& Mults = BS->Multiplicities();
   int                        Degree, Index0, Index1;
   double                     Denom0, Denom1, // denominateur value for u=0 & u=1
                                              // clang-format off
@@ -101,10 +106,7 @@ static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
   bool        Periodic;       // derivative denominatur value for u=0 & 1
                                              // clang-format on
 
-  BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
-  BS->Weights(Weights);
-  BS->Multiplicities(Mults);
   Degree   = BS->Degree();
   Periodic = BS->IsPeriodic();
   Index0   = BS->FirstUKnotIndex();

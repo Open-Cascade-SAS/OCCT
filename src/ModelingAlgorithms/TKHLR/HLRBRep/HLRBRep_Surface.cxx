@@ -185,8 +185,11 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
       return false;
     int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
     int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
-    NCollection_Array2<gp_Pnt> Pnt(1, nu, 1, nv);
-    HLRBRep_BSurfaceTool::Bezier(mySurf)->Poles(Pnt);
+    NCollection_Array2<gp_Pnt>        Pnt(1, nu, 1, nv);
+    const NCollection_Array2<gp_Pnt>& aSrcPoles = HLRBRep_BSurfaceTool::Bezier(mySurf)->Poles();
+    for (int iu = 1; iu <= nu; iu++)
+      for (int iv = 1; iv <= nv; iv++)
+        Pnt(iu, iv) = aSrcPoles(iu, iv);
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
   }
   else if (myType == GeomAbs_BSplineSurface)
@@ -195,10 +198,11 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
       return false;
     int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
     int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
-    NCollection_Array2<gp_Pnt> Pnt(1, nu, 1, nv);
-    NCollection_Array2<double> W(1, nu, 1, nv);
-    HLRBRep_BSurfaceTool::BSpline(mySurf)->Poles(Pnt);
-    HLRBRep_BSurfaceTool::BSpline(mySurf)->Weights(W);
+    NCollection_Array2<gp_Pnt>        Pnt(1, nu, 1, nv);
+    const NCollection_Array2<gp_Pnt>& aSrcPoles = HLRBRep_BSurfaceTool::BSpline(mySurf)->Poles();
+    for (int iu = 1; iu <= nu; iu++)
+      for (int iv = 1; iv <= nv; iv++)
+        Pnt(iu, iv) = aSrcPoles(iu, iv);
     return SideRowsOfPoles(tolF, nu, nv, Pnt);
   }
   else

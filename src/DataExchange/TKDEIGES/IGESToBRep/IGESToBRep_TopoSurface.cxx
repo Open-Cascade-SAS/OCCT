@@ -344,8 +344,7 @@ static void reparamBSpline(occ::handle<Geom_Curve>& curve, const double First, c
   if (bscurve.IsNull())
     return;
 
-  NCollection_Array1<double> Knots(1, bscurve->NbKnots());
-  bscurve->Knots(Knots);
+  NCollection_Array1<double> Knots(bscurve->Knots());
   BSplCLib::Reparametrize(0., 1., Knots);
   bscurve->SetKnots(Knots);
   curve = bscurve;
@@ -620,8 +619,7 @@ TopoDS_Shape IGESToBRep_TopoSurface::TransferRuledSurface(
         bscurve = occ::down_cast<Geom_BSplineCurve>(curve);
         bscurve->Segment(First, Last);
       }
-      NCollection_Array1<double> Knots(1, bscurve->NbKnots());
-      bscurve->Knots(Knots);
+      NCollection_Array1<double> Knots(bscurve->Knots());
       BSplCLib::Reparametrize(0., 1., Knots);
       bscurve->SetKnots(Knots);
 

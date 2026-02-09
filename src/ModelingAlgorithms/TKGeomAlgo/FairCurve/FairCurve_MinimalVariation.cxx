@@ -268,7 +268,7 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
   }
 
   // Summing
-  DeltaCurve->Poles(NPoles->ChangeArray1());
+  NPoles->ChangeArray1() = DeltaCurve->Poles();
   for (kk = NPoles->Lower(); kk <= NPoles->Upper(); kk++)
   {
     NPoles->ChangeValue(kk).ChangeCoord() += Poles->Value(kk).Coord();
@@ -466,13 +466,11 @@ bool FairCurve_MinimalVariation::Compute(const gp_Vec2d&         DeltaP1,
 
     NewBS->InsertKnots(NKnots->Array1(), NMults->Array1(), 1.e-10);
     occ::handle<NCollection_HArray1<gp_Pnt2d>> NewNPoles =
-      new NCollection_HArray1<gp_Pnt2d>(1, NewBS->NbPoles());
-    NewBS->Poles(NewNPoles->ChangeArray1());
-    NewBS->Multiplicities(NMults->ChangeArray1());
-    NewBS->Knots(NKnots->ChangeArray1());
+      new NCollection_HArray1<gp_Pnt2d>(NewBS->Poles());
+    NMults = new NCollection_HArray1<int>(NewBS->Multiplicities());
+    NKnots = new NCollection_HArray1<double>(NewBS->Knots());
     occ::handle<NCollection_HArray1<double>> FKnots =
-      new NCollection_HArray1<double>(1, NewBS->NbPoles() + Degree + 1);
-    NewBS->KnotSequence(FKnots->ChangeArray1());
+      new NCollection_HArray1<double>(NewBS->KnotSequence());
 
     Poles     = NewNPoles;
     Mults     = NMults;

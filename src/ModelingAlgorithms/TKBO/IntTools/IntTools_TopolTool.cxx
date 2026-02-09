@@ -275,8 +275,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (nbsu > 10 || nbsv > 10)
       {
-        NCollection_Array2<gp_Pnt> array2(1, myS->NbUPoles(), 1, myS->NbVPoles());
-        myS->Bezier()->Poles(array2);
+        const NCollection_Array2<gp_Pnt>& array2 = myS->Bezier()->Poles();
         Analyse(array2, nbsu, nbsv);
       }
 
@@ -298,8 +297,7 @@ void IntTools_TopolTool::ComputeSamplePoints()
 
       if (nbsu > 10 || nbsv > 10)
       {
-        NCollection_Array2<gp_Pnt> array2(1, myS->NbUPoles(), 1, myS->NbVPoles());
-        myS->BSpline()->Poles(array2);
+        const NCollection_Array2<gp_Pnt>& array2 = myS->BSpline()->Poles();
         Analyse(array2, nbsu, nbsv);
       }
       if (nbsu < 10)

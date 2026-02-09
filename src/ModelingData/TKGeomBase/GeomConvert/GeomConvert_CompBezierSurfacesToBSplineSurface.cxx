@@ -220,18 +220,11 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
   }
 
   // Les nouveaux champs sont arrivees ....
-  myPoles = new (NCollection_HArray2<gp_Pnt>)(1, Surface->NbUPoles(), 1, Surface->NbVPoles());
-  Surface->Poles(myPoles->ChangeArray2());
-
-  myUMults = new (NCollection_HArray1<int>)(1, Surface->NbUKnots());
-  myVMults = new (NCollection_HArray1<int>)(1, Surface->NbVKnots());
-  myUKnots = new (NCollection_HArray1<double>)(1, Surface->NbUKnots());
-  myVKnots = new (NCollection_HArray1<double>)(1, Surface->NbVKnots());
-
-  Surface->UMultiplicities(myUMults->ChangeArray1());
-  Surface->VMultiplicities(myVMults->ChangeArray1());
-  Surface->UKnots(myUKnots->ChangeArray1());
-  Surface->VKnots(myVKnots->ChangeArray1());
+  myPoles  = new NCollection_HArray2<gp_Pnt>(Surface->Poles());
+  myUMults = new NCollection_HArray1<int>(Surface->UMultiplicities());
+  myVMults = new NCollection_HArray1<int>(Surface->VMultiplicities());
+  myUKnots = new NCollection_HArray1<double>(Surface->UKnots());
+  myVKnots = new NCollection_HArray1<double>(Surface->VKnots());
 }
 
 // ============================================================================
@@ -344,10 +337,9 @@ GeomConvert_CompBezierSurfacesToBSplineSurface::GeomConvert_CompBezierSurfacesTo
     }
 
     // Les nouveaux champs sont arrivees ....
-    myPoles = new (NCollection_HArray2<gp_Pnt>)(1, Surface->NbUPoles(), 1, Surface->NbVPoles());
-    Surface->Poles(myPoles->ChangeArray2());
-    Surface->UMultiplicities(myUMults->ChangeArray1());
-    Surface->VMultiplicities(myVMults->ChangeArray1());
+    myPoles  = new NCollection_HArray2<gp_Pnt>(Surface->Poles());
+    myUMults = new NCollection_HArray1<int>(Surface->UMultiplicities());
+    myVMults = new NCollection_HArray1<int>(Surface->VMultiplicities());
   }
 }
 

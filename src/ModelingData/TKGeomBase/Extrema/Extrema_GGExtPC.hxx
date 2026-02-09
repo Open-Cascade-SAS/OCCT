@@ -190,8 +190,7 @@ public:
       case GeomAbs_BSplineCurve: {
         const int aFirstIdx = TheCurveTool::BSpline(aCurve)->FirstUKnotIndex(),
                   aLastIdx  = TheCurveTool::BSpline(aCurve)->LastUKnotIndex();
-        NCollection_Array1<double> aKnots(aFirstIdx, aLastIdx);
-        TheCurveTool::BSpline(aCurve)->Knots(aKnots);
+        const NCollection_Array1<double>& aKnots = TheCurveTool::BSpline(aCurve)->Knots();
 
         double       aPeriodJump = 0.0;
         const double aTolCoeff   = (myusup - myuinf) * Precision::PConfusion();

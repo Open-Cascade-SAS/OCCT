@@ -47,23 +47,16 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
   seqBS = new NCollection_HSequence<occ::handle<Geom_BoundedCurve>>;
   BS->SetNotPeriodic(); // to have equation NbPoles = NbKnots with Multiplicities - degree - 1
 
-  int                        deg     = BS->Degree();
-  int                        NbKnots = BS->NbKnots();
-  int                        NbPoles = BS->NbPoles();
-  NCollection_Array1<gp_Pnt> Poles(1, NbPoles);
-  NCollection_Array1<double> Weights(1, NbPoles);
-  NCollection_Array1<double> Knots(1, NbKnots);
-  NCollection_Array1<int>    Mults(1, NbKnots);
-  NCollection_Array1<double> KnotSequence(1, NbPoles + deg + 1);
-
-  BS->Poles(Poles);
+  int                              deg = BS->Degree();
+  const NCollection_Array1<gp_Pnt>& Poles = BS->Poles();
+  NCollection_Array1<double>       Weights(1, BS->NbPoles());
   if (BS->IsRational())
-    BS->Weights(Weights);
+    Weights = *BS->Weights();
   else
     Weights.Init(1.);
-  BS->Knots(Knots);
-  BS->Multiplicities(Mults);
-  BS->KnotSequence(KnotSequence);
+  const NCollection_Array1<double>& Knots       = BS->Knots();
+  const NCollection_Array1<int>&    Mults       = BS->Multiplicities();
+  const NCollection_Array1<double>& KnotSequence = BS->KnotSequence();
 
   int StartKnotIndex, EndKnotIndex, j;
 
@@ -78,8 +71,8 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
     int EndFlatIndex = BSplCLib::FlatIndex(deg, EndKnotIndex, Mults, false);
     EndFlatIndex -= Mults(EndKnotIndex) - 1;
 
-    NCollection_Array1<double> TempKnots(1, NbKnots);
-    NCollection_Array1<int>    TempMults(1, NbKnots);
+    NCollection_Array1<double> TempKnots(1, Knots.Length());
+    NCollection_Array1<int>    TempMults(1, Knots.Length());
     TempMults.Init(1);
     int TempKnotIndex        = 1;
     TempKnots(TempKnotIndex) = KnotSequence(StartFlatIndex - deg);
@@ -130,21 +123,16 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
 
 static occ::handle<Geom_BSplineCurve> BSplineCurve2dTo3d(const occ::handle<Geom2d_BSplineCurve>& BS)
 {
-  int                          deg     = BS->Degree();
-  int                          NbKnots = BS->NbKnots();
-  int                          NbPoles = BS->NbPoles();
-  NCollection_Array1<gp_Pnt2d> Poles2d(1, NbPoles);
-  NCollection_Array1<double>   Weights(1, NbPoles);
-  NCollection_Array1<double>   Knots(1, NbKnots);
-  NCollection_Array1<int>      Mults(1, NbKnots);
-
-  BS->Poles(Poles2d);
+  int                                deg     = BS->Degree();
+  int                                NbPoles = BS->NbPoles();
+  const NCollection_Array1<gp_Pnt2d>& Poles2d = BS->Poles();
+  NCollection_Array1<double>         Weights(1, NbPoles);
   if (BS->IsRational())
-    BS->Weights(Weights);
+    Weights = *BS->Weights();
   else
     Weights.Init(1);
-  BS->Knots(Knots);
-  BS->Multiplicities(Mults);
+  const NCollection_Array1<double>& Knots = BS->Knots();
+  const NCollection_Array1<int>&    Mults = BS->Multiplicities();
 
   NCollection_Array1<gp_Pnt> Poles3d(1, NbPoles);
   for (int i = 1; i <= NbPoles; i++)
@@ -157,21 +145,16 @@ static occ::handle<Geom_BSplineCurve> BSplineCurve2dTo3d(const occ::handle<Geom2
 
 static occ::handle<Geom2d_BSplineCurve> BSplineCurve3dTo2d(const occ::handle<Geom_BSplineCurve>& BS)
 {
-  int                        deg     = BS->Degree();
-  int                        NbKnots = BS->NbKnots();
-  int                        NbPoles = BS->NbPoles();
-  NCollection_Array1<gp_Pnt> Poles3d(1, NbPoles);
-  NCollection_Array1<double> Weights(1, NbPoles);
-  NCollection_Array1<double> Knots(1, NbKnots);
-  NCollection_Array1<int>    Mults(1, NbKnots);
-
-  BS->Poles(Poles3d);
+  int                              deg     = BS->Degree();
+  int                              NbPoles = BS->NbPoles();
+  const NCollection_Array1<gp_Pnt>& Poles3d = BS->Poles();
+  NCollection_Array1<double>       Weights(1, NbPoles);
   if (BS->IsRational())
-    BS->Weights(Weights);
+    Weights = *BS->Weights();
   else
     Weights.Init(1);
-  BS->Knots(Knots);
-  BS->Multiplicities(Mults);
+  const NCollection_Array1<double>& Knots = BS->Knots();
+  const NCollection_Array1<int>&    Mults = BS->Multiplicities();
 
   NCollection_Array1<gp_Pnt2d> Poles2d(1, NbPoles);
   for (int i = 1; i <= NbPoles; i++)

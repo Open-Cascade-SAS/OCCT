@@ -553,7 +553,6 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
   gp_Elips Elips;
   //  gp_Hypr  Hypr ;
 
-  int               num_knots;
   GeomAbs_CurveType Type = C->GetType();
 
   gp_Ax2 Axis;
@@ -639,9 +638,7 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
 
           occ::handle<Geom_BSplineCurve> NewCurvePtr =
             GeomConvert::CurveToBSplineCurve(NewTrimCurvePtr);
-          num_knots = NewCurvePtr->NbKnots();
-          NCollection_Array1<double> BsplineKnots(1, num_knots);
-          NewCurvePtr->Knots(BsplineKnots);
+          NCollection_Array1<double> BsplineKnots(NewCurvePtr->Knots());
 
           BSplCLib::Reparametrize(myCurve->FirstParameter(),
                                   myCurve->LastParameter(),

@@ -69,7 +69,7 @@ bool TDataStd_IntPackedMap::ChangeMap(const occ::handle<TColStd_HPackedMapOfInte
     return false;
   if (myMap != theMap)
   {
-    if (!myMap->Map().IsEqual(theMap->Map()))
+    if (!NCollection_PackedMapAlgo::IsEqual(myMap->Map(), theMap->Map()))
     {
       Backup();
       myMap->ChangeMap().Assign(theMap->Map());
@@ -83,7 +83,7 @@ bool TDataStd_IntPackedMap::ChangeMap(const occ::handle<TColStd_HPackedMapOfInte
 
 bool TDataStd_IntPackedMap::ChangeMap(const TColStd_PackedMapOfInteger& theMap)
 {
-  if (!myMap->Map().IsEqual(theMap))
+  if (!NCollection_PackedMapAlgo::IsEqual(myMap->Map(), theMap))
   {
     Backup();
     myMap->ChangeMap().Assign(theMap);

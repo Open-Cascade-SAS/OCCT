@@ -1134,12 +1134,8 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     // get the poles and eventually the weights
     occ::handle<Geom_BSplineCurve> BS = C->BSpline();
     NbPoles                           = BS->NbPoles();
-    NCollection_Array1<gp_Pnt>   P3d(1, NbPoles);
-    NCollection_Array1<gp_Pnt2d> Poles(1, NbPoles);
-    NCollection_Array1<double>   Weights(1, NbPoles);
-    if (BS->IsRational())
-      BS->Weights(Weights);
-    BS->Poles(P3d);
+    const NCollection_Array1<gp_Pnt>& P3d = BS->Poles();
+    NCollection_Array1<gp_Pnt2d>      Poles(1, NbPoles);
 
     // Project poles onto plane using optimized projector (avoids gp_Trsf per point)
     const PlaneProjector aProj(S->Plane().Position());
@@ -1147,16 +1143,13 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     {
       Poles.SetValue(i, aProj.Project(P3d(i)));
     }
-    NbKnots = BS->NbKnots();
-    NCollection_Array1<double> Knots(1, NbKnots);
-    NCollection_Array1<int>    Mults(1, NbKnots);
-    BS->Knots(Knots);
-    BS->Multiplicities(Mults);
+    const NCollection_Array1<double>& Knots = BS->Knots();
+    const NCollection_Array1<int>&    Mults = BS->Multiplicities();
     // get the knots and mults if BSplineCurve
     if (BS->IsRational())
     {
       myBSpline =
-        new Geom2d_BSplineCurve(Poles, Weights, Knots, Mults, BS->Degree(), BS->IsPeriodic());
+        new Geom2d_BSplineCurve(Poles, *BS->Weights(), Knots, Mults, BS->Degree(), BS->IsPeriodic());
     }
     else
     {
@@ -1169,14 +1162,8 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     // get the poles and eventually the weights
     occ::handle<Geom_BezierCurve> BezierCurvePtr = C->Bezier();
     NbPoles                                      = BezierCurvePtr->NbPoles();
-    NCollection_Array1<gp_Pnt>   P3d(1, NbPoles);
-    NCollection_Array1<gp_Pnt2d> Poles(1, NbPoles);
-    NCollection_Array1<double>   Weights(1, NbPoles);
-    if (BezierCurvePtr->IsRational())
-    {
-      BezierCurvePtr->Weights(Weights);
-    }
-    BezierCurvePtr->Poles(P3d);
+    const NCollection_Array1<gp_Pnt>& P3d = BezierCurvePtr->Poles();
+    NCollection_Array1<gp_Pnt2d>      Poles(1, NbPoles);
 
     // Project poles onto plane using optimized projector (avoids gp_Trsf per point)
     const PlaneProjector aProj(S->Plane().Position());
@@ -1186,7 +1173,7 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     }
     if (BezierCurvePtr->IsRational())
     {
-      myBezier = new Geom2d_BezierCurve(Poles, Weights);
+      myBezier = new Geom2d_BezierCurve(Poles, *BezierCurvePtr->Weights());
     }
     else
     {

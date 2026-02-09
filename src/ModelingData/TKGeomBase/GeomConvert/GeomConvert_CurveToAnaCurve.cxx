@@ -189,8 +189,7 @@ occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(
   if (!bsc.IsNull())
   {
     nbPoles = bsc->NbPoles();
-    Poles   = new NCollection_HArray1<gp_Pnt>(1, nbPoles);
-    bsc->Poles(Poles->ChangeArray1());
+    Poles   = new NCollection_HArray1<gp_Pnt>(bsc->Poles());
   }
   else
   {
@@ -198,8 +197,7 @@ occ::handle<Geom_Line> GeomConvert_CurveToAnaCurve::ComputeLine(
     if (!bzc.IsNull())
     {
       nbPoles = bzc->NbPoles();
-      Poles   = new NCollection_HArray1<gp_Pnt>(1, nbPoles);
-      bzc->Poles(Poles->ChangeArray1());
+      Poles   = new NCollection_HArray1<gp_Pnt>(bzc->Poles());
     }
     else
     {

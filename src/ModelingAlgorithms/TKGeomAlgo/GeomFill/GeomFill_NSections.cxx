@@ -157,9 +157,7 @@ static void ResultEval(const occ::handle<Geom_BSplineSurface>& surf,
   int Cdeg = surf->VDegree(), Cdim = surf->NbUPoles() * gap, NbP = surf->NbVPoles();
 
   //  les noeuds plats
-  int                        Ksize = NbP + Cdeg + 1;
-  NCollection_Array1<double> FKnots(1, Ksize);
-  surf->VKnotSequence(FKnots);
+  const NCollection_Array1<double>& FKnots = surf->VKnotSequence();
 
   //  les poles
   int                        Psize = Cdim * NbP;
@@ -298,10 +296,13 @@ bool GeomFill_NSections::D0(const double                V,
   {
     occ::handle<Geom_BSplineCurve> Curve =
       occ::down_cast<Geom_BSplineCurve>(mySurface->VIso(V, false));
-    NCollection_Array1<gp_Pnt> poles(1, mySurface->NbUPoles());
+    const NCollection_Array1<gp_Pnt>& poles = Curve->Poles();
+    const NCollection_Array1<double>* aWPtr = Curve->Weights();
     NCollection_Array1<double> weights(1, mySurface->NbUPoles());
-    Curve->Poles(poles);
-    Curve->Weights(weights);
+    if (aWPtr != nullptr)
+      weights = *aWPtr;
+    else
+      weights.Init(1.0);
     int ii, L = Poles.Length();
     for (ii = 1; ii <= L; ii++)
     {
@@ -514,8 +515,7 @@ void GeomFill_NSections::ComputeSurface()
         curvBS = GeomConvert::CurveToBSplineCurve(curv, Convert_QuasiAngular);
       }
 
-      NCollection_Array1<double> BSK(1, curvBS->NbKnots());
-      curvBS->Knots(BSK);
+      NCollection_Array1<double> BSK(curvBS->Knots());
       BSplCLib::Reparametrize(UFirst, ULast, BSK);
       curvBS->SetKnots(BSK);
 
@@ -630,7 +630,7 @@ void GeomFill_NSections::SectionShape(int& NbPoles, int& NbKnots, int& Degree) c
 void GeomFill_NSections::Knots(NCollection_Array1<double>& TKnots) const
 {
   if (!mySurface.IsNull())
-    mySurface->UKnots(TKnots);
+    TKnots = mySurface->UKnots();
 }
 
 //=======================================================
@@ -639,7 +639,7 @@ void GeomFill_NSections::Knots(NCollection_Array1<double>& TKnots) const
 void GeomFill_NSections::Mults(NCollection_Array1<int>& TMults) const
 {
   if (!mySurface.IsNull())
-    mySurface->UMultiplicities(TMults);
+    TMults = mySurface->UMultiplicities();
 }
 
 //=======================================================
@@ -802,9 +802,14 @@ void GeomFill_NSections::GetMinimalWeight(NCollection_Array1<double>& Weights) c
 
   if (mySurface->IsURational())
   {
-    int                        NbU = mySurface->NbUPoles(), NbV = mySurface->NbVPoles();
-    NCollection_Array2<double> WSurf(1, NbU, 1, NbV);
-    mySurface->Weights(WSurf);
+    int                              NbU = mySurface->NbUPoles(), NbV = mySurface->NbVPoles();
+    const NCollection_Array2<double>* aWSurfPtr = mySurface->Weights();
+    if (aWSurfPtr == nullptr)
+    {
+      Weights.Init(1);
+      return;
+    }
+    const NCollection_Array2<double>& WSurf = *aWSurfPtr;
     int i, j;
     for (i = 1; i <= NbU; i++)
     {

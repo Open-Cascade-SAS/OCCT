@@ -2082,10 +2082,9 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
     GeomAPI_PointsToBSpline               appr(points3d, params, 1, 10, GeomAbs_C1, theTolerance2d);
     const occ::handle<Geom_BSplineCurve>& crv3d = appr.Curve();
 
-    const int                    NbPoles = crv3d->NbPoles();
-    NCollection_Array1<gp_Pnt>   poles3d(1, NbPoles);
-    NCollection_Array1<gp_Pnt2d> poles2d(1, NbPoles);
-    crv3d->Poles(poles3d);
+    const int                         NbPoles = crv3d->NbPoles();
+    const NCollection_Array1<gp_Pnt>& poles3d = crv3d->Poles();
+    NCollection_Array1<gp_Pnt2d>     poles2d(1, NbPoles);
 
     for (int i = 1; i <= NbPoles; i++)
     {
@@ -2093,11 +2092,12 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
     }
 
     NCollection_Array1<double> weights(1, NbPoles);
-    NCollection_Array1<int>    multiplicities(1, crv3d->NbKnots());
-    NCollection_Array1<double> knots(1, crv3d->NbKnots());
-    crv3d->Knots(knots);
-    crv3d->Weights(weights);
-    crv3d->Multiplicities(multiplicities);
+    if (crv3d->IsRational())
+      weights = *crv3d->Weights();
+    else
+      weights.Init(1.);
+    const NCollection_Array1<double>& knots           = crv3d->Knots();
+    const NCollection_Array1<int>&    multiplicities   = crv3d->Multiplicities();
 
     aC2D = new Geom2d_BSplineCurve(poles2d,
                                    weights,

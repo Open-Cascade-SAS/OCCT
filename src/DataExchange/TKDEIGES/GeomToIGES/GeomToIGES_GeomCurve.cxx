@@ -249,16 +249,12 @@ static bool IsPlanar(const occ::handle<Geom_Curve>& curve, gp_XYZ& Normal)
   if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
     DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    NCollection_Array1<gp_Pnt> Poles(1, BSpline->NbPoles());
-    BSpline->Poles(Poles);
-    return ArePolesPlanar(Poles, Normal);
+    return ArePolesPlanar(BSpline->Poles(), Normal);
   }
   if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
     DeclareAndCast(Geom_BezierCurve, Bezier, curve);
-    NCollection_Array1<gp_Pnt> Poles(1, Bezier->NbPoles());
-    Bezier->Poles(Poles);
-    return ArePolesPlanar(Poles, Normal);
+    return ArePolesPlanar(Bezier->Poles(), Normal);
   }
   return false;
 }
@@ -348,10 +344,9 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
 
   // Sequence des Knots de [-Deg, Index+1] dans IGESGeom.
   // and from [1, Nbpoles+Deg+1] in Geom
-  int                        Knotindex;
-  double                     rtampon;
-  NCollection_Array1<double> K(1, Nbpoles + Deg + 1);
-  mycurve->KnotSequence(K);
+  int                                      Knotindex;
+  double                                   rtampon;
+  const NCollection_Array1<double>&        K       = mycurve->KnotSequence();
   int                                      itampon = -Deg;
   occ::handle<NCollection_HArray1<double>> Knots = new NCollection_HArray1<double>(-Deg, Index + 1);
   for (Knotindex = K.Lower(); Knotindex <= K.Upper(); Knotindex++)
@@ -362,8 +357,12 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // Tableau Weights de [0,Index]
-  NCollection_Array1<double> W(1, Nbpoles);
-  mycurve->Weights(W);
+  const NCollection_Array1<double>* aWPtr = mycurve->Weights();
+  NCollection_Array1<double>        W(1, Nbpoles);
+  if (aWPtr != nullptr)
+    W = *aWPtr;
+  else
+    W.Init(1.0);
   itampon                                          = 0;
   occ::handle<NCollection_HArray1<double>> Weights = new NCollection_HArray1<double>(0, Index);
   for (Knotindex = W.Lower(); Knotindex <= W.Upper(); Knotindex++)
@@ -374,9 +373,8 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // Tableau Poles de [0,Index]
-  NCollection_Array1<gp_Pnt> P(1, Nbpoles);
-  mycurve->Poles(P);
-  int Poleindex;
+  const NCollection_Array1<gp_Pnt>& P = mycurve->Poles();
+  int                               Poleindex;
   itampon = 0;
   double                                   Xpt, Ypt, Zpt;
   occ::handle<NCollection_HArray1<gp_XYZ>> Poles = new NCollection_HArray1<gp_XYZ>(0, Index);
@@ -611,8 +609,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
       Bspline = approx.Curve();
     if (Bspline.IsNull())
       GeomConvert::CurveToBSplineCurve(copystart, Convert_QuasiAngular);
-    NCollection_Array1<double> Knots(1, Bspline->NbKnots());
-    Bspline->Knots(Knots);
+    NCollection_Array1<double> Knots(Bspline->Knots());
     BSplCLib::Reparametrize(Udeb, Udeb + 2 * M_PI, Knots);
     Bspline->SetKnots(Knots);
     return TransferCurve(Bspline, Udeb, Ufin);

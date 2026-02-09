@@ -61,8 +61,7 @@ static void GeomLib_ChangeUBounds(occ::handle<Geom_BSplineSurface>& aSurface,
                                   const double                      newU1,
                                   const double                      newU2)
 {
-  NCollection_Array1<double> knots(1, aSurface->NbUKnots());
-  aSurface->UKnots(knots);
+  NCollection_Array1<double> knots(aSurface->UKnots());
   BSplCLib::Reparametrize(newU1, newU2, knots);
   aSurface->SetUKnots(knots);
 }
@@ -71,8 +70,7 @@ static void GeomLib_ChangeVBounds(occ::handle<Geom_BSplineSurface>& aSurface,
                                   const double                      newV1,
                                   const double                      newV2)
 {
-  NCollection_Array1<double> knots(1, aSurface->NbVKnots());
-  aSurface->VKnots(knots);
+  NCollection_Array1<double> knots(aSurface->VKnots());
   BSplCLib::Reparametrize(newV1, newV2, knots);
   aSurface->SetVKnots(knots);
 }
@@ -449,8 +447,7 @@ bool BRepTools_NurbsConvertModification::NewCurve(const TopoDS_Edge&       E,
     BC->Resolution(Tol, UTol);
     if (std::abs(f - fnew) > UTol || std::abs(l - lnew) > UTol)
     {
-      NCollection_Array1<double> knots(1, BC->NbKnots());
-      BC->Knots(knots);
+      NCollection_Array1<double> knots(BC->Knots());
       BSplCLib::Reparametrize(f, l, knots);
       BC->SetKnots(knots);
     }

@@ -57,11 +57,10 @@ void DrawTrSurf_BezierSurface::DrawOn(Draw_Display& dis) const
   occ::handle<Geom_BezierSurface> S = occ::down_cast<Geom_BezierSurface>(surf);
   if (drawPoles)
   {
-    int NbUPoles = S->NbUPoles();
-    int NbVPoles = S->NbVPoles();
     dis.SetColor(polesLook);
-    NCollection_Array2<gp_Pnt> SPoles(1, NbUPoles, 1, NbVPoles);
-    S->Poles(SPoles);
+    const NCollection_Array2<gp_Pnt>& SPoles = S->Poles();
+    int NbUPoles = SPoles.NbRows();
+    int NbVPoles = SPoles.NbColumns();
     for (j = 1; j <= NbVPoles; j++)
     {
       dis.MoveTo(SPoles(1, j));

@@ -36,18 +36,14 @@ static void UnifyByInsertingAllKnots(NCollection_Sequence<occ::handle<Geom_Curve
   for (i = 2; i <= theCurves.Length(); i++)
   {
     occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
-    NCollection_Array1<double>     Ki(1, Ci->NbKnots());
-    Ci->Knots(Ki);
-    NCollection_Array1<int> Mi(1, Ci->NbKnots());
-    Ci->Multiplicities(Mi);
+    const NCollection_Array1<double>& Ki = Ci->Knots();
+    const NCollection_Array1<int>&    Mi = Ci->Multiplicities();
 
     C->InsertKnots(Ki, Mi, PTol, false);
   }
 
-  NCollection_Array1<double> NewKnots(1, C->NbKnots());
-  C->Knots(NewKnots);
-  NCollection_Array1<int> NewMults(1, C->NbKnots());
-  C->Multiplicities(NewMults);
+  const NCollection_Array1<double>& NewKnots = C->Knots();
+  const NCollection_Array1<int>&    NewMults = C->Multiplicities();
   for (i = 2; i <= theCurves.Length(); i++)
   {
     occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
@@ -205,8 +201,7 @@ void GeomFill_Profiler::Perform(const double PTol)
 
     C->IncreaseDegree(myDegree);
 
-    NCollection_Array1<double> Knots(1, C->NbKnots());
-    C->Knots(Knots);
+    NCollection_Array1<double> Knots(C->Knots());
     BSplCLib::Reparametrize(UFirst, ULast, Knots);
     C->SetKnots(Knots);
   }
@@ -269,7 +264,7 @@ void GeomFill_Profiler::Poles(const int Index, NCollection_Array1<gp_Pnt>& Poles
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(Index));
 
-  C->Poles(Poles);
+  Poles = C->Poles();
 }
 
 //=================================================================================================
@@ -285,7 +280,11 @@ void GeomFill_Profiler::Weights(const int Index, NCollection_Array1<double>& Wei
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(Index));
 
-  C->Weights(Weights);
+  const NCollection_Array1<double>* aWPtr = C->Weights();
+  if (aWPtr != nullptr)
+    Weights = *aWPtr;
+  else
+    Weights.Init(1.0);
 }
 
 //=================================================================================================
@@ -316,6 +315,6 @@ void GeomFill_Profiler::KnotsAndMults(NCollection_Array1<double>& Knots,
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(1));
 
-  C->Knots(Knots);
-  C->Multiplicities(Mults);
+  Knots = C->Knots();
+  Mults = C->Multiplicities();
 }

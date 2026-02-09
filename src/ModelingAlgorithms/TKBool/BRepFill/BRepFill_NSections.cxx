@@ -109,8 +109,7 @@ static occ::handle<Geom_BSplineCurve> EdgeToBSpline(const TopoDS_Edge& theEdge)
       aBSCurve->Transform(aLoc.Transformation());
 
     // reparameterize to [0,1]
-    NCollection_Array1<double> aKnots(1, aBSCurve->NbKnots());
-    aBSCurve->Knots(aKnots);
+    NCollection_Array1<double> aKnots(aBSCurve->Knots());
     BSplCLib::Reparametrize(0., 1., aKnots);
     aBSCurve->SetKnots(aKnots);
   }

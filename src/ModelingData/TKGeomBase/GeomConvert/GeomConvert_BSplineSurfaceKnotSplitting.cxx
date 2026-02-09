@@ -53,9 +53,7 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
   else
   {
-    int             NbUKnots = BasisSurface->NbUKnots();
-    Array1OfInteger UMults(1, NbUKnots);
-    BasisSurface->UMultiplicities(UMults);
+    const Array1OfInteger& UMults = BasisSurface->UMultiplicities();
     int Mmax = BSplCLib::MaxKnotMult(UMults, FirstUIndex, LastUIndex);
     if (UDegree - Mmax >= UContinuityRange)
     {
@@ -97,9 +95,7 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   }
   else
   {
-    int             NbVKnots = BasisSurface->NbVKnots();
-    Array1OfInteger VMults(1, NbVKnots);
-    BasisSurface->VMultiplicities(VMults);
+    const Array1OfInteger& VMults = BasisSurface->VMultiplicities();
     int Mmax = BSplCLib::MaxKnotMult(VMults, FirstVIndex, LastVIndex);
     if (VDegree - Mmax >= VContinuityRange)
     {

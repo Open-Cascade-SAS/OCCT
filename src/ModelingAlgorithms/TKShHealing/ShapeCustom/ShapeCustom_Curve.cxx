@@ -60,17 +60,15 @@ occ::handle<Geom_Curve> ShapeCustom_Curve::ConvertToPeriodic(const bool   substi
     if (BSpl->Multiplicity(1) == BSpl->Degree() + 1
         && BSpl->Multiplicity(BSpl->NbKnots()) == BSpl->Degree() + 1)
     {
-      int                        nbPoles = BSpl->NbPoles();
-      NCollection_Array1<gp_Pnt> oldPoles(1, nbPoles);
-      NCollection_Array1<double> oldWeights(1, nbPoles);
-      int                        nbKnots = BSpl->NbKnots();
-      NCollection_Array1<double> oldKnots(1, nbKnots);
-      NCollection_Array1<int>    oldMults(1, nbKnots);
-
-      BSpl->Poles(oldPoles);
-      BSpl->Weights(oldWeights);
-      BSpl->Knots(oldKnots);
-      BSpl->Multiplicities(oldMults);
+      const NCollection_Array1<gp_Pnt>&  oldPoles = BSpl->Poles();
+      NCollection_Array1<double>       oldWeights(1, BSpl->NbPoles());
+      if (BSpl->IsRational())
+        oldWeights = *BSpl->Weights();
+      else
+        oldWeights.Init(1.);
+      int                              nbKnots  = BSpl->NbKnots();
+      const NCollection_Array1<double>& oldKnots = BSpl->Knots();
+      const NCollection_Array1<int>&    oldMults = BSpl->Multiplicities();
 
       NCollection_Array1<double> newKnots(1, nbKnots + 2);
       NCollection_Array1<int>    newMults(1, nbKnots + 2);

@@ -4535,6 +4535,8 @@ int OCC17424(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
+
+
 int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 1)
@@ -4558,11 +4560,11 @@ int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
 
   bool isAffected;
 
-  isAffected = aFullMask.Intersect(aPartMask); // true; extent == 2 (OK)
+  isAffected = NCollection_PackedMapAlgo::Intersect(aFullMask, aPartMask); // true; extent == 2 (OK)
   di << "First time: aFullMask.Intersect(aPartMask), isAffected = " << (int)isAffected << "\n";
-  isAffected = aFullMask.Intersect(aPartMask); // true; extent == 0 (?)
+  isAffected = NCollection_PackedMapAlgo::Intersect(aFullMask, aPartMask); // true; extent == 0 (?)
   di << "Second time: aFullMask.Intersect(aPartMask), isAffected = " << (int)isAffected << "\n";
-  isAffected = aFullMask.Subtract(aPartMask); // false (?)
+  isAffected = NCollection_PackedMapAlgo::Subtract(aFullMask, aPartMask); // false (?)
   di << "After two intersections: aFullMask.Subtract(aPartMask), isAffected = " << (int)isAffected
      << "\n";
 

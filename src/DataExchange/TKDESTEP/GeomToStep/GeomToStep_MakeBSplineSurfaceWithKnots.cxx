@@ -57,8 +57,7 @@ GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
 
   NU = BS->NbUPoles();
   NV = BS->NbVPoles();
-  NCollection_Array2<gp_Pnt> P(1, NU, 1, NV);
-  BS->Poles(P);
+  const NCollection_Array2<gp_Pnt>& P = BS->Poles();
   aControlPointsList = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, NU, 1, NV);
   for (i = P.LowerRow(); i <= P.UpperRow(); i++)
   {
@@ -86,16 +85,14 @@ GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
 
   NUknots = BS->NbUKnots();
   NVknots = BS->NbVKnots();
-  NCollection_Array1<int> MU(1, NUknots);
-  BS->UMultiplicities(MU);
+  const NCollection_Array1<int>& MU = BS->UMultiplicities();
   aUMultiplicities = new NCollection_HArray1<int>(1, NUknots);
   for (i = MU.Lower(); i <= MU.Upper(); i++)
   {
     itampon = MU.Value(i);
     aUMultiplicities->SetValue(i, itampon);
   }
-  NCollection_Array1<int> MV(1, NVknots);
-  BS->VMultiplicities(MV);
+  const NCollection_Array1<int>& MV = BS->VMultiplicities();
   aVMultiplicities = new NCollection_HArray1<int>(1, NVknots);
   for (i = MV.Lower(); i <= MV.Upper(); i++)
   {
@@ -103,10 +100,8 @@ GeomToStep_MakeBSplineSurfaceWithKnots::GeomToStep_MakeBSplineSurfaceWithKnots(
     aVMultiplicities->SetValue(i, itampon);
   }
 
-  NCollection_Array1<double> KU(1, NUknots);
-  NCollection_Array1<double> KV(1, NVknots);
-  BS->UKnots(KU);
-  BS->VKnots(KV);
+  const NCollection_Array1<double>& KU = BS->UKnots();
+  const NCollection_Array1<double>& KV = BS->VKnots();
   aUKnots = new NCollection_HArray1<double>(1, NUknots);
   aVKnots = new NCollection_HArray1<double>(1, NVknots);
   for (i = KU.Lower(); i <= KU.Upper(); i++)

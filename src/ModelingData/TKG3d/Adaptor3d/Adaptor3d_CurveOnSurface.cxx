@@ -279,8 +279,7 @@ static void Locate1Coord(const int                             Index,
   constexpr double           Tol     = Precision::PConfusion() / 10;
   int                        i       = 1, Bnd1, Bnd2;
   bool                       DIsNull = false;
-  NCollection_Array1<double> Arr(1, BSplC->NbKnots());
-  BSplC->Knots(Arr);
+  const NCollection_Array1<double>& Arr = BSplC->Knots();
 
   if (Index == 1)
   {
@@ -495,14 +494,12 @@ static void Locate1Coord(const int                               Index,
     int Bnd1 = Down, Bnd2 = Up;
     if (Index == 1)
     {
-      NCollection_Array1<double> Arr1(1, BSplS->NbUKnots());
-      BSplS->UKnots(Arr1); //   Up1=Arr1.Upper(); Down1=Arr1.Lower();
+      const NCollection_Array1<double>& Arr1 = BSplS->UKnots();
       FindBounds(Arr1, cur, DUV.X(), Bnd1, Bnd2, DIsNull);
     }
     else if (Index == 2)
     {
-      NCollection_Array1<double> Arr2(1, BSplS->NbVKnots());
-      BSplS->VKnots(Arr2); //   Up2=Arr2.Upper(); Down2=Arr2.Lower();
+      const NCollection_Array1<double>& Arr2 = BSplS->VKnots();
       FindBounds(Arr2, cur, DUV.Y(), Bnd1, Bnd2, DIsNull);
     }
 
@@ -1456,8 +1453,7 @@ occ::handle<Geom_BezierCurve> Adaptor3d_CurveOnSurface::Bezier() const
 
   if (Bez2d->IsRational())
   {
-    NCollection_Array1<double> Weights(1, NbPoles);
-    Bez2d->Weights(Weights);
+    const NCollection_Array1<double>& Weights = *Bez2d->Weights();
     Bez = new Geom_BezierCurve(Poles, Weights);
   }
   else
@@ -1485,17 +1481,14 @@ occ::handle<Geom_BSplineCurve> Adaptor3d_CurveOnSurface::BSpline() const
     Poles(i) = to3d(Plane, Bsp2d->Pole(i));
   }
 
-  NCollection_Array1<double> Knots(1, Bsp2d->NbKnots());
-  NCollection_Array1<int>    Mults(1, Bsp2d->NbKnots());
-  Bsp2d->Knots(Knots);
-  Bsp2d->Multiplicities(Mults);
+  const NCollection_Array1<double>& Knots = Bsp2d->Knots();
+  const NCollection_Array1<int>&    Mults = Bsp2d->Multiplicities();
 
   occ::handle<Geom_BSplineCurve> Bsp;
 
   if (Bsp2d->IsRational())
   {
-    NCollection_Array1<double> Weights(1, NbPoles);
-    Bsp2d->Weights(Weights);
+    const NCollection_Array1<double>& Weights = *Bsp2d->Weights();
     Bsp = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Bsp2d->Degree(), Bsp2d->IsPeriodic());
   }
   else
@@ -1889,14 +1882,12 @@ void Adaptor3d_CurveOnSurface::LocatePart(const gp_Pnt2d&                       
 
   if ((DUIsNull) && (!DVIsNull))
   {
-    NCollection_Array1<double> ArrU(1, BSplS->NbUKnots());
-    BSplS->UKnots(ArrU);
+    const NCollection_Array1<double>& ArrU = BSplS->UKnots();
     Locate2Coord(1, UV, DUV, BSplS, ArrU, LeftBot, RightTop);
   }
   else if ((DVIsNull) && (!DUIsNull))
   {
-    NCollection_Array1<double> ArrV(1, BSplS->NbVKnots());
-    BSplS->VKnots(ArrV);
+    const NCollection_Array1<double>& ArrV = BSplS->VKnots();
     Locate2Coord(2, UV, DUV, BSplS, ArrV, LeftBot, RightTop);
   }
 }

@@ -409,10 +409,9 @@ void ShapeUpgrade_ConvertSurfaceToBezierBasis::Compute(const bool Segment)
     int i; // svv #1
     for (i = 1; i <= nbCurves; i++)
     {
-      occ::handle<Geom_BezierCurve> bez     = occ::down_cast<Geom_BezierCurve>(curves->Value(i));
-      int                           nbPoles = bez->NbPoles();
-      NCollection_Array1<gp_Pnt>    poles(1, nbPoles);
-      bez->Poles(poles);
+      occ::handle<Geom_BezierCurve>   bez     = occ::down_cast<Geom_BezierCurve>(curves->Value(i));
+      int                             nbPoles = bez->NbPoles();
+      const NCollection_Array1<gp_Pnt>& poles = bez->Poles();
       NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
       for (int j = 1; j <= nbPoles; j++)
       {

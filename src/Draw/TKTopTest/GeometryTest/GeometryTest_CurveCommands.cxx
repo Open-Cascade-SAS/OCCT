@@ -787,14 +787,10 @@ static int movelaw(Draw_Interpretor& di, int n, const char** a)
       condition = std::max(Draw::Atoi(a[5]), -1);
       condition = std::min(condition, G2->Degree() - 1);
     }
-    NCollection_Array1<gp_Pnt2d> curve_poles(1, G2->NbPoles());
+    NCollection_Array1<gp_Pnt2d> curve_poles(G2->Poles());
     NCollection_Array1<double>   law_poles(1, G2->NbPoles());
-    NCollection_Array1<double>   law_knots(1, G2->NbKnots());
-    NCollection_Array1<int>      law_mults(1, G2->NbKnots());
-
-    G2->Knots(law_knots);
-    G2->Multiplicities(law_mults);
-    G2->Poles(curve_poles);
+    const NCollection_Array1<double>& law_knots = G2->Knots();
+    const NCollection_Array1<int>&    law_mults = G2->Multiplicities();
     for (ii = 1; ii <= G2->NbPoles(); ii++)
     {
       law_poles(ii) = curve_poles(ii).Coord(2);
@@ -843,9 +839,8 @@ static void ComputeDeviation(const Adaptor3d_Curve&                theCurve,
   theImax  = 0;
 
   // take knots
-  int                        nbp = thePnts->NbKnots();
-  NCollection_Array1<double> aKnots(1, nbp);
-  thePnts->Knots(aKnots);
+  const NCollection_Array1<double>& aKnots = thePnts->Knots();
+  int                               nbp    = aKnots.Length();
 
   int i;
   for (i = 1; i < nbp; ++i)

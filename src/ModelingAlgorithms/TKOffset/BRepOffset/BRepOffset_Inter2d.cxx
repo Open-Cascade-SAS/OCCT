@@ -1043,8 +1043,7 @@ static bool ExtendPCurve(const occ::handle<Geom2d_Curve>& aPCurve,
       occ::handle<Geom2d_BezierCurve> aBezier = occ::down_cast<Geom2d_BezierCurve>(NewPCurve);
       if (aBezier->NbPoles() == 2)
       {
-        NCollection_Array1<gp_Pnt2d> thePoles(1, 2);
-        aBezier->Poles(thePoles);
+        const NCollection_Array1<gp_Pnt2d>& thePoles = aBezier->Poles();
         gp_Vec2d aVec(thePoles(1), thePoles(2));
         NewPCurve = new Geom2d_Line(thePoles(1), aVec);
         return true;
@@ -1055,8 +1054,7 @@ static bool ExtendPCurve(const occ::handle<Geom2d_Curve>& aPCurve,
       occ::handle<Geom2d_BSplineCurve> aBSpline = occ::down_cast<Geom2d_BSplineCurve>(NewPCurve);
       if (aBSpline->NbKnots() == 2 && aBSpline->NbPoles() == 2)
       {
-        NCollection_Array1<gp_Pnt2d> thePoles(1, 2);
-        aBSpline->Poles(thePoles);
+        const NCollection_Array1<gp_Pnt2d>& thePoles = aBSpline->Poles();
         gp_Vec2d aVec(thePoles(1), thePoles(2));
         NewPCurve = new Geom2d_Line(thePoles(1), aVec);
         return true;

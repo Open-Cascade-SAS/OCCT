@@ -238,10 +238,9 @@ void BndLib_Add3dCurve::Add(const Adaptor3d_Curve& C,
       }
       // OCC566(apo)->
       Bnd_Box B1;
-      int     k, k1 = Bs->FirstUKnotIndex(), k2 = Bs->LastUKnotIndex(), N = Bs->Degree(),
-             NbKnots = Bs->NbKnots();
-      NCollection_Array1<double> Knots(1, NbKnots);
-      Bs->Knots(Knots);
+      int                               k, k1 = Bs->FirstUKnotIndex(), k2 = Bs->LastUKnotIndex(),
+                                        N = Bs->Degree();
+      const NCollection_Array1<double>& Knots = Bs->Knots();
       GeomAdaptor_Curve GACurve(Bs);
       double            first = Knots(k1), last;
       for (k = k1 + 1; k <= k2; k++)

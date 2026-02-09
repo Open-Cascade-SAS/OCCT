@@ -339,8 +339,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   int                        Knotindex;
   double                     rtampon;
   int                        itampon;
-  NCollection_Array1<double> KU(1, NbUPoles + DegU + 1);
-  mysurface->UKnotSequence(KU);
+  const NCollection_Array1<double>& KU = mysurface->UKnotSequence();
   itampon = -DegU;
   occ::handle<NCollection_HArray1<double>> KnotsU =
     new NCollection_HArray1<double>(-DegU, IndexU + 1);
@@ -353,8 +352,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
 
   // filling knots array for V :
   // Knots sequence from [-DegV, IndexV+1] in IGESGeom.
-  NCollection_Array1<double> KV(1, NbVPoles + DegV + 1);
-  mysurface->VKnotSequence(KV);
+  const NCollection_Array1<double>& KV = mysurface->VKnotSequence();
   itampon = -DegV;
   occ::handle<NCollection_HArray1<double>> KnotsV =
     new NCollection_HArray1<double>(-DegV, IndexV + 1);
