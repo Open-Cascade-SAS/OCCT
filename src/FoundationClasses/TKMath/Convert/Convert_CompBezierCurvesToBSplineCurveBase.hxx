@@ -49,8 +49,7 @@ public:
   {
     if (!mySequence.IsEmpty())
     {
-      [[maybe_unused]] const PointType& aP1 =
-        mySequence.Last().Value(mySequence.Last().Upper());
+      [[maybe_unused]] const PointType& aP1 = mySequence.Last().Value(mySequence.Last().Upper());
       [[maybe_unused]] const PointType& aP2 = thePoles(thePoles.Lower());
 
 #ifdef OCCT_DEBUG
@@ -68,9 +67,9 @@ public:
     myCurvePoles.Clear();
     myCurveKnots.Clear();
     myKnotsMults.Clear();
-    const int aLowerI  = 1;
-    const int anUpperI = mySequence.Length();
-    const int aNbrCurv = anUpperI - aLowerI + 1;
+    const int                  aLowerI  = 1;
+    const int                  anUpperI = mySequence.Length();
+    const int                  aNbrCurv = anUpperI - aLowerI + 1;
     NCollection_Array1<double> aCurveKnVals(1, aNbrCurv);
 
     myDegree = 0;
@@ -79,15 +78,15 @@ public:
       myDegree = std::max(myDegree, mySequence(i).Length() - 1);
     }
 
-    double    aDet = 0;
-    PointType aP1, aP2, aP3;
-    const int aMaxDegree = myDegree;
+    double                        aDet = 0;
+    PointType                     aP1, aP2, aP3;
+    const int                     aMaxDegree = myDegree;
     NCollection_Array1<PointType> aPoints(1, myDegree + 1);
 
     for (int i = aLowerI; i <= anUpperI; i++)
     {
       // 1- Raise the Bezier curve to the maximum degree.
-      const int aDeg = mySequence(i).Length() - 1;
+      const int aDeg  = mySequence(i).Length() - 1;
       const int anInc = myDegree - aDeg;
       if (anInc > 0)
       {
@@ -208,8 +207,7 @@ public:
   //! and corresponding multiplicities of the BSpline curve.
   //! @param[out] theKnots array to fill with knots
   //! @param[out] theMults array to fill with multiplicities
-  void KnotsAndMults(NCollection_Array1<double>& theKnots,
-                     NCollection_Array1<int>&    theMults) const
+  void KnotsAndMults(NCollection_Array1<double>& theKnots, NCollection_Array1<int>& theMults) const
   {
     int k = 1;
     for (int i = theKnots.Lower(); i <= theKnots.Upper(); i++)
@@ -225,11 +223,11 @@ public:
 
 private:
   NCollection_Sequence<NCollection_Array1<PointType>> mySequence;
-  NCollection_Sequence<PointType>                                    myCurvePoles;
-  NCollection_Sequence<double>                                       myCurveKnots;
-  NCollection_Sequence<int>                                          myKnotsMults;
-  int                                                                myDegree;
-  double                                                             myAngular;
+  NCollection_Sequence<PointType>                     myCurvePoles;
+  NCollection_Sequence<double>                        myCurveKnots;
+  NCollection_Sequence<int>                           myKnotsMults;
+  int                                                 myDegree;
+  double                                              myAngular;
 };
 
 #endif // _Convert_CompBezierCurvesToBSplineCurveBase_HeaderFile

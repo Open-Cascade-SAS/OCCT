@@ -52,7 +52,7 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 
   int ii;
 
-  double                    R, r, value;
+  double                     R, r, value;
   NCollection_Array1<double> CosNumerator, SinNumerator;
 
   R = E.MajorRadius();
@@ -129,8 +129,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 #endif
   Standard_DomainError_Raise_if((delta > (2 * M_PI + Tol)) || (delta <= 0.0e0),
                                 "Convert_EllipseToBSplineCurve");
-  int                       ii;
-  double                    R, r, value;
+  int                        ii;
+  double                     R, r, value;
   NCollection_Array1<double> CosNumerator, SinNumerator;
 
   R = E.MajorRadius();

@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #include <gtest/gtest.h>
 
 #include <Convert_GridPolynomialToPoles.hxx>
@@ -25,13 +38,21 @@ TEST(Convert_GridPolynomialToPolesTest, SinglePlanarPatch)
   // c_{00} = (0,0,0), c_{10} = (1,0,0), c_{01} = (0,1,0), c_{11} = (0,0,0)
   occ::handle<NCollection_HArray1<double>> aCoeffs = new NCollection_HArray1<double>(1, 12);
   // c_{00}: x=0,y=0,z=0
-  aCoeffs->SetValue(1, 0.0); aCoeffs->SetValue(2, 0.0); aCoeffs->SetValue(3, 0.0);
+  aCoeffs->SetValue(1, 0.0);
+  aCoeffs->SetValue(2, 0.0);
+  aCoeffs->SetValue(3, 0.0);
   // c_{01}: x=0,y=1,z=0
-  aCoeffs->SetValue(4, 0.0); aCoeffs->SetValue(5, 1.0); aCoeffs->SetValue(6, 0.0);
+  aCoeffs->SetValue(4, 0.0);
+  aCoeffs->SetValue(5, 1.0);
+  aCoeffs->SetValue(6, 0.0);
   // c_{10}: x=1,y=0,z=0
-  aCoeffs->SetValue(7, 1.0); aCoeffs->SetValue(8, 0.0); aCoeffs->SetValue(9, 0.0);
+  aCoeffs->SetValue(7, 1.0);
+  aCoeffs->SetValue(8, 0.0);
+  aCoeffs->SetValue(9, 0.0);
   // c_{11}: x=0,y=0,z=0
-  aCoeffs->SetValue(10, 0.0); aCoeffs->SetValue(11, 0.0); aCoeffs->SetValue(12, 0.0);
+  aCoeffs->SetValue(10, 0.0);
+  aCoeffs->SetValue(11, 0.0);
+  aCoeffs->SetValue(12, 0.0);
 
   occ::handle<NCollection_HArray1<double>> aPolyU = new NCollection_HArray1<double>(1, 2);
   aPolyU->SetValue(1, 0.0);

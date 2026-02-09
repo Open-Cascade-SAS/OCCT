@@ -52,7 +52,7 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
 
   int ii;
 
-  double                    R, value;
+  double                     R, value;
   NCollection_Array1<double> CosNumerator, SinNumerator;
 
   R = C.Radius();
@@ -129,8 +129,8 @@ Convert_CircleToBSplineCurve::Convert_CircleToBSplineCurve(
     throw Standard_DomainError("Convert_CircleToBSplineCurve");
   }
 
-  int                       ii;
-  double                    R, value;
+  int                        ii;
+  double                     R, value;
   NCollection_Array1<double> CosNumerator, SinNumerator;
 
   R            = C.Radius();

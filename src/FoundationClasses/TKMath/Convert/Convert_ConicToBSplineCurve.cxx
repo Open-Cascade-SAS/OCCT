@@ -75,8 +75,8 @@ bool Convert_ConicToBSplineCurve::IsPeriodic() const
 
 //==================================================================================================
 
-Standard_DISABLE_DEPRECATION_WARNINGS
-gp_Pnt2d Convert_ConicToBSplineCurve::Pole(const int theIndex) const
+Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt2d
+  Convert_ConicToBSplineCurve::Pole(const int theIndex) const
 {
   if (theIndex < 1 || theIndex > myPoles.Length())
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Pole: Index out of range");
@@ -109,11 +109,13 @@ int Convert_ConicToBSplineCurve::Multiplicity(const int theIndex) const
     throw Standard_OutOfRange("Convert_ConicToBSplineCurve::Multiplicity: Index out of range");
   return myMults(theIndex);
 }
+
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-//==================================================================================================
+  //==================================================================================================
 
-const NCollection_Array1<gp_Pnt2d>& Convert_ConicToBSplineCurve::Poles() const
+  const NCollection_Array1<gp_Pnt2d>&
+        Convert_ConicToBSplineCurve::Poles() const
 {
   return myPoles;
 }
@@ -204,11 +206,11 @@ static void CosAndSinQuasiAngular(double                              Parameter,
   // to safely pass to PLib::NoDerivativeEvalPolynomial.
   Standard_OutOfRange_Raise_if(EvalPoles.Length() != EvalDegree + 1,
                                "CosAndSinQuasiAngular: EvalPoles size mismatch");
-  const int                aNumCoords = (EvalDegree + 1) * 2;
+  const int                  aNumCoords = (EvalDegree + 1) * 2;
   NCollection_Array1<double> aCoeffs(0, aNumCoords - 1);
   for (int i = EvalPoles.Lower(); i <= EvalPoles.Upper(); i++)
   {
-    const int anIdx = (i - EvalPoles.Lower()) * 2;
+    const int anIdx    = (i - EvalPoles.Lower()) * 2;
     aCoeffs(anIdx)     = EvalPoles(i).X();
     aCoeffs(anIdx + 1) = EvalPoles(i).Y();
   }
@@ -372,14 +374,14 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   if (tgt_theta_flag)
   {
 
-    param = UFirst;
+    param           = UFirst;
     CosNumerator(1) = std::cos(UFirst);
     SinNumerator(1) = std::sin(UFirst);
     Denominator(1)  = 1.0e0;
     Knots(1)        = param;
     Mults(1)        = Degree + 1;
-    direct  = std::cos(alpha);
-    inverse = 1.0e0 / direct;
+    direct          = std::cos(alpha);
+    inverse         = 1.0e0 / direct;
     for (ii = 1; ii <= num_spans; ii++)
     {
       CosNumerator(2 * ii)     = inverse * std::cos(param + alpha);
@@ -486,8 +488,8 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
         {
           flat_knots(ii) = 0.0e0;
         }
-        Knots(2) = UFirst + alpha;
-        Mults(2) = Degree - 1;
+        Knots(2)    = UFirst + alpha;
+        Mults(2)    = Degree - 1;
         temp_degree = 2;
         alpha_2     = alpha * 0.5e0;
         alpha_4     = alpha * 0.25e0;
@@ -542,12 +544,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
     Mults(1)         = num_poles;
     Mults(num_knots) = num_poles;
 
-    BuildPolynomialCosAndSin(UFirst,
-                             ULast,
-                             num_poles,
-                             CosNumerator,
-                             SinNumerator,
-                             Denominator);
+    BuildPolynomialCosAndSin(UFirst, ULast, num_poles, CosNumerator, SinNumerator, Denominator);
   }
 }
 
@@ -562,8 +559,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   NCollection_Array1<double>&        Knots,
   NCollection_Array1<int>&           Mults) const
 {
-  double half_pi, param, first_param, last_param,
-    inverse, value1, value2, value3;
+  double half_pi, param, first_param, last_param, inverse, value1, value2, value3;
 
   int ii, jj, index, num_poles, num_periodic_poles, temp_degree, pivot_index_problem,
     num_flat_knots, num_knots;
@@ -572,9 +568,8 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   {
     throw Standard_ConstructionError();
   }
-  NCollection_Array1<double> temp_cos, temp_sin, temp_denominator,
-    temp_knots;
-  NCollection_Array1<int> temp_mults;
+  NCollection_Array1<double> temp_cos, temp_sin, temp_denominator, temp_knots;
+  NCollection_Array1<int>    temp_mults;
   if (Parameterisation == Convert_TgtThetaOver2)
   {
     BuildCosAndSin(Convert_TgtThetaOver2_3,

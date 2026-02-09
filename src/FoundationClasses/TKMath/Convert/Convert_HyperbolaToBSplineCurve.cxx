@@ -40,11 +40,11 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
   double UF = std::min(U1, U2);
   double UL = std::max(U1, U2);
 
-  myIsPeriodic               = false;
-  myKnots(1) = UF;
-  myMults(1) = 3;
-  myKnots(2) = UL;
-  myMults(2) = 3;
+  myIsPeriodic = false;
+  myKnots(1)   = UF;
+  myMults(1)   = 3;
+  myKnots(2)   = UL;
+  myMults(2)   = 3;
 
   // construction of hyperbola in the reference xOy.
 
@@ -63,12 +63,12 @@ Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d
   myWeights(2) = std::cosh((UL - UF) / 2);
   myWeights(3) = 1.;
 
-  double delta               = std::sinh(UL - UF);
-  double x                   = R * (std::sinh(UL) - std::sinh(UF)) / delta;
-  double y                   = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
-  myPoles(1) = gp_Pnt2d(R * std::cosh(UF), S * r * std::sinh(UF));
-  myPoles(2) = gp_Pnt2d(x, y);
-  myPoles(3) = gp_Pnt2d(R * std::cosh(UL), S * r * std::sinh(UL));
+  double delta = std::sinh(UL - UF);
+  double x     = R * (std::sinh(UL) - std::sinh(UF)) / delta;
+  double y     = S * r * (std::cosh(UL) - std::cosh(UF)) / delta;
+  myPoles(1)   = gp_Pnt2d(R * std::cosh(UF), S * r * std::sinh(UF));
+  myPoles(2)   = gp_Pnt2d(x, y);
+  myPoles(3)   = gp_Pnt2d(R * std::cosh(UL), S * r * std::sinh(UL));
 
   // replace the bspline in the mark of the hyperbola
   gp_Trsf2d Trsf;

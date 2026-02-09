@@ -131,7 +131,7 @@ protected:
   NCollection_Array1<double>   myWeights;
   NCollection_Array1<double>   myKnots;
   NCollection_Array1<int>      myMults;
-  int                          myDegree = 0;
+  int                          myDegree     = 0;
   bool                         myIsPeriodic = false;
 };
 

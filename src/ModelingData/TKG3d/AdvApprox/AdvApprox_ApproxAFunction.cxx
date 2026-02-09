@@ -845,14 +845,14 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
     if (AConverter.IsDone())
     {
       const NCollection_Array2<double>& aPoles = AConverter.Poles();
-      myKnots = new NCollection_HArray1<double>(AConverter.Knots());
-      myMults = new NCollection_HArray1<int>(AConverter.Multiplicities());
+      myKnots  = new NCollection_HArray1<double>(AConverter.Knots());
+      myMults  = new NCollection_HArray1<int>(AConverter.Multiplicities());
       myDegree = AConverter.Degree();
       index    = 0;
       if (myNumSubSpaces[0] > 0)
       {
-        my1DPoles = new NCollection_HArray2<double>(1, aPoles.ColLength(), 1, myNumSubSpaces[0]);
-        my1DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
+        my1DPoles    = new NCollection_HArray2<double>(1, aPoles.ColLength(), 1, myNumSubSpaces[0]);
+        my1DMaxError = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
         my1DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[0]);
         for (ii = 1; ii <= aPoles.ColLength(); ii++)
         {
@@ -891,8 +891,7 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
       if (myNumSubSpaces[1] > 0)
       {
         gp_Pnt2d Point2d;
-        my2DPoles =
-          new NCollection_HArray2<gp_Pnt2d>(1, aPoles.ColLength(), 1, myNumSubSpaces[1]);
+        my2DPoles = new NCollection_HArray2<gp_Pnt2d>(1, aPoles.ColLength(), 1, myNumSubSpaces[1]);
         my2DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
         my2DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[1]);
         for (ii = 1; ii <= aPoles.ColLength(); ii++)
@@ -937,8 +936,8 @@ void AdvApprox_ApproxAFunction::Perform(const int                Num1DSS,
       if (myNumSubSpaces[2] > 0)
       {
         gp_Pnt Point;
-        my3DPoles = new NCollection_HArray2<gp_Pnt>(1, aPoles.ColLength(), 1, myNumSubSpaces[2]);
-        my3DMaxError     = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
+        my3DPoles    = new NCollection_HArray2<gp_Pnt>(1, aPoles.ColLength(), 1, myNumSubSpaces[2]);
+        my3DMaxError = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
         my3DAverageError = new NCollection_HArray1<double>(1, myNumSubSpaces[2]);
         for (ii = 1; ii <= aPoles.ColLength(); ii++)
         {

@@ -41,11 +41,11 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&
 
   double p = Prb.Parameter();
 
-  myIsPeriodic               = false;
-  myKnots(1) = UF;
-  myMults(1) = 3;
-  myKnots(2) = UL;
-  myMults(2) = 3;
+  myIsPeriodic = false;
+  myKnots(1)   = UF;
+  myMults(1)   = 3;
+  myKnots(2)   = UL;
+  myMults(2)   = 3;
 
   myWeights(1) = 1.;
   myWeights(2) = 1.;

@@ -183,7 +183,7 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
                                             const NCollection_Array2<double>& PolynomialIntervals,
                                             const NCollection_Array1<double>& TrueIntervals)
 {
-  int    ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem, poles_index,
+  int ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem, poles_index,
     num_poles;
   double normalized_value, *coefficient_array, *poles_array;
 
@@ -278,8 +278,8 @@ const NCollection_Array2<double>& Convert_CompPolynomialToPoles::Poles() const
 
 //==================================================================================================
 
-Standard_DISABLE_DEPRECATION_WARNINGS
-void Convert_CompPolynomialToPoles::Poles(occ::handle<NCollection_HArray2<double>>& P) const
+Standard_DISABLE_DEPRECATION_WARNINGS void Convert_CompPolynomialToPoles::Poles(
+  occ::handle<NCollection_HArray2<double>>& P) const
 {
   if (myDone)
   {
@@ -333,11 +333,13 @@ void Convert_CompPolynomialToPoles::Multiplicities(occ::handle<NCollection_HArra
     M = new NCollection_HArray1<int>(myMults);
   }
 }
+
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-//==================================================================================================
+  //==================================================================================================
 
-bool Convert_CompPolynomialToPoles::IsDone() const
+  bool
+  Convert_CompPolynomialToPoles::IsDone() const
 {
   return myDone;
 }

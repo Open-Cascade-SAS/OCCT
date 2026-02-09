@@ -549,11 +549,11 @@ void AppDef_Variational::Approximate()
                                              IntervallesPtr);
     if (AConverter.IsDone())
     {
-      occ::handle<NCollection_HArray1<int>>    Mults;
-      int                                      NbPoles = AConverter.NbPoles();
+      occ::handle<NCollection_HArray1<int>> Mults;
+      int                                   NbPoles = AConverter.NbPoles();
       //	int Deg=AConverter.Degree();
       NCollection_Array1<AppParCurves_MultiPoint> TabMU(1, NbPoles);
-      const NCollection_Array2<double>& aPoles = AConverter.Poles();
+      const NCollection_Array2<double>&           aPoles = AConverter.Poles();
       myKnots = new NCollection_HArray1<double>(AConverter.Knots());
       Mults   = new NCollection_HArray1<int>(AConverter.Multiplicities());
 

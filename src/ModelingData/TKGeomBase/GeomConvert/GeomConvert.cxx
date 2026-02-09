@@ -62,7 +62,7 @@ static occ::handle<Geom_BSplineCurve> BSplineCurveBuilder(
   const Convert_ConicToBSplineCurve& Convert)
 
 {
-  occ::handle<Geom_BSplineCurve>         TheCurve;
+  occ::handle<Geom_BSplineCurve>      TheCurve;
   const NCollection_Array1<gp_Pnt2d>& aPoles2d = Convert.Poles();
   const NCollection_Array1<double>&   aWeights = Convert.Weights();
   const NCollection_Array1<double>&   aKnots   = Convert.Knots();

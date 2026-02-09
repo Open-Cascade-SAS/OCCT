@@ -136,7 +136,6 @@ private:
                                   NCollection_Array1<double>&       Parameters) const;
 
 private:
-
   NCollection_Array1<double> myUFlatKnots;
   NCollection_Array1<double> myVFlatKnots;
   NCollection_Array1<double> myUKnots;

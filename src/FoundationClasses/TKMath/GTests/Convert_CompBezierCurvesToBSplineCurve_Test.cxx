@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #include <gtest/gtest.h>
 
 #include <Convert_CompBezierCurvesToBSplineCurve.hxx>
@@ -66,9 +79,9 @@ TEST(Convert_CompBezierCurvesToBSplineCurveTest, TwoAdjacentBeziers_C0)
   EXPECT_GE(aConv.Degree(), 1);
   EXPECT_EQ(aConv.NbKnots(), 3);
 
-  NCollection_Array1<gp_Pnt>  aResPoles(1, aConv.NbPoles());
-  NCollection_Array1<double>  aKnots(1, aConv.NbKnots());
-  NCollection_Array1<int>     aMults(1, aConv.NbKnots());
+  NCollection_Array1<gp_Pnt> aResPoles(1, aConv.NbPoles());
+  NCollection_Array1<double> aKnots(1, aConv.NbKnots());
+  NCollection_Array1<int>    aMults(1, aConv.NbKnots());
   aConv.Poles(aResPoles);
   aConv.KnotsAndMults(aKnots, aMults);
 
@@ -102,7 +115,7 @@ TEST(Convert_CompBezierCurvesToBSplineCurveTest, TwoAdjacentBeziers_C1)
   EXPECT_EQ(aConv.NbKnots(), 3);
 
   // Check that junction has multiplicity Degree-1 (C1)
-  NCollection_Array1<int> aMults(1, aConv.NbKnots());
+  NCollection_Array1<int>    aMults(1, aConv.NbKnots());
   NCollection_Array1<double> aKnots(1, aConv.NbKnots());
   aConv.KnotsAndMults(aKnots, aMults);
   EXPECT_EQ(aMults(2), aConv.Degree() - 1);
@@ -177,7 +190,7 @@ TEST(Convert_CompBezierCurves2dToBSplineCurve2dTest, TwoAdjacent2d_C1)
   EXPECT_EQ(aConv.Degree(), 3);
   EXPECT_EQ(aConv.NbKnots(), 3);
 
-  NCollection_Array1<int> aMults(1, aConv.NbKnots());
+  NCollection_Array1<int>    aMults(1, aConv.NbKnots());
   NCollection_Array1<double> aKnots(1, aConv.NbKnots());
   aConv.KnotsAndMults(aKnots, aMults);
   EXPECT_EQ(aMults(2), aConv.Degree() - 1);

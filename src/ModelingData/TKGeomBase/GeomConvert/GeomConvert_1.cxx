@@ -49,7 +49,6 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
-
 typedef Geom_Surface        Surface;
 typedef Geom_BSplineSurface BSplineSurface;
 

@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #include <gtest/gtest.h>
 
 #include <BSplSLib.hxx>
@@ -36,8 +49,8 @@ TEST(Convert_SphereToBSplineSurfaceTest, FullSphere)
 TEST(Convert_SphereToBSplineSurfaceTest, TrimmedUV)
 {
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 3.0);
-  const double aU1 = 0.0, aU2 = M_PI;
-  const double aV1 = -M_PI / 4.0, aV2 = M_PI / 4.0;
+  const double    aU1 = 0.0, aU2 = M_PI;
+  const double    aV1 = -M_PI / 4.0, aV2 = M_PI / 4.0;
   const Convert_SphereToBSplineSurface aConv(aSphere, aU1, aU2, aV1, aV2);
 
   EXPECT_FALSE(aConv.IsUPeriodic());
@@ -81,17 +94,17 @@ TEST(Convert_SphereToBSplineSurfaceTest, KnotsAreMonotonic)
 
 TEST(Convert_SphereToBSplineSurfaceTest, GeometricVerification)
 {
-  const double aRadius = 5.0;
-  const gp_Ax3 anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const double    aRadius = 5.0;
+  const gp_Ax3    anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   const gp_Sphere aSphere(anAx3, aRadius);
   // Use trimmed sphere to avoid degenerate poles
   const Convert_SphereToBSplineSurface aConv(aSphere, 0.0, M_PI, -M_PI / 4.0, M_PI / 4.0);
 
-  const double aTol = 1.0e-10;
-  const NCollection_Array1<double>& aUK = aConv.UKnots();
-  const NCollection_Array1<double>& aVK = aConv.VKnots();
-  const double aUMin = aUK(aUK.Lower()), aUMax = aUK(aUK.Upper());
-  const double aVMin = aVK(aVK.Lower()), aVMax = aVK(aVK.Upper());
+  const double                      aTol  = 1.0e-10;
+  const NCollection_Array1<double>& aUK   = aConv.UKnots();
+  const NCollection_Array1<double>& aVK   = aConv.VKnots();
+  const double                      aUMin = aUK(aUK.Lower()), aUMax = aUK(aUK.Upper());
+  const double                      aVMin = aVK(aVK.Lower()), aVMax = aVK(aVK.Upper());
 
   for (int i = 0; i <= 4; ++i)
   {
@@ -101,12 +114,23 @@ TEST(Convert_SphereToBSplineSurfaceTest, GeometricVerification)
       const double aV = aVMin + j * (aVMax - aVMin) / 4.0;
 
       gp_Pnt aPnt;
-      BSplSLib::D0(aU, aV, 0, 0,
-                   aConv.Poles(), &aConv.Weights(),
-                   aConv.UKnots(), aConv.VKnots(),
-                   &aConv.UMultiplicities(), &aConv.VMultiplicities(),
-                   aConv.UDegree(), aConv.VDegree(),
-                   true, true, false, false, aPnt);
+      BSplSLib::D0(aU,
+                   aV,
+                   0,
+                   0,
+                   aConv.Poles(),
+                   &aConv.Weights(),
+                   aConv.UKnots(),
+                   aConv.VKnots(),
+                   &aConv.UMultiplicities(),
+                   &aConv.VMultiplicities(),
+                   aConv.UDegree(),
+                   aConv.VDegree(),
+                   true,
+                   true,
+                   false,
+                   false,
+                   aPnt);
 
       // Verify the point lies on the sphere: x^2 + y^2 + z^2 = R^2
       const double aDistFromOrigin = aPnt.Distance(gp_Pnt(0.0, 0.0, 0.0));

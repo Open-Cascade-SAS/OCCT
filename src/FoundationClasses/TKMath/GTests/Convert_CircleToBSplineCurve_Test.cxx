@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #include <gtest/gtest.h>
 
 #include <Convert_CircleToBSplineCurve.hxx>
@@ -9,7 +22,7 @@
 
 TEST(Convert_CircleToBSplineCurveTest, FullCircle_TgtThetaOver2)
 {
-  const gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  const gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
   const Convert_CircleToBSplineCurve aConv(aCirc, Convert_TgtThetaOver2);
 
   EXPECT_EQ(aConv.Degree(), 2);
@@ -34,7 +47,7 @@ TEST(Convert_CircleToBSplineCurveTest, FullCircle_TgtThetaOver2)
 
 TEST(Convert_CircleToBSplineCurveTest, FullCircle_RationalC1)
 {
-  const gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0)), 3.0);
+  const gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0)), 3.0);
   const Convert_CircleToBSplineCurve aConv(aCirc, Convert_RationalC1);
 
   EXPECT_TRUE(aConv.IsPeriodic());
@@ -57,9 +70,9 @@ TEST(Convert_CircleToBSplineCurveTest, FullCircle_RationalC1)
 
 TEST(Convert_CircleToBSplineCurveTest, Arc_TgtThetaOver2)
 {
-  const gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0);
-  const double aU1 = M_PI / 6.0;
-  const double aU2 = 5.0 * M_PI / 3.0;
+  const gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0);
+  const double                       aU1 = M_PI / 6.0;
+  const double                       aU2 = 5.0 * M_PI / 3.0;
   const Convert_CircleToBSplineCurve aConv(aCirc, aU1, aU2, Convert_TgtThetaOver2);
 
   EXPECT_FALSE(aConv.IsPeriodic());
@@ -67,11 +80,11 @@ TEST(Convert_CircleToBSplineCurveTest, Arc_TgtThetaOver2)
   EXPECT_GT(aConv.NbPoles(), 0);
 
   // Verify first pole matches conic point at U1
-  const NCollection_Array1<gp_Pnt2d>& aPoles = aConv.Poles();
-  const double                         aR     = aCirc.Radius();
-  const gp_Pnt2d                       aCenter = aCirc.Location();
-  const gp_Dir2d                       aXDir   = aCirc.XAxis().Direction();
-  const gp_Dir2d                       aYDir   = aCirc.YAxis().Direction();
+  const NCollection_Array1<gp_Pnt2d>& aPoles  = aConv.Poles();
+  const double                        aR      = aCirc.Radius();
+  const gp_Pnt2d                      aCenter = aCirc.Location();
+  const gp_Dir2d                      aXDir   = aCirc.XAxis().Direction();
+  const gp_Dir2d                      aYDir   = aCirc.YAxis().Direction();
 
   const double aFirstX = aCenter.X() + aR * (std::cos(aU1) * aXDir.X() + std::sin(aU1) * aYDir.X());
   const double aFirstY = aCenter.Y() + aR * (std::cos(aU1) * aXDir.Y() + std::sin(aU1) * aYDir.Y());
@@ -101,9 +114,9 @@ TEST(Convert_CircleToBSplineCurveTest, Arc_TgtThetaOver2)
 
 TEST(Convert_CircleToBSplineCurveTest, Arc_QuasiAngular)
 {
-  const gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0);
-  const double aU1 = 0.0;
-  const double aU2 = M_PI;
+  const gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0);
+  const double                       aU1 = 0.0;
+  const double                       aU2 = M_PI;
   const Convert_CircleToBSplineCurve aConv(aCirc, aU1, aU2, Convert_QuasiAngular);
 
   EXPECT_FALSE(aConv.IsPeriodic());
@@ -127,9 +140,9 @@ TEST(Convert_CircleToBSplineCurveTest, Arc_QuasiAngular)
 
 TEST(Convert_CircleToBSplineCurveTest, Arc_Polynomial)
 {
-  const gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0);
-  const double aU1 = 0.0;
-  const double aU2 = M_PI * 0.5;
+  const gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0);
+  const double                       aU1 = 0.0;
+  const double                       aU2 = M_PI * 0.5;
   const Convert_CircleToBSplineCurve aConv(aCirc, aU1, aU2, Convert_Polynomial);
 
   EXPECT_FALSE(aConv.IsPeriodic());
@@ -139,7 +152,7 @@ TEST(Convert_CircleToBSplineCurveTest, Arc_Polynomial)
 
 TEST(Convert_CircleToBSplineCurveTest, WeightsArePositive)
 {
-  const gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0);
+  const gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1.0);
   const Convert_CircleToBSplineCurve aConv(aCirc, Convert_TgtThetaOver2);
 
   const NCollection_Array1<double>& aWeights = aConv.Weights();

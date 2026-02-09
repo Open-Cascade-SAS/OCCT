@@ -126,20 +126,20 @@ protected:
   Standard_EXPORT void Finalize();
 
 protected:
-  NCollection_Array2<gp_Pnt>  myPoles;
-  NCollection_Array2<double>  myWeights;
-  NCollection_Array1<double>  myUKnots;
-  NCollection_Array1<double>  myVKnots;
-  NCollection_Array1<int>     myUMults;
-  NCollection_Array1<int>     myVMults;
-  int                         myUDegree = 0;
-  int                         myVDegree = 0;
-  bool                        myIsUPeriodic = false;
-  bool                        myIsVPeriodic = false;
-  int                         myNbUPoles;
-  int                         myNbVPoles;
-  int                         myNbUKnots;
-  int                         myNbVKnots;
+  NCollection_Array2<gp_Pnt> myPoles;
+  NCollection_Array2<double> myWeights;
+  NCollection_Array1<double> myUKnots;
+  NCollection_Array1<double> myVKnots;
+  NCollection_Array1<int>    myUMults;
+  NCollection_Array1<int>    myVMults;
+  int                        myUDegree     = 0;
+  int                        myVDegree     = 0;
+  bool                       myIsUPeriodic = false;
+  bool                       myIsVPeriodic = false;
+  int                        myNbUPoles;
+  int                        myNbVPoles;
+  int                        myNbUKnots;
+  int                        myNbVKnots;
 };
 
 #endif // _Convert_ElementarySurfaceToBSplineSurface_HeaderFile

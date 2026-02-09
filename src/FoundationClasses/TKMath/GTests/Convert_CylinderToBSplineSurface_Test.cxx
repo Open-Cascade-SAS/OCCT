@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #include <gtest/gtest.h>
 
 #include <BSplSLib.hxx>
@@ -24,8 +37,8 @@ TEST(Convert_CylinderToBSplineSurfaceTest, FullCylinder)
 TEST(Convert_CylinderToBSplineSurfaceTest, TrimmedCylinder)
 {
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 2.0);
-  const double aU1 = 0.0, aU2 = M_PI;
-  const double aV1 = -5.0, aV2 = 5.0;
+  const double      aU1 = 0.0, aU2 = M_PI;
+  const double      aV1 = -5.0, aV2 = 5.0;
   const Convert_CylinderToBSplineSurface aConv(aCyl, aU1, aU2, aV1, aV2);
 
   EXPECT_FALSE(aConv.IsUPeriodic());
@@ -68,18 +81,18 @@ TEST(Convert_CylinderToBSplineSurfaceTest, KnotsAreMonotonic)
 
 TEST(Convert_CylinderToBSplineSurfaceTest, GeometricVerification)
 {
-  const double aRadius = 3.0;
-  const double aV1 = -5.0, aV2 = 5.0;
-  const gp_Ax3 anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  const gp_Cylinder aCyl(anAx3, aRadius);
+  const double                           aRadius = 3.0;
+  const double                           aV1 = -5.0, aV2 = 5.0;
+  const gp_Ax3                           anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  const gp_Cylinder                      aCyl(anAx3, aRadius);
   const Convert_CylinderToBSplineSurface aConv(aCyl, 0.0, M_PI, aV1, aV2);
 
   const double aTol = 1.0e-10;
   // Sample 5x5 grid of BSpline parameters within the domain
-  const NCollection_Array1<double>& aUK = aConv.UKnots();
-  const NCollection_Array1<double>& aVK = aConv.VKnots();
-  const double aUMin = aUK(aUK.Lower()), aUMax = aUK(aUK.Upper());
-  const double aVMin = aVK(aVK.Lower()), aVMax = aVK(aVK.Upper());
+  const NCollection_Array1<double>& aUK   = aConv.UKnots();
+  const NCollection_Array1<double>& aVK   = aConv.VKnots();
+  const double                      aUMin = aUK(aUK.Lower()), aUMax = aUK(aUK.Upper());
+  const double                      aVMin = aVK(aVK.Lower()), aVMax = aVK(aVK.Upper());
 
   for (int i = 0; i <= 4; ++i)
   {
@@ -89,12 +102,23 @@ TEST(Convert_CylinderToBSplineSurfaceTest, GeometricVerification)
       const double aV = aVMin + j * (aVMax - aVMin) / 4.0;
 
       gp_Pnt aPnt;
-      BSplSLib::D0(aU, aV, 0, 0,
-                   aConv.Poles(), &aConv.Weights(),
-                   aConv.UKnots(), aConv.VKnots(),
-                   &aConv.UMultiplicities(), &aConv.VMultiplicities(),
-                   aConv.UDegree(), aConv.VDegree(),
-                   true, false, false, false, aPnt);
+      BSplSLib::D0(aU,
+                   aV,
+                   0,
+                   0,
+                   aConv.Poles(),
+                   &aConv.Weights(),
+                   aConv.UKnots(),
+                   aConv.VKnots(),
+                   &aConv.UMultiplicities(),
+                   &aConv.VMultiplicities(),
+                   aConv.UDegree(),
+                   aConv.VDegree(),
+                   true,
+                   false,
+                   false,
+                   false,
+                   aPnt);
 
       // Verify the point lies on the cylinder: distance from Z axis = R
       const double aDistFromAxis = std::sqrt(aPnt.X() * aPnt.X() + aPnt.Y() * aPnt.Y());

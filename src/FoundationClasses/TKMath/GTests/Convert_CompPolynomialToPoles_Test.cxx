@@ -1,3 +1,16 @@
+// Copyright (c) 2026 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
 #include <gtest/gtest.h>
 
 #include <Convert_CompPolynomialToPoles.hxx>
@@ -10,9 +23,9 @@ TEST(Convert_CompPolynomialToPolesTest, SingleLinearPolynomial)
 {
   // Convert f(x) = 2*x + 1 on [-1,1] to BSpline
   // Polynomial domain [-1,1], True interval [-1,1]
-  const int aDim = 1;
+  const int aDim    = 1;
   const int aMaxDeg = 1;
-  const int aDeg = 1;
+  const int aDeg    = 1;
 
   NCollection_Array1<double> aCoeffs(1, 2);
   aCoeffs(1) = 1.0; // constant term
@@ -37,9 +50,9 @@ TEST(Convert_CompPolynomialToPolesTest, SingleLinearPolynomial)
 TEST(Convert_CompPolynomialToPolesTest, SingleQuadraticPolynomial)
 {
   // Convert f(x) = x^2 on [0,1] to BSpline
-  const int aDim = 1;
+  const int aDim    = 1;
   const int aMaxDeg = 2;
-  const int aDeg = 2;
+  const int aDeg    = 2;
 
   NCollection_Array1<double> aCoeffs(1, 3);
   aCoeffs(1) = 0.0; // x^0
@@ -63,10 +76,10 @@ TEST(Convert_CompPolynomialToPolesTest, SingleQuadraticPolynomial)
 TEST(Convert_CompPolynomialToPolesTest, TwoSpansUniformContinuity)
 {
   // Two linear polynomials with C0 continuity
-  const int aNumCurves = 2;
+  const int aNumCurves  = 2;
   const int aContinuity = 0;
-  const int aDim = 1;
-  const int aMaxDeg = 1;
+  const int aDim        = 1;
+  const int aMaxDeg     = 1;
 
   occ::handle<NCollection_HArray1<int>> aNumCoeff = new NCollection_HArray1<int>(1, 2);
   aNumCoeff->SetValue(1, 2); // linear = 2 coefficients
@@ -79,7 +92,8 @@ TEST(Convert_CompPolynomialToPolesTest, TwoSpansUniformContinuity)
   aCoeffs->SetValue(3, 1.0);
   aCoeffs->SetValue(4, -1.0);
 
-  occ::handle<NCollection_HArray2<double>> aPolyIntervals = new NCollection_HArray2<double>(1, 2, 1, 2);
+  occ::handle<NCollection_HArray2<double>> aPolyIntervals =
+    new NCollection_HArray2<double>(1, 2, 1, 2);
   aPolyIntervals->SetValue(1, 1, 0.0);
   aPolyIntervals->SetValue(1, 2, 1.0);
   aPolyIntervals->SetValue(2, 1, 0.0);
@@ -90,8 +104,14 @@ TEST(Convert_CompPolynomialToPolesTest, TwoSpansUniformContinuity)
   aTrueIntervals->SetValue(2, 0.5);
   aTrueIntervals->SetValue(3, 1.0);
 
-  Convert_CompPolynomialToPoles aConv(aNumCurves, aContinuity, aDim, aMaxDeg,
-                                      aNumCoeff, aCoeffs, aPolyIntervals, aTrueIntervals);
+  Convert_CompPolynomialToPoles aConv(aNumCurves,
+                                      aContinuity,
+                                      aDim,
+                                      aMaxDeg,
+                                      aNumCoeff,
+                                      aCoeffs,
+                                      aPolyIntervals,
+                                      aTrueIntervals);
 
   EXPECT_TRUE(aConv.IsDone());
   EXPECT_EQ(aConv.Degree(), 1);
@@ -101,14 +121,18 @@ TEST(Convert_CompPolynomialToPolesTest, TwoSpansUniformContinuity)
 TEST(Convert_CompPolynomialToPolesTest, ThreeDimensional)
 {
   // 3D linear curve
-  const int aDim = 3;
+  const int aDim    = 3;
   const int aMaxDeg = 1;
-  const int aDeg = 1;
+  const int aDeg    = 1;
 
   // Coefficients for 3D: [x0, y0, z0, x1, y1, z1]
   NCollection_Array1<double> aCoeffs(1, 6);
-  aCoeffs(1) = 0.0; aCoeffs(2) = 0.0; aCoeffs(3) = 0.0; // constant
-  aCoeffs(4) = 1.0; aCoeffs(5) = 2.0; aCoeffs(6) = 3.0; // linear
+  aCoeffs(1) = 0.0;
+  aCoeffs(2) = 0.0;
+  aCoeffs(3) = 0.0; // constant
+  aCoeffs(4) = 1.0;
+  aCoeffs(5) = 2.0;
+  aCoeffs(6) = 3.0; // linear
 
   NCollection_Array1<double> aPolyIntervals(1, 2);
   aPolyIntervals(1) = 0.0;

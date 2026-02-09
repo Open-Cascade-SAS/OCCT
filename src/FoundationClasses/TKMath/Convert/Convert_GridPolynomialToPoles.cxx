@@ -162,7 +162,7 @@ void Convert_GridPolynomialToPoles::Perform(
   double NValue, UValue, VValue;
   int    dimension = 3 * (myVDegree + 1);
   int    SizPatch  = 3 * (MaxUDegree + 1) * (MaxVDegree + 1);
-  myPoles = NCollection_Array2<gp_Pnt>(1, UParameters.Length(), 1, VParameters.Length());
+  myPoles          = NCollection_Array2<gp_Pnt>(1, UParameters.Length(), 1, VParameters.Length());
 
   NCollection_Array1<double> Patch(1, (myUDegree + 1) * dimension);
   NCollection_Array1<double> Point(1, 3);

@@ -131,8 +131,8 @@ bool Convert_ElementarySurfaceToBSplineSurface::IsVPeriodic() const
 
 //==================================================================================================
 
-Standard_DISABLE_DEPRECATION_WARNINGS
-gp_Pnt Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex, const int VIndex) const
+Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt
+  Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex, const int VIndex) const
 {
   Standard_OutOfRange_Raise_if(
     UIndex < 1 || UIndex > myNbUPoles || VIndex < 1 || VIndex > myNbVPoles,
@@ -189,11 +189,13 @@ int Convert_ElementarySurfaceToBSplineSurface::VMultiplicity(const int VIndex) c
     "Convert_ElementarySurfaceToBSplineSurface::VMultiplicity: Index out of range");
   return myVMults(VIndex);
 }
+
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-//==================================================================================================
+  //==================================================================================================
 
-const NCollection_Array2<gp_Pnt>& Convert_ElementarySurfaceToBSplineSurface::Poles() const
+  const NCollection_Array2<gp_Pnt>&
+        Convert_ElementarySurfaceToBSplineSurface::Poles() const
 {
   return myPoles;
 }
