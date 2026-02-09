@@ -65,7 +65,7 @@ void StdPrs_WFPoleSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentat
   {
     if (SType == GeomAbs_BezierSurface)
     {
-      occ::handle<Geom_BezierSurface>  B = aSurface.Bezier();
+      occ::handle<Geom_BezierSurface>   B = aSurface.Bezier();
       const NCollection_Array2<gp_Pnt>& A = B->Poles();
       AddPoles(aPresentation, A, aDrawer);
     }

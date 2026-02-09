@@ -188,8 +188,8 @@ public:
         return;
       }
       case GeomAbs_BSplineCurve: {
-        const int aFirstIdx = TheCurveTool::BSpline(aCurve)->FirstUKnotIndex(),
-                  aLastIdx  = TheCurveTool::BSpline(aCurve)->LastUKnotIndex();
+        const int aFirstIdx                      = TheCurveTool::BSpline(aCurve)->FirstUKnotIndex(),
+                  aLastIdx                       = TheCurveTool::BSpline(aCurve)->LastUKnotIndex();
         const NCollection_Array1<double>& aKnots = TheCurveTool::BSpline(aCurve)->Knots();
 
         double       aPeriodJump = 0.0;

@@ -401,7 +401,7 @@ void Extrema_GenExtPS::GetGridPoints(const Adaptor3d_Surface& theSurf)
       if (!aBspl.IsNull())
       {
         anArrKnots = new NCollection_HArray1<double>(aBspl->Knots());
-        aDegree = aBspl->Degree();
+        aDegree    = aBspl->Degree();
       }
     }
     if (theSurf.BasisCurve()->GetType() == GeomAbs_BezierCurve)

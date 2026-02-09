@@ -4635,18 +4635,19 @@ const double& BSplCLib::FlatBezierKnots(const int Degree)
 
 namespace
 {
-  struct UnitWeightsArray
-  {
-    double Data[2049];
-    constexpr UnitWeightsArray()
-        : Data{}
-    {
-      for (int i = 0; i < 2049; ++i)
-        Data[i] = 1.0;
-    }
-  };
+struct UnitWeightsArray
+{
+  double Data[2049];
 
-  static constexpr UnitWeightsArray THE_UNIT_WEIGHTS{};
+  constexpr UnitWeightsArray()
+      : Data{}
+  {
+    for (int i = 0; i < 2049; ++i)
+      Data[i] = 1.0;
+  }
+};
+
+static constexpr UnitWeightsArray THE_UNIT_WEIGHTS{};
 } // namespace
 
 NCollection_Array1<double> BSplCLib::UnitWeights(const int theNbElems)

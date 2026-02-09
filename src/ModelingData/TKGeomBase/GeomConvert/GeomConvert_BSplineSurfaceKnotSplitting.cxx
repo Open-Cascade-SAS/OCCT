@@ -54,7 +54,7 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   else
   {
     const Array1OfInteger& UMults = BasisSurface->UMultiplicities();
-    int Mmax = BSplCLib::MaxKnotMult(UMults, FirstUIndex, LastUIndex);
+    int                    Mmax   = BSplCLib::MaxKnotMult(UMults, FirstUIndex, LastUIndex);
     if (UDegree - Mmax >= UContinuityRange)
     {
       usplitIndexes = new HArray1OfInteger(1, 2);
@@ -96,7 +96,7 @@ GeomConvert_BSplineSurfaceKnotSplitting::GeomConvert_BSplineSurfaceKnotSplitting
   else
   {
     const Array1OfInteger& VMults = BasisSurface->VMultiplicities();
-    int Mmax = BSplCLib::MaxKnotMult(VMults, FirstVIndex, LastVIndex);
+    int                    Mmax   = BSplCLib::MaxKnotMult(VMults, FirstVIndex, LastVIndex);
     if (VDegree - Mmax >= VContinuityRange)
     {
       usplitIndexes = new HArray1OfInteger(1, 2);

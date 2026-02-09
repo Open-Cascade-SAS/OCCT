@@ -707,10 +707,10 @@ TEST_F(Geom_BezierSurface_Test, WeightsArray_Rational_ReturnsOwning)
 {
   NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   NCollection_Array2<double> aWeightsIn(1, 2, 1, 2);
-  aPoles(1, 1)   = gp_Pnt(0, 0, 0);
-  aPoles(1, 2)   = gp_Pnt(1, 0, 0);
-  aPoles(2, 1)   = gp_Pnt(0, 1, 0);
-  aPoles(2, 2)   = gp_Pnt(1, 1, 0);
+  aPoles(1, 1)     = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)     = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)     = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)     = gp_Pnt(1, 1, 0);
   aWeightsIn(1, 1) = 1.0;
   aWeightsIn(1, 2) = 2.0;
   aWeightsIn(2, 1) = 1.0;

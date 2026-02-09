@@ -359,10 +359,10 @@ static void DeleteRatPoleRow(const NCollection_Array2<gp_Pnt>& Poles,
 
 Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
     : myPoles(theOther.myPoles),
-      myWeights((theOther.myURational || theOther.myVRational)
-                  ? NCollection_Array2<double>(theOther.myWeights)
-                  : BSplSLib::UnitWeights(theOther.myPoles.ColLength(),
-                                          theOther.myPoles.RowLength())),
+      myWeights(
+        (theOther.myURational || theOther.myVRational)
+          ? NCollection_Array2<double>(theOther.myWeights)
+          : BSplSLib::UnitWeights(theOther.myPoles.ColLength(), theOther.myPoles.RowLength())),
       myURational(theOther.myURational),
       myVRational(theOther.myVRational),
       myUMaxDerivInv(theOther.myUMaxDerivInv),

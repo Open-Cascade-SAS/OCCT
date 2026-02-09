@@ -47,11 +47,11 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
   seqBS = new NCollection_HSequence<occ::handle<Geom_BoundedCurve>>;
   BS->SetNotPeriodic(); // to have equation NbPoles = NbKnots with Multiplicities - degree - 1
 
-  int                              deg = BS->Degree();
-  const NCollection_Array1<gp_Pnt>& Poles = BS->Poles();
-  const NCollection_Array1<double>& Weights = BS->WeightsArray();
-  const NCollection_Array1<double>& Knots       = BS->Knots();
-  const NCollection_Array1<int>&    Mults       = BS->Multiplicities();
+  int                               deg          = BS->Degree();
+  const NCollection_Array1<gp_Pnt>& Poles        = BS->Poles();
+  const NCollection_Array1<double>& Weights      = BS->WeightsArray();
+  const NCollection_Array1<double>& Knots        = BS->Knots();
+  const NCollection_Array1<int>&    Mults        = BS->Multiplicities();
   const NCollection_Array1<double>& KnotSequence = BS->KnotSequence();
 
   int StartKnotIndex, EndKnotIndex, j;
@@ -119,12 +119,12 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
 
 static occ::handle<Geom_BSplineCurve> BSplineCurve2dTo3d(const occ::handle<Geom2d_BSplineCurve>& BS)
 {
-  int                                deg     = BS->Degree();
-  int                                NbPoles = BS->NbPoles();
+  int                                 deg     = BS->Degree();
+  int                                 NbPoles = BS->NbPoles();
   const NCollection_Array1<gp_Pnt2d>& Poles2d = BS->Poles();
-  const NCollection_Array1<double>&  Weights = BS->WeightsArray();
-  const NCollection_Array1<double>& Knots = BS->Knots();
-  const NCollection_Array1<int>&    Mults = BS->Multiplicities();
+  const NCollection_Array1<double>&   Weights = BS->WeightsArray();
+  const NCollection_Array1<double>&   Knots   = BS->Knots();
+  const NCollection_Array1<int>&      Mults   = BS->Multiplicities();
 
   NCollection_Array1<gp_Pnt> Poles3d(1, NbPoles);
   for (int i = 1; i <= NbPoles; i++)
@@ -137,12 +137,12 @@ static occ::handle<Geom_BSplineCurve> BSplineCurve2dTo3d(const occ::handle<Geom2
 
 static occ::handle<Geom2d_BSplineCurve> BSplineCurve3dTo2d(const occ::handle<Geom_BSplineCurve>& BS)
 {
-  int                              deg     = BS->Degree();
-  int                              NbPoles = BS->NbPoles();
+  int                               deg     = BS->Degree();
+  int                               NbPoles = BS->NbPoles();
   const NCollection_Array1<gp_Pnt>& Poles3d = BS->Poles();
   const NCollection_Array1<double>& Weights = BS->WeightsArray();
-  const NCollection_Array1<double>& Knots = BS->Knots();
-  const NCollection_Array1<int>&    Mults = BS->Multiplicities();
+  const NCollection_Array1<double>& Knots   = BS->Knots();
+  const NCollection_Array1<int>&    Mults   = BS->Multiplicities();
 
   NCollection_Array1<gp_Pnt2d> Poles2d(1, NbPoles);
   for (int i = 1; i <= NbPoles; i++)

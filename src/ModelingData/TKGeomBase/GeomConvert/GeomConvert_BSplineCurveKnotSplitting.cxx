@@ -48,7 +48,7 @@ GeomConvert_BSplineCurveKnotSplitting::GeomConvert_BSplineCurveKnotSplitting(
   else
   {
     const Array1OfInteger& Mults = BasisCurve->Multiplicities();
-    int Mmax = BSplCLib::MaxKnotMult(Mults, FirstIndex, LastIndex);
+    int                    Mmax  = BSplCLib::MaxKnotMult(Mults, FirstIndex, LastIndex);
     if (Degree - Mmax >= ContinuityRange)
     {
       splitIndexes = new HArray1OfInteger(1, 2);

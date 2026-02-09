@@ -520,7 +520,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
 
       // Poles of meridian = Vpoles
       NbVPoles = C->NbPoles();
-      NCollection_Array1<gp_Pnt>       Poles(C->Poles());
+      NCollection_Array1<gp_Pnt>        Poles(C->Poles());
       const NCollection_Array1<double>& Weights = C->WeightsArray();
 
       double AlfaU;
@@ -621,7 +621,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       NCollection_Array2<double>        Weights(1, C->NbPoles(), 1, 2);
       const NCollection_Array1<double>& UKnots = C->Knots();
       const NCollection_Array1<int>&    UMults = C->Multiplicities();
-      NCollection_Array1<double> VKnots(1, 2);
+      NCollection_Array1<double>        VKnots(1, 2);
       VKnots(1) = VFirst;
       VKnots(2) = VLast;
       NCollection_Array1<int> VMults(1, 2);
@@ -654,26 +654,32 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       occ::handle<Geom_BezierSurface> SBez = occ::down_cast<Geom_BezierSurface>(Surf->Copy());
 
       SBez->Segment(U1, U2, V1, V2);
-      int UDegree = SBez->UDegree();
-      int VDegree = SBez->VDegree();
+      int                        UDegree = SBez->UDegree();
+      int                        VDegree = SBez->VDegree();
       NCollection_Array1<double> UKnots(1, 2);
       NCollection_Array1<int>    UMults(1, 2);
       NCollection_Array1<double> VKnots(1, 2);
       NCollection_Array1<int>    VMults(1, 2);
-      UKnots(1) = 0.0;
-      UKnots(2) = 1.0;
-      UMults(1) = UDegree + 1;
-      UMults(2) = UDegree + 1;
-      VKnots(1) = 0.0;
-      VKnots(2) = 1.0;
-      VMults(1) = VDegree + 1;
-      VMults(2) = VDegree + 1;
-      const NCollection_Array2<gp_Pnt>&    aPoles      = SBez->Poles();
+      UKnots(1)                                     = 0.0;
+      UKnots(2)                                     = 1.0;
+      UMults(1)                                     = UDegree + 1;
+      UMults(2)                                     = UDegree + 1;
+      VKnots(1)                                     = 0.0;
+      VKnots(2)                                     = 1.0;
+      VMults(1)                                     = VDegree + 1;
+      VMults(2)                                     = VDegree + 1;
+      const NCollection_Array2<gp_Pnt>& aPoles      = SBez->Poles();
       const NCollection_Array2<double>* aWeightsPtr = SBez->Weights();
       if (aWeightsPtr != nullptr)
       {
-        TheSurface =
-          new Geom_BSplineSurface(aPoles, *aWeightsPtr, UKnots, VKnots, UMults, VMults, UDegree, VDegree);
+        TheSurface = new Geom_BSplineSurface(aPoles,
+                                             *aWeightsPtr,
+                                             UKnots,
+                                             VKnots,
+                                             UMults,
+                                             VMults,
+                                             UDegree,
+                                             VDegree);
       }
       else
       {
@@ -760,7 +766,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
 
       // Poles of meridian = Vpoles
       NbVPoles = C->NbPoles();
-      NCollection_Array1<gp_Pnt>       Poles(C->Poles());
+      NCollection_Array1<gp_Pnt>        Poles(C->Poles());
       const NCollection_Array1<double>& Weights = C->WeightsArray();
 
       double AlfaU;
@@ -830,26 +836,32 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
 
       occ::handle<Geom_BezierSurface> SBez = occ::down_cast<Geom_BezierSurface>(S);
 
-      int UDegree = SBez->UDegree();
-      int VDegree = SBez->VDegree();
+      int                        UDegree = SBez->UDegree();
+      int                        VDegree = SBez->VDegree();
       NCollection_Array1<double> UKnots(1, 2);
       NCollection_Array1<int>    UMults(1, 2);
       NCollection_Array1<double> VKnots(1, 2);
       NCollection_Array1<int>    VMults(1, 2);
-      UKnots(1) = 0.0;
-      UKnots(2) = 1.0;
-      UMults(1) = UDegree + 1;
-      UMults(2) = UDegree + 1;
-      VKnots(1) = 0.0;
-      VKnots(2) = 1.0;
-      VMults(1) = VDegree + 1;
-      VMults(2) = VDegree + 1;
-      const NCollection_Array2<gp_Pnt>&    aPoles      = SBez->Poles();
+      UKnots(1)                                     = 0.0;
+      UKnots(2)                                     = 1.0;
+      UMults(1)                                     = UDegree + 1;
+      UMults(2)                                     = UDegree + 1;
+      VKnots(1)                                     = 0.0;
+      VKnots(2)                                     = 1.0;
+      VMults(1)                                     = VDegree + 1;
+      VMults(2)                                     = VDegree + 1;
+      const NCollection_Array2<gp_Pnt>& aPoles      = SBez->Poles();
       const NCollection_Array2<double>* aWeightsPtr = SBez->Weights();
       if (aWeightsPtr != nullptr)
       {
-        TheSurface =
-          new Geom_BSplineSurface(aPoles, *aWeightsPtr, UKnots, VKnots, UMults, VMults, UDegree, VDegree);
+        TheSurface = new Geom_BSplineSurface(aPoles,
+                                             *aWeightsPtr,
+                                             UKnots,
+                                             VKnots,
+                                             UMults,
+                                             VMults,
+                                             UDegree,
+                                             VDegree);
       }
       else
       {

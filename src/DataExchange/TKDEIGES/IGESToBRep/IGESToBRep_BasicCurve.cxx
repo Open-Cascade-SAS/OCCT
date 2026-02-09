@@ -898,7 +898,7 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dSplineCurve(
   // ==
   int nbPoles = res3d->NbPoles();
 
-  NCollection_Array1<gp_Pnt2d>  bspoles2d(1, nbPoles);
+  NCollection_Array1<gp_Pnt2d>      bspoles2d(1, nbPoles);
   const NCollection_Array1<double>& knots = res3d->Knots();
   const NCollection_Array1<int>&    multi = res3d->Multiplicities();
 

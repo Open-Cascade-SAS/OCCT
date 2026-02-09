@@ -591,9 +591,9 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
   }
   else if (KindOfCurve == STANDARD_TYPE(Geom2d_BezierCurve))
   {
-    occ::handle<Geom2d_BezierCurve>    CBez2d    = occ::down_cast<Geom2d_BezierCurve>(Curve2d);
-    const NCollection_Array1<gp_Pnt2d>& Poles2d  = CBez2d->Poles();
-    const int                           Nbpoles  = Poles2d.Length();
+    occ::handle<Geom2d_BezierCurve>     CBez2d  = occ::down_cast<Geom2d_BezierCurve>(Curve2d);
+    const NCollection_Array1<gp_Pnt2d>& Poles2d = CBez2d->Poles();
+    const int                           Nbpoles = Poles2d.Length();
     NCollection_Array1<gp_Pnt>          Poles3d(1, Nbpoles);
     for (int i = 1; i <= Nbpoles; i++)
     {
@@ -1549,7 +1549,7 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
     }
 
     //  the flat knots
-    Ksize  = NbP + Cdeg + 1;
+    Ksize = NbP + Cdeg + 1;
     if (InU)
       FKnots = new NCollection_HArray1<double>(BS->UKnotSequence());
     else
@@ -1892,9 +1892,9 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
     BSplCLib::Knots(FKRes, VKnots, VMults);
     VDeg          = Cdeg;
     VMults(Vsize) = VDeg + 1;
-    UKnots = BS->UKnots();
-    UMults = BS->UMultiplicities();
-    UDeg   = BS->UDegree();
+    UKnots        = BS->UKnots();
+    UMults        = BS->UMultiplicities();
+    UDeg          = BS->UDegree();
   }
 
   //  construction de la surface BSpline resultat
@@ -2287,13 +2287,13 @@ static void FunctionMultiply(occ::handle<Geom_BSplineSurface>& BSurf,
                              const double                      knotmax)
 
 {
-  const NCollection_Array1<double>& surface_u_knots  = BSurf->UKnots();
-  const NCollection_Array1<int>&    surface_u_mults  = BSurf->UMultiplicities();
-  const NCollection_Array1<double>& surface_v_knots  = BSurf->VKnots();
-  const NCollection_Array1<int>&    surface_v_mults  = BSurf->VMultiplicities();
-  const NCollection_Array2<gp_Pnt>& surface_poles    = BSurf->Poles();
-  const NCollection_Array2<double>* surface_weights  = BSurf->Weights();
-  int                        i, j, k, status, new_num_u_poles, new_num_v_poles, length = 0;
+  const NCollection_Array1<double>& surface_u_knots = BSurf->UKnots();
+  const NCollection_Array1<int>&    surface_u_mults = BSurf->UMultiplicities();
+  const NCollection_Array1<double>& surface_v_knots = BSurf->VKnots();
+  const NCollection_Array1<int>&    surface_v_mults = BSurf->VMultiplicities();
+  const NCollection_Array2<gp_Pnt>& surface_poles   = BSurf->Poles();
+  const NCollection_Array2<double>* surface_weights = BSurf->Weights();
+  int                               i, j, k, status, new_num_u_poles, new_num_v_poles, length = 0;
   occ::handle<NCollection_HArray1<double>> newuknots, newvknots;
   occ::handle<NCollection_HArray1<int>>    newumults, newvmults;
 

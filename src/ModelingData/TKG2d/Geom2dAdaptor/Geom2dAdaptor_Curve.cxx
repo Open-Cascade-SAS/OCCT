@@ -109,13 +109,13 @@ occ::handle<Adaptor2d_Curve2d> Geom2dAdaptor_Curve::ShallowCopy() const
 GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const double U1, const double U2) const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_BSplineCurve, " ");
-  const auto&                        aBSpline = std::get<BSplineData>(myCurveData).Curve;
-  int                                Nb       = aBSpline->NbKnots();
-  int                                Index1   = 0;
-  int                                Index2   = 0;
-  double                             newFirst, newLast;
-  const NCollection_Array1<double>&  TK = aBSpline->Knots();
-  const NCollection_Array1<int>&     TM = aBSpline->Multiplicities();
+  const auto&                       aBSpline = std::get<BSplineData>(myCurveData).Curve;
+  int                               Nb       = aBSpline->NbKnots();
+  int                               Index1   = 0;
+  int                               Index2   = 0;
+  double                            newFirst, newLast;
+  const NCollection_Array1<double>& TK = aBSpline->Knots();
+  const NCollection_Array1<int>&    TM = aBSpline->Multiplicities();
   BSplCLib::LocateParameter(aBSpline->Degree(),
                             TK,
                             TM,

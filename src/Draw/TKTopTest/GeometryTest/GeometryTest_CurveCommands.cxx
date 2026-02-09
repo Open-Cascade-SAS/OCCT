@@ -787,8 +787,8 @@ static int movelaw(Draw_Interpretor& di, int n, const char** a)
       condition = std::max(Draw::Atoi(a[5]), -1);
       condition = std::min(condition, G2->Degree() - 1);
     }
-    NCollection_Array1<gp_Pnt2d> curve_poles(G2->Poles());
-    NCollection_Array1<double>   law_poles(1, G2->NbPoles());
+    NCollection_Array1<gp_Pnt2d>      curve_poles(G2->Poles());
+    NCollection_Array1<double>        law_poles(1, G2->NbPoles());
     const NCollection_Array1<double>& law_knots = G2->Knots();
     const NCollection_Array1<int>&    law_mults = G2->Multiplicities();
     for (ii = 1; ii <= G2->NbPoles(); ii++)

@@ -132,10 +132,10 @@ occ::handle<Geom_Geometry> Geom_BSplineSurface::Copy() const
 
 Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
     : myPoles(theOther.myPoles),
-      myWeights((theOther.myURational || theOther.myVRational)
-                  ? NCollection_Array2<double>(theOther.myWeights)
-                  : BSplSLib::UnitWeights(theOther.myPoles.ColLength(),
-                                          theOther.myPoles.RowLength())),
+      myWeights(
+        (theOther.myURational || theOther.myVRational)
+          ? NCollection_Array2<double>(theOther.myWeights)
+          : BSplSLib::UnitWeights(theOther.myPoles.ColLength(), theOther.myPoles.RowLength())),
       myUKnots(theOther.myUKnots),
       myVKnots(theOther.myVKnots),
       myUFlatKnots(theOther.myUFlatKnots),

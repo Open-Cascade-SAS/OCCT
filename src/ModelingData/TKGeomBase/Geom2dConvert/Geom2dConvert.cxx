@@ -313,10 +313,10 @@ occ::handle<Geom2d_BSplineCurve> Geom2dConvert::CurveToBSplineCurve(
       int             Degree = CBez->Degree();
       Array1OfReal    Knots(1, 2);
       Array1OfInteger Mults(1, 2);
-      Knots(1) = 0.0;
-      Knots(2) = 1.0;
-      Mults(1) = Degree + 1;
-      Mults(2) = Degree + 1;
+      Knots(1)                   = 0.0;
+      Knots(2)                   = 1.0;
+      Mults(1)                   = Degree + 1;
+      Mults(2)                   = Degree + 1;
       const Array1OfPnt2d& Poles = CBez->Poles();
       if (const NCollection_Array1<double>* pW = CBez->Weights())
       {
@@ -383,10 +383,10 @@ occ::handle<Geom2d_BSplineCurve> Geom2dConvert::CurveToBSplineCurve(
       int             Degree = CBez->Degree();
       Array1OfReal    Knots(1, 2);
       Array1OfInteger Mults(1, 2);
-      Knots(1) = 0.0;
-      Knots(2) = 1.0;
-      Mults(1) = Degree + 1;
-      Mults(2) = Degree + 1;
+      Knots(1)                   = 0.0;
+      Knots(2)                   = 1.0;
+      Mults(1)                   = Degree + 1;
+      Mults(2)                   = Degree + 1;
       const Array1OfPnt2d& Poles = CBez->Poles();
       if (const NCollection_Array1<double>* pW = CBez->Weights())
       {
@@ -472,14 +472,14 @@ static occ::handle<Geom2d_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d
   double                                   start_value, end_value;
   int                                      resNbPoles, degree, ii, jj, aStatus;
 
-  const NCollection_Array1<double>&   BSKnots     = BS->Knots();
-  const NCollection_Array1<int>&      BSMults     = BS->Multiplicities();
-  NCollection_Array1<gp_Pnt2d>        BSPoles(BS->Poles());
-  const NCollection_Array1<double>&   BSWeights   = *BS->Weights();
-  const NCollection_Array1<double>&   BSFlatKnots = BS->KnotSequence();
-  start_value      = BSKnots(1);
-  end_value        = BSKnots(BS->NbKnots());
-  double tolerance = 10. * Epsilon(std::abs(end_value));
+  const NCollection_Array1<double>& BSKnots = BS->Knots();
+  const NCollection_Array1<int>&    BSMults = BS->Multiplicities();
+  NCollection_Array1<gp_Pnt2d>      BSPoles(BS->Poles());
+  const NCollection_Array1<double>& BSWeights   = *BS->Weights();
+  const NCollection_Array1<double>& BSFlatKnots = BS->KnotSequence();
+  start_value                                   = BSKnots(1);
+  end_value                                     = BSKnots(BS->NbKnots());
+  double tolerance                              = 10. * Epsilon(std::abs(end_value));
 
   NCollection_Array1<double>          aKnots(a->Knots());
   const NCollection_Array1<gp_Pnt2d>& aPoles = a->Poles();
@@ -1253,8 +1253,8 @@ void Geom2dConvert::ConcatC1(
                                                  + (Curve1->Degree() * Curve1->NbKnots()));
 
           BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
-          NCollection_Array1<gp_Pnt2d> NewPoles(1, FlatKnots.Length() - (aNewCurveDegree + 1));
-          int                          aStatus;
+          NCollection_Array1<gp_Pnt2d>      NewPoles(1, FlatKnots.Length() - (aNewCurveDegree + 1));
+          int                               aStatus;
           const NCollection_Array1<double>& Curve1Weights = Curve1->WeightsArray();
           for (ii = 1; ii <= Curve1->NbPoles(); ii++)
             for (jj = 1; jj <= 2; jj++)

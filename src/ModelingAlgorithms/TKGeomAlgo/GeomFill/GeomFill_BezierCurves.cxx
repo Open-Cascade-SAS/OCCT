@@ -369,7 +369,7 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     if (CC2->Degree() < DegU)
       CC2->Increase(DegU);
 
-    NCollection_Array2<gp_Pnt>       Poles(1, DegU + 1, 1, 2);
+    NCollection_Array2<gp_Pnt>        Poles(1, DegU + 1, 1, 2);
     const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
     const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
 

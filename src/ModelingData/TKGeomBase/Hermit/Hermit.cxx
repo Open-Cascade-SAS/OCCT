@@ -36,9 +36,9 @@
 static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_Array1<double>& TAB)
 
 {
-  NCollection_Array1<double>   Knots(BS->Knots());
+  NCollection_Array1<double>        Knots(BS->Knots());
   const NCollection_Array1<double>& Weights = BS->WeightsArray();
-  const NCollection_Array1<int>& Mults = BS->Multiplicities();
+  const NCollection_Array1<int>&    Mults   = BS->Multiplicities();
   // clang-format off
   int        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
   double           Denom0,Denom1,                            // denominator value for u=0 & u=1
@@ -92,15 +92,15 @@ static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
                          NCollection_Array1<double>&             TAB)
 
 {
-  NCollection_Array1<double>   Knots(BS->Knots());
+  NCollection_Array1<double>        Knots(BS->Knots());
   const NCollection_Array1<double>& Weights = BS->WeightsArray();
-  const NCollection_Array1<int>& Mults = BS->Multiplicities();
-  int                        Degree, Index0, Index1;
-  double                     Denom0, Denom1, // denominateur value for u=0 & u=1
-                                             // clang-format off
+  const NCollection_Array1<int>&    Mults   = BS->Multiplicities();
+  int                               Degree, Index0, Index1;
+  double                            Denom0, Denom1, // denominateur value for u=0 & u=1
+                                                    // clang-format off
                           Deriv0,Deriv1 ; // denominator value for u=0 & u=1
   bool        Periodic;       // derivative denominatur value for u=0 & 1
-                                             // clang-format on
+                                                    // clang-format on
 
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
   Degree   = BS->Degree();

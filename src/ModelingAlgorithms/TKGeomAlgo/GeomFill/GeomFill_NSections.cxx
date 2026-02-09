@@ -298,7 +298,7 @@ bool GeomFill_NSections::D0(const double                V,
       occ::down_cast<Geom_BSplineCurve>(mySurface->VIso(V, false));
     const NCollection_Array1<gp_Pnt>& poles = Curve->Poles();
     const NCollection_Array1<double>* aWPtr = Curve->Weights();
-    NCollection_Array1<double> weights(1, mySurface->NbUPoles());
+    NCollection_Array1<double>        weights(1, mySurface->NbUPoles());
     if (aWPtr != nullptr)
       weights = *aWPtr;
     else
@@ -802,7 +802,7 @@ void GeomFill_NSections::GetMinimalWeight(NCollection_Array1<double>& Weights) c
 
   if (mySurface->IsURational())
   {
-    int                              NbU = mySurface->NbUPoles(), NbV = mySurface->NbVPoles();
+    int                               NbU = mySurface->NbUPoles(), NbV = mySurface->NbVPoles();
     const NCollection_Array2<double>* aWSurfPtr = mySurface->Weights();
     if (aWSurfPtr == nullptr)
     {
@@ -810,7 +810,7 @@ void GeomFill_NSections::GetMinimalWeight(NCollection_Array1<double>& Weights) c
       return;
     }
     const NCollection_Array2<double>& WSurf = *aWSurfPtr;
-    int i, j;
+    int                               i, j;
     for (i = 1; i <= NbU; i++)
     {
       double min = WSurf(i, 1);

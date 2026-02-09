@@ -1327,7 +1327,7 @@ void ChFi3d_ReparamPcurv(const double Uf, const double Ul, occ::handle<Geom2d_Cu
   {
     const NCollection_Array1<gp_Pnt2d>& pol = pc->Poles();
     NCollection_Array1<double>          kn(pc->Knots());
-    const NCollection_Array1<int>&      mu = pc->Multiplicities();
+    const NCollection_Array1<int>&      mu  = pc->Multiplicities();
     int                                 deg = pc->Degree();
     BSplCLib::Reparametrize(Uf, Ul, kn);
     pc = new Geom2d_BSplineCurve(pol, kn, mu, deg);

@@ -109,14 +109,14 @@ bool GeomFill_UniformSection::D2(const double,
 //=======================================================
 occ::handle<Geom_BSplineSurface> GeomFill_UniformSection::BSplineSurface() const
 {
-  int                              ii, NbPoles = myCurve->NbPoles();
-  NCollection_Array2<gp_Pnt>       Poles(1, NbPoles, 1, 2);
+  int                               ii, NbPoles = myCurve->NbPoles();
+  NCollection_Array2<gp_Pnt>        Poles(1, NbPoles, 1, 2);
   const NCollection_Array1<double>& CurKnots = myCurve->Knots();
-  NCollection_Array1<double>       UKnots(CurKnots);
-  NCollection_Array1<double>       VKnots(1, 2);
-  const NCollection_Array1<int>&   CurMults = myCurve->Multiplicities();
-  NCollection_Array1<int>          UMults(CurMults);
-  NCollection_Array1<int>          VMults(1, 2);
+  NCollection_Array1<double>        UKnots(CurKnots);
+  NCollection_Array1<double>        VKnots(1, 2);
+  const NCollection_Array1<int>&    CurMults = myCurve->Multiplicities();
+  NCollection_Array1<int>           UMults(CurMults);
+  NCollection_Array1<int>           VMults(1, 2);
 
   for (ii = 1; ii <= NbPoles; ii++)
   {

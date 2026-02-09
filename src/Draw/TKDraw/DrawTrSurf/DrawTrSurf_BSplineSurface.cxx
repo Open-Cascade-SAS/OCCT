@@ -123,9 +123,9 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
   if (drawPoles)
   {
     dis.SetColor(polesLook);
-    const NCollection_Array2<gp_Pnt>& SPoles = S->Poles();
-    int NbUPoles = SPoles.NbRows();
-    int NbVPoles = SPoles.NbColumns();
+    const NCollection_Array2<gp_Pnt>& SPoles   = S->Poles();
+    int                               NbUPoles = SPoles.NbRows();
+    int                               NbVPoles = SPoles.NbColumns();
     for (j = 1; j <= NbVPoles; j++)
     {
       dis.MoveTo(SPoles(1, j));
@@ -179,7 +179,7 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 
   if (drawKnots)
   {
-    int                        first, last;
+    int                               first, last;
     const NCollection_Array1<double>& SUKnots = S->UKnots();
     dis.SetColor(knotsLook);
     first = S->FirstUKnotIndex();

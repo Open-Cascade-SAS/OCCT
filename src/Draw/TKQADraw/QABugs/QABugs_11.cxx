@@ -4535,8 +4535,6 @@ int OCC17424(Draw_Interpretor& di, int argc, const char** argv)
   return 0;
 }
 
-
-
 int OCC22301(Draw_Interpretor& di, int argc, const char** argv)
 {
   if (argc != 1)

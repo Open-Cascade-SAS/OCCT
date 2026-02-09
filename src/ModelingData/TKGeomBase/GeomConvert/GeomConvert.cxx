@@ -286,14 +286,14 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
 
       occ::handle<Geom_BezierCurve> CBez = occ::down_cast<Geom_BezierCurve>(Curv->Copy());
       CBez->Segment(U1, U2);
-      int                           Degree = CBez->Degree();
-      const NCollection_Array1<gp_Pnt>& Poles = CBez->Poles();
-      NCollection_Array1<double>    Knots(1, 2);
-      NCollection_Array1<int>       Mults(1, 2);
-      Knots(1) = 0.0;
-      Knots(2) = 1.0;
-      Mults(1) = Degree + 1;
-      Mults(2) = Degree + 1;
+      int                               Degree = CBez->Degree();
+      const NCollection_Array1<gp_Pnt>& Poles  = CBez->Poles();
+      NCollection_Array1<double>        Knots(1, 2);
+      NCollection_Array1<int>           Mults(1, 2);
+      Knots(1)                                      = 0.0;
+      Knots(2)                                      = 1.0;
+      Mults(1)                                      = Degree + 1;
+      Mults(2)                                      = Degree + 1;
       const NCollection_Array1<double>* aWeightsPtr = CBez->Weights();
       if (aWeightsPtr != nullptr)
       {
@@ -388,15 +388,15 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
 
     else if (C->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
     {
-      occ::handle<Geom_BezierCurve> CBez   = occ::down_cast<Geom_BezierCurve>(C);
-      int                           Degree = CBez->Degree();
-      const NCollection_Array1<gp_Pnt>& Poles = CBez->Poles();
-      NCollection_Array1<double>    Knots(1, 2);
-      NCollection_Array1<int>       Mults(1, 2);
-      Knots(1) = 0.0;
-      Knots(2) = 1.0;
-      Mults(1) = Degree + 1;
-      Mults(2) = Degree + 1;
+      occ::handle<Geom_BezierCurve>     CBez   = occ::down_cast<Geom_BezierCurve>(C);
+      int                               Degree = CBez->Degree();
+      const NCollection_Array1<gp_Pnt>& Poles  = CBez->Poles();
+      NCollection_Array1<double>        Knots(1, 2);
+      NCollection_Array1<int>           Mults(1, 2);
+      Knots(1)                                      = 0.0;
+      Knots(2)                                      = 1.0;
+      Mults(1)                                      = Degree + 1;
+      Mults(2)                                      = Degree + 1;
       const NCollection_Array1<double>* aWeightsPtr = CBez->Weights();
       if (aWeightsPtr != nullptr)
       {
@@ -478,8 +478,8 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
                                                       const occ::handle<Geom_BSplineCurve>&   BS)
 
 {
-  const NCollection_Array1<double>&        BSKnots     = BS->Knots();
-  const NCollection_Array1<int>&           BSMults     = BS->Multiplicities();
+  const NCollection_Array1<double>&        BSKnots = BS->Knots();
+  const NCollection_Array1<int>&           BSMults = BS->Multiplicities();
   NCollection_Array1<gp_Pnt>               BSPoles(BS->Poles());
   const NCollection_Array1<double>&        BSWeights   = *BS->Weights();
   const NCollection_Array1<double>&        BSFlatKnots = BS->KnotSequence();
@@ -495,9 +495,9 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
   if ((end_value - start_value) / 5 < tolerance)
     tolerance = (end_value - start_value) / 5;
 
-  NCollection_Array1<double>             aKnots(a->Knots());
-  const NCollection_Array1<gp_Pnt2d>&   aPoles = a->Poles();
-  const NCollection_Array1<int>&         aMults = a->Multiplicities();
+  NCollection_Array1<double>          aKnots(a->Knots());
+  const NCollection_Array1<gp_Pnt2d>& aPoles = a->Poles();
+  const NCollection_Array1<int>&      aMults = a->Multiplicities();
   BSplCLib::Reparametrize(BS->FirstParameter(), BS->LastParameter(), aKnots);
   occ::handle<Geom2d_BSplineCurve> anAncore =
     new Geom2d_BSplineCurve(aPoles, aKnots, aMults, a->Degree());
@@ -866,8 +866,8 @@ void GeomConvert::ConcatG1(
         BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
         NCollection_Array1<gp_Pnt> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
         int                        aStatus;
-        const NCollection_Array1<double>*  aCurve1WeightsPtr = Curve1->Weights();
-        NCollection_Array1<double>         aCurve1UnitWeights;
+        const NCollection_Array1<double>* aCurve1WeightsPtr = Curve1->Weights();
+        NCollection_Array1<double>        aCurve1UnitWeights;
         if (aCurve1WeightsPtr == nullptr)
         {
           aCurve1UnitWeights.Resize(1, Curve1->NbPoles(), false);
@@ -1119,8 +1119,8 @@ void GeomConvert::ConcatC1(
           BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
           NCollection_Array1<gp_Pnt> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
           int                        aStatus;
-          const NCollection_Array1<double>*  aCurve1WeightsPtr = Curve1->Weights();
-          NCollection_Array1<double>         aCurve1UnitWeights;
+          const NCollection_Array1<double>* aCurve1WeightsPtr = Curve1->Weights();
+          NCollection_Array1<double>        aCurve1UnitWeights;
           if (aCurve1WeightsPtr == nullptr)
           {
             aCurve1UnitWeights.Resize(1, Curve1->NbPoles(), false);
@@ -1268,11 +1268,11 @@ void GeomConvert::C0BSplineToArrayOfC1BSplineCurve(
 {
   const NCollection_Array1<int>&    BSMults = BS->Multiplicities();
   const NCollection_Array1<double>& BSKnots = BS->Knots();
-  int                        i, j, nbcurveC1 = 1;
-  double                     U1, U2;
-  bool                       closed_flag = false;
-  gp_Pnt                     point;
-  gp_Vec                     V1, V2;
+  int                               i, j, nbcurveC1 = 1;
+  double                            U1, U2;
+  bool                              closed_flag = false;
+  gp_Pnt                            point;
+  gp_Vec                            V1, V2;
   // clang-format off
  for (i=BS->FirstUKnotIndex() ;i<=(BS->LastUKnotIndex()-1);i++){                                 //give the number of C1 curves
     // clang-format on

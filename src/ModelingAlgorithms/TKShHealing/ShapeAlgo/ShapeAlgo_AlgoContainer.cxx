@@ -132,12 +132,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
   // on detecte d`eventuelles cassures par la multiplicite des poles.
   // Puis on approxime chaque "partie" de BSpline
 
-  int                              NbPoles = bspline->NbPoles();
-  const NCollection_Array1<gp_Pnt>& Poles  = bspline->Poles();
-  const NCollection_Array1<double>& Weigs = bspline->WeightsArray();
-  const NCollection_Array1<double>& Knots = bspline->Knots();
-  const NCollection_Array1<int>&    Mults = bspline->Multiplicities();
-  int deg = bspline->Degree();
+  int                               NbPoles = bspline->NbPoles();
+  const NCollection_Array1<gp_Pnt>& Poles   = bspline->Poles();
+  const NCollection_Array1<double>& Weigs   = bspline->WeightsArray();
+  const NCollection_Array1<double>& Knots   = bspline->Knots();
+  const NCollection_Array1<int>&    Mults   = bspline->Multiplicities();
+  int                               deg     = bspline->Degree();
 
   int jpole = 1;
   int j, PoleIndex, I1;
@@ -199,8 +199,8 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
     if (jpole > 2)
     {
       const NCollection_Array1<gp_Pnt>& newP = mycurve->Poles();
-      occ::handle<IntSurf_LineOn2S> R = new IntSurf_LineOn2S();
-      double                        u1, v1, u2, v2;
+      occ::handle<IntSurf_LineOn2S>     R    = new IntSurf_LineOn2S();
+      double                            u1, v1, u2, v2;
       u1 = v1 = 0.;
       u2 = v2 = 1.;
       for (j = 1; j <= jpole; j++)
@@ -268,12 +268,12 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
   // Puis on approxime chaque "partie" de BSpline et on reconstruit
   // une BSpline = somme des BSplines traitees
 
-  int                                NbPoles = bspline->NbPoles();
-  const NCollection_Array1<gp_Pnt2d>& Poles  = bspline->Poles();
-  const NCollection_Array1<double>&   Weigs = bspline->WeightsArray();
-  const NCollection_Array1<double>& Knots = bspline->Knots();
-  const NCollection_Array1<int>&    Mults = bspline->Multiplicities();
-  int deg = bspline->Degree();
+  int                                 NbPoles = bspline->NbPoles();
+  const NCollection_Array1<gp_Pnt2d>& Poles   = bspline->Poles();
+  const NCollection_Array1<double>&   Weigs   = bspline->WeightsArray();
+  const NCollection_Array1<double>&   Knots   = bspline->Knots();
+  const NCollection_Array1<int>&      Mults   = bspline->Multiplicities();
+  int                                 deg     = bspline->Degree();
 
   int jpole = 1;
   int j, PoleIndex, I1;
@@ -334,10 +334,10 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
     jpole   = mycurve->NbPoles();
     if (jpole > 10)
     {
-      NCollection_Array1<gp_Pnt>         P(1, jpole);
+      NCollection_Array1<gp_Pnt>          P(1, jpole);
       const NCollection_Array1<gp_Pnt2d>& newP = mycurve->Poles();
-      occ::handle<IntSurf_LineOn2S> R = new IntSurf_LineOn2S();
-      double                        u2, v2;
+      occ::handle<IntSurf_LineOn2S>       R    = new IntSurf_LineOn2S();
+      double                              u2, v2;
       u2 = v2 = 1.;
       for (j = 1; j <= jpole; j++)
       {

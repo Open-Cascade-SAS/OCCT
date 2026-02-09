@@ -581,7 +581,7 @@ void HLRBRep_Curve::Knots(NCollection_Array1<double>& kn) const
 {
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
-    occ::handle<Geom_BSplineCurve>     aBSpl     = HLRBRep_BCurveTool::BSpline(myCurve);
+    occ::handle<Geom_BSplineCurve>    aBSpl     = HLRBRep_BCurveTool::BSpline(myCurve);
     const NCollection_Array1<double>& aSrcKnots = aBSpl->Knots();
     for (int i = kn.Lower(); i <= kn.Upper(); i++)
       kn(i) = aSrcKnots(i);
@@ -594,7 +594,7 @@ void HLRBRep_Curve::Multiplicities(NCollection_Array1<int>& mu) const
 {
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
-    occ::handle<Geom_BSplineCurve>  aBSpl     = HLRBRep_BCurveTool::BSpline(myCurve);
+    occ::handle<Geom_BSplineCurve> aBSpl     = HLRBRep_BCurveTool::BSpline(myCurve);
     const NCollection_Array1<int>& aSrcMults = aBSpl->Multiplicities();
     for (int i = mu.Lower(); i <= mu.Upper(); i++)
       mu(i) = aSrcMults(i);

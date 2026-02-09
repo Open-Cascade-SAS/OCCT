@@ -849,10 +849,10 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
   {
     if (nbsu > 8 || nbsv > 8)
     {
-      const occ::handle<Geom_BSplineSurface>& Bspl = myS->BSpline();
-      const NCollection_Array2<gp_Pnt>& array2 = Bspl->Poles();
-      int                              nbup   = array2.NbRows();
-      int                              nbvp   = array2.NbColumns();
+      const occ::handle<Geom_BSplineSurface>& Bspl   = myS->BSpline();
+      const NCollection_Array2<gp_Pnt>&       array2 = Bspl->Poles();
+      int                                     nbup   = array2.NbRows();
+      int                                     nbvp   = array2.NbColumns();
       Analyse(array2, nbup, nbvp, nbsu, nbsv);
     }
     // Check anisotropy
@@ -874,7 +874,7 @@ void Adaptor3d_TopolTool::ComputeSamplePoints()
   {
     if (nbsu > 8 || nbsv > 8)
     {
-      const occ::handle<Geom_BezierSurface>&  Bez    = myS->Bezier();
+      const occ::handle<Geom_BezierSurface>& Bez    = myS->Bezier();
       const NCollection_Array2<gp_Pnt>&      array2 = Bez->Poles();
       int                                    nbup   = array2.NbRows();
       int                                    nbvp   = array2.NbColumns();

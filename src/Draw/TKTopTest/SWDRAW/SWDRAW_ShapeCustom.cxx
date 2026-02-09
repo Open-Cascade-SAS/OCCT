@@ -172,7 +172,7 @@ static void expcurv2d(const occ::handle<Geom2d_Curve>& aCurve,
     if (aCont < theCont && Bs->NbKnots() > 2)
     {
       const NCollection_Array1<double>& aKnots = Bs->Knots();
-      int nbInt = ckeckKnots(aKnots, theFirst, theLast);
+      int                               nbInt  = ckeckKnots(aKnots, theFirst, theLast);
       if (nbInt > 1)
         Nb.ChangeValue(1, 4)++;
     }
@@ -235,7 +235,7 @@ static void expcurv(const occ::handle<Geom_Curve>& aCurve,
     if (aCont < theCont && Bs->NbKnots() > 2)
     {
       const NCollection_Array1<double>& aKnots = Bs->Knots();
-      int nbInt = ckeckKnots(aKnots, theFirst, theLast);
+      int                               nbInt  = ckeckKnots(aKnots, theFirst, theLast);
       if (nbInt > 1)
         Nb.ChangeValue(1, 4)++;
     }

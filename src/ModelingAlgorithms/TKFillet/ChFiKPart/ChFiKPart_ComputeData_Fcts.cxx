@@ -90,9 +90,9 @@ void ChFiKPart_ProjPC(const GeomAdaptor_Curve&   Cg,
       }
       break;
       case GeomAbs_BezierCurve: {
-        occ::handle<Geom2d_BezierCurve>      BezProjc = Projc.Bezier();
-        const NCollection_Array1<gp_Pnt2d>&  TP       = BezProjc->Poles();
-        const NCollection_Array1<double>*    aWPtr    = BezProjc->Weights();
+        occ::handle<Geom2d_BezierCurve>     BezProjc = Projc.Bezier();
+        const NCollection_Array1<gp_Pnt2d>& TP       = BezProjc->Poles();
+        const NCollection_Array1<double>*   aWPtr    = BezProjc->Weights();
         if (aWPtr != nullptr)
         {
           Pcurv = new Geom2d_BezierCurve(TP, *aWPtr);

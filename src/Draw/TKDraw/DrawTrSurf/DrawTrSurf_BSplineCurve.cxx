@@ -66,8 +66,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis) const
   if (drawPoles)
   {
     dis.SetColor(polesLook);
-    const NCollection_Array1<gp_Pnt>& CPoles = C->Poles();
-    int NbPoles = CPoles.Length();
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     dis.MoveTo(CPoles(1));
     for (int i = 2; i <= NbPoles; i++)
     {
@@ -101,8 +101,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis,
   if (drawPoles && ShowPoles)
   {
     dis.SetColor(polesLook);
-    const NCollection_Array1<gp_Pnt>& CPoles = C->Poles();
-    int NbPoles = CPoles.Length();
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     dis.MoveTo(CPoles(1));
     for (int i = 2; i <= NbPoles; i++)
     {
@@ -142,8 +142,8 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis,
   if (drawPoles && ShowPoles)
   {
     dis.SetColor(polesLook);
-    const NCollection_Array1<gp_Pnt>& CPoles = C->Poles();
-    int NbPoles = CPoles.Length();
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     if (Pindex == 0)
     {
       dis.MoveTo(CPoles(1));

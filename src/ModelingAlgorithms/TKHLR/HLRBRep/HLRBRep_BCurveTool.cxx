@@ -74,8 +74,8 @@ void HLRBRep_BCurveTool::PolesAndWeights(const BRepAdaptor_Curve&    C,
 {
   if (C.GetType() == GeomAbs_BezierCurve)
   {
-    const occ::handle<Geom_BezierCurve>  HB        = C.Bezier();
-    const NCollection_Array1<gp_Pnt>&    aSrcPoles = HB->Poles();
+    const occ::handle<Geom_BezierCurve> HB        = C.Bezier();
+    const NCollection_Array1<gp_Pnt>&   aSrcPoles = HB->Poles();
     for (int i = T.Lower(); i <= T.Upper(); i++)
       T(i) = aSrcPoles(i);
     const NCollection_Array1<double>* aWPtr = HB->Weights();

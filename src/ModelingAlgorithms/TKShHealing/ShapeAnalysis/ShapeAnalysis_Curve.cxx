@@ -1007,15 +1007,15 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>&  seq,
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    occ::handle<Geom_BSplineCurve>  BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
-    const NCollection_Array1<gp_Pnt>& Poles = BSpline->Poles();
+    occ::handle<Geom_BSplineCurve>    BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
+    const NCollection_Array1<gp_Pnt>& Poles   = BSpline->Poles();
     for (int i = 1; i <= Poles.Length(); i++)
       seq.Append(Poles(i));
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
-    occ::handle<Geom_BezierCurve>   Bezier = occ::down_cast<Geom_BezierCurve>(curve);
-    const NCollection_Array1<gp_Pnt>& Poles = Bezier->Poles();
+    occ::handle<Geom_BezierCurve>     Bezier = occ::down_cast<Geom_BezierCurve>(curve);
+    const NCollection_Array1<gp_Pnt>& Poles  = Bezier->Poles();
     for (int i = 1; i <= Poles.Length(); i++)
       seq.Append(Poles(i));
   }

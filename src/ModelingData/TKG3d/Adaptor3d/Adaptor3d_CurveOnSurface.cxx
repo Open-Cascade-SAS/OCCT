@@ -275,11 +275,11 @@ static void Locate1Coord(const int                             Index,
                          gp_Pnt2d&                             LeftBot,
                          gp_Pnt2d&                             RightTop)
 {
-  double                     Comp1 = 0, DComp1 = 0, cur, f = 0.0, l = 0.0;
-  constexpr double           Tol     = Precision::PConfusion() / 10;
-  int                        i       = 1, Bnd1, Bnd2;
-  bool                       DIsNull = false;
-  const NCollection_Array1<double>& Arr = BSplC->Knots();
+  double                            Comp1 = 0, DComp1 = 0, cur, f = 0.0, l = 0.0;
+  constexpr double                  Tol     = Precision::PConfusion() / 10;
+  int                               i       = 1, Bnd1, Bnd2;
+  bool                              DIsNull = false;
+  const NCollection_Array1<double>& Arr     = BSplC->Knots();
 
   if (Index == 1)
   {
@@ -1454,7 +1454,7 @@ occ::handle<Geom_BezierCurve> Adaptor3d_CurveOnSurface::Bezier() const
   if (Bez2d->IsRational())
   {
     const NCollection_Array1<double>& Weights = *Bez2d->Weights();
-    Bez = new Geom_BezierCurve(Poles, Weights);
+    Bez                                       = new Geom_BezierCurve(Poles, Weights);
   }
   else
   {

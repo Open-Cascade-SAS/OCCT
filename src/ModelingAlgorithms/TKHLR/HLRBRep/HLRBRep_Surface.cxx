@@ -183,8 +183,8 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
   {
     if (myProj->Perspective())
       return false;
-    int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
-    int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+    int                               nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+    int                               nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     NCollection_Array2<gp_Pnt>        Pnt(1, nu, 1, nv);
     const NCollection_Array2<gp_Pnt>& aSrcPoles = HLRBRep_BSurfaceTool::Bezier(mySurf)->Poles();
     for (int iu = 1; iu <= nu; iu++)
@@ -196,8 +196,8 @@ bool HLRBRep_Surface::IsSide(const double tolF, const double toler) const
   {
     if (myProj->Perspective())
       return false;
-    int                        nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
-    int                        nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
+    int                               nu = HLRBRep_BSurfaceTool::NbUPoles(mySurf);
+    int                               nv = HLRBRep_BSurfaceTool::NbVPoles(mySurf);
     NCollection_Array2<gp_Pnt>        Pnt(1, nu, 1, nv);
     const NCollection_Array2<gp_Pnt>& aSrcPoles = HLRBRep_BSurfaceTool::BSpline(mySurf)->Poles();
     for (int iu = 1; iu <= nu; iu++)

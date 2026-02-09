@@ -28,9 +28,9 @@ StepGeom_KnotType                                                      KnotSpec;
 
 Deg = BS->Degree();
 
-N = BS->NbPoles();
+N                        = BS->NbPoles();
 const Array1OfPnt_gen& P = BS->Poles();
-Listpoints = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, N);
+Listpoints               = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, N);
 for (i = P.Lower(); i <= P.Upper(); i++)
 {
   GeomToStep_MakeCartesianPoint MkPoint(P.Value(i), theLocalFactors.LengthFactor());
@@ -47,9 +47,9 @@ else
 
 Selfinter = StepData_LFalse;
 
-Nknots = BS->NbKnots();
+Nknots                           = BS->NbKnots();
 const NCollection_Array1<int>& M = BS->Multiplicities();
-Mult = new NCollection_HArray1<int>(1, Nknots);
+Mult                             = new NCollection_HArray1<int>(1, Nknots);
 for (i = M.Lower(); i <= M.Upper(); i++)
 {
   itampon = M.Value(i);
@@ -57,7 +57,7 @@ for (i = M.Lower(); i <= M.Upper(); i++)
 }
 
 const NCollection_Array1<double>& K = BS->Knots();
-ListKnots = new NCollection_HArray1<double>(1, Nknots);
+ListKnots                           = new NCollection_HArray1<double>(1, Nknots);
 for (i = K.Lower(); i <= K.Upper(); i++)
 {
   rtampon = K.Value(i);

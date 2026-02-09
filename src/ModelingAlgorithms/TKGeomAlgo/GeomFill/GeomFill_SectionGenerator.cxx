@@ -97,7 +97,7 @@ void GeomFill_SectionGenerator::Section(const int                   P,
 {
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(P));
 
-  Poles = C->Poles();
+  Poles                                   = C->Poles();
   const NCollection_Array1<double>* aWPtr = C->Weights();
   if (aWPtr != nullptr)
     Weigths = *aWPtr;

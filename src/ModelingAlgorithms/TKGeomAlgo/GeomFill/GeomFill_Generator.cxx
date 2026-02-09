@@ -61,7 +61,7 @@ void GeomFill_Generator::Perform(const double PTol)
     occ::handle<Geom_BSplineCurve>    Cj       = occ::down_cast<Geom_BSplineCurve>(mySequence(j));
     const NCollection_Array1<gp_Pnt>& aPoles   = Cj->Poles();
     const NCollection_Array1<double>& aWeights = Cj->WeightsArray();
-    VKnots(j) = (double)(j - 1);
+    VKnots(j)                                  = (double)(j - 1);
     for (i = 1; i <= NbUPoles; i++)
     {
       Poles(i, j)   = aPoles(i);

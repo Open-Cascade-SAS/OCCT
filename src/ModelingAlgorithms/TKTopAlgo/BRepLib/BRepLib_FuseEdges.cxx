@@ -75,10 +75,10 @@ static void BCSmoothing(occ::handle<Geom_BSplineCurve>& theC,
   while (bContinue && iter <= aNbIter)
   {
 
-    int                          aNbKnots = theC->NbKnots();
+    int                        aNbKnots = theC->NbKnots();
     NCollection_Array1<int>    aMults(theC->Multiplicities());
     NCollection_Array1<double> aKnots(theC->Knots());
-    int i, m = theC->Degree();
+    int                        i, m = theC->Degree();
     m = m - theCont;
 
     if (m < 1)

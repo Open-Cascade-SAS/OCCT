@@ -35,7 +35,7 @@ static void UnifyByInsertingAllKnots(NCollection_Sequence<occ::handle<Geom_Curve
   int i;
   for (i = 2; i <= theCurves.Length(); i++)
   {
-    occ::handle<Geom_BSplineCurve> Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
+    occ::handle<Geom_BSplineCurve>    Ci = occ::down_cast<Geom_BSplineCurve>(theCurves(i));
     const NCollection_Array1<double>& Ki = Ci->Knots();
     const NCollection_Array1<int>&    Mi = Ci->Multiplicities();
 

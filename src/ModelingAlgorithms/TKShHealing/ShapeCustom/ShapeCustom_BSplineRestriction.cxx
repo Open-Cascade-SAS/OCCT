@@ -436,10 +436,10 @@ static void ConvertExtrusion(const occ::handle<Geom_Curve>& C, /*const gp_Dir& d
                              const double                   VL,
                              occ::handle<Geom_Surface>&     bspline)
 {
-  occ::handle<Geom_BSplineCurve>   bspl    = occ::down_cast<Geom_BSplineCurve>(C);
-  int                              nbPoles = bspl->NbPoles();
-  const NCollection_Array1<gp_Pnt>& poles  = bspl->Poles();
-  NCollection_Array1<double>       weights(1, nbPoles);
+  occ::handle<Geom_BSplineCurve>    bspl    = occ::down_cast<Geom_BSplineCurve>(C);
+  int                               nbPoles = bspl->NbPoles();
+  const NCollection_Array1<gp_Pnt>& poles   = bspl->Poles();
+  NCollection_Array1<double>        weights(1, nbPoles);
   if (bspl->IsRational())
     weights = *bspl->Weights();
   else

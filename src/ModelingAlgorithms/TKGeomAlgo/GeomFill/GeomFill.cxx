@@ -246,7 +246,7 @@ void GeomFill::GetMinimalWeights(const Convert_ParameterisationType TConv,
     occ::handle<Geom_BSplineCurve> CtoBspl = GeomConvert::CurveToBSplineCurve(Sect1, TConv);
     Weights.Assign(CtoBspl->WeightsArray());
 
-    double                     angle_min = std::max(Precision::PConfusion(), MinAng);
+    double                         angle_min = std::max(Precision::PConfusion(), MinAng);
     occ::handle<Geom_TrimmedCurve> Sect2 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
     CtoBspl                              = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
     const NCollection_Array1<double>& poids = CtoBspl->WeightsArray();

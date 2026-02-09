@@ -344,11 +344,11 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
   // std::cout <<"nbpol = " << nbpol << std::endl;
   if (nbpol > 100)
   {
-    const NCollection_Array1<gp_Pnt>&    PolC3D = HC3D->Poles();
-    NCollection_Array1<gp_Pnt2d>         aDummyPnt2d;
-    const NCollection_Array1<gp_Pnt2d>&  PolPC1 = CompPC1 ? HPC1->Poles() : aDummyPnt2d;
-    const NCollection_Array1<gp_Pnt2d>&  PolPC2 = CompPC2 ? HPC2->Poles() : aDummyPnt2d;
-    NCollection_Array1<bool>             IsValid(1, nbpol);
+    const NCollection_Array1<gp_Pnt>&   PolC3D = HC3D->Poles();
+    NCollection_Array1<gp_Pnt2d>        aDummyPnt2d;
+    const NCollection_Array1<gp_Pnt2d>& PolPC1 = CompPC1 ? HPC1->Poles() : aDummyPnt2d;
+    const NCollection_Array1<gp_Pnt2d>& PolPC2 = CompPC2 ? HPC2->Poles() : aDummyPnt2d;
+    NCollection_Array1<bool>            IsValid(1, nbpol);
     IsValid.Init(true);
     double tol   = std::max(1.e-10, 100. * tol3d * tol3d); // tol *= tol; - square distance
     double tl2d  = tol * (tol2d * tol2d) / (tol3d * tol3d);
@@ -525,10 +525,10 @@ bool TopOpeBRepTool_CurveTool::MakeCurves(const double                     parmi
   int                        degmax          = 8;
   Approx_ParametrizationType parametrization = Approx_ChordLength;
 
-  int                              npol = HC3D->NbPoles();
+  int                               npol   = HC3D->NbPoles();
   const NCollection_Array1<gp_Pnt>& Polc3d = HC3D->Poles();
-  NCollection_Array1<double>       par(1, npol);
-  gp_Pnt                           P = Polc3d(1);
+  NCollection_Array1<double>        par(1, npol);
+  gp_Pnt                            P = Polc3d(1);
 
   bool   IsBad = false;
   int    ip;

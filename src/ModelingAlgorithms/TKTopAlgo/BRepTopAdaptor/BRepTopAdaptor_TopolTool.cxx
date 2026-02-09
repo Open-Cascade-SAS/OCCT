@@ -465,10 +465,10 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
   {
     if (typS == GeomAbs_BSplineSurface)
     {
-      const occ::handle<Geom_BSplineSurface>& Bspl = myS->BSpline();
-      int                                     nbup = Bspl->NbUPoles();
-      int                                     nbvp = Bspl->NbVPoles();
-      const NCollection_Array2<gp_Pnt>& array2 = Bspl->Poles();
+      const occ::handle<Geom_BSplineSurface>& Bspl   = myS->BSpline();
+      int                                     nbup   = Bspl->NbUPoles();
+      int                                     nbvp   = Bspl->NbVPoles();
+      const NCollection_Array2<gp_Pnt>&       array2 = Bspl->Poles();
       Analyse(array2, nbup, nbvp, myNbSamplesU, myNbSamplesV);
       nbsu = myNbSamplesU;
       nbsv = myNbSamplesV;
@@ -476,10 +476,10 @@ void BRepTopAdaptor_TopolTool::ComputeSamplePoints()
     }
     else if (typS == GeomAbs_BezierSurface)
     {
-      const occ::handle<Geom_BezierSurface>& Bez  = myS->Bezier();
-      int                                    nbup = Bez->NbUPoles();
-      int                                    nbvp = Bez->NbVPoles();
-      const NCollection_Array2<gp_Pnt>& array2 = Bez->Poles();
+      const occ::handle<Geom_BezierSurface>& Bez    = myS->Bezier();
+      int                                    nbup   = Bez->NbUPoles();
+      int                                    nbvp   = Bez->NbVPoles();
+      const NCollection_Array2<gp_Pnt>&      array2 = Bez->Poles();
       Analyse(array2, nbup, nbvp, myNbSamplesU, myNbSamplesV);
       nbsu = myNbSamplesU;
       nbsv = myNbSamplesV;

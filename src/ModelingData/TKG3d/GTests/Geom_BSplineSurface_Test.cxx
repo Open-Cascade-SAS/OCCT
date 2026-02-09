@@ -904,7 +904,7 @@ TEST_F(Geom_BSplineSurface_Test, WeightsArray_Rational_ReturnsOwning)
   {
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles(i, j) = gp_Pnt(i, j, 0);
+      aPoles(i, j)     = gp_Pnt(i, j, 0);
       aWeightsIn(i, j) = (i == 2 && j == 2) ? 2.0 : 1.0;
     }
   }

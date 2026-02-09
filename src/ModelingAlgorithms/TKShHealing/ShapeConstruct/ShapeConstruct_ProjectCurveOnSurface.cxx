@@ -2084,7 +2084,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
 
     const int                         NbPoles = crv3d->NbPoles();
     const NCollection_Array1<gp_Pnt>& poles3d = crv3d->Poles();
-    NCollection_Array1<gp_Pnt2d>     poles2d(1, NbPoles);
+    NCollection_Array1<gp_Pnt2d>      poles2d(1, NbPoles);
 
     for (int i = 1; i <= NbPoles; i++)
     {
@@ -2096,8 +2096,8 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
       weights = *crv3d->Weights();
     else
       weights.Init(1.);
-    const NCollection_Array1<double>& knots           = crv3d->Knots();
-    const NCollection_Array1<int>&    multiplicities   = crv3d->Multiplicities();
+    const NCollection_Array1<double>& knots          = crv3d->Knots();
+    const NCollection_Array1<int>&    multiplicities = crv3d->Multiplicities();
 
     aC2D = new Geom2d_BSplineCurve(poles2d,
                                    weights,

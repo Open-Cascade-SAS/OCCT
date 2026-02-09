@@ -52,8 +52,8 @@ void DrawTrSurf_BezierCurve::DrawOn(Draw_Display& dis) const
   if (drawPoles)
   {
     dis.SetColor(polesLook);
-    const NCollection_Array1<gp_Pnt>& CPoles = C->Poles();
-    int NbPoles = CPoles.Length();
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     dis.MoveTo(CPoles(1));
     for (int i = 2; i <= NbPoles; i++)
     {

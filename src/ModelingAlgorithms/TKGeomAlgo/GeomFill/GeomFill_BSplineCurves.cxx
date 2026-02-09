@@ -467,11 +467,11 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
       CC2->IncreaseDegree(DegU);
 
     // Mise en conformite des distributions de noeuds
-    int                        NbPoles = SetSameDistribution(CC1, CC2);
+    int                               NbPoles = SetSameDistribution(CC1, CC2);
     NCollection_Array2<gp_Pnt>        Poles(1, NbPoles, 1, 2);
     const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
     const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
-    int i;
+    int                               i;
     for (i = 1; i <= NbPoles; i++)
     {
       Poles(i, 1) = P1(i);

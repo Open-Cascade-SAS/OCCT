@@ -59,7 +59,7 @@ bool GeomFill_EvolvedSection::D0(const double                U,
 {
   double val;
   int    ii, L = Poles.Length();
-  val = TLaw->Value(U);
+  val   = TLaw->Value(U);
   Poles = myCurve->Poles();
   for (ii = 1; ii <= L; ii++)
   {
@@ -83,7 +83,7 @@ bool GeomFill_EvolvedSection::D1(const double                U,
   int    ii, L = Poles.Length();
   TLaw->D1(U, val, dval);
 
-  Poles = myCurve->Poles();
+  Poles   = myCurve->Poles();
   Weights = myCurve->WeightsArray();
   for (ii = 1; ii <= L; ii++)
   {
@@ -110,7 +110,7 @@ bool GeomFill_EvolvedSection::D2(const double                U,
   double val, dval, d2val;
   int    ii, L = Poles.Length();
   TLaw->D2(U, val, dval, d2val);
-  Poles = myCurve->Poles();
+  Poles   = myCurve->Poles();
   Weights = myCurve->WeightsArray();
 
   for (ii = 1; ii <= L; ii++)
