@@ -58,12 +58,8 @@ bool GeomFill_UniformSection::D0(const double,
                                  NCollection_Array1<gp_Pnt>& Poles,
                                  NCollection_Array1<double>& Weights)
 {
-  Poles = myCurve->Poles();
-  const NCollection_Array1<double>* aWPtr = myCurve->Weights();
-  if (aWPtr != nullptr)
-    Weights = *aWPtr;
-  else
-    Weights.Init(1.0);
+  Poles   = myCurve->Poles();
+  Weights = myCurve->WeightsArray();
 
   return true;
 }
@@ -77,12 +73,8 @@ bool GeomFill_UniformSection::D1(const double,
                                  NCollection_Array1<double>& Weights,
                                  NCollection_Array1<double>& DWeights)
 {
-  Poles = myCurve->Poles();
-  const NCollection_Array1<double>* aWPtr = myCurve->Weights();
-  if (aWPtr != nullptr)
-    Weights = *aWPtr;
-  else
-    Weights.Init(1.0);
+  Poles   = myCurve->Poles();
+  Weights = myCurve->WeightsArray();
   gp_Vec V0(0, 0, 0);
   DPoles.Init(V0);
   DWeights.Init(0);
@@ -101,12 +93,8 @@ bool GeomFill_UniformSection::D2(const double,
                                  NCollection_Array1<double>& DWeights,
                                  NCollection_Array1<double>& D2Weights)
 {
-  Poles = myCurve->Poles();
-  const NCollection_Array1<double>* aWPtr = myCurve->Weights();
-  if (aWPtr != nullptr)
-    Weights = *aWPtr;
-  else
-    Weights.Init(1.0);
+  Poles   = myCurve->Poles();
+  Weights = myCurve->WeightsArray();
   gp_Vec V0(0, 0, 0);
   DPoles.Init(V0);
   DWeights.Init(0);
@@ -290,15 +278,7 @@ double GeomFill_UniformSection::MaximalSection() const
 
 void GeomFill_UniformSection::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
-  const NCollection_Array1<double>* aWPtr = myCurve->Weights();
-  if (aWPtr != nullptr)
-  {
-    Weights = *aWPtr;
-  }
-  else
-  {
-    Weights.Init(1);
-  }
+  Weights = myCurve->WeightsArray();
 }
 
 bool GeomFill_UniformSection::IsConstant(double& Error) const

@@ -677,3 +677,68 @@ TEST_F(Geom_BSplineCurve_Test, LocalD1)
   EXPECT_NEAR(aV1.X(), aV1L.X(), 1e-10);
   EXPECT_NEAR(aV1.Y(), aV1L.Y(), 1e-10);
 }
+
+TEST_F(Geom_BSplineCurve_Test, WeightsArray_NonRational_ReturnsUnitWeights)
+{
+  ASSERT_FALSE(myOriginalCurve->IsRational());
+
+  const NCollection_Array1<double> aWeights = myOriginalCurve->WeightsArray();
+  EXPECT_EQ(aWeights.Length(), myOriginalCurve->NbPoles());
+  EXPECT_FALSE(aWeights.IsDeletable());
+  for (int i = 1; i <= aWeights.Length(); ++i)
+  {
+    EXPECT_DOUBLE_EQ(aWeights(i), 1.0);
+  }
+}
+
+TEST_F(Geom_BSplineCurve_Test, WeightsArray_Rational_ReturnsCopy)
+{
+  // Create a rational BSpline
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1) = gp_Pnt(0, 0, 0);
+  aPoles(2) = gp_Pnt(1, 1, 0);
+  aPoles(3) = gp_Pnt(2, 1, 0);
+  aPoles(4) = gp_Pnt(3, 0, 0);
+
+  NCollection_Array1<double> aWeightsIn(1, 4);
+  aWeightsIn(1) = 1.0;
+  aWeightsIn(2) = 2.0;
+  aWeightsIn(3) = 3.0;
+  aWeightsIn(4) = 1.0;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 4;
+  aMults(2) = 4;
+
+  occ::handle<Geom_BSplineCurve> aRational =
+    new Geom_BSplineCurve(aPoles, aWeightsIn, aKnots, aMults, 3);
+  ASSERT_TRUE(aRational->IsRational());
+
+  const NCollection_Array1<double> aWeights = aRational->WeightsArray();
+  EXPECT_EQ(aWeights.Length(), 4);
+  EXPECT_FALSE(aWeights.IsDeletable());
+  EXPECT_DOUBLE_EQ(aWeights(1), 1.0);
+  EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
+  EXPECT_DOUBLE_EQ(aWeights(3), 3.0);
+  EXPECT_DOUBLE_EQ(aWeights(4), 1.0);
+}
+
+TEST_F(Geom_BSplineCurve_Test, CopyWeightsArray_NonRational_ReturnsOwning)
+{
+  ASSERT_FALSE(myOriginalCurve->IsRational());
+
+  NCollection_Array1<double> aWeights = myOriginalCurve->CopyWeightsArray();
+  EXPECT_EQ(aWeights.Length(), myOriginalCurve->NbPoles());
+  EXPECT_TRUE(aWeights.IsDeletable());
+  for (int i = 1; i <= aWeights.Length(); ++i)
+  {
+    EXPECT_DOUBLE_EQ(aWeights(i), 1.0);
+  }
+  // Verify it is safe to modify
+  aWeights(1) = 2.0;
+  EXPECT_DOUBLE_EQ(aWeights(1), 2.0);
+}

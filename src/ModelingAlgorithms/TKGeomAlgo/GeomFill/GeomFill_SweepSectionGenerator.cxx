@@ -524,12 +524,8 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
 {
   if (myType != 0)
   {
-    Poles = myFirstSect->Poles();
-    const NCollection_Array1<double>* aWPtr = myFirstSect->Weights();
-    if (aWPtr != nullptr)
-      Weigths = *aWPtr;
-    else
-      Weigths.Init(1.0);
+    Poles   = myFirstSect->Poles();
+    Weigths = myFirstSect->WeightsArray();
     gp_Trsf cumulTR;
     if (P > 1)
     {
@@ -634,12 +630,8 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       else
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_QuasiAngular);
 
-      Poles = BS->Poles();
-      const NCollection_Array1<double>* aBSWPtr = BS->Weights();
-      if (aBSWPtr != nullptr)
-        Weigths = *aBSWPtr;
-      else
-        Weigths.Init(1.0);
+      Poles   = BS->Poles();
+      Weigths = BS->WeightsArray();
     }
   }
 }

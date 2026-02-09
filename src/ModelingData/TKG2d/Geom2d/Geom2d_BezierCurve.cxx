@@ -563,6 +563,33 @@ void Geom2d_BezierCurve::Weights(NCollection_Array1<double>& W) const
   }
 }
 
+//==================================================================================================
+
+NCollection_Array1<double> Geom2d_BezierCurve::WeightsArray() const
+{
+  if (IsRational())
+  {
+    // Non-owning view over internal weights (zero allocation).
+    return NCollection_Array1<double>(myWeights(myWeights.Lower()),
+                                      myWeights.Lower(),
+                                      myWeights.Upper());
+  }
+  return BSplCLib::UnitWeights(NbPoles());
+}
+
+//==================================================================================================
+
+NCollection_Array1<double> Geom2d_BezierCurve::CopyWeightsArray() const
+{
+  if (IsRational())
+  {
+    return NCollection_Array1<double>(myWeights);
+  }
+  NCollection_Array1<double> aResult(1, NbPoles());
+  aResult.Init(1.0);
+  return aResult;
+}
+
 //=================================================================================================
 
 void Geom2d_BezierCurve::Transform(const gp_Trsf2d& T)

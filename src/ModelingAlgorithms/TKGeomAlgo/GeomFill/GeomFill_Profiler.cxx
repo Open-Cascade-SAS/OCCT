@@ -280,11 +280,7 @@ void GeomFill_Profiler::Weights(const int Index, NCollection_Array1<double>& Wei
 
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(Index));
 
-  const NCollection_Array1<double>* aWPtr = C->Weights();
-  if (aWPtr != nullptr)
-    Weights = *aWPtr;
-  else
-    Weights.Init(1.0);
+  Weights = C->WeightsArray();
 }
 
 //=================================================================================================

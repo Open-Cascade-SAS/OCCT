@@ -65,11 +65,7 @@ bool GeomFill_EvolvedSection::D0(const double                U,
   {
     Poles(ii).ChangeCoord() *= val;
   }
-  const NCollection_Array1<double>* aWPtr = myCurve->Weights();
-  if (aWPtr != nullptr)
-    Weights = *aWPtr;
-  else
-    Weights.Init(1.0);
+  Weights = myCurve->WeightsArray();
 
   return true;
 }
@@ -88,11 +84,7 @@ bool GeomFill_EvolvedSection::D1(const double                U,
   TLaw->D1(U, val, dval);
 
   Poles = myCurve->Poles();
-  const NCollection_Array1<double>* aWPtr1 = myCurve->Weights();
-  if (aWPtr1 != nullptr)
-    Weights = *aWPtr1;
-  else
-    Weights.Init(1.0);
+  Weights = myCurve->WeightsArray();
   for (ii = 1; ii <= L; ii++)
   {
     DPoles(ii).SetXYZ(Poles(ii).XYZ());
@@ -119,11 +111,7 @@ bool GeomFill_EvolvedSection::D2(const double                U,
   int    ii, L = Poles.Length();
   TLaw->D2(U, val, dval, d2val);
   Poles = myCurve->Poles();
-  const NCollection_Array1<double>* aWPtr2 = myCurve->Weights();
-  if (aWPtr2 != nullptr)
-    Weights = *aWPtr2;
-  else
-    Weights.Init(1.0);
+  Weights = myCurve->WeightsArray();
 
   for (ii = 1; ii <= L; ii++)
   {
@@ -323,15 +311,7 @@ double GeomFill_EvolvedSection::MaximalSection() const
 
 void GeomFill_EvolvedSection::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
-  const NCollection_Array1<double>* aWPtr = myCurve->Weights();
-  if (aWPtr != nullptr)
-  {
-    Weights = *aWPtr;
-  }
-  else
-  {
-    Weights.Init(1);
-  }
+  Weights = myCurve->WeightsArray();
 }
 
 bool GeomFill_EvolvedSection::IsConstant(double& Error) const

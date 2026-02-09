@@ -37,11 +37,7 @@ static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_A
 
 {
   NCollection_Array1<double>   Knots(BS->Knots());
-  NCollection_Array1<double>   Weights(1, BS->NbPoles());
-  if (const NCollection_Array1<double>* pW = BS->Weights())
-    Weights = *pW;
-  else
-    Weights.Init(1.0);
+  const NCollection_Array1<double> Weights = BS->WeightsArray();
   const NCollection_Array1<int>& Mults = BS->Multiplicities();
   // clang-format off
   int        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
@@ -93,11 +89,7 @@ static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
 
 {
   NCollection_Array1<double>   Knots(BS->Knots());
-  NCollection_Array1<double>   Weights(1, BS->NbPoles());
-  if (const NCollection_Array1<double>* pW = BS->Weights())
-    Weights = *pW;
-  else
-    Weights.Init(1.0);
+  const NCollection_Array1<double> Weights = BS->WeightsArray();
   const NCollection_Array1<int>& Mults = BS->Multiplicities();
   int                        Degree, Index0, Index1;
   double                     Denom0, Denom1, // denominateur value for u=0 & u=1

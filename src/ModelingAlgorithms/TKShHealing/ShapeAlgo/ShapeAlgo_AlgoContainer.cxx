@@ -134,10 +134,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
 
   int                              NbPoles = bspline->NbPoles();
   const NCollection_Array1<gp_Pnt>& Poles  = bspline->Poles();
-  NCollection_Array1<double>       Weigs(1, NbPoles);
-  Weigs.Init(1.);
-  if (bspline->IsRational())
-    Weigs = *bspline->Weights();
+  const NCollection_Array1<double> Weigs = bspline->WeightsArray();
   const NCollection_Array1<double>& Knots = bspline->Knots();
   const NCollection_Array1<int>&    Mults = bspline->Multiplicities();
   int deg = bspline->Degree();
@@ -158,7 +155,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
       {
         NCollection_Array1<gp_Pnt> newPoles(1, jpole);
         NCollection_Array1<double> newWeigs(1, jpole);
-        Weigs.Init(1.);
+        newWeigs.Init(1.);
         int                        NbNew = jpole - deg + 1;
         NCollection_Array1<double> newKnots(1, NbNew);
         NCollection_Array1<int>    newMults(1, NbNew);
@@ -273,10 +270,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
 
   int                                NbPoles = bspline->NbPoles();
   const NCollection_Array1<gp_Pnt2d>& Poles  = bspline->Poles();
-  NCollection_Array1<double>         Weigs(1, NbPoles);
-  Weigs.Init(1.);
-  if (bspline->IsRational())
-    Weigs = *bspline->Weights();
+  const NCollection_Array1<double>   Weigs = bspline->WeightsArray();
   const NCollection_Array1<double>& Knots = bspline->Knots();
   const NCollection_Array1<int>&    Mults = bspline->Multiplicities();
   int deg = bspline->Degree();
@@ -297,7 +291,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
       {
         NCollection_Array1<gp_Pnt2d> newPoles(1, jpole);
         NCollection_Array1<double>   newWeigs(1, jpole);
-        Weigs.Init(1.);
+        newWeigs.Init(1.);
         int                        NbNew = jpole - deg + 1;
         NCollection_Array1<double> newKnots(1, NbNew);
         NCollection_Array1<int>    newMults(1, NbNew);

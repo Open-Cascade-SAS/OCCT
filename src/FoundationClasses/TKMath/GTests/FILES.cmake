@@ -8,6 +8,7 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_Box_Test.cxx
   Bnd_OBB_Test.cxx
   BSplCLib_Cache_Test.cxx
+  BSplCLib_UnitWeights_Test.cxx
   BSplSLib_Cache_Test.cxx
   BVH_BinnedBuilder_Test.cxx
   BVH_Box_Test.cxx
