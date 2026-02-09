@@ -24,14 +24,13 @@
 #include <Standard_DomainError.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 
 // Attention :
 // To avoid use of persistent tables in the fields
 // the tables are dimensioned to the maximum (TheNbKnots and TheNbPoles)
 // that correspond to the full circle. For an arc of circle there is a
 // need of less poles and nodes, that is why the fields
-// nbKnots and nbPoles are present and updated in the
+// myNbKnots and myNbPoles are present and updated in the
 // constructor of an arc of B-spline circle to take into account
 // the real number of poles and nodes.
 //  parameterization :
@@ -53,8 +52,8 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 
   int ii;
 
-  double                                   R, r, value;
-  occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
+  double                    R, r, value;
+  NCollection_Array1<double> CosNumerator, SinNumerator;
 
   R = E.MajorRadius();
   r = E.MinorRadius();
@@ -63,33 +62,30 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   {
     // If BuildCosAndSin cannot manage the periodicity
     // => trim on 0,2*PI
-    isperiodic = false;
+    myIsPeriodic = false;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                                 0,
                                                 2 * M_PI,
-                                                CosNumeratorPtr,
-                                                SinNumeratorPtr,
-                                                weights,
-                                                degree,
-                                                knots,
-                                                mults);
+                                                CosNumerator,
+                                                SinNumerator,
+                                                myWeights,
+                                                myDegree,
+                                                myKnots,
+                                                myMults);
   }
   else
   {
-    isperiodic = true;
+    myIsPeriodic = true;
     Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
-                                                CosNumeratorPtr,
-                                                SinNumeratorPtr,
-                                                weights,
-                                                degree,
-                                                knots,
-                                                mults);
+                                                CosNumerator,
+                                                SinNumerator,
+                                                myWeights,
+                                                myDegree,
+                                                myKnots,
+                                                myMults);
   }
 
-  nbPoles = CosNumeratorPtr->Length();
-  nbKnots = knots->Length();
-
-  poles = new NCollection_HArray1<gp_Pnt2d>(1, nbPoles);
+  myPoles = NCollection_Array1<gp_Pnt2d>(1, CosNumerator.Length());
 
   gp_Dir2d  Ox = E.XAxis().Direction();
   gp_Dir2d  Oy = E.YAxis().Direction();
@@ -107,11 +103,11 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   // Replace the bspline in the mark of the circle.
   // and calculate the weight of the bspline.
 
-  for (ii = 1; ii <= nbPoles; ii++)
+  for (ii = 1; ii <= myPoles.Length(); ii++)
   {
-    poles->ChangeArray1()(ii).SetCoord(1, R * CosNumeratorPtr->Value(ii));
-    poles->ChangeArray1()(ii).SetCoord(2, value * SinNumeratorPtr->Value(ii));
-    poles->ChangeArray1()(ii).Transform(Trsf);
+    myPoles(ii).SetCoord(1, R * CosNumerator(ii));
+    myPoles(ii).SetCoord(2, value * SinNumerator(ii));
+    myPoles(ii).Transform(Trsf);
   }
 }
 
@@ -133,28 +129,25 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
 #endif
   Standard_DomainError_Raise_if((delta > (2 * M_PI + Tol)) || (delta <= 0.0e0),
                                 "Convert_EllipseToBSplineCurve");
-  int                                      ii;
-  double                                   R, r, value;
-  occ::handle<NCollection_HArray1<double>> CosNumeratorPtr, SinNumeratorPtr;
+  int                       ii;
+  double                    R, r, value;
+  NCollection_Array1<double> CosNumerator, SinNumerator;
 
   R = E.MajorRadius();
   r = E.MinorRadius();
 
-  isperiodic = false;
+  myIsPeriodic = false;
   Convert_ConicToBSplineCurve::BuildCosAndSin(Parameterisation,
                                               UFirst,
                                               ULast,
-                                              CosNumeratorPtr,
-                                              SinNumeratorPtr,
-                                              weights,
-                                              degree,
-                                              knots,
-                                              mults);
+                                              CosNumerator,
+                                              SinNumerator,
+                                              myWeights,
+                                              myDegree,
+                                              myKnots,
+                                              myMults);
 
-  nbPoles = CosNumeratorPtr->Length();
-  nbKnots = knots->Length();
-
-  poles = new NCollection_HArray1<gp_Pnt2d>(1, nbPoles);
+  myPoles = NCollection_Array1<gp_Pnt2d>(1, CosNumerator.Length());
 
   gp_Dir2d  Ox = E.XAxis().Direction();
   gp_Dir2d  Oy = E.YAxis().Direction();
@@ -172,10 +165,10 @@ Convert_EllipseToBSplineCurve::Convert_EllipseToBSplineCurve(
   // Replace the bspline in the mark of the circle.
   // and calculate the weight of the bspline.
 
-  for (ii = 1; ii <= nbPoles; ii++)
+  for (ii = 1; ii <= myPoles.Length(); ii++)
   {
-    poles->ChangeArray1()(ii).SetCoord(1, R * CosNumeratorPtr->Value(ii));
-    poles->ChangeArray1()(ii).SetCoord(2, value * SinNumeratorPtr->Value(ii));
-    poles->ChangeArray1()(ii).Transform(Trsf);
+    myPoles(ii).SetCoord(1, R * CosNumerator(ii));
+    myPoles(ii).SetCoord(2, value * SinNumerator(ii));
+    myPoles(ii).Transform(Trsf);
   }
 }

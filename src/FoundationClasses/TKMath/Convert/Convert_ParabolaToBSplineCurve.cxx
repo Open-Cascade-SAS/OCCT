@@ -18,17 +18,16 @@
 #include <gp.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Parab2d.hxx>
-#include <gp_Trsf2d.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Trsf2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 
-static int TheDegree  = 2;
-static int MaxNbKnots = 2;
-static int MaxNbPoles = 3;
+constexpr int TheDegree  = 2;
+constexpr int MaxNbKnots = 2;
+constexpr int MaxNbPoles = 3;
 
-//=================================================================================================
+//==================================================================================================
 
 Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d& Prb,
                                                                const double      U1,
@@ -42,31 +41,29 @@ Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d&
 
   double p = Prb.Parameter();
 
-  nbPoles                  = 3;
-  nbKnots                  = 2;
-  isperiodic               = false;
-  knots->ChangeArray1()(1) = UF;
-  mults->ChangeArray1()(1) = 3;
-  knots->ChangeArray1()(2) = UL;
-  mults->ChangeArray1()(2) = 3;
+  myIsPeriodic               = false;
+  myKnots(1) = UF;
+  myMults(1) = 3;
+  myKnots(2) = UL;
+  myMults(2) = 3;
 
-  weights->ChangeArray1()(1) = 1.;
-  weights->ChangeArray1()(2) = 1.;
-  weights->ChangeArray1()(3) = 1.;
+  myWeights(1) = 1.;
+  myWeights(2) = 1.;
+  myWeights(3) = 1.;
 
   gp_Dir2d Ox = Prb.Axis().XDirection();
   gp_Dir2d Oy = Prb.Axis().YDirection();
   double   S  = (Ox.X() * Oy.Y() - Ox.Y() * Oy.X() > 0.) ? 1 : -1;
 
   // poles expressed in the reference mark
-  poles->ChangeArray1()(1) = gp_Pnt2d((UF * UF) / (2. * p), S * UF);
-  poles->ChangeArray1()(2) = gp_Pnt2d((UF * UL) / (2. * p), S * (UF + UL) / 2.);
-  poles->ChangeArray1()(3) = gp_Pnt2d((UL * UL) / (2. * p), S * UL);
+  myPoles(1) = gp_Pnt2d((UF * UF) / (2. * p), S * UF);
+  myPoles(2) = gp_Pnt2d((UF * UL) / (2. * p), S * (UF + UL) / 2.);
+  myPoles(3) = gp_Pnt2d((UL * UL) / (2. * p), S * UL);
 
   // replace the bspline in the mark of the parabola
   gp_Trsf2d Trsf;
   Trsf.SetTransformation(Prb.Axis().XAxis(), gp::OX2d());
-  poles->ChangeArray1()(1).Transform(Trsf);
-  poles->ChangeArray1()(2).Transform(Trsf);
-  poles->ChangeArray1()(3).Transform(Trsf);
+  myPoles(1).Transform(Trsf);
+  myPoles(2).Transform(Trsf);
+  myPoles(3).Transform(Trsf);
 }

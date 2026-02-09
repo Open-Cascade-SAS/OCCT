@@ -22,17 +22,16 @@
 // 15-04-97 : PMN : Constructeurs avec un seul segement ou differentes
 //                  continuitees.
 
-#define No_Standard_OutOfRange
-
 #include <BSplCLib.hxx>
 #include <Convert_CompPolynomialToPoles.hxx>
-#include <PLib.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
+#include <NCollection_HArray2.hxx>
+#include <PLib.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <StdFail_NotDone.hxx>
 
-//=================================================================================================
+//==================================================================================================
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   const int                                       NumCurves,
@@ -43,19 +42,18 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   const occ::handle<NCollection_HArray1<double>>& Coefficients,
   const occ::handle<NCollection_HArray2<double>>& PolynomialIntervals,
   const occ::handle<NCollection_HArray1<double>>& TrueIntervals)
-    : myDone(false)
+    : myDegree(0),
+      myDone(false)
 {
-  int ii, delta;
   if (NumCurves <= 0 || NumCoeffPerCurve.IsNull() || Coefficients.IsNull()
       || PolynomialIntervals.IsNull() || TrueIntervals.IsNull() || Continuity < 0 || MaxDegree <= 0
       || Dimension <= 0 || PolynomialIntervals->RowLength() != 2)
   {
     throw Standard_ConstructionError("Convert_CompPolynomialToPoles:bad arguments");
   }
-  myDegree = 0;
 
-  delta = NumCurves - 1;
-  for (ii = NumCoeffPerCurve->Lower(); ii <= NumCoeffPerCurve->Lower() + delta; ii++)
+  const int aDelta = NumCurves - 1;
+  for (int ii = NumCoeffPerCurve->Lower(); ii <= NumCoeffPerCurve->Lower() + aDelta; ii++)
   {
     myDegree = std::max(NumCoeffPerCurve->Value(ii) - 1, myDegree);
   }
@@ -63,25 +61,21 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   {
     throw Standard_ConstructionError("Convert_CompPolynomialToPoles:Continuity is too great");
   }
-  //
-  //  prepare output
-  //
-  int Tindex, multiplicities;
 
-  myKnots = new NCollection_HArray1<double>(1, NumCurves + 1);
-  for (ii = 1, Tindex = TrueIntervals->Lower(); ii <= NumCurves + 1; ii++, Tindex++)
+  myKnots = NCollection_Array1<double>(1, NumCurves + 1);
+  for (int ii = 1, Tindex = TrueIntervals->Lower(); ii <= NumCurves + 1; ii++, Tindex++)
   {
-    myKnots->ChangeArray1().SetValue(ii, TrueIntervals->Value(Tindex));
+    myKnots.SetValue(ii, TrueIntervals->Value(Tindex));
   }
 
-  multiplicities = myDegree - Continuity;
-  myMults        = new NCollection_HArray1<int>(1, NumCurves + 1);
-  for (ii = 2; ii < NumCurves + 1; ii++)
+  const int aMultiplicities = myDegree - Continuity;
+  myMults                   = NCollection_Array1<int>(1, NumCurves + 1);
+  for (int ii = 2; ii < NumCurves + 1; ii++)
   {
-    myMults->SetValue(ii, multiplicities);
+    myMults.SetValue(ii, aMultiplicities);
   }
-  myMults->SetValue(1, myDegree + 1);
-  myMults->SetValue(NumCurves + 1, myDegree + 1);
+  myMults.SetValue(1, myDegree + 1);
+  myMults.SetValue(NumCurves + 1, myDegree + 1);
 
   Perform(NumCurves,
           MaxDegree,
@@ -101,45 +95,39 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   const NCollection_Array1<double>& Coefficients,
   const NCollection_Array2<double>& PolynomialIntervals,
   const NCollection_Array1<double>& TrueIntervals)
-    : myDone(false)
+    : myDegree(0),
+      myDone(false)
 {
-  int ii, delta;
   if (NumCurves <= 0 || MaxDegree <= 0 || Dimension <= 0 || PolynomialIntervals.RowLength() != 2)
   {
     throw Standard_ConstructionError("Convert_CompPolynomialToPoles:bad arguments");
   }
-  myDegree = 0;
 
-  delta = NumCurves - 1;
-  for (ii = NumCoeffPerCurve.Lower(); ii <= NumCoeffPerCurve.Lower() + delta; ii++)
+  const int aDelta = NumCurves - 1;
+  for (int ii = NumCoeffPerCurve.Lower(); ii <= NumCoeffPerCurve.Lower() + aDelta; ii++)
   {
     myDegree = std::max(NumCoeffPerCurve.Value(ii) - 1, myDegree);
   }
-  //
-  //  prepare output
-  //
-  int Tindex;
 
-  myKnots = new NCollection_HArray1<double>(1, NumCurves + 1);
-  for (ii = 1, Tindex = TrueIntervals.Lower(); ii <= NumCurves + 1; ii++, Tindex++)
+  myKnots = NCollection_Array1<double>(1, NumCurves + 1);
+  for (int ii = 1, Tindex = TrueIntervals.Lower(); ii <= NumCurves + 1; ii++, Tindex++)
   {
-    myKnots->ChangeArray1().SetValue(ii, TrueIntervals.Value(Tindex));
+    myKnots.SetValue(ii, TrueIntervals.Value(Tindex));
   }
 
-  myMults = new NCollection_HArray1<int>(1, NumCurves + 1);
-  for (ii = 2; ii < NumCurves + 1; ii++)
+  myMults = NCollection_Array1<int>(1, NumCurves + 1);
+  for (int ii = 2; ii < NumCurves + 1; ii++)
   {
     if ((Continuity(ii) > myDegree) && (NumCurves > 1))
     {
       throw Standard_ConstructionError("Convert_CompPolynomialToPoles:Continuity is too great");
     }
 
-    myMults->SetValue(ii, myDegree - Continuity(ii));
+    myMults.SetValue(ii, myDegree - Continuity(ii));
   }
-  myMults->SetValue(1, myDegree + 1);
-  myMults->SetValue(NumCurves + 1, myDegree + 1);
+  myMults.SetValue(1, myDegree + 1);
+  myMults.SetValue(NumCurves + 1, myDegree + 1);
 
-  // Calculs
   Perform(NumCurves,
           MaxDegree,
           Dimension,
@@ -158,7 +146,6 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   const NCollection_Array1<double>& TrueIntervals)
     : myDegree(Degree),
       myDone(false)
-
 {
   if (MaxDegree <= 0 || Dimension <= 0 || PolynomialIntervals.Length() != 2)
   {
@@ -172,14 +159,13 @@ Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   NCollection_Array1<int> NumCoeffPerCurve(1, 1);
   NumCoeffPerCurve(1) = Degree + 1;
 
-  myKnots = new NCollection_HArray1<double>(1, 2);
-  myKnots->ChangeArray1().SetValue(1, TrueIntervals.Value(TrueIntervals.Lower()));
-  myKnots->ChangeArray1().SetValue(2, TrueIntervals.Value(TrueIntervals.Lower() + 1));
+  myKnots = NCollection_Array1<double>(1, 2);
+  myKnots.SetValue(1, TrueIntervals.Value(TrueIntervals.Lower()));
+  myKnots.SetValue(2, TrueIntervals.Value(TrueIntervals.Lower() + 1));
 
-  myMults = new NCollection_HArray1<int>(1, 2);
-  myMults->Init(myDegree + 1);
+  myMults = NCollection_Array1<int>(1, 2);
+  myMults.Init(myDegree + 1);
 
-  // Calculs
   Perform(1,
           MaxDegree,
           Dimension,
@@ -197,31 +183,27 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
                                             const NCollection_Array2<double>& PolynomialIntervals,
                                             const NCollection_Array1<double>& TrueIntervals)
 {
-  int ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem, poles_index,
+  int    ii, num_flat_knots, index, Tindex, Pindex, coeff_index, inversion_problem, poles_index,
     num_poles;
   double normalized_value, *coefficient_array, *poles_array;
 
   num_flat_knots = 2 * myDegree + 2;
-  for (ii = 2; ii < myMults->Length(); ii++)
+  for (ii = 2; ii < myMults.Length(); ii++)
   {
-    num_flat_knots += myMults->Value(ii);
+    num_flat_knots += myMults.Value(ii);
   }
   num_poles = num_flat_knots - myDegree - 1;
 
-  myFlatKnots = new NCollection_HArray1<double>(1, num_flat_knots);
-  BSplCLib::KnotSequence(myKnots->Array1(),
-                         myMults->Array1(),
-                         myDegree,
-                         false,
-                         myFlatKnots->ChangeArray1());
+  myFlatKnots = NCollection_Array1<double>(1, num_flat_knots);
+  BSplCLib::KnotSequence(myKnots, myMults, myDegree, false, myFlatKnots);
 
   NCollection_Array1<double> parameters(1, num_poles);
-  BSplCLib::BuildSchoenbergPoints(myDegree, myFlatKnots->Array1(), parameters);
-  myPoles     = new NCollection_HArray2<double>(1, num_poles, 1, Dimension);
+  BSplCLib::BuildSchoenbergPoints(myDegree, myFlatKnots, parameters);
+  myPoles     = NCollection_Array2<double>(1, num_poles, 1, Dimension);
   index       = 2;
   Tindex      = TrueIntervals.Lower() + 1;
   Pindex      = PolynomialIntervals.LowerRow();
-  poles_array = (double*)&(myPoles->ChangeArray2()).Value(1, 1);
+  poles_array = (double*)&myPoles.ChangeValue(1, 1);
 
   NCollection_Array1<int> contact_array(1, num_poles);
 
@@ -262,7 +244,7 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
   // result
   //
   BSplCLib::Interpolate(myDegree,
-                        myFlatKnots->Array1(),
+                        myFlatKnots,
                         parameters,
                         contact_array,
                         Dimension,
@@ -275,68 +257,92 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
   myDone = true;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 int Convert_CompPolynomialToPoles::NbPoles() const
 {
   if (myDone)
   {
-    return myPoles->ColLength();
+    return myPoles.ColLength();
   }
-  else
-    return 0;
+  return 0;
 }
 
-//=================================================================================================
+//==================================================================================================
 
+const NCollection_Array2<double>& Convert_CompPolynomialToPoles::Poles() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "Convert_CompPolynomialToPoles::Poles");
+  return myPoles;
+}
+
+//==================================================================================================
+
+Standard_DISABLE_DEPRECATION_WARNINGS
 void Convert_CompPolynomialToPoles::Poles(occ::handle<NCollection_HArray2<double>>& P) const
 {
   if (myDone)
   {
-    P = myPoles;
+    P = new NCollection_HArray2<double>(myPoles);
   }
 }
 
-//=================================================================================================
+//==================================================================================================
 
 int Convert_CompPolynomialToPoles::NbKnots() const
 {
   if (myDone)
   {
-    return myKnots->Length();
+    return myKnots.Length();
   }
-  else
-    return 0;
+  return 0;
 }
 
-//=================================================================================================
+//==================================================================================================
+
+const NCollection_Array1<double>& Convert_CompPolynomialToPoles::Knots() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "Convert_CompPolynomialToPoles::Knots");
+  return myKnots;
+}
+
+//==================================================================================================
 
 void Convert_CompPolynomialToPoles::Knots(occ::handle<NCollection_HArray1<double>>& K) const
 {
   if (myDone)
   {
-    K = myKnots;
+    K = new NCollection_HArray1<double>(myKnots);
   }
 }
 
-//=================================================================================================
+//==================================================================================================
+
+const NCollection_Array1<int>& Convert_CompPolynomialToPoles::Multiplicities() const
+{
+  StdFail_NotDone_Raise_if(!myDone, "Convert_CompPolynomialToPoles::Multiplicities");
+  return myMults;
+}
+
+//==================================================================================================
 
 void Convert_CompPolynomialToPoles::Multiplicities(occ::handle<NCollection_HArray1<int>>& M) const
 {
   if (myDone)
   {
-    M = myMults;
+    M = new NCollection_HArray1<int>(myMults);
   }
 }
+Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+//==================================================================================================
 
 bool Convert_CompPolynomialToPoles::IsDone() const
 {
   return myDone;
 }
 
-//=================================================================================================
+//==================================================================================================
 
 int Convert_CompPolynomialToPoles::Degree() const
 {

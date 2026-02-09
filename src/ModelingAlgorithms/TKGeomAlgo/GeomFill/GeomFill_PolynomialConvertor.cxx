@@ -20,8 +20,9 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <PLib.hxx>
-#include <StdFail_NotDone.hxx>
 #include <Standard_Integer.hxx>
+#include <Standard_Macro.hxx>
+#include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
@@ -77,7 +78,9 @@ void GeomFill_PolynomialConvertor::Init()
               Coeffs,
               Inter,
               TrueInter); En attente du bon Geomlite*/
+  Standard_DISABLE_DEPRECATION_WARNINGS
   AConverter.Poles(Poles1d);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   for (jj = 1; jj <= Ordre; jj++)
   {

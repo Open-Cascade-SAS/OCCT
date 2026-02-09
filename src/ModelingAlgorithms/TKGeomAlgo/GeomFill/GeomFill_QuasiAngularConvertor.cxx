@@ -20,6 +20,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <PLib.hxx>
+#include <Standard_Macro.hxx>
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
@@ -93,7 +94,9 @@ void GeomFill_QuasiAngularConvertor::Init()
 
   // Convertion
   Convert_CompPolynomialToPoles AConverter(Ordre, Ordre - 1, Ordre - 1, Coeffs, Inter, TrueInter);
+  Standard_DISABLE_DEPRECATION_WARNINGS
   AConverter.Poles(Poles1d);
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
   for (jj = 1; jj <= Ordre; jj++)
   {

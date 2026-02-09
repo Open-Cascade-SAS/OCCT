@@ -21,7 +21,9 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 
-typedef void Convert_CosAndSinEvalFunction(double,
+//! Function type for evaluating cos and sin representations
+//! used in rational curve parameterization.
+using Convert_CosAndSinEvalFunction = void(double,
                                            const int,
                                            const NCollection_Array1<gp_Pnt2d>&,
                                            const NCollection_Array1<double>&,
