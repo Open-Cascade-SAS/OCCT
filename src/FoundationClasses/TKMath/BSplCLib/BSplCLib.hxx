@@ -471,6 +471,12 @@ public:
   //! @return array of unit weights with bounds [1, theNbElems]
   Standard_EXPORT static NCollection_Array1<double> UnitWeights(const int theNbElems);
 
+  //! Returns a pointer to the pre-allocated unit weights static array.
+  //! The array contains MaxUnitWeightsSize() elements, all equal to 1.0.
+  //! @warning Do NOT modify elements through this pointer.
+  //! @return pointer to the first element of the static unit weights array
+  Standard_EXPORT static const double* UnitWeightsData();
+
   //! Stores in LK the useful knots for the BoorSchem
   //! on the span Knots(Index) - Knots(Index+1)
   Standard_EXPORT static void BuildKnots(const int                         Degree,

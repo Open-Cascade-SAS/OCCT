@@ -49,7 +49,7 @@ bool ShapeUpgrade::C0BSplineToSequenceOfC1BSplineCurve(
 
   int                              deg = BS->Degree();
   const NCollection_Array1<gp_Pnt>& Poles = BS->Poles();
-  const NCollection_Array1<double>  Weights = BS->WeightsArray();
+  const NCollection_Array1<double>& Weights = BS->WeightsArray();
   const NCollection_Array1<double>& Knots       = BS->Knots();
   const NCollection_Array1<int>&    Mults       = BS->Multiplicities();
   const NCollection_Array1<double>& KnotSequence = BS->KnotSequence();
@@ -122,7 +122,7 @@ static occ::handle<Geom_BSplineCurve> BSplineCurve2dTo3d(const occ::handle<Geom2
   int                                deg     = BS->Degree();
   int                                NbPoles = BS->NbPoles();
   const NCollection_Array1<gp_Pnt2d>& Poles2d = BS->Poles();
-  const NCollection_Array1<double>   Weights = BS->WeightsArray();
+  const NCollection_Array1<double>&  Weights = BS->WeightsArray();
   const NCollection_Array1<double>& Knots = BS->Knots();
   const NCollection_Array1<int>&    Mults = BS->Multiplicities();
 
@@ -140,7 +140,7 @@ static occ::handle<Geom2d_BSplineCurve> BSplineCurve3dTo2d(const occ::handle<Geo
   int                              deg     = BS->Degree();
   int                              NbPoles = BS->NbPoles();
   const NCollection_Array1<gp_Pnt>& Poles3d = BS->Poles();
-  const NCollection_Array1<double> Weights = BS->WeightsArray();
+  const NCollection_Array1<double>& Weights = BS->WeightsArray();
   const NCollection_Array1<double>& Knots = BS->Knots();
   const NCollection_Array1<int>&    Mults = BS->Multiplicities();
 

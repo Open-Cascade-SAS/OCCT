@@ -299,17 +299,12 @@ public:
     return myRational ? &myWeights : BSplCLib::NoWeights();
   }
 
-  //! Returns weights as an array object (zero allocation).
-  //! For rational curves: returns a non-owning view of internal weights.
-  //! For non-rational curves: returns a non-owning view of unit weights from BSplCLib.
-  //! @warning The returned array does NOT own its memory. Do NOT modify elements.
-  Standard_EXPORT NCollection_Array1<double> WeightsArray() const;
-
-  //! Returns weights as an array object that always owns its memory.
-  //! For rational curves: returns a copy of internal weights.
-  //! For non-rational curves: returns a newly allocated array filled with 1.0.
-  //! The returned array is safe to modify.
-  Standard_EXPORT NCollection_Array1<double> CopyWeightsArray() const;
+  //! Returns a const reference to the weights array.
+  //! For rational curves: the internal owning weights array.
+  //! For non-rational curves: a non-owning view of unit weights from BSplCLib.
+  //! The array is always sized to match NbPoles().
+  //! @warning Do NOT modify elements through the returned reference.
+  const NCollection_Array1<double>& WeightsArray() const { return myWeights; }
 
   //! Applies the transformation T to this Bezier curve.
   Standard_EXPORT void Transform(const gp_Trsf& T) override;

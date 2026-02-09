@@ -454,12 +454,8 @@ occ::handle<Geom_Surface> ShapeCustom_Surface::ConvertToPeriodic(const bool   su
     if (BSpl->UMultiplicity(1) == BSpl->UDegree() + 1
         && BSpl->UMultiplicity(BSpl->NbUKnots()) == BSpl->UDegree() + 1)
     {
-      const NCollection_Array2<gp_Pnt>& oldPoles = BSpl->Poles();
-      NCollection_Array2<double>       oldWeights(1, BSpl->NbUPoles(), 1, BSpl->NbVPoles());
-      if (const NCollection_Array2<double>* aW = BSpl->Weights())
-        oldWeights = *aW;
-      else
-        oldWeights.Init(1.);
+      const NCollection_Array2<gp_Pnt>&   oldPoles   = BSpl->Poles();
+      const NCollection_Array2<double>& oldWeights = BSpl->WeightsArray();
       int                              nbUKnots = BSpl->NbUKnots();
       const NCollection_Array1<double>& oldUKnots = BSpl->UKnots();
       const NCollection_Array1<double>& oldVKnots = BSpl->VKnots();
@@ -509,12 +505,8 @@ occ::handle<Geom_Surface> ShapeCustom_Surface::ConvertToPeriodic(const bool   su
     if (BSpl->VMultiplicity(1) == BSpl->VDegree() + 1
         && BSpl->VMultiplicity(BSpl->NbVKnots()) == BSpl->VDegree() + 1)
     {
-      const NCollection_Array2<gp_Pnt>& oldPoles = BSpl->Poles();
-      NCollection_Array2<double>       oldWeights(1, BSpl->NbUPoles(), 1, BSpl->NbVPoles());
-      if (const NCollection_Array2<double>* aW = BSpl->Weights())
-        oldWeights = *aW;
-      else
-        oldWeights.Init(1.);
+      const NCollection_Array2<gp_Pnt>&   oldPoles   = BSpl->Poles();
+      const NCollection_Array2<double>& oldWeights = BSpl->WeightsArray();
       int                              nbVKnots = BSpl->NbVKnots();
       const NCollection_Array1<double>& oldUKnots = BSpl->UKnots();
       const NCollection_Array1<double>& oldVKnots = BSpl->VKnots();

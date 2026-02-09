@@ -934,6 +934,10 @@ void Geom_BSplineSurface::SetUPeriodic()
   {
     myWeights.ResizeWithTrim(1, nbp, myWeights.LowerCol(), myWeights.UpperCol(), true);
   }
+  else
+  {
+    myWeights = BSplSLib::UnitWeights(nbp, myPoles.RowLength());
+  }
 
   myUPeriodic = true;
 
@@ -967,6 +971,10 @@ void Geom_BSplineSurface::SetVPeriodic()
   if (myURational || myVRational)
   {
     myWeights.ResizeWithTrim(myWeights.LowerRow(), myWeights.UpperRow(), 1, nbp, true);
+  }
+  else
+  {
+    myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), nbp);
   }
 
   myVPeriodic = true;
@@ -1064,6 +1072,7 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
       }
       k++;
     }
+    myWeights = BSplSLib::UnitWeights(nbpoles, nbvp);
   }
 
   myPoles  = std::move(newpoles);
@@ -1161,6 +1170,7 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
       }
       k++;
     }
+    myWeights = BSplSLib::UnitWeights(nbup, nbpoles);
   }
 
   myPoles  = std::move(newpoles);
@@ -1212,6 +1222,7 @@ void Geom_BSplineSurface::SetUNotPeriodic()
                             nknots,
                             npoles,
                             BSplSLib::NoWeights());
+      myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
     }
     myPoles     = std::move(npoles);
     myUMults    = std::move(nmults);
@@ -1266,6 +1277,7 @@ void Geom_BSplineSurface::SetVNotPeriodic()
                             nknots,
                             npoles,
                             BSplSLib::NoWeights());
+      myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
     }
     myPoles     = std::move(npoles);
     myVMults    = std::move(nmults);
@@ -1816,6 +1828,7 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
                           nmults,
                           ParametricTolerance,
                           Add);
+    myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
   }
 
   myPoles  = std::move(npoles);
@@ -1890,6 +1903,7 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
                           nmults,
                           ParametricTolerance,
                           Add);
+    myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
   }
 
   myPoles  = std::move(npoles);
@@ -1962,6 +1976,7 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
                               nmults,
                               Tolerance))
       return false;
+    myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
   }
 
   myPoles  = std::move(npoles);
@@ -2037,6 +2052,7 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
                               nmults,
                               Tolerance))
       return false;
+    myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
   }
 
   myPoles         = std::move(npoles);

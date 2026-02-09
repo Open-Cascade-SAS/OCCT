@@ -682,16 +682,18 @@ TEST_F(Geom_BSplineCurve_Test, WeightsArray_NonRational_ReturnsUnitWeights)
 {
   ASSERT_FALSE(myOriginalCurve->IsRational());
 
-  const NCollection_Array1<double> aWeights = myOriginalCurve->WeightsArray();
+  const NCollection_Array1<double>& aWeights = myOriginalCurve->WeightsArray();
   EXPECT_EQ(aWeights.Length(), myOriginalCurve->NbPoles());
   EXPECT_FALSE(aWeights.IsDeletable());
   for (int i = 1; i <= aWeights.Length(); ++i)
   {
     EXPECT_DOUBLE_EQ(aWeights(i), 1.0);
   }
+  // Verify that the reference is stable
+  EXPECT_EQ(&aWeights, &myOriginalCurve->WeightsArray());
 }
 
-TEST_F(Geom_BSplineCurve_Test, WeightsArray_Rational_ReturnsCopy)
+TEST_F(Geom_BSplineCurve_Test, WeightsArray_Rational_ReturnsOwning)
 {
   // Create a rational BSpline
   NCollection_Array1<gp_Pnt> aPoles(1, 4);
@@ -718,27 +720,13 @@ TEST_F(Geom_BSplineCurve_Test, WeightsArray_Rational_ReturnsCopy)
     new Geom_BSplineCurve(aPoles, aWeightsIn, aKnots, aMults, 3);
   ASSERT_TRUE(aRational->IsRational());
 
-  const NCollection_Array1<double> aWeights = aRational->WeightsArray();
+  const NCollection_Array1<double>& aWeights = aRational->WeightsArray();
   EXPECT_EQ(aWeights.Length(), 4);
-  EXPECT_FALSE(aWeights.IsDeletable());
+  EXPECT_TRUE(aWeights.IsDeletable());
   EXPECT_DOUBLE_EQ(aWeights(1), 1.0);
   EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
   EXPECT_DOUBLE_EQ(aWeights(3), 3.0);
   EXPECT_DOUBLE_EQ(aWeights(4), 1.0);
-}
-
-TEST_F(Geom_BSplineCurve_Test, CopyWeightsArray_NonRational_ReturnsOwning)
-{
-  ASSERT_FALSE(myOriginalCurve->IsRational());
-
-  NCollection_Array1<double> aWeights = myOriginalCurve->CopyWeightsArray();
-  EXPECT_EQ(aWeights.Length(), myOriginalCurve->NbPoles());
-  EXPECT_TRUE(aWeights.IsDeletable());
-  for (int i = 1; i <= aWeights.Length(); ++i)
-  {
-    EXPECT_DOUBLE_EQ(aWeights(i), 1.0);
-  }
-  // Verify it is safe to modify
-  aWeights(1) = 2.0;
-  EXPECT_DOUBLE_EQ(aWeights(1), 2.0);
+  // Verify that the reference is stable
+  EXPECT_EQ(&aWeights, &aRational->WeightsArray());
 }

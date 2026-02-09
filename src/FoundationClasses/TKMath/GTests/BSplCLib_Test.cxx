@@ -16,7 +16,7 @@
 #include <BSplCLib.hxx>
 #include <NCollection_Array1.hxx>
 
-TEST(BSplCLib_UnitWeightsTest, SmallSize_ReturnsNonOwning)
+TEST(BSplCLibTest, UnitWeights_SmallSize_ReturnsNonOwning)
 {
   const int                        aNbElems = 10;
   const NCollection_Array1<double> aWeights = BSplCLib::UnitWeights(aNbElems);
@@ -32,7 +32,7 @@ TEST(BSplCLib_UnitWeightsTest, SmallSize_ReturnsNonOwning)
   }
 }
 
-TEST(BSplCLib_UnitWeightsTest, MaxSize_ReturnsNonOwning)
+TEST(BSplCLibTest, UnitWeights_MaxSize_ReturnsNonOwning)
 {
   const int                        aNbElems = BSplCLib::MaxUnitWeightsSize();
   const NCollection_Array1<double> aWeights = BSplCLib::UnitWeights(aNbElems);
@@ -44,7 +44,7 @@ TEST(BSplCLib_UnitWeightsTest, MaxSize_ReturnsNonOwning)
   EXPECT_DOUBLE_EQ(aWeights(aNbElems), 1.0);
 }
 
-TEST(BSplCLib_UnitWeightsTest, OverMaxSize_ReturnsOwning)
+TEST(BSplCLibTest, UnitWeights_OverMaxSize_ReturnsOwning)
 {
   const int                        aNbElems = BSplCLib::MaxUnitWeightsSize() + 1;
   const NCollection_Array1<double> aWeights = BSplCLib::UnitWeights(aNbElems);
@@ -60,7 +60,7 @@ TEST(BSplCLib_UnitWeightsTest, OverMaxSize_ReturnsOwning)
   }
 }
 
-TEST(BSplCLib_UnitWeightsTest, SingleElement)
+TEST(BSplCLibTest, UnitWeights_SingleElement)
 {
   const NCollection_Array1<double> aWeights = BSplCLib::UnitWeights(1);
 
@@ -69,7 +69,7 @@ TEST(BSplCLib_UnitWeightsTest, SingleElement)
   EXPECT_DOUBLE_EQ(aWeights(1), 1.0);
 }
 
-TEST(BSplCLib_UnitWeightsTest, MaxUnitWeightsSize_IsPositive)
+TEST(BSplCLibTest, MaxUnitWeightsSize_IsPositive)
 {
   EXPECT_GT(BSplCLib::MaxUnitWeightsSize(), 0);
   EXPECT_EQ(BSplCLib::MaxUnitWeightsSize(), 2049);

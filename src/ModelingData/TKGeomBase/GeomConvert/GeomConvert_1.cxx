@@ -521,7 +521,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       // Poles of meridian = Vpoles
       NbVPoles = C->NbPoles();
       NCollection_Array1<gp_Pnt>       Poles(C->Poles());
-      const NCollection_Array1<double> Weights = C->WeightsArray();
+      const NCollection_Array1<double>& Weights = C->WeightsArray();
 
       double AlfaU;
       if (Strim->IsUPeriodic())
@@ -761,7 +761,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       // Poles of meridian = Vpoles
       NbVPoles = C->NbPoles();
       NCollection_Array1<gp_Pnt>       Poles(C->Poles());
-      const NCollection_Array1<double> Weights = C->WeightsArray();
+      const NCollection_Array1<double>& Weights = C->WeightsArray();
 
       double AlfaU;
       NbUKnots = 4;

@@ -535,6 +535,13 @@ public:
     return (myURational || myVRational) ? &myWeights : BSplSLib::NoWeights();
   }
 
+  //! Returns a const reference to the weights array.
+  //! For rational surfaces: the internal owning weights array.
+  //! For non-rational surfaces: a non-owning view of unit weights from BSplSLib.
+  //! The array is always sized to match NbUPoles() x NbVPoles().
+  //! @warning Do NOT modify elements through the returned reference.
+  const NCollection_Array2<double>& WeightsArray() const { return myWeights; }
+
   //! Returns True if the first control points row and the
   //! last control points row are identical. The tolerance
   //! criterion is Resolution from package gp.

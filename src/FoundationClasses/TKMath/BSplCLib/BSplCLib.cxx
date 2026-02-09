@@ -4661,3 +4661,10 @@ NCollection_Array1<double> BSplCLib::UnitWeights(const int theNbElems)
   aResult.Init(1.0);
   return aResult;
 }
+
+//==================================================================================================
+
+const double* BSplCLib::UnitWeightsData()
+{
+  return THE_UNIT_WEIGHTS.Data;
+}

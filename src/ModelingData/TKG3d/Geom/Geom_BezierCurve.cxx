@@ -63,7 +63,8 @@ static bool Rational(const NCollection_Array1<double>& W)
 
 Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
-      myWeights(theOther.myWeights),
+      myWeights(theOther.myRational ? NCollection_Array1<double>(theOther.myWeights)
+                                    : BSplCLib::UnitWeights(theOther.myPoles.Length())),
       myRational(theOther.myRational),
       myClosed(theOther.myClosed),
       myMaxDerivInvOk(false)
@@ -410,9 +411,8 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
     if (std::abs(Weight - 1.) <= gp::Resolution())
       return;
 
-    // set weights of 1.
-    myWeights.Resize(1, nbpoles, false);
-    myWeights.Init(1.);
+    // Becoming rational: copy non-owning view to owned array.
+    myWeights = NCollection_Array1<double>(myWeights);
   }
 
   myWeights(Index) = Weight;
@@ -421,7 +421,7 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
   if (wasrat && !Rational(myWeights))
   {
     myRational = false;
-    myWeights  = NCollection_Array1<double>();
+    myWeights  = BSplCLib::UnitWeights(nbpoles);
   }
   else
     myRational = true;
@@ -601,33 +601,6 @@ void Geom_BezierCurve::Weights(NCollection_Array1<double>& W) const
   }
 }
 
-//==================================================================================================
-
-NCollection_Array1<double> Geom_BezierCurve::WeightsArray() const
-{
-  if (IsRational())
-  {
-    // Non-owning view over internal weights (zero allocation).
-    return NCollection_Array1<double>(myWeights(myWeights.Lower()),
-                                      myWeights.Lower(),
-                                      myWeights.Upper());
-  }
-  return BSplCLib::UnitWeights(NbPoles());
-}
-
-//==================================================================================================
-
-NCollection_Array1<double> Geom_BezierCurve::CopyWeightsArray() const
-{
-  if (IsRational())
-  {
-    return NCollection_Array1<double>(myWeights);
-  }
-  NCollection_Array1<double> aResult(1, NbPoles());
-  aResult.Init(1.0);
-  return aResult;
-}
-
 //=================================================================================================
 
 void Geom_BezierCurve::Transform(const gp_Trsf& T)
@@ -686,13 +659,13 @@ void Geom_BezierCurve::init(const NCollection_Array1<gp_Pnt>& thePoles,
     myRational = Rational(myWeights);
     if (!myRational)
     {
-      myWeights = NCollection_Array1<double>();
+      myWeights = BSplCLib::UnitWeights(nbpoles);
     }
   }
   else
   {
     myRational = false;
-    myWeights  = NCollection_Array1<double>();
+    myWeights  = BSplCLib::UnitWeights(nbpoles);
   }
 
   myMaxDerivInv   = 0.0;

@@ -188,7 +188,7 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
 
     int                              nbPoles = bspl->NbPoles();
     const NCollection_Array1<gp_Pnt>& poles   = bspl->Poles();
-    const NCollection_Array1<double> weights = bspl->WeightsArray();
+    const NCollection_Array1<double>& weights = bspl->WeightsArray();
     const NCollection_Array1<double>& knots = bspl->Knots();
     const NCollection_Array1<int>&    mults = bspl->Multiplicities();
 

@@ -3844,3 +3844,23 @@ void BSplSLib::FunctionMultiply(const BSplSLib_EvaluatorFunction& Function,
     throw Standard_ConstructionError();
   }
 }
+
+//==================================================================================================
+
+NCollection_Array2<double> BSplSLib::UnitWeights(const int theNbUPoles, const int theNbVPoles)
+{
+  const int aTotal = theNbUPoles * theNbVPoles;
+  if (aTotal <= BSplCLib::MaxUnitWeightsSize())
+  {
+    // Non-owning view over global static array (zero allocation).
+    return NCollection_Array2<double>(BSplCLib::UnitWeightsData()[0],
+                                      1,
+                                      theNbUPoles,
+                                      1,
+                                      theNbVPoles);
+  }
+  // Rare: allocate fresh array.
+  NCollection_Array2<double> aResult(1, theNbUPoles, 1, theNbVPoles);
+  aResult.Init(1.0);
+  return aResult;
+}

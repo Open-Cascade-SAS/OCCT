@@ -5,5 +5,6 @@ set(OCCT_TKGeomBase_GTests_FILES
   BndLib_Test.cxx
   Extrema_ExtPC_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
+  Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
 )

@@ -1072,6 +1072,13 @@ public:
   Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array2<double>& W) const;
 
+  //! Returns a const reference to the weights array.
+  //! For rational surfaces: the internal owning weights array.
+  //! For non-rational surfaces: a non-owning view of unit weights from BSplSLib.
+  //! The array is always sized to match NbUPoles() x NbVPoles().
+  //! @warning Do NOT modify elements through the returned reference.
+  const NCollection_Array2<double>& WeightsArray() const { return myWeights; }
+
   //! Returns the weights of the B-spline surface.
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;

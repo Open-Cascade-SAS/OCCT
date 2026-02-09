@@ -769,6 +769,17 @@ public:
                                                NCollection_Array2<gp_Pnt>&       NewNumerator,
                                                NCollection_Array2<double>&       NewDenominator,
                                                int&                              theStatus);
+
+  //! Returns an NCollection_Array2<double> filled with 1.0 values.
+  //! If theNbUPoles * theNbVPoles <= BSplCLib::MaxUnitWeightsSize(),
+  //! references a pre-allocated global array (zero allocation).
+  //! Otherwise, allocates a new array and fills with 1.0.
+  //! @warning The returned array may reference global static memory — do NOT modify elements.
+  //! @param[in] theNbUPoles number of poles in U direction
+  //! @param[in] theNbVPoles number of poles in V direction
+  //! @return array of unit weights with bounds [1, theNbUPoles] x [1, theNbVPoles]
+  Standard_EXPORT static NCollection_Array2<double> UnitWeights(const int theNbUPoles,
+                                                                const int theNbVPoles);
 };
 
 #include <BSplSLib.lxx>

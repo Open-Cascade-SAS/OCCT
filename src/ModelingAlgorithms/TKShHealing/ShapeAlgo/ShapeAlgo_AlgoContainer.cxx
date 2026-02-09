@@ -134,7 +134,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
 
   int                              NbPoles = bspline->NbPoles();
   const NCollection_Array1<gp_Pnt>& Poles  = bspline->Poles();
-  const NCollection_Array1<double> Weigs = bspline->WeightsArray();
+  const NCollection_Array1<double>& Weigs = bspline->WeightsArray();
   const NCollection_Array1<double>& Knots = bspline->Knots();
   const NCollection_Array1<int>&    Mults = bspline->Multiplicities();
   int deg = bspline->Degree();
@@ -270,7 +270,7 @@ void ShapeAlgo_AlgoContainer::ApproxBSplineCurve(
 
   int                                NbPoles = bspline->NbPoles();
   const NCollection_Array1<gp_Pnt2d>& Poles  = bspline->Poles();
-  const NCollection_Array1<double>   Weigs = bspline->WeightsArray();
+  const NCollection_Array1<double>&   Weigs = bspline->WeightsArray();
   const NCollection_Array1<double>& Knots = bspline->Knots();
   const NCollection_Array1<int>&    Mults = bspline->Multiplicities();
   int deg = bspline->Degree();

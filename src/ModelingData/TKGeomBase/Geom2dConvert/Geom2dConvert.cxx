@@ -992,7 +992,7 @@ void Geom2dConvert::ConcatG1(
         BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
         NCollection_Array1<gp_Pnt2d> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
         int                          aStatus;
-        const NCollection_Array1<double> Curve1Weights = Curve1->WeightsArray();
+        const NCollection_Array1<double>& Curve1Weights = Curve1->WeightsArray();
         for (ii = 1; ii <= Curve1->NbPoles(); ii++)
           for (jj = 1; jj <= 2; jj++)
             Curve1Poles(ii).SetCoord(jj, Curve1Poles(ii).Coord(jj) * Curve1Weights(ii));
@@ -1255,7 +1255,7 @@ void Geom2dConvert::ConcatC1(
           BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
           NCollection_Array1<gp_Pnt2d> NewPoles(1, FlatKnots.Length() - (aNewCurveDegree + 1));
           int                          aStatus;
-          const NCollection_Array1<double> Curve1Weights = Curve1->WeightsArray();
+          const NCollection_Array1<double>& Curve1Weights = Curve1->WeightsArray();
           for (ii = 1; ii <= Curve1->NbPoles(); ii++)
             for (jj = 1; jj <= 2; jj++)
               Curve1Poles(ii).SetCoord(jj, Curve1Poles(ii).Coord(jj) * Curve1Weights(ii));
