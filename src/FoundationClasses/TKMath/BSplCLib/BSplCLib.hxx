@@ -466,7 +466,7 @@ public:
   //! Returns an NCollection_Array1<double> filled with 1.0 values.
   //! If theNbElems <= MaxUnitWeightsSize(), references a pre-allocated global array
   //! (zero allocation). Otherwise, allocates a new array and fills with 1.0.
-  //! @warning The returned array may reference global static memory — do NOT modify elements.
+  //! @warning The returned array may reference global static memory -- do NOT modify elements.
   //! @param[in] theNbElems the number of elements in the returned array
   //! @return array of unit weights with bounds [1, theNbElems]
   Standard_EXPORT static NCollection_Array1<double> UnitWeights(const int theNbElems);

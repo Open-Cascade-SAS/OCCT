@@ -55,7 +55,7 @@ static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_A
   // Evaluate the weight function w(u) = sum_i N_i,p(u) * w_i and its derivative
   // at u=0 and u=1. The weight function of a rational BSpline is itself a polynomial
   // BSpline of the same degree, with weight values as scalar "poles" and no rational
-  // denominator — hence Weights is passed as Poles, with NoWeights() for unweighted evaluation.
+  // denominator -- hence Weights is passed as Poles, with NoWeights() for unweighted evaluation.
   BSplCLib::D1(0.0,
                Index0,
                Degree,
@@ -111,7 +111,7 @@ static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
   // Evaluate the weight function w(u) = sum_i N_i,p(u) * w_i and its derivative
   // at u=0 and u=1. The weight function of a rational BSpline is itself a polynomial
   // BSpline of the same degree, with weight values as scalar "poles" and no rational
-  // denominator — hence Weights is passed as Poles, with NoWeights() for unweighted evaluation.
+  // denominator -- hence Weights is passed as Poles, with NoWeights() for unweighted evaluation.
   BSplCLib::D1(0.0,
                Index0,
                Degree,

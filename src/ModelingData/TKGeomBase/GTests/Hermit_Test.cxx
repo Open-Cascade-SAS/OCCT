@@ -113,7 +113,7 @@ TEST(HermitTest, Solution3D_DistinctWeights_ReturnsValidCurve)
 
 TEST(HermitTest, Solution3D_HighWeightRatio_Endpoint)
 {
-  // Large weight ratio: w(0) small, w(1) large → tests the Pole0 < Pole3 branch
+  // Large weight ratio: w(0) small, w(1) large - tests the Pole0 < Pole3 branch
   Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(0.5, 1.0, 5.0);
 
   Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
@@ -130,7 +130,7 @@ TEST(HermitTest, Solution3D_HighWeightRatio_Endpoint)
 
 TEST(HermitTest, Solution3D_ReversedWeightRatio_Endpoint)
 {
-  // Reversed ratio: w(0) large, w(1) small → tests the Pole0 > Pole3 branch
+  // Reversed ratio: w(0) large, w(1) small - tests the Pole0 > Pole3 branch
   Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(5.0, 1.0, 0.5);
 
   Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
@@ -236,7 +236,7 @@ TEST(HermitTest, Solutionbis_DistinctWeights_ReturnsValidKnots)
 
 TEST(HermitTest, Solution3D_Symmetric_WeightsProduceSymmetricResult)
 {
-  // Symmetric weights: w(0) == w(1) → a(0) == a(1)
+  // Symmetric weights: w(0) == w(1), so a(0) == a(1)
   Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(2.0, 1.0, 2.0);
 
   Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
