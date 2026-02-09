@@ -41,16 +41,16 @@ public:
   public:
     //! Constructor
     Node(const TheItemType& theItem)
-        : NCollection_SeqNode()
+        : NCollection_SeqNode(),
+          myValue(theItem)
     {
-      myValue = theItem;
     }
 
     //! Constructor
     Node(TheItemType&& theItem)
-        : NCollection_SeqNode()
+        : NCollection_SeqNode(),
+          myValue(std::forward<TheItemType>(theItem))
     {
-      myValue = std::forward<TheItemType>(theItem);
     }
 
     //! Constructor with in-place value construction

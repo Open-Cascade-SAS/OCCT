@@ -17,7 +17,6 @@
 #include <BSplCLib.hxx>
 #include <gp.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Sequence.hxx>
 #include <Precision.hxx>
 
@@ -52,7 +51,7 @@ public:
     if (!mySequence.IsEmpty())
     {
       [[maybe_unused]] const PointType& aP1 =
-        mySequence.Last()->Value(mySequence.Last()->Upper());
+        mySequence.Last().Value(mySequence.Last().Upper());
       [[maybe_unused]] const PointType& aP2 = thePoles(thePoles.Lower());
 
 #ifdef OCCT_DEBUG
@@ -61,10 +60,7 @@ public:
 #endif
     }
     myDone = false;
-    occ::handle<NCollection_HArray1<PointType>> anHPoles =
-      new NCollection_HArray1<PointType>(thePoles.Lower(), thePoles.Upper());
-    anHPoles->ChangeArray1() = thePoles;
-    mySequence.Append(anHPoles);
+    mySequence.Append(thePoles);
   }
 
   //! Computes all the data needed to build a BSpline curve
@@ -83,7 +79,7 @@ public:
     myDegree = 0;
     for (int i = 1; i <= mySequence.Length(); i++)
     {
-      myDegree = std::max(myDegree, mySequence(i)->Length() - 1);
+      myDegree = std::max(myDegree, mySequence(i).Length() - 1);
     }
 
     double    aDet = 0;
@@ -94,19 +90,19 @@ public:
     for (int i = aLowerI; i <= anUpperI; i++)
     {
       // 1- Raise the Bezier curve to the maximum degree.
-      const int aDeg = mySequence(i)->Length() - 1;
+      const int aDeg = mySequence(i).Length() - 1;
       const int anInc = myDegree - aDeg;
       if (anInc > 0)
       {
         BSplCLib::IncreaseDegree(myDegree,
-                                 mySequence(i)->Array1(),
+                                 mySequence(i),
                                  BSplCLib::NoWeights(),
                                  aPoints,
                                  BSplCLib::NoWeights());
       }
       else
       {
-        aPoints = mySequence(i)->Array1();
+        aPoints = mySequence(i);
       }
 
       // 2- Process the node of junction between 2 Bezier curves.
@@ -231,7 +227,7 @@ public:
   }
 
 private:
-  NCollection_Sequence<occ::handle<NCollection_HArray1<PointType>>> mySequence;
+  NCollection_Sequence<NCollection_Array1<PointType>> mySequence;
   NCollection_Sequence<PointType>                                    myCurvePoles;
   NCollection_Sequence<double>                                       myCurveKnots;
   NCollection_Sequence<int>                                          myKnotsMults;
