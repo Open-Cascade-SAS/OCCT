@@ -18,8 +18,6 @@
 #include <gp.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Sequence.hxx>
-#include <Precision.hxx>
-
 #include <type_traits>
 
 class gp_Pnt;
@@ -45,20 +43,7 @@ public:
   //! Adds the Bezier curve defined by the table of poles to
   //! the sequence of adjacent Bezier curves to be converted.
   //! @param[in] thePoles poles of the Bezier curve to add
-  void AddCurve(const NCollection_Array1<PointType>& thePoles)
-  {
-    if (!mySequence.IsEmpty())
-    {
-      [[maybe_unused]] const PointType& aP1 = mySequence.Last().Value(mySequence.Last().Upper());
-      [[maybe_unused]] const PointType& aP2 = thePoles(thePoles.Lower());
-
-#ifdef OCCT_DEBUG
-      if (!aP1.IsEqual(aP2, Precision::Confusion()))
-        std::cout << "Convert_CompBezierCurvesToBSplineCurve::AddCurve" << std::endl;
-#endif
-    }
-    mySequence.Append(thePoles);
-  }
+  void AddCurve(const NCollection_Array1<PointType>& thePoles) { mySequence.Append(thePoles); }
 
   //! Computes all the data needed to build a BSpline curve
   //! equivalent to the adjacent Bezier curve sequence.
