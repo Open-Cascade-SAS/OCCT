@@ -67,6 +67,10 @@ public:
     myCurvePoles.Clear();
     myCurveKnots.Clear();
     myKnotsMults.Clear();
+    if (mySequence.IsEmpty())
+    {
+      return;
+    }
     const int                  aLowerI  = 1;
     const int                  anUpperI = mySequence.Length();
     const int                  aNbrCurv = anUpperI - aLowerI + 1;
