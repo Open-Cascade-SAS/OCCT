@@ -1114,7 +1114,7 @@ void Geom_BSplineCurve::DumpJson(Standard_OStream& theOStream, int theDepth) con
   if (myPoles.Size() > 0)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myPoles.Size())
 
-  if (myWeights.Size() > 0)
+  if (myRational)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myWeights.Size())
   if (myFlatKnots.Size() > 0)
     OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFlatKnots.Size())

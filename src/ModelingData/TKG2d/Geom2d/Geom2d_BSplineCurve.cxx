@@ -510,6 +510,7 @@ void Geom2d_BSplineCurve::InsertPoleAfter(const int Index, const gp_Pnt2d& P, co
     myWeights = std::move(nweights);
   else
     myWeights = BSplCLib::UnitWeights(myPoles.Length());
+  myRational      = rat;
   myKnots         = std::move(nknots);
   myMults         = std::move(nmults);
   myMaxDerivInvOk = false;
