@@ -62,30 +62,19 @@ static occ::handle<Geom_BSplineCurve> BSplineCurveBuilder(
   const Convert_ConicToBSplineCurve& Convert)
 
 {
-  occ::handle<Geom_BSplineCurve> TheCurve;
-  int                            NbPoles = Convert.NbPoles();
-  int                            NbKnots = Convert.NbKnots();
-  NCollection_Array1<gp_Pnt>     Poles(1, NbPoles);
-  NCollection_Array1<double>     Weights(1, NbPoles);
-  NCollection_Array1<double>     Knots(1, NbKnots);
-  NCollection_Array1<int>        Mults(1, NbKnots);
-  int                            i;
-  gp_Pnt2d                       P2d;
-  gp_Pnt                         P3d;
-  for (i = 1; i <= NbPoles; i++)
+  occ::handle<Geom_BSplineCurve>      TheCurve;
+  const NCollection_Array1<gp_Pnt2d>& aPoles2d = Convert.Poles();
+  const NCollection_Array1<double>&   aWeights = Convert.Weights();
+  const NCollection_Array1<double>&   aKnots   = Convert.Knots();
+  const NCollection_Array1<int>&      aMults   = Convert.Multiplicities();
+  NCollection_Array1<gp_Pnt>          Poles(1, aPoles2d.Length());
+  for (int i = aPoles2d.Lower(); i <= aPoles2d.Upper(); i++)
   {
-    P2d = Convert.Pole(i);
-    P3d.SetCoord(P2d.X(), P2d.Y(), 0.0);
-    Poles(i)   = P3d;
-    Weights(i) = Convert.Weight(i);
-  }
-  for (i = 1; i <= NbKnots; i++)
-  {
-    Knots(i) = Convert.Knot(i);
-    Mults(i) = Convert.Multiplicity(i);
+    const gp_Pnt2d& aP2d = aPoles2d(i);
+    Poles(i).SetCoord(aP2d.X(), aP2d.Y(), 0.0);
   }
   TheCurve =
-    new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Convert.Degree(), Convert.IsPeriodic());
+    new Geom_BSplineCurve(Poles, aWeights, aKnots, aMults, Convert.Degree(), Convert.IsPeriodic());
   gp_Trsf T;
   T.SetTransformation(TheConic->Position(), gp::XOY());
   occ::handle<Geom_BSplineCurve> Cres;

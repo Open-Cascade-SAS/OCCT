@@ -20,8 +20,8 @@
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <PLib.hxx>
-#include <StdFail_NotDone.hxx>
 #include <Standard_Integer.hxx>
+#include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
@@ -77,7 +77,7 @@ void GeomFill_PolynomialConvertor::Init()
               Coeffs,
               Inter,
               TrueInter); En attente du bon Geomlite*/
-  AConverter.Poles(Poles1d);
+  Poles1d = new NCollection_HArray2<double>(AConverter.Poles());
 
   for (jj = 1; jj <= Ordre; jj++)
   {

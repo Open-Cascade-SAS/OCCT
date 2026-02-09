@@ -48,15 +48,9 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
-#include <Standard_Integer.hxx>
 
-typedef Geom_Surface               Surface;
-typedef Geom_BSplineSurface        BSplineSurface;
-typedef NCollection_Array1<double> Array1OfReal;
-typedef NCollection_Array2<double> Array2OfReal;
-typedef NCollection_Array1<int>    Array1OfInteger;
-typedef NCollection_Array2<gp_Pnt> Array2OfPnt;
-typedef gp_Pnt                     Pnt;
+typedef Geom_Surface        Surface;
+typedef Geom_BSplineSurface BSplineSurface;
 
 //=================================================================================================
 
@@ -64,45 +58,14 @@ static occ::handle<Geom_BSplineSurface> BSplineSurfaceBuilder(
   const Convert_ElementarySurfaceToBSplineSurface& Convert)
 {
   occ::handle<Geom_BSplineSurface> TheSurface;
-  int                              UDegree  = Convert.UDegree();
-  int                              VDegree  = Convert.VDegree();
-  int                              NbUPoles = Convert.NbUPoles();
-  int                              NbVPoles = Convert.NbVPoles();
-  int                              NbUKnots = Convert.NbUKnots();
-  int                              NbVKnots = Convert.NbVKnots();
-  Array2OfPnt                      Poles(1, NbUPoles, 1, NbVPoles);
-  Array2OfReal                     Weights(1, NbUPoles, 1, NbVPoles);
-  Array1OfReal                     UKnots(1, NbUKnots);
-  Array1OfReal                     VKnots(1, NbVKnots);
-  Array1OfInteger                  UMults(1, NbUKnots);
-  Array1OfInteger                  VMults(1, NbVKnots);
-  int                              i, j;
-  for (j = 1; j <= NbVPoles; j++)
-  {
-    for (i = 1; i <= NbUPoles; i++)
-    {
-      Poles(i, j)   = Convert.Pole(i, j);
-      Weights(i, j) = Convert.Weight(i, j);
-    }
-  }
-  for (i = 1; i <= NbUKnots; i++)
-  {
-    UKnots(i) = Convert.UKnot(i);
-    UMults(i) = Convert.UMultiplicity(i);
-  }
-  for (i = 1; i <= NbVKnots; i++)
-  {
-    VKnots(i) = Convert.VKnot(i);
-    VMults(i) = Convert.VMultiplicity(i);
-  }
-  TheSurface = new BSplineSurface(Poles,
-                                  Weights,
-                                  UKnots,
-                                  VKnots,
-                                  UMults,
-                                  VMults,
-                                  UDegree,
-                                  VDegree,
+  TheSurface = new BSplineSurface(Convert.Poles(),
+                                  Convert.Weights(),
+                                  Convert.UKnots(),
+                                  Convert.VKnots(),
+                                  Convert.UMultiplicities(),
+                                  Convert.VMultiplicities(),
+                                  Convert.UDegree(),
+                                  Convert.VDegree(),
                                   Convert.IsUPeriodic(),
                                   Convert.IsVPeriodic());
   return TheSurface;

@@ -93,7 +93,7 @@ void GeomFill_QuasiAngularConvertor::Init()
 
   // Convertion
   Convert_CompPolynomialToPoles AConverter(Ordre, Ordre - 1, Ordre - 1, Coeffs, Inter, TrueInter);
-  AConverter.Poles(Poles1d);
+  Poles1d = new NCollection_HArray2<double>(AConverter.Poles());
 
   for (jj = 1; jj <= Ordre; jj++)
   {
