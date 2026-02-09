@@ -133,21 +133,15 @@ static bool Arrange(const occ::handle<Geom_BSplineCurve>& C1,
 static int SetSameDistribution(occ::handle<Geom_BSplineCurve>& C1,
                                occ::handle<Geom_BSplineCurve>& C2)
 {
-  NCollection_Array1<gp_Pnt> P1(C1->Poles());
-  NCollection_Array1<double> W1(1, C1->NbPoles());
-  W1.Init(1.);
-  if (const NCollection_Array1<double>* pW1 = C1->Weights())
-    W1 = *pW1;
-  NCollection_Array1<double> K1(C1->Knots());
-  NCollection_Array1<int>    M1(C1->Multiplicities());
+  NCollection_Array1<gp_Pnt>        P1(C1->Poles());
+  const NCollection_Array1<double>& W1 = C1->WeightsArray();
+  NCollection_Array1<double>        K1(C1->Knots());
+  NCollection_Array1<int>           M1(C1->Multiplicities());
 
-  NCollection_Array1<gp_Pnt> P2(C2->Poles());
-  NCollection_Array1<double> W2(1, C2->NbPoles());
-  W2.Init(1.);
-  if (const NCollection_Array1<double>* pW2 = C2->Weights())
-    W2 = *pW2;
-  NCollection_Array1<double> K2(C2->Knots());
-  NCollection_Array1<int>    M2(C2->Multiplicities());
+  NCollection_Array1<gp_Pnt>        P2(C2->Poles());
+  const NCollection_Array1<double>& W2 = C2->WeightsArray();
+  NCollection_Array1<double>        K2(C2->Knots());
+  NCollection_Array1<int>           M2(C2->Multiplicities());
 
   double K11 = K1(1);
   double K12 = K1(K1.Upper());
@@ -326,25 +320,10 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
   // Traitement des courbes rationelles
   bool isRat = (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
 
-  NCollection_Array1<double> W1(1, NbUPoles);
-  NCollection_Array1<double> W3(1, NbUPoles);
-  NCollection_Array1<double> W2(1, NbVPoles);
-  NCollection_Array1<double> W4(1, NbVPoles);
-  W1.Init(1.);
-  W2.Init(1.);
-  W3.Init(1.);
-  W4.Init(1.);
-  if (isRat)
-  {
-    if (const NCollection_Array1<double>* pW1 = CC1->Weights())
-      W1 = *pW1;
-    if (const NCollection_Array1<double>* pW2 = CC2->Weights())
-      W2 = *pW2;
-    if (const NCollection_Array1<double>* pW3 = CC3->Weights())
-      W3 = *pW3;
-    if (const NCollection_Array1<double>* pW4 = CC4->Weights())
-      W4 = *pW4;
-  }
+  const NCollection_Array1<double>& W1 = CC1->WeightsArray();
+  const NCollection_Array1<double>& W2 = CC2->WeightsArray();
+  const NCollection_Array1<double>& W3 = CC3->WeightsArray();
+  const NCollection_Array1<double>& W4 = CC4->WeightsArray();
 
   GeomFill_Filling Caro;
   if (isRat)
@@ -490,16 +469,9 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     // Traitement des courbes rationelles
     if (isRat)
     {
-      NCollection_Array2<double> Weights(1, NbPoles, 1, 2);
-      NCollection_Array1<double> W1(1, NbPoles);
-      NCollection_Array1<double> W2(1, NbPoles);
-      W1.Init(1.);
-      W2.Init(1.);
-
-      if (const NCollection_Array1<double>* pW1 = CC1->Weights())
-        W1 = *pW1;
-      if (const NCollection_Array1<double>* pW2 = CC2->Weights())
-        W2 = *pW2;
+      NCollection_Array2<double>        Weights(1, NbPoles, 1, 2);
+      const NCollection_Array1<double>& W1 = CC1->WeightsArray();
+      const NCollection_Array1<double>& W2 = CC2->WeightsArray();
       for (i = 1; i <= NbPoles; i++)
       {
         Weights(i, 1) = W1(i);
@@ -559,19 +531,12 @@ void GeomFill_BSplineCurves::Init(const occ::handle<Geom_BSplineCurve>& C1,
     const NCollection_Array1<double>& VKnots = CC2->Knots();
     const NCollection_Array1<int>&    VMults = CC2->Multiplicities();
 
-    NCollection_Array1<double> W1(1, NbUPoles);
-    NCollection_Array1<double> W2(1, NbVPoles);
-    W1.Init(1.);
-    W2.Init(1.);
-
     GeomFill_Filling Caro;
     if (isRat)
     {
-      if (const NCollection_Array1<double>* pW1 = CC1->Weights())
-        W1 = *pW1;
-      if (const NCollection_Array1<double>* pW2 = CC2->Weights())
-        W2 = *pW2;
-      Caro = GeomFill_Curved(P1, P2, W1, W2);
+      const NCollection_Array1<double>& W1 = CC1->WeightsArray();
+      const NCollection_Array1<double>& W2 = CC2->WeightsArray();
+      Caro                                 = GeomFill_Curved(P1, P2, W1, W2);
     }
     else
     {
