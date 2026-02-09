@@ -25,6 +25,7 @@
 #include <Convert_ParameterisationType.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 
 //! Root class for algorithms which convert a conic curve into
 //! a BSpline curve (CircleToBSplineCurve, EllipseToBSplineCurve,
@@ -102,6 +103,28 @@ public:
 
   //! Returns the multiplicities of the BSpline curve.
   [[nodiscard]] Standard_EXPORT const NCollection_Array1<int>& Multiplicities() const;
+
+  //! Legacy API returning handle arrays for compatibility.
+  Standard_DEPRECATED("Use array-based BuildCosAndSin() overload instead")
+  Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType        theParametrisation,
+                                      occ::handle<NCollection_HArray1<double>>& theCosNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& theSinNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& theDenominator,
+                                      int&                                      theDegree,
+                                      occ::handle<NCollection_HArray1<double>>& theKnots,
+                                      occ::handle<NCollection_HArray1<int>>&    theMults) const;
+
+  //! Legacy API returning handle arrays for compatibility.
+  Standard_DEPRECATED("Use array-based BuildCosAndSin() overload instead")
+  Standard_EXPORT void BuildCosAndSin(const Convert_ParameterisationType        theParametrisation,
+                                      const double                              theUFirst,
+                                      const double                              theULast,
+                                      occ::handle<NCollection_HArray1<double>>& theCosNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& theSinNumerator,
+                                      occ::handle<NCollection_HArray1<double>>& theDenominator,
+                                      int&                                      theDegree,
+                                      occ::handle<NCollection_HArray1<double>>& theKnots,
+                                      occ::handle<NCollection_HArray1<int>>&    theMults) const;
 
 protected:
   Standard_EXPORT Convert_ConicToBSplineCurve(const int theNumberOfPoles,

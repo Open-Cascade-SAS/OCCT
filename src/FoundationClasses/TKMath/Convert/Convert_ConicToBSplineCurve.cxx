@@ -21,6 +21,7 @@
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
 #include <PLib.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Integer.hxx>
@@ -139,6 +140,70 @@ const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Knots() const
 const NCollection_Array1<int>& Convert_ConicToBSplineCurve::Multiplicities() const
 {
   return myMults;
+}
+
+//==================================================================================================
+
+void Convert_ConicToBSplineCurve::BuildCosAndSin(
+  const Convert_ParameterisationType        theParametrisation,
+  occ::handle<NCollection_HArray1<double>>& theCosNumerator,
+  occ::handle<NCollection_HArray1<double>>& theSinNumerator,
+  occ::handle<NCollection_HArray1<double>>& theDenominator,
+  int&                                      theDegree,
+  occ::handle<NCollection_HArray1<double>>& theKnots,
+  occ::handle<NCollection_HArray1<int>>&    theMults) const
+{
+  NCollection_Array1<double> aCosNumerator;
+  NCollection_Array1<double> aSinNumerator;
+  NCollection_Array1<double> aDenominator;
+  NCollection_Array1<double> aKnots;
+  NCollection_Array1<int>    aMults;
+  BuildCosAndSin(theParametrisation,
+                 aCosNumerator,
+                 aSinNumerator,
+                 aDenominator,
+                 theDegree,
+                 aKnots,
+                 aMults);
+  theCosNumerator = new NCollection_HArray1<double>(aCosNumerator);
+  theSinNumerator = new NCollection_HArray1<double>(aSinNumerator);
+  theDenominator  = new NCollection_HArray1<double>(aDenominator);
+  theKnots        = new NCollection_HArray1<double>(aKnots);
+  theMults        = new NCollection_HArray1<int>(aMults);
+}
+
+//==================================================================================================
+
+void Convert_ConicToBSplineCurve::BuildCosAndSin(
+  const Convert_ParameterisationType        theParametrisation,
+  const double                              theUFirst,
+  const double                              theULast,
+  occ::handle<NCollection_HArray1<double>>& theCosNumerator,
+  occ::handle<NCollection_HArray1<double>>& theSinNumerator,
+  occ::handle<NCollection_HArray1<double>>& theDenominator,
+  int&                                      theDegree,
+  occ::handle<NCollection_HArray1<double>>& theKnots,
+  occ::handle<NCollection_HArray1<int>>&    theMults) const
+{
+  NCollection_Array1<double> aCosNumerator;
+  NCollection_Array1<double> aSinNumerator;
+  NCollection_Array1<double> aDenominator;
+  NCollection_Array1<double> aKnots;
+  NCollection_Array1<int>    aMults;
+  BuildCosAndSin(theParametrisation,
+                 theUFirst,
+                 theULast,
+                 aCosNumerator,
+                 aSinNumerator,
+                 aDenominator,
+                 theDegree,
+                 aKnots,
+                 aMults);
+  theCosNumerator = new NCollection_HArray1<double>(aCosNumerator);
+  theSinNumerator = new NCollection_HArray1<double>(aSinNumerator);
+  theDenominator  = new NCollection_HArray1<double>(aDenominator);
+  theKnots        = new NCollection_HArray1<double>(aKnots);
+  theMults        = new NCollection_HArray1<int>(aMults);
 }
 
 //=======================================================================
