@@ -13,7 +13,6 @@
 
 #include <GeomGridEval_BezierSurface.hxx>
 
-#include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <GeomGridEval_Curve.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -34,33 +33,19 @@ constexpr int THE_ISOLINE_THRESHOLD = 8;
 //! @return the built cache
 occ::handle<BSplSLib_Cache> buildBezierCache(const occ::handle<Geom_BezierSurface>& theGeom)
 {
-  const int aUDegree = theGeom->UDegree();
-  const int aVDegree = theGeom->VDegree();
+  const NCollection_Array1<double>& aUKnotSequence = theGeom->UKnotSequence();
+  const NCollection_Array1<double>& aVKnotSequence = theGeom->VKnotSequence();
+  const NCollection_Array2<gp_Pnt>& aPoles         = theGeom->Poles();
+  const NCollection_Array2<double>* aWeights       = theGeom->Weights();
 
-  // Use pre-defined flat knots from BSplCLib
-  NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree),
-                                         1,
-                                         2 * (aUDegree + 1));
-  NCollection_Array1<double> aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree),
-                                         1,
-                                         2 * (aVDegree + 1));
-
-  // Get poles and weights directly (const references, no copy)
-  const NCollection_Array2<gp_Pnt>& aPoles   = theGeom->Poles();
-  const NCollection_Array2<double>* aWeights = theGeom->Weights();
-
-  // Create cache (Bezier is non-periodic)
-  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
-                                                          false, // not periodic
-                                                          aUFlatKnots,
-                                                          aVDegree,
-                                                          false, // not periodic
-                                                          aVFlatKnots,
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(theGeom->UDegree(),
+                                                          false,
+                                                          aUKnotSequence,
+                                                          theGeom->VDegree(),
+                                                          false,
+                                                          aVKnotSequence,
                                                           aWeights);
-
-  // Build cache at parameter 0.5 (middle of single span)
-  aCache->BuildCache(0.5, 0.5, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
-
+  aCache->BuildCache(0.5, 0.5, aUKnotSequence, aVKnotSequence, aPoles, aWeights);
   return aCache;
 }
 } // namespace
@@ -220,21 +205,14 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   const int                                aNbV = theVParams.Size();
   NCollection_Array2<GeomGridEval::SurfD3> aResult(1, aNbU, 1, aNbV);
 
-  // Get degrees and create Bezier flat knots
-  const int aUDegree = myGeom->UDegree();
-  const int aVDegree = myGeom->VDegree();
-
-  NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree),
-                                         1,
-                                         2 * (aUDegree + 1));
-  NCollection_Array1<double> aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree),
-                                         1,
-                                         2 * (aVDegree + 1));
-
-  // Get poles and weights
-  const NCollection_Array2<gp_Pnt>& aPoles     = myGeom->Poles();
-  const NCollection_Array2<double>* aWeights   = myGeom->Weights();
-  const bool                        isRational = (aWeights != nullptr);
+  // Get degrees, flat knots, poles, and weights from geometry
+  const int                         aUDegree       = myGeom->UDegree();
+  const int                         aVDegree       = myGeom->VDegree();
+  const NCollection_Array1<double>& aUKnotSequence = myGeom->UKnotSequence();
+  const NCollection_Array1<double>& aVKnotSequence = myGeom->VKnotSequence();
+  const NCollection_Array2<gp_Pnt>& aPoles         = myGeom->Poles();
+  const NCollection_Array2<double>* aWeights       = myGeom->Weights();
+  const bool                        isRational     = (aWeights != nullptr);
 
   // D3 evaluation using BSplSLib::D3 directly
   // Bezier surface is single span (span index = 0), non-periodic
@@ -252,8 +230,8 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
                    0, // V span index (single span for Bezier)
                    aPoles,
                    aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
+                   aUKnotSequence,
+                   aVKnotSequence,
                    nullptr, // U multiplicities (nullptr for flat knots)
                    nullptr, // V multiplicities (nullptr for flat knots)
                    aUDegree,
@@ -319,18 +297,12 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
     return aResult;
   }
 
-  // Get poles and weights from geometry
-  const NCollection_Array2<gp_Pnt>& aPoles     = myGeom->Poles();
-  const NCollection_Array2<double>* aWeights   = myGeom->Weights();
-  const bool                        isRational = (aWeights != nullptr);
-
-  // Use pre-defined flat knots from BSplCLib
-  NCollection_Array1<double> aUFlatKnots(BSplCLib::FlatBezierKnots(aUDegree),
-                                         1,
-                                         2 * (aUDegree + 1));
-  NCollection_Array1<double> aVFlatKnots(BSplCLib::FlatBezierKnots(aVDegree),
-                                         1,
-                                         2 * (aVDegree + 1));
+  // Get poles, weights, and flat knots from geometry
+  const NCollection_Array2<gp_Pnt>& aPoles         = myGeom->Poles();
+  const NCollection_Array2<double>* aWeights       = myGeom->Weights();
+  const bool                        isRational     = (aWeights != nullptr);
+  const NCollection_Array1<double>& aUKnotSequence = myGeom->UKnotSequence();
+  const NCollection_Array1<double>& aVKnotSequence = myGeom->VKnotSequence();
 
   // Bezier has a single span (index 0 with flat knots), non-periodic
   for (int i = 0; i < aNbU; ++i)
@@ -347,8 +319,8 @@ NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
                    0, // V span index (single span for Bezier with flat knots)
                    aPoles,
                    aWeights,
-                   aUFlatKnots,
-                   aVFlatKnots,
+                   aUKnotSequence,
+                   aVKnotSequence,
                    nullptr, // no U multiplicities with flat knots
                    nullptr, // no V multiplicities with flat knots
                    aUDegree,

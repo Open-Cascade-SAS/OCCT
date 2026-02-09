@@ -18,18 +18,15 @@
 #define _Geom_BezierSurface_HeaderFile
 
 #include <Standard.hxx>
-#include <Standard_Type.hxx>
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
+#include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 #include <Geom_BoundedSurface.hxx>
-#include <NCollection_Array1.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
 
-class gp_Pnt;
 class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
@@ -497,10 +494,11 @@ public:
   //!
   //! Raised if the length of P in the U an V direction is not equal to
   //! NbUPoles and NbVPoles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array2<gp_Pnt>& P) const;
 
   //! Returns the poles of the Bezier surface.
-  const NCollection_Array2<gp_Pnt>& Poles() const { return poles->Array2(); }
+  const NCollection_Array2<gp_Pnt>& Poles() const { return myPoles; }
 
   //! Returns the degree of the surface in the U direction it is
   //! NbUPoles - 1
@@ -528,14 +526,13 @@ public:
   //!
   //! Raised if the length of W in the U an V direction is not
   //! equal to NbUPoles and NbVPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array2<double>& W) const;
 
   //! Returns the weights of the Bezier surface.
   const NCollection_Array2<double>* Weights() const
   {
-    if (!weights.IsNull())
-      return &weights->Array2();
-    return BSplSLib::NoWeights();
+    return (myURational || myVRational) ? &myWeights : BSplSLib::NoWeights();
   }
 
   //! Returns True if the first control points row and the
@@ -601,29 +598,41 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& UKnots() const;
+
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& VKnots() const;
+
+  //! Returns Bezier multiplicities for the U degree.
+  Standard_EXPORT const NCollection_Array1<int>& UMultiplicities() const;
+
+  //! Returns Bezier multiplicities for the V degree.
+  Standard_EXPORT const NCollection_Array1<int>& VMultiplicities() const;
+
+  //! Returns Bezier flat knots for the U degree.
+  Standard_EXPORT const NCollection_Array1<double>& UKnotSequence() const;
+
+  //! Returns Bezier flat knots for the V degree.
+  Standard_EXPORT const NCollection_Array1<double>& VKnotSequence() const;
+
   DEFINE_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
+protected:
+  //! Set poles to thePoles, weights to theWeights.
+  //! If theWeights is null the surface is non rational.
+  //! Update rational flags.
+  void init(const NCollection_Array2<gp_Pnt>& thePoles,
+            const NCollection_Array2<double>* theWeights);
+
 private:
-  Geom_BezierSurface(const occ::handle<NCollection_HArray2<gp_Pnt>>& SurfacePoles,
-                     const occ::handle<NCollection_HArray2<double>>& PoleWeights,
-                     const bool                                      IsURational,
-                     const bool                                      IsVRational);
-
-  //! Set poles to Poles, weights to Weights (not copied).
-  //! Create the arrays of coefficients. Poles and Weights
-  //! are assumed to have the first coefficient 1.
-  //!
-  //! if nbpoles < 2 or nbpoles > MaDegree
-  void Init(const occ::handle<NCollection_HArray2<gp_Pnt>>& Poles,
-            const occ::handle<NCollection_HArray2<double>>& Weights);
-
-  bool                                     urational;
-  bool                                     vrational;
-  occ::handle<NCollection_HArray2<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray2<double>> weights;
-  double                                   umaxderivinv;
-  double                                   vmaxderivinv;
-  bool                                     maxderivinvok;
+  NCollection_Array2<gp_Pnt> myPoles;
+  NCollection_Array2<double> myWeights;
+  bool                       myURational     = false;
+  bool                       myVRational     = false;
+  double                     myUMaxDerivInv  = 0.0;
+  double                     myVMaxDerivInv  = 0.0;
+  bool                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

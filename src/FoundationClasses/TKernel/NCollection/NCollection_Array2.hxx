@@ -322,8 +322,9 @@ public:
   }
 
   //! Resizes the array to specified bounds.
-  //! No re-allocation will be done if length of array does not change,
-  //! but existing values will not be discarded if theToCopyData set to FALSE.
+  //! When theToCopyData is false, the array is re-allocated without preserving data.
+  //! When theToCopyData is true, copies elements in linear (row-major) order.
+  //! No re-allocation is done if dimensions are unchanged.
   //! @param theRowLower new lower Row of array
   //! @param theRowUpper new upper Row of array
   //! @param theColLower new lower Column of array
@@ -335,24 +336,81 @@ public:
               int  theColUpper,
               bool theToCopyData)
   {
-    Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
-                                 "NCollection_Array2::Resize");
     if (!theToCopyData)
     {
-      NCollection_Array1<TheItemType>::Resize(
-        BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
-        LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
-        false);
-      mySizeRow  = theRowUpper - theRowLower + 1;
-      mySizeCol  = theColUpper - theColLower + 1;
-      myLowerRow = theRowLower;
-      myLowerCol = theColLower;
+      resizeNoData(theRowLower, theRowUpper, theColLower, theColUpper);
       return;
     }
-    const size_t aNewNbRows    = theRowUpper - theRowLower + 1;
-    const size_t aNewNbCols    = theColUpper - theColLower + 1;
+    resizeImpl<false>(theRowLower, theRowUpper, theColLower, theColUpper);
+  }
+
+  //! Resizes the array preserving 2D element layout.
+  //! When theToCopyData is false, the array is re-allocated without preserving data.
+  //! When theToCopyData is true, copies min(oldNbRows,newNbRows) x min(oldNbCols,newNbCols)
+  //! elements from the top-left corner of the old array to the top-left corner of the new,
+  //! preserving relative (row, col) offsets from lower bounds. Trimming or growing as needed.
+  //! No re-allocation is done if dimensions are unchanged.
+  //! @param theRowLower new lower Row of array
+  //! @param theRowUpper new upper Row of array
+  //! @param theColLower new lower Column of array
+  //! @param theColUpper new upper Column of array
+  //! @param theToCopyData flag to copy existing data into new array
+  void ResizeWithTrim(int  theRowLower,
+                      int  theRowUpper,
+                      int  theColLower,
+                      int  theColUpper,
+                      bool theToCopyData)
+  {
+    if (!theToCopyData)
+    {
+      resizeNoData(theRowLower, theRowUpper, theColLower, theColUpper);
+      return;
+    }
+    resizeImpl<true>(theRowLower, theRowUpper, theColLower, theColUpper);
+  }
+
+protected:
+  //! Resize without copying data.
+  void resizeNoData(int theRowLower, int theRowUpper, int theColLower, int theColUpper)
+  {
+    Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
+                                 "NCollection_Array2::Resize");
+    NCollection_Array1<TheItemType>::Resize(
+      BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
+      LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
+      false);
+    mySizeRow  = theRowUpper - theRowLower + 1;
+    mySizeCol  = theColUpper - theColLower + 1;
+    myLowerRow = theRowLower;
+    myLowerCol = theColLower;
+  }
+
+  //! Internal resize with data copy.
+  //! @tparam thePreserve2D if true, copies the common sub-matrix preserving
+  //!   2D element positions (row, col); if false, copies elements in linear order.
+  template <bool thePreserve2D>
+  void resizeImpl(int theRowLower, int theRowUpper, int theColLower, int theColUpper)
+  {
+    Standard_RangeError_Raise_if(theRowUpper < theRowLower || theColUpper < theColLower,
+                                 "NCollection_Array2::Resize");
+    const size_t aNewNbRows = theRowUpper - theRowLower + 1;
+    const size_t aNewNbCols = theColUpper - theColLower + 1;
+    if (mySizeRow == aNewNbRows && mySizeCol == aNewNbCols)
+    {
+      myLowerRow = theRowLower;
+      myLowerCol = theColLower;
+      NCollection_Array1<TheItemType>::UpdateLowerBound(
+        BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper));
+      return;
+    }
+    if (mySizeRow == 0 || mySizeCol == 0)
+    {
+      resizeNoData(theRowLower, theRowUpper, theColLower, theColUpper);
+      return;
+    }
     const size_t aNbRowsToCopy = (std::min)(mySizeRow, aNewNbRows);
     const size_t aNbColsToCopy = (std::min)(mySizeCol, aNewNbCols);
+    const size_t aOldStride    = thePreserve2D ? mySizeCol : aNbColsToCopy;
 
     NCollection_Array2<TheItemType> aTmpMovedCopy(std::move(*this));
     TheItemType*                    anOldPointer = &aTmpMovedCopy.ChangeFirst();
@@ -360,17 +418,16 @@ public:
       BeginPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       LastPosition(theRowLower, theRowUpper, theColLower, theColUpper),
       false);
-    mySizeRow        = aNewNbRows;
-    mySizeCol        = aNewNbCols;
-    myLowerRow       = theRowLower;
-    myLowerCol       = theColLower;
-    size_t aOldInter = 0;
+    mySizeRow  = aNewNbRows;
+    mySizeCol  = aNewNbCols;
+    myLowerRow = theRowLower;
+    myLowerCol = theColLower;
     for (size_t aRowIter = 0; aRowIter < aNbRowsToCopy; ++aRowIter)
     {
       for (size_t aColIter = 0; aColIter < aNbColsToCopy; ++aColIter)
       {
         NCollection_Array1<TheItemType>::at(aRowIter * aNewNbCols + aColIter) =
-          std::move(anOldPointer[aOldInter++]);
+          std::move(anOldPointer[aRowIter * aOldStride + aColIter]);
       }
     }
   }

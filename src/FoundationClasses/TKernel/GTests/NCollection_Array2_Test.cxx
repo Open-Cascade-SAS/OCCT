@@ -262,6 +262,184 @@ TEST(NCollection_Array2Test, STLIteration)
   EXPECT_EQ(6, anIndex); // Ensure all elements were visited
 }
 
+TEST(NCollection_Array2Test, ResizeWithTrim_PreservesElementPositions)
+{
+  // Fill a 5x4 array with values encoding (row, col) position.
+  NCollection_Array2<int> anArray(1, 5, 1, 4);
+  for (int aRow = 1; aRow <= 5; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 4; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 100 + aCol;
+    }
+  }
+
+  // Shrink rows (5x4 -> 3x4): only rows 1-3 should be preserved.
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 3, 1, 4, true);
+    EXPECT_EQ(3, aCopy.NbRows());
+    EXPECT_EQ(4, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 3; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 4; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Shrink columns (5x4 -> 5x2): only cols 1-2 should be preserved.
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 5, 1, 2, true);
+    EXPECT_EQ(5, aCopy.NbRows());
+    EXPECT_EQ(2, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 2; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Shrink both (5x4 -> 3x2): common sub-matrix [1..3, 1..2].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 3, 1, 2, true);
+    EXPECT_EQ(3, aCopy.NbRows());
+    EXPECT_EQ(2, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 3; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 2; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Grow both (5x4 -> 7x6): original data preserved, new area is default.
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(1, 7, 1, 6, true);
+    EXPECT_EQ(7, aCopy.NbRows());
+    EXPECT_EQ(6, aCopy.NbColumns());
+    for (int aRow = 1; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 1; aCol <= 4; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+}
+
+TEST(NCollection_Array2Test, ResizeWithTrim_NonUnitLowerBounds)
+{
+  // Array with non-1 lower bounds: rows [3..5], cols [10..12].
+  NCollection_Array2<int> anArray(3, 5, 10, 12);
+  for (int aRow = 3; aRow <= 5; ++aRow)
+  {
+    for (int aCol = 10; aCol <= 12; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 100 + aCol;
+    }
+  }
+
+  // Shrink rows, keep cols: [3..4, 10..12].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(3, 4, 10, 12, true);
+    EXPECT_EQ(2, aCopy.NbRows());
+    EXPECT_EQ(3, aCopy.NbColumns());
+    for (int aRow = 3; aRow <= 4; ++aRow)
+    {
+      for (int aCol = 10; aCol <= 12; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Grow both: [3..7, 10..14].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(3, 7, 10, 14, true);
+    EXPECT_EQ(5, aCopy.NbRows());
+    EXPECT_EQ(5, aCopy.NbColumns());
+    for (int aRow = 3; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 10; aCol <= 12; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+
+  // Same dimensions (no-op optimization): [3..5, 10..12].
+  {
+    NCollection_Array2<int> aCopy(anArray);
+    aCopy.ResizeWithTrim(3, 5, 10, 12, true);
+    EXPECT_EQ(3, aCopy.NbRows());
+    EXPECT_EQ(3, aCopy.NbColumns());
+    for (int aRow = 3; aRow <= 5; ++aRow)
+    {
+      for (int aCol = 10; aCol <= 12; ++aCol)
+      {
+        EXPECT_EQ(aRow * 100 + aCol, aCopy(aRow, aCol));
+      }
+    }
+  }
+}
+
+TEST(NCollection_Array2Test, Resize_FromEmpty)
+{
+  // Default-constructed (empty) array resized with data copy should not crash.
+  NCollection_Array2<int> anEmpty;
+  EXPECT_EQ(0, anEmpty.NbRows());
+  EXPECT_EQ(0, anEmpty.NbColumns());
+
+  // Resize with copy (from empty -- nothing to copy, but must not dereference null).
+  anEmpty.Resize(1, 3, 1, 2, true);
+  EXPECT_EQ(3, anEmpty.NbRows());
+  EXPECT_EQ(2, anEmpty.NbColumns());
+
+  // ResizeWithTrim from empty.
+  NCollection_Array2<int> anEmpty2;
+  anEmpty2.ResizeWithTrim(1, 2, 1, 4, true);
+  EXPECT_EQ(2, anEmpty2.NbRows());
+  EXPECT_EQ(4, anEmpty2.NbColumns());
+}
+
+TEST(NCollection_Array2Test, Resize_SameSizeNewBounds)
+{
+  // When dimensions are unchanged but lower bounds change,
+  // the Array1 lower bound must also be updated.
+  NCollection_Array2<int> anArray(1, 3, 1, 3);
+  for (int aRow = 1; aRow <= 3; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 3; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 10 + aCol;
+    }
+  }
+
+  // Same 3x3 dimensions but shifted bounds: [5..7, 10..12].
+  anArray.ResizeWithTrim(5, 7, 10, 12, true);
+  EXPECT_EQ(3, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+
+  // Data should be preserved with new indices.
+  for (int aRow = 5; aRow <= 7; ++aRow)
+  {
+    for (int aCol = 10; aCol <= 12; ++aCol)
+    {
+      EXPECT_EQ((aRow - 4) * 10 + (aCol - 9), anArray(aRow, aCol));
+    }
+  }
+}
+
 TEST(NCollection_Array2Test, Resize_ChangeShapeSameSize)
 {
   // This test checks for data scrambling when resizing to a different shape
@@ -381,4 +559,74 @@ TEST(NCollection_Array2Test, EmplaceValue_ReplacesExisting)
   EXPECT_EQ(120, anArray(1, 2).myA);
   EXPECT_EQ(21, anArray(2, 1).myA);
   EXPECT_EQ(22, anArray(2, 2).myA);
+}
+
+TEST(NCollection_Array2Test, Resize_SameSizeNewBounds_Linear)
+{
+  // Test Resize() (linear copy) with same dimensions but shifted bounds.
+  NCollection_Array2<int> anArray(1, 3, 1, 3);
+  for (int aRow = 1; aRow <= 3; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 3; ++aCol)
+    {
+      anArray(aRow, aCol) = aRow * 10 + aCol;
+    }
+  }
+
+  // Same 3x3 dimensions but shifted bounds: [5..7, 10..12].
+  anArray.Resize(5, 7, 10, 12, true);
+  EXPECT_EQ(3, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+
+  // Data should be preserved with new indices.
+  for (int aRow = 5; aRow <= 7; ++aRow)
+  {
+    for (int aCol = 10; aCol <= 12; ++aCol)
+    {
+      EXPECT_EQ((aRow - 4) * 10 + (aCol - 9), anArray(aRow, aCol));
+    }
+  }
+}
+
+TEST(NCollection_Array2Test, Resize_NoCopy)
+{
+  // Test Resize(..., false) re-allocates without copying data.
+  NCollection_Array2<int> anArray(1, 3, 1, 4);
+  anArray.Init(42);
+
+  // Resize without copy to different dimensions.
+  anArray.Resize(1, 5, 1, 2, false);
+  EXPECT_EQ(5, anArray.NbRows());
+  EXPECT_EQ(2, anArray.NbColumns());
+
+  // Resize without copy to same dimensions (no-op for allocation, but bounds may differ).
+  anArray.Init(7);
+  anArray.Resize(10, 14, 20, 21, false);
+  EXPECT_EQ(5, anArray.NbRows());
+  EXPECT_EQ(2, anArray.NbColumns());
+  EXPECT_EQ(10, anArray.LowerRow());
+  EXPECT_EQ(20, anArray.LowerCol());
+}
+
+TEST(NCollection_Array2Test, ResizeWithTrim_GrowPreservesOldRegion)
+{
+  // Verify that the preserved sub-matrix is intact after growing.
+  // New (uncopied) elements are uninitialized for POD types, so only
+  // the old region is checked.
+  NCollection_Array2<int> anArray(1, 2, 1, 2);
+  anArray.Init(99);
+
+  // Grow from 2x2 to 4x3.
+  anArray.ResizeWithTrim(1, 4, 1, 3, true);
+  EXPECT_EQ(4, anArray.NbRows());
+  EXPECT_EQ(3, anArray.NbColumns());
+
+  // Old 2x2 region should be preserved.
+  for (int aRow = 1; aRow <= 2; ++aRow)
+  {
+    for (int aCol = 1; aCol <= 2; ++aCol)
+    {
+      EXPECT_EQ(99, anArray(aRow, aCol));
+    }
+  }
 }

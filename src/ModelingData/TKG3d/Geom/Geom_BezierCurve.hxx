@@ -21,14 +21,12 @@
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Standard_Integer.hxx>
 #include <Standard_Real.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
-class gp_Pnt;
 class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
@@ -279,6 +277,7 @@ public:
   //! Returns all the poles of the curve.
   //!
   //! Raised if the length of P is not equal to the number of poles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt>& P) const;
 
   //! Returns all the poles of the curve.
@@ -291,14 +290,13 @@ public:
   //! Returns all the weights of the curve.
   //!
   //! Raised if the length of W is not equal to the number of poles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array1<double>& W) const;
 
   //! Returns all the weights of the curve.
   const NCollection_Array1<double>* Weights() const
   {
-    if (!weights.IsNull())
-      return &weights->Array1();
-    return BSplCLib::NoWeights();
+    return myRational ? &myWeights : BSplCLib::NoWeights();
   }
 
   //! Applies the transformation T to this Bezier curve.
@@ -321,26 +319,31 @@ public:
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
 
+  //! Returns Bezier knots {0.0, 1.0} as a static array.
+  Standard_EXPORT const NCollection_Array1<double>& Knots() const;
+
+  //! Returns Bezier multiplicities for the current degree.
+  Standard_EXPORT const NCollection_Array1<int>& Multiplicities() const;
+
+  //! Returns Bezier flat knots for the current degree.
+  Standard_EXPORT const NCollection_Array1<double>& KnotSequence() const;
+
   DEFINE_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
-private:
-  //! Set poles to Poles, weights to Weights (not copied).
-  //! If Weights is null the curve is non rational.
-  //! Create the arrays of coefficients.
-  //! Poles and Weights are assumed to have the first
-  //! coefficient 1.
+protected:
+  //! Set poles to thePoles, weights to theWeights.
+  //! If theWeights is null the curve is non rational.
   //! Update rational and closed.
-  //!
-  //! if nbpoles < 2 or nbboles > MaDegree + 1
-  void Init(const occ::handle<NCollection_HArray1<gp_Pnt>>& Poles,
-            const occ::handle<NCollection_HArray1<double>>& Weights);
+  void init(const NCollection_Array1<gp_Pnt>& thePoles,
+            const NCollection_Array1<double>* theWeights);
 
-  bool                                     rational;
-  bool                                     closed;
-  occ::handle<NCollection_HArray1<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray1<double>> weights;
-  double                                   maxderivinv;
-  bool                                     maxderivinvok;
+private:
+  NCollection_Array1<gp_Pnt> myPoles;
+  NCollection_Array1<double> myWeights;
+  bool                       myRational      = false;
+  bool                       myClosed        = false;
+  double                     myMaxDerivInv   = 0.0;
+  bool                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

@@ -43,20 +43,12 @@
 #include <gp_XYZ.hxx>
 #include <NCollection_Array1.hxx>
 
-#define POLES (poles->Array2())
-#define WEIGHTS (weights->Array2())
-#define UKNOTS (uknots->Array1())
-#define VKNOTS (vknots->Array1())
-#define UFKNOTS (ufknots->Array1())
-#define VFKNOTS (vfknots->Array1())
-#define FMULTS (BSplCLib::NoMults())
-
 //=================================================================================================
 
 bool Geom_BSplineSurface::IsCNu(const int N) const
 {
   Standard_RangeError_Raise_if(N < 0, " ");
-  switch (Usmooth)
+  switch (myUSmooth)
   {
     case GeomAbs_CN:
       return true;
@@ -72,10 +64,10 @@ bool Geom_BSplineSurface::IsCNu(const int N) const
       return N <= 2;
     case GeomAbs_C3:
       return N <= 3 ? true
-                    : N <= udeg
-                             - BSplCLib::MaxKnotMult(umults->Array1(),
-                                                     umults->Lower() + 1,
-                                                     umults->Upper() - 1);
+                    : N <= myUDeg
+                             - BSplCLib::MaxKnotMult(myUMults,
+                                                     myUMults.Lower() + 1,
+                                                     myUMults.Upper() - 1);
     default:
       return false;
   }
@@ -87,7 +79,7 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 {
   Standard_RangeError_Raise_if(N < 0, " ");
 
-  switch (Vsmooth)
+  switch (myVSmooth)
   {
     case GeomAbs_CN:
       return true;
@@ -103,10 +95,10 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
       return N <= 2;
     case GeomAbs_C3:
       return N <= 3 ? true
-                    : N <= vdeg
-                             - BSplCLib::MaxKnotMult(vmults->Array1(),
-                                                     vmults->Lower() + 1,
-                                                     vmults->Upper() - 1);
+                    : N <= myVDeg
+                             - BSplCLib::MaxKnotMult(myVMults,
+                                                     myVMults.Lower() + 1,
+                                                     myVMults.Upper() - 1);
     default:
       return false;
   }
@@ -124,18 +116,18 @@ void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
                aNewV,
                0,
                0,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P);
 }
 
@@ -153,28 +145,28 @@ void Geom_BSplineSurface::D1(const double U,
 
   int uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, uknots->Array1(), &umults->Array1(), U, uperiodic, uindex, aNewU);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUKnots, &myUMults, U, myUPeriodic, uindex, aNewU);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, vknots->Array1(), &vmults->Array1(), V, vperiodic, vindex, aNewV);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D1(aNewU,
                aNewV,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P,
                D1U,
                D1V);
@@ -197,28 +189,28 @@ void Geom_BSplineSurface::D2(const double U,
 
   int uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, uknots->Array1(), &umults->Array1(), U, uperiodic, uindex, aNewU);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUKnots, &myUMults, U, myUPeriodic, uindex, aNewU);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, vknots->Array1(), &vmults->Array1(), V, vperiodic, vindex, aNewV);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D2(aNewU,
                aNewV,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P,
                D1U,
                D1V,
@@ -246,18 +238,18 @@ void Geom_BSplineSurface::D3(const double U,
                V,
                0,
                0,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P,
                D1U,
                D1V,
@@ -281,18 +273,18 @@ gp_Vec Geom_BSplineSurface::DN(const double U, const double V, const int Nu, con
                Nv,
                0,
                0,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                Vn);
   return Vn;
 }
@@ -327,29 +319,28 @@ void Geom_BSplineSurface::LocalD0(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
-  //  BSplSLib::D0(U,V,uindex,vindex,POLES,WEIGHTS,UFKNOTS,VFKNOTS,FMULTS,FMULTS,
   BSplSLib::D0(u,
                v,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P);
 }
 
@@ -371,28 +362,28 @@ void Geom_BSplineSurface::LocalD1(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D1(u,
                v,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P,
                D1U,
                D1V);
@@ -419,28 +410,28 @@ void Geom_BSplineSurface::LocalD2(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D2(u,
                v,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P,
                D1U,
                D1V,
@@ -474,28 +465,28 @@ void Geom_BSplineSurface::LocalD3(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   BSplSLib::D3(u,
                v,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                P,
                D1U,
                D1V,
@@ -525,11 +516,11 @@ gp_Vec Geom_BSplineSurface::LocalDN(const double U,
   double u = U, v = V;
   int    uindex = 0, vindex = 0;
 
-  BSplCLib::LocateParameter(udeg, UFKNOTS, U, uperiodic, FromUK1, ToUK2, uindex, u);
-  uindex = BSplCLib::FlatIndex(udeg, uindex, umults->Array1(), uperiodic);
+  BSplCLib::LocateParameter(myUDeg, myUFlatKnots, U, myUPeriodic, FromUK1, ToUK2, uindex, u);
+  uindex = BSplCLib::FlatIndex(myUDeg, uindex, myUMults, myUPeriodic);
 
-  BSplCLib::LocateParameter(vdeg, VFKNOTS, V, vperiodic, FromVK1, ToVK2, vindex, v);
-  vindex = BSplCLib::FlatIndex(vdeg, vindex, vmults->Array1(), vperiodic);
+  BSplCLib::LocateParameter(myVDeg, myVFlatKnots, V, myVPeriodic, FromVK1, ToVK2, vindex, v);
+  vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
   gp_Vec Vn;
   BSplSLib::DN(u,
@@ -538,18 +529,18 @@ gp_Vec Geom_BSplineSurface::LocalDN(const double U,
                Nv,
                uindex,
                vindex,
-               POLES,
-               &WEIGHTS,
-               UFKNOTS,
-               VFKNOTS,
-               FMULTS,
-               FMULTS,
-               udeg,
-               vdeg,
-               urational,
-               vrational,
-               uperiodic,
-               vperiodic,
+               myPoles,
+               Weights(),
+               myUFlatKnots,
+               myVFlatKnots,
+               BSplCLib::NoMults(),
+               BSplCLib::NoMults(),
+               myUDeg,
+               myVDeg,
+               myURational,
+               myVRational,
+               myUPeriodic,
+               myVPeriodic,
                Vn);
   return Vn;
 }
@@ -558,96 +549,110 @@ gp_Vec Geom_BSplineSurface::LocalDN(const double U,
 
 const gp_Pnt& Geom_BSplineSurface::Pole(const int UIndex, const int VIndex) const
 {
-  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > poles->ColLength() || VIndex < 1
-                                 || VIndex > poles->RowLength(),
+  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myPoles.ColLength() || VIndex < 1
+                                 || VIndex > myPoles.RowLength(),
                                " ");
-  return poles->Value(UIndex, VIndex);
+  return myPoles.Value(UIndex, VIndex);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::Poles(NCollection_Array2<gp_Pnt>& P) const
 {
-  Standard_DimensionError_Raise_if(P.ColLength() != poles->ColLength()
-                                     || P.RowLength() != poles->RowLength(),
+  Standard_DimensionError_Raise_if(P.ColLength() != myPoles.ColLength()
+                                     || P.RowLength() != myPoles.RowLength(),
                                    " ");
-  P = poles->Array2();
+  P = myPoles;
 }
 
 const NCollection_Array2<gp_Pnt>& Geom_BSplineSurface::Poles() const
 {
-  return poles->Array2();
+  return myPoles;
 }
 
 //=================================================================================================
 
 occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U) const
 {
-  NCollection_Array1<gp_Pnt> cpoles(1, poles->RowLength());
-  NCollection_Array1<double> cweights(1, poles->RowLength());
+  NCollection_Array1<gp_Pnt> cpoles(1, myPoles.RowLength());
+  NCollection_Array1<double> cweights(1, myPoles.RowLength());
 
   occ::handle<Geom_BSplineCurve> C;
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
-    BSplSLib::Iso(U, true, POLES, &WEIGHTS, UFKNOTS, FMULTS, udeg, uperiodic, cpoles, &cweights);
-    C =
-      new Geom_BSplineCurve(cpoles, cweights, vknots->Array1(), vmults->Array1(), vdeg, vperiodic);
+    BSplSLib::Iso(U,
+                  true,
+                  myPoles,
+                  Weights(),
+                  myUFlatKnots,
+                  BSplCLib::NoMults(),
+                  myUDeg,
+                  myUPeriodic,
+                  cpoles,
+                  &cweights);
+    C = new Geom_BSplineCurve(cpoles, cweights, myVKnots, myVMults, myVDeg, myVPeriodic);
   }
   else
   {
     BSplSLib::Iso(U,
                   true,
-                  POLES,
+                  myPoles,
                   BSplSLib::NoWeights(),
-                  UFKNOTS,
-                  FMULTS,
-                  udeg,
-                  uperiodic,
+                  myUFlatKnots,
+                  BSplCLib::NoMults(),
+                  myUDeg,
+                  myUPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles, vknots->Array1(), vmults->Array1(), vdeg, vperiodic);
+    C = new Geom_BSplineCurve(cpoles, myVKnots, myVMults, myVDeg, myVPeriodic);
   }
 
   return C;
 }
 
-//=======================================================================
-// function : UIso
-// purpose  : If CheckRational=False, no try to make it non-rational
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U, const bool CheckRational) const
 {
-  NCollection_Array1<gp_Pnt> cpoles(1, poles->RowLength());
-  NCollection_Array1<double> cweights(1, poles->RowLength());
+  NCollection_Array1<gp_Pnt> cpoles(1, myPoles.RowLength());
+  NCollection_Array1<double> cweights(1, myPoles.RowLength());
 
   occ::handle<Geom_BSplineCurve> C;
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
-    BSplSLib::Iso(U, true, POLES, &WEIGHTS, UFKNOTS, FMULTS, udeg, uperiodic, cpoles, &cweights);
+    BSplSLib::Iso(U,
+                  true,
+                  myPoles,
+                  Weights(),
+                  myUFlatKnots,
+                  BSplCLib::NoMults(),
+                  myUDeg,
+                  myUPeriodic,
+                  cpoles,
+                  &cweights);
     C = new Geom_BSplineCurve(cpoles,
                               cweights,
-                              vknots->Array1(),
-                              vmults->Array1(),
-                              vdeg,
-                              vperiodic,
+                              myVKnots,
+                              myVMults,
+                              myVDeg,
+                              myVPeriodic,
                               CheckRational);
   }
   else
   {
     BSplSLib::Iso(U,
                   true,
-                  POLES,
+                  myPoles,
                   BSplSLib::NoWeights(),
-                  UFKNOTS,
-                  FMULTS,
-                  udeg,
-                  uperiodic,
+                  myUFlatKnots,
+                  BSplCLib::NoMults(),
+                  myUDeg,
+                  myUPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles, vknots->Array1(), vmults->Array1(), vdeg, vperiodic);
+    C = new Geom_BSplineCurve(cpoles, myVKnots, myVMults, myVDeg, myVPeriodic);
   }
 
   return C;
@@ -657,160 +662,174 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::UIso(const double U, const bool Che
 
 double Geom_BSplineSurface::UKnot(const int UIndex) const
 {
-  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > uknots->Length(), " ");
-  return uknots->Value(UIndex);
+  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myUKnots.Length(), " ");
+  return myUKnots.Value(UIndex);
 }
 
 //=================================================================================================
 
 double Geom_BSplineSurface::VKnot(const int VIndex) const
 {
-  Standard_OutOfRange_Raise_if(VIndex < 1 || VIndex > vknots->Length(), " ");
-  return vknots->Value(VIndex);
+  Standard_OutOfRange_Raise_if(VIndex < 1 || VIndex > myVKnots.Length(), " ");
+  return myVKnots.Value(VIndex);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::UKnots(NCollection_Array1<double>& Ku) const
 {
-  Standard_DimensionError_Raise_if(Ku.Length() != uknots->Length(), " ");
-  Ku = uknots->Array1();
+  Standard_DimensionError_Raise_if(Ku.Length() != myUKnots.Length(), " ");
+  Ku = myUKnots;
 }
 
 const NCollection_Array1<double>& Geom_BSplineSurface::UKnots() const
 {
-  return uknots->Array1();
+  return myUKnots;
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::VKnots(NCollection_Array1<double>& Kv) const
 {
-  Standard_DimensionError_Raise_if(Kv.Length() != vknots->Length(), " ");
-  Kv = vknots->Array1();
+  Standard_DimensionError_Raise_if(Kv.Length() != myVKnots.Length(), " ");
+  Kv = myVKnots;
 }
 
 const NCollection_Array1<double>& Geom_BSplineSurface::VKnots() const
 {
-  return vknots->Array1();
+  return myVKnots;
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::UKnotSequence(NCollection_Array1<double>& Ku) const
 {
-  Standard_DimensionError_Raise_if(Ku.Length() != ufknots->Length(), " ");
-  Ku = ufknots->Array1();
+  Standard_DimensionError_Raise_if(Ku.Length() != myUFlatKnots.Length(), " ");
+  Ku = myUFlatKnots;
 }
 
 const NCollection_Array1<double>& Geom_BSplineSurface::UKnotSequence() const
 {
-  return ufknots->Array1();
+  return myUFlatKnots;
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::VKnotSequence(NCollection_Array1<double>& Kv) const
 {
-  Standard_DimensionError_Raise_if(Kv.Length() != vfknots->Length(), " ");
-  Kv = vfknots->Array1();
+  Standard_DimensionError_Raise_if(Kv.Length() != myVFlatKnots.Length(), " ");
+  Kv = myVFlatKnots;
 }
 
 const NCollection_Array1<double>& Geom_BSplineSurface::VKnotSequence() const
 {
-  return vfknots->Array1();
+  return myVFlatKnots;
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::UMultiplicity(const int UIndex) const
 {
-  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > umults->Length(), " ");
-  return umults->Value(UIndex);
+  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myUMults.Length(), " ");
+  return myUMults.Value(UIndex);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::UMultiplicities(NCollection_Array1<int>& Mu) const
 {
-  Standard_DimensionError_Raise_if(Mu.Length() != umults->Length(), " ");
-  Mu = umults->Array1();
+  Standard_DimensionError_Raise_if(Mu.Length() != myUMults.Length(), " ");
+  Mu = myUMults;
 }
 
 const NCollection_Array1<int>& Geom_BSplineSurface::UMultiplicities() const
 {
-  return umults->Array1();
+  return myUMults;
 }
 
 //=================================================================================================
 
 occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V) const
 {
-  NCollection_Array1<gp_Pnt> cpoles(1, poles->ColLength());
-  NCollection_Array1<double> cweights(1, poles->ColLength());
+  NCollection_Array1<gp_Pnt> cpoles(1, myPoles.ColLength());
+  NCollection_Array1<double> cweights(1, myPoles.ColLength());
 
   occ::handle<Geom_BSplineCurve> C;
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
-    BSplSLib::Iso(V, false, POLES, &WEIGHTS, VFKNOTS, FMULTS, vdeg, vperiodic, cpoles, &cweights);
-    C =
-      new Geom_BSplineCurve(cpoles, cweights, uknots->Array1(), umults->Array1(), udeg, uperiodic);
+    BSplSLib::Iso(V,
+                  false,
+                  myPoles,
+                  Weights(),
+                  myVFlatKnots,
+                  BSplCLib::NoMults(),
+                  myVDeg,
+                  myVPeriodic,
+                  cpoles,
+                  &cweights);
+    C = new Geom_BSplineCurve(cpoles, cweights, myUKnots, myUMults, myUDeg, myUPeriodic);
   }
   else
   {
     BSplSLib::Iso(V,
                   false,
-                  POLES,
+                  myPoles,
                   BSplSLib::NoWeights(),
-                  VFKNOTS,
-                  FMULTS,
-                  vdeg,
-                  vperiodic,
+                  myVFlatKnots,
+                  BSplCLib::NoMults(),
+                  myVDeg,
+                  myVPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles, uknots->Array1(), umults->Array1(), udeg, uperiodic);
+    C = new Geom_BSplineCurve(cpoles, myUKnots, myUMults, myUDeg, myUPeriodic);
   }
 
   return C;
 }
 
-//=======================================================================
-// function : VIso
-// purpose  : If CheckRational=False, no try to make it non-rational
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V, const bool CheckRational) const
 {
-  NCollection_Array1<gp_Pnt> cpoles(1, poles->ColLength());
-  NCollection_Array1<double> cweights(1, poles->ColLength());
+  NCollection_Array1<gp_Pnt> cpoles(1, myPoles.ColLength());
+  NCollection_Array1<double> cweights(1, myPoles.ColLength());
 
   occ::handle<Geom_BSplineCurve> C;
 
-  if (urational || vrational)
+  if (myURational || myVRational)
   {
-    BSplSLib::Iso(V, false, POLES, &WEIGHTS, VFKNOTS, FMULTS, vdeg, vperiodic, cpoles, &cweights);
+    BSplSLib::Iso(V,
+                  false,
+                  myPoles,
+                  Weights(),
+                  myVFlatKnots,
+                  BSplCLib::NoMults(),
+                  myVDeg,
+                  myVPeriodic,
+                  cpoles,
+                  &cweights);
     C = new Geom_BSplineCurve(cpoles,
                               cweights,
-                              uknots->Array1(),
-                              umults->Array1(),
-                              udeg,
-                              uperiodic,
+                              myUKnots,
+                              myUMults,
+                              myUDeg,
+                              myUPeriodic,
                               CheckRational);
   }
   else
   {
     BSplSLib::Iso(V,
                   false,
-                  POLES,
+                  myPoles,
                   BSplSLib::NoWeights(),
-                  VFKNOTS,
-                  FMULTS,
-                  vdeg,
-                  vperiodic,
+                  myVFlatKnots,
+                  BSplCLib::NoMults(),
+                  myVDeg,
+                  myVPeriodic,
                   cpoles,
                   &cweights);
-    C = new Geom_BSplineCurve(cpoles, uknots->Array1(), umults->Array1(), udeg, uperiodic);
+    C = new Geom_BSplineCurve(cpoles, myUKnots, myUMults, myUDeg, myUPeriodic);
   }
 
   return C;
@@ -820,47 +839,57 @@ occ::handle<Geom_Curve> Geom_BSplineSurface::VIso(const double V, const bool Che
 
 int Geom_BSplineSurface::VMultiplicity(const int VIndex) const
 {
-  Standard_OutOfRange_Raise_if(VIndex < 1 || VIndex > vmults->Length(), " ");
-  return vmults->Value(VIndex);
+  Standard_OutOfRange_Raise_if(VIndex < 1 || VIndex > myVMults.Length(), " ");
+  return myVMults.Value(VIndex);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::VMultiplicities(NCollection_Array1<int>& Mv) const
 {
-  Standard_DimensionError_Raise_if(Mv.Length() != vmults->Length(), " ");
-  Mv = vmults->Array1();
+  Standard_DimensionError_Raise_if(Mv.Length() != myVMults.Length(), " ");
+  Mv = myVMults;
 }
 
 const NCollection_Array1<int>& Geom_BSplineSurface::VMultiplicities() const
 {
-  return vmults->Array1();
+  return myVMults;
 }
 
 //=================================================================================================
 
 double Geom_BSplineSurface::Weight(const int UIndex, const int VIndex) const
 {
-  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > weights->ColLength() || VIndex < 1
-                                 || VIndex > weights->RowLength(),
+  if (!(myURational || myVRational))
+    return 1.0;
+  Standard_OutOfRange_Raise_if(UIndex < 1 || UIndex > myWeights.ColLength() || VIndex < 1
+                                 || VIndex > myWeights.RowLength(),
                                " ");
-  return weights->Value(UIndex, VIndex);
+  return myWeights.Value(UIndex, VIndex);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::Weights(NCollection_Array2<double>& W) const
 {
-  Standard_DimensionError_Raise_if(W.ColLength() != weights->ColLength()
-                                     || W.RowLength() != weights->RowLength(),
+  if (!(myURational || myVRational))
+  {
+    Standard_DimensionError_Raise_if(W.ColLength() != myPoles.ColLength()
+                                       || W.RowLength() != myPoles.RowLength(),
+                                     " ");
+    W.Init(1.0);
+    return;
+  }
+  Standard_DimensionError_Raise_if(W.ColLength() != myWeights.ColLength()
+                                     || W.RowLength() != myWeights.RowLength(),
                                    " ");
-  W = weights->Array2();
+  W = myWeights;
 }
 
 const NCollection_Array2<double>* Geom_BSplineSurface::Weights() const
 {
-  if (urational || vrational)
-    return &weights->Array2();
+  if (myURational || myVRational)
+    return &myWeights;
   return BSplSLib::NoWeights();
 }
 
@@ -868,145 +897,89 @@ const NCollection_Array2<double>* Geom_BSplineSurface::Weights() const
 
 void Geom_BSplineSurface::Transform(const gp_Trsf& T)
 {
-  NCollection_Array2<gp_Pnt>& VPoles = poles->ChangeArray2();
-  for (int j = VPoles.LowerCol(); j <= VPoles.UpperCol(); j++)
+  for (int j = myPoles.LowerCol(); j <= myPoles.UpperCol(); j++)
   {
-    for (int i = VPoles.LowerRow(); i <= VPoles.UpperRow(); i++)
+    for (int i = myPoles.LowerRow(); i <= myPoles.UpperRow(); i++)
     {
-      VPoles(i, j).Transform(T);
+      myPoles(i, j).Transform(T);
     }
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::SetUPeriodic()
 {
-  int i, j;
-
   int first = FirstUKnotIndex();
   int last  = LastUKnotIndex();
 
-  occ::handle<NCollection_HArray1<double>> tk = uknots;
-  NCollection_Array1<double>               cknots((uknots->Array1())(first), first, last);
-  uknots                 = new NCollection_HArray1<double>(1, cknots.Length());
-  uknots->ChangeArray1() = cknots;
+  NCollection_Array1<double> cknots(1, last - first + 1);
+  for (int k = first; k <= last; k++)
+    cknots(k - first + 1) = myUKnots(k);
+  myUKnots = std::move(cknots);
 
-  occ::handle<NCollection_HArray1<int>> tm = umults;
-  NCollection_Array1<int>               cmults((umults->Array1())(first), first, last);
-  //  Modified by Sergey KHROMOV - Mon Feb 10 10:59:00 2003 Begin
-  //   cmults(first) = cmults(last) = std::max( cmults(first), cmults(last));
-  cmults(first) = cmults(last) = std::min(udeg, std::max(cmults(first), cmults(last)));
-  //  Modified by Sergey KHROMOV - Mon Feb 10 10:59:00 2003 End
-  umults                 = new NCollection_HArray1<int>(1, cmults.Length());
-  umults->ChangeArray1() = cmults;
+  NCollection_Array1<int> cmults(1, last - first + 1);
+  for (int k = first; k <= last; k++)
+    cmults(k - first + 1) = myUMults(k);
+  cmults(1) = cmults(cmults.Upper()) =
+    std::min(myUDeg, std::max(cmults(1), cmults(cmults.Upper())));
+  myUMults = std::move(cmults);
 
   // compute new number of poles;
-  int nbp = BSplCLib::NbPoles(udeg, true, cmults);
+  int nbp = BSplCLib::NbPoles(myUDeg, true, myUMults);
 
-  NCollection_Array2<gp_Pnt> cpoles(1, nbp, poles->LowerCol(), poles->UpperCol());
-  for (i = 1; i <= nbp; i++)
+  myPoles.ResizeWithTrim(1, nbp, myPoles.LowerCol(), myPoles.UpperCol(), true);
+  if (myURational || myVRational)
   {
-    for (j = poles->LowerCol(); j <= poles->UpperCol(); j++)
-    {
-      cpoles(i, j) = poles->Value(i, j);
-    }
+    myWeights.ResizeWithTrim(1, nbp, myWeights.LowerCol(), myWeights.UpperCol(), true);
   }
-  poles = new NCollection_HArray2<gp_Pnt>(1, nbp, cpoles.LowerCol(), cpoles.UpperCol());
-  poles->ChangeArray2() = cpoles;
 
-  NCollection_Array2<double> cweights(1, nbp, weights->LowerCol(), weights->UpperCol());
-  if (urational || vrational)
-  {
-    for (i = 1; i <= nbp; i++)
-    {
-      for (j = weights->LowerCol(); j <= weights->UpperCol(); j++)
-      {
-        cweights(i, j) = weights->Value(i, j);
-      }
-    }
-  }
-  else
-  {
-    for (i = 1; i <= nbp; i++)
-    {
-      for (j = weights->LowerCol(); j <= weights->UpperCol(); j++)
-      {
-        cweights(i, j) = 1;
-      }
-    }
-  }
-  weights = new NCollection_HArray2<double>(1, nbp, cweights.LowerCol(), cweights.UpperCol());
-  weights->ChangeArray2() = cweights;
+  myUPeriodic = true;
 
-  uperiodic = true;
-
-  maxderivinvok = false;
-  UpdateUKnots();
+  myMaxDerivInvOk = false;
+  updateUKnots();
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::SetVPeriodic()
 {
-  int i, j;
-
   int first = FirstVKnotIndex();
   int last  = LastVKnotIndex();
 
-  occ::handle<NCollection_HArray1<double>> tk = vknots;
-  NCollection_Array1<double>               cknots((vknots->Array1())(first), first, last);
-  vknots                 = new NCollection_HArray1<double>(1, cknots.Length());
-  vknots->ChangeArray1() = cknots;
+  NCollection_Array1<double> cknots(1, last - first + 1);
+  for (int k = first; k <= last; k++)
+    cknots(k - first + 1) = myVKnots(k);
+  myVKnots = std::move(cknots);
 
-  occ::handle<NCollection_HArray1<int>> tm = vmults;
-  NCollection_Array1<int>               cmults((vmults->Array1())(first), first, last);
-  //  Modified by Sergey KHROMOV - Mon Feb 10 11:00:33 2003 Begin
-  //   cmults(first) = cmults(last) = std::max( cmults(first), cmults(last));
-  cmults(first) = cmults(last) = std::min(vdeg, std::max(cmults(first), cmults(last)));
-  //  Modified by Sergey KHROMOV - Mon Feb 10 11:00:34 2003 End
-  vmults                 = new NCollection_HArray1<int>(1, cmults.Length());
-  vmults->ChangeArray1() = cmults;
+  NCollection_Array1<int> cmults(1, last - first + 1);
+  for (int k = first; k <= last; k++)
+    cmults(k - first + 1) = myVMults(k);
+  cmults(1) = cmults(cmults.Upper()) =
+    std::min(myVDeg, std::max(cmults(1), cmults(cmults.Upper())));
+  myVMults = std::move(cmults);
 
   // compute new number of poles;
-  int nbp = BSplCLib::NbPoles(vdeg, true, cmults);
+  int nbp = BSplCLib::NbPoles(myVDeg, true, myVMults);
 
-  NCollection_Array2<gp_Pnt> cpoles(poles->LowerRow(), poles->UpperRow(), 1, nbp);
-  for (i = poles->LowerRow(); i <= poles->UpperRow(); i++)
+  myPoles.ResizeWithTrim(myPoles.LowerRow(), myPoles.UpperRow(), 1, nbp, true);
+  if (myURational || myVRational)
   {
-    for (j = 1; j <= nbp; j++)
-    {
-      cpoles(i, j) = poles->Value(i, j);
-    }
-  }
-  poles = new NCollection_HArray2<gp_Pnt>(cpoles.LowerRow(), cpoles.UpperRow(), 1, nbp);
-  poles->ChangeArray2() = cpoles;
-
-  if (urational || vrational)
-  {
-    NCollection_Array2<double> cweights(weights->LowerRow(), weights->UpperRow(), 1, nbp);
-    for (i = weights->LowerRow(); i <= weights->UpperRow(); i++)
-    {
-      for (j = 1; j <= nbp; j++)
-      {
-        cweights(i, j) = weights->Value(i, j);
-      }
-    }
-    weights = new NCollection_HArray2<double>(cweights.LowerRow(), cweights.UpperRow(), 1, nbp);
-    weights->ChangeArray2() = cweights;
+    myWeights.ResizeWithTrim(myWeights.LowerRow(), myWeights.UpperRow(), 1, nbp, true);
   }
 
-  vperiodic = true;
+  myVPeriodic = true;
 
-  maxderivinvok = false;
-  UpdateVKnots();
+  myMaxDerivInvOk = false;
+  updateVKnots();
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::SetUOrigin(const int Index)
 {
-  if (!uperiodic)
+  if (!myUPeriodic)
     throw Standard_NoSuchObject("Geom_BSplineSurface::SetUOrigin: surface is not U periodic");
 
   int i, j, k;
@@ -1016,54 +989,48 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
   if ((Index < first) || (Index > last))
     throw Standard_DomainError("Geom_BSplineCurve::SetUOrigin: Index out of range");
 
-  int nbknots = uknots->Length();
-  int nbpoles = poles->ColLength();
+  int nbknots = myUKnots.Length();
+  int nbpoles = myPoles.ColLength();
 
-  occ::handle<NCollection_HArray1<double>> nknots   = new NCollection_HArray1<double>(1, nbknots);
-  NCollection_Array1<double>&              newknots = nknots->ChangeArray1();
+  NCollection_Array1<double> newknots(1, nbknots);
 
-  occ::handle<NCollection_HArray1<int>> nmults   = new NCollection_HArray1<int>(1, nbknots);
-  NCollection_Array1<int>&              newmults = nmults->ChangeArray1();
+  NCollection_Array1<int> newmults(1, nbknots);
 
   // set the knots and mults
-  double period = uknots->Value(last) - uknots->Value(first);
+  double period = myUKnots.Value(last) - myUKnots.Value(first);
   k             = 1;
   for (i = Index; i <= last; i++)
   {
-    newknots(k) = uknots->Value(i);
-    newmults(k) = umults->Value(i);
+    newknots(k) = myUKnots.Value(i);
+    newmults(k) = myUMults.Value(i);
     k++;
   }
   for (i = first + 1; i <= Index; i++)
   {
-    newknots(k) = uknots->Value(i) + period;
-    newmults(k) = umults->Value(i);
+    newknots(k) = myUKnots.Value(i) + period;
+    newmults(k) = myUMults.Value(i);
     k++;
   }
 
   int index = 1;
   for (i = first + 1; i <= Index; i++)
-    index += umults->Value(i);
+    index += myUMults.Value(i);
 
   // set the poles and weights
-  int                                      nbvp = poles->RowLength();
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, nbpoles, 1, nbvp);
-  occ::handle<NCollection_HArray2<double>> nweights =
-    new NCollection_HArray2<double>(1, nbpoles, 1, nbvp);
-  NCollection_Array2<gp_Pnt>& newpoles   = npoles->ChangeArray2();
-  NCollection_Array2<double>& newweights = nweights->ChangeArray2();
-  first                                  = poles->LowerRow();
-  last                                   = poles->UpperRow();
-  if (urational || vrational)
+  int                        nbvp = myPoles.RowLength();
+  NCollection_Array2<gp_Pnt> newpoles(1, nbpoles, 1, nbvp);
+  first = myPoles.LowerRow();
+  last  = myPoles.UpperRow();
+  if (myURational || myVRational)
   {
+    NCollection_Array2<double> newweights(1, nbpoles, 1, nbvp);
     k = 1;
     for (i = index; i <= last; i++)
     {
       for (j = 1; j <= nbvp; j++)
       {
-        newpoles(k, j)   = poles->Value(i, j);
-        newweights(k, j) = weights->Value(i, j);
+        newpoles(k, j)   = myPoles.Value(i, j);
+        newweights(k, j) = myWeights.Value(i, j);
       }
       k++;
     }
@@ -1071,11 +1038,12 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
     {
       for (j = 1; j <= nbvp; j++)
       {
-        newpoles(k, j)   = poles->Value(i, j);
-        newweights(k, j) = weights->Value(i, j);
+        newpoles(k, j)   = myPoles.Value(i, j);
+        newweights(k, j) = myWeights.Value(i, j);
       }
       k++;
     }
+    myWeights = std::move(newweights);
   }
   else
   {
@@ -1084,7 +1052,7 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
     {
       for (j = 1; j <= nbvp; j++)
       {
-        newpoles(k, j) = poles->Value(i, j);
+        newpoles(k, j) = myPoles.Value(i, j);
       }
       k++;
     }
@@ -1092,25 +1060,23 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
     {
       for (j = 1; j <= nbvp; j++)
       {
-        newpoles(k, j) = poles->Value(i, j);
+        newpoles(k, j) = myPoles.Value(i, j);
       }
       k++;
     }
   }
 
-  poles  = npoles;
-  uknots = nknots;
-  umults = nmults;
-  if (urational || vrational)
-    weights = nweights;
-  UpdateUKnots();
+  myPoles  = std::move(newpoles);
+  myUKnots = std::move(newknots);
+  myUMults = std::move(newmults);
+  updateUKnots();
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::SetVOrigin(const int Index)
 {
-  if (!vperiodic)
+  if (!myVPeriodic)
     throw Standard_NoSuchObject("Geom_BSplineSurface::SetVOrigin: surface is not V periodic");
 
   int i, j, k;
@@ -1120,54 +1086,48 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
   if ((Index < first) || (Index > last))
     throw Standard_DomainError("Geom_BSplineCurve::SetVOrigin: Index out of range");
 
-  int nbknots = vknots->Length();
-  int nbpoles = poles->RowLength();
+  int nbknots = myVKnots.Length();
+  int nbpoles = myPoles.RowLength();
 
-  occ::handle<NCollection_HArray1<double>> nknots   = new NCollection_HArray1<double>(1, nbknots);
-  NCollection_Array1<double>&              newknots = nknots->ChangeArray1();
+  NCollection_Array1<double> newknots(1, nbknots);
 
-  occ::handle<NCollection_HArray1<int>> nmults   = new NCollection_HArray1<int>(1, nbknots);
-  NCollection_Array1<int>&              newmults = nmults->ChangeArray1();
+  NCollection_Array1<int> newmults(1, nbknots);
 
   // set the knots and mults
-  double period = vknots->Value(last) - vknots->Value(first);
+  double period = myVKnots.Value(last) - myVKnots.Value(first);
   k             = 1;
   for (i = Index; i <= last; i++)
   {
-    newknots(k) = vknots->Value(i);
-    newmults(k) = vmults->Value(i);
+    newknots(k) = myVKnots.Value(i);
+    newmults(k) = myVMults.Value(i);
     k++;
   }
   for (i = first + 1; i <= Index; i++)
   {
-    newknots(k) = vknots->Value(i) + period;
-    newmults(k) = vmults->Value(i);
+    newknots(k) = myVKnots.Value(i) + period;
+    newmults(k) = myVMults.Value(i);
     k++;
   }
 
   int index = 1;
   for (i = first + 1; i <= Index; i++)
-    index += vmults->Value(i);
+    index += myVMults.Value(i);
 
   // set the poles and weights
-  int                                      nbup = poles->ColLength();
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, nbup, 1, nbpoles);
-  occ::handle<NCollection_HArray2<double>> nweights =
-    new NCollection_HArray2<double>(1, nbup, 1, nbpoles);
-  NCollection_Array2<gp_Pnt>& newpoles   = npoles->ChangeArray2();
-  NCollection_Array2<double>& newweights = nweights->ChangeArray2();
-  first                                  = poles->LowerCol();
-  last                                   = poles->UpperCol();
-  if (urational || vrational)
+  int                        nbup = myPoles.ColLength();
+  NCollection_Array2<gp_Pnt> newpoles(1, nbup, 1, nbpoles);
+  first = myPoles.LowerCol();
+  last  = myPoles.UpperCol();
+  if (myURational || myVRational)
   {
+    NCollection_Array2<double> newweights(1, nbup, 1, nbpoles);
     k = 1;
     for (j = index; j <= last; j++)
     {
       for (i = 1; i <= nbup; i++)
       {
-        newpoles(i, k)   = poles->Value(i, j);
-        newweights(i, k) = weights->Value(i, j);
+        newpoles(i, k)   = myPoles.Value(i, j);
+        newweights(i, k) = myWeights.Value(i, j);
       }
       k++;
     }
@@ -1175,11 +1135,12 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
     {
       for (i = 1; i <= nbup; i++)
       {
-        newpoles(i, k)   = poles->Value(i, j);
-        newweights(i, k) = weights->Value(i, j);
+        newpoles(i, k)   = myPoles.Value(i, j);
+        newweights(i, k) = myWeights.Value(i, j);
       }
       k++;
     }
+    myWeights = std::move(newweights);
   }
   else
   {
@@ -1188,7 +1149,7 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
     {
       for (i = 1; i <= nbup; i++)
       {
-        newpoles(i, k) = poles->Value(i, j);
+        newpoles(i, k) = myPoles.Value(i, j);
       }
       k++;
     }
@@ -1196,75 +1157,69 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
     {
       for (i = 1; i <= nbup; i++)
       {
-        newpoles(i, k) = poles->Value(i, j);
+        newpoles(i, k) = myPoles.Value(i, j);
       }
       k++;
     }
   }
 
-  poles  = npoles;
-  vknots = nknots;
-  vmults = nmults;
-  if (urational || vrational)
-    weights = nweights;
-  UpdateVKnots();
+  myPoles  = std::move(newpoles);
+  myVKnots = std::move(newknots);
+  myVMults = std::move(newmults);
+  updateVKnots();
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::SetUNotPeriodic()
 {
-  if (uperiodic)
+  if (myUPeriodic)
   {
     int NbKnots, NbPoles;
-    BSplCLib::PrepareUnperiodize(udeg, umults->Array1(), NbKnots, NbPoles);
+    BSplCLib::PrepareUnperiodize(myUDeg, myUMults, NbKnots, NbPoles);
 
-    occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-      new NCollection_HArray2<gp_Pnt>(1, NbPoles, 1, poles->RowLength());
+    NCollection_Array2<gp_Pnt> npoles(1, NbPoles, 1, myPoles.RowLength());
 
-    occ::handle<NCollection_HArray1<double>> nknots = new NCollection_HArray1<double>(1, NbKnots);
+    NCollection_Array1<double> nknots(1, NbKnots);
 
-    occ::handle<NCollection_HArray1<int>> nmults = new NCollection_HArray1<int>(1, NbKnots);
+    NCollection_Array1<int> nmults(1, NbKnots);
 
-    occ::handle<NCollection_HArray2<double>> nweights =
-      new NCollection_HArray2<double>(1, NbPoles, 1, poles->RowLength(), 0);
-
-    if (urational || vrational)
+    if (myURational || myVRational)
     {
-
+      NCollection_Array2<double> nweights(1, NbPoles, 1, myPoles.RowLength());
+      nweights.Init(0.0);
       BSplSLib::Unperiodize(true,
-                            udeg,
-                            umults->Array1(),
-                            uknots->Array1(),
-                            poles->Array2(),
-                            &weights->Array2(),
-                            nmults->ChangeArray1(),
-                            nknots->ChangeArray1(),
-                            npoles->ChangeArray2(),
-                            &nweights->ChangeArray2());
+                            myUDeg,
+                            myUMults,
+                            myUKnots,
+                            myPoles,
+                            Weights(),
+                            nmults,
+                            nknots,
+                            npoles,
+                            &nweights);
+      myWeights = std::move(nweights);
     }
     else
     {
-
       BSplSLib::Unperiodize(true,
-                            udeg,
-                            umults->Array1(),
-                            uknots->Array1(),
-                            poles->Array2(),
+                            myUDeg,
+                            myUMults,
+                            myUKnots,
+                            myPoles,
                             BSplSLib::NoWeights(),
-                            nmults->ChangeArray1(),
-                            nknots->ChangeArray1(),
-                            npoles->ChangeArray2(),
+                            nmults,
+                            nknots,
+                            npoles,
                             BSplSLib::NoWeights());
     }
-    poles     = npoles;
-    weights   = nweights;
-    umults    = nmults;
-    uknots    = nknots;
-    uperiodic = false;
+    myPoles     = std::move(npoles);
+    myUMults    = std::move(nmults);
+    myUKnots    = std::move(nknots);
+    myUPeriodic = false;
 
-    maxderivinvok = false;
-    UpdateUKnots();
+    myMaxDerivInvOk = false;
+    updateUKnots();
   }
 }
 
@@ -1272,57 +1227,53 @@ void Geom_BSplineSurface::SetUNotPeriodic()
 
 void Geom_BSplineSurface::SetVNotPeriodic()
 {
-  if (vperiodic)
+  if (myVPeriodic)
   {
     int NbKnots, NbPoles;
-    BSplCLib::PrepareUnperiodize(vdeg, vmults->Array1(), NbKnots, NbPoles);
+    BSplCLib::PrepareUnperiodize(myVDeg, myVMults, NbKnots, NbPoles);
 
-    occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-      new NCollection_HArray2<gp_Pnt>(1, poles->ColLength(), 1, NbPoles);
+    NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength(), 1, NbPoles);
 
-    occ::handle<NCollection_HArray1<double>> nknots = new NCollection_HArray1<double>(1, NbKnots);
+    NCollection_Array1<double> nknots(1, NbKnots);
 
-    occ::handle<NCollection_HArray1<int>> nmults = new NCollection_HArray1<int>(1, NbKnots);
+    NCollection_Array1<int> nmults(1, NbKnots);
 
-    occ::handle<NCollection_HArray2<double>> nweights =
-      new NCollection_HArray2<double>(1, poles->ColLength(), 1, NbPoles, 0);
-
-    if (urational || vrational)
+    if (myURational || myVRational)
     {
-
+      NCollection_Array2<double> nweights(1, myPoles.ColLength(), 1, NbPoles);
+      nweights.Init(0.0);
       BSplSLib::Unperiodize(false,
-                            vdeg,
-                            vmults->Array1(),
-                            vknots->Array1(),
-                            poles->Array2(),
-                            &weights->Array2(),
-                            nmults->ChangeArray1(),
-                            nknots->ChangeArray1(),
-                            npoles->ChangeArray2(),
-                            &nweights->ChangeArray2());
+                            myVDeg,
+                            myVMults,
+                            myVKnots,
+                            myPoles,
+                            Weights(),
+                            nmults,
+                            nknots,
+                            npoles,
+                            &nweights);
+      myWeights = std::move(nweights);
     }
     else
     {
-
       BSplSLib::Unperiodize(false,
-                            vdeg,
-                            vmults->Array1(),
-                            vknots->Array1(),
-                            poles->Array2(),
+                            myVDeg,
+                            myVMults,
+                            myVKnots,
+                            myPoles,
                             BSplSLib::NoWeights(),
-                            nmults->ChangeArray1(),
-                            nknots->ChangeArray1(),
-                            npoles->ChangeArray2(),
+                            nmults,
+                            nknots,
+                            npoles,
                             BSplSLib::NoWeights());
     }
-    poles     = npoles;
-    weights   = nweights;
-    vmults    = nmults;
-    vknots    = nknots;
-    vperiodic = false;
+    myPoles     = std::move(npoles);
+    myVMults    = std::move(nmults);
+    myVKnots    = std::move(nknots);
+    myVPeriodic = false;
 
-    maxderivinvok = false;
-    UpdateVKnots();
+    myMaxDerivInvOk = false;
+    updateVKnots();
   }
 }
 
@@ -1330,7 +1281,7 @@ void Geom_BSplineSurface::SetVNotPeriodic()
 
 bool Geom_BSplineSurface::IsUClosed() const
 {
-  if (uperiodic)
+  if (myUPeriodic)
     return true;
 
   double aU1, aU2, aV1, aV2;
@@ -1348,7 +1299,7 @@ bool Geom_BSplineSurface::IsUClosed() const
 
 bool Geom_BSplineSurface::IsVClosed() const
 {
-  if (vperiodic)
+  if (myVPeriodic)
     return true;
 
   double aU1, aU2, aV1, aV2;
@@ -1366,54 +1317,54 @@ bool Geom_BSplineSurface::IsVClosed() const
 
 bool Geom_BSplineSurface::IsUPeriodic() const
 {
-  return uperiodic;
+  return myUPeriodic;
 }
 
 //=================================================================================================
 
 bool Geom_BSplineSurface::IsVPeriodic() const
 {
-  return vperiodic;
+  return myVPeriodic;
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::FirstUKnotIndex() const
 {
-  if (uperiodic)
+  if (myUPeriodic)
     return 1;
   else
-    return BSplCLib::FirstUKnotIndex(udeg, umults->Array1());
+    return BSplCLib::FirstUKnotIndex(myUDeg, myUMults);
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::FirstVKnotIndex() const
 {
-  if (vperiodic)
+  if (myVPeriodic)
     return 1;
   else
-    return BSplCLib::FirstUKnotIndex(vdeg, vmults->Array1());
+    return BSplCLib::FirstUKnotIndex(myVDeg, myVMults);
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::LastUKnotIndex() const
 {
-  if (uperiodic)
-    return uknots->Length();
+  if (myUPeriodic)
+    return myUKnots.Length();
   else
-    return BSplCLib::LastUKnotIndex(udeg, umults->Array1());
+    return BSplCLib::LastUKnotIndex(myUDeg, myUMults);
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::LastVKnotIndex() const
 {
-  if (vperiodic)
-    return vknots->Length();
+  if (myVPeriodic)
+    return myVKnots.Length();
   else
-    return BSplCLib::LastUKnotIndex(vdeg, vmults->Array1());
+    return BSplCLib::LastUKnotIndex(myVDeg, myVMults);
 }
 
 //=================================================================================================
@@ -1424,26 +1375,21 @@ void Geom_BSplineSurface::LocateU(const double U,
                                   int&         I2,
                                   const bool   WithKnotRepetition) const
 {
-  double                                   NewU = U, vbid = vknots->Value(1);
-  occ::handle<NCollection_HArray1<double>> TheKnots;
-  if (WithKnotRepetition)
-    TheKnots = ufknots;
-  else
-    TheKnots = uknots;
+  double                            NewU = U, vbid = myVKnots.Value(1);
+  const NCollection_Array1<double>& TheKnots = WithKnotRepetition ? myUFlatKnots : myUKnots;
 
   PeriodicNormalization(NewU, vbid); // Attention a la periode
 
-  const NCollection_Array1<double>& Knots                = TheKnots->Array1();
-  double                            UFirst               = Knots(1);
-  double                            ULast                = Knots(Knots.Length());
-  double                            PParametricTolerance = std::abs(ParametricTolerance);
+  double UFirst               = TheKnots(1);
+  double ULast                = TheKnots(TheKnots.Length());
+  double PParametricTolerance = std::abs(ParametricTolerance);
   if (std::abs(NewU - UFirst) <= PParametricTolerance)
   {
     I1 = I2 = 1;
   }
   else if (std::abs(NewU - ULast) <= PParametricTolerance)
   {
-    I1 = I2 = Knots.Length();
+    I1 = I2 = TheKnots.Length();
   }
   else if (NewU < UFirst)
   {
@@ -1452,19 +1398,19 @@ void Geom_BSplineSurface::LocateU(const double U,
   }
   else if (NewU > ULast)
   {
-    I1 = Knots.Length();
+    I1 = TheKnots.Length();
     I2 = I1 + 1;
   }
   else
   {
     I1 = 1;
-    BSplCLib::Hunt(Knots, NewU, I1);
-    I1 = std::max(std::min(I1, Knots.Upper()), Knots.Lower());
-    while (I1 + 1 <= Knots.Upper() && std::abs(Knots(I1 + 1) - NewU) <= PParametricTolerance)
+    BSplCLib::Hunt(TheKnots, NewU, I1);
+    I1 = std::max(std::min(I1, TheKnots.Upper()), TheKnots.Lower());
+    while (I1 + 1 <= TheKnots.Upper() && std::abs(TheKnots(I1 + 1) - NewU) <= PParametricTolerance)
     {
       I1++;
     }
-    if (std::abs(Knots(I1) - NewU) <= PParametricTolerance)
+    if (std::abs(TheKnots(I1) - NewU) <= PParametricTolerance)
     {
       I2 = I1;
     }
@@ -1483,26 +1429,21 @@ void Geom_BSplineSurface::LocateV(const double V,
                                   int&         I2,
                                   const bool   WithKnotRepetition) const
 {
-  double                                   NewV = V, ubid = uknots->Value(1);
-  occ::handle<NCollection_HArray1<double>> TheKnots;
-  if (WithKnotRepetition)
-    TheKnots = vfknots;
-  else
-    TheKnots = vknots;
+  double                            NewV = V, ubid = myUKnots.Value(1);
+  const NCollection_Array1<double>& TheKnots = WithKnotRepetition ? myVFlatKnots : myVKnots;
 
   PeriodicNormalization(ubid, NewV); // Attention a la periode
 
-  const NCollection_Array1<double>& Knots                = TheKnots->Array1();
-  double                            VFirst               = Knots(1);
-  double                            VLast                = Knots(Knots.Length());
-  double                            PParametricTolerance = std::abs(ParametricTolerance);
+  double VFirst               = TheKnots(1);
+  double VLast                = TheKnots(TheKnots.Length());
+  double PParametricTolerance = std::abs(ParametricTolerance);
   if (std::abs(NewV - VFirst) <= PParametricTolerance)
   {
     I1 = I2 = 1;
   }
   else if (std::abs(NewV - VLast) <= PParametricTolerance)
   {
-    I1 = I2 = Knots.Length();
+    I1 = I2 = TheKnots.Length();
   }
   else if (NewV < VFirst - PParametricTolerance)
   {
@@ -1511,19 +1452,19 @@ void Geom_BSplineSurface::LocateV(const double V,
   }
   else if (NewV > VLast + PParametricTolerance)
   {
-    I1 = Knots.Length();
+    I1 = TheKnots.Length();
     I2 = I1 + 1;
   }
   else
   {
     I1 = 1;
-    BSplCLib::Hunt(Knots, NewV, I1);
-    I1 = std::max(std::min(I1, Knots.Upper()), Knots.Lower());
-    while (I1 + 1 <= Knots.Upper() && std::abs(Knots(I1 + 1) - NewV) <= PParametricTolerance)
+    BSplCLib::Hunt(TheKnots, NewV, I1);
+    I1 = std::max(std::min(I1, TheKnots.Upper()), TheKnots.Lower());
+    while (I1 + 1 <= TheKnots.Upper() && std::abs(TheKnots(I1 + 1) - NewV) <= PParametricTolerance)
     {
       I1++;
     }
-    if (std::abs(Knots(I1) - NewV) <= PParametricTolerance)
+    if (std::abs(TheKnots(I1) - NewV) <= PParametricTolerance)
     {
       I2 = I1;
     }
@@ -1538,70 +1479,69 @@ void Geom_BSplineSurface::LocateV(const double V,
 
 void Geom_BSplineSurface::UReverse()
 {
-  BSplCLib::Reverse(umults->ChangeArray1());
-  BSplCLib::Reverse(uknots->ChangeArray1());
+  BSplCLib::Reverse(myUMults);
+  BSplCLib::Reverse(myUKnots);
   int last;
-  if (uperiodic)
-    last = ufknots->Upper() - udeg - 1;
+  if (myUPeriodic)
+    last = myUFlatKnots.Upper() - myUDeg - 1;
   else
-    last = poles->UpperRow();
-  BSplSLib::Reverse(poles->ChangeArray2(), last, true);
-  if (urational || vrational)
-    BSplSLib::Reverse(weights->ChangeArray2(), last, true);
-  UpdateUKnots();
+    last = myPoles.UpperRow();
+  BSplSLib::Reverse(myPoles, last, true);
+  if (myURational || myVRational)
+    BSplSLib::Reverse(myWeights, last, true);
+  updateUKnots();
 }
 
 //=================================================================================================
 
 double Geom_BSplineSurface::UReversedParameter(const double U) const
 {
-  return (uknots->Value(1) + uknots->Value(uknots->Length()) - U);
+  return (myUKnots.Value(1) + myUKnots.Value(myUKnots.Length()) - U);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::VReverse()
 {
-  BSplCLib::Reverse(vmults->ChangeArray1());
-  BSplCLib::Reverse(vknots->ChangeArray1());
+  BSplCLib::Reverse(myVMults);
+  BSplCLib::Reverse(myVKnots);
   int last;
-  if (vperiodic)
-    last = vfknots->Upper() - vdeg - 1;
+  if (myVPeriodic)
+    last = myVFlatKnots.Upper() - myVDeg - 1;
   else
-    last = poles->UpperCol();
-  BSplSLib::Reverse(poles->ChangeArray2(), last, false);
-  if (urational || vrational)
-    BSplSLib::Reverse(weights->ChangeArray2(), last, false);
-  UpdateVKnots();
+    last = myPoles.UpperCol();
+  BSplSLib::Reverse(myPoles, last, false);
+  if (myURational || myVRational)
+    BSplSLib::Reverse(myWeights, last, false);
+  updateVKnots();
 }
 
 //=================================================================================================
 
 double Geom_BSplineSurface::VReversedParameter(const double V) const
 {
-  return (vknots->Value(1) + vknots->Value(vknots->Length()) - V);
+  return (myVKnots.Value(1) + myVKnots.Value(myVKnots.Length()) - V);
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::SetPoleCol(const int VIndex, const NCollection_Array1<gp_Pnt>& CPoles)
 {
-  if (VIndex < 1 || VIndex > poles->RowLength())
+  if (VIndex < 1 || VIndex > myPoles.RowLength())
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetPoleCol: VIndex out of range");
   }
-  if (CPoles.Lower() < 1 || CPoles.Lower() > poles->ColLength() || CPoles.Upper() < 1
-      || CPoles.Upper() > poles->ColLength())
+  if (CPoles.Lower() < 1 || CPoles.Lower() > myPoles.ColLength() || CPoles.Upper() < 1
+      || CPoles.Upper() > myPoles.ColLength())
   {
     throw Standard_ConstructionError("Geom_BSplineSurface::SetPoleCol: invalid array dimension");
   }
 
-  NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
-
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    Poles(I + Poles.LowerRow() - 1, VIndex + Poles.LowerCol() - 1) = CPoles(I);
+    myPoles(I + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1) = CPoles(I);
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1618,22 +1558,21 @@ void Geom_BSplineSurface::SetPoleCol(const int                         VIndex,
 
 void Geom_BSplineSurface::SetPoleRow(const int UIndex, const NCollection_Array1<gp_Pnt>& CPoles)
 {
-  if (UIndex < 1 || UIndex > poles->ColLength())
+  if (UIndex < 1 || UIndex > myPoles.ColLength())
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetPoleRow: UIndex out of range");
   }
-  if (CPoles.Lower() < 1 || CPoles.Lower() > poles->RowLength() || CPoles.Upper() < 1
-      || CPoles.Upper() > poles->RowLength())
+  if (CPoles.Lower() < 1 || CPoles.Lower() > myPoles.RowLength() || CPoles.Upper() < 1
+      || CPoles.Upper() > myPoles.RowLength())
   {
     throw Standard_ConstructionError("Geom_BSplineSurface::SetPoleRow: invalid array dimension");
   }
 
-  NCollection_Array2<gp_Pnt>& Poles = poles->ChangeArray2();
-
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
-    Poles(UIndex + Poles.LowerRow() - 1, I + Poles.LowerCol() - 1) = CPoles(I);
+    myPoles(UIndex + myPoles.LowerRow() - 1, I + myPoles.LowerCol() - 1) = CPoles(I);
   }
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1650,7 +1589,8 @@ void Geom_BSplineSurface::SetPoleRow(const int                         UIndex,
 
 void Geom_BSplineSurface::SetPole(const int UIndex, const int VIndex, const gp_Pnt& P)
 {
-  poles->SetValue(UIndex + poles->LowerRow() - 1, VIndex + poles->LowerCol() - 1, P);
+  myPoles.SetValue(UIndex + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1, P);
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1678,18 +1618,18 @@ void Geom_BSplineSurface::MovePoint(const double  U,
                                     int&          VFirstModifiedPole,
                                     int&          VLastmodifiedPole)
 {
-  if (UIndex1 < 1 || UIndex1 > poles->UpperRow() || UIndex2 < 1 || UIndex2 > poles->UpperRow()
-      || UIndex1 > UIndex2 || VIndex1 < 1 || VIndex1 > poles->UpperCol() || VIndex2 < 1
-      || VIndex2 > poles->UpperCol() || VIndex1 > VIndex2)
+  if (UIndex1 < 1 || UIndex1 > myPoles.UpperRow() || UIndex2 < 1 || UIndex2 > myPoles.UpperRow()
+      || UIndex1 > UIndex2 || VIndex1 < 1 || VIndex1 > myPoles.UpperCol() || VIndex2 < 1
+      || VIndex2 > myPoles.UpperCol() || VIndex1 > VIndex2)
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::MovePoint: Index and #pole mismatch");
   }
 
-  NCollection_Array2<gp_Pnt> npoles(1, poles->UpperRow(), 1, poles->UpperCol());
+  NCollection_Array2<gp_Pnt> npoles(1, myPoles.UpperRow(), 1, myPoles.UpperCol());
   gp_Pnt                     P0;
   D0(U, V, P0);
   gp_Vec Displ(P0, P);
-  bool   rational = (urational || vrational);
+  bool   rational = (myURational || myVRational);
   BSplSLib::MovePoint(U,
                       V,
                       Displ,
@@ -1697,13 +1637,13 @@ void Geom_BSplineSurface::MovePoint(const double  U,
                       UIndex2,
                       VIndex1,
                       VIndex2,
-                      udeg,
-                      vdeg,
+                      myUDeg,
+                      myVDeg,
                       rational,
-                      poles->Array2(),
-                      weights->Array2(),
-                      ufknots->Array1(),
-                      vfknots->Array1(),
+                      myPoles,
+                      myWeights,
+                      myUFlatKnots,
+                      myVFlatKnots,
                       UFirstModifiedPole,
                       ULastmodifiedPole,
                       VFirstModifiedPole,
@@ -1711,19 +1651,19 @@ void Geom_BSplineSurface::MovePoint(const double  U,
                       npoles);
   if (UFirstModifiedPole)
   {
-    poles->ChangeArray2() = npoles;
+    myPoles = std::move(npoles);
   }
-  maxderivinvok = false;
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
 
 void Geom_BSplineSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
-  U1 = ufknots->Value(udeg + 1);
-  U2 = ufknots->Value(ufknots->Upper() - udeg);
-  V1 = vfknots->Value(vdeg + 1);
-  V2 = vfknots->Value(vfknots->Upper() - vdeg);
+  U1 = myUFlatKnots.Value(myUDeg + 1);
+  U2 = myUFlatKnots.Value(myUFlatKnots.Upper() - myUDeg);
+  V1 = myVFlatKnots.Value(myVDeg + 1);
+  V2 = myVFlatKnots.Value(myVFlatKnots.Upper() - myVDeg);
 }
 
 //=================================================================================================
@@ -1737,77 +1677,77 @@ int Geom_BSplineSurface::MaxDegree()
 
 bool Geom_BSplineSurface::IsURational() const
 {
-  return urational;
+  return myURational;
 }
 
 //=================================================================================================
 
 bool Geom_BSplineSurface::IsVRational() const
 {
-  return vrational;
+  return myVRational;
 }
 
 //=================================================================================================
 
 GeomAbs_Shape Geom_BSplineSurface::Continuity() const
 {
-  return ((Usmooth < Vsmooth) ? Usmooth : Vsmooth);
+  return ((myUSmooth < myVSmooth) ? myUSmooth : myVSmooth);
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::NbUKnots() const
 {
-  return uknots->Length();
+  return myUKnots.Length();
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::NbUPoles() const
 {
-  return poles->ColLength();
+  return myPoles.ColLength();
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::NbVKnots() const
 {
-  return vknots->Length();
+  return myVKnots.Length();
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::NbVPoles() const
 {
-  return poles->RowLength();
+  return myPoles.RowLength();
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::UDegree() const
 {
-  return udeg;
+  return myUDeg;
 }
 
 //=================================================================================================
 
 int Geom_BSplineSurface::VDegree() const
 {
-  return vdeg;
+  return myVDeg;
 }
 
 //=================================================================================================
 
 GeomAbs_BSplKnotDistribution Geom_BSplineSurface::UKnotDistribution() const
 {
-  return uknotSet;
+  return myUKnotSet;
 }
 
 //=================================================================================================
 
 GeomAbs_BSplKnotDistribution Geom_BSplineSurface::VKnotDistribution() const
 {
-  return vknotSet;
+  return myVKnotSet;
 }
 
 //=================================================================================================
@@ -1820,10 +1760,10 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
   // Check and compute new sizes
   int nbpoles, nbknots;
 
-  if (!BSplCLib::PrepareInsertKnots(udeg,
-                                    uperiodic,
-                                    uknots->Array1(),
-                                    umults->Array1(),
+  if (!BSplCLib::PrepareInsertKnots(myUDeg,
+                                    myUPeriodic,
+                                    myUKnots,
+                                    myUMults,
                                     Knots,
                                     &Mults,
                                     nbpoles,
@@ -1832,64 +1772,56 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
                                     Add))
     throw Standard_ConstructionError("Geom_BSplineSurface::InsertUKnots");
 
-  if (nbpoles == poles->ColLength())
+  if (nbpoles == myPoles.ColLength())
     return;
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, nbpoles, 1, poles->RowLength());
-  occ::handle<NCollection_HArray2<double>> nweights =
-    new NCollection_HArray2<double>(1, nbpoles, 1, poles->RowLength(), 1.0);
-  occ::handle<NCollection_HArray1<double>> nknots = uknots;
-  occ::handle<NCollection_HArray1<int>>    nmults = umults;
+  NCollection_Array2<gp_Pnt> npoles(1, nbpoles, 1, myPoles.RowLength());
+  NCollection_Array1<double> nknots(1, nbknots);
+  NCollection_Array1<int>    nmults(1, nbknots);
 
-  if (nbknots != uknots->Length())
+  if (myURational || myVRational)
   {
-    nknots = new NCollection_HArray1<double>(1, nbknots);
-    nmults = new NCollection_HArray1<int>(1, nbknots);
-  }
-
-  if (urational || vrational)
-  {
+    NCollection_Array2<double> nweights(1, nbpoles, 1, myPoles.RowLength());
     BSplSLib::InsertKnots(true,
-                          udeg,
-                          uperiodic,
-                          poles->Array2(),
-                          &weights->Array2(),
-                          uknots->Array1(),
-                          umults->Array1(),
+                          myUDeg,
+                          myUPeriodic,
+                          myPoles,
+                          Weights(),
+                          myUKnots,
+                          myUMults,
                           Knots,
                           &Mults,
-                          npoles->ChangeArray2(),
-                          &nweights->ChangeArray2(),
-                          nknots->ChangeArray1(),
-                          nmults->ChangeArray1(),
+                          npoles,
+                          &nweights,
+                          nknots,
+                          nmults,
                           ParametricTolerance,
                           Add);
+    myWeights = std::move(nweights);
   }
   else
   {
     BSplSLib::InsertKnots(true,
-                          udeg,
-                          uperiodic,
-                          poles->Array2(),
+                          myUDeg,
+                          myUPeriodic,
+                          myPoles,
                           BSplSLib::NoWeights(),
-                          uknots->Array1(),
-                          umults->Array1(),
+                          myUKnots,
+                          myUMults,
                           Knots,
                           &Mults,
-                          npoles->ChangeArray2(),
+                          npoles,
                           BSplSLib::NoWeights(),
-                          nknots->ChangeArray1(),
-                          nmults->ChangeArray1(),
+                          nknots,
+                          nmults,
                           ParametricTolerance,
                           Add);
   }
 
-  poles   = npoles;
-  weights = nweights;
-  uknots  = nknots;
-  umults  = nmults;
-  UpdateUKnots();
+  myPoles  = std::move(npoles);
+  myUKnots = std::move(nknots);
+  myUMults = std::move(nmults);
+  updateUKnots();
 }
 
 //=================================================================================================
@@ -1902,10 +1834,10 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
   // Check and compute new sizes
   int nbpoles, nbknots;
 
-  if (!BSplCLib::PrepareInsertKnots(vdeg,
-                                    vperiodic,
-                                    vknots->Array1(),
-                                    vmults->Array1(),
+  if (!BSplCLib::PrepareInsertKnots(myVDeg,
+                                    myVPeriodic,
+                                    myVKnots,
+                                    myVMults,
                                     Knots,
                                     &Mults,
                                     nbpoles,
@@ -1914,64 +1846,56 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
                                     Add))
     throw Standard_ConstructionError("Geom_BSplineSurface::InsertVKnots");
 
-  if (nbpoles == poles->RowLength())
+  if (nbpoles == myPoles.RowLength())
     return;
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, poles->ColLength(), 1, nbpoles);
-  occ::handle<NCollection_HArray2<double>> nweights =
-    new NCollection_HArray2<double>(1, poles->ColLength(), 1, nbpoles, 1.0);
-  occ::handle<NCollection_HArray1<double>> nknots = vknots;
-  occ::handle<NCollection_HArray1<int>>    nmults = vmults;
+  NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength(), 1, nbpoles);
+  NCollection_Array1<double> nknots(1, nbknots);
+  NCollection_Array1<int>    nmults(1, nbknots);
 
-  if (nbknots != vknots->Length())
+  if (myURational || myVRational)
   {
-    nknots = new NCollection_HArray1<double>(1, nbknots);
-    nmults = new NCollection_HArray1<int>(1, nbknots);
-  }
-
-  if (urational || vrational)
-  {
+    NCollection_Array2<double> nweights(1, myPoles.ColLength(), 1, nbpoles);
     BSplSLib::InsertKnots(false,
-                          vdeg,
-                          vperiodic,
-                          poles->Array2(),
-                          &weights->Array2(),
-                          vknots->Array1(),
-                          vmults->Array1(),
+                          myVDeg,
+                          myVPeriodic,
+                          myPoles,
+                          Weights(),
+                          myVKnots,
+                          myVMults,
                           Knots,
                           &Mults,
-                          npoles->ChangeArray2(),
-                          &nweights->ChangeArray2(),
-                          nknots->ChangeArray1(),
-                          nmults->ChangeArray1(),
+                          npoles,
+                          &nweights,
+                          nknots,
+                          nmults,
                           ParametricTolerance,
                           Add);
+    myWeights = std::move(nweights);
   }
   else
   {
     BSplSLib::InsertKnots(false,
-                          vdeg,
-                          vperiodic,
-                          poles->Array2(),
+                          myVDeg,
+                          myVPeriodic,
+                          myPoles,
                           BSplSLib::NoWeights(),
-                          vknots->Array1(),
-                          vmults->Array1(),
+                          myVKnots,
+                          myVMults,
                           Knots,
                           &Mults,
-                          npoles->ChangeArray2(),
+                          npoles,
                           BSplSLib::NoWeights(),
-                          nknots->ChangeArray1(),
-                          nmults->ChangeArray1(),
+                          nknots,
+                          nmults,
                           ParametricTolerance,
                           Add);
   }
 
-  poles   = npoles;
-  weights = nweights;
-  vknots  = nknots;
-  vmults  = nmults;
-  UpdateVKnots();
+  myPoles  = std::move(npoles);
+  myVKnots = std::move(nknots);
+  myVMults = std::move(nmults);
+  updateVKnots();
 }
 
 //=================================================================================================
@@ -1984,82 +1908,68 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
   int I1 = FirstUKnotIndex();
   int I2 = LastUKnotIndex();
 
-  if (!uperiodic && (Index <= I1 || Index >= I2))
+  if (!myUPeriodic && (Index <= I1 || Index >= I2))
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::RemoveUKnot: invalid Index");
   }
-  else if (uperiodic && (Index < I1 || Index > I2))
+  else if (myUPeriodic && (Index < I1 || Index > I2))
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::RemoveUKnot: invalid Index for periodic case");
   }
 
-  const NCollection_Array2<gp_Pnt>& oldpoles = poles->Array2();
-
-  int step = umults->Value(Index) - M;
+  int step = myUMults.Value(Index) - M;
   if (step <= 0)
     return true;
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, oldpoles.ColLength() - step, 1, oldpoles.RowLength());
-  occ::handle<NCollection_HArray1<double>> nknots = uknots;
-  occ::handle<NCollection_HArray1<int>>    nmults = umults;
-
-  if (M == 0)
+  NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength() - step, 1, myPoles.RowLength());
+  const int                  aNewUKnotLen = (M == 0) ? myUKnots.Length() - 1 : myUKnots.Length();
+  NCollection_Array1<double> nknots(1, aNewUKnotLen);
+  NCollection_Array1<int>    nmults(1, aNewUKnotLen);
+  if (myURational || myVRational)
   {
-    nknots = new NCollection_HArray1<double>(1, uknots->Length() - 1);
-    nmults = new NCollection_HArray1<int>(1, uknots->Length() - 1);
-  }
-  occ::handle<NCollection_HArray2<double>> nweights;
-  if (urational || vrational)
-  {
-    nweights = new NCollection_HArray2<double>(1, npoles->ColLength(), 1, npoles->RowLength());
+    NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength());
     if (!BSplSLib::RemoveKnot(true,
                               Index,
                               M,
-                              udeg,
-                              uperiodic,
-                              poles->Array2(),
-                              &weights->Array2(),
-                              uknots->Array1(),
-                              umults->Array1(),
-                              npoles->ChangeArray2(),
-                              &nweights->ChangeArray2(),
-                              nknots->ChangeArray1(),
-                              nmults->ChangeArray1(),
+                              myUDeg,
+                              myUPeriodic,
+                              myPoles,
+                              Weights(),
+                              myUKnots,
+                              myUMults,
+                              npoles,
+                              &nweights,
+                              nknots,
+                              nmults,
                               Tolerance))
       return false;
+    myWeights = std::move(nweights);
   }
   else
   {
-    //
-    // sync the size of the weights
-    //
-    nweights =
-      new NCollection_HArray2<double>(1, npoles->ColLength(), 1, npoles->RowLength(), 1.0e0);
     if (!BSplSLib::RemoveKnot(true,
                               Index,
                               M,
-                              udeg,
-                              uperiodic,
-                              poles->Array2(),
+                              myUDeg,
+                              myUPeriodic,
+                              myPoles,
                               BSplSLib::NoWeights(),
-                              uknots->Array1(),
-                              umults->Array1(),
-                              npoles->ChangeArray2(),
+                              myUKnots,
+                              myUMults,
+                              npoles,
                               BSplSLib::NoWeights(),
-                              nknots->ChangeArray1(),
-                              nmults->ChangeArray1(),
+                              nknots,
+                              nmults,
                               Tolerance))
       return false;
   }
 
-  poles   = npoles;
-  weights = nweights;
-  uknots  = nknots;
-  umults  = nmults;
+  myPoles  = std::move(npoles);
+  myUKnots = std::move(nknots);
+  myUMults = std::move(nmults);
 
-  maxderivinvok = false;
-  UpdateUKnots();
+  myMaxDerivInvOk = false;
+  updateUKnots();
   return true;
 }
 
@@ -2073,82 +1983,67 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
   int I1 = FirstVKnotIndex();
   int I2 = LastVKnotIndex();
 
-  if (!vperiodic && (Index <= I1 || Index >= I2))
+  if (!myVPeriodic && (Index <= I1 || Index >= I2))
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::RemoveVKnot: invalid Index");
   }
-  else if (vperiodic && (Index < I1 || Index > I2))
+  else if (myVPeriodic && (Index < I1 || Index > I2))
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::RemoveVKnot: invalid Index for periodic case");
   }
 
-  const NCollection_Array2<gp_Pnt>& oldpoles = poles->Array2();
-
-  int step = vmults->Value(Index) - M;
+  int step = myVMults.Value(Index) - M;
   if (step <= 0)
     return true;
 
-  occ::handle<NCollection_HArray2<gp_Pnt>> npoles =
-    new NCollection_HArray2<gp_Pnt>(1, oldpoles.ColLength(), 1, oldpoles.RowLength() - step);
-  occ::handle<NCollection_HArray1<double>> nknots = vknots;
-  occ::handle<NCollection_HArray1<int>>    nmults = vmults;
-
-  if (M == 0)
+  NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength(), 1, myPoles.RowLength() - step);
+  const int                  aNewVKnotLen = (M == 0) ? myVKnots.Length() - 1 : myVKnots.Length();
+  NCollection_Array1<double> nknots(1, aNewVKnotLen);
+  NCollection_Array1<int>    nmults(1, aNewVKnotLen);
+  if (myURational || myVRational)
   {
-    nknots = new NCollection_HArray1<double>(1, vknots->Length() - 1);
-    nmults = new NCollection_HArray1<int>(1, vknots->Length() - 1);
-  }
-  occ::handle<NCollection_HArray2<double>> nweights;
-  if (urational || vrational)
-  {
-    nweights = new NCollection_HArray2<double>(1, npoles->ColLength(), 1, npoles->RowLength());
-
+    NCollection_Array2<double> nweights(1, npoles.ColLength(), 1, npoles.RowLength());
     if (!BSplSLib::RemoveKnot(false,
                               Index,
                               M,
-                              vdeg,
-                              vperiodic,
-                              poles->Array2(),
-                              &weights->Array2(),
-                              vknots->Array1(),
-                              vmults->Array1(),
-                              npoles->ChangeArray2(),
-                              &nweights->ChangeArray2(),
-                              nknots->ChangeArray1(),
-                              nmults->ChangeArray1(),
+                              myVDeg,
+                              myVPeriodic,
+                              myPoles,
+                              Weights(),
+                              myVKnots,
+                              myVMults,
+                              npoles,
+                              &nweights,
+                              nknots,
+                              nmults,
                               Tolerance))
       return false;
+    myWeights = std::move(nweights);
   }
   else
   {
-    //
-    // sync the size of the weights array
-    //
-    nweights =
-      new NCollection_HArray2<double>(1, npoles->ColLength(), 1, npoles->RowLength(), 1.0e0);
     if (!BSplSLib::RemoveKnot(false,
                               Index,
                               M,
-                              vdeg,
-                              vperiodic,
-                              poles->Array2(),
+                              myVDeg,
+                              myVPeriodic,
+                              myPoles,
                               BSplSLib::NoWeights(),
-                              vknots->Array1(),
-                              vmults->Array1(),
-                              npoles->ChangeArray2(),
+                              myVKnots,
+                              myVMults,
+                              npoles,
                               BSplSLib::NoWeights(),
-                              nknots->ChangeArray1(),
-                              nmults->ChangeArray1(),
+                              nknots,
+                              nmults,
                               Tolerance))
       return false;
   }
 
-  poles         = npoles;
-  vknots        = nknots;
-  vmults        = nmults;
-  weights       = nweights;
-  maxderivinvok = false;
-  UpdateVKnots();
+  myPoles         = std::move(npoles);
+  myVKnots        = std::move(nknots);
+  myVMults        = std::move(nmults);
+  myMaxDerivInvOk = false;
+  updateVKnots();
   return true;
 }
 
@@ -2158,25 +2053,25 @@ void Geom_BSplineSurface::Resolution(const double Tolerance3D,
                                      double&      UTolerance,
                                      double&      VTolerance)
 {
-  if (!maxderivinvok)
+  if (!myMaxDerivInvOk)
   {
-    BSplSLib::Resolution(poles->Array2(),
-                         &weights->Array2(),
-                         uknots->Array1(),
-                         vknots->Array1(),
-                         umults->Array1(),
-                         vmults->Array1(),
-                         udeg,
-                         vdeg,
-                         urational,
-                         vrational,
-                         uperiodic,
-                         vperiodic,
+    BSplSLib::Resolution(myPoles,
+                         Weights(),
+                         myUKnots,
+                         myVKnots,
+                         myUMults,
+                         myVMults,
+                         myUDeg,
+                         myVDeg,
+                         myURational,
+                         myVRational,
+                         myUPeriodic,
+                         myVPeriodic,
                          1.,
-                         umaxderivinv,
-                         vmaxderivinv);
-    maxderivinvok = true;
+                         myUMaxDerivInv,
+                         myVMaxDerivInv);
+    myMaxDerivInvOk = true;
   }
-  UTolerance = Tolerance3D * umaxderivinv;
-  VTolerance = Tolerance3D * vmaxderivinv;
+  UTolerance = Tolerance3D * myUMaxDerivInv;
+  VTolerance = Tolerance3D * myVMaxDerivInv;
 }

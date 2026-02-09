@@ -26,11 +26,8 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Geom_BoundedSurface.hxx>
-class gp_Pnt;
 class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
@@ -926,6 +923,7 @@ public:
   //!
   //! Raised if the length of P in the U and V direction
   //! is not equal to NbUpoles and NbVPoles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array2<gp_Pnt>& P) const;
 
   //! Returns the poles of the B-spline surface.
@@ -958,6 +956,7 @@ public:
   //!
   //! Raised if the length of Ku is not equal to the number of knots
   //! in the U direction.
+  Standard_DEPRECATED("use UKnots() returning const reference instead")
   Standard_EXPORT void UKnots(NCollection_Array1<double>& Ku) const;
 
   //! Returns the knots in the U direction.
@@ -970,6 +969,7 @@ public:
   //! Ku = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
   //!
   //! Raised if the length of Ku is not equal to NbUPoles + UDegree + 1
+  Standard_DEPRECATED("use UKnotSequence() returning const reference instead")
   Standard_EXPORT void UKnotSequence(NCollection_Array1<double>& Ku) const;
 
   //! Returns the uknots sequence.
@@ -988,6 +988,7 @@ public:
   //!
   //! Raised if the length of Mu is not equal to the number of
   //! knots in the U direction.
+  Standard_DEPRECATED("use UMultiplicities() returning const reference instead")
   Standard_EXPORT void UMultiplicities(NCollection_Array1<int>& Mu) const;
 
   //! Returns the multiplicities of the knots in the U direction.
@@ -1020,6 +1021,7 @@ public:
   //!
   //! Raised if the length of Kv is not equal to the number of
   //! knots in the V direction.
+  Standard_DEPRECATED("use VKnots() returning const reference instead")
   Standard_EXPORT void VKnots(NCollection_Array1<double>& Kv) const;
 
   //! Returns the knots in the V direction.
@@ -1032,6 +1034,7 @@ public:
   //! Kv = {k1, k1, k1, k2, k3, k3, k4, k4, k4}
   //!
   //! Raised if the length of Kv is not equal to NbVPoles + VDegree + 1
+  Standard_DEPRECATED("use VKnotSequence() returning const reference instead")
   Standard_EXPORT void VKnotSequence(NCollection_Array1<double>& Kv) const;
 
   //! Returns the vknots sequence.
@@ -1050,6 +1053,7 @@ public:
   //!
   //! Raised if the length of Mv is not equal to the number of
   //! knots in the V direction.
+  Standard_DEPRECATED("use VMultiplicities() returning const reference instead")
   Standard_EXPORT void VMultiplicities(NCollection_Array1<int>& Mv) const;
 
   //! Returns the multiplicities of the knots in the V direction.
@@ -1065,24 +1069,12 @@ public:
   //!
   //! Raised if the length of W in the U and V direction is
   //! not equal to NbUPoles and NbVPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array2<double>& W) const;
 
   //! Returns the weights of the B-spline surface.
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
-
-  //! Returns handle to the poles array (direct access to internal storage).
-  const occ::handle<NCollection_HArray2<gp_Pnt>>& HArrayPoles() const { return poles; }
-
-  //! Returns handle to the weights array.
-  //! Returns null handle for non-rational surfaces.
-  const occ::handle<NCollection_HArray2<double>>& HArrayWeights() const { return weights; }
-
-  //! Returns handle to the U flat knots sequence.
-  const occ::handle<NCollection_HArray1<double>>& HArrayUFlatKnots() const { return ufknots; }
-
-  //! Returns handle to the V flat knots sequence.
-  const occ::handle<NCollection_HArray1<double>>& HArrayVFlatKnots() const { return vfknots; }
 
   Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
 
@@ -1289,36 +1281,35 @@ protected:
                const bool   SegmentInU,
                const bool   SegmentInV);
 
+protected:
+  //! Recompute the flatknots, the knotsdistribution, the continuity for U.
+  void updateUKnots();
+
+  //! Recompute the flatknots, the knotsdistribution, the continuity for V.
+  void updateVKnots();
+
 private:
-  //! Recompute the flatknots, the knotsdistribution, the
-  //! continuity for U.
-  Standard_EXPORT void UpdateUKnots();
-
-  //! Recompute the flatknots, the knotsdistribution, the
-  //! continuity for V.
-  Standard_EXPORT void UpdateVKnots();
-
-  bool                                     urational;
-  bool                                     vrational;
-  bool                                     uperiodic;
-  bool                                     vperiodic;
-  GeomAbs_BSplKnotDistribution             uknotSet;
-  GeomAbs_BSplKnotDistribution             vknotSet;
-  GeomAbs_Shape                            Usmooth;
-  GeomAbs_Shape                            Vsmooth;
-  int                                      udeg;
-  int                                      vdeg;
-  occ::handle<NCollection_HArray2<gp_Pnt>> poles;
-  occ::handle<NCollection_HArray2<double>> weights;
-  occ::handle<NCollection_HArray1<double>> ufknots;
-  occ::handle<NCollection_HArray1<double>> vfknots;
-  occ::handle<NCollection_HArray1<double>> uknots;
-  occ::handle<NCollection_HArray1<double>> vknots;
-  occ::handle<NCollection_HArray1<int>>    umults;
-  occ::handle<NCollection_HArray1<int>>    vmults;
-  double                                   umaxderivinv;
-  double                                   vmaxderivinv;
-  bool                                     maxderivinvok;
+  NCollection_Array2<gp_Pnt>   myPoles;
+  NCollection_Array2<double>   myWeights;
+  NCollection_Array1<double>   myUKnots;
+  NCollection_Array1<double>   myVKnots;
+  NCollection_Array1<double>   myUFlatKnots;
+  NCollection_Array1<double>   myVFlatKnots;
+  NCollection_Array1<int>      myUMults;
+  NCollection_Array1<int>      myVMults;
+  int                          myUDeg          = 0;
+  int                          myVDeg          = 0;
+  bool                         myUPeriodic     = false;
+  bool                         myVPeriodic     = false;
+  bool                         myURational     = false;
+  bool                         myVRational     = false;
+  GeomAbs_BSplKnotDistribution myUKnotSet      = GeomAbs_NonUniform;
+  GeomAbs_BSplKnotDistribution myVKnotSet      = GeomAbs_NonUniform;
+  GeomAbs_Shape                myUSmooth       = GeomAbs_C0;
+  GeomAbs_Shape                myVSmooth       = GeomAbs_C0;
+  double                       myUMaxDerivInv  = 0.0;
+  double                       myVMaxDerivInv  = 0.0;
+  bool                         myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineSurface_HeaderFile

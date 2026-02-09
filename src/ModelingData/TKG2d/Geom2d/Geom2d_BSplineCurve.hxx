@@ -26,9 +26,7 @@
 #include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <Geom2d_BoundedCurve.hxx>
-class gp_Pnt2d;
 class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
@@ -702,6 +700,7 @@ public:
   //!
   //! Raised K.Lower() is less than number of first knot or
   //! K.Upper() is more than number of last knot.
+  Standard_DEPRECATED("use Knots() returning const reference instead")
   Standard_EXPORT void Knots(NCollection_Array1<double>& K) const;
 
   //! returns the knot values of the B-spline curve;
@@ -716,6 +715,7 @@ public:
   //! Raised if K.Lower() is less than number of first knot
   //! in knot sequence with repetitions or K.Upper() is more
   //! than number of last knot in knot sequence with repetitions.
+  Standard_DEPRECATED("use KnotSequence() returning const reference instead")
   Standard_EXPORT void KnotSequence(NCollection_Array1<double>& K) const;
 
   //! Returns the knots sequence.
@@ -773,6 +773,7 @@ public:
   //! Returns the multiplicity of the knots of the curve.
   //!
   //! Raised if the length of M is not equal to NbKnots.
+  Standard_DEPRECATED("use Multiplicities() returning const reference instead")
   Standard_EXPORT void Multiplicities(NCollection_Array1<int>& M) const;
 
   //! returns the multiplicity of the knots of the curve.
@@ -792,6 +793,7 @@ public:
   //! Returns the poles of the B-spline curve;
   //!
   //! Raised if the length of P is not equal to the number of poles.
+  Standard_DEPRECATED("use Poles() returning const reference instead")
   Standard_EXPORT void Poles(NCollection_Array1<gp_Pnt2d>& P) const;
 
   //! Returns the poles of the B-spline curve;
@@ -810,6 +812,7 @@ public:
   //! Returns the weights of the B-spline curve;
   //!
   //! Raised if the length of W is not equal to NbPoles.
+  Standard_DEPRECATED("use Weights() returning const pointer instead")
   Standard_EXPORT void Weights(NCollection_Array1<double>& W) const;
 
   //! Returns the weights of the B-spline curve;
@@ -839,22 +842,23 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 
-private:
+protected:
   //! Recompute the flatknots, the knotsdistribution, the continuity.
-  Standard_EXPORT void UpdateKnots();
+  void updateKnots();
 
-  bool                                       rational;
-  bool                                       periodic;
-  GeomAbs_BSplKnotDistribution               knotSet;
-  GeomAbs_Shape                              smooth;
-  int                                        deg;
-  occ::handle<NCollection_HArray1<gp_Pnt2d>> poles;
-  occ::handle<NCollection_HArray1<double>>   weights;
-  occ::handle<NCollection_HArray1<double>>   flatknots;
-  occ::handle<NCollection_HArray1<double>>   knots;
-  occ::handle<NCollection_HArray1<int>>      mults;
-  double                                     maxderivinv;
-  bool                                       maxderivinvok;
+private:
+  NCollection_Array1<gp_Pnt2d> myPoles;
+  NCollection_Array1<double>   myWeights;
+  NCollection_Array1<double>   myKnots;
+  NCollection_Array1<double>   myFlatKnots;
+  NCollection_Array1<int>      myMults;
+  int                          myDeg           = 0;
+  bool                         myPeriodic      = false;
+  bool                         myRational      = false;
+  GeomAbs_BSplKnotDistribution myKnotSet       = GeomAbs_NonUniform;
+  GeomAbs_Shape                mySmooth        = GeomAbs_C0;
+  double                       myMaxDerivInv   = 0.0;
+  bool                         myMaxDerivInvOk = false;
 };
 
 #endif // _Geom2d_BSplineCurve_HeaderFile
