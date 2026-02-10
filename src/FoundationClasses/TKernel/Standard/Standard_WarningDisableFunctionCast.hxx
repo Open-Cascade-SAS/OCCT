@@ -25,8 +25,10 @@
 //! suppressing it is the only feasible way to avoid it. As this warning still can point out broken
 //! places, it should be suppressed only locally, where usage of function cast has been verified.
 #if defined(__clang__)
-  #if __clang_major__ >= 16
+  #if __has_warning("-Wcast-function-type-mismatch")
     #pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
+  #elif __has_warning("-Wcast-function-type")
+    #pragma clang diagnostic ignored "-Wcast-function-type"
   #endif
 #elif defined(__GNUC__) && !defined(__INTEL_COMPILER)
   #if (__GNUC__ > 8) || ((__GNUC__ == 8) && (__GNUC_MINOR__ >= 1))
