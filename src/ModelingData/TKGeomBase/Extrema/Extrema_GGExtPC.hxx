@@ -188,9 +188,10 @@ public:
         return;
       }
       case GeomAbs_BSplineCurve: {
-        const int aFirstIdx                      = TheCurveTool::BSpline(aCurve)->FirstUKnotIndex(),
-                  aLastIdx                       = TheCurveTool::BSpline(aCurve)->LastUKnotIndex();
-        const NCollection_Array1<double>& aKnots = TheCurveTool::BSpline(aCurve)->Knots();
+        auto                              aBSpline  = TheCurveTool::BSpline(aCurve);
+        const int                         aFirstIdx = aBSpline->FirstUKnotIndex();
+        const int                         aLastIdx  = aBSpline->LastUKnotIndex();
+        const NCollection_Array1<double>& aKnots    = aBSpline->Knots();
 
         double       aPeriodJump = 0.0;
         const double aTolCoeff   = (myusup - myuinf) * Precision::PConfusion();
@@ -227,7 +228,7 @@ public:
           aLastUsedKnot  = aFirstIdx + 1;
         }
 
-        mysample = (TheCurveTool::BSpline(aCurve))->Degree() + 1;
+        mysample = aBSpline->Degree() + 1;
 
         if (mysample == 2)
         {
