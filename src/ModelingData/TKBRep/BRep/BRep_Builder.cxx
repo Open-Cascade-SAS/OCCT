@@ -57,7 +57,8 @@
 //=======================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
                          const occ::handle<Geom_Curve>&                           C,
-                         const TopLoc_Location&                                   L)
+                         const TopLoc_Location&                                   L,
+                         occ::handle<BRep_Curve3D>& theCached3D)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
   occ::handle<BRep_GCurve>                                          GC;
@@ -79,6 +80,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   {
     itcr.Value()->Curve3D(C);
     itcr.Value()->Location(L);
+    theCached3D = occ::down_cast<BRep_Curve3D>(itcr.Value());
   }
   else
   {
@@ -89,6 +91,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
       C3d->SetRange(f, l);
     }
     lcr.Append(C3d);
+    theCached3D = C3d;
   }
 }
 
@@ -630,7 +633,9 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&             E,
   }
   const TopLoc_Location l = L.Predivided(E.Location());
 
-  UpdateCurves(TE->ChangeCurves(), C, l);
+  occ::handle<BRep_Curve3D> aCached3D;
+  UpdateCurves(TE->ChangeCurves(), C, l, aCached3D);
+  TE->Curve3D(aCached3D);
 
   TE->UpdateTolerance(Tol);
   TE->Modified(true);
@@ -751,9 +756,15 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
     if (itcr.Value()->IsPolygon3D())
     {
       if (P.IsNull())
+      {
         lcr.Remove(itcr);
+        TE->Polygon3D(nullptr);
+      }
       else
+      {
         itcr.Value()->Polygon3D(P);
+        TE->Polygon3D(static_cast<BRep_Polygon3D*>(itcr.Value().get()));
+      }
       TE->Modified(true);
       return;
     }
@@ -763,6 +774,7 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&                 E,
   const TopLoc_Location       l   = L.Predivided(E.Location());
   occ::handle<BRep_Polygon3D> P3d = new BRep_Polygon3D(P, l);
   lcr.Append(P3d);
+  TE->Polygon3D(P3d);
 
   TE->Modified(true);
 }
@@ -1055,7 +1067,9 @@ void BRep_Builder::Degenerated(const TopoDS_Edge& E, const bool D) const
   if (D)
   {
     // set a null 3d curve
-    UpdateCurves(TE->ChangeCurves(), occ::handle<Geom_Curve>(), E.Location());
+    occ::handle<BRep_Curve3D> aCached3D;
+    UpdateCurves(TE->ChangeCurves(), occ::handle<Geom_Curve>(), E.Location(), aCached3D);
+    TE->Curve3D(aCached3D);
   }
   TE->Modified(true);
 }

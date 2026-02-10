@@ -134,13 +134,8 @@ const NCollection_List<occ::handle<Poly_Triangulation>>& BRep_Tool::Triangulatio
 
 double BRep_Tool::Tolerance(const TopoDS_Face& F)
 {
-  const BRep_TFace* TF   = static_cast<const BRep_TFace*>(F.TShape().get());
-  double            p    = TF->Tolerance();
-  constexpr double  pMin = Precision::Confusion();
-  if (p > pMin)
-    return p;
-  else
-    return pMin;
+  const BRep_TFace* TF = static_cast<const BRep_TFace*>(F.TShape().get());
+  return TF->Tolerance();
 }
 
 //=======================================================================
@@ -168,21 +163,14 @@ const occ::handle<Geom_Curve>& BRep_Tool::Curve(const TopoDS_Edge& E,
                                                 double&            First,
                                                 double&            Last)
 {
-  // find the representation
-  const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
-
-  while (itcr.More())
+  // Use the cached 3D curve representation for O(1) access.
+  const BRep_TEdge*                TE       = static_cast<const BRep_TEdge*>(E.TShape().get());
+  const occ::handle<BRep_Curve3D>& aCached  = TE->Curve3D();
+  if (!aCached.IsNull())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurve3D())
-    {
-      const BRep_Curve3D* GC = static_cast<const BRep_Curve3D*>(cr.get());
-      L                      = E.Location() * GC->Location();
-      GC->Range(First, Last);
-      return GC->Curve3D();
-    }
-    itcr.Next();
+    L = E.Location() * aCached->Location();
+    aCached->Range(First, Last);
+    return aCached->Curve3D();
   }
   L.Identity();
   First = Last = 0.;
@@ -231,20 +219,20 @@ bool BRep_Tool::IsGeometric(const TopoDS_Face& F)
 
 bool BRep_Tool::IsGeometric(const TopoDS_Edge& E)
 {
-  // find the representation
+  // Check cached 3D curve first for O(1) access.
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+  const occ::handle<BRep_Curve3D>& aCached = TE->Curve3D();
+  if (!aCached.IsNull() && !aCached->Curve3D().IsNull())
+  {
+    return true;
+  }
 
+  // Fall back to searching for CurveOnSurface representations.
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurve3D())
-    {
-      occ::handle<BRep_Curve3D> GC(occ::down_cast<BRep_Curve3D>(cr));
-      if (!GC.IsNull() && !GC->Curve3D().IsNull())
-        return true;
-    }
-    else if (cr->IsCurveOnSurface())
+    if (cr->IsCurveOnSurface())
       return true;
     itcr.Next();
   }
@@ -261,20 +249,13 @@ static const occ::handle<Poly_Polygon3D> nullPolygon3D;
 
 const occ::handle<Poly_Polygon3D>& BRep_Tool::Polygon3D(const TopoDS_Edge& E, TopLoc_Location& L)
 {
-  // find the representation
-  const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
-
-  while (itcr.More())
+  // Use the cached Polygon3D representation for O(1) access.
+  const BRep_TEdge*                  TE      = static_cast<const BRep_TEdge*>(E.TShape().get());
+  const occ::handle<BRep_Polygon3D>& aCached = TE->Polygon3D();
+  if (!aCached.IsNull())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsPolygon3D())
-    {
-      const BRep_Polygon3D* GC = static_cast<const BRep_Polygon3D*>(cr.get());
-      L                        = E.Location() * GC->Location();
-      return GC->Polygon3D();
-    }
-    itcr.Next();
+    L = E.Location() * aCached->Location();
+    return aCached->Polygon3D();
   }
   L.Identity();
   return nullPolygon3D;
@@ -745,10 +726,16 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 
 bool BRep_Tool::IsClosed(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
-  TopLoc_Location                  l;
-  const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, l);
-  if (IsClosed(E, S, l))
-    return true;
+  const BRep_TFace* TF = static_cast<const BRep_TFace*>(F.TShape().get());
+  // An edge on a plane can never be closed in parametric space.
+  if (!TF->IsPlane())
+  {
+    TopLoc_Location                  l;
+    const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, l);
+    if (IsClosed(E, S, l))
+      return true;
+  }
+  TopLoc_Location                        l;
   const occ::handle<Poly_Triangulation>& T = BRep_Tool::Triangulation(F, l);
   return IsClosed(E, T, l);
 }
@@ -825,13 +812,8 @@ bool BRep_Tool::IsClosed(const TopoDS_Edge&                     E,
 
 double BRep_Tool::Tolerance(const TopoDS_Edge& E)
 {
-  const BRep_TEdge* TE   = static_cast<const BRep_TEdge*>(E.TShape().get());
-  double            p    = TE->Tolerance();
-  constexpr double  pMin = Precision::Confusion();
-  if (p > pMin)
-    return p;
-  else
-    return pMin;
+  const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
+  return TE->Tolerance();
 }
 
 //=======================================================================
@@ -871,24 +853,22 @@ bool BRep_Tool::Degenerated(const TopoDS_Edge& E)
 
 void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
 {
-  //  set the range to all the representations
-  const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+  // Check cached 3D curve first for O(1) access.
+  const BRep_TEdge*                TE      = static_cast<const BRep_TEdge*>(E.TShape().get());
+  const occ::handle<BRep_Curve3D>& aCached = TE->Curve3D();
+  if (!aCached.IsNull() && !aCached->Curve3D().IsNull())
+  {
+    First = aCached->First();
+    Last  = aCached->Last();
+    return;
+  }
 
+  // Fall back to searching for CurveOnSurface representations.
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurve3D())
-    {
-      const BRep_Curve3D* CR = static_cast<const BRep_Curve3D*>(cr.get());
-      if (!CR->Curve3D().IsNull())
-      {
-        First = CR->First();
-        Last  = CR->Last();
-        return;
-      }
-    }
-    else if (cr->IsCurveOnSurface())
+    if (cr->IsCurveOnSurface())
     {
       const BRep_GCurve* CR = static_cast<const BRep_GCurve*>(cr.get());
       First                 = CR->First();
@@ -1260,12 +1240,7 @@ double BRep_Tool::Tolerance(const TopoDS_Vertex& V)
     throw Standard_NullObject("BRep_Tool:: TopoDS_Vertex hasn't gp_Pnt");
   }
 
-  double           p    = aTVert->Tolerance();
-  constexpr double pMin = Precision::Confusion();
-  if (p > pMin)
-    return p;
-  else
-    return pMin;
+  return aTVert->Tolerance();
 }
 
 //=======================================================================

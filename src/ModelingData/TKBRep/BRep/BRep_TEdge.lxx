@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Precision.hxx>
+
 //=================================================================================================
 
 inline double BRep_TEdge::Tolerance() const
@@ -25,7 +27,7 @@ inline double BRep_TEdge::Tolerance() const
 
 inline void BRep_TEdge::Tolerance(const double T)
 {
-  myTolerance = T;
+  myTolerance = std::max(T, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -33,7 +35,7 @@ inline void BRep_TEdge::Tolerance(const double T)
 inline void BRep_TEdge::UpdateTolerance(const double T)
 {
   if (T > myTolerance)
-    myTolerance = T;
+    myTolerance = std::max(T, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -48,4 +50,32 @@ inline const NCollection_List<occ::handle<BRep_CurveRepresentation>>& BRep_TEdge
 inline NCollection_List<occ::handle<BRep_CurveRepresentation>>& BRep_TEdge::ChangeCurves()
 {
   return myCurves;
+}
+
+//=================================================================================================
+
+inline const occ::handle<BRep_Curve3D>& BRep_TEdge::Curve3D() const
+{
+  return myCurve3D;
+}
+
+//=================================================================================================
+
+inline void BRep_TEdge::Curve3D(const occ::handle<BRep_Curve3D>& theCurve)
+{
+  myCurve3D = theCurve;
+}
+
+//=================================================================================================
+
+inline const occ::handle<BRep_Polygon3D>& BRep_TEdge::Polygon3D() const
+{
+  return myPolygon3D;
+}
+
+//=================================================================================================
+
+inline void BRep_TEdge::Polygon3D(const occ::handle<BRep_Polygon3D>& thePolygon)
+{
+  myPolygon3D = thePolygon;
 }

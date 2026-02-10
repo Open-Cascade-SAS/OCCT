@@ -24,6 +24,8 @@
 #include <BRep_CurveRepresentation.hxx>
 #include <NCollection_List.hxx>
 #include <TopoDS_TEdge.hxx>
+class BRep_Curve3D;
+class BRep_Polygon3D;
 class TopoDS_TShape;
 
 //! The TEdge from BRep is inherited from the TEdge
@@ -67,6 +69,18 @@ public:
 
   NCollection_List<occ::handle<BRep_CurveRepresentation>>& ChangeCurves();
 
+  //! Returns the cached 3D curve representation, or null handle if none.
+  const occ::handle<BRep_Curve3D>& Curve3D() const;
+
+  //! Sets the cached 3D curve representation.
+  void Curve3D(const occ::handle<BRep_Curve3D>& theCurve);
+
+  //! Returns the cached 3D polygon representation, or null handle if none.
+  const occ::handle<BRep_Polygon3D>& Polygon3D() const;
+
+  //! Sets the cached 3D polygon representation.
+  void Polygon3D(const occ::handle<BRep_Polygon3D>& thePolygon);
+
   //! Returns a copy of the TShape with no sub-shapes.
   Standard_EXPORT occ::handle<TopoDS_TShape> EmptyCopy() const override;
 
@@ -79,6 +93,8 @@ private:
   double                                                  myTolerance;
   int                                                     myFlags;
   NCollection_List<occ::handle<BRep_CurveRepresentation>> myCurves;
+  occ::handle<BRep_Curve3D>                               myCurve3D;
+  occ::handle<BRep_Polygon3D>                             myPolygon3D;
 };
 
 #include <BRep_TEdge.lxx>

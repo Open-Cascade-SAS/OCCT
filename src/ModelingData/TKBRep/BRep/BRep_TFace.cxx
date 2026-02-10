@@ -15,8 +15,12 @@
 // commercial license or contractual agreement.
 
 #include <BRep_TFace.hxx>
+#include <Geom_OffsetSurface.hxx>
+#include <Geom_Plane.hxx>
+#include <Geom_RectangularTrimmedSurface.hxx>
 #include <Geom_Surface.hxx>
 #include <Poly_Triangulation.hxx>
+#include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TopLoc_Location.hxx>
 #include <TopoDS_Shape.hxx>
@@ -26,9 +30,53 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_TFace, TopoDS_TFace)
 //=================================================================================================
 
 BRep_TFace::BRep_TFace()
-    : myTolerance(RealEpsilon()),
-      myNaturalRestriction(false)
+    : myTolerance(Precision::Confusion()),
+      myNaturalRestriction(false),
+      myIsPlane(false)
 {
+}
+
+//=================================================================================================
+
+//! Checks if the given surface is a plane (directly, or through trimming/offset).
+static bool computeIsPlane(const occ::handle<Geom_Surface>& theSurface)
+{
+  if (theSurface.IsNull())
+  {
+    return false;
+  }
+  occ::handle<Geom_RectangularTrimmedSurface> aGRTS =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface);
+  occ::handle<Geom_OffsetSurface> aGOFS = occ::down_cast<Geom_OffsetSurface>(theSurface);
+  occ::handle<Geom_Plane>         aGP;
+  if (!aGOFS.IsNull())
+  {
+    aGP = occ::down_cast<Geom_Plane>(aGOFS->BasisSurface());
+  }
+  else if (!aGRTS.IsNull())
+  {
+    aGP = occ::down_cast<Geom_Plane>(aGRTS->BasisSurface());
+  }
+  else
+  {
+    aGP = occ::down_cast<Geom_Plane>(theSurface);
+  }
+  return !aGP.IsNull();
+}
+
+//=================================================================================================
+
+void BRep_TFace::Surface(const occ::handle<Geom_Surface>& theSurface)
+{
+  mySurface = theSurface;
+  myIsPlane = computeIsPlane(theSurface);
+}
+
+//=================================================================================================
+
+void BRep_TFace::Tolerance(const double theTolerance)
+{
+  myTolerance = std::max(theTolerance, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -39,6 +87,7 @@ occ::handle<TopoDS_TShape> BRep_TFace::EmptyCopy() const
   TF->Surface(mySurface);
   TF->Location(myLocation);
   TF->Tolerance(myTolerance);
+  // myIsPlane is already set by Surface() setter above.
   return TF;
 }
 
