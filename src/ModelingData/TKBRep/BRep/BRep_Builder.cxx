@@ -1149,6 +1149,7 @@ void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) co
 
     const occ::handle<BRep_CurveRepresentation>& CR = itcr.Value();
 
+    // Check closed surface first: IsCurveOnClosedSurface() implies IsCurveOnSurface().
     if (CR->IsCurveOnClosedSurface())
     {
       UpdateEdge(Eout,
