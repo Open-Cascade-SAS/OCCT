@@ -357,7 +357,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // Tableau Weights de [0,Index]
-  const NCollection_Array1<double>& W = mycurve->WeightsArray();
+  const NCollection_Array1<double>& W              = mycurve->WeightsArray();
   itampon                                          = 0;
   occ::handle<NCollection_HArray1<double>> Weights = new NCollection_HArray1<double>(0, Index);
   for (Knotindex = W.Lower(); Knotindex <= W.Upper(); Knotindex++)

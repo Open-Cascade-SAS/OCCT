@@ -627,8 +627,12 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
     occ::handle<Geom_BSplineCurve>    CBSpl3d;
     if (CBSpl2d->IsRational())
     {
-      CBSpl3d =
-        new Geom_BSplineCurve(Poles3d, CBSpl2d->WeightsArray(), TheKnots, TheMults, TheDegree, IsPeriodic);
+      CBSpl3d = new Geom_BSplineCurve(Poles3d,
+                                      CBSpl2d->WeightsArray(),
+                                      TheKnots,
+                                      TheMults,
+                                      TheDegree,
+                                      IsPeriodic);
     }
     else
     {

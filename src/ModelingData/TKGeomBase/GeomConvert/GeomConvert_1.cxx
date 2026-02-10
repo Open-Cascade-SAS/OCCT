@@ -660,15 +660,15 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       NCollection_Array1<int>    UMults(1, 2);
       NCollection_Array1<double> VKnots(1, 2);
       NCollection_Array1<int>    VMults(1, 2);
-      UKnots(1)                                     = 0.0;
-      UKnots(2)                                     = 1.0;
-      UMults(1)                                     = UDegree + 1;
-      UMults(2)                                     = UDegree + 1;
-      VKnots(1)                                     = 0.0;
-      VKnots(2)                                     = 1.0;
-      VMults(1)                                     = VDegree + 1;
-      VMults(2)                                     = VDegree + 1;
-      const NCollection_Array2<gp_Pnt>& aPoles      = SBez->Poles();
+      UKnots(1)                                = 0.0;
+      UKnots(2)                                = 1.0;
+      UMults(1)                                = UDegree + 1;
+      UMults(2)                                = UDegree + 1;
+      VKnots(1)                                = 0.0;
+      VKnots(2)                                = 1.0;
+      VMults(1)                                = VDegree + 1;
+      VMults(2)                                = VDegree + 1;
+      const NCollection_Array2<gp_Pnt>& aPoles = SBez->Poles();
       if (SBez->IsURational() || SBez->IsVRational())
       {
         TheSurface = new Geom_BSplineSurface(aPoles,
@@ -841,15 +841,15 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       NCollection_Array1<int>    UMults(1, 2);
       NCollection_Array1<double> VKnots(1, 2);
       NCollection_Array1<int>    VMults(1, 2);
-      UKnots(1)                                     = 0.0;
-      UKnots(2)                                     = 1.0;
-      UMults(1)                                     = UDegree + 1;
-      UMults(2)                                     = UDegree + 1;
-      VKnots(1)                                     = 0.0;
-      VKnots(2)                                     = 1.0;
-      VMults(1)                                     = VDegree + 1;
-      VMults(2)                                     = VDegree + 1;
-      const NCollection_Array2<gp_Pnt>& aPoles      = SBez->Poles();
+      UKnots(1)                                = 0.0;
+      UKnots(2)                                = 1.0;
+      UMults(1)                                = UDegree + 1;
+      UMults(2)                                = UDegree + 1;
+      VKnots(1)                                = 0.0;
+      VKnots(2)                                = 1.0;
+      VMults(1)                                = VDegree + 1;
+      VMults(2)                                = VDegree + 1;
+      const NCollection_Array2<gp_Pnt>& aPoles = SBez->Poles();
       if (SBez->IsURational() || SBez->IsVRational())
       {
         TheSurface = new Geom_BSplineSurface(aPoles,

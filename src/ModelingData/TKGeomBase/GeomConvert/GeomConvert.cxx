@@ -290,10 +290,10 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
       const NCollection_Array1<gp_Pnt>& Poles  = CBez->Poles();
       NCollection_Array1<double>        Knots(1, 2);
       NCollection_Array1<int>           Mults(1, 2);
-      Knots(1)                                      = 0.0;
-      Knots(2)                                      = 1.0;
-      Mults(1)                                      = Degree + 1;
-      Mults(2)                                      = Degree + 1;
+      Knots(1) = 0.0;
+      Knots(2) = 1.0;
+      Mults(1) = Degree + 1;
+      Mults(2) = Degree + 1;
       if (CBez->IsRational())
       {
         TheCurve = new Geom_BSplineCurve(Poles, CBez->WeightsArray(), Knots, Mults, Degree);
@@ -392,10 +392,10 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
       const NCollection_Array1<gp_Pnt>& Poles  = CBez->Poles();
       NCollection_Array1<double>        Knots(1, 2);
       NCollection_Array1<int>           Mults(1, 2);
-      Knots(1)                                      = 0.0;
-      Knots(2)                                      = 1.0;
-      Mults(1)                                      = Degree + 1;
-      Mults(2)                                      = Degree + 1;
+      Knots(1) = 0.0;
+      Knots(2) = 1.0;
+      Mults(1) = Degree + 1;
+      Mults(2) = Degree + 1;
       if (CBez->IsRational())
       {
         TheCurve = new Geom_BSplineCurve(Poles, CBez->WeightsArray(), Knots, Mults, Degree);

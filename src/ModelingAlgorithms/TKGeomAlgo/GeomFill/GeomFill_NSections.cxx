@@ -296,9 +296,9 @@ bool GeomFill_NSections::D0(const double                V,
   {
     occ::handle<Geom_BSplineCurve> Curve =
       occ::down_cast<Geom_BSplineCurve>(mySurface->VIso(V, false));
-    const NCollection_Array1<gp_Pnt>&  poles   = Curve->Poles();
+    const NCollection_Array1<gp_Pnt>& poles   = Curve->Poles();
     const NCollection_Array1<double>& weights = Curve->WeightsArray();
-    int ii, L = Poles.Length();
+    int                               ii, L = Poles.Length();
     for (ii = 1; ii <= L; ii++)
     {
       Poles(ii).SetXYZ(poles(ii).XYZ());

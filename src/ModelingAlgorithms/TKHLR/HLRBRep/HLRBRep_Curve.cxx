@@ -519,8 +519,8 @@ void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP,
 
   if (HLRBRep_BCurveTool::GetType(myCurve) == GeomAbs_BSplineCurve)
   {
-    occ::handle<Geom_BSplineCurve>    HB         = (HLRBRep_BCurveTool::BSpline(myCurve));
-    const NCollection_Array1<gp_Pnt>& aSrcPoles  = HB->Poles();
+    occ::handle<Geom_BSplineCurve>    HB          = (HLRBRep_BCurveTool::BSpline(myCurve));
+    const NCollection_Array1<gp_Pnt>& aSrcPoles   = HB->Poles();
     const NCollection_Array1<double>& aSrcWeights = HB->WeightsArray();
     for (int i = i1; i <= i2; i++)
       TP3(i) = aSrcPoles(i);
@@ -529,8 +529,8 @@ void HLRBRep_Curve::PolesAndWeights(NCollection_Array1<gp_Pnt2d>& TP,
   }
   else
   {
-    occ::handle<Geom_BezierCurve>     HB         = (HLRBRep_BCurveTool::Bezier(myCurve));
-    const NCollection_Array1<gp_Pnt>& aSrcPoles  = HB->Poles();
+    occ::handle<Geom_BezierCurve>     HB          = (HLRBRep_BCurveTool::Bezier(myCurve));
+    const NCollection_Array1<gp_Pnt>& aSrcPoles   = HB->Poles();
     const NCollection_Array1<double>& aSrcWeights = HB->WeightsArray();
     for (int i = i1; i <= i2; i++)
       TP3(i) = aSrcPoles(i);
@@ -555,7 +555,7 @@ void HLRBRep_Curve::PolesAndWeights(const occ::handle<Geom_BSplineCurve>& aCurve
   NCollection_Array1<gp_Pnt> TP3(i1, i2);
   //-- HLRBRep_BCurveTool::PolesAndWeights(myCurve,TP3,TW);
 
-  const NCollection_Array1<gp_Pnt>& aSrcPoles  = aCurve->Poles();
+  const NCollection_Array1<gp_Pnt>& aSrcPoles   = aCurve->Poles();
   const NCollection_Array1<double>& aSrcWeights = aCurve->WeightsArray();
   for (int i = i1; i <= i2; i++)
     TP3(i) = aSrcPoles(i);

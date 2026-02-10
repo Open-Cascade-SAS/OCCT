@@ -441,7 +441,7 @@ static void ConvertExtrusion(const occ::handle<Geom_Curve>& C, /*const gp_Dir& d
   const NCollection_Array1<gp_Pnt>& poles   = bspl->Poles();
   const NCollection_Array1<double>& weights = bspl->WeightsArray();
   const NCollection_Array1<double>& knots   = bspl->Knots();
-  const NCollection_Array1<int>&    mults = bspl->Multiplicities();
+  const NCollection_Array1<int>&    mults   = bspl->Multiplicities();
 
   NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
   NCollection_Array2<double> resWeigth(1, nbPoles, 1, 2);
@@ -633,12 +633,12 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)) && myParameters->ConvertBezierSurf())
   {
-    occ::handle<Geom_BezierSurface>   bezier  = occ::down_cast<Geom_BezierSurface>(aSurf);
-    int                               uDegree = bezier->UDegree();
-    int                               vDegree = bezier->VDegree();
-    const NCollection_Array2<gp_Pnt>& aPoles  = bezier->Poles();
+    occ::handle<Geom_BezierSurface>   bezier   = occ::down_cast<Geom_BezierSurface>(aSurf);
+    int                               uDegree  = bezier->UDegree();
+    int                               vDegree  = bezier->VDegree();
+    const NCollection_Array2<gp_Pnt>& aPoles   = bezier->Poles();
     const NCollection_Array2<double>& aWeights = bezier->WeightsArray();
-    NCollection_Array1<double> uKnots(1, 2), vKnots(1, 2);
+    NCollection_Array1<double>        uKnots(1, 2), vKnots(1, 2);
     uKnots(1) = 0;
     uKnots(2) = 1;
     vKnots(1) = 0;
