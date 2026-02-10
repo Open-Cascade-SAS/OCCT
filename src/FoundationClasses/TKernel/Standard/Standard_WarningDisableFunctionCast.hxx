@@ -24,7 +24,7 @@
 //! There is no way to prevent this warning at OCCT level (until safer APIs is introduced), thus
 //! suppressing it is the only feasible way to avoid it. As this warning still can point out broken
 //! places, it should be suppressed only locally, where usage of function cast has been verified.
-#if defined(__clang__)
+#if defined(__clang__) && defined(__has_warning)
   #if __has_warning("-Wcast-function-type-mismatch")
     #pragma clang diagnostic ignored "-Wcast-function-type-mismatch"
   #elif __has_warning("-Wcast-function-type")
