@@ -59,7 +59,6 @@ public:
   const occ::handle<Geom_Surface>& Surface() const { return mySurface; }
 
   //! Sets surface for this face.
-  //! Updates the cached IsPlane flag.
   Standard_EXPORT void Surface(const occ::handle<Geom_Surface>& theSurface);
 
   //! Returns the face location.
@@ -72,10 +71,9 @@ public:
   double Tolerance() const { return myTolerance; }
 
   //! Sets the tolerance for this face.
-  //! The value is clamped to at least Precision::Confusion().
   void Tolerance(const double theTolerance);
 
-  //! Returns TRUE if the face surface is a plane (or trimmed/offset plane).
+  //! Returns TRUE if the face surface is a plane.
   bool IsPlane() const { return myIsPlane; }
 
   //! Returns TRUE if the boundary of this face is known to be the parametric space (Umin, UMax,

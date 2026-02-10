@@ -69,16 +69,12 @@ public:
 
   NCollection_List<occ::handle<BRep_CurveRepresentation>>& ChangeCurves();
 
-  //! Returns the cached 3D curve representation, or null handle if none.
   const occ::handle<BRep_Curve3D>& Curve3D() const;
 
-  //! Sets the cached 3D curve representation.
   void Curve3D(const occ::handle<BRep_Curve3D>& theCurve);
 
-  //! Returns the cached 3D polygon representation, or null handle if none.
   const occ::handle<BRep_Polygon3D>& Polygon3D() const;
 
-  //! Sets the cached 3D polygon representation.
   void Polygon3D(const occ::handle<BRep_Polygon3D>& thePolygon);
 
   //! Returns a copy of the TShape with no sub-shapes.

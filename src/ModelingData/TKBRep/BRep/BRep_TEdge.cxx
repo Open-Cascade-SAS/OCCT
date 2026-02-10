@@ -97,7 +97,6 @@ occ::handle<TopoDS_TShape> BRep_TEdge::EmptyCopy() const
 {
   occ::handle<BRep_TEdge> TE = new BRep_TEdge();
   TE->Tolerance(myTolerance);
-  // Copy the curves representations (polygons are NOT copied).
   NCollection_List<occ::handle<BRep_CurveRepresentation>>&          l = TE->ChangeCurves();
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itr(myCurves);
 
@@ -109,7 +108,6 @@ occ::handle<TopoDS_TShape> BRep_TEdge::EmptyCopy() const
         || aKind == BRep_CurveRepKind::CurveOn2Surfaces)
     {
       occ::handle<BRep_CurveRepresentation> aCopy = itr.Value()->Copy();
-      // Maintain 3D curve cache for the new edge.
       if (aKind == BRep_CurveRepKind::Curve3D)
       {
         TE->Curve3D(occ::down_cast<BRep_Curve3D>(aCopy));

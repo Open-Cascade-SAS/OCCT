@@ -27,7 +27,6 @@ class Geom2d_Curve;
 class Geom_Surface;
 
 //! Discriminant tag identifying the concrete type of a point representation.
-//! Used for O(1) type checks instead of virtual dispatch.
 enum class BRep_PointRepKind : uint8_t
 {
   PointOnCurve,
@@ -41,7 +40,7 @@ class BRep_PointRepresentation : public Standard_Transient
 {
 
 public:
-  //! Returns the concrete representation kind tag for O(1) type discrimination.
+  //! Returns the concrete representation kind tag.
   BRep_PointRepKind PointRepresentationKind() const { return myPointKind; }
 
   //! A point on a 3d curve.

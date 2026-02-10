@@ -31,7 +31,6 @@ class Poly_Polygon2D;
 class Poly_PolygonOnTriangulation;
 
 //! Discriminant tag identifying the concrete type of a curve representation.
-//! Used for O(1) type checks instead of virtual dispatch.
 enum class BRep_CurveRepKind : uint8_t
 {
   Curve3D,
@@ -51,7 +50,7 @@ class BRep_CurveRepresentation : public Standard_Transient
 {
 
 public:
-  //! Returns the concrete representation kind tag for O(1) type discrimination.
+  //! Returns the concrete representation kind tag.
   BRep_CurveRepKind RepresentationKind() const { return myKind; }
 
   //! A 3D curve representation.

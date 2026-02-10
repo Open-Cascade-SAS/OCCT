@@ -38,7 +38,6 @@ BRep_TFace::BRep_TFace()
 
 //=================================================================================================
 
-//! Checks if the given surface is a plane (directly, or through trimming/offset).
 static bool computeIsPlane(const occ::handle<Geom_Surface>& theSurface)
 {
   if (theSurface.IsNull())
@@ -84,8 +83,6 @@ void BRep_TFace::Tolerance(const double theTolerance)
 occ::handle<TopoDS_TShape> BRep_TFace::EmptyCopy() const
 {
   occ::handle<BRep_TFace> TF = new BRep_TFace();
-  // Assign surface and cached plane flag directly to avoid
-  // redundant RTTI downcasts in computeIsPlane().
   TF->mySurface = mySurface;
   TF->myIsPlane = myIsPlane;
   TF->myLocation = myLocation;

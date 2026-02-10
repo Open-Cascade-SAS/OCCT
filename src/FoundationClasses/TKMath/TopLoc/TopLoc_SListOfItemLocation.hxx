@@ -99,7 +99,6 @@ public:
   //! and the list <me> as tail.
   void Construct(const TopLoc_ItemLocation& anItem)
   {
-    // Use move assignment to avoid atomic refcount increment in Assign().
     *this = TopLoc_SListOfItemLocation(anItem, *this);
   }
 
