@@ -34,9 +34,11 @@ class BRep_CurveOnSurface : public BRep_GCurve
 {
 
 public:
-  Standard_EXPORT BRep_CurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
-                                      const occ::handle<Geom_Surface>& S,
-                                      const TopLoc_Location&           L);
+  Standard_EXPORT BRep_CurveOnSurface(
+    const occ::handle<Geom2d_Curve>& PC,
+    const occ::handle<Geom_Surface>& S,
+    const TopLoc_Location&           L,
+    const BRep_CurveRepKind          theKind = BRep_CurveRepKind::CurveOnSurface);
 
   void SetUVPoints(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 

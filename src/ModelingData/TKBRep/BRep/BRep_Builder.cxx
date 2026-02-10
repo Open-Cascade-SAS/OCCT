@@ -373,7 +373,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr     = itcr.Value();
-    bool                                         isregu = cr->IsRegularity(S1, S2, L1, L2);
+    bool                                         isregu = cr->IsRegularity() && cr->IsRegularity(S1, S2, L1, L2);
     if (isregu)
       break;
     itcr.Next();
@@ -1149,12 +1149,7 @@ void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) co
 
     const occ::handle<BRep_CurveRepresentation>& CR = itcr.Value();
 
-    if (CR->IsCurveOnSurface())
-    {
-      UpdateEdge(Eout, CR->PCurve(), CR->Surface(), Ein.Location() * CR->Location(), tol);
-    }
-
-    else if (CR->IsCurveOnClosedSurface())
+    if (CR->IsCurveOnClosedSurface())
     {
       UpdateEdge(Eout,
                  CR->PCurve(),
@@ -1162,6 +1157,10 @@ void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) co
                  CR->Surface(),
                  Ein.Location() * CR->Location(),
                  tol);
+    }
+    else if (CR->IsCurveOnSurface())
+    {
+      UpdateEdge(Eout, CR->PCurve(), CR->Surface(), Ein.Location() * CR->Location(), tol);
     }
 
     if (CR->IsRegularity())

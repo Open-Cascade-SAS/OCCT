@@ -49,6 +49,11 @@ inline const NCollection_List<occ::handle<BRep_CurveRepresentation>>& BRep_TEdge
 
 inline NCollection_List<occ::handle<BRep_CurveRepresentation>>& BRep_TEdge::ChangeCurves()
 {
+  // Invalidate cached representations since the caller may modify the list
+  // (e.g. remove or replace entries). The cache will be lazily repopulated
+  // on the next BRep_Tool query, or explicitly set by BRep_Builder methods.
+  myCurve3D.Nullify();
+  myPolygon3D.Nullify();
   return myCurves;
 }
 

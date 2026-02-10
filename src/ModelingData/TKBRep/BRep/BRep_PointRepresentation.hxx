@@ -100,9 +100,9 @@ public:
 
 protected:
   BRep_PointRepresentation(const double P, const TopLoc_Location& L, const BRep_PointRepKind theKind)
-      : myLocation(L),
-        myParameter(P),
-        myPointKind(theKind)
+      : myPointKind(theKind),
+        myLocation(L),
+        myParameter(P)
   {
   }
 

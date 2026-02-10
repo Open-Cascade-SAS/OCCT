@@ -31,9 +31,11 @@ class BRep_PolygonOnSurface : public BRep_CurveRepresentation
 {
 
 public:
-  Standard_EXPORT BRep_PolygonOnSurface(const occ::handle<Poly_Polygon2D>& P,
-                                        const occ::handle<Geom_Surface>&   S,
-                                        const TopLoc_Location&             L);
+  Standard_EXPORT BRep_PolygonOnSurface(
+    const occ::handle<Poly_Polygon2D>& P,
+    const occ::handle<Geom_Surface>&   S,
+    const TopLoc_Location&             L,
+    const BRep_CurveRepKind            theKind = BRep_CurveRepKind::PolygonOnSurface);
 
   //! A 2D polygon representation in the parametric
   //! space of a surface.

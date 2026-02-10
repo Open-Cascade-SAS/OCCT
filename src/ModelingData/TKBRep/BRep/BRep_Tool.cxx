@@ -75,8 +75,9 @@ static bool IsPlane(const occ::handle<Geom_Surface>& aS);
 
 const occ::handle<Geom_Surface>& BRep_Tool::Surface(const TopoDS_Face& F, TopLoc_Location& L)
 {
-  const BRep_TFace* TF = static_cast<const BRep_TFace*>(F.TShape().get());
-  L                    = F.Location() * TF->Location();
+  const BRep_TFace*      TF     = static_cast<const BRep_TFace*>(F.TShape().get());
+  const TopLoc_Location& aTFLoc = TF->Location();
+  L = aTFLoc.IsIdentity() ? F.Location() : F.Location() * aTFLoc;
   return TF->Surface();
 }
 
@@ -164,14 +165,33 @@ const occ::handle<Geom_Curve>& BRep_Tool::Curve(const TopoDS_Edge& E,
                                                 double&            Last)
 {
   // Use the cached 3D curve representation for O(1) access.
-  const BRep_TEdge*                TE       = static_cast<const BRep_TEdge*>(E.TShape().get());
-  const occ::handle<BRep_Curve3D>& aCached  = TE->Curve3D();
+  const BRep_TEdge*                TE      = static_cast<const BRep_TEdge*>(E.TShape().get());
+  const occ::handle<BRep_Curve3D>& aCached = TE->Curve3D();
   if (!aCached.IsNull())
   {
-    L = E.Location() * aCached->Location();
+    const TopLoc_Location& aCachedLoc = aCached->Location();
+    L = aCachedLoc.IsIdentity() ? E.Location() : E.Location() * aCachedLoc;
     aCached->Range(First, Last);
     return aCached->Curve3D();
   }
+
+  // Fallback: cache was invalidated (e.g. by external ChangeCurves() callers).
+  // Scan the list to find Curve3D representation.
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+  while (itcr.More())
+  {
+    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
+    if (cr->IsCurve3D())
+    {
+      const BRep_GCurve*     GC       = static_cast<const BRep_GCurve*>(cr.get());
+      const TopLoc_Location& aRepLoc  = cr->Location();
+      L = aRepLoc.IsIdentity() ? E.Location() : E.Location() * aRepLoc;
+      GC->Range(First, Last);
+      return cr->Curve3D();
+    }
+    itcr.Next();
+  }
+
   L.Identity();
   First = Last = 0.;
   return nullCurve;
@@ -220,19 +240,24 @@ bool BRep_Tool::IsGeometric(const TopoDS_Face& F)
 bool BRep_Tool::IsGeometric(const TopoDS_Edge& E)
 {
   // Check cached 3D curve first for O(1) access.
-  const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
+  const BRep_TEdge*                TE      = static_cast<const BRep_TEdge*>(E.TShape().get());
   const occ::handle<BRep_Curve3D>& aCached = TE->Curve3D();
   if (!aCached.IsNull() && !aCached->Curve3D().IsNull())
   {
     return true;
   }
 
-  // Fall back to searching for CurveOnSurface representations.
+  // Fall back to searching for Curve3D or CurveOnSurface representations.
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface())
+    if (cr->IsCurve3D())
+    {
+      if (!cr->Curve3D().IsNull())
+        return true;
+    }
+    else if (cr->IsCurveOnSurface())
       return true;
     itcr.Next();
   }
@@ -254,9 +279,26 @@ const occ::handle<Poly_Polygon3D>& BRep_Tool::Polygon3D(const TopoDS_Edge& E, To
   const occ::handle<BRep_Polygon3D>& aCached = TE->Polygon3D();
   if (!aCached.IsNull())
   {
-    L = E.Location() * aCached->Location();
+    const TopLoc_Location& aCachedLoc = aCached->Location();
+    L = aCachedLoc.IsIdentity() ? E.Location() : E.Location() * aCachedLoc;
     return aCached->Polygon3D();
   }
+
+  // Fallback: cache was invalidated (e.g. by external ChangeCurves() callers).
+  // Scan the list to find Polygon3D representation.
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
+  while (itcr.More())
+  {
+    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
+    if (cr->IsPolygon3D())
+    {
+      const TopLoc_Location& aRepLoc = cr->Location();
+      L = aRepLoc.IsIdentity() ? E.Location() : E.Location() * aRepLoc;
+      return cr->Polygon3D();
+    }
+    itcr.Next();
+  }
+
   L.Identity();
   return nullPolygon3D;
 }
@@ -863,21 +905,30 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
     return;
   }
 
-  // Fall back to searching for CurveOnSurface representations.
+  // Fall back to searching for Curve3D or CurveOnSurface representations.
+  bool hasRange = false;
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface())
+    if (cr->IsCurve3D())
     {
-      const BRep_GCurve* CR = static_cast<const BRep_GCurve*>(cr.get());
-      First                 = CR->First();
-      Last                  = CR->Last();
+      const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
+      GC->Range(First, Last);
+      hasRange = true;
+      if (!cr->Curve3D().IsNull())
+        return;
+    }
+    else if (cr->IsCurveOnSurface())
+    {
+      const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
+      GC->Range(First, Last);
       return;
     }
     itcr.Next();
   }
-  First = Last = 0.;
+  if (!hasRange)
+    First = Last = 0.;
 }
 
 //=================================================================================================

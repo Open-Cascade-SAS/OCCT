@@ -30,8 +30,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveOnSurface, BRep_GCurve)
 
 BRep_CurveOnSurface::BRep_CurveOnSurface(const occ::handle<Geom2d_Curve>& PC,
                                          const occ::handle<Geom_Surface>& S,
-                                         const TopLoc_Location&           L)
-    : BRep_GCurve(L, PC->FirstParameter(), PC->LastParameter(), BRep_CurveRepKind::CurveOnSurface),
+                                         const TopLoc_Location&           L,
+                                         const BRep_CurveRepKind          theKind)
+    : BRep_GCurve(L, PC->FirstParameter(), PC->LastParameter(), theKind),
       myPCurve(PC),
       mySurface(S)
 {
