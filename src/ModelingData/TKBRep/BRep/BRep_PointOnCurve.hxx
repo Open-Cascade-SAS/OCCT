@@ -33,9 +33,6 @@ public:
                                     const occ::handle<Geom_Curve>& C,
                                     const TopLoc_Location&         L);
 
-  //! Returns True
-  Standard_EXPORT bool IsPointOnCurve() const override;
-
   Standard_EXPORT bool IsPointOnCurve(const occ::handle<Geom_Curve>& C,
                                       const TopLoc_Location&         L) const override;
 

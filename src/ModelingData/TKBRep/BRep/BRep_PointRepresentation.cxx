@@ -25,35 +25,6 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PointRepresentation, Standard_Transient)
 
 //=================================================================================================
 
-BRep_PointRepresentation::BRep_PointRepresentation(const double P, const TopLoc_Location& L)
-    : myLocation(L),
-      myParameter(P)
-{
-}
-
-//=================================================================================================
-
-bool BRep_PointRepresentation::IsPointOnCurve() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_PointRepresentation::IsPointOnCurveOnSurface() const
-{
-  return false;
-}
-
-//=================================================================================================
-
-bool BRep_PointRepresentation::IsPointOnSurface() const
-{
-  return false;
-}
-
-//=================================================================================================
-
 bool BRep_PointRepresentation::IsPointOnCurve(const occ::handle<Geom_Curve>&,
                                               const TopLoc_Location&) const
 {

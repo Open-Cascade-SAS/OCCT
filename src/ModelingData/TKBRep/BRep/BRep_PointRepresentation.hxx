@@ -26,20 +26,35 @@ class Geom_Curve;
 class Geom2d_Curve;
 class Geom_Surface;
 
+//! Discriminant tag identifying the concrete type of a point representation.
+//! Used for O(1) type checks instead of virtual dispatch.
+enum class BRep_PointRepKind : uint8_t
+{
+  PointOnCurve,
+  PointOnSurface,
+  PointOnCurveOnSurface
+};
+
 //! Root class for the points representations.
 //! Contains a location and a parameter.
 class BRep_PointRepresentation : public Standard_Transient
 {
 
 public:
+  //! Returns the concrete representation kind tag for O(1) type discrimination.
+  BRep_PointRepKind PointRepresentationKind() const { return myPointKind; }
+
   //! A point on a 3d curve.
-  Standard_EXPORT virtual bool IsPointOnCurve() const;
+  bool IsPointOnCurve() const { return myPointKind == BRep_PointRepKind::PointOnCurve; }
 
   //! A point on a 2d curve on a surface.
-  Standard_EXPORT virtual bool IsPointOnCurveOnSurface() const;
+  bool IsPointOnCurveOnSurface() const
+  {
+    return myPointKind == BRep_PointRepKind::PointOnCurveOnSurface;
+  }
 
   //! A point on a surface.
-  Standard_EXPORT virtual bool IsPointOnSurface() const;
+  bool IsPointOnSurface() const { return myPointKind == BRep_PointRepKind::PointOnSurface; }
 
   //! A point on the curve <C>.
   Standard_EXPORT virtual bool IsPointOnCurve(const occ::handle<Geom_Curve>& C,
@@ -84,7 +99,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRep_PointRepresentation, Standard_Transient)
 
 protected:
-  Standard_EXPORT BRep_PointRepresentation(const double P, const TopLoc_Location& L);
+  BRep_PointRepresentation(const double P, const TopLoc_Location& L, const BRep_PointRepKind theKind)
+      : myLocation(L),
+        myParameter(P),
+        myPointKind(theKind)
+  {
+  }
+
+  BRep_PointRepKind myPointKind;
 
 private:
   TopLoc_Location myLocation;

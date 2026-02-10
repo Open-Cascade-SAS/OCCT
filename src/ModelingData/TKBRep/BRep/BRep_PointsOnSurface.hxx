@@ -41,7 +41,8 @@ public:
 protected:
   Standard_EXPORT BRep_PointsOnSurface(const double                     P,
                                        const occ::handle<Geom_Surface>& S,
-                                       const TopLoc_Location&           L);
+                                       const TopLoc_Location&           L,
+                                       const BRep_PointRepKind          theKind);
 
 private:
   occ::handle<Geom_Surface> mySurface;
