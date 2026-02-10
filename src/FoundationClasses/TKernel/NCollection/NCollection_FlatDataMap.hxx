@@ -85,6 +85,10 @@ private:
 
   //! Internal slot structure holding key, value, and metadata.
   //! Key and item storage is uninitialized until state becomes Used.
+#ifdef _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable : 4324) // structure was padded due to alignment specifier
+#endif
   struct Slot
   {
     alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)];
@@ -114,6 +118,9 @@ private:
       return *reinterpret_cast<const TheItemType*>(myItemStorage);
     }
   };
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
 
 public:
   // **************** Iterator interface ****************

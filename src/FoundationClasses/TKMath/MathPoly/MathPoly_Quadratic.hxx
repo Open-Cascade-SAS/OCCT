@@ -43,12 +43,14 @@ inline MathUtils::PolyResult Linear(double theA, double theB)
     {
       aResult.Status = MathUtils::Status::NoSolution;
     }
-    return aResult;
+  }
+  else
+  {
+    aResult.Status   = MathUtils::Status::OK;
+    aResult.NbRoots  = 1;
+    aResult.Roots[0] = -theB / theA;
   }
 
-  aResult.Status   = MathUtils::Status::OK;
-  aResult.NbRoots  = 1;
-  aResult.Roots[0] = -theB / theA;
   return aResult;
 }
 
