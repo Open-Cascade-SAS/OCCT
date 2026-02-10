@@ -1182,8 +1182,7 @@ void GeomInt_IntSS::BuildPCurves(const double                     theFirst,
           || (theLast - theCurve2d->LastParameter() > Precision::PConfusion()))
       {
         occ::handle<Geom2d_BSplineCurve> aBspl = occ::down_cast<Geom2d_BSplineCurve>(theCurve2d);
-        NCollection_Array1<double>       aKnots(1, aBspl->NbKnots());
-        aBspl->Knots(aKnots);
+        NCollection_Array1<double>       aKnots(aBspl->Knots());
         BSplCLib::Reparametrize(theFirst, theLast, aKnots);
         aBspl->SetKnots(aKnots);
       }

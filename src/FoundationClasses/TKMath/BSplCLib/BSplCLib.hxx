@@ -458,6 +458,25 @@ public:
   //! Used as argument for a flatknots evaluation.
   static NCollection_Array1<int>* NoMults();
 
+  //! Returns the maximum number of elements supported by the pre-allocated
+  //! unit weights array (2049). For sizes larger than this, UnitWeights()
+  //! will allocate a new array.
+  static constexpr int MaxUnitWeightsSize() { return 2049; }
+
+  //! Returns an NCollection_Array1<double> filled with 1.0 values.
+  //! If theNbElems <= MaxUnitWeightsSize(), references a pre-allocated global array
+  //! (zero allocation). Otherwise, allocates a new array and fills with 1.0.
+  //! @warning The returned array may reference global static memory -- do NOT modify elements.
+  //! @param[in] theNbElems the number of elements in the returned array
+  //! @return array of unit weights with bounds [1, theNbElems]
+  Standard_EXPORT static NCollection_Array1<double> UnitWeights(const int theNbElems);
+
+  //! Returns a pointer to the pre-allocated unit weights static array.
+  //! The array contains MaxUnitWeightsSize() elements, all equal to 1.0.
+  //! @warning Do NOT modify elements through this pointer.
+  //! @return pointer to the first element of the static unit weights array
+  Standard_EXPORT static const double* UnitWeightsData();
+
   //! Stores in LK the useful knots for the BoorSchem
   //! on the span Knots(Index) - Knots(Index+1)
   Standard_EXPORT static void BuildKnots(const int                         Degree,

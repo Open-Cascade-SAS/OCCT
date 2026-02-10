@@ -36,9 +36,9 @@
 static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_Array1<double>& TAB)
 
 {
-  NCollection_Array1<double> Knots(1, BS->NbKnots());
-  NCollection_Array1<double> Weights(1, BS->NbPoles());
-  NCollection_Array1<int>    Mults(1, BS->NbKnots());
+  NCollection_Array1<double>        Knots(BS->Knots());
+  const NCollection_Array1<double>& Weights = BS->WeightsArray();
+  const NCollection_Array1<int>&    Mults   = BS->Multiplicities();
   // clang-format off
   int        Degree,Index0,Index1;                     // denominateur value for u=0 & u=1
   double           Denom0,Denom1,                            // denominator value for u=0 & u=1
@@ -46,15 +46,16 @@ static void HermiteCoeff(const occ::handle<Geom_BSplineCurve>& BS, NCollection_A
   // clang-format on
   bool Periodic;
 
-  BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
-  BS->Weights(Weights);
-  BS->Multiplicities(Mults);
   Degree   = BS->Degree();
   Periodic = BS->IsPeriodic();
   Index0   = BS->FirstUKnotIndex();
   Index1   = BS->LastUKnotIndex() - 1;
 
+  // Evaluate the weight function w(u) = sum_i N_i,p(u) * w_i and its derivative
+  // at u=0 and u=1. The weight function of a rational BSpline is itself a polynomial
+  // BSpline of the same degree, with weight values as scalar "poles" and no rational
+  // denominator -- hence Weights is passed as Poles, with NoWeights() for unweighted evaluation.
   BSplCLib::D1(0.0,
                Index0,
                Degree,
@@ -91,25 +92,26 @@ static void HermiteCoeff(const occ::handle<Geom2d_BSplineCurve>& BS,
                          NCollection_Array1<double>&             TAB)
 
 {
-  NCollection_Array1<double> Knots(1, BS->NbKnots());
-  NCollection_Array1<double> Weights(1, BS->NbPoles());
-  NCollection_Array1<int>    Mults(1, BS->NbKnots());
-  int                        Degree, Index0, Index1;
-  double                     Denom0, Denom1, // denominateur value for u=0 & u=1
-                                             // clang-format off
+  NCollection_Array1<double>        Knots(BS->Knots());
+  const NCollection_Array1<double>& Weights = BS->WeightsArray();
+  const NCollection_Array1<int>&    Mults   = BS->Multiplicities();
+  int                               Degree, Index0, Index1;
+  double                            Denom0, Denom1, // denominateur value for u=0 & u=1
+                                                    // clang-format off
                           Deriv0,Deriv1 ; // denominator value for u=0 & u=1
   bool        Periodic;       // derivative denominatur value for u=0 & 1
-                                             // clang-format on
+                                                    // clang-format on
 
-  BS->Knots(Knots);
   BSplCLib::Reparametrize(0.0, 1.0, Knots); // affinity on the nodal vector
-  BS->Weights(Weights);
-  BS->Multiplicities(Mults);
   Degree   = BS->Degree();
   Periodic = BS->IsPeriodic();
   Index0   = BS->FirstUKnotIndex();
   Index1   = BS->LastUKnotIndex() - 1;
 
+  // Evaluate the weight function w(u) = sum_i N_i,p(u) * w_i and its derivative
+  // at u=0 and u=1. The weight function of a rational BSpline is itself a polynomial
+  // BSpline of the same degree, with weight values as scalar "poles" and no rational
+  // denominator -- hence Weights is passed as Poles, with NoWeights() for unweighted evaluation.
   BSplCLib::D1(0.0,
                Index0,
                Degree,
@@ -307,7 +309,7 @@ static void PolyTest(const NCollection_Array1<double>&     Herm,
             double Pole0, Pole3;
             Pole0 = Polesinit(0).Y();
             Pole3 = Polesinit(3).Y();
-            if (Pole0 < 3)
+            if (Pole0 < Pole3)
             {
               a = std::log10(Pole3 / Pole0);
               if (boucle == 2)
@@ -318,7 +320,7 @@ static void PolyTest(const NCollection_Array1<double>&     Herm,
                     Polesinit(i).Y()
                       - (Pole3 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
-              if (boucle == 1)
+              else if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
@@ -339,7 +341,7 @@ static void PolyTest(const NCollection_Array1<double>&     Herm,
                     Polesinit(i).Y()
                       - (Pole0 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
-              if (boucle == 1)
+              else if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(
@@ -570,7 +572,7 @@ static void PolyTest(const NCollection_Array1<double>&       Herm,
             double Pole0, Pole3;
             Pole0 = Polesinit(0).Y();
             Pole3 = Polesinit(3).Y();
-            if (Pole0 < 3)
+            if (Pole0 < Pole3)
             {
               a = std::log10(Pole3 / Pole0);
               if (boucle == 2)
@@ -581,7 +583,7 @@ static void PolyTest(const NCollection_Array1<double>&       Herm,
                     Polesinit(i).Y()
                       - (Pole3 * (std::pow(10.0, (-0.5 * std::log10(TolPoles) - a / 2.0)))));
               }
-              if (boucle == 1)
+              else if (boucle == 1)
               {
                 for (i = 0; i <= 3; i++)
                   Polesinit(i).SetCoord(

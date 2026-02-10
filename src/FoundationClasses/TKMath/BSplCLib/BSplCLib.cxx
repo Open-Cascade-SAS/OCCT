@@ -4630,3 +4630,42 @@ const double& BSplCLib::FlatBezierKnots(const int Degree)
 
   return knots[25 - Degree];
 }
+
+//==================================================================================================
+
+namespace
+{
+struct UnitWeightsArray
+{
+  double Data[2049];
+
+  constexpr UnitWeightsArray()
+      : Data{}
+  {
+    for (int i = 0; i < 2049; ++i)
+      Data[i] = 1.0;
+  }
+};
+
+static constexpr UnitWeightsArray THE_UNIT_WEIGHTS{};
+} // namespace
+
+NCollection_Array1<double> BSplCLib::UnitWeights(const int theNbElems)
+{
+  if (theNbElems <= MaxUnitWeightsSize())
+  {
+    // Non-owning view over global static array (zero allocation).
+    return NCollection_Array1<double>(THE_UNIT_WEIGHTS.Data[0], 1, theNbElems);
+  }
+  // Rare: allocate fresh array.
+  NCollection_Array1<double> aResult(1, theNbElems);
+  aResult.Init(1.0);
+  return aResult;
+}
+
+//==================================================================================================
+
+const double* BSplCLib::UnitWeightsData()
+{
+  return THE_UNIT_WEIGHTS.Data;
+}

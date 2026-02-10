@@ -2152,16 +2152,13 @@ void ComputeGridPoints(const BRepAdaptor_Surface&         theSurf,
                        const double                       theTolerance,
                        IntTools_SurfaceRangeLocalizeData& theSurfaceData)
 {
-  int                        i;
-  int                        j;
-  int                        k;
-  int                        aNbSamples[2] = {theSurf.UDegree(), theSurf.VDegree()};
-  int                        aNbKnots[2]   = {theSurf.NbUKnots(), theSurf.NbVKnots()};
-  NCollection_Array1<double> aKnotsU(1, aNbKnots[0]);
-  NCollection_Array1<double> aKnotsV(1, aNbKnots[1]);
-
-  theBsplSurf->UKnots(aKnotsU);
-  theBsplSurf->VKnots(aKnotsV);
+  int                               i;
+  int                               j;
+  int                               k;
+  int                               aNbSamples[2] = {theSurf.UDegree(), theSurf.VDegree()};
+  int                               aNbKnots[2]   = {theSurf.NbUKnots(), theSurf.NbVKnots()};
+  const NCollection_Array1<double>& aKnotsU       = theBsplSurf->UKnots();
+  const NCollection_Array1<double>& aKnotsV       = theBsplSurf->VKnots();
 
   int    iLmI;
   int    iMin[2] = {-1, -1};

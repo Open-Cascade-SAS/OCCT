@@ -51,10 +51,9 @@ void DrawTrSurf_BezierCurve::DrawOn(Draw_Display& dis) const
   occ::handle<Geom_BezierCurve> C = occ::down_cast<Geom_BezierCurve>(curv);
   if (drawPoles)
   {
-    int NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    NCollection_Array1<gp_Pnt> CPoles(1, NbPoles);
-    C->Poles(CPoles);
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     dis.MoveTo(CPoles(1));
     for (int i = 2; i <= NbPoles; i++)
     {

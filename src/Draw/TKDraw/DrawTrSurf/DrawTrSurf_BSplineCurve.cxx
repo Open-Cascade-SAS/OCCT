@@ -65,10 +65,9 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis) const
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(curv);
   if (drawPoles)
   {
-    int NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    NCollection_Array1<gp_Pnt> CPoles(1, NbPoles);
-    C->Poles(CPoles);
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     dis.MoveTo(CPoles(1));
     for (int i = 2; i <= NbPoles; i++)
     {
@@ -83,9 +82,7 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis) const
   DrawTrSurf_Curve::DrawOn(dis);
   if (drawKnots)
   {
-    int                        NbKnots = C->NbKnots();
-    NCollection_Array1<double> CKnots(1, NbKnots);
-    C->Knots(CKnots);
+    const NCollection_Array1<double>& CKnots = C->Knots();
     dis.SetColor(knotsLook);
     int first = C->FirstUKnotIndex();
     int last  = C->LastUKnotIndex();
@@ -103,10 +100,9 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis,
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(curv);
   if (drawPoles && ShowPoles)
   {
-    int NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    NCollection_Array1<gp_Pnt> CPoles(1, NbPoles);
-    C->Poles(CPoles);
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     dis.MoveTo(CPoles(1));
     for (int i = 2; i <= NbPoles; i++)
     {
@@ -118,11 +114,9 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis,
 
   if (drawKnots && ShowKnots)
   {
-    int                        NbKnots = C->NbKnots();
-    NCollection_Array1<double> CKnots(1, NbKnots);
-    C->Knots(CKnots);
+    const NCollection_Array1<double>& CKnots = C->Knots();
     dis.SetColor(knotsLook);
-    for (int i = 1; i <= NbKnots; i++)
+    for (int i = CKnots.Lower(); i <= CKnots.Upper(); i++)
     {
       dis.DrawMarker(C->Value(CKnots(i)), knotsForm, knotsDim);
     }
@@ -147,10 +141,9 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis,
 
   if (drawPoles && ShowPoles)
   {
-    int NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    NCollection_Array1<gp_Pnt> CPoles(1, NbPoles);
-    C->Poles(CPoles);
+    const NCollection_Array1<gp_Pnt>& CPoles  = C->Poles();
+    int                               NbPoles = CPoles.Length();
     if (Pindex == 0)
     {
       dis.MoveTo(CPoles(1));
@@ -267,9 +260,7 @@ void DrawTrSurf_BSplineCurve::DrawOn(Draw_Display& dis,
 
   if (drawKnots && ShowKnots)
   {
-    int                        NbKnots = C->NbKnots();
-    NCollection_Array1<double> CKnots(1, NbKnots);
-    C->Knots(CKnots);
+    const NCollection_Array1<double>& CKnots = C->Knots();
     dis.SetColor(knotsLook);
     for (int i = J1; i <= I2; i++)
     {

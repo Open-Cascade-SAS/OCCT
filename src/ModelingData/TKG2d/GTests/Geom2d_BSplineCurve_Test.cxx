@@ -448,3 +448,56 @@ TEST_F(Geom2d_BSplineCurve_Test, InsertKnots_Multiple)
   gp_Pnt2d aValAfter = myOriginalCurve->Value(0.5);
   EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
 }
+
+TEST_F(Geom2d_BSplineCurve_Test, WeightsArray_NonRational_ReturnsUnitWeights)
+{
+  ASSERT_FALSE(myOriginalCurve->IsRational());
+
+  const NCollection_Array1<double>& aWeights = myOriginalCurve->WeightsArray();
+  EXPECT_EQ(aWeights.Length(), myOriginalCurve->NbPoles());
+  EXPECT_FALSE(aWeights.IsDeletable());
+  for (int i = 1; i <= aWeights.Length(); ++i)
+  {
+    EXPECT_DOUBLE_EQ(aWeights(i), 1.0);
+  }
+  // Verify that the reference is stable
+  EXPECT_EQ(&aWeights, &myOriginalCurve->WeightsArray());
+}
+
+TEST_F(Geom2d_BSplineCurve_Test, WeightsArray_Rational_ReturnsOwning)
+{
+  // Create a rational BSpline
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles(1) = gp_Pnt2d(0, 0);
+  aPoles(2) = gp_Pnt2d(1, 1);
+  aPoles(3) = gp_Pnt2d(2, 1);
+  aPoles(4) = gp_Pnt2d(3, 0);
+
+  NCollection_Array1<double> aWeightsIn(1, 4);
+  aWeightsIn(1) = 1.0;
+  aWeightsIn(2) = 2.0;
+  aWeightsIn(3) = 3.0;
+  aWeightsIn(4) = 1.0;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 4;
+  aMults(2) = 4;
+
+  occ::handle<Geom2d_BSplineCurve> aRational =
+    new Geom2d_BSplineCurve(aPoles, aWeightsIn, aKnots, aMults, 3);
+  ASSERT_TRUE(aRational->IsRational());
+
+  const NCollection_Array1<double>& aWeights = aRational->WeightsArray();
+  EXPECT_EQ(aWeights.Length(), 4);
+  EXPECT_TRUE(aWeights.IsDeletable());
+  EXPECT_DOUBLE_EQ(aWeights(1), 1.0);
+  EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
+  EXPECT_DOUBLE_EQ(aWeights(3), 3.0);
+  EXPECT_DOUBLE_EQ(aWeights(4), 1.0);
+  // Verify that the reference is stable
+  EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}

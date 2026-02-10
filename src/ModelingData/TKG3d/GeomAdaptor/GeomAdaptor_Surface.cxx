@@ -463,11 +463,8 @@ GeomAbs_Shape GeomAdaptor_Surface::UContinuity() const
   {
     case GeomAbs_BSplineSurface: {
       const auto&                aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      const int                  N     = aBSpl->NbUKnots();
-      NCollection_Array1<double> TK(1, N);
-      NCollection_Array1<int>    TM(1, N);
-      aBSpl->UKnots(TK);
-      aBSpl->UMultiplicities(TM);
+      NCollection_Array1<double> TK(aBSpl->UKnots());
+      NCollection_Array1<int>    TM(aBSpl->UMultiplicities());
       return LocalContinuity(aBSpl->UDegree(),
                              aBSpl->NbUKnots(),
                              TK,
@@ -521,11 +518,8 @@ GeomAbs_Shape GeomAdaptor_Surface::VContinuity() const
   {
     case GeomAbs_BSplineSurface: {
       const auto&                aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
-      const int                  N     = aBSpl->NbVKnots();
-      NCollection_Array1<double> TK(1, N);
-      NCollection_Array1<int>    TM(1, N);
-      aBSpl->VKnots(TK);
-      aBSpl->VMultiplicities(TM);
+      NCollection_Array1<double> TK(aBSpl->VKnots());
+      NCollection_Array1<int>    TM(aBSpl->VMultiplicities());
       return LocalContinuity(aBSpl->VDegree(),
                              aBSpl->NbVKnots(),
                              TK,

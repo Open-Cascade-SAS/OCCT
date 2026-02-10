@@ -28,10 +28,9 @@ StepGeom_KnotType                                                      KnotSpec;
 
 Deg = BS->Degree();
 
-N = BS->NbPoles();
-Array1OfPnt_gen P(1, N);
-BS->Poles(P);
-Listpoints = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, N);
+N                        = BS->NbPoles();
+const Array1OfPnt_gen& P = BS->Poles();
+Listpoints               = new NCollection_HArray1<occ::handle<StepGeom_CartesianPoint>>(1, N);
 for (i = P.Lower(); i <= P.Upper(); i++)
 {
   GeomToStep_MakeCartesianPoint MkPoint(P.Value(i), theLocalFactors.LengthFactor());
@@ -48,19 +47,17 @@ else
 
 Selfinter = StepData_LFalse;
 
-Nknots = BS->NbKnots();
-NCollection_Array1<int> M(1, Nknots);
-BS->Multiplicities(M);
-Mult = new NCollection_HArray1<int>(1, Nknots);
+Nknots                           = BS->NbKnots();
+const NCollection_Array1<int>& M = BS->Multiplicities();
+Mult                             = new NCollection_HArray1<int>(1, Nknots);
 for (i = M.Lower(); i <= M.Upper(); i++)
 {
   itampon = M.Value(i);
   Mult->SetValue(i, itampon);
 }
 
-NCollection_Array1<double> K(1, Nknots);
-BS->Knots(K);
-ListKnots = new NCollection_HArray1<double>(1, Nknots);
+const NCollection_Array1<double>& K = BS->Knots();
+ListKnots                           = new NCollection_HArray1<double>(1, Nknots);
 for (i = K.Lower(); i <= K.Upper(); i++)
 {
   rtampon = K.Value(i);
@@ -77,13 +74,11 @@ else if (Distribution == GeomAbs_QuasiUniform)
 else
   KnotSpec = StepGeom_ktPiecewiseBezierKnots;
 
-NCollection_Array1<double> W(1, N);
-BS->Weights(W);
-ListWeights = new NCollection_HArray1<double>(1, N);
+const NCollection_Array1<double>& W = BS->WeightsArray();
+ListWeights                         = new NCollection_HArray1<double>(1, N);
 for (i = W.Lower(); i <= W.Upper(); i++)
 {
-  rtampon = W.Value(i);
-  ListWeights->SetValue(i, rtampon);
+  ListWeights->SetValue(i, W.Value(i));
 }
 
 BSWK = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;

@@ -750,11 +750,12 @@ bool ShapeAnalysis_CheckSmallFace::CheckPin(const TopoDS_Face& F, int& whatrow, 
   if (nbu == 0 || nbv == 0)
     return false;
 
-  NCollection_Array2<gp_Pnt> allpoles(1, nbu, 1, nbv);
+  const NCollection_Array2<gp_Pnt>* allpolesPtr = nullptr;
   if (!bs.IsNull())
-    bs->Poles(allpoles);
+    allpolesPtr = &bs->Poles();
   if (!bz.IsNull())
-    bz->Poles(allpoles);
+    allpolesPtr = &bz->Poles();
+  const NCollection_Array2<gp_Pnt>& allpoles = *allpolesPtr;
 
   //  Check each natural bound if it is a singularity (i.e. a pin)
 

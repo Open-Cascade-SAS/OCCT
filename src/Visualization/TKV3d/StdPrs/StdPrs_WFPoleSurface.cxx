@@ -63,23 +63,16 @@ void StdPrs_WFPoleSurface::Add(const occ::handle<Prs3d_Presentation>& aPresentat
   GeomAbs_SurfaceType SType = aSurface.GetType();
   if (SType == GeomAbs_BezierSurface || SType == GeomAbs_BSplineSurface)
   {
-    int n, m;
     if (SType == GeomAbs_BezierSurface)
     {
-      occ::handle<Geom_BezierSurface> B = aSurface.Bezier();
-      n                                 = aSurface.NbUPoles();
-      m                                 = aSurface.NbVPoles();
-      NCollection_Array2<gp_Pnt> A(1, n, 1, m);
-      (aSurface.Bezier())->Poles(A);
+      occ::handle<Geom_BezierSurface>   B = aSurface.Bezier();
+      const NCollection_Array2<gp_Pnt>& A = B->Poles();
       AddPoles(aPresentation, A, aDrawer);
     }
     else if (SType == GeomAbs_BSplineSurface)
     {
-      occ::handle<Geom_BSplineSurface> B = aSurface.BSpline();
-      n                                  = (aSurface.BSpline())->NbUPoles();
-      m                                  = (aSurface.BSpline())->NbVPoles();
-      NCollection_Array2<gp_Pnt> A(1, n, 1, m);
-      (aSurface.BSpline())->Poles(A);
+      occ::handle<Geom_BSplineSurface>  B = aSurface.BSpline();
+      const NCollection_Array2<gp_Pnt>& A = B->Poles();
       AddPoles(aPresentation, A, aDrawer);
     }
   }

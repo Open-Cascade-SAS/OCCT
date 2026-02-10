@@ -386,8 +386,7 @@ void ShapeFix_EdgeProjAux::Init2d(const double preci)
         // Try to reparametrize (CASE dxf read bug25899)
         occ::handle<Geom2d_BSplineCurve> aBspl =
           occ::down_cast<Geom2d_BSplineCurve>(theCurve2d->Copy());
-        NCollection_Array1<double> aNewKnots(1, aBspl->NbKnots());
-        aBspl->Knots(aNewKnots);
+        NCollection_Array1<double> aNewKnots(aBspl->Knots());
         BSplCLib::Reparametrize(cf, cl, aNewKnots);
         aBspl->SetKnots(aNewKnots);
         theCurve2d = aBspl;

@@ -208,8 +208,7 @@ static bool FindPlane(const occ::handle<Adaptor3d_Curve>& theC, occ::handle<Geom
       }
       else
       {
-        TabP = new (NCollection_HArray1<gp_Pnt>)(1, nbp);
-        GC->Poles(TabP->ChangeArray1());
+        TabP = new NCollection_HArray1<gp_Pnt>(GC->Poles());
       }
     }
     break;
@@ -225,8 +224,7 @@ static bool FindPlane(const occ::handle<Adaptor3d_Curve>& theC, occ::handle<Geom
       }
       else
       {
-        TabP = new (NCollection_HArray1<gp_Pnt>)(1, nbp);
-        GC->Poles(TabP->ChangeArray1());
+        TabP = new NCollection_HArray1<gp_Pnt>(GC->Poles());
       }
     }
     break;

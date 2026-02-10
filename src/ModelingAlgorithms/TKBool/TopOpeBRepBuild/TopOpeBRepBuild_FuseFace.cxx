@@ -1285,9 +1285,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
       return false;
     }
 
-    NCollection_Array1<gp_Pnt> P1(1, nbpoles), P2(1, nbpoles);
-    B1->Poles(P1);
-    B2->Poles(P2);
+    const NCollection_Array1<gp_Pnt>& P1 = B1->Poles();
+    const NCollection_Array1<gp_Pnt>& P2 = B2->Poles();
 
     double tol3d = BRep_Tool::Tolerance(E1);
     for (int p = 1; p <= nbpoles; p++)
@@ -1298,13 +1297,11 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
       }
     }
 
-    NCollection_Array1<double> K1(1, nbknots), K2(1, nbknots);
-    B1->Knots(K1);
-    B2->Knots(K2);
+    const NCollection_Array1<double>& K1 = B1->Knots();
+    const NCollection_Array1<double>& K2 = B2->Knots();
 
-    NCollection_Array1<int> M1(1, nbknots), M2(1, nbknots);
-    B1->Multiplicities(M1);
-    B2->Multiplicities(M2);
+    const NCollection_Array1<int>& M1 = B1->Multiplicities();
+    const NCollection_Array1<int>& M2 = B2->Multiplicities();
 
     for (int k = 1; k <= nbknots; k++)
     {
@@ -1335,9 +1332,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
     if (B1->IsRational())
     {
-      NCollection_Array1<double> W1(1, nbpoles), W2(1, nbpoles);
-      B1->Weights(W1);
-      B2->Weights(W2);
+      const NCollection_Array1<double>& W1 = B1->WeightsArray();
+      const NCollection_Array1<double>& W2 = B2->WeightsArray();
 
       for (int w = 1; w <= nbpoles; w++)
       {
@@ -1360,9 +1356,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
       return false;
     }
 
-    NCollection_Array1<gp_Pnt> P1(1, nbpoles), P2(1, nbpoles);
-    B1->Poles(P1);
-    B2->Poles(P2);
+    const NCollection_Array1<gp_Pnt>& P1 = B1->Poles();
+    const NCollection_Array1<gp_Pnt>& P2 = B2->Poles();
 
     for (int p = 1; p <= nbpoles; p++)
     {
@@ -1389,9 +1384,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
     if (B1->IsRational())
     {
-      NCollection_Array1<double> W1(1, nbpoles), W2(1, nbpoles);
-      B1->Weights(W1);
-      B2->Weights(W2);
+      const NCollection_Array1<double>& W1 = B1->WeightsArray();
+      const NCollection_Array1<double>& W2 = B2->WeightsArray();
 
       for (int w = 1; w <= nbpoles; w++)
       {

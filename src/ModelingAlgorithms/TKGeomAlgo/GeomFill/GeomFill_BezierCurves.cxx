@@ -225,50 +225,21 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
   if (CC4->Degree() < DegV)
     CC4->Increase(DegV);
 
-  NCollection_Array1<gp_Pnt> P1(1, DegU + 1);
-  NCollection_Array1<gp_Pnt> P3(1, DegU + 1);
-  NCollection_Array1<gp_Pnt> P2(1, DegV + 1);
-  NCollection_Array1<gp_Pnt> P4(1, DegV + 1);
-  CC1->Poles(P1);
-  CC2->Poles(P2);
-  CC3->Poles(P3);
-  CC4->Poles(P4);
+  const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
+  const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
+  const NCollection_Array1<gp_Pnt>& P3 = CC3->Poles();
+  const NCollection_Array1<gp_Pnt>& P4 = CC4->Poles();
 
   // Traitement des courbes rationelles
   bool isRat = (CC1->IsRational() || CC2->IsRational() || CC3->IsRational() || CC4->IsRational());
 
-  NCollection_Array1<double> W1(1, DegU + 1);
-  NCollection_Array1<double> W3(1, DegU + 1);
-  NCollection_Array1<double> W2(1, DegV + 1);
-  NCollection_Array1<double> W4(1, DegV + 1);
-  W1.Init(1.);
-  W2.Init(1.);
-  W3.Init(1.);
-  W4.Init(1.);
-
-  if (isRat)
-  {
-    if (CC1->IsRational())
-    {
-      CC1->Weights(W1);
-    }
-    if (CC2->IsRational())
-    {
-      CC2->Weights(W2);
-    }
-    if (CC3->IsRational())
-    {
-      CC3->Weights(W3);
-    }
-    if (CC4->IsRational())
-    {
-      CC4->Weights(W4);
-    }
-  }
-
   GeomFill_Filling Caro;
   if (isRat)
   {
+    NCollection_Array1<double> W1(CC1->WeightsArray());
+    NCollection_Array1<double> W2(CC2->WeightsArray());
+    NCollection_Array1<double> W3(CC3->WeightsArray());
+    NCollection_Array1<double> W4(CC4->WeightsArray());
     // Mise en conformite des poids aux coins.
     SetSameWeights(W1, W2, W3, W4);
     switch (Type)
@@ -369,11 +340,9 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     if (CC2->Degree() < DegU)
       CC2->Increase(DegU);
 
-    NCollection_Array2<gp_Pnt> Poles(1, DegU + 1, 1, 2);
-    NCollection_Array1<gp_Pnt> P1(1, DegU + 1);
-    NCollection_Array1<gp_Pnt> P2(1, DegU + 1);
-    CC1->Poles(P1);
-    CC2->Poles(P2);
+    NCollection_Array2<gp_Pnt>        Poles(1, DegU + 1, 1, 2);
+    const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
+    const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
 
     int i;
     for (i = 1; i <= DegU + 1; i++)
@@ -383,20 +352,9 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     }
     if (isRat)
     {
-      NCollection_Array1<double> W1(1, DegU + 1);
-      NCollection_Array1<double> W2(1, DegU + 1);
-      W1.Init(1.);
-      W2.Init(1.);
-
-      if (CC1->IsRational())
-      {
-        CC1->Weights(W1);
-      }
-      if (CC2->IsRational())
-      {
-        CC2->Weights(W2);
-      }
-      NCollection_Array2<double> Weights(1, DegU + 1, 1, 2);
+      const NCollection_Array1<double>& W1 = CC1->WeightsArray();
+      const NCollection_Array1<double>& W2 = CC2->WeightsArray();
+      NCollection_Array2<double>        Weights(1, DegU + 1, 1, 2);
       for (i = 1; i <= DegU + 1; i++)
       {
         Weights(i, 1) = W1(i);
@@ -411,9 +369,6 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
   }
   else
   {
-    NCollection_Array1<gp_Pnt> P1(1, Deg1 + 1);
-    NCollection_Array1<gp_Pnt> P2(1, Deg2 + 1);
-
     constexpr double Eps  = Precision::Confusion();
     bool             IsOK = false;
     if (CC1->StartPoint().IsEqual(CC2->StartPoint(), Eps))
@@ -440,26 +395,15 @@ void GeomFill_BezierCurves::Init(const occ::handle<Geom_BezierCurve>& C1,
     if (!IsOK)
       throw Standard_OutOfRange("GeomFill_BezierCurves: Courbes non jointives");
 
-    CC1->Poles(P1);
-    CC2->Poles(P2);
-
-    NCollection_Array1<double> W1(1, Deg1 + 1);
-    NCollection_Array1<double> W2(1, Deg2 + 1);
-    W1.Init(1.);
-    W2.Init(1.);
+    const NCollection_Array1<gp_Pnt>& P1 = CC1->Poles();
+    const NCollection_Array1<gp_Pnt>& P2 = CC2->Poles();
 
     GeomFill_Filling Caro;
     if (isRat)
     {
-      if (CC1->IsRational())
-      {
-        CC1->Weights(W1);
-      }
-      if (CC2->IsRational())
-      {
-        CC2->Weights(W2);
-      }
-      Caro = GeomFill_Curved(P1, P2, W1, W2);
+      const NCollection_Array1<double>& W1 = CC1->WeightsArray();
+      const NCollection_Array1<double>& W2 = CC2->WeightsArray();
+      Caro                                 = GeomFill_Curved(P1, P2, W1, W2);
     }
     else
     {

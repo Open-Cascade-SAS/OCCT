@@ -370,10 +370,8 @@ void Extrema_GenExtPS::GetGridPoints(const Adaptor3d_Surface& theSurf)
     occ::handle<Geom_BSplineSurface> aBspl = theSurf.BSpline();
     if (!aBspl.IsNull())
     {
-      NCollection_Array1<double> aUKnots(1, aBspl->NbUKnots());
-      aBspl->UKnots(aUKnots);
-      NCollection_Array1<double> aVKnots(1, aBspl->NbVKnots());
-      aBspl->VKnots(aVKnots);
+      const NCollection_Array1<double>& aUKnots = aBspl->UKnots();
+      const NCollection_Array1<double>& aVKnots = aBspl->VKnots();
       fillParams(aUKnots, aBspl->UDegree(), myumin, myusup, myUParams, myusample);
       fillParams(aVKnots, aBspl->VDegree(), myvmin, myvsup, myVParams, myvsample);
     }
@@ -402,9 +400,8 @@ void Extrema_GenExtPS::GetGridPoints(const Adaptor3d_Surface& theSurf)
       occ::handle<Geom_BSplineCurve> aBspl = theSurf.BasisCurve()->BSpline();
       if (!aBspl.IsNull())
       {
-        anArrKnots = new NCollection_HArray1<double>(1, aBspl->NbKnots());
-        aBspl->Knots(anArrKnots->ChangeArray1());
-        aDegree = aBspl->Degree();
+        anArrKnots = new NCollection_HArray1<double>(aBspl->Knots());
+        aDegree    = aBspl->Degree();
       }
     }
     if (theSurf.BasisCurve()->GetType() == GeomAbs_BezierCurve)

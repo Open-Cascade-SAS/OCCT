@@ -63,12 +63,10 @@ void DrawTrSurf_BSplineCurve2d::DrawOn(Draw_Display& dis) const
 
   if (drawPoles)
   {
-    int NbPoles = C->NbPoles();
     dis.SetColor(polesLook);
-    NCollection_Array1<gp_Pnt2d> CPoles(1, NbPoles);
-    C->Poles(CPoles);
+    const NCollection_Array1<gp_Pnt2d>& CPoles = C->Poles();
     dis.MoveTo(CPoles(1));
-    for (int i = 2; i <= NbPoles; i++)
+    for (int i = 2; i <= CPoles.Length(); i++)
     {
       dis.DrawTo(CPoles(i));
     }
@@ -80,11 +78,9 @@ void DrawTrSurf_BSplineCurve2d::DrawOn(Draw_Display& dis) const
 
   if (drawKnots)
   {
-    int                        NbKnots = C->NbKnots();
-    NCollection_Array1<double> CKnots(1, NbKnots);
-    C->Knots(CKnots);
+    const NCollection_Array1<double>& CKnots = C->Knots();
     dis.SetColor(knotsLook);
-    for (int i = 1; i <= NbKnots; i++)
+    for (int i = CKnots.Lower(); i <= CKnots.Upper(); i++)
     {
       gp_Pnt2d P = C->Value(CKnots(i));
       dis.DrawMarker(P, knotsForm, knotsDim);

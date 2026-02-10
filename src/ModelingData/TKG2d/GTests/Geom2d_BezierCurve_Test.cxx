@@ -455,3 +455,41 @@ TEST_F(Geom2d_BezierCurve_Test, RationalIncrease)
   gp_Pnt2d aValAfter = aCurve->Value(0.5);
   EXPECT_TRUE(aValBefore.IsEqual(aValAfter, 1e-10));
 }
+
+TEST_F(Geom2d_BezierCurve_Test, WeightsArray_NonRational_ReturnsUnitWeights)
+{
+  ASSERT_FALSE(myOriginalCurve->IsRational());
+
+  const NCollection_Array1<double>& aWeights = myOriginalCurve->WeightsArray();
+  EXPECT_EQ(aWeights.Length(), myOriginalCurve->NbPoles());
+  EXPECT_FALSE(aWeights.IsDeletable());
+  for (int i = 1; i <= aWeights.Length(); ++i)
+  {
+    EXPECT_DOUBLE_EQ(aWeights(i), 1.0);
+  }
+  EXPECT_EQ(&aWeights, &myOriginalCurve->WeightsArray());
+}
+
+TEST_F(Geom2d_BezierCurve_Test, WeightsArray_Rational_ReturnsOwning)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
+  aPoles(1) = gp_Pnt2d(0, 0);
+  aPoles(2) = gp_Pnt2d(1, 1);
+  aPoles(3) = gp_Pnt2d(2, 0);
+
+  NCollection_Array1<double> aWeightsIn(1, 3);
+  aWeightsIn(1) = 1.0;
+  aWeightsIn(2) = 2.0;
+  aWeightsIn(3) = 1.0;
+
+  occ::handle<Geom2d_BezierCurve> aRational = new Geom2d_BezierCurve(aPoles, aWeightsIn);
+  ASSERT_TRUE(aRational->IsRational());
+
+  const NCollection_Array1<double>& aWeights = aRational->WeightsArray();
+  EXPECT_EQ(aWeights.Length(), 3);
+  EXPECT_TRUE(aWeights.IsDeletable());
+  EXPECT_DOUBLE_EQ(aWeights(1), 1.0);
+  EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
+  EXPECT_DOUBLE_EQ(aWeights(3), 1.0);
+  EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}

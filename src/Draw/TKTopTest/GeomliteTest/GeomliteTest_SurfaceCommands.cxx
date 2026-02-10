@@ -851,8 +851,7 @@ static int convbz(Draw_Interpretor& di, int n, const char** a)
         di << "the curve " << kk << "is not a BezierCurve\n";
         return 1;
       }
-      NCollection_Array1<gp_Pnt> Poles(1, BZ->NbPoles());
-      BZ->Poles(Poles);
+      NCollection_Array1<gp_Pnt> Poles(BZ->Poles());
       Conv.AddCurve(Poles);
     }
 

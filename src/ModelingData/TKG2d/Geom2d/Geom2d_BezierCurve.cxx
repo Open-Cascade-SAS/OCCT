@@ -103,7 +103,8 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const NCollection_Array1<gp_Pnt2d>& Poles
 
 Geom2d_BezierCurve::Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
-      myWeights(theOther.myWeights),
+      myWeights(theOther.myRational ? NCollection_Array1<double>(theOther.myWeights)
+                                    : BSplCLib::UnitWeights(theOther.myPoles.Length())),
       myRational(theOther.myRational),
       myClosed(theOther.myClosed),
       myMaxDerivInvOk(false)
@@ -382,9 +383,8 @@ void Geom2d_BezierCurve::SetWeight(const int Index, const double Weight)
     if (std::abs(Weight - 1.) <= gp::Resolution())
       return;
 
-    // set weights of 1.
-    myWeights.Resize(1, nbpoles, false);
-    myWeights.Init(1.);
+    // Becoming rational: copy non-owning view to owned array.
+    myWeights = NCollection_Array1<double>(myWeights);
   }
 
   myWeights(Index) = Weight;
@@ -393,7 +393,7 @@ void Geom2d_BezierCurve::SetWeight(const int Index, const double Weight)
   if (wasrat && !Rational(myWeights))
   {
     myRational = false;
-    myWeights  = NCollection_Array1<double>();
+    myWeights  = BSplCLib::UnitWeights(nbpoles);
   }
   else
     myRational = true;
@@ -619,13 +619,13 @@ void Geom2d_BezierCurve::init(const NCollection_Array1<gp_Pnt2d>& thePoles,
     myRational = Rational(myWeights);
     if (!myRational)
     {
-      myWeights = NCollection_Array1<double>();
+      myWeights = BSplCLib::UnitWeights(nbpoles);
     }
   }
   else
   {
     myRational = false;
-    myWeights  = NCollection_Array1<double>();
+    myWeights  = BSplCLib::UnitWeights(nbpoles);
   }
 
   myMaxDerivInv   = 0.0;

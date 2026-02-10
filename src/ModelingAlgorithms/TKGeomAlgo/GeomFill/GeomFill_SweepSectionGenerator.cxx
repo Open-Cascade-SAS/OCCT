@@ -399,7 +399,7 @@ void GeomFill_SweepSectionGenerator::Knots(NCollection_Array1<double>& TKnots) c
   */
   if (myType != 0)
   {
-    myFirstSect->Knots(TKnots);
+    TKnots = myFirstSect->Knots();
   }
   else
   {
@@ -422,7 +422,7 @@ void GeomFill_SweepSectionGenerator::Mults(NCollection_Array1<int>& TMults) cons
   */
   if (myType != 0)
   {
-    myFirstSect->Multiplicities(TMults);
+    TMults = myFirstSect->Multiplicities();
   }
   else
   {
@@ -524,8 +524,8 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
 {
   if (myType != 0)
   {
-    myFirstSect->Poles(Poles);
-    myFirstSect->Weights(Weigths);
+    Poles   = myFirstSect->Poles();
+    Weigths = myFirstSect->WeightsArray();
     gp_Trsf cumulTR;
     if (P > 1)
     {
@@ -630,8 +630,8 @@ void GeomFill_SweepSectionGenerator::Section(const int                   P,
       else
         BS = GeomConvert::CurveToBSplineCurve(CT, Convert_QuasiAngular);
 
-      BS->Poles(Poles);
-      BS->Weights(Weigths);
+      Poles   = BS->Poles();
+      Weigths = BS->WeightsArray();
     }
   }
 }

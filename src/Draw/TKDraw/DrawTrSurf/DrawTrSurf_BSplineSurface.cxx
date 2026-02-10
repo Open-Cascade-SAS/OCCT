@@ -122,11 +122,10 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 
   if (drawPoles)
   {
-    int NbUPoles = S->NbUPoles();
-    int NbVPoles = S->NbVPoles();
     dis.SetColor(polesLook);
-    NCollection_Array2<gp_Pnt> SPoles(1, NbUPoles, 1, NbVPoles);
-    S->Poles(SPoles);
+    const NCollection_Array2<gp_Pnt>& SPoles   = S->Poles();
+    int                               NbUPoles = SPoles.NbRows();
+    int                               NbVPoles = SPoles.NbColumns();
     for (j = 1; j <= NbVPoles; j++)
     {
       dis.MoveTo(SPoles(1, j));
@@ -180,10 +179,8 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
 
   if (drawKnots)
   {
-    int                        first, last;
-    int                        NbUKnots = S->NbUKnots();
-    NCollection_Array1<double> SUKnots(1, NbUKnots);
-    S->UKnots(SUKnots);
+    int                               first, last;
+    const NCollection_Array1<double>& SUKnots = S->UKnots();
     dis.SetColor(knotsLook);
     first = S->FirstUKnotIndex();
     last  = S->LastUKnotIndex();
@@ -191,9 +188,7 @@ void DrawTrSurf_BSplineSurface::DrawOn(Draw_Display& dis) const
     {
       dis.DrawMarker(S->Value(SUKnots(i), Va), knotsForm, knotsDim);
     }
-    int                        NbVKnots = S->NbVKnots();
-    NCollection_Array1<double> SVKnots(1, NbVKnots);
-    S->VKnots(SVKnots);
+    const NCollection_Array1<double>& SVKnots = S->VKnots();
     dis.SetColor(knotsLook);
     first = S->FirstVKnotIndex();
     last  = S->LastVKnotIndex();

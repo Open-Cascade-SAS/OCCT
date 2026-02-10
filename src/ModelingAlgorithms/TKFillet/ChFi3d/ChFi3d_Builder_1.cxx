@@ -286,8 +286,7 @@ static TopoDS_Edge MakeOffsetEdge(const TopoDS_Edge&         theEdge,
       std::abs(LastDiff)  > ParTol)
   {
     occ::handle<Geom_BSplineCurve> BsplCurve = occ::down_cast<Geom_BSplineCurve>(IntCurve);
-    NCollection_Array1<double> aKnots(1, BsplCurve->NbKnots());
-    BsplCurve->Knots(aKnots);
+    NCollection_Array1<double> aKnots(BsplCurve->Knots());
     BSplCLib::Reparametrize(aBAcurve.FirstParameter(), aBAcurve.LastParameter(), aKnots);
     BsplCurve->SetKnots(aKnots);
     if (aBAcurve.IsPeriodic() && !BsplCurve->IsPeriodic())

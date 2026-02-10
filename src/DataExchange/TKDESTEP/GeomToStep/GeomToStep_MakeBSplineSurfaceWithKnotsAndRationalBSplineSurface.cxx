@@ -58,10 +58,9 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   aUDegree = BS->UDegree();
   aVDegree = BS->VDegree();
 
-  NU = BS->NbUPoles();
-  NV = BS->NbVPoles();
-  NCollection_Array2<gp_Pnt> P(1, NU, 1, NV);
-  BS->Poles(P);
+  NU                                  = BS->NbUPoles();
+  NV                                  = BS->NbVPoles();
+  const NCollection_Array2<gp_Pnt>& P = BS->Poles();
   aControlPointsList = new NCollection_HArray2<occ::handle<StepGeom_CartesianPoint>>(1, NU, 1, NV);
   for (i = P.LowerRow(); i <= P.UpperRow(); i++)
   {
@@ -87,31 +86,27 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
 
   aSelfIntersect = StepData_LFalse;
 
-  NUknots = BS->NbUKnots();
-  NVknots = BS->NbVKnots();
-  NCollection_Array1<int> MU(1, NUknots);
-  BS->UMultiplicities(MU);
-  aUMultiplicities = new NCollection_HArray1<int>(1, NUknots);
+  NUknots                           = BS->NbUKnots();
+  NVknots                           = BS->NbVKnots();
+  const NCollection_Array1<int>& MU = BS->UMultiplicities();
+  aUMultiplicities                  = new NCollection_HArray1<int>(1, NUknots);
   for (i = MU.Lower(); i <= MU.Upper(); i++)
   {
     itampon = MU.Value(i);
     aUMultiplicities->SetValue(i, itampon);
   }
-  NCollection_Array1<int> MV(1, NVknots);
-  BS->VMultiplicities(MV);
-  aVMultiplicities = new NCollection_HArray1<int>(1, NVknots);
+  const NCollection_Array1<int>& MV = BS->VMultiplicities();
+  aVMultiplicities                  = new NCollection_HArray1<int>(1, NVknots);
   for (i = MV.Lower(); i <= MV.Upper(); i++)
   {
     itampon = MV.Value(i);
     aVMultiplicities->SetValue(i, itampon);
   }
 
-  NCollection_Array1<double> KU(1, NUknots);
-  NCollection_Array1<double> KV(1, NVknots);
-  BS->UKnots(KU);
-  BS->VKnots(KV);
-  aUKnots = new NCollection_HArray1<double>(1, NUknots);
-  aVKnots = new NCollection_HArray1<double>(1, NVknots);
+  const NCollection_Array1<double>& KU = BS->UKnots();
+  const NCollection_Array1<double>& KV = BS->VKnots();
+  aUKnots                              = new NCollection_HArray1<double>(1, NUknots);
+  aVKnots                              = new NCollection_HArray1<double>(1, NVknots);
   for (i = KU.Lower(); i <= KU.Upper(); i++)
   {
     rtampon = KU.Value(i);
@@ -136,15 +131,13 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   else
     KnotSpec = StepGeom_ktUnspecified;
 
-  NCollection_Array2<double> W(1, NU, 1, NV);
-  BS->Weights(W);
-  aWeightsData = new NCollection_HArray2<double>(1, NU, 1, NV);
+  const NCollection_Array2<double>& W = BS->WeightsArray();
+  aWeightsData                        = new NCollection_HArray2<double>(1, NU, 1, NV);
   for (i = W.LowerRow(); i <= W.UpperRow(); i++)
   {
     for (j = W.LowerCol(); j <= W.UpperCol(); j++)
     {
-      rtampon = W.Value(i, j);
-      aWeightsData->SetValue(i, j, rtampon);
+      aWeightsData->SetValue(i, j, W.Value(i, j));
     }
   }
 

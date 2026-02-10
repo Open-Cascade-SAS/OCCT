@@ -1325,13 +1325,10 @@ void ChFi3d_ReparamPcurv(const double Uf, const double Ul, occ::handle<Geom2d_Cu
   if (std::abs(Uf - pc->FirstParameter()) > Precision::PConfusion()
       || std::abs(Ul - pc->LastParameter()) > Precision::PConfusion())
   {
-    NCollection_Array1<gp_Pnt2d> pol(1, pc->NbPoles());
-    pc->Poles(pol);
-    NCollection_Array1<double> kn(1, pc->NbKnots());
-    pc->Knots(kn);
-    NCollection_Array1<int> mu(1, pc->NbKnots());
-    pc->Multiplicities(mu);
-    int deg = pc->Degree();
+    const NCollection_Array1<gp_Pnt2d>& pol = pc->Poles();
+    NCollection_Array1<double>          kn(pc->Knots());
+    const NCollection_Array1<int>&      mu  = pc->Multiplicities();
+    int                                 deg = pc->Degree();
     BSplCLib::Reparametrize(Uf, Ul, kn);
     pc = new Geom2d_BSplineCurve(pol, kn, mu, deg);
   }
@@ -4736,8 +4733,7 @@ Standard_EXPORT void ChFi3d_PerformElSpine(occ::handle<ChFiDS_ElSpine>& HES,
   // valide des aretes du chemin.
   BSpline = Concat.BSplineCurve();
   // There is a reparametrisation to maximally connect the abscissas of edges.
-  NCollection_Array1<double> BSNoeuds(1, BSpline->NbKnots());
-  BSpline->Knots(BSNoeuds);
+  NCollection_Array1<double> BSNoeuds(BSpline->Knots());
   BSplCLib::Reparametrize(Wrefdeb, Wreffin, BSNoeuds);
   BSpline->SetKnots(BSNoeuds);
   //

@@ -591,11 +591,10 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
   }
   else if (KindOfCurve == STANDARD_TYPE(Geom2d_BezierCurve))
   {
-    occ::handle<Geom2d_BezierCurve> CBez2d  = occ::down_cast<Geom2d_BezierCurve>(Curve2d);
-    int                             Nbpoles = CBez2d->NbPoles();
-    NCollection_Array1<gp_Pnt2d>    Poles2d(1, Nbpoles);
-    CBez2d->Poles(Poles2d);
-    NCollection_Array1<gp_Pnt> Poles3d(1, Nbpoles);
+    occ::handle<Geom2d_BezierCurve>     CBez2d  = occ::down_cast<Geom2d_BezierCurve>(Curve2d);
+    const NCollection_Array1<gp_Pnt2d>& Poles2d = CBez2d->Poles();
+    const int                           Nbpoles = Poles2d.Length();
+    NCollection_Array1<gp_Pnt>          Poles3d(1, Nbpoles);
     for (int i = 1; i <= Nbpoles; i++)
     {
       Poles3d(i) = ElCLib::To3d(Position, Poles2d(i));
@@ -603,9 +602,7 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
     occ::handle<Geom_BezierCurve> CBez3d;
     if (CBez2d->IsRational())
     {
-      NCollection_Array1<double> TheWeights(1, Nbpoles);
-      CBez2d->Weights(TheWeights);
-      CBez3d = new Geom_BezierCurve(Poles3d, TheWeights);
+      CBez3d = new Geom_BezierCurve(Poles3d, CBez2d->WeightsArray());
     }
     else
     {
@@ -615,29 +612,27 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
   }
   else if (KindOfCurve == STANDARD_TYPE(Geom2d_BSplineCurve))
   {
-    occ::handle<Geom2d_BSplineCurve> CBSpl2d    = occ::down_cast<Geom2d_BSplineCurve>(Curve2d);
-    int                              Nbpoles    = CBSpl2d->NbPoles();
-    int                              Nbknots    = CBSpl2d->NbKnots();
-    int                              TheDegree  = CBSpl2d->Degree();
-    bool                             IsPeriodic = CBSpl2d->IsPeriodic();
-    NCollection_Array1<gp_Pnt2d>     Poles2d(1, Nbpoles);
-    CBSpl2d->Poles(Poles2d);
-    NCollection_Array1<gp_Pnt> Poles3d(1, Nbpoles);
+    occ::handle<Geom2d_BSplineCurve>    CBSpl2d    = occ::down_cast<Geom2d_BSplineCurve>(Curve2d);
+    const int                           TheDegree  = CBSpl2d->Degree();
+    const bool                          IsPeriodic = CBSpl2d->IsPeriodic();
+    const NCollection_Array1<gp_Pnt2d>& Poles2d    = CBSpl2d->Poles();
+    const int                           Nbpoles    = Poles2d.Length();
+    NCollection_Array1<gp_Pnt>          Poles3d(1, Nbpoles);
     for (int i = 1; i <= Nbpoles; i++)
     {
       Poles3d(i) = ElCLib::To3d(Position, Poles2d(i));
     }
-    NCollection_Array1<double> TheKnots(1, Nbknots);
-    NCollection_Array1<int>    TheMults(1, Nbknots);
-    CBSpl2d->Knots(TheKnots);
-    CBSpl2d->Multiplicities(TheMults);
-    occ::handle<Geom_BSplineCurve> CBSpl3d;
+    const NCollection_Array1<double>& TheKnots = CBSpl2d->Knots();
+    const NCollection_Array1<int>&    TheMults = CBSpl2d->Multiplicities();
+    occ::handle<Geom_BSplineCurve>    CBSpl3d;
     if (CBSpl2d->IsRational())
     {
-      NCollection_Array1<double> TheWeights(1, Nbpoles);
-      CBSpl2d->Weights(TheWeights);
-      CBSpl3d =
-        new Geom_BSplineCurve(Poles3d, TheWeights, TheKnots, TheMults, TheDegree, IsPeriodic);
+      CBSpl3d = new Geom_BSplineCurve(Poles3d,
+                                      CBSpl2d->WeightsArray(),
+                                      TheKnots,
+                                      TheMults,
+                                      TheDegree,
+                                      IsPeriodic);
     }
     else
     {
@@ -806,9 +801,8 @@ occ::handle<Geom2d_Curve> GeomLib::GTransform(const occ::handle<Geom2d_Curve>& C
       // de la courbe de base.
 
       occ::handle<Geom2d_BezierCurve> C       = occ::down_cast<Geom2d_BezierCurve>(Curve->Copy());
-      int                             NbPoles = C->NbPoles();
-      NCollection_Array1<gp_Pnt2d>    Poles(1, NbPoles);
-      C->Poles(Poles);
+      const int                       NbPoles = C->NbPoles();
+      NCollection_Array1<gp_Pnt2d>    Poles(C->Poles());
       for (int i = 1; i <= NbPoles; i++)
       {
         Poles(i).SetXY(GTrsf.Transformed(Poles(i).XY()));
@@ -822,9 +816,8 @@ occ::handle<Geom2d_Curve> GeomLib::GTransform(const occ::handle<Geom2d_Curve>& C
       // Voir commentaire pour les Bezier.
 
       occ::handle<Geom2d_BSplineCurve> C       = occ::down_cast<Geom2d_BSplineCurve>(Curve->Copy());
-      int                              NbPoles = C->NbPoles();
-      NCollection_Array1<gp_Pnt2d>     Poles(1, NbPoles);
-      C->Poles(Poles);
+      const int                        NbPoles = C->NbPoles();
+      NCollection_Array1<gp_Pnt2d>     Poles(C->Poles());
       for (int i = 1; i <= NbPoles; i++)
       {
         Poles(i).SetXY(GTrsf.Transformed(Poles(i).XY()));
@@ -930,8 +923,7 @@ void GeomLib::SameRange(const double                     Tolerance,
         new Geom2d_TrimmedCurve(CurvePtr, FirstOnCurve, LastOnCurve);
 
       occ::handle<Geom2d_BSplineCurve> BS = Geom2dConvert::CurveToBSplineCurve(TC);
-      NCollection_Array1<double>       Knots(1, BS->NbKnots());
-      BS->Knots(Knots);
+      NCollection_Array1<double>       Knots(BS->Knots());
 
       BSplCLib::Reparametrize(RequestedFirst, RequestedLast, Knots);
 
@@ -978,8 +970,7 @@ void GeomLib::SameRange(const double                     Tolerance,
 
     //
     occ::handle<Geom2d_BSplineCurve> BS = Geom2dConvert::CurveToBSplineCurve(TC);
-    NCollection_Array1<double>       Knots(1, BS->NbKnots());
-    BS->Knots(Knots);
+    NCollection_Array1<double>       Knots(BS->Knots());
 
     BSplCLib::Reparametrize(RequestedFirst, RequestedLast, Knots);
 
@@ -1562,12 +1553,11 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
     }
 
     //  the flat knots
-    Ksize  = NbP + Cdeg + 1;
-    FKnots = new (NCollection_HArray1<double>)(1, Ksize);
+    Ksize = NbP + Cdeg + 1;
     if (InU)
-      BS->UKnotSequence(FKnots->ChangeArray1());
+      FKnots = new NCollection_HArray1<double>(BS->UKnotSequence());
     else
-      BS->VKnotSequence(FKnots->ChangeArray1());
+      FKnots = new NCollection_HArray1<double>(BS->VKnotSequence());
 
     //  the parameter of the connection knot
     if (After)
@@ -1897,18 +1887,18 @@ void GeomLib::ExtendSurfByLength(occ::handle<Geom_BoundedSurface>& Surface,
     UDeg          = Cdeg;
     UMults(Usize) = UDeg + 1; // Petite verrue utile quand la continuite
                               // n'est pas ok.
-    BS->VKnots(VKnots);
-    BS->VMultiplicities(VMults);
-    VDeg = BS->VDegree();
+    VKnots = BS->VKnots();
+    VMults = BS->VMultiplicities();
+    VDeg   = BS->VDegree();
   }
   else
   {
     BSplCLib::Knots(FKRes, VKnots, VMults);
     VDeg          = Cdeg;
     VMults(Vsize) = VDeg + 1;
-    BS->UKnots(UKnots);
-    BS->UMultiplicities(UMults);
-    UDeg = BS->UDegree();
+    UKnots        = BS->UKnots();
+    UMults        = BS->UMultiplicities();
+    UDeg          = BS->UDegree();
   }
 
   //  construction de la surface BSpline resultat
@@ -2301,22 +2291,15 @@ static void FunctionMultiply(occ::handle<Geom_BSplineSurface>& BSurf,
                              const double                      knotmax)
 
 {
-  NCollection_Array1<double> surface_u_knots(1, BSurf->NbUKnots());
-  NCollection_Array1<int>    surface_u_mults(1, BSurf->NbUKnots());
-  NCollection_Array1<double> surface_v_knots(1, BSurf->NbVKnots());
-  NCollection_Array1<int>    surface_v_mults(1, BSurf->NbVKnots());
-  NCollection_Array2<gp_Pnt> surface_poles(1, BSurf->NbUPoles(), 1, BSurf->NbVPoles());
-  NCollection_Array2<double> surface_weights(1, BSurf->NbUPoles(), 1, BSurf->NbVPoles());
-  int                        i, j, k, status, new_num_u_poles, new_num_v_poles, length = 0;
+  const NCollection_Array1<double>& surface_u_knots = BSurf->UKnots();
+  const NCollection_Array1<int>&    surface_u_mults = BSurf->UMultiplicities();
+  const NCollection_Array1<double>& surface_v_knots = BSurf->VKnots();
+  const NCollection_Array1<int>&    surface_v_mults = BSurf->VMultiplicities();
+  const NCollection_Array2<gp_Pnt>& surface_poles   = BSurf->Poles();
+  const NCollection_Array2<double>* surface_weights = BSurf->Weights();
+  int                               i, j, k, status, new_num_u_poles, new_num_v_poles, length = 0;
   occ::handle<NCollection_HArray1<double>> newuknots, newvknots;
   occ::handle<NCollection_HArray1<int>>    newumults, newvmults;
-
-  BSurf->UKnots(surface_u_knots);
-  BSurf->UMultiplicities(surface_u_mults);
-  BSurf->VKnots(surface_v_knots);
-  BSurf->VMultiplicities(surface_v_mults);
-  BSurf->Poles(surface_poles);
-  BSurf->Weights(surface_weights);
 
   NCollection_Array1<double>               Knots(1, 2);
   NCollection_Array1<int>                  Mults(1, 2);
@@ -2379,7 +2362,7 @@ static void FunctionMultiply(occ::handle<Geom_BSplineSurface>& BSurf,
                              &surface_u_mults,
                              &surface_v_mults,
                              surface_poles,
-                             &surface_weights,
+                             surface_weights,
                              newuflatknots,
                              newvflatknots,
                              BSurf->UDegree() + 3,
@@ -2417,23 +2400,22 @@ static void FunctionMultiply(occ::handle<Geom_BSplineSurface>& BSurf,
 static void CancelDenominatorDerivative1D(occ::handle<Geom_BSplineSurface>& BSurf)
 
 {
-  int                        i, j;
-  double                     uknotmin = 1.0, uknotmax = 0.0, x, y, startu_value, endu_value;
-  NCollection_Array1<double> BSurf_u_knots(1, BSurf->NbUKnots());
+  int    i, j;
+  double uknotmin = 1.0, uknotmax = 0.0, x, y, startu_value, endu_value;
 
   startu_value = BSurf->UKnot(1);
   endu_value   = BSurf->UKnot(BSurf->NbUKnots());
-  BSurf->UKnots(BSurf_u_knots);
+  NCollection_Array1<double> BSurf_u_knots(BSurf->UKnots());
   BSplCLib::Reparametrize(0.0, 1.0, BSurf_u_knots);
   BSurf->SetUKnots(BSurf_u_knots); // reparametrisation of the surface
   occ::handle<Geom_BSplineCurve> BCurve;
   NCollection_Array1<double>     BCurveWeights(1, BSurf->NbUPoles());
   NCollection_Array1<gp_Pnt>     BCurvePoles(1, BSurf->NbUPoles());
-  NCollection_Array1<double>     BCurveKnots(1, BSurf->NbUKnots());
-  NCollection_Array1<int>        BCurveMults(1, BSurf->NbUKnots());
 
   if (CanBeTreated(BSurf))
   {
+    const NCollection_Array1<double>& BCurveKnots = BSurf->UKnots();
+    const NCollection_Array1<int>&    BCurveMults = BSurf->UMultiplicities();
     for (i = 1; i <= BSurf->NbVPoles(); i++)
     { // loop on each pole function
       x = 1.0;
@@ -2443,8 +2425,6 @@ static void CancelDenominatorDerivative1D(occ::handle<Geom_BSplineSurface>& BSur
         BCurveWeights(j) = BSurf->Weight(j, i);
         BCurvePoles(j)   = BSurf->Pole(j, i);
       }
-      BSurf->UKnots(BCurveKnots);
-      BSurf->UMultiplicities(BCurveMults);
       BCurve = new Geom_BSplineCurve(BCurvePoles, // building of a pole function
                                      BCurveWeights,
                                      BCurveKnots,
@@ -2463,7 +2443,7 @@ static void CancelDenominatorDerivative1D(occ::handle<Geom_BSplineSurface>& BSur
 
     FunctionMultiply(BSurf, uknotmin, uknotmax); // multiplication
 
-    BSurf->UKnots(BSurf_u_knots);
+    BSurf_u_knots = BSurf->UKnots();
     BSplCLib::Reparametrize(startu_value, endu_value, BSurf_u_knots);
     BSurf->SetUKnots(BSurf_u_knots);
   }

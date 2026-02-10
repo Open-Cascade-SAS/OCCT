@@ -58,8 +58,8 @@ bool GeomFill_UniformSection::D0(const double,
                                  NCollection_Array1<gp_Pnt>& Poles,
                                  NCollection_Array1<double>& Weights)
 {
-  myCurve->Poles(Poles);
-  myCurve->Weights(Weights);
+  Poles   = myCurve->Poles();
+  Weights = myCurve->WeightsArray();
 
   return true;
 }
@@ -73,8 +73,8 @@ bool GeomFill_UniformSection::D1(const double,
                                  NCollection_Array1<double>& Weights,
                                  NCollection_Array1<double>& DWeights)
 {
-  myCurve->Poles(Poles);
-  myCurve->Weights(Weights);
+  Poles   = myCurve->Poles();
+  Weights = myCurve->WeightsArray();
   gp_Vec V0(0, 0, 0);
   DPoles.Init(V0);
   DWeights.Init(0);
@@ -93,8 +93,8 @@ bool GeomFill_UniformSection::D2(const double,
                                  NCollection_Array1<double>& DWeights,
                                  NCollection_Array1<double>& D2Weights)
 {
-  myCurve->Poles(Poles);
-  myCurve->Weights(Weights);
+  Poles   = myCurve->Poles();
+  Weights = myCurve->WeightsArray();
   gp_Vec V0(0, 0, 0);
   DPoles.Init(V0);
   DWeights.Init(0);
@@ -109,21 +109,23 @@ bool GeomFill_UniformSection::D2(const double,
 //=======================================================
 occ::handle<Geom_BSplineSurface> GeomFill_UniformSection::BSplineSurface() const
 {
-  int                        ii, NbPoles = myCurve->NbPoles();
-  NCollection_Array2<gp_Pnt> Poles(1, NbPoles, 1, 2);
-  NCollection_Array1<double> UKnots(1, myCurve->NbKnots()), VKnots(1, 2);
-  NCollection_Array1<int>    UMults(1, myCurve->NbKnots()), VMults(1, 2);
+  int                               ii, NbPoles = myCurve->NbPoles();
+  NCollection_Array2<gp_Pnt>        Poles(1, NbPoles, 1, 2);
+  const NCollection_Array1<double>& CurKnots = myCurve->Knots();
+  NCollection_Array1<double>        UKnots(CurKnots);
+  NCollection_Array1<double>        VKnots(1, 2);
+  const NCollection_Array1<int>&    CurMults = myCurve->Multiplicities();
+  NCollection_Array1<int>           UMults(CurMults);
+  NCollection_Array1<int>           VMults(1, 2);
 
   for (ii = 1; ii <= NbPoles; ii++)
   {
     Poles(ii, 1) = Poles(ii, 2) = myCurve->Pole(ii);
   }
 
-  myCurve->Knots(UKnots);
   VKnots(1) = First;
   VKnots(2) = Last;
 
-  myCurve->Multiplicities(UMults);
   VMults.Init(2);
 
   occ::handle<Geom_BSplineSurface> BS = new (Geom_BSplineSurface)(Poles,
@@ -150,7 +152,7 @@ void GeomFill_UniformSection::SectionShape(int& NbPoles, int& NbKnots, int& Degr
 
 void GeomFill_UniformSection::Knots(NCollection_Array1<double>& TKnots) const
 {
-  myCurve->Knots(TKnots);
+  TKnots = myCurve->Knots();
 }
 
 //=======================================================
@@ -158,7 +160,7 @@ void GeomFill_UniformSection::Knots(NCollection_Array1<double>& TKnots) const
 //=======================================================
 void GeomFill_UniformSection::Mults(NCollection_Array1<int>& TMults) const
 {
-  myCurve->Multiplicities(TMults);
+  TMults = myCurve->Multiplicities();
 }
 
 //=======================================================
@@ -276,14 +278,7 @@ double GeomFill_UniformSection::MaximalSection() const
 
 void GeomFill_UniformSection::GetMinimalWeight(NCollection_Array1<double>& Weights) const
 {
-  if (myCurve->IsRational())
-  {
-    myCurve->Weights(Weights);
-  }
-  else
-  {
-    Weights.Init(1);
-  }
+  Weights = myCurve->WeightsArray();
 }
 
 bool GeomFill_UniformSection::IsConstant(double& Error) const

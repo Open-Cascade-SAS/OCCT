@@ -897,14 +897,10 @@ occ::handle<Geom2d_BSplineCurve> IGESToBRep_BasicCurve::Transfer2dSplineCurve(
   // 2d
   // ==
   int nbPoles = res3d->NbPoles();
-  int nbKnots = res3d->NbKnots();
 
-  NCollection_Array1<gp_Pnt2d> bspoles2d(1, nbPoles);
-  NCollection_Array1<double>   knots(1, nbKnots);
-  NCollection_Array1<int>      multi(1, nbKnots);
-
-  res3d->Knots(knots);
-  res3d->Multiplicities(multi);
+  NCollection_Array1<gp_Pnt2d>      bspoles2d(1, nbPoles);
+  const NCollection_Array1<double>& knots = res3d->Knots();
+  const NCollection_Array1<int>&    multi = res3d->Multiplicities();
 
   for (int i = bspoles2d.Lower(); i <= bspoles2d.Upper(); i++)
     bspoles2d.SetValue(i, gp_Pnt2d(res3d->Pole(i).X(), res3d->Pole(i).Y()));
@@ -1261,21 +1257,14 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
   //  Knots and multiplicities are the same :
   //  =======================================
 
-  int NbKnots = Bspline->NbKnots();
-
-  NCollection_Array1<double> Knot(1, NbKnots);
-  Bspline->Knots(Knot);
-
-  NCollection_Array1<int> Mult(1, NbKnots);
-  Bspline->Multiplicities(Mult);
+  const NCollection_Array1<double>& Knot = Bspline->Knots();
+  const NCollection_Array1<int>&    Mult = Bspline->Multiplicities();
 
   int Degree = Bspline->Degree();
 
   if (Bspline->IsRational())
   {
-    NCollection_Array1<double> Weight(1, NbPoles);
-    Bspline->Weights(Weight);
-    BSplineC = new Geom2d_BSplineCurve(Pole, Weight, Knot, Mult, Degree);
+    BSplineC = new Geom2d_BSplineCurve(Pole, Bspline->WeightsArray(), Knot, Mult, Degree);
   }
   else
     BSplineC = new Geom2d_BSplineCurve(Pole, Knot, Mult, Degree);

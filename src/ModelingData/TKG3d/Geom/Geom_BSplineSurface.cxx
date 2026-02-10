@@ -132,7 +132,10 @@ occ::handle<Geom_Geometry> Geom_BSplineSurface::Copy() const
 
 Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
     : myPoles(theOther.myPoles),
-      myWeights(theOther.myWeights),
+      myWeights(
+        (theOther.myURational || theOther.myVRational)
+          ? NCollection_Array2<double>(theOther.myWeights)
+          : BSplSLib::UnitWeights(theOther.myPoles.ColLength(), theOther.myPoles.RowLength())),
       myUKnots(theOther.myUKnots),
       myVKnots(theOther.myVKnots),
       myUFlatKnots(theOther.myUFlatKnots),
@@ -186,6 +189,8 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
 
   myPoles.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
   myPoles.Assign(Poles);
+
+  myWeights = BSplSLib::UnitWeights(Poles.ColLength(), Poles.RowLength());
 
   myUKnots.Resize(1, UKnots.Length(), false);
   myUKnots.Assign(UKnots);
@@ -263,6 +268,10 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
     myWeights.Resize(1, Poles.ColLength(), 1, Poles.RowLength(), false);
     myWeights.Assign(Weights);
   }
+  else
+  {
+    myWeights = BSplSLib::UnitWeights(Poles.ColLength(), Poles.RowLength());
+  }
 
   myUKnots.Resize(1, UKnots.Length(), false);
   myUKnots.Assign(UKnots);
@@ -311,6 +320,10 @@ void Geom_BSplineSurface::ExchangeUV()
   if (myURational || myVRational)
   {
     myWeights = std::move(nweights);
+  }
+  else
+  {
+    myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   }
 
   std::swap(myURational, myVRational);
@@ -379,6 +392,7 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
                                BSplSLib::NoWeights(),
                                nknots,
                                nmults);
+      myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
     }
     myUDeg   = UDegree;
     myPoles  = std::move(npoles);
@@ -439,6 +453,7 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
                                BSplSLib::NoWeights(),
                                nknots,
                                nmults);
+      myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
     }
     myVDeg   = VDegree;
     myPoles  = std::move(npoles);
@@ -766,6 +781,7 @@ void Geom_BSplineSurface::segment(const double U1,
       }
       k++;
     }
+    myWeights = BSplSLib::UnitWeights(nbupoles, nbvpoles);
   }
 
   myUKnots = std::move(nuknots);
@@ -1210,19 +1226,15 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetWeight: Index and #pole mismatch");
   }
-  if (myWeights.Size() == 0)
+  if (!myURational && !myVRational)
   {
-    myWeights.Resize(myPoles.LowerRow(),
-                     myPoles.UpperRow(),
-                     myPoles.LowerCol(),
-                     myPoles.UpperCol(),
-                     false);
-    myWeights.Init(1.0);
+    // Make an owned copy of the unit weights view before modifying.
+    myWeights = NCollection_Array2<double>(myWeights);
   }
   myWeights(UIndex + myWeights.LowerRow() - 1, VIndex + myWeights.LowerCol() - 1) = Weight;
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
-    myWeights = NCollection_Array2<double>();
+    myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   myMaxDerivInvOk = false;
 }
 
@@ -1240,14 +1252,10 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
   {
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightCol: invalid array dimension");
   }
-  if (myWeights.Size() == 0)
+  if (!myURational && !myVRational)
   {
-    myWeights.Resize(myPoles.LowerRow(),
-                     myPoles.UpperRow(),
-                     myPoles.LowerCol(),
-                     myPoles.UpperCol(),
-                     false);
-    myWeights.Init(1.0);
+    // Make an owned copy of the unit weights view before modifying.
+    myWeights = NCollection_Array2<double>(myWeights);
   }
   int I = CPoleWeights.Lower();
   while (I <= CPoleWeights.Upper())
@@ -1262,7 +1270,7 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
   // Verifie si c'est rationnel
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
-    myWeights = NCollection_Array2<double>();
+    myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   myMaxDerivInvOk = false;
 }
 
@@ -1281,14 +1289,10 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
 
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightRow: invalid array dimension");
   }
-  if (myWeights.Size() == 0)
+  if (!myURational && !myVRational)
   {
-    myWeights.Resize(myPoles.LowerRow(),
-                     myPoles.UpperRow(),
-                     myPoles.LowerCol(),
-                     myPoles.UpperCol(),
-                     false);
-    myWeights.Init(1.0);
+    // Make an owned copy of the unit weights view before modifying.
+    myWeights = NCollection_Array2<double>(myWeights);
   }
   int I = CPoleWeights.Lower();
 
@@ -1304,7 +1308,7 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
   // Verifie si c'est rationnel
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
-    myWeights = NCollection_Array2<double>();
+    myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   myMaxDerivInvOk = false;
 }
 

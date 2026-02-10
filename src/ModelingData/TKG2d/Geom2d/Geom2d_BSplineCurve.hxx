@@ -818,6 +818,13 @@ public:
   //! Returns the weights of the B-spline curve;
   Standard_EXPORT const NCollection_Array1<double>* Weights() const;
 
+  //! Returns a const reference to the weights array.
+  //! For rational curves: the internal owning weights array.
+  //! For non-rational curves: a non-owning view of unit weights from BSplCLib.
+  //! The array is always sized to match NbPoles().
+  //! @warning Do NOT modify elements through the returned reference.
+  const NCollection_Array1<double>& WeightsArray() const { return myWeights; }
+
   //! Applies the transformation T to this BSpline curve.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
 

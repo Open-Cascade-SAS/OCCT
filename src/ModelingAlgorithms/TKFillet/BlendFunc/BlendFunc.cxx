@@ -113,15 +113,13 @@ void BlendFunc::GetMinimalWeights(const BlendFunc_SectionShape       SShape,
       gp_Circ                        C(popAx2, 1);
       occ::handle<Geom_TrimmedCurve> Sect1 = new Geom_TrimmedCurve(new Geom_Circle(C), 0., MaxAng);
       occ::handle<Geom_BSplineCurve> CtoBspl = GeomConvert::CurveToBSplineCurve(Sect1, TConv);
-      CtoBspl->Weights(Weights);
+      Weights.Assign(CtoBspl->WeightsArray());
 
-      NCollection_Array1<double> poids(Weights.Lower(), Weights.Upper());
-      double                     angle_min = std::max(Precision::PConfusion(), MinAng);
-
+      double                         angle_min = std::max(Precision::PConfusion(), MinAng);
       occ::handle<Geom_TrimmedCurve> Sect2 =
         new Geom_TrimmedCurve(new Geom_Circle(C), 0., angle_min);
-      CtoBspl = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
-      CtoBspl->Weights(poids);
+      CtoBspl                                 = GeomConvert::CurveToBSplineCurve(Sect2, TConv);
+      const NCollection_Array1<double>& poids = CtoBspl->WeightsArray();
 
       for (int ii = Weights.Lower(); ii <= Weights.Upper(); ii++)
       {

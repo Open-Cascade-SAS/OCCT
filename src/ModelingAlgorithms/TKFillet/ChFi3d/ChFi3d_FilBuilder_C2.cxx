@@ -616,8 +616,7 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
                                                std::max(parCP1, parCP2),
                                                tol2d);
           }
-          NCollection_Array1<double> kk(1, PCurveOnPiv->NbKnots());
-          PCurveOnPiv->Knots(kk);
+          NCollection_Array1<double> kk(PCurveOnPiv->Knots());
           BSplCLib::Reparametrize(0., 1., kk);
           PCurveOnPiv->SetKnots(kk);
           if (pcfalenvers)

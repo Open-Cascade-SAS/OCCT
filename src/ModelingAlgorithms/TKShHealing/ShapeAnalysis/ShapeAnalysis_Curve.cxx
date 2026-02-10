@@ -1007,21 +1007,16 @@ static void AppendControlPoles(NCollection_Sequence<gp_Pnt>&  seq,
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    // DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
-    occ::handle<Geom_BSplineCurve> BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
-    NCollection_Array1<gp_Pnt>     Poles(1, BSpline->NbPoles());
-    BSpline->Poles(Poles);
-    for (int i = 1; i <= BSpline->NbPoles(); i++)
+    occ::handle<Geom_BSplineCurve>    BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
+    const NCollection_Array1<gp_Pnt>& Poles   = BSpline->Poles();
+    for (int i = 1; i <= Poles.Length(); i++)
       seq.Append(Poles(i));
   }
   else if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
-    // DeclareAndCast(Geom_BezierCurve, Bezier, curve);
-    // occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
-    occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
-    NCollection_Array1<gp_Pnt>    Poles(1, Bezier->NbPoles());
-    Bezier->Poles(Poles);
-    for (int i = 1; i <= Bezier->NbPoles(); i++)
+    occ::handle<Geom_BezierCurve>     Bezier = occ::down_cast<Geom_BezierCurve>(curve);
+    const NCollection_Array1<gp_Pnt>& Poles  = Bezier->Poles();
+    for (int i = 1; i <= Poles.Length(); i++)
       seq.Append(Poles(i));
   }
 }
@@ -1151,20 +1146,14 @@ bool ShapeAnalysis_Curve::IsPlanar(const occ::handle<Geom_Curve>& curve,
 
   if (curve->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    // DeclareAndCast(Geom_BSplineCurve, BSpline, curve);
     occ::handle<Geom_BSplineCurve> BSpline = occ::down_cast<Geom_BSplineCurve>(curve);
-    NCollection_Array1<gp_Pnt>     Poles(1, BSpline->NbPoles());
-    BSpline->Poles(Poles);
-    return IsPlanar(Poles, Normal, precision);
+    return IsPlanar(BSpline->Poles(), Normal, precision);
   }
 
   if (curve->IsKind(STANDARD_TYPE(Geom_BezierCurve)))
   {
-    // DeclareAndCast(Geom_BezierCurve, Bezier, curve);
     occ::handle<Geom_BezierCurve> Bezier = occ::down_cast<Geom_BezierCurve>(curve);
-    NCollection_Array1<gp_Pnt>    Poles(1, Bezier->NbPoles());
-    Bezier->Poles(Poles);
-    return IsPlanar(Poles, Normal, precision);
+    return IsPlanar(Bezier->Poles(), Normal, precision);
   }
 
   if (curve->IsKind(STANDARD_TYPE(ShapeExtend_ComplexCurve)))

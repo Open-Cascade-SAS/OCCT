@@ -298,7 +298,7 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
       if (theCurve->IsRational())
       {
         aPpBC->myWeights =
-          StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(*theCurve->Weights());
+          StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theCurve->WeightsArray());
       }
       aPBC->myPersistent = aPpBC;
       aPC                = aPBC;
@@ -332,7 +332,7 @@ Handle(ShapePersistent_Geom2d::Curve) ShapePersistent_Geom2d_Curve::Translate(
       if (theCurve->IsRational())
       {
         aPpBSC->myWeights =
-          StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(*theCurve->Weights());
+          StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theCurve->WeightsArray());
       }
       aPpBSC->myKnots =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theCurve->Knots());

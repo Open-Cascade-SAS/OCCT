@@ -454,23 +454,13 @@ occ::handle<Geom_Surface> ShapeCustom_Surface::ConvertToPeriodic(const bool   su
     if (BSpl->UMultiplicity(1) == BSpl->UDegree() + 1
         && BSpl->UMultiplicity(BSpl->NbUKnots()) == BSpl->UDegree() + 1)
     {
-      int                        nbUPoles = BSpl->NbUPoles();
-      int                        nbVPoles = BSpl->NbVPoles();
-      NCollection_Array2<gp_Pnt> oldPoles(1, nbUPoles, 1, nbVPoles);
-      NCollection_Array2<double> oldWeights(1, nbUPoles, 1, nbVPoles);
-      int                        nbUKnots = BSpl->NbUKnots();
-      int                        nbVKnots = BSpl->NbVKnots();
-      NCollection_Array1<double> oldUKnots(1, nbUKnots);
-      NCollection_Array1<double> oldVKnots(1, nbVKnots);
-      NCollection_Array1<int>    oldUMults(1, nbUKnots);
-      NCollection_Array1<int>    oldVMults(1, nbVKnots);
-
-      BSpl->Poles(oldPoles);
-      BSpl->Weights(oldWeights);
-      BSpl->UKnots(oldUKnots);
-      BSpl->VKnots(oldVKnots);
-      BSpl->UMultiplicities(oldUMults);
-      BSpl->VMultiplicities(oldVMults);
+      const NCollection_Array2<gp_Pnt>& oldPoles   = BSpl->Poles();
+      const NCollection_Array2<double>& oldWeights = BSpl->WeightsArray();
+      int                               nbUKnots   = BSpl->NbUKnots();
+      const NCollection_Array1<double>& oldUKnots  = BSpl->UKnots();
+      const NCollection_Array1<double>& oldVKnots  = BSpl->VKnots();
+      const NCollection_Array1<int>&    oldUMults  = BSpl->UMultiplicities();
+      const NCollection_Array1<int>&    oldVMults  = BSpl->VMultiplicities();
 
       NCollection_Array1<double> newUKnots(1, nbUKnots + 2);
       NCollection_Array1<int>    newUMults(1, nbUKnots + 2);
@@ -515,23 +505,13 @@ occ::handle<Geom_Surface> ShapeCustom_Surface::ConvertToPeriodic(const bool   su
     if (BSpl->VMultiplicity(1) == BSpl->VDegree() + 1
         && BSpl->VMultiplicity(BSpl->NbVKnots()) == BSpl->VDegree() + 1)
     {
-      int                        nbUPoles = BSpl->NbUPoles();
-      int                        nbVPoles = BSpl->NbVPoles();
-      NCollection_Array2<gp_Pnt> oldPoles(1, nbUPoles, 1, nbVPoles);
-      NCollection_Array2<double> oldWeights(1, nbUPoles, 1, nbVPoles);
-      int                        nbUKnots = BSpl->NbUKnots();
-      int                        nbVKnots = BSpl->NbVKnots();
-      NCollection_Array1<double> oldUKnots(1, nbUKnots);
-      NCollection_Array1<double> oldVKnots(1, nbVKnots);
-      NCollection_Array1<int>    oldUMults(1, nbUKnots);
-      NCollection_Array1<int>    oldVMults(1, nbVKnots);
-
-      BSpl->Poles(oldPoles);
-      BSpl->Weights(oldWeights);
-      BSpl->UKnots(oldUKnots);
-      BSpl->VKnots(oldVKnots);
-      BSpl->UMultiplicities(oldUMults);
-      BSpl->VMultiplicities(oldVMults);
+      const NCollection_Array2<gp_Pnt>& oldPoles   = BSpl->Poles();
+      const NCollection_Array2<double>& oldWeights = BSpl->WeightsArray();
+      int                               nbVKnots   = BSpl->NbVKnots();
+      const NCollection_Array1<double>& oldUKnots  = BSpl->UKnots();
+      const NCollection_Array1<double>& oldVKnots  = BSpl->VKnots();
+      const NCollection_Array1<int>&    oldUMults  = BSpl->UMultiplicities();
+      const NCollection_Array1<int>&    oldVMults  = BSpl->VMultiplicities();
 
       NCollection_Array1<double> newVKnots(1, nbVKnots + 2);
       NCollection_Array1<int>    newVMults(1, nbVKnots + 2);

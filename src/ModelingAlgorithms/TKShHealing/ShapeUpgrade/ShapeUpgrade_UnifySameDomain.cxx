@@ -1956,8 +1956,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const NCollection_Sequence<TopoD
           new Geom2d_TrimmedCurve(ResPCurves(ii), ResFirsts(ii), ResLasts(ii));
         occ::handle<Geom2d_BSplineCurve> aBSplinePCurve =
           Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
-        NCollection_Array1<double> aKnots(1, aBSplinePCurve->NbKnots());
-        aBSplinePCurve->Knots(aKnots);
+        NCollection_Array1<double> aKnots(aBSplinePCurve->Knots());
         BSplCLib::Reparametrize(aFirst3d, aLast3d, aKnots);
         aBSplinePCurve->SetKnots(aKnots);
         ResPCurves(ii) = aBSplinePCurve;
@@ -2005,8 +2004,7 @@ void ShapeUpgrade_UnifySameDomain::UnionPCurves(const NCollection_Sequence<TopoD
             new Geom2d_TrimmedCurve(ResPCurves(ii), ResFirsts(ii), ResLasts(ii));
           occ::handle<Geom2d_BSplineCurve> aBSplinePCurve =
             Geom2dConvert::CurveToBSplineCurve(aTrPCurve);
-          NCollection_Array1<double> aKnots(1, aBSplinePCurve->NbKnots());
-          aBSplinePCurve->Knots(aKnots);
+          NCollection_Array1<double> aKnots(aBSplinePCurve->Knots());
           BSplCLib::Reparametrize(aFirst3d, aLast3d, aKnots);
           aBSplinePCurve->SetKnots(aKnots);
           ResPCurves(ii) = aBSplinePCurve;

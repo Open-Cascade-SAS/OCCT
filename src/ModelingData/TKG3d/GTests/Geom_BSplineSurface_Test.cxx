@@ -876,3 +876,59 @@ TEST_F(Geom_BSplineSurface_Test, CopyIndependence_Knots)
   EXPECT_EQ(aCopy->NbUKnots(), 2);
   EXPECT_EQ(myOriginalSurface->NbUKnots(), 3);
 }
+
+TEST_F(Geom_BSplineSurface_Test, WeightsArray_NonRational_ReturnsUnitWeights)
+{
+  ASSERT_FALSE(myOriginalSurface->IsURational());
+  ASSERT_FALSE(myOriginalSurface->IsVRational());
+
+  const NCollection_Array2<double>& aWeights = myOriginalSurface->WeightsArray();
+  EXPECT_EQ(aWeights.ColLength(), myOriginalSurface->NbUPoles());
+  EXPECT_EQ(aWeights.RowLength(), myOriginalSurface->NbVPoles());
+  EXPECT_FALSE(aWeights.IsDeletable());
+  for (int i = aWeights.LowerRow(); i <= aWeights.UpperRow(); ++i)
+  {
+    for (int j = aWeights.LowerCol(); j <= aWeights.UpperCol(); ++j)
+    {
+      EXPECT_DOUBLE_EQ(aWeights(i, j), 1.0);
+    }
+  }
+  EXPECT_EQ(&aWeights, &myOriginalSurface->WeightsArray());
+}
+
+TEST_F(Geom_BSplineSurface_Test, WeightsArray_Rational_ReturnsOwning)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  NCollection_Array2<double> aWeightsIn(1, 3, 1, 3);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles(i, j)     = gp_Pnt(i, j, 0);
+      aWeightsIn(i, j) = (i == 2 && j == 2) ? 2.0 : 1.0;
+    }
+  }
+
+  NCollection_Array1<double> aKnotsU(1, 2), aKnotsV(1, 2);
+  aKnotsU(1) = 0.0;
+  aKnotsU(2) = 1.0;
+  aKnotsV(1) = 0.0;
+  aKnotsV(2) = 1.0;
+
+  NCollection_Array1<int> aMultsU(1, 2), aMultsV(1, 2);
+  aMultsU(1) = 3;
+  aMultsU(2) = 3;
+  aMultsV(1) = 3;
+  aMultsV(2) = 3;
+
+  occ::handle<Geom_BSplineSurface> aRational =
+    new Geom_BSplineSurface(aPoles, aWeightsIn, aKnotsU, aKnotsV, aMultsU, aMultsV, 2, 2);
+
+  const NCollection_Array2<double>& aWeights = aRational->WeightsArray();
+  EXPECT_EQ(aWeights.ColLength(), 3);
+  EXPECT_EQ(aWeights.RowLength(), 3);
+  EXPECT_TRUE(aWeights.IsDeletable());
+  EXPECT_DOUBLE_EQ(aWeights(2, 2), 2.0);
+  EXPECT_DOUBLE_EQ(aWeights(1, 1), 1.0);
+  EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}

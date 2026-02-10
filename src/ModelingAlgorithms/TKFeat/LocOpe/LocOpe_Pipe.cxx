@@ -358,9 +358,7 @@ const NCollection_Sequence<occ::handle<Geom_Curve>>& LocOpe_Pipe::Curves(
       {
         C->Segment(p1, p2);
       }
-      int                        Nbkn = C->NbKnots();
-      NCollection_Array1<double> Tkn(1, Nbkn);
-      C->Knots(Tkn);
+      NCollection_Array1<double> Tkn(C->Knots());
       BSplCLib::Reparametrize(seq.Length(), seq.Length() + 1, Tkn);
       C->SetKnots(Tkn);
       seq.Append(C);
@@ -487,9 +485,7 @@ occ::handle<Geom_Curve> LocOpe_Pipe::BarycCurve()
     {
       C->Segment(p1, p2);
     }
-    int                        Nbkn = C->NbKnots();
-    NCollection_Array1<double> Tkn(1, Nbkn);
-    C->Knots(Tkn);
+    NCollection_Array1<double> Tkn(C->Knots());
     BSplCLib::Reparametrize(seq.Length(), seq.Length() + 1, Tkn);
     C->SetKnots(Tkn);
     seq.Append(C);

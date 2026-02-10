@@ -683,3 +683,45 @@ TEST_F(Geom_BezierSurface_Test, SetPoleColWithWeights)
   EXPECT_DOUBLE_EQ(aSurf->Weight(1, 2), 3.0);
   EXPECT_DOUBLE_EQ(aSurf->Weight(2, 2), 4.0);
 }
+
+TEST_F(Geom_BezierSurface_Test, WeightsArray_NonRational_ReturnsUnitWeights)
+{
+  ASSERT_FALSE(myOriginalSurface->IsURational());
+  ASSERT_FALSE(myOriginalSurface->IsVRational());
+
+  const NCollection_Array2<double>& aWeights = myOriginalSurface->WeightsArray();
+  EXPECT_EQ(aWeights.ColLength(), myOriginalSurface->NbUPoles());
+  EXPECT_EQ(aWeights.RowLength(), myOriginalSurface->NbVPoles());
+  EXPECT_FALSE(aWeights.IsDeletable());
+  for (int i = aWeights.LowerRow(); i <= aWeights.UpperRow(); ++i)
+  {
+    for (int j = aWeights.LowerCol(); j <= aWeights.UpperCol(); ++j)
+    {
+      EXPECT_DOUBLE_EQ(aWeights(i, j), 1.0);
+    }
+  }
+  EXPECT_EQ(&aWeights, &myOriginalSurface->WeightsArray());
+}
+
+TEST_F(Geom_BezierSurface_Test, WeightsArray_Rational_ReturnsOwning)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
+  NCollection_Array2<double> aWeightsIn(1, 2, 1, 2);
+  aPoles(1, 1)     = gp_Pnt(0, 0, 0);
+  aPoles(1, 2)     = gp_Pnt(1, 0, 0);
+  aPoles(2, 1)     = gp_Pnt(0, 1, 0);
+  aPoles(2, 2)     = gp_Pnt(1, 1, 0);
+  aWeightsIn(1, 1) = 1.0;
+  aWeightsIn(1, 2) = 2.0;
+  aWeightsIn(2, 1) = 1.0;
+  aWeightsIn(2, 2) = 1.0;
+
+  occ::handle<Geom_BezierSurface> aRational = new Geom_BezierSurface(aPoles, aWeightsIn);
+
+  const NCollection_Array2<double>& aWeights = aRational->WeightsArray();
+  EXPECT_EQ(aWeights.Size(), 4);
+  EXPECT_TRUE(aWeights.IsDeletable());
+  EXPECT_DOUBLE_EQ(aWeights(1, 2), 2.0);
+  EXPECT_DOUBLE_EQ(aWeights(1, 1), 1.0);
+  EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}

@@ -63,14 +63,14 @@ void GeomFill_SectionGenerator::GetShape(int& NbPoles,
 
 void GeomFill_SectionGenerator::Knots(NCollection_Array1<double>& TKnots) const
 {
-  (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Knots(TKnots);
+  TKnots = (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Knots();
 }
 
 //=================================================================================================
 
 void GeomFill_SectionGenerator::Mults(NCollection_Array1<int>& TMults) const
 {
-  (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Multiplicities(TMults);
+  TMults = (occ::down_cast<Geom_BSplineCurve>(mySequence(1)))->Multiplicities();
 }
 
 //=================================================================================================
@@ -97,8 +97,8 @@ void GeomFill_SectionGenerator::Section(const int                   P,
 {
   occ::handle<Geom_BSplineCurve> C = occ::down_cast<Geom_BSplineCurve>(mySequence(P));
 
-  C->Poles(Poles);
-  C->Weights(Weigths);
+  Poles   = C->Poles();
+  Weigths = C->WeightsArray();
 }
 
 //=================================================================================================

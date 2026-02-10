@@ -186,17 +186,11 @@ occ::handle<Geom_BSplineSurface> ShapeConstruct::ConvertSurfaceToBSpline(
     shiftF.SetTranslation(extr->Value(UF, 0), extr->Value(UF, VF));
     shiftL.SetTranslation(extr->Value(UF, 0), extr->Value(UF, VL));
 
-    int                        nbPoles = bspl->NbPoles();
-    NCollection_Array1<gp_Pnt> poles(1, nbPoles);
-    NCollection_Array1<double> weights(1, nbPoles);
-    int                        nbKnots = bspl->NbKnots();
-    NCollection_Array1<double> knots(1, nbKnots);
-    NCollection_Array1<int>    mults(1, nbKnots);
-
-    bspl->Poles(poles);
-    bspl->Knots(knots);
-    bspl->Multiplicities(mults);
-    bspl->Weights(weights);
+    int                               nbPoles = bspl->NbPoles();
+    const NCollection_Array1<gp_Pnt>& poles   = bspl->Poles();
+    const NCollection_Array1<double>& weights = bspl->WeightsArray();
+    const NCollection_Array1<double>& knots   = bspl->Knots();
+    const NCollection_Array1<int>&    mults   = bspl->Multiplicities();
 
     NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
     NCollection_Array2<double> resWeigth(1, nbPoles, 1, 2);

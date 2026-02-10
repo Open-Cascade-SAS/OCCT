@@ -8,7 +8,9 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_Box_Test.cxx
   Bnd_OBB_Test.cxx
   BSplCLib_Cache_Test.cxx
+  BSplCLib_Test.cxx
   BSplSLib_Cache_Test.cxx
+  BSplSLib_Test.cxx
   BVH_BinnedBuilder_Test.cxx
   BVH_Box_Test.cxx
   BVH_BuildQueue_Test.cxx

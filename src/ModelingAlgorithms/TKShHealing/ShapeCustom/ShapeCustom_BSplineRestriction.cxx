@@ -436,18 +436,12 @@ static void ConvertExtrusion(const occ::handle<Geom_Curve>& C, /*const gp_Dir& d
                              const double                   VL,
                              occ::handle<Geom_Surface>&     bspline)
 {
-  occ::handle<Geom_BSplineCurve> bspl    = occ::down_cast<Geom_BSplineCurve>(C);
-  int                            nbPoles = bspl->NbPoles();
-  NCollection_Array1<gp_Pnt>     poles(1, nbPoles);
-  NCollection_Array1<double>     weights(1, nbPoles);
-  int                            nbKnots = bspl->NbKnots();
-  NCollection_Array1<double>     knots(1, nbKnots);
-  NCollection_Array1<int>        mults(1, nbKnots);
-
-  bspl->Poles(poles);
-  bspl->Knots(knots);
-  bspl->Multiplicities(mults);
-  bspl->Weights(weights);
+  occ::handle<Geom_BSplineCurve>    bspl    = occ::down_cast<Geom_BSplineCurve>(C);
+  int                               nbPoles = bspl->NbPoles();
+  const NCollection_Array1<gp_Pnt>& poles   = bspl->Poles();
+  const NCollection_Array1<double>& weights = bspl->WeightsArray();
+  const NCollection_Array1<double>& knots   = bspl->Knots();
+  const NCollection_Array1<int>&    mults   = bspl->Multiplicities();
 
   NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
   NCollection_Array2<double> resWeigth(1, nbPoles, 1, 2);
@@ -639,16 +633,12 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
   }
   if (aSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)) && myParameters->ConvertBezierSurf())
   {
-    occ::handle<Geom_BezierSurface> bezier   = occ::down_cast<Geom_BezierSurface>(aSurf);
-    int                             nbUPoles = bezier->NbUPoles();
-    int                             nbVPoles = bezier->NbVPoles();
-    int                             uDegree  = bezier->UDegree();
-    int                             vDegree  = bezier->VDegree();
-    NCollection_Array2<gp_Pnt>      aPoles(1, nbUPoles, 1, nbVPoles);
-    NCollection_Array2<double>      aWeights(1, nbUPoles, 1, nbVPoles);
-    bezier->Poles(aPoles);
-    bezier->Weights(aWeights);
-    NCollection_Array1<double> uKnots(1, 2), vKnots(1, 2);
+    occ::handle<Geom_BezierSurface>   bezier   = occ::down_cast<Geom_BezierSurface>(aSurf);
+    int                               uDegree  = bezier->UDegree();
+    int                               vDegree  = bezier->VDegree();
+    const NCollection_Array2<gp_Pnt>& aPoles   = bezier->Poles();
+    const NCollection_Array2<double>& aWeights = bezier->WeightsArray();
+    NCollection_Array1<double>        uKnots(1, 2), vKnots(1, 2);
     uKnots(1) = 0;
     uKnots(2) = 1;
     vKnots(1) = 0;
@@ -805,19 +795,15 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
             mySurfaceError = std::max(mySurfaceError, anApprox.MaxError());
             if (std::abs(ShiftU) > Precision::PConfusion())
             {
-              int                        nb = Bsc->NbUKnots();
-              NCollection_Array1<double> uknots(1, nb);
-              Bsc->UKnots(uknots);
-              for (int j = 1; j <= nb; j++)
+              NCollection_Array1<double> uknots(Bsc->UKnots());
+              for (int j = 1; j <= uknots.Length(); j++)
                 uknots(j) += ShiftU;
               Bsc->SetUKnots(uknots);
             }
             if (std::abs(ShiftV) > Precision::PConfusion())
             {
-              int                        nb = Bsc->NbVKnots();
-              NCollection_Array1<double> vknots(1, nb);
-              Bsc->VKnots(vknots);
-              for (int j = 1; j <= nb; j++)
+              NCollection_Array1<double> vknots(Bsc->VKnots());
+              for (int j = 1; j <= vknots.Length(); j++)
                 vknots(j) += ShiftV;
               Bsc->SetVKnots(vknots);
             }
@@ -1043,10 +1029,8 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve(const occ::handle<Geom_Curve>&
     double Shift = First - aBSpline->FirstParameter();
     if (std::abs(Shift) > Precision::PConfusion())
     {
-      int                        nbKnots = aBSpline->NbKnots();
-      NCollection_Array1<double> newKnots(1, nbKnots);
-      aBSpline->Knots(newKnots);
-      for (int i = 1; i <= nbKnots; i++)
+      NCollection_Array1<double> newKnots(aBSpline->Knots());
+      for (int i = 1; i <= newKnots.Length(); i++)
         newKnots(i) += Shift;
       aBSpline->SetKnots(newKnots);
     }
@@ -1417,10 +1401,8 @@ bool ShapeCustom_BSplineRestriction::ConvertCurve2d(const occ::handle<Geom2d_Cur
     double Shift = First - aBSpline2d->FirstParameter();
     if (std::abs(Shift) > Precision::PConfusion())
     {
-      int                        nbKnots = aBSpline2d->NbKnots();
-      NCollection_Array1<double> newKnots(1, nbKnots);
-      aBSpline2d->Knots(newKnots);
-      for (int i = 1; i <= nbKnots; i++)
+      NCollection_Array1<double> newKnots(aBSpline2d->Knots());
+      for (int i = 1; i <= newKnots.Length(); i++)
         newKnots(i) += Shift;
       aBSpline2d->SetKnots(newKnots);
     }

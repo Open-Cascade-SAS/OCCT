@@ -97,11 +97,8 @@ TopoDS_Edge HLRBRep::MakeEdge(const HLRBRep_Curve& ec, const double U1, const do
       {
         theCurve->Segment(sta, end);
         NCollection_Array1<gp_Pnt2d> Poles(1, theCurve->NbPoles());
-        NCollection_Array1<double>   knots(1, theCurve->NbKnots());
-        NCollection_Array1<int>      mults(1, theCurve->NbKnots());
-        //-- ec.KnotsAndMultiplicities(knots,mults);
-        theCurve->Knots(knots);
-        theCurve->Multiplicities(mults);
+        NCollection_Array1<double>   knots(theCurve->Knots());
+        NCollection_Array1<int>      mults(theCurve->Multiplicities());
         if (theCurve->IsRational())
         {
           NCollection_Array1<double> Weights(1, theCurve->NbPoles());

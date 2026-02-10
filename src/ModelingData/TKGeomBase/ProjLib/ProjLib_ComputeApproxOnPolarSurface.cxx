@@ -612,18 +612,12 @@ static occ::handle<Geom2d_BSplineCurve> Concat(const occ::handle<Geom2d_BSplineC
   nk  = nk1 + nk2 - 1;
   np  = np1 + np2 - 1;
 
-  NCollection_Array1<double> K1(1, nk1);
-  C1->Knots(K1);
-  NCollection_Array1<int> M1(1, nk1);
-  C1->Multiplicities(M1);
-  NCollection_Array1<gp_Pnt2d> P1(1, np1);
-  C1->Poles(P1);
-  NCollection_Array1<double> K2(1, nk2);
-  C2->Knots(K2);
-  NCollection_Array1<int> M2(1, nk2);
-  C2->Multiplicities(M2);
-  NCollection_Array1<gp_Pnt2d> P2(1, np2);
-  C2->Poles(P2);
+  const NCollection_Array1<double>&   K1 = C1->Knots();
+  const NCollection_Array1<int>&      M1 = C1->Multiplicities();
+  const NCollection_Array1<gp_Pnt2d>& P1 = C1->Poles();
+  const NCollection_Array1<double>&   K2 = C2->Knots();
+  const NCollection_Array1<int>&      M2 = C2->Multiplicities();
+  const NCollection_Array1<gp_Pnt2d>& P2 = C2->Poles();
 
   // Compute the new BSplineCurve
   NCollection_Array1<double>   K(1, nk);
@@ -1685,20 +1679,20 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
         ElSLib::Parameters(Plane, BSC->Pole(i), S, T);
         Poles2d(i).SetCoord(S, T);
       }
-      NCollection_Array1<double> Knots(1, BSC->NbKnots());
-      BSC->Knots(Knots);
-      NCollection_Array1<int> Mults(1, BSC->NbKnots());
-      BSC->Multiplicities(Mults);
+      const NCollection_Array1<double>& Knots = BSC->Knots();
+      const NCollection_Array1<int>&    Mults = BSC->Multiplicities();
       if (BSC->IsRational())
       {
-        NCollection_Array1<double> Weights(1, BSC->NbPoles());
-        BSC->Weights(Weights);
-        return new Geom2d_BSplineCurve(Poles2d,
-                                       Weights,
-                                       Knots,
-                                       Mults,
-                                       BSC->Degree(),
-                                       BSC->IsPeriodic());
+        const NCollection_Array1<double>* pWeights = BSC->Weights();
+        if (pWeights)
+        {
+          return new Geom2d_BSplineCurve(Poles2d,
+                                         *pWeights,
+                                         Knots,
+                                         Mults,
+                                         BSC->Degree(),
+                                         BSC->IsPeriodic());
+        }
       }
       return new Geom2d_BSplineCurve(Poles2d, Knots, Mults, BSC->Degree(), BSC->IsPeriodic());
     }
@@ -1719,14 +1713,16 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
       Mults.Init(BC->NbPoles());
       if (BC->IsRational())
       {
-        NCollection_Array1<double> Weights(1, BC->NbPoles());
-        BC->Weights(Weights);
-        return new Geom2d_BSplineCurve(Poles2d,
-                                       Weights,
-                                       Knots,
-                                       Mults,
-                                       BC->Degree(),
-                                       BC->IsPeriodic());
+        const NCollection_Array1<double>* pWeights = BC->Weights();
+        if (pWeights)
+        {
+          return new Geom2d_BSplineCurve(Poles2d,
+                                         *pWeights,
+                                         Knots,
+                                         Mults,
+                                         BC->Degree(),
+                                         BC->IsPeriodic());
+        }
       }
       return new Geom2d_BSplineCurve(Poles2d, Knots, Mults, BC->Degree(), BC->IsPeriodic());
     }
@@ -1778,16 +1774,12 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
           }
           if (myProjIsDone)
           {
-            NCollection_Array1<double> Knots(1, BSC->NbKnots());
-            BSC->Knots(Knots);
-            NCollection_Array1<int> Mults(1, BSC->NbKnots());
-            BSC->Multiplicities(Mults);
+            const NCollection_Array1<double>& Knots = BSC->Knots();
+            const NCollection_Array1<int>&    Mults = BSC->Multiplicities();
             if (BSC->IsRational())
             {
-              NCollection_Array1<double> Weights(1, BSC->NbPoles());
-              BSC->Weights(Weights);
               return new Geom2d_BSplineCurve(Poles2d,
-                                             Weights,
+                                             BSC->WeightsArray(),
                                              Knots,
                                              Mults,
                                              BSC->Degree(),
@@ -1836,10 +1828,8 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
             Mults.Init(BC->NbPoles());
             if (BC->IsRational())
             {
-              NCollection_Array1<double> Weights(1, BC->NbPoles());
-              BC->Weights(Weights);
               return new Geom2d_BSplineCurve(Poles2d,
-                                             Weights,
+                                             BC->WeightsArray(),
                                              Knots,
                                              Mults,
                                              BC->Degree(),
@@ -1900,16 +1890,12 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
           }
           if (myProjIsDone)
           {
-            NCollection_Array1<double> Knots(1, BSC->NbKnots());
-            BSC->Knots(Knots);
-            NCollection_Array1<int> Mults(1, BSC->NbKnots());
-            BSC->Multiplicities(Mults);
+            const NCollection_Array1<double>& Knots = BSC->Knots();
+            const NCollection_Array1<int>&    Mults = BSC->Multiplicities();
             if (BSC->IsRational())
             {
-              NCollection_Array1<double> Weights(1, BSC->NbPoles());
-              BSC->Weights(Weights);
               return new Geom2d_BSplineCurve(Poles2d,
-                                             Weights,
+                                             BSC->WeightsArray(),
                                              Knots,
                                              Mults,
                                              BSC->Degree(),
@@ -1958,10 +1944,8 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
             Mults.Init(BC->NbPoles());
             if (BC->IsRational())
             {
-              NCollection_Array1<double> Weights(1, BC->NbPoles());
-              BC->Weights(Weights);
               return new Geom2d_BSplineCurve(Poles2d,
-                                             Weights,
+                                             BC->WeightsArray(),
                                              Knots,
                                              Mults,
                                              BC->Degree(),
