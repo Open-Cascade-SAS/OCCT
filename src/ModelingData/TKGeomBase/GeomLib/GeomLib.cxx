@@ -600,9 +600,9 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
       Poles3d(i) = ElCLib::To3d(Position, Poles2d(i));
     }
     occ::handle<Geom_BezierCurve> CBez3d;
-    if (const NCollection_Array1<double>* pWeights = CBez2d->Weights())
+    if (CBez2d->IsRational())
     {
-      CBez3d = new Geom_BezierCurve(Poles3d, *pWeights);
+      CBez3d = new Geom_BezierCurve(Poles3d, CBez2d->WeightsArray());
     }
     else
     {
@@ -625,10 +625,10 @@ occ::handle<Geom_Curve> GeomLib::To3d(const gp_Ax2&                    Position,
     const NCollection_Array1<double>& TheKnots = CBSpl2d->Knots();
     const NCollection_Array1<int>&    TheMults = CBSpl2d->Multiplicities();
     occ::handle<Geom_BSplineCurve>    CBSpl3d;
-    if (const NCollection_Array1<double>* pWeights = CBSpl2d->Weights())
+    if (CBSpl2d->IsRational())
     {
       CBSpl3d =
-        new Geom_BSplineCurve(Poles3d, *pWeights, TheKnots, TheMults, TheDegree, IsPeriodic);
+        new Geom_BSplineCurve(Poles3d, CBSpl2d->WeightsArray(), TheKnots, TheMults, TheDegree, IsPeriodic);
     }
     else
     {

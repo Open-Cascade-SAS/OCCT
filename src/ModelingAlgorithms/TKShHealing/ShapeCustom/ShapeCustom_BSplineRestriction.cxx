@@ -439,12 +439,8 @@ static void ConvertExtrusion(const occ::handle<Geom_Curve>& C, /*const gp_Dir& d
   occ::handle<Geom_BSplineCurve>    bspl    = occ::down_cast<Geom_BSplineCurve>(C);
   int                               nbPoles = bspl->NbPoles();
   const NCollection_Array1<gp_Pnt>& poles   = bspl->Poles();
-  NCollection_Array1<double>        weights(1, nbPoles);
-  if (bspl->IsRational())
-    weights = *bspl->Weights();
-  else
-    weights.Init(1.);
-  const NCollection_Array1<double>& knots = bspl->Knots();
+  const NCollection_Array1<double>& weights = bspl->WeightsArray();
+  const NCollection_Array1<double>& knots   = bspl->Knots();
   const NCollection_Array1<int>&    mults = bspl->Multiplicities();
 
   NCollection_Array2<gp_Pnt> resPoles(1, nbPoles, 1, 2);
@@ -641,11 +637,7 @@ bool ShapeCustom_BSplineRestriction::ConvertSurface(const occ::handle<Geom_Surfa
     int                               uDegree = bezier->UDegree();
     int                               vDegree = bezier->VDegree();
     const NCollection_Array2<gp_Pnt>& aPoles  = bezier->Poles();
-    NCollection_Array2<double>        aWeights(1, bezier->NbUPoles(), 1, bezier->NbVPoles());
-    if (const NCollection_Array2<double>* aW = bezier->Weights())
-      aWeights = *aW;
-    else
-      aWeights.Init(1.);
+    const NCollection_Array2<double>& aWeights = bezier->WeightsArray();
     NCollection_Array1<double> uKnots(1, 2), vKnots(1, 2);
     uKnots(1) = 0;
     uKnots(2) = 1;

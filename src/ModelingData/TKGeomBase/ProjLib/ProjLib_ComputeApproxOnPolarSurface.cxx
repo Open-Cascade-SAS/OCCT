@@ -1778,16 +1778,12 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
             const NCollection_Array1<int>&    Mults = BSC->Multiplicities();
             if (BSC->IsRational())
             {
-              const NCollection_Array1<double>* pWeights = BSC->Weights();
-              if (pWeights)
-              {
-                return new Geom2d_BSplineCurve(Poles2d,
-                                               *pWeights,
-                                               Knots,
-                                               Mults,
-                                               BSC->Degree(),
-                                               BSC->IsPeriodic());
-              }
+              return new Geom2d_BSplineCurve(Poles2d,
+                                             BSC->WeightsArray(),
+                                             Knots,
+                                             Mults,
+                                             BSC->Degree(),
+                                             BSC->IsPeriodic());
             }
             return new Geom2d_BSplineCurve(Poles2d, Knots, Mults, BSC->Degree(), BSC->IsPeriodic());
           }
@@ -1832,16 +1828,12 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
             Mults.Init(BC->NbPoles());
             if (BC->IsRational())
             {
-              const NCollection_Array1<double>* pWeights = BC->Weights();
-              if (pWeights)
-              {
-                return new Geom2d_BSplineCurve(Poles2d,
-                                               *pWeights,
-                                               Knots,
-                                               Mults,
-                                               BC->Degree(),
-                                               BC->IsPeriodic());
-              }
+              return new Geom2d_BSplineCurve(Poles2d,
+                                             BC->WeightsArray(),
+                                             Knots,
+                                             Mults,
+                                             BC->Degree(),
+                                             BC->IsPeriodic());
             }
             return new Geom2d_BSplineCurve(Poles2d, Knots, Mults, BC->Degree(), BC->IsPeriodic());
           }
@@ -1902,16 +1894,12 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
             const NCollection_Array1<int>&    Mults = BSC->Multiplicities();
             if (BSC->IsRational())
             {
-              const NCollection_Array1<double>* pWeights = BSC->Weights();
-              if (pWeights)
-              {
-                return new Geom2d_BSplineCurve(Poles2d,
-                                               *pWeights,
-                                               Knots,
-                                               Mults,
-                                               BSC->Degree(),
-                                               BSC->IsPeriodic());
-              }
+              return new Geom2d_BSplineCurve(Poles2d,
+                                             BSC->WeightsArray(),
+                                             Knots,
+                                             Mults,
+                                             BSC->Degree(),
+                                             BSC->IsPeriodic());
             }
             return new Geom2d_BSplineCurve(Poles2d, Knots, Mults, BSC->Degree(), BSC->IsPeriodic());
           }
@@ -1956,16 +1944,12 @@ occ::handle<Geom2d_BSplineCurve> ProjLib_ComputeApproxOnPolarSurface::ProjectUsi
             Mults.Init(BC->NbPoles());
             if (BC->IsRational())
             {
-              const NCollection_Array1<double>* pWeights = BC->Weights();
-              if (pWeights)
-              {
-                return new Geom2d_BSplineCurve(Poles2d,
-                                               *pWeights,
-                                               Knots,
-                                               Mults,
-                                               BC->Degree(),
-                                               BC->IsPeriodic());
-              }
+              return new Geom2d_BSplineCurve(Poles2d,
+                                             BC->WeightsArray(),
+                                             Knots,
+                                             Mults,
+                                             BC->Degree(),
+                                             BC->IsPeriodic());
             }
             return new Geom2d_BSplineCurve(Poles2d, Knots, Mults, BC->Degree(), BC->IsPeriodic());
           }

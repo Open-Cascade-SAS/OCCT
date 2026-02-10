@@ -1453,7 +1453,7 @@ occ::handle<Geom_BezierCurve> Adaptor3d_CurveOnSurface::Bezier() const
 
   if (Bez2d->IsRational())
   {
-    const NCollection_Array1<double>& Weights = *Bez2d->Weights();
+    const NCollection_Array1<double>& Weights = Bez2d->WeightsArray();
     Bez                                       = new Geom_BezierCurve(Poles, Weights);
   }
   else
@@ -1488,7 +1488,7 @@ occ::handle<Geom_BSplineCurve> Adaptor3d_CurveOnSurface::BSpline() const
 
   if (Bsp2d->IsRational())
   {
-    const NCollection_Array1<double>& Weights = *Bsp2d->Weights();
+    const NCollection_Array1<double>& Weights = Bsp2d->WeightsArray();
     Bsp = new Geom_BSplineCurve(Poles, Weights, Knots, Mults, Bsp2d->Degree(), Bsp2d->IsPeriodic());
   }
   else

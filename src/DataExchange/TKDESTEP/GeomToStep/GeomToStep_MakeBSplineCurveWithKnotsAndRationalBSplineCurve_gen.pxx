@@ -74,20 +74,11 @@ else if (Distribution == GeomAbs_QuasiUniform)
 else
   KnotSpec = StepGeom_ktPiecewiseBezierKnots;
 
-const NCollection_Array1<double>* aWPtr = BS->Weights();
-ListWeights                             = new NCollection_HArray1<double>(1, N);
-if (aWPtr != nullptr)
+const NCollection_Array1<double>& W = BS->WeightsArray();
+ListWeights                         = new NCollection_HArray1<double>(1, N);
+for (i = W.Lower(); i <= W.Upper(); i++)
 {
-  const NCollection_Array1<double>& W = *aWPtr;
-  for (i = W.Lower(); i <= W.Upper(); i++)
-  {
-    rtampon = W.Value(i);
-    ListWeights->SetValue(i, rtampon);
-  }
-}
-else
-{
-  ListWeights->Init(1.0);
+  ListWeights->SetValue(i, W.Value(i));
 }
 
 BSWK = new StepGeom_BSplineCurveWithKnotsAndRationalBSplineCurve;

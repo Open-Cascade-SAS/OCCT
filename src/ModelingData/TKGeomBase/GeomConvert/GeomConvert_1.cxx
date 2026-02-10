@@ -669,11 +669,10 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       VMults(1)                                     = VDegree + 1;
       VMults(2)                                     = VDegree + 1;
       const NCollection_Array2<gp_Pnt>& aPoles      = SBez->Poles();
-      const NCollection_Array2<double>* aWeightsPtr = SBez->Weights();
-      if (aWeightsPtr != nullptr)
+      if (SBez->IsURational() || SBez->IsVRational())
       {
         TheSurface = new Geom_BSplineSurface(aPoles,
-                                             *aWeightsPtr,
+                                             SBez->WeightsArray(),
                                              UKnots,
                                              VKnots,
                                              UMults,
@@ -851,11 +850,10 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       VMults(1)                                     = VDegree + 1;
       VMults(2)                                     = VDegree + 1;
       const NCollection_Array2<gp_Pnt>& aPoles      = SBez->Poles();
-      const NCollection_Array2<double>* aWeightsPtr = SBez->Weights();
-      if (aWeightsPtr != nullptr)
+      if (SBez->IsURational() || SBez->IsVRational())
       {
         TheSurface = new Geom_BSplineSurface(aPoles,
-                                             *aWeightsPtr,
+                                             SBez->WeightsArray(),
                                              UKnots,
                                              VKnots,
                                              UMults,

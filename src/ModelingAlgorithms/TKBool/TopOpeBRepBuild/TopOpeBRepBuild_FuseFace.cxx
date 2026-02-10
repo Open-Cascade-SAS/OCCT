@@ -1332,8 +1332,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
     if (B1->IsRational())
     {
-      const NCollection_Array1<double>& W1 = *B1->Weights();
-      const NCollection_Array1<double>& W2 = *B2->Weights();
+      const NCollection_Array1<double>& W1 = B1->WeightsArray();
+      const NCollection_Array1<double>& W2 = B2->WeightsArray();
 
       for (int w = 1; w <= nbpoles; w++)
       {
@@ -1384,8 +1384,8 @@ bool SameSupport(const TopoDS_Edge& E1, const TopoDS_Edge& E2)
 
     if (B1->IsRational())
     {
-      const NCollection_Array1<double>& W1 = *B1->Weights();
-      const NCollection_Array1<double>& W2 = *B2->Weights();
+      const NCollection_Array1<double>& W1 = B1->WeightsArray();
+      const NCollection_Array1<double>& W2 = B2->WeightsArray();
 
       for (int w = 1; w <= nbpoles; w++)
       {

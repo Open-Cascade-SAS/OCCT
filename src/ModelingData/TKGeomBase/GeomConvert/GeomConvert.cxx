@@ -294,10 +294,9 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
       Knots(2)                                      = 1.0;
       Mults(1)                                      = Degree + 1;
       Mults(2)                                      = Degree + 1;
-      const NCollection_Array1<double>* aWeightsPtr = CBez->Weights();
-      if (aWeightsPtr != nullptr)
+      if (CBez->IsRational())
       {
-        TheCurve = new Geom_BSplineCurve(Poles, *aWeightsPtr, Knots, Mults, Degree);
+        TheCurve = new Geom_BSplineCurve(Poles, CBez->WeightsArray(), Knots, Mults, Degree);
       }
       else
       {
@@ -397,10 +396,9 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
       Knots(2)                                      = 1.0;
       Mults(1)                                      = Degree + 1;
       Mults(2)                                      = Degree + 1;
-      const NCollection_Array1<double>* aWeightsPtr = CBez->Weights();
-      if (aWeightsPtr != nullptr)
+      if (CBez->IsRational())
       {
-        TheCurve = new Geom_BSplineCurve(Poles, *aWeightsPtr, Knots, Mults, Degree);
+        TheCurve = new Geom_BSplineCurve(Poles, CBez->WeightsArray(), Knots, Mults, Degree);
       }
       else
       {
@@ -481,7 +479,7 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
   const NCollection_Array1<double>&        BSKnots = BS->Knots();
   const NCollection_Array1<int>&           BSMults = BS->Multiplicities();
   NCollection_Array1<gp_Pnt>               BSPoles(BS->Poles());
-  const NCollection_Array1<double>&        BSWeights   = *BS->Weights();
+  const NCollection_Array1<double>&        BSWeights   = BS->WeightsArray();
   const NCollection_Array1<double>&        BSFlatKnots = BS->KnotSequence();
   occ::handle<Geom_BSplineCurve>           res;
   occ::handle<NCollection_HArray1<double>> resKnots;
@@ -588,7 +586,7 @@ static bool NeedToBeTreated(const occ::handle<Geom_BSplineCurve>& BS)
 {
   if (BS->IsRational())
   {
-    const NCollection_Array1<double>& tabWeights = *BS->Weights();
+    const NCollection_Array1<double>& tabWeights = BS->WeightsArray();
     return (BSplCLib::IsRational(tabWeights, 1, BS->NbPoles()))
            && ((BS->Weight(1) < (1 - Precision::Confusion()))
                || (BS->Weight(1) > (1 + Precision::Confusion()))
@@ -866,15 +864,7 @@ void GeomConvert::ConcatG1(
         BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
         NCollection_Array1<gp_Pnt> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
         int                        aStatus;
-        const NCollection_Array1<double>* aCurve1WeightsPtr = Curve1->Weights();
-        NCollection_Array1<double>        aCurve1UnitWeights;
-        if (aCurve1WeightsPtr == nullptr)
-        {
-          aCurve1UnitWeights.Resize(1, Curve1->NbPoles(), false);
-          aCurve1UnitWeights.Init(1.0);
-          aCurve1WeightsPtr = &aCurve1UnitWeights;
-        }
-        const NCollection_Array1<double>& Curve1Weights = *aCurve1WeightsPtr;
+        const NCollection_Array1<double>& Curve1Weights = Curve1->WeightsArray();
         for (ii = 1; ii <= Curve1->NbPoles(); ii++)
           for (jj = 1; jj <= 3; jj++)
             Curve1Poles(ii).SetCoord(jj, Curve1Poles(ii).Coord(jj) * Curve1Weights(ii));
@@ -1119,15 +1109,7 @@ void GeomConvert::ConcatC1(
           BSplCLib::KnotSequence(KnotC1, KnotC1Mults, FlatKnots);
           NCollection_Array1<gp_Pnt> NewPoles(1, FlatKnots.Length() - (2 * Curve1->Degree() + 1));
           int                        aStatus;
-          const NCollection_Array1<double>* aCurve1WeightsPtr = Curve1->Weights();
-          NCollection_Array1<double>        aCurve1UnitWeights;
-          if (aCurve1WeightsPtr == nullptr)
-          {
-            aCurve1UnitWeights.Resize(1, Curve1->NbPoles(), false);
-            aCurve1UnitWeights.Init(1.0);
-            aCurve1WeightsPtr = &aCurve1UnitWeights;
-          }
-          const NCollection_Array1<double>& Curve1Weights = *aCurve1WeightsPtr;
+          const NCollection_Array1<double>& Curve1Weights = Curve1->WeightsArray();
           for (ii = 1; ii <= Curve1->NbPoles(); ii++)
             for (jj = 1; jj <= 3; jj++)
               Curve1Poles(ii).SetCoord(jj, Curve1Poles(ii).Coord(jj) * Curve1Weights(ii));

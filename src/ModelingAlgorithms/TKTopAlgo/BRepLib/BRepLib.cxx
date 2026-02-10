@@ -1348,7 +1348,7 @@ TopoDS_Edge BRepLib::SameParameter(const TopoDS_Edge& theEdge,
                 || std::abs(OriginPoint.Y() - NewOriginPoint.Y()) > Precision::PConfusion())
             {
 
-              const NCollection_Array1<double>& Knotbs2d = bs2d->Knots();
+              NCollection_Array1<double> Knotbs2d(bs2d->Knots());
 
               for (int Index = 1; Index <= bs2d->NbKnots(); Index++)
               {

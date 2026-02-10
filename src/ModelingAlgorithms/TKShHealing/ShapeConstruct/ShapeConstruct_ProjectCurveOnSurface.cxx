@@ -2091,11 +2091,7 @@ occ::handle<Geom2d_Curve> ShapeConstruct_ProjectCurveOnSurface::approximatePCurv
       poles2d(i).SetCoord(poles3d(i).X(), poles3d(i).Y());
     }
 
-    NCollection_Array1<double> weights(1, NbPoles);
-    if (crv3d->IsRational())
-      weights = *crv3d->Weights();
-    else
-      weights.Init(1.);
+    const NCollection_Array1<double>& weights = crv3d->WeightsArray();
     const NCollection_Array1<double>& knots          = crv3d->Knots();
     const NCollection_Array1<int>&    multiplicities = crv3d->Multiplicities();
 

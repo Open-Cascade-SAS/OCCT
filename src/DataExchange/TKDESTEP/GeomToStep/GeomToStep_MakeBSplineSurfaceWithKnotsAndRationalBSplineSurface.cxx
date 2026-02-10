@@ -131,23 +131,14 @@ GeomToStep_MakeBSplineSurfaceWithKnotsAndRationalBSplineSurface::
   else
     KnotSpec = StepGeom_ktUnspecified;
 
-  const NCollection_Array2<double>* aWPtr = BS->Weights();
-  aWeightsData                            = new NCollection_HArray2<double>(1, NU, 1, NV);
-  if (aWPtr != nullptr)
+  const NCollection_Array2<double>& W = BS->WeightsArray();
+  aWeightsData                        = new NCollection_HArray2<double>(1, NU, 1, NV);
+  for (i = W.LowerRow(); i <= W.UpperRow(); i++)
   {
-    const NCollection_Array2<double>& W = *aWPtr;
-    for (i = W.LowerRow(); i <= W.UpperRow(); i++)
+    for (j = W.LowerCol(); j <= W.UpperCol(); j++)
     {
-      for (j = W.LowerCol(); j <= W.UpperCol(); j++)
-      {
-        rtampon = W.Value(i, j);
-        aWeightsData->SetValue(i, j, rtampon);
-      }
+      aWeightsData->SetValue(i, j, W.Value(i, j));
     }
-  }
-  else
-  {
-    aWeightsData->Init(1.0);
   }
 
   BSWK = new StepGeom_BSplineSurfaceWithKnotsAndRationalBSplineSurface;

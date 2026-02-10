@@ -318,9 +318,9 @@ occ::handle<Geom2d_BSplineCurve> Geom2dConvert::CurveToBSplineCurve(
       Mults(1)                   = Degree + 1;
       Mults(2)                   = Degree + 1;
       const Array1OfPnt2d& Poles = CBez->Poles();
-      if (const NCollection_Array1<double>* pW = CBez->Weights())
+      if (CBez->IsRational())
       {
-        TheCurve = new BSplineCurve(Poles, *pW, Knots, Mults, Degree);
+        TheCurve = new BSplineCurve(Poles, CBez->WeightsArray(), Knots, Mults, Degree);
       }
       else
       {
@@ -388,9 +388,9 @@ occ::handle<Geom2d_BSplineCurve> Geom2dConvert::CurveToBSplineCurve(
       Mults(1)                   = Degree + 1;
       Mults(2)                   = Degree + 1;
       const Array1OfPnt2d& Poles = CBez->Poles();
-      if (const NCollection_Array1<double>* pW = CBez->Weights())
+      if (CBez->IsRational())
       {
-        TheCurve = new BSplineCurve(Poles, *pW, Knots, Mults, Degree);
+        TheCurve = new BSplineCurve(Poles, CBez->WeightsArray(), Knots, Mults, Degree);
       }
       else
       {
@@ -475,7 +475,7 @@ static occ::handle<Geom2d_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d
   const NCollection_Array1<double>& BSKnots = BS->Knots();
   const NCollection_Array1<int>&    BSMults = BS->Multiplicities();
   NCollection_Array1<gp_Pnt2d>      BSPoles(BS->Poles());
-  const NCollection_Array1<double>& BSWeights   = *BS->Weights();
+  const NCollection_Array1<double>& BSWeights   = BS->WeightsArray();
   const NCollection_Array1<double>& BSFlatKnots = BS->KnotSequence();
   start_value                                   = BSKnots(1);
   end_value                                     = BSKnots(BS->NbKnots());
@@ -572,7 +572,7 @@ static bool NeedToBeTreated(const occ::handle<Geom2d_BSplineCurve>& BS)
 {
   if (BS->IsRational())
   {
-    const NCollection_Array1<double>& tabWeights = *BS->Weights();
+    const NCollection_Array1<double>& tabWeights = BS->WeightsArray();
     return (BSplCLib::IsRational(tabWeights, 1, BS->NbPoles()))
            && ((BS->Weight(1) < (1 - Precision::Confusion()))
                || (BS->Weight(1) > (1 + Precision::Confusion()))

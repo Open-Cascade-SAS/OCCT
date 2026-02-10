@@ -399,7 +399,7 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       if (theSurf->IsURational() || theSurf->IsVRational())
       {
         aPpB->myWeights =
-          StdLPersistent_HArray2::Translate<NCollection_HArray2<double>>(*theSurf->Weights());
+          StdLPersistent_HArray2::Translate<NCollection_HArray2<double>>(theSurf->WeightsArray());
       }
       aPB->myPersistent = aPpB;
       aPS               = aPB;
@@ -436,7 +436,7 @@ Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom_Surface::Translate(
       if (theSurf->IsURational() || theSurf->IsVRational())
       {
         aPpBS->myWeights =
-          StdLPersistent_HArray2::Translate<NCollection_HArray2<double>>(*theSurf->Weights());
+          StdLPersistent_HArray2::Translate<NCollection_HArray2<double>>(theSurf->WeightsArray());
       }
       aPpBS->myUKnots =
         StdLPersistent_HArray1::Translate<NCollection_HArray1<double>>(theSurf->UKnots());

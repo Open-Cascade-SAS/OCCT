@@ -357,12 +357,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
   }
 
   // Tableau Weights de [0,Index]
-  const NCollection_Array1<double>* aWPtr = mycurve->Weights();
-  NCollection_Array1<double>        W(1, Nbpoles);
-  if (aWPtr != nullptr)
-    W = *aWPtr;
-  else
-    W.Init(1.0);
+  const NCollection_Array1<double>& W = mycurve->WeightsArray();
   itampon                                          = 0;
   occ::handle<NCollection_HArray1<double>> Weights = new NCollection_HArray1<double>(0, Index);
   for (Knotindex = W.Lower(); Knotindex <= W.Upper(); Knotindex++)
@@ -608,7 +603,7 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomCurve::TransferCurve(
     if (approx.HasResult())
       Bspline = approx.Curve();
     if (Bspline.IsNull())
-      GeomConvert::CurveToBSplineCurve(copystart, Convert_QuasiAngular);
+      Bspline = GeomConvert::CurveToBSplineCurve(copystart, Convert_QuasiAngular);
     NCollection_Array1<double> Knots(Bspline->Knots());
     BSplCLib::Reparametrize(Udeb, Udeb + 2 * M_PI, Knots);
     Bspline->SetKnots(Knots);

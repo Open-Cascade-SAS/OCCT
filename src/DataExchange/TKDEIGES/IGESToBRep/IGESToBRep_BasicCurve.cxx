@@ -1264,15 +1264,7 @@ occ::handle<Geom2d_Curve> IGESToBRep_BasicCurve::Transfer2dBSplineCurve(
 
   if (Bspline->IsRational())
   {
-    const NCollection_Array1<double>* aWPtr = Bspline->Weights();
-    if (aWPtr != nullptr)
-    {
-      BSplineC = new Geom2d_BSplineCurve(Pole, *aWPtr, Knot, Mult, Degree);
-    }
-    else
-    {
-      BSplineC = new Geom2d_BSplineCurve(Pole, Knot, Mult, Degree);
-    }
+    BSplineC = new Geom2d_BSplineCurve(Pole, Bspline->WeightsArray(), Knot, Mult, Degree);
   }
   else
     BSplineC = new Geom2d_BSplineCurve(Pole, Knot, Mult, Degree);

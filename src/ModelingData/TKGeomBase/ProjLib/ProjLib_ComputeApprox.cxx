@@ -1149,7 +1149,7 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     if (BS->IsRational())
     {
       myBSpline = new Geom2d_BSplineCurve(Poles,
-                                          *BS->Weights(),
+                                          BS->WeightsArray(),
                                           Knots,
                                           Mults,
                                           BS->Degree(),
@@ -1177,7 +1177,7 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
     }
     if (BezierCurvePtr->IsRational())
     {
-      myBezier = new Geom2d_BezierCurve(Poles, *BezierCurvePtr->Weights());
+      myBezier = new Geom2d_BezierCurve(Poles, BezierCurvePtr->WeightsArray());
     }
     else
     {
