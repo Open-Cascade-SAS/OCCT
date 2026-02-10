@@ -33,13 +33,7 @@ BRep_PolygonOnClosedTriangulation::BRep_PolygonOnClosedTriangulation(
     : BRep_PolygonOnTriangulation(P1, T, L),
       myPolygon2(P2)
 {
-}
-
-//=================================================================================================
-
-bool BRep_PolygonOnClosedTriangulation::IsPolygonOnClosedTriangulation() const
-{
-  return true;
+  myKind = BRep_CurveRepKind::PolygonOnClosedTriangulation;
 }
 
 //=================================================================================================

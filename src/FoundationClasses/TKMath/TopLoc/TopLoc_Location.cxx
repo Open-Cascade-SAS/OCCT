@@ -115,6 +115,8 @@ TopLoc_Location TopLoc_Location::Multiplied(const TopLoc_Location& Other) const
 
 TopLoc_Location TopLoc_Location::Divided(const TopLoc_Location& Other) const
 {
+  if (Other.IsIdentity())
+    return *this;
   return Multiplied(Other.Inverted());
 }
 
@@ -125,6 +127,10 @@ TopLoc_Location TopLoc_Location::Divided(const TopLoc_Location& Other) const
 
 TopLoc_Location TopLoc_Location::Predivided(const TopLoc_Location& Other) const
 {
+  if (Other.IsIdentity())
+    return *this;
+  if (IsIdentity())
+    return Other.Inverted();
   return Other.Inverted().Multiplied(*this);
 }
 

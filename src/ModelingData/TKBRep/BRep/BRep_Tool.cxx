@@ -1151,8 +1151,8 @@ GeomAbs_Shape BRep_Tool::Continuity(const TopoDS_Edge&               E,
   TopLoc_Location l2 = L2.Predivided(E.Location());
 
   // find the representation
-  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(
-    (*((occ::handle<BRep_TEdge>*)&E.TShape()))->ChangeCurves());
+  const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
+  NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
 
   while (itcr.More())
   {
@@ -1187,9 +1187,9 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge& E)
 
 GeomAbs_Shape BRep_Tool::MaxContinuity(const TopoDS_Edge& theEdge)
 {
-  GeomAbs_Shape aMaxCont = GeomAbs_C0;
-  for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator aReprIter(
-         (*((occ::handle<BRep_TEdge>*)&theEdge.TShape()))->ChangeCurves());
+  const BRep_TEdge* TE       = static_cast<const BRep_TEdge*>(theEdge.TShape().get());
+  GeomAbs_Shape     aMaxCont = GeomAbs_C0;
+  for (NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator aReprIter(TE->Curves());
        aReprIter.More();
        aReprIter.Next())
   {

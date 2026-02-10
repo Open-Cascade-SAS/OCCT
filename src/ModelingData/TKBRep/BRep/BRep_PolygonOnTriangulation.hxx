@@ -35,9 +35,6 @@ public:
                                               const occ::handle<Poly_Triangulation>&          T,
                                               const TopLoc_Location&                          L);
 
-  //! returns True.
-  Standard_EXPORT bool IsPolygonOnTriangulation() const override;
-
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
   Standard_EXPORT bool IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>& T,

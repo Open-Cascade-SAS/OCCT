@@ -45,9 +45,6 @@ public:
   //! Computes the point at parameter U.
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
 
-  //! Returns True.
-  Standard_EXPORT bool IsCurveOnSurface() const override;
-
   //! A curve in the parametric space of a surface.
   Standard_EXPORT bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
                                         const TopLoc_Location&           L) const override;

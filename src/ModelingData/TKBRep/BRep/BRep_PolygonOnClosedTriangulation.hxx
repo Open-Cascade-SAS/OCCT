@@ -38,9 +38,6 @@ public:
     const occ::handle<Poly_Triangulation>&          Tr,
     const TopLoc_Location&                          L);
 
-  //! Returns True.
-  Standard_EXPORT bool IsPolygonOnClosedTriangulation() const override;
-
   Standard_EXPORT void PolygonOnTriangulation2(
     const occ::handle<Poly_PolygonOnTriangulation>& P2) override;
 

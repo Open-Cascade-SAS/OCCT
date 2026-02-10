@@ -56,7 +56,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRep_GCurve, BRep_CurveRepresentation)
 
 protected:
-  Standard_EXPORT BRep_GCurve(const TopLoc_Location& L, const double First, const double Last);
+  Standard_EXPORT BRep_GCurve(const TopLoc_Location&  L,
+                              const double            First,
+                              const double            Last,
+                              const BRep_CurveRepKind theKind);
 
 private:
   double myFirst;
