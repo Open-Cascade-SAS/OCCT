@@ -769,15 +769,14 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 bool BRep_Tool::IsClosed(const TopoDS_Edge& E, const TopoDS_Face& F)
 {
   const BRep_TFace* TF = static_cast<const BRep_TFace*>(F.TShape().get());
+  TopLoc_Location   l;
   // An edge on a plane can never be closed in parametric space.
   if (!TF->IsPlane())
   {
-    TopLoc_Location                  l;
     const occ::handle<Geom_Surface>& S = BRep_Tool::Surface(F, l);
     if (IsClosed(E, S, l))
       return true;
   }
-  TopLoc_Location                        l;
   const occ::handle<Poly_Triangulation>& T = BRep_Tool::Triangulation(F, l);
   return IsClosed(E, T, l);
 }
@@ -906,7 +905,7 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
   }
 
   // Fall back to searching for Curve3D or CurveOnSurface representations.
-  bool hasRange = false;
+  bool aHasRange = false;
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   while (itcr.More())
   {
@@ -915,7 +914,7 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
     {
       const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
       GC->Range(First, Last);
-      hasRange = true;
+      aHasRange = true;
       if (!cr->Curve3D().IsNull())
         return;
     }
@@ -927,7 +926,7 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
     }
     itcr.Next();
   }
-  if (!hasRange)
+  if (!aHasRange)
     First = Last = 0.;
 }
 

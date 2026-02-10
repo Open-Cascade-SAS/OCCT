@@ -61,18 +61,18 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
                          occ::handle<BRep_Curve3D>& theCached3D)
 {
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(lcr);
-  bool                                                              hasRange = false;
+  bool                                                              aHasRange = false;
   double                                                            f = 0., l = 0.;
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D || kind == BRep_CurveRepKind::CurveOnSurface
-        || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D || aKind == BRep_CurveRepKind::CurveOnSurface
+        || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
     {
       static_cast<const BRep_GCurve*>(itcr.Value().get())->Range(f, l);
-      hasRange = true;
-      if (kind == BRep_CurveRepKind::Curve3D)
+      aHasRange = true;
+      if (aKind == BRep_CurveRepKind::Curve3D)
         break;
     }
     itcr.Next();
@@ -88,7 +88,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   {
     occ::handle<BRep_Curve3D> C3d = new BRep_Curve3D(C, L);
     // test if there is already a range
-    if (hasRange)
+    if (aHasRange)
     {
       C3d->SetRange(f, l);
     }
@@ -117,14 +117,14 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D)
     {
       static_cast<const BRep_GCurve*>(itcr.Value().get())->Range(f, l);
       itcr.Next();
     }
-    else if (kind == BRep_CurveRepKind::CurveOnSurface
-             || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    else if (aKind == BRep_CurveRepKind::CurveOnSurface
+             || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
     {
       if (itcr.Value()->IsCurveOnSurface(S, L))
       {
@@ -187,14 +187,14 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D)
     {
       static_cast<const BRep_GCurve*>(itcr.Value().get())->Range(f, l);
       itcr.Next();
     }
-    else if (kind == BRep_CurveRepKind::CurveOnSurface
-             || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    else if (aKind == BRep_CurveRepKind::CurveOnSurface
+             || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
     {
       if (itcr.Value()->IsCurveOnSurface(S, L))
       {
@@ -255,13 +255,13 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D)
     {
       static_cast<const BRep_GCurve*>(itcr.Value().get())->Range(f, l);
     }
-    else if ((kind == BRep_CurveRepKind::CurveOnSurface
-              || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    else if ((aKind == BRep_CurveRepKind::CurveOnSurface
+              || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
              && itcr.Value()->IsCurveOnSurface(S, L))
     {
       break;
@@ -318,13 +318,13 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D)
     {
       static_cast<const BRep_GCurve*>(itcr.Value().get())->Range(f, l);
     }
-    else if ((kind == BRep_CurveRepKind::CurveOnSurface
-              || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    else if ((aKind == BRep_CurveRepKind::CurveOnSurface
+              || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
              && itcr.Value()->IsCurveOnSurface(S, L))
     {
       break;
@@ -1084,11 +1084,11 @@ void BRep_Builder::Range(const TopoDS_Edge& E,
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D || kind == BRep_CurveRepKind::CurveOnSurface
-        || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D || aKind == BRep_CurveRepKind::CurveOnSurface
+        || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
     {
-      if (!Only3d || kind == BRep_CurveRepKind::Curve3D)
+      if (!Only3d || aKind == BRep_CurveRepKind::Curve3D)
         static_cast<BRep_GCurve*>(itcr.Value().get())->SetRange(First, Last);
     }
     itcr.Next();
@@ -1117,9 +1117,9 @@ void BRep_Builder::Range(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if ((kind == BRep_CurveRepKind::CurveOnSurface
-         || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if ((aKind == BRep_CurveRepKind::CurveOnSurface
+         || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
         && itcr.Value()->IsCurveOnSurface(S, l))
     {
       static_cast<BRep_GCurve*>(itcr.Value().get())->SetRange(First, Last);
@@ -1246,9 +1246,9 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D || kind == BRep_CurveRepKind::CurveOnSurface
-        || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D || aKind == BRep_CurveRepKind::CurveOnSurface
+        || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
     {
       BRep_GCurve* GC = static_cast<BRep_GCurve*>(itcr.Value().get());
       if (ori == TopAbs_FORWARD)
@@ -1260,7 +1260,7 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
         NCollection_List<occ::handle<BRep_PointRepresentation>>& lpr    = TV->ChangePoints();
         const TopLoc_Location&                                   GCloc  = GC->Location();
         TopLoc_Location                                          LGCloc = L * GCloc;
-        if (kind == BRep_CurveRepKind::Curve3D)
+        if (aKind == BRep_CurveRepKind::Curve3D)
         {
           const occ::handle<Geom_Curve>& GC3d = GC->Curve3D();
           UpdatePoints(lpr, Par, GC3d, LGCloc);
@@ -1337,9 +1337,9 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex&             V,
 
   while (itcr.More())
   {
-    const BRep_CurveRepKind kind = itcr.Value()->RepresentationKind();
-    if ((kind == BRep_CurveRepKind::CurveOnSurface
-         || kind == BRep_CurveRepKind::CurveOnClosedSurface)
+    const BRep_CurveRepKind aKind = itcr.Value()->RepresentationKind();
+    if ((aKind == BRep_CurveRepKind::CurveOnSurface
+         || aKind == BRep_CurveRepKind::CurveOnClosedSurface)
         && itcr.Value()->IsCurveOnSurface(S, L))
     { // xpu020198 : BUC60407
       BRep_GCurve* GC = static_cast<BRep_GCurve*>(itcr.Value().get());

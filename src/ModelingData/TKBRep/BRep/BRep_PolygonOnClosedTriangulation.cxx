@@ -30,9 +30,10 @@ BRep_PolygonOnClosedTriangulation::BRep_PolygonOnClosedTriangulation(
   const occ::handle<Poly_PolygonOnTriangulation>& P2,
   const occ::handle<Poly_Triangulation>&          T,
   const TopLoc_Location&                          L)
-    : BRep_PolygonOnTriangulation(P1, T, L, BRep_CurveRepKind::PolygonOnClosedTriangulation),
+    : BRep_PolygonOnTriangulation(P1, T, L),
       myPolygon2(P2)
 {
+  myKind = BRep_CurveRepKind::PolygonOnClosedTriangulation;
 }
 
 //=================================================================================================

@@ -28,9 +28,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_PolygonOnTriangulation, BRep_CurveRepresentation
 BRep_PolygonOnTriangulation::BRep_PolygonOnTriangulation(
   const occ::handle<Poly_PolygonOnTriangulation>& P,
   const occ::handle<Poly_Triangulation>&          T,
-  const TopLoc_Location&                          L,
-  const BRep_CurveRepKind                         theKind)
-    : BRep_CurveRepresentation(L, theKind),
+  const TopLoc_Location&                          L)
+    : BRep_CurveRepresentation(L, BRep_CurveRepKind::PolygonOnTriangulation),
       myPolygon(P),
       myTriangulation(T)
 {

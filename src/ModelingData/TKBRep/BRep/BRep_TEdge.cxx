@@ -103,14 +103,14 @@ occ::handle<TopoDS_TShape> BRep_TEdge::EmptyCopy() const
 
   while (itr.More())
   {
-    const BRep_CurveRepKind kind = itr.Value()->RepresentationKind();
-    if (kind == BRep_CurveRepKind::Curve3D || kind == BRep_CurveRepKind::CurveOnSurface
-        || kind == BRep_CurveRepKind::CurveOnClosedSurface
-        || kind == BRep_CurveRepKind::CurveOn2Surfaces)
+    const BRep_CurveRepKind aKind = itr.Value()->RepresentationKind();
+    if (aKind == BRep_CurveRepKind::Curve3D || aKind == BRep_CurveRepKind::CurveOnSurface
+        || aKind == BRep_CurveRepKind::CurveOnClosedSurface
+        || aKind == BRep_CurveRepKind::CurveOn2Surfaces)
     {
       occ::handle<BRep_CurveRepresentation> aCopy = itr.Value()->Copy();
       // Maintain 3D curve cache for the new edge.
-      if (kind == BRep_CurveRepKind::Curve3D)
+      if (aKind == BRep_CurveRepKind::Curve3D)
       {
         TE->Curve3D(occ::down_cast<BRep_Curve3D>(aCopy));
       }

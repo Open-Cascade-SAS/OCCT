@@ -29,9 +29,10 @@ BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const occ::handle<Poly_
                                                          const occ::handle<Poly_Polygon2D>& P2,
                                                          const occ::handle<Geom_Surface>&   S,
                                                          const TopLoc_Location&             L)
-    : BRep_PolygonOnSurface(P1, S, L, BRep_CurveRepKind::PolygonOnClosedSurface),
+    : BRep_PolygonOnSurface(P1, S, L),
       myPolygon2(P2)
 {
+  myKind = BRep_CurveRepKind::PolygonOnClosedSurface;
 }
 
 //=================================================================================================

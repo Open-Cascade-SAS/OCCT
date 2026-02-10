@@ -31,11 +31,9 @@ class BRep_PolygonOnTriangulation : public BRep_CurveRepresentation
 {
 
 public:
-  Standard_EXPORT BRep_PolygonOnTriangulation(
-    const occ::handle<Poly_PolygonOnTriangulation>& P,
-    const occ::handle<Poly_Triangulation>&          T,
-    const TopLoc_Location&                          L,
-    const BRep_CurveRepKind theKind = BRep_CurveRepKind::PolygonOnTriangulation);
+  Standard_EXPORT BRep_PolygonOnTriangulation(const occ::handle<Poly_PolygonOnTriangulation>& P,
+                                              const occ::handle<Poly_Triangulation>&          T,
+                                              const TopLoc_Location&                          L);
 
   //! Is it a polygon in the definition of <T> with
   //! location <L>.
