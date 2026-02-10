@@ -1040,7 +1040,7 @@ void BRep_Tool::SetUVPoints(const TopoDS_Edge&               E,
 
   while (itcr.More())
   {
-    occ::handle<BRep_CurveRepresentation> cr = itcr.Value();
+    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
     if (cr->IsCurveOnSurface(S, l))
     {
       if (cr->IsCurveOnClosedSurface() && Eisreversed)
@@ -1053,6 +1053,7 @@ void BRep_Tool::SetUVPoints(const TopoDS_Edge&               E,
         BRep_CurveOnSurface* CS = static_cast<BRep_CurveOnSurface*>(cr.get());
         CS->SetUVPoints(PFirst, PLast);
       }
+      return;
     }
     itcr.Next();
   }

@@ -84,10 +84,12 @@ void BRep_TFace::Tolerance(const double theTolerance)
 occ::handle<TopoDS_TShape> BRep_TFace::EmptyCopy() const
 {
   occ::handle<BRep_TFace> TF = new BRep_TFace();
-  TF->Surface(mySurface);
-  TF->Location(myLocation);
+  // Assign surface and cached plane flag directly to avoid
+  // redundant RTTI downcasts in computeIsPlane().
+  TF->mySurface = mySurface;
+  TF->myIsPlane = myIsPlane;
+  TF->myLocation = myLocation;
   TF->Tolerance(myTolerance);
-  // myIsPlane is already set by Surface() setter above.
   return TF;
 }
 
