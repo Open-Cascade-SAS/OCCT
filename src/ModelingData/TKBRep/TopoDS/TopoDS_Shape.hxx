@@ -94,10 +94,9 @@ public:
   //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
   void Location(const TopLoc_Location& theLoc, const bool theRaiseExc = false)
   {
-    const gp_Trsf& aTrsf = theLoc.Transformation();
     if (theRaiseExc)
     {
-      validateTransformation(aTrsf);
+      validateTransformation(theLoc.Transformation());
     }
     myLocation = theLoc;
   }
@@ -192,10 +191,9 @@ public:
   //! @param theRaiseExc flag to raise exception in case of transformation with scale or negative.
   void Move(const TopLoc_Location& thePosition, const bool theRaiseExc = false)
   {
-    const gp_Trsf& aTrsf = thePosition.Transformation();
     if (theRaiseExc)
     {
-      validateTransformation(aTrsf);
+      validateTransformation(thePosition.Transformation());
     }
     myLocation = thePosition * myLocation;
   }

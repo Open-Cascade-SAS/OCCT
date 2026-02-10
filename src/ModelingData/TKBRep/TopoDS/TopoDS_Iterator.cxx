@@ -64,7 +64,10 @@ void TopoDS_Iterator::Next()
 void TopoDS_Iterator::updateCurrentShape()
 {
   myShape = myIterator.Value();
-  myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
+  // Compose(FORWARD, x) == x, so skip the table lookup + assignment
+  // for the common case of FORWARD-oriented parent shapes.
+  if (myOrientation != TopAbs_FORWARD)
+    myShape.Orientation(TopAbs::Compose(myOrientation, myShape.Orientation()));
   if (!myLocation.IsIdentity())
     myShape.Move(myLocation, false);
 }

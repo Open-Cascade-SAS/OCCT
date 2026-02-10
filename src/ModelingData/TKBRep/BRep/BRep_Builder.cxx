@@ -400,7 +400,7 @@ static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>
   while (itpr.More())
   {
     const occ::handle<BRep_PointRepresentation>& pr     = itpr.Value();
-    bool                                         isponc = pr->IsPointOnCurve(C, L);
+    bool                                         isponc = pr->IsPointOnCurve() && pr->IsPointOnCurve(C, L);
     if (isponc)
       break;
     itpr.Next();
@@ -428,7 +428,7 @@ static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>
   while (itpr.More())
   {
     const occ::handle<BRep_PointRepresentation>& pr        = itpr.Value();
-    bool                                         isponcons = pr->IsPointOnCurveOnSurface(PC, S, L);
+    bool                                         isponcons = pr->IsPointOnCurveOnSurface() && pr->IsPointOnCurveOnSurface(PC, S, L);
     if (isponcons)
       break;
     itpr.Next();
@@ -456,7 +456,7 @@ static void UpdatePoints(NCollection_List<occ::handle<BRep_PointRepresentation>>
   while (itpr.More())
   {
     const occ::handle<BRep_PointRepresentation>& pr     = itpr.Value();
-    bool                                         ispons = pr->IsPointOnSurface(S, L);
+    bool                                         ispons = pr->IsPointOnSurface() && pr->IsPointOnSurface(S, L);
     if (ispons)
       break;
     itpr.Next();

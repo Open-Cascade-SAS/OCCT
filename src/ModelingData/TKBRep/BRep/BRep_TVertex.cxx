@@ -34,8 +34,8 @@ BRep_TVertex::BRep_TVertex()
 occ::handle<TopoDS_TShape> BRep_TVertex::EmptyCopy() const
 {
   occ::handle<BRep_TVertex> TV = new BRep_TVertex();
-  TV->Pnt(myPnt);
-  TV->Tolerance(myTolerance);
+  TV->myPnt       = myPnt;
+  TV->myTolerance = myTolerance;
   return TV;
 }
 
