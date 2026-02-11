@@ -225,7 +225,6 @@ public:
   }
 
 protected:
-
   /**
    * Auxiliary class for storing points belonging to the cell as the list
    */
@@ -255,8 +254,7 @@ protected:
     {
       for (size_t i = 0; i < theCellSize.Size(); i++)
       {
-        double aVal =
-          (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
+        double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
         // If the value of index is greater than
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
@@ -287,8 +285,8 @@ protected:
 
     Cell& operator=(Cell&& theOther) noexcept
     {
-      index = std::move(theOther.index);
-      Objects = theOther.Objects;
+      index            = std::move(theOther.index);
+      Objects          = theOther.Objects;
       theOther.Objects = nullptr;
       return *this;
     }

@@ -36,7 +36,7 @@ struct TestPoint2D
 class TestInspector2D
 {
 public:
-  typedef int        Target;
+  typedef int         Target;
   typedef TestPoint2D Point;
 
   enum
@@ -91,7 +91,7 @@ struct TestPoint3D
 class TestInspector3D
 {
 public:
-  typedef int        Target;
+  typedef int         Target;
   typedef TestPoint3D Point;
 
   enum

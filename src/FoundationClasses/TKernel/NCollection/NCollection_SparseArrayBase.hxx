@@ -48,7 +48,6 @@ public:
   //!@}
 
 private:
-
   /**
    * The block of data contains array of items, counter
    * and bit field, allocated as single piece of memory addressed

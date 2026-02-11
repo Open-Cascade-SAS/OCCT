@@ -304,7 +304,7 @@ public:
         myLastNode(theOther.myLastNode),
         myAlloc(std::move(theOther.myAlloc))
   {
-    theOther.myRoot = nullptr;
+    theOther.myRoot     = nullptr;
     theOther.myLastNode = nullptr;
   }
 
@@ -313,10 +313,10 @@ public:
     if (this != &theOther)
     {
       Clear();
-      myRoot = theOther.myRoot;
-      myLastNode = theOther.myLastNode;
-      myAlloc = std::move(theOther.myAlloc);
-      theOther.myRoot = nullptr;
+      myRoot              = theOther.myRoot;
+      myLastNode          = theOther.myLastNode;
+      myAlloc             = std::move(theOther.myAlloc);
+      theOther.myRoot     = nullptr;
       theOther.myLastNode = nullptr;
     }
     return *this;

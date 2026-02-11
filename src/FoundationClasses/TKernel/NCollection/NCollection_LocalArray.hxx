@@ -114,7 +114,7 @@ public:
     }
     else
     {
-      myPtr = theOther.myPtr;
+      myPtr          = theOther.myPtr;
       theOther.myPtr = theOther.myBuffer;
     }
     theOther.mySize = 0;
