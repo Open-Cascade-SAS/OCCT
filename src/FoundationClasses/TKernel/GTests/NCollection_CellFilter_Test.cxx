@@ -131,7 +131,7 @@ TEST(NCollection_CellFilterTest, AddInspect2D_SinglePoint)
   aFilter.Add(20, TestPoint2D(1.5, 1.5));
   aFilter.Add(30, TestPoint2D(0.3, 0.3));
 
-  // Inspect cell containing (0.5, 0.5) — should find 10 and 30 (same cell)
+  // Inspect cell containing (0.5, 0.5) -- should find 10 and 30 (same cell)
   TestInspector2D anInspector;
   aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector);
 
@@ -165,7 +165,7 @@ TEST(NCollection_CellFilterTest, Remove2D)
   // Remove target 10
   aFilter.Remove(10, TestPoint2D(0.5, 0.5));
 
-  // Inspect — should only find 20
+  // Inspect -- should only find 20
   TestInspector2D anInspector;
   aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector);
 
@@ -179,10 +179,10 @@ TEST(NCollection_CellFilterTest, EmptyCellCleanupAfterRemove)
 
   aFilter.Add(10, TestPoint2D(0.5, 0.5));
 
-  // Remove the only target — cell should be cleaned up
+  // Remove the only target -- cell should be cleaned up
   aFilter.Remove(10, TestPoint2D(0.5, 0.5));
 
-  // Inspect — should find nothing
+  // Inspect -- should find nothing
   TestInspector2D anInspector;
   aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector);
   EXPECT_TRUE(anInspector.Found().empty());
@@ -202,7 +202,7 @@ TEST(NCollection_CellFilterTest, EmptyCellCleanupAfterPurge)
   // Found should be empty (purged, not kept)
   EXPECT_TRUE(anInspector.Found().empty());
 
-  // Second inspect — cell should have been cleaned up, nothing found
+  // Second inspect -- cell should have been cleaned up, nothing found
   TestInspector2D anInspector2;
   aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector2);
   EXPECT_TRUE(anInspector2.Found().empty());
@@ -255,7 +255,7 @@ TEST(NCollection_CellFilterTest, InspectWithPurge)
   // Should find 10 and 30 (20 was purged)
   EXPECT_EQ(2u, anInspector.Found().size());
 
-  // Re-inspect — 20 should be gone
+  // Re-inspect -- 20 should be gone
   TestInspector2D anInspector2;
   aFilter.Inspect(TestPoint2D(0.5, 0.5), anInspector2);
   EXPECT_EQ(2u, anInspector2.Found().size());

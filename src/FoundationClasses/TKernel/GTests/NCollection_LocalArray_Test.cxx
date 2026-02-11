@@ -247,7 +247,7 @@ TEST(NCollection_LocalArrayTest, ReallocateNoCopy)
 
   anArray.Reallocate(16, false);
   EXPECT_EQ(16u, anArray.Size());
-  // Content is undefined — just verify it doesn't crash
+  // Content is undefined -- just verify it doesn't crash
 }
 
 // Test Reallocate shrink just updates logical size

@@ -226,7 +226,7 @@ TEST(NCollection_UBTreeTest, DeepUnbalancedTree)
 {
   // Insert sorted non-overlapping intervals to create a deeply unbalanced tree.
   // Each new interval is "out" of all previous bounds, forcing the tree
-  // to grow on one side — producing depth ~ N.
+  // to grow on one side -- producing depth ~ N.
   NCollection_UBTree<int, TestBnd1D> aTree;
 
   const int N = 200; // well over the initial stack size of 64
@@ -236,7 +236,7 @@ TEST(NCollection_UBTreeTest, DeepUnbalancedTree)
     aTree.Add(i, TestBnd1D(aLo, aLo + 1.0));
   }
 
-  // Select all — should find all N objects despite deep recursion
+  // Select all -- should find all N objects despite deep recursion
   TestSelector1D aSelector(TestBnd1D(0.0, double(N) * 10.0));
   int            nSel = aTree.Select(aSelector);
   EXPECT_EQ(N, nSel);
@@ -333,7 +333,7 @@ TEST(NCollection_EBTreeTest, SelectAfterRemove)
   // Remove object 2
   aTree.Remove(2);
 
-  // Select overlapping [3.5, 5.5] — only object 3 should remain
+  // Select overlapping [3.5, 5.5] -- only object 3 should remain
   TestSelector1D aSelector(TestBnd1D(3.5, 5.5));
   int            nSel = aTree.Select(aSelector);
   EXPECT_EQ(1, nSel);
