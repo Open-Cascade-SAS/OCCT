@@ -433,6 +433,28 @@ public:
     return emplaceImpl(std::move(aTempKey), std::false_type{}, std::true_type{});
   }
 
+  //! TryEmplace constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return true if key was newly added, false if key already existed
+  template <typename... Args>
+  bool TryEmplace(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::true_type{}, std::false_type{});
+  }
+
+  //! TryEmplaced constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key (existing or newly added)
+  template <typename... Args>
+  const TheKeyType& TryEmplaced(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::true_type{}, std::true_type{});
+  }
+
   //! Remove key from set
   //! @return true if key was found and removed
   bool Remove(const TheKeyType& theKey)

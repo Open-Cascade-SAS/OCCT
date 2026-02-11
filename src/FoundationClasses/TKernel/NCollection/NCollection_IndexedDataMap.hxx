@@ -517,6 +517,33 @@ public:
     return bindImpl(std::move(theKey1), std::move(theItem), std::true_type{}, std::true_type{});
   }
 
+  //! TryBind binds Item to Key only if Key is not yet bound.
+  //! @param theKey1 key to add
+  //! @param theItem item to bind if Key is not yet bound
+  //! @return true if key was newly added, false if key already existed
+  bool TryBind(const TheKeyType& theKey1, const TheItemType& theItem)
+  {
+    return bindImpl(theKey1, theItem, std::true_type{}, std::false_type{});
+  }
+
+  //! TryBind binds Item to Key only if Key is not yet bound.
+  bool TryBind(TheKeyType&& theKey1, const TheItemType& theItem)
+  {
+    return bindImpl(std::move(theKey1), theItem, std::true_type{}, std::false_type{});
+  }
+
+  //! TryBind binds Item to Key only if Key is not yet bound.
+  bool TryBind(const TheKeyType& theKey1, TheItemType&& theItem)
+  {
+    return bindImpl(theKey1, std::move(theItem), std::true_type{}, std::false_type{});
+  }
+
+  //! TryBind binds Item to Key only if Key is not yet bound.
+  bool TryBind(TheKeyType&& theKey1, TheItemType&& theItem)
+  {
+    return bindImpl(std::move(theKey1), std::move(theItem), std::true_type{}, std::false_type{});
+  }
+
   //! Bind binds Item to Key in map; overwrites value if Key already exists.
   //! @param theKey1 key to add/update
   //! @param theItem new item; overrides value previously bound to the key
