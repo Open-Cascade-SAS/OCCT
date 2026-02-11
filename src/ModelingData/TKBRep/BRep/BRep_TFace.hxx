@@ -71,7 +71,7 @@ public:
   double Tolerance() const { return myTolerance; }
 
   //! Sets the tolerance for this face.
-  void Tolerance(const double theTolerance);
+  Standard_EXPORT void Tolerance(const double theTolerance);
 
   //! Returns TRUE if the face surface is a plane.
   bool IsPlane() const { return myIsPlane; }

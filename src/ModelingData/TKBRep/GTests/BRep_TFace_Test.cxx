@@ -19,6 +19,7 @@
 #include <Geom_Plane.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
 #include <Precision.hxx>
+#include <TopoDS_Shape.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pln.hxx>
 

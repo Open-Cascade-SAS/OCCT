@@ -894,18 +894,18 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
     return;
   }
 
-  bool aHasRange = false;
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
     if (cr->IsCurve3D())
     {
-      const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
-      GC->Range(First, Last);
-      aHasRange = true;
       if (!cr->Curve3D().IsNull())
+      {
+        const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
+        GC->Range(First, Last);
         return;
+      }
     }
     else if (cr->IsCurveOnSurface())
     {
@@ -915,8 +915,7 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
     }
     itcr.Next();
   }
-  if (!aHasRange)
-    First = Last = 0.;
+  First = Last = 0.;
 }
 
 //=================================================================================================
