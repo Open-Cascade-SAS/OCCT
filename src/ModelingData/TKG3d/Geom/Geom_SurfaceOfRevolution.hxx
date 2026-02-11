@@ -300,10 +300,7 @@ public:
   //! else P is between discontinuities
   //! can be evaluated using methods of
   //! global evaluations P = S( U ,V )
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this surface of revolution.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

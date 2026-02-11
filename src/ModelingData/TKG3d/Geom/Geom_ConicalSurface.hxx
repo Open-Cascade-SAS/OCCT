@@ -282,10 +282,7 @@ public:
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1,
   //! - Nu or Nv is negative.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this cone.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

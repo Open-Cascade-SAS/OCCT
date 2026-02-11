@@ -279,10 +279,7 @@ public:
   //! Warning! UndefinedDerivative raised if the continuity of the surface is not CNu in the U
   //! parametric direction and CNv in the V parametric direction.
   //! RangeError Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this patch.
   //! Warning

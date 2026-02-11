@@ -1137,10 +1137,7 @@ public:
   //! the evaluations are the same as if we consider the whole
   //! definition of the surface. Of course the evaluations are
   //! different outside this parametric domain.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
   Standard_EXPORT void LocalD0(const double U,

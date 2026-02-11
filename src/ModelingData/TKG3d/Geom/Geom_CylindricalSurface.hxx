@@ -224,10 +224,7 @@ public:
   //! Computes the derivative of order Nu in the direction u and Nv
   //! in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this cylinder.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

@@ -299,10 +299,7 @@ public:
   //! Warnings:
   //! The exception UndefinedValue or UndefinedDerivative is
   //! raised if it is not possible to compute a unique offset direction.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const final;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this offset surface.
   //! Note: the basis surface is also modified.

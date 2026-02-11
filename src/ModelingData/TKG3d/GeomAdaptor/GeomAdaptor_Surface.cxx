@@ -1293,16 +1293,64 @@ void GeomAdaptor_Surface::D3(const double U,
       D3UVV.SetCoord(0., 0., 0.);
       break;
     case GeomAbs_Cylinder:
-      ElSLib::D3(u, v, std::get<gp_Cylinder>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Cylinder>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
       break;
     case GeomAbs_Cone:
-      ElSLib::D3(u, v, std::get<gp_Cone>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Cone>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
       break;
     case GeomAbs_Sphere:
-      ElSLib::D3(u, v, std::get<gp_Sphere>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Sphere>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
       break;
     case GeomAbs_Torus:
-      ElSLib::D3(u, v, std::get<gp_Torus>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Torus>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
       break;
 
     case GeomAbs_BSplineSurface: {
