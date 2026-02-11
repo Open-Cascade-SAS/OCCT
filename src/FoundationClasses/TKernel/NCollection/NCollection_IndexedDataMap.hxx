@@ -659,9 +659,9 @@ public:
 
   //! Contained returns optional pair of const references to key and value.
   //! Returns std::nullopt if the key is not found.
-  std::optional<std::pair<std::reference_wrapper<const TheKeyType>,
-                          std::reference_wrapper<const TheItemType>>>
-  Contained(const TheKeyType& theKey1) const
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<const TheItemType>>>
+    Contained(const TheKeyType& theKey1) const
   {
     IndexedDataMapNode* aNode;
     if (!lookup(theKey1, aNode))
@@ -671,9 +671,9 @@ public:
 
   //! Contained returns optional pair of const key reference and mutable value reference.
   //! Returns std::nullopt if the key is not found.
-  std::optional<std::pair<std::reference_wrapper<const TheKeyType>,
-                          std::reference_wrapper<TheItemType>>>
-  Contained(const TheKeyType& theKey1)
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<TheItemType>>>
+    Contained(const TheKeyType& theKey1)
   {
     IndexedDataMapNode* aNode;
     if (!lookup(theKey1, aNode))

@@ -574,9 +574,9 @@ public:
 
   //! Contained returns optional pair of const references to key and value.
   //! Returns std::nullopt if the key is not found.
-  std::optional<std::pair<std::reference_wrapper<const TheKeyType>,
-                          std::reference_wrapper<const TheItemType>>>
-  Contained(const TheKeyType& theKey) const
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<const TheItemType>>>
+    Contained(const TheKeyType& theKey) const
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))
@@ -586,9 +586,9 @@ public:
 
   //! Contained returns optional pair of const key reference and mutable value reference.
   //! Returns std::nullopt if the key is not found.
-  std::optional<std::pair<std::reference_wrapper<const TheKeyType>,
-                          std::reference_wrapper<TheItemType>>>
-  Contained(const TheKeyType& theKey)
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<TheItemType>>>
+    Contained(const TheKeyType& theKey)
   {
     DataMapNode* p = nullptr;
     if (!lookup(theKey, p))

@@ -232,10 +232,11 @@ public:
         return;
 
       // Collect children arrays during pre-order traversal, free them after.
-      NCollection_LocalArray<TreeNode*, 64> aChildArrays(64);
-      NCollection_LocalArray<TreeNode*, 64> aStack(64);
-      int                                   aNumArrays = 0;
-      int                                   aTop       = 0;
+      constexpr int                                          THE_INIT_STACK_SIZE = 64;
+      NCollection_LocalArray<TreeNode*, THE_INIT_STACK_SIZE> aChildArrays(THE_INIT_STACK_SIZE);
+      NCollection_LocalArray<TreeNode*, THE_INIT_STACK_SIZE> aStack(THE_INIT_STACK_SIZE);
+      int                                                    aNumArrays = 0;
+      int                                                    aTop       = 0;
 
       aStack[aTop++] = theNode;
 
@@ -479,11 +480,12 @@ template <class TheObjType, class TheBndType>
 int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch,
                                                        Selector&       theSelector) const
 {
-  // Explicit stack for iterative DFS. 64 covers balanced trees up to 2^64 nodes;
+  // Explicit stack for iterative DFS. Covers balanced trees up to 2^64 nodes;
   // Reallocate handles deeply unbalanced trees.
-  NCollection_LocalArray<const TreeNode*, 64> aStack(64);
-  int                                         aTop = 0;
-  int                                         nSel = 0;
+  constexpr int                                                THE_INIT_STACK_SIZE = 64;
+  NCollection_LocalArray<const TreeNode*, THE_INIT_STACK_SIZE> aStack(THE_INIT_STACK_SIZE);
+  int                                                          aTop = 0;
+  int                                                          nSel = 0;
 
   aStack[aTop++] = &theBranch;
 
