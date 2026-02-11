@@ -133,7 +133,7 @@ public:
   //! Computes the parameter on the reversed ellipse for
   //! the point of parameter U on this ellipse.
   //! For an ellipse, the returned value is: 2.*Pi - U.
-  Standard_EXPORT double ReversedParameter(const double U) const override;
+  Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Computes the directrices of this ellipse.
   //! This directrix is the line normal to the XAxis of the ellipse
@@ -158,7 +158,7 @@ public:
   //! If f is the distance between the center of the ellipse and
   //! the Focus1 then the eccentricity e = f / MajorRadius.
   //! Returns 0 if MajorRadius = 0
-  Standard_EXPORT double Eccentricity() const override;
+  Standard_EXPORT double Eccentricity() const final;
 
   //! Computes the focal distance. The focal distance is the distance between the center
   //! and a focus of the ellipse.
@@ -187,30 +187,30 @@ public:
   //! Returns the value of the first parameter of this
   //! ellipse. This is 0.0, which gives the start point of this ellipse.
   //! The start point and end point of an ellipse are coincident.
-  Standard_EXPORT double FirstParameter() const override;
+  Standard_EXPORT double FirstParameter() const final;
 
   //! Returns the value of the last parameter of this
   //! ellipse. This is 2.*Pi, which gives the end point of this ellipse.
   //! The start point and end point of an ellipse are coincident.
-  Standard_EXPORT double LastParameter() const override;
+  Standard_EXPORT double LastParameter() const final;
 
   //! return True.
-  Standard_EXPORT bool IsClosed() const override;
+  Standard_EXPORT bool IsClosed() const final;
 
   //! return True.
-  Standard_EXPORT bool IsPeriodic() const override;
+  Standard_EXPORT bool IsPeriodic() const final;
 
   //! Returns in P the point of parameter U.
   //! P = C + MajorRadius * Cos (U) * XDir + MinorRadius * Sin (U) * YDir
   //! where C is the center of the ellipse , XDir the direction of
   //! the "XAxis" and "YDir" the "YAxis" of the ellipse.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
 
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
 
   //! Returns the point P of parameter U. The vectors V1 and V2
   //! are the first and second derivatives at this point.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
@@ -218,21 +218,21 @@ public:
                           gp_Pnt2d&    P,
                           gp_Vec2d&    V1,
                           gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Vec2d&    V3) const final;
 
   //! For the point of parameter U of this ellipse,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
 
   //! Applies the transformation T to this ellipse.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) final;
 
   //! Creates a new object which is a copy of this ellipse.
-  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const final;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const final;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Ellipse, Geom2d_Conic)
 

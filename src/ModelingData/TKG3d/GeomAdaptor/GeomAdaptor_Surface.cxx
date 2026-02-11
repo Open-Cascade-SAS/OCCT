@@ -30,6 +30,7 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <BSplCLib.hxx>
+#include <ElSLib.hxx>
 #include <BSplSLib_Cache.hxx>
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
@@ -338,6 +339,11 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
     // Cache is not copied - will be rebuilt on demand
     aCopy->mySurfaceData = aNewData;
   }
+  else
+  {
+    // Elementary surface types (gp_Pln, gp_Cylinder, etc.) are value types - direct copy
+    aCopy->mySurfaceData = mySurfaceData;
+  }
 
   return aCopy;
 }
@@ -374,15 +380,30 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
            VLast);
     }
     else if (TheType == STANDARD_TYPE(Geom_Plane))
+    {
       mySurfaceType = GeomAbs_Plane;
+      mySurfaceData = occ::down_cast<Geom_Plane>(S)->Pln();
+    }
     else if (TheType == STANDARD_TYPE(Geom_CylindricalSurface))
+    {
       mySurfaceType = GeomAbs_Cylinder;
+      mySurfaceData = occ::down_cast<Geom_CylindricalSurface>(S)->Cylinder();
+    }
     else if (TheType == STANDARD_TYPE(Geom_ConicalSurface))
+    {
       mySurfaceType = GeomAbs_Cone;
+      mySurfaceData = occ::down_cast<Geom_ConicalSurface>(S)->Cone();
+    }
     else if (TheType == STANDARD_TYPE(Geom_SphericalSurface))
+    {
       mySurfaceType = GeomAbs_Sphere;
+      mySurfaceData = occ::down_cast<Geom_SphericalSurface>(S)->Sphere();
+    }
     else if (TheType == STANDARD_TYPE(Geom_ToroidalSurface))
+    {
       mySurfaceType = GeomAbs_Torus;
+      mySurfaceData = occ::down_cast<Geom_ToroidalSurface>(S)->Torus();
+    }
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfRevolution))
     {
       mySurfaceType = GeomAbs_SurfaceOfRevolution;
@@ -955,6 +976,22 @@ void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
 {
   switch (mySurfaceType)
   {
+    case GeomAbs_Plane:
+      ElSLib::D0(U, V, std::get<gp_Pln>(mySurfaceData), P);
+      break;
+    case GeomAbs_Cylinder:
+      ElSLib::D0(U, V, std::get<gp_Cylinder>(mySurfaceData), P);
+      break;
+    case GeomAbs_Cone:
+      ElSLib::D0(U, V, std::get<gp_Cone>(mySurfaceData), P);
+      break;
+    case GeomAbs_Sphere:
+      ElSLib::D0(U, V, std::get<gp_Sphere>(mySurfaceData), P);
+      break;
+    case GeomAbs_Torus:
+      ElSLib::D0(U, V, std::get<gp_Torus>(mySurfaceData), P);
+      break;
+
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
@@ -1026,6 +1063,22 @@ void GeomAdaptor_Surface::D1(const double U,
 
   switch (mySurfaceType)
   {
+    case GeomAbs_Plane:
+      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), P, D1U, D1V);
+      break;
+    case GeomAbs_Cylinder:
+      ElSLib::D1(u, v, std::get<gp_Cylinder>(mySurfaceData), P, D1U, D1V);
+      break;
+    case GeomAbs_Cone:
+      ElSLib::D1(u, v, std::get<gp_Cone>(mySurfaceData), P, D1U, D1V);
+      break;
+    case GeomAbs_Sphere:
+      ElSLib::D1(u, v, std::get<gp_Sphere>(mySurfaceData), P, D1U, D1V);
+      break;
+    case GeomAbs_Torus:
+      ElSLib::D1(u, v, std::get<gp_Torus>(mySurfaceData), P, D1U, D1V);
+      break;
+
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
@@ -1106,6 +1159,25 @@ void GeomAdaptor_Surface::D2(const double U,
 
   switch (mySurfaceType)
   {
+    case GeomAbs_Plane:
+      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), P, D1U, D1V);
+      D2U.SetCoord(0., 0., 0.);
+      D2V.SetCoord(0., 0., 0.);
+      D2UV.SetCoord(0., 0., 0.);
+      break;
+    case GeomAbs_Cylinder:
+      ElSLib::D2(u, v, std::get<gp_Cylinder>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
+      break;
+    case GeomAbs_Cone:
+      ElSLib::D2(u, v, std::get<gp_Cone>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
+      break;
+    case GeomAbs_Sphere:
+      ElSLib::D2(u, v, std::get<gp_Sphere>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
+      break;
+    case GeomAbs_Torus:
+      ElSLib::D2(u, v, std::get<gp_Torus>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
+      break;
+
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
@@ -1210,6 +1282,77 @@ void GeomAdaptor_Surface::D3(const double U,
 
   switch (mySurfaceType)
   {
+    case GeomAbs_Plane:
+      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), P, D1U, D1V);
+      D2U.SetCoord(0., 0., 0.);
+      D2V.SetCoord(0., 0., 0.);
+      D2UV.SetCoord(0., 0., 0.);
+      D3U.SetCoord(0., 0., 0.);
+      D3V.SetCoord(0., 0., 0.);
+      D3UUV.SetCoord(0., 0., 0.);
+      D3UVV.SetCoord(0., 0., 0.);
+      break;
+    case GeomAbs_Cylinder:
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Cylinder>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
+      break;
+    case GeomAbs_Cone:
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Cone>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
+      break;
+    case GeomAbs_Sphere:
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Sphere>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
+      break;
+    case GeomAbs_Torus:
+      ElSLib::D3(u,
+                 v,
+                 std::get<gp_Torus>(mySurfaceData),
+                 P,
+                 D1U,
+                 D1V,
+                 D2U,
+                 D2V,
+                 D2UV,
+                 D3U,
+                 D3V,
+                 D3UUV,
+                 D3UVV);
+      break;
+
     case GeomAbs_BSplineSurface: {
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
@@ -1348,10 +1491,16 @@ gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, con
     }
 
     case GeomAbs_Plane:
+      return ElSLib::DN(u, v, std::get<gp_Pln>(mySurfaceData), Nu, Nv);
     case GeomAbs_Cylinder:
+      return ElSLib::DN(u, v, std::get<gp_Cylinder>(mySurfaceData), Nu, Nv);
     case GeomAbs_Cone:
+      return ElSLib::DN(u, v, std::get<gp_Cone>(mySurfaceData), Nu, Nv);
     case GeomAbs_Sphere:
+      return ElSLib::DN(u, v, std::get<gp_Sphere>(mySurfaceData), Nu, Nv);
     case GeomAbs_Torus:
+      return ElSLib::DN(u, v, std::get<gp_Torus>(mySurfaceData), Nu, Nv);
+
     case GeomAbs_BezierSurface:
     case GeomAbs_OtherSurface:
     default:
@@ -1507,7 +1656,7 @@ gp_Pln GeomAdaptor_Surface::Plane() const
 {
   if (mySurfaceType != GeomAbs_Plane)
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Plane");
-  return occ::down_cast<Geom_Plane>(mySurface)->Pln();
+  return std::get<gp_Pln>(mySurfaceData);
 }
 
 //=================================================================================================
@@ -1516,7 +1665,7 @@ gp_Cylinder GeomAdaptor_Surface::Cylinder() const
 {
   if (mySurfaceType != GeomAbs_Cylinder)
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Cylinder");
-  return occ::down_cast<Geom_CylindricalSurface>(mySurface)->Cylinder();
+  return std::get<gp_Cylinder>(mySurfaceData);
 }
 
 //=================================================================================================
@@ -1525,7 +1674,7 @@ gp_Cone GeomAdaptor_Surface::Cone() const
 {
   if (mySurfaceType != GeomAbs_Cone)
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Cone");
-  return occ::down_cast<Geom_ConicalSurface>(mySurface)->Cone();
+  return std::get<gp_Cone>(mySurfaceData);
 }
 
 //=================================================================================================
@@ -1534,7 +1683,7 @@ gp_Sphere GeomAdaptor_Surface::Sphere() const
 {
   if (mySurfaceType != GeomAbs_Sphere)
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Sphere");
-  return occ::down_cast<Geom_SphericalSurface>(mySurface)->Sphere();
+  return std::get<gp_Sphere>(mySurfaceData);
 }
 
 //=================================================================================================
@@ -1543,7 +1692,7 @@ gp_Torus GeomAdaptor_Surface::Torus() const
 {
   if (mySurfaceType != GeomAbs_Torus)
     throw Standard_NoSuchObject("GeomAdaptor_Surface::Torus");
-  return occ::down_cast<Geom_ToroidalSurface>(mySurface)->Torus();
+  return std::get<gp_Torus>(mySurfaceData);
 }
 
 //=================================================================================================

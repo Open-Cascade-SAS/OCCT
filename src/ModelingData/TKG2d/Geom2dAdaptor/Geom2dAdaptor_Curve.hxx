@@ -22,6 +22,11 @@
 #include <Geom2d_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
+#include <gp_Hypr2d.hxx>
+#include <gp_Lin2d.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <Precision.hxx>
 #include <Standard_NullObject.hxx>
@@ -30,11 +35,6 @@
 #include <variant>
 
 class gp_Vec2d;
-class gp_Lin2d;
-class gp_Circ2d;
-class gp_Elips2d;
-class gp_Hypr2d;
-class gp_Parab2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
 
@@ -70,7 +70,15 @@ public:
   };
 
   //! Variant type for 2D curve-specific evaluation data.
-  using CurveDataVariant = std::variant<std::monostate, OffsetData, BezierData, BSplineData>;
+  using CurveDataVariant = std::variant<std::monostate,
+                                        gp_Lin2d,
+                                        gp_Circ2d,
+                                        gp_Elips2d,
+                                        gp_Hypr2d,
+                                        gp_Parab2d,
+                                        OffsetData,
+                                        BezierData,
+                                        BSplineData>;
 
 public:
   Standard_EXPORT Geom2dAdaptor_Curve();
@@ -149,22 +157,22 @@ public:
   Standard_EXPORT double Period() const override;
 
   //! Computes the point of parameter U on the curve
-  Standard_EXPORT gp_Pnt2d Value(const double U) const override;
+  Standard_EXPORT gp_Pnt2d Value(const double U) const final;
 
   //! Computes the point of parameter U.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
 
   //! Computes the point of parameter U on the curve with its
   //! first derivative.
   //! Raised if the continuity of the current interval
   //! is not C1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
   //! Raised if the continuity of the current interval
   //! is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
 
   //! Returns the point P of parameter U, the first, the second
   //! and the third derivative.
@@ -174,14 +182,14 @@ public:
                           gp_Pnt2d&    P,
                           gp_Vec2d&    V1,
                           gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Vec2d&    V3) const final;
 
   //! The returned vector gives the value of the derivative for the
   //! order of derivation N.
   //! Raised if the continuity of the current interval
   //! is not CN.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
 
   //! returns the parametric resolution
   Standard_EXPORT double Resolution(const double Ruv) const override;

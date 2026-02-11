@@ -394,7 +394,7 @@ public:
   //! u parametric direction. The bounds of the
   //! surface are not changed, but the given parametric
   //! direction is reversed. Hence, the orientation of the surface is reversed.
-  Standard_EXPORT void UReverse() override;
+  Standard_EXPORT void UReverse() final;
 
   //! Computes the u (or v) parameter on the modified
   //! surface, produced by reversing its u (or v) parametric
@@ -402,14 +402,14 @@ public:
   //! parameter V) on this Bezier surface.
   //! In the case of a Bezier surface, these functions return respectively:
   //! - 1.-U, or 1.-V.
-  Standard_EXPORT double UReversedParameter(const double U) const override;
+  Standard_EXPORT double UReversedParameter(const double U) const final;
 
   //! Changes the orientation of this Bezier surface in the
   //! v parametric direction. The bounds of the
   //! surface are not changed, but the given parametric
   //! direction is reversed. Hence, the orientation of the
   //! surface is reversed.
-  Standard_EXPORT void VReverse() override;
+  Standard_EXPORT void VReverse() final;
 
   //! Computes the u (or v) parameter on the modified
   //! surface, produced by reversing its u (or v) parametric
@@ -417,25 +417,25 @@ public:
   //! parameter V) on this Bezier surface.
   //! In the case of a Bezier surface, these functions return respectively:
   //! - 1.-U, or 1.-V.
-  Standard_EXPORT double VReversedParameter(const double V) const override;
+  Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of
   //! this Bezier surface.
   //! In the case of a Bezier surface, this function returns
   //! U1 = 0, V1 = 0, U2 = 1, V2 = 1.
-  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const final;
 
   //! Returns the continuity of the surface CN : the order of
   //! continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const final;
 
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
 
   Standard_EXPORT void D1(const double U,
                           const double V,
                           gp_Pnt&      P,
                           gp_Vec&      D1U,
-                          gp_Vec&      D1V) const override;
+                          gp_Vec&      D1V) const final;
 
   Standard_EXPORT void D2(const double U,
                           const double V,
@@ -444,7 +444,7 @@ public:
                           gp_Vec&      D1V,
                           gp_Vec&      D2U,
                           gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const override;
+                          gp_Vec&      D2UV) const final;
 
   //! Computes P, the point of parameters (U, V) of this Bezier surface, and
   //! - one or more of the following sets of vectors:
@@ -465,7 +465,7 @@ public:
                           gp_Vec&      D3U,
                           gp_Vec&      D3V,
                           gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const override;
+                          gp_Vec&      D3UVV) const final;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
@@ -474,10 +474,7 @@ public:
   //! Exceptions
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1, or Nu or Nv is negative.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Returns the number of poles in the U direction.
   Standard_EXPORT int NbUPoles() const;
@@ -506,7 +503,7 @@ public:
 
   //! Computes the U isoparametric curve. For a Bezier surface the
   //! UIso curve is a Bezier curve.
-  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
   //! Returns the degree of the surface in the V direction it is
   //! NbVPoles - 1
@@ -514,7 +511,7 @@ public:
 
   //! Computes the V isoparametric curve. For a Bezier surface the
   //! VIso curve is a Bezier curve.
-  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Returns the weight of range UIndex, VIndex
   //!
@@ -545,24 +542,24 @@ public:
   //! Returns True if the first control points row and the
   //! last control points row are identical. The tolerance
   //! criterion is Resolution from package gp.
-  Standard_EXPORT bool IsUClosed() const override;
+  Standard_EXPORT bool IsUClosed() const final;
 
   //! Returns True if the first control points column
   //! and the last control points column are identical.
   //! The tolerance criterion is Resolution from package gp.
-  Standard_EXPORT bool IsVClosed() const override;
+  Standard_EXPORT bool IsVClosed() const final;
 
   //! Returns True, a Bezier surface is always CN
-  Standard_EXPORT bool IsCNu(const int N) const override;
+  Standard_EXPORT bool IsCNu(const int N) const final;
 
   //! Returns True, a BezierSurface is always CN
-  Standard_EXPORT bool IsCNv(const int N) const override;
+  Standard_EXPORT bool IsCNv(const int N) const final;
 
   //! Returns False.
-  Standard_EXPORT bool IsUPeriodic() const override;
+  Standard_EXPORT bool IsUPeriodic() const final;
 
   //! Returns False.
-  Standard_EXPORT bool IsVPeriodic() const override;
+  Standard_EXPORT bool IsVPeriodic() const final;
 
   //! Returns False if the weights are identical in the U direction,
   //! The tolerance criterion is Resolution from package gp.
@@ -581,7 +578,7 @@ public:
   Standard_EXPORT bool IsVRational() const;
 
   //! Applies the transformation T to this Bezier surface.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) final;
 
   //! Returns the value of the maximum polynomial degree of a
   //! Bezier surface. This value is 25.
@@ -600,10 +597,10 @@ public:
   Standard_EXPORT void Resolution(const double Tolerance3D, double& UTolerance, double& VTolerance);
 
   //! Creates a new object which is a copy of this Bezier surface.
-  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const final;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const final;
 
   //! Returns Bezier knots {0.0, 1.0} as a static array.
   Standard_EXPORT const NCollection_Array1<double>& UKnots() const;

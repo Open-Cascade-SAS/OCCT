@@ -25,6 +25,7 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <BSplCLib.hxx>
+#include <ElCLib.hxx>
 #include <BSplCLib_Cache.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
@@ -92,6 +93,11 @@ occ::handle<Adaptor2d_Curve2d> Geom2dAdaptor_Curve::ShallowCopy() const
   else if (std::holds_alternative<BezierData>(myCurveData))
   {
     aCopy->myCurveData = BezierData{};
+  }
+  else
+  {
+    // Elementary curve types (gp_Lin2d, gp_Circ2d, etc.) are value types
+    aCopy->myCurveData = myCurveData;
   }
 
   return aCopy;
@@ -245,22 +251,27 @@ void Geom2dAdaptor_Curve::load(const occ::handle<Geom2d_Curve>& C,
     else if (TheType == STANDARD_TYPE(Geom2d_Circle))
     {
       myTypeCurve = GeomAbs_Circle;
+      myCurveData = occ::down_cast<Geom2d_Circle>(C)->Circ2d();
     }
     else if (TheType == STANDARD_TYPE(Geom2d_Line))
     {
       myTypeCurve = GeomAbs_Line;
+      myCurveData = occ::down_cast<Geom2d_Line>(C)->Lin2d();
     }
     else if (TheType == STANDARD_TYPE(Geom2d_Ellipse))
     {
       myTypeCurve = GeomAbs_Ellipse;
+      myCurveData = occ::down_cast<Geom2d_Ellipse>(C)->Elips2d();
     }
     else if (TheType == STANDARD_TYPE(Geom2d_Parabola))
     {
       myTypeCurve = GeomAbs_Parabola;
+      myCurveData = occ::down_cast<Geom2d_Parabola>(C)->Parab2d();
     }
     else if (TheType == STANDARD_TYPE(Geom2d_Hyperbola))
     {
       myTypeCurve = GeomAbs_Hyperbola;
+      myCurveData = occ::down_cast<Geom2d_Hyperbola>(C)->Hypr2d();
     }
     else if (TheType == STANDARD_TYPE(Geom2d_BezierCurve))
     {
@@ -639,6 +650,22 @@ void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      P = ElCLib::Value(U, std::get<gp_Lin2d>(myCurveData));
+      break;
+    case GeomAbs_Circle:
+      P = ElCLib::Value(U, std::get<gp_Circ2d>(myCurveData));
+      break;
+    case GeomAbs_Ellipse:
+      P = ElCLib::Value(U, std::get<gp_Elips2d>(myCurveData));
+      break;
+    case GeomAbs_Hyperbola:
+      P = ElCLib::Value(U, std::get<gp_Hypr2d>(myCurveData));
+      break;
+    case GeomAbs_Parabola:
+      P = ElCLib::Value(U, std::get<gp_Parab2d>(myCurveData));
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
       // use cached data
@@ -688,6 +715,22 @@ void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), P, V);
+      break;
+    case GeomAbs_Circle:
+      ElCLib::D1(U, std::get<gp_Circ2d>(myCurveData), P, V);
+      break;
+    case GeomAbs_Ellipse:
+      ElCLib::D1(U, std::get<gp_Elips2d>(myCurveData), P, V);
+      break;
+    case GeomAbs_Hyperbola:
+      ElCLib::D1(U, std::get<gp_Hypr2d>(myCurveData), P, V);
+      break;
+    case GeomAbs_Parabola:
+      ElCLib::D1(U, std::get<gp_Parab2d>(myCurveData), P, V);
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
       // use cached data
@@ -738,6 +781,23 @@ void Geom2dAdaptor_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), P, V1);
+      V2.SetCoord(0., 0.);
+      break;
+    case GeomAbs_Circle:
+      ElCLib::D2(U, std::get<gp_Circ2d>(myCurveData), P, V1, V2);
+      break;
+    case GeomAbs_Ellipse:
+      ElCLib::D2(U, std::get<gp_Elips2d>(myCurveData), P, V1, V2);
+      break;
+    case GeomAbs_Hyperbola:
+      ElCLib::D2(U, std::get<gp_Hypr2d>(myCurveData), P, V1, V2);
+      break;
+    case GeomAbs_Parabola:
+      ElCLib::D2(U, std::get<gp_Parab2d>(myCurveData), P, V1, V2);
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
       // use cached data
@@ -793,6 +853,25 @@ void Geom2dAdaptor_Curve::D3(const double U,
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), P, V1);
+      V2.SetCoord(0., 0.);
+      V3.SetCoord(0., 0.);
+      break;
+    case GeomAbs_Circle:
+      ElCLib::D3(U, std::get<gp_Circ2d>(myCurveData), P, V1, V2, V3);
+      break;
+    case GeomAbs_Ellipse:
+      ElCLib::D3(U, std::get<gp_Elips2d>(myCurveData), P, V1, V2, V3);
+      break;
+    case GeomAbs_Hyperbola:
+      ElCLib::D3(U, std::get<gp_Hypr2d>(myCurveData), P, V1, V2, V3);
+      break;
+    case GeomAbs_Parabola:
+      ElCLib::D2(U, std::get<gp_Parab2d>(myCurveData), P, V1, V2);
+      V3.SetCoord(0., 0.);
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
       // use cached data
@@ -845,6 +924,17 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const double U, const int N) const
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      return ElCLib::DN(U, std::get<gp_Lin2d>(myCurveData), N);
+    case GeomAbs_Circle:
+      return ElCLib::DN(U, std::get<gp_Circ2d>(myCurveData), N);
+    case GeomAbs_Ellipse:
+      return ElCLib::DN(U, std::get<gp_Elips2d>(myCurveData), N);
+    case GeomAbs_Hyperbola:
+      return ElCLib::DN(U, std::get<gp_Hypr2d>(myCurveData), N);
+    case GeomAbs_Parabola:
+      return ElCLib::DN(U, std::get<gp_Parab2d>(myCurveData), N);
+
     case GeomAbs_BezierCurve:
       return myCurve->DN(U, N);
 
@@ -893,14 +983,14 @@ double Geom2dAdaptor_Curve::Resolution(const double Ruv) const
     case GeomAbs_Line:
       return Ruv;
     case GeomAbs_Circle: {
-      double R = occ::down_cast<Geom2d_Circle>(myCurve)->Circ2d().Radius();
+      double R = std::get<gp_Circ2d>(myCurveData).Radius();
       if (R > Ruv / 2.)
         return 2 * std::asin(Ruv / (2 * R));
       else
         return 2 * M_PI;
     }
     case GeomAbs_Ellipse: {
-      return Ruv / occ::down_cast<Geom2d_Ellipse>(myCurve)->MajorRadius();
+      return Ruv / std::get<gp_Elips2d>(myCurveData).MajorRadius();
     }
     case GeomAbs_BezierCurve: {
       double res;
@@ -928,7 +1018,7 @@ gp_Lin2d Geom2dAdaptor_Curve::Line() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Line,
                                  "Geom2dAdaptor_Curve::Line() - curve is not a Line");
-  return occ::down_cast<Geom2d_Line>(myCurve)->Lin2d();
+  return std::get<gp_Lin2d>(myCurveData);
 }
 
 //=================================================================================================
@@ -937,7 +1027,7 @@ gp_Circ2d Geom2dAdaptor_Curve::Circle() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Circle,
                                  "Geom2dAdaptor_Curve::Circle() - curve is not a Circle");
-  return occ::down_cast<Geom2d_Circle>(myCurve)->Circ2d();
+  return std::get<gp_Circ2d>(myCurveData);
 }
 
 //=================================================================================================
@@ -946,7 +1036,7 @@ gp_Elips2d Geom2dAdaptor_Curve::Ellipse() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Ellipse,
                                  "Geom2dAdaptor_Curve::Ellipse() - curve is not an Ellipse");
-  return occ::down_cast<Geom2d_Ellipse>(myCurve)->Elips2d();
+  return std::get<gp_Elips2d>(myCurveData);
 }
 
 //=================================================================================================
@@ -955,7 +1045,7 @@ gp_Hypr2d Geom2dAdaptor_Curve::Hyperbola() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Hyperbola,
                                  "Geom2dAdaptor_Curve::Hyperbola() - curve is not a Hyperbola");
-  return occ::down_cast<Geom2d_Hyperbola>(myCurve)->Hypr2d();
+  return std::get<gp_Hypr2d>(myCurveData);
 }
 
 //=================================================================================================
@@ -964,7 +1054,7 @@ gp_Parab2d Geom2dAdaptor_Curve::Parabola() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Parabola,
                                  "Geom2dAdaptor_Curve::Parabola() - curve is not a Parabola");
-  return occ::down_cast<Geom2d_Parabola>(myCurve)->Parab2d();
+  return std::get<gp_Parab2d>(myCurveData);
 }
 
 //=================================================================================================

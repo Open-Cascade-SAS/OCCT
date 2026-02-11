@@ -160,26 +160,26 @@ public:
   //! parametric direction. The bounds of the surface are
   //! not changed, but the given parametric direction is
   //! reversed. Hence the orientation of the surface is reversed.
-  Standard_EXPORT void UReverse() override;
+  Standard_EXPORT void UReverse() final;
 
   //! Computes the u parameter on the modified
   //! surface, produced by when reversing its u
   //! parametric direction, for any point of u parameter U on this patch.
-  Standard_EXPORT double UReversedParameter(const double U) const override;
+  Standard_EXPORT double UReversedParameter(const double U) const final;
 
   //! Changes the orientation of this patch in the v
   //! parametric direction. The bounds of the surface are
   //! not changed, but the given parametric direction is
   //! reversed. Hence the orientation of the surface is reversed.
-  Standard_EXPORT void VReverse() override;
+  Standard_EXPORT void VReverse() final;
 
   //! Computes the v parameter on the modified
   //! surface, produced by when reversing its v
   //! parametric direction, for any point of v parameter V on this patch.
-  Standard_EXPORT double VReversedParameter(const double V) const override;
+  Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this patch.
-  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const final;
 
   //! Returns the continuity of the surface :
   //! C0 : only geometric continuity,
@@ -187,51 +187,51 @@ public:
   //! C2 : continuity of the second derivative all along the Surface,
   //! C3 : continuity of the third derivative all along the Surface,
   //! CN : the order of continuity is infinite.
-  Standard_EXPORT GeomAbs_Shape Continuity() const override;
+  Standard_EXPORT GeomAbs_Shape Continuity() const final;
 
   //! Returns true if this patch is closed in the given parametric direction.
-  Standard_EXPORT bool IsUClosed() const override;
+  Standard_EXPORT bool IsUClosed() const final;
 
   //! Returns true if this patch is closed in the given parametric direction.
-  Standard_EXPORT bool IsVClosed() const override;
+  Standard_EXPORT bool IsVClosed() const final;
 
   //! Returns true if the order of derivation in the U parametric
   //! direction is N.
   //! Raised if N < 0.
-  Standard_EXPORT bool IsCNu(const int N) const override;
+  Standard_EXPORT bool IsCNu(const int N) const final;
 
   //! Returns true if the order of derivation in the V parametric
   //! direction is N.
   //! Raised if N < 0.
-  Standard_EXPORT bool IsCNv(const int N) const override;
+  Standard_EXPORT bool IsCNv(const int N) const final;
 
   //! Returns true if this patch is periodic and not trimmed in the given
   //! parametric direction.
-  Standard_EXPORT bool IsUPeriodic() const override;
+  Standard_EXPORT bool IsUPeriodic() const final;
 
   //! Returns the period of this patch in the u
   //! parametric direction.
   //! raises if the surface is not uperiodic.
-  Standard_EXPORT double UPeriod() const override;
+  Standard_EXPORT double UPeriod() const final;
 
   //! Returns true if this patch is periodic and not trimmed in the given
   //! parametric direction.
-  Standard_EXPORT bool IsVPeriodic() const override;
+  Standard_EXPORT bool IsVPeriodic() const final;
 
   //! Returns the period of this patch in the v
   //! parametric direction.
   //! raises if the surface is not vperiodic.
   //! value and derivatives
-  Standard_EXPORT double VPeriod() const override;
+  Standard_EXPORT double VPeriod() const final;
 
   //! computes the U isoparametric curve.
-  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
   //! Computes the V isoparametric curve.
-  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Can be raised if the basis surface is an OffsetSurface.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
 
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
@@ -241,7 +241,7 @@ public:
                           const double V,
                           gp_Pnt&      P,
                           gp_Vec&      D1U,
-                          gp_Vec&      D1V) const override;
+                          gp_Vec&      D1V) const final;
 
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
@@ -254,7 +254,7 @@ public:
                           gp_Vec&      D1V,
                           gp_Vec&      D2U,
                           gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const override;
+                          gp_Vec&      D2UV) const final;
 
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
@@ -271,7 +271,7 @@ public:
                           gp_Vec&      D3U,
                           gp_Vec&      D3V,
                           gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const override;
+                          gp_Vec&      D3UVV) const final;
 
   //! The returned derivative has the same orientation as the
   //! derivative of the basis surface even if the trimmed surface
@@ -279,16 +279,13 @@ public:
   //! Warning! UndefinedDerivative raised if the continuity of the surface is not CNu in the U
   //! parametric direction and CNv in the V parametric direction.
   //! RangeError Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this patch.
   //! Warning
   //! As a consequence, the basis surface included in the
   //! data structure of this patch is also modified.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) final;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -304,7 +301,7 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const override;
+  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const final;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -321,13 +318,13 @@ public:
   //!   me->ParametricTransformation(T)
   //! @endcode
   //! This method calls the basis surface method.
-  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const final;
 
   //! Creates a new object which is a copy of this patch.
-  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const final;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const final;
 
   DEFINE_STANDARD_RTTIEXT(Geom_RectangularTrimmedSurface, Geom_BoundedSurface)
 

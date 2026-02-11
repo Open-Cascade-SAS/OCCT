@@ -23,7 +23,12 @@
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Surface.hxx>
 #include <gp_Ax1.hxx>
+#include <gp_Cone.hxx>
+#include <gp_Cylinder.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Pln.hxx>
+#include <gp_Sphere.hxx>
+#include <gp_Torus.hxx>
 #include <gp_XYZ.hxx>
 #include <Standard_NullObject.hxx>
 #include <NCollection_Array1.hxx>
@@ -84,8 +89,17 @@ public:
   };
 
   //! Variant type for surface-specific evaluation data.
-  using SurfaceDataVariant = std::
-    variant<std::monostate, ExtrusionData, RevolutionData, OffsetData, BezierData, BSplineData>;
+  using SurfaceDataVariant = std::variant<std::monostate,
+                                          gp_Pln,
+                                          gp_Cylinder,
+                                          gp_Cone,
+                                          gp_Sphere,
+                                          gp_Torus,
+                                          ExtrusionData,
+                                          RevolutionData,
+                                          OffsetData,
+                                          BezierData,
+                                          BSplineData>;
 
 public:
   GeomAdaptor_Surface()

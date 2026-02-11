@@ -147,14 +147,14 @@ public:
   //! As a consequence:
   //! - UReverse reverses the direction of the axis of
   //! revolution of this surface,
-  Standard_EXPORT void UReverse() override;
+  Standard_EXPORT void UReverse() final;
 
   //! Computes the u parameter on the modified
   //! surface, when reversing its u parametric
   //! direction, for any point of u parameter U on this surface of revolution.
   //! In the case of a revolved surface:
   //! - UReversedParameter returns 2.*Pi - U
-  Standard_EXPORT double UReversedParameter(const double U) const override;
+  Standard_EXPORT double UReversedParameter(const double U) const final;
 
   //! Changes the orientation of this surface of revolution
   //! in the v parametric direction. The bounds of the
@@ -163,7 +163,7 @@ public:
   //! surface is reversed.
   //! As a consequence:
   //! - VReverse reverses the meridian of this surface of revolution.
-  Standard_EXPORT void VReverse() override;
+  Standard_EXPORT void VReverse() final;
 
   //! Computes the v parameter on the modified
   //! surface, when reversing its v parametric
@@ -172,7 +172,7 @@ public:
   //! - VReversedParameter returns the reversed
   //! parameter given by the function
   //! ReversedParameter called with V on the meridian.
-  Standard_EXPORT double VReversedParameter(const double V) const override;
+  Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Computes the parameters on the transformed surface for
   //! the transform of the point of parameters U,V on <me>.
@@ -188,7 +188,7 @@ public:
   //!   me->TransformParameters(U,V,T)
   //! @endcode
   //! This method multiplies V by BasisCurve()->ParametricTransformation(T)
-  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const override;
+  Standard_EXPORT void TransformParameters(double& U, double& V, const gp_Trsf& T) const final;
 
   //! Returns a 2d transformation used to find the new
   //! parameters of a point on the transformed surface.
@@ -206,49 +206,49 @@ public:
   //! @endcode
   //! This method returns a scale centered on the
   //! U axis with BasisCurve()->ParametricTransformation(T)
-  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const override;
+  Standard_EXPORT gp_GTrsf2d ParametricTransformation(const gp_Trsf& T) const final;
 
   //! Returns the parametric bounds U1, U2 , V1 and V2 of this surface.
   //! A surface of revolution is always complete, so U1 = 0, U2 = 2*PI.
-  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const override;
+  Standard_EXPORT void Bounds(double& U1, double& U2, double& V1, double& V2) const final;
 
   //! IsUClosed always returns true.
-  Standard_EXPORT bool IsUClosed() const override;
+  Standard_EXPORT bool IsUClosed() const final;
 
   //! IsVClosed returns true if the meridian of this
   //! surface of revolution is closed.
-  Standard_EXPORT bool IsVClosed() const override;
+  Standard_EXPORT bool IsVClosed() const final;
 
   //! IsCNu always returns true.
-  Standard_EXPORT bool IsCNu(const int N) const override;
+  Standard_EXPORT bool IsCNu(const int N) const final;
 
   //! IsCNv returns true if the degree of continuity of the
   //! meridian of this surface of revolution is at least N.
   //! Raised if N < 0.
-  Standard_EXPORT bool IsCNv(const int N) const override;
+  Standard_EXPORT bool IsCNv(const int N) const final;
 
   //! Returns True.
-  Standard_EXPORT bool IsUPeriodic() const override;
+  Standard_EXPORT bool IsUPeriodic() const final;
 
   //! IsVPeriodic returns true if the meridian of this
   //! surface of revolution is periodic.
-  Standard_EXPORT bool IsVPeriodic() const override;
+  Standard_EXPORT bool IsVPeriodic() const final;
 
   //! Computes the U isoparametric curve of this surface
   //! of revolution. It is the curve obtained by rotating the
   //! meridian through an angle U about the axis of revolution.
-  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
   //! Computes the U isoparametric curve of this surface
   //! of revolution. It is the curve obtained by rotating the
   //! meridian through an angle U about the axis of revolution.
-  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const override;
+  Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Computes the point P (U, V) on the surface.
   //! U is the angle of the rotation around the revolution axis.
   //! The direction of this axis gives the sense of rotation.
   //! V is the parameter of the revolved curve.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
+  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
 
   //! Computes the current point and the first derivatives
   //! in the directions U and V.
@@ -257,7 +257,7 @@ public:
                           const double V,
                           gp_Pnt&      P,
                           gp_Vec&      D1U,
-                          gp_Vec&      D1V) const override;
+                          gp_Vec&      D1V) const final;
 
   //! Computes the current point, the first and the second derivatives
   //! in the directions U and V.
@@ -269,7 +269,7 @@ public:
                           gp_Vec&      D1V,
                           gp_Vec&      D2U,
                           gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const override;
+                          gp_Vec&      D2UV) const final;
 
   //! Computes the current point, the first,the second and the third
   //! derivatives in the directions U and V.
@@ -285,7 +285,7 @@ public:
                           gp_Vec&      D3U,
                           gp_Vec&      D3V,
                           gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const override;
+                          gp_Vec&      D3UVV) const final;
 
   //! Computes the derivative of order Nu in the direction u and
   //! Nv in the direction v.
@@ -300,19 +300,16 @@ public:
   //! else P is between discontinuities
   //! can be evaluated using methods of
   //! global evaluations P = S( U ,V )
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const override;
+  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this surface of revolution.
-  Standard_EXPORT void Transform(const gp_Trsf& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf& T) final;
 
   //! Creates a new object which is a copy of this surface of revolution.
-  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const override;
+  Standard_EXPORT occ::handle<Geom_Geometry> Copy() const final;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const final;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)
 
