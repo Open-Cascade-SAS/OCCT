@@ -8,6 +8,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_Array1_Test.cxx
   NCollection_Array2_Test.cxx
   NCollection_BaseAllocator_Test.cxx
+  NCollection_CellFilter_Test.cxx
   NCollection_DataMap_Test.cxx
   NCollection_DoubleMap_Test.cxx
   NCollection_FlatDataMap_Test.cxx
@@ -21,6 +22,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_PackedMap_Test.cxx
   NCollection_Sequence_Test.cxx
   NCollection_SparseArray_Test.cxx
+  NCollection_UBTree_Test.cxx
   NCollection_Vec4_Test.cxx
   NCollection_Vector_Test.cxx
   OSD_Path_Test.cxx

@@ -323,6 +323,24 @@ public:
     return lookup(theKey, p);
   }
 
+  //! Seek returns pointer to key in map. Returns NULL if not found.
+  const TheKeyType* Seek(const TheKeyType& theKey) const
+  {
+    MapNode* p;
+    if (!lookup(theKey, p))
+      return nullptr;
+    return &p->Value();
+  }
+
+  //! ChangeSeek returns modifiable pointer to key in map. Returns NULL if not found.
+  TheKeyType* ChangeSeek(const TheKeyType& theKey)
+  {
+    MapNode* p;
+    if (!lookup(theKey, p))
+      return nullptr;
+    return &p->ChangeValue();
+  }
+
   //! Remove
   bool Remove(const TheKeyType& K)
   {

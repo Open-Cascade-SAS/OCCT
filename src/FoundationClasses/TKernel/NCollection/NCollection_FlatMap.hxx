@@ -338,6 +338,28 @@ public:
     return findSlot(theKey).has_value();
   }
 
+  //! Seek returns pointer to key in map. Returns NULL if not found.
+  const TheKeyType* Seek(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return nullptr;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return nullptr;
+    return &mySlots[*aIdx].Key();
+  }
+
+  //! ChangeSeek returns modifiable pointer to key in map. Returns NULL if not found.
+  TheKeyType* ChangeSeek(const TheKeyType& theKey)
+  {
+    if (mySize == 0)
+      return nullptr;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return nullptr;
+    return &mySlots[*aIdx].Key();
+  }
+
 public:
   // **************** Modification methods ****************
 

@@ -97,7 +97,7 @@ enum NCollection_CellFilter_Action
  *   bool IsEqual (const Target& theT1, const Target& theT2);
  *
  * - method Inspect() performing necessary actions on the candidate target
- *   object (usially comparison with the currently checked bullet object):
+ *   object (usually comparison with the currently checked bullet object):
  *
  *   NCollection_CellFilter_Action Inspect (const Target& theObject);
  *
@@ -224,22 +224,14 @@ public:
     iterateInspect(myDim - 1, aCell, aCellMin, aCellMax, theInspector);
   }
 
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-public: // work-around against obsolete SUN WorkShop 5.3 compiler
-#else
 protected:
-#endif
 
   /**
    * Auxiliary class for storing points belonging to the cell as the list
    */
   struct ListNode
   {
-    ListNode()
-    {
-      // Empty constructor is forbidden.
-      throw Standard_NoSuchObject("NCollection_CellFilter::ListNode()");
-    }
+    ListNode() = delete;
 
     Target    Object;
     ListNode* Next;
@@ -261,9 +253,10 @@ protected:
         : index(theCellSize.Size()),
           Objects(nullptr)
     {
-      for (int i = 0; i < theCellSize.Size(); i++)
+      for (size_t i = 0; i < theCellSize.Size(); i++)
       {
-        double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
+        double aVal =
+          (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
         // If the value of index is greater than
         // INT_MAX it is decreased correspondingly for the value of INT_MAX. If the value
         // of index is less than INT_MIN it is increased correspondingly for the absolute
@@ -274,22 +267,30 @@ protected:
       }
     }
 
-    //! Copy constructor: ensure that list is not deleted twice
+    //! Copy constructor
     Cell(const Cell& theOther)
-        : index(theOther.index.Size())
+        : index(theOther.index.Size()),
+          Objects(theOther.Objects)
     {
-      (*this) = theOther;
+      const size_t aDim = theOther.index.Size();
+      for (size_t anIdx = 0; anIdx < aDim; anIdx++)
+        index[anIdx] = theOther.index[anIdx];
     }
 
-    //! Assignment operator: ensure that list is not deleted twice
-    void operator=(const Cell& theOther) noexcept
+    //! Move constructor: transfers ownership of the object list
+    Cell(Cell&& theOther) noexcept
+        : index(std::move(theOther.index)),
+          Objects(theOther.Objects)
     {
-      int aDim = int(theOther.index.Size());
-      for (int anIdx = 0; anIdx < aDim; anIdx++)
-        index[anIdx] = theOther.index[anIdx];
+      theOther.Objects = nullptr;
+    }
 
-      Objects                   = theOther.Objects;
-      ((Cell&)theOther).Objects = nullptr;
+    Cell& operator=(Cell&& theOther) noexcept
+    {
+      index = std::move(theOther.index);
+      Objects = theOther.Objects;
+      theOther.Objects = nullptr;
+      return *this;
     }
 
     //! Destructor; calls destructors for targets contained in the list
@@ -304,8 +305,10 @@ protected:
     //! Compare cell with other one
     bool IsEqual(const Cell& theOther) const noexcept
     {
-      int aDim = int(theOther.index.Size());
-      for (int i = 0; i < aDim; i++)
+      const size_t aDim = index.Size();
+      if (aDim != theOther.index.Size())
+        return false;
+      for (size_t i = 0; i < aDim; i++)
         if (index[i] != theOther.index[i])
           return false;
       return true;
@@ -322,7 +325,6 @@ protected:
   {
     size_t operator()(const Cell& theCell) const noexcept
     {
-      // number of bits per each dimension in the hash code
       const std::size_t aDim = theCell.index.Size();
       return opencascade::hashBytes(&theCell.index[0],
                                     static_cast<int>(aDim * sizeof(Cell_IndexType)));
@@ -351,7 +353,7 @@ protected:
   void add(const Cell& theCell, const Target& theTarget)
   {
     // add a new cell or get reference to existing one
-    Cell& aMapCell = (Cell&)myCells.Added(theCell);
+    Cell& aMapCell = const_cast<Cell&>(myCells.Added(theCell));
 
     // create a new list node and add it to the beginning of the list
     ListNode* aNode = (ListNode*)myAllocator->Allocate(sizeof(ListNode));
@@ -387,27 +389,31 @@ protected:
   //! Remove the target object from the specified cell
   void remove(const Cell& theCell, const Target& theTarget)
   {
-    // check if any objects are recorded in that cell
-    if (!myCells.Contains(theCell))
+    // single-lookup: get modifiable pointer to cell in map
+    Cell* aMapCell = myCells.ChangeSeek(theCell);
+    if (!aMapCell)
       return;
 
     // iterate by objects in the cell and check each
-    Cell&     aMapCell = (Cell&)myCells.Added(theCell);
-    ListNode* aNode    = aMapCell.Objects;
-    ListNode* aPrev    = nullptr;
+    ListNode* aNode = aMapCell->Objects;
+    ListNode* aPrev = nullptr;
     while (aNode)
     {
       ListNode* aNext = aNode->Next;
       if (Inspector::IsEqual(aNode->Object, theTarget))
       {
         aNode->Object.~Target();
-        (aPrev ? aPrev->Next : aMapCell.Objects) = aNext;
+        (aPrev ? aPrev->Next : aMapCell->Objects) = aNext;
         // note that aNode itself need not to be freed, since IncAllocator is used
       }
       else
         aPrev = aNode;
       aNode = aNext;
     }
+
+    // cleanup empty cell to prevent dead cell accumulation
+    if (!aMapCell->Objects)
+      myCells.Remove(theCell);
   }
 
   //! Internal removal function, performing iteration for adjacent cells
@@ -437,14 +443,14 @@ protected:
   //! Inspect the target objects in the specified cell.
   void inspect(const Cell& theCell, Inspector& theInspector)
   {
-    // check if any objects are recorded in that cell
-    if (!myCells.Contains(theCell))
+    // single-lookup: get modifiable pointer to cell in map
+    Cell* aMapCell = myCells.ChangeSeek(theCell);
+    if (!aMapCell)
       return;
 
     // iterate by objects in the cell and check each
-    Cell&     aMapCell = (Cell&)myCells.Added(theCell);
-    ListNode* aNode    = aMapCell.Objects;
-    ListNode* aPrev    = nullptr;
+    ListNode* aNode = aMapCell->Objects;
+    ListNode* aPrev = nullptr;
     while (aNode)
     {
       ListNode*                     aNext    = aNode->Next;
@@ -453,13 +459,17 @@ protected:
       if (anAction == CellFilter_Purge)
       {
         aNode->Object.~Target();
-        (aPrev ? aPrev->Next : aMapCell.Objects) = aNext;
+        (aPrev ? aPrev->Next : aMapCell->Objects) = aNext;
         // note that aNode itself need not to be freed, since IncAllocator is used
       }
       else
         aPrev = aNode;
       aNode = aNext;
     }
+
+    // cleanup empty cell to prevent dead cell accumulation
+    if (!aMapCell->Objects)
+      myCells.Remove(theCell);
   }
 
   //! Inspect the target objects in the specified range of the cells
