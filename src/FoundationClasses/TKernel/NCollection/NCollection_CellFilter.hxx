@@ -165,7 +165,7 @@ public:
   void Add(const Target& theTarget, const Point& thePnt)
   {
     Cell aCell(thePnt, myCellSize);
-    add(aCell, theTarget);
+    add(aCell.index, theTarget);
   }
 
   //! Adds a target object for further search in the range of cells
@@ -176,9 +176,9 @@ public:
     // get cells range by minimal and maximal coordinates
     Cell aCellMin(thePntMin, myCellSize);
     Cell aCellMax(thePntMax, myCellSize);
-    Cell aCell = aCellMin;
+    Cell aCell(aCellMin.index);
     // add object recursively into all cells in range
-    iterateAdd(myDim - 1, aCell, aCellMin, aCellMax, theTarget);
+    iterateAdd(myDim - 1, aCell.index, aCellMin, aCellMax, theTarget);
   }
 
   //! Find a target object at a point and remove it from the structures.
@@ -199,7 +199,7 @@ public:
     // get cells range by minimal and maximal coordinates
     Cell aCellMin(thePntMin, myCellSize);
     Cell aCellMax(thePntMax, myCellSize);
-    Cell aCell = aCellMin;
+    Cell aCell(aCellMin.index);
     // remove object recursively from all cells in range
     iterateRemove(myDim - 1, aCell, aCellMin, aCellMax, theTarget);
   }
@@ -219,7 +219,7 @@ public:
     // get cells range by minimal and maximal coordinates
     Cell aCellMin(thePntMin, myCellSize);
     Cell aCellMax(thePntMax, myCellSize);
-    Cell aCell = aCellMin;
+    Cell aCell(aCellMin.index);
     // inspect object recursively into all cells in range
     iterateInspect(myDim - 1, aCell, aCellMin, aCellMax, theInspector);
   }
@@ -237,7 +237,8 @@ protected:
   };
 
   //! Cell index type.
-  typedef int Cell_IndexType;
+  typedef int                                        Cell_IndexType;
+  typedef NCollection_LocalArray<Cell_IndexType, 10> CellIndex;
 
   /**
    * Auxiliary structure representing a cell in the space.
@@ -252,7 +253,7 @@ protected:
         : index(theCellSize.Size()),
           Objects(nullptr)
     {
-      for (size_t i = 0; i < theCellSize.Size(); i++)
+      for (int i = 0; i < theCellSize.Size(); i++)
       {
         double aVal = (double)(Inspector::Coord(i, thePnt) / theCellSize(theCellSize.Lower() + i));
         // If the value of index is greater than
@@ -265,14 +266,12 @@ protected:
       }
     }
 
-    //! Copy constructor
-    Cell(const Cell& theOther)
-        : index(theOther.index.Size()),
-          Objects(theOther.Objects)
+    //! Constructor from cell index; creates a lookup-only cell (no object list).
+    Cell(const CellIndex& theIndex)
+        : index(theIndex.Size()),
+          Objects(nullptr)
     {
-      const size_t aDim = theOther.index.Size();
-      for (size_t anIdx = 0; anIdx < aDim; anIdx++)
-        index[anIdx] = theOther.index[anIdx];
+      std::memcpy(index, theIndex, theIndex.Size() * sizeof(Cell_IndexType));
     }
 
     //! Move constructor: transfers ownership of the object list
@@ -315,8 +314,8 @@ protected:
     bool operator==(const Cell& theOther) const noexcept { return IsEqual(theOther); }
 
   public:
-    NCollection_LocalArray<Cell_IndexType, 10> index;
-    ListNode*                                  Objects;
+    CellIndex index;
+    ListNode* Objects;
   };
 
   struct CellHasher
@@ -348,10 +347,10 @@ protected:
   }
 
   //! Add a new target object into the specified cell
-  void add(const Cell& theCell, const Target& theTarget)
+  void add(const CellIndex& theIndex, const Target& theTarget)
   {
     // add a new cell or get reference to existing one
-    Cell& aMapCell = const_cast<Cell&>(myCells.Added(theCell));
+    Cell& aMapCell = const_cast<Cell&>(myCells.TryEmplaced(theIndex));
 
     // create a new list node and add it to the beginning of the list
     ListNode* aNode = (ListNode*)myAllocator->Allocate(sizeof(ListNode));
@@ -363,23 +362,23 @@ protected:
   //! Internal addition function, performing iteration for adjacent cells
   //! by one dimension; called recursively to cover all dimensions
   void iterateAdd(int           idim,
-                  Cell&         theCell,
-                  const Cell&   theCellMin,
-                  const Cell&   theCellMax,
+                  CellIndex&    theIndex,
+                  const Cell&   theMinIndex,
+                  const Cell&   theMaxIndex,
                   const Target& theTarget)
   {
-    const Cell_IndexType aStart = theCellMin.index[idim];
-    const Cell_IndexType anEnd  = theCellMax.index[idim];
+    const Cell_IndexType aStart = theMinIndex.index[idim];
+    const Cell_IndexType anEnd  = theMaxIndex.index[idim];
     for (Cell_IndexType i = aStart; i <= anEnd; ++i)
     {
-      theCell.index[idim] = i;
+      theIndex[idim] = i;
       if (idim) // recurse
       {
-        iterateAdd(idim - 1, theCell, theCellMin, theCellMax, theTarget);
+        iterateAdd(idim - 1, theIndex, theMinIndex, theMaxIndex, theTarget);
       }
       else // add to this cell
       {
-        add(theCell, theTarget);
+        add(theIndex, theTarget);
       }
     }
   }

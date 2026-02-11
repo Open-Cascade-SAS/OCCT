@@ -20,12 +20,16 @@
 
 #include <cstring>
 #include <algorithm>
+#include <type_traits>
 
 //! Auxiliary class optimizing creation of array buffer
 //! (using stack allocation for small arrays).
 template <class theItem, int MAX_ARRAY_SIZE = 1024>
 class NCollection_LocalArray
 {
+  static_assert(std::is_trivially_copyable<theItem>::value,
+                "NCollection_LocalArray uses memcpy/realloc and requires trivially copyable types");
+
 public:
   explicit NCollection_LocalArray(const size_t theSize)
       : myPtr(myBuffer),
