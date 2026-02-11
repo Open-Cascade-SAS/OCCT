@@ -29,6 +29,10 @@ using namespace MathUtils;
 //! @param theA coefficient of x
 //! @param theB constant term
 //! @return result containing 0 or 1 root, or infinite solutions flag
+#ifdef _MSC_VER
+  #pragma warning(push)
+  #pragma warning(disable : 4723) // potential divide by 0 - guarded by IsZero() check
+#endif
 inline MathUtils::PolyResult Linear(double theA, double theB)
 {
   MathUtils::PolyResult aResult;
@@ -43,14 +47,19 @@ inline MathUtils::PolyResult Linear(double theA, double theB)
     {
       aResult.Status = MathUtils::Status::NoSolution;
     }
-    return aResult;
+  }
+  else
+  {
+    aResult.Status   = MathUtils::Status::OK;
+    aResult.NbRoots  = 1;
+    aResult.Roots[0] = -theB / theA;
   }
 
-  aResult.Status   = MathUtils::Status::OK;
-  aResult.NbRoots  = 1;
-  aResult.Roots[0] = -theB / theA;
   return aResult;
 }
+#ifdef _MSC_VER
+  #pragma warning(pop)
+#endif
 
 //! Solve quadratic equation: a*x^2 + b*x + c = 0
 //! Uses numerically stable formulas to avoid catastrophic cancellation.
