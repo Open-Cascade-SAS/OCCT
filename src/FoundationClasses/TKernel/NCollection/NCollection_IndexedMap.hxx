@@ -25,6 +25,8 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_OutOfRange.hxx>
+#include <functional>
+#include <optional>
 #include <type_traits>
 
 /**
@@ -378,6 +380,16 @@ public:
   {
     IndexedMapNode* p;
     return lookup(theKey1, p);
+  }
+
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey1) const
+  {
+    IndexedMapNode* p;
+    if (!lookup(theKey1, p))
+      return std::nullopt;
+    return std::cref(p->Value());
   }
 
   //! Substitute

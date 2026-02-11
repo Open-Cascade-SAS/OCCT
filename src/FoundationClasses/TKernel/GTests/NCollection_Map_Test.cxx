@@ -454,54 +454,34 @@ TEST(NCollection_MapTest, RangeBasedForLoop)
   EXPECT_TRUE(aFoundKeys.count(300) > 0);
 }
 
-// Tests for Seek method
-TEST(NCollection_MapTest, SeekFound)
+// Tests for Contained method
+TEST(NCollection_MapTest, ContainedFound)
 {
   NCollection_Map<int> aMap;
   aMap.Add(10);
   aMap.Add(20);
   aMap.Add(30);
 
-  const int* pKey = aMap.Seek(10);
-  ASSERT_NE(nullptr, pKey);
-  EXPECT_EQ(10, *pKey);
+  auto aResult = aMap.Contained(10);
+  ASSERT_TRUE(aResult.has_value());
+  EXPECT_EQ(10, aResult->get());
 
-  pKey = aMap.Seek(30);
-  ASSERT_NE(nullptr, pKey);
-  EXPECT_EQ(30, *pKey);
+  aResult = aMap.Contained(30);
+  ASSERT_TRUE(aResult.has_value());
+  EXPECT_EQ(30, aResult->get());
 }
 
-TEST(NCollection_MapTest, SeekNotFound)
+TEST(NCollection_MapTest, ContainedNotFound)
 {
   NCollection_Map<int> aMap;
   aMap.Add(10);
 
-  const int* pKey = aMap.Seek(99);
-  EXPECT_EQ(nullptr, pKey);
+  auto aResult = aMap.Contained(99);
+  EXPECT_FALSE(aResult.has_value());
 
-  // Seek on empty map
+  // Contained on empty map
   NCollection_Map<int> anEmptyMap;
-  EXPECT_EQ(nullptr, anEmptyMap.Seek(10));
-}
-
-TEST(NCollection_MapTest, ChangeSeekModify)
-{
-  NCollection_Map<TCollection_AsciiString> aMap;
-  aMap.Add("Hello");
-  aMap.Add("World");
-
-  TCollection_AsciiString* pKey = aMap.ChangeSeek("Hello");
-  ASSERT_NE(nullptr, pKey);
-  EXPECT_TRUE(pKey->IsEqual("Hello"));
-}
-
-TEST(NCollection_MapTest, ChangeSeekNotFound)
-{
-  NCollection_Map<int> aMap;
-  aMap.Add(10);
-
-  int* pKey = aMap.ChangeSeek(99);
-  EXPECT_EQ(nullptr, pKey);
+  EXPECT_FALSE(anEmptyMap.Contained(10).has_value());
 }
 
 // Test iterator equality using NCollection_StlIterator

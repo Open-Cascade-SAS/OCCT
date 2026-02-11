@@ -23,6 +23,8 @@
 #include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
 
+#include <functional>
+#include <optional>
 #include <type_traits>
 #include <utility>
 
@@ -341,22 +343,14 @@ public:
     return lookup(theKey, p);
   }
 
-  //! Seek returns pointer to key in map. Returns NULL if not found.
-  const TheKeyType* Seek(const TheKeyType& theKey) const
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey) const
   {
     MapNode* p;
     if (!lookup(theKey, p))
-      return nullptr;
-    return &p->Value();
-  }
-
-  //! ChangeSeek returns modifiable pointer to key in map. Returns NULL if not found.
-  TheKeyType* ChangeSeek(const TheKeyType& theKey)
-  {
-    MapNode* p;
-    if (!lookup(theKey, p))
-      return nullptr;
-    return &p->ChangeValue();
+      return std::nullopt;
+    return std::cref(p->Key());
   }
 
   //! Remove

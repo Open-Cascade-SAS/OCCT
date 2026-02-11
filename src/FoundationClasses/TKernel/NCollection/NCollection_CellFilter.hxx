@@ -386,13 +386,15 @@ protected:
   //! Remove the target object from the specified cell
   void remove(const Cell& theCell, const Target& theTarget)
   {
-    // single-lookup: get modifiable pointer to cell in map
-    Cell* aMapCell = myCells.ChangeSeek(theCell);
-    if (!aMapCell)
+    // Modifying the Objects field does not affect the hash, const_cast is safe
+    auto aMapCellOpt = myCells.Contained(theCell);
+    if (!aMapCellOpt)
       return;
 
+    Cell& aMapCell = const_cast<Cell&>(aMapCellOpt->get());
+
     // iterate by objects in the cell and check each
-    ListNode* aNode = aMapCell->Objects;
+    ListNode* aNode = aMapCell.Objects;
     ListNode* aPrev = nullptr;
     while (aNode)
     {
@@ -400,7 +402,7 @@ protected:
       if (Inspector::IsEqual(aNode->Object, theTarget))
       {
         aNode->Object.~Target();
-        (aPrev ? aPrev->Next : aMapCell->Objects) = aNext;
+        (aPrev ? aPrev->Next : aMapCell.Objects) = aNext;
         // note that aNode itself need not to be freed, since IncAllocator is used
       }
       else
@@ -409,7 +411,7 @@ protected:
     }
 
     // cleanup empty cell to prevent dead cell accumulation
-    if (!aMapCell->Objects)
+    if (!aMapCell.Objects)
       myCells.Remove(theCell);
   }
 
@@ -440,13 +442,15 @@ protected:
   //! Inspect the target objects in the specified cell.
   void inspect(const Cell& theCell, Inspector& theInspector)
   {
-    // single-lookup: get modifiable pointer to cell in map
-    Cell* aMapCell = myCells.ChangeSeek(theCell);
-    if (!aMapCell)
+    // Modifying the Objects field does not affect the hash, const_cast is safe
+    auto aMapCellOpt = myCells.Contained(theCell);
+    if (!aMapCellOpt)
       return;
 
+    Cell& aMapCell = const_cast<Cell&>(aMapCellOpt->get());
+
     // iterate by objects in the cell and check each
-    ListNode* aNode = aMapCell->Objects;
+    ListNode* aNode = aMapCell.Objects;
     ListNode* aPrev = nullptr;
     while (aNode)
     {
@@ -456,7 +460,7 @@ protected:
       if (anAction == CellFilter_Purge)
       {
         aNode->Object.~Target();
-        (aPrev ? aPrev->Next : aMapCell->Objects) = aNext;
+        (aPrev ? aPrev->Next : aMapCell.Objects) = aNext;
         // note that aNode itself need not to be freed, since IncAllocator is used
       }
       else
@@ -465,7 +469,7 @@ protected:
     }
 
     // cleanup empty cell to prevent dead cell accumulation
-    if (!aMapCell->Objects)
+    if (!aMapCell.Objects)
       myCells.Remove(theCell);
   }
 

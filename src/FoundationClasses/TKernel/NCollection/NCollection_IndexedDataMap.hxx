@@ -25,6 +25,8 @@
 #include <NCollection_ItemsView.hxx>
 
 #include <Standard_OutOfRange.hxx>
+#include <functional>
+#include <optional>
 #include <type_traits>
 #include <utility>
 
@@ -626,6 +628,30 @@ public:
   {
     IndexedDataMapNode* aNode;
     return static_cast<bool>(lookup(theKey1, aNode));
+  }
+
+  //! Contained returns optional pair of const references to key and value.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::pair<std::reference_wrapper<const TheKeyType>,
+                          std::reference_wrapper<const TheItemType>>>
+  Contained(const TheKeyType& theKey1) const
+  {
+    IndexedDataMapNode* aNode;
+    if (!lookup(theKey1, aNode))
+      return std::nullopt;
+    return std::make_pair(std::cref(aNode->Key()), std::cref(aNode->Value()));
+  }
+
+  //! Contained returns optional pair of const key reference and mutable value reference.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::pair<std::reference_wrapper<const TheKeyType>,
+                          std::reference_wrapper<TheItemType>>>
+  Contained(const TheKeyType& theKey1)
+  {
+    IndexedDataMapNode* aNode;
+    if (!lookup(theKey1, aNode))
+      return std::nullopt;
+    return std::make_pair(std::cref(aNode->Key()), std::ref(aNode->ChangeValue()));
   }
 
   //! Substitute

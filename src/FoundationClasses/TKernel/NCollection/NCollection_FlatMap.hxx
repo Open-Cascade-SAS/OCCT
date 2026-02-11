@@ -18,6 +18,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
+#include <functional>
 #include <new>
 #include <optional>
 #include <type_traits>
@@ -336,6 +337,18 @@ public:
     if (mySize == 0)
       return false;
     return findSlot(theKey).has_value();
+  }
+
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return std::nullopt;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return std::nullopt;
+    return std::cref(mySlots[*aIdx].Key());
   }
 
   //! Seek returns pointer to key in map. Returns NULL if not found.
