@@ -129,19 +129,19 @@ public:
   //! Computes the parameter on the reversed hyperbola,
   //! for the point of parameter U on this hyperbola.
   //! For a hyperbola, the returned value is -U.
-  Standard_EXPORT double ReversedParameter(const double U) const override;
+  Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Returns RealFirst from Standard.
-  Standard_EXPORT double FirstParameter() const override;
+  Standard_EXPORT double FirstParameter() const final;
 
   //! returns RealLast from Standard.
-  Standard_EXPORT double LastParameter() const override;
+  Standard_EXPORT double LastParameter() const final;
 
   //! Returns False.
-  Standard_EXPORT bool IsClosed() const override;
+  Standard_EXPORT bool IsClosed() const final;
 
   //! return False for an hyperbola.
-  Standard_EXPORT bool IsPeriodic() const override;
+  Standard_EXPORT bool IsPeriodic() const final;
 
   //! In the local coordinate system of the hyperbola the
   //! equation of the hyperbola is (X*X)/(A*A) - (Y*Y)/(B*B) = 1.0
@@ -188,7 +188,7 @@ public:
   //! If f is the distance between the location of the hyperbola
   //! and the Focus1 then the eccentricity e = f / MajorRadius.
   //! raised if MajorRadius = 0.0
-  Standard_EXPORT double Eccentricity() const override;
+  Standard_EXPORT double Eccentricity() const final;
 
   //! Computes the focal distance. It is the distance between the
   //! two focus of the hyperbola.
@@ -250,14 +250,14 @@ public:
   //! MinorRadius * std::sinh(U) * YDir
   //! where C is the center of the hyperbola , XDir the XDirection and
   //! YDir the YDirection of the hyperbola's local coordinate system.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
+  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const override;
+  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
@@ -265,21 +265,21 @@ public:
                           gp_Pnt2d&    P,
                           gp_Vec2d&    V1,
                           gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+                          gp_Vec2d&    V3) const final;
 
   //! For the point of parameter U of this hyperbola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
 
   //! Applies the transformation T to this hyperbola.
-  Standard_EXPORT void Transform(const gp_Trsf2d& T) override;
+  Standard_EXPORT void Transform(const gp_Trsf2d& T) final;
 
   //! Creates a new object which is a copy of this hyperbola.
-  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const override;
+  Standard_EXPORT occ::handle<Geom2d_Geometry> Copy() const final;
 
   //! Dumps the content of me into the stream
-  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;
+  Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const final;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Hyperbola, Geom2d_Conic)
 

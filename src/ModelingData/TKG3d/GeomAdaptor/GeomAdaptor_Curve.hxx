@@ -21,7 +21,12 @@
 #include <BSplCLib_Cache.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
+#include <gp_Circ.hxx>
 #include <gp_Dir.hxx>
+#include <gp_Elips.hxx>
+#include <gp_Hypr.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
 #include <Precision.hxx>
 #include <Standard_NullObject.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -63,7 +68,17 @@ public:
   };
 
   //! Variant type for curve-specific evaluation data.
-  using CurveDataVariant = std::variant<std::monostate, OffsetData, BezierData, BSplineData>;
+  //! Elementary curve primitives (gp_Lin, gp_Circ, etc.) are stored directly
+  //! to enable direct ElCLib dispatch without virtual calls.
+  using CurveDataVariant = std::variant<std::monostate,
+                                        gp_Lin,
+                                        gp_Circ,
+                                        gp_Elips,
+                                        gp_Hypr,
+                                        gp_Parab,
+                                        OffsetData,
+                                        BezierData,
+                                        BSplineData>;
 
 public:
   GeomAdaptor_Curve()

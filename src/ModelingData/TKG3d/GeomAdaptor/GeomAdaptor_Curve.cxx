@@ -26,6 +26,7 @@
 #include <Adaptor3d_Curve.hxx>
 #include <BSplCLib.hxx>
 #include <BSplCLib_Cache.hxx>
+#include <ElCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
@@ -88,6 +89,11 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
   else if (std::holds_alternative<BezierData>(myCurveData))
   {
     aCopy->myCurveData = BezierData{};
+  }
+  else
+  {
+    // Elementary curve types (gp_Lin, gp_Circ, etc.) are value types - direct copy
+    aCopy->myCurveData = myCurveData;
   }
 
   return aCopy;
@@ -210,22 +216,27 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
     else if (TheType == STANDARD_TYPE(Geom_Circle))
     {
       myTypeCurve = GeomAbs_Circle;
+      myCurveData = occ::down_cast<Geom_Circle>(C)->Circ();
     }
     else if (TheType == STANDARD_TYPE(Geom_Line))
     {
       myTypeCurve = GeomAbs_Line;
+      myCurveData = occ::down_cast<Geom_Line>(C)->Lin();
     }
     else if (TheType == STANDARD_TYPE(Geom_Ellipse))
     {
       myTypeCurve = GeomAbs_Ellipse;
+      myCurveData = occ::down_cast<Geom_Ellipse>(C)->Elips();
     }
     else if (TheType == STANDARD_TYPE(Geom_Parabola))
     {
       myTypeCurve = GeomAbs_Parabola;
+      myCurveData = occ::down_cast<Geom_Parabola>(C)->Parab();
     }
     else if (TheType == STANDARD_TYPE(Geom_Hyperbola))
     {
       myTypeCurve = GeomAbs_Hyperbola;
+      myCurveData = occ::down_cast<Geom_Hyperbola>(C)->Hypr();
     }
     else if (TheType == STANDARD_TYPE(Geom_BezierCurve))
     {
@@ -611,6 +622,26 @@ void GeomAdaptor_Curve::D0(const double U, gp_Pnt& P) const
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      P = ElCLib::Value(U, std::get<gp_Lin>(myCurveData));
+      break;
+
+    case GeomAbs_Circle:
+      P = ElCLib::Value(U, std::get<gp_Circ>(myCurveData));
+      break;
+
+    case GeomAbs_Ellipse:
+      P = ElCLib::Value(U, std::get<gp_Elips>(myCurveData));
+      break;
+
+    case GeomAbs_Hyperbola:
+      P = ElCLib::Value(U, std::get<gp_Hypr>(myCurveData));
+      break;
+
+    case GeomAbs_Parabola:
+      P = ElCLib::Value(U, std::get<gp_Parab>(myCurveData));
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U))
@@ -660,6 +691,26 @@ void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      ElCLib::D1(U, std::get<gp_Lin>(myCurveData), P, V);
+      break;
+
+    case GeomAbs_Circle:
+      ElCLib::D1(U, std::get<gp_Circ>(myCurveData), P, V);
+      break;
+
+    case GeomAbs_Ellipse:
+      ElCLib::D1(U, std::get<gp_Elips>(myCurveData), P, V);
+      break;
+
+    case GeomAbs_Hyperbola:
+      ElCLib::D1(U, std::get<gp_Hypr>(myCurveData), P, V);
+      break;
+
+    case GeomAbs_Parabola:
+      ElCLib::D1(U, std::get<gp_Parab>(myCurveData), P, V);
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U))
@@ -710,6 +761,27 @@ void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      ElCLib::D1(U, std::get<gp_Lin>(myCurveData), P, V1);
+      V2.SetCoord(0., 0., 0.);
+      break;
+
+    case GeomAbs_Circle:
+      ElCLib::D2(U, std::get<gp_Circ>(myCurveData), P, V1, V2);
+      break;
+
+    case GeomAbs_Ellipse:
+      ElCLib::D2(U, std::get<gp_Elips>(myCurveData), P, V1, V2);
+      break;
+
+    case GeomAbs_Hyperbola:
+      ElCLib::D2(U, std::get<gp_Hypr>(myCurveData), P, V1, V2);
+      break;
+
+    case GeomAbs_Parabola:
+      ElCLib::D2(U, std::get<gp_Parab>(myCurveData), P, V1, V2);
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U))
@@ -761,6 +833,29 @@ void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      ElCLib::D1(U, std::get<gp_Lin>(myCurveData), P, V1);
+      V2.SetCoord(0., 0., 0.);
+      V3.SetCoord(0., 0., 0.);
+      break;
+
+    case GeomAbs_Circle:
+      ElCLib::D3(U, std::get<gp_Circ>(myCurveData), P, V1, V2, V3);
+      break;
+
+    case GeomAbs_Ellipse:
+      ElCLib::D3(U, std::get<gp_Elips>(myCurveData), P, V1, V2, V3);
+      break;
+
+    case GeomAbs_Hyperbola:
+      ElCLib::D3(U, std::get<gp_Hypr>(myCurveData), P, V1, V2, V3);
+      break;
+
+    case GeomAbs_Parabola:
+      ElCLib::D2(U, std::get<gp_Parab>(myCurveData), P, V1, V2);
+      V3.SetCoord(0., 0., 0.);
+      break;
+
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U))
@@ -813,6 +908,21 @@ gp_Vec GeomAdaptor_Curve::DN(const double U, const int N) const
 {
   switch (myTypeCurve)
   {
+    case GeomAbs_Line:
+      return ElCLib::DN(U, std::get<gp_Lin>(myCurveData), N);
+
+    case GeomAbs_Circle:
+      return ElCLib::DN(U, std::get<gp_Circ>(myCurveData), N);
+
+    case GeomAbs_Ellipse:
+      return ElCLib::DN(U, std::get<gp_Elips>(myCurveData), N);
+
+    case GeomAbs_Hyperbola:
+      return ElCLib::DN(U, std::get<gp_Hypr>(myCurveData), N);
+
+    case GeomAbs_Parabola:
+      return ElCLib::DN(U, std::get<gp_Parab>(myCurveData), N);
+
     case GeomAbs_BezierCurve:
       return myCurve->DN(U, N);
 
@@ -856,14 +966,14 @@ double GeomAdaptor_Curve::Resolution(const double R3D) const
     case GeomAbs_Line:
       return R3D;
     case GeomAbs_Circle: {
-      double R = occ::down_cast<Geom_Circle>(myCurve)->Circ().Radius();
+      double R = std::get<gp_Circ>(myCurveData).Radius();
       if (R > R3D / 2.)
         return 2 * std::asin(R3D / (2 * R));
       else
         return 2 * M_PI;
     }
     case GeomAbs_Ellipse: {
-      return R3D / occ::down_cast<Geom_Ellipse>(myCurve)->MajorRadius();
+      return R3D / std::get<gp_Elips>(myCurveData).MajorRadius();
     }
     case GeomAbs_BezierCurve: {
       double res;
@@ -891,7 +1001,7 @@ gp_Lin GeomAdaptor_Curve::Line() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Line,
                                  "GeomAdaptor_Curve::Line() - curve is not a Line");
-  return occ::down_cast<Geom_Line>(myCurve)->Lin();
+  return std::get<gp_Lin>(myCurveData);
 }
 
 //=================================================================================================
@@ -900,7 +1010,7 @@ gp_Circ GeomAdaptor_Curve::Circle() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Circle,
                                  "GeomAdaptor_Curve::Circle() - curve is not a Circle");
-  return occ::down_cast<Geom_Circle>(myCurve)->Circ();
+  return std::get<gp_Circ>(myCurveData);
 }
 
 //=================================================================================================
@@ -909,7 +1019,7 @@ gp_Elips GeomAdaptor_Curve::Ellipse() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Ellipse,
                                  "GeomAdaptor_Curve::Ellipse() - curve is not an Ellipse");
-  return occ::down_cast<Geom_Ellipse>(myCurve)->Elips();
+  return std::get<gp_Elips>(myCurveData);
 }
 
 //=================================================================================================
@@ -918,7 +1028,7 @@ gp_Hypr GeomAdaptor_Curve::Hyperbola() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Hyperbola,
                                  "GeomAdaptor_Curve::Hyperbola() - curve is not a Hyperbola");
-  return occ::down_cast<Geom_Hyperbola>(myCurve)->Hypr();
+  return std::get<gp_Hypr>(myCurveData);
 }
 
 //=================================================================================================
@@ -927,7 +1037,7 @@ gp_Parab GeomAdaptor_Curve::Parabola() const
 {
   Standard_NoSuchObject_Raise_if(myTypeCurve != GeomAbs_Parabola,
                                  "GeomAdaptor_Curve::Parabola() - curve is not a Parabola");
-  return occ::down_cast<Geom_Parabola>(myCurve)->Parab();
+  return std::get<gp_Parab>(myCurveData);
 }
 
 //=================================================================================================
