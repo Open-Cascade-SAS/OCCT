@@ -411,7 +411,6 @@ public:
   //! if they contain exactly the same keys.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool IsEqual(const NCollection_Map& theOther) const
   {
     return NCollection_MapAlgo::IsEqual<NCollection_Map>(*this, theOther);
@@ -421,7 +420,6 @@ public:
   //! This function checks if this map contains all keys of another map.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool Contains(const NCollection_Map& theOther) const
   {
     return NCollection_MapAlgo::Contains<NCollection_Map>(*this, theOther);
@@ -433,7 +431,6 @@ public:
   //! (result of the boolean operation) can also be passed as one of operands.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   void Union(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Union<NCollection_Map>(*this, theLeft, theRight);
@@ -445,7 +442,6 @@ public:
   //! True if contents of this map is changed.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool Unite(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Unite<NCollection_Map>(*this, theOther);
@@ -454,7 +450,6 @@ public:
   //! Returns true if this and theMap have common elements.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool HasIntersection(const NCollection_Map& theMap) const
   {
     return NCollection_MapAlgo::HasIntersection<NCollection_Map>(*this, theMap);
@@ -466,7 +461,6 @@ public:
   //! boolean operation) can also be used as one of operands.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   void Intersection(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Intersection<NCollection_Map>(*this, theLeft, theRight);
@@ -478,7 +472,6 @@ public:
   //! of this map is changed.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool Intersect(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Intersect<NCollection_Map>(*this, theOther);
@@ -490,7 +483,6 @@ public:
   //! one. All previous content of this Map is cleared.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   void Subtraction(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Subtraction<NCollection_Map>(*this, theLeft, theRight);
@@ -503,7 +495,6 @@ public:
   //! Returns True if contents of this map is changed.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool Subtract(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Subtract<NCollection_Map>(*this, theOther);
@@ -515,7 +506,6 @@ public:
   //! cleared. This map (result of the boolean operation) can also be used as one of operands.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   void Difference(const NCollection_Map& theLeft, const NCollection_Map& theRight)
   {
     NCollection_MapAlgo::Difference<NCollection_Map>(*this, theLeft, theRight);
@@ -527,7 +517,6 @@ public:
   //! True if contents of this map is changed.
   Standard_DEPRECATED("This method will be removed right after 7.9. release. Use methods from "
                       "NCollection_MapAlgo.hxx instead.")
-
   bool Differ(const NCollection_Map& theOther)
   {
     return NCollection_MapAlgo::Differ<NCollection_Map>(*this, theOther);
