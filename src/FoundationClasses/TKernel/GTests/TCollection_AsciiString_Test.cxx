@@ -1570,3 +1570,119 @@ TEST(TCollection_AsciiStringTest, OCC11758_ComprehensiveConstructorsAndMethods)
     EXPECT_FALSE(d.IsDifferent(d.ToCString()));
   }
 }
+
+// Test: empty string has useful length 0.
+TEST(TCollection_AsciiStringTest, UsefullLength_EmptyString)
+{
+  TCollection_AsciiString aStr;
+  EXPECT_EQ(0, aStr.UsefullLength());
+}
+
+// Test: plain ASCII string with no trailing spaces.
+TEST(TCollection_AsciiStringTest, UsefullLength_AsciiNoTrailing)
+{
+  TCollection_AsciiString aStr("Hello");
+  EXPECT_EQ(5, aStr.UsefullLength());
+}
+
+// Test: ASCII string with trailing spaces.
+TEST(TCollection_AsciiStringTest, UsefullLength_TrailingSpaces)
+{
+  TCollection_AsciiString aStr("Hello   ");
+  EXPECT_EQ(5, aStr.UsefullLength());
+}
+
+// Test: ASCII string with trailing control characters.
+TEST(TCollection_AsciiStringTest, UsefullLength_TrailingControlChars)
+{
+  TCollection_AsciiString aStr("Hello");
+  // Append control characters (tab, newline, null-like)
+  aStr += '\t';
+  aStr += '\n';
+  aStr += '\r';
+  EXPECT_EQ(5, aStr.UsefullLength());
+}
+
+// Test: string consisting entirely of spaces.
+TEST(TCollection_AsciiStringTest, UsefullLength_AllSpaces)
+{
+  TCollection_AsciiString aStr("     ");
+  EXPECT_EQ(0, aStr.UsefullLength());
+}
+
+// Test: string consisting entirely of control characters.
+TEST(TCollection_AsciiStringTest, UsefullLength_AllControlChars)
+{
+  char                    aBuf[] = {'\t', '\n', '\r', '\0'};
+  TCollection_AsciiString aStr(aBuf);
+  EXPECT_EQ(0, aStr.UsefullLength());
+}
+
+// Test: single graphic character.
+TEST(TCollection_AsciiStringTest, UsefullLength_SingleChar)
+{
+  TCollection_AsciiString aStr("A");
+  EXPECT_EQ(1, aStr.UsefullLength());
+}
+
+// Test: single space character.
+TEST(TCollection_AsciiStringTest, UsefullLength_SingleSpace)
+{
+  TCollection_AsciiString aStr(" ");
+  EXPECT_EQ(0, aStr.UsefullLength());
+}
+
+// Test: mixed content with trailing whitespace.
+TEST(TCollection_AsciiStringTest, UsefullLength_MixedTrailing)
+{
+  TCollection_AsciiString aStr("Part Name  \t\n");
+  EXPECT_EQ(9, aStr.UsefullLength());
+}
+
+// Regression test: multibyte UTF-8 characters at the end of the string
+// must NOT be trimmed. The old byte-by-byte backward scan treated individual
+// UTF-8 bytes (>= 0x80) as non-graphic via std::isgraph().
+TEST(TCollection_AsciiStringTest, UsefullLength_Utf8AtEnd)
+{
+  // "Hello" followed by 2 CJK characters (U+4E16 U+754C):
+  // U+4E16 = 0xE4 0xB8 0x96
+  // U+754C = 0xE7 0x95 0x8C
+  TCollection_AsciiString aStr("Hello\xE4\xB8\x96\xE7\x95\x8C");
+  EXPECT_EQ(11, aStr.UsefullLength());
+}
+
+// Test: UTF-8 characters followed by trailing spaces are trimmed correctly.
+TEST(TCollection_AsciiStringTest, UsefullLength_Utf8ThenSpaces)
+{
+  // 6 Cyrillic characters (U+041F U+0440 U+0438 U+0432 U+0435 U+0442) in UTF-8 followed by spaces
+  // Each Cyrillic character is 2 bytes in UTF-8
+  TCollection_AsciiString aStr("\xD0\x9F\xD1\x80\xD0\xB8\xD0\xB2\xD0\xB5\xD1\x82   ");
+  // 12 bytes for Cyrillic text + 3 spaces = 15 total, useful = 12
+  EXPECT_EQ(12, aStr.UsefullLength());
+}
+
+// Test: string with only multibyte UTF-8 characters.
+TEST(TCollection_AsciiStringTest, UsefullLength_Utf8Only)
+{
+  // 2 CJK characters (U+65E5 U+672C) = 0xE6 0x97 0xA5 0xE6 0x9C 0xAC
+  TCollection_AsciiString aStr("\xE6\x97\xA5\xE6\x9C\xAC");
+  EXPECT_EQ(6, aStr.UsefullLength());
+}
+
+// Test: 4-byte UTF-8 character (emoji) at the end.
+TEST(TCollection_AsciiStringTest, UsefullLength_Utf8FourByteAtEnd)
+{
+  // U+1F600 (grinning face) = 0xF0 0x9F 0x98 0x80
+  TCollection_AsciiString aStr("Test\xF0\x9F\x98\x80");
+  EXPECT_EQ(8, aStr.UsefullLength());
+}
+
+// Test: UTF-8 content with trailing control characters.
+TEST(TCollection_AsciiStringTest, UsefullLength_Utf8ThenControlChars)
+{
+  // U+00C4 = 0xC3 0x84 (2-byte UTF-8) followed by control chars
+  TCollection_AsciiString aStr("\xC3\x84");
+  aStr += '\t';
+  aStr += '\n';
+  EXPECT_EQ(2, aStr.UsefullLength());
+}
