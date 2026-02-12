@@ -23,6 +23,7 @@ set(OCCT_TKernel_GTests_FILES
   NCollection_SparseArray_Test.cxx
   NCollection_Vec4_Test.cxx
   NCollection_Vector_Test.cxx
+  OSD_Parallel_Test.cxx
   OSD_Path_Test.cxx
   OSD_PerfMeter_Test.cxx
   Quantity_Color_Test.cxx

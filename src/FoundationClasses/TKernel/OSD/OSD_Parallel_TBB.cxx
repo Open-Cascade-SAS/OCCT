@@ -32,11 +32,10 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
   //=================================================================================================
 
-  void
-  OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
-                                UniversalIterator&      theEnd,
-                                const FunctorInterface& theFunctor,
-                                int                     theNbItems)
+  void OSD_Parallel::forEachExternal(UniversalIterator&      theBegin,
+                                     UniversalIterator&      theEnd,
+                                     const FunctorInterface& theFunctor,
+                                     int                     theNbItems)
 {
   #if TBB_VERSION_MAJOR >= 2021
   // task_scheduler_init is removed,
@@ -56,6 +55,35 @@ Standard_DISABLE_DEPRECATION_WARNINGS
     throw Standard_ProgramError(anException.what());
   }
   #endif
+}
+
+//=================================================================================================
+
+void OSD_Parallel::forIntExternal(int                           theBegin,
+                                  int                           theEnd,
+                                  const ForIntFunctorInterface& theFunctor,
+                                  int                           theGrainSize)
+{
+  if (theGrainSize <= 0)
+  {
+    tbb::parallel_for(tbb::blocked_range<int>(theBegin, theEnd),
+                      [&](const tbb::blocked_range<int>& theRange) {
+                        for (int anIndex = theRange.begin(); anIndex < theRange.end(); ++anIndex)
+                        {
+                          theFunctor(anIndex);
+                        }
+                      });
+  }
+  else
+  {
+    tbb::parallel_for(tbb::blocked_range<int>(theBegin, theEnd, theGrainSize),
+                      [&](const tbb::blocked_range<int>& theRange) {
+                        for (int anIndex = theRange.begin(); anIndex < theRange.end(); ++anIndex)
+                        {
+                          theFunctor(anIndex);
+                        }
+                      });
+  }
 }
 
 #endif /* HAVE_TBB */

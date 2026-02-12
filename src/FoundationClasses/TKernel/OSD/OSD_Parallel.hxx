@@ -14,6 +14,7 @@
 #ifndef OSD_Parallel_HeaderFile
 #define OSD_Parallel_HeaderFile
 
+#include <NCollection_LocalArray.hxx>
 #include <OSD_ThreadPool.hxx>
 #include <Standard_Type.hxx>
 #include <memory>
@@ -107,6 +108,36 @@ private:
   };
 
 protected:
+  //! Interface class for integer-range functors, used to dispatch
+  //! For() to TBB's parallel_for with blocked_range<int> instead of
+  //! type-erased parallel_for_each.
+  class ForIntFunctorInterface
+  {
+  public:
+    virtual ~ForIntFunctorInterface() = default;
+
+    //! Execute the functor for a given index.
+    virtual void operator()(int theIndex) const = 0;
+  };
+
+  //! Template wrapper for integer-range functors.
+  template <typename Functor>
+  class ForIntFunctorWrapper : public ForIntFunctorInterface
+  {
+  public:
+    ForIntFunctorWrapper(const Functor& theFunctor)
+        : myFunctor(theFunctor)
+    {
+    }
+
+    void operator()(int theIndex) const override { myFunctor(theIndex); }
+
+  private:
+    ForIntFunctorWrapper(const ForIntFunctorWrapper&)     = delete;
+    void           operator=(const ForIntFunctorWrapper&) = delete;
+    const Functor& myFunctor;
+  };
+
   // Note: UniversalIterator and FunctorInterface are made protected to be
   // accessible from specialization using threads (non-TBB).
 
@@ -284,6 +315,17 @@ private:
                                               const FunctorInterface& theFunctor,
                                               int                     theNbItems);
 
+  //! Integer-range parallel for using external threads library (TBB).
+  //! Uses tbb::parallel_for with blocked_range<int> instead of type-erased iterators.
+  //! @param theBegin     the first index (inclusive)
+  //! @param theEnd       the last  index (exclusive)
+  //! @param theFunctor   functor interface wrapping the actual functor
+  //! @param theGrainSize grain size for work partitioning; 0 means auto
+  Standard_EXPORT static void forIntExternal(int                           theBegin,
+                                             int                           theEnd,
+                                             const ForIntFunctorInterface& theFunctor,
+                                             int                           theGrainSize);
+
 public: //! @name public methods
   //! Returns TRUE if OCCT threads should be used instead of auxiliary threads library;
   //! default value is FALSE if alternative library has been enabled while OCCT building and TRUE
@@ -321,19 +363,45 @@ public: //! @name public methods
       for (InputIterator it(theBegin); it != theEnd; ++it)
         theFunctor(*it);
     }
+    else if (ToUseOcctThreads())
+    {
+      // Pre-collect iterator positions into array to avoid type erasure overhead
+      // (mutex per item, heap alloc per Clone(), dynamic_cast, virtual dispatch).
+      // Uses stack allocation for small collections via NCollection_LocalArray.
+      int aNbItems = theNbItems;
+      if (aNbItems < 0)
+      {
+        aNbItems = 0;
+        for (InputIterator it(theBegin); it != theEnd; ++it)
+          ++aNbItems;
+      }
+      if (aNbItems == 0)
+      {
+        return;
+      }
+      NCollection_LocalArray<InputIterator, 1024> aLocalBuf(aNbItems);
+      NCollection_Array1<InputIterator>           anIterArray(*aLocalBuf, 0, aNbItems - 1);
+      {
+        int anIdx = 0;
+        for (InputIterator it(theBegin); it != theEnd; ++it, ++anIdx)
+          anIterArray.SetValue(anIdx, it);
+      }
+      auto anIndexedFunctor = [&theFunctor, &anIterArray](int /*theThreadIndex*/,
+                                                          int theElemIndex) {
+        theFunctor(*anIterArray.Value(theElemIndex));
+      };
+      const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher           aPoolLauncher(
+        *aThreadPool,
+        std::min(aNbItems, aThreadPool->NbDefaultThreadsToLaunch()));
+      aPoolLauncher.Perform(0, aNbItems, anIndexedFunctor);
+    }
     else
     {
       UniversalIterator aBegin(new IteratorWrapper<InputIterator>(theBegin));
       UniversalIterator aEnd(new IteratorWrapper<InputIterator>(theEnd));
       FunctorWrapperIter<InputIterator, Functor> aFunctor(theFunctor);
-      if (ToUseOcctThreads())
-      {
-        forEachOcct(aBegin, aEnd, aFunctor, theNbItems);
-      }
-      else
-      {
-        forEachExternal(aBegin, aEnd, aFunctor, theNbItems);
-      }
+      forEachExternal(aBegin, aEnd, aFunctor, theNbItems);
     }
   }
 
@@ -369,11 +437,107 @@ public: //! @name public methods
     }
     else
     {
-      UniversalIterator          aBegin(new IteratorWrapper<int>(theBegin));
-      UniversalIterator          aEnd(new IteratorWrapper<int>(theEnd));
-      FunctorWrapperInt<Functor> aFunctor(theFunctor);
-      forEachExternal(aBegin, aEnd, aFunctor, aRange);
+      ForIntFunctorWrapper<Functor> aFunctor(theFunctor);
+      forIntExternal(theBegin, theEnd, aFunctor, 0);
     }
+  }
+
+  //! Parallelization of "for" loops with explicit grain size control, equivalent to:
+  //! @code
+  //!   for (int anIter = theBegin; anIter != theEnd; ++anIter) {
+  //!     theFunctor(anIter);
+  //!   }
+  //! @endcode
+  //! @param theBegin     the first index (inclusive)
+  //! @param theEnd       the last  index (exclusive)
+  //! @param theFunctor   functor providing an interface "void operator(int theIndex){}"
+  //!                     performing task for specified index
+  //! @param theGrainSize number of items per work chunk;
+  //!                     0 means auto-compute from thread count
+  //! @param isForceSingleThreadExecution if true, then no threads will be created
+  template <typename Functor>
+  static void For(const int      theBegin,
+                  const int      theEnd,
+                  const Functor& theFunctor,
+                  const int      theGrainSize,
+                  const bool     isForceSingleThreadExecution = false)
+  {
+    const int aRange = theEnd - theBegin;
+    if (isForceSingleThreadExecution || aRange == 1)
+    {
+      for (int it(theBegin); it != theEnd; ++it)
+        theFunctor(it);
+    }
+    else if (ToUseOcctThreads())
+    {
+      const occ::handle<OSD_ThreadPool>&   aThreadPool = OSD_ThreadPool::DefaultPool();
+      OSD_ThreadPool::Launcher             aPoolLauncher(*aThreadPool, aRange);
+      FunctorWrapperForThreadPool<Functor> aFunctor(theFunctor);
+      aPoolLauncher.Perform(theBegin, theEnd, aFunctor, theGrainSize);
+    }
+    else
+    {
+      ForIntFunctorWrapper<Functor> aFunctor(theFunctor);
+      forIntExternal(theBegin, theEnd, aFunctor, theGrainSize);
+    }
+  }
+
+  //! Parallel map-reduce over an integer range.
+  //! Each thread accumulates partial results into a thread-local accumulator,
+  //! then a sequential reduce phase merges all partials.
+  //! @param theBegin          the first index (inclusive)
+  //! @param theEnd            the last  index (exclusive)
+  //! @param theIdentity       identity value for the accumulator (used to initialize each thread's
+  //! copy)
+  //! @param theMapFunctor     functor "void (int theIndex, ResultT& theAccum)"
+  //!                          mapping each index into the thread-local accumulator
+  //! @param theReduceFunctor  functor "void (const ResultT& thePartial, ResultT& theTotal)"
+  //!                          merging a partial result into the total
+  //! @param isForceSingleThreadExecution if true, then no threads will be created
+  //! @return the final reduced result
+  template <typename ResultT, typename MapFunc, typename ReduceFunc>
+  static ResultT Reduce(const int         theBegin,
+                        const int         theEnd,
+                        const ResultT&    theIdentity,
+                        const MapFunc&    theMapFunctor,
+                        const ReduceFunc& theReduceFunctor,
+                        const bool        isForceSingleThreadExecution = false)
+  {
+    const int aRange = theEnd - theBegin;
+    if (isForceSingleThreadExecution || aRange <= 1)
+    {
+      ResultT aResult(theIdentity);
+      for (int anIter = theBegin; anIter < theEnd; ++anIter)
+      {
+        theMapFunctor(anIter, aResult);
+      }
+      return aResult;
+    }
+
+    const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+    OSD_ThreadPool::Launcher           aPoolLauncher(*aThreadPool, aRange);
+    const int                          aNbThreads = aPoolLauncher.NbThreads();
+
+    // Per-thread accumulators initialized with identity value.
+    NCollection_Array1<ResultT> anAccumulators(0, aNbThreads - 1);
+    for (int i = 0; i < aNbThreads; ++i)
+    {
+      anAccumulators.SetValue(i, theIdentity);
+    }
+
+    auto aMapWrapper = [&theMapFunctor, &anAccumulators](int theThreadIndex, int theElemIndex) {
+      theMapFunctor(theElemIndex, anAccumulators.ChangeValue(theThreadIndex));
+    };
+
+    aPoolLauncher.Perform(theBegin, theEnd, aMapWrapper);
+
+    // Sequential reduce phase.
+    ResultT aTotal(theIdentity);
+    for (int i = 0; i < aNbThreads; ++i)
+    {
+      theReduceFunctor(anAccumulators.Value(i), aTotal);
+    }
+    return aTotal;
   }
 };
 

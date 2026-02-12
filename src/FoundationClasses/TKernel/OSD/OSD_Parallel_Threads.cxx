@@ -147,6 +147,23 @@ void OSD_Parallel::forEachOcct(UniversalIterator&      theBegin,
   aLauncher.Perform(theBegin, theEnd, theFunctor);
 }
 
+//=================================================================================================
+
+void OSD_Parallel::forIntExternal(int                           theBegin,
+                                  int                           theEnd,
+                                  const ForIntFunctorInterface& theFunctor,
+                                  int                           theGrainSize)
+{
+  const occ::handle<OSD_ThreadPool>& aThreadPool = OSD_ThreadPool::DefaultPool();
+  const int                          aRange      = theEnd - theBegin;
+  OSD_ThreadPool::Launcher           aLauncher(*aThreadPool,
+                                     std::min(aRange, aThreadPool->NbDefaultThreadsToLaunch()));
+  auto aWrappedFunctor = [&theFunctor](int /*theThreadIndex*/, int theElemIndex) {
+    theFunctor(theElemIndex);
+  };
+  aLauncher.Perform(theBegin, theEnd, aWrappedFunctor, theGrainSize);
+}
+
 // Version of parallel executor used when TBB is not available
 #ifndef HAVE_TBB
 //=================================================================================================

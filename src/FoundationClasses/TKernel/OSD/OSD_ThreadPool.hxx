@@ -234,15 +234,16 @@ public:
     //! @code
     //!   for (int anIter = theBegin; anIter < theEnd; ++anIter) {}
     //! @endcode
-    //! @param theBegin   the first data index (inclusive)
-    //! @param theEnd     the last  data index (exclusive)
-    //! @param theFunctor functor providing an interface
-    //!                   "void operator(int theThreadIndex, int theDataIndex){}" performing task
-    //!                   for specified index
+    //! @param theBegin     the first data index (inclusive)
+    //! @param theEnd       the last  data index (exclusive)
+    //! @param theFunctor   functor providing an interface
+    //!                     "void operator(int theThreadIndex, int theDataIndex){}" performing task
+    //!                     for specified index
+    //! @param theGrainSize number of items per work chunk; 0 (default) means auto-compute
     template <typename Functor>
-    void Perform(int theBegin, int theEnd, const Functor& theFunctor)
+    void Perform(int theBegin, int theEnd, const Functor& theFunctor, int theGrainSize = 0)
     {
-      JobRange     aData(theBegin, theEnd);
+      JobRange     aData(theBegin, theEnd, theGrainSize, myNbThreads);
       Job<Functor> aJob(theFunctor, aData);
       perform(aJob);
     }
@@ -274,14 +275,29 @@ public:
 
 protected:
   //! Auxiliary class which ensures exclusive access to iterators of processed data pool.
+  //! Supports chunked iteration to reduce atomic contention for large ranges.
   class JobRange
   {
   public:
-    //! Constructor
+    //! Constructor.
     JobRange(const int& theBegin, const int& theEnd)
         : myBegin(theBegin),
           myEnd(theEnd),
-          myIt(theBegin)
+          myIt(theBegin),
+          myGrainSize(1)
+    {
+    }
+
+    //! Constructor with grain size and thread count for automatic chunking.
+    //! @param theBegin     the first index (inclusive)
+    //! @param theEnd       the last  index (exclusive)
+    //! @param theGrainSize explicit grain size; 0 means auto-compute from thread count
+    //! @param theNbThreads number of threads (used for auto grain size when theGrainSize is 0)
+    JobRange(const int& theBegin, const int& theEnd, int theGrainSize, int theNbThreads)
+        : myBegin(theBegin),
+          myEnd(theEnd),
+          myIt(theBegin),
+          myGrainSize(computeGrainSize(theBegin, theEnd, theGrainSize, theNbThreads))
     {
     }
 
@@ -295,14 +311,43 @@ protected:
     //! Thread-safe method.
     int It() const { return myIt.fetch_add(1); }
 
+    //! Returns a chunk of work [theChunkBegin, theChunkEnd).
+    //! Thread-safe method. Returns false when no more work is available.
+    bool NextChunk(int& theChunkBegin, int& theChunkEnd) const
+    {
+      theChunkBegin = myIt.fetch_add(myGrainSize);
+      if (theChunkBegin >= myEnd)
+      {
+        return false;
+      }
+      theChunkEnd = std::min(theChunkBegin + myGrainSize, myEnd);
+      return true;
+    }
+
   private:
     JobRange(const JobRange& theCopy)            = delete;
     JobRange& operator=(const JobRange& theCopy) = delete;
 
+    //! Compute grain size: use explicit value if > 0, otherwise auto-compute.
+    static int computeGrainSize(int theBegin, int theEnd, int theGrainSize, int theNbThreads)
+    {
+      if (theGrainSize > 0)
+      {
+        return theGrainSize;
+      }
+      const int aRange = theEnd - theBegin;
+      if (aRange <= 0 || theNbThreads <= 0)
+      {
+        return 1;
+      }
+      return std::max(1, aRange / (theNbThreads * 4));
+    }
+
   private:
-    const int&               myBegin; //!< First element of range
-    const int&               myEnd;   //!< Last  element of range
-    mutable std::atomic<int> myIt;    //!< First non processed element of range
+    const int&               myBegin;     //!< First element of range
+    const int&               myEnd;       //!< Last  element of range
+    mutable std::atomic<int> myIt;        //!< First non processed element of range
+    int                      myGrainSize; //!< Number of items per chunk
   };
 
   //! Auxiliary wrapper class for thread function.
@@ -320,9 +365,13 @@ protected:
     //! Method is executed in the context of thread.
     void Perform(int theThreadIndex) override
     {
-      for (int anIter = myRange.It(); anIter < myRange.End(); anIter = myRange.It())
+      int aChunkBegin = 0, aChunkEnd = 0;
+      while (myRange.NextChunk(aChunkBegin, aChunkEnd))
       {
-        myPerformer(theThreadIndex, anIter);
+        for (int anIter = aChunkBegin; anIter < aChunkEnd; ++anIter)
+        {
+          myPerformer(theThreadIndex, anIter);
+        }
       }
     }
 
