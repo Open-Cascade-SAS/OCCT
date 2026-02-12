@@ -17,11 +17,6 @@
 #define NCollection_EBTree_HeaderFile
 
 #include <NCollection_UBTree.hxx>
-#include <Standard_Type.hxx>
-#include <Standard_Transient.hxx>
-#include <NCollection_List.hxx>
-#include <Standard_Integer.hxx>
-#include <NCollection_Sequence.hxx>
 #include <NCollection_DataMap.hxx>
 
 /**
@@ -51,6 +46,22 @@ public:
   {
   }
 
+  NCollection_EBTree(NCollection_EBTree&& theOther) noexcept
+      : UBTree(std::move(theOther)),
+        myObjNodeMap(std::move(theOther.myObjNodeMap))
+  {
+  }
+
+  NCollection_EBTree& operator=(NCollection_EBTree&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      UBTree::operator=(std::move(theOther));
+      myObjNodeMap = std::move(theOther.myObjNodeMap);
+    }
+    return *this;
+  }
+
   /**
    * Updates the tree with a new object and its bounding box.
    * Extends the functionality of the parent method by maintaining
@@ -69,14 +80,16 @@ public:
       // Update the map
       TreeNode& aNewNode = this->ChangeLastNode();
       myObjNodeMap.Bind(theObj, &aNewNode);
-      // If the new node is not the root (has a parent) check the neighbour node
+      // If the new node is not the root (has a parent) check the neighbour node.
+      // Gemmate moved old content to child(0), so the map entry points to stale address.
       if (!aNewNode.IsRoot())
       {
         TreeNode& aNeiNode = aNewNode.ChangeParent().ChangeChild(0);
         if (aNeiNode.IsLeaf())
         {
-          myObjNodeMap.UnBind(aNeiNode.Object());
-          myObjNodeMap.Bind(aNeiNode.Object(), &aNeiNode);
+          TreeNode** aNeiPtr = myObjNodeMap.ChangeSeek(aNeiNode.Object());
+          if (aNeiPtr)
+            *aNeiPtr = &aNeiNode;
         }
       }
       result = true;
@@ -126,107 +139,46 @@ private:
   NCollection_DataMap<TheObjType, TreeNode*> myObjNodeMap; ///< map of object to node pointer
 };
 
-// ================== METHODS TEMPLATES =====================
-
-//=======================================================================
-// function : Remove
-// purpose  : Removes the given object and updates the tree.
-//           Returns false if the tree does not contain theObj.
-//=======================================================================
+//==================================================================================================
 
 template <class TheObjType, class TheBndType>
 bool NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj)
 {
-  bool result = false;
-  if (Contains(theObj))
+  // Single lookup using ChangeSeek instead of Contains() + operator()()
+  TreeNode** pNodePtr = myObjNodeMap.ChangeSeek(theObj);
+  if (!pNodePtr)
+    return false;
+
+  TreeNode* pNode = *pNodePtr;
+  if (pNode->IsRoot())
   {
-    TreeNode* pNode = myObjNodeMap(theObj);
-    if (pNode->IsRoot())
-    {
-      // it is the root, so clear all the tree
-      Clear();
-    }
-    else
-    {
-      // it is a child of some parent,
-      // so kill the child that contains theObj
-      // and update bounding boxes of all ancestors
-      myObjNodeMap.UnBind(theObj);
-      TreeNode* pParent = &pNode->ChangeParent();
-      pParent->Kill((pNode == &pParent->Child(0) ? 0 : 1), this->Allocator());
-      if (pParent->IsLeaf())
-      {
-        // the parent node became a leaf, so update the map
-        myObjNodeMap.UnBind(pParent->Object());
-        myObjNodeMap.Bind(pParent->Object(), pParent);
-      }
-      while (!pParent->IsRoot())
-      {
-        pParent              = &pParent->ChangeParent();
-        pParent->ChangeBnd() = pParent->Child(0).Bnd();
-        pParent->ChangeBnd().Add(pParent->Child(1).Bnd());
-      }
-    }
-    result = true;
+    // it is the root, so clear all the tree
+    Clear();
   }
-  return result;
+  else
+  {
+    // it is a child of some parent,
+    // so kill the child that contains theObj
+    // and update bounding boxes of all ancestors
+    myObjNodeMap.UnBind(theObj);
+    TreeNode* pParent = &pNode->ChangeParent();
+    pParent->Kill((pNode == &pParent->Child(0) ? 0 : 1), this->Allocator());
+    if (pParent->IsLeaf())
+    {
+      // The parent node became a leaf (absorbed surviving child),
+      // so update the map entry to point to the new address.
+      TreeNode** aParentPtr = myObjNodeMap.ChangeSeek(pParent->Object());
+      if (aParentPtr)
+        *aParentPtr = pParent;
+    }
+    while (!pParent->IsRoot())
+    {
+      pParent              = &pParent->ChangeParent();
+      pParent->ChangeBnd() = pParent->Child(0).Bnd();
+      pParent->ChangeBnd().Add(pParent->Child(1).Bnd());
+    }
+  }
+  return true;
 }
-
-// ======================================================================
-// Declaration of handled version of NCollection_EBTree.
-// In the macros below the arguments are:
-// _HEBTREE      - the desired name of handled class
-// _OBJTYPE      - the name of the object type
-// _BNDTYPE      - the name of the bounding box type
-// _HUBTREE      - the name of parent class
-//                 (defined using macro DEFINE_HUBTREE)
-
-#define DEFINE_HEBTREE(_HEBTREE, _OBJTYPE, _BNDTYPE, _HUBTREE)                                     \
-  class _HEBTREE : public _HUBTREE                                                                 \
-  {                                                                                                \
-  public:                                                                                          \
-    typedef NCollection_UBTree<_OBJTYPE, _BNDTYPE> UBTree;                                         \
-    typedef NCollection_EBTree<_OBJTYPE, _BNDTYPE> EBTree;                                         \
-                                                                                                   \
-    _HEBTREE()                                                                                     \
-        : _HUBTREE(new EBTree)                                                                     \
-    {                                                                                              \
-    }                                                                                              \
-    /* Empty constructor */                                                                        \
-                                                                                                   \
-    /* Access to the methods of EBTree */                                                          \
-                                                                                                   \
-    bool Remove(const _OBJTYPE& theObj)                                                            \
-    {                                                                                              \
-      return ChangeETree().Remove(theObj);                                                         \
-    }                                                                                              \
-                                                                                                   \
-    bool Contains(const _OBJTYPE& theObj) const                                                    \
-    {                                                                                              \
-      return ETree().Contains(theObj);                                                             \
-    }                                                                                              \
-                                                                                                   \
-    const UBTree::TreeNode& FindNode(const _OBJTYPE& theObj) const                                 \
-    {                                                                                              \
-      return ETree().FindNode(theObj);                                                             \
-    }                                                                                              \
-                                                                                                   \
-    /* Access to the extended tree algorithm */                                                    \
-                                                                                                   \
-    const EBTree& ETree() const noexcept                                                           \
-    {                                                                                              \
-      return (const EBTree&)Tree();                                                                \
-    }                                                                                              \
-    EBTree& ChangeETree() noexcept                                                                 \
-    {                                                                                              \
-      return (EBTree&)ChangeTree();                                                                \
-    }                                                                                              \
-                                                                                                   \
-    DEFINE_STANDARD_RTTI_INLINE(_HEBTREE, _HUBTREE)                                                \
-    /* Type management */                                                                          \
-  };                                                                                               \
-  DEFINE_STANDARD_HANDLE(_HEBTREE, _HUBTREE)
-
-#define IMPLEMENT_HEBTREE(_HEBTREE, _HUBTREE)
 
 #endif

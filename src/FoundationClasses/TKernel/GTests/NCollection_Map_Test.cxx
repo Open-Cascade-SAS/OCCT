@@ -454,6 +454,36 @@ TEST(NCollection_MapTest, RangeBasedForLoop)
   EXPECT_TRUE(aFoundKeys.count(300) > 0);
 }
 
+// Tests for Contained method
+TEST(NCollection_MapTest, ContainedFound)
+{
+  NCollection_Map<int> aMap;
+  aMap.Add(10);
+  aMap.Add(20);
+  aMap.Add(30);
+
+  auto aResult = aMap.Contained(10);
+  ASSERT_TRUE(aResult.has_value());
+  EXPECT_EQ(10, aResult->get());
+
+  aResult = aMap.Contained(30);
+  ASSERT_TRUE(aResult.has_value());
+  EXPECT_EQ(30, aResult->get());
+}
+
+TEST(NCollection_MapTest, ContainedNotFound)
+{
+  NCollection_Map<int> aMap;
+  aMap.Add(10);
+
+  auto aResult = aMap.Contained(99);
+  EXPECT_FALSE(aResult.has_value());
+
+  // Contained on empty map
+  NCollection_Map<int> anEmptyMap;
+  EXPECT_FALSE(anEmptyMap.Contained(10).has_value());
+}
+
 // Test iterator equality using NCollection_StlIterator
 TEST(NCollection_MapTest, IteratorEquality)
 {

@@ -225,6 +225,56 @@ TEST_F(NCollection_FlatMapTest, EmplacedExistingKey)
   EXPECT_EQ(1, aMap.Size());
 }
 
+// Tests for Seek method
+TEST_F(NCollection_FlatMapTest, SeekFound)
+{
+  NCollection_FlatMap<int> aMap;
+  aMap.Add(10);
+  aMap.Add(20);
+  aMap.Add(30);
+
+  const int* pKey = aMap.Seek(10);
+  ASSERT_NE(nullptr, pKey);
+  EXPECT_EQ(10, *pKey);
+
+  pKey = aMap.Seek(30);
+  ASSERT_NE(nullptr, pKey);
+  EXPECT_EQ(30, *pKey);
+}
+
+TEST_F(NCollection_FlatMapTest, SeekNotFound)
+{
+  NCollection_FlatMap<int> aMap;
+  aMap.Add(10);
+
+  const int* pKey = aMap.Seek(99);
+  EXPECT_EQ(nullptr, pKey);
+
+  // Seek on empty map
+  NCollection_FlatMap<int> anEmptyMap;
+  EXPECT_EQ(nullptr, anEmptyMap.Seek(10));
+}
+
+TEST_F(NCollection_FlatMapTest, ChangeSeekModify)
+{
+  NCollection_FlatMap<TCollection_AsciiString> aMap;
+  aMap.Add("Hello");
+  aMap.Add("World");
+
+  TCollection_AsciiString* pKey = aMap.ChangeSeek("Hello");
+  ASSERT_NE(nullptr, pKey);
+  EXPECT_TRUE(pKey->IsEqual("Hello"));
+}
+
+TEST_F(NCollection_FlatMapTest, ChangeSeekNotFound)
+{
+  NCollection_FlatMap<int> aMap;
+  aMap.Add(10);
+
+  int* pKey = aMap.ChangeSeek(99);
+  EXPECT_EQ(nullptr, pKey);
+}
+
 // Tests for hasher constructor
 TEST_F(NCollection_FlatMapTest, HasherConstructorCopy)
 {

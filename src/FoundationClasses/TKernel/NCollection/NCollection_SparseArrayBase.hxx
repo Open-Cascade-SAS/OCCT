@@ -47,12 +47,7 @@ public:
 
   //!@}
 
-#if defined(__SUNPRO_CC) && (__SUNPRO_CC <= 0x530)
-public: // work-around against obsolete SUN WorkShop 5.3 compiler
-#else
 private:
-#endif
-
   /**
    * The block of data contains array of items, counter
    * and bit field, allocated as single piece of memory addressed

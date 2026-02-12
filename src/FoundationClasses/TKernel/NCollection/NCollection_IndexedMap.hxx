@@ -25,6 +25,8 @@
 #include <NCollection_DefaultHasher.hxx>
 
 #include <Standard_OutOfRange.hxx>
+#include <functional>
+#include <optional>
 #include <type_traits>
 
 /**
@@ -373,11 +375,39 @@ public:
     return emplaceImpl(std::false_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
   }
 
+  //! TryEmplace constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return index of the key (new or existing)
+  template <typename... Args>
+  int TryEmplace(Args&&... theArgs)
+  {
+    return emplaceImpl(std::true_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+  }
+
+  //! TryEmplaced constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key (existing or newly added)
+  template <typename... Args>
+  const TheKeyType& TryEmplaced(Args&&... theArgs)
+  {
+    return emplaceImpl(std::true_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
+  }
+
   //! Contains
   bool Contains(const TheKeyType& theKey1) const
   {
     IndexedMapNode* p;
     return lookup(theKey1, p);
+  }
+
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey1) const
+  {
+    IndexedMapNode* p;
+    if (!lookup(theKey1, p))
+      return std::nullopt;
+    return std::cref(p->Value());
   }
 
   //! Substitute

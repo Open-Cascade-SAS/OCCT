@@ -23,15 +23,22 @@
 
 typedef NCollection_Vector<gp_XYZ> VectorOfPoint;
 
-//! Class BRepExtrema_VertexInspector
-//!   derived from NCollection_CellFilter_InspectorXYZ
-//!   This class define the Inspector interface for CellFilter algorithm,
-//!   working with gp_XYZ points in 3d space.
-//!   Used in search of coincidence points with a certain tolerance.
-class BRepExtrema_VertexInspector : public NCollection_CellFilter_InspectorXYZ
+//! Inspector for CellFilter algorithm working with gp_XYZ points in 3d space.
+//! Used in search of coincidence points with a certain tolerance.
+class BRepExtrema_VertexInspector
 {
 public:
-  typedef int Target;
+  static constexpr int Dimension = 3;
+
+  typedef gp_XYZ Point;
+  typedef int    Target;
+
+  static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+
+  static Point Shift(const Point& thePnt, double theTol)
+  {
+    return Point(thePnt.X() + theTol, thePnt.Y() + theTol, thePnt.Z() + theTol);
+  }
 
   //! Constructor; remembers the tolerance
   BRepExtrema_VertexInspector()
@@ -53,7 +60,7 @@ public:
     myIsNeedAdd = true;
   }
 
-  bool IsNeedAdd() { return myIsNeedAdd; }
+  bool IsNeedAdd() const { return myIsNeedAdd; }
 
   //! Implementation of inspection method
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const int theTarget);

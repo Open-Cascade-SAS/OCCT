@@ -18,6 +18,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_DefaultHasher.hxx>
 
+#include <functional>
 #include <new>
 #include <optional>
 #include <type_traits>
@@ -338,6 +339,40 @@ public:
     return findSlot(theKey).has_value();
   }
 
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return std::nullopt;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return std::nullopt;
+    return std::cref(mySlots[*aIdx].Key());
+  }
+
+  //! Seek returns pointer to key in map. Returns NULL if not found.
+  const TheKeyType* Seek(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return nullptr;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return nullptr;
+    return &mySlots[*aIdx].Key();
+  }
+
+  //! ChangeSeek returns modifiable pointer to key in map. Returns NULL if not found.
+  TheKeyType* ChangeSeek(const TheKeyType& theKey)
+  {
+    if (mySize == 0)
+      return nullptr;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return nullptr;
+    return &mySlots[*aIdx].Key();
+  }
+
 public:
   // **************** Modification methods ****************
 
@@ -396,6 +431,28 @@ public:
     ensureCapacity();
     TheKeyType aTempKey(std::forward<Args>(theArgs)...);
     return emplaceImpl(std::move(aTempKey), std::false_type{}, std::true_type{});
+  }
+
+  //! TryEmplace constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return true if key was newly added, false if key already existed
+  template <typename... Args>
+  bool TryEmplace(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::true_type{}, std::false_type{});
+  }
+
+  //! TryEmplaced constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key (existing or newly added)
+  template <typename... Args>
+  const TheKeyType& TryEmplaced(Args&&... theArgs)
+  {
+    ensureCapacity();
+    TheKeyType aTempKey(std::forward<Args>(theArgs)...);
+    return emplaceImpl(std::move(aTempKey), std::true_type{}, std::true_type{});
   }
 
   //! Remove key from set

@@ -18,14 +18,22 @@
 #include <Standard.hxx>
 #include <Standard_TypeDef.hxx>
 
+#include <cstring>
+#include <algorithm>
+#include <type_traits>
+
 //! Auxiliary class optimizing creation of array buffer
 //! (using stack allocation for small arrays).
 template <class theItem, int MAX_ARRAY_SIZE = 1024>
 class NCollection_LocalArray
 {
+  static_assert(std::is_trivially_copyable<theItem>::value,
+                "NCollection_LocalArray uses memcpy/realloc and requires trivially copyable types");
+
 public:
   explicit NCollection_LocalArray(const size_t theSize)
-      : myPtr(myBuffer)
+      : myPtr(myBuffer),
+        mySize(0)
   {
     Allocate(theSize);
   }
@@ -38,22 +46,114 @@ public:
 
   ~NCollection_LocalArray() { Deallocate(); }
 
-  void Allocate(const size_t theSize)
-  {
-    Deallocate();
-    if (theSize > MAX_ARRAY_SIZE)
-      myPtr = (theItem*)Standard::Allocate(theSize * sizeof(theItem));
-    else
-      myPtr = myBuffer;
+  void Allocate(const size_t theSize) { Reallocate(theSize, false); }
 
-    mySize = theSize;
+  //! Reallocate the array to a new size.
+  //! @param[in] theNewSize new number of elements
+  //! @param[in] theToCopy  if true, existing elements are copied to the new buffer
+  void Reallocate(const size_t theNewSize, bool theToCopy = true)
+  {
+    if (theNewSize <= mySize)
+    {
+      // Shrinking - just update the logical size, keep existing allocation
+      mySize = theNewSize;
+      return;
+    }
+
+    const bool   isOnHeap  = (myPtr != myBuffer);
+    const size_t aNewBytes = theNewSize * sizeof(theItem);
+
+    if (theNewSize <= static_cast<size_t>(MAX_ARRAY_SIZE))
+    {
+      // New size fits in stack buffer
+      if (isOnHeap)
+      {
+        if (theToCopy && mySize > 0)
+        {
+          std::memcpy(myBuffer, myPtr, std::min(mySize, theNewSize) * sizeof(theItem));
+        }
+        Standard::Free(myPtr);
+        myPtr = myBuffer;
+      }
+      mySize = theNewSize;
+      return;
+    }
+
+    if (isOnHeap)
+    {
+      // Already on heap - use Standard::Reallocate (preserves content when growing)
+      if (theToCopy)
+      {
+        myPtr = (theItem*)Standard::Reallocate(myPtr, aNewBytes);
+      }
+      else
+      {
+        Standard::Free(myPtr);
+        myPtr = (theItem*)Standard::Allocate(aNewBytes);
+      }
+    }
+    else
+    {
+      // Stack to heap transition
+      myPtr = (theItem*)Standard::Allocate(aNewBytes);
+      if (theToCopy && mySize > 0)
+      {
+        std::memcpy(myPtr, myBuffer, std::min(mySize, theNewSize) * sizeof(theItem));
+      }
+    }
+    mySize = theNewSize;
   }
 
   size_t Size() const noexcept { return mySize; }
 
   operator theItem*() const noexcept { return myPtr; }
 
-private:
+  NCollection_LocalArray(NCollection_LocalArray&& theOther) noexcept
+      : myPtr(myBuffer),
+        mySize(theOther.mySize)
+  {
+    if (theOther.myPtr == theOther.myBuffer)
+    {
+      std::memcpy(myBuffer, theOther.myBuffer, mySize * sizeof(theItem));
+    }
+    else
+    {
+      myPtr          = theOther.myPtr;
+      theOther.myPtr = theOther.myBuffer;
+    }
+    theOther.mySize = 0;
+  }
+
+  NCollection_LocalArray& operator=(NCollection_LocalArray&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      mySize = theOther.mySize;
+      if (theOther.myPtr == theOther.myBuffer)
+      {
+        // Source on stack: copy data to our buffer
+        Deallocate();
+        myPtr = myBuffer;
+        std::memcpy(myBuffer, theOther.myBuffer, mySize * sizeof(theItem));
+      }
+      else if (myPtr != myBuffer)
+      {
+        // Both on heap: swap pointers, theOther frees our old allocation on destruction
+        theItem* anOldPtr = myPtr;
+        myPtr             = theOther.myPtr;
+        theOther.myPtr    = anOldPtr;
+      }
+      else
+      {
+        // this on stack, theOther on heap: take the pointer
+        myPtr          = theOther.myPtr;
+        theOther.myPtr = theOther.myBuffer;
+      }
+      theOther.mySize = 0;
+    }
+    return *this;
+  }
+
   NCollection_LocalArray(const NCollection_LocalArray&)            = delete;
   NCollection_LocalArray& operator=(const NCollection_LocalArray&) = delete;
 

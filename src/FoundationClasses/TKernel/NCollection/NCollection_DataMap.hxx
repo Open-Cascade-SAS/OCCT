@@ -24,6 +24,8 @@
 
 #include <Standard_TypeMismatch.hxx>
 #include <Standard_NoSuchObject.hxx>
+#include <functional>
+#include <optional>
 #include <type_traits>
 #include <utility>
 
@@ -568,6 +570,30 @@ public:
   {
     DataMapNode* p;
     return lookup(theKey, p);
+  }
+
+  //! Contained returns optional pair of const references to key and value.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<const TheItemType>>>
+    Contained(const TheKeyType& theKey) const
+  {
+    DataMapNode* p = nullptr;
+    if (!lookup(theKey, p))
+      return std::nullopt;
+    return std::make_pair(std::cref(p->Key()), std::cref(p->Value()));
+  }
+
+  //! Contained returns optional pair of const key reference and mutable value reference.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<TheItemType>>>
+    Contained(const TheKeyType& theKey)
+  {
+    DataMapNode* p = nullptr;
+    if (!lookup(theKey, p))
+      return std::nullopt;
+    return std::make_pair(std::cref(p->Key()), std::ref(p->ChangeValue()));
   }
 
   //! UnBind removes Item Key pair from map

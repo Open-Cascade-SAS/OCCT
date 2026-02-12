@@ -23,10 +23,20 @@
 #include <BRepMesh_Vertex.hxx>
 
 //! Class intended for fast searching of the coincidence points.
-class BRepMesh_VertexInspector : public NCollection_CellFilter_InspectorXY
+class BRepMesh_VertexInspector
 {
 public:
-  typedef int Target;
+  static constexpr int Dimension = 2;
+
+  typedef gp_XY Point;
+  typedef int   Target;
+
+  static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+
+  static Point Shift(const Point& thePnt, double theTol)
+  {
+    return Point(thePnt.X() + theTol, thePnt.Y() + theTol);
+  }
 
   //! Constructor.
   //! @param theAllocator memory allocator to be used by internal collections.

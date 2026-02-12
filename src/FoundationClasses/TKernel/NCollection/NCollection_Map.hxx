@@ -23,6 +23,8 @@
 #include <NCollection_TListNode.hxx>
 #include <Standard_NoSuchObject.hxx>
 
+#include <functional>
+#include <optional>
 #include <type_traits>
 #include <utility>
 
@@ -316,11 +318,39 @@ public:
     return emplaceImpl(std::false_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
   }
 
+  //! TryEmplace constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return true if key was newly added, false if key already existed
+  template <typename... Args>
+  bool TryEmplace(Args&&... theArgs)
+  {
+    return emplaceImpl(std::true_type{}, std::false_type{}, std::forward<Args>(theArgs)...);
+  }
+
+  //! TryEmplaced constructs key in-place only if not already present.
+  //! @param theArgs arguments forwarded to key constructor
+  //! @return const reference to the key (existing or newly added)
+  template <typename... Args>
+  const TheKeyType& TryEmplaced(Args&&... theArgs)
+  {
+    return emplaceImpl(std::true_type{}, std::true_type{}, std::forward<Args>(theArgs)...);
+  }
+
   //! Contains
   bool Contains(const TheKeyType& theKey) const
   {
     MapNode* p;
     return lookup(theKey, p);
+  }
+
+  //! Contained returns optional const reference to the key in the map.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<std::reference_wrapper<const TheKeyType>> Contained(const TheKeyType& theKey) const
+  {
+    MapNode* p;
+    if (!lookup(theKey, p))
+      return std::nullopt;
+    return std::cref(p->Key());
   }
 
   //! Remove

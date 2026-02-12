@@ -192,3 +192,154 @@ TEST(NCollection_LocalArrayTest, TransitionStackToHeap)
     EXPECT_EQ(static_cast<int>(i * 5), array[i]);
   }
 }
+
+// Test Reallocate with copy (stack to stack)
+TEST(NCollection_LocalArrayTest, ReallocateStackToStack_WithCopy)
+{
+  NCollection_LocalArray<int, 64> anArray(10);
+  for (size_t i = 0; i < 10; ++i)
+    anArray[i] = static_cast<int>(i * 100);
+
+  anArray.Reallocate(32, true);
+  EXPECT_EQ(32u, anArray.Size());
+
+  // Original elements should be preserved
+  for (size_t i = 0; i < 10; ++i)
+    EXPECT_EQ(static_cast<int>(i * 100), anArray[i]);
+}
+
+// Test Reallocate with copy (stack to heap)
+TEST(NCollection_LocalArrayTest, ReallocateStackToHeap_WithCopy)
+{
+  NCollection_LocalArray<int, 8> anArray(8);
+  for (size_t i = 0; i < 8; ++i)
+    anArray[i] = static_cast<int>(i + 1);
+
+  // Force heap allocation
+  anArray.Reallocate(16, true);
+  EXPECT_EQ(16u, anArray.Size());
+
+  // Original elements should be preserved
+  for (size_t i = 0; i < 8; ++i)
+    EXPECT_EQ(static_cast<int>(i + 1), anArray[i]);
+}
+
+// Test Reallocate with copy (heap to larger heap)
+TEST(NCollection_LocalArrayTest, ReallocateHeapToHeap_WithCopy)
+{
+  NCollection_LocalArray<int, 4> anArray(8); // starts on heap
+  for (size_t i = 0; i < 8; ++i)
+    anArray[i] = static_cast<int>(i * 10);
+
+  anArray.Reallocate(16, true);
+  EXPECT_EQ(16u, anArray.Size());
+
+  for (size_t i = 0; i < 8; ++i)
+    EXPECT_EQ(static_cast<int>(i * 10), anArray[i]);
+}
+
+// Test Reallocate without copy
+TEST(NCollection_LocalArrayTest, ReallocateNoCopy)
+{
+  NCollection_LocalArray<int, 8> anArray(8);
+  for (size_t i = 0; i < 8; ++i)
+    anArray[i] = static_cast<int>(i + 1);
+
+  anArray.Reallocate(16, false);
+  EXPECT_EQ(16u, anArray.Size());
+  // Content is undefined -- just verify it doesn't crash
+}
+
+// Test Reallocate shrink just updates logical size
+TEST(NCollection_LocalArrayTest, ReallocateShrink)
+{
+  NCollection_LocalArray<int, 8> anArray(16); // starts on heap
+  for (size_t i = 0; i < 16; ++i)
+    anArray[i] = static_cast<int>(i * 5);
+
+  // Shrink - should only update logical size, data preserved
+  anArray.Reallocate(4, true);
+  EXPECT_EQ(4u, anArray.Size());
+
+  for (size_t i = 0; i < 4; ++i)
+    EXPECT_EQ(static_cast<int>(i * 5), anArray[i]);
+}
+
+// Test move constructor from stack-allocated source
+TEST(NCollection_LocalArrayTest, MoveConstructor_FromStack)
+{
+  NCollection_LocalArray<int, 64> aSrc(10);
+  for (size_t i = 0; i < 10; ++i)
+    aSrc[i] = static_cast<int>(i * 7);
+
+  NCollection_LocalArray<int, 64> aDst(std::move(aSrc));
+
+  // Destination has the data
+  EXPECT_EQ(10u, aDst.Size());
+  for (size_t i = 0; i < 10; ++i)
+    EXPECT_EQ(static_cast<int>(i * 7), aDst[i]);
+
+  // Source is empty
+  EXPECT_EQ(0u, aSrc.Size());
+}
+
+// Test move constructor from heap-allocated source
+TEST(NCollection_LocalArrayTest, MoveConstructor_FromHeap)
+{
+  NCollection_LocalArray<int, 4> aSrc(16); // exceeds stack buffer, goes to heap
+  for (size_t i = 0; i < 16; ++i)
+    aSrc[i] = static_cast<int>(i * 3);
+
+  NCollection_LocalArray<int, 4> aDst(std::move(aSrc));
+
+  // Destination has the data
+  EXPECT_EQ(16u, aDst.Size());
+  for (size_t i = 0; i < 16; ++i)
+    EXPECT_EQ(static_cast<int>(i * 3), aDst[i]);
+
+  // Source is empty
+  EXPECT_EQ(0u, aSrc.Size());
+}
+
+// Test move assignment operator
+TEST(NCollection_LocalArrayTest, MoveAssignment)
+{
+  NCollection_LocalArray<int, 8> aSrc(8);
+  for (size_t i = 0; i < 8; ++i)
+    aSrc[i] = static_cast<int>(i + 100);
+
+  NCollection_LocalArray<int, 8> aDst(4);
+  for (size_t i = 0; i < 4; ++i)
+    aDst[i] = -1;
+
+  aDst = std::move(aSrc);
+
+  EXPECT_EQ(8u, aDst.Size());
+  for (size_t i = 0; i < 8; ++i)
+    EXPECT_EQ(static_cast<int>(i + 100), aDst[i]);
+
+  EXPECT_EQ(0u, aSrc.Size());
+}
+
+// Test Reallocate used as a growable stack
+TEST(NCollection_LocalArrayTest, ReallocateAsGrowableStack)
+{
+  NCollection_LocalArray<int, 4> aStack(4);
+  int                            aTop = 0;
+
+  // Push more than initial capacity
+  for (int i = 0; i < 20; ++i)
+  {
+    if (aTop >= static_cast<int>(aStack.Size()))
+      aStack.Reallocate(aStack.Size() * 2, true);
+    aStack[aTop++] = i * 3;
+  }
+
+  EXPECT_EQ(20, aTop);
+
+  // Pop and verify
+  for (int i = 19; i >= 0; --i)
+  {
+    EXPECT_EQ(i * 3, aStack[--aTop]);
+  }
+}

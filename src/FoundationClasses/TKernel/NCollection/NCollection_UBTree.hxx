@@ -18,6 +18,7 @@
 
 #include <NCollection_BaseAllocator.hxx>
 #include <NCollection_DefineAlloc.hxx>
+#include <NCollection_LocalArray.hxx>
 
 /**
  * The algorithm of unbalanced binary tree of overlapped bounding boxes.
@@ -171,7 +172,7 @@ public:
      *   added object.
      * @param theBnd
      *   bounding box of theObj.
-     * @theAlloc
+     * @param theAlloc
      *   allocator providing memory to the new child nodes, provided by the
      *   calling Tree instance.
      */
@@ -180,7 +181,6 @@ public:
                  const TheBndType&                             theBnd,
                  const occ::handle<NCollection_BaseAllocator>& theAlloc)
     {
-      // TreeNode *children = new TreeNode [2];
       TreeNode* children = (TreeNode*)theAlloc->Allocate(2 * sizeof(TreeNode));
       new (&children[0]) TreeNode;
       new (&children[1]) TreeNode;
@@ -215,33 +215,53 @@ public:
           myChildren[0].myParent = this;
           myChildren[1].myParent = this;
         }
-        // oldChildren[0].myChildren = oldChildren[1].myChildren = 0L;
-        // delete [] oldChildren;
         oldChildren[iopp].~TreeNode();
         delNode(&oldChildren[i], theAlloc); // remove the whole branch
         theAlloc->Free(oldChildren);
       }
     }
 
-    //  ~TreeNode () { if (myChildren) delete [] myChildren; }
     ~TreeNode() { myChildren = nullptr; }
 
-    /**
-     * Deleter of tree node. The whole hierarchy of its children also deleted.
-     * This method should be used instead of operator delete.
-     */
+    //! Deleter of tree node. The whole hierarchy of its children is also deleted.
+    //! This method should be used instead of operator delete.
+    //! Uses iterative traversal to avoid stack overflow on deeply unbalanced trees.
     static void delNode(TreeNode* theNode, const occ::handle<NCollection_BaseAllocator>& theAlloc)
     {
-      if (theNode)
+      if (!theNode)
+        return;
+
+      // Collect children arrays during pre-order traversal, free them after.
+      constexpr int                                          THE_INIT_STACK_SIZE = 64;
+      NCollection_LocalArray<TreeNode*, THE_INIT_STACK_SIZE> aChildArrays(THE_INIT_STACK_SIZE);
+      NCollection_LocalArray<TreeNode*, THE_INIT_STACK_SIZE> aStack(THE_INIT_STACK_SIZE);
+      int                                                    aNumArrays = 0;
+      int                                                    aTop       = 0;
+
+      aStack[aTop++] = theNode;
+
+      while (aTop > 0)
       {
-        if (theNode->myChildren)
+        TreeNode* aNode = aStack[--aTop];
+        if (aNode->myChildren)
         {
-          delNode(&theNode->myChildren[0], theAlloc);
-          delNode(&theNode->myChildren[1], theAlloc);
-          theAlloc->Free(theNode->myChildren);
+          // Record children array for later freeing
+          if (aNumArrays >= static_cast<int>(aChildArrays.Size()))
+            aChildArrays.Reallocate(aChildArrays.Size() * 2, true);
+          aChildArrays[aNumArrays++] = aNode->myChildren;
+
+          // Push both children for traversal
+          if (aTop + 2 > static_cast<int>(aStack.Size()))
+            aStack.Reallocate(aStack.Size() * 2, true);
+          aStack[aTop++] = &aNode->myChildren[1];
+          aStack[aTop++] = &aNode->myChildren[0];
         }
-        theNode->~TreeNode();
+        aNode->~TreeNode();
       }
+
+      // Free all collected children arrays
+      for (int i = 0; i < aNumArrays; ++i)
+        theAlloc->Free(aChildArrays[i]);
     }
 
   private:
@@ -280,6 +300,29 @@ public:
   {
   }
 
+  NCollection_UBTree(NCollection_UBTree&& theOther) noexcept
+      : myRoot(theOther.myRoot),
+        myLastNode(theOther.myLastNode),
+        myAlloc(std::move(theOther.myAlloc))
+  {
+    theOther.myRoot     = nullptr;
+    theOther.myLastNode = nullptr;
+  }
+
+  NCollection_UBTree& operator=(NCollection_UBTree&& theOther) noexcept
+  {
+    if (this != &theOther)
+    {
+      Clear();
+      myRoot              = theOther.myRoot;
+      myLastNode          = theOther.myLastNode;
+      myAlloc             = std::move(theOther.myAlloc);
+      theOther.myRoot     = nullptr;
+      theOther.myLastNode = nullptr;
+    }
+    return *this;
+  }
+
   /**
    * Update the tree with a new object and its bounding box.
    * @param theObj
@@ -293,7 +336,7 @@ public:
 
   /**
    * Searches in the tree all objects conforming to the given selector.
-   * return
+   * @return
    *   Number of objects accepted
    */
   virtual int Select(Selector& theSelector) const
@@ -310,7 +353,6 @@ public:
    *   kept.
    */
   virtual void Clear(const occ::handle<NCollection_BaseAllocator>& aNewAlloc = nullptr)
-  //      { if (myRoot) delete myRoot; myRoot = 0L; }
   {
     if (myRoot)
     {
@@ -374,11 +416,7 @@ private:
   occ::handle<NCollection_BaseAllocator> myAlloc;    ///< Allocator for TreeNode
 };
 
-// ================== METHODS TEMPLATES =====================
-//=======================================================================
-// function : Add
-// purpose  : Updates the tree with a new object and its bounding box
-//=======================================================================
+//==================================================================================================
 
 template <class TheObjType, class TheBndType>
 bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
@@ -436,124 +474,46 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
   return true;
 }
 
-//=======================================================================
-// function : Select
-// purpose  : Recursively searches in the branch all objects conforming
-//           to the given selector.
-//           Returns the number of objects found.
-//=======================================================================
+//==================================================================================================
 
 template <class TheObjType, class TheBndType>
 int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch,
                                                        Selector&       theSelector) const
 {
-  // Try to reject the branch by bounding box
-  if (theSelector.Reject(theBranch.Bnd()))
-    return 0;
+  // Explicit stack for iterative DFS. Covers balanced trees up to 2^64 nodes;
+  // Reallocate handles deeply unbalanced trees.
+  constexpr int                                                THE_INIT_STACK_SIZE = 64;
+  NCollection_LocalArray<const TreeNode*, THE_INIT_STACK_SIZE> aStack(THE_INIT_STACK_SIZE);
+  int                                                          aTop = 0;
+  int                                                          nSel = 0;
 
-  int nSel = 0;
+  aStack[aTop++] = &theBranch;
 
-  if (theBranch.IsLeaf())
+  while (aTop > 0)
   {
-    // It is a leaf => try to accept the object
-    if (theSelector.Accept(theBranch.Object()))
-      nSel++;
-  }
-  else
-  {
-    // It is a branch => select from its children
-    nSel += Select(theBranch.Child(0), theSelector);
-    if (!theSelector.Stop())
-      nSel += Select(theBranch.Child(1), theSelector);
-  }
+    const TreeNode* aNode = aStack[--aTop];
 
+    if (theSelector.Reject(aNode->Bnd()))
+      continue;
+
+    if (aNode->IsLeaf())
+    {
+      if (theSelector.Accept(aNode->Object()))
+        nSel++;
+      if (theSelector.Stop())
+        break;
+    }
+    else
+    {
+      // Ensure stack has space for 2 children
+      if (aTop + 2 > static_cast<int>(aStack.Size()))
+        aStack.Reallocate(aStack.Size() * 2, true);
+      // Push child(1) first so child(0) is processed first (LIFO order)
+      aStack[aTop++] = &aNode->Child(1);
+      aStack[aTop++] = &aNode->Child(0);
+    }
+  }
   return nSel;
 }
-
-// ======================================================================
-/**
- * Declaration of handled version of NCollection_UBTree.
- * In the macros below the arguments are:
- * _HUBTREE      - the desired name of handled class
- * _OBJTYPE      - the name of the object type
- * _BNDTYPE      - the name of the bounding box type
- * _HPARENT      - the name of parent class (usually Standard_Transient)
- */
-#define DEFINE_HUBTREE(_HUBTREE, _OBJTYPE, _BNDTYPE, _HPARENT)                                     \
-  class _HUBTREE : public _HPARENT                                                                 \
-  {                                                                                                \
-  public:                                                                                          \
-    typedef NCollection_UBTree<_OBJTYPE, _BNDTYPE> UBTree;                                         \
-                                                                                                   \
-    _HUBTREE()                                                                                     \
-        : myTree(new UBTree)                                                                       \
-    {                                                                                              \
-    }                                                                                              \
-    /* Empty constructor */                                                                        \
-    _HUBTREE(const occ::handle<NCollection_BaseAllocator>& theAlloc)                               \
-        : myTree(new UBTree(theAlloc))                                                             \
-    {                                                                                              \
-    }                                                                                              \
-    /* Constructor */                                                                              \
-                                                                                                   \
-    /* Access to the methods of UBTree */                                                          \
-                                                                                                   \
-    bool Add(const _OBJTYPE& theObj, const _BNDTYPE& theBnd)                                       \
-    {                                                                                              \
-      return ChangeTree().Add(theObj, theBnd);                                                     \
-    }                                                                                              \
-                                                                                                   \
-    int Select(UBTree::Selector& theSelector) const                                                \
-    {                                                                                              \
-      return Tree().Select(theSelector);                                                           \
-    }                                                                                              \
-                                                                                                   \
-    void Clear()                                                                                   \
-    {                                                                                              \
-      ChangeTree().Clear();                                                                        \
-    }                                                                                              \
-                                                                                                   \
-    bool IsEmpty() const noexcept                                                                  \
-    {                                                                                              \
-      return Tree().IsEmpty();                                                                     \
-    }                                                                                              \
-                                                                                                   \
-    const UBTree::TreeNode& Root() const                                                           \
-    {                                                                                              \
-      return Tree().Root();                                                                        \
-    }                                                                                              \
-                                                                                                   \
-    /* Access to the tree algorithm */                                                             \
-                                                                                                   \
-    const UBTree& Tree() const noexcept                                                            \
-    {                                                                                              \
-      return *myTree;                                                                              \
-    }                                                                                              \
-    UBTree& ChangeTree() noexcept                                                                  \
-    {                                                                                              \
-      return *myTree;                                                                              \
-    }                                                                                              \
-                                                                                                   \
-    ~_HUBTREE()                                                                                    \
-    {                                                                                              \
-      delete myTree;                                                                               \
-    }                                                                                              \
-    /* Destructor */                                                                               \
-                                                                                                   \
-    DEFINE_STANDARD_RTTI_INLINE(_HUBTREE, _HPARENT)                                                \
-    /* Type management */                                                                          \
-                                                                                                   \
-  private:                                                                                         \
-    /* Copying and assignment are prohibited  */                                                   \
-    _HUBTREE(UBTree*);                                                                             \
-    _HUBTREE(const _HUBTREE&);                                                                     \
-    void operator=(const _HUBTREE&);                                                               \
-                                                                                                   \
-  private:                                                                                         \
-    UBTree* myTree; /* pointer to the tree algorithm */                                            \
-  };                                                                                               \
-  DEFINE_STANDARD_HANDLE(_HUBTREE, _HPARENT)
-
-#define IMPLEMENT_HUBTREE(_HUBTREE, _HPARENT)
 
 #endif

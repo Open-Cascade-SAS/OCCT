@@ -20,6 +20,7 @@
 #include <NCollection_DefaultHasher.hxx>
 #include <NCollection_ItemsView.hxx>
 
+#include <functional>
 #include <new>
 #include <optional>
 #include <type_traits>
@@ -369,6 +370,34 @@ public:
     if (mySize == 0)
       return false;
     return findSlot(theKey).has_value();
+  }
+
+  //! Contained returns optional pair of const references to key and value.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<const TheItemType>>>
+    Contained(const TheKeyType& theKey) const
+  {
+    if (mySize == 0)
+      return std::nullopt;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return std::nullopt;
+    return std::make_pair(std::cref(mySlots[*aIdx].Key()), std::cref(mySlots[*aIdx].Item()));
+  }
+
+  //! Contained returns optional pair of const key reference and mutable value reference.
+  //! Returns std::nullopt if the key is not found.
+  std::optional<
+    std::pair<std::reference_wrapper<const TheKeyType>, std::reference_wrapper<TheItemType>>>
+    Contained(const TheKeyType& theKey)
+  {
+    if (mySize == 0)
+      return std::nullopt;
+    const std::optional<size_t> aIdx = findSlot(theKey);
+    if (!aIdx.has_value())
+      return std::nullopt;
+    return std::make_pair(std::cref(mySlots[*aIdx].Key()), std::ref(mySlots[*aIdx].Item()));
   }
 
   //! Find value by key, returns nullptr if not found
