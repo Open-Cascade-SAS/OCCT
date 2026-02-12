@@ -201,10 +201,20 @@ inline void Extrema_GGenExtCC_ChangeIntervals(occ::handle<NCollection_HArray1<do
   theInts = aNewInts;
 }
 
-class Extrema_GGenExtCC_PointsInspector : public NCollection_CellFilter_InspectorXY
+class Extrema_GGenExtCC_PointsInspector
 {
 public:
+  static constexpr int Dimension = 2;
+
+  typedef gp_XY Point;
   typedef gp_XY Target;
+
+  static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+
+  Point Shift(const Point& thePnt, double theTol) const
+  {
+    return Point(thePnt.X() + theTol, thePnt.Y() + theTol);
+  }
 
   Extrema_GGenExtCC_PointsInspector(const double theTol)
   {

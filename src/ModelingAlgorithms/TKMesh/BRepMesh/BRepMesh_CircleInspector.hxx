@@ -22,10 +22,20 @@
 #include <NCollection_CellFilter.hxx>
 
 //! Auxiliary class to find circles shot by the given point.
-class BRepMesh_CircleInspector : public NCollection_CellFilter_InspectorXY
+class BRepMesh_CircleInspector
 {
 public:
-  typedef int Target;
+  static constexpr int Dimension = 2;
+
+  typedef gp_XY Point;
+  typedef int   Target;
+
+  static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+
+  Point Shift(const Point& thePnt, double theTol) const
+  {
+    return Point(thePnt.X() + theTol, thePnt.Y() + theTol);
+  }
 
   //! Constructor.
   //! @param theTolerance tolerance to be used for identification of shot circles.

@@ -249,10 +249,20 @@ protected:
 
   //! This inspector will find a node nearest to the given point
   //! not far than on the given tolerance
-  class NodeInspector : public NCollection_CellFilter_InspectorXYZ
+  class NodeInspector
   {
   public:
-    typedef int Target;
+    static constexpr int Dimension = 3;
+
+    typedef gp_XYZ Point;
+    typedef int    Target;
+
+    static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
+
+    Point Shift(const Point& thePnt, double theTol) const
+    {
+      return Point(thePnt.X() + theTol, thePnt.Y() + theTol, thePnt.Z() + theTol);
+    }
 
     NodeInspector(const NCollection_Vector<FS_Vertex>& theVec,
                   const gp_Pnt&                        thePnt,
