@@ -17,6 +17,7 @@
 
 #include <AIS_InteractiveContext.hxx>
 #include <BRep_Builder.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <BRepTools.hxx>
 #include <BRepMesh_IncrementalMesh.hxx>
 #include <Graphic3d_AspectFillArea3d.hxx>
@@ -745,10 +746,7 @@ bool AIS_ColoredShape::dispatchColors(
   }
 
   // iterate on sub-shapes
-  BRep_Builder aBBuilder;
-  TopoDS_Shape aShapeCopy = theShapeToParse.EmptyCopied();
-  aShapeCopy.Closed(theShapeToParse.Closed());
-  int nbDef = 0;
+  NCollection_DynamicArray<TopoDS_Shape> aSubShapes(theShapeToParse.NbChildren());
   for (TopoDS_Iterator aSubShapeIter(theShapeToParse); aSubShapeIter.More(); aSubShapeIter.Next())
   {
     const TopoDS_Shape& aSubShape = aSubShapeIter.Value();
@@ -762,19 +760,30 @@ bool AIS_ColoredShape::dispatchColors(
     {
       isSubOverride = true;
     }
-    else
+    else if (aShapeType != TopAbs_FACE)
     {
-      aBBuilder.Add(aShapeCopy, aSubShape);
-      ++nbDef;
+      aSubShapes.Append(aSubShape);
     }
   }
+
+  TopoDS_Shape aShapeCopy;
+  BRep_Builder aBBuilder;
   if (aShapeType == TopAbs_FACE || !isSubOverride)
   {
     aShapeCopy = theShapeToParse;
   }
-  else if (nbDef == 0)
+  else if (aSubShapes.IsEmpty())
   {
     return isOverriden || isSubOverride; // empty compound
+  }
+  else
+  {
+    aShapeCopy = theShapeToParse.EmptyCopied();
+    aShapeCopy.Closed(theShapeToParse.Closed());
+    for (const TopoDS_Shape& aSubShape : aSubShapes)
+    {
+      aBBuilder.Add(aShapeCopy, aSubShape);
+    }
   }
 
   // if any of styles is overridden regarding to default one, add rest to map
