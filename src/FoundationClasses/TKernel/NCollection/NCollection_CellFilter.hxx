@@ -84,7 +84,7 @@ enum NCollection_CellFilter_Action
  *
  * - typedef "Point" defining type of geometrical points used
  *
- * - enum Dimension whose value must be dimension of the point
+ * - static constexpr int Dimension whose value must be dimension of the point
  *
  * - method Coord() returning value of the i-th coordinate of the point:
  *
