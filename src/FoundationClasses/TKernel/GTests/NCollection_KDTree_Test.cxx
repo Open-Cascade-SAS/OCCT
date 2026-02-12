@@ -17,6 +17,8 @@
 #include <NCollection_DynamicArray.hxx>
 
 #include <algorithm>
+#include <cmath>
+#include <limits>
 #include <set>
 #include <vector>
 
@@ -2292,6 +2294,222 @@ TEST(NCollection_KDTreeTest, DuplicatePointsMixed)
 }
 
 // ============================================================
+// Edge: All identical points (comprehensive)
+// ============================================================
+
+TEST(NCollection_KDTreeTest, AllSamePoints_LargeSet2D)
+{
+  // 1000 identical 2D points — stress tests median-split when all coordinates equal.
+  constexpr int THE_N = 1000;
+  TestPoint2D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {3.0, 7.0};
+  }
+  NCollection_KDTree<TestPoint2D, 2> aTree;
+  aTree.Build(aPoints, THE_N);
+  EXPECT_EQ(aTree.Size(), static_cast<size_t>(THE_N));
+  // NearestPoint from anywhere should return dist to (3,7)
+  double aSqDist = 0.0;
+  aTree.NearestPoint({0.0, 0.0}, aSqDist);
+  EXPECT_NEAR(aSqDist, 58.0, 1e-10);
+  // NearestPoint from (3,7) should return 0
+  aTree.NearestPoint({3.0, 7.0}, aSqDist);
+  EXPECT_NEAR(aSqDist, 0.0, 1e-15);
+}
+
+TEST(NCollection_KDTreeTest, AllSamePoints_LargeSet3D)
+{
+  constexpr int THE_N = 500;
+  TestPoint3D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {-2.0, 4.0, 6.0};
+  }
+  NCollection_KDTree<TestPoint3D, 3> aTree;
+  aTree.Build(aPoints, THE_N);
+  EXPECT_EQ(aTree.Size(), static_cast<size_t>(THE_N));
+  double aSqDist = 0.0;
+  aTree.NearestPoint({-2.0, 4.0, 6.0}, aSqDist);
+  EXPECT_NEAR(aSqDist, 0.0, 1e-15);
+}
+
+TEST(NCollection_KDTreeTest, AllSamePoints_KNearest)
+{
+  constexpr int THE_N = 100;
+  TestPoint2D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {5.0, 5.0};
+  }
+  NCollection_KDTree<TestPoint2D, 2> aTree;
+  aTree.Build(aPoints, THE_N);
+  NCollection_Array1<size_t> anIndices(1, 0);
+  NCollection_Array1<double> aDists(1, 0);
+  // K < N
+  const size_t aCount = aTree.KNearestPoints({0.0, 0.0}, 10, anIndices, aDists);
+  EXPECT_EQ(aCount, 10u);
+  for (int i = 1; i <= static_cast<int>(aCount); ++i)
+  {
+    EXPECT_NEAR(aDists.Value(i), 50.0, 1e-10);
+  }
+  // K > N — should return all N
+  const size_t aCount2 = aTree.KNearestPoints({0.0, 0.0}, 200, anIndices, aDists);
+  EXPECT_EQ(aCount2, static_cast<size_t>(THE_N));
+}
+
+TEST(NCollection_KDTreeTest, AllSamePoints_RangeSearch)
+{
+  constexpr int THE_N = 100;
+  TestPoint2D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {5.0, 5.0};
+  }
+  NCollection_KDTree<TestPoint2D, 2> aTree;
+  aTree.Build(aPoints, THE_N);
+  // Zero radius at the exact point — should find all
+  const NCollection_DynamicArray<size_t> aResult = aTree.RangeSearch({5.0, 5.0}, 0.0);
+  EXPECT_EQ(aResult.Size(), THE_N);
+  // Small radius away — should find all (dist = sqrt(2) ≈ 1.414)
+  const NCollection_DynamicArray<size_t> aResult2 = aTree.RangeSearch({4.0, 4.0}, 2.0);
+  EXPECT_EQ(aResult2.Size(), THE_N);
+  // Radius too small from away — should find none
+  const NCollection_DynamicArray<size_t> aResult3 = aTree.RangeSearch({0.0, 0.0}, 1.0);
+  EXPECT_EQ(aResult3.Size(), 0);
+}
+
+TEST(NCollection_KDTreeTest, AllSamePoints_BoxSearch)
+{
+  constexpr int THE_N = 100;
+  TestPoint2D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {5.0, 5.0};
+  }
+  NCollection_KDTree<TestPoint2D, 2> aTree;
+  aTree.Build(aPoints, THE_N);
+  // Box that contains the point — should find all
+  const NCollection_DynamicArray<size_t> aResult = aTree.BoxSearch({4.0, 4.0}, {6.0, 6.0});
+  EXPECT_EQ(aResult.Size(), THE_N);
+  // Box exactly at the point — should find all
+  const NCollection_DynamicArray<size_t> aResult2 = aTree.BoxSearch({5.0, 5.0}, {5.0, 5.0});
+  EXPECT_EQ(aResult2.Size(), THE_N);
+  // Box that misses the point — should find none
+  const NCollection_DynamicArray<size_t> aResult3 = aTree.BoxSearch({0.0, 0.0}, {4.9, 4.9});
+  EXPECT_EQ(aResult3.Size(), 0);
+}
+
+TEST(NCollection_KDTreeTest, AllSamePoints_NearestPoints)
+{
+  constexpr int THE_N = 50;
+  TestPoint2D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {3.0, 3.0};
+  }
+  NCollection_KDTree<TestPoint2D, 2> aTree;
+  aTree.Build(aPoints, THE_N);
+  double aSqDist = 0.0;
+  // All equidistant — should return all N
+  const NCollection_DynamicArray<size_t> aResult = aTree.NearestPoints({0.0, 0.0}, 1e-6, aSqDist);
+  EXPECT_EQ(aResult.Size(), THE_N);
+  EXPECT_NEAR(aSqDist, 18.0, 1e-10);
+}
+
+TEST(NCollection_KDTreeTest, AllSamePoints_CopyMove)
+{
+  constexpr int THE_N = 100;
+  TestPoint2D   aPoints[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {2.0, 8.0};
+  }
+  NCollection_KDTree<TestPoint2D, 2> aTree;
+  aTree.Build(aPoints, THE_N);
+  // Copy
+  NCollection_KDTree<TestPoint2D, 2> aCopy(aTree);
+  EXPECT_EQ(aCopy.Size(), static_cast<size_t>(THE_N));
+  double aSqDist = 0.0;
+  aCopy.NearestPoint({2.0, 8.0}, aSqDist);
+  EXPECT_NEAR(aSqDist, 0.0, 1e-15);
+  // Move
+  NCollection_KDTree<TestPoint2D, 2> aMoved(std::move(aCopy));
+  EXPECT_EQ(aMoved.Size(), static_cast<size_t>(THE_N));
+  EXPECT_TRUE(aCopy.IsEmpty());
+  aMoved.NearestPoint({2.0, 8.0}, aSqDist);
+  EXPECT_NEAR(aSqDist, 0.0, 1e-15);
+}
+
+TEST(NCollection_KDTreeRadiiTest, AllSamePoints_ContainingSearch)
+{
+  constexpr int THE_N = 100;
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {5.0, 5.0};
+    aRadii[i]  = 2.0;
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  // Query at the same point — inside all spheres
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({5.0, 5.0});
+  EXPECT_EQ(aResult.Size(), THE_N);
+  // Query nearby (dist=1 <= 2) — still inside all
+  const NCollection_DynamicArray<size_t> aResult2 = aTree.ContainingSearch({6.0, 5.0});
+  EXPECT_EQ(aResult2.Size(), THE_N);
+  // Query far (dist=10 > 2) — outside all
+  const NCollection_DynamicArray<size_t> aResult3 = aTree.ContainingSearch({15.0, 5.0});
+  EXPECT_EQ(aResult3.Size(), 0);
+}
+
+TEST(NCollection_KDTreeRadiiTest, AllSamePoints_NearestWeighted)
+{
+  constexpr int THE_N = 100;
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {5.0, 5.0};
+    aRadii[i]  = 3.0;
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  double aGap = 0.0;
+  // Query inside: gap = 0 - 3 = -3
+  const size_t aIdx = aTree.NearestWeighted({5.0, 5.0}, aGap);
+  EXPECT_NE(aIdx, 0u);
+  EXPECT_NEAR(aGap, -3.0, 1e-10);
+  // Query outside: gap = 10 - 3 = 7
+  aTree.NearestWeighted({15.0, 5.0}, aGap);
+  EXPECT_NEAR(aGap, 7.0, 1e-10);
+}
+
+TEST(NCollection_KDTreeRadiiTest, AllSamePoints_VaryingRadii)
+{
+  // All points at same location but with different radii
+  constexpr int THE_N = 50;
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {0.0, 0.0};
+    aRadii[i]  = static_cast<double>(i + 1); // 1, 2, ..., 50
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  // NearestWeighted from (10,0): gap = 10 - radius, minimum when radius=50 -> gap=-40
+  double       aGap = 0.0;
+  const size_t aIdx = aTree.NearestWeighted({10.0, 0.0}, aGap);
+  EXPECT_NEAR(aGap, -40.0, 1e-10);
+  EXPECT_NEAR(aTree.Radius(aIdx), 50.0, 1e-15);
+  // ContainingSearch from (10,0): spheres with R >= 10 contain it -> indices 10..50 = 41 points
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({10.0, 0.0});
+  EXPECT_EQ(aResult.Size(), 41);
+}
+
+// ============================================================
 // Edge: Nearest with query exactly on a point
 // ============================================================
 
@@ -2534,5 +2752,587 @@ TEST(NCollection_KDTreeTest, NearestPoints_ValidIndices)
   {
     EXPECT_GE(aResult[i], 1u);
     EXPECT_LE(aResult[i], static_cast<size_t>(THE_N));
+  }
+}
+
+// ============================================================
+// HasRadii: Construction & State
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, DefaultConstructor)
+{
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  EXPECT_TRUE(aTree.IsEmpty());
+  EXPECT_EQ(aTree.Size(), 0u);
+}
+
+TEST(NCollection_KDTreeRadiiTest, BuildFromCArray)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}, {0.0, 5.0}};
+  double                                   aRadii[]  = {1.0, 2.0, 3.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  EXPECT_FALSE(aTree.IsEmpty());
+  EXPECT_EQ(aTree.Size(), 3u);
+}
+
+TEST(NCollection_KDTreeRadiiTest, BuildFromArray1)
+{
+  NCollection_Array1<TestPoint2D> aPoints(1, 3);
+  aPoints.SetValue(1, {0.0, 0.0});
+  aPoints.SetValue(2, {5.0, 0.0});
+  aPoints.SetValue(3, {0.0, 5.0});
+  NCollection_Array1<double> aRadii(1, 3);
+  aRadii.SetValue(1, 1.0);
+  aRadii.SetValue(2, 2.0);
+  aRadii.SetValue(3, 3.0);
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii);
+  EXPECT_FALSE(aTree.IsEmpty());
+  EXPECT_EQ(aTree.Size(), 3u);
+}
+
+TEST(NCollection_KDTreeRadiiTest, BuildEmptyArray)
+{
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(static_cast<const TestPoint2D*>(nullptr), static_cast<const double*>(nullptr), 0);
+  EXPECT_TRUE(aTree.IsEmpty());
+}
+
+TEST(NCollection_KDTreeRadiiTest, RadiusAccessor)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}, {0.0, 5.0}};
+  double                                   aRadii[]  = {1.5, 2.5, 3.5};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  // Points are reindexed internally but original indices are preserved
+  // Check that each original index has the correct radius
+  for (size_t i = 1; i <= 3; ++i)
+  {
+    const double aR        = aTree.Radius(i);
+    const double aExpected = (i == 1) ? 1.5 : (i == 2 ? 2.5 : 3.5);
+    EXPECT_NEAR(aR, aExpected, 1e-15);
+  }
+}
+
+TEST(NCollection_KDTreeRadiiTest, Clear)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 2.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  EXPECT_FALSE(aTree.IsEmpty());
+  aTree.Clear();
+  EXPECT_TRUE(aTree.IsEmpty());
+  EXPECT_EQ(aTree.Size(), 0u);
+}
+
+// ============================================================
+// HasRadii: Copy/Move Semantics
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, CopyConstructor)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}, {0.0, 5.0}};
+  double                                   aRadii[]  = {1.0, 2.0, 3.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  NCollection_KDTree<TestPoint2D, 2, true> aCopy(aTree);
+  EXPECT_EQ(aCopy.Size(), 3u);
+  for (size_t i = 1; i <= 3; ++i)
+  {
+    EXPECT_NEAR(aCopy.Radius(i), aTree.Radius(i), 1e-15);
+  }
+  // Both should give the same NearestWeighted result
+  TestPoint2D aQuery(2.0, 1.0);
+  EXPECT_EQ(aTree.NearestWeighted(aQuery), aCopy.NearestWeighted(aQuery));
+}
+
+TEST(NCollection_KDTreeRadiiTest, MoveConstructor)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 2.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  NCollection_KDTree<TestPoint2D, 2, true> aMoved(std::move(aTree));
+  EXPECT_EQ(aMoved.Size(), 2u);
+  EXPECT_TRUE(aTree.IsEmpty());
+}
+
+TEST(NCollection_KDTreeRadiiTest, CopyAssignment)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 2.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  NCollection_KDTree<TestPoint2D, 2, true> aCopy;
+  aCopy = aTree;
+  EXPECT_EQ(aCopy.Size(), 2u);
+  EXPECT_EQ(aTree.Size(), 2u);
+}
+
+TEST(NCollection_KDTreeRadiiTest, MoveAssignment)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 2.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  NCollection_KDTree<TestPoint2D, 2, true> aMoved;
+  aMoved = std::move(aTree);
+  EXPECT_EQ(aMoved.Size(), 2u);
+  EXPECT_TRUE(aTree.IsEmpty());
+}
+
+// ============================================================
+// HasRadii: Standard queries still work
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, NearestPointStillWorks)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {10.0, 0.0}, {5.0, 5.0}};
+  double                                   aRadii[]  = {1.0, 1.0, 1.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  TestPoint2D  aQuery(4.5, 4.5);
+  double       aSqDist = 0.0;
+  const size_t aIdx    = aTree.NearestPoint(aQuery, aSqDist);
+  EXPECT_NEAR(aTree.Point(aIdx).X, 5.0, 1e-15);
+  EXPECT_NEAR(aTree.Point(aIdx).Y, 5.0, 1e-15);
+  EXPECT_NEAR(aSqDist, 0.5, 1e-10);
+}
+
+TEST(NCollection_KDTreeRadiiTest, RangeSearchStillWorks)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {1.0, 0.0}, {10.0, 10.0}};
+  double                                   aRadii[]  = {0.5, 0.5, 0.5};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  const NCollection_DynamicArray<size_t> aResult = aTree.RangeSearch({0.5, 0.0}, 1.0);
+  EXPECT_EQ(aResult.Size(), 2);
+}
+
+// ============================================================
+// HasRadii: ContainingSearch
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_EmptyTree)
+{
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  const NCollection_DynamicArray<size_t>   aResult = aTree.ContainingSearch({0.0, 0.0});
+  EXPECT_EQ(aResult.Size(), 0);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryInsideSphere)
+{
+  // Sphere at (0,0) with radius 5 — query at (1,1) is inside
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}};
+  double                                   aRadii[]  = {5.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 1);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({1.0, 1.0});
+  EXPECT_EQ(aResult.Size(), 1);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryOutsideSphere)
+{
+  // Sphere at (0,0) with radius 1 — query at (5,5) is outside
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}};
+  double                                   aRadii[]  = {1.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 1);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({5.0, 5.0});
+  EXPECT_EQ(aResult.Size(), 0);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryOnBoundary)
+{
+  // Sphere at (0,0) with radius 5 — query at (3,4) is exactly on boundary (dist=5)
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}};
+  double                                   aRadii[]  = {5.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 1);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({3.0, 4.0});
+  EXPECT_EQ(aResult.Size(), 1);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_MultipleSpheres)
+{
+  // Three spheres, query at (1,0) is inside first two but not third
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {2.0, 0.0}, {10.0, 10.0}};
+  double                                   aRadii[]  = {3.0, 2.0, 1.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({1.0, 0.0});
+  EXPECT_EQ(aResult.Size(), 2);
+  // Verify both found indices correspond to the first two points
+  std::set<size_t> aFoundIndices;
+  for (int i = 0; i < aResult.Size(); ++i)
+  {
+    aFoundIndices.insert(aResult[i]);
+  }
+  // Point at (0,0) with R=3: dist=1 <= 3 ✓
+  // Point at (2,0) with R=2: dist=1 <= 2 ✓
+  // Point at (10,10) with R=1: dist=√(81+100) >> 1 ✗
+  EXPECT_EQ(aFoundIndices.size(), 2u);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_VaryingRadii)
+{
+  // Large sphere at origin with R=100, small spheres far away
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {50.0, 0.0}, {-50.0, 0.0}};
+  double                                   aRadii[]  = {100.0, 0.1, 0.1};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({40.0, 0.0});
+  // Only the large sphere at origin (dist=40 <= 100) should contain it
+  EXPECT_EQ(aResult.Size(), 1);
+  EXPECT_NEAR(aTree.Point(aResult[0]).X, 0.0, 1e-15);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_AllContain)
+{
+  // All spheres contain the origin
+  TestPoint2D aPoints[] = {{1.0, 0.0}, {0.0, 1.0}, {-1.0, 0.0}, {0.0, -1.0}};
+  double      aRadii[]  = {2.0, 2.0, 2.0, 2.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 4);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({0.0, 0.0});
+  EXPECT_EQ(aResult.Size(), 4);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_NoneContain)
+{
+  // Tiny spheres, query far away
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {1.0, 0.0}, {0.0, 1.0}};
+  double                                   aRadii[]  = {0.01, 0.01, 0.01};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({100.0, 100.0});
+  EXPECT_EQ(aResult.Size(), 0);
+}
+
+TEST(NCollection_KDTreeRadiiTest, ContainingSearch_3D)
+{
+  // 3D sphere search
+  TestPoint3D                              aPoints[] = {{0.0, 0.0, 0.0}, {10.0, 0.0, 0.0}};
+  double                                   aRadii[]  = {5.0, 3.0};
+  NCollection_KDTree<TestPoint3D, 3, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  // Query at (2,0,0): inside first sphere (dist=2 <= 5), outside second (dist=8 > 3)
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({2.0, 0.0, 0.0});
+  EXPECT_EQ(aResult.Size(), 1);
+  EXPECT_NEAR(aTree.Point(aResult[0]).X, 0.0, 1e-15);
+}
+
+// ============================================================
+// HasRadii: NearestWeighted
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_EmptyTree)
+{
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  double                                   aGap = 0.0;
+  EXPECT_EQ(aTree.NearestWeighted({0.0, 0.0}, aGap), 0u);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_SinglePoint)
+{
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}};
+  double                                   aRadii[]  = {3.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 1);
+  double aGap = 0.0;
+  // Query at (1,0): gap = dist(1,0) - 3.0 = 1.0 - 3.0 = -2.0 (inside)
+  const size_t aIdx = aTree.NearestWeighted({1.0, 0.0}, aGap);
+  EXPECT_EQ(aIdx, 1u);
+  EXPECT_NEAR(aGap, -2.0, 1e-10);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_CloserSurface)
+{
+  // Two points: small sphere close, large sphere far
+  // P1 at (0,0) R=1, P2 at (10,0) R=5
+  // Query at (3,0):
+  //   gap1 = dist(3,0) - 1 = 3 - 1 = 2
+  //   gap2 = dist(7,0) - 5 = 7 - 5 = 2
+  // Both equidistant from surface — either is valid
+  // Query at (2,0):
+  //   gap1 = 2 - 1 = 1
+  //   gap2 = 8 - 5 = 3
+  // P1 is closer by surface distance
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {10.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 5.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  double       aGap = 0.0;
+  const size_t aIdx = aTree.NearestWeighted({2.0, 0.0}, aGap);
+  EXPECT_NEAR(aTree.Point(aIdx).X, 0.0, 1e-15);
+  EXPECT_NEAR(aGap, 1.0, 1e-10);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_InsideSphere)
+{
+  // Query inside a sphere — gap is negative
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {10.0, 0.0}};
+  double                                   aRadii[]  = {5.0, 1.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  double aGap = 0.0;
+  // Query at (1,0): gap1 = 1 - 5 = -4, gap2 = 9 - 1 = 8
+  const size_t aIdx = aTree.NearestWeighted({1.0, 0.0}, aGap);
+  EXPECT_NEAR(aTree.Point(aIdx).X, 0.0, 1e-15);
+  EXPECT_NEAR(aGap, -4.0, 1e-10);
+  EXPECT_LT(aGap, 0.0);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_LargeRadiusWins)
+{
+  // Far point with very large radius can have smaller gap
+  // P1 at (0,0) R=0.1, P2 at (100,0) R=200
+  // Query at (1,0):
+  //   gap1 = 1 - 0.1 = 0.9
+  //   gap2 = 99 - 200 = -101 (deeply inside P2's sphere)
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {100.0, 0.0}};
+  double                                   aRadii[]  = {0.1, 200.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  double       aGap = 0.0;
+  const size_t aIdx = aTree.NearestWeighted({1.0, 0.0}, aGap);
+  EXPECT_NEAR(aTree.Point(aIdx).X, 100.0, 1e-15);
+  EXPECT_NEAR(aGap, -101.0, 1e-10);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_WithoutGapOutput)
+{
+  // Test the overload without gap output
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {10.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 1.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 2);
+  // Query at (1,0): gap1 = 1-1 = 0, gap2 = 9-1 = 8
+  const size_t aIdx = aTree.NearestWeighted({1.0, 0.0});
+  EXPECT_NEAR(aTree.Point(aIdx).X, 0.0, 1e-15);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_3D)
+{
+  TestPoint3D aPoints[] = {{0.0, 0.0, 0.0}, {10.0, 0.0, 0.0}, {0.0, 10.0, 0.0}};
+  double      aRadii[]  = {2.0, 1.0, 1.0};
+  NCollection_KDTree<TestPoint3D, 3, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  double aGap = 0.0;
+  // Query at (1,0,0): gap1 = 1-2 = -1, gap2 = 9-1 = 8, gap3 = sqrt(101)-1 ≈ 9.05
+  const size_t aIdx = aTree.NearestWeighted({1.0, 0.0, 0.0}, aGap);
+  EXPECT_NEAR(aTree.Point(aIdx).X, 0.0, 1e-15);
+  EXPECT_NEAR(aGap, -1.0, 1e-10);
+}
+
+TEST(NCollection_KDTreeRadiiTest, NearestWeighted_AllSameRadii)
+{
+  // When all radii are equal, NearestWeighted = NearestPoint
+  TestPoint2D                              aPoints[] = {{0.0, 0.0}, {5.0, 0.0}, {10.0, 0.0}};
+  double                                   aRadii[]  = {1.0, 1.0, 1.0};
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, 3);
+  double       aGap         = 0.0;
+  double       aSqDist      = 0.0;
+  const size_t aWeightedIdx = aTree.NearestWeighted({4.0, 0.0}, aGap);
+  const size_t aNearestIdx  = aTree.NearestPoint({4.0, 0.0}, aSqDist);
+  EXPECT_EQ(aWeightedIdx, aNearestIdx);
+}
+
+// ============================================================
+// HasRadii: Brute-force verification
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, BruteForce_ContainingSearch)
+{
+  constexpr int THE_N = 200;
+  TestRandom    aRng(8080);
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
+    aRadii[i]  = aRng.NextDouble(0.1, 10.0);
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  // Run 50 random queries, verify against brute force
+  for (int q = 0; q < 50; ++q)
+  {
+    TestPoint2D aQuery = {aRng.NextDouble(-60, 60), aRng.NextDouble(-60, 60)};
+    const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch(aQuery);
+    // Brute-force: count how many spheres contain aQuery
+    std::set<size_t> aBruteForce;
+    for (int i = 0; i < THE_N; ++i)
+    {
+      const double aDist = sqDist2D(aQuery, aPoints[i]);
+      if (aDist <= aRadii[i] * aRadii[i])
+      {
+        aBruteForce.insert(static_cast<size_t>(i + 1));
+      }
+    }
+    EXPECT_EQ(static_cast<size_t>(aResult.Size()), aBruteForce.size())
+      << "Query (" << aQuery.X << ", " << aQuery.Y << ")";
+    std::set<size_t> aTreeResult;
+    for (int i = 0; i < aResult.Size(); ++i)
+    {
+      aTreeResult.insert(aResult[i]);
+    }
+    EXPECT_EQ(aTreeResult, aBruteForce);
+  }
+}
+
+TEST(NCollection_KDTreeRadiiTest, BruteForce_NearestWeighted)
+{
+  constexpr int THE_N = 200;
+  TestRandom    aRng(9090);
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
+    aRadii[i]  = aRng.NextDouble(0.1, 10.0);
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  // Run 50 random queries, verify against brute force
+  for (int q = 0; q < 50; ++q)
+  {
+    TestPoint2D  aQuery = {aRng.NextDouble(-60, 60), aRng.NextDouble(-60, 60)};
+    double       aGap   = 0.0;
+    const size_t aIdx   = aTree.NearestWeighted(aQuery, aGap);
+    // Brute-force: find minimum gap
+    double aBruteGap = std::numeric_limits<double>::max();
+    for (int i = 0; i < THE_N; ++i)
+    {
+      const double aDist = std::sqrt(sqDist2D(aQuery, aPoints[i]));
+      const double aG    = aDist - aRadii[i];
+      if (aG < aBruteGap)
+      {
+        aBruteGap = aG;
+      }
+    }
+    EXPECT_NEAR(aGap, aBruteGap, 1e-8)
+      << "Query (" << aQuery.X << ", " << aQuery.Y << "), idx=" << aIdx;
+  }
+}
+
+TEST(NCollection_KDTreeRadiiTest, BruteForce_NearestWeighted_3D)
+{
+  constexpr int THE_N = 200;
+  TestRandom    aRng(1212);
+  TestPoint3D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
+    aRadii[i]  = aRng.NextDouble(0.1, 10.0);
+  }
+  NCollection_KDTree<TestPoint3D, 3, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  for (int q = 0; q < 50; ++q)
+  {
+    TestPoint3D  aQuery    = {aRng.NextDouble(-60, 60),
+                              aRng.NextDouble(-60, 60),
+                              aRng.NextDouble(-60, 60)};
+    double       aGap      = 0.0;
+    const size_t aIdx      = aTree.NearestWeighted(aQuery, aGap);
+    double       aBruteGap = std::numeric_limits<double>::max();
+    for (int i = 0; i < THE_N; ++i)
+    {
+      const double aDist = std::sqrt(sqDist3D(aQuery, aPoints[i]));
+      const double aG    = aDist - aRadii[i];
+      if (aG < aBruteGap)
+      {
+        aBruteGap = aG;
+      }
+    }
+    EXPECT_NEAR(aGap, aBruteGap, 1e-8)
+      << "Query (" << aQuery.X << ", " << aQuery.Y << ", " << aQuery.Z << "), idx=" << aIdx;
+  }
+}
+
+// ============================================================
+// HasRadii: Stress Tests
+// ============================================================
+
+TEST(NCollection_KDTreeRadiiTest, StressTest_1000Points)
+{
+  constexpr int THE_N = 1000;
+  TestRandom    aRng(3030);
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {aRng.NextDouble(-100, 100), aRng.NextDouble(-100, 100)};
+    aRadii[i]  = aRng.NextDouble(0.01, 5.0);
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  EXPECT_EQ(aTree.Size(), static_cast<size_t>(THE_N));
+  // Run queries to verify no crashes
+  for (int q = 0; q < 100; ++q)
+  {
+    TestPoint2D aQuery = {aRng.NextDouble(-110, 110), aRng.NextDouble(-110, 110)};
+    aTree.ContainingSearch(aQuery);
+    aTree.NearestWeighted(aQuery);
+    aTree.NearestPoint(aQuery);
+  }
+}
+
+TEST(NCollection_KDTreeRadiiTest, StressTest_ZeroRadii)
+{
+  // Zero radii — ContainingSearch should only find exact matches
+  constexpr int THE_N = 100;
+  TestRandom    aRng(4040);
+  TestPoint2D   aPoints[THE_N];
+  double        aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {aRng.NextDouble(-10, 10), aRng.NextDouble(-10, 10)};
+    aRadii[i]  = 0.0;
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTree;
+  aTree.Build(aPoints, aRadii, THE_N);
+  // Query at one of the points — should find it (dist=0 <= 0)
+  const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch(aPoints[0]);
+  EXPECT_GE(aResult.Size(), 1);
+  // Query far away — should find nothing
+  const NCollection_DynamicArray<size_t> aResult2 = aTree.ContainingSearch({999.0, 999.0});
+  EXPECT_EQ(aResult2.Size(), 0);
+}
+
+TEST(NCollection_KDTreeRadiiTest, StressTest_IdenticalRadii)
+{
+  // When all radii are equal, NearestWeighted should give same result as NearestPoint
+  constexpr int    THE_N = 500;
+  constexpr double THE_R = 2.5;
+  TestRandom       aRng(5050);
+  TestPoint2D      aPoints[THE_N];
+  double           aRadii[THE_N];
+  for (int i = 0; i < THE_N; ++i)
+  {
+    aPoints[i] = {aRng.NextDouble(-50, 50), aRng.NextDouble(-50, 50)};
+    aRadii[i]  = THE_R;
+  }
+  NCollection_KDTree<TestPoint2D, 2, true> aTreeR;
+  aTreeR.Build(aPoints, aRadii, THE_N);
+  NCollection_KDTree<TestPoint2D, 2, false> aTreeNoR;
+  aTreeNoR.Build(aPoints, THE_N);
+  for (int q = 0; q < 50; ++q)
+  {
+    TestPoint2D  aQuery  = {aRng.NextDouble(-60, 60), aRng.NextDouble(-60, 60)};
+    double       aGap    = 0.0;
+    double       aSqDist = 0.0;
+    const size_t aWIdx   = aTreeR.NearestWeighted(aQuery, aGap);
+    const size_t aNIdx   = aTreeNoR.NearestPoint(aQuery, aSqDist);
+    // Gap should be sqrt(sqDist) - R
+    const double aExpectedGap = std::sqrt(aSqDist) - THE_R;
+    EXPECT_NEAR(aGap, aExpectedGap, 1e-8);
+    // Points should be the same
+    EXPECT_NEAR(aTreeR.Point(aWIdx).X, aTreeNoR.Point(aNIdx).X, 1e-10);
+    EXPECT_NEAR(aTreeR.Point(aWIdx).Y, aTreeNoR.Point(aNIdx).Y, 1e-10);
   }
 }

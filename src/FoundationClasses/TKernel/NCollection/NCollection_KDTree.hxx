@@ -20,6 +20,8 @@
 #include <algorithm>
 #include <cmath>
 #include <cstddef>
+#include <limits>
+#include <type_traits>
 
 //! @brief Static KD-Tree for efficient point set queries.
 //!
@@ -29,15 +31,17 @@
 //!
 //! Key features:
 //! - O(N log N) construction via median-split (std::nth_element)
-//! - O(log N) nearest-neighbor search with hyperplane pruning
+//! - O(log N) nearest-neighbor search with bounding box pruning
 //! - O(N^(1-1/d) + k) range and box search
 //! - Cache-friendly permutation-based layout (no node allocations)
+//! - Optional per-point radii for sphere-aware queries (compile-time, zero overhead when unused)
 //! - Works with any point type providing Coord(int) with 1-based indexing
 //!
 //! Best suited for:
 //! - Static point clouds (build once, query many times)
 //! - Nearest-neighbor and k-nearest queries
 //! - Spatial range filtering
+//! - Sphere containment and weighted nearest queries (when HasRadii = true)
 //!
 //! Required interface for ThePointType (besides copy constructor and operator =):
 //! @code
@@ -53,7 +57,9 @@
 //!
 //! @tparam ThePointType  Point type providing Coord(int) with 1-based indexing
 //! @tparam TheDimension  Spatial dimension (compile-time constant, typically 2 or 3)
-template <class ThePointType, int TheDimension>
+//! @tparam HasRadii      When true, enables per-point radii for ContainingSearch
+//!                       and NearestWeighted queries (default: false)
+template <class ThePointType, int TheDimension, bool HasRadii = false>
 class NCollection_KDTree
 {
 public:
@@ -63,9 +69,11 @@ public:
   {
   }
 
-  //! Build the tree from a C array of points.
+  //! Build the tree from a C array of points (no radii).
+  //! Only available when HasRadii is false.
   //! @param[in] thePoints pointer to contiguous array of points
   //! @param[in] theCount  number of points
+  template <bool R = HasRadii, typename = std::enable_if_t<!R>>
   void Build(const ThePointType* thePoints, size_t theCount)
   {
     if (theCount == 0)
@@ -84,8 +92,10 @@ public:
     buildRecursive(1, static_cast<int>(mySize), 0);
   }
 
-  //! Build the tree from an NCollection_Array1.
+  //! Build the tree from an NCollection_Array1 (no radii).
+  //! Only available when HasRadii is false.
   //! @param[in] thePoints array of points (any lower bound)
+  template <bool R = HasRadii, typename = std::enable_if_t<!R>>
   void Build(const NCollection_Array1<ThePointType>& thePoints)
   {
     const int aCount = thePoints.Length();
@@ -105,6 +115,63 @@ public:
     buildRecursive(1, static_cast<int>(mySize), 0);
   }
 
+  //! Build the tree from a C array of points with per-point radii.
+  //! Only available when HasRadii is true.
+  //! @param[in] thePoints pointer to contiguous array of points
+  //! @param[in] theRadii  pointer to contiguous array of radii (one per point)
+  //! @param[in] theCount  number of points
+  template <bool R = HasRadii, typename = std::enable_if_t<R>>
+  void Build(const ThePointType* thePoints, const double* theRadii, size_t theCount)
+  {
+    if (theCount == 0)
+    {
+      Clear();
+      return;
+    }
+    mySize       = theCount;
+    const int aN = static_cast<int>(theCount);
+    myPoints.Resize(1, aN, false);
+    myIndices.Resize(1, aN, false);
+    myRadii.Resize(1, aN, false);
+    myMaxRadius.Resize(1, aN, false);
+    for (size_t i = 0; i < theCount; ++i)
+    {
+      const int anI = static_cast<int>(i + 1);
+      myPoints.SetValue(anI, thePoints[i]);
+      myIndices.SetValue(anI, i + 1);
+      myRadii.SetValue(anI, theRadii[i]);
+    }
+    buildRecursive(1, aN, 0);
+  }
+
+  //! Build the tree from NCollection_Array1 of points with radii.
+  //! Only available when HasRadii is true.
+  //! @param[in] thePoints array of points (any lower bound)
+  //! @param[in] theRadii  array of radii (same length as thePoints)
+  template <bool R = HasRadii, typename = std::enable_if_t<R>>
+  void Build(const NCollection_Array1<ThePointType>& thePoints,
+             const NCollection_Array1<double>&       theRadii)
+  {
+    const int aCount = thePoints.Length();
+    if (aCount == 0)
+    {
+      Clear();
+      return;
+    }
+    mySize = static_cast<size_t>(aCount);
+    myPoints.Resize(1, aCount, false);
+    myIndices.Resize(1, aCount, false);
+    myRadii.Resize(1, aCount, false);
+    myMaxRadius.Resize(1, aCount, false);
+    for (int i = 0; i < aCount; ++i)
+    {
+      myPoints.SetValue(i + 1, thePoints.Value(thePoints.Lower() + i));
+      myIndices.SetValue(i + 1, static_cast<size_t>(i + 1));
+      myRadii.SetValue(i + 1, theRadii.Value(theRadii.Lower() + i));
+    }
+    buildRecursive(1, static_cast<int>(mySize), 0);
+  }
+
   //! Returns true if the tree contains no points.
   bool IsEmpty() const { return mySize == 0; }
 
@@ -117,6 +184,11 @@ public:
     mySize = 0;
     myPoints.Resize(1, 0, false);
     myIndices.Resize(1, 0, false);
+    if constexpr (HasRadii)
+    {
+      myRadii.Resize(1, 0, false);
+      myMaxRadius.Resize(1, 0, false);
+    }
   }
 
   //! Returns the point at the given 1-based original index.
@@ -125,6 +197,16 @@ public:
   const ThePointType& Point(size_t theIndex) const
   {
     return myPoints.Value(static_cast<int>(theIndex));
+  }
+
+  //! Returns the radius of the point at the given 1-based original index.
+  //! Only available when HasRadii is true.
+  //! @param[in] theIndex 1-based point index
+  //! @return radius of the point
+  template <bool R = HasRadii, typename = std::enable_if_t<R>>
+  double Radius(size_t theIndex) const
+  {
+    return myRadii.Value(static_cast<int>(theIndex));
   }
 
   //! Finds the nearest point to theQuery.
@@ -149,7 +231,17 @@ public:
     }
     size_t aBestIndex  = 0;
     double aBestSqDist = std::numeric_limits<double>::max();
-    nearestRecursive(theQuery, 1, static_cast<int>(mySize), 0, aBestIndex, aBestSqDist);
+    double aBoundsMin[TheDimension];
+    double aBoundsMax[TheDimension];
+    initBounds(aBoundsMin, aBoundsMax);
+    nearestRecursive(theQuery,
+                     1,
+                     static_cast<int>(mySize),
+                     0,
+                     aBestIndex,
+                     aBestSqDist,
+                     aBoundsMin,
+                     aBoundsMax);
     theSqDistance = aBestSqDist;
     return aBestIndex;
   }
@@ -175,7 +267,17 @@ public:
     // Find the nearest distance first
     size_t aBestIndex  = 0;
     double aBestSqDist = std::numeric_limits<double>::max();
-    nearestRecursive(theQuery, 1, static_cast<int>(mySize), 0, aBestIndex, aBestSqDist);
+    double aBoundsMin[TheDimension];
+    double aBoundsMax[TheDimension];
+    initBounds(aBoundsMin, aBoundsMax);
+    nearestRecursive(theQuery,
+                     1,
+                     static_cast<int>(mySize),
+                     0,
+                     aBestIndex,
+                     aBestSqDist,
+                     aBoundsMin,
+                     aBoundsMax);
     theSqDistance = aBestSqDist;
     // Collect all points at this distance (within tolerance)
     const double aBestDist       = std::sqrt(aBestSqDist);
@@ -221,7 +323,18 @@ public:
     // Max-heap: pairs of (sqDist, index)
     NCollection_Array1<std::pair<double, size_t>> aHeap(1, static_cast<int>(anActualK));
     size_t                                        aHeapSize = 0;
-    kNearestRecursive(theQuery, 1, static_cast<int>(mySize), 0, aHeap, aHeapSize, anActualK);
+    double                                        aBoundsMin[TheDimension];
+    double                                        aBoundsMax[TheDimension];
+    initBounds(aBoundsMin, aBoundsMax);
+    kNearestRecursive(theQuery,
+                      1,
+                      static_cast<int>(mySize),
+                      0,
+                      aHeap,
+                      aHeapSize,
+                      anActualK,
+                      aBoundsMin,
+                      aBoundsMax);
     // Extract from heap sorted closest-first
     const int aCount = static_cast<int>(aHeapSize);
     theIndices.Resize(1, aCount, false);
@@ -271,6 +384,77 @@ public:
     return aResult;
   }
 
+  //! Finds all points whose sphere contains theQuery.
+  //! Point i "contains" theQuery if dist(theQuery, point_i) <= radius_i.
+  //! Only available when HasRadii is true.
+  //! @param[in] theQuery query point
+  //! @return array of 1-based indices of containing points
+  template <bool R = HasRadii, typename = std::enable_if_t<R>>
+  NCollection_DynamicArray<size_t> ContainingSearch(const ThePointType& theQuery) const
+  {
+    NCollection_DynamicArray<size_t> aResult;
+    if (IsEmpty())
+    {
+      return aResult;
+    }
+    double aBoundsMin[TheDimension];
+    double aBoundsMax[TheDimension];
+    initBounds(aBoundsMin, aBoundsMax);
+    containingSearchRecursive(theQuery,
+                              1,
+                              static_cast<int>(mySize),
+                              0,
+                              aResult,
+                              aBoundsMin,
+                              aBoundsMax);
+    return aResult;
+  }
+
+  //! Finds the point whose sphere surface is closest to theQuery.
+  //! Minimizes gap distance = dist(theQuery, point_i) - radius_i.
+  //! Negative gap means theQuery is inside the sphere.
+  //! Only available when HasRadii is true.
+  //! @param[in] theQuery query point
+  //! @return 1-based index of nearest-weighted point, 0 if tree is empty
+  template <bool R = HasRadii, typename = std::enable_if_t<R>>
+  size_t NearestWeighted(const ThePointType& theQuery) const
+  {
+    double aDummy = 0.0;
+    return NearestWeighted(theQuery, aDummy);
+  }
+
+  //! Finds the point whose sphere surface is closest to theQuery.
+  //! Minimizes gap distance = dist(theQuery, point_i) - radius_i.
+  //! Negative gap means theQuery is inside the sphere.
+  //! Only available when HasRadii is true.
+  //! @param[in]  theQuery       query point
+  //! @param[out] theGapDistance  gap distance to the nearest sphere surface (negative = inside)
+  //! @return 1-based index of nearest-weighted point, 0 if tree is empty
+  template <bool R = HasRadii, typename = std::enable_if_t<R>>
+  size_t NearestWeighted(const ThePointType& theQuery, double& theGapDistance) const
+  {
+    if (IsEmpty())
+    {
+      theGapDistance = 0.0;
+      return 0;
+    }
+    size_t aBestIndex = 0;
+    double aBestGap   = std::numeric_limits<double>::max();
+    double aBoundsMin[TheDimension];
+    double aBoundsMax[TheDimension];
+    initBounds(aBoundsMin, aBoundsMax);
+    nearestWeightedRecursive(theQuery,
+                             1,
+                             static_cast<int>(mySize),
+                             0,
+                             aBestIndex,
+                             aBestGap,
+                             aBoundsMin,
+                             aBoundsMax);
+    theGapDistance = aBestGap;
+    return aBestIndex;
+  }
+
   //! Copy constructor.
   NCollection_KDTree(const NCollection_KDTree& theOther) = default;
 
@@ -278,6 +462,8 @@ public:
   NCollection_KDTree(NCollection_KDTree&& theOther) noexcept
       : myPoints(std::move(theOther.myPoints)),
         myIndices(std::move(theOther.myIndices)),
+        myRadii(std::move(theOther.myRadii)),
+        myMaxRadius(std::move(theOther.myMaxRadius)),
         mySize(theOther.mySize)
   {
     theOther.mySize = 0;
@@ -293,6 +479,8 @@ public:
     {
       myPoints        = std::move(theOther.myPoints);
       myIndices       = std::move(theOther.myIndices);
+      myRadii         = std::move(theOther.myRadii);
+      myMaxRadius     = std::move(theOther.myMaxRadius);
       mySize          = theOther.mySize;
       theOther.mySize = 0;
     }
@@ -326,6 +514,43 @@ private:
       }
     }
     return true;
+  }
+
+  //! Leaf bucket size: subtrees with this many points or fewer
+  //! are scanned linearly instead of recursing further.
+  static constexpr int THE_LEAF_SIZE = 32;
+
+  //! Minimum squared distance from a point to an axis-aligned bounding box.
+  static double sqDistToBox(const ThePointType& theQuery,
+                            const double        theBoundsMin[],
+                            const double        theBoundsMax[])
+  {
+    double aSqDist = 0.0;
+    for (int i = 0; i < TheDimension; ++i)
+    {
+      const double aCoord = theQuery.Coord(i + 1);
+      if (aCoord < theBoundsMin[i])
+      {
+        const double aDiff = theBoundsMin[i] - aCoord;
+        aSqDist += aDiff * aDiff;
+      }
+      else if (aCoord > theBoundsMax[i])
+      {
+        const double aDiff = aCoord - theBoundsMax[i];
+        aSqDist += aDiff * aDiff;
+      }
+    }
+    return aSqDist;
+  }
+
+  //! Initializes bounding box arrays to [-max, +max] in all dimensions.
+  static void initBounds(double theBoundsMin[], double theBoundsMax[])
+  {
+    for (int i = 0; i < TheDimension; ++i)
+    {
+      theBoundsMin[i] = -std::numeric_limits<double>::max();
+      theBoundsMax[i] = std::numeric_limits<double>::max();
+    }
   }
 
   //! Sift-down for a max-heap on the range [1..theSize].
@@ -371,11 +596,22 @@ private:
   }
 
   //! Recursive build: partitions myIndices[theLo..theHi] into a balanced KD-Tree.
-  void buildRecursive(int theLo, int theHi, int theDepth)
+  //! @return maximum radius in the subtree (0.0 when HasRadii is false)
+  double buildRecursive(int theLo, int theHi, int theDepth)
   {
-    if (theLo >= theHi)
+    if (theLo > theHi)
     {
-      return;
+      return 0.0;
+    }
+    if (theLo == theHi)
+    {
+      if constexpr (HasRadii)
+      {
+        const double aR = myRadii.Value(static_cast<int>(myIndices.Value(theLo)));
+        myMaxRadius.SetValue(theLo, aR);
+        return aR;
+      }
+      return 0.0;
     }
     const int theAxis = theDepth % TheDimension;
     const int theMid  = (theLo + theHi) / 2;
@@ -387,20 +623,55 @@ private:
                        return myPoints.Value(static_cast<int>(a)).Coord(theAxis + 1)
                               < myPoints.Value(static_cast<int>(b)).Coord(theAxis + 1);
                      });
-    buildRecursive(theLo, theMid - 1, theDepth + 1);
-    buildRecursive(theMid + 1, theHi, theDepth + 1);
+    if constexpr (HasRadii)
+    {
+      const double aLeftMax  = buildRecursive(theLo, theMid - 1, theDepth + 1);
+      const double aRightMax = buildRecursive(theMid + 1, theHi, theDepth + 1);
+      const double aNodeR    = myRadii.Value(static_cast<int>(myIndices.Value(theMid)));
+      const double aMaxR     = std::max({aNodeR, aLeftMax, aRightMax});
+      myMaxRadius.SetValue(theMid, aMaxR);
+      return aMaxR;
+    }
+    else
+    {
+      buildRecursive(theLo, theMid - 1, theDepth + 1);
+      buildRecursive(theMid + 1, theHi, theDepth + 1);
+      return 0.0;
+    }
   }
 
-  //! Recursive nearest-neighbor search with hyperplane pruning.
+  //! Recursive nearest-neighbor search with bounding box pruning and leaf buckets.
   void nearestRecursive(const ThePointType& theQuery,
                         int                 theLo,
                         int                 theHi,
                         int                 theDepth,
                         size_t&             theBestIndex,
-                        double&             theBestSqDist) const
+                        double&             theBestSqDist,
+                        double              theBoundsMin[],
+                        double              theBoundsMax[]) const
   {
     if (theLo > theHi)
     {
+      return;
+    }
+    // Bounding box pruning: skip subtree if it cannot contain a closer point
+    if (sqDistToBox(theQuery, theBoundsMin, theBoundsMax) >= theBestSqDist)
+    {
+      return;
+    }
+    // Leaf bucket: linear scan for small subtrees
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx   = myIndices.Value(i);
+        const double aSqDist = squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx)));
+        if (aSqDist < theBestSqDist)
+        {
+          theBestSqDist = aSqDist;
+          theBestIndex  = anIdx;
+        }
+      }
       return;
     }
     const int           theMid     = (theLo + theHi) / 2;
@@ -412,36 +683,103 @@ private:
       theBestSqDist = aSqDist;
       theBestIndex  = aNodeIndex;
     }
-    if (theLo == theHi)
+    const int    theAxis   = theDepth % TheDimension;
+    const double aSplitVal = aNodePoint.Coord(theAxis + 1);
+    const double aDiff     = theQuery.Coord(theAxis + 1) - aSplitVal;
+    // Visit closer subtree first, then farther subtree.
+    // The bounding box check at the top of recursion handles pruning.
+    if (aDiff <= 0.0)
     {
-      return;
+      const double aSavedMax = theBoundsMax[theAxis];
+      theBoundsMax[theAxis]  = aSplitVal;
+      nearestRecursive(theQuery,
+                       theLo,
+                       theMid - 1,
+                       theDepth + 1,
+                       theBestIndex,
+                       theBestSqDist,
+                       theBoundsMin,
+                       theBoundsMax);
+      theBoundsMax[theAxis]  = aSavedMax;
+      const double aSavedMin = theBoundsMin[theAxis];
+      theBoundsMin[theAxis]  = aSplitVal;
+      nearestRecursive(theQuery,
+                       theMid + 1,
+                       theHi,
+                       theDepth + 1,
+                       theBestIndex,
+                       theBestSqDist,
+                       theBoundsMin,
+                       theBoundsMax);
+      theBoundsMin[theAxis] = aSavedMin;
     }
-    const int    theAxis = theDepth % TheDimension;
-    const double aDiff   = theQuery.Coord(theAxis + 1) - aNodePoint.Coord(theAxis + 1);
-    // Visit closer subtree first
-    const int aFirstLo  = aDiff <= 0.0 ? theLo : theMid + 1;
-    const int aFirstHi  = aDiff <= 0.0 ? theMid - 1 : theHi;
-    const int aSecondLo = aDiff <= 0.0 ? theMid + 1 : theLo;
-    const int aSecondHi = aDiff <= 0.0 ? theHi : theMid - 1;
-    nearestRecursive(theQuery, aFirstLo, aFirstHi, theDepth + 1, theBestIndex, theBestSqDist);
-    // Prune far subtree if the splitting plane is farther than current best
-    if (aDiff * aDiff < theBestSqDist)
+    else
     {
-      nearestRecursive(theQuery, aSecondLo, aSecondHi, theDepth + 1, theBestIndex, theBestSqDist);
+      const double aSavedMin = theBoundsMin[theAxis];
+      theBoundsMin[theAxis]  = aSplitVal;
+      nearestRecursive(theQuery,
+                       theMid + 1,
+                       theHi,
+                       theDepth + 1,
+                       theBestIndex,
+                       theBestSqDist,
+                       theBoundsMin,
+                       theBoundsMax);
+      theBoundsMin[theAxis]  = aSavedMin;
+      const double aSavedMax = theBoundsMax[theAxis];
+      theBoundsMax[theAxis]  = aSplitVal;
+      nearestRecursive(theQuery,
+                       theLo,
+                       theMid - 1,
+                       theDepth + 1,
+                       theBestIndex,
+                       theBestSqDist,
+                       theBoundsMin,
+                       theBoundsMax);
+      theBoundsMax[theAxis] = aSavedMax;
     }
   }
 
-  //! Recursive k-nearest search with max-heap pruning.
+  //! Recursive k-nearest search with bounding box pruning, max-heap, and leaf buckets.
   void kNearestRecursive(const ThePointType&                            theQuery,
                          int                                            theLo,
                          int                                            theHi,
                          int                                            theDepth,
                          NCollection_Array1<std::pair<double, size_t>>& theHeap,
                          size_t&                                        theHeapSize,
-                         size_t                                         theK) const
+                         size_t                                         theK,
+                         double                                         theBoundsMin[],
+                         double                                         theBoundsMax[]) const
   {
     if (theLo > theHi)
     {
+      return;
+    }
+    // Bounding box pruning: skip subtree if it cannot improve the K-th best
+    if (theHeapSize == theK
+        && sqDistToBox(theQuery, theBoundsMin, theBoundsMax) >= theHeap.Value(1).first)
+    {
+      return;
+    }
+    // Leaf bucket: linear scan for small subtrees
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx   = myIndices.Value(i);
+        const double aSqDist = squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx)));
+        if (theHeapSize < theK)
+        {
+          ++theHeapSize;
+          theHeap.SetValue(static_cast<int>(theHeapSize), {aSqDist, anIdx});
+          heapSiftUp(theHeap, static_cast<int>(theHeapSize));
+        }
+        else if (aSqDist < theHeap.Value(1).first)
+        {
+          theHeap.SetValue(1, {aSqDist, anIdx});
+          heapSiftDown(theHeap, 1, static_cast<int>(theHeapSize));
+        }
+      }
       return;
     }
     const int           theMid     = (theLo + theHi) / 2;
@@ -450,36 +788,76 @@ private:
     const double        aSqDist    = squareDistance(theQuery, aNodePoint);
     if (theHeapSize < theK)
     {
-      // Heap not full, insert
       ++theHeapSize;
       theHeap.SetValue(static_cast<int>(theHeapSize), {aSqDist, aNodeIndex});
       heapSiftUp(theHeap, static_cast<int>(theHeapSize));
     }
     else if (aSqDist < theHeap.Value(1).first)
     {
-      // Replace max in heap
       theHeap.SetValue(1, {aSqDist, aNodeIndex});
       heapSiftDown(theHeap, 1, static_cast<int>(theHeapSize));
     }
-    if (theLo == theHi)
-    {
-      return;
-    }
     const int    theAxis   = theDepth % TheDimension;
-    const double aDiff     = theQuery.Coord(theAxis + 1) - aNodePoint.Coord(theAxis + 1);
-    const int    aFirstLo  = aDiff <= 0.0 ? theLo : theMid + 1;
-    const int    aFirstHi  = aDiff <= 0.0 ? theMid - 1 : theHi;
-    const int    aSecondLo = aDiff <= 0.0 ? theMid + 1 : theLo;
-    const int    aSecondHi = aDiff <= 0.0 ? theHi : theMid - 1;
-    kNearestRecursive(theQuery, aFirstLo, aFirstHi, theDepth + 1, theHeap, theHeapSize, theK);
-    // Prune far subtree
-    if (theHeapSize < theK || aDiff * aDiff < theHeap.Value(1).first)
+    const double aSplitVal = aNodePoint.Coord(theAxis + 1);
+    const double aDiff     = theQuery.Coord(theAxis + 1) - aSplitVal;
+    // Visit closer subtree first, bounding box check at the top handles pruning
+    if (aDiff <= 0.0)
     {
-      kNearestRecursive(theQuery, aSecondLo, aSecondHi, theDepth + 1, theHeap, theHeapSize, theK);
+      const double aSavedMax = theBoundsMax[theAxis];
+      theBoundsMax[theAxis]  = aSplitVal;
+      kNearestRecursive(theQuery,
+                        theLo,
+                        theMid - 1,
+                        theDepth + 1,
+                        theHeap,
+                        theHeapSize,
+                        theK,
+                        theBoundsMin,
+                        theBoundsMax);
+      theBoundsMax[theAxis]  = aSavedMax;
+      const double aSavedMin = theBoundsMin[theAxis];
+      theBoundsMin[theAxis]  = aSplitVal;
+      kNearestRecursive(theQuery,
+                        theMid + 1,
+                        theHi,
+                        theDepth + 1,
+                        theHeap,
+                        theHeapSize,
+                        theK,
+                        theBoundsMin,
+                        theBoundsMax);
+      theBoundsMin[theAxis] = aSavedMin;
+    }
+    else
+    {
+      const double aSavedMin = theBoundsMin[theAxis];
+      theBoundsMin[theAxis]  = aSplitVal;
+      kNearestRecursive(theQuery,
+                        theMid + 1,
+                        theHi,
+                        theDepth + 1,
+                        theHeap,
+                        theHeapSize,
+                        theK,
+                        theBoundsMin,
+                        theBoundsMax);
+      theBoundsMin[theAxis]  = aSavedMin;
+      const double aSavedMax = theBoundsMax[theAxis];
+      theBoundsMax[theAxis]  = aSplitVal;
+      kNearestRecursive(theQuery,
+                        theLo,
+                        theMid - 1,
+                        theDepth + 1,
+                        theHeap,
+                        theHeapSize,
+                        theK,
+                        theBoundsMin,
+                        theBoundsMax);
+      theBoundsMax[theAxis] = aSavedMax;
     }
   }
 
-  //! Recursive range search (sphere).
+  //! Recursive range search (sphere) with leaf buckets.
   void rangeSearchRecursive(const ThePointType&               theQuery,
                             double                            theRadiusSq,
                             int                               theLo,
@@ -489,6 +867,20 @@ private:
   {
     if (theLo > theHi)
     {
+      return;
+    }
+    // Leaf bucket: linear scan for small subtrees
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx   = myIndices.Value(i);
+        const double aSqDist = squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx)));
+        if (aSqDist <= theRadiusSq)
+        {
+          theIndices.Append(anIdx);
+        }
+      }
       return;
     }
     const int           theMid     = (theLo + theHi) / 2;
@@ -524,7 +916,7 @@ private:
     }
   }
 
-  //! Recursive box search (AABB).
+  //! Recursive box search (AABB) with leaf buckets.
   void boxSearchRecursive(const ThePointType&               theMin,
                           const ThePointType&               theMax,
                           int                               theLo,
@@ -534,6 +926,19 @@ private:
   {
     if (theLo > theHi)
     {
+      return;
+    }
+    // Leaf bucket: linear scan for small subtrees
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx = myIndices.Value(i);
+        if (isInsideBox(myPoints.Value(static_cast<int>(anIdx)), theMin, theMax))
+        {
+          theIndices.Append(anIdx);
+        }
+      }
       return;
     }
     const int           theMid     = (theLo + theHi) / 2;
@@ -549,25 +954,200 @@ private:
     }
     const int    theAxis = theDepth % TheDimension;
     const double aCoord  = aNodePoint.Coord(theAxis + 1);
-    // Left subtree has points with coord <= aCoord on this axis
-    // Only visit if box's max on this axis >= smallest possible (which is always true for left)
-    // but prune if aCoord < theMin on this axis (all left children are even smaller)
     if (aCoord >= theMin.Coord(theAxis + 1))
     {
       boxSearchRecursive(theMin, theMax, theLo, theMid - 1, theDepth + 1, theIndices);
     }
-    // Right subtree has points with coord >= aCoord on this axis
-    // Prune if aCoord > theMax on this axis
     if (aCoord <= theMax.Coord(theAxis + 1))
     {
       boxSearchRecursive(theMin, theMax, theMid + 1, theHi, theDepth + 1, theIndices);
     }
   }
 
+  //! Recursive containing search: finds all spheres containing theQuery.
+  //! Uses maxRadius pruning to skip subtrees where no sphere can reach the query.
+  void containingSearchRecursive(const ThePointType&               theQuery,
+                                 int                               theLo,
+                                 int                               theHi,
+                                 int                               theDepth,
+                                 NCollection_DynamicArray<size_t>& theIndices,
+                                 double                            theBoundsMin[],
+                                 double                            theBoundsMax[]) const
+  {
+    if (theLo > theHi)
+    {
+      return;
+    }
+    // Prune: if min distance to subtree box > max radius in subtree, no sphere contains query
+    const int    theMid = (theLo + theHi) / 2;
+    const double aMaxR  = myMaxRadius.Value(theMid);
+    if (sqDistToBox(theQuery, theBoundsMin, theBoundsMax) > aMaxR * aMaxR)
+    {
+      return;
+    }
+    // Leaf bucket: linear scan for small subtrees
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx   = myIndices.Value(i);
+        const double aR      = myRadii.Value(static_cast<int>(anIdx));
+        const double aSqDist = squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx)));
+        if (aSqDist <= aR * aR)
+        {
+          theIndices.Append(anIdx);
+        }
+      }
+      return;
+    }
+    // Check current node
+    const size_t        aNodeIndex = myIndices.Value(theMid);
+    const ThePointType& aNodePoint = myPoints.Value(static_cast<int>(aNodeIndex));
+    const double        aNodeR     = myRadii.Value(static_cast<int>(aNodeIndex));
+    if (squareDistance(theQuery, aNodePoint) <= aNodeR * aNodeR)
+    {
+      theIndices.Append(aNodeIndex);
+    }
+    // Recurse both subtrees with bounds tracking
+    const int    theAxis   = theDepth % TheDimension;
+    const double aSplitVal = aNodePoint.Coord(theAxis + 1);
+    const double aSavedMax = theBoundsMax[theAxis];
+    theBoundsMax[theAxis]  = aSplitVal;
+    containingSearchRecursive(theQuery,
+                              theLo,
+                              theMid - 1,
+                              theDepth + 1,
+                              theIndices,
+                              theBoundsMin,
+                              theBoundsMax);
+    theBoundsMax[theAxis]  = aSavedMax;
+    const double aSavedMin = theBoundsMin[theAxis];
+    theBoundsMin[theAxis]  = aSplitVal;
+    containingSearchRecursive(theQuery,
+                              theMid + 1,
+                              theHi,
+                              theDepth + 1,
+                              theIndices,
+                              theBoundsMin,
+                              theBoundsMax);
+    theBoundsMin[theAxis] = aSavedMin;
+  }
+
+  //! Recursive nearest-weighted search: finds point minimizing dist - radius.
+  //! Uses bounding box + maxRadius pruning to skip subtrees.
+  void nearestWeightedRecursive(const ThePointType& theQuery,
+                                int                 theLo,
+                                int                 theHi,
+                                int                 theDepth,
+                                size_t&             theBestIndex,
+                                double&             theBestGap,
+                                double              theBoundsMin[],
+                                double              theBoundsMax[]) const
+  {
+    if (theLo > theHi)
+    {
+      return;
+    }
+    // Prune: minimum possible gap = sqrt(sqDistToBox) - maxRadius.
+    // To avoid sqrt: if (bestGap + maxRadius) >= 0, then sqDistToBox >= (bestGap + maxRadius)^2.
+    const int    theMid          = (theLo + theHi) / 2;
+    const double aMaxR           = myMaxRadius.Value(theMid);
+    const double aSqDistToBox    = sqDistToBox(theQuery, theBoundsMin, theBoundsMax);
+    const double aPruneThreshold = theBestGap + aMaxR;
+    if (aPruneThreshold >= 0.0 && aSqDistToBox >= aPruneThreshold * aPruneThreshold)
+    {
+      return;
+    }
+    // Leaf bucket: linear scan for small subtrees
+    if (theHi - theLo + 1 <= THE_LEAF_SIZE)
+    {
+      for (int i = theLo; i <= theHi; ++i)
+      {
+        const size_t anIdx = myIndices.Value(i);
+        const double aDist =
+          std::sqrt(squareDistance(theQuery, myPoints.Value(static_cast<int>(anIdx))));
+        const double aGap = aDist - myRadii.Value(static_cast<int>(anIdx));
+        if (aGap < theBestGap)
+        {
+          theBestGap   = aGap;
+          theBestIndex = anIdx;
+        }
+      }
+      return;
+    }
+    // Check current node
+    const size_t        aNodeIndex = myIndices.Value(theMid);
+    const ThePointType& aNodePoint = myPoints.Value(static_cast<int>(aNodeIndex));
+    const double        aDist      = std::sqrt(squareDistance(theQuery, aNodePoint));
+    const double        aGap       = aDist - myRadii.Value(static_cast<int>(aNodeIndex));
+    if (aGap < theBestGap)
+    {
+      theBestGap   = aGap;
+      theBestIndex = aNodeIndex;
+    }
+    // Recurse with bounds tracking, visit closer subtree first
+    const int    theAxis   = theDepth % TheDimension;
+    const double aSplitVal = aNodePoint.Coord(theAxis + 1);
+    const double aDiff     = theQuery.Coord(theAxis + 1) - aSplitVal;
+    if (aDiff <= 0.0)
+    {
+      const double aSavedMax = theBoundsMax[theAxis];
+      theBoundsMax[theAxis]  = aSplitVal;
+      nearestWeightedRecursive(theQuery,
+                               theLo,
+                               theMid - 1,
+                               theDepth + 1,
+                               theBestIndex,
+                               theBestGap,
+                               theBoundsMin,
+                               theBoundsMax);
+      theBoundsMax[theAxis]  = aSavedMax;
+      const double aSavedMin = theBoundsMin[theAxis];
+      theBoundsMin[theAxis]  = aSplitVal;
+      nearestWeightedRecursive(theQuery,
+                               theMid + 1,
+                               theHi,
+                               theDepth + 1,
+                               theBestIndex,
+                               theBestGap,
+                               theBoundsMin,
+                               theBoundsMax);
+      theBoundsMin[theAxis] = aSavedMin;
+    }
+    else
+    {
+      const double aSavedMin = theBoundsMin[theAxis];
+      theBoundsMin[theAxis]  = aSplitVal;
+      nearestWeightedRecursive(theQuery,
+                               theMid + 1,
+                               theHi,
+                               theDepth + 1,
+                               theBestIndex,
+                               theBestGap,
+                               theBoundsMin,
+                               theBoundsMax);
+      theBoundsMin[theAxis]  = aSavedMin;
+      const double aSavedMax = theBoundsMax[theAxis];
+      theBoundsMax[theAxis]  = aSplitVal;
+      nearestWeightedRecursive(theQuery,
+                               theLo,
+                               theMid - 1,
+                               theDepth + 1,
+                               theBestIndex,
+                               theBestGap,
+                               theBoundsMin,
+                               theBoundsMax);
+      theBoundsMax[theAxis] = aSavedMax;
+    }
+  }
+
 private:
   NCollection_Array1<ThePointType> myPoints; //!< Copy of input points (1-based)
   NCollection_Array1<size_t> myIndices; //!< Permutation array encoding tree structure (1-based)
-  size_t                     mySize;    //!< Number of points
+  NCollection_Array1<double> myRadii;   //!< Per-point radii (1-based, only used when HasRadii)
+  NCollection_Array1<double>
+         myMaxRadius; //!< Max radius in subtree rooted at [mid] (only used when HasRadii)
+  size_t mySize;      //!< Number of points
 };
 
 #endif
