@@ -228,12 +228,7 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     // as anyhow the normals are not computed and the lighting will be off,
     // the element color will be taken from Graphic3d_AspectFillArea3d's interior color,
     // and there is no need to spend time on updating material properties
-    if (!IsReflect)
-    {
-      aMaterial[i].SetAmbientColor(Quantity_NOC_BLACK);
-      aMaterial[i].SetDiffuseColor(Quantity_NOC_BLACK);
-    }
-    else
+    if (IsReflect)
     {
       // OCC20644 This stuff is important in order for elemental and nodal colors
       // to produce similar visual impression and also to make colors match
@@ -261,6 +256,9 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
                                      anEdgeWidth,
                                      aMaterial[0],
                                      aMaterial[1]);
+    if (!IsReflect)
+      aGroupFillAspect->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+
     aGGroup = Prs->NewGroup();
     aLGroup = Prs->NewGroup();
     aGGroup->SetClosed(toSupressBackFaces);
@@ -369,6 +367,8 @@ void MeshVS_ElementalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation
     aFillAspect->SetDistinguishOff();
     aFillAspect->SetInteriorColor(aColIter.Key());
     aFillAspect->SetEdgeOff();
+    if (!IsReflect)
+      aFillAspect->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
 
     for (it.Reset(); it.More(); it.Next())
     {

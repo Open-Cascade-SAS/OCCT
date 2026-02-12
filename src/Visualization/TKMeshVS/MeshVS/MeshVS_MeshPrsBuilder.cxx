@@ -271,15 +271,11 @@ void MeshVS_MeshPrsBuilder::BuildElements(const occ::handle<Prs3d_Presentation>&
   //---------- Creating AspectFillArea3d and AspectLine3d -------------
   Graphic3d_MaterialAspect AMat;
   aDrawer->GetMaterial(MeshVS_DA_FrontMaterial, AMat);
-  if (!IsReflect)
-  {
-    AMat.SetAmbientColor(Quantity_NOC_BLACK);
-    AMat.SetDiffuseColor(Quantity_NOC_BLACK);
-    AMat.SetSpecularColor(Quantity_NOC_BLACK);
-    AMat.SetEmissiveColor(Quantity_NOC_BLACK);
-  }
   occ::handle<Graphic3d_AspectFillArea3d> aFill =
     MeshVS_Tool::CreateAspectFillArea3d(GetDrawer(), AMat);
+  if (!IsReflect)
+    aFill->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+
   occ::handle<Graphic3d_AspectLine3d> aBeam = MeshVS_Tool::CreateAspectLine3d(GetDrawer());
   //-------------------------------------------------------------------
 
@@ -610,13 +606,10 @@ void MeshVS_MeshPrsBuilder::BuildHilightPrs(const occ::handle<Prs3d_Presentation
 
   Graphic3d_MaterialAspect AMat;
   aDrawer->GetMaterial(MeshVS_DA_FrontMaterial, AMat);
-  AMat.SetAmbientColor(Quantity_NOC_BLACK);
-  AMat.SetDiffuseColor(Quantity_NOC_BLACK);
-  AMat.SetSpecularColor(Quantity_NOC_BLACK);
-  AMat.SetEmissiveColor(Quantity_NOC_BLACK);
 
   occ::handle<Graphic3d_AspectFillArea3d> aFill =
     MeshVS_Tool::CreateAspectFillArea3d(GetDrawer(), AMat);
+  aFill->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
   occ::handle<Graphic3d_AspectLine3d>   aBeam     = MeshVS_Tool::CreateAspectLine3d(GetDrawer());
   occ::handle<Graphic3d_AspectMarker3d> aNodeMark = MeshVS_Tool::CreateAspectMarker3d(GetDrawer());
 

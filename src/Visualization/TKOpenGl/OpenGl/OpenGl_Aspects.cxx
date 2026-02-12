@@ -64,16 +64,8 @@ OpenGl_Aspects::OpenGl_Aspects(const occ::handle<Graphic3d_Aspects>& theAspect)
 
 void OpenGl_Aspects::SetAspect(const occ::handle<Graphic3d_Aspects>& theAspect)
 {
-  myAspect = theAspect;
-
-  const Graphic3d_MaterialAspect& aMat = theAspect->FrontMaterial();
-  myShadingModel =
-    theAspect->ShadingModel() != Graphic3d_TypeOfShadingModel_Unlit
-        && (aMat.ReflectionMode(Graphic3d_TOR_AMBIENT) || aMat.ReflectionMode(Graphic3d_TOR_DIFFUSE)
-            || aMat.ReflectionMode(Graphic3d_TOR_SPECULAR)
-            || aMat.ReflectionMode(Graphic3d_TOR_EMISSION))
-      ? theAspect->ShadingModel()
-      : Graphic3d_TypeOfShadingModel_Unlit;
+  myAspect       = theAspect;
+  myShadingModel = theAspect->ShadingModel();
 
   // invalidate resources
   myResTextureSet.UpdateRediness(myAspect);

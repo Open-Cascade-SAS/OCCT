@@ -17,13 +17,10 @@ set(OCCT_QABugs_FILES
   QABugs_12.cxx
   QABugs_13.cxx
   QABugs_14.cxx
-  QABugs_15.cxx
   QABugs_16.cxx
   QABugs_17.cxx
   QABugs_18.cxx
   QABugs_19.cxx
   QABugs_20.cxx
   QABugs_BVH.cxx
-  QABugs_PresentableObject.cxx
-  QABugs_PresentableObject.hxx
 )

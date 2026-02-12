@@ -148,28 +148,14 @@ void AIS_Manipulator::init()
   myDrawer->ShadingAspect()->SetColor(Quantity_NOC_WHITE);
   myDrawer->ShadingAspect()->SetMaterial(aShadingMaterial);
 
-  Graphic3d_MaterialAspect aHilightMaterial;
-  aHilightMaterial.SetColor(Quantity_NOC_AZURE);
-  aHilightMaterial.SetAmbientColor(Quantity_NOC_BLACK);
-  aHilightMaterial.SetDiffuseColor(Quantity_NOC_BLACK);
-  aHilightMaterial.SetSpecularColor(Quantity_NOC_BLACK);
-  aHilightMaterial.SetEmissiveColor(Quantity_NOC_BLACK);
-  aHilightMaterial.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
-
   myHighlightAspect = new Prs3d_ShadingAspect();
   myHighlightAspect->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
-  myHighlightAspect->SetMaterial(aHilightMaterial);
-
-  Graphic3d_MaterialAspect aDraggerMaterial;
-  aDraggerMaterial.SetAmbientColor(Quantity_NOC_BLACK);
-  aDraggerMaterial.SetDiffuseColor(Quantity_NOC_BLACK);
-  aDraggerMaterial.SetSpecularColor(Quantity_NOC_BLACK);
-  aDraggerMaterial.SetMaterialType(Graphic3d_MATERIAL_ASPECT);
+  myHighlightAspect->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
+  myHighlightAspect->SetColor(Quantity_NOC_AZURE);
 
   myDraggerHighlight = new Prs3d_ShadingAspect();
   myDraggerHighlight->Aspect()->SetInteriorStyle(Aspect_IS_SOLID);
-  myDraggerHighlight->SetMaterial(aDraggerMaterial);
-
+  myDraggerHighlight->Aspect()->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
   myDraggerHighlight->SetTransparency(0.5);
 
   SetSize(100);

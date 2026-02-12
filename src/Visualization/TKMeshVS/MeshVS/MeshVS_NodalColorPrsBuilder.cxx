@@ -182,12 +182,7 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
   {
     aMaterial[i].SetSpecularColor(Quantity_NOC_BLACK);
     aMaterial[i].SetEmissiveColor(Quantity_NOC_BLACK);
-    if (!IsReflect)
-    {
-      aMaterial[i].SetAmbientColor(Quantity_NOC_BLACK);
-      aMaterial[i].SetDiffuseColor(Quantity_NOC_BLACK);
-    }
-    else
+    if (IsReflect)
     {
       // OCC20644 Using the material with reflection properties same as in
       // ElementalColorPrsBuilder, to get the same colors.
@@ -479,6 +474,8 @@ void MeshVS_NodalColorPrsBuilder::Build(const occ::handle<Prs3d_Presentation>& P
 
   anAsp->SetDistinguishOff();
   anAsp->SetEdgeOff();
+  if (!IsReflect)
+    anAsp->SetShadingModel(Graphic3d_TypeOfShadingModel_Unlit);
 
   occ::handle<Graphic3d_AspectLine3d> anLAsp =
     new Graphic3d_AspectLine3d(anEdgeColor, anEdgeType, anEdgeWidth);
