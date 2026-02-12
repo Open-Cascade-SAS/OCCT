@@ -2299,7 +2299,7 @@ TEST(NCollection_KDTreeTest, DuplicatePointsMixed)
 
 TEST(NCollection_KDTreeTest, AllSamePoints_LargeSet2D)
 {
-  // 1000 identical 2D points — stress tests median-split when all coordinates equal.
+  // 1000 identical 2D points - stress tests median-split when all coordinates equal.
   constexpr int THE_N = 1000;
   TestPoint2D   aPoints[THE_N];
   for (int i = 0; i < THE_N; ++i)
@@ -2353,7 +2353,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_KNearest)
   {
     EXPECT_NEAR(aDists.Value(i), 50.0, 1e-10);
   }
-  // K > N — should return all N
+  // K > N - should return all N
   const size_t aCount2 = aTree.KNearestPoints({0.0, 0.0}, 200, anIndices, aDists);
   EXPECT_EQ(aCount2, static_cast<size_t>(THE_N));
 }
@@ -2368,13 +2368,13 @@ TEST(NCollection_KDTreeTest, AllSamePoints_RangeSearch)
   }
   NCollection_KDTree<TestPoint2D, 2> aTree;
   aTree.Build(aPoints, THE_N);
-  // Zero radius at the exact point — should find all
+  // Zero radius at the exact point - should find all
   const NCollection_DynamicArray<size_t> aResult = aTree.RangeSearch({5.0, 5.0}, 0.0);
   EXPECT_EQ(aResult.Size(), THE_N);
-  // Small radius away — should find all (dist = sqrt(2) ≈ 1.414)
+  // Small radius away - should find all (dist = sqrt(2) ~ 1.414)
   const NCollection_DynamicArray<size_t> aResult2 = aTree.RangeSearch({4.0, 4.0}, 2.0);
   EXPECT_EQ(aResult2.Size(), THE_N);
-  // Radius too small from away — should find none
+  // Radius too small from away - should find none
   const NCollection_DynamicArray<size_t> aResult3 = aTree.RangeSearch({0.0, 0.0}, 1.0);
   EXPECT_EQ(aResult3.Size(), 0);
 }
@@ -2389,13 +2389,13 @@ TEST(NCollection_KDTreeTest, AllSamePoints_BoxSearch)
   }
   NCollection_KDTree<TestPoint2D, 2> aTree;
   aTree.Build(aPoints, THE_N);
-  // Box that contains the point — should find all
+  // Box that contains the point - should find all
   const NCollection_DynamicArray<size_t> aResult = aTree.BoxSearch({4.0, 4.0}, {6.0, 6.0});
   EXPECT_EQ(aResult.Size(), THE_N);
-  // Box exactly at the point — should find all
+  // Box exactly at the point - should find all
   const NCollection_DynamicArray<size_t> aResult2 = aTree.BoxSearch({5.0, 5.0}, {5.0, 5.0});
   EXPECT_EQ(aResult2.Size(), THE_N);
-  // Box that misses the point — should find none
+  // Box that misses the point - should find none
   const NCollection_DynamicArray<size_t> aResult3 = aTree.BoxSearch({0.0, 0.0}, {4.9, 4.9});
   EXPECT_EQ(aResult3.Size(), 0);
 }
@@ -2411,7 +2411,7 @@ TEST(NCollection_KDTreeTest, AllSamePoints_NearestPoints)
   NCollection_KDTree<TestPoint2D, 2> aTree;
   aTree.Build(aPoints, THE_N);
   double aSqDist = 0.0;
-  // All equidistant — should return all N
+  // All equidistant - should return all N
   const NCollection_DynamicArray<size_t> aResult = aTree.NearestPoints({0.0, 0.0}, 1e-6, aSqDist);
   EXPECT_EQ(aResult.Size(), THE_N);
   EXPECT_NEAR(aSqDist, 18.0, 1e-10);
@@ -2453,13 +2453,13 @@ TEST(NCollection_KDTreeRadiiTest, AllSamePoints_ContainingSearch)
   }
   NCollection_KDTree<TestPoint2D, 2, true> aTree;
   aTree.Build(aPoints, aRadii, THE_N);
-  // Query at the same point — inside all spheres
+  // Query at the same point - inside all spheres
   const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch({5.0, 5.0});
   EXPECT_EQ(aResult.Size(), THE_N);
-  // Query nearby (dist=1 <= 2) — still inside all
+  // Query nearby (dist=1 <= 2) - still inside all
   const NCollection_DynamicArray<size_t> aResult2 = aTree.ContainingSearch({6.0, 5.0});
   EXPECT_EQ(aResult2.Size(), THE_N);
-  // Query far (dist=10 > 2) — outside all
+  // Query far (dist=10 > 2) - outside all
   const NCollection_DynamicArray<size_t> aResult3 = aTree.ContainingSearch({15.0, 5.0});
   EXPECT_EQ(aResult3.Size(), 0);
 }
@@ -2924,7 +2924,7 @@ TEST(NCollection_KDTreeRadiiTest, ContainingSearch_EmptyTree)
 
 TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryInsideSphere)
 {
-  // Sphere at (0,0) with radius 5 — query at (1,1) is inside
+  // Sphere at (0,0) with radius 5 - query at (1,1) is inside
   TestPoint2D                              aPoints[] = {{0.0, 0.0}};
   double                                   aRadii[]  = {5.0};
   NCollection_KDTree<TestPoint2D, 2, true> aTree;
@@ -2935,7 +2935,7 @@ TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryInsideSphere)
 
 TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryOutsideSphere)
 {
-  // Sphere at (0,0) with radius 1 — query at (5,5) is outside
+  // Sphere at (0,0) with radius 1 - query at (5,5) is outside
   TestPoint2D                              aPoints[] = {{0.0, 0.0}};
   double                                   aRadii[]  = {1.0};
   NCollection_KDTree<TestPoint2D, 2, true> aTree;
@@ -2946,7 +2946,7 @@ TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryOutsideSphere)
 
 TEST(NCollection_KDTreeRadiiTest, ContainingSearch_QueryOnBoundary)
 {
-  // Sphere at (0,0) with radius 5 — query at (3,4) is exactly on boundary (dist=5)
+  // Sphere at (0,0) with radius 5 - query at (3,4) is exactly on boundary (dist=5)
   TestPoint2D                              aPoints[] = {{0.0, 0.0}};
   double                                   aRadii[]  = {5.0};
   NCollection_KDTree<TestPoint2D, 2, true> aTree;
@@ -2970,9 +2970,9 @@ TEST(NCollection_KDTreeRadiiTest, ContainingSearch_MultipleSpheres)
   {
     aFoundIndices.insert(aResult[i]);
   }
-  // Point at (0,0) with R=3: dist=1 <= 3 ✓
-  // Point at (2,0) with R=2: dist=1 <= 2 ✓
-  // Point at (10,10) with R=1: dist=√(81+100) >> 1 ✗
+  // Point at (0,0) with R=3: dist=1 <= 3 ok
+  // Point at (2,0) with R=2: dist=1 <= 2 ok
+  // Point at (10,10) with R=1: dist=sqrt(81+100) >> 1 no
   EXPECT_EQ(aFoundIndices.size(), 2u);
 }
 
@@ -3055,7 +3055,7 @@ TEST(NCollection_KDTreeRadiiTest, NearestWeighted_CloserSurface)
   // Query at (3,0):
   //   gap1 = dist(3,0) - 1 = 3 - 1 = 2
   //   gap2 = dist(7,0) - 5 = 7 - 5 = 2
-  // Both equidistant from surface — either is valid
+  // Both equidistant from surface - either is valid
   // Query at (2,0):
   //   gap1 = 2 - 1 = 1
   //   gap2 = 8 - 5 = 3
@@ -3072,7 +3072,7 @@ TEST(NCollection_KDTreeRadiiTest, NearestWeighted_CloserSurface)
 
 TEST(NCollection_KDTreeRadiiTest, NearestWeighted_InsideSphere)
 {
-  // Query inside a sphere — gap is negative
+  // Query inside a sphere - gap is negative
   TestPoint2D                              aPoints[] = {{0.0, 0.0}, {10.0, 0.0}};
   double                                   aRadii[]  = {5.0, 1.0};
   NCollection_KDTree<TestPoint2D, 2, true> aTree;
@@ -3121,7 +3121,7 @@ TEST(NCollection_KDTreeRadiiTest, NearestWeighted_3D)
   NCollection_KDTree<TestPoint3D, 3, true> aTree;
   aTree.Build(aPoints, aRadii, 3);
   double aGap = 0.0;
-  // Query at (1,0,0): gap1 = 1-2 = -1, gap2 = 9-1 = 8, gap3 = sqrt(101)-1 ≈ 9.05
+  // Query at (1,0,0): gap1 = 1-2 = -1, gap2 = 9-1 = 8, gap3 = sqrt(101)-1 ~ 9.05
   const size_t aIdx = aTree.NearestWeighted({1.0, 0.0, 0.0}, aGap);
   EXPECT_NEAR(aTree.Point(aIdx).X, 0.0, 1e-15);
   EXPECT_NEAR(aGap, -1.0, 1e-10);
@@ -3284,7 +3284,7 @@ TEST(NCollection_KDTreeRadiiTest, StressTest_1000Points)
 
 TEST(NCollection_KDTreeRadiiTest, StressTest_ZeroRadii)
 {
-  // Zero radii — ContainingSearch should only find exact matches
+  // Zero radii - ContainingSearch should only find exact matches
   constexpr int THE_N = 100;
   TestRandom    aRng(4040);
   TestPoint2D   aPoints[THE_N];
@@ -3296,10 +3296,10 @@ TEST(NCollection_KDTreeRadiiTest, StressTest_ZeroRadii)
   }
   NCollection_KDTree<TestPoint2D, 2, true> aTree;
   aTree.Build(aPoints, aRadii, THE_N);
-  // Query at one of the points — should find it (dist=0 <= 0)
+  // Query at one of the points - should find it (dist=0 <= 0)
   const NCollection_DynamicArray<size_t> aResult = aTree.ContainingSearch(aPoints[0]);
   EXPECT_GE(aResult.Size(), 1);
-  // Query far away — should find nothing
+  // Query far away - should find nothing
   const NCollection_DynamicArray<size_t> aResult2 = aTree.ContainingSearch({999.0, 999.0});
   EXPECT_EQ(aResult2.Size(), 0);
 }
