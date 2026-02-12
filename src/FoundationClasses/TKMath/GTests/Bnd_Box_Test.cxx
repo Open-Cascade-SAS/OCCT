@@ -846,3 +846,37 @@ TEST(Bnd_BoxTest, OCC16485_CumulativeEnlargeTolerance)
   EXPECT_NEAR(-aTol, aXmin, 1e-10) << "Xmin should be equal to -tolerance";
   EXPECT_NEAR(aNbStep + aTol, aXmax, 1e-10) << "Xmax should be equal to nbstep + tolerance";
 }
+
+TEST(Bnd_BoxTest, Contains_Point)
+{
+  Bnd_Box aBox(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 10));
+  EXPECT_TRUE(aBox.Contains(gp_Pnt(5, 5, 5)));
+  EXPECT_TRUE(aBox.Contains(gp_Pnt(0, 0, 0)));
+  EXPECT_FALSE(aBox.Contains(gp_Pnt(-1, 5, 5)));
+  EXPECT_FALSE(aBox.Contains(gp_Pnt(5, 5, 11)));
+}
+
+TEST(Bnd_BoxTest, Intersects_Box)
+{
+  Bnd_Box aBox1(gp_Pnt(0, 0, 0), gp_Pnt(10, 10, 10));
+  Bnd_Box aBox2(gp_Pnt(5, 5, 5), gp_Pnt(15, 15, 15));
+  Bnd_Box aBox3(gp_Pnt(20, 20, 20), gp_Pnt(30, 30, 30));
+  EXPECT_TRUE(aBox1.Intersects(aBox2));
+  EXPECT_FALSE(aBox1.Intersects(aBox3));
+}
+
+TEST(Bnd_BoxTest, Center)
+{
+  Bnd_Box aBox(gp_Pnt(0, 0, 0), gp_Pnt(10, 20, 30));
+  auto    aCenter = aBox.Center();
+  ASSERT_TRUE(aCenter.has_value());
+  EXPECT_DOUBLE_EQ(aCenter->X(), 5.0);
+  EXPECT_DOUBLE_EQ(aCenter->Y(), 10.0);
+  EXPECT_DOUBLE_EQ(aCenter->Z(), 15.0);
+}
+
+TEST(Bnd_BoxTest, Center_VoidNullopt)
+{
+  Bnd_Box aVoid;
+  EXPECT_FALSE(aVoid.Center().has_value());
+}

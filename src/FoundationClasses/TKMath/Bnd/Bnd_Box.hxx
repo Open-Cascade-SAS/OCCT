@@ -22,11 +22,10 @@
 #include <Standard_Handle.hxx>
 
 #include <gp_Pnt.hxx>
-#include <Standard_Real.hxx>
-#include <Standard_Boolean.hxx>
 
 #include <algorithm>
 #include <cmath>
+#include <optional>
 
 class gp_Pnt;
 class gp_Dir;
@@ -218,6 +217,12 @@ public:
   //! if IsVoid()
   [[nodiscard]] Standard_EXPORT gp_Pnt CornerMax() const;
 
+  //! Returns the center of this bounding box. The gap is included.
+  //! If this bounding box is infinite (i.e. "open"), returned values
+  //! may be equal to +/- Precision::Infinite().
+  //! Returns std::nullopt if the box is void.
+  [[nodiscard]] Standard_EXPORT std::optional<gp_Pnt> Center() const;
+
   //! The Box will be infinitely long in the Xmin
   //! direction.
   void OpenXmin() noexcept { Flags |= XminMask; }
@@ -251,7 +256,7 @@ public:
   //! Returns true if this bounding box is open in the Xmax direction.
   [[nodiscard]] bool IsOpenXmax() const noexcept { return (Flags & XmaxMask) != 0; }
 
-  //! Returns true if this bounding box is open in the Ymix direction.
+  //! Returns true if this bounding box is open in the Ymin direction.
   [[nodiscard]] bool IsOpenYmin() const noexcept { return (Flags & YminMask) != 0; }
 
   //! Returns true if this bounding box is open in the Ymax direction.
@@ -332,6 +337,12 @@ public:
   [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt& P1,
                                            const gp_Pnt& P2,
                                            const gp_Dir& D) const;
+
+  //! Returns True if the point is inside or on the boundary of this box.
+  [[nodiscard]] bool Contains(const gp_Pnt& theP) const { return !IsOut(theP); }
+
+  //! Returns True if the other box intersects or is inside this box.
+  [[nodiscard]] bool Intersects(const Bnd_Box& theOther) const { return !IsOut(theOther); }
 
   //! Computes the minimum distance between two boxes.
   [[nodiscard]] Standard_EXPORT double Distance(const Bnd_Box& Other) const;

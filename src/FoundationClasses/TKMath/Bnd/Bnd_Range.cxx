@@ -23,6 +23,7 @@ void Bnd_Range::Common(const Bnd_Range& theOther)
   if (theOther.IsVoid())
   {
     SetVoid();
+    return;
   }
 
   if (IsVoid())
@@ -55,10 +56,11 @@ bool Bnd_Range::Union(const Bnd_Range& theOther)
 
 //=================================================================================================
 
-int Bnd_Range::IsIntersected(const double theVal, const double thePeriod) const
+Bnd_Range::IntersectStatus Bnd_Range::IsIntersected(const double theVal,
+                                                    const double thePeriod) const
 {
   if (IsVoid())
-    return false;
+    return IntersectStatus_Out;
 
   const double aPeriod = std::abs(thePeriod);
   const double aDF = myFirst - theVal, aDL = myLast - theVal;
@@ -67,12 +69,12 @@ int Bnd_Range::IsIntersected(const double theVal, const double thePeriod) const
   {
     const double aDelta = aDF * aDL;
     if (IsEqual(aDelta, 0.0))
-      return 2;
+      return IntersectStatus_Boundary;
 
     if (aDelta > 0.0)
-      return 0;
+      return IntersectStatus_Out;
 
-    return 1;
+    return IntersectStatus_In;
   }
 
   // If <this> intersects theVal then there exists an integer
@@ -97,20 +99,20 @@ int Bnd_Range::IsIntersected(const double theVal, const double thePeriod) const
   { // Interval (myFirst, myLast] intersects seam-edge
     if (IsEqual(aVal2, static_cast<double>(aPar2)))
     { // aVal2 is an integer number => myLast lies ON the "seam-edge"
-      return 2;
+      return IntersectStatus_Boundary;
     }
 
-    return 1;
+    return IntersectStatus_In;
   }
 
   // Here, aPar1 == aPar2.
 
   if (IsEqual(aVal1, static_cast<double>(aPar1)))
   { // aVal1 is an integer number => myFirst lies ON the "seam-edge"
-    return 2;
+    return IntersectStatus_Boundary;
   }
 
-  return 0;
+  return IntersectStatus_Out;
 }
 
 //=================================================================================================
@@ -120,7 +122,7 @@ void Bnd_Range::Split(const double                 theVal,
                       const double                 thePeriod) const
 {
   const double aPeriod = std::abs(thePeriod);
-  if (IsIntersected(theVal, aPeriod) != 1)
+  if (IsIntersected(theVal, aPeriod) != IntersectStatus_In)
   {
     theList.Append(*this);
     return;

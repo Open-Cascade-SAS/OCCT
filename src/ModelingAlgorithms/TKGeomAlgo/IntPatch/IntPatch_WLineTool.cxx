@@ -613,10 +613,10 @@ static bool IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
     aBndR[i].Add(aParF[i]);
     aBndR[i].Add(aParL[i]);
 
-    if (aBndR[i].IsIntersected(theFBound[i], theArrPeriods[i]) == 1)
+    if (aBndR[i].IsIntersected(theFBound[i], theArrPeriods[i]) == Bnd_Range::IntersectStatus_In)
       return true;
 
-    if (aBndR[i].IsIntersected(theLBound[i], theArrPeriods[i]) == 1)
+    if (aBndR[i].IsIntersected(theLBound[i], theArrPeriods[i]) == Bnd_Range::IntersectStatus_In)
       return true;
   }
 
@@ -635,7 +635,7 @@ static bool IsSeamOrBound(const IntSurf_PntOn2S& thePtf,
       return true;
     }
 
-    if (aBndR[i].IsIntersected(0.0, theArrPeriods[i]) == 1)
+    if (aBndR[i].IsIntersected(0.0, theArrPeriods[i]) == Bnd_Range::IntersectStatus_In)
       return true;
   }
 

@@ -77,3 +77,30 @@ TEST(Bnd_OBB_Test, OCC30704_AddPointToVoidBox)
   EXPECT_DOUBLE_EQ(aCenter.Y(), 200.0);
   EXPECT_DOUBLE_EQ(aCenter.Z(), 300.0);
 }
+
+TEST(Bnd_OBB_Test, Contains_Point)
+{
+  Bnd_OBB anOBB(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
+  EXPECT_TRUE(anOBB.Contains(gp_Pnt(0, 0, 0)));
+  EXPECT_TRUE(anOBB.Contains(gp_Pnt(4, 4, 4)));
+  EXPECT_FALSE(anOBB.Contains(gp_Pnt(10, 0, 0)));
+}
+
+TEST(Bnd_OBB_Test, Intersects_OBB)
+{
+  Bnd_OBB anOBB1(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
+  Bnd_OBB anOBB2(gp_Pnt(8, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
+  Bnd_OBB
+    anOBB3(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 5.0, 5.0, 5.0);
+  EXPECT_TRUE(anOBB1.Intersects(anOBB2));
+  EXPECT_FALSE(anOBB1.Intersects(anOBB3));
+}
+
+TEST(Bnd_OBB_Test, GetHalfSizes_StructuredBindings)
+{
+  Bnd_OBB anOBB(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, 1), 3.0, 5.0, 7.0);
+  const auto [aHX, aHY, aHZ] = anOBB.GetHalfSizes();
+  EXPECT_DOUBLE_EQ(aHX, 3.0);
+  EXPECT_DOUBLE_EQ(aHY, 5.0);
+  EXPECT_DOUBLE_EQ(aHZ, 7.0);
+}

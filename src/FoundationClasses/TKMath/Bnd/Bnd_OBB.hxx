@@ -18,7 +18,6 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
-#include <Standard_Real.hxx>
 
 #include <Bnd_Box.hxx>
 #include <gp_Ax3.hxx>
@@ -38,6 +37,18 @@ class Bnd_OBB
 {
 public:
   DEFINE_STANDARD_ALLOC
+
+  //! Structure containing the OBB half-size dimensions.
+  //! Can be used with C++17 structured bindings:
+  //! @code
+  //!   auto [aHX, aHY, aHZ] = anOBB.GetHalfSizes();
+  //! @endcode
+  struct HalfSizes
+  {
+    double X; //!< Half-size along X axis
+    double Y; //!< Half-size along Y axis
+    double Z; //!< Half-size along Z axis
+  };
 
   //! Empty constructor
   Bnd_OBB()
@@ -144,31 +155,44 @@ public:
   //!   gp_Trsf aLoc;
   //!   aLoc.SetTransformation (theOBB.Position(), gp::XOY());
   //! @endcode
-  gp_Ax3 Position() const { return gp_Ax3(myCenter, ZDirection(), XDirection()); }
+  [[nodiscard]] gp_Ax3 Position() const { return gp_Ax3(myCenter, ZDirection(), XDirection()); }
 
   //! Returns the center of OBB
-  const gp_XYZ& Center() const { return myCenter; }
+  [[nodiscard]] const gp_XYZ& Center() const noexcept { return myCenter; }
 
   //! Returns the X Direction of OBB
-  const gp_XYZ& XDirection() const { return myAxes[0]; }
+  [[nodiscard]] const gp_XYZ& XDirection() const noexcept { return myAxes[0]; }
 
   //! Returns the Y Direction of OBB
-  const gp_XYZ& YDirection() const { return myAxes[1]; }
+  [[nodiscard]] const gp_XYZ& YDirection() const noexcept { return myAxes[1]; }
 
   //! Returns the Z Direction of OBB
-  const gp_XYZ& ZDirection() const { return myAxes[2]; }
+  [[nodiscard]] const gp_XYZ& ZDirection() const noexcept { return myAxes[2]; }
 
   //! Returns the X Dimension of OBB
-  double XHSize() const { return myHDims[0]; }
+  [[nodiscard]] double XHSize() const noexcept { return myHDims[0]; }
 
   //! Returns the Y Dimension of OBB
-  double YHSize() const { return myHDims[1]; }
+  [[nodiscard]] double YHSize() const noexcept { return myHDims[1]; }
 
   //! Returns the Z Dimension of OBB
-  double ZHSize() const { return myHDims[2]; }
+  [[nodiscard]] double ZHSize() const noexcept { return myHDims[2]; }
+
+  //! Returns the half-size dimensions of the OBB as a HalfSizes structure.
+  //! Can be used with C++17 structured bindings:
+  //! @code
+  //!   auto [aHX, aHY, aHZ] = anOBB.GetHalfSizes();
+  //! @endcode
+  [[nodiscard]] HalfSizes GetHalfSizes() const noexcept
+  {
+    return {myHDims[0], myHDims[1], myHDims[2]};
+  }
 
   //! Checks if the box is empty.
-  bool IsVoid() const { return ((myHDims[0] < 0.0) || (myHDims[1] < 0.0) || (myHDims[2] < 0.0)); }
+  [[nodiscard]] bool IsVoid() const noexcept
+  {
+    return ((myHDims[0] < 0.0) || (myHDims[1] < 0.0) || (myHDims[2] < 0.0));
+  }
 
   //! Clears this box
   void SetVoid()
@@ -182,7 +206,7 @@ public:
   void SetAABox(const bool& theFlag) { myIsAABox = theFlag; }
 
   //! Returns TRUE if the box is axes aligned
-  bool IsAABox() const { return myIsAABox; }
+  [[nodiscard]] bool IsAABox() const noexcept { return myIsAABox; }
 
   //! Enlarges the box with the given value
   void Enlarge(const double theGapAdd)
@@ -230,19 +254,25 @@ public:
   }
 
   //! Returns square diagonal of this box
-  double SquareExtent() const
+  [[nodiscard]] double SquareExtent() const noexcept
   {
     return 4.0 * (myHDims[0] * myHDims[0] + myHDims[1] * myHDims[1] + myHDims[2] * myHDims[2]);
   }
 
   //! Check if the box do not interfere the other box.
-  Standard_EXPORT bool IsOut(const Bnd_OBB& theOther) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const Bnd_OBB& theOther) const;
 
   //! Check if the point is inside of <this>.
-  Standard_EXPORT bool IsOut(const gp_Pnt& theP) const;
+  [[nodiscard]] Standard_EXPORT bool IsOut(const gp_Pnt& theP) const;
+
+  //! Returns True if the point is inside or on the boundary of this OBB.
+  [[nodiscard]] bool Contains(const gp_Pnt& theP) const { return !IsOut(theP); }
+
+  //! Returns True if the other OBB intersects or is inside this OBB.
+  [[nodiscard]] bool Intersects(const Bnd_OBB& theOther) const { return !IsOut(theOther); }
 
   //! Check if the theOther is completely inside *this.
-  Standard_EXPORT bool IsCompletelyInside(const Bnd_OBB& theOther) const;
+  [[nodiscard]] Standard_EXPORT bool IsCompletelyInside(const Bnd_OBB& theOther) const;
 
   //! Rebuilds this in order to include all previous objects
   //! (which it was created from) and theOther.

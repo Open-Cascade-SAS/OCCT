@@ -24,8 +24,6 @@
 #include <Standard_Dump.hxx>
 #include <Standard_Macro.hxx>
 #include <iostream>
-#include <iomanip>
-#include <fstream>
 
 namespace
 {
@@ -289,6 +287,19 @@ gp_Pnt Bnd_Box::CornerMax() const
 
 //=================================================================================================
 
+std::optional<gp_Pnt> Bnd_Box::Center() const
+{
+  if (IsVoid())
+  {
+    return std::nullopt;
+  }
+  return gp_Pnt(0.5 * (GetXMin() + GetXMax()),
+                0.5 * (GetYMin() + GetYMax()),
+                0.5 * (GetZMin() + GetZMax()));
+}
+
+//=================================================================================================
+
 bool Bnd_Box::IsXThin(const double tol) const
 {
   if (IsWhole())
@@ -460,18 +471,6 @@ void Bnd_Box::Add(const Bnd_Box& Other)
     return;
   }
 
-  if (Xmin > Other.Xmin)
-    Xmin = Other.Xmin;
-  if (Xmax < Other.Xmax)
-    Xmax = Other.Xmax;
-  if (Ymin > Other.Ymin)
-    Ymin = Other.Ymin;
-  if (Ymax < Other.Ymax)
-    Ymax = Other.Ymax;
-  if (Zmin > Other.Zmin)
-    Zmin = Other.Zmin;
-  if (Zmax < Other.Zmax)
-    Zmax = Other.Zmax;
   Gap = std::max(Gap, Other.Gap);
 
   if (IsWhole())
@@ -484,18 +483,48 @@ void Bnd_Box::Add(const Bnd_Box& Other)
     return;
   }
 
-  if (Other.IsOpenXmin())
-    OpenXmin();
-  if (Other.IsOpenXmax())
-    OpenXmax();
-  if (Other.IsOpenYmin())
-    OpenYmin();
-  if (Other.IsOpenYmax())
-    OpenYmax();
-  if (Other.IsOpenZmin())
-    OpenZmin();
-  if (Other.IsOpenZmax())
-    OpenZmax();
+  if (!IsOpenXmin())
+  {
+    if (Other.IsOpenXmin())
+      OpenXmin();
+    else if (Xmin > Other.Xmin)
+      Xmin = Other.Xmin;
+  }
+  if (!IsOpenXmax())
+  {
+    if (Other.IsOpenXmax())
+      OpenXmax();
+    else if (Xmax < Other.Xmax)
+      Xmax = Other.Xmax;
+  }
+  if (!IsOpenYmin())
+  {
+    if (Other.IsOpenYmin())
+      OpenYmin();
+    else if (Ymin > Other.Ymin)
+      Ymin = Other.Ymin;
+  }
+  if (!IsOpenYmax())
+  {
+    if (Other.IsOpenYmax())
+      OpenYmax();
+    else if (Ymax < Other.Ymax)
+      Ymax = Other.Ymax;
+  }
+  if (!IsOpenZmin())
+  {
+    if (Other.IsOpenZmin())
+      OpenZmin();
+    else if (Zmin > Other.Zmin)
+      Zmin = Other.Zmin;
+  }
+  if (!IsOpenZmax())
+  {
+    if (Other.IsOpenZmax())
+      OpenZmax();
+    else if (Zmax < Other.Zmax)
+      Zmax = Other.Zmax;
+  }
 }
 
 //=================================================================================================
@@ -579,21 +608,27 @@ bool Bnd_Box::IsOut(const gp_Pln& P) const
   {
     double A, B, C, D;
     P.Coefficients(A, B, C, D);
-    double d    = A * (Xmin - Gap) + B * (Ymin - Gap) + C * (Zmin - Gap) + D;
-    bool   plus = d > 0;
-    if (plus != ((A * (Xmin - Gap) + B * (Ymin - Gap) + C * (Zmax + Gap) + D) > 0))
+    const double aXmin = GetXMin();
+    const double aXmax = GetXMax();
+    const double aYmin = GetYMin();
+    const double aYmax = GetYMax();
+    const double aZmin = GetZMin();
+    const double aZmax = GetZMax();
+    double       d     = A * aXmin + B * aYmin + C * aZmin + D;
+    bool         plus  = d > 0;
+    if (plus != ((A * aXmin + B * aYmin + C * aZmax + D) > 0))
       return false;
-    if (plus != ((A * (Xmin - Gap) + B * (Ymax + Gap) + C * (Zmin - Gap) + D) > 0))
+    if (plus != ((A * aXmin + B * aYmax + C * aZmin + D) > 0))
       return false;
-    if (plus != ((A * (Xmin - Gap) + B * (Ymax + Gap) + C * (Zmax + Gap) + D) > 0))
+    if (plus != ((A * aXmin + B * aYmax + C * aZmax + D) > 0))
       return false;
-    if (plus != ((A * (Xmax + Gap) + B * (Ymin - Gap) + C * (Zmin - Gap) + D) > 0))
+    if (plus != ((A * aXmax + B * aYmin + C * aZmin + D) > 0))
       return false;
-    if (plus != ((A * (Xmax + Gap) + B * (Ymin - Gap) + C * (Zmax + Gap) + D) > 0))
+    if (plus != ((A * aXmax + B * aYmin + C * aZmax + D) > 0))
       return false;
-    if (plus != ((A * (Xmax + Gap) + B * (Ymax + Gap) + C * (Zmin - Gap) + D) > 0))
+    if (plus != ((A * aXmax + B * aYmax + C * aZmin + D) > 0))
       return false;
-    return plus == ((A * (Xmax + Gap) + B * (Ymax + Gap) + C * (Zmax + Gap) + D) > 0);
+    return plus == ((A * aXmax + B * aYmax + C * aZmax + D) > 0);
   }
 }
 
@@ -642,10 +677,10 @@ bool Bnd_Box::IsOut(const gp_Lin& L) const
     {
       par1 = (myYmin - L.Location().XYZ().Y()) / L.Direction().XYZ().Y();
       par2 = (myYmax - L.Location().XYZ().Y()) / L.Direction().XYZ().Y();
-      //=================DET change 06/03/01====================
+      // Check if parameter ranges from this axis are disjoint (early exit)
       if (parmax < std::min(par1, par2) || parmin > std::max(par1, par2))
         return true;
-      //========================================================
+
       parmin = std::max(parmin, std::min(par1, par2));
       parmax = std::min(parmax, std::max(par1, par2));
       yToSet = true;
@@ -665,10 +700,10 @@ bool Bnd_Box::IsOut(const gp_Lin& L) const
     {
       par1 = (myZmin - L.Location().XYZ().Z()) / L.Direction().XYZ().Z();
       par2 = (myZmax - L.Location().XYZ().Z()) / L.Direction().XYZ().Z();
-      //=================DET change 06/03/01====================
+      // Check if parameter ranges from this axis are disjoint (early exit)
       if (parmax < std::min(par1, par2) || parmin > std::max(par1, par2))
         return true;
-      //========================================================
+
       parmin = std::max(parmin, std::min(par1, par2));
       parmax = std::min(parmax, std::max(par1, par2));
       par1   = L.Location().XYZ().Z() + parmin * L.Direction().XYZ().Z();
@@ -995,13 +1030,15 @@ bool Bnd_Box::IsOut(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Dir& D) const
   return true;
 }
 
-//=======================================================================
-// function : Distance
-// purpose  : computes the minimum distance between two boxes
-//=======================================================================
+//=================================================================================================
 
 double Bnd_Box::Distance(const Bnd_Box& Other) const
 {
+  if (IsVoid() || Other.IsVoid())
+  {
+    return 0.0;
+  }
+
   double aXMinB1, aYMinB1, aZMinB1, aXMaxB1, aYMaxB1, aZMaxB1;
   double aXMinB2, aYMinB2, aZMinB2, aXMaxB2, aYMaxB2, aZMaxB2;
 

@@ -6,7 +6,10 @@ set(OCCT_TKMath_GTests_FILES
   Bnd_B3_Test.cxx
   Bnd_BoundSortBox_Test.cxx
   Bnd_Box_Test.cxx
+  Bnd_Box2d_Test.cxx
   Bnd_OBB_Test.cxx
+  Bnd_Range_Test.cxx
+  Bnd_Sphere_Test.cxx
   BSplCLib_Cache_Test.cxx
   BSplCLib_Test.cxx
   BSplSLib_Cache_Test.cxx

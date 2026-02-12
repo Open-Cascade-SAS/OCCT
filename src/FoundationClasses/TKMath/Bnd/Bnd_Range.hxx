@@ -20,12 +20,25 @@
 
 #include <NCollection_List.hxx>
 
+#include <optional>
+
 //! This class describes a range in 1D space restricted
 //! by two real values.
 //! A range can be void indicating there is no point included in the range.
 class Bnd_Range
 {
 public:
+  //! Structure containing the range bounds (Min, Max).
+  //! Can be used with C++17 structured bindings:
+  //! @code
+  //!   auto [aMin, aMax] = aRange.Get();
+  //! @endcode
+  struct Bounds
+  {
+    double Min; //!< Minimum value of the range
+    double Max; //!< Maximum value of the range
+  };
+
   //! Default constructor. Creates VOID range.
   Bnd_Range()
       : myFirst(0.0),
@@ -50,7 +63,7 @@ public:
   //! Returns false if the operation cannot be done (e.g.
   //! input arguments are empty or separated).
   //! @sa use method ::Add() to merge two ranges unconditionally
-  Standard_EXPORT bool Union(const Bnd_Range& theOther);
+  [[nodiscard]] Standard_EXPORT bool Union(const Bnd_Range& theOther);
 
   //! Splits <this> to several sub-ranges by theVal value
   //! (e.g. range [3, 15] will be split by theVal==5 to the two
@@ -66,16 +79,22 @@ public:
                              NCollection_List<Bnd_Range>& theList,
                              const double                 thePeriod = 0.0) const;
 
+  //! Status of intersection check with a periodic value.
+  //! @sa IsIntersected()
+  enum IntersectStatus
+  {
+    IntersectStatus_Out      = 0, //!< No intersection with theVal+k*thePeriod
+    IntersectStatus_In       = 1, //!< Range strictly contains theVal+k*thePeriod
+    IntersectStatus_Boundary = 2  //!< Range boundary coincides with theVal+k*thePeriod
+  };
+
   //! Checks if <this> intersects values like
   //!   theVal+k*thePeriod, where k is an integer number (k = 0, +/-1, +/-2, ...).
-  //! Returns:
-  //!     0 - if <this> does not intersect the theVal+k*thePeriod.
-  //!     1 - if <this> intersects theVal+k*thePeriod.
-  //!     2 - if myFirst or/and myLast are equal to theVal+k*thePeriod.
   //!
   //! ATTENTION!!!
-  //!  If (myFirst == myLast) then this function will return only either 0 or 2.
-  Standard_EXPORT int IsIntersected(const double theVal, const double thePeriod = 0.0) const;
+  //!  If (myFirst == myLast) then this function will return only either Out or Boundary.
+  Standard_EXPORT IntersectStatus IsIntersected(const double theVal,
+                                                const double thePeriod = 0.0) const;
 
   //! Extends <this> to include theParameter
   void Add(const double theParameter)
@@ -101,6 +120,7 @@ public:
     else if (IsVoid())
     {
       *this = theRange;
+      return;
     }
     myFirst = (std::min)(myFirst, theRange.myFirst);
     myLast  = (std::max)(myLast, theRange.myLast);
@@ -146,6 +166,22 @@ public:
     return true;
   }
 
+  //! Returns the bounds of this range as a Bounds structure.
+  //! Returns std::nullopt if IsVoid().
+  //! Can be used with C++17 structured bindings:
+  //! @code
+  //!   if (auto aBounds = aRange.Get())
+  //!   {
+  //!     auto [aMin, aMax] = *aBounds;
+  //!   }
+  //! @endcode
+  [[nodiscard]] std::optional<Bounds> Get() const noexcept
+  {
+    if (IsVoid())
+      return std::nullopt;
+    return Bounds{myFirst, myLast};
+  }
+
   //! Obtain theParameter satisfied to the equation
   //!     (theParameter-MIN)/(MAX-MIN) == theLambda.
   //!   *  theLambda == 0 --> MIN boundary will be returned;
@@ -165,21 +201,30 @@ public:
     return true;
   }
 
+  //! Returns the center of this range ((Min + Max) / 2).
+  //! Returns std::nullopt if IsVoid().
+  [[nodiscard]] std::optional<double> Center() const noexcept
+  {
+    if (IsVoid())
+      return std::nullopt;
+    return 0.5 * (myFirst + myLast);
+  }
+
   //! Returns range value (MAX-MIN). Returns negative value for VOID range.
-  double Delta() const { return (myLast - myFirst); }
+  [[nodiscard]] double Delta() const noexcept { return (myLast - myFirst); }
 
   //! Is <this> initialized.
-  bool IsVoid() const { return (myLast < myFirst); }
+  [[nodiscard]] bool IsVoid() const noexcept { return (myLast < myFirst); }
 
   //! Initializes <this> by default parameters. Makes <this> VOID.
-  void SetVoid()
+  void SetVoid() noexcept
   {
     myLast  = -1.0;
     myFirst = 0.0;
   }
 
   //! Extends this to the given value (in both side)
-  void Enlarge(const double theDelta)
+  void Enlarge(const double theDelta) noexcept
   {
     if (IsVoid())
     {
@@ -191,13 +236,13 @@ public:
   }
 
   //! Returns the copy of <*this> shifted by theVal
-  Bnd_Range Shifted(const double theVal) const
+  [[nodiscard]] Bnd_Range Shifted(const double theVal) const
   {
     return !IsVoid() ? Bnd_Range(myFirst + theVal, myLast + theVal) : Bnd_Range();
   }
 
   //! Shifts <*this> by theVal
-  void Shift(const double theVal)
+  void Shift(const double theVal) noexcept
   {
     if (!IsVoid())
     {
@@ -208,7 +253,7 @@ public:
 
   //! Trims the First value in range by the given lower limit.
   //! Marks range as Void if the given Lower value is greater than range Max.
-  void TrimFrom(const double theValLower)
+  void TrimFrom(const double theValLower) noexcept
   {
     if (!IsVoid())
     {
@@ -218,7 +263,7 @@ public:
 
   //! Trim the Last value in range by the given Upper limit.
   //! Marks range as Void if the given Upper value is smaller than range Max.
-  void TrimTo(const double theValUpper)
+  void TrimTo(const double theValUpper) noexcept
   {
     if (!IsVoid())
     {
@@ -227,16 +272,46 @@ public:
   }
 
   //! Returns True if the value is out of this range.
-  bool IsOut(double theValue) const { return IsVoid() || theValue < myFirst || theValue > myLast; }
+  [[nodiscard]] bool IsOut(double theValue) const noexcept
+  {
+    return IsVoid() || theValue < myFirst || theValue > myLast;
+  }
 
   //! Returns True if the given range is out of this range.
-  bool IsOut(const Bnd_Range& theRange) const
+  [[nodiscard]] bool IsOut(const Bnd_Range& theRange) const noexcept
   {
     return IsVoid() || theRange.IsVoid() || theRange.myLast < myFirst || theRange.myFirst > myLast;
   }
 
+  //! Returns True if the value is within this range.
+  [[nodiscard]] bool Contains(double theValue) const noexcept { return !IsOut(theValue); }
+
+  //! Returns True if the given range intersects (overlaps with) this range.
+  [[nodiscard]] bool Intersects(const Bnd_Range& theRange) const noexcept
+  {
+    return !IsOut(theRange);
+  }
+
+  //! Returns the MIN boundary of <this>.
+  //! Returns std::nullopt if IsVoid().
+  [[nodiscard]] std::optional<double> Min() const noexcept
+  {
+    if (IsVoid())
+      return std::nullopt;
+    return myFirst;
+  }
+
+  //! Returns the MAX boundary of <this>.
+  //! Returns std::nullopt if IsVoid().
+  [[nodiscard]] std::optional<double> Max() const noexcept
+  {
+    if (IsVoid())
+      return std::nullopt;
+    return myLast;
+  }
+
   //! Returns TRUE if theOther is equal to <*this>
-  bool operator==(const Bnd_Range& theOther) const
+  [[nodiscard]] bool operator==(const Bnd_Range& theOther) const noexcept
   {
     return ((myFirst == theOther.myFirst) && (myLast == theOther.myLast));
   }
