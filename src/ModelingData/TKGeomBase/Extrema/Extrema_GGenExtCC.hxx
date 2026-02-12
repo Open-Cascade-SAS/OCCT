@@ -211,20 +211,20 @@ public:
 
   static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 
-  Point Shift(const Point& thePnt, double theTol) const
+  static Point Shift(const Point& thePnt, double theTol)
   {
     return Point(thePnt.X() + theTol, thePnt.Y() + theTol);
   }
 
   Extrema_GGenExtCC_PointsInspector(const double theTol)
+      : myTol(theTol * theTol),
+        myIsFind(false)
   {
-    myTol    = theTol * theTol;
-    myIsFind = false;
   }
 
   void ClearFind() { myIsFind = false; }
 
-  bool isFind() { return myIsFind; }
+  bool isFind() const { return myIsFind; }
 
   void SetCurrent(const gp_XY& theCurPnt) { myCurrent = theCurPnt; }
 

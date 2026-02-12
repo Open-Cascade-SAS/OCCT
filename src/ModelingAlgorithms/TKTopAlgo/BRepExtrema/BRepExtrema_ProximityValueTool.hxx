@@ -35,7 +35,7 @@ public:
 
   static double Coord(int i, const Point& thePnt) { return thePnt.Coord(i + 1); }
 
-  Point Shift(const Point& thePnt, double theTol) const
+  static Point Shift(const Point& thePnt, double theTol)
   {
     return Point(thePnt.X() + theTol, thePnt.Y() + theTol, thePnt.Z() + theTol);
   }
@@ -60,7 +60,7 @@ public:
     myIsNeedAdd = true;
   }
 
-  bool IsNeedAdd() { return myIsNeedAdd; }
+  bool IsNeedAdd() const { return myIsNeedAdd; }
 
   //! Implementation of inspection method
   Standard_EXPORT NCollection_CellFilter_Action Inspect(const int theTarget);
