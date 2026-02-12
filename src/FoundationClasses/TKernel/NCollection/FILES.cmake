@@ -54,6 +54,8 @@ set(OCCT_NCollection_FILES
   NCollection_Mat3.hxx
   NCollection_Mat4.hxx
   NCollection_OccAllocator.hxx
+  NCollection_OrderedDataMap.hxx
+  NCollection_OrderedMap.hxx
   NCollection_PackedMap.hxx
   NCollection_PackedMapAlgo.hxx
   NCollection_Primes.cxx
