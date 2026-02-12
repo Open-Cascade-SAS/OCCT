@@ -49,7 +49,7 @@ class NCollection_SparseArray : public NCollection_SparseArrayBase
 public:
   //! Constructor; accepts size of blocks
   explicit NCollection_SparseArray(size_t theIncrement) noexcept
-      : NCollection_SparseArrayBase(sizeof(TheItemType), theIncrement)
+      : NCollection_SparseArrayBase(sizeof(TheItemType), theIncrement, destroyItemImpl)
   {
   }
 
@@ -58,7 +58,7 @@ public:
   {
     if (this == &theOther)
       return *this;
-    this->assign(theOther);
+    this->assign(theOther, createItemImpl, destroyItemImpl, copyItemImpl);
     return *this;
   }
 
@@ -67,8 +67,8 @@ public:
   //! in a fast way (without creation of duplicated data)
   void Exchange(NCollection_SparseArray& theOther) noexcept { this->exchange(theOther); }
 
-  //! Destructor
-  ~NCollection_SparseArray() override { Clear(); }
+  //! Clears all the data
+  void Clear() { clearItems(destroyItemImpl); }
 
 public:
   //!@name Array-like interface (in addition to inherited methods)
@@ -95,8 +95,12 @@ public:
   //! Set a value at specified index method
   TheItemType& SetValue(const size_t theIndex, const TheItemType& theValue)
   {
-    return *(TheItemType*)this->setValue(theIndex, (void*)&theValue);
+    return *(TheItemType*)this->setValue(theIndex, (void*)&theValue, createItemImpl, copyItemImpl);
   }
+
+  //! Deletes the item from the array;
+  //! returns True if that item was defined
+  bool UnsetValue(const size_t theIndex) { return this->unsetValue(theIndex, destroyItemImpl); }
 
   //!@}
 
@@ -126,7 +130,7 @@ public:
   bool IsBound(const size_t theIndex) const { return this->HasValue(theIndex); }
 
   //! Remove the item from array
-  bool UnBind(const size_t theIndex) { return this->UnsetValue(theIndex); }
+  bool UnBind(const size_t theIndex) { return UnsetValue(theIndex); }
 
   //!@}
 
@@ -190,29 +194,22 @@ public:
   };
 
 private:
-  // Implementation of virtual methods providing type-specific behaviour
+  // Static functions providing type-specific item operations
 
-  //! Create new item at the specified address with default constructor
-  //  virtual void createItem (void* theAddress)
-  //  {
-  //    new (theAddress) TheItemType;
-  //  }
-
-  //! Create new item at the specified address with copy constructor
-  //! from existing item
-  void createItem(void* theAddress, void* theOther) override
+  //! Copy-construct a new item from existing item
+  static void createItemImpl(void* theAddress, void* theOther)
   {
     new (theAddress) TheItemType(*(const TheItemType*)theOther);
   }
 
-  //! Call destructor to the item at given address
-  void destroyItem(void* theAddress) override
+  //! Call destructor on the item at given address
+  static void destroyItemImpl(void* theAddress)
   {
     ((TheItemType*)theAddress)->TheItemType::~TheItemType();
   }
 
-  //! Call assignment operator to the item
-  void copyItem(void* theAddress, void* theOther) override
+  //! Call assignment operator on the item
+  static void copyItemImpl(void* theAddress, void* theOther)
   {
     (*(TheItemType*)theAddress) = *(const TheItemType*)theOther;
   }

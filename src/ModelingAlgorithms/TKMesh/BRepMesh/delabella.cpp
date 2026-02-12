@@ -247,7 +247,7 @@ struct CDelaBella : IDelaBella
           errlog_proc(errlog_file,
                       "[WRN] all input points are colinear, returning single segment!\n");
         first_hull_vert    = vert_alloc + 0;
-        vert_alloc[0].next = (DelaBella_Vertex*)vert_alloc + 1;
+        vert_alloc[0].next = (DelaBella_Vertex*)(vert_alloc + 1);
         vert_alloc[1].next = nullptr;
       }
       else

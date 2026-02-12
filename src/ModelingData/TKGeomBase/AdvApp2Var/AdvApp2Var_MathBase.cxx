@@ -535,7 +535,7 @@ int mmaper0_(integer*    ncofmx,
   /* ------ Minimum that can be reached : Stop at 1 or NCFNEW ------ */
 
   ncut = 1;
-  if (*ncfnew + 1 > ncut)
+  if (*ncfnew >= ncut)
   {
     ncut = *ncfnew + 1;
   }

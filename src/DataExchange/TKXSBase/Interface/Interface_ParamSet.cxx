@@ -86,9 +86,10 @@ int Interface_ParamSet::Append(const char* const         val,
           OFP.SetEntityNumber(onum);
       }
       //      Confirm the new reservation
-      delete[] theval;
-      theval   = newval;
-      thelnres = newres;
+      char* anOldVal = theval;
+      theval         = newval;
+      thelnres       = newres;
+      delete[] anOldVal;
     }
     //      Register this parameter
     for (i = 0; i < lnval; i++)
