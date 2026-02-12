@@ -668,7 +668,7 @@ public:
     return &p->ChangeValue();
   }
 
-  //! ChangeFind returns mofifiable Item by Key. Raises if Key was not bound
+  //! ChangeFind returns modifiable Item by Key. Raises if Key was not bound
   TheItemType& ChangeFind(const TheKeyType& theKey)
   {
     DataMapNode* p = nullptr;
