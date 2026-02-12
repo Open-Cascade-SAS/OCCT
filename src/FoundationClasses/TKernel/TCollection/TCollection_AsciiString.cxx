@@ -1143,11 +1143,19 @@ void TCollection_AsciiString::UpperCase()
 
 int TCollection_AsciiString::UsefullLength() const
 {
-  int i;
-  for (i = myLength - 1; i >= 0; i--)
-    if (IsGraphic(myString[i]))
-      break;
-  return i + 1;
+  // Use NCollection_UtfIterator to correctly handle multibyte UTF-8 characters.
+  // Non-ASCII Unicode characters (code point > 0x7F) are always considered graphic.
+  // The method trims trailing non-graphic ASCII characters (spaces, control chars).
+  int aLastGraphicEnd = 0;
+  for (NCollection_UtfIterator<char> anIter(myString); *anIter != 0; ++anIter)
+  {
+    const char32_t aChar = *anIter;
+    if (aChar > char32_t(0x7F) || std::isgraph(static_cast<int>(aChar)) != 0)
+    {
+      aLastGraphicEnd = int(anIter.BufferNext() - myString);
+    }
+  }
+  return aLastGraphicEnd;
 }
 
 //=================================================================================================
