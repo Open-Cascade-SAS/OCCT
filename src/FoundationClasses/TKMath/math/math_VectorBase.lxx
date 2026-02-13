@@ -101,11 +101,11 @@ void math_VectorBase<TheItemType>::SetLower(const int theLower)
 template <typename TheItemType>
 double math_VectorBase<TheItemType>::Norm() const
 {
-  const int          aLen = Length();
-  const TheItemType* aPtr = &Array(Lower());
-  double aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
-  int    i       = 0;
-  int    aLen4   = aLen - 3;
+  const int          aLen  = Length();
+  const TheItemType* aPtr  = &Array(Lower());
+  double             aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
+  int                i     = 0;
+  int                aLen4 = aLen - 3;
 
   for (; i < aLen4; i += 4)
   {
@@ -131,11 +131,11 @@ double math_VectorBase<TheItemType>::Norm() const
 template <typename TheItemType>
 double math_VectorBase<TheItemType>::Norm2() const
 {
-  const int          aLen = Length();
-  const TheItemType* aPtr = &Array(Lower());
-  double aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
-  int    i       = 0;
-  int    aLen4   = aLen - 3;
+  const int          aLen  = Length();
+  const TheItemType* aPtr  = &Array(Lower());
+  double             aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
+  int                i     = 0;
+  int                aLen4 = aLen - 3;
 
   for (; i < aLen4; i += 4)
   {
@@ -528,8 +528,8 @@ void math_VectorBase<TheItemType>::TMultiply(const math_VectorBase<TheItemType>&
 
   for (int r = 0; r < aNRows; r++)
   {
-    TheItemType    aSum     = 0.0;
-    const double*  aRowData = aMatData + r * aNCols;
+    TheItemType   aSum     = 0.0;
+    const double* aRowData = aMatData + r * aNCols;
     for (int c = 0; c < aNCols; c++)
     {
       aSum += aLeftPtr[c] * aRowData[c];

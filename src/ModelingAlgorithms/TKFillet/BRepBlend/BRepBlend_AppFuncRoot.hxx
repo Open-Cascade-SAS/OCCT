@@ -172,15 +172,15 @@ private:
                                       const int    LastIndex,
                                       int&         ParamIndex) const;
 
-  occ::handle<BRepBlend_Line>          myLine;
-  void*                                myFunc;
-  math_Vector                          myTolerance;
-  Blend_Point                          myPnt;
-  gp_Pnt                               myBary;
-  math_Vector                          X1;
-  math_Vector                          X2;
-  math_Vector                          XInit;
-  math_Vector                          Sol;
+  occ::handle<BRepBlend_Line>           myLine;
+  void*                                 myFunc;
+  math_Vector                           myTolerance;
+  Blend_Point                           myPnt;
+  gp_Pnt                                myBary;
+  math_Vector                           X1;
+  math_Vector                           X2;
+  math_Vector                           XInit;
+  math_Vector                           Sol;
   std::unique_ptr<math_FunctionSetRoot> mySolver;
 };
 

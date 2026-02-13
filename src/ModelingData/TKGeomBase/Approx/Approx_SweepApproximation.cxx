@@ -303,7 +303,7 @@ void Approx_SweepApproximation::Approximation(
     // --> Fill Champs of the surface ----
     int ii, jj;
 
-    vdeg            = Approx.Degree();
+    vdeg               = Approx.Degree();
     const int aNbPoles = Approx.NbPoles();
     // Unfortunately Adv_Approx stores the transposition of the required
     // so, writing tabPoles = Approx.Poles() will give an erroneous result
