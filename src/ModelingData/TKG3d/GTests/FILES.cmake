@@ -9,9 +9,11 @@ set(OCCT_TKG3d_GTests_FILES
   Geom_OffsetCurve_Test.cxx
   Geom_OffsetSurface_Test.cxx
   GeomAdaptor_Curve_Test.cxx
+  GeomAdaptor_TransformedCurve_Test.cxx
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
   GeomGridEval_Cone_Test.cxx
+  GeomGridEval_CurveOnSurface_Test.cxx
   GeomGridEval_Curve_Test.cxx
   GeomGridEval_Sphere_Test.cxx
   GeomGridEval_BezierCurve_Test.cxx

@@ -20,6 +20,7 @@
 #include <GeomGridEval_BSplineCurve.hxx>
 #include <GeomGridEval_BezierCurve.hxx>
 #include <GeomGridEval_Circle.hxx>
+#include <GeomGridEval_CurveOnSurface.hxx>
 #include <GeomGridEval_Ellipse.hxx>
 #include <GeomGridEval_Hyperbola.hxx>
 #include <GeomGridEval_Line.hxx>
@@ -27,10 +28,12 @@
 #include <GeomGridEval_OtherCurve.hxx>
 #include <GeomGridEval_Parabola.hxx>
 #include <gp_Pnt.hxx>
+#include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
 #include <variant>
 
 //! @brief Unified grid evaluator for any 3D curve.
@@ -63,16 +66,17 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Variant type holding all possible curve evaluators.
-  using EvaluatorVariant = std::variant<std::monostate,            // Uninitialized state
-                                        GeomGridEval_Line,         // Line curve
-                                        GeomGridEval_Circle,       // Circle curve
-                                        GeomGridEval_Ellipse,      // Ellipse curve
-                                        GeomGridEval_Hyperbola,    // Hyperbola curve
-                                        GeomGridEval_Parabola,     // Parabola curve
-                                        GeomGridEval_BezierCurve,  // Bezier curve
-                                        GeomGridEval_BSplineCurve, // B-spline curve
-                                        GeomGridEval_OffsetCurve,  // Offset curve
-                                        GeomGridEval_OtherCurve>;  // Fallback for other types
+  using EvaluatorVariant = std::variant<std::monostate,               // Uninitialized state
+                                        GeomGridEval_Line,            // Line curve
+                                        GeomGridEval_Circle,          // Circle curve
+                                        GeomGridEval_Ellipse,         // Ellipse curve
+                                        GeomGridEval_Hyperbola,       // Hyperbola curve
+                                        GeomGridEval_Parabola,        // Parabola curve
+                                        GeomGridEval_BezierCurve,     // Bezier curve
+                                        GeomGridEval_BSplineCurve,    // B-spline curve
+                                        GeomGridEval_OffsetCurve,     // Offset curve
+                                        GeomGridEval_CurveOnSurface,  // Curve on surface
+                                        GeomGridEval_OtherCurve>;     // Fallback for other types
 
   //! Default constructor - uninitialized state.
   GeomGridEval_Curve()
@@ -137,9 +141,31 @@ public:
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
+  //! Returns true if a transformation is applied.
+  bool HasTransformation() const { return myTrsf.has_value(); }
+
+  //! Returns the transformation (empty if not set).
+  const std::optional<gp_Trsf>& GetTransformation() const { return myTrsf; }
+
 private:
-  EvaluatorVariant  myEvaluator;
-  GeomAbs_CurveType myCurveType;
+  //! Apply transformation to grid of points.
+  void applyTransformation(NCollection_Array1<gp_Pnt>& theGrid) const;
+
+  //! Apply transformation to grid of D1 results.
+  void applyTransformation(NCollection_Array1<GeomGridEval::CurveD1>& theGrid) const;
+
+  //! Apply transformation to grid of D2 results.
+  void applyTransformation(NCollection_Array1<GeomGridEval::CurveD2>& theGrid) const;
+
+  //! Apply transformation to grid of D3 results.
+  void applyTransformation(NCollection_Array1<GeomGridEval::CurveD3>& theGrid) const;
+
+  //! Apply transformation to grid of vectors.
+  void applyTransformation(NCollection_Array1<gp_Vec>& theGrid) const;
+
+  EvaluatorVariant       myEvaluator;
+  GeomAbs_CurveType      myCurveType;
+  std::optional<gp_Trsf> myTrsf; //!< Optional transformation for TransformedCurve/BRepAdaptor
 };
 
 #endif // _GeomGridEval_Curve_HeaderFile
