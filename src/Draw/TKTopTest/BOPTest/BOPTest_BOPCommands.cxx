@@ -143,7 +143,7 @@ int bop(Draw_Interpretor& di, int n, const char** a)
   aLC.Append(aS2);
   //
   delete pPF;
-  pPF = nullptr;
+  pPF                                        = nullptr;
   occ::handle<NCollection_BaseAllocator> aAL = NCollection_BaseAllocator::CommonBaseAllocator();
   pPF                                        = new BOPAlgo_PaveFiller(aAL);
   //
