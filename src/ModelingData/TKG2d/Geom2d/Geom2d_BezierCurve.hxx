@@ -21,13 +21,10 @@
 
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Geom2d_BoundedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
-class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
@@ -87,6 +84,8 @@ class Geom2d_BezierCurve : public Geom2d_BoundedCurve
 {
 
 public:
+
+
   //! Creates a non rational Bezier curve with a set of poles :
   //! CurvePoles. The weights are defaulted to all being 1.
   //! Raises ConstructionError if the number of poles is greater than MaxDegree + 1
@@ -211,17 +210,13 @@ public:
   //! curve cannot be greater than "MaxDegree".
   Standard_EXPORT int Degree() const;
 
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
 
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD1> EvalD1(const double U) const final;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD2> EvalD2(const double U) const final;
 
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD3> EvalD3(const double U) const final;
 
   //! For this Bezier curve, computes
   //! - the point P of parameter U, or
@@ -231,7 +226,7 @@ public:
   //! - V3, the third derivative vector.
   //! Note: the parameter U can be outside the bounds of the curve.
   //! Raises RangeError if N < 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
 
   //! Returns the end point or start point of this Bezier curve.
   Standard_EXPORT gp_Pnt2d EndPoint() const final;

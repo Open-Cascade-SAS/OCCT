@@ -286,12 +286,12 @@ void ComputeDerivatives(int                         theMaxOrder,
     switch (theMinOrder)
     {
       case 1:
-        theOscSurf->D1(theU, theV, P, DL1U, DL1V);
+        static_cast<const Geom_Surface&>(*theOscSurf).D1(theU, theV, P, DL1U, DL1V);
         DerSurfL.SetValue(1, 0, DL1U);
         DerSurfL.SetValue(0, 1, DL1V);
         break;
       case 2:
-        theOscSurf->D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
+        static_cast<const Geom_Surface&>(*theOscSurf).D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
         DerSurfL.SetValue(1, 0, DL1U);
         DerSurfL.SetValue(0, 1, DL1V);
         DerSurfL.SetValue(1, 1, DL2UV);
@@ -299,7 +299,7 @@ void ComputeDerivatives(int                         theMaxOrder,
         DerSurfL.SetValue(0, 2, DL2V);
         break;
       case 3:
-        theOscSurf->D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
+        static_cast<const Geom_Surface&>(*theOscSurf).D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
         DerSurfL.SetValue(1, 0, DL1U);
         DerSurfL.SetValue(0, 1, DL1V);
         DerSurfL.SetValue(1, 1, DL2UV);

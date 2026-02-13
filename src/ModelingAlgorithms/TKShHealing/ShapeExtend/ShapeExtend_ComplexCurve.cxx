@@ -41,60 +41,68 @@ void ShapeExtend_ComplexCurve::Transform(const gp_Trsf& T)
 
 //=================================================================================================
 
-void ShapeExtend_ComplexCurve::D0(const double U, gp_Pnt& P) const
+std::optional<gp_Pnt> ShapeExtend_ComplexCurve::EvalD0(const double U) const
 {
   double UOut;
   int    ind = LocateParameter(U, UOut);
-  Curve(ind)->D0(UOut, P);
+  return Curve(ind)->EvalD0(UOut);
 }
 
 //=================================================================================================
 
-void ShapeExtend_ComplexCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
+std::optional<Geom_CurveD1> ShapeExtend_ComplexCurve::EvalD1(const double U) const
 {
   double UOut;
-  int    ind = LocateParameter(U, UOut);
-  Curve(ind)->D1(UOut, P, V1);
-  TransformDN(V1, ind, 1);
+  int    ind    = LocateParameter(U, UOut);
+  auto   aResult = Curve(ind)->EvalD1(UOut);
+  if (aResult)
+  {
+    TransformDN(aResult->D1, ind, 1);
+  }
+  return aResult;
 }
 
 //=================================================================================================
 
-void ShapeExtend_ComplexCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+std::optional<Geom_CurveD2> ShapeExtend_ComplexCurve::EvalD2(const double U) const
 {
   double UOut;
-  int    ind = LocateParameter(U, UOut);
-  Curve(ind)->D2(UOut, P, V1, V2);
-  TransformDN(V1, ind, 1);
-  TransformDN(V2, ind, 2);
+  int    ind    = LocateParameter(U, UOut);
+  auto   aResult = Curve(ind)->EvalD2(UOut);
+  if (aResult)
+  {
+    TransformDN(aResult->D1, ind, 1);
+    TransformDN(aResult->D2, ind, 2);
+  }
+  return aResult;
 }
 
 //=================================================================================================
 
-void ShapeExtend_ComplexCurve::D3(const double U,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      V1,
-                                  gp_Vec&      V2,
-                                  gp_Vec&      V3) const
+std::optional<Geom_CurveD3> ShapeExtend_ComplexCurve::EvalD3(const double U) const
 {
   double UOut;
-  int    ind = LocateParameter(U, UOut);
-  Curve(ind)->D3(UOut, P, V1, V2, V3);
-  TransformDN(V1, ind, 1);
-  TransformDN(V2, ind, 2);
-  TransformDN(V3, ind, 3);
+  int    ind    = LocateParameter(U, UOut);
+  auto   aResult = Curve(ind)->EvalD3(UOut);
+  if (aResult)
+  {
+    TransformDN(aResult->D1, ind, 1);
+    TransformDN(aResult->D2, ind, 2);
+    TransformDN(aResult->D3, ind, 3);
+  }
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec ShapeExtend_ComplexCurve::DN(const double U, const int N) const
+std::optional<gp_Vec> ShapeExtend_ComplexCurve::EvalDN(const double U, const int N) const
 {
   double UOut;
   int    ind = LocateParameter(U, UOut);
-  gp_Vec res = Curve(ind)->DN(UOut, N);
-  if (N)
-    TransformDN(res, ind, N);
-  return res;
+  auto   aResult = Curve(ind)->EvalDN(UOut, N);
+  if (aResult && N)
+    TransformDN(*aResult, ind, N);
+  return aResult;
 }
 
 //=================================================================================================

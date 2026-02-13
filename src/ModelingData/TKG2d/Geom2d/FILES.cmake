@@ -2,6 +2,7 @@
 set(OCCT_Geom2d_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Geom2d_FILES
+  Geom2d.hxx
   Geom2d_AxisPlacement.cxx
   Geom2d_AxisPlacement.hxx
   Geom2d_BezierCurve.cxx

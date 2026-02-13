@@ -106,12 +106,13 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 //=================================================================================================
 
-void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
+std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V) const
 {
   double aNewU = U;
   double aNewV = V;
   PeriodicNormalization(aNewU, aNewV);
 
+  gp_Pnt P;
   BSplSLib::D0(aNewU,
                aNewV,
                0,
@@ -129,15 +130,12 @@ void Geom_BSplineSurface::D0(const double U, const double V, gp_Pnt& P) const
                myUPeriodic,
                myVPeriodic,
                P);
+  return P;
 }
 
 //=================================================================================================
 
-void Geom_BSplineSurface::D1(const double U,
-                             const double V,
-                             gp_Pnt&      P,
-                             gp_Vec&      D1U,
-                             gp_Vec&      D1V) const
+std::optional<Geom_SurfD1> Geom_BSplineSurface::EvalD1(const double U, const double V) const
 {
   double aNewU = U;
   double aNewV = V;
@@ -151,6 +149,7 @@ void Geom_BSplineSurface::D1(const double U,
   BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
+  std::optional<Geom_SurfD1> aResult{std::in_place};
   BSplSLib::D1(aNewU,
                aNewV,
                uindex,
@@ -167,21 +166,15 @@ void Geom_BSplineSurface::D1(const double U,
                myVRational,
                myUPeriodic,
                myVPeriodic,
-               P,
-               D1U,
-               D1V);
+               aResult->Point,
+               aResult->D1U,
+               aResult->D1V);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BSplineSurface::D2(const double U,
-                             const double V,
-                             gp_Pnt&      P,
-                             gp_Vec&      D1U,
-                             gp_Vec&      D1V,
-                             gp_Vec&      D2U,
-                             gp_Vec&      D2V,
-                             gp_Vec&      D2UV) const
+std::optional<Geom_SurfD2> Geom_BSplineSurface::EvalD2(const double U, const double V) const
 {
   double aNewU = U;
   double aNewV = V;
@@ -195,6 +188,7 @@ void Geom_BSplineSurface::D2(const double U,
   BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
+  std::optional<Geom_SurfD2> aResult{std::in_place};
   BSplSLib::D2(aNewU,
                aNewV,
                uindex,
@@ -211,29 +205,20 @@ void Geom_BSplineSurface::D2(const double U,
                myVRational,
                myUPeriodic,
                myVPeriodic,
-               P,
-               D1U,
-               D1V,
-               D2U,
-               D2V,
-               D2UV);
+               aResult->Point,
+               aResult->D1U,
+               aResult->D1V,
+               aResult->D2U,
+               aResult->D2V,
+               aResult->D2UV);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BSplineSurface::D3(const double U,
-                             const double V,
-                             gp_Pnt&      P,
-                             gp_Vec&      D1U,
-                             gp_Vec&      D1V,
-                             gp_Vec&      D2U,
-                             gp_Vec&      D2V,
-                             gp_Vec&      D2UV,
-                             gp_Vec&      D3U,
-                             gp_Vec&      D3V,
-                             gp_Vec&      D3UUV,
-                             gp_Vec&      D3UVV) const
+std::optional<Geom_SurfD3> Geom_BSplineSurface::EvalD3(const double U, const double V) const
 {
+  std::optional<Geom_SurfD3> aResult{std::in_place};
   BSplSLib::D3(U,
                V,
                0,
@@ -250,21 +235,25 @@ void Geom_BSplineSurface::D3(const double U,
                myVRational,
                myUPeriodic,
                myVPeriodic,
-               P,
-               D1U,
-               D1V,
-               D2U,
-               D2V,
-               D2UV,
-               D3U,
-               D3V,
-               D3UUV,
-               D3UVV);
+               aResult->Point,
+               aResult->D1U,
+               aResult->D1V,
+               aResult->D2U,
+               aResult->D2V,
+               aResult->D2UV,
+               aResult->D3U,
+               aResult->D3V,
+               aResult->D3UUV,
+               aResult->D3UVV);
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec Geom_BSplineSurface::DN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_BSplineSurface::EvalDN(const double U,
+                                                  const double V,
+                                                  const int    Nu,
+                                                  const int    Nv) const
 {
   gp_Vec Vn;
   BSplSLib::DN(U,
@@ -1639,7 +1628,7 @@ void Geom_BSplineSurface::MovePoint(const double  U,
 
   NCollection_Array2<gp_Pnt> npoles(1, myPoles.UpperRow(), 1, myPoles.UpperCol());
   gp_Pnt                     P0;
-  D0(U, V, P0);
+  Geom_Surface::D0(U, V, P0);
   gp_Vec Displ(P0, P);
   bool   rational = (myURational || myVRational);
   BSplSLib::MovePoint(U,

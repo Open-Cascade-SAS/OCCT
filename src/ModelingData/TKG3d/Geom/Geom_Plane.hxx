@@ -21,15 +21,12 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_ElementarySurface.hxx>
-#include <Standard_Integer.hxx>
+
 class gp_Ax3;
 class gp_Pln;
-class gp_Pnt;
 class gp_Dir;
 class gp_Trsf;
 class gp_GTrsf2d;
-class Geom_Curve;
-class gp_Vec;
 class Geom_Geometry;
 
 //! Describes a plane in 3D space.
@@ -62,6 +59,8 @@ class Geom_Plane : public Geom_ElementarySurface
 {
 
 public:
+
+
   //! Creates a plane located in 3D space with an axis placement three axis.
   //! The "ZDirection" of "A3" is the direction normal
   //! to the plane. The "Location" point of "A3" is the origin of the plane.
@@ -181,45 +180,23 @@ public:
   //! @endcode
   //! where O is the "Location" point of the plane, XDir the
   //! "XDirection" and YDir the "YDirection" of the plane's local coordinate system.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
 
   //! Computes the current point and the first derivatives in the directions U and V.
-  Standard_EXPORT void D1(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V) const final;
+  Standard_EXPORT std::optional<Geom_SurfD1> EvalD1(const double U, const double V) const final;
 
   //! Computes the current point, the first and the second
   //! derivatives in the directions U and V.
-  Standard_EXPORT void D2(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const final;
+  Standard_EXPORT std::optional<Geom_SurfD2> EvalD2(const double U, const double V) const final;
 
   //! Computes the current point, the first,the second and the
   //! third derivatives in the directions U and V.
-  Standard_EXPORT void D3(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV,
-                          gp_Vec&      D3U,
-                          gp_Vec&      D3V,
-                          gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const final;
+  Standard_EXPORT std::optional<Geom_SurfD3> EvalD3(const double U, const double V) const final;
 
   //! Computes the derivative of order Nu in the direction u
   //! and Nv in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const double V, const int Nu, const int Nv) const final;
 
   //! Applies the transformation T to this plane.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

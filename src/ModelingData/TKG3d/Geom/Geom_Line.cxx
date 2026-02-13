@@ -167,43 +167,45 @@ void Geom_Line::Transform(const gp_Trsf& T)
 
 //=================================================================================================
 
-void Geom_Line::D0(const double U, gp_Pnt& P) const
+std::optional<gp_Pnt> Geom_Line::EvalD0(const double U) const
 {
-  P = ElCLib::LineValue(U, pos);
+  return ElCLib::LineValue(U, pos);
 }
 
 //=================================================================================================
 
-void Geom_Line::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
+std::optional<Geom_CurveD1> Geom_Line::EvalD1(const double U) const
 {
-
-  ElCLib::LineD1(U, pos, P, V1);
+  std::optional<Geom_CurveD1> aResult{std::in_place};
+  ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_Line::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+std::optional<Geom_CurveD2> Geom_Line::EvalD2(const double U) const
 {
-
-  ElCLib::LineD1(U, pos, P, V1);
-  V2.SetCoord(0.0, 0.0, 0.0);
+  std::optional<Geom_CurveD2> aResult{std::in_place};
+  ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
+  aResult->D2.SetCoord(0.0, 0.0, 0.0);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_Line::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+std::optional<Geom_CurveD3> Geom_Line::EvalD3(const double U) const
 {
-
-  ElCLib::LineD1(U, pos, P, V1);
-  V2.SetCoord(0.0, 0.0, 0.0);
-  V3.SetCoord(0.0, 0.0, 0.0);
+  std::optional<Geom_CurveD3> aResult{std::in_place};
+  ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
+  aResult->D2.SetCoord(0.0, 0.0, 0.0);
+  aResult->D3.SetCoord(0.0, 0.0, 0.0);
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec Geom_Line::DN(const double, const int N) const
+std::optional<gp_Vec> Geom_Line::EvalDN(const double, const int N) const
 {
-
   Standard_RangeError_Raise_if(N <= 0, " ");
   if (N == 1)
     return gp_Vec(pos.Direction());

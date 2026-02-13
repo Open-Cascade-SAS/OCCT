@@ -1501,41 +1501,37 @@ GeomAbs_Shape Bisector_BisecAna::Continuity() const
 
 //=================================================================================================
 
-void Bisector_BisecAna::D0(const double U, gp_Pnt2d& P) const
+std::optional<gp_Pnt2d> Bisector_BisecAna::EvalD0(const double U) const
 {
-  thebisector->BasisCurve()->D0(U, P);
+  return thebisector->BasisCurve()->EvalD0(U);
 }
 
 //=================================================================================================
 
-void Bisector_BisecAna::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const
+std::optional<Geom2d_CurveD1> Bisector_BisecAna::EvalD1(const double U) const
 {
-  thebisector->BasisCurve()->D1(U, P, V1);
+  return thebisector->BasisCurve()->EvalD1(U);
 }
 
 //=================================================================================================
 
-void Bisector_BisecAna::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+std::optional<Geom2d_CurveD2> Bisector_BisecAna::EvalD2(const double U) const
 {
-  thebisector->BasisCurve()->D2(U, P, V1, V2);
+  return thebisector->BasisCurve()->EvalD2(U);
 }
 
 //=================================================================================================
 
-void Bisector_BisecAna::D3(const double U,
-                           gp_Pnt2d&    P,
-                           gp_Vec2d&    V1,
-                           gp_Vec2d&    V2,
-                           gp_Vec2d&    V3) const
+std::optional<Geom2d_CurveD3> Bisector_BisecAna::EvalD3(const double U) const
 {
-  thebisector->BasisCurve()->D3(U, P, V1, V2, V3);
+  return thebisector->BasisCurve()->EvalD3(U);
 }
 
 //=================================================================================================
 
-gp_Vec2d Bisector_BisecAna::DN(const double U, const int N) const
+std::optional<gp_Vec2d> Bisector_BisecAna::EvalDN(const double U, const int N) const
 {
-  return thebisector->BasisCurve()->DN(U, N);
+  return thebisector->BasisCurve()->EvalDN(U, N);
 }
 
 //=================================================================================================

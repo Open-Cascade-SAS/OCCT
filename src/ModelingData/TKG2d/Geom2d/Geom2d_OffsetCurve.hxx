@@ -22,10 +22,7 @@
 
 #include <GeomAbs_Shape.hxx>
 #include <Geom2d_Curve.hxx>
-#include <Standard_Integer.hxx>
 
-class gp_Pnt2d;
-class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
@@ -70,6 +67,8 @@ class Geom2d_OffsetCurve : public Geom2d_Curve
 {
 
 public:
+
+
   //! Constructs a curve offset from the basis curve C,
   //! where Offset is the distance between the offset
   //! curve and the basis curve at any point.
@@ -156,29 +155,25 @@ public:
   //! Warning! this should not be called
   //! if the basis curve is not at least C1. Nevertheless
   //! if used on portion where the curve is C1, it is OK
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C2.
   //! Nevertheless, it's OK to use it on portion
   //! where the curve is C2
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD1> EvalD1(const double U) const final;
 
   //! Warning! This should not be called
   //! if the continuity of the basis curve is not C3.
   //! Nevertheless, it's OK to use it on portion
   //! where the curve is C3
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD2> EvalD2(const double U) const final;
 
   //! Warning! This should not be called
   //! if the continuity of the basis curve is not C4.
   //! Nevertheless, it's OK to use it on portion
   //! where the curve is C4
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD3> EvalD3(const double U) const final;
 
   //! The returned vector gives the value of the derivative
   //! for the order of derivation N.
@@ -196,7 +191,7 @@ public:
   //! Warnings :
   //! The exception UndefinedValue or UndefinedDerivative is
   //! raised if it is not possible to compute a unique offset direction.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
 
   //! Returns the value of the first parameter of this
   //! offset curve. The first parameter corresponds to the

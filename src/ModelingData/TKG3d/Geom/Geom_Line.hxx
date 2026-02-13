@@ -23,11 +23,8 @@
 #include <gp_Ax1.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 class gp_Lin;
-class gp_Pnt;
 class gp_Dir;
-class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
@@ -45,6 +42,8 @@ class Geom_Line : public Geom_Curve
 {
 
 public:
+
+
   //! Creates a line located in 3D space with the axis placement A1.
   //! The Location of A1 is the origin of the line.
   Standard_EXPORT Geom_Line(const gp_Ax1& A1);
@@ -106,30 +105,27 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT bool IsCN(const int N) const final;
 
-  //! Returns in P the point of parameter U.
+  //! Returns the point of parameter U.
   //! P (U) = O + U * Dir where O is the "Location" point of the
   //! line and Dir the direction of the line.
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
-  //! Returns the point P of parameter u and the first derivative V1.
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const final;
+  //! Returns the point of parameter U and the first derivative.
+  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
 
-  //! Returns the point P of parameter U, the first and second
-  //! derivatives V1 and V2. V2 is a vector with null magnitude
+  //! Returns the point of parameter U, the first and second
+  //! derivatives. The second derivative is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const final;
+  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
 
-  //! V2 and V3 are vectors with null magnitude for a line.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const final;
+  //! Returns the point of parameter U, the first, second and third
+  //! derivatives. The second and third derivatives are vectors with null magnitude for a line.
+  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
 
-  //! The returned vector gives the value of the derivative for the
+  //! Returns the vector corresponding to the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this line.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

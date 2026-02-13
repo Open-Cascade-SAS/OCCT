@@ -21,12 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <Geom2d_Conic.hxx>
-#include <Standard_Integer.hxx>
 class gp_Circ2d;
 class gp_Ax2d;
 class gp_Ax22d;
-class gp_Pnt2d;
-class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
@@ -61,6 +58,8 @@ class Geom2d_Circle : public Geom2d_Conic
 {
 
 public:
+
+
   //! Constructs a circle by conversion of the gp_Circ2d circle C.
   Standard_EXPORT Geom2d_Circle(const gp_Circ2d& C);
 
@@ -116,27 +115,23 @@ public:
   //! P = C + R * Cos (U) * XDir + R * Sin (U) * YDir
   //! where C is the center of the circle , XDir the XDirection and
   //! YDir the YDirection of the circle's local coordinate system.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD1> EvalD1(const double U) const final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD2> EvalD2(const double U) const final;
 
   //! Returns the point P of parameter u, the first second and third
   //! derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const final;
+  Standard_EXPORT std::optional<Geom2d_CurveD3> EvalD3(const double U) const final;
 
   //! For the point of parameter U of this circle, computes
   //! the vector corresponding to the Nth derivative.
   //! Exceptions: Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this circle.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) final;

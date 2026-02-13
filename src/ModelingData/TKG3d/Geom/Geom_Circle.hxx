@@ -21,11 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_Conic.hxx>
-#include <Standard_Integer.hxx>
 class gp_Circ;
 class gp_Ax2;
-class gp_Pnt;
-class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
@@ -62,6 +59,8 @@ class Geom_Circle : public Geom_Conic
 {
 
 public:
+
+
   //! Constructs a circle by conversion of the gp_Circ circle C.
   Standard_EXPORT Geom_Circle(const gp_Circ& C);
 
@@ -114,31 +113,27 @@ public:
   //! returns True.
   Standard_EXPORT bool IsPeriodic() const final;
 
-  //! Returns in P the point of parameter U.
+  //! Returns the point of parameter U.
   //! P = C + R * Cos (U) * XDir + R * Sin (U) * YDir
   //! where C is the center of the circle , XDir the XDirection and
   //! YDir the YDirection of the circle's local coordinate system.
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
-  //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const final;
+  //! Returns the point of parameter U and the first derivative.
+  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
 
-  //! Returns the point P of parameter U, the first and second
-  //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const final;
+  //! Returns the point of parameter U, the first and second
+  //! derivatives.
+  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
 
-  //! Returns the point P of parameter u, the first second and third
-  //! derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const final;
+  //! Returns the point of parameter U, the first, second and third
+  //! derivatives.
+  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
 
-  //! The returned vector gives the value of the derivative for the
+  //! Returns the vector corresponding to the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this circle.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

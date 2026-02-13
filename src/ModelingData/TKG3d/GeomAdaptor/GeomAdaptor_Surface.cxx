@@ -1356,7 +1356,8 @@ void GeomAdaptor_Surface::D3(const double U,
     case GeomAbs_BSplineSurface: {
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
-        aBSpl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+        static_cast<const Geom_Surface&>(*aBSpl)
+          .D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
       else
       {
         if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
@@ -1377,7 +1378,8 @@ void GeomAdaptor_Surface::D3(const double U,
                          D3UUV,
                          D3UVV);
         else
-          aBSpl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+          static_cast<const Geom_Surface&>(*aBSpl)
+            .D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
       }
       break;
     }

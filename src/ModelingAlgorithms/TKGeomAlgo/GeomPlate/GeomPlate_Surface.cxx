@@ -191,97 +191,85 @@ bool GeomPlate_Surface::IsCNv(const int) const
 
 //=================================================================================================
 
-void GeomPlate_Surface::D0(const double U, const double V, gp_Pnt& P) const
+std::optional<gp_Pnt> GeomPlate_Surface::EvalD0(const double U, const double V) const
 {
   gp_XY  P1(U, V);
   gp_Pnt P2;
   mySurfinit->D0(U, V, P2);
-  gp_XYZ P3; //=mySurfinter.Evaluate(P1);
-  P3 = mySurfinter.Evaluate(P1);
+  gp_XYZ P3 = mySurfinter.Evaluate(P1);
+  gp_Pnt P;
   for (int i = 1; i <= 3; i++)
   {
     P.SetCoord(i, P3.Coord(i) + P2.Coord(i));
   }
+  return P;
 }
 
 //=================================================================================================
 
-void GeomPlate_Surface::D1(const double U,
-                           const double V,
-                           gp_Pnt&      P,
-                           gp_Vec&      D1U,
-                           gp_Vec&      D1V) const
+std::optional<Geom_SurfD1> GeomPlate_Surface::EvalD1(const double U, const double V) const
 {
-  gp_XY  P1(U, V);
-  gp_Pnt P2;
-  D0(U, V, P);
+  Geom_SurfD1 aResult;
+  gp_XY       P1(U, V);
+  gp_Pnt      P2;
+  auto        aP = EvalD0(U, V);
+  if (aP)
+  {
+    aResult.Point = *aP;
+  }
   gp_Vec V1U, V1V;
   mySurfinit->D1(U, V, P2, V1U, V1V);
   gp_XYZ V2U = mySurfinter.EvaluateDerivative(P1, 1, 0);
   gp_XYZ V2V = mySurfinter.EvaluateDerivative(P1, 0, 1);
   for (int i = 1; i <= 3; i++)
   {
-    D1U.SetCoord(i, V1U.Coord(i) + V2U.Coord(i));
-    D1V.SetCoord(i, V1V.Coord(i) + V2V.Coord(i));
+    aResult.D1U.SetCoord(i, V1U.Coord(i) + V2U.Coord(i));
+    aResult.D1V.SetCoord(i, V1V.Coord(i) + V2V.Coord(i));
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-void GeomPlate_Surface::D2(const double U,
-                           const double V,
-                           gp_Pnt&      P,
-                           gp_Vec&      D1U,
-                           gp_Vec&      D1V,
-                           gp_Vec&      D2U,
-                           gp_Vec&      D2V,
-                           gp_Vec&      D2UV) const
+std::optional<Geom_SurfD2> GeomPlate_Surface::EvalD2(const double U, const double V) const
 {
-  gp_XY  P1(U, V);
-  gp_Pnt P2;
+  Geom_SurfD2 aResult;
+  gp_XY       P1(U, V);
+  gp_Pnt      P2;
 
   gp_Vec V1U, V1V, V1UV, vv, v;
-  D1(U, V, P, D1U, D1V);
+  auto   aD1 = EvalD1(U, V);
+  if (aD1)
+  {
+    aResult.Point = aD1->Point;
+    aResult.D1U   = aD1->D1U;
+    aResult.D1V   = aD1->D1V;
+  }
   mySurfinit->D2(U, V, P2, vv, v, V1U, V1V, V1UV);
   gp_XYZ V2U  = mySurfinter.EvaluateDerivative(P1, 2, 0);
   gp_XYZ V2V  = mySurfinter.EvaluateDerivative(P1, 0, 2);
   gp_XYZ V2UV = mySurfinter.EvaluateDerivative(P1, 1, 1);
   for (int i = 1; i <= 3; i++)
   {
-    D2U.SetCoord(i, V1U.Coord(i) + V2U.Coord(i));
-    D2V.SetCoord(i, V1V.Coord(i) + V2V.Coord(i));
-    D2UV.SetCoord(i, V1UV.Coord(i) + V2UV.Coord(i));
+    aResult.D2U.SetCoord(i, V1U.Coord(i) + V2U.Coord(i));
+    aResult.D2V.SetCoord(i, V1V.Coord(i) + V2V.Coord(i));
+    aResult.D2UV.SetCoord(i, V1UV.Coord(i) + V2UV.Coord(i));
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-// void GeomPlate_Surface::D3(const double U, const double V, gp_Pnt& P, gp_Vec& D1U,
-// gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV,
-// gp_Vec& D3UVV) const
-void GeomPlate_Surface::D3(const double,
-                           const double,
-                           gp_Pnt&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&) const
+std::optional<Geom_SurfD3> GeomPlate_Surface::EvalD3(const double, const double) const
 {
-  throw Standard_Failure("D3");
+  return std::nullopt;
 }
 
 //=================================================================================================
 
-// gp_Vec GeomPlate_Surface::DN(const double U, const double V, const int
-// Nu, const int Nv) const
-gp_Vec GeomPlate_Surface::DN(const double, const double, const int, const int) const
+std::optional<gp_Vec> GeomPlate_Surface::EvalDN(const double, const double, const int, const int) const
 {
-  throw Standard_Failure("DN");
+  return std::nullopt;
 }
 
 //=================================================================================================

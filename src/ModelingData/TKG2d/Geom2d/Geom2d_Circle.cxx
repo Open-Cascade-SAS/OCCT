@@ -161,35 +161,41 @@ bool Geom2d_Circle::IsPeriodic() const
 
 //=================================================================================================
 
-void Geom2d_Circle::D0(const double U, Pnt2d& P) const
+std::optional<gp_Pnt2d> Geom2d_Circle::EvalD0(const double U) const
 {
-  P = ElCLib::CircleValue(U, pos, radius);
+  return ElCLib::CircleValue(U, pos, radius);
 }
 
 //=================================================================================================
 
-void Geom2d_Circle::D1(const double U, Pnt2d& P, Vec2d& V1) const
+std::optional<Geom2d_CurveD1> Geom2d_Circle::EvalD1(const double U) const
 {
-  ElCLib::CircleD1(U, pos, radius, P, V1);
+  std::optional<Geom2d_CurveD1> aResult{std::in_place};
+  ElCLib::CircleD1(U, pos, radius, aResult->Point, aResult->D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom2d_Circle::D2(const double U, Pnt2d& P, Vec2d& V1, Vec2d& V2) const
+std::optional<Geom2d_CurveD2> Geom2d_Circle::EvalD2(const double U) const
 {
-  ElCLib::CircleD2(U, pos, radius, P, V1, V2);
+  std::optional<Geom2d_CurveD2> aResult{std::in_place};
+  ElCLib::CircleD2(U, pos, radius, aResult->Point, aResult->D1, aResult->D2);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom2d_Circle::D3(const double U, Pnt2d& P, Vec2d& V1, Vec2d& V2, Vec2d& V3) const
+std::optional<Geom2d_CurveD3> Geom2d_Circle::EvalD3(const double U) const
 {
-  ElCLib::CircleD3(U, pos, radius, P, V1, V2, V3);
+  std::optional<Geom2d_CurveD3> aResult{std::in_place};
+  ElCLib::CircleD3(U, pos, radius, aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  return aResult;
 }
 
 //=================================================================================================
 
-Vec2d Geom2d_Circle::DN(const double U, const int N) const
+std::optional<gp_Vec2d> Geom2d_Circle::EvalDN(const double U, const int N) const
 {
   Standard_RangeError_Raise_if(N < 1, " ");
   return ElCLib::CircleDN(U, pos, radius, N);

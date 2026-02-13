@@ -23,10 +23,7 @@
 #include <gp_Dir.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_Curve.hxx>
-#include <Standard_Integer.hxx>
 
-class gp_Pnt;
-class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
@@ -75,6 +72,8 @@ class Geom_OffsetCurve : public Geom_Curve
 {
 
 public:
+
+
   //! C is the basis curve, Offset is the distance between <me> and
   //! the basis curve at any point. V defines the fixed reference
   //! direction (offset direction). If P is a point on the basis
@@ -169,25 +168,21 @@ public:
   //! Warning! this should not be called
   //! if the basis curve is not at least C1. Nevertheless
   //! if used on portion where the curve is C1, it is OK
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C2.
   //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C2
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const final;
+  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C3.
   //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C3
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const final;
+  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
 
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const final;
+  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
 
   //! The returned vector gives the value of the derivative
   //! for the order of derivation N.
@@ -203,7 +198,7 @@ public:
   //! raised if it is not possible to compute a unique offset
   //! direction.
   //! Raised if N < 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
 
   //! Returns the value of the first parameter of this
   //! offset curve. The first parameter corresponds to the

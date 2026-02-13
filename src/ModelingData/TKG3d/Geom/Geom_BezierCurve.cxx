@@ -37,7 +37,6 @@
 #include <Standard_OutOfRange.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
-#include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <array>
@@ -472,38 +471,46 @@ int Geom_BezierCurve::Degree() const
 
 //=================================================================================================
 
-void Geom_BezierCurve::D0(const double U, gp_Pnt& P) const
+std::optional<gp_Pnt> Geom_BezierCurve::EvalD0(const double U) const
 {
+  gp_Pnt P;
   BSplCLib::D0(U, Poles(), Weights(), P);
+  return P;
 }
 
 //=================================================================================================
 
-void Geom_BezierCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
+std::optional<Geom_CurveD1> Geom_BezierCurve::EvalD1(const double U) const
 {
-  BSplCLib::D1(U, Poles(), Weights(), P, V1);
+  std::optional<Geom_CurveD1> aResult{std::in_place};
+  BSplCLib::D1(U, Poles(), Weights(), aResult->Point, aResult->D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BezierCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+std::optional<Geom_CurveD2> Geom_BezierCurve::EvalD2(const double U) const
 {
-  BSplCLib::D2(U, Poles(), Weights(), P, V1, V2);
+  std::optional<Geom_CurveD2> aResult{std::in_place};
+  BSplCLib::D2(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BezierCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+std::optional<Geom_CurveD3> Geom_BezierCurve::EvalD3(const double U) const
 {
-  BSplCLib::D3(U, Poles(), Weights(), P, V1, V2, V3);
+  std::optional<Geom_CurveD3> aResult{std::in_place};
+  BSplCLib::D3(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec Geom_BezierCurve::DN(const double U, const int N) const
+std::optional<gp_Vec> Geom_BezierCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    throw Standard_RangeError("Geom_BezierCurve::DN");
+    throw Standard_RangeError("Geom_BezierCurve::EvalDN");
   gp_Vec V;
 
   const int aDeg = myPoles.Size() - 1;

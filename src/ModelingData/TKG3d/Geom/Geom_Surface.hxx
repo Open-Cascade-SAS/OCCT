@@ -18,11 +18,11 @@
 #define _Geom_Surface_HeaderFile
 
 #include <Geom_Curve.hxx>
+#include <Geom_UndefinedDerivative.hxx>
+#include <Geom_UndefinedValue.hxx>
 
 class gp_Trsf;
 class gp_GTrsf2d;
-class gp_Pnt;
-class gp_Vec;
 
 //! Describes the common behavior of surfaces in 3D space.
 //! The Geom package provides many implementations of concrete derived surfaces,
@@ -205,66 +205,119 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT virtual bool IsCNv(const int N) const = 0;
 
-  //! Computes the point of parameter U,V on the surface.
-  //!
-  //! Raised only for an "OffsetSurface" if it is not possible to
-  //! compute the current point.
-  Standard_EXPORT virtual void D0(const double U, const double V, gp_Pnt& P) const = 0;
-
-  //! Computes the point P and the first derivatives in the directions U and V at this point.
-  //! Raised if the continuity of the surface is not C1.
-  //!
-  //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  Standard_EXPORT virtual void D1(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V) const = 0;
-
-  //! Computes the point P, the first and the second derivatives in
-  //! the directions U and V at this point.
-  //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT virtual void D2(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV) const = 0;
-
-  //! Computes the point P, the first,the second and the third
-  //! derivatives in the directions U and V at this point.
-  //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT virtual void D3(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV,
-                                  gp_Vec&      D3U,
-                                  gp_Vec&      D3V,
-                                  gp_Vec&      D3UUV,
-                                  gp_Vec&      D3UVV) const = 0;
-
-  //! Computes the derivative of order Nu in the direction U and Nv in the direction V at the point
-  //! P(U, V).
-  //!
-  //! Raised if the continuity of the surface is not CNu in the U direction or not CNv in the V
-  //! direction. Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT virtual gp_Vec DN(const double U,
-                                    const double V,
-                                    const int    Nu,
-                                    const int    Nv) const = 0;
-
   //! Computes the point of parameter (U, V) on the surface.
-  //!
-  //! It is implemented with D0.
-  //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  //!
-  //! Raised only for an "OffsetSurface" if it is not possible to compute the current point.
+  //! Returns std::nullopt on failure.
+  Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(const double U, const double V) const = 0;
+
+  //! Computes the point and first partial derivatives at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C1.
+  Standard_EXPORT virtual std::optional<Geom_SurfD1> EvalD1(const double U, const double V) const = 0;
+
+  //! Computes the point and partial derivatives up to 2nd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C2.
+  Standard_EXPORT virtual std::optional<Geom_SurfD2> EvalD2(const double U, const double V) const = 0;
+
+  //! Computes the point and partial derivatives up to 3rd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C3.
+  Standard_EXPORT virtual std::optional<Geom_SurfD3> EvalD3(const double U, const double V) const = 0;
+
+  //! Computes the derivative of order Nu in U and Nv in V at the point (U, V).
+  //! Returns std::nullopt on failure.
+  Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U,
+                                                       const double V,
+                                                       const int    Nu,
+                                                       const int    Nv) const = 0;
+
+  //! Computes the point of parameter (U, V). Throws on failure for backward compatibility.
+  inline void D0(const double U, const double V, gp_Pnt& P) const
+  {
+    const std::optional<gp_Pnt> aP = EvalD0(U, V);
+    if (!aP)
+    {
+      throw Geom_UndefinedValue("Geom_Surface::EvalD0(): evaluation failed");
+    }
+    P = *aP;
+  }
+
+  //! Computes the point and first partial derivatives. Throws on failure.
+  inline void D1(const double U, const double V, gp_Pnt& P, gp_Vec& D1U, gp_Vec& D1V) const
+  {
+    const std::optional<Geom_SurfD1> aR = EvalD1(U, V);
+    if (!aR)
+    {
+      throw Geom_UndefinedDerivative("Geom_Surface::EvalD1(): evaluation failed");
+    }
+    P   = aR->Point;
+    D1U = aR->D1U;
+    D1V = aR->D1V;
+  }
+
+  //! Computes the point and partial derivatives up to 2nd order. Throws on failure.
+  inline void D2(const double U,
+                 const double V,
+                 gp_Pnt&      P,
+                 gp_Vec&      D1U,
+                 gp_Vec&      D1V,
+                 gp_Vec&      D2U,
+                 gp_Vec&      D2V,
+                 gp_Vec&      D2UV) const
+  {
+    const std::optional<Geom_SurfD2> aR = EvalD2(U, V);
+    if (!aR)
+    {
+      throw Geom_UndefinedDerivative("Geom_Surface::EvalD2(): evaluation failed");
+    }
+    P    = aR->Point;
+    D1U  = aR->D1U;
+    D1V  = aR->D1V;
+    D2U  = aR->D2U;
+    D2V  = aR->D2V;
+    D2UV = aR->D2UV;
+  }
+
+  //! Computes the point and partial derivatives up to 3rd order. Throws on failure.
+  inline void D3(const double U,
+                 const double V,
+                 gp_Pnt&      P,
+                 gp_Vec&      D1U,
+                 gp_Vec&      D1V,
+                 gp_Vec&      D2U,
+                 gp_Vec&      D2V,
+                 gp_Vec&      D2UV,
+                 gp_Vec&      D3U,
+                 gp_Vec&      D3V,
+                 gp_Vec&      D3UUV,
+                 gp_Vec&      D3UVV) const
+  {
+    const std::optional<Geom_SurfD3> aR = EvalD3(U, V);
+    if (!aR)
+    {
+      throw Geom_UndefinedDerivative("Geom_Surface::EvalD3(): evaluation failed");
+    }
+    P     = aR->Point;
+    D1U   = aR->D1U;
+    D1V   = aR->D1V;
+    D2U   = aR->D2U;
+    D2V   = aR->D2V;
+    D2UV  = aR->D2UV;
+    D3U   = aR->D3U;
+    D3V   = aR->D3V;
+    D3UUV = aR->D3UUV;
+    D3UVV = aR->D3UVV;
+  }
+
+  //! Computes the derivative of order Nu in U and Nv in V. Throws on failure.
+  inline gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const
+  {
+    const std::optional<gp_Vec> aVN = EvalDN(U, V, Nu, Nv);
+    if (!aVN)
+    {
+      throw Geom_UndefinedDerivative("Geom_Surface::DN(): evaluation failed");
+    }
+    return *aVN;
+  }
+
+  //! Computes the point of parameter (U, V) on the surface. Implemented with D0.
   Standard_EXPORT gp_Pnt Value(const double U, const double V) const;
 
   //! Dumps the content of me into the stream

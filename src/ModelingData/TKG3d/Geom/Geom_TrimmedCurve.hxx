@@ -22,10 +22,7 @@
 
 #include <Geom_BoundedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 class Geom_Curve;
-class gp_Pnt;
-class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
@@ -41,6 +38,8 @@ class Geom_TrimmedCurve : public Geom_BoundedCurve
 {
 
 public:
+
+
   //! Constructs a trimmed curve from the basis curve C
   //! which is limited between parameter values U1 and U2.
   //! Note: - U1 can be greater or less than U2; in both cases,
@@ -186,31 +185,27 @@ public:
   //! has not the same orientation as the basis curve.
   Standard_EXPORT gp_Pnt StartPoint() const final;
 
-  //! Returns in P the point of parameter U.
+  //! Returns the point of parameter U.
   //!
   //! If the basis curve is an OffsetCurve sometimes it is not
   //! possible to do the evaluation of the curve at the parameter
   //! U (see class OffsetCurve).
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const final;
+  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const final;
+  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
 
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const final;
+  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
 
   //! N is the order of derivation.
   //! Raised if the continuity of the curve is not CN.
   //! Raised if N < 1.
   //! geometric transformations
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this trimmed curve.
   //! Warning The basis curve is also modified.

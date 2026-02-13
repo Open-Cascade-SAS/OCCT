@@ -23,12 +23,10 @@
 #include <Precision.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
 #include <Geom_BoundedSurface.hxx>
-class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
@@ -148,6 +146,8 @@ class Geom_BSplineSurface : public Geom_BoundedSurface
 {
 
 public:
+
+
   //! Creates a non-rational b-spline surface (weights
   //! default value is 1.).
   //! The following conditions must be verified.
@@ -1083,41 +1083,24 @@ public:
   //! value and derivatives computation
   Standard_EXPORT const NCollection_Array2<double>* Weights() const;
 
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
+  //! Computes the point of parameter (U, V) on the surface.
+  //! Returns std::nullopt on failure.
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
 
-  //! Raised if the continuity of the surface is not C1.
-  Standard_EXPORT void D1(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V) const final;
+  //! Computes the point and first partial derivatives at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C1.
+  Standard_EXPORT std::optional<Geom_SurfD1> EvalD1(const double U, const double V) const final;
 
-  //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT void D2(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const final;
+  //! Computes the point and partial derivatives up to 2nd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C2.
+  Standard_EXPORT std::optional<Geom_SurfD2> EvalD2(const double U, const double V) const final;
 
-  //! Raised if the continuity of the surface is not C3.
-  Standard_EXPORT void D3(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV,
-                          gp_Vec&      D3U,
-                          gp_Vec&      D3V,
-                          gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const final;
+  //! Computes the point and partial derivatives up to 3rd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C3.
+  Standard_EXPORT std::optional<Geom_SurfD3> EvalD3(const double U, const double V) const final;
 
-  //! Nu is the order of derivation in the U parametric direction and
-  //! Nv is the order of derivation in the V parametric direction.
+  //! Computes the derivative of order Nu in U and Nv in V at (U, V).
+  //! Returns std::nullopt on failure.
   //!
   //! Raised if the continuity of the surface is not CNu in the U
   //! direction and CNv in the V direction.
@@ -1137,7 +1120,10 @@ public:
   //! the evaluations are the same as if we consider the whole
   //! definition of the surface. Of course the evaluations are
   //! different outside this parametric domain.
-  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
   Standard_EXPORT void LocalD0(const double U,

@@ -207,55 +207,44 @@ void Geom_SphericalSurface::Coefficients(double& A1,
 
 //=================================================================================================
 
-void Geom_SphericalSurface::D0(const double U, const double V, Pnt& P) const
+std::optional<gp_Pnt> Geom_SphericalSurface::EvalD0(const double U, const double V) const
 {
-  ElSLib::SphereD0(U, V, pos, radius, P);
+  gp_Pnt aP;
+  ElSLib::SphereD0(U, V, pos, radius, aP);
+  return aP;
 }
 
 //=================================================================================================
 
-void Geom_SphericalSurface::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
+std::optional<Geom_SurfD1> Geom_SphericalSurface::EvalD1(const double U, const double V) const
 {
-  ElSLib::SphereD1(U, V, pos, radius, P, D1U, D1V);
+  std::optional<Geom_SurfD1> aResult{std::in_place};
+  ElSLib::SphereD1(U, V, pos, radius, aResult->Point, aResult->D1U, aResult->D1V);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_SphericalSurface::D2(const double U,
-                               const double V,
-                               Pnt&         P,
-                               Vec&         D1U,
-                               Vec&         D1V,
-                               Vec&         D2U,
-                               Vec&         D2V,
-                               Vec&         D2UV) const
+std::optional<Geom_SurfD2> Geom_SphericalSurface::EvalD2(const double U, const double V) const
 {
-  ElSLib::SphereD2(U, V, pos, radius, P, D1U, D1V, D2U, D2V, D2UV);
+  std::optional<Geom_SurfD2> aResult{std::in_place};
+  ElSLib::SphereD2(U, V, pos, radius, aResult->Point, aResult->D1U, aResult->D1V, aResult->D2U, aResult->D2V, aResult->D2UV);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_SphericalSurface::D3(const double U,
-                               const double V,
-                               Pnt&         P,
-                               Vec&         D1U,
-                               Vec&         D1V,
-                               Vec&         D2U,
-                               Vec&         D2V,
-                               Vec&         D2UV,
-                               Vec&         D3U,
-                               Vec&         D3V,
-                               Vec&         D3UUV,
-                               Vec&         D3UVV) const
+std::optional<Geom_SurfD3> Geom_SphericalSurface::EvalD3(const double U, const double V) const
 {
-  ElSLib::SphereD3(U, V, pos, radius, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  std::optional<Geom_SurfD3> aResult{std::in_place};
+  ElSLib::SphereD3(U, V, pos, radius, aResult->Point, aResult->D1U, aResult->D1V, aResult->D2U, aResult->D2V, aResult->D2UV, aResult->D3U, aResult->D3V, aResult->D3UUV, aResult->D3UVV);
+  return aResult;
 }
 
 //=================================================================================================
 
-Vec Geom_SphericalSurface::DN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_SphericalSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
-
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
   return ElSLib::SphereDN(U, V, pos, radius, Nu, Nv);
 }

@@ -36,6 +36,7 @@ class Bisector_BisecPC : public Bisector_Curve
 {
 
 public:
+
   Standard_EXPORT Bisector_BisecPC();
 
   //! Constructs the bisector between the point <P> and
@@ -134,19 +135,15 @@ public:
   //! parameter U on <me> and my point or my curve.
   Standard_EXPORT double Distance(const double U) const;
 
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const override;
+  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const override;
 
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const override;
+  Standard_EXPORT std::optional<Geom2d_CurveD1> EvalD1(const double U) const override;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const override;
+  Standard_EXPORT std::optional<Geom2d_CurveD2> EvalD2(const double U) const override;
 
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const override;
+  Standard_EXPORT std::optional<Geom2d_CurveD3> EvalD3(const double U) const override;
 
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const override;
+  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const override;
 
   Standard_EXPORT void Dump(const int Deep = 0, const int Offset = 0) const;
 

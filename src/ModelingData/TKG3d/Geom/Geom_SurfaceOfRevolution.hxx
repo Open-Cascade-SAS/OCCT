@@ -22,15 +22,12 @@
 
 #include <Geom_SweptSurface.hxx>
 #include <gp_Pnt.hxx>
-#include <Standard_Integer.hxx>
-
 class Geom_Curve;
 class gp_Ax1;
 class gp_Dir;
 class gp_Ax2;
 class gp_Trsf;
 class gp_GTrsf2d;
-class gp_Vec;
 class Geom_Geometry;
 
 //! Describes a surface of revolution (revolved surface).
@@ -74,6 +71,8 @@ class Geom_SurfaceOfRevolution : public Geom_SweptSurface
 {
 
 public:
+
+
   //! C : is the meridian or the referenced curve.
   //! A1 is the axis of revolution.
   //! The form of a SurfaceOfRevolution can be :
@@ -248,59 +247,31 @@ public:
   //! U is the angle of the rotation around the revolution axis.
   //! The direction of this axis gives the sense of rotation.
   //! V is the parameter of the revolved curve.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
+  //! Returns std::nullopt on failure.
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
 
-  //! Computes the current point and the first derivatives
-  //! in the directions U and V.
-  //! Raised if the continuity of the surface is not C1.
-  Standard_EXPORT void D1(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V) const final;
+  //! Computes the point and first partial derivatives at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C1.
+  Standard_EXPORT std::optional<Geom_SurfD1> EvalD1(const double U, const double V) const final;
 
-  //! Computes the current point, the first and the second derivatives
-  //! in the directions U and V.
-  //! Raised if the continuity of the surface is not C2.
-  Standard_EXPORT void D2(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const final;
+  //! Computes the point and partial derivatives up to 2nd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C2.
+  Standard_EXPORT std::optional<Geom_SurfD2> EvalD2(const double U, const double V) const final;
 
-  //! Computes the current point, the first,the second and the third
-  //! derivatives in the directions U and V.
-  //! Raised if the continuity of the surface is not C3.
-  Standard_EXPORT void D3(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV,
-                          gp_Vec&      D3U,
-                          gp_Vec&      D3V,
-                          gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const final;
+  //! Computes the point and partial derivatives up to 3rd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C3.
+  Standard_EXPORT std::optional<Geom_SurfD3> EvalD3(const double U, const double V) const final;
 
-  //! Computes the derivative of order Nu in the direction u and
-  //! Nv in the direction v.
+  //! Computes the derivative of order Nu in U and Nv in V at (U, V).
+  //! Returns std::nullopt on failure.
   //!
   //! Raised if the continuity of the surface is not CNu in the u
   //! direction and CNv in the v direction.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  //! The following functions evaluates the local derivatives
-  //! on surface. Useful to manage discontinuities on the surface.
-  //! if   Side =  1 ->  P = S( U+,V )
-  //! if   Side = -1 ->  P = S( U-,V )
-  //! else P is between discontinuities
-  //! can be evaluated using methods of
-  //! global evaluations P = S( U ,V )
-  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Applies the transformation T to this surface of revolution.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;
