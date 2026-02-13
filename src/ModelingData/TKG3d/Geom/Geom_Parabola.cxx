@@ -200,7 +200,8 @@ std::optional<Geom_CurveD3> Geom_Parabola::EvalD3(const double U) const
 
 std::optional<gp_Vec> Geom_Parabola::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, " ");
+  if (N < 1)
+    return std::nullopt;
   return ElCLib::ParabolaDN(U, pos, focalLength, N);
 }
 

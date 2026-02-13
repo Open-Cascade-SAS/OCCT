@@ -41,6 +41,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
+#include <Standard_Failure.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLProp_SLProps.hxx>
@@ -311,12 +312,19 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
     return equivSurf->EvalD0(U, V);
   }
 
-  gp_Pnt aP;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
+  try
+  {
+    gp_Pnt aP;
+    if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
+    {
+      return std::nullopt;
+    }
+    return aP;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aP;
 }
 
 //=================================================================================================
@@ -334,19 +342,26 @@ std::optional<Geom_SurfD1> Geom_OffsetSurface::EvalD1(const double U, const doub
     return equivSurf->EvalD1(U, V);
   }
 
-  Geom_SurfD1 aResult;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD1(U,
-                                           V,
-                                           basisSurf.get(),
-                                           offsetValue,
-                                           myOscSurf.get(),
-                                           aResult.Point,
-                                           aResult.D1U,
-                                           aResult.D1V))
+  try
+  {
+    Geom_SurfD1 aResult;
+    if (!Geom_OffsetSurfaceUtils::EvaluateD1(U,
+                                             V,
+                                             basisSurf.get(),
+                                             offsetValue,
+                                             myOscSurf.get(),
+                                             aResult.Point,
+                                             aResult.D1U,
+                                             aResult.D1V))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 //=================================================================================================
@@ -365,22 +380,29 @@ std::optional<Geom_SurfD2> Geom_OffsetSurface::EvalD2(const double U, const doub
     return equivSurf->EvalD2(U, V);
   }
 
-  Geom_SurfD2 aResult;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD2(U,
-                                           V,
-                                           basisSurf.get(),
-                                           offsetValue,
-                                           myOscSurf.get(),
-                                           aResult.Point,
-                                           aResult.D1U,
-                                           aResult.D1V,
-                                           aResult.D2U,
-                                           aResult.D2V,
-                                           aResult.D2UV))
+  try
+  {
+    Geom_SurfD2 aResult;
+    if (!Geom_OffsetSurfaceUtils::EvaluateD2(U,
+                                             V,
+                                             basisSurf.get(),
+                                             offsetValue,
+                                             myOscSurf.get(),
+                                             aResult.Point,
+                                             aResult.D1U,
+                                             aResult.D1V,
+                                             aResult.D2U,
+                                             aResult.D2V,
+                                             aResult.D2UV))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 //=================================================================================================
@@ -398,26 +420,33 @@ std::optional<Geom_SurfD3> Geom_OffsetSurface::EvalD3(const double U, const doub
     return equivSurf->EvalD3(U, V);
   }
 
-  Geom_SurfD3 aResult;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD3(U,
-                                           V,
-                                           basisSurf.get(),
-                                           offsetValue,
-                                           myOscSurf.get(),
-                                           aResult.Point,
-                                           aResult.D1U,
-                                           aResult.D1V,
-                                           aResult.D2U,
-                                           aResult.D2V,
-                                           aResult.D2UV,
-                                           aResult.D3U,
-                                           aResult.D3V,
-                                           aResult.D3UUV,
-                                           aResult.D3UVV))
+  try
+  {
+    Geom_SurfD3 aResult;
+    if (!Geom_OffsetSurfaceUtils::EvaluateD3(U,
+                                             V,
+                                             basisSurf.get(),
+                                             offsetValue,
+                                             myOscSurf.get(),
+                                             aResult.Point,
+                                             aResult.D1U,
+                                             aResult.D1V,
+                                             aResult.D2U,
+                                             aResult.D2V,
+                                             aResult.D2UV,
+                                             aResult.D3U,
+                                             aResult.D3V,
+                                             aResult.D3UUV,
+                                             aResult.D3UVV))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 //=================================================================================================
@@ -427,7 +456,8 @@ std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
                                                  const int    Nu,
                                                  const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
 #ifdef CHECK
   if (!(basisSurf->IsCNu(Nu) && basisSurf->IsCNv(Nv)))
   {
@@ -439,19 +469,26 @@ std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
     return equivSurf->EvalDN(U, V, Nu, Nv);
   }
 
-  gp_Vec aResult;
-  if (!Geom_OffsetSurfaceUtils::EvaluateDN(U,
-                                           V,
-                                           Nu,
-                                           Nv,
-                                           basisSurf.get(),
-                                           offsetValue,
-                                           myOscSurf.get(),
-                                           aResult))
+  try
+  {
+    gp_Vec aResult;
+    if (!Geom_OffsetSurfaceUtils::EvaluateDN(U,
+                                             V,
+                                             Nu,
+                                             Nv,
+                                             basisSurf.get(),
+                                             offsetValue,
+                                             myOscSurf.get(),
+                                             aResult))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 ////*************************************************

@@ -207,26 +207,26 @@ public:
 
   //! Computes the point of parameter (U, V) on the surface.
   //! Returns std::nullopt on failure.
-  Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(const double U, const double V) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(const double U, const double V) const = 0;
 
   //! Computes the point and first partial derivatives at (U, V).
   //! Returns std::nullopt if the surface continuity is not C1.
-  Standard_EXPORT virtual std::optional<Geom_SurfD1> EvalD1(const double U,
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD1> EvalD1(const double U,
                                                             const double V) const = 0;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
   //! Returns std::nullopt if the surface continuity is not C2.
-  Standard_EXPORT virtual std::optional<Geom_SurfD2> EvalD2(const double U,
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD2> EvalD2(const double U,
                                                             const double V) const = 0;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Returns std::nullopt if the surface continuity is not C3.
-  Standard_EXPORT virtual std::optional<Geom_SurfD3> EvalD3(const double U,
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD3> EvalD3(const double U,
                                                             const double V) const = 0;
 
   //! Computes the derivative of order Nu in U and Nv in V at the point (U, V).
   //! Returns std::nullopt on failure.
-  Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U,
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U,
                                                        const double V,
                                                        const int    Nu,
                                                        const int    Nv) const = 0;
@@ -237,7 +237,7 @@ public:
     const std::optional<gp_Pnt> aP = EvalD0(U, V);
     if (!aP)
     {
-      throw Geom_UndefinedValue("Geom_Surface::EvalD0(): evaluation failed");
+      throw Geom_UndefinedValue("Geom_Surface::D0(): evaluation failed");
     }
     P = *aP;
   }
@@ -248,7 +248,7 @@ public:
     const std::optional<Geom_SurfD1> aR = EvalD1(U, V);
     if (!aR)
     {
-      throw Geom_UndefinedDerivative("Geom_Surface::EvalD1(): evaluation failed");
+      throw Geom_UndefinedDerivative("Geom_Surface::D1(): evaluation failed");
     }
     P   = aR->Point;
     D1U = aR->D1U;
@@ -268,7 +268,7 @@ public:
     const std::optional<Geom_SurfD2> aR = EvalD2(U, V);
     if (!aR)
     {
-      throw Geom_UndefinedDerivative("Geom_Surface::EvalD2(): evaluation failed");
+      throw Geom_UndefinedDerivative("Geom_Surface::D2(): evaluation failed");
     }
     P    = aR->Point;
     D1U  = aR->D1U;
@@ -295,7 +295,7 @@ public:
     const std::optional<Geom_SurfD3> aR = EvalD3(U, V);
     if (!aR)
     {
-      throw Geom_UndefinedDerivative("Geom_Surface::EvalD3(): evaluation failed");
+      throw Geom_UndefinedDerivative("Geom_Surface::D3(): evaluation failed");
     }
     P     = aR->Point;
     D1U   = aR->D1U;

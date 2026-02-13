@@ -482,7 +482,8 @@ std::optional<Geom2d_CurveD3> Geom2d_BezierCurve::EvalD3(const double U) const
 
 std::optional<gp_Vec2d> Geom2d_BezierCurve::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, "Geom2d_BezierCurve::EvalDN");
+  if (N < 1)
+    return std::nullopt;
   gp_Vec2d V;
 
   BSplCLib::DN(U, N, 0, Degree(), false, myPoles, Weights(), Knots(), &Multiplicities(), V);

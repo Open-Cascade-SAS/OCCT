@@ -19,6 +19,8 @@
 #include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
+#include <Geom_Parabola.hxx>
+#include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
 #include <GeomAPI_PointsToBSpline.hxx>
@@ -186,4 +188,83 @@ TEST(Geom_CurveEvalTest, OffsetCurve_D0Wrapper_ThrowsAtSingular)
   // The backward-compatibility wrapper should NOT throw for valid evaluation
   gp_Pnt aP;
   EXPECT_NO_THROW(anOffset->D0(0.0, aP));
+}
+
+//=================================================================================================
+// Parabola tests
+//=================================================================================================
+
+TEST(Geom_CurveEvalTest, Parabola_EvalD3_ZeroThirdDerivative)
+{
+  // Parabola: y = x^2 / (4*f), third derivative is zero
+  occ::handle<Geom_Parabola> aCurve =
+    new Geom_Parabola(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 2.0);
+
+  const auto aD3 = aCurve->EvalD3(1.0);
+  ASSERT_TRUE(aD3.has_value());
+  EXPECT_NEAR(aD3->D3.Magnitude(), 0.0, Precision::Confusion());
+}
+
+//=================================================================================================
+// BSplineCurve EvalDN invalid N test
+//=================================================================================================
+
+TEST(Geom_CurveEvalTest, BSplineCurve_EvalDN_InvalidN_ReturnsNullopt)
+{
+  NCollection_Array1<gp_Pnt> aPnts(1, 3);
+  aPnts(1) = gp_Pnt(0.0, 0.0, 0.0);
+  aPnts(2) = gp_Pnt(1.0, 1.0, 0.0);
+  aPnts(3) = gp_Pnt(2.0, 0.0, 0.0);
+
+  GeomAPI_PointsToBSpline anInterp(aPnts);
+  ASSERT_TRUE(anInterp.IsDone());
+  occ::handle<Geom_BSplineCurve> aCurve = anInterp.Curve();
+
+  const double aMid = (aCurve->FirstParameter() + aCurve->LastParameter()) / 2.0;
+
+  // N=0 should return nullopt
+  EXPECT_FALSE(aCurve->EvalDN(aMid, 0).has_value());
+  // N=-1 should return nullopt
+  EXPECT_FALSE(aCurve->EvalDN(aMid, -1).has_value());
+}
+
+//=================================================================================================
+// TrimmedCurve delegation test
+//=================================================================================================
+
+TEST(Geom_CurveEvalTest, TrimmedCurve_EvalD1_DelegatesToBasis)
+{
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
+  occ::handle<Geom_Circle> aBasis = new Geom_Circle(aCirc);
+
+  occ::handle<Geom_TrimmedCurve> aTrimmed = new Geom_TrimmedCurve(aBasis, 0.0, M_PI);
+
+  const double aU = M_PI / 4.0;
+
+  const auto aBasisD1  = aBasis->EvalD1(aU);
+  const auto aTrimmedD1 = aTrimmed->EvalD1(aU);
+
+  ASSERT_TRUE(aBasisD1.has_value());
+  ASSERT_TRUE(aTrimmedD1.has_value());
+
+  EXPECT_NEAR(aBasisD1->Point.Distance(aTrimmedD1->Point), 0.0, Precision::Confusion());
+  EXPECT_NEAR((aBasisD1->D1 - aTrimmedD1->D1).Magnitude(), 0.0, Precision::Confusion());
+}
+
+//=================================================================================================
+// OffsetCurve EvalD1 singular test
+//=================================================================================================
+
+TEST(Geom_CurveEvalTest, OffsetCurve_EvalD1_NulloptAtSingular)
+{
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
+  occ::handle<Geom_Circle> aBasis = new Geom_Circle(aCirc);
+
+  // Offset by -radius creates a collapsed curve at the center
+  occ::handle<Geom_OffsetCurve> anOffset =
+    new Geom_OffsetCurve(aBasis, -5.0, gp_Dir(0.0, 0.0, 1.0));
+
+  // EvalD1 on a degenerate offset curve should return nullopt
+  const auto aResult = anOffset->EvalD1(0.0);
+  EXPECT_FALSE(aResult.has_value());
 }

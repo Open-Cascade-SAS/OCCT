@@ -168,23 +168,23 @@ public:
 
   //! Computes the point of parameter U.
   //! Returns std::nullopt on failure (e.g. OffsetCurve at singular point).
-  Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(const double U) const = 0;
 
   //! Computes the point and first derivative at parameter U.
   //! Returns std::nullopt if the curve continuity is not C1.
-  Standard_EXPORT virtual std::optional<Geom_CurveD1> EvalD1(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD1> EvalD1(const double U) const = 0;
 
   //! Computes the point and first two derivatives at parameter U.
   //! Returns std::nullopt if the curve continuity is not C2.
-  Standard_EXPORT virtual std::optional<Geom_CurveD2> EvalD2(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD2> EvalD2(const double U) const = 0;
 
   //! Computes the point and first three derivatives at parameter U.
   //! Returns std::nullopt if the curve continuity is not C3.
-  Standard_EXPORT virtual std::optional<Geom_CurveD3> EvalD3(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD3> EvalD3(const double U) const = 0;
 
   //! Computes the Nth derivative at parameter U.
   //! Returns std::nullopt if the curve continuity is not CN, or N < 1.
-  Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U, const int N) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U, const int N) const = 0;
 
   //! Returns in P the point of parameter U.
   //! Throws on failure for backward compatibility.
@@ -193,7 +193,7 @@ public:
     const std::optional<gp_Pnt> aP = EvalD0(U);
     if (!aP)
     {
-      throw Geom_UndefinedValue("Geom_Curve::EvalD0(): evaluation failed");
+      throw Geom_UndefinedValue("Geom_Curve::D0(): evaluation failed");
     }
     P = *aP;
   }
@@ -205,7 +205,7 @@ public:
     const std::optional<Geom_CurveD1> aR = EvalD1(U);
     if (!aR)
     {
-      throw Geom_UndefinedDerivative("Geom_Curve::EvalD1(): evaluation failed");
+      throw Geom_UndefinedDerivative("Geom_Curve::D1(): evaluation failed");
     }
     P  = aR->Point;
     V1 = aR->D1;
@@ -218,7 +218,7 @@ public:
     const std::optional<Geom_CurveD2> aR = EvalD2(U);
     if (!aR)
     {
-      throw Geom_UndefinedDerivative("Geom_Curve::EvalD2(): evaluation failed");
+      throw Geom_UndefinedDerivative("Geom_Curve::D2(): evaluation failed");
     }
     P  = aR->Point;
     V1 = aR->D1;
@@ -232,7 +232,7 @@ public:
     const std::optional<Geom_CurveD3> aR = EvalD3(U);
     if (!aR)
     {
-      throw Geom_UndefinedDerivative("Geom_Curve::EvalD3(): evaluation failed");
+      throw Geom_UndefinedDerivative("Geom_Curve::D3(): evaluation failed");
     }
     P  = aR->Point;
     V1 = aR->D1;

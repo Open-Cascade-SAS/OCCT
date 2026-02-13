@@ -255,6 +255,8 @@ std::optional<gp_Vec> Geom_BSplineSurface::EvalDN(const double U,
                                                   const int    Nu,
                                                   const int    Nv) const
 {
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   gp_Vec Vn;
   BSplSLib::DN(U,
                V,

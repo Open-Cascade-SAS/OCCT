@@ -316,7 +316,8 @@ std::optional<Geom2d_CurveD3> Geom2d_Hyperbola::EvalD3(const double U) const
 
 std::optional<gp_Vec2d> Geom2d_Hyperbola::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, " ");
+  if (N < 1)
+    return std::nullopt;
   return ElCLib::HyperbolaDN(U, pos, majorRadius, minorRadius, N);
 }
 

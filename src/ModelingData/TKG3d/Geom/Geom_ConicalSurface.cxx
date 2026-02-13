@@ -317,7 +317,8 @@ std::optional<gp_Vec> Geom_ConicalSurface::EvalDN(const double U,
                                                   const int    Nu,
                                                   const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   if (Nv > 1)
   {
     return Vec(0.0, 0.0, 0.0);

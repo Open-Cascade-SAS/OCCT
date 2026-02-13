@@ -206,7 +206,8 @@ std::optional<Geom_CurveD3> Geom_Line::EvalD3(const double U) const
 
 std::optional<gp_Vec> Geom_Line::EvalDN(const double, const int N) const
 {
-  Standard_RangeError_Raise_if(N <= 0, " ");
+  if (N < 1)
+    return std::nullopt;
   if (N == 1)
     return gp_Vec(pos.Direction());
   else

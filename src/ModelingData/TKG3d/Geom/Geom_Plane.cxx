@@ -244,7 +244,8 @@ std::optional<gp_Vec> Geom_Plane::EvalDN(const double,
                                          const int Nu,
                                          const int Nv) const
 {
-  Standard_RangeError_Raise_if(Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   if (Nu == 0 && Nv == 1)
   {
     return Vec(pos.YDirection());

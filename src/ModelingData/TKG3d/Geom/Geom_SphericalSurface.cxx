@@ -270,7 +270,8 @@ std::optional<gp_Vec> Geom_SphericalSurface::EvalDN(const double U,
                                                     const int    Nu,
                                                     const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   return ElSLib::SphereDN(U, V, pos, radius, Nu, Nv);
 }
 

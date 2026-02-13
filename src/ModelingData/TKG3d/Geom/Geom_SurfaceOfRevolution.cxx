@@ -23,6 +23,7 @@
 #include "Geom_RevolutionUtils.pxx"
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_UndefinedDerivative.hxx>
+#include <Standard_Failure.hxx>
 #include <gp.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Ax2.hxx>
@@ -217,64 +218,92 @@ void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double
 
 std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 {
-  gp_Pnt aP;
-  Geom_RevolutionUtils::D0(U, V, *basisCurve, gp_Ax1(loc, direction), aP);
-  return aP;
+  try
+  {
+    gp_Pnt aP;
+    Geom_RevolutionUtils::D0(U, V, *basisCurve, gp_Ax1(loc, direction), aP);
+    return aP;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }
 
 //=================================================================================================
 
 std::optional<Geom_SurfD1> Geom_SurfaceOfRevolution::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_SurfD1> aResult{std::in_place};
-  Geom_RevolutionUtils::D1(U,
-                           V,
-                           *basisCurve,
-                           gp_Ax1(loc, direction),
-                           aResult->Point,
-                           aResult->D1U,
-                           aResult->D1V);
-  return aResult;
+  try
+  {
+    std::optional<Geom_SurfD1> aResult{std::in_place};
+    Geom_RevolutionUtils::D1(U,
+                             V,
+                             *basisCurve,
+                             gp_Ax1(loc, direction),
+                             aResult->Point,
+                             aResult->D1U,
+                             aResult->D1V);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }
 
 //=================================================================================================
 
 std::optional<Geom_SurfD2> Geom_SurfaceOfRevolution::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_SurfD2> aResult{std::in_place};
-  Geom_RevolutionUtils::D2(U,
-                           V,
-                           *basisCurve,
-                           gp_Ax1(loc, direction),
-                           aResult->Point,
-                           aResult->D1U,
-                           aResult->D1V,
-                           aResult->D2U,
-                           aResult->D2V,
-                           aResult->D2UV);
-  return aResult;
+  try
+  {
+    std::optional<Geom_SurfD2> aResult{std::in_place};
+    Geom_RevolutionUtils::D2(U,
+                             V,
+                             *basisCurve,
+                             gp_Ax1(loc, direction),
+                             aResult->Point,
+                             aResult->D1U,
+                             aResult->D1V,
+                             aResult->D2U,
+                             aResult->D2V,
+                             aResult->D2UV);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }
 
 //=================================================================================================
 
 std::optional<Geom_SurfD3> Geom_SurfaceOfRevolution::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_SurfD3> aResult{std::in_place};
-  Geom_RevolutionUtils::D3(U,
-                           V,
-                           *basisCurve,
-                           gp_Ax1(loc, direction),
-                           aResult->Point,
-                           aResult->D1U,
-                           aResult->D1V,
-                           aResult->D2U,
-                           aResult->D2V,
-                           aResult->D2UV,
-                           aResult->D3U,
-                           aResult->D3V,
-                           aResult->D3UUV,
-                           aResult->D3UVV);
-  return aResult;
+  try
+  {
+    std::optional<Geom_SurfD3> aResult{std::in_place};
+    Geom_RevolutionUtils::D3(U,
+                             V,
+                             *basisCurve,
+                             gp_Ax1(loc, direction),
+                             aResult->Point,
+                             aResult->D1U,
+                             aResult->D1V,
+                             aResult->D2U,
+                             aResult->D2V,
+                             aResult->D2UV,
+                             aResult->D3U,
+                             aResult->D3V,
+                             aResult->D3UUV,
+                             aResult->D3UVV);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }
 
 //=================================================================================================
@@ -284,8 +313,16 @@ std::optional<gp_Vec> Geom_SurfaceOfRevolution::EvalDN(const double U,
                                                        const int    Nu,
                                                        const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
-  return Geom_RevolutionUtils::DN(U, V, *basisCurve, gp_Ax1(loc, direction), Nu, Nv);
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
+  try
+  {
+    return Geom_RevolutionUtils::DN(U, V, *basisCurve, gp_Ax1(loc, direction), Nu, Nv);
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }
 
 //=================================================================================================

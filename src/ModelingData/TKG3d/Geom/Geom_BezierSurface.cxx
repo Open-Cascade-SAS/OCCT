@@ -1559,7 +1559,8 @@ std::optional<gp_Vec> Geom_BezierSurface::EvalDN(const double U,
                                                  const int    Nu,
                                                  const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nv < 0 || Nu < 0, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   gp_Vec Derivative;
   if (myURational || myVRational)
   {

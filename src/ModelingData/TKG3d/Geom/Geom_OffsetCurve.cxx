@@ -26,6 +26,7 @@
 #include <Geom_OffsetCurveUtils.pxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
+#include <Standard_Failure.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -242,73 +243,102 @@ GeomAbs_Shape Geom_OffsetCurve::Continuity() const
 
 std::optional<gp_Pnt> Geom_OffsetCurve::EvalD0(const double theU) const
 {
-  gp_Pnt theP;
-  if (!Geom_OffsetCurveUtils::EvaluateD0(theU, basisCurve.get(), direction, offsetValue, theP))
+  try
+  {
+    gp_Pnt theP;
+    if (!Geom_OffsetCurveUtils::EvaluateD0(theU, basisCurve.get(), direction, offsetValue, theP))
+    {
+      return std::nullopt;
+    }
+    return theP;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return theP;
 }
 
 //==================================================================================================
 
 std::optional<Geom_CurveD1> Geom_OffsetCurve::EvalD1(const double theU) const
 {
-  Geom_CurveD1 aResult;
-  if (!Geom_OffsetCurveUtils::EvaluateD1(theU,
-                                         basisCurve.get(),
-                                         direction,
-                                         offsetValue,
-                                         aResult.Point,
-                                         aResult.D1))
+  try
+  {
+    Geom_CurveD1 aResult;
+    if (!Geom_OffsetCurveUtils::EvaluateD1(theU,
+                                           basisCurve.get(),
+                                           direction,
+                                           offsetValue,
+                                           aResult.Point,
+                                           aResult.D1))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 //==================================================================================================
 
 std::optional<Geom_CurveD2> Geom_OffsetCurve::EvalD2(const double theU) const
 {
-  Geom_CurveD2 aResult;
-  if (!Geom_OffsetCurveUtils::EvaluateD2(theU,
-                                         basisCurve.get(),
-                                         direction,
-                                         offsetValue,
-                                         aResult.Point,
-                                         aResult.D1,
-                                         aResult.D2))
+  try
+  {
+    Geom_CurveD2 aResult;
+    if (!Geom_OffsetCurveUtils::EvaluateD2(theU,
+                                           basisCurve.get(),
+                                           direction,
+                                           offsetValue,
+                                           aResult.Point,
+                                           aResult.D1,
+                                           aResult.D2))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 //==================================================================================================
 
 std::optional<Geom_CurveD3> Geom_OffsetCurve::EvalD3(const double theU) const
 {
-  Geom_CurveD3 aResult;
-  if (!Geom_OffsetCurveUtils::EvaluateD3(theU,
-                                         basisCurve.get(),
-                                         direction,
-                                         offsetValue,
-                                         aResult.Point,
-                                         aResult.D1,
-                                         aResult.D2,
-                                         aResult.D3))
+  try
+  {
+    Geom_CurveD3 aResult;
+    if (!Geom_OffsetCurveUtils::EvaluateD3(theU,
+                                           basisCurve.get(),
+                                           direction,
+                                           offsetValue,
+                                           aResult.Point,
+                                           aResult.D1,
+                                           aResult.D2,
+                                           aResult.D3))
+    {
+      return std::nullopt;
+    }
+    return aResult;
+  }
+  catch (const Standard_Failure&)
   {
     return std::nullopt;
   }
-  return aResult;
 }
 
 //==================================================================================================
 
 std::optional<gp_Vec> Geom_OffsetCurve::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, "Exception: Geom_OffsetCurve::EvalDN(...). N<1.");
+  if (N < 1)
+    return std::nullopt;
 
   gp_Vec aVN;
   if (!Geom_OffsetCurveUtils::EvaluateDN(U, basisCurve.get(), direction, offsetValue, N, aVN))

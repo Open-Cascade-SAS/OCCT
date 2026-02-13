@@ -220,7 +220,8 @@ std::optional<Geom2d_CurveD3> Geom2d_Line::EvalD3(const double U) const
 
 std::optional<gp_Vec2d> Geom2d_Line::EvalDN(const double, const int N) const
 {
-  Standard_RangeError_Raise_if(N <= 0, " ");
+  if (N < 1)
+    return std::nullopt;
   if (N == 1)
     return gp_Vec2d(pos.Direction());
   else

@@ -254,6 +254,8 @@ std::optional<Geom_CurveD3> Geom_BSplineCurve::EvalD3(const double U) const
 
 std::optional<gp_Vec> Geom_BSplineCurve::EvalDN(const double U, const int N) const
 {
+  if (N < 1)
+    return std::nullopt;
   gp_Vec V;
   BSplCLib::DN(U, N, 0, myDeg, myPeriodic, myPoles, Weights(), myFlatKnots, BSplCLib::NoMults(), V);
   return V;

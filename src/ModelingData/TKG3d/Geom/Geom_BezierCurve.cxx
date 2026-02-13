@@ -510,7 +510,7 @@ std::optional<Geom_CurveD3> Geom_BezierCurve::EvalD3(const double U) const
 std::optional<gp_Vec> Geom_BezierCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    throw Standard_RangeError("Geom_BezierCurve::EvalDN");
+    return std::nullopt;
   gp_Vec V;
 
   const int aDeg = myPoles.Size() - 1;

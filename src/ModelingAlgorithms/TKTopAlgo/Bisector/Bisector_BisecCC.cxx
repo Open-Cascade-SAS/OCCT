@@ -1014,6 +1014,8 @@ std::optional<Geom2d_CurveD3> Bisector_BisecCC::EvalD3(const double U) const
 
 std::optional<gp_Vec2d> Bisector_BisecCC::EvalDN(const double U, const int N) const
 {
+  if (N < 1)
+    return std::nullopt;
   gp_Pnt2d P;
   gp_Vec2d V1(0., 0.);
   gp_Vec2d V2(0., 0.);

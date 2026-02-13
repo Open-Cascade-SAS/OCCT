@@ -225,7 +225,8 @@ std::optional<Geom_CurveD3> Geom_Ellipse::EvalD3(const double U) const
 
 std::optional<gp_Vec> Geom_Ellipse::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, " ");
+  if (N < 1)
+    return std::nullopt;
   return ElCLib::EllipseDN(U, pos, majorRadius, minorRadius, N);
 }
 
