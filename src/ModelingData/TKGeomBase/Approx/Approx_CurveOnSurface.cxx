@@ -502,21 +502,22 @@ void Approx_CurveOnSurface::Perform(const int           theMaxSegments,
     occ::handle<NCollection_HArray1<int>>    Mults  = aApprox.Multiplicities();
     int                                      Degree = aApprox.Degree();
 
+    const int aNbPoles = aApprox.NbPoles();
     if (!theOnly2d)
     {
-      NCollection_Array1<gp_Pnt> Poles(1, aApprox.NbPoles());
+      NCollection_Array1<gp_Pnt> Poles(1, aNbPoles);
       aApprox.Poles(1, Poles);
       myCurve3d = new Geom_BSplineCurve(Poles, Knots->Array1(), Mults->Array1(), Degree);
       myError3d = aApprox.MaxError(3, 1);
     }
     if (!theOnly3d)
     {
-      NCollection_Array1<gp_Pnt2d> Poles2d(1, aApprox.NbPoles());
-      NCollection_Array1<double>   Poles1dU(1, aApprox.NbPoles());
+      NCollection_Array1<gp_Pnt2d> Poles2d(1, aNbPoles);
+      NCollection_Array1<double>   Poles1dU(1, aNbPoles);
       aApprox.Poles1d(1, Poles1dU);
-      NCollection_Array1<double> Poles1dV(1, aApprox.NbPoles());
+      NCollection_Array1<double> Poles1dV(1, aNbPoles);
       aApprox.Poles1d(2, Poles1dV);
-      for (int i = 1; i <= aApprox.NbPoles(); i++)
+      for (int i = 1; i <= aNbPoles; i++)
         Poles2d.SetValue(i, gp_Pnt2d(Poles1dU.Value(i), Poles1dV.Value(i)));
       myCurve2d = new Geom2d_BSplineCurve(Poles2d, Knots->Array1(), Mults->Array1(), Degree);
 

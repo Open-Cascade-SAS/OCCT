@@ -361,17 +361,16 @@ int BSplCLib::MinKnotMult(const Array1OfInteger& Mults, const int FromK1, const 
 
 int BSplCLib::NbPoles(const int Degree, const bool Periodic, const NCollection_Array1<int>& Mults)
 {
-  int        i, sigma = 0;
-  int        f   = Mults.Lower();
-  int        l   = Mults.Upper();
+  const int  f   = Mults.Lower();
+  const int  l   = Mults.Upper();
   const int* pmu = &Mults(f);
-  pmu -= f;
-  int Mf = pmu[f];
-  int Ml = pmu[l];
+  const int  Mf  = pmu[0];
+  const int  Ml  = pmu[l - f];
   if (Mf <= 0)
     return 0;
   if (Ml <= 0)
     return 0;
+  int sigma;
   if (Periodic)
   {
     if (Mf > Degree)
@@ -384,7 +383,7 @@ int BSplCLib::NbPoles(const int Degree, const bool Periodic, const NCollection_A
   }
   else
   {
-    int Deg1 = Degree + 1;
+    const int Deg1 = Degree + 1;
     if (Mf > Deg1)
       return 0;
     if (Ml > Deg1)
@@ -392,7 +391,7 @@ int BSplCLib::NbPoles(const int Degree, const bool Periodic, const NCollection_A
     sigma = Mf + Ml - Deg1;
   }
 
-  for (i = f + 1; i < l; i++)
+  for (int i = 1; i < l - f; i++)
   {
     if (pmu[i] <= 0)
       return 0;
@@ -3008,39 +3007,45 @@ int BSplCLib::SolveBandedSystem(const math_Matrix& Matrix,
     return 1;
   }
 
-  double* PolesArray = &Array;
+  double*       PolesArray = &Array;
+  const int     aLRow      = Matrix.LowerRow();
+  const int     aNCols     = Matrix.ColNumber();
+  const double* aMatData   = &Matrix(aLRow, 1);
 
-  for (int ii = Matrix.LowerRow() + 1; ii <= Matrix.UpperRow(); ii++)
+  for (int ii = aLRow + 1; ii <= Matrix.UpperRow(); ii++)
   {
-    const int aMinIndex =
-      (ii - LowerBandWidth >= Matrix.LowerRow() ? ii - LowerBandWidth : Matrix.LowerRow());
+    const int     aMinIndex = (ii - LowerBandWidth >= aLRow ? ii - LowerBandWidth : aLRow);
+    const double* aRowII    = aMatData + (ii - aLRow) * aNCols;
 
     for (int jj = aMinIndex; jj < ii; jj++)
     {
+      const double aCoeff = aRowII[jj - ii + LowerBandWidth];
       for (int kk = 0; kk < ArrayDimension; kk++)
       {
         PolesArray[(ii - 1) * ArrayDimension + kk] +=
-          PolesArray[(jj - 1) * ArrayDimension + kk] * Matrix(ii, jj - ii + LowerBandWidth + 1);
+          PolesArray[(jj - 1) * ArrayDimension + kk] * aCoeff;
       }
     }
   }
 
-  for (int ii = Matrix.UpperRow(); ii >= Matrix.LowerRow(); ii--)
+  for (int ii = Matrix.UpperRow(); ii >= aLRow; ii--)
   {
     const int aMaxIndex =
       (ii + UpperBandWidth <= Matrix.UpperRow() ? ii + UpperBandWidth : Matrix.UpperRow());
+    const double* aRowII = aMatData + (ii - aLRow) * aNCols;
 
     for (int jj = aMaxIndex; jj > ii; jj--)
     {
+      const double aCoeff = aRowII[jj - ii + LowerBandWidth];
       for (int kk = 0; kk < ArrayDimension; kk++)
       {
         PolesArray[(ii - 1) * ArrayDimension + kk] -=
-          PolesArray[(jj - 1) * ArrayDimension + kk] * Matrix(ii, jj - ii + LowerBandWidth + 1);
+          PolesArray[(jj - 1) * ArrayDimension + kk] * aCoeff;
       }
     }
 
     // Fixing a bug PRO18577 to avoid division by zero
-    const double     aDivisor      = Matrix(ii, LowerBandWidth + 1);
+    const double     aDivisor      = aRowII[LowerBandWidth];
     constexpr double THE_TOLERANCE = 1.0e-16;
     if (std::abs(aDivisor) <= THE_TOLERANCE)
     {
@@ -3147,9 +3152,14 @@ void BSplCLib::Interpolate(const int                         Degree,
                            double&                           Poles,
                            int&                              InversionProblem)
 {
-  int ErrorCode, UpperBandWidth, LowerBandWidth;
-  //  double *PolesArray = &Poles ;
-  math_Matrix InterpolationMatrix(1, Parameters.Length(), 1, 2 * Degree + 1);
+  int           ErrorCode, UpperBandWidth, LowerBandWidth;
+  constexpr int THE_STACK_LIMIT = 2048;
+  const int     aMatSize        = Parameters.Length() * (2 * Degree + 1);
+  double        aStackBuf[THE_STACK_LIMIT];
+  math_Matrix   InterpolationMatrix =
+    (aMatSize <= THE_STACK_LIMIT)
+        ? math_Matrix(aStackBuf, 1, Parameters.Length(), 1, 2 * Degree + 1)
+        : math_Matrix(1, Parameters.Length(), 1, 2 * Degree + 1);
   ErrorCode = BSplCLib::BuildBSpMatrix(Parameters,
                                        ContactOrderArray,
                                        FlatKnots,
@@ -3187,9 +3197,14 @@ void BSplCLib::Interpolate(const int                         Degree,
                            double&                           Weights,
                            int&                              InversionProblem)
 {
-  int ErrorCode, UpperBandWidth, LowerBandWidth;
-
-  math_Matrix InterpolationMatrix(1, Parameters.Length(), 1, 2 * Degree + 1);
+  int           ErrorCode, UpperBandWidth, LowerBandWidth;
+  constexpr int THE_STACK_LIMIT = 2048;
+  const int     aMatSize        = Parameters.Length() * (2 * Degree + 1);
+  double        aStackBuf[THE_STACK_LIMIT];
+  math_Matrix   InterpolationMatrix =
+    (aMatSize <= THE_STACK_LIMIT)
+        ? math_Matrix(aStackBuf, 1, Parameters.Length(), 1, 2 * Degree + 1)
+        : math_Matrix(1, Parameters.Length(), 1, 2 * Degree + 1);
   ErrorCode = BSplCLib::BuildBSpMatrix(Parameters,
                                        ContactOrderArray,
                                        FlatKnots,

@@ -197,7 +197,10 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
   myFlatKnots = NCollection_Array1<double>(1, num_flat_knots);
   BSplCLib::KnotSequence(myKnots, myMults, myDegree, false, myFlatKnots);
 
-  NCollection_Array1<double> parameters(1, num_poles);
+  constexpr int              THE_MAX_POLES = 128;
+  double                     aParamBuf[THE_MAX_POLES];
+  int                        aContactBuf[THE_MAX_POLES];
+  NCollection_Array1<double> parameters(aParamBuf[0], 1, num_poles, num_poles <= THE_MAX_POLES);
   BSplCLib::BuildSchoenbergPoints(myDegree, myFlatKnots, parameters);
   myPoles     = NCollection_Array2<double>(1, num_poles, 1, Dimension);
   index       = 2;
@@ -205,7 +208,7 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
   Pindex      = PolynomialIntervals.LowerRow();
   poles_array = (double*)&myPoles.ChangeValue(1, 1);
 
-  NCollection_Array1<int> contact_array(1, num_poles);
+  NCollection_Array1<int> contact_array(aContactBuf[0], 1, num_poles, num_poles <= THE_MAX_POLES);
 
   poles_index = 0;
   for (ii = 1; ii <= num_poles; ii++, poles_index += Dimension)
@@ -338,8 +341,7 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
   //==================================================================================================
 
-  bool
-  Convert_CompPolynomialToPoles::IsDone() const
+  bool Convert_CompPolynomialToPoles::IsDone() const
 {
   return myDone;
 }

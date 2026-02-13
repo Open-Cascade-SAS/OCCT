@@ -303,12 +303,13 @@ void Approx_SweepApproximation::Approximation(
     // --> Fill Champs of the surface ----
     int ii, jj;
 
-    vdeg = Approx.Degree();
+    vdeg            = Approx.Degree();
+    const int aNbPoles = Approx.NbPoles();
     // Unfortunately Adv_Approx stores the transposition of the required
     // so, writing tabPoles = Approx.Poles() will give an erroneous result
     // It is only possible to allocate and recopy term by term...
-    tabPoles   = new (NCollection_HArray2<gp_Pnt>)(1, Num3DSS, 1, Approx.NbPoles());
-    tabWeights = new (NCollection_HArray2<double>)(1, Num3DSS, 1, Approx.NbPoles());
+    tabPoles   = new (NCollection_HArray2<gp_Pnt>)(1, Num3DSS, 1, aNbPoles);
+    tabWeights = new (NCollection_HArray2<double>)(1, Num3DSS, 1, aNbPoles);
 
     if (Num1DSS == Num3DSS)
     {
@@ -316,7 +317,7 @@ void Approx_SweepApproximation::Approximation(
       gp_Pnt P;
       for (ii = 1; ii <= Num3DSS; ii++)
       {
-        for (jj = 1; jj <= Approx.NbPoles(); jj++)
+        for (jj = 1; jj <= aNbPoles; jj++)
         {
           P     = Approx.Poles()->Value(jj, ii);
           wpoid = Approx.Poles1d()->Value(jj, ii);
@@ -332,7 +333,7 @@ void Approx_SweepApproximation::Approximation(
       tabWeights->Init(1);
       for (ii = 1; ii <= Num3DSS; ii++)
       {
-        for (jj = 1; jj <= Approx.NbPoles(); jj++)
+        for (jj = 1; jj <= aNbPoles; jj++)
         {
           tabPoles->SetValue(ii, jj, Approx.Poles()->Value(jj, ii));
         }
@@ -355,10 +356,10 @@ void Approx_SweepApproximation::Approximation(
       {
         TrsfInv = AAffin->Value(ii).Inverted();
         occ::handle<NCollection_HArray1<gp_Pnt2d>> P2d =
-          new (NCollection_HArray1<gp_Pnt2d>)(1, Approx.NbPoles());
+          new (NCollection_HArray1<gp_Pnt2d>)(1, aNbPoles);
         Approx.Poles2d(ii, P2d->ChangeArray1());
         // do not forget to apply inverted homothety.
-        for (jj = 1; jj <= Approx.NbPoles(); jj++)
+        for (jj = 1; jj <= aNbPoles; jj++)
         {
           TrsfInv.Transforms(P2d->ChangeValue(jj).ChangeCoord());
         }
