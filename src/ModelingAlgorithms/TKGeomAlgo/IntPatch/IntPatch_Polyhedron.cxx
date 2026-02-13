@@ -57,14 +57,11 @@ static int NbPOnV(const occ::handle<Adaptor3d_Surface>& S)
 void IntPatch_Polyhedron::Destroy()
 {
   gp_Pnt* CMyPnts = (gp_Pnt*)C_MyPnts;
-  if (C_MyPnts)
-    delete[] CMyPnts;
+  delete[] CMyPnts;
   double* CMyU = (double*)C_MyU;
-  if (C_MyU)
-    delete[] CMyU;
+  delete[] CMyU;
   double* CMyV = (double*)C_MyV;
-  if (C_MyV)
-    delete[] CMyV;
+  delete[] CMyV;
   C_MyPnts = C_MyU = C_MyV = nullptr;
 }
 

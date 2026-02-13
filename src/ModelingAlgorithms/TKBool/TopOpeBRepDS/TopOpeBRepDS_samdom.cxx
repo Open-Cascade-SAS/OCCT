@@ -37,17 +37,11 @@ static occ::handle<TopOpeBRepDS_HDataStructure>* Ghds;
 
 void FDSSDM_Close()
 {
-  if (Gps1)
-  {
-    delete Gps1;
-    Gps1 = nullptr;
-  }
+  delete Gps1;
+  Gps1 = nullptr;
   //
-  if (Gps2)
-  {
-    delete Gps2;
-    Gps2 = nullptr;
-  }
+  delete Gps2;
+  Gps2 = nullptr;
 }
 
 // modified by NIZNHY-PKV Sun Dec 15 17:56:02 2002 t

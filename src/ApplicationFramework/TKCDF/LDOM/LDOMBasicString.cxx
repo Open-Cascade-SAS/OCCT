@@ -118,8 +118,7 @@ LDOMBasicString::~LDOMBasicString()
 {
   if (myType == LDOM_AsciiFree)
   {
-    if (myVal.ptr)
-      delete[] (char*)myVal.ptr;
+    delete[] (char*)myVal.ptr;
   }
 }
 
@@ -130,7 +129,7 @@ LDOMBasicString::~LDOMBasicString()
 
 LDOMBasicString& LDOMBasicString::operator=(const LDOM_NullPtr*)
 {
-  if (myType == LDOM_AsciiFree && myVal.ptr)
+  if (myType == LDOM_AsciiFree)
     delete[] (char*)myVal.ptr;
   myType    = LDOM_NULL;
   myVal.ptr = nullptr;
@@ -148,7 +147,7 @@ LDOMBasicString& LDOMBasicString::operator=(const LDOMBasicString& anOther)
   {
     return *this;
   }
-  if (myType == LDOM_AsciiFree && myVal.ptr)
+  if (myType == LDOM_AsciiFree)
     delete[] (char*)myVal.ptr;
   myType = anOther.Type();
   switch (myType)

@@ -80,11 +80,8 @@ BOPAlgo_Builder::~BOPAlgo_Builder()
 {
   if (myEntryPoint == 1)
   {
-    if (myPaveFiller)
-    {
-      delete myPaveFiller;
-      myPaveFiller = nullptr;
-    }
+    delete myPaveFiller;
+    myPaveFiller = nullptr;
   }
 }
 
@@ -173,11 +170,8 @@ void BOPAlgo_Builder::Perform(const Message_ProgressRange& theRange)
   //
   if (myEntryPoint == 1)
   {
-    if (myPaveFiller)
-    {
-      delete myPaveFiller;
-      myPaveFiller = nullptr;
-    }
+    delete myPaveFiller;
+    myPaveFiller = nullptr;
   }
   //
   occ::handle<NCollection_BaseAllocator> aAllocator =

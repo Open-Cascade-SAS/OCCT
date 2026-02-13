@@ -57,11 +57,8 @@ void BOPAlgo_Splitter::Perform(const Message_ProgressRange& theRange)
   //
   if (myEntryPoint == 1)
   {
-    if (myPaveFiller)
-    {
-      delete myPaveFiller;
-      myPaveFiller = nullptr;
-    }
+    delete myPaveFiller;
+    myPaveFiller = nullptr;
   }
   //
   // prepare shapes for intersection

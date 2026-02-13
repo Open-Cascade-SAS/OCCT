@@ -608,11 +608,8 @@ void Image_AlienPixMap::Clear()
     myPalette = NULL;
   }
 #elif defined(__EMSCRIPTEN__)
-  if (myLibImage != NULL)
-  {
-    free((void*)myLibImage);
-    myLibImage = NULL;
-  }
+  free((void*)myLibImage);
+  myLibImage = NULL;
 #endif
 }
 

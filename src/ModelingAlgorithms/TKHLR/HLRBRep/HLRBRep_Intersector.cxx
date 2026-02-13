@@ -484,11 +484,8 @@ void HLRBRep_Intersector::SimulateOnePoint(HLRBRep_EdgeData* theEdge1,
 void HLRBRep_Intersector::Load(HLRBRep_Surface* theSurface)
 {
   mySurface = theSurface;
-  if (myPolyhedron != nullptr)
-  {
-    delete myPolyhedron;
-    myPolyhedron = nullptr;
-  }
+  delete myPolyhedron;
+  myPolyhedron = nullptr;
 }
 
 //=================================================================================================
@@ -668,8 +665,8 @@ const IntCurveSurface_IntersectionSegment& HLRBRep_Intersector::CSSegment(const 
 
 void HLRBRep_Intersector::Destroy()
 {
-  if (myPolyhedron != nullptr)
-    delete myPolyhedron;
+  delete myPolyhedron;
+  myPolyhedron = nullptr;
 }
 
 /* ********************************************************************************

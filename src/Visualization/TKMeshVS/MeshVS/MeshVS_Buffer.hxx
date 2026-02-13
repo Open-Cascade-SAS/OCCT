@@ -44,11 +44,8 @@ public:
   //! Destructor
   ~MeshVS_Buffer()
   {
-    if (myDynData)
-    {
-      Standard::Free(myDynData);
-      myDynData = nullptr;
-    }
+    Standard::Free(myDynData);
+    myDynData = nullptr;
   }
 
   //! Cast the buffer to the void pointer

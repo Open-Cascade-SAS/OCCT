@@ -530,11 +530,8 @@ void Draw_Viewer::RemoveView(const int id)
 {
   if (Draw_Batch)
     return;
-  if (myViews[id])
-  {
-    delete myViews[id];
-    myViews[id] = nullptr;
-  }
+  delete myViews[id];
+  myViews[id] = nullptr;
 }
 
 //=================================================================================================
@@ -724,11 +721,8 @@ void Draw_Viewer::DeleteView(const int id)
 {
   if (Draw_Batch)
     return;
-  if (myViews[id] != nullptr)
-  {
-    delete myViews[id];
-    myViews[id] = nullptr;
-  }
+  delete myViews[id];
+  myViews[id] = nullptr;
 }
 
 //=================================================================================================

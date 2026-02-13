@@ -33,29 +33,17 @@ static bool                            GLOBAL_FDSCNX_prepared = false;
 
 void FDSCNX_Close()
 {
-  if (GLOBAL_elf1)
-  {
-    delete GLOBAL_elf1;
-    GLOBAL_elf1 = nullptr;
-  }
+  delete GLOBAL_elf1;
+  GLOBAL_elf1 = nullptr;
   //
-  if (GLOBAL_elf2)
-  {
-    delete GLOBAL_elf2;
-    GLOBAL_elf2 = nullptr;
-  }
+  delete GLOBAL_elf2;
+  GLOBAL_elf2 = nullptr;
   //
-  if (GLOBAL_fle)
-  {
-    delete GLOBAL_fle;
-    GLOBAL_fle = nullptr;
-  }
+  delete GLOBAL_fle;
+  GLOBAL_fle = nullptr;
   //
-  if (GLOBAL_los)
-  {
-    delete GLOBAL_los;
-    GLOBAL_los = nullptr;
-  }
+  delete GLOBAL_los;
+  GLOBAL_los = nullptr;
   //
   GLOBAL_FDSCNX_prepared = false;
 }

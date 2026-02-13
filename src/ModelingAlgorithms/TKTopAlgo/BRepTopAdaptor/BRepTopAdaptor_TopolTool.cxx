@@ -78,10 +78,7 @@ void BRepTopAdaptor_TopolTool::Initialize(const occ::handle<Adaptor3d_Surface>& 
   TopoDS_Shape s_wnt = brhs->Face();
   s_wnt.Orientation(TopAbs_FORWARD);
   myFace = TopoDS::Face(s_wnt);
-  if (myFClass2d != nullptr)
-  {
-    delete (BRepTopAdaptor_FClass2d*)myFClass2d;
-  }
+  delete (BRepTopAdaptor_FClass2d*)myFClass2d;
   myFClass2d   = nullptr;
   myNbSamplesU = -1;
   myS          = S;
@@ -205,11 +202,8 @@ bool BRepTopAdaptor_TopolTool::IsThePointOn(const gp_Pnt2d& P,
 
 void BRepTopAdaptor_TopolTool::Destroy()
 {
-  if (myFClass2d != nullptr)
-  {
-    delete (BRepTopAdaptor_FClass2d*)myFClass2d;
-    myFClass2d = nullptr;
-  }
+  delete (BRepTopAdaptor_FClass2d*)myFClass2d;
+  myFClass2d = nullptr;
 }
 
 //=================================================================================================

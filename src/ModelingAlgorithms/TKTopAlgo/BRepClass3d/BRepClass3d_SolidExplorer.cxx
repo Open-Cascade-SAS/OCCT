@@ -835,12 +835,9 @@ void BRepClass3d_SolidExplorer::Destroy()
   NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher>::Iterator iter(myMapOfInter);
   for (; iter.More(); iter.Next())
   {
-    void* ptr = iter.Value();
-    if (ptr)
-    {
-      delete (IntCurvesFace_Intersector*)ptr;
-      myMapOfInter.ChangeFind(iter.Key()) = nullptr;
-    }
+    void*& aPtr = iter.ChangeValue();
+    delete (IntCurvesFace_Intersector*)aPtr;
+    aPtr = nullptr;
   }
   myMapOfInter.Clear();
 }
@@ -860,12 +857,9 @@ void BRepClass3d_SolidExplorer::InitShape(const TopoDS_Shape& S)
   NCollection_DataMap<TopoDS_Shape, void*, TopTools_ShapeMapHasher>::Iterator iter(myMapOfInter);
   for (; iter.More(); iter.Next())
   {
-    void* ptr = iter.Value();
-    if (ptr)
-    {
-      delete (IntCurvesFace_Intersector*)ptr;
-      myMapOfInter.ChangeFind(iter.Key()) = nullptr;
-    }
+    void*& aPtr = iter.ChangeValue();
+    delete (IntCurvesFace_Intersector*)aPtr;
+    aPtr = nullptr;
   }
 
   myMapOfInter.Clear();

@@ -174,8 +174,7 @@ void Interface_ParamSet::Destroy()
   //  if (!thenext.IsNull()) thenext->Destroy();
   thenext.Nullify();
   //  "Manual" destruction (direct memory management)
-  if (theval)
-    delete[] theval;
+  delete[] theval;
   theval = nullptr;
   thelist->Clear();
   thelist.Nullify();

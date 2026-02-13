@@ -1248,10 +1248,7 @@ void GeomFill_ConstrainedFilling::PerformS1()
   // Un petit menage
   for (i = 0; i <= 3; i++)
   {
-    if (nt[i])
-    {
-      delete[] nt[i];
-    }
+    delete[] nt[i];
   }
 }
 

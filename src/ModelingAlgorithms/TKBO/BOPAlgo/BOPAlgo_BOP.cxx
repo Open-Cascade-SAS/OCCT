@@ -360,11 +360,8 @@ void BOPAlgo_BOP::Perform(const Message_ProgressRange& theRange)
   //
   if (myEntryPoint == 1)
   {
-    if (myPaveFiller)
-    {
-      delete myPaveFiller;
-      myPaveFiller = nullptr;
-    }
+    delete myPaveFiller;
+    myPaveFiller = nullptr;
   }
   //
   aAllocator = NCollection_BaseAllocator::CommonBaseAllocator();

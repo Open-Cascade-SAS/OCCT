@@ -254,8 +254,7 @@ LDOM_MemManager::LDOM_MemManager(const int aBlockSize)
 LDOM_MemManager::~LDOM_MemManager()
 {
   delete myFirstBlock;
-  if (myHashTable)
-    delete myHashTable;
+  delete myHashTable;
 }
 
 //=================================================================================================

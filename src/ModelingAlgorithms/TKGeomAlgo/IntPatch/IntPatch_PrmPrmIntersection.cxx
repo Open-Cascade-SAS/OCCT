@@ -2392,11 +2392,8 @@ void IntPatch_PrmPrmIntersection::Perform(const occ::handle<Adaptor3d_Surface>& 
     done = Interference.IsDone();
     if (!done)
     {
-      if (pInterference)
-      {
-        delete pInterference;
-        pInterference = nullptr;
-      }
+      delete pInterference;
+      pInterference = nullptr;
 
       return;
     }
