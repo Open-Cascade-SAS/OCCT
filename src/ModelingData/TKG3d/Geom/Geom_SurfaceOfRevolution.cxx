@@ -227,7 +227,8 @@ std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const dou
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U,
+                                                                    const double V) const
 {
   auto aBasisD1 = basisCurve->EvalD1(V);
   if (!aBasisD1)
@@ -245,7 +246,8 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U,
+                                                                    const double V) const
 {
   auto aBasisD2 = basisCurve->EvalD2(V);
   if (!aBasisD2)
@@ -267,7 +269,8 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U,
+                                                                    const double V) const
 {
   auto aBasisD3 = basisCurve->EvalD3(V);
   if (!aBasisD3)

@@ -232,8 +232,14 @@ std::optional<Geom2d_Curve::ResD2> Geom2d_OffsetCurve::EvalD2(const double theU)
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
     gp_Vec2d aDummyD4;
-    if (!Geom2d_OffsetCurveUtils::AdjustDerivative(
-          *basisCurve, 3, theU, aD1, aD2, aD3, aDummyD4, isDirectionChange))
+    if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*basisCurve,
+                                                   3,
+                                                   theU,
+                                                   aD1,
+                                                   aD2,
+                                                   aD3,
+                                                   aDummyD4,
+                                                   isDirectionChange))
       return std::nullopt;
   }
   if (!Geom2d_OffsetCurveUtils::CalculateD2(aValue, aD1, aD2, aD3, isDirectionChange, offsetValue))
@@ -253,12 +259,18 @@ std::optional<Geom2d_Curve::ResD3> Geom2d_OffsetCurve::EvalD3(const double theU)
     return std::nullopt;
   gp_Pnt2d aValue = aBasisD3->Point;
   gp_Vec2d aD1 = aBasisD3->D1, aD2 = aBasisD3->D2, aD3 = aBasisD3->D3;
-  gp_Vec2d aD4              = *aD4Opt;
+  gp_Vec2d aD4               = *aD4Opt;
   bool     isDirectionChange = false;
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
-    if (!Geom2d_OffsetCurveUtils::AdjustDerivative(
-          *basisCurve, 4, theU, aD1, aD2, aD3, aD4, isDirectionChange))
+    if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*basisCurve,
+                                                   4,
+                                                   theU,
+                                                   aD1,
+                                                   aD2,
+                                                   aD3,
+                                                   aD4,
+                                                   isDirectionChange))
       return std::nullopt;
   }
   if (!Geom2d_OffsetCurveUtils::CalculateD3(aValue,
@@ -280,18 +292,15 @@ std::optional<gp_Vec2d> Geom2d_OffsetCurve::EvalDN(const double U, const int N) 
     return std::nullopt;
   switch (N)
   {
-    case 1:
-    {
+    case 1: {
       auto aR = EvalD1(U);
       return aR ? std::optional<gp_Vec2d>(aR->D1) : std::nullopt;
     }
-    case 2:
-    {
+    case 2: {
       auto aR = EvalD2(U);
       return aR ? std::optional<gp_Vec2d>(aR->D2) : std::nullopt;
     }
-    case 3:
-    {
+    case 3: {
       auto aR = EvalD3(U);
       return aR ? std::optional<gp_Vec2d>(aR->D3) : std::nullopt;
     }

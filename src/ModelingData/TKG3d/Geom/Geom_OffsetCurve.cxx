@@ -278,8 +278,14 @@ std::optional<Geom_Curve::ResD2> Geom_OffsetCurve::EvalD2(const double theU) con
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
     gp_Vec aDummyD4;
-    if (!Geom_OffsetCurveUtils::AdjustDerivative(
-          *basisCurve, 3, theU, aD1, aD2, aD3, aDummyD4, isDirectionChange))
+    if (!Geom_OffsetCurveUtils::AdjustDerivative(*basisCurve,
+                                                 3,
+                                                 theU,
+                                                 aD1,
+                                                 aD2,
+                                                 aD3,
+                                                 aDummyD4,
+                                                 isDirectionChange))
       return std::nullopt;
   }
   if (!Geom_OffsetCurveUtils::CalculateD2(aValue,
@@ -305,12 +311,18 @@ std::optional<Geom_Curve::ResD3> Geom_OffsetCurve::EvalD3(const double theU) con
     return std::nullopt;
   gp_Pnt aValue = aBasisD3->Point;
   gp_Vec aD1 = aBasisD3->D1, aD2 = aBasisD3->D2, aD3 = aBasisD3->D3;
-  gp_Vec aD4              = *aD4Opt;
+  gp_Vec aD4               = *aD4Opt;
   bool   isDirectionChange = false;
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
-    if (!Geom_OffsetCurveUtils::AdjustDerivative(
-          *basisCurve, 4, theU, aD1, aD2, aD3, aD4, isDirectionChange))
+    if (!Geom_OffsetCurveUtils::AdjustDerivative(*basisCurve,
+                                                 4,
+                                                 theU,
+                                                 aD1,
+                                                 aD2,
+                                                 aD3,
+                                                 aD4,
+                                                 isDirectionChange))
       return std::nullopt;
   }
   if (!Geom_OffsetCurveUtils::CalculateD3(aValue,
@@ -333,18 +345,15 @@ std::optional<gp_Vec> Geom_OffsetCurve::EvalDN(const double U, const int N) cons
     return std::nullopt;
   switch (N)
   {
-    case 1:
-    {
+    case 1: {
       auto aR = EvalD1(U);
       return aR ? std::optional<gp_Vec>(aR->D1) : std::nullopt;
     }
-    case 2:
-    {
+    case 2: {
       auto aR = EvalD2(U);
       return aR ? std::optional<gp_Vec>(aR->D2) : std::nullopt;
     }
-    case 3:
-    {
+    case 3: {
       auto aR = EvalD3(U);
       return aR ? std::optional<gp_Vec>(aR->D3) : std::nullopt;
     }

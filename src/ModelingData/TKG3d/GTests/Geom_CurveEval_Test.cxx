@@ -241,7 +241,7 @@ TEST(Geom_CurveEvalTest, TrimmedCurve_EvalD1_DelegatesToBasis)
 
   const double aU = M_PI / 4.0;
 
-  const auto aBasisD1  = aBasis->EvalD1(aU);
+  const auto aBasisD1   = aBasis->EvalD1(aU);
   const auto aTrimmedD1 = aTrimmed->EvalD1(aU);
 
   ASSERT_TRUE(aBasisD1.has_value());

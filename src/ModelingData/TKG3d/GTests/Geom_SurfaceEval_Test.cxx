@@ -171,7 +171,7 @@ TEST(Geom_SurfaceEvalTest, OffsetSurface_EvalD0_ValidOnRegularSurface)
 
 TEST(Geom_SurfaceEvalTest, CylindricalSurface_EvalD1_ValidResults)
 {
-  const double aRadius = 4.0;
+  const double                         aRadius = 4.0;
   occ::handle<Geom_CylindricalSurface> aSurf =
     new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), aRadius);
 
@@ -253,8 +253,7 @@ TEST(Geom_SurfaceEvalTest, ExtrusionSurface_EvalD0_ValidResults)
   ASSERT_TRUE(aResult.has_value());
 
   // Point should lie on circle of radius 3 at height V
-  const double aDistXY =
-    std::sqrt(aResult->X() * aResult->X() + aResult->Y() * aResult->Y());
+  const double aDistXY = std::sqrt(aResult->X() * aResult->X() + aResult->Y() * aResult->Y());
   EXPECT_NEAR(aDistXY, 3.0, Precision::Confusion());
   EXPECT_NEAR(aResult->Z(), aV, Precision::Confusion());
 }
@@ -266,12 +265,10 @@ TEST(Geom_SurfaceEvalTest, ExtrusionSurface_EvalD0_ValidResults)
 TEST(Geom_SurfaceEvalTest, RevolutionSurface_EvalD1_ValidResults)
 {
   // Revolve a line around Z axis to create a cone-like surface
-  occ::handle<Geom_Line> aGeneratrix =
-    new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Line> aGeneratrix = new Geom_Line(gp_Pnt(1.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
 
-  gp_Ax1 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  occ::handle<Geom_SurfaceOfRevolution> aSurf =
-    new Geom_SurfaceOfRevolution(aGeneratrix, anAxis);
+  gp_Ax1                                anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_SurfaceOfRevolution> aSurf = new Geom_SurfaceOfRevolution(aGeneratrix, anAxis);
 
   const double aU = M_PI / 4.0;
   const double aV = 2.0;

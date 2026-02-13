@@ -133,17 +133,23 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OffsetCurve::EvaluateGrid
     {
       gp_Vec aDummyD4;
       if (!Geom_OffsetCurveUtils::AdjustDerivative(*myBasis,
-                                                    3,
-                                                    theParams.Value(theParams.Lower() + i - 1),
-                                                    aD1,
-                                                    aD2,
-                                                    aD3,
-                                                    aDummyD4,
-                                                    isDirectionChange))
+                                                   3,
+                                                   theParams.Value(theParams.Lower() + i - 1),
+                                                   aD1,
+                                                   aD2,
+                                                   aD3,
+                                                   aDummyD4,
+                                                   isDirectionChange))
         return NCollection_Array1<GeomGridEval::CurveD2>();
     }
 
-    if (!Geom_OffsetCurveUtils::CalculateD2(aP, aD1, aD2, aD3, aDirXYZ, myOffset, isDirectionChange))
+    if (!Geom_OffsetCurveUtils::CalculateD2(aP,
+                                            aD1,
+                                            aD2,
+                                            aD3,
+                                            aDirXYZ,
+                                            myOffset,
+                                            isDirectionChange))
       return NCollection_Array1<GeomGridEval::CurveD2>();
     aResult.ChangeValue(i) = {aP, aD1, aD2};
   }
@@ -192,19 +198,25 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
     bool isDirectionChange = false;
     if (aD1.SquareMagnitude() <= gp::Resolution())
     {
-      if (!Geom_OffsetCurveUtils::AdjustDerivative(
-            *myBasis, 4, aParam, aD1, aD2, aD3, aD4, isDirectionChange))
+      if (!Geom_OffsetCurveUtils::AdjustDerivative(*myBasis,
+                                                   4,
+                                                   aParam,
+                                                   aD1,
+                                                   aD2,
+                                                   aD3,
+                                                   aD4,
+                                                   isDirectionChange))
         return NCollection_Array1<GeomGridEval::CurveD3>();
     }
 
     if (!Geom_OffsetCurveUtils::CalculateD3(aP,
-                                           aD1,
-                                           aD2,
-                                           aD3,
-                                           aD4,
-                                           aDirXYZ,
-                                           myOffset,
-                                           isDirectionChange))
+                                            aD1,
+                                            aD2,
+                                            aD3,
+                                            aD4,
+                                            aDirXYZ,
+                                            myOffset,
+                                            isDirectionChange))
       return NCollection_Array1<GeomGridEval::CurveD3>();
     aResult.ChangeValue(i) = {aP, aD1, aD2, aD3};
   }

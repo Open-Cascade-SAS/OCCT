@@ -311,7 +311,8 @@ inline bool D1(const double     theU,
   return true;
 }
 
-//! Evaluates point, first and second derivatives on surface of revolution using non-throwing EvalD2.
+//! Evaluates point, first and second derivatives on surface of revolution using non-throwing
+//! EvalD2.
 //! @tparam CurveType Type supporting EvalD2(param) method
 //! @param theU Rotation angle parameter
 //! @param theV Parameter along the basis curve

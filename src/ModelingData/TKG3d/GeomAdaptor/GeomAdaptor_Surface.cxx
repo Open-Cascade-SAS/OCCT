@@ -1076,8 +1076,8 @@ void GeomAdaptor_Surface::D1(const double U,
 std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double V) const
 {
   Geom_Surface::ResD1 aResult;
-  int         Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double      u = U, v = V;
+  int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double              u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1116,20 +1116,10 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
       ElSLib::D1(u, v, std::get<gp_Cone>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
       return aResult;
     case GeomAbs_Sphere:
-      ElSLib::D1(u,
-                 v,
-                 std::get<gp_Sphere>(mySurfaceData),
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V);
+      ElSLib::D1(u, v, std::get<gp_Sphere>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
       return aResult;
     case GeomAbs_Torus:
-      ElSLib::D1(u,
-                 v,
-                 std::get<gp_Torus>(mySurfaceData),
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V);
+      ElSLib::D1(u, v, std::get<gp_Torus>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
       return aResult;
 
     case GeomAbs_BezierSurface: {
@@ -1218,8 +1208,8 @@ void GeomAdaptor_Surface::D2(const double U,
 std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double V) const
 {
   Geom_Surface::ResD2 aResult;
-  int         Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double      u = U, v = V;
+  int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double              u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1298,14 +1288,8 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
-      aCache->D2(U,
-                 V,
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V,
-                 aResult.D2U,
-                 aResult.D2V,
-                 aResult.D2UV);
+      aCache
+        ->D2(U, V, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
       return aResult;
     }
     case GeomAbs_BSplineSurface: {
@@ -1427,8 +1411,8 @@ void GeomAdaptor_Surface::D3(const double U,
 std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double V) const
 {
   Geom_Surface::ResD3 aResult;
-  int         Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double      u = U, v = V;
+  int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double              u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;

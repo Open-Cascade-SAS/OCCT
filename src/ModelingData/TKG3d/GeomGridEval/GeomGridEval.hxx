@@ -22,8 +22,8 @@
 
 //! @brief Namespace containing type aliases and template helpers for grid evaluators.
 //!
-//! Provides type aliases to common evaluation result structures defined in Geom_Curve and Geom_Surface
-//! and template helpers for iterating over parameter grids.
+//! Provides type aliases to common evaluation result structures defined in Geom_Curve and
+//! Geom_Surface and template helpers for iterating over parameter grids.
 namespace GeomGridEval
 {
 

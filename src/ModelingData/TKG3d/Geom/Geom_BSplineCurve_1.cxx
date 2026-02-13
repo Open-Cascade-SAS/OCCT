@@ -177,8 +177,8 @@ std::optional<gp_Pnt> Geom_BSplineCurve::EvalD0(const double U) const
 std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 {
   std::optional<Geom_Curve::ResD1> aResult{std::in_place};
-  int                         aSpanIndex = 0;
-  double                      aNewU(U);
+  int                              aSpanIndex = 0;
+  double                           aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
@@ -202,8 +202,8 @@ std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 {
   std::optional<Geom_Curve::ResD2> aResult{std::in_place};
-  int                         aSpanIndex = 0;
-  double                      aNewU(U);
+  int                              aSpanIndex = 0;
+  double                           aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
@@ -228,8 +228,8 @@ std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 std::optional<Geom_Curve::ResD3> Geom_BSplineCurve::EvalD3(const double U) const
 {
   std::optional<Geom_Curve::ResD3> aResult{std::in_place};
-  int                         aSpanIndex = 0;
-  double                      aNewU(U);
+  int                              aSpanIndex = 0;
+  double                           aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))

@@ -334,7 +334,7 @@ bool AdjustDerivative(const CurveType& theCurve,
   static const double aMinStep       = 1e-7;
   static const int    aMaxDerivOrder = 3;
 
-  theIsDirectionChange = false;
+  theIsDirectionChange     = false;
   const double anUinfium   = theCurve.FirstParameter();
   const double anUsupremum = theCurve.LastParameter();
 
@@ -472,9 +472,9 @@ bool EvaluateD2(double                theU,
   auto aD3Opt = theBasisCurve->EvalD3(theU);
   if (!aD3Opt)
     return false;
-  theValue = aD3Opt->Point;
-  theD1    = aD3Opt->D1;
-  theD2    = aD3Opt->D2;
+  theValue   = aD3Opt->Point;
+  theD1      = aD3Opt->D1;
+  theD2      = aD3Opt->D2;
   gp_Vec aD3 = aD3Opt->D3;
 
   bool isDirectionChange = false;

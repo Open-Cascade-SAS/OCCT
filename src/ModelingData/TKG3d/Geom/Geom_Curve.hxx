@@ -209,7 +209,8 @@ public:
 
   //! Computes the Nth derivative at parameter U.
   //! Returns std::nullopt if the curve continuity is not CN, or N < 1.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U, const int N) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U,
+                                                                     const int    N) const = 0;
 
   //! Returns in P the point of parameter U.
   //! Throws on failure for backward compatibility.

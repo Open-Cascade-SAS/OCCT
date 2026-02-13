@@ -283,8 +283,7 @@ bool ComputeDerivatives(int                         theMaxOrder,
                                         theMaxOrder + theNV + 1);
     switch (theMinOrder)
     {
-      case 1:
-      {
+      case 1: {
         auto aD1 = theOscSurf->EvalD1(theU, theV);
         if (!aD1)
           return false;
@@ -292,8 +291,7 @@ bool ComputeDerivatives(int                         theMaxOrder,
         DerSurfL.SetValue(0, 1, aD1->D1V);
         break;
       }
-      case 2:
-      {
+      case 2: {
         auto aD2 = theOscSurf->EvalD2(theU, theV);
         if (!aD2)
           return false;
@@ -304,8 +302,7 @@ bool ComputeDerivatives(int                         theMaxOrder,
         DerSurfL.SetValue(0, 2, aD2->D2V);
         break;
       }
-      case 3:
-      {
+      case 3: {
         auto aD3 = theOscSurf->EvalD3(theU, theV);
         if (!aD3)
           return false;
@@ -761,7 +758,14 @@ bool EvaluateD0(double                  theU,
   if (!aBasisD1)
     return false;
   theValue = aBasisD1->Point;
-  return EvaluateD0(theU, theV, theBasisSurf, theOffset, theOscQuery, theValue, aBasisD1->D1U, aBasisD1->D1V);
+  return EvaluateD0(theU,
+                    theV,
+                    theBasisSurf,
+                    theOffset,
+                    theOscQuery,
+                    theValue,
+                    aBasisD1->D1U,
+                    aBasisD1->D1V);
 }
 
 //! Template function for D1 evaluation with pre-computed basis surface D2.
@@ -1811,4 +1815,3 @@ bool EvaluateDN(double                  theU,
 } // namespace Geom_OffsetSurfaceUtils
 
 #endif // _Geom_OffsetSurfaceUtils_HeaderFile
-

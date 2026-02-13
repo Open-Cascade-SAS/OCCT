@@ -145,7 +145,7 @@ std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, cons
 //=================================================================================================
 
 std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
-                                                                 const double V) const
+                                                                         const double V) const
 {
   auto aBasisD1 = basisCurve->EvalD1(U);
   if (!aBasisD1)
@@ -164,7 +164,7 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const d
 //=================================================================================================
 
 std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
-                                                                 const double V) const
+                                                                         const double V) const
 {
   auto aBasisD2 = basisCurve->EvalD2(U);
   if (!aBasisD2)
@@ -187,7 +187,7 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const d
 //=================================================================================================
 
 std::optional<Geom_Surface::ResD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
-                                                                 const double V) const
+                                                                         const double V) const
 {
   auto aBasisD3 = basisCurve->EvalD3(U);
   if (!aBasisD3)

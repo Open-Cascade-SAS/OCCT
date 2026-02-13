@@ -312,12 +312,7 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
   }
 
   gp_Pnt aP;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD0(U,
-                                            V,
-                                            basisSurf.get(),
-                                            offsetValue,
-                                            myOscSurf.get(),
-                                            aP))
+  if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
   {
     return std::nullopt;
   }
@@ -341,13 +336,13 @@ std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, co
 
   Geom_Surface::ResD1 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD1(U,
-                                            V,
-                                            basisSurf.get(),
-                                            offsetValue,
-                                            myOscSurf.get(),
-                                            aResult.Point,
-                                            aResult.D1U,
-                                            aResult.D1V))
+                                           V,
+                                           basisSurf.get(),
+                                           offsetValue,
+                                           myOscSurf.get(),
+                                           aResult.Point,
+                                           aResult.D1U,
+                                           aResult.D1V))
   {
     return std::nullopt;
   }
@@ -372,16 +367,16 @@ std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, co
 
   Geom_Surface::ResD2 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD2(U,
-                                            V,
-                                            basisSurf.get(),
-                                            offsetValue,
-                                            myOscSurf.get(),
-                                            aResult.Point,
-                                            aResult.D1U,
-                                            aResult.D1V,
-                                            aResult.D2U,
-                                            aResult.D2V,
-                                            aResult.D2UV))
+                                           V,
+                                           basisSurf.get(),
+                                           offsetValue,
+                                           myOscSurf.get(),
+                                           aResult.Point,
+                                           aResult.D1U,
+                                           aResult.D1V,
+                                           aResult.D2U,
+                                           aResult.D2V,
+                                           aResult.D2UV))
   {
     return std::nullopt;
   }
@@ -405,20 +400,20 @@ std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, co
 
   Geom_Surface::ResD3 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD3(U,
-                                            V,
-                                            basisSurf.get(),
-                                            offsetValue,
-                                            myOscSurf.get(),
-                                            aResult.Point,
-                                            aResult.D1U,
-                                            aResult.D1V,
-                                            aResult.D2U,
-                                            aResult.D2V,
-                                            aResult.D2UV,
-                                            aResult.D3U,
-                                            aResult.D3V,
-                                            aResult.D3UUV,
-                                            aResult.D3UVV))
+                                           V,
+                                           basisSurf.get(),
+                                           offsetValue,
+                                           myOscSurf.get(),
+                                           aResult.Point,
+                                           aResult.D1U,
+                                           aResult.D1V,
+                                           aResult.D2U,
+                                           aResult.D2V,
+                                           aResult.D2UV,
+                                           aResult.D3U,
+                                           aResult.D3V,
+                                           aResult.D3UUV,
+                                           aResult.D3UVV))
   {
     return std::nullopt;
   }
@@ -447,13 +442,13 @@ std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
 
   gp_Vec aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateDN(U,
-                                            V,
-                                            Nu,
-                                            Nv,
-                                            basisSurf.get(),
-                                            offsetValue,
-                                            myOscSurf.get(),
-                                            aResult))
+                                           V,
+                                           Nu,
+                                           Nv,
+                                           basisSurf.get(),
+                                           offsetValue,
+                                           myOscSurf.get(),
+                                           aResult))
   {
     return std::nullopt;
   }

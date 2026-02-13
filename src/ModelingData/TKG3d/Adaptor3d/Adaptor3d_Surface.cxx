@@ -493,7 +493,10 @@ std::optional<Geom_Surface::ResD3> Adaptor3d_Surface::EvalD3(double theU, double
 
 //=================================================================================================
 
-std::optional<gp_Vec> Adaptor3d_Surface::EvalDN(double theU, double theV, int theNu, int theNv) const
+std::optional<gp_Vec> Adaptor3d_Surface::EvalDN(double theU,
+                                                double theV,
+                                                int    theNu,
+                                                int    theNv) const
 {
   try
   {

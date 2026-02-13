@@ -112,7 +112,7 @@ TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalD1_ConsistentWithOldAPI)
 
 TEST(Geom2d_CurveEvalTest, Ellipse_EvalD2D3_ValidResults)
 {
-  gp_Elips2d                      anElips(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0, 3.0);
+  gp_Elips2d                  anElips(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0, 3.0);
   occ::handle<Geom2d_Ellipse> aCurve = new Geom2d_Ellipse(anElips);
 
   const double aU = M_PI / 4.0;

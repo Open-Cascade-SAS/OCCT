@@ -933,7 +933,8 @@ std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
       auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
-        aBSplData.Curve->LocalD3(U, aStart, aFinish, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+        aBSplData.Curve
+          ->LocalD3(U, aStart, aFinish, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       }
       else
       {
