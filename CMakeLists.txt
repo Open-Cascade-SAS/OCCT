@@ -116,9 +116,9 @@ if ("${BUILD_LIBRARY_TYPE}" STREQUAL "Shared")
     set (BUILD_SHARED_LIBRARY_NAME_POSTFIX "" CACHE STRING "${BUILD_SHARED_LIBRARY_NAME_POSTFIX_DESCR}" FORCE)
   endif()
 else()
-  message(AUTHOR_WARNING "OCCT is licensed under LGPL 2.1, which has limitations on"
-                         "static linking with proprietary software."
-                         "OCCT3D offers commercial licensing exceptions to LGPL 2.1."
+  message(AUTHOR_WARNING "OCCT is licensed under LGPL 2.1, which has limitations on "
+                         "static linking with proprietary software. "
+                         "OCCT3D offers commercial licensing exceptions to LGPL 2.1. "
                          "Please use our contact form at https://occt3d.com/")
   unset (BUILD_SHARED_LIBS)
   unset (BUILD_SHARED_LIBRARY_NAME_POSTFIX)
