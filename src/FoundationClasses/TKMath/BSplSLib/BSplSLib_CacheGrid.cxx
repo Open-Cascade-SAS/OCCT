@@ -177,7 +177,7 @@ int BSplSLib_CacheGrid::locateCellDir(double        theParam,
     if (aDelta >= aLen)
       continue;
 
-    // Check proximity to span end — if within machine epsilon of the next
+    // Check proximity to span end - if within machine epsilon of the next
     // knot boundary, prefer the next span (consistent with BSplCLib::LocateParameter)
     const double anEps = Epsilon((std::min)(std::fabs(theLast), std::fabs(aParam)));
     if (aLen - aDelta <= anEps)
@@ -253,7 +253,7 @@ void BSplSLib_CacheGrid::rebuildGrid(double theU, double theV) const
                 myCellSpanStartV,
                 myCellSpanEndV);
 
-  // Mark cells whose span changed as invalid. Cache objects stay in place —
+  // Mark cells whose span changed as invalid. Cache objects stay in place --
   // never moved or released. Invalid cells are rebuilt on demand by calling
   // BuildCache on the existing cache object (no reallocation).
   for (int iU = 0; iU < THE_GRID_SIZE; ++iU)

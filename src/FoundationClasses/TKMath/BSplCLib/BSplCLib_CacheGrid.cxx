@@ -113,7 +113,7 @@ void BSplCLib_CacheGrid::centerGrid(int theCenterSpanIndex) const
                                            theCenterSpanIndex,
                                            neighborSpanIndex(theCenterSpanIndex, +1)};
 
-  // Update span boundaries. Cache objects stay in place — never moved or released.
+  // Update span boundaries. Cache objects stay in place - never moved or released.
   // Cells whose span changed are marked invalid and will be rebuilt on demand
   // by calling BuildCache on the existing cache object (no reallocation).
   for (int i = 0; i < THE_GRID_SIZE; ++i)
@@ -177,7 +177,7 @@ int BSplCLib_CacheGrid::locateCell(double theParameter) const
     if (aDelta >= aLen)
       continue;
 
-    // Check proximity to span end — if within machine epsilon of the next
+    // Check proximity to span end - if within machine epsilon of the next
     // knot boundary, prefer the next span (consistent with BSplCLib::LocateParameter)
     const double anEps = Epsilon((std::min)(std::fabs(myLastParam), std::fabs(aParam)));
     if (aLen - aDelta <= anEps)
