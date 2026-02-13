@@ -538,7 +538,7 @@ TEST(Geom2dGridEval_CurveTest, BezierCurveDispatch)
   aPoles.SetValue(3, gp_Pnt2d(3, 2));
   aPoles.SetValue(4, gp_Pnt2d(4, 0));
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
-  Geom2dAdaptor_Curve              anAdaptor(aBezier);
+  Geom2dAdaptor_Curve             anAdaptor(aBezier);
 
   Geom2dGridEval_Curve anEval;
   anEval.Initialize(anAdaptor);

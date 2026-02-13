@@ -228,10 +228,10 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_BSplineCurve::Evaluat
        Geom2dGridEval::CurveD1&           theResult) {
       theCache->D1Local(theLocalParam, theResult.Point, theResult.D1);
     },
-    [](const CurveData&           theData,
-       double                     theParam,
-       int                        theSpanIdx,
-       Geom2dGridEval::CurveD1&   theResult) {
+    [](const CurveData&         theData,
+       double                   theParam,
+       int                      theSpanIdx,
+       Geom2dGridEval::CurveD1& theResult) {
       BSplCLib::D1(theParam,
                    theSpanIdx,
                    theData.Degree,
@@ -264,10 +264,10 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_BSplineCurve::Evaluat
        Geom2dGridEval::CurveD2&           theResult) {
       theCache->D2Local(theLocalParam, theResult.Point, theResult.D1, theResult.D2);
     },
-    [](const CurveData&           theData,
-       double                     theParam,
-       int                        theSpanIdx,
-       Geom2dGridEval::CurveD2&   theResult) {
+    [](const CurveData&         theData,
+       double                   theParam,
+       int                      theSpanIdx,
+       Geom2dGridEval::CurveD2& theResult) {
       BSplCLib::D2(theParam,
                    theSpanIdx,
                    theData.Degree,
@@ -301,10 +301,10 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_BSplineCurve::Evaluat
        Geom2dGridEval::CurveD3&           theResult) {
       theCache->D3Local(theLocalParam, theResult.Point, theResult.D1, theResult.D2, theResult.D3);
     },
-    [](const CurveData&           theData,
-       double                     theParam,
-       int                        theSpanIdx,
-       Geom2dGridEval::CurveD3&   theResult) {
+    [](const CurveData&         theData,
+       double                   theParam,
+       int                      theSpanIdx,
+       Geom2dGridEval::CurveD3& theResult) {
       BSplCLib::D3(theParam,
                    theSpanIdx,
                    theData.Degree,

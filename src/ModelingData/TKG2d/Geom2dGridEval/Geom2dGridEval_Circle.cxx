@@ -68,7 +68,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Circle::EvaluateGridD
     return NCollection_Array1<Geom2dGridEval::CurveD1>();
   }
 
-  const int                                     aNb = theParams.Size();
+  const int                                   aNb = theParams.Size();
   NCollection_Array1<Geom2dGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Circ2d& aCirc   = myGeom->Circ2d();
@@ -92,11 +92,10 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Circle::EvaluateGridD
 
     // P = C + R * (cos(u) * X + sin(u) * Y)
     // D1 = R * (-sin(u) * X + cos(u) * Y)
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + aRadius * (cosU * aXX + sinU * aYX),
-                                         aCY + aRadius * (cosU * aXY + sinU * aYY)),
-                                gp_Vec2d(aRadius * (-sinU * aXX + cosU * aYX),
-                                         aRadius * (-sinU * aXY + cosU * aYY))};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + aRadius * (cosU * aXX + sinU * aYX),
+               aCY + aRadius * (cosU * aXY + sinU * aYY)),
+      gp_Vec2d(aRadius * (-sinU * aXX + cosU * aYX), aRadius * (-sinU * aXY + cosU * aYY))};
   }
   return aResult;
 }
@@ -111,7 +110,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Circle::EvaluateGridD
     return NCollection_Array1<Geom2dGridEval::CurveD2>();
   }
 
-  const int                                     aNb = theParams.Size();
+  const int                                   aNb = theParams.Size();
   NCollection_Array1<Geom2dGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Circ2d& aCirc   = myGeom->Circ2d();
@@ -136,13 +135,11 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Circle::EvaluateGridD
     // P = C + R * (cos(u) * X + sin(u) * Y)
     // D1 = R * (-sin(u) * X + cos(u) * Y)
     // D2 = R * (-cos(u) * X - sin(u) * Y)
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + aRadius * (cosU * aXX + sinU * aYX),
-                                         aCY + aRadius * (cosU * aXY + sinU * aYY)),
-                                gp_Vec2d(aRadius * (-sinU * aXX + cosU * aYX),
-                                         aRadius * (-sinU * aXY + cosU * aYY)),
-                                gp_Vec2d(aRadius * (-cosU * aXX - sinU * aYX),
-                                         aRadius * (-cosU * aXY - sinU * aYY))};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + aRadius * (cosU * aXX + sinU * aYX),
+               aCY + aRadius * (cosU * aXY + sinU * aYY)),
+      gp_Vec2d(aRadius * (-sinU * aXX + cosU * aYX), aRadius * (-sinU * aXY + cosU * aYY)),
+      gp_Vec2d(aRadius * (-cosU * aXX - sinU * aYX), aRadius * (-cosU * aXY - sinU * aYY))};
   }
   return aResult;
 }
@@ -157,7 +154,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Circle::EvaluateGridD
     return NCollection_Array1<Geom2dGridEval::CurveD3>();
   }
 
-  const int                                     aNb = theParams.Size();
+  const int                                   aNb = theParams.Size();
   NCollection_Array1<Geom2dGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Circ2d& aCirc   = myGeom->Circ2d();
@@ -183,15 +180,12 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Circle::EvaluateGridD
     // D1 = R * (-sin(u) * X + cos(u) * Y)
     // D2 = R * (-cos(u) * X - sin(u) * Y)
     // D3 = R * (sin(u) * X - cos(u) * Y)
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + aRadius * (cosU * aXX + sinU * aYX),
-                                         aCY + aRadius * (cosU * aXY + sinU * aYY)),
-                                gp_Vec2d(aRadius * (-sinU * aXX + cosU * aYX),
-                                         aRadius * (-sinU * aXY + cosU * aYY)),
-                                gp_Vec2d(aRadius * (-cosU * aXX - sinU * aYX),
-                                         aRadius * (-cosU * aXY - sinU * aYY)),
-                                gp_Vec2d(aRadius * (sinU * aXX - cosU * aYX),
-                                         aRadius * (sinU * aXY - cosU * aYY))};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + aRadius * (cosU * aXX + sinU * aYX),
+               aCY + aRadius * (cosU * aXY + sinU * aYY)),
+      gp_Vec2d(aRadius * (-sinU * aXX + cosU * aYX), aRadius * (-sinU * aXY + cosU * aYY)),
+      gp_Vec2d(aRadius * (-cosU * aXX - sinU * aYX), aRadius * (-cosU * aXY - sinU * aYY)),
+      gp_Vec2d(aRadius * (sinU * aXX - cosU * aYX), aRadius * (sinU * aXY - cosU * aYY))};
   }
   return aResult;
 }

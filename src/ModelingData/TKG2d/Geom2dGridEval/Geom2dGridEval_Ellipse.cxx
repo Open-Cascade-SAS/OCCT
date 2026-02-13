@@ -68,7 +68,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Ellipse::EvaluateGrid
     return NCollection_Array1<Geom2dGridEval::CurveD1>();
   }
 
-  const int                                     aNb = theParams.Size();
+  const int                                   aNb = theParams.Size();
   NCollection_Array1<Geom2dGridEval::CurveD1> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -94,11 +94,10 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Ellipse::EvaluateGrid
     // P = Center + MajorR * cos(u) * XDir + MinorR * sin(u) * YDir
     // D1 = -MajorR * sin(u) * XDir + MinorR * cos(u) * YDir
 
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-                                         aCY + aMajR * cosU * aXY + aMinR * sinU * aYY),
-                                gp_Vec2d(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-                                         -aMajR * sinU * aXY + aMinR * cosU * aYY)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+               aCY + aMajR * cosU * aXY + aMinR * sinU * aYY),
+      gp_Vec2d(-aMajR * sinU * aXX + aMinR * cosU * aYX, -aMajR * sinU * aXY + aMinR * cosU * aYY)};
   }
   return aResult;
 }
@@ -113,7 +112,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Ellipse::EvaluateGrid
     return NCollection_Array1<Geom2dGridEval::CurveD2>();
   }
 
-  const int                                     aNb = theParams.Size();
+  const int                                   aNb = theParams.Size();
   NCollection_Array1<Geom2dGridEval::CurveD2> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -140,13 +139,11 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Ellipse::EvaluateGrid
     // D1 = -MajorR * sin(u) * XDir + MinorR * cos(u) * YDir
     // D2 = -MajorR * cos(u) * XDir - MinorR * sin(u) * YDir = -(P - Center)
 
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-                                         aCY + aMajR * cosU * aXY + aMinR * sinU * aYY),
-                                gp_Vec2d(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-                                         -aMajR * sinU * aXY + aMinR * cosU * aYY),
-                                gp_Vec2d(-aMajR * cosU * aXX - aMinR * sinU * aYX,
-                                         -aMajR * cosU * aXY - aMinR * sinU * aYY)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+               aCY + aMajR * cosU * aXY + aMinR * sinU * aYY),
+      gp_Vec2d(-aMajR * sinU * aXX + aMinR * cosU * aYX, -aMajR * sinU * aXY + aMinR * cosU * aYY),
+      gp_Vec2d(-aMajR * cosU * aXX - aMinR * sinU * aYX, -aMajR * cosU * aXY - aMinR * sinU * aYY)};
   }
   return aResult;
 }
@@ -161,7 +158,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Ellipse::EvaluateGrid
     return NCollection_Array1<Geom2dGridEval::CurveD3>();
   }
 
-  const int                                     aNb = theParams.Size();
+  const int                                   aNb = theParams.Size();
   NCollection_Array1<Geom2dGridEval::CurveD3> aResult(1, aNb);
 
   const gp_Elips2d& anElips = myGeom->Elips2d();
@@ -189,15 +186,12 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Ellipse::EvaluateGrid
     // D2 = -MajorR * cos(u) * XDir - MinorR * sin(u) * YDir
     // D3 =  MajorR * sin(u) * XDir - MinorR * cos(u) * YDir = -D1
 
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
-                                         aCY + aMajR * cosU * aXY + aMinR * sinU * aYY),
-                                gp_Vec2d(-aMajR * sinU * aXX + aMinR * cosU * aYX,
-                                         -aMajR * sinU * aXY + aMinR * cosU * aYY),
-                                gp_Vec2d(-aMajR * cosU * aXX - aMinR * sinU * aYX,
-                                         -aMajR * cosU * aXY - aMinR * sinU * aYY),
-                                gp_Vec2d(aMajR * sinU * aXX - aMinR * cosU * aYX,
-                                         aMajR * sinU * aXY - aMinR * cosU * aYY)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + aMajR * cosU * aXX + aMinR * sinU * aYX,
+               aCY + aMajR * cosU * aXY + aMinR * sinU * aYY),
+      gp_Vec2d(-aMajR * sinU * aXX + aMinR * cosU * aYX, -aMajR * sinU * aXY + aMinR * cosU * aYY),
+      gp_Vec2d(-aMajR * cosU * aXX - aMinR * sinU * aYX, -aMajR * cosU * aXY - aMinR * sinU * aYY),
+      gp_Vec2d(aMajR * sinU * aXX - aMinR * cosU * aYX, aMajR * sinU * aXY - aMinR * cosU * aYY)};
   }
   return aResult;
 }

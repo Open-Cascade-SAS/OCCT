@@ -32,7 +32,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Parabola::EvaluateGrid(
   const gp_Pnt2d&   aCenter = aParab.Location();
   const gp_Dir2d    aXDir   = aParab.MirrorAxis().Direction();
   const gp_Dir2d    aYDir(-aXDir.Y(), aXDir.X());
-  const double      aFocal  = aParab.Focal();
+  const double      aFocal = aParab.Focal();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -51,8 +51,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Parabola::EvaluateGrid(
     const double u2Term = u * u * aCoeff;
 
     aResult.SetValue(i - theParams.Lower() + 1,
-                     gp_Pnt2d(aCX + u2Term * aXX + u * aYX,
-                              aCY + u2Term * aXY + u * aYY));
+                     gp_Pnt2d(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY));
   }
   return aResult;
 }
@@ -74,7 +73,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Parabola::EvaluateGri
   const gp_Pnt2d&   aCenter = aParab.Location();
   const gp_Dir2d    aXDir   = aParab.MirrorAxis().Direction();
   const gp_Dir2d    aYDir(-aXDir.Y(), aXDir.X());
-  const double      aFocal  = aParab.Focal();
+  const double      aFocal = aParab.Focal();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -96,10 +95,9 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Parabola::EvaluateGri
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + u2Term * aXX + u * aYX,
-                                         aCY + u2Term * aXY + u * aYY),
-                                gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY)};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY),
+      gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY)};
   }
   return aResult;
 }
@@ -121,7 +119,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Parabola::EvaluateGri
   const gp_Pnt2d&   aCenter = aParab.Location();
   const gp_Dir2d    aXDir   = aParab.MirrorAxis().Direction();
   const gp_Dir2d    aYDir(-aXDir.Y(), aXDir.X());
-  const double      aFocal  = aParab.Focal();
+  const double      aFocal = aParab.Focal();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -143,11 +141,10 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Parabola::EvaluateGri
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + u2Term * aXX + u * aYX,
-                                         aCY + u2Term * aXY + u * aYY),
-                                gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY),
-                                aD2};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY),
+      gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY),
+      aD2};
   }
   return aResult;
 }
@@ -169,7 +166,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Parabola::EvaluateGri
   const gp_Pnt2d&   aCenter = aParab.Location();
   const gp_Dir2d    aXDir   = aParab.MirrorAxis().Direction();
   const gp_Dir2d    aYDir(-aXDir.Y(), aXDir.X());
-  const double      aFocal  = aParab.Focal();
+  const double      aFocal = aParab.Focal();
 
   const double aCX = aCenter.X();
   const double aCY = aCenter.Y();
@@ -191,12 +188,11 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Parabola::EvaluateGri
     const double u2Term = u * u * aCoeff;
     const double d1Term = u * aCoeff2;
 
-    aResult.ChangeValue(i - theParams.Lower()
-                        + 1) = {gp_Pnt2d(aCX + u2Term * aXX + u * aYX,
-                                         aCY + u2Term * aXY + u * aYY),
-                                gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY),
-                                aD2,
-                                aD3};
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {
+      gp_Pnt2d(aCX + u2Term * aXX + u * aYX, aCY + u2Term * aXY + u * aYY),
+      gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY),
+      aD2,
+      aD3};
   }
   return aResult;
 }
@@ -234,8 +230,7 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_Parabola::EvaluateGridDN(
     {
       const double u      = theParams.Value(i);
       const double d1Term = u * aCoeff2;
-      aResult.SetValue(i - theParams.Lower() + 1,
-                       gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY));
+      aResult.SetValue(i - theParams.Lower() + 1, gp_Vec2d(d1Term * aXX + aYX, d1Term * aXY + aYY));
     }
   }
   else if (theN == 2)
