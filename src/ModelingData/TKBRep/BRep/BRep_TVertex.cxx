@@ -16,6 +16,7 @@
 
 #include <BRep_TVertex.hxx>
 #include <gp_Pnt.hxx>
+#include <Precision.hxx>
 #include <Standard_Type.hxx>
 #include <TopoDS_Shape.hxx>
 
@@ -24,7 +25,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_TVertex, TopoDS_TVertex)
 //=================================================================================================
 
 BRep_TVertex::BRep_TVertex()
-    : myTolerance(RealEpsilon())
+    : myTolerance(Precision::Confusion())
 {
 }
 
@@ -33,8 +34,8 @@ BRep_TVertex::BRep_TVertex()
 occ::handle<TopoDS_TShape> BRep_TVertex::EmptyCopy() const
 {
   occ::handle<BRep_TVertex> TV = new BRep_TVertex();
-  TV->Pnt(myPnt);
-  TV->Tolerance(myTolerance);
+  TV->myPnt       = myPnt;
+  TV->myTolerance = myTolerance;
   return TV;
 }
 

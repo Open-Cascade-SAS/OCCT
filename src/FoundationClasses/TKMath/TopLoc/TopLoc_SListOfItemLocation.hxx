@@ -99,7 +99,7 @@ public:
   //! and the list <me> as tail.
   void Construct(const TopLoc_ItemLocation& anItem)
   {
-    Assign(TopLoc_SListOfItemLocation(anItem, *this));
+    *this = TopLoc_SListOfItemLocation(anItem, *this);
   }
 
   //! Replaces the list <me> by its tail.

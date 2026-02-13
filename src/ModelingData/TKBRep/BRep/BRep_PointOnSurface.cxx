@@ -27,16 +27,9 @@ BRep_PointOnSurface::BRep_PointOnSurface(const double                     P1,
                                          const double                     P2,
                                          const occ::handle<Geom_Surface>& S,
                                          const TopLoc_Location&           L)
-    : BRep_PointsOnSurface(P1, S, L),
+    : BRep_PointsOnSurface(P1, S, L, BRep_PointRepKind::PointOnSurface),
       myParameter2(P2)
 {
-}
-
-//=================================================================================================
-
-bool BRep_PointOnSurface::IsPointOnSurface() const
-{
-  return true;
 }
 
 //=================================================================================================

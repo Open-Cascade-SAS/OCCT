@@ -30,64 +30,95 @@ class Poly_Polygon3D;
 class Poly_Polygon2D;
 class Poly_PolygonOnTriangulation;
 
+//! Discriminant tag identifying the concrete type of a curve representation.
+enum class BRep_CurveRepKind : uint8_t
+{
+  Curve3D,
+  CurveOnSurface,
+  CurveOnClosedSurface,
+  CurveOn2Surfaces,
+  Polygon3D,
+  PolygonOnSurface,
+  PolygonOnClosedSurface,
+  PolygonOnTriangulation,
+  PolygonOnClosedTriangulation
+};
+
 //! Root class for the curve representations. Contains
 //! a location.
 class BRep_CurveRepresentation : public Standard_Transient
 {
 
 public:
+  //! Returns the concrete representation kind tag.
+  BRep_CurveRepKind RepresentationKind() const { return myKind; }
+
   //! A 3D curve representation.
-  Standard_EXPORT virtual bool IsCurve3D() const;
+  bool IsCurve3D() const { return myKind == BRep_CurveRepKind::Curve3D; }
 
   //! A curve in the parametric space of a surface.
-  Standard_EXPORT virtual bool IsCurveOnSurface() const;
+  bool IsCurveOnSurface() const
+  {
+    return myKind == BRep_CurveRepKind::CurveOnSurface
+           || myKind == BRep_CurveRepKind::CurveOnClosedSurface;
+  }
 
   //! A continuity between two surfaces.
-  Standard_EXPORT virtual bool IsRegularity() const;
+  bool IsRegularity() const
+  {
+    return myKind == BRep_CurveRepKind::CurveOnClosedSurface
+           || myKind == BRep_CurveRepKind::CurveOn2Surfaces;
+  }
 
-  //! A curve with two parametric curves on the same
-  //! surface.
-  Standard_EXPORT virtual bool IsCurveOnClosedSurface() const;
+  //! A curve with two parametric curves on the same surface.
+  bool IsCurveOnClosedSurface() const { return myKind == BRep_CurveRepKind::CurveOnClosedSurface; }
 
-  //! Is it a curve in the parametric space of <S> with
-  //! location <L>.
+  //! Is it a curve in the parametric space of <S> with location <L>.
   Standard_EXPORT virtual bool IsCurveOnSurface(const occ::handle<Geom_Surface>& S,
                                                 const TopLoc_Location&           L) const;
 
-  //! Is it a regularity between <S1> and <S2> with
-  //! location <L1> and <L2>.
+  //! Is it a regularity between <S1> and <S2> with location <L1> and <L2>.
   Standard_EXPORT virtual bool IsRegularity(const occ::handle<Geom_Surface>& S1,
                                             const occ::handle<Geom_Surface>& S2,
                                             const TopLoc_Location&           L1,
                                             const TopLoc_Location&           L2) const;
 
   //! A 3D polygon representation.
-  Standard_EXPORT virtual bool IsPolygon3D() const;
+  bool IsPolygon3D() const { return myKind == BRep_CurveRepKind::Polygon3D; }
 
-  //! A representation by an array of nodes on a
-  //! triangulation.
-  Standard_EXPORT virtual bool IsPolygonOnTriangulation() const;
+  //! A representation by an array of nodes on a triangulation.
+  bool IsPolygonOnTriangulation() const
+  {
+    return myKind == BRep_CurveRepKind::PolygonOnTriangulation
+           || myKind == BRep_CurveRepKind::PolygonOnClosedTriangulation;
+  }
 
-  //! Is it a polygon in the definition of <T> with
-  //! location <L>.
+  //! Is it a polygon in the definition of <T> with location <L>.
   Standard_EXPORT virtual bool IsPolygonOnTriangulation(const occ::handle<Poly_Triangulation>& T,
                                                         const TopLoc_Location& L) const;
 
-  //! A representation by two arrays of nodes on a
-  //! triangulation.
-  Standard_EXPORT virtual bool IsPolygonOnClosedTriangulation() const;
+  //! A representation by two arrays of nodes on a triangulation.
+  bool IsPolygonOnClosedTriangulation() const
+  {
+    return myKind == BRep_CurveRepKind::PolygonOnClosedTriangulation;
+  }
 
   //! A polygon in the parametric space of a surface.
-  Standard_EXPORT virtual bool IsPolygonOnSurface() const;
+  bool IsPolygonOnSurface() const
+  {
+    return myKind == BRep_CurveRepKind::PolygonOnSurface
+           || myKind == BRep_CurveRepKind::PolygonOnClosedSurface;
+  }
 
-  //! Is it a polygon in the parametric space of <S> with
-  //! location <L>.
+  //! Is it a polygon in the parametric space of <S> with location <L>.
   Standard_EXPORT virtual bool IsPolygonOnSurface(const occ::handle<Geom_Surface>& S,
                                                   const TopLoc_Location&           L) const;
 
-  //! Two 2D polygon representations in the parametric
-  //! space of a surface.
-  Standard_EXPORT virtual bool IsPolygonOnClosedSurface() const;
+  //! Two 2D polygon representations in the parametric space of a surface.
+  bool IsPolygonOnClosedSurface() const
+  {
+    return myKind == BRep_CurveRepKind::PolygonOnClosedSurface;
+  }
 
   const TopLoc_Location& Location() const;
 
@@ -150,9 +181,14 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation, Standard_Transient)
 
 protected:
-  Standard_EXPORT BRep_CurveRepresentation(const TopLoc_Location& L);
+  BRep_CurveRepresentation(const TopLoc_Location& L, const BRep_CurveRepKind theKind)
+      : myLocation(L),
+        myKind(theKind)
+  {
+  }
 
-  TopLoc_Location myLocation;
+  TopLoc_Location      myLocation;
+  BRep_CurveRepKind    myKind;
 };
 
 #include <BRep_CurveRepresentation.lxx>

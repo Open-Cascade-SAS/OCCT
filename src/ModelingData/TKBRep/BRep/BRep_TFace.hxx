@@ -59,7 +59,7 @@ public:
   const occ::handle<Geom_Surface>& Surface() const { return mySurface; }
 
   //! Sets surface for this face.
-  void Surface(const occ::handle<Geom_Surface>& theSurface) { mySurface = theSurface; }
+  Standard_EXPORT void Surface(const occ::handle<Geom_Surface>& theSurface);
 
   //! Returns the face location.
   const TopLoc_Location& Location() const { return myLocation; }
@@ -71,7 +71,10 @@ public:
   double Tolerance() const { return myTolerance; }
 
   //! Sets the tolerance for this face.
-  void Tolerance(const double theTolerance) { myTolerance = theTolerance; }
+  Standard_EXPORT void Tolerance(const double theTolerance);
+
+  //! Returns TRUE if the face surface is a plane.
+  bool IsPlane() const { return myIsPlane; }
 
   //! Returns TRUE if the boundary of this face is known to be the parametric space (Umin, UMax,
   //! VMin, VMax).
@@ -142,6 +145,7 @@ private:
   TopLoc_Location                                   myLocation;
   double                                            myTolerance;
   bool                                              myNaturalRestriction;
+  bool                                              myIsPlane;
 };
 
 #endif // _BRep_TFace_HeaderFile

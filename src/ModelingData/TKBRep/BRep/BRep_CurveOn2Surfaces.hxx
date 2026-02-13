@@ -35,9 +35,6 @@ public:
                                         const TopLoc_Location&           L2,
                                         const GeomAbs_Shape              C);
 
-  //! Returns True.
-  Standard_EXPORT bool IsRegularity() const override;
-
   //! A curve on two surfaces (continuity).
   Standard_EXPORT bool IsRegularity(const occ::handle<Geom_Surface>& S1,
                                     const occ::handle<Geom_Surface>& S2,

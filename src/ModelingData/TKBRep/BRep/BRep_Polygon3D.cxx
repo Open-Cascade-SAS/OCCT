@@ -26,16 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_Polygon3D, BRep_CurveRepresentation)
 //=================================================================================================
 
 BRep_Polygon3D::BRep_Polygon3D(const occ::handle<Poly_Polygon3D>& P, const TopLoc_Location& L)
-    : BRep_CurveRepresentation(L),
+    : BRep_CurveRepresentation(L, BRep_CurveRepKind::Polygon3D),
       myPolygon3D(P)
 {
-}
-
-//=================================================================================================
-
-bool BRep_Polygon3D::IsPolygon3D() const
-{
-  return true;
 }
 
 //=================================================================================================

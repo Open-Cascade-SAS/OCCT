@@ -34,8 +34,6 @@ public:
                                       const occ::handle<Geom_Surface>& S,
                                       const TopLoc_Location&           L);
 
-  Standard_EXPORT bool IsPointOnSurface() const override;
-
   Standard_EXPORT bool IsPointOnSurface(const occ::handle<Geom_Surface>& S,
                                         const TopLoc_Location&           L) const override;
 

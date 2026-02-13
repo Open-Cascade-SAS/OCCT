@@ -36,20 +36,7 @@ BRep_CurveOnClosedSurface::BRep_CurveOnClosedSurface(const occ::handle<Geom2d_Cu
       myPCurve2(PC2),
       myContinuity(C)
 {
-}
-
-//=================================================================================================
-
-bool BRep_CurveOnClosedSurface::IsCurveOnClosedSurface() const
-{
-  return true;
-}
-
-//=================================================================================================
-
-bool BRep_CurveOnClosedSurface::IsRegularity() const
-{
-  return true;
+  myKind = BRep_CurveRepKind::CurveOnClosedSurface;
 }
 
 //=================================================================================================

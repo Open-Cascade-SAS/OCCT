@@ -41,12 +41,6 @@ public:
 
   void UVPoints2(gp_Pnt2d& P1, gp_Pnt2d& P2) const;
 
-  //! Returns True.
-  Standard_EXPORT bool IsCurveOnClosedSurface() const override;
-
-  //! Returns True
-  Standard_EXPORT bool IsRegularity() const override;
-
   //! A curve on two surfaces (continuity).
   Standard_EXPORT bool IsRegularity(const occ::handle<Geom_Surface>& S1,
                                     const occ::handle<Geom_Surface>& S2,

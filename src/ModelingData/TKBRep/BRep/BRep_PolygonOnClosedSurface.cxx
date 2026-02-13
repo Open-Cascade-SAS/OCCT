@@ -32,13 +32,7 @@ BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const occ::handle<Poly_
     : BRep_PolygonOnSurface(P1, S, L),
       myPolygon2(P2)
 {
-}
-
-//=================================================================================================
-
-bool BRep_PolygonOnClosedSurface::IsPolygonOnClosedSurface() const
-{
-  return true;
+  myKind = BRep_CurveRepKind::PolygonOnClosedSurface;
 }
 
 //=================================================================================================

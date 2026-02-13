@@ -14,6 +14,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Precision.hxx>
+
 //=================================================================================================
 
 inline double BRep_TVertex::Tolerance() const
@@ -25,7 +27,7 @@ inline double BRep_TVertex::Tolerance() const
 
 inline void BRep_TVertex::Tolerance(const double T)
 {
-  myTolerance = T;
+  myTolerance = std::max(T, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -33,7 +35,7 @@ inline void BRep_TVertex::Tolerance(const double T)
 inline void BRep_TVertex::UpdateTolerance(const double T)
 {
   if (T > myTolerance)
-    myTolerance = T;
+    myTolerance = std::max(T, Precision::Confusion());
 }
 
 //=================================================================================================

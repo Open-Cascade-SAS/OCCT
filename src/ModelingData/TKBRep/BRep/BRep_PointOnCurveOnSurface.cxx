@@ -28,16 +28,9 @@ BRep_PointOnCurveOnSurface::BRep_PointOnCurveOnSurface(const double             
                                                        const occ::handle<Geom2d_Curve>& C,
                                                        const occ::handle<Geom_Surface>& S,
                                                        const TopLoc_Location&           L)
-    : BRep_PointsOnSurface(P, S, L),
+    : BRep_PointsOnSurface(P, S, L, BRep_PointRepKind::PointOnCurveOnSurface),
       myPCurve(C)
 {
-}
-
-//=================================================================================================
-
-bool BRep_PointOnCurveOnSurface::IsPointOnCurveOnSurface() const
-{
-  return true;
 }
 
 //=================================================================================================
