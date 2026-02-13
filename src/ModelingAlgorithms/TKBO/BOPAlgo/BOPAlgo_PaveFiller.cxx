@@ -135,16 +135,10 @@ bool BOPAlgo_PaveFiller::IsPrimary() const
 void BOPAlgo_PaveFiller::Clear()
 {
   BOPAlgo_Algo::Clear();
-  if (myIterator)
-  {
-    delete myIterator;
-    myIterator = nullptr;
-  }
-  if (myDS)
-  {
-    delete myDS;
-    myDS = nullptr;
-  }
+  delete myIterator;
+  myIterator = nullptr;
+  delete myDS;
+  myDS = nullptr;
   myIncreasedSS.Clear();
 }
 

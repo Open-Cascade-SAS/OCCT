@@ -165,8 +165,7 @@ void OSD_Environment::Build()
   putenv(buffer[index]);
 
   // then (and only then!) free old entry, if existed
-  if (old_value)
-    free(old_value);
+  free(old_value);
 
   // check the result
   char* result = getenv(myName.ToCString());

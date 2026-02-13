@@ -102,11 +102,8 @@ const char* Interface_MSG::Value() const
 
 void Interface_MSG::Destroy()
 {
-  if (theval)
-  {
-    delete[] theval;
-    theval = nullptr;
-  }
+  delete[] theval;
+  theval = nullptr;
 }
 
 Interface_MSG::operator const char*() const

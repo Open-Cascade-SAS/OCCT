@@ -286,11 +286,8 @@ void TNaming_NamedShape::Clear()
   {
     q = p;
     p = p->nextSameAttribute;
-    if (q != nullptr)
-    {
-      delete q;
-      q = nullptr;
-    }
+    delete q;
+    q = nullptr;
   }
 
   myNode = nullptr;
@@ -352,11 +349,8 @@ bool TNaming_NamedShape::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttD
     {
       q = p;
       p = p->nextSameAttribute;
-      if (q != nullptr)
-      {
-        delete q;
-        q = nullptr;
-      }
+      delete q;
+      q = nullptr;
     }
 
     myNode = nullptr;

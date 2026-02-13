@@ -557,11 +557,8 @@ static void printtolblend(Draw_Interpretor& di)
 
 static int MKEVOL(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rake != nullptr)
-  {
-    delete Rake;
-    Rake = nullptr;
-  }
+  delete Rake;
+  Rake = nullptr;
   printtolblend(di);
   if (narg < 3)
     return 1;
@@ -632,18 +629,12 @@ static int BUILDEVOL(Draw_Interpretor& di, int, const char**)
   {
     TopoDS_Shape result = Rake->Shape();
     DBRep::Set(name, result);
-    if (Rake != nullptr)
-    {
-      delete Rake;
-      Rake = nullptr;
-    }
-    return 0;
-  }
-  if (Rake != nullptr)
-  {
     delete Rake;
     Rake = nullptr;
+    return 0;
   }
+  delete Rake;
+  Rake = nullptr;
   return 1;
 }
 

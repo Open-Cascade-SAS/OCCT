@@ -365,11 +365,8 @@ void Poly_Triangulation::SetCachedMinMax(const Bnd_Box& theBox)
 
 void Poly_Triangulation::unsetCachedMinMax()
 {
-  if (myCachedMinMax != nullptr)
-  {
-    delete myCachedMinMax;
-    myCachedMinMax = nullptr;
-  }
+  delete myCachedMinMax;
+  myCachedMinMax = nullptr;
 }
 
 //=================================================================================================

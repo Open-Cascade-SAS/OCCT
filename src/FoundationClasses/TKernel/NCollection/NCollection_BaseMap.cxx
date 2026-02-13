@@ -52,9 +52,8 @@ void NCollection_BaseMap::EndResize(const int              theNbBuckets,
                                     NCollection_ListNode** data2) noexcept
 {
   (void)theNbBuckets; // obsolete parameter
-  if (myData1)
-    Standard::Free(myData1);
-  if (myData2 && isDouble)
+  Standard::Free(myData1);
+  if (isDouble)
     Standard::Free(myData2);
   myNbBuckets = N;
   myData1     = data1;
@@ -90,10 +89,8 @@ void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMem
   }
   if (doReleaseMemory)
   {
-    if (myData1)
-      Standard::Free(myData1);
-    if (myData2)
-      Standard::Free(myData2);
+    Standard::Free(myData1);
+    Standard::Free(myData2);
     myData1 = myData2 = nullptr;
   }
 }

@@ -31,11 +31,8 @@ NCollection_UtfStringTool::~NCollection_UtfStringTool()
 
 wchar_t* NCollection_UtfStringTool::FromLocale(const char* theString)
 {
-  if (myWideBuffer != nullptr)
-  {
-    delete[] myWideBuffer;
-    myWideBuffer = nullptr;
-  }
+  delete[] myWideBuffer;
+  myWideBuffer = nullptr;
 
   #if defined(_WIN32)
   // use WinAPI

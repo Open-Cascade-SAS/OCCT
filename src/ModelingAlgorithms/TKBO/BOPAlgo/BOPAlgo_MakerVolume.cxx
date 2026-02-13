@@ -53,11 +53,8 @@ void BOPAlgo_MakerVolume::Perform(const Message_ProgressRange& theRange)
   //
   if (myEntryPoint == 1)
   {
-    if (myPaveFiller)
-    {
-      delete myPaveFiller;
-      myPaveFiller = nullptr;
-    }
+    delete myPaveFiller;
+    myPaveFiller = nullptr;
   }
   //
   occ::handle<NCollection_BaseAllocator> aAllocator =

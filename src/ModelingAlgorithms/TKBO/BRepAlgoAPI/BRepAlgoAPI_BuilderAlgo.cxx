@@ -58,16 +58,13 @@ BRepAlgoAPI_BuilderAlgo::~BRepAlgoAPI_BuilderAlgo()
 void BRepAlgoAPI_BuilderAlgo::Clear()
 {
   BRepAlgoAPI_Algo::Clear();
-  if (myDSFiller && myIsIntersectionNeeded)
+  if (myIsIntersectionNeeded)
   {
     delete myDSFiller;
     myDSFiller = nullptr;
   }
-  if (myBuilder)
-  {
-    delete myBuilder;
-    myBuilder = nullptr;
-  }
+  delete myBuilder;
+  myBuilder = nullptr;
   if (myHistory)
     myHistory.Nullify();
 
@@ -107,8 +104,7 @@ void BRepAlgoAPI_BuilderAlgo::IntersectShapes(const NCollection_List<TopoDS_Shap
   if (!myIsIntersectionNeeded)
     return;
 
-  if (myDSFiller)
-    delete myDSFiller;
+  delete myDSFiller;
 
   // Create new Filler
   myDSFiller = new BOPAlgo_PaveFiller(myAllocator);

@@ -60,11 +60,8 @@ static void printtolblend(Draw_Interpretor& di)
 
 static int VBLEND(Draw_Interpretor& di, int narg, const char** a)
 {
-  if (Rakk != nullptr)
-  {
-    delete Rakk;
-    Rakk = nullptr;
-  }
+  delete Rakk;
+  Rakk = nullptr;
   printtolblend(di);
   if (narg < 5)
     return 1;

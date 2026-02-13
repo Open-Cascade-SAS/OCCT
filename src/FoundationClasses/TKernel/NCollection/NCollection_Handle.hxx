@@ -46,8 +46,7 @@ private:
     //! Destructor deletes the object
     ~Ptr() override
     {
-      if (myPtr)
-        delete myPtr;
+      delete myPtr;
       myPtr = nullptr;
     }
 

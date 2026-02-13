@@ -467,11 +467,7 @@ int thrusections(Draw_Interpretor& di, int n, const char** a)
   bool issolid = (Draw::Atoi(a[index]) == 1);
   bool isruled = (Draw::Atoi(a[index + 1]) == 1);
 
-  if (Generator != nullptr)
-  {
-    delete Generator;
-    Generator = nullptr;
-  }
+  delete Generator;
   Generator           = new BRepOffsetAPI_ThruSections(issolid, isruled);
   bool IsMutableInput = true;
   int  NbEdges        = 0;
@@ -568,11 +564,8 @@ static int mksweep(Draw_Interpretor& di, int n, const char** a)
   TopoDS_Shape Spine = DBRep::Get(a[1], TopAbs_WIRE);
   if (Spine.IsNull())
     return 1;
-  if (Sweep != nullptr)
-  {
-    delete Sweep;
-    Sweep = nullptr;
-  }
+  delete Sweep;
+  Sweep = nullptr;
 
   if (n > 2 && n <= 5)
   {

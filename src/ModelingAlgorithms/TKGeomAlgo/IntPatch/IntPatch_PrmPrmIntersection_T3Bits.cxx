@@ -30,11 +30,8 @@ IntPatch_PrmPrmIntersection_T3Bits::IntPatch_PrmPrmIntersection_T3Bits(const int
 
 IntPatch_PrmPrmIntersection_T3Bits::~IntPatch_PrmPrmIntersection_T3Bits()
 {
-  if (p)
-  {
-    delete[] p;
-    p = nullptr;
-  }
+  delete[] p;
+  p = nullptr;
 }
 
 void IntPatch_PrmPrmIntersection_T3Bits::ResetAnd()

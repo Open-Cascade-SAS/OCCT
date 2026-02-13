@@ -180,8 +180,7 @@ void IntPolyh_Intersection::Perform(const NCollection_Array1<double>& theUPars1,
   {
     // Intersection not done
     myIsDone = false;
-    if (pMaillageStd)
-      delete pMaillageStd;
+    delete pMaillageStd;
     return;
   }
 
@@ -228,19 +227,14 @@ void IntPolyh_Intersection::Perform(const NCollection_Array1<double>& theUPars1,
     }
 
     // Clean up
-    if (pMaillageFF)
-      delete pMaillageFF;
-    if (pMaillageFR)
-      delete pMaillageFR;
-    if (pMaillageRF)
-      delete pMaillageRF;
-    if (pMaillageRR)
-      delete pMaillageRR;
+    delete pMaillageFF;
+    delete pMaillageFR;
+    delete pMaillageRF;
+    delete pMaillageRR;
   }
 
   // clean up
-  if (pMaillageStd)
-    delete pMaillageStd;
+  delete pMaillageStd;
 }
 
 //=================================================================================================

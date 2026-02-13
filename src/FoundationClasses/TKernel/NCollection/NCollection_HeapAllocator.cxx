@@ -38,8 +38,7 @@ void* NCollection_HeapAllocator::Allocate(const size_t theSize)
 
 void NCollection_HeapAllocator::Free(void* anAddress)
 {
-  if (anAddress)
-    free(anAddress);
+  free(anAddress);
 }
 
 //=================================================================================================

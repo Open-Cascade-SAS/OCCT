@@ -177,11 +177,7 @@ LDOM_XmlWriter::LDOM_XmlWriter(const char* theEncoding)
 LDOM_XmlWriter::~LDOM_XmlWriter()
 {
   delete[] myEncodingName;
-
-  if (myABuffer != nullptr)
-  {
-    delete[] myABuffer;
-  }
+  delete[] myABuffer;
 }
 
 //=================================================================================================
@@ -417,10 +413,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
     aLength = (int)(20 + strlen(aName));
     if (aLength > myABufferLen)
     {
-      if (myABuffer != nullptr)
-      {
-        delete[] myABuffer;
-      }
+      delete[] myABuffer;
 
       myABuffer    = new char[aLength + 1];
       myABufferLen = aLength;
@@ -452,10 +445,7 @@ void LDOM_XmlWriter::WriteAttribute(Standard_OStream& theOStream, const LDOM_Nod
 
     if (aLength > myABufferLen)
     {
-      if (myABuffer != nullptr)
-      {
-        delete[] myABuffer;
-      }
+      delete[] myABuffer;
 
       myABuffer    = new char[aLength + 1];
       myABufferLen = aLength;

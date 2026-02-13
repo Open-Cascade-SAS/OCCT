@@ -36,8 +36,7 @@
 
 LDOMParser::~LDOMParser()
 {
-  if (myReader)
-    delete myReader;
+  delete myReader;
 }
 
 //=======================================================================
@@ -145,8 +144,7 @@ bool LDOMParser::parse(std::istream& anInput, const bool theTagPerStep, const bo
   myError.Clear();
 
   // Create the Reader instance
-  if (myReader)
-    delete myReader;
+  delete myReader;
   myReader = new LDOM_XmlReader(myDocument, myError, theTagPerStep);
 
   // Parse

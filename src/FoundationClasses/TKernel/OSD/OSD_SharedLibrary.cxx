@@ -196,12 +196,9 @@ const char* OSD_SharedLibrary::DlError() const
 
 void OSD_SharedLibrary::Destroy()
 {
-  if (myName != nullptr)
-  {
-    delete[] myName;
-    myName   = nullptr;
-    myHandle = nullptr;
-  }
+  delete[] myName;
+  myName   = nullptr;
+  myHandle = nullptr;
 }
 
 #else
@@ -253,9 +250,7 @@ void OSD_SharedLibrary ::SetName(const char* const aName)
   OSD_Path                path(aName);
   TCollection_AsciiString name(aName);
 
-  if (myName != NULL)
-
-    delete[] myName;
+  delete[] myName;
 
   myName = new char[strlen(aName) + 1];
 
@@ -343,10 +338,7 @@ const char* OSD_SharedLibrary ::DlError() const
 
 void OSD_SharedLibrary ::Destroy()
 {
-
-  if (myName != NULL)
-    delete[] myName;
-
+  delete[] myName;
 } // end OSD_SharedLibrary :: Destroy
 
 #endif
