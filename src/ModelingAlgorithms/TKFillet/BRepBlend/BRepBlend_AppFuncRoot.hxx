@@ -30,8 +30,12 @@
 #include <gp_Vec2d.hxx>
 #include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
+
+#include <memory>
+
 class BRepBlend_Line;
 class Blend_AppFunction;
+class math_FunctionSetRoot;
 
 //! Function to approximate by AppSurface
 class BRepBlend_AppFuncRoot : public Approx_SweepFunction
@@ -152,6 +156,8 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BRepBlend_AppFuncRoot, Approx_SweepFunction)
 
+  Standard_EXPORT ~BRepBlend_AppFuncRoot();
+
 protected:
   Standard_EXPORT BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,
                                         Blend_AppFunction&           Func,
@@ -166,15 +172,16 @@ private:
                                       const int    LastIndex,
                                       int&         ParamIndex) const;
 
-  occ::handle<BRepBlend_Line> myLine;
-  void*                       myFunc;
-  math_Vector                 myTolerance;
-  Blend_Point                 myPnt;
-  gp_Pnt                      myBary;
-  math_Vector                 X1;
-  math_Vector                 X2;
-  math_Vector                 XInit;
-  math_Vector                 Sol;
+  occ::handle<BRepBlend_Line>           myLine;
+  void*                                 myFunc;
+  math_Vector                           myTolerance;
+  Blend_Point                           myPnt;
+  gp_Pnt                                myBary;
+  math_Vector                           X1;
+  math_Vector                           X2;
+  math_Vector                           XInit;
+  math_Vector                           Sol;
+  std::unique_ptr<math_FunctionSetRoot> mySolver;
 };
 
 #endif // _BRepBlend_AppFuncRoot_HeaderFile

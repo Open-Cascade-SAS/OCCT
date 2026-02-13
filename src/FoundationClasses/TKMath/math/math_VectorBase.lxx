@@ -101,66 +101,60 @@ void math_VectorBase<TheItemType>::SetLower(const int theLower)
 template <typename TheItemType>
 double math_VectorBase<TheItemType>::Norm() const
 {
-  // 4-way unrolled accumulation for better vectorization
-  double aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
-  int    anIndex  = Lower();
-  int    anUpper  = Upper();
-  int    anUpper4 = anUpper - 3;
+  const int          aLen  = Length();
+  const TheItemType* aPtr  = &Array(Lower());
+  double             aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
+  int                i     = 0;
+  int                aLen4 = aLen - 3;
 
-  // Process 4 elements at a time
-  for (; anIndex <= anUpper4; anIndex += 4)
+  for (; i < aLen4; i += 4)
   {
-    const double aVal0 = static_cast<double>(Array(anIndex));
-    const double aVal1 = static_cast<double>(Array(anIndex + 1));
-    const double aVal2 = static_cast<double>(Array(anIndex + 2));
-    const double aVal3 = static_cast<double>(Array(anIndex + 3));
+    const double aVal0 = static_cast<double>(aPtr[i]);
+    const double aVal1 = static_cast<double>(aPtr[i + 1]);
+    const double aVal2 = static_cast<double>(aPtr[i + 2]);
+    const double aVal3 = static_cast<double>(aPtr[i + 3]);
     aSum1 += aVal0 * aVal0;
     aSum2 += aVal1 * aVal1;
     aSum3 += aVal2 * aVal2;
     aSum4 += aVal3 * aVal3;
   }
 
-  // Process remaining elements
-  for (; anIndex <= anUpper; ++anIndex)
+  for (; i < aLen; ++i)
   {
-    const double aVal = static_cast<double>(Array(anIndex));
+    const double aVal = static_cast<double>(aPtr[i]);
     aSum1 += aVal * aVal;
   }
 
-  // Combine partial sums (pairwise for better numerical stability)
   return std::sqrt((aSum1 + aSum2) + (aSum3 + aSum4));
 }
 
 template <typename TheItemType>
 double math_VectorBase<TheItemType>::Norm2() const
 {
-  // 4-way unrolled accumulation for better vectorization
-  double aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
-  int    anIndex  = Lower();
-  int    anUpper  = Upper();
-  int    anUpper4 = anUpper - 3;
+  const int          aLen  = Length();
+  const TheItemType* aPtr  = &Array(Lower());
+  double             aSum1 = 0.0, aSum2 = 0.0, aSum3 = 0.0, aSum4 = 0.0;
+  int                i     = 0;
+  int                aLen4 = aLen - 3;
 
-  // Process 4 elements at a time
-  for (; anIndex <= anUpper4; anIndex += 4)
+  for (; i < aLen4; i += 4)
   {
-    const double aVal0 = static_cast<double>(Array(anIndex));
-    const double aVal1 = static_cast<double>(Array(anIndex + 1));
-    const double aVal2 = static_cast<double>(Array(anIndex + 2));
-    const double aVal3 = static_cast<double>(Array(anIndex + 3));
+    const double aVal0 = static_cast<double>(aPtr[i]);
+    const double aVal1 = static_cast<double>(aPtr[i + 1]);
+    const double aVal2 = static_cast<double>(aPtr[i + 2]);
+    const double aVal3 = static_cast<double>(aPtr[i + 3]);
     aSum1 += aVal0 * aVal0;
     aSum2 += aVal1 * aVal1;
     aSum3 += aVal2 * aVal2;
     aSum4 += aVal3 * aVal3;
   }
 
-  // Process remaining elements
-  for (; anIndex <= anUpper; ++anIndex)
+  for (; i < aLen; ++i)
   {
-    const double aVal = static_cast<double>(Array(anIndex));
+    const double aVal = static_cast<double>(aPtr[i]);
     aSum1 += aVal * aVal;
   }
 
-  // Combine partial sums (pairwise for better numerical stability)
   return (aSum1 + aSum2) + (aSum3 + aSum4);
 }
 
@@ -446,17 +440,22 @@ void math_VectorBase<TheItemType>::Multiply(const math_Matrix&                  
     (Length() != theLeft.RowNumber()) || (theLeft.ColNumber() != theRight.Length()),
     "math_VectorBase::Multiply() - input matrix and /or vector have wrong dimensions");
 
-  int Index = Lower();
-  for (int I = theLeft.LowerRow(); I <= theLeft.UpperRow(); I++)
+  // result[r] = sum_c theLeft(r, c) * theRight[c]
+  const int          aNRows    = theLeft.RowNumber();
+  const int          aNCols    = theLeft.ColNumber();
+  const double*      aMatData  = &theLeft(theLeft.LowerRow(), theLeft.LowerCol());
+  const TheItemType* aRightPtr = &theRight.Array(theRight.Lower());
+  TheItemType*       aResPtr   = &Array(Lower());
+
+  for (int r = 0; r < aNRows; r++)
   {
-    Array(Index) = 0.0;
-    int K        = theRight.Lower();
-    for (int J = theLeft.LowerCol(); J <= theLeft.UpperCol(); J++)
+    TheItemType   aSum     = 0.0;
+    const double* aRowData = aMatData + r * aNCols;
+    for (int c = 0; c < aNCols; c++)
     {
-      Array(Index) = Array(Index) + theLeft(I, J) * theRight.Array(K);
-      K++;
+      aSum += aRowData[c] * aRightPtr[c];
     }
-    Index++;
+    aResPtr[r] = aSum;
   }
 }
 
@@ -468,17 +467,21 @@ void math_VectorBase<TheItemType>::Multiply(const math_VectorBase<TheItemType>& 
     (Length() != theRight.ColNumber()) || (theLeft.Length() != theRight.RowNumber()),
     "math_VectorBase::Multiply() - input matrix and /or vector have wrong dimensions");
 
-  int Index = Lower();
-  for (int J = theRight.LowerCol(); J <= theRight.UpperCol(); J++)
+  // result[c] = sum_r theLeft[r] * theRight(r, c)
+  const int          aNCols   = theRight.ColNumber();
+  const int          aNRows   = theRight.RowNumber();
+  const double*      aMatData = &theRight(theRight.LowerRow(), theRight.LowerCol());
+  const TheItemType* aLeftPtr = &theLeft.Array(theLeft.Lower());
+  TheItemType*       aResPtr  = &Array(Lower());
+
+  for (int c = 0; c < aNCols; c++)
   {
-    Array(Index) = 0.0;
-    int K        = theLeft.Lower();
-    for (int I = theRight.LowerRow(); I <= theRight.UpperRow(); I++)
+    TheItemType aSum = 0.0;
+    for (int r = 0; r < aNRows; r++)
     {
-      Array(Index) = Array(Index) + theLeft.Array(K) * theRight(I, J);
-      K++;
+      aSum += aLeftPtr[r] * aMatData[r * aNCols + c];
     }
-    Index++;
+    aResPtr[c] = aSum;
   }
 }
 
@@ -490,17 +493,21 @@ void math_VectorBase<TheItemType>::TMultiply(const math_Matrix&                 
     (Length() != theTLeft.ColNumber()) || (theTLeft.RowNumber() != theRight.Length()),
     "math_VectorBase::TMultiply() - input matrix and /or vector have wrong dimensions");
 
-  int Index = Lower();
-  for (int I = theTLeft.LowerCol(); I <= theTLeft.UpperCol(); I++)
+  // result[c] = sum_r theTLeft(r, c) * theRight[r]  (transpose-multiply)
+  const int          aNCols    = theTLeft.ColNumber();
+  const int          aNRows    = theTLeft.RowNumber();
+  const double*      aMatData  = &theTLeft(theTLeft.LowerRow(), theTLeft.LowerCol());
+  const TheItemType* aRightPtr = &theRight.Array(theRight.Lower());
+  TheItemType*       aResPtr   = &Array(Lower());
+
+  for (int c = 0; c < aNCols; c++)
   {
-    Array(Index) = 0.0;
-    int K        = theRight.Lower();
-    for (int J = theTLeft.LowerRow(); J <= theTLeft.UpperRow(); J++)
+    TheItemType aSum = 0.0;
+    for (int r = 0; r < aNRows; r++)
     {
-      Array(Index) = Array(Index) + theTLeft(J, I) * theRight.Array(K);
-      K++;
+      aSum += aMatData[r * aNCols + c] * aRightPtr[r];
     }
-    Index++;
+    aResPtr[c] = aSum;
   }
 }
 
@@ -512,17 +519,22 @@ void math_VectorBase<TheItemType>::TMultiply(const math_VectorBase<TheItemType>&
     (Length() != theTRight.RowNumber()) || (theLeft.Length() != theTRight.ColNumber()),
     "math_VectorBase::TMultiply() - input matrix and /or vector have wrong dimensions");
 
-  int Index = Lower();
-  for (int J = theTRight.LowerRow(); J <= theTRight.UpperRow(); J++)
+  // result[r] = sum_c theLeft[c] * theTRight(r, c)
+  const int          aNCols   = theTRight.ColNumber();
+  const int          aNRows   = theTRight.RowNumber();
+  const double*      aMatData = &theTRight(theTRight.LowerRow(), theTRight.LowerCol());
+  const TheItemType* aLeftPtr = &theLeft.Array(theLeft.Lower());
+  TheItemType*       aResPtr  = &Array(Lower());
+
+  for (int r = 0; r < aNRows; r++)
   {
-    Array(Index) = 0.0;
-    int K        = theLeft.Lower();
-    for (int I = theTRight.LowerCol(); I <= theTRight.UpperCol(); I++)
+    TheItemType   aSum     = 0.0;
+    const double* aRowData = aMatData + r * aNCols;
+    for (int c = 0; c < aNCols; c++)
     {
-      Array(Index) = Array(Index) + theLeft.Array(K) * theTRight(J, I);
-      K++;
+      aSum += aLeftPtr[c] * aRowData[c];
     }
-    Index++;
+    aResPtr[r] = aSum;
   }
 }
 
@@ -530,19 +542,19 @@ template <typename TheItemType>
 TheItemType math_VectorBase<TheItemType>::Multiplied(
   const math_VectorBase<TheItemType>& theRight) const
 {
-  double Result = 0;
-
   Standard_DimensionError_Raise_if(
     Length() != theRight.Length(),
     "math_VectorBase::Multiplied() - input vector has wrong dimensions");
 
-  int I = theRight.Lower();
-  for (int Index = Lower(); Index <= Upper(); Index++)
+  const int          aLen      = Length();
+  const TheItemType* aLeftPtr  = &Array(Lower());
+  const TheItemType* aRightPtr = &theRight.Array(theRight.Lower());
+  TheItemType        aResult   = 0;
+  for (int i = 0; i < aLen; i++)
   {
-    Result = Result + Array(Index) * theRight.Array(I);
-    I++;
+    aResult += aLeftPtr[i] * aRightPtr[i];
   }
-  return Result;
+  return aResult;
 }
 
 template <typename TheItemType>

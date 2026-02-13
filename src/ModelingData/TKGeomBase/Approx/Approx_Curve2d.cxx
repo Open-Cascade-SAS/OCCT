@@ -149,12 +149,13 @@ Approx_Curve2d::Approx_Curve2d(const occ::handle<Adaptor2d_Curve2d>& C2D,
 
   if (myHasResult)
   {
-    NCollection_Array1<gp_Pnt2d> Poles2d(1, aApprox.NbPoles());
-    NCollection_Array1<double>   Poles1dU(1, aApprox.NbPoles());
+    const int                    aNbPoles = aApprox.NbPoles();
+    NCollection_Array1<gp_Pnt2d> Poles2d(1, aNbPoles);
+    NCollection_Array1<double>   Poles1dU(1, aNbPoles);
     aApprox.Poles1d(1, Poles1dU);
-    NCollection_Array1<double> Poles1dV(1, aApprox.NbPoles());
+    NCollection_Array1<double> Poles1dV(1, aNbPoles);
     aApprox.Poles1d(2, Poles1dV);
-    for (int i = 1; i <= aApprox.NbPoles(); i++)
+    for (int i = 1; i <= aNbPoles; i++)
       Poles2d.SetValue(i, gp_Pnt2d(Poles1dU.Value(i), Poles1dV.Value(i)));
 
     occ::handle<NCollection_HArray1<double>> Knots  = aApprox.Knots();

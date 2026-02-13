@@ -23,9 +23,7 @@
 #include <Standard_Integer.hxx>
 #include <StdFail_NotDone.hxx>
 #include <NCollection_Array1.hxx>
-#include <NCollection_HArray1.hxx>
 #include <NCollection_Array2.hxx>
-#include <NCollection_HArray2.hxx>
 #include <math_Vector.hxx>
 
 GeomFill_PolynomialConvertor::GeomFill_PolynomialConvertor()
@@ -43,63 +41,49 @@ bool GeomFill_PolynomialConvertor::Initialized() const
 void GeomFill_PolynomialConvertor::Init()
 {
   if (myinit)
-    return; // On n'initialise qu'une fois
-  int                                      ii, jj;
-  double                                   terme;
-  math_Matrix                              H(1, Ordre, 1, Ordre), B(1, Ordre, 1, Ordre);
-  occ::handle<NCollection_HArray1<double>> Coeffs =
-                                             new (NCollection_HArray1<double>)(1, Ordre * Ordre),
-                                           TrueInter = new (NCollection_HArray1<double>)(1, 2);
-
-  occ::handle<NCollection_HArray2<double>> Poles1d =
-                                             new (NCollection_HArray2<double>)(1, Ordre, 1, Ordre),
-                                           Inter = new (NCollection_HArray2<double>)(1, 1, 1, 2);
-
-  // Calcul de B
-  Inter->SetValue(1, 1, -1);
-  Inter->SetValue(1, 2, 1);
-  TrueInter->SetValue(1, -1);
-  TrueInter->SetValue(2, 1);
-
-  Coeffs->Init(0);
-  for (ii = 1; ii <= Ordre; ii++)
-  {
-    Coeffs->SetValue(ii + (ii - 1) * Ordre, 1);
-  }
-
-  // Convertion ancienne formules
-  occ::handle<NCollection_HArray1<int>> Ncf = new (NCollection_HArray1<int>)(1, 1);
-  Ncf->Init(Ordre);
-
-  Convert_CompPolynomialToPoles AConverter(1, 1, 8, 8, Ncf, Coeffs, Inter, TrueInter);
-  /*  Convert_CompPolynomialToPoles
-       AConverter(8, Ordre-1,  Ordre-1,
-              Coeffs,
-              Inter,
-              TrueInter); En attente du bon Geomlite*/
-  Poles1d = new NCollection_HArray2<double>(AConverter.Poles());
-
-  for (jj = 1; jj <= Ordre; jj++)
-  {
-    for (ii = 1; ii <= Ordre; ii++)
-    {
-      terme = Poles1d->Value(ii, jj);
-      if (std::abs(terme - 1) < 1.e-9)
-        terme = 1; // petite retouche
-      if (std::abs(terme + 1) < 1.e-9)
-        terme = -1;
-      B(ii, jj) = terme;
-    }
-  }
-  // Calcul de H
-  myinit = PLib::HermiteCoefficients(-1, 1, Ordre / 2 - 1, Ordre / 2 - 1, H);
-  H.Transpose();
-
-  if (!myinit)
     return;
 
-  // reste l'essentiel
-  BH = B * H;
+  // BH = B * H where B is the monomial-to-BSpline conversion matrix on [-1,1], degree 7,
+  // and H is the Hermite coefficients matrix. Both are mathematical constants computed once.
+  static const math_Matrix THE_BH_MATRIX = []() {
+    constexpr int              anOrdre = 8;
+    NCollection_Array1<double> aCoeffs(1, anOrdre * anOrdre);
+    NCollection_Array1<double> anInter(1, 2), aTrueInter(1, 2);
+    anInter.SetValue(1, -1);
+    anInter.SetValue(2, 1);
+    aTrueInter.SetValue(1, -1);
+    aTrueInter.SetValue(2, 1);
+    aCoeffs.Init(0);
+    for (int ii = 1; ii <= anOrdre; ii++)
+      aCoeffs.SetValue(ii + (ii - 1) * anOrdre, 1);
+
+    Convert_CompPolynomialToPoles     aConverter(anOrdre,
+                                             anOrdre - 1,
+                                             anOrdre - 1,
+                                             aCoeffs,
+                                             anInter,
+                                             aTrueInter);
+    const NCollection_Array2<double>& aPoles = aConverter.Poles();
+    math_Matrix                       aB(1, anOrdre, 1, anOrdre);
+    for (int jj = 1; jj <= anOrdre; jj++)
+      for (int ii = 1; ii <= anOrdre; ii++)
+      {
+        double aTerm = aPoles.Value(ii, jj);
+        if (std::abs(aTerm - 1) < 1.e-9)
+          aTerm = 1;
+        if (std::abs(aTerm + 1) < 1.e-9)
+          aTerm = -1;
+        aB(ii, jj) = aTerm;
+      }
+
+    math_Matrix aH(1, anOrdre, 1, anOrdre);
+    PLib::HermiteCoefficients(-1, 1, anOrdre / 2 - 1, anOrdre / 2 - 1, aH);
+    aH.Transpose();
+    return math_Matrix(aB * aH);
+  }();
+
+  BH     = THE_BH_MATRIX;
+  myinit = true;
 }
 
 void GeomFill_PolynomialConvertor::Section(const gp_Pnt&               FirstPnt,
