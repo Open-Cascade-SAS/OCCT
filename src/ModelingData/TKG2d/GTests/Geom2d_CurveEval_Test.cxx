@@ -23,6 +23,7 @@
 #include <Precision.hxx>
 #include <gp_Ax22d.hxx>
 #include <gp_Circ2d.hxx>
+#include <gp_Elips2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 
