@@ -36,7 +36,6 @@ class Bisector_BisecPC : public Bisector_Curve
 {
 
 public:
-
   Standard_EXPORT Bisector_BisecPC();
 
   //! Constructs the bisector between the point <P> and

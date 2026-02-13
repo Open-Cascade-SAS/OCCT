@@ -72,8 +72,6 @@ class Geom_OffsetCurve : public Geom_Curve
 {
 
 public:
-
-
   //! C is the basis curve, Offset is the distance between <me> and
   //! the basis curve at any point. V defines the fixed reference
   //! direction (offset direction). If P is a point on the basis

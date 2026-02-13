@@ -56,8 +56,6 @@ class Geom2d_Parabola : public Geom2d_Conic
 {
 
 public:
-
-
   //! Creates a parabola from a non persistent one.
   Standard_EXPORT Geom2d_Parabola(const gp_Parab2d& Prb);
 

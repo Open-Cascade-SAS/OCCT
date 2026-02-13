@@ -60,8 +60,6 @@ class Geom2d_Ellipse : public Geom2d_Conic
 {
 
 public:
-
-
   //! Creates an ellipse by conversion of the gp_Elips2d ellipse E.
   Standard_EXPORT Geom2d_Ellipse(const gp_Elips2d& E);
 

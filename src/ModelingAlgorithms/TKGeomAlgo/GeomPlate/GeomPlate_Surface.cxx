@@ -267,7 +267,10 @@ std::optional<Geom_SurfD3> GeomPlate_Surface::EvalD3(const double, const double)
 
 //=================================================================================================
 
-std::optional<gp_Vec> GeomPlate_Surface::EvalDN(const double, const double, const int, const int) const
+std::optional<gp_Vec> GeomPlate_Surface::EvalDN(const double,
+                                                const double,
+                                                const int,
+                                                const int) const
 {
   return std::nullopt;
 }

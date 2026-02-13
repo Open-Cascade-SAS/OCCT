@@ -209,7 +209,11 @@ std::optional<gp_Pnt2d> Geom2d_OffsetCurve::EvalD0(const double theU) const
 std::optional<Geom2d_CurveD1> Geom2d_OffsetCurve::EvalD1(const double theU) const
 {
   Geom2d_CurveD1 aResult;
-  if (!Geom2d_OffsetCurveUtils::EvaluateD1(theU, basisCurve.get(), offsetValue, aResult.Point, aResult.D1))
+  if (!Geom2d_OffsetCurveUtils::EvaluateD1(theU,
+                                           basisCurve.get(),
+                                           offsetValue,
+                                           aResult.Point,
+                                           aResult.D1))
   {
     return std::nullopt;
   }
@@ -221,7 +225,12 @@ std::optional<Geom2d_CurveD1> Geom2d_OffsetCurve::EvalD1(const double theU) cons
 std::optional<Geom2d_CurveD2> Geom2d_OffsetCurve::EvalD2(const double theU) const
 {
   Geom2d_CurveD2 aResult;
-  if (!Geom2d_OffsetCurveUtils::EvaluateD2(theU, basisCurve.get(), offsetValue, aResult.Point, aResult.D1, aResult.D2))
+  if (!Geom2d_OffsetCurveUtils::EvaluateD2(theU,
+                                           basisCurve.get(),
+                                           offsetValue,
+                                           aResult.Point,
+                                           aResult.D1,
+                                           aResult.D2))
   {
     return std::nullopt;
   }

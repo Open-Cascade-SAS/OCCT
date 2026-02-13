@@ -312,8 +312,7 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
   }
 
   gp_Pnt aP;
-  if (!Geom_OffsetSurfaceUtils::EvaluateD0(
-        U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
+  if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
   {
     return std::nullopt;
   }

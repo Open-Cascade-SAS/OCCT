@@ -239,7 +239,10 @@ std::optional<Geom_SurfD3> Geom_Plane::EvalD3(const double U, const double V) co
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_Plane::EvalDN(const double, const double, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_Plane::EvalDN(const double,
+                                         const double,
+                                         const int Nu,
+                                         const int Nv) const
 {
   Standard_RangeError_Raise_if(Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");
   if (Nu == 0 && Nv == 1)

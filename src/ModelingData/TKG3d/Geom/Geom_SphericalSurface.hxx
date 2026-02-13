@@ -70,8 +70,6 @@ class Geom_SphericalSurface : public Geom_ElementarySurface
 {
 
 public:
-
-
   //! A3 is the local coordinate system of the surface.
   //! At the creation the parametrization of the surface is defined
   //! such as the normal Vector (N = D1U ^ D1V) is directed away from
@@ -204,7 +202,10 @@ public:
   //! Computes the derivative of order Nu in the direction u
   //! and Nv in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Applies the transformation T to this sphere.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

@@ -51,8 +51,6 @@ class Geom_RectangularTrimmedSurface : public Geom_BoundedSurface
 {
 
 public:
-
-
   //! The U parametric direction of the surface is oriented from U1
   //! to U2. The V parametric direction of the surface is oriented
   //! from V1 to V2.

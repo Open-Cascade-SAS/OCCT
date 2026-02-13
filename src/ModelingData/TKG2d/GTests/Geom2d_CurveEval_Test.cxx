@@ -31,7 +31,7 @@
 
 TEST(Geom2d_CurveEvalTest, Circle_EvalD0D1_ValidResults)
 {
-  gp_Circ2d aCirc(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 4.0);
+  gp_Circ2d                  aCirc(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 4.0);
   occ::handle<Geom2d_Circle> aCurve = new Geom2d_Circle(aCirc);
 
   const double aU = M_PI / 4.0;
@@ -59,7 +59,7 @@ TEST(Geom2d_CurveEvalTest, Circle_EvalD0D1_ValidResults)
 TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD0_NulloptAtSingular)
 {
   // Create a circle with offset = -radius to get a degenerate (zero-radius) curve
-  gp_Circ2d aCirc(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
+  gp_Circ2d                  aCirc(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
   occ::handle<Geom2d_Circle> aBasis = new Geom2d_Circle(aCirc);
 
   // Offset by -radius creates a collapsed curve at the center

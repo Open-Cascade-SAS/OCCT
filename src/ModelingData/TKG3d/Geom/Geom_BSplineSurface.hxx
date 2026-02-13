@@ -146,8 +146,6 @@ class Geom_BSplineSurface : public Geom_BoundedSurface
 {
 
 public:
-
-
   //! Creates a non-rational b-spline surface (weights
   //! default value is 1.).
   //! The following conditions must be verified.

@@ -141,17 +141,24 @@ std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, cons
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U, const double V) const
+std::optional<Geom_SurfD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
+                                                                 const double V) const
 {
   std::optional<Geom_SurfD1> aResult{std::in_place};
-  Geom_ExtrusionUtils::D1(
-    U, V, *basisCurve, direction.XYZ(), aResult->Point, aResult->D1U, aResult->D1V);
+  Geom_ExtrusionUtils::D1(U,
+                          V,
+                          *basisCurve,
+                          direction.XYZ(),
+                          aResult->Point,
+                          aResult->D1U,
+                          aResult->D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U, const double V) const
+std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
+                                                                 const double V) const
 {
   std::optional<Geom_SurfD2> aResult{std::in_place};
   Geom_ExtrusionUtils::D2(U,
@@ -169,24 +176,24 @@ std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U, const double V) const
+std::optional<Geom_SurfD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
+                                                                 const double V) const
 {
   std::optional<Geom_SurfD3> aResult{std::in_place};
-  Geom_ExtrusionUtils::
-    D3(U,
-       V,
-       *basisCurve,
-       direction.XYZ(),
-       aResult->Point,
-       aResult->D1U,
-       aResult->D1V,
-       aResult->D2U,
-       aResult->D2V,
-       aResult->D2UV,
-       aResult->D3U,
-       aResult->D3V,
-       aResult->D3UUV,
-       aResult->D3UVV);
+  Geom_ExtrusionUtils::D3(U,
+                          V,
+                          *basisCurve,
+                          direction.XYZ(),
+                          aResult->Point,
+                          aResult->D1U,
+                          aResult->D1V,
+                          aResult->D2U,
+                          aResult->D2V,
+                          aResult->D2UV,
+                          aResult->D3U,
+                          aResult->D3V,
+                          aResult->D3UUV,
+                          aResult->D3UVV);
   return aResult;
 }
 

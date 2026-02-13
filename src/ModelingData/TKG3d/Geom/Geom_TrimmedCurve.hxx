@@ -38,8 +38,6 @@ class Geom_TrimmedCurve : public Geom_BoundedCurve
 {
 
 public:
-
-
   //! Constructs a trimmed curve from the basis curve C
   //! which is limited between parameter values U1 and U2.
   //! Note: - U1 can be greater or less than U2; in both cases,

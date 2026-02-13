@@ -61,8 +61,6 @@ class Geom_Ellipse : public Geom_Conic
 {
 
 public:
-
-
   //! Constructs an ellipse by conversion of the gp_Elips ellipse E.
   Standard_EXPORT Geom_Ellipse(const gp_Elips& E);
 

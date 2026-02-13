@@ -370,7 +370,7 @@ std::optional<gp_Pnt> Geom_RectangularTrimmedSurface::EvalD0(const double U, con
 //=================================================================================================
 
 std::optional<Geom_SurfD1> Geom_RectangularTrimmedSurface::EvalD1(const double U,
-                                                               const double V) const
+                                                                  const double V) const
 {
   return basisSurf->EvalD1(U, V);
 }
@@ -378,7 +378,7 @@ std::optional<Geom_SurfD1> Geom_RectangularTrimmedSurface::EvalD1(const double U
 //=================================================================================================
 
 std::optional<Geom_SurfD2> Geom_RectangularTrimmedSurface::EvalD2(const double U,
-                                                               const double V) const
+                                                                  const double V) const
 {
   return basisSurf->EvalD2(U, V);
 }
@@ -386,7 +386,7 @@ std::optional<Geom_SurfD2> Geom_RectangularTrimmedSurface::EvalD2(const double U
 //=================================================================================================
 
 std::optional<Geom_SurfD3> Geom_RectangularTrimmedSurface::EvalD3(const double U,
-                                                               const double V) const
+                                                                  const double V) const
 {
   return basisSurf->EvalD3(U, V);
 }
@@ -394,9 +394,9 @@ std::optional<Geom_SurfD3> Geom_RectangularTrimmedSurface::EvalD3(const double U
 //=================================================================================================
 
 std::optional<gp_Vec> Geom_RectangularTrimmedSurface::EvalDN(const double U,
-                                                              const double V,
-                                                              const int    Nu,
-                                                              const int    Nv) const
+                                                             const double V,
+                                                             const int    Nu,
+                                                             const int    Nv) const
 {
   return basisSurf->EvalDN(U, V, Nu, Nv);
 }

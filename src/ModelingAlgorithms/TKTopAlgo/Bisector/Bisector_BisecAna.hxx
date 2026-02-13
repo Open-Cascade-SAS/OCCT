@@ -41,7 +41,6 @@ class Bisector_BisecAna : public Bisector_Curve
 {
 
 public:
-
   Standard_EXPORT Bisector_BisecAna();
 
   //! Performs the bisecting line between the curves

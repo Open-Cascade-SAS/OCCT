@@ -68,8 +68,6 @@ class ShapeExtend_CompositeSurface : public Geom_Surface
 {
 
 public:
-
-
   //! Empty constructor.
   Standard_EXPORT ShapeExtend_CompositeSurface();
 

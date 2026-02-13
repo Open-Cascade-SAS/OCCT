@@ -63,8 +63,6 @@ class Geom_CylindricalSurface : public Geom_ElementarySurface
 {
 
 public:
-
-
   //! A3 defines the local coordinate system of the cylindrical surface.
   //! The "ZDirection" of A3 defines the direction of the surface's axis of symmetry.
   //! At the creation the parametrization of the surface is defined
@@ -201,7 +199,10 @@ public:
   //! Computes the derivative of order Nu in the direction u and Nv
   //! in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Applies the transformation T to this cylinder.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

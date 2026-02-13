@@ -71,8 +71,6 @@ class Geom_SurfaceOfRevolution : public Geom_SweptSurface
 {
 
 public:
-
-
   //! C : is the meridian or the referenced curve.
   //! A1 is the axis of revolution.
   //! The form of a SurfaceOfRevolution can be :

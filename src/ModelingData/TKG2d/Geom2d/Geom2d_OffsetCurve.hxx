@@ -67,8 +67,6 @@ class Geom2d_OffsetCurve : public Geom2d_Curve
 {
 
 public:
-
-
   //! Constructs a curve offset from the basis curve C,
   //! where Offset is the distance between the offset
   //! curve and the basis curve at any point.

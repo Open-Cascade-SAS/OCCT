@@ -84,8 +84,6 @@ class Geom2d_BezierCurve : public Geom2d_BoundedCurve
 {
 
 public:
-
-
   //! Creates a non rational Bezier curve with a set of poles :
   //! CurvePoles. The weights are defaulted to all being 1.
   //! Raises ConstructionError if the number of poles is greater than MaxDegree + 1

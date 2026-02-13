@@ -232,7 +232,17 @@ std::optional<Geom_SurfD1> Geom_ToroidalSurface::EvalD1(const double U, const do
 std::optional<Geom_SurfD2> Geom_ToroidalSurface::EvalD2(const double U, const double V) const
 {
   std::optional<Geom_SurfD2> aResult{std::in_place};
-  ElSLib::TorusD2(U, V, pos, majorRadius, minorRadius, aResult->Point, aResult->D1U, aResult->D1V, aResult->D2U, aResult->D2V, aResult->D2UV);
+  ElSLib::TorusD2(U,
+                  V,
+                  pos,
+                  majorRadius,
+                  minorRadius,
+                  aResult->Point,
+                  aResult->D1U,
+                  aResult->D1V,
+                  aResult->D2U,
+                  aResult->D2V,
+                  aResult->D2UV);
   return aResult;
 }
 
@@ -261,7 +271,10 @@ std::optional<Geom_SurfD3> Geom_ToroidalSurface::EvalD3(const double U, const do
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_ToroidalSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_ToroidalSurface::EvalDN(const double U,
+                                                   const double V,
+                                                   const int    Nu,
+                                                   const int    Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, "  ");
   return ElSLib::TorusDN(U, V, pos, majorRadius, minorRadius, Nu, Nv);

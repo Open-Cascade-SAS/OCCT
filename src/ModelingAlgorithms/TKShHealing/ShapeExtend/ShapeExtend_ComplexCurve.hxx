@@ -30,8 +30,6 @@ class ShapeExtend_ComplexCurve : public Geom_Curve
 {
 
 public:
-
-
   //! Returns number of curves
   Standard_EXPORT virtual int NbCurves() const = 0;
 

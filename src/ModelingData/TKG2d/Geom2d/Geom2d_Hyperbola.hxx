@@ -81,8 +81,6 @@ class Geom2d_Hyperbola : public Geom2d_Conic
 {
 
 public:
-
-
   //! Creates an Hyperbola from a non persistent one from package gp
   Standard_EXPORT Geom2d_Hyperbola(const gp_Hypr2d& H);
 

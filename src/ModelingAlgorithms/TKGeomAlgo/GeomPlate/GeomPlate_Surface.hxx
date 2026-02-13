@@ -42,8 +42,6 @@ class GeomPlate_Surface : public Geom_Surface
 {
 
 public:
-
-
   Standard_EXPORT GeomPlate_Surface(const occ::handle<Geom_Surface>& Surfinit,
                                     const Plate_Plate&               Surfinter);
 

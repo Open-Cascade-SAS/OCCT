@@ -58,8 +58,6 @@ class Geom2d_Circle : public Geom2d_Conic
 {
 
 public:
-
-
   //! Constructs a circle by conversion of the gp_Circ2d circle C.
   Standard_EXPORT Geom2d_Circle(const gp_Circ2d& C);
 

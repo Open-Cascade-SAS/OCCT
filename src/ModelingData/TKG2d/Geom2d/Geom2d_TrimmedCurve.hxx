@@ -37,8 +37,6 @@ class Geom2d_TrimmedCurve : public Geom2d_BoundedCurve
 {
 
 public:
-
-
   //! Creates a trimmed curve from the basis curve C limited between
   //! U1 and U2.
   //!

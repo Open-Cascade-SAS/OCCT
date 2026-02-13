@@ -59,8 +59,6 @@ class Geom_SurfaceOfLinearExtrusion : public Geom_SweptSurface
 {
 
 public:
-
-
   //! V is the direction of extrusion.
   //! C is the extruded curve.
   //! The form of a SurfaceOfLinearExtrusion can be :

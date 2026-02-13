@@ -70,8 +70,6 @@ class Geom_ConicalSurface : public Geom_ElementarySurface
 {
 
 public:
-
-
   //! A3 defines the local coordinate system of the conical surface.
   //! Ang is the conical surface semi-angle. Its absolute value is in range
   //! ]0, PI/2[.
@@ -259,7 +257,10 @@ public:
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1,
   //! - Nu or Nv is negative.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Applies the transformation T to this cone.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

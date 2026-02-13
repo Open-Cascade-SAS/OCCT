@@ -64,8 +64,6 @@ class Geom_Parabola : public Geom_Conic
 {
 
 public:
-
-
   //! Creates a parabola from a non transient one.
   Standard_EXPORT Geom_Parabola(const gp_Parab& Prb);
 

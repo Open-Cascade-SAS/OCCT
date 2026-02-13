@@ -273,7 +273,14 @@ std::optional<Geom2d_CurveD2> Geom2d_Ellipse::EvalD2(const double U) const
 std::optional<Geom2d_CurveD3> Geom2d_Ellipse::EvalD3(const double U) const
 {
   std::optional<Geom2d_CurveD3> aResult{std::in_place};
-  ElCLib::EllipseD3(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  ElCLib::EllipseD3(U,
+                    pos,
+                    majorRadius,
+                    minorRadius,
+                    aResult->Point,
+                    aResult->D1,
+                    aResult->D2,
+                    aResult->D3);
   return aResult;
 }
 

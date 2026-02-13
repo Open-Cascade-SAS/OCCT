@@ -123,8 +123,6 @@ class Geom2d_BSplineCurve : public Geom2d_BoundedCurve
 {
 
 public:
-
-
   //! Creates a non-rational B_spline curve on the
   //! basis <Knots, Multiplicities> of degree <Degree>.
   //! The following conditions must be verified.

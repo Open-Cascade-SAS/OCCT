@@ -58,8 +58,6 @@ class Geom_OffsetSurface : public Geom_Surface
 {
 
 public:
-
-
   //! Constructs a surface offset from the basis surface
   //! S, where Offset is the distance between the offset
   //! surface and the basis surface at any point.

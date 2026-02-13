@@ -59,8 +59,6 @@ class Geom_Circle : public Geom_Conic
 {
 
 public:
-
-
   //! Constructs a circle by conversion of the gp_Circ circle C.
   Standard_EXPORT Geom_Circle(const gp_Circ& C);
 

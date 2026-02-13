@@ -245,7 +245,14 @@ std::optional<Geom_CurveD2> Geom_Hyperbola::EvalD2(const double U) const
 std::optional<Geom_CurveD3> Geom_Hyperbola::EvalD3(const double U) const
 {
   std::optional<Geom_CurveD3> aResult{std::in_place};
-  ElCLib::HyperbolaD3(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  ElCLib::HyperbolaD3(U,
+                      pos,
+                      majorRadius,
+                      minorRadius,
+                      aResult->Point,
+                      aResult->D1,
+                      aResult->D2,
+                      aResult->D3);
   return aResult;
 }
 

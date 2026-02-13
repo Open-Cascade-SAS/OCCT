@@ -1555,9 +1555,9 @@ std::optional<Geom_SurfD3> Geom_BezierSurface::EvalD3(const double U, const doub
 //=================================================================================================
 
 std::optional<gp_Vec> Geom_BezierSurface::EvalDN(const double U,
-                                                  const double V,
-                                                  const int    Nu,
-                                                  const int    Nv) const
+                                                 const double V,
+                                                 const int    Nu,
+                                                 const int    Nv) const
 {
   Standard_RangeError_Raise_if(Nu + Nv < 1 || Nv < 0 || Nu < 0, " ");
   gp_Vec Derivative;

@@ -227,8 +227,13 @@ std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const dou
 std::optional<Geom_SurfD1> Geom_SurfaceOfRevolution::EvalD1(const double U, const double V) const
 {
   std::optional<Geom_SurfD1> aResult{std::in_place};
-  Geom_RevolutionUtils::D1(
-    U, V, *basisCurve, gp_Ax1(loc, direction), aResult->Point, aResult->D1U, aResult->D1V);
+  Geom_RevolutionUtils::D1(U,
+                           V,
+                           *basisCurve,
+                           gp_Ax1(loc, direction),
+                           aResult->Point,
+                           aResult->D1U,
+                           aResult->D1V);
   return aResult;
 }
 

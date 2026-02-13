@@ -101,8 +101,6 @@ class Geom_BezierSurface : public Geom_BoundedSurface
 {
 
 public:
-
-
   //! Creates a non-rational Bezier surface with a set of poles.
   //! Control points representation :
   //! SPoles(Uorigin,Vorigin) ...................SPoles(Uorigin,Vend)

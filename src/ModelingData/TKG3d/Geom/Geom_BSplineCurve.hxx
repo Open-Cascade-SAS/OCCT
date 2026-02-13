@@ -119,8 +119,6 @@ class Geom_BSplineCurve : public Geom_BoundedCurve
 {
 
 public:
-
-
   //! Creates a non-rational B_spline curve on the
   //! basis <Knots, Multiplicities> of degree <Degree>.
   Standard_EXPORT Geom_BSplineCurve(const NCollection_Array1<gp_Pnt>& Poles,

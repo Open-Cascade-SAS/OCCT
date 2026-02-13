@@ -42,8 +42,6 @@ class Geom_Line : public Geom_Curve
 {
 
 public:
-
-
   //! Creates a line located in 3D space with the axis placement A1.
   //! The Location of A1 is the origin of the line.
   Standard_EXPORT Geom_Line(const gp_Ax1& A1);

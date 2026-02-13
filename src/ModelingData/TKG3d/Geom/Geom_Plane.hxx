@@ -59,8 +59,6 @@ class Geom_Plane : public Geom_ElementarySurface
 {
 
 public:
-
-
   //! Creates a plane located in 3D space with an axis placement three axis.
   //! The "ZDirection" of "A3" is the direction normal
   //! to the plane. The "Location" point of "A3" is the origin of the plane.
@@ -196,7 +194,10 @@ public:
   //! Computes the derivative of order Nu in the direction u
   //! and Nv in the direction v.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Applies the transformation T to this plane.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

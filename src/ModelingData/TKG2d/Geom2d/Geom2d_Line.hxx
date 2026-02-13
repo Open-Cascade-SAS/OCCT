@@ -48,8 +48,6 @@ class Geom2d_Line : public Geom2d_Curve
 {
 
 public:
-
-
   //! Creates a line located in 2D space with the axis placement A.
   //! The Location of A is the origin of the line.
   Standard_EXPORT Geom2d_Line(const gp_Ax2d& A);

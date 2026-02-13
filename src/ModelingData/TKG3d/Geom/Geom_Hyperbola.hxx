@@ -81,8 +81,6 @@ class Geom_Hyperbola : public Geom_Conic
 {
 
 public:
-
-
   //! Constructs a hyperbola by conversion of the gp_Hypr hyperbola H.
   Standard_EXPORT Geom_Hyperbola(const gp_Hypr& H);
 

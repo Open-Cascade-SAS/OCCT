@@ -36,7 +36,6 @@ class Bisector_BisecCC : public Bisector_Curve
 {
 
 public:
-
   Standard_EXPORT Bisector_BisecCC();
 
   //! Constructs the bisector between the curves <Cu1>

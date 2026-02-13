@@ -39,7 +39,7 @@ TEST(Geom_CurveEvalTest, Circle_EvalD0_ReturnsValidPoint)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
   occ::handle<Geom_Circle> aCurve = new Geom_Circle(aCirc);
 
-  const double                    aU      = M_PI / 4.0;
+  const double                aU      = M_PI / 4.0;
   const std::optional<gp_Pnt> aResult = aCurve->EvalD0(aU);
   ASSERT_TRUE(aResult.has_value());
 
@@ -181,8 +181,7 @@ TEST(Geom_CurveEvalTest, OffsetCurve_D0Wrapper_ThrowsAtSingular)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
   occ::handle<Geom_Circle> aBasis = new Geom_Circle(aCirc);
 
-  occ::handle<Geom_OffsetCurve> anOffset =
-    new Geom_OffsetCurve(aBasis, 2.0, gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aBasis, 2.0, gp_Dir(0.0, 0.0, 1.0));
 
   // The backward-compatibility wrapper should NOT throw for valid evaluation
   gp_Pnt aP;

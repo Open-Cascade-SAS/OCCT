@@ -34,7 +34,8 @@
 
 TEST(Geom_SurfaceEvalTest, Plane_EvalD0_ReturnsValidPoint)
 {
-  occ::handle<Geom_Plane> aSurf = new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
+  occ::handle<Geom_Plane> aSurf =
+    new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
 
   const auto aResult = aSurf->EvalD0(1.0, 2.0);
   ASSERT_TRUE(aResult.has_value());
@@ -47,7 +48,8 @@ TEST(Geom_SurfaceEvalTest, Plane_EvalD0_ReturnsValidPoint)
 
 TEST(Geom_SurfaceEvalTest, Plane_EvalD1_ConstantPartials)
 {
-  occ::handle<Geom_Plane> aSurf = new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
+  occ::handle<Geom_Plane> aSurf =
+    new Geom_Plane(gp_Pln(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)));
 
   const auto aD1 = aSurf->EvalD1(1.0, 2.0);
   ASSERT_TRUE(aD1.has_value());
@@ -64,8 +66,8 @@ TEST(Geom_SurfaceEvalTest, Plane_EvalD1_ConstantPartials)
 
 TEST(Geom_SurfaceEvalTest, Sphere_EvalD1_PartialDerivatives)
 {
-  const double            aRadius = 5.0;
-  gp_Sphere               aSphere(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), aRadius);
+  const double aRadius = 5.0;
+  gp_Sphere    aSphere(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), aRadius);
   occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSphere);
 
   const double aU = M_PI / 4.0; // longitude
