@@ -43,7 +43,10 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_OffsetCurve::EvaluateGrid(
   {
     const Geom2dGridEval::CurveD1& aBasis = aBasisD1.Value(i);
     gp_Pnt2d                       aP     = aBasis.Point;
-    Geom2d_OffsetCurveUtils::CalculateD0(aP, aBasis.D1, myOffset);
+    if (!Geom2d_OffsetCurveUtils::CalculateD0(aP, aBasis.D1, myOffset))
+    {
+      return NCollection_Array1<gp_Pnt2d>();
+    }
     aResult.SetValue(i, aP);
   }
 
@@ -78,7 +81,10 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OffsetCurve::Evaluate
     const Geom2dGridEval::CurveD2& aBasis = aBasisD2.Value(i);
     gp_Pnt2d                       aP     = aBasis.Point;
     gp_Vec2d                       aD1    = aBasis.D1;
-    Geom2d_OffsetCurveUtils::CalculateD1(aP, aD1, aBasis.D2, myOffset);
+    if (!Geom2d_OffsetCurveUtils::CalculateD1(aP, aD1, aBasis.D2, myOffset))
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD1>();
+    }
     aResult.ChangeValue(i) = {aP, aD1};
   }
 
@@ -121,17 +127,23 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OffsetCurve::Evaluate
     if (aD1.SquareMagnitude() <= gp::Resolution())
     {
       gp_Vec2d aDummyD4;
-      isDirectionChange =
-        Geom2d_OffsetCurveUtils::AdjustDerivative(*myBasis,
-                                                  3,
-                                                  theParams.Value(theParams.Lower() + i - 1),
-                                                  aD1,
-                                                  aD2,
-                                                  aD3,
-                                                  aDummyD4);
+      if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*myBasis,
+                                                     3,
+                                                     theParams.Value(theParams.Lower() + i - 1),
+                                                     aD1,
+                                                     aD2,
+                                                     aD3,
+                                                     aDummyD4,
+                                                     isDirectionChange))
+      {
+        return NCollection_Array1<Geom2dGridEval::CurveD2>();
+      }
     }
 
-    Geom2d_OffsetCurveUtils::CalculateD2(aP, aD1, aD2, aD3, isDirectionChange, myOffset);
+    if (!Geom2d_OffsetCurveUtils::CalculateD2(aP, aD1, aD2, aD3, isDirectionChange, myOffset))
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD2>();
+    }
     aResult.ChangeValue(i) = {aP, aD1, aD2};
   }
 
@@ -170,17 +182,34 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OffsetCurve::Evaluate
     gp_Vec2d                       aD1    = aBasis.D1;
     gp_Vec2d                       aD2    = aBasis.D2;
     gp_Vec2d                       aD3    = aBasis.D3;
-    gp_Vec2d                       aD4    = myBasis->DN(aParam, 4);
+    std::optional<gp_Vec2d>        aD4Opt = myBasis->EvalDN(aParam, 4);
+    if (!aD4Opt)
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD3>();
+    }
+    gp_Vec2d aD4 = *aD4Opt;
 
     // Check for direction change at singular points
     bool isDirectionChange = false;
     if (aD1.SquareMagnitude() <= gp::Resolution())
     {
-      isDirectionChange =
-        Geom2d_OffsetCurveUtils::AdjustDerivative(*myBasis, 4, aParam, aD1, aD2, aD3, aD4);
+      if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*myBasis,
+                                                     4,
+                                                     aParam,
+                                                     aD1,
+                                                     aD2,
+                                                     aD3,
+                                                     aD4,
+                                                     isDirectionChange))
+      {
+        return NCollection_Array1<Geom2dGridEval::CurveD3>();
+      }
     }
 
-    Geom2d_OffsetCurveUtils::CalculateD3(aP, aD1, aD2, aD3, aD4, isDirectionChange, myOffset);
+    if (!Geom2d_OffsetCurveUtils::CalculateD3(aP, aD1, aD2, aD3, aD4, isDirectionChange, myOffset))
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD3>();
+    }
     aResult.ChangeValue(i) = {aP, aD1, aD2, aD3};
   }
 
@@ -204,7 +233,11 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OffsetCurve::EvaluateGridDN(
   if (theN == 1)
   {
     NCollection_Array1<Geom2dGridEval::CurveD1> aD1Grid = EvaluateGridD1(theParams);
-    NCollection_Array1<gp_Vec2d>                aResult(1, aNbParams);
+    if (aD1Grid.IsEmpty())
+    {
+      return NCollection_Array1<gp_Vec2d>();
+    }
+    NCollection_Array1<gp_Vec2d> aResult(1, aNbParams);
     for (int i = 1; i <= aNbParams; ++i)
     {
       aResult.SetValue(i, aD1Grid.Value(i).D1);
@@ -214,7 +247,11 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OffsetCurve::EvaluateGridDN(
   else if (theN == 2)
   {
     NCollection_Array1<Geom2dGridEval::CurveD2> aD2Grid = EvaluateGridD2(theParams);
-    NCollection_Array1<gp_Vec2d>                aResult(1, aNbParams);
+    if (aD2Grid.IsEmpty())
+    {
+      return NCollection_Array1<gp_Vec2d>();
+    }
+    NCollection_Array1<gp_Vec2d> aResult(1, aNbParams);
     for (int i = 1; i <= aNbParams; ++i)
     {
       aResult.SetValue(i, aD2Grid.Value(i).D2);
@@ -224,7 +261,11 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OffsetCurve::EvaluateGridDN(
   else if (theN == 3)
   {
     NCollection_Array1<Geom2dGridEval::CurveD3> aD3Grid = EvaluateGridD3(theParams);
-    NCollection_Array1<gp_Vec2d>                aResult(1, aNbParams);
+    if (aD3Grid.IsEmpty())
+    {
+      return NCollection_Array1<gp_Vec2d>();
+    }
+    NCollection_Array1<gp_Vec2d> aResult(1, aNbParams);
     for (int i = 1; i <= aNbParams; ++i)
     {
       aResult.SetValue(i, aD3Grid.Value(i).D3);

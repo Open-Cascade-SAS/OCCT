@@ -28,7 +28,12 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_OtherCurve::EvaluateGrid(
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    aResult.SetValue(i - theParams.Lower() + 1, myCurve.get().Value(theParams.Value(i)));
+    std::optional<gp_Pnt2d> aP = myCurve.get().EvalD0(theParams.Value(i));
+    if (!aP)
+    {
+      return NCollection_Array1<gp_Pnt2d>();
+    }
+    aResult.SetValue(i - theParams.Lower() + 1, *aP);
   }
 
   return aResult;
@@ -49,10 +54,12 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OtherCurve::EvaluateG
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    gp_Pnt2d aPoint;
-    gp_Vec2d aD1;
-    myCurve.get().D1(theParams.Value(i), aPoint, aD1);
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {aPoint, aD1};
+    std::optional<Geom2d_Curve::ResD1> aD1 = myCurve.get().EvalD1(theParams.Value(i));
+    if (!aD1)
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD1>();
+    }
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {aD1->Point, aD1->D1};
   }
 
   return aResult;
@@ -73,10 +80,12 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OtherCurve::EvaluateG
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    gp_Pnt2d aPoint;
-    gp_Vec2d aD1, aD2;
-    myCurve.get().D2(theParams.Value(i), aPoint, aD1, aD2);
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {aPoint, aD1, aD2};
+    std::optional<Geom2d_Curve::ResD2> aD2 = myCurve.get().EvalD2(theParams.Value(i));
+    if (!aD2)
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD2>();
+    }
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {aD2->Point, aD2->D1, aD2->D2};
   }
 
   return aResult;
@@ -97,10 +106,12 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OtherCurve::EvaluateG
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    gp_Pnt2d aPoint;
-    gp_Vec2d aD1, aD2, aD3;
-    myCurve.get().D3(theParams.Value(i), aPoint, aD1, aD2, aD3);
-    aResult.ChangeValue(i - theParams.Lower() + 1) = {aPoint, aD1, aD2, aD3};
+    std::optional<Geom2d_Curve::ResD3> aD3 = myCurve.get().EvalD3(theParams.Value(i));
+    if (!aD3)
+    {
+      return NCollection_Array1<Geom2dGridEval::CurveD3>();
+    }
+    aResult.ChangeValue(i - theParams.Lower() + 1) = {aD3->Point, aD3->D1, aD3->D2, aD3->D3};
   }
 
   return aResult;
@@ -124,6 +135,10 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OtherCurve::EvaluateGridDN(
   if (theN == 1)
   {
     NCollection_Array1<Geom2dGridEval::CurveD1> aD1Grid = EvaluateGridD1(theParams);
+    if (aD1Grid.IsEmpty())
+    {
+      return NCollection_Array1<gp_Vec2d>();
+    }
     for (int i = 1; i <= aNb; ++i)
     {
       aResult.SetValue(i, aD1Grid.Value(i).D1);
@@ -132,6 +147,10 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OtherCurve::EvaluateGridDN(
   else if (theN == 2)
   {
     NCollection_Array1<Geom2dGridEval::CurveD2> aD2Grid = EvaluateGridD2(theParams);
+    if (aD2Grid.IsEmpty())
+    {
+      return NCollection_Array1<gp_Vec2d>();
+    }
     for (int i = 1; i <= aNb; ++i)
     {
       aResult.SetValue(i, aD2Grid.Value(i).D2);
@@ -140,6 +159,10 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OtherCurve::EvaluateGridDN(
   else if (theN == 3)
   {
     NCollection_Array1<Geom2dGridEval::CurveD3> aD3Grid = EvaluateGridD3(theParams);
+    if (aD3Grid.IsEmpty())
+    {
+      return NCollection_Array1<gp_Vec2d>();
+    }
     for (int i = 1; i <= aNb; ++i)
     {
       aResult.SetValue(i, aD3Grid.Value(i).D3);
@@ -147,10 +170,15 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OtherCurve::EvaluateGridDN(
   }
   else
   {
-    // For orders > 3, use adaptor DN method
+    // For orders > 3, use adaptor EvalDN method
     for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
     {
-      aResult.SetValue(i - theParams.Lower() + 1, myCurve.get().DN(theParams.Value(i), theN));
+      std::optional<gp_Vec2d> aDN = myCurve.get().EvalDN(theParams.Value(i), theN);
+      if (!aDN)
+      {
+        return NCollection_Array1<gp_Vec2d>();
+      }
+      aResult.SetValue(i - theParams.Lower() + 1, *aDN);
     }
   }
   return aResult;
