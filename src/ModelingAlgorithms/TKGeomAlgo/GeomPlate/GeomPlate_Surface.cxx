@@ -208,13 +208,13 @@ std::optional<gp_Pnt> GeomPlate_Surface::EvalD0(const double U, const double V) 
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> GeomPlate_Surface::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> GeomPlate_Surface::EvalD1(const double U, const double V) const
 {
   auto aSurfD1 = mySurfinit->EvalD1(U, V);
   if (!aSurfD1)
     return std::nullopt;
   gp_XY       P1(U, V);
-  Geom_SurfD1 aResult;
+  Geom_Surface::ResD1 aResult;
   gp_XYZ      P3 = mySurfinter.Evaluate(P1);
   for (int i = 1; i <= 3; i++)
   {
@@ -232,13 +232,13 @@ std::optional<Geom_SurfD1> GeomPlate_Surface::EvalD1(const double U, const doubl
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> GeomPlate_Surface::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> GeomPlate_Surface::EvalD2(const double U, const double V) const
 {
   auto aSurfD2 = mySurfinit->EvalD2(U, V);
   if (!aSurfD2)
     return std::nullopt;
   gp_XY       P1(U, V);
-  Geom_SurfD2 aResult;
+  Geom_Surface::ResD2 aResult;
   gp_XYZ      P3 = mySurfinter.Evaluate(P1);
   for (int i = 1; i <= 3; i++)
   {
@@ -265,7 +265,7 @@ std::optional<Geom_SurfD2> GeomPlate_Surface::EvalD2(const double U, const doubl
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> GeomPlate_Surface::EvalD3(const double, const double) const
+std::optional<Geom_Surface::ResD3> GeomPlate_Surface::EvalD3(const double, const double) const
 {
   return std::nullopt;
 }

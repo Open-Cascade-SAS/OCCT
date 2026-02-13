@@ -174,18 +174,18 @@ std::optional<gp_Pnt> Geom_Line::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD1> Geom_Line::EvalD1(const double U) const
+std::optional<Geom_Curve::ResD1> Geom_Line::EvalD1(const double U) const
 {
-  std::optional<Geom_CurveD1> aResult{std::in_place};
+  std::optional<Geom_Curve::ResD1> aResult{std::in_place};
   ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_CurveD2> Geom_Line::EvalD2(const double U) const
+std::optional<Geom_Curve::ResD2> Geom_Line::EvalD2(const double U) const
 {
-  std::optional<Geom_CurveD2> aResult{std::in_place};
+  std::optional<Geom_Curve::ResD2> aResult{std::in_place};
   ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
   aResult->D2.SetCoord(0.0, 0.0, 0.0);
   return aResult;
@@ -193,9 +193,9 @@ std::optional<Geom_CurveD2> Geom_Line::EvalD2(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD3> Geom_Line::EvalD3(const double U) const
+std::optional<Geom_Curve::ResD3> Geom_Line::EvalD3(const double U) const
 {
-  std::optional<Geom_CurveD3> aResult{std::in_place};
+  std::optional<Geom_Curve::ResD3> aResult{std::in_place};
   ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
   aResult->D2.SetCoord(0.0, 0.0, 0.0);
   aResult->D3.SetCoord(0.0, 0.0, 0.0);

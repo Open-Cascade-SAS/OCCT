@@ -505,7 +505,7 @@ std::optional<gp_Pnt> ShapeExtend_CompositeSurface::EvalD0(const double U, const
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> ShapeExtend_CompositeSurface::EvalD1(const double U,
+std::optional<Geom_Surface::ResD1> ShapeExtend_CompositeSurface::EvalD1(const double U,
                                                                 const double V) const
 {
   int      i  = LocateUParameter(U);
@@ -516,7 +516,7 @@ std::optional<Geom_SurfD1> ShapeExtend_CompositeSurface::EvalD1(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> ShapeExtend_CompositeSurface::EvalD2(const double U,
+std::optional<Geom_Surface::ResD2> ShapeExtend_CompositeSurface::EvalD2(const double U,
                                                                 const double V) const
 {
   int      i  = LocateUParameter(U);
@@ -527,7 +527,7 @@ std::optional<Geom_SurfD2> ShapeExtend_CompositeSurface::EvalD2(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> ShapeExtend_CompositeSurface::EvalD3(const double U,
+std::optional<Geom_Surface::ResD3> ShapeExtend_CompositeSurface::EvalD3(const double U,
                                                                 const double V) const
 {
   int      i  = LocateUParameter(U);

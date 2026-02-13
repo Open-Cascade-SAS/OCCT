@@ -50,7 +50,7 @@ std::optional<gp_Pnt> ShapeExtend_ComplexCurve::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD1> ShapeExtend_ComplexCurve::EvalD1(const double U) const
+std::optional<Geom_Curve::ResD1> ShapeExtend_ComplexCurve::EvalD1(const double U) const
 {
   double UOut;
   int    ind     = LocateParameter(U, UOut);
@@ -64,7 +64,7 @@ std::optional<Geom_CurveD1> ShapeExtend_ComplexCurve::EvalD1(const double U) con
 
 //=================================================================================================
 
-std::optional<Geom_CurveD2> ShapeExtend_ComplexCurve::EvalD2(const double U) const
+std::optional<Geom_Curve::ResD2> ShapeExtend_ComplexCurve::EvalD2(const double U) const
 {
   double UOut;
   int    ind     = LocateParameter(U, UOut);
@@ -79,7 +79,7 @@ std::optional<Geom_CurveD2> ShapeExtend_ComplexCurve::EvalD2(const double U) con
 
 //=================================================================================================
 
-std::optional<Geom_CurveD3> ShapeExtend_ComplexCurve::EvalD3(const double U) const
+std::optional<Geom_Curve::ResD3> ShapeExtend_ComplexCurve::EvalD3(const double U) const
 {
   double UOut;
   int    ind     = LocateParameter(U, UOut);

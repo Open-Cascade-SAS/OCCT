@@ -172,15 +172,15 @@ public:
   //! if the continuity of the basis curve is not C2.
   //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C2
-  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
 
   //! Warning! this should not be called
   //! if the continuity of the basis curve is not C3.
   //! Nevertheless, it's OK to use it on a portion
   //! where the curve is C3
-  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
 
-  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
 
   //! The returned vector gives the value of the derivative
   //! for the order of derivation N.

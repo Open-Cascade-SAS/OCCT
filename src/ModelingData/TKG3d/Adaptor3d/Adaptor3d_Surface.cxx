@@ -434,11 +434,11 @@ std::optional<gp_Pnt> Adaptor3d_Surface::EvalD0(double theU, double theV) const
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Adaptor3d_Surface::EvalD1(double theU, double theV) const
+std::optional<Geom_Surface::ResD1> Adaptor3d_Surface::EvalD1(double theU, double theV) const
 {
   try
   {
-    Geom_SurfD1 aResult;
+    Geom_Surface::ResD1 aResult;
     D1(theU, theV, aResult.Point, aResult.D1U, aResult.D1V);
     return aResult;
   }
@@ -450,11 +450,11 @@ std::optional<Geom_SurfD1> Adaptor3d_Surface::EvalD1(double theU, double theV) c
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Adaptor3d_Surface::EvalD2(double theU, double theV) const
+std::optional<Geom_Surface::ResD2> Adaptor3d_Surface::EvalD2(double theU, double theV) const
 {
   try
   {
-    Geom_SurfD2 aResult;
+    Geom_Surface::ResD2 aResult;
     D2(theU, theV, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
     return aResult;
   }
@@ -466,11 +466,11 @@ std::optional<Geom_SurfD2> Adaptor3d_Surface::EvalD2(double theU, double theV) c
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Adaptor3d_Surface::EvalD3(double theU, double theV) const
+std::optional<Geom_Surface::ResD3> Adaptor3d_Surface::EvalD3(double theU, double theV) const
 {
   try
   {
-    Geom_SurfD3 aResult;
+    Geom_Surface::ResD3 aResult;
     D3(theU,
        theV,
        aResult.Point,

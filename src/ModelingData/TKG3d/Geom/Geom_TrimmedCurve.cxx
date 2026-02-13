@@ -187,21 +187,21 @@ std::optional<gp_Pnt> Geom_TrimmedCurve::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD1> Geom_TrimmedCurve::EvalD1(const double U) const
+std::optional<Geom_Curve::ResD1> Geom_TrimmedCurve::EvalD1(const double U) const
 {
   return basisCurve->EvalD1(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom_CurveD2> Geom_TrimmedCurve::EvalD2(const double U) const
+std::optional<Geom_Curve::ResD2> Geom_TrimmedCurve::EvalD2(const double U) const
 {
   return basisCurve->EvalD2(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom_CurveD3> Geom_TrimmedCurve::EvalD3(const double U) const
+std::optional<Geom_Curve::ResD3> Geom_TrimmedCurve::EvalD3(const double U) const
 {
   return basisCurve->EvalD3(U);
 }

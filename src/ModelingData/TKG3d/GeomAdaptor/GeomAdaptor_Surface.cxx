@@ -1073,9 +1073,9 @@ void GeomAdaptor_Surface::D1(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> GeomAdaptor_Surface::EvalD1(double U, double V) const
+std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double V) const
 {
-  Geom_SurfD1 aResult;
+  Geom_Surface::ResD1 aResult;
   int         Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double      u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
@@ -1215,9 +1215,9 @@ void GeomAdaptor_Surface::D2(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> GeomAdaptor_Surface::EvalD2(double U, double V) const
+std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double V) const
 {
-  Geom_SurfD2 aResult;
+  Geom_Surface::ResD2 aResult;
   int         Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double      u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
@@ -1424,9 +1424,9 @@ void GeomAdaptor_Surface::D3(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> GeomAdaptor_Surface::EvalD3(double U, double V) const
+std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double V) const
 {
-  Geom_SurfD3 aResult;
+  Geom_Surface::ResD3 aResult;
   int         Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double      u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)

@@ -18,6 +18,7 @@
 #define _Adaptor3d_Surface_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <gp_Ax1.hxx>
@@ -238,15 +239,15 @@ public:
 
   //! Computes the point and first partial derivatives at (U, V).
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD1> EvalD1(double U, double V) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Surface::ResD1> EvalD1(double U, double V) const;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD2> EvalD2(double U, double V) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Surface::ResD2> EvalD2(double U, double V) const;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD3> EvalD3(double U, double V) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Surface::ResD3> EvalD3(double U, double V) const;
 
   //! Computes the derivative of order Nu in U and Nv in V at (U, V).
   //! Returns std::nullopt on failure.

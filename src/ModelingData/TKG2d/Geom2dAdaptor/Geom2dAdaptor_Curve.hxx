@@ -224,13 +224,13 @@ public:
   [[nodiscard]] Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(double U) const final;
 
   //! Non-throwing D1 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_CurveD1> EvalD1(double U) const final;
+  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(double U) const final;
 
   //! Non-throwing D2 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_CurveD2> EvalD2(double U) const final;
+  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(double U) const final;
 
   //! Non-throwing D3 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_CurveD3> EvalD3(double U) const final;
+  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(double U) const final;
 
   //! Non-throwing DN evaluation. Returns std::nullopt on failure.
   [[nodiscard]] Standard_EXPORT std::optional<gp_Vec2d> EvalDN(double U, int N) const final;

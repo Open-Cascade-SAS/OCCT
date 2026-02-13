@@ -20,8 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <Geom.hxx>
 #include <Geom_Geometry.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
@@ -59,6 +60,30 @@ class Geom_Curve : public Geom_Geometry
 {
 
 public:
+  //! Result of D1 evaluation: point and first derivative.
+  struct ResD1
+  {
+    gp_Pnt Point;
+    gp_Vec D1;
+  };
+
+  //! Result of D2 evaluation: point and first two derivatives.
+  struct ResD2
+  {
+    gp_Pnt Point;
+    gp_Vec D1;
+    gp_Vec D2;
+  };
+
+  //! Result of D3 evaluation: point and first three derivatives.
+  struct ResD3
+  {
+    gp_Pnt Point;
+    gp_Vec D1;
+    gp_Vec D2;
+    gp_Vec D3;
+  };
+
   //! Changes the direction of parametrization of <me>.
   //! The "FirstParameter" and the "LastParameter" are not changed
   //! but the orientation of the curve is modified. If the curve
@@ -172,15 +197,15 @@ public:
 
   //! Computes the point and first derivative at parameter U.
   //! Returns std::nullopt if the curve continuity is not C1.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD1> EvalD1(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<ResD1> EvalD1(const double U) const = 0;
 
   //! Computes the point and first two derivatives at parameter U.
   //! Returns std::nullopt if the curve continuity is not C2.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD2> EvalD2(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<ResD2> EvalD2(const double U) const = 0;
 
   //! Computes the point and first three derivatives at parameter U.
   //! Returns std::nullopt if the curve continuity is not C3.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD3> EvalD3(const double U) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<ResD3> EvalD3(const double U) const = 0;
 
   //! Computes the Nth derivative at parameter U.
   //! Returns std::nullopt if the curve continuity is not CN, or N < 1.
@@ -202,7 +227,7 @@ public:
   //! Throws on failure for backward compatibility.
   inline void D1(const double U, gp_Pnt& P, gp_Vec& V1) const
   {
-    const std::optional<Geom_CurveD1> aR = EvalD1(U);
+    const std::optional<ResD1> aR = EvalD1(U);
     if (!aR)
     {
       throw Geom_UndefinedDerivative("Geom_Curve::D1(): evaluation failed");
@@ -215,7 +240,7 @@ public:
   //! Throws on failure for backward compatibility.
   inline void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
   {
-    const std::optional<Geom_CurveD2> aR = EvalD2(U);
+    const std::optional<ResD2> aR = EvalD2(U);
     if (!aR)
     {
       throw Geom_UndefinedDerivative("Geom_Curve::D2(): evaluation failed");
@@ -229,7 +254,7 @@ public:
   //! Throws on failure for backward compatibility.
   inline void D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
   {
-    const std::optional<Geom_CurveD3> aR = EvalD3(U);
+    const std::optional<ResD3> aR = EvalD3(U);
     if (!aR)
     {
       throw Geom_UndefinedDerivative("Geom_Curve::D3(): evaluation failed");

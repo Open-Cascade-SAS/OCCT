@@ -203,15 +203,15 @@ public:
   //! the "XAxis" and "YDir" the "YAxis" of the ellipse.
   Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
 
-  Standard_EXPORT std::optional<Geom2d_CurveD1> EvalD1(const double U) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(const double U) const final;
 
   //! Returns the point P of parameter U. The vectors V1 and V2
   //! are the first and second derivatives at this point.
-  Standard_EXPORT std::optional<Geom2d_CurveD2> EvalD2(const double U) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(const double U) const final;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
-  Standard_EXPORT std::optional<Geom2d_CurveD3> EvalD3(const double U) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(const double U) const final;
 
   //! For the point of parameter U of this ellipse,
   //! computes the vector corresponding to the Nth derivative.

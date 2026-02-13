@@ -14,24 +14,25 @@
 #ifndef _GeomGridEval_HeaderFile
 #define _GeomGridEval_HeaderFile
 
-#include <Geom.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
 //! @brief Namespace containing type aliases and template helpers for grid evaluators.
 //!
-//! Provides type aliases to common evaluation result structures defined in Geom.hxx
+//! Provides type aliases to common evaluation result structures defined in Geom_Curve and Geom_Surface
 //! and template helpers for iterating over parameter grids.
 namespace GeomGridEval
 {
 
-using CurveD1 = Geom_CurveD1;
-using CurveD2 = Geom_CurveD2;
-using CurveD3 = Geom_CurveD3;
-using SurfD1  = Geom_SurfD1;
-using SurfD2  = Geom_SurfD2;
-using SurfD3  = Geom_SurfD3;
+using CurveD1 = Geom_Curve::ResD1;
+using CurveD2 = Geom_Curve::ResD2;
+using CurveD3 = Geom_Curve::ResD3;
+using SurfD1  = Geom_Surface::ResD1;
+using SurfD2  = Geom_Surface::ResD2;
+using SurfD3  = Geom_Surface::ResD3;
 
 //==================================================================================================
 // Template helpers for parametric surface evaluation.

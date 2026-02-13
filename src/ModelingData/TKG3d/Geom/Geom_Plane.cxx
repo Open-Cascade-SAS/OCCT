@@ -202,18 +202,18 @@ std::optional<gp_Pnt> Geom_Plane::EvalD0(const double U, const double V) const
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_Plane::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_Plane::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   ElSLib::PlaneD1(U, V, pos, aResult->Point, aResult->D1U, aResult->D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_Plane::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_Plane::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   ElSLib::PlaneD1(U, V, pos, aResult->Point, aResult->D1U, aResult->D1V);
   aResult->D2U.SetCoord(0.0, 0.0, 0.0);
   aResult->D2V.SetCoord(0.0, 0.0, 0.0);
@@ -223,9 +223,9 @@ std::optional<Geom_SurfD2> Geom_Plane::EvalD2(const double U, const double V) co
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_Plane::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_Plane::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   ElSLib::PlaneD1(U, V, pos, aResult->Point, aResult->D1U, aResult->D1V);
   aResult->D2U.SetCoord(0.0, 0.0, 0.0);
   aResult->D2V.SetCoord(0.0, 0.0, 0.0);

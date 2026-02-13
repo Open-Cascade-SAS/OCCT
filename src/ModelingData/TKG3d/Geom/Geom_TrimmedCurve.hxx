@@ -191,13 +191,13 @@ public:
   Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
 
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
 
   //! N is the order of derivation.
   //! Raised if the continuity of the curve is not CN.

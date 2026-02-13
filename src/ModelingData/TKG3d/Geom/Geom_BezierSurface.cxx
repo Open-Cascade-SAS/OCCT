@@ -1376,9 +1376,9 @@ std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V)
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_BezierSurface::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   if (myURational || myVRational)
   {
     BSplSLib::D1(U,
@@ -1428,9 +1428,9 @@ std::optional<Geom_SurfD1> Geom_BezierSurface::EvalD1(const double U, const doub
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_BezierSurface::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   if (myURational || myVRational)
   {
     //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
@@ -1488,9 +1488,9 @@ std::optional<Geom_SurfD2> Geom_BezierSurface::EvalD2(const double U, const doub
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_BezierSurface::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   if (myURational || myVRational)
   {
     BSplSLib::D3(U,

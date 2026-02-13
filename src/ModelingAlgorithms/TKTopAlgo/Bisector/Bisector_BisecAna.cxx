@@ -1508,21 +1508,21 @@ std::optional<gp_Pnt2d> Bisector_BisecAna::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD1> Bisector_BisecAna::EvalD1(const double U) const
+std::optional<Geom2d_Curve::ResD1> Bisector_BisecAna::EvalD1(const double U) const
 {
   return thebisector->BasisCurve()->EvalD1(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD2> Bisector_BisecAna::EvalD2(const double U) const
+std::optional<Geom2d_Curve::ResD2> Bisector_BisecAna::EvalD2(const double U) const
 {
   return thebisector->BasisCurve()->EvalD2(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD3> Bisector_BisecAna::EvalD3(const double U) const
+std::optional<Geom2d_Curve::ResD3> Bisector_BisecAna::EvalD3(const double U) const
 {
   return thebisector->BasisCurve()->EvalD3(U);
 }

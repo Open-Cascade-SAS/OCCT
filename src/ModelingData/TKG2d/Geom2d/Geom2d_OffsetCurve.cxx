@@ -207,7 +207,7 @@ std::optional<gp_Pnt2d> Geom2d_OffsetCurve::EvalD0(const double theU) const
 
 //==================================================================================================
 
-std::optional<Geom2d_CurveD1> Geom2d_OffsetCurve::EvalD1(const double theU) const
+std::optional<Geom2d_Curve::ResD1> Geom2d_OffsetCurve::EvalD1(const double theU) const
 {
   auto aBasisD2 = basisCurve->EvalD2(theU);
   if (!aBasisD2)
@@ -216,12 +216,12 @@ std::optional<Geom2d_CurveD1> Geom2d_OffsetCurve::EvalD1(const double theU) cons
   gp_Vec2d aD1    = aBasisD2->D1;
   if (!Geom2d_OffsetCurveUtils::CalculateD1(aValue, aD1, aBasisD2->D2, offsetValue))
     return std::nullopt;
-  return Geom2d_CurveD1{aValue, aD1};
+  return Geom2d_Curve::ResD1{aValue, aD1};
 }
 
 //==================================================================================================
 
-std::optional<Geom2d_CurveD2> Geom2d_OffsetCurve::EvalD2(const double theU) const
+std::optional<Geom2d_Curve::ResD2> Geom2d_OffsetCurve::EvalD2(const double theU) const
 {
   auto aBasisD3 = basisCurve->EvalD3(theU);
   if (!aBasisD3)
@@ -238,12 +238,12 @@ std::optional<Geom2d_CurveD2> Geom2d_OffsetCurve::EvalD2(const double theU) cons
   }
   if (!Geom2d_OffsetCurveUtils::CalculateD2(aValue, aD1, aD2, aD3, isDirectionChange, offsetValue))
     return std::nullopt;
-  return Geom2d_CurveD2{aValue, aD1, aD2};
+  return Geom2d_Curve::ResD2{aValue, aD1, aD2};
 }
 
 //==================================================================================================
 
-std::optional<Geom2d_CurveD3> Geom2d_OffsetCurve::EvalD3(const double theU) const
+std::optional<Geom2d_Curve::ResD3> Geom2d_OffsetCurve::EvalD3(const double theU) const
 {
   auto aBasisD3 = basisCurve->EvalD3(theU);
   if (!aBasisD3)
@@ -269,7 +269,7 @@ std::optional<Geom2d_CurveD3> Geom2d_OffsetCurve::EvalD3(const double theU) cons
                                             isDirectionChange,
                                             offsetValue))
     return std::nullopt;
-  return Geom2d_CurveD3{aValue, aD1, aD2, aD3};
+  return Geom2d_Curve::ResD3{aValue, aD1, aD2, aD3};
 }
 
 //==================================================================================================

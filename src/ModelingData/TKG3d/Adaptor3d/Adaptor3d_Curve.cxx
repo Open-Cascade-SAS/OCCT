@@ -271,11 +271,11 @@ std::optional<gp_Pnt> Adaptor3d_Curve::EvalD0(double theU) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD1> Adaptor3d_Curve::EvalD1(double theU) const
+std::optional<Geom_Curve::ResD1> Adaptor3d_Curve::EvalD1(double theU) const
 {
   try
   {
-    Geom_CurveD1 aResult;
+    Geom_Curve::ResD1 aResult;
     D1(theU, aResult.Point, aResult.D1);
     return aResult;
   }
@@ -287,11 +287,11 @@ std::optional<Geom_CurveD1> Adaptor3d_Curve::EvalD1(double theU) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD2> Adaptor3d_Curve::EvalD2(double theU) const
+std::optional<Geom_Curve::ResD2> Adaptor3d_Curve::EvalD2(double theU) const
 {
   try
   {
-    Geom_CurveD2 aResult;
+    Geom_Curve::ResD2 aResult;
     D2(theU, aResult.Point, aResult.D1, aResult.D2);
     return aResult;
   }
@@ -303,11 +303,11 @@ std::optional<Geom_CurveD2> Adaptor3d_Curve::EvalD2(double theU) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD3> Adaptor3d_Curve::EvalD3(double theU) const
+std::optional<Geom_Curve::ResD3> Adaptor3d_Curve::EvalD3(double theU) const
 {
   try
   {
-    Geom_CurveD3 aResult;
+    Geom_Curve::ResD3 aResult;
     D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
     return aResult;
   }

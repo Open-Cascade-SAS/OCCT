@@ -2,7 +2,6 @@
 set(OCCT_Geom_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Geom_FILES
-  Geom.hxx
   Geom_Axis1Placement.cxx
   Geom_Axis1Placement.hxx
   Geom_Axis2Placement.cxx

@@ -144,13 +144,13 @@ std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, cons
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
+std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
                                                                  const double V) const
 {
   auto aBasisD1 = basisCurve->EvalD1(U);
   if (!aBasisD1)
     return std::nullopt;
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   Geom_ExtrusionUtils::CalculateD1(aBasisD1->Point,
                                    aBasisD1->D1,
                                    V,
@@ -163,13 +163,13 @@ std::optional<Geom_SurfD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
+std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
                                                                  const double V) const
 {
   auto aBasisD2 = basisCurve->EvalD2(U);
   if (!aBasisD2)
     return std::nullopt;
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   Geom_ExtrusionUtils::CalculateD2(aBasisD2->Point,
                                    aBasisD2->D1,
                                    aBasisD2->D2,
@@ -186,13 +186,13 @@ std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
+std::optional<Geom_Surface::ResD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
                                                                  const double V) const
 {
   auto aBasisD3 = basisCurve->EvalD3(U);
   if (!aBasisD3)
     return std::nullopt;
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   Geom_ExtrusionUtils::CalculateD3(aBasisD3->Point,
                                    aBasisD3->D1,
                                    aBasisD3->D2,

@@ -710,9 +710,9 @@ void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD1> GeomAdaptor_Curve::EvalD1(double U) const
+std::optional<Geom_Curve::ResD1> GeomAdaptor_Curve::EvalD1(double U) const
 {
-  Geom_CurveD1 aResult;
+  Geom_Curve::ResD1 aResult;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
@@ -792,9 +792,9 @@ void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
 
 //=================================================================================================
 
-std::optional<Geom_CurveD2> GeomAdaptor_Curve::EvalD2(double U) const
+std::optional<Geom_Curve::ResD2> GeomAdaptor_Curve::EvalD2(double U) const
 {
-  Geom_CurveD2 aResult;
+  Geom_Curve::ResD2 aResult;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
@@ -877,9 +877,9 @@ void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
 
 //=================================================================================================
 
-std::optional<Geom_CurveD3> GeomAdaptor_Curve::EvalD3(double U) const
+std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
 {
-  Geom_CurveD3 aResult;
+  Geom_Curve::ResD3 aResult;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:

@@ -220,18 +220,18 @@ std::optional<gp_Pnt> Geom_ToroidalSurface::EvalD0(const double U, const double 
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_ToroidalSurface::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_ToroidalSurface::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   ElSLib::TorusD1(U, V, pos, majorRadius, minorRadius, aResult->Point, aResult->D1U, aResult->D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_ToroidalSurface::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_ToroidalSurface::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   ElSLib::TorusD2(U,
                   V,
                   pos,
@@ -248,9 +248,9 @@ std::optional<Geom_SurfD2> Geom_ToroidalSurface::EvalD2(const double U, const do
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_ToroidalSurface::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_ToroidalSurface::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   ElSLib::TorusD3(U,
                   V,
                   pos,

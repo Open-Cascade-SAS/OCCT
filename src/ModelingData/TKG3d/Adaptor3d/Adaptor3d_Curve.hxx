@@ -17,7 +17,7 @@
 #ifndef _Adaptor3d_Curve_HeaderFile
 #define _Adaptor3d_Curve_HeaderFile
 
-#include <Geom.hxx>
+#include <Geom_Curve.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
@@ -161,15 +161,15 @@ public:
 
   //! Computes the point and first derivative at parameter U.
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD1> EvalD1(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Curve::ResD1> EvalD1(double U) const;
 
   //! Computes the point and first two derivatives at parameter U.
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD2> EvalD2(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Curve::ResD2> EvalD2(double U) const;
 
   //! Computes the point and first three derivatives at parameter U.
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_CurveD3> EvalD3(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Curve::ResD3> EvalD3(double U) const;
 
   //! Computes the Nth derivative at parameter U.
   //! Returns std::nullopt on failure.

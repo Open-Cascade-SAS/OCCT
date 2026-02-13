@@ -280,27 +280,27 @@ std::optional<gp_Pnt2d> Geom2d_Hyperbola::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD1> Geom2d_Hyperbola::EvalD1(const double U) const
+std::optional<Geom2d_Curve::ResD1> Geom2d_Hyperbola::EvalD1(const double U) const
 {
-  std::optional<Geom2d_CurveD1> aResult{std::in_place};
+  std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
   ElCLib::HyperbolaD1(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD2> Geom2d_Hyperbola::EvalD2(const double U) const
+std::optional<Geom2d_Curve::ResD2> Geom2d_Hyperbola::EvalD2(const double U) const
 {
-  std::optional<Geom2d_CurveD2> aResult{std::in_place};
+  std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
   ElCLib::HyperbolaD2(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1, aResult->D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD3> Geom2d_Hyperbola::EvalD3(const double U) const
+std::optional<Geom2d_Curve::ResD3> Geom2d_Hyperbola::EvalD3(const double U) const
 {
-  std::optional<Geom2d_CurveD3> aResult{std::in_place};
+  std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
   ElCLib::HyperbolaD3(U,
                       pos,
                       majorRadius,

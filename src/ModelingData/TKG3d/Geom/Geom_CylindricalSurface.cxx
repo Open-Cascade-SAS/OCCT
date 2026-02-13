@@ -218,18 +218,18 @@ std::optional<gp_Pnt> Geom_CylindricalSurface::EvalD0(const double U, const doub
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_CylindricalSurface::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_CylindricalSurface::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   ElSLib::CylinderD1(U, V, pos, radius, aResult->Point, aResult->D1U, aResult->D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_CylindricalSurface::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_CylindricalSurface::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   ElSLib::CylinderD2(U,
                      V,
                      pos,
@@ -245,9 +245,9 @@ std::optional<Geom_SurfD2> Geom_CylindricalSurface::EvalD2(const double U, const
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_CylindricalSurface::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_CylindricalSurface::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   ElSLib::CylinderD3(U,
                      V,
                      pos,

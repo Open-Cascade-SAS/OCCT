@@ -135,7 +135,7 @@ std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_BSplineSurface::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, const double V) const
 {
   double aNewU = U;
   double aNewV = V;
@@ -149,7 +149,7 @@ std::optional<Geom_SurfD1> Geom_BSplineSurface::EvalD1(const double U, const dou
   BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   BSplSLib::D1(aNewU,
                aNewV,
                uindex,
@@ -174,7 +174,7 @@ std::optional<Geom_SurfD1> Geom_BSplineSurface::EvalD1(const double U, const dou
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_BSplineSurface::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, const double V) const
 {
   double aNewU = U;
   double aNewV = V;
@@ -188,7 +188,7 @@ std::optional<Geom_SurfD2> Geom_BSplineSurface::EvalD2(const double U, const dou
   BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   BSplSLib::D2(aNewU,
                aNewV,
                uindex,
@@ -216,9 +216,9 @@ std::optional<Geom_SurfD2> Geom_BSplineSurface::EvalD2(const double U, const dou
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_BSplineSurface::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_BSplineSurface::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   BSplSLib::D3(U,
                V,
                0,

@@ -109,16 +109,16 @@ public:
   Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
   //! Returns the point of parameter U and the first derivative.
-  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
 
   //! Returns the point of parameter U, the first and second
   //! derivatives. The second derivative is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
 
   //! Returns the point of parameter U, the first, second and third
   //! derivatives. The second and third derivatives are vectors with null magnitude for a line.
-  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
 
   //! Returns the vector corresponding to the derivative for the
   //! order of derivation N.

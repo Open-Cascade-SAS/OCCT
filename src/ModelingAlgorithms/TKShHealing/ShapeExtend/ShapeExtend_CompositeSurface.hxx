@@ -268,15 +268,15 @@ public:
 
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
-  Standard_EXPORT std::optional<Geom_SurfD1> EvalD1(const double U, const double V) const override;
+  Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(const double U, const double V) const override;
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
-  Standard_EXPORT std::optional<Geom_SurfD2> EvalD2(const double U, const double V) const override;
+  Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(const double U, const double V) const override;
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
-  Standard_EXPORT std::optional<Geom_SurfD3> EvalD3(const double U, const double V) const override;
+  Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(const double U, const double V) const override;
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).

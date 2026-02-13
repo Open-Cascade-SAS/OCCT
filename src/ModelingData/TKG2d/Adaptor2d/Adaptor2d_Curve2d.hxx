@@ -17,7 +17,7 @@
 #ifndef _Adaptor2d_Curve2d_HeaderFile
 #define _Adaptor2d_Curve2d_HeaderFile
 
-#include <Geom2d.hxx>
+#include <Geom2d_Curve.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Lin2d.hxx>
@@ -160,15 +160,15 @@ public:
 
   //! Computes the point and first derivative at parameter U.
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_CurveD1> EvalD1(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_Curve::ResD1> EvalD1(double U) const;
 
   //! Computes the point and first two derivatives at parameter U.
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_CurveD2> EvalD2(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_Curve::ResD2> EvalD2(double U) const;
 
   //! Computes the point and first three derivatives at parameter U.
   //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_CurveD3> EvalD3(double U) const;
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_Curve::ResD3> EvalD3(double U) const;
 
   //! Computes the Nth derivative at parameter U.
   //! Returns std::nullopt on failure.

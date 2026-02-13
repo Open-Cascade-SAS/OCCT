@@ -977,9 +977,9 @@ std::optional<gp_Pnt2d> Bisector_BisecCC::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD1> Bisector_BisecCC::EvalD1(const double U) const
+std::optional<Geom2d_Curve::ResD1> Bisector_BisecCC::EvalD1(const double U) const
 {
-  Geom2d_CurveD1 aResult;
+  Geom2d_Curve::ResD1 aResult;
   aResult.D1.SetCoord(0., 0.);
   gp_Vec2d V2, V3;
   Values(U, 1, aResult.Point, aResult.D1, V2, V3);
@@ -988,9 +988,9 @@ std::optional<Geom2d_CurveD1> Bisector_BisecCC::EvalD1(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD2> Bisector_BisecCC::EvalD2(const double U) const
+std::optional<Geom2d_Curve::ResD2> Bisector_BisecCC::EvalD2(const double U) const
 {
-  Geom2d_CurveD2 aResult;
+  Geom2d_Curve::ResD2 aResult;
   aResult.D1.SetCoord(0., 0.);
   aResult.D2.SetCoord(0., 0.);
   gp_Vec2d V3;
@@ -1000,9 +1000,9 @@ std::optional<Geom2d_CurveD2> Bisector_BisecCC::EvalD2(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_CurveD3> Bisector_BisecCC::EvalD3(const double U) const
+std::optional<Geom2d_Curve::ResD3> Bisector_BisecCC::EvalD3(const double U) const
 {
-  Geom2d_CurveD3 aResult;
+  Geom2d_Curve::ResD3 aResult;
   aResult.D1.SetCoord(0., 0.);
   aResult.D2.SetCoord(0., 0.);
   aResult.D3.SetCoord(0., 0.);

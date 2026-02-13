@@ -326,7 +326,7 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_OffsetSurface::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0 || myBasisSurfContinuity == GeomAbs_C1)
@@ -339,7 +339,7 @@ std::optional<Geom_SurfD1> Geom_OffsetSurface::EvalD1(const double U, const doub
     return equivSurf->EvalD1(U, V);
   }
 
-  Geom_SurfD1 aResult;
+  Geom_Surface::ResD1 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD1(U,
                                             V,
                                             basisSurf.get(),
@@ -356,7 +356,7 @@ std::optional<Geom_SurfD1> Geom_OffsetSurface::EvalD1(const double U, const doub
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_OffsetSurface::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0 || myBasisSurfContinuity == GeomAbs_C1
@@ -370,7 +370,7 @@ std::optional<Geom_SurfD2> Geom_OffsetSurface::EvalD2(const double U, const doub
     return equivSurf->EvalD2(U, V);
   }
 
-  Geom_SurfD2 aResult;
+  Geom_Surface::ResD2 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD2(U,
                                             V,
                                             basisSurf.get(),
@@ -390,7 +390,7 @@ std::optional<Geom_SurfD2> Geom_OffsetSurface::EvalD2(const double U, const doub
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_OffsetSurface::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, const double V) const
 {
 #ifdef CHECK
   if (!(basisSurf->IsCNu(4) && basisSurf->IsCNv(4)))
@@ -403,7 +403,7 @@ std::optional<Geom_SurfD3> Geom_OffsetSurface::EvalD3(const double U, const doub
     return equivSurf->EvalD3(U, V);
   }
 
-  Geom_SurfD3 aResult;
+  Geom_Surface::ResD3 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD3(U,
                                             V,
                                             basisSurf.get(),

@@ -227,12 +227,12 @@ std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const dou
 
 //=================================================================================================
 
-std::optional<Geom_SurfD1> Geom_SurfaceOfRevolution::EvalD1(const double U, const double V) const
+std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U, const double V) const
 {
   auto aBasisD1 = basisCurve->EvalD1(V);
   if (!aBasisD1)
     return std::nullopt;
-  std::optional<Geom_SurfD1> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   Geom_RevolutionUtils::CalculateD1(aBasisD1->Point,
                                     aBasisD1->D1,
                                     U,
@@ -245,12 +245,12 @@ std::optional<Geom_SurfD1> Geom_SurfaceOfRevolution::EvalD1(const double U, cons
 
 //=================================================================================================
 
-std::optional<Geom_SurfD2> Geom_SurfaceOfRevolution::EvalD2(const double U, const double V) const
+std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U, const double V) const
 {
   auto aBasisD2 = basisCurve->EvalD2(V);
   if (!aBasisD2)
     return std::nullopt;
-  std::optional<Geom_SurfD2> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   Geom_RevolutionUtils::CalculateD2(aBasisD2->Point,
                                     aBasisD2->D1,
                                     aBasisD2->D2,
@@ -267,12 +267,12 @@ std::optional<Geom_SurfD2> Geom_SurfaceOfRevolution::EvalD2(const double U, cons
 
 //=================================================================================================
 
-std::optional<Geom_SurfD3> Geom_SurfaceOfRevolution::EvalD3(const double U, const double V) const
+std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U, const double V) const
 {
   auto aBasisD3 = basisCurve->EvalD3(V);
   if (!aBasisD3)
     return std::nullopt;
-  std::optional<Geom_SurfD3> aResult{std::in_place};
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   Geom_RevolutionUtils::CalculateD3(aBasisD3->Point,
                                     aBasisD3->D1,
                                     aBasisD3->D2,

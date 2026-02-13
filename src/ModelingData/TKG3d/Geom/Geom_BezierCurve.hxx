@@ -227,9 +227,9 @@ public:
 
   Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
-  Standard_EXPORT std::optional<Geom_CurveD1> EvalD1(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
 
-  Standard_EXPORT std::optional<Geom_CurveD2> EvalD2(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
 
   //! For this Bezier curve, computes
   //! - the point P of parameter U, or
@@ -238,7 +238,7 @@ public:
   //! - V2, the second derivative vector,
   //! - V3, the third derivative vector.
   //! Note: the parameter U can be outside the bounds of the curve.
-  Standard_EXPORT std::optional<Geom_CurveD3> EvalD3(const double U) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
 
   //! For the point of parameter U of this Bezier curve,
   //! computes the vector corresponding to the Nth derivative.

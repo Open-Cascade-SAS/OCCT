@@ -150,27 +150,27 @@ std::optional<gp_Pnt> Geom_Circle::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom_CurveD1> Geom_Circle::EvalD1(const double U) const
+std::optional<Geom_Curve::ResD1> Geom_Circle::EvalD1(const double U) const
 {
-  std::optional<Geom_CurveD1> aResult{std::in_place};
+  std::optional<Geom_Curve::ResD1> aResult{std::in_place};
   ElCLib::CircleD1(U, pos, radius, aResult->Point, aResult->D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_CurveD2> Geom_Circle::EvalD2(const double U) const
+std::optional<Geom_Curve::ResD2> Geom_Circle::EvalD2(const double U) const
 {
-  std::optional<Geom_CurveD2> aResult{std::in_place};
+  std::optional<Geom_Curve::ResD2> aResult{std::in_place};
   ElCLib::CircleD2(U, pos, radius, aResult->Point, aResult->D1, aResult->D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_CurveD3> Geom_Circle::EvalD3(const double U) const
+std::optional<Geom_Curve::ResD3> Geom_Circle::EvalD3(const double U) const
 {
-  std::optional<Geom_CurveD3> aResult{std::in_place};
+  std::optional<Geom_Curve::ResD3> aResult{std::in_place};
   ElCLib::CircleD3(U, pos, radius, aResult->Point, aResult->D1, aResult->D2, aResult->D3);
   return aResult;
 }
