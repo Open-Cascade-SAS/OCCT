@@ -157,10 +157,11 @@ private:
   const NCollection_Array1<gp_Pnt2d>* myPoles2D;
   const NCollection_Array1<double>*   myWeights;
 
-  mutable int    myCellSpanIndex[THE_GRID_SIZE]; //!< span index per cell (-1 = unused)
-  mutable double myCellSpanStart[THE_GRID_SIZE]; //!< span start parameter per cell
-  mutable double myCellSpanEnd[THE_GRID_SIZE];   //!< span end parameter per cell
+  mutable int    myCellSpanIndex[THE_GRID_SIZE];  //!< span index per cell (-1 = unused)
+  mutable double myCellSpanStart[THE_GRID_SIZE];  //!< span start parameter per cell
+  mutable double myCellSpanLength[THE_GRID_SIZE]; //!< span length per cell (end - start)
 
+  mutable int  myLastCell;                 //!< last-used cell index (fast-path hint)
   mutable bool myCellValid[THE_GRID_SIZE]; //!< true if cache is built for current span
   mutable occ::handle<BSplCLib_Cache> myCache[THE_GRID_SIZE]; //!< cache objects
 };

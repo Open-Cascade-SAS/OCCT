@@ -92,19 +92,19 @@ private:
   bool locateCell(double theU, double theV, int& theCellU, int& theCellV) const;
 
   //! Locate cell in one direction.
-  //! @param[in] theParam     parameter value
-  //! @param[in] theSpanIdx   array of span indices for 3 cells
-  //! @param[in] theSpanStart array of span start values for 3 cells
-  //! @param[in] theSpanEnd   array of span end values for 3 cells
-  //! @param[in] theSpanMax   maximum span index
-  //! @param[in] theFirst     first parameter
-  //! @param[in] theLast      last parameter
+  //! @param[in] theParam      parameter value
+  //! @param[in] theSpanIdx    array of span indices for 3 cells
+  //! @param[in] theSpanStart  array of span start values for 3 cells
+  //! @param[in] theSpanLength array of span lengths for 3 cells
+  //! @param[in] theSpanMax    maximum span index
+  //! @param[in] theFirst      first parameter
+  //! @param[in] theLast       last parameter
   //! @param[in] theIsPeriodic whether the direction is periodic
   //! @return cell index (0..2) or -1 if not found
   static int locateCellDir(double        theParam,
                            const int*    theSpanIdx,
                            const double* theSpanStart,
-                           const double* theSpanEnd,
+                           const double* theSpanLength,
                            int           theSpanMax,
                            double        theFirst,
                            double        theLast,
@@ -118,7 +118,7 @@ private:
                             const NCollection_Array1<double>& theFlatKnots,
                             int*                              theCellSpanIndex,
                             double*                           theCellSpanStart,
-                            double*                           theCellSpanEnd);
+                            double*                           theCellSpanLength);
 
   //! Compute neighbor span index handling periodicity.
   static int neighborSpanIndex(int  theCenterSpanIndex,
@@ -168,7 +168,11 @@ private:
 
   mutable int    myCellSpanIndexU[THE_GRID_SIZE], myCellSpanIndexV[THE_GRID_SIZE];
   mutable double myCellSpanStartU[THE_GRID_SIZE], myCellSpanStartV[THE_GRID_SIZE];
-  mutable double myCellSpanEndU[THE_GRID_SIZE], myCellSpanEndV[THE_GRID_SIZE];
+  mutable double myCellSpanLengthU[THE_GRID_SIZE], myCellSpanLengthV[THE_GRID_SIZE];
+
+  mutable int myLastCellU;    //!< last-used cell U index (fast-path hint)
+  mutable int myLastCellV;    //!< last-used cell V index (fast-path hint)
+  mutable int myLastCacheIdx; //!< last-used flat cache index
 
   // 3x3 cache: myCache[iU * THE_GRID_SIZE + iV]
   mutable bool myCellValid[THE_GRID_SIZE * THE_GRID_SIZE]; //!< true if built for current span
