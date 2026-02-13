@@ -47,14 +47,17 @@ BSplSLib_CacheGrid::BSplSLib_CacheGrid(int                               theDegr
       myPoles(&thePoles),
       myWeights(theWeights)
 {
+  myLastCellU    = 1;
+  myLastCellV    = 1;
+  myLastCacheIdx = cacheIndex(1, 1);
   for (int i = 0; i < THE_GRID_SIZE; ++i)
   {
-    myCellSpanIndexU[i] = -1;
-    myCellSpanStartU[i] = 0.0;
-    myCellSpanEndU[i]   = 0.0;
-    myCellSpanIndexV[i] = -1;
-    myCellSpanStartV[i] = 0.0;
-    myCellSpanEndV[i]   = 0.0;
+    myCellSpanIndexU[i]  = -1;
+    myCellSpanStartU[i]  = 0.0;
+    myCellSpanLengthU[i] = 0.0;
+    myCellSpanIndexV[i]  = -1;
+    myCellSpanStartV[i]  = 0.0;
+    myCellSpanLengthV[i] = 0.0;
   }
   for (int i = 0; i < THE_GRID_SIZE * THE_GRID_SIZE; ++i)
   {
@@ -104,7 +107,7 @@ void BSplSLib_CacheGrid::centerGridDir(int                               theCent
                                        const NCollection_Array1<double>& theFlatKnots,
                                        int*                              theCellSpanIndex,
                                        double*                           theCellSpanStart,
-                                       double*                           theCellSpanEnd)
+                                       double*                           theCellSpanLength)
 {
   const int aSpanIndices[THE_GRID_SIZE] = {
     neighborSpanIndex(theCenterSpanIndex, -1, theSpanMin, theSpanMax, theIsPeriodic),
@@ -116,13 +119,13 @@ void BSplSLib_CacheGrid::centerGridDir(int                               theCent
     theCellSpanIndex[i] = aSpanIndices[i];
     if (aSpanIndices[i] >= 0)
     {
-      theCellSpanStart[i] = theFlatKnots.Value(aSpanIndices[i]);
-      theCellSpanEnd[i]   = theFlatKnots.Value(aSpanIndices[i] + 1);
+      theCellSpanStart[i]  = theFlatKnots.Value(aSpanIndices[i]);
+      theCellSpanLength[i] = theFlatKnots.Value(aSpanIndices[i] + 1) - theCellSpanStart[i];
     }
     else
     {
-      theCellSpanStart[i] = 0.0;
-      theCellSpanEnd[i]   = 0.0;
+      theCellSpanStart[i]  = 0.0;
+      theCellSpanLength[i] = 0.0;
     }
   }
 }
@@ -132,7 +135,7 @@ void BSplSLib_CacheGrid::centerGridDir(int                               theCent
 int BSplSLib_CacheGrid::locateCellDir(double        theParam,
                                       const int*    theSpanIdx,
                                       const double* theSpanStart,
-                                      const double* theSpanEnd,
+                                      const double* theSpanLength,
                                       int           theSpanMax,
                                       double        theFirst,
                                       double        theLast,
@@ -160,7 +163,6 @@ int BSplSLib_CacheGrid::locateCellDir(double        theParam,
       continue;
 
     const double aDelta = aParam - theSpanStart[i];
-    const double aLen   = theSpanEnd[i] - theSpanStart[i];
 
     if (aDelta < 0.0)
       continue;
@@ -168,19 +170,19 @@ int BSplSLib_CacheGrid::locateCellDir(double        theParam,
     if (theSpanIdx[i] == theSpanMax)
     {
       // Last span: parameter is valid if within [start, end]
-      if (aDelta <= aLen)
+      if (aDelta <= theSpanLength[i])
         return i;
       continue;
     }
 
     // Non-last span: parameter must be in [start, end)
-    if (aDelta >= aLen)
+    if (aDelta >= theSpanLength[i])
       continue;
 
-    // Check proximity to span end - if within machine epsilon of the next
+    // Check proximity to span end -- if within machine epsilon of the next
     // knot boundary, prefer the next span (consistent with BSplCLib::LocateParameter)
     const double anEps = Epsilon((std::min)(std::fabs(theLast), std::fabs(aParam)));
-    if (aLen - aDelta <= anEps)
+    if (theSpanLength[i] - aDelta <= anEps)
       continue;
 
     return i;
@@ -195,7 +197,7 @@ bool BSplSLib_CacheGrid::locateCell(double theU, double theV, int& theCellU, int
   theCellU = locateCellDir(theU,
                            myCellSpanIndexU,
                            myCellSpanStartU,
-                           myCellSpanEndU,
+                           myCellSpanLengthU,
                            mySpanIndexMaxU,
                            myFirstParamU,
                            myLastParamU,
@@ -206,7 +208,7 @@ bool BSplSLib_CacheGrid::locateCell(double theU, double theV, int& theCellU, int
   theCellV = locateCellDir(theV,
                            myCellSpanIndexV,
                            myCellSpanStartV,
-                           myCellSpanEndV,
+                           myCellSpanLengthV,
                            mySpanIndexMaxV,
                            myFirstParamV,
                            myLastParamV,
@@ -243,7 +245,7 @@ void BSplSLib_CacheGrid::rebuildGrid(double theU, double theV) const
                 *myFlatKnotsU,
                 myCellSpanIndexU,
                 myCellSpanStartU,
-                myCellSpanEndU);
+                myCellSpanLengthU);
   centerGridDir(aParamsV.SpanIndex,
                 mySpanIndexMinV,
                 mySpanIndexMaxV,
@@ -251,7 +253,7 @@ void BSplSLib_CacheGrid::rebuildGrid(double theU, double theV) const
                 *myFlatKnotsV,
                 myCellSpanIndexV,
                 myCellSpanStartV,
-                myCellSpanEndV);
+                myCellSpanLengthV);
 
   // Mark cells whose span changed as invalid. Cache objects stay in place --
   // never moved or released. Invalid cells are rebuilt on demand by calling
@@ -292,27 +294,44 @@ void BSplSLib_CacheGrid::ensureCell(double theU, double theV, int& theCellU, int
 {
   if (!locateCell(theU, theV, theCellU, theCellV))
   {
-    // Parameters outside grid - recenter
+    // Parameters outside grid -- recenter
     rebuildGrid(theU, theV);
     theCellU = 1;
     theCellV = 1;
-    return;
   }
-  const int aIdx = cacheIndex(theCellU, theCellV);
-  if (!myCellValid[aIdx])
+  else
   {
-    // Cell span is known but cache not yet built for current span
-    buildCell(theCellU, theCellV);
+    const int aIdx = cacheIndex(theCellU, theCellV);
+    if (!myCellValid[aIdx])
+    {
+      // Cell span is known but cache not yet built for current span
+      buildCell(theCellU, theCellV);
+    }
   }
+  myLastCellU    = theCellU;
+  myLastCellV    = theCellV;
+  myLastCacheIdx = cacheIndex(theCellU, theCellV);
 }
 
 //==================================================================================================
 
 void BSplSLib_CacheGrid::D0(const double& theU, const double& theV, gp_Pnt& thePoint) const
 {
+  // Fast path: check if parameters are still in the last-used cell
+  if (myCellValid[myLastCacheIdx])
+  {
+    const double aDeltaU = theU - myCellSpanStartU[myLastCellU];
+    const double aDeltaV = theV - myCellSpanStartV[myLastCellV];
+    if (aDeltaU >= 0.0 && aDeltaU <= myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
+        && aDeltaV <= myCellSpanLengthV[myLastCellV])
+    {
+      myCache[myLastCacheIdx]->D0(theU, theV, thePoint);
+      return;
+    }
+  }
   int aCellU = -1, aCellV = -1;
   ensureCell(theU, theV, aCellU, aCellV);
-  myCache[cacheIndex(aCellU, aCellV)]->D0(theU, theV, thePoint);
+  myCache[myLastCacheIdx]->D0(theU, theV, thePoint);
 }
 
 //==================================================================================================
@@ -323,9 +342,20 @@ void BSplSLib_CacheGrid::D1(const double& theU,
                             gp_Vec&       theTangentU,
                             gp_Vec&       theTangentV) const
 {
+  if (myCellValid[myLastCacheIdx])
+  {
+    const double aDeltaU = theU - myCellSpanStartU[myLastCellU];
+    const double aDeltaV = theV - myCellSpanStartV[myLastCellV];
+    if (aDeltaU >= 0.0 && aDeltaU <= myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
+        && aDeltaV <= myCellSpanLengthV[myLastCellV])
+    {
+      myCache[myLastCacheIdx]->D1(theU, theV, thePoint, theTangentU, theTangentV);
+      return;
+    }
+  }
   int aCellU = -1, aCellV = -1;
   ensureCell(theU, theV, aCellU, aCellV);
-  myCache[cacheIndex(aCellU, aCellV)]->D1(theU, theV, thePoint, theTangentU, theTangentV);
+  myCache[myLastCacheIdx]->D1(theU, theV, thePoint, theTangentU, theTangentV);
 }
 
 //==================================================================================================
@@ -339,14 +369,32 @@ void BSplSLib_CacheGrid::D2(const double& theU,
                             gp_Vec&       theCurvatureV,
                             gp_Vec&       theCurvatureUV) const
 {
+  if (myCellValid[myLastCacheIdx])
+  {
+    const double aDeltaU = theU - myCellSpanStartU[myLastCellU];
+    const double aDeltaV = theV - myCellSpanStartV[myLastCellV];
+    if (aDeltaU >= 0.0 && aDeltaU <= myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
+        && aDeltaV <= myCellSpanLengthV[myLastCellV])
+    {
+      myCache[myLastCacheIdx]->D2(theU,
+                                  theV,
+                                  thePoint,
+                                  theTangentU,
+                                  theTangentV,
+                                  theCurvatureU,
+                                  theCurvatureV,
+                                  theCurvatureUV);
+      return;
+    }
+  }
   int aCellU = -1, aCellV = -1;
   ensureCell(theU, theV, aCellU, aCellV);
-  myCache[cacheIndex(aCellU, aCellV)]->D2(theU,
-                                          theV,
-                                          thePoint,
-                                          theTangentU,
-                                          theTangentV,
-                                          theCurvatureU,
-                                          theCurvatureV,
-                                          theCurvatureUV);
+  myCache[myLastCacheIdx]->D2(theU,
+                              theV,
+                              thePoint,
+                              theTangentU,
+                              theTangentV,
+                              theCurvatureU,
+                              theCurvatureV,
+                              theCurvatureUV);
 }
