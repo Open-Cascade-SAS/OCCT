@@ -155,6 +155,43 @@ public:
                                gp_Vec& theCurvature,
                                gp_Vec& theTorsion) const;
 
+  //! Calculates the 2D point using pre-computed local parameter in [0, 1] range.
+  //! This bypasses periodic normalization and local parameter calculation.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the result of calculation (the point on the curve)
+  Standard_EXPORT void D0Local(double theLocalParam, gp_Pnt2d& thePoint) const;
+
+  //! Calculates the 2D point and first derivative using pre-computed local parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the point on the curve
+  //! @param[out] theTangent    first derivative (tangent vector)
+  Standard_EXPORT void D1Local(double    theLocalParam,
+                               gp_Pnt2d& thePoint,
+                               gp_Vec2d& theTangent) const;
+
+  //! Calculates the 2D point, first and second derivatives using pre-computed local parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the point on the curve
+  //! @param[out] theTangent    first derivative (tangent vector)
+  //! @param[out] theCurvature  second derivative (curvature vector)
+  Standard_EXPORT void D2Local(double    theLocalParam,
+                               gp_Pnt2d& thePoint,
+                               gp_Vec2d& theTangent,
+                               gp_Vec2d& theCurvature) const;
+
+  //! Calculates the 2D point, first, second and third derivatives using pre-computed local
+  //! parameter.
+  //! @param[in]  theLocalParam pre-computed local parameter: (Param - SpanStart) / SpanLength
+  //! @param[out] thePoint      the point on the curve
+  //! @param[out] theTangent    first derivative (tangent vector)
+  //! @param[out] theCurvature  second derivative (curvature vector)
+  //! @param[out] theTorsion    third derivative (torsion vector)
+  Standard_EXPORT void D3Local(double    theLocalParam,
+                               gp_Pnt2d& thePoint,
+                               gp_Vec2d& theTangent,
+                               gp_Vec2d& theCurvature,
+                               gp_Vec2d& theTorsion) const;
+
   DEFINE_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
 protected:
