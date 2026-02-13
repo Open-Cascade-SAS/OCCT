@@ -23,7 +23,6 @@
 #include <Geom_Line.hxx>
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <Standard_Failure.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir.hxx>
@@ -135,16 +134,12 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(double& U1, double& U2, double& V1, d
 
 std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, const double V) const
 {
-  try
-  {
-    gp_Pnt aP;
-    Geom_ExtrusionUtils::D0(U, V, *basisCurve, direction.XYZ(), aP);
-    return aP;
-  }
-  catch (const Standard_Failure&)
-  {
+  auto aBasisD0 = basisCurve->EvalD0(U);
+  if (!aBasisD0)
     return std::nullopt;
-  }
+  gp_Pnt aP;
+  Geom_ExtrusionUtils::CalculateD0(*aBasisD0, V, direction.XYZ(), aP);
+  return aP;
 }
 
 //=================================================================================================
@@ -152,22 +147,18 @@ std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, cons
 std::optional<Geom_SurfD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
                                                                  const double V) const
 {
-  try
-  {
-    std::optional<Geom_SurfD1> aResult{std::in_place};
-    Geom_ExtrusionUtils::D1(U,
-                            V,
-                            *basisCurve,
-                            direction.XYZ(),
-                            aResult->Point,
-                            aResult->D1U,
-                            aResult->D1V);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
+  auto aBasisD1 = basisCurve->EvalD1(U);
+  if (!aBasisD1)
     return std::nullopt;
-  }
+  std::optional<Geom_SurfD1> aResult{std::in_place};
+  Geom_ExtrusionUtils::CalculateD1(aBasisD1->Point,
+                                   aBasisD1->D1,
+                                   V,
+                                   direction.XYZ(),
+                                   aResult->Point,
+                                   aResult->D1U,
+                                   aResult->D1V);
+  return aResult;
 }
 
 //=================================================================================================
@@ -175,25 +166,22 @@ std::optional<Geom_SurfD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
 std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
                                                                  const double V) const
 {
-  try
-  {
-    std::optional<Geom_SurfD2> aResult{std::in_place};
-    Geom_ExtrusionUtils::D2(U,
-                            V,
-                            *basisCurve,
-                            direction.XYZ(),
-                            aResult->Point,
-                            aResult->D1U,
-                            aResult->D1V,
-                            aResult->D2U,
-                            aResult->D2V,
-                            aResult->D2UV);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
+  auto aBasisD2 = basisCurve->EvalD2(U);
+  if (!aBasisD2)
     return std::nullopt;
-  }
+  std::optional<Geom_SurfD2> aResult{std::in_place};
+  Geom_ExtrusionUtils::CalculateD2(aBasisD2->Point,
+                                   aBasisD2->D1,
+                                   aBasisD2->D2,
+                                   V,
+                                   direction.XYZ(),
+                                   aResult->Point,
+                                   aResult->D1U,
+                                   aResult->D1V,
+                                   aResult->D2U,
+                                   aResult->D2V,
+                                   aResult->D2UV);
+  return aResult;
 }
 
 //=================================================================================================
@@ -201,29 +189,27 @@ std::optional<Geom_SurfD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
 std::optional<Geom_SurfD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
                                                                  const double V) const
 {
-  try
-  {
-    std::optional<Geom_SurfD3> aResult{std::in_place};
-    Geom_ExtrusionUtils::D3(U,
-                            V,
-                            *basisCurve,
-                            direction.XYZ(),
-                            aResult->Point,
-                            aResult->D1U,
-                            aResult->D1V,
-                            aResult->D2U,
-                            aResult->D2V,
-                            aResult->D2UV,
-                            aResult->D3U,
-                            aResult->D3V,
-                            aResult->D3UUV,
-                            aResult->D3UVV);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
+  auto aBasisD3 = basisCurve->EvalD3(U);
+  if (!aBasisD3)
     return std::nullopt;
-  }
+  std::optional<Geom_SurfD3> aResult{std::in_place};
+  Geom_ExtrusionUtils::CalculateD3(aBasisD3->Point,
+                                   aBasisD3->D1,
+                                   aBasisD3->D2,
+                                   aBasisD3->D3,
+                                   V,
+                                   direction.XYZ(),
+                                   aResult->Point,
+                                   aResult->D1U,
+                                   aResult->D1V,
+                                   aResult->D2U,
+                                   aResult->D2V,
+                                   aResult->D2UV,
+                                   aResult->D3U,
+                                   aResult->D3V,
+                                   aResult->D3UUV,
+                                   aResult->D3UVV);
+  return aResult;
 }
 
 //=================================================================================================
@@ -235,14 +221,18 @@ std::optional<gp_Vec> Geom_SurfaceOfLinearExtrusion::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
-  try
+  if (Nv == 0)
   {
-    return Geom_ExtrusionUtils::DN(U, *basisCurve, direction.XYZ(), Nu, Nv);
+    auto aDN = basisCurve->EvalDN(U, Nu);
+    if (!aDN)
+      return std::nullopt;
+    return Geom_ExtrusionUtils::CalculateDN(*aDN, direction.XYZ(), Nu, Nv);
   }
-  catch (const Standard_Failure&)
+  else if (Nu == 0 && Nv == 1)
   {
-    return std::nullopt;
+    return gp_Vec(direction.XYZ());
   }
+  return gp_Vec(0.0, 0.0, 0.0);
 }
 
 //=================================================================================================

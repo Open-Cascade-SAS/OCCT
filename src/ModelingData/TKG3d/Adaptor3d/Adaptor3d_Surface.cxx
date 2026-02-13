@@ -28,6 +28,7 @@
 #include <gp_Sphere.hxx>
 #include <gp_Torus.hxx>
 #include <gp_Vec.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_Surface, Standard_Transient)
@@ -413,4 +414,93 @@ occ::handle<Adaptor3d_Surface> Adaptor3d_Surface::BasisSurface() const
 double Adaptor3d_Surface::OffsetValue() const
 {
   throw Standard_NotImplemented("Adaptor3d_Surface::OffsetValue");
+}
+
+//=================================================================================================
+
+std::optional<gp_Pnt> Adaptor3d_Surface::EvalD0(double theU, double theV) const
+{
+  try
+  {
+    gp_Pnt aP;
+    D0(theU, theV, aP);
+    return aP;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom_SurfD1> Adaptor3d_Surface::EvalD1(double theU, double theV) const
+{
+  try
+  {
+    Geom_SurfD1 aResult;
+    D1(theU, theV, aResult.Point, aResult.D1U, aResult.D1V);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom_SurfD2> Adaptor3d_Surface::EvalD2(double theU, double theV) const
+{
+  try
+  {
+    Geom_SurfD2 aResult;
+    D2(theU, theV, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom_SurfD3> Adaptor3d_Surface::EvalD3(double theU, double theV) const
+{
+  try
+  {
+    Geom_SurfD3 aResult;
+    D3(theU,
+       theV,
+       aResult.Point,
+       aResult.D1U,
+       aResult.D1V,
+       aResult.D2U,
+       aResult.D2V,
+       aResult.D2UV,
+       aResult.D3U,
+       aResult.D3V,
+       aResult.D3UUV,
+       aResult.D3UVV);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<gp_Vec> Adaptor3d_Surface::EvalDN(double theU, double theV, int theNu, int theNv) const
+{
+  try
+  {
+    return DN(theU, theV, theNu, theNv);
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }

@@ -24,8 +24,7 @@
 #include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Parab.hxx>
-#include <gp_Pnt.hxx>
-#include <gp_Vec.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor3d_Curve, Standard_Transient)
@@ -252,4 +251,82 @@ occ::handle<Geom_BSplineCurve> Adaptor3d_Curve::BSpline() const
 occ::handle<Geom_OffsetCurve> Adaptor3d_Curve::OffsetCurve() const
 {
   throw Standard_NotImplemented("Adaptor3d_Curve::OffsetCurve");
+}
+
+//=================================================================================================
+
+std::optional<gp_Pnt> Adaptor3d_Curve::EvalD0(double theU) const
+{
+  try
+  {
+    gp_Pnt aP;
+    D0(theU, aP);
+    return aP;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom_CurveD1> Adaptor3d_Curve::EvalD1(double theU) const
+{
+  try
+  {
+    Geom_CurveD1 aResult;
+    D1(theU, aResult.Point, aResult.D1);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom_CurveD2> Adaptor3d_Curve::EvalD2(double theU) const
+{
+  try
+  {
+    Geom_CurveD2 aResult;
+    D2(theU, aResult.Point, aResult.D1, aResult.D2);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom_CurveD3> Adaptor3d_Curve::EvalD3(double theU) const
+{
+  try
+  {
+    Geom_CurveD3 aResult;
+    D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<gp_Vec> Adaptor3d_Curve::EvalDN(double theU, int theN) const
+{
+  try
+  {
+    return DN(theU, theN);
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }

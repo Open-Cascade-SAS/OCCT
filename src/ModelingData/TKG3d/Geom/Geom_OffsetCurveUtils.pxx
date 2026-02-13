@@ -14,6 +14,7 @@
 #ifndef _Geom_OffsetCurveUtils_HeaderFile
 #define _Geom_OffsetCurveUtils_HeaderFile
 
+#include <Geom_Curve.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -22,6 +23,7 @@
 #include <Standard_NullValue.hxx>
 
 #include <cmath>
+#include <optional>
 
 //! Internal helper namespace for 3D offset curve calculations.
 //! Provides static inline functions to compute offset curve point and derivatives
@@ -307,7 +309,8 @@ inline bool CalculateD3(gp_Pnt&       theValue,
 
 //! Adjusts derivatives at singular points where the first derivative is nearly zero.
 //! Uses Taylor series approximation to find a valid tangent direction.
-//! @tparam CurveType type supporting D0, DN methods (Geom_Curve or adaptor)
+//! Uses EvalDN/EvalD0 to avoid exceptions.
+//! @tparam CurveType type supporting EvalD0, EvalDN methods (Geom_Curve or adaptor)
 //! @param[in] theCurve basis curve for derivative evaluation
 //! @param[in] theMaxDerivative maximum derivative order to compute (3 or 4)
 //! @param[in] theU parameter value
@@ -315,7 +318,8 @@ inline bool CalculateD3(gp_Pnt&       theValue,
 //! @param[in,out] theD2 second derivative (will be adjusted)
 //! @param[in,out] theD3 third derivative (will be adjusted)
 //! @param[in,out] theD4 fourth derivative (will be adjusted if theMaxDerivative >= 4)
-//! @return true if direction change detected
+//! @param[out] theIsDirectionChange true if direction change detected
+//! @return true if evaluation succeeded, false if any evaluation failed
 template <typename CurveType>
 bool AdjustDerivative(const CurveType& theCurve,
                       int              theMaxDerivative,
@@ -323,15 +327,16 @@ bool AdjustDerivative(const CurveType& theCurve,
                       gp_Vec&          theD1,
                       gp_Vec&          theD2,
                       gp_Vec&          theD3,
-                      gp_Vec&          theD4)
+                      gp_Vec&          theD4,
+                      bool&            theIsDirectionChange)
 {
   static const double aTol           = gp::Resolution();
   static const double aMinStep       = 1e-7;
   static const int    aMaxDerivOrder = 3;
 
-  bool         isDirectionChange = false;
-  const double anUinfium         = theCurve.FirstParameter();
-  const double anUsupremum       = theCurve.LastParameter();
+  theIsDirectionChange = false;
+  const double anUinfium   = theCurve.FirstParameter();
+  const double anUsupremum = theCurve.LastParameter();
 
   static const double DivisionFactor = 1.e-3;
   double              du;
@@ -352,7 +357,10 @@ bool AdjustDerivative(const CurveType& theCurve,
 
   do
   {
-    V = theCurve.DN(theU, ++anIndex);
+    auto aVOpt = theCurve.EvalDN(theU, ++anIndex);
+    if (!aVOpt)
+      return false;
+    V = *aVOpt;
   } while ((V.SquareMagnitude() <= aTol) && anIndex < aMaxDerivOrder);
 
   double u;
@@ -366,22 +374,26 @@ bool AdjustDerivative(const CurveType& theCurve,
     u = theU - aDelta;
   }
 
-  gp_Pnt P1, P2;
-  theCurve.D0(std::min(theU, u), P1);
-  theCurve.D0(std::max(theU, u), P2);
+  auto aP1Opt = theCurve.EvalD0(std::min(theU, u));
+  auto aP2Opt = theCurve.EvalD0(std::max(theU, u));
+  if (!aP1Opt || !aP2Opt)
+    return false;
 
-  gp_Vec V1(P1, P2);
-  isDirectionChange  = V.Dot(V1) < 0.0;
-  const double aSign = isDirectionChange ? -1.0 : 1.0;
+  gp_Vec V1(*aP1Opt, *aP2Opt);
+  theIsDirectionChange = V.Dot(V1) < 0.0;
+  const double aSign   = theIsDirectionChange ? -1.0 : 1.0;
 
   theD1             = V * aSign;
   gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
   for (int i = 1; i < theMaxDerivative; i++)
   {
-    *(aDeriv[i - 1]) = theCurve.DN(theU, anIndex + i) * aSign;
+    auto aDNOpt = theCurve.EvalDN(theU, anIndex + i);
+    if (!aDNOpt)
+      return false;
+    *(aDeriv[i - 1]) = *aDNOpt * aSign;
   }
 
-  return isDirectionChange;
+  return true;
 }
 
 //! Template function for D0 evaluation of offset curve.
@@ -401,9 +413,11 @@ bool EvaluateD0(double                theU,
                 double                theOffset,
                 gp_Pnt&               theValue)
 {
-  gp_Vec aD1;
-  theBasisCurve->D1(theU, theValue, aD1);
-  return CalculateD0(theValue, aD1, theDir.XYZ(), theOffset);
+  auto aD1Opt = theBasisCurve->EvalD1(theU);
+  if (!aD1Opt)
+    return false;
+  theValue = aD1Opt->Point;
+  return CalculateD0(theValue, aD1Opt->D1, theDir.XYZ(), theOffset);
 }
 
 //! Template function for D1 evaluation of offset curve.
@@ -425,9 +439,12 @@ bool EvaluateD1(double                theU,
                 gp_Pnt&               theValue,
                 gp_Vec&               theD1)
 {
-  gp_Vec aD2;
-  theBasisCurve->D2(theU, theValue, theD1, aD2);
-  return CalculateD1(theValue, theD1, aD2, theDir.XYZ(), theOffset);
+  auto aD2Opt = theBasisCurve->EvalD2(theU);
+  if (!aD2Opt)
+    return false;
+  theValue = aD2Opt->Point;
+  theD1    = aD2Opt->D1;
+  return CalculateD1(theValue, theD1, aD2Opt->D2, theDir.XYZ(), theOffset);
 }
 
 //! Template function for D2 evaluation of offset curve.
@@ -452,14 +469,20 @@ bool EvaluateD2(double                theU,
                 gp_Vec&               theD1,
                 gp_Vec&               theD2)
 {
-  gp_Vec aD3;
-  theBasisCurve->D3(theU, theValue, theD1, theD2, aD3);
+  auto aD3Opt = theBasisCurve->EvalD3(theU);
+  if (!aD3Opt)
+    return false;
+  theValue = aD3Opt->Point;
+  theD1    = aD3Opt->D1;
+  theD2    = aD3Opt->D2;
+  gp_Vec aD3 = aD3Opt->D3;
 
   bool isDirectionChange = false;
   if (theD1.SquareMagnitude() <= gp::Resolution())
   {
     gp_Vec aDummyD4;
-    isDirectionChange = AdjustDerivative(*theBasisCurve, 3, theU, theD1, theD2, aD3, aDummyD4);
+    if (!AdjustDerivative(*theBasisCurve, 3, theU, theD1, theD2, aD3, aDummyD4, isDirectionChange))
+      return false;
   }
 
   return CalculateD2(theValue, theD1, theD2, aD3, theDir.XYZ(), theOffset, isDirectionChange);
@@ -489,13 +512,24 @@ bool EvaluateD3(double                theU,
                 gp_Vec&               theD2,
                 gp_Vec&               theD3)
 {
-  theBasisCurve->D3(theU, theValue, theD1, theD2, theD3);
-  gp_Vec aD4 = theBasisCurve->DN(theU, 4);
+  auto aD3Opt = theBasisCurve->EvalD3(theU);
+  if (!aD3Opt)
+    return false;
+  theValue = aD3Opt->Point;
+  theD1    = aD3Opt->D1;
+  theD2    = aD3Opt->D2;
+  theD3    = aD3Opt->D3;
+
+  auto aD4Opt = theBasisCurve->EvalDN(theU, 4);
+  if (!aD4Opt)
+    return false;
+  gp_Vec aD4 = *aD4Opt;
 
   bool isDirectionChange = false;
   if (theD1.SquareMagnitude() <= gp::Resolution())
   {
-    isDirectionChange = AdjustDerivative(*theBasisCurve, 4, theU, theD1, theD2, theD3, aD4);
+    if (!AdjustDerivative(*theBasisCurve, 4, theU, theD1, theD2, theD3, aD4, isDirectionChange))
+      return false;
   }
 
   return CalculateD3(theValue,
@@ -539,10 +573,14 @@ bool EvaluateDN(double                theU,
       return EvaluateD2(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, theDN);
     case 3:
       return EvaluateD3(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, aDummy, theDN);
-    default:
+    default: {
       // For derivatives > 3, return basis curve derivative (no offset contribution)
-      theDN = theBasisCurve->DN(theU, theN);
+      auto aDNOpt = theBasisCurve->EvalDN(theU, theN);
+      if (!aDNOpt)
+        return false;
+      theDN = *aDNOpt;
       return true;
+    }
   }
 }
 

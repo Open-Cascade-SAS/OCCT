@@ -162,27 +162,30 @@ inline gp_Vec CalculateDN(const gp_Vec& theCurveDN,
   return gp_Vec(0.0, 0.0, 0.0);
 }
 
-//! Evaluates point on extrusion surface.
-//! @tparam CurveType Type supporting D0(param, point) method
+//! Evaluates point on extrusion surface using non-throwing EvalD0.
+//! @tparam CurveType Type supporting EvalD0(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
 //! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theP [out] Evaluated point
+//! @return true if evaluation succeeded, false on failure
 template <typename CurveType>
-inline void D0(const double     theU,
+inline bool D0(const double     theU,
                const double     theV,
                const CurveType& theBasis,
                const gp_XYZ&    theDir,
                gp_Pnt&          theP)
 {
-  gp_Pnt aCurvePt;
-  theBasis.D0(theU, aCurvePt);
-  CalculateD0(aCurvePt, theV, theDir, theP);
+  auto aCurveD0 = theBasis.EvalD0(theU);
+  if (!aCurveD0)
+    return false;
+  CalculateD0(*aCurveD0, theV, theDir, theP);
+  return true;
 }
 
-//! Evaluates point and first derivatives on extrusion surface.
-//! @tparam CurveType Type supporting D1(param, point, vec) method
+//! Evaluates point and first derivatives on extrusion surface using non-throwing EvalD1.
+//! @tparam CurveType Type supporting EvalD1(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
@@ -190,8 +193,9 @@ inline void D0(const double     theU,
 //! @param theP [out] Evaluated point
 //! @param theD1U [out] First derivative with respect to U
 //! @param theD1V [out] First derivative with respect to V
+//! @return true if evaluation succeeded, false on failure
 template <typename CurveType>
-inline void D1(const double     theU,
+inline bool D1(const double     theU,
                const double     theV,
                const CurveType& theBasis,
                const gp_XYZ&    theDir,
@@ -199,14 +203,15 @@ inline void D1(const double     theU,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V)
 {
-  gp_Pnt aCurvePt;
-  gp_Vec aCurveD1;
-  theBasis.D1(theU, aCurvePt, aCurveD1);
-  CalculateD1(aCurvePt, aCurveD1, theV, theDir, theP, theD1U, theD1V);
+  auto aCurveD1 = theBasis.EvalD1(theU);
+  if (!aCurveD1)
+    return false;
+  CalculateD1(aCurveD1->Point, aCurveD1->D1, theV, theDir, theP, theD1U, theD1V);
+  return true;
 }
 
-//! Evaluates point, first and second derivatives on extrusion surface.
-//! @tparam CurveType Type supporting D2(param, point, vec, vec) method
+//! Evaluates point, first and second derivatives on extrusion surface using non-throwing EvalD2.
+//! @tparam CurveType Type supporting EvalD2(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
@@ -217,8 +222,9 @@ inline void D1(const double     theU,
 //! @param theD2U [out] Second derivative with respect to U
 //! @param theD2V [out] Second derivative with respect to V
 //! @param theD2UV [out] Mixed second derivative
+//! @return true if evaluation succeeded, false on failure
 template <typename CurveType>
-inline void D2(const double     theU,
+inline bool D2(const double     theU,
                const double     theV,
                const CurveType& theBasis,
                const gp_XYZ&    theDir,
@@ -229,12 +235,12 @@ inline void D2(const double     theU,
                gp_Vec&          theD2V,
                gp_Vec&          theD2UV)
 {
-  gp_Pnt aCurvePt;
-  gp_Vec aCurveD1, aCurveD2;
-  theBasis.D2(theU, aCurvePt, aCurveD1, aCurveD2);
-  CalculateD2(aCurvePt,
-              aCurveD1,
-              aCurveD2,
+  auto aCurveD2 = theBasis.EvalD2(theU);
+  if (!aCurveD2)
+    return false;
+  CalculateD2(aCurveD2->Point,
+              aCurveD2->D1,
+              aCurveD2->D2,
               theV,
               theDir,
               theP,
@@ -243,10 +249,12 @@ inline void D2(const double     theU,
               theD2U,
               theD2V,
               theD2UV);
+  return true;
 }
 
-//! Evaluates point, first, second and third derivatives on extrusion surface.
-//! @tparam CurveType Type supporting D3(param, point, vec, vec, vec) method
+//! Evaluates point, first, second and third derivatives on extrusion surface
+//! using non-throwing EvalD3.
+//! @tparam CurveType Type supporting EvalD3(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
 //! @param theBasis Basis curve
@@ -261,8 +269,9 @@ inline void D2(const double     theU,
 //! @param theD3V [out] Third derivative with respect to V
 //! @param theD3UUV [out] Mixed third derivative (UUV)
 //! @param theD3UVV [out] Mixed third derivative (UVV)
+//! @return true if evaluation succeeded, false on failure
 template <typename CurveType>
-inline void D3(const double     theU,
+inline bool D3(const double     theU,
                const double     theV,
                const CurveType& theBasis,
                const gp_XYZ&    theDir,
@@ -277,13 +286,13 @@ inline void D3(const double     theU,
                gp_Vec&          theD3UUV,
                gp_Vec&          theD3UVV)
 {
-  gp_Pnt aCurvePt;
-  gp_Vec aCurveD1, aCurveD2, aCurveD3;
-  theBasis.D3(theU, aCurvePt, aCurveD1, aCurveD2, aCurveD3);
-  CalculateD3(aCurvePt,
-              aCurveD1,
-              aCurveD2,
-              aCurveD3,
+  auto aCurveD3 = theBasis.EvalD3(theU);
+  if (!aCurveD3)
+    return false;
+  CalculateD3(aCurveD3->Point,
+              aCurveD3->D1,
+              aCurveD3->D2,
+              aCurveD3->D3,
               theV,
               theDir,
               theP,
@@ -296,25 +305,36 @@ inline void D3(const double     theU,
               theD3V,
               theD3UUV,
               theD3UVV);
+  return true;
 }
 
-//! Evaluates N-th derivative on extrusion surface.
-//! @tparam CurveType Type supporting DN(param, order) method
+//! Evaluates N-th derivative on extrusion surface using non-throwing EvalDN.
+//! @tparam CurveType Type supporting EvalDN(param, order) method
 //! @param theU Parameter along the basis curve
 //! @param theBasis Basis curve
 //! @param theDir Extrusion direction XYZ (must be normalized)
 //! @param theDerU Derivative order with respect to U
 //! @param theDerV Derivative order with respect to V
-//! @return The derivative vector
+//! @param theDN [out] The derivative vector
+//! @return true if evaluation succeeded, false on failure
 template <typename CurveType>
-inline gp_Vec DN(const double     theU,
-                 const CurveType& theBasis,
-                 const gp_XYZ&    theDir,
-                 const int        theDerU,
-                 const int        theDerV)
+inline bool DN(const double     theU,
+               const CurveType& theBasis,
+               const gp_XYZ&    theDir,
+               const int        theDerU,
+               const int        theDerV,
+               gp_Vec&          theDN)
 {
-  gp_Vec aCurveDN = (theDerV == 0) ? theBasis.DN(theU, theDerU) : gp_Vec();
-  return CalculateDN(aCurveDN, theDir, theDerU, theDerV);
+  gp_Vec aCurveDN;
+  if (theDerV == 0)
+  {
+    auto aCurveDNOpt = theBasis.EvalDN(theU, theDerU);
+    if (!aCurveDNOpt)
+      return false;
+    aCurveDN = *aCurveDNOpt;
+  }
+  theDN = CalculateDN(aCurveDN, theDir, theDerU, theDerV);
+  return true;
 }
 
 } // namespace Geom_ExtrusionUtils

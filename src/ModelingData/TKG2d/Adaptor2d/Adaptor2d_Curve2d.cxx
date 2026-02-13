@@ -22,8 +22,7 @@
 #include <gp_Hypr2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Parab2d.hxx>
-#include <gp_Pnt2d.hxx>
-#include <gp_Vec2d.hxx>
+#include <Standard_Failure.hxx>
 #include <Standard_NotImplemented.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Adaptor2d_Curve2d, Standard_Transient)
@@ -259,4 +258,82 @@ occ::handle<Geom2d_BSplineCurve> Adaptor2d_Curve2d::BSpline() const
 int Adaptor2d_Curve2d::NbSamples() const
 {
   return 20;
+}
+
+//=================================================================================================
+
+std::optional<gp_Pnt2d> Adaptor2d_Curve2d::EvalD0(double theU) const
+{
+  try
+  {
+    gp_Pnt2d aP;
+    D0(theU, aP);
+    return aP;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom2d_CurveD1> Adaptor2d_Curve2d::EvalD1(double theU) const
+{
+  try
+  {
+    Geom2d_CurveD1 aResult;
+    D1(theU, aResult.Point, aResult.D1);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom2d_CurveD2> Adaptor2d_Curve2d::EvalD2(double theU) const
+{
+  try
+  {
+    Geom2d_CurveD2 aResult;
+    D2(theU, aResult.Point, aResult.D1, aResult.D2);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<Geom2d_CurveD3> Adaptor2d_Curve2d::EvalD3(double theU) const
+{
+  try
+  {
+    Geom2d_CurveD3 aResult;
+    D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+    return aResult;
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
+}
+
+//=================================================================================================
+
+std::optional<gp_Vec2d> Adaptor2d_Curve2d::EvalDN(double theU, int theN) const
+{
+  try
+  {
+    return DN(theU, theN);
+  }
+  catch (const Standard_Failure&)
+  {
+    return std::nullopt;
+  }
 }

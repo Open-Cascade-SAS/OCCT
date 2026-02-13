@@ -17,6 +17,7 @@
 #ifndef _Adaptor2d_Curve2d_HeaderFile
 #define _Adaptor2d_Curve2d_HeaderFile
 
+#include <Geom2d.hxx>
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Lin2d.hxx>
@@ -29,8 +30,8 @@
 #include <Standard_Handle.hxx>
 #include <NCollection_Array1.hxx>
 
-class gp_Pnt2d;
-class gp_Vec2d;
+#include <optional>
+
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
 
@@ -152,6 +153,27 @@ public:
   Standard_EXPORT virtual occ::handle<Geom2d_BezierCurve> Bezier() const;
 
   Standard_EXPORT virtual occ::handle<Geom2d_BSplineCurve> BSpline() const;
+
+  //! Computes the point of parameter U on the curve.
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Pnt2d> EvalD0(double U) const;
+
+  //! Computes the point and first derivative at parameter U.
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_CurveD1> EvalD1(double U) const;
+
+  //! Computes the point and first two derivatives at parameter U.
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_CurveD2> EvalD2(double U) const;
+
+  //! Computes the point and first three derivatives at parameter U.
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom2d_CurveD3> EvalD3(double U) const;
+
+  //! Computes the Nth derivative at parameter U.
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec2d> EvalDN(double U, int N) const;
+
   Standard_EXPORT ~Adaptor2d_Curve2d() override;
 };
 

@@ -31,6 +31,8 @@
 #include <Standard_Handle.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <optional>
+
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
 
@@ -229,6 +231,30 @@ public:
   Standard_EXPORT virtual occ::handle<Adaptor3d_Surface> BasisSurface() const;
 
   Standard_EXPORT virtual double OffsetValue() const;
+
+  //! Computes the point of parameters (U, V) on the surface.
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(double U, double V) const;
+
+  //! Computes the point and first partial derivatives at (U, V).
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD1> EvalD1(double U, double V) const;
+
+  //! Computes the point and partial derivatives up to 2nd order at (U, V).
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD2> EvalD2(double U, double V) const;
+
+  //! Computes the point and partial derivatives up to 3rd order at (U, V).
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_SurfD3> EvalD3(double U, double V) const;
+
+  //! Computes the derivative of order Nu in U and Nv in V at (U, V).
+  //! Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(double U,
+                                                                     double V,
+                                                                     int    Nu,
+                                                                     int    Nv) const;
+
   Standard_EXPORT ~Adaptor3d_Surface() override;
 };
 
