@@ -1,5 +1,0 @@
-# Test source files for TKTObjDRAW
-set(OCCT_TKTObjDRAW_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
-
-set(OCCT_TKTObjDRAW_GTests_FILES
-)
