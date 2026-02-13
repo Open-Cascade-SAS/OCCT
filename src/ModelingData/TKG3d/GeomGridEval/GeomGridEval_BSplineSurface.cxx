@@ -24,7 +24,7 @@ namespace
 
 //! Threshold for using cache vs direct evaluation.
 //! For small spans (few points), direct BSplSLib evaluation is faster than building cache.
-constexpr int THE_CACHE_THRESHOLD = 4;
+constexpr int THE_CACHE_THRESHOLD = 2;
 
 //! Helper structure holding extracted B-spline surface data.
 struct SurfaceData

@@ -657,7 +657,7 @@ std::optional<gp_Pnt> GeomAdaptor_Curve::EvalD0(double U) const
 
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
+      if (aCache.IsNull())
         RebuildCache(U);
       aCache->D0(U, P);
       return P;
@@ -737,7 +737,7 @@ std::optional<Geom_Curve::ResD1> GeomAdaptor_Curve::EvalD1(double U) const
 
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
+      if (aCache.IsNull())
         RebuildCache(U);
       aCache->D1(U, aResult.Point, aResult.D1);
       return aResult;
@@ -820,7 +820,7 @@ std::optional<Geom_Curve::ResD2> GeomAdaptor_Curve::EvalD2(double U) const
 
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
+      if (aCache.IsNull())
         RebuildCache(U);
       aCache->D2(U, aResult.Point, aResult.D1, aResult.D2);
       return aResult;
@@ -922,7 +922,7 @@ std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
 
     case GeomAbs_BezierCurve: {
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U))
+      if (aCache.IsNull())
         RebuildCache(U);
       aCache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       return aResult;
