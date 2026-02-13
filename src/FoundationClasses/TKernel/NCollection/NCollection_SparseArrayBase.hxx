@@ -24,26 +24,36 @@
  * Base class for NCollection_SparseArray;
  * provides non-template implementation of general mechanics
  * of block allocation, items creation / deletion etc.
+ *
+ * Type-specific item operations (construction, destruction, copy)
+ * are provided by the derived template class via function pointers
+ * passed as arguments to the protected methods.
  */
 
 class NCollection_SparseArrayBase
 {
 public:
-  //!@name Type-independent public interface
+  //!@name Function pointer types for type-specific item operations
   //!@{
 
-  //! Clears all the data
-  Standard_EXPORT void Clear();
+  //! Copy-construct a new item at theAddress from theOther
+  using CreateItemFunc = void (*)(void* theAddress, void* theOther);
+  //! Destroy the item at theAddress
+  using DestroyItemFunc = void (*)(void* theAddress);
+  //! Copy-assign the item at theAddress from theOther
+  using CopyItemFunc = void (*)(void* theAddress, void* theOther);
+
+  //!@}
+
+public:
+  //!@name Type-independent public interface
+  //!@{
 
   //! Returns number of currently contained items
   size_t Size() const noexcept { return mySize; }
 
   //! Check whether the value at given index is set
   Standard_EXPORT bool HasValue(const size_t theIndex) const;
-
-  //! Deletes the item from the array;
-  //! returns True if that item was defined
-  Standard_EXPORT bool UnsetValue(const size_t theIndex);
 
   //!@}
 
@@ -180,18 +190,23 @@ private:
 protected:
   // Object life
 
-  //! Constructor; initialized by size of item and of block (in items)
-  NCollection_SparseArrayBase(size_t theItemSize, size_t theBlockSize) noexcept
+  //! Constructor; initialized by size of item, block size, and item destructor function.
+  //! @param theDestroyItem is stored to enable proper item destruction in the base destructor
+  NCollection_SparseArrayBase(size_t          theItemSize,
+                              size_t          theBlockSize,
+                              DestroyItemFunc theDestroyItem) noexcept
       : myItemSize(theItemSize),
         myBlockSize(theBlockSize),
         myNbBlocks(0),
         mySize(0),
-        myData(nullptr)
+        myData(nullptr),
+        myDestroyItem(theDestroyItem)
   {
   }
 
-  //! Destructor
-  virtual ~NCollection_SparseArrayBase() { Clear(); }
+  //! Destructor; properly destroys all items and frees all memory.
+  //! Uses the stored DestroyItemFunc, so no virtual dispatch is needed.
+  ~NCollection_SparseArrayBase() { clearItems(myDestroyItem); }
 
 protected:
   // Data access interface for descendants
@@ -219,32 +234,36 @@ protected:
       + myItemSize * (theIndex % myBlockSize);
   }
 
-  //! Set a value to the specified item; returns address of the set item
-  Standard_EXPORT void* setValue(const size_t theIndex, void* const theValue);
+  //! Clears all items and frees all memory.
+  //! @param theDestroyItem function to call destructor on each item
+  Standard_EXPORT void clearItems(DestroyItemFunc theDestroyItem);
+
+  //! Deletes the item at theIndex from the array;
+  //! returns True if the item was defined.
+  //! @param theDestroyItem function to call destructor on the item
+  Standard_EXPORT bool unsetValue(const size_t theIndex, DestroyItemFunc theDestroyItem);
+
+  //! Set a value to the specified item; returns address of the set item.
+  //! @param theCreateItem function to copy-construct a new item
+  //! @param theCopyItem function to copy-assign an existing item
+  Standard_EXPORT void* setValue(const size_t   theIndex,
+                                 void* const    theValue,
+                                 CreateItemFunc theCreateItem,
+                                 CopyItemFunc   theCopyItem);
 
   //! Copy contents of theOther to this;
-  //! assumes that this and theOther have exactly the same type of arguments
-  Standard_EXPORT void assign(const NCollection_SparseArrayBase& theOther);
+  //! assumes that this and theOther have exactly the same type of arguments.
+  //! @param theCreateItem function to copy-construct a new item
+  //! @param theDestroyItem function to call destructor on an item
+  //! @param theCopyItem function to copy-assign an existing item
+  Standard_EXPORT void assign(const NCollection_SparseArrayBase& theOther,
+                              CreateItemFunc                     theCreateItem,
+                              DestroyItemFunc                    theDestroyItem,
+                              CopyItemFunc                       theCopyItem);
 
   //! Exchange contents of theOther and this;
   //! assumes that this and theOther have exactly the same type of arguments
   Standard_EXPORT void exchange(NCollection_SparseArrayBase& theOther) noexcept;
-
-protected:
-  // Methods to be provided by descendant
-
-  //! Create new item at the specified address with default constructor
-  //  virtual void createItem (void* theAddress) = 0;
-
-  //! Create new item at the specified address with copy constructor
-  //! from existing item
-  virtual void createItem(void* theAddress, void* theOther) = 0;
-
-  //! Call destructor to the item
-  virtual void destroyItem(void* theAddress) = 0;
-
-  //! Call assignment operator to the item
-  virtual void copyItem(void* theAddress, void* theOther) = 0;
 
 private:
   // Implementation of memory allocation/deallocation and access mechanics
@@ -252,15 +271,16 @@ private:
   //! Allocate space for at least iBlock+1 blocks
   void allocData(const size_t iBlock);
 
-  //! Free specified block
-  void freeBlock(const size_t iBlock);
+  //! Free specified block, destroying all items via theDestroyItem
+  void freeBlock(const size_t iBlock, DestroyItemFunc theDestroyItem);
 
 protected:
-  size_t myItemSize;  //!< size of item
-  size_t myBlockSize; //!< block size (in items)
-  size_t myNbBlocks;  //!< allocated size of blocks table
-  size_t mySize;      //!< number of currently defined items
-  void** myData;      //!< array of pointers to data blocks
+  size_t          myItemSize;    //!< size of item
+  size_t          myBlockSize;   //!< block size (in items)
+  size_t          myNbBlocks;    //!< allocated size of blocks table
+  size_t          mySize;        //!< number of currently defined items
+  void**          myData;        //!< array of pointers to data blocks
+  DestroyItemFunc myDestroyItem; //!< function to call destructor on items
 };
 
 #endif
