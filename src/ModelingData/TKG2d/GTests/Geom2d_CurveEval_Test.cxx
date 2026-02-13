@@ -173,16 +173,20 @@ TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalDN_InvalidN_ReturnsNullopt)
 // OffsetCurve 2D EvalD1 singular test
 //=================================================================================================
 
-TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD1_NulloptAtSingular)
+TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD1_DegenerateAtCollapsed)
 {
   // Create a circle with offset = -radius to get a degenerate (zero-radius) curve
   gp_Circ2d                  aCirc(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
   occ::handle<Geom2d_Circle> aBasis = new Geom2d_Circle(aCirc);
 
-  // Offset by -radius creates a collapsed curve at the center
+  // Offset by -radius creates a collapsed curve at the center.
+  // The basis circle has valid tangents everywhere, so EvalD1 succeeds
+  // but produces a degenerate result (all points map to the center).
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aBasis, -3.0);
 
-  // EvalD1 on a degenerate offset curve should return nullopt
   const auto aResult = anOffset->EvalD1(0.0);
-  EXPECT_FALSE(aResult.has_value());
+  ASSERT_TRUE(aResult.has_value());
+
+  // The point should be near the center
+  EXPECT_NEAR(aResult->Point.Distance(gp_Pnt2d(0.0, 0.0)), 0.0, Precision::Confusion());
 }

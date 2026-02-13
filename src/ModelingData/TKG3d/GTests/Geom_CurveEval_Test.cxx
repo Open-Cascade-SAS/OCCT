@@ -255,16 +255,20 @@ TEST(Geom_CurveEvalTest, TrimmedCurve_EvalD1_DelegatesToBasis)
 // OffsetCurve EvalD1 singular test
 //=================================================================================================
 
-TEST(Geom_CurveEvalTest, OffsetCurve_EvalD1_NulloptAtSingular)
+TEST(Geom_CurveEvalTest, OffsetCurve_EvalD1_DegenerateAtCollapsed)
 {
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
   occ::handle<Geom_Circle> aBasis = new Geom_Circle(aCirc);
 
-  // Offset by -radius creates a collapsed curve at the center
+  // Offset by -radius creates a collapsed curve at the center.
+  // The basis circle has valid tangents everywhere, so EvalD1 succeeds
+  // but produces a degenerate result (all points map to the center).
   occ::handle<Geom_OffsetCurve> anOffset =
     new Geom_OffsetCurve(aBasis, -5.0, gp_Dir(0.0, 0.0, 1.0));
 
-  // EvalD1 on a degenerate offset curve should return nullopt
   const auto aResult = anOffset->EvalD1(0.0);
-  EXPECT_FALSE(aResult.has_value());
+  ASSERT_TRUE(aResult.has_value());
+
+  // The point should be near the center
+  EXPECT_NEAR(aResult->Point.Distance(gp_Pnt(0.0, 0.0, 0.0)), 0.0, Precision::Confusion());
 }
