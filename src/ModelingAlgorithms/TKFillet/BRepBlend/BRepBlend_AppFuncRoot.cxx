@@ -257,6 +257,7 @@ void BRepBlend_AppFuncRoot::SetTolerance(const double Tol3d, const double Tol2d)
       myTolerance(ii) = Tol2d;
     }
   }
+  mySolver->SetTolerance(myTolerance);
 }
 
 gp_Pnt BRepBlend_AppFuncRoot::BarycentreOfSurf() const
