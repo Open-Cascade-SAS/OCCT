@@ -322,8 +322,8 @@ void BSplSLib_CacheGrid::D0(const double& theU, const double& theV, gp_Pnt& theP
   {
     const double aDeltaU = theU - myCellSpanStartU[myLastCellU];
     const double aDeltaV = theV - myCellSpanStartV[myLastCellV];
-    if (aDeltaU >= 0.0 && aDeltaU <= myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
-        && aDeltaV <= myCellSpanLengthV[myLastCellV])
+    if (aDeltaU >= 0.0 && aDeltaU < myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
+        && aDeltaV < myCellSpanLengthV[myLastCellV])
     {
       myCache[myLastCacheIdx]->D0(theU, theV, thePoint);
       return;
@@ -346,8 +346,8 @@ void BSplSLib_CacheGrid::D1(const double& theU,
   {
     const double aDeltaU = theU - myCellSpanStartU[myLastCellU];
     const double aDeltaV = theV - myCellSpanStartV[myLastCellV];
-    if (aDeltaU >= 0.0 && aDeltaU <= myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
-        && aDeltaV <= myCellSpanLengthV[myLastCellV])
+    if (aDeltaU >= 0.0 && aDeltaU < myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
+        && aDeltaV < myCellSpanLengthV[myLastCellV])
     {
       myCache[myLastCacheIdx]->D1(theU, theV, thePoint, theTangentU, theTangentV);
       return;
@@ -373,8 +373,8 @@ void BSplSLib_CacheGrid::D2(const double& theU,
   {
     const double aDeltaU = theU - myCellSpanStartU[myLastCellU];
     const double aDeltaV = theV - myCellSpanStartV[myLastCellV];
-    if (aDeltaU >= 0.0 && aDeltaU <= myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
-        && aDeltaV <= myCellSpanLengthV[myLastCellV])
+    if (aDeltaU >= 0.0 && aDeltaU < myCellSpanLengthU[myLastCellU] && aDeltaV >= 0.0
+        && aDeltaV < myCellSpanLengthV[myLastCellV])
     {
       myCache[myLastCacheIdx]->D2(theU,
                                   theV,
