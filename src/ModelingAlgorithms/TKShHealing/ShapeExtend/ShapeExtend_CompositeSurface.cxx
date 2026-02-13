@@ -495,77 +495,58 @@ bool ShapeExtend_CompositeSurface::IsVClosed() const
 
 //=================================================================================================
 
-void ShapeExtend_CompositeSurface::D0(const double U, const double V, gp_Pnt& P) const
+std::optional<gp_Pnt> ShapeExtend_CompositeSurface::EvalD0(const double U, const double V) const
 {
   int      i  = LocateUParameter(U);
   int      j  = LocateVParameter(V);
   gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
-  myPatches->Value(i, j)->D0(uv.X(), uv.Y(), P);
+  return myPatches->Value(i, j)->EvalD0(uv.X(), uv.Y());
 }
 
 //=================================================================================================
 
-void ShapeExtend_CompositeSurface::D1(const double U,
-                                      const double V,
-                                      gp_Pnt&      P,
-                                      gp_Vec&      D1U,
-                                      gp_Vec&      D1V) const
+std::optional<Geom_Surface::ResD1> ShapeExtend_CompositeSurface::EvalD1(const double U,
+                                                                        const double V) const
 {
   int      i  = LocateUParameter(U);
   int      j  = LocateVParameter(V);
   gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
-  myPatches->Value(i, j)->D1(uv.X(), uv.Y(), P, D1U, D1V);
+  return myPatches->Value(i, j)->EvalD1(uv.X(), uv.Y());
 }
 
 //=================================================================================================
 
-void ShapeExtend_CompositeSurface::D2(const double U,
-                                      const double V,
-                                      gp_Pnt&      P,
-                                      gp_Vec&      D1U,
-                                      gp_Vec&      D1V,
-                                      gp_Vec&      D2U,
-                                      gp_Vec&      D2V,
-                                      gp_Vec&      D2UV) const
+std::optional<Geom_Surface::ResD2> ShapeExtend_CompositeSurface::EvalD2(const double U,
+                                                                        const double V) const
 {
   int      i  = LocateUParameter(U);
   int      j  = LocateVParameter(V);
   gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
-  myPatches->Value(i, j)->D2(uv.X(), uv.Y(), P, D1U, D1V, D2U, D2V, D2UV);
+  return myPatches->Value(i, j)->EvalD2(uv.X(), uv.Y());
 }
 
 //=================================================================================================
 
-void ShapeExtend_CompositeSurface::D3(const double U,
-                                      const double V,
-                                      gp_Pnt&      P,
-                                      gp_Vec&      D1U,
-                                      gp_Vec&      D1V,
-                                      gp_Vec&      D2U,
-                                      gp_Vec&      D2V,
-                                      gp_Vec&      D2UV,
-                                      gp_Vec&      D3U,
-                                      gp_Vec&      D3V,
-                                      gp_Vec&      D3UUV,
-                                      gp_Vec&      D3UVV) const
+std::optional<Geom_Surface::ResD3> ShapeExtend_CompositeSurface::EvalD3(const double U,
+                                                                        const double V) const
 {
   int      i  = LocateUParameter(U);
   int      j  = LocateVParameter(V);
   gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
-  myPatches->Value(i, j)->D3(uv.X(), uv.Y(), P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  return myPatches->Value(i, j)->EvalD3(uv.X(), uv.Y());
 }
 
 //=================================================================================================
 
-gp_Vec ShapeExtend_CompositeSurface::DN(const double U,
-                                        const double V,
-                                        const int    Nu,
-                                        const int    Nv) const
+std::optional<gp_Vec> ShapeExtend_CompositeSurface::EvalDN(const double U,
+                                                           const double V,
+                                                           const int    Nu,
+                                                           const int    Nv) const
 {
   int      i  = LocateUParameter(U);
   int      j  = LocateVParameter(V);
   gp_Pnt2d uv = GlobalToLocal(i, j, gp_Pnt2d(U, V));
-  return myPatches->Value(i, j)->DN(uv.X(), uv.Y(), Nu, Nv);
+  return myPatches->Value(i, j)->EvalDN(uv.X(), uv.Y(), Nu, Nv);
 }
 
 //=================================================================================================

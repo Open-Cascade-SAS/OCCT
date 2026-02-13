@@ -191,97 +191,69 @@ bool GeomPlate_Surface::IsCNv(const int) const
 
 //=================================================================================================
 
-void GeomPlate_Surface::D0(const double U, const double V, gp_Pnt& P) const
+std::optional<gp_Pnt> GeomPlate_Surface::EvalD0(const double U, const double V) const
 {
+  std::optional<gp_Pnt> aSurfP = mySurfinit->EvalD0(U, V);
+  if (!aSurfP)
+    return std::nullopt;
   gp_XY  P1(U, V);
-  gp_Pnt P2;
-  mySurfinit->D0(U, V, P2);
-  gp_XYZ P3; //=mySurfinter.Evaluate(P1);
-  P3 = mySurfinter.Evaluate(P1);
-  for (int i = 1; i <= 3; i++)
-  {
-    P.SetCoord(i, P3.Coord(i) + P2.Coord(i));
-  }
+  gp_XYZ P3 = mySurfinter.Evaluate(P1);
+  return gp_Pnt(P3 + aSurfP->XYZ());
 }
 
 //=================================================================================================
 
-void GeomPlate_Surface::D1(const double U,
-                           const double V,
-                           gp_Pnt&      P,
-                           gp_Vec&      D1U,
-                           gp_Vec&      D1V) const
+std::optional<Geom_Surface::ResD1> GeomPlate_Surface::EvalD1(const double U, const double V) const
 {
+  std::optional<Geom_Surface::ResD1> aSurfD1 = mySurfinit->EvalD1(U, V);
+  if (!aSurfD1)
+    return std::nullopt;
   gp_XY  P1(U, V);
-  gp_Pnt P2;
-  D0(U, V, P);
-  gp_Vec V1U, V1V;
-  mySurfinit->D1(U, V, P2, V1U, V1V);
+  gp_XYZ P3  = mySurfinter.Evaluate(P1);
   gp_XYZ V2U = mySurfinter.EvaluateDerivative(P1, 1, 0);
   gp_XYZ V2V = mySurfinter.EvaluateDerivative(P1, 0, 1);
-  for (int i = 1; i <= 3; i++)
-  {
-    D1U.SetCoord(i, V1U.Coord(i) + V2U.Coord(i));
-    D1V.SetCoord(i, V1V.Coord(i) + V2V.Coord(i));
-  }
+  return Geom_Surface::ResD1{gp_Pnt(P3 + aSurfD1->Point.XYZ()),
+                             gp_Vec(aSurfD1->D1U.XYZ() + V2U),
+                             gp_Vec(aSurfD1->D1V.XYZ() + V2V)};
 }
 
 //=================================================================================================
 
-void GeomPlate_Surface::D2(const double U,
-                           const double V,
-                           gp_Pnt&      P,
-                           gp_Vec&      D1U,
-                           gp_Vec&      D1V,
-                           gp_Vec&      D2U,
-                           gp_Vec&      D2V,
-                           gp_Vec&      D2UV) const
+std::optional<Geom_Surface::ResD2> GeomPlate_Surface::EvalD2(const double U, const double V) const
 {
+  std::optional<Geom_Surface::ResD2> aSurfD2 = mySurfinit->EvalD2(U, V);
+  if (!aSurfD2)
+    return std::nullopt;
   gp_XY  P1(U, V);
-  gp_Pnt P2;
-
-  gp_Vec V1U, V1V, V1UV, vv, v;
-  D1(U, V, P, D1U, D1V);
-  mySurfinit->D2(U, V, P2, vv, v, V1U, V1V, V1UV);
-  gp_XYZ V2U  = mySurfinter.EvaluateDerivative(P1, 2, 0);
-  gp_XYZ V2V  = mySurfinter.EvaluateDerivative(P1, 0, 2);
-  gp_XYZ V2UV = mySurfinter.EvaluateDerivative(P1, 1, 1);
-  for (int i = 1; i <= 3; i++)
-  {
-    D2U.SetCoord(i, V1U.Coord(i) + V2U.Coord(i));
-    D2V.SetCoord(i, V1V.Coord(i) + V2V.Coord(i));
-    D2UV.SetCoord(i, V1UV.Coord(i) + V2UV.Coord(i));
-  }
+  gp_XYZ P3         = mySurfinter.Evaluate(P1);
+  gp_XYZ V2U_interp = mySurfinter.EvaluateDerivative(P1, 1, 0);
+  gp_XYZ V2V_interp = mySurfinter.EvaluateDerivative(P1, 0, 1);
+  gp_XYZ V2U        = mySurfinter.EvaluateDerivative(P1, 2, 0);
+  gp_XYZ V2V        = mySurfinter.EvaluateDerivative(P1, 0, 2);
+  gp_XYZ V2UV       = mySurfinter.EvaluateDerivative(P1, 1, 1);
+  return Geom_Surface::ResD2{gp_Pnt(P3 + aSurfD2->Point.XYZ()),
+                             gp_Vec(aSurfD2->D1U.XYZ() + V2U_interp),
+                             gp_Vec(aSurfD2->D1V.XYZ() + V2V_interp),
+                             gp_Vec(aSurfD2->D2U.XYZ() + V2U),
+                             gp_Vec(aSurfD2->D2V.XYZ() + V2V),
+                             gp_Vec(aSurfD2->D2UV.XYZ() + V2UV)};
 }
 
 //=================================================================================================
 
-// void GeomPlate_Surface::D3(const double U, const double V, gp_Pnt& P, gp_Vec& D1U,
-// gp_Vec& D1V, gp_Vec& D2U, gp_Vec& D2V, gp_Vec& D2UV, gp_Vec& D3U, gp_Vec& D3V, gp_Vec& D3UUV,
-// gp_Vec& D3UVV) const
-void GeomPlate_Surface::D3(const double,
-                           const double,
-                           gp_Pnt&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&,
-                           gp_Vec&) const
+std::optional<Geom_Surface::ResD3> GeomPlate_Surface::EvalD3(const double, const double) const
 {
-  throw Standard_Failure("D3");
+  return std::nullopt;
 }
 
 //=================================================================================================
 
-// gp_Vec GeomPlate_Surface::DN(const double U, const double V, const int
-// Nu, const int Nv) const
-gp_Vec GeomPlate_Surface::DN(const double, const double, const int, const int) const
+std::optional<gp_Vec> GeomPlate_Surface::EvalDN(const double,
+                                                const double,
+                                                const int,
+                                                const int) const
 {
-  throw Standard_Failure("DN");
+  return std::nullopt;
 }
 
 //=================================================================================================

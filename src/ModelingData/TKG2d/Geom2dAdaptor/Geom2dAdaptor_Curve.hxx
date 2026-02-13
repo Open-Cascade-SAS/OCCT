@@ -220,6 +220,21 @@ public:
 
   Standard_EXPORT occ::handle<Geom2d_BSplineCurve> BSpline() const override;
 
+  //! Non-throwing point evaluation. Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(double U) const final;
+
+  //! Non-throwing D1 evaluation. Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(double U) const final;
+
+  //! Non-throwing D2 evaluation. Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(double U) const final;
+
+  //! Non-throwing D3 evaluation. Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(double U) const final;
+
+  //! Non-throwing DN evaluation. Returns std::nullopt on failure.
+  [[nodiscard]] Standard_EXPORT std::optional<gp_Vec2d> EvalDN(double U, int N) const final;
+
 private:
   Standard_EXPORT GeomAbs_Shape LocalContinuity(const double U1, const double U2) const;
 

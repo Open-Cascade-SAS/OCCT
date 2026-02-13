@@ -965,7 +965,7 @@ void Geom_BSplineCurve::MovePoint(const double  U,
   }
   NCollection_Array1<gp_Pnt> npoles(1, myPoles.Length());
   gp_Pnt                     P0;
-  D0(U, P0);
+  Geom_Curve::D0(U, P0);
   gp_Vec Displ(P0, P);
   BSplCLib::MovePoint(U,
                       Displ,
@@ -1007,7 +1007,7 @@ void Geom_BSplineCurve::MovePointAndTangent(const double  U,
   gp_Pnt                     P0;
 
   gp_Vec delta_derivative;
-  D1(U, P0, delta_derivative);
+  Geom_Curve::D1(U, P0, delta_derivative);
   gp_Vec delta(P0, P);
   for (ii = 1; ii <= 3; ii++)
   {

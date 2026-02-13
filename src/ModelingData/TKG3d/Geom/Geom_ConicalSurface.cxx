@@ -254,56 +254,71 @@ void Geom_ConicalSurface::Coefficients(double& A1,
 
 //=================================================================================================
 
-void Geom_ConicalSurface::D0(const double U, const double V, Pnt& P) const
+std::optional<gp_Pnt> Geom_ConicalSurface::EvalD0(const double U, const double V) const
 {
-
-  P = ElSLib::ConeValue(U, V, pos, radius, semiAngle);
+  return ElSLib::ConeValue(U, V, pos, radius, semiAngle);
 }
 
 //=================================================================================================
 
-void Geom_ConicalSurface::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
+std::optional<Geom_Surface::ResD1> Geom_ConicalSurface::EvalD1(const double U, const double V) const
 {
-  ElSLib::ConeD1(U, V, pos, radius, semiAngle, P, D1U, D1V);
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
+  ElSLib::ConeD1(U, V, pos, radius, semiAngle, aResult->Point, aResult->D1U, aResult->D1V);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_ConicalSurface::D2(const double U,
-                             const double V,
-                             Pnt&         P,
-                             Vec&         D1U,
-                             Vec&         D1V,
-                             Vec&         D2U,
-                             Vec&         D2V,
-                             Vec&         D2UV) const
+std::optional<Geom_Surface::ResD2> Geom_ConicalSurface::EvalD2(const double U, const double V) const
 {
-  ElSLib::ConeD2(U, V, pos, radius, semiAngle, P, D1U, D1V, D2U, D2V, D2UV);
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
+  ElSLib::ConeD2(U,
+                 V,
+                 pos,
+                 radius,
+                 semiAngle,
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V,
+                 aResult->D2U,
+                 aResult->D2V,
+                 aResult->D2UV);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_ConicalSurface::D3(const double U,
-                             const double V,
-                             Pnt&         P,
-                             Vec&         D1U,
-                             Vec&         D1V,
-                             Vec&         D2U,
-                             Vec&         D2V,
-                             Vec&         D2UV,
-                             Vec&         D3U,
-                             Vec&         D3V,
-                             Vec&         D3UUV,
-                             Vec&         D3UVV) const
+std::optional<Geom_Surface::ResD3> Geom_ConicalSurface::EvalD3(const double U, const double V) const
 {
-  ElSLib::ConeD3(U, V, pos, radius, semiAngle, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
+  ElSLib::ConeD3(U,
+                 V,
+                 pos,
+                 radius,
+                 semiAngle,
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V,
+                 aResult->D2U,
+                 aResult->D2V,
+                 aResult->D2UV,
+                 aResult->D3U,
+                 aResult->D3V,
+                 aResult->D3UUV,
+                 aResult->D3UVV);
+  return aResult;
 }
 
 //=================================================================================================
 
-Vec Geom_ConicalSurface::DN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_ConicalSurface::EvalDN(const double U,
+                                                  const double V,
+                                                  const int    Nu,
+                                                  const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   if (Nv > 1)
   {
     return Vec(0.0, 0.0, 0.0);

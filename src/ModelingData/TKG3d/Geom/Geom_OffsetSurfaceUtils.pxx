@@ -17,6 +17,7 @@
 #include <CSLib.hxx>
 #include <CSLib_NormalStatus.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -255,7 +256,7 @@ inline bool CalculateD1(gp_Pnt&       theValue,
 //! @param[out] theDerNUV array of normal derivatives
 //! @param[in,out] theDerSurf array of surface derivatives
 template <class BasisSurfType, class OscSurfType>
-void ComputeDerivatives(int                         theMaxOrder,
+bool ComputeDerivatives(int                         theMaxOrder,
                         int                         theMinOrder,
                         double                      theU,
                         double                      theV,
@@ -268,9 +269,6 @@ void ComputeDerivatives(int                         theMaxOrder,
                         NCollection_Array2<gp_Vec>& theDerNUV,
                         NCollection_Array2<gp_Vec>& theDerSurf)
 {
-  gp_Pnt P;
-  gp_Vec DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3UUV, DL3UVV, DL3V;
-
   if (theAlongU || theAlongV)
   {
     theMaxOrder = 0;
@@ -285,31 +283,40 @@ void ComputeDerivatives(int                         theMaxOrder,
                                         theMaxOrder + theNV + 1);
     switch (theMinOrder)
     {
-      case 1:
-        theOscSurf->D1(theU, theV, P, DL1U, DL1V);
-        DerSurfL.SetValue(1, 0, DL1U);
-        DerSurfL.SetValue(0, 1, DL1V);
+      case 1: {
+        std::optional<Geom_Surface::ResD1> aD1 = theOscSurf->EvalD1(theU, theV);
+        if (!aD1)
+          return false;
+        DerSurfL.SetValue(1, 0, aD1->D1U);
+        DerSurfL.SetValue(0, 1, aD1->D1V);
         break;
-      case 2:
-        theOscSurf->D2(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV);
-        DerSurfL.SetValue(1, 0, DL1U);
-        DerSurfL.SetValue(0, 1, DL1V);
-        DerSurfL.SetValue(1, 1, DL2UV);
-        DerSurfL.SetValue(2, 0, DL2U);
-        DerSurfL.SetValue(0, 2, DL2V);
+      }
+      case 2: {
+        std::optional<Geom_Surface::ResD2> aD2 = theOscSurf->EvalD2(theU, theV);
+        if (!aD2)
+          return false;
+        DerSurfL.SetValue(1, 0, aD2->D1U);
+        DerSurfL.SetValue(0, 1, aD2->D1V);
+        DerSurfL.SetValue(1, 1, aD2->D2UV);
+        DerSurfL.SetValue(2, 0, aD2->D2U);
+        DerSurfL.SetValue(0, 2, aD2->D2V);
         break;
-      case 3:
-        theOscSurf->D3(theU, theV, P, DL1U, DL1V, DL2U, DL2V, DL2UV, DL3U, DL3V, DL3UUV, DL3UVV);
-        DerSurfL.SetValue(1, 0, DL1U);
-        DerSurfL.SetValue(0, 1, DL1V);
-        DerSurfL.SetValue(1, 1, DL2UV);
-        DerSurfL.SetValue(2, 0, DL2U);
-        DerSurfL.SetValue(0, 2, DL2V);
-        DerSurfL.SetValue(3, 0, DL3U);
-        DerSurfL.SetValue(2, 1, DL3UUV);
-        DerSurfL.SetValue(1, 2, DL3UVV);
-        DerSurfL.SetValue(0, 3, DL3V);
+      }
+      case 3: {
+        std::optional<Geom_Surface::ResD3> aD3 = theOscSurf->EvalD3(theU, theV);
+        if (!aD3)
+          return false;
+        DerSurfL.SetValue(1, 0, aD3->D1U);
+        DerSurfL.SetValue(0, 1, aD3->D1V);
+        DerSurfL.SetValue(1, 1, aD3->D2UV);
+        DerSurfL.SetValue(2, 0, aD3->D2U);
+        DerSurfL.SetValue(0, 2, aD3->D2V);
+        DerSurfL.SetValue(3, 0, aD3->D3U);
+        DerSurfL.SetValue(2, 1, aD3->D3UUV);
+        DerSurfL.SetValue(1, 2, aD3->D3UVV);
+        DerSurfL.SetValue(0, 3, aD3->D3V);
         break;
+      }
       default:
         break;
     }
@@ -320,12 +327,20 @@ void ComputeDerivatives(int                         theMaxOrder,
         for (int j = i; j <= theMaxOrder + theNV + 1; j++)
           if (i + j > theMinOrder)
           {
-            DerSurfL.SetValue(i, j, theOscSurf->DN(theU, theV, i, j));
-            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+            std::optional<gp_Vec> aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
+            std::optional<gp_Vec> aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
+            if (!aOscDN || !aBasisDN)
+              return false;
+            DerSurfL.SetValue(i, j, *aOscDN);
+            theDerSurf.SetValue(i, j, *aBasisDN);
             if (i != j && j <= theNU + 1)
             {
-              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-              DerSurfL.SetValue(j, i, theOscSurf->DN(theU, theV, j, i));
+              std::optional<gp_Vec> aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
+              std::optional<gp_Vec> aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
+              if (!aBasisDNji || !aOscDNji)
+                return false;
+              theDerSurf.SetValue(j, i, *aBasisDNji);
+              DerSurfL.SetValue(j, i, *aOscDNji);
             }
           }
     }
@@ -335,12 +350,20 @@ void ComputeDerivatives(int                         theMaxOrder,
         for (int i = j; i <= theMaxOrder + theNU + 1; i++)
           if (i + j > theMinOrder)
           {
-            DerSurfL.SetValue(i, j, theOscSurf->DN(theU, theV, i, j));
-            theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+            std::optional<gp_Vec> aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
+            std::optional<gp_Vec> aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
+            if (!aOscDN || !aBasisDN)
+              return false;
+            DerSurfL.SetValue(i, j, *aOscDN);
+            theDerSurf.SetValue(i, j, *aBasisDN);
             if (i != j && i <= theNV + 1)
             {
-              theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
-              DerSurfL.SetValue(j, i, theOscSurf->DN(theU, theV, j, i));
+              std::optional<gp_Vec> aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
+              std::optional<gp_Vec> aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
+              if (!aBasisDNji || !aOscDNji)
+                return false;
+              theDerSurf.SetValue(j, i, *aBasisDNji);
+              DerSurfL.SetValue(j, i, *aOscDNji);
             }
           }
     }
@@ -361,10 +384,16 @@ void ComputeDerivatives(int                         theMaxOrder,
       {
         if (i + j > theMinOrder)
         {
-          theDerSurf.SetValue(i, j, theBasisSurf->DN(theU, theV, i, j));
+          std::optional<gp_Vec> aDN = theBasisSurf->EvalDN(theU, theV, i, j);
+          if (!aDN)
+            return false;
+          theDerSurf.SetValue(i, j, *aDN);
           if (i != j && j <= theDerSurf.UpperRow() && i <= theDerSurf.UpperCol())
           {
-            theDerSurf.SetValue(j, i, theBasisSurf->DN(theU, theV, j, i));
+            std::optional<gp_Vec> aDNji = theBasisSurf->EvalDN(theU, theV, j, i);
+            if (!aDNji)
+              return false;
+            theDerSurf.SetValue(j, i, *aDNji);
           }
         }
       }
@@ -373,6 +402,7 @@ void ComputeDerivatives(int                         theMaxOrder,
       for (int j = 0; j <= theMaxOrder + theNV; j++)
         theDerNUV.SetValue(i, j, CSLib::DNNUV(i, j, theDerSurf));
   }
+  return true;
 }
 
 //! Attempts to replace a zero derivative by stepping away and recomputing.
@@ -424,9 +454,6 @@ bool ReplaceDerivative(double               theU,
         aStep = (theVMax - theVMin) / 100.;
     }
 
-    gp_Pnt aP;
-    gp_Vec aDU, aDV;
-
     // Step away from current parametric coordinates and calculate derivatives once again.
     // Replace zero derivative by the obtained.
     for (double aStepSign = -1.0; aStepSign <= 1.0 && !isReplaced; aStepSign += 2.0)
@@ -447,16 +474,18 @@ bool ReplaceDerivative(double               theU,
           continue;
       }
 
-      theBasisSurf->D1(aU, aV, aP, aDU, aDV);
+      std::optional<Geom_Surface::ResD1> aD1Result = theBasisSurf->EvalD1(aU, aV);
+      if (!aD1Result)
+        continue;
 
-      if (isReplaceDU && aDU.SquareMagnitude() > theSquareTol)
+      if (isReplaceDU && aD1Result->D1U.SquareMagnitude() > theSquareTol)
       {
-        theDU      = aDU;
+        theDU      = aD1Result->D1U;
         isReplaced = true;
       }
-      if (isReplaceDV && aDV.SquareMagnitude() > theSquareTol)
+      if (isReplaceDV && aD1Result->D1V.SquareMagnitude() > theSquareTol)
       {
-        theDV      = aDV;
+        theDV      = aD1Result->D1V;
         isReplaced = true;
       }
     }
@@ -566,7 +595,12 @@ bool EvaluateD0(double                  theU,
     // For subsequent iterations, recompute D1 at shifted point
     if (!isFirstIteration)
     {
-      theBasisSurf->D1(theU, theV, theValue, aD1U, aD1V);
+      std::optional<Geom_Surface::ResD1> aD1Result = theBasisSurf->EvalD1(theU, theV);
+      if (!aD1Result)
+        return false;
+      theValue = aD1Result->Point;
+      aD1U     = aD1Result->D1U;
+      aD1V     = aD1Result->D1V;
     }
     isFirstIteration = false;
 
@@ -605,34 +639,36 @@ bool EvaluateD0(double                  theU,
     // Use ComputeDerivatives which handles osculating surface properly
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
-      ComputeDerivatives(aMaxOrder,
-                         1,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         0,
-                         0,
-                         aOscInfo.AlongU,
-                         aOscInfo.AlongV,
-                         aOscSurf,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              1,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              0,
+                              0,
+                              aOscInfo.AlongU,
+                              aOscInfo.AlongV,
+                              aOscSurf,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
     else
     {
       occ::handle<Geom_BSplineSurface> aDummy;
-      ComputeDerivatives(aMaxOrder,
-                         1,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         0,
-                         0,
-                         false,
-                         false,
-                         aDummy,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              1,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              0,
+                              0,
+                              false,
+                              false,
+                              aDummy,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
 
     gp_Dir             aNormal;
@@ -718,9 +754,18 @@ bool EvaluateD0(double                  theU,
                 const OscSurfQueryType& theOscQuery,
                 gp_Pnt&                 theValue)
 {
-  gp_Vec aD1U, aD1V;
-  theBasisSurf->D1(theU, theV, theValue, aD1U, aD1V);
-  return EvaluateD0(theU, theV, theBasisSurf, theOffset, theOscQuery, theValue, aD1U, aD1V);
+  std::optional<Geom_Surface::ResD1> aBasisD1 = theBasisSurf->EvalD1(theU, theV);
+  if (!aBasisD1)
+    return false;
+  theValue = aBasisD1->Point;
+  return EvaluateD0(theU,
+                    theV,
+                    theBasisSurf,
+                    theOffset,
+                    theOscQuery,
+                    theValue,
+                    aBasisD1->D1U,
+                    aBasisD1->D1V);
 }
 
 //! Template function for D1 evaluation with pre-computed basis surface D2.
@@ -772,7 +817,15 @@ bool EvaluateD1(double                  theU,
     // For subsequent iterations, recompute D2 at shifted point
     if (!isFirstIteration)
     {
-      theBasisSurf->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+      std::optional<Geom_Surface::ResD2> aD2Result = theBasisSurf->EvalD2(theU, theV);
+      if (!aD2Result)
+        return false;
+      theValue = aD2Result->Point;
+      theD1U   = aD2Result->D1U;
+      theD1V   = aD2Result->D1V;
+      aD2U     = aD2Result->D2U;
+      aD2V     = aD2Result->D2V;
+      aD2UV    = aD2Result->D2UV;
     }
     isFirstIteration = false;
 
@@ -866,34 +919,36 @@ bool EvaluateD1(double                  theU,
 
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
-      ComputeDerivatives(aMaxOrder,
-                         2,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         1,
-                         1,
-                         aOscInfo.AlongU,
-                         aOscInfo.AlongV,
-                         aOscSurf,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              2,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              1,
+                              1,
+                              aOscInfo.AlongU,
+                              aOscInfo.AlongV,
+                              aOscSurf,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
     else
     {
       occ::handle<Geom_BSplineSurface> aDummy;
-      ComputeDerivatives(aMaxOrder,
-                         2,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         1,
-                         1,
-                         false,
-                         false,
-                         aDummy,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              2,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              1,
+                              1,
+                              false,
+                              false,
+                              aDummy,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
 
     gp_Dir             aNormal;
@@ -934,34 +989,36 @@ bool EvaluateD1(double                  theU,
         aDerSurf.SetValue(0, 1, aNewDV);
         if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
         {
-          ComputeDerivatives(aMaxOrder,
-                             2,
-                             theU,
-                             theV,
-                             theBasisSurf,
-                             1,
-                             1,
-                             aOscInfo.AlongU,
-                             aOscInfo.AlongV,
-                             aOscSurf,
-                             aDerNUV,
-                             aDerSurf);
+          if (!ComputeDerivatives(aMaxOrder,
+                                  2,
+                                  theU,
+                                  theV,
+                                  theBasisSurf,
+                                  1,
+                                  1,
+                                  aOscInfo.AlongU,
+                                  aOscInfo.AlongV,
+                                  aOscSurf,
+                                  aDerNUV,
+                                  aDerSurf))
+            return false;
         }
         else
         {
           occ::handle<Geom_BSplineSurface> aDummy;
-          ComputeDerivatives(aMaxOrder,
-                             2,
-                             theU,
-                             theV,
-                             theBasisSurf,
-                             1,
-                             1,
-                             false,
-                             false,
-                             aDummy,
-                             aDerNUV,
-                             aDerSurf);
+          if (!ComputeDerivatives(aMaxOrder,
+                                  2,
+                                  theU,
+                                  theV,
+                                  theBasisSurf,
+                                  1,
+                                  1,
+                                  false,
+                                  false,
+                                  aDummy,
+                                  aDerNUV,
+                                  aDerSurf))
+            return false;
         }
         CSLib::Normal(aMaxOrder,
                       aDerNUV,
@@ -1037,8 +1094,12 @@ bool EvaluateD1(double                  theU,
                 gp_Vec&                 theD1U,
                 gp_Vec&                 theD1V)
 {
-  gp_Vec aD2U, aD2V, aD2UV;
-  theBasisSurf->D2(theU, theV, theValue, theD1U, theD1V, aD2U, aD2V, aD2UV);
+  std::optional<Geom_Surface::ResD2> aBasisD2 = theBasisSurf->EvalD2(theU, theV);
+  if (!aBasisD2)
+    return false;
+  theValue = aBasisD2->Point;
+  theD1U   = aBasisD2->D1U;
+  theD1V   = aBasisD2->D1V;
   return EvaluateD1(theU,
                     theV,
                     theBasisSurf,
@@ -1047,9 +1108,9 @@ bool EvaluateD1(double                  theU,
                     theValue,
                     theD1U,
                     theD1V,
-                    aD2U,
-                    aD2V,
-                    aD2UV);
+                    aBasisD2->D2U,
+                    aBasisD2->D2V,
+                    aBasisD2->D2UV);
 }
 
 //! Template function for D2 evaluation with pre-computed basis surface D3.
@@ -1110,18 +1171,19 @@ bool EvaluateD2(double                  theU,
     // For subsequent iterations, recompute D3 at shifted point
     if (!isFirstIteration)
     {
-      theBasisSurf->D3(theU,
-                       theV,
-                       theValue,
-                       theD1U,
-                       theD1V,
-                       theD2U,
-                       theD2V,
-                       theD2UV,
-                       aD3U,
-                       aD3V,
-                       aD3UUV,
-                       aD3UVV);
+      std::optional<Geom_Surface::ResD3> aD3Result = theBasisSurf->EvalD3(theU, theV);
+      if (!aD3Result)
+        return false;
+      theValue = aD3Result->Point;
+      theD1U   = aD3Result->D1U;
+      theD1V   = aD3Result->D1V;
+      theD2U   = aD3Result->D2U;
+      theD2V   = aD3Result->D2V;
+      theD2UV  = aD3Result->D2UV;
+      aD3U     = aD3Result->D3U;
+      aD3V     = aD3Result->D3V;
+      aD3UUV   = aD3Result->D3UUV;
+      aD3UVV   = aD3Result->D3UVV;
     }
     isFirstIteration = false;
 
@@ -1168,34 +1230,36 @@ bool EvaluateD2(double                  theU,
     // Use ComputeDerivatives to populate DerNUV
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
-      ComputeDerivatives(aMaxOrder,
-                         3,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         2,
-                         2,
-                         aOscInfo.AlongU,
-                         aOscInfo.AlongV,
-                         aOscSurf,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              3,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              2,
+                              2,
+                              aOscInfo.AlongU,
+                              aOscInfo.AlongV,
+                              aOscSurf,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
     else
     {
       occ::handle<Geom_BSplineSurface> aDummy;
-      ComputeDerivatives(aMaxOrder,
-                         3,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         2,
-                         2,
-                         false,
-                         false,
-                         aDummy,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              3,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              2,
+                              2,
+                              false,
+                              false,
+                              aDummy,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
 
     // Compute normal using CSLib (second call with MaxOrder)
@@ -1228,9 +1292,14 @@ bool EvaluateD2(double                  theU,
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
       // For D2, re-fetch from basis surface
-      theD2U  = theBasisSurf->DN(theU, theV, 2, 0);
-      theD2V  = theBasisSurf->DN(theU, theV, 0, 2);
-      theD2UV = theBasisSurf->DN(theU, theV, 1, 1);
+      std::optional<gp_Vec> aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
+      std::optional<gp_Vec> aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
+      std::optional<gp_Vec> aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
+      if (!aDN20 || !aDN02 || !aDN11)
+        return false;
+      theD2U  = *aDN20;
+      theD2V  = *aDN02;
+      theD2UV = *aDN11;
 
       // Add offset corrections using CSLib::DNNormal
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
@@ -1288,9 +1357,15 @@ bool EvaluateD2(double                  theU,
                 gp_Vec&                 theD2V,
                 gp_Vec&                 theD2UV)
 {
-  gp_Vec aD3U, aD3V, aD3UUV, aD3UVV;
-  theBasisSurf
-    ->D3(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV, aD3U, aD3V, aD3UUV, aD3UVV);
+  std::optional<Geom_Surface::ResD3> aBasisD3 = theBasisSurf->EvalD3(theU, theV);
+  if (!aBasisD3)
+    return false;
+  theValue = aBasisD3->Point;
+  theD1U   = aBasisD3->D1U;
+  theD1V   = aBasisD3->D1V;
+  theD2U   = aBasisD3->D2U;
+  theD2V   = aBasisD3->D2V;
+  theD2UV  = aBasisD3->D2UV;
   return EvaluateD2(theU,
                     theV,
                     theBasisSurf,
@@ -1302,10 +1377,10 @@ bool EvaluateD2(double                  theU,
                     theD2U,
                     theD2V,
                     theD2UV,
-                    aD3U,
-                    aD3V,
-                    aD3UUV,
-                    aD3UVV);
+                    aBasisD3->D3U,
+                    aBasisD3->D3V,
+                    aBasisD3->D3UUV,
+                    aBasisD3->D3UVV);
 }
 
 //! Template function for D3 evaluation with retry mechanism for singular points.
@@ -1354,18 +1429,19 @@ bool EvaluateD3(double                  theU,
 
   for (;;)
   {
-    theBasisSurf->D3(theU,
-                     theV,
-                     theValue,
-                     theD1U,
-                     theD1V,
-                     theD2U,
-                     theD2V,
-                     theD2UV,
-                     theD3U,
-                     theD3V,
-                     theD3UUV,
-                     theD3UVV);
+    std::optional<Geom_Surface::ResD3> aD3Result = theBasisSurf->EvalD3(theU, theV);
+    if (!aD3Result)
+      return false;
+    theValue = aD3Result->Point;
+    theD1U   = aD3Result->D1U;
+    theD1V   = aD3Result->D1V;
+    theD2U   = aD3Result->D2U;
+    theD2V   = aD3Result->D2V;
+    theD2UV  = aD3Result->D2UV;
+    theD3U   = aD3Result->D3U;
+    theD3V   = aD3Result->D3V;
+    theD3UUV = aD3Result->D3UUV;
+    theD3UVV = aD3Result->D3UVV;
 
     if (IsInfiniteCoord(theD1U) || IsInfiniteCoord(theD1V))
     {
@@ -1411,34 +1487,36 @@ bool EvaluateD3(double                  theU,
     // Use ComputeDerivatives to populate DerNUV
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
-      ComputeDerivatives(aMaxOrder,
-                         3,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         3,
-                         3,
-                         aOscInfo.AlongU,
-                         aOscInfo.AlongV,
-                         aOscSurf,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              3,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              3,
+                              3,
+                              aOscInfo.AlongU,
+                              aOscInfo.AlongV,
+                              aOscSurf,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
     else
     {
       occ::handle<Geom_BSplineSurface> aDummy;
-      ComputeDerivatives(aMaxOrder,
-                         3,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         3,
-                         3,
-                         false,
-                         false,
-                         aDummy,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              3,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              3,
+                              3,
+                              false,
+                              false,
+                              aDummy,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
 
     // Compute normal using CSLib (second call with MaxOrder)
@@ -1471,13 +1549,22 @@ bool EvaluateD3(double                  theU,
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
       // For D2 and D3, re-fetch from basis surface
-      theD2U   = theBasisSurf->DN(theU, theV, 2, 0);
-      theD2V   = theBasisSurf->DN(theU, theV, 0, 2);
-      theD2UV  = theBasisSurf->DN(theU, theV, 1, 1);
-      theD3U   = theBasisSurf->DN(theU, theV, 3, 0);
-      theD3V   = theBasisSurf->DN(theU, theV, 0, 3);
-      theD3UUV = theBasisSurf->DN(theU, theV, 2, 1);
-      theD3UVV = theBasisSurf->DN(theU, theV, 1, 2);
+      std::optional<gp_Vec> aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
+      std::optional<gp_Vec> aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
+      std::optional<gp_Vec> aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
+      std::optional<gp_Vec> aDN30 = theBasisSurf->EvalDN(theU, theV, 3, 0);
+      std::optional<gp_Vec> aDN03 = theBasisSurf->EvalDN(theU, theV, 0, 3);
+      std::optional<gp_Vec> aDN21 = theBasisSurf->EvalDN(theU, theV, 2, 1);
+      std::optional<gp_Vec> aDN12 = theBasisSurf->EvalDN(theU, theV, 1, 2);
+      if (!aDN20 || !aDN02 || !aDN11 || !aDN30 || !aDN03 || !aDN21 || !aDN12)
+        return false;
+      theD2U   = *aDN20;
+      theD2V   = *aDN02;
+      theD2UV  = *aDN11;
+      theD3U   = *aDN30;
+      theD3V   = *aDN03;
+      theD3UUV = *aDN21;
+      theD3UVV = *aDN12;
 
       // Add offset corrections using CSLib::DNNormal
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
@@ -1546,7 +1633,6 @@ bool EvaluateDN(double                  theU,
   const bool isVPer = theBasisSurf->IsVPeriodic();
 
   // Use pre-computed D1 for first iteration
-  gp_Pnt aP;
   gp_Vec aD1U             = theD1U;
   gp_Vec aD1V             = theD1V;
   bool   isFirstIteration = true;
@@ -1556,7 +1642,11 @@ bool EvaluateDN(double                  theU,
     // For subsequent iterations, recompute D1 at shifted point
     if (!isFirstIteration)
     {
-      theBasisSurf->D1(theU, theV, aP, aD1U, aD1V);
+      std::optional<Geom_Surface::ResD1> aD1Result = theBasisSurf->EvalD1(theU, theV);
+      if (!aD1Result)
+        return false;
+      aD1U = aD1Result->D1U;
+      aD1V = aD1Result->D1V;
     }
     isFirstIteration = false;
 
@@ -1604,34 +1694,36 @@ bool EvaluateDN(double                  theU,
     // Use ComputeDerivatives
     if (aOscInfo.HasOsculating() && !aOscSurf.IsNull())
     {
-      ComputeDerivatives(aMaxOrder,
-                         1,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         theNu,
-                         theNv,
-                         aOscInfo.AlongU,
-                         aOscInfo.AlongV,
-                         aOscSurf,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              1,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              theNu,
+                              theNv,
+                              aOscInfo.AlongU,
+                              aOscInfo.AlongV,
+                              aOscSurf,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
     else
     {
       occ::handle<Geom_BSplineSurface> aDummy;
-      ComputeDerivatives(aMaxOrder,
-                         1,
-                         theU,
-                         theV,
-                         theBasisSurf,
-                         theNu,
-                         theNv,
-                         false,
-                         false,
-                         aDummy,
-                         aDerNUV,
-                         aDerSurf);
+      if (!ComputeDerivatives(aMaxOrder,
+                              1,
+                              theU,
+                              theV,
+                              theBasisSurf,
+                              theNu,
+                              theNv,
+                              false,
+                              false,
+                              aDummy,
+                              aDerNUV,
+                              aDerSurf))
+        return false;
     }
 
     // Compute normal with CSLib
@@ -1654,7 +1746,10 @@ bool EvaluateDN(double                  theU,
       const double aSign = theOffset * aOscInfo.Sign();
 
       // Compute DN result: basis DN + offset * DNNormal
-      theResult = theBasisSurf->DN(theU, theV, theNu, theNv);
+      std::optional<gp_Vec> aBasisDN = theBasisSurf->EvalDN(theU, theV, theNu, theNv);
+      if (!aBasisDN)
+        return false;
+      theResult = *aBasisDN;
       theResult.Add(CSLib::DNNormal(theNu, theNv, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       return true;
     }
@@ -1702,9 +1797,9 @@ bool EvaluateDN(double                  theU,
                 const OscSurfQueryType& theOscQuery,
                 gp_Vec&                 theResult)
 {
-  gp_Pnt aP;
-  gp_Vec aD1U, aD1V;
-  theBasisSurf->D1(theU, theV, aP, aD1U, aD1V);
+  std::optional<Geom_Surface::ResD1> aBasisD1 = theBasisSurf->EvalD1(theU, theV);
+  if (!aBasisD1)
+    return false;
   return EvaluateDN(theU,
                     theV,
                     theNu,
@@ -1713,8 +1808,8 @@ bool EvaluateDN(double                  theU,
                     theOffset,
                     theOscQuery,
                     theResult,
-                    aD1U,
-                    aD1V);
+                    aBasisD1->D1U,
+                    aBasisD1->D1V);
 }
 
 } // namespace Geom_OffsetSurfaceUtils

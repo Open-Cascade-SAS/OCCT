@@ -21,12 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <Geom2d_Conic.hxx>
-#include <Standard_Integer.hxx>
 class gp_Parab2d;
 class gp_Ax2d;
 class gp_Ax22d;
-class gp_Pnt2d;
-class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
@@ -147,27 +144,23 @@ public:
   //! P = S + F * (U * U * XDir + * U * YDir)
   //! where S is the vertex of the parabola, XDir the XDirection and
   //! YDir the YDirection of the parabola's local coordinate system.
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
 
   //! Returns the point P of parameter U and the first derivative V1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(const double U) const final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(const double U) const final;
 
   //! Returns the point P of parameter U, the first second and third
   //! derivatives V1 V2 and V3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(const double U) const final;
 
   //! For the point of parameter U of this parabola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this parabola.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) final;

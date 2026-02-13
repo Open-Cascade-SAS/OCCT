@@ -21,13 +21,10 @@
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
-#include <Standard_Real.hxx>
 #include <Geom_BoundedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
-class gp_Vec;
 class gp_Trsf;
 class Geom_Geometry;
 
@@ -228,11 +225,11 @@ public:
   //! parameter U can be out of the bounds of the curve.
   Standard_EXPORT int Degree() const;
 
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
 
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
 
   //! For this Bezier curve, computes
   //! - the point P of parameter U, or
@@ -241,17 +238,13 @@ public:
   //! - V2, the second derivative vector,
   //! - V3, the third derivative vector.
   //! Note: the parameter U can be outside the bounds of the curve.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const final;
+  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
 
   //! For the point of parameter U of this Bezier curve,
   //! computes the vector corresponding to the Nth derivative.
   //! Note: the parameter U can be outside the bounds of the curve.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
 
   //! Returns Value (U=0.), it is the first control point of the curve.
   Standard_EXPORT gp_Pnt StartPoint() const final;

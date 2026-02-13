@@ -298,158 +298,146 @@ GeomAbs_Shape Geom_OffsetSurface::Continuity() const
 
 //=================================================================================================
 
-void Geom_OffsetSurface::D0(const double U, const double V, gp_Pnt& P) const
+std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0)
-    throw Geom_UndefinedValue();
+  {
+    return std::nullopt;
+  }
 #endif
   if (!equivSurf.IsNull())
   {
-    equivSurf->D0(U, V, P);
-    return;
+    return equivSurf->EvalD0(U, V);
   }
 
-  if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), P))
+  gp_Pnt aP;
+  if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
   {
-    throw Geom_UndefinedValue(
-      "Geom_OffsetSurface::D0(): Unable to calculate value at singular point");
+    return std::nullopt;
   }
+  return aP;
 }
 
 //=================================================================================================
 
-void Geom_OffsetSurface::D1(const double U,
-                            const double V,
-                            gp_Pnt&      P,
-                            gp_Vec&      D1U,
-                            gp_Vec&      D1V) const
+std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0 || myBasisSurfContinuity == GeomAbs_C1)
-    throw Geom_UndefinedDerivative();
+  {
+    return std::nullopt;
+  }
 #endif
   if (!equivSurf.IsNull())
   {
-    equivSurf->D1(U, V, P, D1U, D1V);
-    return;
+    return equivSurf->EvalD1(U, V);
   }
 
+  Geom_Surface::ResD1 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD1(U,
                                            V,
                                            basisSurf.get(),
                                            offsetValue,
                                            myOscSurf.get(),
-                                           P,
-                                           D1U,
-                                           D1V))
+                                           aResult.Point,
+                                           aResult.D1U,
+                                           aResult.D1V))
   {
-    throw Geom_UndefinedDerivative(
-      "Geom_OffsetSurface::D1(): Unable to calculate derivative at singular point");
+    return std::nullopt;
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_OffsetSurface::D2(const double U,
-                            const double V,
-                            gp_Pnt&      P,
-                            gp_Vec&      D1U,
-                            gp_Vec&      D1V,
-                            gp_Vec&      D2U,
-                            gp_Vec&      D2V,
-                            gp_Vec&      D2UV) const
+std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0 || myBasisSurfContinuity == GeomAbs_C1
       || myBasisSurfContinuity == GeomAbs_C2)
-    throw Geom_UndefinedDerivative();
+  {
+    return std::nullopt;
+  }
 #endif
   if (!equivSurf.IsNull())
   {
-    equivSurf->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
-    return;
+    return equivSurf->EvalD2(U, V);
   }
 
+  Geom_Surface::ResD2 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD2(U,
                                            V,
                                            basisSurf.get(),
                                            offsetValue,
                                            myOscSurf.get(),
-                                           P,
-                                           D1U,
-                                           D1V,
-                                           D2U,
-                                           D2V,
-                                           D2UV))
+                                           aResult.Point,
+                                           aResult.D1U,
+                                           aResult.D1V,
+                                           aResult.D2U,
+                                           aResult.D2V,
+                                           aResult.D2UV))
   {
-    throw Geom_UndefinedDerivative(
-      "Geom_OffsetSurface::D2(): Unable to calculate derivative at singular point");
+    return std::nullopt;
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_OffsetSurface::D3(const double U,
-                            const double V,
-                            gp_Pnt&      P,
-                            gp_Vec&      D1U,
-                            gp_Vec&      D1V,
-                            gp_Vec&      D2U,
-                            gp_Vec&      D2V,
-                            gp_Vec&      D2UV,
-                            gp_Vec&      D3U,
-                            gp_Vec&      D3V,
-                            gp_Vec&      D3UUV,
-                            gp_Vec&      D3UVV) const
+std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, const double V) const
 {
 #ifdef CHECK
   if (!(basisSurf->IsCNu(4) && basisSurf->IsCNv(4)))
   {
-    throw Geom_UndefinedDerivative();
+    return std::nullopt;
   }
 #endif
   if (!equivSurf.IsNull())
   {
-    equivSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
-    return;
+    return equivSurf->EvalD3(U, V);
   }
 
+  Geom_Surface::ResD3 aResult;
   if (!Geom_OffsetSurfaceUtils::EvaluateD3(U,
                                            V,
                                            basisSurf.get(),
                                            offsetValue,
                                            myOscSurf.get(),
-                                           P,
-                                           D1U,
-                                           D1V,
-                                           D2U,
-                                           D2V,
-                                           D2UV,
-                                           D3U,
-                                           D3V,
-                                           D3UUV,
-                                           D3UVV))
+                                           aResult.Point,
+                                           aResult.D1U,
+                                           aResult.D1V,
+                                           aResult.D2U,
+                                           aResult.D2V,
+                                           aResult.D2UV,
+                                           aResult.D3U,
+                                           aResult.D3V,
+                                           aResult.D3UUV,
+                                           aResult.D3UVV))
   {
-    throw Geom_UndefinedDerivative(
-      "Geom_OffsetSurface::D3(): Unable to calculate derivative at singular point");
+    return std::nullopt;
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec Geom_OffsetSurface::DN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
+                                                 const double V,
+                                                 const int    Nu,
+                                                 const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu < 0 || Nv < 0 || Nu + Nv < 1, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
 #ifdef CHECK
   if (!(basisSurf->IsCNu(Nu) && basisSurf->IsCNv(Nv)))
   {
-    throw Geom_UndefinedDerivative();
+    return std::nullopt;
   }
 #endif
   if (!equivSurf.IsNull())
   {
-    return equivSurf->DN(U, V, Nu, Nv);
+    return equivSurf->EvalDN(U, V, Nu, Nv);
   }
 
   gp_Vec aResult;
@@ -462,8 +450,7 @@ gp_Vec Geom_OffsetSurface::DN(const double U, const double V, const int Nu, cons
                                            myOscSurf.get(),
                                            aResult))
   {
-    throw Geom_UndefinedDerivative(
-      "Geom_OffsetSurface::DN(): Unable to calculate derivative at singular point");
+    return std::nullopt;
   }
   return aResult;
 }

@@ -22,12 +22,10 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Array1.hxx>
-#include <Standard_Integer.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
 
-class gp_Vec;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
@@ -429,52 +427,38 @@ public:
   //! continuity is infinite.
   Standard_EXPORT GeomAbs_Shape Continuity() const final;
 
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const final;
+  //! Computes the point of parameter (U, V) on the surface.
+  //! Returns std::nullopt on failure.
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
 
-  Standard_EXPORT void D1(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V) const final;
+  //! Computes the point and first partial derivatives at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C1.
+  Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(const double U,
+                                                            const double V) const final;
 
-  Standard_EXPORT void D2(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const final;
+  //! Computes the point and partial derivatives up to 2nd order at (U, V).
+  //! Returns std::nullopt if the surface continuity is not C2.
+  Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(const double U,
+                                                            const double V) const final;
 
-  //! Computes P, the point of parameters (U, V) of this Bezier surface, and
-  //! - one or more of the following sets of vectors:
-  //! - D1U and D1V, the first derivative vectors at this point,
-  //! - D2U, D2V and D2UV, the second derivative
-  //! vectors at this point,
-  //! - D3U, D3V, D3UUV and D3UVV, the third
-  //! derivative vectors at this point.
+  //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Note: The parameters U and V can be outside the bounds of the surface.
-  Standard_EXPORT void D3(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV,
-                          gp_Vec&      D3U,
-                          gp_Vec&      D3V,
-                          gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const final;
+  //! Returns std::nullopt if the surface continuity is not C3.
+  Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(const double U,
+                                                            const double V) const final;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
   //! direction, at the point of parameters (U, V) of this Bezier surface.
   //! Note: The parameters U and V can be outside the bounds of the surface.
+  //! Returns std::nullopt on failure.
   //! Exceptions
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1, or Nu or Nv is negative.
-  Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const final;
 
   //! Returns the number of poles in the U direction.
   Standard_EXPORT int NbUPoles() const;

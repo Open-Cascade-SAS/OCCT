@@ -26,15 +26,12 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <ShapeExtend_Parametrisation.hxx>
-#include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 class gp_Pnt2d;
 class gp_Trsf2d;
 class gp_Trsf;
 class Geom_Geometry;
 class Geom_Curve;
-class gp_Pnt;
-class gp_Vec;
 
 //! Composite surface is represented by a grid of surfaces
 //! (patches) connected geometrically. Patches may have different
@@ -267,48 +264,29 @@ public:
   Standard_EXPORT bool IsCNv(const int N) const override;
 
   //! Computes the point of parameter U,V on the grid.
-  Standard_EXPORT void D0(const double U, const double V, gp_Pnt& P) const override;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const override;
 
   //! Computes the point P and the first derivatives in the
   //! directions U and V at this point.
-  Standard_EXPORT void D1(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V) const override;
+  Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(const double U,
+                                                            const double V) const override;
 
   //! Computes the point P, the first and the second derivatives in
   //! the directions U and V at this point.
-  Standard_EXPORT void D2(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV) const override;
+  Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(const double U,
+                                                            const double V) const override;
 
   //! Computes the point P, the first,the second and the third
   //! derivatives in the directions U and V at this point.
-  Standard_EXPORT void D3(const double U,
-                          const double V,
-                          gp_Pnt&      P,
-                          gp_Vec&      D1U,
-                          gp_Vec&      D1V,
-                          gp_Vec&      D2U,
-                          gp_Vec&      D2V,
-                          gp_Vec&      D2UV,
-                          gp_Vec&      D3U,
-                          gp_Vec&      D3V,
-                          gp_Vec&      D3UUV,
-                          gp_Vec&      D3UVV) const override;
+  Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(const double U,
+                                                            const double V) const override;
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
-  Standard_EXPORT gp_Vec DN(const double U,
-                            const double V,
-                            const int    Nu,
-                            const int    Nv) const override;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+                                               const double V,
+                                               const int    Nu,
+                                               const int    Nv) const override;
 
   //! Computes the point of parameter pnt on the grid.
   Standard_EXPORT gp_Pnt Value(const gp_Pnt2d& pnt) const;

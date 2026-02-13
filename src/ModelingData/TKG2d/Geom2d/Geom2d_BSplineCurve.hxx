@@ -23,11 +23,9 @@
 #include <Precision.hxx>
 #include <GeomAbs_BSplKnotDistribution.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <Standard_Integer.hxx>
 #include <gp_Pnt2d.hxx>
 #include <NCollection_Array1.hxx>
 #include <Geom2d_BoundedCurve.hxx>
-class gp_Vec2d;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
@@ -577,13 +575,13 @@ public:
   //! Computation of value and derivatives
   Standard_EXPORT int Degree() const;
 
-  Standard_EXPORT void D0(const double U, gp_Pnt2d& P) const final;
+  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT void D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(const double U) const final;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT void D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(const double U) const final;
 
   //! For this BSpline curve, computes
   //! - the point P of parameter U, or
@@ -597,11 +595,7 @@ public:
   //! defined by the parameter with a value greater than U,
   //! i.e. the part of the curve to the "right" of the singularity.
   //! Raises UndefinedDerivative if the continuity of the curve is not C3.
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt2d&    P,
-                          gp_Vec2d&    V1,
-                          gp_Vec2d&    V2,
-                          gp_Vec2d&    V3) const final;
+  Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(const double U) const final;
 
   //! For the point of parameter U of this BSpline curve,
   //! computes the vector corresponding to the Nth derivative.
@@ -624,7 +618,7 @@ public:
   //! the same as if we consider the whole definition of the
   //! curve. Of course the evaluations are different outside
   //! this parametric domain.
-  Standard_EXPORT gp_Vec2d DN(const double U, const int N) const final;
+  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
 
   //! Raised if FromK1 = ToK2.
   Standard_EXPORT gp_Pnt2d LocalValue(const double U, const int FromK1, const int ToK2) const;

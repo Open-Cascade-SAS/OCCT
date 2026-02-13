@@ -113,8 +113,8 @@ bool Geom_BSplineCurve::IsG1(const double theTf, const double theTl, const doubl
 
   gp_Pnt aP;
   gp_Vec aV1, aV2;
-  D1(Knot(FirstUKnotIndex()), aP, aV1);
-  D1(Knot(LastUKnotIndex()), aP, aV2);
+  Geom_Curve::D1(Knot(FirstUKnotIndex()), aP, aV1);
+  Geom_Curve::D1(Knot(LastUKnotIndex()), aP, aV2);
 
   if ((aV1.SquareMagnitude() <= gp::Resolution()) || aV2.SquareMagnitude() <= gp::Resolution())
   {
@@ -158,8 +158,9 @@ int Geom_BSplineCurve::Degree() const
 
 //=================================================================================================
 
-void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
+std::optional<gp_Pnt> Geom_BSplineCurve::EvalD0(const double U) const
 {
+  gp_Pnt P;
   int    aSpanIndex = 0;
   double aNewU(U);
   PeriodicNormalization(aNewU);
@@ -168,28 +169,41 @@ void Geom_BSplineCurve::D0(const double U, gp_Pnt& P) const
     aSpanIndex--;
 
   BSplCLib::D0(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P);
+  return P;
 }
 
 //=================================================================================================
 
-void Geom_BSplineCurve::D1(const double U, gp_Pnt& P, gp_Vec& V1) const
+std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 {
-  int    aSpanIndex = 0;
-  double aNewU(U);
+  std::optional<Geom_Curve::ResD1> aResult{std::in_place};
+  int                              aSpanIndex = 0;
+  double                           aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
     aSpanIndex--;
 
-  BSplCLib::D1(aNewU, aSpanIndex, myDeg, myPeriodic, myPoles, Weights(), myKnots, &myMults, P, V1);
+  BSplCLib::D1(aNewU,
+               aSpanIndex,
+               myDeg,
+               myPeriodic,
+               myPoles,
+               Weights(),
+               myKnots,
+               &myMults,
+               aResult->Point,
+               aResult->D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 {
-  int    aSpanIndex = 0;
-  double aNewU(U);
+  std::optional<Geom_Curve::ResD2> aResult{std::in_place};
+  int                              aSpanIndex = 0;
+  double                           aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
@@ -203,17 +217,19 @@ void Geom_BSplineCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) co
                Weights(),
                myKnots,
                &myMults,
-               P,
-               V1,
-               V2);
+               aResult->Point,
+               aResult->D1,
+               aResult->D2);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+std::optional<Geom_Curve::ResD3> Geom_BSplineCurve::EvalD3(const double U) const
 {
-  int    aSpanIndex = 0;
-  double aNewU(U);
+  std::optional<Geom_Curve::ResD3> aResult{std::in_place};
+  int                              aSpanIndex = 0;
+  double                           aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
@@ -227,16 +243,19 @@ void Geom_BSplineCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp
                Weights(),
                myKnots,
                &myMults,
-               P,
-               V1,
-               V2,
-               V3);
+               aResult->Point,
+               aResult->D1,
+               aResult->D2,
+               aResult->D3);
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec Geom_BSplineCurve::DN(const double U, const int N) const
+std::optional<gp_Vec> Geom_BSplineCurve::EvalDN(const double U, const int N) const
 {
+  if (N < 1)
+    return std::nullopt;
   gp_Vec V;
   BSplCLib::DN(U, N, 0, myDeg, myPeriodic, myPoles, Weights(), myFlatKnots, BSplCLib::NoMults(), V);
   return V;

@@ -194,74 +194,119 @@ GeomAbs_Shape Geom2d_OffsetCurve::Continuity() const
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D0(const double theU, gp_Pnt2d& theP) const
+std::optional<gp_Pnt2d> Geom2d_OffsetCurve::EvalD0(const double theU) const
 {
-  if (!Geom2d_OffsetCurveUtils::EvaluateD0(theU, basisCurve.get(), offsetValue, theP))
-  {
-    throw Standard_NullValue("Geom2d_OffsetCurve::D0: Unable to calculate offset point");
-  }
+  std::optional<Geom2d_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(theU);
+  if (!aBasisD1)
+    return std::nullopt;
+  gp_Pnt2d aValue = aBasisD1->Point;
+  if (!Geom2d_OffsetCurveUtils::CalculateD0(aValue, aBasisD1->D1, offsetValue))
+    return std::nullopt;
+  return aValue;
 }
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D1(const double theU, gp_Pnt2d& theP, gp_Vec2d& theV1) const
+std::optional<Geom2d_Curve::ResD1> Geom2d_OffsetCurve::EvalD1(const double theU) const
 {
-  if (!Geom2d_OffsetCurveUtils::EvaluateD1(theU, basisCurve.get(), offsetValue, theP, theV1))
-  {
-    throw Standard_NullValue("Geom2d_OffsetCurve::D1: Unable to calculate offset D1");
-  }
+  std::optional<Geom2d_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(theU);
+  if (!aBasisD2)
+    return std::nullopt;
+  gp_Pnt2d aValue = aBasisD2->Point;
+  gp_Vec2d aD1    = aBasisD2->D1;
+  if (!Geom2d_OffsetCurveUtils::CalculateD1(aValue, aD1, aBasisD2->D2, offsetValue))
+    return std::nullopt;
+  return Geom2d_Curve::ResD1{aValue, aD1};
 }
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D2(const double theU,
-                            gp_Pnt2d&    theP,
-                            gp_Vec2d&    theV1,
-                            gp_Vec2d&    theV2) const
+std::optional<Geom2d_Curve::ResD2> Geom2d_OffsetCurve::EvalD2(const double theU) const
 {
-  if (!Geom2d_OffsetCurveUtils::EvaluateD2(theU, basisCurve.get(), offsetValue, theP, theV1, theV2))
+  std::optional<Geom2d_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(theU);
+  if (!aBasisD3)
+    return std::nullopt;
+  gp_Pnt2d aValue = aBasisD3->Point;
+  gp_Vec2d aD1 = aBasisD3->D1, aD2 = aBasisD3->D2, aD3 = aBasisD3->D3;
+  bool     isDirectionChange = false;
+  if (aD1.SquareMagnitude() <= gp::Resolution())
   {
-    throw Standard_NullValue("Geom2d_OffsetCurve::D2: Unable to calculate offset D2");
+    gp_Vec2d aDummyD4;
+    if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*basisCurve,
+                                                   3,
+                                                   theU,
+                                                   aD1,
+                                                   aD2,
+                                                   aD3,
+                                                   aDummyD4,
+                                                   isDirectionChange))
+      return std::nullopt;
   }
+  if (!Geom2d_OffsetCurveUtils::CalculateD2(aValue, aD1, aD2, aD3, isDirectionChange, offsetValue))
+    return std::nullopt;
+  return Geom2d_Curve::ResD2{aValue, aD1, aD2};
 }
 
 //==================================================================================================
 
-void Geom2d_OffsetCurve::D3(const double theU,
-                            gp_Pnt2d&    theP,
-                            gp_Vec2d&    theV1,
-                            gp_Vec2d&    theV2,
-                            gp_Vec2d&    theV3) const
+std::optional<Geom2d_Curve::ResD3> Geom2d_OffsetCurve::EvalD3(const double theU) const
 {
-  if (!Geom2d_OffsetCurveUtils::EvaluateD3(theU,
-                                           basisCurve.get(),
-                                           offsetValue,
-                                           theP,
-                                           theV1,
-                                           theV2,
-                                           theV3))
+  std::optional<Geom2d_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(theU);
+  if (!aBasisD3)
+    return std::nullopt;
+  std::optional<gp_Vec2d> aD4Opt = basisCurve->EvalDN(theU, 4);
+  if (!aD4Opt)
+    return std::nullopt;
+  gp_Pnt2d aValue = aBasisD3->Point;
+  gp_Vec2d aD1 = aBasisD3->D1, aD2 = aBasisD3->D2, aD3 = aBasisD3->D3;
+  gp_Vec2d aD4               = *aD4Opt;
+  bool     isDirectionChange = false;
+  if (aD1.SquareMagnitude() <= gp::Resolution())
   {
-    throw Standard_NullValue("Geom2d_OffsetCurve::D3: Unable to calculate offset D3");
+    if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*basisCurve,
+                                                   4,
+                                                   theU,
+                                                   aD1,
+                                                   aD2,
+                                                   aD3,
+                                                   aD4,
+                                                   isDirectionChange))
+      return std::nullopt;
   }
+  if (!Geom2d_OffsetCurveUtils::CalculateD3(aValue,
+                                            aD1,
+                                            aD2,
+                                            aD3,
+                                            aD4,
+                                            isDirectionChange,
+                                            offsetValue))
+    return std::nullopt;
+  return Geom2d_Curve::ResD3{aValue, aD1, aD2, aD3};
 }
 
 //==================================================================================================
 
-gp_Vec2d Geom2d_OffsetCurve::DN(const double U, const int N) const
+std::optional<gp_Vec2d> Geom2d_OffsetCurve::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
-
-  gp_Vec2d aVN;
-  if (!Geom2d_OffsetCurveUtils::EvaluateDN(U, basisCurve.get(), offsetValue, N, aVN))
+  if (N < 1)
+    return std::nullopt;
+  switch (N)
   {
-    if (N > 3)
-    {
-      throw Standard_NotImplemented("Exception: Derivative order is greater than 3. "
-                                    "Cannot compute of derivative.");
+    case 1: {
+      std::optional<Geom2d_Curve::ResD1> aR = EvalD1(U);
+      return aR ? std::optional<gp_Vec2d>(aR->D1) : std::nullopt;
     }
-    throw Standard_NullValue("Geom2d_OffsetCurve::DN: Unable to calculate offset DN");
+    case 2: {
+      std::optional<Geom2d_Curve::ResD2> aR = EvalD2(U);
+      return aR ? std::optional<gp_Vec2d>(aR->D2) : std::nullopt;
+    }
+    case 3: {
+      std::optional<Geom2d_Curve::ResD3> aR = EvalD3(U);
+      return aR ? std::optional<gp_Vec2d>(aR->D3) : std::nullopt;
+    }
+    default:
+      return basisCurve->EvalDN(U, N);
   }
-  return aVN;
 }
 
 //==================================================================================================
@@ -290,8 +335,8 @@ double Geom2d_OffsetCurve::Offset() const
 bool Geom2d_OffsetCurve::IsClosed() const
 {
   gp_Pnt2d PF, PL;
-  D0(FirstParameter(), PF);
-  D0(LastParameter(), PL);
+  Geom2d_Curve::D0(FirstParameter(), PF);
+  Geom2d_Curve::D0(LastParameter(), PL);
   return (PF.Distance(PL) <= gp::Resolution());
 }
 

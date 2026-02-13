@@ -21,11 +21,8 @@
 #include <Standard_Type.hxx>
 
 #include <Geom_Curve.hxx>
-#include <Standard_Integer.hxx>
 #include <GeomAbs_Shape.hxx>
 class gp_Trsf;
-class gp_Pnt;
-class gp_Vec;
 
 //! Defines a curve which consists of several segments.
 //! Implements basic interface to it.
@@ -73,19 +70,15 @@ public:
 
   //! Returns point at parameter U.
   //! Finds appropriate curve and local parameter on it.
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
+  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const override;
 
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
+  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const override;
 
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
+  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const override;
 
-  Standard_EXPORT void D3(const double U,
-                          gp_Pnt&      P,
-                          gp_Vec&      V1,
-                          gp_Vec&      V2,
-                          gp_Vec&      V3) const override;
+  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const override;
 
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
+  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const override;
 
   //! Returns scale factor for recomputing of deviatives.
   Standard_EXPORT virtual double GetScaleFactor(const int ind) const = 0;

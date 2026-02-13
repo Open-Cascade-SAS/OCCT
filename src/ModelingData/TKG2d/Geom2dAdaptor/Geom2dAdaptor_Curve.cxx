@@ -39,6 +39,7 @@
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
+#include <Geom2d_UndefinedValue.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp.hxx>
 #include <gp_Circ2d.hxx>
@@ -52,7 +53,6 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
-#include <Standard_NullValue.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
@@ -648,48 +648,61 @@ gp_Pnt2d Geom2dAdaptor_Curve::Value(const double U) const
 
 void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
 {
+  std::optional<gp_Pnt2d> aResult = EvalD0(U);
+  if (!aResult)
+    throw Geom2d_UndefinedValue("Geom2dAdaptor_Curve::D0: evaluation failed");
+  P = *aResult;
+}
+
+//=================================================================================================
+
+std::optional<gp_Pnt2d> Geom2dAdaptor_Curve::EvalD0(double U) const
+{
+  gp_Pnt2d P;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
       P = ElCLib::Value(U, std::get<gp_Lin2d>(myCurveData));
-      break;
+      return P;
+
     case GeomAbs_Circle:
       P = ElCLib::Value(U, std::get<gp_Circ2d>(myCurveData));
-      break;
+      return P;
+
     case GeomAbs_Ellipse:
       P = ElCLib::Value(U, std::get<gp_Elips2d>(myCurveData));
-      break;
+      return P;
+
     case GeomAbs_Hyperbola:
       P = ElCLib::Value(U, std::get<gp_Hypr2d>(myCurveData));
-      break;
+      return P;
+
     case GeomAbs_Parabola:
       P = ElCLib::Value(U, std::get<gp_Parab2d>(myCurveData));
-      break;
+      return P;
 
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
-      // use cached data
       if (aBezierData.Cache.IsNull() || !aBezierData.Cache->IsCacheValid(U))
         RebuildCache(U);
       aBezierData.Cache->D0(U, P);
-      break;
+      return P;
     }
 
     case GeomAbs_BSplineCurve: {
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
-      int   aStart = 0, aFinish = 0;
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplineData.Curve->LocalD0(U, aStart, aFinish, P);
       }
       else
       {
-        // use cached data
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
           RebuildCache(U);
         aBSplineData.Cache->D0(U, P);
       }
-      break;
+      return P;
     }
 
     case GeomAbs_OffsetCurve: {
@@ -699,13 +712,13 @@ void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
                                                anOffsetData.Offset,
                                                P))
       {
-        throw Standard_NullValue("Geom2dAdaptor_Curve::D0: Unable to calculate offset point");
+        return std::nullopt;
       }
-      break;
+      return P;
     }
 
     default:
-      myCurve->D0(U, P);
+      return myCurve->EvalD0(U);
   }
 }
 
@@ -713,48 +726,62 @@ void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
 
 void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 {
+  std::optional<Geom2d_Curve::ResD1> aResult = EvalD1(U);
+  if (!aResult)
+    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::D1: evaluation failed");
+  P = aResult->Point;
+  V = aResult->D1;
+}
+
+//=================================================================================================
+
+std::optional<Geom2d_Curve::ResD1> Geom2dAdaptor_Curve::EvalD1(double U) const
+{
+  Geom2d_Curve::ResD1 aResult;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
-      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), P, V);
-      break;
+      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), aResult.Point, aResult.D1);
+      return aResult;
+
     case GeomAbs_Circle:
-      ElCLib::D1(U, std::get<gp_Circ2d>(myCurveData), P, V);
-      break;
+      ElCLib::D1(U, std::get<gp_Circ2d>(myCurveData), aResult.Point, aResult.D1);
+      return aResult;
+
     case GeomAbs_Ellipse:
-      ElCLib::D1(U, std::get<gp_Elips2d>(myCurveData), P, V);
-      break;
+      ElCLib::D1(U, std::get<gp_Elips2d>(myCurveData), aResult.Point, aResult.D1);
+      return aResult;
+
     case GeomAbs_Hyperbola:
-      ElCLib::D1(U, std::get<gp_Hypr2d>(myCurveData), P, V);
-      break;
+      ElCLib::D1(U, std::get<gp_Hypr2d>(myCurveData), aResult.Point, aResult.D1);
+      return aResult;
+
     case GeomAbs_Parabola:
-      ElCLib::D1(U, std::get<gp_Parab2d>(myCurveData), P, V);
-      break;
+      ElCLib::D1(U, std::get<gp_Parab2d>(myCurveData), aResult.Point, aResult.D1);
+      return aResult;
 
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
-      // use cached data
       if (aBezierData.Cache.IsNull() || !aBezierData.Cache->IsCacheValid(U))
         RebuildCache(U);
-      aBezierData.Cache->D1(U, P, V);
-      break;
+      aBezierData.Cache->D1(U, aResult.Point, aResult.D1);
+      return aResult;
     }
 
     case GeomAbs_BSplineCurve: {
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
-      int   aStart = 0, aFinish = 0;
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
-        aBSplineData.Curve->LocalD1(U, aStart, aFinish, P, V);
+        aBSplineData.Curve->LocalD1(U, aStart, aFinish, aResult.Point, aResult.D1);
       }
       else
       {
-        // use cached data
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
           RebuildCache(U);
-        aBSplineData.Cache->D1(U, P, V);
+        aBSplineData.Cache->D1(U, aResult.Point, aResult.D1);
       }
-      break;
+      return aResult;
     }
 
     case GeomAbs_OffsetCurve: {
@@ -762,16 +789,16 @@ void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
       if (!Geom2d_OffsetCurveUtils::EvaluateD1(U,
                                                anOffsetData.BasisAdaptor.get(),
                                                anOffsetData.Offset,
-                                               P,
-                                               V))
+                                               aResult.Point,
+                                               aResult.D1))
       {
-        throw Standard_NullValue("Geom2dAdaptor_Curve::D1: Unable to calculate offset D1");
+        return std::nullopt;
       }
-      break;
+      return aResult;
     }
 
     default:
-      myCurve->D1(U, P, V);
+      return myCurve->EvalD1(U);
   }
 }
 
@@ -779,49 +806,64 @@ void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 
 void Geom2dAdaptor_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
+  std::optional<Geom2d_Curve::ResD2> aResult = EvalD2(U);
+  if (!aResult)
+    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::D2: evaluation failed");
+  P  = aResult->Point;
+  V1 = aResult->D1;
+  V2 = aResult->D2;
+}
+
+//=================================================================================================
+
+std::optional<Geom2d_Curve::ResD2> Geom2dAdaptor_Curve::EvalD2(double U) const
+{
+  Geom2d_Curve::ResD2 aResult;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
-      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), P, V1);
-      V2.SetCoord(0., 0.);
-      break;
+      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), aResult.Point, aResult.D1);
+      aResult.D2.SetCoord(0., 0.);
+      return aResult;
+
     case GeomAbs_Circle:
-      ElCLib::D2(U, std::get<gp_Circ2d>(myCurveData), P, V1, V2);
-      break;
+      ElCLib::D2(U, std::get<gp_Circ2d>(myCurveData), aResult.Point, aResult.D1, aResult.D2);
+      return aResult;
+
     case GeomAbs_Ellipse:
-      ElCLib::D2(U, std::get<gp_Elips2d>(myCurveData), P, V1, V2);
-      break;
+      ElCLib::D2(U, std::get<gp_Elips2d>(myCurveData), aResult.Point, aResult.D1, aResult.D2);
+      return aResult;
+
     case GeomAbs_Hyperbola:
-      ElCLib::D2(U, std::get<gp_Hypr2d>(myCurveData), P, V1, V2);
-      break;
+      ElCLib::D2(U, std::get<gp_Hypr2d>(myCurveData), aResult.Point, aResult.D1, aResult.D2);
+      return aResult;
+
     case GeomAbs_Parabola:
-      ElCLib::D2(U, std::get<gp_Parab2d>(myCurveData), P, V1, V2);
-      break;
+      ElCLib::D2(U, std::get<gp_Parab2d>(myCurveData), aResult.Point, aResult.D1, aResult.D2);
+      return aResult;
 
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
-      // use cached data
       if (aBezierData.Cache.IsNull() || !aBezierData.Cache->IsCacheValid(U))
         RebuildCache(U);
-      aBezierData.Cache->D2(U, P, V1, V2);
-      break;
+      aBezierData.Cache->D2(U, aResult.Point, aResult.D1, aResult.D2);
+      return aResult;
     }
 
     case GeomAbs_BSplineCurve: {
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
-      int   aStart = 0, aFinish = 0;
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
-        aBSplineData.Curve->LocalD2(U, aStart, aFinish, P, V1, V2);
+        aBSplineData.Curve->LocalD2(U, aStart, aFinish, aResult.Point, aResult.D1, aResult.D2);
       }
       else
       {
-        // use cached data
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
           RebuildCache(U);
-        aBSplineData.Cache->D2(U, P, V1, V2);
+        aBSplineData.Cache->D2(U, aResult.Point, aResult.D1, aResult.D2);
       }
-      break;
+      return aResult;
     }
 
     case GeomAbs_OffsetCurve: {
@@ -829,17 +871,17 @@ void Geom2dAdaptor_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d
       if (!Geom2d_OffsetCurveUtils::EvaluateD2(U,
                                                anOffsetData.BasisAdaptor.get(),
                                                anOffsetData.Offset,
-                                               P,
-                                               V1,
-                                               V2))
+                                               aResult.Point,
+                                               aResult.D1,
+                                               aResult.D2))
       {
-        throw Standard_NullValue("Geom2dAdaptor_Curve::D2: Unable to calculate offset D2");
+        return std::nullopt;
       }
-      break;
+      return aResult;
     }
 
     default:
-      myCurve->D2(U, P, V1, V2);
+      return myCurve->EvalD2(U);
   }
 }
 
@@ -851,51 +893,83 @@ void Geom2dAdaptor_Curve::D3(const double U,
                              gp_Vec2d&    V2,
                              gp_Vec2d&    V3) const
 {
+  std::optional<Geom2d_Curve::ResD3> aResult = EvalD3(U);
+  if (!aResult)
+    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::D3: evaluation failed");
+  P  = aResult->Point;
+  V1 = aResult->D1;
+  V2 = aResult->D2;
+  V3 = aResult->D3;
+}
+
+//=================================================================================================
+
+std::optional<Geom2d_Curve::ResD3> Geom2dAdaptor_Curve::EvalD3(double U) const
+{
+  Geom2d_Curve::ResD3 aResult;
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
-      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), P, V1);
-      V2.SetCoord(0., 0.);
-      V3.SetCoord(0., 0.);
-      break;
+      ElCLib::D1(U, std::get<gp_Lin2d>(myCurveData), aResult.Point, aResult.D1);
+      aResult.D2.SetCoord(0., 0.);
+      aResult.D3.SetCoord(0., 0.);
+      return aResult;
+
     case GeomAbs_Circle:
-      ElCLib::D3(U, std::get<gp_Circ2d>(myCurveData), P, V1, V2, V3);
-      break;
+      ElCLib::D3(U,
+                 std::get<gp_Circ2d>(myCurveData),
+                 aResult.Point,
+                 aResult.D1,
+                 aResult.D2,
+                 aResult.D3);
+      return aResult;
+
     case GeomAbs_Ellipse:
-      ElCLib::D3(U, std::get<gp_Elips2d>(myCurveData), P, V1, V2, V3);
-      break;
+      ElCLib::D3(U,
+                 std::get<gp_Elips2d>(myCurveData),
+                 aResult.Point,
+                 aResult.D1,
+                 aResult.D2,
+                 aResult.D3);
+      return aResult;
+
     case GeomAbs_Hyperbola:
-      ElCLib::D3(U, std::get<gp_Hypr2d>(myCurveData), P, V1, V2, V3);
-      break;
+      ElCLib::D3(U,
+                 std::get<gp_Hypr2d>(myCurveData),
+                 aResult.Point,
+                 aResult.D1,
+                 aResult.D2,
+                 aResult.D3);
+      return aResult;
+
     case GeomAbs_Parabola:
-      ElCLib::D2(U, std::get<gp_Parab2d>(myCurveData), P, V1, V2);
-      V3.SetCoord(0., 0.);
-      break;
+      ElCLib::D2(U, std::get<gp_Parab2d>(myCurveData), aResult.Point, aResult.D1, aResult.D2);
+      aResult.D3.SetCoord(0., 0.);
+      return aResult;
 
     case GeomAbs_BezierCurve: {
       auto& aBezierData = std::get<BezierData>(myCurveData);
-      // use cached data
       if (aBezierData.Cache.IsNull() || !aBezierData.Cache->IsCacheValid(U))
         RebuildCache(U);
-      aBezierData.Cache->D3(U, P, V1, V2, V3);
-      break;
+      aBezierData.Cache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+      return aResult;
     }
 
     case GeomAbs_BSplineCurve: {
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
-      int   aStart = 0, aFinish = 0;
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
-        aBSplineData.Curve->LocalD3(U, aStart, aFinish, P, V1, V2, V3);
+        aBSplineData.Curve
+          ->LocalD3(U, aStart, aFinish, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       }
       else
       {
-        // use cached data
         if (aBSplineData.Cache.IsNull() || !aBSplineData.Cache->IsCacheValid(U))
           RebuildCache(U);
-        aBSplineData.Cache->D3(U, P, V1, V2, V3);
+        aBSplineData.Cache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
       }
-      break;
+      return aResult;
     }
 
     case GeomAbs_OffsetCurve: {
@@ -903,18 +977,18 @@ void Geom2dAdaptor_Curve::D3(const double U,
       if (!Geom2d_OffsetCurveUtils::EvaluateD3(U,
                                                anOffsetData.BasisAdaptor.get(),
                                                anOffsetData.Offset,
-                                               P,
-                                               V1,
-                                               V2,
-                                               V3))
+                                               aResult.Point,
+                                               aResult.D1,
+                                               aResult.D2,
+                                               aResult.D3))
       {
-        throw Standard_NullValue("Geom2dAdaptor_Curve::D3: Unable to calculate offset D3");
+        return std::nullopt;
       }
-      break;
+      return aResult;
     }
 
     default:
-      myCurve->D3(U, P, V1, V2, V3);
+      return myCurve->EvalD3(U);
   }
 }
 
@@ -922,21 +996,35 @@ void Geom2dAdaptor_Curve::D3(const double U,
 
 gp_Vec2d Geom2dAdaptor_Curve::DN(const double U, const int N) const
 {
+  std::optional<gp_Vec2d> aResult = EvalDN(U, N);
+  if (!aResult)
+    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::DN: evaluation failed");
+  return *aResult;
+}
+
+//=================================================================================================
+
+std::optional<gp_Vec2d> Geom2dAdaptor_Curve::EvalDN(double U, int N) const
+{
   switch (myTypeCurve)
   {
     case GeomAbs_Line:
       return ElCLib::DN(U, std::get<gp_Lin2d>(myCurveData), N);
+
     case GeomAbs_Circle:
       return ElCLib::DN(U, std::get<gp_Circ2d>(myCurveData), N);
+
     case GeomAbs_Ellipse:
       return ElCLib::DN(U, std::get<gp_Elips2d>(myCurveData), N);
+
     case GeomAbs_Hyperbola:
       return ElCLib::DN(U, std::get<gp_Hypr2d>(myCurveData), N);
+
     case GeomAbs_Parabola:
       return ElCLib::DN(U, std::get<gp_Parab2d>(myCurveData), N);
 
     case GeomAbs_BezierCurve:
-      return myCurve->DN(U, N);
+      return myCurve->EvalDN(U, N);
 
     case GeomAbs_BSplineCurve: {
       int aStart = 0, aFinish = 0;
@@ -944,12 +1032,11 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const double U, const int N) const
       {
         return std::get<BSplineData>(myCurveData).Curve->LocalDN(U, aStart, aFinish, N);
       }
-      return myCurve->DN(U, N);
+      else
+        return myCurve->EvalDN(U, N);
     }
 
     case GeomAbs_OffsetCurve: {
-      Standard_RangeError_Raise_if(N < 1, "Geom2dAdaptor_Curve::DN(): N < 1");
-
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       gp_Vec2d    aDN;
       if (!Geom2d_OffsetCurveUtils::EvaluateDN(U,
@@ -958,20 +1045,15 @@ gp_Vec2d Geom2dAdaptor_Curve::DN(const double U, const int N) const
                                                N,
                                                aDN))
       {
-        if (N > 3)
-        {
-          throw Standard_NotImplemented(
-            "Geom2dAdaptor_Curve::DN: Derivative order > 3 not supported");
-        }
-        throw Standard_NullValue("Geom2dAdaptor_Curve::DN: Unable to calculate offset DN");
+        return std::nullopt;
       }
       return aDN;
     }
 
-    default: // to eliminate gcc warning
+    default:
       break;
   }
-  return myCurve->DN(U, N);
+  return myCurve->EvalDN(U, N);
 }
 
 //=================================================================================================

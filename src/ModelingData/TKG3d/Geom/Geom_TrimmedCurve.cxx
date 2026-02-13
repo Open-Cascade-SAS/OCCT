@@ -180,41 +180,37 @@ occ::handle<Geom_Curve> Geom_TrimmedCurve::BasisCurve() const
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D0(const double U, Pnt& P) const
+std::optional<gp_Pnt> Geom_TrimmedCurve::EvalD0(const double U) const
 {
-
-  basisCurve->D0(U, P);
+  return basisCurve->EvalD0(U);
 }
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D1(const double U, Pnt& P, Vec& V1) const
+std::optional<Geom_Curve::ResD1> Geom_TrimmedCurve::EvalD1(const double U) const
 {
-
-  basisCurve->D1(U, P, V1);
+  return basisCurve->EvalD1(U);
 }
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D2(const double U, Pnt& P, Vec& V1, Vec& V2) const
+std::optional<Geom_Curve::ResD2> Geom_TrimmedCurve::EvalD2(const double U) const
 {
-
-  basisCurve->D2(U, P, V1, V2);
+  return basisCurve->EvalD2(U);
 }
 
 //=================================================================================================
 
-void Geom_TrimmedCurve::D3(const double U, Pnt& P, Vec& V1, Vec& V2, Vec& V3) const
+std::optional<Geom_Curve::ResD3> Geom_TrimmedCurve::EvalD3(const double U) const
 {
-
-  basisCurve->D3(U, P, V1, V2, V3);
+  return basisCurve->EvalD3(U);
 }
 
 //=================================================================================================
 
-Vec Geom_TrimmedCurve::DN(const double U, const int N) const
+std::optional<gp_Vec> Geom_TrimmedCurve::EvalDN(const double U, const int N) const
 {
-  return basisCurve->DN(U, N);
+  return basisCurve->EvalDN(U, N);
 }
 
 //=================================================================================================

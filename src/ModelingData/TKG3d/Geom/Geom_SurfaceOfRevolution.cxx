@@ -215,69 +215,118 @@ void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::D0(const double U, const double V, Pnt& P) const
+std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 {
-  Geom_RevolutionUtils::D0(U, V, *basisCurve, gp_Ax1(loc, direction), P);
+  std::optional<gp_Pnt> aBasisD0 = basisCurve->EvalD0(V);
+  if (!aBasisD0)
+    return std::nullopt;
+  gp_Pnt aP;
+  Geom_RevolutionUtils::CalculateD0(*aBasisD0, U, gp_Ax1(loc, direction), aP);
+  return aP;
 }
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::D1(const double U, const double V, Pnt& P, Vec& D1U, Vec& D1V) const
+std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U,
+                                                                    const double V) const
 {
-  Geom_RevolutionUtils::D1(U, V, *basisCurve, gp_Ax1(loc, direction), P, D1U, D1V);
+  std::optional<Geom_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(V);
+  if (!aBasisD1)
+    return std::nullopt;
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
+  Geom_RevolutionUtils::CalculateD1(aBasisD1->Point,
+                                    aBasisD1->D1,
+                                    U,
+                                    gp_Ax1(loc, direction),
+                                    aResult->Point,
+                                    aResult->D1U,
+                                    aResult->D1V);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::D2(const double U,
-                                  const double V,
-                                  Pnt&         P,
-                                  Vec&         D1U,
-                                  Vec&         D1V,
-                                  Vec&         D2U,
-                                  Vec&         D2V,
-                                  Vec&         D2UV) const
+std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U,
+                                                                    const double V) const
 {
-  Geom_RevolutionUtils::D2(U, V, *basisCurve, gp_Ax1(loc, direction), P, D1U, D1V, D2U, D2V, D2UV);
+  std::optional<Geom_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(V);
+  if (!aBasisD2)
+    return std::nullopt;
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
+  Geom_RevolutionUtils::CalculateD2(aBasisD2->Point,
+                                    aBasisD2->D1,
+                                    aBasisD2->D2,
+                                    U,
+                                    gp_Ax1(loc, direction),
+                                    aResult->Point,
+                                    aResult->D1U,
+                                    aResult->D1V,
+                                    aResult->D2U,
+                                    aResult->D2V,
+                                    aResult->D2UV);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_SurfaceOfRevolution::D3(const double U,
-                                  const double V,
-                                  Pnt&         P,
-                                  Vec&         D1U,
-                                  Vec&         D1V,
-                                  Vec&         D2U,
-                                  Vec&         D2V,
-                                  Vec&         D2UV,
-                                  Vec&         D3U,
-                                  Vec&         D3V,
-                                  Vec&         D3UUV,
-                                  Vec&         D3UVV) const
+std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U,
+                                                                    const double V) const
 {
-  Geom_RevolutionUtils::D3(U,
-                           V,
-                           *basisCurve,
-                           gp_Ax1(loc, direction),
-                           P,
-                           D1U,
-                           D1V,
-                           D2U,
-                           D2V,
-                           D2UV,
-                           D3U,
-                           D3V,
-                           D3UUV,
-                           D3UVV);
+  std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(V);
+  if (!aBasisD3)
+    return std::nullopt;
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
+  Geom_RevolutionUtils::CalculateD3(aBasisD3->Point,
+                                    aBasisD3->D1,
+                                    aBasisD3->D2,
+                                    aBasisD3->D3,
+                                    U,
+                                    gp_Ax1(loc, direction),
+                                    aResult->Point,
+                                    aResult->D1U,
+                                    aResult->D1V,
+                                    aResult->D2U,
+                                    aResult->D2V,
+                                    aResult->D2UV,
+                                    aResult->D3U,
+                                    aResult->D3V,
+                                    aResult->D3UUV,
+                                    aResult->D3UVV);
+  return aResult;
 }
 
 //=================================================================================================
 
-Vec Geom_SurfaceOfRevolution::DN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_SurfaceOfRevolution::EvalDN(const double U,
+                                                       const double V,
+                                                       const int    Nu,
+                                                       const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nu < 0 || Nv < 0, " ");
-  return Geom_RevolutionUtils::DN(U, V, *basisCurve, gp_Ax1(loc, direction), Nu, Nv);
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
+  gp_Vec aCurvePtOrDN;
+  if (Nu == 0)
+  {
+    std::optional<gp_Vec> aDN = basisCurve->EvalDN(V, Nv);
+    if (!aDN)
+      return std::nullopt;
+    aCurvePtOrDN = *aDN;
+  }
+  else if (Nv == 0)
+  {
+    std::optional<gp_Pnt> aD0 = basisCurve->EvalD0(V);
+    if (!aD0)
+      return std::nullopt;
+    aCurvePtOrDN = gp_Vec(aD0->XYZ() - loc.XYZ());
+  }
+  else
+  {
+    std::optional<gp_Vec> aDN = basisCurve->EvalDN(V, Nv);
+    if (!aDN)
+      return std::nullopt;
+    aCurvePtOrDN = *aDN;
+  }
+  return Geom_RevolutionUtils::CalculateDN(aCurvePtOrDN, U, gp_Ax1(loc, direction), Nu, Nv);
 }
 
 //=================================================================================================

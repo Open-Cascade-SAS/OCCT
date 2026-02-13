@@ -47,6 +47,7 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Ax1.hxx>
@@ -126,30 +127,32 @@ GeomAbs_Shape LocalContinuity(int                         Degree,
 
 //! Offset surface D0 evaluation with retry mechanism for singular points.
 //! Uses equivalent surface adaptor for faster evaluation when available.
-inline void offsetD0(const double                           theU,
+//! @return true if evaluation succeeded, false on failure
+inline bool offsetD0(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
                      gp_Pnt&                                theValue)
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    theData.EquivalentAdaptor->D0(theU, theV, theValue);
-    return;
+    std::optional<gp_Pnt> aResult = theData.EquivalentAdaptor->EvalD0(theU, theV);
+    if (!aResult)
+      return false;
+    theValue = *aResult;
+    return true;
   }
-  if (!Geom_OffsetSurfaceUtils::EvaluateD0(theU,
-                                           theV,
-                                           theData.BasisAdaptor,
-                                           theData.Offset,
-                                           theData.OffsetSurface.get(),
-                                           theValue))
-  {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D0");
-  }
+  return Geom_OffsetSurfaceUtils::EvaluateD0(theU,
+                                             theV,
+                                             theData.BasisAdaptor,
+                                             theData.Offset,
+                                             theData.OffsetSurface.get(),
+                                             theValue);
 }
 
 //! Offset surface D1 evaluation with retry mechanism for singular points.
 //! Uses equivalent surface adaptor for faster evaluation when available.
-inline void offsetD1(const double                           theU,
+//! @return true if evaluation succeeded, false on failure
+inline bool offsetD1(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
                      gp_Pnt&                                theValue,
@@ -158,25 +161,28 @@ inline void offsetD1(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    theData.EquivalentAdaptor->D1(theU, theV, theValue, theD1U, theD1V);
-    return;
+    std::optional<Geom_Surface::ResD1> aResult = theData.EquivalentAdaptor->EvalD1(theU, theV);
+    if (!aResult)
+      return false;
+    theValue = aResult->Point;
+    theD1U   = aResult->D1U;
+    theD1V   = aResult->D1V;
+    return true;
   }
-  if (!Geom_OffsetSurfaceUtils::EvaluateD1(theU,
-                                           theV,
-                                           theData.BasisAdaptor,
-                                           theData.Offset,
-                                           theData.OffsetSurface.get(),
-                                           theValue,
-                                           theD1U,
-                                           theD1V))
-  {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D1");
-  }
+  return Geom_OffsetSurfaceUtils::EvaluateD1(theU,
+                                             theV,
+                                             theData.BasisAdaptor,
+                                             theData.Offset,
+                                             theData.OffsetSurface.get(),
+                                             theValue,
+                                             theD1U,
+                                             theD1V);
 }
 
 //! Offset surface D2 evaluation with retry mechanism for singular points.
 //! Uses equivalent surface adaptor for faster evaluation when available.
-inline void offsetD2(const double                           theU,
+//! @return true if evaluation succeeded, false on failure
+inline bool offsetD2(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
                      gp_Pnt&                                theValue,
@@ -188,28 +194,34 @@ inline void offsetD2(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    theData.EquivalentAdaptor->D2(theU, theV, theValue, theD1U, theD1V, theD2U, theD2V, theD2UV);
-    return;
+    std::optional<Geom_Surface::ResD2> aResult = theData.EquivalentAdaptor->EvalD2(theU, theV);
+    if (!aResult)
+      return false;
+    theValue = aResult->Point;
+    theD1U   = aResult->D1U;
+    theD1V   = aResult->D1V;
+    theD2U   = aResult->D2U;
+    theD2V   = aResult->D2V;
+    theD2UV  = aResult->D2UV;
+    return true;
   }
-  if (!Geom_OffsetSurfaceUtils::EvaluateD2(theU,
-                                           theV,
-                                           theData.BasisAdaptor,
-                                           theData.Offset,
-                                           theData.OffsetSurface.get(),
-                                           theValue,
-                                           theD1U,
-                                           theD1V,
-                                           theD2U,
-                                           theD2V,
-                                           theD2UV))
-  {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D2");
-  }
+  return Geom_OffsetSurfaceUtils::EvaluateD2(theU,
+                                             theV,
+                                             theData.BasisAdaptor,
+                                             theData.Offset,
+                                             theData.OffsetSurface.get(),
+                                             theValue,
+                                             theD1U,
+                                             theD1V,
+                                             theD2U,
+                                             theD2V,
+                                             theD2UV);
 }
 
 //! Offset surface D3 evaluation with retry mechanism for singular points.
 //! Uses equivalent surface adaptor for faster evaluation when available.
-inline void offsetD3(const double                           theU,
+//! @return true if evaluation succeeded, false on failure
+inline bool offsetD3(const double                           theU,
                      const double                           theV,
                      const GeomAdaptor_Surface::OffsetData& theData,
                      gp_Pnt&                                theValue,
@@ -225,65 +237,64 @@ inline void offsetD3(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    theData.EquivalentAdaptor->D3(theU,
-                                  theV,
-                                  theValue,
-                                  theD1U,
-                                  theD1V,
-                                  theD2U,
-                                  theD2V,
-                                  theD2UV,
-                                  theD3U,
-                                  theD3V,
-                                  theD3UUV,
-                                  theD3UVV);
-    return;
+    std::optional<Geom_Surface::ResD3> aResult = theData.EquivalentAdaptor->EvalD3(theU, theV);
+    if (!aResult)
+      return false;
+    theValue = aResult->Point;
+    theD1U   = aResult->D1U;
+    theD1V   = aResult->D1V;
+    theD2U   = aResult->D2U;
+    theD2V   = aResult->D2V;
+    theD2UV  = aResult->D2UV;
+    theD3U   = aResult->D3U;
+    theD3V   = aResult->D3V;
+    theD3UUV = aResult->D3UUV;
+    theD3UVV = aResult->D3UVV;
+    return true;
   }
-  if (!Geom_OffsetSurfaceUtils::EvaluateD3(theU,
-                                           theV,
-                                           theData.BasisAdaptor,
-                                           theData.Offset,
-                                           theData.OffsetSurface.get(),
-                                           theValue,
-                                           theD1U,
-                                           theD1V,
-                                           theD2U,
-                                           theD2V,
-                                           theD2UV,
-                                           theD3U,
-                                           theD3V,
-                                           theD3UUV,
-                                           theD3UVV))
-  {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset D3");
-  }
+  return Geom_OffsetSurfaceUtils::EvaluateD3(theU,
+                                             theV,
+                                             theData.BasisAdaptor,
+                                             theData.Offset,
+                                             theData.OffsetSurface.get(),
+                                             theValue,
+                                             theD1U,
+                                             theD1V,
+                                             theD2U,
+                                             theD2V,
+                                             theD2UV,
+                                             theD3U,
+                                             theD3V,
+                                             theD3UUV,
+                                             theD3UVV);
 }
 
 //! Offset surface DN evaluation.
 //! Uses equivalent surface adaptor for faster evaluation when available.
-inline gp_Vec offsetDN(const double                           theU,
-                       const double                           theV,
-                       const GeomAdaptor_Surface::OffsetData& theData,
-                       int                                    theNu,
-                       int                                    theNv)
+//! @return true if evaluation succeeded, false on failure
+inline bool offsetDN(const double                           theU,
+                     const double                           theV,
+                     const GeomAdaptor_Surface::OffsetData& theData,
+                     int                                    theNu,
+                     int                                    theNv,
+                     gp_Vec&                                theResult)
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    return theData.EquivalentAdaptor->DN(theU, theV, theNu, theNv);
+    std::optional<gp_Vec> aResult = theData.EquivalentAdaptor->EvalDN(theU, theV, theNu, theNv);
+    if (!aResult)
+      return false;
+    theResult = *aResult;
+    return true;
   }
-  gp_Vec aResult;
-  if (!Geom_OffsetSurfaceUtils::EvaluateDN(theU,
-                                           theV,
-                                           theNu,
-                                           theNv,
-                                           theData.BasisAdaptor.get(),
-                                           theData.Offset,
-                                           theData.OffsetSurface.get(),
-                                           aResult))
-  {
-    throw Standard_NumericError("GeomAdaptor_Surface: Unable to calculate offset DN");
-  }
-  return aResult;
+  return Geom_OffsetSurfaceUtils::EvaluateDN(theU,
+                                             theV,
+                                             theNu,
+                                             theNv,
+                                             theData.BasisAdaptor.get(),
+                                             theData.Offset,
+                                             theData.OffsetSurface.get(),
+                                             theResult);
 }
 
 } // end of anonymous namespace
@@ -974,59 +985,73 @@ gp_Pnt GeomAdaptor_Surface::Value(const double U, const double V) const
 
 void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
 {
+  std::optional<gp_Pnt> aResult = EvalD0(U, V);
+  if (!aResult)
+    throw Geom_UndefinedValue("GeomAdaptor_Surface::D0: evaluation failed");
+  P = *aResult;
+}
+
+//=================================================================================================
+
+std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
+{
+  gp_Pnt P;
   switch (mySurfaceType)
   {
     case GeomAbs_Plane:
       ElSLib::D0(U, V, std::get<gp_Pln>(mySurfaceData), P);
-      break;
+      return P;
     case GeomAbs_Cylinder:
       ElSLib::D0(U, V, std::get<gp_Cylinder>(mySurfaceData), P);
-      break;
+      return P;
     case GeomAbs_Cone:
       ElSLib::D0(U, V, std::get<gp_Cone>(mySurfaceData), P);
-      break;
+      return P;
     case GeomAbs_Sphere:
       ElSLib::D0(U, V, std::get<gp_Sphere>(mySurfaceData), P);
-      break;
+      return P;
     case GeomAbs_Torus:
       ElSLib::D0(U, V, std::get<gp_Torus>(mySurfaceData), P);
-      break;
+      return P;
 
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
       aCache->D0(U, V, P);
-      break;
+      return P;
     }
     case GeomAbs_BSplineSurface: {
       auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
       aCache->D0(U, V, P);
-      break;
+      return P;
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      Geom_ExtrusionUtils::D0(U, V, *anExtData.BasisCurve, anExtData.Direction, P);
-      break;
+      if (!Geom_ExtrusionUtils::D0(U, V, *anExtData.BasisCurve, anExtData.Direction, P))
+        return std::nullopt;
+      return P;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      Geom_RevolutionUtils::D0(U, V, *aRevData.BasisCurve, aRevData.Axis, P);
-      break;
+      if (!Geom_RevolutionUtils::D0(U, V, *aRevData.BasisCurve, aRevData.Axis, P))
+        return std::nullopt;
+      return P;
     }
 
     case GeomAbs_OffsetSurface: {
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
-      offsetD0(U, V, anOffData, P);
-      break;
+      if (!offsetD0(U, V, anOffData, P))
+        return std::nullopt;
+      return P;
     }
 
     default:
-      mySurface->D0(U, V, P);
+      return mySurface->EvalD0(U, V);
   }
 }
 
@@ -1038,8 +1063,21 @@ void GeomAdaptor_Surface::D1(const double U,
                              gp_Vec&      D1U,
                              gp_Vec&      D1V) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double u = U, v = V;
+  std::optional<Geom_Surface::ResD1> aResult = EvalD1(U, V);
+  if (!aResult)
+    throw Geom_UndefinedDerivative("GeomAdaptor_Surface::D1: evaluation failed");
+  P   = aResult->Point;
+  D1U = aResult->D1U;
+  D1V = aResult->D1V;
+}
+
+//=================================================================================================
+
+std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double V) const
+{
+  Geom_Surface::ResD1 aResult;
+  int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double              u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1064,62 +1102,82 @@ void GeomAdaptor_Surface::D1(const double U,
   switch (mySurfaceType)
   {
     case GeomAbs_Plane:
-      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), P, D1U, D1V);
-      break;
+      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
+      return aResult;
     case GeomAbs_Cylinder:
-      ElSLib::D1(u, v, std::get<gp_Cylinder>(mySurfaceData), P, D1U, D1V);
-      break;
+      ElSLib::D1(u,
+                 v,
+                 std::get<gp_Cylinder>(mySurfaceData),
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V);
+      return aResult;
     case GeomAbs_Cone:
-      ElSLib::D1(u, v, std::get<gp_Cone>(mySurfaceData), P, D1U, D1V);
-      break;
+      ElSLib::D1(u, v, std::get<gp_Cone>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
+      return aResult;
     case GeomAbs_Sphere:
-      ElSLib::D1(u, v, std::get<gp_Sphere>(mySurfaceData), P, D1U, D1V);
-      break;
+      ElSLib::D1(u, v, std::get<gp_Sphere>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
+      return aResult;
     case GeomAbs_Torus:
-      ElSLib::D1(u, v, std::get<gp_Torus>(mySurfaceData), P, D1U, D1V);
-      break;
+      ElSLib::D1(u, v, std::get<gp_Torus>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
+      return aResult;
 
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
-      aCache->D1(U, V, P, D1U, D1V);
-      break;
+      aCache->D1(U, V, aResult.Point, aResult.D1U, aResult.D1V);
+      return aResult;
     }
     case GeomAbs_BSplineSurface: {
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
       if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-        aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V);
+        aBSpl->LocalD1(u, v, Ideb, Ifin, IVdeb, IVfin, aResult.Point, aResult.D1U, aResult.D1V);
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
           RebuildCache(U, V);
-        aBSplData.Cache->D1(U, V, P, D1U, D1V);
+        aBSplData.Cache->D1(U, V, aResult.Point, aResult.D1U, aResult.D1V);
       }
-      break;
+      return aResult;
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      Geom_ExtrusionUtils::D1(u, v, *anExtData.BasisCurve, anExtData.Direction, P, D1U, D1V);
-      break;
+      if (!Geom_ExtrusionUtils::D1(u,
+                                   v,
+                                   *anExtData.BasisCurve,
+                                   anExtData.Direction,
+                                   aResult.Point,
+                                   aResult.D1U,
+                                   aResult.D1V))
+        return std::nullopt;
+      return aResult;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      Geom_RevolutionUtils::D1(u, v, *aRevData.BasisCurve, aRevData.Axis, P, D1U, D1V);
-      break;
+      if (!Geom_RevolutionUtils::D1(u,
+                                    v,
+                                    *aRevData.BasisCurve,
+                                    aRevData.Axis,
+                                    aResult.Point,
+                                    aResult.D1U,
+                                    aResult.D1V))
+        return std::nullopt;
+      return aResult;
     }
 
     case GeomAbs_OffsetSurface: {
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
-      offsetD1(u, v, anOffData, P, D1U, D1V);
-      break;
+      if (!offsetD1(u, v, anOffData, aResult.Point, aResult.D1U, aResult.D1V))
+        return std::nullopt;
+      return aResult;
     }
 
     default:
-      mySurface->D1(u, v, P, D1U, D1V);
+      return mySurface->EvalD1(u, v);
   }
 }
 
@@ -1134,8 +1192,24 @@ void GeomAdaptor_Surface::D2(const double U,
                              gp_Vec&      D2V,
                              gp_Vec&      D2UV) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double u = U, v = V;
+  std::optional<Geom_Surface::ResD2> aResult = EvalD2(U, V);
+  if (!aResult)
+    throw Geom_UndefinedDerivative("GeomAdaptor_Surface::D2: evaluation failed");
+  P    = aResult->Point;
+  D1U  = aResult->D1U;
+  D1V  = aResult->D1V;
+  D2U  = aResult->D2U;
+  D2V  = aResult->D2V;
+  D2UV = aResult->D2UV;
+}
+
+//=================================================================================================
+
+std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double V) const
+{
+  Geom_Surface::ResD2 aResult;
+  int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double              u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1160,85 +1234,145 @@ void GeomAdaptor_Surface::D2(const double U,
   switch (mySurfaceType)
   {
     case GeomAbs_Plane:
-      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), P, D1U, D1V);
-      D2U.SetCoord(0., 0., 0.);
-      D2V.SetCoord(0., 0., 0.);
-      D2UV.SetCoord(0., 0., 0.);
-      break;
+      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
+      aResult.D2U.SetCoord(0., 0., 0.);
+      aResult.D2V.SetCoord(0., 0., 0.);
+      aResult.D2UV.SetCoord(0., 0., 0.);
+      return aResult;
     case GeomAbs_Cylinder:
-      ElSLib::D2(u, v, std::get<gp_Cylinder>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
-      break;
+      ElSLib::D2(u,
+                 v,
+                 std::get<gp_Cylinder>(mySurfaceData),
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
+      return aResult;
     case GeomAbs_Cone:
-      ElSLib::D2(u, v, std::get<gp_Cone>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
-      break;
+      ElSLib::D2(u,
+                 v,
+                 std::get<gp_Cone>(mySurfaceData),
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
+      return aResult;
     case GeomAbs_Sphere:
-      ElSLib::D2(u, v, std::get<gp_Sphere>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
-      break;
+      ElSLib::D2(u,
+                 v,
+                 std::get<gp_Sphere>(mySurfaceData),
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
+      return aResult;
     case GeomAbs_Torus:
-      ElSLib::D2(u, v, std::get<gp_Torus>(mySurfaceData), P, D1U, D1V, D2U, D2V, D2UV);
-      break;
+      ElSLib::D2(u,
+                 v,
+                 std::get<gp_Torus>(mySurfaceData),
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
+      return aResult;
 
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
-      aCache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
-      break;
+      aCache
+        ->D2(U, V, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
+      return aResult;
     }
     case GeomAbs_BSplineSurface: {
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
       if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
-        aBSpl->LocalD2(u, v, Ideb, Ifin, IVdeb, IVfin, P, D1U, D1V, D2U, D2V, D2UV);
+        aBSpl->LocalD2(u,
+                       v,
+                       Ideb,
+                       Ifin,
+                       IVdeb,
+                       IVfin,
+                       aResult.Point,
+                       aResult.D1U,
+                       aResult.D1V,
+                       aResult.D2U,
+                       aResult.D2V,
+                       aResult.D2UV);
       else
       {
         if (aBSplData.Cache.IsNull() || !aBSplData.Cache->IsCacheValid(U, V))
           RebuildCache(U, V);
-        aBSplData.Cache->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+        aBSplData.Cache->D2(U,
+                            V,
+                            aResult.Point,
+                            aResult.D1U,
+                            aResult.D1V,
+                            aResult.D2U,
+                            aResult.D2V,
+                            aResult.D2UV);
       }
-      break;
+      return aResult;
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      Geom_ExtrusionUtils::D2(u,
-                              v,
-                              *anExtData.BasisCurve,
-                              anExtData.Direction,
-                              P,
-                              D1U,
-                              D1V,
-                              D2U,
-                              D2V,
-                              D2UV);
-      break;
+      if (!Geom_ExtrusionUtils::D2(u,
+                                   v,
+                                   *anExtData.BasisCurve,
+                                   anExtData.Direction,
+                                   aResult.Point,
+                                   aResult.D1U,
+                                   aResult.D1V,
+                                   aResult.D2U,
+                                   aResult.D2V,
+                                   aResult.D2UV))
+        return std::nullopt;
+      return aResult;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      Geom_RevolutionUtils::D2(u,
-                               v,
-                               *aRevData.BasisCurve,
-                               aRevData.Axis,
-                               P,
-                               D1U,
-                               D1V,
-                               D2U,
-                               D2V,
-                               D2UV);
-      break;
+      if (!Geom_RevolutionUtils::D2(u,
+                                    v,
+                                    *aRevData.BasisCurve,
+                                    aRevData.Axis,
+                                    aResult.Point,
+                                    aResult.D1U,
+                                    aResult.D1V,
+                                    aResult.D2U,
+                                    aResult.D2V,
+                                    aResult.D2UV))
+        return std::nullopt;
+      return aResult;
     }
 
     case GeomAbs_OffsetSurface: {
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
-      offsetD2(u, v, anOffData, P, D1U, D1V, D2U, D2V, D2UV);
-      break;
+      if (!offsetD2(u,
+                    v,
+                    anOffData,
+                    aResult.Point,
+                    aResult.D1U,
+                    aResult.D1V,
+                    aResult.D2U,
+                    aResult.D2V,
+                    aResult.D2UV))
+        return std::nullopt;
+      return aResult;
     }
 
-    default: {
-      mySurface->D2(u, v, P, D1U, D1V, D2U, D2V, D2UV);
-      break;
-    }
+    default:
+      return mySurface->EvalD2(u, v);
   }
 }
 
@@ -1257,8 +1391,28 @@ void GeomAdaptor_Surface::D3(const double U,
                              gp_Vec&      D3UUV,
                              gp_Vec&      D3UVV) const
 {
-  int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
-  double u = U, v = V;
+  std::optional<Geom_Surface::ResD3> aResult = EvalD3(U, V);
+  if (!aResult)
+    throw Geom_UndefinedDerivative("GeomAdaptor_Surface::D3: evaluation failed");
+  P     = aResult->Point;
+  D1U   = aResult->D1U;
+  D1V   = aResult->D1V;
+  D2U   = aResult->D2U;
+  D2V   = aResult->D2V;
+  D2UV  = aResult->D2UV;
+  D3U   = aResult->D3U;
+  D3V   = aResult->D3V;
+  D3UUV = aResult->D3UUV;
+  D3UVV = aResult->D3UVV;
+}
+
+//=================================================================================================
+
+std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double V) const
+{
+  Geom_Surface::ResD3 aResult;
+  int                 Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
+  double              u = U, v = V;
   if (std::abs(U - myUFirst) <= myTolU)
   {
     USide = 1;
@@ -1283,80 +1437,85 @@ void GeomAdaptor_Surface::D3(const double U,
   switch (mySurfaceType)
   {
     case GeomAbs_Plane:
-      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), P, D1U, D1V);
-      D2U.SetCoord(0., 0., 0.);
-      D2V.SetCoord(0., 0., 0.);
-      D2UV.SetCoord(0., 0., 0.);
-      D3U.SetCoord(0., 0., 0.);
-      D3V.SetCoord(0., 0., 0.);
-      D3UUV.SetCoord(0., 0., 0.);
-      D3UVV.SetCoord(0., 0., 0.);
-      break;
+      ElSLib::D1(u, v, std::get<gp_Pln>(mySurfaceData), aResult.Point, aResult.D1U, aResult.D1V);
+      aResult.D2U.SetCoord(0., 0., 0.);
+      aResult.D2V.SetCoord(0., 0., 0.);
+      aResult.D2UV.SetCoord(0., 0., 0.);
+      aResult.D3U.SetCoord(0., 0., 0.);
+      aResult.D3V.SetCoord(0., 0., 0.);
+      aResult.D3UUV.SetCoord(0., 0., 0.);
+      aResult.D3UVV.SetCoord(0., 0., 0.);
+      return aResult;
     case GeomAbs_Cylinder:
       ElSLib::D3(u,
                  v,
                  std::get<gp_Cylinder>(mySurfaceData),
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV,
-                 D3U,
-                 D3V,
-                 D3UUV,
-                 D3UVV);
-      break;
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
+      return aResult;
     case GeomAbs_Cone:
       ElSLib::D3(u,
                  v,
                  std::get<gp_Cone>(mySurfaceData),
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV,
-                 D3U,
-                 D3V,
-                 D3UUV,
-                 D3UVV);
-      break;
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
+      return aResult;
     case GeomAbs_Sphere:
       ElSLib::D3(u,
                  v,
                  std::get<gp_Sphere>(mySurfaceData),
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV,
-                 D3U,
-                 D3V,
-                 D3UUV,
-                 D3UVV);
-      break;
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
+      return aResult;
     case GeomAbs_Torus:
       ElSLib::D3(u,
                  v,
                  std::get<gp_Torus>(mySurfaceData),
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV,
-                 D3U,
-                 D3V,
-                 D3UUV,
-                 D3UVV);
-      break;
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
+      return aResult;
 
     case GeomAbs_BSplineSurface: {
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
-        aBSpl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+      {
+        std::optional<Geom_Surface::ResD3> aD3 = aBSpl->EvalD3(u, v);
+        if (!aD3)
+          return std::nullopt;
+        return *aD3;
+      }
       else
       {
         if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
@@ -1366,76 +1525,104 @@ void GeomAdaptor_Surface::D3(const double U,
                          Ifin,
                          IVdeb,
                          IVfin,
-                         P,
-                         D1U,
-                         D1V,
-                         D2U,
-                         D2V,
-                         D2UV,
-                         D3U,
-                         D3V,
-                         D3UUV,
-                         D3UVV);
+                         aResult.Point,
+                         aResult.D1U,
+                         aResult.D1V,
+                         aResult.D2U,
+                         aResult.D2V,
+                         aResult.D2UV,
+                         aResult.D3U,
+                         aResult.D3V,
+                         aResult.D3UUV,
+                         aResult.D3UVV);
         else
-          aBSpl->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+        {
+          std::optional<Geom_Surface::ResD3> aD3 = aBSpl->EvalD3(u, v);
+          if (!aD3)
+            return std::nullopt;
+          return *aD3;
+        }
       }
-      break;
+      return aResult;
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      Geom_ExtrusionUtils::D3(u,
-                              v,
-                              *anExtData.BasisCurve,
-                              anExtData.Direction,
-                              P,
-                              D1U,
-                              D1V,
-                              D2U,
-                              D2V,
-                              D2UV,
-                              D3U,
-                              D3V,
-                              D3UUV,
-                              D3UVV);
-      break;
+      if (!Geom_ExtrusionUtils::D3(u,
+                                   v,
+                                   *anExtData.BasisCurve,
+                                   anExtData.Direction,
+                                   aResult.Point,
+                                   aResult.D1U,
+                                   aResult.D1V,
+                                   aResult.D2U,
+                                   aResult.D2V,
+                                   aResult.D2UV,
+                                   aResult.D3U,
+                                   aResult.D3V,
+                                   aResult.D3UUV,
+                                   aResult.D3UVV))
+        return std::nullopt;
+      return aResult;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      Geom_RevolutionUtils::D3(u,
-                               v,
-                               *aRevData.BasisCurve,
-                               aRevData.Axis,
-                               P,
-                               D1U,
-                               D1V,
-                               D2U,
-                               D2V,
-                               D2UV,
-                               D3U,
-                               D3V,
-                               D3UUV,
-                               D3UVV);
-      break;
+      if (!Geom_RevolutionUtils::D3(u,
+                                    v,
+                                    *aRevData.BasisCurve,
+                                    aRevData.Axis,
+                                    aResult.Point,
+                                    aResult.D1U,
+                                    aResult.D1V,
+                                    aResult.D2U,
+                                    aResult.D2V,
+                                    aResult.D2UV,
+                                    aResult.D3U,
+                                    aResult.D3V,
+                                    aResult.D3UUV,
+                                    aResult.D3UVV))
+        return std::nullopt;
+      return aResult;
     }
 
     case GeomAbs_OffsetSurface: {
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
-      offsetD3(u, v, anOffData, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
-      break;
+      if (!offsetD3(u,
+                    v,
+                    anOffData,
+                    aResult.Point,
+                    aResult.D1U,
+                    aResult.D1V,
+                    aResult.D2U,
+                    aResult.D2V,
+                    aResult.D2UV,
+                    aResult.D3U,
+                    aResult.D3V,
+                    aResult.D3UUV,
+                    aResult.D3UVV))
+        return std::nullopt;
+      return aResult;
     }
 
-    default: {
-      mySurface->D3(u, v, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
-      break;
-    }
+    default:
+      return mySurface->EvalD3(u, v);
   }
 }
 
 //=================================================================================================
 
 gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, const int Nv) const
+{
+  std::optional<gp_Vec> aResult = EvalDN(U, V, Nu, Nv);
+  if (!aResult)
+    throw Geom_UndefinedDerivative("GeomAdaptor_Surface::DN: evaluation failed");
+  return *aResult;
+}
+
+//=================================================================================================
+
+std::optional<gp_Vec> GeomAdaptor_Surface::EvalDN(double U, double V, int Nu, int Nv) const
 {
   int    Ideb, Ifin, IVdeb, IVfin, USide = 0, VSide = 0;
   double u = U, v = V;
@@ -1465,29 +1652,38 @@ gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, con
     case GeomAbs_BSplineSurface: {
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
-        return aBSpl->DN(u, v, Nu, Nv);
+        return aBSpl->EvalDN(u, v, Nu, Nv);
       else
       {
         if (IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
           return aBSpl->LocalDN(u, v, Ideb, Ifin, IVdeb, IVfin, Nu, Nv);
         else
-          return aBSpl->DN(u, v, Nu, Nv);
+          return aBSpl->EvalDN(u, v, Nu, Nv);
       }
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
-      return Geom_ExtrusionUtils::DN(u, *anExtData.BasisCurve, anExtData.Direction, Nu, Nv);
+      gp_Vec      aDN;
+      if (!Geom_ExtrusionUtils::DN(u, *anExtData.BasisCurve, anExtData.Direction, Nu, Nv, aDN))
+        return std::nullopt;
+      return aDN;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
-      return Geom_RevolutionUtils::DN(u, v, *aRevData.BasisCurve, aRevData.Axis, Nu, Nv);
+      gp_Vec      aDN;
+      if (!Geom_RevolutionUtils::DN(u, v, *aRevData.BasisCurve, aRevData.Axis, Nu, Nv, aDN))
+        return std::nullopt;
+      return aDN;
     }
 
     case GeomAbs_OffsetSurface: {
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
-      return offsetDN(u, v, anOffData, Nu, Nv);
+      gp_Vec      aDN;
+      if (!offsetDN(u, v, anOffData, Nu, Nv, aDN))
+        return std::nullopt;
+      return aDN;
     }
 
     case GeomAbs_Plane:
@@ -1507,7 +1703,7 @@ gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, con
       break;
   }
 
-  return mySurface->DN(u, v, Nu, Nv);
+  return mySurface->EvalDN(u, v, Nu, Nv);
 }
 
 //=================================================================================================

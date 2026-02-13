@@ -14,76 +14,25 @@
 #ifndef _GeomGridEval_HeaderFile
 #define _GeomGridEval_HeaderFile
 
-#include <gp_Pnt.hxx>
+#include <Geom_Curve.hxx>
+#include <Geom_Surface.hxx>
 #include <gp_Pnt2d.hxx>
-#include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 
-//! @brief Namespace containing result structures for grid evaluators.
+//! @brief Namespace containing type aliases and template helpers for grid evaluators.
 //!
-//! Provides lightweight POD structures for returning evaluation results
-//! with derivatives from curve and surface grid evaluators.
+//! Provides type aliases to common evaluation result structures defined in Geom_Curve and
+//! Geom_Surface and template helpers for iterating over parameter grids.
 namespace GeomGridEval
 {
 
-//! Result structure for curve D1 evaluation (point and first derivative).
-struct CurveD1
-{
-  gp_Pnt Point;
-  gp_Vec D1;
-};
-
-//! Result structure for curve D2 evaluation (point and first two derivatives).
-struct CurveD2
-{
-  gp_Pnt Point;
-  gp_Vec D1;
-  gp_Vec D2;
-};
-
-//! Result structure for curve D3 evaluation (point and first three derivatives).
-struct CurveD3
-{
-  gp_Pnt Point;
-  gp_Vec D1;
-  gp_Vec D2;
-  gp_Vec D3;
-};
-
-//! Result structure for surface D1 evaluation (point and partial derivatives).
-struct SurfD1
-{
-  gp_Pnt Point;
-  gp_Vec D1U;
-  gp_Vec D1V;
-};
-
-//! Result structure for surface D2 evaluation (point and partial derivatives up to 2nd order).
-struct SurfD2
-{
-  gp_Pnt Point;
-  gp_Vec D1U;
-  gp_Vec D1V;
-  gp_Vec D2U;
-  gp_Vec D2V;
-  gp_Vec D2UV;
-};
-
-//! Result structure for surface D3 evaluation (point and partial derivatives up to 3rd order).
-struct SurfD3
-{
-  gp_Pnt Point;
-  gp_Vec D1U;
-  gp_Vec D1V;
-  gp_Vec D2U;
-  gp_Vec D2V;
-  gp_Vec D2UV;
-  gp_Vec D3U;
-  gp_Vec D3V;
-  gp_Vec D3UUV;
-  gp_Vec D3UVV;
-};
+using CurveD1 = Geom_Curve::ResD1;
+using CurveD2 = Geom_Curve::ResD2;
+using CurveD3 = Geom_Curve::ResD3;
+using SurfD1  = Geom_Surface::ResD1;
+using SurfD2  = Geom_Surface::ResD2;
+using SurfD3  = Geom_Surface::ResD3;
 
 //==================================================================================================
 // Template helpers for parametric surface evaluation.

@@ -444,41 +444,46 @@ int Geom2d_BezierCurve::Degree() const
 
 //=================================================================================================
 
-void Geom2d_BezierCurve::D0(const double U, gp_Pnt2d& P) const
+std::optional<gp_Pnt2d> Geom2d_BezierCurve::EvalD0(const double U) const
 {
+  gp_Pnt2d P;
   BSplCLib::D0(U, Poles(), Weights(), P);
+  return P;
 }
 
 //=================================================================================================
 
-void Geom2d_BezierCurve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V1) const
+std::optional<Geom2d_Curve::ResD1> Geom2d_BezierCurve::EvalD1(const double U) const
 {
-  BSplCLib::D1(U, Poles(), Weights(), P, V1);
+  std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
+  BSplCLib::D1(U, Poles(), Weights(), aResult->Point, aResult->D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom2d_BezierCurve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
+std::optional<Geom2d_Curve::ResD2> Geom2d_BezierCurve::EvalD2(const double U) const
 {
-  BSplCLib::D2(U, Poles(), Weights(), P, V1, V2);
+  std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
+  BSplCLib::D2(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2);
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom2d_BezierCurve::D3(const double U,
-                            gp_Pnt2d&    P,
-                            gp_Vec2d&    V1,
-                            gp_Vec2d&    V2,
-                            gp_Vec2d&    V3) const
+std::optional<Geom2d_Curve::ResD3> Geom2d_BezierCurve::EvalD3(const double U) const
 {
-  BSplCLib::D3(U, Poles(), Weights(), P, V1, V2, V3);
+  std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
+  BSplCLib::D3(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec2d Geom2d_BezierCurve::DN(const double U, const int N) const
+std::optional<gp_Vec2d> Geom2d_BezierCurve::EvalDN(const double U, const int N) const
 {
-  Standard_RangeError_Raise_if(N < 1, "Geom2d_BezierCurve::DN");
+  if (N < 1)
+    return std::nullopt;
   gp_Vec2d V;
 
   BSplCLib::DN(U, N, 0, Degree(), false, myPoles, Weights(), Knots(), &Multiplicities(), V);

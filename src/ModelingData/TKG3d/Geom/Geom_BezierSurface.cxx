@@ -1328,8 +1328,9 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 //=================================================================================================
 
-void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
+std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V) const
 {
+  gp_Pnt P;
   if (myURational || myVRational)
   {
     BSplSLib::D0(U,
@@ -1370,16 +1371,14 @@ void Geom_BezierSurface::D0(const double U, const double V, gp_Pnt& P) const
                  false,
                  P);
   }
+  return P;
 }
 
 //=================================================================================================
 
-void Geom_BezierSurface::D1(const double U,
-                            const double V,
-                            gp_Pnt&      P,
-                            gp_Vec&      D1U,
-                            gp_Vec&      D1V) const
+std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, const double V) const
 {
+  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   if (myURational || myVRational)
   {
     BSplSLib::D1(U,
@@ -1398,9 +1397,9 @@ void Geom_BezierSurface::D1(const double U,
                  myVRational,
                  false,
                  false,
-                 P,
-                 D1U,
-                 D1V);
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V);
   }
   else
   {
@@ -1420,23 +1419,18 @@ void Geom_BezierSurface::D1(const double U,
                  myVRational,
                  false,
                  false,
-                 P,
-                 D1U,
-                 D1V);
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V);
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BezierSurface::D2(const double U,
-                            const double V,
-                            gp_Pnt&      P,
-                            gp_Vec&      D1U,
-                            gp_Vec&      D1V,
-                            gp_Vec&      D2U,
-                            gp_Vec&      D2V,
-                            gp_Vec&      D2UV) const
+std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, const double V) const
 {
+  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   if (myURational || myVRational)
   {
     //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
@@ -1456,12 +1450,12 @@ void Geom_BezierSurface::D2(const double U,
                  myVRational,
                  false,
                  false,
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV);
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V,
+                 aResult->D2U,
+                 aResult->D2V,
+                 aResult->D2UV);
   }
   else
   {
@@ -1482,30 +1476,21 @@ void Geom_BezierSurface::D2(const double U,
                  myVRational,
                  false,
                  false,
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV);
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V,
+                 aResult->D2U,
+                 aResult->D2V,
+                 aResult->D2UV);
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-void Geom_BezierSurface::D3(const double U,
-                            const double V,
-                            gp_Pnt&      P,
-                            gp_Vec&      D1U,
-                            gp_Vec&      D1V,
-                            gp_Vec&      D2U,
-                            gp_Vec&      D2V,
-                            gp_Vec&      D2UV,
-                            gp_Vec&      D3U,
-                            gp_Vec&      D3V,
-                            gp_Vec&      D3UUV,
-                            gp_Vec&      D3UVV) const
+std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, const double V) const
 {
+  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   if (myURational || myVRational)
   {
     BSplSLib::D3(U,
@@ -1524,16 +1509,16 @@ void Geom_BezierSurface::D3(const double U,
                  myVRational,
                  false,
                  false,
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV,
-                 D3U,
-                 D3V,
-                 D3UUV,
-                 D3UVV);
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V,
+                 aResult->D2U,
+                 aResult->D2V,
+                 aResult->D2UV,
+                 aResult->D3U,
+                 aResult->D3V,
+                 aResult->D3UUV,
+                 aResult->D3UVV);
   }
   else
   {
@@ -1553,24 +1538,29 @@ void Geom_BezierSurface::D3(const double U,
                  myVRational,
                  false,
                  false,
-                 P,
-                 D1U,
-                 D1V,
-                 D2U,
-                 D2V,
-                 D2UV,
-                 D3U,
-                 D3V,
-                 D3UUV,
-                 D3UVV);
+                 aResult->Point,
+                 aResult->D1U,
+                 aResult->D1V,
+                 aResult->D2U,
+                 aResult->D2V,
+                 aResult->D2UV,
+                 aResult->D3U,
+                 aResult->D3V,
+                 aResult->D3UUV,
+                 aResult->D3UVV);
   }
+  return aResult;
 }
 
 //=================================================================================================
 
-gp_Vec Geom_BezierSurface::DN(const double U, const double V, const int Nu, const int Nv) const
+std::optional<gp_Vec> Geom_BezierSurface::EvalDN(const double U,
+                                                 const double V,
+                                                 const int    Nu,
+                                                 const int    Nv) const
 {
-  Standard_RangeError_Raise_if(Nu + Nv < 1 || Nv < 0 || Nu < 0, " ");
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
   gp_Vec Derivative;
   if (myURational || myVRational)
   {

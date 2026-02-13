@@ -362,67 +362,45 @@ GeomAbs_Shape Geom_RectangularTrimmedSurface::Continuity() const
 
 //=================================================================================================
 
-void Geom_RectangularTrimmedSurface::D0(const double U, const double V, Pnt& P) const
+std::optional<gp_Pnt> Geom_RectangularTrimmedSurface::EvalD0(const double U, const double V) const
 {
-
-  basisSurf->D0(U, V, P);
+  return basisSurf->EvalD0(U, V);
 }
 
 //=================================================================================================
 
-void Geom_RectangularTrimmedSurface::D1(const double U,
-                                        const double V,
-                                        Pnt&         P,
-                                        Vec&         D1U,
-                                        Vec&         D1V) const
+std::optional<Geom_Surface::ResD1> Geom_RectangularTrimmedSurface::EvalD1(const double U,
+                                                                          const double V) const
 {
-
-  basisSurf->D1(U, V, P, D1U, D1V);
+  return basisSurf->EvalD1(U, V);
 }
 
 //=================================================================================================
 
-void Geom_RectangularTrimmedSurface::D2(const double U,
-                                        const double V,
-                                        Pnt&         P,
-                                        Vec&         D1U,
-                                        Vec&         D1V,
-                                        Vec&         D2U,
-                                        Vec&         D2V,
-                                        Vec&         D2UV) const
+std::optional<Geom_Surface::ResD2> Geom_RectangularTrimmedSurface::EvalD2(const double U,
+                                                                          const double V) const
 {
-
-  basisSurf->D2(U, V, P, D1U, D1V, D2U, D2V, D2UV);
+  return basisSurf->EvalD2(U, V);
 }
 
 //=================================================================================================
 
-void Geom_RectangularTrimmedSurface::D3(const double U,
-                                        const double V,
-                                        Pnt&         P,
-                                        Vec&         D1U,
-                                        Vec&         D1V,
-                                        Vec&         D2U,
-                                        Vec&         D2V,
-                                        Vec&         D2UV,
-                                        Vec&         D3U,
-                                        Vec&         D3V,
-                                        Vec&         D3UUV,
-                                        Vec&         D3UVV) const
+std::optional<Geom_Surface::ResD3> Geom_RectangularTrimmedSurface::EvalD3(const double U,
+                                                                          const double V) const
 {
-
-  basisSurf->D3(U, V, P, D1U, D1V, D2U, D2V, D2UV, D3U, D3V, D3UUV, D3UVV);
+  return basisSurf->EvalD3(U, V);
 }
 
 //=================================================================================================
 
-Vec Geom_RectangularTrimmedSurface::DN(const double U,
-                                       const double V,
-                                       const int    Nu,
-                                       const int    Nv) const
+std::optional<gp_Vec> Geom_RectangularTrimmedSurface::EvalDN(const double U,
+                                                             const double V,
+                                                             const int    Nu,
+                                                             const int    Nv) const
 {
-
-  return basisSurf->DN(U, V, Nu, Nv);
+  if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
+    return std::nullopt;
+  return basisSurf->EvalDN(U, V, Nu, Nv);
 }
 
 //=================================================================================================
