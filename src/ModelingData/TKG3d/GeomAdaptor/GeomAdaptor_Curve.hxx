@@ -19,6 +19,7 @@
 
 #include <Adaptor3d_Curve.hxx>
 #include <BSplCLib_Cache.hxx>
+#include <BSplCLib_CacheGrid.hxx>
 #include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 #include <gp_Circ.hxx>
@@ -63,8 +64,8 @@ public:
   //! Internal structure for BSpline curve cache data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineCurve>      Curve; //!< BSpline curve to prevent downcasts
-    mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom_BSplineCurve>          Curve;     //!< BSpline curve to prevent downcasts
+    mutable occ::handle<BSplCLib_CacheGrid> CacheGrid; //!< Multi-span cached data for evaluation
   };
 
   //! Variant type for curve-specific evaluation data.
