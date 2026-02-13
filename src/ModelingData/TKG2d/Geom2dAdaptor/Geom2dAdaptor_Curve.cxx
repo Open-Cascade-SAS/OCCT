@@ -690,8 +690,8 @@ std::optional<gp_Pnt2d> Geom2dAdaptor_Curve::EvalD0(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplineData.Curve->LocalD0(U, aStart, aFinish, P);
@@ -769,8 +769,8 @@ std::optional<Geom2d_Curve::ResD1> Geom2dAdaptor_Curve::EvalD1(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplineData.Curve->LocalD1(U, aStart, aFinish, aResult.Point, aResult.D1);
@@ -851,8 +851,8 @@ std::optional<Geom2d_Curve::ResD2> Geom2dAdaptor_Curve::EvalD2(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplineData.Curve->LocalD2(U, aStart, aFinish, aResult.Point, aResult.D1, aResult.D2);
@@ -956,8 +956,8 @@ std::optional<Geom2d_Curve::ResD3> Geom2dAdaptor_Curve::EvalD3(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
-      int   aStart = 0, aFinish = 0;
-      auto& aBSplineData = std::get<BSplineData>(myCurveData);
+      int                aStart = 0, aFinish = 0;
+      const BSplineData& aBSplineData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
       {
         aBSplineData.Curve

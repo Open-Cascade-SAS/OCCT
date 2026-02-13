@@ -14,9 +14,12 @@
 #ifndef _Geom_ExtrusionUtils_HeaderFile
 #define _Geom_ExtrusionUtils_HeaderFile
 
+#include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
+
+#include <optional>
 
 //! @file Geom_ExtrusionUtils.pxx
 //! @brief Shared utility functions for extrusion surface evaluation.
@@ -177,7 +180,7 @@ inline bool D0(const double     theU,
                const gp_XYZ&    theDir,
                gp_Pnt&          theP)
 {
-  auto aCurveD0 = theBasis.EvalD0(theU);
+  std::optional<gp_Pnt> aCurveD0 = theBasis.EvalD0(theU);
   if (!aCurveD0)
     return false;
   CalculateD0(*aCurveD0, theV, theDir, theP);
@@ -203,7 +206,7 @@ inline bool D1(const double     theU,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V)
 {
-  auto aCurveD1 = theBasis.EvalD1(theU);
+  std::optional<Geom_Curve::ResD1> aCurveD1 = theBasis.EvalD1(theU);
   if (!aCurveD1)
     return false;
   CalculateD1(aCurveD1->Point, aCurveD1->D1, theV, theDir, theP, theD1U, theD1V);
@@ -235,7 +238,7 @@ inline bool D2(const double     theU,
                gp_Vec&          theD2V,
                gp_Vec&          theD2UV)
 {
-  auto aCurveD2 = theBasis.EvalD2(theU);
+  std::optional<Geom_Curve::ResD2> aCurveD2 = theBasis.EvalD2(theU);
   if (!aCurveD2)
     return false;
   CalculateD2(aCurveD2->Point,
@@ -286,7 +289,7 @@ inline bool D3(const double     theU,
                gp_Vec&          theD3UUV,
                gp_Vec&          theD3UVV)
 {
-  auto aCurveD3 = theBasis.EvalD3(theU);
+  std::optional<Geom_Curve::ResD3> aCurveD3 = theBasis.EvalD3(theU);
   if (!aCurveD3)
     return false;
   CalculateD3(aCurveD3->Point,
@@ -328,7 +331,7 @@ inline bool DN(const double     theU,
   gp_Vec aCurveDN;
   if (theDerV == 0)
   {
-    auto aCurveDNOpt = theBasis.EvalDN(theU, theDerU);
+    std::optional<gp_Vec> aCurveDNOpt = theBasis.EvalDN(theU, theDerU);
     if (!aCurveDNOpt)
       return false;
     aCurveDN = *aCurveDNOpt;

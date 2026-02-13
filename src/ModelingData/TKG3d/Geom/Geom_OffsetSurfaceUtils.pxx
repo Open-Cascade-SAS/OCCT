@@ -284,7 +284,7 @@ bool ComputeDerivatives(int                         theMaxOrder,
     switch (theMinOrder)
     {
       case 1: {
-        auto aD1 = theOscSurf->EvalD1(theU, theV);
+        std::optional<Geom_Surface::ResD1> aD1 = theOscSurf->EvalD1(theU, theV);
         if (!aD1)
           return false;
         DerSurfL.SetValue(1, 0, aD1->D1U);
@@ -292,7 +292,7 @@ bool ComputeDerivatives(int                         theMaxOrder,
         break;
       }
       case 2: {
-        auto aD2 = theOscSurf->EvalD2(theU, theV);
+        std::optional<Geom_Surface::ResD2> aD2 = theOscSurf->EvalD2(theU, theV);
         if (!aD2)
           return false;
         DerSurfL.SetValue(1, 0, aD2->D1U);
@@ -303,7 +303,7 @@ bool ComputeDerivatives(int                         theMaxOrder,
         break;
       }
       case 3: {
-        auto aD3 = theOscSurf->EvalD3(theU, theV);
+        std::optional<Geom_Surface::ResD3> aD3 = theOscSurf->EvalD3(theU, theV);
         if (!aD3)
           return false;
         DerSurfL.SetValue(1, 0, aD3->D1U);
@@ -327,16 +327,16 @@ bool ComputeDerivatives(int                         theMaxOrder,
         for (int j = i; j <= theMaxOrder + theNV + 1; j++)
           if (i + j > theMinOrder)
           {
-            auto aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
-            auto aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
+            std::optional<gp_Vec> aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
+            std::optional<gp_Vec> aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
             if (!aOscDN || !aBasisDN)
               return false;
             DerSurfL.SetValue(i, j, *aOscDN);
             theDerSurf.SetValue(i, j, *aBasisDN);
             if (i != j && j <= theNU + 1)
             {
-              auto aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
-              auto aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
+              std::optional<gp_Vec> aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
+              std::optional<gp_Vec> aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
               if (!aBasisDNji || !aOscDNji)
                 return false;
               theDerSurf.SetValue(j, i, *aBasisDNji);
@@ -350,16 +350,16 @@ bool ComputeDerivatives(int                         theMaxOrder,
         for (int i = j; i <= theMaxOrder + theNU + 1; i++)
           if (i + j > theMinOrder)
           {
-            auto aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
-            auto aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
+            std::optional<gp_Vec> aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
+            std::optional<gp_Vec> aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
             if (!aOscDN || !aBasisDN)
               return false;
             DerSurfL.SetValue(i, j, *aOscDN);
             theDerSurf.SetValue(i, j, *aBasisDN);
             if (i != j && i <= theNV + 1)
             {
-              auto aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
-              auto aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
+              std::optional<gp_Vec> aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
+              std::optional<gp_Vec> aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
               if (!aBasisDNji || !aOscDNji)
                 return false;
               theDerSurf.SetValue(j, i, *aBasisDNji);
@@ -384,13 +384,13 @@ bool ComputeDerivatives(int                         theMaxOrder,
       {
         if (i + j > theMinOrder)
         {
-          auto aDN = theBasisSurf->EvalDN(theU, theV, i, j);
+          std::optional<gp_Vec> aDN = theBasisSurf->EvalDN(theU, theV, i, j);
           if (!aDN)
             return false;
           theDerSurf.SetValue(i, j, *aDN);
           if (i != j && j <= theDerSurf.UpperRow() && i <= theDerSurf.UpperCol())
           {
-            auto aDNji = theBasisSurf->EvalDN(theU, theV, j, i);
+            std::optional<gp_Vec> aDNji = theBasisSurf->EvalDN(theU, theV, j, i);
             if (!aDNji)
               return false;
             theDerSurf.SetValue(j, i, *aDNji);
@@ -474,7 +474,7 @@ bool ReplaceDerivative(double               theU,
           continue;
       }
 
-      auto aD1Result = theBasisSurf->EvalD1(aU, aV);
+      std::optional<Geom_Surface::ResD1> aD1Result = theBasisSurf->EvalD1(aU, aV);
       if (!aD1Result)
         continue;
 
@@ -595,7 +595,7 @@ bool EvaluateD0(double                  theU,
     // For subsequent iterations, recompute D1 at shifted point
     if (!isFirstIteration)
     {
-      auto aD1Result = theBasisSurf->EvalD1(theU, theV);
+      std::optional<Geom_Surface::ResD1> aD1Result = theBasisSurf->EvalD1(theU, theV);
       if (!aD1Result)
         return false;
       theValue = aD1Result->Point;
@@ -754,7 +754,7 @@ bool EvaluateD0(double                  theU,
                 const OscSurfQueryType& theOscQuery,
                 gp_Pnt&                 theValue)
 {
-  auto aBasisD1 = theBasisSurf->EvalD1(theU, theV);
+  std::optional<Geom_Surface::ResD1> aBasisD1 = theBasisSurf->EvalD1(theU, theV);
   if (!aBasisD1)
     return false;
   theValue = aBasisD1->Point;
@@ -817,7 +817,7 @@ bool EvaluateD1(double                  theU,
     // For subsequent iterations, recompute D2 at shifted point
     if (!isFirstIteration)
     {
-      auto aD2Result = theBasisSurf->EvalD2(theU, theV);
+      std::optional<Geom_Surface::ResD2> aD2Result = theBasisSurf->EvalD2(theU, theV);
       if (!aD2Result)
         return false;
       theValue = aD2Result->Point;
@@ -1094,7 +1094,7 @@ bool EvaluateD1(double                  theU,
                 gp_Vec&                 theD1U,
                 gp_Vec&                 theD1V)
 {
-  auto aBasisD2 = theBasisSurf->EvalD2(theU, theV);
+  std::optional<Geom_Surface::ResD2> aBasisD2 = theBasisSurf->EvalD2(theU, theV);
   if (!aBasisD2)
     return false;
   theValue = aBasisD2->Point;
@@ -1171,7 +1171,7 @@ bool EvaluateD2(double                  theU,
     // For subsequent iterations, recompute D3 at shifted point
     if (!isFirstIteration)
     {
-      auto aD3Result = theBasisSurf->EvalD3(theU, theV);
+      std::optional<Geom_Surface::ResD3> aD3Result = theBasisSurf->EvalD3(theU, theV);
       if (!aD3Result)
         return false;
       theValue = aD3Result->Point;
@@ -1292,9 +1292,9 @@ bool EvaluateD2(double                  theU,
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
       // For D2, re-fetch from basis surface
-      auto aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
-      auto aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
-      auto aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
+      std::optional<gp_Vec> aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
+      std::optional<gp_Vec> aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
+      std::optional<gp_Vec> aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
       if (!aDN20 || !aDN02 || !aDN11)
         return false;
       theD2U  = *aDN20;
@@ -1357,7 +1357,7 @@ bool EvaluateD2(double                  theU,
                 gp_Vec&                 theD2V,
                 gp_Vec&                 theD2UV)
 {
-  auto aBasisD3 = theBasisSurf->EvalD3(theU, theV);
+  std::optional<Geom_Surface::ResD3> aBasisD3 = theBasisSurf->EvalD3(theU, theV);
   if (!aBasisD3)
     return false;
   theValue = aBasisD3->Point;
@@ -1429,7 +1429,7 @@ bool EvaluateD3(double                  theU,
 
   for (;;)
   {
-    auto aD3Result = theBasisSurf->EvalD3(theU, theV);
+    std::optional<Geom_Surface::ResD3> aD3Result = theBasisSurf->EvalD3(theU, theV);
     if (!aD3Result)
       return false;
     theValue = aD3Result->Point;
@@ -1549,13 +1549,13 @@ bool EvaluateD3(double                  theU,
         aDerSurf(0, 1).Added(CSLib::DNNormal(0, 1, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
 
       // For D2 and D3, re-fetch from basis surface
-      auto aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
-      auto aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
-      auto aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
-      auto aDN30 = theBasisSurf->EvalDN(theU, theV, 3, 0);
-      auto aDN03 = theBasisSurf->EvalDN(theU, theV, 0, 3);
-      auto aDN21 = theBasisSurf->EvalDN(theU, theV, 2, 1);
-      auto aDN12 = theBasisSurf->EvalDN(theU, theV, 1, 2);
+      std::optional<gp_Vec> aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
+      std::optional<gp_Vec> aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
+      std::optional<gp_Vec> aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
+      std::optional<gp_Vec> aDN30 = theBasisSurf->EvalDN(theU, theV, 3, 0);
+      std::optional<gp_Vec> aDN03 = theBasisSurf->EvalDN(theU, theV, 0, 3);
+      std::optional<gp_Vec> aDN21 = theBasisSurf->EvalDN(theU, theV, 2, 1);
+      std::optional<gp_Vec> aDN12 = theBasisSurf->EvalDN(theU, theV, 1, 2);
       if (!aDN20 || !aDN02 || !aDN11 || !aDN30 || !aDN03 || !aDN21 || !aDN12)
         return false;
       theD2U   = *aDN20;
@@ -1642,7 +1642,7 @@ bool EvaluateDN(double                  theU,
     // For subsequent iterations, recompute D1 at shifted point
     if (!isFirstIteration)
     {
-      auto aD1Result = theBasisSurf->EvalD1(theU, theV);
+      std::optional<Geom_Surface::ResD1> aD1Result = theBasisSurf->EvalD1(theU, theV);
       if (!aD1Result)
         return false;
       aD1U = aD1Result->D1U;
@@ -1746,7 +1746,7 @@ bool EvaluateDN(double                  theU,
       const double aSign = theOffset * aOscInfo.Sign();
 
       // Compute DN result: basis DN + offset * DNNormal
-      auto aBasisDN = theBasisSurf->EvalDN(theU, theV, theNu, theNv);
+      std::optional<gp_Vec> aBasisDN = theBasisSurf->EvalDN(theU, theV, theNu, theNv);
       if (!aBasisDN)
         return false;
       theResult = *aBasisDN;
@@ -1797,7 +1797,7 @@ bool EvaluateDN(double                  theU,
                 const OscSurfQueryType& theOscQuery,
                 gp_Vec&                 theResult)
 {
-  auto aBasisD1 = theBasisSurf->EvalD1(theU, theV);
+  std::optional<Geom_Surface::ResD1> aBasisD1 = theBasisSurf->EvalD1(theU, theV);
   if (!aBasisD1)
     return false;
   return EvaluateDN(theU,

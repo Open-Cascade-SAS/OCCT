@@ -357,7 +357,7 @@ bool AdjustDerivative(const CurveType& theCurve,
 
   do
   {
-    auto aVOpt = theCurve.EvalDN(theU, ++anIndex);
+    std::optional<gp_Vec> aVOpt = theCurve.EvalDN(theU, ++anIndex);
     if (!aVOpt)
       return false;
     V = *aVOpt;
@@ -374,8 +374,8 @@ bool AdjustDerivative(const CurveType& theCurve,
     u = theU - aDelta;
   }
 
-  auto aP1Opt = theCurve.EvalD0(std::min(theU, u));
-  auto aP2Opt = theCurve.EvalD0(std::max(theU, u));
+  std::optional<gp_Pnt> aP1Opt = theCurve.EvalD0(std::min(theU, u));
+  std::optional<gp_Pnt> aP2Opt = theCurve.EvalD0(std::max(theU, u));
   if (!aP1Opt || !aP2Opt)
     return false;
 
@@ -387,7 +387,7 @@ bool AdjustDerivative(const CurveType& theCurve,
   gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
   for (int i = 1; i < theMaxDerivative; i++)
   {
-    auto aDNOpt = theCurve.EvalDN(theU, anIndex + i);
+    std::optional<gp_Vec> aDNOpt = theCurve.EvalDN(theU, anIndex + i);
     if (!aDNOpt)
       return false;
     *(aDeriv[i - 1]) = *aDNOpt * aSign;
@@ -413,7 +413,7 @@ bool EvaluateD0(double                theU,
                 double                theOffset,
                 gp_Pnt&               theValue)
 {
-  auto aD1Opt = theBasisCurve->EvalD1(theU);
+  std::optional<Geom_Curve::ResD1> aD1Opt = theBasisCurve->EvalD1(theU);
   if (!aD1Opt)
     return false;
   theValue = aD1Opt->Point;
@@ -439,7 +439,7 @@ bool EvaluateD1(double                theU,
                 gp_Pnt&               theValue,
                 gp_Vec&               theD1)
 {
-  auto aD2Opt = theBasisCurve->EvalD2(theU);
+  std::optional<Geom_Curve::ResD2> aD2Opt = theBasisCurve->EvalD2(theU);
   if (!aD2Opt)
     return false;
   theValue = aD2Opt->Point;
@@ -469,7 +469,7 @@ bool EvaluateD2(double                theU,
                 gp_Vec&               theD1,
                 gp_Vec&               theD2)
 {
-  auto aD3Opt = theBasisCurve->EvalD3(theU);
+  std::optional<Geom_Curve::ResD3> aD3Opt = theBasisCurve->EvalD3(theU);
   if (!aD3Opt)
     return false;
   theValue   = aD3Opt->Point;
@@ -512,7 +512,7 @@ bool EvaluateD3(double                theU,
                 gp_Vec&               theD2,
                 gp_Vec&               theD3)
 {
-  auto aD3Opt = theBasisCurve->EvalD3(theU);
+  std::optional<Geom_Curve::ResD3> aD3Opt = theBasisCurve->EvalD3(theU);
   if (!aD3Opt)
     return false;
   theValue = aD3Opt->Point;
@@ -520,7 +520,7 @@ bool EvaluateD3(double                theU,
   theD2    = aD3Opt->D2;
   theD3    = aD3Opt->D3;
 
-  auto aD4Opt = theBasisCurve->EvalDN(theU, 4);
+  std::optional<gp_Vec> aD4Opt = theBasisCurve->EvalDN(theU, 4);
   if (!aD4Opt)
     return false;
   gp_Vec aD4 = *aD4Opt;
@@ -575,7 +575,7 @@ bool EvaluateDN(double                theU,
       return EvaluateD3(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, aDummy, theDN);
     default: {
       // For derivatives > 3, return basis curve derivative (no offset contribution)
-      auto aDNOpt = theBasisCurve->EvalDN(theU, theN);
+      std::optional<gp_Vec> aDNOpt = theBasisCurve->EvalDN(theU, theN);
       if (!aDNOpt)
         return false;
       theDN = *aDNOpt;
