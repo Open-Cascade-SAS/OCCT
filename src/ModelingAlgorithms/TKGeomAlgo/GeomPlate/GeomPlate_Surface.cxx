@@ -193,74 +193,50 @@ bool GeomPlate_Surface::IsCNv(const int) const
 
 std::optional<gp_Pnt> GeomPlate_Surface::EvalD0(const double U, const double V) const
 {
-  auto aSurfP = mySurfinit->EvalD0(U, V);
+  std::optional<gp_Pnt> aSurfP = mySurfinit->EvalD0(U, V);
   if (!aSurfP)
     return std::nullopt;
   gp_XY  P1(U, V);
   gp_XYZ P3 = mySurfinter.Evaluate(P1);
-  gp_Pnt P;
-  for (int i = 1; i <= 3; i++)
-  {
-    P.SetCoord(i, P3.Coord(i) + aSurfP->Coord(i));
-  }
-  return P;
+  return gp_Pnt(P3 + aSurfP->XYZ());
 }
 
 //=================================================================================================
 
 std::optional<Geom_Surface::ResD1> GeomPlate_Surface::EvalD1(const double U, const double V) const
 {
-  auto aSurfD1 = mySurfinit->EvalD1(U, V);
+  std::optional<Geom_Surface::ResD1> aSurfD1 = mySurfinit->EvalD1(U, V);
   if (!aSurfD1)
     return std::nullopt;
-  gp_XY               P1(U, V);
-  Geom_Surface::ResD1 aResult;
-  gp_XYZ              P3 = mySurfinter.Evaluate(P1);
-  for (int i = 1; i <= 3; i++)
-  {
-    aResult.Point.SetCoord(i, P3.Coord(i) + aSurfD1->Point.Coord(i));
-  }
+  gp_XY  P1(U, V);
+  gp_XYZ P3  = mySurfinter.Evaluate(P1);
   gp_XYZ V2U = mySurfinter.EvaluateDerivative(P1, 1, 0);
   gp_XYZ V2V = mySurfinter.EvaluateDerivative(P1, 0, 1);
-  for (int i = 1; i <= 3; i++)
-  {
-    aResult.D1U.SetCoord(i, aSurfD1->D1U.Coord(i) + V2U.Coord(i));
-    aResult.D1V.SetCoord(i, aSurfD1->D1V.Coord(i) + V2V.Coord(i));
-  }
-  return aResult;
+  return Geom_Surface::ResD1{gp_Pnt(P3 + aSurfD1->Point.XYZ()),
+                             gp_Vec(aSurfD1->D1U.XYZ() + V2U),
+                             gp_Vec(aSurfD1->D1V.XYZ() + V2V)};
 }
 
 //=================================================================================================
 
 std::optional<Geom_Surface::ResD2> GeomPlate_Surface::EvalD2(const double U, const double V) const
 {
-  auto aSurfD2 = mySurfinit->EvalD2(U, V);
+  std::optional<Geom_Surface::ResD2> aSurfD2 = mySurfinit->EvalD2(U, V);
   if (!aSurfD2)
     return std::nullopt;
-  gp_XY               P1(U, V);
-  Geom_Surface::ResD2 aResult;
-  gp_XYZ              P3 = mySurfinter.Evaluate(P1);
-  for (int i = 1; i <= 3; i++)
-  {
-    aResult.Point.SetCoord(i, P3.Coord(i) + aSurfD2->Point.Coord(i));
-  }
+  gp_XY  P1(U, V);
+  gp_XYZ P3         = mySurfinter.Evaluate(P1);
   gp_XYZ V2U_interp = mySurfinter.EvaluateDerivative(P1, 1, 0);
   gp_XYZ V2V_interp = mySurfinter.EvaluateDerivative(P1, 0, 1);
-  for (int i = 1; i <= 3; i++)
-  {
-    aResult.D1U.SetCoord(i, aSurfD2->D1U.Coord(i) + V2U_interp.Coord(i));
-    aResult.D1V.SetCoord(i, aSurfD2->D1V.Coord(i) + V2V_interp.Coord(i));
-  }
-  gp_XYZ V2U  = mySurfinter.EvaluateDerivative(P1, 2, 0);
-  gp_XYZ V2V  = mySurfinter.EvaluateDerivative(P1, 0, 2);
-  gp_XYZ V2UV = mySurfinter.EvaluateDerivative(P1, 1, 1);
-  for (int i = 1; i <= 3; i++)
-  {
-    aResult.D2U.SetCoord(i, aSurfD2->D2U.Coord(i) + V2U.Coord(i));
-    aResult.D2V.SetCoord(i, aSurfD2->D2V.Coord(i) + V2V.Coord(i));
-    aResult.D2UV.SetCoord(i, aSurfD2->D2UV.Coord(i) + V2UV.Coord(i));
-  }
-  return aResult;
+  gp_XYZ V2U        = mySurfinter.EvaluateDerivative(P1, 2, 0);
+  gp_XYZ V2V        = mySurfinter.EvaluateDerivative(P1, 0, 2);
+  gp_XYZ V2UV       = mySurfinter.EvaluateDerivative(P1, 1, 1);
+  return Geom_Surface::ResD2{gp_Pnt(P3 + aSurfD2->Point.XYZ()),
+                             gp_Vec(aSurfD2->D1U.XYZ() + V2U_interp),
+                             gp_Vec(aSurfD2->D1V.XYZ() + V2V_interp),
+                             gp_Vec(aSurfD2->D2U.XYZ() + V2U),
+                             gp_Vec(aSurfD2->D2V.XYZ() + V2V),
+                             gp_Vec(aSurfD2->D2UV.XYZ() + V2UV)};
 }
 
 //=================================================================================================

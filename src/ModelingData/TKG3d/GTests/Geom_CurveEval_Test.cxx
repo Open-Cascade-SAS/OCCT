@@ -58,7 +58,7 @@ TEST(Geom_CurveEvalTest, Circle_EvalD1D2D3_ReturnsValidDerivatives)
   const double aU = M_PI / 3.0;
 
   // EvalD1
-  const auto aD1 = aCurve->EvalD1(aU);
+  const std::optional<Geom_Curve::ResD1> aD1 = aCurve->EvalD1(aU);
   ASSERT_TRUE(aD1.has_value());
   EXPECT_NEAR(aD1->Point.Distance(gp_Pnt(0.0, 0.0, 0.0)), 5.0, Precision::Confusion());
   // D1 should be perpendicular to radius vector for a circle
@@ -66,14 +66,14 @@ TEST(Geom_CurveEvalTest, Circle_EvalD1D2D3_ReturnsValidDerivatives)
   EXPECT_NEAR(aRadial.Dot(aD1->D1), 0.0, 1.0e-10);
 
   // EvalD2
-  const auto aD2 = aCurve->EvalD2(aU);
+  const std::optional<Geom_Curve::ResD2> aD2 = aCurve->EvalD2(aU);
   ASSERT_TRUE(aD2.has_value());
   EXPECT_NEAR(aD2->Point.Distance(aD1->Point), 0.0, Precision::Confusion());
   // D2 of circle points toward center (centripetal acceleration)
   EXPECT_NEAR(aD2->D2.Magnitude(), 5.0, 1.0e-10);
 
   // EvalD3
-  const auto aD3 = aCurve->EvalD3(aU);
+  const std::optional<Geom_Curve::ResD3> aD3 = aCurve->EvalD3(aU);
   ASSERT_TRUE(aD3.has_value());
   EXPECT_NEAR(aD3->Point.Distance(aD1->Point), 0.0, Precision::Confusion());
   EXPECT_GT(aD3->D3.Magnitude(), 0.0);
@@ -87,7 +87,7 @@ TEST(Geom_CurveEvalTest, Line_EvalD2_ZeroSecondDerivative)
 {
   occ::handle<Geom_Line> aCurve = new Geom_Line(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(1.0, 0.0, 0.0));
 
-  const auto aD2 = aCurve->EvalD2(5.0);
+  const std::optional<Geom_Curve::ResD2> aD2 = aCurve->EvalD2(5.0);
   ASSERT_TRUE(aD2.has_value());
   EXPECT_NEAR(aD2->D2.Magnitude(), 0.0, Precision::Confusion());
 
@@ -120,7 +120,7 @@ TEST(Geom_CurveEvalTest, BSplineCurve_EvalD1_ConsistentWithOldAPI)
   const double aMid   = (aFirst + aLast) / 2.0;
 
   // Compare EvalD1 with old D1 wrapper
-  const auto aEvalResult = aCurve->EvalD1(aMid);
+  const std::optional<Geom_Curve::ResD1> aEvalResult = aCurve->EvalD1(aMid);
   ASSERT_TRUE(aEvalResult.has_value());
 
   gp_Pnt aOldP;
@@ -142,10 +142,10 @@ TEST(Geom_CurveEvalTest, EvalDN_N1_ConsistentWithEvalD1)
 
   const double aU = M_PI / 6.0;
 
-  const auto aD1 = aCurve->EvalD1(aU);
+  const std::optional<Geom_Curve::ResD1> aD1 = aCurve->EvalD1(aU);
   ASSERT_TRUE(aD1.has_value());
 
-  const auto aDN1 = aCurve->EvalDN(aU, 1);
+  const std::optional<gp_Vec> aDN1 = aCurve->EvalDN(aU, 1);
   ASSERT_TRUE(aDN1.has_value());
 
   EXPECT_NEAR((aD1->D1 - *aDN1).Magnitude(), 0.0, Precision::Confusion());
@@ -171,7 +171,7 @@ TEST(Geom_CurveEvalTest, OffsetCurve_EvalD0_ReturnsNulloptAtSingular)
   // Actually, the offset curve evaluation uses the basis curve's tangent for computing
   // the offset direction, and a degenerate offset curve may or may not fail at D0.
   // Let's just verify the API works and returns a value.
-  const auto aResult = anOffset->EvalD0(0.0);
+  const std::optional<gp_Pnt> aResult = anOffset->EvalD0(0.0);
   // For a circle offset by -radius, this should still return a valid point (the center)
   EXPECT_TRUE(aResult.has_value());
 }
@@ -200,7 +200,7 @@ TEST(Geom_CurveEvalTest, Parabola_EvalD3_ZeroThirdDerivative)
   occ::handle<Geom_Parabola> aCurve =
     new Geom_Parabola(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 2.0);
 
-  const auto aD3 = aCurve->EvalD3(1.0);
+  const std::optional<Geom_Curve::ResD3> aD3 = aCurve->EvalD3(1.0);
   ASSERT_TRUE(aD3.has_value());
   EXPECT_NEAR(aD3->D3.Magnitude(), 0.0, Precision::Confusion());
 }
@@ -241,8 +241,8 @@ TEST(Geom_CurveEvalTest, TrimmedCurve_EvalD1_DelegatesToBasis)
 
   const double aU = M_PI / 4.0;
 
-  const auto aBasisD1   = aBasis->EvalD1(aU);
-  const auto aTrimmedD1 = aTrimmed->EvalD1(aU);
+  const std::optional<Geom_Curve::ResD1> aBasisD1   = aBasis->EvalD1(aU);
+  const std::optional<Geom_Curve::ResD1> aTrimmedD1 = aTrimmed->EvalD1(aU);
 
   ASSERT_TRUE(aBasisD1.has_value());
   ASSERT_TRUE(aTrimmedD1.has_value());
@@ -266,7 +266,7 @@ TEST(Geom_CurveEvalTest, OffsetCurve_EvalD1_DegenerateAtCollapsed)
   occ::handle<Geom_OffsetCurve> anOffset =
     new Geom_OffsetCurve(aBasis, -5.0, gp_Dir(0.0, 0.0, 1.0));
 
-  const auto aResult = anOffset->EvalD1(0.0);
+  const std::optional<Geom_Curve::ResD1> aResult = anOffset->EvalD1(0.0);
   ASSERT_TRUE(aResult.has_value());
 
   // The point should be near the center

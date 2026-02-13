@@ -196,7 +196,7 @@ GeomAbs_Shape Geom2d_OffsetCurve::Continuity() const
 
 std::optional<gp_Pnt2d> Geom2d_OffsetCurve::EvalD0(const double theU) const
 {
-  auto aBasisD1 = basisCurve->EvalD1(theU);
+  std::optional<Geom2d_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(theU);
   if (!aBasisD1)
     return std::nullopt;
   gp_Pnt2d aValue = aBasisD1->Point;
@@ -209,7 +209,7 @@ std::optional<gp_Pnt2d> Geom2d_OffsetCurve::EvalD0(const double theU) const
 
 std::optional<Geom2d_Curve::ResD1> Geom2d_OffsetCurve::EvalD1(const double theU) const
 {
-  auto aBasisD2 = basisCurve->EvalD2(theU);
+  std::optional<Geom2d_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(theU);
   if (!aBasisD2)
     return std::nullopt;
   gp_Pnt2d aValue = aBasisD2->Point;
@@ -223,7 +223,7 @@ std::optional<Geom2d_Curve::ResD1> Geom2d_OffsetCurve::EvalD1(const double theU)
 
 std::optional<Geom2d_Curve::ResD2> Geom2d_OffsetCurve::EvalD2(const double theU) const
 {
-  auto aBasisD3 = basisCurve->EvalD3(theU);
+  std::optional<Geom2d_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(theU);
   if (!aBasisD3)
     return std::nullopt;
   gp_Pnt2d aValue = aBasisD3->Point;
@@ -251,10 +251,10 @@ std::optional<Geom2d_Curve::ResD2> Geom2d_OffsetCurve::EvalD2(const double theU)
 
 std::optional<Geom2d_Curve::ResD3> Geom2d_OffsetCurve::EvalD3(const double theU) const
 {
-  auto aBasisD3 = basisCurve->EvalD3(theU);
+  std::optional<Geom2d_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(theU);
   if (!aBasisD3)
     return std::nullopt;
-  auto aD4Opt = basisCurve->EvalDN(theU, 4);
+  std::optional<gp_Vec2d> aD4Opt = basisCurve->EvalDN(theU, 4);
   if (!aD4Opt)
     return std::nullopt;
   gp_Pnt2d aValue = aBasisD3->Point;
@@ -293,15 +293,15 @@ std::optional<gp_Vec2d> Geom2d_OffsetCurve::EvalDN(const double U, const int N) 
   switch (N)
   {
     case 1: {
-      auto aR = EvalD1(U);
+      std::optional<Geom2d_Curve::ResD1> aR = EvalD1(U);
       return aR ? std::optional<gp_Vec2d>(aR->D1) : std::nullopt;
     }
     case 2: {
-      auto aR = EvalD2(U);
+      std::optional<Geom2d_Curve::ResD2> aR = EvalD2(U);
       return aR ? std::optional<gp_Vec2d>(aR->D2) : std::nullopt;
     }
     case 3: {
-      auto aR = EvalD3(U);
+      std::optional<Geom2d_Curve::ResD3> aR = EvalD3(U);
       return aR ? std::optional<gp_Vec2d>(aR->D3) : std::nullopt;
     }
     default:

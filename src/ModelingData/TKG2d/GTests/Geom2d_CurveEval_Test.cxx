@@ -39,13 +39,13 @@ TEST(Geom2d_CurveEvalTest, Circle_EvalD0D1_ValidResults)
   const double aU = M_PI / 4.0;
 
   // EvalD0
-  const auto aD0 = aCurve->EvalD0(aU);
+  const std::optional<gp_Pnt2d> aD0 = aCurve->EvalD0(aU);
   ASSERT_TRUE(aD0.has_value());
   const double aDist = aD0->Distance(gp_Pnt2d(0.0, 0.0));
   EXPECT_NEAR(aDist, 4.0, Precision::Confusion());
 
   // EvalD1
-  const auto aD1 = aCurve->EvalD1(aU);
+  const std::optional<Geom2d_Curve::ResD1> aD1 = aCurve->EvalD1(aU);
   ASSERT_TRUE(aD1.has_value());
   EXPECT_NEAR(aD1->Point.Distance(*aD0), 0.0, Precision::Confusion());
 
@@ -70,7 +70,7 @@ TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD0_ValidAtDegenerateCenter)
   // EvalD0 on the offset curve. This may or may not return nullopt depending on
   // implementation - the degenerate curve should still produce a valid point
   // (the center), since offset curve D0 evaluation is typically valid.
-  const auto aResult = anOffset->EvalD0(0.0);
+  const std::optional<gp_Pnt2d> aResult = anOffset->EvalD0(0.0);
   EXPECT_TRUE(aResult.has_value());
 }
 
@@ -96,7 +96,7 @@ TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalD1_ConsistentWithOldAPI)
   const double aMid   = (aFirst + aLast) / 2.0;
 
   // Compare EvalD1 with old D1 wrapper
-  const auto aEvalResult = aCurve->EvalD1(aMid);
+  const std::optional<Geom2d_Curve::ResD1> aEvalResult = aCurve->EvalD1(aMid);
   ASSERT_TRUE(aEvalResult.has_value());
 
   gp_Pnt2d aOldP;
@@ -118,11 +118,11 @@ TEST(Geom2d_CurveEvalTest, Ellipse_EvalD2D3_ValidResults)
 
   const double aU = M_PI / 4.0;
 
-  const auto aD2 = aCurve->EvalD2(aU);
+  const std::optional<Geom2d_Curve::ResD2> aD2 = aCurve->EvalD2(aU);
   ASSERT_TRUE(aD2.has_value());
   EXPECT_GT(aD2->D2.Magnitude(), 0.0);
 
-  const auto aD3 = aCurve->EvalD3(aU);
+  const std::optional<Geom2d_Curve::ResD3> aD3 = aCurve->EvalD3(aU);
   ASSERT_TRUE(aD3.has_value());
   EXPECT_GT(aD3->D3.Magnitude(), 0.0);
 }
@@ -136,13 +136,13 @@ TEST(Geom2d_CurveEvalTest, Line_EvalDN_ValidResults)
   occ::handle<Geom2d_Line> aCurve = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0));
 
   // DN(U, 1) should return the direction
-  const auto aDN1 = aCurve->EvalDN(5.0, 1);
+  const std::optional<gp_Vec2d> aDN1 = aCurve->EvalDN(5.0, 1);
   ASSERT_TRUE(aDN1.has_value());
   EXPECT_NEAR(aDN1->X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aDN1->Y(), 0.0, Precision::Confusion());
 
   // DN(U, 2) should return zero for a line
-  const auto aDN2 = aCurve->EvalDN(5.0, 2);
+  const std::optional<gp_Vec2d> aDN2 = aCurve->EvalDN(5.0, 2);
   ASSERT_TRUE(aDN2.has_value());
   EXPECT_NEAR(aDN2->Magnitude(), 0.0, Precision::Confusion());
 }
@@ -185,7 +185,7 @@ TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD1_DegenerateAtCollapsed)
   // but produces a degenerate result (all points map to the center).
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aBasis, -3.0);
 
-  const auto aResult = anOffset->EvalD1(0.0);
+  const std::optional<Geom2d_Curve::ResD1> aResult = anOffset->EvalD1(0.0);
   ASSERT_TRUE(aResult.has_value());
 
   // The point should be near the center

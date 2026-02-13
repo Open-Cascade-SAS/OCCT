@@ -135,7 +135,7 @@ inline bool offsetD0(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    auto aResult = theData.EquivalentAdaptor->EvalD0(theU, theV);
+    std::optional<gp_Pnt> aResult = theData.EquivalentAdaptor->EvalD0(theU, theV);
     if (!aResult)
       return false;
     theValue = *aResult;
@@ -161,7 +161,7 @@ inline bool offsetD1(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    auto aResult = theData.EquivalentAdaptor->EvalD1(theU, theV);
+    std::optional<Geom_Surface::ResD1> aResult = theData.EquivalentAdaptor->EvalD1(theU, theV);
     if (!aResult)
       return false;
     theValue = aResult->Point;
@@ -194,7 +194,7 @@ inline bool offsetD2(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    auto aResult = theData.EquivalentAdaptor->EvalD2(theU, theV);
+    std::optional<Geom_Surface::ResD2> aResult = theData.EquivalentAdaptor->EvalD2(theU, theV);
     if (!aResult)
       return false;
     theValue = aResult->Point;
@@ -237,7 +237,7 @@ inline bool offsetD3(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    auto aResult = theData.EquivalentAdaptor->EvalD3(theU, theV);
+    std::optional<Geom_Surface::ResD3> aResult = theData.EquivalentAdaptor->EvalD3(theU, theV);
     if (!aResult)
       return false;
     theValue = aResult->Point;
@@ -281,7 +281,7 @@ inline bool offsetDN(const double                           theU,
 {
   if (!theData.EquivalentAdaptor.IsNull())
   {
-    auto aResult = theData.EquivalentAdaptor->EvalDN(theU, theV, theNu, theNv);
+    std::optional<gp_Vec> aResult = theData.EquivalentAdaptor->EvalDN(theU, theV, theNu, theNv);
     if (!aResult)
       return false;
     theResult = *aResult;
@@ -985,7 +985,7 @@ gp_Pnt GeomAdaptor_Surface::Value(const double U, const double V) const
 
 void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
 {
-  auto aResult = EvalD0(U, V);
+  std::optional<gp_Pnt> aResult = EvalD0(U, V);
   if (!aResult)
     throw Geom_UndefinedValue("GeomAdaptor_Surface::D0: evaluation failed");
   P = *aResult;
@@ -1063,7 +1063,7 @@ void GeomAdaptor_Surface::D1(const double U,
                              gp_Vec&      D1U,
                              gp_Vec&      D1V) const
 {
-  auto aResult = EvalD1(U, V);
+  std::optional<Geom_Surface::ResD1> aResult = EvalD1(U, V);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Surface::D1: evaluation failed");
   P   = aResult->Point;
@@ -1192,7 +1192,7 @@ void GeomAdaptor_Surface::D2(const double U,
                              gp_Vec&      D2V,
                              gp_Vec&      D2UV) const
 {
-  auto aResult = EvalD2(U, V);
+  std::optional<Geom_Surface::ResD2> aResult = EvalD2(U, V);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Surface::D2: evaluation failed");
   P    = aResult->Point;
@@ -1391,7 +1391,7 @@ void GeomAdaptor_Surface::D3(const double U,
                              gp_Vec&      D3UUV,
                              gp_Vec&      D3UVV) const
 {
-  auto aResult = EvalD3(U, V);
+  std::optional<Geom_Surface::ResD3> aResult = EvalD3(U, V);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Surface::D3: evaluation failed");
   P     = aResult->Point;
@@ -1511,7 +1511,7 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
       {
-        auto aD3 = aBSpl->EvalD3(u, v);
+        std::optional<Geom_Surface::ResD3> aD3 = aBSpl->EvalD3(u, v);
         if (!aD3)
           return std::nullopt;
         return *aD3;
@@ -1537,7 +1537,7 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
                          aResult.D3UVV);
         else
         {
-          auto aD3 = aBSpl->EvalD3(u, v);
+          std::optional<Geom_Surface::ResD3> aD3 = aBSpl->EvalD3(u, v);
           if (!aD3)
             return std::nullopt;
           return *aD3;
@@ -1614,7 +1614,7 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
 
 gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, const int Nv) const
 {
-  auto aResult = EvalDN(U, V, Nu, Nv);
+  std::optional<gp_Vec> aResult = EvalDN(U, V, Nu, Nv);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Surface::DN: evaluation failed");
   return *aResult;

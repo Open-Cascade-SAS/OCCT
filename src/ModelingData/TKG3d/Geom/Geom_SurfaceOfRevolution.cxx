@@ -217,7 +217,7 @@ void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double
 
 std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 {
-  auto aBasisD0 = basisCurve->EvalD0(V);
+  std::optional<gp_Pnt> aBasisD0 = basisCurve->EvalD0(V);
   if (!aBasisD0)
     return std::nullopt;
   gp_Pnt aP;
@@ -230,7 +230,7 @@ std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const dou
 std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U,
                                                                     const double V) const
 {
-  auto aBasisD1 = basisCurve->EvalD1(V);
+  std::optional<Geom_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(V);
   if (!aBasisD1)
     return std::nullopt;
   std::optional<Geom_Surface::ResD1> aResult{std::in_place};
@@ -249,7 +249,7 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double
 std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U,
                                                                     const double V) const
 {
-  auto aBasisD2 = basisCurve->EvalD2(V);
+  std::optional<Geom_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(V);
   if (!aBasisD2)
     return std::nullopt;
   std::optional<Geom_Surface::ResD2> aResult{std::in_place};
@@ -272,7 +272,7 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double
 std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U,
                                                                     const double V) const
 {
-  auto aBasisD3 = basisCurve->EvalD3(V);
+  std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(V);
   if (!aBasisD3)
     return std::nullopt;
   std::optional<Geom_Surface::ResD3> aResult{std::in_place};
@@ -307,21 +307,21 @@ std::optional<gp_Vec> Geom_SurfaceOfRevolution::EvalDN(const double U,
   gp_Vec aCurvePtOrDN;
   if (Nu == 0)
   {
-    auto aDN = basisCurve->EvalDN(V, Nv);
+    std::optional<gp_Vec> aDN = basisCurve->EvalDN(V, Nv);
     if (!aDN)
       return std::nullopt;
     aCurvePtOrDN = *aDN;
   }
   else if (Nv == 0)
   {
-    auto aD0 = basisCurve->EvalD0(V);
+    std::optional<gp_Pnt> aD0 = basisCurve->EvalD0(V);
     if (!aD0)
       return std::nullopt;
     aCurvePtOrDN = gp_Vec(aD0->XYZ() - loc.XYZ());
   }
   else
   {
-    auto aDN = basisCurve->EvalDN(V, Nv);
+    std::optional<gp_Vec> aDN = basisCurve->EvalDN(V, Nv);
     if (!aDN)
       return std::nullopt;
     aCurvePtOrDN = *aDN;

@@ -134,7 +134,7 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(double& U1, double& U2, double& V1, d
 
 std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, const double V) const
 {
-  auto aBasisD0 = basisCurve->EvalD0(U);
+  std::optional<gp_Pnt> aBasisD0 = basisCurve->EvalD0(U);
   if (!aBasisD0)
     return std::nullopt;
   gp_Pnt aP;
@@ -147,7 +147,7 @@ std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, cons
 std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
                                                                          const double V) const
 {
-  auto aBasisD1 = basisCurve->EvalD1(U);
+  std::optional<Geom_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(U);
   if (!aBasisD1)
     return std::nullopt;
   std::optional<Geom_Surface::ResD1> aResult{std::in_place};
@@ -166,7 +166,7 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const d
 std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
                                                                          const double V) const
 {
-  auto aBasisD2 = basisCurve->EvalD2(U);
+  std::optional<Geom_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(U);
   if (!aBasisD2)
     return std::nullopt;
   std::optional<Geom_Surface::ResD2> aResult{std::in_place};
@@ -189,7 +189,7 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const d
 std::optional<Geom_Surface::ResD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
                                                                          const double V) const
 {
-  auto aBasisD3 = basisCurve->EvalD3(U);
+  std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(U);
   if (!aBasisD3)
     return std::nullopt;
   std::optional<Geom_Surface::ResD3> aResult{std::in_place};
@@ -223,7 +223,7 @@ std::optional<gp_Vec> Geom_SurfaceOfLinearExtrusion::EvalDN(const double U,
     return std::nullopt;
   if (Nv == 0)
   {
-    auto aDN = basisCurve->EvalDN(U, Nu);
+    std::optional<gp_Vec> aDN = basisCurve->EvalDN(U, Nu);
     if (!aDN)
       return std::nullopt;
     return Geom_ExtrusionUtils::CalculateDN(*aDN, direction.XYZ(), Nu, Nv);

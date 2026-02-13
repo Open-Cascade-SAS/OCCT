@@ -622,7 +622,7 @@ gp_Pnt GeomAdaptor_Curve::Value(const double U) const
 
 void GeomAdaptor_Curve::D0(const double U, gp_Pnt& P) const
 {
-  auto aResult = EvalD0(U);
+  std::optional<gp_Pnt> aResult = EvalD0(U);
   if (!aResult)
     throw Geom_UndefinedValue("GeomAdaptor_Curve::D0: evaluation failed");
   P = *aResult;
@@ -701,7 +701,7 @@ std::optional<gp_Pnt> GeomAdaptor_Curve::EvalD0(double U) const
 
 void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
-  auto aResult = EvalD1(U);
+  std::optional<Geom_Curve::ResD1> aResult = EvalD1(U);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Curve::D1: evaluation failed");
   P = aResult->Point;
@@ -782,7 +782,7 @@ std::optional<Geom_Curve::ResD1> GeomAdaptor_Curve::EvalD1(double U) const
 
 void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
-  auto aResult = EvalD2(U);
+  std::optional<Geom_Curve::ResD2> aResult = EvalD2(U);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Curve::D2: evaluation failed");
   P  = aResult->Point;
@@ -866,7 +866,7 @@ std::optional<Geom_Curve::ResD2> GeomAdaptor_Curve::EvalD2(double U) const
 
 void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
-  auto aResult = EvalD3(U);
+  std::optional<Geom_Curve::ResD3> aResult = EvalD3(U);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Curve::D3: evaluation failed");
   P  = aResult->Point;
@@ -970,7 +970,7 @@ std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
 
 gp_Vec GeomAdaptor_Curve::DN(const double U, const int N) const
 {
-  auto aResult = EvalDN(U, N);
+  std::optional<gp_Vec> aResult = EvalDN(U, N);
   if (!aResult)
     throw Geom_UndefinedDerivative("GeomAdaptor_Curve::DN: evaluation failed");
   return *aResult;
