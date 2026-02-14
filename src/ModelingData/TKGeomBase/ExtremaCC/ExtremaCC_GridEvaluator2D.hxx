@@ -45,6 +45,15 @@ template <typename Curve1Eval, typename Curve2Eval>
 class ExtremaCC_GridEvaluator2D
 {
 public:
+  //! Default grid resolution (samples per curve).
+  static constexpr int THE_DEFAULT_GRID_SIZE = 64;
+
+  //! Minimum grid resolution.
+  static constexpr int THE_MIN_GRID_SIZE = 16;
+
+  //! Maximum grid resolution.
+  static constexpr int THE_MAX_GRID_SIZE = 256;
+
   //! Cached grid point with pre-computed data.
   struct CurvePoint
   {
@@ -70,7 +79,24 @@ public:
                             const ExtremaCC::Domain2D& theDomain)
       : myCurve1(theCurve1),
         myCurve2(theCurve2),
-        myDomain(theDomain)
+        myDomain(theDomain),
+        myGridSize(THE_DEFAULT_GRID_SIZE)
+  {
+  }
+
+  //! Constructor with custom grid resolution.
+  //! @param theCurve1 first curve evaluator
+  //! @param theCurve2 second curve evaluator
+  //! @param theDomain parameter domain
+  //! @param theGridSize number of samples per curve (clamped to [16, 256])
+  ExtremaCC_GridEvaluator2D(const Curve1Eval&           theCurve1,
+                            const Curve2Eval&           theCurve2,
+                            const ExtremaCC::Domain2D& theDomain,
+                            int                         theGridSize)
+      : myCurve1(theCurve1),
+        myCurve2(theCurve2),
+        myDomain(theDomain),
+        myGridSize(std::max(THE_MIN_GRID_SIZE, std::min(THE_MAX_GRID_SIZE, theGridSize)))
   {
   }
 
@@ -118,9 +144,8 @@ private:
   //! @brief Build grids for both curves.
   void buildGrids() const
   {
-    // Determine grid size based on domain extent
-    // 64 samples provides better resolution for complex curves like BSplines
-    constexpr int aNbSamples = 64;
+    // Use configurable grid size
+    const int aNbSamples = myGridSize;
 
     const double aU1Min  = myDomain.Curve1.Min;
     const double aU1Max  = myDomain.Curve1.Max;
@@ -314,6 +339,7 @@ private:
 
     // Additionally, scan for distance local minima (cells with smaller distance than neighbors)
     // This helps find extrema on parallel curves where gradient might not change sign
+    // Uses 8-neighbor check (including diagonals) for more robust detection
     if (theMode == ExtremaCC::SearchMode::Min || theMode == ExtremaCC::SearchMode::MinMax)
     {
       for (int i = 1; i < aNb1 - 2; ++i)
@@ -322,10 +348,15 @@ private:
         {
           const double aDist = myGridData(i, j).Dist;
 
-          // Check if this is a local minimum in distance
-          const bool aIsLocalMin = aDist < myGridData(i - 1, j).Dist && aDist < myGridData(i + 1, j).Dist
-                                   && aDist < myGridData(i, j - 1).Dist
-                                   && aDist < myGridData(i, j + 1).Dist;
+          // Check if this is a local minimum in distance (8-neighbor check)
+          const bool aIsLocalMin = aDist < myGridData(i - 1, j).Dist     // left
+                                   && aDist < myGridData(i + 1, j).Dist  // right
+                                   && aDist < myGridData(i, j - 1).Dist  // down
+                                   && aDist < myGridData(i, j + 1).Dist  // up
+                                   && aDist < myGridData(i - 1, j - 1).Dist  // bottom-left diagonal
+                                   && aDist < myGridData(i + 1, j - 1).Dist  // bottom-right diagonal
+                                   && aDist < myGridData(i - 1, j + 1).Dist  // top-left diagonal
+                                   && aDist < myGridData(i + 1, j + 1).Dist; // top-right diagonal
 
           if (aIsLocalMin)
           {
@@ -386,7 +417,6 @@ private:
                         double                theTol,
                         ExtremaCC::SearchMode theMode) const
   {
-    theResult.Status = ExtremaCC::Status::OK;
     myFoundRoots.Clear();
     mySortedEntries.Clear();
 
@@ -443,99 +473,71 @@ private:
       aCellU2Min      = std::max(myDomain.Curve2.Min, aCellU2Min - aExpand2);
       aCellU2Max      = std::min(myDomain.Curve2.Max, aCellU2Max + aExpand2);
 
-      // Newton iteration
-      ExtremaCC_Newton::Result aNewtonRes = ExtremaCC_Newton::Solve(aFunc,
-                                                                     aCand.StartU1,
-                                                                     aCand.StartU2,
-                                                                     aCellU1Min,
-                                                                     aCellU1Max,
-                                                                     aCellU2Min,
-                                                                     aCellU2Max,
-                                                                     theTol);
+      // Newton iteration using MathSys::Newton2DSymmetric directly
+      MathSys::Newton2DResult aNewtonRes = MathSys::Newton2DSymmetric(aFunc,
+                                                                       aCand.StartU1,
+                                                                       aCand.StartU2,
+                                                                       aCellU1Min,
+                                                                       aCellU1Max,
+                                                                       aCellU2Min,
+                                                                       aCellU2Max,
+                                                                       theTol);
 
       double aRootU1    = 0.0;
       double aRootU2    = 0.0;
       bool   aConverged = false;
 
-      if (aNewtonRes.IsDone)
+      if (aNewtonRes.IsDone())
       {
-        aRootU1    = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U1));
-        aRootU2    = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.U2));
+        aRootU1    = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U));
+        aRootU2    = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.V));
         aConverged = true;
       }
       else
       {
-        // Fallback: find best grid point in the candidate cell
-        double aBestDist = std::numeric_limits<double>::max();
-        int    aBestI1   = aCand.Idx1;
-        int    aBestI2   = aCand.Idx2;
-
-        for (int di = 0; di <= 1; ++di)
+        // Powell fallback: gradient-free optimization when Newton fails.
+        // Powell is robust for ill-conditioned problems or degenerate curves.
+        double aPowellU1 = 0.0;
+        double aPowellU2 = 0.0;
+        if (powellFallback(aFunc,
+                           aCand.StartU1,
+                           aCand.StartU2,
+                           aCellU1Min,
+                           aCellU1Max,
+                           aCellU2Min,
+                           aCellU2Max,
+                           theTol,
+                           aPowellU1,
+                           aPowellU2))
         {
-          for (int dj = 0; dj <= 1; ++dj)
-          {
-            int    i     = aCand.Idx1 + di;
-            int    j     = aCand.Idx2 + dj;
-            double aDist = myGridData(i, j).Dist;
-            if (aDist < aBestDist)
-            {
-              aBestDist = aDist;
-              aBestI1   = i;
-              aBestI2   = j;
-            }
-          }
-        }
-
-        aRootU1 = myGrid1(aBestI1).U;
-        aRootU2 = myGrid2(aBestI2).U;
-
-        // Try Newton again from best corner
-        ExtremaCC_Newton::Result aRetryRes = ExtremaCC_Newton::Solve(aFunc,
-                                                                      aRootU1,
-                                                                      aRootU2,
-                                                                      aCellU1Min,
-                                                                      aCellU1Max,
-                                                                      aCellU2Min,
-                                                                      aCellU2Max,
-                                                                      theTol * 10.0);
-
-        if (aRetryRes.IsDone)
-        {
-          aRootU1    = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aRetryRes.U1));
-          aRootU2    = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aRetryRes.U2));
+          aRootU1    = aPowellU1;
+          aRootU2    = aPowellU2;
           aConverged = true;
         }
         else
         {
-          // Powell fallback: gradient-free optimization when Newton fails
-          // Especially robust for ill-conditioned problems or degenerate curves
-          double aPowellU1 = 0.0;
-          double aPowellU2 = 0.0;
-          if (powellFallback(aFunc,
-                             aRootU1,
-                             aRootU2,
-                             aCellU1Min,
-                             aCellU1Max,
-                             aCellU2Min,
-                             aCellU2Max,
-                             theTol,
-                             aPowellU1,
-                             aPowellU2))
+          // Final fallback: use best grid corner and check gradient
+          double aBestDist = std::numeric_limits<double>::max();
+          for (int di = 0; di <= 1; ++di)
           {
-            aRootU1    = aPowellU1;
-            aRootU2    = aPowellU2;
-            aConverged = true;
-          }
-          else
-          {
-            // Final fallback: check if gradient is near zero at best grid point
-            double aF1, aF2;
-            aFunc.Value(aRootU1, aRootU2, aF1, aF2);
-            double aFNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
-            if (aFNorm < theTol * 100.0)
+            for (int dj = 0; dj <= 1; ++dj)
             {
-              aConverged = true;
+              const double aDist = myGridData(aCand.Idx1 + di, aCand.Idx2 + dj).Dist;
+              if (aDist < aBestDist)
+              {
+                aBestDist = aDist;
+                aRootU1   = myGrid1(aCand.Idx1 + di).U;
+                aRootU2   = myGrid2(aCand.Idx2 + dj).U;
+              }
             }
+          }
+
+          double aF1, aF2;
+          aFunc.Value(aRootU1, aRootU2, aF1, aF2);
+          const double aFNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
+          if (aFNorm < theTol * 100.0)
+          {
+            aConverged = true;
           }
         }
       }
@@ -707,23 +709,23 @@ private:
 
     // Try Newton refinement from the best grid point
     ExtremaCC_DistanceFunction<Curve1Eval, Curve2Eval> aFunc(myCurve1, myCurve2);
-    ExtremaCC_Newton::Result aNewtonRes = ExtremaCC_Newton::Solve(aFunc,
-                                                                   aGridMinU1,
-                                                                   aGridMinU2,
-                                                                   myDomain.Curve1.Min,
-                                                                   myDomain.Curve1.Max,
-                                                                   myDomain.Curve2.Min,
-                                                                   myDomain.Curve2.Max,
-                                                                   theTol);
+    MathSys::Newton2DResult aNewtonRes = MathSys::Newton2DSymmetric(aFunc,
+                                                                     aGridMinU1,
+                                                                     aGridMinU2,
+                                                                     myDomain.Curve1.Min,
+                                                                     myDomain.Curve1.Max,
+                                                                     myDomain.Curve2.Min,
+                                                                     myDomain.Curve2.Max,
+                                                                     theTol);
 
     double aRefinedU1   = aGridMinU1;
     double aRefinedU2   = aGridMinU2;
     double aRefinedDist = aGridMinDist;
 
-    if (aNewtonRes.IsDone)
+    if (aNewtonRes.IsDone())
     {
-      aRefinedU1   = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U1));
-      aRefinedU2   = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.U2));
+      aRefinedU1   = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U));
+      aRefinedU2   = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.V));
       aRefinedDist = aFunc.SquareDistance(aRefinedU1, aRefinedU2);
     }
     else
@@ -763,9 +765,10 @@ private:
   }
 
 private:
-  const Curve1Eval&   myCurve1; //!< First curve evaluator
-  const Curve2Eval&   myCurve2; //!< Second curve evaluator
-  ExtremaCC::Domain2D myDomain; //!< Parameter domain
+  const Curve1Eval&   myCurve1;  //!< First curve evaluator
+  const Curve2Eval&   myCurve2;  //!< Second curve evaluator
+  ExtremaCC::Domain2D myDomain;  //!< Parameter domain
+  int                 myGridSize; //!< Grid resolution (samples per curve)
 
   // Mutable cached temporaries
   mutable NCollection_Array1<CurvePoint>              myGrid1;         //!< Cached grid for first curve
