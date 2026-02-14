@@ -10,6 +10,7 @@ set(OCCT_MathUtils_FILES
   MathUtils_Core.hxx
   MathUtils_Convergence.hxx
   MathUtils_Poly.hxx
+  MathUtils_Random.hxx
   MathUtils_Bracket.hxx
   MathUtils_Gauss.hxx
   MathUtils_Deriv.hxx

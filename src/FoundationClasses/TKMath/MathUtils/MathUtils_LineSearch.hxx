@@ -545,6 +545,180 @@ inline double QuadraticInterpolation(double thePhi0,
   return aAlphaNew;
 }
 
+//! Brent's method for 1D minimization along a single coordinate axis.
+//! Operates in-place on one coordinate of thePoint, avoiding vector allocations.
+//! Unlike ExactLineSearch which works with arbitrary direction vectors and allocates
+//! internal temporaries, this function modifies only thePoint(theDimIdx) during the
+//! search and restores it if no improvement is found.
+//!
+//! @tparam Function type with Value(const math_Vector&, double&) method
+//! @param theFunc function to minimize
+//! @param thePoint current point (the active coordinate is modified during search,
+//!                 restored if no improvement)
+//! @param theDimIdx index of the coordinate to optimize
+//! @param theLoBound lower bound for this coordinate
+//! @param theUpBound upper bound for this coordinate
+//! @param theFx current function value at thePoint (updated if improved)
+//! @param theTolerance convergence tolerance
+//! @param theMaxIter maximum iterations
+//! @param theEvalCount incremented by the number of function evaluations used
+//! @return true if an improvement was found; thePoint and theFx are updated accordingly
+template <typename Function>
+bool BrentAlongCoordinate(Function&    theFunc,
+                          math_Vector& thePoint,
+                          int          theDimIdx,
+                          double       theLoBound,
+                          double       theUpBound,
+                          double&      theFx,
+                          double       theTolerance,
+                          int          theMaxIter,
+                          int&         theEvalCount)
+{
+  const double aOrigCoord = thePoint(theDimIdx);
+
+  // Search interval [aA, aB] in coordinate space (not alpha space)
+  double aA = theLoBound;
+  double aB = theUpBound;
+  double aX = aOrigCoord;
+  double aW = aX;
+  double aV = aX;
+
+  double aFx = theFx;
+  double aFw = aFx;
+  double aFv = aFx;
+
+  double aD = 0.0;
+  double aE = 0.0;
+
+  for (int anIter = 0; anIter < theMaxIter; ++anIter)
+  {
+    const double aXm   = 0.5 * (aA + aB);
+    const double aTol1 = theTolerance * std::abs(aX) + THE_ZERO_TOL / 10.0;
+    const double aTol2 = 2.0 * aTol1;
+
+    // Check convergence
+    if (std::abs(aX - aXm) <= (aTol2 - 0.5 * (aB - aA)))
+    {
+      break;
+    }
+
+    double aU            = 0.0;
+    bool   aUseParabolic = false;
+
+    // Try parabolic interpolation
+    if (std::abs(aE) > aTol1)
+    {
+      const double aR = (aX - aW) * (aFx - aFv);
+      double       aQ = (aX - aV) * (aFx - aFw);
+      double       aP = (aX - aV) * aQ - (aX - aW) * aR;
+      aQ              = 2.0 * (aQ - aR);
+
+      if (aQ > 0.0)
+      {
+        aP = -aP;
+      }
+      else
+      {
+        aQ = -aQ;
+      }
+
+      const double aETmp = aE;
+      aE                 = aD;
+
+      if (std::abs(aP) < std::abs(0.5 * aQ * aETmp) && aP > aQ * (aA - aX) && aP < aQ * (aB - aX))
+      {
+        aD = aP / aQ;
+        aU = aX + aD;
+        if ((aU - aA) < aTol2 || (aB - aU) < aTol2)
+        {
+          aD = SignTransfer(aTol1, aXm - aX);
+        }
+        aUseParabolic = true;
+      }
+    }
+
+    if (!aUseParabolic)
+    {
+      aE = (aX < aXm) ? (aB - aX) : (aA - aX);
+      aD = THE_GOLDEN_SECTION * aE;
+    }
+
+    if (std::abs(aD) >= aTol1)
+    {
+      aU = aX + aD;
+    }
+    else
+    {
+      aU = aX + SignTransfer(aTol1, aD);
+    }
+
+    // Evaluate: only modify the single coordinate
+    thePoint(theDimIdx) = aU;
+    double aFu          = 0.0;
+    if (!theFunc.Value(thePoint, aFu))
+    {
+      // Restore and abort
+      thePoint(theDimIdx) = aOrigCoord;
+      return false;
+    }
+    ++theEvalCount;
+
+    // Update bracket
+    if (aFu <= aFx)
+    {
+      if (aU < aX)
+      {
+        aB = aX;
+      }
+      else
+      {
+        aA = aX;
+      }
+      aV  = aW;
+      aW  = aX;
+      aX  = aU;
+      aFv = aFw;
+      aFw = aFx;
+      aFx = aFu;
+    }
+    else
+    {
+      if (aU < aX)
+      {
+        aA = aU;
+      }
+      else
+      {
+        aB = aU;
+      }
+      if (aFu <= aFw || aW == aX)
+      {
+        aV  = aW;
+        aW  = aU;
+        aFv = aFw;
+        aFw = aFu;
+      }
+      else if (aFu <= aFv || aV == aX || aV == aW)
+      {
+        aV  = aU;
+        aFv = aFu;
+      }
+    }
+  }
+
+  // Accept if improved
+  if (aFx < theFx)
+  {
+    thePoint(theDimIdx) = aX;
+    theFx               = aFx;
+    return true;
+  }
+
+  // Restore original coordinate
+  thePoint(theDimIdx) = aOrigCoord;
+  return false;
+}
+
 } // namespace MathUtils
 
 #endif // _MathUtils_LineSearch_HeaderFile

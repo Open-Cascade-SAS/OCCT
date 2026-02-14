@@ -16,11 +16,11 @@
 
 #include <MathUtils_Types.hxx>
 #include <MathUtils_Config.hxx>
+#include <MathUtils_Random.hxx>
 #include <MathOpt_PSO.hxx>
 #include <MathOpt_BFGS.hxx>
 #include <MathOpt_Powell.hxx>
 #include <MathUtils_Core.hxx>
-#include <math_BullardGenerator.hxx>
 
 #include <NCollection_Vector.hxx>
 
@@ -42,12 +42,13 @@ enum class GlobalStrategy
 //! Configuration for global optimization.
 struct GlobalConfig : NDimConfig
 {
-  GlobalStrategy Strategy      = GlobalStrategy::PSOHybrid; //!< Algorithm to use
-  int            NbPopulation  = 40;                        //!< Population/swarm size
-  int            NbStarts      = 10;    //!< Number of random starts (for MultiStart)
-  double         MutationScale = 0.8;   //!< Mutation scale (for DE)
-  double         CrossoverProb = 0.9;   //!< Crossover probability (for DE)
-  unsigned int   Seed          = 12345; //!< Random seed
+  GlobalStrategy Strategy           = GlobalStrategy::PSOHybrid; //!< Algorithm to use
+  int            NbPopulation       = 40;                        //!< Population/swarm size
+  int            NbStarts           = 10;  //!< Number of random starts (for MultiStart)
+  double         MutationScale      = 0.8; //!< Mutation scale (for DE)
+  double         CrossoverProb      = 0.9; //!< Crossover probability (for DE)
+  unsigned int   Seed               = 6;   //!< Random seed
+  int            PolishBudgetPerDim = 50;  //!< Max polishing evals per dimension (0 = no polishing)
 
   //! Default constructor.
   GlobalConfig()
@@ -83,55 +84,62 @@ VectorResult DifferentialEvolution(Function&           theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theLowerBounds.Lower();
-  const int aUpper = theLowerBounds.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const int aLower  = theLowerBounds.Lower();
+  const int aUpper  = theLowerBounds.Upper();
+  const int aNbDims = aUpper - aLower + 1;
 
-  if (theUpperBounds.Length() != aN)
+  if (theUpperBounds.Length() != aNbDims)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  const int    aNP = theConfig.NbPopulation;
-  const double aF  = theConfig.MutationScale;
-  const double aCR = theConfig.CrossoverProb;
+  const int aNbPop = theConfig.NbPopulation;
+  if (aNbPop < 4)
+  {
+    // DE requires at least 4 population members for mutation (3 distinct + target)
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
+  const double aMutScale  = theConfig.MutationScale;
+  const double aCrossProb = theConfig.CrossoverProb;
 
   // Random number generator
-  math_BullardGenerator aRNG(theConfig.Seed);
+  MathUtils::RandomGenerator aRNG(theConfig.Seed);
 
   // Population: vector of candidate solutions
   NCollection_Vector<math_Vector> aPopulation;
-  math_Vector                     aFitness(0, aNP - 1);
+  math_Vector                     aFitness(0, aNbPop - 1);
 
   // Initialize population
-  for (int i = 0; i < aNP; ++i)
+  for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
   {
     aPopulation.Append(math_Vector(aLower, aUpper));
-    for (int j = aLower; j <= aUpper; ++j)
+    for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
     {
-      double r = aRNG.NextReal();
-      aPopulation.ChangeValue(i)(j) =
-        theLowerBounds(j) + r * (theUpperBounds(j) - theLowerBounds(j));
+      const double aRandVal = aRNG.NextReal();
+      aPopulation.ChangeValue(aMemberIdx)(aDimIdx) =
+        theLowerBounds(aDimIdx) + aRandVal * (theUpperBounds(aDimIdx) - theLowerBounds(aDimIdx));
     }
 
-    double aFit;
-    if (!theFunc.Value(aPopulation.Value(i), aFit))
+    double aFitVal;
+    if (!theFunc.Value(aPopulation.Value(aMemberIdx), aFitVal))
     {
-      aFit = std::numeric_limits<double>::max();
+      aFitVal = std::numeric_limits<double>::max();
     }
-    aFitness(i) = aFit;
+    aFitness(aMemberIdx) = aFitVal;
   }
 
   // Find best
   int    aBestIdx   = 0;
   double aBestValue = aFitness(0);
-  for (int i = 1; i < aNP; ++i)
+  for (int aMemberIdx = 1; aMemberIdx < aNbPop; ++aMemberIdx)
   {
-    if (aFitness(i) < aBestValue)
+    if (aFitness(aMemberIdx) < aBestValue)
     {
-      aBestValue = aFitness(i);
-      aBestIdx   = i;
+      aBestValue = aFitness(aMemberIdx);
+      aBestIdx   = aMemberIdx;
     }
   }
 
@@ -143,39 +151,41 @@ VectorResult DifferentialEvolution(Function&           theFunc,
   {
     aResult.NbIterations = anIter + 1;
 
-    for (int i = 0; i < aNP; ++i)
+    for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
     {
-      // Select 3 distinct random indices different from i
-      int a, b, c;
+      // Select 3 distinct random indices different from current member
+      int anIdxA, anIdxB, anIdxC;
       do
       {
-        a = static_cast<int>(aRNG.NextReal() * aNP);
-      } while (a == i);
+        anIdxA = static_cast<int>(aRNG.NextReal() * aNbPop);
+      } while (anIdxA == aMemberIdx);
       do
       {
-        b = static_cast<int>(aRNG.NextReal() * aNP);
-      } while (b == i || b == a);
+        anIdxB = static_cast<int>(aRNG.NextReal() * aNbPop);
+      } while (anIdxB == aMemberIdx || anIdxB == anIdxA);
       do
       {
-        c = static_cast<int>(aRNG.NextReal() * aNP);
-      } while (c == i || c == a || c == b);
+        anIdxC = static_cast<int>(aRNG.NextReal() * aNbPop);
+      } while (anIdxC == aMemberIdx || anIdxC == anIdxA || anIdxC == anIdxB);
 
       // Mutation and crossover
-      int jRand = aLower + static_cast<int>(aRNG.NextReal() * aN);
+      const int aJRand = aLower + static_cast<int>(aRNG.NextReal() * aNbDims);
 
-      for (int j = aLower; j <= aUpper; ++j)
+      for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
       {
-        if (aRNG.NextReal() < aCR || j == jRand)
+        if (aRNG.NextReal() < aCrossProb || aDimIdx == aJRand)
         {
           // Mutation: DE/rand/1
-          double aVal =
-            aPopulation.Value(a)(j) + aF * (aPopulation.Value(b)(j) - aPopulation.Value(c)(j));
+          const double aMutVal =
+            aPopulation.Value(anIdxA)(aDimIdx)
+            + aMutScale * (aPopulation.Value(anIdxB)(aDimIdx) - aPopulation.Value(anIdxC)(aDimIdx));
           // Clamp to bounds
-          aTrial(j) = MathUtils::Clamp(aVal, theLowerBounds(j), theUpperBounds(j));
+          aTrial(aDimIdx) =
+            MathUtils::Clamp(aMutVal, theLowerBounds(aDimIdx), theUpperBounds(aDimIdx));
         }
         else
         {
-          aTrial(j) = aPopulation.Value(i)(j);
+          aTrial(aDimIdx) = aPopulation.Value(aMemberIdx)(aDimIdx);
         }
       }
 
@@ -186,24 +196,24 @@ VectorResult DifferentialEvolution(Function&           theFunc,
         aTrialFitness = std::numeric_limits<double>::max();
       }
 
-      if (aTrialFitness <= aFitness(i))
+      if (aTrialFitness <= aFitness(aMemberIdx))
       {
-        aPopulation.ChangeValue(i) = aTrial;
-        aFitness(i)                = aTrialFitness;
+        aPopulation.ChangeValue(aMemberIdx) = aTrial;
+        aFitness(aMemberIdx)                = aTrialFitness;
 
         if (aTrialFitness < aBestValue)
         {
           aBestValue = aTrialFitness;
-          aBestIdx   = i;
+          aBestIdx   = aMemberIdx;
         }
       }
     }
 
     // Check convergence
     double aMaxDiff = 0.0;
-    for (int i = 0; i < aNP; ++i)
+    for (int aMemberIdx = 0; aMemberIdx < aNbPop; ++aMemberIdx)
     {
-      aMaxDiff = std::max(aMaxDiff, std::abs(aFitness(i) - aBestValue));
+      aMaxDiff = std::max(aMaxDiff, std::abs(aFitness(aMemberIdx) - aBestValue));
     }
 
     if (aMaxDiff < theConfig.Tolerance)
@@ -212,9 +222,25 @@ VectorResult DifferentialEvolution(Function&           theFunc,
     }
   }
 
+  // Polish the best solution using coordinate-wise Brent's method
+  math_Vector aPolished      = aPopulation.Value(aBestIdx);
+  double      aPolishedValue = aBestValue;
+  if (theConfig.PolishBudgetPerDim > 0)
+  {
+    int aPolishEvals = 0;
+    PolishCoordinateWise(theFunc,
+                         aPolished,
+                         aPolishedValue,
+                         theLowerBounds,
+                         theUpperBounds,
+                         theConfig.Tolerance,
+                         theConfig.PolishBudgetPerDim * aNbDims,
+                         aPolishEvals);
+  }
+
   aResult.Status   = Status::OK;
-  aResult.Solution = aPopulation.Value(aBestIdx);
-  aResult.Value    = aBestValue;
+  aResult.Solution = aPolished;
+  aResult.Value    = aPolishedValue;
   return aResult;
 }
 
@@ -238,17 +264,17 @@ VectorResult MultiStart(Function&           theFunc,
 {
   VectorResult aResult;
 
-  const int aLower = theLowerBounds.Lower();
-  const int aUpper = theLowerBounds.Upper();
-  const int aN     = aUpper - aLower + 1;
+  const int aLower  = theLowerBounds.Lower();
+  const int aUpper  = theLowerBounds.Upper();
+  const int aNbDims = aUpper - aLower + 1;
 
-  if (theUpperBounds.Length() != aN)
+  if (theUpperBounds.Length() != aNbDims)
   {
     aResult.Status = Status::InvalidInput;
     return aResult;
   }
 
-  math_BullardGenerator aRNG(theConfig.Seed);
+  MathUtils::RandomGenerator aRNG(theConfig.Seed);
 
   math_Vector aBestSolution(aLower, aUpper);
   double      aBestValue = std::numeric_limits<double>::max();
@@ -265,14 +291,15 @@ VectorResult MultiStart(Function&           theFunc,
     aPowellConfig.MaxIterations = 10;
   }
 
-  for (int s = 0; s < theConfig.NbStarts; ++s)
+  for (int aStartIdx = 0; aStartIdx < theConfig.NbStarts; ++aStartIdx)
   {
     // Random starting point within bounds
     math_Vector aStart(aLower, aUpper);
-    for (int i = aLower; i <= aUpper; ++i)
+    for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
     {
-      double r  = aRNG.NextReal();
-      aStart(i) = theLowerBounds(i) + r * (theUpperBounds(i) - theLowerBounds(i));
+      const double aRandVal = aRNG.NextReal();
+      aStart(aDimIdx) =
+        theLowerBounds(aDimIdx) + aRandVal * (theUpperBounds(aDimIdx) - theLowerBounds(aDimIdx));
     }
 
     // Run local optimization from this starting point
@@ -282,9 +309,10 @@ VectorResult MultiStart(Function&           theFunc,
     {
       // Clamp solution to bounds
       math_Vector aSol = *aLocalResult.Solution;
-      for (int i = aLower; i <= aUpper; ++i)
+      for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
       {
-        aSol(i) = MathUtils::Clamp(aSol(i), theLowerBounds(i), theUpperBounds(i));
+        aSol(aDimIdx) =
+          MathUtils::Clamp(aSol(aDimIdx), theLowerBounds(aDimIdx), theUpperBounds(aDimIdx));
       }
 
       // Re-evaluate at clamped point
@@ -338,15 +366,55 @@ VectorResult GlobalMinimum(Function&           theFunc,
                            const math_Vector&  theUpperBounds,
                            const GlobalConfig& theConfig = GlobalConfig())
 {
+  return GlobalMinimum(theFunc,
+                       theLowerBounds,
+                       theUpperBounds,
+                       theConfig,
+                       nullptr,
+                       nullptr,
+                       nullptr);
+}
+
+//! Unified global optimization interface with PSO-specific options.
+//!
+//! For PSO and PSOHybrid strategies, uses the provided PSO configuration,
+//! seed particles, and stats output. For other strategies, these are ignored.
+//!
+//! @tparam Function type with Value(const math_Vector&, double&) method
+//! @param theFunc function to minimize
+//! @param theLowerBounds lower bounds for each variable
+//! @param theUpperBounds upper bounds for each variable
+//! @param theConfig solver configuration
+//! @param thePSOConfig optional PSO-specific configuration (overrides auto-generated)
+//! @param theSeeds optional seed particles for PSO initialization
+//! @param theStats optional PSO statistics output
+//! @return result containing best solution found
+template <typename Function>
+VectorResult GlobalMinimum(Function&                                  theFunc,
+                           const math_Vector&                         theLowerBounds,
+                           const math_Vector&                         theUpperBounds,
+                           const GlobalConfig&                        theConfig,
+                           const PSOConfig*                           thePSOConfig,
+                           const NCollection_Vector<PSOSeedParticle>* theSeeds = nullptr,
+                           PSOStats*                                  theStats = nullptr)
+{
   switch (theConfig.Strategy)
   {
     case GlobalStrategy::PSO: {
       PSOConfig aPSOConfig;
-      aPSOConfig.NbParticles   = theConfig.NbPopulation;
-      aPSOConfig.MaxIterations = theConfig.MaxIterations;
-      aPSOConfig.Tolerance     = theConfig.Tolerance;
-      aPSOConfig.Seed          = theConfig.Seed;
-      return PSO(theFunc, theLowerBounds, theUpperBounds, aPSOConfig);
+      if (thePSOConfig != nullptr)
+      {
+        aPSOConfig = *thePSOConfig;
+      }
+      else
+      {
+        aPSOConfig.NbParticles        = theConfig.NbPopulation;
+        aPSOConfig.MaxIterations      = theConfig.MaxIterations;
+        aPSOConfig.Tolerance          = theConfig.Tolerance;
+        aPSOConfig.Seed               = theConfig.Seed;
+        aPSOConfig.PolishBudgetPerDim = theConfig.PolishBudgetPerDim;
+      }
+      return PSO(theFunc, theLowerBounds, theUpperBounds, aPSOConfig, theSeeds, theStats);
     }
 
     case GlobalStrategy::MultiStart:
@@ -355,12 +423,24 @@ VectorResult GlobalMinimum(Function&           theFunc,
     case GlobalStrategy::PSOHybrid: {
       // Run PSO first for global exploration
       PSOConfig aPSOConfig;
-      aPSOConfig.NbParticles   = theConfig.NbPopulation;
-      aPSOConfig.MaxIterations = theConfig.MaxIterations / 2;
-      aPSOConfig.Tolerance     = theConfig.Tolerance * 10.0;
-      aPSOConfig.Seed          = theConfig.Seed;
+      if (thePSOConfig != nullptr)
+      {
+        // Honor caller's PSO configuration fully
+        aPSOConfig = *thePSOConfig;
+      }
+      else
+      {
+        // Auto-generate PSO config from GlobalConfig:
+        // use half iterations and relaxed tolerance for the PSO phase
+        aPSOConfig.NbParticles        = theConfig.NbPopulation;
+        aPSOConfig.MaxIterations      = theConfig.MaxIterations / 2;
+        aPSOConfig.Tolerance          = theConfig.Tolerance * 10.0;
+        aPSOConfig.Seed               = theConfig.Seed;
+        aPSOConfig.PolishBudgetPerDim = theConfig.PolishBudgetPerDim;
+      }
 
-      VectorResult aPSOResult = PSO(theFunc, theLowerBounds, theUpperBounds, aPSOConfig);
+      VectorResult aPSOResult =
+        PSO(theFunc, theLowerBounds, theUpperBounds, aPSOConfig, theSeeds, theStats);
 
       if (!aPSOResult.IsDone() || !aPSOResult.Solution)
       {
@@ -383,9 +463,10 @@ VectorResult GlobalMinimum(Function&           theFunc,
         const int   aLower = theLowerBounds.Lower();
         const int   aUpper = theLowerBounds.Upper();
         math_Vector aSol   = *aLocalResult.Solution;
-        for (int i = aLower; i <= aUpper; ++i)
+        for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
         {
-          aSol(i) = MathUtils::Clamp(aSol(i), theLowerBounds(i), theUpperBounds(i));
+          aSol(aDimIdx) =
+            MathUtils::Clamp(aSol(aDimIdx), theLowerBounds(aDimIdx), theUpperBounds(aDimIdx));
         }
         aLocalResult.Solution = aSol;
 
