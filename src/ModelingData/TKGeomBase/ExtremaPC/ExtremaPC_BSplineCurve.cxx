@@ -15,6 +15,7 @@
 
 #include <GeomGridEval_BSplineCurve.hxx>
 #include <math_Vector.hxx>
+#include <NCollection_Vector.hxx>
 
 //==================================================================================================
 
@@ -44,19 +45,22 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
   if (myCurve.IsNull())
   {
     // Fallback to uniform sampling
-    return ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max, 32);
+    return ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max,
+                                                       ExtremaPC::THE_BSPLINE_FALLBACK_SAMPLES);
   }
 
   const double theUMin = myDomain.Min;
   const double theUMax = myDomain.Max;
 
-  const int                   aDegree = myCurve->Degree();
+  const int                         aDegree = myCurve->Degree();
   const NCollection_Array1<double>& aKnots  = myCurve->Knots();
 
-  // First pass: count parameters
-  int aCount = 1; // Start with theUMin
-  // Use 2*(degree+1) samples per span
-  const int aSamplesPerSpan = 2 * (aDegree + 1);
+  // Use multiplier*(degree+1) samples per span for accurate extrema detection.
+  const int aSamplesPerSpan = ExtremaPC::THE_BSPLINE_SPAN_MULTIPLIER * (aDegree + 1);
+
+  // Single-pass algorithm using dynamic vector
+  NCollection_Vector<double> aParams;
+  aParams.Append(theUMin);
 
   for (int i = aKnots.Lower(); i < aKnots.Upper(); ++i)
   {
@@ -72,38 +76,19 @@ math_Vector ExtremaPC_BSplineCurve::buildKnotAwareParams() const
     {
       double aU = aSpanLo + j * aStep;
       if (aU > theUMin && aU < theUMax)
-        ++aCount;
+        aParams.Append(aU);
     }
     if (aKnotHi > theUMin && aKnotHi < theUMax)
-      ++aCount;
+      aParams.Append(aKnotHi);
   }
-  ++aCount; // For theUMax
+  aParams.Append(theUMax);
 
-  // Second pass: fill math_Vector
-  math_Vector aResult(1, aCount);
-  int         aIdx = 1;
-  aResult(aIdx++)  = theUMin;
-
-  for (int i = aKnots.Lower(); i < aKnots.Upper(); ++i)
+  // Convert to math_Vector (required by BuildGrid interface)
+  math_Vector aResult(1, aParams.Length());
+  for (int i = 0; i < aParams.Length(); ++i)
   {
-    double aKnotLo = aKnots.Value(i);
-    double aKnotHi = aKnots.Value(i + 1);
-    double aSpanLo = std::max(aKnotLo, theUMin);
-    double aSpanHi = std::min(aKnotHi, theUMax);
-    if (aSpanHi <= aSpanLo)
-      continue;
-
-    double aStep = (aSpanHi - aSpanLo) / aSamplesPerSpan;
-    for (int j = 1; j < aSamplesPerSpan; ++j)
-    {
-      double aU = aSpanLo + j * aStep;
-      if (aU > theUMin && aU < theUMax)
-        aResult(aIdx++) = aU;
-    }
-    if (aKnotHi > theUMin && aKnotHi < theUMax)
-      aResult(aIdx++) = aKnotHi;
+    aResult(i + 1) = aParams.Value(i);
   }
-  aResult(aIdx) = theUMax;
 
   return aResult;
 }

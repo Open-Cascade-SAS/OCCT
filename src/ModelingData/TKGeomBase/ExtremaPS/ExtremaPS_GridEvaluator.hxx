@@ -22,6 +22,7 @@
 #include <math_Vector.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Vector.hxx>
+#include <Precision.hxx>
 
 #include <algorithm>
 #include <cmath>
@@ -393,7 +394,9 @@ private:
       const SortEntry& anEntry   = mySortedEntries.Value(s);
       double           anEstDist = anEntry.Dist;
 
-      // Early termination
+      // Early termination: skip candidates that are clearly worse than the best found.
+      // For Min mode: skip if estimated distance > best * (2.0 - threshold), i.e., ~1.1x best.
+      // For Max mode: skip if estimated distance < best * threshold, i.e., ~0.9x best.
       constexpr double aMinSkipThreshold = 2.0 - ExtremaPS::THE_MAX_SKIP_THRESHOLD;
       if (theMode == ExtremaPS::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
         break;
@@ -458,7 +461,8 @@ private:
 
         // Try Newton one more time from the best corner
         ExtremaPS_Newton::Result aRetryRes = ExtremaPS_Newton::Solve(
-          aFunc, aRootU, aRootV, aCellUMin, aCellUMax, aCellVMin, aCellVMax, theTol * 10.0);
+          aFunc, aRootU, aRootV, aCellUMin, aCellUMax, aCellVMin, aCellVMax,
+          theTol * ExtremaPS::THE_NEWTON_RETRY_TOL_FACTOR);
 
         if (aRetryRes.IsDone)
         {
@@ -615,14 +619,12 @@ private:
     if (myCacheCount == 0)
       return false;
 
-    constexpr double THE_COHERENCE_THRESHOLD_SQ = 100.0; // Distance^2 threshold
-
     // Get most recent cached solution
     int aLastIdx = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
     const CachedSolution& aLast = myCachedSolutions[aLastIdx];
 
     double aDistSq = theP.SquareDistance(aLast.QueryPoint);
-    if (aDistSq > THE_COHERENCE_THRESHOLD_SQ)
+    if (aDistSq > ExtremaPS::THE_COHERENCE_THRESHOLD_SQ)
       return false;
 
     // Compute starting point: use trajectory prediction if 3 points available
@@ -646,15 +648,15 @@ private:
       double aMag01 = aV01.Magnitude();
       double aMag12 = aV12.Magnitude();
 
-      // Only predict if steps are similar in magnitude (ratio between 0.5 and 2.0)
-      if (aMag01 > 1e-10 && aMag12 > 1e-10)
+      // Only predict if steps are similar in magnitude (ratio within acceptable range)
+      if (aMag01 > Precision::Confusion() && aMag12 > Precision::Confusion())
       {
         double aRatio = aMag12 / aMag01;
-        if (aRatio > 0.5 && aRatio < 2.0)
+        if (aRatio > ExtremaPS::THE_TRAJECTORY_MIN_RATIO && aRatio < ExtremaPS::THE_TRAJECTORY_MAX_RATIO)
         {
           // Compute cosine of angle between consecutive steps
           double aCos = aV01.Dot(aV12) / (aMag01 * aMag12);
-          if (aCos > 0.7) // Roughly same direction (< ~45 degrees)
+          if (aCos > ExtremaPS::THE_TRAJECTORY_MIN_COS) // Roughly same direction (< ~45 degrees)
           {
             // Linear extrapolation: predict (U, V) based on previous steps
             double aDeltaU = aS2.U - aS1.U;

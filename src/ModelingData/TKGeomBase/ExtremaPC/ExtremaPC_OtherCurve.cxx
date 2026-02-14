@@ -45,10 +45,9 @@ void ExtremaPC_OtherCurve::buildGrid()
   }
 
   // Use higher number of samples for general curves
-  constexpr int aNbSamples = 64;
-
   math_Vector aParams =
-    ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max, aNbSamples);
+    ExtremaPC_GridEvaluator::BuildUniformParams(myDomain.Min, myDomain.Max,
+                                                ExtremaPC::THE_OTHER_CURVE_NB_SAMPLES);
 
   GeomGridEval_OtherCurve aGridEval(*myCurve);
   myEvaluator.BuildGrid(aGridEval, aParams);
