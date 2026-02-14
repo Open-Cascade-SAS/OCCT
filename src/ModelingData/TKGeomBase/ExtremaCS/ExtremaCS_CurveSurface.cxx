@@ -13,29 +13,20 @@
 
 #include <ExtremaCS_CurveSurface.hxx>
 
-// Include all curve wrappers
-#include <ExtremaCS_BezierCurve.hxx>
-#include <ExtremaCS_BSplineCurve.hxx>
+// Include adapters for numerical evaluation
+#include <ExtremaCS_CurveAdapter.hxx>
+#include <ExtremaCS_SurfaceAdapter.hxx>
+
+// Include elementary curve wrappers (for analytical pairs only)
 #include <ExtremaCS_Circle.hxx>
 #include <ExtremaCS_Ellipse.hxx>
-#include <ExtremaCS_Hyperbola.hxx>
 #include <ExtremaCS_Line.hxx>
-#include <ExtremaCS_OffsetCurve.hxx>
-#include <ExtremaCS_OtherCurve.hxx>
-#include <ExtremaCS_Parabola.hxx>
 
-// Include all surface wrappers
-#include <ExtremaCS_BezierSurface.hxx>
-#include <ExtremaCS_BSplineSurface.hxx>
+// Include elementary surface wrappers (for analytical pairs only)
 #include <ExtremaCS_Cone.hxx>
 #include <ExtremaCS_Cylinder.hxx>
-#include <ExtremaCS_OffsetSurface.hxx>
-#include <ExtremaCS_OtherSurface.hxx>
 #include <ExtremaCS_Plane.hxx>
 #include <ExtremaCS_Sphere.hxx>
-#include <ExtremaCS_SurfaceOfExtrusion.hxx>
-#include <ExtremaCS_SurfaceOfRevolution.hxx>
-#include <ExtremaCS_Torus.hxx>
 
 // Include analytical pairs
 #include <ExtremaCS_CircleCylinder.hxx>
@@ -184,12 +175,12 @@ struct ExtremaCS_CurveSurface::Impl
       return theResult;
     }
 
-    ExtremaCS_OtherCurve   aCurveEval(*myCurve, theDomain.Curve);
-    ExtremaCS_OtherSurface aSurfaceEval(*mySurface, theDomain.Surface);
+    ExtremaCS_CurveAdapter   aCurveEval(*myCurve, theDomain.Curve);
+    ExtremaCS_SurfaceAdapter aSurfaceEval(*mySurface, theDomain.Surface);
 
-    ExtremaCS_GridEvaluator3D<ExtremaCS_OtherCurve, ExtremaCS_OtherSurface> aGridEval(aCurveEval,
-                                                                                       aSurfaceEval,
-                                                                                       theDomain);
+    ExtremaCS_GridEvaluator3D<ExtremaCS_CurveAdapter, ExtremaCS_SurfaceAdapter> aGridEval(aCurveEval,
+                                                                                           aSurfaceEval,
+                                                                                           theDomain);
     aGridEval.Perform(theResult, theTol, theMode);
 
     return theResult;

@@ -14,8 +14,6 @@
 #include <ExtremaCC_Curves.hxx>
 
 // Include all pair implementations
-#include <ExtremaCC_BezierCurve.hxx>
-#include <ExtremaCC_BSplineCurve.hxx>
 #include <ExtremaCC_Circle.hxx>
 #include <ExtremaCC_CircleCircle.hxx>
 #include <ExtremaCC_CircleEllipse.hxx>
@@ -35,9 +33,8 @@
 #include <ExtremaCC_Line.hxx>
 #include <ExtremaCC_LineLine.hxx>
 #include <ExtremaCC_LineParabola.hxx>
+#include <ExtremaCC_CurveAdapter.hxx>
 #include <ExtremaCC_Numerical.hxx>
-#include <ExtremaCC_OffsetCurve.hxx>
-#include <ExtremaCC_OtherCurve.hxx>
 #include <ExtremaCC_Parabola.hxx>
 #include <ExtremaCC_ParabolaParabola.hxx>
 #include <GeomAbs_CurveType.hxx>
@@ -167,12 +164,12 @@ struct ExtremaCC_Curves::Impl
       return theResult;
     }
 
-    ExtremaCC_OtherCurve aEval1(*myCurve1, theDomain.Curve1);
-    ExtremaCC_OtherCurve aEval2(*myCurve2, theDomain.Curve2);
+    ExtremaCC_CurveAdapter aEval1(*myCurve1, theDomain.Curve1);
+    ExtremaCC_CurveAdapter aEval2(*myCurve2, theDomain.Curve2);
 
-    ExtremaCC_GridEvaluator2D<ExtremaCC_OtherCurve, ExtremaCC_OtherCurve> aGridEval(aEval1,
-                                                                                    aEval2,
-                                                                                    theDomain);
+    ExtremaCC_GridEvaluator2D<ExtremaCC_CurveAdapter, ExtremaCC_CurveAdapter> aGridEval(aEval1,
+                                                                                        aEval2,
+                                                                                        theDomain);
     aGridEval.Perform(theResult, theTol, theMode);
 
     return theResult;
@@ -477,8 +474,8 @@ const ExtremaCC::Result& ExtremaCC_Curves::PerformWithEndpoints(double          
         myImpl->myCurve1 != nullptr && myImpl->myCurve2 != nullptr)
     {
       // Create evaluators for endpoint computation
-      ExtremaCC_OtherCurve aEval1(*myImpl->myCurve1, myDomain.Curve1);
-      ExtremaCC_OtherCurve aEval2(*myImpl->myCurve2, myDomain.Curve2);
+      ExtremaCC_CurveAdapter aEval1(*myImpl->myCurve1, myDomain.Curve1);
+      ExtremaCC_CurveAdapter aEval2(*myImpl->myCurve2, myDomain.Curve2);
 
       // Add endpoint extrema (respecting swap if needed)
       if (mySwapped)
