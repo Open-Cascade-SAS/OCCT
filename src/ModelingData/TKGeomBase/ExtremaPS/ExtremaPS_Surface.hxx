@@ -64,6 +64,10 @@ class ExtremaPS_Surface
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Default constructor - creates uninitialized evaluator.
+  //! Use IsInitialized() to check state, or assign a properly constructed instance.
+  ExtremaPS_Surface() = default;
+
   //! Constructor from GeomAdaptor_Surface (uses adaptor bounds as domain).
   //! @param[in] theSurface surface adaptor
   Standard_EXPORT ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface);

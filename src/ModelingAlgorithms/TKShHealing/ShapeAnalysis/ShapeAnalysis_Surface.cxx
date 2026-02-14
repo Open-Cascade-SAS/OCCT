@@ -32,7 +32,6 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <BndLib_Add3dCurve.hxx>
-#include <ElSLib.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -50,7 +49,6 @@
 #include <gp_Pnt2d.hxx>
 #include <Message.hxx>
 #include <Precision.hxx>
-#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -98,7 +96,6 @@ inline void RestrictBounds(double& theUf, double& theUl, double& theVf, double& 
 
 ShapeAnalysis_Surface::ShapeAnalysis_Surface(const occ::handle<Geom_Surface>& S)
     : mySurf(S),
-      myExtOK(false), //: 30
       myNbDeg(-1),
       myIsos(false),
       myIsoBoxes(false),
@@ -132,7 +129,7 @@ void ShapeAnalysis_Surface::Init(const occ::handle<Geom_Surface>& theSurface)
     assert(!theSurface.IsNull());
     return;
   }
-  myExtOK     = false; //: 30
+  myExtPS     = ExtremaPS_Surface(); // Reset to uninitialized state
   mySurf      = theSurface;
   myNbDeg     = -1;
   myUCloseVal = myVCloseVal = -1;
@@ -1168,266 +1165,145 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const double preci)
 {
   GeomAdaptor_Surface& SurfAdapt = *Adaptor3d();
   double               S = 0., T = 0.;
-  myGap         = -1.;  // devra etre calcule
-  bool computed = true; // a priori
+  myGap = -1.; // devra etre calcule
 
   double uf, ul, vf, vl;
-  Bounds(uf, ul, vf, vl); // modified by rln on 12/11/97 mySurf-> is deleted
+  Bounds(uf, ul, vf, vl);
 
-  { //: c9 abv 3 Mar 98: UKI60107-1 #350: to prevent 'catch' from catching exception raising below
-    //: it
-    try
-    { // ajout CKY 30-DEC-1997 (cf ProStep TR6 r_89-ug)
-      OCC_CATCH_SIGNALS
-      GeomAbs_SurfaceType surftype = SurfAdapt.GetType();
-      switch (surftype)
-      {
+  try
+  {
+    OCC_CATCH_SIGNALS
 
-        case GeomAbs_Plane: {
-          gp_Pln Plane = SurfAdapt.Plane();
-          ElSLib::Parameters(Plane, P3D, S, T);
-          break;
-        }
-        case GeomAbs_Cylinder: {
-          gp_Cylinder Cylinder = SurfAdapt.Cylinder();
-          ElSLib::Parameters(Cylinder, P3D, S, T);
-          S += ShapeAnalysis::AdjustByPeriod(S, 0.5 * (uf + ul), 2 * M_PI);
-          break;
-        }
-        case GeomAbs_Cone: {
-          gp_Cone Cone = SurfAdapt.Cone();
-          ElSLib::Parameters(Cone, P3D, S, T);
-          S += ShapeAnalysis::AdjustByPeriod(S, 0.5 * (uf + ul), 2 * M_PI);
-          break;
-        }
-        case GeomAbs_Sphere: {
-          gp_Sphere Sphere = SurfAdapt.Sphere();
-          ElSLib::Parameters(Sphere, P3D, S, T);
-          S += ShapeAnalysis::AdjustByPeriod(S, 0.5 * (uf + ul), 2 * M_PI);
-          break;
-        }
-        case GeomAbs_Torus: {
-          gp_Torus Torus = SurfAdapt.Torus();
-          ElSLib::Parameters(Torus, P3D, S, T);
-          S += ShapeAnalysis::AdjustByPeriod(S, 0.5 * (uf + ul), 2 * M_PI);
-          T += ShapeAnalysis::AdjustByPeriod(T, 0.5 * (vf + vl), 2 * M_PI);
-          break;
-        }
-        case GeomAbs_BezierSurface:
-        case GeomAbs_BSplineSurface:
-        case GeomAbs_SurfaceOfExtrusion:
-        case GeomAbs_SurfaceOfRevolution:
-        case GeomAbs_OffsetSurface: //: d0 abv 3 Mar 98: UKI60107-1 #350
-        {
-          S = (uf + ul) / 2;
-          T = (vf + vl) / 2; // yaura aumoins qqchose
-                             // pdn to fix hangs PRO17015
-          if ((surftype == GeomAbs_SurfaceOfExtrusion) && Precision::IsInfinite(uf)
-              && Precision::IsInfinite(ul))
-          {
-            // conic case
-            gp_Pnt2d prev(S, T);
-            gp_Pnt2d solution;
-            if (SurfaceNewton(prev, P3D, preci, solution) != 0)
-            {
-#ifdef OCCT_DEBUG
-              std::cout << "Newton found point on conic extrusion" << std::endl;
-#endif
-              return solution;
-            }
-#ifdef OCCT_DEBUG
-            std::cout << "Newton failed point on conic extrusion" << std::endl;
-#endif
-            uf = -500;
-            ul = 500;
-          }
-
-          RestrictBounds(uf, ul, vf, vl);
-
-          //: 30 by abv 2.12.97: speed optimization
-          // code is taken from GeomAPI_ProjectPointOnSurf
-          if (!myExtOK)
-          {
-            //      double du = std::abs(ul-uf)/100;  double dv = std::abs(vl-vf)/100;
-            //      if (IsUClosed()) du = 0;  if (IsVClosed()) dv = 0;
-            //  Forcer appel a IsU-VClosed
-            if (myUCloseVal < 0)
-              IsUClosed();
-            if (myVCloseVal < 0)
-              IsVClosed();
-            double du = 0., dv = 0.;
-            // extension of the surface range is limited to non-offset surfaces as the latter
-            // can throw exception (e.g. Geom_UndefinedValue) when computing value - see id23943
-            if (!mySurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
-            {
-              // modified by rln during fixing CSR # BUC60035 entity #D231
-              du = std::min(myUDelt, SurfAdapt.UResolution(preci));
-              dv = std::min(myVDelt, SurfAdapt.VResolution(preci));
-            }
-            constexpr double Tol = Precision::PConfusion();
-            myExtPS.SetFlag(Extrema_ExtFlag_MIN);
-            myExtPS.Initialize(SurfAdapt, uf - du, ul + du, vf - dv, vl + dv, Tol, Tol);
-            myExtOK = true;
-          }
-          myExtPS.Perform(P3D);
-          int nPSurf = (myExtPS.IsDone() ? myExtPS.NbExt() : 0);
-
-          if (nPSurf > 0)
-          {
-            double dist2Min = myExtPS.SquareDistance(1);
-            int    indMin   = 1;
-            for (int sol = 2; sol <= nPSurf; sol++)
-            {
-              double dist2 = myExtPS.SquareDistance(sol);
-              if (dist2Min > dist2)
-              {
-                dist2Min = dist2;
-                indMin   = sol;
-              }
-            }
-            myExtPS.Point(indMin).Parameter(S, T);
-            // PTV 26.06.2002 WORKAROUND protect OCC486. Remove after fix bug.
-            // file CEA_cuve-V5.igs Entityes 244, 259, 847, 925
-            // if project point3D on SurfaceOfRevolution Extreme recompute 2d point, but
-            // returns an old distance from 3d to solution :-(
-            gp_Pnt aCheckPnt = SurfAdapt.Value(S, T);
-            dist2Min         = P3D.SquareDistance(aCheckPnt);
-            // end of WORKAROUND
-            double disSurf = sqrt(dist2Min); //, disCurv =1.e10;
-
-            // Test de projection merdeuse sur les bords :
-            double UU = S, VV = T,
-                   DistMinOnIso =
-                     RealLast(); // myGap;
-                                 //	ForgetNewton(P3D, mySurf, preci, UU, VV, DistMinOnIso);
-
-            // test added by rln on 08/12/97
-            //	DistMinOnIso = UVFromIso (P3D, preci, UU, VV);
-            bool possLockal = false; //: study S4030 (optimizing)
-            if (disSurf > preci)
-            {
-              gp_Pnt2d pp(UU, VV);
-              if (SurfaceNewton(pp, P3D, preci, pp) != 0)
-              { //: q2 abv 16 Mar 99: PRO7226 #412920
-                double dist = P3D.Distance(Value(pp));
-                if (dist < disSurf)
-                {
-                  disSurf = dist;
-                  S = UU = pp.X();
-                  T = VV = pp.Y();
-                }
-              }
-              if (disSurf < 10 * preci)
-                if (mySurf->Continuity() != GeomAbs_C0)
-                {
-                  constexpr double Tol = Precision::Confusion();
-                  gp_Vec           D1U, D1V;
-                  gp_Pnt           pnt;
-                  SurfAdapt.D1(UU, VV, pnt, D1U, D1V);
-                  gp_Vec b = D1U.Crossed(D1V);
-                  gp_Vec a(pnt, P3D);
-                  double ab   = a.Dot(b);
-                  double nrm2 = b.SquareMagnitude();
-                  if (nrm2 > 1e-10)
-                  {
-                    double dist = a.SquareMagnitude() - (ab * ab) / nrm2;
-                    possLockal  = (dist < Tol * Tol);
-                  }
-                }
-              if (!possLockal)
-              {
-                DistMinOnIso = UVFromIso(P3D, preci, UU, VV);
-              }
-            }
-
-            if (disSurf > DistMinOnIso)
-            {
-              // On prend les parametres UU et VV;
-              S     = UU;
-              T     = VV;
-              myGap = DistMinOnIso;
-            }
-            else
-            {
-              myGap = disSurf;
-            }
-
-            // On essaie Intersection Droite Passant par P3D / Surface
-            //	if ((myGap > preci)&&(!possLockal) ) {
-            //	  double SS, TT;
-            //	  disCurv = FindUV(P3D, mySurf, S, T, SS, TT);
-            //	  if (disCurv < preci || disCurv < myGap) {
-            //	    S = SS;
-            //	    T = TT;
-            //	  }
-            //	}
-          }
-          else
-          {
-#ifdef OCCT_DEBUG
-            std::cout << "Warning: ShapeAnalysis_Surface::ValueOfUV(): Extrema failed, doing Newton"
-                      << std::endl;
-#endif
-            // on essai sur les bords
-            double UU = S,
-                   VV = T; //, DistMinOnIso;
-                           //	ForgetNewton(P3D, mySurf, preci, UU, VV, DistMinOnIso);
-            myGap = UVFromIso(P3D, preci, UU, VV);
-            //	if (DistMinOnIso > preci) {
-            //	  double SS, TT;
-            //	  double disCurv = FindUV(P3D, mySurf, UU, VV, SS, TT);
-            //	  if (disCurv < preci) {
-            //	    S = SS;
-            //	    T = TT;
-            //	  }
-            //	}
-            //	else {
-            S = UU;
-            T = VV;
-            //	}
-          }
-        }
-        break;
-
-        default:
-          computed = false;
-          break;
-      }
-
-    } // end Try ValueOfUV (CKY 30-DEC-1997)
-
-    catch (Standard_Failure const& anException)
+    // Handle special case for extrusion surfaces with infinite bounds
+    GeomAbs_SurfaceType surftype = SurfAdapt.GetType();
+    if ((surftype == GeomAbs_SurfaceOfExtrusion) && Precision::IsInfinite(uf)
+        && Precision::IsInfinite(ul))
     {
-#ifdef OCCT_DEBUG
-      //   Pas de raison mais qui sait. Mieux vaut retourner un truc faux que stopper
-      //   L ideal serait d avoir un status ... mais qui va l interroger ?
-      //   Avec ce status, on saurait que ce point est a sauter et voila tout
-      //   En attendant, on met une valeur "pas idiote" mais surement fausse ...
-      // szv#4:S4163:12Mar99 optimized
-      //: s5
-      std::cout << "\nWarning: ShapeAnalysis_Surface::ValueOfUV(): Exception: ";
-      anException.Print(std::cout);
-      std::cout << std::endl;
-#endif
-      (void)anException;
-      S = (Precision::IsInfinite(uf)) ? 0 : (uf + ul) / 2.;
-      T = (Precision::IsInfinite(vf)) ? 0 : (vf + vl) / 2.;
+      // conic case - try Newton first
+      gp_Pnt2d prev(0., (vf + vl) / 2);
+      gp_Pnt2d solution;
+      if (SurfaceNewton(prev, P3D, preci, solution) != 0)
+      {
+        myGap = P3D.Distance(SurfAdapt.Value(solution.X(), solution.Y()));
+        return solution;
+      }
+      uf = -500;
+      ul = 500;
     }
-  } //: c9
-    // szv#4:S4163:12Mar99 waste raise
-    // if (!computed) throw Standard_NoSuchObject("PCurveLib_ProjectPointOnSurf::ValueOfUV untreated
-    // surface type");
-  if (computed)
-  {
-    if (myGap <= 0)
-      myGap = P3D.Distance(SurfAdapt.Value(S, T));
+
+    RestrictBounds(uf, ul, vf, vl);
+
+    // Initialize ExtremaPS_Surface if not yet done
+    if (!myExtPS.IsInitialized())
+    {
+      // Ensure IsU-VClosed has been called
+      if (myUCloseVal < 0)
+        IsUClosed();
+      if (myVCloseVal < 0)
+        IsVClosed();
+      double du = 0., dv = 0.;
+      // Extension of the surface range is limited to non-offset surfaces as the latter
+      // can throw exception (e.g. Geom_UndefinedValue) when computing value - see id23943
+      if (!mySurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
+      {
+        du = std::min(myUDelt, SurfAdapt.UResolution(preci));
+        dv = std::min(myVDelt, SurfAdapt.VResolution(preci));
+      }
+      ExtremaPS::Domain2D aDomain(uf - du, ul + du, vf - dv, vl + dv);
+      myExtPS = ExtremaPS_Surface(SurfAdapt, aDomain);
+    }
+
+    const ExtremaPS::Result& aResult = myExtPS.Perform(P3D, preci, ExtremaPS::SearchMode::Min);
+    int                      nPSurf  = aResult.IsDone() ? aResult.NbExt() : 0;
+
+    if (nPSurf > 0)
+    {
+      int aMinIdx = aResult.MinIndex();
+      S           = aResult[aMinIdx].U;
+      T           = aResult[aMinIdx].V;
+
+      // Verify distance (workaround for OCC486)
+      gp_Pnt aCheckPnt = SurfAdapt.Value(S, T);
+      double disSurf   = P3D.Distance(aCheckPnt);
+
+      // For non-analytical surfaces, try to improve the result if distance exceeds precision
+      if (disSurf > preci && surftype != GeomAbs_Plane && surftype != GeomAbs_Cylinder
+          && surftype != GeomAbs_Cone && surftype != GeomAbs_Sphere && surftype != GeomAbs_Torus)
+      {
+        double UU = S, VV = T;
+        double DistMinOnIso = RealLast();
+        bool   possLocal    = false;
+
+        // Try Newton refinement
+        gp_Pnt2d pp(UU, VV);
+        if (SurfaceNewton(pp, P3D, preci, pp) != 0)
+        {
+          double dist = P3D.Distance(Value(pp));
+          if (dist < disSurf)
+          {
+            disSurf = dist;
+            S = UU = pp.X();
+            T = VV = pp.Y();
+          }
+        }
+
+        // Check if point is locally on surface (normal projection)
+        if (disSurf < 10 * preci && mySurf->Continuity() != GeomAbs_C0)
+        {
+          constexpr double Tol = Precision::Confusion();
+          gp_Vec           D1U, D1V;
+          gp_Pnt           pnt;
+          SurfAdapt.D1(UU, VV, pnt, D1U, D1V);
+          gp_Vec b = D1U.Crossed(D1V);
+          gp_Vec a(pnt, P3D);
+          double ab   = a.Dot(b);
+          double nrm2 = b.SquareMagnitude();
+          if (nrm2 > 1e-10)
+          {
+            double dist = a.SquareMagnitude() - (ab * ab) / nrm2;
+            possLocal   = (dist < Tol * Tol);
+          }
+        }
+
+        // Try iso-line projection as fallback
+        if (!possLocal)
+        {
+          DistMinOnIso = UVFromIso(P3D, preci, UU, VV);
+        }
+
+        if (disSurf > DistMinOnIso)
+        {
+          S     = UU;
+          T     = VV;
+          myGap = DistMinOnIso;
+        }
+        else
+        {
+          myGap = disSurf;
+        }
+      }
+      else
+      {
+        myGap = disSurf;
+      }
+    }
+    else
+    {
+      // Fall back to iso-line projection
+      S     = (uf + ul) / 2;
+      T     = (vf + vl) / 2;
+      myGap = UVFromIso(P3D, preci, S, T);
+    }
   }
-  else
+  catch (Standard_Failure const&)
   {
-    myGap = -1.;
-    S     = 0.;
-    T     = 0.;
+    S = (Precision::IsInfinite(uf)) ? 0 : (uf + ul) / 2.;
+    T = (Precision::IsInfinite(vf)) ? 0 : (vf + vl) / 2.;
   }
+
+  if (myGap <= 0)
+    myGap = P3D.Distance(SurfAdapt.Value(S, T));
+
   return gp_Pnt2d(S, T);
 }
 
