@@ -52,7 +52,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 
 //=================================================================================================
 
-void Geom_BezierSurface::SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+void Geom_BezierSurface::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
 {
   Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
@@ -1344,7 +1345,8 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+  if (const std::optional<gp_Pnt> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -1398,7 +1400,8 @@ std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V)
 
 std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -1456,7 +1459,8 @@ std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, co
 
 std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -1522,7 +1526,8 @@ std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, co
 
 std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -1597,7 +1602,8 @@ std::optional<gp_Vec> Geom_BezierSurface::EvalDN(const double U,
                                                  const int    Nu,
                                                  const int    Nv) const
 {
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

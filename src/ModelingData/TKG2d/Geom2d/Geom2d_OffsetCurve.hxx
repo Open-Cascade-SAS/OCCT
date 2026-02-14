@@ -25,7 +25,11 @@
 
 class gp_Trsf2d;
 class Geom2d_Geometry;
-namespace Geom2d_EvalRepCurveDesc { class Base; }
+
+namespace Geom2d_EvalRepCurveDesc
+{
+class Base;
+}
 
 //! This class implements the basis services for the creation,
 //! edition, modification and evaluation of planar offset curve.
@@ -103,7 +107,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -289,10 +294,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom2d_OffsetCurve, Geom2d_Curve)
 
 private:
-  occ::handle<Geom2d_Curve> basisCurve;
+  occ::handle<Geom2d_Curve>                  basisCurve;
   occ::handle<Geom2d_EvalRepCurveDesc::Base> myEvalRep;
-  double                    offsetValue;
-  GeomAbs_Shape             myBasisCurveContinuity;
+  double                                     offsetValue;
+  GeomAbs_Shape                              myBasisCurveContinuity;
 };
 
 #endif // _Geom2d_OffsetCurve_HeaderFile

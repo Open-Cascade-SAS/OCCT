@@ -29,7 +29,11 @@ class gp_Ax2;
 class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
-namespace Geom_EvalRepSurfaceDesc { class Base; }
+
+namespace Geom_EvalRepSurfaceDesc
+{
+class Base;
+}
 
 //! Describes a surface of revolution (revolved surface).
 //! Such a surface is obtained by rotating a curve (called
@@ -100,7 +104,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -301,7 +306,7 @@ public:
 
 private:
   occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
-  gp_Pnt loc;
+  gp_Pnt                                     loc;
 };
 
 #endif // _Geom_SurfaceOfRevolution_HeaderFile

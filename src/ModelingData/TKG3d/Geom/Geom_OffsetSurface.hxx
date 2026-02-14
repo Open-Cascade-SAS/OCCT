@@ -31,7 +31,11 @@ class Geom_OsculatingSurface;
 class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
-namespace Geom_EvalRepSurfaceDesc { class Base; }
+
+namespace Geom_EvalRepSurfaceDesc
+{
+class Base;
+}
 
 //! Describes an offset surface in 3D space.
 //! An offset surface is defined by:
@@ -95,7 +99,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -368,11 +373,11 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 
 private:
-  occ::handle<Geom_Surface>               basisSurf;
-  occ::handle<Geom_EvalRepSurfaceDesc::Base>      myEvalRep;
-  double                                  offsetValue;
-  std::unique_ptr<Geom_OsculatingSurface> myOscSurf;
-  GeomAbs_Shape                           myBasisSurfContinuity;
+  occ::handle<Geom_Surface>                  basisSurf;
+  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  double                                     offsetValue;
+  std::unique_ptr<Geom_OsculatingSurface>    myOscSurf;
+  GeomAbs_Shape                              myBasisSurfContinuity;
 };
 
 #endif // _Geom_OffsetSurface_HeaderFile

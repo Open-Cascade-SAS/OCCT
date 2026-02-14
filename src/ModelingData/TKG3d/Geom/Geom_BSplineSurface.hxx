@@ -30,7 +30,11 @@
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
-namespace Geom_EvalRepSurfaceDesc { class Base; }
+
+namespace Geom_EvalRepSurfaceDesc
+{
+class Base;
+}
 
 //! Describes a BSpline surface.
 //! In each parametric direction, a BSpline surface can be:
@@ -229,7 +233,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -1294,28 +1299,28 @@ protected:
   void updateVKnots();
 
 private:
-  NCollection_Array2<gp_Pnt>   myPoles;
-  NCollection_Array2<double>   myWeights;
-  NCollection_Array1<double>   myUKnots;
-  NCollection_Array1<double>   myVKnots;
-  NCollection_Array1<double>   myUFlatKnots;
-  NCollection_Array1<double>   myVFlatKnots;
-  NCollection_Array1<int>      myUMults;
-  NCollection_Array1<int>      myVMults;
+  NCollection_Array2<gp_Pnt>                 myPoles;
+  NCollection_Array2<double>                 myWeights;
+  NCollection_Array1<double>                 myUKnots;
+  NCollection_Array1<double>                 myVKnots;
+  NCollection_Array1<double>                 myUFlatKnots;
+  NCollection_Array1<double>                 myVFlatKnots;
+  NCollection_Array1<int>                    myUMults;
+  NCollection_Array1<int>                    myVMults;
   occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
-  int                          myUDeg          = 0;
-  int                          myVDeg          = 0;
-  bool                         myUPeriodic     = false;
-  bool                         myVPeriodic     = false;
-  bool                         myURational     = false;
-  bool                         myVRational     = false;
-  GeomAbs_BSplKnotDistribution myUKnotSet      = GeomAbs_NonUniform;
-  GeomAbs_BSplKnotDistribution myVKnotSet      = GeomAbs_NonUniform;
-  GeomAbs_Shape                myUSmooth       = GeomAbs_C0;
-  GeomAbs_Shape                myVSmooth       = GeomAbs_C0;
-  double                       myUMaxDerivInv  = 0.0;
-  double                       myVMaxDerivInv  = 0.0;
-  bool                         myMaxDerivInvOk = false;
+  int                                        myUDeg          = 0;
+  int                                        myVDeg          = 0;
+  bool                                       myUPeriodic     = false;
+  bool                                       myVPeriodic     = false;
+  bool                                       myURational     = false;
+  bool                                       myVRational     = false;
+  GeomAbs_BSplKnotDistribution               myUKnotSet      = GeomAbs_NonUniform;
+  GeomAbs_BSplKnotDistribution               myVKnotSet      = GeomAbs_NonUniform;
+  GeomAbs_Shape                              myUSmooth       = GeomAbs_C0;
+  GeomAbs_Shape                              myVSmooth       = GeomAbs_C0;
+  double                                     myUMaxDerivInv  = 0.0;
+  double                                     myVMaxDerivInv  = 0.0;
+  bool                                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineSurface_HeaderFile

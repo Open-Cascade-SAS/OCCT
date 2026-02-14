@@ -48,7 +48,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BSplineCurve, Geom2d_BoundedCurve)
 
 //=================================================================================================
 
-void Geom2d_BSplineCurve::SetEvalRepresentation(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc)
+void Geom2d_BSplineCurve::SetEvalRepresentation(
+  const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc)
 {
   Geom2d_EvalRepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;

@@ -26,7 +26,11 @@ class gp_Dir;
 class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
-namespace Geom_EvalRepSurfaceDesc { class Base; }
+
+namespace Geom_EvalRepSurfaceDesc
+{
+class Base;
+}
 
 //! Describes a surface of linear extrusion ("extruded
 //! surface"), e.g. a generalized cylinder. Such a surface
@@ -81,7 +85,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }

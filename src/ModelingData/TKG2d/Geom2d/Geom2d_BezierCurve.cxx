@@ -46,7 +46,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BezierCurve, Geom2d_BoundedCurve)
 
 //=================================================================================================
 
-void Geom2d_BezierCurve::SetEvalRepresentation(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc)
+void Geom2d_BezierCurve::SetEvalRepresentation(
+  const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc)
 {
   Geom2d_EvalRepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
@@ -458,7 +459,8 @@ int Geom2d_BezierCurve::Degree() const
 
 std::optional<gp_Pnt2d> Geom2d_BezierCurve::EvalD0(const double U) const
 {
-  if (const std::optional<gp_Pnt2d> aEvalRepResult = Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U);
+  if (const std::optional<gp_Pnt2d> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -473,7 +475,8 @@ std::optional<gp_Pnt2d> Geom2d_BezierCurve::EvalD0(const double U) const
 
 std::optional<Geom2d_Curve::ResD1> Geom2d_BezierCurve::EvalD1(const double U) const
 {
-  if (const std::optional<Geom2d_Curve::ResD1> aEvalRepResult = Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
+  if (const std::optional<Geom2d_Curve::ResD1> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -488,7 +491,8 @@ std::optional<Geom2d_Curve::ResD1> Geom2d_BezierCurve::EvalD1(const double U) co
 
 std::optional<Geom2d_Curve::ResD2> Geom2d_BezierCurve::EvalD2(const double U) const
 {
-  if (const std::optional<Geom2d_Curve::ResD2> aEvalRepResult = Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
+  if (const std::optional<Geom2d_Curve::ResD2> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -503,7 +507,8 @@ std::optional<Geom2d_Curve::ResD2> Geom2d_BezierCurve::EvalD2(const double U) co
 
 std::optional<Geom2d_Curve::ResD3> Geom2d_BezierCurve::EvalD3(const double U) const
 {
-  if (const std::optional<Geom2d_Curve::ResD3> aEvalRepResult = Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
+  if (const std::optional<Geom2d_Curve::ResD3> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -521,7 +526,8 @@ std::optional<gp_Vec2d> Geom2d_BezierCurve::EvalDN(const double U, const int N) 
   if (N < 1)
     return std::nullopt;
 
-  if (const std::optional<gp_Vec2d> aEvalRepResult = Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+  if (const std::optional<gp_Vec2d> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

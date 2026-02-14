@@ -28,7 +28,11 @@
 #include <Geom_BoundedCurve.hxx>
 class gp_Trsf;
 class Geom_Geometry;
-namespace Geom_EvalRepCurveDesc { class Base; }
+
+namespace Geom_EvalRepCurveDesc
+{
+class Base;
+}
 
 //! Definition of the B_spline curve.
 //! A B-spline curve can be
@@ -175,7 +179,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -831,19 +836,19 @@ protected:
   void updateKnots();
 
 private:
-  NCollection_Array1<gp_Pnt>   myPoles;
-  NCollection_Array1<double>   myWeights;
-  NCollection_Array1<double>   myKnots;
-  NCollection_Array1<double>   myFlatKnots;
-  NCollection_Array1<int>      myMults;
+  NCollection_Array1<gp_Pnt>               myPoles;
+  NCollection_Array1<double>               myWeights;
+  NCollection_Array1<double>               myKnots;
+  NCollection_Array1<double>               myFlatKnots;
+  NCollection_Array1<int>                  myMults;
   occ::handle<Geom_EvalRepCurveDesc::Base> myEvalRep;
-  int                          myDeg           = 0;
-  bool                         myPeriodic      = false;
-  bool                         myRational      = false;
-  GeomAbs_BSplKnotDistribution myKnotSet       = GeomAbs_NonUniform;
-  GeomAbs_Shape                mySmooth        = GeomAbs_C0;
-  double                       myMaxDerivInv   = 0.0;
-  bool                         myMaxDerivInvOk = false;
+  int                                      myDeg           = 0;
+  bool                                     myPeriodic      = false;
+  bool                                     myRational      = false;
+  GeomAbs_BSplKnotDistribution             myKnotSet       = GeomAbs_NonUniform;
+  GeomAbs_Shape                            mySmooth        = GeomAbs_C0;
+  double                                   myMaxDerivInv   = 0.0;
+  bool                                     myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BSplineCurve_HeaderFile

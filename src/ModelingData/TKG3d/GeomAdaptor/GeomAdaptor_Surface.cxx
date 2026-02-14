@@ -77,23 +77,28 @@ namespace
 {
 bool hasEvalRep(const GeomAdaptor_Surface::SurfaceDataVariant& theData)
 {
-  if (const GeomAdaptor_Surface::BezierData* aBezierData = std::get_if<GeomAdaptor_Surface::BezierData>(&theData))
+  if (const GeomAdaptor_Surface::BezierData* aBezierData =
+        std::get_if<GeomAdaptor_Surface::BezierData>(&theData))
   {
     return !aBezierData->EvalRep.IsNull();
   }
-  if (const GeomAdaptor_Surface::BSplineData* aBSplineData = std::get_if<GeomAdaptor_Surface::BSplineData>(&theData))
+  if (const GeomAdaptor_Surface::BSplineData* aBSplineData =
+        std::get_if<GeomAdaptor_Surface::BSplineData>(&theData))
   {
     return !aBSplineData->EvalRep.IsNull();
   }
-  if (const GeomAdaptor_Surface::ExtrusionData* anExtrusionData = std::get_if<GeomAdaptor_Surface::ExtrusionData>(&theData))
+  if (const GeomAdaptor_Surface::ExtrusionData* anExtrusionData =
+        std::get_if<GeomAdaptor_Surface::ExtrusionData>(&theData))
   {
     return !anExtrusionData->EvalRep.IsNull();
   }
-  if (const GeomAdaptor_Surface::RevolutionData* aRevolutionData = std::get_if<GeomAdaptor_Surface::RevolutionData>(&theData))
+  if (const GeomAdaptor_Surface::RevolutionData* aRevolutionData =
+        std::get_if<GeomAdaptor_Surface::RevolutionData>(&theData))
   {
     return !aRevolutionData->EvalRep.IsNull();
   }
-  if (const GeomAdaptor_Surface::OffsetData* anOffsetData = std::get_if<GeomAdaptor_Surface::OffsetData>(&theData))
+  if (const GeomAdaptor_Surface::OffsetData* anOffsetData =
+        std::get_if<GeomAdaptor_Surface::OffsetData>(&theData))
   {
     return !anOffsetData->EvalRep.IsNull();
   }
@@ -381,8 +386,8 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
   else if (auto* aBezierData = std::get_if<GeomAdaptor_Surface::BezierData>(&mySurfaceData))
   {
     GeomAdaptor_Surface::BezierData aNewData;
-    aNewData.Surface = aBezierData->Surface;
-    aNewData.EvalRep = aBezierData->EvalRep;
+    aNewData.Surface     = aBezierData->Surface;
+    aNewData.EvalRep     = aBezierData->EvalRep;
     aCopy->mySurfaceData = aNewData;
   }
   else

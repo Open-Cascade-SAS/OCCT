@@ -65,15 +65,18 @@ namespace
 {
 bool hasEvalRep(const Geom2dAdaptor_Curve::CurveDataVariant& theData)
 {
-  if (const Geom2dAdaptor_Curve::BezierData* aBezierData = std::get_if<Geom2dAdaptor_Curve::BezierData>(&theData))
+  if (const Geom2dAdaptor_Curve::BezierData* aBezierData =
+        std::get_if<Geom2dAdaptor_Curve::BezierData>(&theData))
   {
     return !aBezierData->EvalRep.IsNull();
   }
-  if (const Geom2dAdaptor_Curve::BSplineData* aBSplineData = std::get_if<Geom2dAdaptor_Curve::BSplineData>(&theData))
+  if (const Geom2dAdaptor_Curve::BSplineData* aBSplineData =
+        std::get_if<Geom2dAdaptor_Curve::BSplineData>(&theData))
   {
     return !aBSplineData->EvalRep.IsNull();
   }
-  if (const Geom2dAdaptor_Curve::OffsetData* anOffsetData = std::get_if<Geom2dAdaptor_Curve::OffsetData>(&theData))
+  if (const Geom2dAdaptor_Curve::OffsetData* anOffsetData =
+        std::get_if<Geom2dAdaptor_Curve::OffsetData>(&theData))
   {
     return !anOffsetData->EvalRep.IsNull();
   }
@@ -108,17 +111,17 @@ occ::handle<Adaptor2d_Curve2d> Geom2dAdaptor_Curve::ShallowCopy() const
   else if (const auto* aBSplineData = std::get_if<BSplineData>(&myCurveData))
   {
     BSplineData aNewData;
-    aNewData.Curve   = aBSplineData->Curve;
-    aNewData.EvalRep = aBSplineData->EvalRep;
+    aNewData.Curve     = aBSplineData->Curve;
+    aNewData.EvalRep   = aBSplineData->EvalRep;
     aCopy->myCurveData = std::move(aNewData);
   }
   else if (std::holds_alternative<BezierData>(myCurveData))
   {
     const BezierData& aBezierData = std::get<BezierData>(myCurveData);
     BezierData        aNewData;
-    aNewData.Curve   = aBezierData.Curve;
-    aNewData.Cache   = aBezierData.Cache;
-    aNewData.EvalRep = aBezierData.EvalRep;
+    aNewData.Curve     = aBezierData.Curve;
+    aNewData.Cache     = aBezierData.Cache;
+    aNewData.EvalRep   = aBezierData.EvalRep;
     aCopy->myCurveData = std::move(aNewData);
   }
   else
@@ -314,7 +317,7 @@ void Geom2dAdaptor_Curve::load(const occ::handle<Geom2d_Curve>& C,
       BSplineData aBSplineData;
       aBSplineData.Curve   = occ::down_cast<Geom2d_BSplineCurve>(myCurve);
       aBSplineData.EvalRep = aBSplineData.Curve->EvalRepresentation();
-      myCurveData        = std::move(aBSplineData);
+      myCurveData          = std::move(aBSplineData);
     }
     else if (TheType == STANDARD_TYPE(Geom2d_OffsetCurve))
     {

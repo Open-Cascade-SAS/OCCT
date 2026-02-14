@@ -69,14 +69,15 @@ static const double MyAngularToleranceForG1 = Precision::Angular();
 
 namespace
 {
-occ::handle<Geom_EvalRepSurfaceDesc::Base> makeFullSurfaceRep(const occ::handle<Geom_Surface>& theSurface)
+occ::handle<Geom_EvalRepSurfaceDesc::Base> makeFullSurfaceRep(
+  const occ::handle<Geom_Surface>& theSurface)
 {
   if (theSurface.IsNull())
   {
     return occ::handle<Geom_EvalRepSurfaceDesc::Base>();
   }
   occ::handle<Geom_EvalRepSurfaceDesc::Full> aDesc = new Geom_EvalRepSurfaceDesc::Full();
-  aDesc->Representation = theSurface;
+  aDesc->Representation                            = theSurface;
   return aDesc;
 }
 
@@ -97,7 +98,8 @@ occ::handle<Geom_Surface> directRepSurface(const Geom_OffsetSurface& theSurface)
 
 //=================================================================================================
 
-void Geom_OffsetSurface::SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+void Geom_OffsetSurface::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
 {
   Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
@@ -344,7 +346,8 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
     return std::nullopt;
   }
 #endif
-  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+  if (const std::optional<gp_Pnt> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -368,7 +371,8 @@ std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, co
     return std::nullopt;
   }
 #endif
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -400,7 +404,8 @@ std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, co
     return std::nullopt;
   }
 #endif
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -434,7 +439,8 @@ std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, co
     return std::nullopt;
   }
 #endif
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -477,7 +483,8 @@ std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
     return std::nullopt;
   }
 #endif
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

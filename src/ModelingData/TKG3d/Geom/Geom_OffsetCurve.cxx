@@ -47,7 +47,8 @@ static const double MyAngularToleranceForG1 = Precision::Angular();
 
 //==================================================================================================
 
-void Geom_OffsetCurve::SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+void Geom_OffsetCurve::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
 {
   Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
@@ -258,7 +259,8 @@ GeomAbs_Shape Geom_OffsetCurve::Continuity() const
 
 std::optional<gp_Pnt> Geom_OffsetCurve::EvalD0(const double theU) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, theU);
+  if (const std::optional<gp_Pnt> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, theU);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -277,7 +279,8 @@ std::optional<gp_Pnt> Geom_OffsetCurve::EvalD0(const double theU) const
 
 std::optional<Geom_Curve::ResD1> Geom_OffsetCurve::EvalD1(const double theU) const
 {
-  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, theU);
+  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, theU);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -297,7 +300,8 @@ std::optional<Geom_Curve::ResD1> Geom_OffsetCurve::EvalD1(const double theU) con
 
 std::optional<Geom_Curve::ResD2> Geom_OffsetCurve::EvalD2(const double theU) const
 {
-  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, theU);
+  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, theU);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -337,7 +341,8 @@ std::optional<Geom_Curve::ResD2> Geom_OffsetCurve::EvalD2(const double theU) con
 
 std::optional<Geom_Curve::ResD3> Geom_OffsetCurve::EvalD3(const double theU) const
 {
-  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, theU);
+  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, theU);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -383,7 +388,8 @@ std::optional<gp_Vec> Geom_OffsetCurve::EvalDN(const double U, const int N) cons
 {
   if (N < 1)
     return std::nullopt;
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

@@ -51,7 +51,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineCurve, Geom_BoundedCurve)
 
 //=================================================================================================
 
-void Geom_BSplineCurve::SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+void Geom_BSplineCurve::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
 {
   Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;

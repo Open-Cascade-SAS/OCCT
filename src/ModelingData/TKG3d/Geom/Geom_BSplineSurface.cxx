@@ -43,7 +43,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineSurface, Geom_BoundedSurface)
 
 //=================================================================================================
 
-void Geom_BSplineSurface::SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+void Geom_BSplineSurface::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
 {
   Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;

@@ -184,7 +184,8 @@ std::optional<gp_Pnt> Geom_BSplineCurve::EvalD0(const double U) const
 
 std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 {
-  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
+  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -215,7 +216,8 @@ std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 
 std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 {
-  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
+  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -247,7 +249,8 @@ std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 
 std::optional<Geom_Curve::ResD3> Geom_BSplineCurve::EvalD3(const double U) const
 {
-  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
+  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -283,7 +286,8 @@ std::optional<gp_Vec> Geom_BSplineCurve::EvalDN(const double U, const int N) con
   if (N < 1)
     return std::nullopt;
 
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

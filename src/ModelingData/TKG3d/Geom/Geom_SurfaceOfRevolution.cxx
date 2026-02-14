@@ -77,7 +77,7 @@ void Geom_SurfaceOfRevolution::SetEvalRepresentation(
 occ::handle<Geom_Geometry> Geom_SurfaceOfRevolution::Copy() const
 {
   occ::handle<Geom_SurfaceOfRevolution> aCopy = new Geom_SurfaceOfRevolution(basisCurve, Axis());
-  aCopy->myEvalRep = Geom_EvalRepUtils::CloneSurfaceDesc(myEvalRep);
+  aCopy->myEvalRep                            = Geom_EvalRepUtils::CloneSurfaceDesc(myEvalRep);
   return aCopy;
 }
 
@@ -235,7 +235,8 @@ void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double
 
 std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+  if (const std::optional<gp_Pnt> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -254,7 +255,8 @@ std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const dou
 std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U,
                                                                     const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -279,7 +281,8 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double
 std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U,
                                                                     const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -308,7 +311,8 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double
 std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U,
                                                                     const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -346,7 +350,8 @@ std::optional<gp_Vec> Geom_SurfaceOfRevolution::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

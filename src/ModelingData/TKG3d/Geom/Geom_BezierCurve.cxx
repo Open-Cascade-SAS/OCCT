@@ -48,7 +48,8 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 
 //=================================================================================================
 
-void Geom_BezierCurve::SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+void Geom_BezierCurve::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
 {
   Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
@@ -500,7 +501,8 @@ std::optional<gp_Pnt> Geom_BezierCurve::EvalD0(const double U) const
 
 std::optional<Geom_Curve::ResD1> Geom_BezierCurve::EvalD1(const double U) const
 {
-  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
+  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -515,7 +517,8 @@ std::optional<Geom_Curve::ResD1> Geom_BezierCurve::EvalD1(const double U) const
 
 std::optional<Geom_Curve::ResD2> Geom_BezierCurve::EvalD2(const double U) const
 {
-  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
+  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -530,7 +533,8 @@ std::optional<Geom_Curve::ResD2> Geom_BezierCurve::EvalD2(const double U) const
 
 std::optional<Geom_Curve::ResD3> Geom_BezierCurve::EvalD3(const double U) const
 {
-  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
+  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -548,7 +552,8 @@ std::optional<gp_Vec> Geom_BezierCurve::EvalDN(const double U, const int N) cons
   if (N < 1)
     return std::nullopt;
 
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

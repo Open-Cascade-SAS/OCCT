@@ -110,7 +110,8 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+  if (const std::optional<gp_Pnt> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -145,7 +146,8 @@ std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V
 
 std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -190,7 +192,8 @@ std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, c
 
 std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -238,7 +241,8 @@ std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, c
 
 std::optional<Geom_Surface::ResD3> Geom_BSplineSurface::EvalD3(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;
@@ -284,7 +288,8 @@ std::optional<gp_Vec> Geom_BSplineSurface::EvalDN(const double U,
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
 
-  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
       aEvalRepResult.has_value())
   {
     return aEvalRepResult;

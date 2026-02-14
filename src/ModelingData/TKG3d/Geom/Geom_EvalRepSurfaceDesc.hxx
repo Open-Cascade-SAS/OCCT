@@ -39,8 +39,8 @@ struct Map2d
   {
     return std::abs(ScaleU - 1.0) < Precision::Confusion()
            && std::abs(ScaleV - 1.0) < Precision::Confusion()
-           && std::abs(OffsetU) < Precision::Confusion() && std::abs(OffsetV) < Precision::Confusion()
-           && !SwapUV;
+           && std::abs(OffsetU) < Precision::Confusion()
+           && std::abs(OffsetV) < Precision::Confusion() && !SwapUV;
   }
 
   bool IsValid() const
@@ -77,6 +77,7 @@ struct Domain2d
            && (theV >= VFirst - Precision::Confusion()) && (theV <= VLast + Precision::Confusion());
   }
 };
+
 //! Abstract base descriptor for surface evaluation representation.
 //! Holds the representation handle and a Kind tag for switch-based dispatch.
 class Base : public Standard_Transient
@@ -85,9 +86,9 @@ public:
   //! Descriptor kind for switch-based dispatch (no RTTI needed).
   enum class Kind
   {
-    Full,          //!< fully equivalent, no derivative limit, no domain, no map
-    DerivBounded,  //!< full domain + identity map, limited to MaxDerivOrder
-    Mapped         //!< has MaxDerivOrder + optional Domain + ParamMap
+    Full,         //!< fully equivalent, no derivative limit, no domain, no map
+    DerivBounded, //!< full domain + identity map, limited to MaxDerivOrder
+    Mapped        //!< has MaxDerivOrder + optional Domain + ParamMap
   };
 
   occ::handle<Geom_Surface> Representation; //!< geometry used for evaluation

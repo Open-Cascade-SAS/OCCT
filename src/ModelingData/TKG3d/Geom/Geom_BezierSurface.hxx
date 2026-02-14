@@ -29,6 +29,7 @@
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
+
 namespace Geom_EvalRepSurfaceDesc
 {
 class Base;
@@ -133,7 +134,8 @@ public:
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
-  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -631,14 +633,14 @@ protected:
             const NCollection_Array2<double>* theWeights);
 
 private:
-  NCollection_Array2<gp_Pnt> myPoles;
-  NCollection_Array2<double> myWeights;
+  NCollection_Array2<gp_Pnt>                 myPoles;
+  NCollection_Array2<double>                 myWeights;
   occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
-  bool                       myURational     = false;
-  bool                       myVRational     = false;
-  double                     myUMaxDerivInv  = 0.0;
-  double                     myVMaxDerivInv  = 0.0;
-  bool                       myMaxDerivInvOk = false;
+  bool                                       myURational     = false;
+  bool                                       myVRational     = false;
+  double                                     myUMaxDerivInv  = 0.0;
+  double                                     myVMaxDerivInv  = 0.0;
+  bool                                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

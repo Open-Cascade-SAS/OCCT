@@ -38,6 +38,7 @@
 class GeomAdaptor_Curve;
 class Geom_OffsetSurface;
 class Geom_BezierSurface;
+
 namespace Geom_EvalRepSurfaceDesc
 {
 class Base;
@@ -58,17 +59,17 @@ public:
   //! Internal structure for extrusion surface evaluation data.
   struct ExtrusionData
   {
-    occ::handle<Adaptor3d_Curve> BasisCurve; //!< Adaptor for basis curve
-    gp_XYZ                       Direction;  //!< Extrusion direction XYZ (normalized)
-    occ::handle<Geom_EvalRepSurfaceDesc::Base> EvalRep; //!< Eval representation descriptor
+    occ::handle<Adaptor3d_Curve>               BasisCurve; //!< Adaptor for basis curve
+    gp_XYZ                                     Direction;  //!< Extrusion direction XYZ (normalized)
+    occ::handle<Geom_EvalRepSurfaceDesc::Base> EvalRep;    //!< Eval representation descriptor
   };
 
   //! Internal structure for revolution surface evaluation data.
   struct RevolutionData
   {
-    occ::handle<Adaptor3d_Curve> BasisCurve; //!< Adaptor for basis curve
-    gp_Ax1                       Axis;       //!< Revolution axis
-    occ::handle<Geom_EvalRepSurfaceDesc::Base> EvalRep; //!< Eval representation descriptor
+    occ::handle<Adaptor3d_Curve>               BasisCurve; //!< Adaptor for basis curve
+    gp_Ax1                                     Axis;       //!< Revolution axis
+    occ::handle<Geom_EvalRepSurfaceDesc::Base> EvalRep;    //!< Eval representation descriptor
   };
 
   //! Internal structure for offset surface evaluation data.
@@ -86,16 +87,16 @@ public:
   //! Internal structure for Bezier surface cache data.
   struct BezierData
   {
-    occ::handle<Geom_BezierSurface>    Surface; //!< Bezier surface to prevent downcasts
-    mutable occ::handle<BSplSLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom_BezierSurface>            Surface; //!< Bezier surface to prevent downcasts
+    mutable occ::handle<BSplSLib_Cache>        Cache;   //!< Cached data for evaluation
     occ::handle<Geom_EvalRepSurfaceDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Internal structure for BSpline surface cache data.
   struct BSplineData
   {
-    occ::handle<Geom_BSplineSurface>    Surface; //!< BSpline surface to prevent downcasts
-    mutable occ::handle<BSplSLib_Cache> Cache;   //!< Cached data for evaluation
+    occ::handle<Geom_BSplineSurface>           Surface; //!< BSpline surface to prevent downcasts
+    mutable occ::handle<BSplSLib_Cache>        Cache;   //!< Cached data for evaluation
     occ::handle<Geom_EvalRepSurfaceDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 

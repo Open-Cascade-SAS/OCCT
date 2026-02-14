@@ -32,7 +32,8 @@ struct Map1d
 
   bool IsIdentity() const
   {
-    return std::abs(Scale - 1.0) < Precision::Confusion() && std::abs(Offset) < Precision::Confusion();
+    return std::abs(Scale - 1.0) < Precision::Confusion()
+           && std::abs(Offset) < Precision::Confusion();
   }
 
   bool IsValid() const { return std::abs(Scale) > Precision::Confusion(); }
@@ -51,6 +52,7 @@ struct Domain1d
     return (theU >= First - Precision::Confusion()) && (theU <= Last + Precision::Confusion());
   }
 };
+
 //! Abstract base descriptor for 2D curve evaluation representation.
 //! Holds the representation handle and a Kind tag for switch-based dispatch.
 class Base : public Standard_Transient
@@ -59,9 +61,9 @@ public:
   //! Descriptor kind for switch-based dispatch (no RTTI needed).
   enum class Kind
   {
-    Full,          //!< fully equivalent, no derivative limit, no domain, no map
-    DerivBounded,  //!< full domain + identity map, limited to MaxDerivOrder
-    Mapped         //!< has MaxDerivOrder + optional Domain + ParamMap
+    Full,         //!< fully equivalent, no derivative limit, no domain, no map
+    DerivBounded, //!< full domain + identity map, limited to MaxDerivOrder
+    Mapped        //!< has MaxDerivOrder + optional Domain + ParamMap
   };
 
   occ::handle<Geom2d_Curve> Representation; //!< geometry used for evaluation
