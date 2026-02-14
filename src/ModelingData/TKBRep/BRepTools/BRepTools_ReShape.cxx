@@ -206,6 +206,30 @@ bool BRepTools_ReShape::IsRecorded(const TopoDS_Shape& ashape) const
 
 //=================================================================================================
 
+bool BRepTools_ReShape::HasRecordedSubShape(const TopoDS_Shape& theShape) const
+{
+  if (!HasModifications() || theShape.IsNull())
+  {
+    return false;
+  }
+
+  if (IsRecorded(theShape))
+  {
+    return true;
+  }
+
+  for (TopoDS_Iterator anIt(theShape, false); anIt.More(); anIt.Next())
+  {
+    if (HasRecordedSubShape(anIt.Value()))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
 TopoDS_Shape BRepTools_ReShape::Value(const TopoDS_Shape& ashape) const
 {
   TopoDS_Shape res;

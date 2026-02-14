@@ -92,6 +92,12 @@ public:
   //! Tells if a shape is recorded for Replace/Remove
   Standard_EXPORT virtual bool IsRecorded(const TopoDS_Shape& shape) const;
 
+  //! Returns true if at least one replacement/removal is recorded.
+  bool HasModifications() const { return !myShapeToReplacement.IsEmpty(); }
+
+  //! Returns true if the shape itself or any of its descendants are recorded.
+  Standard_EXPORT virtual bool HasRecordedSubShape(const TopoDS_Shape& theShape) const;
+
   //! Returns the new value for an individual shape
   //! If not recorded, returns the original shape itself
   //! If to be Removed, returns a Null Shape
