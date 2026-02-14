@@ -574,7 +574,7 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_NonPSOStrategies_UnchangedWithPSOOptions
   math_Vector aLower(1, 2, -5.0);
   math_Vector aUpper(1, 2, 5.0);
 
-  // MultiStart — PSO params should be ignored
+  // MultiStart - PSO params should be ignored
   MathOpt::GlobalConfig aConfigMS(MathOpt::GlobalStrategy::MultiStart, 100);
   aConfigMS.NbStarts = 20;
 
@@ -585,7 +585,7 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_NonPSOStrategies_UnchangedWithPSOOptions
   ASSERT_TRUE(aResultMS.IsDone());
   EXPECT_NEAR(*aResultMS.Value, 0.0, THE_TOLERANCE);
 
-  // DE — PSO params should be ignored
+  // DE - PSO params should be ignored
   MathOpt::GlobalConfig aConfigDE(MathOpt::GlobalStrategy::DifferentialEvolution, 100);
   aConfigDE.NbPopulation = 40;
 

@@ -466,7 +466,7 @@ TEST(MathOpt_PSOTest, SeededInit_Sphere2D_ImprovesEvalCount)
   auto aResultUnseeded = MathOpt::PSO(aFunc, aLower, aUpper, aConfig, nullptr, &aStatsUnseeded);
   ASSERT_TRUE(aResultUnseeded.IsDone());
 
-  // Seeded run — seed near the origin
+  // Seeded run - seed near the origin
   MathOpt::PSOConfig aConfigSeeded = aConfig;
   aConfigSeeded.InitMode           = MathOpt::PSOInitMode::SeededPlusRandom;
 
@@ -591,13 +591,13 @@ TEST(MathOpt_PSOTest, TargetValue_EarlyStop)
   MathOpt::PSOConfig aConfigFull;
   aConfigFull.NbParticles   = 40;
   aConfigFull.MaxIterations = 200;
-  aConfigFull.Tolerance     = 1.0e-10; // very tight — force many iterations
+  aConfigFull.Tolerance     = 1.0e-10; // very tight - force many iterations
 
   MathOpt::PSOStats aStatsFull;
   auto aResultFull = MathOpt::PSO(aFunc, aLower, aUpper, aConfigFull, nullptr, &aStatsFull);
   ASSERT_TRUE(aResultFull.IsDone());
 
-  // Run with target value — should stop early
+  // Run with target value - should stop early
   MathOpt::PSOConfig aConfigTarget = aConfigFull;
   aConfigTarget.TargetValue        = 0.1;
 

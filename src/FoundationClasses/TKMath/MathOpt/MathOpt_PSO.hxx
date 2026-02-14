@@ -171,7 +171,7 @@ void PolishCoordinateWise(Function&          theFunc,
                          theEvalCount);
   }
 
-  // Second pass for non-separable functions — dimensions may interact
+  // Second pass for non-separable functions - dimensions may interact
   if (theEvalCount < theMaxPolishEvals && aNbDims > 1)
   {
     for (int aDimIdx = aLower; aDimIdx <= aUpper; ++aDimIdx)
@@ -672,7 +672,7 @@ VectorResult PSO(Function&                                  theFunc,
           }
           else
           {
-            // No restart budget — converged
+            // No restart budget - converged
             break;
           }
         }
