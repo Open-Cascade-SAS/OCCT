@@ -39,6 +39,17 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaPS_Performance_Test.cxx
   ExtremaPS_Torus_Comparison_Test.cxx
   ExtremaPS_Torus_Test.cxx
+  ExtremaSS_ConeCone_Test.cxx
+  ExtremaSS_ConeSphere_Test.cxx
+  ExtremaSS_ConeTorus_Test.cxx
+  ExtremaSS_CylinderCone_Test.cxx
+  ExtremaSS_CylinderCylinder_Test.cxx
+  ExtremaSS_CylinderTorus_Test.cxx
+  ExtremaSS_PlaneCone_Test.cxx
+  ExtremaSS_PlaneTorus_Test.cxx
+  ExtremaSS_SphereSphere_Test.cxx
+  ExtremaSS_SphereTorus_Test.cxx
+  ExtremaSS_TorusTorus_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
