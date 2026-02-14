@@ -285,8 +285,8 @@ public:
       return myResult;
     }
 
-    // TODO: Add boundary extrema handling for bounded domains
-    // For now, just return interior extrema
+    // Add boundary extrema
+    checkBoundaryExtrema(theTol, theMode);
 
     if (myResult.Extrema.IsEmpty())
     {
@@ -355,6 +355,201 @@ private:
       theU               = std::atan2(aSinU, aCosU);
       if (theU < 0.0)
         theU += ExtremaSS::THE_TWO_PI;
+    }
+  }
+
+  //! Check boundary extrema for bounded domains.
+  void checkBoundaryExtrema(double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    if (!myDomain.has_value())
+    {
+      return;
+    }
+
+    const ExtremaSS::Domain4D&   aDom  = myDomain.value();
+    const MathUtils::Domain2D& aDom1 = aDom.Domain1;
+    const MathUtils::Domain2D& aDom2 = aDom.Domain2;
+
+    // Sample boundary edges
+    constexpr int aNbSamples = 20;
+
+    // Check boundaries of domain 1 against interior of domain 2
+    // V1 = VMin1 and V1 = VMax1 edges
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU1 = aDom1.UMin + i * (aDom1.UMax - aDom1.UMin) / aNbSamples;
+      checkPointAgainstSphere2(aU1, aDom1.VMin, theTol, theMode);
+      checkPointAgainstSphere2(aU1, aDom1.VMax, theTol, theMode);
+    }
+
+    // U1 = UMin1 and U1 = UMax1 edges
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aV1 = aDom1.VMin + i * (aDom1.VMax - aDom1.VMin) / aNbSamples;
+      checkPointAgainstSphere2(aDom1.UMin, aV1, theTol, theMode);
+      checkPointAgainstSphere2(aDom1.UMax, aV1, theTol, theMode);
+    }
+
+    // Similarly for domain 2 boundaries
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU2 = aDom2.UMin + i * (aDom2.UMax - aDom2.UMin) / aNbSamples;
+      checkPointAgainstSphere1(aU2, aDom2.VMin, theTol, theMode);
+      checkPointAgainstSphere1(aU2, aDom2.VMax, theTol, theMode);
+    }
+
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aV2 = aDom2.VMin + i * (aDom2.VMax - aDom2.VMin) / aNbSamples;
+      checkPointAgainstSphere1(aDom2.UMin, aV2, theTol, theMode);
+      checkPointAgainstSphere1(aDom2.UMax, aV2, theTol, theMode);
+    }
+  }
+
+  //! Check a point on sphere 1 against sphere 2 for potential extrema.
+  void checkPointAgainstSphere2(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aP1 = Value1(theU1, theV1);
+
+    // Direction from sphere 2 center to P1
+    const double aDx = aP1.X() - myCenter2X;
+    const double aDy = aP1.Y() - myCenter2Y;
+    const double aDz = aP1.Z() - myCenter2Z;
+    const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
+
+    if (aDist < theTol)
+    {
+      // P1 is at center of sphere 2, any point on sphere 2 is equidistant
+      return;
+    }
+
+    // Normalize direction
+    const double aInvDist = 1.0 / aDist;
+    const double aNx = aDx * aInvDist;
+    const double aNy = aDy * aInvDist;
+    const double aNz = aDz * aInvDist;
+
+    // Compute UV on sphere 2 for closest point (toward P1)
+    double aU2Min = 0.0, aV2Min = 0.0;
+    computeUVFromDirection(aNx, aNy, aNz,
+                           myAxis2X, myAxis2Y, myAxis2Z,
+                           myXDir2X, myXDir2Y, myXDir2Z,
+                           myYDir2X, myYDir2Y, myYDir2Z,
+                           theTol, aU2Min, aV2Min);
+
+    // Check if UV is within domain
+    if (myDomain.has_value())
+    {
+      const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
+      if (aU2Min < aDom2.UMin - theTol || aU2Min > aDom2.UMax + theTol ||
+          aV2Min < aDom2.VMin - theTol || aV2Min > aDom2.VMax + theTol)
+      {
+        // Clamp to boundary and use that point instead
+        aU2Min = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
+        aV2Min = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
+      }
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const gp_Pnt aP2 = Value2(aU2Min, aV2Min);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Min, aV2Min, aP1, aP2, aSqDist, true, theTol);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      // Farthest point is in opposite direction
+      double aU2Max = 0.0, aV2Max = 0.0;
+      computeUVFromDirection(-aNx, -aNy, -aNz,
+                             myAxis2X, myAxis2Y, myAxis2Z,
+                             myXDir2X, myXDir2Y, myXDir2Z,
+                             myYDir2X, myYDir2Y, myYDir2Z,
+                             theTol, aU2Max, aV2Max);
+
+      if (myDomain.has_value())
+      {
+        const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
+        aU2Max = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
+        aV2Max = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
+      }
+
+      const gp_Pnt aP2 = Value2(aU2Max, aV2Max);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Max, aV2Max, aP1, aP2, aSqDist, false, theTol);
+    }
+  }
+
+  //! Check a point on sphere 2 against sphere 1 for potential extrema.
+  void checkPointAgainstSphere1(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aP2 = Value2(theU2, theV2);
+
+    // Direction from sphere 1 center to P2
+    const double aDx = aP2.X() - myCenter1X;
+    const double aDy = aP2.Y() - myCenter1Y;
+    const double aDz = aP2.Z() - myCenter1Z;
+    const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
+
+    if (aDist < theTol)
+    {
+      // P2 is at center of sphere 1
+      return;
+    }
+
+    // Normalize direction
+    const double aInvDist = 1.0 / aDist;
+    const double aNx = aDx * aInvDist;
+    const double aNy = aDy * aInvDist;
+    const double aNz = aDz * aInvDist;
+
+    // Compute UV on sphere 1 for closest point (toward P2)
+    double aU1Min = 0.0, aV1Min = 0.0;
+    computeUVFromDirection(aNx, aNy, aNz,
+                           myAxis1X, myAxis1Y, myAxis1Z,
+                           myXDir1X, myXDir1Y, myXDir1Z,
+                           myYDir1X, myYDir1Y, myYDir1Z,
+                           theTol, aU1Min, aV1Min);
+
+    // Check if UV is within domain
+    if (myDomain.has_value())
+    {
+      const MathUtils::Domain2D& aDom1 = myDomain->Domain1;
+      if (aU1Min < aDom1.UMin - theTol || aU1Min > aDom1.UMax + theTol ||
+          aV1Min < aDom1.VMin - theTol || aV1Min > aDom1.VMax + theTol)
+      {
+        aU1Min = std::clamp(aU1Min, aDom1.UMin, aDom1.UMax);
+        aV1Min = std::clamp(aV1Min, aDom1.VMin, aDom1.VMax);
+      }
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const gp_Pnt aP1 = Value1(aU1Min, aV1Min);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, aU1Min, aV1Min, theU2, theV2, aP1, aP2, aSqDist, true, theTol);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      // Farthest point is in opposite direction
+      double aU1Max = 0.0, aV1Max = 0.0;
+      computeUVFromDirection(-aNx, -aNy, -aNz,
+                             myAxis1X, myAxis1Y, myAxis1Z,
+                             myXDir1X, myXDir1Y, myXDir1Z,
+                             myYDir1X, myYDir1Y, myYDir1Z,
+                             theTol, aU1Max, aV1Max);
+
+      if (myDomain.has_value())
+      {
+        const MathUtils::Domain2D& aDom1 = myDomain->Domain1;
+        aU1Max = std::clamp(aU1Max, aDom1.UMin, aDom1.UMax);
+        aV1Max = std::clamp(aV1Max, aDom1.VMin, aDom1.VMax);
+      }
+
+      const gp_Pnt aP1 = Value1(aU1Max, aV1Max);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, aU1Max, aV1Max, theU2, theV2, aP1, aP2, aSqDist, false, theTol);
     }
   }
 

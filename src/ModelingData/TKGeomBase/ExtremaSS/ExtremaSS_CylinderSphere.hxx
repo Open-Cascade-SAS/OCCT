@@ -352,7 +352,8 @@ public:
       return myResult;
     }
 
-    // TODO: Add boundary extrema handling for bounded domains
+    // Add boundary extrema
+    checkBoundaryExtrema(theTol, theMode);
 
     if (myResult.Extrema.IsEmpty())
     {
@@ -408,6 +409,188 @@ private:
       theU = std::atan2(aSinU, aCosU);
       if (theU < 0.0)
         theU += ExtremaSS::THE_TWO_PI;
+    }
+  }
+
+  //! Check boundary extrema for bounded domains.
+  void checkBoundaryExtrema(double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    if (!myDomain.has_value())
+    {
+      return;
+    }
+
+    const ExtremaSS::Domain4D&   aDom  = myDomain.value();
+    const MathUtils::Domain2D& aDom1 = aDom.Domain1; // Cylinder domain
+    const MathUtils::Domain2D& aDom2 = aDom.Domain2; // Sphere domain
+
+    constexpr int aNbSamples = 20;
+
+    // Check cylinder boundary against sphere
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU1 = aDom1.UMin + i * (aDom1.UMax - aDom1.UMin) / aNbSamples;
+      checkCylinderPointAgainstSphere(aU1, aDom1.VMin, theTol, theMode);
+      checkCylinderPointAgainstSphere(aU1, aDom1.VMax, theTol, theMode);
+    }
+
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aV1 = aDom1.VMin + i * (aDom1.VMax - aDom1.VMin) / aNbSamples;
+      checkCylinderPointAgainstSphere(aDom1.UMin, aV1, theTol, theMode);
+      checkCylinderPointAgainstSphere(aDom1.UMax, aV1, theTol, theMode);
+    }
+
+    // Check sphere boundary against cylinder
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU2 = aDom2.UMin + i * (aDom2.UMax - aDom2.UMin) / aNbSamples;
+      checkSpherePointAgainstCylinder(aU2, aDom2.VMin, theTol, theMode);
+      checkSpherePointAgainstCylinder(aU2, aDom2.VMax, theTol, theMode);
+    }
+
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aV2 = aDom2.VMin + i * (aDom2.VMax - aDom2.VMin) / aNbSamples;
+      checkSpherePointAgainstCylinder(aDom2.UMin, aV2, theTol, theMode);
+      checkSpherePointAgainstCylinder(aDom2.UMax, aV2, theTol, theMode);
+    }
+  }
+
+  //! Check a point on cylinder against sphere for potential extrema.
+  void checkCylinderPointAgainstSphere(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aP1 = Value1(theU1, theV1);
+
+    // Direction from sphere center to cylinder point
+    const double aDx = aP1.X() - mySphCenterX;
+    const double aDy = aP1.Y() - mySphCenterY;
+    const double aDz = aP1.Z() - mySphCenterZ;
+    const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
+
+    if (aDist < theTol)
+    {
+      return;
+    }
+
+    const double aInvDist = 1.0 / aDist;
+    const double aNx = aDx * aInvDist;
+    const double aNy = aDy * aInvDist;
+    const double aNz = aDz * aInvDist;
+
+    // Closest point on sphere (toward cylinder point)
+    double aU2Min = 0.0, aV2Min = 0.0;
+    computeSphereUVFromDirection(aNx, aNy, aNz, theTol, aU2Min, aV2Min);
+
+    if (myDomain.has_value())
+    {
+      const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
+      aU2Min = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
+      aV2Min = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const gp_Pnt aP2 = Value2(aU2Min, aV2Min);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Min, aV2Min, aP1, aP2, aSqDist, true, theTol);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      double aU2Max = 0.0, aV2Max = 0.0;
+      computeSphereUVFromDirection(-aNx, -aNy, -aNz, theTol, aU2Max, aV2Max);
+
+      if (myDomain.has_value())
+      {
+        const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
+        aU2Max = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
+        aV2Max = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
+      }
+
+      const gp_Pnt aP2 = Value2(aU2Max, aV2Max);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Max, aV2Max, aP1, aP2, aSqDist, false, theTol);
+    }
+  }
+
+  //! Check a point on sphere against cylinder for potential extrema.
+  void checkSpherePointAgainstCylinder(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aP2 = Value2(theU2, theV2);
+
+    // Project sphere point onto cylinder axis
+    const double aVecX = aP2.X() - myCylOrigX;
+    const double aVecY = aP2.Y() - myCylOrigY;
+    const double aVecZ = aP2.Z() - myCylOrigZ;
+    double aV1 = aVecX * myCylAxisX + aVecY * myCylAxisY + aVecZ * myCylAxisZ;
+
+    // Clamp V to domain
+    if (myDomain.has_value())
+    {
+      aV1 = std::clamp(aV1, myDomain->Domain1.VMin, myDomain->Domain1.VMax);
+    }
+
+    // Point on axis at V1
+    const double aAxisPtX = myCylOrigX + aV1 * myCylAxisX;
+    const double aAxisPtY = myCylOrigY + aV1 * myCylAxisY;
+    const double aAxisPtZ = myCylOrigZ + aV1 * myCylAxisZ;
+
+    // Direction from axis to sphere point (perpendicular to axis)
+    double aPerpX = aP2.X() - aAxisPtX;
+    double aPerpY = aP2.Y() - aAxisPtY;
+    double aPerpZ = aP2.Z() - aAxisPtZ;
+
+    // Remove axis component
+    const double aDotAxis = aPerpX * myCylAxisX + aPerpY * myCylAxisY + aPerpZ * myCylAxisZ;
+    aPerpX -= aDotAxis * myCylAxisX;
+    aPerpY -= aDotAxis * myCylAxisY;
+    aPerpZ -= aDotAxis * myCylAxisZ;
+
+    const double aPerpDist = std::sqrt(aPerpX * aPerpX + aPerpY * aPerpY + aPerpZ * aPerpZ);
+
+    double aU1Min = 0.0;
+    if (aPerpDist > theTol)
+    {
+      const double aInvPerpDist = 1.0 / aPerpDist;
+      const double aDirX = aPerpX * aInvPerpDist;
+      const double aDirY = aPerpY * aInvPerpDist;
+      const double aDirZ = aPerpZ * aInvPerpDist;
+
+      // U for closest point (toward sphere point)
+      const double aDotX = aDirX * myCylXDirX + aDirY * myCylXDirY + aDirZ * myCylXDirZ;
+      const double aDotY = aDirX * myCylYDirX + aDirY * myCylYDirY + aDirZ * myCylYDirZ;
+      aU1Min = std::atan2(aDotY, aDotX);
+      if (aU1Min < 0.0)
+        aU1Min += ExtremaSS::THE_TWO_PI;
+    }
+
+    if (myDomain.has_value())
+    {
+      aU1Min = std::clamp(aU1Min, myDomain->Domain1.UMin, myDomain->Domain1.UMax);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const gp_Pnt aP1 = Value1(aU1Min, aV1);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, aU1Min, aV1, theU2, theV2, aP1, aP2, aSqDist, true, theTol);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      double aU1Max = aU1Min + M_PI;
+      if (aU1Max >= ExtremaSS::THE_TWO_PI)
+        aU1Max -= ExtremaSS::THE_TWO_PI;
+
+      if (myDomain.has_value())
+      {
+        aU1Max = std::clamp(aU1Max, myDomain->Domain1.UMin, myDomain->Domain1.UMax);
+      }
+
+      const gp_Pnt aP1 = Value1(aU1Max, aV1);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, aU1Max, aV1, theU2, theV2, aP1, aP2, aSqDist, false, theTol);
     }
   }
 
