@@ -427,29 +427,121 @@ private:
       aCellVMin       = std::max(theDomain.VMin, aCellVMin - aExpandV);
       aCellVMax       = std::min(theDomain.VMax, aCellVMax + aExpandV);
 
-      // Newton iteration
-      ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
-                                                                    aCand.StartU,
-                                                                    aCand.StartV,
-                                                                    aCellUMin,
-                                                                    aCellUMax,
-                                                                    aCellVMin,
-                                                                    aCellVMax,
-                                                                    theTol);
+      // Multi-start Newton: try from center and all 4 corners to find the best solution
+      // This helps avoid converging to local minima, especially near boundaries
+      double aBestRootU    = 0.0;
+      double aBestRootV    = 0.0;
+      double aBestRootDist = std::numeric_limits<double>::max();
+      bool   aConverged    = false;
 
-      double aRootU     = 0.0;
-      double aRootV     = 0.0;
-      bool   aConverged = false;
+      // Starting points: center + 4 corners of the cell
+      const double aStartPoints[5][2] = {
+        {aCand.StartU, aCand.StartV},                                      // Center
+        {myGrid(aCand.IdxU, aCand.IdxV).U, myGrid(aCand.IdxU, aCand.IdxV).V},           // Corner 00
+        {myGrid(aCand.IdxU + 1, aCand.IdxV).U, myGrid(aCand.IdxU + 1, aCand.IdxV).V},   // Corner 10
+        {myGrid(aCand.IdxU, aCand.IdxV + 1).U, myGrid(aCand.IdxU, aCand.IdxV + 1).V},   // Corner 01
+        {myGrid(aCand.IdxU + 1, aCand.IdxV + 1).U, myGrid(aCand.IdxU + 1, aCand.IdxV + 1).V} // Corner 11
+      };
 
-      if (aNewtonRes.IsDone)
+      for (int iStart = 0; iStart < 5; ++iStart)
       {
-        aRootU     = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
-        aRootV     = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
-        aConverged = true;
+        ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                      aStartPoints[iStart][0],
+                                                                      aStartPoints[iStart][1],
+                                                                      aCellUMin,
+                                                                      aCellUMax,
+                                                                      aCellVMin,
+                                                                      aCellVMax,
+                                                                      theTol);
+
+        if (aNewtonRes.IsDone)
+        {
+          double aRootU = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
+          double aRootV = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+          double aDist  = aFunc.SquareDistance(aRootU, aRootV);
+
+          // Keep the best solution (for Min mode) or worst (for Max mode)
+          bool aIsBetter = (theMode == ExtremaPS::SearchMode::Max) ? (aDist > aBestRootDist)
+                                                                   : (aDist < aBestRootDist);
+          if (aIsBetter)
+          {
+            aBestRootU    = aRootU;
+            aBestRootV    = aRootV;
+            aBestRootDist = aDist;
+            aConverged    = true;
+          }
+        }
       }
-      else
+
+      // Boundary edge optimization: when cell touches domain boundary, do 1D search along edge.
+      // This handles cases where the true extremum lies ON the boundary where 2D Newton may fail.
+      auto tryBoundaryEdge = [&](double theFixedParam, bool theIsUFixed, double theVarMin, double theVarMax) {
+        // 1D distance function along boundary edge
+        struct EdgeFunc
+        {
+          const ExtremaPS_DistanceFunction* Func;
+          double                            FixedParam;
+          bool                              IsUFixed;
+
+          bool Value(double theVar, double& theF) const
+          {
+            double aU = IsUFixed ? FixedParam : theVar;
+            double aV = IsUFixed ? theVar : FixedParam;
+            theF      = Func->SquareDistance(aU, aV);
+            return true;
+          }
+        };
+
+        EdgeFunc anEdgeFunc{&aFunc, theFixedParam, theIsUFixed};
+        MathUtils::Config aConfig;
+        aConfig.XTolerance    = theTol;
+        aConfig.MaxIterations = ExtremaPS::THE_MAX_GOLDEN_ITERATIONS;
+
+        auto aGoldenRes = MathOpt::Golden(anEdgeFunc, theVarMin, theVarMax, aConfig);
+        if (aGoldenRes.IsDone())
+        {
+          double aEdgeU = theIsUFixed ? theFixedParam : *aGoldenRes.Root;
+          double aEdgeV = theIsUFixed ? *aGoldenRes.Root : theFixedParam;
+          double aDist  = aFunc.SquareDistance(aEdgeU, aEdgeV);
+
+          bool aIsBetter = (theMode == ExtremaPS::SearchMode::Max) ? (aDist > aBestRootDist)
+                                                                   : (aDist < aBestRootDist);
+          if (aIsBetter)
+          {
+            aBestRootU    = aEdgeU;
+            aBestRootV    = aEdgeV;
+            aBestRootDist = aDist;
+            aConverged    = true;
+          }
+        }
+      };
+
+      // Check which boundaries this cell touches and search along them
+      const double aBndTol = theTol * 10.0; // Tolerance for boundary detection
+      if (std::abs(aCellVMax - theDomain.VMax) < aBndTol)
       {
-        // Newton fallback: Find best grid point in the candidate cell
+        // Cell touches V=VMax boundary: search along U with V fixed at VMax
+        tryBoundaryEdge(theDomain.VMax, false, aCellUMin, aCellUMax);
+      }
+      if (std::abs(aCellVMin - theDomain.VMin) < aBndTol)
+      {
+        // Cell touches V=VMin boundary
+        tryBoundaryEdge(theDomain.VMin, false, aCellUMin, aCellUMax);
+      }
+      if (std::abs(aCellUMax - theDomain.UMax) < aBndTol)
+      {
+        // Cell touches U=UMax boundary
+        tryBoundaryEdge(theDomain.UMax, true, aCellVMin, aCellVMax);
+      }
+      if (std::abs(aCellUMin - theDomain.UMin) < aBndTol)
+      {
+        // Cell touches U=UMin boundary
+        tryBoundaryEdge(theDomain.UMin, true, aCellVMin, aCellVMax);
+      }
+
+      // Fallback if no Newton converged: use the best grid corner directly
+      if (!aConverged)
+      {
         double aBestGridDist = std::numeric_limits<double>::max();
         int    aBestI        = aCand.IdxU;
         int    aBestJ        = aCand.IdxV;
@@ -470,39 +562,22 @@ private:
           }
         }
 
-        aRootU = myGrid(aBestI, aBestJ).U;
-        aRootV = myGrid(aBestI, aBestJ).V;
+        aBestRootU    = myGrid(aBestI, aBestJ).U;
+        aBestRootV    = myGrid(aBestI, aBestJ).V;
+        aBestRootDist = aBestGridDist;
 
-        // Try Newton one more time from the best corner
-        ExtremaPS_Newton::Result aRetryRes =
-          ExtremaPS_Newton::Solve(aFunc,
-                                  aRootU,
-                                  aRootV,
-                                  aCellUMin,
-                                  aCellUMax,
-                                  aCellVMin,
-                                  aCellVMax,
-                                  theTol * ExtremaPS::THE_NEWTON_RETRY_TOL_FACTOR);
-
-        if (aRetryRes.IsDone)
+        // Check if gradient is near zero (valid extremum at grid point)
+        double aFu, aFv;
+        aFunc.Value(aBestRootU, aBestRootV, aFu, aFv);
+        double aFNorm = std::sqrt(aFu * aFu + aFv * aFv);
+        if (aFNorm < theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
         {
-          aRootU     = std::max(theDomain.UMin, std::min(theDomain.UMax, aRetryRes.U));
-          aRootV     = std::max(theDomain.VMin, std::min(theDomain.VMax, aRetryRes.V));
           aConverged = true;
         }
-        else
-        {
-          // Final fallback: use the best grid point directly
-          double aFu, aFv;
-          aFunc.Value(aRootU, aRootV, aFu, aFv);
-          double aFNorm = std::sqrt(aFu * aFu + aFv * aFv);
-
-          if (aFNorm < theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
-          {
-            aConverged = true;
-          }
-        }
       }
+
+      double aRootU = aBestRootU;
+      double aRootV = aBestRootV;
 
       if (!aConverged)
         continue;
@@ -646,17 +721,29 @@ private:
     if (myCacheCount == 0)
       return false;
 
-    // Get most recent cached solution
-    int                   aLastIdx = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
-    const CachedSolution& aLast    = myCachedSolutions[aLastIdx];
+    // Find nearest cached solution (not just most recent)
+    int    aNearestIdx  = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+    double aNearestDist = theP.SquareDistance(myCachedSolutions[aNearestIdx].QueryPoint);
 
-    double aDistSq = theP.SquareDistance(aLast.QueryPoint);
-    if (aDistSq > ExtremaPS::THE_COHERENCE_THRESHOLD_SQ)
+    for (int i = 1; i < myCacheCount; ++i)
+    {
+      int    aIdx  = (myCacheIndex + THE_CACHE_SIZE - 1 - i) % THE_CACHE_SIZE;
+      double aDist = theP.SquareDistance(myCachedSolutions[aIdx].QueryPoint);
+      if (aDist < aNearestDist)
+      {
+        aNearestDist = aDist;
+        aNearestIdx  = aIdx;
+      }
+    }
+
+    if (aNearestDist > ExtremaPS::THE_COHERENCE_THRESHOLD_SQ)
       return false;
 
+    const CachedSolution& aNearest = myCachedSolutions[aNearestIdx];
+
     // Compute starting point: use trajectory prediction if 3 points available
-    double aStartU = aLast.U;
-    double aStartV = aLast.V;
+    double aStartU = aNearest.U;
+    double aStartV = aNearest.V;
 
     if (myCacheCount >= 3)
     {
@@ -792,8 +879,8 @@ private:
   mutable double myMinDist = 0.0;        //!< Global minimum squared distance
   mutable double myMaxDist = 0.0;        //!< Global maximum squared distance
 
-  // Cached solutions for spatial coherence optimization (ring buffer of 3)
-  static constexpr int THE_CACHE_SIZE = 3;
+  // Cached solutions for spatial coherence optimization (ring buffer)
+  static constexpr int THE_CACHE_SIZE = 16;
 
   struct CachedSolution
   {
