@@ -315,10 +315,8 @@ public:
   {
     const size_t aPos = (theRow - myLowerRow) * mySizeCol + (theCol - myLowerCol);
     Standard_OutOfRange_Raise_if(aPos >= this->mySize, "NCollection_Array2::EmplaceValue");
-    pointer aPnt = this->myPointer + aPos;
-    this->myAllocator.destroy(aPnt);
-    this->myAllocator.construct(aPnt, std::forward<Args>(theArgs)...);
-    return *aPnt;
+    this->myPointer[aPos] = value_type(std::forward<Args>(theArgs)...);
+    return this->myPointer[aPos];
   }
 
   //! Resizes the array to specified bounds.

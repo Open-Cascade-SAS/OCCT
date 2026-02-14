@@ -334,10 +334,8 @@ public:
   {
     const size_t aPos = theIndex - myLowerBound;
     Standard_OutOfRange_Raise_if(aPos >= mySize, "NCollection_Array1::EmplaceValue");
-    pointer aPnt = myPointer + aPos;
-    myAllocator.destroy(aPnt);
-    myAllocator.construct(aPnt, std::forward<Args>(theArgs)...);
-    return *aPnt;
+    myPointer[aPos] = value_type(std::forward<Args>(theArgs)...);
+    return myPointer[aPos];
   }
 
   //! Changes the lowest bound. Do not move data
