@@ -134,7 +134,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineIntersectsCircle_TwoPoints)
   ASSERT_GE(aResult.NbExt(), 2);
 
   // Line intersects circle at two points
-  // At Y=5, X = ±sqrt(100-25) = ±sqrt(75)
+  // At Y=5, X = +/-sqrt(100-25) = +/-sqrt(75)
   EXPECT_NEAR(aResult.MinSquareDistance(), 0.0, THE_TOL);
 }
 
@@ -220,7 +220,7 @@ TEST_F(ExtremaCC_CircleLineTest, PartialCircle_Arc)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
-  // Arc from 0 to π/2 (first quadrant)
+  // Arc from 0 to pi/2 (first quadrant)
   ExtremaCC::Domain2D aDomain{{0.0, THE_PI / 2.0}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
@@ -229,7 +229,7 @@ TEST_F(ExtremaCC_CircleLineTest, PartialCircle_Arc)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // Minimum is at θ=0 where circle point is (10,0,0) which is on the line
+  // Minimum is at theta=0 where circle point is (10,0,0) which is on the line
   EXPECT_NEAR(aResult.MinSquareDistance(), 0.0, THE_TOL);
 }
 

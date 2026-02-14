@@ -143,19 +143,19 @@ bool ExtremaCC_CircleEllipse::performCoplanar(double theTol) const
   }
 
   // Concentric circle and ellipse with aligned axes
-  // Extrema occur at the ellipse axes: 0, π/2, π, 3π/2
+  // Extrema occur at the ellipse axes: 0, pi/2, pi, 3pi/2
   // For the circle, the corresponding parameters are the same (both start from X-axis)
-  // If axes are opposite, the circle parameter is shifted by π
+  // If axes are opposite, the circle parameter is shifted by pi
 
   const bool bSameDirection = aXc.Dot(aXe) > 0.0;
 
-  // Extrema at ellipse axes: 0 (major), π/2 (minor), π (-major), 3π/2 (-minor)
+  // Extrema at ellipse axes: 0 (major), pi/2 (minor), pi (-major), 3pi/2 (-minor)
   constexpr double aParams[4] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
 
   for (int i = 0; i < 4; ++i)
   {
     const double aU2 = aParams[i]; // Parameter on ellipse
-    // If X-axes are opposite, parameter on circle is shifted by π
+    // If X-axes are opposite, parameter on circle is shifted by pi
     const double aU1 = bSameDirection ? aParams[i] : std::fmod(aParams[i] + M_PI, 2.0 * M_PI);
 
     addSolution(aU1, aU2, theTol);

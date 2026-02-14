@@ -115,7 +115,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, TiltedParallelPlanes_InfiniteSolutions)
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
 
-  // Distance = 10 * sqrt(3) ≈ 17.32
+  // Distance = 10 * sqrt(3) ~ 17.32
   const double aExpectedDist = 10.0 * std::sqrt(3.0);
   EXPECT_NEAR(std::sqrt(aResult.InfiniteSquareDistance), aExpectedDist, THE_TOL);
 }

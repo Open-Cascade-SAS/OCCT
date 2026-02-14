@@ -242,9 +242,9 @@ private:
     if (myApexDistToPlane * aDistRate < 0)
     {
       // Cone opens toward the plane, will eventually intersect
-      // For OCCT parameterization: d(V) = locDist + V * (Axis·N)
-      // where locDist = (Location - PlaneOrig)·N
-      // For axis perpendicular, X·N = Y·N = 0, so the formula simplifies
+      // For OCCT parameterization: d(V) = locDist + V * (Axis.N)
+      // where locDist = (Location - PlaneOrig).N
+      // For axis perpendicular, X.N = Y.N = 0, so the formula simplifies
       const gp_Pnt& aLoc = myCone.Location();
       const double aLocDistToPlane = (aLoc.X() - myPlaneOrigX) * myPlaneNormX
                                    + (aLoc.Y() - myPlaneOrigY) * myPlaneNormY

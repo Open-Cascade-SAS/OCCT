@@ -145,10 +145,10 @@ public:
       if (aDistToCenter <= aRadius + theTol)
       {
         // Line passes through or is tangent to sphere - find intersection points
-        // Solve: |P + t*D - C|² = R²
+        // Solve: |P + t*D - C|^2 = R^2
         // Let W = P - C
-        // |W + t*D|² = R²
-        // t² + 2*(W·D)*t + (|W|² - R²) = 0
+        // |W + t*D|^2 = R^2
+        // t^2 + 2*(W.D)*t + (|W|^2 - R^2) = 0
         const gp_Vec aW(aCenter, aLineP);
         const double aB = aW.Dot(gp_Vec(aLineD));           // coefficient / 2
         const double aC = aW.SquareMagnitude() - aRadius * aRadius;

@@ -249,9 +249,9 @@ TEST_F(ExtremaCC_CurvesTest, BezierBezier_Simple)
 {
   // Create two Bezier curves
   // Note: Bezier curves do NOT pass through interior control points!
-  // B1(t) = (1-t)²*(0,0,0) + 2t(1-t)*(5,10,0) + t²*(10,0,0)
-  // B2(t) = (1-t)²*(0,20,0) + 2t(1-t)*(5,10,0) + t²*(10,20,0)
-  // At t=0.5: B1 = (5,5,0), B2 = (5,15,0), distance² = 100
+  // B1(t) = (1-t)^2*(0,0,0) + 2t(1-t)*(5,10,0) + t^2*(10,0,0)
+  // B2(t) = (1-t)^2*(0,20,0) + 2t(1-t)*(5,10,0) + t^2*(10,20,0)
+  // At t=0.5: B1 = (5,5,0), B2 = (5,15,0), distance^2 = 100
 
   NCollection_Array1<gp_Pnt> aPoles1(1, 3);
   aPoles1(1) = gp_Pnt(0, 0, 0);
@@ -275,7 +275,7 @@ TEST_F(ExtremaCC_CurvesTest, BezierBezier_Simple)
 
   ASSERT_TRUE(aResult.IsDone());
   // Closest points are at t=0.5 on both curves: (5,5,0) and (5,15,0)
-  // Distance² = (5-5)² + (5-15)² + (0-0)² = 100
+  // Distance^2 = (5-5)^2 + (5-15)^2 + (0-0)^2 = 100
   EXPECT_NEAR(aResult.MinSquareDistance(), 100.0, 1.0);
 }
 

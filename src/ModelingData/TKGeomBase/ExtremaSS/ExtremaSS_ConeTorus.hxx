@@ -31,7 +31,7 @@
 //! This requires 2D optimization over the combined parameter space.
 //!
 //! **Parameterization:**
-//! - Cone: P(U, V) = Apex + V*cos(α)*Axis + V*sin(α)*(cos(U)*XDir + sin(U)*YDir)
+//! - Cone: P(U, V) = Apex + V*cos(alpha)*Axis + V*sin(alpha)*(cos(U)*XDir + sin(U)*YDir)
 //! - Torus: P(U, V) = Center + (R + r*cos(V))*(cos(U)*XDir + sin(U)*YDir) + r*sin(V)*Axis
 class ExtremaSS_ConeTorus
 {

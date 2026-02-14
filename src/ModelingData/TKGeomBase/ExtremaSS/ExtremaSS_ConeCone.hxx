@@ -42,8 +42,8 @@
 //! Most general case requiring 2D optimization over V1, V2.
 //!
 //! **Parameterization:**
-//! - Cone: P(U, V) = Apex + V*cos(α)*Axis + V*sin(α)*(cos(U)*XDir + sin(U)*YDir)
-//!   where α is the semi-angle
+//! - Cone: P(U, V) = Apex + V*cos(alpha)*Axis + V*sin(alpha)*(cos(U)*XDir + sin(U)*YDir)
+//!   where alpha is the semi-angle
 class ExtremaSS_ConeCone
 {
 public:
@@ -264,8 +264,8 @@ private:
     const double aU2Away   = aU2Toward + M_PI;
 
     // For parallel cones with OCCT parameterization:
-    // At V1, R1 = RefRadius1 + V1*tan(α1)
-    // At V2, R2 = RefRadius2 + V2*tan(α2)
+    // At V1, R1 = RefRadius1 + V1*tan(alpha1)
+    // At V2, R2 = RefRadius2 + V2*tan(alpha2)
     // The distance between surfaces depends on R1, R2 and axis distance
 
     // Sample V values to find extrema
@@ -337,8 +337,8 @@ private:
     myResult.Status = ExtremaSS::Status::InfiniteSolutions;
 
     // For coaxial cones with OCCT parameterization:
-    // At V1, R1 = RefRadius1 + V1*tan(α1)
-    // At V2, R2 = RefRadius2 + V2*tan(α2)
+    // At V1, R1 = RefRadius1 + V1*tan(alpha1)
+    // At V2, R2 = RefRadius2 + V2*tan(alpha2)
 
     // Sample to find extrema
     constexpr int    aNbSamples = 30;
@@ -564,7 +564,7 @@ private:
                    aRadius * (-aSinU * myXDir1.Y() + aCosU * myYDir1.Y()),
                    aRadius * (-aSinU * myXDir1.Z() + aCosU * myYDir1.Z()));
 
-    // dP/dV = Axis + tan(α) * (cos(U)*XDir + sin(U)*YDir)
+    // dP/dV = Axis + tan(alpha) * (cos(U)*XDir + sin(U)*YDir)
     theDV = gp_Vec(myAxis1.X() + myTan1 * (aCosU * myXDir1.X() + aSinU * myYDir1.X()),
                    myAxis1.Y() + myTan1 * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()),
                    myAxis1.Z() + myTan1 * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()));
@@ -600,17 +600,17 @@ private:
     const double aSinU   = std::sin(theU);
     const double aRadius = myRefRadius1 + theV * myTan1;
 
-    // d²P/dU² = R * (-cos(U)*XDir - sin(U)*YDir) = -R * (cos(U)*XDir + sin(U)*YDir)
+    // d^2P/dU^2 = R * (-cos(U)*XDir - sin(U)*YDir) = -R * (cos(U)*XDir + sin(U)*YDir)
     theDUU = gp_Vec(-aRadius * (aCosU * myXDir1.X() + aSinU * myYDir1.X()),
                     -aRadius * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()),
                     -aRadius * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()));
 
-    // d²P/dUdV = tan(α) * (-sin(U)*XDir + cos(U)*YDir)
+    // d^2P/dUdV = tan(alpha) * (-sin(U)*XDir + cos(U)*YDir)
     theDUV = gp_Vec(myTan1 * (-aSinU * myXDir1.X() + aCosU * myYDir1.X()),
                     myTan1 * (-aSinU * myXDir1.Y() + aCosU * myYDir1.Y()),
                     myTan1 * (-aSinU * myXDir1.Z() + aCosU * myYDir1.Z()));
 
-    // d²P/dV² = 0
+    // d^2P/dV^2 = 0
     theDVV = gp_Vec(0, 0, 0);
   }
 
@@ -644,7 +644,7 @@ private:
     // Sign for gradient: +1 for minimum (gradient should be zero), -1 for maximum
     const double aSign = theIsMin ? 1.0 : -1.0;
 
-    // Functor for gradient of D² and its Jacobian (Hessian of D²)
+    // Functor for gradient of D^2 and its Jacobian (Hessian of D^2)
     auto aFunc = [this, aSign](double aU1, double aV1, double aU2, double aV2,
                                 double aF[4], double aJ[4][4]) -> bool {
       // Compute points and derivatives on both cones
@@ -656,48 +656,48 @@ private:
       // Delta = P1 - P2
       const gp_Vec aDelta(aP2, aP1);
 
-      // Gradient of D² (to be zeroed):
-      // F0 = ∂D²/∂U1 = 2 * Delta · dP1/dU1
-      // F1 = ∂D²/∂V1 = 2 * Delta · dP1/dV1
-      // F2 = ∂D²/∂U2 = -2 * Delta · dP2/dU2
-      // F3 = ∂D²/∂V2 = -2 * Delta · dP2/dV2
+      // Gradient of D^2 (to be zeroed):
+      // F0 = dD^2/dU1 = 2 * Delta . dP1/dU1
+      // F1 = dD^2/dV1 = 2 * Delta . dP1/dV1
+      // F2 = dD^2/dU2 = -2 * Delta . dP2/dU2
+      // F3 = dD^2/dV2 = -2 * Delta . dP2/dV2
       aF[0] = aSign * 2.0 * aDelta.Dot(aDU1);
       aF[1] = aSign * 2.0 * aDelta.Dot(aDV1);
       aF[2] = aSign * (-2.0) * aDelta.Dot(aDU2);
       aF[3] = aSign * (-2.0) * aDelta.Dot(aDV2);
 
-      // Second derivatives for Jacobian (Hessian of D²)
+      // Second derivatives for Jacobian (Hessian of D^2)
       gp_Vec aDUU1, aDUV1, aDVV1;
       gp_Vec aDUU2, aDUV2, aDVV2;
       D2_1(aU1, aV1, aDUU1, aDUV1, aDVV1);
       D2_2(aU2, aV2, aDUU2, aDUV2, aDVV2);
 
-      // Jacobian J[i][j] = ∂F[i]/∂x[j]
-      // J[0][0] = ∂²D²/∂U1² = 2*(dP1/dU1 · dP1/dU1 + Delta · d²P1/dU1²)
+      // Jacobian J[i][j] = dF[i]/dx[j]
+      // J[0][0] = d^2D^2/dU1^2 = 2*(dP1/dU1 . dP1/dU1 + Delta . d^2P1/dU1^2)
       aJ[0][0] = aSign * 2.0 * (aDU1.Dot(aDU1) + aDelta.Dot(aDUU1));
-      // J[0][1] = ∂²D²/∂U1∂V1 = 2*(dP1/dU1 · dP1/dV1 + Delta · d²P1/dU1dV1)
+      // J[0][1] = d^2D^2/dU1dV1 = 2*(dP1/dU1 . dP1/dV1 + Delta . d^2P1/dU1dV1)
       aJ[0][1] = aSign * 2.0 * (aDU1.Dot(aDV1) + aDelta.Dot(aDUV1));
-      // J[0][2] = ∂²D²/∂U1∂U2 = -2*(dP1/dU1 · dP2/dU2)
+      // J[0][2] = d^2D^2/dU1dU2 = -2*(dP1/dU1 . dP2/dU2)
       aJ[0][2] = aSign * (-2.0) * aDU1.Dot(aDU2);
-      // J[0][3] = ∂²D²/∂U1∂V2 = -2*(dP1/dU1 · dP2/dV2)
+      // J[0][3] = d^2D^2/dU1dV2 = -2*(dP1/dU1 . dP2/dV2)
       aJ[0][3] = aSign * (-2.0) * aDU1.Dot(aDV2);
 
       // J[1][0] = J[0][1] (symmetric)
       aJ[1][0] = aJ[0][1];
-      // J[1][1] = ∂²D²/∂V1² = 2*(dP1/dV1 · dP1/dV1 + Delta · d²P1/dV1²)
+      // J[1][1] = d^2D^2/dV1^2 = 2*(dP1/dV1 . dP1/dV1 + Delta . d^2P1/dV1^2)
       aJ[1][1] = aSign * 2.0 * (aDV1.Dot(aDV1) + aDelta.Dot(aDVV1));
-      // J[1][2] = ∂²D²/∂V1∂U2 = -2*(dP1/dV1 · dP2/dU2)
+      // J[1][2] = d^2D^2/dV1dU2 = -2*(dP1/dV1 . dP2/dU2)
       aJ[1][2] = aSign * (-2.0) * aDV1.Dot(aDU2);
-      // J[1][3] = ∂²D²/∂V1∂V2 = -2*(dP1/dV1 · dP2/dV2)
+      // J[1][3] = d^2D^2/dV1dV2 = -2*(dP1/dV1 . dP2/dV2)
       aJ[1][3] = aSign * (-2.0) * aDV1.Dot(aDV2);
 
       // J[2][0] = J[0][2] (symmetric)
       aJ[2][0] = aJ[0][2];
       // J[2][1] = J[1][2] (symmetric)
       aJ[2][1] = aJ[1][2];
-      // J[2][2] = ∂²D²/∂U2² = 2*(dP2/dU2 · dP2/dU2 + (-Delta) · d²P2/dU2²)
+      // J[2][2] = d^2D^2/dU2^2 = 2*(dP2/dU2 . dP2/dU2 + (-Delta) . d^2P2/dU2^2)
       aJ[2][2] = aSign * 2.0 * (aDU2.Dot(aDU2) - aDelta.Dot(aDUU2));
-      // J[2][3] = ∂²D²/∂U2∂V2 = 2*(dP2/dU2 · dP2/dV2 + (-Delta) · d²P2/dU2dV2)
+      // J[2][3] = d^2D^2/dU2dV2 = 2*(dP2/dU2 . dP2/dV2 + (-Delta) . d^2P2/dU2dV2)
       aJ[2][3] = aSign * 2.0 * (aDU2.Dot(aDV2) - aDelta.Dot(aDUV2));
 
       // J[3][0] = J[0][3] (symmetric)
@@ -706,7 +706,7 @@ private:
       aJ[3][1] = aJ[1][3];
       // J[3][2] = J[2][3] (symmetric)
       aJ[3][2] = aJ[2][3];
-      // J[3][3] = ∂²D²/∂V2² = 2*(dP2/dV2 · dP2/dV2 + (-Delta) · d²P2/dV2²)
+      // J[3][3] = d^2D^2/dV2^2 = 2*(dP2/dV2 . dP2/dV2 + (-Delta) . d^2P2/dV2^2)
       aJ[3][3] = aSign * 2.0 * (aDV2.Dot(aDV2) - aDelta.Dot(aDVV2));
 
       return true;

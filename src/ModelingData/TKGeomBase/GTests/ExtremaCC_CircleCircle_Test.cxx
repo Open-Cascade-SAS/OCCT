@@ -205,7 +205,7 @@ TEST_F(ExtremaCC_CircleCircleTest, PerpendicularPlanes_Offset)
   ASSERT_GE(aResult.NbExt(), 2);
 
   // Circle1: (10*cos(t1), 10*sin(t1), 0), Circle2: (10*cos(t2), 20, 10*sin(t2))
-  // Minimum at t1=atan(2), t2=0: D² = 600 - 200*sqrt(5) ≈ 152.786
+  // Minimum at t1=atan(2), t2=0: D^2 = 600 - 200*sqrt(5) ~ 152.786
   double aExpectedMinSqDist = 600.0 - 200.0 * std::sqrt(5.0);
   EXPECT_NEAR(aResult.MinSquareDistance(), aExpectedMinSqDist, 1.0e-6);
 }

@@ -38,10 +38,10 @@ constexpr int THE_HASH_CELLS = 8;
 //! Gradient data for a point pair.
 struct GradientData
 {
-  double F1; //!< (S1-S2) · dS1/dU1
-  double F2; //!< (S1-S2) · dS1/dV1
-  double F3; //!< (S2-S1) · dS2/dU2
-  double F4; //!< (S2-S1) · dS2/dV2
+  double F1; //!< (S1-S2) . dS1/dU1
+  double F2; //!< (S1-S2) . dS1/dV1
+  double F3; //!< (S2-S1) . dS2/dU2
+  double F4; //!< (S2-S1) . dS2/dV2
 };
 
 //! Entry for spatial hash table.
