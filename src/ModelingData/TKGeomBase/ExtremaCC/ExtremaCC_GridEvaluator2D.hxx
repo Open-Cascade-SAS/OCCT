@@ -118,7 +118,8 @@ private:
   void buildGrids() const
   {
     // Determine grid size based on domain extent
-    constexpr int aNbSamples = 32;
+    // 64 samples provides better resolution for complex curves like BSplines
+    constexpr int aNbSamples = 64;
 
     const double aU1Min  = myDomain.Curve1.Min;
     const double aU1Max  = myDomain.Curve1.Max;
@@ -306,6 +307,48 @@ private:
           aCand.EstDist = aMinDist;
           aCand.GradMag = aMinGrad;
           myCandidates.Append(aCand);
+        }
+      }
+    }
+
+    // Additionally, scan for distance local minima (cells with smaller distance than neighbors)
+    // This helps find extrema on parallel curves where gradient might not change sign
+    if (theMode == ExtremaCC::SearchMode::Min || theMode == ExtremaCC::SearchMode::MinMax)
+    {
+      for (int i = 1; i < aNb1 - 2; ++i)
+      {
+        for (int j = 1; j < aNb2 - 2; ++j)
+        {
+          const double aDist = myGridData(i, j).Dist;
+
+          // Check if this is a local minimum in distance
+          const bool aIsLocalMin = aDist < myGridData(i - 1, j).Dist && aDist < myGridData(i + 1, j).Dist
+                                   && aDist < myGridData(i, j - 1).Dist
+                                   && aDist < myGridData(i, j + 1).Dist;
+
+          if (aIsLocalMin)
+          {
+            // Check it's not a duplicate candidate
+            bool aIsDup = false;
+            for (int c = 0; c < myCandidates.Length() && !aIsDup; ++c)
+            {
+              const Candidate& aExist = myCandidates.Value(c);
+              if (aExist.Idx1 == i && aExist.Idx2 == j)
+                aIsDup = true;
+            }
+            if (!aIsDup)
+            {
+              Candidate aCand;
+              aCand.Idx1    = i;
+              aCand.Idx2    = j;
+              aCand.StartU1 = myGrid1(i).U;
+              aCand.StartU2 = myGrid2(j).U;
+              aCand.EstDist = aDist;
+              aCand.GradMag = myGridData(i, j).F1 * myGridData(i, j).F1
+                              + myGridData(i, j).F2 * myGridData(i, j).F2;
+              myCandidates.Append(aCand);
+            }
+          }
         }
       }
     }
