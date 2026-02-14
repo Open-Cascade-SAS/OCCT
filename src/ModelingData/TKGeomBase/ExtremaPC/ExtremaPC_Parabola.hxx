@@ -83,7 +83,7 @@ public:
   //! @return point on parabola
   gp_Pnt Value(double theU) const
   {
-    // Parabola: P(u) = Vertex + (u²/4F)*XDir + u*YDir
+    // Parabola: P(u) = Vertex + (u^2/4F)*XDir + u*YDir
     const double aX = theU * theU * my1Over4F;
     return gp_Pnt(myVertexX + aX * myXDirX + theU * myYDirX,
                   myVertexY + aX * myXDirY + theU * myYDirY,

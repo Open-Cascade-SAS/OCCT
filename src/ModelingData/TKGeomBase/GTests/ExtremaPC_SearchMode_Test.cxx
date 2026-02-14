@@ -170,7 +170,7 @@ TEST_F(ExtremaPC_SearchModeTest, Line_MaxMode)
   EXPECT_GE(aNewResult.NbExt(), 1);
 
   // Maximum distance is to endpoint at (-50, 0, 0) or (50, 0, 0)
-  // Distance = sqrt(50^2 + 10^2) = sqrt(2600) ≈ 50.99
+  // Distance = sqrt(50^2 + 10^2) = sqrt(2600) ~= 50.99
   double aExpectedMaxDist = std::sqrt(2600.0);
   double aNewMaxDist      = std::sqrt(aNewResult.MaxSquareDistance());
   EXPECT_NEAR(aNewMaxDist, aExpectedMaxDist, THE_TOL);
@@ -778,7 +778,7 @@ TEST_F(ExtremaPC_SearchModeTest, Bezier_MaxMode)
   ASSERT_GE(aNewResult.NbExt(), 1);
 
   // With endpoint handling, max is at either endpoint (0,0,0) or (4,0,0)
-  // Distance from (2,1,0) to endpoints = sqrt(4 + 1) = sqrt(5) ≈ 2.236
+  // Distance from (2,1,0) to endpoints = sqrt(4 + 1) = sqrt(5) ~= 2.236
   double aExpectedMaxDist = std::sqrt(5.0);
   double aNewMaxDist      = std::sqrt(aNewResult.MaxSquareDistance());
   EXPECT_NEAR(aNewMaxDist, aExpectedMaxDist, 0.01);

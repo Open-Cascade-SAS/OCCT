@@ -233,14 +233,14 @@ TEST_F(ExtremaPS_CylinderTest, PartialDomain)
   // Point in the first quadrant
   gp_Pnt aPoint(20.0, 20.0, 5.0);
 
-  // Only first quadrant: U in [0, π/2]
+  // Only first quadrant: U in [0, PI/2]
   ExtremaPS_Cylinder       anEval(aCylinder, ExtremaPS::Domain2D(0.0, M_PI / 2.0, 0.0, 10.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aPoint, THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // Minimum should be at U = π/4 (45°)
+  // Minimum should be at U = PI/4 (45 deg)
   int aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].U, M_PI / 4.0, THE_TOL);
 }

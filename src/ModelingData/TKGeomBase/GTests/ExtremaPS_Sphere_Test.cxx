@@ -246,7 +246,7 @@ TEST_F(ExtremaPS_SphereTest, PartialDomain)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
 
-  // Minimum should be at U = π/4, V = 0
+  // Minimum should be at U = PI/4, V = 0
   int aMinIdx = aResult.MinIndex();
   EXPECT_NEAR(aResult[aMinIdx].U, M_PI / 4.0, 0.1);
   EXPECT_NEAR(aResult[aMinIdx].V, 0.0, 0.1);

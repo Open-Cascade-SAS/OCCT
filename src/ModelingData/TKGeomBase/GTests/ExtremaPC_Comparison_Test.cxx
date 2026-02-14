@@ -642,7 +642,7 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   // Create a larger BSpline with 20 control points for meaningful benchmark
   // For degree 3 with 20 poles: n_knots = n_poles - degree + 1 = 18
   // End knots have multiplicity = degree + 1 = 4, interior knots have multiplicity 1
-  // Total: 4 + 16*1 + 4 = 24 = n_poles + degree + 1 ✓
+  // Total: 4 + 16*1 + 4 = 24 = n_poles + degree + 1 OK
   constexpr int aNbPoles = 20;
   constexpr int aDegree  = 3;
   constexpr int aNbKnots = aNbPoles - aDegree + 1; // 18 knots

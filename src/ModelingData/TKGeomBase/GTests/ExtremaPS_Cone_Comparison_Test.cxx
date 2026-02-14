@@ -29,8 +29,7 @@
 
 namespace
 {
-const double THE_TOLERANCE      = 1.0e-6;
-const double THE_DIST_TOLERANCE = 1.0e-3; // Relaxed for cone extrema
+const double THE_TOLERANCE = 1.0e-6;
 
 //! Helper to compare or verify new implementation when old may fail
 //! Note: Cone comparison has known differences between implementations due to
@@ -147,7 +146,7 @@ TEST_F(ExtremaPS_ConeComparisonTest, PointDiagonal)
 
 TEST_F(ExtremaPS_ConeComparisonTest, PointNearApex)
 {
-  // Apex is at z = -5 / tan(30°) ≈ -8.66, but with positive semi-angle the cone opens upward
+  // Apex is at z = -5 / tan(30 deg) ~= -8.66, but with positive semi-angle the cone opens upward
   gp_Pnt aP(0.5, 0.0, -8.0);
   CompareMinDistances(aP, myAdaptor, 0.0, 2 * M_PI, -15.0, 50.0, "PointNearApex");
 }

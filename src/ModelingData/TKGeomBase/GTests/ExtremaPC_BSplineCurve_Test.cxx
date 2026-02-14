@@ -106,7 +106,7 @@ protected:
     aKnots(4) = 1.0;
 
     NCollection_Array1<int> aMults(1, 4);
-    aMults(1) = 3; // sum = 3 + 1 + 1 + 3 = 8 ✓
+    aMults(1) = 3; // sum = 3 + 1 + 1 + 3 = 8 OK
     aMults(2) = 1;
     aMults(3) = 1;
     aMults(4) = 3;
@@ -343,7 +343,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_PointNear)
   gp_Pnt aPtOnCurve = aBSpline->Value(aResult[aMinIdx].Parameter);
   EXPECT_NEAR(aResult[aMinIdx].Point.Distance(aPtOnCurve), 0.0, THE_TOL);
 
-  // Oscillating curve peaks at Y≈2, so distance from (2.5, 3.0) should be around 1
+  // Oscillating curve peaks at Y~=2, so distance from (2.5, 3.0) should be around 1
   EXPECT_LT(std::sqrt(aResult.MinSquareDistance()), 2.0);
 }
 

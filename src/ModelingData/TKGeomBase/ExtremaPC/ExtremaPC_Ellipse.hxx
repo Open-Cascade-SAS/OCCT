@@ -185,7 +185,7 @@ private:
     double aKo3 = -aB * aY;
     double aKo4 = aA * aX;
 
-    // MathRoot::Trigonometric handles all special cases including Y ≈ 0
+    // MathRoot::Trigonometric handles all special cases including Y ~= 0
     MathRoot::TrigResult aTrigRes =
       MathRoot::Trigonometric(0.0, aKo2, aKo3, aKo4, 0.0, theUMin, theUMax);
 

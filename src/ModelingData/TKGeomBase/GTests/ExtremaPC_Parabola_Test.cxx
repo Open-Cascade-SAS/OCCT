@@ -60,10 +60,10 @@ TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_Positive)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GE(aResult.NbExt(), 1);
 
-  // For parabola y² = 20x with point at (10,0,0) on axis,
+  // For parabola y^2 = 20x with point at (10,0,0) on axis,
   // the closest point is the vertex at (0,0,0) with distance = 10
   double aMinSqDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(aMinSqDist, 100.0, THE_TOL); // Distance² to vertex
+  EXPECT_NEAR(aMinSqDist, 100.0, THE_TOL); // Distance^2 to vertex
 }
 
 TEST_F(ExtremaPC_ParabolaTest, PointOnAxis_Negative)
