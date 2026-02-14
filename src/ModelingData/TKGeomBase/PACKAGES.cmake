@@ -9,6 +9,7 @@ set(OCCT_TKGeomBase_LIST_OF_PACKAGES
   FEmTool
   AppCont
   Extrema
+  ExtremaCC
   ExtremaPC
   ExtremaPS
   IntAna
