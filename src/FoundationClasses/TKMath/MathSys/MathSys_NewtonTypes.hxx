@@ -30,10 +30,10 @@ template <int N>
 struct NewtonResultN
 {
   MathUtils::Status     Status       = MathUtils::Status::NotConverged; //!< Final solver status
-  std::array<double, N> X            = {};                               //!< Solution estimate
-  size_t                NbIterations = 0;                                //!< Performed iterations
-  double                ResidualNorm = 0.0;                              //!< Final residual norm ||F||
-  double                StepNorm     = 0.0;                              //!< Final step norm ||dX||
+  std::array<double, N> X            = {};                              //!< Solution estimate
+  size_t                NbIterations = 0;                               //!< Performed iterations
+  double                ResidualNorm = 0.0; //!< Final residual norm ||F||
+  double                StepNorm     = 0.0; //!< Final step norm ||dX||
 
   //! Returns true if computation converged.
   bool IsDone() const { return Status == MathUtils::Status::OK; }

@@ -82,7 +82,7 @@ TEST_F(MathSys_Newton3DTest, Solve3D_NonlinearSystem)
   aBounds.HasBounds = false;
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = 1.0e-10;
+  aOptions.FTolerance    = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const MathSys::NewtonResultN<3> aResult =
@@ -211,7 +211,7 @@ TEST_F(MathSys_Newton3DTest, SolveCurveSurfaceExtrema3D_Smoke)
   aBounds.Max = {10.0, 10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = THE_TOL;
+  aOptions.FTolerance    = THE_TOL;
   aOptions.MaxIterations = 20;
 
   const MathSys::NewtonResultN<3> aResult =

@@ -268,7 +268,7 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
 
   aRes.ResidualNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
   aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                    : MathUtils::Status::MaxIterations;
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 
@@ -442,7 +442,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
 
       aRes.ResidualNorm = std::sqrt(aCheckF1 * aCheckF1 + aCheckF2 * aCheckF2);
       aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                        : MathUtils::Status::MaxIterations;
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -456,7 +456,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
 
   aRes.ResidualNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
   aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                    : MathUtils::Status::MaxIterations;
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

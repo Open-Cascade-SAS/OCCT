@@ -263,7 +263,7 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
 
   aRes.ResidualNorm = std::sqrt(aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2]);
   aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                    : MathUtils::Status::MaxIterations;
+                                                                   : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

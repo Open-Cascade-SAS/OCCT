@@ -150,7 +150,7 @@ TEST(MathSys_Newton2DTest, Solve2D_Quadratic_Converges)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = 1.0e-10;
+  aOptions.FTolerance    = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const MathSys::NewtonResultN<2> aResult = MathSys::Solve2D(aFunc, {5.0, 3.0}, aBounds, aOptions);
@@ -171,7 +171,7 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_Target_Converges)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = 1.0e-10;
+  aOptions.FTolerance    = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const MathSys::NewtonResultN<2> aResult =
@@ -193,7 +193,7 @@ TEST(MathSys_Newton2DTest, Regression_TinyStepDoesNotConvergeWithLargeResidual)
   aBounds.Max = {1.0, 1.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = 1.0e-8;
+  aOptions.FTolerance    = 1.0e-8;
   aOptions.XTolerance    = 1.0e-16;
   aOptions.MaxIterations = 10;
 
@@ -233,7 +233,7 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_HighPrecision)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = 5.0e-8;
+  aOptions.FTolerance    = 5.0e-8;
   aOptions.MaxIterations = 100;
 
   const MathSys::NewtonResultN<2> aResult =
@@ -272,7 +272,7 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_ConsistentFromDifferentStarts)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.FTolerance   = 1.0e-10;
+  aOptions.FTolerance    = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const std::array<std::array<double, 2>, 4> aStarts = {std::array<double, 2>{0.0, 0.0},
