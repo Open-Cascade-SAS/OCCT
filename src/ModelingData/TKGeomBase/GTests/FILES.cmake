@@ -4,6 +4,34 @@ set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKGeomBase_GTests_FILES
   BndLib_Test.cxx
   Extrema_ExtPC_Test.cxx
+  ExtremaPC_BezierCurve_Test.cxx
+  ExtremaPC_BSplineCurve_Test.cxx
+  ExtremaPC_Circle_Test.cxx
+  ExtremaPC_Comparison_Test.cxx
+  ExtremaPC_Curve_Test.cxx
+  ExtremaPC_Ellipse_Test.cxx
+  ExtremaPC_ExtendedGeometry_Test.cxx
+  ExtremaPC_Hyperbola_Test.cxx
+  ExtremaPC_Line_Test.cxx
+  ExtremaPC_OffsetCurve_Test.cxx
+  ExtremaPC_Parabola_Test.cxx
+  ExtremaPC_SearchMode_Test.cxx
+  ExtremaPS_BezierSurface_Comparison_Test.cxx
+  ExtremaPS_BezierSurface_Test.cxx
+  ExtremaPS_BSplineSurface_Comparison_Test.cxx
+  ExtremaPS_BSplineSurface_Test.cxx
+  ExtremaPS_Cone_Comparison_Test.cxx
+  ExtremaPS_Cone_Test.cxx
+  ExtremaPS_Cylinder_Comparison_Test.cxx
+  ExtremaPS_Cylinder_Test.cxx
+  ExtremaPS_Plane_Comparison_Test.cxx
+  ExtremaPS_Plane_Test.cxx
+  ExtremaPS_Sphere_Comparison_Test.cxx
+  ExtremaPS_Sphere_Test.cxx
+  ExtremaPS_Surface_Test.cxx
+  ExtremaPS_Performance_Test.cxx
+  ExtremaPS_Torus_Comparison_Test.cxx
+  ExtremaPS_Torus_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
