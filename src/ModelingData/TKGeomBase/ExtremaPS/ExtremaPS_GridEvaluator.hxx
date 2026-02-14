@@ -127,14 +127,13 @@ public:
   {
     myResult.Clear();
 
-    // Try cached solution first if query points are spatially coherent
-    if (tryFromCachedSolution(theSurface, theP, theDomain, theTol, theMode))
-    {
-      return myResult;
-    }
-
     // Full grid scan + refinement
     scanGrid(theP, theTol, theMode);
+
+    // Add cached solution as additional candidate for Newton (hint optimization)
+    // This improves convergence when query points are spatially coherent
+    addCachedAsCandidate(theP, theDomain);
+
     refineCandidates(theSurface, theP, theDomain, theTol, theMode);
     addGridMinFallback(theSurface, theP, theDomain, theTol, theMode);
 
@@ -200,7 +199,8 @@ private:
     const double aPz = theP.Z();
 
     // Tolerance for near-zero gradient detection (use squared for faster comparison)
-    const double aTolF   = theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR;
+    // Use Precision::Confusion() as base, NOT theTol which is distance tolerance and can be ~1.0
+    const double aTolF   = Precision::Confusion() * ExtremaPS::THE_GRADIENT_TOL_FACTOR;
     const double aTolFSq = aTolF * aTolF;
     const double aScaleRatioSq =
       ExtremaPS::THE_DISTANCE_SCALE_RATIO * ExtremaPS::THE_DISTANCE_SCALE_RATIO;
@@ -345,6 +345,116 @@ private:
     }
   }
 
+  //! @brief Add cached solution as an additional candidate for Newton refinement.
+  //!
+  //! This is a "hint" optimization - the cached solution is used as an additional
+  //! starting point for Newton, improving convergence when query points are spatially coherent.
+  //! The grid scan is always performed to ensure correctness.
+  //!
+  //! @param theP query point
+  //! @param theDomain 2D parameter domain
+  void addCachedAsCandidate(const gp_Pnt& theP, const ExtremaPS::Domain2D& theDomain) const
+  {
+    if (myCacheCount == 0)
+      return;
+
+    // Find nearest cached solution
+    int    aNearestIdx  = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+    double aNearestDist = theP.SquareDistance(myCachedSolutions[aNearestIdx].QueryPoint);
+
+    for (int i = 1; i < myCacheCount; ++i)
+    {
+      int    aIdx  = (myCacheIndex + THE_CACHE_SIZE - 1 - i) % THE_CACHE_SIZE;
+      double aDist = theP.SquareDistance(myCachedSolutions[aIdx].QueryPoint);
+      if (aDist < aNearestDist)
+      {
+        aNearestDist = aDist;
+        aNearestIdx  = aIdx;
+      }
+    }
+
+    // Only use cache if query point is spatially close
+    if (aNearestDist > ExtremaPS::THE_COHERENCE_THRESHOLD_SQ)
+      return;
+
+    const CachedSolution& aNearest = myCachedSolutions[aNearestIdx];
+
+    // Compute starting point with optional trajectory prediction
+    double aStartU = aNearest.U;
+    double aStartV = aNearest.V;
+
+    if (myCacheCount >= 3)
+    {
+      // Get 3 most recent points for trajectory prediction
+      int aIdx2 = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+      int aIdx1 = (myCacheIndex + THE_CACHE_SIZE - 2) % THE_CACHE_SIZE;
+      int aIdx0 = (myCacheIndex + THE_CACHE_SIZE - 3) % THE_CACHE_SIZE;
+
+      const CachedSolution& aS0 = myCachedSolutions[aIdx0];
+      const CachedSolution& aS1 = myCachedSolutions[aIdx1];
+      const CachedSolution& aS2 = myCachedSolutions[aIdx2];
+
+      gp_Vec aV01(aS0.QueryPoint, aS1.QueryPoint);
+      gp_Vec aV12(aS1.QueryPoint, aS2.QueryPoint);
+      double aMag01 = aV01.Magnitude();
+      double aMag12 = aV12.Magnitude();
+
+      if (aMag01 > Precision::Confusion() && aMag12 > Precision::Confusion())
+      {
+        double aRatio = aMag12 / aMag01;
+        if (aRatio > ExtremaPS::THE_TRAJECTORY_MIN_RATIO
+            && aRatio < ExtremaPS::THE_TRAJECTORY_MAX_RATIO)
+        {
+          double aCos = aV01.Dot(aV12) / (aMag01 * aMag12);
+          if (aCos > ExtremaPS::THE_TRAJECTORY_MIN_COS)
+          {
+            // Linear extrapolation
+            double aDeltaU = aS2.U - aS1.U;
+            double aDeltaV = aS2.V - aS1.V;
+            aStartU        = aS2.U + aDeltaU;
+            aStartV        = aS2.V + aDeltaV;
+            aStartU        = std::max(theDomain.UMin, std::min(theDomain.UMax, aStartU));
+            aStartV        = std::max(theDomain.VMin, std::min(theDomain.VMax, aStartV));
+          }
+        }
+      }
+    }
+
+    // Find the grid cell containing the cached solution
+    const int aNbU   = myGrid.UpperRow() - myGrid.LowerRow() + 1;
+    const int aNbV   = myGrid.UpperCol() - myGrid.LowerCol() + 1;
+    int       aCellI = 0;
+    int       aCellJ = 0;
+
+    // Binary search for cell
+    for (int i = 0; i < aNbU - 1; ++i)
+    {
+      if (aStartU >= myGrid(i, 0).U && aStartU <= myGrid(i + 1, 0).U)
+      {
+        aCellI = i;
+        break;
+      }
+    }
+    for (int j = 0; j < aNbV - 1; ++j)
+    {
+      if (aStartV >= myGrid(0, j).V && aStartV <= myGrid(0, j + 1).V)
+      {
+        aCellJ = j;
+        break;
+      }
+    }
+
+    // Add as candidate with high priority (low GradMag)
+    Candidate aCand;
+    aCand.IdxU    = aCellI;
+    aCand.IdxV    = aCellJ;
+    aCand.StartU  = aStartU;
+    aCand.StartV  = aStartV;
+    aCand.EstDist = aNearestDist; // Use distance to cached query point as estimate
+    aCand.GradMag = 0.0;          // High priority
+    myCandidates.Append(aCand);
+  }
+
   //! @brief Refine candidates using 2D Newton's method with grid fallback.
   void refineCandidates(const Adaptor3d_Surface&   theSurface,
                         const gp_Pnt&              theP,
@@ -413,48 +523,28 @@ private:
 
       const Candidate& aCand = myCandidates.Value(anEntry.Idx);
 
-      // Multi-start Newton from cell center and corners with domain bounds.
+      // Newton from cell center (primary starting point)
       double aBestRootU    = 0.0;
       double aBestRootV    = 0.0;
       double aBestRootDist = std::numeric_limits<double>::max();
       bool   aConverged    = false;
 
-      const double aStartPoints[5][2] = {
-        {aCand.StartU, aCand.StartV},                                      // Center
-        {myGrid(aCand.IdxU, aCand.IdxV).U, myGrid(aCand.IdxU, aCand.IdxV).V},           // Corner 00
-        {myGrid(aCand.IdxU + 1, aCand.IdxV).U, myGrid(aCand.IdxU + 1, aCand.IdxV).V},   // Corner 10
-        {myGrid(aCand.IdxU, aCand.IdxV + 1).U, myGrid(aCand.IdxU, aCand.IdxV + 1).V},   // Corner 01
-        {myGrid(aCand.IdxU + 1, aCand.IdxV + 1).U, myGrid(aCand.IdxU + 1, aCand.IdxV + 1).V} // Corner 11
-      };
+      // Try center first (most likely to converge for interior extrema)
+      ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                    aCand.StartU,
+                                                                    aCand.StartV,
+                                                                    theDomain.UMin,
+                                                                    theDomain.UMax,
+                                                                    theDomain.VMin,
+                                                                    theDomain.VMax,
+                                                                    theTol);
 
-      for (int iStart = 0; iStart < 5; ++iStart)
+      if (aNewtonRes.IsDone)
       {
-        ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
-                                                                      aStartPoints[iStart][0],
-                                                                      aStartPoints[iStart][1],
-                                                                      theDomain.UMin,
-                                                                      theDomain.UMax,
-                                                                      theDomain.VMin,
-                                                                      theDomain.VMax,
-                                                                      theTol);
-
-        if (aNewtonRes.IsDone)
-        {
-          double aRootU = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
-          double aRootV = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
-          double aDist  = aFunc.SquareDistance(aRootU, aRootV);
-
-          // Keep the best solution (for Min mode) or worst (for Max mode)
-          bool aIsBetter = (theMode == ExtremaPS::SearchMode::Max) ? (aDist > aBestRootDist)
-                                                                   : (aDist < aBestRootDist);
-          if (aIsBetter)
-          {
-            aBestRootU    = aRootU;
-            aBestRootV    = aRootV;
-            aBestRootDist = aDist;
-            aConverged    = true;
-          }
-        }
+        aBestRootU    = std::max(theDomain.UMin, std::min(theDomain.UMax, aNewtonRes.U));
+        aBestRootV    = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
+        aBestRootDist = aFunc.SquareDistance(aBestRootU, aBestRootV);
+        aConverged    = true;
       }
 
       // Fallback if no Newton converged: use the best grid corner directly
@@ -485,10 +575,11 @@ private:
         aBestRootDist = aBestGridDist;
 
         // Check if gradient is near zero (valid extremum at grid point)
+        // Use Precision::Confusion() as base, NOT theTol which is distance tolerance
         double aFu, aFv;
         aFunc.Value(aBestRootU, aBestRootV, aFu, aFv);
         double aFNorm = std::sqrt(aFu * aFu + aFv * aFv);
-        if (aFNorm < theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
+        if (aFNorm < Precision::Confusion() * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
         {
           aConverged = true;
         }
@@ -722,16 +813,71 @@ private:
     double aRootV = std::max(theDomain.VMin, std::min(theDomain.VMax, aNewtonRes.V));
 
     // Verify the solution is valid (gradient near zero)
+    // Use Precision::Confusion() as base, NOT theTol which is distance tolerance
     double aFu, aFv;
     aFunc.Value(aRootU, aRootV, aFu, aFv);
-    double aFNorm = aFu * aFu + aFv * aFv;
-    if (aFNorm
-        > theTol * theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
+    double aFNorm   = aFu * aFu + aFv * aFv;
+    double aGradTol = Precision::Confusion() * ExtremaPS::THE_GRADIENT_TOL_FACTOR;
+    if (aFNorm > aGradTol * aGradTol)
       return false;
 
-    // Valid solution found - add result
+    // Valid solution found
     gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
     double aSqDist = theP.SquareDistance(aPt);
+
+    // Safety check: compare with grid estimate to avoid returning a much worse solution
+    // This catches cases where the cached hint leads to a poor local minimum
+    if (theMode != ExtremaPS::SearchMode::Max)
+    {
+      const int aNbU = myGrid.UpperRow() - myGrid.LowerRow() + 1;
+      const int aNbV = myGrid.UpperCol() - myGrid.LowerCol() + 1;
+      if (aNbU > 0 && aNbV > 0)
+      {
+        // Quick scan: check sparse grid points + all boundaries
+        double aGridMinDist = std::numeric_limits<double>::max();
+
+        // Sparse interior points (every 4th)
+        for (int i = 0; i < aNbU; i += 4)
+        {
+          for (int j = 0; j < aNbV; j += 4)
+          {
+            double aDist = theP.SquareDistance(myGrid(i, j).Point);
+            if (aDist < aGridMinDist)
+              aGridMinDist = aDist;
+          }
+        }
+
+        // Check all boundary points (U=0, U=max, V=0, V=max)
+        // These are often where extrema lie for bounded domains
+        const int aLastU = aNbU - 1;
+        const int aLastV = aNbV - 1;
+        for (int j = 0; j < aNbV; ++j)
+        {
+          double aD1 = theP.SquareDistance(myGrid(0, j).Point);
+          double aD2 = theP.SquareDistance(myGrid(aLastU, j).Point);
+          if (aD1 < aGridMinDist)
+            aGridMinDist = aD1;
+          if (aD2 < aGridMinDist)
+            aGridMinDist = aD2;
+        }
+        for (int i = 1; i < aLastU; ++i)
+        {
+          double aD1 = theP.SquareDistance(myGrid(i, 0).Point);
+          double aD2 = theP.SquareDistance(myGrid(i, aLastV).Point);
+          if (aD1 < aGridMinDist)
+            aGridMinDist = aD1;
+          if (aD2 < aGridMinDist)
+            aGridMinDist = aD2;
+        }
+
+        // If grid has a significantly better point (2x closer), reject fast path
+        constexpr double THE_SAFETY_FACTOR = 4.0; // squared ratio = 2x distance
+        if (aGridMinDist < aSqDist / THE_SAFETY_FACTOR)
+        {
+          return false; // Fall back to full grid scan
+        }
+      }
+    }
 
     // Classify as min or max using second derivative
     double aDFuu, aDFuv, aDFvv;

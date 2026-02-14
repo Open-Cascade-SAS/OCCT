@@ -203,17 +203,23 @@ Newton2DResult Newton2D(const Function& theFunc,
   return Newton2D(theFunc, theU0, theV0, -aInf, aInf, -aInf, aInf, theTol, theMaxIter);
 }
 
-//! Optimized 2D Newton solver for symmetric Jacobian.
+//! Optimized 2D Newton solver for symmetric Jacobian with backtracking line search.
 //!
 //! Many 2D problems have symmetric Jacobians (e.g., gradient of scalar function).
 //! This variant is optimized for the symmetric case where J12 = J21.
 //! Convergence tolerances match math_FunctionSetRoot for high precision.
 //!
-//! The function type must provide a method:
+//! Features:
+//! - Backtracking Armijo line search for robust convergence
+//! - Gradient descent fallback for singular/ill-conditioned Jacobian
+//! - Step size limiting to prevent wild oscillations
+//!
+//! The function type must provide methods:
 //! @code
 //!   bool ValueAndJacobian(double theU, double theV,
 //!                         double& theF1, double& theF2,
 //!                         double& theJ11, double& theJ12, double& theJ22) const;
+//!   bool Value(double theU, double theV, double& theF1, double& theF2) const;
 //! @endcode
 //! where J = [[J11, J12], [J12, J22]] (symmetric).
 //!
@@ -243,10 +249,14 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
   aRes.U = theU0;
   aRes.V = theV0;
 
-  const double aMaxStep   = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
-  const double aStepTolU  = THE_NEWTON_STEP_TOL_FACTOR * (theUMax - theUMin);
-  const double aStepTolV  = THE_NEWTON_STEP_TOL_FACTOR * (theVMax - theVMin);
-  const double aFTolSq    = THE_NEWTON_FTOL_SQ;
+  const double aMaxStep  = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
+  const double aStepTolU = THE_NEWTON_STEP_TOL_FACTOR * (theUMax - theUMin);
+  const double aStepTolV = THE_NEWTON_STEP_TOL_FACTOR * (theVMax - theVMin);
+  const double aFTolSq   = THE_NEWTON_FTOL_SQ;
+
+  // Line search parameters
+  constexpr double THE_BACKTRACK_RHO = 0.5; // Step reduction factor
+  constexpr int    THE_MAX_BACKTRACK = 10;  // Maximum backtracking iterations
 
   for (size_t i = 0; i < theMaxIter; ++i)
   {
@@ -271,19 +281,28 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
     const double aDet = aJ11 * aJ22 - aJ12 * aJ12;
 
     double aDU, aDV;
+    bool   aNeedLineSearch = false; // Only use line search when step is unreliable
+
     if (std::abs(aDet) < 1.0e-30)
     {
-      // Singular Jacobian - try gradient descent step
-      const double aNormSq = aJ11 * aJ11 + 2.0 * aJ12 * aJ12 + aJ22 * aJ22;
-      if (aNormSq < 1.0e-60)
+      // Singular Jacobian - use gradient descent direction
+      // For F(u,v) = 0.5*(f1^2 + f2^2), gradient is J^T * F
+      const double aGradU  = aJ11 * aF1 + aJ12 * aF2;
+      const double aGradV  = aJ12 * aF1 + aJ22 * aF2;
+      const double aGradSq = aGradU * aGradU + aGradV * aGradV;
+
+      if (aGradSq < 1.0e-60)
       {
         aRes.FNorm  = std::sqrt(aFNormSq);
         aRes.Status = Status::Singular;
         return aRes;
       }
-      const double aStep = std::sqrt(aFNormSq / aNormSq) * 0.1;
-      aDU                = -aStep * aF1;
-      aDV                = -aStep * aF2;
+
+      // Steepest descent: step = -alpha * grad, alpha chosen to give reasonable step
+      const double aAlpha = aFNormSq / aGradSq; // Optimal for quadratic
+      aDU                 = -aAlpha * aGradU;
+      aDV                 = -aAlpha * aGradV;
+      aNeedLineSearch     = true; // Gradient descent needs line search
     }
     else
     {
@@ -291,28 +310,71 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
       const double aInvDet = 1.0 / aDet;
       aDU                  = (-aF1 * aJ22 + aF2 * aJ12) * aInvDet;
       aDV                  = (-aF2 * aJ11 + aF1 * aJ12) * aInvDet;
+    }
 
-      // Limit step size
-      const double aStepNormSq = aDU * aDU + aDV * aDV;
-      if (aStepNormSq > aMaxStep * aMaxStep)
+    // Limit step size to prevent wild jumps
+    const double aStepNormSq = aDU * aDU + aDV * aDV;
+    if (aStepNormSq > aMaxStep * aMaxStep)
+    {
+      const double aScale = aMaxStep / std::sqrt(aStepNormSq);
+      aDU *= aScale;
+      aDV *= aScale;
+      aNeedLineSearch = true; // Limited step needs line search
+    }
+
+    // Compute new position
+    double aNewU = aRes.U + aDU;
+    double aNewV = aRes.V + aDV;
+
+    // Clamp to bounds
+    aNewU = std::max(theUMin, std::min(theUMax, aNewU));
+    aNewV = std::max(theVMin, std::min(theVMax, aNewV));
+
+    double aNewFNormSq = 0.0;
+
+    // Only use line search when step is unreliable (gradient descent or limited step)
+    if (aNeedLineSearch)
+    {
+      double aNewF1, aNewF2;
+      if (!theFunc.Value(aNewU, aNewV, aNewF1, aNewF2))
       {
-        const double aScale = aMaxStep / std::sqrt(aStepNormSq);
-        aDU *= aScale;
-        aDV *= aScale;
+        aRes.Status = Status::NumericalError;
+        return aRes;
+      }
+      aNewFNormSq = aNewF1 * aNewF1 + aNewF2 * aNewF2;
+
+      // Backtrack if step increased the function value significantly
+      if (aNewFNormSq > aFNormSq * 1.5) // Allow some increase (1.5x) before backtracking
+      {
+        double aAlpha = THE_BACKTRACK_RHO;
+        for (int k = 0; k < THE_MAX_BACKTRACK - 1; ++k)
+        {
+          aNewU = aRes.U + aAlpha * aDU;
+          aNewV = aRes.V + aAlpha * aDV;
+          aNewU = std::max(theUMin, std::min(theUMax, aNewU));
+          aNewV = std::max(theVMin, std::min(theVMax, aNewV));
+
+          if (!theFunc.Value(aNewU, aNewV, aNewF1, aNewF2))
+          {
+            aAlpha *= THE_BACKTRACK_RHO;
+            continue;
+          }
+
+          aNewFNormSq = aNewF1 * aNewF1 + aNewF2 * aNewF2;
+          if (aNewFNormSq < aFNormSq * 1.5)
+          {
+            break; // Accept step
+          }
+          aAlpha *= THE_BACKTRACK_RHO;
+        }
       }
     }
 
-    // Update with clamping to bounds
+    // Update position
     const double aOldU = aRes.U;
     const double aOldV = aRes.V;
-    double       aNewU = aRes.U + aDU;
-    double       aNewV = aRes.V + aDV;
-
-    // Clamp to bounds
-    aNewU  = std::max(theUMin, std::min(theUMax, aNewU));
-    aNewV  = std::max(theVMin, std::min(theVMax, aNewV));
-    aRes.U = aNewU;
-    aRes.V = aNewV;
+    aRes.U             = aNewU;
+    aRes.V             = aNewV;
 
     // Compute actual step taken (after clamping)
     const double aActualDU = aRes.U - aOldU;
@@ -321,7 +383,16 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
     // Parametric convergence: step is negligible (matching math_FunctionSetRoot)
     if (std::abs(aActualDU) < aStepTolU && std::abs(aActualDV) < aStepTolV)
     {
-      aRes.FNorm  = std::sqrt(aFNormSq);
+      // Compute final FNorm if not already computed by line search
+      if (!aNeedLineSearch)
+      {
+        double aNewF1, aNewF2;
+        if (theFunc.Value(aRes.U, aRes.V, aNewF1, aNewF2))
+        {
+          aNewFNormSq = aNewF1 * aNewF1 + aNewF2 * aNewF2;
+        }
+      }
+      aRes.FNorm  = std::sqrt(aNewFNormSq);
       aRes.Status = Status::OK;
       return aRes;
     }

@@ -583,3 +583,204 @@ TEST_F(ExtremaPS_TorusTest, Verify_SquareDistanceConsistent)
     EXPECT_NEAR(anExt.SquareDistance, aActualSqDist, THE_TOLERANCE);
   }
 }
+
+//==================================================================================================
+// Apple Torus Tests (MajorRadius < MinorRadius)
+// These test the special case where the generating circle overlaps the axis,
+// requiring special handling to find the correct U parameter.
+//==================================================================================================
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_BasicProjection)
+{
+  // Apple torus: minor radius (10) > major radius (3)
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 10.0);
+  gp_Pnt          aP(15.0, 0.0, 0.0);
+  ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  ASSERT_GE(aResult.Extrema.Length(), 1);
+
+  // Minimum distance should be 15 - (3 + 10) = 2
+  double aMinDist = aResult.MinSquareDistance();
+  EXPECT_NEAR(std::sqrt(aMinDist), 2.0, THE_TOLERANCE);
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_PointInsideOverlap)
+{
+  // Apple torus with point in the overlapping region
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 10.0);
+  gp_Pnt          aP(5.0, 0.0, 8.0); // Inside the apple region
+  ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  ASSERT_GE(aResult.Extrema.Length(), 1);
+
+  // Verify the result is on the surface and U parameter matches ElSLib
+  const ExtremaPS::ExtremumResult& anExt = aResult.Extrema.Value(0);
+  double                           aElU, aElV;
+  ElSLib::TorusParameters(aTorus.Position(), 3.0, 10.0, anExt.Point, aElU, aElV);
+
+  // U should be close to ElSLib result (within 2*PI periodicity)
+  double aDiffU = std::abs(anExt.U - aElU);
+  if (aDiffU > THE_PI)
+    aDiffU = 2.0 * THE_PI - aDiffU;
+  EXPECT_LT(aDiffU, 0.1);
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_XAxisOriented)
+{
+  // Apple torus with axis along X (like the failing geometry from bug report)
+  gp_Ax3   aPos(gp_Pnt(-124.815, 0, 0), gp_Dir(-1, 0, 0), gp_Dir(0, 0, 1));
+  gp_Torus aTorus(aPos, 0.170286, 127.0);
+
+  // Test point that would give wrong U without apple torus handling
+  gp_Pnt          aP(-120.0, 5.0, 3.0);
+  ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  ASSERT_GE(aResult.Extrema.Length(), 1);
+
+  // Verify U matches ElSLib for the minimum
+  const ExtremaPS::ExtremumResult& anExt = aResult.Extrema.Value(0);
+  double                           aElU, aElV;
+  ElSLib::TorusParameters(aPos, 0.170286, 127.0, anExt.Point, aElU, aElV);
+
+  double aDiffU = std::abs(anExt.U - aElU);
+  if (aDiffU > THE_PI)
+    aDiffU = 2.0 * THE_PI - aDiffU;
+  EXPECT_LT(aDiffU, 0.1) << "U mismatch: got " << anExt.U << ", expected " << aElU;
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_VerifyUMatchesElSLib)
+{
+  // Test multiple points on apple torus to verify U parameter matches ElSLib
+  gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 10.0);
+
+  std::vector<gp_Pnt> aTestPoints = {
+    gp_Pnt(5.0, 0.0, 8.0),   // +X, +Z
+    gp_Pnt(-5.0, 0.0, 8.0),  // -X, +Z
+    gp_Pnt(0.0, 5.0, 8.0),   // +Y, +Z
+    gp_Pnt(0.0, -5.0, 8.0),  // -Y, +Z
+    gp_Pnt(5.0, 5.0, 8.0),   // diagonal, +Z
+    gp_Pnt(-5.0, -5.0, 8.0), // diagonal, +Z
+  };
+
+  for (const gp_Pnt& aP : aTestPoints)
+  {
+    ExtremaPS_Torus          anEval(aTorus);
+    const ExtremaPS::Result& aResult =
+      anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
+
+    ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+    ASSERT_GE(aResult.Extrema.Length(), 1);
+
+    const ExtremaPS::ExtremumResult& anExt = aResult.Extrema.Value(0);
+    double                           aElU, aElV;
+    ElSLib::TorusParameters(aTorus.Position(), 3.0, 10.0, anExt.Point, aElU, aElV);
+
+    // Compare U (handle periodicity)
+    double aDiffU = std::abs(anExt.U - aElU);
+    if (aDiffU > THE_PI)
+      aDiffU = 2.0 * THE_PI - aDiffU;
+
+    EXPECT_LT(aDiffU, 0.1) << "For point (" << aP.X() << ", " << aP.Y() << ", " << aP.Z()
+                           << "): U mismatch, got " << anExt.U << ", expected " << aElU;
+  }
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_PointOnAxis)
+{
+  // Point on axis of apple torus
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 10.0);
+  gp_Pnt          aP(0.0, 0.0, 5.0);
+  ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+
+  // Point on axis -> infinite solutions
+  EXPECT_EQ(aResult.Status, ExtremaPS::Status::InfiniteSolutions);
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_ExtremeRatio)
+{
+  // Very extreme apple torus: major = 0.1, minor = 100
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.1, 100.0);
+  gp_Pnt          aP(50.0, 0.0, 80.0);
+  ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
+  const ExtremaPS::Result& aResult =
+    anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  ASSERT_GE(aResult.Extrema.Length(), 1);
+
+  // Verify point is on surface
+  const ExtremaPS::ExtremumResult& anExt   = aResult.Extrema.Value(0);
+  gp_Pnt                           aSurfPt = ElSLib::Value(anExt.U, anExt.V, aTorus);
+  EXPECT_NEAR(anExt.Point.Distance(aSurfPt), 0.0, THE_TOLERANCE);
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_RotatedAxis)
+{
+  // Apple torus with tilted axis
+  gp_Dir   aTiltedDir(1.0 / std::sqrt(3.0), 1.0 / std::sqrt(3.0), 1.0 / std::sqrt(3.0));
+  gp_Torus aTorus(gp_Ax3(gp_Pnt(10, 10, 10), aTiltedDir), 2.0, 15.0);
+
+  gp_Pnt                   aP(20.0, 15.0, 12.0);
+  ExtremaPS_Torus          anEval(aTorus);
+  const ExtremaPS::Result& aResult =
+    anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  ASSERT_GE(aResult.Extrema.Length(), 1);
+
+  // Verify point is on surface
+  const ExtremaPS::ExtremumResult& anExt   = aResult.Extrema.Value(0);
+  gp_Pnt                           aSurfPt = ElSLib::Value(anExt.U, anExt.V, aTorus);
+  EXPECT_NEAR(anExt.Point.Distance(aSurfPt), 0.0, THE_TOLERANCE);
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_MultipleExtrema)
+{
+  // Apple torus should still find multiple extrema
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 10.0);
+  gp_Pnt          aP(8.0, 0.0, 5.0);
+  ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
+  const ExtremaPS::Result& aResult =
+    anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  EXPECT_GE(aResult.Extrema.Length(), 2);
+
+  // Min and max should be different
+  double aMinDist = aResult.MinSquareDistance();
+  double aMaxDist = aResult.MaxSquareDistance();
+  EXPECT_LT(aMinDist, aMaxDist);
+}
+
+TEST_F(ExtremaPS_TorusTest, AppleTorus_ViaAggregator)
+{
+  // Test apple torus through ExtremaPS_Surface aggregator
+  gp_Torus                          aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0, 10.0);
+  occ::handle<Geom_ToroidalSurface> aGeomTorus = new Geom_ToroidalSurface(aTorus);
+  GeomAdaptor_Surface               anAdaptor(aGeomTorus);
+  ExtremaPS_Surface                 anExtPS(anAdaptor);
+
+  gp_Pnt                   aP(5.0, 0.0, 8.0);
+  const ExtremaPS::Result& aResult =
+    anExtPS.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
+
+  ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
+  ASSERT_GE(aResult.Extrema.Length(), 1);
+
+  // Verify U matches ElSLib
+  const ExtremaPS::ExtremumResult& anExt = aResult.Extrema.Value(0);
+  double                           aElU, aElV;
+  ElSLib::TorusParameters(aTorus.Position(), 3.0, 10.0, anExt.Point, aElU, aElV);
+
+  double aDiffU = std::abs(anExt.U - aElU);
+  if (aDiffU > THE_PI)
+    aDiffU = 2.0 * THE_PI - aDiffU;
+  EXPECT_LT(aDiffU, 0.1);
+}

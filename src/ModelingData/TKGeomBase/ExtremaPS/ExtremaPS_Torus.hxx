@@ -179,10 +179,10 @@ public:
     const double aRadialDist = std::sqrt(aRadialDistSq);
     const double aInvRadDist = 1.0 / aRadialDist;
 
-    // Normalized radial direction
-    const double aRadNormX = aRadX * aInvRadDist;
-    const double aRadNormY = aRadY * aInvRadDist;
-    const double aRadNormZ = aRadZ * aInvRadDist;
+    // Normalized radial direction (mutable for apple torus case)
+    double aRadNormX = aRadX * aInvRadDist;
+    double aRadNormY = aRadY * aInvRadDist;
+    double aRadNormZ = aRadZ * aInvRadDist;
 
     // U parameter (major angle)
     const double aCosU = aRadNormX * myXDirX + aRadNormY * myXDirY + aRadNormZ * myXDirZ;
@@ -190,6 +190,49 @@ public:
     double       aU    = std::atan2(aSinU, aCosU);
     if (aU < 0.0)
       aU += aTwoPi;
+
+    // Apple torus case (MajorRadius < MinorRadius): need to check which generating circle
+    // is actually closer. The radial projection may point to the wrong one.
+    // This matches ElSLib::TorusParameters behavior.
+    if (myMajorRadius < myMinorRadius)
+    {
+      // Circle center at U
+      const double aCircleCenterX1 = myCenterX + myMajorRadius * aRadNormX;
+      const double aCircleCenterY1 = myCenterY + myMajorRadius * aRadNormY;
+      const double aCircleCenterZ1 = myCenterZ + myMajorRadius * aRadNormZ;
+
+      // Circle center at U + PI (opposite)
+      const double aCircleCenterX2 = myCenterX - myMajorRadius * aRadNormX;
+      const double aCircleCenterY2 = myCenterY - myMajorRadius * aRadNormY;
+      const double aCircleCenterZ2 = myCenterZ - myMajorRadius * aRadNormZ;
+
+      // Vector from circle center 1 to point
+      const double aDx1            = theP.X() - aCircleCenterX1;
+      const double aDy1            = theP.Y() - aCircleCenterY1;
+      const double aDz1            = theP.Z() - aCircleCenterZ1;
+      const double aDistSq1        = aDx1 * aDx1 + aDy1 * aDy1 + aDz1 * aDz1;
+      const double aMinorRadiusSq  = myMinorRadius * myMinorRadius;
+      const double aD1             = std::abs(aDistSq1 - aMinorRadiusSq);
+
+      // Vector from circle center 2 to point
+      const double aDx2     = theP.X() - aCircleCenterX2;
+      const double aDy2     = theP.Y() - aCircleCenterY2;
+      const double aDz2     = theP.Z() - aCircleCenterZ2;
+      const double aDistSq2 = aDx2 * aDx2 + aDy2 * aDy2 + aDz2 * aDz2;
+      const double aD2      = std::abs(aDistSq2 - aMinorRadiusSq);
+
+      // If the opposite circle is closer, use U + PI and flip radial direction
+      if (aD2 < aD1)
+      {
+        aU += M_PI;
+        if (aU >= aTwoPi)
+          aU -= aTwoPi;
+        // Flip radial norm to point to the correct generating circle center
+        aRadNormX = -aRadNormX;
+        aRadNormY = -aRadNormY;
+        aRadNormZ = -aRadNormZ;
+      }
+    }
 
     // Normalize U to domain range for periodic parameter
     if (myDomain.has_value())
@@ -224,7 +267,7 @@ public:
     // V parameter (minor angle)
     double aV = 0.0;
     double aCircleNormX, aCircleNormY, aCircleNormZ;
-    if (aCircleDist < theTol)
+    if (aCircleDist < Precision::Confusion())
     {
       aCircleNormX = aRadNormX;
       aCircleNormY = aRadNormY;
