@@ -22,7 +22,8 @@
 
 namespace
 {
-constexpr double THE_TOLERANCE = 1.0e-2;
+constexpr double THE_TOLERANCE            = 1.0e-6;
+constexpr double THE_STOCHASTIC_TOLERANCE = 1.0e-2;
 
 // ============================================================================
 // Test function classes
@@ -164,7 +165,6 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSO_Sphere)
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSO, 100);
   aConfig.NbPopulation = 40;
-  aConfig.Seed         = 42;
 
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
@@ -183,7 +183,6 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_MultiStart_Sphere)
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::MultiStart, 100);
   aConfig.NbStarts = 20;
-  aConfig.Seed     = 42;
 
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
@@ -202,7 +201,6 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_Booth)
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSOHybrid, 100);
   aConfig.NbPopulation = 40;
-  aConfig.Seed         = 42;
 
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
@@ -223,7 +221,6 @@ TEST(MathOpt_GlobOptTest, GlobalMinimum_DE_Sphere)
   aConfig.NbPopulation  = 40;
   aConfig.MutationScale = 0.8;
   aConfig.CrossoverProb = 0.9;
-  aConfig.Seed          = 42;
 
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
@@ -249,7 +246,6 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Sphere)
   aConfig.NbPopulation  = 40;
   aConfig.MutationScale = 0.8;
   aConfig.CrossoverProb = 0.9;
-  aConfig.Seed          = 42;
 
   auto aResult = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
 
@@ -271,7 +267,6 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rosenbrock)
   aConfig.NbPopulation  = 50;
   aConfig.MutationScale = 0.8;
   aConfig.CrossoverProb = 0.9;
-  aConfig.Seed          = 42;
 
   auto aResult = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
 
@@ -293,7 +288,6 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Rastrigin)
   aConfig.NbPopulation  = 60;
   aConfig.MutationScale = 0.5;
   aConfig.CrossoverProb = 0.9;
-  aConfig.Seed          = 42;
 
   auto aResult = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
 
@@ -317,7 +311,6 @@ TEST(MathOpt_GlobOptTest, MultiStart_Sphere)
 
   MathOpt::GlobalConfig aConfig;
   aConfig.NbStarts = 20;
-  aConfig.Seed     = 42;
 
   auto aResult = MathOpt::MultiStart(aFunc, aLower, aUpper, aConfig);
 
@@ -336,7 +329,6 @@ TEST(MathOpt_GlobOptTest, MultiStart_Booth)
 
   MathOpt::GlobalConfig aConfig;
   aConfig.NbStarts = 30;
-  aConfig.Seed     = 42;
 
   auto aResult = MathOpt::MultiStart(aFunc, aLower, aUpper, aConfig);
 
@@ -359,7 +351,6 @@ TEST(MathOpt_GlobOptTest, Himmelblau_FindsOneMinimum)
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 200);
   aConfig.NbPopulation = 50;
-  aConfig.Seed         = 42;
 
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
@@ -367,7 +358,7 @@ TEST(MathOpt_GlobOptTest, Himmelblau_FindsOneMinimum)
 
   // Himmelblau has 4 global minima, all with f = 0
   // The algorithm should find one of them
-  EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(*aResult.Value, 0.0, THE_STOCHASTIC_TOLERANCE);
 }
 
 // ============================================================================
@@ -383,7 +374,6 @@ TEST(MathOpt_GlobOptTest, GoldsteinPrice)
 
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::DifferentialEvolution, 200);
   aConfig.NbPopulation = 60;
-  aConfig.Seed         = 42;
 
   auto aResult = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfig);
 
@@ -411,7 +401,6 @@ TEST(MathOpt_GlobOptTest, DifferentialEvolution_Sphere5D)
   aConfig.NbPopulation  = 80;
   aConfig.MutationScale = 0.7;
   aConfig.CrossoverProb = 0.9;
-  aConfig.Seed          = 42;
 
   auto aResult = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
 
@@ -437,14 +426,14 @@ TEST(MathOpt_GlobOptTest, StrategyComparison_Rosenbrock)
   // Test PSO
   MathOpt::GlobalConfig aConfigPSO(MathOpt::GlobalStrategy::PSO, 200);
   aConfigPSO.NbPopulation = 50;
-  aConfigPSO.Seed         = 42;
-  auto aResultPSO         = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfigPSO);
+
+  auto aResultPSO = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfigPSO);
 
   // Test DE
   MathOpt::GlobalConfig aConfigDE(MathOpt::GlobalStrategy::DifferentialEvolution, 200);
   aConfigDE.NbPopulation = 50;
-  aConfigDE.Seed         = 42;
-  auto aResultDE         = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfigDE);
+
+  auto aResultDE = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfigDE);
 
   ASSERT_TRUE(aResultPSO.IsDone());
   ASSERT_TRUE(aResultDE.IsDone());
@@ -468,7 +457,6 @@ TEST(MathOpt_GlobOptTest, Reproducibility_DE)
   MathOpt::GlobalConfig aConfig;
   aConfig.MaxIterations = 100;
   aConfig.NbPopulation  = 40;
-  aConfig.Seed          = 12345;
 
   auto aResult1 = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
   auto aResult2 = MathOpt::DifferentialEvolution(aFunc, aLower, aUpper, aConfig);
@@ -501,11 +489,107 @@ TEST(MathOpt_GlobOptTest, CompareWithOldAPI_Sphere)
   // New API
   MathOpt::GlobalConfig aConfig(MathOpt::GlobalStrategy::PSOHybrid, 100);
   aConfig.NbPopulation = 40;
-  aConfig.Seed         = 42;
-  auto aNewResult      = MathOpt::GlobalMinimum(aNewFunc, aLower, aUpper, aConfig);
+
+  auto aNewResult = MathOpt::GlobalMinimum(aNewFunc, aLower, aUpper, aConfig);
 
   ASSERT_TRUE(aNewResult.IsDone());
 
   // Both should find a good solution
   EXPECT_LT(*aNewResult.Value, 0.1);
+}
+
+// ============================================================================
+// New GlobalMinimum overload tests
+// ============================================================================
+
+TEST(MathOpt_GlobOptTest, GlobalMinimum_PSO_CustomPSOConfig)
+{
+  SphereFunc aFunc;
+
+  math_Vector aLower(1, 2, -5.0);
+  math_Vector aUpper(1, 2, 5.0);
+
+  MathOpt::GlobalConfig aGlobConfig(MathOpt::GlobalStrategy::PSO, 200);
+  aGlobConfig.NbPopulation = 40;
+
+  MathOpt::PSOConfig aPSOConfig;
+  aPSOConfig.NbParticles   = 60;
+  aPSOConfig.MaxIterations = 150;
+  aPSOConfig.Tolerance     = 1.0e-6;
+
+  aPSOConfig.InertiaSchedule = MathOpt::PSOInertiaSchedule::LinearDecay;
+  aPSOConfig.OmegaMin        = 0.3;
+
+  MathOpt::PSOStats aStats;
+  auto              aResult =
+    MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aGlobConfig, &aPSOConfig, nullptr, &aStats);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR((*aResult.Solution)(1), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR((*aResult.Solution)(2), 0.0, THE_TOLERANCE);
+  EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
+  EXPECT_GT(aStats.NbFunctionEvals, 0);
+  EXPECT_GT(aStats.NbIterations, 0);
+}
+
+TEST(MathOpt_GlobOptTest, GlobalMinimum_PSOHybrid_WithSeeds)
+{
+  BoothFunc aFunc;
+
+  math_Vector aLower(1, 2, -10.0);
+  math_Vector aUpper(1, 2, 10.0);
+
+  MathOpt::GlobalConfig aGlobConfig(MathOpt::GlobalStrategy::PSOHybrid, 100);
+  aGlobConfig.NbPopulation = 40;
+
+  MathOpt::PSOConfig aPSOConfig;
+  aPSOConfig.NbParticles   = 40;
+  aPSOConfig.MaxIterations = 100;
+  aPSOConfig.Tolerance     = 1.0e-6;
+
+  aPSOConfig.InitMode = MathOpt::PSOInitMode::SeededPlusRandom;
+
+  // Seed near the minimum (1, 3)
+  math_Vector aSeedPos(1, 2);
+  aSeedPos(1) = 1.5;
+  aSeedPos(2) = 2.5;
+  NCollection_Vector<MathOpt::PSOSeedParticle> aSeeds;
+  aSeeds.Append(MathOpt::PSOSeedParticle(aSeedPos));
+
+  MathOpt::PSOStats aStats;
+  auto              aResult =
+    MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aGlobConfig, &aPSOConfig, &aSeeds, &aStats);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR((*aResult.Solution)(1), 1.0, THE_TOLERANCE);
+  EXPECT_NEAR((*aResult.Solution)(2), 3.0, THE_TOLERANCE);
+  EXPECT_NEAR(*aResult.Value, 0.0, THE_TOLERANCE);
+  EXPECT_GT(aStats.NbFunctionEvals, 0);
+}
+
+TEST(MathOpt_GlobOptTest, GlobalMinimum_NonPSOStrategies_UnchangedWithPSOOptions)
+{
+  SphereFunc aFunc;
+
+  math_Vector aLower(1, 2, -5.0);
+  math_Vector aUpper(1, 2, 5.0);
+
+  // MultiStart — PSO params should be ignored
+  MathOpt::GlobalConfig aConfigMS(MathOpt::GlobalStrategy::MultiStart, 100);
+  aConfigMS.NbStarts = 20;
+
+  MathOpt::PSOConfig aPSOConfig;
+  aPSOConfig.NbParticles = 100;
+
+  auto aResultMS = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfigMS, &aPSOConfig);
+  ASSERT_TRUE(aResultMS.IsDone());
+  EXPECT_NEAR(*aResultMS.Value, 0.0, THE_TOLERANCE);
+
+  // DE — PSO params should be ignored
+  MathOpt::GlobalConfig aConfigDE(MathOpt::GlobalStrategy::DifferentialEvolution, 100);
+  aConfigDE.NbPopulation = 40;
+
+  auto aResultDE = MathOpt::GlobalMinimum(aFunc, aLower, aUpper, aConfigDE, &aPSOConfig);
+  ASSERT_TRUE(aResultDE.IsDone());
+  EXPECT_NEAR(*aResultDE.Value, 0.0, THE_TOLERANCE);
 }
