@@ -117,9 +117,9 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
   {
     const BezierData& aBezierData = std::get<BezierData>(myCurveData);
     BezierData        aCopyData;
-    aCopyData.Curve    = aBezierData.Curve;
-    aCopyData.Cache    = aBezierData.Cache;
-    aCopyData.EvalRep  = aBezierData.EvalRep;
+    aCopyData.Curve   = aBezierData.Curve;
+    aCopyData.EvalRep = aBezierData.EvalRep;
+    // Cache is not copied - will be rebuilt on demand.
     aCopy->myCurveData = std::move(aCopyData);
   }
   else
