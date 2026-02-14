@@ -45,6 +45,7 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaSS_CylinderCone_Test.cxx
   ExtremaSS_CylinderCylinder_Test.cxx
   ExtremaSS_CylinderTorus_Test.cxx
+  ExtremaSS_GenericPair_Test.cxx
   ExtremaSS_PlaneCone_Test.cxx
   ExtremaSS_PlaneTorus_Test.cxx
   ExtremaSS_SphereSphere_Test.cxx

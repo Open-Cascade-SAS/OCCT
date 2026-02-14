@@ -16,9 +16,13 @@
 
 #include <Adaptor3d_Surface.hxx>
 #include <ExtremaSS.hxx>
+#include <gp_Vec.hxx>
+#include <NCollection_Array2.hxx>
+#include <NCollection_Vector.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <optional>
+#include <tuple>
 
 //! @brief Generic grid-based surface-surface extrema computation.
 //!
@@ -78,6 +82,18 @@ public:
   bool IsBounded() const { return myDomain.has_value(); }
 
 private:
+  //! Extracted bounds for both surfaces.
+  struct Bounds4D
+  {
+    double U1Min, U1Max, V1Min, V1Max;
+    double U2Min, U2Max, V2Min, V2Max;
+  };
+
+  //! Extract parameter bounds from domain or surfaces.
+  //! @param[in] theClamp if true, clamp infinite bounds to THE_MAX_PARAM
+  //! @return extracted bounds
+  Bounds4D extractBounds(bool theClamp) const;
+
   //! Build grids for both surfaces.
   void buildGrids() const;
 
@@ -88,11 +104,38 @@ private:
   void refineCandidates(double theTol, ExtremaSS::SearchMode theMode) const;
 
 private:
-  const Adaptor3d_Surface*             mySurface1;
-  const Adaptor3d_Surface*             mySurface2;
+  //! Cached grid point with pre-computed data for a surface.
+  struct SurfaceGridPoint
+  {
+    double U;     //!< U parameter value
+    double V;     //!< V parameter value
+    gp_Pnt Point; //!< Surface point S(u,v)
+    gp_Vec DU;    //!< First derivative dS/dU
+    gp_Vec DV;    //!< First derivative dS/dV
+  };
+
+  //! Candidate cell for 4D Newton refinement.
+  struct Candidate4D
+  {
+    int    I1, J1;    //!< Grid indices on surface 1
+    int    I2, J2;    //!< Grid indices on surface 2
+    double U1, V1;    //!< Starting parameters on surface 1
+    double U2, V2;    //!< Starting parameters on surface 2
+    double EstSqDist; //!< Estimated squared distance
+  };
+
+private:
+  const Adaptor3d_Surface*           mySurface1;
+  const Adaptor3d_Surface*           mySurface2;
   std::optional<ExtremaSS::Domain4D> myDomain;
-  mutable ExtremaSS::Result            myResult;
-  bool                                 mySwapped;
+  mutable ExtremaSS::Result          myResult;
+  bool                               mySwapped;
+
+  // Mutable cached data for grid-based computation
+  mutable NCollection_Array2<SurfaceGridPoint>                    myGrid1;
+  mutable NCollection_Array2<SurfaceGridPoint>                    myGrid2;
+  mutable NCollection_Vector<Candidate4D>                         myCandidates;
+  mutable NCollection_Vector<std::tuple<double, double, double, double>> myFoundRoots;
 };
 
 #endif // _ExtremaSS_GenericPair_HeaderFile
