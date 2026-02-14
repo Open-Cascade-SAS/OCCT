@@ -4,7 +4,6 @@ set(OCCT_ExtremaPC_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_ExtremaPC_FILES
   # Core types
   ExtremaPC.hxx
-  ExtremaPC_POnCurv.hxx
 
   # Elementary curves (header-only, analytical solutions)
   ExtremaPC_Line.hxx
