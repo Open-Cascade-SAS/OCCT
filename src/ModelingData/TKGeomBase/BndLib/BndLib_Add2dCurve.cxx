@@ -15,6 +15,7 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
+#include <BSplCLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -29,11 +30,26 @@
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <gp.hxx>
+#include <MathOpt_Brent.hxx>
+#include <MathOpt_PSO.hxx>
+#include <MathPoly_Quartic.hxx>
+#include <NCollection_Array2.hxx>
+#include <PLib.hxx>
 #include <Precision.hxx>
 #include <Standard_Type.hxx>
-#include <math_Function.hxx>
-#include <math_BrentMinimum.hxx>
-#include <math_PSO.hxx>
+
+/// Maximum bisection iterations for derivative root isolation.
+/// 53 iterations guarantee full double precision (~2^-53 relative interval).
+constexpr int THE_MAX_BISECTION_ITER = 53;
+
+/// Stack buffer size for Taylor polynomial coefficients.
+/// 128 doubles covers degree 31 for 3D rational curves (32 rows * 4 columns).
+constexpr int THE_CACHE_BUF_SIZE = 128;
+
+/// Maximum curve degree for which direct polynomial root-finding is used.
+/// Derivative polynomial degree is (curve degree - 1), and MathPoly::Quartic handles up to
+/// degree 4.
+constexpr int THE_MAX_DIRECT_ROOT_DEGREE = 5;
 
 //=================================================================================================
 
@@ -109,7 +125,7 @@ protected:
 };
 
 //
-class Curv2dMaxMinCoordMVar : public math_MultipleVarFunction
+class Curv2dMaxMinCoordMVar
 {
 public:
   Curv2dMaxMinCoordMVar(const occ::handle<Geom2d_Curve>& theCurve,
@@ -125,7 +141,7 @@ public:
   {
   }
 
-  bool Value(const math_Vector& X, double& F) override
+  bool Value(const math_Vector& X, double& F)
   {
     if (!CheckInputData(X(1)))
     {
@@ -137,8 +153,6 @@ public:
 
     return true;
   }
-
-  int NbVariables() const override { return 1; }
 
 private:
   Curv2dMaxMinCoordMVar& operator=(const Curv2dMaxMinCoordMVar&) = delete;
@@ -153,7 +167,7 @@ private:
 };
 
 //
-class Curv2dMaxMinCoord : public math_Function
+class Curv2dMaxMinCoord
 {
 public:
   Curv2dMaxMinCoord(const occ::handle<Geom2d_Curve>& theCurve,
@@ -169,7 +183,7 @@ public:
   {
   }
 
-  bool Value(const double X, double& F) override
+  bool Value(const double X, double& F)
   {
     if (!CheckInputData(X))
     {
@@ -193,6 +207,337 @@ private:
   int                              myCoordIndx;
   double                           mySign;
 };
+
+/// Evaluates derivative (or rational derivative numerator) for a single coordinate
+/// from cached 2D Taylor polynomial coefficients.
+/// @param theCacheBuf  buffer with Taylor polynomial coefficients
+/// @param theRowLen    number of columns per row (2 for non-rational 2D, 3 for rational)
+/// @param theDegree    polynomial degree
+/// @param theCoord     coordinate index (0=X, 1=Y)
+/// @param theIsRational true for rational curves (NURBS)
+/// @param theT         local parameter value in [0, 1]
+/// @return for non-rational: f'_c(t); for rational: d(xw)/dt * w - xw * dw/dt
+static double evaluateDerivCoord2d(const double* theCacheBuf,
+                                   const int     theRowLen,
+                                   const int     theDegree,
+                                   const int     theCoord,
+                                   const bool    theIsRational,
+                                   const double  theT)
+{
+  if (!theIsRational)
+  {
+    double aResult = 0.0;
+    double aPow    = 1.0;
+    for (int i = 0; i < theDegree; ++i)
+    {
+      aResult += (i + 1) * theCacheBuf[(i + 1) * theRowLen + theCoord] * aPow;
+      aPow *= theT;
+    }
+    return aResult;
+  }
+
+  const int aWCoord = theRowLen - 1;
+  double    aXW = 0.0, aW = 0.0, aDXW = 0.0, aDW = 0.0;
+  double    aPow = 1.0;
+  for (int i = 0; i <= theDegree; ++i)
+  {
+    aXW += theCacheBuf[i * theRowLen + theCoord] * aPow;
+    aW += theCacheBuf[i * theRowLen + aWCoord] * aPow;
+    if (i < theDegree)
+    {
+      aDXW += (i + 1) * theCacheBuf[(i + 1) * theRowLen + theCoord] * aPow;
+      aDW += (i + 1) * theCacheBuf[(i + 1) * theRowLen + aWCoord] * aPow;
+    }
+    aPow *= theT;
+  }
+  return aDXW * aW - aXW * aDW;
+}
+
+/// Finds coordinate extrema of a non-rational 2D polynomial span using direct root-finding.
+/// Supports derivative polynomial degree 1-4 (curve degree 2-5).
+/// @param theCacheBuf  buffer with Taylor polynomial coefficients
+/// @param theRowLen    number of columns per row
+/// @param theDegree    polynomial degree of the curve span
+/// @param theTMin      lower bound of local parameter range
+/// @param theTMax      upper bound of local parameter range
+/// @param theBox       bounding box to extend with extremal points
+static void addPolySpanExtrema2d(const double* theCacheBuf,
+                                 const int     theRowLen,
+                                 const int     theDegree,
+                                 const double  theTMin,
+                                 const double  theTMax,
+                                 Bnd_Box2d&    theBox)
+{
+  if (theDegree < 2)
+  {
+    return;
+  }
+
+  const int aDerivDeg = theDegree - 1;
+
+  for (int aCoord = 0; aCoord < 2; ++aCoord)
+  {
+    double aDerivCoeffs[5];
+    for (int i = 0; i <= aDerivDeg; ++i)
+    {
+      aDerivCoeffs[i] = (i + 1.0) * theCacheBuf[(i + 1) * theRowLen + aCoord];
+    }
+
+    // Find derivative roots using MathPoly direct solvers (leading coefficient first)
+    MathUtils::PolyResult aPolyResult;
+    switch (aDerivDeg)
+    {
+      case 1:
+        aPolyResult = MathPoly::Linear(aDerivCoeffs[1], aDerivCoeffs[0]);
+        break;
+      case 2:
+        aPolyResult = MathPoly::Quadratic(aDerivCoeffs[2], aDerivCoeffs[1], aDerivCoeffs[0]);
+        break;
+      case 3:
+        aPolyResult =
+          MathPoly::Cubic(aDerivCoeffs[3], aDerivCoeffs[2], aDerivCoeffs[1], aDerivCoeffs[0]);
+        break;
+      case 4:
+        aPolyResult = MathPoly::Quartic(aDerivCoeffs[4],
+                                        aDerivCoeffs[3],
+                                        aDerivCoeffs[2],
+                                        aDerivCoeffs[1],
+                                        aDerivCoeffs[0]);
+        break;
+      default:
+        break;
+    }
+
+    if (!aPolyResult.IsDone())
+    {
+      continue;
+    }
+
+    for (size_t i = 0; i < aPolyResult.NbRoots; ++i)
+    {
+      const double aRoot = aPolyResult.Roots[i];
+      if (aRoot > theTMin + Precision::PConfusion() && aRoot < theTMax - Precision::PConfusion())
+      {
+        double aPoint[4];
+        PLib::NoDerivativeEvalPolynomial(aRoot,
+                                         theDegree,
+                                         theRowLen,
+                                         theDegree * theRowLen,
+                                         theCacheBuf[0],
+                                         aPoint[0]);
+        theBox.Add(gp_Pnt2d(aPoint[0], aPoint[1]));
+      }
+    }
+  }
+}
+
+/// Fallback 2D extrema finder for rational or high-degree spans.
+/// Uses sign-change detection on sampled derivative values followed by
+/// bisection refinement to isolate each root.
+/// @param theCacheBuf   buffer with Taylor polynomial coefficients
+/// @param theRowLen     number of columns per row
+/// @param theDegree     polynomial degree of the curve span
+/// @param theIsRational true for rational curves
+/// @param theTMin       lower bound of local parameter range
+/// @param theTMax       upper bound of local parameter range
+/// @param theBox        bounding box to extend with extremal points
+static void addSpanExtremaByBisection2d(const double* theCacheBuf,
+                                        const int     theRowLen,
+                                        const int     theDegree,
+                                        const bool    theIsRational,
+                                        const double  theTMin,
+                                        const double  theTMax,
+                                        Bnd_Box2d&    theBox)
+{
+  if (theDegree < 2)
+  {
+    return;
+  }
+
+  const int    aNbSamples = std::max(4 * theDegree, 8);
+  const double aDt        = (theTMax - theTMin) / aNbSamples;
+
+  for (int aCoord = 0; aCoord < 2; ++aCoord)
+  {
+    double aPrevDeriv =
+      evaluateDerivCoord2d(theCacheBuf, theRowLen, theDegree, aCoord, theIsRational, theTMin);
+
+    for (int i = 1; i <= aNbSamples; ++i)
+    {
+      const double aT = theTMin + i * aDt;
+      const double aCurrDeriv =
+        evaluateDerivCoord2d(theCacheBuf, theRowLen, theDegree, aCoord, theIsRational, aT);
+
+      if (aPrevDeriv * aCurrDeriv < 0.0)
+      {
+        double aTLow  = theTMin + (i - 1) * aDt;
+        double aTHigh = aT;
+        double aDLow  = aPrevDeriv;
+
+        for (int anIter = 0; anIter < THE_MAX_BISECTION_ITER; ++anIter)
+        {
+          const double aTMid = (aTLow + aTHigh) * 0.5;
+          const double aDMid =
+            evaluateDerivCoord2d(theCacheBuf, theRowLen, theDegree, aCoord, theIsRational, aTMid);
+
+          if (aDLow * aDMid < 0.0)
+          {
+            aTHigh = aTMid;
+          }
+          else
+          {
+            aTLow = aTMid;
+            aDLow = aDMid;
+          }
+        }
+
+        const double aTRoot = (aTLow + aTHigh) * 0.5;
+        double       aPoint[4];
+        PLib::NoDerivativeEvalPolynomial(aTRoot,
+                                         theDegree,
+                                         theRowLen,
+                                         theDegree * theRowLen,
+                                         theCacheBuf[0],
+                                         aPoint[0]);
+
+        if (theIsRational)
+        {
+          const double aW = aPoint[theRowLen - 1];
+          theBox.Add(gp_Pnt2d(aPoint[0] / aW, aPoint[1] / aW));
+        }
+        else
+        {
+          theBox.Add(gp_Pnt2d(aPoint[0], aPoint[1]));
+        }
+      }
+
+      aPrevDeriv = aCurrDeriv;
+    }
+  }
+}
+
+/// Computes exact bounding box for a 2D BSpline curve over its full parameter range.
+/// Uses per-span polynomial root-finding to locate coordinate extrema.
+/// @param theCurve  BSpline curve
+/// @param theBox    bounding box to extend
+static void addBSplineBBox2d(const occ::handle<Geom2d_BSplineCurve>& theCurve, Bnd_Box2d& theBox)
+{
+  const int  aDegree      = theCurve->Degree();
+  const bool anIsRational = theCurve->IsRational();
+  const bool anIsPeriodic = theCurve->IsPeriodic();
+
+  const NCollection_Array1<gp_Pnt2d>& aPoles     = theCurve->Poles();
+  const NCollection_Array1<double>*   aWeights   = theCurve->Weights();
+  const NCollection_Array1<double>&   aFlatKnots = theCurve->KnotSequence();
+  const NCollection_Array1<double>&   aKnots     = theCurve->Knots();
+  const int                           aRowLen    = anIsRational ? 3 : 2;
+
+  // Add all distinct knot points
+  for (int i = aKnots.Lower(); i <= aKnots.Upper(); ++i)
+  {
+    gp_Pnt2d aPnt;
+    theCurve->D0(aKnots(i), aPnt);
+    theBox.Add(aPnt);
+  }
+
+  // Process each non-degenerate knot span
+  const int aSpanMin = aFlatKnots.Lower() + aDegree;
+  const int aSpanMax = aFlatKnots.Upper() - aDegree - 1;
+
+  for (int anISpan = aSpanMin; anISpan <= aSpanMax; ++anISpan)
+  {
+    const double aSpanStart  = aFlatKnots(anISpan);
+    const double aSpanEnd    = aFlatKnots(anISpan + 1);
+    const double aSpanLength = aSpanEnd - aSpanStart;
+
+    if (aSpanLength < Precision::PConfusion())
+    {
+      continue;
+    }
+
+    double                     aCacheBuf[THE_CACHE_BUF_SIZE];
+    NCollection_Array2<double> aCacheArray(aCacheBuf[0], 1, aDegree + 1, 1, aRowLen);
+
+    BSplCLib::BuildCache(aSpanStart,
+                         aSpanLength,
+                         anIsPeriodic,
+                         aDegree,
+                         anISpan,
+                         aFlatKnots,
+                         aPoles,
+                         aWeights,
+                         aCacheArray);
+
+    if (!anIsRational && aDegree <= THE_MAX_DIRECT_ROOT_DEGREE)
+    {
+      addPolySpanExtrema2d(aCacheBuf, aRowLen, aDegree, 0.0, 1.0, theBox);
+    }
+    else
+    {
+      addSpanExtremaByBisection2d(aCacheBuf, aRowLen, aDegree, anIsRational, 0.0, 1.0, theBox);
+    }
+  }
+}
+
+/// Computes exact bounding box for a 2D Bezier curve over a given parameter range.
+/// @param theCurve  Bezier curve
+/// @param theTMin   start of parameter range
+/// @param theTMax   end of parameter range
+/// @param theBox    bounding box to extend
+static void addBezierBBox2d(const occ::handle<Geom2d_BezierCurve>& theCurve,
+                            const double                           theTMin,
+                            const double                           theTMax,
+                            Bnd_Box2d&                             theBox)
+{
+  const int  aDegree      = theCurve->Degree();
+  const bool anIsRational = theCurve->IsRational();
+  const int  aRowLen      = anIsRational ? 3 : 2;
+
+  const NCollection_Array1<gp_Pnt2d>& aPoles     = theCurve->Poles();
+  const NCollection_Array1<double>*   aWeights   = theCurve->Weights();
+  const NCollection_Array1<double>&   aFlatKnots = theCurve->KnotSequence();
+
+  // Add endpoints
+  gp_Pnt2d aPnt;
+  theCurve->D0(theTMin, aPnt);
+  theBox.Add(aPnt);
+  theCurve->D0(theTMax, aPnt);
+  theBox.Add(aPnt);
+
+  if (aDegree < 2)
+  {
+    return;
+  }
+
+  const double aSpanStart  = theCurve->FirstParameter();
+  const double aSpanLength = theCurve->LastParameter() - aSpanStart;
+  const int    aSpanIndex  = aFlatKnots.Lower() + aDegree;
+
+  double                     aCacheBuf[THE_CACHE_BUF_SIZE];
+  NCollection_Array2<double> aCacheArray(aCacheBuf[0], 1, aDegree + 1, 1, aRowLen);
+
+  BSplCLib::BuildCache(aSpanStart,
+                       aSpanLength,
+                       false,
+                       aDegree,
+                       aSpanIndex,
+                       aFlatKnots,
+                       aPoles,
+                       aWeights,
+                       aCacheArray);
+
+  const double aTMin = std::max(0.0, (theTMin - aSpanStart) / aSpanLength);
+  const double aTMax = std::min(1.0, (theTMax - aSpanStart) / aSpanLength);
+
+  if (!anIsRational && aDegree <= THE_MAX_DIRECT_ROOT_DEGREE)
+  {
+    addPolySpanExtrema2d(aCacheBuf, aRowLen, aDegree, aTMin, aTMax, theBox);
+  }
+  else
+  {
+    addSpanExtremaByBisection2d(aCacheBuf, aRowLen, aDegree, anIsRational, aTMin, aTMax, theBox);
+  }
+}
 
 //=================================================================================================
 
@@ -355,6 +700,14 @@ void BndLib_Box2dCurve::PerformOptimal(const double Tol)
   { // LineConic
     PerformLineConic();
   }
+  else if (myTypeBase == GeomAbs_BezierCurve)
+  {
+    PerformBezier();
+  }
+  else if (myTypeBase == GeomAbs_BSplineCurve)
+  {
+    PerformBSpline();
+  }
   else
   {
     PerformGenCurv(Tol);
@@ -380,48 +733,15 @@ void BndLib_Box2dCurve::PerformBezier()
     PerformOther();
     return;
   }
-  //
-  int                             i, aNbPoles;
-  double                          aT1, aT2, aTb[2];
-  gp_Pnt2d                        aP2D;
-  occ::handle<Geom2d_Geometry>    aG;
-  occ::handle<Geom2d_BezierCurve> aCBz, aCBzSeg;
-  //
-  myErrorStatus     = 0;
-  Bnd_Box2d& aBox2D = myBox;
-  //
-  aCBz = occ::down_cast<Geom2d_BezierCurve>(myCurveBase);
-  aT1  = aCBz->FirstParameter();
-  aT2  = aCBz->LastParameter();
-  //
-  aTb[0] = myT1;
-  if (aTb[0] < aT1)
-  {
-    aTb[0] = aT1;
-  }
-  //
-  aTb[1] = myT2;
-  if (aTb[1] > aT2)
-  {
-    aTb[1] = aT2;
-  }
-  //
-  constexpr double anEps = Precision::PConfusion();
-  if (std::abs(aT1 - aTb[0]) > anEps || std::abs(aT2 - aTb[1]) > anEps)
-  {
-    aG = aCBz->Copy();
-    //
-    aCBzSeg = occ::down_cast<Geom2d_BezierCurve>(aG);
-    aCBzSeg->Segment(aTb[0], aTb[1]);
-    aCBz = aCBzSeg;
-  }
-  //
-  aNbPoles = aCBz->NbPoles();
-  for (i = 1; i <= aNbPoles; ++i)
-  {
-    aP2D = aCBz->Pole(i);
-    aBox2D.Add(aP2D);
-  }
+
+  myErrorStatus = 0;
+
+  occ::handle<Geom2d_BezierCurve> aCBz = occ::down_cast<Geom2d_BezierCurve>(myCurveBase);
+
+  double aTMin = std::max(myT1, aCBz->FirstParameter());
+  double aTMax = std::min(myT2, aCBz->LastParameter());
+
+  addBezierBBox2d(aCBz, aTMin, aTMax, myBox);
 }
 
 //=================================================================================================
@@ -433,54 +753,33 @@ void BndLib_Box2dCurve::PerformBSpline()
     PerformOther();
     return;
   }
-  //
-  int                              i, aNbPoles;
-  double                           aT1, aT2, aTb[2];
-  gp_Pnt2d                         aP2D;
-  occ::handle<Geom2d_Geometry>     aG;
-  occ::handle<Geom2d_BSplineCurve> aCBS, aCBSs;
-  //
-  myErrorStatus     = 0;
-  Bnd_Box2d& aBox2D = myBox;
-  //
-  aCBS = occ::down_cast<Geom2d_BSplineCurve>(myCurveBase);
-  aT1  = aCBS->FirstParameter();
-  aT2  = aCBS->LastParameter();
-  //
-  aTb[0] = myT1;
-  if (aTb[0] < aT1)
+
+  myErrorStatus = 0;
+
+  occ::handle<Geom2d_BSplineCurve> aCBS = occ::down_cast<Geom2d_BSplineCurve>(myCurveBase);
+  const double                     aT1  = aCBS->FirstParameter();
+  const double                     aT2  = aCBS->LastParameter();
+
+  double aTMin = std::max(myT1, aT1);
+  double aTMax = std::min(myT2, aT2);
+
+  if (aTMax < aTMin)
   {
-    aTb[0] = aT1;
-  }
-  aTb[1] = myT2;
-  if (aTb[1] > aT2)
-  {
-    aTb[1] = aT2;
+    aTMin = aT1;
+    aTMax = aT2;
   }
 
-  if (aTb[1] < aTb[0])
-  {
-    aTb[0] = aT1;
-    aTb[1] = aT2;
-  }
-
-  //
+  // Segment the curve if the range doesn't match
   constexpr double eps = Precision::PConfusion();
-  if (std::abs(aT1 - aTb[0]) > eps || std::abs(aT2 - aTb[1]) > eps)
+  if (std::abs(aT1 - aTMin) > eps || std::abs(aT2 - aTMax) > eps)
   {
-    aG = aCBS->Copy();
-    //
-    aCBSs = occ::down_cast<Geom2d_BSplineCurve>(aG);
-    aCBSs->Segment(aTb[0], aTb[1]);
+    occ::handle<Geom2d_Geometry>     aG    = aCBS->Copy();
+    occ::handle<Geom2d_BSplineCurve> aCBSs = occ::down_cast<Geom2d_BSplineCurve>(aG);
+    aCBSs->Segment(aTMin, aTMax);
     aCBS = aCBSs;
   }
-  //
-  aNbPoles = aCBS->NbPoles();
-  for (i = 1; i <= aNbPoles; ++i)
-  {
-    aP2D = aCBS->Pole(i);
-    aBox2D.Add(aP2D);
-  }
+
+  addBSplineBBox2d(aCBS, myBox);
 }
 
 //=================================================================================================
@@ -561,41 +860,44 @@ double BndLib_Box2dCurve::AdjustExtr(const double UMin,
   if (UMax - UMin < 0.01 * Du)
   {
     // It is suggested that function has one extremum on small interval
-    math_BrentMinimum anOptLoc(reltol, 100, UTol);
-    Curv2dMaxMinCoord aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
-    anOptLoc.Perform(aFunc, UMin, (UMin + UMax) / 2., UMax);
-    if (anOptLoc.IsDone())
+    MathUtils::Config       aBrentConfig(reltol, 100);
+    Curv2dMaxMinCoord       aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
+    MathUtils::ScalarResult aBrentResult = MathOpt::Brent(aFunc, UMin, UMax, aBrentConfig);
+    if (aBrentResult.IsDone())
     {
-      extr = anOptLoc.Minimum();
-      return aSign * extr;
+      return aSign * (*aBrentResult.Value);
     }
   }
   //
-  int         aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
-  double      maxstep      = (UMax - UMin) / (aNbParticles + 1);
-  math_Vector aT(1, 1);
+  const int aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  double    aMaxStep     = (UMax - UMin) / (aNbParticles + 1);
+
   math_Vector aLowBorder(1, 1);
   math_Vector aUppBorder(1, 1);
-  math_Vector aSteps(1, 1);
   aLowBorder(1) = UMin;
   aUppBorder(1) = UMax;
-  aSteps(1)     = std::min(0.1 * Du, maxstep);
 
-  Curv2dMaxMinCoordMVar aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
-  math_PSO              aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
-  aFinder.Perform(aSteps, extr, aT);
+  Curv2dMaxMinCoordMVar   aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
+  MathOpt::PSOConfig      aPSOConfig(aNbParticles, 100);
+  MathUtils::VectorResult aPSOResult = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPSOConfig);
   //
-  math_BrentMinimum anOptLoc(reltol, 100, UTol);
-  Curv2dMaxMinCoord aFunc1(myCurve, UMin, UMax, CoordIndx, aSign);
-  anOptLoc.Perform(aFunc1,
-                   std::max(aT(1) - aSteps(1), UMin),
-                   aT(1),
-                   std::min(aT(1) + aSteps(1), UMax));
-
-  if (anOptLoc.IsDone())
+  if (aPSOResult.IsDone())
   {
-    extr = anOptLoc.Minimum();
-    return aSign * extr;
+    const double aStep  = std::min(0.1 * Du, aMaxStep);
+    const double aBestT = (*aPSOResult.Solution)(1);
+
+    MathUtils::Config       aBrentConfig(reltol, 100);
+    Curv2dMaxMinCoord       aFunc1(myCurve, UMin, UMax, CoordIndx, aSign);
+    MathUtils::ScalarResult aBrentResult = MathOpt::Brent(aFunc1,
+                                                          std::max(aBestT - aStep, UMin),
+                                                          std::min(aBestT + aStep, UMax),
+                                                          aBrentConfig);
+
+    if (aBrentResult.IsDone())
+    {
+      return aSign * (*aBrentResult.Value);
+    }
+    return aSign * (*aPSOResult.Value);
   }
 
   return aSign * extr;

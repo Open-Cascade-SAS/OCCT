@@ -1120,11 +1120,12 @@ TEST(BndLib_Add2dCurveTest, BezierCurve)
   double aXmin, aYmin, aXmax, aYmax;
   aBox.Get(aXmin, aYmin, aXmax, aYmax);
 
-  // Box should contain all control points
+  // Box should contain all points on the curve.
+  // For this Bezier, Y(t) = 9t(1-t), max at t=0.5 giving Y=2.25.
   EXPECT_LE(aXmin, 0.);
   EXPECT_GE(aXmax, 4.);
   EXPECT_LE(aYmin, 0.);
-  EXPECT_GE(aYmax, 3.);
+  EXPECT_NEAR(aYmax, 2.25, 0.01);
 }
 
 TEST(BndLib_Add2dCurveTest, AddOptimal_Ellipse)
@@ -1478,4 +1479,756 @@ TEST(BndLib_AddSurfaceTest, OffsetSurface_ParameterPrecision)
     << "X range should not collapse due to floating-point precision issues";
   EXPECT_GT(aComputedRangeY, aRange * 0.9)
     << "Y range should not collapse due to floating-point precision issues";
+}
+
+//==================================================================================================
+// BSpline / Bezier Exact Bounding Box Tests
+//==================================================================================================
+
+// Cubic BSpline with known extrema: S-curve in XY plane
+TEST(BndLib_Add3dCurveTest, BSpline_Cubic_ExactBox)
+{
+  // Create a cubic B-spline that oscillates in Y:
+  // poles chosen to produce a curve with Y extrema strictly inside parameter range
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(1., 3., 0.);
+  aPoles(3) = gp_Pnt(2., -1., 0.);
+  aPoles(4) = gp_Pnt(3., 4., 0.);
+  aPoles(5) = gp_Pnt(4., -2., 0.);
+  aPoles(6) = gp_Pnt(5., 1., 0.);
+
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+  aKnots(4) = 3.0;
+
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 4;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+
+  // Compute bounding box using Add (previously sampling-based, now exact)
+  Bnd_Box aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBox);
+
+  // Verify by dense sampling that no point falls outside the box
+  constexpr int aNbSamples = 1000;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "Point at u=" << u << " is outside the bounding box";
+  }
+
+  // Verify the box is tight: check that X range matches [0, 5] closely
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 5.0, Precision::Confusion());
+  EXPECT_NEAR(aZMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aZMax, 0.0, Precision::Confusion());
+}
+
+// Quartic BSpline with multiple extrema per span
+TEST(BndLib_Add3dCurveTest, BSpline_Quartic_MultipleExtremaPerSpan)
+{
+  // Quartic (degree 4) BSpline
+  NCollection_Array1<gp_Pnt> aPoles(1, 7);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(0.5, 5., 0.);
+  aPoles(3) = gp_Pnt(1., -3., 0.);
+  aPoles(4) = gp_Pnt(1.5, 4., 0.);
+  aPoles(5) = gp_Pnt(2., -2., 0.);
+  aPoles(6) = gp_Pnt(2.5, 3., 0.);
+  aPoles(7) = gp_Pnt(3., 0., 0.);
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+
+  NCollection_Array1<int> aMults(1, 3);
+  aMults(1) = 5;
+  aMults(2) = 2;
+  aMults(3) = 5;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 4);
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+  Bnd_Box           aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBox);
+
+  // Verify no sample point is outside
+  constexpr int aNbSamples = 2000;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "Point at u=" << u << " is outside the bounding box";
+  }
+}
+
+// Rational BSpline (NURBS circle arc) with known bounding box
+TEST(BndLib_Add3dCurveTest, BSpline_Rational_CircleArc)
+{
+  // Create a NURBS quarter circle of radius 10 in XY plane
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles(1) = gp_Pnt(10., 0., 0.);
+  aPoles(2) = gp_Pnt(10., 10., 0.);
+  aPoles(3) = gp_Pnt(0., 10., 0.);
+
+  NCollection_Array1<double> aWeights(1, 3);
+  aWeights(1) = 1.0;
+  aWeights(2) = std::cos(M_PI / 4.0); // sqrt(2)/2
+  aWeights(3) = 1.0;
+
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 3;
+  aMults(2) = 3;
+
+  occ::handle<Geom_BSplineCurve> aCurve =
+    new Geom_BSplineCurve(aPoles, aWeights, aKnots, aMults, 2);
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+  Bnd_Box           aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBox);
+
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+
+  // Quarter circle from (10,0) to (0,10): all points have norm=10
+  // X range should be [0, 10], Y range [0, 10], Z = 0
+  EXPECT_NEAR(aZMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aZMax, 0.0, Precision::Confusion());
+
+  // Verify no point falls outside the box
+  constexpr int aNbSamples = 500;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "Point at u=" << u << " is outside the bounding box";
+  }
+}
+
+// Bezier curve with known bounds
+TEST(BndLib_Add3dCurveTest, Bezier_Cubic_KnownBounds)
+{
+  // Cubic Bezier: (0,0,0) -> (1,3,0) -> (2,-1,0) -> (3,2,0)
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(1., 3., 0.);
+  aPoles(3) = gp_Pnt(2., -1., 0.);
+  aPoles(4) = gp_Pnt(3., 2., 0.);
+
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles);
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+  Bnd_Box           aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBox);
+
+  // Verify by dense sampling
+  constexpr int aNbSamples = 1000;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = static_cast<double>(i) / aNbSamples;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "Point at u=" << u << " is outside the bounding box";
+  }
+
+  // X should span [0, 3] exactly (monotonic in X)
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 3.0, Precision::Confusion());
+}
+
+// Trimmed BSpline: verify correct bounds for partial parameter range
+TEST(BndLib_Add3dCurveTest, BSpline_Trimmed_PartialRange)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(1., 5., 0.);
+  aPoles(3) = gp_Pnt(2., -3., 0.);
+  aPoles(4) = gp_Pnt(3., 4., 0.);
+  aPoles(5) = gp_Pnt(4., -2., 0.);
+  aPoles(6) = gp_Pnt(5., 1., 0.);
+
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+  aKnots(4) = 3.0;
+
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 4;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  // Test trimmed range [0.5, 2.5]
+  const double aU1 = 0.5;
+  const double aU2 = 2.5;
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+  Bnd_Box           aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, aU1, aU2, 0.0, aBox);
+
+  // Verify by dense sampling within the trimmed range
+  constexpr int aNbSamples = 1000;
+  const double  du         = (aU2 - aU1) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = aU1 + i * du;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "Point at u=" << u << " is outside the trimmed bounding box";
+  }
+}
+
+// AddOptimal produces box at least as tight as Add for BSpline
+TEST(BndLib_Add3dCurveTest, BSpline_AddOptimal_AtLeastAsTight)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(1., 3., 1.);
+  aPoles(3) = gp_Pnt(2., -1., 2.);
+  aPoles(4) = gp_Pnt(3., 4., -1.);
+  aPoles(5) = gp_Pnt(4., -2., 3.);
+  aPoles(6) = gp_Pnt(5., 1., 0.);
+
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+  aKnots(4) = 3.0;
+
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 4;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+  GeomAdaptor_Curve              aAdaptor(aCurve);
+
+  Bnd_Box aBoxAdd;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBoxAdd);
+
+  Bnd_Box aBoxOptimal;
+  BndLib_Add3dCurve::AddOptimal(aAdaptor, 0.0, aBoxOptimal);
+
+  // Both should contain all curve points
+  constexpr int aNbSamples = 1000;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBoxAdd.IsOut(aPnt));
+    EXPECT_FALSE(aBoxOptimal.IsOut(aPnt));
+  }
+}
+
+// 2D BSpline exact bounding box test
+TEST(BndLib_Add2dCurveTest, BSpline2d_Cubic_ExactBox)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 6);
+  aPoles(1) = gp_Pnt2d(0., 0.);
+  aPoles(2) = gp_Pnt2d(1., 3.);
+  aPoles(3) = gp_Pnt2d(2., -1.);
+  aPoles(4) = gp_Pnt2d(3., 4.);
+  aPoles(5) = gp_Pnt2d(4., -2.);
+  aPoles(6) = gp_Pnt2d(5., 1.);
+
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+  aKnots(4) = 3.0;
+
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 4;
+
+  occ::handle<Geom2d_BSplineCurve> aCurve = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  Bnd_Box2d aBox;
+  BndLib_Add2dCurve::Add(aCurve, 0.0, aBox);
+
+  // Verify by dense sampling
+  constexpr int aNbSamples = 1000;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double   u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt2d aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "2D Point at u=" << u << " is outside the bounding box";
+  }
+
+  const auto [aXMin, aXMax, aYMin, aYMax] = aBox.Get();
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 5.0, Precision::Confusion());
+}
+
+// 2D Bezier exact bounding box test
+TEST(BndLib_Add2dCurveTest, Bezier2d_Cubic_ExactBox)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles(1) = gp_Pnt2d(0., 0.);
+  aPoles(2) = gp_Pnt2d(1., 3.);
+  aPoles(3) = gp_Pnt2d(2., -1.);
+  aPoles(4) = gp_Pnt2d(3., 2.);
+
+  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles);
+
+  Bnd_Box2d aBox;
+  BndLib_Add2dCurve::Add(aCurve, 0.0, aBox);
+
+  constexpr int aNbSamples = 1000;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double   u    = static_cast<double>(i) / aNbSamples;
+    const gp_Pnt2d aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "2D Point at u=" << u << " is outside the bounding box";
+  }
+
+  const auto [aXMin, aXMax, aYMin, aYMax] = aBox.Get();
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 3.0, Precision::Confusion());
+}
+
+// 2D BSpline optimal bounding box test
+TEST(BndLib_Add2dCurveTest, BSpline2d_AddOptimal_ExactBox)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 5);
+  aPoles(1) = gp_Pnt2d(0., 0.);
+  aPoles(2) = gp_Pnt2d(1., 4.);
+  aPoles(3) = gp_Pnt2d(2., -2.);
+  aPoles(4) = gp_Pnt2d(3., 3.);
+  aPoles(5) = gp_Pnt2d(4., 1.);
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+
+  NCollection_Array1<int> aMults(1, 3);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 4;
+
+  occ::handle<Geom2d_BSplineCurve> aCurve = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
+
+  Bnd_Box2d aBox;
+  BndLib_Add2dCurve::AddOptimal(aCurve,
+                                aCurve->FirstParameter(),
+                                aCurve->LastParameter(),
+                                0.0,
+                                aBox);
+
+  constexpr int aNbSamples = 1000;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double   u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt2d aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "2D Point at u=" << u << " is outside the bounding box";
+  }
+}
+
+// Linear BSpline: no internal extrema, box is just the endpoints
+TEST(BndLib_Add3dCurveTest, BSpline_Linear_EndpointsOnly)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(5., 3., 2.);
+  aPoles(3) = gp_Pnt(10., 0., 4.);
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+
+  NCollection_Array1<int> aMults(1, 3);
+  aMults(1) = 2;
+  aMults(2) = 1;
+  aMults(3) = 2;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 1);
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+  Bnd_Box           aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBox);
+
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 10.0, Precision::Confusion());
+  EXPECT_NEAR(aYMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aYMax, 3.0, Precision::Confusion());
+  EXPECT_NEAR(aZMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aZMax, 4.0, Precision::Confusion());
+}
+
+// Quintic (degree 5) BSpline: tests the highest degree supported by direct root-finding
+TEST(BndLib_Add3dCurveTest, BSpline_Quintic_DirectRoots)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 8);
+  aPoles(1) = gp_Pnt(0., 0., 0.);
+  aPoles(2) = gp_Pnt(1., 4., 1.);
+  aPoles(3) = gp_Pnt(2., -2., 3.);
+  aPoles(4) = gp_Pnt(3., 5., -1.);
+  aPoles(5) = gp_Pnt(4., -3., 2.);
+  aPoles(6) = gp_Pnt(5., 6., 0.);
+  aPoles(7) = gp_Pnt(6., -1., 4.);
+  aPoles(8) = gp_Pnt(7., 2., 1.);
+
+  NCollection_Array1<double> aKnots(1, 3);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
+  aKnots(3) = 2.0;
+
+  NCollection_Array1<int> aMults(1, 3);
+  aMults(1) = 6;
+  aMults(2) = 2;
+  aMults(3) = 6;
+
+  occ::handle<Geom_BSplineCurve> aCurve = new Geom_BSplineCurve(aPoles, aKnots, aMults, 5);
+
+  GeomAdaptor_Curve aAdaptor(aCurve);
+  Bnd_Box           aBox;
+  BndLib_Add3dCurve::Add(aAdaptor, 0.0, aBox);
+
+  constexpr int aNbSamples = 2000;
+  const double  du         = (aCurve->LastParameter() - aCurve->FirstParameter()) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    const double u    = aCurve->FirstParameter() + i * du;
+    const gp_Pnt aPnt = aCurve->Value(u);
+    EXPECT_FALSE(aBox.IsOut(aPnt)) << "Quintic: point at u=" << u << " is outside the box";
+  }
+}
+
+//==================================================================================================
+// BndLib_AddSurface: BSpline / Bezier Exact Bounding Box Tests
+//==================================================================================================
+
+// Cubic BSpline surface with known extrema - verifies exact bbox via derivative root-finding
+TEST(BndLib_AddSurfaceTest, BSpline_Surface_ExactBox)
+{
+  // Create a bicubic BSpline surface with poles that produce interior extrema.
+  // 6 poles in U x 4 poles in V, degree 3 in both directions.
+  NCollection_Array2<gp_Pnt> aPoles(1, 6, 1, 4);
+  // Set poles: a wavy surface with Z extrema inside the domain
+  for (int i = 1; i <= 6; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      const double aX = (i - 1) * 2.0;
+      const double aY = (j - 1) * 3.0;
+      const double aZ = 5.0 * std::sin(M_PI * (i - 1) / 5.0) * std::sin(M_PI * (j - 1) / 3.0);
+      aPoles(i, j)    = gp_Pnt(aX, aY, aZ);
+    }
+  }
+
+  NCollection_Array1<double> aUKnots(1, 4);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aUKnots(3) = 2.0;
+  aUKnots(4) = 3.0;
+
+  NCollection_Array1<int> aUMults(1, 4);
+  aUMults(1) = 4;
+  aUMults(2) = 1;
+  aUMults(3) = 1;
+  aUMults(4) = 4;
+
+  NCollection_Array1<double> aVKnots(1, 2);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+
+  NCollection_Array1<int> aVMults(1, 2);
+  aVMults(1) = 4;
+  aVMults(2) = 4;
+
+  occ::handle<Geom_BSplineSurface> aSurf =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+
+  GeomAdaptor_Surface aAdaptor(aSurf);
+  Bnd_Box             aBox;
+  BndLib_AddSurface::Add(aAdaptor, 0.0, aBox);
+
+  // Verify by dense sampling that no point falls outside the box
+  constexpr int aNbU = 100, aNbV = 100;
+  double        aU1, aU2, aV1, aV2;
+  aSurf->Bounds(aU1, aU2, aV1, aV2);
+  const double aDU = (aU2 - aU1) / aNbU;
+  const double aDV = (aV2 - aV1) / aNbV;
+  for (int i = 0; i <= aNbU; ++i)
+  {
+    for (int j = 0; j <= aNbV; ++j)
+    {
+      const gp_Pnt aPnt = aSurf->Value(aU1 + i * aDU, aV1 + j * aDV);
+      EXPECT_FALSE(aBox.IsOut(aPnt)) << "BSpline surface point at (" << (aU1 + i * aDU) << ", "
+                                     << (aV1 + j * aDV) << ") is outside the bounding box";
+    }
+  }
+
+  // Verify X and Y ranges are exact (monotonic in those directions)
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 10.0, Precision::Confusion());
+  EXPECT_NEAR(aYMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aYMax, 9.0, Precision::Confusion());
+}
+
+// Rational BSpline (NURBS) surface with known bounding box
+TEST(BndLib_AddSurfaceTest, BSpline_Rational_Surface)
+{
+  // Create a rational quadratic surface (quarter cylinder approximation)
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 2);
+  aPoles(1, 1) = gp_Pnt(10., 0., 0.);
+  aPoles(2, 1) = gp_Pnt(10., 10., 0.);
+  aPoles(3, 1) = gp_Pnt(0., 10., 0.);
+  aPoles(1, 2) = gp_Pnt(10., 0., 5.);
+  aPoles(2, 2) = gp_Pnt(10., 10., 5.);
+  aPoles(3, 2) = gp_Pnt(0., 10., 5.);
+
+  NCollection_Array2<double> aWeights(1, 3, 1, 2);
+  aWeights(1, 1) = 1.0;
+  aWeights(2, 1) = std::cos(M_PI / 4.0);
+  aWeights(3, 1) = 1.0;
+  aWeights(1, 2) = 1.0;
+  aWeights(2, 2) = std::cos(M_PI / 4.0);
+  aWeights(3, 2) = 1.0;
+
+  NCollection_Array1<double> aUKnots(1, 2);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+
+  NCollection_Array1<int> aUMults(1, 2);
+  aUMults(1) = 3;
+  aUMults(2) = 3;
+
+  NCollection_Array1<double> aVKnots(1, 2);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+
+  NCollection_Array1<int> aVMults(1, 2);
+  aVMults(1) = 2;
+  aVMults(2) = 2;
+
+  occ::handle<Geom_BSplineSurface> aSurf =
+    new Geom_BSplineSurface(aPoles, aWeights, aUKnots, aVKnots, aUMults, aVMults, 2, 1);
+
+  GeomAdaptor_Surface aAdaptor(aSurf);
+  Bnd_Box             aBox;
+  BndLib_AddSurface::Add(aAdaptor, 0.0, aBox);
+
+  // Verify by dense sampling
+  constexpr int aNbSamples = 100;
+  double        aU1, aU2, aV1, aV2;
+  aSurf->Bounds(aU1, aU2, aV1, aV2);
+  const double aDU = (aU2 - aU1) / aNbSamples;
+  const double aDV = (aV2 - aV1) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    for (int j = 0; j <= aNbSamples; ++j)
+    {
+      const gp_Pnt aPnt = aSurf->Value(aU1 + i * aDU, aV1 + j * aDV);
+      EXPECT_FALSE(aBox.IsOut(aPnt)) << "NURBS surface point is outside the bounding box";
+    }
+  }
+}
+
+// Bezier surface with analytically known extrema
+TEST(BndLib_AddSurfaceTest, Bezier_Surface_KnownBounds)
+{
+  // Create a bicubic Bezier surface with known pole positions
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      const double aX = (i - 1) * 3.0;
+      const double aY = (j - 1) * 3.0;
+      // Z forms a dome shape with extremum inside
+      const double aZ = ((i == 2 || i == 3) && (j == 2 || j == 3)) ? 10.0 : 0.0;
+      aPoles(i, j)    = gp_Pnt(aX, aY, aZ);
+    }
+  }
+
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aPoles);
+  GeomAdaptor_Surface             aAdaptor(aBezier);
+  Bnd_Box                         aBox;
+  BndLib_AddSurface::Add(aAdaptor, 0.0, aBox);
+
+  // Verify by dense sampling
+  constexpr int aNbSamples = 100;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    for (int j = 0; j <= aNbSamples; ++j)
+    {
+      const double u    = static_cast<double>(i) / aNbSamples;
+      const double v    = static_cast<double>(j) / aNbSamples;
+      const gp_Pnt aPnt = aBezier->Value(u, v);
+      EXPECT_FALSE(aBox.IsOut(aPnt))
+        << "Bezier surface point at (" << u << ", " << v << ") is outside the bounding box";
+    }
+  }
+
+  // X spans [0, 9], Y spans [0, 9] (endpoints of Bezier)
+  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = aBox.Get();
+  EXPECT_NEAR(aXMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aXMax, 9.0, Precision::Confusion());
+  EXPECT_NEAR(aYMin, 0.0, Precision::Confusion());
+  EXPECT_NEAR(aYMax, 9.0, Precision::Confusion());
+  EXPECT_LE(aZMin, 0.0 + Precision::Confusion());
+  // Z max is the actual curve max, which is less than pole height 10
+  EXPECT_GT(aZMax, 3.0) << "Z max should capture interior dome";
+}
+
+// Verify Add() for BSpline surface is at least as tight as old AddOptimal()
+TEST(BndLib_AddSurfaceTest, BSpline_Surface_AddOptimal_AsTight)
+{
+  // Create a biquadratic BSpline surface with 2 spans in each direction.
+  // Degree 2, 3 knots with mults [3,1,3] gives sum=7, NbPoles = 7-2-1 = 4.
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      const double aX = (i - 1) * 3.0;
+      const double aY = (j - 1) * 3.0;
+      const double aZ = std::sin(M_PI * (i - 1) / 3.0) * std::cos(M_PI * (j - 1) / 3.0) * 3.0;
+      aPoles(i, j)    = gp_Pnt(aX, aY, aZ);
+    }
+  }
+
+  NCollection_Array1<double> aUKnots(1, 3);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aUKnots(3) = 2.0;
+
+  NCollection_Array1<int> aUMults(1, 3);
+  aUMults(1) = 3;
+  aUMults(2) = 1;
+  aUMults(3) = 3;
+
+  NCollection_Array1<double> aVKnots(1, 3);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+  aVKnots(3) = 2.0;
+
+  NCollection_Array1<int> aVMults(1, 3);
+  aVMults(1) = 3;
+  aVMults(2) = 1;
+  aVMults(3) = 3;
+
+  occ::handle<Geom_BSplineSurface> aSurf =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 2, 2);
+
+  GeomAdaptor_Surface aAdaptor(aSurf);
+
+  Bnd_Box aBoxAdd;
+  BndLib_AddSurface::Add(aAdaptor, 0.0, aBoxAdd);
+
+  Bnd_Box aBoxOptimal;
+  BndLib_AddSurface::AddOptimal(aAdaptor, 0.0, aBoxOptimal);
+
+  // Both boxes should contain all surface points
+  constexpr int aNbSamples = 100;
+  double        aU1, aU2, aV1, aV2;
+  aSurf->Bounds(aU1, aU2, aV1, aV2);
+  const double aDU = (aU2 - aU1) / aNbSamples;
+  const double aDV = (aV2 - aV1) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    for (int j = 0; j <= aNbSamples; ++j)
+    {
+      const gp_Pnt aPnt = aSurf->Value(aU1 + i * aDU, aV1 + j * aDV);
+      EXPECT_FALSE(aBoxAdd.IsOut(aPnt));
+      EXPECT_FALSE(aBoxOptimal.IsOut(aPnt));
+    }
+  }
+}
+
+// Trimmed BSpline surface - correct bounds for partial parameter range
+TEST(BndLib_AddSurfaceTest, BSpline_Surface_Trimmed)
+{
+  // Create a BSpline surface and test with trimmed parameters
+  NCollection_Array2<gp_Pnt> aPoles(1, 5, 1, 4);
+  for (int i = 1; i <= 5; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      const double aX = (i - 1) * 2.0;
+      const double aY = (j - 1) * 3.0;
+      const double aZ = 4.0 * std::sin(M_PI * (i - 1) / 4.0) * std::sin(M_PI * (j - 1) / 3.0);
+      aPoles(i, j)    = gp_Pnt(aX, aY, aZ);
+    }
+  }
+
+  NCollection_Array1<double> aUKnots(1, 3);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aUKnots(3) = 2.0;
+
+  NCollection_Array1<int> aUMults(1, 3);
+  aUMults(1) = 4;
+  aUMults(2) = 1;
+  aUMults(3) = 4;
+
+  NCollection_Array1<double> aVKnots(1, 2);
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+
+  NCollection_Array1<int> aVMults(1, 2);
+  aVMults(1) = 4;
+  aVMults(2) = 4;
+
+  occ::handle<Geom_BSplineSurface> aSurf =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+
+  // Test with trimmed parameter range
+  const double aTrimUMin = 0.5;
+  const double aTrimUMax = 1.5;
+  const double aTrimVMin = 0.2;
+  const double aTrimVMax = 0.8;
+
+  GeomAdaptor_Surface aAdaptor(aSurf);
+  Bnd_Box             aBox;
+  const double        aTol = Precision::Confusion();
+  BndLib_AddSurface::Add(aAdaptor, aTrimUMin, aTrimUMax, aTrimVMin, aTrimVMax, aTol, aBox);
+
+  // Verify by dense sampling within the trimmed range
+  constexpr int aNbSamples = 100;
+  const double  aDU        = (aTrimUMax - aTrimUMin) / aNbSamples;
+  const double  aDV        = (aTrimVMax - aTrimVMin) / aNbSamples;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    for (int j = 0; j <= aNbSamples; ++j)
+    {
+      const double u    = aTrimUMin + i * aDU;
+      const double v    = aTrimVMin + j * aDV;
+      const gp_Pnt aPnt = aSurf->Value(u, v);
+      EXPECT_FALSE(aBox.IsOut(aPnt)) << "Trimmed BSpline surface point at (" << u << ", " << v
+                                     << ") is outside the bounding box";
+    }
+  }
 }

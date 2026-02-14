@@ -20,21 +20,26 @@
 #include <Bnd_Box.hxx>
 #include <BndLib.hxx>
 #include <BndLib_AddSurface.hxx>
+#include <BSplSLib_Cache.hxx>
 #include <ElSLib.hxx>
-#include <ElCLib.hxx>
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomGridEval_Surface.hxx>
+#include <gp_Cone.hxx>
 #include <gp_Pln.hxx>
 #include <gp_Pnt.hxx>
-#include <gp_Cone.hxx>
-#include <Precision.hxx>
-#include <NCollection_Array2.hxx>
-#include <Standard_Integer.hxx>
+#include <gp_Vec.hxx>
+#include <MathOpt_Powell.hxx>
+#include <MathOpt_PSO.hxx>
 #include <NCollection_Array1.hxx>
-#include <math_PSO.hxx>
-#include <math_Powell.hxx>
+#include <NCollection_Array2.hxx>
+#include <Precision.hxx>
+#include <Standard_Integer.hxx>
+
+/// Maximum bisection iterations for derivative root isolation.
+/// 53 iterations guarantee full double precision (~2^-53 relative interval).
+constexpr int THE_MAX_BISECTION_ITER = 53;
 //
 static int NbUSamples(const Adaptor3d_Surface& S, const double Umin, const double Umax);
 //
@@ -50,15 +55,413 @@ static double AdjustExtr(const Adaptor3d_Surface& S,
                          const double             Tol,
                          const bool               IsMin);
 
-static void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
-                                const NCollection_Array1<int>&    theMults,
-                                const int                         theDegree,
-                                const double                      theMin,
-                                const double                      theMax,
-                                const int                         theMaxPoleIdx,
-                                const bool                        theIsPeriodic,
-                                int&                              theOutMinIdx,
-                                int&                              theOutMaxIdx);
+/// Finds coordinate extrema along one edge of a surface span using D1 + bisection.
+/// @param theCache      surface cache built for the current span
+/// @param theFixedParam value of the fixed parameter (u or v boundary)
+/// @param theVaryMin    start of varying parameter range
+/// @param theVaryMax    end of varying parameter range
+/// @param theIsUFixed   true if u is fixed (edge parallel to v), false if v is fixed
+/// @param theBox        bounding box to extend
+static void addSurfEdgeExtrema(BSplSLib_Cache& theCache,
+                               const double    theFixedParam,
+                               const double    theVaryMin,
+                               const double    theVaryMax,
+                               const bool      theIsUFixed,
+                               Bnd_Box&        theBox)
+{
+  const double aRange = theVaryMax - theVaryMin;
+  if (aRange < Precision::PConfusion())
+  {
+    return;
+  }
+
+  // Sample D1 along the edge
+  constexpr int aNbSamples = 16;
+  const double  aDt        = aRange / aNbSamples;
+
+  // For each coordinate (X=1, Y=2, Z=3), detect sign changes in the relevant
+  // partial derivative component and bisect to find the root.
+  for (int aCoord = 1; aCoord <= 3; ++aCoord)
+  {
+    // Sample the derivative at the first point
+    gp_Pnt aPnt;
+    gp_Vec aDU, aDV;
+
+    double aT0 = theVaryMin;
+    if (theIsUFixed)
+    {
+      theCache.D1(theFixedParam, aT0, aPnt, aDU, aDV);
+    }
+    else
+    {
+      theCache.D1(aT0, theFixedParam, aPnt, aDU, aDV);
+    }
+    // The relevant derivative: if u is fixed, extrema along v use dS/dv;
+    // if v is fixed, extrema along u use dS/du.
+    double aPrevDeriv = theIsUFixed ? aDV.Coord(aCoord) : aDU.Coord(aCoord);
+
+    for (int i = 1; i <= aNbSamples; ++i)
+    {
+      const double aT1 = theVaryMin + i * aDt;
+      if (theIsUFixed)
+      {
+        theCache.D1(theFixedParam, aT1, aPnt, aDU, aDV);
+      }
+      else
+      {
+        theCache.D1(aT1, theFixedParam, aPnt, aDU, aDV);
+      }
+      const double aCurrDeriv = theIsUFixed ? aDV.Coord(aCoord) : aDU.Coord(aCoord);
+
+      if (aPrevDeriv * aCurrDeriv < 0.0)
+      {
+        // Sign change detected - bisect
+        double aTLow  = aT1 - aDt;
+        double aTHigh = aT1;
+        double aDLow  = aPrevDeriv;
+
+        for (int anIter = 0; anIter < THE_MAX_BISECTION_ITER; ++anIter)
+        {
+          const double aTMid = (aTLow + aTHigh) * 0.5;
+          if (theIsUFixed)
+          {
+            theCache.D1(theFixedParam, aTMid, aPnt, aDU, aDV);
+          }
+          else
+          {
+            theCache.D1(aTMid, theFixedParam, aPnt, aDU, aDV);
+          }
+          const double aDMid = theIsUFixed ? aDV.Coord(aCoord) : aDU.Coord(aCoord);
+
+          if (aDLow * aDMid <= 0.0)
+          {
+            aTHigh = aTMid;
+          }
+          else
+          {
+            aTLow = aTMid;
+            aDLow = aDMid;
+          }
+        }
+
+        // Evaluate D0 at root and add to box
+        const double aTRoot = (aTLow + aTHigh) * 0.5;
+        if (theIsUFixed)
+        {
+          theCache.D0(theFixedParam, aTRoot, aPnt);
+        }
+        else
+        {
+          theCache.D0(aTRoot, theFixedParam, aPnt);
+        }
+        theBox.Add(aPnt);
+      }
+      else if (std::abs(aCurrDeriv) < Precision::Confusion())
+      {
+        // Derivative is near zero at this sample - potential extremum
+        if (theIsUFixed)
+        {
+          theCache.D0(theFixedParam, aT1, aPnt);
+        }
+        else
+        {
+          theCache.D0(aT1, theFixedParam, aPnt);
+        }
+        theBox.Add(aPnt);
+      }
+
+      aPrevDeriv = aCurrDeriv;
+    }
+  }
+}
+
+/// Finds interior coordinate extrema within a surface span.
+/// Samples D1 on a coarse grid and looks for cells where both partial derivatives
+/// change sign simultaneously for a given coordinate, then refines with alternating bisection.
+/// @param theCache  surface cache built for the current span
+/// @param theUMin   lower bound of U parameter range for the span
+/// @param theUMax   upper bound of U parameter range for the span
+/// @param theVMin   lower bound of V parameter range for the span
+/// @param theVMax   upper bound of V parameter range for the span
+/// @param theBox    bounding box to extend
+static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
+                                   const double    theUMin,
+                                   const double    theUMax,
+                                   const double    theVMin,
+                                   const double    theVMax,
+                                   Bnd_Box&        theBox)
+{
+  const double aURng = theUMax - theUMin;
+  const double aVRng = theVMax - theVMin;
+  if (aURng < Precision::PConfusion() || aVRng < Precision::PConfusion())
+  {
+    return;
+  }
+
+  // Sample D1 on a coarse grid
+  constexpr int aNbU = 8;
+  constexpr int aNbV = 8;
+  const double  aDU  = aURng / aNbU;
+  const double  aDV  = aVRng / aNbV;
+
+  // Store derivative components at grid nodes
+  // For each coordinate c (0=X,1=Y,2=Z): dS_c/du and dS_c/dv
+  double aDUArr[3][(aNbU + 1) * (aNbV + 1)];
+  double aDVArr[3][(aNbU + 1) * (aNbV + 1)];
+
+  for (int i = 0; i <= aNbU; ++i)
+  {
+    const double aU = theUMin + i * aDU;
+    for (int j = 0; j <= aNbV; ++j)
+    {
+      const double aV = theVMin + j * aDV;
+      gp_Pnt       aPnt;
+      gp_Vec       aTanU, aTanV;
+      theCache.D1(aU, aV, aPnt, aTanU, aTanV);
+
+      const int anIdx = i * (aNbV + 1) + j;
+      for (int c = 0; c < 3; ++c)
+      {
+        aDUArr[c][anIdx] = aTanU.Coord(c + 1);
+        aDVArr[c][anIdx] = aTanV.Coord(c + 1);
+      }
+    }
+  }
+
+  // For each coordinate, find cells where both dS_c/du and dS_c/dv change sign
+  for (int c = 0; c < 3; ++c)
+  {
+    for (int i = 0; i < aNbU; ++i)
+    {
+      for (int j = 0; j < aNbV; ++j)
+      {
+        // Check corners of cell (i,j) to (i+1,j+1)
+        const int anIdx00 = i * (aNbV + 1) + j;
+        const int anIdx10 = (i + 1) * (aNbV + 1) + j;
+        const int anIdx01 = i * (aNbV + 1) + (j + 1);
+        const int anIdx11 = (i + 1) * (aNbV + 1) + (j + 1);
+
+        // Check if dS_c/du changes sign across the cell in u-direction.
+        // Use <= 0.0 to handle the case where a derivative is exactly zero
+        // at a grid node (the root coincides with a sample point).
+        const bool aUSignChange = (aDUArr[c][anIdx00] * aDUArr[c][anIdx10] <= 0.0
+                                   && (aDUArr[c][anIdx00] != 0.0 || aDUArr[c][anIdx10] != 0.0))
+                                  || (aDUArr[c][anIdx01] * aDUArr[c][anIdx11] <= 0.0
+                                      && (aDUArr[c][anIdx01] != 0.0 || aDUArr[c][anIdx11] != 0.0));
+
+        // Check if dS_c/dv changes sign across the cell in v-direction
+        const bool aVSignChange = (aDVArr[c][anIdx00] * aDVArr[c][anIdx01] <= 0.0
+                                   && (aDVArr[c][anIdx00] != 0.0 || aDVArr[c][anIdx01] != 0.0))
+                                  || (aDVArr[c][anIdx10] * aDVArr[c][anIdx11] <= 0.0
+                                      && (aDVArr[c][anIdx10] != 0.0 || aDVArr[c][anIdx11] != 0.0));
+
+        if (!aUSignChange || !aVSignChange)
+        {
+          continue;
+        }
+
+        // Both partial derivatives change sign in this cell.
+        // Refine with alternating 1D bisection in u and v.
+        double aULow  = theUMin + i * aDU;
+        double aUHigh = theUMin + (i + 1) * aDU;
+        double aVLow  = theVMin + j * aDV;
+        double aVHigh = theVMin + (j + 1) * aDV;
+
+        double aUMid = (aULow + aUHigh) * 0.5;
+        double aVMid = (aVLow + aVHigh) * 0.5;
+
+        for (int anIter = 0; anIter < THE_MAX_BISECTION_ITER; ++anIter)
+        {
+          gp_Pnt aPnt;
+          gp_Vec aTanU, aTanV;
+          theCache.D1(aUMid, aVMid, aPnt, aTanU, aTanV);
+
+          if (anIter % 2 == 0)
+          {
+            // Bisect in u: narrow the u interval based on dS_c/du sign
+            gp_Pnt aPntLow;
+            gp_Vec aTanULow, aTanVLow;
+            theCache.D1(aULow, aVMid, aPntLow, aTanULow, aTanVLow);
+
+            if (aTanULow.Coord(c + 1) * aTanU.Coord(c + 1) <= 0.0)
+            {
+              aUHigh = aUMid;
+            }
+            else
+            {
+              aULow = aUMid;
+            }
+            aUMid = (aULow + aUHigh) * 0.5;
+          }
+          else
+          {
+            // Bisect in v: narrow the v interval based on dS_c/dv sign
+            gp_Pnt aPntLow;
+            gp_Vec aTanULow, aTanVLow;
+            theCache.D1(aUMid, aVLow, aPntLow, aTanULow, aTanVLow);
+
+            if (aTanVLow.Coord(c + 1) * aTanV.Coord(c + 1) <= 0.0)
+            {
+              aVHigh = aVMid;
+            }
+            else
+            {
+              aVLow = aVMid;
+            }
+            aVMid = (aVLow + aVHigh) * 0.5;
+          }
+        }
+
+        // Evaluate D0 at the converged point and add to box
+        gp_Pnt aResult;
+        theCache.D0(aUMid, aVMid, aResult);
+        theBox.Add(aResult);
+      }
+    }
+  }
+}
+
+/// Computes exact bounding box for a 3D BSpline surface.
+/// Uses per-span edge derivative root-finding and interior extrema detection.
+/// @param theSurf  BSpline surface
+/// @param theTol   tolerance to enlarge the resulting box
+/// @param theBox   bounding box to extend
+static void addBSplineSurfBBox3d(const occ::handle<Geom_BSplineSurface>& theSurf,
+                                 const double                            theTol,
+                                 Bnd_Box&                                theBox)
+{
+  const int  aUDegree    = theSurf->UDegree();
+  const int  aVDegree    = theSurf->VDegree();
+  const bool anIsUPeriod = theSurf->IsUPeriodic();
+  const bool anIsVPeriod = theSurf->IsVPeriodic();
+
+  const NCollection_Array1<double>& aUKnots = theSurf->UKnots();
+  const NCollection_Array1<double>& aVKnots = theSurf->VKnots();
+  const NCollection_Array2<gp_Pnt>& aPoles  = theSurf->Poles();
+
+  const NCollection_Array2<double>* aWeights = theSurf->Weights();
+
+  const NCollection_Array1<double>& aUFlatKnots = theSurf->UKnotSequence();
+  const NCollection_Array1<double>& aVFlatKnots = theSurf->VKnotSequence();
+
+  // Add all knot grid intersection points
+  for (int i = aUKnots.Lower(); i <= aUKnots.Upper(); ++i)
+  {
+    for (int j = aVKnots.Lower(); j <= aVKnots.Upper(); ++j)
+    {
+      theBox.Add(theSurf->Value(aUKnots(i), aVKnots(j)));
+    }
+  }
+
+  // Create cache for surface span evaluation
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
+                                                     anIsUPeriod,
+                                                     aUFlatKnots,
+                                                     aVDegree,
+                                                     anIsVPeriod,
+                                                     aVFlatKnots,
+                                                     aWeights);
+
+  // Process each U-span x V-span
+  for (int iU = aUKnots.Lower(); iU < aUKnots.Upper(); ++iU)
+  {
+    const double aUMin = aUKnots(iU);
+    const double aUMax = aUKnots(iU + 1);
+    if (aUMax - aUMin < Precision::PConfusion())
+    {
+      continue;
+    }
+
+    for (int iV = aVKnots.Lower(); iV < aVKnots.Upper(); ++iV)
+    {
+      const double aVMin = aVKnots(iV);
+      const double aVMax = aVKnots(iV + 1);
+      if (aVMax - aVMin < Precision::PConfusion())
+      {
+        continue;
+      }
+
+      // Build cache for this span
+      aCache->BuildCache(aUMin, aVMin, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+
+      // Edge extrema: 4 edges of the span
+      // Bottom edge: v = aVMin, u varies
+      addSurfEdgeExtrema(*aCache, aVMin, aUMin, aUMax, false, theBox);
+      // Top edge: v = aVMax, u varies
+      addSurfEdgeExtrema(*aCache, aVMax, aUMin, aUMax, false, theBox);
+      // Left edge: u = aUMin, v varies
+      addSurfEdgeExtrema(*aCache, aUMin, aVMin, aVMax, true, theBox);
+      // Right edge: u = aUMax, v varies
+      addSurfEdgeExtrema(*aCache, aUMax, aVMin, aVMax, true, theBox);
+
+      // Interior extrema
+      addSurfInteriorExtrema(*aCache, aUMin, aUMax, aVMin, aVMax, theBox);
+    }
+  }
+
+  theBox.Enlarge(theTol);
+}
+
+/// Computes exact bounding box for a 3D Bezier surface.
+/// @param theSurf  Bezier surface
+/// @param theTol   tolerance to enlarge the resulting box
+/// @param theBox   bounding box to extend
+static void addBezierSurfBBox3d(const occ::handle<Geom_BezierSurface>& theSurf,
+                                const double                           theTol,
+                                Bnd_Box&                               theBox)
+{
+  const int  aUDegree = theSurf->UDegree();
+  const int  aVDegree = theSurf->VDegree();
+  const bool anIsRat  = theSurf->IsURational() || theSurf->IsVRational();
+
+  // Add corner points
+  double aUMin, aUMax, aVMin, aVMax;
+  theSurf->Bounds(aUMin, aUMax, aVMin, aVMax);
+
+  theBox.Add(theSurf->Value(aUMin, aVMin));
+  theBox.Add(theSurf->Value(aUMin, aVMax));
+  theBox.Add(theSurf->Value(aUMax, aVMin));
+  theBox.Add(theSurf->Value(aUMax, aVMax));
+
+  if (aUDegree < 2 && aVDegree < 2)
+  {
+    theBox.Enlarge(theTol);
+    return;
+  }
+
+  // Build flat knots for Bezier (single span)
+  NCollection_Array1<double> aUFlatKnots(1, 2 * (aUDegree + 1));
+  NCollection_Array1<double> aVFlatKnots(1, 2 * (aVDegree + 1));
+  for (int i = 1; i <= aUDegree + 1; ++i)
+  {
+    aUFlatKnots(i)                = aUMin;
+    aUFlatKnots(i + aUDegree + 1) = aUMax;
+  }
+  for (int i = 1; i <= aVDegree + 1; ++i)
+  {
+    aVFlatKnots(i)                = aVMin;
+    aVFlatKnots(i + aVDegree + 1) = aVMax;
+  }
+
+  const NCollection_Array2<gp_Pnt>& aPoles   = theSurf->Poles();
+  const NCollection_Array2<double>* aWeights = anIsRat ? theSurf->Weights() : nullptr;
+
+  // Create cache and build for the single span
+  Handle(BSplSLib_Cache) aCache =
+    new BSplSLib_Cache(aUDegree, false, aUFlatKnots, aVDegree, false, aVFlatKnots, aWeights);
+  aCache->BuildCache(aUMin, aVMin, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
+
+  // Edge extrema: 4 edges
+  addSurfEdgeExtrema(*aCache, aVMin, aUMin, aUMax, false, theBox);
+  addSurfEdgeExtrema(*aCache, aVMax, aUMin, aUMax, false, theBox);
+  addSurfEdgeExtrema(*aCache, aUMin, aVMin, aVMax, true, theBox);
+  addSurfEdgeExtrema(*aCache, aUMax, aVMin, aVMax, true, theBox);
+
+  // Interior extrema
+  addSurfInteriorExtrema(*aCache, aUMin, aUMax, aVMin, aVMax, theBox);
+
+  theBox.Enlarge(theTol);
+}
 
 //=================================================================================================
 
@@ -204,40 +607,6 @@ static void TreatInfinitePlane(const gp_Pln& aPlane,
   aB.Enlarge(aTol);
 }
 
-// Compute start and finish indexes used in convex hull.
-// theMinIdx - minimum poles index, that can be used.
-// theMaxIdx - maximum poles index, that can be used.
-// theShiftCoeff - shift between flatknots array and poles array.
-// This value should be equal to 1 in case of non periodic BSpline,
-// and (degree + 1) - mults(the lowest index).
-
-void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
-                         const NCollection_Array1<int>&    theMults,
-                         const int                         theDegree,
-                         const double                      theMin,
-                         const double                      theMax,
-                         const int                         theMaxPoleIdx,
-                         const bool                        theIsPeriodic,
-                         int&                              theOutMinIdx,
-                         int&                              theOutMaxIdx)
-{
-  BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
-  theOutMinIdx = std::clamp(theOutMinIdx, theKnots.Lower(), theKnots.Upper());
-
-  BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
-  theOutMaxIdx++;
-  theOutMaxIdx          = std::clamp(theOutMaxIdx, theKnots.Lower(), theKnots.Upper());
-  const int aMultiplier = theMults(theOutMaxIdx);
-
-  theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
-  theOutMinIdx = std::max(theOutMinIdx, 1);
-  theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
-  theOutMaxIdx += theDegree - aMultiplier;
-  if (!theIsPeriodic)
-    theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
-}
-
-//  Modified by skv - Fri Aug 27 12:29:04 2004 OCC6503 End
 //=================================================================================================
 
 void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
@@ -312,128 +681,45 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
       B.Enlarge(Tol);
       break;
     }
-    case GeomAbs_BezierSurface:
-    case GeomAbs_BSplineSurface: {
-      bool   isUseConvexHullAlgorithm = true;
-      double PTol                     = Precision::Parametric(Precision::Confusion());
-      // Borders of underlying geometry.
-      double anUMinParam = UMin, anUMaxParam = UMax, // BSpline case.
-        aVMinParam = VMin, aVMaxParam = VMax;
-      occ::handle<Geom_BSplineSurface> aBS;
-      if (Type == GeomAbs_BezierSurface)
-      {
-        // Bezier surface:
-        // All of poles used for any parameter,
-        // that's why in case of trimmed parameters handled by grid algorithm.
-
-        if (std::abs(UMin - S.FirstUParameter()) > PTol
-            || std::abs(VMin - S.FirstVParameter()) > PTol
-            || std::abs(UMax - S.LastUParameter()) > PTol
-            || std::abs(VMax - S.LastVParameter()) > PTol)
-        {
-          // Borders not equal to topology borders.
-          isUseConvexHullAlgorithm = false;
-        }
-      }
-      else
-      {
-        // BSpline:
-        // If Umin, Vmin, Umax, Vmax lies inside geometry bounds then:
-        // use convex hull algorithm,
-        // if Umin, VMin, Umax, Vmax lies outside then:
-        // use grid algorithm on analytic continuation (default case).
-        aBS = S.BSpline();
-        aBS->Bounds(anUMinParam, anUMaxParam, aVMinParam, aVMaxParam);
-        if ((UMin - anUMinParam) < -PTol || (VMin - aVMinParam) < -PTol
-            || (UMax - anUMaxParam) > PTol || (VMax - aVMaxParam) > PTol)
-        {
-          // Out of geometry borders.
-          isUseConvexHullAlgorithm = false;
-        }
-      }
-
-      if (isUseConvexHullAlgorithm)
-      {
-        int                        aNbUPoles = S.NbUPoles(), aNbVPoles = S.NbVPoles();
-        NCollection_Array2<gp_Pnt> Tp(1, aNbUPoles, 1, aNbVPoles);
-        int                        UMinIdx = 0, UMaxIdx = 0;
-        int                        VMinIdx = 0, VMaxIdx = 0;
-        bool                       isUPeriodic = S.IsUPeriodic(), isVPeriodic = S.IsVPeriodic();
-        if (Type == GeomAbs_BezierSurface)
-        {
-          Tp      = S.Bezier()->Poles();
-          UMinIdx = 1;
-          UMaxIdx = aNbUPoles;
-          VMinIdx = 1;
-          VMaxIdx = aNbVPoles;
-        }
-        else
-        {
-          Tp = aBS->Poles();
-
-          UMinIdx = 1;
-          UMaxIdx = aNbUPoles;
-          VMinIdx = 1;
-          VMaxIdx = aNbVPoles;
-
-          if (UMin > anUMinParam || UMax < anUMaxParam)
-          {
-            const NCollection_Array1<int>&    aMults = aBS->UMultiplicities();
-            const NCollection_Array1<double>& aKnots = aBS->UKnots();
-
-            ComputePolesIndexes(aKnots,
-                                aMults,
-                                aBS->UDegree(),
-                                UMin,
-                                UMax,
-                                aNbUPoles,
-                                isUPeriodic,
-                                UMinIdx,
-                                UMaxIdx); // the Output indexes
-          }
-
-          if (VMin > aVMinParam || VMax < aVMaxParam)
-          {
-            const NCollection_Array1<int>&    aMults = aBS->VMultiplicities();
-            const NCollection_Array1<double>& aKnots = aBS->VKnots();
-
-            ComputePolesIndexes(aKnots,
-                                aMults,
-                                aBS->VDegree(),
-                                VMin,
-                                VMax,
-                                aNbVPoles,
-                                isVPeriodic,
-                                VMinIdx,
-                                VMaxIdx); // the Output indexes
-          }
-        }
-
-        // Use poles to build convex hull.
-        int ip, jp;
-        for (int i = UMinIdx; i <= UMaxIdx; i++)
-        {
-          ip = i;
-          if (isUPeriodic && ip > aNbUPoles)
-          {
-            ip = ip - aNbUPoles;
-          }
-          for (int j = VMinIdx; j <= VMaxIdx; j++)
-          {
-            jp = j;
-            if (isVPeriodic && jp > aNbVPoles)
-            {
-              jp = jp - aNbVPoles;
-            }
-            B.Add(Tp(ip, jp));
-          }
-        }
-
-        B.Enlarge(Tol);
-        break;
-      }
+    case GeomAbs_BezierSurface: {
+      addBezierSurfBBox3d(S.Bezier(), Tol, B);
+      break;
     }
-      [[fallthrough]];
+    case GeomAbs_BSplineSurface: {
+      occ::handle<Geom_BSplineSurface> aBS = S.BSpline();
+      double                           anUMinParam, anUMaxParam, aVMinParam, aVMaxParam;
+      aBS->Bounds(anUMinParam, anUMaxParam, aVMinParam, aVMaxParam);
+
+      const double PTol = Precision::Parametric(Precision::Confusion());
+      if (std::abs(UMin - anUMinParam) > PTol || std::abs(UMax - anUMaxParam) > PTol
+          || std::abs(VMin - aVMinParam) > PTol || std::abs(VMax - aVMaxParam) > PTol)
+      {
+        // Trim to the requested parameter range using Segment
+        occ::handle<Geom_Geometry>       aG = aBS->Copy();
+        occ::handle<Geom_BSplineSurface> aBSaux(occ::down_cast<Geom_BSplineSurface>(aG));
+        double                           u1 = UMin, u2 = UMax, v1 = VMin, v2 = VMax;
+        if (!aBSaux->IsUPeriodic())
+        {
+          u1 = std::max(u1, anUMinParam);
+          u2 = std::min(u2, anUMaxParam);
+        }
+        if (!aBSaux->IsVPeriodic())
+        {
+          v1 = std::max(v1, aVMinParam);
+          v2 = std::min(v2, aVMaxParam);
+        }
+        double aUSegTol = 2. * Precision::PConfusion();
+        double aVSegTol = 2. * Precision::PConfusion();
+        if (std::abs(u2 - u1) < aUSegTol)
+          aUSegTol = std::abs(u2 - u1) * 0.01;
+        if (std::abs(v2 - v1) < aVSegTol)
+          aVSegTol = std::abs(v2 - v1) * 0.01;
+        aBSaux->Segment(u1, u2, v1, v2, aUSegTol, aVSegTol);
+        aBS = aBSaux;
+      }
+      addBSplineSurfBBox3d(aBS, Tol, B);
+      break;
+    }
     default: {
       // Use batch grid evaluation for optimized surface point computation
       const int Nu = NbUSamples(S);
@@ -533,6 +819,44 @@ void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S,
     }
     case GeomAbs_Sphere: {
       BndLib::Add(S.Sphere(), UMin, UMax, VMin, VMax, Tol, B);
+      break;
+    }
+    case GeomAbs_BezierSurface: {
+      addBezierSurfBBox3d(S.Bezier(), Tol, B);
+      break;
+    }
+    case GeomAbs_BSplineSurface: {
+      occ::handle<Geom_BSplineSurface> aBS = S.BSpline();
+      double                           anUMinParam, anUMaxParam, aVMinParam, aVMaxParam;
+      aBS->Bounds(anUMinParam, anUMaxParam, aVMinParam, aVMaxParam);
+
+      const double PTol = Precision::Parametric(Precision::Confusion());
+      if (std::abs(UMin - anUMinParam) > PTol || std::abs(UMax - anUMaxParam) > PTol
+          || std::abs(VMin - aVMinParam) > PTol || std::abs(VMax - aVMaxParam) > PTol)
+      {
+        occ::handle<Geom_Geometry>       aG = aBS->Copy();
+        occ::handle<Geom_BSplineSurface> aBSaux(occ::down_cast<Geom_BSplineSurface>(aG));
+        double                           u1 = UMin, u2 = UMax, v1 = VMin, v2 = VMax;
+        if (!aBSaux->IsUPeriodic())
+        {
+          u1 = std::max(u1, anUMinParam);
+          u2 = std::min(u2, anUMaxParam);
+        }
+        if (!aBSaux->IsVPeriodic())
+        {
+          v1 = std::max(v1, aVMinParam);
+          v2 = std::min(v2, aVMaxParam);
+        }
+        double aUSegTol = 2. * Precision::PConfusion();
+        double aVSegTol = 2. * Precision::PConfusion();
+        if (std::abs(u2 - u1) < aUSegTol)
+          aUSegTol = std::abs(u2 - u1) * 0.01;
+        if (std::abs(v2 - v1) < aVSegTol)
+          aVSegTol = std::abs(v2 - v1) * 0.01;
+        aBSaux->Segment(u1, u2, v1, v2, aUSegTol, aVSegTol);
+        aBS = aBSaux;
+      }
+      addBSplineSurfBBox3d(aBS, Tol, B);
       break;
     }
     default: {
@@ -715,7 +1039,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
 //
 
 //
-class SurfMaxMinCoord : public math_MultipleVarFunction
+class SurfMaxMinCoord
 {
 public:
   SurfMaxMinCoord(const Adaptor3d_Surface& theSurf,
@@ -731,84 +1055,23 @@ public:
         myVMin(VMin),
         myVMax(VMax),
         myCoordIndx(CoordIndx),
-        mySign(Sign),
-        myPenalty(0.)
+        mySign(Sign)
   {
-    math_Vector X(1, 2);
-    X(1) = UMin;
-    X(2) = (VMin + VMax) / 2.;
-    double F1, F2;
-    Value(X, F1);
-    X(1) = UMax;
-    Value(X, F2);
-    double DU = std::abs((F2 - F1) / (UMax - UMin));
-    X(1)      = (UMin + UMax) / 2.;
-    X(2)      = VMin;
-    Value(X, F1);
-    X(2) = VMax;
-    Value(X, F2);
-    double DV = std::abs((F2 - F1) / (VMax - VMin));
-    myPenalty = 10. * std::max(DU, DV);
-    myPenalty = std::max(myPenalty, 1.);
   }
 
-  bool Value(const math_Vector& X, double& F) override
+  bool Value(const math_Vector& X, double& F)
   {
-    if (CheckInputData(X))
+    if (X(1) < myUMin || X(1) > myUMax || X(2) < myVMin || X(2) > myVMax)
     {
-      gp_Pnt aP = mySurf.Value(X(1), X(2));
-      F         = mySign * aP.Coord(myCoordIndx);
+      return false;
     }
-    else
-    {
-      double UPen = 0., VPen = 0., u0, v0;
-      if (X(1) < myUMin)
-      {
-        UPen = myPenalty * (myUMin - X(1));
-        u0   = myUMin;
-      }
-      else if (X(1) > myUMax)
-      {
-        UPen = myPenalty * (X(1) - myUMax);
-        u0   = myUMax;
-      }
-      else
-      {
-        u0 = X(1);
-      }
-      //
-      if (X(2) < myVMin)
-      {
-        VPen = myPenalty * (myVMin - X(2));
-        v0   = myVMin;
-      }
-      else if (X(2) > myVMax)
-      {
-        VPen = myPenalty * (X(2) - myVMax);
-        v0   = myVMax;
-      }
-      else
-      {
-        v0 = X(2);
-      }
-      //
-      gp_Pnt aP = mySurf.Value(u0, v0);
-      F         = mySign * aP.Coord(myCoordIndx) + UPen + VPen;
-    }
-
+    gp_Pnt aP = mySurf.Value(X(1), X(2));
+    F         = mySign * aP.Coord(myCoordIndx);
     return true;
   }
 
-  int NbVariables() const override { return 2; }
-
 private:
   SurfMaxMinCoord& operator=(const SurfMaxMinCoord&) = delete;
-
-  bool CheckInputData(const math_Vector& theParams)
-  {
-    return theParams(1) >= myUMin && theParams(1) <= myUMax && theParams(2) >= myVMin
-           && theParams(2) <= myVMax;
-  }
 
   const Adaptor3d_Surface& mySurf;
   double                   myUMin;
@@ -817,7 +1080,6 @@ private:
   double                   myVMax;
   int                      myCoordIndx;
   double                   mySign;
-  double                   myPenalty;
 };
 
 //=================================================================================================
@@ -832,52 +1094,38 @@ double AdjustExtr(const Adaptor3d_Surface& S,
                   const double             Tol,
                   const bool               IsMin)
 {
-  double aSign  = IsMin ? 1. : -1.;
-  double extr   = aSign * Extr0;
-  double relTol = 2. * Tol;
-  if (std::abs(extr) > Tol)
-  {
-    relTol /= std::abs(extr);
-  }
-  double Du = (S.LastUParameter() - S.FirstUParameter());
-  double Dv = (S.LastVParameter() - S.FirstVParameter());
-  //
-  math_Vector aT(1, 2);
+  double aSign = IsMin ? 1. : -1.;
+  double extr  = aSign * Extr0;
+  double Du    = (S.LastUParameter() - S.FirstUParameter());
+  double Dv    = (S.LastVParameter() - S.FirstVParameter());
+
   math_Vector aLowBorder(1, 2);
   math_Vector aUppBorder(1, 2);
-  math_Vector aSteps(1, 2);
   aLowBorder(1) = UMin;
   aUppBorder(1) = UMax;
   aLowBorder(2) = VMin;
   aUppBorder(2) = VMax;
 
-  int    aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
-  int    aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
-  int    aNbParticles = aNbU * aNbV;
-  double aMaxUStep    = (UMax - UMin) / (aNbU + 1);
-  aSteps(1)           = std::min(0.1 * Du, aMaxUStep);
-  double aMaxVStep    = (VMax - VMin) / (aNbV + 1);
-  aSteps(2)           = std::min(0.1 * Dv, aMaxVStep);
+  int aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  int aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
+  int aNbParticles = aNbU * aNbV;
 
-  SurfMaxMinCoord aFunc(S, UMin, UMax, VMin, VMax, CoordIndx, aSign);
-  math_PSO        aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
-  aFinder.Perform(aSteps, extr, aT);
+  SurfMaxMinCoord         aFunc(S, UMin, UMax, VMin, VMax, CoordIndx, aSign);
+  MathOpt::PSOConfig      aPSOConfig(aNbParticles, 100);
+  MathUtils::VectorResult aPSOResult = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPSOConfig);
 
-  // Refinement of extremal value
-  math_Matrix aDir(1, 2, 1, 2, 0.0);
-  aDir(1, 1) = 1.;
-  aDir(2, 1) = 0.;
-  aDir(1, 2) = 0.;
-  aDir(2, 2) = 1.;
-
-  int         aNbIter = 200;
-  math_Powell powell(aFunc, relTol, aNbIter, Tol);
-  powell.Perform(aFunc, aT, aDir);
-
-  if (powell.IsDone())
+  if (aPSOResult.IsDone())
   {
-    powell.Location(aT);
-    extr = powell.Minimum();
+    // Refine with Powell
+    MathUtils::Config       aPowellConfig(Tol, 200);
+    MathUtils::VectorResult aPowellResult =
+      MathOpt::Powell(aFunc, *aPSOResult.Solution, aPowellConfig);
+
+    if (aPowellResult.IsDone())
+    {
+      return aSign * (*aPowellResult.Value);
+    }
+    return aSign * (*aPSOResult.Value);
   }
 
   return aSign * extr;
