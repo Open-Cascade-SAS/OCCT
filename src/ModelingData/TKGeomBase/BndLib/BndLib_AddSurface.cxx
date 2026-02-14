@@ -354,13 +354,13 @@ static void addBSplineSurfBBox3d(const occ::handle<Geom_BSplineSurface>& theSurf
   }
 
   // Create cache for surface span evaluation
-  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(aUDegree,
-                                                     anIsUPeriod,
-                                                     aUFlatKnots,
-                                                     aVDegree,
-                                                     anIsVPeriod,
-                                                     aVFlatKnots,
-                                                     aWeights);
+  occ::handle<BSplSLib_Cache> aCache = new BSplSLib_Cache(aUDegree,
+                                                          anIsUPeriod,
+                                                          aUFlatKnots,
+                                                          aVDegree,
+                                                          anIsVPeriod,
+                                                          aVFlatKnots,
+                                                          aWeights);
 
   // Process each U-span x V-span
   for (int iU = aUKnots.Lower(); iU < aUKnots.Upper(); ++iU)
@@ -447,7 +447,7 @@ static void addBezierSurfBBox3d(const occ::handle<Geom_BezierSurface>& theSurf,
   const NCollection_Array2<double>* aWeights = anIsRat ? theSurf->Weights() : nullptr;
 
   // Create cache and build for the single span
-  Handle(BSplSLib_Cache) aCache =
+  occ::handle<BSplSLib_Cache> aCache =
     new BSplSLib_Cache(aUDegree, false, aUFlatKnots, aVDegree, false, aVFlatKnots, aWeights);
   aCache->BuildCache(aUMin, aVMin, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
 

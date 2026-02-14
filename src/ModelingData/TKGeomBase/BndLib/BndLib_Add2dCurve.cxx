@@ -42,9 +42,11 @@
 /// 53 iterations guarantee full double precision (~2^-53 relative interval).
 constexpr int THE_MAX_BISECTION_ITER = 53;
 
+/// Number of coordinates in homogeneous 2D cache rows (X, Y, W).
+constexpr int THE_CACHE_ROW_LEN = 3;
+
 /// Stack buffer size for Taylor polynomial coefficients.
-/// 128 doubles covers degree 31 for 3D rational curves (32 rows * 4 columns).
-constexpr int THE_CACHE_BUF_SIZE = 128;
+constexpr int THE_CACHE_BUF_SIZE = (BSplCLib::MaxDegree() + 1) * THE_CACHE_ROW_LEN;
 
 /// Maximum curve degree for which direct polynomial root-finding is used.
 /// Derivative polynomial degree is (curve degree - 1), and MathPoly::Quartic handles up to
