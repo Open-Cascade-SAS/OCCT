@@ -269,13 +269,13 @@ private:
     // The distance between surfaces depends on R1, R2 and axis distance
 
     // Sample V values to find extrema
-    searchParallelCase(aU1Toward, aU1Away, aU2Toward, aU2Away, aAxisDist, aDotAxis, theTol, theMode);
+    searchParallelCase(aU1Toward, aU1Away, aU2Toward, aU2Away, aAxisDist, theTol, theMode);
   }
 
   //! Search for extrema in parallel case by sampling V values.
   void searchParallelCase(double theU1Toward, double theU1Away,
                           double theU2Toward, double theU2Away,
-                          double theAxisDist, double theDeltaDotAxis,
+                          double theAxisDist,
                           double theTol, ExtremaSS::SearchMode theMode) const
   {
     constexpr int aNbSamples = 50;
@@ -340,9 +340,6 @@ private:
     // At V1, R1 = RefRadius1 + V1*tan(α1)
     // At V2, R2 = RefRadius2 + V2*tan(α2)
 
-    const double aAxisDot = myAxis1.X() * myAxis2.X() + myAxis1.Y() * myAxis2.Y()
-                            + myAxis1.Z() * myAxis2.Z();
-
     // Sample to find extrema
     constexpr int    aNbSamples = 30;
     constexpr double aVMin      = -50.0;
@@ -350,8 +347,8 @@ private:
 
     double aBestMinSqDist = std::numeric_limits<double>::max();
     double aBestMaxSqDist = 0.0;
-    double aBestMinU1 = 0, aBestMinV1 = 0, aBestMinU2 = 0, aBestMinV2 = 0;
-    double aBestMaxU1 = 0, aBestMaxV1 = 0, aBestMaxU2 = 0, aBestMaxV2 = 0;
+    double aBestMinV1 = 0, aBestMinV2 = 0;
+    double aBestMaxV1 = 0, aBestMaxV2 = 0;
 
     for (int i = 0; i <= aNbSamples; ++i)
     {

@@ -100,7 +100,7 @@ public:
       ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     // First compute interior extrema
-    Perform(theTol, theMode);
+    (void)Perform(theTol, theMode);
 
     // For bounded domains, also check boundary extrema
     if (myDomain.has_value())
@@ -215,7 +215,6 @@ private:
 
     // For concentric tori, distance depends only on major radii difference and V angles.
     // The extrema occur when both points are on the same radial line from center.
-    const double aRDiff = myMajorRadius1 - myMajorRadius2;
 
     // At U = any, V1 and V2 determine distance.
     // Distance = |sqrt((R1 + r1*cos(V1))^2 - (R2 + r2*cos(V2))^2 + (r1*sin(V1) - r2*sin(V2))^2)|
@@ -334,7 +333,7 @@ private:
         const double aMinDist = std::max(0.0, aCenterDistSame - myMinorRadius1 - myMinorRadius2);
         // Find V parameters
         double aV1Min, aV2Min;
-        computeCircleCircleExtrema(aCenterDistSame, myMinorRadius1, myMinorRadius2,
+        computeCircleCircleExtrema(aCenterDistSame,
                                    aAxisDist, myMajorRadius1 - myMajorRadius2,
                                    aV1Min, aV2Min, true);
         addExtremum(aU, aV1Min, aU, aV2Min, aMinDist * aMinDist, true, theTol);
@@ -343,7 +342,7 @@ private:
       {
         const double aMaxDist = aCenterDistSame + myMinorRadius1 + myMinorRadius2;
         double aV1Max, aV2Max;
-        computeCircleCircleExtrema(aCenterDistSame, myMinorRadius1, myMinorRadius2,
+        computeCircleCircleExtrema(aCenterDistSame,
                                    aAxisDist, myMajorRadius1 - myMajorRadius2,
                                    aV1Max, aV2Max, false);
         addExtremum(aU, aV1Max, aU, aV2Max, aMaxDist * aMaxDist, false, theTol);
@@ -360,7 +359,7 @@ private:
       {
         const double aMinDist = std::max(0.0, aCenterDistOpp - myMinorRadius1 - myMinorRadius2);
         double aV1Min, aV2Min;
-        computeCircleCircleExtrema(aCenterDistOpp, myMinorRadius1, myMinorRadius2,
+        computeCircleCircleExtrema(aCenterDistOpp,
                                    aAxisDist, myMajorRadius1 + myMajorRadius2,
                                    aV1Min, aV2Min, true);
         addExtremum(aU, aV1Min, aU + M_PI, aV2Min, aMinDist * aMinDist, true, theTol);
@@ -369,7 +368,7 @@ private:
       {
         const double aMaxDist = aCenterDistOpp + myMinorRadius1 + myMinorRadius2;
         double aV1Max, aV2Max;
-        computeCircleCircleExtrema(aCenterDistOpp, myMinorRadius1, myMinorRadius2,
+        computeCircleCircleExtrema(aCenterDistOpp,
                                    aAxisDist, myMajorRadius1 + myMajorRadius2,
                                    aV1Max, aV2Max, false);
         addExtremum(aU, aV1Max, aU + M_PI, aV2Max, aMaxDist * aMaxDist, false, theTol);
@@ -395,16 +394,12 @@ private:
 
   //! Compute V parameters for circle-circle extrema in a plane.
   //! @param theCenterDist distance between circle centers
-  //! @param theR1 radius of first circle
-  //! @param theR2 radius of second circle
   //! @param theAxisDist distance along axis (z component)
   //! @param theRadialDist radial distance (horizontal component)
   //! @param theV1 [out] V parameter on first circle
   //! @param theV2 [out] V parameter on second circle
   //! @param theMinimum true for minimum, false for maximum
   void computeCircleCircleExtrema(double theCenterDist,
-                                  double theR1,
-                                  double theR2,
                                   double theAxisDist,
                                   double theRadialDist,
                                   double& theV1,
@@ -926,13 +921,13 @@ private:
     for (int i = 0; i <= aNbSamples; ++i)
     {
       const double aV1 = aV1Min + i * (aV1Max - aV1Min) / aNbSamples;
-      search3DExtrema(aU1Min, aV1, aU2Min, aU2Max, aV2Min, aV2Max, true, theTol, theMode);
+      search3DExtrema(aU1Min, aV1, aU2Min, aU2Max, aV2Min, aV2Max, theTol, theMode);
     }
     // Face U1 = U1Max
     for (int i = 0; i <= aNbSamples; ++i)
     {
       const double aV1 = aV1Min + i * (aV1Max - aV1Min) / aNbSamples;
-      search3DExtrema(aU1Max, aV1, aU2Min, aU2Max, aV2Min, aV2Max, true, theTol, theMode);
+      search3DExtrema(aU1Max, aV1, aU2Min, aU2Max, aV2Min, aV2Max, theTol, theMode);
     }
     // Similar for other boundary faces...
     // (Simplified - full implementation would check all 8 faces)
@@ -942,7 +937,6 @@ private:
   void search3DExtrema(double theFixedU1, double theFixedV1,
                        double theU2Min, double theU2Max,
                        double theV2Min, double theV2Max,
-                       bool   theU1Fixed,
                        double theTol, ExtremaSS::SearchMode theMode) const
   {
     constexpr int aNbSamples = 10;

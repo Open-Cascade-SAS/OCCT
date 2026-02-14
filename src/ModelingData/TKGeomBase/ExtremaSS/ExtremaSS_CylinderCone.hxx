@@ -551,8 +551,6 @@ private:
       return;
     }
 
-    const double aRCone = std::abs(aVCone * mySinSemiAngle);
-
     // Cross product gives direction perpendicular to both axes
     const gp_Dir& aCrossDir = myCrossProduct;
 

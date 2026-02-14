@@ -215,7 +215,6 @@ private:
     // All generating circles are at the same distance from plane
     // Extrema are at top and bottom of each generating circle (where v = +/-pi/2)
 
-    const double aSign       = myAxisDotNorm > 0 ? 1.0 : -1.0;
     const double aAbsCenterDist = std::abs(myCenterDistToPlane);
 
     // Distance from torus center to plane is myCenterDistToPlane
@@ -224,7 +223,6 @@ private:
 
     // Minimum distance
     const double aMinDist = aAbsCenterDist - myMinorRadius;
-    const double aMaxDist = aAbsCenterDist + myMinorRadius;
 
     if (aMinDist < theTol)
     {
@@ -279,8 +277,7 @@ private:
     //                     = centerDist + R*sqrt(aXDotN^2 + aYDotN^2)*cos(U - phi)
     // where phi = atan2(aYDotN, aXDotN)
 
-    const double aAmplitude = myMajorRadius * std::sqrt(aXDotN * aXDotN + aYDotN * aYDotN);
-    const double aPhi       = std::atan2(aYDotN, aXDotN);
+    const double aPhi = std::atan2(aYDotN, aXDotN);
 
     // U for minimum distance to plane (generating circle closest to plane)
     double aUClose = aPhi + M_PI; // where cos(U - phi) = -1
@@ -296,7 +293,6 @@ private:
     if (theMode != ExtremaSS::SearchMode::Max)
     {
       // Minimum: closest generating circle, closest point on circle (toward plane)
-      const double aCircDistToPlane = myCenterDistToPlane - aAmplitude;
       processTorusPoint(aUClose, 0.0, theTol, true);
     }
 

@@ -322,9 +322,6 @@ private:
     // The common perpendicular direction is myCrossProduct = Axis1 × Axis2 (already normalized)
     // Distance between axes = |(C2 - C1) · N| where N is the common perpendicular
 
-    const double aDotN = myDeltaCenter.Dot(gp_Vec(myCrossProduct));
-    const double aAxisDist = std::abs(aDotN);
-
     // Find the closest points on each axis
     // Parameterize: P1(t) = C1 + t*A1, P2(s) = C2 + s*A2
     // Closest approach: (P2(s) - P1(t)) · A1 = 0 and (P2(s) - P1(t)) · A2 = 0

@@ -247,10 +247,6 @@ private:
 
     const double aAxisDist = aPerp.Magnitude();
 
-    // Check axes alignment (same or opposite direction)
-    const double aAxisDot = myCylAxis.X() * myTorusAxis.X() + myCylAxis.Y() * myTorusAxis.Y()
-                            + myCylAxis.Z() * myTorusAxis.Z();
-
     myResult.Status = ExtremaSS::Status::OK;
 
     if (aAxisDist < theTol)
@@ -305,11 +301,6 @@ private:
           std::abs(aCircleCenterDist - myCylRadius) - myMinorRadius;
       addExtremum(aUCylToward, aVCyl, aUTorusToward, 0.0,
                   aMinDist1 * aMinDist1, true, theTol);
-
-      // V_torus = π (pointing away from cylinder axis)
-      const double aMinDist2 =
-          std::abs(aCircleCenterDist - myCylRadius) + myMinorRadius;
-      // This is actually a local maximum on this generating circle
 
       // Also check the generating circle away from cylinder
       const double aCircleCenterDistAway = aAxisDist + myMajorRadius;
@@ -380,7 +371,6 @@ private:
     {
       // Maximum at V_torus = 0 (outer) or V_torus = π (inner) depending on cylinder radius
       const double aMaxDist1 = myCylRadius + myMajorRadius + myMinorRadius;
-      const double aMaxDist2 = std::abs(myCylRadius - myMajorRadius) + myMinorRadius;
 
       addExtremum(0.0, aVCyl, M_PI, 0.0, aMaxDist1 * aMaxDist1, false, theTol);
     }
@@ -445,7 +435,6 @@ private:
 
       // Vector from cylinder axis to circle center
       gp_Vec aDirToCircle(aPOnCylAxis, aCircleCenter);
-      const double aDistToCircle = aDirToCircle.Magnitude();
 
       // For the generating circle, find extrema to cylinder
       // The circle is in a plane with normal = aRadialDir
