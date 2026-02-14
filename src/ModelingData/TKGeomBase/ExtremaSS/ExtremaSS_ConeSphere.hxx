@@ -580,6 +580,23 @@ public:
     ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     (void)Perform(theTol, theMode);
+
+    if (myResult.IsInfinite() || !myDomain.has_value())
+    {
+      return myResult;
+    }
+
+    checkBoundaryExtrema(theTol, theMode);
+
+    if (myResult.Extrema.IsEmpty())
+    {
+      myResult.Status = ExtremaSS::Status::NoSolution;
+    }
+    else
+    {
+      myResult.Status = ExtremaSS::Status::OK;
+    }
+
     return myResult;
   }
 
@@ -587,6 +604,202 @@ public:
   const gp_Sphere& Sphere() const { return mySphere; }
   bool             IsSwapped() const { return mySwapped; }
   bool             IsBounded() const { return myDomain.has_value(); }
+
+private:
+  //! Check boundary extrema for bounded domains.
+  void checkBoundaryExtrema(double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    if (!myDomain.has_value())
+    {
+      return;
+    }
+
+    const ExtremaSS::Domain4D&   aDom  = myDomain.value();
+    const MathUtils::Domain2D& aDom1 = aDom.Domain1; // Cone domain
+    const MathUtils::Domain2D& aDom2 = aDom.Domain2; // Sphere domain
+
+    constexpr int aNbSamples = 20;
+
+    // Check cone boundary against sphere
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU1 = aDom1.UMin + i * (aDom1.UMax - aDom1.UMin) / aNbSamples;
+      checkConePointAgainstSphere(aU1, aDom1.VMin, theTol, theMode);
+      checkConePointAgainstSphere(aU1, aDom1.VMax, theTol, theMode);
+    }
+
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aV1 = aDom1.VMin + i * (aDom1.VMax - aDom1.VMin) / aNbSamples;
+      checkConePointAgainstSphere(aDom1.UMin, aV1, theTol, theMode);
+      checkConePointAgainstSphere(aDom1.UMax, aV1, theTol, theMode);
+    }
+
+    // Check sphere boundary against cone
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU2 = aDom2.UMin + i * (aDom2.UMax - aDom2.UMin) / aNbSamples;
+      checkSpherePointAgainstCone(aU2, aDom2.VMin, theTol, theMode);
+      checkSpherePointAgainstCone(aU2, aDom2.VMax, theTol, theMode);
+    }
+
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aV2 = aDom2.VMin + i * (aDom2.VMax - aDom2.VMin) / aNbSamples;
+      checkSpherePointAgainstCone(aDom2.UMin, aV2, theTol, theMode);
+      checkSpherePointAgainstCone(aDom2.UMax, aV2, theTol, theMode);
+    }
+  }
+
+  //! Check a point on cone against sphere for potential extrema.
+  void checkConePointAgainstSphere(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aP1 = Value1(theU1, theV1);
+
+    // Direction from sphere center to cone point
+    const double aDx = aP1.X() - mySphereCenterX;
+    const double aDy = aP1.Y() - mySphereCenterY;
+    const double aDz = aP1.Z() - mySphereCenterZ;
+    const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
+
+    if (aDist < theTol)
+    {
+      return;
+    }
+
+    const double aInvDist = 1.0 / aDist;
+    const double aNx = aDx * aInvDist;
+    const double aNy = aDy * aInvDist;
+    const double aNz = aDz * aInvDist;
+
+    // Closest point on sphere (toward cone point)
+    double aU2Min = 0.0, aV2Min = 0.0;
+    computeSphereParamsFromDir(aNx, aNy, aNz, aU2Min, aV2Min);
+
+    if (myDomain.has_value())
+    {
+      const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
+      aU2Min = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
+      aV2Min = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const gp_Pnt aP2 = Value2(aU2Min, aV2Min);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Min, aV2Min, aP1, aP2, aSqDist, true, theTol);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      double aU2Max = 0.0, aV2Max = 0.0;
+      computeSphereParamsFromDir(-aNx, -aNy, -aNz, aU2Max, aV2Max);
+
+      if (myDomain.has_value())
+      {
+        const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
+        aU2Max = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
+        aV2Max = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
+      }
+
+      const gp_Pnt aP2 = Value2(aU2Max, aV2Max);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Max, aV2Max, aP1, aP2, aSqDist, false, theTol);
+    }
+  }
+
+  //! Compute sphere UV from direction.
+  void computeSphereParamsFromDir(double theDirX, double theDirY, double theDirZ,
+                                  double& theU, double& theV) const
+  {
+    const double aZ = theDirX * mySphereZDirX + theDirY * mySphereZDirY + theDirZ * mySphereZDirZ;
+    theV = std::asin(std::clamp(aZ, -1.0, 1.0));
+
+    const double aX = theDirX * mySphereXDirX + theDirY * mySphereXDirY + theDirZ * mySphereXDirZ;
+    const double aY = theDirX * mySphereYDirX + theDirY * mySphereYDirY + theDirZ * mySphereYDirZ;
+    theU = std::atan2(aY, aX);
+    if (theU < 0)
+      theU += ExtremaSS::THE_TWO_PI;
+  }
+
+  //! Check a point on sphere against cone for potential extrema.
+  void checkSpherePointAgainstCone(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aP2 = Value2(theU2, theV2);
+
+    // Project sphere point onto cone axis
+    const double aVecX = aP2.X() - myConeOrigX;
+    const double aVecY = aP2.Y() - myConeOrigY;
+    const double aVecZ = aP2.Z() - myConeOrigZ;
+    double aV1 = aVecX * myConeAxisX + aVecY * myConeAxisY + aVecZ * myConeAxisZ;
+
+    // Clamp V to domain
+    if (myDomain.has_value())
+    {
+      aV1 = std::clamp(aV1, myDomain->Domain1.VMin, myDomain->Domain1.VMax);
+    }
+
+    // Point on axis at V1
+    const double aAxisPtX = myConeOrigX + aV1 * myConeAxisX;
+    const double aAxisPtY = myConeOrigY + aV1 * myConeAxisY;
+    const double aAxisPtZ = myConeOrigZ + aV1 * myConeAxisZ;
+
+    // Direction from axis to sphere point
+    double aPerpX = aP2.X() - aAxisPtX;
+    double aPerpY = aP2.Y() - aAxisPtY;
+    double aPerpZ = aP2.Z() - aAxisPtZ;
+
+    // Remove axis component
+    const double aDotAxis = aPerpX * myConeAxisX + aPerpY * myConeAxisY + aPerpZ * myConeAxisZ;
+    aPerpX -= aDotAxis * myConeAxisX;
+    aPerpY -= aDotAxis * myConeAxisY;
+    aPerpZ -= aDotAxis * myConeAxisZ;
+
+    const double aPerpDist = std::sqrt(aPerpX * aPerpX + aPerpY * aPerpY + aPerpZ * aPerpZ);
+
+    double aU1Min = 0.0;
+    if (aPerpDist > theTol)
+    {
+      const double aInvPerpDist = 1.0 / aPerpDist;
+      const double aDirX = aPerpX * aInvPerpDist;
+      const double aDirY = aPerpY * aInvPerpDist;
+      const double aDirZ = aPerpZ * aInvPerpDist;
+
+      const double aDotX = aDirX * myConeXDirX + aDirY * myConeXDirY + aDirZ * myConeXDirZ;
+      const double aDotY = aDirX * myConeYDirX + aDirY * myConeYDirY + aDirZ * myConeYDirZ;
+      aU1Min = std::atan2(aDotY, aDotX);
+      if (aU1Min < 0.0)
+        aU1Min += ExtremaSS::THE_TWO_PI;
+    }
+
+    if (myDomain.has_value())
+    {
+      aU1Min = std::clamp(aU1Min, myDomain->Domain1.UMin, myDomain->Domain1.UMax);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const gp_Pnt aP1 = Value1(aU1Min, aV1);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, aU1Min, aV1, theU2, theV2, aP1, aP2, aSqDist, true, theTol);
+    }
+
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      double aU1Max = aU1Min + M_PI;
+      if (aU1Max >= ExtremaSS::THE_TWO_PI)
+        aU1Max -= ExtremaSS::THE_TWO_PI;
+
+      if (myDomain.has_value())
+      {
+        aU1Max = std::clamp(aU1Max, myDomain->Domain1.UMin, myDomain->Domain1.UMax);
+      }
+
+      const gp_Pnt aP1 = Value1(aU1Max, aV1);
+      const double aSqDist = aP1.SquareDistance(aP2);
+      ExtremaSS::AddExtremum(myResult, aU1Max, aV1, theU2, theV2, aP1, aP2, aSqDist, false, theTol);
+    }
+  }
 
 private:
   gp_Cone                            myCone;

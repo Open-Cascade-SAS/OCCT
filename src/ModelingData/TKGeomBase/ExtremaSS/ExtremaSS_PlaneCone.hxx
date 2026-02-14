@@ -589,9 +589,216 @@ public:
     ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     (void)Perform(theTol, theMode);
+
+    // Add boundary extrema if domain is bounded
+    if (myResult.IsInfinite() || !myDomain.has_value())
+    {
+      return myResult;
+    }
+
+    checkBoundaryExtrema(theTol, theMode);
+
+    if (myResult.Extrema.IsEmpty())
+    {
+      myResult.Status = ExtremaSS::Status::NoSolution;
+    }
+    else
+    {
+      myResult.Status = ExtremaSS::Status::OK;
+    }
     return myResult;
   }
 
+private:
+  //! Check extrema on domain boundaries.
+  void checkBoundaryExtrema(double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    if (!myDomain.has_value())
+    {
+      return;
+    }
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    constexpr int              aNbSamples = 20;
+
+    // Sample plane boundary edges (Domain1)
+    const double aDU1 = (aDom.Domain1.UMax - aDom.Domain1.UMin) / aNbSamples;
+    const double aDV1 = (aDom.Domain1.VMax - aDom.Domain1.VMin) / aNbSamples;
+
+    // U edges (VMin and VMax)
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU1 = aDom.Domain1.UMin + i * aDU1;
+      checkPlanePointAgainstCone(aU1, aDom.Domain1.VMin, theTol, theMode);
+      checkPlanePointAgainstCone(aU1, aDom.Domain1.VMax, theTol, theMode);
+    }
+
+    // V edges (UMin and UMax)
+    for (int i = 1; i < aNbSamples; ++i)
+    {
+      const double aV1 = aDom.Domain1.VMin + i * aDV1;
+      checkPlanePointAgainstCone(aDom.Domain1.UMin, aV1, theTol, theMode);
+      checkPlanePointAgainstCone(aDom.Domain1.UMax, aV1, theTol, theMode);
+    }
+
+    // Sample cone boundary edges (Domain2)
+    const double aDU2 = (aDom.Domain2.UMax - aDom.Domain2.UMin) / aNbSamples;
+    const double aDV2 = (aDom.Domain2.VMax - aDom.Domain2.VMin) / aNbSamples;
+
+    // U edges (VMin and VMax)
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU2 = aDom.Domain2.UMin + i * aDU2;
+      checkConePointAgainstPlane(aU2, aDom.Domain2.VMin, theTol, theMode);
+      checkConePointAgainstPlane(aU2, aDom.Domain2.VMax, theTol, theMode);
+    }
+
+    // V edges (UMin and UMax)
+    for (int i = 1; i < aNbSamples; ++i)
+    {
+      const double aV2 = aDom.Domain2.VMin + i * aDV2;
+      checkConePointAgainstPlane(aDom.Domain2.UMin, aV2, theTol, theMode);
+      checkConePointAgainstPlane(aDom.Domain2.UMax, aV2, theTol, theMode);
+    }
+  }
+
+  //! Check a plane boundary point against the cone.
+  void checkPlanePointAgainstCone(double thePlaneU, double thePlaneV, double theTol,
+                                  ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aPlanePt = Value1(thePlaneU, thePlaneV);
+
+    // Find closest point on cone axis to this plane point
+    const gp_Pnt& aConeOrig = myCone.Location();
+    const double aDx = aPlanePt.X() - aConeOrig.X();
+    const double aDy = aPlanePt.Y() - aConeOrig.Y();
+    const double aDz = aPlanePt.Z() - aConeOrig.Z();
+
+    // V parameter along axis (from cone origin)
+    const double aConeV = aDx * myConeAxisX + aDy * myConeAxisY + aDz * myConeAxisZ;
+
+    // Point on axis at this V
+    const double aAxisPtX = aConeOrig.X() + aConeV * myConeAxisX;
+    const double aAxisPtY = aConeOrig.Y() + aConeV * myConeAxisY;
+    const double aAxisPtZ = aConeOrig.Z() + aConeV * myConeAxisZ;
+
+    // Radial direction from axis to point
+    const double aRadX = aPlanePt.X() - aAxisPtX;
+    const double aRadY = aPlanePt.Y() - aAxisPtY;
+    const double aRadZ = aPlanePt.Z() - aAxisPtZ;
+    const double aRadDist = std::sqrt(aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ);
+
+    if (aRadDist < theTol)
+    {
+      // Point is on cone axis
+      return;
+    }
+
+    // U angle
+    const double aRadDirX = aRadX / aRadDist;
+    const double aRadDirY = aRadY / aRadDist;
+    const double aRadDirZ = aRadZ / aRadDist;
+
+    double aConeU = std::atan2(aRadDirX * myConeYDirX + aRadDirY * myConeYDirY + aRadDirZ * myConeYDirZ,
+                               aRadDirX * myConeXDirX + aRadDirY * myConeXDirY + aRadDirZ * myConeXDirZ);
+    if (aConeU < 0)
+      aConeU += ExtremaSS::THE_TWO_PI;
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+
+    // Check closest point (minimum)
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const double aClampedU = std::clamp(aConeU, aDom.Domain2.UMin, aDom.Domain2.UMax);
+      const double aClampedV = std::clamp(aConeV, aDom.Domain2.VMin, aDom.Domain2.VMax);
+      const gp_Pnt aConePt = Value2(aClampedU, aClampedV);
+      const double aSqDist = aPlanePt.SquareDistance(aConePt);
+
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aConePt, aPlanePt,
+                               aSqDist, true, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aConePt,
+                               aSqDist, true, theTol);
+      }
+    }
+
+    // Check farthest point (maximum) - opposite side of cone
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      double aConeUFar = aConeU + M_PI;
+      if (aConeUFar > ExtremaSS::THE_TWO_PI)
+        aConeUFar -= ExtremaSS::THE_TWO_PI;
+
+      const double aClampedU = std::clamp(aConeUFar, aDom.Domain2.UMin, aDom.Domain2.UMax);
+      const double aClampedV = std::clamp(aConeV, aDom.Domain2.VMin, aDom.Domain2.VMax);
+      const gp_Pnt aConePt = Value2(aClampedU, aClampedV);
+      const double aSqDist = aPlanePt.SquareDistance(aConePt);
+
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aConePt, aPlanePt,
+                               aSqDist, false, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aConePt,
+                               aSqDist, false, theTol);
+      }
+    }
+  }
+
+  //! Check a cone boundary point against the plane.
+  void checkConePointAgainstPlane(double theConeU, double theConeV, double theTol,
+                                  ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aConePt = Value2(theConeU, theConeV);
+
+    // Project cone point onto plane
+    const double aDistToPlane = (aConePt.X() - myPlaneOrigX) * myPlaneNormX
+                              + (aConePt.Y() - myPlaneOrigY) * myPlaneNormY
+                              + (aConePt.Z() - myPlaneOrigZ) * myPlaneNormZ;
+
+    const gp_Pnt aProjPt(aConePt.X() - aDistToPlane * myPlaneNormX,
+                         aConePt.Y() - aDistToPlane * myPlaneNormY,
+                         aConePt.Z() - aDistToPlane * myPlaneNormZ);
+
+    // Compute plane UV parameters
+    double aPlaneU = (aProjPt.X() - myPlaneOrigX) * myPlaneXDirX
+                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneXDirY
+                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+    double aPlaneV = (aProjPt.X() - myPlaneOrigX) * myPlaneYDirX
+                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneYDirY
+                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+
+    // Clamp to plane domain
+    const double aClampedU = std::clamp(aPlaneU, aDom.Domain1.UMin, aDom.Domain1.UMax);
+    const double aClampedV = std::clamp(aPlaneV, aDom.Domain1.VMin, aDom.Domain1.VMax);
+    const gp_Pnt aPlanePt = Value1(aClampedU, aClampedV);
+    const double aSqDist = aConePt.SquareDistance(aPlanePt);
+
+    // Only minimum makes sense for fixed cone point
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, theConeU, theConeV, aClampedU, aClampedV, aConePt, aPlanePt,
+                               aSqDist, true, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theConeU, theConeV, aPlanePt, aConePt,
+                               aSqDist, true, theTol);
+      }
+    }
+  }
+
+public:
   const gp_Pln&  Plane() const { return myPlane; }
   const gp_Cone& Cone() const { return myCone; }
   bool           IsSwapped() const { return mySwapped; }

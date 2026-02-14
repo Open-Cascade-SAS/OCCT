@@ -428,9 +428,241 @@ public:
     ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     (void)Perform(theTol, theMode);
+
+    // Add boundary extrema if domain is bounded
+    if (myResult.IsInfinite() || !myDomain.has_value())
+    {
+      return myResult;
+    }
+
+    checkBoundaryExtrema(theTol, theMode);
+
+    if (myResult.Extrema.IsEmpty())
+    {
+      myResult.Status = ExtremaSS::Status::NoSolution;
+    }
+    else
+    {
+      myResult.Status = ExtremaSS::Status::OK;
+    }
     return myResult;
   }
 
+private:
+  //! Check extrema on domain boundaries.
+  void checkBoundaryExtrema(double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    if (!myDomain.has_value())
+    {
+      return;
+    }
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    constexpr int              aNbSamples = 20;
+
+    // Sample plane boundary edges (Domain1)
+    const double aDU1 = (aDom.Domain1.UMax - aDom.Domain1.UMin) / aNbSamples;
+    const double aDV1 = (aDom.Domain1.VMax - aDom.Domain1.VMin) / aNbSamples;
+
+    // U edges (VMin and VMax)
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU1 = aDom.Domain1.UMin + i * aDU1;
+      checkPlanePointAgainstTorus(aU1, aDom.Domain1.VMin, theTol, theMode);
+      checkPlanePointAgainstTorus(aU1, aDom.Domain1.VMax, theTol, theMode);
+    }
+
+    // V edges (UMin and UMax)
+    for (int i = 1; i < aNbSamples; ++i)
+    {
+      const double aV1 = aDom.Domain1.VMin + i * aDV1;
+      checkPlanePointAgainstTorus(aDom.Domain1.UMin, aV1, theTol, theMode);
+      checkPlanePointAgainstTorus(aDom.Domain1.UMax, aV1, theTol, theMode);
+    }
+
+    // Sample torus boundary edges (Domain2)
+    const double aDU2 = (aDom.Domain2.UMax - aDom.Domain2.UMin) / aNbSamples;
+    const double aDV2 = (aDom.Domain2.VMax - aDom.Domain2.VMin) / aNbSamples;
+
+    // U edges (VMin and VMax)
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU2 = aDom.Domain2.UMin + i * aDU2;
+      checkTorusPointAgainstPlane(aU2, aDom.Domain2.VMin, theTol, theMode);
+      checkTorusPointAgainstPlane(aU2, aDom.Domain2.VMax, theTol, theMode);
+    }
+
+    // V edges (UMin and UMax)
+    for (int i = 1; i < aNbSamples; ++i)
+    {
+      const double aV2 = aDom.Domain2.VMin + i * aDV2;
+      checkTorusPointAgainstPlane(aDom.Domain2.UMin, aV2, theTol, theMode);
+      checkTorusPointAgainstPlane(aDom.Domain2.UMax, aV2, theTol, theMode);
+    }
+  }
+
+  //! Check a plane boundary point against the torus.
+  void checkPlanePointAgainstTorus(double thePlaneU, double thePlaneV, double theTol,
+                                   ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aPlanePt = Value1(thePlaneU, thePlaneV);
+
+    // Find closest/farthest point on torus to this plane point
+    // Direction from torus center to plane point
+    const double aDx = aPlanePt.X() - myTorusCenterX;
+    const double aDy = aPlanePt.Y() - myTorusCenterY;
+    const double aDz = aPlanePt.Z() - myTorusCenterZ;
+
+    // Project onto torus axis to get height
+    const double aHeight = aDx * myTorusAxisX + aDy * myTorusAxisY + aDz * myTorusAxisZ;
+
+    // Projection onto torus XY plane
+    const double aProjX = aDx - aHeight * myTorusAxisX;
+    const double aProjY = aDy - aHeight * myTorusAxisY;
+    const double aProjZ = aDz - aHeight * myTorusAxisZ;
+    const double aRadialDist = std::sqrt(aProjX * aProjX + aProjY * aProjY + aProjZ * aProjZ);
+
+    if (aRadialDist < theTol)
+    {
+      // Point is on torus axis - use default direction
+      return;
+    }
+
+    // Torus U angle
+    const double aRadDirX = aProjX / aRadialDist;
+    const double aRadDirY = aProjY / aRadialDist;
+    const double aRadDirZ = aProjZ / aRadialDist;
+
+    double aTorusU = std::atan2(aRadDirX * myTorusYDirX + aRadDirY * myTorusYDirY + aRadDirZ * myTorusYDirZ,
+                                aRadDirX * myTorusXDirX + aRadDirY * myTorusXDirY + aRadDirZ * myTorusXDirZ);
+    if (aTorusU < 0)
+      aTorusU += ExtremaSS::THE_TWO_PI;
+
+    // Generating circle center at this U
+    const double aCosU = std::cos(aTorusU);
+    const double aSinU = std::sin(aTorusU);
+    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+
+    // Direction from circle center to plane point
+    const double aCdx = aPlanePt.X() - aCircCentX;
+    const double aCdy = aPlanePt.Y() - aCircCentY;
+    const double aCdz = aPlanePt.Z() - aCircCentZ;
+    const double aCdist = std::sqrt(aCdx * aCdx + aCdy * aCdy + aCdz * aCdz);
+
+    if (aCdist < theTol)
+      return;
+
+    const double aCdirX = aCdx / aCdist;
+    const double aCdirY = aCdy / aCdist;
+    const double aCdirZ = aCdz / aCdist;
+
+    // V angle for closest point on generating circle
+    const double aRadialComp = aCdirX * (aCosU * myTorusXDirX + aSinU * myTorusYDirX)
+                             + aCdirY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
+                             + aCdirZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aAxialComp = aCdirX * myTorusAxisX + aCdirY * myTorusAxisY + aCdirZ * myTorusAxisZ;
+
+    double aTorusV = std::atan2(aAxialComp, aRadialComp);
+    if (aTorusV < 0)
+      aTorusV += ExtremaSS::THE_TWO_PI;
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+
+    // Check closest point (minimum)
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      const double aClampedU = std::clamp(aTorusU, aDom.Domain2.UMin, aDom.Domain2.UMax);
+      const double aClampedV = std::clamp(aTorusV, aDom.Domain2.VMin, aDom.Domain2.VMax);
+      const gp_Pnt aTorusPt = Value2(aClampedU, aClampedV);
+      const double aSqDist = aPlanePt.SquareDistance(aTorusPt);
+
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aTorusPt, aPlanePt,
+                               aSqDist, true, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aTorusPt,
+                               aSqDist, true, theTol);
+      }
+    }
+
+    // Check farthest point (maximum) - opposite side of generating circle
+    if (theMode != ExtremaSS::SearchMode::Min)
+    {
+      double aTorusVFar = aTorusV + M_PI;
+      if (aTorusVFar > ExtremaSS::THE_TWO_PI)
+        aTorusVFar -= ExtremaSS::THE_TWO_PI;
+
+      const double aClampedU = std::clamp(aTorusU, aDom.Domain2.UMin, aDom.Domain2.UMax);
+      const double aClampedV = std::clamp(aTorusVFar, aDom.Domain2.VMin, aDom.Domain2.VMax);
+      const gp_Pnt aTorusPt = Value2(aClampedU, aClampedV);
+      const double aSqDist = aPlanePt.SquareDistance(aTorusPt);
+
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aTorusPt, aPlanePt,
+                               aSqDist, false, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aTorusPt,
+                               aSqDist, false, theTol);
+      }
+    }
+  }
+
+  //! Check a torus boundary point against the plane.
+  void checkTorusPointAgainstPlane(double theTorusU, double theTorusV, double theTol,
+                                   ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aTorusPt = Value2(theTorusU, theTorusV);
+
+    // Project torus point onto plane
+    const double aDistToPlane = (aTorusPt.X() - myPlaneOrigX) * myPlaneNormX
+                              + (aTorusPt.Y() - myPlaneOrigY) * myPlaneNormY
+                              + (aTorusPt.Z() - myPlaneOrigZ) * myPlaneNormZ;
+
+    const gp_Pnt aProjPt(aTorusPt.X() - aDistToPlane * myPlaneNormX,
+                         aTorusPt.Y() - aDistToPlane * myPlaneNormY,
+                         aTorusPt.Z() - aDistToPlane * myPlaneNormZ);
+
+    // Compute plane UV parameters
+    double aPlaneU = (aProjPt.X() - myPlaneOrigX) * myPlaneXDirX
+                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneXDirY
+                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+    double aPlaneV = (aProjPt.X() - myPlaneOrigX) * myPlaneYDirX
+                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneYDirY
+                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+
+    // Clamp to plane domain
+    const double aClampedU = std::clamp(aPlaneU, aDom.Domain1.UMin, aDom.Domain1.UMax);
+    const double aClampedV = std::clamp(aPlaneV, aDom.Domain1.VMin, aDom.Domain1.VMax);
+    const gp_Pnt aPlanePt = Value1(aClampedU, aClampedV);
+    const double aSqDist = aTorusPt.SquareDistance(aPlanePt);
+
+    // Both minimum and maximum are the same for a fixed torus point (projection)
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, theTorusU, theTorusV, aClampedU, aClampedV, aTorusPt, aPlanePt,
+                               aSqDist, true, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theTorusU, theTorusV, aPlanePt, aTorusPt,
+                               aSqDist, true, theTol);
+      }
+    }
+  }
+
+public:
   const gp_Pln&   Plane() const { return myPlane; }
   const gp_Torus& Torus() const { return myTorus; }
   bool            IsSwapped() const { return mySwapped; }

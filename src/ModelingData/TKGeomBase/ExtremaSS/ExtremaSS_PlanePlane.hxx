@@ -218,23 +218,174 @@ public:
     // Start with interior extrema
     (void)Perform(theTol, theMode);
 
-    // If no bounded domain or result is already infinite, return
+    // If no bounded domain, return
     if (!myDomain.has_value())
     {
       return myResult;
     }
 
-    // For bounded plane domains with non-parallel planes,
-    // we need to find extrema at corners/edges
-    if (myResult.Status == ExtremaSS::Status::NoSolution)
+    // If result is already infinite (parallel planes), sample boundary
+    // to provide representative extrema points
+    if (myResult.IsInfinite())
     {
-      // Planes intersect but domains may not - need corner analysis
-      // TODO: Implement bounded plane-plane extrema
+      checkBoundaryExtrema(theTol, theMode);
+      if (myResult.Extrema.IsEmpty())
+      {
+        myResult.Status = ExtremaSS::Status::NoSolution;
+      }
+      else
+      {
+        myResult.Status = ExtremaSS::Status::OK;
+      }
+      return myResult;
     }
 
+    // For non-parallel planes (they intersect), check bounded domains
+    checkBoundaryExtrema(theTol, theMode);
+
+    if (myResult.Extrema.IsEmpty())
+    {
+      myResult.Status = ExtremaSS::Status::NoSolution;
+    }
+    else
+    {
+      myResult.Status = ExtremaSS::Status::OK;
+    }
     return myResult;
   }
 
+private:
+  //! Check extrema on domain boundaries.
+  void checkBoundaryExtrema(double theTol, ExtremaSS::SearchMode theMode) const
+  {
+    if (!myDomain.has_value())
+    {
+      return;
+    }
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    constexpr int              aNbSamples = 20;
+
+    // Sample plane 1 boundary edges (Domain1)
+    const double aDU1 = (aDom.Domain1.UMax - aDom.Domain1.UMin) / aNbSamples;
+    const double aDV1 = (aDom.Domain1.VMax - aDom.Domain1.VMin) / aNbSamples;
+
+    // U edges (VMin and VMax)
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU1 = aDom.Domain1.UMin + i * aDU1;
+      checkPlane1PointAgainstPlane2(aU1, aDom.Domain1.VMin, theTol, theMode);
+      checkPlane1PointAgainstPlane2(aU1, aDom.Domain1.VMax, theTol, theMode);
+    }
+
+    // V edges (UMin and UMax)
+    for (int i = 1; i < aNbSamples; ++i)
+    {
+      const double aV1 = aDom.Domain1.VMin + i * aDV1;
+      checkPlane1PointAgainstPlane2(aDom.Domain1.UMin, aV1, theTol, theMode);
+      checkPlane1PointAgainstPlane2(aDom.Domain1.UMax, aV1, theTol, theMode);
+    }
+
+    // Sample plane 2 boundary edges (Domain2)
+    const double aDU2 = (aDom.Domain2.UMax - aDom.Domain2.UMin) / aNbSamples;
+    const double aDV2 = (aDom.Domain2.VMax - aDom.Domain2.VMin) / aNbSamples;
+
+    // U edges (VMin and VMax)
+    for (int i = 0; i <= aNbSamples; ++i)
+    {
+      const double aU2 = aDom.Domain2.UMin + i * aDU2;
+      checkPlane2PointAgainstPlane1(aU2, aDom.Domain2.VMin, theTol, theMode);
+      checkPlane2PointAgainstPlane1(aU2, aDom.Domain2.VMax, theTol, theMode);
+    }
+
+    // V edges (UMin and UMax)
+    for (int i = 1; i < aNbSamples; ++i)
+    {
+      const double aV2 = aDom.Domain2.VMin + i * aDV2;
+      checkPlane2PointAgainstPlane1(aDom.Domain2.UMin, aV2, theTol, theMode);
+      checkPlane2PointAgainstPlane1(aDom.Domain2.UMax, aV2, theTol, theMode);
+    }
+  }
+
+  //! Check a plane 1 boundary point against plane 2.
+  void checkPlane1PointAgainstPlane2(double thePlane1U, double thePlane1V, double theTol,
+                                     ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aPt1 = Value1(thePlane1U, thePlane1V);
+
+    // Project onto plane 2
+    const double aDistToPlane2 = (aPt1.X() - myOrig2X) * myNorm2X
+                               + (aPt1.Y() - myOrig2Y) * myNorm2Y
+                               + (aPt1.Z() - myOrig2Z) * myNorm2Z;
+
+    const gp_Pnt aProjPt(aPt1.X() - aDistToPlane2 * myNorm2X,
+                         aPt1.Y() - aDistToPlane2 * myNorm2Y,
+                         aPt1.Z() - aDistToPlane2 * myNorm2Z);
+
+    // Compute plane 2 UV parameters
+    double aPlane2U = (aProjPt.X() - myOrig2X) * myXDir2X
+                    + (aProjPt.Y() - myOrig2Y) * myXDir2Y
+                    + (aProjPt.Z() - myOrig2Z) * myXDir2Z;
+    double aPlane2V = (aProjPt.X() - myOrig2X) * myYDir2X
+                    + (aProjPt.Y() - myOrig2Y) * myYDir2Y
+                    + (aProjPt.Z() - myOrig2Z) * myYDir2Z;
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+
+    // Clamp to plane 2 domain
+    const double aClampedU = std::clamp(aPlane2U, aDom.Domain2.UMin, aDom.Domain2.UMax);
+    const double aClampedV = std::clamp(aPlane2V, aDom.Domain2.VMin, aDom.Domain2.VMax);
+    const gp_Pnt aPt2 = Value2(aClampedU, aClampedV);
+    const double aSqDist = aPt1.SquareDistance(aPt2);
+
+    // Only minimum makes sense for fixed plane 1 point
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      ExtremaSS::AddExtremum(myResult, thePlane1U, thePlane1V, aClampedU, aClampedV, aPt1, aPt2,
+                             aSqDist, true, theTol);
+    }
+  }
+
+  //! Check a plane 2 boundary point against plane 1.
+  void checkPlane2PointAgainstPlane1(double thePlane2U, double thePlane2V, double theTol,
+                                     ExtremaSS::SearchMode theMode) const
+  {
+    const gp_Pnt aPt2 = Value2(thePlane2U, thePlane2V);
+
+    // Project onto plane 1
+    const double aDistToPlane1 = (aPt2.X() - myOrig1X) * myNorm1X
+                               + (aPt2.Y() - myOrig1Y) * myNorm1Y
+                               + (aPt2.Z() - myOrig1Z) * myNorm1Z;
+
+    const gp_Pnt aProjPt(aPt2.X() - aDistToPlane1 * myNorm1X,
+                         aPt2.Y() - aDistToPlane1 * myNorm1Y,
+                         aPt2.Z() - aDistToPlane1 * myNorm1Z);
+
+    // Compute plane 1 UV parameters
+    double aPlane1U = (aProjPt.X() - myOrig1X) * myXDir1X
+                    + (aProjPt.Y() - myOrig1Y) * myXDir1Y
+                    + (aProjPt.Z() - myOrig1Z) * myXDir1Z;
+    double aPlane1V = (aProjPt.X() - myOrig1X) * myYDir1X
+                    + (aProjPt.Y() - myOrig1Y) * myYDir1Y
+                    + (aProjPt.Z() - myOrig1Z) * myYDir1Z;
+
+    const ExtremaSS::Domain4D& aDom = myDomain.value();
+
+    // Clamp to plane 1 domain
+    const double aClampedU = std::clamp(aPlane1U, aDom.Domain1.UMin, aDom.Domain1.UMax);
+    const double aClampedV = std::clamp(aPlane1V, aDom.Domain1.VMin, aDom.Domain1.VMax);
+    const gp_Pnt aPt1 = Value1(aClampedU, aClampedV);
+    const double aSqDist = aPt2.SquareDistance(aPt1);
+
+    // Only minimum makes sense for fixed plane 2 point
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlane2U, thePlane2V, aPt1, aPt2,
+                             aSqDist, true, theTol);
+    }
+  }
+
+public:
   //! @}
 
   //! Returns the first plane geometry.
