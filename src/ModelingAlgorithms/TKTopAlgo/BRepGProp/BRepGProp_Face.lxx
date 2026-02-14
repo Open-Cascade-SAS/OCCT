@@ -21,7 +21,8 @@
 //=======================================================================
 
 inline BRepGProp_Face::BRepGProp_Face(const bool IsUseSpan)
-    : mySReverse(false),
+    : myIsFaceContextReady(false),
+      mySReverse(false),
       myIsUseSpan(IsUseSpan)
 {
 }
@@ -33,7 +34,9 @@ inline BRepGProp_Face::BRepGProp_Face(const bool IsUseSpan)
 //=======================================================================
 
 inline BRepGProp_Face::BRepGProp_Face(const TopoDS_Face& F, const bool IsUseSpan)
-    : myIsUseSpan(IsUseSpan)
+    : myIsFaceContextReady(false),
+      mySReverse(false),
+      myIsUseSpan(IsUseSpan)
 {
   Load(F);
 }
