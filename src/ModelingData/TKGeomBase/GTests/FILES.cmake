@@ -9,6 +9,9 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaCC_Comparison_Test.cxx
   ExtremaCC_Curves_Test.cxx
   ExtremaCC_LineLine_Test.cxx
+  ExtremaCS_CirclePlane_Test.cxx
+  ExtremaCS_CurveSurface_Test.cxx
+  ExtremaCS_LinePlane_Test.cxx
   ExtremaPC_BezierCurve_Test.cxx
   ExtremaPC_BSplineCurve_Test.cxx
   ExtremaPC_Circle_Test.cxx

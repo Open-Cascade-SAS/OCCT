@@ -10,6 +10,7 @@ set(OCCT_TKGeomBase_LIST_OF_PACKAGES
   AppCont
   Extrema
   ExtremaCC
+  ExtremaCS
   ExtremaPC
   ExtremaPS
   ExtremaSS
