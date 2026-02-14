@@ -41,6 +41,26 @@
 
 //=================================================================================================
 
+static bool hasRecordedShape(const occ::handle<ShapeBuild_ReShape>& theContext,
+                             const TopoDS_Shape&                    theShape)
+{
+  if (theContext->IsRecorded(theShape))
+  {
+    return true;
+  }
+
+  for (TopoDS_Iterator anIt(theShape, false); anIt.More(); anIt.Next())
+  {
+    if (hasRecordedShape(theContext, anIt.Value()))
+    {
+      return true;
+    }
+  }
+  return false;
+}
+
+//=================================================================================================
+
 ShapeUpgrade_ShapeDivide::ShapeUpgrade_ShapeDivide()
     : myStatus(0)
 {
@@ -138,7 +158,7 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
         TopLoc_Location nullLoc;
         shape.Location(nullLoc);
       }
-      myShape = myContext->Apply(shape);
+      myShape = hasRecordedShape(myContext, shape) ? myContext->Apply(shape) : shape;
       Perform(false);
       if (myContext->ModeConsiderLocation())
         myResult.Location(L);
@@ -178,7 +198,7 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
     {
       TopoDS_Shape tmpF = exp.Current().Oriented(TopAbs_FORWARD);
       TopoDS_Face  F    = TopoDS::Face(tmpF); // protection against INTERNAL shapes: cts20105a.rle
-      TopoDS_Shape sh   = myContext->Apply(F, TopAbs_SHAPE);
+      TopoDS_Shape sh   = hasRecordedShape(myContext, F) ? myContext->Apply(F, TopAbs_SHAPE) : F;
       for (TopExp_Explorer exp2(sh, TopAbs_FACE); exp2.More(); exp2.Next())
       {
         try
@@ -245,7 +265,7 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
       // smh#8
       TopoDS_Shape tmpW = exp.Current().Oriented(TopAbs_FORWARD);
       TopoDS_Wire  W    = TopoDS::Wire(tmpW); // protection against INTERNAL shapes
-      TopoDS_Shape sh   = myContext->Apply(W, TopAbs_SHAPE);
+      TopoDS_Shape sh   = hasRecordedShape(myContext, W) ? myContext->Apply(W, TopAbs_SHAPE) : W;
       for (TopExp_Explorer exp2(sh, TopAbs_WIRE); exp2.More(); exp2.Next())
       {
         TopoDS_Wire wire = TopoDS::Wire(exp2.Current());
@@ -278,7 +298,7 @@ bool ShapeUpgrade_ShapeDivide::Perform(const bool newContext)
       TopExp::Vertices(E, V2, V1);
       if (V1.IsNull() && V2.IsNull())
         continue; // skl 27.10.2004 for OCC5624
-      TopoDS_Shape sh = myContext->Apply(E, TopAbs_SHAPE);
+      TopoDS_Shape sh = hasRecordedShape(myContext, E) ? myContext->Apply(E, TopAbs_SHAPE) : E;
       for (TopExp_Explorer exp2(sh, TopAbs_EDGE); exp2.More(); exp2.Next())
       {
         TopoDS_Edge edge = TopoDS::Edge(exp2.Current());

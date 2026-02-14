@@ -366,23 +366,27 @@ TopoDS_Shape BRepTools_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_Sh
   if (shape.IsNull())
     return shape;
 
-  // apply direct replacement
-  TopoDS_Shape newsh = Value(shape);
-
-  // if shape removed, return NULL
-  if (newsh.IsNull())
+  TopoDS_Shape newsh = shape;
+  if (IsRecorded(shape))
   {
-    myStatus = EncodeStatus(2); // ShapeExtend_DONE2
-    return newsh;
-  }
+    // apply direct replacement
+    newsh = Value(shape);
 
-  // if shape replaced, apply modifications to the result recursively
-  if ((myConsiderLocation && !newsh.IsPartner(shape))
-      || (!myConsiderLocation && !newsh.IsSame(shape)))
-  {
-    TopoDS_Shape res = Apply(newsh, until);
-    myStatus |= EncodeStatus(1); // ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
-    return res;
+    // if shape removed, return NULL
+    if (newsh.IsNull())
+    {
+      myStatus = EncodeStatus(2); // ShapeExtend_DONE2
+      return newsh;
+    }
+
+    // if shape replaced, apply modifications to the result recursively
+    if ((myConsiderLocation && !newsh.IsPartner(shape))
+        || (!myConsiderLocation && !newsh.IsSame(shape)))
+    {
+      TopoDS_Shape res = Apply(newsh, until);
+      myStatus |= EncodeStatus(1); // ShapeExtend::EncodeStatus ( ShapeExtend_DONE1 );
+      return res;
+    }
   }
 
   TopAbs_ShapeEnum st = shape.ShapeType();
@@ -408,16 +412,18 @@ TopoDS_Shape BRepTools_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_Sh
   */
   BRep_Builder B;
 
-  TopoDS_Shape       result = shape.EmptyCopied();
-  TopAbs_Orientation orien  = shape.Orientation();
-  result.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
-  bool modif     = false;
-  int  locStatus = myStatus;
+  TopoDS_Shape       result;
+  TopAbs_Orientation orien       = shape.Orientation();
+  bool               modif       = false;
+  bool               hasResult   = false;
+  int                locStatus   = myStatus;
+  int                aChildIndex = 0;
 
   // apply recorded modifications to subshapes
   bool isEmpty = true;
   for (TopoDS_Iterator it(shape, false); it.More(); it.Next())
   {
+    ++aChildIndex;
     const TopoDS_Shape& sh = it.Value();
     newsh                  = Apply(sh, until);
     if (newsh != sh)
@@ -429,11 +435,39 @@ TopoDS_Shape BRepTools_ReShape::Apply(const TopoDS_Shape& shape, const TopAbs_Sh
     if (newsh.IsNull())
     {
       locStatus |= EncodeStatus(4); // ShapeExtend::EncodeStatus ( ShapeExtend_DONE4 );
+      if (!modif)
+        continue;
+    }
+    else
+    {
+      locStatus |= EncodeStatus(3); // ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
+      if (!modif)
+        continue;
+    }
+
+    if (!hasResult)
+    {
+      result = shape.EmptyCopied();
+      result.Orientation(TopAbs_FORWARD); // protect against INTERNAL or EXTERNAL shapes
+      hasResult = true;
+
+      // sub-shapes before first modification are unchanged, append them as-is
+      int aPrevIndex = 0;
+      for (TopoDS_Iterator aPrevIt(shape, false); aPrevIt.More() && aPrevIndex < aChildIndex - 1;
+           aPrevIt.Next(), ++aPrevIndex)
+      {
+        B.Add(result, aPrevIt.Value());
+      }
+      if (aPrevIndex > 0)
+        isEmpty = false;
+    }
+
+    if (newsh.IsNull())
+    {
       continue;
     }
     if (isEmpty)
       isEmpty = false;
-    locStatus |= EncodeStatus(3); // ShapeExtend::EncodeStatus ( ShapeExtend_DONE3 );
     if (st == TopAbs_COMPOUND || newsh.ShapeType() == sh.ShapeType())
     { // fix for SAMTECH bug OCC322 about absent internal vertices after sewing.
       B.Add(result, newsh);
