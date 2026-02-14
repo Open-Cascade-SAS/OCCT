@@ -61,77 +61,97 @@ static double AdjustExtr(const Adaptor3d_Surface& S,
 /// @param theVaryMin    start of varying parameter range
 /// @param theVaryMax    end of varying parameter range
 /// @param theIsUFixed   true if u is fixed (edge parallel to v), false if v is fixed
+/// @param theUMin       lower U bound of the current span
+/// @param theUMax       upper U bound of the current span
+/// @param theVMin       lower V bound of the current span
+/// @param theVMax       upper V bound of the current span
 /// @param theBox        bounding box to extend
 static void addSurfEdgeExtrema(BSplSLib_Cache& theCache,
                                const double    theFixedParam,
                                const double    theVaryMin,
                                const double    theVaryMax,
                                const bool      theIsUFixed,
+                               const double    theUMin,
+                               const double    theUMax,
+                               const double    theVMin,
+                               const double    theVMax,
                                Bnd_Box&        theBox)
 {
-  const double aRange = theVaryMax - theVaryMin;
-  if (aRange < Precision::PConfusion())
+  const double aURange = theUMax - theUMin;
+  const double aVRange = theVMax - theVMin;
+  if (aURange < Precision::PConfusion() || aVRange < Precision::PConfusion())
   {
     return;
   }
 
-  // Sample D1 along the edge
-  constexpr int aNbSamples = 16;
-  const double  aDt        = aRange / aNbSamples;
+  const double aUMid       = 0.5 * (theUMin + theUMax);
+  const double aVMid       = 0.5 * (theVMin + theVMax);
+  const double aUInvLength = 2.0 / aURange;
+  const double aVInvLength = 2.0 / aVRange;
 
-  // For each coordinate (X=1, Y=2, Z=3), detect sign changes in the relevant
-  // partial derivative component and bisect to find the root.
-  for (int aCoord = 1; aCoord <= 3; ++aCoord)
+  const double aFixedLocal =
+    theIsUFixed ? (theFixedParam - aUMid) * aUInvLength : (theFixedParam - aVMid) * aVInvLength;
+  const double aVaryLocalMin =
+    theIsUFixed ? (theVaryMin - aVMid) * aVInvLength : (theVaryMin - aUMid) * aUInvLength;
+  const double aVaryLocalMax =
+    theIsUFixed ? (theVaryMax - aVMid) * aVInvLength : (theVaryMax - aUMid) * aUInvLength;
+
+  const double aRangeLocal = aVaryLocalMax - aVaryLocalMin;
+  if (std::abs(aRangeLocal) < Precision::PConfusion())
   {
-    // Sample the derivative at the first point
-    gp_Pnt aPnt;
-    gp_Vec aDU, aDV;
+    return;
+  }
 
-    double aT0 = theVaryMin;
+  // Sample D1Local along the edge
+  constexpr int aNbSamples = 16;
+  const double  aDt        = aRangeLocal / aNbSamples;
+  const double  aTolParam  = std::max(1.0e-15, 1.0e-12 * std::abs(aRangeLocal));
+
+  gp_Pnt aPnt;
+  gp_Vec aDU, aDV;
+
+  auto evalDerivAt = [&](const double theLocalVar, double theDeriv[3]) {
     if (theIsUFixed)
     {
-      theCache.D1(theFixedParam, aT0, aPnt, aDU, aDV);
+      theCache.D1Local(aFixedLocal, theLocalVar, aPnt, aDU, aDV);
+      theDeriv[0] = aDV.X();
+      theDeriv[1] = aDV.Y();
+      theDeriv[2] = aDV.Z();
     }
     else
     {
-      theCache.D1(aT0, theFixedParam, aPnt, aDU, aDV);
+      theCache.D1Local(theLocalVar, aFixedLocal, aPnt, aDU, aDV);
+      theDeriv[0] = aDU.X();
+      theDeriv[1] = aDU.Y();
+      theDeriv[2] = aDU.Z();
     }
-    // The relevant derivative: if u is fixed, extrema along v use dS/dv;
-    // if v is fixed, extrema along u use dS/du.
-    double aPrevDeriv = theIsUFixed ? aDV.Coord(aCoord) : aDU.Coord(aCoord);
+  };
 
-    for (int i = 1; i <= aNbSamples; ++i)
+  double aPrevDeriv[3];
+  double aCurrDeriv[3];
+  evalDerivAt(aVaryLocalMin, aPrevDeriv);
+
+  for (int i = 1; i <= aNbSamples; ++i)
+  {
+    const double aLocalVar = aVaryLocalMin + i * aDt;
+    evalDerivAt(aLocalVar, aCurrDeriv);
+
+    bool hasNearZero = false;
+    for (int aCoord = 0; aCoord < 3; ++aCoord)
     {
-      const double aT1 = theVaryMin + i * aDt;
-      if (theIsUFixed)
-      {
-        theCache.D1(theFixedParam, aT1, aPnt, aDU, aDV);
-      }
-      else
-      {
-        theCache.D1(aT1, theFixedParam, aPnt, aDU, aDV);
-      }
-      const double aCurrDeriv = theIsUFixed ? aDV.Coord(aCoord) : aDU.Coord(aCoord);
-
-      if (aPrevDeriv * aCurrDeriv < 0.0)
+      if (aPrevDeriv[aCoord] * aCurrDeriv[aCoord] < 0.0)
       {
         // Sign change detected - bisect
-        double aTLow  = aT1 - aDt;
-        double aTHigh = aT1;
-        double aDLow  = aPrevDeriv;
+        double aTLow  = aLocalVar - aDt;
+        double aTHigh = aLocalVar;
+        double aDLow  = aPrevDeriv[aCoord];
 
         for (int anIter = 0; anIter < THE_MAX_BISECTION_ITER; ++anIter)
         {
           const double aTMid = (aTLow + aTHigh) * 0.5;
-          if (theIsUFixed)
-          {
-            theCache.D1(theFixedParam, aTMid, aPnt, aDU, aDV);
-          }
-          else
-          {
-            theCache.D1(aTMid, theFixedParam, aPnt, aDU, aDV);
-          }
-          const double aDMid = theIsUFixed ? aDV.Coord(aCoord) : aDU.Coord(aCoord);
+          double       aDerivMid[3];
+          evalDerivAt(aTMid, aDerivMid);
+          const double aDMid = aDerivMid[aCoord];
 
           if (aDLow * aDMid <= 0.0)
           {
@@ -142,36 +162,48 @@ static void addSurfEdgeExtrema(BSplSLib_Cache& theCache,
             aTLow = aTMid;
             aDLow = aDMid;
           }
+
+          if (aTHigh - aTLow <= aTolParam)
+          {
+            break;
+          }
         }
 
         // Evaluate D0 at root and add to box
         const double aTRoot = (aTLow + aTHigh) * 0.5;
         if (theIsUFixed)
         {
-          theCache.D0(theFixedParam, aTRoot, aPnt);
+          theCache.D0Local(aFixedLocal, aTRoot, aPnt);
         }
         else
         {
-          theCache.D0(aTRoot, theFixedParam, aPnt);
+          theCache.D0Local(aTRoot, aFixedLocal, aPnt);
         }
         theBox.Add(aPnt);
       }
-      else if (std::abs(aCurrDeriv) < Precision::Confusion())
+      else if (std::abs(aCurrDeriv[aCoord]) < Precision::Confusion())
       {
-        // Derivative is near zero at this sample - potential extremum
-        if (theIsUFixed)
-        {
-          theCache.D0(theFixedParam, aT1, aPnt);
-        }
-        else
-        {
-          theCache.D0(aT1, theFixedParam, aPnt);
-        }
-        theBox.Add(aPnt);
+        hasNearZero = true;
       }
-
-      aPrevDeriv = aCurrDeriv;
     }
+
+    if (hasNearZero)
+    {
+      // Derivative is near zero at this sample for at least one coordinate.
+      if (theIsUFixed)
+      {
+        theCache.D0Local(aFixedLocal, aLocalVar, aPnt);
+      }
+      else
+      {
+        theCache.D0Local(aLocalVar, aFixedLocal, aPnt);
+      }
+      theBox.Add(aPnt);
+    }
+
+    aPrevDeriv[0] = aCurrDeriv[0];
+    aPrevDeriv[1] = aCurrDeriv[1];
+    aPrevDeriv[2] = aCurrDeriv[2];
   }
 }
 
@@ -201,8 +233,9 @@ static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
   // Sample D1 on a coarse grid
   constexpr int aNbU = 8;
   constexpr int aNbV = 8;
-  const double  aDU  = aURng / aNbU;
-  const double  aDV  = aVRng / aNbV;
+  const double  aDU  = 2.0 / aNbU;
+  const double  aDV  = 2.0 / aNbV;
+  const double  aTol = 1.0e-12;
 
   // Store derivative components at grid nodes
   // For each coordinate c (0=X,1=Y,2=Z): dS_c/du and dS_c/dv
@@ -211,20 +244,21 @@ static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
 
   for (int i = 0; i <= aNbU; ++i)
   {
-    const double aU = theUMin + i * aDU;
+    const double aU = -1.0 + i * aDU;
     for (int j = 0; j <= aNbV; ++j)
     {
-      const double aV = theVMin + j * aDV;
+      const double aV = -1.0 + j * aDV;
       gp_Pnt       aPnt;
       gp_Vec       aTanU, aTanV;
-      theCache.D1(aU, aV, aPnt, aTanU, aTanV);
+      theCache.D1Local(aU, aV, aPnt, aTanU, aTanV);
 
-      const int anIdx = i * (aNbV + 1) + j;
-      for (int c = 0; c < 3; ++c)
-      {
-        aDUArr[c][anIdx] = aTanU.Coord(c + 1);
-        aDVArr[c][anIdx] = aTanV.Coord(c + 1);
-      }
+      const int anIdx  = i * (aNbV + 1) + j;
+      aDUArr[0][anIdx] = aTanU.X();
+      aDUArr[1][anIdx] = aTanU.Y();
+      aDUArr[2][anIdx] = aTanU.Z();
+      aDVArr[0][anIdx] = aTanV.X();
+      aDVArr[1][anIdx] = aTanV.Y();
+      aDVArr[2][anIdx] = aTanV.Z();
     }
   }
 
@@ -262,10 +296,10 @@ static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
 
         // Both partial derivatives change sign in this cell.
         // Refine with alternating 1D bisection in u and v.
-        double aULow  = theUMin + i * aDU;
-        double aUHigh = theUMin + (i + 1) * aDU;
-        double aVLow  = theVMin + j * aDV;
-        double aVHigh = theVMin + (j + 1) * aDV;
+        double aULow  = -1.0 + i * aDU;
+        double aUHigh = -1.0 + (i + 1) * aDU;
+        double aVLow  = -1.0 + j * aDV;
+        double aVHigh = -1.0 + (j + 1) * aDV;
 
         double aUMid = (aULow + aUHigh) * 0.5;
         double aVMid = (aVLow + aVHigh) * 0.5;
@@ -274,16 +308,19 @@ static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
         {
           gp_Pnt aPnt;
           gp_Vec aTanU, aTanV;
-          theCache.D1(aUMid, aVMid, aPnt, aTanU, aTanV);
+          theCache.D1Local(aUMid, aVMid, aPnt, aTanU, aTanV);
+          const double aDMidU = (c == 0 ? aTanU.X() : (c == 1 ? aTanU.Y() : aTanU.Z()));
+          const double aDMidV = (c == 0 ? aTanV.X() : (c == 1 ? aTanV.Y() : aTanV.Z()));
 
           if (anIter % 2 == 0)
           {
             // Bisect in u: narrow the u interval based on dS_c/du sign
             gp_Pnt aPntLow;
             gp_Vec aTanULow, aTanVLow;
-            theCache.D1(aULow, aVMid, aPntLow, aTanULow, aTanVLow);
+            theCache.D1Local(aULow, aVMid, aPntLow, aTanULow, aTanVLow);
+            const double aDLowU = (c == 0 ? aTanULow.X() : (c == 1 ? aTanULow.Y() : aTanULow.Z()));
 
-            if (aTanULow.Coord(c + 1) * aTanU.Coord(c + 1) <= 0.0)
+            if (aDLowU * aDMidU <= 0.0)
             {
               aUHigh = aUMid;
             }
@@ -298,9 +335,10 @@ static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
             // Bisect in v: narrow the v interval based on dS_c/dv sign
             gp_Pnt aPntLow;
             gp_Vec aTanULow, aTanVLow;
-            theCache.D1(aUMid, aVLow, aPntLow, aTanULow, aTanVLow);
+            theCache.D1Local(aUMid, aVLow, aPntLow, aTanULow, aTanVLow);
+            const double aDLowV = (c == 0 ? aTanVLow.X() : (c == 1 ? aTanVLow.Y() : aTanVLow.Z()));
 
-            if (aTanVLow.Coord(c + 1) * aTanV.Coord(c + 1) <= 0.0)
+            if (aDLowV * aDMidV <= 0.0)
             {
               aVHigh = aVMid;
             }
@@ -310,11 +348,16 @@ static void addSurfInteriorExtrema(BSplSLib_Cache& theCache,
             }
             aVMid = (aVLow + aVHigh) * 0.5;
           }
+
+          if (aUHigh - aULow <= aTol && aVHigh - aVLow <= aTol)
+          {
+            break;
+          }
         }
 
         // Evaluate D0 at the converged point and add to box
         gp_Pnt aResult;
-        theCache.D0(aUMid, aVMid, aResult);
+        theCache.D0Local(aUMid, aVMid, aResult);
         theBox.Add(aResult);
       }
     }
@@ -386,13 +429,13 @@ static void addBSplineSurfBBox3d(const occ::handle<Geom_BSplineSurface>& theSurf
 
       // Edge extrema: 4 edges of the span
       // Bottom edge: v = aVMin, u varies
-      addSurfEdgeExtrema(*aCache, aVMin, aUMin, aUMax, false, theBox);
+      addSurfEdgeExtrema(*aCache, aVMin, aUMin, aUMax, false, aUMin, aUMax, aVMin, aVMax, theBox);
       // Top edge: v = aVMax, u varies
-      addSurfEdgeExtrema(*aCache, aVMax, aUMin, aUMax, false, theBox);
+      addSurfEdgeExtrema(*aCache, aVMax, aUMin, aUMax, false, aUMin, aUMax, aVMin, aVMax, theBox);
       // Left edge: u = aUMin, v varies
-      addSurfEdgeExtrema(*aCache, aUMin, aVMin, aVMax, true, theBox);
+      addSurfEdgeExtrema(*aCache, aUMin, aVMin, aVMax, true, aUMin, aUMax, aVMin, aVMax, theBox);
       // Right edge: u = aUMax, v varies
-      addSurfEdgeExtrema(*aCache, aUMax, aVMin, aVMax, true, theBox);
+      addSurfEdgeExtrema(*aCache, aUMax, aVMin, aVMax, true, aUMin, aUMax, aVMin, aVMax, theBox);
 
       // Interior extrema
       addSurfInteriorExtrema(*aCache, aUMin, aUMax, aVMin, aVMax, theBox);
@@ -452,10 +495,10 @@ static void addBezierSurfBBox3d(const occ::handle<Geom_BezierSurface>& theSurf,
   aCache->BuildCache(aUMin, aVMin, aUFlatKnots, aVFlatKnots, aPoles, aWeights);
 
   // Edge extrema: 4 edges
-  addSurfEdgeExtrema(*aCache, aVMin, aUMin, aUMax, false, theBox);
-  addSurfEdgeExtrema(*aCache, aVMax, aUMin, aUMax, false, theBox);
-  addSurfEdgeExtrema(*aCache, aUMin, aVMin, aVMax, true, theBox);
-  addSurfEdgeExtrema(*aCache, aUMax, aVMin, aVMax, true, theBox);
+  addSurfEdgeExtrema(*aCache, aVMin, aUMin, aUMax, false, aUMin, aUMax, aVMin, aVMax, theBox);
+  addSurfEdgeExtrema(*aCache, aVMax, aUMin, aUMax, false, aUMin, aUMax, aVMin, aVMax, theBox);
+  addSurfEdgeExtrema(*aCache, aUMin, aVMin, aVMax, true, aUMin, aUMax, aVMin, aVMax, theBox);
+  addSurfEdgeExtrema(*aCache, aUMax, aVMin, aVMax, true, aUMin, aUMax, aVMin, aVMax, theBox);
 
   // Interior extrema
   addSurfInteriorExtrema(*aCache, aUMin, aUMax, aVMin, aVMax, theBox);
