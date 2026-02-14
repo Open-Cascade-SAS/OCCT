@@ -20,6 +20,87 @@
 namespace MathUtils
 {
 
+//! Squared function tolerance for Newton iterations (matching math_FunctionSetRoot Eps).
+constexpr double THE_NEWTON_FTOL_SQ = 1.0e-32;
+
+//! Relative parametric step tolerance factor for Newton iterations.
+constexpr double THE_NEWTON_STEP_TOL_FACTOR = 1.0e-16;
+
+//! Default maximum iterations for Newton solvers.
+constexpr size_t THE_NEWTON_MAX_ITER = 100;
+
+//==================================================================================================
+//! @name Newton 2D Solver Constants
+//! Constants for 2D Newton-Raphson solver (MathSys_Newton2D).
+//==================================================================================================
+
+//! Determinant threshold below which 2x2 Jacobian matrix is considered singular.
+//! When |det(J)| < threshold, falls back to SVD or gradient descent.
+constexpr double THE_NEWTON2D_SINGULAR_DET = 1.0e-25;
+
+//! Squared gradient threshold below which point is considered a critical point.
+//! When |grad|^2 < threshold, Newton iteration is at a stationary point.
+constexpr double THE_NEWTON2D_CRITICAL_GRAD_SQ = 1.0e-60;
+
+//! Maximum step size as fraction of domain size for bounded Newton iterations.
+constexpr double THE_NEWTON2D_MAX_STEP_RATIO = 0.5;
+
+//! Domain extension factor for soft boundary handling.
+//! Solutions slightly outside domain (by this fraction) are allowed if converged.
+//! Reduced to 1e-4 to closely match old algorithm behavior.
+constexpr double THE_NEWTON2D_DOMAIN_EXT = 1.0e-4;
+
+//! Stagnation progress ratio - improvement required each iteration to avoid stagnation.
+//! Value of 0.999 means at least 0.1% improvement required.
+constexpr double THE_NEWTON2D_STAGNATION_RATIO = 0.999;
+
+//! Number of iterations without progress before declaring stagnation.
+constexpr int THE_NEWTON2D_STAGNATION_COUNT = 3;
+
+//! Maximum line search backtracking iterations.
+constexpr int THE_NEWTON2D_LINE_SEARCH_MAX = 8;
+
+//! Relative step threshold below which line search is skipped.
+//! If step^2 / domain^2 < threshold, Newton is converging well.
+constexpr double THE_NEWTON2D_SKIP_LINESEARCH_SQ = 0.01;
+
+//! Tolerance relaxation factor for accepting stagnated solutions.
+//! Stagnated solution accepted if |F| < tolerance * factor.
+constexpr double THE_NEWTON2D_STAGNATION_RELAX = 10.0;
+
+//! Function increase threshold triggering line search backtracking.
+//! If f(new) > f(old) * threshold, backtracking is triggered.
+constexpr double THE_NEWTON2D_BACKTRACK_TRIGGER = 1.5;
+
+//! Backtracking acceptance ratio for line search.
+//! Step accepted if f(new) < f(old) * ratio.
+constexpr double THE_NEWTON2D_BACKTRACK_ACCEPT = 1.2;
+
+//! Maximum relaxation factor for solutions at max iterations.
+constexpr double THE_NEWTON2D_MAXITER_RELAX = 10.0;
+
+//==================================================================================================
+//! @name Hessian Classification Constants
+//! Constants for extremum classification using second derivatives.
+//==================================================================================================
+
+//! Relative tolerance for Hessian degeneracy detection.
+//! If |det(H)| < threshold * |H_ii| * |H_jj|, Hessian is considered degenerate.
+constexpr double THE_HESSIAN_DEGENERACY_REL = 1.0e-8;
+
+//! Absolute tolerance for Hessian degeneracy detection.
+//! Minimum threshold for determinant comparison.
+constexpr double THE_HESSIAN_DEGENERACY_ABS = 1.0e-20;
+
+//==================================================================================================
+//! @name Line Search Constants
+//! Constants for line search acceptance conditions.
+//==================================================================================================
+
+//! Armijo condition constant (sufficient decrease).
+//! Step accepted if: f(x + alpha*d) <= f(x) + c1 * alpha * grad_f . d
+constexpr double THE_ARMIJO_C1 = 1.0e-4;
+
 //! Configuration for iterative solvers.
 //! Provides common settings for convergence criteria and iteration limits.
 struct Config

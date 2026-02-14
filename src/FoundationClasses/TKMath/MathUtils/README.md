@@ -16,12 +16,13 @@ The MathUtils package provides foundational utilities used by all other modern m
 
 ### Types and Configuration
 - `MathUtils_Types.hxx` - Common result types and status enums
-- `MathUtils_Config.hxx` - Solver configuration structures
+- `MathUtils_Config.hxx` - Solver configuration structures and shared Newton/line-search constants
 
 ### Core Utilities
 - `MathUtils_Core.hxx` - Mathematical constants and helper functions
 - `MathUtils_Convergence.hxx` - Convergence testing utilities
 - `MathUtils_Poly.hxx` - Polynomial evaluation and manipulation
+- `MathUtils_Domain.hxx` - 1D/2D parameter domain helpers (contains/clamp/normalize/equality checks)
 - `MathUtils_Bracket.hxx` - Root and minimum bracketing algorithms
 - `MathUtils_Gauss.hxx` - Gauss-Legendre quadrature points and weights
 - `MathUtils_Deriv.hxx` - Numerical differentiation utilities
