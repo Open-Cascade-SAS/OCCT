@@ -45,6 +45,7 @@ set(OCCT_ExtremaCS_FILES
   ExtremaCS_CircleSphere.hxx
   ExtremaCS_CircleCylinder.hxx
   ExtremaCS_EllipsePlane.hxx
+  ExtremaCS_EllipseSphere.hxx
 
   # Numerical template for grid-based pairs
   ExtremaCS_Numerical.hxx
