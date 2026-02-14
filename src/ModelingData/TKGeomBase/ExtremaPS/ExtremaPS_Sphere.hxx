@@ -186,7 +186,7 @@ public:
     const double aCosV = std::cos(aV);
     double       aU    = 0.0;
 
-    const bool aIsAtPole = (std::abs(aCosV) < theTol);
+    const bool aIsAtPole = (std::abs(aCosV) < Precision::PConfusion());
     if (!aIsAtPole)
     {
       const double aInvCosV = 1.0 / aCosV;
@@ -342,7 +342,7 @@ public:
     double aUOpp = aU + M_PI;
     ExtremaPS::NormalizeU(aUOpp, theDomain);
     const double aVOpp        = -aV;
-    const bool   aIsOppAtPole = (std::abs(std::abs(aVOpp) - aHalfPi) < theTol);
+    const bool   aIsOppAtPole = (std::abs(std::abs(aVOpp) - aHalfPi) < Precision::PConfusion());
 
     // Add maximum extremum (farthest point - antipodal)
     if (theMode != ExtremaPS::SearchMode::Min)
