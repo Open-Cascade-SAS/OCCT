@@ -84,7 +84,7 @@ protected:
     myAdaptor.Load(myPlane);
   }
 
-  Handle(Geom_Plane) myPlane;
+  occ::handle<Geom_Plane> myPlane;
   GeomAdaptor_Surface myAdaptor;
 };
 
@@ -130,7 +130,7 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointAbove)
 {
   // Create tilted plane (45 degrees around X axis)
   gp_Dir aNorm(0.0, -std::sin(M_PI / 4), std::cos(M_PI / 4));
-  Handle(Geom_Plane) aTiltedPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), aNorm)));
+  occ::handle<Geom_Plane> aTiltedPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), aNorm)));
   GeomAdaptor_Surface anAdaptor(aTiltedPlane);
 
   gp_Pnt aP(5.0, 5.0, 5.0);
@@ -140,7 +140,7 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointAbove)
 TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointBelow)
 {
   gp_Dir aNorm(0.0, -std::sin(M_PI / 4), std::cos(M_PI / 4));
-  Handle(Geom_Plane) aTiltedPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), aNorm)));
+  occ::handle<Geom_Plane> aTiltedPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(0, 0, 0), aNorm)));
   GeomAdaptor_Surface anAdaptor(aTiltedPlane);
 
   gp_Pnt aP(5.0, -5.0, -5.0);
@@ -153,7 +153,7 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TiltedPlane_PointBelow)
 
 TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointNear)
 {
-  Handle(Geom_Plane) aTransPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
+  occ::handle<Geom_Plane> aTransPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
   GeomAdaptor_Surface anAdaptor(aTransPlane);
 
   gp_Pnt aP(105.0, 205.0, 60.0);
@@ -162,7 +162,7 @@ TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointNear)
 
 TEST_F(ExtremaPS_PlaneComparisonTest, TranslatedPlane_PointFar)
 {
-  Handle(Geom_Plane) aTransPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
+  occ::handle<Geom_Plane> aTransPlane = new Geom_Plane(gp_Pln(gp_Ax3(gp_Pnt(100, 200, 50), gp_Dir(0, 0, 1))));
   GeomAdaptor_Surface anAdaptor(aTransPlane);
 
   gp_Pnt aP(500.0, 600.0, 150.0);

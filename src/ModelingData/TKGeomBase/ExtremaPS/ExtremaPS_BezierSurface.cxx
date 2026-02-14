@@ -17,7 +17,7 @@
 
 //==================================================================================================
 
-ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const Handle(Geom_BezierSurface)& theSurface)
+ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSurface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface),
       myDomain{0.0, 1.0, 0.0, 1.0}  // Bezier surfaces always have domain [0,1]x[0,1]
@@ -34,7 +34,7 @@ ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const Handle(Geom_BezierSurface
 
 //==================================================================================================
 
-ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const Handle(Geom_BezierSurface)& theSurface,
+ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSurface>& theSurface,
                                                  const ExtremaPS::Domain2D&        theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),

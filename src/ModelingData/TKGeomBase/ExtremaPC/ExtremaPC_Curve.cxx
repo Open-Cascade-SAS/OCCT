@@ -133,11 +133,11 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin
 
 //==================================================================================================
 
-void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&                 theCurve,
+void ExtremaPC_Curve::initFromGeomCurve(const occ::handle<Geom_Curve>&                 theCurve,
                                          const std::optional<ExtremaPC::Domain1D>& theDomain)
 {
   // Try specific curve types for direct initialization
-  Handle(Geom_Line) aLine = Handle(Geom_Line)::DownCast(theCurve);
+  occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(theCurve);
   if (!aLine.IsNull())
   {
     if (theDomain.has_value())
@@ -151,7 +151,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
     return;
   }
 
-  Handle(Geom_Circle) aCircle = Handle(Geom_Circle)::DownCast(theCurve);
+  occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(theCurve);
   if (!aCircle.IsNull())
   {
     if (theDomain.has_value())
@@ -165,7 +165,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
     return;
   }
 
-  Handle(Geom_Ellipse) anEllipse = Handle(Geom_Ellipse)::DownCast(theCurve);
+  occ::handle<Geom_Ellipse> anEllipse = occ::down_cast<Geom_Ellipse>(theCurve);
   if (!anEllipse.IsNull())
   {
     if (theDomain.has_value())
@@ -179,7 +179,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
     return;
   }
 
-  Handle(Geom_Hyperbola) aHyperbola = Handle(Geom_Hyperbola)::DownCast(theCurve);
+  occ::handle<Geom_Hyperbola> aHyperbola = occ::down_cast<Geom_Hyperbola>(theCurve);
   if (!aHyperbola.IsNull())
   {
     if (theDomain.has_value())
@@ -193,7 +193,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
     return;
   }
 
-  Handle(Geom_Parabola) aParabola = Handle(Geom_Parabola)::DownCast(theCurve);
+  occ::handle<Geom_Parabola> aParabola = occ::down_cast<Geom_Parabola>(theCurve);
   if (!aParabola.IsNull())
   {
     if (theDomain.has_value())
@@ -207,7 +207,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
     return;
   }
 
-  Handle(Geom_BezierCurve) aBezier = Handle(Geom_BezierCurve)::DownCast(theCurve);
+  occ::handle<Geom_BezierCurve> aBezier = occ::down_cast<Geom_BezierCurve>(theCurve);
   if (!aBezier.IsNull())
   {
     if (theDomain.has_value())
@@ -221,7 +221,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
     return;
   }
 
-  Handle(Geom_BSplineCurve) aBSpline = Handle(Geom_BSplineCurve)::DownCast(theCurve);
+  occ::handle<Geom_BSplineCurve> aBSpline = occ::down_cast<Geom_BSplineCurve>(theCurve);
   if (!aBSpline.IsNull())
   {
     if (theDomain.has_value())
@@ -273,7 +273,7 @@ void ExtremaPC_Curve::initFromGeomCurve(const Handle(Geom_Curve)&               
 
 //==================================================================================================
 
-ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve)
+ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve)
     : myEvaluator(std::monostate{})
 {
   if (theCurve.IsNull())
@@ -282,7 +282,7 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve)
   }
 
   // Check for trimmed curve - if so, use bounds
-  Handle(Geom_TrimmedCurve) aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
+  occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(theCurve);
   if (!aTrimmed.IsNull())
   {
     ExtremaPC::Domain1D aDomain(aTrimmed->FirstParameter(), aTrimmed->LastParameter());
@@ -296,7 +296,7 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve)
 
 //==================================================================================================
 
-ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theUMin, double theUMax)
+ExtremaPC_Curve::ExtremaPC_Curve(const occ::handle<Geom_Curve>& theCurve, double theUMin, double theUMax)
     : myEvaluator(std::monostate{})
 {
   if (theCurve.IsNull())
@@ -305,12 +305,12 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Handle(Geom_Curve)& theCurve, double theU
   }
 
   // Get base curve and effective bounds
-  Handle(Geom_Curve) aBaseCurve     = theCurve;
+  occ::handle<Geom_Curve> aBaseCurve     = theCurve;
   double             aEffectiveUMin = theUMin;
   double             aEffectiveUMax = theUMax;
 
   // For trimmed curve, intersect input bounds with trimmed bounds
-  Handle(Geom_TrimmedCurve) aTrimmed = Handle(Geom_TrimmedCurve)::DownCast(theCurve);
+  occ::handle<Geom_TrimmedCurve> aTrimmed = occ::down_cast<Geom_TrimmedCurve>(theCurve);
   if (!aTrimmed.IsNull())
   {
     aBaseCurve = aTrimmed->BasisCurve();

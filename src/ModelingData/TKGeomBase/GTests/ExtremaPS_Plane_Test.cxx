@@ -361,7 +361,7 @@ TEST_F(ExtremaPS_PlaneTest, SearchMode_MinMax)
 
 TEST_F(ExtremaPS_PlaneTest, Aggregator_Basic)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane, -100.0, 100.0, -100.0, 100.0);
 
   ExtremaPS_Surface anExtPS(anAdaptor);
@@ -379,7 +379,7 @@ TEST_F(ExtremaPS_PlaneTest, Aggregator_Basic)
 
 TEST_F(ExtremaPS_PlaneTest, Aggregator_TiltedPlane)
 {
-  Handle(Geom_Plane) aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
   GeomAdaptor_Surface anAdaptor(aGeomPlane, -100.0, 100.0, -100.0, 100.0);
 
   ExtremaPS_Surface anExtPS(anAdaptor);

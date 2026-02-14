@@ -21,7 +21,7 @@ namespace
 //! Build knot-aware parameter array (like Extrema_GenExtPS::fillParams).
 //! Ensures samples are placed at knot boundaries plus intermediate points.
 //! @return math_Vector with 1-based indexing
-math_Vector BuildKnotAwareParams(const TColStd_Array1OfReal& theKnots,
+math_Vector BuildKnotAwareParams(const NCollection_Array1<double>& theKnots,
                                   int                         theDegree,
                                   double                      theParMin,
                                   double                      theParMax)
@@ -102,7 +102,7 @@ math_Vector BuildKnotAwareParams(const TColStd_Array1OfReal& theKnots,
 
 //==================================================================================================
 
-ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface)
+ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface)
 {
@@ -126,7 +126,7 @@ ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurf
 
 //==================================================================================================
 
-ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const Handle(Geom_BSplineSurface)& theSurface,
+ExtremaPS_BSplineSurface::ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface,
                                                    const ExtremaPS::Domain2D&         theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),

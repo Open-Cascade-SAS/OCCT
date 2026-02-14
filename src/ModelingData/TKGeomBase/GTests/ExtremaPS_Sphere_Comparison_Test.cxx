@@ -85,7 +85,7 @@ protected:
     myAdaptor.Load(mySphere);
   }
 
-  Handle(Geom_SphericalSurface) mySphere;
+  occ::handle<Geom_SphericalSurface> mySphere;
   GeomAdaptor_Surface           myAdaptor;
 };
 
@@ -136,7 +136,7 @@ TEST_F(ExtremaPS_SphereComparisonTest, PointDiagonal)
 TEST_F(ExtremaPS_SphereComparisonTest, LargeRadius_PointOutside)
 {
   gp_Sphere aSph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
-  Handle(Geom_SphericalSurface) aSurf = new Geom_SphericalSurface(aSph);
+  occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
   GeomAdaptor_Surface           anAdaptor(aSurf);
 
   gp_Pnt aP(100.0, 0.0, 0.0);
@@ -146,7 +146,7 @@ TEST_F(ExtremaPS_SphereComparisonTest, LargeRadius_PointOutside)
 TEST_F(ExtremaPS_SphereComparisonTest, SmallRadius_PointNear)
 {
   gp_Sphere aSph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
-  Handle(Geom_SphericalSurface) aSurf = new Geom_SphericalSurface(aSph);
+  occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
   GeomAdaptor_Surface           anAdaptor(aSurf);
 
   gp_Pnt aP(1.0, 0.0, 0.0);
@@ -160,7 +160,7 @@ TEST_F(ExtremaPS_SphereComparisonTest, SmallRadius_PointNear)
 TEST_F(ExtremaPS_SphereComparisonTest, TranslatedSphere_PointNear)
 {
   gp_Sphere aSph(gp_Ax3(gp_Pnt(10, 20, 30), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_SphericalSurface) aSurf = new Geom_SphericalSurface(aSph);
+  occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
   GeomAdaptor_Surface           anAdaptor(aSurf);
 
   gp_Pnt aP(20.0, 20.0, 30.0);
@@ -170,7 +170,7 @@ TEST_F(ExtremaPS_SphereComparisonTest, TranslatedSphere_PointNear)
 TEST_F(ExtremaPS_SphereComparisonTest, TranslatedSphere_PointInside)
 {
   gp_Sphere aSph(gp_Ax3(gp_Pnt(10, 20, 30), gp_Dir(0, 0, 1)), 5.0);
-  Handle(Geom_SphericalSurface) aSurf = new Geom_SphericalSurface(aSph);
+  occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
   GeomAdaptor_Surface           anAdaptor(aSurf);
 
   gp_Pnt aP(12.0, 21.0, 31.0);

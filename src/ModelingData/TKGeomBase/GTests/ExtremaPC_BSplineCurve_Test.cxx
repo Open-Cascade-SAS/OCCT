@@ -18,9 +18,6 @@
 
 #include <Geom_BSplineCurve.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 #include <gp_Pnt.hxx>
 
 #include <chrono>
@@ -35,19 +32,19 @@ protected:
   static constexpr double THE_TOL = 1.0e-6;
 
   //! Create a simple cubic BSpline curve (arc-like).
-  Handle(Geom_BSplineCurve) createCubicBSpline() const
+  occ::handle<Geom_BSplineCurve> createCubicBSpline() const
   {
-    TColgp_Array1OfPnt aPoles(1, 4);
+    NCollection_Array1<gp_Pnt> aPoles(1, 4);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(1, 2, 0);
     aPoles(3) = gp_Pnt(2, 2, 0);
     aPoles(4) = gp_Pnt(3, 0, 0);
 
-    TColStd_Array1OfReal aKnots(1, 2);
+    NCollection_Array1<double> aKnots(1, 2);
     aKnots(1) = 0.0;
     aKnots(2) = 1.0;
 
-    TColStd_Array1OfInteger aMults(1, 2);
+    NCollection_Array1<int> aMults(1, 2);
     aMults(1) = 4;
     aMults(2) = 4;
 
@@ -55,17 +52,17 @@ protected:
   }
 
   //! Create a linear BSpline (degree 1).
-  Handle(Geom_BSplineCurve) createLinearBSpline() const
+  occ::handle<Geom_BSplineCurve> createLinearBSpline() const
   {
-    TColgp_Array1OfPnt aPoles(1, 2);
+    NCollection_Array1<gp_Pnt> aPoles(1, 2);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(10, 0, 0);
 
-    TColStd_Array1OfReal aKnots(1, 2);
+    NCollection_Array1<double> aKnots(1, 2);
     aKnots(1) = 0.0;
     aKnots(2) = 1.0;
 
-    TColStd_Array1OfInteger aMults(1, 2);
+    NCollection_Array1<int> aMults(1, 2);
     aMults(1) = 2;
     aMults(2) = 2;
 
@@ -73,18 +70,18 @@ protected:
   }
 
   //! Create a quadratic BSpline.
-  Handle(Geom_BSplineCurve) createQuadraticBSpline() const
+  occ::handle<Geom_BSplineCurve> createQuadraticBSpline() const
   {
-    TColgp_Array1OfPnt aPoles(1, 3);
+    NCollection_Array1<gp_Pnt> aPoles(1, 3);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(5, 10, 0);
     aPoles(3) = gp_Pnt(10, 0, 0);
 
-    TColStd_Array1OfReal aKnots(1, 2);
+    NCollection_Array1<double> aKnots(1, 2);
     aKnots(1) = 0.0;
     aKnots(2) = 1.0;
 
-    TColStd_Array1OfInteger aMults(1, 2);
+    NCollection_Array1<int> aMults(1, 2);
     aMults(1) = 3;
     aMults(2) = 3;
 
@@ -93,22 +90,22 @@ protected:
 
   //! Create a BSpline with multiple knots (more spans).
   //! For 5 poles and degree 2: sum of mults = 5 + 2 + 1 = 8
-  Handle(Geom_BSplineCurve) createMultiSpanBSpline() const
+  occ::handle<Geom_BSplineCurve> createMultiSpanBSpline() const
   {
-    TColgp_Array1OfPnt aPoles(1, 5);
+    NCollection_Array1<gp_Pnt> aPoles(1, 5);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(1, 2, 0);
     aPoles(3) = gp_Pnt(2, 0, 0);
     aPoles(4) = gp_Pnt(3, 2, 0);
     aPoles(5) = gp_Pnt(4, 0, 0);
 
-    TColStd_Array1OfReal aKnots(1, 4);
+    NCollection_Array1<double> aKnots(1, 4);
     aKnots(1) = 0.0;
     aKnots(2) = 0.33;
     aKnots(3) = 0.67;
     aKnots(4) = 1.0;
 
-    TColStd_Array1OfInteger aMults(1, 4);
+    NCollection_Array1<int> aMults(1, 4);
     aMults(1) = 3;  // sum = 3 + 1 + 1 + 3 = 8 ✓
     aMults(2) = 1;
     aMults(3) = 1;
@@ -118,19 +115,19 @@ protected:
   }
 
   //! Create a 3D BSpline (not in XY plane).
-  Handle(Geom_BSplineCurve) create3DBSpline() const
+  occ::handle<Geom_BSplineCurve> create3DBSpline() const
   {
-    TColgp_Array1OfPnt aPoles(1, 4);
+    NCollection_Array1<gp_Pnt> aPoles(1, 4);
     aPoles(1) = gp_Pnt(0, 0, 0);
     aPoles(2) = gp_Pnt(1, 1, 1);
     aPoles(3) = gp_Pnt(2, 1, 2);
     aPoles(4) = gp_Pnt(3, 0, 3);
 
-    TColStd_Array1OfReal aKnots(1, 2);
+    NCollection_Array1<double> aKnots(1, 2);
     aKnots(1) = 0.0;
     aKnots(2) = 1.0;
 
-    TColStd_Array1OfInteger aMults(1, 2);
+    NCollection_Array1<int> aMults(1, 2);
     aMults(1) = 4;
     aMults(2) = 4;
 
@@ -144,7 +141,7 @@ protected:
 
 TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Start)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(0.0, 0.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -160,7 +157,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Start)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_End)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(3.0, 0.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -176,7 +173,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_End)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Middle)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint   = aBSpline->Value(0.5);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -196,7 +193,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointOnCurve_Middle)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Above)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(1.5, 3.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -214,7 +211,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Above)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Below)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(1.5, -1.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -235,7 +232,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_Below)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_OutOfPlane)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(1.5, 2.0, 5.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -256,7 +253,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PointNearCurve_OutOfPlane)
 
 TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOnLine)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createLinearBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createLinearBSpline();
   gp_Pnt                    aPoint(5.0, 0.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -272,7 +269,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOnLine)
 
 TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOffLine)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createLinearBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createLinearBSpline();
   gp_Pnt                    aPoint(5.0, 3.0, 4.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -292,7 +289,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, LinearBSpline_PointOffLine)
 
 TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointNear)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createQuadraticBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createQuadraticBSpline();
   gp_Pnt                    aPoint(5.0, 8.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -311,7 +308,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointNear)
 
 TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointOnApex)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createQuadraticBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createQuadraticBSpline();
   // Apex is approximately at middle
   gp_Pnt aPoint = aBSpline->Value(0.5);
 
@@ -331,7 +328,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, QuadraticBSpline_PointOnApex)
 
 TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_PointNear)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createMultiSpanBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createMultiSpanBSpline();
   gp_Pnt                    aPoint(2.5, 3.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -352,7 +349,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_PointNear)
 
 TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_MultipleExtrema)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createMultiSpanBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createMultiSpanBSpline();
   gp_Pnt                    aPoint(2.5, 1.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -377,7 +374,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, MultiSpanBSpline_MultipleExtrema)
 
 TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointOn)
 {
-  Handle(Geom_BSplineCurve) aBSpline = create3DBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = create3DBSpline();
   gp_Pnt                    aPoint   = aBSpline->Value(0.5);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -392,7 +389,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointOn)
 
 TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointNear)
 {
-  Handle(Geom_BSplineCurve) aBSpline = create3DBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = create3DBSpline();
   gp_Pnt                    aPoint(1.5, 2.0, 1.5);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -415,7 +412,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, BSpline3D_PointNear)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_FirstHalf)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(2.5, 1.0, 0.0);
 
   // Create evaluator with domain restricted to first half [0, 0.5]
@@ -435,7 +432,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_FirstHalf)
 
 TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_SecondHalf)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(0.5, 1.0, 0.0);
 
   // Create evaluator with domain restricted to second half [0.5, 1.0]
@@ -459,7 +456,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, PartialRange_SecondHalf)
 
 TEST_F(ExtremaPC_BSplineCurveTest, VerifyProjectedPoint)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(1.5, 3.0, 0.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -479,7 +476,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, VerifyProjectedPoint)
 
 TEST_F(ExtremaPC_BSplineCurveTest, VerifyDistanceConsistency)
 {
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   gp_Pnt                    aPoint(2.0, 2.5, 1.0);
 
   ExtremaPC_BSplineCurve anEval(aBSpline);
@@ -502,7 +499,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, VerifyDistanceConsistency)
 TEST_F(ExtremaPC_BSplineCurveTest, RefinementConfig_DisableRefinement)
 {
   // Test that disabling refinement works
-  Handle(Geom_BSplineCurve) aBSpline = createCubicBSpline();
+  occ::handle<Geom_BSplineCurve> aBSpline = createCubicBSpline();
   GeomAdaptor_Curve         anAdaptor(aBSpline);
   gp_Pnt                    aPoint(1.5, 2.0, 0.0);
 
@@ -517,7 +514,7 @@ TEST_F(ExtremaPC_BSplineCurveTest, RefinementConfig_DisableRefinement)
 TEST_F(ExtremaPC_BSplineCurveTest, HighDegreeSpline_RefinementHelps)
 {
   // Create a high-degree spline where Newton might have more difficulty
-  TColgp_Array1OfPnt aPoles(1, 8);
+  NCollection_Array1<gp_Pnt> aPoles(1, 8);
   aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
   aPoles(2) = gp_Pnt(0.5, 1.0, 0.0);
   aPoles(3) = gp_Pnt(1.0, -0.5, 0.0);
@@ -527,14 +524,14 @@ TEST_F(ExtremaPC_BSplineCurveTest, HighDegreeSpline_RefinementHelps)
   aPoles(7) = gp_Pnt(3.0, -0.5, 0.0);
   aPoles(8) = gp_Pnt(3.5, 0.5, 0.0);
 
-  TColStd_Array1OfReal    aKnots(1, 2);
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<double>    aKnots(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
   aMults(1) = 8;
   aMults(2) = 8;
 
-  Handle(Geom_BSplineCurve) aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 7);
+  occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 7);
   GeomAdaptor_Curve         anAdaptor(aBSpline);
 
   // Point that requires accurate projection

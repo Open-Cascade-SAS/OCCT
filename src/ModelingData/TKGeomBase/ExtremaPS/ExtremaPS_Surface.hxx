@@ -84,13 +84,13 @@ public:
   //! For non-trimmed surfaces, does NOT set domain (uses natural/unbounded behavior).
   //! For trimmed surfaces, uses the trimmed bounds as domain.
   //! @param[in] theSurface geometric surface handle
-  Standard_EXPORT explicit ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface);
+  Standard_EXPORT explicit ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface);
 
   //! Constructor from Geom_Surface with specified domain.
   //! For trimmed surfaces, intersects input bounds with trimmed bounds.
   //! @param[in] theSurface geometric surface handle
   //! @param[in] theDomain parameter domain
-  Standard_EXPORT ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface,
+  Standard_EXPORT ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface,
                                     const ExtremaPS::Domain2D&  theDomain);
 
   //! @name Extrema Computation
@@ -146,11 +146,11 @@ private:
   //! Handles all surface type detection and evaluator creation.
   //! @param[in] theSurface the surface to initialize from (must not be null)
   //! @param[in] theDomain optional domain to use
-  void initFromGeomSurface(const Handle(Geom_Surface)&                theSurface,
+  void initFromGeomSurface(const occ::handle<Geom_Surface>&                theSurface,
                            const std::optional<ExtremaPS::Domain2D>& theDomain);
 
   EvaluatorVariant           myEvaluator; //!< Specialized evaluator
-  Handle(GeomAdaptor_Surface) myAdaptor;   //!< Stored adaptor for Geom-based construction
+  occ::handle<GeomAdaptor_Surface> myAdaptor;   //!< Stored adaptor for Geom-based construction
 };
 
 #endif // _ExtremaPS_Surface_HeaderFile

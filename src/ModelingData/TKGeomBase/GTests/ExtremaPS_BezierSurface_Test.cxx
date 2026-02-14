@@ -20,7 +20,6 @@
 #include <Geom_BezierSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
 
 #include <cmath>
 
@@ -29,9 +28,9 @@ namespace
 const double THE_TOLERANCE = 1.0e-6;
 
 //! Create a flat Bezier surface (essentially a plane)
-Handle(Geom_BezierSurface) MakeFlatBezier()
+occ::handle<Geom_BezierSurface> MakeFlatBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 2, 1, 2);
+  NCollection_Array2<gp_Pnt> aPoles(1, 2, 1, 2);
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(2, 1, gp_Pnt(10, 0, 0));
   aPoles.SetValue(1, 2, gp_Pnt(0, 10, 0));
@@ -40,9 +39,9 @@ Handle(Geom_BezierSurface) MakeFlatBezier()
 }
 
 //! Create a curved Bezier surface (saddle-like)
-Handle(Geom_BezierSurface) MakeSaddleBezier()
+occ::handle<Geom_BezierSurface> MakeSaddleBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   // Corners
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(3, 1, gp_Pnt(10, 0, 0));
@@ -59,9 +58,9 @@ Handle(Geom_BezierSurface) MakeSaddleBezier()
 }
 
 //! Create a dome Bezier surface
-Handle(Geom_BezierSurface) MakeDomeBezier()
+occ::handle<Geom_BezierSurface> MakeDomeBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 3, 1, 3);
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
   // Corners - at Z=0
   aPoles.SetValue(1, 1, gp_Pnt(0, 0, 0));
   aPoles.SetValue(3, 1, gp_Pnt(10, 0, 0));
@@ -78,9 +77,9 @@ Handle(Geom_BezierSurface) MakeDomeBezier()
 }
 
 //! Create a high-degree Bezier surface (4x4)
-Handle(Geom_BezierSurface) MakeHighDegreeBezier()
+occ::handle<Geom_BezierSurface> MakeHighDegreeBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -95,9 +94,9 @@ Handle(Geom_BezierSurface) MakeHighDegreeBezier()
 }
 
 //! Create a wavy Bezier surface
-Handle(Geom_BezierSurface) MakeWavyBezier()
+occ::handle<Geom_BezierSurface> MakeWavyBezier()
 {
-  TColgp_Array2OfPnt aPoles(1, 5, 1, 5);
+  NCollection_Array2<gp_Pnt> aPoles(1, 5, 1, 5);
   for (int i = 1; i <= 5; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -120,7 +119,7 @@ class ExtremaPS_BezierSurfaceTest : public testing::Test
 protected:
   void SetUp() override { myFlatSurface = MakeFlatBezier(); }
 
-  Handle(Geom_BezierSurface) myFlatSurface;
+  occ::handle<Geom_BezierSurface> myFlatSurface;
 };
 
 //==================================================================================================
@@ -200,7 +199,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, FlatSurface_PointOutsideDomain)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointAboveCenter)
 {
-  Handle(Geom_BezierSurface) aSaddle = MakeSaddleBezier();
+  occ::handle<Geom_BezierSurface> aSaddle = MakeSaddleBezier();
   gp_Pnt                     aP(5.0, 5.0, 10.0);
   ExtremaPS_BezierSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -216,7 +215,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointAboveCenter)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointBelowCenter)
 {
-  Handle(Geom_BezierSurface) aSaddle = MakeSaddleBezier();
+  occ::handle<Geom_BezierSurface> aSaddle = MakeSaddleBezier();
   gp_Pnt                     aP(5.0, 5.0, -5.0);
   ExtremaPS_BezierSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -227,7 +226,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_PointBelowCenter)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_MultipleExtrema)
 {
-  Handle(Geom_BezierSurface) aSaddle = MakeSaddleBezier();
+  occ::handle<Geom_BezierSurface> aSaddle = MakeSaddleBezier();
   gp_Pnt                     aP(5.0, 5.0, 0.0);
   ExtremaPS_BezierSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult =
@@ -244,7 +243,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SaddleSurface_MultipleExtrema)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAbovePeak)
 {
-  Handle(Geom_BezierSurface) aDome = MakeDomeBezier();
+  occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
   gp_Pnt                     aP(5.0, 5.0, 15.0);
   ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -261,7 +260,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAbovePeak)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAtCorner)
 {
-  Handle(Geom_BezierSurface) aDome = MakeDomeBezier();
+  occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
   gp_Pnt                     aP(0.0, 0.0, 10.0);
   ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -278,7 +277,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointAtCorner)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointUnderDome)
 {
-  Handle(Geom_BezierSurface) aDome = MakeDomeBezier();
+  occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
   gp_Pnt                     aP(5.0, 5.0, 0.0);
   ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -293,7 +292,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, DomeSurface_PointUnderDome)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_BasicProjection)
 {
-  Handle(Geom_BezierSurface) aHighDeg = MakeHighDegreeBezier();
+  occ::handle<Geom_BezierSurface> aHighDeg = MakeHighDegreeBezier();
   gp_Pnt                     aP(5.0, 5.0, 10.0);
   ExtremaPS_BezierSurface   anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -304,7 +303,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_BasicProjection)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_MultiplePoints)
 {
-  Handle(Geom_BezierSurface) aHighDeg = MakeHighDegreeBezier();
+  occ::handle<Geom_BezierSurface> aHighDeg = MakeHighDegreeBezier();
   ExtremaPS_BezierSurface   anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
 
   // Test multiple points
@@ -324,7 +323,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, HighDegree_MultiplePoints)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointAbovePeak)
 {
-  Handle(Geom_BezierSurface) aWavy = MakeWavyBezier();
+  occ::handle<Geom_BezierSurface> aWavy = MakeWavyBezier();
   gp_Pnt                     aP(M_PI / 2.0, M_PI / 2.0, 5.0);
   ExtremaPS_BezierSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -335,7 +334,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointAbovePeak)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, WavySurface_PointInValley)
 {
-  Handle(Geom_BezierSurface) aWavy = MakeWavyBezier();
+  occ::handle<Geom_BezierSurface> aWavy = MakeWavyBezier();
   gp_Pnt                     aP(0.0, 0.0, -5.0);
   ExtremaPS_BezierSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
@@ -423,7 +422,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_MaxOnly)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, SearchMode_DomeMinMax)
 {
-  Handle(Geom_BezierSurface) aDome = MakeDomeBezier();
+  occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
   gp_Pnt                     aP(5.0, 5.0, 10.0);
   ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult =
@@ -454,7 +453,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_FlatSurface)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, Aggregator_DomeSurface)
 {
-  Handle(Geom_BezierSurface) aDome = MakeDomeBezier();
+  occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
   GeomAdaptor_Surface        anAdaptor(aDome);
   ExtremaPS_Surface          anExtPS(anAdaptor);
 
@@ -550,7 +549,7 @@ TEST_F(ExtremaPS_BezierSurfaceTest, EdgeCase_DiagonalPoint)
 
 TEST_F(ExtremaPS_BezierSurfaceTest, Verify_PointOnSurface)
 {
-  Handle(Geom_BezierSurface) aDome = MakeDomeBezier();
+  occ::handle<Geom_BezierSurface> aDome = MakeDomeBezier();
   gp_Pnt                     aP(3.0, 7.0, 8.0);
   ExtremaPS_BezierSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);

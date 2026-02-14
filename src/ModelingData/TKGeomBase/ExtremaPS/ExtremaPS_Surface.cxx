@@ -70,7 +70,7 @@ ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface,
 
 //==================================================================================================
 
-ExtremaPS_Surface::ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface)
+ExtremaPS_Surface::ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface)
     : myEvaluator(std::monostate{})
 {
   if (theSurface.IsNull())
@@ -79,8 +79,8 @@ ExtremaPS_Surface::ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface)
   }
 
   // Check for rectangular trimmed surface - if so, use bounds
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed =
-    Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface);
+  occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface);
   if (!aTrimmed.IsNull())
   {
     double aU1, aU2, aV1, aV2;
@@ -96,7 +96,7 @@ ExtremaPS_Surface::ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface)
 
 //==================================================================================================
 
-ExtremaPS_Surface::ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface,
+ExtremaPS_Surface::ExtremaPS_Surface(const occ::handle<Geom_Surface>& theSurface,
                                       const ExtremaPS::Domain2D&  theDomain)
     : myEvaluator(std::monostate{})
 {
@@ -106,15 +106,15 @@ ExtremaPS_Surface::ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface,
   }
 
   // Get base surface and effective bounds
-  Handle(Geom_Surface) aBaseSurface = theSurface;
+  occ::handle<Geom_Surface> aBaseSurface = theSurface;
   double               aEffectiveU1 = theDomain.UMin;
   double               aEffectiveU2 = theDomain.UMax;
   double               aEffectiveV1 = theDomain.VMin;
   double               aEffectiveV2 = theDomain.VMax;
 
   // For trimmed surface, intersect input bounds with trimmed bounds
-  Handle(Geom_RectangularTrimmedSurface) aTrimmed =
-    Handle(Geom_RectangularTrimmedSurface)::DownCast(theSurface);
+  occ::handle<Geom_RectangularTrimmedSurface> aTrimmed =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(theSurface);
   if (!aTrimmed.IsNull())
   {
     aBaseSurface = aTrimmed->BasisSurface();
@@ -134,11 +134,11 @@ ExtremaPS_Surface::ExtremaPS_Surface(const Handle(Geom_Surface)& theSurface,
 
 //==================================================================================================
 
-void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&                theSurface,
+void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&                theSurface,
                                              const std::optional<ExtremaPS::Domain2D>& theDomain)
 {
   // Try specific surface types for direct initialization
-  Handle(Geom_Plane) aPlane = Handle(Geom_Plane)::DownCast(theSurface);
+  occ::handle<Geom_Plane> aPlane = occ::down_cast<Geom_Plane>(theSurface);
   if (!aPlane.IsNull())
   {
     if (theDomain.has_value())
@@ -152,8 +152,8 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_CylindricalSurface) aCylinder =
-    Handle(Geom_CylindricalSurface)::DownCast(theSurface);
+  occ::handle<Geom_CylindricalSurface> aCylinder =
+    occ::down_cast<Geom_CylindricalSurface>(theSurface);
   if (!aCylinder.IsNull())
   {
     if (theDomain.has_value())
@@ -167,7 +167,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_ConicalSurface) aCone = Handle(Geom_ConicalSurface)::DownCast(theSurface);
+  occ::handle<Geom_ConicalSurface> aCone = occ::down_cast<Geom_ConicalSurface>(theSurface);
   if (!aCone.IsNull())
   {
     if (theDomain.has_value())
@@ -181,7 +181,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_SphericalSurface) aSphere = Handle(Geom_SphericalSurface)::DownCast(theSurface);
+  occ::handle<Geom_SphericalSurface> aSphere = occ::down_cast<Geom_SphericalSurface>(theSurface);
   if (!aSphere.IsNull())
   {
     if (theDomain.has_value())
@@ -195,7 +195,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_ToroidalSurface) aTorus = Handle(Geom_ToroidalSurface)::DownCast(theSurface);
+  occ::handle<Geom_ToroidalSurface> aTorus = occ::down_cast<Geom_ToroidalSurface>(theSurface);
   if (!aTorus.IsNull())
   {
     if (theDomain.has_value())
@@ -209,7 +209,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_BezierSurface) aBezier = Handle(Geom_BezierSurface)::DownCast(theSurface);
+  occ::handle<Geom_BezierSurface> aBezier = occ::down_cast<Geom_BezierSurface>(theSurface);
   if (!aBezier.IsNull())
   {
     if (theDomain.has_value())
@@ -223,7 +223,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_BSplineSurface) aBSpline = Handle(Geom_BSplineSurface)::DownCast(theSurface);
+  occ::handle<Geom_BSplineSurface> aBSpline = occ::down_cast<Geom_BSplineSurface>(theSurface);
   if (!aBSpline.IsNull())
   {
     if (theDomain.has_value())
@@ -237,7 +237,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const Handle(Geom_Surface)&         
     return;
   }
 
-  Handle(Geom_OffsetSurface) anOffset = Handle(Geom_OffsetSurface)::DownCast(theSurface);
+  occ::handle<Geom_OffsetSurface> anOffset = occ::down_cast<Geom_OffsetSurface>(theSurface);
   if (!anOffset.IsNull())
   {
     if (theDomain.has_value())
@@ -314,8 +314,8 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
         dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
       if (aGeomAdaptor != nullptr)
       {
-        Handle(Geom_OffsetSurface) anOffsetSurf =
-          Handle(Geom_OffsetSurface)::DownCast(aGeomAdaptor->Surface());
+        occ::handle<Geom_OffsetSurface> anOffsetSurf =
+          occ::down_cast<Geom_OffsetSurface>(aGeomAdaptor->Surface());
         if (!anOffsetSurf.IsNull())
         {
           myEvaluator = ExtremaPS_OffsetSurface(anOffsetSurf, theDomain);

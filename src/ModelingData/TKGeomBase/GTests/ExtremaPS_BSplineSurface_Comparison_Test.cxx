@@ -20,9 +20,6 @@
 #include <Geom_BSplineSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array2OfPnt.hxx>
-#include <TColStd_Array1OfInteger.hxx>
-#include <TColStd_Array1OfReal.hxx>
 
 #include <cmath>
 
@@ -63,9 +60,9 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
 
 //! Create a flat BSpline surface
 //! For 4 poles with degree 3: sum of multiplicities = 4 + 3 + 1 = 8
-Handle(Geom_BSplineSurface) MakeFlatBSpline()
+occ::handle<Geom_BSplineSurface> MakeFlatBSpline()
 {
-  TColgp_Array2OfPnt aPoles(1, 4, 1, 4);
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
   for (int i = 1; i <= 4; ++i)
   {
     for (int j = 1; j <= 4; ++j)
@@ -74,8 +71,8 @@ Handle(Geom_BSplineSurface) MakeFlatBSpline()
     }
   }
 
-  TColStd_Array1OfReal    aUKnots(1, 2), aVKnots(1, 2);
-  TColStd_Array1OfInteger aUMults(1, 2), aVMults(1, 2);
+  NCollection_Array1<double>    aUKnots(1, 2), aVKnots(1, 2);
+  NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 1.0;
@@ -93,9 +90,9 @@ Handle(Geom_BSplineSurface) MakeFlatBSpline()
 
 //! Create a dome-like BSpline surface
 //! For 5 poles with degree 2: sum of multiplicities = 5 + 2 + 1 = 8
-Handle(Geom_BSplineSurface) MakeDomeBSpline()
+occ::handle<Geom_BSplineSurface> MakeDomeBSpline()
 {
-  TColgp_Array2OfPnt aPoles(1, 5, 1, 5);
+  NCollection_Array2<gp_Pnt> aPoles(1, 5, 1, 5);
   for (int i = 1; i <= 5; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -110,8 +107,8 @@ Handle(Geom_BSplineSurface) MakeDomeBSpline()
     }
   }
 
-  TColStd_Array1OfReal    aUKnots(1, 3), aVKnots(1, 3);
-  TColStd_Array1OfInteger aUMults(1, 3), aVMults(1, 3);
+  NCollection_Array1<double>    aUKnots(1, 3), aVKnots(1, 3);
+  NCollection_Array1<int> aUMults(1, 3), aVMults(1, 3);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.5;
@@ -133,9 +130,9 @@ Handle(Geom_BSplineSurface) MakeDomeBSpline()
 
 //! Create a saddle-like BSpline surface
 //! For 5 poles with degree 2: sum of multiplicities = 5 + 2 + 1 = 8
-Handle(Geom_BSplineSurface) MakeSaddleBSpline()
+occ::handle<Geom_BSplineSurface> MakeSaddleBSpline()
 {
-  TColgp_Array2OfPnt aPoles(1, 5, 1, 5);
+  NCollection_Array2<gp_Pnt> aPoles(1, 5, 1, 5);
   for (int i = 1; i <= 5; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -148,8 +145,8 @@ Handle(Geom_BSplineSurface) MakeSaddleBSpline()
     }
   }
 
-  TColStd_Array1OfReal    aUKnots(1, 3), aVKnots(1, 3);
-  TColStd_Array1OfInteger aUMults(1, 3), aVMults(1, 3);
+  NCollection_Array1<double>    aUKnots(1, 3), aVKnots(1, 3);
+  NCollection_Array1<int> aUMults(1, 3), aVMults(1, 3);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.5;
@@ -171,9 +168,9 @@ Handle(Geom_BSplineSurface) MakeSaddleBSpline()
 
 //! Create a wavy BSpline surface with more control points
 //! For 7 poles with degree 3: sum of multiplicities = 7 + 3 + 1 = 11
-Handle(Geom_BSplineSurface) MakeWavyBSpline()
+occ::handle<Geom_BSplineSurface> MakeWavyBSpline()
 {
-  TColgp_Array2OfPnt aPoles(1, 7, 1, 7);
+  NCollection_Array2<gp_Pnt> aPoles(1, 7, 1, 7);
   for (int i = 1; i <= 7; ++i)
   {
     for (int j = 1; j <= 7; ++j)
@@ -185,8 +182,8 @@ Handle(Geom_BSplineSurface) MakeWavyBSpline()
     }
   }
 
-  TColStd_Array1OfReal    aUKnots(1, 4), aVKnots(1, 4);
-  TColStd_Array1OfInteger aUMults(1, 4), aVMults(1, 4);
+  NCollection_Array1<double>    aUKnots(1, 4), aVKnots(1, 4);
+  NCollection_Array1<int> aUMults(1, 4), aVMults(1, 4);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.33;
@@ -225,10 +222,10 @@ protected:
     myWavySurface   = MakeWavyBSpline();
   }
 
-  Handle(Geom_BSplineSurface) myFlatSurface;
-  Handle(Geom_BSplineSurface) myDomeSurface;
-  Handle(Geom_BSplineSurface) mySaddleSurface;
-  Handle(Geom_BSplineSurface) myWavySurface;
+  occ::handle<Geom_BSplineSurface> myFlatSurface;
+  occ::handle<Geom_BSplineSurface> myDomeSurface;
+  occ::handle<Geom_BSplineSurface> mySaddleSurface;
+  occ::handle<Geom_BSplineSurface> myWavySurface;
 };
 
 //==================================================================================================

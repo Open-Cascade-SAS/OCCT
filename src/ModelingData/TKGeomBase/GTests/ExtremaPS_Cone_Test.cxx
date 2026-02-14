@@ -333,7 +333,7 @@ TEST_F(ExtremaPS_ConeTest, SearchMode_Max)
 
 TEST_F(ExtremaPS_ConeTest, Aggregator_Basic)
 {
-  Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(
+  occ::handle<Geom_ConicalSurface> aGeomCone = new Geom_ConicalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4.0, 0.0);
   GeomAdaptor_Surface anAdaptor(aGeomCone, 0.0, 2.0 * M_PI, 0.0, 20.0);
 
@@ -349,7 +349,7 @@ TEST_F(ExtremaPS_ConeTest, Aggregator_Basic)
 
 TEST_F(ExtremaPS_ConeTest, Aggregator_NonZeroRefRadius)
 {
-  Handle(Geom_ConicalSurface) aGeomCone = new Geom_ConicalSurface(
+  occ::handle<Geom_ConicalSurface> aGeomCone = new Geom_ConicalSurface(
     gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 4.0, 5.0);
   GeomAdaptor_Surface anAdaptor(aGeomCone, 0.0, 2.0 * M_PI, 0.0, 20.0);
 

@@ -98,7 +98,7 @@ protected:
     myAdaptor.Load(myCone);
   }
 
-  Handle(Geom_ConicalSurface) myCone;
+  occ::handle<Geom_ConicalSurface> myCone;
   GeomAdaptor_Surface         myAdaptor;
 };
 
@@ -152,7 +152,7 @@ TEST_F(ExtremaPS_ConeComparisonTest, WideAngle_PointOutside)
 {
   // 60 degree semi-angle
   gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 3, 5.0);
-  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(aCone);
+  occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
   gp_Pnt aP(20.0, 0.0, 5.0);
@@ -163,7 +163,7 @@ TEST_F(ExtremaPS_ConeComparisonTest, NarrowAngle_PointNear)
 {
   // 15 degree semi-angle
   gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 12, 5.0);
-  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(aCone);
+  occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 0.0, 10.0);
@@ -177,7 +177,7 @@ TEST_F(ExtremaPS_ConeComparisonTest, NarrowAngle_PointNear)
 TEST_F(ExtremaPS_ConeComparisonTest, TiltedCone_XAxis)
 {
   gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), M_PI / 6, 5.0);
-  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(aCone);
+  occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 0.0);
@@ -188,7 +188,7 @@ TEST_F(ExtremaPS_ConeComparisonTest, TiltedCone_Diagonal)
 {
   gp_Dir aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
   gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), aDir), M_PI / 6, 5.0);
-  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(aCone);
+  occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
   GeomAdaptor_Surface         anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 10.0);

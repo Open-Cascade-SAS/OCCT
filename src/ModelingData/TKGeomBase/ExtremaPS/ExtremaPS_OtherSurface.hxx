@@ -42,13 +42,13 @@ public:
   //! Constructor from surface handle (uses surface bounds from adaptor).
   //! Grid is built eagerly at construction time.
   //! @param[in] theSurface surface handle
-  Standard_EXPORT explicit ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSurface);
+  Standard_EXPORT explicit ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface);
 
   //! Constructor with surface and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theSurface surface handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
-  Standard_EXPORT ExtremaPS_OtherSurface(const Handle(Geom_Surface)& theSurface,
+  Standard_EXPORT ExtremaPS_OtherSurface(const occ::handle<Geom_Surface>& theSurface,
                                          const ExtremaPS::Domain2D&  theDomain);
 
   //! @name Surface Evaluation
@@ -93,7 +93,7 @@ public:
   //! @}
 
   //! Returns the surface handle.
-  const Handle(Geom_Surface)& Surface() const { return mySurface; }
+  const occ::handle<Geom_Surface>& Surface() const { return mySurface; }
 
   //! Returns the parameter domain.
   const ExtremaPS::Domain2D& Domain() const { return myDomain; }
@@ -103,7 +103,7 @@ private:
   void buildGrid();
 
 private:
-  Handle(Geom_Surface)  mySurface;  //!< Surface geometry
+  occ::handle<Geom_Surface>  mySurface;  //!< Surface geometry
   GeomAdaptor_Surface   myAdaptor;  //!< Surface adaptor (cached)
   ExtremaPS::Domain2D   myDomain;   //!< Parameter domain (fixed at construction)
 
