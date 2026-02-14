@@ -52,6 +52,14 @@ public:
   const gp_Elips& Ellipse2() const { return myEllipse2; }
 
 private:
+  //! @brief Try coplanar fast-path for concentric ellipses with aligned axes.
+  //! @param theTol Tolerance for computation.
+  //! @return True if handled analytically, false if numerical approach needed.
+  bool performCoplanar(double theTol) const;
+
+  //! @brief Add solution if within domain bounds.
+  void addSolution(double theU1, double theU2, double theTol) const;
+
   gp_Elips                            myEllipse1;
   gp_Elips                            myEllipse2;
   std::optional<ExtremaCC::Domain2D> myDomain;

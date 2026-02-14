@@ -185,6 +185,10 @@ private:
     myMinDist = std::numeric_limits<double>::max();
     myMaxDist = -std::numeric_limits<double>::max();
     myMinI = myMinJ = myMaxI = myMaxJ = 0;
+    myHasZeroDist = false;
+
+    // Tolerance for zero-distance detection (intersection)
+    const double aZeroDistTol = theTol * theTol;
 
     for (int i = 0; i < aNb1; ++i)
     {
@@ -216,6 +220,12 @@ private:
           myMinDist = aData.Dist;
           myMinI    = i;
           myMinJ    = j;
+
+          // Early detection of intersection (zero distance)
+          if (aData.Dist < aZeroDistTol && theMode != ExtremaCC::SearchMode::Max)
+          {
+            myHasZeroDist = true;
+          }
         }
         if (aData.Dist > myMaxDist)
         {
@@ -224,6 +234,21 @@ private:
           myMaxJ    = j;
         }
       }
+    }
+
+    // Early termination: if zero-distance found and searching for minimum only,
+    // skip the full cell scan and add the intersection point directly
+    if (myHasZeroDist && theMode == ExtremaCC::SearchMode::Min)
+    {
+      Candidate aCand;
+      aCand.Idx1    = std::max(0, std::min(aNb1 - 2, myMinI));
+      aCand.Idx2    = std::max(0, std::min(aNb2 - 2, myMinJ));
+      aCand.StartU1 = myGrid1(myMinI).U;
+      aCand.StartU2 = myGrid2(myMinJ).U;
+      aCand.EstDist = myMinDist;
+      aCand.GradMag = 0.0;
+      myCandidates.Append(aCand);
+      return; // Skip full cell scan - we found the minimum (intersection)
     }
 
     // Scan cells for sign changes in gradient
@@ -569,6 +594,7 @@ private:
   mutable int    myMaxI = 0, myMaxJ = 0;
   mutable double myMinDist = 0.0;
   mutable double myMaxDist = 0.0;
+  mutable bool   myHasZeroDist = false; //!< True if intersection found during grid scan
 };
 
 #endif // _ExtremaCC_GridEvaluator2D_HeaderFile

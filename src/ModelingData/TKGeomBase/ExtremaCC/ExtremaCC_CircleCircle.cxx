@@ -120,7 +120,7 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
 
   // Non-concentric coplanar circles
   // Ensure aC1 has the larger radius
-  int      j1 = 0, j2 = 1;
+  bool     aSwapped = false;
   gp_Circ  aC1 = myCircle1;
   gp_Circ  aC2 = myCircle2;
   double   aR1 = myCircle1.Radius();
@@ -128,8 +128,7 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
 
   if (aR2 > aR1)
   {
-    j1  = 1;
-    j2  = 0;
+    aSwapped = true;
     aC1 = myCircle2;
     aC2 = myCircle1;
     std::swap(aR1, aR2);
@@ -155,7 +154,7 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
   const double aT22 = ElCLib::Parameter(aC2, aP22);
 
   // Store solutions (swap back if needed)
-  if (j1 == 0)
+  if (!aSwapped)
   {
     addSolution(aT11, aT21, theTol); // P11, P21
     addSolution(aT11, aT22, theTol); // P11, P22
@@ -200,7 +199,7 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
     double aT1_1 = ElCLib::Parameter(aC1, aPL1);
     double aT2_1 = ElCLib::Parameter(aC2, aPL1);
 
-    if (j1 == 0)
+    if (!aSwapped)
     {
       addSolution(aT1_1, aT2_1, theTol);
     }
@@ -214,7 +213,7 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
       double aT1_2 = ElCLib::Parameter(aC1, aPL2);
       double aT2_2 = ElCLib::Parameter(aC2, aPL2);
 
-      if (j1 == 0)
+      if (!aSwapped)
       {
         addSolution(aT1_2, aT2_2, theTol);
       }
@@ -233,11 +232,9 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
 
 void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
 {
-  // For non-coplanar circles, use numerical grid-based approach
-  // This is a simplified implementation - uses sampling
+  // For non-coplanar circles, use grid-based approach with Newton refinement
 
   constexpr int aNbSamples = 36; // 10 degree increments
-  constexpr double aDelta  = 2.0 * M_PI / aNbSamples;
 
   double aMinDist2 = RealLast();
   double aMaxDist2 = 0.0;
@@ -284,85 +281,38 @@ void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
     }
   }
 
-  // Newton refinement for minimum
-  ExtremaCC_Circle aEval1(myCircle1, myDomain->Curve1);
-  ExtremaCC_Circle aEval2(myCircle2, myDomain->Curve2);
+  // Set up evaluators and distance function
+  ExtremaCC::Domain1D aDom1 = myDomain.has_value() ? myDomain->Curve1 : ExtremaCC::Domain1D{0.0, 2.0 * M_PI};
+  ExtremaCC::Domain1D aDom2 = myDomain.has_value() ? myDomain->Curve2 : ExtremaCC::Domain1D{0.0, 2.0 * M_PI};
+  ExtremaCC_Circle aEval1(myCircle1, aDom1);
+  ExtremaCC_Circle aEval2(myCircle2, aDom2);
   ExtremaCC_DistanceFunction<ExtremaCC_Circle, ExtremaCC_Circle> aDistFunc(aEval1, aEval2);
 
-  double aU1 = aMinU1, aU2 = aMinU2;
-  for (int iter = 0; iter < 20; ++iter)
+  // Newton refinement for minimum using modern solver
+  ExtremaCC_Newton::Result aMinResult = ExtremaCC_Newton::Solve(
+    aDistFunc, aMinU1, aMinU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
+
+  if (aMinResult.IsDone)
   {
-    double aF1, aF2, aJ11, aJ12, aJ22;
-    if (!aDistFunc.ValueAndJacobian(aU1, aU2, aF1, aF2, aJ11, aJ12, aJ22))
-    {
-      break;
-    }
-
-    // Check convergence
-    if (std::abs(aF1) < theTol && std::abs(aF2) < theTol)
-    {
-      break;
-    }
-
-    // Solve symmetric 2x2 system
-    const double aDet = aJ11 * aJ22 - aJ12 * aJ12;
-    if (std::abs(aDet) < gp::Resolution())
-    {
-      break;
-    }
-
-    const double aDU1 = (aF1 * aJ22 - aF2 * aJ12) / aDet;
-    const double aDU2 = (aF2 * aJ11 - aF1 * aJ12) / aDet;
-
-    aU1 -= aDU1;
-    aU2 -= aDU2;
-
-    // Clamp to domain
-    if (myDomain.has_value())
-    {
-      aU1 = std::max(aU1Min, std::min(aU1Max, aU1));
-      aU2 = std::max(aU2Min, std::min(aU2Max, aU2));
-    }
+    addSolution(aMinResult.U1, aMinResult.U2, theTol);
   }
-
-  addSolution(aU1, aU2, theTol);
+  else
+  {
+    addSolution(aMinU1, aMinU2, theTol); // Fallback to grid point
+  }
 
   // Newton refinement for maximum
-  aU1 = aMaxU1;
-  aU2 = aMaxU2;
-  for (int iter = 0; iter < 20; ++iter)
+  ExtremaCC_Newton::Result aMaxResult = ExtremaCC_Newton::Solve(
+    aDistFunc, aMaxU1, aMaxU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
+
+  if (aMaxResult.IsDone)
   {
-    double aF1, aF2, aJ11, aJ12, aJ22;
-    if (!aDistFunc.ValueAndJacobian(aU1, aU2, aF1, aF2, aJ11, aJ12, aJ22))
-    {
-      break;
-    }
-
-    if (std::abs(aF1) < theTol && std::abs(aF2) < theTol)
-    {
-      break;
-    }
-
-    const double aDet = aJ11 * aJ22 - aJ12 * aJ12;
-    if (std::abs(aDet) < gp::Resolution())
-    {
-      break;
-    }
-
-    const double aDU1 = (aF1 * aJ22 - aF2 * aJ12) / aDet;
-    const double aDU2 = (aF2 * aJ11 - aF1 * aJ12) / aDet;
-
-    aU1 -= aDU1;
-    aU2 -= aDU2;
-
-    if (myDomain.has_value())
-    {
-      aU1 = std::max(aU1Min, std::min(aU1Max, aU1));
-      aU2 = std::max(aU2Min, std::min(aU2Max, aU2));
-    }
+    addSolution(aMaxResult.U1, aMaxResult.U2, theTol);
   }
-
-  addSolution(aU1, aU2, theTol);
+  else
+  {
+    addSolution(aMaxU1, aMaxU2, theTol); // Fallback to grid point
+  }
 
   myResult.Status = ExtremaCC::Status::OK;
 }

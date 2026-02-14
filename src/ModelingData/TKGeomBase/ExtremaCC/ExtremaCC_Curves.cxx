@@ -115,8 +115,9 @@ struct ExtremaCC_Curves::Impl
   const ExtremaCC::Result& performAnalytical(double                     theTol,
                                              ExtremaCC::SearchMode     theMode,
                                              ExtremaCC::Result&         theResult,
-                                             const ExtremaCC::Domain2D& theDomain) const
+                                             const ExtremaCC::Domain2D& /*theDomain*/) const
   {
+    // Note: theDomain unused because analytical pairs store domain at construction
     return std::visit(
       [&](const auto& aPair) -> const ExtremaCC::Result& {
         if constexpr (std::is_same_v<std::decay_t<decltype(aPair)>, std::monostate>)
