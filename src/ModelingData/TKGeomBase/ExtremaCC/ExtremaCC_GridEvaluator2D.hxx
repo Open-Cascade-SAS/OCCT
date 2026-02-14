@@ -17,6 +17,7 @@
 #include <ExtremaCC.hxx>
 #include <ExtremaCC_DistanceFunction.hxx>
 #include <gp_Vec.hxx>
+#include <MathOpt_Powell.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Vector.hxx>
@@ -506,13 +507,35 @@ private:
         }
         else
         {
-          // Final fallback: check if gradient is near zero at best grid point
-          double aF1, aF2;
-          aFunc.Value(aRootU1, aRootU2, aF1, aF2);
-          double aFNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
-          if (aFNorm < theTol * 100.0)
+          // Powell fallback: gradient-free optimization when Newton fails
+          // Especially robust for ill-conditioned problems or degenerate curves
+          double aPowellU1 = 0.0;
+          double aPowellU2 = 0.0;
+          if (powellFallback(aFunc,
+                             aRootU1,
+                             aRootU2,
+                             aCellU1Min,
+                             aCellU1Max,
+                             aCellU2Min,
+                             aCellU2Max,
+                             theTol,
+                             aPowellU1,
+                             aPowellU2))
           {
+            aRootU1    = aPowellU1;
+            aRootU2    = aPowellU2;
             aConverged = true;
+          }
+          else
+          {
+            // Final fallback: check if gradient is near zero at best grid point
+            double aF1, aF2;
+            aFunc.Value(aRootU1, aRootU2, aF1, aF2);
+            double aFNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
+            if (aFNorm < theTol * 100.0)
+            {
+              aConverged = true;
+            }
           }
         }
       }
@@ -567,6 +590,105 @@ private:
     }
   }
 
+  //! @brief Powell's method fallback for 2D minimization.
+  //!
+  //! Uses gradient-free Powell's conjugate direction method to find extrema
+  //! when Newton's method fails. This is robust for ill-conditioned problems.
+  //!
+  //! @param theFunc distance function
+  //! @param theStartU1 starting parameter on first curve
+  //! @param theStartU2 starting parameter on second curve
+  //! @param theU1Min lower bound for first curve
+  //! @param theU1Max upper bound for first curve
+  //! @param theU2Min lower bound for second curve
+  //! @param theU2Max upper bound for second curve
+  //! @param theTol tolerance
+  //! @param theRootU1 output: refined parameter on first curve
+  //! @param theRootU2 output: refined parameter on second curve
+  //! @return true if Powell found a valid extremum
+  template <typename DistanceFunctionType>
+  bool powellFallback(const DistanceFunctionType& theFunc,
+                      double                      theStartU1,
+                      double                      theStartU2,
+                      double                      theU1Min,
+                      double                      theU1Max,
+                      double                      theU2Min,
+                      double                      theU2Max,
+                      double                      theTol,
+                      double&                     theRootU1,
+                      double&                     theRootU2) const
+  {
+    // Wrapper class adapting distance function to Powell's interface
+    // Powell expects Value(math_Vector, double&) for N-dimensional minimization
+    class PowellWrapper
+    {
+    public:
+      PowellWrapper(const DistanceFunctionType& theF,
+                    double                      theMinU1,
+                    double                      theMaxU1,
+                    double                      theMinU2,
+                    double                      theMaxU2)
+          : myFunc(theF),
+            myU1Min(theMinU1),
+            myU1Max(theMaxU1),
+            myU2Min(theMinU2),
+            myU2Max(theMaxU2)
+      {
+      }
+
+      bool Value(const math_Vector& theX, double& theVal)
+      {
+        // Apply bounds clamping
+        const double aU1 = std::max(myU1Min, std::min(myU1Max, theX(1)));
+        const double aU2 = std::max(myU2Min, std::min(myU2Max, theX(2)));
+
+        // Squared distance as objective
+        theVal = myFunc.SquareDistance(aU1, aU2);
+        return true;
+      }
+
+    private:
+      const DistanceFunctionType& myFunc;
+      double                      myU1Min, myU1Max;
+      double                      myU2Min, myU2Max;
+    };
+
+    // Create wrapper and starting point
+    PowellWrapper aWrapper(theFunc, theU1Min, theU1Max, theU2Min, theU2Max);
+
+    math_Vector aStart(1, 2);
+    aStart(1) = theStartU1;
+    aStart(2) = theStartU2;
+
+    // Configure Powell
+    MathUtils::Config aConfig;
+    aConfig.XTolerance    = theTol;
+    aConfig.FTolerance    = theTol * theTol; // Squared distance tolerance
+    aConfig.MaxIterations = 50;
+
+    // Run Powell optimization
+    MathUtils::VectorResult aResult = MathOpt::Powell(aWrapper, aStart, aConfig);
+
+    if ((aResult.Status == MathUtils::Status::OK || aResult.Status == MathUtils::Status::MaxIterations)
+        && aResult.Solution.has_value())
+    {
+      // Clamp result to bounds
+      const math_Vector& aSol = aResult.Solution.value();
+      theRootU1 = std::max(theU1Min, std::min(theU1Max, aSol(1)));
+      theRootU2 = std::max(theU2Min, std::min(theU2Max, aSol(2)));
+
+      // Verify that we found a valid extremum by checking gradient
+      double aF1, aF2;
+      theFunc.Value(theRootU1, theRootU2, aF1, aF2);
+      const double aFNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
+
+      // Accept if gradient is reasonably small
+      return aFNorm < theTol * 1000.0;
+    }
+
+    return false;
+  }
+
   //! @brief Add grid minimum fallback if no results found.
   void addGridMinFallback(ExtremaCC::Result&    theResult,
                           double                theTol,
@@ -603,6 +725,27 @@ private:
       aRefinedU1   = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U1));
       aRefinedU2   = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.U2));
       aRefinedDist = aFunc.SquareDistance(aRefinedU1, aRefinedU2);
+    }
+    else
+    {
+      // Powell fallback when Newton fails
+      double aPowellU1 = 0.0;
+      double aPowellU2 = 0.0;
+      if (powellFallback(aFunc,
+                         aGridMinU1,
+                         aGridMinU2,
+                         myDomain.Curve1.Min,
+                         myDomain.Curve1.Max,
+                         myDomain.Curve2.Min,
+                         myDomain.Curve2.Max,
+                         theTol,
+                         aPowellU1,
+                         aPowellU2))
+      {
+        aRefinedU1   = aPowellU1;
+        aRefinedU2   = aPowellU2;
+        aRefinedDist = aFunc.SquareDistance(aRefinedU1, aRefinedU2);
+      }
     }
 
     gp_Pnt aPt1 = myCurve1.Value(aRefinedU1);
