@@ -357,6 +357,8 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
       aDV *= aScale;
     }
 
+    // Merit function for line search is phi = 0.5 * ||F||^2.
+    // Its gradient is grad(phi) = J^T * F, so directional derivative is grad(phi) . dX.
     const double aGradPhiU = aJ11 * aF1 + aJ12 * aF2;
     const double aGradPhiV = aJ12 * aF1 + aJ22 * aF2;
     const double aDirDeriv = aGradPhiU * aDU + aGradPhiV * aDV;
@@ -368,6 +370,8 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
     {
       if (aDirDeriv >= 0.0)
       {
+        // Armijo backtracking requires a descent direction for phi; non-negative derivative cannot
+        // provide sufficient decrease.
         aRes.Status = MathUtils::Status::NonDescentDirection;
         return aRes;
       }
