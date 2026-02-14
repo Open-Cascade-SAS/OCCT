@@ -34,6 +34,11 @@
 #include <variant>
 
 class Geom_BSplineCurve;
+class Geom_BezierCurve;
+namespace Geom_EvalRepCurveDesc
+{
+class Base;
+}
 
 //! This class provides an interface between the services provided by any
 //! curve from the package Geom and those required of the curve by algorithms which use it.
@@ -52,12 +57,15 @@ public:
     occ::handle<GeomAdaptor_Curve> BasisAdaptor; //!< Adaptor for basis curve
     double                         Offset = 0.0; //!< Offset distance
     gp_Dir                         Direction;    //!< Offset direction
+    occ::handle<Geom_EvalRepCurveDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Internal structure for Bezier curve cache data.
   struct BezierData
   {
+    occ::handle<Geom_BezierCurve>      Curve; //!< Bezier curve to prevent downcasts
     mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom_EvalRepCurveDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Internal structure for BSpline curve cache data.
@@ -65,6 +73,7 @@ public:
   {
     occ::handle<Geom_BSplineCurve>      Curve; //!< BSpline curve to prevent downcasts
     mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom_EvalRepCurveDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Variant type for curve-specific evaluation data.

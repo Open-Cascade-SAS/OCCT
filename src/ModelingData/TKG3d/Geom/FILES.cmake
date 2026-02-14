@@ -41,6 +41,9 @@ set(OCCT_Geom_FILES
   Geom_ElementarySurface.hxx
   Geom_Ellipse.cxx
   Geom_Ellipse.hxx
+  Geom_EvalRepCurveDesc.hxx
+  Geom_EvalRepSurfaceDesc.hxx
+  Geom_EvalRepUtils.pxx
   Geom_Geometry.cxx
   Geom_Geometry.hxx
 

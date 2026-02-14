@@ -37,6 +37,10 @@
 class gp_Vec2d;
 class Geom2d_BezierCurve;
 class Geom2d_BSplineCurve;
+namespace Geom2d_EvalRepCurveDesc
+{
+class Base;
+}
 
 //! An interface between the services provided by any
 //! curve from the package Geom2d and those required
@@ -54,12 +58,15 @@ public:
   {
     occ::handle<Geom2dAdaptor_Curve> BasisAdaptor; //!< Adaptor for basis curve
     double                           Offset = 0.0; //!< Offset distance
+    occ::handle<Geom2d_EvalRepCurveDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Internal structure for Bezier curve evaluation data.
   struct BezierData
   {
+    occ::handle<Geom2d_BezierCurve>    Curve; //!< Bezier curve to prevent downcasts
     mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom2d_EvalRepCurveDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Internal structure for BSpline curve evaluation data.
@@ -67,6 +74,7 @@ public:
   {
     occ::handle<Geom2d_BSplineCurve>    Curve; //!< BSpline curve to prevent downcasts
     mutable occ::handle<BSplCLib_Cache> Cache; //!< Cached data for evaluation
+    occ::handle<Geom2d_EvalRepCurveDesc::Base> EvalRep; //!< Eval representation descriptor
   };
 
   //! Variant type for 2D curve-specific evaluation data.

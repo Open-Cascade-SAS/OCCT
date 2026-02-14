@@ -28,6 +28,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
+#include "Geom_EvalRepSurfaceDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -108,6 +110,12 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V) const
 {
+  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   double aNewU = U;
   double aNewV = V;
   PeriodicNormalization(aNewU, aNewV);
@@ -137,6 +145,12 @@ std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V
 
 std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   double aNewU = U;
   double aNewV = V;
   PeriodicNormalization(aNewU, aNewV);
@@ -176,6 +190,12 @@ std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, c
 
 std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   double aNewU = U;
   double aNewV = V;
   PeriodicNormalization(aNewU, aNewV);
@@ -218,6 +238,12 @@ std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, c
 
 std::optional<Geom_Surface::ResD3> Geom_BSplineSurface::EvalD3(const double U, const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   BSplSLib::D3(U,
                V,
@@ -257,6 +283,13 @@ std::optional<gp_Vec> Geom_BSplineSurface::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
+
+  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Vec Vn;
   BSplSLib::DN(U,
                V,
@@ -888,6 +921,7 @@ const NCollection_Array2<double>* Geom_BSplineSurface::Weights() const
 
 void Geom_BSplineSurface::Transform(const gp_Trsf& T)
 {
+  ClearEvalRepresentation();
   for (int j = myPoles.LowerCol(); j <= myPoles.UpperCol(); j++)
   {
     for (int i = myPoles.LowerRow(); i <= myPoles.UpperRow(); i++)
@@ -902,6 +936,7 @@ void Geom_BSplineSurface::Transform(const gp_Trsf& T)
 
 void Geom_BSplineSurface::SetUPeriodic()
 {
+  ClearEvalRepresentation();
   int first = FirstUKnotIndex();
   int last  = LastUKnotIndex();
 
@@ -940,6 +975,7 @@ void Geom_BSplineSurface::SetUPeriodic()
 
 void Geom_BSplineSurface::SetVPeriodic()
 {
+  ClearEvalRepresentation();
   int first = FirstVKnotIndex();
   int last  = LastVKnotIndex();
 
@@ -980,6 +1016,8 @@ void Geom_BSplineSurface::SetUOrigin(const int Index)
 {
   if (!myUPeriodic)
     throw Standard_NoSuchObject("Geom_BSplineSurface::SetUOrigin: surface is not U periodic");
+
+  ClearEvalRepresentation();
 
   int i, j, k;
   int first = FirstUKnotIndex();
@@ -1079,6 +1117,8 @@ void Geom_BSplineSurface::SetVOrigin(const int Index)
   if (!myVPeriodic)
     throw Standard_NoSuchObject("Geom_BSplineSurface::SetVOrigin: surface is not V periodic");
 
+  ClearEvalRepresentation();
+
   int i, j, k;
   int first = FirstVKnotIndex();
   int last  = LastVKnotIndex();
@@ -1176,6 +1216,7 @@ void Geom_BSplineSurface::SetUNotPeriodic()
 {
   if (myUPeriodic)
   {
+    ClearEvalRepresentation();
     int NbKnots, NbPoles;
     BSplCLib::PrepareUnperiodize(myUDeg, myUMults, NbKnots, NbPoles);
 
@@ -1231,6 +1272,7 @@ void Geom_BSplineSurface::SetVNotPeriodic()
 {
   if (myVPeriodic)
   {
+    ClearEvalRepresentation();
     int NbKnots, NbPoles;
     BSplCLib::PrepareUnperiodize(myVDeg, myVMults, NbKnots, NbPoles);
 
@@ -1482,6 +1524,7 @@ void Geom_BSplineSurface::LocateV(const double V,
 
 void Geom_BSplineSurface::UReverse()
 {
+  ClearEvalRepresentation();
   BSplCLib::Reverse(myUMults);
   BSplCLib::Reverse(myUKnots);
   int last;
@@ -1506,6 +1549,7 @@ double Geom_BSplineSurface::UReversedParameter(const double U) const
 
 void Geom_BSplineSurface::VReverse()
 {
+  ClearEvalRepresentation();
   BSplCLib::Reverse(myVMults);
   BSplCLib::Reverse(myVKnots);
   int last;
@@ -1540,6 +1584,7 @@ void Geom_BSplineSurface::SetPoleCol(const int VIndex, const NCollection_Array1<
     throw Standard_ConstructionError("Geom_BSplineSurface::SetPoleCol: invalid array dimension");
   }
 
+  ClearEvalRepresentation();
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
     myPoles(I + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1) = CPoles(I);
@@ -1571,6 +1616,7 @@ void Geom_BSplineSurface::SetPoleRow(const int UIndex, const NCollection_Array1<
     throw Standard_ConstructionError("Geom_BSplineSurface::SetPoleRow: invalid array dimension");
   }
 
+  ClearEvalRepresentation();
   for (int I = CPoles.Lower(); I <= CPoles.Upper(); I++)
   {
     myPoles(UIndex + myPoles.LowerRow() - 1, I + myPoles.LowerCol() - 1) = CPoles(I);
@@ -1592,6 +1638,7 @@ void Geom_BSplineSurface::SetPoleRow(const int                         UIndex,
 
 void Geom_BSplineSurface::SetPole(const int UIndex, const int VIndex, const gp_Pnt& P)
 {
+  ClearEvalRepresentation();
   myPoles.SetValue(UIndex + myPoles.LowerRow() - 1, VIndex + myPoles.LowerCol() - 1, P);
   myMaxDerivInvOk = false;
 }
@@ -1654,6 +1701,7 @@ void Geom_BSplineSurface::MovePoint(const double  U,
                       npoles);
   if (UFirstModifiedPole)
   {
+    ClearEvalRepresentation();
     myPoles = std::move(npoles);
   }
   myMaxDerivInvOk = false;
@@ -1778,6 +1826,8 @@ void Geom_BSplineSurface::InsertUKnots(const NCollection_Array1<double>& Knots,
   if (nbpoles == myPoles.ColLength())
     return;
 
+  ClearEvalRepresentation();
+
   NCollection_Array2<gp_Pnt> npoles(1, nbpoles, 1, myPoles.RowLength());
   NCollection_Array1<double> nknots(1, nbknots);
   NCollection_Array1<int>    nmults(1, nbknots);
@@ -1852,6 +1902,8 @@ void Geom_BSplineSurface::InsertVKnots(const NCollection_Array1<double>& Knots,
 
   if (nbpoles == myPoles.RowLength())
     return;
+
+  ClearEvalRepresentation();
 
   NCollection_Array2<gp_Pnt> npoles(1, myPoles.ColLength(), 1, nbpoles);
   NCollection_Array1<double> nknots(1, nbknots);
@@ -1970,6 +2022,7 @@ bool Geom_BSplineSurface::RemoveUKnot(const int Index, const int M, const double
     myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
   }
 
+  ClearEvalRepresentation();
   myPoles  = std::move(npoles);
   myUKnots = std::move(nknots);
   myUMults = std::move(nmults);
@@ -2046,9 +2099,11 @@ bool Geom_BSplineSurface::RemoveVKnot(const int Index, const int M, const double
     myWeights = BSplSLib::UnitWeights(npoles.ColLength(), npoles.RowLength());
   }
 
-  myPoles         = std::move(npoles);
-  myVKnots        = std::move(nknots);
-  myVMults        = std::move(nmults);
+  ClearEvalRepresentation();
+  myPoles  = std::move(npoles);
+  myVKnots = std::move(nknots);
+  myVMults = std::move(nmults);
+
   myMaxDerivInvOk = false;
   updateVKnots();
   return true;

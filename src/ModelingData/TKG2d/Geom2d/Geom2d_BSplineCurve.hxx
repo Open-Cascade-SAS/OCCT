@@ -28,6 +28,7 @@
 #include <Geom2d_BoundedCurve.hxx>
 class gp_Trsf2d;
 class Geom2d_Geometry;
+namespace Geom2d_EvalRepCurveDesc { class Base; }
 
 //! Describes a BSpline curve.
 //! A BSpline curve can be:
@@ -188,6 +189,19 @@ public:
 
   //! Copy constructor for optimized copying without validation.
   Standard_EXPORT Geom2d_BSplineCurve(const Geom2d_BSplineCurve& theOther);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom2d_EvalRepCurveDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! Increases the degree of this BSpline curve to
   //! Degree. As a result, the poles, weights and
@@ -853,6 +867,7 @@ private:
   NCollection_Array1<double>   myKnots;
   NCollection_Array1<double>   myFlatKnots;
   NCollection_Array1<int>      myMults;
+  occ::handle<Geom2d_EvalRepCurveDesc::Base> myEvalRep;
   int                          myDeg           = 0;
   bool                         myPeriodic      = false;
   bool                         myRational      = false;

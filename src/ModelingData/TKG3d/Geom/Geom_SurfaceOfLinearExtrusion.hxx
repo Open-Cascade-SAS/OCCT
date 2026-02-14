@@ -26,6 +26,7 @@ class gp_Dir;
 class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
+namespace Geom_EvalRepSurfaceDesc { class Base; }
 
 //! Describes a surface of linear extrusion ("extruded
 //! surface"), e.g. a generalized cylinder. Such a surface
@@ -71,6 +72,19 @@ public:
   //! curve C is a line and V is parallel to the direction of this
   //! line.
   Standard_EXPORT Geom_SurfaceOfLinearExtrusion(const occ::handle<Geom_Curve>& C, const gp_Dir& V);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! Assigns V as the "direction of extrusion" for this
   //! surface of linear extrusion.
@@ -235,6 +249,9 @@ public:
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const final;
 
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfLinearExtrusion, Geom_SweptSurface)
+
+private:
+  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
 };
 
 #endif // _Geom_SurfaceOfLinearExtrusion_HeaderFile

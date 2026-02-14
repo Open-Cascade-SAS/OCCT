@@ -30,6 +30,8 @@
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include "Geom_EvalRepCurveDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -41,10 +43,19 @@
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineCurve, Geom_BoundedCurve)
+
+//=================================================================================================
+
+void Geom_BSplineCurve::SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
 
 //=================================================================================================
 
@@ -105,6 +116,7 @@ Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
       myKnots(theOther.myKnots),
       myFlatKnots(theOther.myFlatKnots),
       myMults(theOther.myMults),
+      myEvalRep(Geom_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
       myDeg(theOther.myDeg),
       myPeriodic(theOther.myPeriodic),
       myRational(theOther.myRational),
@@ -219,6 +231,8 @@ void Geom_BSplineCurve::IncreaseDegree(const int Degree)
 {
   if (Degree == myDeg)
     return;
+
+  ClearEvalRepresentation();
 
   if (Degree < myDeg || Degree > Geom_BSplineCurve::MaxDegree())
   {
@@ -336,6 +350,8 @@ void Geom_BSplineCurve::InsertKnots(const NCollection_Array1<double>& Knots,
   if (nbpoles == myPoles.Length())
     return;
 
+  ClearEvalRepresentation();
+
   NCollection_Array1<gp_Pnt> npoles(1, nbpoles);
   NCollection_Array1<double> nknots(1, nbknots);
   NCollection_Array1<int>    nmults(1, nbknots);
@@ -423,6 +439,8 @@ bool Geom_BSplineCurve::RemoveKnot(const int Index, const int M, const double To
     return false;
   }
 
+  ClearEvalRepresentation();
+
   if (IsRational())
     myWeights = std::move(nweights);
   else
@@ -440,6 +458,7 @@ bool Geom_BSplineCurve::RemoveKnot(const int Index, const int M, const double To
 
 void Geom_BSplineCurve::Reverse()
 {
+  ClearEvalRepresentation();
   BSplCLib::Reverse(myKnots);
   BSplCLib::Reverse(myMults);
   int last;
@@ -466,6 +485,8 @@ void Geom_BSplineCurve::Segment(const double U1, const double U2, const double t
 {
   if (U2 < U1)
     throw Standard_DomainError("Geom_BSplineCurve::Segment");
+
+  ClearEvalRepresentation();
 
   double NewU1, NewU2;
   double U, DU = 0, aDDU = 0;
@@ -660,6 +681,7 @@ void Geom_BSplineCurve::SetKnot(const int Index, const double K)
   }
   if (K != myKnots.Value(Index))
   {
+    ClearEvalRepresentation();
     myKnots.SetValue(Index, K);
     myMaxDerivInvOk = false;
     updateKnots();
@@ -671,6 +693,7 @@ void Geom_BSplineCurve::SetKnot(const int Index, const double K)
 void Geom_BSplineCurve::SetKnots(const NCollection_Array1<double>& K)
 {
   CheckCurveData(myPoles, K, myMults, myDeg, myPeriodic);
+  ClearEvalRepresentation();
   myKnots         = K;
   myMaxDerivInvOk = false;
   updateKnots();
@@ -688,6 +711,7 @@ void Geom_BSplineCurve::SetKnot(const int Index, const double K, const int M)
 
 void Geom_BSplineCurve::SetPeriodic()
 {
+  ClearEvalRepresentation();
   int first = FirstUKnotIndex();
   int last  = LastUKnotIndex();
 
@@ -723,6 +747,8 @@ void Geom_BSplineCurve::SetOrigin(const int Index)
 {
   if (!myPeriodic)
     throw Standard_NoSuchObject("Geom_BSplineCurve::SetOrigin");
+
+  ClearEvalRepresentation();
 
   int i, k;
   int first = FirstUKnotIndex();
@@ -819,6 +845,7 @@ void Geom_BSplineCurve::SetOrigin(const double U, const double Tol)
 
   if (std::abs(U - u) > Tol)
   { // On reparametre la courbe
+    ClearEvalRepresentation();
     double delta = U - u;
     uf += delta;
     ul += delta;
@@ -859,6 +886,7 @@ void Geom_BSplineCurve::SetNotPeriodic()
 {
   if (myPeriodic)
   {
+    ClearEvalRepresentation();
     int NbKnots, NbPoles;
     BSplCLib::PrepareUnperiodize(myDeg, myMults, NbKnots, NbPoles);
 
@@ -903,6 +931,7 @@ void Geom_BSplineCurve::SetPole(const int Index, const gp_Pnt& P)
 {
   if (Index < 1 || Index > myPoles.Length())
     throw Standard_OutOfRange("BSpline curve: SetPole: index and #pole mismatch");
+  ClearEvalRepresentation();
   myPoles.SetValue(Index, P);
   myMaxDerivInvOk = false;
 }
@@ -924,6 +953,8 @@ void Geom_BSplineCurve::SetWeight(const int Index, const double W)
 
   if (W <= gp::Resolution())
     throw Standard_ConstructionError("BSpline curve: SetWeight: Weight too small");
+
+  ClearEvalRepresentation();
 
   bool rat = IsRational() || (std::abs(W - 1.) > gp::Resolution());
 
@@ -980,6 +1011,7 @@ void Geom_BSplineCurve::MovePoint(const double  U,
                       npoles);
   if (FirstModifiedPole)
   {
+    ClearEvalRepresentation();
     myPoles         = std::move(npoles);
     myMaxDerivInvOk = false;
   }
@@ -1027,6 +1059,7 @@ void Geom_BSplineCurve::MovePointAndTangent(const double  U,
                                 ErrorStatus);
   if (!ErrorStatus)
   {
+    ClearEvalRepresentation();
     myPoles         = std::move(new_poles);
     myMaxDerivInvOk = false;
   }

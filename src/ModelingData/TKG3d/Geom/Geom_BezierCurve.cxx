@@ -24,6 +24,8 @@
 // Suppressed Swaps, added Init, removed typedefs
 
 #include <Geom_BezierCurve.hxx>
+#include "Geom_EvalRepCurveDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -35,6 +37,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 #include <NCollection_Array1.hxx>
@@ -42,6 +45,14 @@
 #include <array>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
+
+//=================================================================================================
+
+void Geom_BezierCurve::SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
 
 //=================================================================================================
 
@@ -64,6 +75,7 @@ Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
       myWeights(theOther.myRational ? NCollection_Array1<double>(theOther.myWeights)
                                     : BSplCLib::UnitWeights(theOther.myPoles.Length())),
+      myEvalRep(Geom_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
       myRational(theOther.myRational),
       myClosed(theOther.myClosed),
       myMaxDerivInvOk(false)
@@ -473,6 +485,12 @@ int Geom_BezierCurve::Degree() const
 
 std::optional<gp_Pnt> Geom_BezierCurve::EvalD0(const double U) const
 {
+  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Pnt P;
   BSplCLib::D0(U, Poles(), Weights(), P);
   return P;
@@ -482,6 +500,12 @@ std::optional<gp_Pnt> Geom_BezierCurve::EvalD0(const double U) const
 
 std::optional<Geom_Curve::ResD1> Geom_BezierCurve::EvalD1(const double U) const
 {
+  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD1> aResult{std::in_place};
   BSplCLib::D1(U, Poles(), Weights(), aResult->Point, aResult->D1);
   return aResult;
@@ -491,6 +515,12 @@ std::optional<Geom_Curve::ResD1> Geom_BezierCurve::EvalD1(const double U) const
 
 std::optional<Geom_Curve::ResD2> Geom_BezierCurve::EvalD2(const double U) const
 {
+  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD2> aResult{std::in_place};
   BSplCLib::D2(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2);
   return aResult;
@@ -500,6 +530,12 @@ std::optional<Geom_Curve::ResD2> Geom_BezierCurve::EvalD2(const double U) const
 
 std::optional<Geom_Curve::ResD3> Geom_BezierCurve::EvalD3(const double U) const
 {
+  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD3> aResult{std::in_place};
   BSplCLib::D3(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2, aResult->D3);
   return aResult;
@@ -511,6 +547,13 @@ std::optional<gp_Vec> Geom_BezierCurve::EvalDN(const double U, const int N) cons
 {
   if (N < 1)
     return std::nullopt;
+
+  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Vec V;
 
   const int aDeg = myPoles.Size() - 1;
@@ -616,6 +659,7 @@ void Geom_BezierCurve::Transform(const gp_Trsf& T)
 
   for (int i = 1; i <= nbpoles; i++)
     myPoles(i).Transform(T);
+  ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
 
@@ -677,6 +721,7 @@ void Geom_BezierCurve::init(const NCollection_Array1<gp_Pnt>& thePoles,
 
   myMaxDerivInv   = 0.0;
   myMaxDerivInvOk = false;
+  ClearEvalRepresentation();
 }
 
 //=================================================================================================

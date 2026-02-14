@@ -28,6 +28,8 @@
 #include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
+#include "Geom_EvalRepSurfaceDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
@@ -40,12 +42,21 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
+
+//=================================================================================================
+
+void Geom_BezierSurface::SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
 
 //=======================================================================
 // function : Rational
@@ -363,6 +374,7 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
         (theOther.myURational || theOther.myVRational)
           ? NCollection_Array2<double>(theOther.myWeights)
           : BSplSLib::UnitWeights(theOther.myPoles.ColLength(), theOther.myPoles.RowLength())),
+      myEvalRep(Geom_EvalRepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
       myURational(theOther.myURational),
       myVRational(theOther.myVRational),
       myUMaxDerivInv(theOther.myUMaxDerivInv),
@@ -1253,6 +1265,7 @@ void Geom_BezierSurface::UReverse()
       }
     }
   }
+  ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
 
@@ -1299,6 +1312,7 @@ void Geom_BezierSurface::VReverse()
       }
     }
   }
+  ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
 
@@ -1330,6 +1344,12 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V) const
 {
+  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Pnt P;
   if (myURational || myVRational)
   {
@@ -1378,6 +1398,12 @@ std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V)
 
 std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Surface::ResD1> aResult{std::in_place};
   if (myURational || myVRational)
   {
@@ -1430,6 +1456,12 @@ std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, co
 
 std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Surface::ResD2> aResult{std::in_place};
   if (myURational || myVRational)
   {
@@ -1490,6 +1522,12 @@ std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, co
 
 std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Surface::ResD3> aResult{std::in_place};
   if (myURational || myVRational)
   {
@@ -1559,6 +1597,12 @@ std::optional<gp_Vec> Geom_BezierSurface::EvalDN(const double U,
                                                  const int    Nu,
                                                  const int    Nv) const
 {
+  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
   gp_Vec Derivative;
@@ -1805,6 +1849,7 @@ void Geom_BezierSurface::Transform(const gp_Trsf& T)
       myPoles(I, J).Transform(T);
     }
   }
+  ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
 
@@ -1941,6 +1986,7 @@ void Geom_BezierSurface::init(const NCollection_Array2<gp_Pnt>& thePoles,
   }
 
   myMaxDerivInvOk = false;
+  ClearEvalRepresentation();
 }
 
 //=================================================================================================

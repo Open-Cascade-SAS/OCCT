@@ -18,6 +18,8 @@
 #include <BSplSLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_Curve.hxx>
+#include "Geom_EvalRepSurfaceDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include "Geom_ExtrusionUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
@@ -32,6 +34,7 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -55,12 +58,20 @@ typedef gp_XYZ                        XYZ;
 
 //=================================================================================================
 
+void Geom_SurfaceOfLinearExtrusion::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
+
+//=================================================================================================
+
 occ::handle<Geom_Geometry> Geom_SurfaceOfLinearExtrusion::Copy() const
 {
-
-  occ::handle<Geom_SurfaceOfLinearExtrusion> Sr;
-  Sr = new SurfaceOfLinearExtrusion(basisCurve, direction);
-  return Sr;
+  occ::handle<Geom_SurfaceOfLinearExtrusion> aCopy = new SurfaceOfLinearExtrusion(basisCurve, direction);
+  aCopy->myEvalRep = Geom_EvalRepUtils::CloneSurfaceDesc(myEvalRep);
+  return aCopy;
 }
 
 //=================================================================================================
@@ -77,7 +88,7 @@ Geom_SurfaceOfLinearExtrusion::Geom_SurfaceOfLinearExtrusion(const occ::handle<G
 
 void Geom_SurfaceOfLinearExtrusion::UReverse()
 {
-
+  ClearEvalRepresentation();
   basisCurve->Reverse();
 }
 
@@ -93,6 +104,7 @@ double Geom_SurfaceOfLinearExtrusion::UReversedParameter(const double U) const
 
 void Geom_SurfaceOfLinearExtrusion::VReverse()
 {
+  ClearEvalRepresentation();
   direction.Reverse();
 }
 
@@ -108,6 +120,7 @@ double Geom_SurfaceOfLinearExtrusion::VReversedParameter(const double V) const
 
 void Geom_SurfaceOfLinearExtrusion::SetDirection(const Dir& V)
 {
+  ClearEvalRepresentation();
   direction = V;
 }
 
@@ -115,6 +128,7 @@ void Geom_SurfaceOfLinearExtrusion::SetDirection(const Dir& V)
 
 void Geom_SurfaceOfLinearExtrusion::SetBasisCurve(const occ::handle<Geom_Curve>& C)
 {
+  ClearEvalRepresentation();
   smooth     = C->Continuity();
   basisCurve = occ::down_cast<Geom_Curve>(C->Copy());
 }
@@ -134,6 +148,12 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(double& U1, double& U2, double& V1, d
 
 std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, const double V) const
 {
+  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<gp_Pnt> aBasisD0 = basisCurve->EvalD0(U);
   if (!aBasisD0)
     return std::nullopt;
@@ -147,6 +167,12 @@ std::optional<gp_Pnt> Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, cons
 std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
                                                                          const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(U);
   if (!aBasisD1)
     return std::nullopt;
@@ -166,6 +192,12 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfLinearExtrusion::EvalD1(const d
 std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
                                                                          const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(U);
   if (!aBasisD2)
     return std::nullopt;
@@ -189,6 +221,12 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfLinearExtrusion::EvalD2(const d
 std::optional<Geom_Surface::ResD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
                                                                          const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(U);
   if (!aBasisD3)
     return std::nullopt;
@@ -215,12 +253,19 @@ std::optional<Geom_Surface::ResD3> Geom_SurfaceOfLinearExtrusion::EvalD3(const d
 //=================================================================================================
 
 std::optional<gp_Vec> Geom_SurfaceOfLinearExtrusion::EvalDN(const double U,
-                                                            const double,
+                                                            const double V,
                                                             const int Nu,
                                                             const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
+
+  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   if (Nv == 0)
   {
     std::optional<gp_Vec> aDN = basisCurve->EvalDN(U, Nu);
@@ -278,6 +323,7 @@ bool Geom_SurfaceOfLinearExtrusion::IsCNv(const int) const
 
 void Geom_SurfaceOfLinearExtrusion::Transform(const Trsf& T)
 {
+  ClearEvalRepresentation();
   direction.Transform(T);
   basisCurve->Transform(T);
 }

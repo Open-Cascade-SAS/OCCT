@@ -16,6 +16,8 @@
 
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include "Geom_EvalRepCurveDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -160,6 +162,12 @@ int Geom_BSplineCurve::Degree() const
 
 std::optional<gp_Pnt> Geom_BSplineCurve::EvalD0(const double U) const
 {
+  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Pnt P;
   int    aSpanIndex = 0;
   double aNewU(U);
@@ -176,6 +184,12 @@ std::optional<gp_Pnt> Geom_BSplineCurve::EvalD0(const double U) const
 
 std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 {
+  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD1> aResult{std::in_place};
   int                              aSpanIndex = 0;
   double                           aNewU(U);
@@ -201,6 +215,12 @@ std::optional<Geom_Curve::ResD1> Geom_BSplineCurve::EvalD1(const double U) const
 
 std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 {
+  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD2> aResult{std::in_place};
   int                              aSpanIndex = 0;
   double                           aNewU(U);
@@ -227,6 +247,12 @@ std::optional<Geom_Curve::ResD2> Geom_BSplineCurve::EvalD2(const double U) const
 
 std::optional<Geom_Curve::ResD3> Geom_BSplineCurve::EvalD3(const double U) const
 {
+  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD3> aResult{std::in_place};
   int                              aSpanIndex = 0;
   double                           aNewU(U);
@@ -256,6 +282,13 @@ std::optional<gp_Vec> Geom_BSplineCurve::EvalDN(const double U, const int N) con
 {
   if (N < 1)
     return std::nullopt;
+
+  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Vec V;
   BSplCLib::DN(U, N, 0, myDeg, myPeriodic, myPoles, Weights(), myFlatKnots, BSplCLib::NoMults(), V);
   return V;
@@ -605,6 +638,7 @@ bool Geom_BSplineCurve::IsRational() const
 
 void Geom_BSplineCurve::Transform(const gp_Trsf& T)
 {
+  ClearEvalRepresentation();
   for (int I = 1; I <= myPoles.Length(); I++)
     myPoles.ChangeValue(I).Transform(T);
   myMaxDerivInvOk = false;

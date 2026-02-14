@@ -26,6 +26,7 @@
 
 class gp_Trsf;
 class Geom_Geometry;
+namespace Geom_EvalRepCurveDesc { class Base; }
 
 //! This class implements the basis services for an offset curve
 //! in 3D space. The Offset curve in this package can be a self
@@ -97,6 +98,19 @@ public:
   //! Copy constructor for optimized copying without validation.
   //! @param[in] theOther the offset curve to copy from
   Standard_EXPORT Geom_OffsetCurve(const Geom_OffsetCurve& theOther);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom_EvalRepCurveDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! Changes the orientation of this offset curve.
   //! As a result:
@@ -274,6 +288,7 @@ public:
 
 private:
   occ::handle<Geom_Curve> basisCurve;
+  occ::handle<Geom_EvalRepCurveDesc::Base> myEvalRep;
   gp_Dir                  direction;
   double                  offsetValue;
   GeomAbs_Shape           myBasisCurveContinuity;

@@ -30,6 +30,7 @@
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
+namespace Geom_EvalRepSurfaceDesc { class Base; }
 
 //! Describes a BSpline surface.
 //! In each parametric direction, a BSpline surface can be:
@@ -219,6 +220,19 @@ public:
   //! Copy constructor for optimized copying without validation.
   //! @param[in] theOther the BSpline surface to copy from
   Standard_EXPORT Geom_BSplineSurface(const Geom_BSplineSurface& theOther);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! Exchanges the u and v parametric directions on
   //! this BSpline surface.
@@ -1288,6 +1302,7 @@ private:
   NCollection_Array1<double>   myVFlatKnots;
   NCollection_Array1<int>      myUMults;
   NCollection_Array1<int>      myVMults;
+  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
   int                          myUDeg          = 0;
   int                          myVDeg          = 0;
   bool                         myUPeriodic     = false;

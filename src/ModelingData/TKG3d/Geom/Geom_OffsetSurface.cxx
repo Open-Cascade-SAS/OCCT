@@ -25,6 +25,8 @@
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_ElementarySurface.hxx>
+#include "Geom_EvalRepSurfaceDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_Ellipse.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -53,6 +55,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_NumericError.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 #include <NCollection_Array1.hxx>
@@ -63,6 +66,42 @@
 IMPLEMENT_STANDARD_RTTIEXT(Geom_OffsetSurface, Geom_Surface)
 
 static const double MyAngularToleranceForG1 = Precision::Angular();
+
+namespace
+{
+occ::handle<Geom_EvalRepSurfaceDesc::Base> makeFullSurfaceRep(const occ::handle<Geom_Surface>& theSurface)
+{
+  if (theSurface.IsNull())
+  {
+    return occ::handle<Geom_EvalRepSurfaceDesc::Base>();
+  }
+  occ::handle<Geom_EvalRepSurfaceDesc::Full> aDesc = new Geom_EvalRepSurfaceDesc::Full();
+  aDesc->Representation = theSurface;
+  return aDesc;
+}
+
+occ::handle<Geom_Surface> directRepSurface(const Geom_OffsetSurface& theSurface)
+{
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& aDesc = theSurface.EvalRepresentation();
+  if (aDesc.IsNull())
+  {
+    return occ::handle<Geom_Surface>();
+  }
+  if (aDesc->GetKind() != Geom_EvalRepSurfaceDesc::Base::Kind::Full)
+  {
+    return occ::handle<Geom_Surface>();
+  }
+  return aDesc->Representation;
+}
+} // namespace
+
+//=================================================================================================
+
+void Geom_OffsetSurface::SetEvalRepresentation(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
 
 //=================================================================================================
 
@@ -79,15 +118,13 @@ occ::handle<Geom_Geometry> Geom_OffsetSurface::Copy() const
 
 Geom_OffsetSurface::Geom_OffsetSurface(const Geom_OffsetSurface& theOther)
     : basisSurf(occ::down_cast<Geom_Surface>(theOther.basisSurf->Copy())),
-      equivSurf(theOther.equivSurf.IsNull()
-                  ? occ::handle<Geom_Surface>()
-                  : occ::down_cast<Geom_Surface>(theOther.equivSurf->Copy())),
+      myEvalRep(Geom_EvalRepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
       offsetValue(theOther.offsetValue),
       myOscSurf(theOther.myOscSurf ? std::make_unique<Geom_OsculatingSurface>(*theOther.myOscSurf)
                                    : nullptr),
       myBasisSurfContinuity(theOther.myBasisSurfContinuity)
 {
-  // Deep copy without validation - source surface is already validated
+  // Deep copy without validation - source surface is already validated.
 }
 
 //=================================================================================================
@@ -109,6 +146,7 @@ Geom_OffsetSurface::Geom_OffsetSurface(const occ::handle<Geom_Surface>& theSurf,
 void Geom_OffsetSurface::SetBasisSurface(const occ::handle<Geom_Surface>& S,
                                          const bool                       isNotCheckC0)
 {
+  ClearEvalRepresentation();
   double aUf, aUl, aVf, aVl;
   S->Bounds(aUf, aUl, aVf, aVl);
 
@@ -215,7 +253,8 @@ void Geom_OffsetSurface::SetBasisSurface(const occ::handle<Geom_Surface>& S,
     basisSurf = aCheckingSurf;
   }
 
-  equivSurf = Surface();
+  const occ::handle<Geom_Surface> aSurfaceRep = Surface();
+  SetEvalRepresentation(makeFullSurfaceRep(aSurfaceRep));
 
   if (aCheckingSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface))
       || aCheckingSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
@@ -233,18 +272,18 @@ void Geom_OffsetSurface::SetBasisSurface(const occ::handle<Geom_Surface>& S,
 
 void Geom_OffsetSurface::SetOffsetValue(const double D)
 {
+  ClearEvalRepresentation();
   offsetValue = D;
-  equivSurf   = Surface();
+  SetEvalRepresentation(makeFullSurfaceRep(Surface()));
 }
 
 //=================================================================================================
 
 void Geom_OffsetSurface::UReverse()
 {
+  ClearEvalRepresentation();
   basisSurf->UReverse();
   offsetValue = -offsetValue;
-  if (!equivSurf.IsNull())
-    equivSurf->UReverse();
 }
 
 //=================================================================================================
@@ -258,10 +297,9 @@ double Geom_OffsetSurface::UReversedParameter(const double U) const
 
 void Geom_OffsetSurface::VReverse()
 {
+  ClearEvalRepresentation();
   basisSurf->VReverse();
   offsetValue = -offsetValue;
-  if (!equivSurf.IsNull())
-    equivSurf->VReverse();
 }
 
 //=================================================================================================
@@ -306,9 +344,10 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
     return std::nullopt;
   }
 #endif
-  if (!equivSurf.IsNull())
+  if (const std::optional<gp_Pnt> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+      aEvalRepResult.has_value())
   {
-    return equivSurf->EvalD0(U, V);
+    return aEvalRepResult;
   }
 
   gp_Pnt aP;
@@ -329,9 +368,10 @@ std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, co
     return std::nullopt;
   }
 #endif
-  if (!equivSurf.IsNull())
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+      aEvalRepResult.has_value())
   {
-    return equivSurf->EvalD1(U, V);
+    return aEvalRepResult;
   }
 
   Geom_Surface::ResD1 aResult;
@@ -360,9 +400,10 @@ std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, co
     return std::nullopt;
   }
 #endif
-  if (!equivSurf.IsNull())
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+      aEvalRepResult.has_value())
   {
-    return equivSurf->EvalD2(U, V);
+    return aEvalRepResult;
   }
 
   Geom_Surface::ResD2 aResult;
@@ -393,9 +434,10 @@ std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, co
     return std::nullopt;
   }
 #endif
-  if (!equivSurf.IsNull())
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+      aEvalRepResult.has_value())
   {
-    return equivSurf->EvalD3(U, V);
+    return aEvalRepResult;
   }
 
   Geom_Surface::ResD3 aResult;
@@ -435,9 +477,10 @@ std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
     return std::nullopt;
   }
 #endif
-  if (!equivSurf.IsNull())
+  if (const std::optional<gp_Vec> aEvalRepResult = Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+      aEvalRepResult.has_value())
   {
-    return equivSurf->EvalDN(U, V, Nu, Nv);
+    return aEvalRepResult;
   }
 
   gp_Vec aResult;
@@ -565,7 +608,8 @@ void Geom_OffsetSurface_VIsoEvaluator::Evaluate(int*, /*Dimension*/
 
 occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
 {
-  if (equivSurf.IsNull())
+  const occ::handle<Geom_Surface> anEquivSurface = directRepSurface(*this);
+  if (anEquivSurface.IsNull())
   {
     GeomAdaptor_Surface aGAsurf(basisSurf);
     if (aGAsurf.GetType() == GeomAbs_SurfaceOfExtrusion)
@@ -608,15 +652,15 @@ occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
     occ::handle<Geom_BSplineCurve> C = new Geom_BSplineCurve(Poles, Knots, Mults, Approx.Degree());
     return C;
   }
-  else
-    return equivSurf->UIso(UU);
+  return anEquivSurface->UIso(UU);
 }
 
 //=================================================================================================
 
 occ::handle<Geom_Curve> Geom_OffsetSurface::VIso(const double VV) const
 {
-  if (equivSurf.IsNull())
+  const occ::handle<Geom_Surface> anEquivSurface = directRepSurface(*this);
+  if (anEquivSurface.IsNull())
   {
     const int                                Num1 = 0, Num2 = 0, Num3 = 1;
     occ::handle<NCollection_HArray1<double>> T1, T2, T3 = new NCollection_HArray1<double>(1, Num3);
@@ -644,8 +688,7 @@ occ::handle<Geom_Curve> Geom_OffsetSurface::VIso(const double VV) const
     occ::handle<Geom_BSplineCurve> C = new Geom_BSplineCurve(Poles, Knots, Mults, Approx.Degree());
     return C;
   }
-  else
-    return equivSurf->VIso(VV);
+  return anEquivSurface->VIso(VV);
 }
 
 //=================================================================================================
@@ -799,9 +842,9 @@ bool Geom_OffsetSurface::IsVClosed() const
 
 void Geom_OffsetSurface::Transform(const gp_Trsf& T)
 {
+  ClearEvalRepresentation();
   basisSurf->Transform(T);
   offsetValue *= T.ScaleFactor();
-  equivSurf.Nullify();
 }
 
 //=================================================================================================
@@ -809,8 +852,11 @@ void Geom_OffsetSurface::Transform(const gp_Trsf& T)
 void Geom_OffsetSurface::TransformParameters(double& U, double& V, const gp_Trsf& T) const
 {
   basisSurf->TransformParameters(U, V, T);
-  if (!equivSurf.IsNull())
-    equivSurf->TransformParameters(U, V, T);
+  const occ::handle<Geom_Surface> anEquivSurface = directRepSurface(*this);
+  if (!anEquivSurface.IsNull())
+  {
+    anEquivSurface->TransformParameters(U, V, T);
+  }
 }
 
 //=================================================================================================
@@ -972,12 +1018,14 @@ bool Geom_OffsetSurface::VOsculatingSurface(const double                      U,
 
 void Geom_OffsetSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
+  const occ::handle<Geom_Surface> anEquivSurface = directRepSurface(*this);
+
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 
   OCCT_DUMP_BASE_CLASS(theOStream, theDepth, Geom_Surface)
 
   OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, basisSurf.get())
-  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, equivSurf.get())
+  OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, anEquivSurface.get())
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, offsetValue)
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myBasisSurfContinuity)

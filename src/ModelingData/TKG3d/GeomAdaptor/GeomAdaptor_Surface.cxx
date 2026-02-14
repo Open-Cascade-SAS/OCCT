@@ -75,6 +75,30 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Surface, Adaptor3d_Surface)
 
 namespace
 {
+bool hasEvalRep(const GeomAdaptor_Surface::SurfaceDataVariant& theData)
+{
+  if (const GeomAdaptor_Surface::BezierData* aBezierData = std::get_if<GeomAdaptor_Surface::BezierData>(&theData))
+  {
+    return !aBezierData->EvalRep.IsNull();
+  }
+  if (const GeomAdaptor_Surface::BSplineData* aBSplineData = std::get_if<GeomAdaptor_Surface::BSplineData>(&theData))
+  {
+    return !aBSplineData->EvalRep.IsNull();
+  }
+  if (const GeomAdaptor_Surface::ExtrusionData* anExtrusionData = std::get_if<GeomAdaptor_Surface::ExtrusionData>(&theData))
+  {
+    return !anExtrusionData->EvalRep.IsNull();
+  }
+  if (const GeomAdaptor_Surface::RevolutionData* aRevolutionData = std::get_if<GeomAdaptor_Surface::RevolutionData>(&theData))
+  {
+    return !aRevolutionData->EvalRep.IsNull();
+  }
+  if (const GeomAdaptor_Surface::OffsetData* anOffsetData = std::get_if<GeomAdaptor_Surface::OffsetData>(&theData))
+  {
+    return !anOffsetData->EvalRep.IsNull();
+  }
+  return false;
+}
 
 //=================================================================================================
 
@@ -320,6 +344,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
     GeomAdaptor_Surface::ExtrusionData aNewData;
     aNewData.BasisCurve  = anExtrusionData->BasisCurve->ShallowCopy();
     aNewData.Direction   = anExtrusionData->Direction;
+    aNewData.EvalRep     = anExtrusionData->EvalRep;
     aCopy->mySurfaceData = aNewData;
   }
   else if (auto* aRevolutionData = std::get_if<GeomAdaptor_Surface::RevolutionData>(&mySurfaceData))
@@ -327,6 +352,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
     GeomAdaptor_Surface::RevolutionData aNewData;
     aNewData.BasisCurve  = aRevolutionData->BasisCurve->ShallowCopy();
     aNewData.Axis        = aRevolutionData->Axis;
+    aNewData.EvalRep     = aRevolutionData->EvalRep;
     aCopy->mySurfaceData = aNewData;
   }
   else if (auto* anOffsetData = std::get_if<GeomAdaptor_Surface::OffsetData>(&mySurfaceData))
@@ -341,13 +367,22 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_Surface::ShallowCopy() const
     }
     aNewData.OffsetSurface = anOffsetData->OffsetSurface; // Shared handle to original surface
     aNewData.Offset        = anOffsetData->Offset;
+    aNewData.EvalRep       = anOffsetData->EvalRep;
     aCopy->mySurfaceData   = std::move(aNewData);
   }
   else if (auto* aBSplineData = std::get_if<GeomAdaptor_Surface::BSplineData>(&mySurfaceData))
   {
     GeomAdaptor_Surface::BSplineData aNewData;
     aNewData.Surface = aBSplineData->Surface;
+    aNewData.EvalRep = aBSplineData->EvalRep;
     // Cache is not copied - will be rebuilt on demand
+    aCopy->mySurfaceData = aNewData;
+  }
+  else if (auto* aBezierData = std::get_if<GeomAdaptor_Surface::BezierData>(&mySurfaceData))
+  {
+    GeomAdaptor_Surface::BezierData aNewData;
+    aNewData.Surface = aBezierData->Surface;
+    aNewData.EvalRep = aBezierData->EvalRep;
     aCopy->mySurfaceData = aNewData;
   }
   else
@@ -424,6 +459,7 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
       GeomAdaptor_Surface::RevolutionData aRevData;
       aRevData.BasisCurve = new GeomAdaptor_Curve(aRevSurf->BasisCurve());
       aRevData.Axis       = aRevSurf->Axis();
+      aRevData.EvalRep    = aRevSurf->EvalRepresentation();
       mySurfaceData       = aRevData;
     }
     else if (TheType == STANDARD_TYPE(Geom_SurfaceOfLinearExtrusion))
@@ -435,18 +471,23 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
       GeomAdaptor_Surface::ExtrusionData anExtData;
       anExtData.BasisCurve = new GeomAdaptor_Curve(anExtSurf->BasisCurve());
       anExtData.Direction  = anExtSurf->Direction().XYZ();
+      anExtData.EvalRep    = anExtSurf->EvalRepresentation();
       mySurfaceData        = anExtData;
     }
     else if (TheType == STANDARD_TYPE(Geom_BezierSurface))
     {
       mySurfaceType = GeomAbs_BezierSurface;
-      mySurfaceData = GeomAdaptor_Surface::BezierData{};
+      GeomAdaptor_Surface::BezierData aBezierData;
+      aBezierData.Surface = occ::down_cast<Geom_BezierSurface>(mySurface);
+      aBezierData.EvalRep = aBezierData.Surface->EvalRepresentation();
+      mySurfaceData       = std::move(aBezierData);
     }
     else if (TheType == STANDARD_TYPE(Geom_BSplineSurface))
     {
       mySurfaceType = GeomAbs_BSplineSurface;
       GeomAdaptor_Surface::BSplineData aBSplineData;
       aBSplineData.Surface = occ::down_cast<Geom_BSplineSurface>(mySurface);
+      aBSplineData.EvalRep = aBSplineData.Surface->EvalRepresentation();
       mySurfaceData        = aBSplineData;
     }
     else if (TheType == STANDARD_TYPE(Geom_OffsetSurface))
@@ -464,6 +505,7 @@ void GeomAdaptor_Surface::load(const occ::handle<Geom_Surface>& S,
                                                           myTolV);
       anOffsetData.OffsetSurface = anOffSurf;
       anOffsetData.Offset        = anOffSurf->Offset();
+      anOffsetData.EvalRep       = anOffSurf->EvalRepresentation();
       // Check if equivalent canonical surface exists for faster evaluation
       occ::handle<Geom_Surface> anEquivSurf = anOffSurf->Surface();
       if (!anEquivSurf.IsNull())
@@ -1015,6 +1057,10 @@ std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
       return P;
 
     case GeomAbs_BezierSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD0(U, V);
+      }
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull())
         RebuildCache(U, V);
@@ -1022,6 +1068,10 @@ std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
       return P;
     }
     case GeomAbs_BSplineSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD0(U, V);
+      }
       auto& aCache = std::get<BSplineData>(mySurfaceData).Cache;
       if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
         RebuildCache(U, V);
@@ -1030,6 +1080,10 @@ std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD0(U, V);
+      }
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       if (!Geom_ExtrusionUtils::D0(U, V, *anExtData.BasisCurve, anExtData.Direction, P))
         return std::nullopt;
@@ -1037,6 +1091,10 @@ std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
     }
 
     case GeomAbs_SurfaceOfRevolution: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD0(U, V);
+      }
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       if (!Geom_RevolutionUtils::D0(U, V, *aRevData.BasisCurve, aRevData.Axis, P))
         return std::nullopt;
@@ -1044,6 +1102,10 @@ std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
     }
 
     case GeomAbs_OffsetSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD0(U, V);
+      }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       if (!offsetD0(U, V, anOffData, P))
         return std::nullopt;
@@ -1123,6 +1185,10 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
       return aResult;
 
     case GeomAbs_BezierSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD1(U, V);
+      }
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull())
         RebuildCache(U, V);
@@ -1130,6 +1196,10 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
       return aResult;
     }
     case GeomAbs_BSplineSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD1(U, V);
+      }
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
       if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
@@ -1144,6 +1214,10 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD1(U, V);
+      }
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       if (!Geom_ExtrusionUtils::D1(u,
                                    v,
@@ -1157,6 +1231,10 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
     }
 
     case GeomAbs_SurfaceOfRevolution: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD1(U, V);
+      }
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       if (!Geom_RevolutionUtils::D1(u,
                                     v,
@@ -1170,6 +1248,10 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
     }
 
     case GeomAbs_OffsetSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD1(U, V);
+      }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       if (!offsetD1(u, v, anOffData, aResult.Point, aResult.D1U, aResult.D1V))
         return std::nullopt;
@@ -1285,6 +1367,10 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
       return aResult;
 
     case GeomAbs_BezierSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD2(U, V);
+      }
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
       if (aCache.IsNull())
         RebuildCache(U, V);
@@ -1293,6 +1379,10 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
       return aResult;
     }
     case GeomAbs_BSplineSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD2(U, V);
+      }
       auto&       aBSplData = std::get<BSplineData>(mySurfaceData);
       const auto& aBSpl     = aBSplData.Surface;
       if ((USide != 0 || VSide != 0) && IfUVBound(u, v, Ideb, Ifin, IVdeb, IVfin, USide, VSide))
@@ -1325,6 +1415,10 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD2(U, V);
+      }
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       if (!Geom_ExtrusionUtils::D2(u,
                                    v,
@@ -1341,6 +1435,10 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
     }
 
     case GeomAbs_SurfaceOfRevolution: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD2(U, V);
+      }
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       if (!Geom_RevolutionUtils::D2(u,
                                     v,
@@ -1357,6 +1455,10 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
     }
 
     case GeomAbs_OffsetSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD2(U, V);
+      }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       if (!offsetD2(u,
                     v,
@@ -1508,6 +1610,10 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
       return aResult;
 
     case GeomAbs_BSplineSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD3(U, V);
+      }
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
       {
@@ -1547,6 +1653,10 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD3(U, V);
+      }
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       if (!Geom_ExtrusionUtils::D3(u,
                                    v,
@@ -1567,6 +1677,10 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
     }
 
     case GeomAbs_SurfaceOfRevolution: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD3(U, V);
+      }
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       if (!Geom_RevolutionUtils::D3(u,
                                     v,
@@ -1587,6 +1701,10 @@ std::optional<Geom_Surface::ResD3> GeomAdaptor_Surface::EvalD3(double U, double 
     }
 
     case GeomAbs_OffsetSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalD3(U, V);
+      }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       if (!offsetD3(u,
                     v,
@@ -1650,6 +1768,10 @@ std::optional<gp_Vec> GeomAdaptor_Surface::EvalDN(double U, double V, int Nu, in
   switch (mySurfaceType)
   {
     case GeomAbs_BSplineSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalDN(U, V, Nu, Nv);
+      }
       const auto& aBSpl = std::get<BSplineData>(mySurfaceData).Surface;
       if ((USide == 0) && (VSide == 0))
         return aBSpl->EvalDN(u, v, Nu, Nv);
@@ -1663,6 +1785,10 @@ std::optional<gp_Vec> GeomAdaptor_Surface::EvalDN(double U, double V, int Nu, in
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalDN(U, V, Nu, Nv);
+      }
       const auto& anExtData = std::get<GeomAdaptor_Surface::ExtrusionData>(mySurfaceData);
       gp_Vec      aDN;
       if (!Geom_ExtrusionUtils::DN(u, *anExtData.BasisCurve, anExtData.Direction, Nu, Nv, aDN))
@@ -1671,6 +1797,10 @@ std::optional<gp_Vec> GeomAdaptor_Surface::EvalDN(double U, double V, int Nu, in
     }
 
     case GeomAbs_SurfaceOfRevolution: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalDN(U, V, Nu, Nv);
+      }
       const auto& aRevData = std::get<GeomAdaptor_Surface::RevolutionData>(mySurfaceData);
       gp_Vec      aDN;
       if (!Geom_RevolutionUtils::DN(u, v, *aRevData.BasisCurve, aRevData.Axis, Nu, Nv, aDN))
@@ -1679,6 +1809,10 @@ std::optional<gp_Vec> GeomAdaptor_Surface::EvalDN(double U, double V, int Nu, in
     }
 
     case GeomAbs_OffsetSurface: {
+      if (hasEvalRep(mySurfaceData))
+      {
+        return mySurface->EvalDN(U, V, Nu, Nv);
+      }
       const auto& anOffData = std::get<GeomAdaptor_Surface::OffsetData>(mySurfaceData);
       gp_Vec      aDN;
       if (!offsetDN(u, v, anOffData, Nu, Nv, aDN))

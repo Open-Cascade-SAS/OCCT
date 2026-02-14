@@ -61,6 +61,26 @@ static const double PosTol = Precision::PConfusion() / 2;
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_Curve, Adaptor3d_Curve)
 
+namespace
+{
+bool hasEvalRep(const GeomAdaptor_Curve::CurveDataVariant& theData)
+{
+  if (const GeomAdaptor_Curve::BezierData* aBezierData = std::get_if<GeomAdaptor_Curve::BezierData>(&theData))
+  {
+    return !aBezierData->EvalRep.IsNull();
+  }
+  if (const GeomAdaptor_Curve::BSplineData* aBSplineData = std::get_if<GeomAdaptor_Curve::BSplineData>(&theData))
+  {
+    return !aBSplineData->EvalRep.IsNull();
+  }
+  if (const GeomAdaptor_Curve::OffsetData* anOffsetData = std::get_if<GeomAdaptor_Curve::OffsetData>(&theData))
+  {
+    return !anOffsetData->EvalRep.IsNull();
+  }
+  return false;
+}
+} // namespace
+
 //=================================================================================================
 
 occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
@@ -80,17 +100,24 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_Curve::ShallowCopy() const
       occ::down_cast<GeomAdaptor_Curve>(anOffsetData->BasisAdaptor->ShallowCopy());
     aCopyData.Offset    = anOffsetData->Offset;
     aCopyData.Direction = anOffsetData->Direction;
+    aCopyData.EvalRep   = anOffsetData->EvalRep;
     aCopy->myCurveData  = std::move(aCopyData);
   }
   else if (const auto* aBSplineData = std::get_if<BSplineData>(&myCurveData))
   {
     BSplineData aCopyData;
-    aCopyData.Curve    = aBSplineData->Curve;
+    aCopyData.Curve   = aBSplineData->Curve;
+    aCopyData.EvalRep = aBSplineData->EvalRep;
     aCopy->myCurveData = std::move(aCopyData);
   }
   else if (std::holds_alternative<BezierData>(myCurveData))
   {
-    aCopy->myCurveData = BezierData{};
+    const BezierData& aBezierData = std::get<BezierData>(myCurveData);
+    BezierData        aCopyData;
+    aCopyData.Curve   = aBezierData.Curve;
+    aCopyData.Cache   = aBezierData.Cache;
+    aCopyData.EvalRep = aBezierData.EvalRep;
+    aCopy->myCurveData = std::move(aCopyData);
   }
   else
   {
@@ -243,13 +270,17 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
     else if (TheType == STANDARD_TYPE(Geom_BezierCurve))
     {
       myTypeCurve = GeomAbs_BezierCurve;
-      myCurveData = BezierData{};
+      BezierData aBezierData;
+      aBezierData.Curve   = occ::down_cast<Geom_BezierCurve>(C);
+      aBezierData.EvalRep = aBezierData.Curve->EvalRepresentation();
+      myCurveData         = std::move(aBezierData);
     }
     else if (TheType == STANDARD_TYPE(Geom_BSplineCurve))
     {
       myTypeCurve = GeomAbs_BSplineCurve;
       BSplineData aBSplineData;
-      aBSplineData.Curve = occ::down_cast<Geom_BSplineCurve>(C);
+      aBSplineData.Curve   = occ::down_cast<Geom_BSplineCurve>(C);
+      aBSplineData.EvalRep = aBSplineData.Curve->EvalRepresentation();
       myCurveData        = std::move(aBSplineData);
     }
     else if (TheType == STANDARD_TYPE(Geom_OffsetCurve))
@@ -260,6 +291,7 @@ void GeomAdaptor_Curve::load(const occ::handle<Geom_Curve>& C,
       anOffsetData.BasisAdaptor = new GeomAdaptor_Curve(anOffsetCurve->BasisCurve());
       anOffsetData.Offset       = anOffsetCurve->Offset();
       anOffsetData.Direction    = anOffsetCurve->Direction();
+      anOffsetData.EvalRep      = anOffsetCurve->EvalRepresentation();
       myCurveData               = std::move(anOffsetData);
     }
     else
@@ -656,6 +688,10 @@ std::optional<gp_Pnt> GeomAdaptor_Curve::EvalD0(double U) const
       return P;
 
     case GeomAbs_BezierCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD0(U);
+      }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
         RebuildCache(U);
@@ -664,6 +700,10 @@ std::optional<gp_Pnt> GeomAdaptor_Curve::EvalD0(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD0(U);
+      }
       int   aStart = 0, aFinish = 0;
       auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
@@ -680,6 +720,10 @@ std::optional<gp_Pnt> GeomAdaptor_Curve::EvalD0(double U) const
     }
 
     case GeomAbs_OffsetCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD0(U);
+      }
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom_OffsetCurveUtils::EvaluateD0(U,
                                              anOffsetData.BasisAdaptor.get(),
@@ -736,6 +780,10 @@ std::optional<Geom_Curve::ResD1> GeomAdaptor_Curve::EvalD1(double U) const
       return aResult;
 
     case GeomAbs_BezierCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD1(U);
+      }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
         RebuildCache(U);
@@ -744,6 +792,10 @@ std::optional<Geom_Curve::ResD1> GeomAdaptor_Curve::EvalD1(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD1(U);
+      }
       int   aStart = 0, aFinish = 0;
       auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
@@ -760,6 +812,10 @@ std::optional<Geom_Curve::ResD1> GeomAdaptor_Curve::EvalD1(double U) const
     }
 
     case GeomAbs_OffsetCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD1(U);
+      }
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom_OffsetCurveUtils::EvaluateD1(U,
                                              anOffsetData.BasisAdaptor.get(),
@@ -819,6 +875,10 @@ std::optional<Geom_Curve::ResD2> GeomAdaptor_Curve::EvalD2(double U) const
       return aResult;
 
     case GeomAbs_BezierCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD2(U);
+      }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
         RebuildCache(U);
@@ -827,6 +887,10 @@ std::optional<Geom_Curve::ResD2> GeomAdaptor_Curve::EvalD2(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD2(U);
+      }
       int   aStart = 0, aFinish = 0;
       auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
@@ -843,6 +907,10 @@ std::optional<Geom_Curve::ResD2> GeomAdaptor_Curve::EvalD2(double U) const
     }
 
     case GeomAbs_OffsetCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD2(U);
+      }
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom_OffsetCurveUtils::EvaluateD2(U,
                                              anOffsetData.BasisAdaptor.get(),
@@ -921,6 +989,10 @@ std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
       return aResult;
 
     case GeomAbs_BezierCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD3(U);
+      }
       auto& aCache = std::get<BezierData>(myCurveData).Cache;
       if (aCache.IsNull())
         RebuildCache(U);
@@ -929,6 +1001,10 @@ std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
     }
 
     case GeomAbs_BSplineCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD3(U);
+      }
       int   aStart = 0, aFinish = 0;
       auto& aBSplData = std::get<BSplineData>(myCurveData);
       if (IsBoundary(U, aStart, aFinish))
@@ -946,6 +1022,10 @@ std::optional<Geom_Curve::ResD3> GeomAdaptor_Curve::EvalD3(double U) const
     }
 
     case GeomAbs_OffsetCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalD3(U);
+      }
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       if (!Geom_OffsetCurveUtils::EvaluateD3(U,
                                              anOffsetData.BasisAdaptor.get(),
@@ -1001,6 +1081,10 @@ std::optional<gp_Vec> GeomAdaptor_Curve::EvalDN(double U, int N) const
       return myCurve->EvalDN(U, N);
 
     case GeomAbs_BSplineCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalDN(U, N);
+      }
       int aStart = 0, aFinish = 0;
       if (IsBoundary(U, aStart, aFinish))
       {
@@ -1011,6 +1095,10 @@ std::optional<gp_Vec> GeomAdaptor_Curve::EvalDN(double U, int N) const
     }
 
     case GeomAbs_OffsetCurve: {
+      if (hasEvalRep(myCurveData))
+      {
+        return myCurve->EvalDN(U, N);
+      }
       const auto& anOffsetData = std::get<OffsetData>(myCurveData);
       gp_Vec      aDN;
       if (!Geom_OffsetCurveUtils::EvaluateDN(U,
