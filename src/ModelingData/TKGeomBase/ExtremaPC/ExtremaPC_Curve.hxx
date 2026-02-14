@@ -14,7 +14,6 @@
 #ifndef _ExtremaPC_Curve_HeaderFile
 #define _ExtremaPC_Curve_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
 #include <ExtremaPC.hxx>
 #include <ExtremaPC_BezierCurve.hxx>
 #include <ExtremaPC_BSplineCurve.hxx>
@@ -81,13 +80,13 @@ public:
   //! Constructor with curve adaptor.
   //! Uses the curve's natural parameter bounds as domain.
   //! @param[in] theCurve curve adaptor
-  Standard_EXPORT explicit ExtremaPC_Curve(const Adaptor3d_Curve& theCurve);
+  Standard_EXPORT explicit ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve);
 
   //! Constructor with curve adaptor and parameter range.
   //! @param[in] theCurve curve adaptor
   //! @param[in] theUMin lower parameter bound
   //! @param[in] theUMax upper parameter bound
-  Standard_EXPORT ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax);
+  Standard_EXPORT ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve, double theUMin, double theUMax);
 
   //! Constructor with Geom_Curve.
   //! For non-trimmed curves, does NOT set domain (uses natural/unbounded behavior).

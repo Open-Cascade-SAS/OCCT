@@ -14,8 +14,8 @@
 #ifndef _ExtremaCC_Curves_HeaderFile
 #define _ExtremaCC_Curves_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
 #include <ExtremaCC.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <variant>
@@ -72,15 +72,15 @@ public:
   //! Constructor with two curves (uses full curve domains).
   //! @param[in] theCurve1 first curve
   //! @param[in] theCurve2 second curve
-  Standard_EXPORT ExtremaCC_Curves(const Adaptor3d_Curve& theCurve1,
-                                   const Adaptor3d_Curve& theCurve2);
+  Standard_EXPORT ExtremaCC_Curves(const GeomAdaptor_Curve& theCurve1,
+                                   const GeomAdaptor_Curve& theCurve2);
 
   //! Constructor with two curves and parameter domains.
   //! @param[in] theCurve1 first curve
   //! @param[in] theCurve2 second curve
   //! @param[in] theDomain parameter domains for both curves
-  Standard_EXPORT ExtremaCC_Curves(const Adaptor3d_Curve&      theCurve1,
-                                   const Adaptor3d_Curve&      theCurve2,
+  Standard_EXPORT ExtremaCC_Curves(const GeomAdaptor_Curve&   theCurve1,
+                                   const GeomAdaptor_Curve&   theCurve2,
                                    const ExtremaCC::Domain2D& theDomain);
 
   //! Destructor.
@@ -122,7 +122,7 @@ public:
 
 private:
   //! Initializes the appropriate pair handler based on curve types.
-  void initPair(const Adaptor3d_Curve& theCurve1, const Adaptor3d_Curve& theCurve2);
+  void initPair(const GeomAdaptor_Curve& theCurve1, const GeomAdaptor_Curve& theCurve2);
 
   //! Variant type for analytical pairs (use unique_ptr to avoid header dependencies).
   struct AnalyticalPair;

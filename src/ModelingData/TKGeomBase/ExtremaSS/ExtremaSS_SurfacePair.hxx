@@ -14,7 +14,6 @@
 #ifndef _ExtremaSS_SurfacePair_HeaderFile
 #define _ExtremaSS_SurfacePair_HeaderFile
 
-#include <Adaptor3d_Surface.hxx>
 #include <ExtremaSS.hxx>
 #include <ExtremaSS_ConeCone.hxx>
 #include <ExtremaSS_ConeSphere.hxx>
@@ -33,6 +32,7 @@
 #include <ExtremaSS_SphereTorus.hxx>
 #include <ExtremaSS_TorusTorus.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <optional>
@@ -74,19 +74,61 @@ public:
                                         ExtremaSS_TorusTorus,
                                         ExtremaSS_GenericPair>;
 
-  //! Constructor from two Adaptor3d_Surface objects.
+  //! Constructor from two GeomAdaptor_Surface objects.
   //! @param[in] theSurface1 first surface
   //! @param[in] theSurface2 second surface
-  Standard_EXPORT ExtremaSS_SurfacePair(const Adaptor3d_Surface& theSurface1,
-                                        const Adaptor3d_Surface& theSurface2);
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_Surface& theSurface1,
+                                        const GeomAdaptor_Surface& theSurface2);
 
   //! Constructor with explicit domains.
   //! @param[in] theSurface1 first surface
   //! @param[in] theSurface2 second surface
   //! @param[in] theDomain parameter domains for both surfaces
-  Standard_EXPORT ExtremaSS_SurfacePair(const Adaptor3d_Surface&   theSurface1,
-                                        const Adaptor3d_Surface&   theSurface2,
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_Surface& theSurface1,
+                                        const GeomAdaptor_Surface& theSurface2,
                                         const ExtremaSS::Domain4D& theDomain);
+
+  //! Constructor from GeomAdaptor_Surface and GeomAdaptor_TransformedSurface.
+  //! @param[in] theSurface1 first surface
+  //! @param[in] theSurface2 second surface (transformed)
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_Surface&            theSurface1,
+                                        const GeomAdaptor_TransformedSurface& theSurface2);
+
+  //! Constructor with explicit domains.
+  //! @param[in] theSurface1 first surface
+  //! @param[in] theSurface2 second surface (transformed)
+  //! @param[in] theDomain parameter domains for both surfaces
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_Surface&            theSurface1,
+                                        const GeomAdaptor_TransformedSurface& theSurface2,
+                                        const ExtremaSS::Domain4D&            theDomain);
+
+  //! Constructor from GeomAdaptor_TransformedSurface and GeomAdaptor_Surface.
+  //! @param[in] theSurface1 first surface (transformed)
+  //! @param[in] theSurface2 second surface
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_TransformedSurface& theSurface1,
+                                        const GeomAdaptor_Surface&            theSurface2);
+
+  //! Constructor with explicit domains.
+  //! @param[in] theSurface1 first surface (transformed)
+  //! @param[in] theSurface2 second surface
+  //! @param[in] theDomain parameter domains for both surfaces
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_TransformedSurface& theSurface1,
+                                        const GeomAdaptor_Surface&            theSurface2,
+                                        const ExtremaSS::Domain4D&            theDomain);
+
+  //! Constructor from two GeomAdaptor_TransformedSurface objects.
+  //! @param[in] theSurface1 first surface (transformed)
+  //! @param[in] theSurface2 second surface (transformed)
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_TransformedSurface& theSurface1,
+                                        const GeomAdaptor_TransformedSurface& theSurface2);
+
+  //! Constructor with explicit domains.
+  //! @param[in] theSurface1 first surface (transformed)
+  //! @param[in] theSurface2 second surface (transformed)
+  //! @param[in] theDomain parameter domains for both surfaces
+  Standard_EXPORT ExtremaSS_SurfacePair(const GeomAdaptor_TransformedSurface& theSurface1,
+                                        const GeomAdaptor_TransformedSurface& theSurface2,
+                                        const ExtremaSS::Domain4D&            theDomain);
 
   //! Find interior extrema only.
   //! @param theTol tolerance
@@ -112,8 +154,8 @@ public:
 
 private:
   //! Initialize evaluator based on surface types.
-  void initializeEvaluator(const Adaptor3d_Surface&   theSurface1,
-                           const Adaptor3d_Surface&   theSurface2,
+  void initializeEvaluator(const GeomAdaptor_Surface& theSurface1,
+                           const GeomAdaptor_Surface& theSurface2,
                            const ExtremaSS::Domain4D& theDomain);
 
   EvaluatorVariant myEvaluator;

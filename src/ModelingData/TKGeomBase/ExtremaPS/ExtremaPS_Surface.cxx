@@ -28,27 +28,6 @@
 
 //==================================================================================================
 
-ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface& theSurface)
-    : myEvaluator(std::monostate{})
-{
-  ExtremaPS::Domain2D aDomain(theSurface.FirstUParameter(),
-                              theSurface.LastUParameter(),
-                              theSurface.FirstVParameter(),
-                              theSurface.LastVParameter());
-  initializeEvaluator(theSurface, aDomain);
-}
-
-//==================================================================================================
-
-ExtremaPS_Surface::ExtremaPS_Surface(const Adaptor3d_Surface&   theSurface,
-                                     const ExtremaPS::Domain2D& theDomain)
-    : myEvaluator(std::monostate{})
-{
-  initializeEvaluator(theSurface, theDomain);
-}
-
-//==================================================================================================
-
 ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface)
     : myEvaluator(std::monostate{})
 {
@@ -63,6 +42,27 @@ ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface)
 
 ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_Surface& theSurface,
                                      const ExtremaPS::Domain2D& theDomain)
+    : myEvaluator(std::monostate{})
+{
+  initializeEvaluator(theSurface, theDomain);
+}
+
+//==================================================================================================
+
+ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_TransformedSurface& theSurface)
+    : myEvaluator(std::monostate{})
+{
+  ExtremaPS::Domain2D aDomain(theSurface.FirstUParameter(),
+                              theSurface.LastUParameter(),
+                              theSurface.FirstVParameter(),
+                              theSurface.LastVParameter());
+  initializeEvaluator(theSurface, aDomain);
+}
+
+//==================================================================================================
+
+ExtremaPS_Surface::ExtremaPS_Surface(const GeomAdaptor_TransformedSurface& theSurface,
+                                     const ExtremaPS::Domain2D&            theDomain)
     : myEvaluator(std::monostate{})
 {
   initializeEvaluator(theSurface, theDomain);
@@ -300,7 +300,7 @@ void ExtremaPS_Surface::initFromGeomSurface(const occ::handle<Geom_Surface>&    
 
 //==================================================================================================
 
-void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurface,
+void ExtremaPS_Surface::initializeEvaluator(const GeomAdaptor_Surface& theSurface,
                                             const ExtremaPS::Domain2D& theDomain)
 {
   const GeomAbs_SurfaceType aSurfType = theSurface.GetType();
@@ -336,81 +336,66 @@ void ExtremaPS_Surface::initializeEvaluator(const Adaptor3d_Surface&   theSurfac
       break;
 
     case GeomAbs_OffsetSurface: {
-      // For offset surfaces, we need to extract the underlying Geom_OffsetSurface
-      // Try downcasting from GeomAdaptor_Surface
-      const GeomAdaptor_Surface* aGeomAdaptor =
-        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-      if (aGeomAdaptor != nullptr)
+      occ::handle<Geom_OffsetSurface> anOffsetSurf =
+        occ::down_cast<Geom_OffsetSurface>(theSurface.Surface());
+      if (!anOffsetSurf.IsNull())
       {
-        occ::handle<Geom_OffsetSurface> anOffsetSurf =
-          occ::down_cast<Geom_OffsetSurface>(aGeomAdaptor->Surface());
-        if (!anOffsetSurf.IsNull())
-        {
-          myEvaluator = ExtremaPS_OffsetSurface(anOffsetSurf, theDomain);
-          break;
-        }
+        myEvaluator = ExtremaPS_OffsetSurface(anOffsetSurf, theDomain);
       }
-      // Fallback to OtherSurface if we can't get the offset surface handle
-      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface))
+      else
       {
-        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface(), theDomain);
+        myEvaluator = ExtremaPS_OtherSurface(theSurface.Surface(), theDomain);
       }
       break;
     }
 
     case GeomAbs_SurfaceOfRevolution: {
-      const GeomAdaptor_Surface* aGeomAdaptor =
-        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-      if (aGeomAdaptor != nullptr)
+      occ::handle<Geom_SurfaceOfRevolution> aRevSurf =
+        occ::down_cast<Geom_SurfaceOfRevolution>(theSurface.Surface());
+      if (!aRevSurf.IsNull())
       {
-        occ::handle<Geom_SurfaceOfRevolution> aRevSurf =
-          occ::down_cast<Geom_SurfaceOfRevolution>(aGeomAdaptor->Surface());
-        if (!aRevSurf.IsNull())
-        {
-          myEvaluator = ExtremaPS_SurfaceOfRevolution(aRevSurf, theDomain);
-          break;
-        }
+        myEvaluator = ExtremaPS_SurfaceOfRevolution(aRevSurf, theDomain);
       }
-      // Fallback to OtherSurface
-      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface))
+      else
       {
-        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface(), theDomain);
+        myEvaluator = ExtremaPS_OtherSurface(theSurface.Surface(), theDomain);
       }
       break;
     }
 
     case GeomAbs_SurfaceOfExtrusion: {
-      const GeomAdaptor_Surface* aGeomAdaptor =
-        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-      if (aGeomAdaptor != nullptr)
+      occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
+        occ::down_cast<Geom_SurfaceOfLinearExtrusion>(theSurface.Surface());
+      if (!anExtSurf.IsNull())
       {
-        occ::handle<Geom_SurfaceOfLinearExtrusion> anExtSurf =
-          occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aGeomAdaptor->Surface());
-        if (!anExtSurf.IsNull())
-        {
-          myEvaluator = ExtremaPS_SurfaceOfExtrusion(anExtSurf, theDomain);
-          break;
-        }
+        myEvaluator = ExtremaPS_SurfaceOfExtrusion(anExtSurf, theDomain);
       }
-      // Fallback to OtherSurface
-      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurface))
+      else
       {
-        myEvaluator = ExtremaPS_OtherSurface(aGA->Surface(), theDomain);
+        myEvaluator = ExtremaPS_OtherSurface(theSurface.Surface(), theDomain);
       }
       break;
     }
 
     default: {
-      // For other surface types
-      const GeomAdaptor_Surface* aGeomAdaptor =
-        dynamic_cast<const GeomAdaptor_Surface*>(&theSurface);
-      if (aGeomAdaptor != nullptr && !aGeomAdaptor->Surface().IsNull())
+      if (!theSurface.Surface().IsNull())
       {
-        myEvaluator = ExtremaPS_OtherSurface(aGeomAdaptor->Surface(), theDomain);
+        myEvaluator = ExtremaPS_OtherSurface(theSurface.Surface(), theDomain);
       }
       break;
     }
   }
+}
+
+//==================================================================================================
+
+void ExtremaPS_Surface::initializeEvaluator(const GeomAdaptor_TransformedSurface& theSurface,
+                                            const ExtremaPS::Domain2D&            theDomain)
+{
+  // For transformed surfaces, we delegate to the underlying GeomAdaptor_Surface
+  // The transformation is applied during evaluation via the adaptor
+  const GeomAdaptor_Surface& aBaseSurface = theSurface.Surface();
+  initializeEvaluator(aBaseSurface, theDomain);
 }
 
 //==================================================================================================

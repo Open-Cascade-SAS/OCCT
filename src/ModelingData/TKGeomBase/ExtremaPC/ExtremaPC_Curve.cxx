@@ -37,7 +37,7 @@ static ExtremaPC::Result THE_NOT_DONE_RESULT = [] {
 
 //==================================================================================================
 
-ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
+ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve)
     : myEvaluator(std::monostate{})
 {
   ExtremaPC::Domain1D     aDomain(theCurve.FirstParameter(), theCurve.LastParameter());
@@ -85,7 +85,7 @@ ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve)
 
 //==================================================================================================
 
-ExtremaPC_Curve::ExtremaPC_Curve(const Adaptor3d_Curve& theCurve, double theUMin, double theUMax)
+ExtremaPC_Curve::ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve, double theUMin, double theUMax)
     : myEvaluator(std::monostate{})
 {
   ExtremaPC::Domain1D     aDomain(theUMin, theUMax);

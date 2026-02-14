@@ -14,9 +14,10 @@
 #ifndef _ExtremaCS_CurveSurface_HeaderFile
 #define _ExtremaCS_CurveSurface_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
-#include <Adaptor3d_Surface.hxx>
 #include <ExtremaCS.hxx>
+#include <GeomAdaptor_Curve.hxx>
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <variant>
@@ -66,16 +67,30 @@ public:
   //! Constructor with curve and surface (uses full parameter domains).
   //! @param[in] theCurve the curve
   //! @param[in] theSurface the surface
-  Standard_EXPORT ExtremaCS_CurveSurface(const Adaptor3d_Curve&   theCurve,
-                                          const Adaptor3d_Surface& theSurface);
+  Standard_EXPORT ExtremaCS_CurveSurface(const GeomAdaptor_Curve&   theCurve,
+                                         const GeomAdaptor_Surface& theSurface);
 
   //! Constructor with curve and surface and parameter domains.
   //! @param[in] theCurve the curve
   //! @param[in] theSurface the surface
   //! @param[in] theDomain parameter domains for curve and surface
-  Standard_EXPORT ExtremaCS_CurveSurface(const Adaptor3d_Curve&        theCurve,
-                                          const Adaptor3d_Surface&      theSurface,
-                                          const ExtremaCS::Domain3D&   theDomain);
+  Standard_EXPORT ExtremaCS_CurveSurface(const GeomAdaptor_Curve&   theCurve,
+                                         const GeomAdaptor_Surface& theSurface,
+                                         const ExtremaCS::Domain3D& theDomain);
+
+  //! Constructor with curve and transformed surface (uses full parameter domains).
+  //! @param[in] theCurve the curve
+  //! @param[in] theSurface the transformed surface
+  Standard_EXPORT ExtremaCS_CurveSurface(const GeomAdaptor_Curve&              theCurve,
+                                         const GeomAdaptor_TransformedSurface& theSurface);
+
+  //! Constructor with curve and transformed surface and parameter domains.
+  //! @param[in] theCurve the curve
+  //! @param[in] theSurface the transformed surface
+  //! @param[in] theDomain parameter domains for curve and surface
+  Standard_EXPORT ExtremaCS_CurveSurface(const GeomAdaptor_Curve&              theCurve,
+                                         const GeomAdaptor_TransformedSurface& theSurface,
+                                         const ExtremaCS::Domain3D&            theDomain);
 
   //! Destructor.
   Standard_EXPORT ~ExtremaCS_CurveSurface();
@@ -105,7 +120,7 @@ public:
 
 private:
   //! Initializes the appropriate pair handler based on curve and surface types.
-  void initPair(const Adaptor3d_Curve& theCurve, const Adaptor3d_Surface& theSurface);
+  void initPair(const GeomAdaptor_Curve& theCurve, const GeomAdaptor_Surface& theSurface);
 
   ExtremaCS::Domain3D       myDomain; //!< Parameter domains
   mutable ExtremaCS::Result myResult; //!< Result storage
