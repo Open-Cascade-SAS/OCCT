@@ -103,6 +103,7 @@ set(OCCT_TKMath_GTests_FILES
   MathInteg_Comparison_Test.cxx
   # MathSys tests
   MathSys_LM_Test.cxx
+  MathSys_Newton3D_Test.cxx
   MathSys_Comparison_Test.cxx
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx
