@@ -24,11 +24,15 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
+#include <Geom_Hyperbola.hxx>
 #include <Geom_Line.hxx>
+#include <Geom_Parabola.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Circ.hxx>
+#include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
+#include <gp_Parab.hxx>
 
 #include <chrono>
 #include <cmath>
@@ -243,6 +247,89 @@ TEST_F(ExtremaCC_ComparisonTest, EllipseLine)
   Extrema_ExtCC anOldExtCC(anAdaptor1, anAdaptor2);
 
   CompareMinDistance(aNewResult, anOldExtCC, "EllipseLine");
+}
+
+//==================================================================================================
+// Hyperbola comparison tests
+//==================================================================================================
+
+TEST_F(ExtremaCC_ComparisonTest, HyperbolaLine)
+{
+  // Hyperbola in XY plane with major radius 10, minor radius 5
+  gp_Hypr aHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
+  gp_Lin  aLin(gp_Pnt(20, 0, 5), gp_Dir(0, 1, 0));
+
+  occ::handle<Geom_Hyperbola> aGeomHypr = new Geom_Hyperbola(aHypr);
+  occ::handle<Geom_Line>      aGeomLin  = new Geom_Line(aLin);
+  GeomAdaptor_Curve           anAdaptor1(aGeomHypr, -2.0, 2.0); // Bounded hyperbola
+  GeomAdaptor_Curve           anAdaptor2(aGeomLin, -30.0, 30.0);
+
+  ExtremaCC_Curves         anExtCC(anAdaptor1, anAdaptor2);
+  const ExtremaCC::Result& aNewResult = anExtCC.Perform(THE_TOL);
+
+  Extrema_ExtCC anOldExtCC(anAdaptor1, anAdaptor2);
+
+  CompareMinDistance(aNewResult, anOldExtCC, "HyperbolaLine");
+}
+
+TEST_F(ExtremaCC_ComparisonTest, HyperbolaCircle)
+{
+  gp_Hypr aHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
+  gp_Circ aCirc(gp_Ax2(gp_Pnt(25, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+
+  occ::handle<Geom_Hyperbola> aGeomHypr = new Geom_Hyperbola(aHypr);
+  occ::handle<Geom_Circle>    aGeomCirc = new Geom_Circle(aCirc);
+  GeomAdaptor_Curve           anAdaptor1(aGeomHypr, -2.0, 2.0);
+  GeomAdaptor_Curve           anAdaptor2(aGeomCirc);
+
+  ExtremaCC_Curves         anExtCC(anAdaptor1, anAdaptor2);
+  const ExtremaCC::Result& aNewResult = anExtCC.Perform(THE_TOL);
+
+  Extrema_ExtCC anOldExtCC(anAdaptor1, anAdaptor2);
+
+  CompareMinDistance(aNewResult, anOldExtCC, "HyperbolaCircle");
+}
+
+//==================================================================================================
+// Parabola comparison tests
+//==================================================================================================
+
+TEST_F(ExtremaCC_ComparisonTest, ParabolaLine)
+{
+  // Parabola in XY plane with focal length 5
+  gp_Parab aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Lin   aLin(gp_Pnt(15, 0, 3), gp_Dir(0, 1, 0));
+
+  occ::handle<Geom_Parabola> aGeomParab = new Geom_Parabola(aParab);
+  occ::handle<Geom_Line>     aGeomLin   = new Geom_Line(aLin);
+  GeomAdaptor_Curve          anAdaptor1(aGeomParab, -10.0, 10.0);
+  GeomAdaptor_Curve          anAdaptor2(aGeomLin, -30.0, 30.0);
+
+  ExtremaCC_Curves         anExtCC(anAdaptor1, anAdaptor2);
+  const ExtremaCC::Result& aNewResult = anExtCC.Perform(THE_TOL);
+
+  Extrema_ExtCC anOldExtCC(anAdaptor1, anAdaptor2);
+
+  CompareMinDistance(aNewResult, anOldExtCC, "ParabolaLine");
+}
+
+TEST_F(ExtremaCC_ComparisonTest, EllipseEllipse)
+{
+  // Two separated ellipses - clear gap between them
+  gp_Elips anElips1(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
+  gp_Elips anElips2(gp_Ax2(gp_Pnt(40, 0, 0), gp_Dir(0, 0, 1)), 15.0, 8.0);
+
+  occ::handle<Geom_Ellipse> aGeomElips1 = new Geom_Ellipse(anElips1);
+  occ::handle<Geom_Ellipse> aGeomElips2 = new Geom_Ellipse(anElips2);
+  GeomAdaptor_Curve         anAdaptor1(aGeomElips1);
+  GeomAdaptor_Curve         anAdaptor2(aGeomElips2);
+
+  ExtremaCC_Curves         anExtCC(anAdaptor1, anAdaptor2);
+  const ExtremaCC::Result& aNewResult = anExtCC.Perform(THE_TOL);
+
+  Extrema_ExtCC anOldExtCC(anAdaptor1, anAdaptor2);
+
+  CompareMinDistance(aNewResult, anOldExtCC, "EllipseEllipse");
 }
 
 //==================================================================================================
