@@ -53,6 +53,7 @@ public:
       : myHyperbola(theHyperbola),
         myDomain(std::nullopt)
   {
+    cacheGeometry();
   }
 
   //! Constructor with hyperbola geometry and parameter domain.
@@ -62,6 +63,7 @@ public:
       : myHyperbola(theHyperbola),
         myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
   {
+    cacheGeometry();
   }
 
   //! Copy constructor is deleted.
@@ -76,10 +78,20 @@ public:
   //! Move assignment operator.
   ExtremaPC_Hyperbola& operator=(ExtremaPC_Hyperbola&&) = default;
 
-  //! Evaluates point on hyperbola at parameter.
+  //! Evaluates point on hyperbola at parameter using cached geometry.
   //! @param theU parameter
   //! @return point on hyperbola
-  gp_Pnt Value(double theU) const { return ElCLib::Value(theU, myHyperbola); }
+  gp_Pnt Value(double theU) const
+  {
+    // Hyperbola: P(u) = Center + R*cosh(u)*XDir + r*sinh(u)*YDir
+    const double aCosh = std::cosh(theU);
+    const double aSinh = std::sinh(theU);
+    const double aRCosh = myMajorR * aCosh;
+    const double arSinh = myMinorR * aSinh;
+    return gp_Pnt(myCenterX + aRCosh * myXDirX + arSinh * myYDirX,
+                  myCenterY + aRCosh * myXDirY + arSinh * myYDirY,
+                  myCenterZ + aRCosh * myXDirZ + arSinh * myYDirZ);
+  }
 
   //! Returns true if domain is bounded.
   bool IsBounded() const { return myDomain.has_value(); }
@@ -126,30 +138,66 @@ public:
   const gp_Hypr& Hyperbola() const { return myHyperbola; }
 
 private:
-  //! Solve the quartic equation and return polynomial result.
+  //! Cache geometry components for fast computation.
+  void cacheGeometry()
+  {
+    const gp_Pnt& aCenter = myHyperbola.Location();
+    myCenterX = aCenter.X();
+    myCenterY = aCenter.Y();
+    myCenterZ = aCenter.Z();
+
+    const gp_Dir& aXDir = myHyperbola.XAxis().Direction();
+    myXDirX = aXDir.X();
+    myXDirY = aXDir.Y();
+    myXDirZ = aXDir.Z();
+
+    const gp_Dir& aYDir = myHyperbola.YAxis().Direction();
+    myYDirX = aYDir.X();
+    myYDirY = aYDir.Y();
+    myYDirZ = aYDir.Z();
+
+    const gp_Dir& aAxis = myHyperbola.Axis().Direction();
+    myAxisX = aAxis.X();
+    myAxisY = aAxis.Y();
+    myAxisZ = aAxis.Z();
+
+    myMajorR = myHyperbola.MajorRadius();
+    myMinorR = myHyperbola.MinorRadius();
+    myR2PlusR2Over4 = (myMajorR * myMajorR + myMinorR * myMinorR) / 4.0;
+  }
+
+  //! Solve the quartic equation and return polynomial result using cached geometry.
   MathPoly::PolyResult solveQuartic(const gp_Pnt& theP) const
   {
-    // Project point P onto the hyperbola plane
-    const gp_Pnt& aCenter = myHyperbola.Location();
-    const gp_Dir& aAxis   = myHyperbola.Axis().Direction();
-    gp_Vec        aToP(aCenter, theP);
-    double        aHeight = aToP.Dot(gp_Vec(aAxis));
-    gp_Vec        aTrsl   = gp_Vec(aAxis) * (-aHeight);
-    gp_Pnt        aPp     = theP.Translated(aTrsl);
+    // Vector from center to point
+    const double aDx = theP.X() - myCenterX;
+    const double aDy = theP.Y() - myCenterY;
+    const double aDz = theP.Z() - myCenterZ;
 
-    // Get hyperbola radii and compute local coordinates
-    double aR = myHyperbola.MajorRadius();
-    double ar = myHyperbola.MinorRadius();
-    gp_Vec aOPp(aCenter, aPp);
-    double aX = aOPp.Dot(gp_Vec(myHyperbola.XAxis().Direction()));
-    double aY = aOPp.Dot(gp_Vec(myHyperbola.YAxis().Direction()));
+    // Project point P onto the hyperbola plane
+    // Height = (P - Center) . Axis
+    const double aHeight = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
+
+    // Projected point Pp = P - Height * Axis
+    const double aPpX = theP.X() - aHeight * myAxisX;
+    const double aPpY = theP.Y() - aHeight * myAxisY;
+    const double aPpZ = theP.Z() - aHeight * myAxisZ;
+
+    // Vector from center to projected point
+    const double aOPpX = aPpX - myCenterX;
+    const double aOPpY = aPpY - myCenterY;
+    const double aOPpZ = aPpZ - myCenterZ;
+
+    // Local coordinates in hyperbola frame
+    const double aX = aOPpX * myXDirX + aOPpY * myXDirY + aOPpZ * myXDirZ;
+    const double aY = aOPpX * myYDirX + aOPpY * myYDirY + aOPpZ * myYDirZ;
 
     // Solve quartic equation in v = e^u
-    double aC1 = (aR * aR + ar * ar) / 4.0;
-    double aC2 = -(aX * aR + aY * ar) / 2.0;
-    double aC3 = 0.0;
-    double aC4 = (aX * aR - aY * ar) / 2.0;
-    double aC5 = -aC1;
+    const double aC1 = myR2PlusR2Over4;
+    const double aC2 = -(aX * myMajorR + aY * myMinorR) / 2.0;
+    const double aC3 = 0.0;
+    const double aC4 = (aX * myMajorR - aY * myMinorR) / 2.0;
+    const double aC5 = -myR2PlusR2Over4;
 
     return MathPoly::Quartic(aC1, aC2, aC3, aC4, aC5);
   }
@@ -174,7 +222,7 @@ private:
       if (aPolyRes.Status == MathUtils::Status::InfiniteSolutions)
       {
         myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
-        gp_Pnt aPtOnCurve               = ElCLib::Value(0.0, myHyperbola);
+        gp_Pnt aPtOnCurve               = Value(0.0);
         myResult.InfiniteSquareDistance = theP.SquareDistance(aPtOnCurve);
       }
       else
@@ -202,7 +250,7 @@ private:
           continue;
       }
 
-      gp_Pnt aCurvePt = ElCLib::Value(aU, myHyperbola);
+      gp_Pnt aCurvePt = Value(aU);
 
       // Check for duplicates
       bool aDuplicate = false;
@@ -231,7 +279,7 @@ private:
         // For unbounded case, just use +1.0
         aNeighborU = aU + 1.0;
       }
-      gp_Pnt aNeighborPt   = ElCLib::Value(aNeighborU, myHyperbola);
+      gp_Pnt aNeighborPt   = Value(aNeighborU);
       double aNeighborDist = theP.SquareDistance(aNeighborPt);
       bool   aIsMin        = aSqDist < aNeighborDist;
 
@@ -256,6 +304,15 @@ private:
   gp_Hypr                            myHyperbola; //!< Hyperbola geometry
   std::optional<ExtremaPC::Domain1D> myDomain;    //!< Parameter domain (nullopt for infinite)
   mutable ExtremaPC::Result          myResult;    //!< Reusable result storage
+
+  // Cached geometry components for fast computation
+  double myCenterX, myCenterY, myCenterZ; //!< Center location
+  double myXDirX, myXDirY, myXDirZ;       //!< X-axis direction
+  double myYDirX, myYDirY, myYDirZ;       //!< Y-axis direction
+  double myAxisX, myAxisY, myAxisZ;       //!< Main axis direction
+  double myMajorR;                        //!< Major radius
+  double myMinorR;                        //!< Minor radius
+  double myR2PlusR2Over4;                 //!< Precomputed (R² + r²)/4
 };
 
 #endif // _ExtremaPC_Hyperbola_HeaderFile
