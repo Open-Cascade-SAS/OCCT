@@ -494,3 +494,117 @@ TEST_F(ShapeAnalysis_SurfaceTest, StressTest_Torus_H3)
     }
   }
 }
+
+//==================================================================================================
+// Cone Past Apex Tests (R < 0)
+// These test the case where the query point is on the "other nappe" of the cone,
+// past the apex, where the radius R = RefRadius + V*sin(α) becomes negative.
+//==================================================================================================
+
+TEST_F(ShapeAnalysis_SurfaceTest, Cone_PastApex_I1)
+{
+  // Cone geometry from real-world failure case:
+  // Location: (0, 127.166, 0), Axis: (0, 1, 0), XDir: (0, 0, -1), YDir: (-1, 0, 0)
+  // RefRadius: 135.442, SemiAngle: 1.21203 rad (69.444 deg)
+  // ApexV: -144.652
+  gp_Ax3 anAxis(gp_Pnt(0, 127.166, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, -1));
+  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(anAxis, 1.21203, 135.442);
+
+  // Query point on cone at V=-162.808 where R = -17 (past apex)
+  // This is a point on the nappe with R < 0
+  gp_Pnt aPoint(14.3557, 70, 9.10578);
+
+  Handle(ShapeAnalysis_Surface) anAnalyzer = new ShapeAnalysis_Surface(aSurf);
+  gp_Pnt2d                      aResult    = anAnalyzer->ValueOfUV(aPoint, 0.001);
+
+  gp_Pnt aSurfPnt = aSurf->Value(aResult.X(), aResult.Y());
+  double aDist    = aPoint.Distance(aSurfPnt);
+
+  // The point should be found on the surface (distance ≈ 0)
+  EXPECT_LT(aDist, 0.01) << "Distance " << aDist << " too large for point on cone past apex";
+}
+
+TEST_F(ShapeAnalysis_SurfaceTest, Cone_PastApex_I2)
+{
+  // Same cone geometry
+  gp_Ax3 anAxis(gp_Pnt(0, 127.166, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, -1));
+  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(anAxis, 1.21203, 135.442);
+
+  // Another point on cone past apex at V=-174.437 where R = -27.8885
+  gp_Pnt aPoint(0, 65.9168, 27.8885);
+
+  Handle(ShapeAnalysis_Surface) anAnalyzer = new ShapeAnalysis_Surface(aSurf);
+  gp_Pnt2d                      aResult    = anAnalyzer->ValueOfUV(aPoint, 0.001);
+
+  gp_Pnt aSurfPnt = aSurf->Value(aResult.X(), aResult.Y());
+  double aDist    = aPoint.Distance(aSurfPnt);
+
+  EXPECT_LT(aDist, 0.01) << "Distance " << aDist << " too large for point on cone past apex";
+}
+
+TEST_F(ShapeAnalysis_SurfaceTest, Cone_PastApex_I3)
+{
+  // Same cone geometry
+  gp_Ax3 anAxis(gp_Pnt(0, 127.166, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, -1));
+  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(anAxis, 1.21203, 135.442);
+
+  // Point at V=-177.221 where R = -30.4946
+  gp_Pnt aPoint(0, 64.9395, 30.4946);
+
+  Handle(ShapeAnalysis_Surface) anAnalyzer = new ShapeAnalysis_Surface(aSurf);
+  gp_Pnt2d                      aResult    = anAnalyzer->ValueOfUV(aPoint, 0.001);
+
+  gp_Pnt aSurfPnt = aSurf->Value(aResult.X(), aResult.Y());
+  double aDist    = aPoint.Distance(aSurfPnt);
+
+  EXPECT_LT(aDist, 0.01) << "Distance " << aDist << " too large for point on cone past apex";
+}
+
+TEST_F(ShapeAnalysis_SurfaceTest, Cone_PastApex_I4)
+{
+  // Same cone geometry
+  gp_Ax3 anAxis(gp_Pnt(0, 127.166, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, -1));
+  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(anAxis, 1.21203, 135.442);
+
+  // Point with non-zero X component past apex
+  gp_Pnt aPoint(-0.768247, 65.8251, 28.1225);
+
+  Handle(ShapeAnalysis_Surface) anAnalyzer = new ShapeAnalysis_Surface(aSurf);
+  gp_Pnt2d                      aResult    = anAnalyzer->ValueOfUV(aPoint, 0.001);
+
+  gp_Pnt aSurfPnt = aSurf->Value(aResult.X(), aResult.Y());
+  double aDist    = aPoint.Distance(aSurfPnt);
+
+  EXPECT_LT(aDist, 0.01) << "Distance " << aDist << " too large for point on cone past apex";
+}
+
+TEST_F(ShapeAnalysis_SurfaceTest, Cone_PastApex_StressTest_I5)
+{
+  // Same cone geometry with large semi-angle
+  gp_Ax3 anAxis(gp_Pnt(0, 127.166, 0), gp_Dir(0, 1, 0), gp_Dir(0, 0, -1));
+  Handle(Geom_ConicalSurface) aSurf = new Geom_ConicalSurface(anAxis, 1.21203, 135.442);
+
+  const double aRefRadius = 135.442;
+  const double aSinAngle  = std::sin(1.21203);
+  const double aApexV     = -aRefRadius / aSinAngle; // ≈ -144.652
+
+  Handle(ShapeAnalysis_Surface) anAnalyzer = new ShapeAnalysis_Surface(aSurf);
+
+  // Test many points past the apex (V < ApexV, so R < 0)
+  for (int iU = 0; iU < 12; ++iU)
+  {
+    for (int iV = 0; iV < 5; ++iV)
+    {
+      double aU = iU * M_PI / 6;
+      // V values past apex: -150, -160, -170, -180, -190
+      double aV     = aApexV - 5.0 - iV * 10.0;
+      gp_Pnt aPoint = aSurf->Value(aU, aV);
+
+      gp_Pnt2d aResult  = anAnalyzer->ValueOfUV(aPoint, 0.001);
+      gp_Pnt   aSurfPnt = aSurf->Value(aResult.X(), aResult.Y());
+      double   aDist    = aPoint.Distance(aSurfPnt);
+
+      EXPECT_LT(aDist, 0.01) << "Failed at U=" << aU << ", V=" << aV << " (past apex)";
+    }
+  }
+}

@@ -413,28 +413,12 @@ private:
 
       const Candidate& aCand = myCandidates.Value(anEntry.Idx);
 
-      // Newton bounds from grid cell
-      double aCellUMin = myGrid(aCand.IdxU, aCand.IdxV).U;
-      double aCellUMax = myGrid(aCand.IdxU + 1, aCand.IdxV).U;
-      double aCellVMin = myGrid(aCand.IdxU, aCand.IdxV).V;
-      double aCellVMax = myGrid(aCand.IdxU, aCand.IdxV + 1).V;
-
-      // Expand bounds slightly
-      double aExpandU = (aCellUMax - aCellUMin) * ExtremaPS::THE_CELL_EXPAND_RATIO;
-      double aExpandV = (aCellVMax - aCellVMin) * ExtremaPS::THE_CELL_EXPAND_RATIO;
-      aCellUMin       = std::max(theDomain.UMin, aCellUMin - aExpandU);
-      aCellUMax       = std::min(theDomain.UMax, aCellUMax + aExpandU);
-      aCellVMin       = std::max(theDomain.VMin, aCellVMin - aExpandV);
-      aCellVMax       = std::min(theDomain.VMax, aCellVMax + aExpandV);
-
-      // Multi-start Newton: try from center and all 4 corners to find the best solution
-      // This helps avoid converging to local minima, especially near boundaries
+      // Multi-start Newton from cell center and corners with domain bounds.
       double aBestRootU    = 0.0;
       double aBestRootV    = 0.0;
       double aBestRootDist = std::numeric_limits<double>::max();
       bool   aConverged    = false;
 
-      // Starting points: center + 4 corners of the cell
       const double aStartPoints[5][2] = {
         {aCand.StartU, aCand.StartV},                                      // Center
         {myGrid(aCand.IdxU, aCand.IdxV).U, myGrid(aCand.IdxU, aCand.IdxV).V},           // Corner 00
@@ -448,10 +432,10 @@ private:
         ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
                                                                       aStartPoints[iStart][0],
                                                                       aStartPoints[iStart][1],
-                                                                      aCellUMin,
-                                                                      aCellUMax,
-                                                                      aCellVMin,
-                                                                      aCellVMax,
+                                                                      theDomain.UMin,
+                                                                      theDomain.UMax,
+                                                                      theDomain.VMin,
+                                                                      theDomain.VMax,
                                                                       theTol);
 
         if (aNewtonRes.IsDone)
@@ -471,72 +455,6 @@ private:
             aConverged    = true;
           }
         }
-      }
-
-      // Boundary edge optimization: when cell touches domain boundary, do 1D search along edge.
-      // This handles cases where the true extremum lies ON the boundary where 2D Newton may fail.
-      auto tryBoundaryEdge = [&](double theFixedParam, bool theIsUFixed, double theVarMin, double theVarMax) {
-        // 1D distance function along boundary edge
-        struct EdgeFunc
-        {
-          const ExtremaPS_DistanceFunction* Func;
-          double                            FixedParam;
-          bool                              IsUFixed;
-
-          bool Value(double theVar, double& theF) const
-          {
-            double aU = IsUFixed ? FixedParam : theVar;
-            double aV = IsUFixed ? theVar : FixedParam;
-            theF      = Func->SquareDistance(aU, aV);
-            return true;
-          }
-        };
-
-        EdgeFunc anEdgeFunc{&aFunc, theFixedParam, theIsUFixed};
-        MathUtils::Config aConfig;
-        aConfig.XTolerance    = theTol;
-        aConfig.MaxIterations = ExtremaPS::THE_MAX_GOLDEN_ITERATIONS;
-
-        auto aGoldenRes = MathOpt::Golden(anEdgeFunc, theVarMin, theVarMax, aConfig);
-        if (aGoldenRes.IsDone())
-        {
-          double aEdgeU = theIsUFixed ? theFixedParam : *aGoldenRes.Root;
-          double aEdgeV = theIsUFixed ? *aGoldenRes.Root : theFixedParam;
-          double aDist  = aFunc.SquareDistance(aEdgeU, aEdgeV);
-
-          bool aIsBetter = (theMode == ExtremaPS::SearchMode::Max) ? (aDist > aBestRootDist)
-                                                                   : (aDist < aBestRootDist);
-          if (aIsBetter)
-          {
-            aBestRootU    = aEdgeU;
-            aBestRootV    = aEdgeV;
-            aBestRootDist = aDist;
-            aConverged    = true;
-          }
-        }
-      };
-
-      // Check which boundaries this cell touches and search along them
-      const double aBndTol = theTol * 10.0; // Tolerance for boundary detection
-      if (std::abs(aCellVMax - theDomain.VMax) < aBndTol)
-      {
-        // Cell touches V=VMax boundary: search along U with V fixed at VMax
-        tryBoundaryEdge(theDomain.VMax, false, aCellUMin, aCellUMax);
-      }
-      if (std::abs(aCellVMin - theDomain.VMin) < aBndTol)
-      {
-        // Cell touches V=VMin boundary
-        tryBoundaryEdge(theDomain.VMin, false, aCellUMin, aCellUMax);
-      }
-      if (std::abs(aCellUMax - theDomain.UMax) < aBndTol)
-      {
-        // Cell touches U=UMax boundary
-        tryBoundaryEdge(theDomain.UMax, true, aCellVMin, aCellVMax);
-      }
-      if (std::abs(aCellUMin - theDomain.UMin) < aBndTol)
-      {
-        // Cell touches U=UMin boundary
-        tryBoundaryEdge(theDomain.UMin, true, aCellVMin, aCellVMax);
       }
 
       // Fallback if no Newton converged: use the best grid corner directly

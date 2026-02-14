@@ -20,6 +20,15 @@
 namespace MathUtils
 {
 
+//! Squared function tolerance for Newton iterations (matching math_FunctionSetRoot Eps).
+constexpr double THE_NEWTON_FTOL_SQ = 1.0e-32;
+
+//! Relative parametric step tolerance factor for Newton iterations.
+constexpr double THE_NEWTON_STEP_TOL_FACTOR = 1.0e-16;
+
+//! Default maximum iterations for Newton solvers.
+constexpr size_t THE_NEWTON_MAX_ITER = 100;
+
 //! Configuration for iterative solvers.
 //! Provides common settings for convergence criteria and iteration limits.
 struct Config
