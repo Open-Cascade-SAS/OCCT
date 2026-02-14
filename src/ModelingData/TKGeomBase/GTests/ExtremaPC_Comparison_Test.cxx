@@ -50,7 +50,9 @@ protected:
   //! @param theNew    New ExtremaPC result
   //! @param theOld    Old Extrema_ExtPC result
   //! @param theTestName Name of the test for reporting
-  void CompareMinDistance(const ExtremaPC::Result& theNew, Extrema_ExtPC& theOld, const char* theTestName)
+  void CompareMinDistance(const ExtremaPC::Result& theNew,
+                          Extrema_ExtPC&           theOld,
+                          const char*              theTestName)
   {
     // Both must complete successfully
     ASSERT_TRUE(theNew.IsDone()) << theTestName << ": New implementation failed";
@@ -90,9 +92,8 @@ protected:
     if (aOldDist > THE_TOL)
     {
       double aRelDiff = std::abs(aNewDist - aOldDist) / aOldDist;
-      EXPECT_LT(aRelDiff, THE_TOL_REL)
-        << theTestName << ": Distance mismatch - Old: " << aOldDist << ", New: " << aNewDist
-        << ", RelDiff: " << aRelDiff;
+      EXPECT_LT(aRelDiff, THE_TOL_REL) << theTestName << ": Distance mismatch - Old: " << aOldDist
+                                       << ", New: " << aNewDist << ", RelDiff: " << aRelDiff;
     }
     else
     {
@@ -152,7 +153,8 @@ protected:
       double aNewMinSqDist = theNew.MinSquareDistance();
       // New should be <= old (with tolerance)
       EXPECT_LE(aNewMinSqDist, aOldMinSqDist * (1.0 + THE_TOL_REL) + THE_TOL * THE_TOL)
-        << theTestName << ": New implementation found worse minimum. Old: " << std::sqrt(aOldMinSqDist)
+        << theTestName
+        << ": New implementation found worse minimum. Old: " << std::sqrt(aOldMinSqDist)
         << ", New: " << std::sqrt(aNewMinSqDist);
     }
   }
@@ -165,12 +167,12 @@ protected:
 TEST_F(ExtremaPC_ComparisonTest, Line_PointOnLine)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(5.0, 0.0, 0.0);
 
   // New implementation
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   // Old implementation
@@ -182,11 +184,11 @@ TEST_F(ExtremaPC_ComparisonTest, Line_PointOnLine)
 TEST_F(ExtremaPC_ComparisonTest, Line_PointOffLine)
 {
   occ::handle<Geom_Line> aGeomLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomAdaptor_Curve anAdaptor(aGeomLine, -100.0, 100.0);
+  GeomAdaptor_Curve      anAdaptor(aGeomLine, -100.0, 100.0);
 
   gp_Pnt aPoint(5.0, 3.0, 4.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -206,7 +208,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointOutside)
 
   gp_Pnt aPoint(20.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -222,7 +224,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointInside)
 
   gp_Pnt aPoint(3.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -238,7 +240,7 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_PointOffPlane)
 
   gp_Pnt aPoint(15.0, 0.0, 5.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -258,7 +260,7 @@ TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointOnMajorAxis)
 
   gp_Pnt aPoint(30.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -274,7 +276,7 @@ TEST_F(ExtremaPC_ComparisonTest, Ellipse_PointGeneral)
 
   gp_Pnt aPoint(15.0, 12.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -294,7 +296,7 @@ TEST_F(ExtremaPC_ComparisonTest, Parabola_PointNearVertex)
 
   gp_Pnt aPoint(1.0, 2.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -314,7 +316,7 @@ TEST_F(ExtremaPC_ComparisonTest, Hyperbola_PointNearBranch)
 
   gp_Pnt aPoint(15.0, 3.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -343,11 +345,11 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_CubicCurve)
   aMults(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   gp_Pnt aPoint(1.5, 3.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -380,11 +382,11 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
   aMults(4) = 3;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   gp_Pnt aPoint(3.0, 4.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -403,8 +405,7 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_MultiSpan)
     // Verify the found point is actually on the curve
     const auto& aExtremum = aNewResult[aNewResult.MinIndex()];
     gp_Pnt      aCurvePnt = anAdaptor.Value(aExtremum.Parameter);
-    EXPECT_NEAR(aCurvePnt.Distance(aExtremum.Point), 0.0, 1.0e-6)
-      << "Point should be on curve";
+    EXPECT_NEAR(aCurvePnt.Distance(aExtremum.Point), 0.0, 1.0e-6) << "Point should be on curve";
   }
 
   // Log the difference for information
@@ -438,11 +439,11 @@ TEST_F(ExtremaPC_ComparisonTest, Bezier_CubicCurve)
   aPoles(4) = gp_Pnt(4, 0, 0);
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve        anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
   gp_Pnt aPoint(2.0, 4.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -456,13 +457,14 @@ TEST_F(ExtremaPC_ComparisonTest, Bezier_CubicCurve)
 
 TEST_F(ExtremaPC_ComparisonTest, OffsetCircle)
 {
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
+  occ::handle<Geom_Circle> aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aCircle, 5.0, gp_Dir(0, 0, 1));
-  GeomAdaptor_Curve        anAdaptor(anOffsetCurve);
+  GeomAdaptor_Curve             anAdaptor(anOffsetCurve);
 
   gp_Pnt aPoint(25.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -480,22 +482,23 @@ TEST_F(ExtremaPC_ComparisonTest, Circle_RandomPoints)
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
-  std::mt19937                          aGen(12345); // Fixed seed for reproducibility
-  std::uniform_real_distribution<>      aDist(-30.0, 30.0);
+  std::mt19937                     aGen(12345); // Fixed seed for reproducibility
+  std::uniform_real_distribution<> aDist(-30.0, 30.0);
 
-  const int aNumTests = 100;
+  const int aNumTests  = 100;
   int       aFailCount = 0;
 
   for (int i = 0; i < aNumTests; ++i)
   {
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
-    if (aNewResult.IsDone() && anOldExtPC.IsDone() && aNewResult.NbExt() > 0 && anOldExtPC.NbExt() > 0)
+    if (aNewResult.IsDone() && anOldExtPC.IsDone() && aNewResult.NbExt() > 0
+        && anOldExtPC.NbExt() > 0)
     {
       double aNewMin = std::sqrt(aNewResult.MinSquareDistance());
       double aOldMin = RealLast();
@@ -540,24 +543,25 @@ TEST_F(ExtremaPC_ComparisonTest, BSpline_RandomPoints)
   aMults(4) = 3;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
-  std::mt19937                          aGen(54321);
-  std::uniform_real_distribution<>      aDist(-2.0, 7.0);
+  std::mt19937                     aGen(54321);
+  std::uniform_real_distribution<> aDist(-2.0, 7.0);
 
-  const int aNumTests = 100;
+  const int aNumTests  = 100;
   int       aFailCount = 0;
 
   for (int i = 0; i < aNumTests; ++i)
   {
     gp_Pnt aPoint(aDist(aGen), aDist(aGen), aDist(aGen));
 
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
     Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
 
-    if (aNewResult.IsDone() && anOldExtPC.IsDone() && aNewResult.NbExt() > 0 && anOldExtPC.NbExt() > 0)
+    if (aNewResult.IsDone() && anOldExtPC.IsDone() && aNewResult.NbExt() > 0
+        && anOldExtPC.NbExt() > 0)
     {
       double aNewMin = std::sqrt(aNewResult.MinSquareDistance());
       double aOldMin = RealLast();
@@ -587,8 +591,8 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Circle)
     new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomCircle);
 
-  std::mt19937                          aGen(11111);
-  std::uniform_real_distribution<>      aDist(-30.0, 30.0);
+  std::mt19937                     aGen(11111);
+  std::uniform_real_distribution<> aDist(-30.0, 30.0);
 
   const int aNumIterations = 1000;
 
@@ -604,11 +608,11 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Circle)
   auto aStartNew = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aResult = anExtPC.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNew     = std::chrono::high_resolution_clock::now();
+  auto aEndNew      = std::chrono::high_resolution_clock::now();
   auto aDurationNew = std::chrono::duration_cast<std::chrono::microseconds>(aEndNew - aStartNew);
 
   // Time old implementation
@@ -622,12 +626,12 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Circle)
   auto aDurationOld = std::chrono::duration_cast<std::chrono::microseconds>(aEndOld - aStartOld);
 
   std::cout << "[          ] Performance_Circle:" << std::endl;
-  std::cout << "[          ]   New: " << aDurationNew.count() << " us (" << aNumIterations << " iterations)"
-            << std::endl;
-  std::cout << "[          ]   Old: " << aDurationOld.count() << " us (" << aNumIterations << " iterations)"
-            << std::endl;
-  std::cout << "[          ]   Ratio (Old/New): " << static_cast<double>(aDurationOld.count()) / aDurationNew.count()
-            << std::endl;
+  std::cout << "[          ]   New: " << aDurationNew.count() << " us (" << aNumIterations
+            << " iterations)" << std::endl;
+  std::cout << "[          ]   Old: " << aDurationOld.count() << " us (" << aNumIterations
+            << " iterations)" << std::endl;
+  std::cout << "[          ]   Ratio (Old/New): "
+            << static_cast<double>(aDurationOld.count()) / aDurationNew.count() << std::endl;
 
   // We don't fail on performance, just report
   SUCCEED();
@@ -646,14 +650,12 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
-    double t = (i - 1.0) / (aNbPoles - 1.0);
-    aPoles(i) = gp_Pnt(t * 10.0,
-                       std::sin(t * M_PI * 4) * 3.0,
-                       std::cos(t * M_PI * 3) * 2.0);
+    double t  = (i - 1.0) / (aNbPoles - 1.0);
+    aPoles(i) = gp_Pnt(t * 10.0, std::sin(t * M_PI * 4) * 3.0, std::cos(t * M_PI * 3) * 2.0);
   }
 
   NCollection_Array1<double> aKnots(1, aNbKnots);
-  NCollection_Array1<int> aMults(1, aNbKnots);
+  NCollection_Array1<int>    aMults(1, aNbKnots);
   for (int i = 1; i <= aNbKnots; ++i)
   {
     aKnots(i) = (i - 1.0) / (aNbKnots - 1.0);
@@ -662,10 +664,10 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   }
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
-  std::mt19937                          aGen(22222);
-  std::uniform_real_distribution<>      aDist(-2.0, 12.0);
+  std::mt19937                     aGen(22222);
+  std::uniform_real_distribution<> aDist(-2.0, 12.0);
 
   const int aNumIterations = 10000;
 
@@ -680,23 +682,25 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   auto aStartNewNoCaching = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aResult = anExtPC.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNewNoCaching     = std::chrono::high_resolution_clock::now();
-  auto aDurationNewNoCaching = std::chrono::duration_cast<std::chrono::microseconds>(aEndNewNoCaching - aStartNewNoCaching);
+  auto aEndNewNoCaching = std::chrono::high_resolution_clock::now();
+  auto aDurationNewNoCaching =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndNewNoCaching - aStartNewNoCaching);
 
   // Time new implementation - WITH CACHING (reuse evaluator)
   ExtremaPC_Curve anExtPCCached(anAdaptor);
-  auto aStartNewCached = std::chrono::high_resolution_clock::now();
+  auto            aStartNewCached = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
     const ExtremaPC::Result& aResult = anExtPCCached.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNewCached     = std::chrono::high_resolution_clock::now();
-  auto aDurationNewCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
+  auto aEndNewCached = std::chrono::high_resolution_clock::now();
+  auto aDurationNewCached =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
 
   // Time old implementation - NO CACHING (create new for each point)
   auto aStartOldNoCaching = std::chrono::high_resolution_clock::now();
@@ -705,8 +709,9 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
     Extrema_ExtPC anOldExtPC(aPt, anAdaptor);
     (void)anOldExtPC;
   }
-  auto aEndOldNoCaching      = std::chrono::high_resolution_clock::now();
-  auto aDurationOldNoCaching = std::chrono::duration_cast<std::chrono::microseconds>(aEndOldNoCaching - aStartOldNoCaching);
+  auto aEndOldNoCaching = std::chrono::high_resolution_clock::now();
+  auto aDurationOldNoCaching =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndOldNoCaching - aStartOldNoCaching);
 
   // Time old implementation - WITH CACHING (Initialize once, Perform per point)
   Extrema_ExtPC anOldExtPCCached;
@@ -716,10 +721,12 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   {
     anOldExtPCCached.Perform(aPt);
   }
-  auto aEndOldCached      = std::chrono::high_resolution_clock::now();
-  auto aDurationOldCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
+  auto aEndOldCached = std::chrono::high_resolution_clock::now();
+  auto aDurationOldCached =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
 
-  std::cout << "[          ] Performance_BSpline (" << aNumIterations << " iterations, 20-pole curve):" << std::endl;
+  std::cout << "[          ] Performance_BSpline (" << aNumIterations
+            << " iterations, 20-pole curve):" << std::endl;
   std::cout << "[          ]   Old (no caching):     " << aDurationOldNoCaching.count() << " us"
             << " (" << aDurationOldNoCaching.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   Old (with caching):   " << aDurationOldCached.count() << " us"
@@ -729,11 +736,14 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_BSpline)
   std::cout << "[          ]   New (with caching):   " << aDurationNewCached.count() << " us"
             << " (" << aDurationNewCached.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   Old caching benefit:  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationOldNoCaching.count()) / aDurationOldCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationOldNoCaching.count()) / aDurationOldCached.count()
+            << "x" << std::endl;
   std::cout << "[          ]   New caching benefit:  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationNewNoCaching.count()) / aDurationNewCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationNewNoCaching.count()) / aDurationNewCached.count()
+            << "x" << std::endl;
   std::cout << "[          ]   New vs Old (cached):  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x"
+            << std::endl;
 
   SUCCEED();
 }
@@ -744,8 +754,8 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Ellipse)
     new Geom_Ellipse(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 10.0);
   GeomAdaptor_Curve anAdaptor(aGeomEllipse);
 
-  std::mt19937                          aGen(33333);
-  std::uniform_real_distribution<>      aDist(-40.0, 40.0);
+  std::mt19937                     aGen(33333);
+  std::uniform_real_distribution<> aDist(-40.0, 40.0);
 
   const int aNumIterations = 10000;
 
@@ -760,11 +770,11 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Ellipse)
   auto aStartNew = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aResult = anExtPC.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNew     = std::chrono::high_resolution_clock::now();
+  auto aEndNew      = std::chrono::high_resolution_clock::now();
   auto aDurationNew = std::chrono::duration_cast<std::chrono::microseconds>(aEndNew - aStartNew);
 
   // Time old implementation
@@ -777,7 +787,8 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Ellipse)
   auto aEndOld      = std::chrono::high_resolution_clock::now();
   auto aDurationOld = std::chrono::duration_cast<std::chrono::microseconds>(aEndOld - aStartOld);
 
-  std::cout << "[          ] Performance_Ellipse (" << aNumIterations << " iterations):" << std::endl;
+  std::cout << "[          ] Performance_Ellipse (" << aNumIterations
+            << " iterations):" << std::endl;
   std::cout << "[          ]   Old Extrema_ExtPC: " << aDurationOld.count() << " us"
             << " (" << aDurationOld.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   New ExtremaPC:     " << aDurationNew.count() << " us"
@@ -794,17 +805,15 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
   NCollection_Array1<gp_Pnt> aPoles(1, 16);
   for (int i = 1; i <= 16; ++i)
   {
-    double t = (i - 1.0) / 15.0;
-    aPoles(i) = gp_Pnt(t * 10.0,
-                       std::sin(t * M_PI * 3) * 4.0,
-                       std::cos(t * M_PI * 2) * 3.0);
+    double t  = (i - 1.0) / 15.0;
+    aPoles(i) = gp_Pnt(t * 10.0, std::sin(t * M_PI * 3) * 4.0, std::cos(t * M_PI * 2) * 3.0);
   }
 
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  GeomAdaptor_Curve        anAdaptor(aBezier);
+  GeomAdaptor_Curve             anAdaptor(aBezier);
 
-  std::mt19937                          aGen(44444);
-  std::uniform_real_distribution<>      aDist(-2.0, 12.0);
+  std::mt19937                     aGen(44444);
+  std::uniform_real_distribution<> aDist(-2.0, 12.0);
 
   const int aNumIterations = 10000;
 
@@ -819,23 +828,25 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
   auto aStartNewNoCaching = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
-    ExtremaPC_Curve   anExtPC(anAdaptor);
+    ExtremaPC_Curve          anExtPC(anAdaptor);
     const ExtremaPC::Result& aResult = anExtPC.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNewNoCaching     = std::chrono::high_resolution_clock::now();
-  auto aDurationNewNoCaching = std::chrono::duration_cast<std::chrono::microseconds>(aEndNewNoCaching - aStartNewNoCaching);
+  auto aEndNewNoCaching = std::chrono::high_resolution_clock::now();
+  auto aDurationNewNoCaching =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndNewNoCaching - aStartNewNoCaching);
 
   // Time new implementation - WITH CACHING (reuse evaluator)
   ExtremaPC_Curve anExtPCCached(anAdaptor);
-  auto aStartNewCached = std::chrono::high_resolution_clock::now();
+  auto            aStartNewCached = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
     const ExtremaPC::Result& aResult = anExtPCCached.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNewCached     = std::chrono::high_resolution_clock::now();
-  auto aDurationNewCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
+  auto aEndNewCached = std::chrono::high_resolution_clock::now();
+  auto aDurationNewCached =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
 
   // Time old implementation - NO CACHING (create new for each point)
   auto aStartOldNoCaching = std::chrono::high_resolution_clock::now();
@@ -844,8 +855,9 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
     Extrema_ExtPC anOldExtPC(aPt, anAdaptor);
     (void)anOldExtPC;
   }
-  auto aEndOldNoCaching      = std::chrono::high_resolution_clock::now();
-  auto aDurationOldNoCaching = std::chrono::duration_cast<std::chrono::microseconds>(aEndOldNoCaching - aStartOldNoCaching);
+  auto aEndOldNoCaching = std::chrono::high_resolution_clock::now();
+  auto aDurationOldNoCaching =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndOldNoCaching - aStartOldNoCaching);
 
   // Time old implementation - WITH CACHING (Initialize once, Perform per point)
   Extrema_ExtPC anOldExtPCCached;
@@ -855,10 +867,12 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
   {
     anOldExtPCCached.Perform(aPt);
   }
-  auto aEndOldCached      = std::chrono::high_resolution_clock::now();
-  auto aDurationOldCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
+  auto aEndOldCached = std::chrono::high_resolution_clock::now();
+  auto aDurationOldCached =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
 
-  std::cout << "[          ] Performance_Bezier_Caching (" << aNumIterations << " iterations, degree-15 curve):" << std::endl;
+  std::cout << "[          ] Performance_Bezier_Caching (" << aNumIterations
+            << " iterations, degree-15 curve):" << std::endl;
   std::cout << "[          ]   Old (no caching):     " << aDurationOldNoCaching.count() << " us"
             << " (" << aDurationOldNoCaching.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   Old (with caching):   " << aDurationOldCached.count() << " us"
@@ -868,11 +882,14 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_Bezier_Caching)
   std::cout << "[          ]   New (with caching):   " << aDurationNewCached.count() << " us"
             << " (" << aDurationNewCached.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   Old caching benefit:  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationOldNoCaching.count()) / aDurationOldCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationOldNoCaching.count()) / aDurationOldCached.count()
+            << "x" << std::endl;
   std::cout << "[          ]   New caching benefit:  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationNewNoCaching.count()) / aDurationNewCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationNewNoCaching.count()) / aDurationNewCached.count()
+            << "x" << std::endl;
   std::cout << "[          ]   New vs Old (cached):  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x"
+            << std::endl;
 
   SUCCEED();
 }
@@ -890,7 +907,7 @@ TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_Circle)
   // Point exactly on the circle
   gp_Pnt aPoint(10.0, 0.0, 0.0);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -918,12 +935,12 @@ TEST_F(ExtremaPC_ComparisonTest, PointOnCurve_BSpline)
   aMults(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  GeomAdaptor_Curve         anAdaptor(aBSpline);
+  GeomAdaptor_Curve              anAdaptor(aBSpline);
 
   // Point on curve at u=0.5
   gp_Pnt aPoint = aBSpline->Value(0.5);
 
-  ExtremaPC_Curve   anExtPC(anAdaptor);
+  ExtremaPC_Curve          anExtPC(anAdaptor);
   const ExtremaPC::Result& aNewResult = anExtPC.Perform(aPoint, THE_TOL);
 
   Extrema_ExtPC anOldExtPC(aPoint, anAdaptor);
@@ -947,14 +964,13 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
-    double t = (i - 1.0) / (aNbPoles - 1.0);
-    aPoles(i) = gp_Pnt(t * 10.0,
-                       std::sin(t * M_PI * 2) * 3.0,
+    double t  = (i - 1.0) / (aNbPoles - 1.0);
+    aPoles(i) = gp_Pnt(t * 10.0, std::sin(t * M_PI * 2) * 3.0,
                        0.0); // Planar curve for offset
   }
 
   NCollection_Array1<double> aKnots(1, aNbKnots);
-  NCollection_Array1<int> aMults(1, aNbKnots);
+  NCollection_Array1<int>    aMults(1, aNbKnots);
   for (int i = 1; i <= aNbKnots; ++i)
   {
     aKnots(i) = (i - 1.0) / (aNbKnots - 1.0);
@@ -964,7 +980,8 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
   occ::handle<Geom_BSplineCurve> aBSpline = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
 
   // Create offset curve with offset = 2.0
-  occ::handle<Geom_OffsetCurve> anOffsetCurve = new Geom_OffsetCurve(aBSpline, 2.0, gp_Dir(0, 0, 1));
+  occ::handle<Geom_OffsetCurve> anOffsetCurve =
+    new Geom_OffsetCurve(aBSpline, 2.0, gp_Dir(0, 0, 1));
   GeomAdaptor_Curve anAdaptor(anOffsetCurve);
 
   std::mt19937                     aGen(55555);
@@ -981,14 +998,15 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
 
   // Time new implementation - WITH CACHING (reuse evaluator)
   ExtremaPC_Curve anExtPCCached(anAdaptor);
-  auto aStartNewCached = std::chrono::high_resolution_clock::now();
+  auto            aStartNewCached = std::chrono::high_resolution_clock::now();
   for (const auto& aPt : aPoints)
   {
     const ExtremaPC::Result& aResult = anExtPCCached.Perform(aPt, THE_TOL);
     (void)aResult;
   }
-  auto aEndNewCached     = std::chrono::high_resolution_clock::now();
-  auto aDurationNewCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
+  auto aEndNewCached = std::chrono::high_resolution_clock::now();
+  auto aDurationNewCached =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndNewCached - aStartNewCached);
 
   // Time old implementation - WITH CACHING (Initialize once, Perform per point)
   Extrema_ExtPC anOldExtPCCached;
@@ -998,16 +1016,19 @@ TEST_F(ExtremaPC_ComparisonTest, Performance_OffsetBSpline)
   {
     anOldExtPCCached.Perform(aPt);
   }
-  auto aEndOldCached      = std::chrono::high_resolution_clock::now();
-  auto aDurationOldCached = std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
+  auto aEndOldCached = std::chrono::high_resolution_clock::now();
+  auto aDurationOldCached =
+    std::chrono::duration_cast<std::chrono::microseconds>(aEndOldCached - aStartOldCached);
 
-  std::cout << "[          ] Performance_OffsetBSpline (" << aNumIterations << " iterations, 10-pole base curve):" << std::endl;
+  std::cout << "[          ] Performance_OffsetBSpline (" << aNumIterations
+            << " iterations, 10-pole base curve):" << std::endl;
   std::cout << "[          ]   Old (with caching):   " << aDurationOldCached.count() << " us"
             << " (" << aDurationOldCached.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   New (with caching):   " << aDurationNewCached.count() << " us"
             << " (" << aDurationNewCached.count() / aNumIterations << " us/query)" << std::endl;
   std::cout << "[          ]   New vs Old (cached):  " << std::fixed << std::setprecision(2)
-            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x" << std::endl;
+            << static_cast<double>(aDurationOldCached.count()) / aDurationNewCached.count() << "x"
+            << std::endl;
 
   SUCCEED();
 }

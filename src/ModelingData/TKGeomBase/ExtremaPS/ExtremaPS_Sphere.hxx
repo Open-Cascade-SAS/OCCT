@@ -75,9 +75,9 @@ private:
   //! Check if domain is natural (full sphere).
   static bool isNaturalDomain(const ExtremaPS::Domain2D& theDomain)
   {
-    return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI) &&
-           theDomain.VMin <= -ExtremaPS::THE_HALF_PI + Precision::PConfusion() &&
-           theDomain.VMax >= ExtremaPS::THE_HALF_PI - Precision::PConfusion();
+    return theDomain.IsUFullPeriod(ExtremaPS::THE_TWO_PI)
+           && theDomain.VMin <= -ExtremaPS::THE_HALF_PI + Precision::PConfusion()
+           && theDomain.VMax >= ExtremaPS::THE_HALF_PI - Precision::PConfusion();
   }
 
 private:
@@ -85,32 +85,31 @@ private:
   void initCache()
   {
     // Cache sphere components for fast computation
-    const gp_Ax3& aPos = mySphere.Position();
+    const gp_Ax3& aPos    = mySphere.Position();
     const gp_Pnt& aCenter = aPos.Location();
-    myCenterX = aCenter.X();
-    myCenterY = aCenter.Y();
-    myCenterZ = aCenter.Z();
+    myCenterX             = aCenter.X();
+    myCenterY             = aCenter.Y();
+    myCenterZ             = aCenter.Z();
 
     const gp_Dir& aAxis = aPos.Direction();
-    myAxisX = aAxis.X();
-    myAxisY = aAxis.Y();
-    myAxisZ = aAxis.Z();
+    myAxisX             = aAxis.X();
+    myAxisY             = aAxis.Y();
+    myAxisZ             = aAxis.Z();
 
     const gp_Dir& aXDir = aPos.XDirection();
-    myXDirX = aXDir.X();
-    myXDirY = aXDir.Y();
-    myXDirZ = aXDir.Z();
+    myXDirX             = aXDir.X();
+    myXDirY             = aXDir.Y();
+    myXDirZ             = aXDir.Z();
 
     const gp_Dir& aYDir = aPos.YDirection();
-    myYDirX = aYDir.X();
-    myYDirY = aYDir.Y();
-    myYDirZ = aYDir.Z();
+    myYDirX             = aYDir.X();
+    myYDirY             = aYDir.Y();
+    myYDirZ             = aYDir.Z();
 
     myRadius = mySphere.Radius();
   }
 
 public:
-
   //! @name Surface Evaluation
   //! @{
 
@@ -121,16 +120,15 @@ public:
   //! @return point on sphere at (U, V)
   gp_Pnt Value(double theU, double theV) const
   {
-    const double aCosU = std::cos(theU);
-    const double aSinU = std::sin(theU);
-    const double aCosV = std::cos(theV);
-    const double aSinV = std::sin(theV);
+    const double aCosU  = std::cos(theU);
+    const double aSinU  = std::sin(theU);
+    const double aCosV  = std::cos(theV);
+    const double aSinV  = std::sin(theV);
     const double aRcosV = myRadius * aCosV;
     return gp_Pnt(
       myCenterX + aRcosV * (aCosU * myXDirX + aSinU * myYDirX) + myRadius * aSinV * myAxisX,
       myCenterY + aRcosV * (aCosU * myXDirY + aSinU * myYDirY) + myRadius * aSinV * myAxisY,
-      myCenterZ + aRcosV * (aCosU * myXDirZ + aSinU * myYDirZ) + myRadius * aSinV * myAxisZ
-    );
+      myCenterZ + aRcosV * (aCosU * myXDirZ + aSinU * myYDirZ) + myRadius * aSinV * myAxisZ);
   }
 
   //! @}
@@ -149,17 +147,18 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return const reference to result with interior extrema only
-  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     myResult.Clear();
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
 
     // Vector from center to point
-    const double aDx = theP.X() - myCenterX;
-    const double aDy = theP.Y() - myCenterY;
-    const double aDz = theP.Z() - myCenterZ;
+    const double aDx     = theP.X() - myCenterX;
+    const double aDy     = theP.Y() - myCenterY;
+    const double aDz     = theP.Z() - myCenterZ;
     const double aDistSq = aDx * aDx + aDy * aDy + aDz * aDz;
 
     // Check for degenerate case: point at center
@@ -170,7 +169,7 @@ public:
       return myResult;
     }
 
-    const double aDist = std::sqrt(aDistSq);
+    const double aDist    = std::sqrt(aDistSq);
     const double aInvDist = 1.0 / aDist;
 
     // Normalized direction from center to point
@@ -179,22 +178,23 @@ public:
     const double aDirZ = aDz * aInvDist;
 
     // V (elevation) from direction
-    double aSinV = aDirX * myAxisX + aDirY * myAxisY + aDirZ * myAxisZ;
-    aSinV = aSinV < -1.0 ? -1.0 : (aSinV > 1.0 ? 1.0 : aSinV);
+    double aSinV    = aDirX * myAxisX + aDirY * myAxisY + aDirZ * myAxisZ;
+    aSinV           = aSinV < -1.0 ? -1.0 : (aSinV > 1.0 ? 1.0 : aSinV);
     const double aV = std::asin(aSinV);
 
     // U (azimuth) from direction
     const double aCosV = std::cos(aV);
-    double aU = 0.0;
+    double       aU    = 0.0;
 
     const bool aIsAtPole = (std::abs(aCosV) < theTol);
     if (!aIsAtPole)
     {
       const double aInvCosV = 1.0 / aCosV;
-      const double aCosU = (aDirX * myXDirX + aDirY * myXDirY + aDirZ * myXDirZ) * aInvCosV;
-      const double aSinU = (aDirX * myYDirX + aDirY * myYDirY + aDirZ * myYDirZ) * aInvCosV;
-      aU = std::atan2(aSinU, aCosU);
-      if (aU < 0.0) aU += aTwoPi;
+      const double aCosU    = (aDirX * myXDirX + aDirY * myXDirY + aDirZ * myXDirZ) * aInvCosV;
+      const double aSinU    = (aDirX * myYDirX + aDirY * myYDirY + aDirZ * myYDirZ) * aInvCosV;
+      aU                    = std::atan2(aSinU, aCosU);
+      if (aU < 0.0)
+        aU += aTwoPi;
     }
 
     // FAST PATH: Natural domain (full sphere) - most common case
@@ -227,7 +227,8 @@ public:
         const double aDistToSurf = aDist + myRadius;
 
         double aUOpp = aU + M_PI;
-        if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+        if (aUOpp >= aTwoPi)
+          aUOpp -= aTwoPi;
 
         ExtremaPS::ExtremumResult anExt;
         anExt.U              = aUOpp;
@@ -244,11 +245,12 @@ public:
 
     // BOUNDED PATH: Handle bounded domain
     const ExtremaPS::Domain2D& theDomain = *myDomain;
-    constexpr double aHalfPi = ExtremaPS::THE_HALF_PI;
+    constexpr double           aHalfPi   = ExtremaPS::THE_HALF_PI;
 
     // Check if domain is full in each direction
     const bool aIsFullU = theDomain.IsUFullPeriod(aTwoPi, theTol);
-    const bool aIsFullV = (theDomain.VMin <= -aHalfPi + theTol && theDomain.VMax >= aHalfPi - theTol);
+    const bool aIsFullV =
+      (theDomain.VMin <= -aHalfPi + theTol && theDomain.VMax >= aHalfPi - theTol);
 
     // Still full domain? (shouldn't happen if isNaturalDomain worked, but be safe)
     if (aIsFullU && aIsFullV)
@@ -279,7 +281,8 @@ public:
         const double aDistToSurf = aDist + myRadius;
 
         double aUOpp = aU + M_PI;
-        if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+        if (aUOpp >= aTwoPi)
+          aUOpp -= aTwoPi;
 
         ExtremaPS::ExtremumResult anExt;
         anExt.U              = aUOpp;
@@ -297,9 +300,12 @@ public:
     // GENERAL PATH: Bounded domain
     // Helper: Check U in range (with periodicity handling)
     auto checkUInRange = [&](double aTestU) -> bool {
-      if (aIsFullU) return true;
-      while (aTestU < theDomain.UMin) aTestU += aTwoPi;
-      while (aTestU >= theDomain.UMin + aTwoPi) aTestU -= aTwoPi;
+      if (aIsFullU)
+        return true;
+      while (aTestU < theDomain.UMin)
+        aTestU += aTwoPi;
+      while (aTestU >= theDomain.UMin + aTwoPi)
+        aTestU -= aTwoPi;
       return theDomain.U().Contains(aTestU, theTol);
     };
 
@@ -315,8 +321,10 @@ public:
         double aClampedU = aU;
         if (!aIsAtPole && !aIsFullU)
         {
-          while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
+          while (aClampedU < theDomain.UMin)
+            aClampedU += aTwoPi;
+          while (aClampedU > theDomain.UMax)
+            aClampedU -= aTwoPi;
           aClampedU = theDomain.U().Clamp(aClampedU);
         }
 
@@ -335,9 +343,10 @@ public:
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
-    if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
-    const double aVOpp = -aV;
-    const bool aIsOppAtPole = (std::abs(std::abs(aVOpp) - aHalfPi) < theTol);
+    if (aUOpp >= aTwoPi)
+      aUOpp -= aTwoPi;
+    const double aVOpp        = -aV;
+    const bool   aIsOppAtPole = (std::abs(std::abs(aVOpp) - aHalfPi) < theTol);
 
     // Add maximum extremum (farthest point - antipodal)
     if (theMode != ExtremaPS::SearchMode::Min)
@@ -351,8 +360,10 @@ public:
         double aClampedU = aUOpp;
         if (!aIsOppAtPole && !aIsFullU)
         {
-          while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
+          while (aClampedU < theDomain.UMin)
+            aClampedU += aTwoPi;
+          while (aClampedU > theDomain.UMax)
+            aClampedU -= aTwoPi;
           aClampedU = theDomain.U().Clamp(aClampedU);
         }
 
@@ -369,7 +380,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
     return myResult;
   }
 
@@ -382,9 +394,10 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return const reference to result with interior + boundary extrema
-  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
-                                                              double                theTol,
-                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
     (void)Perform(theP, theTol, theMode);
@@ -428,11 +441,11 @@ private:
   mutable ExtremaPS::Result          myResult; //!< Reusable result storage
 
   // Cached components for fast computation
-  double myCenterX, myCenterY, myCenterZ;  //!< Sphere center
-  double myAxisX, myAxisY, myAxisZ;        //!< Sphere axis (Z direction)
-  double myXDirX, myXDirY, myXDirZ;        //!< Sphere X direction
-  double myYDirX, myYDirY, myYDirZ;        //!< Sphere Y direction
-  double myRadius;                         //!< Sphere radius
+  double myCenterX, myCenterY, myCenterZ; //!< Sphere center
+  double myAxisX, myAxisY, myAxisZ;       //!< Sphere axis (Z direction)
+  double myXDirX, myXDirY, myXDirZ;       //!< Sphere X direction
+  double myYDirX, myYDirY, myYDirZ;       //!< Sphere Y direction
+  double myRadius;                        //!< Sphere radius
 };
 
 #endif // _ExtremaPS_Sphere_HeaderFile

@@ -82,35 +82,35 @@ private:
     // Cache cone components for fast computation
     const gp_Ax3& aPos = myCone.Position();
     const gp_Pnt& aLoc = aPos.Location();
-    myLocX = aLoc.X();
-    myLocY = aLoc.Y();
-    myLocZ = aLoc.Z();
+    myLocX             = aLoc.X();
+    myLocY             = aLoc.Y();
+    myLocZ             = aLoc.Z();
 
     const gp_Dir& aAxis = aPos.Direction();
-    myAxisX = aAxis.X();
-    myAxisY = aAxis.Y();
-    myAxisZ = aAxis.Z();
+    myAxisX             = aAxis.X();
+    myAxisY             = aAxis.Y();
+    myAxisZ             = aAxis.Z();
 
     const gp_Dir& aXDir = aPos.XDirection();
-    myXDirX = aXDir.X();
-    myXDirY = aXDir.Y();
-    myXDirZ = aXDir.Z();
+    myXDirX             = aXDir.X();
+    myXDirY             = aXDir.Y();
+    myXDirZ             = aXDir.Z();
 
     const gp_Dir& aYDir = aPos.YDirection();
-    myYDirX = aYDir.X();
-    myYDirY = aYDir.Y();
-    myYDirZ = aYDir.Z();
+    myYDirX             = aYDir.X();
+    myYDirY             = aYDir.Y();
+    myYDirZ             = aYDir.Z();
 
     myRefRadius = myCone.RefRadius();
     mySemiAngle = myCone.SemiAngle();
     myTanAngle  = std::tan(mySemiAngle);
     myCosAngle  = std::cos(mySemiAngle);
     mySinAngle  = std::sin(mySemiAngle);
-    myApexV     = std::abs(myTanAngle) > ExtremaPS::THE_CONE_APEX_TOLERANCE ? -myRefRadius / myTanAngle : 0.0;
+    myApexV =
+      std::abs(myTanAngle) > ExtremaPS::THE_CONE_APEX_TOLERANCE ? -myRefRadius / myTanAngle : 0.0;
   }
 
 public:
-
   //! @name Surface Evaluation
   //! @{
 
@@ -123,12 +123,10 @@ public:
   {
     const double aCos = std::cos(theU);
     const double aSin = std::sin(theU);
-    const double aR = myRefRadius + theV * myTanAngle;
-    return gp_Pnt(
-      myLocX + theV * myAxisX + aR * (aCos * myXDirX + aSin * myYDirX),
-      myLocY + theV * myAxisY + aR * (aCos * myXDirY + aSin * myYDirY),
-      myLocZ + theV * myAxisZ + aR * (aCos * myXDirZ + aSin * myYDirZ)
-    );
+    const double aR   = myRefRadius + theV * myTanAngle;
+    return gp_Pnt(myLocX + theV * myAxisX + aR * (aCos * myXDirX + aSin * myYDirX),
+                  myLocY + theV * myAxisY + aR * (aCos * myXDirY + aSin * myYDirY),
+                  myLocZ + theV * myAxisZ + aR * (aCos * myXDirZ + aSin * myYDirZ));
   }
 
   //! @}
@@ -143,9 +141,10 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return const reference to result with interior extrema only
-  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     myResult.Clear();
     constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
@@ -159,22 +158,22 @@ public:
     const double aZ = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
 
     // Radial components (point relative to axis at Z)
-    const double aRadX = aDx - aZ * myAxisX;
-    const double aRadY = aDy - aZ * myAxisY;
-    const double aRadZ = aDz - aZ * myAxisZ;
+    const double aRadX  = aDx - aZ * myAxisX;
+    const double aRadY  = aDy - aZ * myAxisY;
+    const double aRadZ  = aDz - aZ * myAxisZ;
     const double aRhoSq = aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ;
-    const double aRho = std::sqrt(aRhoSq);
+    const double aRho   = std::sqrt(aRhoSq);
 
     // Check for degenerate case: point on axis
     if (aRho < theTol)
     {
       // Distance to apex
-      const double aApexX = myLocX + myApexV * myAxisX;
-      const double aApexY = myLocY + myApexV * myAxisY;
-      const double aApexZ = myLocZ + myApexV * myAxisZ;
-      const double aDistToApexSq = (theP.X() - aApexX) * (theP.X() - aApexX) +
-                                   (theP.Y() - aApexY) * (theP.Y() - aApexY) +
-                                   (theP.Z() - aApexZ) * (theP.Z() - aApexZ);
+      const double aApexX        = myLocX + myApexV * myAxisX;
+      const double aApexY        = myLocY + myApexV * myAxisY;
+      const double aApexZ        = myLocZ + myApexV * myAxisZ;
+      const double aDistToApexSq = (theP.X() - aApexX) * (theP.X() - aApexX)
+                                   + (theP.Y() - aApexY) * (theP.Y() - aApexY)
+                                   + (theP.Z() - aApexZ) * (theP.Z() - aApexZ);
 
       if (aDistToApexSq < theTol * theTol)
       {
@@ -192,9 +191,9 @@ public:
       }
 
       // On axis but not at apex - bounded domain
-      const ExtremaPS::Domain2D& theDomain = *myDomain;
-      double aClosestV = theDomain.V().Clamp(aZ);
-      double aRadiusAtV = myRefRadius + aClosestV * myTanAngle;
+      const ExtremaPS::Domain2D& theDomain  = *myDomain;
+      double                     aClosestV  = theDomain.V().Clamp(aZ);
+      double                     aRadiusAtV = myRefRadius + aClosestV * myTanAngle;
 
       if (aRadiusAtV < theTol && theDomain.V().Contains(myApexV, theTol))
       {
@@ -204,33 +203,35 @@ public:
       }
 
       myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-      const double aDeltaZ = aZ - aClosestV;
+      const double aDeltaZ            = aZ - aClosestV;
       myResult.InfiniteSquareDistance = aRadiusAtV * aRadiusAtV + aDeltaZ * aDeltaZ;
       return myResult;
     }
 
     // Compute U from radial direction
-    const double aInvRho = 1.0 / aRho;
+    const double aInvRho   = 1.0 / aRho;
     const double aRadNormX = aRadX * aInvRho;
     const double aRadNormY = aRadY * aInvRho;
     const double aRadNormZ = aRadZ * aInvRho;
 
     const double aCosU = aRadNormX * myXDirX + aRadNormY * myXDirY + aRadNormZ * myXDirZ;
     const double aSinU = aRadNormX * myYDirX + aRadNormY * myYDirY + aRadNormZ * myYDirZ;
-    double aU = std::atan2(aSinU, aCosU);
-    if (aU < 0.0) aU += aTwoPi;
+    double       aU    = std::atan2(aSinU, aCosU);
+    if (aU < 0.0)
+      aU += aTwoPi;
 
     // Compute closest V on the generator
-    const double aLocalZ = aZ - myApexV;
-    const double aGenDist = aLocalZ * myCosAngle + aRho * mySinAngle;
+    const double aLocalZ   = aZ - myApexV;
+    const double aGenDist  = aLocalZ * myCosAngle + aRho * mySinAngle;
     const double aClosestV = myApexV + aGenDist * myCosAngle;
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
-    if (aUOpp >= aTwoPi) aUOpp -= aTwoPi;
+    if (aUOpp >= aTwoPi)
+      aUOpp -= aTwoPi;
 
     // For maximum, project onto opposite generator
-    const double aGenDistMax = aLocalZ * myCosAngle - aRho * mySinAngle;
+    const double aGenDistMax  = aLocalZ * myCosAngle - aRho * mySinAngle;
     const double aClosestVMax = myApexV + aGenDistMax * myCosAngle;
 
     // FAST PATH: Natural domain (full U, infinite V) - most common case
@@ -278,9 +279,12 @@ public:
 
     // Helper: Check U in range (with periodicity handling)
     auto checkUInRange = [&](double aTestU) -> bool {
-      if (aIsFullU) return true;
-      while (aTestU < theDomain.UMin) aTestU += aTwoPi;
-      while (aTestU >= theDomain.UMin + aTwoPi) aTestU -= aTwoPi;
+      if (aIsFullU)
+        return true;
+      while (aTestU < theDomain.UMin)
+        aTestU += aTwoPi;
+      while (aTestU >= theDomain.UMin + aTwoPi)
+        aTestU -= aTwoPi;
       return theDomain.U().Contains(aTestU, theTol);
     };
 
@@ -293,8 +297,10 @@ public:
         double aClampedU = aU;
         if (!aIsFullU)
         {
-          while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
+          while (aClampedU < theDomain.UMin)
+            aClampedU += aTwoPi;
+          while (aClampedU > theDomain.UMax)
+            aClampedU -= aTwoPi;
           aClampedU = theDomain.U().Clamp(aClampedU);
         }
 
@@ -320,8 +326,10 @@ public:
         double aClampedU = aUOpp;
         if (!aIsFullU)
         {
-          while (aClampedU < theDomain.UMin) aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax) aClampedU -= aTwoPi;
+          while (aClampedU < theDomain.UMin)
+            aClampedU += aTwoPi;
+          while (aClampedU > theDomain.UMax)
+            aClampedU -= aTwoPi;
           aClampedU = theDomain.U().Clamp(aClampedU);
         }
 
@@ -338,7 +346,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaPS::Status::NoSolution : ExtremaPS::Status::OK;
     return myResult;
   }
 
@@ -349,9 +358,10 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return const reference to result with interior + boundary extrema
-  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
-                                                              double                theTol,
-                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
     (void)Perform(theP, theTol, theMode);
@@ -395,16 +405,16 @@ private:
   mutable ExtremaPS::Result          myResult; //!< Reusable result storage
 
   // Cached components for fast computation
-  double myLocX, myLocY, myLocZ;        //!< Cone axis location
-  double myAxisX, myAxisY, myAxisZ;     //!< Cone axis direction
-  double myXDirX, myXDirY, myXDirZ;     //!< Cone X direction
-  double myYDirX, myYDirY, myYDirZ;     //!< Cone Y direction
-  double myRefRadius;                   //!< Reference radius
-  double mySemiAngle;                   //!< Semi-angle
-  double myTanAngle;                    //!< tan(semi-angle)
-  double myCosAngle;                    //!< cos(semi-angle)
-  double mySinAngle;                    //!< sin(semi-angle)
-  double myApexV;                       //!< Apex V parameter
+  double myLocX, myLocY, myLocZ;    //!< Cone axis location
+  double myAxisX, myAxisY, myAxisZ; //!< Cone axis direction
+  double myXDirX, myXDirY, myXDirZ; //!< Cone X direction
+  double myYDirX, myYDirY, myYDirZ; //!< Cone Y direction
+  double myRefRadius;               //!< Reference radius
+  double mySemiAngle;               //!< Semi-angle
+  double myTanAngle;                //!< tan(semi-angle)
+  double myCosAngle;                //!< cos(semi-angle)
+  double mySinAngle;                //!< sin(semi-angle)
+  double myApexV;                   //!< Apex V parameter
 };
 
 #endif // _ExtremaPS_Cone_HeaderFile

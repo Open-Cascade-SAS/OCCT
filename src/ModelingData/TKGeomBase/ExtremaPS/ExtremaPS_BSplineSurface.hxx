@@ -42,14 +42,15 @@ public:
   //! Constructor from BSpline surface handle (uses full surface domain).
   //! Grid is built eagerly at construction time.
   //! @param[in] theSurface BSpline surface handle
-  Standard_EXPORT explicit ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface);
+  Standard_EXPORT explicit ExtremaPS_BSplineSurface(
+    const occ::handle<Geom_BSplineSurface>& theSurface);
 
   //! Constructor with BSpline surface and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theSurface BSpline surface handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPS_BSplineSurface(const occ::handle<Geom_BSplineSurface>& theSurface,
-                                           const ExtremaPS::Domain2D&         theDomain);
+                                           const ExtremaPS::Domain2D&              theDomain);
 
   //! @name Surface Evaluation
   //! @{
@@ -104,14 +105,14 @@ private:
 
 private:
   occ::handle<Geom_BSplineSurface> mySurface; //!< Surface geometry
-  GeomAdaptor_Surface         myAdaptor; //!< Surface adaptor (cached)
-  ExtremaPS::Domain2D         myDomain;  //!< Parameter domain (fixed at construction)
+  GeomAdaptor_Surface              myAdaptor; //!< Surface adaptor (cached)
+  ExtremaPS::Domain2D              myDomain;  //!< Parameter domain (fixed at construction)
 
   // Knot vectors for knot-aware sampling
-  NCollection_Array1<double> myUKnots; //!< U knot vector
-  NCollection_Array1<double> myVKnots; //!< V knot vector
-  int                  myUDegree = 0; //!< U degree
-  int                  myVDegree = 0; //!< V degree
+  NCollection_Array1<double> myUKnots;      //!< U knot vector
+  NCollection_Array1<double> myVKnots;      //!< V knot vector
+  int                        myUDegree = 0; //!< U degree
+  int                        myVDegree = 0; //!< V degree
 
   // Grid evaluator with cached state (grid, result, temporary vectors)
   mutable ExtremaPS_GridEvaluator myEvaluator;

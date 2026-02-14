@@ -53,9 +53,9 @@ protected:
 TEST_F(ExtremaPS_TorusTest, BasicProjection_PointOutsideTorusXAxis)
 {
   // Point outside torus on X axis - projects to outer edge
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -68,9 +68,9 @@ TEST_F(ExtremaPS_TorusTest, BasicProjection_PointOutsideTorusXAxis)
 TEST_F(ExtremaPS_TorusTest, BasicProjection_PointInsideHole)
 {
   // Point inside the torus hole (on axis)
-  gp_Pnt         aP(0.0, 0.0, 0.0);
+  gp_Pnt          aP(0.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   // Point on axis -> infinite solutions
   EXPECT_EQ(aResult.Status, ExtremaPS::Status::InfiniteSolutions);
@@ -79,9 +79,9 @@ TEST_F(ExtremaPS_TorusTest, BasicProjection_PointInsideHole)
 TEST_F(ExtremaPS_TorusTest, BasicProjection_PointAboveTorus)
 {
   // Point above the torus
-  gp_Pnt         aP(5.0, 0.0, 5.0);
+  gp_Pnt          aP(5.0, 0.0, 5.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -94,9 +94,9 @@ TEST_F(ExtremaPS_TorusTest, BasicProjection_PointAboveTorus)
 TEST_F(ExtremaPS_TorusTest, BasicProjection_PointBelowTorus)
 {
   // Point below the torus
-  gp_Pnt         aP(5.0, 0.0, -3.0);
+  gp_Pnt          aP(5.0, 0.0, -3.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -109,9 +109,9 @@ TEST_F(ExtremaPS_TorusTest, BasicProjection_PointBelowTorus)
 TEST_F(ExtremaPS_TorusTest, BasicProjection_PointOnTorusSurface)
 {
   // Point exactly on torus surface
-  gp_Pnt         aP(6.0, 0.0, 0.0); // outer edge at U=0, V=0
+  gp_Pnt          aP(6.0, 0.0, 0.0); // outer edge at U=0, V=0
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -123,9 +123,9 @@ TEST_F(ExtremaPS_TorusTest, BasicProjection_PointOnTorusSurface)
 TEST_F(ExtremaPS_TorusTest, BasicProjection_PointInsideTorus)
 {
   // Point inside torus tube
-  gp_Pnt         aP(5.5, 0.0, 0.0); // between inner (4) and outer (6) radius
+  gp_Pnt          aP(5.5, 0.0, 0.0); // between inner (4) and outer (6) radius
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -141,9 +141,9 @@ TEST_F(ExtremaPS_TorusTest, BasicProjection_PointInsideTorus)
 TEST_F(ExtremaPS_TorusTest, Degenerate_PointOnAxis)
 {
   // Point exactly on torus axis
-  gp_Pnt         aP(0.0, 0.0, 3.0);
+  gp_Pnt          aP(0.0, 0.0, 3.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   EXPECT_EQ(aResult.Status, ExtremaPS::Status::InfiniteSolutions);
 }
@@ -151,9 +151,9 @@ TEST_F(ExtremaPS_TorusTest, Degenerate_PointOnAxis)
 TEST_F(ExtremaPS_TorusTest, Degenerate_PointNearAxis)
 {
   // Point very close to axis but not exactly on it
-  gp_Pnt         aP(1.0e-8, 0.0, 0.0);
+  gp_Pnt          aP(1.0e-8, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   EXPECT_EQ(aResult.Status, ExtremaPS::Status::InfiniteSolutions);
 }
@@ -161,9 +161,9 @@ TEST_F(ExtremaPS_TorusTest, Degenerate_PointNearAxis)
 TEST_F(ExtremaPS_TorusTest, Degenerate_PointFarOnAxis)
 {
   // Point far on axis
-  gp_Pnt         aP(0.0, 0.0, 100.0);
+  gp_Pnt          aP(0.0, 0.0, 100.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   EXPECT_EQ(aResult.Status, ExtremaPS::Status::InfiniteSolutions);
   // Infinite square distance should be set
@@ -178,10 +178,10 @@ TEST_F(ExtremaPS_TorusTest, Degenerate_PointFarOnAxis)
 TEST_F(ExtremaPS_TorusTest, Config_LargeMajorRadius)
 {
   // Large major radius
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 100.0, 1.0);
-  gp_Pnt         aP(105.0, 0.0, 0.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 100.0, 1.0);
+  gp_Pnt          aP(105.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -191,10 +191,10 @@ TEST_F(ExtremaPS_TorusTest, Config_LargeMajorRadius)
 TEST_F(ExtremaPS_TorusTest, Config_LargeMinorRadius)
 {
   // Large minor radius (thick tube)
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 3.0);
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 3.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -204,10 +204,10 @@ TEST_F(ExtremaPS_TorusTest, Config_LargeMinorRadius)
 TEST_F(ExtremaPS_TorusTest, Config_SmallMinorRadius)
 {
   // Small minor radius (thin tube)
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 0.1);
-  gp_Pnt         aP(6.0, 0.0, 0.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 0.1);
+  gp_Pnt          aP(6.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -217,10 +217,10 @@ TEST_F(ExtremaPS_TorusTest, Config_SmallMinorRadius)
 TEST_F(ExtremaPS_TorusTest, Config_AlmostRing)
 {
   // Minor radius almost equals major radius
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 4.9);
-  gp_Pnt         aP(15.0, 0.0, 0.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 4.9);
+  gp_Pnt          aP(15.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -234,10 +234,10 @@ TEST_F(ExtremaPS_TorusTest, Config_AlmostRing)
 TEST_F(ExtremaPS_TorusTest, Transform_TranslatedTorus)
 {
   // Torus centered at (10, 10, 10)
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(10, 10, 10), gp_Dir(0, 0, 1)), 5.0, 1.0);
-  gp_Pnt         aP(20.0, 10.0, 10.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(10, 10, 10), gp_Dir(0, 0, 1)), 5.0, 1.0);
+  gp_Pnt          aP(20.0, 10.0, 10.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -247,10 +247,10 @@ TEST_F(ExtremaPS_TorusTest, Transform_TranslatedTorus)
 TEST_F(ExtremaPS_TorusTest, Transform_RotatedTorusXAxis)
 {
   // Torus with axis along X
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 5.0, 1.0);
-  gp_Pnt         aP(0.0, 10.0, 0.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 5.0, 1.0);
+  gp_Pnt          aP(0.0, 10.0, 0.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -260,10 +260,10 @@ TEST_F(ExtremaPS_TorusTest, Transform_RotatedTorusXAxis)
 TEST_F(ExtremaPS_TorusTest, Transform_RotatedTorusYAxis)
 {
   // Torus with axis along Y
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 5.0, 1.0);
-  gp_Pnt         aP(0.0, 0.0, 10.0);
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0)), 5.0, 1.0);
+  gp_Pnt          aP(0.0, 0.0, 10.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -273,11 +273,11 @@ TEST_F(ExtremaPS_TorusTest, Transform_RotatedTorusYAxis)
 TEST_F(ExtremaPS_TorusTest, Transform_TiltedTorus)
 {
   // Torus with tilted axis (45 degrees from Z)
-  gp_Dir         aTiltedDir(1.0 / std::sqrt(2.0), 0.0, 1.0 / std::sqrt(2.0));
-  gp_Torus       aTorus(gp_Ax3(gp_Pnt(0, 0, 0), aTiltedDir), 5.0, 1.0);
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Dir          aTiltedDir(1.0 / std::sqrt(2.0), 0.0, 1.0 / std::sqrt(2.0));
+  gp_Torus        aTorus(gp_Ax3(gp_Pnt(0, 0, 0), aTiltedDir), 5.0, 1.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(aTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -289,7 +289,7 @@ TEST_F(ExtremaPS_TorusTest, Transform_TiltedTorus)
 
 TEST_F(ExtremaPS_TorusTest, SearchMode_MinOnly)
 {
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
@@ -306,7 +306,7 @@ TEST_F(ExtremaPS_TorusTest, SearchMode_MinOnly)
 
 TEST_F(ExtremaPS_TorusTest, SearchMode_MaxOnly)
 {
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Max);
@@ -323,7 +323,7 @@ TEST_F(ExtremaPS_TorusTest, SearchMode_MaxOnly)
 
 TEST_F(ExtremaPS_TorusTest, SearchMode_MinMax)
 {
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
@@ -340,9 +340,9 @@ TEST_F(ExtremaPS_TorusTest, SearchMode_MinMax)
 TEST_F(ExtremaPS_TorusTest, Boundary_PartialURange)
 {
   // Only first quadrant in U
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, THE_PI / 2.0, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -358,9 +358,9 @@ TEST_F(ExtremaPS_TorusTest, Boundary_PartialURange)
 TEST_F(ExtremaPS_TorusTest, Boundary_PartialVRange)
 {
   // Only upper half of generating circle (V in [0, PI])
-  gp_Pnt         aP(5.0, 0.0, 3.0);
-  ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(5.0, 0.0, 3.0);
+  ExtremaPS_Torus          anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, THE_PI));
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -369,9 +369,9 @@ TEST_F(ExtremaPS_TorusTest, Boundary_PartialVRange)
 TEST_F(ExtremaPS_TorusTest, Boundary_SmallUVPatch)
 {
   // Small patch around U=0, V=0
-  gp_Pnt         aP(6.5, 0.0, 0.0);
-  ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(-0.1, 0.1, -0.1, 0.1));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(6.5, 0.0, 0.0);
+  ExtremaPS_Torus          anEval(myTorus, ExtremaPS::Domain2D(-0.1, 0.1, -0.1, 0.1));
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -380,9 +380,9 @@ TEST_F(ExtremaPS_TorusTest, Boundary_SmallUVPatch)
 TEST_F(ExtremaPS_TorusTest, Boundary_ExtremumOutsideRange)
 {
   // Point projects to U=PI, but range is [0, PI/2]
-  gp_Pnt         aP(-10.0, 0.0, 0.0);
+  gp_Pnt          aP(-10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, THE_PI / 2.0, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   // Should still find boundary extrema
   if (aResult.Status == ExtremaPS::Status::OK)
@@ -402,11 +402,11 @@ TEST_F(ExtremaPS_TorusTest, Boundary_ExtremumOutsideRange)
 TEST_F(ExtremaPS_TorusTest, Aggregator_ToroidalSurface)
 {
   occ::handle<Geom_ToroidalSurface> aGeomTorus = new Geom_ToroidalSurface(myTorus);
-  GeomAdaptor_Surface          anAdaptor(aGeomTorus);
-  ExtremaPS_Surface            anExtPS(anAdaptor);
+  GeomAdaptor_Surface               anAdaptor(aGeomTorus);
+  ExtremaPS_Surface                 anExtPS(anAdaptor);
 
-  gp_Pnt            aP(10.0, 0.0, 0.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(10.0, 0.0, 0.0);
+  const ExtremaPS::Result& aResult = anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -418,8 +418,8 @@ TEST_F(ExtremaPS_TorusTest, Aggregator_ToroidalSurface)
 TEST_F(ExtremaPS_TorusTest, Aggregator_WithSearchMode)
 {
   occ::handle<Geom_ToroidalSurface> aGeomTorus = new Geom_ToroidalSurface(myTorus);
-  GeomAdaptor_Surface          anAdaptor(aGeomTorus);
-  ExtremaPS_Surface            anExtPS(anAdaptor);
+  GeomAdaptor_Surface               anAdaptor(aGeomTorus);
+  ExtremaPS_Surface                 anExtPS(anAdaptor);
 
   gp_Pnt                   aP(10.0, 0.0, 0.0);
   const ExtremaPS::Result& aResult =
@@ -439,7 +439,7 @@ TEST_F(ExtremaPS_TorusTest, Aggregator_WithSearchMode)
 TEST_F(ExtremaPS_TorusTest, MultipleExtrema_FourExtrema)
 {
   // General point should give 4 extrema on full torus
-  gp_Pnt         aP(8.0, 0.0, 2.0);
+  gp_Pnt          aP(8.0, 0.0, 2.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
@@ -451,7 +451,7 @@ TEST_F(ExtremaPS_TorusTest, MultipleExtrema_FourExtrema)
 
 TEST_F(ExtremaPS_TorusTest, MultipleExtrema_MinMaxDifferent)
 {
-  gp_Pnt         aP(10.0, 0.0, 0.0);
+  gp_Pnt          aP(10.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
@@ -474,9 +474,9 @@ TEST_F(ExtremaPS_TorusTest, MultipleExtrema_MinMaxDifferent)
 TEST_F(ExtremaPS_TorusTest, EdgeCase_PointOnMajorCircle)
 {
   // Point on the major circle plane, at major radius distance
-  gp_Pnt         aP(5.0, 0.0, 0.0); // center of generating circle
+  gp_Pnt          aP(5.0, 0.0, 0.0); // center of generating circle
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -486,9 +486,9 @@ TEST_F(ExtremaPS_TorusTest, EdgeCase_PointOnMajorCircle)
 TEST_F(ExtremaPS_TorusTest, EdgeCase_PointAtInnerEdge)
 {
   // Point at inner edge of torus
-  gp_Pnt         aP(4.0, 0.0, 0.0); // exactly at inner radius
+  gp_Pnt          aP(4.0, 0.0, 0.0); // exactly at inner radius
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -498,9 +498,9 @@ TEST_F(ExtremaPS_TorusTest, EdgeCase_PointAtInnerEdge)
 TEST_F(ExtremaPS_TorusTest, EdgeCase_PointAtOuterEdge)
 {
   // Point at outer edge of torus
-  gp_Pnt         aP(6.0, 0.0, 0.0); // exactly at outer radius
+  gp_Pnt          aP(6.0, 0.0, 0.0); // exactly at outer radius
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -510,9 +510,9 @@ TEST_F(ExtremaPS_TorusTest, EdgeCase_PointAtOuterEdge)
 TEST_F(ExtremaPS_TorusTest, EdgeCase_PointAtTopOfTorus)
 {
   // Point at top of torus (Z = minor radius)
-  gp_Pnt         aP(5.0, 0.0, 1.0);
+  gp_Pnt          aP(5.0, 0.0, 1.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -522,9 +522,9 @@ TEST_F(ExtremaPS_TorusTest, EdgeCase_PointAtTopOfTorus)
 TEST_F(ExtremaPS_TorusTest, EdgeCase_VeryFarPoint)
 {
   // Point very far from torus
-  gp_Pnt         aP(1000.0, 0.0, 0.0);
+  gp_Pnt          aP(1000.0, 0.0, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -534,10 +534,10 @@ TEST_F(ExtremaPS_TorusTest, EdgeCase_VeryFarPoint)
 TEST_F(ExtremaPS_TorusTest, EdgeCase_DiagonalPoint)
 {
   // Point at 45 degrees in XY plane
-  double         aCoord = 10.0 / std::sqrt(2.0);
-  gp_Pnt         aP(aCoord, aCoord, 0.0);
+  double          aCoord = 10.0 / std::sqrt(2.0);
+  gp_Pnt          aP(aCoord, aCoord, 0.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   double aMinDist = aResult.MinSquareDistance();
@@ -550,9 +550,9 @@ TEST_F(ExtremaPS_TorusTest, EdgeCase_DiagonalPoint)
 
 TEST_F(ExtremaPS_TorusTest, Verify_PointOnSurface)
 {
-  gp_Pnt         aP(8.0, 3.0, 1.5);
+  gp_Pnt          aP(8.0, 3.0, 1.5);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -560,7 +560,7 @@ TEST_F(ExtremaPS_TorusTest, Verify_PointOnSurface)
   // Verify each extremum point is on the surface
   for (int i = 0; i < aResult.Extrema.Length(); ++i)
   {
-    const ExtremaPS::ExtremumResult& anExt = aResult.Extrema.Value(i);
+    const ExtremaPS::ExtremumResult& anExt   = aResult.Extrema.Value(i);
     gp_Pnt                           aSurfPt = ElSLib::Value(anExt.U, anExt.V, myTorus);
     EXPECT_NEAR(anExt.Point.Distance(aSurfPt), 0.0, THE_TOLERANCE);
   }
@@ -568,9 +568,9 @@ TEST_F(ExtremaPS_TorusTest, Verify_PointOnSurface)
 
 TEST_F(ExtremaPS_TorusTest, Verify_SquareDistanceConsistent)
 {
-  gp_Pnt         aP(7.0, 2.0, 1.0);
+  gp_Pnt          aP(7.0, 2.0, 1.0);
   ExtremaPS_Torus anEval(myTorus, ExtremaPS::Domain2D(0.0, 2.0 * THE_PI, 0.0, 2.0 * THE_PI));
-  const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -578,7 +578,7 @@ TEST_F(ExtremaPS_TorusTest, Verify_SquareDistanceConsistent)
   // Verify square distance matches actual distance
   for (int i = 0; i < aResult.Extrema.Length(); ++i)
   {
-    const ExtremaPS::ExtremumResult& anExt      = aResult.Extrema.Value(i);
+    const ExtremaPS::ExtremumResult& anExt         = aResult.Extrema.Value(i);
     double                           aActualSqDist = aP.SquareDistance(anExt.Point);
     EXPECT_NEAR(anExt.SquareDistance, aActualSqDist, THE_TOLERANCE);
   }

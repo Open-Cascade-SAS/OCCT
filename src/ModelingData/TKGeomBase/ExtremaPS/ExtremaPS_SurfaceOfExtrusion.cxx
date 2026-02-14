@@ -68,10 +68,9 @@ gp_Pnt ExtremaPS_SurfaceOfExtrusion::Value(double theU, double theV) const
 
 //==================================================================================================
 
-const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(
-  const gp_Pnt&         theP,
-  double                theTol,
-  ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(const gp_Pnt&         theP,
+                                                               double                theTol,
+                                                               ExtremaPS::SearchMode theMode) const
 {
   myResult.Clear();
   mySamples.Clear();
@@ -102,16 +101,16 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(
   // Functor class for MathOpt::Brent
   struct DistanceFunc
   {
-    const gp_Pnt&                              myP;
-    const Handle(Geom_Curve)&                  myCurve;
-    double                                     myDirX, myDirY, myDirZ;
+    const gp_Pnt&                             myP;
+    const Handle(Geom_Curve)&                 myCurve;
+    double                                    myDirX, myDirY, myDirZ;
     const std::optional<ExtremaPS::Domain2D>& myDom;
 
-    DistanceFunc(const gp_Pnt&                              theP,
-                 const Handle(Geom_Curve)&                  theCurve,
-                 double                                     theDirX,
-                 double                                     theDirY,
-                 double                                     theDirZ,
+    DistanceFunc(const gp_Pnt&                             theP,
+                 const Handle(Geom_Curve)&                 theCurve,
+                 double                                    theDirX,
+                 double                                    theDirY,
+                 double                                    theDirZ,
                  const std::optional<ExtremaPS::Domain2D>& theDomain)
         : myP(theP),
           myCurve(theCurve),
@@ -133,7 +132,7 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(
 
       if (myDom.has_value())
       {
-        double aOptV = std::max(myDom->VMin, std::min(myDom->VMax, -aWD));
+        double       aOptV = std::max(myDom->VMin, std::min(myDom->VMax, -aWD));
         const gp_Pnt aSurfPt(aCurvePt.X() + aOptV * myDirX,
                              aCurvePt.Y() + aOptV * myDirY,
                              aCurvePt.Z() + aOptV * myDirZ);
@@ -150,8 +149,7 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(
   DistanceFunc aFunc(theP, aBasisCurve, myDirX, myDirY, myDirZ, myDomain);
 
   // Lambda to compute distance squared and optimal V at parameter u
-  auto computeDistanceAndV = [&](double theU) -> std::pair<double, double>
-  {
+  auto computeDistanceAndV = [&](double theU) -> std::pair<double, double> {
     const gp_Pnt aCurvePt = aBasisCurve->Value(theU);
     const double aWx      = aCurvePt.X() - theP.X();
     const double aWy      = aCurvePt.Y() - theP.Y();
@@ -179,8 +177,8 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(
 
   for (int i = 0; i <= aNSamples; ++i)
   {
-    const double aU               = aUMin + i * aDU;
-    auto [aSqDist, aOptV]         = computeDistanceAndV(aU);
+    const double aU       = aUMin + i * aDU;
+    auto [aSqDist, aOptV] = computeDistanceAndV(aU);
     mySamples.Append({aU, aOptV, aSqDist});
   }
 

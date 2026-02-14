@@ -20,7 +20,7 @@
 ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSurface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface),
-      myDomain{0.0, 1.0, 0.0, 1.0}  // Bezier surfaces always have domain [0,1]x[0,1]
+      myDomain{0.0, 1.0, 0.0, 1.0} // Bezier surfaces always have domain [0,1]x[0,1]
 {
   // Grid density based on surface degree: multiplier*(deg+1), clamped to [min, max]
   myNbUSamples = ExtremaPS::THE_BEZIER_DEGREE_MULTIPLIER * (mySurface->UDegree() + 1);
@@ -37,7 +37,7 @@ ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSu
 //==================================================================================================
 
 ExtremaPS_BezierSurface::ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSurface>& theSurface,
-                                                 const ExtremaPS::Domain2D&        theDomain)
+                                                 const ExtremaPS::Domain2D&             theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),
       myDomain(theDomain)
@@ -84,9 +84,10 @@ const ExtremaPS::Result& ExtremaPS_BezierSurface::Perform(const gp_Pnt&         
 
 //==================================================================================================
 
-const ExtremaPS::Result& ExtremaPS_BezierSurface::PerformWithBoundary(const gp_Pnt&         theP,
-                                                                       double                theTol,
-                                                                       ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_BezierSurface::PerformWithBoundary(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPS::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);

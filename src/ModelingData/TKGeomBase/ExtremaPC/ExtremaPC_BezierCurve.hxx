@@ -56,7 +56,7 @@ public:
   //! @param[in] theCurve Bezier curve handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPC_BezierCurve(const occ::handle<Geom_BezierCurve>& theCurve,
-                                        const ExtremaPC::Domain1D&      theDomain);
+                                        const ExtremaPC::Domain1D&           theDomain);
 
   //! Copy constructor is deleted.
   ExtremaPC_BezierCurve(const ExtremaPC_BezierCurve&) = delete;
@@ -111,9 +111,9 @@ private:
   void buildGrid();
 
   occ::handle<Geom_BezierCurve> myCurve;     //!< Bezier curve
-  GeomAdaptor_Curve        myAdaptor;   //!< Curve adaptor
-  ExtremaPC::Domain1D      myDomain;    //!< Parameter domain (fixed)
-  int                      myNbSamples; //!< Number of samples
+  GeomAdaptor_Curve             myAdaptor;   //!< Curve adaptor
+  ExtremaPC::Domain1D           myDomain;    //!< Parameter domain (fixed)
+  int                           myNbSamples; //!< Number of samples
 
   // Grid evaluator with cached state (grid, result, temporary vectors)
   mutable ExtremaPC_GridEvaluator myEvaluator;

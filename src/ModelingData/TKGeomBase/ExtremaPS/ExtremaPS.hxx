@@ -124,7 +124,6 @@ constexpr int THE_OTHER_SURFACE_NB_SAMPLES = 32;
 //! and the grid already provides N^2 samples per cell.
 constexpr int THE_BSPLINE_SPAN_OFFSET = 2;
 
-
 //! Bring Domain2D into ExtremaPS namespace for convenience.
 using MathUtils::Domain2D;
 
@@ -150,8 +149,8 @@ enum class SearchMode
 //! Result of a single extremum computation.
 struct ExtremumResult
 {
-  double U              = 0.0;  //!< U parameter value on surface
-  double V              = 0.0;  //!< V parameter value on surface
+  double U = 0.0;               //!< U parameter value on surface
+  double V = 0.0;               //!< V parameter value on surface
   gp_Pnt Point;                 //!< Point on surface at (U, V)
   double SquareDistance = 0.0;  //!< Square of the distance from query point to surface point
   bool   IsMinimum      = true; //!< True if this is a local minimum, false if maximum
@@ -304,11 +303,11 @@ struct Result
 //! @param thePt 3D point on surface
 //! @param theTol tolerance for comparison
 //! @return true if point is duplicate
-inline bool IsDuplicateExtremum(const Result&  theResult,
-                                double         theU,
-                                double         theV,
-                                const gp_Pnt&  thePt,
-                                double         theTol)
+inline bool IsDuplicateExtremum(const Result& theResult,
+                                double        theU,
+                                double        theV,
+                                const gp_Pnt& thePt,
+                                double        theTol)
 {
   for (int i = 0; i < theResult.Extrema.Length(); ++i)
   {
@@ -425,8 +424,8 @@ inline void AddEdgeExtrema(Result&                 theResult,
 
     bool Value(double theParam, double& theF) const
     {
-      double aU = IsUFixed ? FixedParam : theParam;
-      double aV = IsUFixed ? theParam : FixedParam;
+      double aU  = IsUFixed ? FixedParam : theParam;
+      double aV  = IsUFixed ? theParam : FixedParam;
       gp_Pnt aPt = Eval->Value(aU, aV);
       theF       = P->SquareDistance(aPt);
       return true;
@@ -434,8 +433,8 @@ inline void AddEdgeExtrema(Result&                 theResult,
   };
 
   // Helper to find minimum along an edge
-  auto findEdgeMin = [&](double theFixedParam, bool theIsUFixed, double theParamMin,
-                         double theParamMax) -> double {
+  auto findEdgeMin =
+    [&](double theFixedParam, bool theIsUFixed, double theParamMin, double theParamMax) -> double {
     EdgeDistFunc aFunc{&theP, &theEval, theFixedParam, theIsUFixed, 0.0, 0.0};
 
     MathUtils::Config aConfig;

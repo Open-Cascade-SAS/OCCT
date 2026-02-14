@@ -50,8 +50,14 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
   const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
@@ -60,12 +66,13 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
   {
     EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0)
-        << theTestName << ": Infinite distance should be non-negative";
+      << theTestName << ": Infinite distance should be non-negative";
     return;
   }
 
   // New implementation must succeed
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -83,8 +90,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 
 //! Create a simple meridian curve (line at radius 5 from axis)
@@ -100,7 +107,7 @@ occ::handle<Geom_Curve> MakeLineMeridian()
 occ::handle<Geom_Curve> MakeCircleMeridian()
 {
   // Circle centered at (5, 0, 0) with radius 2, in the XZ plane
-  gp_Ax2 anAxis(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
+  gp_Ax2  anAxis(gp_Pnt(5.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
   gp_Circ aCircle(anAxis, 2.0);
   return new Geom_Circle(aCircle);
 }
@@ -146,7 +153,7 @@ protected:
 
     // Create a torus-like surface
     occ::handle<Geom_Curve> aCircleMeridian = MakeCircleMeridian();
-    myTorusLike = new Geom_SurfaceOfRevolution(aCircleMeridian, anAxis);
+    myTorusLike                             = new Geom_SurfaceOfRevolution(aCircleMeridian, anAxis);
     myTorusAdaptor.Load(myTorusLike);
 
     // Create a surface with curved meridian
@@ -233,12 +240,12 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Curved_PointDiagonal)
 {
   // For curved meridians at diagonal points, compare against grid-based OtherSurface
   // The specialized algorithm matches OtherSurface which is our new baseline
-  gp_Pnt                         aP(5.0, 5.0, 2.0);
-  const ExtremaPS::Domain2D      aDomain(0.0, 2 * M_PI, 0.0, 1.0);
-  ExtremaPS_OtherSurface         aGridExtPS(myCurvedSurface, aDomain);
-  ExtremaPS_SurfaceOfRevolution  aSpecExtPS(myCurvedSurface, aDomain);
-  const ExtremaPS::Result&       aGridResult = aGridExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
-  const ExtremaPS::Result&       aSpecResult = aSpecExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                        aP(5.0, 5.0, 2.0);
+  const ExtremaPS::Domain2D     aDomain(0.0, 2 * M_PI, 0.0, 1.0);
+  ExtremaPS_OtherSurface        aGridExtPS(myCurvedSurface, aDomain);
+  ExtremaPS_SurfaceOfRevolution aSpecExtPS(myCurvedSurface, aDomain);
+  const ExtremaPS::Result&      aGridResult = aGridExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  const ExtremaPS::Result&      aSpecResult = aSpecExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aGridResult.Status, ExtremaPS::Status::OK);
   ASSERT_EQ(aSpecResult.Status, ExtremaPS::Status::OK);
@@ -246,7 +253,7 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Curved_PointDiagonal)
   double aGridMin = aGridResult.MinSquareDistance();
   double aSpecMin = aSpecResult.MinSquareDistance();
   EXPECT_NEAR(std::sqrt(aGridMin), std::sqrt(aSpecMin), THE_DIST_TOLERANCE)
-      << "Curved_PointDiagonal: Specialized should match grid-based";
+    << "Curved_PointDiagonal: Specialized should match grid-based";
 }
 
 //==================================================================================================
@@ -273,7 +280,7 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, DirectAPI_Basic)
 {
   ExtremaPS_SurfaceOfRevolution anExtPS(myCylinderLike);
 
-  gp_Pnt                       aP(10.0, 0.0, 0.0);
+  gp_Pnt                   aP(10.0, 0.0, 0.0);
   const ExtremaPS::Result& aResult = anExtPS.Perform(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -288,7 +295,7 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, DirectAPI_OnAxis_InfiniteSolutions)
 {
   ExtremaPS_SurfaceOfRevolution anExtPS(myCylinderLike);
 
-  gp_Pnt                       aP(0.0, 0.0, 0.0);
+  gp_Pnt                   aP(0.0, 0.0, 0.0);
   const ExtremaPS::Result& aResult = anExtPS.Perform(aP, THE_TOLERANCE);
 
   // Point on axis should give infinite solutions
@@ -318,12 +325,13 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Performance_Comparison)
   auto aOldStart = std::chrono::high_resolution_clock::now();
   for (const gp_Pnt& aP : aPoints)
   {
-    Extrema_ExtPS anExtPS(aP, myCurvedAdaptor, 0.0, 2 * M_PI, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
+    Extrema_ExtPS
+      anExtPS(aP, myCurvedAdaptor, 0.0, 2 * M_PI, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
     (void)anExtPS.IsDone();
   }
   auto aOldEnd = std::chrono::high_resolution_clock::now();
   auto aOldDuration =
-      std::chrono::duration_cast<std::chrono::microseconds>(aOldEnd - aOldStart).count();
+    std::chrono::duration_cast<std::chrono::microseconds>(aOldEnd - aOldStart).count();
 
   // Time new implementation
   ExtremaPS_Surface aNewExtPS(myCurvedAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, 0.0, 1.0));
@@ -334,7 +342,7 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, Performance_Comparison)
   }
   auto aNewEnd = std::chrono::high_resolution_clock::now();
   auto aNewDuration =
-      std::chrono::duration_cast<std::chrono::microseconds>(aNewEnd - aNewStart).count();
+    std::chrono::duration_cast<std::chrono::microseconds>(aNewEnd - aNewStart).count();
 
   double aSpeedup = static_cast<double>(aOldDuration) / aNewDuration;
 
@@ -387,7 +395,8 @@ TEST_F(ExtremaPS_SurfaceOfRevolutionTest, StressTest_RandomPoints)
           continue;
         }
 
-        if (aGridResult.Status == ExtremaPS::Status::OK && aSpecResult.Status == ExtremaPS::Status::OK)
+        if (aGridResult.Status == ExtremaPS::Status::OK
+            && aSpecResult.Status == ExtremaPS::Status::OK)
         {
           double aGridMin = aGridResult.MinSquareDistance();
           double aSpecMin = aSpecResult.MinSquareDistance();

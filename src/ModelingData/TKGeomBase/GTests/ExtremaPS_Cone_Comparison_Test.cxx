@@ -43,23 +43,31 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // Handle infinite solutions case (e.g., point on cone axis)
   if (aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
   {
-    EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0) << theTestName << ": Infinite distance should be non-negative";
+    EXPECT_GE(aNewResult.InfiniteSquareDistance, 0.0)
+      << theTestName << ": Infinite distance should be non-negative";
     return;
   }
 
   // New implementation must succeed with either OK or InfiniteSolutions
-  ASSERT_TRUE(aNewResult.Status == ExtremaPS::Status::OK ||
-              aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
-      << theTestName << ": New implementation failed with status " << static_cast<int>(aNewResult.Status);
+  ASSERT_TRUE(aNewResult.Status == ExtremaPS::Status::OK
+              || aNewResult.Status == ExtremaPS::Status::InfiniteSolutions)
+    << theTestName << ": New implementation failed with status "
+    << static_cast<int>(aNewResult.Status);
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -79,8 +87,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   // Use larger tolerance for cones due to different handling of V range
   const double aConeDistTol = 5.0; // Very relaxed for cone due to implementation differences
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), aConeDistTol)
-      << theTestName << ": Min distances differ significantly - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ significantly - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 } // namespace
 
@@ -99,7 +107,7 @@ protected:
   }
 
   occ::handle<Geom_ConicalSurface> myCone;
-  GeomAdaptor_Surface         myAdaptor;
+  GeomAdaptor_Surface              myAdaptor;
 };
 
 //==================================================================================================
@@ -151,9 +159,9 @@ TEST_F(ExtremaPS_ConeComparisonTest, PointNearApex)
 TEST_F(ExtremaPS_ConeComparisonTest, WideAngle_PointOutside)
 {
   // 60 degree semi-angle
-  gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 3, 5.0);
+  gp_Cone                          aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 3, 5.0);
   occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  GeomAdaptor_Surface              anAdaptor(aSurf);
 
   gp_Pnt aP(20.0, 0.0, 5.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -10.0, 50.0, "WideAngle_PointOutside");
@@ -162,9 +170,9 @@ TEST_F(ExtremaPS_ConeComparisonTest, WideAngle_PointOutside)
 TEST_F(ExtremaPS_ConeComparisonTest, NarrowAngle_PointNear)
 {
   // 15 degree semi-angle
-  gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 12, 5.0);
+  gp_Cone                          aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), M_PI / 12, 5.0);
   occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  GeomAdaptor_Surface              anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 0.0, 10.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -10.0, 50.0, "NarrowAngle_PointNear");
@@ -176,9 +184,9 @@ TEST_F(ExtremaPS_ConeComparisonTest, NarrowAngle_PointNear)
 
 TEST_F(ExtremaPS_ConeComparisonTest, TiltedCone_XAxis)
 {
-  gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), M_PI / 6, 5.0);
+  gp_Cone                          aCone(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), M_PI / 6, 5.0);
   occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  GeomAdaptor_Surface              anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -10.0, 50.0, "TiltedCone_XAxis");
@@ -186,10 +194,10 @@ TEST_F(ExtremaPS_ConeComparisonTest, TiltedCone_XAxis)
 
 TEST_F(ExtremaPS_ConeComparisonTest, TiltedCone_Diagonal)
 {
-  gp_Dir aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
-  gp_Cone aCone(gp_Ax3(gp_Pnt(0, 0, 0), aDir), M_PI / 6, 5.0);
+  gp_Dir                           aDir(1.0 / std::sqrt(2.0), 1.0 / std::sqrt(2.0), 0.0);
+  gp_Cone                          aCone(gp_Ax3(gp_Pnt(0, 0, 0), aDir), M_PI / 6, 5.0);
   occ::handle<Geom_ConicalSurface> aSurf = new Geom_ConicalSurface(aCone);
-  GeomAdaptor_Surface         anAdaptor(aSurf);
+  GeomAdaptor_Surface              anAdaptor(aSurf);
 
   gp_Pnt aP(10.0, 10.0, 10.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -10.0, 50.0, "TiltedCone_Diagonal");
@@ -239,11 +247,11 @@ TEST_F(ExtremaPS_ConeComparisonTest, StressTest_ConicalPoints)
       {
         gp_Pnt aP(r * std::cos(aRad), r * std::sin(aRad), z);
 
-        Extrema_ExtPS anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, -10.0, 50.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS
+          anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, -10.0, 50.0, THE_TOLERANCE, THE_TOLERANCE);
 
         ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, -10.0, 50.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -276,4 +284,3 @@ TEST_F(ExtremaPS_ConeComparisonTest, StressTest_ConicalPoints)
   // New algorithm must match or find better (closer) results than old algorithm.
   EXPECT_EQ(aPassCount, aTotalCount) << "All cases should match or improve";
 }
-

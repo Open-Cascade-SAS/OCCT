@@ -47,14 +47,15 @@ public:
   //! Constructor from offset surface handle (uses basis surface domain).
   //! Grid is built eagerly at construction time.
   //! @param[in] theSurface offset surface handle
-  Standard_EXPORT explicit ExtremaPS_OffsetSurface(const occ::handle<Geom_OffsetSurface>& theSurface);
+  Standard_EXPORT explicit ExtremaPS_OffsetSurface(
+    const occ::handle<Geom_OffsetSurface>& theSurface);
 
   //! Constructor with offset surface and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theSurface offset surface handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPS_OffsetSurface(const occ::handle<Geom_OffsetSurface>& theSurface,
-                                          const ExtremaPS::Domain2D&        theDomain);
+                                          const ExtremaPS::Domain2D&             theDomain);
 
   //! @name Surface Evaluation
   //! @{
@@ -108,9 +109,9 @@ private:
   void buildGrid();
 
 private:
-  occ::handle<Geom_OffsetSurface> mySurface;  //!< Offset surface geometry
-  GeomAdaptor_Surface        myAdaptor;  //!< Surface adaptor (cached)
-  ExtremaPS::Domain2D        myDomain;   //!< Parameter domain (fixed at construction)
+  occ::handle<Geom_OffsetSurface> mySurface; //!< Offset surface geometry
+  GeomAdaptor_Surface             myAdaptor; //!< Surface adaptor (cached)
+  ExtremaPS::Domain2D             myDomain;  //!< Parameter domain (fixed at construction)
 
   // Grid evaluator with cached state (grid, result, temporary vectors)
   mutable ExtremaPS_GridEvaluator myEvaluator;

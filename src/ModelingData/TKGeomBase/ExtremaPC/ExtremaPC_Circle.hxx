@@ -96,9 +96,10 @@ public:
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing extrema or InfiniteSolutions status
-  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -117,8 +118,8 @@ public:
     if (aOPpMag < theTol)
     {
       // Point is on the circle axis - all points on circle are equidistant
-      myResult.Status = ExtremaPC::Status::InfiniteSolutions;
-      double aRadius = myCircle.Radius();
+      myResult.Status                 = ExtremaPC::Status::InfiniteSolutions;
+      double aRadius                  = myCircle.Radius();
       myResult.InfiniteSquareDistance = aRadius * aRadius + aHeight * aHeight;
       return myResult;
     }
@@ -207,10 +208,12 @@ public:
   //! @param theP query point
   //! @param theTol tolerance for degenerate case detection
   //! @param theMode search mode (MinMax, Min, or Max)
-  //! @return const reference to result containing interior + endpoint extrema or InfiniteSolutions status
-  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  //! @return const reference to result containing interior + endpoint extrema or InfiniteSolutions
+  //! status
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)Perform(theP, theTol, theMode);
 

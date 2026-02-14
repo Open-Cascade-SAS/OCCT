@@ -42,14 +42,15 @@ public:
   //! Constructor from Bezier surface handle (uses full surface domain [0,1]x[0,1]).
   //! Grid is built eagerly at construction time.
   //! @param[in] theSurface Bezier surface handle
-  Standard_EXPORT explicit ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSurface>& theSurface);
+  Standard_EXPORT explicit ExtremaPS_BezierSurface(
+    const occ::handle<Geom_BezierSurface>& theSurface);
 
   //! Constructor with Bezier surface and parameter domain.
   //! Grid is built eagerly at construction time for the specified domain.
   //! @param[in] theSurface Bezier surface handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPS_BezierSurface(const occ::handle<Geom_BezierSurface>& theSurface,
-                                          const ExtremaPS::Domain2D&        theDomain);
+                                          const ExtremaPS::Domain2D&             theDomain);
 
   //! @name Surface Evaluation
   //! @{
@@ -103,11 +104,11 @@ private:
   void buildGrid();
 
 private:
-  occ::handle<Geom_BezierSurface> mySurface;  //!< Surface geometry
-  GeomAdaptor_Surface        myAdaptor;  //!< Surface adaptor (cached)
-  ExtremaPS::Domain2D        myDomain;   //!< Parameter domain (fixed at construction)
-  int myNbUSamples = 0;  //!< Number of U samples
-  int myNbVSamples = 0;  //!< Number of V samples
+  occ::handle<Geom_BezierSurface> mySurface;        //!< Surface geometry
+  GeomAdaptor_Surface             myAdaptor;        //!< Surface adaptor (cached)
+  ExtremaPS::Domain2D             myDomain;         //!< Parameter domain (fixed at construction)
+  int                             myNbUSamples = 0; //!< Number of U samples
+  int                             myNbVSamples = 0; //!< Number of V samples
 
   // Grid evaluator with cached state (grid, result, temporary vectors)
   mutable ExtremaPS_GridEvaluator myEvaluator;

@@ -36,14 +36,21 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   ASSERT_TRUE(anOldExtPS.IsDone()) << theTestName << ": Old implementation failed";
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   double aOldMinSqDist = std::numeric_limits<double>::max();
   for (int i = 1; i <= anOldExtPS.NbExt(); ++i)
@@ -54,8 +61,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 
 //! Create a flat BSpline surface
@@ -71,8 +78,8 @@ occ::handle<Geom_BSplineSurface> MakeFlatBSpline()
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 2), aVKnots(1, 2);
-  NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 1.0;
@@ -81,7 +88,7 @@ occ::handle<Geom_BSplineSurface> MakeFlatBSpline()
 
   // For 4 poles, deg 3: need 4+3+1 = 8 total multiplicity
   aUMults(1) = 4;
-  aUMults(2) = 4;  // 4+4 = 8 ✓
+  aUMults(2) = 4; // 4+4 = 8 ✓
   aVMults(1) = 4;
   aVMults(2) = 4;
 
@@ -101,14 +108,14 @@ occ::handle<Geom_BSplineSurface> MakeDomeBSpline()
       double y = (j - 1) * 2.5;
       // Create dome shape: center raised
       double cx = 5.0, cy = 5.0;
-      double r  = std::sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
-      double z  = std::max(0.0, 5.0 - r * 0.5);
+      double r     = std::sqrt((x - cx) * (x - cx) + (y - cy) * (y - cy));
+      double z     = std::max(0.0, 5.0 - r * 0.5);
       aPoles(i, j) = gp_Pnt(x, y, z);
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 3), aVKnots(1, 3);
-  NCollection_Array1<int> aUMults(1, 3), aVMults(1, 3);
+  NCollection_Array1<double> aUKnots(1, 3), aVKnots(1, 3);
+  NCollection_Array1<int>    aUMults(1, 3), aVMults(1, 3);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.5;
@@ -118,9 +125,9 @@ occ::handle<Geom_BSplineSurface> MakeDomeBSpline()
   aVKnots(3) = 1.0;
 
   // For 5 poles, deg 2: need 5+2+1 = 8 total multiplicity
-  aUMults(1) = 3;  // degree + 1 at start
-  aUMults(2) = 2;  // 8 - 3 - 3 = 2
-  aUMults(3) = 3;  // degree + 1 at end  -> 3+2+3 = 8 ✓
+  aUMults(1) = 3; // degree + 1 at start
+  aUMults(2) = 2; // 8 - 3 - 3 = 2
+  aUMults(3) = 3; // degree + 1 at end  -> 3+2+3 = 8 ✓
   aVMults(1) = 3;
   aVMults(2) = 2;
   aVMults(3) = 3;
@@ -140,13 +147,13 @@ occ::handle<Geom_BSplineSurface> MakeSaddleBSpline()
       double x = (i - 1) * 2.5;
       double y = (j - 1) * 2.5;
       // Create saddle shape: z = (x-5)^2 - (y-5)^2
-      double z = ((x - 5.0) * (x - 5.0) - (y - 5.0) * (y - 5.0)) * 0.1;
+      double z     = ((x - 5.0) * (x - 5.0) - (y - 5.0) * (y - 5.0)) * 0.1;
       aPoles(i, j) = gp_Pnt(x, y, z);
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 3), aVKnots(1, 3);
-  NCollection_Array1<int> aUMults(1, 3), aVMults(1, 3);
+  NCollection_Array1<double> aUKnots(1, 3), aVKnots(1, 3);
+  NCollection_Array1<int>    aUMults(1, 3), aVMults(1, 3);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.5;
@@ -158,7 +165,7 @@ occ::handle<Geom_BSplineSurface> MakeSaddleBSpline()
   // For 5 poles, deg 2: need 8 total multiplicity
   aUMults(1) = 3;
   aUMults(2) = 2;
-  aUMults(3) = 3;  // 3+2+3 = 8 ✓
+  aUMults(3) = 3; // 3+2+3 = 8 ✓
   aVMults(1) = 3;
   aVMults(2) = 2;
   aVMults(3) = 3;
@@ -175,15 +182,15 @@ occ::handle<Geom_BSplineSurface> MakeWavyBSpline()
   {
     for (int j = 1; j <= 7; ++j)
     {
-      double x = (i - 1) * 10.0 / 6.0;
-      double y = (j - 1) * 10.0 / 6.0;
-      double z = 2.0 * std::sin(x * 0.8) * std::cos(y * 0.8);
+      double x     = (i - 1) * 10.0 / 6.0;
+      double y     = (j - 1) * 10.0 / 6.0;
+      double z     = 2.0 * std::sin(x * 0.8) * std::cos(y * 0.8);
       aPoles(i, j) = gp_Pnt(x, y, z);
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 4), aVKnots(1, 4);
-  NCollection_Array1<int> aUMults(1, 4), aVMults(1, 4);
+  NCollection_Array1<double> aUKnots(1, 4), aVKnots(1, 4);
+  NCollection_Array1<int>    aUMults(1, 4), aVMults(1, 4);
 
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.33;
@@ -195,10 +202,10 @@ occ::handle<Geom_BSplineSurface> MakeWavyBSpline()
   aVKnots(4) = 1.0;
 
   // For 7 poles, deg 3: need 7+3+1 = 11 total multiplicity
-  aUMults(1) = 4;  // degree + 1 at start
+  aUMults(1) = 4; // degree + 1 at start
   aUMults(2) = 2;
   aUMults(3) = 1;
-  aUMults(4) = 4;  // degree + 1 at end  -> 4+2+1+4 = 11 ✓
+  aUMults(4) = 4; // degree + 1 at end  -> 4+2+1+4 = 11 ✓
   aVMults(1) = 4;
   aVMults(2) = 2;
   aVMults(3) = 1;
@@ -350,11 +357,10 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_DomeSurface)
       {
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
 
-        ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        ExtremaPS_Surface        aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -368,8 +374,8 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_DomeSurface)
           double aNewMin = aNewResult.MinSquareDistance();
 
           // Pass if results match within tolerance OR new finds closer point
-          double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
-                            std::max(std::sqrt(aOldMin), 1.0);
+          double aRelDiff =
+            std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) / std::max(std::sqrt(aOldMin), 1.0);
           if (aRelDiff < 0.05 || aNewMin < aOldMin)
           {
             ++aPassCount;
@@ -397,11 +403,10 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_SaddleSurface)
       {
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
 
-        ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        ExtremaPS_Surface        aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -415,8 +420,8 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_SaddleSurface)
           double aNewMin = aNewResult.MinSquareDistance();
 
           // Pass if results match within tolerance OR new finds closer point
-          double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
-                            std::max(std::sqrt(aOldMin), 1.0);
+          double aRelDiff =
+            std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) / std::max(std::sqrt(aOldMin), 1.0);
           if (aRelDiff < 0.05 || aNewMin < aOldMin)
           {
             ++aPassCount;
@@ -444,11 +449,10 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
       {
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS anOldExtPS(aP, anAdaptor, 0.0, 1.0, 0.0, 1.0, THE_TOLERANCE, THE_TOLERANCE);
 
-        ExtremaPS_Surface aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        ExtremaPS_Surface        aNewExtPS(anAdaptor, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -462,8 +466,8 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
           double aNewMin = aNewResult.MinSquareDistance();
 
           // Pass if results match within tolerance OR new finds closer point
-          double aRelDiff = std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) /
-                            std::max(std::sqrt(aOldMin), 1.0);
+          double aRelDiff =
+            std::abs(std::sqrt(aOldMin) - std::sqrt(aNewMin)) / std::max(std::sqrt(aOldMin), 1.0);
           if (aRelDiff < 0.10 || aNewMin < aOldMin)
           {
             ++aPassCount;
@@ -476,4 +480,3 @@ TEST_F(ExtremaPS_BSplineSurfaceComparisonTest, StressTest_WavySurface)
   // New algorithm must match or find better (closer) results than old algorithm.
   EXPECT_EQ(aPassCount, aTotalCount) << "All cases should match or improve";
 }
-

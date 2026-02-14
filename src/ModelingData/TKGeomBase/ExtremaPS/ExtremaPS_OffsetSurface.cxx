@@ -20,8 +20,10 @@
 ExtremaPS_OffsetSurface::ExtremaPS_OffsetSurface(const occ::handle<Geom_OffsetSurface>& theSurface)
     : mySurface(theSurface),
       myAdaptor(theSurface),
-      myDomain{myAdaptor.FirstUParameter(), myAdaptor.LastUParameter(),
-               myAdaptor.FirstVParameter(), myAdaptor.LastVParameter()}
+      myDomain{myAdaptor.FirstUParameter(),
+               myAdaptor.LastUParameter(),
+               myAdaptor.FirstVParameter(),
+               myAdaptor.LastVParameter()}
 {
   // Build grid eagerly at construction time
   buildGrid();
@@ -30,7 +32,7 @@ ExtremaPS_OffsetSurface::ExtremaPS_OffsetSurface(const occ::handle<Geom_OffsetSu
 //==================================================================================================
 
 ExtremaPS_OffsetSurface::ExtremaPS_OffsetSurface(const occ::handle<Geom_OffsetSurface>& theSurface,
-                                                 const ExtremaPS::Domain2D&        theDomain)
+                                                 const ExtremaPS::Domain2D&             theDomain)
     : mySurface(theSurface),
       myAdaptor(theSurface),
       myDomain(theDomain)
@@ -51,10 +53,12 @@ void ExtremaPS_OffsetSurface::buildGrid()
   // Build the grid for the current domain using default sample count for offset surfaces.
   // Offset surfaces use the same sampling density as general surfaces.
   math_Vector aUParams =
-    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin, myDomain.UMax,
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.UMin,
+                                                myDomain.UMax,
                                                 ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES);
   math_Vector aVParams =
-    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin, myDomain.VMax,
+    ExtremaPS_GridEvaluator::BuildUniformParams(myDomain.VMin,
+                                                myDomain.VMax,
                                                 ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES);
 
   GeomGridEval_OffsetSurface anEval(mySurface);
@@ -79,9 +83,10 @@ const ExtremaPS::Result& ExtremaPS_OffsetSurface::Perform(const gp_Pnt&         
 
 //==================================================================================================
 
-const ExtremaPS::Result& ExtremaPS_OffsetSurface::PerformWithBoundary(const gp_Pnt&         theP,
-                                                                       double                theTol,
-                                                                       ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_OffsetSurface::PerformWithBoundary(
+  const gp_Pnt&         theP,
+  double                theTol,
+  ExtremaPS::SearchMode theMode) const
 {
   // Get interior extrema (populates myEvaluator's result)
   (void)myEvaluator.Perform(myAdaptor, theP, myDomain, theTol, theMode);

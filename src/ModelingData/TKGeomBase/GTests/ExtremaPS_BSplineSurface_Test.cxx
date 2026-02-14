@@ -43,8 +43,8 @@ occ::handle<Geom_BSplineSurface> MakeFlatBSpline()
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 2), aVKnots(1, 2);
-  NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
   aUKnots(1) = 0.0;
   aUKnots(2) = 1.0;
   aVKnots(1) = 0.0;
@@ -66,16 +66,16 @@ occ::handle<Geom_BSplineSurface> MakeDomeBSpline()
   {
     for (int j = 1; j <= 5; ++j)
     {
-      double aX  = (i - 1) * 2.5;
-      double aY  = (j - 1) * 2.5;
-      double aR  = std::sqrt((aX - 5.0) * (aX - 5.0) + (aY - 5.0) * (aY - 5.0));
-      double aZ  = std::max(0.0, 5.0 - aR * 0.5);
+      double aX = (i - 1) * 2.5;
+      double aY = (j - 1) * 2.5;
+      double aR = std::sqrt((aX - 5.0) * (aX - 5.0) + (aY - 5.0) * (aY - 5.0));
+      double aZ = std::max(0.0, 5.0 - aR * 0.5);
       aPoles.SetValue(i, j, gp_Pnt(aX, aY, aZ));
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 3), aVKnots(1, 3);
-  NCollection_Array1<int> aUMults(1, 3), aVMults(1, 3);
+  NCollection_Array1<double> aUKnots(1, 3), aVKnots(1, 3);
+  NCollection_Array1<int>    aUMults(1, 3), aVMults(1, 3);
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.5;
   aUKnots(3) = 1.0;
@@ -83,9 +83,9 @@ occ::handle<Geom_BSplineSurface> MakeDomeBSpline()
   aVKnots(2) = 0.5;
   aVKnots(3) = 1.0;
   // For 5 poles, deg 2: need 5+2+1 = 8 total multiplicity
-  aUMults(1) = 3;  // degree + 1 at start
-  aUMults(2) = 2;  // 8 - 3 - 3 = 2
-  aUMults(3) = 3;  // degree + 1 at end
+  aUMults(1) = 3; // degree + 1 at start
+  aUMults(2) = 2; // 8 - 3 - 3 = 2
+  aUMults(3) = 3; // degree + 1 at end
   aVMults(1) = 3;
   aVMults(2) = 2;
   aVMults(3) = 3;
@@ -109,8 +109,8 @@ occ::handle<Geom_BSplineSurface> MakeWavyBSpline()
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 4), aVKnots(1, 4);
-  NCollection_Array1<int> aUMults(1, 4), aVMults(1, 4);
+  NCollection_Array1<double> aUKnots(1, 4), aVKnots(1, 4);
+  NCollection_Array1<int>    aUMults(1, 4), aVMults(1, 4);
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.33;
   aUKnots(3) = 0.67;
@@ -120,10 +120,10 @@ occ::handle<Geom_BSplineSurface> MakeWavyBSpline()
   aVKnots(3) = 0.67;
   aVKnots(4) = 1.0;
   // For 7 poles, deg 3: need 7+3+1 = 11 total multiplicity
-  aUMults(1) = 4;  // degree + 1 at start
-  aUMults(2) = 2;  // 11 - 4 - 4 - 1 = 2
+  aUMults(1) = 4; // degree + 1 at start
+  aUMults(2) = 2; // 11 - 4 - 4 - 1 = 2
   aUMults(3) = 1;
-  aUMults(4) = 4;  // degree + 1 at end
+  aUMults(4) = 4; // degree + 1 at end
   aVMults(1) = 4;
   aVMults(2) = 2;
   aVMults(3) = 1;
@@ -148,8 +148,8 @@ occ::handle<Geom_BSplineSurface> MakeSaddleBSpline()
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 3), aVKnots(1, 3);
-  NCollection_Array1<int> aUMults(1, 3), aVMults(1, 3);
+  NCollection_Array1<double> aUKnots(1, 3), aVKnots(1, 3);
+  NCollection_Array1<int>    aUMults(1, 3), aVMults(1, 3);
   aUKnots(1) = 0.0;
   aUKnots(2) = 0.5;
   aUKnots(3) = 1.0;
@@ -157,9 +157,9 @@ occ::handle<Geom_BSplineSurface> MakeSaddleBSpline()
   aVKnots(2) = 0.5;
   aVKnots(3) = 1.0;
   // For 5 poles, deg 2: need 5+2+1 = 8 total multiplicity
-  aUMults(1) = 3;  // degree + 1 at start
-  aUMults(2) = 2;  // 8 - 3 - 3 = 2
-  aUMults(3) = 3;  // degree + 1 at end
+  aUMults(1) = 3; // degree + 1 at start
+  aUMults(2) = 2; // 8 - 3 - 3 = 2
+  aUMults(3) = 3; // degree + 1 at end
   aVMults(1) = 3;
   aVMults(2) = 2;
   aVMults(3) = 3;
@@ -182,8 +182,8 @@ occ::handle<Geom_BSplineSurface> MakeHighDegreeBSpline()
     }
   }
 
-  NCollection_Array1<double>    aUKnots(1, 2), aVKnots(1, 2);
-  NCollection_Array1<int> aUMults(1, 2), aVMults(1, 2);
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
   aUKnots(1) = 0.0;
   aUKnots(2) = 1.0;
   aVKnots(1) = 0.0;
@@ -214,7 +214,7 @@ protected:
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointAbove)
 {
-  gp_Pnt                    aP(5.0, 5.0, 10.0);
+  gp_Pnt                   aP(5.0, 5.0, 10.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -227,7 +227,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointAbove)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointOnSurface)
 {
-  gp_Pnt                    aP(5.0, 5.0, 0.0);
+  gp_Pnt                   aP(5.0, 5.0, 0.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -240,7 +240,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointOnSurface)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointBelow)
 {
-  gp_Pnt                    aP(5.0, 5.0, -5.0);
+  gp_Pnt                   aP(5.0, 5.0, -5.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -253,7 +253,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointBelow)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointAtCorner)
 {
-  gp_Pnt                    aP(0.0, 0.0, 3.0);
+  gp_Pnt                   aP(0.0, 0.0, 3.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -266,7 +266,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointAtCorner)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointOutsideDomain)
 {
-  gp_Pnt                    aP(-5.0, 5.0, 0.0);
+  gp_Pnt                   aP(-5.0, 5.0, 0.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -284,9 +284,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, FlatSurface_PointOutsideDomain)
 TEST_F(ExtremaPS_BSplineSurfaceTest, DomeSurface_PointAbovePeak)
 {
   occ::handle<Geom_BSplineSurface> aDome = MakeDomeBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 15.0);
-  ExtremaPS_BSplineSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 5.0, 15.0);
+  ExtremaPS_BSplineSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -294,16 +294,16 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, DomeSurface_PointAbovePeak)
   // Minimum distance to dome from point 15 units above center should be reasonable
   // The dome peak is approximately at Z=5, so minimum distance should be around 10
   double aMinDist = std::sqrt(aResult.MinSquareDistance());
-  EXPECT_GT(aMinDist, 5.0);   // At least 5 units away
-  EXPECT_LT(aMinDist, 15.0);  // At most 15 units away (from corners)
+  EXPECT_GT(aMinDist, 5.0);  // At least 5 units away
+  EXPECT_LT(aMinDist, 15.0); // At most 15 units away (from corners)
 }
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, DomeSurface_PointAtEdge)
 {
   occ::handle<Geom_BSplineSurface> aDome = MakeDomeBSpline();
-  gp_Pnt                      aP(0.0, 5.0, 10.0);
-  ExtremaPS_BSplineSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(0.0, 5.0, 10.0);
+  ExtremaPS_BSplineSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -312,9 +312,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, DomeSurface_PointAtEdge)
 TEST_F(ExtremaPS_BSplineSurfaceTest, DomeSurface_PointUnderDome)
 {
   occ::handle<Geom_BSplineSurface> aDome = MakeDomeBSpline();
-  gp_Pnt                      aP(5.0, 5.0, -5.0);
-  ExtremaPS_BSplineSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 5.0, -5.0);
+  ExtremaPS_BSplineSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -327,9 +327,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, DomeSurface_PointUnderDome)
 TEST_F(ExtremaPS_BSplineSurfaceTest, WavySurface_PointAbovePeak)
 {
   occ::handle<Geom_BSplineSurface> aWavy = MakeWavyBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 10.0);
-  ExtremaPS_BSplineSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 5.0, 10.0);
+  ExtremaPS_BSplineSurface         anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -338,9 +338,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, WavySurface_PointAbovePeak)
 TEST_F(ExtremaPS_BSplineSurfaceTest, WavySurface_PointInValley)
 {
   occ::handle<Geom_BSplineSurface> aWavy = MakeWavyBSpline();
-  gp_Pnt                      aP(5.0, 0.0, -5.0);
-  ExtremaPS_BSplineSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 0.0, -5.0);
+  ExtremaPS_BSplineSurface         anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -349,9 +349,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, WavySurface_PointInValley)
 TEST_F(ExtremaPS_BSplineSurfaceTest, WavySurface_MultipleExtrema)
 {
   occ::handle<Geom_BSplineSurface> aWavy = MakeWavyBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 0.0);
-  ExtremaPS_BSplineSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult =
+  gp_Pnt                           aP(5.0, 5.0, 0.0);
+  ExtremaPS_BSplineSurface         anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -365,9 +365,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, WavySurface_MultipleExtrema)
 TEST_F(ExtremaPS_BSplineSurfaceTest, SaddleSurface_PointAboveCenter)
 {
   occ::handle<Geom_BSplineSurface> aSaddle = MakeSaddleBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 10.0);
-  ExtremaPS_BSplineSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 5.0, 10.0);
+  ExtremaPS_BSplineSurface         anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -376,9 +376,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, SaddleSurface_PointAboveCenter)
 TEST_F(ExtremaPS_BSplineSurfaceTest, SaddleSurface_PointAtSaddlePoint)
 {
   occ::handle<Geom_BSplineSurface> aSaddle = MakeSaddleBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 5.0);
-  ExtremaPS_BSplineSurface   anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 5.0, 5.0);
+  ExtremaPS_BSplineSurface         anEval(aSaddle, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -391,9 +391,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, SaddleSurface_PointAtSaddlePoint)
 TEST_F(ExtremaPS_BSplineSurfaceTest, HighDegree_BasicProjection)
 {
   occ::handle<Geom_BSplineSurface> aHighDeg = MakeHighDegreeBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 10.0);
-  ExtremaPS_BSplineSurface   anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(5.0, 5.0, 10.0);
+  ExtremaPS_BSplineSurface         anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -402,13 +402,15 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, HighDegree_BasicProjection)
 TEST_F(ExtremaPS_BSplineSurfaceTest, HighDegree_MultiplePoints)
 {
   occ::handle<Geom_BSplineSurface> aHighDeg = MakeHighDegreeBSpline();
-  ExtremaPS_BSplineSurface   anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  ExtremaPS_BSplineSurface         anEval(aHighDeg, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
 
-  std::vector<gp_Pnt> aPoints = {gp_Pnt(2.0, 2.0, 5.0), gp_Pnt(7.0, 3.0, 3.0), gp_Pnt(5.0, 8.0, -2.0)};
+  std::vector<gp_Pnt> aPoints = {gp_Pnt(2.0, 2.0, 5.0),
+                                 gp_Pnt(7.0, 3.0, 3.0),
+                                 gp_Pnt(5.0, 8.0, -2.0)};
 
   for (const auto& aP : aPoints)
   {
-    const ExtremaPS::Result& aResult =anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+    const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
     EXPECT_EQ(aResult.Status, ExtremaPS::Status::OK);
     EXPECT_GE(aResult.Extrema.Length(), 1);
   }
@@ -420,7 +422,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, HighDegree_MultiplePoints)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_HalfU)
 {
-  gp_Pnt                    aP(2.5, 5.0, 5.0);
+  gp_Pnt                   aP(2.5, 5.0, 5.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 0.5, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -435,7 +437,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_HalfU)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_HalfV)
 {
-  gp_Pnt                    aP(5.0, 2.5, 5.0);
+  gp_Pnt                   aP(5.0, 2.5, 5.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 0.5));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -450,7 +452,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_HalfV)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_SmallPatch)
 {
-  gp_Pnt                    aP(5.0, 5.0, 5.0);
+  gp_Pnt                   aP(5.0, 5.0, 5.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.4, 0.6, 0.4, 0.6));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -461,9 +463,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_SmallPatch)
 TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_SingleKnotSpan)
 {
   occ::handle<Geom_BSplineSurface> aWavy = MakeWavyBSpline();
-  gp_Pnt                      aP(3.0, 3.0, 5.0);
-  ExtremaPS_BSplineSurface   anEval(aWavy, ExtremaPS::Domain2D(0.0, 0.33, 0.0, 0.33));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(3.0, 3.0, 5.0);
+  ExtremaPS_BSplineSurface         anEval(aWavy, ExtremaPS::Domain2D(0.0, 0.33, 0.0, 0.33));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
 }
@@ -474,7 +476,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, PartialDomain_SingleKnotSpan)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, SearchMode_MinOnly)
 {
-  gp_Pnt                    aP(5.0, 5.0, 10.0);
+  gp_Pnt                   aP(5.0, 5.0, 10.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Min);
@@ -490,7 +492,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, SearchMode_MinOnly)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, SearchMode_MaxOnly)
 {
-  gp_Pnt                    aP(5.0, 5.0, 10.0);
+  gp_Pnt                   aP(5.0, 5.0, 10.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::Max);
@@ -501,9 +503,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, SearchMode_MaxOnly)
 TEST_F(ExtremaPS_BSplineSurfaceTest, SearchMode_DomeMinMax)
 {
   occ::handle<Geom_BSplineSurface> aDome = MakeDomeBSpline();
-  gp_Pnt                      aP(5.0, 5.0, 10.0);
-  ExtremaPS_BSplineSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult =
+  gp_Pnt                           aP(5.0, 5.0, 10.0);
+  ExtremaPS_BSplineSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult =
     anEval.PerformWithBoundary(aP, THE_TOLERANCE, ExtremaPS::SearchMode::MinMax);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
@@ -519,8 +521,8 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Aggregator_FlatSurface)
   GeomAdaptor_Surface anAdaptor(myFlatSurface);
   ExtremaPS_Surface   anExtPS(anAdaptor);
 
-  gp_Pnt            aP(5.0, 5.0, 7.0);
-  const ExtremaPS::Result& aResult =anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(5.0, 5.0, 7.0);
+  const ExtremaPS::Result& aResult = anExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -532,11 +534,11 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Aggregator_FlatSurface)
 TEST_F(ExtremaPS_BSplineSurfaceTest, Aggregator_DomeSurface)
 {
   occ::handle<Geom_BSplineSurface> aDome = MakeDomeBSpline();
-  GeomAdaptor_Surface         anAdaptor(aDome);
-  ExtremaPS_Surface           anExtPS(anAdaptor);
+  GeomAdaptor_Surface              anAdaptor(aDome);
+  ExtremaPS_Surface                anExtPS(anAdaptor);
 
-  gp_Pnt            aP(5.0, 5.0, 12.0);
-  const ExtremaPS::Result& aResult =anExtPS.Perform(aP, THE_TOLERANCE);
+  gp_Pnt                   aP(5.0, 5.0, 12.0);
+  const ExtremaPS::Result& aResult = anExtPS.Perform(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -564,7 +566,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Aggregator_WithSearchMode)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_VeryClosePoint)
 {
-  gp_Pnt                    aP(5.0, 5.0, 1.0e-8);
+  gp_Pnt                   aP(5.0, 5.0, 1.0e-8);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -577,7 +579,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_VeryClosePoint)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_VeryFarPoint)
 {
-  gp_Pnt                    aP(5.0, 5.0, 1000.0);
+  gp_Pnt                   aP(5.0, 5.0, 1000.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -590,7 +592,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_VeryFarPoint)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_PointOnEdge)
 {
-  gp_Pnt                    aP(5.0, 0.0, 3.0);
+  gp_Pnt                   aP(5.0, 0.0, 3.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -603,7 +605,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_PointOnEdge)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_DiagonalPoint)
 {
-  gp_Pnt                    aP(15.0, 15.0, 0.0);
+  gp_Pnt                   aP(15.0, 15.0, 0.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -621,9 +623,9 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, EdgeCase_DiagonalPoint)
 TEST_F(ExtremaPS_BSplineSurfaceTest, Verify_PointOnSurface)
 {
   occ::handle<Geom_BSplineSurface> aDome = MakeDomeBSpline();
-  gp_Pnt                      aP(3.0, 7.0, 8.0);
-  ExtremaPS_BSplineSurface   anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
-  const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
+  gp_Pnt                           aP(3.0, 7.0, 8.0);
+  ExtremaPS_BSplineSurface         anEval(aDome, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
+  const ExtremaPS::Result&         aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
   ASSERT_EQ(aResult.Status, ExtremaPS::Status::OK);
   ASSERT_GE(aResult.Extrema.Length(), 1);
@@ -638,7 +640,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Verify_PointOnSurface)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, Verify_SquareDistanceConsistent)
 {
-  gp_Pnt                    aP(7.0, 3.0, 4.0);
+  gp_Pnt                   aP(7.0, 3.0, 4.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -647,7 +649,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Verify_SquareDistanceConsistent)
 
   for (int i = 0; i < aResult.Extrema.Length(); ++i)
   {
-    const ExtremaPS::ExtremumResult& anExt        = aResult.Extrema.Value(i);
+    const ExtremaPS::ExtremumResult& anExt         = aResult.Extrema.Value(i);
     double                           aActualSqDist = aP.SquareDistance(anExt.Point);
     EXPECT_NEAR(anExt.SquareDistance, aActualSqDist, THE_TOLERANCE);
   }
@@ -655,7 +657,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Verify_SquareDistanceConsistent)
 
 TEST_F(ExtremaPS_BSplineSurfaceTest, Verify_ParametersInRange)
 {
-  gp_Pnt                    aP(5.0, 5.0, 5.0);
+  gp_Pnt                   aP(5.0, 5.0, 5.0);
   ExtremaPS_BSplineSurface anEval(myFlatSurface, ExtremaPS::Domain2D(0.2, 0.8, 0.3, 0.7));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -679,7 +681,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Knots_PointNearKnot)
 {
   occ::handle<Geom_BSplineSurface> aWavy = MakeWavyBSpline();
   // Point near internal knot at U=0.33
-  gp_Pnt                    aP(3.3, 5.0, 5.0);
+  gp_Pnt                   aP(3.3, 5.0, 5.0);
   ExtremaPS_BSplineSurface anEval(aWavy, ExtremaPS::Domain2D(0.0, 1.0, 0.0, 1.0));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 
@@ -691,7 +693,7 @@ TEST_F(ExtremaPS_BSplineSurfaceTest, Knots_CrossingKnotSpan)
 {
   occ::handle<Geom_BSplineSurface> aWavy = MakeWavyBSpline();
   // Range that crosses knot at 0.33
-  gp_Pnt                    aP(5.0, 5.0, 5.0);
+  gp_Pnt                   aP(5.0, 5.0, 5.0);
   ExtremaPS_BSplineSurface anEval(aWavy, ExtremaPS::Domain2D(0.2, 0.5, 0.2, 0.5));
   const ExtremaPS::Result& aResult = anEval.PerformWithBoundary(aP, THE_TOLERANCE);
 

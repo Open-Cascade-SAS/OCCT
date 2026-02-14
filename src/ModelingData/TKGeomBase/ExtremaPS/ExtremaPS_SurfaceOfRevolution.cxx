@@ -80,15 +80,15 @@ void ExtremaPS_SurfaceOfRevolution::initCache()
 
     bool Value(double theV, double& theF) const
     {
-      const gp_Pnt aCurvePt    = myCurve->Value(theV);
-      const double aDx         = aCurvePt.X() - myLocX;
-      const double aDy         = aCurvePt.Y() - myLocY;
-      const double aDz         = aCurvePt.Z() - myLocZ;
-      const double aAxial      = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
-      const double aRadX       = aDx - aAxial * myAxisX;
-      const double aRadY       = aDy - aAxial * myAxisY;
-      const double aRadZ       = aDz - aAxial * myAxisZ;
-      theF                     = -(aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ);
+      const gp_Pnt aCurvePt = myCurve->Value(theV);
+      const double aDx      = aCurvePt.X() - myLocX;
+      const double aDy      = aCurvePt.Y() - myLocY;
+      const double aDz      = aCurvePt.Z() - myLocZ;
+      const double aAxial   = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
+      const double aRadX    = aDx - aAxial * myAxisX;
+      const double aRadY    = aDy - aAxial * myAxisY;
+      const double aRadZ    = aDz - aAxial * myAxisZ;
+      theF                  = -(aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ);
       return true;
     }
   };
@@ -145,17 +145,17 @@ void ExtremaPS_SurfaceOfRevolution::initCache()
   if (aBestRadSq > ExtremaPS::THE_PARAM_TOLERANCE * ExtremaPS::THE_PARAM_TOLERANCE)
   {
     // Compute radial direction at the best V
-    const gp_Pnt aBestPt    = aBasisCurve->Value(aBestV);
-    const double aDx        = aBestPt.X() - myLocX;
-    const double aDy        = aBestPt.Y() - myLocY;
-    const double aDz        = aBestPt.Z() - myLocZ;
-    const double aAxial     = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
-    const double aRadX      = aDx - aAxial * myAxisX;
-    const double aRadY      = aDy - aAxial * myAxisY;
-    const double aRadZ      = aDz - aAxial * myAxisZ;
-    const double aInvRad    = 1.0 / std::sqrt(aBestRadSq);
-    aXDir                   = gp_Dir(aRadX * aInvRad, aRadY * aInvRad, aRadZ * aInvRad);
-    aFoundXDir              = true;
+    const gp_Pnt aBestPt = aBasisCurve->Value(aBestV);
+    const double aDx     = aBestPt.X() - myLocX;
+    const double aDy     = aBestPt.Y() - myLocY;
+    const double aDz     = aBestPt.Z() - myLocZ;
+    const double aAxial  = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
+    const double aRadX   = aDx - aAxial * myAxisX;
+    const double aRadY   = aDy - aAxial * myAxisY;
+    const double aRadZ   = aDz - aAxial * myAxisZ;
+    const double aInvRad = 1.0 / std::sqrt(aBestRadSq);
+    aXDir                = gp_Dir(aRadX * aInvRad, aRadY * aInvRad, aRadZ * aInvRad);
+    aFoundXDir           = true;
   }
 
   if (!aFoundXDir)
@@ -192,10 +192,9 @@ gp_Pnt ExtremaPS_SurfaceOfRevolution::Value(double theU, double theV) const
 
 //==================================================================================================
 
-const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(
-  const gp_Pnt&         theP,
-  double                theTol,
-  ExtremaPS::SearchMode theMode) const
+const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(const gp_Pnt&         theP,
+                                                                double                theTol,
+                                                                ExtremaPS::SearchMode theMode) const
 {
   myResult.Clear();
   constexpr double aTwoPi = ExtremaPS::THE_TWO_PI;
@@ -215,9 +214,9 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(
   const double aAxialDist = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
 
   // Radial components (perpendicular to axis)
-  const double aRadX     = aDx - aAxialDist * myAxisX;
-  const double aRadY     = aDy - aAxialDist * myAxisY;
-  const double aRadZ     = aDz - aAxialDist * myAxisZ;
+  const double aRadX      = aDx - aAxialDist * myAxisX;
+  const double aRadY      = aDy - aAxialDist * myAxisY;
+  const double aRadZ      = aDz - aAxialDist * myAxisZ;
   const double aRadDistSq = aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ;
 
   // Check for degenerate case: point on axis
@@ -243,11 +242,11 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(
   }
 
   // Compute U (rotation angle) analytically from radial direction
-  const double aRadDist   = std::sqrt(aRadDistSq);
+  const double aRadDist    = std::sqrt(aRadDistSq);
   const double aInvRadDist = 1.0 / aRadDist;
-  const double aRadNormX  = aRadX * aInvRadDist;
-  const double aRadNormY  = aRadY * aInvRadDist;
-  const double aRadNormZ  = aRadZ * aInvRadDist;
+  const double aRadNormX   = aRadX * aInvRadDist;
+  const double aRadNormY   = aRadY * aInvRadDist;
+  const double aRadNormZ   = aRadZ * aInvRadDist;
 
   // Project normalized radial direction onto XDir and YDir to get angle
   const double aCosU = aRadNormX * myXDirX + aRadNormY * myXDirY + aRadNormZ * myXDirZ;
@@ -307,27 +306,25 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(
     const gp_Pnt& aCurvePt = aCurveExt.Point;
 
     // Compute the radial distance of this curve point from the axis
-    const double aCurveDx     = aCurvePt.X() - myLocX;
-    const double aCurveDy     = aCurvePt.Y() - myLocY;
-    const double aCurveDz     = aCurvePt.Z() - myLocZ;
-    const double aCurveAxial  = aCurveDx * myAxisX + aCurveDy * myAxisY + aCurveDz * myAxisZ;
-    const double aCurveRadX   = aCurveDx - aCurveAxial * myAxisX;
-    const double aCurveRadY   = aCurveDy - aCurveAxial * myAxisY;
-    const double aCurveRadZ   = aCurveDz - aCurveAxial * myAxisZ;
-    const double aCurveRadius = std::sqrt(aCurveRadX * aCurveRadX + aCurveRadY * aCurveRadY +
-                                          aCurveRadZ * aCurveRadZ);
+    const double aCurveDx    = aCurvePt.X() - myLocX;
+    const double aCurveDy    = aCurvePt.Y() - myLocY;
+    const double aCurveDz    = aCurvePt.Z() - myLocZ;
+    const double aCurveAxial = aCurveDx * myAxisX + aCurveDy * myAxisY + aCurveDz * myAxisZ;
+    const double aCurveRadX  = aCurveDx - aCurveAxial * myAxisX;
+    const double aCurveRadY  = aCurveDy - aCurveAxial * myAxisY;
+    const double aCurveRadZ  = aCurveDz - aCurveAxial * myAxisZ;
+    const double aCurveRadius =
+      std::sqrt(aCurveRadX * aCurveRadX + aCurveRadY * aCurveRadY + aCurveRadZ * aCurveRadZ);
 
     // The surface point is at the same V, but rotated to angle U
     // Surface point = AxisPoint + radius * (cos(U)*XDir + sin(U)*YDir) + axial*Axis
     const double aCosUVal = std::cos(aU);
     const double aSinUVal = std::sin(aU);
 
-    const gp_Pnt aSurfPt(myLocX + aCurveAxial * myAxisX +
-                           aCurveRadius * (aCosUVal * myXDirX + aSinUVal * myYDirX),
-                         myLocY + aCurveAxial * myAxisY +
-                           aCurveRadius * (aCosUVal * myXDirY + aSinUVal * myYDirY),
-                         myLocZ + aCurveAxial * myAxisZ +
-                           aCurveRadius * (aCosUVal * myXDirZ + aSinUVal * myYDirZ));
+    const gp_Pnt aSurfPt(
+      myLocX + aCurveAxial * myAxisX + aCurveRadius * (aCosUVal * myXDirX + aSinUVal * myYDirX),
+      myLocY + aCurveAxial * myAxisY + aCurveRadius * (aCosUVal * myXDirY + aSinUVal * myYDirY),
+      myLocZ + aCurveAxial * myAxisZ + aCurveRadius * (aCosUVal * myXDirZ + aSinUVal * myYDirZ));
 
     const double aSqDist = theP.SquareDistance(aSurfPt);
 
@@ -372,12 +369,11 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(
         const double aCosUOpp = std::cos(aUOpp);
         const double aSinUOpp = std::sin(aUOpp);
 
-        const gp_Pnt aSurfPtOpp(myLocX + aCurveAxial * myAxisX +
-                                  aCurveRadius * (aCosUOpp * myXDirX + aSinUOpp * myYDirX),
-                                myLocY + aCurveAxial * myAxisY +
-                                  aCurveRadius * (aCosUOpp * myXDirY + aSinUOpp * myYDirY),
-                                myLocZ + aCurveAxial * myAxisZ +
-                                  aCurveRadius * (aCosUOpp * myXDirZ + aSinUOpp * myYDirZ));
+        const gp_Pnt aSurfPtOpp(
+          myLocX + aCurveAxial * myAxisX + aCurveRadius * (aCosUOpp * myXDirX + aSinUOpp * myYDirX),
+          myLocY + aCurveAxial * myAxisY + aCurveRadius * (aCosUOpp * myXDirY + aSinUOpp * myYDirY),
+          myLocZ + aCurveAxial * myAxisZ
+            + aCurveRadius * (aCosUOpp * myXDirZ + aSinUOpp * myYDirZ));
 
         const double aSqDistOpp = theP.SquareDistance(aSurfPtOpp);
 

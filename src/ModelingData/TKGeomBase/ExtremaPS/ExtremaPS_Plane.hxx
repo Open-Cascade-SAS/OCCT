@@ -63,7 +63,8 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPS_Plane(const gp_Pln& thePlane, const ExtremaPS::Domain2D& theDomain)
       : myPlane(thePlane),
-        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPS::Domain2D>(theDomain) : std::nullopt)
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPS::Domain2D>(theDomain)
+                                      : std::nullopt)
   {
     initCache();
   }
@@ -75,28 +76,27 @@ private:
     // Cache plane components for fast computation
     const gp_Ax3& aPos = myPlane.Position();
     const gp_Pnt& aLoc = aPos.Location();
-    myLocX = aLoc.X();
-    myLocY = aLoc.Y();
-    myLocZ = aLoc.Z();
+    myLocX             = aLoc.X();
+    myLocY             = aLoc.Y();
+    myLocZ             = aLoc.Z();
 
     const gp_Dir& aNorm = aPos.Direction();
-    myNormX = aNorm.X();
-    myNormY = aNorm.Y();
-    myNormZ = aNorm.Z();
+    myNormX             = aNorm.X();
+    myNormY             = aNorm.Y();
+    myNormZ             = aNorm.Z();
 
     const gp_Dir& aXDir = aPos.XDirection();
-    myXDirX = aXDir.X();
-    myXDirY = aXDir.Y();
-    myXDirZ = aXDir.Z();
+    myXDirX             = aXDir.X();
+    myXDirY             = aXDir.Y();
+    myXDirZ             = aXDir.Z();
 
     const gp_Dir& aYDir = aPos.YDirection();
-    myYDirX = aYDir.X();
-    myYDirY = aYDir.Y();
-    myYDirZ = aYDir.Z();
+    myYDirX             = aYDir.X();
+    myYDirY             = aYDir.Y();
+    myYDirZ             = aYDir.Z();
   }
 
 public:
-
   //! @name Surface Evaluation
   //! @{
 
@@ -127,9 +127,10 @@ public:
   //! @param theTol tolerance for boundary check
   //! @param theMode search mode (MinMax, Min, Max)
   //! @return const reference to result with interior extrema only
-  [[nodiscard]] const ExtremaPS::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -147,8 +148,8 @@ public:
 
     // Compute signed distance (dot product with normal) and UV parameters
     const double aSignedDist = aDx * myNormX + aDy * myNormY + aDz * myNormZ;
-    const double aU = aDx * myXDirX + aDy * myXDirY + aDz * myXDirZ;
-    const double aV = aDx * myYDirX + aDy * myYDirY + aDz * myYDirZ;
+    const double aU          = aDx * myXDirX + aDy * myXDirY + aDz * myXDirZ;
+    const double aV          = aDx * myYDirX + aDy * myYDirY + aDz * myYDirZ;
 
     // Fast path: unbounded domain - most common case, skip all bounds checks
     if (!myDomain.has_value())
@@ -158,8 +159,8 @@ public:
       anExt.U              = aU;
       anExt.V              = aV;
       anExt.Point          = gp_Pnt(theP.X() - aSignedDist * myNormX,
-                                    theP.Y() - aSignedDist * myNormY,
-                                    theP.Z() - aSignedDist * myNormZ);
+                           theP.Y() - aSignedDist * myNormY,
+                           theP.Z() - aSignedDist * myNormZ);
       anExt.SquareDistance = aSignedDist * aSignedDist;
       anExt.IsMinimum      = true;
       myResult.Extrema.Append(anExt);
@@ -179,16 +180,18 @@ public:
     }
 
     // Inline clamp for speed
-    const double aClampedU = (aU < myDomain->UMin) ? myDomain->UMin : ((aU > myDomain->UMax) ? myDomain->UMax : aU);
-    const double aClampedV = (aV < myDomain->VMin) ? myDomain->VMin : ((aV > myDomain->VMax) ? myDomain->VMax : aV);
+    const double aClampedU =
+      (aU < myDomain->UMin) ? myDomain->UMin : ((aU > myDomain->UMax) ? myDomain->UMax : aU);
+    const double aClampedV =
+      (aV < myDomain->VMin) ? myDomain->VMin : ((aV > myDomain->VMax) ? myDomain->VMax : aV);
 
     myResult.Status = ExtremaPS::Status::OK;
     ExtremaPS::ExtremumResult anExt;
     anExt.U              = aClampedU;
     anExt.V              = aClampedV;
     anExt.Point          = gp_Pnt(theP.X() - aSignedDist * myNormX,
-                                  theP.Y() - aSignedDist * myNormY,
-                                  theP.Z() - aSignedDist * myNormZ);
+                         theP.Y() - aSignedDist * myNormY,
+                         theP.Z() - aSignedDist * myNormZ);
     anExt.SquareDistance = aSignedDist * aSignedDist;
     anExt.IsMinimum      = true;
     myResult.Extrema.Append(anExt);
@@ -205,9 +208,10 @@ public:
   //! @param theTol tolerance
   //! @param theMode search mode
   //! @return const reference to result with interior + boundary extrema
-  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(const gp_Pnt&         theP,
-                                                              double                theTol,
-                                                              ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPS::Result& PerformWithBoundary(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPS::SearchMode theMode = ExtremaPS::SearchMode::MinMax) const
   {
     // Start with interior extrema
     if (theMode != ExtremaPS::SearchMode::Max)
@@ -254,35 +258,33 @@ public:
 private:
   //! Add corner extrema (maximum candidates).
   //! For plane, corners are always potential maximum distance points.
-  void addCornerExtrema(ExtremaPS::Result&           theResult,
-                        const gp_Pnt&                theP,
-                        const ExtremaPS::Domain2D&   theDomain) const
+  void addCornerExtrema(ExtremaPS::Result&         theResult,
+                        const gp_Pnt&              theP,
+                        const ExtremaPS::Domain2D& theDomain) const
   {
     double aMaxSqDist = -1.0;
     double aMaxU = 0.0, aMaxV = 0.0;
     gp_Pnt aMaxPt;
 
     // Check four corners - use cached directions for fast evaluation
-    const double aCorners[4][2] = {
-      {theDomain.UMin, theDomain.VMin},
-      {theDomain.UMax, theDomain.VMin},
-      {theDomain.UMin, theDomain.VMax},
-      {theDomain.UMax, theDomain.VMax}
-    };
+    const double aCorners[4][2] = {{theDomain.UMin, theDomain.VMin},
+                                   {theDomain.UMax, theDomain.VMin},
+                                   {theDomain.UMin, theDomain.VMax},
+                                   {theDomain.UMax, theDomain.VMax}};
 
     for (int i = 0; i < 4; ++i)
     {
-      const double aU = aCorners[i][0];
-      const double aV = aCorners[i][1];
+      const double aU        = aCorners[i][0];
+      const double aV        = aCorners[i][1];
       const gp_Pnt aCornerPt = Value(aU, aV);
-      const double aSqDist = theP.SquareDistance(aCornerPt);
+      const double aSqDist   = theP.SquareDistance(aCornerPt);
 
       if (aSqDist > aMaxSqDist)
       {
         aMaxSqDist = aSqDist;
-        aMaxU = aU;
-        aMaxV = aV;
-        aMaxPt = aCornerPt;
+        aMaxU      = aU;
+        aMaxV      = aV;
+        aMaxPt     = aCornerPt;
       }
     }
 
@@ -299,15 +301,15 @@ private:
   }
 
 private:
-  gp_Pln                               myPlane;  //!< Plane geometry
-  std::optional<ExtremaPS::Domain2D>   myDomain; //!< Parameter domain (nullopt for unbounded)
-  mutable ExtremaPS::Result            myResult; //!< Reusable result storage
+  gp_Pln                             myPlane;  //!< Plane geometry
+  std::optional<ExtremaPS::Domain2D> myDomain; //!< Parameter domain (nullopt for unbounded)
+  mutable ExtremaPS::Result          myResult; //!< Reusable result storage
 
   // Cached components for fast computation
-  double myLocX, myLocY, myLocZ;     //!< Plane location
-  double myNormX, myNormY, myNormZ;  //!< Plane normal
-  double myXDirX, myXDirY, myXDirZ;  //!< Plane X direction
-  double myYDirX, myYDirY, myYDirZ;  //!< Plane Y direction
+  double myLocX, myLocY, myLocZ;    //!< Plane location
+  double myNormX, myNormY, myNormZ; //!< Plane normal
+  double myXDirX, myXDirY, myXDirZ; //!< Plane X direction
+  double myYDirX, myYDirY, myYDirZ; //!< Plane Y direction
 };
 
 #endif // _ExtremaPS_Plane_HeaderFile

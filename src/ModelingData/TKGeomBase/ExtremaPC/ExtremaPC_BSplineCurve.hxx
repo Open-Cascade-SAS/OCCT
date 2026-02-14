@@ -57,7 +57,7 @@ public:
   //! @param[in] theCurve BSpline curve handle
   //! @param[in] theDomain parameter domain (fixed for all queries)
   Standard_EXPORT ExtremaPC_BSplineCurve(const occ::handle<Geom_BSplineCurve>& theCurve,
-                                         const ExtremaPC::Domain1D&       theDomain);
+                                         const ExtremaPC::Domain1D&            theDomain);
 
   //! Copy constructor is deleted.
   ExtremaPC_BSplineCurve(const ExtremaPC_BSplineCurve&) = delete;
@@ -117,8 +117,8 @@ private:
   void buildGrid();
 
   occ::handle<Geom_BSplineCurve> myCurve;   //!< BSpline curve
-  GeomAdaptor_Curve         myAdaptor; //!< Curve adaptor
-  ExtremaPC::Domain1D       myDomain;  //!< Parameter domain (fixed)
+  GeomAdaptor_Curve              myAdaptor; //!< Curve adaptor
+  ExtremaPC::Domain1D            myDomain;  //!< Parameter domain (fixed)
 
   // Grid evaluator with cached state (grid, result, temporary vectors)
   mutable ExtremaPC_GridEvaluator myEvaluator;

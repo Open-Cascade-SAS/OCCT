@@ -61,7 +61,8 @@ public:
   //! @param[in] theDomain parameter domain (fixed for all queries)
   ExtremaPC_Hyperbola(const gp_Hypr& theHyperbola, const ExtremaPC::Domain1D& theDomain)
       : myHyperbola(theHyperbola),
-        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain) : std::nullopt)
+        myDomain(theDomain.IsFinite() ? std::optional<ExtremaPC::Domain1D>(theDomain)
+                                      : std::nullopt)
   {
     cacheGeometry();
   }
@@ -84,8 +85,8 @@ public:
   gp_Pnt Value(double theU) const
   {
     // Hyperbola: P(u) = Center + R*cosh(u)*XDir + r*sinh(u)*YDir
-    const double aCosh = std::cosh(theU);
-    const double aSinh = std::sinh(theU);
+    const double aCosh  = std::cosh(theU);
+    const double aSinh  = std::sinh(theU);
     const double aRCosh = myMajorR * aCosh;
     const double arSinh = myMinorR * aSinh;
     return gp_Pnt(myCenterX + aRCosh * myXDirX + arSinh * myYDirX,
@@ -105,9 +106,10 @@ public:
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing extrema
-  [[nodiscard]] const ExtremaPC::Result& Perform(const gp_Pnt&         theP,
-                                                  double                theTol,
-                                                  ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& Perform(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     performCore(theP, myDomain, theTol, theMode);
     return myResult;
@@ -119,9 +121,10 @@ public:
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(const gp_Pnt&         theP,
-                                                               double                theTol,
-                                                               ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
+  [[nodiscard]] const ExtremaPC::Result& PerformWithEndpoints(
+    const gp_Pnt&         theP,
+    double                theTol,
+    ExtremaPC::SearchMode theMode = ExtremaPC::SearchMode::MinMax) const
   {
     (void)Perform(theP, theTol, theMode);
 
@@ -142,27 +145,27 @@ private:
   void cacheGeometry()
   {
     const gp_Pnt& aCenter = myHyperbola.Location();
-    myCenterX = aCenter.X();
-    myCenterY = aCenter.Y();
-    myCenterZ = aCenter.Z();
+    myCenterX             = aCenter.X();
+    myCenterY             = aCenter.Y();
+    myCenterZ             = aCenter.Z();
 
     const gp_Dir& aXDir = myHyperbola.XAxis().Direction();
-    myXDirX = aXDir.X();
-    myXDirY = aXDir.Y();
-    myXDirZ = aXDir.Z();
+    myXDirX             = aXDir.X();
+    myXDirY             = aXDir.Y();
+    myXDirZ             = aXDir.Z();
 
     const gp_Dir& aYDir = myHyperbola.YAxis().Direction();
-    myYDirX = aYDir.X();
-    myYDirY = aYDir.Y();
-    myYDirZ = aYDir.Z();
+    myYDirX             = aYDir.X();
+    myYDirY             = aYDir.Y();
+    myYDirZ             = aYDir.Z();
 
     const gp_Dir& aAxis = myHyperbola.Axis().Direction();
-    myAxisX = aAxis.X();
-    myAxisY = aAxis.Y();
-    myAxisZ = aAxis.Z();
+    myAxisX             = aAxis.X();
+    myAxisY             = aAxis.Y();
+    myAxisZ             = aAxis.Z();
 
-    myMajorR = myHyperbola.MajorRadius();
-    myMinorR = myHyperbola.MinorRadius();
+    myMajorR        = myHyperbola.MajorRadius();
+    myMinorR        = myHyperbola.MinorRadius();
     myR2PlusR2Over4 = (myMajorR * myMajorR + myMinorR * myMinorR) / 4.0;
   }
 
@@ -208,10 +211,10 @@ private:
   //! @param theDomain optional parameter domain (nullopt for unbounded)
   //! @param theTol tolerance for duplicate detection
   //! @param theMode search mode
-  void performCore(const gp_Pnt&                              theP,
+  void performCore(const gp_Pnt&                             theP,
                    const std::optional<ExtremaPC::Domain1D>& theDomain,
-                   double                                     theTol,
-                   ExtremaPC::SearchMode                      theMode) const
+                   double                                    theTol,
+                   ExtremaPC::SearchMode                     theMode) const
   {
     myResult.Clear();
 

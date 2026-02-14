@@ -41,14 +41,21 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
                          double               theVMax,
                          const std::string&   theTestName)
 {
-  Extrema_ExtPS anOldExtPS(thePoint, theAdaptor, theUMin, theUMax, theVMin, theVMax,
-                           THE_TOLERANCE, THE_TOLERANCE);
+  Extrema_ExtPS anOldExtPS(thePoint,
+                           theAdaptor,
+                           theUMin,
+                           theUMax,
+                           theVMin,
+                           theVMax,
+                           THE_TOLERANCE,
+                           THE_TOLERANCE);
 
   ExtremaPS_Surface aNewExtPS(theAdaptor, ExtremaPS::Domain2D(theUMin, theUMax, theVMin, theVMax));
-  const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
+  const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(thePoint, THE_TOLERANCE);
 
   // New implementation must always succeed
-  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK) << theTestName << ": New implementation failed";
+  ASSERT_EQ(aNewResult.Status, ExtremaPS::Status::OK)
+    << theTestName << ": New implementation failed";
 
   // If old implementation failed, we just verify new worked
   if (!anOldExtPS.IsDone() || anOldExtPS.NbExt() == 0)
@@ -66,8 +73,8 @@ void CompareMinDistances(const gp_Pnt&        thePoint,
   double aNewMinSqDist = aNewResult.MinSquareDistance();
 
   EXPECT_NEAR(std::sqrt(aOldMinSqDist), std::sqrt(aNewMinSqDist), THE_DIST_TOLERANCE)
-      << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
-      << ", New: " << std::sqrt(aNewMinSqDist);
+    << theTestName << ": Min distances differ - Old: " << std::sqrt(aOldMinSqDist)
+    << ", New: " << std::sqrt(aNewMinSqDist);
 }
 } // namespace
 
@@ -86,7 +93,7 @@ protected:
   }
 
   occ::handle<Geom_SphericalSurface> mySphere;
-  GeomAdaptor_Surface           myAdaptor;
+  GeomAdaptor_Surface                myAdaptor;
 };
 
 //==================================================================================================
@@ -135,19 +142,25 @@ TEST_F(ExtremaPS_SphereComparisonTest, PointDiagonal)
 
 TEST_F(ExtremaPS_SphereComparisonTest, LargeRadius_PointOutside)
 {
-  gp_Sphere aSph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
+  gp_Sphere                          aSph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0);
   occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
-  GeomAdaptor_Surface           anAdaptor(aSurf);
+  GeomAdaptor_Surface                anAdaptor(aSurf);
 
   gp_Pnt aP(100.0, 0.0, 0.0);
-  CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -M_PI / 2, M_PI / 2, "LargeRadius_PointOutside");
+  CompareMinDistances(aP,
+                      anAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -M_PI / 2,
+                      M_PI / 2,
+                      "LargeRadius_PointOutside");
 }
 
 TEST_F(ExtremaPS_SphereComparisonTest, SmallRadius_PointNear)
 {
-  gp_Sphere aSph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
+  gp_Sphere                          aSph(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 0.5);
   occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
-  GeomAdaptor_Surface           anAdaptor(aSurf);
+  GeomAdaptor_Surface                anAdaptor(aSurf);
 
   gp_Pnt aP(1.0, 0.0, 0.0);
   CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -M_PI / 2, M_PI / 2, "SmallRadius_PointNear");
@@ -159,22 +172,34 @@ TEST_F(ExtremaPS_SphereComparisonTest, SmallRadius_PointNear)
 
 TEST_F(ExtremaPS_SphereComparisonTest, TranslatedSphere_PointNear)
 {
-  gp_Sphere aSph(gp_Ax3(gp_Pnt(10, 20, 30), gp_Dir(0, 0, 1)), 5.0);
+  gp_Sphere                          aSph(gp_Ax3(gp_Pnt(10, 20, 30), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
-  GeomAdaptor_Surface           anAdaptor(aSurf);
+  GeomAdaptor_Surface                anAdaptor(aSurf);
 
   gp_Pnt aP(20.0, 20.0, 30.0);
-  CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -M_PI / 2, M_PI / 2, "TranslatedSphere_PointNear");
+  CompareMinDistances(aP,
+                      anAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -M_PI / 2,
+                      M_PI / 2,
+                      "TranslatedSphere_PointNear");
 }
 
 TEST_F(ExtremaPS_SphereComparisonTest, TranslatedSphere_PointInside)
 {
-  gp_Sphere aSph(gp_Ax3(gp_Pnt(10, 20, 30), gp_Dir(0, 0, 1)), 5.0);
+  gp_Sphere                          aSph(gp_Ax3(gp_Pnt(10, 20, 30), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_SphericalSurface> aSurf = new Geom_SphericalSurface(aSph);
-  GeomAdaptor_Surface           anAdaptor(aSurf);
+  GeomAdaptor_Surface                anAdaptor(aSurf);
 
   gp_Pnt aP(12.0, 21.0, 31.0);
-  CompareMinDistances(aP, anAdaptor, 0.0, 2 * M_PI, -M_PI / 2, M_PI / 2, "TranslatedSphere_PointInside");
+  CompareMinDistances(aP,
+                      anAdaptor,
+                      0.0,
+                      2 * M_PI,
+                      -M_PI / 2,
+                      M_PI / 2,
+                      "TranslatedSphere_PointInside");
 }
 
 //==================================================================================================
@@ -222,11 +247,18 @@ TEST_F(ExtremaPS_SphereComparisonTest, StressTest_SphericalPoints)
         double z = r * std::sin(aPhiRad);
         gp_Pnt aP(x, y, z);
 
-        Extrema_ExtPS anOldExtPS(aP, myAdaptor, 0.0, 2 * M_PI, -M_PI / 2, M_PI / 2,
-                                 THE_TOLERANCE, THE_TOLERANCE);
+        Extrema_ExtPS anOldExtPS(aP,
+                                 myAdaptor,
+                                 0.0,
+                                 2 * M_PI,
+                                 -M_PI / 2,
+                                 M_PI / 2,
+                                 THE_TOLERANCE,
+                                 THE_TOLERANCE);
 
-        ExtremaPS_Surface aNewExtPS(myAdaptor, ExtremaPS::Domain2D(0.0, 2 * M_PI, -M_PI / 2, M_PI / 2));
-        const ExtremaPS::Result& aNewResult =aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
+        ExtremaPS_Surface        aNewExtPS(myAdaptor,
+                                    ExtremaPS::Domain2D(0.0, 2 * M_PI, -M_PI / 2, M_PI / 2));
+        const ExtremaPS::Result& aNewResult = aNewExtPS.PerformWithBoundary(aP, THE_TOLERANCE);
 
         ++aTotalCount;
 
@@ -250,4 +282,3 @@ TEST_F(ExtremaPS_SphereComparisonTest, StressTest_SphericalPoints)
 
   EXPECT_EQ(aPassCount, aTotalCount);
 }
-

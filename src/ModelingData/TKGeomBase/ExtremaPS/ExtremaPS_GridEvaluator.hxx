@@ -216,15 +216,15 @@ private:
     {
       for (int j = 0; j < aNbV; ++j)
       {
-        const GridPoint& aGP  = myGrid(i, j);
-        const double     aDx  = aGP.Point.X() - aPx;
-        const double     aDy  = aGP.Point.Y() - aPy;
-        const double     aDz  = aGP.Point.Z() - aPz;
+        const GridPoint& aGP = myGrid(i, j);
+        const double     aDx = aGP.Point.X() - aPx;
+        const double     aDy = aGP.Point.Y() - aPy;
+        const double     aDz = aGP.Point.Z() - aPz;
 
         GridPointData& aData = myGridData(i, j);
-        aData.Fu   = aDx * aGP.DU.X() + aDy * aGP.DU.Y() + aDz * aGP.DU.Z();
-        aData.Fv   = aDx * aGP.DV.X() + aDy * aGP.DV.Y() + aDz * aGP.DV.Z();
-        aData.Dist = aDx * aDx + aDy * aDy + aDz * aDz;
+        aData.Fu             = aDx * aGP.DU.X() + aDy * aGP.DU.Y() + aDz * aGP.DU.Z();
+        aData.Fv             = aDx * aGP.DV.X() + aDy * aGP.DV.Y() + aDz * aGP.DV.Z();
+        aData.Dist           = aDx * aDx + aDy * aDy + aDz * aDz;
 
         // Track global min/max during pre-computation (cached for addGridMinFallback)
         if (aData.Dist < myMinDist)
@@ -279,8 +279,8 @@ private:
         const double aTolRelSq = std::max(aTolFSq, aMinDist * aScaleRatioSq);
 
         // Check for near-zero gradient (use squared magnitudes)
-        const bool aNearZero =
-          (aGrad00 < aTolRelSq) || (aGrad10 < aTolRelSq) || (aGrad01 < aTolRelSq) || (aGrad11 < aTolRelSq);
+        const bool aNearZero = (aGrad00 < aTolRelSq) || (aGrad10 < aTolRelSq)
+                               || (aGrad01 < aTolRelSq) || (aGrad11 < aTolRelSq);
 
         // Early accept if near-zero gradient found
         bool aAddCandidate = aNearZero;
@@ -371,23 +371,30 @@ private:
 
     if (theMode == ExtremaPS::SearchMode::Min)
     {
-      std::sort(mySortedEntries.begin(), mySortedEntries.end(), [](const SortEntry& a, const SortEntry& b) {
-        if (std::abs(a.Dist - b.Dist) > ExtremaPS::THE_RELATIVE_TOLERANCE * std::max(a.Dist, b.Dist))
-          return a.Dist < b.Dist;
-        return a.GradMag < b.GradMag;
-      });
+      std::sort(mySortedEntries.begin(),
+                mySortedEntries.end(),
+                [](const SortEntry& a, const SortEntry& b) {
+                  if (std::abs(a.Dist - b.Dist)
+                      > ExtremaPS::THE_RELATIVE_TOLERANCE * std::max(a.Dist, b.Dist))
+                    return a.Dist < b.Dist;
+                  return a.GradMag < b.GradMag;
+                });
     }
     else if (theMode == ExtremaPS::SearchMode::Max)
     {
-      std::sort(mySortedEntries.begin(), mySortedEntries.end(), [](const SortEntry& a, const SortEntry& b) {
-        if (std::abs(a.Dist - b.Dist) > ExtremaPS::THE_RELATIVE_TOLERANCE * std::max(a.Dist, b.Dist))
-          return a.Dist > b.Dist;
-        return a.GradMag < b.GradMag;
-      });
+      std::sort(mySortedEntries.begin(),
+                mySortedEntries.end(),
+                [](const SortEntry& a, const SortEntry& b) {
+                  if (std::abs(a.Dist - b.Dist)
+                      > ExtremaPS::THE_RELATIVE_TOLERANCE * std::max(a.Dist, b.Dist))
+                    return a.Dist > b.Dist;
+                  return a.GradMag < b.GradMag;
+                });
     }
 
-    double aBestSqDist = (theMode == ExtremaPS::SearchMode::Min) ? std::numeric_limits<double>::max()
-                                                                 : -std::numeric_limits<double>::max();
+    double aBestSqDist = (theMode == ExtremaPS::SearchMode::Min)
+                           ? std::numeric_limits<double>::max()
+                           : -std::numeric_limits<double>::max();
 
     for (int s = 0; s < mySortedEntries.Length(); ++s)
     {
@@ -400,7 +407,8 @@ private:
       constexpr double aMinSkipThreshold = 2.0 - ExtremaPS::THE_MAX_SKIP_THRESHOLD;
       if (theMode == ExtremaPS::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
         break;
-      if (theMode == ExtremaPS::SearchMode::Max && anEstDist < aBestSqDist * ExtremaPS::THE_MAX_SKIP_THRESHOLD)
+      if (theMode == ExtremaPS::SearchMode::Max
+          && anEstDist < aBestSqDist * ExtremaPS::THE_MAX_SKIP_THRESHOLD)
         break;
 
       const Candidate& aCand = myCandidates.Value(anEntry.Idx);
@@ -420,8 +428,14 @@ private:
       aCellVMax       = std::min(theDomain.VMax, aCellVMax + aExpandV);
 
       // Newton iteration
-      ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(
-        aFunc, aCand.StartU, aCand.StartV, aCellUMin, aCellUMax, aCellVMin, aCellVMax, theTol);
+      ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                    aCand.StartU,
+                                                                    aCand.StartV,
+                                                                    aCellUMin,
+                                                                    aCellUMax,
+                                                                    aCellVMin,
+                                                                    aCellVMax,
+                                                                    theTol);
 
       double aRootU     = 0.0;
       double aRootV     = 0.0;
@@ -460,9 +474,15 @@ private:
         aRootV = myGrid(aBestI, aBestJ).V;
 
         // Try Newton one more time from the best corner
-        ExtremaPS_Newton::Result aRetryRes = ExtremaPS_Newton::Solve(
-          aFunc, aRootU, aRootV, aCellUMin, aCellUMax, aCellVMin, aCellVMax,
-          theTol * ExtremaPS::THE_NEWTON_RETRY_TOL_FACTOR);
+        ExtremaPS_Newton::Result aRetryRes =
+          ExtremaPS_Newton::Solve(aFunc,
+                                  aRootU,
+                                  aRootV,
+                                  aCellUMin,
+                                  aCellUMax,
+                                  aCellVMin,
+                                  aCellVMax,
+                                  theTol * ExtremaPS::THE_NEWTON_RETRY_TOL_FACTOR);
 
         if (aRetryRes.IsDone)
         {
@@ -549,8 +569,14 @@ private:
 
     // Try Newton refinement from the best grid point
     ExtremaPS_DistanceFunction aFunc(theSurface, theP);
-    ExtremaPS_Newton::Result   aNewtonRes = ExtremaPS_Newton::Solve(
-      aFunc, aGridMinU, aGridMinV, theDomain.UMin, theDomain.UMax, theDomain.VMin, theDomain.VMax, theTol);
+    ExtremaPS_Newton::Result   aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                  aGridMinU,
+                                                                  aGridMinV,
+                                                                  theDomain.UMin,
+                                                                  theDomain.UMax,
+                                                                  theDomain.VMin,
+                                                                  theDomain.VMax,
+                                                                  theTol);
 
     double aRefinedU    = aGridMinU;
     double aRefinedV    = aGridMinV;
@@ -565,8 +591,8 @@ private:
       aRefinedDist = theP.SquareDistance(aRefinedPt);
     }
 
-    double aResultMinDist =
-      myResult.Extrema.IsEmpty() ? std::numeric_limits<double>::max() : myResult.MinSquareDistance();
+    double aResultMinDist = myResult.Extrema.IsEmpty() ? std::numeric_limits<double>::max()
+                                                       : myResult.MinSquareDistance();
 
     if (aRefinedDist < aResultMinDist * ExtremaPS::THE_REFINED_DIST_THRESHOLD)
     {
@@ -575,7 +601,8 @@ private:
       for (int i = 0; i < myResult.Extrema.Length(); ++i)
       {
         const auto& anExisting = myResult.Extrema.Value(i);
-        if (std::abs(anExisting.U - aRefinedU) < theTol && std::abs(anExisting.V - aRefinedV) < theTol)
+        if (std::abs(anExisting.U - aRefinedU) < theTol
+            && std::abs(anExisting.V - aRefinedV) < theTol)
         {
           aSkip = true;
           break;
@@ -598,11 +625,11 @@ private:
   NCollection_Array2<GridPoint> myGrid; //!< Cached grid
 
   // Mutable cached temporaries (reused via Clear())
-  mutable ExtremaPS::Result                             myResult;        //!< Reusable result
-  mutable NCollection_Vector<Candidate>                 myCandidates;    //!< Candidates from grid scan
-  mutable NCollection_Vector<std::pair<double, double>> myFoundRoots;    //!< Found roots for dedup
-  mutable NCollection_Vector<SortEntry>                 mySortedEntries; //!< Sorted candidate indices
-  mutable NCollection_Array2<GridPointData>             myGridData;      //!< Pre-computed Fu/Fv/Dist
+  mutable ExtremaPS::Result                             myResult;     //!< Reusable result
+  mutable NCollection_Vector<Candidate>                 myCandidates; //!< Candidates from grid scan
+  mutable NCollection_Vector<std::pair<double, double>> myFoundRoots; //!< Found roots for dedup
+  mutable NCollection_Vector<SortEntry>     mySortedEntries;          //!< Sorted candidate indices
+  mutable NCollection_Array2<GridPointData> myGridData;               //!< Pre-computed Fu/Fv/Dist
 
   //! @brief Try to find extremum starting from cached solution (spatial coherence optimization).
   //!
@@ -620,8 +647,8 @@ private:
       return false;
 
     // Get most recent cached solution
-    int aLastIdx = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
-    const CachedSolution& aLast = myCachedSolutions[aLastIdx];
+    int                   aLastIdx = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+    const CachedSolution& aLast    = myCachedSolutions[aLastIdx];
 
     double aDistSq = theP.SquareDistance(aLast.QueryPoint);
     if (aDistSq > ExtremaPS::THE_COHERENCE_THRESHOLD_SQ)
@@ -652,7 +679,8 @@ private:
       if (aMag01 > Precision::Confusion() && aMag12 > Precision::Confusion())
       {
         double aRatio = aMag12 / aMag01;
-        if (aRatio > ExtremaPS::THE_TRAJECTORY_MIN_RATIO && aRatio < ExtremaPS::THE_TRAJECTORY_MAX_RATIO)
+        if (aRatio > ExtremaPS::THE_TRAJECTORY_MIN_RATIO
+            && aRatio < ExtremaPS::THE_TRAJECTORY_MAX_RATIO)
         {
           // Compute cosine of angle between consecutive steps
           double aCos = aV01.Dot(aV12) / (aMag01 * aMag12);
@@ -661,8 +689,8 @@ private:
             // Linear extrapolation: predict (U, V) based on previous steps
             double aDeltaU = aS2.U - aS1.U;
             double aDeltaV = aS2.V - aS1.V;
-            aStartU = aS2.U + aDeltaU;
-            aStartV = aS2.V + aDeltaV;
+            aStartU        = aS2.U + aDeltaU;
+            aStartV        = aS2.V + aDeltaV;
             // Clamp to domain
             aStartU = std::max(theDomain.UMin, std::min(theDomain.UMax, aStartU));
             aStartV = std::max(theDomain.VMin, std::min(theDomain.VMax, aStartV));
@@ -673,8 +701,14 @@ private:
 
     // Try Newton from predicted/cached starting point
     ExtremaPS_DistanceFunction aFunc(theSurface, theP);
-    ExtremaPS_Newton::Result   aNewtonRes = ExtremaPS_Newton::Solve(
-      aFunc, aStartU, aStartV, theDomain.UMin, theDomain.UMax, theDomain.VMin, theDomain.VMax, theTol);
+    ExtremaPS_Newton::Result   aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
+                                                                  aStartU,
+                                                                  aStartV,
+                                                                  theDomain.UMin,
+                                                                  theDomain.UMax,
+                                                                  theDomain.VMin,
+                                                                  theDomain.VMax,
+                                                                  theTol);
 
     if (!aNewtonRes.IsDone)
       return false;
@@ -686,7 +720,8 @@ private:
     double aFu, aFv;
     aFunc.Value(aRootU, aRootV, aFu, aFv);
     double aFNorm = aFu * aFu + aFv * aFv;
-    if (aFNorm > theTol * theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
+    if (aFNorm
+        > theTol * theTol * ExtremaPS::THE_GRADIENT_TOL_FACTOR * ExtremaPS::THE_GRADIENT_TOL_FACTOR)
       return false;
 
     // Valid solution found - add result
@@ -725,7 +760,7 @@ private:
     myCachedSolutions[myCacheIndex].QueryPoint = theP;
     myCachedSolutions[myCacheIndex].U          = theU;
     myCachedSolutions[myCacheIndex].V          = theV;
-    myCacheIndex = (myCacheIndex + 1) % THE_CACHE_SIZE;
+    myCacheIndex                               = (myCacheIndex + 1) % THE_CACHE_SIZE;
     if (myCacheCount < THE_CACHE_SIZE)
       ++myCacheCount;
   }
@@ -752,19 +787,21 @@ private:
   }
 
   // Cached global min/max indices from last scanGrid
-  mutable int    myMinI = 0, myMinJ = 0;    //!< Grid indices of global minimum
-  mutable int    myMaxI = 0, myMaxJ = 0;    //!< Grid indices of global maximum
-  mutable double myMinDist = 0.0;           //!< Global minimum squared distance
-  mutable double myMaxDist = 0.0;           //!< Global maximum squared distance
+  mutable int    myMinI = 0, myMinJ = 0; //!< Grid indices of global minimum
+  mutable int    myMaxI = 0, myMaxJ = 0; //!< Grid indices of global maximum
+  mutable double myMinDist = 0.0;        //!< Global minimum squared distance
+  mutable double myMaxDist = 0.0;        //!< Global maximum squared distance
 
   // Cached solutions for spatial coherence optimization (ring buffer of 3)
   static constexpr int THE_CACHE_SIZE = 3;
+
   struct CachedSolution
   {
     gp_Pnt QueryPoint;
     double U = 0.0;
     double V = 0.0;
   };
+
   mutable CachedSolution myCachedSolutions[THE_CACHE_SIZE]; //!< Ring buffer of cached solutions
   mutable int            myCacheCount = 0;                  //!< Number of valid entries (0 to 3)
   mutable int            myCacheIndex = 0;                  //!< Next write index (circular)
