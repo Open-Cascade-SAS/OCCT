@@ -80,6 +80,9 @@ enum class Status {
 };
 ```
 
+Note: specialized `MathSys` 2D/3D/4D Newton solvers use `MathSys::NewtonStatus`
+from `MathSys_NewtonTypes.hxx` rather than `MathUtils::Status`.
+
 ### Result Types
 - `ScalarResult` - For 1D root finding results
 - `PolyResult` - For polynomial root results (up to 4 roots)

@@ -14,10 +14,13 @@
 #ifndef _MathSys_Newton4D_HeaderFile
 #define _MathSys_Newton4D_HeaderFile
 
-#include <MathUtils_Types.hxx>
-#include <MathUtils_Config.hxx>
+#include <MathSys_NewtonTypes.hxx>
+
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 #include <algorithm>
+#include <array>
 #include <cmath>
 
 //! @file MathSys_Newton4D.hxx
@@ -37,35 +40,68 @@
 
 namespace MathSys
 {
-using namespace MathUtils;
-
-//! Result of 4D Newton iteration.
-struct Newton4DResult
-{
-  Status Status = Status::NotConverged; //!< Computation status
-  double X1     = 0.0;                  //!< Solution X1 coordinate
-  double X2     = 0.0;                  //!< Solution X2 coordinate
-  double X3     = 0.0;                  //!< Solution X3 coordinate
-  double X4     = 0.0;                  //!< Solution X4 coordinate
-  size_t NbIter = 0;                    //!< Number of iterations performed
-  double FNorm  = 0.0;                  //!< Final |F| norm
-
-  //! Returns true if computation succeeded.
-  bool IsDone() const { return Status == Status::OK; }
-
-  //! Conversion to bool for convenient checking.
-  explicit operator bool() const { return IsDone(); }
-};
-
 namespace detail
 {
 
+//! Check that NewtonBoundsN<4> has valid (min <= max) ranges.
+inline bool IsBoundsValid4D(const NewtonBoundsN<4>& theBounds)
+{
+  if (!theBounds.HasBounds)
+  {
+    return true;
+  }
+
+  return theBounds.Min[0] <= theBounds.Max[0] && theBounds.Min[1] <= theBounds.Max[1]
+         && theBounds.Min[2] <= theBounds.Max[2] && theBounds.Min[3] <= theBounds.Max[3];
+}
+
+//! Check that NewtonOptions fields are positive and valid.
+inline bool IsOptionsValid4D(const NewtonOptions& theOptions)
+{
+  return theOptions.ResidualTol > 0.0 && theOptions.StepTolRel > 0.0 && theOptions.MaxIterations > 0
+         && theOptions.MaxStepRatio > 0.0 && theOptions.SoftBoundsExtension >= 0.0;
+}
+
+//! Return the largest domain extent across all 4 dimensions (min 1.0).
+inline double MaxDomainSize4D(const NewtonBoundsN<4>& theBounds)
+{
+  if (!theBounds.HasBounds)
+  {
+    return 1.0;
+  }
+
+  const double aD0 = theBounds.Max[0] - theBounds.Min[0];
+  const double aD1 = theBounds.Max[1] - theBounds.Min[1];
+  const double aD2 = theBounds.Max[2] - theBounds.Min[2];
+  const double aD3 = theBounds.Max[3] - theBounds.Min[3];
+  return std::max(1.0, std::max(aD0, std::max(aD1, std::max(aD2, aD3))));
+}
+
+//! Clamp solution array to bounds, optionally extending by soft-bounds ratio.
+inline void Clamp4D(std::array<double, 4>&  theX,
+                    const NewtonBoundsN<4>& theBounds,
+                    bool                    theUseSoftBounds,
+                    double                  theSoftExtRatio)
+{
+  if (!theBounds.HasBounds)
+  {
+    return;
+  }
+
+  for (int i = 0; i < 4; ++i)
+  {
+    const double aExt =
+      theUseSoftBounds ? (theBounds.Max[i] - theBounds.Min[i]) * theSoftExtRatio : 0.0;
+    theX[i] = std::clamp(theX[i], theBounds.Min[i] - aExt, theBounds.Max[i] + aExt);
+  }
+}
+
 //! Solve 4x4 linear system using Gaussian elimination with partial pivoting.
-//! @param theJ input 4x4 Jacobian matrix (modified during computation)
-//! @param theF input 4-element right-hand side (modified: negated)
-//! @param theDelta output 4-element solution vector
+//! @param[in] theJ 4x4 Jacobian matrix
+//! @param[in] theF 4-element right-hand side
+//! @param[out] theDelta 4-element solution vector
 //! @return true if system was solved successfully
-inline bool Solve4x4(double theJ[4][4], double theF[4], double theDelta[4])
+inline bool Solve4x4(const double theJ[4][4], const double theF[4], double theDelta[4])
 {
   // Augmented matrix [J | -F]
   double A[4][5];
@@ -138,7 +174,7 @@ inline bool Solve4x4(double theJ[4][4], double theF[4], double theDelta[4])
 
 } // namespace detail
 
-//! Optimized 4D Newton-Raphson solver with bounds.
+//! Solve a 4x4 nonlinear system by Newton iteration with bounds.
 //!
 //! Solves the system [F1, F2, F3, F4] = [0, 0, 0, 0] using Newton-Raphson iteration
 //! with Gaussian elimination for the 4x4 linear system at each step.
@@ -151,71 +187,49 @@ inline bool Solve4x4(double theJ[4][4], double theF[4], double theDelta[4])
 //! where theF is the function values and theJ is the 4x4 Jacobian matrix.
 //!
 //! @tparam Function callable type (functor, lambda, or function pointer)
-//! @param theFunc function to solve (provides F and Jacobian)
-//! @param theX1_0 initial X1 guess
-//! @param theX2_0 initial X2 guess
-//! @param theX3_0 initial X3 guess
-//! @param theX4_0 initial X4 guess
-//! @param theX1Min X1 lower bound
-//! @param theX1Max X1 upper bound
-//! @param theX2Min X2 lower bound
-//! @param theX2Max X2 upper bound
-//! @param theX3Min X3 lower bound
-//! @param theX3Max X3 upper bound
-//! @param theX4Min X4 lower bound
-//! @param theX4Max X4 upper bound
-//! @param theTol tolerance for convergence (|F| < tol)
-//! @param theMaxIter maximum iterations (default 20)
-//! @return Newton4DResult containing solution if converged
+//! @param[in] theFunc function to solve (provides F and Jacobian)
+//! @param[in] theX0 initial guess {x1, x2, x3, x4}
+//! @param[in] theBounds box bounds for each variable
+//! @param[in] theOptions solver options (tolerances, max iterations, etc.)
+//! @return NewtonResultN<4> containing solution, status, and diagnostics
 template <typename Function>
-Newton4DResult Newton4D(const Function& theFunc,
-                        double          theX1_0,
-                        double          theX2_0,
-                        double          theX3_0,
-                        double          theX4_0,
-                        double          theX1Min,
-                        double          theX1Max,
-                        double          theX2Min,
-                        double          theX2Max,
-                        double          theX3Min,
-                        double          theX3Max,
-                        double          theX4Min,
-                        double          theX4Max,
-                        double          theTol,
-                        size_t          theMaxIter = 20)
+NewtonResultN<4> Solve4D(const Function&              theFunc,
+                         const std::array<double, 4>& theX0,
+                         const NewtonBoundsN<4>&      theBounds,
+                         const NewtonOptions&         theOptions = NewtonOptions())
 {
-  Newton4DResult aRes;
-  aRes.X1 = theX1_0;
-  aRes.X2 = theX2_0;
-  aRes.X3 = theX3_0;
-  aRes.X4 = theX4_0;
+  NewtonResultN<4> aRes;
+  aRes.X = theX0;
 
-  // Pre-compute max step limit (50% of smallest domain range)
-  const double aMaxStep =
-    0.5
-    * std::min(
-      {theX1Max - theX1Min, theX2Max - theX2Min, theX3Max - theX3Min, theX4Max - theX4Min});
-  const double aTolSq = theTol * theTol;
-
-  for (size_t i = 0; i < theMaxIter; ++i)
+  if (!detail::IsOptionsValid4D(theOptions) || !detail::IsBoundsValid4D(theBounds))
   {
-    aRes.NbIter = i + 1;
+    aRes.Status = NewtonStatus::InvalidInput;
+    return aRes;
+  }
+
+  detail::Clamp4D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
+
+  const double aTolSq   = theOptions.ResidualTol * theOptions.ResidualTol;
+  const double aMaxStep = theOptions.MaxStepRatio * detail::MaxDomainSize4D(theBounds);
+
+  for (size_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
+  {
+    aRes.NbIter = anIter + 1;
 
     double aF[4];
     double aJ[4][4];
-    if (!theFunc(aRes.X1, aRes.X2, aRes.X3, aRes.X4, aF, aJ))
+    if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aRes.X[3], aF, aJ))
     {
-      aRes.Status = Status::NumericalError;
+      aRes.Status = NewtonStatus::NumericalError;
       return aRes;
     }
 
     // Check convergence using squared norm (avoid sqrt)
     const double aFNormSq = aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2] + aF[3] * aF[3];
-
-    if (aFNormSq < aTolSq)
+    aRes.ResidualNorm     = std::sqrt(aFNormSq);
+    if (aFNormSq <= aTolSq)
     {
-      aRes.FNorm  = std::sqrt(aFNormSq);
-      aRes.Status = Status::OK;
+      aRes.Status = NewtonStatus::Converged;
       return aRes;
     }
 
@@ -223,165 +237,109 @@ Newton4DResult Newton4D(const Function& theFunc,
     double aDelta[4];
     if (!detail::Solve4x4(aJ, aF, aDelta))
     {
-      // Singular Jacobian - try gradient descent step
-      double aJNormSq = 0.0;
-      for (int r = 0; r < 4; ++r)
+      // Singular Jacobian - try steepest descent direction: -J^T * F
+      double aGrad[4] = {0.0, 0.0, 0.0, 0.0};
+      for (int c = 0; c < 4; ++c)
       {
-        for (int c = 0; c < 4; ++c)
+        for (int r = 0; r < 4; ++r)
         {
-          aJNormSq += aJ[r][c] * aJ[r][c];
+          aGrad[c] += aJ[r][c] * aF[r];
         }
       }
 
-      if (aJNormSq < 1.0e-60)
+      const double aGradSq =
+        aGrad[0] * aGrad[0] + aGrad[1] * aGrad[1] + aGrad[2] * aGrad[2] + aGrad[3] * aGrad[3];
+      if (aGradSq < 1.0e-60)
       {
-        aRes.FNorm  = std::sqrt(aFNormSq);
-        aRes.Status = Status::Singular;
+        aRes.Status = NewtonStatus::SingularJacobian;
         return aRes;
       }
 
-      // Use steepest descent direction: -J^T * F
-      const double aStep = std::sqrt(aFNormSq / aJNormSq) * 0.1;
-      for (int k = 0; k < 4; ++k)
+      const double aAlpha = std::min(1.0, std::sqrt(aFNormSq / aGradSq) * 0.1);
+      for (int i = 0; i < 4; ++i)
       {
-        aDelta[k] = 0.0;
-        for (int r = 0; r < 4; ++r)
-        {
-          aDelta[k] -= aStep * aJ[r][k] * aF[r];
-        }
+        aDelta[i] = -aAlpha * aGrad[i];
       }
     }
-    else
+
+    // Limit step size to prevent wild oscillations
+    const double aStepNormSq =
+      aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1] + aDelta[2] * aDelta[2] + aDelta[3] * aDelta[3];
+    const double aStepNorm = std::sqrt(aStepNormSq);
+    if (aStepNorm > aMaxStep)
     {
-      // Limit step size to prevent wild oscillations
-      const double aStepNormSq = aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1]
-                                 + aDelta[2] * aDelta[2] + aDelta[3] * aDelta[3];
-      if (aStepNormSq > aMaxStep * aMaxStep)
+      const double aScale = aMaxStep / aStepNorm;
+      for (int i = 0; i < 4; ++i)
       {
-        const double aScale = aMaxStep / std::sqrt(aStepNormSq);
-        aDelta[0] *= aScale;
-        aDelta[1] *= aScale;
-        aDelta[2] *= aScale;
-        aDelta[3] *= aScale;
+        aDelta[i] *= aScale;
       }
     }
 
     // Update and clamp to bounds
-    aRes.X1 = std::clamp(aRes.X1 + aDelta[0], theX1Min, theX1Max);
-    aRes.X2 = std::clamp(aRes.X2 + aDelta[1], theX2Min, theX2Max);
-    aRes.X3 = std::clamp(aRes.X3 + aDelta[2], theX3Min, theX3Max);
-    aRes.X4 = std::clamp(aRes.X4 + aDelta[3], theX4Min, theX4Max);
+    std::array<double, 4> aNewX = {aRes.X[0] + aDelta[0],
+                                   aRes.X[1] + aDelta[1],
+                                   aRes.X[2] + aDelta[2],
+                                   aRes.X[3] + aDelta[3]};
+    detail::Clamp4D(aNewX, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
+
+    aRes.StepNorm = std::sqrt((aNewX[0] - aRes.X[0]) * (aNewX[0] - aRes.X[0])
+                              + (aNewX[1] - aRes.X[1]) * (aNewX[1] - aRes.X[1])
+                              + (aNewX[2] - aRes.X[2]) * (aNewX[2] - aRes.X[2])
+                              + (aNewX[3] - aRes.X[3]) * (aNewX[3] - aRes.X[3]));
+    aRes.X        = aNewX;
+
+    const double aScaleRef = std::max(
+      1.0,
+      std::max(std::abs(aRes.X[0]),
+               std::max(std::abs(aRes.X[1]), std::max(std::abs(aRes.X[2]), std::abs(aRes.X[3])))));
+    if (aRes.StepNorm <= theOptions.StepTolRel * aScaleRef)
+    {
+      aRes.Status = NewtonStatus::MaxIterations;
+      return aRes;
+    }
   }
 
-  // Final convergence check (only at max iterations)
+  // Final convergence check after max iterations
   double aF[4];
   double aJ[4][4];
-  if (theFunc(aRes.X1, aRes.X2, aRes.X3, aRes.X4, aF, aJ))
+  if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aRes.X[3], aF, aJ))
   {
-    aRes.FNorm = std::sqrt(aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2] + aF[3] * aF[3]);
-    if (aRes.FNorm < theTol)
-    {
-      aRes.Status = Status::OK;
-    }
-    else
-    {
-      aRes.Status = Status::MaxIterations;
-    }
-  }
-  else
-  {
-    aRes.Status = Status::NumericalError;
+    aRes.Status = NewtonStatus::NumericalError;
+    return aRes;
   }
 
+  aRes.ResidualNorm = std::sqrt(aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2] + aF[3] * aF[3]);
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.ResidualTol) ? NewtonStatus::Converged
+                                                                    : NewtonStatus::MaxIterations;
   return aRes;
 }
 
-//! Unbounded 4D Newton-Raphson solver.
+//! Optimized 4D Newton solver for surface-surface extrema.
 //!
-//! @tparam Function type with ValueAndJacobian method
-//! @param theFunc function to solve
-//! @param theX1_0 initial X1 guess
-//! @param theX2_0 initial X2 guess
-//! @param theX3_0 initial X3 guess
-//! @param theX4_0 initial X4 guess
-//! @param theTol tolerance for convergence
-//! @param theMaxIter maximum iterations (default 20)
-//! @return Newton4DResult containing solution if converged
-template <typename Function>
-Newton4DResult Newton4D(const Function& theFunc,
-                        double          theX1_0,
-                        double          theX2_0,
-                        double          theX3_0,
-                        double          theX4_0,
-                        double          theTol,
-                        size_t          theMaxIter = 20)
-{
-  constexpr double aInf = 1.0e100;
-  return Newton4D(theFunc,
-                  theX1_0,
-                  theX2_0,
-                  theX3_0,
-                  theX4_0,
-                  -aInf,
-                  aInf,
-                  -aInf,
-                  aInf,
-                  -aInf,
-                  aInf,
-                  -aInf,
-                  aInf,
-                  theTol,
-                  theMaxIter);
-}
-
-//! Optimized 4D Newton solver for Surface-Surface extrema.
-//!
-//! Specialized version for the common case of finding extrema between two surfaces.
+//! Specialized version for finding extrema between two surfaces S1(u1,v1) and S2(u2,v2).
 //! The function values are the gradient components of the squared distance:
-//! - F1 = (S1-S2) * dS1/dU1
-//! - F2 = (S1-S2) * dS1/dV1
-//! - F3 = (S2-S1) * dS2/dU2
-//! - F4 = (S2-S1) * dS2/dV2
+//! - F1 = (S1-S2) . dS1/dU1
+//! - F2 = (S1-S2) . dS1/dV1
+//! - F3 = (S2-S1) . dS2/dU2
+//! - F4 = (S2-S1) . dS2/dV2
 //!
-//! The Jacobian has a special structure with 2x2 blocks.
+//! The Jacobian has a special block structure with 2x2 blocks.
 //!
-//! @tparam SurfaceEvaluator type providing D2 evaluation for surfaces
-//! @param theSurf1 first surface evaluator
-//! @param theSurf2 second surface evaluator
-//! @param theU1_0 initial U1 guess on surface 1
-//! @param theV1_0 initial V1 guess on surface 1
-//! @param theU2_0 initial U2 guess on surface 2
-//! @param theV2_0 initial V2 guess on surface 2
-//! @param theU1Min U1 lower bound
-//! @param theU1Max U1 upper bound
-//! @param theV1Min V1 lower bound
-//! @param theV1Max V1 upper bound
-//! @param theU2Min U2 lower bound
-//! @param theU2Max U2 upper bound
-//! @param theV2Min V2 lower bound
-//! @param theV2Max V2 upper bound
-//! @param theTol tolerance for convergence
-//! @param theMaxIter maximum iterations (default 20)
-//! @return Newton4DResult with U1,V1,U2,V2 stored in X1,X2,X3,X4
+//! @tparam SurfaceEvaluator1 type providing D2 evaluation for first surface
+//! @tparam SurfaceEvaluator2 type providing D2 evaluation for second surface
+//! @param[in] theSurf1 first surface evaluator
+//! @param[in] theSurf2 second surface evaluator
+//! @param[in] theX0 initial guess {u1, v1, u2, v2}
+//! @param[in] theBounds box bounds for {u1, v1, u2, v2}
+//! @param[in] theOptions solver options
+//! @return NewtonResultN<4> with u1, v1, u2, v2 stored in X[0..3]
 template <typename SurfaceEvaluator1, typename SurfaceEvaluator2>
-Newton4DResult Newton4DSurfaceSurface(const SurfaceEvaluator1& theSurf1,
-                                      const SurfaceEvaluator2& theSurf2,
-                                      double                   theU1_0,
-                                      double                   theV1_0,
-                                      double                   theU2_0,
-                                      double                   theV2_0,
-                                      double                   theU1Min,
-                                      double                   theU1Max,
-                                      double                   theV1Min,
-                                      double                   theV1Max,
-                                      double                   theU2Min,
-                                      double                   theU2Max,
-                                      double                   theV2Min,
-                                      double                   theV2Max,
-                                      double                   theTol,
-                                      size_t                   theMaxIter = 20)
+NewtonResultN<4> SolveSurfaceSurfaceExtrema4D(const SurfaceEvaluator1&     theSurf1,
+                                              const SurfaceEvaluator2&     theSurf2,
+                                              const std::array<double, 4>& theX0,
+                                              const NewtonBoundsN<4>&      theBounds,
+                                              const NewtonOptions& theOptions = NewtonOptions())
 {
-  // Lambda that computes F and J for surface-surface extrema
   auto aFunc = [&theSurf1, &theSurf2](double theU1,
                                       double theV1,
                                       double theU2,
@@ -428,25 +386,10 @@ Newton4DResult Newton4DSurfaceSurface(const SurfaceEvaluator1& theSurf1,
     theJ[2][3] = aD1V2.Dot(aD1U2) - aD.Dot(aD2UV2);
     theJ[3][2] = theJ[2][3]; // Symmetric
     theJ[3][3] = aD1V2.Dot(aD1V2) - aD.Dot(aD2VV2);
-
     return true;
   };
 
-  return Newton4D(aFunc,
-                  theU1_0,
-                  theV1_0,
-                  theU2_0,
-                  theV2_0,
-                  theU1Min,
-                  theU1Max,
-                  theV1Min,
-                  theV1Max,
-                  theU2Min,
-                  theU2Max,
-                  theV2Min,
-                  theV2Max,
-                  theTol,
-                  theMaxIter);
+  return Solve4D(aFunc, theX0, theBounds, theOptions);
 }
 
 } // namespace MathSys

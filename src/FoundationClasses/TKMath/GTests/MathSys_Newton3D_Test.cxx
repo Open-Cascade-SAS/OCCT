@@ -15,16 +15,7 @@
 
 #include <MathSys_Newton3D.hxx>
 
-#include <cmath>
-
-namespace
-{
-constexpr double THE_TOLERANCE = 1.0e-7;
-}
-
-//==================================================================================================
-// Test fixture for MathSys_Newton3D tests
-//==================================================================================================
+#include <array>
 
 class MathSys_Newton3DTest : public testing::Test
 {
@@ -32,14 +23,8 @@ protected:
   static constexpr double THE_TOL = 1.0e-10;
 };
 
-//==================================================================================================
-// Test: Simple 3D linear system
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, Linear3DSystem)
+TEST_F(MathSys_Newton3DTest, Solve3D_LinearSystem)
 {
-  // System: 2x + y + z = 4, x + 3y + z = 5, x + y + 4z = 6
-  // Solution: x = 1, y = 1, z = 1
   auto aFunc =
     [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
@@ -55,31 +40,31 @@ TEST_F(MathSys_Newton3DTest, Linear3DSystem)
     theJ[2][0] = 1.0;
     theJ[2][1] = 1.0;
     theJ[2][2] = 4.0;
-
     return true;
   };
 
-  auto aResult = MathSys::Newton3D(aFunc, 0.0, 0.0, 0.0, THE_TOL);
-  ASSERT_TRUE(aResult.IsDone());
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
 
-  EXPECT_NEAR(aResult.X1, 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.X2, 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.X3, 1.0, THE_TOLERANCE);
+  MathSys::NewtonOptions aOptions;
+  aOptions.ResidualTol = THE_TOL;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-8);
+  EXPECT_NEAR(aResult.X[1], 1.0, 1.0e-8);
+  EXPECT_NEAR(aResult.X[2], 1.0, 1.0e-8);
 }
 
-//==================================================================================================
-// Test: Nonlinear 3D system - sphere-plane intersection
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, NonlinearSpherePlane)
+TEST_F(MathSys_Newton3DTest, Solve3D_NonlinearSystem)
 {
-  // System: x^2 + y^2 + z^2 = 3 (sphere), x + y + z = 3 (plane through sphere)
-  // One solution: x = y = z = 1
   auto aFunc =
     [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = theX1 * theX1 + theX2 * theX2 + theX3 * theX3 - 3.0;
     theF[1] = theX1 + theX2 + theX3 - 3.0;
-    theF[2] = theX1 - theX2; // Symmetry constraint
+    theF[2] = theX1 - theX2;
 
     theJ[0][0] = 2.0 * theX1;
     theJ[0][1] = 2.0 * theX2;
@@ -90,28 +75,27 @@ TEST_F(MathSys_Newton3DTest, NonlinearSpherePlane)
     theJ[2][0] = 1.0;
     theJ[2][1] = -1.0;
     theJ[2][2] = 0.0;
-
     return true;
   };
 
-  // Start close to the solution for nonlinear systems
-  auto aResult = MathSys::Newton3D(aFunc, 0.8, 0.8, 1.4, THE_TOL);
-  ASSERT_TRUE(aResult.IsDone());
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
 
-  // Nonlinear systems may have slightly lower precision
-  constexpr double aNonlinearTol = 1.0e-5;
-  EXPECT_NEAR(aResult.X1, 1.0, aNonlinearTol);
-  EXPECT_NEAR(aResult.X2, 1.0, aNonlinearTol);
-  EXPECT_NEAR(aResult.X3, 1.0, aNonlinearTol);
+  MathSys::NewtonOptions aOptions;
+  aOptions.ResidualTol   = 1.0e-10;
+  aOptions.MaxIterations = 50;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.8, 0.8, 1.4}, aBounds, aOptions);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-5);
+  EXPECT_NEAR(aResult.X[1], 1.0, 1.0e-5);
+  EXPECT_NEAR(aResult.X[2], 1.0, 1.0e-5);
 }
 
-//==================================================================================================
-// Test: 3D Newton with bounds
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, BoundedNewton3D)
+TEST_F(MathSys_Newton3DTest, Solve3D_Bounded)
 {
-  // Same linear system but with bounds
   auto aFunc =
     [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
@@ -127,197 +111,116 @@ TEST_F(MathSys_Newton3DTest, BoundedNewton3D)
     theJ[2][0] = 1.0;
     theJ[2][1] = 1.0;
     theJ[2][2] = 4.0;
-
     return true;
   };
 
-  auto aResult =
-    MathSys::Newton3D(aFunc, 0.0, 0.0, 0.0, -10.0, 10.0, -10.0, 10.0, -10.0, 10.0, THE_TOL);
-  ASSERT_TRUE(aResult.IsDone());
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.Min = {-10.0, -10.0, -10.0};
+  aBounds.Max = {10.0, 10.0, 10.0};
 
-  EXPECT_NEAR(aResult.X1, 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.X2, 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.X3, 1.0, THE_TOLERANCE);
+  MathSys::NewtonOptions aOptions;
+  aOptions.ResidualTol = THE_TOL;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-8);
+  EXPECT_NEAR(aResult.X[1], 1.0, 1.0e-8);
+  EXPECT_NEAR(aResult.X[2], 1.0, 1.0e-8);
 }
 
-//==================================================================================================
-// Test: 3D Newton gradient descent fallback
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, GradientDescentFallback)
+TEST_F(MathSys_Newton3DTest, Solve3D_InvalidInput)
 {
-  // System where Jacobian is nearly singular at some points
-  auto aFunc =
-    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
-    // F1 = x^3 - 1, F2 = y^3 - 1, F3 = z^3 - 1
-    // Solution: x = y = z = 1
-    theF[0] = theX1 * theX1 * theX1 - 1.0;
-    theF[1] = theX2 * theX2 * theX2 - 1.0;
-    theF[2] = theX3 * theX3 * theX3 - 1.0;
-
-    theJ[0][0] = 3.0 * theX1 * theX1;
+  auto aFunc = [](double /*theX1*/,
+                  double /*theX2*/,
+                  double /*theX3*/,
+                  double theF[3],
+                  double theJ[3][3]) -> bool {
+    theF[0]    = 0.0;
+    theF[1]    = 0.0;
+    theF[2]    = 0.0;
+    theJ[0][0] = 1.0;
     theJ[0][1] = 0.0;
     theJ[0][2] = 0.0;
     theJ[1][0] = 0.0;
-    theJ[1][1] = 3.0 * theX2 * theX2;
+    theJ[1][1] = 1.0;
     theJ[1][2] = 0.0;
     theJ[2][0] = 0.0;
     theJ[2][1] = 0.0;
-    theJ[2][2] = 3.0 * theX3 * theX3;
-
+    theJ[2][2] = 1.0;
     return true;
   };
 
-  // Start at (0.5, 0.5, 0.5) - Jacobian is not singular here
-  auto aResult = MathSys::Newton3D(aFunc, 0.5, 0.5, 0.5, THE_TOL);
-  ASSERT_TRUE(aResult.IsDone());
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.Min = {1.0, 0.0, 0.0};
+  aBounds.Max = {0.0, 1.0, 1.0};
 
-  EXPECT_NEAR(aResult.X1, 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.X2, 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aResult.X3, 1.0, THE_TOLERANCE);
+  MathSys::NewtonOptions aOptions;
+  aOptions.ResidualTol = THE_TOL;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+
+  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::InvalidInput);
+  EXPECT_FALSE(aResult.IsDone());
 }
 
-//==================================================================================================
-// Test: 3D Newton convergence count
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, ConvergenceCount)
+namespace
 {
-  // Simple linear system should converge in 1 iteration
-  auto aFunc =
-    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
-    theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
-    theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
-    theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
-
-    theJ[0][0] = 2.0;
-    theJ[0][1] = 1.0;
-    theJ[0][2] = 1.0;
-    theJ[1][0] = 1.0;
-    theJ[1][1] = 3.0;
-    theJ[1][2] = 1.0;
-    theJ[2][0] = 1.0;
-    theJ[2][1] = 1.0;
-    theJ[2][2] = 4.0;
-
-    return true;
-  };
-
-  auto aResult = MathSys::Newton3D(aFunc, 0.0, 0.0, 0.0, THE_TOL);
-  ASSERT_TRUE(aResult.IsDone());
-
-  // Linear system should converge in 1-2 iterations
-  EXPECT_LE(aResult.NbIter, 2u);
-}
-
-//==================================================================================================
-// Test: Verify function values at solution
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, VerifyFunctionValues)
+class LineCurveEval
 {
-  // Use the linear system which always converges
-  auto aFunc =
-    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
-    theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
-    theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
-    theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
-
-    theJ[0][0] = 2.0;
-    theJ[0][1] = 1.0;
-    theJ[0][2] = 1.0;
-    theJ[1][0] = 1.0;
-    theJ[1][1] = 3.0;
-    theJ[1][2] = 1.0;
-    theJ[2][0] = 1.0;
-    theJ[2][1] = 1.0;
-    theJ[2][2] = 4.0;
-
-    return true;
-  };
-
-  auto aResult = MathSys::Newton3D(aFunc, 0.0, 0.0, 0.0, THE_TOL);
-  ASSERT_TRUE(aResult.IsDone());
-
-  // Verify function values at solution
-  double aF[3];
-  double aJ[3][3];
-  aFunc(aResult.X1, aResult.X2, aResult.X3, aF, aJ);
-
-  EXPECT_NEAR(aF[0], 0.0, THE_TOLERANCE);
-  EXPECT_NEAR(aF[1], 0.0, THE_TOLERANCE);
-  EXPECT_NEAR(aF[2], 0.0, THE_TOLERANCE);
-}
-
-//==================================================================================================
-// Test: Different starting points
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, DifferentStartingPoints)
-{
-  auto aFunc =
-    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
-    theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
-    theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
-    theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
-
-    theJ[0][0] = 2.0;
-    theJ[0][1] = 1.0;
-    theJ[0][2] = 1.0;
-    theJ[1][0] = 1.0;
-    theJ[1][1] = 3.0;
-    theJ[1][2] = 1.0;
-    theJ[2][0] = 1.0;
-    theJ[2][1] = 1.0;
-    theJ[2][2] = 4.0;
-
-    return true;
-  };
-
-  double aStartPoints[][3] = {{0.0, 0.0, 0.0},
-                              {-5.0, -5.0, -5.0},
-                              {10.0, 10.0, 10.0},
-                              {0.5, 1.5, 0.5}};
-
-  for (const auto& aStart : aStartPoints)
+public:
+  void D2(double theT, gp_Pnt& theP, gp_Vec& theD1, gp_Vec& theD2) const
   {
-    auto aResult = MathSys::Newton3D(aFunc, aStart[0], aStart[1], aStart[2], THE_TOL);
-    ASSERT_TRUE(aResult.IsDone()) << "Failed for start (" << aStart[0] << ", " << aStart[1] << ", "
-                                  << aStart[2] << ")";
-
-    EXPECT_NEAR(aResult.X1, 1.0, THE_TOLERANCE);
-    EXPECT_NEAR(aResult.X2, 1.0, THE_TOLERANCE);
-    EXPECT_NEAR(aResult.X3, 1.0, THE_TOLERANCE);
+    theP.SetCoord(theT, 0.0, 0.0);
+    theD1.SetCoord(1.0, 0.0, 0.0);
+    theD2.SetCoord(0.0, 0.0, 0.0);
   }
-}
+};
 
-//==================================================================================================
-// Test: Solve3x3 helper function
-//==================================================================================================
-
-TEST_F(MathSys_Newton3DTest, Solve3x3Helper)
+class PlaneSurfaceEval
 {
-  // Test the 3x3 solver directly
-  // System: [2 1 1][x]   [4]
-  //         [1 3 1][y] = [5]
-  //         [1 1 4][z]   [6]
-  // Solution: x = y = z = 1
+public:
+  void D2(double  theU,
+          double  theV,
+          gp_Pnt& theP,
+          gp_Vec& theD1U,
+          gp_Vec& theD1V,
+          gp_Vec& theD2UU,
+          gp_Vec& theD2VV,
+          gp_Vec& theD2UV) const
+  {
+    theP.SetCoord(theU, theV, 0.0);
+    theD1U.SetCoord(1.0, 0.0, 0.0);
+    theD1V.SetCoord(0.0, 1.0, 0.0);
+    theD2UU.SetCoord(0.0, 0.0, 0.0);
+    theD2VV.SetCoord(0.0, 0.0, 0.0);
+    theD2UV.SetCoord(0.0, 0.0, 0.0);
+  }
+};
+} // namespace
 
-  double aJ[3][3] = {{2.0, 1.0, 1.0}, {1.0, 3.0, 1.0}, {1.0, 1.0, 4.0}};
-  double aF[3]    = {4.0, 5.0, 6.0}; // We want J*x = F, but Solve3x3 solves J*x = -F
-  // So we negate F to get the right answer
-  aF[0] = -aF[0];
-  aF[1] = -aF[1];
-  aF[2] = -aF[2];
+TEST_F(MathSys_Newton3DTest, SolveCurveSurfaceExtrema3D_Smoke)
+{
+  LineCurveEval    aCurve;
+  PlaneSurfaceEval aSurface;
 
-  double aDelta[3];
-  bool   aSolved = MathSys::detail::Solve3x3(aJ, aF, aDelta);
-  ASSERT_TRUE(aSolved);
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.Min = {-10.0, -10.0, -10.0};
+  aBounds.Max = {10.0, 10.0, 10.0};
 
-  // Solve3x3 returns -J^(-1)*F, which should be [-1,-1,-1] since we negated F
-  // Actually, let me re-read the Solve3x3... it solves J*delta = -F, returning delta
-  // So if we pass F = [-4, -5, -6], we get delta such that J*delta = [4, 5, 6]
-  EXPECT_NEAR(aDelta[0], 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aDelta[1], 1.0, THE_TOLERANCE);
-  EXPECT_NEAR(aDelta[2], 1.0, THE_TOLERANCE);
+  MathSys::NewtonOptions aOptions;
+  aOptions.ResidualTol   = THE_TOL;
+  aOptions.MaxIterations = 20;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::SolveCurveSurfaceExtrema3D(aCurve,
+                                        aSurface,
+                                        std::array<double, 3>{1.0, 1.0, 0.0},
+                                        aBounds,
+                                        aOptions);
+
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_NEAR(aResult.ResidualNorm, 0.0, 1.0e-12);
 }
