@@ -161,7 +161,7 @@ void ExtremaPS_SurfaceOfRevolution::initCache()
   if (!aFoundXDir)
   {
     // All curve points are on axis - use a generic perpendicular direction
-    // Check if axis is nearly aligned with Z (|Z| ≈ 1 within angular precision)
+    // Check if axis is nearly aligned with Z (|Z| ~= 1 within angular precision)
     if (1.0 - std::abs(myAxisZ) > Precision::Angular())
     {
       // Axis is not Z-aligned, cross with Z to get perpendicular

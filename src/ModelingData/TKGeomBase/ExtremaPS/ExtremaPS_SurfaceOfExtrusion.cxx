@@ -95,9 +95,9 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfExtrusion::Perform(
   }
 
   // For extrusion surfaces, the correct distance formula is:
-  // dist²(u) = |C(u) - P|² - ((C(u) - P)·D)²
+  // dist^2(u) = |C(u) - P|^2 - ((C(u) - P).D)^2
   // This is the squared perpendicular distance from P to the line through C(u) with direction D.
-  // The optimal V for each u is: V(u) = (P - C(u))·D
+  // The optimal V for each u is: V(u) = (P - C(u)).D
 
   // Functor class for MathOpt::Brent
   struct DistanceFunc
