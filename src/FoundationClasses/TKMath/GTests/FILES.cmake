@@ -80,6 +80,7 @@ set(OCCT_TKMath_GTests_FILES
   # MathPoly tests
   MathPoly_Test.cxx
   MathPoly_Comparison_Test.cxx
+  MathPoly_Laguerre_Test.cxx
   # MathLin tests
   MathLin_Test.cxx
   MathLin_Comparison_Test.cxx
