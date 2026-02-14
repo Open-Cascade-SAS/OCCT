@@ -462,7 +462,7 @@ private:
     const double aCosU1 = aPerpDir.Dot(aXDir1);
     const double aSinU1 = aPerpDir.Dot(aYDir1);
     const double aU1_near = std::atan2(aSinU1, aCosU1);
-    const double aU1_far  = normalizeAngle(aU1_near + M_PI);
+    const double aU1_far  = ExtremaSS::NormalizeAngle(aU1_near + M_PI);
 
     // Similarly for torus 2 (but opposite direction)
     const gp_Dir aXDir2 = myTorus2.XAxis().Direction();
@@ -470,7 +470,7 @@ private:
     const double aCosU2 = -aPerpDir.Dot(aXDir2);
     const double aSinU2 = -aPerpDir.Dot(aYDir2);
     const double aU2_near = std::atan2(aSinU2, aCosU2);
-    const double aU2_far  = normalizeAngle(aU2_near + M_PI);
+    const double aU2_far  = ExtremaSS::NormalizeAngle(aU2_near + M_PI);
 
     // Now we have 4 combinations of (U1, U2) to check
     // For each, the problem is 2D over (V1, V2)
@@ -546,8 +546,8 @@ private:
 
     if (aSearchMax)
     {
-      const double aV1_far = normalizeAngle(aV1_near + M_PI);
-      const double aV2_far = normalizeAngle(aV2_near + M_PI);
+      const double aV1_far = ExtremaSS::NormalizeAngle(aV1_near + M_PI);
+      const double aV2_far = ExtremaSS::NormalizeAngle(aV2_near + M_PI);
       const double aMaxDist = aCenterDist + myMinorRadius1 + myMinorRadius2;
       addExtremum(theU1, aV1_far, theU2, aV2_far, aMaxDist * aMaxDist, false, theTol);
     }
@@ -675,8 +675,8 @@ private:
         }
 
         // Also check maximum (opposite V values)
-        const double aV1_opp = normalizeAngle(aV1 + M_PI);
-        const double aV2_opp = normalizeAngle(aV2 + M_PI);
+        const double aV1_opp = ExtremaSS::NormalizeAngle(aV1 + M_PI);
+        const double aV2_opp = ExtremaSS::NormalizeAngle(aV2 + M_PI);
         const double aV1_max = std::clamp(aV1_opp, aV1Min, aV1Max);
         const double aV2_max = std::clamp(aV2_opp, aV2Min, aV2Max);
         const gp_Pnt aP1_max = Value1(aU1, aV1_max);
@@ -987,18 +987,6 @@ private:
     {
       addExtremum(theFixedU1, theFixedV1, aBestMaxU2, aBestMaxV2, aMaxSqDist, false, theTol);
     }
-  }
-
-  //! Normalize angle to [0, 2*PI).
-  static double normalizeAngle(double theAngle)
-  {
-    constexpr double aTwoPi = 2.0 * M_PI;
-    double aResult = std::fmod(theAngle, aTwoPi);
-    if (aResult < 0.0)
-    {
-      aResult += aTwoPi;
-    }
-    return aResult;
   }
 
   //! Add extremum to result if valid and not duplicate.

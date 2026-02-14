@@ -21,6 +21,7 @@
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
 
+#include <algorithm>
 #include <cmath>
 #include <limits>
 
@@ -71,30 +72,6 @@ constexpr double THE_CONE_APEX_TOLERANCE = Precision::Angular();
 
 //! Relative tolerance for distance comparison in sorting/filtering.
 constexpr double THE_RELATIVE_TOLERANCE = Precision::Confusion();
-
-//! Ratio of cell size for Newton search expansion.
-constexpr double THE_CELL_EXPAND_RATIO = 0.1;
-
-//! Ratio of distance for scaling tolerance in cell search.
-constexpr double THE_DISTANCE_SCALE_RATIO = 0.1;
-
-//! Threshold for skipping max candidates that are clearly worse.
-constexpr double THE_MAX_SKIP_THRESHOLD = 0.9;
-
-//! Threshold for refined distance comparison (slightly less than 1.0).
-constexpr double THE_REFINED_DIST_THRESHOLD = 0.99;
-
-//! Relaxation factor for gradient-based zero detection.
-constexpr double THE_GRADIENT_TOL_FACTOR = 1000.0;
-
-//! Multiplier for Newton retry tolerance when initial Newton fails.
-constexpr double THE_NEWTON_RETRY_TOL_FACTOR = 10.0;
-
-//! Maximum number of Newton iterations for optimization.
-constexpr int THE_MAX_NEWTON_ITERATIONS = 50;
-
-//! Maximum number of Golden section iterations.
-constexpr int THE_MAX_GOLDEN_ITERATIONS = 50;
 
 //! Default number of samples for grid-based surfaces (per direction).
 constexpr int THE_DEFAULT_NB_SAMPLES = 20;
@@ -298,6 +275,37 @@ struct Result
 //==================================================================================================
 //! @name Utility Functions
 //==================================================================================================
+
+//! @brief Normalize angle to [0, 2*PI) range.
+//! @param theAngle angle in radians
+//! @return normalized angle in [0, 2*PI)
+inline double NormalizeAngle(double theAngle)
+{
+  double aResult = std::fmod(theAngle, THE_TWO_PI);
+  if (aResult < 0.0)
+  {
+    aResult += THE_TWO_PI;
+  }
+  return aResult;
+}
+
+//! @brief Safe arc cosine with clamping to avoid NaN.
+//! Clamps the input to [-1, 1] range before computing acos.
+//! @param theValue value to compute acos of
+//! @return arc cosine in [0, PI]
+inline double SafeAcos(double theValue)
+{
+  return std::acos(std::clamp(theValue, -1.0, 1.0));
+}
+
+//! @brief Safe arc sine with clamping to avoid NaN.
+//! Clamps the input to [-1, 1] range before computing asin.
+//! @param theValue value to compute asin of
+//! @return arc sine in [-PI/2, PI/2]
+inline double SafeAsin(double theValue)
+{
+  return std::asin(std::clamp(theValue, -1.0, 1.0));
+}
 
 //! @brief Check if a point pair is duplicate in the result.
 //! @param theResult existing result to check against

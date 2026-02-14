@@ -93,10 +93,6 @@ private:
   std::optional<ExtremaSS::Domain4D> myDomain;
   mutable ExtremaSS::Result            myResult;
   bool                                 mySwapped;
-
-  // Grid dimensions
-  int myNbSamplesU1, myNbSamplesV1;
-  int myNbSamplesU2, myNbSamplesV2;
 };
 
 #endif // _ExtremaSS_GenericPair_HeaderFile

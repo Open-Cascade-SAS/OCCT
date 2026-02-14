@@ -361,7 +361,7 @@ private:
         aMinDist = 0.0;
         // V_torus where R + r*cos(V) = R_cyl
         const double aCosV = (myCylRadius - myMajorRadius) / myMinorRadius;
-        aVTorus            = (std::abs(aCosV) <= 1.0) ? std::acos(aCosV) : 0.0;
+        aVTorus            = ExtremaSS::SafeAcos(aCosV);
       }
 
       addExtremum(0.0, aVCyl, 0.0, aVTorus, aMinDist * aMinDist, true, theTol);
@@ -706,18 +706,6 @@ private:
     }
   }
 
-  //! Normalize angle to [0, 2*PI).
-  static double normalizeAngle(double theAngle)
-  {
-    constexpr double aTwoPi = 2.0 * M_PI;
-    double aResult = std::fmod(theAngle, aTwoPi);
-    if (aResult < 0.0)
-    {
-      aResult += aTwoPi;
-    }
-    return aResult;
-  }
-
   //! Add an extremum to the result, avoiding duplicates.
   void addExtremum(double theU1,
                    double theV1,
@@ -727,9 +715,9 @@ private:
                    bool   theIsMin,
                    double theTol) const
   {
-    const double aU1 = normalizeAngle(theU1);
-    const double aU2 = normalizeAngle(theU2);
-    const double aV2 = normalizeAngle(theV2);
+    const double aU1 = ExtremaSS::NormalizeAngle(theU1);
+    const double aU2 = ExtremaSS::NormalizeAngle(theU2);
+    const double aV2 = ExtremaSS::NormalizeAngle(theV2);
 
     const double aTolSq = theTol * theTol;
     for (int i = 0; i < myResult.Extrema.Length(); ++i)

@@ -20,11 +20,7 @@ ExtremaSS_GenericPair::ExtremaSS_GenericPair(const Adaptor3d_Surface& theSurface
     : mySurface1(&theSurface1),
       mySurface2(&theSurface2),
       myDomain(std::nullopt),
-      mySwapped(false),
-      myNbSamplesU1(ExtremaSS::THE_DEFAULT_NB_SAMPLES),
-      myNbSamplesV1(ExtremaSS::THE_DEFAULT_NB_SAMPLES),
-      myNbSamplesU2(ExtremaSS::THE_DEFAULT_NB_SAMPLES),
-      myNbSamplesV2(ExtremaSS::THE_DEFAULT_NB_SAMPLES)
+      mySwapped(false)
 {
 }
 
@@ -36,11 +32,7 @@ ExtremaSS_GenericPair::ExtremaSS_GenericPair(const Adaptor3d_Surface&   theSurfa
     : mySurface1(&theSurface1),
       mySurface2(&theSurface2),
       myDomain(theDomain),
-      mySwapped(false),
-      myNbSamplesU1(ExtremaSS::THE_DEFAULT_NB_SAMPLES),
-      myNbSamplesV1(ExtremaSS::THE_DEFAULT_NB_SAMPLES),
-      myNbSamplesU2(ExtremaSS::THE_DEFAULT_NB_SAMPLES),
-      myNbSamplesV2(ExtremaSS::THE_DEFAULT_NB_SAMPLES)
+      mySwapped(false)
 {
 }
 
