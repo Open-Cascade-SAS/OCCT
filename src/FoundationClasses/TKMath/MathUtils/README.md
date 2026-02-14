@@ -16,12 +16,13 @@ The MathUtils package provides foundational utilities used by all other modern m
 
 ### Types and Configuration
 - `MathUtils_Types.hxx` - Common result types and status enums
-- `MathUtils_Config.hxx` - Solver configuration structures
+- `MathUtils_Config.hxx` - Solver configuration structures and shared Newton/line-search constants
 
 ### Core Utilities
 - `MathUtils_Core.hxx` - Mathematical constants and helper functions
 - `MathUtils_Convergence.hxx` - Convergence testing utilities
 - `MathUtils_Poly.hxx` - Polynomial evaluation and manipulation
+- `MathUtils_Domain.hxx` - 1D/2D parameter domain helpers (contains/clamp/normalize/equality checks)
 - `MathUtils_Bracket.hxx` - Root and minimum bracketing algorithms
 - `MathUtils_Gauss.hxx` - Gauss-Legendre quadrature points and weights
 - `MathUtils_Deriv.hxx` - Numerical differentiation utilities
@@ -72,12 +73,21 @@ auto result2 = MathRoot::Brent(func, 0.0, 2.0);
 ### Status Enum
 ```cpp
 enum class Status {
-  OK,           // Success
-  Failed,       // Generic failure
-  MaxIter,      // Maximum iterations reached
-  NoConvergence // Algorithm did not converge
+  OK,
+  NotConverged,
+  MaxIterations,
+  NumericalError,
+  InvalidInput,
+  InfiniteSolutions,
+  NoSolution,
+  NotPositiveDefinite,
+  Singular,
+  NonDescentDirection
 };
 ```
+
+Note: specialized `MathSys` 2D/3D/4D Newton solvers also use `MathUtils::Status`
+via `MathSys_NewtonTypes.hxx`.
 
 ### Result Types
 - `ScalarResult` - For 1D root finding results

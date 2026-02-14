@@ -36,7 +36,8 @@ enum class Status
   InfiniteSolutions,   //!< Infinite number of solutions (degenerate case)
   NoSolution,          //!< No solution exists
   NotPositiveDefinite, //!< Matrix not positive definite (for Cholesky, Newton, etc.)
-  Singular             //!< Matrix is singular or nearly singular
+  Singular,            //!< Matrix is singular or nearly singular
+  NonDescentDirection  //!< Search direction is not a descent direction for merit function
 };
 
 //! Result for scalar (1D) root finding and minimization.
