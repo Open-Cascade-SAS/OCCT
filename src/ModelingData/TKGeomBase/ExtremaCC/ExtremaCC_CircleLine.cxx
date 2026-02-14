@@ -285,9 +285,32 @@ bool ExtremaCC_CircleLine::performPlanar(double theTol) const
   }
   else
   {
-    // Line passes through circle center - infinite solutions at radius distance
-    myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
-    myResult.InfiniteSquareDistance = myCircle.Radius() * myCircle.Radius();
+    // Line passes through circle center in the plane
+    // Add 4 extrema: 2 minima (intersections along line direction)
+    // and 2 maxima (perpendicular to line direction in plane)
+    const gp_Dir& aDirL = myLine.Direction();
+    const gp_Dir& aCNorm = myCircle.Axis().Direction();
+
+    // Points along line direction (intersections - minima)
+    gp_Pnt aP1Plus = myCircle.Location().XYZ() + myCircle.Radius() * aDirL.XYZ();
+    gp_Pnt aP1Minus = myCircle.Location().XYZ() - myCircle.Radius() * aDirL.XYZ();
+    double aU1Plus = ElCLib::Parameter(myCircle, aP1Plus);
+    double aU1Minus = ElCLib::Parameter(myCircle, aP1Minus);
+    double aU2Plus = ElCLib::Parameter(myLine, aP1Plus);
+    double aU2Minus = ElCLib::Parameter(myLine, aP1Minus);
+    addSolution(aU1Plus, aU2Plus, theTol);
+    addSolution(aU1Minus, aU2Minus, theTol);
+
+    // Points perpendicular to line direction (maxima)
+    gp_Dir aPerpInPlane = aCNorm.Crossed(aDirL);
+    gp_Pnt aP2Plus = myCircle.Location().XYZ() + myCircle.Radius() * aPerpInPlane.XYZ();
+    gp_Pnt aP2Minus = myCircle.Location().XYZ() - myCircle.Radius() * aPerpInPlane.XYZ();
+    double aU1PerpPlus = ElCLib::Parameter(myCircle, aP2Plus);
+    double aU1PerpMinus = ElCLib::Parameter(myCircle, aP2Minus);
+    double aU2PerpPlus = ElCLib::Parameter(myLine, aP2Plus);
+    double aU2PerpMinus = ElCLib::Parameter(myLine, aP2Minus);
+    addSolution(aU1PerpPlus, aU2PerpPlus, theTol);
+    addSolution(aU1PerpMinus, aU2PerpMinus, theTol);
   }
 
   if (myResult.Status != ExtremaCC::Status::InfiniteSolutions)

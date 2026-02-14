@@ -14,7 +14,6 @@
 #ifndef _ExtremaCC_DistanceFunction_HeaderFile
 #define _ExtremaCC_DistanceFunction_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <MathSys_Newton2D.hxx>
@@ -37,18 +36,26 @@
 //!   J22 = dF2/du2 = C2'.C2' + (C2-C1).C2''
 //!
 //! This class provides evaluation of F and its Jacobian for 2D Newton iteration.
+//!
+//! @tparam Curve1Eval First curve evaluator type
+//! @tparam Curve2Eval Second curve evaluator type
+//!
+//! Evaluator types must provide:
+//! - gp_Pnt Value(double u) const
+//! - void D1(double u, gp_Pnt& pt, gp_Vec& d1) const
+//! - void D2(double u, gp_Pnt& pt, gp_Vec& d1, gp_Vec& d2) const
+template <typename Curve1Eval, typename Curve2Eval>
 class ExtremaCC_DistanceFunction
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructor.
-  //! @param theCurve1 first curve adaptor
-  //! @param theCurve2 second curve adaptor
-  ExtremaCC_DistanceFunction(const Adaptor3d_Curve& theCurve1,
-                             const Adaptor3d_Curve& theCurve2)
-      : myCurve1(&theCurve1),
-        myCurve2(&theCurve2)
+  //! @param theCurve1 first curve evaluator
+  //! @param theCurve2 second curve evaluator
+  ExtremaCC_DistanceFunction(const Curve1Eval& theCurve1, const Curve2Eval& theCurve2)
+      : myCurve1(theCurve1),
+        myCurve2(theCurve2)
   {
   }
 
@@ -62,11 +69,11 @@ public:
   {
     gp_Pnt aPt1;
     gp_Vec aD1_1;
-    myCurve1->D1(theU1, aPt1, aD1_1);
+    myCurve1.D1(theU1, aPt1, aD1_1);
 
     gp_Pnt aPt2;
     gp_Vec aD1_2;
-    myCurve2->D1(theU2, aPt2, aD1_2);
+    myCurve2.D1(theU2, aPt2, aD1_2);
 
     // Vector from C2 to C1
     gp_Vec aVec(aPt2, aPt1);
@@ -102,11 +109,11 @@ public:
   {
     gp_Pnt aPt1;
     gp_Vec aD1_1, aD2_1;
-    myCurve1->D2(theU1, aPt1, aD1_1, aD2_1);
+    myCurve1.D2(theU1, aPt1, aD1_1, aD2_1);
 
     gp_Pnt aPt2;
     gp_Vec aD1_2, aD2_2;
-    myCurve2->D2(theU2, aPt2, aD1_2, aD2_2);
+    myCurve2.D2(theU2, aPt2, aD1_2, aD2_2);
 
     // Vector from C2 to C1
     gp_Vec aVec12(aPt2, aPt1);
@@ -139,20 +146,20 @@ public:
   //! @return squared distance between C1(u1) and C2(u2)
   double SquareDistance(double theU1, double theU2) const
   {
-    gp_Pnt aPt1 = myCurve1->Value(theU1);
-    gp_Pnt aPt2 = myCurve2->Value(theU2);
+    gp_Pnt aPt1 = myCurve1.Value(theU1);
+    gp_Pnt aPt2 = myCurve2.Value(theU2);
     return aPt1.SquareDistance(aPt2);
   }
 
-  //! Returns the first curve.
-  const Adaptor3d_Curve& Curve1() const { return *myCurve1; }
+  //! Returns the first curve evaluator.
+  const Curve1Eval& Curve1() const { return myCurve1; }
 
-  //! Returns the second curve.
-  const Adaptor3d_Curve& Curve2() const { return *myCurve2; }
+  //! Returns the second curve evaluator.
+  const Curve2Eval& Curve2() const { return myCurve2; }
 
 private:
-  const Adaptor3d_Curve* myCurve1; //!< First curve adaptor (not owned)
-  const Adaptor3d_Curve* myCurve2; //!< Second curve adaptor (not owned)
+  const Curve1Eval& myCurve1; //!< First curve evaluator (not owned)
+  const Curve2Eval& myCurve2; //!< Second curve evaluator (not owned)
 };
 
 //! @brief 2D Newton solver for curve-curve extrema.
@@ -173,6 +180,7 @@ struct Result
 };
 
 //! Perform 2D Newton iteration for curve-curve extrema.
+//! @tparam DistanceFunctionType distance function type
 //! @param theFunc distance function
 //! @param theU1_0 initial guess on first curve
 //! @param theU2_0 initial guess on second curve
@@ -183,15 +191,16 @@ struct Result
 //! @param theTol tolerance for convergence
 //! @param theMaxIter maximum iterations
 //! @return Newton result
-inline Result Solve(const ExtremaCC_DistanceFunction& theFunc,
-                    double                            theU1_0,
-                    double                            theU2_0,
-                    double                            theU1Min,
-                    double                            theU1Max,
-                    double                            theU2Min,
-                    double                            theU2Max,
-                    double                            theTol,
-                    int                               theMaxIter = 20)
+template <typename DistanceFunctionType>
+inline Result Solve(const DistanceFunctionType& theFunc,
+                    double                      theU1_0,
+                    double                      theU2_0,
+                    double                      theU1Min,
+                    double                      theU1Max,
+                    double                      theU2Min,
+                    double                      theU2Max,
+                    double                      theTol,
+                    int                         theMaxIter = 20)
 {
   // Use MathSys::Newton2DSymmetric for the core algorithm
   auto aMathResult = MathSys::Newton2DSymmetric(theFunc,

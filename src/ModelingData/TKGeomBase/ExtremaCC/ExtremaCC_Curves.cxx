@@ -316,7 +316,19 @@ const ExtremaCC::Result& ExtremaCC_Curves::Perform(double                theTol,
   }
   else
   {
-    myImpl->performAnalytical(theTol, theMode, myResult, myDomain);
+    const ExtremaCC::Result& aPairResult =
+      myImpl->performAnalytical(theTol, theMode, myResult, myDomain);
+    // Copy results from the underlying pair if it's not a monostate case
+    if (&aPairResult != &myResult)
+    {
+      myResult.Clear();
+      myResult.Status                = aPairResult.Status;
+      myResult.InfiniteSquareDistance = aPairResult.InfiniteSquareDistance;
+      for (int i = 0; i < aPairResult.Extrema.Length(); ++i)
+      {
+        myResult.Extrema.Append(aPairResult.Extrema(i));
+      }
+    }
   }
 
   // Swap parameters back if curves were swapped

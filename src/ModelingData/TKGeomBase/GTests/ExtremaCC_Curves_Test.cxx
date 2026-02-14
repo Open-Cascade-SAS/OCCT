@@ -26,9 +26,7 @@
 #include <gp_Elips.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
-#include <TColgp_Array1OfPnt.hxx>
-#include <TColStd_Array1OfReal.hxx>
-#include <TColStd_Array1OfInteger.hxx>
+#include <NCollection_Array1.hxx>
 
 #include <cmath>
 
@@ -74,7 +72,7 @@ TEST_F(ExtremaCC_CurvesTest, LineLine_Parallel)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 25.0, THE_TOL);
 }
@@ -219,17 +217,17 @@ TEST_F(ExtremaCC_CurvesTest, LineBSpline_Simple)
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
   // Create a simple BSpline curve
-  TColgp_Array1OfPnt aPoles(1, 4);
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
   aPoles(1) = gp_Pnt(0, 10, 0);
   aPoles(2) = gp_Pnt(10, 10, 0);
   aPoles(3) = gp_Pnt(20, 10, 0);
   aPoles(4) = gp_Pnt(30, 10, 0);
 
-  TColStd_Array1OfReal aKnots(1, 2);
+  NCollection_Array1<double> aKnots(1, 2);
   aKnots(1) = 0.0;
   aKnots(2) = 1.0;
 
-  TColStd_Array1OfInteger aMults(1, 2);
+  NCollection_Array1<int> aMults(1, 2);
   aMults(1) = 4;
   aMults(2) = 4;
 
@@ -250,12 +248,17 @@ TEST_F(ExtremaCC_CurvesTest, LineBSpline_Simple)
 TEST_F(ExtremaCC_CurvesTest, BezierBezier_Simple)
 {
   // Create two Bezier curves
-  TColgp_Array1OfPnt aPoles1(1, 3);
+  // Note: Bezier curves do NOT pass through interior control points!
+  // B1(t) = (1-t)²*(0,0,0) + 2t(1-t)*(5,10,0) + t²*(10,0,0)
+  // B2(t) = (1-t)²*(0,20,0) + 2t(1-t)*(5,10,0) + t²*(10,20,0)
+  // At t=0.5: B1 = (5,5,0), B2 = (5,15,0), distance² = 100
+
+  NCollection_Array1<gp_Pnt> aPoles1(1, 3);
   aPoles1(1) = gp_Pnt(0, 0, 0);
   aPoles1(2) = gp_Pnt(5, 10, 0);
   aPoles1(3) = gp_Pnt(10, 0, 0);
 
-  TColgp_Array1OfPnt aPoles2(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles2(1, 3);
   aPoles2(1) = gp_Pnt(0, 20, 0);
   aPoles2(2) = gp_Pnt(5, 10, 0);
   aPoles2(3) = gp_Pnt(10, 20, 0);
@@ -271,15 +274,16 @@ TEST_F(ExtremaCC_CurvesTest, BezierBezier_Simple)
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
-  // Both curves pass through (5, 10, 0), so minimum distance is 0
-  EXPECT_NEAR(aResult.MinSquareDistance(), 0.0, 1.0);
+  // Closest points are at t=0.5 on both curves: (5,5,0) and (5,15,0)
+  // Distance² = (5-5)² + (5-15)² + (0-0)² = 100
+  EXPECT_NEAR(aResult.MinSquareDistance(), 100.0, 1.0);
 }
 
 TEST_F(ExtremaCC_CurvesTest, CircleBezier_Mixed)
 {
   Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
 
-  TColgp_Array1OfPnt aPoles(1, 3);
+  NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(20, 0, 0);
   aPoles(2) = gp_Pnt(25, 5, 0);
   aPoles(3) = gp_Pnt(30, 0, 0);
@@ -366,7 +370,8 @@ TEST_F(ExtremaCC_CurvesTest, MoveConstructor)
 
   const ExtremaCC::Result& aResult = anExtrema2.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
+  // Parallel lines have infinite solutions
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
 }
 
@@ -387,7 +392,8 @@ TEST_F(ExtremaCC_CurvesTest, MoveAssignment)
 
   const ExtremaCC::Result& aResult = anExtrema2.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
+  // Parallel lines have infinite solutions
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
 }
 

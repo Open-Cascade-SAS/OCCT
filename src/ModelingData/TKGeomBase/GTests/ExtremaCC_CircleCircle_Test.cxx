@@ -44,8 +44,8 @@ TEST_F(ExtremaCC_CircleCircleTest, ConcentricCircles_SamePlane)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
   // Concentric circles: infinite solutions with constant distance
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   // Distance = R1 - R2 = 10 - 5 = 5
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 25.0, THE_TOL);
@@ -61,8 +61,8 @@ TEST_F(ExtremaCC_CircleCircleTest, ConcentricCircles_SameRadius)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
   // Same circles: infinite solutions with zero distance
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 0.0, THE_TOL);
 }
@@ -204,8 +204,10 @@ TEST_F(ExtremaCC_CircleCircleTest, PerpendicularPlanes_Offset)
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 2);
 
-  // Minimum: from (0,10,0) on C1 to (0,20,0) on C2 = 10
-  EXPECT_NEAR(aResult.MinSquareDistance(), 100.0, THE_TOL);
+  // Circle1: (10*cos(t1), 10*sin(t1), 0), Circle2: (10*cos(t2), 20, 10*sin(t2))
+  // Minimum at t1=atan(2), t2=0: D² = 600 - 200*sqrt(5) ≈ 152.786
+  double aExpectedMinSqDist = 600.0 - 200.0 * std::sqrt(5.0);
+  EXPECT_NEAR(aResult.MinSquareDistance(), aExpectedMinSqDist, 1.0e-6);
 }
 
 //==================================================================================================
@@ -215,7 +217,7 @@ TEST_F(ExtremaCC_CircleCircleTest, PerpendicularPlanes_Offset)
 TEST_F(ExtremaCC_CircleCircleTest, TiltedCircles_45Degrees)
 {
   gp_Circ aCircle1(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
-  gp_Circ aCircle2(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 1).Normalized()), 10.0);
+  gp_Circ aCircle2(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 1)), 10.0); // gp_Dir auto-normalizes
 
   ExtremaCC::Domain2D    aDomain{{0.0, THE_TWO_PI}, {0.0, THE_TWO_PI}};
   ExtremaCC_CircleCircle anExtrema(aCircle1, aCircle2, aDomain);

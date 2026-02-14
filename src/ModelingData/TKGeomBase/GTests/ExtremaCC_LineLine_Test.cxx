@@ -41,8 +41,8 @@ TEST_F(ExtremaCC_LineLineTest, ParallelLines_SameDirection)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
   // Parallel lines have infinite solutions
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   // Distance should be constant: sqrt(3^2 + 4^2) = 5
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 25.0, THE_TOL);
@@ -58,7 +58,7 @@ TEST_F(ExtremaCC_LineLineTest, ParallelLines_OppositeDirection)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 25.0, THE_TOL);
 }
@@ -74,7 +74,7 @@ TEST_F(ExtremaCC_LineLineTest, ParallelLines_ZeroDistance)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 0.0, THE_TOL);
 }
@@ -176,9 +176,10 @@ TEST_F(ExtremaCC_LineLineTest, SkewLines_OffsetOrigins)
   ASSERT_EQ(aResult.NbExt(), 1);
 
   // Minimum distance is Z offset = 4
+  // Line2: (10, 3+t2, 4), perpendicular to Line1 dir requires 3+t2=0, so t2=-3
   EXPECT_NEAR(aResult[0].SquareDistance, 16.0, THE_TOL);
   EXPECT_NEAR(aResult[0].Parameter1, 10.0, THE_TOL);
-  EXPECT_NEAR(aResult[0].Parameter2, 3.0, THE_TOL);
+  EXPECT_NEAR(aResult[0].Parameter2, -3.0, THE_TOL);
 }
 
 TEST_F(ExtremaCC_LineLineTest, SkewLines_3D)
@@ -258,8 +259,11 @@ TEST_F(ExtremaCC_LineLineTest, VerifyClosestPoints_Skew)
   ASSERT_EQ(aResult.NbExt(), 1);
 
   // Verify points
+  // Line1: (t1, 0, 0), Line2: (5, 3+t2, 4)
+  // Perpendicular conditions: t1=5, t2=-3
+  // So P1=(5,0,0), P2=(5, 3+(-3), 4)=(5,0,4)
   gp_Pnt aExpectedP1(5, 0, 0);
-  gp_Pnt aExpectedP2(5, 3, 4);
+  gp_Pnt aExpectedP2(5, 0, 4);
 
   EXPECT_NEAR(aResult[0].Point1.X(), aExpectedP1.X(), THE_TOL);
   EXPECT_NEAR(aResult[0].Point1.Y(), aExpectedP1.Y(), THE_TOL);
@@ -269,9 +273,10 @@ TEST_F(ExtremaCC_LineLineTest, VerifyClosestPoints_Skew)
   EXPECT_NEAR(aResult[0].Point2.Y(), aExpectedP2.Y(), THE_TOL);
   EXPECT_NEAR(aResult[0].Point2.Z(), aExpectedP2.Z(), THE_TOL);
 
-  // Verify distance consistency
+  // Verify distance consistency: only Z difference of 4
   double aComputedDist = aResult[0].Point1.SquareDistance(aResult[0].Point2);
   EXPECT_NEAR(aResult[0].SquareDistance, aComputedDist, THE_TOL);
+  EXPECT_NEAR(aResult[0].SquareDistance, 16.0, THE_TOL);
 }
 
 TEST_F(ExtremaCC_LineLineTest, VerifyClosestPoints_Intersecting)

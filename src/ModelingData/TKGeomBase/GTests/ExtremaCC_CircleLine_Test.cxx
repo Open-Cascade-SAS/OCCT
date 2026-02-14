@@ -46,8 +46,8 @@ TEST_F(ExtremaCC_CircleLineTest, LineThroughCenter_Perpendicular)
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.IsDone());
   // All points on circle are equidistant from line (R=10)
+  ASSERT_TRUE(aResult.IsInfinite());
   EXPECT_EQ(aResult.Status, ExtremaCC::Status::InfiniteSolutions);
   EXPECT_NEAR(aResult.InfiniteSquareDistance, 100.0, THE_TOL); // R^2
 }

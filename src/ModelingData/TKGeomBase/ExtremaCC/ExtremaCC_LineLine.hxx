@@ -140,14 +140,32 @@ public:
 
       if (aOutside1 || aOutside2)
       {
-        // Extremum is outside bounds - no interior solution
-        myResult.Status = ExtremaCC::Status::OK;
-        return myResult;
+        // Extremum is outside bounds - find boundary extremum
+        // Clamp parameters and recompute the closest point
+        aU1 = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1));
+        // Recompute optimal u2 for clamped u1
+        gp_Pnt aClampedP1 = ElCLib::Value(aU1, myLine1);
+        aU2 = ElCLib::Parameter(myLine2, aClampedP1);
+        aU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
+        // Recompute optimal u1 for possibly clamped u2
+        gp_Pnt aClampedP2 = ElCLib::Value(aU2, myLine2);
+        double aU1New = ElCLib::Parameter(myLine1, aClampedP2);
+        aU1New = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1New));
+        // If u1 changed, update u2 again
+        if (std::abs(aU1New - aU1) > theTol)
+        {
+          aU1 = aU1New;
+          aClampedP1 = ElCLib::Value(aU1, myLine1);
+          aU2 = ElCLib::Parameter(myLine2, aClampedP1);
+          aU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
+        }
       }
-
-      // Clamp to bounds
-      aU1 = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1));
-      aU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
+      else
+      {
+        // Clamp to bounds (no-op if already inside)
+        aU1 = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1));
+        aU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
+      }
     }
 
     // Compute points on lines

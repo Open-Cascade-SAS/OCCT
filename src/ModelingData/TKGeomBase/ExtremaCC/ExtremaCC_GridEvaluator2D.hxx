@@ -14,11 +14,9 @@
 #ifndef _ExtremaCC_GridEvaluator2D_HeaderFile
 #define _ExtremaCC_GridEvaluator2D_HeaderFile
 
-#include <Adaptor3d_Curve.hxx>
 #include <ExtremaCC.hxx>
 #include <ExtremaCC_DistanceFunction.hxx>
 #include <gp_Vec.hxx>
-#include <math_Vector.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Vector.hxx>
@@ -28,7 +26,7 @@
 #include <cmath>
 #include <limits>
 
-//! @brief Grid-based curve-curve extrema computation class.
+//! @brief Template grid-based curve-curve extrema computation class.
 //!
 //! Provides grid-based extrema finding algorithm for two curves.
 //! The 2D grid samples (u1, u2) parameter space where:
@@ -38,14 +36,15 @@
 //! Algorithm:
 //! 1. Build 2D grid of curve points and derivatives
 //! 2. Scan grid to find candidate cells (gradient sign changes)
-//! 3. Newton refinement on each candidate using ExtremaCC_Newton::Solve
+//! 3. Newton refinement on each candidate
 //!
-//! All temporary vectors are stored as mutable fields and reused via Clear()
-//! to avoid repeated heap allocations.
+//! @tparam Curve1Eval Evaluator type for first curve (must have Value, D1, Domain)
+//! @tparam Curve2Eval Evaluator type for second curve
+template <typename Curve1Eval, typename Curve2Eval>
 class ExtremaCC_GridEvaluator2D
 {
 public:
-  //! Cached grid point with pre-computed data for first curve.
+  //! Cached grid point with pre-computed data.
   struct CurvePoint
   {
     double U;     //!< Parameter value
@@ -64,105 +63,49 @@ public:
     double GradMag; //!< Gradient magnitude (smaller = closer to extremum)
   };
 
-  //! Default constructor.
-  ExtremaCC_GridEvaluator2D() = default;
-
-  //! @brief Build grid for first curve.
-  //! @param theCurve curve adaptor
-  //! @param theParams parameter values
-  void BuildGrid1(const Adaptor3d_Curve& theCurve, const math_Vector& theParams)
+  //! Constructor with two curve evaluators and domain.
+  ExtremaCC_GridEvaluator2D(const Curve1Eval&           theCurve1,
+                            const Curve2Eval&           theCurve2,
+                            const ExtremaCC::Domain2D& theDomain)
+      : myCurve1(theCurve1),
+        myCurve2(theCurve2),
+        myDomain(theDomain)
   {
-    const int aNb = theParams.Length();
-    myGrid1.Resize(0, aNb - 1, false);
-
-    for (int i = 0; i < aNb; ++i)
-    {
-      double aU = theParams(theParams.Lower() + i);
-      gp_Pnt aPt;
-      gp_Vec aD1;
-      theCurve.D1(aU, aPt, aD1);
-
-      myGrid1(i).U     = aU;
-      myGrid1(i).Point = aPt;
-      myGrid1(i).D1    = aD1;
-    }
   }
 
-  //! @brief Build grid for second curve.
-  //! @param theCurve curve adaptor
-  //! @param theParams parameter values
-  void BuildGrid2(const Adaptor3d_Curve& theCurve, const math_Vector& theParams)
-  {
-    const int aNb = theParams.Length();
-    myGrid2.Resize(0, aNb - 1, false);
-
-    for (int i = 0; i < aNb; ++i)
-    {
-      double aU = theParams(theParams.Lower() + i);
-      gp_Pnt aPt;
-      gp_Vec aD1;
-      theCurve.D1(aU, aPt, aD1);
-
-      myGrid2(i).U     = aU;
-      myGrid2(i).Point = aPt;
-      myGrid2(i).D1    = aD1;
-    }
-  }
-
-  //! Returns the cached grid for first curve.
-  const NCollection_Array1<CurvePoint>& Grid1() const { return myGrid1; }
-
-  //! Returns the cached grid for second curve.
-  const NCollection_Array1<CurvePoint>& Grid2() const { return myGrid2; }
-
-  //! Returns mutable reference to the result for post-processing.
-  ExtremaCC::Result& Result() const { return myResult; }
-
-  //! @brief Perform extrema computation using cached grids (interior only).
-  //!
-  //! @param theCurve1 first curve adaptor
-  //! @param theCurve2 second curve adaptor
-  //! @param theDomain 2D parameter domain
+  //! @brief Perform extrema computation.
+  //! @param theResult result storage
   //! @param theTol tolerance
   //! @param theMode search mode
-  //! @return const reference to result with interior extrema only
-  [[nodiscard]] const ExtremaCC::Result& Perform(const Adaptor3d_Curve&    theCurve1,
-                                                 const Adaptor3d_Curve&    theCurve2,
-                                                 const ExtremaCC::Domain2D& theDomain,
-                                                 double                    theTol,
-                                                 ExtremaCC::SearchMode     theMode) const
+  void Perform(ExtremaCC::Result&    theResult,
+               double                theTol,
+               ExtremaCC::SearchMode theMode) const
   {
-    myResult.Clear();
+    theResult.Clear();
+
+    // Build grids
+    buildGrids();
 
     // Full grid scan + refinement
     scanGrid(theTol, theMode);
-    refineCandidates(theCurve1, theCurve2, theDomain, theTol, theMode);
-    addGridMinFallback(theCurve1, theCurve2, theDomain, theTol, theMode);
+    refineCandidates(theResult, theTol, theMode);
+    addGridMinFallback(theResult, theTol, theMode);
 
-    if (!myResult.Extrema.IsEmpty())
+    if (!theResult.Extrema.IsEmpty())
     {
-      myResult.Status = ExtremaCC::Status::OK;
+      theResult.Status = ExtremaCC::Status::OK;
     }
-    return myResult;
-  }
-
-  //! @brief Build uniform parameter grid.
-  //! @return math_Vector with 1-based indexing
-  static math_Vector BuildUniformParams(double theMin, double theMax, int theNbSamples)
-  {
-    math_Vector  aParams(1, theNbSamples);
-    const double aStep = (theMax - theMin) / (theNbSamples - 1);
-
-    for (int i = 1; i <= theNbSamples; ++i)
-    {
-      aParams(i) = theMin + (i - 1) * aStep;
-    }
-    aParams(theNbSamples) = theMax; // Ensure exact endpoint
-
-    return aParams;
   }
 
 private:
+  //! Pre-computed gradient data for a grid cell point.
+  struct GridCellData
+  {
+    double F1;   //!< Gradient component F1 = (C1-C2).C1'
+    double F2;   //!< Gradient component F2 = (C2-C1).C2'
+    double Dist; //!< Squared distance ||C1-C2||^2
+  };
+
   //! Entry for sorting candidates.
   struct SortEntry
   {
@@ -171,13 +114,52 @@ private:
     double GradMag;
   };
 
-  //! Pre-computed gradient data for a grid cell point.
-  struct GridCellData
+  //! @brief Build grids for both curves.
+  void buildGrids() const
   {
-    double F1;   //!< Gradient component F1 = (C1-C2).C1'
-    double F2;   //!< Gradient component F2 = (C2-C1).C2'
-    double Dist; //!< Squared distance ||C1-C2||^2
-  };
+    // Determine grid size based on domain extent
+    constexpr int aNbSamples = 32;
+
+    const double aU1Min  = myDomain.Curve1.Min;
+    const double aU1Max  = myDomain.Curve1.Max;
+    const double aU2Min  = myDomain.Curve2.Min;
+    const double aU2Max  = myDomain.Curve2.Max;
+    const double aStep1  = (aU1Max - aU1Min) / (aNbSamples - 1);
+    const double aStep2  = (aU2Max - aU2Min) / (aNbSamples - 1);
+
+    myGrid1.Resize(0, aNbSamples - 1, false);
+    myGrid2.Resize(0, aNbSamples - 1, false);
+
+    // Build grid 1
+    for (int i = 0; i < aNbSamples; ++i)
+    {
+      double aU = aU1Min + i * aStep1;
+      if (i == aNbSamples - 1) aU = aU1Max;
+
+      gp_Pnt aPt;
+      gp_Vec aD1;
+      myCurve1.D1(aU, aPt, aD1);
+
+      myGrid1(i).U     = aU;
+      myGrid1(i).Point = aPt;
+      myGrid1(i).D1    = aD1;
+    }
+
+    // Build grid 2
+    for (int i = 0; i < aNbSamples; ++i)
+    {
+      double aU = aU2Min + i * aStep2;
+      if (i == aNbSamples - 1) aU = aU2Max;
+
+      gp_Pnt aPt;
+      gp_Vec aD1;
+      myCurve2.D1(aU, aPt, aD1);
+
+      myGrid2(i).U     = aU;
+      myGrid2(i).Point = aPt;
+      myGrid2(i).D1    = aD1;
+    }
+  }
 
   //! @brief Scan 2D grid to find candidate cells for extrema.
   void scanGrid(double theTol, ExtremaCC::SearchMode theMode) const
@@ -331,17 +313,15 @@ private:
   }
 
   //! @brief Refine candidates using 2D Newton's method.
-  void refineCandidates(const Adaptor3d_Curve&     theCurve1,
-                        const Adaptor3d_Curve&     theCurve2,
-                        const ExtremaCC::Domain2D& theDomain,
-                        double                     theTol,
-                        ExtremaCC::SearchMode      theMode) const
+  void refineCandidates(ExtremaCC::Result&    theResult,
+                        double                theTol,
+                        ExtremaCC::SearchMode theMode) const
   {
-    myResult.Status = ExtremaCC::Status::OK;
+    theResult.Status = ExtremaCC::Status::OK;
     myFoundRoots.Clear();
     mySortedEntries.Clear();
 
-    ExtremaCC_DistanceFunction aFunc(theCurve1, theCurve2);
+    ExtremaCC_DistanceFunction<Curve1Eval, Curve2Eval> aFunc(myCurve1, myCurve2);
 
     // Build sorted entries
     for (int c = 0; c < myCandidates.Length(); ++c)
@@ -389,10 +369,10 @@ private:
 
       double aExpand1 = (aCellU1Max - aCellU1Min) * 0.1;
       double aExpand2 = (aCellU2Max - aCellU2Min) * 0.1;
-      aCellU1Min      = std::max(theDomain.Curve1.Min, aCellU1Min - aExpand1);
-      aCellU1Max      = std::min(theDomain.Curve1.Max, aCellU1Max + aExpand1);
-      aCellU2Min      = std::max(theDomain.Curve2.Min, aCellU2Min - aExpand2);
-      aCellU2Max      = std::min(theDomain.Curve2.Max, aCellU2Max + aExpand2);
+      aCellU1Min      = std::max(myDomain.Curve1.Min, aCellU1Min - aExpand1);
+      aCellU1Max      = std::min(myDomain.Curve1.Max, aCellU1Max + aExpand1);
+      aCellU2Min      = std::max(myDomain.Curve2.Min, aCellU2Min - aExpand2);
+      aCellU2Max      = std::min(myDomain.Curve2.Max, aCellU2Max + aExpand2);
 
       // Newton iteration
       ExtremaCC_Newton::Result aNewtonRes = ExtremaCC_Newton::Solve(aFunc,
@@ -410,8 +390,8 @@ private:
 
       if (aNewtonRes.IsDone)
       {
-        aRootU1    = std::max(theDomain.Curve1.Min, std::min(theDomain.Curve1.Max, aNewtonRes.U1));
-        aRootU2    = std::max(theDomain.Curve2.Min, std::min(theDomain.Curve2.Max, aNewtonRes.U2));
+        aRootU1    = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U1));
+        aRootU2    = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.U2));
         aConverged = true;
       }
       else
@@ -452,8 +432,8 @@ private:
 
         if (aRetryRes.IsDone)
         {
-          aRootU1    = std::max(theDomain.Curve1.Min, std::min(theDomain.Curve1.Max, aRetryRes.U1));
-          aRootU2    = std::max(theDomain.Curve2.Min, std::min(theDomain.Curve2.Max, aRetryRes.U2));
+          aRootU1    = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aRetryRes.U1));
+          aRootU2    = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aRetryRes.U2));
           aConverged = true;
         }
         else
@@ -486,8 +466,8 @@ private:
       if (aSkip)
         continue;
 
-      gp_Pnt aPt1    = theCurve1.Value(aRootU1);
-      gp_Pnt aPt2    = theCurve2.Value(aRootU2);
+      gp_Pnt aPt1    = myCurve1.Value(aRootU1);
+      gp_Pnt aPt2    = myCurve2.Value(aRootU2);
       double aSqDist = aPt1.SquareDistance(aPt2);
 
       // Classify as min or max using second derivative (Hessian determinant)
@@ -508,28 +488,26 @@ private:
       anExt.Point2         = aPt2;
       anExt.SquareDistance = aSqDist;
       anExt.IsMinimum      = aIsMin;
-      myResult.Extrema.Append(anExt);
+      theResult.Extrema.Append(anExt);
 
       myFoundRoots.Append(std::make_pair(aRootU1, aRootU2));
     }
 
-    if (myResult.Extrema.IsEmpty() && myCandidates.IsEmpty())
+    if (theResult.Extrema.IsEmpty() && myCandidates.IsEmpty())
     {
-      myResult.Status = ExtremaCC::Status::NoSolution;
+      theResult.Status = ExtremaCC::Status::NoSolution;
     }
   }
 
   //! @brief Add grid minimum fallback if no results found.
-  void addGridMinFallback(const Adaptor3d_Curve&     theCurve1,
-                          const Adaptor3d_Curve&     theCurve2,
-                          const ExtremaCC::Domain2D& theDomain,
-                          double                     theTol,
-                          ExtremaCC::SearchMode      theMode) const
+  void addGridMinFallback(ExtremaCC::Result&    theResult,
+                          double                theTol,
+                          ExtremaCC::SearchMode theMode) const
   {
     if (theMode != ExtremaCC::SearchMode::Min && theMode != ExtremaCC::SearchMode::MinMax)
       return;
 
-    if (!myResult.Extrema.IsEmpty())
+    if (!theResult.Extrema.IsEmpty())
       return;
 
     // Use cached min from grid scan
@@ -538,14 +516,14 @@ private:
     const double aGridMinDist = myMinDist;
 
     // Try Newton refinement from the best grid point
-    ExtremaCC_DistanceFunction aFunc(theCurve1, theCurve2);
-    ExtremaCC_Newton::Result   aNewtonRes = ExtremaCC_Newton::Solve(aFunc,
+    ExtremaCC_DistanceFunction<Curve1Eval, Curve2Eval> aFunc(myCurve1, myCurve2);
+    ExtremaCC_Newton::Result aNewtonRes = ExtremaCC_Newton::Solve(aFunc,
                                                                    aGridMinU1,
                                                                    aGridMinU2,
-                                                                   theDomain.Curve1.Min,
-                                                                   theDomain.Curve1.Max,
-                                                                   theDomain.Curve2.Min,
-                                                                   theDomain.Curve2.Max,
+                                                                   myDomain.Curve1.Min,
+                                                                   myDomain.Curve1.Max,
+                                                                   myDomain.Curve2.Min,
+                                                                   myDomain.Curve2.Max,
                                                                    theTol);
 
     double aRefinedU1   = aGridMinU1;
@@ -554,13 +532,13 @@ private:
 
     if (aNewtonRes.IsDone)
     {
-      aRefinedU1   = std::max(theDomain.Curve1.Min, std::min(theDomain.Curve1.Max, aNewtonRes.U1));
-      aRefinedU2   = std::max(theDomain.Curve2.Min, std::min(theDomain.Curve2.Max, aNewtonRes.U2));
+      aRefinedU1   = std::max(myDomain.Curve1.Min, std::min(myDomain.Curve1.Max, aNewtonRes.U1));
+      aRefinedU2   = std::max(myDomain.Curve2.Min, std::min(myDomain.Curve2.Max, aNewtonRes.U2));
       aRefinedDist = aFunc.SquareDistance(aRefinedU1, aRefinedU2);
     }
 
-    gp_Pnt aPt1 = theCurve1.Value(aRefinedU1);
-    gp_Pnt aPt2 = theCurve2.Value(aRefinedU2);
+    gp_Pnt aPt1 = myCurve1.Value(aRefinedU1);
+    gp_Pnt aPt2 = myCurve2.Value(aRefinedU2);
 
     ExtremaCC::ExtremumResult anExt;
     anExt.Parameter1     = aRefinedU1;
@@ -569,20 +547,22 @@ private:
     anExt.Point2         = aPt2;
     anExt.SquareDistance = aRefinedDist;
     anExt.IsMinimum      = true;
-    myResult.Extrema.Append(anExt);
-    myResult.Status = ExtremaCC::Status::OK;
+    theResult.Extrema.Append(anExt);
+    theResult.Status = ExtremaCC::Status::OK;
   }
 
 private:
-  NCollection_Array1<CurvePoint> myGrid1; //!< Cached grid for first curve
-  NCollection_Array1<CurvePoint> myGrid2; //!< Cached grid for second curve
+  const Curve1Eval&   myCurve1; //!< First curve evaluator
+  const Curve2Eval&   myCurve2; //!< Second curve evaluator
+  ExtremaCC::Domain2D myDomain; //!< Parameter domain
 
   // Mutable cached temporaries
-  mutable ExtremaCC::Result                               myResult;        //!< Reusable result
-  mutable NCollection_Vector<Candidate>                   myCandidates;    //!< Candidates from grid
-  mutable NCollection_Vector<std::pair<double, double>>   myFoundRoots;    //!< Found roots for dedup
-  mutable NCollection_Vector<SortEntry>                   mySortedEntries; //!< Sorted candidates
-  mutable NCollection_Array2<GridCellData>                myGridData;      //!< Pre-computed F1/F2/Dist
+  mutable NCollection_Array1<CurvePoint>              myGrid1;         //!< Cached grid for first curve
+  mutable NCollection_Array1<CurvePoint>              myGrid2;         //!< Cached grid for second curve
+  mutable NCollection_Vector<Candidate>               myCandidates;    //!< Candidates from grid
+  mutable NCollection_Vector<std::pair<double, double>> myFoundRoots;  //!< Found roots for dedup
+  mutable NCollection_Vector<SortEntry>               mySortedEntries; //!< Sorted candidates
+  mutable NCollection_Array2<GridCellData>            myGridData;      //!< Pre-computed F1/F2/Dist
 
   // Cached global min/max indices from last scanGrid
   mutable int    myMinI = 0, myMinJ = 0;
