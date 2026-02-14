@@ -32,14 +32,14 @@ public:
 
   ExtremaCC_CircleHyperbola(const gp_Circ& theCircle, const gp_Hypr& theHyperbola);
 
-  ExtremaCC_CircleHyperbola(const gp_Circ&              theCircle,
-                            const gp_Hypr&              theHyperbola,
+  ExtremaCC_CircleHyperbola(const gp_Circ&             theCircle,
+                            const gp_Hypr&             theHyperbola,
                             const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_CircleHyperbola(const ExtremaCC_CircleHyperbola&) = delete;
+  ExtremaCC_CircleHyperbola(const ExtremaCC_CircleHyperbola&)            = delete;
   ExtremaCC_CircleHyperbola& operator=(const ExtremaCC_CircleHyperbola&) = delete;
-  ExtremaCC_CircleHyperbola(ExtremaCC_CircleHyperbola&&) = default;
-  ExtremaCC_CircleHyperbola& operator=(ExtremaCC_CircleHyperbola&&) = default;
+  ExtremaCC_CircleHyperbola(ExtremaCC_CircleHyperbola&&)                 = default;
+  ExtremaCC_CircleHyperbola& operator=(ExtremaCC_CircleHyperbola&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -50,11 +50,12 @@ public:
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
   const gp_Circ& Circle() const { return myCircle; }
+
   const gp_Hypr& Hyperbola() const { return myHyperbola; }
 
 private:
-  gp_Circ                             myCircle;
-  gp_Hypr                             myHyperbola;
+  gp_Circ                            myCircle;
+  gp_Hypr                            myHyperbola;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };

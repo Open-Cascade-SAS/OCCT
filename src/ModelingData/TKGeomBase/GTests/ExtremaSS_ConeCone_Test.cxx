@@ -43,7 +43,7 @@ TEST_F(ExtremaSS_ConeConeTest, SeparatedCones_PerpendicularAxes)
   const gp_Ax3  aCone2Axis(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone2(aCone2Axis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -65,11 +65,11 @@ TEST_F(ExtremaSS_ConeConeTest, CoaxialCones_SameDirection)
   const gp_Ax3  aCone2Axis(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1));
   const gp_Cone aCone2(aCone2Axis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_ConeConeTest, CoaxialCones_OppositeDirections)
@@ -81,11 +81,11 @@ TEST_F(ExtremaSS_ConeConeTest, CoaxialCones_OppositeDirections)
   const gp_Ax3  aCone2Axis(gp_Pnt(0, 0, 10), gp_Dir(0, 0, -1));
   const gp_Cone aCone2(aCone2Axis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_ConeConeTest, ParallelAxes_Separated)
@@ -100,7 +100,7 @@ TEST_F(ExtremaSS_ConeConeTest, ParallelAxes_Separated)
   const gp_Ax3  aCone2Axis(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cone aCone2(aCone2Axis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -120,7 +120,7 @@ TEST_F(ExtremaSS_ConeConeTest, IntersectingCones_MinDistanceZero)
   const gp_Ax3  aCone2Axis(gp_Pnt(2, 0, 2), gp_Dir(0, 0, 1));
   const gp_Cone aCone2(aCone2Axis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -139,7 +139,7 @@ TEST_F(ExtremaSS_ConeConeTest, PerpendicularAxes_SkewCones)
   const gp_Ax3  aCone2Axis(gp_Pnt(10, 0, 5), gp_Dir(1, 0, 0));
   const gp_Cone aCone2(aCone2Axis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -187,7 +187,7 @@ TEST_F(ExtremaSS_ConeConeTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Ax3  aCone2Axis(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone2(aCone2Axis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -211,7 +211,7 @@ TEST_F(ExtremaSS_ConeConeTest, DifferentSemiAngles)
   const gp_Ax3  aCone2Axis(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cone aCone2(aCone2Axis, M_PI / 3.0, 0.0); // 60 degrees
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -226,7 +226,7 @@ TEST_F(ExtremaSS_ConeConeTest, SmallSemiAngles_NearCylinders)
   const gp_Ax3  aCone2Axis(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
   const gp_Cone aCone2(aCone2Axis, 0.01, 2.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -241,7 +241,7 @@ TEST_F(ExtremaSS_ConeConeTest, LargeSemiAngles_WideOpening)
   const gp_Ax3  aCone2Axis(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone2(aCone2Axis, M_PI / 3.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -256,7 +256,7 @@ TEST_F(ExtremaSS_ConeConeTest, ConesWithNonZeroRefRadius)
   const gp_Ax3  aCone2Axis(gp_Pnt(20, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone2(aCone2Axis, M_PI / 4.0, 2.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -272,7 +272,7 @@ TEST_F(ExtremaSS_ConeConeTest, SameApexLocation_DifferentDirections)
   const gp_Ax3  aCone2Axis(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
   const gp_Cone aCone2(aCone2Axis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_ConeCone anEval(aCone1, aCone2);
+  ExtremaSS_ConeCone       anEval(aCone1, aCone2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   if (aResult.Status == ExtremaSS::Status::OK)

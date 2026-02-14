@@ -37,7 +37,7 @@ TEST_F(ExtremaSS_SphereSphereTest, TwoSeparatedSpheres_FindsMinAndMax)
   const gp_Sphere aSphere1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -45,12 +45,12 @@ TEST_F(ExtremaSS_SphereSphereTest, TwoSeparatedSpheres_FindsMinAndMax)
 
   // Minimum distance: 10 - 2 - 3 = 5
   const double aExpectedMinDist = 5.0;
-  const double aMinSqDist = aResult.MinSquareDistance();
+  const double aMinSqDist       = aResult.MinSquareDistance();
   EXPECT_NEAR(std::sqrt(aMinSqDist), aExpectedMinDist, THE_TOL);
 
   // Maximum distance: 10 + 2 + 3 = 15
   const double aExpectedMaxDist = 15.0;
-  const double aMaxSqDist = aResult.MaxSquareDistance();
+  const double aMaxSqDist       = aResult.MaxSquareDistance();
   EXPECT_NEAR(std::sqrt(aMaxSqDist), aExpectedMaxDist, THE_TOL);
 
   // Check minimum extremum
@@ -88,7 +88,7 @@ TEST_F(ExtremaSS_SphereSphereTest, ConcentricSpheres_ReturnsInfiniteSolutions)
   const gp_Sphere aSphere1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -105,7 +105,7 @@ TEST_F(ExtremaSS_SphereSphereTest, TouchingSpheres_MinDistanceIsZero)
   const gp_Sphere aSphere1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -121,7 +121,7 @@ TEST_F(ExtremaSS_SphereSphereTest, IntersectingSpheres_MinDistanceIsZero)
   const gp_Sphere aSphere1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0);
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(4, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -139,7 +139,7 @@ TEST_F(ExtremaSS_SphereSphereTest, SpheresAlongDiagonal_CorrectExtrema)
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(3, 4, 0), gp_Dir(0, 0, 1)), 2.0);
   // Distance between centers = sqrt(9 + 16) = 5
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -147,12 +147,12 @@ TEST_F(ExtremaSS_SphereSphereTest, SpheresAlongDiagonal_CorrectExtrema)
 
   // Minimum distance: 5 - 1 - 2 = 2
   const double aExpectedMinDist = 2.0;
-  const double aMinSqDist = aResult.MinSquareDistance();
+  const double aMinSqDist       = aResult.MinSquareDistance();
   EXPECT_NEAR(std::sqrt(aMinSqDist), aExpectedMinDist, THE_TOL);
 
   // Maximum distance: 5 + 1 + 2 = 8
   const double aExpectedMaxDist = 8.0;
-  const double aMaxSqDist = aResult.MaxSquareDistance();
+  const double aMaxSqDist       = aResult.MaxSquareDistance();
   EXPECT_NEAR(std::sqrt(aMaxSqDist), aExpectedMaxDist, THE_TOL);
 }
 
@@ -161,7 +161,7 @@ TEST_F(ExtremaSS_SphereSphereTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Sphere aSphere1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -177,7 +177,7 @@ TEST_F(ExtremaSS_SphereSphereTest, SearchModeMax_OnlyFindsMaximum)
   const gp_Sphere aSphere1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Max);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -195,7 +195,7 @@ TEST_F(ExtremaSS_SphereSphereTest, NestedSpheres_CorrectDistances)
   const gp_Sphere aSphere2(gp_Ax3(gp_Pnt(2, 0, 0), gp_Dir(0, 0, 1)), 3.0);
   // Center distance = 2, R1 - R2 = 7, so S2 is inside S1
 
-  ExtremaSS_SphereSphere anEval(aSphere1, aSphere2);
+  ExtremaSS_SphereSphere   anEval(aSphere1, aSphere2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

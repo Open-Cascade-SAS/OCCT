@@ -53,8 +53,8 @@ public:
   }
 
   //! Constructor with line and cone geometry and domain.
-  ExtremaCS_LineCone(const gp_Lin&                        theLine,
-                     const gp_Cone&                       theCone,
+  ExtremaCS_LineCone(const gp_Lin&                             theLine,
+                     const gp_Cone&                            theCone,
                      const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myLine(theLine),
         myCone(theCone),
@@ -81,10 +81,10 @@ public:
     else
     {
       // Default domain for line: use reasonable range based on cone size
-      const double aRefR = myCone.RefRadius();
-      const double aRange = std::max(aRefR * 10.0, 100.0);
-      aDomain.Curve.Min = -aRange;
-      aDomain.Curve.Max = aRange;
+      const double aRefR   = myCone.RefRadius();
+      const double aRange  = std::max(aRefR * 10.0, 100.0);
+      aDomain.Curve.Min    = -aRange;
+      aDomain.Curve.Max    = aRange;
       aDomain.Surface.UMin = 0.0;
       aDomain.Surface.UMax = ExtremaCS::THE_TWO_PI;
       aDomain.Surface.VMin = -aRange;
@@ -96,8 +96,8 @@ public:
     ExtremaCS_Cone aConeEval(myCone, aDomain.Surface);
 
     ExtremaCS_GridEvaluator3D<ExtremaCS_Line, ExtremaCS_Cone> aGridEval(aLineEval,
-                                                                         aConeEval,
-                                                                         aDomain);
+                                                                        aConeEval,
+                                                                        aDomain);
     aGridEval.Perform(myResult, theTol, theMode);
 
     return myResult;

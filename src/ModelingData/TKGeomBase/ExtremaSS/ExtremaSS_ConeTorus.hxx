@@ -95,8 +95,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& Perform(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -114,8 +114,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& PerformWithBoundary(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -140,11 +140,11 @@ public:
     const double aRadius = theV * mySinSemiAngle;
     const double aHeight = theV * myCosSemiAngle;
     return gp_Pnt(myConeApex.X() + aHeight * myConeAxis.X()
-                      + aRadius * (aCosU * myConeXDir.X() + aSinU * myConeYDir.X()),
+                    + aRadius * (aCosU * myConeXDir.X() + aSinU * myConeYDir.X()),
                   myConeApex.Y() + aHeight * myConeAxis.Y()
-                      + aRadius * (aCosU * myConeXDir.Y() + aSinU * myConeYDir.Y()),
+                    + aRadius * (aCosU * myConeXDir.Y() + aSinU * myConeYDir.Y()),
                   myConeApex.Z() + aHeight * myConeAxis.Z()
-                      + aRadius * (aCosU * myConeXDir.Z() + aSinU * myConeYDir.Z()));
+                    + aRadius * (aCosU * myConeXDir.Z() + aSinU * myConeYDir.Z()));
   }
 
   //! Evaluate point on torus (surface 2).
@@ -159,11 +159,11 @@ public:
     const double aSinV   = std::sin(theV);
     const double aRadius = myMajorRadius + myMinorRadius * aCosV;
     return gp_Pnt(myTorusCenter.X() + aRadius * (aCosU * myTorusXDir.X() + aSinU * myTorusYDir.X())
-                      + myMinorRadius * aSinV * myTorusAxis.X(),
+                    + myMinorRadius * aSinV * myTorusAxis.X(),
                   myTorusCenter.Y() + aRadius * (aCosU * myTorusXDir.Y() + aSinU * myTorusYDir.Y())
-                      + myMinorRadius * aSinV * myTorusAxis.Y(),
+                    + myMinorRadius * aSinV * myTorusAxis.Y(),
                   myTorusCenter.Z() + aRadius * (aCosU * myTorusXDir.Z() + aSinU * myTorusYDir.Z())
-                      + myMinorRadius * aSinV * myTorusAxis.Z());
+                    + myMinorRadius * aSinV * myTorusAxis.Z());
   }
 
   //! Check if surfaces were swapped.
@@ -204,7 +204,7 @@ private:
     myResult.Status = ExtremaSS::Status::OK;
 
     // Sample over both cone V and torus U, V
-    constexpr int aNbSamples = 36;
+    constexpr int    aNbSamples = 36;
     constexpr double aVConeMin = 0.1, aVConeMax = 50.0;
 
     double aBestMinSqDist = std::numeric_limits<double>::max();
@@ -227,8 +227,8 @@ private:
 
           for (int iTorusV = 0; iTorusV < aNbSamples; ++iTorusV)
           {
-            const double aVTorus  = 2.0 * M_PI * iTorusV / aNbSamples;
-            const gp_Pnt aPTorus  = Value2(aUTorus, aVTorus);
+            const double aVTorus = 2.0 * M_PI * iTorusV / aNbSamples;
+            const gp_Pnt aPTorus = Value2(aUTorus, aVTorus);
             const double aSqDist = aPCone.SquareDistance(aPTorus);
 
             if (aSqDist < aBestMinSqDist)
@@ -330,7 +330,7 @@ private:
     if (!myDomain.has_value())
       return;
 
-    const ExtremaSS::Domain4D&  aDom  = myDomain.value();
+    const ExtremaSS::Domain4D& aDom  = myDomain.value();
     const MathUtils::Domain2D& aDom1 = aDom.Domain1;
     const MathUtils::Domain2D& aDom2 = aDom.Domain2;
 
@@ -368,7 +368,10 @@ private:
   }
 
   //! Check a point on cone against torus.
-  void checkConePointAgainstTorus(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkConePointAgainstTorus(double                theU1,
+                                  double                theV1,
+                                  double                theTol,
+                                  ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP1 = Value1(theU1, theV1);
 
@@ -413,7 +416,10 @@ private:
   }
 
   //! Check a point on torus against cone.
-  void checkTorusPointAgainstCone(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkTorusPointAgainstCone(double                theU2,
+                                  double                theV2,
+                                  double                theTol,
+                                  ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP2 = Value2(theU2, theV2);
 
@@ -422,7 +428,7 @@ private:
     double aBestMinU1 = 0, aBestMinV1 = 1;
     double aBestMaxU1 = 0, aBestMaxV1 = 1;
 
-    constexpr int aNbSamples = 36;
+    constexpr int    aNbSamples = 36;
     constexpr double aVMin = 0.1, aVMax = 50.0;
 
     for (int i = 0; i < aNbSamples; ++i)
@@ -483,9 +489,9 @@ private:
         const double aDV1 = std::abs(anExisting.V1 - theV1);
         const double aDV2 = std::abs(anExisting.V2 - aV2);
 
-        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol) &&
-            (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol &&
-            (aDV2 < theTol || std::abs(aDV2 - 2 * M_PI) < theTol))
+        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol)
+            && (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol
+            && (aDV2 < theTol || std::abs(aDV2 - 2 * M_PI) < theTol))
         {
           return;
         }
@@ -528,17 +534,17 @@ private:
   gp_Cone  myCone;  //!< The cone
   gp_Torus myTorus; //!< The torus
 
-  std::optional<ExtremaSS::Domain4D> myDomain; //!< Optional bounded domain
+  std::optional<ExtremaSS::Domain4D> myDomain;  //!< Optional bounded domain
   bool                               mySwapped; //!< True if torus was provided first
 
   // Cached cone geometry
-  gp_Pnt myConeApex;       //!< Cone apex
-  gp_Dir myConeAxis;       //!< Cone axis
-  gp_Dir myConeXDir;       //!< Cone X direction
-  gp_Dir myConeYDir;       //!< Cone Y direction
-  double mySemiAngle;      //!< Cone semi-angle
-  double mySinSemiAngle;   //!< sin(semi-angle)
-  double myCosSemiAngle;   //!< cos(semi-angle)
+  gp_Pnt myConeApex;     //!< Cone apex
+  gp_Dir myConeAxis;     //!< Cone axis
+  gp_Dir myConeXDir;     //!< Cone X direction
+  gp_Dir myConeYDir;     //!< Cone Y direction
+  double mySemiAngle;    //!< Cone semi-angle
+  double mySinSemiAngle; //!< sin(semi-angle)
+  double myCosSemiAngle; //!< cos(semi-angle)
 
   // Cached torus geometry
   gp_Pnt myTorusCenter; //!< Torus center

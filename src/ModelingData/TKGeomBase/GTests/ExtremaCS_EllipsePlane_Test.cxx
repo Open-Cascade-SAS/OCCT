@@ -36,11 +36,11 @@ protected:
 TEST_F(ExtremaCS_EllipsePlaneTest, Parallel_AbovePlane)
 {
   // Ellipse in plane Z=5, parallel to XY plane
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -51,11 +51,11 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Parallel_AbovePlane)
 TEST_F(ExtremaCS_EllipsePlaneTest, Parallel_InPlane)
 {
   // Ellipse in XY plane
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -69,12 +69,12 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Parallel_InPlane)
 TEST_F(ExtremaCS_EllipsePlaneTest, Tilted_CenterOnPlane)
 {
   // Ellipse tilted at 45 degrees, center on plane
-  gp_Dir aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 0), aTiltedNormal);
+  gp_Dir   aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 0), aTiltedNormal);
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -87,12 +87,12 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Tilted_CenterOnPlane)
 TEST_F(ExtremaCS_EllipsePlaneTest, Tilted_CenterAbovePlane)
 {
   // Ellipse tilted, center above plane
-  gp_Dir aTiltedNormal(0, 1, 1); // gp_Dir auto-normalizes (45 degree tilt)
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 5), aTiltedNormal);
+  gp_Dir   aTiltedNormal(0, 1, 1); // gp_Dir auto-normalizes (45 degree tilt)
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 5), aTiltedNormal);
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -102,24 +102,24 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Tilted_CenterAbovePlane)
   // - Minimum distance should be positive (ellipse above plane)
   // - Minimum should be less than center height (5)
   EXPECT_GT(aResult.MinSquareDistance(), 0.0);
-  EXPECT_LT(aResult.MinSquareDistance(), 25.0);  // < 5^2
+  EXPECT_LT(aResult.MinSquareDistance(), 25.0); // < 5^2
 
   if (aResult.NbExt() >= 2)
   {
     // Maximum should be greater than center height
-    EXPECT_GT(aResult.MaxSquareDistance(), 25.0);  // > 5^2
+    EXPECT_GT(aResult.MaxSquareDistance(), 25.0); // > 5^2
   }
 }
 
 TEST_F(ExtremaCS_EllipsePlaneTest, Tilted_MajorAxisIntersects)
 {
   // Ellipse tilted so major axis intersects plane
-  gp_Dir aTiltedNormal(1, 0, 1); // 45 degree tilt around Y axis
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 2), aTiltedNormal);
-  gp_Elips anEllipse(anEllipseAx, 4.0, 1.0); // major = 4, minor = 1
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Dir   aTiltedNormal(1, 0, 1); // 45 degree tilt around Y axis
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 2), aTiltedNormal);
+  gp_Elips anEllipse(anEllipseAx, 4.0, 1.0);         // major = 4, minor = 1
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -137,11 +137,11 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Tilted_MajorAxisIntersects)
 TEST_F(ExtremaCS_EllipsePlaneTest, Perpendicular_EllipseEdgeOnPlane)
 {
   // Ellipse perpendicular to XY plane, edge touches plane
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 4), gp_Dir(1, 0, 0)); // Ellipse in YZ plane
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 4), gp_Dir(1, 0, 0)); // Ellipse in YZ plane
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -160,11 +160,11 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Perpendicular_EllipseEdgeOnPlane)
 TEST_F(ExtremaCS_EllipsePlaneTest, Perpendicular_EllipseAbovePlane)
 {
   // Ellipse perpendicular to XY plane, entirely above
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0)); // Ellipse in YZ plane
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0)); // Ellipse in YZ plane
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -187,12 +187,12 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Perpendicular_EllipseAbovePlane)
 TEST_F(ExtremaCS_EllipsePlaneTest, Orientation_MinorAxisTowardPlane)
 {
   // Ellipse tilted so minor axis points toward plane
-  gp_Dir aTiltedNormal(0, 1, 1); // 45 degree tilt
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 10), aTiltedNormal);
-  gp_Elips anEllipse(anEllipseAx, 4.0, 2.0); // major = 4, minor = 2
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Dir   aTiltedNormal(0, 1, 1); // 45 degree tilt
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 10), aTiltedNormal);
+  gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);         // major = 4, minor = 2
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -200,7 +200,7 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Orientation_MinorAxisTowardPlane)
 
   // Tilted ellipse above plane - minimum should be positive and less than center height
   EXPECT_GT(aResult.MinSquareDistance(), 0.0);
-  EXPECT_LT(aResult.MinSquareDistance(), 100.0);  // < 10^2
+  EXPECT_LT(aResult.MinSquareDistance(), 100.0); // < 10^2
 }
 
 //==================================================================================================
@@ -209,12 +209,12 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Orientation_MinorAxisTowardPlane)
 
 TEST_F(ExtremaCS_EllipsePlaneTest, SearchMode_MinOnly)
 {
-  gp_Dir aTiltedNormal(1, 0, 1);
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 5), aTiltedNormal);
+  gp_Dir   aTiltedNormal(1, 0, 1);
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 5), aTiltedNormal);
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -224,12 +224,12 @@ TEST_F(ExtremaCS_EllipsePlaneTest, SearchMode_MinOnly)
 
 TEST_F(ExtremaCS_EllipsePlaneTest, SearchMode_MaxOnly)
 {
-  gp_Dir aTiltedNormal(1, 0, 1);
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 5), aTiltedNormal);
+  gp_Dir   aTiltedNormal(1, 0, 1);
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 5), aTiltedNormal);
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -243,11 +243,11 @@ TEST_F(ExtremaCS_EllipsePlaneTest, SearchMode_MaxOnly)
 
 TEST_F(ExtremaCS_EllipsePlaneTest, Parameters_Verify)
 {
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0));
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0));
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -260,8 +260,8 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Parameters_Verify)
   EXPECT_NEAR(anExt.PointOnCurve.Distance(aExpectedEllPt), 0.0, THE_TOL);
 
   // Verify point on plane matches parameters
-  gp_Pnt aExpectedPlanePt = ElSLib::Value(anExt.ParameterOnSurfaceU,
-                                           anExt.ParameterOnSurfaceV, aPlane);
+  gp_Pnt aExpectedPlanePt =
+    ElSLib::Value(anExt.ParameterOnSurfaceU, anExt.ParameterOnSurfaceV, aPlane);
   EXPECT_NEAR(anExt.PointOnSurface.Distance(aExpectedPlanePt), 0.0, THE_TOL);
 }
 
@@ -271,16 +271,16 @@ TEST_F(ExtremaCS_EllipsePlaneTest, Parameters_Verify)
 
 TEST_F(ExtremaCS_EllipsePlaneTest, Domain_CurveRestricted)
 {
-  gp_Ax2 anEllipseAx(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0));
+  gp_Ax2   anEllipseAx(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0));
   gp_Elips anEllipse(anEllipseAx, 4.0, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln   aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
   // Restrict curve domain to upper half of ellipse
   ExtremaCS::Domain3D aDomain;
-  aDomain.Curve = {0.0, M_PI};
+  aDomain.Curve   = {0.0, M_PI};
   aDomain.Surface = {-100.0, 100.0, -100.0, 100.0};
 
-  ExtremaCS_EllipsePlane anExtrema(anEllipse, aPlane, aDomain);
+  ExtremaCS_EllipsePlane   anExtrema(anEllipse, aPlane, aDomain);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());

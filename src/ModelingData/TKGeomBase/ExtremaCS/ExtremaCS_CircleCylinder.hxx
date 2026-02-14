@@ -45,8 +45,8 @@ public:
   }
 
   //! Constructor with circle and cylinder geometry and domain.
-  ExtremaCS_CircleCylinder(const gp_Circ&                       theCircle,
-                           const gp_Cylinder&                   theCylinder,
+  ExtremaCS_CircleCylinder(const gp_Circ&                            theCircle,
+                           const gp_Cylinder&                        theCylinder,
                            const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myCircle(theCircle),
         myCylinder(theCylinder),
@@ -73,23 +73,23 @@ public:
     else
     {
       // Default domains
-      aDomain.Curve.Min = 0.0;
-      aDomain.Curve.Max = ExtremaCS::THE_TWO_PI;
+      aDomain.Curve.Min    = 0.0;
+      aDomain.Curve.Max    = ExtremaCS::THE_TWO_PI;
       aDomain.Surface.UMin = 0.0;
       aDomain.Surface.UMax = ExtremaCS::THE_TWO_PI;
       // V domain based on circle size and position
-      const double aRange = myCircle.Radius() * 5.0 + 100.0;
+      const double aRange  = myCircle.Radius() * 5.0 + 100.0;
       aDomain.Surface.VMin = -aRange;
       aDomain.Surface.VMax = aRange;
     }
 
     // Use grid-based numerical approach
-    ExtremaCS_Circle aCircleEval(myCircle, aDomain.Curve);
+    ExtremaCS_Circle   aCircleEval(myCircle, aDomain.Curve);
     ExtremaCS_Cylinder aCylEval(myCylinder, aDomain.Surface);
 
     ExtremaCS_GridEvaluator3D<ExtremaCS_Circle, ExtremaCS_Cylinder> aGridEval(aCircleEval,
-                                                                               aCylEval,
-                                                                               aDomain);
+                                                                              aCylEval,
+                                                                              aDomain);
     aGridEval.Perform(myResult, theTol, theMode);
 
     return myResult;

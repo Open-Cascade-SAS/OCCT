@@ -32,14 +32,14 @@ public:
 
   ExtremaCC_CircleParabola(const gp_Circ& theCircle, const gp_Parab& theParabola);
 
-  ExtremaCC_CircleParabola(const gp_Circ&              theCircle,
-                           const gp_Parab&             theParabola,
+  ExtremaCC_CircleParabola(const gp_Circ&             theCircle,
+                           const gp_Parab&            theParabola,
                            const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_CircleParabola(const ExtremaCC_CircleParabola&) = delete;
+  ExtremaCC_CircleParabola(const ExtremaCC_CircleParabola&)            = delete;
   ExtremaCC_CircleParabola& operator=(const ExtremaCC_CircleParabola&) = delete;
-  ExtremaCC_CircleParabola(ExtremaCC_CircleParabola&&) = default;
-  ExtremaCC_CircleParabola& operator=(ExtremaCC_CircleParabola&&) = default;
+  ExtremaCC_CircleParabola(ExtremaCC_CircleParabola&&)                 = default;
+  ExtremaCC_CircleParabola& operator=(ExtremaCC_CircleParabola&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -49,12 +49,13 @@ public:
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  const gp_Circ&   Circle() const { return myCircle; }
+  const gp_Circ& Circle() const { return myCircle; }
+
   const gp_Parab& Parabola() const { return myParabola; }
 
 private:
-  gp_Circ                             myCircle;
-  gp_Parab                            myParabola;
+  gp_Circ                            myCircle;
+  gp_Parab                           myParabola;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };

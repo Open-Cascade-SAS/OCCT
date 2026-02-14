@@ -321,13 +321,13 @@ struct Result
 //! Configuration for extrema computation.
 struct Config
 {
-  double                  Tolerance      = THE_DEFAULT_TOLERANCE;      //!< Tolerance for root finding
-  std::optional<Domain3D> Domain;                                      //!< Parameter domain
-  int                     NbCurveSamples = THE_DEFAULT_CURVE_SAMPLES;  //!< Samples for curve
-  int                     NbUSamples     = THE_DEFAULT_SURFACE_SAMPLES;//!< U samples for surface
-  int                     NbVSamples     = THE_DEFAULT_SURFACE_SAMPLES;//!< V samples for surface
-  SearchMode              Mode           = SearchMode::MinMax;         //!< Search mode
-  bool                    IncludeEndpoints = true;                     //!< Include boundary extrema
+  double                  Tolerance = THE_DEFAULT_TOLERANCE; //!< Tolerance for root finding
+  std::optional<Domain3D> Domain;                            //!< Parameter domain
+  int                     NbCurveSamples   = THE_DEFAULT_CURVE_SAMPLES;   //!< Samples for curve
+  int                     NbUSamples       = THE_DEFAULT_SURFACE_SAMPLES; //!< U samples for surface
+  int                     NbVSamples       = THE_DEFAULT_SURFACE_SAMPLES; //!< V samples for surface
+  SearchMode              Mode             = SearchMode::MinMax;          //!< Search mode
+  bool                    IncludeEndpoints = true; //!< Include boundary extrema
 };
 
 //==================================================================================================
@@ -448,11 +448,11 @@ inline bool AddExtremum(Result&       theResult,
 //! @param theDomain optional domain to check against
 //! @param theTol tolerance for bound check
 //! @return true if within bounds (or no domain specified)
-inline bool IsWithinDomain(double                       theT,
-                           double                       theU,
-                           double                       theV,
+inline bool IsWithinDomain(double                         theT,
+                           double                         theU,
+                           double                         theV,
                            const std::optional<Domain3D>& theDomain,
-                           double                       theTol)
+                           double                         theTol)
 {
   if (!theDomain.has_value())
   {

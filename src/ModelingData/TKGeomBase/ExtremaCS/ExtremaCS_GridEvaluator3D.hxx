@@ -69,23 +69,23 @@ public:
   //! Cached surface point with pre-computed data.
   struct SurfacePoint
   {
-    double U, V;     //!< Parameter values
-    gp_Pnt Point;    //!< Surface point S(u,v)
-    gp_Vec D1U, D1V; //!< First derivatives
+    double U, V;             //!< Parameter values
+    gp_Pnt Point;            //!< Surface point S(u,v)
+    gp_Vec D1U, D1V;         //!< First derivatives
     gp_Vec D2UU, D2VV, D2UV; //!< Second derivatives
   };
 
   //! Candidate cell for Newton refinement.
   struct Candidate
   {
-    int    CurveIdx;    //!< Index in curve grid
-    int    SurfIdxU;    //!< U index in surface grid
-    int    SurfIdxV;    //!< V index in surface grid
-    double StartT;      //!< Starting t for Newton
-    double StartU;      //!< Starting u for Newton
-    double StartV;      //!< Starting v for Newton
-    double EstDist;     //!< Estimated squared distance
-    double GradMag;     //!< Gradient magnitude (smaller = closer to extremum)
+    int    CurveIdx; //!< Index in curve grid
+    int    SurfIdxU; //!< U index in surface grid
+    int    SurfIdxV; //!< V index in surface grid
+    double StartT;   //!< Starting t for Newton
+    double StartU;   //!< Starting u for Newton
+    double StartV;   //!< Starting v for Newton
+    double EstDist;  //!< Estimated squared distance
+    double GradMag;  //!< Gradient magnitude (smaller = closer to extremum)
   };
 
   //! Constructor with curve and surface evaluators.
@@ -118,9 +118,7 @@ public:
   //! @param theResult result storage
   //! @param theTol tolerance
   //! @param theMode search mode
-  void Perform(ExtremaCS::Result&    theResult,
-               double                theTol,
-               ExtremaCS::SearchMode theMode) const
+  void Perform(ExtremaCS::Result& theResult, double theTol, ExtremaCS::SearchMode theMode) const
   {
     theResult.Clear();
 
@@ -160,17 +158,18 @@ private:
   //! @brief Build grid for curve.
   void buildCurveGrid() const
   {
-    const int aNbSamples = myCurveGridSize;
-    const double aTMin = myDomain.Curve.Min;
-    const double aTMax = myDomain.Curve.Max;
-    const double aStep = (aTMax - aTMin) / (aNbSamples - 1);
+    const int    aNbSamples = myCurveGridSize;
+    const double aTMin      = myDomain.Curve.Min;
+    const double aTMax      = myDomain.Curve.Max;
+    const double aStep      = (aTMax - aTMin) / (aNbSamples - 1);
 
     myCurveGrid.Resize(0, aNbSamples - 1, false);
 
     for (int i = 0; i < aNbSamples; ++i)
     {
       double aT = aTMin + i * aStep;
-      if (i == aNbSamples - 1) aT = aTMax;
+      if (i == aNbSamples - 1)
+        aT = aTMax;
 
       gp_Pnt aPt;
       gp_Vec aD1, aD2;
@@ -186,12 +185,12 @@ private:
   //! @brief Build grid for surface.
   void buildSurfaceGrid() const
   {
-    const int aNbU = mySurfaceGridSize;
-    const int aNbV = mySurfaceGridSize;
-    const double aUMin = myDomain.Surface.UMin;
-    const double aUMax = myDomain.Surface.UMax;
-    const double aVMin = myDomain.Surface.VMin;
-    const double aVMax = myDomain.Surface.VMax;
+    const int    aNbU   = mySurfaceGridSize;
+    const int    aNbV   = mySurfaceGridSize;
+    const double aUMin  = myDomain.Surface.UMin;
+    const double aUMax  = myDomain.Surface.UMax;
+    const double aVMin  = myDomain.Surface.VMin;
+    const double aVMax  = myDomain.Surface.VMax;
     const double aStepU = (aUMax - aUMin) / (aNbU - 1);
     const double aStepV = (aVMax - aVMin) / (aNbV - 1);
 
@@ -200,26 +199,28 @@ private:
     for (int i = 0; i < aNbU; ++i)
     {
       double aU = aUMin + i * aStepU;
-      if (i == aNbU - 1) aU = aUMax;
+      if (i == aNbU - 1)
+        aU = aUMax;
 
       for (int j = 0; j < aNbV; ++j)
       {
         double aV = aVMin + j * aStepV;
-        if (j == aNbV - 1) aV = aVMax;
+        if (j == aNbV - 1)
+          aV = aVMax;
 
         gp_Pnt aPt;
         gp_Vec aD1U, aD1V, aD2UU, aD2VV, aD2UV;
         mySurface.D2(aU, aV, aPt, aD1U, aD1V, aD2UU, aD2VV, aD2UV);
 
         SurfacePoint& aSP = mySurfaceGrid(i, j);
-        aSP.U    = aU;
-        aSP.V    = aV;
-        aSP.Point = aPt;
-        aSP.D1U   = aD1U;
-        aSP.D1V   = aD1V;
-        aSP.D2UU  = aD2UU;
-        aSP.D2VV  = aD2VV;
-        aSP.D2UV  = aD2UV;
+        aSP.U             = aU;
+        aSP.V             = aV;
+        aSP.Point         = aPt;
+        aSP.D1U           = aD1U;
+        aSP.D1V           = aD1V;
+        aSP.D2UU          = aD2UU;
+        aSP.D2VV          = aD2VV;
+        aSP.D2UV          = aD2UV;
       }
     }
   }
@@ -274,16 +275,16 @@ private:
           if (aDist < myMinDist)
           {
             myMinDist = aDist;
-            myMinT = iT;
-            myMinU = iU;
-            myMinV = iV;
+            myMinT    = iT;
+            myMinU    = iU;
+            myMinV    = iV;
           }
           if (aDist > myMaxDist)
           {
             myMaxDist = aDist;
-            myMaxT = iT;
-            myMaxU = iU;
-            myMaxV = iV;
+            myMaxT    = iT;
+            myMaxU    = iU;
+            myMaxV    = iV;
           }
 
           // For interior cells, check for gradient sign changes
@@ -350,8 +351,8 @@ private:
   }
 
   //! @brief Check if gradient sign changes in neighboring cells.
-  bool checkNeighborSignChanges(int iT, int iU, int iV,
-                                 double theF1, double theF2, double theF3) const
+  bool checkNeighborSignChanges(int iT, int iU, int iV, double theF1, double theF2, double theF3)
+    const
   {
     const int aNbT = myCurveGrid.Length();
     const int aNbU = mySurfaceGrid.UpperRow() - mySurfaceGrid.LowerRow() + 1;
@@ -360,37 +361,40 @@ private:
     // Check T+1 neighbor
     if (iT + 1 < aNbT)
     {
-      const CurvePoint& aCP = myCurveGrid(iT + 1);
+      const CurvePoint&   aCP = myCurveGrid(iT + 1);
       const SurfacePoint& aSP = mySurfaceGrid(iU, iV);
-      const double aDx = aCP.Point.X() - aSP.Point.X();
-      const double aDy = aCP.Point.Y() - aSP.Point.Y();
-      const double aDz = aCP.Point.Z() - aSP.Point.Z();
-      const double aF1 = aDx * aCP.D1.X() + aDy * aCP.D1.Y() + aDz * aCP.D1.Z();
-      if (theF1 * aF1 < 0.0) return true;
+      const double        aDx = aCP.Point.X() - aSP.Point.X();
+      const double        aDy = aCP.Point.Y() - aSP.Point.Y();
+      const double        aDz = aCP.Point.Z() - aSP.Point.Z();
+      const double        aF1 = aDx * aCP.D1.X() + aDy * aCP.D1.Y() + aDz * aCP.D1.Z();
+      if (theF1 * aF1 < 0.0)
+        return true;
     }
 
     // Check U+1 neighbor
     if (iU + 1 < aNbU)
     {
-      const CurvePoint& aCP = myCurveGrid(iT);
+      const CurvePoint&   aCP = myCurveGrid(iT);
       const SurfacePoint& aSP = mySurfaceGrid(iU + 1, iV);
-      const double aDx = aCP.Point.X() - aSP.Point.X();
-      const double aDy = aCP.Point.Y() - aSP.Point.Y();
-      const double aDz = aCP.Point.Z() - aSP.Point.Z();
-      const double aF2 = -(aDx * aSP.D1U.X() + aDy * aSP.D1U.Y() + aDz * aSP.D1U.Z());
-      if (theF2 * aF2 < 0.0) return true;
+      const double        aDx = aCP.Point.X() - aSP.Point.X();
+      const double        aDy = aCP.Point.Y() - aSP.Point.Y();
+      const double        aDz = aCP.Point.Z() - aSP.Point.Z();
+      const double        aF2 = -(aDx * aSP.D1U.X() + aDy * aSP.D1U.Y() + aDz * aSP.D1U.Z());
+      if (theF2 * aF2 < 0.0)
+        return true;
     }
 
     // Check V+1 neighbor
     if (iV + 1 < aNbV)
     {
-      const CurvePoint& aCP = myCurveGrid(iT);
+      const CurvePoint&   aCP = myCurveGrid(iT);
       const SurfacePoint& aSP = mySurfaceGrid(iU, iV + 1);
-      const double aDx = aCP.Point.X() - aSP.Point.X();
-      const double aDy = aCP.Point.Y() - aSP.Point.Y();
-      const double aDz = aCP.Point.Z() - aSP.Point.Z();
-      const double aF3 = -(aDx * aSP.D1V.X() + aDy * aSP.D1V.Y() + aDz * aSP.D1V.Z());
-      if (theF3 * aF3 < 0.0) return true;
+      const double        aDx = aCP.Point.X() - aSP.Point.X();
+      const double        aDy = aCP.Point.Y() - aSP.Point.Y();
+      const double        aDz = aCP.Point.Z() - aSP.Point.Z();
+      const double        aF3 = -(aDx * aSP.D1V.X() + aDy * aSP.D1V.Y() + aDz * aSP.D1V.Z());
+      if (theF3 * aF3 < 0.0)
+        return true;
     }
 
     return false;
@@ -433,7 +437,7 @@ private:
     for (int c = 0; c < myCandidates.Length(); ++c)
     {
       const Candidate& aCand = myCandidates.Value(c);
-      SortEntry anEntry;
+      SortEntry        anEntry;
       anEntry.Idx     = c;
       anEntry.Dist    = aCand.EstDist;
       anEntry.GradMag = aCand.GradMag;
@@ -465,7 +469,7 @@ private:
     for (int s = 0; s < mySortedEntries.Length(); ++s)
     {
       const SortEntry& anEntry = mySortedEntries.Value(s);
-      const Candidate& aCand = myCandidates.Value(anEntry.Idx);
+      const Candidate& aCand   = myCandidates.Value(anEntry.Idx);
 
       // Newton bounds from grid cell (with small expansion)
       const int aNbT = myCurveGrid.Length();
@@ -495,31 +499,31 @@ private:
       aVMax = std::min(myDomain.Surface.VMax, aVMax);
 
       // Newton3DCurveSurface iteration
-      MathSys::Newton3DResult aNewtonRes = MathSys::Newton3DCurveSurface(
-        myCurve,
-        mySurface,
-        aCand.StartT,
-        aCand.StartU,
-        aCand.StartV,
-        aTMin,
-        aTMax,
-        aUMin,
-        aUMax,
-        aVMin,
-        aVMax,
-        theTol * ExtremaCS::THE_NEWTON_FTOL_FACTOR,
-        ExtremaCS::THE_MAX_NEWTON_ITERATIONS);
+      MathSys::Newton3DResult aNewtonRes =
+        MathSys::Newton3DCurveSurface(myCurve,
+                                      mySurface,
+                                      aCand.StartT,
+                                      aCand.StartU,
+                                      aCand.StartV,
+                                      aTMin,
+                                      aTMax,
+                                      aUMin,
+                                      aUMax,
+                                      aVMin,
+                                      aVMax,
+                                      theTol * ExtremaCS::THE_NEWTON_FTOL_FACTOR,
+                                      ExtremaCS::THE_MAX_NEWTON_ITERATIONS);
 
-      double aRootT = 0.0;
-      double aRootU = 0.0;
-      double aRootV = 0.0;
-      bool aConverged = false;
+      double aRootT     = 0.0;
+      double aRootU     = 0.0;
+      double aRootV     = 0.0;
+      bool   aConverged = false;
 
       if (aNewtonRes.IsDone())
       {
-        aRootT = std::clamp(aNewtonRes.X1, myDomain.Curve.Min, myDomain.Curve.Max);
-        aRootU = std::clamp(aNewtonRes.X2, myDomain.Surface.UMin, myDomain.Surface.UMax);
-        aRootV = std::clamp(aNewtonRes.X3, myDomain.Surface.VMin, myDomain.Surface.VMax);
+        aRootT     = std::clamp(aNewtonRes.X1, myDomain.Curve.Min, myDomain.Curve.Max);
+        aRootU     = std::clamp(aNewtonRes.X2, myDomain.Surface.UMin, myDomain.Surface.UMax);
+        aRootV     = std::clamp(aNewtonRes.X3, myDomain.Surface.VMin, myDomain.Surface.VMax);
         aConverged = true;
       }
       else
@@ -545,9 +549,9 @@ private:
         }
 
         gp_Vec aD(aPtS, aPtC);
-        double aF1 = aD.Dot(aD1C);
-        double aF2 = -aD.Dot(aD1U);
-        double aF3 = -aD.Dot(aD1V);
+        double aF1    = aD.Dot(aD1C);
+        double aF2    = -aD.Dot(aD1U);
+        double aF3    = -aD.Dot(aD1V);
         double aFNorm = std::sqrt(aF1 * aF1 + aF2 * aF2 + aF3 * aF3);
 
         if (aFNorm < theTol * 100.0)
@@ -575,8 +579,8 @@ private:
       if (aSkip)
         continue;
 
-      gp_Pnt aPtC = myCurve.Value(aRootT);
-      gp_Pnt aPtS = mySurface.Value(aRootU, aRootV);
+      gp_Pnt aPtC    = myCurve.Value(aRootT);
+      gp_Pnt aPtS    = mySurface.Value(aRootU, aRootV);
       double aSqDist = aPtC.SquareDistance(aPtS);
 
       // Classify as min or max using Hessian
@@ -647,20 +651,20 @@ private:
     const double aGridMinV = mySurfaceGrid(myMinU, myMinV).V;
 
     // Try Newton refinement from the best grid point
-    MathSys::Newton3DResult aNewtonRes = MathSys::Newton3DCurveSurface(
-      myCurve,
-      mySurface,
-      aGridMinT,
-      aGridMinU,
-      aGridMinV,
-      myDomain.Curve.Min,
-      myDomain.Curve.Max,
-      myDomain.Surface.UMin,
-      myDomain.Surface.UMax,
-      myDomain.Surface.VMin,
-      myDomain.Surface.VMax,
-      theTol * ExtremaCS::THE_NEWTON_FTOL_FACTOR,
-      ExtremaCS::THE_MAX_NEWTON_ITERATIONS);
+    MathSys::Newton3DResult aNewtonRes =
+      MathSys::Newton3DCurveSurface(myCurve,
+                                    mySurface,
+                                    aGridMinT,
+                                    aGridMinU,
+                                    aGridMinV,
+                                    myDomain.Curve.Min,
+                                    myDomain.Curve.Max,
+                                    myDomain.Surface.UMin,
+                                    myDomain.Surface.UMax,
+                                    myDomain.Surface.VMin,
+                                    myDomain.Surface.VMax,
+                                    theTol * ExtremaCS::THE_NEWTON_FTOL_FACTOR,
+                                    ExtremaCS::THE_MAX_NEWTON_ITERATIONS);
 
     double aRefinedT = aGridMinT;
     double aRefinedU = aGridMinU;
@@ -689,22 +693,22 @@ private:
   }
 
 private:
-  const CurveEval&   myCurve;         //!< Curve evaluator
-  const SurfaceEval& mySurface;       //!< Surface evaluator
-  ExtremaCS::Domain3D myDomain;       //!< Parameter domain
-  int myCurveGridSize;                //!< Curve grid resolution
-  int mySurfaceGridSize;              //!< Surface grid resolution (per direction)
+  const CurveEval&    myCurve;           //!< Curve evaluator
+  const SurfaceEval&  mySurface;         //!< Surface evaluator
+  ExtremaCS::Domain3D myDomain;          //!< Parameter domain
+  int                 myCurveGridSize;   //!< Curve grid resolution
+  int                 mySurfaceGridSize; //!< Surface grid resolution (per direction)
 
   // Mutable cached temporaries
   mutable NCollection_Array1<CurvePoint>   myCurveGrid;   //!< Cached grid for curve
   mutable NCollection_Array2<SurfacePoint> mySurfaceGrid; //!< Cached grid for surface
   mutable NCollection_Vector<Candidate>    myCandidates;  //!< Candidates from grid
   mutable NCollection_Vector<std::tuple<double, double, double>> myFoundRoots; //!< Found roots
-  mutable NCollection_Vector<SortEntry>    mySortedEntries; //!< Sorted candidates
+  mutable NCollection_Vector<SortEntry> mySortedEntries; //!< Sorted candidates
 
   // Cached global min/max indices from last scanGrid
-  mutable int myMinT = 0, myMinU = 0, myMinV = 0;
-  mutable int myMaxT = 0, myMaxU = 0, myMaxV = 0;
+  mutable int    myMinT = 0, myMinU = 0, myMinV = 0;
+  mutable int    myMaxT = 0, myMaxU = 0, myMaxV = 0;
   mutable double myMinDist = 0.0;
   mutable double myMaxDist = 0.0;
 };

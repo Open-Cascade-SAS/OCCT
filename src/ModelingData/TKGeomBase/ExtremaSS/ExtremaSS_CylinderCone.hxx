@@ -108,8 +108,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& Perform(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -135,8 +135,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& PerformWithBoundary(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -166,11 +166,11 @@ public:
     const double aCosU = std::cos(theU);
     const double aSinU = std::sin(theU);
     return gp_Pnt(myCylCenter.X() + myCylRadius * (aCosU * myCylXDir.X() + aSinU * myCylYDir.X())
-                      + theV * myCylAxis.X(),
+                    + theV * myCylAxis.X(),
                   myCylCenter.Y() + myCylRadius * (aCosU * myCylXDir.Y() + aSinU * myCylYDir.Y())
-                      + theV * myCylAxis.Y(),
+                    + theV * myCylAxis.Y(),
                   myCylCenter.Z() + myCylRadius * (aCosU * myCylXDir.Z() + aSinU * myCylYDir.Z())
-                      + theV * myCylAxis.Z());
+                    + theV * myCylAxis.Z());
   }
 
   //! Evaluate point on cone (surface 2).
@@ -184,11 +184,11 @@ public:
     const double aRadius = theV * mySinSemiAngle;
     const double aHeight = theV * myCosSemiAngle;
     return gp_Pnt(myConeApex.X() + aHeight * myConeAxis.X()
-                      + aRadius * (aCosU * myConeXDir.X() + aSinU * myConeYDir.X()),
+                    + aRadius * (aCosU * myConeXDir.X() + aSinU * myConeYDir.X()),
                   myConeApex.Y() + aHeight * myConeAxis.Y()
-                      + aRadius * (aCosU * myConeXDir.Y() + aSinU * myConeYDir.Y()),
+                    + aRadius * (aCosU * myConeXDir.Y() + aSinU * myConeYDir.Y()),
                   myConeApex.Z() + aHeight * myConeAxis.Z()
-                      + aRadius * (aCosU * myConeXDir.Z() + aSinU * myConeYDir.Z()));
+                    + aRadius * (aCosU * myConeXDir.Z() + aSinU * myConeYDir.Z()));
   }
 
   //! Check if surfaces were swapped.
@@ -225,13 +225,12 @@ private:
     // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
     const gp_Vec aCrossVec = gp_Vec(myCylAxis).Crossed(gp_Vec(myConeAxis));
     const double aCrossMag = aCrossVec.Magnitude();
-    myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
+    myAxesParallel         = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
-      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
-                              aCrossVec.Y() / aCrossMag,
-                              aCrossVec.Z() / aCrossMag);
+      myCrossProduct =
+        gp_Dir(aCrossVec.X() / aCrossMag, aCrossVec.Y() / aCrossMag, aCrossVec.Z() / aCrossMag);
     }
 
     // Vector from cylinder center to cone apex
@@ -355,9 +354,9 @@ private:
 
         for (double aVCone : {aVConeMin, aVConeMax})
         {
-          const double aRCone  = std::abs(aVCone * mySinSemiAngle);
+          const double aRCone   = std::abs(aVCone * mySinSemiAngle);
           const double aMaxDist = aAxisDist + myCylRadius + aRCone;
-          const double aVCyl   = -aDotAxis + aVCone * myCosSemiAngle * aAxisDot;
+          const double aVCyl    = -aDotAxis + aVCone * myCosSemiAngle * aAxisDot;
 
           addExtremum(aUCylAway, aVCyl, aUConeAway, aVCone, aMaxDist * aMaxDist, false, theTol);
         }
@@ -536,7 +535,7 @@ private:
     const gp_Vec aVecFromApex(myConeApex, theIntersection);
     const double aDotAxis = aVecFromApex.Dot(gp_Vec(myConeAxis));
     double       aVCone =
-        (std::abs(myCosSemiAngle) > theTol) ? aDotAxis / myCosSemiAngle : aVecFromApex.Magnitude();
+      (std::abs(myCosSemiAngle) > theTol) ? aDotAxis / myCosSemiAngle : aVecFromApex.Magnitude();
 
     // For single-nappe cones (RefRadius = 0), V should be >= 0
     // If V < 0, the intersection is on the "wrong" side of the apex
@@ -583,8 +582,8 @@ private:
 
         const bool aIsMin = (i == j);
 
-        if ((aIsMin && theMode != ExtremaSS::SearchMode::Max) ||
-            (!aIsMin && theMode != ExtremaSS::SearchMode::Min))
+        if ((aIsMin && theMode != ExtremaSS::SearchMode::Max)
+            || (!aIsMin && theMode != ExtremaSS::SearchMode::Min))
         {
           addExtremum(aUCyl, theVCyl, aUCone, aVCone, aSqDist, aIsMin, theTol);
         }
@@ -664,7 +663,7 @@ private:
 
         // Perpendicular distance from cone point to cylinder axis
         gp_Vec aPerpVec(aPOnCylAxis, aPCone);
-        aPerpVec               = aPerpVec - gp_Vec(myEval->myCylAxis) * aPerpVec.Dot(gp_Vec(myEval->myCylAxis));
+        aPerpVec = aPerpVec - gp_Vec(myEval->myCylAxis) * aPerpVec.Dot(gp_Vec(myEval->myCylAxis));
         const double aDistAxis = aPerpVec.Magnitude();
 
         // Squared error from desired cylinder radius
@@ -764,15 +763,14 @@ private:
     constexpr double aVMax      = 100.0;
 
     // Compute tan(semi-angle) for correct OCCT radius formula
-    const double aTanSemiAngle =
-        (std::abs(myCosSemiAngle) > ExtremaSS::THE_ANGULAR_TOLERANCE)
-            ? mySinSemiAngle / myCosSemiAngle
-            : 1e10;
+    const double aTanSemiAngle = (std::abs(myCosSemiAngle) > ExtremaSS::THE_ANGULAR_TOLERANCE)
+                                   ? mySinSemiAngle / myCosSemiAngle
+                                   : 1e10;
 
-    double       aBestMinSqDist = std::numeric_limits<double>::max();
-    double       aBestMaxSqDist = 0.0;
-    double       aBestMinU1 = 0, aBestMinV1 = 0, aBestMinU2 = 0, aBestMinV2 = 0;
-    double       aBestMaxU1 = 0, aBestMaxV1 = 0, aBestMaxU2 = 0, aBestMaxV2 = 0;
+    double aBestMinSqDist = std::numeric_limits<double>::max();
+    double aBestMaxSqDist = 0.0;
+    double aBestMinU1 = 0, aBestMinV1 = 0, aBestMinU2 = 0, aBestMinV2 = 0;
+    double aBestMaxU1 = 0, aBestMaxV1 = 0, aBestMaxU2 = 0, aBestMaxV2 = 0;
 
     for (int i = 0; i <= aNbSamples; ++i)
     {
@@ -806,7 +804,7 @@ private:
       aDir.Divide(aDist);
 
       // Project onto perpendicular planes
-      gp_Vec aDirCylPerp = aDir - gp_Vec(myCylAxis) * aDir.Dot(gp_Vec(myCylAxis));
+      gp_Vec aDirCylPerp  = aDir - gp_Vec(myCylAxis) * aDir.Dot(gp_Vec(myCylAxis));
       gp_Vec aDirConePerp = aDir - gp_Vec(myConeAxis) * aDir.Dot(gp_Vec(myConeAxis));
 
       const double aCylPerpMag  = aDirCylPerp.Magnitude();
@@ -861,7 +859,8 @@ private:
     }
 
     // Refine the found extrema
-    if (theMode != ExtremaSS::SearchMode::Max && aBestMinSqDist < std::numeric_limits<double>::max())
+    if (theMode != ExtremaSS::SearchMode::Max
+        && aBestMinSqDist < std::numeric_limits<double>::max())
     {
       refineExtremum(aBestMinU1, aBestMinV1, aBestMinU2, aBestMinV2, true, theTol);
     }
@@ -873,7 +872,12 @@ private:
   }
 
   //! Refine an extremum using Powell's method (gradient-free optimization).
-  void refineExtremum(double theU1, double theV1, double theU2, double theV2, bool theIsMin, double theTol) const
+  void refineExtremum(double theU1,
+                      double theV1,
+                      double theU2,
+                      double theV2,
+                      bool   theIsMin,
+                      double theTol) const
   {
     // Functor for squared distance between surfaces
     // For maximum, we minimize -distance^2
@@ -952,7 +956,7 @@ private:
     if (!myDomain.has_value())
       return;
 
-    const ExtremaSS::Domain4D&  aDom  = myDomain.value();
+    const ExtremaSS::Domain4D& aDom  = myDomain.value();
     const MathUtils::Domain2D& aDom1 = aDom.Domain1;
     const MathUtils::Domain2D& aDom2 = aDom.Domain2;
 
@@ -990,7 +994,10 @@ private:
   }
 
   //! Check a point on cylinder against cone.
-  void checkPointAgainstCone(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPointAgainstCone(double                theU1,
+                             double                theV1,
+                             double                theTol,
+                             ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP1 = Value1(theU1, theV1);
 
@@ -999,7 +1006,8 @@ private:
     const double aDotAxis = aVecFromApex.Dot(gp_Vec(myConeAxis));
 
     // V parameter on cone
-    const double aVCone = (std::abs(myCosSemiAngle) > theTol) ? aDotAxis / myCosSemiAngle : aDotAxis;
+    const double aVCone =
+      (std::abs(myCosSemiAngle) > theTol) ? aDotAxis / myCosSemiAngle : aDotAxis;
 
     // Clamp to domain if bounded
     double aVConeClamped = aVCone;
@@ -1015,7 +1023,7 @@ private:
                           myConeApex.Z() + aHeight * myConeAxis.Z());
 
     gp_Vec aDirToP1(aPOnAxis, aP1);
-    aDirToP1 = aDirToP1 - gp_Vec(myConeAxis) * aDirToP1.Dot(gp_Vec(myConeAxis));
+    aDirToP1                 = aDirToP1 - gp_Vec(myConeAxis) * aDirToP1.Dot(gp_Vec(myConeAxis));
     const double aDistToAxis = aDirToP1.Magnitude();
 
     if (aDistToAxis < theTol)
@@ -1044,7 +1052,10 @@ private:
   }
 
   //! Check a point on cone against cylinder.
-  void checkPointAgainstCylinder(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPointAgainstCylinder(double                theU2,
+                                 double                theV2,
+                                 double                theTol,
+                                 ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP2 = Value2(theU2, theV2);
 
@@ -1063,7 +1074,7 @@ private:
                           myCylCenter.Z() + aVCylClamped * myCylAxis.Z());
 
     gp_Vec aDirToP2(aPOnAxis, aP2);
-    aDirToP2 = aDirToP2 - gp_Vec(myCylAxis) * aDirToP2.Dot(gp_Vec(myCylAxis));
+    aDirToP2                 = aDirToP2 - gp_Vec(myCylAxis) * aDirToP2.Dot(gp_Vec(myCylAxis));
     const double aDistToAxis = aDirToP2.Magnitude();
 
     if (aDistToAxis < theTol)
@@ -1114,8 +1125,9 @@ private:
         const double aDV1 = std::abs(anExisting.V1 - theV1);
         const double aDV2 = std::abs(anExisting.V2 - theV2);
 
-        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol) &&
-            (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol && aDV2 < theTol)
+        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol)
+            && (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol
+            && aDV2 < theTol)
         {
           return;
         }
@@ -1158,7 +1170,7 @@ private:
   gp_Cylinder myCylinder; //!< The cylinder
   gp_Cone     myCone;     //!< The cone
 
-  std::optional<ExtremaSS::Domain4D> myDomain; //!< Optional bounded domain
+  std::optional<ExtremaSS::Domain4D> myDomain;  //!< Optional bounded domain
   bool                               mySwapped; //!< True if cone was provided first
 
   // Cached cylinder geometry

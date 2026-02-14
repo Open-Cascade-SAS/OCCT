@@ -40,7 +40,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, SeparatedCylinderAndTorus_FindsMinimum)
   // Torus at (20, 0, 0)
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -57,7 +57,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, CoaxialCylinderAndTorus_InfiniteSolutions)
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Torus    aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 1.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Coaxial - infinite solutions
@@ -75,7 +75,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, PerpendicularAxes_FindsMinimum)
   // Torus with axis along X
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(1, 0, 0)), 3.0, 0.5);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -90,11 +90,11 @@ TEST_F(ExtremaSS_CylinderTorusTest, CylinderThroughTorusHole_FindsMinimum)
   // Torus with large major radius
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 5.0, 1.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_CylinderTorusTest, TouchingCylinderAndTorus_MinDistanceZero)
@@ -103,7 +103,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, TouchingCylinderAndTorus_MinDistanceZero)
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Torus    aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 4.0, 2.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Coaxial, inner torus surface at 4-2=2 from axis, cylinder at 2
@@ -146,7 +146,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Torus    aTorus(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -170,11 +170,11 @@ TEST_F(ExtremaSS_CylinderTorusTest, TiltedTorus_GeneralOrientation)
   const gp_Dir   aTorusDir(1, 1, 1);
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(15, 0, 0), aTorusDir), 5.0, 1.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_CylinderTorusTest, SmallMinorRadius_ThinTorus)
@@ -182,7 +182,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, SmallMinorRadius_ThinTorus)
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   const gp_Torus    aTorus(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 5.0, 0.1);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -198,7 +198,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, LargeCylinder_FarFromTorus)
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   const gp_Torus    aTorus(gp_Ax3(gp_Pnt(50, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -215,7 +215,7 @@ TEST_F(ExtremaSS_CylinderTorusTest, ParallelButNotCoaxial_Offset)
   const gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 1.0);
   const gp_Torus    aTorus(gp_Ax3(gp_Pnt(10, 5, 0), gp_Dir(0, 0, 1)), 3.0, 0.5);
 
-  ExtremaSS_CylinderTorus anEval(aCyl, aTorus);
+  ExtremaSS_CylinderTorus  anEval(aCyl, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

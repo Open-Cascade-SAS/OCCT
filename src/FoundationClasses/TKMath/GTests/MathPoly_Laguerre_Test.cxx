@@ -35,7 +35,8 @@ protected:
   }
 };
 
-// Test quintic with known roots: (x-1)(x-2)(x-3)(x-4)(x-5) = x^5 - 15x^4 + 85x^3 - 225x^2 + 274x - 120
+// Test quintic with known roots: (x-1)(x-2)(x-3)(x-4)(x-5) = x^5 - 15x^4 + 85x^3 - 225x^2 + 274x -
+// 120
 TEST_F(MathPoly_LaguerreTest, Quintic_FiveDistinctRoots)
 {
   auto aResult = MathPoly::Quintic(1.0, -15.0, 85.0, -225.0, 274.0, -120.0);
@@ -130,7 +131,8 @@ TEST_F(MathPoly_LaguerreTest, Sextic_SymmetricRoots)
 // Test octic with 8 real roots: (x-1)(x-2)(x-3)(x-4)(x-5)(x-6)(x-7)(x-8)
 TEST_F(MathPoly_LaguerreTest, Octic_EightDistinctRoots)
 {
-  // (x-1)(x-2)(x-3)(x-4)(x-5)(x-6)(x-7)(x-8) = x^8 - 36x^7 + 546x^6 - 4536x^5 + 22449x^4 - 67284x^3 + 118124x^2 - 109584x + 40320
+  // (x-1)(x-2)(x-3)(x-4)(x-5)(x-6)(x-7)(x-8) = x^8 - 36x^7 + 546x^6 - 4536x^5 + 22449x^4 - 67284x^3
+  // + 118124x^2 - 109584x + 40320
   double aCoeffs[9] = {40320.0, -109584.0, 118124.0, -67284.0, 22449.0, -4536.0, 546.0, -36.0, 1.0};
 
   auto aResult = MathPoly::Octic(aCoeffs);
@@ -141,8 +143,7 @@ TEST_F(MathPoly_LaguerreTest, Octic_EightDistinctRoots)
   for (size_t i = 0; i < aResult.NbRoots; ++i)
   {
     double aExpected = static_cast<double>(i + 1);
-    EXPECT_NEAR(aResult.Roots[i], aExpected, 1.0e-6)
-      << "Root " << i << " differs";
+    EXPECT_NEAR(aResult.Roots[i], aExpected, 1.0e-6) << "Root " << i << " differs";
   }
 }
 

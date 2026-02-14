@@ -38,7 +38,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, ParallelCylinders_Separated)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   // Parallel cylinders have infinite solutions
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -54,7 +54,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, CoaxialCylinders_InfiniteSolutions)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
 
@@ -69,7 +69,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, SkewCylinders_FindsMinimum)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(5, 0, 0), gp_Dir(0, 1, 0)), 1.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);
@@ -86,7 +86,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, IntersectingAxes_FindsMinimum)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 2.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   // Axes intersect at origin, surfaces intersect
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -103,7 +103,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, TouchingCylinders_MinDistanceZero)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   // Parallel cylinders, distance = 5 - 2 - 3 = 0
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -147,7 +147,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0)), 1.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
   {
@@ -170,11 +170,11 @@ TEST_F(ExtremaSS_CylinderCylinderTest, AlmostParallel_SmallAngle)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(10, 0, 0), aSlightlyTilted), 2.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   // Should still find a solution
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_CylinderCylinderTest, DifferentRadii_SkewAxes)
@@ -183,7 +183,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, DifferentRadii_SkewAxes)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 1, 0)), 2.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);
@@ -200,7 +200,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, PerpendicularAxes_AtDistance)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(5, 0, 5), gp_Dir(1, 0, 0)), 1.0);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);
@@ -212,7 +212,7 @@ TEST_F(ExtremaSS_CylinderCylinderTest, SmallRadius_PrecisionTest)
   const gp_Cylinder aCyl2(gp_Ax3(gp_Pnt(5, 0, 0), gp_Dir(0, 1, 0)), 0.1);
 
   ExtremaSS_CylinderCylinder anEval(aCyl1, aCyl2);
-  const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
+  const ExtremaSS::Result&   aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
   ASSERT_GE(aResult.NbExt(), 1);

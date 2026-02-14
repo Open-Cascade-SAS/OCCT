@@ -54,16 +54,16 @@ public:
   //! Evaluates point and first derivative at parameter.
   void D1(double theU, gp_Pnt& thePt, gp_Vec& theD1) const
   {
-    thePt  = myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
-    theD1  = gp_Vec(myLine.Direction());
+    thePt = myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
+    theD1 = gp_Vec(myLine.Direction());
   }
 
   //! Evaluates point and first two derivatives at parameter.
   void D2(double theU, gp_Pnt& thePt, gp_Vec& theD1, gp_Vec& theD2) const
   {
-    thePt  = myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
-    theD1  = gp_Vec(myLine.Direction());
-    theD2  = gp_Vec(0.0, 0.0, 0.0); // Line has zero curvature
+    thePt = myLine.Location().Translated(theU * gp_Vec(myLine.Direction()));
+    theD1 = gp_Vec(myLine.Direction());
+    theD2 = gp_Vec(0.0, 0.0, 0.0); // Line has zero curvature
   }
 
   //! Returns true if domain is bounded.

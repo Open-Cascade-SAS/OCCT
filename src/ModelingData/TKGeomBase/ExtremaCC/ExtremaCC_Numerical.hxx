@@ -66,8 +66,8 @@ public:
   //! @param[in] theCurve1 first curve evaluator
   //! @param[in] theCurve2 second curve evaluator
   //! @param[in] theDomain parameter domains for both curves
-  ExtremaCC_Numerical(const Curve1Eval&           theCurve1,
-                      const Curve2Eval&           theCurve2,
+  ExtremaCC_Numerical(const Curve1Eval&          theCurve1,
+                      const Curve2Eval&          theCurve2,
                       const ExtremaCC::Domain2D& theDomain)
       : myCurve1(theCurve1),
         myCurve2(theCurve2),

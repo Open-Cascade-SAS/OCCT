@@ -39,7 +39,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, AxisParallelToPlane_InfiniteSolutions)
   const gp_Pln      aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0)), 3.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -54,7 +54,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, AxisPerpendicularToPlane_InfiniteSolutions)
   const gp_Pln      aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 5.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // When axis is perpendicular to plane, all points on the circle at any V
@@ -68,7 +68,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, AxisParallelToPlane_Touching_InfiniteSolutio
   const gp_Pln      aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 3), gp_Dir(1, 0, 0)), 3.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Axis parallel to plane but touching -> InfiniteSolutions with distance 0
@@ -82,7 +82,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, AxisParallelToPlane_Intersecting_InfiniteSol
   const gp_Pln      aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 2), gp_Dir(1, 0, 0)), 5.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Axis parallel to plane and intersecting -> InfiniteSolutions with distance 0
@@ -102,7 +102,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, TiltedCylinder_FindsMinAndMax)
   const gp_Dir      aTiltedAxis(1, 0, 1); // 45 degrees to plane
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 10), aTiltedAxis), 2.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -121,10 +121,10 @@ TEST_F(ExtremaSS_PlaneCylinderTest, TiltedCylinder_PredictableMinDistance)
   const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Dir aTiltedAxis(1, 0, 1); // 45 degrees to plane (sin(45) = 1/sqrt(2))
 
-  const double aRadius = 2.0;
+  const double      aRadius = 2.0;
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 100), aTiltedAxis), aRadius);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -141,10 +141,10 @@ TEST_F(ExtremaSS_PlaneCylinderTest, SwappedOrder_SameResult)
   const gp_Dir      aTiltedAxis(1, 0, 1);
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 10), aTiltedAxis), 3.0);
 
-  ExtremaSS_PlaneCylinder anEval1(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval1(aPlane, aCylinder);
   const ExtremaSS::Result& aResult1 = anEval1.Perform(THE_TOL);
 
-  ExtremaSS_PlaneCylinder anEval2(aCylinder, aPlane);
+  ExtremaSS_PlaneCylinder  anEval2(aCylinder, aPlane);
   const ExtremaSS::Result& aResult2 = anEval2.Perform(THE_TOL);
 
   ASSERT_EQ(aResult1.Status, ExtremaSS::Status::OK);
@@ -159,7 +159,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Dir      aTiltedAxis(1, 0, 1);
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 10), aTiltedAxis), 3.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -178,7 +178,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, SearchModeMax_OnlyFindsMaximum)
   const gp_Dir      aTiltedAxis(1, 0, 1);
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 10), aTiltedAxis), 3.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Max);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -201,7 +201,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, TiltedPlane_TiltedCylinder)
   const gp_Dir      aCylAxis(1, 1, 0);
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 10, 10), aCylAxis), 2.0);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -217,7 +217,7 @@ TEST_F(ExtremaSS_PlaneCylinderTest, SmallTiltedCylinder_MinDistanceFormula)
   const double      aRadius = 0.5;
   const gp_Cylinder aCylinder(gp_Ax3(gp_Pnt(0, 0, 100), aTiltedAxis), aRadius);
 
-  ExtremaSS_PlaneCylinder anEval(aPlane, aCylinder);
+  ExtremaSS_PlaneCylinder  anEval(aPlane, aCylinder);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -226,4 +226,3 @@ TEST_F(ExtremaSS_PlaneCylinderTest, SmallTiltedCylinder_MinDistanceFormula)
   const double aExpectedMinDist = aRadius / std::sqrt(2.0);
   EXPECT_NEAR(std::sqrt(aResult.MinSquareDistance()), aExpectedMinDist, THE_TOL);
 }
-

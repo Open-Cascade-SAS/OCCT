@@ -168,7 +168,7 @@ public:
 
     // Check if planes are parallel
     // |N1 . N2| should be close to 1 for parallel planes
-    const double aAbsDot = std::abs(myNormalDot);
+    const double aAbsDot   = std::abs(myNormalDot);
     const double aAngleTol = ExtremaSS::THE_ANGULAR_TOLERANCE;
 
     if (aAbsDot < 1.0 - aAngleTol)
@@ -263,7 +263,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    const ExtremaSS::Domain4D& aDom       = myDomain.value();
     constexpr int              aNbSamples = 20;
 
     // Sample plane 1 boundary edges (Domain1)
@@ -308,80 +308,94 @@ private:
   }
 
   //! Check a plane 1 boundary point against plane 2.
-  void checkPlane1PointAgainstPlane2(double thePlane1U, double thePlane1V, double theTol,
+  void checkPlane1PointAgainstPlane2(double                thePlane1U,
+                                     double                thePlane1V,
+                                     double                theTol,
                                      ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aPt1 = Value1(thePlane1U, thePlane1V);
 
     // Project onto plane 2
-    const double aDistToPlane2 = (aPt1.X() - myOrig2X) * myNorm2X
-                               + (aPt1.Y() - myOrig2Y) * myNorm2Y
-                               + (aPt1.Z() - myOrig2Z) * myNorm2Z;
+    const double aDistToPlane2 = (aPt1.X() - myOrig2X) * myNorm2X + (aPt1.Y() - myOrig2Y) * myNorm2Y
+                                 + (aPt1.Z() - myOrig2Z) * myNorm2Z;
 
     const gp_Pnt aProjPt(aPt1.X() - aDistToPlane2 * myNorm2X,
                          aPt1.Y() - aDistToPlane2 * myNorm2Y,
                          aPt1.Z() - aDistToPlane2 * myNorm2Z);
 
     // Compute plane 2 UV parameters
-    double aPlane2U = (aProjPt.X() - myOrig2X) * myXDir2X
-                    + (aProjPt.Y() - myOrig2Y) * myXDir2Y
-                    + (aProjPt.Z() - myOrig2Z) * myXDir2Z;
-    double aPlane2V = (aProjPt.X() - myOrig2X) * myYDir2X
-                    + (aProjPt.Y() - myOrig2Y) * myYDir2Y
-                    + (aProjPt.Z() - myOrig2Z) * myYDir2Z;
+    double aPlane2U = (aProjPt.X() - myOrig2X) * myXDir2X + (aProjPt.Y() - myOrig2Y) * myXDir2Y
+                      + (aProjPt.Z() - myOrig2Z) * myXDir2Z;
+    double aPlane2V = (aProjPt.X() - myOrig2X) * myYDir2X + (aProjPt.Y() - myOrig2Y) * myYDir2Y
+                      + (aProjPt.Z() - myOrig2Z) * myYDir2Z;
 
     const ExtremaSS::Domain4D& aDom = myDomain.value();
 
     // Clamp to plane 2 domain
     const double aClampedU = std::clamp(aPlane2U, aDom.Domain2.UMin, aDom.Domain2.UMax);
     const double aClampedV = std::clamp(aPlane2V, aDom.Domain2.VMin, aDom.Domain2.VMax);
-    const gp_Pnt aPt2 = Value2(aClampedU, aClampedV);
-    const double aSqDist = aPt1.SquareDistance(aPt2);
+    const gp_Pnt aPt2      = Value2(aClampedU, aClampedV);
+    const double aSqDist   = aPt1.SquareDistance(aPt2);
 
     // Only minimum makes sense for fixed plane 1 point
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      ExtremaSS::AddExtremum(myResult, thePlane1U, thePlane1V, aClampedU, aClampedV, aPt1, aPt2,
-                             aSqDist, true, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             thePlane1U,
+                             thePlane1V,
+                             aClampedU,
+                             aClampedV,
+                             aPt1,
+                             aPt2,
+                             aSqDist,
+                             true,
+                             theTol);
     }
   }
 
   //! Check a plane 2 boundary point against plane 1.
-  void checkPlane2PointAgainstPlane1(double thePlane2U, double thePlane2V, double theTol,
+  void checkPlane2PointAgainstPlane1(double                thePlane2U,
+                                     double                thePlane2V,
+                                     double                theTol,
                                      ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aPt2 = Value2(thePlane2U, thePlane2V);
 
     // Project onto plane 1
-    const double aDistToPlane1 = (aPt2.X() - myOrig1X) * myNorm1X
-                               + (aPt2.Y() - myOrig1Y) * myNorm1Y
-                               + (aPt2.Z() - myOrig1Z) * myNorm1Z;
+    const double aDistToPlane1 = (aPt2.X() - myOrig1X) * myNorm1X + (aPt2.Y() - myOrig1Y) * myNorm1Y
+                                 + (aPt2.Z() - myOrig1Z) * myNorm1Z;
 
     const gp_Pnt aProjPt(aPt2.X() - aDistToPlane1 * myNorm1X,
                          aPt2.Y() - aDistToPlane1 * myNorm1Y,
                          aPt2.Z() - aDistToPlane1 * myNorm1Z);
 
     // Compute plane 1 UV parameters
-    double aPlane1U = (aProjPt.X() - myOrig1X) * myXDir1X
-                    + (aProjPt.Y() - myOrig1Y) * myXDir1Y
-                    + (aProjPt.Z() - myOrig1Z) * myXDir1Z;
-    double aPlane1V = (aProjPt.X() - myOrig1X) * myYDir1X
-                    + (aProjPt.Y() - myOrig1Y) * myYDir1Y
-                    + (aProjPt.Z() - myOrig1Z) * myYDir1Z;
+    double aPlane1U = (aProjPt.X() - myOrig1X) * myXDir1X + (aProjPt.Y() - myOrig1Y) * myXDir1Y
+                      + (aProjPt.Z() - myOrig1Z) * myXDir1Z;
+    double aPlane1V = (aProjPt.X() - myOrig1X) * myYDir1X + (aProjPt.Y() - myOrig1Y) * myYDir1Y
+                      + (aProjPt.Z() - myOrig1Z) * myYDir1Z;
 
     const ExtremaSS::Domain4D& aDom = myDomain.value();
 
     // Clamp to plane 1 domain
     const double aClampedU = std::clamp(aPlane1U, aDom.Domain1.UMin, aDom.Domain1.UMax);
     const double aClampedV = std::clamp(aPlane1V, aDom.Domain1.VMin, aDom.Domain1.VMax);
-    const gp_Pnt aPt1 = Value1(aClampedU, aClampedV);
-    const double aSqDist = aPt2.SquareDistance(aPt1);
+    const gp_Pnt aPt1      = Value1(aClampedU, aClampedV);
+    const double aSqDist   = aPt2.SquareDistance(aPt1);
 
     // Only minimum makes sense for fixed plane 2 point
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlane2U, thePlane2V, aPt1, aPt2,
-                             aSqDist, true, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aClampedU,
+                             aClampedV,
+                             thePlane2U,
+                             thePlane2V,
+                             aPt1,
+                             aPt2,
+                             aSqDist,
+                             true,
+                             theTol);
     }
   }
 
@@ -404,10 +418,10 @@ public:
   bool IsBounded() const { return myDomain.has_value(); }
 
 private:
-  gp_Pln                               myPlane1; //!< First plane geometry
-  gp_Pln                               myPlane2; //!< Second plane geometry
+  gp_Pln                             myPlane1; //!< First plane geometry
+  gp_Pln                             myPlane2; //!< Second plane geometry
   std::optional<ExtremaSS::Domain4D> myDomain; //!< Parameter domain
-  mutable ExtremaSS::Result            myResult; //!< Reusable result storage
+  mutable ExtremaSS::Result          myResult; //!< Reusable result storage
 
   // Cached plane 1 components
   double myOrig1X, myOrig1Y, myOrig1Z;

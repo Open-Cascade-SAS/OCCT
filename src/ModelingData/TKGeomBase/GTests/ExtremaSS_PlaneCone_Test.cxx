@@ -39,7 +39,7 @@ TEST_F(ExtremaSS_PlaneConeTest, ConeSeparatedFromPlane_ApexIsClosest)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0); // 30 degree semi-angle, apex at (0,0,5)
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -57,7 +57,7 @@ TEST_F(ExtremaSS_PlaneConeTest, ApexOnPlane_MinDistanceIsZero)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0); // 45 degree semi-angle, apex at origin
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -75,7 +75,7 @@ TEST_F(ExtremaSS_PlaneConeTest, ConeIntersectsPlane_MinDistanceIsZero)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, -1));
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0); // Pointing down, will intersect plane
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find intersection - minimum distance is 0
@@ -91,7 +91,7 @@ TEST_F(ExtremaSS_PlaneConeTest, AxisParallelToPlane_ApexClosest)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 3), gp_Dir(1, 0, 0));
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0); // Horizontal cone at height 3
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // The cone opens horizontally, so it will eventually cross Z=0
@@ -113,7 +113,7 @@ TEST_F(ExtremaSS_PlaneConeTest, AxisPerpendicularToPlane_ConeFacingAway)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -131,7 +131,7 @@ TEST_F(ExtremaSS_PlaneConeTest, AxisPerpendicularToPlane_ConeFacingPlane)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, -1));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Cone points toward plane, will intersect
@@ -152,11 +152,11 @@ TEST_F(ExtremaSS_PlaneConeTest, GeneralOrientation_TiltedCone)
 {
   // Plane at Z=0, tilted cone
   const gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
-  const gp_Dir  aConeDir(1, 0, 1);  // 45 degrees from vertical
+  const gp_Dir  aConeDir(1, 0, 1); // 45 degrees from vertical
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 10), aConeDir);
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -202,7 +202,7 @@ TEST_F(ExtremaSS_PlaneConeTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -229,7 +229,7 @@ TEST_F(ExtremaSS_PlaneConeTest, VerySmallSemiAngle_NearCylinder)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, 0.01, 2.0); // Very small angle, ref radius 2
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -247,7 +247,7 @@ TEST_F(ExtremaSS_PlaneConeTest, LargeSemiAngle_WideOpeningCone)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 3.0, 0.0); // 60 degree semi-angle
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -263,7 +263,7 @@ TEST_F(ExtremaSS_PlaneConeTest, PlaneNotAtOrigin_OffsetPlane)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 0.0);
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -281,12 +281,12 @@ TEST_F(ExtremaSS_PlaneConeTest, TiltedPlane_GeneralOrientation)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 5, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 6.0, 0.0);
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find some extrema
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_PlaneConeTest, ConeWithNonZeroRefRadius)
@@ -296,7 +296,7 @@ TEST_F(ExtremaSS_PlaneConeTest, ConeWithNonZeroRefRadius)
   const gp_Ax3  aConeAxis(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   const gp_Cone aCone(aConeAxis, M_PI / 4.0, 2.0); // Ref radius 2
 
-  ExtremaSS_PlaneCone anEval(aPlane, aCone);
+  ExtremaSS_PlaneCone      anEval(aPlane, aCone);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

@@ -32,14 +32,14 @@ public:
 
   ExtremaCC_EllipseParabola(const gp_Elips& theEllipse, const gp_Parab& theParabola);
 
-  ExtremaCC_EllipseParabola(const gp_Elips&             theEllipse,
-                            const gp_Parab&             theParabola,
+  ExtremaCC_EllipseParabola(const gp_Elips&            theEllipse,
+                            const gp_Parab&            theParabola,
                             const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_EllipseParabola(const ExtremaCC_EllipseParabola&) = delete;
+  ExtremaCC_EllipseParabola(const ExtremaCC_EllipseParabola&)            = delete;
   ExtremaCC_EllipseParabola& operator=(const ExtremaCC_EllipseParabola&) = delete;
-  ExtremaCC_EllipseParabola(ExtremaCC_EllipseParabola&&) = default;
-  ExtremaCC_EllipseParabola& operator=(ExtremaCC_EllipseParabola&&) = default;
+  ExtremaCC_EllipseParabola(ExtremaCC_EllipseParabola&&)                 = default;
+  ExtremaCC_EllipseParabola& operator=(ExtremaCC_EllipseParabola&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -49,12 +49,13 @@ public:
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  const gp_Elips&  Ellipse() const { return myEllipse; }
+  const gp_Elips& Ellipse() const { return myEllipse; }
+
   const gp_Parab& Parabola() const { return myParabola; }
 
 private:
-  gp_Elips                            myEllipse;
-  gp_Parab                            myParabola;
+  gp_Elips                           myEllipse;
+  gp_Parab                           myParabola;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };

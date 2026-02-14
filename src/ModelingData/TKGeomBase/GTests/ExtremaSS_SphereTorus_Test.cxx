@@ -40,7 +40,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereSeparatedFromTorus_FindsExtrema)
   // Sphere at (15, 0, 0) with radius 2
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -59,7 +59,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereCenterOnTorusAxis_InfiniteSolutions)
   // Sphere centered on torus axis at (0, 0, 10)
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should be infinite solutions (circle of extrema)
@@ -74,7 +74,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereTouchingTorus_MinDistanceZero)
   // Sphere at (8, 0, 0) with radius 2 - exactly touches outer torus
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(8, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -90,7 +90,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereInsideTorus_FindsMinimum)
   // Small sphere inside the torus hole at (10, 0, 0)
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 0, 0), gp_Dir(0, 0, 1)), 0.5);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -109,7 +109,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereInTorusHole_FindsMinimum)
   // Sphere at center of torus hole
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 3.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Sphere center on axis - infinite solutions
@@ -148,7 +148,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Torus  aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -165,7 +165,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SearchModeMax_OnlyFindsMaximum)
   const gp_Torus  aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Max);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -189,12 +189,12 @@ TEST_F(ExtremaSS_SphereTorusTest, TiltedTorus_GeneralOrientation)
 
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find some extrema
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_SphereTorusTest, SmallMinorRadius_ThinTorus)
@@ -204,7 +204,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SmallMinorRadius_ThinTorus)
 
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -216,7 +216,7 @@ TEST_F(ExtremaSS_SphereTorusTest, LargeTorus_SphereFarAway)
   const gp_Torus  aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 5.0);
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(100, 0, 0), gp_Dir(0, 0, 1)), 1.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -235,7 +235,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereAboveTorus_FindsMinimum)
   // Sphere directly above torus center
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 2.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Sphere center on axis - infinite solutions
@@ -250,7 +250,7 @@ TEST_F(ExtremaSS_SphereTorusTest, SphereAtSideOfTorus_FindsMinAndMax)
   // Sphere at the side (not on axis)
   const gp_Sphere aSphere(gp_Ax3(gp_Pnt(10, 5, 0), gp_Dir(0, 0, 1)), 1.0);
 
-  ExtremaSS_SphereTorus anEval(aSphere, aTorus);
+  ExtremaSS_SphereTorus    anEval(aSphere, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

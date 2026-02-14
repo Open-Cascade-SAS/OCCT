@@ -86,7 +86,9 @@ public:
   //! @param[in] theCurve curve adaptor
   //! @param[in] theUMin lower parameter bound
   //! @param[in] theUMax upper parameter bound
-  Standard_EXPORT ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve, double theUMin, double theUMax);
+  Standard_EXPORT ExtremaPC_Curve(const GeomAdaptor_Curve& theCurve,
+                                  double                   theUMin,
+                                  double                   theUMax);
 
   //! Constructor with Geom_Curve.
   //! For non-trimmed curves, does NOT set domain (uses natural/unbounded behavior).

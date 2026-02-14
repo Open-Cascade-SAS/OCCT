@@ -31,8 +31,8 @@ ExtremaCC_CircleHyperbola::ExtremaCC_CircleHyperbola(const gp_Circ& theCircle,
 
 //==================================================================================================
 
-ExtremaCC_CircleHyperbola::ExtremaCC_CircleHyperbola(const gp_Circ&              theCircle,
-                                                     const gp_Hypr&              theHyperbola,
+ExtremaCC_CircleHyperbola::ExtremaCC_CircleHyperbola(const gp_Circ&             theCircle,
+                                                     const gp_Hypr&             theHyperbola,
                                                      const ExtremaCC::Domain2D& theDomain)
     : myCircle(theCircle),
       myHyperbola(theHyperbola),

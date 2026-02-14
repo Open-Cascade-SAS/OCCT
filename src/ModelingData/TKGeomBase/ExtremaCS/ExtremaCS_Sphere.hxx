@@ -33,8 +33,10 @@ public:
   //! Constructor with sphere geometry (default domain: U in [0, 2*PI], V in [-PI/2, PI/2]).
   explicit ExtremaCS_Sphere(const gp_Sphere& theSphere)
       : mySphere(theSphere),
-        myDomain(ExtremaCS::Domain2D{0.0, ExtremaCS::THE_TWO_PI,
-                                     -ExtremaCS::THE_HALF_PI, ExtremaCS::THE_HALF_PI})
+        myDomain(ExtremaCS::Domain2D{0.0,
+                                     ExtremaCS::THE_TWO_PI,
+                                     -ExtremaCS::THE_HALF_PI,
+                                     ExtremaCS::THE_HALF_PI})
   {
   }
 
@@ -55,9 +57,14 @@ public:
   }
 
   //! Evaluates point and first two derivatives at parameters.
-  void D2(double theU, double theV, gp_Pnt& thePt,
-          gp_Vec& theD1U, gp_Vec& theD1V,
-          gp_Vec& theD2UU, gp_Vec& theD2VV, gp_Vec& theD2UV) const
+  void D2(double  theU,
+          double  theV,
+          gp_Pnt& thePt,
+          gp_Vec& theD1U,
+          gp_Vec& theD1V,
+          gp_Vec& theD2UU,
+          gp_Vec& theD2VV,
+          gp_Vec& theD2UV) const
   {
     ElSLib::D2(theU, theV, mySphere, thePt, theD1U, theD1V, theD2UU, theD2VV, theD2UV);
   }

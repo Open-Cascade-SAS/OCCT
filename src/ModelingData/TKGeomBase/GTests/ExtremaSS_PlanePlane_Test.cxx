@@ -37,7 +37,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, ParallelPlanes_InfiniteSolutions)
   const gp_Pln aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Pln aPlane2(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -52,7 +52,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, ParallelPlanes_OppositeNormals_InfiniteSolution
   const gp_Pln aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Pln aPlane2(gp_Pnt(0, 0, 10), gp_Dir(0, 0, -1));
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -67,7 +67,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, CoincidentPlanes_InfiniteSolutions)
   const gp_Pln aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Pln aPlane2(gp_Pnt(5, 5, 0), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -82,7 +82,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, PerpendicularPlanes_NoSolution)
   const gp_Pln aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
   const gp_Pln aPlane2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)); // YZ plane
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Intersecting planes - no meaningful extremum
@@ -95,7 +95,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, AngledPlanes_NoSolution)
   const gp_Pln aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Pln aPlane2(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 1));
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Non-parallel planes intersect
@@ -110,7 +110,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, TiltedParallelPlanes_InfiniteSolutions)
   const gp_Pln aPlane2(gp_Pnt(10, 10, 10), aTiltedNormal);
   // Distance = (10,10,10) . (1,1,1)/|1,1,1| = 30/sqrt(3) = 10*sqrt(3)
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
@@ -125,7 +125,7 @@ TEST_F(ExtremaSS_PlanePlaneTest, SearchModeMin_ParallelPlanes)
   const gp_Pln aPlane1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   const gp_Pln aPlane2(gp_Pnt(0, 0, 7), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlanePlane anEval(aPlane1, aPlane2);
+  ExtremaSS_PlanePlane     anEval(aPlane1, aPlane2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   // Even with SearchMode::Min, parallel planes give infinite solutions

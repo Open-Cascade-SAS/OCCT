@@ -47,8 +47,8 @@ public:
   //! @param[in] theCircle the circle
   //! @param[in] theEllipse the ellipse
   //! @param[in] theDomain parameter domains for both curves
-  ExtremaCC_CircleEllipse(const gp_Circ&              theCircle,
-                          const gp_Elips&             theEllipse,
+  ExtremaCC_CircleEllipse(const gp_Circ&             theCircle,
+                          const gp_Elips&            theEllipse,
                           const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
@@ -94,8 +94,8 @@ private:
   //! @brief Add solution if within domain bounds.
   void addSolution(double theU1, double theU2, double theTol) const;
 
-  gp_Circ                             myCircle;  //!< Circle geometry
-  gp_Elips                            myEllipse; //!< Ellipse geometry
+  gp_Circ                            myCircle;  //!< Circle geometry
+  gp_Elips                           myEllipse; //!< Ellipse geometry
   std::optional<ExtremaCC::Domain2D> myDomain;  //!< Parameter domains
   mutable ExtremaCC::Result          myResult;  //!< Reusable result storage
 };

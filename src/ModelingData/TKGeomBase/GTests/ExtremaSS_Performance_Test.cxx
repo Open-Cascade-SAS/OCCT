@@ -328,12 +328,12 @@ TEST(ExtremaSS_Performance, TorusTorus)
   // Use fewer iterations because it's very slow
   const int aOldIterations = NUM_ITERATIONS / 10;
   aOldTime                 = Benchmark(
-                    [&]() {
-                      Extrema_ExtSS anExt(aAdaptor1, aAdaptor2, THE_TOL, THE_TOL);
-                      if (anExt.IsDone() && anExt.NbExt() > 0)
-                        aOldDist = std::sqrt(anExt.SquareDistance(1));
-                    },
-                    aOldIterations);
+    [&]() {
+      Extrema_ExtSS anExt(aAdaptor1, aAdaptor2, THE_TOL, THE_TOL);
+      if (anExt.IsDone() && anExt.NbExt() > 0)
+        aOldDist = std::sqrt(anExt.SquareDistance(1));
+    },
+    aOldIterations);
   aOldTime *= 10; // Scale up for comparison
 
   // New API
@@ -418,10 +418,10 @@ TEST(ExtremaSS_Performance, PlaneCylinder)
   gp_Pln      aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Cylinder aCyl(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(1, 0, 0)), 2.0);
 
-  Handle(Geom_Plane)             aGeomPln = new Geom_Plane(aPlane);
+  Handle(Geom_Plane)              aGeomPln = new Geom_Plane(aPlane);
   Handle(Geom_CylindricalSurface) aGeomCyl = new Geom_CylindricalSurface(aCyl);
-  GeomAdaptor_Surface            aAdaptorPln(aGeomPln);
-  GeomAdaptor_Surface            aAdaptorCyl(aGeomCyl);
+  GeomAdaptor_Surface             aAdaptorPln(aGeomPln);
+  GeomAdaptor_Surface             aAdaptorCyl(aGeomCyl);
 
   // Bounded domains
   const double aU1Min = -100.0, aU1Max = 100.0;
@@ -534,6 +534,7 @@ TEST(ExtremaSS_Performance, Summary)
 {
   std::cout << "\n========================================" << std::endl;
   std::cout << "ExtremaSS Performance Comparison Summary" << std::endl;
-  std::cout << "Iterations: " << NUM_ITERATIONS << " (Torus-Torus: 100 scaled to 1000)" << std::endl;
+  std::cout << "Iterations: " << NUM_ITERATIONS << " (Torus-Torus: 100 scaled to 1000)"
+            << std::endl;
   std::cout << "========================================\n" << std::endl;
 }

@@ -30,8 +30,8 @@ ExtremaCC_ParabolaParabola::ExtremaCC_ParabolaParabola(const gp_Parab& theParabo
 
 //==================================================================================================
 
-ExtremaCC_ParabolaParabola::ExtremaCC_ParabolaParabola(const gp_Parab&             theParabola1,
-                                                       const gp_Parab&             theParabola2,
+ExtremaCC_ParabolaParabola::ExtremaCC_ParabolaParabola(const gp_Parab&            theParabola1,
+                                                       const gp_Parab&            theParabola2,
                                                        const ExtremaCC::Domain2D& theDomain)
     : myParabola1(theParabola1),
       myParabola2(theParabola2),

@@ -65,8 +65,8 @@ public:
   //! @param theCyl1 First cylinder
   //! @param theCyl2 Second cylinder
   //! @param theDomain Bounded domain for both surfaces
-  ExtremaSS_CylinderCylinder(const gp_Cylinder& theCyl1,
-                             const gp_Cylinder& theCyl2,
+  ExtremaSS_CylinderCylinder(const gp_Cylinder&         theCyl1,
+                             const gp_Cylinder&         theCyl2,
                              const ExtremaSS::Domain4D& theDomain)
       : myCylinder1(theCyl1),
         myCylinder2(theCyl2),
@@ -80,8 +80,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& Perform(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -109,8 +109,8 @@ public:
   //! @param theMode Search mode (Min, Max, or MinMax)
   //! @return Result containing extremum points and distances
   [[nodiscard]] const ExtremaSS::Result& PerformWithBoundary(
-      double                theTol,
-      ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
+    double                theTol,
+    ExtremaSS::SearchMode theMode = ExtremaSS::SearchMode::MinMax) const
   {
     myResult.Clear();
 
@@ -141,12 +141,10 @@ public:
   {
     const double aCosU = std::cos(theU);
     const double aSinU = std::sin(theU);
-    return gp_Pnt(myCenter1.X() + myRadius1 * (aCosU * myXDir1.X() + aSinU * myYDir1.X())
-                      + theV * myAxis1.X(),
-                  myCenter1.Y() + myRadius1 * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y())
-                      + theV * myAxis1.Y(),
-                  myCenter1.Z() + myRadius1 * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z())
-                      + theV * myAxis1.Z());
+    return gp_Pnt(
+      myCenter1.X() + myRadius1 * (aCosU * myXDir1.X() + aSinU * myYDir1.X()) + theV * myAxis1.X(),
+      myCenter1.Y() + myRadius1 * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()) + theV * myAxis1.Y(),
+      myCenter1.Z() + myRadius1 * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()) + theV * myAxis1.Z());
   }
 
   //! Evaluate point on second cylinder.
@@ -157,12 +155,10 @@ public:
   {
     const double aCosU = std::cos(theU);
     const double aSinU = std::sin(theU);
-    return gp_Pnt(myCenter2.X() + myRadius2 * (aCosU * myXDir2.X() + aSinU * myYDir2.X())
-                      + theV * myAxis2.X(),
-                  myCenter2.Y() + myRadius2 * (aCosU * myXDir2.Y() + aSinU * myYDir2.Y())
-                      + theV * myAxis2.Y(),
-                  myCenter2.Z() + myRadius2 * (aCosU * myXDir2.Z() + aSinU * myYDir2.Z())
-                      + theV * myAxis2.Z());
+    return gp_Pnt(
+      myCenter2.X() + myRadius2 * (aCosU * myXDir2.X() + aSinU * myYDir2.X()) + theV * myAxis2.X(),
+      myCenter2.Y() + myRadius2 * (aCosU * myXDir2.Y() + aSinU * myYDir2.Y()) + theV * myAxis2.Y(),
+      myCenter2.Z() + myRadius2 * (aCosU * myXDir2.Z() + aSinU * myYDir2.Z()) + theV * myAxis2.Z());
   }
 
   //! Check if surfaces were swapped.
@@ -196,19 +192,19 @@ private:
     // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
     const gp_Vec aCrossVec = gp_Vec(myAxis1).Crossed(gp_Vec(myAxis2));
     const double aCrossMag = aCrossVec.Magnitude();
-    myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
+    myAxesParallel         = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
       // Normalize the cross product (common perpendicular direction)
-      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
-                              aCrossVec.Y() / aCrossMag,
-                              aCrossVec.Z() / aCrossMag);
+      myCrossProduct =
+        gp_Dir(aCrossVec.X() / aCrossMag, aCrossVec.Y() / aCrossMag, aCrossVec.Z() / aCrossMag);
     }
 
     // Vector from center1 to center2
-    myDeltaCenter =
-        gp_Vec(myCenter2.X() - myCenter1.X(), myCenter2.Y() - myCenter1.Y(), myCenter2.Z() - myCenter1.Z());
+    myDeltaCenter = gp_Vec(myCenter2.X() - myCenter1.X(),
+                           myCenter2.Y() - myCenter1.Y(),
+                           myCenter2.Z() - myCenter1.Z());
   }
 
   //! Compute extrema for parallel cylinders.
@@ -260,10 +256,10 @@ private:
 
     // Find U1 where cylinder1's radial direction points toward axis2
     // Radial direction at U1 is: cos(U1)*XDir1 + sin(U1)*YDir1 = aDirToAxis2
-    const double aDot1X = aDirToAxis2.X() * myXDir1.X() + aDirToAxis2.Y() * myXDir1.Y()
-                          + aDirToAxis2.Z() * myXDir1.Z();
-    const double aDot1Y = aDirToAxis2.X() * myYDir1.X() + aDirToAxis2.Y() * myYDir1.Y()
-                          + aDirToAxis2.Z() * myYDir1.Z();
+    const double aDot1X =
+      aDirToAxis2.X() * myXDir1.X() + aDirToAxis2.Y() * myXDir1.Y() + aDirToAxis2.Z() * myXDir1.Z();
+    const double aDot1Y =
+      aDirToAxis2.X() * myYDir1.X() + aDirToAxis2.Y() * myYDir1.Y() + aDirToAxis2.Z() * myYDir1.Z();
     const double aU1Toward = std::atan2(aDot1Y, aDot1X);
     const double aU1Away   = aU1Toward + M_PI;
 
@@ -271,10 +267,10 @@ private:
     const gp_Dir aDirToAxis1(-aDirToAxis2.X(), -aDirToAxis2.Y(), -aDirToAxis2.Z());
 
     // Find U2 where cylinder2's radial direction points toward axis1
-    const double aDot2X = aDirToAxis1.X() * myXDir2.X() + aDirToAxis1.Y() * myXDir2.Y()
-                          + aDirToAxis1.Z() * myXDir2.Z();
-    const double aDot2Y = aDirToAxis1.X() * myYDir2.X() + aDirToAxis1.Y() * myYDir2.Y()
-                          + aDirToAxis1.Z() * myYDir2.Z();
+    const double aDot2X =
+      aDirToAxis1.X() * myXDir2.X() + aDirToAxis1.Y() * myXDir2.Y() + aDirToAxis1.Z() * myXDir2.Z();
+    const double aDot2Y =
+      aDirToAxis1.X() * myYDir2.X() + aDirToAxis1.Y() * myYDir2.Y() + aDirToAxis1.Z() * myYDir2.Z();
     const double aU2Toward = std::atan2(aDot2Y, aDot2X);
     const double aU2Away   = aU2Toward + M_PI;
 
@@ -328,11 +324,12 @@ private:
 
     const double aA1DotA1 = 1.0; // Axis is unit vector
     const double aA2DotA2 = 1.0;
-    const double aA1DotA2 = myAxis1.X() * myAxis2.X() + myAxis1.Y() * myAxis2.Y() + myAxis1.Z() * myAxis2.Z();
-    const double aDeltaDotA1 =
-        myDeltaCenter.X() * myAxis1.X() + myDeltaCenter.Y() * myAxis1.Y() + myDeltaCenter.Z() * myAxis1.Z();
-    const double aDeltaDotA2 =
-        myDeltaCenter.X() * myAxis2.X() + myDeltaCenter.Y() * myAxis2.Y() + myDeltaCenter.Z() * myAxis2.Z();
+    const double aA1DotA2 =
+      myAxis1.X() * myAxis2.X() + myAxis1.Y() * myAxis2.Y() + myAxis1.Z() * myAxis2.Z();
+    const double aDeltaDotA1 = myDeltaCenter.X() * myAxis1.X() + myDeltaCenter.Y() * myAxis1.Y()
+                               + myDeltaCenter.Z() * myAxis1.Z();
+    const double aDeltaDotA2 = myDeltaCenter.X() * myAxis2.X() + myDeltaCenter.Y() * myAxis2.Y()
+                               + myDeltaCenter.Z() * myAxis2.Z();
 
     // Solve: t - s*cos(theta) = (C2-C1).A1, -t*cos(theta) + s = (C2-C1).A2
     // where cos(theta) = A1.A2
@@ -374,11 +371,11 @@ private:
 
     // Project this direction onto the perpendicular plane of each cylinder
     // For cylinder 1: project onto plane perpendicular to Axis1
-    gp_Vec aDir1Perp = aDirBetween - gp_Vec(myAxis1) * aDirBetween.Dot(gp_Vec(myAxis1));
+    gp_Vec       aDir1Perp    = aDirBetween - gp_Vec(myAxis1) * aDirBetween.Dot(gp_Vec(myAxis1));
     const double aDir1PerpMag = aDir1Perp.Magnitude();
 
     // For cylinder 2: project onto plane perpendicular to Axis2
-    gp_Vec aDir2Perp = aDirBetween - gp_Vec(myAxis2) * aDirBetween.Dot(gp_Vec(myAxis2));
+    gp_Vec       aDir2Perp    = aDirBetween - gp_Vec(myAxis2) * aDirBetween.Dot(gp_Vec(myAxis2));
     const double aDir2PerpMag = aDir2Perp.Magnitude();
 
     myResult.Status = ExtremaSS::Status::OK;
@@ -427,19 +424,23 @@ private:
     // For cylinder 1 at U1: radial direction is cos(U1)*XDir1 + sin(U1)*YDir1
     // Projection onto aDirBetween: R1 * (cos(U1)*(XDir1.D) + sin(U1)*(YDir1.D))
 
-    const double aX1DotD = myXDir1.X() * aDirBetween.X() + myXDir1.Y() * aDirBetween.Y() + myXDir1.Z() * aDirBetween.Z();
-    const double aY1DotD = myYDir1.X() * aDirBetween.X() + myYDir1.Y() * aDirBetween.Y() + myYDir1.Z() * aDirBetween.Z();
+    const double aX1DotD =
+      myXDir1.X() * aDirBetween.X() + myXDir1.Y() * aDirBetween.Y() + myXDir1.Z() * aDirBetween.Z();
+    const double aY1DotD =
+      myYDir1.X() * aDirBetween.X() + myYDir1.Y() * aDirBetween.Y() + myYDir1.Z() * aDirBetween.Z();
 
-    const double aX2DotD = myXDir2.X() * aDirBetween.X() + myXDir2.Y() * aDirBetween.Y() + myXDir2.Z() * aDirBetween.Z();
-    const double aY2DotD = myYDir2.X() * aDirBetween.X() + myYDir2.Y() * aDirBetween.Y() + myYDir2.Z() * aDirBetween.Z();
+    const double aX2DotD =
+      myXDir2.X() * aDirBetween.X() + myXDir2.Y() * aDirBetween.Y() + myXDir2.Z() * aDirBetween.Z();
+    const double aY2DotD =
+      myYDir2.X() * aDirBetween.X() + myYDir2.Y() * aDirBetween.Y() + myYDir2.Z() * aDirBetween.Z();
 
     // Maximum projection for cylinder 1 in direction D: at U1 = atan2(Y1.D, X1.D)
     const double aU1Toward = std::atan2(aY1DotD, aX1DotD);
-    const double aU1Away = aU1Toward + M_PI;
+    const double aU1Away   = aU1Toward + M_PI;
 
     // For cylinder 2, we want projection in -D direction for minimum
     const double aU2Toward = std::atan2(-aY2DotD, -aX2DotD);
-    const double aU2Away = aU2Toward + M_PI;
+    const double aU2Away   = aU2Toward + M_PI;
 
     // Maximum projections
     const double aProj1Max = myRadius1 * std::sqrt(aX1DotD * aX1DotD + aY1DotD * aY1DotD);
@@ -462,8 +463,8 @@ private:
   }
 
   //! Compute extrema when axes intersect.
-  void computeIntersectingAxesCase(const gp_Pnt& theIntersection,
-                                   double        theTol,
+  void computeIntersectingAxesCase(const gp_Pnt&         theIntersection,
+                                   double                theTol,
                                    ExtremaSS::SearchMode theMode) const
   {
     // Axes intersect at theIntersection
@@ -484,13 +485,17 @@ private:
 
     // Project cross direction onto each cylinder's perpendicular plane
     // For cylinder 1:
-    const double aC1X = aCrossDir.X() * myXDir1.X() + aCrossDir.Y() * myXDir1.Y() + aCrossDir.Z() * myXDir1.Z();
-    const double aC1Y = aCrossDir.X() * myYDir1.X() + aCrossDir.Y() * myYDir1.Y() + aCrossDir.Z() * myYDir1.Z();
+    const double aC1X =
+      aCrossDir.X() * myXDir1.X() + aCrossDir.Y() * myXDir1.Y() + aCrossDir.Z() * myXDir1.Z();
+    const double aC1Y =
+      aCrossDir.X() * myYDir1.X() + aCrossDir.Y() * myYDir1.Y() + aCrossDir.Z() * myYDir1.Z();
     const double aU1Cross = std::atan2(aC1Y, aC1X);
 
     // For cylinder 2:
-    const double aC2X = aCrossDir.X() * myXDir2.X() + aCrossDir.Y() * myXDir2.Y() + aCrossDir.Z() * myXDir2.Z();
-    const double aC2Y = aCrossDir.X() * myYDir2.X() + aCrossDir.Y() * myYDir2.Y() + aCrossDir.Z() * myYDir2.Z();
+    const double aC2X =
+      aCrossDir.X() * myXDir2.X() + aCrossDir.Y() * myXDir2.Y() + aCrossDir.Z() * myXDir2.Z();
+    const double aC2Y =
+      aCrossDir.X() * myYDir2.X() + aCrossDir.Y() * myYDir2.Y() + aCrossDir.Z() * myYDir2.Z();
     const double aU2Cross = std::atan2(aC2Y, aC2X);
 
     myResult.Status = ExtremaSS::Status::OK;
@@ -506,15 +511,15 @@ private:
         const double aU1 = aU1Vals[i];
         const double aU2 = aU2Vals[j];
 
-        const gp_Pnt aP1 = Value1(aU1, aV1);
-        const gp_Pnt aP2 = Value2(aU2, aV2);
+        const gp_Pnt aP1     = Value1(aU1, aV1);
+        const gp_Pnt aP2     = Value2(aU2, aV2);
         const double aSqDist = aP1.SquareDistance(aP2);
 
         // Determine if this is a minimum or maximum
         const bool aIsMin = (i == j); // Same side = minimum, opposite = maximum
 
-        if ((aIsMin && theMode != ExtremaSS::SearchMode::Max) ||
-            (!aIsMin && theMode != ExtremaSS::SearchMode::Min))
+        if ((aIsMin && theMode != ExtremaSS::SearchMode::Max)
+            || (!aIsMin && theMode != ExtremaSS::SearchMode::Min))
         {
           addExtremum(aU1, aV1, aU2, aV2, aSqDist, aIsMin, theTol);
         }
@@ -530,7 +535,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    const ExtremaSS::Domain4D& aDom  = myDomain.value();
     const MathUtils::Domain2D& aDom1 = aDom.Domain1;
     const MathUtils::Domain2D& aDom2 = aDom.Domain2;
 
@@ -577,7 +582,10 @@ private:
   }
 
   //! Check a point on surface 1 against surface 2 for potential extrema.
-  void checkPointAgainstSurface2(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPointAgainstSurface2(double                theU1,
+                                 double                theV1,
+                                 double                theTol,
+                                 ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP1 = Value1(theU1, theV1);
 
@@ -604,7 +612,7 @@ private:
 
     // Direction from axis to P1, projected onto perpendicular plane
     gp_Vec aDirToP1(aPOnAxis2, aP1);
-    aDirToP1 = aDirToP1 - gp_Vec(myAxis2) * aDirToP1.Dot(gp_Vec(myAxis2));
+    aDirToP1                 = aDirToP1 - gp_Vec(myAxis2) * aDirToP1.Dot(gp_Vec(myAxis2));
     const double aDistToAxis = aDirToP1.Magnitude();
 
     if (aDistToAxis < theTol)
@@ -616,28 +624,31 @@ private:
     aDirToP1.Divide(aDistToAxis);
 
     // U2 for minimum: pointing toward P1
-    const double aU2X = aDirToP1.Dot(gp_Vec(myXDir2));
-    const double aU2Y = aDirToP1.Dot(gp_Vec(myYDir2));
+    const double aU2X   = aDirToP1.Dot(gp_Vec(myXDir2));
+    const double aU2Y   = aDirToP1.Dot(gp_Vec(myYDir2));
     const double aU2Min = std::atan2(aU2Y, aU2X);
     const double aU2Max = aU2Min + M_PI;
 
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      const gp_Pnt aP2 = Value2(aU2Min, aV2);
+      const gp_Pnt aP2     = Value2(aU2Min, aV2);
       const double aSqDist = aP1.SquareDistance(aP2);
       addExtremum(theU1, theV1, aU2Min, aV2, aSqDist, true, theTol);
     }
 
     if (theMode != ExtremaSS::SearchMode::Min)
     {
-      const gp_Pnt aP2 = Value2(aU2Max, aV2);
+      const gp_Pnt aP2     = Value2(aU2Max, aV2);
       const double aSqDist = aP1.SquareDistance(aP2);
       addExtremum(theU1, theV1, aU2Max, aV2, aSqDist, false, theTol);
     }
   }
 
   //! Check a point on surface 2 against surface 1 for potential extrema.
-  void checkPointAgainstSurface1(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPointAgainstSurface1(double                theU2,
+                                 double                theV2,
+                                 double                theTol,
+                                 ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP2 = Value2(theU2, theV2);
 
@@ -659,7 +670,7 @@ private:
                            myCenter1.Z() + aV1 * myAxis1.Z());
 
     gp_Vec aDirToP2(aPOnAxis1, aP2);
-    aDirToP2 = aDirToP2 - gp_Vec(myAxis1) * aDirToP2.Dot(gp_Vec(myAxis1));
+    aDirToP2                 = aDirToP2 - gp_Vec(myAxis1) * aDirToP2.Dot(gp_Vec(myAxis1));
     const double aDistToAxis = aDirToP2.Magnitude();
 
     if (aDistToAxis < theTol)
@@ -669,21 +680,21 @@ private:
 
     aDirToP2.Divide(aDistToAxis);
 
-    const double aU1X = aDirToP2.Dot(gp_Vec(myXDir1));
-    const double aU1Y = aDirToP2.Dot(gp_Vec(myYDir1));
+    const double aU1X   = aDirToP2.Dot(gp_Vec(myXDir1));
+    const double aU1Y   = aDirToP2.Dot(gp_Vec(myYDir1));
     const double aU1Min = std::atan2(aU1Y, aU1X);
     const double aU1Max = aU1Min + M_PI;
 
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      const gp_Pnt aP1 = Value1(aU1Min, aV1);
+      const gp_Pnt aP1     = Value1(aU1Min, aV1);
       const double aSqDist = aP1.SquareDistance(aP2);
       addExtremum(aU1Min, aV1, theU2, theV2, aSqDist, true, theTol);
     }
 
     if (theMode != ExtremaSS::SearchMode::Min)
     {
-      const gp_Pnt aP1 = Value1(aU1Max, aV1);
+      const gp_Pnt aP1     = Value1(aU1Max, aV1);
       const double aSqDist = aP1.SquareDistance(aP2);
       addExtremum(aU1Max, aV1, theU2, theV2, aSqDist, false, theTol);
     }
@@ -715,9 +726,9 @@ private:
         const double aDV1 = std::abs(anExisting.V1 - theV1);
         const double aDV2 = std::abs(anExisting.V2 - theV2);
 
-        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol) &&
-            (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) &&
-            aDV1 < theTol && aDV2 < theTol)
+        if ((aDU1 < theTol || std::abs(aDU1 - 2 * M_PI) < theTol)
+            && (aDU2 < theTol || std::abs(aDU2 - 2 * M_PI) < theTol) && aDV1 < theTol
+            && aDV2 < theTol)
         {
           return; // Duplicate
         }

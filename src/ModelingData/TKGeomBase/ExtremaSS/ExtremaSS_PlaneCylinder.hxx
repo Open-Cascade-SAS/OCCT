@@ -132,7 +132,8 @@ private:
     myCylRadius = myCylinder.Radius();
 
     // Compute axis-normal dot product
-    myAxisNormDot = myCylAxisX * myPlaneNormX + myCylAxisY * myPlaneNormY + myCylAxisZ * myPlaneNormZ;
+    myAxisNormDot =
+      myCylAxisX * myPlaneNormX + myCylAxisY * myPlaneNormY + myCylAxisZ * myPlaneNormZ;
   }
 
 public:
@@ -263,19 +264,19 @@ public:
 
       // Project onto plane
       const double aDistToPlane = (aCylPtX - myPlaneOrigX) * myPlaneNormX
-                                + (aCylPtY - myPlaneOrigY) * myPlaneNormY
-                                + (aCylPtZ - myPlaneOrigZ) * myPlaneNormZ;
+                                  + (aCylPtY - myPlaneOrigY) * myPlaneNormY
+                                  + (aCylPtZ - myPlaneOrigZ) * myPlaneNormZ;
       const gp_Pnt aPlanePt(aCylPtX - aDistToPlane * myPlaneNormX,
                             aCylPtY - aDistToPlane * myPlaneNormY,
                             aCylPtZ - aDistToPlane * myPlaneNormZ);
 
       // Compute UV parameters
       const double aPlaneU = (aPlanePt.X() - myPlaneOrigX) * myPlaneXDirX
-                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
-                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                             + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
+                             + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
       const double aPlaneV = (aPlanePt.X() - myPlaneOrigX) * myPlaneYDirX
-                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
-                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                             + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
+                             + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
 
       double aCylU =
         std::atan2(-aRadialDirX * myCylYDirX - aRadialDirY * myCylYDirY - aRadialDirZ * myCylYDirZ,
@@ -287,13 +288,29 @@ public:
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aCylU, aT, aPlaneU, aPlaneV, aCylPt, aPlanePt, aMinSqDist,
-                               true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aCylU,
+                               aT,
+                               aPlaneU,
+                               aPlaneV,
+                               aCylPt,
+                               aPlanePt,
+                               aMinSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aPlaneU, aPlaneV, aCylU, aT, aPlanePt, aCylPt, aMinSqDist,
-                               true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aPlaneU,
+                               aPlaneV,
+                               aCylU,
+                               aT,
+                               aPlanePt,
+                               aCylPt,
+                               aMinSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -307,18 +324,18 @@ public:
 
       // Project onto plane
       const double aDistToPlane = (aCylPtX - myPlaneOrigX) * myPlaneNormX
-                                + (aCylPtY - myPlaneOrigY) * myPlaneNormY
-                                + (aCylPtZ - myPlaneOrigZ) * myPlaneNormZ;
+                                  + (aCylPtY - myPlaneOrigY) * myPlaneNormY
+                                  + (aCylPtZ - myPlaneOrigZ) * myPlaneNormZ;
       const gp_Pnt aPlanePt(aCylPtX - aDistToPlane * myPlaneNormX,
                             aCylPtY - aDistToPlane * myPlaneNormY,
                             aCylPtZ - aDistToPlane * myPlaneNormZ);
 
       const double aPlaneU = (aPlanePt.X() - myPlaneOrigX) * myPlaneXDirX
-                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
-                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                             + (aPlanePt.Y() - myPlaneOrigY) * myPlaneXDirY
+                             + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
       const double aPlaneV = (aPlanePt.X() - myPlaneOrigX) * myPlaneYDirX
-                           + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
-                           + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                             + (aPlanePt.Y() - myPlaneOrigY) * myPlaneYDirY
+                             + (aPlanePt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
 
       double aCylU =
         std::atan2(aRadialDirX * myCylYDirX + aRadialDirY * myCylYDirY + aRadialDirZ * myCylYDirZ,
@@ -330,18 +347,34 @@ public:
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aCylU, aT, aPlaneU, aPlaneV, aCylPt, aPlanePt, aMaxSqDist,
-                               false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aCylU,
+                               aT,
+                               aPlaneU,
+                               aPlaneV,
+                               aCylPt,
+                               aPlanePt,
+                               aMaxSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aPlaneU, aPlaneV, aCylU, aT, aPlanePt, aCylPt, aMaxSqDist,
-                               false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aPlaneU,
+                               aPlaneV,
+                               aCylU,
+                               aT,
+                               aPlanePt,
+                               aCylPt,
+                               aMaxSqDist,
+                               false,
+                               theTol);
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution
-                                                 : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
@@ -379,7 +412,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    const ExtremaSS::Domain4D& aDom       = myDomain.value();
     constexpr int              aNbSamples = 20;
 
     // Sample plane boundary edges (Domain1)
@@ -424,7 +457,9 @@ private:
   }
 
   //! Check a plane boundary point against the cylinder.
-  void checkPlanePointAgainstCylinder(double thePlaneU, double thePlaneV, double theTol,
+  void checkPlanePointAgainstCylinder(double                thePlaneU,
+                                      double                thePlaneV,
+                                      double                theTol,
                                       ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aPlanePt = Value1(thePlaneU, thePlaneV);
@@ -443,9 +478,9 @@ private:
     const double aAxisPtZ = myCylOrigZ + aCylV * myCylAxisZ;
 
     // Radial direction from axis to point
-    const double aRadX = aPlanePt.X() - aAxisPtX;
-    const double aRadY = aPlanePt.Y() - aAxisPtY;
-    const double aRadZ = aPlanePt.Z() - aAxisPtZ;
+    const double aRadX    = aPlanePt.X() - aAxisPtX;
+    const double aRadY    = aPlanePt.Y() - aAxisPtY;
+    const double aRadZ    = aPlanePt.Z() - aAxisPtZ;
     const double aRadDist = std::sqrt(aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ);
 
     if (aRadDist < theTol)
@@ -459,8 +494,9 @@ private:
     const double aRadDirY = aRadY / aRadDist;
     const double aRadDirZ = aRadZ / aRadDist;
 
-    double aCylU = std::atan2(aRadDirX * myCylYDirX + aRadDirY * myCylYDirY + aRadDirZ * myCylYDirZ,
-                              aRadDirX * myCylXDirX + aRadDirY * myCylXDirY + aRadDirZ * myCylXDirZ);
+    double aCylU =
+      std::atan2(aRadDirX * myCylYDirX + aRadDirY * myCylYDirY + aRadDirZ * myCylYDirZ,
+                 aRadDirX * myCylXDirX + aRadDirY * myCylXDirY + aRadDirZ * myCylXDirZ);
     if (aCylU < 0)
       aCylU += ExtremaSS::THE_TWO_PI;
 
@@ -471,18 +507,34 @@ private:
     {
       const double aClampedU = std::clamp(aCylU, aDom.Domain2.UMin, aDom.Domain2.UMax);
       const double aClampedV = std::clamp(aCylV, aDom.Domain2.VMin, aDom.Domain2.VMax);
-      const gp_Pnt aCylPt = Value2(aClampedU, aClampedV);
-      const double aSqDist = aPlanePt.SquareDistance(aCylPt);
+      const gp_Pnt aCylPt    = Value2(aClampedU, aClampedV);
+      const double aSqDist   = aPlanePt.SquareDistance(aCylPt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aCylPt, aPlanePt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               thePlaneU,
+                               thePlaneV,
+                               aCylPt,
+                               aPlanePt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aCylPt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               thePlaneU,
+                               thePlaneV,
+                               aClampedU,
+                               aClampedV,
+                               aPlanePt,
+                               aCylPt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -495,32 +547,50 @@ private:
 
       const double aClampedU = std::clamp(aCylUFar, aDom.Domain2.UMin, aDom.Domain2.UMax);
       const double aClampedV = std::clamp(aCylV, aDom.Domain2.VMin, aDom.Domain2.VMax);
-      const gp_Pnt aCylPt = Value2(aClampedU, aClampedV);
-      const double aSqDist = aPlanePt.SquareDistance(aCylPt);
+      const gp_Pnt aCylPt    = Value2(aClampedU, aClampedV);
+      const double aSqDist   = aPlanePt.SquareDistance(aCylPt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, thePlaneU, thePlaneV, aCylPt, aPlanePt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               thePlaneU,
+                               thePlaneV,
+                               aCylPt,
+                               aPlanePt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, thePlaneU, thePlaneV, aClampedU, aClampedV, aPlanePt, aCylPt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               thePlaneU,
+                               thePlaneV,
+                               aClampedU,
+                               aClampedV,
+                               aPlanePt,
+                               aCylPt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
     }
   }
 
   //! Check a cylinder boundary point against the plane.
-  void checkCylinderPointAgainstPlane(double theCylU, double theCylV, double theTol,
+  void checkCylinderPointAgainstPlane(double                theCylU,
+                                      double                theCylV,
+                                      double                theTol,
                                       ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aCylPt = Value2(theCylU, theCylV);
 
     // Project cylinder point onto plane
     const double aDistToPlane = (aCylPt.X() - myPlaneOrigX) * myPlaneNormX
-                              + (aCylPt.Y() - myPlaneOrigY) * myPlaneNormY
-                              + (aCylPt.Z() - myPlaneOrigZ) * myPlaneNormZ;
+                                + (aCylPt.Y() - myPlaneOrigY) * myPlaneNormY
+                                + (aCylPt.Z() - myPlaneOrigZ) * myPlaneNormZ;
 
     const gp_Pnt aProjPt(aCylPt.X() - aDistToPlane * myPlaneNormX,
                          aCylPt.Y() - aDistToPlane * myPlaneNormY,
@@ -528,48 +598,67 @@ private:
 
     // Compute plane UV parameters
     double aPlaneU = (aProjPt.X() - myPlaneOrigX) * myPlaneXDirX
-                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneXDirY
-                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                     + (aProjPt.Y() - myPlaneOrigY) * myPlaneXDirY
+                     + (aProjPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
     double aPlaneV = (aProjPt.X() - myPlaneOrigX) * myPlaneYDirX
-                   + (aProjPt.Y() - myPlaneOrigY) * myPlaneYDirY
-                   + (aProjPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                     + (aProjPt.Y() - myPlaneOrigY) * myPlaneYDirY
+                     + (aProjPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
 
     const ExtremaSS::Domain4D& aDom = myDomain.value();
 
     // Clamp to plane domain
     const double aClampedU = std::clamp(aPlaneU, aDom.Domain1.UMin, aDom.Domain1.UMax);
     const double aClampedV = std::clamp(aPlaneV, aDom.Domain1.VMin, aDom.Domain1.VMax);
-    const gp_Pnt aPlanePt = Value1(aClampedU, aClampedV);
-    const double aSqDist = aCylPt.SquareDistance(aPlanePt);
+    const gp_Pnt aPlanePt  = Value1(aClampedU, aClampedV);
+    const double aSqDist   = aCylPt.SquareDistance(aPlanePt);
 
     // Only minimum makes sense for fixed cylinder point
     if (theMode != ExtremaSS::SearchMode::Max)
     {
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, theCylU, theCylV, aClampedU, aClampedV, aCylPt, aPlanePt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               theCylU,
+                               theCylV,
+                               aClampedU,
+                               aClampedV,
+                               aCylPt,
+                               aPlanePt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theCylU, theCylV, aPlanePt, aCylPt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               theCylU,
+                               theCylV,
+                               aPlanePt,
+                               aCylPt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
     }
   }
 
 public:
-  const gp_Pln&      Plane() const { return myPlane; }
+  const gp_Pln& Plane() const { return myPlane; }
+
   const gp_Cylinder& Cylinder() const { return myCylinder; }
-  bool               IsSwapped() const { return mySwapped; }
-  bool               IsBounded() const { return myDomain.has_value(); }
+
+  bool IsSwapped() const { return mySwapped; }
+
+  bool IsBounded() const { return myDomain.has_value(); }
 
 private:
-  gp_Pln                               myPlane;
-  gp_Cylinder                          myCylinder;
+  gp_Pln                             myPlane;
+  gp_Cylinder                        myCylinder;
   std::optional<ExtremaSS::Domain4D> myDomain;
-  mutable ExtremaSS::Result            myResult;
-  bool                                 mySwapped;
+  mutable ExtremaSS::Result          myResult;
+  bool                               mySwapped;
 
   // Cached plane components
   double myPlaneOrigX, myPlaneOrigY, myPlaneOrigZ;

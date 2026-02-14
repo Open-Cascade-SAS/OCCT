@@ -372,7 +372,7 @@ TEST_F(ExtremaCC_ComparisonTest, BSplineBSpline)
   // First BSpline - horizontal curve at y=0
   NCollection_Array1<gp_Pnt> aPoles1(1, 4);
   aPoles1(1) = gp_Pnt(0, 0, 0);
-  aPoles1(2) = gp_Pnt(1, 1, 0);  // Slight upward curve
+  aPoles1(2) = gp_Pnt(1, 1, 0); // Slight upward curve
   aPoles1(3) = gp_Pnt(2, 1, 0);
   aPoles1(4) = gp_Pnt(3, 0, 0);
 
@@ -389,7 +389,7 @@ TEST_F(ExtremaCC_ComparisonTest, BSplineBSpline)
   // Second BSpline - directly above at y=5, but dipping down in the middle
   NCollection_Array1<gp_Pnt> aPoles2(1, 4);
   aPoles2(1) = gp_Pnt(0, 5, 0);
-  aPoles2(2) = gp_Pnt(1, 3, 0);  // Dips down toward first curve
+  aPoles2(2) = gp_Pnt(1, 3, 0); // Dips down toward first curve
   aPoles2(3) = gp_Pnt(2, 3, 0);
   aPoles2(4) = gp_Pnt(3, 5, 0);
 
@@ -443,7 +443,7 @@ TEST_F(ExtremaCC_ComparisonTest, Performance_CircleCircle)
   auto aStartNew = std::chrono::high_resolution_clock::now();
   for (const auto& aPos : aPositions)
   {
-    gp_Circ aCirc2Moved(gp_Ax2(aPos, gp_Dir(1, 0, 0)), 5.0);
+    gp_Circ                  aCirc2Moved(gp_Ax2(aPos, gp_Dir(1, 0, 0)), 5.0);
     occ::handle<Geom_Circle> aGeomCirc2Moved = new Geom_Circle(aCirc2Moved);
     GeomAdaptor_Curve        anAdaptor1(aGeomCirc1);
     GeomAdaptor_Curve        anAdaptor2(aGeomCirc2Moved);
@@ -459,7 +459,7 @@ TEST_F(ExtremaCC_ComparisonTest, Performance_CircleCircle)
   auto aStartOld = std::chrono::high_resolution_clock::now();
   for (const auto& aPos : aPositions)
   {
-    gp_Circ aCirc2Moved(gp_Ax2(aPos, gp_Dir(1, 0, 0)), 5.0);
+    gp_Circ                  aCirc2Moved(gp_Ax2(aPos, gp_Dir(1, 0, 0)), 5.0);
     occ::handle<Geom_Circle> aGeomCirc2Moved = new Geom_Circle(aCirc2Moved);
     GeomAdaptor_Curve        anAdaptor1(aGeomCirc1);
     GeomAdaptor_Curve        anAdaptor2(aGeomCirc2Moved);
@@ -560,7 +560,7 @@ TEST_F(ExtremaCC_ComparisonTest, Performance_BSplineBSpline)
   aKnots1(2) = 1.0;
 
   NCollection_Array1<int> aMults1(1, 2);
-  aMults1(1) = 4;  // degree + 1 = 4
+  aMults1(1) = 4; // degree + 1 = 4
   aMults1(2) = 4;
 
   occ::handle<Geom_BSplineCurve> aBSpline1 = new Geom_BSplineCurve(aPoles1, aKnots1, aMults1, 3);

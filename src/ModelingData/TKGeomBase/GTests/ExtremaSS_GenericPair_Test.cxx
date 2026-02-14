@@ -35,9 +35,9 @@ protected:
 
   //! Create a simple bilinear Bezier surface (flat plane-like).
   Handle(Geom_BezierSurface) createBezierPlane(const gp_Pnt& theCorner,
-                                                double        theSizeU,
-                                                double        theSizeV,
-                                                const gp_Dir& theNormal)
+                                               double        theSizeU,
+                                               double        theSizeV,
+                                               const gp_Dir& theNormal)
   {
     gp_Dir aDirU, aDirV;
     if (std::abs(theNormal.Z()) < 0.9)
@@ -83,9 +83,9 @@ protected:
   //! Create a cubic BSpline surface (wavy surface).
   //! Uses 4x4 control points for cubic degree (Bezier-like segment).
   Handle(Geom_BSplineSurface) createBSplineWavySurface(const gp_Pnt& theCenter,
-                                                        double        theSizeU,
-                                                        double        theSizeV,
-                                                        double        theAmplitude)
+                                                       double        theSizeU,
+                                                       double        theSizeV,
+                                                       double        theAmplitude)
   {
     // 4x4 control points for a cubic BSpline (Bezier-like)
     const int aNbPoles = 4;
@@ -101,7 +101,7 @@ protected:
         double aV = (j - 1) * theSizeV / (aNbPoles - 1) - theSizeV / 2.0;
         // Wavy pattern using control point displacement
         double aZ = theAmplitude * std::sin(M_PI * (i - 1) / (aNbPoles - 1))
-                  * std::cos(M_PI * (j - 1) / (aNbPoles - 1));
+                    * std::cos(M_PI * (j - 1) / (aNbPoles - 1));
 
         aPoles(i, j) = gp_Pnt(theCenter.X() + aU, theCenter.Y() + aV, theCenter.Z() + aZ);
       }
@@ -121,9 +121,9 @@ protected:
 
   //! Create a BSpline plane-like surface.
   Handle(Geom_BSplineSurface) createBSplinePlane(const gp_Pnt& theCorner,
-                                                  double        theSizeU,
-                                                  double        theSizeV,
-                                                  const gp_Dir& theNormal)
+                                                 double        theSizeU,
+                                                 double        theSizeV,
+                                                 const gp_Dir& theNormal)
   {
     gp_Dir aDirU, aDirV;
     if (std::abs(theNormal.Z()) < 0.9)
@@ -137,15 +137,15 @@ protected:
     aDirV = theNormal.Crossed(aDirU);
 
     // 4x4 control points for cubic BSpline
-    const int aNbPoles = 4;
+    const int                  aNbPoles = 4;
     NCollection_Array2<gp_Pnt> aPoles(1, aNbPoles, 1, aNbPoles);
 
     for (int i = 1; i <= aNbPoles; ++i)
     {
       for (int j = 1; j <= aNbPoles; ++j)
       {
-        double aU = (i - 1) * theSizeU / (aNbPoles - 1);
-        double aV = (j - 1) * theSizeV / (aNbPoles - 1);
+        double aU    = (i - 1) * theSizeU / (aNbPoles - 1);
+        double aV    = (j - 1) * theSizeV / (aNbPoles - 1);
         aPoles(i, j) = theCorner.Translated(gp_Vec(aDirU) * aU + gp_Vec(aDirV) * aV);
       }
     }
@@ -177,7 +177,7 @@ TEST_F(ExtremaSS_GenericPairTest, TwoBezierPlanes_Parallel)
   GeomAdaptor_Surface anAdaptor1(aSurf1);
   GeomAdaptor_Surface anAdaptor2(aSurf2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find extrema (for parallel planes, all points are at same distance)
@@ -197,7 +197,7 @@ TEST_F(ExtremaSS_GenericPairTest, TwoBezierPlanes_Perpendicular)
   GeomAdaptor_Surface anAdaptor1(aSurf1);
   GeomAdaptor_Surface anAdaptor2(aSurf2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -211,12 +211,12 @@ TEST_F(ExtremaSS_GenericPairTest, SaddleSurface_VsPlane)
 {
   // A saddle surface and a flat Bezier plane
   Handle(Geom_BezierSurface) aSaddle = createSaddleSurface(gp_Pnt(0, 0, 5), 2.0);
-  Handle(Geom_BezierSurface) aPlane  = createBezierPlane(gp_Pnt(-5, -5, 0), 10, 10, gp_Dir(0, 0, 1));
+  Handle(Geom_BezierSurface) aPlane = createBezierPlane(gp_Pnt(-5, -5, 0), 10, 10, gp_Dir(0, 0, 1));
 
   GeomAdaptor_Surface anAdaptor1(aSaddle);
   GeomAdaptor_Surface anAdaptor2(aPlane);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -225,7 +225,7 @@ TEST_F(ExtremaSS_GenericPairTest, SaddleSurface_VsPlane)
   // Bezier surface from saddle-shaped poles approximates z=x^2-y^2 but doesn't interpolate exactly.
   // The minimum distance between surfaces should be positive and reasonable.
   double aMinDist = std::sqrt(aResult.MinSquareDistance());
-  EXPECT_GT(aMinDist, 0.0); // Should be positive distance
+  EXPECT_GT(aMinDist, 0.0);  // Should be positive distance
   EXPECT_LT(aMinDist, 10.0); // Should be reasonable (saddle center is at z=5)
 }
 
@@ -238,7 +238,7 @@ TEST_F(ExtremaSS_GenericPairTest, TwoSaddleSurfaces_Separated)
   GeomAdaptor_Surface anAdaptor1(aSaddle1);
   GeomAdaptor_Surface anAdaptor2(aSaddle2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -270,7 +270,7 @@ TEST_F(ExtremaSS_GenericPairTest, WithDomain_RestrictedSearch)
   aDomain.Domain2.VMin = 0.0;
   aDomain.Domain2.VMax = 0.5;
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2, aDomain);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2, aDomain);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -303,7 +303,7 @@ TEST_F(ExtremaSS_GenericPairTest, PerformWithBoundary_IncludesCorners)
   GeomAdaptor_Surface anAdaptor1(aSurf1);
   GeomAdaptor_Surface anAdaptor2(aSurf2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.PerformWithBoundary(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -323,7 +323,7 @@ TEST_F(ExtremaSS_GenericPairTest, SearchModeMin_OnlyFindsMinimum)
   GeomAdaptor_Surface anAdaptor1(aSaddle1);
   GeomAdaptor_Surface anAdaptor2(aSaddle2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -345,10 +345,10 @@ TEST_F(ExtremaSS_GenericPairTest, SwappedOrder_SameResult)
   GeomAdaptor_Surface anAdaptor1(aSaddle1);
   GeomAdaptor_Surface anAdaptor2(aSaddle2);
 
-  ExtremaSS_GenericPair anEval1(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval1(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult1 = anEval1.Perform(THE_TOL);
 
-  ExtremaSS_GenericPair anEval2(anAdaptor2, anAdaptor1);
+  ExtremaSS_GenericPair    anEval2(anAdaptor2, anAdaptor1);
   const ExtremaSS::Result& aResult2 = anEval2.Perform(THE_TOL);
 
   ASSERT_EQ(aResult1.Status, ExtremaSS::Status::OK);
@@ -373,7 +373,7 @@ TEST_F(ExtremaSS_GenericPairTest, TwoBSplinePlanes_Parallel)
   GeomAdaptor_Surface anAdaptor1(aSurf1);
   GeomAdaptor_Surface anAdaptor2(aSurf2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -394,7 +394,7 @@ TEST_F(ExtremaSS_GenericPairTest, BSplineWavy_VsBSplinePlane)
   GeomAdaptor_Surface anAdaptor1(aWavy);
   GeomAdaptor_Surface anAdaptor2(aPlane);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -409,15 +409,13 @@ TEST_F(ExtremaSS_GenericPairTest, BSplineWavy_VsBSplinePlane)
 TEST_F(ExtremaSS_GenericPairTest, TwoBSplineWavy_Surfaces)
 {
   // Two wavy BSpline surfaces at different heights
-  Handle(Geom_BSplineSurface) aWavy1 =
-    createBSplineWavySurface(gp_Pnt(0, 0, 0), 8.0, 8.0, 1.0);
-  Handle(Geom_BSplineSurface) aWavy2 =
-    createBSplineWavySurface(gp_Pnt(0, 0, 6), 8.0, 8.0, 1.0);
+  Handle(Geom_BSplineSurface) aWavy1 = createBSplineWavySurface(gp_Pnt(0, 0, 0), 8.0, 8.0, 1.0);
+  Handle(Geom_BSplineSurface) aWavy2 = createBSplineWavySurface(gp_Pnt(0, 0, 6), 8.0, 8.0, 1.0);
 
   GeomAdaptor_Surface anAdaptor1(aWavy1);
   GeomAdaptor_Surface anAdaptor2(aWavy2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -433,14 +431,13 @@ TEST_F(ExtremaSS_GenericPairTest, TwoBSplineWavy_Surfaces)
 TEST_F(ExtremaSS_GenericPairTest, BSpline_VsBezier_Mixed)
 {
   // BSpline wavy surface vs Bezier saddle surface
-  Handle(Geom_BSplineSurface) aBSpline =
-    createBSplineWavySurface(gp_Pnt(0, 0, 0), 6.0, 6.0, 0.5);
-  Handle(Geom_BezierSurface) aBezier = createSaddleSurface(gp_Pnt(10, 0, 0), 2.0);
+  Handle(Geom_BSplineSurface) aBSpline = createBSplineWavySurface(gp_Pnt(0, 0, 0), 6.0, 6.0, 0.5);
+  Handle(Geom_BezierSurface)  aBezier  = createSaddleSurface(gp_Pnt(10, 0, 0), 2.0);
 
   GeomAdaptor_Surface anAdaptor1(aBSpline);
   GeomAdaptor_Surface anAdaptor2(aBezier);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -460,7 +457,7 @@ TEST_F(ExtremaSS_GenericPairTest, OffsetSphere_VsPlane)
 {
   // Offset surface from a sphere
   // This exercises the GenericPair fallback for offset surfaces
-  gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
+  gp_Sphere                     aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
   Handle(Geom_SphericalSurface) aBaseSphere = new Geom_SphericalSurface(aSphere);
 
   // Offset creates a larger or smaller sphere depending on sign
@@ -473,7 +470,7 @@ TEST_F(ExtremaSS_GenericPairTest, OffsetSphere_VsPlane)
   GeomAdaptor_Surface anAdaptor1(anOffsetSurf);
   GeomAdaptor_Surface anAdaptor2(aPlane);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -501,7 +498,7 @@ TEST_F(ExtremaSS_GenericPairTest, TwoOffsetSurfaces)
   GeomAdaptor_Surface anAdaptor1(anOffset1);
   GeomAdaptor_Surface anAdaptor2(anOffset2);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -516,17 +513,16 @@ TEST_F(ExtremaSS_GenericPairTest, TwoOffsetSurfaces)
 TEST_F(ExtremaSS_GenericPairTest, BSpline_VsOffsetSurface)
 {
   // BSpline wavy surface vs offset sphere
-  Handle(Geom_BSplineSurface) aBSpline =
-    createBSplineWavySurface(gp_Pnt(0, 0, 0), 8.0, 8.0, 0.5);
+  Handle(Geom_BSplineSurface) aBSpline = createBSplineWavySurface(gp_Pnt(0, 0, 0), 8.0, 8.0, 0.5);
 
-  gp_Sphere aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
+  gp_Sphere                     aSphere(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 3.0);
   Handle(Geom_SphericalSurface) aBaseSphere = new Geom_SphericalSurface(aSphere);
-  Handle(Geom_OffsetSurface) anOffset = new Geom_OffsetSurface(aBaseSphere, 0.5);
+  Handle(Geom_OffsetSurface)    anOffset    = new Geom_OffsetSurface(aBaseSphere, 0.5);
 
   GeomAdaptor_Surface anAdaptor1(aBSpline);
   GeomAdaptor_Surface anAdaptor2(anOffset);
 
-  ExtremaSS_GenericPair anEval(anAdaptor1, anAdaptor2);
+  ExtremaSS_GenericPair    anEval(anAdaptor1, anAdaptor2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

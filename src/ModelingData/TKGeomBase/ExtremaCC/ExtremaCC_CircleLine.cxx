@@ -31,26 +31,29 @@
 
 namespace
 {
-  //! Refines direction to eliminate near-zero components.
-  //! @param[in,out] theDir direction to refine
-  void refineDir(gp_Dir& theDir)
+//! Refines direction to eliminate near-zero components.
+//! @param[in,out] theDir direction to refine
+void refineDir(gp_Dir& theDir)
+{
+  constexpr double aTol = 1.0e-16;
+  double           aX   = theDir.X();
+  double           aY   = theDir.Y();
+  double           aZ   = theDir.Z();
+
+  if (std::abs(aX) < aTol)
+    aX = 0.0;
+  if (std::abs(aY) < aTol)
+    aY = 0.0;
+  if (std::abs(aZ) < aTol)
+    aZ = 0.0;
+
+  // Renormalize if needed
+  const double aMag = std::sqrt(aX * aX + aY * aY + aZ * aZ);
+  if (aMag > gp::Resolution())
   {
-    constexpr double aTol = 1.0e-16;
-    double aX = theDir.X();
-    double aY = theDir.Y();
-    double aZ = theDir.Z();
-
-    if (std::abs(aX) < aTol) aX = 0.0;
-    if (std::abs(aY) < aTol) aY = 0.0;
-    if (std::abs(aZ) < aTol) aZ = 0.0;
-
-    // Renormalize if needed
-    const double aMag = std::sqrt(aX * aX + aY * aY + aZ * aZ);
-    if (aMag > gp::Resolution())
-    {
-      theDir.SetCoord(aX / aMag, aY / aMag, aZ / aMag);
-    }
+    theDir.SetCoord(aX / aMag, aY / aMag, aZ / aMag);
   }
+}
 } // namespace
 
 //==================================================================================================
@@ -64,8 +67,8 @@ ExtremaCC_CircleLine::ExtremaCC_CircleLine(const gp_Circ& theCircle, const gp_Li
 
 //==================================================================================================
 
-ExtremaCC_CircleLine::ExtremaCC_CircleLine(const gp_Circ&              theCircle,
-                                           const gp_Lin&               theLine,
+ExtremaCC_CircleLine::ExtremaCC_CircleLine(const gp_Circ&             theCircle,
+                                           const gp_Lin&              theLine,
                                            const ExtremaCC::Domain2D& theDomain)
     : myCircle(theCircle),
       myLine(theLine),
@@ -146,15 +149,21 @@ const ExtremaCC::Result& ExtremaCC_CircleLine::Perform(double                the
   double aA4 = -aVxyz.X();
 
   // Clean up near-zero coefficients
-  if (std::abs(aA1) <= aCoefTol) aA1 = 0.0;
-  if (std::abs(aA2) <= aCoefTol) aA2 = 0.0;
-  if (std::abs(aA3) <= aCoefTol) aA3 = 0.0;
-  if (std::abs(aA4) <= aCoefTol) aA4 = 0.0;
-  if (std::abs(aA5) <= aCoefTol) aA5 = 0.0;
+  if (std::abs(aA1) <= aCoefTol)
+    aA1 = 0.0;
+  if (std::abs(aA2) <= aCoefTol)
+    aA2 = 0.0;
+  if (std::abs(aA3) <= aCoefTol)
+    aA3 = 0.0;
+  if (std::abs(aA4) <= aCoefTol)
+    aA4 = 0.0;
+  if (std::abs(aA5) <= aCoefTol)
+    aA5 = 0.0;
 
   // Solve using MathRoot::Trigonometric (modern solver)
   // Equation: A1*cos^2 + 2*A2*cos*sin + A3*cos + A4*sin + A5 = 0
-  MathRoot::TrigResult aSolverResult = MathRoot::Trigonometric(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
+  MathRoot::TrigResult aSolverResult =
+    MathRoot::Trigonometric(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
 
   if (!aSolverResult.IsDone())
   {
@@ -277,15 +286,13 @@ bool ExtremaCC_CircleLine::performPlanar(double theTol) const
     const gp_Dir aPerpDir(aPerp);
 
     // Closest point: in direction of perpendicular
-    const gp_Pnt aPClose =
-      myCircle.Location().XYZ() - myCircle.Radius() * aPerpDir.XYZ();
+    const gp_Pnt aPClose  = myCircle.Location().XYZ() - myCircle.Radius() * aPerpDir.XYZ();
     const double aU1Close = ElCLib::Parameter(myCircle, aPClose);
     const double aU2Close = ElCLib::Parameter(myLine, aPClose);
     addSolution(aU1Close, aU2Close, theTol);
 
     // Farthest point: opposite direction
-    const gp_Pnt aPFar =
-      myCircle.Location().XYZ() + myCircle.Radius() * aPerpDir.XYZ();
+    const gp_Pnt aPFar  = myCircle.Location().XYZ() + myCircle.Radius() * aPerpDir.XYZ();
     const double aU1Far = ElCLib::Parameter(myCircle, aPFar);
     const double aU2Far = ElCLib::Parameter(myLine, aPFar);
     addSolution(aU1Far, aU2Far, theTol);
@@ -295,26 +302,26 @@ bool ExtremaCC_CircleLine::performPlanar(double theTol) const
     // Line passes through circle center in the plane
     // Add 4 extrema: 2 minima (intersections along line direction)
     // and 2 maxima (perpendicular to line direction in plane)
-    const gp_Dir& aDirL = myLine.Direction();
+    const gp_Dir& aDirL  = myLine.Direction();
     const gp_Dir& aCNorm = myCircle.Axis().Direction();
 
     // Points along line direction (intersections - minima)
-    gp_Pnt aP1Plus = myCircle.Location().XYZ() + myCircle.Radius() * aDirL.XYZ();
+    gp_Pnt aP1Plus  = myCircle.Location().XYZ() + myCircle.Radius() * aDirL.XYZ();
     gp_Pnt aP1Minus = myCircle.Location().XYZ() - myCircle.Radius() * aDirL.XYZ();
-    double aU1Plus = ElCLib::Parameter(myCircle, aP1Plus);
+    double aU1Plus  = ElCLib::Parameter(myCircle, aP1Plus);
     double aU1Minus = ElCLib::Parameter(myCircle, aP1Minus);
-    double aU2Plus = ElCLib::Parameter(myLine, aP1Plus);
+    double aU2Plus  = ElCLib::Parameter(myLine, aP1Plus);
     double aU2Minus = ElCLib::Parameter(myLine, aP1Minus);
     addSolution(aU1Plus, aU2Plus, theTol);
     addSolution(aU1Minus, aU2Minus, theTol);
 
     // Points perpendicular to line direction (maxima)
     gp_Dir aPerpInPlane = aCNorm.Crossed(aDirL);
-    gp_Pnt aP2Plus = myCircle.Location().XYZ() + myCircle.Radius() * aPerpInPlane.XYZ();
-    gp_Pnt aP2Minus = myCircle.Location().XYZ() - myCircle.Radius() * aPerpInPlane.XYZ();
-    double aU1PerpPlus = ElCLib::Parameter(myCircle, aP2Plus);
+    gp_Pnt aP2Plus      = myCircle.Location().XYZ() + myCircle.Radius() * aPerpInPlane.XYZ();
+    gp_Pnt aP2Minus     = myCircle.Location().XYZ() - myCircle.Radius() * aPerpInPlane.XYZ();
+    double aU1PerpPlus  = ElCLib::Parameter(myCircle, aP2Plus);
     double aU1PerpMinus = ElCLib::Parameter(myCircle, aP2Minus);
-    double aU2PerpPlus = ElCLib::Parameter(myLine, aP2Plus);
+    double aU2PerpPlus  = ElCLib::Parameter(myLine, aP2Plus);
     double aU2PerpMinus = ElCLib::Parameter(myLine, aP2Minus);
     addSolution(aU1PerpPlus, aU2PerpPlus, theTol);
     addSolution(aU1PerpMinus, aU2PerpMinus, theTol);
@@ -335,10 +342,10 @@ void ExtremaCC_CircleLine::addSolution(double theU1, double theU2, double theTol
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -359,8 +366,8 @@ void ExtremaCC_CircleLine::addSolution(double theU1, double theU2, double theTol
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

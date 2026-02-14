@@ -37,7 +37,7 @@ TEST_F(ExtremaSS_TorusTorusTest, SeparatedTori_FindsMinimum)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -54,7 +54,7 @@ TEST_F(ExtremaSS_TorusTorusTest, ConcentricTori_InfiniteSolutions)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Concentric tori have infinite solutions
@@ -67,7 +67,7 @@ TEST_F(ExtremaSS_TorusTorusTest, CoaxialTori_DifferentCenters)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Coaxial tori have infinite solutions
@@ -83,7 +83,7 @@ TEST_F(ExtremaSS_TorusTorusTest, PerpendicularAxes_FindsMinimum)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(15, 0, 0), gp_Dir(1, 0, 0)), 3.0, 0.5);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -96,7 +96,7 @@ TEST_F(ExtremaSS_TorusTorusTest, TouchingTori_MinDistanceZero)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(12, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Distance: 12 - 6 - 6 = 0
@@ -111,7 +111,7 @@ TEST_F(ExtremaSS_TorusTorusTest, IntersectingTori_MinDistanceZero)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 2.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(8, 0, 0), gp_Dir(0, 0, 1)), 5.0, 2.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Distance: 8 - 7 - 7 = -6 (they intersect)
@@ -126,7 +126,7 @@ TEST_F(ExtremaSS_TorusTorusTest, NestedTori_OneInsideOther)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 20.0, 5.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 2.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Concentric - infinite solutions
@@ -165,7 +165,7 @@ TEST_F(ExtremaSS_TorusTorusTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -182,7 +182,7 @@ TEST_F(ExtremaSS_TorusTorusTest, SearchModeMax_OnlyFindsMaximum)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(20, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Max);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -204,7 +204,7 @@ TEST_F(ExtremaSS_TorusTorusTest, ParallelAxes_NotCoaxial)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(15, 5, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -219,11 +219,11 @@ TEST_F(ExtremaSS_TorusTorusTest, TiltedAxes_GeneralOrientation)
   const gp_Dir   aDir2(1, 0, 1);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(20, 0, 0), aDir2), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_TorusTorusTest, SmallMinorRadii_ThinTori)
@@ -231,7 +231,7 @@ TEST_F(ExtremaSS_TorusTorusTest, SmallMinorRadii_ThinTori)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 0.1);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(25, 0, 0), gp_Dir(0, 0, 1)), 10.0, 0.1);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -247,7 +247,7 @@ TEST_F(ExtremaSS_TorusTorusTest, DifferentSizes_LargeAndSmall)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 10.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(100, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -263,7 +263,7 @@ TEST_F(ExtremaSS_TorusTorusTest, CloseButNotTouching)
   const gp_Torus aTorus1(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(12.5, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -281,7 +281,7 @@ TEST_F(ExtremaSS_TorusTorusTest, AxesAtAngle_45Degrees)
   const gp_Dir   aDir2(1, 0, 1); // 45 degrees from Z
   const gp_Torus aTorus2(gp_Ax3(gp_Pnt(15, 0, 0), aDir2), 5.0, 1.0);
 
-  ExtremaSS_TorusTorus anEval(aTorus1, aTorus2);
+  ExtremaSS_TorusTorus     anEval(aTorus1, aTorus2);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);

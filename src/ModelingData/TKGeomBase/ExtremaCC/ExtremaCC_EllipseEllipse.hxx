@@ -31,14 +31,14 @@ public:
 
   ExtremaCC_EllipseEllipse(const gp_Elips& theEllipse1, const gp_Elips& theEllipse2);
 
-  ExtremaCC_EllipseEllipse(const gp_Elips&             theEllipse1,
-                           const gp_Elips&             theEllipse2,
+  ExtremaCC_EllipseEllipse(const gp_Elips&            theEllipse1,
+                           const gp_Elips&            theEllipse2,
                            const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_EllipseEllipse(const ExtremaCC_EllipseEllipse&) = delete;
+  ExtremaCC_EllipseEllipse(const ExtremaCC_EllipseEllipse&)            = delete;
   ExtremaCC_EllipseEllipse& operator=(const ExtremaCC_EllipseEllipse&) = delete;
-  ExtremaCC_EllipseEllipse(ExtremaCC_EllipseEllipse&&) = default;
-  ExtremaCC_EllipseEllipse& operator=(ExtremaCC_EllipseEllipse&&) = default;
+  ExtremaCC_EllipseEllipse(ExtremaCC_EllipseEllipse&&)                 = default;
+  ExtremaCC_EllipseEllipse& operator=(ExtremaCC_EllipseEllipse&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -49,6 +49,7 @@ public:
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
   const gp_Elips& Ellipse1() const { return myEllipse1; }
+
   const gp_Elips& Ellipse2() const { return myEllipse2; }
 
 private:
@@ -60,8 +61,8 @@ private:
   //! @brief Add solution if within domain bounds.
   void addSolution(double theU1, double theU2, double theTol) const;
 
-  gp_Elips                            myEllipse1;
-  gp_Elips                            myEllipse2;
+  gp_Elips                           myEllipse1;
+  gp_Elips                           myEllipse2;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };

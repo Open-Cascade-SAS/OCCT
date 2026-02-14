@@ -44,42 +44,51 @@
 
 namespace
 {
-  //! Curve type category for dispatch.
-  enum class CurveCategory
-  {
-    Line,
-    Circle,
-    Ellipse,
-    Hyperbola,
-    Parabola,
-    BezierCurve,
-    BSplineCurve,
-    OffsetCurve,
-    OtherCurve
-  };
+//! Curve type category for dispatch.
+enum class CurveCategory
+{
+  Line,
+  Circle,
+  Ellipse,
+  Hyperbola,
+  Parabola,
+  BezierCurve,
+  BSplineCurve,
+  OffsetCurve,
+  OtherCurve
+};
 
-  //! Get category from curve type.
-  CurveCategory getCategory(GeomAbs_CurveType theType)
+//! Get category from curve type.
+CurveCategory getCategory(GeomAbs_CurveType theType)
+{
+  switch (theType)
   {
-    switch (theType)
-    {
-      case GeomAbs_Line: return CurveCategory::Line;
-      case GeomAbs_Circle: return CurveCategory::Circle;
-      case GeomAbs_Ellipse: return CurveCategory::Ellipse;
-      case GeomAbs_Hyperbola: return CurveCategory::Hyperbola;
-      case GeomAbs_Parabola: return CurveCategory::Parabola;
-      case GeomAbs_BezierCurve: return CurveCategory::BezierCurve;
-      case GeomAbs_BSplineCurve: return CurveCategory::BSplineCurve;
-      case GeomAbs_OffsetCurve: return CurveCategory::OffsetCurve;
-      default: return CurveCategory::OtherCurve;
-    }
+    case GeomAbs_Line:
+      return CurveCategory::Line;
+    case GeomAbs_Circle:
+      return CurveCategory::Circle;
+    case GeomAbs_Ellipse:
+      return CurveCategory::Ellipse;
+    case GeomAbs_Hyperbola:
+      return CurveCategory::Hyperbola;
+    case GeomAbs_Parabola:
+      return CurveCategory::Parabola;
+    case GeomAbs_BezierCurve:
+      return CurveCategory::BezierCurve;
+    case GeomAbs_BSplineCurve:
+      return CurveCategory::BSplineCurve;
+    case GeomAbs_OffsetCurve:
+      return CurveCategory::OffsetCurve;
+    default:
+      return CurveCategory::OtherCurve;
   }
+}
 
-  //! Check if category is elementary (can use analytical methods).
-  bool isElementary(CurveCategory theCat)
-  {
-    return theCat <= CurveCategory::Parabola;
-  }
+//! Check if category is elementary (can use analytical methods).
+bool isElementary(CurveCategory theCat)
+{
+  return theCat <= CurveCategory::Parabola;
+}
 } // namespace
 
 //! Implementation structure using variant for type-safe dispatch.
@@ -105,13 +114,13 @@ struct ExtremaCC_Curves::Impl
   AnalyticalVariant myAnalytical;
 
   // For numerical pairs, we store the curve references
-  const GeomAdaptor_Curve* myCurve1 = nullptr;
-  const GeomAdaptor_Curve* myCurve2 = nullptr;
+  const GeomAdaptor_Curve* myCurve1      = nullptr;
+  const GeomAdaptor_Curve* myCurve2      = nullptr;
   bool                     myIsNumerical = false;
 
-  const ExtremaCC::Result& performAnalytical(double                     theTol,
-                                             ExtremaCC::SearchMode     theMode,
-                                             ExtremaCC::Result&         theResult,
+  const ExtremaCC::Result& performAnalytical(double                theTol,
+                                             ExtremaCC::SearchMode theMode,
+                                             ExtremaCC::Result&    theResult,
                                              const ExtremaCC::Domain2D& /*theDomain*/) const
   {
     // Note: theDomain unused because analytical pairs store domain at construction
@@ -130,10 +139,11 @@ struct ExtremaCC_Curves::Impl
       myAnalytical);
   }
 
-  const ExtremaCC::Result& performAnalyticalWithEndpoints(double                     theTol,
-                                                          ExtremaCC::SearchMode     theMode,
-                                                          ExtremaCC::Result&         theResult,
-                                                          const ExtremaCC::Domain2D& /*theDomain*/) const
+  const ExtremaCC::Result& performAnalyticalWithEndpoints(
+    double                theTol,
+    ExtremaCC::SearchMode theMode,
+    ExtremaCC::Result&    theResult,
+    const ExtremaCC::Domain2D& /*theDomain*/) const
   {
     // Note: theDomain unused because analytical pairs store domain at construction
     return std::visit(
@@ -152,7 +162,7 @@ struct ExtremaCC_Curves::Impl
   }
 
   const ExtremaCC::Result& performNumerical(double                     theTol,
-                                            ExtremaCC::SearchMode     theMode,
+                                            ExtremaCC::SearchMode      theMode,
                                             ExtremaCC::Result&         theResult,
                                             const ExtremaCC::Domain2D& theDomain) const
   {
@@ -234,7 +244,8 @@ ExtremaCC_Curves& ExtremaCC_Curves::operator=(ExtremaCC_Curves&& theOther) noexc
 
 //==================================================================================================
 
-void ExtremaCC_Curves::initPair(const GeomAdaptor_Curve& theCurve1, const GeomAdaptor_Curve& theCurve2)
+void ExtremaCC_Curves::initPair(const GeomAdaptor_Curve& theCurve1,
+                                const GeomAdaptor_Curve& theCurve2)
 {
   const CurveCategory aCat1 = getCategory(theCurve1.GetType());
   const CurveCategory aCat2 = getCategory(theCurve2.GetType());
@@ -265,8 +276,9 @@ void ExtremaCC_Curves::initPair(const GeomAdaptor_Curve& theCurve1, const GeomAd
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleLine>(theCurve2.Circle(), theCurve1.Line(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleLine>(theCurve2.Circle(),
+                                                                    theCurve1.Line(),
+                                                                    aSwappedDomain);
     }
     // EllipseLine
     else if (aCat1 == CurveCategory::Ellipse && aCat2 == CurveCategory::Line)
@@ -278,21 +290,24 @@ void ExtremaCC_Curves::initPair(const GeomAdaptor_Curve& theCurve1, const GeomAd
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_EllipseLine>(theCurve2.Ellipse(), theCurve1.Line(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_EllipseLine>(theCurve2.Ellipse(),
+                                                                     theCurve1.Line(),
+                                                                     aSwappedDomain);
     }
     // HyperbolaLine
     else if (aCat1 == CurveCategory::Hyperbola && aCat2 == CurveCategory::Line)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_HyperbolaLine>(theCurve1.Hyperbola(), theCurve2.Line(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_HyperbolaLine>(theCurve1.Hyperbola(),
+                                                                       theCurve2.Line(),
+                                                                       myDomain);
     }
     else if (aCat1 == CurveCategory::Line && aCat2 == CurveCategory::Hyperbola)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_HyperbolaLine>(theCurve2.Hyperbola(), theCurve1.Line(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_HyperbolaLine>(theCurve2.Hyperbola(),
+                                                                       theCurve1.Line(),
+                                                                       aSwappedDomain);
     }
     // LineParabola
     else if (aCat1 == CurveCategory::Line && aCat2 == CurveCategory::Parabola)
@@ -304,104 +319,120 @@ void ExtremaCC_Curves::initPair(const GeomAdaptor_Curve& theCurve1, const GeomAd
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_LineParabola>(theCurve2.Line(), theCurve1.Parabola(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_LineParabola>(theCurve2.Line(),
+                                                                      theCurve1.Parabola(),
+                                                                      aSwappedDomain);
     }
     // CircleEllipse
     else if (aCat1 == CurveCategory::Circle && aCat2 == CurveCategory::Ellipse)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleEllipse>(theCurve1.Circle(), theCurve2.Ellipse(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleEllipse>(theCurve1.Circle(),
+                                                                       theCurve2.Ellipse(),
+                                                                       myDomain);
     }
     else if (aCat1 == CurveCategory::Ellipse && aCat2 == CurveCategory::Circle)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleEllipse>(theCurve2.Circle(), theCurve1.Ellipse(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleEllipse>(theCurve2.Circle(),
+                                                                       theCurve1.Ellipse(),
+                                                                       aSwappedDomain);
     }
     // CircleHyperbola
     else if (aCat1 == CurveCategory::Circle && aCat2 == CurveCategory::Hyperbola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleHyperbola>(theCurve1.Circle(), theCurve2.Hyperbola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleHyperbola>(theCurve1.Circle(),
+                                                                         theCurve2.Hyperbola(),
+                                                                         myDomain);
     }
     else if (aCat1 == CurveCategory::Hyperbola && aCat2 == CurveCategory::Circle)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleHyperbola>(theCurve2.Circle(), theCurve1.Hyperbola(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleHyperbola>(theCurve2.Circle(),
+                                                                         theCurve1.Hyperbola(),
+                                                                         aSwappedDomain);
     }
     // CircleParabola
     else if (aCat1 == CurveCategory::Circle && aCat2 == CurveCategory::Parabola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleParabola>(theCurve1.Circle(), theCurve2.Parabola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleParabola>(theCurve1.Circle(),
+                                                                        theCurve2.Parabola(),
+                                                                        myDomain);
     }
     else if (aCat1 == CurveCategory::Parabola && aCat2 == CurveCategory::Circle)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_CircleParabola>(theCurve2.Circle(), theCurve1.Parabola(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_CircleParabola>(theCurve2.Circle(),
+                                                                        theCurve1.Parabola(),
+                                                                        aSwappedDomain);
     }
     // EllipseEllipse
     else if (aCat1 == CurveCategory::Ellipse && aCat2 == CurveCategory::Ellipse)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_EllipseEllipse>(theCurve1.Ellipse(), theCurve2.Ellipse(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_EllipseEllipse>(theCurve1.Ellipse(),
+                                                                        theCurve2.Ellipse(),
+                                                                        myDomain);
     }
     // EllipseHyperbola
     else if (aCat1 == CurveCategory::Ellipse && aCat2 == CurveCategory::Hyperbola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_EllipseHyperbola>(theCurve1.Ellipse(), theCurve2.Hyperbola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_EllipseHyperbola>(theCurve1.Ellipse(),
+                                                                          theCurve2.Hyperbola(),
+                                                                          myDomain);
     }
     else if (aCat1 == CurveCategory::Hyperbola && aCat2 == CurveCategory::Ellipse)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_EllipseHyperbola>(theCurve2.Ellipse(), theCurve1.Hyperbola(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_EllipseHyperbola>(theCurve2.Ellipse(),
+                                                                          theCurve1.Hyperbola(),
+                                                                          aSwappedDomain);
     }
     // EllipseParabola
     else if (aCat1 == CurveCategory::Ellipse && aCat2 == CurveCategory::Parabola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_EllipseParabola>(theCurve1.Ellipse(), theCurve2.Parabola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_EllipseParabola>(theCurve1.Ellipse(),
+                                                                         theCurve2.Parabola(),
+                                                                         myDomain);
     }
     else if (aCat1 == CurveCategory::Parabola && aCat2 == CurveCategory::Ellipse)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_EllipseParabola>(theCurve2.Ellipse(), theCurve1.Parabola(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_EllipseParabola>(theCurve2.Ellipse(),
+                                                                         theCurve1.Parabola(),
+                                                                         aSwappedDomain);
     }
     // HyperbolaHyperbola
     else if (aCat1 == CurveCategory::Hyperbola && aCat2 == CurveCategory::Hyperbola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_HyperbolaHyperbola>(theCurve1.Hyperbola(), theCurve2.Hyperbola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_HyperbolaHyperbola>(theCurve1.Hyperbola(),
+                                                                            theCurve2.Hyperbola(),
+                                                                            myDomain);
     }
     // HyperbolaParabola
     else if (aCat1 == CurveCategory::Hyperbola && aCat2 == CurveCategory::Parabola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_HyperbolaParabola>(theCurve1.Hyperbola(), theCurve2.Parabola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_HyperbolaParabola>(theCurve1.Hyperbola(),
+                                                                           theCurve2.Parabola(),
+                                                                           myDomain);
     }
     else if (aCat1 == CurveCategory::Parabola && aCat2 == CurveCategory::Hyperbola)
     {
       mySwapped = true;
       ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_HyperbolaParabola>(theCurve2.Hyperbola(), theCurve1.Parabola(), aSwappedDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_HyperbolaParabola>(theCurve2.Hyperbola(),
+                                                                           theCurve1.Parabola(),
+                                                                           aSwappedDomain);
     }
     // ParabolaParabola
     else if (aCat1 == CurveCategory::Parabola && aCat2 == CurveCategory::Parabola)
     {
-      myImpl->myAnalytical =
-        std::make_unique<ExtremaCC_ParabolaParabola>(theCurve1.Parabola(), theCurve2.Parabola(), myDomain);
+      myImpl->myAnalytical = std::make_unique<ExtremaCC_ParabolaParabola>(theCurve1.Parabola(),
+                                                                          theCurve2.Parabola(),
+                                                                          myDomain);
     }
     // For remaining pairs, fall back to numerical
     else
@@ -437,7 +468,7 @@ const ExtremaCC::Result& ExtremaCC_Curves::Perform(double                theTol,
     if (&aPairResult != &myResult)
     {
       myResult.Clear();
-      myResult.Status                = aPairResult.Status;
+      myResult.Status                 = aPairResult.Status;
       myResult.InfiniteSquareDistance = aPairResult.InfiniteSquareDistance;
       for (int i = 0; i < aPairResult.Extrema.Length(); ++i)
       {
@@ -470,8 +501,8 @@ const ExtremaCC::Result& ExtremaCC_Curves::PerformWithEndpoints(double          
     myImpl->performNumerical(theTol, theMode, myResult, myDomain);
 
     // Add endpoint extrema for numerical pairs
-    if (myResult.Status == ExtremaCC::Status::OK &&
-        myImpl->myCurve1 != nullptr && myImpl->myCurve2 != nullptr)
+    if (myResult.Status == ExtremaCC::Status::OK && myImpl->myCurve1 != nullptr
+        && myImpl->myCurve2 != nullptr)
     {
       // Create evaluators for endpoint computation
       ExtremaCC_CurveAdapter aEval1(*myImpl->myCurve1, myDomain.Curve1);
@@ -499,7 +530,7 @@ const ExtremaCC::Result& ExtremaCC_Curves::PerformWithEndpoints(double          
     if (&aPairResult != &myResult)
     {
       myResult.Clear();
-      myResult.Status                = aPairResult.Status;
+      myResult.Status                 = aPairResult.Status;
       myResult.InfiniteSquareDistance = aPairResult.InfiniteSquareDistance;
       for (int i = 0; i < aPairResult.Extrema.Length(); ++i)
       {

@@ -33,8 +33,8 @@ ExtremaCC_CircleCircle::ExtremaCC_CircleCircle(const gp_Circ& theCircle1, const 
 
 //==================================================================================================
 
-ExtremaCC_CircleCircle::ExtremaCC_CircleCircle(const gp_Circ&              theCircle1,
-                                               const gp_Circ&              theCircle2,
+ExtremaCC_CircleCircle::ExtremaCC_CircleCircle(const gp_Circ&             theCircle1,
+                                               const gp_Circ&             theCircle2,
                                                const ExtremaCC::Domain2D& theDomain)
     : myCircle1(theCircle1),
       myCircle2(theCircle2),
@@ -96,7 +96,7 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
   const gp_Dir& aDc2 = myCircle2.Axis().Direction();
 
   // Check if circles are in the same plane
-  gp_Pln        aPlc1(aPc1, aDc1);
+  gp_Pln       aPlc1(aPc1, aDc1);
   const double aD2          = aPlc1.SquareDistance(aPc2);
   const bool   bIsSamePlane = aDc1.IsParallel(aDc2, aTolA) && aD2 < aTolD2;
 
@@ -120,22 +120,22 @@ bool ExtremaCC_CircleCircle::performCoplanar(double theTol) const
 
   // Non-concentric coplanar circles
   // Ensure aC1 has the larger radius
-  bool     aSwapped = false;
-  gp_Circ  aC1 = myCircle1;
-  gp_Circ  aC2 = myCircle2;
-  double   aR1 = myCircle1.Radius();
-  double   aR2 = myCircle2.Radius();
+  bool    aSwapped = false;
+  gp_Circ aC1      = myCircle1;
+  gp_Circ aC2      = myCircle2;
+  double  aR1      = myCircle1.Radius();
+  double  aR2      = myCircle2.Radius();
 
   if (aR2 > aR1)
   {
     aSwapped = true;
-    aC1 = myCircle2;
-    aC2 = myCircle1;
+    aC1      = myCircle2;
+    aC2      = myCircle1;
     std::swap(aR1, aR2);
   }
 
-  const gp_Pnt& aP1 = aC1.Location();
-  const gp_Pnt& aP2 = aC2.Location();
+  const gp_Pnt& aP1  = aC1.Location();
+  const gp_Pnt& aP2  = aC2.Location();
   const double  aD12 = aP1.Distance(aP2);
 
   const gp_Vec aVec12(aP1, aP2);
@@ -282,15 +282,17 @@ void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
   }
 
   // Set up evaluators and distance function
-  ExtremaCC::Domain1D aDom1 = myDomain.has_value() ? myDomain->Curve1 : ExtremaCC::Domain1D{0.0, 2.0 * M_PI};
-  ExtremaCC::Domain1D aDom2 = myDomain.has_value() ? myDomain->Curve2 : ExtremaCC::Domain1D{0.0, 2.0 * M_PI};
-  ExtremaCC_Circle aEval1(myCircle1, aDom1);
-  ExtremaCC_Circle aEval2(myCircle2, aDom2);
+  ExtremaCC::Domain1D aDom1 =
+    myDomain.has_value() ? myDomain->Curve1 : ExtremaCC::Domain1D{0.0, 2.0 * M_PI};
+  ExtremaCC::Domain1D aDom2 =
+    myDomain.has_value() ? myDomain->Curve2 : ExtremaCC::Domain1D{0.0, 2.0 * M_PI};
+  ExtremaCC_Circle                                               aEval1(myCircle1, aDom1);
+  ExtremaCC_Circle                                               aEval2(myCircle2, aDom2);
   ExtremaCC_DistanceFunction<ExtremaCC_Circle, ExtremaCC_Circle> aDistFunc(aEval1, aEval2);
 
   // Newton refinement for minimum using MathSys solver directly
-  MathSys::Newton2DResult aMinResult = MathSys::Newton2DSymmetric(
-    aDistFunc, aMinU1, aMinU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
+  MathSys::Newton2DResult aMinResult =
+    MathSys::Newton2DSymmetric(aDistFunc, aMinU1, aMinU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
 
   if (aMinResult.IsDone())
   {
@@ -302,8 +304,8 @@ void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
   }
 
   // Newton refinement for maximum
-  MathSys::Newton2DResult aMaxResult = MathSys::Newton2DSymmetric(
-    aDistFunc, aMaxU1, aMaxU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
+  MathSys::Newton2DResult aMaxResult =
+    MathSys::Newton2DSymmetric(aDistFunc, aMaxU1, aMaxU2, aU1Min, aU1Max, aU2Min, aU2Max, theTol);
 
   if (aMaxResult.IsDone())
   {
@@ -324,10 +326,10 @@ void ExtremaCC_CircleCircle::addSolution(double theU1, double theU2, double theT
   // Check bounds if domain is specified
   if (myDomain.has_value())
   {
-    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
-                           (theU1 > myDomain->Curve1.Max + theTol);
-    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
-                           (theU2 > myDomain->Curve2.Max + theTol);
+    const bool aOutside1 =
+      (theU1 < myDomain->Curve1.Min - theTol) || (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 =
+      (theU2 < myDomain->Curve2.Min - theTol) || (theU2 > myDomain->Curve2.Max + theTol);
 
     if (aOutside1 || aOutside2)
     {
@@ -348,8 +350,8 @@ void ExtremaCC_CircleCircle::addSolution(double theU1, double theU2, double theT
   for (int i = 0; i < myResult.Extrema.Length(); ++i)
   {
     const auto& anExt = myResult.Extrema(i);
-    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
-        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol
+        && std::abs(anExt.Parameter2 - theU2) < aDupTol)
     {
       return; // Duplicate
     }

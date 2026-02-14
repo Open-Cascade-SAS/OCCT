@@ -30,8 +30,8 @@ ExtremaCC_HyperbolaHyperbola::ExtremaCC_HyperbolaHyperbola(const gp_Hypr& theHyp
 
 //==================================================================================================
 
-ExtremaCC_HyperbolaHyperbola::ExtremaCC_HyperbolaHyperbola(const gp_Hypr&              theHyperbola1,
-                                                           const gp_Hypr&              theHyperbola2,
+ExtremaCC_HyperbolaHyperbola::ExtremaCC_HyperbolaHyperbola(const gp_Hypr&             theHyperbola1,
+                                                           const gp_Hypr&             theHyperbola2,
                                                            const ExtremaCC::Domain2D& theDomain)
     : myHyperbola1(theHyperbola1),
       myHyperbola2(theHyperbola2),

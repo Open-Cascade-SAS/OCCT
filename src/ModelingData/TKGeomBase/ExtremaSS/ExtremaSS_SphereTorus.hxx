@@ -143,7 +143,7 @@ private:
 
     // Project sphere center onto torus plane
     myHeightAbovePlane = myCenterToCenterX * myTorusAxisX + myCenterToCenterY * myTorusAxisY
-                       + myCenterToCenterZ * myTorusAxisZ;
+                         + myCenterToCenterZ * myTorusAxisZ;
 
     // Projection in torus XY plane
     const double aProjX = myCenterToCenterX - myHeightAbovePlane * myTorusAxisX;
@@ -179,11 +179,14 @@ public:
     const double aSinV = std::sin(theV);
     return gp_Pnt(
       mySphereCenterX
-        + mySphereRadius * (aCosV * (aCosU * mySphereXDirX + aSinU * mySphereYDirX) + aSinV * mySphereZDirX),
+        + mySphereRadius
+            * (aCosV * (aCosU * mySphereXDirX + aSinU * mySphereYDirX) + aSinV * mySphereZDirX),
       mySphereCenterY
-        + mySphereRadius * (aCosV * (aCosU * mySphereXDirY + aSinU * mySphereYDirY) + aSinV * mySphereZDirY),
+        + mySphereRadius
+            * (aCosV * (aCosU * mySphereXDirY + aSinU * mySphereYDirY) + aSinV * mySphereZDirY),
       mySphereCenterZ
-        + mySphereRadius * (aCosV * (aCosU * mySphereXDirZ + aSinU * mySphereYDirZ) + aSinV * mySphereZDirZ));
+        + mySphereRadius
+            * (aCosV * (aCosU * mySphereXDirZ + aSinU * mySphereYDirZ) + aSinV * mySphereZDirZ));
   }
 
   gp_Pnt Value2(double theU, double theV) const
@@ -194,10 +197,12 @@ public:
     const double aCosV   = std::cos(theV);
     const double aSinV   = std::sin(theV);
     const double aRadius = myMajorRadius + myMinorRadius * aCosV;
-    return gp_Pnt(
-      myTorusCenterX + aRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX) + myMinorRadius * aSinV * myTorusAxisX,
-      myTorusCenterY + aRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY) + myMinorRadius * aSinV * myTorusAxisY,
-      myTorusCenterZ + aRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ) + myMinorRadius * aSinV * myTorusAxisZ);
+    return gp_Pnt(myTorusCenterX + aRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX)
+                    + myMinorRadius * aSinV * myTorusAxisX,
+                  myTorusCenterY + aRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
+                    + myMinorRadius * aSinV * myTorusAxisY,
+                  myTorusCenterZ + aRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ)
+                    + myMinorRadius * aSinV * myTorusAxisZ);
   }
 
   [[nodiscard]] const ExtremaSS::Result& Perform(
@@ -241,8 +246,9 @@ private:
     }
 
     // Infinite solutions at constant distance
-    myResult.Status                 = ExtremaSS::Status::InfiniteSolutions;
-    myResult.InfiniteSquareDistance = (theMode == ExtremaSS::SearchMode::Max) ? aMaxDist * aMaxDist : aMinDist * aMinDist;
+    myResult.Status = ExtremaSS::Status::InfiniteSolutions;
+    myResult.InfiniteSquareDistance =
+      (theMode == ExtremaSS::SearchMode::Max) ? aMaxDist * aMaxDist : aMinDist * aMinDist;
     return myResult;
   }
 
@@ -254,8 +260,9 @@ private:
     // U_far: generating circle center farthest from sphere center projection
 
     // Angle for closest generating circle (toward sphere center)
-    double aUClose = std::atan2(myRadialDirX * myTorusYDirX + myRadialDirY * myTorusYDirY + myRadialDirZ * myTorusYDirZ,
-                                myRadialDirX * myTorusXDirX + myRadialDirY * myTorusXDirY + myRadialDirZ * myTorusXDirZ);
+    double aUClose = std::atan2(
+      myRadialDirX * myTorusYDirX + myRadialDirY * myTorusYDirY + myRadialDirZ * myTorusYDirZ,
+      myRadialDirX * myTorusXDirX + myRadialDirY * myTorusXDirY + myRadialDirZ * myTorusXDirZ);
     if (aUClose < 0)
       aUClose += ExtremaSS::THE_TWO_PI;
 
@@ -290,18 +297,22 @@ private:
       processInnerExtremum(aUFar, theTol);
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
   void processGeneratingCircle(double theU, double theTol, bool theIsClosest) const
   {
     // Center of generating circle at angle U
-    const double aCosU      = std::cos(theU);
-    const double aSinU      = std::sin(theU);
-    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
-    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
-    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aCosU = std::cos(theU);
+    const double aSinU = std::sin(theU);
+    const double aCircCentX =
+      myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY =
+      myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ =
+      myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
 
     // Vector from generating circle center to sphere center
     const double aDx = mySphereCenterX - aCircCentX;
@@ -326,10 +337,10 @@ private:
         // Sphere is inside the tube, minimum distance is minorRadius - sphereRadius
         // Pick any point on generating circle (V=0) as representative
         const gp_Pnt aTorusPt = Value2(theU, 0);
-        const double aSqDist = aDistFromSphSurface * aDistFromSphSurface;
+        const double aSqDist  = aDistFromSphSurface * aDistFromSphSurface;
         // Sphere point toward torus - use torus XDir as representative direction
-        const double aCosU = std::cos(theU);
-        const double aSinU = std::sin(theU);
+        const double aCosU    = std::cos(theU);
+        const double aSinU    = std::sin(theU);
         const double aRadDirX = aCosU * myTorusXDirX + aSinU * myTorusYDirX;
         const double aRadDirY = aCosU * myTorusXDirY + aSinU * myTorusYDirY;
         const double aRadDirZ = aCosU * myTorusXDirZ + aSinU * myTorusYDirZ;
@@ -354,7 +365,8 @@ private:
 
     // Distance from torus point to sphere center
     const double aDistToCone = aDistToCircCenter - myMinorRadius;
-    const double aSurfDist   = theIsClosest ? (aDistToCone - mySphereRadius) : (aDistToCone + mySphereRadius);
+    const double aSurfDist =
+      theIsClosest ? (aDistToCone - mySphereRadius) : (aDistToCone + mySphereRadius);
 
     if (aSurfDist < -theTol && theIsClosest)
     {
@@ -388,11 +400,14 @@ private:
   void processOuterExtremum(double theU, double theTol) const
   {
     // Maximum distance: farthest side of the closest generating circle
-    const double aCosU      = std::cos(theU);
-    const double aSinU      = std::sin(theU);
-    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
-    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
-    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aCosU = std::cos(theU);
+    const double aSinU = std::sin(theU);
+    const double aCircCentX =
+      myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY =
+      myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ =
+      myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
 
     const double aDx             = mySphereCenterX - aCircCentX;
     const double aDy             = mySphereCenterY - aCircCentY;
@@ -425,11 +440,14 @@ private:
   void processInnerExtremum(double theU, double theTol) const
   {
     // Minimum distance: closest side of the farthest generating circle
-    const double aCosU      = std::cos(theU);
-    const double aSinU      = std::sin(theU);
-    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
-    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
-    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aCosU = std::cos(theU);
+    const double aSinU = std::sin(theU);
+    const double aCircCentX =
+      myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY =
+      myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ =
+      myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
 
     const double aDx             = mySphereCenterX - aCircCentX;
     const double aDy             = mySphereCenterY - aCircCentY;
@@ -458,15 +476,21 @@ private:
     addExtremumFull(aSpherePt, aTorusPt, theU, theTol, true, aSqDist);
   }
 
-  void addExtremum(const gp_Pnt& theTorusPt, double theTorusU, double theTol, bool theIsMin,
-                   double theSqDist) const
+  void addExtremum(const gp_Pnt& theTorusPt,
+                   double        theTorusU,
+                   double        theTol,
+                   bool          theIsMin,
+                   double        theSqDist) const
   {
     // Compute torus V parameter
-    const double aCosU      = std::cos(theTorusU);
-    const double aSinU      = std::sin(theTorusU);
-    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
-    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
-    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aCosU = std::cos(theTorusU);
+    const double aSinU = std::sin(theTorusU);
+    const double aCircCentX =
+      myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY =
+      myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ =
+      myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
 
     const double aLocalX = theTorusPt.X() - aCircCentX;
     const double aLocalY = theTorusPt.Y() - aCircCentY;
@@ -474,8 +498,8 @@ private:
 
     // Project onto radial direction (in torus XY plane) and axis direction
     const double aRadialComp = aLocalX * (aCosU * myTorusXDirX + aSinU * myTorusYDirX)
-                             + aLocalY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
-                             + aLocalZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+                               + aLocalY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
+                               + aLocalZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
     const double aAxialComp =
       aLocalX * myTorusAxisX + aLocalY * myTorusAxisY + aLocalZ * myTorusAxisZ;
 
@@ -501,33 +525,56 @@ private:
 
     if (mySwapped)
     {
-      ExtremaSS::AddExtremum(myResult, theTorusU, aTorusV, aSphereU, aSphereV, theTorusPt, aSpherePt,
-                             theSqDist, theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theTorusU,
+                             aTorusV,
+                             aSphereU,
+                             aSphereV,
+                             theTorusPt,
+                             aSpherePt,
+                             theSqDist,
+                             theIsMin,
+                             theTol);
     }
     else
     {
-      ExtremaSS::AddExtremum(myResult, aSphereU, aSphereV, theTorusU, aTorusV, aSpherePt, theTorusPt,
-                             theSqDist, theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aSphereU,
+                             aSphereV,
+                             theTorusU,
+                             aTorusV,
+                             aSpherePt,
+                             theTorusPt,
+                             theSqDist,
+                             theIsMin,
+                             theTol);
     }
   }
 
-  void addExtremumFull(const gp_Pnt& theSpherePt, const gp_Pnt& theTorusPt, double theTorusU,
-                       double theTol, bool theIsMin, double theSqDist) const
+  void addExtremumFull(const gp_Pnt& theSpherePt,
+                       const gp_Pnt& theTorusPt,
+                       double        theTorusU,
+                       double        theTol,
+                       bool          theIsMin,
+                       double        theSqDist) const
   {
     // Compute torus V parameter
-    const double aCosU      = std::cos(theTorusU);
-    const double aSinU      = std::sin(theTorusU);
-    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
-    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
-    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aCosU = std::cos(theTorusU);
+    const double aSinU = std::sin(theTorusU);
+    const double aCircCentX =
+      myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY =
+      myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ =
+      myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
 
     const double aLocalX = theTorusPt.X() - aCircCentX;
     const double aLocalY = theTorusPt.Y() - aCircCentY;
     const double aLocalZ = theTorusPt.Z() - aCircCentZ;
 
     const double aRadialComp = aLocalX * (aCosU * myTorusXDirX + aSinU * myTorusYDirX)
-                             + aLocalY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
-                             + aLocalZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+                               + aLocalY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
+                               + aLocalZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
     const double aAxialComp =
       aLocalX * myTorusAxisX + aLocalY * myTorusAxisY + aLocalZ * myTorusAxisZ;
 
@@ -541,13 +588,29 @@ private:
 
     if (mySwapped)
     {
-      ExtremaSS::AddExtremum(myResult, theTorusU, aTorusV, aSphereU, aSphereV, theTorusPt, theSpherePt,
-                             theSqDist, theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theTorusU,
+                             aTorusV,
+                             aSphereU,
+                             aSphereV,
+                             theTorusPt,
+                             theSpherePt,
+                             theSqDist,
+                             theIsMin,
+                             theTol);
     }
     else
     {
-      ExtremaSS::AddExtremum(myResult, aSphereU, aSphereV, theTorusU, aTorusV, theSpherePt, theTorusPt,
-                             theSqDist, theIsMin, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aSphereU,
+                             aSphereV,
+                             theTorusU,
+                             aTorusV,
+                             theSpherePt,
+                             theTorusPt,
+                             theSqDist,
+                             theIsMin,
+                             theTol);
     }
   }
 
@@ -602,7 +665,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D& aDom = myDomain.value();
+    const ExtremaSS::Domain4D& aDom       = myDomain.value();
     constexpr int              aNbSamples = 20;
 
     // Sample sphere boundary edges (Domain1)
@@ -647,7 +710,9 @@ private:
   }
 
   //! Check a sphere boundary point against the torus.
-  void checkSpherePointAgainstTorus(double theSphereU, double theSphereV, double theTol,
+  void checkSpherePointAgainstTorus(double                theSphereU,
+                                    double                theSphereV,
+                                    double                theTol,
                                     ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aSphPt = Value1(theSphereU, theSphereV);
@@ -662,9 +727,9 @@ private:
     const double aHeight = aDx * myTorusAxisX + aDy * myTorusAxisY + aDz * myTorusAxisZ;
 
     // Projection onto torus XY plane
-    const double aProjX = aDx - aHeight * myTorusAxisX;
-    const double aProjY = aDy - aHeight * myTorusAxisY;
-    const double aProjZ = aDz - aHeight * myTorusAxisZ;
+    const double aProjX      = aDx - aHeight * myTorusAxisX;
+    const double aProjY      = aDy - aHeight * myTorusAxisY;
+    const double aProjZ      = aDz - aHeight * myTorusAxisZ;
     const double aRadialDist = std::sqrt(aProjX * aProjX + aProjY * aProjY + aProjZ * aProjZ);
 
     if (aRadialDist < theTol)
@@ -678,22 +743,26 @@ private:
     const double aRadDirY = aProjY / aRadialDist;
     const double aRadDirZ = aProjZ / aRadialDist;
 
-    double aTorusU = std::atan2(aRadDirX * myTorusYDirX + aRadDirY * myTorusYDirY + aRadDirZ * myTorusYDirZ,
-                                aRadDirX * myTorusXDirX + aRadDirY * myTorusXDirY + aRadDirZ * myTorusXDirZ);
+    double aTorusU =
+      std::atan2(aRadDirX * myTorusYDirX + aRadDirY * myTorusYDirY + aRadDirZ * myTorusYDirZ,
+                 aRadDirX * myTorusXDirX + aRadDirY * myTorusXDirY + aRadDirZ * myTorusXDirZ);
     if (aTorusU < 0)
       aTorusU += ExtremaSS::THE_TWO_PI;
 
     // Generating circle center at this U
     const double aCosU = std::cos(aTorusU);
     const double aSinU = std::sin(aTorusU);
-    const double aCircCentX = myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
-    const double aCircCentY = myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
-    const double aCircCentZ = myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+    const double aCircCentX =
+      myTorusCenterX + myMajorRadius * (aCosU * myTorusXDirX + aSinU * myTorusYDirX);
+    const double aCircCentY =
+      myTorusCenterY + myMajorRadius * (aCosU * myTorusXDirY + aSinU * myTorusYDirY);
+    const double aCircCentZ =
+      myTorusCenterZ + myMajorRadius * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
 
     // Direction from circle center to sphere point
-    const double aCdx = aSphPt.X() - aCircCentX;
-    const double aCdy = aSphPt.Y() - aCircCentY;
-    const double aCdz = aSphPt.Z() - aCircCentZ;
+    const double aCdx   = aSphPt.X() - aCircCentX;
+    const double aCdy   = aSphPt.Y() - aCircCentY;
+    const double aCdz   = aSphPt.Z() - aCircCentZ;
     const double aCdist = std::sqrt(aCdx * aCdx + aCdy * aCdy + aCdz * aCdz);
 
     if (aCdist < theTol)
@@ -705,8 +774,8 @@ private:
 
     // V angle for closest point on generating circle
     const double aRadialComp = aCdirX * (aCosU * myTorusXDirX + aSinU * myTorusYDirX)
-                             + aCdirY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
-                             + aCdirZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
+                               + aCdirY * (aCosU * myTorusXDirY + aSinU * myTorusYDirY)
+                               + aCdirZ * (aCosU * myTorusXDirZ + aSinU * myTorusYDirZ);
     const double aAxialComp = aCdirX * myTorusAxisX + aCdirY * myTorusAxisY + aCdirZ * myTorusAxisZ;
 
     double aTorusV = std::atan2(aAxialComp, aRadialComp);
@@ -720,18 +789,34 @@ private:
     {
       const double aClampedU = std::clamp(aTorusU, aDom.Domain2.UMin, aDom.Domain2.UMax);
       const double aClampedV = std::clamp(aTorusV, aDom.Domain2.VMin, aDom.Domain2.VMax);
-      const gp_Pnt aTorusPt = Value2(aClampedU, aClampedV);
-      const double aSqDist = aSphPt.SquareDistance(aTorusPt);
+      const gp_Pnt aTorusPt  = Value2(aClampedU, aClampedV);
+      const double aSqDist   = aSphPt.SquareDistance(aTorusPt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theSphereU, theSphereV, aTorusPt, aSphPt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               theSphereU,
+                               theSphereV,
+                               aTorusPt,
+                               aSphPt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, theSphereU, theSphereV, aClampedU, aClampedV, aSphPt, aTorusPt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               theSphereU,
+                               theSphereV,
+                               aClampedU,
+                               aClampedV,
+                               aSphPt,
+                               aTorusPt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -744,32 +829,50 @@ private:
 
       const double aClampedU = std::clamp(aTorusU, aDom.Domain2.UMin, aDom.Domain2.UMax);
       const double aClampedV = std::clamp(aTorusVFar, aDom.Domain2.VMin, aDom.Domain2.VMax);
-      const gp_Pnt aTorusPt = Value2(aClampedU, aClampedV);
-      const double aSqDist = aSphPt.SquareDistance(aTorusPt);
+      const gp_Pnt aTorusPt  = Value2(aClampedU, aClampedV);
+      const double aSqDist   = aSphPt.SquareDistance(aTorusPt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theSphereU, theSphereV, aTorusPt, aSphPt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               theSphereU,
+                               theSphereV,
+                               aTorusPt,
+                               aSphPt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, theSphereU, theSphereV, aClampedU, aClampedV, aSphPt, aTorusPt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               theSphereU,
+                               theSphereV,
+                               aClampedU,
+                               aClampedV,
+                               aSphPt,
+                               aTorusPt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
     }
   }
 
   //! Check a torus boundary point against the sphere.
-  void checkTorusPointAgainstSphere(double theTorusU, double theTorusV, double theTol,
+  void checkTorusPointAgainstSphere(double                theTorusU,
+                                    double                theTorusV,
+                                    double                theTol,
                                     ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aTorusPt = Value2(theTorusU, theTorusV);
 
     // Direction from sphere center to torus point
-    const double aDx = aTorusPt.X() - mySphereCenterX;
-    const double aDy = aTorusPt.Y() - mySphereCenterY;
-    const double aDz = aTorusPt.Z() - mySphereCenterZ;
+    const double aDx   = aTorusPt.X() - mySphereCenterX;
+    const double aDy   = aTorusPt.Y() - mySphereCenterY;
+    const double aDz   = aTorusPt.Z() - mySphereCenterZ;
     const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
 
     if (aDist < theTol)
@@ -786,18 +889,34 @@ private:
     {
       const double aClampedU = std::clamp(aSphereU, aDom.Domain1.UMin, aDom.Domain1.UMax);
       const double aClampedV = std::clamp(aSphereV, aDom.Domain1.VMin, aDom.Domain1.VMax);
-      const gp_Pnt aSphPt = Value1(aClampedU, aClampedV);
-      const double aSqDist = aTorusPt.SquareDistance(aSphPt);
+      const gp_Pnt aSphPt    = Value1(aClampedU, aClampedV);
+      const double aSqDist   = aTorusPt.SquareDistance(aSphPt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, theTorusU, theTorusV, aClampedU, aClampedV, aTorusPt, aSphPt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               theTorusU,
+                               theTorusV,
+                               aClampedU,
+                               aClampedV,
+                               aTorusPt,
+                               aSphPt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theTorusU, theTorusV, aSphPt, aTorusPt,
-                               aSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               theTorusU,
+                               theTorusV,
+                               aSphPt,
+                               aTorusPt,
+                               aSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -805,29 +924,52 @@ private:
     if (theMode != ExtremaSS::SearchMode::Min)
     {
       double aSphereUFar, aSphereVFar;
-      computeSphereParamsFromDirection(-aDx / aDist, -aDy / aDist, -aDz / aDist, aSphereUFar, aSphereVFar);
+      computeSphereParamsFromDirection(-aDx / aDist,
+                                       -aDy / aDist,
+                                       -aDz / aDist,
+                                       aSphereUFar,
+                                       aSphereVFar);
 
       const double aClampedU = std::clamp(aSphereUFar, aDom.Domain1.UMin, aDom.Domain1.UMax);
       const double aClampedV = std::clamp(aSphereVFar, aDom.Domain1.VMin, aDom.Domain1.VMax);
-      const gp_Pnt aSphPt = Value1(aClampedU, aClampedV);
-      const double aSqDist = aTorusPt.SquareDistance(aSphPt);
+      const gp_Pnt aSphPt    = Value1(aClampedU, aClampedV);
+      const double aSqDist   = aTorusPt.SquareDistance(aSphPt);
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, theTorusU, theTorusV, aClampedU, aClampedV, aTorusPt, aSphPt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               theTorusU,
+                               theTorusV,
+                               aClampedU,
+                               aClampedV,
+                               aTorusPt,
+                               aSphPt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aClampedU, aClampedV, theTorusU, theTorusV, aSphPt, aTorusPt,
-                               aSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aClampedU,
+                               aClampedV,
+                               theTorusU,
+                               theTorusV,
+                               aSphPt,
+                               aTorusPt,
+                               aSqDist,
+                               false,
+                               theTol);
       }
     }
   }
 
   //! Compute sphere UV parameters from a direction vector.
-  void computeSphereParamsFromDirection(double theDirX, double theDirY, double theDirZ,
-                                        double& theU, double& theV) const
+  void computeSphereParamsFromDirection(double  theDirX,
+                                        double  theDirY,
+                                        double  theDirZ,
+                                        double& theU,
+                                        double& theV) const
   {
     const double aX = theDirX * mySphereXDirX + theDirY * mySphereXDirY + theDirZ * mySphereXDirZ;
     const double aY = theDirX * mySphereYDirX + theDirY * mySphereYDirY + theDirZ * mySphereYDirZ;
@@ -840,11 +982,13 @@ private:
   }
 
 public:
-
   const gp_Sphere& Sphere() const { return mySphere; }
-  const gp_Torus&  Torus() const { return myTorus; }
-  bool             IsSwapped() const { return mySwapped; }
-  bool             IsBounded() const { return myDomain.has_value(); }
+
+  const gp_Torus& Torus() const { return myTorus; }
+
+  bool IsSwapped() const { return mySwapped; }
+
+  bool IsBounded() const { return myDomain.has_value(); }
 
 private:
   gp_Sphere                          mySphere;

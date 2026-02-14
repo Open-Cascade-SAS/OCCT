@@ -35,7 +35,8 @@
 //! 4. Both extrema are on the normal line through sphere center
 //!
 //! @note The extrema points are:
-//!       - On sphere: center + R * (sign(d) * normal) for min, center - R * (sign(d) * normal) for max
+//!       - On sphere: center + R * (sign(d) * normal) for min, center - R * (sign(d) * normal) for
+//!       max
 //!       - On plane: projection of sphere extremum point onto plane
 class ExtremaSS_PlaneSphere
 {
@@ -101,48 +102,48 @@ private:
   void initCache()
   {
     // Cache plane components
-    const gp_Ax3& aPlanePos = myPlane.Position();
+    const gp_Ax3& aPlanePos  = myPlane.Position();
     const gp_Pnt& aPlaneOrig = aPlanePos.Location();
-    myPlaneOrigX = aPlaneOrig.X();
-    myPlaneOrigY = aPlaneOrig.Y();
-    myPlaneOrigZ = aPlaneOrig.Z();
+    myPlaneOrigX             = aPlaneOrig.X();
+    myPlaneOrigY             = aPlaneOrig.Y();
+    myPlaneOrigZ             = aPlaneOrig.Z();
 
     const gp_Dir& aPlaneNorm = aPlanePos.Direction();
-    myPlaneNormX = aPlaneNorm.X();
-    myPlaneNormY = aPlaneNorm.Y();
-    myPlaneNormZ = aPlaneNorm.Z();
+    myPlaneNormX             = aPlaneNorm.X();
+    myPlaneNormY             = aPlaneNorm.Y();
+    myPlaneNormZ             = aPlaneNorm.Z();
 
     const gp_Dir& aPlaneXDir = aPlanePos.XDirection();
-    myPlaneXDirX = aPlaneXDir.X();
-    myPlaneXDirY = aPlaneXDir.Y();
-    myPlaneXDirZ = aPlaneXDir.Z();
+    myPlaneXDirX             = aPlaneXDir.X();
+    myPlaneXDirY             = aPlaneXDir.Y();
+    myPlaneXDirZ             = aPlaneXDir.Z();
 
     const gp_Dir& aPlaneYDir = aPlanePos.YDirection();
-    myPlaneYDirX = aPlaneYDir.X();
-    myPlaneYDirY = aPlaneYDir.Y();
-    myPlaneYDirZ = aPlaneYDir.Z();
+    myPlaneYDirX             = aPlaneYDir.X();
+    myPlaneYDirY             = aPlaneYDir.Y();
+    myPlaneYDirZ             = aPlaneYDir.Z();
 
     // Cache sphere components
-    const gp_Ax3& aSpherePos = mySphere.Position();
+    const gp_Ax3& aSpherePos    = mySphere.Position();
     const gp_Pnt& aSphereCenter = aSpherePos.Location();
-    mySphereCenterX = aSphereCenter.X();
-    mySphereCenterY = aSphereCenter.Y();
-    mySphereCenterZ = aSphereCenter.Z();
+    mySphereCenterX             = aSphereCenter.X();
+    mySphereCenterY             = aSphereCenter.Y();
+    mySphereCenterZ             = aSphereCenter.Z();
 
     const gp_Dir& aSphereAxis = aSpherePos.Direction();
-    mySphereAxisX = aSphereAxis.X();
-    mySphereAxisY = aSphereAxis.Y();
-    mySphereAxisZ = aSphereAxis.Z();
+    mySphereAxisX             = aSphereAxis.X();
+    mySphereAxisY             = aSphereAxis.Y();
+    mySphereAxisZ             = aSphereAxis.Z();
 
     const gp_Dir& aSphereXDir = aSpherePos.XDirection();
-    mySphereXDirX = aSphereXDir.X();
-    mySphereXDirY = aSphereXDir.Y();
-    mySphereXDirZ = aSphereXDir.Z();
+    mySphereXDirX             = aSphereXDir.X();
+    mySphereXDirY             = aSphereXDir.Y();
+    mySphereXDirZ             = aSphereXDir.Z();
 
     const gp_Dir& aSphereYDir = aSpherePos.YDirection();
-    mySphereYDirX = aSphereYDir.X();
-    mySphereYDirY = aSphereYDir.Y();
-    mySphereYDirZ = aSphereYDir.Z();
+    mySphereYDirX             = aSphereYDir.X();
+    mySphereYDirY             = aSphereYDir.Y();
+    mySphereYDirZ             = aSphereYDir.Z();
 
     mySphereRadius = mySphere.Radius();
 
@@ -209,7 +210,7 @@ public:
     myResult.Clear();
 
     // Direction from plane to sphere center (along normal)
-    const double aSign = (mySignedDistance >= 0.0) ? 1.0 : -1.0;
+    const double aSign    = (mySignedDistance >= 0.0) ? 1.0 : -1.0;
     const double aAbsDist = std::abs(mySignedDistance);
 
     // Compute UV on sphere from plane normal direction
@@ -219,12 +220,20 @@ public:
     double aSphereU_Max, aSphereV_Max;
 
     // Direction toward plane: -sign * normal
-    computeSphereUVFromDirection(-aSign * myPlaneNormX, -aSign * myPlaneNormY, -aSign * myPlaneNormZ,
-                                 theTol, aSphereU_Min, aSphereV_Min);
+    computeSphereUVFromDirection(-aSign * myPlaneNormX,
+                                 -aSign * myPlaneNormY,
+                                 -aSign * myPlaneNormZ,
+                                 theTol,
+                                 aSphereU_Min,
+                                 aSphereV_Min);
 
     // Direction away from plane: +sign * normal
-    computeSphereUVFromDirection(aSign * myPlaneNormX, aSign * myPlaneNormY, aSign * myPlaneNormZ,
-                                 theTol, aSphereU_Max, aSphereV_Max);
+    computeSphereUVFromDirection(aSign * myPlaneNormX,
+                                 aSign * myPlaneNormY,
+                                 aSign * myPlaneNormZ,
+                                 theTol,
+                                 aSphereU_Max,
+                                 aSphereV_Max);
 
     // Minimum extremum
     if (theMode != ExtremaSS::SearchMode::Max)
@@ -236,11 +245,11 @@ public:
 
       // Project onto plane to get plane point
       const double aPlaneU = (aSphPt.X() - myPlaneOrigX) * myPlaneXDirX
-                           + (aSphPt.Y() - myPlaneOrigY) * myPlaneXDirY
-                           + (aSphPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                             + (aSphPt.Y() - myPlaneOrigY) * myPlaneXDirY
+                             + (aSphPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
       const double aPlaneV = (aSphPt.X() - myPlaneOrigX) * myPlaneYDirX
-                           + (aSphPt.Y() - myPlaneOrigY) * myPlaneYDirY
-                           + (aSphPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                             + (aSphPt.Y() - myPlaneOrigY) * myPlaneYDirY
+                             + (aSphPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
       const gp_Pnt aPlanePt = Value1(aPlaneU, aPlaneV);
 
       const double aMinDist   = aAbsDist - mySphereRadius;
@@ -248,13 +257,29 @@ public:
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aSphereU_Min, aSphereV_Min, aPlaneU, aPlaneV, aSphPt,
-                               aPlanePt, aMinSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aSphereU_Min,
+                               aSphereV_Min,
+                               aPlaneU,
+                               aPlaneV,
+                               aSphPt,
+                               aPlanePt,
+                               aMinSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aPlaneU, aPlaneV, aSphereU_Min, aSphereV_Min, aPlanePt,
-                               aSphPt, aMinSqDist, true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aPlaneU,
+                               aPlaneV,
+                               aSphereU_Min,
+                               aSphereV_Min,
+                               aPlanePt,
+                               aSphPt,
+                               aMinSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -268,11 +293,11 @@ public:
 
       // Project onto plane to get plane point
       const double aPlaneU = (aSphPt.X() - myPlaneOrigX) * myPlaneXDirX
-                           + (aSphPt.Y() - myPlaneOrigY) * myPlaneXDirY
-                           + (aSphPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
+                             + (aSphPt.Y() - myPlaneOrigY) * myPlaneXDirY
+                             + (aSphPt.Z() - myPlaneOrigZ) * myPlaneXDirZ;
       const double aPlaneV = (aSphPt.X() - myPlaneOrigX) * myPlaneYDirX
-                           + (aSphPt.Y() - myPlaneOrigY) * myPlaneYDirY
-                           + (aSphPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
+                             + (aSphPt.Y() - myPlaneOrigY) * myPlaneYDirY
+                             + (aSphPt.Z() - myPlaneOrigZ) * myPlaneYDirZ;
       const gp_Pnt aPlanePt = Value1(aPlaneU, aPlaneV);
 
       const double aMaxDist   = aAbsDist + mySphereRadius;
@@ -280,18 +305,34 @@ public:
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aSphereU_Max, aSphereV_Max, aPlaneU, aPlaneV, aSphPt,
-                               aPlanePt, aMaxSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aSphereU_Max,
+                               aSphereV_Max,
+                               aPlaneU,
+                               aPlaneV,
+                               aSphPt,
+                               aPlanePt,
+                               aMaxSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aPlaneU, aPlaneV, aSphereU_Max, aSphereV_Max, aPlanePt,
-                               aSphPt, aMaxSqDist, false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aPlaneU,
+                               aPlaneV,
+                               aSphereU_Max,
+                               aSphereV_Max,
+                               aPlanePt,
+                               aSphPt,
+                               aMaxSqDist,
+                               false,
+                               theTol);
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution
-                                                 : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
@@ -341,10 +382,10 @@ public:
 
 private:
   //! Compute UV on sphere from direction vector.
-  void computeSphereUVFromDirection(double theDirX,
-                                    double theDirY,
-                                    double theDirZ,
-                                    double theTol,
+  void computeSphereUVFromDirection(double  theDirX,
+                                    double  theDirY,
+                                    double  theDirZ,
+                                    double  theTol,
                                     double& theU,
                                     double& theV) const
   {
@@ -378,7 +419,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D&   aDom  = myDomain.value();
+    const ExtremaSS::Domain4D& aDom  = myDomain.value();
     const MathUtils::Domain2D& aDom1 = aDom.Domain1; // Plane domain
     const MathUtils::Domain2D& aDom2 = aDom.Domain2; // Sphere domain
 
@@ -416,14 +457,17 @@ private:
   }
 
   //! Check a point on plane against sphere for potential extrema.
-  void checkPlanePointAgainstSphere(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkPlanePointAgainstSphere(double                theU1,
+                                    double                theV1,
+                                    double                theTol,
+                                    ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP1 = Value1(theU1, theV1);
 
     // Direction from sphere center to plane point
-    const double aDx = aP1.X() - mySphereCenterX;
-    const double aDy = aP1.Y() - mySphereCenterY;
-    const double aDz = aP1.Z() - mySphereCenterZ;
+    const double aDx   = aP1.X() - mySphereCenterX;
+    const double aDy   = aP1.Y() - mySphereCenterY;
+    const double aDz   = aP1.Z() - mySphereCenterZ;
     const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
 
     if (aDist < theTol)
@@ -433,9 +477,9 @@ private:
     }
 
     const double aInvDist = 1.0 / aDist;
-    const double aNx = aDx * aInvDist;
-    const double aNy = aDy * aInvDist;
-    const double aNz = aDz * aInvDist;
+    const double aNx      = aDx * aInvDist;
+    const double aNy      = aDy * aInvDist;
+    const double aNz      = aDz * aInvDist;
 
     // Closest point on sphere (toward plane point)
     double aU2Min = 0.0, aV2Min = 0.0;
@@ -444,15 +488,24 @@ private:
     if (myDomain.has_value())
     {
       const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
-      aU2Min = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
-      aV2Min = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
+      aU2Min                           = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
+      aV2Min                           = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
     }
 
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      const gp_Pnt aP2 = Value2(aU2Min, aV2Min);
+      const gp_Pnt aP2     = Value2(aU2Min, aV2Min);
       const double aSqDist = aP1.SquareDistance(aP2);
-      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Min, aV2Min, aP1, aP2, aSqDist, true, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theU1,
+                             theV1,
+                             aU2Min,
+                             aV2Min,
+                             aP1,
+                             aP2,
+                             aSqDist,
+                             true,
+                             theTol);
     }
 
     if (theMode != ExtremaSS::SearchMode::Min)
@@ -464,25 +517,37 @@ private:
       if (myDomain.has_value())
       {
         const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
-        aU2Max = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
-        aV2Max = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
+        aU2Max                           = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
+        aV2Max                           = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
       }
 
-      const gp_Pnt aP2 = Value2(aU2Max, aV2Max);
+      const gp_Pnt aP2     = Value2(aU2Max, aV2Max);
       const double aSqDist = aP1.SquareDistance(aP2);
-      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Max, aV2Max, aP1, aP2, aSqDist, false, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theU1,
+                             theV1,
+                             aU2Max,
+                             aV2Max,
+                             aP1,
+                             aP2,
+                             aSqDist,
+                             false,
+                             theTol);
     }
   }
 
   //! Check a point on sphere against plane for potential extrema.
-  void checkSpherePointAgainstPlane(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkSpherePointAgainstPlane(double                theU2,
+                                    double                theV2,
+                                    double                theTol,
+                                    ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP2 = Value2(theU2, theV2);
 
     // Project sphere point onto plane
-    const double aVecX = aP2.X() - myPlaneOrigX;
-    const double aVecY = aP2.Y() - myPlaneOrigY;
-    const double aVecZ = aP2.Z() - myPlaneOrigZ;
+    const double aVecX       = aP2.X() - myPlaneOrigX;
+    const double aVecY       = aP2.Y() - myPlaneOrigY;
+    const double aVecZ       = aP2.Z() - myPlaneOrigZ;
     const double aSignedDist = aVecX * myPlaneNormX + aVecY * myPlaneNormY + aVecZ * myPlaneNormZ;
 
     // Closest point on plane
@@ -494,18 +559,18 @@ private:
     const double aLocalX = aProjX - myPlaneOrigX;
     const double aLocalY = aProjY - myPlaneOrigY;
     const double aLocalZ = aProjZ - myPlaneOrigZ;
-    double aU1 = aLocalX * myPlaneXDirX + aLocalY * myPlaneXDirY + aLocalZ * myPlaneXDirZ;
-    double aV1 = aLocalX * myPlaneYDirX + aLocalY * myPlaneYDirY + aLocalZ * myPlaneYDirZ;
+    double       aU1     = aLocalX * myPlaneXDirX + aLocalY * myPlaneXDirY + aLocalZ * myPlaneXDirZ;
+    double       aV1     = aLocalX * myPlaneYDirX + aLocalY * myPlaneYDirY + aLocalZ * myPlaneYDirZ;
 
     // Clamp to domain
     if (myDomain.has_value())
     {
       const MathUtils::Domain2D& aDom1 = myDomain->Domain1;
-      aU1 = std::clamp(aU1, aDom1.UMin, aDom1.UMax);
-      aV1 = std::clamp(aV1, aDom1.VMin, aDom1.VMax);
+      aU1                              = std::clamp(aU1, aDom1.UMin, aDom1.UMax);
+      aV1                              = std::clamp(aV1, aDom1.VMin, aDom1.VMax);
     }
 
-    const gp_Pnt aP1 = Value1(aU1, aV1);
+    const gp_Pnt aP1     = Value1(aU1, aV1);
     const double aSqDist = aP1.SquareDistance(aP2);
 
     // For plane-sphere, the projected point is always the closest
@@ -517,13 +582,11 @@ private:
     // For maximum, check domain corners
     if (theMode != ExtremaSS::SearchMode::Min && myDomain.has_value())
     {
-      const MathUtils::Domain2D& aDom1 = myDomain->Domain1;
-      const double aCorners[4][2] = {
-        {aDom1.UMin, aDom1.VMin},
-        {aDom1.UMin, aDom1.VMax},
-        {aDom1.UMax, aDom1.VMin},
-        {aDom1.UMax, aDom1.VMax}
-      };
+      const MathUtils::Domain2D& aDom1          = myDomain->Domain1;
+      const double               aCorners[4][2] = {{aDom1.UMin, aDom1.VMin},
+                                                   {aDom1.UMin, aDom1.VMax},
+                                                   {aDom1.UMax, aDom1.VMin},
+                                                   {aDom1.UMax, aDom1.VMax}};
 
       double aMaxSqDist = 0.0;
       double aBestU1 = aU1, aBestV1 = aV1;
@@ -531,27 +594,36 @@ private:
 
       for (int c = 0; c < 4; ++c)
       {
-        const gp_Pnt aCornerPt = Value1(aCorners[c][0], aCorners[c][1]);
+        const gp_Pnt aCornerPt     = Value1(aCorners[c][0], aCorners[c][1]);
         const double aCornerSqDist = aCornerPt.SquareDistance(aP2);
         if (aCornerSqDist > aMaxSqDist)
         {
           aMaxSqDist = aCornerSqDist;
-          aBestU1 = aCorners[c][0];
-          aBestV1 = aCorners[c][1];
-          aBestP1 = aCornerPt;
+          aBestU1    = aCorners[c][0];
+          aBestV1    = aCorners[c][1];
+          aBestP1    = aCornerPt;
         }
       }
 
-      ExtremaSS::AddExtremum(myResult, aBestU1, aBestV1, theU2, theV2, aBestP1, aP2, aMaxSqDist, false, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             aBestU1,
+                             aBestV1,
+                             theU2,
+                             theV2,
+                             aBestP1,
+                             aP2,
+                             aMaxSqDist,
+                             false,
+                             theTol);
     }
   }
 
 private:
-  gp_Pln                               myPlane;   //!< Plane geometry
-  gp_Sphere                            mySphere;  //!< Sphere geometry
-  std::optional<ExtremaSS::Domain4D> myDomain; //!< Parameter domain
-  mutable ExtremaSS::Result            myResult;  //!< Reusable result storage
-  bool                                 mySwapped; //!< True if surfaces were swapped
+  gp_Pln                             myPlane;   //!< Plane geometry
+  gp_Sphere                          mySphere;  //!< Sphere geometry
+  std::optional<ExtremaSS::Domain4D> myDomain;  //!< Parameter domain
+  mutable ExtremaSS::Result          myResult;  //!< Reusable result storage
+  bool                               mySwapped; //!< True if surfaces were swapped
 
   // Cached plane components
   double myPlaneOrigX, myPlaneOrigY, myPlaneOrigZ;

@@ -55,8 +55,8 @@ public:
   }
 
   //! Constructor with ellipse and sphere geometry and domain.
-  ExtremaCS_EllipseSphere(const gp_Elips&                      theEllipse,
-                          const gp_Sphere&                     theSphere,
+  ExtremaCS_EllipseSphere(const gp_Elips&                           theEllipse,
+                          const gp_Sphere&                          theSphere,
                           const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myEllipse(theEllipse),
         mySphere(theSphere),
@@ -75,26 +75,26 @@ public:
     myResult.Clear();
 
     const gp_Pnt& aEllCenter = myEllipse.Location();
-    const gp_Dir& aEllipseX = myEllipse.XAxis().Direction();
-    const gp_Dir& aEllipseY = myEllipse.YAxis().Direction();
-    const double aMajor = myEllipse.MajorRadius();
-    const double aMinor = myEllipse.MinorRadius();
+    const gp_Dir& aEllipseX  = myEllipse.XAxis().Direction();
+    const gp_Dir& aEllipseY  = myEllipse.YAxis().Direction();
+    const double  aMajor     = myEllipse.MajorRadius();
+    const double  aMinor     = myEllipse.MinorRadius();
 
     const gp_Pnt& aSphCenter = mySphere.Location();
-    const double aSphRadius = mySphere.Radius();
+    const double  aSphRadius = mySphere.Radius();
 
     // Vector from ellipse center to sphere center
     gp_Vec aCS(aEllCenter, aSphCenter);
 
     // Project sphere center onto ellipse plane
-    const gp_Dir& aN = myEllipse.Axis().Direction();
-    const double aDistToPlane = aCS.Dot(gp_Vec(aN));
+    const gp_Dir& aN           = myEllipse.Axis().Direction();
+    const double  aDistToPlane = aCS.Dot(gp_Vec(aN));
 
     // Projection of sphere center onto ellipse plane
     gp_Pnt aProjCenter = aSphCenter.Translated(-aDistToPlane * gp_Vec(aN));
 
     // Vector from ellipse center to projected sphere center (in ellipse plane)
-    gp_Vec aCP(aEllCenter, aProjCenter);
+    gp_Vec       aCP(aEllCenter, aProjCenter);
     const double aDistInPlane = aCP.Magnitude();
 
     // Check for special case: sphere center on ellipse axis
@@ -110,7 +110,7 @@ public:
       // Solutions: t = 0, PI/2, PI, 3*PI/2
 
       auto addExtremumOnAxis = [this, &theTol, &aSphCenter, &aSphRadius](double theT,
-                                                                          bool   theCheckMin) {
+                                                                         bool   theCheckMin) {
         double aT = ExtremaCS::NormalizeAngle(theT);
 
         // Check curve domain
@@ -118,19 +118,20 @@ public:
         {
           if (aT < myDomain->Curve.Min - theTol || aT > myDomain->Curve.Max + theTol)
           {
-            double aTplus = aT + ExtremaCS::THE_TWO_PI;
+            double aTplus  = aT + ExtremaCS::THE_TWO_PI;
             double aTminus = aT - ExtremaCS::THE_TWO_PI;
             if (aTplus >= myDomain->Curve.Min - theTol && aTplus <= myDomain->Curve.Max + theTol)
               aT = aTplus;
-            else if (aTminus >= myDomain->Curve.Min - theTol && aTminus <= myDomain->Curve.Max + theTol)
+            else if (aTminus >= myDomain->Curve.Min - theTol
+                     && aTminus <= myDomain->Curve.Max + theTol)
               aT = aTminus;
             else
               return;
           }
         }
 
-        const gp_Pnt aEllPt = ElCLib::Value(aT, myEllipse);
-        const double aDistToCenter = aEllPt.Distance(aSphCenter);
+        const gp_Pnt aEllPt         = ElCLib::Value(aT, myEllipse);
+        const double aDistToCenter  = aEllPt.Distance(aSphCenter);
         const double aDistToSurface = std::abs(aDistToCenter - aSphRadius);
 
         gp_Vec aDir(aSphCenter, aEllPt);
@@ -201,8 +202,8 @@ public:
         }
       }
 
-      myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                    : ExtremaCS::Status::OK;
+      myResult.Status =
+        myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
       return myResult;
     }
 
@@ -216,7 +217,7 @@ public:
     //
     // Actually, let's recompute more carefully:
     // W = aEllCenter - aSphCenter
-    gp_Vec aW(aSphCenter, aEllCenter);
+    gp_Vec       aW(aSphCenter, aEllCenter);
     const double aWx = aW.Dot(gp_Vec(aEllipseX));
     const double aWy = aW.Dot(gp_Vec(aEllipseY));
 
@@ -268,8 +269,8 @@ public:
       aSupBound = myDomain->Curve.Max;
     }
 
-    MathRoot::TrigResult aTrigResult = MathRoot::Trigonometric(aA, aB, aC, aD, aE,
-                                                                aInfBound, aSupBound);
+    MathRoot::TrigResult aTrigResult =
+      MathRoot::Trigonometric(aA, aB, aC, aD, aE, aInfBound, aSupBound);
 
     if (!aTrigResult.IsDone() && !aTrigResult.InfiniteRoots)
     {
@@ -298,7 +299,7 @@ public:
       }
 
       const gp_Pnt aEllPt = ElCLib::Value(aT, myEllipse);
-      gp_Vec aDir(aSphCenter, aEllPt);
+      gp_Vec       aDir(aSphCenter, aEllPt);
       const double aDistToCenter = aDir.Magnitude();
 
       gp_Pnt aSphPt;
@@ -337,7 +338,7 @@ public:
       anExt.PointOnCurve        = aEllPt;
       anExt.PointOnSurface      = aSphPt;
       anExt.SquareDistance      = aDistToSurface * aDistToSurface;
-      anExt.IsMinimum           = false;  // Will be set later
+      anExt.IsMinimum           = false; // Will be set later
       myResult.Extrema.Append(anExt);
     };
 
@@ -354,12 +355,13 @@ public:
       for (int i = 0; i < myResult.Extrema.Length(); ++i)
       {
         const double aDist = myResult.Extrema.Value(i).SquareDistance;
-        if (aDist < aMinDist) aMinDist = aDist;
+        if (aDist < aMinDist)
+          aMinDist = aDist;
       }
 
       for (int i = 0; i < myResult.Extrema.Length(); ++i)
       {
-        const double aDist = myResult.Extrema.Value(i).SquareDistance;
+        const double aDist                        = myResult.Extrema.Value(i).SquareDistance;
         myResult.Extrema.ChangeValue(i).IsMinimum = (std::abs(aDist - aMinDist) < theTol);
       }
 
@@ -380,8 +382,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                  : ExtremaCS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
     return myResult;
   }
 

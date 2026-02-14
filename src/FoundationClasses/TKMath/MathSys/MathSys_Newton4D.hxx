@@ -193,7 +193,8 @@ Newton4DResult Newton4D(const Function& theFunc,
   // Pre-compute max step limit (50% of smallest domain range)
   const double aMaxStep =
     0.5
-    * std::min({theX1Max - theX1Min, theX2Max - theX2Min, theX3Max - theX3Min, theX4Max - theX4Min});
+    * std::min(
+      {theX1Max - theX1Min, theX2Max - theX2Min, theX3Max - theX3Min, theX4Max - theX4Min});
   const double aTolSq = theTol * theTol;
 
   for (size_t i = 0; i < theMaxIter; ++i)
@@ -253,8 +254,8 @@ Newton4DResult Newton4D(const Function& theFunc,
     else
     {
       // Limit step size to prevent wild oscillations
-      const double aStepNormSq =
-        aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1] + aDelta[2] * aDelta[2] + aDelta[3] * aDelta[3];
+      const double aStepNormSq = aDelta[0] * aDelta[0] + aDelta[1] * aDelta[1]
+                                 + aDelta[2] * aDelta[2] + aDelta[3] * aDelta[3];
       if (aStepNormSq > aMaxStep * aMaxStep)
       {
         const double aScale = aMaxStep / std::sqrt(aStepNormSq);
@@ -316,8 +317,21 @@ Newton4DResult Newton4D(const Function& theFunc,
                         size_t          theMaxIter = 20)
 {
   constexpr double aInf = 1.0e100;
-  return Newton4D(
-    theFunc, theX1_0, theX2_0, theX3_0, theX4_0, -aInf, aInf, -aInf, aInf, -aInf, aInf, -aInf, aInf, theTol, theMaxIter);
+  return Newton4D(theFunc,
+                  theX1_0,
+                  theX2_0,
+                  theX3_0,
+                  theX4_0,
+                  -aInf,
+                  aInf,
+                  -aInf,
+                  aInf,
+                  -aInf,
+                  aInf,
+                  -aInf,
+                  aInf,
+                  theTol,
+                  theMaxIter);
 }
 
 //! Optimized 4D Newton solver for Surface-Surface extrema.

@@ -31,14 +31,14 @@ public:
 
   ExtremaCC_ParabolaParabola(const gp_Parab& theParabola1, const gp_Parab& theParabola2);
 
-  ExtremaCC_ParabolaParabola(const gp_Parab&             theParabola1,
-                             const gp_Parab&             theParabola2,
+  ExtremaCC_ParabolaParabola(const gp_Parab&            theParabola1,
+                             const gp_Parab&            theParabola2,
                              const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_ParabolaParabola(const ExtremaCC_ParabolaParabola&) = delete;
+  ExtremaCC_ParabolaParabola(const ExtremaCC_ParabolaParabola&)            = delete;
   ExtremaCC_ParabolaParabola& operator=(const ExtremaCC_ParabolaParabola&) = delete;
-  ExtremaCC_ParabolaParabola(ExtremaCC_ParabolaParabola&&) = default;
-  ExtremaCC_ParabolaParabola& operator=(ExtremaCC_ParabolaParabola&&) = default;
+  ExtremaCC_ParabolaParabola(ExtremaCC_ParabolaParabola&&)                 = default;
+  ExtremaCC_ParabolaParabola& operator=(ExtremaCC_ParabolaParabola&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -49,11 +49,12 @@ public:
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
   const gp_Parab& Parabola1() const { return myParabola1; }
+
   const gp_Parab& Parabola2() const { return myParabola2; }
 
 private:
-  gp_Parab                            myParabola1;
-  gp_Parab                            myParabola2;
+  gp_Parab                           myParabola1;
+  gp_Parab                           myParabola2;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };

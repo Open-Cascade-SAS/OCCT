@@ -36,11 +36,11 @@ protected:
 TEST_F(ExtremaCS_CirclePlaneTest, Parallel_AbovePlane)
 {
   // Circle in plane Z=5, parallel to XY plane
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
   gp_Circ aCircle(aCircleAx, 3.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -51,11 +51,11 @@ TEST_F(ExtremaCS_CirclePlaneTest, Parallel_AbovePlane)
 TEST_F(ExtremaCS_CirclePlaneTest, Parallel_InPlane)
 {
   // Circle in XY plane
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Circ aCircle(aCircleAx, 3.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL);
 
   ASSERT_TRUE(aResult.IsInfinite());
@@ -69,12 +69,12 @@ TEST_F(ExtremaCS_CirclePlaneTest, Parallel_InPlane)
 TEST_F(ExtremaCS_CirclePlaneTest, Tilted_CircleThroughPlane)
 {
   // Circle tilted at 45 degrees, center on plane
-  gp_Dir aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 0), aTiltedNormal);
+  gp_Dir  aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 0), aTiltedNormal);
   gp_Circ aCircle(aCircleAx, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -96,26 +96,26 @@ TEST_F(ExtremaCS_CirclePlaneTest, Tilted_CircleThroughPlane)
 TEST_F(ExtremaCS_CirclePlaneTest, Tilted_CircleAbovePlane)
 {
   // Circle tilted at 45 degrees, center above plane
-  gp_Dir aTiltedNormal(0, 1, 1); // gp_Dir auto-normalizes
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 5), aTiltedNormal);
+  gp_Dir  aTiltedNormal(0, 1, 1); // gp_Dir auto-normalizes
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 5), aTiltedNormal);
   gp_Circ aCircle(aCircleAx, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
   ASSERT_GE(aResult.NbExt(), 1);
 
   // Minimum should be at distance = 5 - sqrt(2) (center height - radius*sin(45))
-  double aMinDist = aResult.MinSquareDistance();
+  double aMinDist     = aResult.MinSquareDistance();
   double aExpectedMin = 5.0 - std::sqrt(2.0);
   EXPECT_NEAR(aMinDist, aExpectedMin * aExpectedMin, 0.1);
 
   // Maximum should be at distance = 5 + sqrt(2)
   if (aResult.NbExt() >= 2)
   {
-    double aMaxDist = aResult.MaxSquareDistance();
+    double aMaxDist     = aResult.MaxSquareDistance();
     double aExpectedMax = 5.0 + std::sqrt(2.0);
     EXPECT_NEAR(aMaxDist, aExpectedMax * aExpectedMax, 0.1);
   }
@@ -124,11 +124,11 @@ TEST_F(ExtremaCS_CirclePlaneTest, Tilted_CircleAbovePlane)
 TEST_F(ExtremaCS_CirclePlaneTest, Perpendicular_CircleEdgeOnPlane)
 {
   // Circle perpendicular to XY plane, edge touches plane
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 3), gp_Dir(1, 0, 0)); // Circle in YZ plane
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 3), gp_Dir(1, 0, 0)); // Circle in YZ plane
   gp_Circ aCircle(aCircleAx, 3.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)); // XY plane
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::MinMax);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -150,12 +150,12 @@ TEST_F(ExtremaCS_CirclePlaneTest, Perpendicular_CircleEdgeOnPlane)
 
 TEST_F(ExtremaCS_CirclePlaneTest, SearchMode_MinOnly)
 {
-  gp_Dir aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 5), aTiltedNormal);
+  gp_Dir  aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 5), aTiltedNormal);
   gp_Circ aCircle(aCircleAx, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Min);
 
   ASSERT_TRUE(aResult.IsDone());
@@ -165,12 +165,12 @@ TEST_F(ExtremaCS_CirclePlaneTest, SearchMode_MinOnly)
 
 TEST_F(ExtremaCS_CirclePlaneTest, SearchMode_MaxOnly)
 {
-  gp_Dir aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
-  gp_Ax2 aCircleAx(gp_Pnt(0, 0, 5), aTiltedNormal);
+  gp_Dir  aTiltedNormal(1, 0, 1); // gp_Dir auto-normalizes
+  gp_Ax2  aCircleAx(gp_Pnt(0, 0, 5), aTiltedNormal);
   gp_Circ aCircle(aCircleAx, 2.0);
-  gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
+  gp_Pln  aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCS_CirclePlane anExtrema(aCircle, aPlane);
+  ExtremaCS_CirclePlane    anExtrema(aCircle, aPlane);
   const ExtremaCS::Result& aResult = anExtrema.Perform(THE_TOL, ExtremaCS::SearchMode::Max);
 
   ASSERT_TRUE(aResult.IsDone());

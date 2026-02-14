@@ -103,50 +103,50 @@ private:
   void initCache()
   {
     // Cache cylinder components
-    const gp_Ax3& aCylPos = myCylinder.Position();
+    const gp_Ax3& aCylPos  = myCylinder.Position();
     const gp_Pnt& aCylOrig = aCylPos.Location();
-    myCylOrigX = aCylOrig.X();
-    myCylOrigY = aCylOrig.Y();
-    myCylOrigZ = aCylOrig.Z();
+    myCylOrigX             = aCylOrig.X();
+    myCylOrigY             = aCylOrig.Y();
+    myCylOrigZ             = aCylOrig.Z();
 
     const gp_Dir& aCylAxis = aCylPos.Direction();
-    myCylAxisX = aCylAxis.X();
-    myCylAxisY = aCylAxis.Y();
-    myCylAxisZ = aCylAxis.Z();
+    myCylAxisX             = aCylAxis.X();
+    myCylAxisY             = aCylAxis.Y();
+    myCylAxisZ             = aCylAxis.Z();
 
     const gp_Dir& aCylXDir = aCylPos.XDirection();
-    myCylXDirX = aCylXDir.X();
-    myCylXDirY = aCylXDir.Y();
-    myCylXDirZ = aCylXDir.Z();
+    myCylXDirX             = aCylXDir.X();
+    myCylXDirY             = aCylXDir.Y();
+    myCylXDirZ             = aCylXDir.Z();
 
     const gp_Dir& aCylYDir = aCylPos.YDirection();
-    myCylYDirX = aCylYDir.X();
-    myCylYDirY = aCylYDir.Y();
-    myCylYDirZ = aCylYDir.Z();
+    myCylYDirX             = aCylYDir.X();
+    myCylYDirY             = aCylYDir.Y();
+    myCylYDirZ             = aCylYDir.Z();
 
     myCylRadius = myCylinder.Radius();
 
     // Cache sphere components
-    const gp_Ax3& aSphPos = mySphere.Position();
+    const gp_Ax3& aSphPos    = mySphere.Position();
     const gp_Pnt& aSphCenter = aSphPos.Location();
-    mySphCenterX = aSphCenter.X();
-    mySphCenterY = aSphCenter.Y();
-    mySphCenterZ = aSphCenter.Z();
+    mySphCenterX             = aSphCenter.X();
+    mySphCenterY             = aSphCenter.Y();
+    mySphCenterZ             = aSphCenter.Z();
 
     const gp_Dir& aSphAxis = aSphPos.Direction();
-    mySphAxisX = aSphAxis.X();
-    mySphAxisY = aSphAxis.Y();
-    mySphAxisZ = aSphAxis.Z();
+    mySphAxisX             = aSphAxis.X();
+    mySphAxisY             = aSphAxis.Y();
+    mySphAxisZ             = aSphAxis.Z();
 
     const gp_Dir& aSphXDir = aSphPos.XDirection();
-    mySphXDirX = aSphXDir.X();
-    mySphXDirY = aSphXDir.Y();
-    mySphXDirZ = aSphXDir.Z();
+    mySphXDirX             = aSphXDir.X();
+    mySphXDirY             = aSphXDir.Y();
+    mySphXDirZ             = aSphXDir.Z();
 
     const gp_Dir& aSphYDir = aSphPos.YDirection();
-    mySphYDirX = aSphYDir.X();
-    mySphYDirY = aSphYDir.Y();
-    mySphYDirZ = aSphYDir.Z();
+    mySphYDirX             = aSphYDir.X();
+    mySphYDirY             = aSphYDir.Y();
+    mySphYDirZ             = aSphYDir.Z();
 
     mySphRadius = mySphere.Radius();
 
@@ -185,12 +185,10 @@ public:
   {
     const double aCosU = std::cos(theU);
     const double aSinU = std::sin(theU);
-    return gp_Pnt(myCylOrigX + myCylRadius * (aCosU * myCylXDirX + aSinU * myCylYDirX)
-                    + theV * myCylAxisX,
-                  myCylOrigY + myCylRadius * (aCosU * myCylXDirY + aSinU * myCylYDirY)
-                    + theV * myCylAxisY,
-                  myCylOrigZ + myCylRadius * (aCosU * myCylXDirZ + aSinU * myCylYDirZ)
-                    + theV * myCylAxisZ);
+    return gp_Pnt(
+      myCylOrigX + myCylRadius * (aCosU * myCylXDirX + aSinU * myCylYDirX) + theV * myCylAxisX,
+      myCylOrigY + myCylRadius * (aCosU * myCylXDirY + aSinU * myCylYDirY) + theV * myCylAxisY,
+      myCylOrigZ + myCylRadius * (aCosU * myCylXDirZ + aSinU * myCylYDirZ) + theV * myCylAxisZ);
   }
 
   //! Evaluate sphere point at given parameters.
@@ -236,7 +234,7 @@ public:
     if (myAxisDistSq < theTol * theTol)
     {
       // Sphere center on cylinder axis - infinite solutions at a ring
-      const double aRadDiff = std::abs(myCylRadius - mySphRadius);
+      const double aRadDiff           = std::abs(myCylRadius - mySphRadius);
       myResult.Status                 = ExtremaSS::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = aRadDiff * aRadDiff;
       return myResult;
@@ -277,18 +275,34 @@ public:
       double aSphU, aSphV;
       computeSphereUVFromDirection(-aDirX, -aDirY, -aDirZ, theTol, aSphU, aSphV);
 
-      const double aMinDist = aAxisDist - myCylRadius - mySphRadius;
+      const double aMinDist   = aAxisDist - myCylRadius - mySphRadius;
       const double aMinSqDist = (aMinDist > 0.0) ? aMinDist * aMinDist : 0.0;
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aSphU, aSphV, aCylUNorm, aCylV, aSphPt, aCylPt, aMinSqDist,
-                               true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aSphU,
+                               aSphV,
+                               aCylUNorm,
+                               aCylV,
+                               aSphPt,
+                               aCylPt,
+                               aMinSqDist,
+                               true,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aCylUNorm, aCylV, aSphU, aSphV, aCylPt, aSphPt, aMinSqDist,
-                               true, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aCylUNorm,
+                               aCylV,
+                               aSphU,
+                               aSphV,
+                               aCylPt,
+                               aSphPt,
+                               aMinSqDist,
+                               true,
+                               theTol);
       }
     }
 
@@ -322,18 +336,34 @@ public:
 
       if (mySwapped)
       {
-        ExtremaSS::AddExtremum(myResult, aSphU, aSphV, aCylUNorm, aCylV, aSphPt, aCylPt, aMaxSqDist,
-                               false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aSphU,
+                               aSphV,
+                               aCylUNorm,
+                               aCylV,
+                               aSphPt,
+                               aCylPt,
+                               aMaxSqDist,
+                               false,
+                               theTol);
       }
       else
       {
-        ExtremaSS::AddExtremum(myResult, aCylUNorm, aCylV, aSphU, aSphV, aCylPt, aSphPt, aMaxSqDist,
-                               false, theTol);
+        ExtremaSS::AddExtremum(myResult,
+                               aCylUNorm,
+                               aCylV,
+                               aSphU,
+                               aSphV,
+                               aCylPt,
+                               aSphPt,
+                               aMaxSqDist,
+                               false,
+                               theTol);
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution
-                                                 : ExtremaSS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaSS::Status::NoSolution : ExtremaSS::Status::OK;
     return myResult;
   }
 
@@ -383,10 +413,10 @@ public:
 
 private:
   //! Compute UV on sphere from direction vector.
-  void computeSphereUVFromDirection(double theDirX,
-                                    double theDirY,
-                                    double theDirZ,
-                                    double theTol,
+  void computeSphereUVFromDirection(double  theDirX,
+                                    double  theDirY,
+                                    double  theDirZ,
+                                    double  theTol,
                                     double& theU,
                                     double& theV) const
   {
@@ -420,7 +450,7 @@ private:
       return;
     }
 
-    const ExtremaSS::Domain4D&   aDom  = myDomain.value();
+    const ExtremaSS::Domain4D& aDom  = myDomain.value();
     const MathUtils::Domain2D& aDom1 = aDom.Domain1; // Cylinder domain
     const MathUtils::Domain2D& aDom2 = aDom.Domain2; // Sphere domain
 
@@ -458,14 +488,17 @@ private:
   }
 
   //! Check a point on cylinder against sphere for potential extrema.
-  void checkCylinderPointAgainstSphere(double theU1, double theV1, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkCylinderPointAgainstSphere(double                theU1,
+                                       double                theV1,
+                                       double                theTol,
+                                       ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP1 = Value1(theU1, theV1);
 
     // Direction from sphere center to cylinder point
-    const double aDx = aP1.X() - mySphCenterX;
-    const double aDy = aP1.Y() - mySphCenterY;
-    const double aDz = aP1.Z() - mySphCenterZ;
+    const double aDx   = aP1.X() - mySphCenterX;
+    const double aDy   = aP1.Y() - mySphCenterY;
+    const double aDz   = aP1.Z() - mySphCenterZ;
     const double aDist = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
 
     if (aDist < theTol)
@@ -474,9 +507,9 @@ private:
     }
 
     const double aInvDist = 1.0 / aDist;
-    const double aNx = aDx * aInvDist;
-    const double aNy = aDy * aInvDist;
-    const double aNz = aDz * aInvDist;
+    const double aNx      = aDx * aInvDist;
+    const double aNy      = aDy * aInvDist;
+    const double aNz      = aDz * aInvDist;
 
     // Closest point on sphere (toward cylinder point)
     double aU2Min = 0.0, aV2Min = 0.0;
@@ -485,15 +518,24 @@ private:
     if (myDomain.has_value())
     {
       const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
-      aU2Min = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
-      aV2Min = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
+      aU2Min                           = std::clamp(aU2Min, aDom2.UMin, aDom2.UMax);
+      aV2Min                           = std::clamp(aV2Min, aDom2.VMin, aDom2.VMax);
     }
 
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      const gp_Pnt aP2 = Value2(aU2Min, aV2Min);
+      const gp_Pnt aP2     = Value2(aU2Min, aV2Min);
       const double aSqDist = aP1.SquareDistance(aP2);
-      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Min, aV2Min, aP1, aP2, aSqDist, true, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theU1,
+                             theV1,
+                             aU2Min,
+                             aV2Min,
+                             aP1,
+                             aP2,
+                             aSqDist,
+                             true,
+                             theTol);
     }
 
     if (theMode != ExtremaSS::SearchMode::Min)
@@ -504,18 +546,30 @@ private:
       if (myDomain.has_value())
       {
         const MathUtils::Domain2D& aDom2 = myDomain->Domain2;
-        aU2Max = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
-        aV2Max = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
+        aU2Max                           = std::clamp(aU2Max, aDom2.UMin, aDom2.UMax);
+        aV2Max                           = std::clamp(aV2Max, aDom2.VMin, aDom2.VMax);
       }
 
-      const gp_Pnt aP2 = Value2(aU2Max, aV2Max);
+      const gp_Pnt aP2     = Value2(aU2Max, aV2Max);
       const double aSqDist = aP1.SquareDistance(aP2);
-      ExtremaSS::AddExtremum(myResult, theU1, theV1, aU2Max, aV2Max, aP1, aP2, aSqDist, false, theTol);
+      ExtremaSS::AddExtremum(myResult,
+                             theU1,
+                             theV1,
+                             aU2Max,
+                             aV2Max,
+                             aP1,
+                             aP2,
+                             aSqDist,
+                             false,
+                             theTol);
     }
   }
 
   //! Check a point on sphere against cylinder for potential extrema.
-  void checkSpherePointAgainstCylinder(double theU2, double theV2, double theTol, ExtremaSS::SearchMode theMode) const
+  void checkSpherePointAgainstCylinder(double                theU2,
+                                       double                theV2,
+                                       double                theTol,
+                                       ExtremaSS::SearchMode theMode) const
   {
     const gp_Pnt aP2 = Value2(theU2, theV2);
 
@@ -523,7 +577,7 @@ private:
     const double aVecX = aP2.X() - myCylOrigX;
     const double aVecY = aP2.Y() - myCylOrigY;
     const double aVecZ = aP2.Z() - myCylOrigZ;
-    double aV1 = aVecX * myCylAxisX + aVecY * myCylAxisY + aVecZ * myCylAxisZ;
+    double       aV1   = aVecX * myCylAxisX + aVecY * myCylAxisY + aVecZ * myCylAxisZ;
 
     // Clamp V to domain
     if (myDomain.has_value())
@@ -553,14 +607,14 @@ private:
     if (aPerpDist > theTol)
     {
       const double aInvPerpDist = 1.0 / aPerpDist;
-      const double aDirX = aPerpX * aInvPerpDist;
-      const double aDirY = aPerpY * aInvPerpDist;
-      const double aDirZ = aPerpZ * aInvPerpDist;
+      const double aDirX        = aPerpX * aInvPerpDist;
+      const double aDirY        = aPerpY * aInvPerpDist;
+      const double aDirZ        = aPerpZ * aInvPerpDist;
 
       // U for closest point (toward sphere point)
       const double aDotX = aDirX * myCylXDirX + aDirY * myCylXDirY + aDirZ * myCylXDirZ;
       const double aDotY = aDirX * myCylYDirX + aDirY * myCylYDirY + aDirZ * myCylYDirZ;
-      aU1Min = std::atan2(aDotY, aDotX);
+      aU1Min             = std::atan2(aDotY, aDotX);
       if (aU1Min < 0.0)
         aU1Min += ExtremaSS::THE_TWO_PI;
     }
@@ -572,7 +626,7 @@ private:
 
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      const gp_Pnt aP1 = Value1(aU1Min, aV1);
+      const gp_Pnt aP1     = Value1(aU1Min, aV1);
       const double aSqDist = aP1.SquareDistance(aP2);
       ExtremaSS::AddExtremum(myResult, aU1Min, aV1, theU2, theV2, aP1, aP2, aSqDist, true, theTol);
     }
@@ -588,18 +642,18 @@ private:
         aU1Max = std::clamp(aU1Max, myDomain->Domain1.UMin, myDomain->Domain1.UMax);
       }
 
-      const gp_Pnt aP1 = Value1(aU1Max, aV1);
+      const gp_Pnt aP1     = Value1(aU1Max, aV1);
       const double aSqDist = aP1.SquareDistance(aP2);
       ExtremaSS::AddExtremum(myResult, aU1Max, aV1, theU2, theV2, aP1, aP2, aSqDist, false, theTol);
     }
   }
 
 private:
-  gp_Cylinder                          myCylinder; //!< Cylinder geometry
-  gp_Sphere                            mySphere;   //!< Sphere geometry
+  gp_Cylinder                        myCylinder; //!< Cylinder geometry
+  gp_Sphere                          mySphere;   //!< Sphere geometry
   std::optional<ExtremaSS::Domain4D> myDomain;   //!< Parameter domain
-  mutable ExtremaSS::Result            myResult;   //!< Reusable result storage
-  bool                                 mySwapped;  //!< True if surfaces were swapped
+  mutable ExtremaSS::Result          myResult;   //!< Reusable result storage
+  bool                               mySwapped;  //!< True if surfaces were swapped
 
   // Cached cylinder components
   double myCylOrigX, myCylOrigY, myCylOrigZ;
@@ -616,10 +670,10 @@ private:
   double mySphRadius;
 
   // Precomputed geometry
-  double myAxisParam;                              //!< Parameter along cylinder axis
+  double myAxisParam;                                          //!< Parameter along cylinder axis
   double myClosestOnAxisX, myClosestOnAxisY, myClosestOnAxisZ; //!< Closest point on axis
-  double myPerpX, myPerpY, myPerpZ;                //!< Vector from axis to sphere center
-  double myAxisDistSq;                              //!< Squared distance from center to axis
+  double myPerpX, myPerpY, myPerpZ; //!< Vector from axis to sphere center
+  double myAxisDistSq;              //!< Squared distance from center to axis
 };
 
 #endif // _ExtremaSS_CylinderSphere_HeaderFile

@@ -57,9 +57,14 @@ public:
 
   //! Evaluates point and first two derivatives at parameters.
   //! For a plane, all second derivatives are zero (zero curvature).
-  void D2(double theU, double theV, gp_Pnt& thePt,
-          gp_Vec& theD1U, gp_Vec& theD1V,
-          gp_Vec& theD2UU, gp_Vec& theD2VV, gp_Vec& theD2UV) const
+  void D2(double  theU,
+          double  theV,
+          gp_Pnt& thePt,
+          gp_Vec& theD1U,
+          gp_Vec& theD1V,
+          gp_Vec& theD2UU,
+          gp_Vec& theD2VV,
+          gp_Vec& theD2UV) const
   {
     ElSLib::D1(theU, theV, myPlane, thePt, theD1U, theD1V);
     // Plane has zero curvature - all second derivatives are zero

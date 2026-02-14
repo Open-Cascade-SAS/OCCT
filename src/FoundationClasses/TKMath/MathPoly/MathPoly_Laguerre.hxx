@@ -34,11 +34,11 @@ constexpr int THE_MAX_POLY_DEGREE = 20;
 //! Result for general polynomial solver.
 struct GeneralPolyResult
 {
-  MathUtils::Status                              Status  = MathUtils::Status::NotConverged;
-  std::array<double, THE_MAX_POLY_DEGREE>        Roots   = {};
-  std::array<std::complex<double>, THE_MAX_POLY_DEGREE> ComplexRoots = {};
-  size_t                                         NbRoots = 0;
-  size_t                                         NbComplexRoots = 0;
+  MathUtils::Status                                     Status = MathUtils::Status::NotConverged;
+  std::array<double, THE_MAX_POLY_DEGREE>               Roots  = {};
+  std::array<std::complex<double>, THE_MAX_POLY_DEGREE> ComplexRoots   = {};
+  size_t                                                NbRoots        = 0;
+  size_t                                                NbComplexRoots = 0;
 
   bool IsDone() const { return Status == MathUtils::Status::OK; }
 
@@ -56,12 +56,12 @@ namespace detail
 //! @param theP output: polynomial value P(x)
 //! @param theDP output: first derivative P'(x)
 //! @param theD2P output: second derivative P''(x)
-inline void EvaluatePolynomialWithDerivatives(const double*        theCoeffs,
-                                               int                  theDegree,
-                                               std::complex<double> theX,
-                                               std::complex<double>& theP,
-                                               std::complex<double>& theDP,
-                                               std::complex<double>& theD2P)
+inline void EvaluatePolynomialWithDerivatives(const double*         theCoeffs,
+                                              int                   theDegree,
+                                              std::complex<double>  theX,
+                                              std::complex<double>& theP,
+                                              std::complex<double>& theDP,
+                                              std::complex<double>& theD2P)
 {
   // Horner's method with derivative computation
   theP   = std::complex<double>(theCoeffs[theDegree], 0.0);
@@ -85,10 +85,10 @@ inline void EvaluatePolynomialWithDerivatives(const double*        theCoeffs,
 //! @param theMaxIter maximum iterations
 //! @return refined root estimate
 inline std::complex<double> LaguerreIteration(const double*        theCoeffs,
-                                               int                  theDegree,
-                                               std::complex<double> theX0,
-                                               double               theTol,
-                                               int                  theMaxIter)
+                                              int                  theDegree,
+                                              std::complex<double> theX0,
+                                              double               theTol,
+                                              int                  theMaxIter)
 {
   std::complex<double> aX = theX0;
   const double         aN = static_cast<double>(theDegree);
@@ -155,9 +155,9 @@ inline void DeflateReal(double* theCoeffs, int& theDegree, double theRoot)
   double aCarry = theCoeffs[theDegree];
   for (int i = theDegree - 1; i >= 0; --i)
   {
-    double aTemp   = theCoeffs[i];
-    theCoeffs[i]   = aCarry;
-    aCarry         = aTemp + aCarry * theRoot;
+    double aTemp = theCoeffs[i];
+    theCoeffs[i] = aCarry;
+    aCarry       = aTemp + aCarry * theRoot;
   }
   --theDegree;
 }
@@ -253,9 +253,7 @@ inline double RefineRealRoot(const double* theOrigCoeffs, int theOrigDegree, dou
 //! @param theDegree polynomial degree
 //! @param theTol tolerance for convergence and real/complex discrimination
 //! @return GeneralPolyResult containing real and complex roots
-inline GeneralPolyResult Laguerre(const double* theCoeffs,
-                                   int           theDegree,
-                                   double        theTol = 1.0e-12)
+inline GeneralPolyResult Laguerre(const double* theCoeffs, int theDegree, double theTol = 1.0e-12)
 {
   GeneralPolyResult aResult;
 
@@ -295,12 +293,10 @@ inline GeneralPolyResult Laguerre(const double* theCoeffs,
   {
     // Use different starting points to improve convergence
     // Rotate through starting positions
-    std::array<std::complex<double>, 4> aStartPoints = {
-      std::complex<double>(0.0, 0.1),
-      std::complex<double>(1.0, 0.5),
-      std::complex<double>(-0.5, 0.3),
-      std::complex<double>(0.5, -0.3)
-    };
+    std::array<std::complex<double>, 4> aStartPoints = {std::complex<double>(0.0, 0.1),
+                                                        std::complex<double>(1.0, 0.5),
+                                                        std::complex<double>(-0.5, 0.3),
+                                                        std::complex<double>(0.5, -0.3)};
 
     std::complex<double> aX0 = aStartPoints[aStartIdx % 4];
     ++aStartIdx;
@@ -385,12 +381,12 @@ inline GeneralPolyResult LaguerreN(const double* theCoeffs, size_t theSize, doub
 //! @param theG constant term
 //! @return PolyResult containing real roots only
 inline MathUtils::PolyResult Sextic(double theA,
-                                     double theB,
-                                     double theC,
-                                     double theD,
-                                     double theE,
-                                     double theF,
-                                     double theG)
+                                    double theB,
+                                    double theC,
+                                    double theD,
+                                    double theE,
+                                    double theF,
+                                    double theG)
 {
   MathUtils::PolyResult aResult;
 
@@ -442,11 +438,11 @@ inline MathUtils::PolyResult Sextic(double theA,
 //! @param theF constant term
 //! @return PolyResult containing real roots only
 inline MathUtils::PolyResult Quintic(double theA,
-                                      double theB,
-                                      double theC,
-                                      double theD,
-                                      double theE,
-                                      double theF)
+                                     double theB,
+                                     double theC,
+                                     double theD,
+                                     double theE,
+                                     double theF)
 {
   MathUtils::PolyResult aResult;
 

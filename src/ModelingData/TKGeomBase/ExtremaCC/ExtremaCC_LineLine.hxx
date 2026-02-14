@@ -65,8 +65,8 @@ public:
   //! @param[in] theLine1 first line
   //! @param[in] theLine2 second line
   //! @param[in] theDomain parameter domains for both lines
-  ExtremaCC_LineLine(const gp_Lin& theLine1,
-                     const gp_Lin& theLine2,
+  ExtremaCC_LineLine(const gp_Lin&              theLine1,
+                     const gp_Lin&              theLine2,
                      const ExtremaCC::Domain2D& theDomain)
       : myLine1(theLine1),
         myLine2(theLine2),
@@ -109,7 +109,7 @@ public:
     if (aSqSinA < gp::Resolution() || aD1.IsParallel(aD2, Precision::Angular()))
     {
       // Parallel lines - infinite solutions at constant distance
-      myResult.Status = ExtremaCC::Status::InfiniteSolutions;
+      myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = myLine2.SquareDistance(myLine1.Location());
       return myResult;
     }
@@ -125,7 +125,7 @@ public:
     // Check for overflow (very nearly parallel)
     if (Precision::IsInfinite(aU1) || Precision::IsInfinite(aU2))
     {
-      myResult.Status = ExtremaCC::Status::InfiniteSolutions;
+      myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
       myResult.InfiniteSquareDistance = myLine2.SquareDistance(myLine1.Location());
       return myResult;
     }
@@ -133,10 +133,10 @@ public:
     // Check bounds if domain is specified
     if (myDomain.has_value())
     {
-      bool aOutside1 = (aU1 < myDomain->Curve1.Min - theTol) ||
-                       (aU1 > myDomain->Curve1.Max + theTol);
-      bool aOutside2 = (aU2 < myDomain->Curve2.Min - theTol) ||
-                       (aU2 > myDomain->Curve2.Max + theTol);
+      bool aOutside1 =
+        (aU1 < myDomain->Curve1.Min - theTol) || (aU1 > myDomain->Curve1.Max + theTol);
+      bool aOutside2 =
+        (aU2 < myDomain->Curve2.Min - theTol) || (aU2 > myDomain->Curve2.Max + theTol);
 
       if (aOutside1 || aOutside2)
       {
@@ -145,19 +145,19 @@ public:
         aU1 = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1));
         // Recompute optimal u2 for clamped u1
         gp_Pnt aClampedP1 = ElCLib::Value(aU1, myLine1);
-        aU2 = ElCLib::Parameter(myLine2, aClampedP1);
-        aU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
+        aU2               = ElCLib::Parameter(myLine2, aClampedP1);
+        aU2               = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
         // Recompute optimal u1 for possibly clamped u2
         gp_Pnt aClampedP2 = ElCLib::Value(aU2, myLine2);
-        double aU1New = ElCLib::Parameter(myLine1, aClampedP2);
-        aU1New = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1New));
+        double aU1New     = ElCLib::Parameter(myLine1, aClampedP2);
+        aU1New            = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, aU1New));
         // If u1 changed, update u2 again
         if (std::abs(aU1New - aU1) > theTol)
         {
-          aU1 = aU1New;
+          aU1        = aU1New;
           aClampedP1 = ElCLib::Value(aU1, myLine1);
-          aU2 = ElCLib::Parameter(myLine2, aClampedP1);
-          aU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
+          aU2        = ElCLib::Parameter(myLine2, aClampedP1);
+          aU2        = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, aU2));
         }
       }
       else
@@ -214,10 +214,10 @@ public:
   const gp_Lin& Line2() const { return myLine2; }
 
 private:
-  gp_Lin                              myLine1;  //!< First line geometry
-  gp_Lin                              myLine2;  //!< Second line geometry
-  std::optional<ExtremaCC::Domain2D>  myDomain; //!< Parameter domains
-  mutable ExtremaCC::Result           myResult; //!< Reusable result storage
+  gp_Lin                             myLine1;  //!< First line geometry
+  gp_Lin                             myLine2;  //!< Second line geometry
+  std::optional<ExtremaCC::Domain2D> myDomain; //!< Parameter domains
+  mutable ExtremaCC::Result          myResult; //!< Reusable result storage
 };
 
 #endif // _ExtremaCC_LineLine_HeaderFile

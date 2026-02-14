@@ -41,7 +41,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineThroughCenter_Perpendicular)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -58,7 +58,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineThroughCenter_InPlane)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -81,7 +81,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineParallelToPlane_OffsetZ)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0));
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -101,7 +101,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineParallelToPlane_OffsetXY)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 20, 5), gp_Dir(1, 0, 0));
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -125,7 +125,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineIntersectsCircle_TwoPoints)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 5, 0), gp_Dir(1, 0, 0)); // Line at Y=5
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -144,7 +144,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineTangentToCircle)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0)); // Tangent line at (10,0,0)
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -166,7 +166,7 @@ TEST_F(ExtremaCC_CircleLineTest, LineOutsideCircle_SamePlane)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 20, 0), gp_Dir(1, 0, 0));
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -194,7 +194,7 @@ TEST_F(ExtremaCC_CircleLineTest, Circle3D_LineSkew)
   gp_Circ aCircle(anAx2, 5.0);
   gp_Lin  aLine(gp_Pnt(10, 0, 0), gp_Dir(0, 1, 0));
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -221,7 +221,7 @@ TEST_F(ExtremaCC_CircleLineTest, PartialCircle_Arc)
   gp_Lin  aLine(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
 
   // Arc from 0 to pi/2 (first quadrant)
-  ExtremaCC::Domain2D aDomain{{0.0, THE_PI / 2.0}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_PI / 2.0}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -242,7 +242,7 @@ TEST_F(ExtremaCC_CircleLineTest, VerifyClosestPoints)
   gp_Circ aCircle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0);
   gp_Lin  aLine(gp_Pnt(0, 0, 5), gp_Dir(1, 0, 0)); // Line at Z=5
 
-  ExtremaCC::Domain2D aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
+  ExtremaCC::Domain2D  aDomain{{0.0, THE_TWO_PI}, {-100.0, 100.0}};
   ExtremaCC_CircleLine anExtrema(aCircle, aLine, aDomain);
 
   const ExtremaCC::Result& aResult = anExtrema.Perform(THE_TOL);
@@ -263,4 +263,3 @@ TEST_F(ExtremaCC_CircleLineTest, VerifyClosestPoints)
     EXPECT_NEAR(aResult[i].Point2.Z(), 5.0, THE_TOL);
   }
 }
-

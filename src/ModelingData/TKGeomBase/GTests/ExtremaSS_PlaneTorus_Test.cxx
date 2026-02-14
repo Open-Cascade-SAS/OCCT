@@ -40,7 +40,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneParallelToTorusAxis_FindsExtrema)
   // Horizontal plane at Z=10 (plane perpendicular to torus axis)
   const gp_Pln aPlane(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Plane perpendicular to torus axis: infinite solutions (entire circles at min/max distance)
@@ -58,7 +58,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlanePerpendicularToTorusAxis_SeparatedFromToru
   // Vertical plane at X=10 (perpendicular to X axis)
   const gp_Pln aPlane(gp_Pnt(10, 0, 0), gp_Dir(1, 0, 0));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
@@ -77,7 +77,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneTouchingTorus_MinDistanceZero)
   // Plane at Z=1 (touches top of torus) - plane perpendicular to torus axis
   const gp_Pln aPlane(gp_Pnt(0, 0, 1), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Plane touches torus at an entire circle - infinite solutions at distance 0
@@ -93,7 +93,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneIntersectingTorus_MinDistanceZero)
   // Plane at Z=0 (cuts through torus)
   const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find intersection
@@ -116,7 +116,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneBelowTorus_FindsMinimum)
   // Plane at Z=0 (perpendicular to torus axis)
   const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Plane perpendicular to torus axis - infinite solutions
@@ -158,7 +158,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, SearchModeMin_OnlyFindsMinimum)
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
   const gp_Pln   aPlane(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL, ExtremaSS::SearchMode::Min);
 
   if (aResult.Status == ExtremaSS::Status::OK)
@@ -182,12 +182,12 @@ TEST_F(ExtremaSS_PlaneTorusTest, TiltedPlane_GeneralOrientation)
   const gp_Dir aPlaneDir(1, 1, 1);
   const gp_Pln aPlane(gp_Pnt(10, 10, 10), aPlaneDir);
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Should find some extrema
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_PlaneTorusTest, TiltedTorus_GeneralOrientation)
@@ -198,11 +198,11 @@ TEST_F(ExtremaSS_PlaneTorusTest, TiltedTorus_GeneralOrientation)
 
   const gp_Pln aPlane(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK ||
-              aResult.Status == ExtremaSS::Status::InfiniteSolutions);
+  ASSERT_TRUE(aResult.Status == ExtremaSS::Status::OK
+              || aResult.Status == ExtremaSS::Status::InfiniteSolutions);
 }
 
 TEST_F(ExtremaSS_PlaneTorusTest, SmallMinorRadius_ThinTorus)
@@ -212,7 +212,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, SmallMinorRadius_ThinTorus)
 
   const gp_Pln aPlane(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Plane perpendicular to torus axis - infinite solutions
@@ -227,7 +227,7 @@ TEST_F(ExtremaSS_PlaneTorusTest, LargeTorus_FarFromPlane)
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 50.0, 5.0);
   const gp_Pln   aPlane(gp_Pnt(0, 0, 100), gp_Dir(0, 0, 1));
 
-  ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
+  ExtremaSS_PlaneTorus     anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
   // Plane perpendicular to torus axis - infinite solutions

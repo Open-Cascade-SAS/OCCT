@@ -40,7 +40,8 @@ TEST_F(MathSys_Newton3DTest, Linear3DSystem)
 {
   // System: 2x + y + z = 4, x + 3y + z = 5, x + y + 4z = 6
   // Solution: x = 1, y = 1, z = 1
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
     theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
     theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
@@ -74,7 +75,8 @@ TEST_F(MathSys_Newton3DTest, NonlinearSpherePlane)
 {
   // System: x^2 + y^2 + z^2 = 3 (sphere), x + y + z = 3 (plane through sphere)
   // One solution: x = y = z = 1
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = theX1 * theX1 + theX2 * theX2 + theX3 * theX3 - 3.0;
     theF[1] = theX1 + theX2 + theX3 - 3.0;
     theF[2] = theX1 - theX2; // Symmetry constraint
@@ -110,7 +112,8 @@ TEST_F(MathSys_Newton3DTest, NonlinearSpherePlane)
 TEST_F(MathSys_Newton3DTest, BoundedNewton3D)
 {
   // Same linear system but with bounds
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
     theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
     theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
@@ -144,7 +147,8 @@ TEST_F(MathSys_Newton3DTest, BoundedNewton3D)
 TEST_F(MathSys_Newton3DTest, GradientDescentFallback)
 {
   // System where Jacobian is nearly singular at some points
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     // F1 = x^3 - 1, F2 = y^3 - 1, F3 = z^3 - 1
     // Solution: x = y = z = 1
     theF[0] = theX1 * theX1 * theX1 - 1.0;
@@ -180,7 +184,8 @@ TEST_F(MathSys_Newton3DTest, GradientDescentFallback)
 TEST_F(MathSys_Newton3DTest, ConvergenceCount)
 {
   // Simple linear system should converge in 1 iteration
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
     theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
     theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
@@ -212,7 +217,8 @@ TEST_F(MathSys_Newton3DTest, ConvergenceCount)
 TEST_F(MathSys_Newton3DTest, VerifyFunctionValues)
 {
   // Use the linear system which always converges
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
     theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
     theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
@@ -249,7 +255,8 @@ TEST_F(MathSys_Newton3DTest, VerifyFunctionValues)
 
 TEST_F(MathSys_Newton3DTest, DifferentStartingPoints)
 {
-  auto aFunc = [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
     theF[0] = 2.0 * theX1 + theX2 + theX3 - 4.0;
     theF[1] = theX1 + 3.0 * theX2 + theX3 - 5.0;
     theF[2] = theX1 + theX2 + 4.0 * theX3 - 6.0;
@@ -267,13 +274,16 @@ TEST_F(MathSys_Newton3DTest, DifferentStartingPoints)
     return true;
   };
 
-  double aStartPoints[][3] = {{0.0, 0.0, 0.0}, {-5.0, -5.0, -5.0}, {10.0, 10.0, 10.0}, {0.5, 1.5, 0.5}};
+  double aStartPoints[][3] = {{0.0, 0.0, 0.0},
+                              {-5.0, -5.0, -5.0},
+                              {10.0, 10.0, 10.0},
+                              {0.5, 1.5, 0.5}};
 
   for (const auto& aStart : aStartPoints)
   {
     auto aResult = MathSys::Newton3D(aFunc, aStart[0], aStart[1], aStart[2], THE_TOL);
-    ASSERT_TRUE(aResult.IsDone())
-      << "Failed for start (" << aStart[0] << ", " << aStart[1] << ", " << aStart[2] << ")";
+    ASSERT_TRUE(aResult.IsDone()) << "Failed for start (" << aStart[0] << ", " << aStart[1] << ", "
+                                  << aStart[2] << ")";
 
     EXPECT_NEAR(aResult.X1, 1.0, THE_TOLERANCE);
     EXPECT_NEAR(aResult.X2, 1.0, THE_TOLERANCE);
@@ -311,4 +321,3 @@ TEST_F(MathSys_Newton3DTest, Solve3x3Helper)
   EXPECT_NEAR(aDelta[1], 1.0, THE_TOLERANCE);
   EXPECT_NEAR(aDelta[2], 1.0, THE_TOLERANCE);
 }
-

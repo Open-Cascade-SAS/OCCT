@@ -21,7 +21,7 @@
 
 //==================================================================================================
 
-ExtremaCC_EllipseParabola::ExtremaCC_EllipseParabola(const gp_Elips&  theEllipse,
+ExtremaCC_EllipseParabola::ExtremaCC_EllipseParabola(const gp_Elips& theEllipse,
                                                      const gp_Parab& theParabola)
     : myEllipse(theEllipse),
       myParabola(theParabola),
@@ -31,8 +31,8 @@ ExtremaCC_EllipseParabola::ExtremaCC_EllipseParabola(const gp_Elips&  theEllipse
 
 //==================================================================================================
 
-ExtremaCC_EllipseParabola::ExtremaCC_EllipseParabola(const gp_Elips&             theEllipse,
-                                                     const gp_Parab&             theParabola,
+ExtremaCC_EllipseParabola::ExtremaCC_EllipseParabola(const gp_Elips&            theEllipse,
+                                                     const gp_Parab&            theParabola,
                                                      const ExtremaCC::Domain2D& theDomain)
     : myEllipse(theEllipse),
       myParabola(theParabola),

@@ -53,8 +53,8 @@ public:
   }
 
   //! Constructor with line and sphere geometry and domain.
-  ExtremaCS_LineSphere(const gp_Lin&                        theLine,
-                       const gp_Sphere&                     theSphere,
+  ExtremaCS_LineSphere(const gp_Lin&                             theLine,
+                       const gp_Sphere&                          theSphere,
                        const std::optional<ExtremaCS::Domain3D>& theDomain)
       : myLine(theLine),
         mySphere(theSphere),
@@ -72,10 +72,10 @@ public:
   {
     myResult.Clear();
 
-    const gp_Pnt& aLineP = myLine.Location();
-    const gp_Dir& aLineD = myLine.Direction();
+    const gp_Pnt& aLineP  = myLine.Location();
+    const gp_Dir& aLineD  = myLine.Direction();
     const gp_Pnt& aCenter = mySphere.Location();
-    const double aRadius = mySphere.Radius();
+    const double  aRadius = mySphere.Radius();
 
     // Find t where line is closest to sphere center
     // t = (C - P) . D
@@ -83,7 +83,7 @@ public:
     const double aT = aPC.Dot(gp_Vec(aLineD));
 
     // Point on line closest to center
-    const gp_Pnt aLinePt = aLineP.Translated(aT * gp_Vec(aLineD));
+    const gp_Pnt aLinePt       = aLineP.Translated(aT * gp_Vec(aLineD));
     const double aDistToCenter = aLinePt.Distance(aCenter);
 
     // Helper to add an extremum
@@ -99,7 +99,7 @@ public:
 
       // Compute points
       const gp_Pnt aCurvePt = aLineP.Translated(theT * gp_Vec(aLineD));
-      gp_Vec aDir(mySphere.Location(), aCurvePt);
+      gp_Vec       aDir(mySphere.Location(), aCurvePt);
       const double aDist = aDir.Magnitude();
 
       gp_Pnt aSphPt;
@@ -150,15 +150,15 @@ public:
         // |W + t*D|^2 = R^2
         // t^2 + 2*(W.D)*t + (|W|^2 - R^2) = 0
         const gp_Vec aW(aCenter, aLineP);
-        const double aB = aW.Dot(gp_Vec(aLineD));           // coefficient / 2
-        const double aC = aW.SquareMagnitude() - aRadius * aRadius;
+        const double aB     = aW.Dot(gp_Vec(aLineD)); // coefficient / 2
+        const double aC     = aW.SquareMagnitude() - aRadius * aRadius;
         const double aDiscr = aB * aB - aC;
 
         if (aDiscr >= 0.0)
         {
           const double aSqrtDiscr = std::sqrt(aDiscr);
-          const double aT1 = -aB - aSqrtDiscr;
-          const double aT2 = -aB + aSqrtDiscr;
+          const double aT1        = -aB - aSqrtDiscr;
+          const double aT2        = -aB + aSqrtDiscr;
 
           // Add both intersection points as minima (distance = 0)
           addExtremum(aT1, true);
@@ -193,8 +193,8 @@ public:
         gp_Pnt aPtMin = aLineP.Translated(aTMin * gp_Vec(aLineD));
         gp_Pnt aPtMax = aLineP.Translated(aTMax * gp_Vec(aLineD));
 
-        gp_Vec aDirMin(mySphere.Location(), aPtMin);
-        gp_Vec aDirMax(mySphere.Location(), aPtMax);
+        gp_Vec       aDirMin(mySphere.Location(), aPtMin);
+        gp_Vec       aDirMax(mySphere.Location(), aPtMax);
         const double aDistMin = aDirMin.Magnitude() - aRadius;
         const double aDistMax = aDirMax.Magnitude() - aRadius;
 
@@ -209,8 +209,8 @@ public:
       }
     }
 
-    myResult.Status = myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution
-                                                  : ExtremaCS::Status::OK;
+    myResult.Status =
+      myResult.Extrema.IsEmpty() ? ExtremaCS::Status::NoSolution : ExtremaCS::Status::OK;
     return myResult;
   }
 

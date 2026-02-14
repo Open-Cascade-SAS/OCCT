@@ -31,14 +31,14 @@ public:
 
   ExtremaCC_HyperbolaHyperbola(const gp_Hypr& theHyperbola1, const gp_Hypr& theHyperbola2);
 
-  ExtremaCC_HyperbolaHyperbola(const gp_Hypr&              theHyperbola1,
-                               const gp_Hypr&              theHyperbola2,
+  ExtremaCC_HyperbolaHyperbola(const gp_Hypr&             theHyperbola1,
+                               const gp_Hypr&             theHyperbola2,
                                const ExtremaCC::Domain2D& theDomain);
 
-  ExtremaCC_HyperbolaHyperbola(const ExtremaCC_HyperbolaHyperbola&) = delete;
+  ExtremaCC_HyperbolaHyperbola(const ExtremaCC_HyperbolaHyperbola&)            = delete;
   ExtremaCC_HyperbolaHyperbola& operator=(const ExtremaCC_HyperbolaHyperbola&) = delete;
-  ExtremaCC_HyperbolaHyperbola(ExtremaCC_HyperbolaHyperbola&&) = default;
-  ExtremaCC_HyperbolaHyperbola& operator=(ExtremaCC_HyperbolaHyperbola&&) = default;
+  ExtremaCC_HyperbolaHyperbola(ExtremaCC_HyperbolaHyperbola&&)                 = default;
+  ExtremaCC_HyperbolaHyperbola& operator=(ExtremaCC_HyperbolaHyperbola&&)      = default;
 
   [[nodiscard]] const ExtremaCC::Result& Perform(
     double                theTol,
@@ -49,11 +49,12 @@ public:
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
   const gp_Hypr& Hyperbola1() const { return myHyperbola1; }
+
   const gp_Hypr& Hyperbola2() const { return myHyperbola2; }
 
 private:
-  gp_Hypr                             myHyperbola1;
-  gp_Hypr                             myHyperbola2;
+  gp_Hypr                            myHyperbola1;
+  gp_Hypr                            myHyperbola2;
   std::optional<ExtremaCC::Domain2D> myDomain;
   mutable ExtremaCC::Result          myResult;
 };
