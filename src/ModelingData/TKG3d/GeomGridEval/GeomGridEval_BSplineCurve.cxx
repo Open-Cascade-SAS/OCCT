@@ -22,7 +22,7 @@ namespace
 {
 
 //! Threshold for using cache vs direct evaluation.
-constexpr int THE_CACHE_THRESHOLD = 4;
+constexpr int THE_CACHE_THRESHOLD = 2;
 
 //! Helper structure holding extracted B-spline curve data.
 struct CurveData

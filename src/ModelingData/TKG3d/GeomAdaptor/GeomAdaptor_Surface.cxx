@@ -1016,7 +1016,7 @@ std::optional<gp_Pnt> GeomAdaptor_Surface::EvalD0(double U, double V) const
 
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
+      if (aCache.IsNull())
         RebuildCache(U, V);
       aCache->D0(U, V, P);
       return P;
@@ -1124,7 +1124,7 @@ std::optional<Geom_Surface::ResD1> GeomAdaptor_Surface::EvalD1(double U, double 
 
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
+      if (aCache.IsNull())
         RebuildCache(U, V);
       aCache->D1(U, V, aResult.Point, aResult.D1U, aResult.D1V);
       return aResult;
@@ -1286,7 +1286,7 @@ std::optional<Geom_Surface::ResD2> GeomAdaptor_Surface::EvalD2(double U, double 
 
     case GeomAbs_BezierSurface: {
       auto& aCache = std::get<BezierData>(mySurfaceData).Cache;
-      if (aCache.IsNull() || !aCache->IsCacheValid(U, V))
+      if (aCache.IsNull())
         RebuildCache(U, V);
       aCache
         ->D2(U, V, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
