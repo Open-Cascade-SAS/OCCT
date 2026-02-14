@@ -24,7 +24,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
 #include <IntAna2d_AnaIntersection.hxx>
-#include <math_TrigonometricFunctionRoots.hxx>
+#include <MathRoot_Trig.hxx>
 #include <Precision.hxx>
 
 #include <cmath>
@@ -152,17 +152,24 @@ const ExtremaCC::Result& ExtremaCC_CircleLine::Perform(double                the
   if (std::abs(aA4) <= aCoefTol) aA4 = 0.0;
   if (std::abs(aA5) <= aCoefTol) aA5 = 0.0;
 
-  // Solve using math_TrigonometricFunctionRoots
+  // Solve using MathRoot::Trigonometric (modern solver)
   // Equation: A1*cos^2 + 2*A2*cos*sin + A3*cos + A4*sin + A5 = 0
-  math_TrigonometricFunctionRoots aSolver(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
+  MathRoot::TrigResult aSolverResult = MathRoot::Trigonometric(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
 
-  if (!aSolver.IsDone())
+  if (!aSolverResult.IsDone())
   {
+    if (aSolverResult.InfiniteRoots)
+    {
+      // All points at same distance - parallel case
+      myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
+      myResult.InfiniteSquareDistance = aR * aR;
+      return myResult;
+    }
     myResult.Status = ExtremaCC::Status::NumericalError;
     return myResult;
   }
 
-  if (aSolver.InfiniteRoots())
+  if (aSolverResult.InfiniteRoots)
   {
     // All points at same distance - parallel case
     myResult.Status                 = ExtremaCC::Status::InfiniteSolutions;
@@ -171,10 +178,10 @@ const ExtremaCC::Result& ExtremaCC_CircleLine::Perform(double                the
   }
 
   // Store solutions
-  const int aNbSol = aSolver.NbSolutions();
-  for (int i = 1; i <= aNbSol; ++i)
+  const int aNbSol = aSolverResult.NbRoots;
+  for (int i = 0; i < aNbSol; ++i)
   {
-    const double aU1 = aSolver.Value(i);
+    const double aU1 = aSolverResult.Roots[i];
     const gp_Pnt aP1 = ElCLib::Value(aU1, myCircle);
     const double aU2 = gp_Vec(aO1, aP1).Dot(aD);
 

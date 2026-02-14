@@ -17,7 +17,7 @@
 #include <ExtremaCC_Ellipse.hxx>
 #include <ExtremaCC_Line.hxx>
 #include <gp_Vec.hxx>
-#include <math_TrigonometricFunctionRoots.hxx>
+#include <MathRoot_Trig.hxx>
 
 #include <cmath>
 
@@ -92,16 +92,23 @@ const ExtremaCC::Result& ExtremaCC_EllipseLine::Perform(double                th
   if (std::abs(aA4) <= aCoefTol) aA4 = 0.0;
   if (std::abs(aA5) <= aCoefTol) aA5 = 0.0;
 
-  // Solve using math_TrigonometricFunctionRoots
-  math_TrigonometricFunctionRoots aSolver(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
+  // Solve using MathRoot::Trigonometric (modern solver)
+  MathRoot::TrigResult aSolverResult = MathRoot::Trigonometric(aA1, aA2, aA3, aA4, aA5, 0.0, 2.0 * M_PI);
 
-  if (!aSolver.IsDone())
+  if (!aSolverResult.IsDone())
   {
+    if (aSolverResult.InfiniteRoots)
+    {
+      myResult.Status = ExtremaCC::Status::InfiniteSolutions;
+      const gp_Pnt aP = ElCLib::Value(0.0, myEllipse);
+      myResult.InfiniteSquareDistance = myLine.SquareDistance(aP);
+      return myResult;
+    }
     myResult.Status = ExtremaCC::Status::NumericalError;
     return myResult;
   }
 
-  if (aSolver.InfiniteRoots())
+  if (aSolverResult.InfiniteRoots)
   {
     // Parallel case - infinite solutions
     myResult.Status = ExtremaCC::Status::InfiniteSolutions;
@@ -111,10 +118,10 @@ const ExtremaCC::Result& ExtremaCC_EllipseLine::Perform(double                th
   }
 
   // Store solutions
-  const int aNbSol = aSolver.NbSolutions();
-  for (int i = 1; i <= aNbSol; ++i)
+  const int aNbSol = aSolverResult.NbRoots;
+  for (int i = 0; i < aNbSol; ++i)
   {
-    const double aU1 = aSolver.Value(i);
+    const double aU1 = aSolverResult.Roots[i];
     const gp_Pnt aP1 = ElCLib::Value(aU1, myEllipse);
     const double aU2 = gp_Vec(aO1, aP1).Dot(aD);
 

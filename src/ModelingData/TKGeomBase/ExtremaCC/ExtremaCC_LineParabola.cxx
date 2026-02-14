@@ -17,7 +17,7 @@
 #include <ExtremaCC_Line.hxx>
 #include <ExtremaCC_Parabola.hxx>
 #include <gp_Vec.hxx>
-#include <math_DirectPolynomialRoots.hxx>
+#include <MathPoly_Cubic.hxx>
 
 #include <cmath>
 
@@ -81,19 +81,24 @@ const ExtremaCC::Result& ExtremaCC_LineParabola::Perform(double                t
   const double aA4 = aVxyz.Y();
 
   // Solve cubic polynomial: A1*y^3 + A2*y^2 + A3*y + A4 = 0
-  math_DirectPolynomialRoots aSolver(aA1, aA2, aA3, aA4);
+  MathUtils::PolyResult aSolverResult = MathPoly::Cubic(aA1, aA2, aA3, aA4);
 
-  if (!aSolver.IsDone())
+  if (!aSolverResult.IsDone())
   {
+    if (aSolverResult.Status == MathUtils::Status::InfiniteSolutions)
+    {
+      myResult.Status = ExtremaCC::Status::InfiniteSolutions;
+      return myResult;
+    }
     myResult.Status = ExtremaCC::Status::NumericalError;
     return myResult;
   }
 
   // Store solutions
-  const int aNbSol = aSolver.NbSolutions();
-  for (int i = 1; i <= aNbSol; ++i)
+  const size_t aNbSol = aSolverResult.NbRoots;
+  for (size_t i = 0; i < aNbSol; ++i)
   {
-    const double aU2 = aSolver.Value(i); // Parameter on parabola
+    const double aU2 = aSolverResult.Roots[i]; // Parameter on parabola
     const gp_Pnt aP2 = ElCLib::Value(aU2, myParabola);
     const double aU1 = gp_Vec(aO1, aP2).Dot(aD1); // Parameter on line
 

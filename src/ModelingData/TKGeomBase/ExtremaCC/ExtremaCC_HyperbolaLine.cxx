@@ -17,7 +17,7 @@
 #include <ExtremaCC_Hyperbola.hxx>
 #include <ExtremaCC_Line.hxx>
 #include <gp_Vec.hxx>
-#include <math_DirectPolynomialRoots.hxx>
+#include <MathPoly_Quartic.hxx>
 
 #include <cmath>
 
@@ -86,19 +86,24 @@ const ExtremaCC::Result& ExtremaCC_HyperbolaLine::Perform(double                
   const double aA5 = aa - ab;
 
   // Solve degree-4 polynomial: A1*v^4 + A2*v^3 + 0*v^2 + A4*v + A5 = 0
-  math_DirectPolynomialRoots aSolver(aA1, aA2, 0.0, aA4, aA5);
+  MathUtils::PolyResult aSolverResult = MathPoly::Quartic(aA1, aA2, 0.0, aA4, aA5);
 
-  if (!aSolver.IsDone())
+  if (!aSolverResult.IsDone())
   {
+    if (aSolverResult.Status == MathUtils::Status::InfiniteSolutions)
+    {
+      myResult.Status = ExtremaCC::Status::InfiniteSolutions;
+      return myResult;
+    }
     myResult.Status = ExtremaCC::Status::NumericalError;
     return myResult;
   }
 
   // Store solutions
-  const int aNbSol = aSolver.NbSolutions();
-  for (int i = 1; i <= aNbSol; ++i)
+  const size_t aNbSol = aSolverResult.NbRoots;
+  for (size_t i = 0; i < aNbSol; ++i)
   {
-    const double aV = aSolver.Value(i);
+    const double aV = aSolverResult.Roots[i];
 
     // Only positive v values correspond to real hyperbola parameters (v = exp(u))
     if (aV > 0.0)
