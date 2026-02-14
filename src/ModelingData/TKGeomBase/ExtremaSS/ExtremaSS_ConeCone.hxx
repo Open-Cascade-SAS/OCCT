@@ -16,6 +16,7 @@
 
 #include <ExtremaSS.hxx>
 #include <gp_Cone.hxx>
+#include <MathOpt_Powell.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
@@ -542,7 +543,7 @@ private:
     }
   }
 
-  //! Refine an extremum using gradient descent.
+  //! Refine an extremum using Powell's method (gradient-free optimization).
   void refineExtremum(double theU1,
                       double theV1,
                       double theU2,
@@ -550,40 +551,53 @@ private:
                       bool   theIsMin,
                       double theTol) const
   {
-    double aU1 = theU1, aV1 = theV1, aU2 = theU2, aV2 = theV2;
-
-    constexpr int    aMaxIter = 30;
-    constexpr double aStep    = 0.01;
-
-    for (int iter = 0; iter < aMaxIter; ++iter)
+    // Functor for squared distance between surfaces
+    struct DistanceFunc
     {
-      const gp_Pnt aP1     = Value1(aU1, aV1);
-      const gp_Pnt aP2     = Value2(aU2, aV2);
-      const double aSqDist = aP1.SquareDistance(aP2);
+      const ExtremaSS_ConeCone* myEval;
+      bool                      myIsMin;
 
-      const double aEps = 1e-6;
+      DistanceFunc(const ExtremaSS_ConeCone* theEval, bool theIsMin)
+          : myEval(theEval),
+            myIsMin(theIsMin)
+      {
+      }
 
-      const double aGradU1 = (Value1(aU1 + aEps, aV1).SquareDistance(aP2) - aSqDist) / aEps;
-      const double aGradV1 = (Value1(aU1, aV1 + aEps).SquareDistance(aP2) - aSqDist) / aEps;
-      const double aGradU2 = (aP1.SquareDistance(Value2(aU2 + aEps, aV2)) - aSqDist) / aEps;
-      const double aGradV2 = (aP1.SquareDistance(Value2(aU2, aV2 + aEps)) - aSqDist) / aEps;
+      bool Value(const math_Vector& theX, double& theF) const
+      {
+        const gp_Pnt aP1     = myEval->Value1(theX(1), theX(2));
+        const gp_Pnt aP2     = myEval->Value2(theX(3), theX(4));
+        const double aSqDist = aP1.SquareDistance(aP2);
+        theF                 = myIsMin ? aSqDist : -aSqDist;
+        return true;
+      }
+    };
 
-      const double aGradMag =
-          std::sqrt(aGradU1 * aGradU1 + aGradV1 * aGradV1 + aGradU2 * aGradU2 + aGradV2 * aGradV2);
+    math_Vector aStartPt(1, 4);
+    aStartPt(1) = theU1;
+    aStartPt(2) = theV1;
+    aStartPt(3) = theU2;
+    aStartPt(4) = theV2;
 
-      if (aGradMag < theTol)
-        break;
+    MathUtils::Config  aConfig(theTol, 50);
+    DistanceFunc       aFunc(this, theIsMin);
+    MathUtils::VectorResult aOptResult = MathOpt::Powell(aFunc, aStartPt, aConfig);
 
-      const double aDir = theIsMin ? -1.0 : 1.0;
-      aU1 += aDir * aStep * aGradU1 / aGradMag;
-      aV1 += aDir * aStep * aGradV1 / aGradMag;
-      aU2 += aDir * aStep * aGradU2 / aGradMag;
-      aV2 += aDir * aStep * aGradV2 / aGradMag;
+    double aU1 = theU1, aV1 = theV1, aU2 = theU2, aV2 = theV2;
+    double aSqDist = 0.0;
+
+    if (aOptResult.IsDone() && aOptResult.Solution.has_value())
+    {
+      const math_Vector& aSol = *aOptResult.Solution;
+      aU1                     = aSol(1);
+      aV1                     = aSol(2);
+      aU2                     = aSol(3);
+      aV2                     = aSol(4);
     }
 
-    const gp_Pnt aP1     = Value1(aU1, aV1);
-    const gp_Pnt aP2     = Value2(aU2, aV2);
-    const double aSqDist = aP1.SquareDistance(aP2);
+    const gp_Pnt aP1 = Value1(aU1, aV1);
+    const gp_Pnt aP2 = Value2(aU2, aV2);
+    aSqDist          = aP1.SquareDistance(aP2);
 
     addExtremum(aU1, aV1, aU2, aV2, aSqDist, theIsMin, theTol);
   }

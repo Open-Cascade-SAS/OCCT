@@ -17,6 +17,7 @@
 #include <ElSLib.hxx>
 #include <ExtremaSS.hxx>
 #include <gp_Torus.hxx>
+#include <MathOpt_Powell.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
@@ -846,100 +847,57 @@ private:
     }
   }
 
-  //! Refine extremum using gradient descent.
+  //! Refine extremum using Powell's method (gradient-free optimization).
   void refineExtremum(double theU1, double theV1,
                       double theU2, double theV2,
                       bool   theIsMinimum,
                       double theTol) const
   {
+    struct DistanceFunc
+    {
+      const ExtremaSS_TorusTorus* myEval;
+      bool                        myIsMin;
+
+      DistanceFunc(const ExtremaSS_TorusTorus* theEval, bool theIsMin)
+          : myEval(theEval),
+            myIsMin(theIsMin)
+      {
+      }
+
+      bool Value(const math_Vector& theX, double& theF) const
+      {
+        const gp_Pnt aP1     = myEval->Value1(theX(1), theX(2));
+        const gp_Pnt aP2     = myEval->Value2(theX(3), theX(4));
+        const double aSqDist = aP1.SquareDistance(aP2);
+        theF                 = myIsMin ? aSqDist : -aSqDist;
+        return true;
+      }
+    };
+
+    math_Vector aStartPt(1, 4);
+    aStartPt(1) = theU1;
+    aStartPt(2) = theV1;
+    aStartPt(3) = theU2;
+    aStartPt(4) = theV2;
+
+    MathUtils::Config       aConfig(theTol, 50);
+    DistanceFunc            aFunc(this, theIsMinimum);
+    MathUtils::VectorResult aOptResult = MathOpt::Powell(aFunc, aStartPt, aConfig);
+
     double aU1 = theU1, aV1 = theV1, aU2 = theU2, aV2 = theV2;
 
-    // Get bounds
-    double aU1Min = 0.0, aU1Max = 2.0 * M_PI;
-    double aU2Min = 0.0, aU2Max = 2.0 * M_PI;
-    double aV1Min = 0.0, aV1Max = 2.0 * M_PI;
-    double aV2Min = 0.0, aV2Max = 2.0 * M_PI;
-
-    if (myDomain.has_value())
+    if (aOptResult.IsDone() && aOptResult.Solution.has_value())
     {
-      aU1Min = myDomain->Domain1.UMin;
-      aU1Max = myDomain->Domain1.UMax;
-      aV1Min = myDomain->Domain1.VMin;
-      aV1Max = myDomain->Domain1.VMax;
-      aU2Min = myDomain->Domain2.UMin;
-      aU2Max = myDomain->Domain2.UMax;
-      aV2Min = myDomain->Domain2.VMin;
-      aV2Max = myDomain->Domain2.VMax;
+      const math_Vector& aSol = *aOptResult.Solution;
+      aU1                     = aSol(1);
+      aV1                     = aSol(2);
+      aU2                     = aSol(3);
+      aV2                     = aSol(4);
     }
 
-    constexpr int    aMaxIter = 50;
-    constexpr double aH = 1e-6;
-    double           aAlpha = 0.1;
-    const double     aSign = theIsMinimum ? 1.0 : -1.0;
-
-    gp_Pnt aP1 = Value1(aU1, aV1);
-    gp_Pnt aP2 = Value2(aU2, aV2);
-    double aSqDist = aP1.SquareDistance(aP2);
-
-    for (int anIter = 0; anIter < aMaxIter; ++anIter)
-    {
-      // Compute gradient numerically
-      const gp_Pnt aP1_dU1 = Value1(aU1 + aH, aV1);
-      const gp_Pnt aP1_dV1 = Value1(aU1, aV1 + aH);
-      const gp_Pnt aP2_dU2 = Value2(aU2 + aH, aV2);
-      const gp_Pnt aP2_dV2 = Value2(aU2, aV2 + aH);
-
-      const double aGradU1 = (aP1_dU1.SquareDistance(aP2) - aSqDist) / aH;
-      const double aGradV1 = (aP1_dV1.SquareDistance(aP2) - aSqDist) / aH;
-      const double aGradU2 = (aP1.SquareDistance(aP2_dU2) - aSqDist) / aH;
-      const double aGradV2 = (aP1.SquareDistance(aP2_dV2) - aSqDist) / aH;
-
-      const double aGradNorm = std::sqrt(aGradU1 * aGradU1 + aGradV1 * aGradV1 +
-                                         aGradU2 * aGradU2 + aGradV2 * aGradV2);
-
-      if (aGradNorm < theTol * theTol)
-      {
-        break;
-      }
-
-      // Update parameters
-      double aNewU1 = aU1 - aSign * aAlpha * aGradU1 / aGradNorm;
-      double aNewV1 = aV1 - aSign * aAlpha * aGradV1 / aGradNorm;
-      double aNewU2 = aU2 - aSign * aAlpha * aGradU2 / aGradNorm;
-      double aNewV2 = aV2 - aSign * aAlpha * aGradV2 / aGradNorm;
-
-      // Clamp to domain
-      aNewU1 = std::clamp(aNewU1, aU1Min, aU1Max);
-      aNewV1 = std::clamp(aNewV1, aV1Min, aV1Max);
-      aNewU2 = std::clamp(aNewU2, aU2Min, aU2Max);
-      aNewV2 = std::clamp(aNewV2, aV2Min, aV2Max);
-
-      const gp_Pnt aNewP1 = Value1(aNewU1, aNewV1);
-      const gp_Pnt aNewP2 = Value2(aNewU2, aNewV2);
-      const double aNewSqDist = aNewP1.SquareDistance(aNewP2);
-
-      const bool aImproved = theIsMinimum ? (aNewSqDist < aSqDist) : (aNewSqDist > aSqDist);
-
-      if (aImproved)
-      {
-        aU1 = aNewU1;
-        aV1 = aNewV1;
-        aU2 = aNewU2;
-        aV2 = aNewV2;
-        aP1 = aNewP1;
-        aP2 = aNewP2;
-        aSqDist = aNewSqDist;
-        aAlpha = std::min(aAlpha * 1.1, 1.0);
-      }
-      else
-      {
-        aAlpha *= 0.5;
-        if (aAlpha < 1e-10)
-        {
-          break;
-        }
-      }
-    }
+    const gp_Pnt aP1     = Value1(aU1, aV1);
+    const gp_Pnt aP2     = Value2(aU2, aV2);
+    const double aSqDist = aP1.SquareDistance(aP2);
 
     addExtremum(aU1, aV1, aU2, aV2, aSqDist, theIsMinimum, theTol);
   }

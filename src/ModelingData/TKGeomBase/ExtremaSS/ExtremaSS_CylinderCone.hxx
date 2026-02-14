@@ -17,6 +17,8 @@
 #include <ExtremaSS.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
+#include <MathOpt_Brent.hxx>
+#include <MathOpt_Powell.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <cmath>
@@ -597,13 +599,13 @@ private:
                                             double                theTol,
                                             ExtremaSS::SearchMode theMode) const
   {
+    (void)theVCyl; // Not used directly; we search over cone V
     myResult.Status = ExtremaSS::Status::OK;
 
     // The axes intersect but the intersection point is at a negative V on the cone
     // (i.e., the cylinder axis passes through the region "behind" the cone apex)
 
     // First, always check the apex (V = 0) as a candidate for minimum
-    // Find closest point on cylinder to the apex
     const gp_Vec aVecFromCyl(myCylCenter, myConeApex);
     const double aVCylApex = aVecFromCyl.Dot(gp_Vec(myCylAxis));
 
@@ -631,59 +633,105 @@ private:
       aBestMinU1             = std::atan2(aApexCylY, aApexCylX);
     }
 
-    // Now search for V >= 0 where the cone surface might get closer to the cylinder
-    constexpr int aNbUSamples = 36;
+    // Functor to compute squared error: (dist_to_cyl_axis - R_cyl)^2
+    // This is minimized when the cone surface intersects the cylinder.
+    struct ConeDistFunc
+    {
+      const ExtremaSS_CylinderCone* myEval;
+      double                        myUCone;
+
+      ConeDistFunc(const ExtremaSS_CylinderCone* theEval, double theUCone)
+          : myEval(theEval),
+            myUCone(theUCone)
+      {
+      }
+
+      bool Value(double theV, double& theF) const
+      {
+        if (theV < 0.0)
+        {
+          theF = std::numeric_limits<double>::max();
+          return true;
+        }
+
+        const gp_Pnt aPCone = myEval->Value2(myUCone, theV);
+
+        // Project cone point onto cylinder axis
+        const gp_Vec aVecFromCyl(myEval->myCylCenter, aPCone);
+        const double aVCyl = aVecFromCyl.Dot(gp_Vec(myEval->myCylAxis));
+
+        const gp_Pnt aPOnCylAxis(myEval->myCylCenter.X() + aVCyl * myEval->myCylAxis.X(),
+                                 myEval->myCylCenter.Y() + aVCyl * myEval->myCylAxis.Y(),
+                                 myEval->myCylCenter.Z() + aVCyl * myEval->myCylAxis.Z());
+
+        // Perpendicular distance from cone point to cylinder axis
+        gp_Vec aPerpVec(aPOnCylAxis, aPCone);
+        aPerpVec               = aPerpVec - gp_Vec(myEval->myCylAxis) * aPerpVec.Dot(gp_Vec(myEval->myCylAxis));
+        const double aDistAxis = aPerpVec.Magnitude();
+
+        // Squared error from desired cylinder radius
+        const double aError = aDistAxis - myEval->myCylRadius;
+        theF                = aError * aError;
+        return true;
+      }
+    };
+
+    // For each U on the cone, use Brent's method to find V where the cone surface
+    // reaches distance R_cyl from the cylinder axis (i.e., intersects the cylinder)
+    constexpr int aNbUSamples = 72;
+
+    MathUtils::Config aConfig(theTol, 100);
 
     for (int iU = 0; iU < aNbUSamples; ++iU)
     {
       const double aUCone = 2.0 * M_PI * iU / aNbUSamples;
 
-      // Sample V from 0 to a reasonable maximum
-      constexpr int    aNbVSamples = 100;
-      constexpr double aVMax       = 100.0;
+      ConeDistFunc aFunc(this, aUCone);
 
-      for (int iV = 1; iV <= aNbVSamples; ++iV) // Start from 1 since we already checked V=0
+      // Search in V range [0, 100] for intersection
+      MathUtils::ScalarResult aOptResult = MathOpt::Brent(aFunc, 0.0, 100.0, aConfig);
+
+      if (aOptResult.IsDone() && aOptResult.Value.has_value() && aOptResult.Root.has_value())
       {
-        const double aVCone = aVMax * iV / aNbVSamples;
-        const gp_Pnt aPCone = Value2(aUCone, aVCone);
+        const double aMinError = *aOptResult.Value;
+        const double aVCone    = *aOptResult.Root;
 
-        // Find closest point on cylinder to this cone point
-        const gp_Vec aVecFromCylPt(myCylCenter, aPCone);
-        const double aVCyl = aVecFromCylPt.Dot(gp_Vec(myCylAxis));
-
-        // Point on cylinder axis
-        const gp_Pnt aPOnCylAxisPt(myCylCenter.X() + aVCyl * myCylAxis.X(),
-                                   myCylCenter.Y() + aVCyl * myCylAxis.Y(),
-                                   myCylCenter.Z() + aVCyl * myCylAxis.Z());
-
-        // Direction from cylinder axis to cone point
-        gp_Vec aDirToCone(aPOnCylAxisPt, aPCone);
-        aDirToCone = aDirToCone - gp_Vec(myCylAxis) * aDirToCone.Dot(gp_Vec(myCylAxis));
-        const double aDistToCylAxis = aDirToCone.Magnitude();
-
-        if (aDistToCylAxis < theTol)
-          continue;
-
-        aDirToCone.Divide(aDistToCylAxis);
-
-        // Find U on cylinder pointing toward cone
-        const double aCylX = aDirToCone.Dot(gp_Vec(myCylXDir));
-        const double aCylY = aDirToCone.Dot(gp_Vec(myCylYDir));
-        const double aUCyl = std::atan2(aCylY, aCylX);
-
-        // Cylinder surface point
-        const gp_Pnt aPCyl = Value1(aUCyl, aVCyl);
-
-        // Distance between surfaces
-        const double aSqDist = aPCyl.SquareDistance(aPCone);
-
-        if (aSqDist < aBestMinSqDist)
+        // Check if we found an intersection (error close to zero)
+        if (aMinError < theTol * theTol && aVCone >= 0.0)
         {
-          aBestMinSqDist = aSqDist;
-          aBestMinU1     = aUCyl;
-          aBestMinV1     = aVCyl;
-          aBestMinU2     = aUCone;
-          aBestMinV2     = aVCone;
+          const gp_Pnt aPCone = Value2(aUCone, aVCone);
+
+          // Compute cylinder point at this location
+          const gp_Vec aVecFromCylPt(myCylCenter, aPCone);
+          const double aVCyl = aVecFromCylPt.Dot(gp_Vec(myCylAxis));
+
+          const gp_Pnt aPOnCylAxisPt(myCylCenter.X() + aVCyl * myCylAxis.X(),
+                                     myCylCenter.Y() + aVCyl * myCylAxis.Y(),
+                                     myCylCenter.Z() + aVCyl * myCylAxis.Z());
+
+          gp_Vec aPerpVec(aPOnCylAxisPt, aPCone);
+          aPerpVec = aPerpVec - gp_Vec(myCylAxis) * aPerpVec.Dot(gp_Vec(myCylAxis));
+          const double aDistToCylAxis = aPerpVec.Magnitude();
+
+          if (aDistToCylAxis > theTol)
+          {
+            aPerpVec.Divide(aDistToCylAxis);
+            const double aCylX = aPerpVec.Dot(gp_Vec(myCylXDir));
+            const double aCylY = aPerpVec.Dot(gp_Vec(myCylYDir));
+            const double aUCyl = std::atan2(aCylY, aCylX);
+
+            const gp_Pnt aPCyl   = Value1(aUCyl, aVCyl);
+            const double aSqDist = aPCyl.SquareDistance(aPCone);
+
+            if (aSqDist < aBestMinSqDist)
+            {
+              aBestMinSqDist = aSqDist;
+              aBestMinU1     = aUCyl;
+              aBestMinV1     = aVCyl;
+              aBestMinU2     = aUCone;
+              aBestMinV2     = aVCone;
+            }
+          }
         }
       }
     }
@@ -691,9 +739,14 @@ private:
     // Add the best minimum found
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      // If the best is close to V=0 (apex), use exact apex position
-      if (aBestMinV2 < theTol)
+      if (aBestMinSqDist < theTol * theTol)
       {
+        // Exact intersection found
+        addExtremum(aBestMinU1, aBestMinV1, aBestMinU2, aBestMinV2, 0.0, true, theTol);
+      }
+      else if (aBestMinV2 < theTol)
+      {
+        // Apex is closest
         addExtremum(aBestMinU1, aBestMinV1, 0.0, 0.0, aBestMinSqDist, true, theTol);
       }
       else
@@ -821,51 +874,76 @@ private:
     }
   }
 
-  //! Refine an extremum using Newton iteration.
+  //! Refine an extremum using Powell's method (gradient-free optimization).
   void refineExtremum(double theU1, double theV1, double theU2, double theV2, bool theIsMin, double theTol) const
   {
-    // Simple gradient descent refinement
-    double aU1 = theU1, aV1 = theV1, aU2 = theU2, aV2 = theV2;
-
-    constexpr int    aMaxIter = 20;
-    constexpr double aStep    = 0.01;
-
-    for (int iter = 0; iter < aMaxIter; ++iter)
+    // Functor for squared distance between surfaces
+    // For maximum, we minimize -distance²
+    struct DistanceFunc
     {
+      const ExtremaSS_CylinderCone* myEval;
+      bool                          myIsMin;
+
+      DistanceFunc(const ExtremaSS_CylinderCone* theEval, bool theIsMin)
+          : myEval(theEval),
+            myIsMin(theIsMin)
+      {
+      }
+
+      bool Value(const math_Vector& theX, double& theF) const
+      {
+        const double aU1 = theX(1);
+        const double aV1 = theX(2);
+        const double aU2 = theX(3);
+        const double aV2 = theX(4);
+
+        const gp_Pnt aP1     = myEval->Value1(aU1, aV1);
+        const gp_Pnt aP2     = myEval->Value2(aU2, aV2);
+        const double aSqDist = aP1.SquareDistance(aP2);
+
+        // For minimization return distance², for maximization return -distance²
+        theF = myIsMin ? aSqDist : -aSqDist;
+        return true;
+      }
+    };
+
+    // Set up starting point
+    math_Vector aStartPt(1, 4);
+    aStartPt(1) = theU1;
+    aStartPt(2) = theV1;
+    aStartPt(3) = theU2;
+    aStartPt(4) = theV2;
+
+    // Configure Powell's method
+    MathUtils::Config aConfig(theTol, 50);
+
+    DistanceFunc aFunc(this, theIsMin);
+
+    // Run Powell optimization
+    MathUtils::VectorResult aOptResult = MathOpt::Powell(aFunc, aStartPt, aConfig);
+
+    double aU1 = theU1, aV1 = theV1, aU2 = theU2, aV2 = theV2;
+    double aSqDist = 0.0;
+
+    if (aOptResult.IsDone() && aOptResult.Solution.has_value())
+    {
+      const math_Vector& aSol = *aOptResult.Solution;
+      aU1                     = aSol(1);
+      aV1                     = aSol(2);
+      aU2                     = aSol(3);
+      aV2                     = aSol(4);
+
       const gp_Pnt aP1 = Value1(aU1, aV1);
       const gp_Pnt aP2 = Value2(aU2, aV2);
-
-      const double aSqDist = aP1.SquareDistance(aP2);
-
-      // Compute numerical gradients
-      const double aEps = 1e-6;
-
-      const gp_Pnt aP1_dU1 = Value1(aU1 + aEps, aV1);
-      const gp_Pnt aP1_dV1 = Value1(aU1, aV1 + aEps);
-      const gp_Pnt aP2_dU2 = Value2(aU2 + aEps, aV2);
-      const gp_Pnt aP2_dV2 = Value2(aU2, aV2 + aEps);
-
-      const double aGradU1 = (aP1_dU1.SquareDistance(aP2) - aSqDist) / aEps;
-      const double aGradV1 = (aP1_dV1.SquareDistance(aP2) - aSqDist) / aEps;
-      const double aGradU2 = (aP1.SquareDistance(aP2_dU2) - aSqDist) / aEps;
-      const double aGradV2 = (aP1.SquareDistance(aP2_dV2) - aSqDist) / aEps;
-
-      const double aGradMag =
-          std::sqrt(aGradU1 * aGradU1 + aGradV1 * aGradV1 + aGradU2 * aGradU2 + aGradV2 * aGradV2);
-
-      if (aGradMag < theTol)
-        break;
-
-      const double aDir = theIsMin ? -1.0 : 1.0;
-      aU1 += aDir * aStep * aGradU1 / aGradMag;
-      aV1 += aDir * aStep * aGradV1 / aGradMag;
-      aU2 += aDir * aStep * aGradU2 / aGradMag;
-      aV2 += aDir * aStep * aGradV2 / aGradMag;
+      aSqDist          = aP1.SquareDistance(aP2);
     }
-
-    const gp_Pnt aP1     = Value1(aU1, aV1);
-    const gp_Pnt aP2     = Value2(aU2, aV2);
-    const double aSqDist = aP1.SquareDistance(aP2);
+    else
+    {
+      // Fall back to input values if optimization failed
+      const gp_Pnt aP1 = Value1(theU1, theV1);
+      const gp_Pnt aP2 = Value2(theU2, theV2);
+      aSqDist          = aP1.SquareDistance(aP2);
+    }
 
     addExtremum(aU1, aV1, aU2, aV2, aSqDist, theIsMin, theTol);
   }
