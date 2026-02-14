@@ -48,8 +48,8 @@ public:
   //! @param[in] theParabola the parabola
   //! @param[in] theDomain parameter domains for both curves
   Standard_EXPORT ExtremaCC_LineParabola(const gp_Lin&              theLine,
-                         const gp_Parab&            theParabola,
-                         const ExtremaCC::Domain2D& theDomain);
+                                         const gp_Parab&            theParabola,
+                                         const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
   ExtremaCC_LineParabola(const ExtremaCC_LineParabola&) = delete;

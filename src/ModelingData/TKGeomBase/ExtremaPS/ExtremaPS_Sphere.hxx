@@ -306,7 +306,8 @@ public:
     // GENERAL PATH: Bounded domain
     // Helper: Check U in range
     auto checkUInRange = [&](double aTestU) -> bool {
-      return aIsFullU || ExtremaPS::IsInPeriodicRange(aTestU, theDomain.UMin, theDomain.UMax, theTol);
+      return aIsFullU
+             || ExtremaPS::IsInPeriodicRange(aTestU, theDomain.UMin, theDomain.UMax, theTol);
     };
 
     // Add minimum extremum (closest point)
@@ -340,7 +341,7 @@ public:
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
     ExtremaPS::NormalizeU(aUOpp, theDomain);
-    const double aVOpp       = -aV;
+    const double aVOpp        = -aV;
     const bool   aIsOppAtPole = (std::abs(std::abs(aVOpp) - aHalfPi) < theTol);
 
     // Add maximum extremum (farthest point - antipodal)
