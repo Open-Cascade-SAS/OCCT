@@ -448,6 +448,77 @@ inline void AddEndpointExtrema(Result&          theResult,
   }
 }
 
+//! @brief Adds a solution to the result if it's within domain bounds and not a duplicate.
+//!
+//! This is a utility template to reduce code duplication in analytical pair classes.
+//! It performs domain checking, clamping, duplicate detection, and stores the result.
+//!
+//! @tparam Curve1Eval Type with Value(double) method returning gp_Pnt
+//! @tparam Curve2Eval Type with Value(double) method returning gp_Pnt
+//! @param theResult result to add solution to
+//! @param theU1 parameter on first curve
+//! @param theU2 parameter on second curve
+//! @param theEval1 first curve evaluator
+//! @param theEval2 second curve evaluator
+//! @param theDomain optional parameter domain
+//! @param theTol tolerance for bounds and duplicate detection
+//! @return true if solution was added, false if outside domain or duplicate
+template <typename Curve1Eval, typename Curve2Eval>
+inline bool AddSolutionIfValid(Result&                             theResult,
+                               double                              theU1,
+                               double                              theU2,
+                               const Curve1Eval&                   theEval1,
+                               const Curve2Eval&                   theEval2,
+                               const std::optional<Domain2D>&      theDomain,
+                               double                              theTol)
+{
+  // Check bounds if domain is specified
+  if (theDomain.has_value())
+  {
+    const bool aOutside1 = (theU1 < theDomain->Curve1.Min - theTol) ||
+                           (theU1 > theDomain->Curve1.Max + theTol);
+    const bool aOutside2 = (theU2 < theDomain->Curve2.Min - theTol) ||
+                           (theU2 > theDomain->Curve2.Max + theTol);
+
+    if (aOutside1 || aOutside2)
+    {
+      return false; // Outside domain
+    }
+
+    // Clamp to bounds
+    theU1 = std::max(theDomain->Curve1.Min, std::min(theDomain->Curve1.Max, theU1));
+    theU2 = std::max(theDomain->Curve2.Min, std::min(theDomain->Curve2.Max, theU2));
+  }
+
+  // Compute points
+  const gp_Pnt aP1 = theEval1.Value(theU1);
+  const gp_Pnt aP2 = theEval2.Value(theU2);
+
+  // Check for duplicate solutions
+  constexpr double aDupTol = 1.0e-10;
+  for (int i = 0; i < theResult.Extrema.Length(); ++i)
+  {
+    const ExtremumResult& anExt = theResult.Extrema.Value(i);
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
+        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    {
+      return false; // Duplicate
+    }
+  }
+
+  // Store result
+  ExtremumResult anExt;
+  anExt.Parameter1     = theU1;
+  anExt.Parameter2     = theU2;
+  anExt.Point1         = aP1;
+  anExt.Point2         = aP2;
+  anExt.SquareDistance = aP1.SquareDistance(aP2);
+  anExt.IsMinimum      = true; // Will be classified later if needed
+
+  theResult.Extrema.Append(anExt);
+  return true;
+}
+
 //! @brief Swaps parameters in result when curves were swapped for canonical ordering.
 //!
 //! When handling symmetric pairs (e.g., LineCircle vs CircleLine), we normalize

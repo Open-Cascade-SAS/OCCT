@@ -133,6 +133,27 @@ struct ExtremaCC_Curves::Impl
       myAnalytical);
   }
 
+  const ExtremaCC::Result& performAnalyticalWithEndpoints(double                     theTol,
+                                                          ExtremaCC::SearchMode     theMode,
+                                                          ExtremaCC::Result&         theResult,
+                                                          const ExtremaCC::Domain2D& /*theDomain*/) const
+  {
+    // Note: theDomain unused because analytical pairs store domain at construction
+    return std::visit(
+      [&](const auto& aPair) -> const ExtremaCC::Result& {
+        if constexpr (std::is_same_v<std::decay_t<decltype(aPair)>, std::monostate>)
+        {
+          theResult.Status = ExtremaCC::Status::NotDone;
+          return theResult;
+        }
+        else
+        {
+          return aPair->PerformWithEndpoints(theTol, theMode);
+        }
+      },
+      myAnalytical);
+  }
+
   const ExtremaCC::Result& performNumerical(double                     theTol,
                                             ExtremaCC::SearchMode     theMode,
                                             ExtremaCC::Result&         theResult,
@@ -350,7 +371,59 @@ const ExtremaCC::Result& ExtremaCC_Curves::Perform(double                theTol,
 const ExtremaCC::Result& ExtremaCC_Curves::PerformWithEndpoints(double                theTol,
                                                                 ExtremaCC::SearchMode theMode) const
 {
-  // For now, just call Perform
-  // TODO: Add endpoint handling for numerical pairs
-  return Perform(theTol, theMode);
+  if (myImpl->myIsNumerical)
+  {
+    // First perform the regular extrema computation
+    myImpl->performNumerical(theTol, theMode, myResult, myDomain);
+
+    // Add endpoint extrema for numerical pairs
+    if (myResult.Status == ExtremaCC::Status::OK &&
+        myImpl->myCurve1 != nullptr && myImpl->myCurve2 != nullptr)
+    {
+      // Create evaluators for endpoint computation
+      ExtremaCC_OtherCurve aEval1(*myImpl->myCurve1, myDomain.Curve1);
+      ExtremaCC_OtherCurve aEval2(*myImpl->myCurve2, myDomain.Curve2);
+
+      // Add endpoint extrema (respecting swap if needed)
+      if (mySwapped)
+      {
+        ExtremaCC::Domain2D aSwappedDomain{myDomain.Curve2, myDomain.Curve1};
+        ExtremaCC::AddEndpointExtrema(myResult, aSwappedDomain, aEval2, aEval1, theTol, theMode);
+      }
+      else
+      {
+        ExtremaCC::AddEndpointExtrema(myResult, myDomain, aEval1, aEval2, theTol, theMode);
+      }
+    }
+  }
+  else
+  {
+    // Use PerformWithEndpoints for analytical pairs
+    const ExtremaCC::Result& aPairResult =
+      myImpl->performAnalyticalWithEndpoints(theTol, theMode, myResult, myDomain);
+
+    // Copy results from the underlying pair if it's not a monostate case
+    if (&aPairResult != &myResult)
+    {
+      myResult.Clear();
+      myResult.Status                = aPairResult.Status;
+      myResult.InfiniteSquareDistance = aPairResult.InfiniteSquareDistance;
+      for (int i = 0; i < aPairResult.Extrema.Length(); ++i)
+      {
+        myResult.Extrema.Append(aPairResult.Extrema(i));
+      }
+    }
+
+    // Swap parameters back if curves were swapped
+    if (mySwapped && myResult.Status == ExtremaCC::Status::OK)
+    {
+      for (int i = 0; i < myResult.Extrema.Length(); ++i)
+      {
+        std::swap(myResult.Extrema(i).Parameter1, myResult.Extrema(i).Parameter2);
+        std::swap(myResult.Extrema(i).Point1, myResult.Extrema(i).Point2);
+      }
+    }
+  }
+
+  return myResult;
 }

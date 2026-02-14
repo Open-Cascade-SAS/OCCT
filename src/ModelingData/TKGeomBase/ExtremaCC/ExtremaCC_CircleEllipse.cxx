@@ -13,9 +13,12 @@
 
 #include <ExtremaCC_CircleEllipse.hxx>
 
+#include <ElCLib.hxx>
 #include <ExtremaCC_Circle.hxx>
 #include <ExtremaCC_Ellipse.hxx>
 #include <ExtremaCC_GridEvaluator2D.hxx>
+#include <gp_Pln.hxx>
+#include <Precision.hxx>
 
 #include <cmath>
 
@@ -47,7 +50,13 @@ const ExtremaCC::Result& ExtremaCC_CircleEllipse::Perform(double                
 {
   myResult.Clear();
 
-  // Set up domains
+  // Try coplanar fast-path for concentric circle and ellipse with aligned axes
+  if (performCoplanar(theTol))
+  {
+    return myResult;
+  }
+
+  // General case: use grid-based numerical approach
   ExtremaCC::Domain2D aDomain;
   if (myDomain.has_value())
   {
@@ -89,4 +98,119 @@ const ExtremaCC::Result& ExtremaCC_CircleEllipse::PerformWithEndpoints(
   }
 
   return myResult;
+}
+
+//==================================================================================================
+
+bool ExtremaCC_CircleEllipse::performCoplanar(double theTol) const
+{
+  const double aTolA  = Precision::Angular();
+  const double aTolD  = theTol;
+  const double aTolD2 = aTolD * aTolD;
+
+  const gp_Pnt& aPc  = myCircle.Location();
+  const gp_Dir& aDc  = myCircle.Axis().Direction();
+  const gp_Pnt& aPe  = myEllipse.Location();
+  const gp_Dir& aDe  = myEllipse.Axis().Direction();
+  const gp_Dir& aXc  = myCircle.XAxis().Direction();
+  const gp_Dir& aXe  = myEllipse.XAxis().Direction();
+
+  // Check if circle and ellipse are in the same plane
+  gp_Pln        aPlnC(aPc, aDc);
+  const double  aD2e         = aPlnC.SquareDistance(aPe);
+  const bool    bIsSamePlane = aDc.IsParallel(aDe, aTolA) && aD2e < aTolD2;
+
+  if (!bIsSamePlane)
+  {
+    return false; // Not coplanar - use numerical algorithm
+  }
+
+  // Check if circle and ellipse are concentric
+  const double aDC2        = aPc.SquareDistance(aPe);
+  const bool   bConcentric = aDC2 < aTolD2;
+
+  if (!bConcentric)
+  {
+    return false; // Non-concentric coplanar - use numerical algorithm
+  }
+
+  // Check if axes are aligned (circle X-axis parallel to ellipse X-axis)
+  const bool bAlignedAxes = aXc.IsParallel(aXe, aTolA);
+
+  if (!bAlignedAxes)
+  {
+    return false; // Concentric but rotated - use numerical algorithm
+  }
+
+  // Concentric circle and ellipse with aligned axes
+  // Extrema occur at the ellipse axes: 0, π/2, π, 3π/2
+  // For the circle, the corresponding parameters are the same (both start from X-axis)
+  // If axes are opposite, the circle parameter is shifted by π
+
+  const bool bSameDirection = aXc.Dot(aXe) > 0.0;
+
+  // Extrema at ellipse axes: 0 (major), π/2 (minor), π (-major), 3π/2 (-minor)
+  constexpr double aParams[4] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
+
+  for (int i = 0; i < 4; ++i)
+  {
+    const double aU2 = aParams[i]; // Parameter on ellipse
+    // If X-axes are opposite, parameter on circle is shifted by π
+    const double aU1 = bSameDirection ? aParams[i] : std::fmod(aParams[i] + M_PI, 2.0 * M_PI);
+
+    addSolution(aU1, aU2, theTol);
+  }
+
+  myResult.Status = ExtremaCC::Status::OK;
+  return true;
+}
+
+//==================================================================================================
+
+void ExtremaCC_CircleEllipse::addSolution(double theU1, double theU2, double theTol) const
+{
+  // Check bounds if domain is specified
+  if (myDomain.has_value())
+  {
+    const bool aOutside1 = (theU1 < myDomain->Curve1.Min - theTol) ||
+                           (theU1 > myDomain->Curve1.Max + theTol);
+    const bool aOutside2 = (theU2 < myDomain->Curve2.Min - theTol) ||
+                           (theU2 > myDomain->Curve2.Max + theTol);
+
+    if (aOutside1 || aOutside2)
+    {
+      return; // Outside domain
+    }
+
+    // Clamp to bounds
+    theU1 = std::max(myDomain->Curve1.Min, std::min(myDomain->Curve1.Max, theU1));
+    theU2 = std::max(myDomain->Curve2.Min, std::min(myDomain->Curve2.Max, theU2));
+  }
+
+  // Compute points
+  const gp_Pnt aP1 = ElCLib::Value(theU1, myCircle);
+  const gp_Pnt aP2 = ElCLib::Value(theU2, myEllipse);
+
+  // Check for duplicate solutions
+  constexpr double aDupTol = 1.0e-10;
+  for (int i = 0; i < myResult.Extrema.Length(); ++i)
+  {
+    const auto& anExt = myResult.Extrema(i);
+    if (std::abs(anExt.Parameter1 - theU1) < aDupTol &&
+        std::abs(anExt.Parameter2 - theU2) < aDupTol)
+    {
+      return; // Duplicate
+    }
+  }
+
+  // Store result
+  ExtremaCC::ExtremumResult anExt;
+  anExt.Parameter1     = theU1;
+  anExt.Parameter2     = theU2;
+  anExt.Point1         = aP1;
+  anExt.Point2         = aP2;
+  anExt.SquareDistance = aP1.SquareDistance(aP2);
+  anExt.IsMinimum      = true; // Will be classified later if needed
+
+  myResult.Extrema.Append(anExt);
 }
