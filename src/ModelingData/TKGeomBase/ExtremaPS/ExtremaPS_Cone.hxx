@@ -106,8 +106,9 @@ private:
     myTanAngle  = std::tan(mySemiAngle);
     myCosAngle  = std::cos(mySemiAngle);
     mySinAngle  = std::sin(mySemiAngle);
+    // Apex is where R(V) = RefRadius + V*sin(α) = 0, so V_apex = -RefRadius/sin(α)
     myApexV =
-      std::abs(myTanAngle) > ExtremaPS::THE_CONE_APEX_TOLERANCE ? -myRefRadius / myTanAngle : 0.0;
+      std::abs(mySinAngle) > ExtremaPS::THE_CONE_APEX_TOLERANCE ? -myRefRadius / mySinAngle : 0.0;
   }
 
 public:
@@ -123,10 +124,14 @@ public:
   {
     const double aCos = std::cos(theU);
     const double aSin = std::sin(theU);
-    const double aR   = myRefRadius + theV * myTanAngle;
-    return gp_Pnt(myLocX + theV * myAxisX + aR * (aCos * myXDirX + aSin * myYDirX),
-                  myLocY + theV * myAxisY + aR * (aCos * myXDirY + aSin * myYDirY),
-                  myLocZ + theV * myAxisZ + aR * (aCos * myXDirZ + aSin * myYDirZ));
+    // OCCT cone parametrization (from ElSLib::ConeValue):
+    // R(V) = RefRadius + V * sin(SemiAngle)
+    // Axial = V * cos(SemiAngle)
+    const double aR     = myRefRadius + theV * mySinAngle;
+    const double aAxial = theV * myCosAngle;
+    return gp_Pnt(myLocX + aAxial * myAxisX + aR * (aCos * myXDirX + aSin * myYDirX),
+                  myLocY + aAxial * myAxisY + aR * (aCos * myXDirY + aSin * myYDirY),
+                  myLocZ + aAxial * myAxisZ + aR * (aCos * myXDirZ + aSin * myYDirZ));
   }
 
   //! @}
@@ -193,7 +198,7 @@ public:
       // On axis but not at apex - bounded domain
       const ExtremaPS::Domain2D& theDomain  = *myDomain;
       double                     aClosestV  = theDomain.V().Clamp(aZ);
-      double                     aRadiusAtV = myRefRadius + aClosestV * myTanAngle;
+      double                     aRadiusAtV = myRefRadius + aClosestV * mySinAngle;
 
       if (aRadiusAtV < theTol && theDomain.V().Contains(myApexV, theTol))
       {
@@ -227,9 +232,12 @@ public:
     }
 
     // Compute closest V on the generator
-    const double aLocalZ   = aZ - myApexV;
+    // In OCCT cone parametrization: Z = V * cos(SemiAngle), R = RefRadius + V * sin(SemiAngle)
+    // The apex is at V = myApexV, but its AXIAL position is myApexV * cos(α)
+    const double aApexZ    = myApexV * myCosAngle; // Axial position of apex
+    const double aLocalZ   = aZ - aApexZ;          // Point's axial distance from apex
     const double aGenDist  = aLocalZ * myCosAngle + aRho * mySinAngle;
-    const double aClosestV = myApexV + aGenDist * myCosAngle;
+    const double aClosestV = myApexV + aGenDist;
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
@@ -242,9 +250,9 @@ public:
       aUOpp -= aTwoPi;
     }
 
-    // For maximum, project onto opposite generator
+    // For maximum, project onto opposite generator (antipodal direction)
     const double aGenDistMax  = aLocalZ * myCosAngle - aRho * mySinAngle;
-    const double aClosestVMax = myApexV + aGenDistMax * myCosAngle;
+    const double aClosestVMax = myApexV + aGenDistMax;
 
     // FAST PATH: Natural domain (full U, infinite V) - most common case
     if (!myDomain.has_value())
