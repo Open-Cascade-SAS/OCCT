@@ -235,18 +235,25 @@ private:
     }
 
     // For axis perpendicular to plane, extrema form circles (all U values at specific V)
+    // This is an infinite solutions case, but we add representative points
+    myResult.Status = ExtremaSS::Status::InfiniteSolutions;
+    // InfiniteSquareDistance should reflect the minimum distance (used for quick checks)
+    myResult.InfiniteSquareDistance = aMinDist * aMinDist;
+
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      myResult.Status                 = ExtremaSS::Status::InfiniteSolutions;
-      myResult.InfiniteSquareDistance = aMinDist * aMinDist;
-      if (theMode == ExtremaSS::SearchMode::Min)
-        return myResult;
+      // Add a representative minimum point at U=0
+      // When center is above plane (myCenterDistToPlane > 0), min is at bottom of torus (v = -pi/2)
+      // When center is below plane (myCenterDistToPlane < 0), min is at top of torus (v = pi/2)
+      const double aVMin = myCenterDistToPlane > 0 ? -M_PI / 2.0 : M_PI / 2.0;
+      processTorusPoint(0.0, aVMin, theTol, true);
     }
 
     if (theMode != ExtremaSS::SearchMode::Min)
     {
-      myResult.Status                 = ExtremaSS::Status::InfiniteSolutions;
-      myResult.InfiniteSquareDistance = aMaxDist * aMaxDist;
+      // Add a representative maximum point at U=0
+      const double aVMax = myCenterDistToPlane > 0 ? M_PI / 2.0 : -M_PI / 2.0;
+      processTorusPoint(0.0, aVMax, theTol, false);
     }
 
     return myResult;

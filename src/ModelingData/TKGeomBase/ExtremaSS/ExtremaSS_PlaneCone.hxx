@@ -242,13 +242,37 @@ private:
     if (myApexDistToPlane * aDistRate < 0)
     {
       // Cone opens toward the plane, will eventually intersect
-      // V at intersection: apexDist + V * distRate = 0 => V = -apexDist / distRate
-      const double aVIntersect = -myApexDistToPlane / (myCosSemiAngle * myAxisDotNorm);
-      if (aVIntersect > 0)
+      // For OCCT parameterization: d(V) = locDist + V * (Axis·N)
+      // where locDist = (Location - PlaneOrig)·N
+      // For axis perpendicular, X·N = Y·N = 0, so the formula simplifies
+      const gp_Pnt& aLoc = myCone.Location();
+      const double aLocDistToPlane = (aLoc.X() - myPlaneOrigX) * myPlaneNormX
+                                   + (aLoc.Y() - myPlaneOrigY) * myPlaneNormY
+                                   + (aLoc.Z() - myPlaneOrigZ) * myPlaneNormZ;
+      const double aVIntersect = -aLocDistToPlane / myAxisDotNorm;
+
+      // V can be negative (toward apex) or positive (away from apex)
+      // Check if the intersection point is on the valid part of the cone
+      // For refRadius > 0, V can be negative down to -refRadius/tan(alpha)
+      const double aVApex = (std::abs(mySinSemiAngle) > theTol) ? -myRefRadius / std::tan(mySemiAngle) : -1e10;
+      const bool aValidIntersection = (aVIntersect > aVApex) || std::abs(aLocDistToPlane) < theTol;
+
+      if (aValidIntersection)
       {
-        // Intersection exists for positive V (valid cone region)
-        myResult.Status                 = ExtremaSS::Status::InfiniteSolutions;
-        myResult.InfiniteSquareDistance = 0.0;
+        // Intersection exists - add representative point with distance 0
+        if (theMode != ExtremaSS::SearchMode::Max)
+        {
+          if (std::abs(aLocDistToPlane) < theTol)
+          {
+            // Location is on plane - reference circle touches plane
+            addExtremumAtUV(0.0, 0.0, theTol, true);
+          }
+          else
+          {
+            addExtremumAtUV(0.0, aVIntersect, theTol, true);
+          }
+        }
+        myResult.Status = ExtremaSS::Status::OK;
         return myResult;
       }
     }
@@ -329,13 +353,24 @@ private:
 
     if (aHasIntersection)
     {
-      // Minimum distance is 0
+      // Minimum distance is 0 - add representative intersection point
       if (theMode != ExtremaSS::SearchMode::Max)
       {
-        myResult.Status                 = ExtremaSS::Status::InfiniteSolutions;
-        myResult.InfiniteSquareDistance = 0.0;
-        return myResult;
+        if (std::abs(myApexDistToPlane) < theTol)
+        {
+          // Apex is on plane
+          addApexExtremum(theTol, true);
+        }
+        else
+        {
+          // Find intersection point
+          const double aUInt = myApexDistToPlane > 0 ? aPhi + M_PI : aPhi;
+          const double aVInt = std::abs(myApexDistToPlane) / myC2C3Norm;
+          addExtremumAtUV(aUInt < 0 ? aUInt + ExtremaSS::THE_TWO_PI : aUInt, aVInt, theTol, true);
+        }
       }
+      myResult.Status = ExtremaSS::Status::OK;
+      return myResult;
     }
 
     // Minimum: apex (V=0) if no intersection

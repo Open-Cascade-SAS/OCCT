@@ -37,18 +37,17 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneParallelToTorusAxis_FindsExtrema)
   // Torus at origin with axis along Z
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  // Horizontal plane at Z=10
+  // Horizontal plane at Z=10 (plane perpendicular to torus axis)
   const gp_Pln aPlane(gp_Pnt(0, 0, 10), gp_Dir(0, 0, 1));
 
   ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
-  ASSERT_GE(aResult.NbExt(), 1);
+  // Plane perpendicular to torus axis: infinite solutions (entire circles at min/max distance)
+  EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
 
   // Minimum distance: 10 - 1 = 9 (from top of torus to plane)
-  const double aMinSqDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(std::sqrt(aMinSqDist), 9.0, THE_TOL);
+  EXPECT_NEAR(std::sqrt(aResult.InfiniteSquareDistance), 9.0, THE_TOL);
 }
 
 TEST_F(ExtremaSS_PlaneTorusTest, PlanePerpendicularToTorusAxis_SeparatedFromTorus)
@@ -75,15 +74,15 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneTouchingTorus_MinDistanceZero)
   // Torus at origin
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  // Plane at Z=1 (touches top of torus)
+  // Plane at Z=1 (touches top of torus) - plane perpendicular to torus axis
   const gp_Pln aPlane(gp_Pnt(0, 0, 1), gp_Dir(0, 0, 1));
 
   ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
-  const double aMinSqDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(aMinSqDist, 0.0, THE_TOL);
+  // Plane touches torus at an entire circle - infinite solutions at distance 0
+  EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
+  EXPECT_NEAR(aResult.InfiniteSquareDistance, 0.0, THE_TOL);
 }
 
 TEST_F(ExtremaSS_PlaneTorusTest, PlaneIntersectingTorus_MinDistanceZero)
@@ -114,17 +113,17 @@ TEST_F(ExtremaSS_PlaneTorusTest, PlaneBelowTorus_FindsMinimum)
   // Torus at height Z=5
   const gp_Torus aTorus(gp_Ax3(gp_Pnt(0, 0, 5), gp_Dir(0, 0, 1)), 5.0, 1.0);
 
-  // Plane at Z=0
+  // Plane at Z=0 (perpendicular to torus axis)
   const gp_Pln aPlane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
 
   ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
+  // Plane perpendicular to torus axis - infinite solutions
+  EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
 
   // Minimum distance: 5 - 1 = 4
-  const double aMinSqDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(std::sqrt(aMinSqDist), 4.0, THE_TOL);
+  EXPECT_NEAR(std::sqrt(aResult.InfiniteSquareDistance), 4.0, THE_TOL);
 }
 
 //==================================================================================================
@@ -216,11 +215,11 @@ TEST_F(ExtremaSS_PlaneTorusTest, SmallMinorRadius_ThinTorus)
   ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
+  // Plane perpendicular to torus axis - infinite solutions
+  EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
 
   // Minimum: 5 - 0.1 = 4.9
-  const double aMinSqDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(std::sqrt(aMinSqDist), 4.9, THE_TOL);
+  EXPECT_NEAR(std::sqrt(aResult.InfiniteSquareDistance), 4.9, THE_TOL);
 }
 
 TEST_F(ExtremaSS_PlaneTorusTest, LargeTorus_FarFromPlane)
@@ -231,9 +230,9 @@ TEST_F(ExtremaSS_PlaneTorusTest, LargeTorus_FarFromPlane)
   ExtremaSS_PlaneTorus anEval(aPlane, aTorus);
   const ExtremaSS::Result& aResult = anEval.Perform(THE_TOL);
 
-  ASSERT_EQ(aResult.Status, ExtremaSS::Status::OK);
+  // Plane perpendicular to torus axis - infinite solutions
+  EXPECT_EQ(aResult.Status, ExtremaSS::Status::InfiniteSolutions);
 
   // Minimum: 100 - 5 = 95
-  const double aMinSqDist = aResult.MinSquareDistance();
-  EXPECT_NEAR(std::sqrt(aMinSqDist), 95.0, THE_TOL);
+  EXPECT_NEAR(std::sqrt(aResult.InfiniteSquareDistance), 95.0, THE_TOL);
 }

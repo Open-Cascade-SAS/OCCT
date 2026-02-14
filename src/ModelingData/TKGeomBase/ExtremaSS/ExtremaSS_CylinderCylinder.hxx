@@ -193,19 +193,17 @@ private:
     myYDir2             = anAx2.YDirection();
     myRadius2           = myCylinder2.Radius();
 
-    // Check if axes are parallel
-    myCrossProduct = myAxis1.Crossed(myAxis2);
-    const double aCrossMag =
-        std::sqrt(myCrossProduct.X() * myCrossProduct.X() + myCrossProduct.Y() * myCrossProduct.Y()
-                  + myCrossProduct.Z() * myCrossProduct.Z());
+    // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
+    const gp_Vec aCrossVec = gp_Vec(myAxis1).Crossed(gp_Vec(myAxis2));
+    const double aCrossMag = aCrossVec.Magnitude();
     myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
       // Normalize the cross product (common perpendicular direction)
-      myCrossProduct = gp_Dir(myCrossProduct.X() / aCrossMag,
-                              myCrossProduct.Y() / aCrossMag,
-                              myCrossProduct.Z() / aCrossMag);
+      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
+                              aCrossVec.Y() / aCrossMag,
+                              aCrossVec.Z() / aCrossMag);
     }
 
     // Vector from center1 to center2
@@ -233,6 +231,16 @@ private:
       // Report the radial difference as distance
       const double aRadDiff = std::abs(myRadius1 - myRadius2);
       const double aRadSum  = myRadius1 + myRadius2;
+
+      // Set InfiniteSquareDistance based on search mode
+      if (theMode == ExtremaSS::SearchMode::Max)
+      {
+        myResult.InfiniteSquareDistance = aRadSum * aRadSum;
+      }
+      else
+      {
+        myResult.InfiniteSquareDistance = aRadDiff * aRadDiff;
+      }
 
       if (theMode != ExtremaSS::SearchMode::Max)
       {
@@ -270,7 +278,8 @@ private:
     const double aU2Toward = std::atan2(aDot2Y, aDot2X);
     const double aU2Away   = aU2Toward + M_PI;
 
-    // Parallel axes: infinite solutions along V (use V=0)
+    // Parallel axes: infinite solutions along V
+    // The minimum/maximum distances are constant along V
     myResult.Status = ExtremaSS::Status::InfiniteSolutions;
 
     // Minimum distance: both pointing toward each other
@@ -281,9 +290,21 @@ private:
     // Distance = aAxisDist + R1 + R2
     const double aMaxDist = aAxisDist + myRadius1 + myRadius2;
 
+    // For parallel cylinders, set InfiniteSquareDistance to the minimum
+    // This is the constant distance along the entire length
+    if (theMode == ExtremaSS::SearchMode::Max)
+    {
+      myResult.InfiniteSquareDistance = aMaxDist * aMaxDist;
+    }
+    else
+    {
+      myResult.InfiniteSquareDistance = std::max(0.0, aMinDist) * std::max(0.0, aMinDist);
+    }
+
+    // Also add representative extremum points
     if (theMode != ExtremaSS::SearchMode::Max)
     {
-      const double aMinSqDist = aMinDist * aMinDist;
+      const double aMinSqDist = std::max(0.0, aMinDist) * std::max(0.0, aMinDist);
       addExtremum(aU1Toward, 0.0, aU2Toward, 0.0, aMinSqDist, true, theTol);
     }
 

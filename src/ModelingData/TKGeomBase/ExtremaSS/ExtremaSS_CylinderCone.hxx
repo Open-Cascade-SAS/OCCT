@@ -220,18 +220,16 @@ private:
     myCosSemiAngle        = std::cos(mySemiAngle);
     myConeRefRadius       = myCone.RefRadius();
 
-    // Check if axes are parallel
-    myCrossProduct = myCylAxis.Crossed(myConeAxis);
-    const double aCrossMag =
-        std::sqrt(myCrossProduct.X() * myCrossProduct.X() + myCrossProduct.Y() * myCrossProduct.Y()
-                  + myCrossProduct.Z() * myCrossProduct.Z());
+    // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
+    const gp_Vec aCrossVec = gp_Vec(myCylAxis).Crossed(gp_Vec(myConeAxis));
+    const double aCrossMag = aCrossVec.Magnitude();
     myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
-      myCrossProduct = gp_Dir(myCrossProduct.X() / aCrossMag,
-                              myCrossProduct.Y() / aCrossMag,
-                              myCrossProduct.Z() / aCrossMag);
+      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
+                              aCrossVec.Y() / aCrossMag,
+                              aCrossVec.Z() / aCrossMag);
     }
 
     // Vector from cylinder center to cone apex
@@ -527,16 +525,29 @@ private:
   }
 
   //! Compute extrema when axes intersect.
-  void computeIntersectingAxesCase(const gp_Pnt& theIntersection,
-                                   double        theVCyl,
-                                   double        theTol,
+  void computeIntersectingAxesCase(const gp_Pnt&         theIntersection,
+                                   double                theVCyl,
+                                   double                theTol,
                                    ExtremaSS::SearchMode theMode) const
   {
     // Find V_cone for intersection point
     const gp_Vec aVecFromApex(myConeApex, theIntersection);
-    const double aDistFromApex = aVecFromApex.Magnitude();
-    const double aDotAxis      = aVecFromApex.Dot(gp_Vec(myConeAxis));
-    const double aVCone = (std::abs(myCosSemiAngle) > theTol) ? aDotAxis / myCosSemiAngle : aDistFromApex;
+    const double aDotAxis = aVecFromApex.Dot(gp_Vec(myConeAxis));
+    double       aVCone =
+        (std::abs(myCosSemiAngle) > theTol) ? aDotAxis / myCosSemiAngle : aVecFromApex.Magnitude();
+
+    // For single-nappe cones (RefRadius = 0), V should be >= 0
+    // If V < 0, the intersection is on the "wrong" side of the apex
+    // In this case, search for where surfaces might actually intersect
+    const bool aValidConeV = (myConeRefRadius > theTol) || (aVCone >= -theTol);
+
+    if (!aValidConeV)
+    {
+      // The axis intersection is outside the valid cone surface
+      // Search for where the cone surface might reach the cylinder
+      searchIntersectingAxesSurfaceContact(theVCyl, theTol, theMode);
+      return;
+    }
 
     const double aRCone = std::abs(aVCone * mySinSemiAngle);
 
@@ -581,6 +592,118 @@ private:
     }
   }
 
+  //! Search for surface contact when axes intersect but axis intersection is outside cone surface.
+  void searchIntersectingAxesSurfaceContact(double                theVCyl,
+                                            double                theTol,
+                                            ExtremaSS::SearchMode theMode) const
+  {
+    myResult.Status = ExtremaSS::Status::OK;
+
+    // The axes intersect but the intersection point is at a negative V on the cone
+    // (i.e., the cylinder axis passes through the region "behind" the cone apex)
+
+    // First, always check the apex (V = 0) as a candidate for minimum
+    // Find closest point on cylinder to the apex
+    const gp_Vec aVecFromCyl(myCylCenter, myConeApex);
+    const double aVCylApex = aVecFromCyl.Dot(gp_Vec(myCylAxis));
+
+    // Point on cylinder axis closest to apex
+    const gp_Pnt aPOnCylAxis(myCylCenter.X() + aVCylApex * myCylAxis.X(),
+                             myCylCenter.Y() + aVCylApex * myCylAxis.Y(),
+                             myCylCenter.Z() + aVCylApex * myCylAxis.Z());
+
+    // Direction from cylinder axis to apex
+    gp_Vec aDirToApex(aPOnCylAxis, myConeApex);
+    aDirToApex = aDirToApex - gp_Vec(myCylAxis) * aDirToApex.Dot(gp_Vec(myCylAxis));
+    const double aApexDistToCylAxis = aDirToApex.Magnitude();
+
+    // Distance from apex to cylinder surface
+    const double aApexToCylSurf = std::abs(aApexDistToCylAxis - myCylRadius);
+
+    double aBestMinSqDist = aApexToCylSurf * aApexToCylSurf;
+    double aBestMinU1 = 0, aBestMinV1 = aVCylApex, aBestMinU2 = 0, aBestMinV2 = 0;
+
+    if (aApexDistToCylAxis > theTol)
+    {
+      aDirToApex.Divide(aApexDistToCylAxis);
+      const double aApexCylX = aDirToApex.Dot(gp_Vec(myCylXDir));
+      const double aApexCylY = aDirToApex.Dot(gp_Vec(myCylYDir));
+      aBestMinU1             = std::atan2(aApexCylY, aApexCylX);
+    }
+
+    // Now search for V >= 0 where the cone surface might get closer to the cylinder
+    constexpr int aNbUSamples = 36;
+
+    for (int iU = 0; iU < aNbUSamples; ++iU)
+    {
+      const double aUCone = 2.0 * M_PI * iU / aNbUSamples;
+
+      // Sample V from 0 to a reasonable maximum
+      constexpr int    aNbVSamples = 100;
+      constexpr double aVMax       = 100.0;
+
+      for (int iV = 1; iV <= aNbVSamples; ++iV) // Start from 1 since we already checked V=0
+      {
+        const double aVCone = aVMax * iV / aNbVSamples;
+        const gp_Pnt aPCone = Value2(aUCone, aVCone);
+
+        // Find closest point on cylinder to this cone point
+        const gp_Vec aVecFromCylPt(myCylCenter, aPCone);
+        const double aVCyl = aVecFromCylPt.Dot(gp_Vec(myCylAxis));
+
+        // Point on cylinder axis
+        const gp_Pnt aPOnCylAxisPt(myCylCenter.X() + aVCyl * myCylAxis.X(),
+                                   myCylCenter.Y() + aVCyl * myCylAxis.Y(),
+                                   myCylCenter.Z() + aVCyl * myCylAxis.Z());
+
+        // Direction from cylinder axis to cone point
+        gp_Vec aDirToCone(aPOnCylAxisPt, aPCone);
+        aDirToCone = aDirToCone - gp_Vec(myCylAxis) * aDirToCone.Dot(gp_Vec(myCylAxis));
+        const double aDistToCylAxis = aDirToCone.Magnitude();
+
+        if (aDistToCylAxis < theTol)
+          continue;
+
+        aDirToCone.Divide(aDistToCylAxis);
+
+        // Find U on cylinder pointing toward cone
+        const double aCylX = aDirToCone.Dot(gp_Vec(myCylXDir));
+        const double aCylY = aDirToCone.Dot(gp_Vec(myCylYDir));
+        const double aUCyl = std::atan2(aCylY, aCylX);
+
+        // Cylinder surface point
+        const gp_Pnt aPCyl = Value1(aUCyl, aVCyl);
+
+        // Distance between surfaces
+        const double aSqDist = aPCyl.SquareDistance(aPCone);
+
+        if (aSqDist < aBestMinSqDist)
+        {
+          aBestMinSqDist = aSqDist;
+          aBestMinU1     = aUCyl;
+          aBestMinV1     = aVCyl;
+          aBestMinU2     = aUCone;
+          aBestMinV2     = aVCone;
+        }
+      }
+    }
+
+    // Add the best minimum found
+    if (theMode != ExtremaSS::SearchMode::Max)
+    {
+      // If the best is close to V=0 (apex), use exact apex position
+      if (aBestMinV2 < theTol)
+      {
+        addExtremum(aBestMinU1, aBestMinV1, 0.0, 0.0, aBestMinSqDist, true, theTol);
+      }
+      else
+      {
+        // Refine non-apex solutions
+        refineExtremum(aBestMinU1, aBestMinV1, aBestMinU2, aBestMinV2, true, theTol);
+      }
+    }
+  }
+
   //! Search for extrema by sampling along cone axis.
   void searchAlongConeAxis(double theTol, ExtremaSS::SearchMode theMode) const
   {
@@ -588,6 +711,12 @@ private:
     constexpr int    aNbSamples = 50;
     constexpr double aVMin      = -100.0;
     constexpr double aVMax      = 100.0;
+
+    // Compute tan(semi-angle) for correct OCCT radius formula
+    const double aTanSemiAngle =
+        (std::abs(myCosSemiAngle) > ExtremaSS::THE_ANGULAR_TOLERANCE)
+            ? mySinSemiAngle / myCosSemiAngle
+            : 1e10;
 
     double       aBestMinSqDist = std::numeric_limits<double>::max();
     double       aBestMaxSqDist = 0.0;
@@ -597,7 +726,8 @@ private:
     for (int i = 0; i <= aNbSamples; ++i)
     {
       const double aVCone = aVMin + i * (aVMax - aVMin) / aNbSamples;
-      const double aRCone = std::abs(aVCone * mySinSemiAngle);
+      // OCCT cone radius formula: RefRadius + V * tan(SemiAngle)
+      const double aRCone = myConeRefRadius + std::abs(aVCone) * aTanSemiAngle;
 
       // Point on cone axis at this V
       const double aHeight = aVCone * myCosSemiAngle;

@@ -206,8 +206,12 @@ private:
   //! Compute extrema for concentric tori (same center and axis).
   //! This case has analytical solution - extrema occur at V where
   //! the minor circles are closest/farthest.
+  //! Concentric tori have infinite solutions along the U parameter.
   void computeConcentricCase(double theTol, ExtremaSS::SearchMode theMode) const
   {
+    // Concentric tori have infinite solutions - any U value gives the same distances
+    myResult.Status = ExtremaSS::Status::InfiniteSolutions;
+
     // For concentric tori, distance depends only on major radii difference and V angles.
     // The extrema occur when both points are on the same radial line from center.
     const double aRDiff = myMajorRadius1 - myMajorRadius2;
@@ -269,19 +273,39 @@ private:
       const double aMaxDist = aMaxR1 + aMaxR2;
       addExtremum(0.0, 0.0, M_PI, 0.0, aMaxDist * aMaxDist, false, theTol);
     }
+
+    // For concentric tori, compute the minimum distance for InfiniteSquareDistance
+    // The minimum is the smallest difference between inner/outer radii configurations
+    double aMinDist = std::numeric_limits<double>::max();
+    // Outer-outer
+    aMinDist = std::min(aMinDist, std::abs((myMajorRadius1 + myMinorRadius1) -
+                                           (myMajorRadius2 + myMinorRadius2)));
+    // Inner-inner
+    aMinDist = std::min(aMinDist, std::abs((myMajorRadius1 - myMinorRadius1) -
+                                           (myMajorRadius2 - myMinorRadius2)));
+    // Outer-inner and inner-outer
+    aMinDist = std::min(aMinDist, std::abs((myMajorRadius1 + myMinorRadius1) -
+                                           (myMajorRadius2 - myMinorRadius2)));
+    aMinDist = std::min(aMinDist, std::abs((myMajorRadius1 - myMinorRadius1) -
+                                           (myMajorRadius2 + myMinorRadius2)));
+    myResult.InfiniteSquareDistance = aMinDist * aMinDist;
   }
 
   //! Compute extrema for coaxial tori (same axis, different centers).
   //! The problem reduces to finding extrema between circles that sweep
   //! along the shared axis.
+  //! Coaxial tori have infinite solutions along the U parameter.
   void computeCoaxialCase(double theTol, ExtremaSS::SearchMode theMode) const
   {
+    // Coaxial tori have infinite solutions - any U value gives the same distances
+    myResult.Status = ExtremaSS::Status::InfiniteSolutions;
+
     // For coaxial tori, the U parameter can be chosen the same for both.
     // The problem reduces to 2D: finding extrema between the minor circles
     // at the same U position.
 
     // Project center distance onto axis
-    const double aAxisDist = myCenterVec.Dot(gp_Vec(myAxis1));
+    const double aAxisDist = std::abs(myCenterVec.Dot(gp_Vec(myAxis1)));
 
     // At any U, the generating circles are coplanar.
     // Circle 1: center at (R1, 0) from axis at z=0, radius r1
@@ -350,6 +374,22 @@ private:
         addExtremum(aU, aV1Max, aU + M_PI, aV2Max, aMaxDist * aMaxDist, false, theTol);
       }
     }
+
+    // Compute InfiniteSquareDistance - the minimum distance between the coaxial tori
+    // Same side configuration (usually gives minimum for separated tori)
+    const double aCenterDistSame = std::sqrt(
+        (myMajorRadius1 - myMajorRadius2) * (myMajorRadius1 - myMajorRadius2) +
+        aAxisDist * aAxisDist);
+    const double aMinDistSame = std::max(0.0, aCenterDistSame - myMinorRadius1 - myMinorRadius2);
+
+    // Opposite side configuration
+    const double aCenterDistOpp2 = std::sqrt(
+        (myMajorRadius1 + myMajorRadius2) * (myMajorRadius1 + myMajorRadius2) +
+        aAxisDist * aAxisDist);
+    const double aMinDistOpp = std::max(0.0, aCenterDistOpp2 - myMinorRadius1 - myMinorRadius2);
+
+    myResult.InfiniteSquareDistance = std::min(aMinDistSame, aMinDistOpp) *
+                                      std::min(aMinDistSame, aMinDistOpp);
   }
 
   //! Compute V parameters for circle-circle extrema in a plane.

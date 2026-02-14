@@ -312,7 +312,32 @@ private:
 
     if (aDistToCircCenter < theTol)
     {
-      // Sphere center is at generating circle center - infinite solutions
+      // Sphere center is at generating circle center - sphere is inside the tube
+      // All torus points on this generating circle are equidistant from sphere center
+      // Distance = minorRadius - sphereRadius (if sphere fits inside) or sphere intersects torus
+      const double aDistFromSphSurface = myMinorRadius - mySphereRadius;
+      if (aDistFromSphSurface < theTol)
+      {
+        // Sphere intersects or touches torus
+        addExtremum(Value2(theU, 0), theU, theTol, true, 0.0);
+      }
+      else
+      {
+        // Sphere is inside the tube, minimum distance is minorRadius - sphereRadius
+        // Pick any point on generating circle (V=0) as representative
+        const gp_Pnt aTorusPt = Value2(theU, 0);
+        const double aSqDist = aDistFromSphSurface * aDistFromSphSurface;
+        // Sphere point toward torus - use torus XDir as representative direction
+        const double aCosU = std::cos(theU);
+        const double aSinU = std::sin(theU);
+        const double aRadDirX = aCosU * myTorusXDirX + aSinU * myTorusYDirX;
+        const double aRadDirY = aCosU * myTorusXDirY + aSinU * myTorusYDirY;
+        const double aRadDirZ = aCosU * myTorusXDirZ + aSinU * myTorusYDirZ;
+        const gp_Pnt aSpherePt(mySphereCenterX + mySphereRadius * aRadDirX,
+                               mySphereCenterY + mySphereRadius * aRadDirY,
+                               mySphereCenterZ + mySphereRadius * aRadDirZ);
+        addExtremumFull(aSpherePt, aTorusPt, theU, theTol, theIsClosest, aSqDist);
+      }
       return;
     }
 

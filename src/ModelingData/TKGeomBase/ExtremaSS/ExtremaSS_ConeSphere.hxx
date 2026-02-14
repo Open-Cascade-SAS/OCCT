@@ -279,6 +279,30 @@ private:
 
   const ExtremaSS::Result& performGeneral(double theTol, ExtremaSS::SearchMode theMode) const
   {
+    // First, check if sphere touches or contains the apex
+    const double aDistToApex =
+      std::sqrt(myApexToCenterX * myApexToCenterX + myApexToCenterY * myApexToCenterY + myApexToCenterZ * myApexToCenterZ);
+    const double aApexDistFromSurface = aDistToApex - mySphereRadius;
+
+    if (theMode != ExtremaSS::SearchMode::Max && std::abs(aApexDistFromSurface) < theTol)
+    {
+      // Sphere touches apex - minimum distance is 0
+      const double aVApex = -myRefRadius / myTanSemiAngle;
+      double       aSphereU, aSphereV;
+      computeSphereParams(myApex, aSphereU, aSphereV);
+
+      if (mySwapped)
+      {
+        ExtremaSS::AddExtremum(myResult, aSphereU, aSphereV, 0.0, aVApex, myApex, myApex, 0.0, true, theTol);
+      }
+      else
+      {
+        ExtremaSS::AddExtremum(myResult, 0.0, aVApex, aSphereU, aSphereV, myApex, myApex, 0.0, true, theTol);
+      }
+      myResult.Status = ExtremaSS::Status::OK;
+      return myResult;
+    }
+
     // Sphere center not on axis
     // The extrema lie in the plane containing the axis and the center
     // This plane intersects the cone in two lines (generators)
@@ -485,34 +509,50 @@ private:
                                double        theTol,
                                bool          theIsMin) const
   {
-    // For intersection, find point on sphere closest to cone point
+    // For intersection, the cone point is inside the sphere
+    // The closest sphere point is in direction from center to cone point
     const double aDx  = theConePoint.X() - mySphereCenterX;
     const double aDy  = theConePoint.Y() - mySphereCenterY;
     const double aDz  = theConePoint.Z() - mySphereCenterZ;
     const double aLen = std::sqrt(aDx * aDx + aDy * aDy + aDz * aDz);
 
+    gp_Pnt aSpherePt;
+    double aSphereU, aSphereV;
+
     if (aLen > theTol)
     {
+      // Normal case: cone point is not at sphere center
       const double aSphereX = mySphereCenterX + mySphereRadius * aDx / aLen;
       const double aSphereY = mySphereCenterY + mySphereRadius * aDy / aLen;
       const double aSphereZ = mySphereCenterZ + mySphereRadius * aDz / aLen;
-      const gp_Pnt aSpherePt(aSphereX, aSphereY, aSphereZ);
-
-      double aSphereU, aSphereV;
+      aSpherePt             = gp_Pnt(aSphereX, aSphereY, aSphereZ);
       computeSphereParams(aSpherePt, aSphereU, aSphereV);
+    }
+    else
+    {
+      // Cone point is at sphere center - sphere center is exactly on cone surface
+      // Use the cone's radial direction to determine sphere point
+      const double aSphereX = mySphereCenterX + mySphereRadius * myRadialDirX;
+      const double aSphereY = mySphereCenterY + mySphereRadius * myRadialDirY;
+      const double aSphereZ = mySphereCenterZ + mySphereRadius * myRadialDirZ;
+      aSpherePt             = gp_Pnt(aSphereX, aSphereY, aSphereZ);
+      computeSphereParams(aSpherePt, aSphereU, aSphereV);
+    }
 
-      const double aSqDist = aSpherePt.SquareDistance(theConePoint);
+    // The actual distance is 0 since they intersect - find actual intersection point
+    // The intersection is where the sphere surface meets the cone surface
+    // For the minimum, we report distance 0 at the intersection
+    const double aSqDist = 0.0;
 
-      if (mySwapped)
-      {
-        ExtremaSS::AddExtremum(myResult, aSphereU, aSphereV, theConeU, theConeV, aSpherePt, theConePoint,
-                               aSqDist, theIsMin, theTol);
-      }
-      else
-      {
-        ExtremaSS::AddExtremum(myResult, theConeU, theConeV, aSphereU, aSphereV, theConePoint, aSpherePt,
-                               aSqDist, theIsMin, theTol);
-      }
+    if (mySwapped)
+    {
+      ExtremaSS::AddExtremum(myResult, aSphereU, aSphereV, theConeU, theConeV, aSpherePt, theConePoint,
+                             aSqDist, theIsMin, theTol);
+    }
+    else
+    {
+      ExtremaSS::AddExtremum(myResult, theConeU, theConeV, aSphereU, aSphereV, theConePoint, aSpherePt,
+                             aSqDist, theIsMin, theTol);
     }
   }
 

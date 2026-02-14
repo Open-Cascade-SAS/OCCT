@@ -126,39 +126,38 @@ public:
     return myResult;
   }
 
-  //! Evaluate point on first cone.
+  //! Evaluate point on first cone using OCCT parameterization.
+  //! OCCT cone: P(U,V) = Location + V*Direction + (RefRadius + V*tan(SemiAngle))*(cos(U)*XDir + sin(U)*YDir)
   //! @param theU U parameter (angle)
-  //! @param theV V parameter (distance from apex)
+  //! @param theV V parameter (distance along axis from cone location)
   //! @return Point on cone 1
   gp_Pnt Value1(double theU, double theV) const
   {
     const double aCosU   = std::cos(theU);
     const double aSinU   = std::sin(theU);
-    const double aRadius = theV * mySin1;
-    const double aHeight = theV * myCos1;
-    return gp_Pnt(myApex1.X() + aHeight * myAxis1.X()
+    const double aRadius = myRefRadius1 + theV * myTan1;
+    return gp_Pnt(myLocation1.X() + theV * myAxis1.X()
                       + aRadius * (aCosU * myXDir1.X() + aSinU * myYDir1.X()),
-                  myApex1.Y() + aHeight * myAxis1.Y()
+                  myLocation1.Y() + theV * myAxis1.Y()
                       + aRadius * (aCosU * myXDir1.Y() + aSinU * myYDir1.Y()),
-                  myApex1.Z() + aHeight * myAxis1.Z()
+                  myLocation1.Z() + theV * myAxis1.Z()
                       + aRadius * (aCosU * myXDir1.Z() + aSinU * myYDir1.Z()));
   }
 
-  //! Evaluate point on second cone.
+  //! Evaluate point on second cone using OCCT parameterization.
   //! @param theU U parameter (angle)
-  //! @param theV V parameter (distance from apex)
+  //! @param theV V parameter (distance along axis from cone location)
   //! @return Point on cone 2
   gp_Pnt Value2(double theU, double theV) const
   {
     const double aCosU   = std::cos(theU);
     const double aSinU   = std::sin(theU);
-    const double aRadius = theV * mySin2;
-    const double aHeight = theV * myCos2;
-    return gp_Pnt(myApex2.X() + aHeight * myAxis2.X()
+    const double aRadius = myRefRadius2 + theV * myTan2;
+    return gp_Pnt(myLocation2.X() + theV * myAxis2.X()
                       + aRadius * (aCosU * myXDir2.X() + aSinU * myYDir2.X()),
-                  myApex2.Y() + aHeight * myAxis2.Y()
+                  myLocation2.Y() + theV * myAxis2.Y()
                       + aRadius * (aCosU * myXDir2.Y() + aSinU * myYDir2.Y()),
-                  myApex2.Z() + aHeight * myAxis2.Z()
+                  myLocation2.Z() + theV * myAxis2.Z()
                       + aRadius * (aCosU * myXDir2.Z() + aSinU * myYDir2.Z()));
   }
 
@@ -174,39 +173,48 @@ private:
   //! Initialize cached values from geometry.
   void initCache()
   {
-    // Extract cone 1 data
+    // Extract cone 1 data using OCCT parameterization
     const gp_Ax3& anAx1 = myCone1.Position();
+    myLocation1         = anAx1.Location();
     myApex1             = myCone1.Apex();
     myAxis1             = anAx1.Direction();
     myXDir1             = anAx1.XDirection();
     myYDir1             = anAx1.YDirection();
     mySemiAngle1        = myCone1.SemiAngle();
+    myRefRadius1        = myCone1.RefRadius();
+    myTan1              = std::tan(mySemiAngle1);
     mySin1              = std::sin(mySemiAngle1);
     myCos1              = std::cos(mySemiAngle1);
 
-    // Extract cone 2 data
+    // Extract cone 2 data using OCCT parameterization
     const gp_Ax3& anAx2 = myCone2.Position();
+    myLocation2         = anAx2.Location();
     myApex2             = myCone2.Apex();
     myAxis2             = anAx2.Direction();
     myXDir2             = anAx2.XDirection();
     myYDir2             = anAx2.YDirection();
     mySemiAngle2        = myCone2.SemiAngle();
+    myRefRadius2        = myCone2.RefRadius();
+    myTan2              = std::tan(mySemiAngle2);
     mySin2              = std::sin(mySemiAngle2);
     myCos2              = std::cos(mySemiAngle2);
 
-    // Check if axes are parallel
-    myCrossProduct = myAxis1.Crossed(myAxis2);
-    const double aCrossMag =
-        std::sqrt(myCrossProduct.X() * myCrossProduct.X() + myCrossProduct.Y() * myCrossProduct.Y()
-                  + myCrossProduct.Z() * myCrossProduct.Z());
+    // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
+    const gp_Vec aCrossVec = gp_Vec(myAxis1).Crossed(gp_Vec(myAxis2));
+    const double aCrossMag = aCrossVec.Magnitude();
     myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
-      myCrossProduct = gp_Dir(myCrossProduct.X() / aCrossMag,
-                              myCrossProduct.Y() / aCrossMag,
-                              myCrossProduct.Z() / aCrossMag);
+      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
+                              aCrossVec.Y() / aCrossMag,
+                              aCrossVec.Z() / aCrossMag);
     }
+
+    // Vector from location1 to location2 (for parallel case analysis)
+    myDeltaLocation = gp_Vec(myLocation2.X() - myLocation1.X(),
+                             myLocation2.Y() - myLocation1.Y(),
+                             myLocation2.Z() - myLocation1.Z());
 
     // Vector from apex1 to apex2
     myDeltaApex = gp_Vec(myApex2.X() - myApex1.X(),
@@ -217,11 +225,11 @@ private:
   //! Compute extrema for parallel axes case.
   void computeParallelCase(double theTol, ExtremaSS::SearchMode theMode) const
   {
-    // Project apex2 onto axis1
-    const double aDotAxis = myDeltaApex.Dot(gp_Vec(myAxis1));
-    const gp_Vec aPerp(myDeltaApex.X() - aDotAxis * myAxis1.X(),
-                       myDeltaApex.Y() - aDotAxis * myAxis1.Y(),
-                       myDeltaApex.Z() - aDotAxis * myAxis1.Z());
+    // Project location2 onto axis1
+    const double aDotAxis = myDeltaLocation.Dot(gp_Vec(myAxis1));
+    const gp_Vec aPerp(myDeltaLocation.X() - aDotAxis * myAxis1.X(),
+                       myDeltaLocation.Y() - aDotAxis * myAxis1.Y(),
+                       myDeltaLocation.Z() - aDotAxis * myAxis1.Z());
 
     const double aAxisDist = aPerp.Magnitude();
 
@@ -254,13 +262,10 @@ private:
     const double aU2Toward = std::atan2(aDot2Y, aDot2X);
     const double aU2Away   = aU2Toward + M_PI;
 
-    // For parallel cones, at each (V1, V2) we have circles of radii R1 = V1*sin(α1), R2 = V2*sin(α2)
-    // The distance between surfaces is:
-    // d = aAxisDist - R1 - R2 = aAxisDist - V1*sin(α1) - V2*sin(α2) when pointing toward each other
-    // d = aAxisDist + R1 + R2 when pointing away
-
-    // For minimum: we need V1*sin(α1) + V2*sin(α2) = aAxisDist
-    // This is a family of solutions (infinite for unbounded cones)
+    // For parallel cones with OCCT parameterization:
+    // At V1, R1 = RefRadius1 + V1*tan(α1)
+    // At V2, R2 = RefRadius2 + V2*tan(α2)
+    // The distance between surfaces depends on R1, R2 and axis distance
 
     // Sample V values to find extrema
     searchParallelCase(aU1Toward, aU1Away, aU2Toward, aU2Away, aAxisDist, aDotAxis, theTol, theMode);
@@ -273,23 +278,26 @@ private:
                           double theTol, ExtremaSS::SearchMode theMode) const
   {
     constexpr int aNbSamples = 50;
-    constexpr double aVMin = 0.1;
+    constexpr double aVMin = -50.0;  // V can be negative in OCCT parameterization
     constexpr double aVMax = 100.0;
 
     double aBestMinSqDist = std::numeric_limits<double>::max();
     double aBestMaxSqDist = 0.0;
-    double aBestMinV1 = 1.0, aBestMinV2 = 1.0;
-    double aBestMaxV1 = 1.0, aBestMaxV2 = 1.0;
+    double aBestMinV1 = 0.0, aBestMinV2 = 0.0;
+    double aBestMaxV1 = 0.0, aBestMaxV2 = 0.0;
 
     for (int i = 0; i <= aNbSamples; ++i)
     {
       const double aV1 = aVMin + i * (aVMax - aVMin) / aNbSamples;
-      const double aR1 = aV1 * mySin1;
+      // OCCT radius: R = RefRadius + V * tan(SemiAngle)
+      const double aR1 = myRefRadius1 + aV1 * myTan1;
+      if (aR1 < 0.0) continue;  // Skip invalid radius
 
       for (int j = 0; j <= aNbSamples; ++j)
       {
         const double aV2 = aVMin + j * (aVMax - aVMin) / aNbSamples;
-        const double aR2 = aV2 * mySin2;
+        const double aR2 = myRefRadius2 + aV2 * myTan2;
+        if (aR2 < 0.0) continue;  // Skip invalid radius
 
         // Minimum: both pointing toward each other
         const double aMinDist = std::abs(theAxisDist - aR1 - aR2);
@@ -327,35 +335,34 @@ private:
   {
     myResult.Status = ExtremaSS::Status::InfiniteSolutions;
 
-    // For coaxial cones, at each pair (V1, V2), the radii are R1 = V1*sin(α1), R2 = V2*sin(α2)
-    // Height along axis: H1 = V1*cos(α1), H2 = V2*cos(α2) + offset
+    // For coaxial cones with OCCT parameterization:
+    // At V1, R1 = RefRadius1 + V1*tan(α1)
+    // At V2, R2 = RefRadius2 + V2*tan(α2)
 
-    const double aDotAxis = myDeltaApex.Dot(gp_Vec(myAxis1));
     const double aAxisDot = myAxis1.X() * myAxis2.X() + myAxis1.Y() * myAxis2.Y()
                             + myAxis1.Z() * myAxis2.Z();
 
-    // If cones have same semi-angle and same axis direction, they might be nested
-    // or intersecting
-
     // Sample to find extrema
     constexpr int    aNbSamples = 30;
-    constexpr double aVMin      = 0.1;
+    constexpr double aVMin      = -50.0;
     constexpr double aVMax      = 50.0;
 
     double aBestMinSqDist = std::numeric_limits<double>::max();
     double aBestMaxSqDist = 0.0;
-    double aBestMinU1 = 0, aBestMinV1 = 1, aBestMinU2 = 0, aBestMinV2 = 1;
-    double aBestMaxU1 = 0, aBestMaxV1 = 1, aBestMaxU2 = 0, aBestMaxV2 = 1;
+    double aBestMinU1 = 0, aBestMinV1 = 0, aBestMinU2 = 0, aBestMinV2 = 0;
+    double aBestMaxU1 = 0, aBestMaxV1 = 0, aBestMaxU2 = 0, aBestMaxV2 = 0;
 
     for (int i = 0; i <= aNbSamples; ++i)
     {
       const double aV1 = aVMin + i * (aVMax - aVMin) / aNbSamples;
-      const double aR1 = aV1 * mySin1;
+      const double aR1 = myRefRadius1 + aV1 * myTan1;
+      if (aR1 < 0.0) continue;
 
       for (int j = 0; j <= aNbSamples; ++j)
       {
         const double aV2 = aVMin + j * (aVMax - aVMin) / aNbSamples;
-        const double aR2 = aV2 * mySin2;
+        const double aR2 = myRefRadius2 + aV2 * myTan2;
+        if (aR2 < 0.0) continue;
 
         // Minimum: same U angle
         const double aMinDist = std::abs(aR1 - aR2);
@@ -377,6 +384,8 @@ private:
       }
     }
 
+    myResult.InfiniteSquareDistance = aBestMinSqDist;
+
     if (theMode != ExtremaSS::SearchMode::Max)
     {
       addExtremum(0.0, aBestMinV1, 0.0, aBestMinV2, aBestMinSqDist, true, theTol);
@@ -393,8 +402,20 @@ private:
   {
     myResult.Status = ExtremaSS::Status::OK;
 
+    // First check apex-to-apex distance (important special case)
+    const double aApexDistSq = myApex1.SquareDistance(myApex2);
+    if (aApexDistSq < theTol * theTol)
+    {
+      // Apexes coincide - minimum distance is 0
+      // For cones with refRadius=0, the apex is at V where R=0
+      const double aV1Apex = -myRefRadius1 / myTan1;
+      const double aV2Apex = -myRefRadius2 / myTan2;
+      addExtremum(0.0, aV1Apex, 0.0, aV2Apex, 0.0, true, theTol);
+    }
+
     // For skew/intersecting axes, we need to search over V1, V2
     // For each V1, V2, we have circles at different positions and radii
+    // Using OCCT parameterization: R = RefRadius + V * tan(SemiAngle)
 
     constexpr int aNbSamples = 40;
     constexpr double aVMin = -50.0;
@@ -402,41 +423,56 @@ private:
 
     double aBestMinSqDist = std::numeric_limits<double>::max();
     double aBestMaxSqDist = 0.0;
-    double aBestMinU1 = 0, aBestMinV1 = 1, aBestMinU2 = 0, aBestMinV2 = 1;
-    double aBestMaxU1 = 0, aBestMaxV1 = 1, aBestMaxU2 = 0, aBestMaxV2 = 1;
+    double aBestMinU1 = 0, aBestMinV1 = 0, aBestMinU2 = 0, aBestMinV2 = 0;
+    double aBestMaxU1 = 0, aBestMaxV1 = 0, aBestMaxU2 = 0, aBestMaxV2 = 0;
 
     for (int i = 0; i <= aNbSamples; ++i)
     {
       const double aV1 = aVMin + i * (aVMax - aVMin) / aNbSamples;
-      if (std::abs(aV1) < theTol) continue;
+      // OCCT parameterization: R = RefRadius + V * tan(SemiAngle)
+      const double aR1 = myRefRadius1 + aV1 * myTan1;
+      if (aR1 < 0.0) continue;
 
-      const double aR1 = std::abs(aV1 * mySin1);
-      const double aH1 = aV1 * myCos1;
-
-      // Center of circle on cone 1
-      const gp_Pnt aCircle1Center(myApex1.X() + aH1 * myAxis1.X(),
-                                  myApex1.Y() + aH1 * myAxis1.Y(),
-                                  myApex1.Z() + aH1 * myAxis1.Z());
+      // Center of circle on cone 1: Location + V * Direction
+      const gp_Pnt aCircle1Center(myLocation1.X() + aV1 * myAxis1.X(),
+                                  myLocation1.Y() + aV1 * myAxis1.Y(),
+                                  myLocation1.Z() + aV1 * myAxis1.Z());
 
       for (int j = 0; j <= aNbSamples; ++j)
       {
         const double aV2 = aVMin + j * (aVMax - aVMin) / aNbSamples;
-        if (std::abs(aV2) < theTol) continue;
-
-        const double aR2 = std::abs(aV2 * mySin2);
-        const double aH2 = aV2 * myCos2;
+        const double aR2 = myRefRadius2 + aV2 * myTan2;
+        if (aR2 < 0.0) continue;
 
         // Center of circle on cone 2
-        const gp_Pnt aCircle2Center(myApex2.X() + aH2 * myAxis2.X(),
-                                    myApex2.Y() + aH2 * myAxis2.Y(),
-                                    myApex2.Z() + aH2 * myAxis2.Z());
+        const gp_Pnt aCircle2Center(myLocation2.X() + aV2 * myAxis2.X(),
+                                    myLocation2.Y() + aV2 * myAxis2.Y(),
+                                    myLocation2.Z() + aV2 * myAxis2.Z());
 
         // Direction between circle centers
         gp_Vec aDirBetween(aCircle1Center, aCircle2Center);
         const double aDistBetween = aDirBetween.Magnitude();
 
+        // Handle case where circle centers coincide
         if (aDistBetween < theTol)
+        {
+          // Same center - minimum is |R1 - R2|, maximum is R1 + R2
+          const double aMinDist = std::abs(aR1 - aR2);
+          const double aMaxDist = aR1 + aR2;
+          if (aMinDist * aMinDist < aBestMinSqDist)
+          {
+            aBestMinSqDist = aMinDist * aMinDist;
+            aBestMinU1 = 0; aBestMinV1 = aV1;
+            aBestMinU2 = 0; aBestMinV2 = aV2;
+          }
+          if (aMaxDist * aMaxDist > aBestMaxSqDist)
+          {
+            aBestMaxSqDist = aMaxDist * aMaxDist;
+            aBestMaxU1 = 0; aBestMaxV1 = aV1;
+            aBestMaxU2 = M_PI; aBestMaxV2 = aV2;
+          }
           continue;
+        }
 
         aDirBetween.Divide(aDistBetween);
 
@@ -757,28 +793,35 @@ private:
 
   std::optional<ExtremaSS::Domain4D> myDomain; //!< Optional bounded domain
 
-  // Cached cone 1 geometry
+  // Cached cone 1 geometry (OCCT parameterization)
+  gp_Pnt myLocation1;   //!< Location (origin) of cone 1
   gp_Pnt myApex1;       //!< Apex of cone 1
   gp_Dir myAxis1;       //!< Axis of cone 1
   gp_Dir myXDir1;       //!< X direction of cone 1
   gp_Dir myYDir1;       //!< Y direction of cone 1
   double mySemiAngle1;  //!< Semi-angle of cone 1
+  double myRefRadius1;  //!< Reference radius of cone 1
+  double myTan1;        //!< tan(semi-angle) of cone 1
   double mySin1;        //!< sin(semi-angle) of cone 1
   double myCos1;        //!< cos(semi-angle) of cone 1
 
-  // Cached cone 2 geometry
+  // Cached cone 2 geometry (OCCT parameterization)
+  gp_Pnt myLocation2;   //!< Location (origin) of cone 2
   gp_Pnt myApex2;       //!< Apex of cone 2
   gp_Dir myAxis2;       //!< Axis of cone 2
   gp_Dir myXDir2;       //!< X direction of cone 2
   gp_Dir myYDir2;       //!< Y direction of cone 2
   double mySemiAngle2;  //!< Semi-angle of cone 2
+  double myRefRadius2;  //!< Reference radius of cone 2
+  double myTan2;        //!< tan(semi-angle) of cone 2
   double mySin2;        //!< sin(semi-angle) of cone 2
   double myCos2;        //!< cos(semi-angle) of cone 2
 
   // Cached relationship
-  gp_Dir myCrossProduct; //!< Cross product of axes
-  gp_Vec myDeltaApex;    //!< Vector from apex1 to apex2
-  bool   myAxesParallel; //!< True if axes are parallel
+  gp_Dir myCrossProduct;   //!< Cross product of axes
+  gp_Vec myDeltaLocation;  //!< Vector from location1 to location2
+  gp_Vec myDeltaApex;      //!< Vector from apex1 to apex2
+  bool   myAxesParallel;   //!< True if axes are parallel
 
   mutable ExtremaSS::Result myResult; //!< Computation result
 };

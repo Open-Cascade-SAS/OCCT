@@ -217,18 +217,16 @@ private:
     myMajorRadius          = myTorus.MajorRadius();
     myMinorRadius          = myTorus.MinorRadius();
 
-    // Check if axes are parallel
-    myCrossProduct = myCylAxis.Crossed(myTorusAxis);
-    const double aCrossMag =
-        std::sqrt(myCrossProduct.X() * myCrossProduct.X() + myCrossProduct.Y() * myCrossProduct.Y()
-                  + myCrossProduct.Z() * myCrossProduct.Z());
+    // Check if axes are parallel using gp_Vec to avoid gp_Dir exception for parallel vectors
+    const gp_Vec aCrossVec = gp_Vec(myCylAxis).Crossed(gp_Vec(myTorusAxis));
+    const double aCrossMag = aCrossVec.Magnitude();
     myAxesParallel = (aCrossMag < ExtremaSS::THE_ANGULAR_TOLERANCE);
 
     if (!myAxesParallel)
     {
-      myCrossProduct = gp_Dir(myCrossProduct.X() / aCrossMag,
-                              myCrossProduct.Y() / aCrossMag,
-                              myCrossProduct.Z() / aCrossMag);
+      myCrossProduct = gp_Dir(aCrossVec.X() / aCrossMag,
+                              aCrossVec.Y() / aCrossMag,
+                              aCrossVec.Z() / aCrossMag);
     }
 
     // Vector from cylinder center to torus center
@@ -385,6 +383,23 @@ private:
 
       addExtremum(0.0, aVCyl, M_PI, 0.0, aMaxDist1 * aMaxDist1, false, theTol);
     }
+
+    // Compute InfiniteSquareDistance - minimum distance for coaxial cylinder-torus
+    const double aOuterRadius = myMajorRadius + myMinorRadius;
+    const double aInnerRadius = myMajorRadius - myMinorRadius;
+    double aMinDist = 0.0;
+
+    if (myCylRadius >= aOuterRadius)
+    {
+      aMinDist = myCylRadius - aOuterRadius;
+    }
+    else if (myCylRadius <= aInnerRadius && aInnerRadius > 0)
+    {
+      aMinDist = aInnerRadius - myCylRadius;
+    }
+    // else cylinder is within torus annulus, distance is 0
+
+    myResult.InfiniteSquareDistance = aMinDist * aMinDist;
   }
 
   //! Compute extrema for general (non-parallel) axes case.
