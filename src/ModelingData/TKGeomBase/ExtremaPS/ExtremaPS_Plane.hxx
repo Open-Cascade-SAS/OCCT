@@ -187,12 +187,13 @@ public:
 
     myResult.Status = ExtremaPS::Status::OK;
     ExtremaPS::ExtremumResult anExt;
-    anExt.U              = aClampedU;
-    anExt.V              = aClampedV;
-    anExt.Point          = gp_Pnt(theP.X() - aSignedDist * myNormX,
-                         theP.Y() - aSignedDist * myNormY,
-                         theP.Z() - aSignedDist * myNormZ);
-    anExt.SquareDistance = aSignedDist * aSignedDist;
+    anExt.U = aClampedU;
+    anExt.V = aClampedV;
+    // Compute actual surface point at clamped parameters
+    const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
+    anExt.Point          = aSurfPt;
+    // Recompute distance to the actual clamped point
+    anExt.SquareDistance = theP.SquareDistance(aSurfPt);
     anExt.IsMinimum      = true;
     myResult.Extrema.Append(anExt);
     return myResult;

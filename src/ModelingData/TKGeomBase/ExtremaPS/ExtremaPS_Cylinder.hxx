@@ -162,8 +162,20 @@ public:
     // Check for degenerate case: point on axis
     if (aRadialDistSq < theTol * theTol)
     {
-      myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-      myResult.InfiniteSquareDistance = myRadius * myRadius;
+      myResult.Status = ExtremaPS::Status::InfiniteSolutions;
+
+      // For bounded V domain, account for distance along axis
+      if (myDomain.has_value() && myDomain->V().IsFinite())
+      {
+        const double aClampedV = myDomain->V().Clamp(aV);
+        const double aDeltaV   = aV - aClampedV;
+        // Distance = sqrt(R² + ΔV²), so squared distance = R² + ΔV²
+        myResult.InfiniteSquareDistance = myRadius * myRadius + aDeltaV * aDeltaV;
+      }
+      else
+      {
+        myResult.InfiniteSquareDistance = myRadius * myRadius;
+      }
       return myResult;
     }
 

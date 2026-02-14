@@ -32,6 +32,75 @@ namespace MathSys
 {
 using namespace MathUtils;
 
+//! Solve 2x2 symmetric system using eigenvalue decomposition (SVD fallback).
+//! More robust than Cramer's rule for ill-conditioned matrices.
+//! @param theJ11 J(1,1) element
+//! @param theJ12 J(1,2) = J(2,1) element
+//! @param theJ22 J(2,2) element
+//! @param theF1 RHS component 1
+//! @param theF2 RHS component 2
+//! @param theDU output: solution U component
+//! @param theDV output: solution V component
+//! @param theTol tolerance for eigenvalue regularization
+//! @return true if solution found
+inline bool SolveSymmetric2x2SVD(double theJ11, double theJ12, double theJ22,
+                                  double theF1, double theF2,
+                                  double& theDU, double& theDV,
+                                  double theTol = 1.0e-15)
+{
+  // For symmetric 2x2 matrix J = [[a,b],[b,c]], eigenvalues are:
+  // λ1,2 = (a+c)/2 ± sqrt(((a-c)/2)² + b²)
+  const double aTrace   = theJ11 + theJ22;
+  const double aDiff    = (theJ11 - theJ22) * 0.5;
+  const double aDiscrim = std::sqrt(aDiff * aDiff + theJ12 * theJ12);
+
+  double aLambda1 = aTrace * 0.5 + aDiscrim;
+  double aLambda2 = aTrace * 0.5 - aDiscrim;
+
+  // Regularize small eigenvalues (truncated SVD)
+  const double aMinLambda = std::max(std::abs(aLambda1), std::abs(aLambda2)) * theTol;
+  if (std::abs(aLambda1) < aMinLambda && std::abs(aLambda2) < aMinLambda)
+  {
+    return false; // Both eigenvalues effectively zero
+  }
+
+  // Eigenvector for lambda1: (b, lambda1 - a) normalized, or (lambda1 - c, b) normalized
+  // Use the formula that gives better numerical stability
+  double aV1x, aV1y;
+  if (std::abs(theJ12) > std::abs(aDiff))
+  {
+    const double aLen1 = std::sqrt(theJ12 * theJ12 + (aLambda1 - theJ11) * (aLambda1 - theJ11));
+    if (aLen1 < theTol) return false;
+    aV1x = theJ12 / aLen1;
+    aV1y = (aLambda1 - theJ11) / aLen1;
+  }
+  else
+  {
+    const double aLen1 = std::sqrt((aLambda1 - theJ22) * (aLambda1 - theJ22) + theJ12 * theJ12);
+    if (aLen1 < theTol) return false;
+    aV1x = (aLambda1 - theJ22) / aLen1;
+    aV1y = theJ12 / aLen1;
+  }
+
+  // Eigenvector for lambda2 is orthogonal: (-v1y, v1x)
+  double aV2x = -aV1y;
+  double aV2y = aV1x;
+
+  // Project RHS onto eigenvector basis
+  double aB1 = aV1x * (-theF1) + aV1y * (-theF2);
+  double aB2 = aV2x * (-theF1) + aV2y * (-theF2);
+
+  // Solve in eigenspace with regularization
+  double aX1 = (std::abs(aLambda1) > aMinLambda) ? aB1 / aLambda1 : 0.0;
+  double aX2 = (std::abs(aLambda2) > aMinLambda) ? aB2 / aLambda2 : 0.0;
+
+  // Transform back to original space
+  theDU = aV1x * aX1 + aV2x * aX2;
+  theDV = aV1y * aX1 + aV2y * aX2;
+
+  return true;
+}
+
 //! Result of 2D Newton iteration.
 struct Newton2DResult
 {
@@ -88,7 +157,7 @@ Newton2DResult Newton2D(const Function& theFunc,
   aRes.V = theV0;
 
   // Pre-compute max step limit once
-  const double aMaxStep = 0.5 * std::max(theUMax - theUMin, theVMax - theVMin);
+  const double aMaxStep = THE_NEWTON2D_MAX_STEP_RATIO * std::max(theUMax - theUMin, theVMax - theVMin);
   const double aTolSq   = theTol * theTol;
 
   for (size_t i = 0; i < theMaxIter; ++i)
@@ -117,11 +186,11 @@ Newton2DResult Newton2D(const Function& theFunc,
     const double aDet = aDF1dU * aDF2dV - aDF1dV * aDF2dU;
 
     double aDU, aDV;
-    if (std::abs(aDet) < 1.0e-30)
+    if (std::abs(aDet) < THE_NEWTON2D_SINGULAR_DET)
     {
       // Singular Jacobian - try gradient descent step
       const double aNormSq = aDF1dU * aDF1dU + aDF1dV * aDF1dV + aDF2dU * aDF2dU + aDF2dV * aDF2dV;
-      if (aNormSq < 1.0e-60)
+      if (aNormSq < THE_NEWTON2D_CRITICAL_GRAD_SQ)
       {
         aRes.FNorm  = std::sqrt(aFNormSq);
         aRes.Status = Status::Singular;
@@ -246,7 +315,7 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
   // Domain size for step limiting
   const double aDomainU = theUMax - theUMin;
   const double aDomainV = theVMax - theVMin;
-  const double aMaxStep = 0.5 * std::max(aDomainU, aDomainV);
+  const double aMaxStep = THE_NEWTON2D_MAX_STEP_RATIO * std::max(aDomainU, aDomainV);
 
   // Convergence tolerances
   // Use user tolerance for gradient, not hardcoded value
@@ -254,8 +323,8 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
 
   // Small extension beyond domain (matching OLD behavior)
   // OLD allows solutions slightly outside domain if gradient is near zero
-  const double aExtU = 0.01 * aDomainU;
-  const double aExtV = 0.01 * aDomainV;
+  const double aExtU = THE_NEWTON2D_DOMAIN_EXT * aDomainU;
+  const double aExtV = THE_NEWTON2D_DOMAIN_EXT * aDomainV;
   const double aExtUMin = theUMin - aExtU;
   const double aExtUMax = theUMax + aExtU;
   const double aExtVMin = theVMin - aExtV;
@@ -287,14 +356,14 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
     }
 
     // Stagnation detection: if function not improving, may be stuck
-    if (aFNormSq >= aPrevFNormSq * 0.99) // Less than 1% improvement
+    if (aFNormSq >= aPrevFNormSq * THE_NEWTON2D_STAGNATION_RATIO) // Less than 0.1% improvement
     {
       aStagnationCount++;
-      if (aStagnationCount >= 5)
+      if (aStagnationCount >= THE_NEWTON2D_STAGNATION_COUNT)
       {
         // Stagnated - accept current position if gradient is reasonably small
         aRes.FNorm = std::sqrt(aFNormSq);
-        if (aRes.FNorm < theTol * 100.0) // Relaxed tolerance for stagnation
+        if (aRes.FNorm < theTol * THE_NEWTON2D_STAGNATION_RELAX) // Relaxed tolerance for stagnation
         {
           aRes.Status = Status::OK;
         }
@@ -316,28 +385,45 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
 
     double aDU, aDV;
 
-    if (std::abs(aDet) < 1.0e-20) // More relaxed threshold than before
+    if (std::abs(aDet) < THE_NEWTON2D_SINGULAR_DET)
     {
-      // Singular/ill-conditioned Jacobian - use gradient descent
-      // For merit function phi = 0.5*(F1^2 + F2^2), gradient is [J11*F1 + J12*F2, J12*F1 + J22*F2]
-      const double aGradU  = aJ11 * aF1 + aJ12 * aF2;
-      const double aGradV  = aJ12 * aF1 + aJ22 * aF2;
-      const double aGradSq = aGradU * aGradU + aGradV * aGradV;
+      // Try SVD-based solve first (more robust for ill-conditioned matrices)
+      bool aSVDSuccess = SolveSymmetric2x2SVD(aJ11, aJ12, aJ22, aF1, aF2, aDU, aDV);
 
-      if (aGradSq < 1.0e-60)
+      if (!aSVDSuccess)
       {
-        // Gradient is essentially zero - we're at a critical point
-        aRes.FNorm  = std::sqrt(aFNormSq);
-        aRes.Status = (aRes.FNorm < theTol * 10.0) ? Status::OK : Status::Singular;
-        return aRes;
-      }
+        // SVD failed - fall back to gradient descent
+        // For merit function phi = 0.5*(F1^2 + F2^2), gradient is [J11*F1 + J12*F2, J12*F1 + J22*F2]
+        const double aGradU  = aJ11 * aF1 + aJ12 * aF2;
+        const double aGradV  = aJ12 * aF1 + aJ22 * aF2;
+        const double aGradSq = aGradU * aGradU + aGradV * aGradV;
 
-      // Steepest descent with adaptive step size
-      // Use Barzilai-Borwein-like step: alpha = |F|^2 / |grad|^2
-      double aAlpha = aFNormSq / aGradSq;
-      aAlpha = std::min(aAlpha, aMaxStep / std::sqrt(aGradSq)); // Limit step
-      aDU = -aAlpha * aGradU;
-      aDV = -aAlpha * aGradV;
+        if (aGradSq < THE_NEWTON2D_CRITICAL_GRAD_SQ)
+        {
+          // Gradient is essentially zero - we're at a critical point
+          aRes.FNorm  = std::sqrt(aFNormSq);
+          aRes.Status = (aRes.FNorm < theTol * THE_NEWTON2D_MAXITER_RELAX) ? Status::OK : Status::Singular;
+          return aRes;
+        }
+
+        // Steepest descent with adaptive step size
+        // Use Barzilai-Borwein-like step: alpha = |F|^2 / |grad|^2
+        double aAlpha = aFNormSq / aGradSq;
+        aAlpha = std::min(aAlpha, aMaxStep / std::sqrt(aGradSq)); // Limit step
+        aDU = -aAlpha * aGradU;
+        aDV = -aAlpha * aGradV;
+      }
+      else
+      {
+        // SVD succeeded - limit step size
+        const double aStepNorm = std::sqrt(aDU * aDU + aDV * aDV);
+        if (aStepNorm > aMaxStep)
+        {
+          const double aScale = aMaxStep / aStepNorm;
+          aDU *= aScale;
+          aDV *= aScale;
+        }
+      }
     }
     else
     {
@@ -371,10 +457,31 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
       double aNewFNormSq = aNewF1 * aNewF1 + aNewF2 * aNewF2;
 
       // Backtrack if function increased too much
-      if (aNewFNormSq > aFNormSq * 2.0)
+      if (aNewFNormSq > aFNormSq * THE_NEWTON2D_BACKTRACK_TRIGGER)
       {
+        // Use quadratic interpolation for first estimate
+        // Model: f(α) ≈ f(0) + f'(0)*α + c*α², where c = (f(1) - f(0) - f'(0))/1
+        // Directional derivative f'(0) = grad·d where d is search direction
+        // For squared norm: grad = 2*[F1, F2], d = [dU, dV]
+        // f'(0) = 2*(F1*dU_from_F1 + F2*dU_from_F2) ... but we approximate
+        // Using f(0), f(1) and assuming quadratic, min at α = f(0) / (2*(f(1) - f(0) + f(0)))
+        // Simplified: α_opt ≈ 0.5 * f(0) / (f(1) - f(0) + f(0)) = 0.5 * f(0) / f(1)
+        // But safer: α_opt = f(0) / (f(1) - f(0)) / 2, clamped to [0.1, 0.5]
+
         double aAlpha = 0.5;
-        for (int k = 0; k < 8; ++k)
+        if (aNewFNormSq > aFNormSq)
+        {
+          // Quadratic interpolation: assume f(α) = a + b*α + c*α²
+          // f(0) = a = aFNormSq
+          // f(1) = a + b + c = aNewFNormSq
+          // Minimum of quadratic at α = -b/(2c)
+          // Approximating b ≈ -(f(0)), c ≈ f(1) - f(0) + f(0) = f(1)
+          // gives α ≈ f(0)/(2*f(1)), clamped for safety
+          double aAlphaQuad = aFNormSq / (2.0 * aNewFNormSq);
+          aAlpha = std::max(0.1, std::min(0.5, aAlphaQuad));
+        }
+
+        for (int k = 0; k < THE_NEWTON2D_LINE_SEARCH_MAX; ++k)
         {
           double aTryU = aRes.U + aAlpha * aDU;
           double aTryV = aRes.V + aAlpha * aDV;
@@ -385,14 +492,29 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
           if (theFunc.Value(aTryU, aTryV, aTryF1, aTryF2))
           {
             double aTryFNormSq = aTryF1 * aTryF1 + aTryF2 * aTryF2;
-            if (aTryFNormSq < aFNormSq * 1.5)
+            if (aTryFNormSq < aFNormSq * THE_NEWTON2D_BACKTRACK_ACCEPT)
             {
               aNewU = aTryU;
               aNewV = aTryV;
               break;
             }
+
+            // Update quadratic estimate for next iteration
+            // New model: interpolate between f(0) and f(α)
+            if (aTryFNormSq > aFNormSq && k < THE_NEWTON2D_LINE_SEARCH_MAX - 1)
+            {
+              double aAlphaQuad = aAlpha * aFNormSq / (2.0 * aTryFNormSq);
+              aAlpha = std::max(aAlpha * 0.25, std::min(aAlpha * 0.5, aAlphaQuad));
+            }
+            else
+            {
+              aAlpha *= 0.5;
+            }
           }
-          aAlpha *= 0.5;
+          else
+          {
+            aAlpha *= 0.5;
+          }
         }
       }
     }
@@ -408,7 +530,7 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
     aRes.FNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
 
     // Accept if gradient is reasonably small (relaxed for max iterations)
-    if (aRes.FNorm < theTol * 10.0)
+    if (aRes.FNorm < theTol * THE_NEWTON2D_MAXITER_RELAX)
     {
       aRes.Status = Status::OK;
     }

@@ -269,10 +269,20 @@ public:
     double aCircleNormX, aCircleNormY, aCircleNormZ;
     if (aCircleDist < Precision::Confusion())
     {
+      // Point at generating circle center - any V gives same distance
+      // Use radial direction as default (V=0), or clamp to domain if bounded
       aCircleNormX = aRadNormX;
       aCircleNormY = aRadNormY;
       aCircleNormZ = aRadNormZ;
-      aV           = 0.0;
+      if (myDomain.has_value())
+      {
+        // For bounded domain, use domain midpoint as most likely valid V
+        aV = (myDomain->VMin + myDomain->VMax) * 0.5;
+      }
+      else
+      {
+        aV = 0.0;
+      }
     }
     else
     {
@@ -409,6 +419,47 @@ public:
     const bool                 aIsFullU = aDomain.IsUFullPeriod(aTwoPi, theTol);
     const bool                 aIsFullV = aDomain.IsVFullPeriod(aTwoPi, theTol);
 
+    // Compute V parameters for opposite generating circle
+    // (same as natural domain case - compute proper V, not just aV + PI)
+    double aVOpp2 = 0.0;
+    double aVOpp3 = M_PI;
+    {
+      const double aOppCircleCenterX = myCenterX - myMajorRadius * aRadNormX;
+      const double aOppCircleCenterY = myCenterY - myMajorRadius * aRadNormY;
+      const double aOppCircleCenterZ = myCenterZ - myMajorRadius * aRadNormZ;
+
+      const double aOppCircleDx    = theP.X() - aOppCircleCenterX;
+      const double aOppCircleDy    = theP.Y() - aOppCircleCenterY;
+      const double aOppCircleDz    = theP.Z() - aOppCircleCenterZ;
+      const double aOppCircleDistSq =
+        aOppCircleDx * aOppCircleDx + aOppCircleDy * aOppCircleDy + aOppCircleDz * aOppCircleDz;
+      const double aOppCircleDist = std::sqrt(aOppCircleDistSq);
+
+      if (aOppCircleDist > theTol)
+      {
+        const double aInvOppDist = 1.0 / aOppCircleDist;
+        const double aOppNormX   = aOppCircleDx * aInvOppDist;
+        const double aOppNormY   = aOppCircleDy * aInvOppDist;
+        const double aOppNormZ   = aOppCircleDz * aInvOppDist;
+
+        // V for opposite circle - note: radial direction is flipped (-aRadNormX/Y/Z)
+        const double aOppCosV =
+          aOppNormX * (-aRadNormX) + aOppNormY * (-aRadNormY) + aOppNormZ * (-aRadNormZ);
+        const double aOppSinV = aOppNormX * myAxisX + aOppNormY * myAxisY + aOppNormZ * myAxisZ;
+        aVOpp2                = std::atan2(aOppSinV, aOppCosV);
+        if (aVOpp2 < 0.0)
+          aVOpp2 += aTwoPi;
+
+        aVOpp3 = aVOpp2 + M_PI;
+        if (aVOpp3 >= aTwoPi)
+          aVOpp3 -= aTwoPi;
+      }
+
+      // Normalize to domain
+      ExtremaPS::NormalizeV(aVOpp2, aDomain);
+      ExtremaPS::NormalizeV(aVOpp3, aDomain);
+    }
+
     auto addExtremum = [&](double aExtU, double aExtV, bool aIsMin) {
       // Check if in range
       const bool aUInRange =
@@ -459,9 +510,11 @@ public:
 
     if (theMode != ExtremaPS::SearchMode::Min)
     {
+      // Same circle, antipodal V
       addExtremum(aU, aVOpp, false);
-      addExtremum(aUOpp, aV, false);
-      addExtremum(aUOpp, aVOpp, false);
+      // Opposite circle - use properly computed V values (not just aV + PI)
+      addExtremum(aUOpp, aVOpp2, false);
+      addExtremum(aUOpp, aVOpp3, false);
     }
 
     myResult.Status =

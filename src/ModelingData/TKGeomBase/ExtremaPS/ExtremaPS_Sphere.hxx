@@ -202,6 +202,11 @@ public:
         ExtremaPS::NormalizeU(aU, *myDomain);
       }
     }
+    else if (myDomain.has_value())
+    {
+      // At pole: any U gives the same point, use domain midpoint to ensure it's in range
+      aU = (myDomain->UMin + myDomain->UMax) * 0.5;
+    }
 
     // FAST PATH: Natural domain (full sphere) - most common case
     // Avoid sin/cos by using the already-computed direction

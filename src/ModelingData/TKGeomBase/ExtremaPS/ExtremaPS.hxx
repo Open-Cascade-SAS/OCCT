@@ -83,10 +83,15 @@ constexpr double THE_REFINED_DIST_THRESHOLD = 0.99;
 
 //! Relaxation factor for gradient-based zero detection.
 //! Multiplied with tolerance for more robust extremum detection.
-constexpr double THE_GRADIENT_TOL_FACTOR = 1000.0;
+//! Reduced from 1000.0 to 100.0 to achieve better precision (~1e-5 gradient threshold).
+constexpr double THE_GRADIENT_TOL_FACTOR = 100.0;
 
 //! Multiplier for Newton retry tolerance when initial Newton fails.
 constexpr double THE_NEWTON_RETRY_TOL_FACTOR = 10.0;
+
+//! High precision tolerance target (5e-8, better than Precision::Confusion ~1e-7).
+//! Used for multi-start Newton and two-phase refinement.
+constexpr double THE_HIGH_PRECISION_TOL = 5.0e-8;
 
 //! Squared threshold for spatial coherence optimization.
 //! Query points within this squared distance use cached solution.

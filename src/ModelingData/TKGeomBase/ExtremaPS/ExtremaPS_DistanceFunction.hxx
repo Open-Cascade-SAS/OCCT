@@ -183,6 +183,78 @@ inline Result Solve(const ExtremaPS_DistanceFunction& theFunc,
   return aRes;
 }
 
+//! Perform high-precision 2D Newton iteration using two-phase approach.
+//! Phase 1: Coarse convergence with relaxed tolerance
+//! Phase 2: Fine convergence from coarse solution
+//!
+//! @param theFunc distance function
+//! @param theU0 initial U guess
+//! @param theV0 initial V guess
+//! @param theUMin U lower bound
+//! @param theUMax U upper bound
+//! @param theVMin V lower bound
+//! @param theVMax V upper bound
+//! @param theTol target tolerance for convergence (typically 5e-8 or better)
+//! @param theMaxIter maximum iterations per phase
+//! @return Newton result
+inline Result SolveHighPrecision(const ExtremaPS_DistanceFunction& theFunc,
+                                  double                            theU0,
+                                  double                            theV0,
+                                  double                            theUMin,
+                                  double                            theUMax,
+                                  double                            theVMin,
+                                  double                            theVMax,
+                                  double                            theTol,
+                                  int                               theMaxIter = 50)
+{
+  // Phase 1: Coarse convergence with relaxed tolerance
+  // Use 100x larger tolerance and half the iterations
+  const double aCoarseTol = theTol * 100.0;
+  auto aCoarseResult = MathSys::Newton2DSymmetric(theFunc,
+                                                  theU0,
+                                                  theV0,
+                                                  theUMin,
+                                                  theUMax,
+                                                  theVMin,
+                                                  theVMax,
+                                                  aCoarseTol,
+                                                  static_cast<size_t>(theMaxIter / 2));
+
+  // If coarse phase failed completely, return failure
+  if (aCoarseResult.Status == MathUtils::Status::NumericalError)
+  {
+    Result aRes;
+    aRes.IsDone = false;
+    aRes.U      = aCoarseResult.U;
+    aRes.V      = aCoarseResult.V;
+    aRes.NbIter = static_cast<int>(aCoarseResult.NbIter);
+    aRes.FNorm  = aCoarseResult.FNorm;
+    return aRes;
+  }
+
+  // Phase 2: Fine convergence from coarse solution
+  // Use target tolerance and remaining iterations
+  auto aFineResult = MathSys::Newton2DSymmetric(theFunc,
+                                                aCoarseResult.U,
+                                                aCoarseResult.V,
+                                                theUMin,
+                                                theUMax,
+                                                theVMin,
+                                                theVMax,
+                                                theTol,
+                                                static_cast<size_t>(theMaxIter));
+
+  // Combine results
+  Result aRes;
+  aRes.IsDone = aFineResult.IsDone();
+  aRes.U      = aFineResult.U;
+  aRes.V      = aFineResult.V;
+  aRes.NbIter = static_cast<int>(aCoarseResult.NbIter + aFineResult.NbIter);
+  aRes.FNorm  = aFineResult.FNorm;
+
+  return aRes;
+}
+
 } // namespace ExtremaPS_Newton
 
 #endif // _ExtremaPS_DistanceFunction_HeaderFile

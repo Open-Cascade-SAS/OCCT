@@ -29,6 +29,54 @@ constexpr double THE_NEWTON_STEP_TOL_FACTOR = 1.0e-16;
 //! Default maximum iterations for Newton solvers.
 constexpr size_t THE_NEWTON_MAX_ITER = 100;
 
+//==================================================================================================
+//! @name Newton 2D Solver Constants
+//! Constants for 2D Newton-Raphson solver (MathSys_Newton2D).
+//==================================================================================================
+
+//! Determinant threshold below which 2x2 Jacobian matrix is considered singular.
+//! When |det(J)| < threshold, falls back to SVD or gradient descent.
+constexpr double THE_NEWTON2D_SINGULAR_DET = 1.0e-25;
+
+//! Squared gradient threshold below which point is considered a critical point.
+//! When |grad|^2 < threshold, Newton iteration is at a stationary point.
+constexpr double THE_NEWTON2D_CRITICAL_GRAD_SQ = 1.0e-60;
+
+//! Maximum step size as fraction of domain size for bounded Newton iterations.
+constexpr double THE_NEWTON2D_MAX_STEP_RATIO = 0.5;
+
+//! Domain extension factor for soft boundary handling.
+//! Solutions slightly outside domain (by this fraction) are allowed if converged.
+constexpr double THE_NEWTON2D_DOMAIN_EXT = 0.01;
+
+//! Stagnation progress ratio - improvement required each iteration to avoid stagnation.
+//! Value of 0.999 means at least 0.1% improvement required.
+constexpr double THE_NEWTON2D_STAGNATION_RATIO = 0.999;
+
+//! Number of iterations without progress before declaring stagnation.
+constexpr int THE_NEWTON2D_STAGNATION_COUNT = 3;
+
+//! Maximum line search backtracking iterations.
+constexpr int THE_NEWTON2D_LINE_SEARCH_MAX = 12;
+
+//! Tolerance relaxation factor for accepting stagnated solutions.
+//! Stagnated solution accepted if |F| < tolerance * factor.
+constexpr double THE_NEWTON2D_STAGNATION_RELAX = 10.0;
+
+//! Function increase threshold triggering line search backtracking.
+//! If f(new) > f(old) * threshold, backtracking is triggered.
+constexpr double THE_NEWTON2D_BACKTRACK_TRIGGER = 1.5;
+
+//! Backtracking acceptance ratio for line search.
+//! Step accepted if f(new) < f(old) * ratio.
+constexpr double THE_NEWTON2D_BACKTRACK_ACCEPT = 1.2;
+
+//! Maximum relaxation factor for solutions at max iterations.
+constexpr double THE_NEWTON2D_MAXITER_RELAX = 10.0;
+
+//! High precision tolerance target (5e-8, better than Precision::Confusion).
+constexpr double THE_HIGH_PRECISION_TOL = 5.0e-8;
+
 //! Configuration for iterative solvers.
 //! Provides common settings for convergence criteria and iteration limits.
 struct Config

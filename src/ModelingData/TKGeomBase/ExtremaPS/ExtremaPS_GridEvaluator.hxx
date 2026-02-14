@@ -188,7 +188,8 @@ private:
 
   //! @brief Scan 2D grid to find candidate cells for extrema.
   //! Uses pre-computed grid point data to avoid redundant calculations.
-  void scanGrid(const gp_Pnt& theP, double theTol, ExtremaPS::SearchMode theMode) const
+  //! @note theTol is intentionally unused - gradient tolerance uses Precision::Confusion() for consistency.
+  void scanGrid(const gp_Pnt& theP, [[maybe_unused]] double theTol, ExtremaPS::SearchMode theMode) const
   {
     myCandidates.Clear();
 
@@ -530,30 +531,25 @@ private:
 
       const Candidate& aCand = myCandidates.Value(anEntry.Idx);
 
-      // Newton from cell center (primary starting point)
-      double aBestRootU    = 0.0;
-      double aBestRootV    = 0.0;
-      double aBestRootDist = std::numeric_limits<double>::max();
-      bool   aConverged    = false;
+      // Newton from cell center
+      double aBestRootU = 0.0;
+      double aBestRootV = 0.0;
+      bool   aConverged = false;
 
-      // Try center first (most likely to converge for interior extrema)
+      // Solve using Newton from cell center
       ExtremaPS_Newton::Result aNewtonRes = ExtremaPS_Newton::Solve(aFunc,
-                                                                    aCand.StartU,
-                                                                    aCand.StartV,
-                                                                    theDomain.UMin,
-                                                                    theDomain.UMax,
-                                                                    theDomain.VMin,
-                                                                    theDomain.VMax,
-                                                                    theTol);
-
+                                                                     aCand.StartU,
+                                                                     aCand.StartV,
+                                                                     theDomain.UMin,
+                                                                     theDomain.UMax,
+                                                                     theDomain.VMin,
+                                                                     theDomain.VMax,
+                                                                     theTol);
       if (aNewtonRes.IsDone)
       {
-        // Don't clamp - Newton already handles soft bounds
-        // This allows solutions slightly outside domain if gradient is near zero
-        aBestRootU    = aNewtonRes.U;
-        aBestRootV    = aNewtonRes.V;
-        aBestRootDist = aFunc.SquareDistance(aBestRootU, aBestRootV);
-        aConverged    = true;
+        aBestRootU = aNewtonRes.U;
+        aBestRootV = aNewtonRes.V;
+        aConverged = true;
       }
 
       // Fallback if no Newton converged: use the best grid corner directly
@@ -579,9 +575,8 @@ private:
           }
         }
 
-        aBestRootU    = myGrid(aBestI, aBestJ).U;
-        aBestRootV    = myGrid(aBestI, aBestJ).V;
-        aBestRootDist = aBestGridDist;
+        aBestRootU = myGrid(aBestI, aBestJ).U;
+        aBestRootV = myGrid(aBestI, aBestJ).V;
 
         // Check if gradient is near zero (valid extremum at grid point)
         // Use Precision::Confusion() as base, NOT theTol which is distance tolerance
@@ -839,43 +834,9 @@ private:
     if (aFNorm > aGradTol * aGradTol)
       return false;
 
-    // Valid solution found
+    // Valid solution found - compute point and distance
     gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
     double aSqDist = theP.SquareDistance(aPt);
-
-    // Quick validation: compare with grid minimum from last scan
-    // Use cached myMinDist from previous scanGrid (O(1) check)
-    if (theMode != ExtremaPS::SearchMode::Max && myMinDist > 0.0)
-    {
-      // If grid minimum was significantly better, we may be in wrong basin
-      // Note: myMinDist is from previous query, so allow some tolerance
-      if (myMinDist < aSqDist * 0.3) // Grid min was ~1.8x closer
-      {
-        return false;
-      }
-    }
-
-    // Validate: check if other cached (U,V) positions give better distance
-    // This catches cases where Newton converged to wrong basin
-    if (theMode != ExtremaPS::SearchMode::Max && myCacheCount > 1)
-    {
-      for (int i = 0; i < myCacheCount; ++i)
-      {
-        int aIdx = (myCacheIndex + THE_CACHE_SIZE - 1 - i) % THE_CACHE_SIZE;
-        if (aIdx == aNearestIdx)
-          continue; // Skip the one we started from
-
-        // Evaluate surface at other cached (U,V)
-        gp_Pnt aOtherPt = theSurface.Value(myCachedSolutions[aIdx].U, myCachedSolutions[aIdx].V);
-        double aOtherDist = theP.SquareDistance(aOtherPt);
-
-        // If another cached position is significantly closer, we're in wrong basin
-        if (aOtherDist < aSqDist * 0.5) // Other point is ~1.4x closer
-        {
-          return false;
-        }
-      }
-    }
 
     // Classify as min or max using second derivative
     double aDFuu, aDFuv, aDFvv;

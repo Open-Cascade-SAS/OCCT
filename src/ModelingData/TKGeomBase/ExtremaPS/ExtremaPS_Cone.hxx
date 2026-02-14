@@ -196,8 +196,10 @@ public:
       }
 
       // On axis but not at apex - bounded domain
+      // Convert axial coordinate aZ to V parameter: V = Axial / cos(SemiAngle)
       const ExtremaPS::Domain2D& theDomain  = *myDomain;
-      double                     aClosestV  = theDomain.V().Clamp(aZ);
+      const double               aVFromZ    = aZ / myCosAngle;
+      double                     aClosestV  = theDomain.V().Clamp(aVFromZ);
       double                     aRadiusAtV = myRefRadius + aClosestV * mySinAngle;
 
       if (aRadiusAtV < theTol && theDomain.V().Contains(myApexV, theTol))
@@ -207,8 +209,9 @@ public:
         return myResult;
       }
 
-      myResult.Status                 = ExtremaPS::Status::InfiniteSolutions;
-      const double aDeltaZ            = aZ - aClosestV;
+      myResult.Status = ExtremaPS::Status::InfiniteSolutions;
+      // Axial delta: point's axial position minus surface point's axial position
+      const double aDeltaZ            = aZ - aClosestV * myCosAngle;
       myResult.InfiniteSquareDistance = aRadiusAtV * aRadiusAtV + aDeltaZ * aDeltaZ;
       return myResult;
     }

@@ -46,6 +46,8 @@ set(OCCT_TKGeomBase_GTests_FILES
   ExtremaPS_Performance_Test.cxx
   ExtremaPS_Torus_Comparison_Test.cxx
   ExtremaPS_Torus_Test.cxx
+  ExtremaPS_EdgeCases_Test.cxx
+  ExtremaPS_Precision_Test.cxx
   ExtremaSS_ConeCone_Test.cxx
   ExtremaSS_ConeSphere_Test.cxx
   ExtremaSS_ConeTorus_Test.cxx
