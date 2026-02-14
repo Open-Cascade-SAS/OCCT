@@ -30,9 +30,9 @@ class ExtremaCC_CircleParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_CircleParabola(const gp_Circ& theCircle, const gp_Parab& theParabola);
+  Standard_EXPORT ExtremaCC_CircleParabola(const gp_Circ& theCircle, const gp_Parab& theParabola);
 
-  ExtremaCC_CircleParabola(const gp_Circ&             theCircle,
+  Standard_EXPORT ExtremaCC_CircleParabola(const gp_Circ&             theCircle,
                            const gp_Parab&            theParabola,
                            const ExtremaCC::Domain2D& theDomain);
 
@@ -41,11 +41,11 @@ public:
   ExtremaCC_CircleParabola(ExtremaCC_CircleParabola&&)                 = default;
   ExtremaCC_CircleParabola& operator=(ExtremaCC_CircleParabola&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

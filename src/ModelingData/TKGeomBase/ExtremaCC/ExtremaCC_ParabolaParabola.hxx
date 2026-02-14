@@ -29,9 +29,9 @@ class ExtremaCC_ParabolaParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_ParabolaParabola(const gp_Parab& theParabola1, const gp_Parab& theParabola2);
+  Standard_EXPORT ExtremaCC_ParabolaParabola(const gp_Parab& theParabola1, const gp_Parab& theParabola2);
 
-  ExtremaCC_ParabolaParabola(const gp_Parab&            theParabola1,
+  Standard_EXPORT ExtremaCC_ParabolaParabola(const gp_Parab&            theParabola1,
                              const gp_Parab&            theParabola2,
                              const ExtremaCC::Domain2D& theDomain);
 
@@ -40,11 +40,11 @@ public:
   ExtremaCC_ParabolaParabola(ExtremaCC_ParabolaParabola&&)                 = default;
   ExtremaCC_ParabolaParabola& operator=(ExtremaCC_ParabolaParabola&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

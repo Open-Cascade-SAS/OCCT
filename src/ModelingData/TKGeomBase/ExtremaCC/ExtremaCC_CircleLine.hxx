@@ -46,15 +46,15 @@ public:
   //! Constructor with circle and line geometries (unbounded).
   //! @param[in] theCircle the circle
   //! @param[in] theLine the line
-  ExtremaCC_CircleLine(const gp_Circ& theCircle, const gp_Lin& theLine);
+  Standard_EXPORT ExtremaCC_CircleLine(const gp_Circ& theCircle, const gp_Lin& theLine);
 
   //! Constructor with circle and line geometries and parameter domains.
   //! @param[in] theCircle the circle
   //! @param[in] theLine the line
   //! @param[in] theDomain parameter domains for both curves
-  ExtremaCC_CircleLine(const gp_Circ&             theCircle,
-                       const gp_Lin&              theLine,
-                       const ExtremaCC::Domain2D& theDomain);
+  Standard_EXPORT ExtremaCC_CircleLine(const gp_Circ&             theCircle,
+                                       const gp_Lin&              theLine,
+                                       const ExtremaCC::Domain2D& theDomain);
 
   //! Copy constructor is deleted.
   ExtremaCC_CircleLine(const ExtremaCC_CircleLine&) = delete;
@@ -72,7 +72,7 @@ public:
   //! @param[in] theTol tolerance for angle/distance comparison
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing the extrema
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
@@ -80,7 +80,7 @@ public:
   //! @param[in] theTol tolerance for angle/distance comparison
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

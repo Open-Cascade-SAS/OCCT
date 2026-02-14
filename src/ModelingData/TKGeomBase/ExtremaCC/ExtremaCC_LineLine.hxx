@@ -90,7 +90,7 @@ public:
   //! @param theTol tolerance for parallel detection and parameter comparison
   //! @param theMode search mode (unused for lines - always returns minimum)
   //! @return const reference to result containing the extremum
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const
   {
@@ -190,7 +190,7 @@ public:
   //! @param theTol tolerance for parallel detection and parameter comparison
   //! @param theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const
   {

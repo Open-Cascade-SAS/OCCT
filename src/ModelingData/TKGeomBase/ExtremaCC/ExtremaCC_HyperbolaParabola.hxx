@@ -30,9 +30,9 @@ class ExtremaCC_HyperbolaParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_HyperbolaParabola(const gp_Hypr& theHyperbola, const gp_Parab& theParabola);
+  Standard_EXPORT ExtremaCC_HyperbolaParabola(const gp_Hypr& theHyperbola, const gp_Parab& theParabola);
 
-  ExtremaCC_HyperbolaParabola(const gp_Hypr&             theHyperbola,
+  Standard_EXPORT ExtremaCC_HyperbolaParabola(const gp_Hypr&             theHyperbola,
                               const gp_Parab&            theParabola,
                               const ExtremaCC::Domain2D& theDomain);
 
@@ -41,11 +41,11 @@ public:
   ExtremaCC_HyperbolaParabola(ExtremaCC_HyperbolaParabola&&)                 = default;
   ExtremaCC_HyperbolaParabola& operator=(ExtremaCC_HyperbolaParabola&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

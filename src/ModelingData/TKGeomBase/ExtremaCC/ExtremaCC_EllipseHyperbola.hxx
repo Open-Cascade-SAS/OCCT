@@ -30,9 +30,9 @@ class ExtremaCC_EllipseHyperbola
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_EllipseHyperbola(const gp_Elips& theEllipse, const gp_Hypr& theHyperbola);
+  Standard_EXPORT ExtremaCC_EllipseHyperbola(const gp_Elips& theEllipse, const gp_Hypr& theHyperbola);
 
-  ExtremaCC_EllipseHyperbola(const gp_Elips&            theEllipse,
+  Standard_EXPORT ExtremaCC_EllipseHyperbola(const gp_Elips&            theEllipse,
                              const gp_Hypr&             theHyperbola,
                              const ExtremaCC::Domain2D& theDomain);
 
@@ -41,11 +41,11 @@ public:
   ExtremaCC_EllipseHyperbola(ExtremaCC_EllipseHyperbola&&)                 = default;
   ExtremaCC_EllipseHyperbola& operator=(ExtremaCC_EllipseHyperbola&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

@@ -40,13 +40,13 @@ public:
   //! Constructor with hyperbola and line geometries (unbounded).
   //! @param[in] theHyperbola the hyperbola
   //! @param[in] theLine the line
-  ExtremaCC_HyperbolaLine(const gp_Hypr& theHyperbola, const gp_Lin& theLine);
+  Standard_EXPORT ExtremaCC_HyperbolaLine(const gp_Hypr& theHyperbola, const gp_Lin& theLine);
 
   //! Constructor with hyperbola and line geometries and parameter domains.
   //! @param[in] theHyperbola the hyperbola
   //! @param[in] theLine the line
   //! @param[in] theDomain parameter domains for both curves
-  ExtremaCC_HyperbolaLine(const gp_Hypr&             theHyperbola,
+  Standard_EXPORT ExtremaCC_HyperbolaLine(const gp_Hypr&             theHyperbola,
                           const gp_Lin&              theLine,
                           const ExtremaCC::Domain2D& theDomain);
 
@@ -66,7 +66,7 @@ public:
   //! @param[in] theTol tolerance for angle/distance comparison
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing the extrema
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
@@ -74,7 +74,7 @@ public:
   //! @param[in] theTol tolerance for angle/distance comparison
   //! @param[in] theMode search mode (MinMax, Min, or Max)
   //! @return const reference to result containing interior + endpoint extrema
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 

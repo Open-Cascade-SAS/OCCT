@@ -30,9 +30,9 @@ class ExtremaCC_EllipseParabola
 public:
   DEFINE_STANDARD_ALLOC
 
-  ExtremaCC_EllipseParabola(const gp_Elips& theEllipse, const gp_Parab& theParabola);
+  Standard_EXPORT ExtremaCC_EllipseParabola(const gp_Elips& theEllipse, const gp_Parab& theParabola);
 
-  ExtremaCC_EllipseParabola(const gp_Elips&            theEllipse,
+  Standard_EXPORT ExtremaCC_EllipseParabola(const gp_Elips&            theEllipse,
                             const gp_Parab&            theParabola,
                             const ExtremaCC::Domain2D& theDomain);
 
@@ -41,11 +41,11 @@ public:
   ExtremaCC_EllipseParabola(ExtremaCC_EllipseParabola&&)                 = default;
   ExtremaCC_EllipseParabola& operator=(ExtremaCC_EllipseParabola&&)      = default;
 
-  [[nodiscard]] const ExtremaCC::Result& Perform(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& Perform(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
-  [[nodiscard]] const ExtremaCC::Result& PerformWithEndpoints(
+  [[nodiscard]] Standard_EXPORT const ExtremaCC::Result& PerformWithEndpoints(
     double                theTol,
     ExtremaCC::SearchMode theMode = ExtremaCC::SearchMode::MinMax) const;
 
