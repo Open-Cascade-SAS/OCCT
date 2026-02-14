@@ -75,11 +75,27 @@ constexpr double THE_CELL_EXPAND_RATIO = 0.1;
 //! Ratio of distance for scaling tolerance in cell search.
 constexpr double THE_DISTANCE_SCALE_RATIO = 0.1;
 
+//==================================================================================================
+//! @name Early Termination and Candidate Processing Constants
+//! Constants controlling candidate filtering, early termination, and iteration limits.
+//==================================================================================================
+
 //! Threshold for skipping max candidates that are clearly worse.
+//! For Max mode: skip if estDist < bestDist * threshold (i.e., 90% of best).
 constexpr double THE_MAX_SKIP_THRESHOLD = 0.9;
 
-//! Threshold for refined distance comparison (slightly less than 1.0).
-constexpr double THE_REFINED_DIST_THRESHOLD = 0.99;
+//! Threshold margin for Min mode early termination.
+//! For Min mode: skip if estDist > bestDist * (1 + margin).
+//! Value of 0.2 means skip candidates 20% worse than current best.
+constexpr double THE_MIN_SKIP_MARGIN = 0.2;
+
+//! Maximum number of candidates to process before stopping.
+//! Limits Newton iterations per grid scan for performance.
+constexpr int THE_MAX_CANDIDATES_TO_PROCESS = 50;
+
+//! Threshold for refined distance comparison.
+//! Grid fallback accepted if refinedDist < currentMin * threshold.
+constexpr double THE_REFINED_DIST_THRESHOLD = 1.0;
 
 //! Relaxation factor for gradient-based zero detection.
 //! Multiplied with tolerance for more robust extremum detection.
@@ -89,23 +105,45 @@ constexpr double THE_GRADIENT_TOL_FACTOR = 100.0;
 //! Multiplier for Newton retry tolerance when initial Newton fails.
 constexpr double THE_NEWTON_RETRY_TOL_FACTOR = 10.0;
 
-//! High precision tolerance target (5e-8, better than Precision::Confusion ~1e-7).
-//! Used for multi-start Newton and two-phase refinement.
-constexpr double THE_HIGH_PRECISION_TOL = 5.0e-8;
+//==================================================================================================
+//! @name Cache and Coherent Scanning Constants
+//! Constants for spatial coherence optimization and trajectory prediction.
+//==================================================================================================
 
 //! Squared threshold for spatial coherence optimization.
 //! Query points within this squared distance use cached solution.
+//! Value of 100.0 corresponds to distance of 10.0 units.
 constexpr double THE_COHERENCE_THRESHOLD_SQ = 100.0;
 
 //! Minimum ratio for trajectory prediction (step magnitude ratio).
+//! Ratios below this indicate irregular step sizes.
 constexpr double THE_TRAJECTORY_MIN_RATIO = 0.5;
 
 //! Maximum ratio for trajectory prediction (step magnitude ratio).
+//! Ratios above this indicate acceleration/deceleration too large.
 constexpr double THE_TRAJECTORY_MAX_RATIO = 2.0;
 
 //! Minimum cosine for trajectory prediction (direction alignment).
 //! Values above this indicate roughly same direction (< ~45 degrees).
 constexpr double THE_TRAJECTORY_MIN_COS = 0.7;
+
+//! Minimum cosine for quadratic extrapolation (high coherence).
+//! Values above this indicate very smooth trajectory (< ~25 degrees).
+constexpr double THE_TRAJECTORY_QUADRATIC_COS = 0.9;
+
+//! Cache size for coherent scanning (number of solutions stored).
+//! Increased from 3 to 5 to enable quadratic extrapolation.
+constexpr int THE_CACHE_SIZE = 5;
+
+//! Sanity factor for cache result validation.
+//! If cache-based Newton result has squared distance > (theTol^2 * factor),
+//! it's rejected as likely converging to wrong local minimum.
+//! Value of 1e6 allows reasonable tolerance range while catching gross errors.
+constexpr double THE_CACHE_SANITY_FACTOR = 1.0e6;
+
+//! Velocity adjustment limit for trajectory prediction.
+//! Limits acceleration factor to prevent overshoot.
+constexpr double THE_VELOCITY_ADJUST_LIMIT = 1.5;
 
 //! Maximum number of Newton iterations for grid optimization.
 constexpr int THE_MAX_GOLDEN_ITERATIONS = 50;

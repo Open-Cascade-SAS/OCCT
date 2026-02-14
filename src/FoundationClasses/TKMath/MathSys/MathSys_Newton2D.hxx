@@ -450,14 +450,38 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
     aNewU = std::max(aExtUMin, std::min(aExtUMax, aNewU));
     aNewV = std::max(aExtVMin, std::min(aExtVMax, aNewV));
 
+    // Step size relative to domain - used for early termination and line search skip
+    const double aStepNormSq = aDU * aDU + aDV * aDV;
+    const double aDomainSizeSq = aDomainU * aDomainU + aDomainV * aDomainV;
+    const double aRelStepSq = aStepNormSq / std::max(aDomainSizeSq, THE_HESSIAN_DEGENERACY_ABS);
+
+    // Early convergence: if step is very small relative to domain, we're converged
+    if (aRelStepSq < THE_NEWTON_STEP_TOL_FACTOR * THE_NEWTON_STEP_TOL_FACTOR)
+    {
+      aRes.FNorm  = std::sqrt(aFNormSq);
+      aRes.Status = Status::OK;
+      return aRes;
+    }
+
+    // Skip line search for small steps - Newton is working well
+    // This avoids expensive Value() calls when not needed
+    const bool aSkipLineSearch = (aRelStepSq < THE_NEWTON2D_SKIP_LINESEARCH_SQ);
+
     // Line search if step increases function value significantly
     double aNewF1, aNewF2;
-    if (theFunc.Value(aNewU, aNewV, aNewF1, aNewF2))
+    if (!aSkipLineSearch && theFunc.Value(aNewU, aNewV, aNewF1, aNewF2))
     {
       double aNewFNormSq = aNewF1 * aNewF1 + aNewF2 * aNewF2;
 
-      // Backtrack if function increased too much
-      if (aNewFNormSq > aFNormSq * THE_NEWTON2D_BACKTRACK_TRIGGER)
+      // Compute directional derivative for Armijo condition: grad_f . d
+      // For f = 0.5*(F1^2 + F2^2), grad_f = [F1, F2] (simplified)
+      // d = [dU, dV], so grad_f . d = F1*dU + F2*dV
+      const double aDirectionalDeriv = aF1 * aDU + aF2 * aDV;
+
+      // Backtrack if function increased too much OR Armijo not satisfied
+      // Armijo: f(x + d) <= f(x) + c1 * grad_f . d
+      const bool aArmijoFailed = (aNewFNormSq > aFNormSq + THE_ARMIJO_C1 * aDirectionalDeriv);
+      if (aNewFNormSq > aFNormSq * THE_NEWTON2D_BACKTRACK_TRIGGER || aArmijoFailed)
       {
         // Use quadratic interpolation for first estimate
         // Model: f(α) ≈ f(0) + f'(0)*α + c*α², where c = (f(1) - f(0) - f'(0))/1
@@ -492,7 +516,9 @@ Newton2DResult Newton2DSymmetric(const Function& theFunc,
           if (theFunc.Value(aTryU, aTryV, aTryF1, aTryF2))
           {
             double aTryFNormSq = aTryF1 * aTryF1 + aTryF2 * aTryF2;
-            if (aTryFNormSq < aFNormSq * THE_NEWTON2D_BACKTRACK_ACCEPT)
+            // Accept if Armijo condition satisfied: f(x + α*d) <= f(x) + c1*α*(grad·d)
+            const double aArmijoThreshold = aFNormSq + THE_ARMIJO_C1 * aAlpha * aDirectionalDeriv;
+            if (aTryFNormSq <= aArmijoThreshold || aTryFNormSq < aFNormSq * THE_NEWTON2D_BACKTRACK_ACCEPT)
             {
               aNewU = aTryU;
               aNewV = aTryV;

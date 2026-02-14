@@ -47,7 +47,8 @@ constexpr double THE_NEWTON2D_MAX_STEP_RATIO = 0.5;
 
 //! Domain extension factor for soft boundary handling.
 //! Solutions slightly outside domain (by this fraction) are allowed if converged.
-constexpr double THE_NEWTON2D_DOMAIN_EXT = 0.01;
+//! Reduced to 1e-4 to closely match old algorithm behavior.
+constexpr double THE_NEWTON2D_DOMAIN_EXT = 1.0e-4;
 
 //! Stagnation progress ratio - improvement required each iteration to avoid stagnation.
 //! Value of 0.999 means at least 0.1% improvement required.
@@ -57,7 +58,11 @@ constexpr double THE_NEWTON2D_STAGNATION_RATIO = 0.999;
 constexpr int THE_NEWTON2D_STAGNATION_COUNT = 3;
 
 //! Maximum line search backtracking iterations.
-constexpr int THE_NEWTON2D_LINE_SEARCH_MAX = 12;
+constexpr int THE_NEWTON2D_LINE_SEARCH_MAX = 8;
+
+//! Relative step threshold below which line search is skipped.
+//! If step^2 / domain^2 < threshold, Newton is converging well.
+constexpr double THE_NEWTON2D_SKIP_LINESEARCH_SQ = 0.01;
 
 //! Tolerance relaxation factor for accepting stagnated solutions.
 //! Stagnated solution accepted if |F| < tolerance * factor.
@@ -74,8 +79,27 @@ constexpr double THE_NEWTON2D_BACKTRACK_ACCEPT = 1.2;
 //! Maximum relaxation factor for solutions at max iterations.
 constexpr double THE_NEWTON2D_MAXITER_RELAX = 10.0;
 
-//! High precision tolerance target (5e-8, better than Precision::Confusion).
-constexpr double THE_HIGH_PRECISION_TOL = 5.0e-8;
+//==================================================================================================
+//! @name Hessian Classification Constants
+//! Constants for extremum classification using second derivatives.
+//==================================================================================================
+
+//! Relative tolerance for Hessian degeneracy detection.
+//! If |det(H)| < threshold * |H_ii| * |H_jj|, Hessian is considered degenerate.
+constexpr double THE_HESSIAN_DEGENERACY_REL = 1.0e-8;
+
+//! Absolute tolerance for Hessian degeneracy detection.
+//! Minimum threshold for determinant comparison.
+constexpr double THE_HESSIAN_DEGENERACY_ABS = 1.0e-20;
+
+//==================================================================================================
+//! @name Line Search Constants
+//! Constants for line search acceptance conditions.
+//==================================================================================================
+
+//! Armijo condition constant (sufficient decrease).
+//! Step accepted if: f(x + alpha*d) <= f(x) + c1 * alpha * grad_f . d
+constexpr double THE_ARMIJO_C1 = 1.0e-4;
 
 //! Configuration for iterative solvers.
 //! Provides common settings for convergence criteria and iteration limits.

@@ -20,6 +20,7 @@
 #include <GeomGridEval.hxx>
 #include <gp_Vec.hxx>
 #include <math_Vector.hxx>
+#include <MathUtils_Config.hxx>
 #include <NCollection_Array2.hxx>
 #include <NCollection_Vector.hxx>
 #include <Precision.hxx>
@@ -367,12 +368,12 @@ private:
       return;
 
     // Find nearest cached solution
-    int    aNearestIdx  = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+    int    aNearestIdx  = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 1) % ExtremaPS::THE_CACHE_SIZE;
     double aNearestDist = theP.SquareDistance(myCachedSolutions[aNearestIdx].QueryPoint);
 
     for (int i = 1; i < myCacheCount; ++i)
     {
-      int    aIdx  = (myCacheIndex + THE_CACHE_SIZE - 1 - i) % THE_CACHE_SIZE;
+      int    aIdx  = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 1 - i) % ExtremaPS::THE_CACHE_SIZE;
       double aDist = theP.SquareDistance(myCachedSolutions[aIdx].QueryPoint);
       if (aDist < aNearestDist)
       {
@@ -394,9 +395,9 @@ private:
     if (myCacheCount >= 3)
     {
       // Get 3 most recent points for trajectory prediction
-      int aIdx2 = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
-      int aIdx1 = (myCacheIndex + THE_CACHE_SIZE - 2) % THE_CACHE_SIZE;
-      int aIdx0 = (myCacheIndex + THE_CACHE_SIZE - 3) % THE_CACHE_SIZE;
+      int aIdx2 = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 1) % ExtremaPS::THE_CACHE_SIZE;
+      int aIdx1 = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 2) % ExtremaPS::THE_CACHE_SIZE;
+      int aIdx0 = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 3) % ExtremaPS::THE_CACHE_SIZE;
 
       const CachedSolution& aS0 = myCachedSolutions[aIdx0];
       const CachedSolution& aS1 = myCachedSolutions[aIdx1];
@@ -416,50 +417,118 @@ private:
           double aCos = aV01.Dot(aV12) / (aMag01 * aMag12);
           if (aCos > ExtremaPS::THE_TRAJECTORY_MIN_COS)
           {
-            // Linear extrapolation
-            double aDeltaU = aS2.U - aS1.U;
-            double aDeltaV = aS2.V - aS1.V;
-            aStartU        = aS2.U + aDeltaU;
-            aStartV        = aS2.V + aDeltaV;
-            aStartU        = std::max(theDomain.UMin, std::min(theDomain.UMax, aStartU));
-            aStartV        = std::max(theDomain.VMin, std::min(theDomain.VMax, aStartV));
+            // Use quadratic extrapolation if 4+ points available and trajectory is smooth
+            // Quadratic: U_next = 3*U2 - 3*U1 + U0 (includes velocity + acceleration)
+            if (myCacheCount >= 4 && aCos > ExtremaPS::THE_TRAJECTORY_QUADRATIC_COS)
+            {
+              aStartU = 3.0 * aS2.U - 3.0 * aS1.U + aS0.U;
+              aStartV = 3.0 * aS2.V - 3.0 * aS1.V + aS0.V;
+            }
+            else
+            {
+              // Linear extrapolation for 3 points or lower coherence
+              double aDeltaU = aS2.U - aS1.U;
+              double aDeltaV = aS2.V - aS1.V;
+              aStartU        = aS2.U + aDeltaU;
+              aStartV        = aS2.V + aDeltaV;
+            }
+            aStartU = std::max(theDomain.UMin, std::min(theDomain.UMax, aStartU));
+            aStartV = std::max(theDomain.VMin, std::min(theDomain.VMax, aStartV));
           }
         }
       }
     }
 
-    // Find the grid cell containing the cached solution
-    const int aNbU   = myGrid.UpperRow() - myGrid.LowerRow() + 1;
-    const int aNbV   = myGrid.UpperCol() - myGrid.LowerCol() + 1;
-    int       aCellI = 0;
-    int       aCellJ = 0;
+    // Find the grid cell containing the cached solution using binary search O(log n)
+    const int aNbU = myGrid.UpperRow() - myGrid.LowerRow() + 1;
+    const int aNbV = myGrid.UpperCol() - myGrid.LowerCol() + 1;
 
-    // Binary search for cell
-    for (int i = 0; i < aNbU - 1; ++i)
+    // Binary search for U cell
+    int aCellI = 0;
     {
-      if (aStartU >= myGrid(i, 0).U && aStartU <= myGrid(i + 1, 0).U)
+      int aLo = 0, aHi = aNbU - 2;
+      while (aLo <= aHi)
       {
-        aCellI = i;
-        break;
+        int aMid = (aLo + aHi) / 2;
+        if (aStartU < myGrid(aMid, 0).U)
+          aHi = aMid - 1;
+        else if (aStartU > myGrid(aMid + 1, 0).U)
+          aLo = aMid + 1;
+        else
+        {
+          aCellI = aMid;
+          break;
+        }
       }
-    }
-    for (int j = 0; j < aNbV - 1; ++j)
-    {
-      if (aStartV >= myGrid(0, j).V && aStartV <= myGrid(0, j + 1).V)
-      {
-        aCellJ = j;
-        break;
-      }
+      if (aLo > aHi)
+        aCellI = std::max(0, std::min(aNbU - 2, aLo));
     }
 
-    // Add as candidate with high priority (low GradMag)
+    // Binary search for V cell
+    int aCellJ = 0;
+    {
+      int aLo = 0, aHi = aNbV - 2;
+      while (aLo <= aHi)
+      {
+        int aMid = (aLo + aHi) / 2;
+        if (aStartV < myGrid(0, aMid).V)
+          aHi = aMid - 1;
+        else if (aStartV > myGrid(0, aMid + 1).V)
+          aLo = aMid + 1;
+        else
+        {
+          aCellJ = aMid;
+          break;
+        }
+      }
+      if (aLo > aHi)
+        aCellJ = std::max(0, std::min(aNbV - 2, aLo));
+    }
+
+    // Compute proper estimates from grid cell (like regular grid candidates)
+    // This ensures cache candidate competes fairly with grid candidates
+    // (aNbU, aNbV already defined above for binary search)
+
+    // Ensure cell indices are valid for data access
+    const int aDataI = std::max(0, std::min(aNbU - 2, aCellI));
+    const int aDataJ = std::max(0, std::min(aNbV - 2, aCellJ));
+
+    // Get grid data at cell corners
+    const GridPointData& aD00 = myGridData(aDataI, aDataJ);
+    const GridPointData& aD10 = myGridData(aDataI + 1, aDataJ);
+    const GridPointData& aD01 = myGridData(aDataI, aDataJ + 1);
+    const GridPointData& aD11 = myGridData(aDataI + 1, aDataJ + 1);
+
+    // Compute min distance from cell corners (proper estimate)
+    double aMinDist = aD00.Dist;
+    if (aD10.Dist < aMinDist)
+      aMinDist = aD10.Dist;
+    if (aD01.Dist < aMinDist)
+      aMinDist = aD01.Dist;
+    if (aD11.Dist < aMinDist)
+      aMinDist = aD11.Dist;
+
+    // Compute min gradient magnitude from cell corners
+    const double aGrad00 = aD00.Fu * aD00.Fu + aD00.Fv * aD00.Fv;
+    const double aGrad10 = aD10.Fu * aD10.Fu + aD10.Fv * aD10.Fv;
+    const double aGrad01 = aD01.Fu * aD01.Fu + aD01.Fv * aD01.Fv;
+    const double aGrad11 = aD11.Fu * aD11.Fu + aD11.Fv * aD11.Fv;
+    double       aMinGradMag = aGrad00;
+    if (aGrad10 < aMinGradMag)
+      aMinGradMag = aGrad10;
+    if (aGrad01 < aMinGradMag)
+      aMinGradMag = aGrad01;
+    if (aGrad11 < aMinGradMag)
+      aMinGradMag = aGrad11;
+
+    // Add candidate with proper estimates (trajectory-predicted starting point)
     Candidate aCand;
     aCand.IdxU    = aCellI;
     aCand.IdxV    = aCellJ;
     aCand.StartU  = aStartU;
     aCand.StartV  = aStartV;
-    aCand.EstDist = aNearestDist; // Use distance to cached query point as estimate
-    aCand.GradMag = 0.0;          // High priority
+    aCand.EstDist = aMinDist;    // Actual distance estimate from grid
+    aCand.GradMag = aMinGradMag; // Actual gradient magnitude from grid
     myCandidates.Append(aCand);
   }
 
@@ -514,16 +583,17 @@ private:
                            ? std::numeric_limits<double>::max()
                            : -std::numeric_limits<double>::max();
 
-    for (int s = 0; s < mySortedEntries.Length(); ++s)
+    const int aMaxCandidates = std::min(mySortedEntries.Length(), ExtremaPS::THE_MAX_CANDIDATES_TO_PROCESS);
+    for (int s = 0; s < aMaxCandidates; ++s)
     {
       const SortEntry& anEntry   = mySortedEntries.Value(s);
       double           anEstDist = anEntry.Dist;
 
       // Early termination: skip candidates that are clearly worse than the best found.
-      // For Min mode: skip if estimated distance > best * (2.0 - threshold), i.e., ~1.1x best.
-      // For Max mode: skip if estimated distance < best * threshold, i.e., ~0.9x best.
-      constexpr double aMinSkipThreshold = 2.0 - ExtremaPS::THE_MAX_SKIP_THRESHOLD;
-      if (theMode == ExtremaPS::SearchMode::Min && anEstDist > aBestSqDist * aMinSkipThreshold)
+      // For Min mode: skip if estimated distance > best * (1 + margin).
+      // For Max mode: skip if estimated distance < best * threshold.
+      if (theMode == ExtremaPS::SearchMode::Min
+          && anEstDist > aBestSqDist * (1.0 + ExtremaPS::THE_MIN_SKIP_MARGIN))
         break;
       if (theMode == ExtremaPS::SearchMode::Max
           && anEstDist < aBestSqDist * ExtremaPS::THE_MAX_SKIP_THRESHOLD)
@@ -595,12 +665,15 @@ private:
       if (!aConverged)
         continue;
 
-      // Check for duplicate
+      gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
+      double aSqDist = theP.SquareDistance(aPt);
+
+      // Check for duplicate using spatial distance (not parameter space)
       bool aSkip = false;
       for (int r = 0; r < myFoundRoots.Length(); ++r)
       {
-        if (std::abs(aRootU - myFoundRoots.Value(r).first) < theTol
-            && std::abs(aRootV - myFoundRoots.Value(r).second) < theTol)
+        gp_Pnt aPrevPt = theSurface.Value(myFoundRoots.Value(r).first, myFoundRoots.Value(r).second);
+        if (aPt.SquareDistance(aPrevPt) < theTol * theTol)
         {
           aSkip = true;
           break;
@@ -609,13 +682,21 @@ private:
       if (aSkip)
         continue;
 
-      gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
-      double aSqDist = theP.SquareDistance(aPt);
-
-      // Classify as min or max using second derivative
+      // Classify as min or max using second derivative with degeneracy check
       double aFu, aFv, aDFuu, aDFuv, aDFvv;
       aFunc.ValueAndJacobian(aRootU, aRootV, aFu, aFv, aDFuu, aDFuv, aDFvv);
-      bool aIsMin = (aDFuu > 0.0 && aDFuu * aDFvv - aDFuv * aDFuv > 0.0);
+
+      // Compute Hessian determinant and check for degeneracy
+      const double aDet = aDFuu * aDFvv - aDFuv * aDFuv;
+      const double aHessianScale = std::max(std::abs(aDFuu) * std::abs(aDFvv),
+                                            MathUtils::THE_HESSIAN_DEGENERACY_ABS);
+      const bool aIsDegenerate = std::abs(aDet) < MathUtils::THE_HESSIAN_DEGENERACY_REL * aHessianScale;
+
+      // Skip degenerate critical points (saddles or flat regions)
+      if (aIsDegenerate || aDet < 0.0)
+        continue;
+
+      bool aIsMin = (aDFuu > 0.0 && aDet > 0.0);
 
       ExtremaPS::ExtremumResult anExt;
       anExt.U              = aRootU;
@@ -744,12 +825,12 @@ private:
       return false;
 
     // Find nearest cached solution (not just most recent)
-    int    aNearestIdx  = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE;
+    int    aNearestIdx  = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 1) % ExtremaPS::THE_CACHE_SIZE;
     double aNearestDist = theP.SquareDistance(myCachedSolutions[aNearestIdx].QueryPoint);
 
     for (int i = 1; i < myCacheCount; ++i)
     {
-      int    aIdx  = (myCacheIndex + THE_CACHE_SIZE - 1 - i) % THE_CACHE_SIZE;
+      int    aIdx  = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 1 - i) % ExtremaPS::THE_CACHE_SIZE;
       double aDist = theP.SquareDistance(myCachedSolutions[aIdx].QueryPoint);
       if (aDist < aNearestDist)
       {
@@ -770,9 +851,9 @@ private:
     if (myCacheCount >= 3)
     {
       // Get 3 most recent points (in order: oldest, middle, newest)
-      int aIdx2 = (myCacheIndex + THE_CACHE_SIZE - 1) % THE_CACHE_SIZE; // newest
-      int aIdx1 = (myCacheIndex + THE_CACHE_SIZE - 2) % THE_CACHE_SIZE; // middle
-      int aIdx0 = (myCacheIndex + THE_CACHE_SIZE - 3) % THE_CACHE_SIZE; // oldest
+      int aIdx2 = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 1) % ExtremaPS::THE_CACHE_SIZE; // newest
+      int aIdx1 = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 2) % ExtremaPS::THE_CACHE_SIZE; // middle
+      int aIdx0 = (myCacheIndex + ExtremaPS::THE_CACHE_SIZE - 3) % ExtremaPS::THE_CACHE_SIZE; // oldest
 
       const CachedSolution& aS0 = myCachedSolutions[aIdx0];
       const CachedSolution& aS1 = myCachedSolutions[aIdx1];
@@ -795,11 +876,21 @@ private:
           double aCos = aV01.Dot(aV12) / (aMag01 * aMag12);
           if (aCos > ExtremaPS::THE_TRAJECTORY_MIN_COS) // Roughly same direction (< ~45 degrees)
           {
-            // Linear extrapolation: predict (U, V) based on previous steps
-            double aDeltaU = aS2.U - aS1.U;
-            double aDeltaV = aS2.V - aS1.V;
-            aStartU        = aS2.U + aDeltaU;
-            aStartV        = aS2.V + aDeltaV;
+            // Use quadratic extrapolation if 4+ points available and trajectory is smooth
+            // Quadratic: U_next = 3*U2 - 3*U1 + U0 (includes velocity + acceleration)
+            if (myCacheCount >= 4 && aCos > ExtremaPS::THE_TRAJECTORY_QUADRATIC_COS)
+            {
+              aStartU = 3.0 * aS2.U - 3.0 * aS1.U + aS0.U;
+              aStartV = 3.0 * aS2.V - 3.0 * aS1.V + aS0.V;
+            }
+            else
+            {
+              // Linear extrapolation for 3 points or lower coherence
+              double aDeltaU = aS2.U - aS1.U;
+              double aDeltaV = aS2.V - aS1.V;
+              aStartU        = aS2.U + aDeltaU;
+              aStartV        = aS2.V + aDeltaV;
+            }
             // Clamp to domain
             aStartU = std::max(theDomain.UMin, std::min(theDomain.UMax, aStartU));
             aStartV = std::max(theDomain.VMin, std::min(theDomain.VMax, aStartV));
@@ -838,16 +929,37 @@ private:
     gp_Pnt aPt     = theSurface.Value(aRootU, aRootV);
     double aSqDist = theP.SquareDistance(aPt);
 
-    // Classify as min or max using second derivative
+    // Classify as min or max using second derivative with degeneracy check
     double aDFuu, aDFuv, aDFvv;
     aFunc.ValueAndJacobian(aRootU, aRootV, aFu, aFv, aDFuu, aDFuv, aDFvv);
-    bool aIsMin = (aDFuu > 0.0 && aDFuu * aDFvv - aDFuv * aDFuv > 0.0);
+
+    // Compute Hessian determinant and check for degeneracy
+    const double aDet = aDFuu * aDFvv - aDFuv * aDFuv;
+    const double aHessianScale = std::max(std::abs(aDFuu) * std::abs(aDFvv),
+                                          MathUtils::THE_HESSIAN_DEGENERACY_ABS);
+    const bool aIsDegenerate = std::abs(aDet) < MathUtils::THE_HESSIAN_DEGENERACY_REL * aHessianScale;
+
+    // Reject degenerate critical points (saddles or flat regions)
+    if (aIsDegenerate || aDet < 0.0)
+      return false;
+
+    bool aIsMin = (aDFuu > 0.0 && aDet > 0.0);
 
     // Filter by search mode
     if (theMode == ExtremaPS::SearchMode::Min && !aIsMin)
       return false;
     if (theMode == ExtremaPS::SearchMode::Max && aIsMin)
       return false;
+
+    // CRITICAL VALIDATION: Check if cache result is reasonable.
+    // For coherent scanning (sequential nearby points), if trajectory prediction
+    // is correct, the result should be close to the surface. If Newton converged
+    // to a far local minimum, fall back to grid search for the global minimum.
+    // Use tolerance squared as sanity threshold - solutions with significantly
+    // larger distance indicate wrong convergence basin.
+    const double aSanityThresholdSq = theTol * theTol * ExtremaPS::THE_CACHE_SANITY_FACTOR;
+    if (theMode == ExtremaPS::SearchMode::Min && aSqDist > aSanityThresholdSq)
+      return false; // Cache result too far - likely wrong local minimum
 
     ExtremaPS::ExtremumResult anExt;
     anExt.U              = aRootU;
@@ -870,8 +982,8 @@ private:
     myCachedSolutions[myCacheIndex].QueryPoint = theP;
     myCachedSolutions[myCacheIndex].U          = theU;
     myCachedSolutions[myCacheIndex].V          = theV;
-    myCacheIndex                               = (myCacheIndex + 1) % THE_CACHE_SIZE;
-    if (myCacheCount < THE_CACHE_SIZE)
+    myCacheIndex                               = (myCacheIndex + 1) % ExtremaPS::THE_CACHE_SIZE;
+    if (myCacheCount < ExtremaPS::THE_CACHE_SIZE)
       ++myCacheCount;
   }
 
@@ -903,8 +1015,7 @@ private:
   mutable double myMaxDist = 0.0;        //!< Global maximum squared distance
 
   // Cached solutions for spatial coherence optimization (ring buffer)
-  static constexpr int THE_CACHE_SIZE = 3;
-
+  // Uses centralized constant from ExtremaPS.hxx
   struct CachedSolution
   {
     gp_Pnt QueryPoint;
@@ -912,9 +1023,9 @@ private:
     double V = 0.0;
   };
 
-  mutable CachedSolution myCachedSolutions[THE_CACHE_SIZE]; //!< Ring buffer of cached solutions
-  mutable int            myCacheCount = 0;                  //!< Number of valid entries (0 to 3)
-  mutable int            myCacheIndex = 0;                  //!< Next write index (circular)
+  mutable CachedSolution myCachedSolutions[ExtremaPS::THE_CACHE_SIZE]; //!< Ring buffer of cached solutions
+  mutable int            myCacheCount = 0;                             //!< Number of valid entries
+  mutable int            myCacheIndex = 0;                             //!< Next write index (circular)
 };
 
 #endif // _ExtremaPS_GridEvaluator_HeaderFile
