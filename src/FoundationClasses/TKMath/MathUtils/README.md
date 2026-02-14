@@ -73,15 +73,21 @@ auto result2 = MathRoot::Brent(func, 0.0, 2.0);
 ### Status Enum
 ```cpp
 enum class Status {
-  OK,           // Success
-  Failed,       // Generic failure
-  MaxIter,      // Maximum iterations reached
-  NoConvergence // Algorithm did not converge
+  OK,
+  NotConverged,
+  MaxIterations,
+  NumericalError,
+  InvalidInput,
+  InfiniteSolutions,
+  NoSolution,
+  NotPositiveDefinite,
+  Singular,
+  NonDescentDirection
 };
 ```
 
-Note: specialized `MathSys` 2D/3D/4D Newton solvers use `MathSys::NewtonStatus`
-from `MathSys_NewtonTypes.hxx` rather than `MathUtils::Status`.
+Note: specialized `MathSys` 2D/3D/4D Newton solvers also use `MathUtils::Status`
+via `MathSys_NewtonTypes.hxx`.
 
 ### Result Types
 - `ScalarResult` - For 1D root finding results

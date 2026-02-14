@@ -58,7 +58,7 @@ inline bool IsBoundsValid4D(const NewtonBoundsN<4>& theBounds)
 //! Check that NewtonOptions fields are positive and valid.
 inline bool IsOptionsValid4D(const NewtonOptions& theOptions)
 {
-  return theOptions.ResidualTol > 0.0 && theOptions.StepTolRel > 0.0 && theOptions.MaxIterations > 0
+  return theOptions.FTolerance > 0.0 && theOptions.XTolerance > 0.0 && theOptions.MaxIterations > 0
          && theOptions.MaxStepRatio > 0.0 && theOptions.SoftBoundsExtension >= 0.0;
 }
 
@@ -203,24 +203,24 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
 
   if (!detail::IsOptionsValid4D(theOptions) || !detail::IsBoundsValid4D(theBounds))
   {
-    aRes.Status = NewtonStatus::InvalidInput;
+    aRes.Status = MathUtils::Status::InvalidInput;
     return aRes;
   }
 
   detail::Clamp4D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aTolSq   = theOptions.ResidualTol * theOptions.ResidualTol;
+  const double aTolSq   = theOptions.FTolerance * theOptions.FTolerance;
   const double aMaxStep = theOptions.MaxStepRatio * detail::MaxDomainSize4D(theBounds);
 
-  for (size_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
+  for (int anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
-    aRes.NbIter = anIter + 1;
+    aRes.NbIterations = static_cast<size_t>(anIter + 1);
 
     double aF[4];
     double aJ[4][4];
     if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aRes.X[3], aF, aJ))
     {
-      aRes.Status = NewtonStatus::NumericalError;
+      aRes.Status = MathUtils::Status::NumericalError;
       return aRes;
     }
 
@@ -229,7 +229,7 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
     aRes.ResidualNorm     = std::sqrt(aFNormSq);
     if (aFNormSq <= aTolSq)
     {
-      aRes.Status = NewtonStatus::Converged;
+      aRes.Status = MathUtils::Status::OK;
       return aRes;
     }
 
@@ -251,7 +251,7 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
         aGrad[0] * aGrad[0] + aGrad[1] * aGrad[1] + aGrad[2] * aGrad[2] + aGrad[3] * aGrad[3];
       if (aGradSq < 1.0e-60)
       {
-        aRes.Status = NewtonStatus::SingularJacobian;
+        aRes.Status = MathUtils::Status::Singular;
         return aRes;
       }
 
@@ -292,9 +292,9 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
       1.0,
       std::max(std::abs(aRes.X[0]),
                std::max(std::abs(aRes.X[1]), std::max(std::abs(aRes.X[2]), std::abs(aRes.X[3])))));
-    if (aRes.StepNorm <= theOptions.StepTolRel * aScaleRef)
+    if (aRes.StepNorm <= theOptions.XTolerance * aScaleRef)
     {
-      aRes.Status = NewtonStatus::MaxIterations;
+      aRes.Status = MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -304,13 +304,13 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
   double aJ[4][4];
   if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aRes.X[3], aF, aJ))
   {
-    aRes.Status = NewtonStatus::NumericalError;
+    aRes.Status = MathUtils::Status::NumericalError;
     return aRes;
   }
 
   aRes.ResidualNorm = std::sqrt(aF[0] * aF[0] + aF[1] * aF[1] + aF[2] * aF[2] + aF[3] * aF[3]);
-  aRes.Status       = (aRes.ResidualNorm <= theOptions.ResidualTol) ? NewtonStatus::Converged
-                                                                    : NewtonStatus::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                    : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

@@ -41,7 +41,7 @@ constexpr double THE_ARMIJO_C1        = 1.0e-4;
 //! Check that NewtonOptions fields are positive and valid.
 inline bool IsOptionsValid(const NewtonOptions& theOptions)
 {
-  return theOptions.ResidualTol > 0.0 && theOptions.StepTolRel > 0.0 && theOptions.MaxIterations > 0
+  return theOptions.FTolerance > 0.0 && theOptions.XTolerance > 0.0 && theOptions.MaxIterations > 0
          && theOptions.MaxStepRatio > 0.0 && theOptions.SoftBoundsExtension >= 0.0;
 }
 
@@ -180,23 +180,23 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
 
   if (!detail::IsOptionsValid(theOptions) || !detail::IsBoundsValid2D(theBounds))
   {
-    aRes.Status = NewtonStatus::InvalidInput;
+    aRes.Status = MathUtils::Status::InvalidInput;
     return aRes;
   }
 
   detail::Clamp2D(aRes.X, theBounds, false, 0.0);
 
-  const double aTolSq   = theOptions.ResidualTol * theOptions.ResidualTol;
+  const double aTolSq   = theOptions.FTolerance * theOptions.FTolerance;
   const double aMaxStep = theOptions.MaxStepRatio * detail::MaxDomainSize2D(theBounds);
 
-  for (size_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
+  for (int anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
-    aRes.NbIter = anIter + 1;
+    aRes.NbIterations = static_cast<size_t>(anIter + 1);
 
     double aF1, aF2, aJ11, aJ12, aJ21, aJ22;
     if (!theFunc.ValueAndJacobian(aRes.X[0], aRes.X[1], aF1, aF2, aJ11, aJ12, aJ21, aJ22))
     {
-      aRes.Status = NewtonStatus::NumericalError;
+      aRes.Status = MathUtils::Status::NumericalError;
       return aRes;
     }
 
@@ -205,7 +205,7 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
 
     if (aFNormSq <= aTolSq)
     {
-      aRes.Status = NewtonStatus::Converged;
+      aRes.Status = MathUtils::Status::OK;
       return aRes;
     }
 
@@ -220,7 +220,7 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
       const double aGradSq = aGradU * aGradU + aGradV * aGradV;
       if (aGradSq < detail::THE_CRITICAL_GRAD_SQ)
       {
-        aRes.Status = NewtonStatus::SingularJacobian;
+        aRes.Status = MathUtils::Status::Singular;
         return aRes;
       }
 
@@ -252,9 +252,9 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
     aRes.X        = aNewX;
 
     const double aScaleRef = std::max(1.0, std::max(std::abs(aRes.X[0]), std::abs(aRes.X[1])));
-    if (aRes.StepNorm <= theOptions.StepTolRel * aScaleRef)
+    if (aRes.StepNorm <= theOptions.XTolerance * aScaleRef)
     {
-      aRes.Status = NewtonStatus::MaxIterations;
+      aRes.Status = MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -262,13 +262,13 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
   double aF1, aF2, aJ11, aJ12, aJ21, aJ22;
   if (!theFunc.ValueAndJacobian(aRes.X[0], aRes.X[1], aF1, aF2, aJ11, aJ12, aJ21, aJ22))
   {
-    aRes.Status = NewtonStatus::NumericalError;
+    aRes.Status = MathUtils::Status::NumericalError;
     return aRes;
   }
 
   aRes.ResidualNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
-  aRes.Status       = (aRes.ResidualNorm <= theOptions.ResidualTol) ? NewtonStatus::Converged
-                                                                    : NewtonStatus::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                    : MathUtils::Status::MaxIterations;
   return aRes;
 }
 
@@ -290,23 +290,23 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
 
   if (!detail::IsOptionsValid(theOptions) || !detail::IsBoundsValid2D(theBounds))
   {
-    aRes.Status = NewtonStatus::InvalidInput;
+    aRes.Status = MathUtils::Status::InvalidInput;
     return aRes;
   }
 
   detail::Clamp2D(aRes.X, theBounds, theOptions.AllowSoftBounds, theOptions.SoftBoundsExtension);
 
-  const double aTolSq   = theOptions.ResidualTol * theOptions.ResidualTol;
+  const double aTolSq   = theOptions.FTolerance * theOptions.FTolerance;
   const double aMaxStep = theOptions.MaxStepRatio * detail::MaxDomainSize2D(theBounds);
 
-  for (size_t anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
+  for (int anIter = 0; anIter < theOptions.MaxIterations; ++anIter)
   {
-    aRes.NbIter = anIter + 1;
+    aRes.NbIterations = static_cast<size_t>(anIter + 1);
 
     double aF1, aF2, aJ11, aJ12, aJ22;
     if (!theFunc.ValueAndJacobian(aRes.X[0], aRes.X[1], aF1, aF2, aJ11, aJ12, aJ22))
     {
-      aRes.Status = NewtonStatus::NumericalError;
+      aRes.Status = MathUtils::Status::NumericalError;
       return aRes;
     }
 
@@ -315,7 +315,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
 
     if (aFNormSq <= aTolSq)
     {
-      aRes.Status = NewtonStatus::Converged;
+      aRes.Status = MathUtils::Status::OK;
       return aRes;
     }
 
@@ -332,7 +332,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
         const double aGradSq = aGradU * aGradU + aGradV * aGradV;
         if (aGradSq < detail::THE_CRITICAL_GRAD_SQ)
         {
-          aRes.Status = NewtonStatus::SingularJacobian;
+          aRes.Status = MathUtils::Status::Singular;
           return aRes;
         }
 
@@ -368,7 +368,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
     {
       if (aDirDeriv >= 0.0)
       {
-        aRes.Status = NewtonStatus::NonDescentDirection;
+        aRes.Status = MathUtils::Status::NonDescentDirection;
         return aRes;
       }
 
@@ -407,7 +407,7 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
 
       if (!isAccepted)
       {
-        aRes.Status = NewtonStatus::NonDescentDirection;
+        aRes.Status = MathUtils::Status::NonDescentDirection;
         return aRes;
       }
     }
@@ -431,18 +431,18 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
     }
 
     const double aScaleRef = std::max(1.0, std::max(std::abs(aRes.X[0]), std::abs(aRes.X[1])));
-    if (aRes.StepNorm <= theOptions.StepTolRel * aScaleRef)
+    if (aRes.StepNorm <= theOptions.XTolerance * aScaleRef)
     {
       double aCheckF1, aCheckF2;
       if (!theFunc.Value(aRes.X[0], aRes.X[1], aCheckF1, aCheckF2))
       {
-        aRes.Status = NewtonStatus::NumericalError;
+        aRes.Status = MathUtils::Status::NumericalError;
         return aRes;
       }
 
       aRes.ResidualNorm = std::sqrt(aCheckF1 * aCheckF1 + aCheckF2 * aCheckF2);
-      aRes.Status       = (aRes.ResidualNorm <= theOptions.ResidualTol) ? NewtonStatus::Converged
-                                                                        : NewtonStatus::MaxIterations;
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                        : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
@@ -450,13 +450,13 @@ NewtonResultN<2> Solve2DSymmetric(const Function&              theFunc,
   double aF1, aF2;
   if (!theFunc.Value(aRes.X[0], aRes.X[1], aF1, aF2))
   {
-    aRes.Status = NewtonStatus::NumericalError;
+    aRes.Status = MathUtils::Status::NumericalError;
     return aRes;
   }
 
   aRes.ResidualNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
-  aRes.Status       = (aRes.ResidualNorm <= theOptions.ResidualTol) ? NewtonStatus::Converged
-                                                                    : NewtonStatus::MaxIterations;
+  aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                    : MathUtils::Status::MaxIterations;
   return aRes;
 }
 

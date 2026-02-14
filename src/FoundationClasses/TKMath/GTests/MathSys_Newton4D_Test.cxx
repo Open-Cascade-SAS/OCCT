@@ -59,7 +59,7 @@ TEST_F(MathSys_Newton4DTest, Solve4D_LinearSystem)
   aBounds.HasBounds = false;
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<4> aResult =
     MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
@@ -96,7 +96,7 @@ TEST_F(MathSys_Newton4DTest, Solve4D_Bounded)
   aBounds.Max = {10.0, 10.0, 10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<4> aResult =
     MathSys::Solve4D(aFunc, {9.0, 8.0, 7.0, 6.0}, aBounds, aOptions);
@@ -132,12 +132,12 @@ TEST_F(MathSys_Newton4DTest, Solve4D_InvalidInput)
   aBounds.Max = {0.0, 1.0, 1.0, 1.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<4> aResult =
     MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
 
-  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::InvalidInput);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
   EXPECT_FALSE(aResult.IsDone());
 }
 
@@ -175,7 +175,7 @@ TEST_F(MathSys_Newton4DTest, SolveSurfaceSurfaceExtrema4D_Smoke)
   aBounds.Max = {10.0, 10.0, 10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<4> aResult =
     MathSys::SolveSurfaceSurfaceExtrema4D(aSurf1,

@@ -45,7 +45,7 @@ aBounds.Min = {-10.0, -10.0};
 aBounds.Max = {10.0, 10.0};
 
 MathSys::NewtonOptions aOptions;
-aOptions.ResidualTol      = 1.0e-10;
+aOptions.FTolerance      = 1.0e-10;
 aOptions.MaxIterations    = 100;
 aOptions.EnableLineSearch = true;
 
@@ -85,7 +85,7 @@ aBounds.Min = {-100.0, -100.0, -100.0};
 aBounds.Max = {100.0, 100.0, 100.0};
 
 MathSys::NewtonOptions aOptions;
-aOptions.ResidualTol   = 1.0e-10;
+aOptions.FTolerance   = 1.0e-10;
 aOptions.MaxIterations = 100;
 
 const MathSys::NewtonResultN<3> aResult =
@@ -110,7 +110,7 @@ aBounds.Min = {tMin, uMin, vMin};
 aBounds.Max = {tMax, uMax, vMax};
 
 MathSys::NewtonOptions aOptions;
-aOptions.ResidualTol   = tolerance;
+aOptions.FTolerance   = tolerance;
 aOptions.MaxIterations = maxIter;
 
 const MathSys::NewtonResultN<3> aResult =
@@ -144,7 +144,7 @@ aBounds.Min = {-10.0, -10.0, -10.0, -10.0};
 aBounds.Max = {10.0, 10.0, 10.0, 10.0};
 
 MathSys::NewtonOptions aOptions;
-aOptions.ResidualTol   = 1.0e-10;
+aOptions.FTolerance   = 1.0e-10;
 aOptions.MaxIterations = 100;
 
 const MathSys::NewtonResultN<4> aResult =
@@ -163,7 +163,7 @@ aBounds.Min = {u1Min, v1Min, u2Min, v2Min};
 aBounds.Max = {u1Max, v1Max, u2Max, v2Max};
 
 MathSys::NewtonOptions aOptions;
-aOptions.ResidualTol   = tolerance;
+aOptions.FTolerance   = tolerance;
 aOptions.MaxIterations = maxIter;
 
 const MathSys::NewtonResultN<4> aResult =
@@ -196,15 +196,15 @@ MathSys exposes two interface styles:
   - Returns `MathSys::NewtonResultN<N>`
 
 Shared specialized API types are defined in `MathSys_NewtonTypes.hxx`:
-- `MathSys::NewtonStatus`
+- `MathUtils::Status`
 - `MathSys::NewtonResultN<N>`
 - `MathSys::NewtonBoundsN<N>`
 - `MathSys::NewtonOptions`
 
 ## Convergence Notes
 
-- Specialized solvers use strict residual-based convergence (`ResidualNorm <= ResidualTol`).
-- Step-size stagnation alone does not produce `Converged` status.
+- Specialized solvers use strict residual-based convergence (`ResidualNorm <= FTolerance`).
+- Step-size stagnation alone does not produce `Status::OK` status.
 - `Solve2DSymmetric()` uses Armijo backtracking with directional derivative based on `J^T * F`.
 
 ## Dependencies

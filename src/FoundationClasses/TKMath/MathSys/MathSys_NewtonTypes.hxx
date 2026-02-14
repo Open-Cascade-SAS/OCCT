@@ -14,36 +14,29 @@
 #ifndef _MathSys_NewtonTypes_HeaderFile
 #define _MathSys_NewtonTypes_HeaderFile
 
+#include <MathUtils_Config.hxx>
+#include <MathUtils_Types.hxx>
+
 #include <array>
 #include <cstddef>
 
 //! Shared types for specialized small-dimension Newton solvers.
 namespace MathSys
 {
-
-//! Outcome status for Newton solvers.
-enum class NewtonStatus
-{
-  Converged,           //!< Residual tolerance satisfied
-  MaxIterations,       //!< Iteration limit reached without convergence
-  SingularJacobian,    //!< Jacobian is singular and recovery failed
-  NonDescentDirection, //!< Search direction is not a descent direction for merit function
-  NumericalError,      //!< Numerical evaluation failure
-  InvalidInput         //!< Invalid bounds/options input
-};
+using namespace MathUtils;
 
 //! Result of N-dimensional Newton solver.
 template <int N>
 struct NewtonResultN
 {
-  NewtonStatus          Status       = NewtonStatus::MaxIterations; //!< Final solver status
-  std::array<double, N> X            = {};                          //!< Solution estimate
-  size_t                NbIter       = 0;                           //!< Performed iterations
-  double                ResidualNorm = 0.0;                         //!< Final residual norm ||F||
-  double                StepNorm     = 0.0;                         //!< Final step norm ||dX||
+  MathUtils::Status     Status       = MathUtils::Status::NotConverged; //!< Final solver status
+  std::array<double, N> X            = {};                               //!< Solution estimate
+  size_t                NbIterations = 0;                                //!< Performed iterations
+  double                ResidualNorm = 0.0;                              //!< Final residual norm ||F||
+  double                StepNorm     = 0.0;                              //!< Final step norm ||dX||
 
   //! Returns true if computation converged.
-  bool IsDone() const { return Status == NewtonStatus::Converged; }
+  bool IsDone() const { return Status == MathUtils::Status::OK; }
 
   //! Conversion to bool for convenient checking.
   explicit operator bool() const { return IsDone(); }
@@ -59,15 +52,21 @@ struct NewtonBoundsN
 };
 
 //! Solver options for small-dimension Newton methods.
-struct NewtonOptions
+struct NewtonOptions : MathUtils::Config
 {
-  double ResidualTol         = 1.0e-10; //!< Convergence tolerance on residual norm
-  double StepTolRel          = 1.0e-16; //!< Relative tolerance on step size
-  size_t MaxIterations       = 100;     //!< Maximum iterations
-  double MaxStepRatio        = 0.5;     //!< Max step as ratio of largest domain size
-  bool   EnableLineSearch    = true;    //!< Enable Armijo backtracking line search
-  bool   AllowSoftBounds     = false;   //!< Allow slight bounds extension
-  double SoftBoundsExtension = 1.0e-4;  //!< Extension ratio for soft bounds
+  double MaxStepRatio        = 0.5;    //!< Max step as ratio of largest domain size
+  bool   EnableLineSearch    = true;   //!< Enable Armijo backtracking line search
+  bool   AllowSoftBounds     = false;  //!< Allow slight bounds extension
+  double SoftBoundsExtension = 1.0e-4; //!< Extension ratio for soft bounds
+
+  //! Default constructor with strict residual/step tolerances for specialized Newton.
+  NewtonOptions()
+  {
+    Tolerance     = 1.0e-10;
+    XTolerance    = 1.0e-16;
+    FTolerance    = 1.0e-10;
+    MaxIterations = 100;
+  }
 };
 
 } // namespace MathSys

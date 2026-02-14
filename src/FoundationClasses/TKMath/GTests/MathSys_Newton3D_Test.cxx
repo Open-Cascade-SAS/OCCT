@@ -47,7 +47,7 @@ TEST_F(MathSys_Newton3DTest, Solve3D_LinearSystem)
   aBounds.HasBounds = false;
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<3> aResult =
     MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
@@ -82,7 +82,7 @@ TEST_F(MathSys_Newton3DTest, Solve3D_NonlinearSystem)
   aBounds.HasBounds = false;
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = 1.0e-10;
+  aOptions.FTolerance   = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const MathSys::NewtonResultN<3> aResult =
@@ -119,7 +119,7 @@ TEST_F(MathSys_Newton3DTest, Solve3D_Bounded)
   aBounds.Max = {10.0, 10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<3> aResult =
     MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
@@ -157,12 +157,12 @@ TEST_F(MathSys_Newton3DTest, Solve3D_InvalidInput)
   aBounds.Max = {0.0, 1.0, 1.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = THE_TOL;
+  aOptions.FTolerance = THE_TOL;
 
   const MathSys::NewtonResultN<3> aResult =
     MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
 
-  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::InvalidInput);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
   EXPECT_FALSE(aResult.IsDone());
 }
 
@@ -211,7 +211,7 @@ TEST_F(MathSys_Newton3DTest, SolveCurveSurfaceExtrema3D_Smoke)
   aBounds.Max = {10.0, 10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = THE_TOL;
+  aOptions.FTolerance   = THE_TOL;
   aOptions.MaxIterations = 20;
 
   const MathSys::NewtonResultN<3> aResult =

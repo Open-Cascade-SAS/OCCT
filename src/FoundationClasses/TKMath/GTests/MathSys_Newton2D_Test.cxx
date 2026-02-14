@@ -150,13 +150,13 @@ TEST(MathSys_Newton2DTest, Solve2D_Quadratic_Converges)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = 1.0e-10;
+  aOptions.FTolerance   = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const MathSys::NewtonResultN<2> aResult = MathSys::Solve2D(aFunc, {5.0, 3.0}, aBounds, aOptions);
 
   EXPECT_TRUE(aResult.IsDone());
-  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::Converged);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::OK);
   EXPECT_NEAR(aResult.X[0], 0.0, 1.0e-12);
   EXPECT_NEAR(aResult.X[1], 0.0, 1.0e-12);
   EXPECT_LT(aResult.ResidualNorm, 1.0e-10);
@@ -171,14 +171,14 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_Target_Converges)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = 1.0e-10;
+  aOptions.FTolerance   = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const MathSys::NewtonResultN<2> aResult =
     MathSys::Solve2DSymmetric(aFunc, {0.0, 0.0}, aBounds, aOptions);
 
   EXPECT_TRUE(aResult.IsDone());
-  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::Converged);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::OK);
   EXPECT_NEAR(aResult.X[0], 3.5, 1.0e-9);
   EXPECT_NEAR(aResult.X[1], 7.2, 1.0e-9);
   EXPECT_LT(aResult.ResidualNorm, 1.0e-10);
@@ -193,15 +193,15 @@ TEST(MathSys_Newton2DTest, Regression_TinyStepDoesNotConvergeWithLargeResidual)
   aBounds.Max = {1.0, 1.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = 1.0e-8;
-  aOptions.StepTolRel    = 1.0e-16;
+  aOptions.FTolerance   = 1.0e-8;
+  aOptions.XTolerance    = 1.0e-16;
   aOptions.MaxIterations = 10;
 
   const MathSys::NewtonResultN<2> aResult =
     MathSys::Solve2DSymmetric(aFunc, {0.0, 0.0}, aBounds, aOptions);
 
   EXPECT_FALSE(aResult.IsDone());
-  EXPECT_NE(aResult.Status, MathSys::NewtonStatus::Converged);
+  EXPECT_NE(aResult.Status, MathUtils::Status::OK);
   EXPECT_GT(aResult.ResidualNorm, 1.0e-2);
 }
 
@@ -221,7 +221,7 @@ TEST(MathSys_Newton2DTest, Regression_ArmijoUsesJtFDirectionalDerivative)
     MathSys::Solve2DSymmetric(aFunc, {0.0, 0.0}, aBounds, aOptions);
 
   EXPECT_FALSE(aResult.IsDone());
-  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::NonDescentDirection);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::NonDescentDirection);
 }
 
 TEST(MathSys_Newton2DTest, Solve2DSymmetric_HighPrecision)
@@ -233,7 +233,7 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_HighPrecision)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = 5.0e-8;
+  aOptions.FTolerance   = 5.0e-8;
   aOptions.MaxIterations = 100;
 
   const MathSys::NewtonResultN<2> aResult =
@@ -254,12 +254,12 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_InvalidInput)
   aBounds.Max = {0.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol = 1.0e-10;
+  aOptions.FTolerance = 1.0e-10;
 
   const MathSys::NewtonResultN<2> aResult =
     MathSys::Solve2DSymmetric(aFunc, {0.0, 0.0}, aBounds, aOptions);
 
-  EXPECT_EQ(aResult.Status, MathSys::NewtonStatus::InvalidInput);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
   EXPECT_FALSE(aResult.IsDone());
 }
 
@@ -272,7 +272,7 @@ TEST(MathSys_Newton2DTest, Solve2DSymmetric_ConsistentFromDifferentStarts)
   aBounds.Max = {10.0, 10.0};
 
   MathSys::NewtonOptions aOptions;
-  aOptions.ResidualTol   = 1.0e-10;
+  aOptions.FTolerance   = 1.0e-10;
   aOptions.MaxIterations = 50;
 
   const std::array<std::array<double, 2>, 4> aStarts = {std::array<double, 2>{0.0, 0.0},
