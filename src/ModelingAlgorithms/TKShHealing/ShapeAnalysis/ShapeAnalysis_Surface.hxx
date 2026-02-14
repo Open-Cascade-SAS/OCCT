@@ -17,11 +17,11 @@
 #ifndef _ShapeAnalysis_Surface_HeaderFile
 #define _ShapeAnalysis_Surface_HeaderFile
 
-#include <Extrema_ExtPS.hxx>
+#include <Bnd_Box.hxx>
+#include <ExtremaPS_Surface.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
-#include <Bnd_Box.hxx>
 #include <NCollection_Sequence.hxx>
 
 class Geom_Surface;
@@ -301,8 +301,7 @@ public:
 protected:
   occ::handle<Geom_Surface>        mySurf;
   occ::handle<GeomAdaptor_Surface> myAdSur;
-  Extrema_ExtPS                    myExtPS;
-  bool                             myExtOK;
+  ExtremaPS_Surface                myExtPS; //!< Point-Surface extrema evaluator
   int                              myNbDeg;
   double                           myPreci[4];
   gp_Pnt                           myP3d[4];

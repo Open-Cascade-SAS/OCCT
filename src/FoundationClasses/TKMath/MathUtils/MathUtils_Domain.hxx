@@ -107,6 +107,15 @@ struct Domain1D
   {
     return Min > -theInfLimit && Max < theInfLimit;
   }
+
+  //! Check if this domain equals another within tolerance.
+  //! @param theOther domain to compare with
+  //! @param theTol tolerance for comparison
+  //! @return true if domains are equal within tolerance
+  bool IsEqual(const Domain1D& theOther, double theTol = 1.0e-10) const
+  {
+    return std::abs(Min - theOther.Min) <= theTol && std::abs(Max - theOther.Max) <= theTol;
+  }
 };
 
 //! @brief 2D parameter domain for surfaces.

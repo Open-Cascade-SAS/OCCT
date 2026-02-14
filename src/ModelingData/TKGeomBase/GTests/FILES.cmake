@@ -4,6 +4,67 @@ set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKGeomBase_GTests_FILES
   BndLib_Test.cxx
   Extrema_ExtPC_Test.cxx
+  ExtremaCC_CircleCircle_Test.cxx
+  ExtremaCC_CircleLine_Test.cxx
+  ExtremaCC_Comparison_Test.cxx
+  ExtremaCC_Curves_Test.cxx
+  ExtremaCC_LineLine_Test.cxx
+  ExtremaCS_CirclePlane_Test.cxx
+  ExtremaCS_CircleSphere_Test.cxx
+  ExtremaCS_CurveSurface_Test.cxx
+  ExtremaCS_EllipsePlane_Test.cxx
+  ExtremaCS_EllipseSphere_Test.cxx
+  ExtremaCS_LinePlane_Test.cxx
+  ExtremaCS_LineSphere_Test.cxx
+  ExtremaPC_BezierCurve_Test.cxx
+  ExtremaPC_BSplineCurve_Test.cxx
+  ExtremaPC_Circle_Test.cxx
+  ExtremaPC_Comparison_Test.cxx
+  ExtremaPC_Curve_Test.cxx
+  ExtremaPC_Ellipse_Test.cxx
+  ExtremaPC_ExtendedGeometry_Test.cxx
+  ExtremaPC_Hyperbola_Test.cxx
+  ExtremaPC_Line_Test.cxx
+  ExtremaPC_OffsetCurve_Test.cxx
+  ExtremaPC_Parabola_Test.cxx
+  ExtremaPC_SearchMode_Test.cxx
+  ExtremaPS_BezierSurface_Comparison_Test.cxx
+  ExtremaPS_BezierSurface_Test.cxx
+  ExtremaPS_BSplineSurface_Comparison_Test.cxx
+  ExtremaPS_BSplineSurface_Test.cxx
+  ExtremaPS_Cone_Comparison_Test.cxx
+  ExtremaPS_Cone_Test.cxx
+  ExtremaPS_Cylinder_Comparison_Test.cxx
+  ExtremaPS_Cylinder_Test.cxx
+  ExtremaPS_Plane_Comparison_Test.cxx
+  ExtremaPS_Plane_Test.cxx
+  ExtremaPS_Sphere_Comparison_Test.cxx
+  ExtremaPS_Sphere_Test.cxx
+  ExtremaPS_Surface_Test.cxx
+  ExtremaPS_SurfaceOfExtrusion_Test.cxx
+  ExtremaPS_SurfaceOfRevolution_Test.cxx
+  ExtremaPS_Performance_Test.cxx
+  ExtremaPS_Torus_Comparison_Test.cxx
+  ExtremaPS_Torus_Test.cxx
+  ExtremaPS_EdgeCases_Test.cxx
+  ExtremaPS_Precision_Test.cxx
+  ExtremaSS_ConeCone_Test.cxx
+  ExtremaSS_ConeSphere_Test.cxx
+  ExtremaSS_ConeTorus_Test.cxx
+  ExtremaSS_CylinderCone_Test.cxx
+  ExtremaSS_CylinderCylinder_Test.cxx
+  ExtremaSS_CylinderSphere_Test.cxx
+  ExtremaSS_CylinderTorus_Test.cxx
+  ExtremaSS_GenericPair_Test.cxx
+  ExtremaSS_PlaneCone_Test.cxx
+  ExtremaSS_PlaneCylinder_Test.cxx
+  ExtremaSS_PlanePlane_Test.cxx
+  ExtremaSS_PlaneSphere_Test.cxx
+  ExtremaSS_PlaneTorus_Test.cxx
+  ExtremaSS_SphereSphere_Test.cxx
+  ExtremaSS_SphereTorus_Test.cxx
+  ExtremaSS_TorusTorus_Test.cxx
+  ExtremaSS_Performance_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
