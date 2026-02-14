@@ -79,8 +79,8 @@ const ExtremaCC::Result& ExtremaCC_CircleParabola::PerformWithEndpoints(
 
   if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
   {
-    ExtremaCC_Circle   aEval1(myCircle);
-    ExtremaCC_Parabola aEval2(myParabola);
+    ExtremaCC_Circle   aEval1(myCircle, myDomain->Curve1);
+    ExtremaCC_Parabola aEval2(myParabola, myDomain->Curve2);
     ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
   }
 

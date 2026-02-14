@@ -83,8 +83,8 @@ const ExtremaCC::Result& ExtremaCC_CircleEllipse::PerformWithEndpoints(
   // Add endpoint extrema if domain is bounded
   if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
   {
-    ExtremaCC_Circle  aEval1(myCircle);
-    ExtremaCC_Ellipse aEval2(myEllipse);
+    ExtremaCC_Circle  aEval1(myCircle, myDomain->Curve1);
+    ExtremaCC_Ellipse aEval2(myEllipse, myDomain->Curve2);
     ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
   }
 

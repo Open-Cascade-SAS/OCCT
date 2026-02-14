@@ -16,6 +16,7 @@
 
 #include <ElCLib.hxx>
 #include <ExtremaCC.hxx>
+#include <ExtremaCC_Line.hxx>
 #include <gp.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
@@ -180,8 +181,8 @@ public:
     // Add endpoint extrema if domain is bounded
     if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
     {
-      ExtremaCC_Line aEval1(myLine1);
-      ExtremaCC_Line aEval2(myLine2);
+      ExtremaCC_Line aEval1(myLine1, myDomain->Curve1);
+      ExtremaCC_Line aEval2(myLine2, myDomain->Curve2);
       ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
     }
 

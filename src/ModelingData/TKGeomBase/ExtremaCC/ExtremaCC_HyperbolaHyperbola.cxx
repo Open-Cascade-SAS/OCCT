@@ -78,8 +78,8 @@ const ExtremaCC::Result& ExtremaCC_HyperbolaHyperbola::PerformWithEndpoints(
 
   if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
   {
-    ExtremaCC_Hyperbola aEval1(myHyperbola1);
-    ExtremaCC_Hyperbola aEval2(myHyperbola2);
+    ExtremaCC_Hyperbola aEval1(myHyperbola1, myDomain->Curve1);
+    ExtremaCC_Hyperbola aEval2(myHyperbola2, myDomain->Curve2);
     ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
   }
 

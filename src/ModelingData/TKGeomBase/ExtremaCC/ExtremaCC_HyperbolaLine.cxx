@@ -126,8 +126,8 @@ const ExtremaCC::Result& ExtremaCC_HyperbolaLine::PerformWithEndpoints(
   // Add endpoint extrema if domain is bounded
   if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
   {
-    ExtremaCC_Hyperbola aEval1(myHyperbola);
-    ExtremaCC_Line      aEval2(myLine);
+    ExtremaCC_Hyperbola aEval1(myHyperbola, myDomain->Curve1);
+    ExtremaCC_Line      aEval2(myLine, myDomain->Curve2);
     ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
   }
 

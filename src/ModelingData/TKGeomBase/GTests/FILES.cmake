@@ -4,6 +4,10 @@ set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_TKGeomBase_GTests_FILES
   BndLib_Test.cxx
   Extrema_ExtPC_Test.cxx
+  ExtremaCC_CircleCircle_Test.cxx
+  ExtremaCC_CircleLine_Test.cxx
+  ExtremaCC_Curves_Test.cxx
+  ExtremaCC_LineLine_Test.cxx
   ExtremaPC_BezierCurve_Test.cxx
   ExtremaPC_BSplineCurve_Test.cxx
   ExtremaPC_Circle_Test.cxx

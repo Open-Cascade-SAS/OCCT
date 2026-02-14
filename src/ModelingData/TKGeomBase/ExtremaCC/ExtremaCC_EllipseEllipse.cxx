@@ -78,8 +78,8 @@ const ExtremaCC::Result& ExtremaCC_EllipseEllipse::PerformWithEndpoints(
 
   if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
   {
-    ExtremaCC_Ellipse aEval1(myEllipse1);
-    ExtremaCC_Ellipse aEval2(myEllipse2);
+    ExtremaCC_Ellipse aEval1(myEllipse1, myDomain->Curve1);
+    ExtremaCC_Ellipse aEval2(myEllipse2, myDomain->Curve2);
     ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
   }
 

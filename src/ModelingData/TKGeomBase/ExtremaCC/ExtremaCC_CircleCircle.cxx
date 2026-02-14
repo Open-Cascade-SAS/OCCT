@@ -74,8 +74,8 @@ const ExtremaCC::Result& ExtremaCC_CircleCircle::PerformWithEndpoints(
   // Add endpoint extrema if domain is bounded
   if (myResult.Status == ExtremaCC::Status::OK && myDomain.has_value())
   {
-    ExtremaCC_Circle aEval1(myCircle1);
-    ExtremaCC_Circle aEval2(myCircle2);
+    ExtremaCC_Circle aEval1(myCircle1, myDomain->Curve1);
+    ExtremaCC_Circle aEval2(myCircle2, myDomain->Curve2);
     ExtremaCC::AddEndpointExtrema(myResult, *myDomain, aEval1, aEval2, theTol, theMode);
   }
 
@@ -285,8 +285,8 @@ void ExtremaCC_CircleCircle::performNonCoplanar(double theTol) const
   }
 
   // Newton refinement for minimum
-  ExtremaCC_Circle aEval1(myCircle1);
-  ExtremaCC_Circle aEval2(myCircle2);
+  ExtremaCC_Circle aEval1(myCircle1, myDomain->Curve1);
+  ExtremaCC_Circle aEval2(myCircle2, myDomain->Curve2);
   ExtremaCC_DistanceFunction<ExtremaCC_Circle, ExtremaCC_Circle> aDistFunc(aEval1, aEval2);
 
   double aU1 = aMinU1, aU2 = aMinU2;
