@@ -32,6 +32,10 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor3d_IsoCurve.hxx>
 #include <BndLib_Add3dCurve.hxx>
+#include <Extrema_ExtPS.hxx>
+
+// Debug flag for comparing OLD vs NEW extrema implementations
+#define SHAPEANALYSIS_DEBUG_EXTREMA
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BoundedSurface.hxx>
 #include <Geom_ConicalSurface.hxx>
@@ -49,6 +53,7 @@
 #include <gp_Pnt2d.hxx>
 #include <Message.hxx>
 #include <Precision.hxx>
+#include <ShapeAnalysis.hxx>
 #include <ShapeAnalysis_Curve.hxx>
 #include <ShapeAnalysis_Surface.hxx>
 #include <Standard_ErrorHandler.hxx>
@@ -1194,23 +1199,12 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const double preci)
     RestrictBounds(uf, ul, vf, vl);
 
     // Initialize ExtremaPS_Surface if not yet done
+    // NOTE: We don't pass domain to avoid different normalization behavior.
+    // ExtremaPS returns U in [0, 2π) like old Extrema_ExtPElS did.
+    // Normalization to surface domain is done afterward using AdjustByPeriod.
     if (!myExtPS.IsInitialized())
     {
-      // Ensure IsU-VClosed has been called
-      if (myUCloseVal < 0)
-        IsUClosed();
-      if (myVCloseVal < 0)
-        IsVClosed();
-      double du = 0., dv = 0.;
-      // Extension of the surface range is limited to non-offset surfaces as the latter
-      // can throw exception (e.g. Geom_UndefinedValue) when computing value - see id23943
-      if (!mySurf->IsKind(STANDARD_TYPE(Geom_OffsetSurface)))
-      {
-        du = std::min(myUDelt, SurfAdapt.UResolution(preci));
-        dv = std::min(myVDelt, SurfAdapt.VResolution(preci));
-      }
-      ExtremaPS::Domain2D aDomain(uf - du, ul + du, vf - dv, vl + dv);
-      myExtPS = ExtremaPS_Surface(SurfAdapt, aDomain);
+      myExtPS = ExtremaPS_Surface(SurfAdapt);
     }
 
     const ExtremaPS::Result& aResult = myExtPS.Perform(P3D, preci, ExtremaPS::SearchMode::Min);
@@ -1221,6 +1215,12 @@ gp_Pnt2d ShapeAnalysis_Surface::ValueOfUV(const gp_Pnt& P3D, const double preci)
       int aMinIdx = aResult.MinIndex();
       S           = aResult[aMinIdx].U;
       T           = aResult[aMinIdx].V;
+
+      // Normalize periodic parameters to domain center
+      if (IsUClosed())
+        S += ShapeAnalysis::AdjustByPeriod(S, 0.5 * (uf + ul), 2 * M_PI);
+      if (IsVClosed())
+        T += ShapeAnalysis::AdjustByPeriod(T, 0.5 * (vf + vl), 2 * M_PI);
 
       // Verify distance (workaround for OCC486)
       gp_Pnt aCheckPnt = SurfAdapt.Value(S, T);
