@@ -195,6 +195,12 @@ public:
       aU                    = std::atan2(aSinU, aCosU);
       if (aU < 0.0)
         aU += aTwoPi;
+
+      // Normalize U to domain range for periodic parameter
+      if (myDomain.has_value())
+      {
+        ExtremaPS::NormalizeU(aU, *myDomain);
+      }
     }
 
     // FAST PATH: Natural domain (full sphere) - most common case
@@ -298,15 +304,9 @@ public:
     }
 
     // GENERAL PATH: Bounded domain
-    // Helper: Check U in range (with periodicity handling)
+    // Helper: Check U in range
     auto checkUInRange = [&](double aTestU) -> bool {
-      if (aIsFullU)
-        return true;
-      while (aTestU < theDomain.UMin)
-        aTestU += aTwoPi;
-      while (aTestU >= theDomain.UMin + aTwoPi)
-        aTestU -= aTwoPi;
-      return theDomain.U().Contains(aTestU, theTol);
+      return aIsFullU || ExtremaPS::IsInPeriodicRange(aTestU, theDomain.UMin, theDomain.UMax, theTol);
     };
 
     // Add minimum extremum (closest point)
@@ -321,11 +321,7 @@ public:
         double aClampedU = aU;
         if (!aIsAtPole && !aIsFullU)
         {
-          while (aClampedU < theDomain.UMin)
-            aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax)
-            aClampedU -= aTwoPi;
-          aClampedU = theDomain.U().Clamp(aClampedU);
+          ExtremaPS::ClampToPeriodicRange(aClampedU, theDomain.UMin, theDomain.UMax);
         }
 
         const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
@@ -343,9 +339,8 @@ public:
 
     // Antipodal point for maximum
     double aUOpp = aU + M_PI;
-    if (aUOpp >= aTwoPi)
-      aUOpp -= aTwoPi;
-    const double aVOpp        = -aV;
+    ExtremaPS::NormalizeU(aUOpp, theDomain);
+    const double aVOpp       = -aV;
     const bool   aIsOppAtPole = (std::abs(std::abs(aVOpp) - aHalfPi) < theTol);
 
     // Add maximum extremum (farthest point - antipodal)
@@ -360,11 +355,7 @@ public:
         double aClampedU = aUOpp;
         if (!aIsOppAtPole && !aIsFullU)
         {
-          while (aClampedU < theDomain.UMin)
-            aClampedU += aTwoPi;
-          while (aClampedU > theDomain.UMax)
-            aClampedU -= aTwoPi;
-          aClampedU = theDomain.U().Clamp(aClampedU);
+          ExtremaPS::ClampToPeriodicRange(aClampedU, theDomain.UMin, theDomain.UMax);
         }
 
         const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);

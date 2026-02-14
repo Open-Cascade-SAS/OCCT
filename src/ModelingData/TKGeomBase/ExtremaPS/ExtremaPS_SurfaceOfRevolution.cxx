@@ -262,15 +262,11 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(const gp_Pnt&   
     const ExtremaPS::Domain2D& aDomain = *myDomain;
     if (!aDomain.IsUFullPeriod(aTwoPi, theTol))
     {
-      // Normalize U to domain range
-      double aTestU = aU;
-      while (aTestU < aDomain.UMin)
-        aTestU += aTwoPi;
-      while (aTestU >= aDomain.UMin + aTwoPi)
-        aTestU -= aTwoPi;
-      aUInRange = aDomain.U().Contains(aTestU, theTol);
+      aUInRange = ExtremaPS::IsInPeriodicRange(aU, aDomain.UMin, aDomain.UMax, theTol);
       if (aUInRange)
-        aU = aTestU;
+      {
+        ExtremaPS::ClampToPeriodicRange(aU, aDomain.UMin, aDomain.UMax);
+      }
     }
   }
 
@@ -353,14 +349,11 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(const gp_Pnt&   
         const ExtremaPS::Domain2D& aDomain = *myDomain;
         if (!aDomain.IsUFullPeriod(aTwoPi, theTol))
         {
-          double aTestU = aUOpp;
-          while (aTestU < aDomain.UMin)
-            aTestU += aTwoPi;
-          while (aTestU >= aDomain.UMin + aTwoPi)
-            aTestU -= aTwoPi;
-          aUOppInRange = aDomain.U().Contains(aTestU, theTol);
+          aUOppInRange = ExtremaPS::IsInPeriodicRange(aUOpp, aDomain.UMin, aDomain.UMax, theTol);
           if (aUOppInRange)
-            aUOpp = aTestU;
+          {
+            ExtremaPS::ClampToPeriodicRange(aUOpp, aDomain.UMin, aDomain.UMax);
+          }
         }
       }
 

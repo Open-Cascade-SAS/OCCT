@@ -191,10 +191,22 @@ public:
     if (aU < 0.0)
       aU += aTwoPi;
 
+    // Normalize U to domain range for periodic parameter
+    if (myDomain.has_value())
+    {
+      ExtremaPS::NormalizeU(aU, *myDomain);
+    }
+
     // Antipodal U
     double aUOpp = aU + M_PI;
-    if (aUOpp >= aTwoPi)
+    if (myDomain.has_value())
+    {
+      ExtremaPS::NormalizeU(aUOpp, *myDomain);
+    }
+    else if (aUOpp >= aTwoPi)
+    {
       aUOpp -= aTwoPi;
+    }
 
     // Center of nearest generating circle
     const double aCircleCenterX = myCenterX + myMajorRadius * aRadNormX;
@@ -233,10 +245,22 @@ public:
         aV += aTwoPi;
     }
 
+    // Normalize V to domain range for periodic parameter
+    if (myDomain.has_value())
+    {
+      ExtremaPS::NormalizeV(aV, *myDomain);
+    }
+
     // Antipodal V
     double aVOpp = aV + M_PI;
-    if (aVOpp >= aTwoPi)
+    if (myDomain.has_value())
+    {
+      ExtremaPS::NormalizeV(aVOpp, *myDomain);
+    }
+    else if (aVOpp >= aTwoPi)
+    {
       aVOpp -= aTwoPi;
+    }
 
     // FAST PATH: Natural domain (full torus) - compute extrema directly without bounds checking
     if (!myDomain.has_value())
@@ -342,39 +366,24 @@ public:
     const bool                 aIsFullU = aDomain.IsUFullPeriod(aTwoPi, theTol);
     const bool                 aIsFullV = aDomain.IsVFullPeriod(aTwoPi, theTol);
 
-    auto checkInRange =
-      [&](double aTestU, double aRangeMin, double aRangeMax, bool aIsFull) -> bool {
-      if (aIsFull)
-        return true;
-      while (aTestU < aRangeMin)
-        aTestU += aTwoPi;
-      while (aTestU >= aRangeMin + aTwoPi)
-        aTestU -= aTwoPi;
-      return (aTestU >= aRangeMin - theTol && aTestU <= aRangeMax + theTol);
-    };
-
     auto addExtremum = [&](double aExtU, double aExtV, bool aIsMin) {
-      if (!checkInRange(aExtU, aDomain.UMin, aDomain.UMax, aIsFullU)
-          || !checkInRange(aExtV, aDomain.VMin, aDomain.VMax, aIsFullV))
+      // Check if in range
+      const bool aUInRange =
+        aIsFullU || ExtremaPS::IsInPeriodicRange(aExtU, aDomain.UMin, aDomain.UMax, theTol);
+      const bool aVInRange =
+        aIsFullV || ExtremaPS::IsInPeriodicRange(aExtV, aDomain.VMin, aDomain.VMax, theTol);
+      if (!aUInRange || !aVInRange)
         return;
 
       double aClampedU = aExtU;
       double aClampedV = aExtV;
       if (!aIsFullU)
       {
-        while (aClampedU < aDomain.UMin)
-          aClampedU += aTwoPi;
-        while (aClampedU > aDomain.UMax)
-          aClampedU -= aTwoPi;
-        aClampedU = aDomain.U().Clamp(aClampedU);
+        ExtremaPS::ClampToPeriodicRange(aClampedU, aDomain.UMin, aDomain.UMax);
       }
       if (!aIsFullV)
       {
-        while (aClampedV < aDomain.VMin)
-          aClampedV += aTwoPi;
-        while (aClampedV > aDomain.VMax)
-          aClampedV -= aTwoPi;
-        aClampedV = aDomain.V().Clamp(aClampedV);
+        ExtremaPS::ClampToPeriodicRange(aClampedV, aDomain.VMin, aDomain.VMax);
       }
 
       const gp_Pnt aSurfPt = Value(aClampedU, aClampedV);
