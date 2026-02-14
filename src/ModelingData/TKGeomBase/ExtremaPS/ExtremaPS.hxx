@@ -124,6 +124,7 @@ constexpr int THE_OTHER_SURFACE_NB_SAMPLES = 32;
 //! and the grid already provides N^2 samples per cell.
 constexpr int THE_BSPLINE_SPAN_OFFSET = 2;
 
+
 //! Bring Domain2D into ExtremaPS namespace for convenience.
 using MathUtils::Domain2D;
 

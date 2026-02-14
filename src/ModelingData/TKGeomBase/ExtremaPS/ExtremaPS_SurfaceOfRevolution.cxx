@@ -13,6 +13,10 @@
 
 #include <ExtremaPS_SurfaceOfRevolution.hxx>
 
+#include <MathOpt_Brent.hxx>
+#include <MathUtils_Core.hxx>
+#include <Precision.hxx>
+
 #include <cmath>
 
 //==================================================================================================
@@ -61,20 +65,115 @@ void ExtremaPS_SurfaceOfRevolution::initCache()
   myAxisY = aDir.Y();
   myAxisZ = aDir.Z();
 
-  // Compute perpendicular directions (X and Y in the rotation plane)
-  // Use the reference direction from the surface if available
-  gp_Dir aXDir;
-  if (std::abs(myAxisZ) < 0.9)
+  // Get the reference direction from the surface (where U=0)
+  // Find the curve point with maximum radial distance from axis using Brent's method
+  const Handle(Geom_Curve)& aBasisCurve = mySurface->BasisCurve();
+  const double              aVFirst     = aBasisCurve->FirstParameter();
+  const double              aVLast      = aBasisCurve->LastParameter();
+
+  // Functor to compute negative squared radial distance (minimize to find maximum)
+  struct NegRadialDistFunc
   {
-    // Axis not aligned with Z, use Z cross Axis
-    aXDir = gp_Dir(0, 0, 1).Crossed(aDir);
-  }
-  else
+    const Handle(Geom_Curve)& myCurve;
+    double                    myLocX, myLocY, myLocZ;
+    double                    myAxisX, myAxisY, myAxisZ;
+
+    bool Value(double theV, double& theF) const
+    {
+      const gp_Pnt aCurvePt    = myCurve->Value(theV);
+      const double aDx         = aCurvePt.X() - myLocX;
+      const double aDy         = aCurvePt.Y() - myLocY;
+      const double aDz         = aCurvePt.Z() - myLocZ;
+      const double aAxial      = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
+      const double aRadX       = aDx - aAxial * myAxisX;
+      const double aRadY       = aDy - aAxial * myAxisY;
+      const double aRadZ       = aDz - aAxial * myAxisZ;
+      theF                     = -(aRadX * aRadX + aRadY * aRadY + aRadZ * aRadZ);
+      return true;
+    }
+  };
+
+  NegRadialDistFunc aFunc{aBasisCurve, myLocX, myLocY, myLocZ, myAxisX, myAxisY, myAxisZ};
+
+  // Sample the curve to find intervals with local maxima of radial distance
+  const int    aNSamples = ExtremaPS::THE_OTHER_SURFACE_NB_SAMPLES;
+  const double aDV       = (aVLast - aVFirst) / aNSamples;
+
+  double aBestV     = aVFirst;
+  double aBestRadSq = 0.0;
+
+  // Find sample with maximum radial distance (minimum of negative)
+  double aPrevNegRadSq = 0.0;
+  aFunc.Value(aVFirst, aPrevNegRadSq);
+  if (-aPrevNegRadSq > aBestRadSq)
   {
-    // Axis nearly aligned with Z, use X cross Axis
-    aXDir = gp_Dir(1, 0, 0).Crossed(aDir);
+    aBestRadSq = -aPrevNegRadSq;
+    aBestV     = aVFirst;
   }
-  gp_Dir aYDir = aDir.Crossed(aXDir);
+
+  for (int i = 1; i <= aNSamples; ++i)
+  {
+    const double aV = aVFirst + i * aDV;
+    double       aNegRadSq;
+    aFunc.Value(aV, aNegRadSq);
+
+    if (-aNegRadSq > aBestRadSq)
+    {
+      aBestRadSq = -aNegRadSq;
+      aBestV     = aV;
+    }
+  }
+
+  // Refine the best sample using Brent's method
+  const double aLeft  = std::max(aVFirst, aBestV - aDV);
+  const double aRight = std::min(aVLast, aBestV + aDV);
+
+  MathUtils::Config aConfig(ExtremaPS::THE_PARAM_TOLERANCE, ExtremaPS::THE_MAX_GOLDEN_ITERATIONS);
+  MathUtils::ScalarResult aRes = MathOpt::Brent(aFunc, aLeft, aRight, aConfig);
+
+  if (aRes.Root.has_value())
+  {
+    aBestV = *aRes.Root;
+    double aNegRadSq;
+    aFunc.Value(aBestV, aNegRadSq);
+    aBestRadSq = -aNegRadSq;
+  }
+
+  gp_Dir aXDir, aYDir;
+  bool   aFoundXDir = false;
+
+  if (aBestRadSq > ExtremaPS::THE_PARAM_TOLERANCE * ExtremaPS::THE_PARAM_TOLERANCE)
+  {
+    // Compute radial direction at the best V
+    const gp_Pnt aBestPt    = aBasisCurve->Value(aBestV);
+    const double aDx        = aBestPt.X() - myLocX;
+    const double aDy        = aBestPt.Y() - myLocY;
+    const double aDz        = aBestPt.Z() - myLocZ;
+    const double aAxial     = aDx * myAxisX + aDy * myAxisY + aDz * myAxisZ;
+    const double aRadX      = aDx - aAxial * myAxisX;
+    const double aRadY      = aDy - aAxial * myAxisY;
+    const double aRadZ      = aDz - aAxial * myAxisZ;
+    const double aInvRad    = 1.0 / std::sqrt(aBestRadSq);
+    aXDir                   = gp_Dir(aRadX * aInvRad, aRadY * aInvRad, aRadZ * aInvRad);
+    aFoundXDir              = true;
+  }
+
+  if (!aFoundXDir)
+  {
+    // All curve points are on axis - use a generic perpendicular direction
+    // Check if axis is nearly aligned with Z (|Z| ≈ 1 within angular precision)
+    if (1.0 - std::abs(myAxisZ) > Precision::Angular())
+    {
+      // Axis is not Z-aligned, cross with Z to get perpendicular
+      aXDir = gp_Dir(0, 0, 1).Crossed(aDir);
+    }
+    else
+    {
+      // Axis is Z-aligned, cross with X to get perpendicular
+      aXDir = gp_Dir(1, 0, 0).Crossed(aDir);
+    }
+  }
+  aYDir = aDir.Crossed(aXDir);
 
   myXDirX = aXDir.X();
   myXDirY = aXDir.Y();
@@ -176,18 +275,21 @@ const ExtremaPS::Result& ExtremaPS_SurfaceOfRevolution::Perform(
     }
   }
 
-  // Now find extrema along the meridian curve
-  // The query point for the curve is the point projected onto the meridian plane
-  // In the meridian plane, the point has coordinates (radialDist, axialDist) relative to axis
+  // Transform P to the meridian plane (U=0) by rotating by -U
+  // P_meridian has the same axial and radial distances but at angle 0
+  // P_meridian = AxisLoc + aAxialDist * Axis + aRadDist * XDir
+  const gp_Pnt aMeridianP(myLocX + aAxialDist * myAxisX + aRadDist * myXDirX,
+                          myLocY + aAxialDist * myAxisY + aRadDist * myXDirY,
+                          myLocZ + aAxialDist * myAxisZ + aRadDist * myXDirZ);
 
-  // Perform curve extrema search
+  // Find extrema along the meridian curve to the transformed point
   ExtremaPC::SearchMode aCurveMode = ExtremaPC::SearchMode::MinMax;
   if (theMode == ExtremaPS::SearchMode::Min)
     aCurveMode = ExtremaPC::SearchMode::Min;
   else if (theMode == ExtremaPS::SearchMode::Max)
     aCurveMode = ExtremaPC::SearchMode::Max;
 
-  const ExtremaPC::Result& aCurveResult = myCurveExtrema.Perform(theP, theTol, aCurveMode);
+  const ExtremaPC::Result& aCurveResult = myCurveExtrema.Perform(aMeridianP, theTol, aCurveMode);
 
   if (!aCurveResult.IsDone())
   {
