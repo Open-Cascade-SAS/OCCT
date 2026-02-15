@@ -114,6 +114,16 @@ public:
                                     gp_Trsf&                                                Trsf,
                                     const StepData_Factors& theLocalFactors = StepData_Factors());
 
+  //! Heals the collected during transferring shapes.
+  //! Activated only in case if corresponding DE parameter is selected.
+  //! If post-healing is not enabled, healing performed in TransferShape method.
+  //! Can be called after transferring shapes.
+  //! Automatically clean shapes to heal after healing.
+  //! @param theTP - transient process to use for healing
+  //! @param theFirstIndex - index of first shape to merge history
+  Standard_EXPORT void PostHealing(const Handle(Transfer_TransientProcess)& theTP,
+                                   const Standard_Integer                   theFirstIndex);
+
   DEFINE_STANDARD_RTTIEXT(STEPControl_ActorRead, Transfer_ActorOfTransientProcess)
 
 protected:
@@ -224,11 +234,12 @@ private:
                        Message_ProgressScope&                            thePS);
 
 private:
-  StepToTopoDS_NMTool                   myNMTool;
-  double                                myPrecision;
-  double                                myMaxTol;
-  occ::handle<StepRepr_Representation>  mySRContext;
-  occ::handle<Interface_InterfaceModel> myModel;
+  StepToTopoDS_NMTool                  myNMTool;
+  Standard_Real                        myPrecision;
+  Standard_Real                        myMaxTol;
+  Handle(StepRepr_Representation)      mySRContext;
+  Handle(Interface_InterfaceModel)     myModel;
+  NCollection_IndexedMap<TopoDS_Shape> myShapesToHeal;
 };
 
 #endif // _STEPControl_ActorRead_HeaderFile
