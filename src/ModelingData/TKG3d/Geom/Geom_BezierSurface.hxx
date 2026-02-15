@@ -30,6 +30,11 @@ class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
 
+namespace Geom_EvalRepSurfaceDesc
+{
+class Base;
+}
+
 //! Describes a rational or non-rational Bezier surface.
 //! - A non-rational Bezier surface is defined by a table
 //! of poles (also known as control points).
@@ -120,6 +125,20 @@ public:
   //! Copy constructor for optimized copying without validation.
   //! @param[in] theOther the Bezier surface to copy from
   Standard_EXPORT Geom_BezierSurface(const Geom_BezierSurface& theOther);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! ---Purpose
   //! Creates a rational Bezier surface with a set of poles and a
@@ -614,13 +633,14 @@ protected:
             const NCollection_Array2<double>* theWeights);
 
 private:
-  NCollection_Array2<gp_Pnt> myPoles;
-  NCollection_Array2<double> myWeights;
-  bool                       myURational     = false;
-  bool                       myVRational     = false;
-  double                     myUMaxDerivInv  = 0.0;
-  double                     myVMaxDerivInv  = 0.0;
-  bool                       myMaxDerivInvOk = false;
+  NCollection_Array2<gp_Pnt>                 myPoles;
+  NCollection_Array2<double>                 myWeights;
+  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  bool                                       myURational     = false;
+  bool                                       myVRational     = false;
+  double                                     myUMaxDerivInv  = 0.0;
+  double                                     myVMaxDerivInv  = 0.0;
+  bool                                       myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierSurface_HeaderFile

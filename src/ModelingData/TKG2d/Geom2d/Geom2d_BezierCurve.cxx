@@ -24,6 +24,8 @@
 // Suppressed Swaps, added Init, removed typedefs
 
 #include <Geom2d_BezierCurve.hxx>
+#include "Geom2d_EvalRepCurveDesc.hxx"
+#include "Geom2d_EvalRepUtils.pxx"
 #include <Geom2d_Geometry.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
@@ -33,6 +35,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_DimensionError.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 #include <Standard_Integer.hxx>
@@ -40,6 +43,15 @@
 #include <array>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BezierCurve, Geom2d_BoundedCurve)
+
+//=================================================================================================
+
+void Geom2d_BezierCurve::SetEvalRepresentation(
+  const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc)
+{
+  Geom2d_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
 
 //=================================================================================================
 
@@ -105,6 +117,7 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
       myWeights(theOther.myRational ? NCollection_Array1<double>(theOther.myWeights)
                                     : BSplCLib::UnitWeights(theOther.myPoles.Length())),
+      myEvalRep(Geom2d_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
       myRational(theOther.myRational),
       myClosed(theOther.myClosed),
       myMaxDerivInvOk(false)
@@ -446,6 +459,13 @@ int Geom2d_BezierCurve::Degree() const
 
 std::optional<gp_Pnt2d> Geom2d_BezierCurve::EvalD0(const double U) const
 {
+  if (const std::optional<gp_Pnt2d> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Pnt2d P;
   BSplCLib::D0(U, Poles(), Weights(), P);
   return P;
@@ -455,6 +475,13 @@ std::optional<gp_Pnt2d> Geom2d_BezierCurve::EvalD0(const double U) const
 
 std::optional<Geom2d_Curve::ResD1> Geom2d_BezierCurve::EvalD1(const double U) const
 {
+  if (const std::optional<Geom2d_Curve::ResD1> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
   BSplCLib::D1(U, Poles(), Weights(), aResult->Point, aResult->D1);
   return aResult;
@@ -464,6 +491,13 @@ std::optional<Geom2d_Curve::ResD1> Geom2d_BezierCurve::EvalD1(const double U) co
 
 std::optional<Geom2d_Curve::ResD2> Geom2d_BezierCurve::EvalD2(const double U) const
 {
+  if (const std::optional<Geom2d_Curve::ResD2> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
   BSplCLib::D2(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2);
   return aResult;
@@ -473,6 +507,13 @@ std::optional<Geom2d_Curve::ResD2> Geom2d_BezierCurve::EvalD2(const double U) co
 
 std::optional<Geom2d_Curve::ResD3> Geom2d_BezierCurve::EvalD3(const double U) const
 {
+  if (const std::optional<Geom2d_Curve::ResD3> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
   BSplCLib::D3(U, Poles(), Weights(), aResult->Point, aResult->D1, aResult->D2, aResult->D3);
   return aResult;
@@ -484,6 +525,14 @@ std::optional<gp_Vec2d> Geom2d_BezierCurve::EvalDN(const double U, const int N) 
 {
   if (N < 1)
     return std::nullopt;
+
+  if (const std::optional<gp_Vec2d> aEvalRepResult =
+        Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   gp_Vec2d V;
 
   BSplCLib::DN(U, N, 0, Degree(), false, myPoles, Weights(), Knots(), &Multiplicities(), V);
@@ -576,6 +625,7 @@ void Geom2d_BezierCurve::Transform(const gp_Trsf2d& T)
 
   for (int i = 1; i <= nbpoles; i++)
     myPoles(i).Transform(T);
+  ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
 
@@ -635,6 +685,7 @@ void Geom2d_BezierCurve::init(const NCollection_Array1<gp_Pnt2d>& thePoles,
 
   myMaxDerivInv   = 0.0;
   myMaxDerivInvOk = false;
+  ClearEvalRepresentation();
 }
 
 //=================================================================================================

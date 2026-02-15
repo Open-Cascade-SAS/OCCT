@@ -28,6 +28,11 @@
 class gp_Trsf;
 class Geom_Geometry;
 
+namespace Geom_EvalRepCurveDesc
+{
+class Base;
+}
+
 //! Describes a rational or non-rational Bezier curve
 //! - a non-rational Bezier curve is defined by a table of
 //! poles (also called control points),
@@ -100,6 +105,20 @@ public:
   //! Copy constructor for optimized copying without validation.
   //! @param[in] theOther the Bezier curve to copy from
   Standard_EXPORT Geom_BezierCurve(const Geom_BezierCurve& theOther);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom_EvalRepCurveDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! Increases the degree of a bezier curve. Degree is the new
   //! degree of <me>. Raises ConstructionError
@@ -338,12 +357,13 @@ protected:
             const NCollection_Array1<double>* theWeights);
 
 private:
-  NCollection_Array1<gp_Pnt> myPoles;
-  NCollection_Array1<double> myWeights;
-  bool                       myRational      = false;
-  bool                       myClosed        = false;
-  double                     myMaxDerivInv   = 0.0;
-  bool                       myMaxDerivInvOk = false;
+  NCollection_Array1<gp_Pnt>               myPoles;
+  NCollection_Array1<double>               myWeights;
+  occ::handle<Geom_EvalRepCurveDesc::Base> myEvalRep;
+  bool                                     myRational      = false;
+  bool                                     myClosed        = false;
+  double                                   myMaxDerivInv   = 0.0;
+  bool                                     myMaxDerivInvOk = false;
 };
 
 #endif // _Geom_BezierCurve_HeaderFile

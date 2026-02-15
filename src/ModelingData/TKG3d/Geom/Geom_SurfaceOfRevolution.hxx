@@ -30,6 +30,11 @@ class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
 
+namespace Geom_EvalRepSurfaceDesc
+{
+class Base;
+}
+
 //! Describes a surface of revolution (revolved surface).
 //! Such a surface is obtained by rotating a curve (called
 //! the "meridian") through a complete revolution about
@@ -90,6 +95,20 @@ public:
   //! It is not checked that the revolved curve C doesn't
   //! self-intersects.
   Standard_EXPORT Geom_SurfaceOfRevolution(const occ::handle<Geom_Curve>& C, const gp_Ax1& A1);
+
+  //! Returns true if an evaluation representation is attached.
+  bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
+
+  //! Returns the current evaluation representation descriptor (may be null).
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+
+  //! Sets a new evaluation representation.
+  //! Validates descriptor data and ensures no circular references.
+  Standard_EXPORT void SetEvalRepresentation(
+    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+
+  //! Removes the evaluation representation.
+  void ClearEvalRepresentation() { myEvalRep.Nullify(); }
 
   //! Changes the axis of revolution.
   //! Warnings :
@@ -286,7 +305,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom_SurfaceOfRevolution, Geom_SweptSurface)
 
 private:
-  gp_Pnt loc;
+  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  gp_Pnt                                     loc;
 };
 
 #endif // _Geom_SurfaceOfRevolution_HeaderFile

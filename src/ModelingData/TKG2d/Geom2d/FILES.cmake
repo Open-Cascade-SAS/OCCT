@@ -23,6 +23,8 @@ set(OCCT_Geom2d_FILES
   Geom2d_Direction.hxx
   Geom2d_Ellipse.cxx
   Geom2d_Ellipse.hxx
+  Geom2d_EvalRepCurveDesc.hxx
+  Geom2d_EvalRepUtils.pxx
   Geom2d_Geometry.cxx
   Geom2d_Geometry.hxx
   Geom2d_Hyperbola.cxx

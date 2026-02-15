@@ -19,6 +19,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
+#include "Geom_EvalRepSurfaceDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include "Geom_RevolutionUtils.pxx"
 #include <Geom_SurfaceOfRevolution.hxx>
@@ -36,6 +38,7 @@
 #include <gp_XYZ.hxx>
 #include <Precision.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -62,10 +65,20 @@ typedef gp_XYZ                   XYZ;
 
 //=================================================================================================
 
+void Geom_SurfaceOfRevolution::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
+
+//=================================================================================================
+
 occ::handle<Geom_Geometry> Geom_SurfaceOfRevolution::Copy() const
 {
-
-  return new Geom_SurfaceOfRevolution(basisCurve, Axis());
+  occ::handle<Geom_SurfaceOfRevolution> aCopy = new Geom_SurfaceOfRevolution(basisCurve, Axis());
+  aCopy->myEvalRep                            = Geom_EvalRepUtils::CloneSurfaceDesc(myEvalRep);
+  return aCopy;
 }
 
 //=================================================================================================
@@ -81,6 +94,7 @@ Geom_SurfaceOfRevolution::Geom_SurfaceOfRevolution(const occ::handle<Geom_Curve>
 
 void Geom_SurfaceOfRevolution::UReverse()
 {
+  ClearEvalRepresentation();
   direction.Reverse();
 }
 
@@ -96,7 +110,7 @@ double Geom_SurfaceOfRevolution::UReversedParameter(const double U) const
 
 void Geom_SurfaceOfRevolution::VReverse()
 {
-
+  ClearEvalRepresentation();
   basisCurve->Reverse();
 }
 
@@ -176,6 +190,7 @@ bool Geom_SurfaceOfRevolution::IsVPeriodic() const
 
 void Geom_SurfaceOfRevolution::SetAxis(const Ax1& A1)
 {
+  ClearEvalRepresentation();
   direction = A1.Direction();
   loc       = A1.Location();
 }
@@ -184,6 +199,7 @@ void Geom_SurfaceOfRevolution::SetAxis(const Ax1& A1)
 
 void Geom_SurfaceOfRevolution::SetDirection(const Dir& V)
 {
+  ClearEvalRepresentation();
   direction = V;
 }
 
@@ -191,6 +207,7 @@ void Geom_SurfaceOfRevolution::SetDirection(const Dir& V)
 
 void Geom_SurfaceOfRevolution::SetBasisCurve(const occ::handle<Geom_Curve>& C)
 {
+  ClearEvalRepresentation();
   basisCurve = occ::down_cast<Geom_Curve>(C->Copy());
   smooth     = C->Continuity();
 }
@@ -199,6 +216,7 @@ void Geom_SurfaceOfRevolution::SetBasisCurve(const occ::handle<Geom_Curve>& C)
 
 void Geom_SurfaceOfRevolution::SetLocation(const Pnt& P)
 {
+  ClearEvalRepresentation();
   loc = P;
 }
 
@@ -217,6 +235,13 @@ void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double
 
 std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 {
+  if (const std::optional<gp_Pnt> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<gp_Pnt> aBasisD0 = basisCurve->EvalD0(V);
   if (!aBasisD0)
     return std::nullopt;
@@ -230,6 +255,13 @@ std::optional<gp_Pnt> Geom_SurfaceOfRevolution::EvalD0(const double U, const dou
 std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double U,
                                                                     const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(V);
   if (!aBasisD1)
     return std::nullopt;
@@ -249,6 +281,13 @@ std::optional<Geom_Surface::ResD1> Geom_SurfaceOfRevolution::EvalD1(const double
 std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double U,
                                                                     const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(V);
   if (!aBasisD2)
     return std::nullopt;
@@ -272,6 +311,13 @@ std::optional<Geom_Surface::ResD2> Geom_SurfaceOfRevolution::EvalD2(const double
 std::optional<Geom_Surface::ResD3> Geom_SurfaceOfRevolution::EvalD3(const double U,
                                                                     const double V) const
 {
+  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
+
   std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(V);
   if (!aBasisD3)
     return std::nullopt;
@@ -304,6 +350,12 @@ std::optional<gp_Vec> Geom_SurfaceOfRevolution::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     return std::nullopt;
+  if (const std::optional<gp_Vec> aEvalRepResult =
+        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
+      aEvalRepResult.has_value())
+  {
+    return aEvalRepResult;
+  }
   gp_Vec aCurvePtOrDN;
   if (Nu == 0)
   {
@@ -384,6 +436,7 @@ occ::handle<Geom_Curve> Geom_SurfaceOfRevolution::VIso(const double V) const
 
 void Geom_SurfaceOfRevolution::Transform(const Trsf& T)
 {
+  ClearEvalRepresentation();
   loc.Transform(T);
   direction.Transform(T);
   basisCurve->Transform(T);

@@ -24,6 +24,8 @@
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include "Geom_EvalRepSurfaceDesc.hxx"
+#include "Geom_EvalRepUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -34,9 +36,19 @@
 #include <Standard_DomainError.hxx>
 #include <Standard_NotImplemented.hxx>
 #include <Standard_OutOfRange.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineSurface, Geom_BoundedSurface)
+
+//=================================================================================================
+
+void Geom_BSplineSurface::SetEvalRepresentation(
+  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+{
+  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  myEvalRep = theDesc;
+}
 
 //=================================================================================================
 
@@ -142,6 +154,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
       myVFlatKnots(theOther.myVFlatKnots),
       myUMults(theOther.myUMults),
       myVMults(theOther.myVMults),
+      myEvalRep(Geom_EvalRepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
       myUDeg(theOther.myUDeg),
       myVDeg(theOther.myVDeg),
       myUPeriodic(theOther.myUPeriodic),
@@ -293,6 +306,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const NCollection_Array2<gp_Pnt>& Poles
 
 void Geom_BSplineSurface::ExchangeUV()
 {
+  ClearEvalRepresentation();
   int LC = myPoles.LowerCol();
   int UC = myPoles.UpperCol();
   int LR = myPoles.LowerRow();
@@ -344,6 +358,8 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
   {
     if (UDegree < myUDeg || UDegree > Geom_BSplineSurface::MaxDegree())
       throw Standard_ConstructionError("Geom_BSplineSurface::IncreaseDegree: bad U degree value");
+
+    ClearEvalRepresentation();
 
     int FromK1 = FirstUKnotIndex();
     int ToK2   = LastUKnotIndex();
@@ -405,6 +421,8 @@ void Geom_BSplineSurface::IncreaseDegree(const int UDegree, const int VDegree)
   {
     if (VDegree < myVDeg || VDegree > Geom_BSplineSurface::MaxDegree())
       throw Standard_ConstructionError("Geom_BSplineSurface::IncreaseDegree: bad V degree value");
+
+    ClearEvalRepresentation();
 
     int FromK1 = FirstVKnotIndex();
     int ToK2   = LastVKnotIndex();
@@ -518,6 +536,7 @@ void Geom_BSplineSurface::segment(const double U1,
                                   const bool   SegmentInU,
                                   const bool   SegmentInV)
 {
+  ClearEvalRepresentation();
   double deltaU = U2 - U1;
   if (myUPeriodic)
   {
@@ -876,6 +895,7 @@ void Geom_BSplineSurface::SetUKnot(const int UIndex, const double K)
 
   if (K != myUKnots.Value(NewIndex))
   {
+    ClearEvalRepresentation();
     myUKnots.SetValue(NewIndex, K);
     myMaxDerivInvOk = false;
     updateUKnots();
@@ -908,6 +928,7 @@ void Geom_BSplineSurface::SetUKnots(const NCollection_Array1<double>& UK)
     }
   }
   double K1 = UK(Lower);
+  ClearEvalRepresentation();
   for (int i = Lower; i <= Upper; i++)
   {
     myUKnots.SetValue(i, UK(i));
@@ -965,6 +986,7 @@ void Geom_BSplineSurface::SetVKnot(const int VIndex, const double K)
 
   if (K != myVKnots.Value(NewIndex))
   {
+    ClearEvalRepresentation();
     myVKnots.SetValue(NewIndex, K);
     myMaxDerivInvOk = false;
     updateVKnots();
@@ -997,6 +1019,7 @@ void Geom_BSplineSurface::SetVKnots(const NCollection_Array1<double>& VK)
     }
   }
   double K1 = VK(Lower);
+  ClearEvalRepresentation();
   for (int i = Lower; i <= Upper; i++)
   {
     myVKnots.SetValue(i, VK(i));
@@ -1226,6 +1249,7 @@ void Geom_BSplineSurface::SetWeight(const int UIndex, const int VIndex, const do
   {
     throw Standard_OutOfRange("Geom_BSplineSurface::SetWeight: Index and #pole mismatch");
   }
+  ClearEvalRepresentation();
   if (!myURational && !myVRational)
   {
     // Make an owned copy of the unit weights view before modifying.
@@ -1252,6 +1276,7 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
   {
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightCol: invalid array dimension");
   }
+  ClearEvalRepresentation();
   if (!myURational && !myVRational)
   {
     // Make an owned copy of the unit weights view before modifying.
@@ -1289,6 +1314,7 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
 
     throw Standard_ConstructionError("Geom_BSplineSurface::SetWeightRow: invalid array dimension");
   }
+  ClearEvalRepresentation();
   if (!myURational && !myVRational)
   {
     // Make an owned copy of the unit weights view before modifying.
