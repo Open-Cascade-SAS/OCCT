@@ -3,7 +3,7 @@ puts "0030679: Attached model hangs most of OCCT common functionality"
 puts "========"
 puts ""
 
-puts "REQUIRED ALL: evaluation failed"
+puts "REQUIRED ALL: Geom_OffsetSurface::EvalD0"
 restore [locate_data_file bug30679_face.brep] a
 
 pcurve a

@@ -161,44 +161,44 @@ bool Geom2d_Circle::IsPeriodic() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Geom2d_Circle::EvalD0(const double U) const
+gp_Pnt2d Geom2d_Circle::EvalD0(const double U) const
 {
   return ElCLib::CircleValue(U, pos, radius);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Geom2d_Circle::EvalD1(const double U) const
+Geom2d_Curve::ResD1 Geom2d_Circle::EvalD1(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
-  ElCLib::CircleD1(U, pos, radius, aResult->Point, aResult->D1);
+  Geom2d_Curve::ResD1 aResult;
+  ElCLib::CircleD1(U, pos, radius, aResult.Point, aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Geom2d_Circle::EvalD2(const double U) const
+Geom2d_Curve::ResD2 Geom2d_Circle::EvalD2(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
-  ElCLib::CircleD2(U, pos, radius, aResult->Point, aResult->D1, aResult->D2);
+  Geom2d_Curve::ResD2 aResult;
+  ElCLib::CircleD2(U, pos, radius, aResult.Point, aResult.D1, aResult.D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Geom2d_Circle::EvalD3(const double U) const
+Geom2d_Curve::ResD3 Geom2d_Circle::EvalD3(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
-  ElCLib::CircleD3(U, pos, radius, aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  Geom2d_Curve::ResD3 aResult;
+  ElCLib::CircleD3(U, pos, radius, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Geom2d_Circle::EvalDN(const double U, const int N) const
+gp_Vec2d Geom2d_Circle::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom2d_UndefinedDerivative();
   return ElCLib::CircleDN(U, pos, radius, N);
 }
 

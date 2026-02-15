@@ -319,26 +319,20 @@ public:
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
   Standard_EXPORT gp_Vec DN(const double U, const double V, const int Nu, const int Nv) const final;
 
-  //! Non-throwing point evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<gp_Pnt> EvalD0(double U, double V) const final;
+  //! Point evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(double U, double V) const final;
 
-  //! Non-throwing D1 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(double U,
-                                                                          double V) const final;
+  //! D1 evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT Geom_Surface::ResD1 EvalD1(double U, double V) const final;
 
-  //! Non-throwing D2 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(double U,
-                                                                          double V) const final;
+  //! D2 evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT Geom_Surface::ResD2 EvalD2(double U, double V) const final;
 
-  //! Non-throwing D3 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(double U,
-                                                                          double V) const final;
+  //! D3 evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT Geom_Surface::ResD3 EvalD3(double U, double V) const final;
 
-  //! Non-throwing DN evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<gp_Vec> EvalDN(double U,
-                                                             double V,
-                                                             int    Nu,
-                                                             int    Nv) const final;
+  //! DN evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(double U, double V, int Nu, int Nv) const final;
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.

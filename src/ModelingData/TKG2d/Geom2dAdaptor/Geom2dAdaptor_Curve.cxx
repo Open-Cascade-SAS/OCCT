@@ -683,15 +683,12 @@ gp_Pnt2d Geom2dAdaptor_Curve::Value(const double U) const
 
 void Geom2dAdaptor_Curve::D0(const double U, gp_Pnt2d& P) const
 {
-  std::optional<gp_Pnt2d> aResult = EvalD0(U);
-  if (!aResult)
-    throw Geom2d_UndefinedValue("Geom2dAdaptor_Curve::D0: evaluation failed");
-  P = *aResult;
+  P = EvalD0(U);
 }
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Geom2dAdaptor_Curve::EvalD0(double U) const
+gp_Pnt2d Geom2dAdaptor_Curve::EvalD0(double U) const
 {
   gp_Pnt2d P;
   switch (myTypeCurve)
@@ -759,7 +756,7 @@ std::optional<gp_Pnt2d> Geom2dAdaptor_Curve::EvalD0(double U) const
                                                anOffsetData.Offset,
                                                P))
       {
-        return std::nullopt;
+        throw Geom2d_UndefinedValue("Geom2dAdaptor_Curve::EvalD0: evaluation failed");
       }
       return P;
     }
@@ -773,16 +770,14 @@ std::optional<gp_Pnt2d> Geom2dAdaptor_Curve::EvalD0(double U) const
 
 void Geom2dAdaptor_Curve::D1(const double U, gp_Pnt2d& P, gp_Vec2d& V) const
 {
-  std::optional<Geom2d_Curve::ResD1> aResult = EvalD1(U);
-  if (!aResult)
-    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::D1: evaluation failed");
-  P = aResult->Point;
-  V = aResult->D1;
+  const Geom2d_Curve::ResD1 aResult = EvalD1(U);
+  P                                 = aResult.Point;
+  V                                 = aResult.D1;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Geom2dAdaptor_Curve::EvalD1(double U) const
+Geom2d_Curve::ResD1 Geom2dAdaptor_Curve::EvalD1(double U) const
 {
   Geom2d_Curve::ResD1 aResult;
   switch (myTypeCurve)
@@ -851,7 +846,7 @@ std::optional<Geom2d_Curve::ResD1> Geom2dAdaptor_Curve::EvalD1(double U) const
                                                aResult.Point,
                                                aResult.D1))
       {
-        return std::nullopt;
+        throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::EvalD1: evaluation failed");
       }
       return aResult;
     }
@@ -865,17 +860,15 @@ std::optional<Geom2d_Curve::ResD1> Geom2dAdaptor_Curve::EvalD1(double U) const
 
 void Geom2dAdaptor_Curve::D2(const double U, gp_Pnt2d& P, gp_Vec2d& V1, gp_Vec2d& V2) const
 {
-  std::optional<Geom2d_Curve::ResD2> aResult = EvalD2(U);
-  if (!aResult)
-    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::D2: evaluation failed");
-  P  = aResult->Point;
-  V1 = aResult->D1;
-  V2 = aResult->D2;
+  const Geom2d_Curve::ResD2 aResult = EvalD2(U);
+  P                                 = aResult.Point;
+  V1                                = aResult.D1;
+  V2                                = aResult.D2;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Geom2dAdaptor_Curve::EvalD2(double U) const
+Geom2d_Curve::ResD2 Geom2dAdaptor_Curve::EvalD2(double U) const
 {
   Geom2d_Curve::ResD2 aResult;
   switch (myTypeCurve)
@@ -946,7 +939,7 @@ std::optional<Geom2d_Curve::ResD2> Geom2dAdaptor_Curve::EvalD2(double U) const
                                                aResult.D1,
                                                aResult.D2))
       {
-        return std::nullopt;
+        throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::EvalD2: evaluation failed");
       }
       return aResult;
     }
@@ -964,18 +957,16 @@ void Geom2dAdaptor_Curve::D3(const double U,
                              gp_Vec2d&    V2,
                              gp_Vec2d&    V3) const
 {
-  std::optional<Geom2d_Curve::ResD3> aResult = EvalD3(U);
-  if (!aResult)
-    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::D3: evaluation failed");
-  P  = aResult->Point;
-  V1 = aResult->D1;
-  V2 = aResult->D2;
-  V3 = aResult->D3;
+  const Geom2d_Curve::ResD3 aResult = EvalD3(U);
+  P                                 = aResult.Point;
+  V1                                = aResult.D1;
+  V2                                = aResult.D2;
+  V3                                = aResult.D3;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Geom2dAdaptor_Curve::EvalD3(double U) const
+Geom2d_Curve::ResD3 Geom2dAdaptor_Curve::EvalD3(double U) const
 {
   Geom2d_Curve::ResD3 aResult;
   switch (myTypeCurve)
@@ -1065,7 +1056,7 @@ std::optional<Geom2d_Curve::ResD3> Geom2dAdaptor_Curve::EvalD3(double U) const
                                                aResult.D2,
                                                aResult.D3))
       {
-        return std::nullopt;
+        throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::EvalD3: evaluation failed");
       }
       return aResult;
     }
@@ -1079,15 +1070,12 @@ std::optional<Geom2d_Curve::ResD3> Geom2dAdaptor_Curve::EvalD3(double U) const
 
 gp_Vec2d Geom2dAdaptor_Curve::DN(const double U, const int N) const
 {
-  std::optional<gp_Vec2d> aResult = EvalDN(U, N);
-  if (!aResult)
-    throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::DN: evaluation failed");
-  return *aResult;
+  return EvalDN(U, N);
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Geom2dAdaptor_Curve::EvalDN(double U, int N) const
+gp_Vec2d Geom2dAdaptor_Curve::EvalDN(double U, int N) const
 {
   switch (myTypeCurve)
   {
@@ -1136,7 +1124,7 @@ std::optional<gp_Vec2d> Geom2dAdaptor_Curve::EvalDN(double U, int N) const
                                                N,
                                                aDN))
       {
-        return std::nullopt;
+        throw Geom2d_UndefinedDerivative("Geom2dAdaptor_Curve::EvalDN: evaluation failed");
       }
       return aDN;
     }

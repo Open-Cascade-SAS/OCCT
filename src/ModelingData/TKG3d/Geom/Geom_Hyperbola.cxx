@@ -217,51 +217,51 @@ Ax1 Geom_Hyperbola::Directrix2() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_Hyperbola::EvalD0(const double U) const
+gp_Pnt Geom_Hyperbola::EvalD0(const double U) const
 {
   return ElCLib::HyperbolaValue(U, pos, majorRadius, minorRadius);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD1> Geom_Hyperbola::EvalD1(const double U) const
+Geom_Curve::ResD1 Geom_Hyperbola::EvalD1(const double U) const
 {
-  std::optional<Geom_Curve::ResD1> aResult{std::in_place};
-  ElCLib::HyperbolaD1(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1);
+  Geom_Curve::ResD1 aResult;
+  ElCLib::HyperbolaD1(U, pos, majorRadius, minorRadius, aResult.Point, aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD2> Geom_Hyperbola::EvalD2(const double U) const
+Geom_Curve::ResD2 Geom_Hyperbola::EvalD2(const double U) const
 {
-  std::optional<Geom_Curve::ResD2> aResult{std::in_place};
-  ElCLib::HyperbolaD2(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1, aResult->D2);
+  Geom_Curve::ResD2 aResult;
+  ElCLib::HyperbolaD2(U, pos, majorRadius, minorRadius, aResult.Point, aResult.D1, aResult.D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD3> Geom_Hyperbola::EvalD3(const double U) const
+Geom_Curve::ResD3 Geom_Hyperbola::EvalD3(const double U) const
 {
-  std::optional<Geom_Curve::ResD3> aResult{std::in_place};
+  Geom_Curve::ResD3 aResult;
   ElCLib::HyperbolaD3(U,
                       pos,
                       majorRadius,
                       minorRadius,
-                      aResult->Point,
-                      aResult->D1,
-                      aResult->D2,
-                      aResult->D3);
+                      aResult.Point,
+                      aResult.D1,
+                      aResult.D2,
+                      aResult.D3);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_Hyperbola::EvalDN(const double U, const int N) const
+gp_Vec Geom_Hyperbola::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   return ElCLib::HyperbolaDN(U, pos, majorRadius, minorRadius, N);
 }
 

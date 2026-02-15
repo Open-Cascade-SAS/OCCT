@@ -182,51 +182,51 @@ Ax1 Geom_Ellipse::Directrix2() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_Ellipse::EvalD0(const double U) const
+gp_Pnt Geom_Ellipse::EvalD0(const double U) const
 {
   return ElCLib::EllipseValue(U, pos, majorRadius, minorRadius);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD1> Geom_Ellipse::EvalD1(const double U) const
+Geom_Curve::ResD1 Geom_Ellipse::EvalD1(const double U) const
 {
-  std::optional<Geom_Curve::ResD1> aResult{std::in_place};
-  ElCLib::EllipseD1(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1);
+  Geom_Curve::ResD1 aResult;
+  ElCLib::EllipseD1(U, pos, majorRadius, minorRadius, aResult.Point, aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD2> Geom_Ellipse::EvalD2(const double U) const
+Geom_Curve::ResD2 Geom_Ellipse::EvalD2(const double U) const
 {
-  std::optional<Geom_Curve::ResD2> aResult{std::in_place};
-  ElCLib::EllipseD2(U, pos, majorRadius, minorRadius, aResult->Point, aResult->D1, aResult->D2);
+  Geom_Curve::ResD2 aResult;
+  ElCLib::EllipseD2(U, pos, majorRadius, minorRadius, aResult.Point, aResult.D1, aResult.D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD3> Geom_Ellipse::EvalD3(const double U) const
+Geom_Curve::ResD3 Geom_Ellipse::EvalD3(const double U) const
 {
-  std::optional<Geom_Curve::ResD3> aResult{std::in_place};
+  Geom_Curve::ResD3 aResult;
   ElCLib::EllipseD3(U,
                     pos,
                     majorRadius,
                     minorRadius,
-                    aResult->Point,
-                    aResult->D1,
-                    aResult->D2,
-                    aResult->D3);
+                    aResult.Point,
+                    aResult.D1,
+                    aResult.D2,
+                    aResult.D3);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_Ellipse::EvalDN(const double U, const int N) const
+gp_Vec Geom_Ellipse::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   return ElCLib::EllipseDN(U, pos, majorRadius, minorRadius, N);
 }
 

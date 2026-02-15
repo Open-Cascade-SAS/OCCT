@@ -27,8 +27,6 @@
 #include <Geom_UndefinedDerivative.hxx>
 #include <Geom_UndefinedValue.hxx>
 
-#include <optional>
-
 class gp_Trsf;
 
 //! The abstract class Curve describes the common
@@ -192,91 +190,57 @@ public:
   Standard_EXPORT virtual bool IsCN(const int N) const = 0;
 
   //! Computes the point of parameter U.
-  //! Returns std::nullopt on failure (e.g. OffsetCurve at singular point).
-  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(const double U) const = 0;
+  //! Raises an exception on failure (e.g. OffsetCurve at singular point).
+  [[nodiscard]] Standard_EXPORT virtual gp_Pnt EvalD0(const double U) const = 0;
 
   //! Computes the point and first derivative at parameter U.
-  //! Returns std::nullopt if the curve continuity is not C1.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<ResD1> EvalD1(const double U) const = 0;
+  //! Raises an exception if the curve continuity is not C1.
+  [[nodiscard]] Standard_EXPORT virtual ResD1 EvalD1(const double U) const = 0;
 
   //! Computes the point and first two derivatives at parameter U.
-  //! Returns std::nullopt if the curve continuity is not C2.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<ResD2> EvalD2(const double U) const = 0;
+  //! Raises an exception if the curve continuity is not C2.
+  [[nodiscard]] Standard_EXPORT virtual ResD2 EvalD2(const double U) const = 0;
 
   //! Computes the point and first three derivatives at parameter U.
-  //! Returns std::nullopt if the curve continuity is not C3.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<ResD3> EvalD3(const double U) const = 0;
+  //! Raises an exception if the curve continuity is not C3.
+  [[nodiscard]] Standard_EXPORT virtual ResD3 EvalD3(const double U) const = 0;
 
   //! Computes the Nth derivative at parameter U.
-  //! Returns std::nullopt if the curve continuity is not CN, or N < 1.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(const double U,
-                                                                     const int    N) const = 0;
+  //! Raises an exception if the curve continuity is not CN, or N < 1.
+  [[nodiscard]] Standard_EXPORT virtual gp_Vec EvalDN(const double U, const int N) const = 0;
 
   //! Returns in P the point of parameter U.
-  //! Throws on failure for backward compatibility.
-  inline void D0(const double U, gp_Pnt& P) const
-  {
-    const std::optional<gp_Pnt> aP = EvalD0(U);
-    if (!aP)
-    {
-      throw Geom_UndefinedValue("Geom_Curve::D0(): evaluation failed");
-    }
-    P = *aP;
-  }
+  inline void D0(const double U, gp_Pnt& P) const { P = EvalD0(U); }
 
   //! Returns the point P of parameter U and the first derivative V1.
-  //! Throws on failure for backward compatibility.
   inline void D1(const double U, gp_Pnt& P, gp_Vec& V1) const
   {
-    const std::optional<ResD1> aR = EvalD1(U);
-    if (!aR)
-    {
-      throw Geom_UndefinedDerivative("Geom_Curve::D1(): evaluation failed");
-    }
-    P  = aR->Point;
-    V1 = aR->D1;
+    const ResD1 aR = EvalD1(U);
+    P              = aR.Point;
+    V1             = aR.D1;
   }
 
   //! Returns the point P of parameter U, the first and second derivatives V1 and V2.
-  //! Throws on failure for backward compatibility.
   inline void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
   {
-    const std::optional<ResD2> aR = EvalD2(U);
-    if (!aR)
-    {
-      throw Geom_UndefinedDerivative("Geom_Curve::D2(): evaluation failed");
-    }
-    P  = aR->Point;
-    V1 = aR->D1;
-    V2 = aR->D2;
+    const ResD2 aR = EvalD2(U);
+    P              = aR.Point;
+    V1             = aR.D1;
+    V2             = aR.D2;
   }
 
   //! Returns the point P of parameter U, the first, the second and the third derivative.
-  //! Throws on failure for backward compatibility.
   inline void D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
   {
-    const std::optional<ResD3> aR = EvalD3(U);
-    if (!aR)
-    {
-      throw Geom_UndefinedDerivative("Geom_Curve::D3(): evaluation failed");
-    }
-    P  = aR->Point;
-    V1 = aR->D1;
-    V2 = aR->D2;
-    V3 = aR->D3;
+    const ResD3 aR = EvalD3(U);
+    P              = aR.Point;
+    V1             = aR.D1;
+    V2             = aR.D2;
+    V3             = aR.D3;
   }
 
   //! The returned vector gives the value of the derivative for the order of derivation N.
-  //! Throws on failure for backward compatibility.
-  inline gp_Vec DN(const double U, const int N) const
-  {
-    const std::optional<gp_Vec> aVN = EvalDN(U, N);
-    if (!aVN)
-    {
-      throw Geom_UndefinedDerivative("Geom_Curve::DN(): evaluation failed");
-    }
-    return *aVN;
-  }
+  inline gp_Vec DN(const double U, const int N) const { return EvalDN(U, N); }
 
   //! Computes the point of parameter U on <me>.
   //! It is implemented with D0.

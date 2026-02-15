@@ -106,24 +106,24 @@ public:
   //! Returns the point of parameter U.
   //! P (U) = O + U * Dir where O is the "Location" point of the
   //! line and Dir the direction of the line.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt EvalD0(const double U) const final;
 
   //! Returns the point of parameter U and the first derivative.
-  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Returns the point of parameter U, the first and second
   //! derivatives. The second derivative is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double U) const final;
 
   //! Returns the point of parameter U, the first, second and third
   //! derivatives. The second and third derivatives are vectors with null magnitude for a line.
-  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double U) const final;
 
   //! Returns the vector corresponding to the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this line.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

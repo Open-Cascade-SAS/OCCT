@@ -28,6 +28,7 @@
 #include <Geom_OffsetCurveUtils.pxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <Geom_UndefinedDerivative.hxx>
+#include <Geom_UndefinedValue.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -257,62 +258,53 @@ GeomAbs_Shape Geom_OffsetCurve::Continuity() const
 
 //==================================================================================================
 
-std::optional<gp_Pnt> Geom_OffsetCurve::EvalD0(const double theU) const
+gp_Pnt Geom_OffsetCurve::EvalD0(const double theU) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, theU);
-      aEvalRepResult.has_value())
+  gp_Pnt aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Curve::ResD1> aBasisD1 = basisCurve->EvalD1(theU);
-  if (!aBasisD1)
-    return std::nullopt;
-  gp_Pnt aValue = aBasisD1->Point;
-  if (!Geom_OffsetCurveUtils::CalculateD0(aValue, aBasisD1->D1, direction.XYZ(), offsetValue))
-    return std::nullopt;
+  const Geom_Curve::ResD1 aBasisD1 = basisCurve->EvalD1(theU);
+  gp_Pnt                  aValue   = aBasisD1.Point;
+  if (!Geom_OffsetCurveUtils::CalculateD0(aValue, aBasisD1.D1, direction.XYZ(), offsetValue))
+    throw Geom_UndefinedValue("Geom_OffsetCurve::EvalD0");
   return aValue;
 }
 
 //==================================================================================================
 
-std::optional<Geom_Curve::ResD1> Geom_OffsetCurve::EvalD1(const double theU) const
+Geom_Curve::ResD1 Geom_OffsetCurve::EvalD1(const double theU) const
 {
-  if (const std::optional<Geom_Curve::ResD1> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, theU);
-      aEvalRepResult.has_value())
+  Geom_Curve::ResD1 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Curve::ResD2> aBasisD2 = basisCurve->EvalD2(theU);
-  if (!aBasisD2)
-    return std::nullopt;
-  gp_Pnt aValue = aBasisD2->Point;
-  gp_Vec aD1    = aBasisD2->D1;
-  if (!Geom_OffsetCurveUtils::CalculateD1(aValue, aD1, aBasisD2->D2, direction.XYZ(), offsetValue))
-    return std::nullopt;
+  const Geom_Curve::ResD2 aBasisD2 = basisCurve->EvalD2(theU);
+  gp_Pnt                  aValue   = aBasisD2.Point;
+  gp_Vec                  aD1      = aBasisD2.D1;
+  if (!Geom_OffsetCurveUtils::CalculateD1(aValue, aD1, aBasisD2.D2, direction.XYZ(), offsetValue))
+    throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalD1");
   return Geom_Curve::ResD1{aValue, aD1};
 }
 
 //==================================================================================================
 
-std::optional<Geom_Curve::ResD2> Geom_OffsetCurve::EvalD2(const double theU) const
+Geom_Curve::ResD2 Geom_OffsetCurve::EvalD2(const double theU) const
 {
-  if (const std::optional<Geom_Curve::ResD2> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, theU);
-      aEvalRepResult.has_value())
+  Geom_Curve::ResD2 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(theU);
-  if (!aBasisD3)
-    return std::nullopt;
-  gp_Pnt aValue = aBasisD3->Point;
-  gp_Vec aD1 = aBasisD3->D1, aD2 = aBasisD3->D2, aD3 = aBasisD3->D3;
-  bool   isDirectionChange = false;
+  const Geom_Curve::ResD3 aBasisD3 = basisCurve->EvalD3(theU);
+  gp_Pnt                  aValue   = aBasisD3.Point;
+  gp_Vec                  aD1 = aBasisD3.D1, aD2 = aBasisD3.D2, aD3 = aBasisD3.D3;
+  bool                    isDirectionChange = false;
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
     gp_Vec aDummyD4;
@@ -324,7 +316,7 @@ std::optional<Geom_Curve::ResD2> Geom_OffsetCurve::EvalD2(const double theU) con
                                                  aD3,
                                                  aDummyD4,
                                                  isDirectionChange))
-      return std::nullopt;
+      throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalD2");
   }
   if (!Geom_OffsetCurveUtils::CalculateD2(aValue,
                                           aD1,
@@ -333,31 +325,26 @@ std::optional<Geom_Curve::ResD2> Geom_OffsetCurve::EvalD2(const double theU) con
                                           direction.XYZ(),
                                           offsetValue,
                                           isDirectionChange))
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalD2");
   return Geom_Curve::ResD2{aValue, aD1, aD2};
 }
 
 //==================================================================================================
 
-std::optional<Geom_Curve::ResD3> Geom_OffsetCurve::EvalD3(const double theU) const
+Geom_Curve::ResD3 Geom_OffsetCurve::EvalD3(const double theU) const
 {
-  if (const std::optional<Geom_Curve::ResD3> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, theU);
-      aEvalRepResult.has_value())
+  Geom_Curve::ResD3 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Curve::ResD3> aBasisD3 = basisCurve->EvalD3(theU);
-  if (!aBasisD3)
-    return std::nullopt;
-  std::optional<gp_Vec> aD4Opt = basisCurve->EvalDN(theU, 4);
-  if (!aD4Opt)
-    return std::nullopt;
-  gp_Pnt aValue = aBasisD3->Point;
-  gp_Vec aD1 = aBasisD3->D1, aD2 = aBasisD3->D2, aD3 = aBasisD3->D3;
-  gp_Vec aD4               = *aD4Opt;
-  bool   isDirectionChange = false;
+  const Geom_Curve::ResD3 aBasisD3 = basisCurve->EvalD3(theU);
+  const gp_Vec            aD4Basis = basisCurve->EvalDN(theU, 4);
+  gp_Pnt                  aValue   = aBasisD3.Point;
+  gp_Vec                  aD1 = aBasisD3.D1, aD2 = aBasisD3.D2, aD3 = aBasisD3.D3;
+  gp_Vec                  aD4               = aD4Basis;
+  bool                    isDirectionChange = false;
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
     if (!Geom_OffsetCurveUtils::AdjustDerivative(*basisCurve,
@@ -368,7 +355,7 @@ std::optional<Geom_Curve::ResD3> Geom_OffsetCurve::EvalD3(const double theU) con
                                                  aD3,
                                                  aD4,
                                                  isDirectionChange))
-      return std::nullopt;
+      throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalD3");
   }
   if (!Geom_OffsetCurveUtils::CalculateD3(aValue,
                                           aD1,
@@ -378,35 +365,31 @@ std::optional<Geom_Curve::ResD3> Geom_OffsetCurve::EvalD3(const double theU) con
                                           direction.XYZ(),
                                           offsetValue,
                                           isDirectionChange))
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalD3");
   return Geom_Curve::ResD3{aValue, aD1, aD2, aD3};
 }
 
 //==================================================================================================
 
-std::optional<gp_Vec> Geom_OffsetCurve::EvalDN(const double U, const int N) const
+gp_Vec Geom_OffsetCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
-  if (const std::optional<gp_Vec> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
-      aEvalRepResult.has_value())
+    throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalDN");
+  gp_Vec aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }
   switch (N)
   {
     case 1: {
-      std::optional<Geom_Curve::ResD1> aR = EvalD1(U);
-      return aR ? std::optional<gp_Vec>(aR->D1) : std::nullopt;
+      return EvalD1(U).D1;
     }
     case 2: {
-      std::optional<Geom_Curve::ResD2> aR = EvalD2(U);
-      return aR ? std::optional<gp_Vec>(aR->D2) : std::nullopt;
+      return EvalD2(U).D2;
     }
     case 3: {
-      std::optional<Geom_Curve::ResD3> aR = EvalD3(U);
-      return aR ? std::optional<gp_Vec>(aR->D3) : std::nullopt;
+      return EvalD3(U).D3;
     }
     default:
       return basisCurve->EvalDN(U, N);

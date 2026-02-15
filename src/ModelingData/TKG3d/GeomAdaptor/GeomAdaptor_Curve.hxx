@@ -270,20 +270,20 @@ public:
 
   Standard_EXPORT occ::handle<Geom_OffsetCurve> OffsetCurve() const override;
 
-  //! Non-throwing point evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<gp_Pnt> EvalD0(double U) const final;
+  //! Point evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(double U) const final;
 
-  //! Non-throwing D1 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(double U) const final;
+  //! D1 evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(double U) const final;
 
-  //! Non-throwing D2 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(double U) const final;
+  //! D2 evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD2 EvalD2(double U) const final;
 
-  //! Non-throwing D3 evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(double U) const final;
+  //! D3 evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD3 EvalD3(double U) const final;
 
-  //! Non-throwing DN evaluation. Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT std::optional<gp_Vec> EvalDN(double U, int N) const final;
+  //! DN evaluation. Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(double U, int N) const final;
 
   friend class GeomAdaptor_Surface;
 

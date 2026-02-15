@@ -108,11 +108,10 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V) const
+gp_Pnt Geom_BSplineSurface::EvalD0(const double U, const double V) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  gp_Pnt aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -144,11 +143,10 @@ std::optional<gp_Pnt> Geom_BSplineSurface::EvalD0(const double U, const double V
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, const double V) const
+Geom_Surface::ResD1 Geom_BSplineSurface::EvalD1(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD1 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -165,7 +163,7 @@ std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, c
   BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
-  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
+  Geom_Surface::ResD1 aResult;
   BSplSLib::D1(aNewU,
                aNewV,
                uindex,
@@ -182,19 +180,18 @@ std::optional<Geom_Surface::ResD1> Geom_BSplineSurface::EvalD1(const double U, c
                myVRational,
                myUPeriodic,
                myVPeriodic,
-               aResult->Point,
-               aResult->D1U,
-               aResult->D1V);
+               aResult.Point,
+               aResult.D1U,
+               aResult.D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, const double V) const
+Geom_Surface::ResD2 Geom_BSplineSurface::EvalD2(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD2 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -211,7 +208,7 @@ std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, c
   BSplCLib::LocateParameter(myVDeg, myVKnots, &myVMults, V, myVPeriodic, vindex, aNewV);
   vindex = BSplCLib::FlatIndex(myVDeg, vindex, myVMults, myVPeriodic);
 
-  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
+  Geom_Surface::ResD2 aResult;
   BSplSLib::D2(aNewU,
                aNewV,
                uindex,
@@ -228,27 +225,26 @@ std::optional<Geom_Surface::ResD2> Geom_BSplineSurface::EvalD2(const double U, c
                myVRational,
                myUPeriodic,
                myVPeriodic,
-               aResult->Point,
-               aResult->D1U,
-               aResult->D1V,
-               aResult->D2U,
-               aResult->D2V,
-               aResult->D2UV);
+               aResult.Point,
+               aResult.D1U,
+               aResult.D1V,
+               aResult.D2U,
+               aResult.D2V,
+               aResult.D2UV);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_BSplineSurface::EvalD3(const double U, const double V) const
+Geom_Surface::ResD3 Geom_BSplineSurface::EvalD3(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD3 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
+  Geom_Surface::ResD3 aResult;
   BSplSLib::D3(U,
                V,
                0,
@@ -265,32 +261,28 @@ std::optional<Geom_Surface::ResD3> Geom_BSplineSurface::EvalD3(const double U, c
                myVRational,
                myUPeriodic,
                myVPeriodic,
-               aResult->Point,
-               aResult->D1U,
-               aResult->D1V,
-               aResult->D2U,
-               aResult->D2V,
-               aResult->D2UV,
-               aResult->D3U,
-               aResult->D3V,
-               aResult->D3UUV,
-               aResult->D3UVV);
+               aResult.Point,
+               aResult.D1U,
+               aResult.D1V,
+               aResult.D2U,
+               aResult.D2V,
+               aResult.D2UV,
+               aResult.D3U,
+               aResult.D3V,
+               aResult.D3UUV,
+               aResult.D3UVV);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_BSplineSurface::EvalDN(const double U,
-                                                  const double V,
-                                                  const int    Nu,
-                                                  const int    Nv) const
+gp_Vec Geom_BSplineSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
 
-  if (const std::optional<gp_Vec> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
-      aEvalRepResult.has_value())
+  gp_Vec aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }

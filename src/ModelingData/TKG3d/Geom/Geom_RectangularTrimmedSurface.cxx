@@ -362,44 +362,41 @@ GeomAbs_Shape Geom_RectangularTrimmedSurface::Continuity() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_RectangularTrimmedSurface::EvalD0(const double U, const double V) const
+gp_Pnt Geom_RectangularTrimmedSurface::EvalD0(const double U, const double V) const
 {
   return basisSurf->EvalD0(U, V);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_RectangularTrimmedSurface::EvalD1(const double U,
-                                                                          const double V) const
+Geom_Surface::ResD1 Geom_RectangularTrimmedSurface::EvalD1(const double U, const double V) const
 {
   return basisSurf->EvalD1(U, V);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_RectangularTrimmedSurface::EvalD2(const double U,
-                                                                          const double V) const
+Geom_Surface::ResD2 Geom_RectangularTrimmedSurface::EvalD2(const double U, const double V) const
 {
   return basisSurf->EvalD2(U, V);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_RectangularTrimmedSurface::EvalD3(const double U,
-                                                                          const double V) const
+Geom_Surface::ResD3 Geom_RectangularTrimmedSurface::EvalD3(const double U, const double V) const
 {
   return basisSurf->EvalD3(U, V);
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_RectangularTrimmedSurface::EvalDN(const double U,
-                                                             const double V,
-                                                             const int    Nu,
-                                                             const int    Nv) const
+gp_Vec Geom_RectangularTrimmedSurface::EvalDN(const double U,
+                                              const double V,
+                                              const int    Nu,
+                                              const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   return basisSurf->EvalDN(U, V, Nu, Nv);
 }
 

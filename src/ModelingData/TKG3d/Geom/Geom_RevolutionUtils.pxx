@@ -21,8 +21,6 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 
-#include <optional>
-
 //! @file Geom_RevolutionUtils.pxx
 //! @brief Shared utility functions for surface of revolution evaluation.
 //!
@@ -266,7 +264,7 @@ inline gp_Vec CalculateDN(const gp_Vec& theCurvePtOrDN,
   return aResult;
 }
 
-//! Evaluates point on surface of revolution using non-throwing EvalD0.
+//! Evaluates point on surface of revolution using EvalD0.
 //! @tparam CurveType Type supporting EvalD0(param) method
 //! @param theU Rotation angle parameter
 //! @param theV Parameter along the basis curve
@@ -281,14 +279,12 @@ inline bool D0(const double     theU,
                const gp_Ax1&    theAxis,
                gp_Pnt&          theP)
 {
-  std::optional<gp_Pnt> aCurveD0 = theBasis.EvalD0(theV);
-  if (!aCurveD0)
-    return false;
-  CalculateD0(*aCurveD0, theU, theAxis, theP);
+  const gp_Pnt aCurveD0 = theBasis.EvalD0(theV);
+  CalculateD0(aCurveD0, theU, theAxis, theP);
   return true;
 }
 
-//! Evaluates point and first derivatives on surface of revolution using non-throwing EvalD1.
+//! Evaluates point and first derivatives on surface of revolution using EvalD1.
 //! @tparam CurveType Type supporting EvalD1(param) method
 //! @param theU Rotation angle parameter
 //! @param theV Parameter along the basis curve
@@ -307,14 +303,12 @@ inline bool D1(const double     theU,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V)
 {
-  std::optional<Geom_Curve::ResD1> aCurveD1 = theBasis.EvalD1(theV);
-  if (!aCurveD1)
-    return false;
-  CalculateD1(aCurveD1->Point, aCurveD1->D1, theU, theAxis, theP, theD1U, theD1V);
+  const Geom_Curve::ResD1 aCurveD1 = theBasis.EvalD1(theV);
+  CalculateD1(aCurveD1.Point, aCurveD1.D1, theU, theAxis, theP, theD1U, theD1V);
   return true;
 }
 
-//! Evaluates point, first and second derivatives on surface of revolution using non-throwing
+//! Evaluates point, first and second derivatives on surface of revolution using
 //! EvalD2.
 //! @tparam CurveType Type supporting EvalD2(param) method
 //! @param theU Rotation angle parameter
@@ -340,12 +334,10 @@ inline bool D2(const double     theU,
                gp_Vec&          theD2V,
                gp_Vec&          theD2UV)
 {
-  std::optional<Geom_Curve::ResD2> aCurveD2 = theBasis.EvalD2(theV);
-  if (!aCurveD2)
-    return false;
-  CalculateD2(aCurveD2->Point,
-              aCurveD2->D1,
-              aCurveD2->D2,
+  const Geom_Curve::ResD2 aCurveD2 = theBasis.EvalD2(theV);
+  CalculateD2(aCurveD2.Point,
+              aCurveD2.D1,
+              aCurveD2.D2,
               theU,
               theAxis,
               theP,
@@ -358,7 +350,7 @@ inline bool D2(const double     theU,
 }
 
 //! Evaluates point and all derivatives up to third order on surface of revolution
-//! using non-throwing EvalD3.
+//! using EvalD3.
 //! @tparam CurveType Type supporting EvalD3(param) method
 //! @param theU Rotation angle parameter
 //! @param theV Parameter along the basis curve
@@ -391,13 +383,11 @@ inline bool D3(const double     theU,
                gp_Vec&          theD3UUV,
                gp_Vec&          theD3UVV)
 {
-  std::optional<Geom_Curve::ResD3> aCurveD3 = theBasis.EvalD3(theV);
-  if (!aCurveD3)
-    return false;
-  CalculateD3(aCurveD3->Point,
-              aCurveD3->D1,
-              aCurveD3->D2,
-              aCurveD3->D3,
+  const Geom_Curve::ResD3 aCurveD3 = theBasis.EvalD3(theV);
+  CalculateD3(aCurveD3.Point,
+              aCurveD3.D1,
+              aCurveD3.D2,
+              aCurveD3.D3,
               theU,
               theAxis,
               theP,
@@ -413,7 +403,7 @@ inline bool D3(const double     theU,
   return true;
 }
 
-//! Evaluates N-th derivative on surface of revolution using non-throwing EvalD0/EvalDN.
+//! Evaluates N-th derivative on surface of revolution using EvalD0/EvalDN.
 //! @tparam CurveType Type supporting EvalD0, EvalDN methods
 //! @param theU Rotation angle parameter
 //! @param theV Parameter along the basis curve
@@ -435,24 +425,16 @@ inline bool DN(const double     theU,
   gp_Vec aCurvePtOrDN;
   if (theDerU == 0)
   {
-    std::optional<gp_Vec> aDNOpt = theBasis.EvalDN(theV, theDerV);
-    if (!aDNOpt)
-      return false;
-    aCurvePtOrDN = *aDNOpt;
+    aCurvePtOrDN = theBasis.EvalDN(theV, theDerV);
   }
   else if (theDerV == 0)
   {
-    std::optional<gp_Pnt> aPOpt = theBasis.EvalD0(theV);
-    if (!aPOpt)
-      return false;
-    aCurvePtOrDN = gp_Vec(aPOpt->XYZ() - theAxis.Location().XYZ());
+    const gp_Pnt aP = theBasis.EvalD0(theV);
+    aCurvePtOrDN    = gp_Vec(aP.XYZ() - theAxis.Location().XYZ());
   }
   else
   {
-    std::optional<gp_Vec> aDNOpt = theBasis.EvalDN(theV, theDerV);
-    if (!aDNOpt)
-      return false;
-    aCurvePtOrDN = *aDNOpt;
+    aCurvePtOrDN = theBasis.EvalDN(theV, theDerV);
   }
 
   theDN = CalculateDN(aCurvePtOrDN, theU, theAxis, theDerU, theDerV);

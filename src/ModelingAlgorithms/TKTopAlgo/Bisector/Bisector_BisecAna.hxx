@@ -128,15 +128,15 @@ public:
 
   Standard_EXPORT GeomAbs_Shape Continuity() const override;
 
-  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const override;
+  Standard_EXPORT gp_Pnt2d EvalD0(const double U) const override;
 
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(const double U) const override;
+  Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(const double U) const override;
 
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(const double U) const override;
+  Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(const double U) const override;
 
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(const double U) const override;
+  Standard_EXPORT Geom2d_Curve::ResD3 EvalD3(const double U) const override;
 
-  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const override;
+  Standard_EXPORT gp_Vec2d EvalDN(const double U, const int N) const override;
 
   Standard_EXPORT occ::handle<Geom2d_Curve> Geom2dCurve() const;
 
