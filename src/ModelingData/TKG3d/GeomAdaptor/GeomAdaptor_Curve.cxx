@@ -746,8 +746,8 @@ gp_Pnt GeomAdaptor_Curve::EvalD0(double U) const
 void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
 {
   const Geom_Curve::ResD1 aResult = EvalD1(U);
-  P = aResult.Point;
-  V = aResult.D1;
+  P                               = aResult.Point;
+  V                               = aResult.D1;
 }
 
 //=================================================================================================
@@ -837,9 +837,9 @@ Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(double U) const
 void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
 {
   const Geom_Curve::ResD2 aResult = EvalD2(U);
-  P  = aResult.Point;
-  V1 = aResult.D1;
-  V2 = aResult.D2;
+  P                               = aResult.Point;
+  V1                              = aResult.D1;
+  V2                              = aResult.D2;
 }
 
 //=================================================================================================
@@ -931,10 +931,10 @@ Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(double U) const
 void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
 {
   const Geom_Curve::ResD3 aResult = EvalD3(U);
-  P  = aResult.Point;
-  V1 = aResult.D1;
-  V2 = aResult.D2;
-  V3 = aResult.D3;
+  P                               = aResult.Point;
+  V1                              = aResult.D1;
+  V2                              = aResult.D2;
+  V3                              = aResult.D3;
 }
 
 //=================================================================================================

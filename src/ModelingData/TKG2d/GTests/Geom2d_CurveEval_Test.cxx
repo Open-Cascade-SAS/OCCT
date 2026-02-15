@@ -40,7 +40,7 @@ TEST(Geom2d_CurveEvalTest, Circle_EvalD0D1_ValidResults)
   const double aU = M_PI / 4.0;
 
   // EvalD0
-  const gp_Pnt2d aD0 = aCurve->EvalD0(aU);
+  const gp_Pnt2d aD0   = aCurve->EvalD0(aU);
   const double   aDist = aD0.Distance(gp_Pnt2d(0.0, 0.0));
   EXPECT_NEAR(aDist, 4.0, Precision::Confusion());
 

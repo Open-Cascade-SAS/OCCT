@@ -466,10 +466,7 @@ Geom_Surface::ResD3 Geom_OffsetSurface::EvalD3(const double U, const double V) c
 
 //=================================================================================================
 
-gp_Vec Geom_OffsetSurface::EvalDN(const double U,
-                                                 const double V,
-                                                 const int    Nu,
-                                                 const int    Nv) const
+gp_Vec Geom_OffsetSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalDN");

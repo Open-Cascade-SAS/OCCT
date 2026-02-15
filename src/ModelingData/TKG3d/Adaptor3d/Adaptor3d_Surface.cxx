@@ -465,10 +465,7 @@ Geom_Surface::ResD3 Adaptor3d_Surface::EvalD3(double theU, double theV) const
 
 //=================================================================================================
 
-gp_Vec Adaptor3d_Surface::EvalDN(double theU,
-                                                double theV,
-                                                int    theNu,
-                                                int    theNv) const
+gp_Vec Adaptor3d_Surface::EvalDN(double theU, double theV, int theNu, int theNv) const
 {
   return DN(theU, theV, theNu, theNv);
 }

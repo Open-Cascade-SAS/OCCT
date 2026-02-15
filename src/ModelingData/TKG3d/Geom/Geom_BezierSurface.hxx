@@ -452,19 +452,16 @@ public:
 
   //! Computes the point and first partial derivatives at (U, V).
   //! Raises an exception if the surface continuity is not C1.
-  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U,
-                                                            const double V) const final;
+  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U, const double V) const final;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
   //! Raises an exception if the surface continuity is not C2.
-  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U,
-                                                            const double V) const final;
+  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U, const double V) const final;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Note: The parameters U and V can be outside the bounds of the surface.
   //! Raises an exception if the surface continuity is not C3.
-  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U,
-                                                            const double V) const final;
+  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U, const double V) const final;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
@@ -475,9 +472,9 @@ public:
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1, or Nu or Nv is negative.
   Standard_EXPORT gp_Vec EvalDN(const double U,
-                                               const double V,
-                                               const int    Nu,
-                                               const int    Nv) const final;
+                                const double V,
+                                const int    Nu,
+                                const int    Nv) const final;
 
   //! Returns the number of poles in the U direction.
   Standard_EXPORT int NbUPoles() const;

@@ -188,9 +188,9 @@ inline bool offsetD1(const double                           theU,
   if (!theData.EquivalentAdaptor.IsNull())
   {
     const Geom_Surface::ResD1 aResult = theData.EquivalentAdaptor->EvalD1(theU, theV);
-    theValue = aResult.Point;
-    theD1U   = aResult.D1U;
-    theD1V   = aResult.D1V;
+    theValue                          = aResult.Point;
+    theD1U                            = aResult.D1U;
+    theD1V                            = aResult.D1V;
     return true;
   }
   return Geom_OffsetSurfaceUtils::EvaluateD1(theU,
@@ -219,12 +219,12 @@ inline bool offsetD2(const double                           theU,
   if (!theData.EquivalentAdaptor.IsNull())
   {
     const Geom_Surface::ResD2 aResult = theData.EquivalentAdaptor->EvalD2(theU, theV);
-    theValue = aResult.Point;
-    theD1U   = aResult.D1U;
-    theD1V   = aResult.D1V;
-    theD2U   = aResult.D2U;
-    theD2V   = aResult.D2V;
-    theD2UV  = aResult.D2UV;
+    theValue                          = aResult.Point;
+    theD1U                            = aResult.D1U;
+    theD1V                            = aResult.D1V;
+    theD2U                            = aResult.D2U;
+    theD2V                            = aResult.D2V;
+    theD2UV                           = aResult.D2UV;
     return true;
   }
   return Geom_OffsetSurfaceUtils::EvaluateD2(theU,
@@ -260,16 +260,16 @@ inline bool offsetD3(const double                           theU,
   if (!theData.EquivalentAdaptor.IsNull())
   {
     const Geom_Surface::ResD3 aResult = theData.EquivalentAdaptor->EvalD3(theU, theV);
-    theValue = aResult.Point;
-    theD1U   = aResult.D1U;
-    theD1V   = aResult.D1V;
-    theD2U   = aResult.D2U;
-    theD2V   = aResult.D2V;
-    theD2UV  = aResult.D2UV;
-    theD3U   = aResult.D3U;
-    theD3V   = aResult.D3V;
-    theD3UUV = aResult.D3UUV;
-    theD3UVV = aResult.D3UVV;
+    theValue                          = aResult.Point;
+    theD1U                            = aResult.D1U;
+    theD1V                            = aResult.D1V;
+    theD2U                            = aResult.D2U;
+    theD2V                            = aResult.D2V;
+    theD2UV                           = aResult.D2UV;
+    theD3U                            = aResult.D3U;
+    theD3V                            = aResult.D3V;
+    theD3UUV                          = aResult.D3UUV;
+    theD3UVV                          = aResult.D3UVV;
     return true;
   }
   return Geom_OffsetSurfaceUtils::EvaluateD3(theU,
@@ -1116,9 +1116,9 @@ void GeomAdaptor_Surface::D1(const double U,
                              gp_Vec&      D1V) const
 {
   const Geom_Surface::ResD1 aResult = EvalD1(U, V);
-  P   = aResult.Point;
-  D1U = aResult.D1U;
-  D1V = aResult.D1V;
+  P                                 = aResult.Point;
+  D1U                               = aResult.D1U;
+  D1V                               = aResult.D1V;
 }
 
 //=================================================================================================
@@ -1263,12 +1263,12 @@ void GeomAdaptor_Surface::D2(const double U,
                              gp_Vec&      D2UV) const
 {
   const Geom_Surface::ResD2 aResult = EvalD2(U, V);
-  P    = aResult.Point;
-  D1U  = aResult.D1U;
-  D1V  = aResult.D1V;
-  D2U  = aResult.D2U;
-  D2V  = aResult.D2V;
-  D2UV = aResult.D2UV;
+  P                                 = aResult.Point;
+  D1U                               = aResult.D1U;
+  D1V                               = aResult.D1V;
+  D2U                               = aResult.D2U;
+  D2V                               = aResult.D2V;
+  D2UV                              = aResult.D2UV;
 }
 
 //=================================================================================================
@@ -1480,16 +1480,16 @@ void GeomAdaptor_Surface::D3(const double U,
                              gp_Vec&      D3UVV) const
 {
   const Geom_Surface::ResD3 aResult = EvalD3(U, V);
-  P     = aResult.Point;
-  D1U   = aResult.D1U;
-  D1V   = aResult.D1V;
-  D2U   = aResult.D2U;
-  D2V   = aResult.D2V;
-  D2UV  = aResult.D2UV;
-  D3U   = aResult.D3U;
-  D3V   = aResult.D3V;
-  D3UUV = aResult.D3UUV;
-  D3UVV = aResult.D3UVV;
+  P                                 = aResult.Point;
+  D1U                               = aResult.D1U;
+  D1V                               = aResult.D1V;
+  D2U                               = aResult.D2U;
+  D2V                               = aResult.D2V;
+  D2UV                              = aResult.D2UV;
+  D3U                               = aResult.D3U;
+  D3V                               = aResult.D3V;
+  D3UUV                             = aResult.D3UUV;
+  D3UVV                             = aResult.D3UVV;
 }
 
 //=================================================================================================

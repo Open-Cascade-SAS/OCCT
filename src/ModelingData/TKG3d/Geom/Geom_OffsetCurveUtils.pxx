@@ -407,7 +407,7 @@ bool EvaluateD0(double                theU,
                 gp_Pnt&               theValue)
 {
   const Geom_Curve::ResD1 aD1 = theBasisCurve->EvalD1(theU);
-  theValue = aD1.Point;
+  theValue                    = aD1.Point;
   return CalculateD0(theValue, aD1.D1, theDir.XYZ(), theOffset);
 }
 
@@ -431,8 +431,8 @@ bool EvaluateD1(double                theU,
                 gp_Vec&               theD1)
 {
   const Geom_Curve::ResD2 aD2 = theBasisCurve->EvalD2(theU);
-  theValue = aD2.Point;
-  theD1    = aD2.D1;
+  theValue                    = aD2.Point;
+  theD1                       = aD2.D1;
   return CalculateD1(theValue, theD1, aD2.D2, theDir.XYZ(), theOffset);
 }
 
@@ -459,10 +459,10 @@ bool EvaluateD2(double                theU,
                 gp_Vec&               theD2)
 {
   const Geom_Curve::ResD3 aD3Result = theBasisCurve->EvalD3(theU);
-  theValue   = aD3Result.Point;
-  theD1      = aD3Result.D1;
-  theD2      = aD3Result.D2;
-  gp_Vec aD3 = aD3Result.D3;
+  theValue                          = aD3Result.Point;
+  theD1                             = aD3Result.D1;
+  theD2                             = aD3Result.D2;
+  gp_Vec aD3                        = aD3Result.D3;
 
   bool isDirectionChange = false;
   if (theD1.SquareMagnitude() <= gp::Resolution())
@@ -500,10 +500,10 @@ bool EvaluateD3(double                theU,
                 gp_Vec&               theD3)
 {
   const Geom_Curve::ResD3 aD3Result = theBasisCurve->EvalD3(theU);
-  theValue = aD3Result.Point;
-  theD1    = aD3Result.D1;
-  theD2    = aD3Result.D2;
-  theD3    = aD3Result.D3;
+  theValue                          = aD3Result.Point;
+  theD1                             = aD3Result.D1;
+  theD2                             = aD3Result.D2;
+  theD3                             = aD3Result.D3;
 
   gp_Vec aD4 = theBasisCurve->EvalDN(theU, 4);
 

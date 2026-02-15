@@ -156,15 +156,14 @@ gp_Pnt Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, const double V) con
   }
 
   const gp_Pnt aBasisD0 = basisCurve->EvalD0(U);
-  gp_Pnt aP;
+  gp_Pnt       aP;
   Geom_ExtrusionUtils::CalculateD0(aBasisD0, V, direction.XYZ(), aP);
   return aP;
 }
 
 //=================================================================================================
 
-Geom_Surface::ResD1 Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
-                                                                         const double V) const
+Geom_Surface::ResD1 Geom_SurfaceOfLinearExtrusion::EvalD1(const double U, const double V) const
 {
   Geom_Surface::ResD1 aEvalRepResult;
   if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
@@ -173,7 +172,7 @@ Geom_Surface::ResD1 Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
   }
 
   const Geom_Curve::ResD1 aBasisD1 = basisCurve->EvalD1(U);
-  Geom_Surface::ResD1 aResult;
+  Geom_Surface::ResD1     aResult;
   Geom_ExtrusionUtils::CalculateD1(aBasisD1.Point,
                                    aBasisD1.D1,
                                    V,
@@ -186,8 +185,7 @@ Geom_Surface::ResD1 Geom_SurfaceOfLinearExtrusion::EvalD1(const double U,
 
 //=================================================================================================
 
-Geom_Surface::ResD2 Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
-                                                                         const double V) const
+Geom_Surface::ResD2 Geom_SurfaceOfLinearExtrusion::EvalD2(const double U, const double V) const
 {
   Geom_Surface::ResD2 aEvalRepResult;
   if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
@@ -196,7 +194,7 @@ Geom_Surface::ResD2 Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
   }
 
   const Geom_Curve::ResD2 aBasisD2 = basisCurve->EvalD2(U);
-  Geom_Surface::ResD2 aResult;
+  Geom_Surface::ResD2     aResult;
   Geom_ExtrusionUtils::CalculateD2(aBasisD2.Point,
                                    aBasisD2.D1,
                                    aBasisD2.D2,
@@ -213,8 +211,7 @@ Geom_Surface::ResD2 Geom_SurfaceOfLinearExtrusion::EvalD2(const double U,
 
 //=================================================================================================
 
-Geom_Surface::ResD3 Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
-                                                                         const double V) const
+Geom_Surface::ResD3 Geom_SurfaceOfLinearExtrusion::EvalD3(const double U, const double V) const
 {
   Geom_Surface::ResD3 aEvalRepResult;
   if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
@@ -223,7 +220,7 @@ Geom_Surface::ResD3 Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
   }
 
   const Geom_Curve::ResD3 aBasisD3 = basisCurve->EvalD3(U);
-  Geom_Surface::ResD3 aResult;
+  Geom_Surface::ResD3     aResult;
   Geom_ExtrusionUtils::CalculateD3(aBasisD3.Point,
                                    aBasisD3.D1,
                                    aBasisD3.D2,
@@ -246,9 +243,9 @@ Geom_Surface::ResD3 Geom_SurfaceOfLinearExtrusion::EvalD3(const double U,
 //=================================================================================================
 
 gp_Vec Geom_SurfaceOfLinearExtrusion::EvalDN(const double U,
-                                                            const double V,
-                                                            const int    Nu,
-                                                            const int    Nv) const
+                                             const double V,
+                                             const int    Nu,
+                                             const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     throw Geom_UndefinedDerivative();

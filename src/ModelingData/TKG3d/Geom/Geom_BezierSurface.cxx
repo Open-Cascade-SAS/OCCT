@@ -1593,10 +1593,7 @@ Geom_Surface::ResD3 Geom_BezierSurface::EvalD3(const double U, const double V) c
 
 //=================================================================================================
 
-gp_Vec Geom_BezierSurface::EvalDN(const double U,
-                                                 const double V,
-                                                 const int    Nu,
-                                                 const int    Nv) const
+gp_Vec Geom_BezierSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
   gp_Vec aEvalRepResult;
   if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))

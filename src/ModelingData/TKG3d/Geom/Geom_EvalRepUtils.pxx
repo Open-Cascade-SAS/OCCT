@@ -37,13 +37,13 @@ bool TryEvalCurveD0(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc,
                     gp_Pnt&                                         theResult);
 bool TryEvalCurveD1(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc,
                     const double                                    theU,
-                    Geom_Curve::ResD1&                             theResult);
+                    Geom_Curve::ResD1&                              theResult);
 bool TryEvalCurveD2(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc,
                     const double                                    theU,
-                    Geom_Curve::ResD2&                             theResult);
+                    Geom_Curve::ResD2&                              theResult);
 bool TryEvalCurveD3(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc,
                     const double                                    theU,
-                    Geom_Curve::ResD3&                             theResult);
+                    Geom_Curve::ResD3&                              theResult);
 bool TryEvalCurveDN(const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc,
                     const double                                    theU,
                     const int                                       theN,
@@ -56,15 +56,15 @@ bool TryEvalSurfaceD0(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc,
 bool TryEvalSurfaceD1(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc,
                       const double                                      theU,
                       const double                                      theV,
-                      Geom_Surface::ResD1&                             theResult);
+                      Geom_Surface::ResD1&                              theResult);
 bool TryEvalSurfaceD2(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc,
                       const double                                      theU,
                       const double                                      theV,
-                      Geom_Surface::ResD2&                             theResult);
+                      Geom_Surface::ResD2&                              theResult);
 bool TryEvalSurfaceD3(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc,
                       const double                                      theU,
                       const double                                      theV,
-                      Geom_Surface::ResD3&                             theResult);
+                      Geom_Surface::ResD3&                              theResult);
 bool TryEvalSurfaceDN(const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc,
                       const double                                      theU,
                       const double                                      theV,
@@ -77,13 +77,13 @@ bool TryEvalCurveD0Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
                           gp_Pnt&                              theResult);
 bool TryEvalCurveD1Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
                           const double                         theU,
-                          Geom_Curve::ResD1&                  theResult);
+                          Geom_Curve::ResD1&                   theResult);
 bool TryEvalCurveD2Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
                           const double                         theU,
-                          Geom_Curve::ResD2&                  theResult);
+                          Geom_Curve::ResD2&                   theResult);
 bool TryEvalCurveD3Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
                           const double                         theU,
-                          Geom_Curve::ResD3&                  theResult);
+                          Geom_Curve::ResD3&                   theResult);
 bool TryEvalCurveDNMapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
                           const double                         theU,
                           const int                            theN,
@@ -96,15 +96,15 @@ bool TryEvalSurfaceD0Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
 bool TryEvalSurfaceD1Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
                             const double                           theU,
                             const double                           theV,
-                            Geom_Surface::ResD1&                  theResult);
+                            Geom_Surface::ResD1&                   theResult);
 bool TryEvalSurfaceD2Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
                             const double                           theU,
                             const double                           theV,
-                            Geom_Surface::ResD2&                  theResult);
+                            Geom_Surface::ResD2&                   theResult);
 bool TryEvalSurfaceD3Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
                             const double                           theU,
                             const double                           theV,
-                            Geom_Surface::ResD3&                  theResult);
+                            Geom_Surface::ResD3&                   theResult);
 bool TryEvalSurfaceDNMapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
                             const double                           theU,
                             const double                           theV,
@@ -638,8 +638,8 @@ inline bool Geom_EvalRepUtils::TryEvalSurfaceDN(
 //==================================================================================================
 
 inline bool Geom_EvalRepUtils::TryEvalCurveD0Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
-                                                     const double                         theU,
-                                                     gp_Pnt&                              theResult)
+                                                    const double                         theU,
+                                                    gp_Pnt&                              theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -654,8 +654,8 @@ inline bool Geom_EvalRepUtils::TryEvalCurveD0Mapped(const Geom_EvalRepCurveDesc:
 //==================================================================================================
 
 inline bool Geom_EvalRepUtils::TryEvalCurveD1Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
-                                                     const double                         theU,
-                                                     Geom_Curve::ResD1&                  theResult)
+                                                    const double                         theU,
+                                                    Geom_Curve::ResD1&                   theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -674,8 +674,8 @@ inline bool Geom_EvalRepUtils::TryEvalCurveD1Mapped(const Geom_EvalRepCurveDesc:
 //==================================================================================================
 
 inline bool Geom_EvalRepUtils::TryEvalCurveD2Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
-                                                     const double                         theU,
-                                                     Geom_Curve::ResD2&                  theResult)
+                                                    const double                         theU,
+                                                    Geom_Curve::ResD2&                   theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -696,8 +696,8 @@ inline bool Geom_EvalRepUtils::TryEvalCurveD2Mapped(const Geom_EvalRepCurveDesc:
 //==================================================================================================
 
 inline bool Geom_EvalRepUtils::TryEvalCurveD3Mapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
-                                                     const double                         theU,
-                                                     Geom_Curve::ResD3&                  theResult)
+                                                    const double                         theU,
+                                                    Geom_Curve::ResD3&                   theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -720,9 +720,9 @@ inline bool Geom_EvalRepUtils::TryEvalCurveD3Mapped(const Geom_EvalRepCurveDesc:
 //==================================================================================================
 
 inline bool Geom_EvalRepUtils::TryEvalCurveDNMapped(const Geom_EvalRepCurveDesc::Mapped& theDesc,
-                                                     const double                         theU,
-                                                     const int                            theN,
-                                                     gp_Vec&                              theResult)
+                                                    const double                         theU,
+                                                    const int                            theN,
+                                                    gp_Vec&                              theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -738,10 +738,11 @@ inline bool Geom_EvalRepUtils::TryEvalCurveDNMapped(const Geom_EvalRepCurveDesc:
 
 //==================================================================================================
 
-inline bool Geom_EvalRepUtils::TryEvalSurfaceD0Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       const double                           theV,
-                                                       gp_Pnt&                                theResult)
+inline bool Geom_EvalRepUtils::TryEvalSurfaceD0Mapped(
+  const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  gp_Pnt&                                theResult)
 {
   double aURep = 0.0;
   double aVRep = 0.0;
@@ -758,10 +759,11 @@ inline bool Geom_EvalRepUtils::TryEvalSurfaceD0Mapped(const Geom_EvalRepSurfaceD
 
 //==================================================================================================
 
-inline bool Geom_EvalRepUtils::TryEvalSurfaceD1Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       const double                           theV,
-                                                       Geom_Surface::ResD1&                  theResult)
+inline bool Geom_EvalRepUtils::TryEvalSurfaceD1Mapped(
+  const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  Geom_Surface::ResD1&                   theResult)
 {
   double aURep = 0.0;
   double aVRep = 0.0;
@@ -790,10 +792,11 @@ inline bool Geom_EvalRepUtils::TryEvalSurfaceD1Mapped(const Geom_EvalRepSurfaceD
 
 //==================================================================================================
 
-inline bool Geom_EvalRepUtils::TryEvalSurfaceD2Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       const double                           theV,
-                                                       Geom_Surface::ResD2&                  theResult)
+inline bool Geom_EvalRepUtils::TryEvalSurfaceD2Mapped(
+  const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  Geom_Surface::ResD2&                   theResult)
 {
   double aURep = 0.0;
   double aVRep = 0.0;
@@ -834,10 +837,11 @@ inline bool Geom_EvalRepUtils::TryEvalSurfaceD2Mapped(const Geom_EvalRepSurfaceD
 
 //==================================================================================================
 
-inline bool Geom_EvalRepUtils::TryEvalSurfaceD3Mapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       const double                           theV,
-                                                       Geom_Surface::ResD3&                  theResult)
+inline bool Geom_EvalRepUtils::TryEvalSurfaceD3Mapped(
+  const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  Geom_Surface::ResD3&                   theResult)
 {
   double aURep = 0.0;
   double aVRep = 0.0;
@@ -883,12 +887,13 @@ inline bool Geom_EvalRepUtils::TryEvalSurfaceD3Mapped(const Geom_EvalRepSurfaceD
 
 //==================================================================================================
 
-inline bool Geom_EvalRepUtils::TryEvalSurfaceDNMapped(const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       const double                           theV,
-                                                       const int                              theNu,
-                                                       const int                              theNv,
-                                                       gp_Vec&                                theResult)
+inline bool Geom_EvalRepUtils::TryEvalSurfaceDNMapped(
+  const Geom_EvalRepSurfaceDesc::Mapped& theDesc,
+  const double                           theU,
+  const double                           theV,
+  const int                              theNu,
+  const int                              theNv,
+  gp_Vec&                                theResult)
 {
   double aURep = 0.0;
   double aVRep = 0.0;

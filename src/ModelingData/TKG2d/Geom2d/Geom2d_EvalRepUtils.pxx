@@ -28,33 +28,33 @@ occ::handle<Geom2d_EvalRepCurveDesc::Base> CloneCurveDesc(
   const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc);
 
 bool TryEvalCurveD0(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc,
-                    const double                                       theU,
-                    gp_Pnt2d&                                          theResult);
+                    const double                                      theU,
+                    gp_Pnt2d&                                         theResult);
 bool TryEvalCurveD1(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc,
-                    const double                                       theU,
+                    const double                                      theU,
                     Geom2d_Curve::ResD1&                              theResult);
 bool TryEvalCurveD2(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc,
-                    const double                                       theU,
+                    const double                                      theU,
                     Geom2d_Curve::ResD2&                              theResult);
 bool TryEvalCurveD3(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc,
-                    const double                                       theU,
+                    const double                                      theU,
                     Geom2d_Curve::ResD3&                              theResult);
 bool TryEvalCurveDN(const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc,
-                    const double                                       theU,
-                    const int                                          theN,
-                    gp_Vec2d&                                          theResult);
+                    const double                                      theU,
+                    const int                                         theN,
+                    gp_Vec2d&                                         theResult);
 bool TryEvalCurveD0Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
                           const double                           theU,
                           gp_Pnt2d&                              theResult);
 bool TryEvalCurveD1Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
                           const double                           theU,
-                          Geom2d_Curve::ResD1&                  theResult);
+                          Geom2d_Curve::ResD1&                   theResult);
 bool TryEvalCurveD2Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
                           const double                           theU,
-                          Geom2d_Curve::ResD2&                  theResult);
+                          Geom2d_Curve::ResD2&                   theResult);
 bool TryEvalCurveD3Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
                           const double                           theU,
-                          Geom2d_Curve::ResD3&                  theResult);
+                          Geom2d_Curve::ResD3&                   theResult);
 bool TryEvalCurveDNMapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
                           const double                           theU,
                           const int                              theN,
@@ -155,9 +155,10 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD0(
       theResult = theDesc->Representation->EvalD0(theU);
       return true;
     case Geom2d_EvalRepCurveDesc::Base::Kind::Mapped:
-      return TryEvalCurveD0Mapped(*static_cast<const Geom2d_EvalRepCurveDesc::Mapped*>(theDesc.get()),
-                                  theU,
-                                  theResult);
+      return TryEvalCurveD0Mapped(
+        *static_cast<const Geom2d_EvalRepCurveDesc::Mapped*>(theDesc.get()),
+        theU,
+        theResult);
   }
   return false;
 }
@@ -180,7 +181,8 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD1(
       theResult = theDesc->Representation->EvalD1(theU);
       return true;
     case Geom2d_EvalRepCurveDesc::Base::Kind::DerivBounded: {
-      const auto* aBounded = static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
+      const auto* aBounded =
+        static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
       if (aBounded->MaxDerivOrder < 1)
       {
         return false;
@@ -218,7 +220,8 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD2(
       theResult = theDesc->Representation->EvalD2(theU);
       return true;
     case Geom2d_EvalRepCurveDesc::Base::Kind::DerivBounded: {
-      const auto* aBounded = static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
+      const auto* aBounded =
+        static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
       if (aBounded->MaxDerivOrder < 2)
       {
         return false;
@@ -256,7 +259,8 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD3(
       theResult = theDesc->Representation->EvalD3(theU);
       return true;
     case Geom2d_EvalRepCurveDesc::Base::Kind::DerivBounded: {
-      const auto* aBounded = static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
+      const auto* aBounded =
+        static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
       if (aBounded->MaxDerivOrder < 3)
       {
         return false;
@@ -295,7 +299,8 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveDN(
       theResult = theDesc->Representation->EvalDN(theU, theN);
       return true;
     case Geom2d_EvalRepCurveDesc::Base::Kind::DerivBounded: {
-      const auto* aBounded = static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
+      const auto* aBounded =
+        static_cast<const Geom2d_EvalRepCurveDesc::DerivBounded*>(theDesc.get());
       if (aBounded->MaxDerivOrder < static_cast<std::size_t>(theN))
       {
         return false;
@@ -317,9 +322,10 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveDN(
 
 //==================================================================================================
 
-inline bool Geom2d_EvalRepUtils::TryEvalCurveD0Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       gp_Pnt2d&                              theResult)
+inline bool Geom2d_EvalRepUtils::TryEvalCurveD0Mapped(
+  const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
+  const double                           theU,
+  gp_Pnt2d&                              theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -333,9 +339,10 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD0Mapped(const Geom2d_EvalRepCurveD
 
 //==================================================================================================
 
-inline bool Geom2d_EvalRepUtils::TryEvalCurveD1Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       Geom2d_Curve::ResD1&                  theResult)
+inline bool Geom2d_EvalRepUtils::TryEvalCurveD1Mapped(
+  const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
+  const double                           theU,
+  Geom2d_Curve::ResD1&                   theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -353,9 +360,10 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD1Mapped(const Geom2d_EvalRepCurveD
 
 //==================================================================================================
 
-inline bool Geom2d_EvalRepUtils::TryEvalCurveD2Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       Geom2d_Curve::ResD2&                  theResult)
+inline bool Geom2d_EvalRepUtils::TryEvalCurveD2Mapped(
+  const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
+  const double                           theU,
+  Geom2d_Curve::ResD2&                   theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -363,9 +371,9 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD2Mapped(const Geom2d_EvalRepCurveD
     return false;
   }
 
-  const Geom2d_Curve::ResD2 aRepRes  = theDesc.Representation->EvalD2(aURep);
-  const double              aScale   = theDesc.ParamMap.Scale;
-  const double              aScale2  = aScale * aScale;
+  const Geom2d_Curve::ResD2 aRepRes = theDesc.Representation->EvalD2(aURep);
+  const double              aScale  = theDesc.ParamMap.Scale;
+  const double              aScale2 = aScale * aScale;
 
   theResult.Point = aRepRes.Point;
   theResult.D1    = aRepRes.D1 * aScale;
@@ -375,9 +383,10 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD2Mapped(const Geom2d_EvalRepCurveD
 
 //==================================================================================================
 
-inline bool Geom2d_EvalRepUtils::TryEvalCurveD3Mapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       Geom2d_Curve::ResD3&                  theResult)
+inline bool Geom2d_EvalRepUtils::TryEvalCurveD3Mapped(
+  const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
+  const double                           theU,
+  Geom2d_Curve::ResD3&                   theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -399,10 +408,11 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveD3Mapped(const Geom2d_EvalRepCurveD
 
 //==================================================================================================
 
-inline bool Geom2d_EvalRepUtils::TryEvalCurveDNMapped(const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
-                                                       const double                           theU,
-                                                       const int                              theN,
-                                                       gp_Vec2d&                              theResult)
+inline bool Geom2d_EvalRepUtils::TryEvalCurveDNMapped(
+  const Geom2d_EvalRepCurveDesc::Mapped& theDesc,
+  const double                           theU,
+  const int                              theN,
+  gp_Vec2d&                              theResult)
 {
   const double aURep = theDesc.ParamMap.Map(theU);
   if (theDesc.Domain.has_value() && !theDesc.Domain->Contains(aURep))
@@ -412,7 +422,7 @@ inline bool Geom2d_EvalRepUtils::TryEvalCurveDNMapped(const Geom2d_EvalRepCurveD
 
   const gp_Vec2d aRepVec = theDesc.Representation->EvalDN(aURep, theN);
   const double   aScaleN = std::pow(theDesc.ParamMap.Scale, theN);
-  theResult             = aRepVec * aScaleN;
+  theResult              = aRepVec * aScaleN;
   return true;
 }
 

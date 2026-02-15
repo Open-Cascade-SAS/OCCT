@@ -216,8 +216,7 @@ gp_Pnt Geom_SphericalSurface::EvalD0(const double U, const double V) const
 
 //=================================================================================================
 
-Geom_Surface::ResD1 Geom_SphericalSurface::EvalD1(const double U,
-                                                                 const double V) const
+Geom_Surface::ResD1 Geom_SphericalSurface::EvalD1(const double U, const double V) const
 {
   Geom_Surface::ResD1 aResult;
   ElSLib::SphereD1(U, V, pos, radius, aResult.Point, aResult.D1U, aResult.D1V);
@@ -226,8 +225,7 @@ Geom_Surface::ResD1 Geom_SphericalSurface::EvalD1(const double U,
 
 //=================================================================================================
 
-Geom_Surface::ResD2 Geom_SphericalSurface::EvalD2(const double U,
-                                                                 const double V) const
+Geom_Surface::ResD2 Geom_SphericalSurface::EvalD2(const double U, const double V) const
 {
   Geom_Surface::ResD2 aResult;
   ElSLib::SphereD2(U,
@@ -245,8 +243,7 @@ Geom_Surface::ResD2 Geom_SphericalSurface::EvalD2(const double U,
 
 //=================================================================================================
 
-Geom_Surface::ResD3 Geom_SphericalSurface::EvalD3(const double U,
-                                                                 const double V) const
+Geom_Surface::ResD3 Geom_SphericalSurface::EvalD3(const double U, const double V) const
 {
   Geom_Surface::ResD3 aResult;
   ElSLib::SphereD3(U,
@@ -269,9 +266,9 @@ Geom_Surface::ResD3 Geom_SphericalSurface::EvalD3(const double U,
 //=================================================================================================
 
 gp_Vec Geom_SphericalSurface::EvalDN(const double U,
-                                                    const double V,
-                                                    const int    Nu,
-                                                    const int    Nv) const
+                                     const double V,
+                                     const int    Nu,
+                                     const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     throw Geom_UndefinedDerivative();

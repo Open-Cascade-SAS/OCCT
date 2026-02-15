@@ -220,7 +220,7 @@ gp_Pnt2d Geom2d_OffsetCurve::EvalD0(const double theU) const
   }
 
   const Geom2d_Curve::ResD1 aBasisD1 = basisCurve->EvalD1(theU);
-  gp_Pnt2d aValue = aBasisD1.Point;
+  gp_Pnt2d                  aValue   = aBasisD1.Point;
   if (!Geom2d_OffsetCurveUtils::CalculateD0(aValue, aBasisD1.D1, offsetValue))
     throw Geom2d_UndefinedValue("Geom2d_OffsetCurve::EvalD0");
   return aValue;
@@ -237,8 +237,8 @@ Geom2d_Curve::ResD1 Geom2d_OffsetCurve::EvalD1(const double theU) const
   }
 
   const Geom2d_Curve::ResD2 aBasisD2 = basisCurve->EvalD2(theU);
-  gp_Pnt2d aValue = aBasisD2.Point;
-  gp_Vec2d aD1    = aBasisD2.D1;
+  gp_Pnt2d                  aValue   = aBasisD2.Point;
+  gp_Vec2d                  aD1      = aBasisD2.D1;
   if (!Geom2d_OffsetCurveUtils::CalculateD1(aValue, aD1, aBasisD2.D2, offsetValue))
     throw Geom2d_UndefinedDerivative("Geom2d_OffsetCurve::EvalD1");
   return Geom2d_Curve::ResD1{aValue, aD1};
@@ -255,9 +255,9 @@ Geom2d_Curve::ResD2 Geom2d_OffsetCurve::EvalD2(const double theU) const
   }
 
   const Geom2d_Curve::ResD3 aBasisD3 = basisCurve->EvalD3(theU);
-  gp_Pnt2d aValue = aBasisD3.Point;
-  gp_Vec2d aD1 = aBasisD3.D1, aD2 = aBasisD3.D2, aD3 = aBasisD3.D3;
-  bool     isDirectionChange = false;
+  gp_Pnt2d                  aValue   = aBasisD3.Point;
+  gp_Vec2d                  aD1 = aBasisD3.D1, aD2 = aBasisD3.D2, aD3 = aBasisD3.D3;
+  bool                      isDirectionChange = false;
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
     gp_Vec2d aDummyD4;
@@ -288,10 +288,10 @@ Geom2d_Curve::ResD3 Geom2d_OffsetCurve::EvalD3(const double theU) const
 
   const Geom2d_Curve::ResD3 aBasisD3 = basisCurve->EvalD3(theU);
   const gp_Vec2d            aD4Basis = basisCurve->EvalDN(theU, 4);
-  gp_Pnt2d aValue = aBasisD3.Point;
-  gp_Vec2d aD1 = aBasisD3.D1, aD2 = aBasisD3.D2, aD3 = aBasisD3.D3;
-  gp_Vec2d aD4               = aD4Basis;
-  bool     isDirectionChange = false;
+  gp_Pnt2d                  aValue   = aBasisD3.Point;
+  gp_Vec2d                  aD1 = aBasisD3.D1, aD2 = aBasisD3.D2, aD3 = aBasisD3.D3;
+  gp_Vec2d                  aD4               = aD4Basis;
+  bool                      isDirectionChange = false;
   if (aD1.SquareMagnitude() <= gp::Resolution())
   {
     if (!Geom2d_OffsetCurveUtils::AdjustDerivative(*basisCurve,

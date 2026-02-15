@@ -176,8 +176,7 @@ TEST(Geom_SurfaceEvalTest, CylindricalSurface_EvalD1_ValidResults)
   const Geom_Surface::ResD1 aD1 = aSurf->EvalD1(aU, aV);
 
   // Point should lie on cylinder of given radius at height V
-  const double aDistXY =
-    std::sqrt(aD1.Point.X() * aD1.Point.X() + aD1.Point.Y() * aD1.Point.Y());
+  const double aDistXY = std::sqrt(aD1.Point.X() * aD1.Point.X() + aD1.Point.Y() * aD1.Point.Y());
   EXPECT_NEAR(aDistXY, aRadius, Precision::Confusion());
   EXPECT_NEAR(aD1.Point.Z(), aV, Precision::Confusion());
 
@@ -268,8 +267,7 @@ TEST(Geom_SurfaceEvalTest, RevolutionSurface_EvalD1_ValidResults)
   const Geom_Surface::ResD1 aD1 = aSurf->EvalD1(aU, aV);
 
   // Point should lie on a circle of radius 1 at height V
-  const double aDistXY =
-    std::sqrt(aD1.Point.X() * aD1.Point.X() + aD1.Point.Y() * aD1.Point.Y());
+  const double aDistXY = std::sqrt(aD1.Point.X() * aD1.Point.X() + aD1.Point.Y() * aD1.Point.Y());
   EXPECT_NEAR(aDistXY, 1.0, Precision::Confusion());
   EXPECT_NEAR(aD1.Point.Z(), aV, Precision::Confusion());
 

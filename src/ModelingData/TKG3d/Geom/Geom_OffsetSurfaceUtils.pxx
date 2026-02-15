@@ -321,14 +321,14 @@ bool ComputeDerivatives(int                         theMaxOrder,
         for (int j = i; j <= theMaxOrder + theNV + 1; j++)
           if (i + j > theMinOrder)
           {
-            gp_Vec aOscDN = theOscSurf->EvalDN(theU, theV, i, j);
+            gp_Vec aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
             gp_Vec aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
             DerSurfL.SetValue(i, j, aOscDN);
             theDerSurf.SetValue(i, j, aBasisDN);
             if (i != j && j <= theNU + 1)
             {
               gp_Vec aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
-              gp_Vec aOscDNji = theOscSurf->EvalDN(theU, theV, j, i);
+              gp_Vec aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
               theDerSurf.SetValue(j, i, aBasisDNji);
               DerSurfL.SetValue(j, i, aOscDNji);
             }
@@ -340,14 +340,14 @@ bool ComputeDerivatives(int                         theMaxOrder,
         for (int i = j; i <= theMaxOrder + theNU + 1; i++)
           if (i + j > theMinOrder)
           {
-            gp_Vec aOscDN = theOscSurf->EvalDN(theU, theV, i, j);
+            gp_Vec aOscDN   = theOscSurf->EvalDN(theU, theV, i, j);
             gp_Vec aBasisDN = theBasisSurf->EvalDN(theU, theV, i, j);
             DerSurfL.SetValue(i, j, aOscDN);
             theDerSurf.SetValue(i, j, aBasisDN);
             if (i != j && i <= theNV + 1)
             {
               gp_Vec aBasisDNji = theBasisSurf->EvalDN(theU, theV, j, i);
-              gp_Vec aOscDNji = theOscSurf->EvalDN(theU, theV, j, i);
+              gp_Vec aOscDNji   = theOscSurf->EvalDN(theU, theV, j, i);
               theDerSurf.SetValue(j, i, aBasisDNji);
               DerSurfL.SetValue(j, i, aOscDNji);
             }
@@ -576,9 +576,9 @@ bool EvaluateD0(double                  theU,
     if (!isFirstIteration)
     {
       Geom_Surface::ResD1 aD1Result = theBasisSurf->EvalD1(theU, theV);
-      theValue = aD1Result.Point;
-      aD1U     = aD1Result.D1U;
-      aD1V     = aD1Result.D1V;
+      theValue                      = aD1Result.Point;
+      aD1U                          = aD1Result.D1U;
+      aD1V                          = aD1Result.D1V;
     }
     isFirstIteration = false;
 
@@ -733,7 +733,7 @@ bool EvaluateD0(double                  theU,
                 gp_Pnt&                 theValue)
 {
   Geom_Surface::ResD1 aBasisD1 = theBasisSurf->EvalD1(theU, theV);
-  theValue = aBasisD1.Point;
+  theValue                     = aBasisD1.Point;
   return EvaluateD0(theU,
                     theV,
                     theBasisSurf,
@@ -794,12 +794,12 @@ bool EvaluateD1(double                  theU,
     if (!isFirstIteration)
     {
       Geom_Surface::ResD2 aD2Result = theBasisSurf->EvalD2(theU, theV);
-      theValue = aD2Result.Point;
-      theD1U   = aD2Result.D1U;
-      theD1V   = aD2Result.D1V;
-      aD2U     = aD2Result.D2U;
-      aD2V     = aD2Result.D2V;
-      aD2UV    = aD2Result.D2UV;
+      theValue                      = aD2Result.Point;
+      theD1U                        = aD2Result.D1U;
+      theD1V                        = aD2Result.D1V;
+      aD2U                          = aD2Result.D2U;
+      aD2V                          = aD2Result.D2V;
+      aD2UV                         = aD2Result.D2UV;
     }
     isFirstIteration = false;
 
@@ -1069,9 +1069,9 @@ bool EvaluateD1(double                  theU,
                 gp_Vec&                 theD1V)
 {
   Geom_Surface::ResD2 aBasisD2 = theBasisSurf->EvalD2(theU, theV);
-  theValue = aBasisD2.Point;
-  theD1U   = aBasisD2.D1U;
-  theD1V   = aBasisD2.D1V;
+  theValue                     = aBasisD2.Point;
+  theD1U                       = aBasisD2.D1U;
+  theD1V                       = aBasisD2.D1V;
   return EvaluateD1(theU,
                     theV,
                     theBasisSurf,
@@ -1144,16 +1144,16 @@ bool EvaluateD2(double                  theU,
     if (!isFirstIteration)
     {
       Geom_Surface::ResD3 aD3Result = theBasisSurf->EvalD3(theU, theV);
-      theValue = aD3Result.Point;
-      theD1U   = aD3Result.D1U;
-      theD1V   = aD3Result.D1V;
-      theD2U   = aD3Result.D2U;
-      theD2V   = aD3Result.D2V;
-      theD2UV  = aD3Result.D2UV;
-      aD3U     = aD3Result.D3U;
-      aD3V     = aD3Result.D3V;
-      aD3UUV   = aD3Result.D3UUV;
-      aD3UVV   = aD3Result.D3UVV;
+      theValue                      = aD3Result.Point;
+      theD1U                        = aD3Result.D1U;
+      theD1V                        = aD3Result.D1V;
+      theD2U                        = aD3Result.D2U;
+      theD2V                        = aD3Result.D2V;
+      theD2UV                       = aD3Result.D2UV;
+      aD3U                          = aD3Result.D3U;
+      aD3V                          = aD3Result.D3V;
+      aD3UUV                        = aD3Result.D3UUV;
+      aD3UVV                        = aD3Result.D3UVV;
     }
     isFirstIteration = false;
 
@@ -1265,9 +1265,9 @@ bool EvaluateD2(double                  theU,
       gp_Vec aDN20 = theBasisSurf->EvalDN(theU, theV, 2, 0);
       gp_Vec aDN02 = theBasisSurf->EvalDN(theU, theV, 0, 2);
       gp_Vec aDN11 = theBasisSurf->EvalDN(theU, theV, 1, 1);
-      theD2U  = aDN20;
-      theD2V  = aDN02;
-      theD2UV = aDN11;
+      theD2U       = aDN20;
+      theD2V       = aDN02;
+      theD2UV      = aDN11;
 
       // Add offset corrections using CSLib::DNNormal
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
@@ -1326,12 +1326,12 @@ bool EvaluateD2(double                  theU,
                 gp_Vec&                 theD2UV)
 {
   Geom_Surface::ResD3 aBasisD3 = theBasisSurf->EvalD3(theU, theV);
-  theValue = aBasisD3.Point;
-  theD1U   = aBasisD3.D1U;
-  theD1V   = aBasisD3.D1V;
-  theD2U   = aBasisD3.D2U;
-  theD2V   = aBasisD3.D2V;
-  theD2UV  = aBasisD3.D2UV;
+  theValue                     = aBasisD3.Point;
+  theD1U                       = aBasisD3.D1U;
+  theD1V                       = aBasisD3.D1V;
+  theD2U                       = aBasisD3.D2U;
+  theD2V                       = aBasisD3.D2V;
+  theD2UV                      = aBasisD3.D2UV;
   return EvaluateD2(theU,
                     theV,
                     theBasisSurf,
@@ -1396,16 +1396,16 @@ bool EvaluateD3(double                  theU,
   for (;;)
   {
     Geom_Surface::ResD3 aD3Result = theBasisSurf->EvalD3(theU, theV);
-    theValue = aD3Result.Point;
-    theD1U   = aD3Result.D1U;
-    theD1V   = aD3Result.D1V;
-    theD2U   = aD3Result.D2U;
-    theD2V   = aD3Result.D2V;
-    theD2UV  = aD3Result.D2UV;
-    theD3U   = aD3Result.D3U;
-    theD3V   = aD3Result.D3V;
-    theD3UUV = aD3Result.D3UUV;
-    theD3UVV = aD3Result.D3UVV;
+    theValue                      = aD3Result.Point;
+    theD1U                        = aD3Result.D1U;
+    theD1V                        = aD3Result.D1V;
+    theD2U                        = aD3Result.D2U;
+    theD2V                        = aD3Result.D2V;
+    theD2UV                       = aD3Result.D2UV;
+    theD3U                        = aD3Result.D3U;
+    theD3V                        = aD3Result.D3V;
+    theD3UUV                      = aD3Result.D3UUV;
+    theD3UVV                      = aD3Result.D3UVV;
 
     if (IsInfiniteCoord(theD1U) || IsInfiniteCoord(theD1V))
     {
@@ -1520,13 +1520,13 @@ bool EvaluateD3(double                  theU,
       gp_Vec aDN03 = theBasisSurf->EvalDN(theU, theV, 0, 3);
       gp_Vec aDN21 = theBasisSurf->EvalDN(theU, theV, 2, 1);
       gp_Vec aDN12 = theBasisSurf->EvalDN(theU, theV, 1, 2);
-      theD2U   = aDN20;
-      theD2V   = aDN02;
-      theD2UV  = aDN11;
-      theD3U   = aDN30;
-      theD3V   = aDN03;
-      theD3UUV = aDN21;
-      theD3UVV = aDN12;
+      theD2U       = aDN20;
+      theD2V       = aDN02;
+      theD2UV      = aDN11;
+      theD3U       = aDN30;
+      theD3V       = aDN03;
+      theD3UUV     = aDN21;
+      theD3UVV     = aDN12;
 
       // Add offset corrections using CSLib::DNNormal
       theD2U.Add(CSLib::DNNormal(2, 0, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
@@ -1605,8 +1605,8 @@ bool EvaluateDN(double                  theU,
     if (!isFirstIteration)
     {
       Geom_Surface::ResD1 aD1Result = theBasisSurf->EvalD1(theU, theV);
-      aD1U = aD1Result.D1U;
-      aD1V = aD1Result.D1V;
+      aD1U                          = aD1Result.D1U;
+      aD1V                          = aD1Result.D1V;
     }
     isFirstIteration = false;
 
@@ -1707,7 +1707,7 @@ bool EvaluateDN(double                  theU,
 
       // Compute DN result: basis DN + offset * DNNormal
       gp_Vec aBasisDN = theBasisSurf->EvalDN(theU, theV, theNu, theNv);
-      theResult = aBasisDN;
+      theResult       = aBasisDN;
       theResult.Add(CSLib::DNNormal(theNu, theNv, aDerNUV, aOrderU, aOrderV).Multiplied(aSign));
       return true;
     }

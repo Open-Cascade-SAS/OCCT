@@ -1106,18 +1106,15 @@ public:
 
   //! Computes the point and first partial derivatives at (U, V).
   //! Raises an exception if the surface continuity is not C1.
-  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U,
-                                                            const double V) const final;
+  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U, const double V) const final;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
   //! Raises an exception if the surface continuity is not C2.
-  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U,
-                                                            const double V) const final;
+  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U, const double V) const final;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Raises an exception if the surface continuity is not C3.
-  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U,
-                                                            const double V) const final;
+  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U, const double V) const final;
 
   //! Computes the derivative of order Nu in U and Nv in V at (U, V).
   //! Raises an exception on failure.
@@ -1141,9 +1138,9 @@ public:
   //! definition of the surface. Of course the evaluations are
   //! different outside this parametric domain.
   Standard_EXPORT gp_Vec EvalDN(const double U,
-                                               const double V,
-                                               const int    Nu,
-                                               const int    Nv) const final;
+                                const double V,
+                                const int    Nu,
+                                const int    Nv) const final;
 
   //! Raised if FromUK1 = ToUK2 or FromVK1 = ToVK2.
   Standard_EXPORT void LocalD0(const double U,

@@ -239,10 +239,7 @@ Geom_Surface::ResD3 Geom_Plane::EvalD3(const double U, const double V) const
 
 //=================================================================================================
 
-gp_Vec Geom_Plane::EvalDN(const double,
-                                         const double,
-                                         const int Nu,
-                                         const int Nv) const
+gp_Vec Geom_Plane::EvalDN(const double, const double, const int Nu, const int Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     throw Geom_UndefinedDerivative();

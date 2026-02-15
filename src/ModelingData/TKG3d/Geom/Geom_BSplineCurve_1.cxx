@@ -191,8 +191,8 @@ Geom_Curve::ResD1 Geom_BSplineCurve::EvalD1(const double U) const
   }
 
   Geom_Curve::ResD1 aResult;
-  int                              aSpanIndex = 0;
-  double                           aNewU(U);
+  int               aSpanIndex = 0;
+  double            aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
@@ -222,8 +222,8 @@ Geom_Curve::ResD2 Geom_BSplineCurve::EvalD2(const double U) const
   }
 
   Geom_Curve::ResD2 aResult;
-  int                              aSpanIndex = 0;
-  double                           aNewU(U);
+  int               aSpanIndex = 0;
+  double            aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))
@@ -254,8 +254,8 @@ Geom_Curve::ResD3 Geom_BSplineCurve::EvalD3(const double U) const
   }
 
   Geom_Curve::ResD3 aResult;
-  int                              aSpanIndex = 0;
-  double                           aNewU(U);
+  int               aSpanIndex = 0;
+  double            aNewU(U);
   PeriodicNormalization(aNewU);
   BSplCLib::LocateParameter(myDeg, myKnots, &myMults, U, myPeriodic, aSpanIndex, aNewU);
   if (aNewU < myKnots(aSpanIndex))

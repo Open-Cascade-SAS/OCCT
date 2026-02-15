@@ -201,8 +201,7 @@ public:
 
   //! Computes the Nth derivative at parameter U.
   //! Raises an exception if the curve continuity is not CN, or N < 1.
-  [[nodiscard]] Standard_EXPORT virtual gp_Vec2d EvalDN(const double U,
-                                                                       const int    N) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual gp_Vec2d EvalDN(const double U, const int N) const = 0;
 
   //! Returns in P the point of parameter U.
   inline void D0(const double U, gp_Pnt2d& P) const { P = EvalD0(U); }

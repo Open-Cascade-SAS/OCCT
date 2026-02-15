@@ -241,30 +241,26 @@ public:
 
   //! Computes the point of parameter (U, V) on the surface.
   //! Raises an exception on failure.
-  [[nodiscard]] Standard_EXPORT virtual gp_Pnt EvalD0(const double U,
-                                                                     const double V) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual gp_Pnt EvalD0(const double U, const double V) const = 0;
 
   //! Computes the point and first partial derivatives at (U, V).
   //! Raises an exception if the surface continuity is not C1.
-  [[nodiscard]] Standard_EXPORT virtual ResD1 EvalD1(const double U,
-                                                                    const double V) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual ResD1 EvalD1(const double U, const double V) const = 0;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
   //! Raises an exception if the surface continuity is not C2.
-  [[nodiscard]] Standard_EXPORT virtual ResD2 EvalD2(const double U,
-                                                                    const double V) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual ResD2 EvalD2(const double U, const double V) const = 0;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Raises an exception if the surface continuity is not C3.
-  [[nodiscard]] Standard_EXPORT virtual ResD3 EvalD3(const double U,
-                                                                    const double V) const = 0;
+  [[nodiscard]] Standard_EXPORT virtual ResD3 EvalD3(const double U, const double V) const = 0;
 
   //! Computes the derivative of order Nu in U and Nv in V at the point (U, V).
   //! Raises an exception on failure.
   [[nodiscard]] Standard_EXPORT virtual gp_Vec EvalDN(const double U,
-                                                                     const double V,
-                                                                     const int    Nu,
-                                                                     const int    Nv) const = 0;
+                                                      const double V,
+                                                      const int    Nu,
+                                                      const int    Nv) const = 0;
 
   //! Computes the point of parameter (U, V).
   inline void D0(const double U, const double V, gp_Pnt& P) const { P = EvalD0(U, V); }

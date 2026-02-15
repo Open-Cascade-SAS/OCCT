@@ -357,7 +357,7 @@ bool AdjustDerivative(const CurveType& theCurve,
   for (int i = 1; i < theMaxDerivative; i++)
   {
     const gp_Vec2d aDN = theCurve.EvalDN(theU, anIndex + i);
-    *(aDeriv[i - 1]) = aDN * aSign;
+    *(aDeriv[i - 1])   = aDN * aSign;
   }
 
   return true;
@@ -379,7 +379,7 @@ bool EvaluateD0(double                theU,
                 gp_Pnt2d&             theValue)
 {
   const Geom2d_Curve::ResD1 aD1 = theBasisCurve->EvalD1(theU);
-  theValue = aD1.Point;
+  theValue                      = aD1.Point;
   return CalculateD0(theValue, aD1.D1, theOffset);
 }
 
@@ -401,8 +401,8 @@ bool EvaluateD1(double                theU,
                 gp_Vec2d&             theD1)
 {
   const Geom2d_Curve::ResD2 aD2 = theBasisCurve->EvalD2(theU);
-  theValue = aD2.Point;
-  theD1    = aD2.D1;
+  theValue                      = aD2.Point;
+  theD1                         = aD2.D1;
   return CalculateD1(theValue, theD1, aD2.D2, theOffset);
 }
 
@@ -427,10 +427,10 @@ bool EvaluateD2(double                theU,
                 gp_Vec2d&             theD2)
 {
   const Geom2d_Curve::ResD3 aD3Result = theBasisCurve->EvalD3(theU);
-  theValue     = aD3Result.Point;
-  theD1        = aD3Result.D1;
-  theD2        = aD3Result.D2;
-  gp_Vec2d aD3 = aD3Result.D3;
+  theValue                            = aD3Result.Point;
+  theD1                               = aD3Result.D1;
+  theD2                               = aD3Result.D2;
+  gp_Vec2d aD3                        = aD3Result.D3;
 
   bool isDirectionChange = false;
   if (theD1.SquareMagnitude() <= gp::Resolution())
@@ -466,10 +466,10 @@ bool EvaluateD3(double                theU,
                 gp_Vec2d&             theD3)
 {
   const Geom2d_Curve::ResD3 aD3Result = theBasisCurve->EvalD3(theU);
-  theValue = aD3Result.Point;
-  theD1    = aD3Result.D1;
-  theD2    = aD3Result.D2;
-  theD3    = aD3Result.D3;
+  theValue                            = aD3Result.Point;
+  theD1                               = aD3Result.D1;
+  theD2                               = aD3Result.D2;
+  theD3                               = aD3Result.D3;
 
   gp_Vec2d aD4 = theBasisCurve->EvalDN(theU, 4);
 

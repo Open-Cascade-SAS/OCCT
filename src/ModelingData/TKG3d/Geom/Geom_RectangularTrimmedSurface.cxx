@@ -369,24 +369,21 @@ gp_Pnt Geom_RectangularTrimmedSurface::EvalD0(const double U, const double V) co
 
 //=================================================================================================
 
-Geom_Surface::ResD1 Geom_RectangularTrimmedSurface::EvalD1(const double U,
-                                                                          const double V) const
+Geom_Surface::ResD1 Geom_RectangularTrimmedSurface::EvalD1(const double U, const double V) const
 {
   return basisSurf->EvalD1(U, V);
 }
 
 //=================================================================================================
 
-Geom_Surface::ResD2 Geom_RectangularTrimmedSurface::EvalD2(const double U,
-                                                                          const double V) const
+Geom_Surface::ResD2 Geom_RectangularTrimmedSurface::EvalD2(const double U, const double V) const
 {
   return basisSurf->EvalD2(U, V);
 }
 
 //=================================================================================================
 
-Geom_Surface::ResD3 Geom_RectangularTrimmedSurface::EvalD3(const double U,
-                                                                          const double V) const
+Geom_Surface::ResD3 Geom_RectangularTrimmedSurface::EvalD3(const double U, const double V) const
 {
   return basisSurf->EvalD3(U, V);
 }
@@ -394,9 +391,9 @@ Geom_Surface::ResD3 Geom_RectangularTrimmedSurface::EvalD3(const double U,
 //=================================================================================================
 
 gp_Vec Geom_RectangularTrimmedSurface::EvalDN(const double U,
-                                                             const double V,
-                                                             const int    Nu,
-                                                             const int    Nv) const
+                                              const double V,
+                                              const int    Nu,
+                                              const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     throw Geom_UndefinedDerivative();

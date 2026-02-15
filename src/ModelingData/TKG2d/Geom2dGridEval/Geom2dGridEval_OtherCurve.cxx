@@ -50,7 +50,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OtherCurve::EvaluateG
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const Geom2d_Curve::ResD1 aD1 = myCurve.get().EvalD1(theParams.Value(i));
+    const Geom2d_Curve::ResD1 aD1                  = myCurve.get().EvalD1(theParams.Value(i));
     aResult.ChangeValue(i - theParams.Lower() + 1) = {aD1.Point, aD1.D1};
   }
 
@@ -72,7 +72,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OtherCurve::EvaluateG
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const Geom2d_Curve::ResD2 aD2 = myCurve.get().EvalD2(theParams.Value(i));
+    const Geom2d_Curve::ResD2 aD2                  = myCurve.get().EvalD2(theParams.Value(i));
     aResult.ChangeValue(i - theParams.Lower() + 1) = {aD2.Point, aD2.D1, aD2.D2};
   }
 
@@ -94,7 +94,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OtherCurve::EvaluateG
 
   for (int i = theParams.Lower(); i <= theParams.Upper(); ++i)
   {
-    const Geom2d_Curve::ResD3 aD3 = myCurve.get().EvalD3(theParams.Value(i));
+    const Geom2d_Curve::ResD3 aD3                  = myCurve.get().EvalD3(theParams.Value(i));
     aResult.ChangeValue(i - theParams.Lower() + 1) = {aD3.Point, aD3.D1, aD3.D2, aD3.D3};
   }
 

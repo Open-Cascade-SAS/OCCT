@@ -21,7 +21,6 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 
-
 //! @file Geom_RevolutionUtils.pxx
 //! @brief Shared utility functions for surface of revolution evaluation.
 //!
@@ -431,7 +430,7 @@ inline bool DN(const double     theU,
   else if (theDerV == 0)
   {
     const gp_Pnt aP = theBasis.EvalD0(theV);
-    aCurvePtOrDN = gp_Vec(aP.XYZ() - theAxis.Location().XYZ());
+    aCurvePtOrDN    = gp_Vec(aP.XYZ() - theAxis.Location().XYZ());
   }
   else
   {
