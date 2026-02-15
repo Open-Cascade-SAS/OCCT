@@ -19,7 +19,7 @@
 #include <BRep_Builder.hxx>
 #include <BRepCheck_Shell.hxx>
 #include <BRepCheck_Status.hxx>
-#include <BRepBuilderAPI_Copy.hxx>
+#include <BRep_Tool.hxx>
 #include <Geom_Axis2Placement.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Trsf.hxx>
@@ -32,7 +32,8 @@
 #include <Message_ProgressScope.hxx>
 #include <OSD_Timer.hxx>
 #include <Precision.hxx>
-#include <ShapeProcess_ShapeContext.hxx>
+#include <ShapeAnalysis_Edge.hxx>
+#include <ShapeConstruct_ProjectCurveOnSurface.hxx>
 #include <Standard_ErrorHandler.hxx>
 #include <Standard_Failure.hxx>
 #include <Standard_Transient.hxx>
@@ -109,6 +110,7 @@
 #include <TopExp_Explorer.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Compound.hxx>
+#include <TopoDS_Edge.hxx>
 #include <TopoDS_Face.hxx>
 #include <TopoDS_Iterator.hxx>
 #include <TopoDS_Shell.hxx>
@@ -129,8 +131,148 @@
 #include <StepRepr_ConstructiveGeometryRepresentation.hxx>
 #include <StepRepr_MechanicalDesignAndDraughtingRelationship.hxx>
 #include <Geom_Plane.hxx>
+#include <mutex>
 
 IMPLEMENT_STANDARD_RTTIEXT(STEPControl_ActorRead, Transfer_ActorOfTransientProcess)
+
+namespace
+{
+struct STEPControl_EdgePartnerHasher
+{
+  size_t operator()(const TopoDS_Shape& theShape) const noexcept
+  {
+    return opencascade::hash(theShape.TShape().get());
+  }
+
+  bool operator()(const TopoDS_Shape& theShape1, const TopoDS_Shape& theShape2) const noexcept
+  {
+    return theShape1.IsPartner(theShape2);
+  }
+};
+
+struct STEPControl_PCurveTask
+{
+  TopoDS_Edge Edge;
+  TopoDS_Face Face;
+  int         EdgeIndex;
+};
+
+static void STEPControl_ComputeMissingPCurve(const TopoDS_Edge& theEdge,
+                                             const TopoDS_Face& theFace,
+                                             const double       thePrecision)
+{
+  const Handle(Geom_Surface) aSurface = BRep_Tool::Surface(theFace);
+  if (aSurface.IsNull() || aSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
+  {
+    return;
+  }
+
+  const TopLoc_Location aLocation = theFace.Location();
+  ShapeAnalysis_Edge    anEdgeAnalyzer;
+  if (anEdgeAnalyzer.HasPCurve(theEdge, aSurface, aLocation))
+  {
+    return;
+  }
+
+  double             aFirst   = 0.0;
+  double             aLast    = 0.0;
+  Handle(Geom_Curve) aCurve3d = BRep_Tool::Curve(theEdge, aFirst, aLast);
+  if (aCurve3d.IsNull())
+  {
+    return;
+  }
+
+  double        aTolFirst = -1.0;
+  double        aTolLast  = -1.0;
+  TopoDS_Vertex aV1;
+  TopoDS_Vertex aV2;
+  TopExp::Vertices(theEdge, aV1, aV2);
+  if (!aV1.IsNull())
+  {
+    aTolFirst = BRep_Tool::Tolerance(aV1);
+  }
+  if (!aV2.IsNull())
+  {
+    aTolLast = BRep_Tool::Tolerance(aV2);
+  }
+
+  const double aLocalPrecision =
+    (thePrecision > 0.0 ? thePrecision : BRep_Tool::Tolerance(theEdge));
+  ShapeConstruct_ProjectCurveOnSurface aProjector;
+  aProjector.Init(aSurface, aLocalPrecision);
+
+  Handle(Geom2d_Curve) aCurve2d;
+  if (!aProjector.Perform(aCurve3d, aFirst, aLast, aCurve2d, aTolFirst, aTolLast)
+      || aCurve2d.IsNull())
+  {
+    return;
+  }
+
+  BRep_Builder aBuilder;
+  aBuilder.UpdateEdge(theEdge, aCurve2d, aSurface, aLocation, 0.0);
+  aBuilder.Range(theEdge, aSurface, aLocation, aFirst, aLast);
+}
+
+static void STEPControl_ComputeMissingPCurves(
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theShapes,
+  const double                                                         thePrecision)
+{
+  NCollection_Sequence<STEPControl_PCurveTask>                        aTasks;
+  NCollection_IndexedMap<TopoDS_Shape, STEPControl_EdgePartnerHasher> aEdgeMap;
+
+  for (int aShapeIndex = 1; aShapeIndex <= theShapes.Size(); ++aShapeIndex)
+  {
+    const TopoDS_Shape& aShape = theShapes.FindKey(aShapeIndex);
+    for (TopExp_Explorer aFaceExp(aShape, TopAbs_FACE); aFaceExp.More(); aFaceExp.Next())
+    {
+      const TopoDS_Face&         aFace    = TopoDS::Face(aFaceExp.Current());
+      const Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
+      if (aSurface.IsNull() || aSurface->IsKind(STANDARD_TYPE(Geom_Plane)))
+      {
+        continue;
+      }
+
+      const TopLoc_Location aLocation = aFace.Location();
+      for (TopExp_Explorer anEdgeExp(aFace, TopAbs_EDGE); anEdgeExp.More(); anEdgeExp.Next())
+      {
+        const TopoDS_Edge& anEdge = TopoDS::Edge(anEdgeExp.Current());
+        if (anEdge.IsNull())
+        {
+          continue;
+        }
+
+        ShapeAnalysis_Edge anEdgeAnalyzer;
+        if (anEdgeAnalyzer.HasPCurve(anEdge, aSurface, aLocation))
+        {
+          continue;
+        }
+        if (anEdgeAnalyzer.IsSeam(anEdge, aSurface, aLocation))
+        {
+          continue;
+        }
+
+        STEPControl_PCurveTask aTask;
+        aTask.Edge      = anEdge;
+        aTask.Face      = aFace;
+        aTask.EdgeIndex = aEdgeMap.Add(anEdge);
+        aTasks.Append(aTask);
+      }
+    }
+  }
+
+  if (aTasks.IsEmpty())
+  {
+    return;
+  }
+
+  NCollection_Array1<std::mutex> aEdgeLocks(1, aEdgeMap.Size());
+  OSD_Parallel::For(1, aTasks.Length() + 1, [&](const int theTaskIndex) {
+    const STEPControl_PCurveTask& aTask = aTasks.Value(theTaskIndex);
+    std::lock_guard<std::mutex>   aLock(aEdgeLocks.ChangeValue(aTask.EdgeIndex));
+    STEPControl_ComputeMissingPCurve(aTask.Edge, aTask.Face, thePrecision);
+  });
+}
+} // namespace
 
 // #include <Interface_InterfaceModel.hxx>  // pour mise au point
 // MappedItem :
@@ -329,7 +471,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::Transfer(
   const Message_ProgressRange&                  theProgress)
 {
   // [BEGIN] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  const Standard_Integer     aNbTPitems = TP->NbMapped();
+  const int                  aNbTPitems = TP->NbMapped();
   StepData_Factors           aLocalFactors;
   Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   if (!aStepModel->IsInitializedUnit())
@@ -362,9 +504,9 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::Transfer(
     }
   }
   // [END] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  Standard_Boolean        aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
+  const bool              aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
   Handle(Transfer_Binder) aResult =
-    TransferShape(start, TP, aLocalFactors, Standard_True, aTrsfUse, theProgress);
+    TransferShape(start, TP, aLocalFactors, true, aTrsfUse, theProgress);
   PostHealing(TP, aNbTPitems);
   return aResult;
 }
@@ -1564,7 +1706,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 {
   Message_Messenger::StreamBuffer  sout = TP->Messenger()->SendInfo();
   Handle(TransferBRep_ShapeBinder) shbinder;
-  Standard_Boolean                 found = Standard_False;
+  bool                             found = false;
   StepToTopoDS_Builder             myShapeBuilder;
   TopoDS_Shape                     mappedShape;
 #ifdef TRANSLOG
@@ -2368,7 +2510,7 @@ void STEPControl_ActorRead::computeIDEASClosings(
 
 //=================================================================================================
 
-void STEPControl_ActorRead::SetModel(const Handle(Interface_InterfaceModel)& theModel)
+void STEPControl_ActorRead::SetModel(const occ::handle<Interface_InterfaceModel>& theModel)
 {
   myModel = theModel;
 }
@@ -2428,68 +2570,39 @@ TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(
 //=================================================================================================
 
 void STEPControl_ActorRead::PostHealing(const Handle(Transfer_TransientProcess)& theTP,
-                                        const Standard_Integer                   theFirstIndex)
+                                        const int                                theFirstIndex)
 {
   if (myShapesToHeal.IsEmpty())
   {
-    return; // nothing
+    return;
   }
-  NCollection_Array1<std::unique_ptr<XSAlgo_ShapeProcessor>> aInfos(1, myShapesToHeal.Size());
-  NCollection_Array1<TopTools_DataMapOfShapeShape> aOrigToCopyMapArr(1, myShapesToHeal.Size());
-  NCollection_Array1<TopTools_DataMapOfShapeShape> aCopyToOrigMapArr(1, myShapesToHeal.Size());
-  XSAlgo_ShapeProcessor::ParameterMap              aParameters = GetShapeFixParameters();
+
+  STEPControl_ComputeMissingPCurves(myShapesToHeal, myPrecision);
+
+  XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
   XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
   XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
-  OSD_Parallel::For(1, myShapesToHeal.Size() + 1, [&](int i) {
-    TopoDS_Shape        anOrig = myShapesToHeal.FindKey(i);
-    BRepBuilderAPI_Copy aCurCopy(anOrig, true, true);
-    TopoDS_Shape        aCopy = aCurCopy.Shape();
-    // Collect all the modified shapes in Copy()
-    // for futher update of binders not to lost attached attributes
-    for (int aTypeIt = anOrig.ShapeType() + 1; aTypeIt <= TopAbs_VERTEX; aTypeIt++)
-    {
-      for (TopExp_Explorer anExp(anOrig, (TopAbs_ShapeEnum)aTypeIt); anExp.More(); anExp.Next())
-      {
-        const TopoDS_Shape& aSx         = anExp.Current();
-        const TopoDS_Shape& aModifShape = aCurCopy.ModifiedShape(aSx);
-        aOrigToCopyMapArr.ChangeValue(i).Bind(aSx, aModifShape);
-        aCopyToOrigMapArr.ChangeValue(i).Bind(aModifShape, aSx);
-      }
-    }
-    aInfos[i] = std::make_unique<XSAlgo_ShapeProcessor>(aParameters);
-    aCopy     = aInfos[i]->ProcessShape(aCopy, GetProcessingFlags().first, Message_ProgressRange());
-    *(Handle(TopoDS_TShape)&)anOrig.TShape() = *aCopy.TShape();
-  });
 
-  // Update Shape context for correct attributes attaching
-  Handle(ShapeProcess_ShapeContext) aFullContext =
-    new ShapeProcess_ShapeContext(TopoDS_Shape(), nullptr);
-  TopTools_DataMapOfShapeShape& aHealedMap = (TopTools_DataMapOfShapeShape&)aFullContext->Map();
-
-  // Copy maps to the common binders map
-  for (int i = 1; i <= aOrigToCopyMapArr.Size(); i++)
+  const int aFirstTPItem = (theFirstIndex > 1 ? theFirstIndex : 1);
+  for (int aTPItemIndex = aFirstTPItem; aTPItemIndex <= theTP->NbMapped(); ++aTPItemIndex)
   {
-    const auto&                       aForwMap = aOrigToCopyMapArr.Value(i);
-    const auto&                       aRevMap  = aCopyToOrigMapArr.Value(i);
-    Handle(ShapeProcess_ShapeContext) aContext = aInfos.ChangeValue(i)->GetContext();
+    Handle(TransferBRep_ShapeBinder) aShapeBinder =
+      Handle(TransferBRep_ShapeBinder)::DownCast(theTP->MapItem(aTPItemIndex));
+    if (aShapeBinder.IsNull() || aShapeBinder->Result().IsNull())
+    {
+      continue;
+    }
 
-    for (TopTools_DataMapOfShapeShape::Iterator aMapIt(aForwMap); aMapIt.More(); aMapIt.Next())
+    XSAlgo_ShapeProcessor aShapeProcessor(aParameters);
+    const TopoDS_Shape    aShape = aShapeProcessor.ProcessShape(aShapeBinder->Result(),
+                                                             GetProcessingFlags().first,
+                                                             Message_ProgressRange());
+    if (!aShape.IsNull())
     {
-      aHealedMap.Bind(aMapIt.Key(), aMapIt.Value());
+      aShapeBinder->SetResult(aShape);
     }
-    for (TopTools_DataMapOfShapeShape::Iterator anIter(aContext->Map()); anIter.More();
-         anIter.Next())
-    {
-      TopoDS_Shape aShape;
-      if (aRevMap.Find(anIter.Key(), aShape))
-      {
-        aHealedMap.Bind(aShape, anIter.Value());
-      }
-    }
+    aShapeProcessor.MergeTransferInfo(theTP, aTPItemIndex);
   }
-  XSAlgo_ShapeProcessor::MergeShapeTransferInfo(theTP,
-                                                aHealedMap,
-                                                theFirstIndex,
-                                                aFullContext->Messages());
+
   myShapesToHeal.Clear();
 }

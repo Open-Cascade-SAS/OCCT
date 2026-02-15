@@ -122,7 +122,7 @@ public:
   //! @param theTP - transient process to use for healing
   //! @param theFirstIndex - index of first shape to merge history
   Standard_EXPORT void PostHealing(const Handle(Transfer_TransientProcess)& theTP,
-                                   const Standard_Integer                   theFirstIndex);
+                                   const int                                theFirstIndex);
 
   DEFINE_STANDARD_RTTIEXT(STEPControl_ActorRead, Transfer_ActorOfTransientProcess)
 
@@ -234,12 +234,12 @@ private:
                        Message_ProgressScope&                            thePS);
 
 private:
-  StepToTopoDS_NMTool                  myNMTool;
-  Standard_Real                        myPrecision;
-  Standard_Real                        myMaxTol;
-  Handle(StepRepr_Representation)      mySRContext;
-  Handle(Interface_InterfaceModel)     myModel;
-  NCollection_IndexedMap<TopoDS_Shape> myShapesToHeal;
+  StepToTopoDS_NMTool                                           myNMTool;
+  double                                                        myPrecision;
+  double                                                        myMaxTol;
+  Handle(StepRepr_Representation)                               mySRContext;
+  Handle(Interface_InterfaceModel)                              myModel;
+  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> myShapesToHeal;
 };
 
 #endif // _STEPControl_ActorRead_HeaderFile
