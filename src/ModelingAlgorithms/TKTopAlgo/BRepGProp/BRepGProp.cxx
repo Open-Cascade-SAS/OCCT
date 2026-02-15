@@ -60,7 +60,7 @@ public:
     const gp_TrsfForm aForm = theTrsf.Form();
     if (aForm != gp_Identity && aForm != gp_Translation)
     {
-      // g is a relative offset from loc to center of mass — rotate only.
+      // g is a relative offset from loc to center of mass - rotate only.
       const gp_Mat aR    = theTrsf.VectorialPart();
       gp_XYZ       aGxyz = g.XYZ();
       aGxyz.Multiply(aR);
@@ -452,7 +452,7 @@ static double volumeProperties(const TopoDS_Shape& S,
       const TopLoc_Location  aRelLoc = aSolid.Location().Multiplied(aCached.Location.Inverted());
 
       // When SkipShared is enabled, skip exact duplicate instances
-      // (same placement and orientation) — matches original face-level dedup behavior.
+      // (same placement and orientation) - matches original face-level dedup behavior.
       if (SkipShared && aRelLoc.IsIdentity() && aSolid.Orientation() == aCached.Orientation)
       {
         continue;
