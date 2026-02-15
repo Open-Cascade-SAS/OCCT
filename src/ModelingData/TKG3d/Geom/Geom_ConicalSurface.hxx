@@ -238,19 +238,19 @@ public:
   //! @endcode
   //! where Loc is the origin of the placement plane (XAxis, YAxis)
   //! XDir is the direction of the XAxis and YDir the direction of the YAxis.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
+  Standard_EXPORT gp_Pnt EvalD0(const double U, const double V) const final;
 
   //! Computes the current point and the first derivatives in the directions U and V.
-  Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(const double U,
+  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U,
                                                             const double V) const final;
 
   //! Computes the current point, the first and the second derivatives in the directions U and V.
-  Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(const double U,
+  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U,
                                                             const double V) const final;
 
   //! Computes the current point, the first,the second and the third
   //! derivatives in the directions U and V.
-  Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(const double U,
+  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U,
                                                             const double V) const final;
 
   //! Computes the derivative of order Nu in the u
@@ -260,7 +260,7 @@ public:
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1,
   //! - Nu or Nv is negative.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+  Standard_EXPORT gp_Vec EvalDN(const double U,
                                                const double V,
                                                const int    Nu,
                                                const int    Nv) const final;

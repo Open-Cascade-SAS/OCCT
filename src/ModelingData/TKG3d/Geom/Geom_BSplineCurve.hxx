@@ -517,16 +517,16 @@ public:
   Standard_EXPORT int Degree() const;
 
   //! Returns the point of parameter U.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt EvalD0(const double U) const final;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double U) const final;
 
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double U) const final;
 
   //! For the point of parameter U of this BSpline curve,
   //! computes the vector corresponding to the Nth derivative.
@@ -550,7 +550,7 @@ public:
   //! the same as if we consider the whole definition of the
   //! curve. Of course the evaluations are different outside
   //! this parametric domain.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec EvalDN(const double U, const int N) const final;
 
   //! Raised if FromK1 = ToK2.
   Standard_EXPORT gp_Pnt LocalValue(const double U, const int FromK1, const int ToK2) const;

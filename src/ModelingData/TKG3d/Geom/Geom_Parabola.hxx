@@ -155,23 +155,23 @@ public:
   //! P = S + F * (U * U * XDir + * U * YDir)
   //! where S is the vertex of the parabola, XDir the XDirection and
   //! YDir the YDirection of the parabola's local coordinate system.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt EvalD0(const double U) const final;
 
   //! Returns the point of parameter U and the first derivative.
-  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Returns the point of parameter U, the first and second
   //! derivatives.
-  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double U) const final;
 
   //! Returns the point of parameter U, the first, second and third
   //! derivatives.
-  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double U) const final;
 
   //! For the point of parameter U of this parabola,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this parabola.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

@@ -181,47 +181,47 @@ bool Geom2d_Line::IsCN(const int) const
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Geom2d_Line::EvalD0(const double U) const
+gp_Pnt2d Geom2d_Line::EvalD0(const double U) const
 {
   return ElCLib::LineValue(U, pos);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Geom2d_Line::EvalD1(const double U) const
+Geom2d_Curve::ResD1 Geom2d_Line::EvalD1(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
-  ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
+  Geom2d_Curve::ResD1 aResult;
+  ElCLib::LineD1(U, pos, aResult.Point, aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Geom2d_Line::EvalD2(const double U) const
+Geom2d_Curve::ResD2 Geom2d_Line::EvalD2(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
-  ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
-  aResult->D2.SetCoord(0.0, 0.0);
+  Geom2d_Curve::ResD2 aResult;
+  ElCLib::LineD1(U, pos, aResult.Point, aResult.D1);
+  aResult.D2.SetCoord(0.0, 0.0);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Geom2d_Line::EvalD3(const double U) const
+Geom2d_Curve::ResD3 Geom2d_Line::EvalD3(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
-  ElCLib::LineD1(U, pos, aResult->Point, aResult->D1);
-  aResult->D2.SetCoord(0.0, 0.0);
-  aResult->D3.SetCoord(0.0, 0.0);
+  Geom2d_Curve::ResD3 aResult;
+  ElCLib::LineD1(U, pos, aResult.Point, aResult.D1);
+  aResult.D2.SetCoord(0.0, 0.0);
+  aResult.D3.SetCoord(0.0, 0.0);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Geom2d_Line::EvalDN(const double, const int N) const
+gp_Vec2d Geom2d_Line::EvalDN(const double, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom2d_UndefinedDerivative();
   if (N == 1)
     return gp_Vec2d(pos.Direction());
   else

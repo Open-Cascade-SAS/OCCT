@@ -23,7 +23,6 @@
 #include <Standard_NullValue.hxx>
 
 #include <cmath>
-#include <optional>
 
 //! Internal helper namespace for 3D offset curve calculations.
 //! Provides static inline functions to compute offset curve point and derivatives
@@ -309,7 +308,6 @@ inline bool CalculateD3(gp_Pnt&       theValue,
 
 //! Adjusts derivatives at singular points where the first derivative is nearly zero.
 //! Uses Taylor series approximation to find a valid tangent direction.
-//! Uses EvalDN/EvalD0 to avoid exceptions.
 //! @tparam CurveType type supporting EvalD0, EvalDN methods (Geom_Curve or adaptor)
 //! @param[in] theCurve basis curve for derivative evaluation
 //! @param[in] theMaxDerivative maximum derivative order to compute (3 or 4)
@@ -357,10 +355,7 @@ bool AdjustDerivative(const CurveType& theCurve,
 
   do
   {
-    std::optional<gp_Vec> aVOpt = theCurve.EvalDN(theU, ++anIndex);
-    if (!aVOpt)
-      return false;
-    V = *aVOpt;
+    V = theCurve.EvalDN(theU, ++anIndex);
   } while ((V.SquareMagnitude() <= aTol) && anIndex < aMaxDerivOrder);
 
   double u;
@@ -374,12 +369,12 @@ bool AdjustDerivative(const CurveType& theCurve,
     u = theU - aDelta;
   }
 
-  std::optional<gp_Pnt> aP1Opt = theCurve.EvalD0(std::min(theU, u));
-  std::optional<gp_Pnt> aP2Opt = theCurve.EvalD0(std::max(theU, u));
-  if (!aP1Opt || !aP2Opt)
-    return false;
+  gp_Pnt aP1;
+  gp_Pnt aP2;
+  aP1 = theCurve.EvalD0(std::min(theU, u));
+  aP2 = theCurve.EvalD0(std::max(theU, u));
 
-  gp_Vec V1(*aP1Opt, *aP2Opt);
+  gp_Vec V1(aP1, aP2);
   theIsDirectionChange = V.Dot(V1) < 0.0;
   const double aSign   = theIsDirectionChange ? -1.0 : 1.0;
 
@@ -387,10 +382,8 @@ bool AdjustDerivative(const CurveType& theCurve,
   gp_Vec* aDeriv[3] = {&theD2, &theD3, &theD4};
   for (int i = 1; i < theMaxDerivative; i++)
   {
-    std::optional<gp_Vec> aDNOpt = theCurve.EvalDN(theU, anIndex + i);
-    if (!aDNOpt)
-      return false;
-    *(aDeriv[i - 1]) = *aDNOpt * aSign;
+    const gp_Vec aDN = theCurve.EvalDN(theU, anIndex + i);
+    *(aDeriv[i - 1]) = aDN * aSign;
   }
 
   return true;
@@ -413,11 +406,9 @@ bool EvaluateD0(double                theU,
                 double                theOffset,
                 gp_Pnt&               theValue)
 {
-  std::optional<Geom_Curve::ResD1> aD1Opt = theBasisCurve->EvalD1(theU);
-  if (!aD1Opt)
-    return false;
-  theValue = aD1Opt->Point;
-  return CalculateD0(theValue, aD1Opt->D1, theDir.XYZ(), theOffset);
+  const Geom_Curve::ResD1 aD1 = theBasisCurve->EvalD1(theU);
+  theValue = aD1.Point;
+  return CalculateD0(theValue, aD1.D1, theDir.XYZ(), theOffset);
 }
 
 //! Template function for D1 evaluation of offset curve.
@@ -439,12 +430,10 @@ bool EvaluateD1(double                theU,
                 gp_Pnt&               theValue,
                 gp_Vec&               theD1)
 {
-  std::optional<Geom_Curve::ResD2> aD2Opt = theBasisCurve->EvalD2(theU);
-  if (!aD2Opt)
-    return false;
-  theValue = aD2Opt->Point;
-  theD1    = aD2Opt->D1;
-  return CalculateD1(theValue, theD1, aD2Opt->D2, theDir.XYZ(), theOffset);
+  const Geom_Curve::ResD2 aD2 = theBasisCurve->EvalD2(theU);
+  theValue = aD2.Point;
+  theD1    = aD2.D1;
+  return CalculateD1(theValue, theD1, aD2.D2, theDir.XYZ(), theOffset);
 }
 
 //! Template function for D2 evaluation of offset curve.
@@ -469,13 +458,11 @@ bool EvaluateD2(double                theU,
                 gp_Vec&               theD1,
                 gp_Vec&               theD2)
 {
-  std::optional<Geom_Curve::ResD3> aD3Opt = theBasisCurve->EvalD3(theU);
-  if (!aD3Opt)
-    return false;
-  theValue   = aD3Opt->Point;
-  theD1      = aD3Opt->D1;
-  theD2      = aD3Opt->D2;
-  gp_Vec aD3 = aD3Opt->D3;
+  const Geom_Curve::ResD3 aD3Result = theBasisCurve->EvalD3(theU);
+  theValue   = aD3Result.Point;
+  theD1      = aD3Result.D1;
+  theD2      = aD3Result.D2;
+  gp_Vec aD3 = aD3Result.D3;
 
   bool isDirectionChange = false;
   if (theD1.SquareMagnitude() <= gp::Resolution())
@@ -512,18 +499,13 @@ bool EvaluateD3(double                theU,
                 gp_Vec&               theD2,
                 gp_Vec&               theD3)
 {
-  std::optional<Geom_Curve::ResD3> aD3Opt = theBasisCurve->EvalD3(theU);
-  if (!aD3Opt)
-    return false;
-  theValue = aD3Opt->Point;
-  theD1    = aD3Opt->D1;
-  theD2    = aD3Opt->D2;
-  theD3    = aD3Opt->D3;
+  const Geom_Curve::ResD3 aD3Result = theBasisCurve->EvalD3(theU);
+  theValue = aD3Result.Point;
+  theD1    = aD3Result.D1;
+  theD2    = aD3Result.D2;
+  theD3    = aD3Result.D3;
 
-  std::optional<gp_Vec> aD4Opt = theBasisCurve->EvalDN(theU, 4);
-  if (!aD4Opt)
-    return false;
-  gp_Vec aD4 = *aD4Opt;
+  gp_Vec aD4 = theBasisCurve->EvalDN(theU, 4);
 
   bool isDirectionChange = false;
   if (theD1.SquareMagnitude() <= gp::Resolution())
@@ -575,10 +557,7 @@ bool EvaluateDN(double                theU,
       return EvaluateD3(theU, theBasisCurve, theDir, theOffset, aPnt, aDummy, aDummy, theDN);
     default: {
       // For derivatives > 3, return basis curve derivative (no offset contribution)
-      std::optional<gp_Vec> aDNOpt = theBasisCurve->EvalDN(theU, theN);
-      if (!aDNOpt)
-        return false;
-      theDN = *aDNOpt;
+      theDN = theBasisCurve->EvalDN(theU, theN);
       return true;
     }
   }

@@ -447,34 +447,34 @@ public:
   Standard_EXPORT GeomAbs_Shape Continuity() const final;
 
   //! Computes the point of parameter (U, V) on the surface.
-  //! Returns std::nullopt on failure.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
+  //! Raises an exception on failure.
+  Standard_EXPORT gp_Pnt EvalD0(const double U, const double V) const final;
 
   //! Computes the point and first partial derivatives at (U, V).
-  //! Returns std::nullopt if the surface continuity is not C1.
-  Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(const double U,
+  //! Raises an exception if the surface continuity is not C1.
+  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U,
                                                             const double V) const final;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
-  //! Returns std::nullopt if the surface continuity is not C2.
-  Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(const double U,
+  //! Raises an exception if the surface continuity is not C2.
+  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U,
                                                             const double V) const final;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! Note: The parameters U and V can be outside the bounds of the surface.
-  //! Returns std::nullopt if the surface continuity is not C3.
-  Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(const double U,
+  //! Raises an exception if the surface continuity is not C3.
+  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U,
                                                             const double V) const final;
 
   //! Computes the derivative of order Nu in the u
   //! parametric direction, and Nv in the v parametric
   //! direction, at the point of parameters (U, V) of this Bezier surface.
   //! Note: The parameters U and V can be outside the bounds of the surface.
-  //! Returns std::nullopt on failure.
+  //! Raises an exception on failure.
   //! Exceptions
   //! Standard_RangeError if:
   //! - Nu + Nv is less than 1, or Nu or Nv is negative.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+  Standard_EXPORT gp_Vec EvalDN(const double U,
                                                const double V,
                                                const int    Nu,
                                                const int    Nv) const final;

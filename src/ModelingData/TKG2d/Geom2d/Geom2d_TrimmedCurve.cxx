@@ -218,35 +218,35 @@ Pnt2d Geom2d_TrimmedCurve::StartPoint() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Geom2d_TrimmedCurve::EvalD0(const double U) const
+gp_Pnt2d Geom2d_TrimmedCurve::EvalD0(const double U) const
 {
   return basisCurve->EvalD0(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Geom2d_TrimmedCurve::EvalD1(const double U) const
+Geom2d_Curve::ResD1 Geom2d_TrimmedCurve::EvalD1(const double U) const
 {
   return basisCurve->EvalD1(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Geom2d_TrimmedCurve::EvalD2(const double U) const
+Geom2d_Curve::ResD2 Geom2d_TrimmedCurve::EvalD2(const double U) const
 {
   return basisCurve->EvalD2(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Geom2d_TrimmedCurve::EvalD3(const double U) const
+Geom2d_Curve::ResD3 Geom2d_TrimmedCurve::EvalD3(const double U) const
 {
   return basisCurve->EvalD3(U);
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Geom2d_TrimmedCurve::EvalDN(const double U, const int N) const
+gp_Vec2d Geom2d_TrimmedCurve::EvalDN(const double U, const int N) const
 {
   return basisCurve->EvalDN(U, N);
 }

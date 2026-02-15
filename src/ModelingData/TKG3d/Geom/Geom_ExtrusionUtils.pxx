@@ -19,7 +19,6 @@
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
 
-#include <optional>
 
 //! @file Geom_ExtrusionUtils.pxx
 //! @brief Shared utility functions for extrusion surface evaluation.
@@ -165,7 +164,7 @@ inline gp_Vec CalculateDN(const gp_Vec& theCurveDN,
   return gp_Vec(0.0, 0.0, 0.0);
 }
 
-//! Evaluates point on extrusion surface using non-throwing EvalD0.
+//! Evaluates point on extrusion surface using EvalD0.
 //! @tparam CurveType Type supporting EvalD0(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
@@ -180,14 +179,12 @@ inline bool D0(const double     theU,
                const gp_XYZ&    theDir,
                gp_Pnt&          theP)
 {
-  std::optional<gp_Pnt> aCurveD0 = theBasis.EvalD0(theU);
-  if (!aCurveD0)
-    return false;
-  CalculateD0(*aCurveD0, theV, theDir, theP);
+  const gp_Pnt aCurveD0 = theBasis.EvalD0(theU);
+  CalculateD0(aCurveD0, theV, theDir, theP);
   return true;
 }
 
-//! Evaluates point and first derivatives on extrusion surface using non-throwing EvalD1.
+//! Evaluates point and first derivatives on extrusion surface using EvalD1.
 //! @tparam CurveType Type supporting EvalD1(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
@@ -206,14 +203,12 @@ inline bool D1(const double     theU,
                gp_Vec&          theD1U,
                gp_Vec&          theD1V)
 {
-  std::optional<Geom_Curve::ResD1> aCurveD1 = theBasis.EvalD1(theU);
-  if (!aCurveD1)
-    return false;
-  CalculateD1(aCurveD1->Point, aCurveD1->D1, theV, theDir, theP, theD1U, theD1V);
+  const Geom_Curve::ResD1 aCurveD1 = theBasis.EvalD1(theU);
+  CalculateD1(aCurveD1.Point, aCurveD1.D1, theV, theDir, theP, theD1U, theD1V);
   return true;
 }
 
-//! Evaluates point, first and second derivatives on extrusion surface using non-throwing EvalD2.
+//! Evaluates point, first and second derivatives on extrusion surface using EvalD2.
 //! @tparam CurveType Type supporting EvalD2(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
@@ -238,12 +233,10 @@ inline bool D2(const double     theU,
                gp_Vec&          theD2V,
                gp_Vec&          theD2UV)
 {
-  std::optional<Geom_Curve::ResD2> aCurveD2 = theBasis.EvalD2(theU);
-  if (!aCurveD2)
-    return false;
-  CalculateD2(aCurveD2->Point,
-              aCurveD2->D1,
-              aCurveD2->D2,
+  const Geom_Curve::ResD2 aCurveD2 = theBasis.EvalD2(theU);
+  CalculateD2(aCurveD2.Point,
+              aCurveD2.D1,
+              aCurveD2.D2,
               theV,
               theDir,
               theP,
@@ -256,7 +249,7 @@ inline bool D2(const double     theU,
 }
 
 //! Evaluates point, first, second and third derivatives on extrusion surface
-//! using non-throwing EvalD3.
+//! using EvalD3.
 //! @tparam CurveType Type supporting EvalD3(param) method
 //! @param theU Parameter along the basis curve
 //! @param theV Parameter along the extrusion direction
@@ -289,13 +282,11 @@ inline bool D3(const double     theU,
                gp_Vec&          theD3UUV,
                gp_Vec&          theD3UVV)
 {
-  std::optional<Geom_Curve::ResD3> aCurveD3 = theBasis.EvalD3(theU);
-  if (!aCurveD3)
-    return false;
-  CalculateD3(aCurveD3->Point,
-              aCurveD3->D1,
-              aCurveD3->D2,
-              aCurveD3->D3,
+  const Geom_Curve::ResD3 aCurveD3 = theBasis.EvalD3(theU);
+  CalculateD3(aCurveD3.Point,
+              aCurveD3.D1,
+              aCurveD3.D2,
+              aCurveD3.D3,
               theV,
               theDir,
               theP,
@@ -311,7 +302,7 @@ inline bool D3(const double     theU,
   return true;
 }
 
-//! Evaluates N-th derivative on extrusion surface using non-throwing EvalDN.
+//! Evaluates N-th derivative on extrusion surface using EvalDN.
 //! @tparam CurveType Type supporting EvalDN(param, order) method
 //! @param theU Parameter along the basis curve
 //! @param theBasis Basis curve
@@ -331,10 +322,7 @@ inline bool DN(const double     theU,
   gp_Vec aCurveDN;
   if (theDerV == 0)
   {
-    std::optional<gp_Vec> aCurveDNOpt = theBasis.EvalDN(theU, theDerU);
-    if (!aCurveDNOpt)
-      return false;
-    aCurveDN = *aCurveDNOpt;
+    aCurveDN = theBasis.EvalDN(theU, theDerU);
   }
   theDN = CalculateDN(aCurveDN, theDir, theDerU, theDerV);
   return true;

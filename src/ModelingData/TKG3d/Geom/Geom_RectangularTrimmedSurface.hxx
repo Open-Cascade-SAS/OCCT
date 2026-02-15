@@ -229,40 +229,40 @@ public:
 
   //! Computes the point of parameter (U, V) on the surface.
   //! Can be raised if the basis surface is an OffsetSurface.
-  //! Returns std::nullopt on failure.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U, const double V) const final;
+  //! Raises an exception on failure.
+  Standard_EXPORT gp_Pnt EvalD0(const double U, const double V) const final;
 
   //! Computes the point and first partial derivatives at (U, V).
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
-  //! Returns std::nullopt if the surface continuity is not C1.
-  Standard_EXPORT std::optional<Geom_Surface::ResD1> EvalD1(const double U,
+  //! Raises an exception if the surface continuity is not C1.
+  Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double U,
                                                             const double V) const final;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
-  //! Returns std::nullopt if the surface continuity is not C2.
-  Standard_EXPORT std::optional<Geom_Surface::ResD2> EvalD2(const double U,
+  //! Raises an exception if the surface continuity is not C2.
+  Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double U,
                                                             const double V) const final;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
   //! The returned derivatives have the same orientation as the
   //! derivatives of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
-  //! Returns std::nullopt if the surface continuity is not C3.
-  Standard_EXPORT std::optional<Geom_Surface::ResD3> EvalD3(const double U,
+  //! Raises an exception if the surface continuity is not C3.
+  Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double U,
                                                             const double V) const final;
 
   //! Computes the derivative of order Nu in U and Nv in V at (U, V).
   //! The returned derivative has the same orientation as the
   //! derivative of the basis surface even if the trimmed surface
   //! has not the same parametric orientation.
-  //! Returns std::nullopt on failure.
+  //! Raises an exception on failure.
   //! RangeError Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U,
+  Standard_EXPORT gp_Vec EvalDN(const double U,
                                                const double V,
                                                const int    Nu,
                                                const int    Nv) const final;

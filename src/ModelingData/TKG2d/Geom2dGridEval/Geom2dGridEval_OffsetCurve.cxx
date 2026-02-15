@@ -182,12 +182,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OffsetCurve::Evaluate
     gp_Vec2d                       aD1    = aBasis.D1;
     gp_Vec2d                       aD2    = aBasis.D2;
     gp_Vec2d                       aD3    = aBasis.D3;
-    std::optional<gp_Vec2d>        aD4Opt = myBasis->EvalDN(aParam, 4);
-    if (!aD4Opt)
-    {
-      return NCollection_Array1<Geom2dGridEval::CurveD3>();
-    }
-    gp_Vec2d aD4 = *aD4Opt;
+    gp_Vec2d aD4 = myBasis->EvalDN(aParam, 4);
 
     // Check for direction change at singular points
     bool isDirectionChange = false;

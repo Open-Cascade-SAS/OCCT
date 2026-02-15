@@ -254,71 +254,71 @@ void Geom_ConicalSurface::Coefficients(double& A1,
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_ConicalSurface::EvalD0(const double U, const double V) const
+gp_Pnt Geom_ConicalSurface::EvalD0(const double U, const double V) const
 {
   return ElSLib::ConeValue(U, V, pos, radius, semiAngle);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_ConicalSurface::EvalD1(const double U, const double V) const
+Geom_Surface::ResD1 Geom_ConicalSurface::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
-  ElSLib::ConeD1(U, V, pos, radius, semiAngle, aResult->Point, aResult->D1U, aResult->D1V);
+  Geom_Surface::ResD1 aResult;
+  ElSLib::ConeD1(U, V, pos, radius, semiAngle, aResult.Point, aResult.D1U, aResult.D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_ConicalSurface::EvalD2(const double U, const double V) const
+Geom_Surface::ResD2 Geom_ConicalSurface::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
+  Geom_Surface::ResD2 aResult;
   ElSLib::ConeD2(U,
                  V,
                  pos,
                  radius,
                  semiAngle,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V,
-                 aResult->D2U,
-                 aResult->D2V,
-                 aResult->D2UV);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_ConicalSurface::EvalD3(const double U, const double V) const
+Geom_Surface::ResD3 Geom_ConicalSurface::EvalD3(const double U, const double V) const
 {
-  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
+  Geom_Surface::ResD3 aResult;
   ElSLib::ConeD3(U,
                  V,
                  pos,
                  radius,
                  semiAngle,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V,
-                 aResult->D2U,
-                 aResult->D2V,
-                 aResult->D2UV,
-                 aResult->D3U,
-                 aResult->D3V,
-                 aResult->D3UUV,
-                 aResult->D3UVV);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_ConicalSurface::EvalDN(const double U,
+gp_Vec Geom_ConicalSurface::EvalDN(const double U,
                                                   const double V,
                                                   const int    Nu,
                                                   const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   if (Nv > 1)
   {
     return Vec(0.0, 0.0, 0.0);

@@ -188,22 +188,22 @@ public:
   //! If the basis curve is an OffsetCurve sometimes it is not
   //! possible to do the evaluation of the curve at the parameter
   //! U (see class OffsetCurve).
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt EvalD0(const double U) const final;
 
   //! Raised if the continuity of the curve is not C1.
-  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Raised if the continuity of the curve is not C2.
-  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double U) const final;
 
   //! Raised if the continuity of the curve is not C3.
-  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double U) const final;
 
   //! N is the order of derivation.
   //! Raised if the continuity of the curve is not CN.
   //! Raised if N < 1.
   //! geometric transformations
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this trimmed curve.
   //! Warning The basis curve is also modified.

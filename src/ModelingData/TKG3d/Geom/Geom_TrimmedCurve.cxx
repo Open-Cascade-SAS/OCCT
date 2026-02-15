@@ -180,35 +180,35 @@ occ::handle<Geom_Curve> Geom_TrimmedCurve::BasisCurve() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_TrimmedCurve::EvalD0(const double U) const
+gp_Pnt Geom_TrimmedCurve::EvalD0(const double U) const
 {
   return basisCurve->EvalD0(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD1> Geom_TrimmedCurve::EvalD1(const double U) const
+Geom_Curve::ResD1 Geom_TrimmedCurve::EvalD1(const double U) const
 {
   return basisCurve->EvalD1(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD2> Geom_TrimmedCurve::EvalD2(const double U) const
+Geom_Curve::ResD2 Geom_TrimmedCurve::EvalD2(const double U) const
 {
   return basisCurve->EvalD2(U);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD3> Geom_TrimmedCurve::EvalD3(const double U) const
+Geom_Curve::ResD3 Geom_TrimmedCurve::EvalD3(const double U) const
 {
   return basisCurve->EvalD3(U);
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_TrimmedCurve::EvalDN(const double U, const int N) const
+gp_Vec Geom_TrimmedCurve::EvalDN(const double U, const int N) const
 {
   return basisCurve->EvalDN(U, N);
 }

@@ -160,11 +160,10 @@ int Geom2d_BSplineCurve::Degree() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Geom2d_BSplineCurve::EvalD0(const double U) const
+gp_Pnt2d Geom2d_BSplineCurve::EvalD0(const double U) const
 {
-  if (const std::optional<gp_Pnt2d> aEvalRepResult =
-        Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U);
-      aEvalRepResult.has_value())
+  gp_Pnt2d aEvalRepResult;
+  if (Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -183,16 +182,15 @@ std::optional<gp_Pnt2d> Geom2d_BSplineCurve::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Geom2d_BSplineCurve::EvalD1(const double U) const
+Geom2d_Curve::ResD1 Geom2d_BSplineCurve::EvalD1(const double U) const
 {
-  if (const std::optional<Geom2d_Curve::ResD1> aEvalRepResult =
-        Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U);
-      aEvalRepResult.has_value())
+  Geom2d_Curve::ResD1 aEvalRepResult;
+  if (Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
+  Geom2d_Curve::ResD1 aResult;
   int                                aSpanIndex = 0;
   double                             aNewU(U);
   PeriodicNormalization(aNewU);
@@ -208,23 +206,22 @@ std::optional<Geom2d_Curve::ResD1> Geom2d_BSplineCurve::EvalD1(const double U) c
                Weights(),
                myKnots,
                &myMults,
-               aResult->Point,
-               aResult->D1);
+               aResult.Point,
+               aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Geom2d_BSplineCurve::EvalD2(const double U) const
+Geom2d_Curve::ResD2 Geom2d_BSplineCurve::EvalD2(const double U) const
 {
-  if (const std::optional<Geom2d_Curve::ResD2> aEvalRepResult =
-        Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U);
-      aEvalRepResult.has_value())
+  Geom2d_Curve::ResD2 aEvalRepResult;
+  if (Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
+  Geom2d_Curve::ResD2 aResult;
   int                                aSpanIndex = 0;
   double                             aNewU(U);
   PeriodicNormalization(aNewU);
@@ -240,24 +237,23 @@ std::optional<Geom2d_Curve::ResD2> Geom2d_BSplineCurve::EvalD2(const double U) c
                Weights(),
                myKnots,
                &myMults,
-               aResult->Point,
-               aResult->D1,
-               aResult->D2);
+               aResult.Point,
+               aResult.D1,
+               aResult.D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Geom2d_BSplineCurve::EvalD3(const double U) const
+Geom2d_Curve::ResD3 Geom2d_BSplineCurve::EvalD3(const double U) const
 {
-  if (const std::optional<Geom2d_Curve::ResD3> aEvalRepResult =
-        Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U);
-      aEvalRepResult.has_value())
+  Geom2d_Curve::ResD3 aEvalRepResult;
+  if (Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
+  Geom2d_Curve::ResD3 aResult;
   int                                aSpanIndex = 0;
   double                             aNewU(U);
   PeriodicNormalization(aNewU);
@@ -273,23 +269,22 @@ std::optional<Geom2d_Curve::ResD3> Geom2d_BSplineCurve::EvalD3(const double U) c
                Weights(),
                myKnots,
                &myMults,
-               aResult->Point,
-               aResult->D1,
-               aResult->D2,
-               aResult->D3);
+               aResult.Point,
+               aResult.D1,
+               aResult.D2,
+               aResult.D3);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Geom2d_BSplineCurve::EvalDN(const double U, const int N) const
+gp_Vec2d Geom2d_BSplineCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom2d_UndefinedDerivative();
 
-  if (const std::optional<gp_Vec2d> aEvalRepResult =
-        Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N);
-      aEvalRepResult.has_value())
+  gp_Vec2d aEvalRepResult;
+  if (Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }

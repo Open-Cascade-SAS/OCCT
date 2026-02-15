@@ -418,92 +418,57 @@ double Adaptor3d_Surface::OffsetValue() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Adaptor3d_Surface::EvalD0(double theU, double theV) const
+gp_Pnt Adaptor3d_Surface::EvalD0(double theU, double theV) const
 {
-  try
-  {
-    gp_Pnt aP;
-    D0(theU, theV, aP);
-    return aP;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  gp_Pnt aP;
+  D0(theU, theV, aP);
+  return aP;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Adaptor3d_Surface::EvalD1(double theU, double theV) const
+Geom_Surface::ResD1 Adaptor3d_Surface::EvalD1(double theU, double theV) const
 {
-  try
-  {
-    Geom_Surface::ResD1 aResult;
-    D1(theU, theV, aResult.Point, aResult.D1U, aResult.D1V);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  Geom_Surface::ResD1 aResult;
+  D1(theU, theV, aResult.Point, aResult.D1U, aResult.D1V);
+  return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Adaptor3d_Surface::EvalD2(double theU, double theV) const
+Geom_Surface::ResD2 Adaptor3d_Surface::EvalD2(double theU, double theV) const
 {
-  try
-  {
-    Geom_Surface::ResD2 aResult;
-    D2(theU, theV, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  Geom_Surface::ResD2 aResult;
+  D2(theU, theV, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
+  return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Adaptor3d_Surface::EvalD3(double theU, double theV) const
+Geom_Surface::ResD3 Adaptor3d_Surface::EvalD3(double theU, double theV) const
 {
-  try
-  {
-    Geom_Surface::ResD3 aResult;
-    D3(theU,
-       theV,
-       aResult.Point,
-       aResult.D1U,
-       aResult.D1V,
-       aResult.D2U,
-       aResult.D2V,
-       aResult.D2UV,
-       aResult.D3U,
-       aResult.D3V,
-       aResult.D3UUV,
-       aResult.D3UVV);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  Geom_Surface::ResD3 aResult;
+  D3(theU,
+     theV,
+     aResult.Point,
+     aResult.D1U,
+     aResult.D1V,
+     aResult.D2U,
+     aResult.D2V,
+     aResult.D2UV,
+     aResult.D3U,
+     aResult.D3V,
+     aResult.D3UUV,
+     aResult.D3UVV);
+  return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Adaptor3d_Surface::EvalDN(double theU,
+gp_Vec Adaptor3d_Surface::EvalDN(double theU,
                                                 double theV,
                                                 int    theNu,
                                                 int    theNv) const
 {
-  try
-  {
-    return DN(theU, theV, theNu, theNv);
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  return DN(theU, theV, theNu, theNv);
 }

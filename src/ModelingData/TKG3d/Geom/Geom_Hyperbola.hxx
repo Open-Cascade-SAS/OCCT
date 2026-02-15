@@ -224,23 +224,23 @@ public:
   //! MinorRadius * std::sinh(U) * YDir
   //! where C is the center of the hyperbola , XDir the XDirection and
   //! YDir the YDirection of the hyperbola's local coordinate system.
-  Standard_EXPORT std::optional<gp_Pnt> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt EvalD0(const double U) const final;
 
   //! Returns the point of parameter U and the first derivative.
-  Standard_EXPORT std::optional<Geom_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Returns the point of parameter U, the first and second
   //! derivatives.
-  Standard_EXPORT std::optional<Geom_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD2 EvalD2(const double U) const final;
 
   //! Returns the point of parameter U, the first, second and
   //! third derivatives.
-  Standard_EXPORT std::optional<Geom_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom_Curve::ResD3 EvalD3(const double U) const final;
 
   //! Returns the vector corresponding to the derivative for the
   //! order of derivation N.
   //! Raised if N < 1.
-  Standard_EXPORT std::optional<gp_Vec> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this hyperbola.
   Standard_EXPORT void Transform(const gp_Trsf& T) final;

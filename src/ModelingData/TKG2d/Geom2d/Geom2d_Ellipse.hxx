@@ -201,22 +201,22 @@ public:
   //! P = C + MajorRadius * Cos (U) * XDir + MinorRadius * Sin (U) * YDir
   //! where C is the center of the ellipse , XDir the direction of
   //! the "XAxis" and "YDir" the "YAxis" of the ellipse.
-  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt2d EvalD0(const double U) const final;
 
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Returns the point P of parameter U. The vectors V1 and V2
   //! are the first and second derivatives at this point.
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(const double U) const final;
 
   //! Returns the point P of parameter U, the first second and
   //! third derivatives V1 V2 and V3.
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom2d_Curve::ResD3 EvalD3(const double U) const final;
 
   //! For the point of parameter U of this ellipse,
   //! computes the vector corresponding to the Nth derivative.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec2d EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this ellipse.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) final;

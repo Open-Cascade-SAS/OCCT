@@ -117,25 +117,25 @@ public:
   //! Returns in P the point of parameter U.
   //! P (U) = O + U * Dir where O is the "Location" point of the
   //! line and Dir the direction of the line.
-  Standard_EXPORT std::optional<gp_Pnt2d> EvalD0(const double U) const final;
+  Standard_EXPORT gp_Pnt2d EvalD0(const double U) const final;
 
   //! Returns the point P of parameter u and the first derivative V1.
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD1> EvalD1(const double U) const final;
+  Standard_EXPORT Geom2d_Curve::ResD1 EvalD1(const double U) const final;
 
   //! Returns the point P of parameter U, the first and second
   //! derivatives V1 and V2. V2 is a vector with null magnitude
   //! for a line.
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD2> EvalD2(const double U) const final;
+  Standard_EXPORT Geom2d_Curve::ResD2 EvalD2(const double U) const final;
 
   //! V2 and V3 are vectors with null magnitude for a line.
-  Standard_EXPORT std::optional<Geom2d_Curve::ResD3> EvalD3(const double U) const final;
+  Standard_EXPORT Geom2d_Curve::ResD3 EvalD3(const double U) const final;
 
   //! For the point of parameter U of this line, computes
   //! the vector corresponding to the Nth derivative.
   //! Note: if N is greater than or equal to 2, the result is a
   //! vector with null magnitude.
   //! Exceptions Standard_RangeError if N is less than 1.
-  Standard_EXPORT std::optional<gp_Vec2d> EvalDN(const double U, const int N) const final;
+  Standard_EXPORT gp_Vec2d EvalDN(const double U, const int N) const final;
 
   //! Applies the transformation T to this line.
   Standard_EXPORT void Transform(const gp_Trsf2d& T) final;

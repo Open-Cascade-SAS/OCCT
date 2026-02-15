@@ -262,78 +262,43 @@ int Adaptor2d_Curve2d::NbSamples() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Adaptor2d_Curve2d::EvalD0(double theU) const
+gp_Pnt2d Adaptor2d_Curve2d::EvalD0(double theU) const
 {
-  try
-  {
-    gp_Pnt2d aP;
-    D0(theU, aP);
-    return aP;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  gp_Pnt2d aP;
+  D0(theU, aP);
+  return aP;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Adaptor2d_Curve2d::EvalD1(double theU) const
+Geom2d_Curve::ResD1 Adaptor2d_Curve2d::EvalD1(double theU) const
 {
-  try
-  {
-    Geom2d_Curve::ResD1 aResult;
-    D1(theU, aResult.Point, aResult.D1);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  Geom2d_Curve::ResD1 aResult;
+  D1(theU, aResult.Point, aResult.D1);
+  return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Adaptor2d_Curve2d::EvalD2(double theU) const
+Geom2d_Curve::ResD2 Adaptor2d_Curve2d::EvalD2(double theU) const
 {
-  try
-  {
-    Geom2d_Curve::ResD2 aResult;
-    D2(theU, aResult.Point, aResult.D1, aResult.D2);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  Geom2d_Curve::ResD2 aResult;
+  D2(theU, aResult.Point, aResult.D1, aResult.D2);
+  return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Adaptor2d_Curve2d::EvalD3(double theU) const
+Geom2d_Curve::ResD3 Adaptor2d_Curve2d::EvalD3(double theU) const
 {
-  try
-  {
-    Geom2d_Curve::ResD3 aResult;
-    D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
-    return aResult;
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  Geom2d_Curve::ResD3 aResult;
+  D3(theU, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+  return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Adaptor2d_Curve2d::EvalDN(double theU, int theN) const
+gp_Vec2d Adaptor2d_Curve2d::EvalDN(double theU, int theN) const
 {
-  try
-  {
-    return DN(theU, theN);
-  }
-  catch (const Standard_Failure&)
-  {
-    return std::nullopt;
-  }
+  return DN(theU, theN);
 }

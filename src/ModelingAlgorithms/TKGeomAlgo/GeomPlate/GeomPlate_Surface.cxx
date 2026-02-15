@@ -24,6 +24,7 @@
 
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
+#include <Geom_UndefinedDerivative.hxx>
 #include <GeomPlate_Surface.hxx>
 #include <gp_GTrsf2d.hxx>
 #include <gp_Pnt.hxx>
@@ -191,39 +192,33 @@ bool GeomPlate_Surface::IsCNv(const int) const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> GeomPlate_Surface::EvalD0(const double U, const double V) const
+gp_Pnt GeomPlate_Surface::EvalD0(const double U, const double V) const
 {
-  std::optional<gp_Pnt> aSurfP = mySurfinit->EvalD0(U, V);
-  if (!aSurfP)
-    return std::nullopt;
+  const gp_Pnt aSurfP = mySurfinit->EvalD0(U, V);
   gp_XY  P1(U, V);
   gp_XYZ P3 = mySurfinter.Evaluate(P1);
-  return gp_Pnt(P3 + aSurfP->XYZ());
+  return gp_Pnt(P3 + aSurfP.XYZ());
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> GeomPlate_Surface::EvalD1(const double U, const double V) const
+Geom_Surface::ResD1 GeomPlate_Surface::EvalD1(const double U, const double V) const
 {
-  std::optional<Geom_Surface::ResD1> aSurfD1 = mySurfinit->EvalD1(U, V);
-  if (!aSurfD1)
-    return std::nullopt;
+  const Geom_Surface::ResD1 aSurfD1 = mySurfinit->EvalD1(U, V);
   gp_XY  P1(U, V);
   gp_XYZ P3  = mySurfinter.Evaluate(P1);
   gp_XYZ V2U = mySurfinter.EvaluateDerivative(P1, 1, 0);
   gp_XYZ V2V = mySurfinter.EvaluateDerivative(P1, 0, 1);
-  return Geom_Surface::ResD1{gp_Pnt(P3 + aSurfD1->Point.XYZ()),
-                             gp_Vec(aSurfD1->D1U.XYZ() + V2U),
-                             gp_Vec(aSurfD1->D1V.XYZ() + V2V)};
+  return Geom_Surface::ResD1{gp_Pnt(P3 + aSurfD1.Point.XYZ()),
+                             gp_Vec(aSurfD1.D1U.XYZ() + V2U),
+                             gp_Vec(aSurfD1.D1V.XYZ() + V2V)};
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> GeomPlate_Surface::EvalD2(const double U, const double V) const
+Geom_Surface::ResD2 GeomPlate_Surface::EvalD2(const double U, const double V) const
 {
-  std::optional<Geom_Surface::ResD2> aSurfD2 = mySurfinit->EvalD2(U, V);
-  if (!aSurfD2)
-    return std::nullopt;
+  const Geom_Surface::ResD2 aSurfD2 = mySurfinit->EvalD2(U, V);
   gp_XY  P1(U, V);
   gp_XYZ P3         = mySurfinter.Evaluate(P1);
   gp_XYZ V2U_interp = mySurfinter.EvaluateDerivative(P1, 1, 0);
@@ -231,29 +226,29 @@ std::optional<Geom_Surface::ResD2> GeomPlate_Surface::EvalD2(const double U, con
   gp_XYZ V2U        = mySurfinter.EvaluateDerivative(P1, 2, 0);
   gp_XYZ V2V        = mySurfinter.EvaluateDerivative(P1, 0, 2);
   gp_XYZ V2UV       = mySurfinter.EvaluateDerivative(P1, 1, 1);
-  return Geom_Surface::ResD2{gp_Pnt(P3 + aSurfD2->Point.XYZ()),
-                             gp_Vec(aSurfD2->D1U.XYZ() + V2U_interp),
-                             gp_Vec(aSurfD2->D1V.XYZ() + V2V_interp),
-                             gp_Vec(aSurfD2->D2U.XYZ() + V2U),
-                             gp_Vec(aSurfD2->D2V.XYZ() + V2V),
-                             gp_Vec(aSurfD2->D2UV.XYZ() + V2UV)};
+  return Geom_Surface::ResD2{gp_Pnt(P3 + aSurfD2.Point.XYZ()),
+                             gp_Vec(aSurfD2.D1U.XYZ() + V2U_interp),
+                             gp_Vec(aSurfD2.D1V.XYZ() + V2V_interp),
+                             gp_Vec(aSurfD2.D2U.XYZ() + V2U),
+                             gp_Vec(aSurfD2.D2V.XYZ() + V2V),
+                             gp_Vec(aSurfD2.D2UV.XYZ() + V2UV)};
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> GeomPlate_Surface::EvalD3(const double, const double) const
+Geom_Surface::ResD3 GeomPlate_Surface::EvalD3(const double, const double) const
 {
-  return std::nullopt;
+  throw Geom_UndefinedDerivative("GeomPlate_Surface::EvalD3");
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> GeomPlate_Surface::EvalDN(const double,
+gp_Vec GeomPlate_Surface::EvalDN(const double,
                                                 const double,
                                                 const int,
                                                 const int) const
 {
-  return std::nullopt;
+  throw Geom_UndefinedDerivative("GeomPlate_Surface::EvalDN");
 }
 
 //=================================================================================================

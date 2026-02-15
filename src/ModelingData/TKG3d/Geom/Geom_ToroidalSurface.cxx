@@ -19,6 +19,7 @@
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_ToroidalSurface.hxx>
+#include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ.hxx>
@@ -211,7 +212,7 @@ void Geom_ToroidalSurface::Coefficients(Array1OfReal& Coef) const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_ToroidalSurface::EvalD0(const double U, const double V) const
+gp_Pnt Geom_ToroidalSurface::EvalD0(const double U, const double V) const
 {
   gp_Pnt aP;
   ElSLib::TorusD0(U, V, pos, majorRadius, minorRadius, aP);
@@ -220,67 +221,67 @@ std::optional<gp_Pnt> Geom_ToroidalSurface::EvalD0(const double U, const double 
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_ToroidalSurface::EvalD1(const double U,
+Geom_Surface::ResD1 Geom_ToroidalSurface::EvalD1(const double U,
                                                                 const double V) const
 {
-  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
-  ElSLib::TorusD1(U, V, pos, majorRadius, minorRadius, aResult->Point, aResult->D1U, aResult->D1V);
+  Geom_Surface::ResD1 aResult;
+  ElSLib::TorusD1(U, V, pos, majorRadius, minorRadius, aResult.Point, aResult.D1U, aResult.D1V);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_ToroidalSurface::EvalD2(const double U,
+Geom_Surface::ResD2 Geom_ToroidalSurface::EvalD2(const double U,
                                                                 const double V) const
 {
-  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
+  Geom_Surface::ResD2 aResult;
   ElSLib::TorusD2(U,
                   V,
                   pos,
                   majorRadius,
                   minorRadius,
-                  aResult->Point,
-                  aResult->D1U,
-                  aResult->D1V,
-                  aResult->D2U,
-                  aResult->D2V,
-                  aResult->D2UV);
+                  aResult.Point,
+                  aResult.D1U,
+                  aResult.D1V,
+                  aResult.D2U,
+                  aResult.D2V,
+                  aResult.D2UV);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_ToroidalSurface::EvalD3(const double U,
+Geom_Surface::ResD3 Geom_ToroidalSurface::EvalD3(const double U,
                                                                 const double V) const
 {
-  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
+  Geom_Surface::ResD3 aResult;
   ElSLib::TorusD3(U,
                   V,
                   pos,
                   majorRadius,
                   minorRadius,
-                  aResult->Point,
-                  aResult->D1U,
-                  aResult->D1V,
-                  aResult->D2U,
-                  aResult->D2V,
-                  aResult->D2UV,
-                  aResult->D3U,
-                  aResult->D3V,
-                  aResult->D3UUV,
-                  aResult->D3UVV);
+                  aResult.Point,
+                  aResult.D1U,
+                  aResult.D1V,
+                  aResult.D2U,
+                  aResult.D2V,
+                  aResult.D2UV,
+                  aResult.D3U,
+                  aResult.D3V,
+                  aResult.D3UUV,
+                  aResult.D3UVV);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_ToroidalSurface::EvalDN(const double U,
+gp_Vec Geom_ToroidalSurface::EvalDN(const double U,
                                                    const double V,
                                                    const int    Nu,
                                                    const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   return ElSLib::TorusDN(U, V, pos, majorRadius, minorRadius, Nu, Nv);
 }
 

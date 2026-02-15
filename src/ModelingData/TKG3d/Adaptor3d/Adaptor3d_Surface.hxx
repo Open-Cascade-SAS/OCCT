@@ -32,8 +32,6 @@
 #include <Standard_Handle.hxx>
 #include <NCollection_Array1.hxx>
 
-#include <optional>
-
 class Geom_BezierSurface;
 class Geom_BSplineSurface;
 
@@ -234,27 +232,27 @@ public:
   Standard_EXPORT virtual double OffsetValue() const;
 
   //! Computes the point of parameters (U, V) on the surface.
-  //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Pnt> EvalD0(double U, double V) const;
+  //! Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT virtual gp_Pnt EvalD0(double U, double V) const;
 
   //! Computes the point and first partial derivatives at (U, V).
-  //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Surface::ResD1> EvalD1(double U,
+  //! Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT virtual Geom_Surface::ResD1 EvalD1(double U,
                                                                                   double V) const;
 
   //! Computes the point and partial derivatives up to 2nd order at (U, V).
-  //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Surface::ResD2> EvalD2(double U,
+  //! Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT virtual Geom_Surface::ResD2 EvalD2(double U,
                                                                                   double V) const;
 
   //! Computes the point and partial derivatives up to 3rd order at (U, V).
-  //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<Geom_Surface::ResD3> EvalD3(double U,
+  //! Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT virtual Geom_Surface::ResD3 EvalD3(double U,
                                                                                   double V) const;
 
   //! Computes the derivative of order Nu in U and Nv in V at (U, V).
-  //! Returns std::nullopt on failure.
-  [[nodiscard]] Standard_EXPORT virtual std::optional<gp_Vec> EvalDN(double U,
+  //! Raises an exception on failure.
+  [[nodiscard]] Standard_EXPORT virtual gp_Vec EvalDN(double U,
                                                                      double V,
                                                                      int    Nu,
                                                                      int    Nv) const;

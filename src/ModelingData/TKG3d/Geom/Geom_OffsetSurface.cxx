@@ -338,17 +338,16 @@ GeomAbs_Shape Geom_OffsetSurface::Continuity() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V) const
+gp_Pnt Geom_OffsetSurface::EvalD0(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0)
   {
-    return std::nullopt;
+    throw Geom_UndefinedValue("Geom_OffsetSurface::EvalD0");
   }
 #endif
-  if (const std::optional<gp_Pnt> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  gp_Pnt aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -356,24 +355,23 @@ std::optional<gp_Pnt> Geom_OffsetSurface::EvalD0(const double U, const double V)
   gp_Pnt aP;
   if (!Geom_OffsetSurfaceUtils::EvaluateD0(U, V, basisSurf.get(), offsetValue, myOscSurf.get(), aP))
   {
-    return std::nullopt;
+    throw Geom_UndefinedValue("Geom_OffsetSurface::EvalD0");
   }
   return aP;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, const double V) const
+Geom_Surface::ResD1 Geom_OffsetSurface::EvalD1(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0 || myBasisSurfContinuity == GeomAbs_C1)
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalD1");
   }
 #endif
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD1 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -388,25 +386,24 @@ std::optional<Geom_Surface::ResD1> Geom_OffsetSurface::EvalD1(const double U, co
                                            aResult.D1U,
                                            aResult.D1V))
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalD1");
   }
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, const double V) const
+Geom_Surface::ResD2 Geom_OffsetSurface::EvalD2(const double U, const double V) const
 {
 #ifdef CHECK
   if (myBasisSurfContinuity == GeomAbs_C0 || myBasisSurfContinuity == GeomAbs_C1
       || myBasisSurfContinuity == GeomAbs_C2)
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalD2");
   }
 #endif
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD2 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -424,24 +421,23 @@ std::optional<Geom_Surface::ResD2> Geom_OffsetSurface::EvalD2(const double U, co
                                            aResult.D2V,
                                            aResult.D2UV))
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalD2");
   }
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, const double V) const
+Geom_Surface::ResD3 Geom_OffsetSurface::EvalD3(const double U, const double V) const
 {
 #ifdef CHECK
   if (!(basisSurf->IsCNu(4) && basisSurf->IsCNv(4)))
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalD3");
   }
 #endif
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD3 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -463,29 +459,28 @@ std::optional<Geom_Surface::ResD3> Geom_OffsetSurface::EvalD3(const double U, co
                                            aResult.D3UUV,
                                            aResult.D3UVV))
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalD3");
   }
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
+gp_Vec Geom_OffsetSurface::EvalDN(const double U,
                                                  const double V,
                                                  const int    Nu,
                                                  const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalDN");
 #ifdef CHECK
   if (!(basisSurf->IsCNu(Nu) && basisSurf->IsCNv(Nv)))
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalDN");
   }
 #endif
-  if (const std::optional<gp_Vec> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
-      aEvalRepResult.has_value())
+  gp_Vec aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -500,7 +495,7 @@ std::optional<gp_Vec> Geom_OffsetSurface::EvalDN(const double U,
                                            myOscSurf.get(),
                                            aResult))
   {
-    return std::nullopt;
+    throw Geom_UndefinedDerivative("Geom_OffsetSurface::EvalDN");
   }
   return aResult;
 }

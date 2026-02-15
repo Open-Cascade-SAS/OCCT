@@ -143,44 +143,44 @@ double Geom_Circle::Radius() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_Circle::EvalD0(const double U) const
+gp_Pnt Geom_Circle::EvalD0(const double U) const
 {
   return ElCLib::CircleValue(U, pos, radius);
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD1> Geom_Circle::EvalD1(const double U) const
+Geom_Curve::ResD1 Geom_Circle::EvalD1(const double U) const
 {
-  std::optional<Geom_Curve::ResD1> aResult{std::in_place};
-  ElCLib::CircleD1(U, pos, radius, aResult->Point, aResult->D1);
+  Geom_Curve::ResD1 aResult;
+  ElCLib::CircleD1(U, pos, radius, aResult.Point, aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD2> Geom_Circle::EvalD2(const double U) const
+Geom_Curve::ResD2 Geom_Circle::EvalD2(const double U) const
 {
-  std::optional<Geom_Curve::ResD2> aResult{std::in_place};
-  ElCLib::CircleD2(U, pos, radius, aResult->Point, aResult->D1, aResult->D2);
+  Geom_Curve::ResD2 aResult;
+  ElCLib::CircleD2(U, pos, radius, aResult.Point, aResult.D1, aResult.D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Curve::ResD3> Geom_Circle::EvalD3(const double U) const
+Geom_Curve::ResD3 Geom_Circle::EvalD3(const double U) const
 {
-  std::optional<Geom_Curve::ResD3> aResult{std::in_place};
-  ElCLib::CircleD3(U, pos, radius, aResult->Point, aResult->D1, aResult->D2, aResult->D3);
+  Geom_Curve::ResD3 aResult;
+  ElCLib::CircleD3(U, pos, radius, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_Circle::EvalDN(const double U, const int N) const
+gp_Vec Geom_Circle::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   return ElCLib::CircleDN(U, pos, radius, N);
 }
 

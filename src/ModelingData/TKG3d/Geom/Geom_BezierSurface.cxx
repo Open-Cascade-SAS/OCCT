@@ -1343,11 +1343,10 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V) const
+gp_Pnt Geom_BezierSurface::EvalD0(const double U, const double V) const
 {
-  if (const std::optional<gp_Pnt> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  gp_Pnt aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -1398,16 +1397,15 @@ std::optional<gp_Pnt> Geom_BezierSurface::EvalD0(const double U, const double V)
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, const double V) const
+Geom_Surface::ResD1 Geom_BezierSurface::EvalD1(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD1> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD1 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Surface::ResD1> aResult{std::in_place};
+  Geom_Surface::ResD1 aResult;
   if (myURational || myVRational)
   {
     BSplSLib::D1(U,
@@ -1426,9 +1424,9 @@ std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, co
                  myVRational,
                  false,
                  false,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V);
   }
   else
   {
@@ -1448,25 +1446,24 @@ std::optional<Geom_Surface::ResD1> Geom_BezierSurface::EvalD1(const double U, co
                  myVRational,
                  false,
                  false,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V);
   }
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, const double V) const
+Geom_Surface::ResD2 Geom_BezierSurface::EvalD2(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD2> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD2 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Surface::ResD2> aResult{std::in_place};
+  Geom_Surface::ResD2 aResult;
   if (myURational || myVRational)
   {
     //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
@@ -1486,12 +1483,12 @@ std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, co
                  myVRational,
                  false,
                  false,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V,
-                 aResult->D2U,
-                 aResult->D2V,
-                 aResult->D2UV);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
   }
   else
   {
@@ -1512,28 +1509,27 @@ std::optional<Geom_Surface::ResD2> Geom_BezierSurface::EvalD2(const double U, co
                  myVRational,
                  false,
                  false,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V,
-                 aResult->D2U,
-                 aResult->D2V,
-                 aResult->D2UV);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV);
   }
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, const double V) const
+Geom_Surface::ResD3 Geom_BezierSurface::EvalD3(const double U, const double V) const
 {
-  if (const std::optional<Geom_Surface::ResD3> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V);
-      aEvalRepResult.has_value())
+  Geom_Surface::ResD3 aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
-  std::optional<Geom_Surface::ResD3> aResult{std::in_place};
+  Geom_Surface::ResD3 aResult;
   if (myURational || myVRational)
   {
     BSplSLib::D3(U,
@@ -1552,16 +1548,16 @@ std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, co
                  myVRational,
                  false,
                  false,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V,
-                 aResult->D2U,
-                 aResult->D2V,
-                 aResult->D2UV,
-                 aResult->D3U,
-                 aResult->D3V,
-                 aResult->D3UUV,
-                 aResult->D3UVV);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
   }
   else
   {
@@ -1581,36 +1577,35 @@ std::optional<Geom_Surface::ResD3> Geom_BezierSurface::EvalD3(const double U, co
                  myVRational,
                  false,
                  false,
-                 aResult->Point,
-                 aResult->D1U,
-                 aResult->D1V,
-                 aResult->D2U,
-                 aResult->D2V,
-                 aResult->D2UV,
-                 aResult->D3U,
-                 aResult->D3V,
-                 aResult->D3UUV,
-                 aResult->D3UVV);
+                 aResult.Point,
+                 aResult.D1U,
+                 aResult.D1V,
+                 aResult.D2U,
+                 aResult.D2V,
+                 aResult.D2UV,
+                 aResult.D3U,
+                 aResult.D3V,
+                 aResult.D3UUV,
+                 aResult.D3UVV);
   }
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec> Geom_BezierSurface::EvalDN(const double U,
+gp_Vec Geom_BezierSurface::EvalDN(const double U,
                                                  const double V,
                                                  const int    Nu,
                                                  const int    Nv) const
 {
-  if (const std::optional<gp_Vec> aEvalRepResult =
-        Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv);
-      aEvalRepResult.has_value())
+  gp_Vec aEvalRepResult;
+  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }
 
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
-    return std::nullopt;
+    throw Geom_UndefinedDerivative();
   gp_Vec Derivative;
   if (myURational || myVRational)
   {

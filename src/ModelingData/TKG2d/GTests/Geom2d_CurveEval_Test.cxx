@@ -18,6 +18,7 @@
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_OffsetCurve.hxx>
+#include <Geom2d_UndefinedDerivative.hxx>
 #include <Geom2dAPI_PointsToBSpline.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
@@ -39,19 +40,17 @@ TEST(Geom2d_CurveEvalTest, Circle_EvalD0D1_ValidResults)
   const double aU = M_PI / 4.0;
 
   // EvalD0
-  const std::optional<gp_Pnt2d> aD0 = aCurve->EvalD0(aU);
-  ASSERT_TRUE(aD0.has_value());
-  const double aDist = aD0->Distance(gp_Pnt2d(0.0, 0.0));
+  const gp_Pnt2d aD0 = aCurve->EvalD0(aU);
+  const double   aDist = aD0.Distance(gp_Pnt2d(0.0, 0.0));
   EXPECT_NEAR(aDist, 4.0, Precision::Confusion());
 
   // EvalD1
-  const std::optional<Geom2d_Curve::ResD1> aD1 = aCurve->EvalD1(aU);
-  ASSERT_TRUE(aD1.has_value());
-  EXPECT_NEAR(aD1->Point.Distance(*aD0), 0.0, Precision::Confusion());
+  const Geom2d_Curve::ResD1 aD1 = aCurve->EvalD1(aU);
+  EXPECT_NEAR(aD1.Point.Distance(aD0), 0.0, Precision::Confusion());
 
   // D1 should be perpendicular to radius
-  const gp_Vec2d aRadial(gp_Pnt2d(0.0, 0.0), aD1->Point);
-  EXPECT_NEAR(aRadial.Dot(aD1->D1), 0.0, 1.0e-10);
+  const gp_Vec2d aRadial(gp_Pnt2d(0.0, 0.0), aD1.Point);
+  EXPECT_NEAR(aRadial.Dot(aD1.D1), 0.0, 1.0e-10);
 }
 
 //=================================================================================================
@@ -70,8 +69,8 @@ TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD0_ValidAtDegenerateCenter)
   // EvalD0 on the offset curve. This may or may not return nullopt depending on
   // implementation - the degenerate curve should still produce a valid point
   // (the center), since offset curve D0 evaluation is typically valid.
-  const std::optional<gp_Pnt2d> aResult = anOffset->EvalD0(0.0);
-  EXPECT_TRUE(aResult.has_value());
+  const gp_Pnt2d aResult = anOffset->EvalD0(0.0);
+  EXPECT_NEAR(aResult.Distance(gp_Pnt2d(0.0, 0.0)), 0.0, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -96,15 +95,14 @@ TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalD1_ConsistentWithOldAPI)
   const double aMid   = (aFirst + aLast) / 2.0;
 
   // Compare EvalD1 with old D1 wrapper
-  const std::optional<Geom2d_Curve::ResD1> aEvalResult = aCurve->EvalD1(aMid);
-  ASSERT_TRUE(aEvalResult.has_value());
+  const Geom2d_Curve::ResD1 aEvalResult = aCurve->EvalD1(aMid);
 
   gp_Pnt2d aOldP;
   gp_Vec2d aOldV1;
   aCurve->D1(aMid, aOldP, aOldV1);
 
-  EXPECT_NEAR(aEvalResult->Point.Distance(aOldP), 0.0, Precision::Confusion());
-  EXPECT_NEAR((aEvalResult->D1 - aOldV1).Magnitude(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aEvalResult.Point.Distance(aOldP), 0.0, Precision::Confusion());
+  EXPECT_NEAR((aEvalResult.D1 - aOldV1).Magnitude(), 0.0, Precision::Confusion());
 }
 
 //=================================================================================================
@@ -118,13 +116,11 @@ TEST(Geom2d_CurveEvalTest, Ellipse_EvalD2D3_ValidResults)
 
   const double aU = M_PI / 4.0;
 
-  const std::optional<Geom2d_Curve::ResD2> aD2 = aCurve->EvalD2(aU);
-  ASSERT_TRUE(aD2.has_value());
-  EXPECT_GT(aD2->D2.Magnitude(), 0.0);
+  const Geom2d_Curve::ResD2 aD2 = aCurve->EvalD2(aU);
+  EXPECT_GT(aD2.D2.Magnitude(), 0.0);
 
-  const std::optional<Geom2d_Curve::ResD3> aD3 = aCurve->EvalD3(aU);
-  ASSERT_TRUE(aD3.has_value());
-  EXPECT_GT(aD3->D3.Magnitude(), 0.0);
+  const Geom2d_Curve::ResD3 aD3 = aCurve->EvalD3(aU);
+  EXPECT_GT(aD3.D3.Magnitude(), 0.0);
 }
 
 //=================================================================================================
@@ -136,22 +132,20 @@ TEST(Geom2d_CurveEvalTest, Line_EvalDN_ValidResults)
   occ::handle<Geom2d_Line> aCurve = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0));
 
   // DN(U, 1) should return the direction
-  const std::optional<gp_Vec2d> aDN1 = aCurve->EvalDN(5.0, 1);
-  ASSERT_TRUE(aDN1.has_value());
-  EXPECT_NEAR(aDN1->X(), 1.0, Precision::Confusion());
-  EXPECT_NEAR(aDN1->Y(), 0.0, Precision::Confusion());
+  const gp_Vec2d aDN1 = aCurve->EvalDN(5.0, 1);
+  EXPECT_NEAR(aDN1.X(), 1.0, Precision::Confusion());
+  EXPECT_NEAR(aDN1.Y(), 0.0, Precision::Confusion());
 
   // DN(U, 2) should return zero for a line
-  const std::optional<gp_Vec2d> aDN2 = aCurve->EvalDN(5.0, 2);
-  ASSERT_TRUE(aDN2.has_value());
-  EXPECT_NEAR(aDN2->Magnitude(), 0.0, Precision::Confusion());
+  const gp_Vec2d aDN2 = aCurve->EvalDN(5.0, 2);
+  EXPECT_NEAR(aDN2.Magnitude(), 0.0, Precision::Confusion());
 }
 
 //=================================================================================================
 // BSplineCurve 2D EvalDN invalid N test
 //=================================================================================================
 
-TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalDN_InvalidN_ReturnsNullopt)
+TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalDN_InvalidN_Throws)
 {
   NCollection_Array1<gp_Pnt2d> aPnts(1, 3);
   aPnts(1) = gp_Pnt2d(0.0, 0.0);
@@ -164,10 +158,8 @@ TEST(Geom2d_CurveEvalTest, BSplineCurve_EvalDN_InvalidN_ReturnsNullopt)
 
   const double aMid = (aCurve->FirstParameter() + aCurve->LastParameter()) / 2.0;
 
-  // N=0 should return nullopt
-  EXPECT_FALSE(aCurve->EvalDN(aMid, 0).has_value());
-  // N=-1 should return nullopt
-  EXPECT_FALSE(aCurve->EvalDN(aMid, -1).has_value());
+  EXPECT_THROW(aCurve->EvalDN(aMid, 0), Geom2d_UndefinedDerivative);
+  EXPECT_THROW(aCurve->EvalDN(aMid, -1), Geom2d_UndefinedDerivative);
 }
 
 //=================================================================================================
@@ -185,9 +177,8 @@ TEST(Geom2d_CurveEvalTest, OffsetCurve_EvalD1_DegenerateAtCollapsed)
   // but produces a degenerate result (all points map to the center).
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aBasis, -3.0);
 
-  const std::optional<Geom2d_Curve::ResD1> aResult = anOffset->EvalD1(0.0);
-  ASSERT_TRUE(aResult.has_value());
+  const Geom2d_Curve::ResD1 aResult = anOffset->EvalD1(0.0);
 
   // The point should be near the center
-  EXPECT_NEAR(aResult->Point.Distance(gp_Pnt2d(0.0, 0.0)), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aResult.Point.Distance(gp_Pnt2d(0.0, 0.0)), 0.0, Precision::Confusion());
 }

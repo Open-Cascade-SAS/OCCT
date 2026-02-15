@@ -190,45 +190,45 @@ double Geom2d_Parabola::Parameter() const
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Geom2d_Parabola::EvalD0(const double U) const
+gp_Pnt2d Geom2d_Parabola::EvalD0(const double U) const
 {
   return ElCLib::ParabolaValue(U, pos, focalLength);
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Geom2d_Parabola::EvalD1(const double U) const
+Geom2d_Curve::ResD1 Geom2d_Parabola::EvalD1(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD1> aResult{std::in_place};
-  ElCLib::ParabolaD1(U, pos, focalLength, aResult->Point, aResult->D1);
+  Geom2d_Curve::ResD1 aResult;
+  ElCLib::ParabolaD1(U, pos, focalLength, aResult.Point, aResult.D1);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Geom2d_Parabola::EvalD2(const double U) const
+Geom2d_Curve::ResD2 Geom2d_Parabola::EvalD2(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD2> aResult{std::in_place};
-  ElCLib::ParabolaD2(U, pos, focalLength, aResult->Point, aResult->D1, aResult->D2);
+  Geom2d_Curve::ResD2 aResult;
+  ElCLib::ParabolaD2(U, pos, focalLength, aResult.Point, aResult.D1, aResult.D2);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Geom2d_Parabola::EvalD3(const double U) const
+Geom2d_Curve::ResD3 Geom2d_Parabola::EvalD3(const double U) const
 {
-  std::optional<Geom2d_Curve::ResD3> aResult{std::in_place};
-  ElCLib::ParabolaD2(U, pos, focalLength, aResult->Point, aResult->D1, aResult->D2);
-  aResult->D3.SetCoord(0.0, 0.0);
+  Geom2d_Curve::ResD3 aResult;
+  ElCLib::ParabolaD2(U, pos, focalLength, aResult.Point, aResult.D1, aResult.D2);
+  aResult.D3.SetCoord(0.0, 0.0);
   return aResult;
 }
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Geom2d_Parabola::EvalDN(const double U, const int N) const
+gp_Vec2d Geom2d_Parabola::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom2d_UndefinedDerivative();
   return ElCLib::ParabolaDN(U, pos, focalLength, N);
 }
 

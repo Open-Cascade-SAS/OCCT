@@ -23,6 +23,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_Line.hxx>
+#include <Geom2d_UndefinedDerivative.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
 #include <Geom2dGcc_Circ2d2TanRad.hxx>
 #include <Geom2dInt_GInter.hxx>
@@ -968,7 +969,7 @@ gp_Pnt2d Bisector_BisecCC::ValueByInt(const double U, double& U1, double& U2, do
 
 //=================================================================================================
 
-std::optional<gp_Pnt2d> Bisector_BisecCC::EvalD0(const double U) const
+gp_Pnt2d Bisector_BisecCC::EvalD0(const double U) const
 {
   double U1, U2, Dist;
 
@@ -977,7 +978,7 @@ std::optional<gp_Pnt2d> Bisector_BisecCC::EvalD0(const double U) const
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD1> Bisector_BisecCC::EvalD1(const double U) const
+Geom2d_Curve::ResD1 Bisector_BisecCC::EvalD1(const double U) const
 {
   Geom2d_Curve::ResD1 aResult;
   aResult.D1.SetCoord(0., 0.);
@@ -988,7 +989,7 @@ std::optional<Geom2d_Curve::ResD1> Bisector_BisecCC::EvalD1(const double U) cons
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD2> Bisector_BisecCC::EvalD2(const double U) const
+Geom2d_Curve::ResD2 Bisector_BisecCC::EvalD2(const double U) const
 {
   Geom2d_Curve::ResD2 aResult;
   aResult.D1.SetCoord(0., 0.);
@@ -1000,7 +1001,7 @@ std::optional<Geom2d_Curve::ResD2> Bisector_BisecCC::EvalD2(const double U) cons
 
 //=================================================================================================
 
-std::optional<Geom2d_Curve::ResD3> Bisector_BisecCC::EvalD3(const double U) const
+Geom2d_Curve::ResD3 Bisector_BisecCC::EvalD3(const double U) const
 {
   Geom2d_Curve::ResD3 aResult;
   aResult.D1.SetCoord(0., 0.);
@@ -1012,10 +1013,10 @@ std::optional<Geom2d_Curve::ResD3> Bisector_BisecCC::EvalD3(const double U) cons
 
 //=================================================================================================
 
-std::optional<gp_Vec2d> Bisector_BisecCC::EvalDN(const double U, const int N) const
+gp_Vec2d Bisector_BisecCC::EvalDN(const double U, const int N) const
 {
   if (N < 1)
-    return std::nullopt;
+    throw Geom2d_UndefinedDerivative("Bisector_BisecCC::EvalDN");
   gp_Pnt2d P;
   gp_Vec2d V1(0., 0.);
   gp_Vec2d V2(0., 0.);
@@ -1030,7 +1031,7 @@ std::optional<gp_Vec2d> Bisector_BisecCC::EvalDN(const double U, const int N) co
     case 3:
       return V3;
     default: {
-      return std::nullopt;
+      throw Geom2d_UndefinedDerivative("Bisector_BisecCC::EvalDN");
     }
   }
 }
