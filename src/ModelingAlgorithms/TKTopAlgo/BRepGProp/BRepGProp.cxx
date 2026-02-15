@@ -32,6 +32,7 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <TopoDS_Compound.hxx>
 #include <TopoDS_Shape.hxx>
+#include <cmath>
 
 #ifdef OCCT_DEBUG
 static int AffichEps = 0;
@@ -458,10 +459,30 @@ static double volumeProperties(const TopoDS_Shape& S,
         continue;
       }
 
+      // Cache reuse is only valid for rigid (isometric) transforms.
+      // Shape locations may contain scaling or negative determinant
+      // (TopoDS_Shape::Location() does not enforce rigidity by default),
+      // which would produce incorrect volume/inertia with rotation-only transform.
+      const gp_Trsf& aRelTrsf = aRelLoc.Transformation();
+      if (std::abs(std::abs(aRelTrsf.ScaleFactor()) - 1.0) > TopLoc_Location::ScalePrec()
+          || aRelTrsf.IsNegative())
+      {
+        // Non-rigid relative transform: fall back to direct face-level computation.
+        GProp_GProps aSolidProps(P);
+        const double anError =
+          volumePropertiesFaces(aSolid, aSolidProps, P, Eps, SkipShared, UseTriangulation);
+        if (ErrorMax < anError)
+        {
+          ErrorMax = anError;
+        }
+        Props.Add(aSolidProps);
+        continue;
+      }
+
       GPropTransformer aTransformed(aCached.Props);
       if (!aRelLoc.IsIdentity())
       {
-        aTransformed.ApplyTransform(aRelLoc.Transformation());
+        aTransformed.ApplyTransform(aRelTrsf);
       }
       if (aSolid.Orientation() != aCached.Orientation)
       {
