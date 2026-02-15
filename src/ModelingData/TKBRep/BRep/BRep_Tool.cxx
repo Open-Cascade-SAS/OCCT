@@ -321,28 +321,31 @@ occ::handle<Geom2d_Curve> BRep_Tool::CurveOnSurface(const TopoDS_Edge&          
                                                     double&                          Last,
                                                     bool*                            theIsStored)
 {
-  TopLoc_Location loc         = L.Predivided(E.Location());
-  bool            Eisreversed = (E.Orientation() == TopAbs_REVERSED);
+  bool Eisreversed = (E.Orientation() == TopAbs_REVERSED);
   if (theIsStored)
     *theIsStored = true;
 
   // find the representation
   const BRep_TEdge* TE = static_cast<const BRep_TEdge*>(E.TShape().get());
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
-
-  while (itcr.More())
+  if (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    if (cr->IsCurveOnSurface(S, loc))
+    const TopLoc_Location loc = L.Predivided(E.Location());
+
+    while (itcr.More())
     {
-      const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
-      GC->Range(First, Last);
-      if (GC->IsCurveOnClosedSurface() && Eisreversed)
-        return GC->PCurve2();
-      else
-        return GC->PCurve();
+      const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
+      if (cr->IsCurveOnSurface(S, loc))
+      {
+        const BRep_GCurve* GC = static_cast<const BRep_GCurve*>(cr.get());
+        GC->Range(First, Last);
+        if (GC->IsCurveOnClosedSurface() && Eisreversed)
+          return GC->PCurve2();
+        else
+          return GC->PCurve();
+      }
+      itcr.Next();
     }
-    itcr.Next();
   }
 
   // Curve is not found. Try projection on plane

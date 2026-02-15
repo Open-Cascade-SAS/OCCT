@@ -28,12 +28,15 @@
 #include <NCollection_Array1.hxx>
 #include <GeomAbs_IsoType.hxx>
 #include <NCollection_HArray1.hxx>
+#include <TopLoc_Location.hxx>
+
 class TopoDS_Face;
 class gp_Pnt;
 class gp_Vec;
 class TopoDS_Edge;
 class gp_Pnt2d;
 class gp_Vec2d;
+class Geom_Surface;
 
 class BRepGProp_Face
 {
@@ -149,10 +152,13 @@ public:
                                  occ::handle<NCollection_HArray1<double>>& theTKnots) const;
 
 private:
-  BRepAdaptor_Surface mySurface;
-  Geom2dAdaptor_Curve myCurve;
-  bool                mySReverse;
-  bool                myIsUseSpan;
+  BRepAdaptor_Surface       mySurface;
+  Geom2dAdaptor_Curve       myCurve;
+  occ::handle<Geom_Surface> myFaceSurface;
+  TopLoc_Location           myFaceLocation;
+  bool                      myIsFaceContextReady;
+  bool                      mySReverse;
+  bool                      myIsUseSpan;
 };
 
 #include <BRepGProp_Face.lxx>

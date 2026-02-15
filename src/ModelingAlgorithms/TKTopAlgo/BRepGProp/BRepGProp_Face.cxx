@@ -159,8 +159,12 @@ void BRepGProp_Face::Bounds(double& U1, double& U2, double& V1, double& V2) cons
 
 bool BRepGProp_Face::Load(const TopoDS_Edge& E)
 {
-  double                    a, b;
-  occ::handle<Geom2d_Curve> C = BRep_Tool::CurveOnSurface(E, mySurface.Face(), a, b);
+  double a, b;
+  if (!myIsFaceContextReady)
+  {
+    return false;
+  }
+  occ::handle<Geom2d_Curve> C = BRep_Tool::CurveOnSurface(E, myFaceSurface, myFaceLocation, a, b);
   if (C.IsNull())
   {
     return false;
@@ -182,6 +186,8 @@ void BRepGProp_Face::Load(const TopoDS_Face& F)
 {
   TopoDS_Shape aLocalShape = F.Oriented(TopAbs_FORWARD);
   mySurface.Initialize(TopoDS::Face(aLocalShape));
+  myFaceSurface        = BRep_Tool::Surface(mySurface.Face(), myFaceLocation);
+  myIsFaceContextReady = !myFaceSurface.IsNull();
   //  mySurface.Initialize(TopoDS::Face(F.Oriented(TopAbs_FORWARD)));
   mySReverse = (F.Orientation() == TopAbs_REVERSED);
 }
