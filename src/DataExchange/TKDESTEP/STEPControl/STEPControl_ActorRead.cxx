@@ -329,7 +329,7 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::Transfer(
   const Message_ProgressRange&                  theProgress)
 {
   // [BEGIN] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  const Standard_Integer     aNbTPitems = TP->NbMapped();
+  const int                  aNbTPitems = TP->NbMapped();
   StepData_Factors           aLocalFactors;
   Handle(StepData_StepModel) aStepModel = Handle(StepData_StepModel)::DownCast(TP->Model());
   if (!aStepModel->IsInitializedUnit())
@@ -362,9 +362,9 @@ occ::handle<Transfer_Binder> STEPControl_ActorRead::Transfer(
     }
   }
   // [END] Get version of preprocessor (to detect I-Deas case) (ssv; 23.11.2010)
-  Standard_Boolean        aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
+  bool                    aTrsfUse = (aStepModel->InternalParameters.ReadRootTransformation == 1);
   Handle(Transfer_Binder) aResult =
-    TransferShape(start, TP, aLocalFactors, Standard_True, aTrsfUse, theProgress);
+    TransferShape(start, TP, aLocalFactors, true, aTrsfUse, theProgress);
   PostHealing(TP, aNbTPitems);
   return aResult;
 }
@@ -1564,7 +1564,7 @@ occ::handle<TransferBRep_ShapeBinder> STEPControl_ActorRead::TransferEntity(
 {
   Message_Messenger::StreamBuffer  sout = TP->Messenger()->SendInfo();
   Handle(TransferBRep_ShapeBinder) shbinder;
-  Standard_Boolean                 found = Standard_False;
+  bool                             found = false;
   StepToTopoDS_Builder             myShapeBuilder;
   TopoDS_Shape                     mappedShape;
 #ifdef TRANSLOG
@@ -2428,16 +2428,18 @@ TopoDS_Shape STEPControl_ActorRead::TransferRelatedSRR(
 //=================================================================================================
 
 void STEPControl_ActorRead::PostHealing(const Handle(Transfer_TransientProcess)& theTP,
-                                        const Standard_Integer                   theFirstIndex)
+                                        const int                                theFirstIndex)
 {
   if (myShapesToHeal.IsEmpty())
   {
     return; // nothing
   }
   NCollection_Array1<std::unique_ptr<XSAlgo_ShapeProcessor>> aInfos(1, myShapesToHeal.Size());
-  NCollection_Array1<TopTools_DataMapOfShapeShape> aOrigToCopyMapArr(1, myShapesToHeal.Size());
-  NCollection_Array1<TopTools_DataMapOfShapeShape> aCopyToOrigMapArr(1, myShapesToHeal.Size());
-  XSAlgo_ShapeProcessor::ParameterMap              aParameters = GetShapeFixParameters();
+  NCollection_Array1<NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>>
+    aOrigToCopyMapArr(1, myShapesToHeal.Size());
+  NCollection_Array1<NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>>
+                                      aCopyToOrigMapArr(1, myShapesToHeal.Size());
+  XSAlgo_ShapeProcessor::ParameterMap aParameters = GetShapeFixParameters();
   XSAlgo_ShapeProcessor::SetParameter("FixShape.Tolerance3d", myPrecision, true, aParameters);
   XSAlgo_ShapeProcessor::SetParameter("FixShape.MaxTolerance3d", myMaxTol, true, aParameters);
   OSD_Parallel::For(1, myShapesToHeal.Size() + 1, [&](int i) {
@@ -2464,7 +2466,8 @@ void STEPControl_ActorRead::PostHealing(const Handle(Transfer_TransientProcess)&
   // Update Shape context for correct attributes attaching
   Handle(ShapeProcess_ShapeContext) aFullContext =
     new ShapeProcess_ShapeContext(TopoDS_Shape(), nullptr);
-  TopTools_DataMapOfShapeShape& aHealedMap = (TopTools_DataMapOfShapeShape&)aFullContext->Map();
+  NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& aHealedMap =
+    (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>&)aFullContext->Map();
 
   // Copy maps to the common binders map
   for (int i = 1; i <= aOrigToCopyMapArr.Size(); i++)
@@ -2473,11 +2476,16 @@ void STEPControl_ActorRead::PostHealing(const Handle(Transfer_TransientProcess)&
     const auto&                       aRevMap  = aCopyToOrigMapArr.Value(i);
     Handle(ShapeProcess_ShapeContext) aContext = aInfos.ChangeValue(i)->GetContext();
 
-    for (TopTools_DataMapOfShapeShape::Iterator aMapIt(aForwMap); aMapIt.More(); aMapIt.Next())
+    for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator aMapIt(
+           aForwMap);
+         aMapIt.More();
+         aMapIt.Next())
     {
       aHealedMap.Bind(aMapIt.Key(), aMapIt.Value());
     }
-    for (TopTools_DataMapOfShapeShape::Iterator anIter(aContext->Map()); anIter.More();
+    for (NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator anIter(
+           aContext->Map());
+         anIter.More();
          anIter.Next())
     {
       TopoDS_Shape aShape;
