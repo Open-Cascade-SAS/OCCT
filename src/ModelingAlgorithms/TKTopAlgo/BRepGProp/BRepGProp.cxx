@@ -24,15 +24,62 @@
 #include <TopoDS.hxx>
 #include <BRepAdaptor_Curve.hxx>
 
+#include <BRep_Builder.hxx>
 #include <BRep_Tool.hxx>
-#include <TopoDS_Shape.hxx>
-#include <TopTools_ShapeMapHasher.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_Map.hxx>
 #include <BRepCheck_Shell.hxx>
+#include <TopTools_ShapeMapHasher.hxx>
+#include <TopoDS_Compound.hxx>
+#include <TopoDS_Shape.hxx>
+#include <cmath>
 
 #ifdef OCCT_DEBUG
 static int AffichEps = 0;
 #endif
+
+namespace
+{
+
+//! Helper to transform GProp_GProps by accessing protected members.
+//! Used for solid-level caching: compute properties once per unique solid,
+//! then transform for duplicate instances at different locations.
+class GPropTransformer : public GProp_GProps
+{
+public:
+  GPropTransformer(const GProp_GProps& theSource)
+      : GProp_GProps(theSource)
+  {
+  }
+
+  //! Apply a rigid transform to the stored properties.
+  //! Transforms reference point (loc) as absolute point, gravity center offset (g)
+  //! as relative vector (rotation only, no translation), and rotates inertia tensor.
+  void ApplyTransform(const gp_Trsf& theTrsf)
+  {
+    loc.Transform(theTrsf);
+    const gp_TrsfForm aForm = theTrsf.Form();
+    if (aForm != gp_Identity && aForm != gp_Translation)
+    {
+      // g is a relative offset from loc to center of mass - rotate only.
+      const gp_Mat aR    = theTrsf.VectorialPart();
+      gp_XYZ       aGxyz = g.XYZ();
+      aGxyz.Multiply(aR);
+      g.SetXYZ(aGxyz);
+      const gp_Mat aRt = aR.Transposed();
+      inertia          = aR.Multiplied(inertia).Multiplied(aRt);
+    }
+  }
+
+  //! Negate volume contribution (for reversed solid orientation).
+  void Negate()
+  {
+    dim = -dim;
+    inertia.Multiply(-1.0);
+  }
+};
+
+} // anonymous namespace
 
 static gp_Pnt roughBaryCenter(const TopoDS_Shape& S)
 {
@@ -237,11 +284,15 @@ double BRepGProp::SurfaceProperties(const TopoDS_Shape& S,
 
 //=================================================================================================
 
-static double volumeProperties(const TopoDS_Shape& S,
-                               GProp_GProps&       Props,
-                               const double        Eps,
-                               const bool          SkipShared,
-                               const bool          UseTriangulation)
+//! Process faces of a shape for volume properties computation.
+//! This is the core face-level integration loop used both for unique solids
+//! and for shapes without shared solids.
+static double volumePropertiesFaces(const TopoDS_Shape& S,
+                                    GProp_GProps&       Props,
+                                    const gp_Pnt&       theRefPnt,
+                                    const double        Eps,
+                                    const bool          SkipShared,
+                                    const bool          UseTriangulation)
 {
   int i;
 #ifdef OCCT_DEBUG
@@ -249,11 +300,10 @@ static double volumeProperties(const TopoDS_Shape& S,
 #endif
   double           ErrorMax = 0.0, Error = 0.0;
   TopExp_Explorer  ex;
-  gp_Pnt           P(roughBaryCenter(S));
   BRepGProp_Vinert G;
-  G.SetLocation(P);
+  G.SetLocation(theRefPnt);
   BRepGProp_MeshProps MG(BRepGProp_MeshProps::Vinert);
-  MG.SetLocation(P);
+  MG.SetLocation(theRefPnt);
 
   BRepGProp_Face                                         BF;
   BRepGProp_Domain                                       BD;
@@ -341,6 +391,150 @@ static double volumeProperties(const TopoDS_Shape& S,
   if (AffichEps)
     std::cout << "\n-----------------\n" << iErrorMax << ":\tMaxError = " << ErrorMax << "\n";
 #endif
+  return ErrorMax;
+}
+
+//=================================================================================================
+
+static double volumeProperties(const TopoDS_Shape& S,
+                               GProp_GProps&       Props,
+                               const double        Eps,
+                               const bool          SkipShared,
+                               const bool          UseTriangulation)
+{
+  const gp_Pnt P(roughBaryCenter(S));
+
+  // Check for shared solids: if the same TShape appears multiple times
+  // (via compound nesting with different locations), we compute properties
+  // once per unique solid and reuse via rigid transform for duplicates.
+  bool hasSharedSolids = false;
+  {
+    NCollection_Map<opencascade::handle<TopoDS_TShape>> aSeenSolids;
+    for (TopExp_Explorer exS(S, TopAbs_SOLID); exS.More(); exS.Next())
+    {
+      if (!aSeenSolids.Add(exS.Current().TShape()))
+      {
+        hasSharedSolids = true;
+        break;
+      }
+    }
+  }
+
+  if (!hasSharedSolids)
+  {
+    // No shared solids: use direct face-level iteration (original path).
+    return volumePropertiesFaces(S, Props, P, Eps, SkipShared, UseTriangulation);
+  }
+
+  // Shared solids detected: iterate at solid level with caching.
+  // For each unique TShape, compute properties once via face integration.
+  // For duplicate instances, transform the cached result by the relative
+  // location and add to Props (using Huygens theorem via GProp_GProps::Add).
+  struct SolidCacheEntry
+  {
+    GProp_GProps       Props;
+    TopLoc_Location    Location;
+    TopAbs_Orientation Orientation;
+  };
+
+  NCollection_DataMap<opencascade::handle<TopoDS_TShape>, SolidCacheEntry> aSolidCache;
+
+  double ErrorMax = 0.0;
+
+  for (TopExp_Explorer exS(S, TopAbs_SOLID); exS.More(); exS.Next())
+  {
+    const TopoDS_Shape&                       aSolid = exS.Current();
+    const opencascade::handle<TopoDS_TShape>& aTS    = aSolid.TShape();
+
+    if (aSolidCache.IsBound(aTS))
+    {
+      // Duplicate instance: transform cached properties.
+      const SolidCacheEntry& aCached = aSolidCache(aTS);
+      const TopLoc_Location  aRelLoc = aSolid.Location().Multiplied(aCached.Location.Inverted());
+
+      // When SkipShared is enabled, skip exact duplicate instances
+      // (same placement and orientation) - matches original face-level dedup behavior.
+      if (SkipShared && aRelLoc.IsIdentity() && aSolid.Orientation() == aCached.Orientation)
+      {
+        continue;
+      }
+
+      // Cache reuse is only valid for rigid (isometric) transforms.
+      // Shape locations may contain scaling or negative determinant
+      // (TopoDS_Shape::Location() does not enforce rigidity by default),
+      // which would produce incorrect volume/inertia with rotation-only transform.
+      const gp_Trsf& aRelTrsf = aRelLoc.Transformation();
+      if (std::abs(std::abs(aRelTrsf.ScaleFactor()) - 1.0) > TopLoc_Location::ScalePrec()
+          || aRelTrsf.IsNegative())
+      {
+        // Non-rigid relative transform: fall back to direct face-level computation.
+        GProp_GProps aSolidProps(P);
+        const double anError =
+          volumePropertiesFaces(aSolid, aSolidProps, P, Eps, SkipShared, UseTriangulation);
+        if (ErrorMax < anError)
+        {
+          ErrorMax = anError;
+        }
+        Props.Add(aSolidProps);
+        continue;
+      }
+
+      GPropTransformer aTransformed(aCached.Props);
+      if (!aRelLoc.IsIdentity())
+      {
+        aTransformed.ApplyTransform(aRelTrsf);
+      }
+      if (aSolid.Orientation() != aCached.Orientation)
+      {
+        aTransformed.Negate();
+      }
+      Props.Add(aTransformed);
+    }
+    else
+    {
+      // First instance of this TShape: compute via face integration.
+      GProp_GProps aSolidProps(P);
+      const double anError =
+        volumePropertiesFaces(aSolid, aSolidProps, P, Eps, SkipShared, UseTriangulation);
+      if (ErrorMax < anError)
+      {
+        ErrorMax = anError;
+      }
+
+      SolidCacheEntry anEntry;
+      anEntry.Props       = aSolidProps;
+      anEntry.Location    = aSolid.Location();
+      anEntry.Orientation = aSolid.Orientation();
+      aSolidCache.Bind(aTS, anEntry);
+
+      Props.Add(aSolidProps);
+    }
+  }
+
+  // Handle faces not belonging to any solid (free shells/faces in the compound).
+  {
+    bool            hasFree = false;
+    TopoDS_Compound aFreeComp;
+    BRep_Builder    aBld;
+    aBld.MakeCompound(aFreeComp);
+    for (TopExp_Explorer exF(S, TopAbs_FACE, TopAbs_SOLID); exF.More(); exF.Next())
+    {
+      aBld.Add(aFreeComp, exF.Current());
+      hasFree = true;
+    }
+    if (hasFree)
+    {
+      GProp_GProps aFreeProps(P);
+      const double aFreeError =
+        volumePropertiesFaces(aFreeComp, aFreeProps, P, Eps, SkipShared, UseTriangulation);
+      if (ErrorMax < aFreeError)
+      {
+        ErrorMax = aFreeError;
+      }
+      Props.Add(aFreeProps);
+    }
+  }
+
   return ErrorMax;
 }
 
