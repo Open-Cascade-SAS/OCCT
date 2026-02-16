@@ -1,0 +1,339 @@
+# This workflow builds OCCT Windows packages for releases using prepared 3rd-party archives.
+# It creates various package configurations (Release/Debug, with/without PCH).
+# The workflow is triggered on tags and builds without Inspector.
+
+name: Build Windows Release Packages
+
+on:
+  push:
+    tags:
+      - '**'
+  pull_request:
+    branches:
+      - '**'
+
+permissions:
+  contents: read
+
+env:
+  OCCT_VERSION: '8.0.0-rc4'
+  THIRDPARTY_URL: 'https://github.com/Open-Cascade-SAS/OCCT/releases/download/V7_9_0_beta1/3rdparty-vc14-64.zip'
+
+jobs:
+  # Build 3rd-party package
+  package-thirdparty:
+    name: Package 3rd-party VC++ 2022 64-bit
+    runs-on: windows-2022
+
+    steps:
+    - name: Download 3rd-party dependencies
+      run: |
+        Invoke-WebRequest -Uri $env:THIRDPARTY_URL -OutFile 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Upload 3rd-party package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: 3rdparty-vc14-64
+        path: 3rdparty-vc14-64.zip
+        retention-days: 30
+
+  # Build OCCT without PCH (Release + Debug)
+  build-no-pch:
+    name: Build OCCT without PCH (Release + Debug)
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.1
+
+    - name: Download and extract 3rd-party dependencies
+      run: |
+        Invoke-WebRequest -Uri $env:THIRDPARTY_URL -OutFile 3rdparty-vc14-64.zip
+        Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+        Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Configure OCCT
+      run: |
+        mkdir build
+        cd build
+        cmake -T host=x64 `
+              -D BUILD_USE_PCH=OFF `
+              -D BUILD_GTEST=OFF `
+              -D BUILD_INCLUDE_SYMLINK=ON `
+              -D BUILD_CPP_STANDARD=C++17 `
+              -D USE_DRACO=ON `
+              -D USE_FREETYPE=ON `
+              -D USE_RAPIDJSON=ON `
+              -D USE_MMGR_TYPE=JEMALLOC `
+              -D USE_TBB=ON `
+              -D USE_VTK=ON `
+              -D USE_TK=ON `
+              -D USE_OPENVR=ON `
+              -D USE_OPENGL=ON `
+              -D USE_GLES2=ON `
+              -D USE_FREEIMAGE=ON `
+              -D USE_FFMPEG=ON `
+              -D USE_D3D=ON `
+              -D BUILD_OPT_PROFILE=Production `
+              -D BUILD_MODULE_Draw=ON `
+              -D BUILD_MODULE_ApplicationFramework=ON `
+              -D BUILD_MODULE_DataExchange=ON `
+              -D BUILD_MODULE_FoundationClasses=ON `
+              -D BUILD_MODULE_ModelingAlgorithms=ON `
+              -D BUILD_MODULE_ModelingData=ON `
+              -D BUILD_MODULE_Visualization=ON `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+              -D INSTALL_DIR=${{ github.workspace }}/occt-vc14-64 ..
+      shell: pwsh
+
+    - name: Build and Install OCCT Release
+      run: |
+        cd build
+        cmake --build . --target install --config Release
+      shell: pwsh
+
+    - name: Fix env.bat THIRDPARTY_DIR path
+      run: |
+        $envBatPath = "${{ github.workspace }}/occt-vc14-64/env.bat"
+        if (Test-Path $envBatPath) {
+          $content = Get-Content $envBatPath -Raw
+          $content = $content -replace 'THIRDPARTY_DIR=.*3rdparty-vc14-64"', 'THIRDPARTY_DIR=..\3rdparty-vc14-64"'
+          Set-Content -Path $envBatPath -Value $content -NoNewline
+          Write-Host "Updated env.bat with relative THIRDPARTY_DIR path"
+        }
+      shell: pwsh
+
+    - name: Create OCCT Release package
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $folderName -DestinationPath "$folderName.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload OCCT Release package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: opencascade-release-no-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64.zip
+        retention-days: 30
+
+    - name: Create combined package (Release + 3rd-party)
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        $thirdpartyName = "3rdparty-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $thirdpartyName,$folderName -DestinationPath "$folderName-combined.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload combined Release package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: occt-combined-release-no-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-combined.zip
+        retention-days: 30
+
+    - name: Build and Install OCCT Debug (keeping Release files)
+      run: |
+        cd build
+        cmake --build . --target install --config Debug
+      shell: pwsh
+
+    - name: Fix env.bat THIRDPARTY_DIR path for Debug
+      run: |
+        $envBatPath = "${{ github.workspace }}/occt-vc14-64/env.bat"
+        if (Test-Path $envBatPath) {
+          $content = Get-Content $envBatPath -Raw
+          $content = $content -replace 'THIRDPARTY_DIR=.*3rdparty-vc14-64"', 'THIRDPARTY_DIR=..\3rdparty-vc14-64"'
+          Set-Content -Path $envBatPath -Value $content -NoNewline
+          Write-Host "Updated env.bat with relative THIRDPARTY_DIR path"
+        }
+      shell: pwsh
+
+    - name: Create OCCT Release+Debug package
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $folderName -DestinationPath "opencascade-$version-vc14-64-with-debug.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload OCCT Release+Debug package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: opencascade-with-debug-no-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-with-debug.zip
+        retention-days: 30
+
+    - name: Create combined package (Release+Debug + 3rd-party)
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        $thirdpartyName = "3rdparty-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $thirdpartyName,$folderName -DestinationPath "$folderName-with-debug-combined.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload combined Release+Debug package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: occt-combined-with-debug-no-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-with-debug-combined.zip
+        retention-days: 30
+
+  # Build OCCT with PCH (Release + Debug)
+  build-pch:
+    name: Build OCCT with PCH (Release + Debug)
+    runs-on: windows-2022
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4.2.1
+
+    - name: Download and extract 3rd-party dependencies
+      run: |
+        Invoke-WebRequest -Uri $env:THIRDPARTY_URL -OutFile 3rdparty-vc14-64.zip
+        Expand-Archive -Path 3rdparty-vc14-64.zip -DestinationPath .
+        Remove-Item 3rdparty-vc14-64.zip
+      shell: pwsh
+
+    - name: Configure OCCT
+      run: |
+        mkdir build
+        cd build
+        cmake -T host=x64 `
+              -D BUILD_USE_PCH=ON `
+              -D BUILD_GTEST=OFF `
+              -D BUILD_INCLUDE_SYMLINK=ON `
+              -D BUILD_CPP_STANDARD=C++17 `
+              -D USE_DRACO=ON `
+              -D USE_FREETYPE=ON `
+              -D USE_RAPIDJSON=ON `
+              -D USE_MMGR_TYPE=JEMALLOC `
+              -D USE_TBB=ON `
+              -D USE_VTK=ON `
+              -D USE_TK=ON `
+              -D USE_OPENVR=ON `
+              -D USE_OPENGL=ON `
+              -D USE_GLES2=ON `
+              -D USE_FREEIMAGE=ON `
+              -D USE_FFMPEG=ON `
+              -D USE_D3D=ON `
+              -D BUILD_OPT_PROFILE=Production `
+              -D BUILD_MODULE_Draw=ON `
+              -D BUILD_MODULE_ApplicationFramework=ON `
+              -D BUILD_MODULE_DataExchange=ON `
+              -D BUILD_MODULE_FoundationClasses=ON `
+              -D BUILD_MODULE_ModelingAlgorithms=ON `
+              -D BUILD_MODULE_ModelingData=ON `
+              -D BUILD_MODULE_Visualization=ON `
+              -D 3RDPARTY_DIR=${{ github.workspace }}/3rdparty-vc14-64 `
+              -D INSTALL_DIR=${{ github.workspace }}/occt-vc14-64 ..
+      shell: pwsh
+
+    - name: Build and Install OCCT Release
+      run: |
+        cd build
+        cmake --build . --target install --config Release
+      shell: pwsh
+
+    - name: Fix env.bat THIRDPARTY_DIR path
+      run: |
+        $envBatPath = "${{ github.workspace }}/occt-vc14-64/env.bat"
+        if (Test-Path $envBatPath) {
+          $content = Get-Content $envBatPath -Raw
+          $content = $content -replace 'THIRDPARTY_DIR=.*3rdparty-vc14-64"', 'THIRDPARTY_DIR=..\3rdparty-vc14-64"'
+          Set-Content -Path $envBatPath -Value $content -NoNewline
+          Write-Host "Updated env.bat with relative THIRDPARTY_DIR path"
+        }
+      shell: pwsh
+
+    - name: Create OCCT Release PCH package
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $folderName -DestinationPath "opencascade-$version-vc14-64-pch.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload OCCT Release PCH package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: opencascade-release-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-pch.zip
+        retention-days: 30
+
+    - name: Create combined PCH package (Release + 3rd-party)
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        $thirdpartyName = "3rdparty-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $thirdpartyName,$folderName -DestinationPath "$folderName-pch-combined.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload combined Release PCH package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: occt-combined-release-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-pch-combined.zip
+        retention-days: 30
+
+    - name: Build and Install OCCT Debug (keeping Release files)
+      run: |
+        cd build
+        cmake --build . --target install --config Debug
+      shell: pwsh
+
+    - name: Fix env.bat THIRDPARTY_DIR path for Debug
+      run: |
+        $envBatPath = "${{ github.workspace }}/occt-vc14-64/env.bat"
+        if (Test-Path $envBatPath) {
+          $content = Get-Content $envBatPath -Raw
+          $content = $content -replace 'THIRDPARTY_DIR=.*3rdparty-vc14-64"', 'THIRDPARTY_DIR=..\3rdparty-vc14-64"'
+          Set-Content -Path $envBatPath -Value $content -NoNewline
+          Write-Host "Updated env.bat with relative THIRDPARTY_DIR path"
+        }
+      shell: pwsh
+
+    - name: Create OCCT Release+Debug PCH package
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $folderName -DestinationPath "opencascade-$version-vc14-64-pch-with-debug.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload OCCT Release+Debug PCH package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: opencascade-with-debug-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-pch-with-debug.zip
+        retention-days: 30
+
+    - name: Create combined PCH package (Release+Debug + 3rd-party)
+      run: |
+        $version = $env:OCCT_VERSION
+        $folderName = "opencascade-$version-vc14-64"
+        $thirdpartyName = "3rdparty-vc14-64"
+        Rename-Item occt-vc14-64 $folderName
+        Compress-Archive -Path $thirdpartyName,$folderName -DestinationPath "$folderName-pch-with-debug-combined.zip"
+        Rename-Item $folderName occt-vc14-64
+      shell: pwsh
+
+    - name: Upload combined Release+Debug PCH package
+      uses: actions/upload-artifact@v4.4.3
+      with:
+        name: occt-combined-with-debug-pch
+        path: opencascade-${{ env.OCCT_VERSION }}-vc14-64-pch-with-debug-combined.zip
+        retention-days: 30
