@@ -21,6 +21,7 @@
 #include <Standard_Type.hxx>
 
 #include <BRepTools_ReShape.hxx>
+#include <NCollection_Map.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <Standard_Integer.hxx>
 #include <ShapeExtend_Status.hxx>
@@ -104,6 +105,33 @@ public:
   Standard_EXPORT virtual bool Status(const ShapeExtend_Status status) const;
 
   DEFINE_STANDARD_RTTIEXT(ShapeBuild_ReShape, BRepTools_ReShape)
+
+private:
+  // Class to detect loops during recursive shape processing.
+  class LoopDetector
+  {
+  private:
+    // Visited map type (orientation-sensitive to allow proper processing
+    // of shapes with different orientations).
+    // int is visit count.
+    using VisitedMap = NCollection_DataMap<TopoDS_Shape, int, TopTools_ShapeMapHasher>;
+
+  public:
+    LoopDetector() = default;
+
+    // Returns true if loop was not detected and processing can continue.
+    bool CanContinue(const TopoDS_Shape& theShape);
+
+  private:
+    VisitedMap myVisited;
+  };
+
+  //! Internal recursive implementation of Apply.
+  //! Uses visited map to prevent infinite recursion on shapes with shared
+  //! sub-shapes (e.g., Moebius strip with shared edges).
+  TopoDS_Shape applyImpl(const TopoDS_Shape&    theShape,
+                         const TopAbs_ShapeEnum theUntil,
+                         LoopDetector&          theVisited);
 };
 
 #endif // _ShapeBuild_ReShape_HeaderFile
