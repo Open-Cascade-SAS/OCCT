@@ -29,13 +29,22 @@
 //=========================================================================
 gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
+  if (S1.Distance(Center) < gp::Resolution() 
+      || S2.Distance(Center) < gp::Resolution()
+      || S1.Distance(S2) < gp::Resolution())
+  {
+    TheError = gce_ConfusedPoints;
+    return;
+  }
+
   gp_Dir XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
   gp_Lin L(Center, XAxis);
   double D = S1.Distance(Center);
   double d = L.Distance(S2);
-  if (d == 0.0)
+  if (d < gp::Resolution())
   {
     TheError = gce_ColinearPoints;
+    return;
   }
   gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
   TheHypr  = gp_Hypr(gp_Ax2(Center, Norm, XAxis), D, d);
