@@ -36,15 +36,12 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_
   gp_Lin2d L(Center, XAxis);
   double   D1 = S1.Distance(Center);
   double   D2 = L.Distance(S2);
-  if (D1 >= D2)
+  if (D2 == 0.0)
   {
-    TheHypr2d = gp_Hypr2d(Axis, D1, D2);
-    TheError  = gce_Done;
+    TheError = gce_ColinearPoints;
   }
-  else
-  {
-    TheError = gce_InvertAxis;
-  }
+  TheHypr2d = gp_Hypr2d(Axis, D1, D2);
+  TheError  = gce_Done;
 }
 
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax2d& MajorAxis,

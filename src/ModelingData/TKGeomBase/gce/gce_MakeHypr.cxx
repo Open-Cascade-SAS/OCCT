@@ -33,25 +33,18 @@ gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Cen
   gp_Lin L(Center, XAxis);
   double D = S1.Distance(Center);
   double d = L.Distance(S2);
-  if (d > D)
+  if (d == 0.0)
   {
-    TheError = gce_InvertAxis;
+    TheError = gce_ColinearPoints;
   }
-  else
-  {
-    gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
-    TheHypr  = gp_Hypr(gp_Ax2(Center, Norm, XAxis), D, d);
-    TheError = gce_Done;
-  }
+  gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
+  TheHypr  = gp_Hypr(gp_Ax2(Center, Norm, XAxis), D, d);
+  TheError = gce_Done;
 }
 
 gce_MakeHypr::gce_MakeHypr(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
-  if (MajorRadius < MinorRadius)
-  {
-    TheError = gce_InvertRadius;
-  }
-  else if (MajorRadius < 0.0)
+  if (MajorRadius < 0.0 || MinorRadius < 0.0)
   {
     TheError = gce_NegativeRadius;
   }
