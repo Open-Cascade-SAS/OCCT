@@ -64,7 +64,7 @@ TEST(BRepGPropTest, VolumeProperties_UnitBox)
 
 TEST(BRepGPropTest, VolumeProperties_Sphere)
 {
-  const double aRadius = 5.0;
+  const double           aRadius = 5.0;
   BRepPrimAPI_MakeSphere aSphere(aRadius);
   TopoDS_Shape           aShape = aSphere.Shape();
   ASSERT_TRUE(aSphere.IsDone());

@@ -47,7 +47,7 @@ TEST(BRepBuilderAPI_MakeEdgeTest, LinearEdge_TwoPoints)
 
 TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Full)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
 
   BRepBuilderAPI_MakeEdge aMakeEdge(aCircle);
@@ -64,7 +64,7 @@ TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Full)
 
 TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Trimmed)
 {
-  gp_Ax2 anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
 
   // Half circle: 0 to PI
@@ -126,7 +126,7 @@ TEST(BRepBuilderAPI_MakeEdgeTest, ToleranceCheck)
   ASSERT_TRUE(aMakeEdge.IsDone());
 
   TopoDS_Edge anEdge = aMakeEdge.Edge();
-  double aTol = BRep_Tool::Tolerance(anEdge);
+  double      aTol   = BRep_Tool::Tolerance(anEdge);
   EXPECT_GT(aTol, 0.0) << "Edge tolerance should be positive";
   EXPECT_LE(aTol, Precision::Confusion()) << "Edge tolerance should not exceed confusion";
 }

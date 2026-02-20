@@ -52,9 +52,7 @@ TEST(BRepFilletAPI_MakeChamferTest, AsymmetricChamfer)
   const TopoDS_Shape& aBox = aBoxMaker.Shape();
   ASSERT_TRUE(aBoxMaker.IsDone());
 
-  NCollection_IndexedDataMap<TopoDS_Shape,
-                             NCollection_List<TopoDS_Shape>,
-                             TopTools_ShapeMapHasher>
+  NCollection_IndexedDataMap<TopoDS_Shape, NCollection_List<TopoDS_Shape>, TopTools_ShapeMapHasher>
     anEdgeFaceMap;
   TopExp::MapShapesAndAncestors(aBox, TopAbs_EDGE, TopAbs_FACE, anEdgeFaceMap);
 

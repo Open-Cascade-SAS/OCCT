@@ -29,7 +29,8 @@
 
 TEST(GeomConvertTest, CircleToBSpline)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
+  Handle(Geom_Circle) aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
 
   Handle(Geom_BSplineCurve) aBSpline = GeomConvert::CurveToBSplineCurve(aCircle);
 
@@ -45,7 +46,7 @@ TEST(GeomConvertTest, CircleToBSpline)
 
 TEST(GeomConvertTest, LineToBSpline)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)         aLine    = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_TrimmedCurve) aTrimmed = new Geom_TrimmedCurve(aLine, 0.0, 10.0);
 
   Handle(Geom_BSplineCurve) aBSpline = GeomConvert::CurveToBSplineCurve(aTrimmed);
@@ -61,7 +62,7 @@ TEST(GeomConvertTest, LineToBSpline)
 
 TEST(GeomConvertTest, PlaneToBSplineSurface)
 {
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp::XOY());
+  Handle(Geom_Plane)                     aPlane = new Geom_Plane(gp::XOY());
   Handle(Geom_RectangularTrimmedSurface) aTrimmed =
     new Geom_RectangularTrimmedSurface(aPlane, 0.0, 10.0, 0.0, 10.0);
 

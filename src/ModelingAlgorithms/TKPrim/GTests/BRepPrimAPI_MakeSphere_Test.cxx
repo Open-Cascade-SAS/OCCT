@@ -24,7 +24,7 @@
 
 TEST(BRepPrimAPI_MakeSphereTest, FullSphere)
 {
-  const double aRadius = 5.0;
+  const double           aRadius = 5.0;
   BRepPrimAPI_MakeSphere aSphere(aRadius);
   TopoDS_Shape           aShape = aSphere.Shape();
 
@@ -51,7 +51,7 @@ TEST(BRepPrimAPI_MakeSphereTest, FaceCount)
 
 TEST(BRepPrimAPI_MakeSphereTest, Volume)
 {
-  const double aRadius = 5.0;
+  const double           aRadius = 5.0;
   BRepPrimAPI_MakeSphere aSphere(aRadius);
   TopoDS_Shape           aShape = aSphere.Shape();
   ASSERT_TRUE(aSphere.IsDone());
@@ -86,7 +86,7 @@ TEST(BRepPrimAPI_MakeSphereTest, PartialSphere_AngleLimited)
 
 TEST(BRepPrimAPI_MakeSphereTest, CenterOfMass)
 {
-  const double aRadius = 5.0;
+  const double           aRadius = 5.0;
   BRepPrimAPI_MakeSphere aSphere(aRadius);
   TopoDS_Shape           aShape = aSphere.Shape();
   ASSERT_TRUE(aSphere.IsDone());

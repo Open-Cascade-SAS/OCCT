@@ -37,7 +37,7 @@ TEST(BRepBuilderAPI_TransformTest, Translate)
   aTrsf.SetTranslation(gp_Vec(100.0, 0.0, 0.0));
 
   BRepBuilderAPI_Transform aTransform(aBox, aTrsf);
-  const TopoDS_Shape& aResult = aTransform.Shape();
+  const TopoDS_Shape&      aResult = aTransform.Shape();
   ASSERT_FALSE(aResult.IsNull()) << "Transformed shape is null";
 
   GProp_GProps aProps;
@@ -57,11 +57,11 @@ TEST(BRepBuilderAPI_TransformTest, Rotate)
   ASSERT_TRUE(aMakeBox.IsDone()) << "Box creation failed";
 
   gp_Trsf aTrsf;
-  gp_Ax1 aZAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax1  aZAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   aTrsf.SetRotation(aZAxis, M_PI / 2.0);
 
   BRepBuilderAPI_Transform aTransform(aBox, aTrsf);
-  const TopoDS_Shape& aResult = aTransform.Shape();
+  const TopoDS_Shape&      aResult = aTransform.Shape();
   ASSERT_FALSE(aResult.IsNull()) << "Transformed shape is null";
 
   GProp_GProps aProps;
@@ -84,7 +84,7 @@ TEST(BRepBuilderAPI_TransformTest, Scale)
   aTrsf.SetScale(gp_Pnt(0.0, 0.0, 0.0), 2.0);
 
   BRepBuilderAPI_Transform aTransform(aBox, aTrsf);
-  const TopoDS_Shape& aResult = aTransform.Shape();
+  const TopoDS_Shape&      aResult = aTransform.Shape();
   ASSERT_FALSE(aResult.IsNull()) << "Transformed shape is null";
 
   GProp_GProps aProps;
@@ -102,11 +102,11 @@ TEST(BRepBuilderAPI_TransformTest, Mirror)
   ASSERT_TRUE(aMakeBox.IsDone()) << "Box creation failed";
 
   gp_Trsf aTrsf;
-  gp_Ax2 aYZPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  gp_Ax2  aYZPlane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   aTrsf.SetMirror(aYZPlane);
 
   BRepBuilderAPI_Transform aTransform(aBox, aTrsf);
-  const TopoDS_Shape& aResult = aTransform.Shape();
+  const TopoDS_Shape&      aResult = aTransform.Shape();
   ASSERT_FALSE(aResult.IsNull()) << "Transformed shape is null";
 
   GProp_GProps aProps;
@@ -127,7 +127,7 @@ TEST(BRepBuilderAPI_TransformTest, ShapeValidity)
   aTrsf.SetTranslation(gp_Vec(50.0, 50.0, 50.0));
 
   BRepBuilderAPI_Transform aTransform(aBox, aTrsf);
-  const TopoDS_Shape& aResult = aTransform.Shape();
+  const TopoDS_Shape&      aResult = aTransform.Shape();
   ASSERT_FALSE(aResult.IsNull()) << "Transformed shape is null";
 
   BRepCheck_Analyzer anAnalyzer(aResult);

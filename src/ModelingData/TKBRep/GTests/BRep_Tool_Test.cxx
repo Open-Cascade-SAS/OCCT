@@ -41,7 +41,7 @@ TEST(BRep_Tool_Test, Pnt_FromVertex)
   ASSERT_TRUE(anExp.More());
 
   const TopoDS_Vertex& aVertex = TopoDS::Vertex(anExp.Current());
-  gp_Pnt aPnt = BRep_Tool::Pnt(aVertex);
+  gp_Pnt               aPnt    = BRep_Tool::Pnt(aVertex);
 
   // The point coordinates should be within the box bounds [0,10] x [0,20] x [0,30]
   EXPECT_GE(aPnt.X(), -Precision::Confusion());
@@ -62,7 +62,7 @@ TEST(BRep_Tool_Test, Tolerance_Vertex)
   ASSERT_TRUE(anExp.More());
 
   const TopoDS_Vertex& aVertex = TopoDS::Vertex(anExp.Current());
-  double aTol = BRep_Tool::Tolerance(aVertex);
+  double               aTol    = BRep_Tool::Tolerance(aVertex);
   EXPECT_GE(aTol, 0.0);
 }
 
@@ -76,7 +76,7 @@ TEST(BRep_Tool_Test, Tolerance_Edge)
   ASSERT_TRUE(anExp.More());
 
   const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-  double aTol = BRep_Tool::Tolerance(anEdge);
+  double             aTol   = BRep_Tool::Tolerance(anEdge);
   EXPECT_GE(aTol, 0.0);
 }
 
@@ -90,7 +90,7 @@ TEST(BRep_Tool_Test, Tolerance_Face)
   ASSERT_TRUE(anExp.More());
 
   const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
-  double aTol = BRep_Tool::Tolerance(aFace);
+  double             aTol  = BRep_Tool::Tolerance(aFace);
   EXPECT_GE(aTol, 0.0);
 }
 
@@ -104,8 +104,8 @@ TEST(BRep_Tool_Test, Curve_FromEdge)
   ASSERT_TRUE(anExp.More());
 
   const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-  double aFirst = 0.0;
-  double aLast = 0.0;
+  double             aFirst = 0.0;
+  double             aLast  = 0.0;
   Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
 
   EXPECT_FALSE(aCurve.IsNull()) << "Curve from a box edge should not be null";
@@ -121,7 +121,7 @@ TEST(BRep_Tool_Test, Surface_FromFace)
   TopExp_Explorer anExp(aBox, TopAbs_FACE);
   ASSERT_TRUE(anExp.More());
 
-  const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
+  const TopoDS_Face&   aFace    = TopoDS::Face(anExp.Current());
   Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
 
   EXPECT_FALSE(aSurface.IsNull()) << "Surface from a box face should not be null";
@@ -129,7 +129,7 @@ TEST(BRep_Tool_Test, Surface_FromFace)
 
 TEST(BRep_Tool_Test, IsClosed_CircleEdge)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
+  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
   BRepBuilderAPI_MakeEdge anEdgeMaker(aCircle);
   ASSERT_TRUE(anEdgeMaker.IsDone());
 

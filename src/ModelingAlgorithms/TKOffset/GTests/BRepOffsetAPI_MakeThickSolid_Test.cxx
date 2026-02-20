@@ -129,7 +129,7 @@ TEST(BRepOffsetAPI_MakeThickSolidTest, ThickSolidLargerVolume)
   BRepGProp::SurfaceProperties(aFace, aFaceProps);
   const double aFaceArea = aFaceProps.Mass();
 
-  const double anOffset = 2.0;
+  const double                 anOffset = 2.0;
   BRepOffsetAPI_MakeThickSolid aMaker;
   aMaker.MakeThickSolidBySimple(aFace, anOffset);
   aMaker.Build();

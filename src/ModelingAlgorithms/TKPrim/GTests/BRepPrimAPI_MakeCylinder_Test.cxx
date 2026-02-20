@@ -24,8 +24,8 @@
 
 TEST(BRepPrimAPI_MakeCylinderTest, FullCylinder)
 {
-  const double aRadius = 5.0;
-  const double aHeight = 10.0;
+  const double             aRadius = 5.0;
+  const double             aHeight = 10.0;
   BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight);
   TopoDS_Shape             aShape = aCylinder.Shape();
 
@@ -53,8 +53,8 @@ TEST(BRepPrimAPI_MakeCylinderTest, FaceCount)
 
 TEST(BRepPrimAPI_MakeCylinderTest, Volume)
 {
-  const double aRadius = 5.0;
-  const double aHeight = 10.0;
+  const double             aRadius = 5.0;
+  const double             aHeight = 10.0;
   BRepPrimAPI_MakeCylinder aCylinder(aRadius, aHeight);
   TopoDS_Shape             aShape = aCylinder.Shape();
   ASSERT_TRUE(aCylinder.IsDone());

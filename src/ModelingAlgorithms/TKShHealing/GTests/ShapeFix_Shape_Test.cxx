@@ -78,7 +78,7 @@ TEST(ShapeFix_ShapeTest, FixCompound)
   const TopoDS_Shape& aBox2 = aMakeBox2.Shape();
   ASSERT_TRUE(aMakeBox2.IsDone());
 
-  BRep_Builder aBuilder;
+  BRep_Builder    aBuilder;
   TopoDS_Compound aCompound;
   aBuilder.MakeCompound(aCompound);
   aBuilder.Add(aCompound, aBox1);

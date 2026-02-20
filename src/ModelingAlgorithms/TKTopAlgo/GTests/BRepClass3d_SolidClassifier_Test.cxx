@@ -30,8 +30,7 @@ TEST(BRepClass3d_SolidClassifierTest, PointInside_Box)
   BRepClass3d_SolidClassifier aClassifier(aBox);
   aClassifier.Perform(gp_Pnt(5.0, 5.0, 5.0), Precision::Confusion());
 
-  EXPECT_EQ(aClassifier.State(), TopAbs_IN)
-    << "Point (5,5,5) should be inside the box";
+  EXPECT_EQ(aClassifier.State(), TopAbs_IN) << "Point (5,5,5) should be inside the box";
 }
 
 TEST(BRepClass3d_SolidClassifierTest, PointOutside_Box)
@@ -43,8 +42,7 @@ TEST(BRepClass3d_SolidClassifierTest, PointOutside_Box)
   BRepClass3d_SolidClassifier aClassifier(aBox);
   aClassifier.Perform(gp_Pnt(20.0, 20.0, 20.0), Precision::Confusion());
 
-  EXPECT_EQ(aClassifier.State(), TopAbs_OUT)
-    << "Point (20,20,20) should be outside the box";
+  EXPECT_EQ(aClassifier.State(), TopAbs_OUT) << "Point (20,20,20) should be outside the box";
 }
 
 TEST(BRepClass3d_SolidClassifierTest, PointOnFace_Box)
@@ -63,14 +61,13 @@ TEST(BRepClass3d_SolidClassifierTest, PointOnFace_Box)
 TEST(BRepClass3d_SolidClassifierTest, PointInside_Sphere)
 {
   BRepPrimAPI_MakeSphere aMakeSphere(10.0);
-  const TopoDS_Shape& aSphere = aMakeSphere.Shape();
+  const TopoDS_Shape&    aSphere = aMakeSphere.Shape();
   ASSERT_TRUE(aMakeSphere.IsDone()) << "Sphere creation failed";
 
   BRepClass3d_SolidClassifier aClassifier(aSphere);
   aClassifier.Perform(gp_Pnt(0.0, 0.0, 0.0), Precision::Confusion());
 
-  EXPECT_EQ(aClassifier.State(), TopAbs_IN)
-    << "Origin should be inside the sphere";
+  EXPECT_EQ(aClassifier.State(), TopAbs_IN) << "Origin should be inside the sphere";
 }
 
 TEST(BRepClass3d_SolidClassifierTest, PerformInfinitePoint)
@@ -82,6 +79,5 @@ TEST(BRepClass3d_SolidClassifierTest, PerformInfinitePoint)
   BRepClass3d_SolidClassifier aClassifier(aBox);
   aClassifier.PerformInfinitePoint(Precision::Confusion());
 
-  EXPECT_EQ(aClassifier.State(), TopAbs_OUT)
-    << "Infinite point should be outside the box";
+  EXPECT_EQ(aClassifier.State(), TopAbs_OUT) << "Infinite point should be outside the box";
 }

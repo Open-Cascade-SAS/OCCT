@@ -37,7 +37,7 @@ TEST(gp_Pnt2dTest, CoordinateConstructor)
 
 TEST(gp_Pnt2dTest, XYConstructor)
 {
-  gp_XY aXY(3.0, 4.0);
+  gp_XY    aXY(3.0, 4.0);
   gp_Pnt2d aPnt(aXY);
   EXPECT_DOUBLE_EQ(aPnt.X(), 3.0);
   EXPECT_DOUBLE_EQ(aPnt.Y(), 4.0);
@@ -120,7 +120,7 @@ TEST(gp_Pnt2dTest, Mirror_Axis)
 {
   gp_Pnt2d aPnt(1.0, 1.0);
   // Mirror through the X axis
-  gp_Ax2d anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  gp_Ax2d  anAxis(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   gp_Pnt2d aResult = aPnt.Mirrored(anAxis);
   EXPECT_NEAR(aResult.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aResult.Y(), -1.0, Precision::Confusion());

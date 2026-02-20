@@ -25,7 +25,7 @@
 
 TEST(Geom_PlaneTest, ConstructFromAx3)
 {
-  gp_Ax3 anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  gp_Ax3             anAx3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Plane) aPlane = new Geom_Plane(anAx3);
   ASSERT_FALSE(aPlane.IsNull());
   EXPECT_TRUE(aPlane->Location().IsEqual(gp_Pnt(0.0, 0.0, 0.0), Precision::Confusion()));
@@ -41,7 +41,7 @@ TEST(Geom_PlaneTest, ConstructFromPointAndDir)
 TEST(Geom_PlaneTest, D0Evaluation)
 {
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Pnt aPnt;
+  gp_Pnt             aPnt;
 
   // XY plane at origin: D0(U,V) = (U,V,0) for default axis
   aPlane->D0(3.0, 4.0, aPnt);
@@ -53,7 +53,7 @@ TEST(Geom_PlaneTest, D0Evaluation)
 TEST(Geom_PlaneTest, Coefficients)
 {
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 5.0), gp_Dir(0.0, 0.0, 1.0));
-  double anA, aB, aC, aD;
+  double             anA, aB, aC, aD;
   aPlane->Coefficients(anA, aB, aC, aD);
   EXPECT_NEAR(anA, 0.0, Precision::Confusion());
   EXPECT_NEAR(aB, 0.0, Precision::Confusion());
@@ -64,7 +64,7 @@ TEST(Geom_PlaneTest, Coefficients)
 TEST(Geom_PlaneTest, UIso)
 {
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Curve) aUIso = aPlane->UIso(2.0);
+  Handle(Geom_Curve) aUIso  = aPlane->UIso(2.0);
   ASSERT_FALSE(aUIso.IsNull());
 
   // UIso at U=2 on XY plane should be a line at x=2, varying in Y
@@ -79,7 +79,7 @@ TEST(Geom_PlaneTest, UIso)
 TEST(Geom_PlaneTest, VIso)
 {
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Curve) aVIso = aPlane->VIso(3.0);
+  Handle(Geom_Curve) aVIso  = aPlane->VIso(3.0);
   ASSERT_FALSE(aVIso.IsNull());
 
   // VIso at V=3 on XY plane should be a line at y=3, varying in X
@@ -94,7 +94,7 @@ TEST(Geom_PlaneTest, VIso)
 TEST(Geom_PlaneTest, Transform)
 {
   Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  gp_Trsf aTrsf;
+  gp_Trsf            aTrsf;
   aTrsf.SetTranslation(gp_Vec(0.0, 0.0, 10.0));
   aPlane->Transform(aTrsf);
   EXPECT_NEAR(aPlane->Location().Z(), 10.0, Precision::Confusion());
@@ -102,8 +102,8 @@ TEST(Geom_PlaneTest, Transform)
 
 TEST(Geom_PlaneTest, Copy)
 {
-  Handle(Geom_Plane) aPlane = new Geom_Plane(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Geometry) aCopy = aPlane->Copy();
+  Handle(Geom_Plane)    aPlane = new Geom_Plane(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Geometry) aCopy  = aPlane->Copy();
   ASSERT_FALSE(aCopy.IsNull());
   Handle(Geom_Plane) aCopyPlane = Handle(Geom_Plane)::DownCast(aCopy);
   ASSERT_FALSE(aCopyPlane.IsNull());

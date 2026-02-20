@@ -91,7 +91,7 @@ TEST(BRepBuilderAPI_SewingTest, NbDegeneratedShapes)
 TEST(BRepBuilderAPI_SewingTest, SetTolerance)
 {
   BRepBuilderAPI_Sewing aSewing;
-  const double aTol = 0.01;
+  const double          aTol = 0.01;
   aSewing.SetTolerance(aTol);
   EXPECT_NEAR(aSewing.Tolerance(), aTol, Precision::Confusion());
 }

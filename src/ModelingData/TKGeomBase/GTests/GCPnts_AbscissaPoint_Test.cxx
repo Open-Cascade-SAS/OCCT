@@ -34,7 +34,8 @@ TEST(GCPnts_AbscissaPointTest, LineLength)
 
 TEST(GCPnts_AbscissaPointTest, CircleArcLength)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 1.0);
+  Handle(Geom_Circle) aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 1.0);
   GeomAdaptor_Curve anAdaptor(aCircle, 0.0, M_PI);
 
   const double aLength = GCPnts_AbscissaPoint::Length(anAdaptor);
@@ -44,7 +45,8 @@ TEST(GCPnts_AbscissaPointTest, CircleArcLength)
 
 TEST(GCPnts_AbscissaPointTest, FullCircleLength)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
+  Handle(Geom_Circle) aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 5.0);
   GeomAdaptor_Curve anAdaptor(aCircle, 0.0, 2.0 * M_PI);
 
   const double aLength = GCPnts_AbscissaPoint::Length(anAdaptor);
@@ -66,7 +68,8 @@ TEST(GCPnts_AbscissaPointTest, ParameterAtAbscissa_Line)
 
 TEST(GCPnts_AbscissaPointTest, ParameterAtAbscissa_Circle)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 1.0);
+  Handle(Geom_Circle) aCircle =
+    new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), 1.0);
   GeomAdaptor_Curve anAdaptor(aCircle, 0.0, 2.0 * M_PI);
 
   GCPnts_AbscissaPoint anAbscissa(anAdaptor, M_PI / 2.0, 0.0);

@@ -68,8 +68,7 @@ TEST(BRepBuilderAPI_CopyTest, CopyIsDistinct)
   const TopoDS_Shape& aCopy = aCopier.Shape();
   ASSERT_FALSE(aCopy.IsNull()) << "Copied shape is null";
 
-  EXPECT_FALSE(aCopy.IsEqual(aBox))
-    << "Copy should not be equal to original (different TShape)";
+  EXPECT_FALSE(aCopy.IsEqual(aBox)) << "Copy should not be equal to original (different TShape)";
 }
 
 TEST(BRepBuilderAPI_CopyTest, CopyGeomTrue)

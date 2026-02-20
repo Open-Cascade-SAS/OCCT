@@ -43,7 +43,7 @@ TEST(ShapeAnalysis_EdgeTest, FirstVertex_LastVertex)
   ASSERT_TRUE(aMakeEdge.IsDone());
   const TopoDS_Edge& anEdge = aMakeEdge.Edge();
 
-  ShapeAnalysis_Edge anAnalyzer;
+  ShapeAnalysis_Edge  anAnalyzer;
   const TopoDS_Vertex aFirstVertex = anAnalyzer.FirstVertex(anEdge);
   const TopoDS_Vertex aLastVertex  = anAnalyzer.LastVertex(anEdge);
 
@@ -63,7 +63,7 @@ TEST(ShapeAnalysis_EdgeTest, IsClosed_OpenEdge)
 
 TEST(ShapeAnalysis_EdgeTest, IsClosed_ClosedEdge)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
+  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
   BRepBuilderAPI_MakeEdge aMakeEdge(aCircle);
   ASSERT_TRUE(aMakeEdge.IsDone());
   const TopoDS_Edge& anEdge = aMakeEdge.Edge();

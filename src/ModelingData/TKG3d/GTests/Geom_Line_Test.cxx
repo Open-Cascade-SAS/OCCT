@@ -23,7 +23,7 @@
 
 TEST(Geom_LineTest, ConstructFromAx1)
 {
-  gp_Ax1              anAx1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  gp_Ax1            anAx1(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_Line) aLine = new Geom_Line(anAx1);
   ASSERT_FALSE(aLine.IsNull());
 
@@ -44,7 +44,7 @@ TEST(Geom_LineTest, ConstructFromPointAndDir)
 TEST(Geom_LineTest, D0Evaluation)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Pnt aPnt;
+  gp_Pnt            aPnt;
   aLine->D0(5.0, aPnt);
   EXPECT_NEAR(aPnt.X(), 5.0, Precision::Confusion());
   EXPECT_NEAR(aPnt.Y(), 0.0, Precision::Confusion());
@@ -54,8 +54,8 @@ TEST(Geom_LineTest, D0Evaluation)
 TEST(Geom_LineTest, D1Evaluation)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0));
-  gp_Pnt aPnt;
-  gp_Vec aV1;
+  gp_Pnt            aPnt;
+  gp_Vec            aV1;
   aLine->D1(3.0, aPnt, aV1);
   EXPECT_NEAR(aPnt.Y(), 3.0, Precision::Confusion());
   // First derivative is the direction vector (constant for a line)
@@ -67,8 +67,8 @@ TEST(Geom_LineTest, D1Evaluation)
 TEST(Geom_LineTest, D2Evaluation)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Pnt aPnt;
-  gp_Vec aV1, aV2;
+  gp_Pnt            aPnt;
+  gp_Vec            aV1, aV2;
   aLine->D2(1.0, aPnt, aV1, aV2);
   // Second derivative of a line is zero
   EXPECT_NEAR(aV2.Magnitude(), 0.0, Precision::Confusion());
@@ -90,7 +90,7 @@ TEST(Geom_LineTest, Reverse)
 
 TEST(Geom_LineTest, Reversed)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)  aLine     = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_Curve) aReversed = aLine->Reversed();
   ASSERT_FALSE(aReversed.IsNull());
   Handle(Geom_Line) aRevLine = Handle(Geom_Line)::DownCast(aReversed);
@@ -101,7 +101,7 @@ TEST(Geom_LineTest, Reversed)
 TEST(Geom_LineTest, Transform)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  gp_Trsf aTrsf;
+  gp_Trsf           aTrsf;
   aTrsf.SetTranslation(gp_Vec(0.0, 0.0, 5.0));
   aLine->Transform(aTrsf);
   EXPECT_NEAR(aLine->Lin().Location().Z(), 5.0, Precision::Confusion());
@@ -109,7 +109,7 @@ TEST(Geom_LineTest, Transform)
 
 TEST(Geom_LineTest, Copy)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
+  Handle(Geom_Line)     aLine = new Geom_Line(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
   Handle(Geom_Geometry) aCopy = aLine->Copy();
   ASSERT_FALSE(aCopy.IsNull());
   Handle(Geom_Line) aCopyLine = Handle(Geom_Line)::DownCast(aCopy);

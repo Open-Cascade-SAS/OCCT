@@ -121,8 +121,7 @@ TEST(gp_DirTest, CrossCross)
   gp_Dir aC(0.0, 0.0, 1.0);
   gp_Dir aCrossCross = aA.CrossCrossed(aB, aC);
   // Result should be a valid normalized direction
-  double aMag = std::sqrt(aCrossCross.X() * aCrossCross.X()
-                          + aCrossCross.Y() * aCrossCross.Y()
+  double aMag = std::sqrt(aCrossCross.X() * aCrossCross.X() + aCrossCross.Y() * aCrossCross.Y()
                           + aCrossCross.Z() * aCrossCross.Z());
   EXPECT_NEAR(aMag, 1.0, Precision::Confusion());
 }
