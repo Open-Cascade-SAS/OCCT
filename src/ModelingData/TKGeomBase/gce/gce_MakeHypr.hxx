@@ -76,8 +76,7 @@ public:
   //! MinorRadius.
   //! For the hyperbola the MajorRadius can be lower than the
   //! MinorRadius.
-  //! The status is "NegativeRadius" if MajorRadius < 0.0 and
-  //! "InvertRadius" if MinorRadius > MajorRadius.
+  //! The status is "NegativeRadius" if MajorRadius < 0.0 or MinorRadius < 0.0
   Standard_EXPORT gce_MakeHypr(const gp_Ax2& A2,
                                const double  MajorRadius,
                                const double  MinorRadius);
@@ -91,11 +90,6 @@ public:
   //! Warning
   //! If an error occurs (that is, when IsDone returns
   //! false), the Status function returns:
-  //! -   gce_NegativeRadius if MajorRadius is less than 0.0;
-  //! -   gce_InvertRadius if:
-  //! -   the major radius (computed with Center, S1) is
-  //! less than the minor radius (computed with Center, S1 and S2), or
-  //! -   MajorRadius is less than MinorRadius; or
   //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
   Standard_EXPORT gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
 

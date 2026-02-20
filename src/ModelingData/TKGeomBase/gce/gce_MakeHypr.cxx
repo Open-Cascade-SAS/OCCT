@@ -29,29 +29,31 @@
 //=========================================================================
 gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
+  if (S1.Distance(Center) < gp::Resolution() 
+      || S2.Distance(Center) < gp::Resolution()
+      || S1.Distance(S2) < gp::Resolution())
+  {
+    TheError = gce_ConfusedPoints;
+    return;
+  }
+
   gp_Dir XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
   gp_Lin L(Center, XAxis);
   double D = S1.Distance(Center);
   double d = L.Distance(S2);
-  if (d > D)
+  if (d < gp::Resolution())
   {
-    TheError = gce_InvertAxis;
+    TheError = gce_ColinearPoints;
+    return;
   }
-  else
-  {
-    gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
-    TheHypr  = gp_Hypr(gp_Ax2(Center, Norm, XAxis), D, d);
-    TheError = gce_Done;
-  }
+  gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
+  TheHypr  = gp_Hypr(gp_Ax2(Center, Norm, XAxis), D, d);
+  TheError = gce_Done;
 }
 
 gce_MakeHypr::gce_MakeHypr(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
-  if (MajorRadius < MinorRadius)
-  {
-    TheError = gce_InvertRadius;
-  }
-  else if (MajorRadius < 0.0)
+  if (MajorRadius < 0.0 || MinorRadius < 0.0)
   {
     TheError = gce_NegativeRadius;
   }

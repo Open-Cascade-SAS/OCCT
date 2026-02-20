@@ -30,21 +30,27 @@
 //=========================================================================
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
 {
+  if (S1.Distance(Center) < gp::Resolution() 
+      || S2.Distance(Center) < gp::Resolution()
+      || S1.Distance(S2) < gp::Resolution())
+  {
+    TheError = gce_ConfusedPoints;
+    return;
+  }
+
   gp_Dir2d XAxis(gp_XY(S1.XY() - Center.XY()));
   gp_Dir2d YAxis(gp_XY(S2.XY() - Center.XY()));
   gp_Ax22d Axis(Center, XAxis, YAxis);
   gp_Lin2d L(Center, XAxis);
   double   D1 = S1.Distance(Center);
   double   D2 = L.Distance(S2);
-  if (D1 >= D2)
+  if (D2 < gp::Resolution())
   {
-    TheHypr2d = gp_Hypr2d(Axis, D1, D2);
-    TheError  = gce_Done;
+    TheError = gce_ColinearPoints;
+    return;
   }
-  else
-  {
-    TheError = gce_InvertAxis;
-  }
+  TheHypr2d = gp_Hypr2d(Axis, D1, D2);
+  TheError  = gce_Done;
 }
 
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax2d& MajorAxis,
