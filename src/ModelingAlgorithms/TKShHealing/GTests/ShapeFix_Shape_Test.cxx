@@ -29,7 +29,7 @@ TEST(ShapeFix_ShapeTest, FixValidBox)
   const TopoDS_Shape& aBox = aMakeBox.Shape();
   ASSERT_TRUE(aMakeBox.IsDone());
 
-  Handle(ShapeFix_Shape) aFixer = new ShapeFix_Shape(aBox);
+  occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aBox);
   aFixer->Perform();
   const TopoDS_Shape aResult = aFixer->Shape();
   ASSERT_FALSE(aResult.IsNull());
@@ -44,7 +44,7 @@ TEST(ShapeFix_ShapeTest, StatusAfterFix)
   const TopoDS_Shape& aBox = aMakeBox.Shape();
   ASSERT_TRUE(aMakeBox.IsDone());
 
-  Handle(ShapeFix_Shape) aFixer = new ShapeFix_Shape(aBox);
+  occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aBox);
   aFixer->Perform();
 
   // A valid box should not require any failure-level fixes
@@ -53,7 +53,7 @@ TEST(ShapeFix_ShapeTest, StatusAfterFix)
 
 TEST(ShapeFix_ShapeTest, SetPrecision)
 {
-  Handle(ShapeFix_Shape) aFixer = new ShapeFix_Shape();
+  occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape();
 
   const double aPrecision    = 0.01;
   const double aMinTolerance = 0.001;
@@ -84,7 +84,7 @@ TEST(ShapeFix_ShapeTest, FixCompound)
   aBuilder.Add(aCompound, aBox1);
   aBuilder.Add(aCompound, aBox2);
 
-  Handle(ShapeFix_Shape) aFixer = new ShapeFix_Shape(aCompound);
+  occ::handle<ShapeFix_Shape> aFixer = new ShapeFix_Shape(aCompound);
   aFixer->Perform();
   const TopoDS_Shape aResult = aFixer->Shape();
   ASSERT_FALSE(aResult.IsNull());

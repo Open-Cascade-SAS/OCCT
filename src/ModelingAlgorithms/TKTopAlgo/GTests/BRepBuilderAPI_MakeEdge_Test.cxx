@@ -47,8 +47,8 @@ TEST(BRepBuilderAPI_MakeEdgeTest, LinearEdge_TwoPoints)
 
 TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Full)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 5.0);
 
   BRepBuilderAPI_MakeEdge aMakeEdge(aCircle);
   ASSERT_TRUE(aMakeEdge.IsDone()) << "Full circular edge creation failed";
@@ -64,8 +64,8 @@ TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Full)
 
 TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Trimmed)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 5.0);
 
   // Half circle: 0 to PI
   BRepBuilderAPI_MakeEdge aMakeEdge(aCircle, 0.0, M_PI);
@@ -82,7 +82,7 @@ TEST(BRepBuilderAPI_MakeEdgeTest, CircularEdge_Trimmed)
 
 TEST(BRepBuilderAPI_MakeEdgeTest, EdgeFromLine_WithBounds)
 {
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
 
   BRepBuilderAPI_MakeEdge aMakeEdge(aLine, 0.0, 7.0);
   ASSERT_TRUE(aMakeEdge.IsDone()) << "Edge from line with bounds failed";

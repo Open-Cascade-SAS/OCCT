@@ -24,9 +24,9 @@
 
 // Helper to create a simple rational BSpline curve (degree 2, 3 poles)
 // with weights that produce distinct endpoint weight values.
-static Handle(Geom_BSplineCurve) MakeRationalBSpline3D(const double theW1,
-                                                       const double theW2,
-                                                       const double theW3)
+static occ::handle<Geom_BSplineCurve> MakeRationalBSpline3D(const double theW1,
+                                                            const double theW2,
+                                                            const double theW3)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 3);
   aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
@@ -50,9 +50,9 @@ static Handle(Geom_BSplineCurve) MakeRationalBSpline3D(const double theW1,
 }
 
 // Helper to create a simple rational BSpline 2D curve (degree 2, 3 poles).
-static Handle(Geom2d_BSplineCurve) MakeRationalBSpline2D(const double theW1,
-                                                         const double theW2,
-                                                         const double theW3)
+static occ::handle<Geom2d_BSplineCurve> MakeRationalBSpline2D(const double theW1,
+                                                              const double theW2,
+                                                              const double theW3)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
   aPoles(1) = gp_Pnt2d(0.0, 0.0);
@@ -78,9 +78,9 @@ static Handle(Geom2d_BSplineCurve) MakeRationalBSpline2D(const double theW1,
 TEST(HermitTest, Solution3D_UniformWeights_ReturnsValidCurve)
 {
   // Uniform weights => weight function is constant 1.0 everywhere
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(1.0, 1.0, 1.0);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(1.0, 1.0, 1.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
   EXPECT_GE(aResult->NbPoles(), 4);
@@ -97,9 +97,9 @@ TEST(HermitTest, Solution3D_UniformWeights_ReturnsValidCurve)
 TEST(HermitTest, Solution3D_DistinctWeights_ReturnsValidCurve)
 {
   // Different weights at endpoints: w(0)=2, w(1)=3
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(2.0, 1.5, 3.0);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(2.0, 1.5, 3.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 
@@ -114,9 +114,9 @@ TEST(HermitTest, Solution3D_DistinctWeights_ReturnsValidCurve)
 TEST(HermitTest, Solution3D_HighWeightRatio_Endpoint)
 {
   // Large weight ratio: w(0) small, w(1) large - tests the Pole0 < Pole3 branch
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(0.5, 1.0, 5.0);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(0.5, 1.0, 5.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 
@@ -131,9 +131,9 @@ TEST(HermitTest, Solution3D_HighWeightRatio_Endpoint)
 TEST(HermitTest, Solution3D_ReversedWeightRatio_Endpoint)
 {
   // Reversed ratio: w(0) large, w(1) small - tests the Pole0 > Pole3 branch
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(5.0, 1.0, 0.5);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(5.0, 1.0, 0.5);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 
@@ -147,9 +147,9 @@ TEST(HermitTest, Solution3D_ReversedWeightRatio_Endpoint)
 TEST(HermitTest, Solution3D_PositivePoles)
 {
   // The result curve should have all positive Y coordinates (positive denominator)
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(2.0, 3.0, 1.5);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(2.0, 3.0, 1.5);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
   for (int i = 1; i <= aResult->NbPoles(); ++i)
@@ -160,9 +160,9 @@ TEST(HermitTest, Solution3D_PositivePoles)
 
 TEST(HermitTest, Solution2D_UniformWeights_ReturnsValidCurve)
 {
-  Handle(Geom2d_BSplineCurve) aBS = MakeRationalBSpline2D(1.0, 1.0, 1.0);
+  occ::handle<Geom2d_BSplineCurve> aBS = MakeRationalBSpline2D(1.0, 1.0, 1.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 
@@ -175,9 +175,9 @@ TEST(HermitTest, Solution2D_UniformWeights_ReturnsValidCurve)
 
 TEST(HermitTest, Solution2D_DistinctWeights_ReturnsValidCurve)
 {
-  Handle(Geom2d_BSplineCurve) aBS = MakeRationalBSpline2D(2.0, 1.5, 3.0);
+  occ::handle<Geom2d_BSplineCurve> aBS = MakeRationalBSpline2D(2.0, 1.5, 3.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 
@@ -191,9 +191,9 @@ TEST(HermitTest, Solution2D_DistinctWeights_ReturnsValidCurve)
 TEST(HermitTest, Solution2D_HighWeightRatio_Endpoint)
 {
   // Large ratio tests the Pole0 < Pole3 branch in 2D PolyTest
-  Handle(Geom2d_BSplineCurve) aBS = MakeRationalBSpline2D(0.5, 1.0, 5.0);
+  occ::handle<Geom2d_BSplineCurve> aBS = MakeRationalBSpline2D(0.5, 1.0, 5.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 
@@ -206,7 +206,7 @@ TEST(HermitTest, Solution2D_HighWeightRatio_Endpoint)
 
 TEST(HermitTest, Solutionbis_UniformWeights_KnotsUnchanged)
 {
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(1.0, 1.0, 1.0);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(1.0, 1.0, 1.0);
 
   double aKnotmin = 0.0;
   double aKnotmax = 1.0;
@@ -222,7 +222,7 @@ TEST(HermitTest, Solutionbis_UniformWeights_KnotsUnchanged)
 
 TEST(HermitTest, Solutionbis_DistinctWeights_ReturnsValidKnots)
 {
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(2.0, 1.5, 3.0);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(2.0, 1.5, 3.0);
 
   double aKnotmin = 0.0;
   double aKnotmax = 1.0;
@@ -237,9 +237,9 @@ TEST(HermitTest, Solutionbis_DistinctWeights_ReturnsValidKnots)
 TEST(HermitTest, Solution3D_Symmetric_WeightsProduceSymmetricResult)
 {
   // Symmetric weights: w(0) == w(1), so a(0) == a(1)
-  Handle(Geom_BSplineCurve) aBS = MakeRationalBSpline3D(2.0, 1.0, 2.0);
+  occ::handle<Geom_BSplineCurve> aBS = MakeRationalBSpline3D(2.0, 1.0, 2.0);
 
-  Handle(Geom2d_BSplineCurve) aResult = Hermit::Solution(aBS);
+  occ::handle<Geom2d_BSplineCurve> aResult = Hermit::Solution(aBS);
 
   ASSERT_FALSE(aResult.IsNull());
 

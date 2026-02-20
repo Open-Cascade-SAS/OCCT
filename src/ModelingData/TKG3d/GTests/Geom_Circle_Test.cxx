@@ -23,24 +23,24 @@
 
 TEST(Geom_CircleTest, Constructor)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 5.0);
   ASSERT_FALSE(aCircle.IsNull());
   EXPECT_NEAR(aCircle->Radius(), 5.0, Precision::Confusion());
 }
 
 TEST(Geom_CircleTest, Center)
 {
-  gp_Pnt              aCenter(1.0, 2.0, 3.0);
-  gp_Ax2              anAxis(aCenter, gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
+  gp_Pnt                   aCenter(1.0, 2.0, 3.0);
+  gp_Ax2                   anAxis(aCenter, gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 5.0);
   EXPECT_TRUE(aCircle->Circ().Location().IsEqual(aCenter, Precision::Confusion()));
 }
 
 TEST(Geom_CircleTest, D0Evaluation)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 1.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 1.0);
 
   gp_Pnt aPnt;
 
@@ -69,8 +69,8 @@ TEST(Geom_CircleTest, D0Evaluation)
 
 TEST(Geom_CircleTest, D1Evaluation)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 1.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 1.0);
 
   gp_Pnt aPnt;
   gp_Vec aV1;
@@ -84,8 +84,8 @@ TEST(Geom_CircleTest, D1Evaluation)
 
 TEST(Geom_CircleTest, D2Evaluation)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 1.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 1.0);
 
   gp_Pnt aPnt;
   gp_Vec aV1, aV2;
@@ -99,8 +99,8 @@ TEST(Geom_CircleTest, D2Evaluation)
 
 TEST(Geom_CircleTest, Reverse)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 1.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 1.0);
 
   double aParam         = M_PI_4;
   double aReversedParam = aCircle->ReversedParameter(aParam);
@@ -110,8 +110,8 @@ TEST(Geom_CircleTest, Reverse)
 
 TEST(Geom_CircleTest, Transform)
 {
-  gp_Ax2              anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 5.0);
+  gp_Ax2                   anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 5.0);
 
   gp_Trsf aTrsf;
   aTrsf.SetScale(gp_Pnt(0.0, 0.0, 0.0), 2.0);
@@ -121,12 +121,12 @@ TEST(Geom_CircleTest, Transform)
 
 TEST(Geom_CircleTest, Copy)
 {
-  gp_Ax2              anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAxis, 7.0);
+  gp_Ax2                   anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(anAxis, 7.0);
 
-  Handle(Geom_Geometry) aCopy = aCircle->Copy();
+  occ::handle<Geom_Geometry> aCopy = aCircle->Copy();
   ASSERT_FALSE(aCopy.IsNull());
-  Handle(Geom_Circle) aCopyCircle = Handle(Geom_Circle)::DownCast(aCopy);
+  occ::handle<Geom_Circle> aCopyCircle = occ::down_cast<Geom_Circle>(aCopy);
   ASSERT_FALSE(aCopyCircle.IsNull());
   EXPECT_NEAR(aCopyCircle->Radius(), 7.0, Precision::Confusion());
   EXPECT_TRUE(

@@ -103,10 +103,10 @@ TEST(BRep_Tool_Test, Curve_FromEdge)
   TopExp_Explorer anExp(aBox, TopAbs_EDGE);
   ASSERT_TRUE(anExp.More());
 
-  const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-  double             aFirst = 0.0;
-  double             aLast  = 0.0;
-  Handle(Geom_Curve) aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
+  const TopoDS_Edge&      anEdge = TopoDS::Edge(anExp.Current());
+  double                  aFirst = 0.0;
+  double                  aLast  = 0.0;
+  occ::handle<Geom_Curve> aCurve = BRep_Tool::Curve(anEdge, aFirst, aLast);
 
   EXPECT_FALSE(aCurve.IsNull()) << "Curve from a box edge should not be null";
   EXPECT_LT(aFirst, aLast) << "First parameter should be less than last parameter";
@@ -121,16 +121,16 @@ TEST(BRep_Tool_Test, Surface_FromFace)
   TopExp_Explorer anExp(aBox, TopAbs_FACE);
   ASSERT_TRUE(anExp.More());
 
-  const TopoDS_Face&   aFace    = TopoDS::Face(anExp.Current());
-  Handle(Geom_Surface) aSurface = BRep_Tool::Surface(aFace);
+  const TopoDS_Face&        aFace    = TopoDS::Face(anExp.Current());
+  occ::handle<Geom_Surface> aSurface = BRep_Tool::Surface(aFace);
 
   EXPECT_FALSE(aSurface.IsNull()) << "Surface from a box face should not be null";
 }
 
 TEST(BRep_Tool_Test, IsClosed_CircleEdge)
 {
-  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
-  BRepBuilderAPI_MakeEdge anEdgeMaker(aCircle);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
+  BRepBuilderAPI_MakeEdge  anEdgeMaker(aCircle);
   ASSERT_TRUE(anEdgeMaker.IsDone());
 
   const TopoDS_Edge& anEdge = anEdgeMaker.Edge();

@@ -79,7 +79,7 @@ TEST(BRepBuilderAPI_MakeFaceTest, FaceFromWire)
 
 TEST(BRepBuilderAPI_MakeFaceTest, FaceFromGeomPlane_WithBounds)
 {
-  Handle(Geom_Plane)      aGeomPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Plane> aGeomPlane = new Geom_Plane(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
   BRepBuilderAPI_MakeFace aMakeFace(aGeomPlane, 0.0, 10.0, 0.0, 5.0, Precision::Confusion());
   ASSERT_TRUE(aMakeFace.IsDone()) << "Face from Geom_Plane with bounds failed";
 
@@ -96,8 +96,8 @@ TEST(BRepBuilderAPI_MakeFaceTest, FaceFromGeomPlane_WithBounds)
 
 TEST(BRepBuilderAPI_MakeFaceTest, FaceFromCylindricalSurface)
 {
-  gp_Ax3                          anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-  Handle(Geom_CylindricalSurface) aCylSurf = new Geom_CylindricalSurface(anAxis, 5.0);
+  gp_Ax3                               anAxis(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_CylindricalSurface> aCylSurf = new Geom_CylindricalSurface(anAxis, 5.0);
 
   // Create a bounded face: U from 0 to 2*PI, V from 0 to 10
   BRepBuilderAPI_MakeFace aMakeFace(aCylSurf, 0.0, 2.0 * M_PI, 0.0, 10.0, Precision::Confusion());

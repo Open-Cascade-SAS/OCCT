@@ -63,8 +63,8 @@ TEST(ShapeAnalysis_EdgeTest, IsClosed_OpenEdge)
 
 TEST(ShapeAnalysis_EdgeTest, IsClosed_ClosedEdge)
 {
-  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
-  BRepBuilderAPI_MakeEdge aMakeEdge(aCircle);
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp::DZ()), 5.0);
+  BRepBuilderAPI_MakeEdge  aMakeEdge(aCircle);
   ASSERT_TRUE(aMakeEdge.IsDone());
   const TopoDS_Edge& anEdge = aMakeEdge.Edge();
 
