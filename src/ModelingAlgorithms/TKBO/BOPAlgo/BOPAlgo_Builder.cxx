@@ -586,11 +586,19 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
             NCollection_List<TopoDS_Shape>::Iterator itLFIm(*pLFIm);
             for (; itLFIm.More(); itLFIm.Next())
             {
-              TopoDS_Face aFIm = TopoDS::Face(itLFIm.Value());
-              if (BOPTools_AlgoTools::IsSplitToReverse(aFIm, aF, myContext))
+              const TopoDS_Face& aFImRef = TopoDS::Face(itLFIm.Value());
+              if (BOPTools_AlgoTools::IsSplitToReverse(aFImRef, aF, myContext))
+              {
+                TopoDS_Face aFIm = aFImRef;
                 aFIm.Reverse();
-              aMapOri.Add(aFIm);
-              aMap.Add(aFIm);
+                aMapOri.Add(aFIm);
+                aMap.Add(aFIm);
+              }
+              else
+              {
+                aMapOri.Add(aFImRef);
+                aMap.Add(aFImRef);
+              }
             }
           }
           else
@@ -647,7 +655,7 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
     const int aNbF = aMap.Extent();
     for (int j = 1; j <= aNbF; ++j)
     {
-      TopoDS_Shape aFIm = aMap(j);
+      const TopoDS_Shape& aFIm = aMap(j);
 
       bool isIN         = anINMap.Contains(aFIm);
       bool isINOpposite = anOppositeINMap.Contains(aFIm);
@@ -783,7 +791,7 @@ void BOPAlgo_Builder::BuildBOP(const NCollection_List<TopoDS_Shape>& theObjects,
     // Add faces of the block to the shell
     TopExp_Explorer anExpF(aCB, TopAbs_FACE);
     for (; anExpF.More(); anExpF.Next())
-      aBB.Add(aShell, TopoDS::Face(anExpF.Current()));
+      aBB.Add(aShell, anExpF.Current());
 
     BOPTools_AlgoTools::OrientFacesOnShell(aShell);
     // Make solid out of the shell

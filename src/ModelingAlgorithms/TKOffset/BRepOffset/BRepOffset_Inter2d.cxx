@@ -608,7 +608,6 @@ static void EdgeInter(
     // There can be doubles
     //----------------------------------
     NCollection_List<TopoDS_Shape>::Iterator it1LV1, it1LV2, it2LV1;
-    gp_Pnt                                   P1, P2;
     bool                                     Purge = true;
 
     while (Purge)
@@ -618,21 +617,19 @@ static void EdgeInter(
       for (it1LV1.Initialize(LV1), it1LV2.Initialize(LV2); it1LV1.More();
            it1LV1.Next(), it1LV2.Next())
       {
+        const TopoDS_Vertex& aV1   = TopoDS::Vertex(it1LV1.Value());
+        const gp_Pnt         P1    = BRep_Tool::Pnt(aV1);
+        const double         aTol1 = BRep_Tool::Tolerance(aV1);
+
         j = 1;
         it2LV1.Initialize(LV1);
         while (j < i)
         {
-          P1 = BRep_Tool::Pnt(TopoDS::Vertex(it1LV1.Value()));
-          P2 = BRep_Tool::Pnt(TopoDS::Vertex(it2LV1.Value()));
-          //  Modified by skv - Thu Jan 22 18:19:04 2004 OCC4455 Begin
-          //           if (P1.IsEqual(P2,10*Tol)) {
-          double aTol;
-
-          aTol = std::max(BRep_Tool::Tolerance(TopoDS::Vertex(it1LV1.Value())),
-                          BRep_Tool::Tolerance(TopoDS::Vertex(it2LV1.Value())));
+          const TopoDS_Vertex& aV2  = TopoDS::Vertex(it2LV1.Value());
+          const gp_Pnt         P2   = BRep_Tool::Pnt(aV2);
+          const double         aTol = std::max(aTol1, BRep_Tool::Tolerance(aV2));
           if (P1.IsEqual(P2, aTol))
           {
-            //  Modified by skv - Thu Jan 22 18:19:05 2004 OCC4455 End
             LV1.Remove(it1LV1);
             LV2.Remove(it1LV2);
             if (AffichPurge)
@@ -1321,14 +1318,15 @@ bool BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge& E, TopoDS_Edge& NE, const
         l -= 0.05 * (l - f);
       else
       {
-        f = FirstParOnPC;
-        l = LastParOnPC;
+        f                                       = FirstParOnPC;
+        l                                       = LastParOnPC;
+        const gp_Trsf               aMinLocTrsf = MinLoc.Transformation();
         GeomAPI_ProjectPointOnCurve Projector;
         if (!Precision::IsInfinite(FirstParOnPC))
         {
           gp_Pnt2d P2d1 = MinPC->Value(FirstParOnPC);
           gp_Pnt   P1   = MinSurf->Value(P2d1.X(), P2d1.Y());
-          P1.Transform(MinLoc.Transformation());
+          P1.Transform(aMinLocTrsf);
           Projector.Init(P1, C3d);
           if (Projector.NbPoints() > 0)
             f = Projector.LowerDistanceParameter();
@@ -1341,7 +1339,7 @@ bool BRepOffset_Inter2d::ExtentEdge(const TopoDS_Edge& E, TopoDS_Edge& NE, const
         {
           gp_Pnt2d P2d2 = MinPC->Value(LastParOnPC);
           gp_Pnt   P2   = MinSurf->Value(P2d2.X(), P2d2.Y());
-          P2.Transform(MinLoc.Transformation());
+          P2.Transform(aMinLocTrsf);
           Projector.Init(P2, C3d);
           if (Projector.NbPoints() > 0)
             l = Projector.LowerDistanceParameter();

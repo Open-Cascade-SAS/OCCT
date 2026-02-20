@@ -4066,7 +4066,8 @@ void BOPAlgo_PaveFiller::CorrectToleranceOfSE()
     //
     const TopoDS_Vertex& aV      = TopoDS::Vertex(myDS->Shape(nV));
     double               aTolV   = BRep_Tool::Tolerance(aV);
-    double               aMaxTol = aMVITol.IsBound(nV) ? aMVITol.Find(nV) : 0.;
+    const double*        pMaxTol = aMVITol.Seek(nV);
+    double               aMaxTol = pMaxTol ? *pMaxTol : 0.;
     // it makes no sense to compute the real tolerance if it is
     // impossible to reduce the tolerance at least 0.1% of the current value
     if (aTolV - aMaxTol < 0.001 * aTolV)

@@ -26,6 +26,8 @@
 #include <OpenGl_GlCore44.hxx>
 #include <OSD_Protection.hxx>
 #include <OSD_File.hxx>
+#include <NCollection_MapAlgo.hxx>
+#include <NCollection_Vector.hxx>
 
 #include "../../TKService/Shaders/Shaders_RaytraceBase_vs.pxx"
 #include "../../TKService/Shaders/Shaders_RaytraceBase_fs.pxx"
@@ -87,7 +89,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
   {
     myRaytraceGeometry.ClearMaterials();
 
-    myArrayToTrianglesMap.clear();
+    myArrayToTrianglesMap.Clear();
 
     myIsRaytraceDataValid = false;
   }
@@ -95,15 +97,15 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
   // The set of processed structures (reflected to ray-tracing)
   // This set is used to remove out-of-date records from the
   // hash map of structures
-  std::set<const OpenGl_Structure*> anElements;
+  NCollection_Map<const OpenGl_Structure*> anElements;
 
   // Set to store all currently visible OpenGL primitive arrays
   // applicable for ray-tracing
-  std::set<size_t> anArrayIDs;
+  NCollection_Map<size_t> anArrayIDs;
 
   // Set to store all non-raytracable elements allowing tracking
   // of changes in OpenGL scene (only for path tracing)
-  std::set<int> aNonRaytraceIDs;
+  NCollection_Map<int> aNonRaytraceIDs;
 
   for (NCollection_List<occ::handle<Graphic3d_Layer>>::Iterator aLayerIter(myZLayers.Layers());
        aLayerIter.More();
@@ -135,8 +137,8 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
           }
           else if (aStructure->IsVisible() && myRaytraceParameters.GlobalIllumination)
           {
-            aNonRaytraceIDs.insert(aStructure->highlight ? aStructure->Identification()
-                                                         : -aStructure->Identification());
+            aNonRaytraceIDs.Add(aStructure->highlight ? aStructure->Identification()
+                                                      : -aStructure->Identification());
           }
         }
         else if (theMode == OpenGl_GUM_PREPARE)
@@ -163,7 +165,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
 
               if (aPrimArray != nullptr)
               {
-                anArrayIDs.insert(aPrimArray->GetUID());
+                anArrayIDs.Add(aPrimArray->GetUID());
               }
             }
           }
@@ -176,7 +178,7 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
           }
           else if (addRaytraceStructure(aStructure, theGlContext))
           {
-            anElements.insert(aStructure); // structure was processed
+            anElements.Add(aStructure); // structure was processed
           }
         }
       }
@@ -199,11 +201,11 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
         continue;
       }
 
-      if (anArrayIDs.find(aTriangleSet->AssociatedPArrayID()) != anArrayIDs.end())
+      if (anArrayIDs.Contains(aTriangleSet->AssociatedPArrayID()))
       {
         anUnchangedObjects.Append(myRaytraceGeometry.Objects().Value(anObjIdx));
 
-        myArrayToTrianglesMap[aTriangleSet->AssociatedPArrayID()] = aTriangleSet;
+        myArrayToTrianglesMap.Bind(aTriangleSet->AssociatedPArrayID(), aTriangleSet);
       }
     }
 
@@ -214,18 +216,23 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
   else if (theMode == OpenGl_GUM_REBUILD)
   {
     // Actualize the hash map of structures - remove out-of-date records
-    std::map<const OpenGl_Structure*, StructState>::iterator anIter = myStructureStates.begin();
-
-    while (anIter != myStructureStates.end())
+    NCollection_Vector<const OpenGl_Structure*> aKeysToRemove(
+      myStructureStates.Extent() > 0 ? myStructureStates.Extent() : 1);
+    for (NCollection_DataMap<const OpenGl_Structure*, StructState>::Iterator anIter(
+           myStructureStates);
+         anIter.More();
+         anIter.Next())
     {
-      if (anElements.find(anIter->first) == anElements.end())
+      if (!anElements.Contains(anIter.Key()))
       {
-        myStructureStates.erase(anIter++);
+        aKeysToRemove.Append(anIter.Key());
       }
-      else
-      {
-        ++anIter;
-      }
+    }
+    for (NCollection_Vector<const OpenGl_Structure*>::Iterator aKeyIter(aKeysToRemove);
+         aKeyIter.More();
+         aKeyIter.Next())
+    {
+      myStructureStates.UnBind(aKeyIter.Value());
     }
 
     // Actualize OpenGL layer list state
@@ -247,24 +254,12 @@ bool OpenGl_View::updateRaytraceGeometry(const RaytraceUpdateMode           theM
 
   if (myRaytraceParameters.GlobalIllumination)
   {
-    bool toRestart = aNonRaytraceIDs.size() != myNonRaytraceStructureIDs.size();
-
-    for (std::set<int>::iterator anID = aNonRaytraceIDs.begin();
-         anID != aNonRaytraceIDs.end() && !toRestart;
-         ++anID)
-    {
-      if (myNonRaytraceStructureIDs.find(*anID) == myNonRaytraceStructureIDs.end())
-      {
-        toRestart = true;
-      }
-    }
-
-    if (toRestart)
+    if (!NCollection_MapAlgo::IsEqual(myNonRaytraceStructureIDs, aNonRaytraceIDs))
     {
       myAccumFrames = 0;
     }
 
-    myNonRaytraceStructureIDs = aNonRaytraceIDs;
+    myNonRaytraceStructureIDs.Exchange(aNonRaytraceIDs);
   }
 
   return true;
@@ -288,18 +283,15 @@ bool OpenGl_View::toUpdateStructure(const OpenGl_Structure* theStructure)
     return false; // did not contain ray-trace elements
   }
 
-  std::map<const OpenGl_Structure*, StructState>::iterator aStructState =
-    myStructureStates.find(theStructure);
+  const StructState* aStructState = myStructureStates.Seek(theStructure);
 
-  if (aStructState == myStructureStates.end()
-      || aStructState->second.StructureState != theStructure->ModificationState())
+  if (aStructState == nullptr || aStructState->StructureState != theStructure->ModificationState())
   {
     return true;
   }
   else if (theStructure->InstancedStructure() != nullptr)
   {
-    return aStructState->second.InstancedState
-           != theStructure->InstancedStructure()->ModificationState();
+    return aStructState->InstancedState != theStructure->InstancedStructure()->ModificationState();
   }
 
   return false;
@@ -319,33 +311,21 @@ void buildTextureTransform(const occ::handle<Graphic3d_TextureParams>& theParams
   }
 
   // Apply scaling
-  const NCollection_Vec2<float>& aScale = theParams->Scale();
+  const float aScaleX = theParams->Scale().x();
+  const float aScaleY = theParams->Scale().y();
 
-  theMatrix.ChangeValue(0, 0) *= aScale.x();
-  theMatrix.ChangeValue(1, 0) *= aScale.x();
-  theMatrix.ChangeValue(2, 0) *= aScale.x();
-  theMatrix.ChangeValue(3, 0) *= aScale.x();
-
-  theMatrix.ChangeValue(0, 1) *= aScale.y();
-  theMatrix.ChangeValue(1, 1) *= aScale.y();
-  theMatrix.ChangeValue(2, 1) *= aScale.y();
-  theMatrix.ChangeValue(3, 1) *= aScale.y();
+  theMatrix.ChangeValue(0, 0) = aScaleX;
+  theMatrix.ChangeValue(1, 1) = aScaleY;
 
   // Apply translation
   const NCollection_Vec2<float> aTrans = -theParams->Translation();
-
-  theMatrix.ChangeValue(0, 3) =
-    theMatrix.GetValue(0, 0) * aTrans.x() + theMatrix.GetValue(0, 1) * aTrans.y();
-
-  theMatrix.ChangeValue(1, 3) =
-    theMatrix.GetValue(1, 0) * aTrans.x() + theMatrix.GetValue(1, 1) * aTrans.y();
-
-  theMatrix.ChangeValue(2, 3) =
-    theMatrix.GetValue(2, 0) * aTrans.x() + theMatrix.GetValue(2, 1) * aTrans.y();
+  theMatrix.ChangeValue(0, 3)          = aScaleX * aTrans.x();
+  theMatrix.ChangeValue(1, 3)          = aScaleY * aTrans.y();
 
   // Apply rotation
-  const float aSin = std::sin(-theParams->Rotation() * static_cast<float>(M_PI / 180.0));
-  const float aCos = std::cos(-theParams->Rotation() * static_cast<float>(M_PI / 180.0));
+  const float aAngle = -theParams->Rotation() * static_cast<float>(M_PI / 180.0);
+  const float aSin   = std::sin(aAngle);
+  const float aCos   = std::cos(aAngle);
 
   BVH_Mat4f aRotationMat;
   aRotationMat.SetValue(0, 0, aCos);
@@ -492,7 +472,7 @@ bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*            theStr
 {
   if (!theStructure->IsVisible())
   {
-    myStructureStates[theStructure] = StructState(theStructure);
+    myStructureStates.Bind(theStructure, StructState(theStructure));
 
     return true;
   }
@@ -513,7 +493,7 @@ bool OpenGl_View::addRaytraceStructure(const OpenGl_Structure*            theStr
                                  theGlContext);
   }
 
-  myStructureStates[theStructure] = StructState(theStructure);
+  myStructureStates.Bind(theStructure, StructState(theStructure));
 
   return aResult;
 }
@@ -528,6 +508,11 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
                                     const occ::handle<OpenGl_Context>& theGlContext)
 {
   NCollection_Mat4<float> aMat4;
+  const bool              hasTrsf = !theTrsf.IsNull();
+  if (hasTrsf)
+  {
+    theTrsf->Trsf().GetMat4(aMat4);
+  }
   for (OpenGl_Structure::GroupIterator aGroupIter(theStructure->Groups()); aGroupIter.More();
        aGroupIter.Next())
   {
@@ -564,16 +549,14 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
 
         if (aPrimArray != nullptr)
         {
-          std::map<size_t, OpenGl_TriangleSet*>::iterator aSetIter =
-            myArrayToTrianglesMap.find(aPrimArray->GetUID());
+          OpenGl_TriangleSet** aSetPtr = myArrayToTrianglesMap.ChangeSeek(aPrimArray->GetUID());
 
-          if (aSetIter != myArrayToTrianglesMap.end())
+          if (aSetPtr != nullptr)
           {
-            OpenGl_TriangleSet*                          aSet       = aSetIter->second;
+            OpenGl_TriangleSet*                          aSet       = *aSetPtr;
             opencascade::handle<BVH_Transform<float, 4>> aTransform = new BVH_Transform<float, 4>();
-            if (!theTrsf.IsNull())
+            if (hasTrsf)
             {
-              theTrsf->Trsf().GetMat4(aMat4);
               aTransform->SetTransform(aMat4);
             }
 
@@ -591,9 +574,8 @@ bool OpenGl_View::addRaytraceGroups(const OpenGl_Structure*            theStruct
             {
               opencascade::handle<BVH_Transform<float, 4>> aTransform =
                 new BVH_Transform<float, 4>();
-              if (!theTrsf.IsNull())
+              if (hasTrsf)
               {
-                theTrsf->Trsf().GetMat4(aMat4);
                 aTransform->SetTransform(aMat4);
               }
 
@@ -1158,54 +1140,54 @@ bool OpenGl_View::ShaderSource::LoadFromStrings(const TCollection_AsciiString* t
 TCollection_AsciiString OpenGl_View::generateShaderPrefix(
   const occ::handle<OpenGl_Context>& theGlContext) const
 {
-  TCollection_AsciiString aPrefixString = TCollection_AsciiString("#define STACK_SIZE ")
-                                          + TCollection_AsciiString(myRaytraceParameters.StackSize)
-                                          + "\n" + TCollection_AsciiString("#define NB_BOUNCES ")
-                                          + TCollection_AsciiString(myRaytraceParameters.NbBounces);
+  TCollection_AsciiString aPrefixString("#define STACK_SIZE ");
+  aPrefixString += TCollection_AsciiString(myRaytraceParameters.StackSize);
+  aPrefixString += "\n#define NB_BOUNCES ";
+  aPrefixString += TCollection_AsciiString(myRaytraceParameters.NbBounces);
 
   if (myRaytraceParameters.IsZeroToOneDepth)
   {
-    aPrefixString += TCollection_AsciiString("\n#define THE_ZERO_TO_ONE_DEPTH");
+    aPrefixString += "\n#define THE_ZERO_TO_ONE_DEPTH";
   }
 
   if (myRaytraceParameters.TransparentShadows)
   {
-    aPrefixString += TCollection_AsciiString("\n#define TRANSPARENT_SHADOWS");
+    aPrefixString += "\n#define TRANSPARENT_SHADOWS";
   }
   if (!theGlContext->ToRenderSRGB())
   {
-    aPrefixString += TCollection_AsciiString("\n#define THE_SHIFT_sRGB");
+    aPrefixString += "\n#define THE_SHIFT_sRGB";
   }
 
   // If OpenGL driver supports bindless textures and texturing
   // is actually used, activate texturing in ray-tracing mode
   if (myRaytraceParameters.UseBindlessTextures && theGlContext->arbTexBindless != nullptr)
   {
-    aPrefixString += TCollection_AsciiString("\n#define USE_TEXTURES")
-                     + TCollection_AsciiString("\n#define MAX_TEX_NUMBER ")
-                     + TCollection_AsciiString(OpenGl_RaytraceGeometry::MAX_TEX_NUMBER);
+    aPrefixString += "\n#define USE_TEXTURES";
+    aPrefixString += "\n#define MAX_TEX_NUMBER ";
+    aPrefixString += TCollection_AsciiString(OpenGl_RaytraceGeometry::MAX_TEX_NUMBER);
   }
 
   if (myRaytraceParameters.GlobalIllumination) // path tracing activated
   {
-    aPrefixString += TCollection_AsciiString("\n#define PATH_TRACING");
+    aPrefixString += "\n#define PATH_TRACING";
 
     if (myRaytraceParameters.AdaptiveScreenSampling) // adaptive screen sampling requested
     {
       if (theGlContext->IsGlGreaterEqual(4, 4))
       {
-        aPrefixString += TCollection_AsciiString("\n#define ADAPTIVE_SAMPLING");
+        aPrefixString += "\n#define ADAPTIVE_SAMPLING";
         if (myRaytraceParameters.AdaptiveScreenSamplingAtomic
             && theGlContext->CheckExtension("GL_NV_shader_atomic_float"))
         {
-          aPrefixString += TCollection_AsciiString("\n#define ADAPTIVE_SAMPLING_ATOMIC");
+          aPrefixString += "\n#define ADAPTIVE_SAMPLING_ATOMIC";
         }
       }
     }
 
     if (myRaytraceParameters.TwoSidedBsdfModels) // two-sided BSDFs requested
     {
-      aPrefixString += TCollection_AsciiString("\n#define TWO_SIDED_BXDF");
+      aPrefixString += "\n#define TWO_SIDED_BXDF";
     }
 
     switch (myRaytraceParameters.ToneMappingMethod)
@@ -1213,24 +1195,24 @@ TCollection_AsciiString OpenGl_View::generateShaderPrefix(
       case Graphic3d_ToneMappingMethod_Disabled:
         break;
       case Graphic3d_ToneMappingMethod_Filmic:
-        aPrefixString += TCollection_AsciiString("\n#define TONE_MAPPING_FILMIC");
+        aPrefixString += "\n#define TONE_MAPPING_FILMIC";
         break;
     }
   }
 
   if (myRaytraceParameters.ToIgnoreNormalMap)
   {
-    aPrefixString += TCollection_AsciiString("\n#define IGNORE_NORMAL_MAP");
+    aPrefixString += "\n#define IGNORE_NORMAL_MAP";
   }
 
   if (myRaytraceParameters.CubemapForBack)
   {
-    aPrefixString += TCollection_AsciiString("\n#define BACKGROUND_CUBEMAP");
+    aPrefixString += "\n#define BACKGROUND_CUBEMAP";
   }
 
   if (myRaytraceParameters.DepthOfField)
   {
-    aPrefixString += TCollection_AsciiString("\n#define DEPTH_OF_FIELD");
+    aPrefixString += "\n#define DEPTH_OF_FIELD";
   }
 
   return aPrefixString;

@@ -15,6 +15,7 @@
 #include <BOPTools_Set.hxx>
 #include <BRep_Tool.hxx>
 #include <TopExp_Explorer.hxx>
+#include <TopoDS.hxx>
 #include <TopoDS_Edge.hxx>
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
@@ -26,7 +27,7 @@ static size_t NormalizedIds(const size_t aId, const int aDiv);
 
 BOPTools_Set::BOPTools_Set()
     : myAllocator(NCollection_BaseAllocator::CommonBaseAllocator()),
-      myShapes(myAllocator)
+      myShapes(256, myAllocator)
 {
   myNbShapes = 0;
   mySum      = 0;
@@ -37,7 +38,7 @@ BOPTools_Set::BOPTools_Set()
 
 BOPTools_Set::BOPTools_Set(const occ::handle<NCollection_BaseAllocator>& theAllocator)
     : myAllocator(theAllocator),
-      myShapes(myAllocator)
+      myShapes(256, myAllocator)
 {
   myNbShapes = 0;
   mySum      = 0;
@@ -48,16 +49,12 @@ BOPTools_Set::BOPTools_Set(const occ::handle<NCollection_BaseAllocator>& theAllo
 
 BOPTools_Set::BOPTools_Set(const BOPTools_Set& theOther)
     : myAllocator(theOther.myAllocator),
+      myShapes(theOther.myShapes),
       myShape(theOther.myShape),
       myNbShapes(theOther.myNbShapes),
       mySum(theOther.mySum),
       myUpper(theOther.myUpper)
 {
-  for (NCollection_List<TopoDS_Shape>::Iterator aIt(theOther.myShapes); aIt.More(); aIt.Next())
-  {
-    const TopoDS_Shape& aShape = aIt.Value();
-    myShapes.Append(aShape);
-  }
 }
 
 //=================================================================================================
@@ -87,21 +84,12 @@ int BOPTools_Set::NbShapes() const
 
 BOPTools_Set& BOPTools_Set::Assign(const BOPTools_Set& theOther)
 {
-  NCollection_List<TopoDS_Shape>::Iterator aIt;
-  //
   myShape     = theOther.myShape;
   myNbShapes  = theOther.myNbShapes;
   mySum       = theOther.mySum;
   myUpper     = theOther.myUpper;
   myAllocator = theOther.myAllocator;
-  //
-  myShapes.Clear();
-  aIt.Initialize(theOther.myShapes);
-  for (; aIt.More(); aIt.Next())
-  {
-    const TopoDS_Shape& aSx = aIt.Value();
-    myShapes.Append(aSx);
-  }
+  myShapes    = theOther.myShapes;
   return *this;
 }
 
@@ -116,36 +104,27 @@ const TopoDS_Shape& BOPTools_Set::Shape() const
 
 bool BOPTools_Set::IsEqual(const BOPTools_Set& theOther) const
 {
-  bool bRet;
-  //
-  bRet = false;
-  //
   if (theOther.myNbShapes != myNbShapes)
   {
-    return bRet;
+    return false;
   }
   //
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher> aM1;
-  NCollection_List<TopoDS_Shape>::Iterator               aIt;
   //
-  aIt.Initialize(myShapes);
-  for (; aIt.More(); aIt.Next())
+  for (int i = 0; i < myShapes.Size(); ++i)
   {
-    const TopoDS_Shape& aSx1 = aIt.Value();
-    aM1.Add(aSx1);
+    aM1.Add(myShapes(i));
   }
   //
-  aIt.Initialize(theOther.myShapes);
-  for (; aIt.More(); aIt.Next())
+  for (int i = 0; i < theOther.myShapes.Size(); ++i)
   {
-    const TopoDS_Shape& aSx2 = aIt.Value();
-    if (!aM1.Contains(aSx2))
+    if (!aM1.Contains(theOther.myShapes(i)))
     {
-      return bRet;
+      return false;
     }
   }
   //
-  return !bRet;
+  return true;
 }
 
 //=================================================================================================
@@ -167,7 +146,7 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType)
     const TopoDS_Shape& aSx = aExp.Current();
     if (theType == TopAbs_EDGE)
     {
-      const TopoDS_Edge& aEx = *((TopoDS_Edge*)&aSx);
+      const TopoDS_Edge& aEx = TopoDS::Edge(aSx);
       if (BRep_Tool::Degenerated(aEx))
       {
         continue;
@@ -193,18 +172,15 @@ void BOPTools_Set::Add(const TopoDS_Shape& theS, const TopAbs_ShapeEnum theType)
     }
   }
   //
-  myNbShapes = myShapes.Extent();
+  myNbShapes = myShapes.Size();
   if (!myNbShapes)
   {
     return;
   }
   //
-  NCollection_List<TopoDS_Shape>::Iterator aIt;
-  //
-  aIt.Initialize(myShapes);
-  for (; aIt.More(); aIt.Next())
+  for (int i = 0; i < myShapes.Size(); ++i)
   {
-    const TopoDS_Shape& aSx = aIt.Value();
+    const TopoDS_Shape& aSx = myShapes(i);
     aId                     = TopTools_ShapeMapHasher{}(aSx) % myUpper + 1;
     aIdN                    = NormalizedIds(aId, myNbShapes);
     mySum += aIdN;

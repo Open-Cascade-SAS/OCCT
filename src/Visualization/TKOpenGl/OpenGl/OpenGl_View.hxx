@@ -29,8 +29,8 @@
 #include <OpenGl_TileSampler.hxx>
 #include <TCollection_AsciiString.hxx>
 
-#include <map>
-#include <set>
+#include <NCollection_DataMap.hxx>
+#include <NCollection_Map.hxx>
 
 class OpenGl_BackgroundArray;
 class OpenGl_DepthPeeling;
@@ -1063,13 +1063,13 @@ protected: //! @name fields related to ray-tracing
   int myUniformLocations[2][OpenGl_RT_NbVariables];
 
   //! State of OpenGL structures reflected to ray-tracing.
-  std::map<const OpenGl_Structure*, StructState> myStructureStates;
+  NCollection_DataMap<const OpenGl_Structure*, StructState> myStructureStates;
 
   //! PrimitiveArray to TriangleSet map for scene partial update.
-  std::map<size_t, OpenGl_TriangleSet*> myArrayToTrianglesMap;
+  NCollection_DataMap<size_t, OpenGl_TriangleSet*> myArrayToTrianglesMap;
 
   //! Set of IDs of non-raytracable elements (to detect updates).
-  std::set<int> myNonRaytraceStructureIDs;
+  NCollection_Map<int> myNonRaytraceStructureIDs;
 
   //! Marks if environment map should be updated.
   bool myToUpdateEnvironmentMap;
