@@ -130,5 +130,9 @@ TEST(gp_Dir2dTest, Transform)
 
 TEST(gp_Dir2dTest, ZeroMagnitudeThrows)
 {
+#ifndef No_Exception
   EXPECT_THROW(gp_Dir2d aDir(0.0, 0.0), Standard_ConstructionError);
+#else
+  GTEST_SKIP() << "No_Exception is defined; exception behavior is disabled in this build.";
+#endif
 }
