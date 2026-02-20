@@ -299,6 +299,31 @@ TEST_F(NCollection_FlatDataMapTest, LargeDataSet)
   EXPECT_EQ(NUM_ELEMENTS, count);
 }
 
+TEST_F(NCollection_FlatDataMapTest, LongProbeSequence)
+{
+  struct ConstantHasher
+  {
+    size_t operator()(int) const { return 0; }
+
+    bool operator()(int theKey1, int theKey2) const { return theKey1 == theKey2; }
+  };
+
+  constexpr int                                     THE_NUM_ELEMENTS = 400;
+  NCollection_FlatDataMap<int, int, ConstantHasher> aMap;
+
+  for (int i = 0; i < THE_NUM_ELEMENTS; ++i)
+  {
+    EXPECT_TRUE(aMap.Bind(i, i * 3));
+  }
+
+  EXPECT_EQ(THE_NUM_ELEMENTS, aMap.Size());
+  for (int i = 0; i < THE_NUM_ELEMENTS; ++i)
+  {
+    EXPECT_TRUE(aMap.IsBound(i)) << "Key " << i << " not found";
+    EXPECT_EQ(i * 3, aMap.Find(i));
+  }
+}
+
 TEST_F(NCollection_FlatDataMapTest, UnBindAndRebind)
 {
   NCollection_FlatDataMap<int, int> aMap;
