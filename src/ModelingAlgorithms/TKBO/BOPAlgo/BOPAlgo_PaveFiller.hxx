@@ -124,10 +124,7 @@ public:
   void SetArguments(const NCollection_List<TopoDS_Shape>& theLS) { myArguments = theLS; }
 
   //! Sets the arguments for operation (move semantics)
-  void SetArguments(NCollection_List<TopoDS_Shape>&& theLS)
-  {
-    myArguments = std::move(theLS);
-  }
+  void SetArguments(NCollection_List<TopoDS_Shape>&& theLS) { myArguments = std::move(theLS); }
 
   //! Adds the argument for operation
   void AddArgument(const TopoDS_Shape& theShape) { myArguments.Append(theShape); }

@@ -31,14 +31,14 @@ BVH_Mat4f buildTextureTransformForTest(const occ::handle<Graphic3d_TextureParams
     return aMatrix;
   }
 
-  const float aScaleX = theParams->Scale().x();
-  const float aScaleY = theParams->Scale().y();
+  const float aScaleX       = theParams->Scale().x();
+  const float aScaleY       = theParams->Scale().y();
   aMatrix.ChangeValue(0, 0) = aScaleX;
   aMatrix.ChangeValue(1, 1) = aScaleY;
 
   const NCollection_Vec2<float> aTrans = -theParams->Translation();
-  aMatrix.ChangeValue(0, 3) = aScaleX * aTrans.x();
-  aMatrix.ChangeValue(1, 3) = aScaleY * aTrans.y();
+  aMatrix.ChangeValue(0, 3)            = aScaleX * aTrans.x();
+  aMatrix.ChangeValue(1, 3)            = aScaleY * aTrans.y();
 
   const float aAngle = -theParams->Rotation() * static_cast<float>(M_PI / 180.0);
   const float aSin   = std::sin(aAngle);
@@ -52,7 +52,7 @@ BVH_Mat4f buildTextureTransformForTest(const occ::handle<Graphic3d_TextureParams
 
   return aMatrix * aRotationMat;
 }
-}
+} // namespace
 
 TEST(OpenGl_View_Raytrace_TextureTransformTest, IdentityParams)
 {

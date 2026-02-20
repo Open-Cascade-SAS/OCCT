@@ -33,14 +33,13 @@ bool acceptSegmentIntersection(const gp_Pnt2d&                     theRefPnt1,
                                const bool                          theUseSelfLoopCheck)
 {
   gp_Pnt2d                         anIntPnt;
-  const BRepMesh_GeomTool::IntFlag anIntStatus =
-    BRepMesh_GeomTool::IntSegSeg(theRefPnt1.XY(),
-                                 theRefPnt2.XY(),
-                                 theCandidatePnt1.XY(),
-                                 theCandidatePnt2.XY(),
-                                 false,
-                                 false,
-                                 anIntPnt);
+  const BRepMesh_GeomTool::IntFlag anIntStatus = BRepMesh_GeomTool::IntSegSeg(theRefPnt1.XY(),
+                                                                              theRefPnt2.XY(),
+                                                                              theCandidatePnt1.XY(),
+                                                                              theCandidatePnt2.XY(),
+                                                                              false,
+                                                                              false,
+                                                                              anIntPnt);
   if (anIntStatus != BRepMesh_GeomTool::Cross)
   {
     return false;
