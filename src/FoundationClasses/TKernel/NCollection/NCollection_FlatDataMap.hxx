@@ -48,7 +48,7 @@
  * - Keys and values must be movable
  * - Higher memory usage at low load factors
  * - Iteration order is not insertion order
- * - Maximum probe distance is 250 (sufficient for normal hash distributions)
+ * - Probe distance grows with collisions (bounded by table capacity)
  *
  * @note This class is NOT thread-safe. External synchronization is required
  *       for concurrent access from multiple threads.
@@ -71,10 +71,6 @@ private:
   //! Default initial capacity (must be power of 2)
   static constexpr size_t THE_DEFAULT_CAPACITY = 8;
 
-  //! Maximum allowed probe distance before throwing an exception.
-  //! This limit is sufficient for normal hash distributions with proper load factors.
-  static constexpr uint8_t THE_MAX_PROBE_DISTANCE = 250;
-
   //! Slot state enumeration for hash table entries.
   //! Uses Robin Hood hashing with backward shift deletion.
   enum class SlotState : uint8_t
@@ -95,7 +91,7 @@ private:
     alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)];
     alignas(TheItemType) char myItemStorage[sizeof(TheItemType)];
     size_t    myHash;          //!< Cached hash code
-    uint8_t   myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
+    size_t    myProbeDistance; //!< Distance from ideal bucket (for Robin Hood)
     SlotState myState;         //!< Current state of this slot
 
     Slot() noexcept
@@ -831,7 +827,7 @@ private:
     const size_t aHash     = myHasher(theKey);
     const size_t aMask     = myCapacity - 1;
     size_t       aIndex    = aHash & aMask;
-    uint8_t      aProbe    = 0;
+    size_t       aProbe    = 0;
     const size_t aMaxProbe = myCapacity;
 
     while (aProbe < aMaxProbe)
@@ -866,7 +862,7 @@ private:
     const size_t aHash  = myHasher(theKey);
     const size_t aMask  = myCapacity - 1;
     size_t       aIndex = aHash & aMask;
-    uint8_t      aProbe = 0;
+    size_t       aProbe = 0;
 
     TheKeyType  aKeyToInsert  = std::forward<K>(theKey);
     TheItemType aItemToInsert = std::forward<V>(theItem);
@@ -899,18 +895,13 @@ private:
         std::swap(aKeyToInsert, aSlot.Key());
         std::swap(aItemToInsert, aSlot.Item());
         std::swap(aHashToInsert, aSlot.myHash);
-        uint8_t aTmp          = aProbe;
+        const size_t aTmp     = aProbe;
         aProbe                = aSlot.myProbeDistance;
         aSlot.myProbeDistance = aTmp;
       }
 
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
-
-      if (aProbe > THE_MAX_PROBE_DISTANCE)
-      {
-        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-      }
     }
   }
 
@@ -920,7 +911,7 @@ private:
     const size_t aHash  = myHasher(theKey);
     const size_t aMask  = myCapacity - 1;
     size_t       aIndex = aHash & aMask;
-    uint8_t      aProbe = 0;
+    size_t       aProbe = 0;
 
     TheKeyType  aKeyToInsert  = std::forward<K>(theKey);
     TheItemType aItemToInsert = std::forward<V>(theItem);
@@ -952,18 +943,13 @@ private:
         std::swap(aKeyToInsert, aSlot.Key());
         std::swap(aItemToInsert, aSlot.Item());
         std::swap(aHashToInsert, aSlot.myHash);
-        uint8_t aTmp          = aProbe;
+        const size_t aTmp     = aProbe;
         aProbe                = aSlot.myProbeDistance;
         aSlot.myProbeDistance = aTmp;
       }
 
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
-
-      if (aProbe > THE_MAX_PROBE_DISTANCE)
-      {
-        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-      }
     }
   }
 
@@ -973,7 +959,7 @@ private:
     const size_t aHash  = myHasher(theKey);
     const size_t aMask  = myCapacity - 1;
     size_t       aIndex = aHash & aMask;
-    uint8_t      aProbe = 0;
+    size_t       aProbe = 0;
 
     TheKeyType  aKeyToInsert  = std::forward<K>(theKey);
     TheItemType aItemToInsert = std::forward<V>(theItem);
@@ -1007,18 +993,13 @@ private:
         std::swap(aKeyToInsert, aSlot.Key());
         std::swap(aItemToInsert, aSlot.Item());
         std::swap(aHashToInsert, aSlot.myHash);
-        uint8_t aTmp          = aProbe;
+        const size_t aTmp     = aProbe;
         aProbe                = aSlot.myProbeDistance;
         aSlot.myProbeDistance = aTmp;
       }
 
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
-
-      if (aProbe > THE_MAX_PROBE_DISTANCE)
-      {
-        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-      }
     }
   }
 
@@ -1028,7 +1009,7 @@ private:
     const size_t aHash  = myHasher(theKey);
     const size_t aMask  = myCapacity - 1;
     size_t       aIndex = aHash & aMask;
-    uint8_t      aProbe = 0;
+    size_t       aProbe = 0;
 
     TheKeyType aKeyToInsert  = std::forward<K>(theKey);
     size_t     aHashToInsert = aHash;
@@ -1063,7 +1044,7 @@ private:
         std::swap(aKeyToInsert, aSlot.Key());
         std::swap(aItemToInsert, aSlot.Item());
         std::swap(aHashToInsert, aSlot.myHash);
-        uint8_t aTmp          = aProbe;
+        const size_t aTmp     = aProbe;
         aProbe                = aSlot.myProbeDistance;
         aSlot.myProbeDistance = aTmp;
 
@@ -1090,28 +1071,18 @@ private:
             std::swap(aKeyToInsert, aSlot2.Key());
             std::swap(aItemToInsert, aSlot2.Item());
             std::swap(aHashToInsert, aSlot2.myHash);
-            uint8_t aTmp2          = aProbe;
+            const size_t aTmp2     = aProbe;
             aProbe                 = aSlot2.myProbeDistance;
             aSlot2.myProbeDistance = aTmp2;
           }
 
           ++aProbe;
           aIndex = (aIndex + 1) & aMask;
-
-          if (aProbe > THE_MAX_PROBE_DISTANCE)
-          {
-            throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-          }
         }
       }
 
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
-
-      if (aProbe > THE_MAX_PROBE_DISTANCE)
-      {
-        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-      }
     }
   }
 
@@ -1121,7 +1092,7 @@ private:
     const size_t aHash  = myHasher(theKey);
     const size_t aMask  = myCapacity - 1;
     size_t       aIndex = aHash & aMask;
-    uint8_t      aProbe = 0;
+    size_t       aProbe = 0;
 
     TheKeyType aKeyToInsert  = std::forward<K>(theKey);
     size_t     aHashToInsert = aHash;
@@ -1156,7 +1127,7 @@ private:
         std::swap(aKeyToInsert, aSlot.Key());
         std::swap(aItemToInsert, aSlot.Item());
         std::swap(aHashToInsert, aSlot.myHash);
-        uint8_t aTmp          = aProbe;
+        const size_t aTmp     = aProbe;
         aProbe                = aSlot.myProbeDistance;
         aSlot.myProbeDistance = aTmp;
 
@@ -1185,28 +1156,18 @@ private:
             std::swap(aKeyToInsert, aSlot2.Key());
             std::swap(aItemToInsert, aSlot2.Item());
             std::swap(aHashToInsert, aSlot2.myHash);
-            uint8_t aTmp2          = aProbe;
+            const size_t aTmp2     = aProbe;
             aProbe                 = aSlot2.myProbeDistance;
             aSlot2.myProbeDistance = aTmp2;
           }
 
           ++aProbe;
           aIndex = (aIndex + 1) & aMask;
-
-          if (aProbe > THE_MAX_PROBE_DISTANCE)
-          {
-            throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-          }
         }
       }
 
       ++aProbe;
       aIndex = (aIndex + 1) & aMask;
-
-      if (aProbe > THE_MAX_PROBE_DISTANCE)
-      {
-        throw Standard_OutOfRange("NCollection_FlatDataMap: excessive probe length");
-      }
     }
   }
 
