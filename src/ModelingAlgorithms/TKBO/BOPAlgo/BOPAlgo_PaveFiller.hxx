@@ -46,6 +46,9 @@
 #include <Standard_Real.hxx>
 #include <TopAbs_ShapeEnum.hxx>
 #include <TopoDS_Shape.hxx>
+
+#include <utility>
+
 class IntTools_Context;
 class BOPDS_PaveBlock;
 class gp_Pnt;
@@ -119,6 +122,9 @@ public:
 
   //! Sets the arguments for operation
   void SetArguments(const NCollection_List<TopoDS_Shape>& theLS) { myArguments = theLS; }
+
+  //! Sets the arguments for operation (move semantics)
+  void SetArguments(NCollection_List<TopoDS_Shape>&& theLS) { myArguments = std::move(theLS); }
 
   //! Adds the argument for operation
   void AddArgument(const TopoDS_Shape& theShape) { myArguments.Append(theShape); }

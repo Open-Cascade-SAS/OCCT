@@ -66,8 +66,7 @@ protected:
   IMeshData_Face(const TopoDS_Face& theFace)
       : IMeshData_TessellatedShape(theFace)
   {
-    BRepAdaptor_Surface aSurfAdaptor(GetFace(), false);
-    mySurface = new BRepAdaptor_Surface(aSurfAdaptor);
+    mySurface = new BRepAdaptor_Surface(GetFace(), false);
   }
 
 private:
