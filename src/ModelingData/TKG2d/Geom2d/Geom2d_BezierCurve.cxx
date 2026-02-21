@@ -24,8 +24,8 @@
 // Suppressed Swaps, added Init, removed typedefs
 
 #include <Geom2d_BezierCurve.hxx>
-#include "Geom2d_EvalRepCurveDesc.hxx"
-#include "Geom2d_EvalRepUtils.pxx"
+#include <Geom2dEval_RepCurveDesc.hxx>
+#include <Geom2dEval_RepUtils.pxx>
 #include <Geom2d_Geometry.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
@@ -47,9 +47,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom2d_BezierCurve, Geom2d_BoundedCurve)
 //=================================================================================================
 
 void Geom2d_BezierCurve::SetEvalRepresentation(
-  const occ::handle<Geom2d_EvalRepCurveDesc::Base>& theDesc)
+  const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc)
 {
-  Geom2d_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  Geom2dEval_RepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -117,7 +117,7 @@ Geom2d_BezierCurve::Geom2d_BezierCurve(const Geom2d_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
       myWeights(theOther.myRational ? NCollection_Array1<double>(theOther.myWeights)
                                     : BSplCLib::UnitWeights(theOther.myPoles.Length())),
-      myEvalRep(Geom2d_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
+      myEvalRep(Geom2dEval_RepUtils::CloneCurveDesc(theOther.myEvalRep)),
       myRational(theOther.myRational),
       myClosed(theOther.myClosed),
       myMaxDerivInvOk(false)
@@ -460,7 +460,7 @@ int Geom2d_BezierCurve::Degree() const
 gp_Pnt2d Geom2d_BezierCurve::EvalD0(const double U) const
 {
   gp_Pnt2d aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -475,7 +475,7 @@ gp_Pnt2d Geom2d_BezierCurve::EvalD0(const double U) const
 Geom2d_Curve::ResD1 Geom2d_BezierCurve::EvalD1(const double U) const
 {
   Geom2d_Curve::ResD1 aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -490,7 +490,7 @@ Geom2d_Curve::ResD1 Geom2d_BezierCurve::EvalD1(const double U) const
 Geom2d_Curve::ResD2 Geom2d_BezierCurve::EvalD2(const double U) const
 {
   Geom2d_Curve::ResD2 aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -505,7 +505,7 @@ Geom2d_Curve::ResD2 Geom2d_BezierCurve::EvalD2(const double U) const
 Geom2d_Curve::ResD3 Geom2d_BezierCurve::EvalD3(const double U) const
 {
   Geom2d_Curve::ResD3 aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -523,7 +523,7 @@ gp_Vec2d Geom2d_BezierCurve::EvalDN(const double U, const int N) const
     throw Geom2d_UndefinedDerivative();
 
   gp_Vec2d aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }

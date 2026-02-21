@@ -16,8 +16,8 @@
 
 #include <BSplCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>
-#include "Geom2d_EvalRepCurveDesc.hxx"
-#include "Geom2d_EvalRepUtils.pxx"
+#include <Geom2dEval_RepCurveDesc.hxx>
+#include <Geom2dEval_RepUtils.pxx>
 #include <Geom2d_UndefinedDerivative.hxx>
 #include <gp.hxx>
 #include <gp_Pnt2d.hxx>
@@ -163,7 +163,7 @@ int Geom2d_BSplineCurve::Degree() const
 gp_Pnt2d Geom2d_BSplineCurve::EvalD0(const double U) const
 {
   gp_Pnt2d aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -185,7 +185,7 @@ gp_Pnt2d Geom2d_BSplineCurve::EvalD0(const double U) const
 Geom2d_Curve::ResD1 Geom2d_BSplineCurve::EvalD1(const double U) const
 {
   Geom2d_Curve::ResD1 aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -216,7 +216,7 @@ Geom2d_Curve::ResD1 Geom2d_BSplineCurve::EvalD1(const double U) const
 Geom2d_Curve::ResD2 Geom2d_BSplineCurve::EvalD2(const double U) const
 {
   Geom2d_Curve::ResD2 aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -248,7 +248,7 @@ Geom2d_Curve::ResD2 Geom2d_BSplineCurve::EvalD2(const double U) const
 Geom2d_Curve::ResD3 Geom2d_BSplineCurve::EvalD3(const double U) const
 {
   Geom2d_Curve::ResD3 aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -284,7 +284,7 @@ gp_Vec2d Geom2d_BSplineCurve::EvalDN(const double U, const int N) const
     throw Geom2d_UndefinedDerivative();
 
   gp_Vec2d aEvalRepResult;
-  if (Geom2d_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
+  if (Geom2dEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }

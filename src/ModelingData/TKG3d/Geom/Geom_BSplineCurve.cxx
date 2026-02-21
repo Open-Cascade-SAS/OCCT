@@ -30,8 +30,8 @@
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include "Geom_EvalRepCurveDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepCurveDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -52,9 +52,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineCurve, Geom_BoundedCurve)
 //=================================================================================================
 
 void Geom_BSplineCurve::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -117,7 +117,7 @@ Geom_BSplineCurve::Geom_BSplineCurve(const Geom_BSplineCurve& theOther)
       myKnots(theOther.myKnots),
       myFlatKnots(theOther.myFlatKnots),
       myMults(theOther.myMults),
-      myEvalRep(Geom_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
+      myEvalRep(GeomEval_RepUtils::CloneCurveDesc(theOther.myEvalRep)),
       myDeg(theOther.myDeg),
       myPeriodic(theOther.myPeriodic),
       myRational(theOther.myRational),
