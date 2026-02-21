@@ -72,14 +72,20 @@ public:
   //! @throw Standard_ConstructionError if theB <= 0
   Standard_EXPORT void SetSemiAxisB(double theB);
 
-  //! Computes the u parameter on the modified surface,
-  //! when reversing its u parametric direction.
-  //! @return -U
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
+  Standard_EXPORT void UReverse() final;
+
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
+  Standard_EXPORT void VReverse() final;
+
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double UReversedParameter(const double U) const final;
 
-  //! Computes the v parameter on the modified surface,
-  //! when reversing its v parametric direction.
-  //! @return -V
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this surface.
@@ -103,12 +109,12 @@ public:
 
   //! Computes the U isoparametric curve.
   //! For a hyperbolic paraboloid, no standard Geom_Curve representation is available.
-  //! @return nullptr
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
   //! Computes the V isoparametric curve.
   //! For a hyperbolic paraboloid, no standard Geom_Curve representation is available.
-  //! @return nullptr
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Computes the point P(U, V) on the surface.

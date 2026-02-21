@@ -108,18 +108,20 @@ public:
 
   // Surface interface
 
-  //! Reverses the U direction of parametrization.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void UReverse() final;
 
-  //! Reverses the V direction of parametrization.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void VReverse() final;
 
-  //! Returns the parameter on the U-reversed surface.
-  //! @return 1.0 - U
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double UReversedParameter(const double U) const final;
 
-  //! Returns the parameter on the V-reversed surface.
-  //! @return 1.0 - V
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns the parametric bounds.
@@ -141,10 +143,12 @@ public:
   //! Returns false. The AHT-Bezier surface is not periodic in V.
   Standard_EXPORT bool IsVPeriodic() const final;
 
-  //! Returns nullptr. The U isoparametric curve is not a standard Geom_Curve type.
+  //! Isoparametric curve extraction is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
-  //! Returns nullptr. The V isoparametric curve is not a standard Geom_Curve type.
+  //! Isoparametric curve extraction is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Returns GeomAbs_CN.

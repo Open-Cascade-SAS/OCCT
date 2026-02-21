@@ -135,6 +135,16 @@ TEST(GeomEval_EllipsoidSurfaceTest, Iso_NotImplemented)
   EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
+TEST(GeomEval_EllipsoidSurfaceTest, Reverse_NotImplemented)
+{
+  gp_Ax3 anAx3;
+  GeomEval_EllipsoidSurface aSurf(anAx3, 3.0, 2.0, 1.0);
+  EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.UReversedParameter(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReversedParameter(0.5), Standard_NotImplemented);
+}
+
 // Test implicit equation at evaluated points
 TEST(GeomEval_EllipsoidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
 {

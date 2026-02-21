@@ -89,16 +89,30 @@ void GeomEval_HypParaboloidSurface::SetSemiAxisB(double theB)
 
 //==================================================================================================
 
-double GeomEval_HypParaboloidSurface::UReversedParameter(const double U) const
+void GeomEval_HypParaboloidSurface::UReverse()
 {
-  return -U;
+  throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::UReverse");
 }
 
 //==================================================================================================
 
-double GeomEval_HypParaboloidSurface::VReversedParameter(const double V) const
+void GeomEval_HypParaboloidSurface::VReverse()
 {
-  return -V;
+  throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::VReverse");
+}
+
+//==================================================================================================
+
+double GeomEval_HypParaboloidSurface::UReversedParameter(const double /*U*/) const
+{
+  throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::UReversedParameter");
+}
+
+//==================================================================================================
+
+double GeomEval_HypParaboloidSurface::VReversedParameter(const double /*V*/) const
+{
+  throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::VReversedParameter");
 }
 
 //==================================================================================================

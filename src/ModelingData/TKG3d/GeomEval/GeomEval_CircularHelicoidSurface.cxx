@@ -59,16 +59,30 @@ void GeomEval_CircularHelicoidSurface::SetPitch(double thePitch)
 
 //==================================================================================================
 
-double GeomEval_CircularHelicoidSurface::UReversedParameter(const double U) const
+void GeomEval_CircularHelicoidSurface::UReverse()
 {
-  return 2.0 * M_PI - U;
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::UReverse");
 }
 
 //==================================================================================================
 
-double GeomEval_CircularHelicoidSurface::VReversedParameter(const double V) const
+void GeomEval_CircularHelicoidSurface::VReverse()
 {
-  return -V;
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::VReverse");
+}
+
+//==================================================================================================
+
+double GeomEval_CircularHelicoidSurface::UReversedParameter(const double /*U*/) const
+{
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::UReversedParameter");
+}
+
+//==================================================================================================
+
+double GeomEval_CircularHelicoidSurface::VReversedParameter(const double /*V*/) const
+{
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::VReversedParameter");
 }
 
 //==================================================================================================

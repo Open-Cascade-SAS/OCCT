@@ -78,12 +78,12 @@ public:
   //! Returns the end point of the curve (at parameter 1).
   Standard_EXPORT gp_Pnt EndPoint() const final;
 
-  //! Reverses the direction of parametrization.
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Reverse() final;
 
-  //! Returns the parameter on the reversed curve for
-  //! the point of parameter U on this curve.
-  //! @return 1.0 - U
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Returns the value of the first parameter: 0.0.

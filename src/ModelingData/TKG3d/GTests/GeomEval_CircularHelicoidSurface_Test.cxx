@@ -168,6 +168,16 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Properties)
   EXPECT_THROW(aSurf.VIso(0.0), Standard_NotImplemented);
 }
 
+TEST(GeomEval_CircularHelicoidSurfaceTest, Reverse_NotImplemented)
+{
+  gp_Ax3 anAx3;
+  GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
+  EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.UReversedParameter(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReversedParameter(0.5), Standard_NotImplemented);
+}
+
 TEST(GeomEval_CircularHelicoidSurfaceTest, Transform_PreservesEvaluation)
 {
   gp_Ax3 anAx3;

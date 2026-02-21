@@ -34,7 +34,7 @@ class Geom_Geometry;
 //! - omega is the angular frequency (> 0),
 //! - phi is the phase shift.
 //!
-//! The parameter range is (-inf, +inf). The curve is periodic with period 2*Pi/omega.
+//! The parameter range is (-inf, +inf). The curve is not periodic.
 class GeomEval_SineWaveCurve : public Geom_Curve
 {
 public:
@@ -62,10 +62,12 @@ public:
   //! Returns the phase shift.
   Standard_EXPORT double Phase() const;
 
-  //! Reverses the direction of parametrization.
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Reverse() final;
 
-  //! @return -U
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Returns -Precision::Infinite().
@@ -77,10 +79,11 @@ public:
   //! Returns false.
   Standard_EXPORT bool IsClosed() const final;
 
-  //! Returns true. Period = 2*Pi/omega.
+  //! Returns false.
   Standard_EXPORT bool IsPeriodic() const final;
 
-  //! Returns the period: 2*Pi/omega.
+  //! Not available for non-periodic curve.
+  //! @throw Standard_NoSuchObject
   Standard_EXPORT double Period() const final;
 
   //! Returns GeomAbs_CN.

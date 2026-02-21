@@ -95,16 +95,30 @@ void GeomEval_EllipsoidSurface::SetSemiAxisC(double theC)
 
 //==================================================================================================
 
-double GeomEval_EllipsoidSurface::UReversedParameter(const double U) const
+void GeomEval_EllipsoidSurface::UReverse()
 {
-  return 2.0 * M_PI - U;
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::UReverse");
 }
 
 //==================================================================================================
 
-double GeomEval_EllipsoidSurface::VReversedParameter(const double V) const
+void GeomEval_EllipsoidSurface::VReverse()
 {
-  return -V;
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::VReverse");
+}
+
+//==================================================================================================
+
+double GeomEval_EllipsoidSurface::UReversedParameter(const double /*U*/) const
+{
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::UReversedParameter");
+}
+
+//==================================================================================================
+
+double GeomEval_EllipsoidSurface::VReversedParameter(const double /*V*/) const
+{
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::VReversedParameter");
 }
 
 //==================================================================================================

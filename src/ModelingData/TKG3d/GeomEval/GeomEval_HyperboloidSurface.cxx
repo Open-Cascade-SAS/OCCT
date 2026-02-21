@@ -95,16 +95,30 @@ void GeomEval_HyperboloidSurface::SetMode(SheetMode theMode)
 
 //==================================================================================================
 
-double GeomEval_HyperboloidSurface::UReversedParameter(const double U) const
+void GeomEval_HyperboloidSurface::UReverse()
 {
-  return (2.0 * M_PI - U);
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::UReverse");
 }
 
 //==================================================================================================
 
-double GeomEval_HyperboloidSurface::VReversedParameter(const double V) const
+void GeomEval_HyperboloidSurface::VReverse()
 {
-  return (-V);
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::VReverse");
+}
+
+//==================================================================================================
+
+double GeomEval_HyperboloidSurface::UReversedParameter(const double /*U*/) const
+{
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::UReversedParameter");
+}
+
+//==================================================================================================
+
+double GeomEval_HyperboloidSurface::VReversedParameter(const double /*V*/) const
+{
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::VReversedParameter");
 }
 
 //==================================================================================================

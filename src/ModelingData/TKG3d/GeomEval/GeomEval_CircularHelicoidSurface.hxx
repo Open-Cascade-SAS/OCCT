@@ -50,10 +50,20 @@ public:
   //! @throw Standard_ConstructionError if thePitch == 0
   Standard_EXPORT void SetPitch(double thePitch);
 
-  //! Returns 2*Pi - U.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
+  Standard_EXPORT void UReverse() final;
+
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
+  Standard_EXPORT void VReverse() final;
+
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double UReversedParameter(const double U) const final;
 
-  //! Returns -V.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns infinite bounds for both parameters.
@@ -71,10 +81,12 @@ public:
   //! Returns false.
   Standard_EXPORT bool IsVPeriodic() const final;
 
-  //! Returns nullptr (no standard isoparametric curve type).
+  //! Isoparametric curve extraction is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
-  //! Returns nullptr (no standard isoparametric curve type).
+  //! Isoparametric curve extraction is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Computes the point S(U, V) on the surface.

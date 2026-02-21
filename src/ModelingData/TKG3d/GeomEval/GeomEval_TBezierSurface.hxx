@@ -94,16 +94,20 @@ public:
 
   // -- Geom_Surface interface --
 
-  //! Reverses the U direction by reversing the pole rows.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void UReverse() final;
 
-  //! Returns the parameter on the reversed U surface: Pi/alphaU - U.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double UReversedParameter(const double U) const final;
 
-  //! Reverses the V direction by reversing the pole columns.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void VReverse() final;
 
-  //! Returns the parameter on the reversed V surface: Pi/alphaV - V.
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns the parametric bounds.
@@ -134,12 +138,12 @@ public:
   //! Returns true for all N. T-Bezier surfaces are infinitely differentiable in V.
   Standard_EXPORT bool IsCNv(int N) const final;
 
-  //! Returns the U isoparametric curve.
-  //! @return nullptr (not implemented for T-Bezier surfaces)
+  //! Isoparametric curve extraction is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
-  //! Returns the V isoparametric curve.
-  //! @return nullptr (not implemented for T-Bezier surfaces)
+  //! Isoparametric curve extraction is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Computes the point S(U, V).

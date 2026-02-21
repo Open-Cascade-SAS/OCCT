@@ -61,16 +61,30 @@ void GeomEval_ParaboloidSurface::SetFocal(double theFocal)
 
 //==================================================================================================
 
-double GeomEval_ParaboloidSurface::UReversedParameter(const double U) const
+void GeomEval_ParaboloidSurface::UReverse()
 {
-  return (2.0 * M_PI - U);
+  throw Standard_NotImplemented("GeomEval_ParaboloidSurface::UReverse");
 }
 
 //==================================================================================================
 
-double GeomEval_ParaboloidSurface::VReversedParameter(const double V) const
+void GeomEval_ParaboloidSurface::VReverse()
 {
-  return -V;
+  throw Standard_NotImplemented("GeomEval_ParaboloidSurface::VReverse");
+}
+
+//==================================================================================================
+
+double GeomEval_ParaboloidSurface::UReversedParameter(const double /*U*/) const
+{
+  throw Standard_NotImplemented("GeomEval_ParaboloidSurface::UReversedParameter");
+}
+
+//==================================================================================================
+
+double GeomEval_ParaboloidSurface::VReversedParameter(const double /*V*/) const
+{
+  throw Standard_NotImplemented("GeomEval_ParaboloidSurface::VReversedParameter");
 }
 
 //==================================================================================================

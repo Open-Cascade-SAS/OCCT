@@ -155,6 +155,16 @@ TEST(GeomEval_HyperboloidSurfaceTest, Iso_NotImplemented)
   EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
+TEST(GeomEval_HyperboloidSurfaceTest, Reverse_NotImplemented)
+{
+  gp_Ax3 anAx3;
+  GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
+  EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.UReversedParameter(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReversedParameter(0.5), Standard_NotImplemented);
+}
+
 // Test implicit equation at evaluated points for one-sheet
 TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_OneSheet_SatisfiedAtEvalPoints)
 {

@@ -58,14 +58,20 @@ public:
   //! @throw Standard_ConstructionError if theFocal <= 0
   Standard_EXPORT void SetFocal(double theFocal);
 
-  //! Computes the u parameter on the modified surface,
-  //! when reversing its u parametric direction.
-  //! @return 2*Pi - U
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
+  Standard_EXPORT void UReverse() final;
+
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
+  Standard_EXPORT void VReverse() final;
+
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double UReversedParameter(const double U) const final;
 
-  //! Computes the v parameter on the modified surface,
-  //! when reversing its v parametric direction.
-  //! @return -V
+  //! Reversal is not supported for this eval surface.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double VReversedParameter(const double V) const final;
 
   //! Returns the parametric bounds U1, U2, V1 and V2 of this paraboloid.
@@ -90,13 +96,13 @@ public:
   //! Computes the U isoparametric curve.
   //! For a paraboloid, the U isoparametric curve is a parabola,
   //! which is not a standard Geom_Curve type.
-  //! @return nullptr
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> UIso(const double U) const final;
 
   //! Computes the V isoparametric curve.
   //! For a paraboloid, the V isoparametric curve is a circle of radius |v|,
   //! which degenerates to a point at v=0.
-  //! @return nullptr
+  //! @throw Standard_NotImplemented
   Standard_EXPORT occ::handle<Geom_Curve> VIso(const double V) const final;
 
   //! Computes the point P(U, V) on the surface.
