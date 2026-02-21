@@ -28,6 +28,11 @@ namespace
 constexpr double THE_FD_TOL_D1 = 1e-5;
 constexpr double THE_FD_TOL_D2 = 1e-4;
 
+double vecDiff(const gp_Vec& theV1, const gp_Vec& theV2)
+{
+  return (theV1 - theV2).Magnitude();
+}
+
 // Helper to create a pure polynomial AHT-Bezier surface.
 // Basis: {1, t, t^2} in each direction => 3x3 poles, algDegree=2, alpha=0, beta=0
 GeomEval_AHTBezierSurface createPolynomialSurface()
@@ -42,6 +47,22 @@ GeomEval_AHTBezierSurface createPolynomialSurface()
     }
   }
   return GeomEval_AHTBezierSurface(aPoles, 2, 2, 0.0, 0.0, 0.0, 0.0);
+}
+
+GeomEval_AHTBezierSurface createPolynomialSurfaceRationalUniformWeight(const double theWeight)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles.SetValue(i, j, gp_Pnt(double(i - 1), double(j - 1),
+                                    double((i - 1) * (j - 1)) * 0.1));
+      aWeights.SetValue(i, j, theWeight);
+    }
+  }
+  return GeomEval_AHTBezierSurface(aPoles, aWeights, 2, 2, 0.0, 0.0, 0.0, 0.0);
 }
 
 } // namespace
@@ -267,4 +288,34 @@ TEST(GeomEval_AHTBezierSurfaceTest, EvalDN_ConsistentWithD1)
   EXPECT_NEAR(aD1.D1V.X(), aDN_V.X(), Precision::Confusion());
   EXPECT_NEAR(aD1.D1V.Y(), aDN_V.Y(), Precision::Confusion());
   EXPECT_NEAR(aD1.D1V.Z(), aDN_V.Z(), Precision::Confusion());
+}
+
+TEST(GeomEval_AHTBezierSurfaceTest, RationalUniformScale_Invariant)
+{
+  GeomEval_AHTBezierSurface aRatW1 = createPolynomialSurfaceRationalUniformWeight(1.0);
+  GeomEval_AHTBezierSurface aRatW5 = createPolynomialSurfaceRationalUniformWeight(5.0);
+  const double              aU     = 0.37;
+  const double              aV     = 0.62;
+
+  EXPECT_NEAR(aRatW1.EvalD0(aU, aV).Distance(aRatW5.EvalD0(aU, aV)), 0.0, 1e-12);
+
+  const Geom_Surface::ResD1 aD1W1 = aRatW1.EvalD1(aU, aV);
+  const Geom_Surface::ResD1 aD1W5 = aRatW5.EvalD1(aU, aV);
+  EXPECT_NEAR(vecDiff(aD1W1.D1U, aD1W5.D1U), 0.0, 1e-12);
+  EXPECT_NEAR(vecDiff(aD1W1.D1V, aD1W5.D1V), 0.0, 1e-12);
+
+  const Geom_Surface::ResD2 aD2W1 = aRatW1.EvalD2(aU, aV);
+  const Geom_Surface::ResD2 aD2W5 = aRatW5.EvalD2(aU, aV);
+  EXPECT_NEAR(vecDiff(aD2W1.D2U, aD2W5.D2U), 0.0, 1e-12);
+  EXPECT_NEAR(vecDiff(aD2W1.D2V, aD2W5.D2V), 0.0, 1e-12);
+  EXPECT_NEAR(vecDiff(aD2W1.D2UV, aD2W5.D2UV), 0.0, 1e-12);
+
+  const Geom_Surface::ResD3 aD3W1 = aRatW1.EvalD3(aU, aV);
+  const Geom_Surface::ResD3 aD3W5 = aRatW5.EvalD3(aU, aV);
+  EXPECT_NEAR(vecDiff(aD3W1.D3U, aD3W5.D3U), 0.0, 1e-12);
+  EXPECT_NEAR(vecDiff(aD3W1.D3V, aD3W5.D3V), 0.0, 1e-12);
+  EXPECT_NEAR(vecDiff(aD3W1.D3UUV, aD3W5.D3UUV), 0.0, 1e-12);
+  EXPECT_NEAR(vecDiff(aD3W1.D3UVV, aD3W5.D3UVV), 0.0, 1e-12);
+
+  EXPECT_NEAR(vecDiff(aRatW1.EvalDN(aU, aV, 2, 1), aRatW5.EvalDN(aU, aV, 2, 1)), 0.0, 1e-12);
 }

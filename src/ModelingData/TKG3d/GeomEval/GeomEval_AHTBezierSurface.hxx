@@ -199,21 +199,6 @@ private:
   //! Compute the number of basis functions for the given parameters.
   static int basisDimension(int theAlgDegree, double theAlpha, double theBeta);
 
-  //! Evaluate basis at t: fills theBasis with values of all basis functions.
-  static void evalBasis(double                      theT,
-                        int                         theAlgDegree,
-                        double                      theAlpha,
-                        double                      theBeta,
-                        NCollection_Array1<double>& theBasis);
-
-  //! Evaluate d-th derivative of basis at t.
-  static void evalBasisDeriv(double                      theT,
-                             int                         theDerivOrder,
-                             int                         theAlgDegree,
-                             double                      theAlpha,
-                             double                      theBeta,
-                             NCollection_Array1<double>& theBasisDeriv);
-
   NCollection_Array2<gp_Pnt>  myPoles;
   NCollection_Array2<double>  myWeights;
   int                         myAlgDegreeU;

@@ -17,6 +17,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomEval_AHTBezierCurve_Test.cxx
   GeomEval_AHTBezierCurve_Perf_Test.cxx
   GeomEval_AHTBezierSurface_Test.cxx
+  GeomEval_AHTBezierSurface_Perf_Test.cxx
   GeomEval_CircularHelicoidSurface_Test.cxx
   GeomEval_CircularHelixCurve_Test.cxx
   GeomEval_EllipsoidSurface_Test.cxx
