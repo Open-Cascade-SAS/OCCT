@@ -57,10 +57,12 @@ public:
   //! Returns the growth exponent.
   Standard_EXPORT double GrowthExponent() const;
 
-  //! Reverses the direction of parametrization.
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Reverse() final;
 
-  //! @return -U
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Returns -Precision::Infinite().

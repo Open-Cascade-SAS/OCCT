@@ -23,6 +23,34 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_SineWaveCurve, Geom2d_Curve)
 
+namespace
+{
+inline double powInt(const double theBase, const int theExp)
+{
+  double aRes = 1.0;
+  for (int i = 0; i < theExp; ++i)
+  {
+    aRes *= theBase;
+  }
+  return aRes;
+}
+
+inline double sinShiftByQuarterTurns(const double theSin, const double theCos, const int theN)
+{
+  switch (theN & 3)
+  {
+    case 0:
+      return theSin;
+    case 1:
+      return theCos;
+    case 2:
+      return -theSin;
+    default:
+      return -theCos;
+  }
+}
+} // namespace
+
 //==================================================================================================
 
 Geom2dEval_SineWaveCurve::Geom2dEval_SineWaveCurve(const gp_Ax2d& thePosition,
@@ -220,10 +248,13 @@ gp_Vec2d Geom2dEval_SineWaveCurve::EvalDN(const double U, const int N) const
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aOmN = std::pow(myOmega, N);
-  const double aPhase = myOmega * U + myPhase + N * M_PI / 2.0;
+  const double aArg  = myOmega * U + myPhase;
+  const double aSin  = std::sin(aArg);
+  const double aCos  = std::cos(aArg);
+  const double aOmN  = powInt(myOmega, N);
+  const double aSinN = sinShiftByQuarterTurns(aSin, aCos, N);
 
-  gp_XY aResult = myAmplitude * aOmN * std::sin(aPhase) * aYD;
+  gp_XY aResult = myAmplitude * aOmN * aSinN * aYD;
   if (N == 1)
   {
     aResult += aXD;

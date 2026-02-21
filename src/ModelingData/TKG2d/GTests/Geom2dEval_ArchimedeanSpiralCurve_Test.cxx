@@ -28,6 +28,7 @@
 namespace
 {
 constexpr double THE_FD_TOL = 1e-5;
+constexpr double THE_FD_TOL_DN = 1e-4;
 } // namespace
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Construction_ValidParams)
@@ -87,6 +88,52 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD1_ConsistentWithD0)
 
   EXPECT_NEAR(aD1.D1.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD1.D1.Y(), aFD.Y(), THE_FD_TOL);
+}
+
+TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD2_ConsistentWithD1)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
+  const double aT = 3.0;
+
+  Geom2d_Curve::ResD2 aD2  = aCurve.EvalD2(aT);
+  Geom2d_Curve::ResD1 aD1p = aCurve.EvalD1(aT + Precision::Confusion());
+  Geom2d_Curve::ResD1 aD1m = aCurve.EvalD1(aT - Precision::Confusion());
+  gp_Vec2d aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
+
+  EXPECT_NEAR(aD2.D2.X(), aFD.X(), THE_FD_TOL);
+  EXPECT_NEAR(aD2.D2.Y(), aFD.Y(), THE_FD_TOL);
+}
+
+TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD3_ConsistentWithD2)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
+  const double aT = 3.0;
+
+  Geom2d_Curve::ResD3 aD3  = aCurve.EvalD3(aT);
+  Geom2d_Curve::ResD2 aD2p = aCurve.EvalD2(aT + Precision::Confusion());
+  Geom2d_Curve::ResD2 aD2m = aCurve.EvalD2(aT - Precision::Confusion());
+  gp_Vec2d aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
+
+  EXPECT_NEAR(aD3.D3.X(), aFD.X(), THE_FD_TOL);
+  EXPECT_NEAR(aD3.D3.Y(), aFD.Y(), THE_FD_TOL);
+}
+
+TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalDN_HigherOrder_ConsistentWithPreviousOrder)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
+  const double aT = 2.0;
+  const int    aN = 6;
+
+  const gp_Vec2d aDN = aCurve.EvalDN(aT, aN);
+  const gp_Vec2d aDNm1P = aCurve.EvalDN(aT + Precision::Confusion(), aN - 1);
+  const gp_Vec2d aDNm1M = aCurve.EvalDN(aT - Precision::Confusion(), aN - 1);
+  const gp_Vec2d aFD((aDNm1P.XY() - aDNm1M.XY()) / (2.0 * Precision::Confusion()));
+
+  EXPECT_NEAR(aDN.X(), aFD.X(), THE_FD_TOL_DN);
+  EXPECT_NEAR(aDN.Y(), aFD.Y(), THE_FD_TOL_DN);
 }
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Properties)

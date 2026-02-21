@@ -57,10 +57,12 @@ public:
   //! Returns the growth rate per radian.
   Standard_EXPORT double GrowthRate() const;
 
-  //! Reverses the direction of parametrization.
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Reverse() final;
 
-  //! @return -U
+  //! Reversal is not supported for this eval curve.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Returns 0.

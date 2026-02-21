@@ -23,6 +23,36 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_CircleInvoluteCurve, Geom2d_Curve)
 
+namespace
+{
+inline void trigShiftByQuarterTurns(const double theSin,
+                                    const double theCos,
+                                    const int    theN,
+                                    double&      theSinShift,
+                                    double&      theCosShift)
+{
+  switch (theN & 3)
+  {
+    case 0:
+      theSinShift = theSin;
+      theCosShift = theCos;
+      break;
+    case 1:
+      theSinShift = theCos;
+      theCosShift = -theSin;
+      break;
+    case 2:
+      theSinShift = -theSin;
+      theCosShift = -theCos;
+      break;
+    default:
+      theSinShift = -theCos;
+      theCosShift = theSin;
+      break;
+  }
+}
+} // namespace
+
 //==================================================================================================
 
 Geom2dEval_CircleInvoluteCurve::Geom2dEval_CircleInvoluteCurve(const gp_Ax2d& thePosition,
@@ -232,13 +262,14 @@ gp_Vec2d Geom2dEval_CircleInvoluteCurve::EvalDN(const double U, const int N) con
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aPhaseN   = N * M_PI / 2.0;
-  const double aPhaseNm1 = (N - 1) * M_PI / 2.0;
-
-  const double aCosN   = std::cos(U + aPhaseN);
-  const double aSinN   = std::sin(U + aPhaseN);
-  const double aSinNm1 = std::sin(U + aPhaseNm1);
-  const double aCosNm1 = std::cos(U + aPhaseNm1);
+  const double aSinU = std::sin(U);
+  const double aCosU = std::cos(U);
+  double       aSinN = 0.0;
+  double       aCosN = 0.0;
+  double       aSinNm1 = 0.0;
+  double       aCosNm1 = 0.0;
+  trigShiftByQuarterTurns(aSinU, aCosU, N, aSinN, aCosN);
+  trigShiftByQuarterTurns(aSinU, aCosU, N - 1, aSinNm1, aCosNm1);
 
   const double aFN = aCosN + U * aSinN + N * aSinNm1;
   const double aGN = aSinN - U * aCosN - N * aCosNm1;

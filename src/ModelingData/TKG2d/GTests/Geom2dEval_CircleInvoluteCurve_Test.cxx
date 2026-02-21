@@ -28,6 +28,7 @@
 namespace
 {
 constexpr double THE_FD_TOL = 1e-5;
+constexpr double THE_FD_TOL_DN = 1e-4;
 } // namespace
 
 TEST(Geom2dEval_CircleInvoluteCurveTest, Construction_ValidParams)
@@ -109,6 +110,37 @@ TEST(Geom2dEval_CircleInvoluteCurveTest, EvalD2_ConsistentWithD1)
 
   EXPECT_NEAR(aD2.D2.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD2.D2.Y(), aFD.Y(), THE_FD_TOL);
+}
+
+TEST(Geom2dEval_CircleInvoluteCurveTest, EvalD3_ConsistentWithD2)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_CircleInvoluteCurve aCurve(anAx2d, 1.0);
+  const double aT = 2.0;
+
+  Geom2d_Curve::ResD3 aD3  = aCurve.EvalD3(aT);
+  Geom2d_Curve::ResD2 aD2p = aCurve.EvalD2(aT + Precision::Confusion());
+  Geom2d_Curve::ResD2 aD2m = aCurve.EvalD2(aT - Precision::Confusion());
+  gp_Vec2d aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
+
+  EXPECT_NEAR(aD3.D3.X(), aFD.X(), THE_FD_TOL);
+  EXPECT_NEAR(aD3.D3.Y(), aFD.Y(), THE_FD_TOL);
+}
+
+TEST(Geom2dEval_CircleInvoluteCurveTest, EvalDN_HigherOrder_ConsistentWithPreviousOrder)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_CircleInvoluteCurve aCurve(anAx2d, 1.0);
+  const double aT = 2.0;
+  const int    aN = 6;
+
+  const gp_Vec2d aDN = aCurve.EvalDN(aT, aN);
+  const gp_Vec2d aDNm1P = aCurve.EvalDN(aT + Precision::Confusion(), aN - 1);
+  const gp_Vec2d aDNm1M = aCurve.EvalDN(aT - Precision::Confusion(), aN - 1);
+  const gp_Vec2d aFD((aDNm1P.XY() - aDNm1M.XY()) / (2.0 * Precision::Confusion()));
+
+  EXPECT_NEAR(aDN.X(), aFD.X(), THE_FD_TOL_DN);
+  EXPECT_NEAR(aDN.Y(), aFD.Y(), THE_FD_TOL_DN);
 }
 
 TEST(Geom2dEval_CircleInvoluteCurveTest, Properties)

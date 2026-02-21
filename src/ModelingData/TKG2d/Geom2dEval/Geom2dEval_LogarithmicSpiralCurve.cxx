@@ -23,6 +23,40 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_LogarithmicSpiralCurve, Geom2d_Curve)
 
+namespace
+{
+inline void powComplexInt(const double theBaseRe,
+                          const double theBaseIm,
+                          const int    theExp,
+                          double&      theResRe,
+                          double&      theResIm)
+{
+  double aResRe = 1.0;
+  double aResIm = 0.0;
+  double aPowRe = theBaseRe;
+  double aPowIm = theBaseIm;
+  int    aExp   = theExp;
+  while (aExp > 0)
+  {
+    if ((aExp & 1) != 0)
+    {
+      const double aTmpRe = aResRe * aPowRe - aResIm * aPowIm;
+      const double aTmpIm = aResRe * aPowIm + aResIm * aPowRe;
+      aResRe              = aTmpRe;
+      aResIm              = aTmpIm;
+    }
+
+    const double aNextPowRe = aPowRe * aPowRe - aPowIm * aPowIm;
+    const double aNextPowIm = 2.0 * aPowRe * aPowIm;
+    aPowRe                  = aNextPowRe;
+    aPowIm                  = aNextPowIm;
+    aExp >>= 1;
+  }
+  theResRe = aResRe;
+  theResIm = aResIm;
+}
+} // namespace
+
 //==================================================================================================
 
 Geom2dEval_LogarithmicSpiralCurve::Geom2dEval_LogarithmicSpiralCurve(const gp_Ax2d& thePosition,
@@ -241,26 +275,23 @@ gp_Vec2d Geom2dEval_LogarithmicSpiralCurve::EvalDN(const double U, const int N) 
     return EvalD3(U).D3;
   }
 
-  // General case using the fact that C(t) = a*e^(b*t)*e^(i*t)
-  // in complex representation. The N-th derivative is:
-  // a*(b+i)^N*e^((b+i)*t)
-  // where (b+i)^N = |b+i|^N * e^(i*N*atan2(1,b))
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
   const double aB = myGrowthExponent;
-  const double aExp = myScale * std::exp(aB * U);
+  const double aScale = myScale * std::exp(aB * U);
+  const double aCosU  = std::cos(U);
+  const double aSinU  = std::sin(U);
 
-  // (b+i)^N in polar form: magnitude = (b^2+1)^(N/2), angle = N*atan2(1,b)
-  const double aMag = std::pow(aB * aB + 1.0, N / 2.0);
-  const double aAngle = N * std::atan2(1.0, aB);
+  // d^N/dt^N [a*e^(b*t)*(cos(t) + i*sin(t))]
+  // = a*e^(b*t) * (b+i)^N * (cos(t) + i*sin(t))
+  double aPowRe = 0.0;
+  double aPowIm = 0.0;
+  powComplexInt(aB, 1.0, N, aPowRe, aPowIm);
 
-  // Result = a*e^(b*t) * magnitude * [cos(t + angle)*XDir + sin(t + angle)*YDir]
-  const double aCoeff = aExp * aMag;
-  const double aCos = std::cos(U + aAngle);
-  const double aSin = std::sin(U + aAngle);
-
-  return gp_Vec2d(aCoeff * aCos * aXD + aCoeff * aSin * aYD);
+  const double aCoeffX = aPowRe * aCosU - aPowIm * aSinU;
+  const double aCoeffY = aPowRe * aSinU + aPowIm * aCosU;
+  return gp_Vec2d(aScale * aCoeffX * aXD + aScale * aCoeffY * aYD);
 }
 
 //==================================================================================================

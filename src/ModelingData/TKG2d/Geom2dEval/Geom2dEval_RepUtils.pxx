@@ -421,7 +421,11 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveDNMapped(
   }
 
   const gp_Vec2d aRepVec = theDesc.Representation->EvalDN(aURep, theN);
-  const double   aScaleN = std::pow(theDesc.ParamMap.Scale, theN);
+  double         aScaleN = 1.0;
+  for (int i = 0; i < theN; ++i)
+  {
+    aScaleN *= theDesc.ParamMap.Scale;
+  }
   theResult              = aRepVec * aScaleN;
   return true;
 }

@@ -23,6 +23,36 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_ArchimedeanSpiralCurve, Geom2d_Curve)
 
+namespace
+{
+inline void trigShiftByQuarterTurns(const double theSin,
+                                    const double theCos,
+                                    const int    theN,
+                                    double&      theSinShift,
+                                    double&      theCosShift)
+{
+  switch (theN & 3)
+  {
+    case 0:
+      theSinShift = theSin;
+      theCosShift = theCos;
+      break;
+    case 1:
+      theSinShift = theCos;
+      theCosShift = -theSin;
+      break;
+    case 2:
+      theSinShift = -theSin;
+      theCosShift = -theCos;
+      break;
+    default:
+      theSinShift = -theCos;
+      theCosShift = theSin;
+      break;
+  }
+}
+} // namespace
+
 //==================================================================================================
 
 Geom2dEval_ArchimedeanSpiralCurve::Geom2dEval_ArchimedeanSpiralCurve(const gp_Ax2d& thePosition,
@@ -233,15 +263,14 @@ gp_Vec2d Geom2dEval_ArchimedeanSpiralCurve::EvalDN(const double U, const int N) 
   const double aR = myInitialRadius + myGrowthRate * U;
   const double aB = myGrowthRate;
 
-  // d^N/dt^N[cos(t)] = cos(t + N*Pi/2)
-  // d^N/dt^N[sin(t)] = sin(t + N*Pi/2)
-  const double aPhaseN   = N * M_PI / 2.0;
-  const double aPhaseNm1 = (N - 1) * M_PI / 2.0;
-
-  const double aCosN   = std::cos(U + aPhaseN);
-  const double aSinN   = std::sin(U + aPhaseN);
-  const double aCosNm1 = std::cos(U + aPhaseNm1);
-  const double aSinNm1 = std::sin(U + aPhaseNm1);
+  const double aSinU = std::sin(U);
+  const double aCosU = std::cos(U);
+  double       aSinN = 0.0;
+  double       aCosN = 0.0;
+  double       aSinNm1 = 0.0;
+  double       aCosNm1 = 0.0;
+  trigShiftByQuarterTurns(aSinU, aCosU, N, aSinN, aCosN);
+  trigShiftByQuarterTurns(aSinU, aCosU, N - 1, aSinNm1, aCosNm1);
 
   // X component: r*cos^(N)(t) + N*b*cos^(N-1)(t)
   const double aCoeffX = aR * aCosN + N * aB * aCosNm1;
