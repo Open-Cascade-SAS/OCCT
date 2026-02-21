@@ -23,11 +23,11 @@
 //  RBD : 15/10/98 ; Le cache est desormais defini sur [-1,1] (pro15537).
 //  pmn : 10/12/98 ; Update de la methode segment (suite a la modif de cache).
 
-#include <array>
+#include <Geom_BezierSurface.hxx>
 
 #include <BSplCLib.hxx>
+#include <BSplSLib_Cache.hxx>
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BezierSurface.hxx>
 #include "Geom_EvalRepSurfaceDesc.hxx"
 #include "Geom_EvalRepUtils.pxx"
 #include <Geom_Curve.hxx>
@@ -48,7 +48,24 @@
 #include <Standard_Integer.hxx>
 #include <NCollection_Array1.hxx>
 
+#include <array>
+
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
+
+//=================================================================================================
+
+Handle(BSplSLib_Cache) Geom_BezierSurface::buildEvalCache() const
+{
+  Handle(BSplSLib_Cache) aCache = new BSplSLib_Cache(UDegree(),
+                                                     false,
+                                                     UKnotSequence(),
+                                                     VDegree(),
+                                                     false,
+                                                     VKnotSequence(),
+                                                     Weights());
+  aCache->BuildCache(0.5, 0.5, UKnotSequence(), VKnotSequence(), myPoles, Weights());
+  return aCache;
+}
 
 //=================================================================================================
 
@@ -516,6 +533,7 @@ void Geom_BezierSurface::ExchangeUV()
   }
 
   std::swap(myURational, myVRational);
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -634,6 +652,7 @@ void Geom_BezierSurface::Increase(const int UDeg, const int VDeg)
   {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -668,7 +687,8 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
     AddPoleCol(myPoles, CPoles, VIndex, npoles);
     myWeights = BSplSLib::UnitWeights(NbUPoles, NbVPoles + 1);
   }
-  myPoles         = std::move(npoles);
+  myPoles = std::move(npoles);
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -716,6 +736,7 @@ void Geom_BezierSurface::InsertPoleColAfter(const int                         VI
   {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -767,7 +788,8 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
     AddPoleRow(myPoles, CPoles, UIndex, npoles);
     myWeights = BSplSLib::UnitWeights(NbUPoles + 1, NbVPoles);
   }
-  myPoles         = std::move(npoles);
+  myPoles = std::move(npoles);
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -815,6 +837,7 @@ void Geom_BezierSurface::InsertPoleRowAfter(const int                         UI
   {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -864,7 +887,8 @@ void Geom_BezierSurface::RemovePoleCol(const int VIndex)
     DeletePoleCol(myPoles, VIndex, npoles);
     myWeights = BSplSLib::UnitWeights(NbUPoles, NbVPoles - 1);
   }
-  myPoles         = std::move(npoles);
+  myPoles = std::move(npoles);
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -898,7 +922,8 @@ void Geom_BezierSurface::RemovePoleRow(const int UIndex)
     DeletePoleRow(myPoles, UIndex, npoles);
     myWeights = BSplSLib::UnitWeights(NbUPoles - 1, NbVPoles);
   }
-  myPoles         = std::move(npoles);
+  myPoles = std::move(npoles);
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -995,6 +1020,7 @@ void Geom_BezierSurface::Segment(const double U1, const double U2, const double 
     PLib::VTrimming(vfirst, vlast, aCoefs, PLib::NoWeights2());
     PLib::CoefficientsPoles(aCoefs, PLib::NoWeights2(), myPoles, PLib::NoWeights2());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -1006,7 +1032,8 @@ void Geom_BezierSurface::SetPole(const int UIndex, const int VIndex, const gp_Pn
     throw Standard_OutOfRange();
 
   myPoles(UIndex, VIndex) = P;
-  myMaxDerivInvOk         = false;
+  myEvalCache.Nullify();
+  myMaxDerivInvOk = false;
 }
 
 //=================================================================================================
@@ -1067,6 +1094,7 @@ void Geom_BezierSurface::SetPoleCol(const int VIndex, const NCollection_Array1<g
   {
     myPoles(I, VIndex) = CPoles(I);
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -1085,6 +1113,7 @@ void Geom_BezierSurface::SetPoleRow(const int UIndex, const NCollection_Array1<g
   {
     myPoles(UIndex, I) = CPoles(I);
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -1145,6 +1174,7 @@ void Geom_BezierSurface::SetWeight(const int UIndex, const int VIndex, const dou
       myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
     }
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -1186,6 +1216,7 @@ void Geom_BezierSurface::SetWeightCol(const int                         VIndex,
   {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -1227,6 +1258,7 @@ void Geom_BezierSurface::SetWeightRow(const int                         UIndex,
   {
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -1266,6 +1298,7 @@ void Geom_BezierSurface::UReverse()
       }
     }
   }
+  myEvalCache.Nullify();
   ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
@@ -1313,6 +1346,7 @@ void Geom_BezierSurface::VReverse()
       }
     }
   }
+  myEvalCache.Nullify();
   ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
@@ -1351,47 +1385,64 @@ gp_Pnt Geom_BezierSurface::EvalD0(const double U, const double V) const
     return aEvalRepResult;
   }
 
+  Handle(BSplSLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      gp_Pnt P;
+      if (myURational || myVRational)
+      {
+        BSplSLib::D0(U,
+                     V,
+                     1,
+                     1,
+                     myPoles,
+                     &myWeights,
+                     UKnots(),
+                     UKnots(),
+                     &UMultiplicities(),
+                     &VMultiplicities(),
+                     (myPoles.ColLength() - 1),
+                     (myPoles.RowLength() - 1),
+                     myURational,
+                     myVRational,
+                     false,
+                     false,
+                     P);
+      }
+      else
+      {
+        BSplSLib::D0(U,
+                     V,
+                     1,
+                     1,
+                     myPoles,
+                     BSplSLib::NoWeights(),
+                     UKnots(),
+                     UKnots(),
+                     &UMultiplicities(),
+                     &VMultiplicities(),
+                     (myPoles.ColLength() - 1),
+                     (myPoles.RowLength() - 1),
+                     myURational,
+                     myVRational,
+                     false,
+                     false,
+                     P);
+      }
+      return P;
+    }
+  }
   gp_Pnt P;
-  if (myURational || myVRational)
-  {
-    BSplSLib::D0(U,
-                 V,
-                 1,
-                 1,
-                 myPoles,
-                 &myWeights,
-                 UKnots(),
-                 UKnots(),
-                 &UMultiplicities(),
-                 &VMultiplicities(),
-                 (myPoles.ColLength() - 1),
-                 (myPoles.RowLength() - 1),
-                 myURational,
-                 myVRational,
-                 false,
-                 false,
-                 P);
-  }
-  else
-  {
-    BSplSLib::D0(U,
-                 V,
-                 1,
-                 1,
-                 myPoles,
-                 BSplSLib::NoWeights(),
-                 UKnots(),
-                 UKnots(),
-                 &UMultiplicities(),
-                 &VMultiplicities(),
-                 (myPoles.ColLength() - 1),
-                 (myPoles.RowLength() - 1),
-                 myURational,
-                 myVRational,
-                 false,
-                 false,
-                 P);
-  }
+  aCache->D0(U, V, P);
   return P;
 }
 
@@ -1405,51 +1456,68 @@ Geom_Surface::ResD1 Geom_BezierSurface::EvalD1(const double U, const double V) c
     return aEvalRepResult;
   }
 
+  Handle(BSplSLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      Geom_Surface::ResD1 aResult;
+      if (myURational || myVRational)
+      {
+        BSplSLib::D1(U,
+                     V,
+                     1,
+                     1,
+                     myPoles,
+                     &myWeights,
+                     UKnots(),
+                     UKnots(),
+                     &UMultiplicities(),
+                     &VMultiplicities(),
+                     (myPoles.ColLength() - 1),
+                     (myPoles.RowLength() - 1),
+                     myURational,
+                     myVRational,
+                     false,
+                     false,
+                     aResult.Point,
+                     aResult.D1U,
+                     aResult.D1V);
+      }
+      else
+      {
+        BSplSLib::D1(U,
+                     V,
+                     1,
+                     1,
+                     myPoles,
+                     BSplSLib::NoWeights(),
+                     UKnots(),
+                     UKnots(),
+                     &UMultiplicities(),
+                     &VMultiplicities(),
+                     (myPoles.ColLength() - 1),
+                     (myPoles.RowLength() - 1),
+                     myURational,
+                     myVRational,
+                     false,
+                     false,
+                     aResult.Point,
+                     aResult.D1U,
+                     aResult.D1V);
+      }
+      return aResult;
+    }
+  }
   Geom_Surface::ResD1 aResult;
-  if (myURational || myVRational)
-  {
-    BSplSLib::D1(U,
-                 V,
-                 1,
-                 1,
-                 myPoles,
-                 &myWeights,
-                 UKnots(),
-                 UKnots(),
-                 &UMultiplicities(),
-                 &VMultiplicities(),
-                 (myPoles.ColLength() - 1),
-                 (myPoles.RowLength() - 1),
-                 myURational,
-                 myVRational,
-                 false,
-                 false,
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V);
-  }
-  else
-  {
-    BSplSLib::D1(U,
-                 V,
-                 1,
-                 1,
-                 myPoles,
-                 BSplSLib::NoWeights(),
-                 UKnots(),
-                 UKnots(),
-                 &UMultiplicities(),
-                 &VMultiplicities(),
-                 (myPoles.ColLength() - 1),
-                 (myPoles.RowLength() - 1),
-                 myURational,
-                 myVRational,
-                 false,
-                 false,
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V);
-  }
+  aCache->D1(U, V, aResult.Point, aResult.D1U, aResult.D1V);
   return aResult;
 }
 
@@ -1463,59 +1531,74 @@ Geom_Surface::ResD2 Geom_BezierSurface::EvalD2(const double U, const double V) c
     return aEvalRepResult;
   }
 
+  Handle(BSplSLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      Geom_Surface::ResD2 aResult;
+      if (myURational || myVRational)
+      {
+        BSplSLib::D2(U,
+                     V,
+                     1,
+                     1,
+                     myPoles,
+                     &myWeights,
+                     UKnots(),
+                     UKnots(),
+                     &UMultiplicities(),
+                     &VMultiplicities(),
+                     (myPoles.ColLength() - 1),
+                     (myPoles.RowLength() - 1),
+                     myURational,
+                     myVRational,
+                     false,
+                     false,
+                     aResult.Point,
+                     aResult.D1U,
+                     aResult.D1V,
+                     aResult.D2U,
+                     aResult.D2V,
+                     aResult.D2UV);
+      }
+      else
+      {
+        BSplSLib::D2(U,
+                     V,
+                     1,
+                     1,
+                     myPoles,
+                     BSplSLib::NoWeights(),
+                     UKnots(),
+                     UKnots(),
+                     &UMultiplicities(),
+                     &VMultiplicities(),
+                     (myPoles.ColLength() - 1),
+                     (myPoles.RowLength() - 1),
+                     myURational,
+                     myVRational,
+                     false,
+                     false,
+                     aResult.Point,
+                     aResult.D1U,
+                     aResult.D1V,
+                     aResult.D2U,
+                     aResult.D2V,
+                     aResult.D2UV);
+      }
+      return aResult;
+    }
+  }
   Geom_Surface::ResD2 aResult;
-  if (myURational || myVRational)
-  {
-    //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
-    BSplSLib::D2(U,
-                 V,
-                 1,
-                 1,
-                 myPoles,
-                 &myWeights,
-                 UKnots(),
-                 UKnots(),
-                 &UMultiplicities(),
-                 &VMultiplicities(),
-                 (myPoles.ColLength() - 1),
-                 (myPoles.RowLength() - 1),
-                 myURational,
-                 myVRational,
-                 false,
-                 false,
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V,
-                 aResult.D2U,
-                 aResult.D2V,
-                 aResult.D2UV);
-  }
-  else
-  {
-    //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
-    BSplSLib::D2(U,
-                 V,
-                 1,
-                 1,
-                 myPoles,
-                 BSplSLib::NoWeights(),
-                 UKnots(),
-                 UKnots(),
-                 &UMultiplicities(),
-                 &VMultiplicities(),
-                 (myPoles.ColLength() - 1),
-                 (myPoles.RowLength() - 1),
-                 myURational,
-                 myVRational,
-                 false,
-                 false,
-                 aResult.Point,
-                 aResult.D1U,
-                 aResult.D1V,
-                 aResult.D2U,
-                 aResult.D2V,
-                 aResult.D2UV);
-  }
+  aCache->D2(U, V, aResult.Point, aResult.D1U, aResult.D1V, aResult.D2U, aResult.D2V, aResult.D2UV);
   return aResult;
 }
 
@@ -1847,6 +1930,7 @@ void Geom_BezierSurface::Transform(const gp_Trsf& T)
       myPoles(I, J).Transform(T);
     }
   }
+  myEvalCache.Nullify();
   ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
@@ -1984,6 +2068,7 @@ void Geom_BezierSurface::init(const NCollection_Array2<gp_Pnt>& thePoles,
   }
 
   myMaxDerivInvOk = false;
+  myEvalCache.Nullify();
   ClearEvalRepresentation();
 }
 
