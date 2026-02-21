@@ -13,6 +13,7 @@
 
 #include <GeomEval_AHTBezierCurve.hxx>
 
+#include <NCollection_LocalArray.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
@@ -22,6 +23,340 @@
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_AHTBezierCurve, Geom_BoundedCurve)
+
+namespace
+{
+
+struct PolyEvalData
+{
+  gp_XYZ N0;
+  gp_XYZ N1;
+  gp_XYZ N2;
+  gp_XYZ N3;
+  double W0 = 0.0;
+  double W1 = 0.0;
+  double W2 = 0.0;
+  double W3 = 0.0;
+};
+
+double powInt(const double theBase, const int theExp)
+{
+  double aRes = 1.0;
+  for (int i = 0; i < theExp; ++i)
+  {
+    aRes *= theBase;
+  }
+  return aRes;
+}
+
+double fallingFactorial(const int theN, const int theK)
+{
+  double aRes = 1.0;
+  for (int i = 0; i < theK; ++i)
+  {
+    aRes *= double(theN - i);
+  }
+  return aRes;
+}
+
+template <int theMaxOrder>
+void evalPolynomialNonRational(const NCollection_Array1<gp_Pnt>& thePoles,
+                               const int                          theDegree,
+                               const double                       theU,
+                               PolyEvalData&                      theData)
+{
+  theData = PolyEvalData();
+  const int aPoleLow = thePoles.Lower();
+  theData.N0 = thePoles.Value(aPoleLow + theDegree).XYZ();
+
+  for (int k = theDegree - 1; k >= 0; --k)
+  {
+    if constexpr (theMaxOrder >= 3)
+    {
+      theData.N3 = theData.N3 * theU + theData.N2 * 3.0;
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      theData.N2 = theData.N2 * theU + theData.N1 * 2.0;
+    }
+    if constexpr (theMaxOrder >= 1)
+    {
+      theData.N1 = theData.N1 * theU + theData.N0;
+    }
+    theData.N0 = theData.N0 * theU + thePoles.Value(aPoleLow + k).XYZ();
+  }
+}
+
+template <int theMaxOrder>
+void evalPolynomialRational(const NCollection_Array1<gp_Pnt>&   thePoles,
+                            const NCollection_Array1<double>& theWeights,
+                            const int                          theDegree,
+                            const double                       theU,
+                            PolyEvalData&                      theData)
+{
+  theData = PolyEvalData();
+  const int aPoleLow   = thePoles.Lower();
+  const int aWeightLow = theWeights.Lower();
+
+  const double aWLead = theWeights.Value(aWeightLow + theDegree);
+  theData.N0 = thePoles.Value(aPoleLow + theDegree).XYZ() * aWLead;
+  theData.W0 = aWLead;
+
+  for (int k = theDegree - 1; k >= 0; --k)
+  {
+    if constexpr (theMaxOrder >= 3)
+    {
+      theData.N3 = theData.N3 * theU + theData.N2 * 3.0;
+      theData.W3 = theData.W3 * theU + theData.W2 * 3.0;
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      theData.N2 = theData.N2 * theU + theData.N1 * 2.0;
+      theData.W2 = theData.W2 * theU + theData.W1 * 2.0;
+    }
+    if constexpr (theMaxOrder >= 1)
+    {
+      theData.N1 = theData.N1 * theU + theData.N0;
+      theData.W1 = theData.W1 * theU + theData.W0;
+    }
+
+    const double aWk = theWeights.Value(aWeightLow + k);
+    theData.N0 = theData.N0 * theU + thePoles.Value(aPoleLow + k).XYZ() * aWk;
+    theData.W0 = theData.W0 * theU + aWk;
+  }
+}
+
+template <int theMaxOrder, bool theIsRational>
+void evalMixedAHT(const NCollection_Array1<gp_Pnt>&   thePoles,
+                  const NCollection_Array1<double>& theWeights,
+                  const int                          theAlgDegree,
+                  const double                       theAlpha,
+                  const double                       theBeta,
+                  const double                       theU,
+                  PolyEvalData&                      theData)
+{
+  theData = PolyEvalData();
+
+  int aPoleIdx   = thePoles.Lower();
+  int aWeightIdx = theWeights.Lower();
+
+  // Polynomial part: {1, t, ..., t^k}.
+  double aPow = 1.0;
+  double aPowM1 = 0.0;
+  double aPowM2 = 0.0;
+  double aPowM3 = 0.0;
+  for (int k = 0; k <= theAlgDegree; ++k)
+  {
+    const gp_XYZ& aPole = thePoles.Value(aPoleIdx++).XYZ();
+    const double  aB0   = aPow;
+    double        aB1   = 0.0;
+    double        aB2   = 0.0;
+    double        aB3   = 0.0;
+    if constexpr (theMaxOrder >= 1)
+    {
+      aB1 = (k >= 1) ? double(k) * aPowM1 : 0.0;
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      aB2 = (k >= 2) ? double(k) * double(k - 1) * aPowM2 : 0.0;
+    }
+    if constexpr (theMaxOrder >= 3)
+    {
+      aB3 = (k >= 3) ? double(k) * double(k - 1) * double(k - 2) * aPowM3 : 0.0;
+    }
+
+    if constexpr (theIsRational)
+    {
+      const double aWi = theWeights.Value(aWeightIdx++);
+      theData.N0 += aPole * (aWi * aB0);
+      theData.W0 += aWi * aB0;
+      if constexpr (theMaxOrder >= 1)
+      {
+        theData.N1 += aPole * (aWi * aB1);
+        theData.W1 += aWi * aB1;
+      }
+      if constexpr (theMaxOrder >= 2)
+      {
+        theData.N2 += aPole * (aWi * aB2);
+        theData.W2 += aWi * aB2;
+      }
+      if constexpr (theMaxOrder >= 3)
+      {
+        theData.N3 += aPole * (aWi * aB3);
+        theData.W3 += aWi * aB3;
+      }
+    }
+    else
+    {
+      theData.N0 += aPole * aB0;
+      if constexpr (theMaxOrder >= 1)
+      {
+        theData.N1 += aPole * aB1;
+      }
+      if constexpr (theMaxOrder >= 2)
+      {
+        theData.N2 += aPole * aB2;
+      }
+      if constexpr (theMaxOrder >= 3)
+      {
+        theData.N3 += aPole * aB3;
+      }
+    }
+
+    aPowM3 = aPowM2;
+    aPowM2 = aPowM1;
+    aPowM1 = aPow;
+    aPow *= theU;
+  }
+
+  if (theAlpha > 0.0)
+  {
+    const double aAlphaU = theAlpha * theU;
+    const double aSinh   = std::sinh(aAlphaU);
+    const double aCosh   = std::cosh(aAlphaU);
+    const double aAlpha2 = theAlpha * theAlpha;
+    const double aAlpha3 = aAlpha2 * theAlpha;
+
+    const gp_XYZ& aPoleSinh = thePoles.Value(aPoleIdx++).XYZ();
+    const gp_XYZ& aPoleCosh = thePoles.Value(aPoleIdx++).XYZ();
+    double        aWiSinh   = 1.0;
+    double        aWiCosh   = 1.0;
+    if constexpr (theIsRational)
+    {
+      aWiSinh = theWeights.Value(aWeightIdx++);
+      aWiCosh = theWeights.Value(aWeightIdx++);
+    }
+
+    const double aB0Sinh = aSinh;
+    const double aB0Cosh = aCosh;
+    double       aB1Sinh = 0.0;
+    double       aB1Cosh = 0.0;
+    double       aB2Sinh = 0.0;
+    double       aB2Cosh = 0.0;
+    double       aB3Sinh = 0.0;
+    double       aB3Cosh = 0.0;
+    if constexpr (theMaxOrder >= 1)
+    {
+      aB1Sinh = theAlpha * aCosh;
+      aB1Cosh = theAlpha * aSinh;
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      aB2Sinh = aAlpha2 * aSinh;
+      aB2Cosh = aAlpha2 * aCosh;
+    }
+    if constexpr (theMaxOrder >= 3)
+    {
+      aB3Sinh = aAlpha3 * aCosh;
+      aB3Cosh = aAlpha3 * aSinh;
+    }
+
+    theData.N0 += aPoleSinh * (aWiSinh * aB0Sinh) + aPoleCosh * (aWiCosh * aB0Cosh);
+    if constexpr (theIsRational)
+    {
+      theData.W0 += aWiSinh * aB0Sinh + aWiCosh * aB0Cosh;
+    }
+    if constexpr (theMaxOrder >= 1)
+    {
+      theData.N1 += aPoleSinh * (aWiSinh * aB1Sinh) + aPoleCosh * (aWiCosh * aB1Cosh);
+      if constexpr (theIsRational)
+      {
+        theData.W1 += aWiSinh * aB1Sinh + aWiCosh * aB1Cosh;
+      }
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      theData.N2 += aPoleSinh * (aWiSinh * aB2Sinh) + aPoleCosh * (aWiCosh * aB2Cosh);
+      if constexpr (theIsRational)
+      {
+        theData.W2 += aWiSinh * aB2Sinh + aWiCosh * aB2Cosh;
+      }
+    }
+    if constexpr (theMaxOrder >= 3)
+    {
+      theData.N3 += aPoleSinh * (aWiSinh * aB3Sinh) + aPoleCosh * (aWiCosh * aB3Cosh);
+      if constexpr (theIsRational)
+      {
+        theData.W3 += aWiSinh * aB3Sinh + aWiCosh * aB3Cosh;
+      }
+    }
+  }
+
+  if (theBeta > 0.0)
+  {
+    const double aBetaU = theBeta * theU;
+    const double aSin   = std::sin(aBetaU);
+    const double aCos   = std::cos(aBetaU);
+    const double aBeta2 = theBeta * theBeta;
+    const double aBeta3 = aBeta2 * theBeta;
+
+    const gp_XYZ& aPoleSin = thePoles.Value(aPoleIdx++).XYZ();
+    const gp_XYZ& aPoleCos = thePoles.Value(aPoleIdx++).XYZ();
+    double        aWiSin   = 1.0;
+    double        aWiCos   = 1.0;
+    if constexpr (theIsRational)
+    {
+      aWiSin = theWeights.Value(aWeightIdx++);
+      aWiCos = theWeights.Value(aWeightIdx++);
+    }
+
+    const double aB0Sin = aSin;
+    const double aB0Cos = aCos;
+    double       aB1Sin = 0.0;
+    double       aB1Cos = 0.0;
+    double       aB2Sin = 0.0;
+    double       aB2Cos = 0.0;
+    double       aB3Sin = 0.0;
+    double       aB3Cos = 0.0;
+    if constexpr (theMaxOrder >= 1)
+    {
+      aB1Sin = theBeta * aCos;
+      aB1Cos = -theBeta * aSin;
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      aB2Sin = -aBeta2 * aSin;
+      aB2Cos = -aBeta2 * aCos;
+    }
+    if constexpr (theMaxOrder >= 3)
+    {
+      aB3Sin = -aBeta3 * aCos;
+      aB3Cos = aBeta3 * aSin;
+    }
+
+    theData.N0 += aPoleSin * (aWiSin * aB0Sin) + aPoleCos * (aWiCos * aB0Cos);
+    if constexpr (theIsRational)
+    {
+      theData.W0 += aWiSin * aB0Sin + aWiCos * aB0Cos;
+    }
+    if constexpr (theMaxOrder >= 1)
+    {
+      theData.N1 += aPoleSin * (aWiSin * aB1Sin) + aPoleCos * (aWiCos * aB1Cos);
+      if constexpr (theIsRational)
+      {
+        theData.W1 += aWiSin * aB1Sin + aWiCos * aB1Cos;
+      }
+    }
+    if constexpr (theMaxOrder >= 2)
+    {
+      theData.N2 += aPoleSin * (aWiSin * aB2Sin) + aPoleCos * (aWiCos * aB2Cos);
+      if constexpr (theIsRational)
+      {
+        theData.W2 += aWiSin * aB2Sin + aWiCos * aB2Cos;
+      }
+    }
+    if constexpr (theMaxOrder >= 3)
+    {
+      theData.N3 += aPoleSin * (aWiSin * aB3Sin) + aPoleCos * (aWiCos * aB3Cos);
+      if constexpr (theIsRational)
+      {
+        theData.W3 += aWiSin * aB3Sin + aWiCos * aB3Cos;
+      }
+    }
+  }
+}
+
+} // namespace
 
 //==================================================================================================
 
@@ -242,169 +577,68 @@ bool GeomEval_AHTBezierCurve::IsCN(const int /*N*/) const
 
 //==================================================================================================
 
-void GeomEval_AHTBezierCurve::evalBasis(double                      theT,
-                                         NCollection_Array1<double>& theBasis) const
-{
-  const int aLower = theBasis.Lower();
-  int       anIdx  = aLower;
-
-  // Polynomial part: 1, t, t^2, ..., t^k
-  double aPow = 1.0;
-  for (int k = 0; k <= myAlgDegree; ++k)
-  {
-    theBasis.ChangeValue(anIdx++) = aPow;
-    aPow *= theT;
-  }
-
-  // Hyperbolic part: sinh(alpha*t), cosh(alpha*t)
-  if (myAlpha > 0.0)
-  {
-    const double aAlphaT = myAlpha * theT;
-    theBasis.ChangeValue(anIdx++) = std::sinh(aAlphaT);
-    theBasis.ChangeValue(anIdx++) = std::cosh(aAlphaT);
-  }
-
-  // Trigonometric part: sin(beta*t), cos(beta*t)
-  if (myBeta > 0.0)
-  {
-    const double aBetaT = myBeta * theT;
-    theBasis.ChangeValue(anIdx++) = std::sin(aBetaT);
-    theBasis.ChangeValue(anIdx++) = std::cos(aBetaT);
-  }
-}
-
-//==================================================================================================
-
-void GeomEval_AHTBezierCurve::evalBasisDeriv(double                      theT,
-                                              int                         theDerivOrder,
-                                              NCollection_Array1<double>& theBasisDeriv) const
-{
-  const int aLower = theBasisDeriv.Lower();
-  int       anIdx  = aLower;
-
-  // Polynomial part: d^d/dt^d [t^k] = k!/(k-d)! * t^(k-d) if d <= k, else 0
-  for (int k = 0; k <= myAlgDegree; ++k)
-  {
-    if (theDerivOrder > k)
-    {
-      theBasisDeriv.ChangeValue(anIdx++) = 0.0;
-    }
-    else
-    {
-      // Compute falling factorial: k * (k-1) * ... * (k-d+1)
-      double aCoeff = 1.0;
-      for (int j = 0; j < theDerivOrder; ++j)
-      {
-        aCoeff *= (k - j);
-      }
-      theBasisDeriv.ChangeValue(anIdx++) = aCoeff * std::pow(theT, k - theDerivOrder);
-    }
-  }
-
-  // Hyperbolic part:
-  // d^d/dt^d [sinh(alpha*t)] = alpha^d * (d%2==0 ? sinh(alpha*t) : cosh(alpha*t))
-  // d^d/dt^d [cosh(alpha*t)] = alpha^d * (d%2==0 ? cosh(alpha*t) : sinh(alpha*t))
-  if (myAlpha > 0.0)
-  {
-    const double aAlphaT    = myAlpha * theT;
-    const double aAlphaPow  = std::pow(myAlpha, theDerivOrder);
-    const double aSinh      = std::sinh(aAlphaT);
-    const double aCosh      = std::cosh(aAlphaT);
-    const bool   isEvenDeriv = (theDerivOrder % 2 == 0);
-
-    theBasisDeriv.ChangeValue(anIdx++) = aAlphaPow * (isEvenDeriv ? aSinh : aCosh);
-    theBasisDeriv.ChangeValue(anIdx++) = aAlphaPow * (isEvenDeriv ? aCosh : aSinh);
-  }
-
-  // Trigonometric part:
-  // d^d/dt^d [sin(beta*t)] = beta^d * sin(beta*t + d*PI/2)
-  // d^d/dt^d [cos(beta*t)] = beta^d * cos(beta*t + d*PI/2)
-  if (myBeta > 0.0)
-  {
-    const double aBetaT   = myBeta * theT;
-    const double aBetaPow = std::pow(myBeta, theDerivOrder);
-    const double aPhase   = theDerivOrder * M_PI / 2.0;
-
-    theBasisDeriv.ChangeValue(anIdx++) = aBetaPow * std::sin(aBetaT + aPhase);
-    theBasisDeriv.ChangeValue(anIdx++) = aBetaPow * std::cos(aBetaT + aPhase);
-  }
-}
-
-//==================================================================================================
-
 gp_Pnt GeomEval_AHTBezierCurve::EvalD0(const double U) const
 {
-  const int aDim = NbPoles();
-  NCollection_Array1<double> aBasis(0, aDim - 1);
-  evalBasis(U, aBasis);
+  if (myAlpha <= 0.0 && myBeta <= 0.0)
+  {
+    PolyEvalData aPoly;
+    if (!myRational)
+    {
+      evalPolynomialNonRational<0>(myPoles, myAlgDegree, U, aPoly);
+      return gp_Pnt(aPoly.N0);
+    }
 
+    evalPolynomialRational<0>(myPoles, myWeights, myAlgDegree, U, aPoly);
+    return gp_Pnt(aPoly.N0 / aPoly.W0);
+  }
+  PolyEvalData aMixed;
   if (!myRational)
   {
-    // Non-rational: C(t) = sum_i P_i * B_i(t)
-    gp_XYZ aSum(0.0, 0.0, 0.0);
-    for (int i = 0; i < aDim; ++i)
-    {
-      aSum += myPoles.Value(myPoles.Lower() + i).XYZ() * aBasis.Value(i);
-    }
-    return gp_Pnt(aSum);
+    evalMixedAHT<0, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+    return gp_Pnt(aMixed.N0);
   }
 
-  // Rational: C(t) = sum_i (w_i * P_i * B_i(t)) / sum_i (w_i * B_i(t))
-  gp_XYZ aNumer(0.0, 0.0, 0.0);
-  double  aDenom = 0.0;
-  for (int i = 0; i < aDim; ++i)
-  {
-    const double aWB = myWeights.Value(myWeights.Lower() + i) * aBasis.Value(i);
-    aNumer += myPoles.Value(myPoles.Lower() + i).XYZ() * aWB;
-    aDenom += aWB;
-  }
-  return gp_Pnt(aNumer / aDenom);
+  evalMixedAHT<0, true>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+  return gp_Pnt(aMixed.N0 / aMixed.W0);
 }
 
 //==================================================================================================
 
 Geom_Curve::ResD1 GeomEval_AHTBezierCurve::EvalD1(const double U) const
 {
-  const int aDim = NbPoles();
-  NCollection_Array1<double> aBasis(0, aDim - 1);
-  NCollection_Array1<double> aBasisD1(0, aDim - 1);
-  evalBasis(U, aBasis);
-  evalBasisDeriv(U, 1, aBasisD1);
-
-  Geom_Curve::ResD1 aResult;
-
-  if (!myRational)
+  if (myAlpha <= 0.0 && myBeta <= 0.0)
   {
-    gp_XYZ aSum(0.0, 0.0, 0.0);
-    gp_XYZ aSumD1(0.0, 0.0, 0.0);
-    for (int i = 0; i < aDim; ++i)
+    PolyEvalData        aPoly;
+    Geom_Curve::ResD1 aResult;
+    if (!myRational)
     {
-      const gp_XYZ& aPole = myPoles.Value(myPoles.Lower() + i).XYZ();
-      aSum   += aPole * aBasis.Value(i);
-      aSumD1 += aPole * aBasisD1.Value(i);
+      evalPolynomialNonRational<1>(myPoles, myAlgDegree, U, aPoly);
+      aResult.Point = gp_Pnt(aPoly.N0);
+      aResult.D1    = gp_Vec(aPoly.N1);
+      return aResult;
     }
-    aResult.Point = gp_Pnt(aSum);
-    aResult.D1    = gp_Vec(aSumD1);
+
+    evalPolynomialRational<1>(myPoles, myWeights, myAlgDegree, U, aPoly);
+    const double aInvW = 1.0 / aPoly.W0;
+    aResult.Point = gp_Pnt(aPoly.N0 * aInvW);
+    aResult.D1    = gp_Vec((aPoly.N1 * aPoly.W0 - aPoly.N0 * aPoly.W1) * (aInvW * aInvW));
     return aResult;
   }
 
-  // Rational quotient rule: C' = (N' * W - N * W') / W^2
-  gp_XYZ aN(0.0, 0.0, 0.0);
-  gp_XYZ aND1(0.0, 0.0, 0.0);
-  double  aW   = 0.0;
-  double  aWD1 = 0.0;
-  for (int i = 0; i < aDim; ++i)
+  Geom_Curve::ResD1 aResult;
+  PolyEvalData aMixed;
+  if (!myRational)
   {
-    const gp_XYZ& aPole = myPoles.Value(myPoles.Lower() + i).XYZ();
-    const double  aWi   = myWeights.Value(myWeights.Lower() + i);
-    aN   += aPole * (aWi * aBasis.Value(i));
-    aND1 += aPole * (aWi * aBasisD1.Value(i));
-    aW   += aWi * aBasis.Value(i);
-    aWD1 += aWi * aBasisD1.Value(i);
+    evalMixedAHT<1, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+    aResult.Point = gp_Pnt(aMixed.N0);
+    aResult.D1    = gp_Vec(aMixed.N1);
+    return aResult;
   }
-  const double aInvW = 1.0 / aW;
-  aResult.Point = gp_Pnt(aN * aInvW);
-  aResult.D1    = gp_Vec((aND1 * aW - aN * aWD1) * (aInvW * aInvW));
+
+  evalMixedAHT<1, true>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+  const double aInvW = 1.0 / aMixed.W0;
+  aResult.Point = gp_Pnt(aMixed.N0 * aInvW);
+  aResult.D1    = gp_Vec((aMixed.N1 * aMixed.W0 - aMixed.N0 * aMixed.W1) * (aInvW * aInvW));
   return aResult;
 }
 
@@ -412,62 +646,48 @@ Geom_Curve::ResD1 GeomEval_AHTBezierCurve::EvalD1(const double U) const
 
 Geom_Curve::ResD2 GeomEval_AHTBezierCurve::EvalD2(const double U) const
 {
-  const int aDim = NbPoles();
-  NCollection_Array1<double> aBasis(0, aDim - 1);
-  NCollection_Array1<double> aBasisD1(0, aDim - 1);
-  NCollection_Array1<double> aBasisD2(0, aDim - 1);
-  evalBasis(U, aBasis);
-  evalBasisDeriv(U, 1, aBasisD1);
-  evalBasisDeriv(U, 2, aBasisD2);
-
-  Geom_Curve::ResD2 aResult;
-
-  if (!myRational)
+  if (myAlpha <= 0.0 && myBeta <= 0.0)
   {
-    gp_XYZ aSum(0.0, 0.0, 0.0);
-    gp_XYZ aSumD1(0.0, 0.0, 0.0);
-    gp_XYZ aSumD2(0.0, 0.0, 0.0);
-    for (int i = 0; i < aDim; ++i)
+    PolyEvalData        aPoly;
+    Geom_Curve::ResD2 aResult;
+    if (!myRational)
     {
-      const gp_XYZ& aPole = myPoles.Value(myPoles.Lower() + i).XYZ();
-      aSum   += aPole * aBasis.Value(i);
-      aSumD1 += aPole * aBasisD1.Value(i);
-      aSumD2 += aPole * aBasisD2.Value(i);
+      evalPolynomialNonRational<2>(myPoles, myAlgDegree, U, aPoly);
+      aResult.Point = gp_Pnt(aPoly.N0);
+      aResult.D1    = gp_Vec(aPoly.N1);
+      aResult.D2    = gp_Vec(aPoly.N2);
+      return aResult;
     }
-    aResult.Point = gp_Pnt(aSum);
-    aResult.D1    = gp_Vec(aSumD1);
-    aResult.D2    = gp_Vec(aSumD2);
+
+    evalPolynomialRational<2>(myPoles, myWeights, myAlgDegree, U, aPoly);
+    const double aInvW = 1.0 / aPoly.W0;
+    const gp_XYZ aC    = aPoly.N0 * aInvW;
+    const gp_XYZ aCD1  = (aPoly.N1 * aPoly.W0 - aPoly.N0 * aPoly.W1) * (aInvW * aInvW);
+    aResult.Point = gp_Pnt(aC);
+    aResult.D1    = gp_Vec(aCD1);
+    aResult.D2    = gp_Vec((aPoly.N2 - aCD1 * (2.0 * aPoly.W1) - aC * aPoly.W2) * aInvW);
     return aResult;
   }
 
-  // Rational: use quotient rule for 2nd derivative.
-  // C = N/W, C' = (N'W - NW') / W^2
-  // C'' = (N''W^2 - NW'' - 2W'(N'W - NW')) / W^3
-  //      = (N'' - 2*W'*C' - W''*C) / W
-  gp_XYZ aN(0.0, 0.0, 0.0);
-  gp_XYZ aND1(0.0, 0.0, 0.0);
-  gp_XYZ aND2(0.0, 0.0, 0.0);
-  double  aW   = 0.0;
-  double  aWD1 = 0.0;
-  double  aWD2 = 0.0;
-  for (int i = 0; i < aDim; ++i)
+  Geom_Curve::ResD2 aResult;
+  PolyEvalData aMixed;
+  if (!myRational)
   {
-    const gp_XYZ& aPole = myPoles.Value(myPoles.Lower() + i).XYZ();
-    const double  aWi   = myWeights.Value(myWeights.Lower() + i);
-    aN   += aPole * (aWi * aBasis.Value(i));
-    aND1 += aPole * (aWi * aBasisD1.Value(i));
-    aND2 += aPole * (aWi * aBasisD2.Value(i));
-    aW   += aWi * aBasis.Value(i);
-    aWD1 += aWi * aBasisD1.Value(i);
-    aWD2 += aWi * aBasisD2.Value(i);
+    evalMixedAHT<2, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+    aResult.Point = gp_Pnt(aMixed.N0);
+    aResult.D1    = gp_Vec(aMixed.N1);
+    aResult.D2    = gp_Vec(aMixed.N2);
+    return aResult;
   }
-  const double aInvW = 1.0 / aW;
-  const gp_XYZ aC    = aN * aInvW;
-  const gp_XYZ aCD1  = (aND1 * aW - aN * aWD1) * (aInvW * aInvW);
+
+  evalMixedAHT<2, true>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+  const double aInvW = 1.0 / aMixed.W0;
+  const gp_XYZ aC    = aMixed.N0 * aInvW;
+  const gp_XYZ aCD1  = (aMixed.N1 * aMixed.W0 - aMixed.N0 * aMixed.W1) * (aInvW * aInvW);
 
   aResult.Point = gp_Pnt(aC);
   aResult.D1    = gp_Vec(aCD1);
-  aResult.D2    = gp_Vec((aND2 - aCD1 * (2.0 * aWD1) - aC * aWD2) * aInvW);
+  aResult.D2    = gp_Vec((aMixed.N2 - aCD1 * (2.0 * aMixed.W1) - aC * aMixed.W2) * aInvW);
   return aResult;
 }
 
@@ -475,77 +695,58 @@ Geom_Curve::ResD2 GeomEval_AHTBezierCurve::EvalD2(const double U) const
 
 Geom_Curve::ResD3 GeomEval_AHTBezierCurve::EvalD3(const double U) const
 {
-  const int aDim = NbPoles();
-  NCollection_Array1<double> aBasis(0, aDim - 1);
-  NCollection_Array1<double> aBasisD1(0, aDim - 1);
-  NCollection_Array1<double> aBasisD2(0, aDim - 1);
-  NCollection_Array1<double> aBasisD3(0, aDim - 1);
-  evalBasis(U, aBasis);
-  evalBasisDeriv(U, 1, aBasisD1);
-  evalBasisDeriv(U, 2, aBasisD2);
-  evalBasisDeriv(U, 3, aBasisD3);
-
-  Geom_Curve::ResD3 aResult;
-
-  if (!myRational)
+  if (myAlpha <= 0.0 && myBeta <= 0.0)
   {
-    gp_XYZ aSum(0.0, 0.0, 0.0);
-    gp_XYZ aSumD1(0.0, 0.0, 0.0);
-    gp_XYZ aSumD2(0.0, 0.0, 0.0);
-    gp_XYZ aSumD3(0.0, 0.0, 0.0);
-    for (int i = 0; i < aDim; ++i)
+    PolyEvalData        aPoly;
+    Geom_Curve::ResD3 aResult;
+    if (!myRational)
     {
-      const gp_XYZ& aPole = myPoles.Value(myPoles.Lower() + i).XYZ();
-      aSum   += aPole * aBasis.Value(i);
-      aSumD1 += aPole * aBasisD1.Value(i);
-      aSumD2 += aPole * aBasisD2.Value(i);
-      aSumD3 += aPole * aBasisD3.Value(i);
+      evalPolynomialNonRational<3>(myPoles, myAlgDegree, U, aPoly);
+      aResult.Point = gp_Pnt(aPoly.N0);
+      aResult.D1    = gp_Vec(aPoly.N1);
+      aResult.D2    = gp_Vec(aPoly.N2);
+      aResult.D3    = gp_Vec(aPoly.N3);
+      return aResult;
     }
-    aResult.Point = gp_Pnt(aSum);
-    aResult.D1    = gp_Vec(aSumD1);
-    aResult.D2    = gp_Vec(aSumD2);
-    aResult.D3    = gp_Vec(aSumD3);
+
+    evalPolynomialRational<3>(myPoles, myWeights, myAlgDegree, U, aPoly);
+    const double aInvW = 1.0 / aPoly.W0;
+    const gp_XYZ aC    = aPoly.N0 * aInvW;
+    const gp_XYZ aCD1  = (aPoly.N1 - aC * aPoly.W1) * aInvW;
+    const gp_XYZ aCD2  = (aPoly.N2 - aCD1 * (2.0 * aPoly.W1) - aC * aPoly.W2) * aInvW;
+    const gp_XYZ aCD3  = (aPoly.N3 - aCD2 * (3.0 * aPoly.W1)
+                                  - aCD1 * (3.0 * aPoly.W2)
+                                  - aC * aPoly.W3)
+                         * aInvW;
+
+    aResult.Point = gp_Pnt(aC);
+    aResult.D1    = gp_Vec(aCD1);
+    aResult.D2    = gp_Vec(aCD2);
+    aResult.D3    = gp_Vec(aCD3);
     return aResult;
   }
 
-  // Rational: C = N/W
-  // Use recursive formula: C^(k) = (N^(k) - sum_{j=1}^{k} C(k,j)*W^(j)*C^(k-j)) / W
-  gp_XYZ aN(0.0, 0.0, 0.0);
-  gp_XYZ aND1(0.0, 0.0, 0.0);
-  gp_XYZ aND2(0.0, 0.0, 0.0);
-  gp_XYZ aND3(0.0, 0.0, 0.0);
-  double  aW   = 0.0;
-  double  aWD1 = 0.0;
-  double  aWD2 = 0.0;
-  double  aWD3 = 0.0;
-  for (int i = 0; i < aDim; ++i)
+  Geom_Curve::ResD3 aResult;
+  PolyEvalData aMixed;
+  if (!myRational)
   {
-    const gp_XYZ& aPole = myPoles.Value(myPoles.Lower() + i).XYZ();
-    const double  aWi   = myWeights.Value(myWeights.Lower() + i);
-    aN   += aPole * (aWi * aBasis.Value(i));
-    aND1 += aPole * (aWi * aBasisD1.Value(i));
-    aND2 += aPole * (aWi * aBasisD2.Value(i));
-    aND3 += aPole * (aWi * aBasisD3.Value(i));
-    aW   += aWi * aBasis.Value(i);
-    aWD1 += aWi * aBasisD1.Value(i);
-    aWD2 += aWi * aBasisD2.Value(i);
-    aWD3 += aWi * aBasisD3.Value(i);
+    evalMixedAHT<3, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+    aResult.Point = gp_Pnt(aMixed.N0);
+    aResult.D1    = gp_Vec(aMixed.N1);
+    aResult.D2    = gp_Vec(aMixed.N2);
+    aResult.D3    = gp_Vec(aMixed.N3);
+    return aResult;
   }
-  const double aInvW = 1.0 / aW;
 
-  // C = N / W
-  const gp_XYZ aC = aN * aInvW;
-
-  // C' = (N' - W'*C) / W
-  const gp_XYZ aCD1 = (aND1 - aC * aWD1) * aInvW;
-
-  // C'' = (N'' - 2*W'*C' - W''*C) / W
-  const gp_XYZ aCD2 = (aND2 - aCD1 * (2.0 * aWD1) - aC * aWD2) * aInvW;
-
-  // C''' = (N''' - 3*W'*C'' - 3*W''*C' - W'''*C) / W
-  const gp_XYZ aCD3 = (aND3 - aCD2 * (3.0 * aWD1)
-                              - aCD1 * (3.0 * aWD2)
-                              - aC * aWD3) * aInvW;
+  evalMixedAHT<3, true>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
+  const double aInvW = 1.0 / aMixed.W0;
+  const gp_XYZ aC    = aMixed.N0 * aInvW;
+  const gp_XYZ aCD1  = (aMixed.N1 - aC * aMixed.W1) * aInvW;
+  const gp_XYZ aCD2  = (aMixed.N2 - aCD1 * (2.0 * aMixed.W1) - aC * aMixed.W2) * aInvW;
+  const gp_XYZ aCD3  = (aMixed.N3 - aCD2 * (3.0 * aMixed.W1)
+                                  - aCD1 * (3.0 * aMixed.W2)
+                                  - aC * aMixed.W3)
+                         * aInvW;
 
   aResult.Point = gp_Pnt(aC);
   aResult.D1    = gp_Vec(aCD1);
@@ -577,69 +778,185 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
     return EvalD3(U).D3;
   }
 
-  // General case: compute all derivative orders up to N.
-  const int aDim = NbPoles();
-
-  // Evaluate basis derivatives for orders 0..N.
-  NCollection_Array1<NCollection_Array1<double>> aBasisDerivs(0, N);
-  for (int d = 0; d <= N; ++d)
-  {
-    aBasisDerivs.ChangeValue(d).Resize(0, aDim - 1, false);
-    if (d == 0)
-    {
-      evalBasis(U, aBasisDerivs.ChangeValue(0));
-    }
-    else
-    {
-      evalBasisDeriv(U, d, aBasisDerivs.ChangeValue(d));
-    }
-  }
+  const int aPoleLow = myPoles.Lower();
 
   if (!myRational)
   {
+    int    aPoleIdx = aPoleLow;
     gp_XYZ aSum(0.0, 0.0, 0.0);
-    for (int i = 0; i < aDim; ++i)
+
+    // Polynomial part.
+    for (int k = 0; k <= myAlgDegree; ++k)
     {
-      aSum += myPoles.Value(myPoles.Lower() + i).XYZ() * aBasisDerivs.Value(N).Value(i);
+      double aBasisN = 0.0;
+      if (N <= k)
+      {
+        if (U == 0.0)
+        {
+          aBasisN = (N == k) ? fallingFactorial(k, N) : 0.0;
+        }
+        else
+        {
+          aBasisN = fallingFactorial(k, N) * powInt(U, k - N);
+        }
+      }
+      aSum += myPoles.Value(aPoleIdx++).XYZ() * aBasisN;
     }
+
+    if (myAlpha > 0.0)
+    {
+      const double aAlphaU   = myAlpha * U;
+      const double aAlphaPow = powInt(myAlpha, N);
+      const double aSinh     = std::sinh(aAlphaU);
+      const double aCosh     = std::cosh(aAlphaU);
+      const bool   isEvenN   = (N % 2 == 0);
+      const double aSinhN    = aAlphaPow * (isEvenN ? aSinh : aCosh);
+      const double aCoshN    = aAlphaPow * (isEvenN ? aCosh : aSinh);
+      aSum += myPoles.Value(aPoleIdx++).XYZ() * aSinhN;
+      aSum += myPoles.Value(aPoleIdx++).XYZ() * aCoshN;
+    }
+
+    if (myBeta > 0.0)
+    {
+      const double aBetaU   = myBeta * U;
+      const double aBetaPow = powInt(myBeta, N);
+      const double aSin     = std::sin(aBetaU);
+      const double aCos     = std::cos(aBetaU);
+      double       aSinN    = 0.0;
+      double       aCosN    = 0.0;
+      switch (N & 3)
+      {
+        case 0: aSinN = aSin;  aCosN = aCos;  break;
+        case 1: aSinN = aCos;  aCosN = -aSin; break;
+        case 2: aSinN = -aSin; aCosN = -aCos; break;
+        case 3: aSinN = -aCos; aCosN = aSin;  break;
+      }
+      aSum += myPoles.Value(aPoleIdx++).XYZ() * (aBetaPow * aSinN);
+      aSum += myPoles.Value(aPoleIdx++).XYZ() * (aBetaPow * aCosN);
+    }
+
     return gp_Vec(aSum);
   }
 
-  // Rational: use recursive formula.
-  // First compute N^(d) and W^(d) for d = 0..N.
-  NCollection_Array1<gp_XYZ> aNDerivs(0, N);
-  NCollection_Array1<double> aWDerivs(0, N);
-  for (int d = 0; d <= N; ++d)
+  // Rational case. For general N, keep only W^(d) and C^(d) arrays;
+  // N^(d) is computed on demand per derivative order.
+  NCollection_LocalArray<double, 16> aWDerivs(N + 1);
+  NCollection_LocalArray<gp_XYZ, 16> aCDerivs(N + 1);
+
+  const int aWeightLow = myWeights.Lower();
+  const int aPolyCount = myAlgDegree + 1;
+  const int aHyperIdx  = aPoleLow + aPolyCount;
+  const int aTrigIdx   = aHyperIdx + (myAlpha > 0.0 ? 2 : 0);
+
+  const gp_XYZ* aPoleSinh = nullptr;
+  const gp_XYZ* aPoleCosh = nullptr;
+  const gp_XYZ* aPoleSin  = nullptr;
+  const gp_XYZ* aPoleCos  = nullptr;
+  double        aWiSinh   = 0.0;
+  double        aWiCosh   = 0.0;
+  double        aWiSin    = 0.0;
+  double        aWiCos    = 0.0;
+
+  if (myAlpha > 0.0)
   {
-    aNDerivs.ChangeValue(d) = gp_XYZ(0.0, 0.0, 0.0);
-    aWDerivs.ChangeValue(d) = 0.0;
-    for (int i = 0; i < aDim; ++i)
-    {
-      const double aWi = myWeights.Value(myWeights.Lower() + i);
-      aNDerivs.ChangeValue(d) += myPoles.Value(myPoles.Lower() + i).XYZ()
-                                 * (aWi * aBasisDerivs.Value(d).Value(i));
-      aWDerivs.ChangeValue(d) += aWi * aBasisDerivs.Value(d).Value(i);
-    }
+    aPoleSinh = &myPoles.Value(aHyperIdx).XYZ();
+    aPoleCosh = &myPoles.Value(aHyperIdx + 1).XYZ();
+    aWiSinh   = myWeights.Value(aWeightLow + aPolyCount);
+    aWiCosh   = myWeights.Value(aWeightLow + aPolyCount + 1);
   }
 
-  // Now compute C^(d) for d = 0..N using the recursive formula:
-  // C^(d) = (N^(d) - sum_{j=1}^{d} C(d,j)*W^(j)*C^(d-j)) / W
-  const double aInvW = 1.0 / aWDerivs.Value(0);
-  NCollection_Array1<gp_XYZ> aCDerivs(0, N);
-  aCDerivs.ChangeValue(0) = aNDerivs.Value(0) * aInvW;
-  for (int d = 1; d <= N; ++d)
+  if (myBeta > 0.0)
   {
-    gp_XYZ aSum = aNDerivs.Value(d);
-    // Binomial coefficients C(d,j) for j=1..d
-    double aBinom = 1.0;
-    for (int j = 1; j <= d; ++j)
-    {
-      aBinom = aBinom * (d - j + 1) / j;
-      aSum -= aCDerivs.Value(d - j) * (aBinom * aWDerivs.Value(j));
-    }
-    aCDerivs.ChangeValue(d) = aSum * aInvW;
+    const int aTrigWIdx = aWeightLow + aPolyCount + (myAlpha > 0.0 ? 2 : 0);
+    aPoleSin = &myPoles.Value(aTrigIdx).XYZ();
+    aPoleCos = &myPoles.Value(aTrigIdx + 1).XYZ();
+    aWiSin   = myWeights.Value(aTrigWIdx);
+    aWiCos   = myWeights.Value(aTrigWIdx + 1);
   }
-  return gp_Vec(aCDerivs.Value(N));
+
+  const double aAlphaU = myAlpha * U;
+  const double aSinh   = (myAlpha > 0.0) ? std::sinh(aAlphaU) : 0.0;
+  const double aCosh   = (myAlpha > 0.0) ? std::cosh(aAlphaU) : 0.0;
+  const double aBetaU  = myBeta * U;
+  const double aSin    = (myBeta > 0.0) ? std::sin(aBetaU) : 0.0;
+  const double aCos    = (myBeta > 0.0) ? std::cos(aBetaU) : 0.0;
+
+  double aAlphaPow = 1.0;
+  double aBetaPow  = 1.0;
+  double aInvW0    = 0.0;
+  for (int d = 0; d <= N; ++d)
+  {
+    gp_XYZ aNd(0.0, 0.0, 0.0);
+    double aWd = 0.0;
+
+    // Polynomial part: d/dt^d [t^k].
+    for (int k = 0; k <= myAlgDegree; ++k)
+    {
+      const gp_XYZ& aPole = myPoles.Value(aPoleLow + k).XYZ();
+      const double  aWi   = myWeights.Value(aWeightLow + k);
+      double        aBasisD = 0.0;
+      if (d <= k)
+      {
+        if (U == 0.0)
+        {
+          aBasisD = (d == k) ? fallingFactorial(k, d) : 0.0;
+        }
+        else
+        {
+          aBasisD = fallingFactorial(k, d) * powInt(U, k - d);
+        }
+      }
+
+      aNd += aPole * (aWi * aBasisD);
+      aWd += aWi * aBasisD;
+    }
+
+    if (myAlpha > 0.0)
+    {
+      const bool   isEvenD = (d % 2 == 0);
+      const double aDSinh  = aAlphaPow * (isEvenD ? aSinh : aCosh);
+      const double aDCosh  = aAlphaPow * (isEvenD ? aCosh : aSinh);
+      aNd += (*aPoleSinh) * (aWiSinh * aDSinh) + (*aPoleCosh) * (aWiCosh * aDCosh);
+      aWd += aWiSinh * aDSinh + aWiCosh * aDCosh;
+    }
+
+    if (myBeta > 0.0)
+    {
+      double aDSin = 0.0;
+      double aDCos = 0.0;
+      switch (d & 3)
+      {
+        case 0: aDSin = aSin;  aDCos = aCos;  break;
+        case 1: aDSin = aCos;  aDCos = -aSin; break;
+        case 2: aDSin = -aSin; aDCos = -aCos; break;
+        case 3: aDSin = -aCos; aDCos = aSin;  break;
+      }
+      aNd += (*aPoleSin) * (aWiSin * aBetaPow * aDSin) + (*aPoleCos) * (aWiCos * aBetaPow * aDCos);
+      aWd += aWiSin * aBetaPow * aDSin + aWiCos * aBetaPow * aDCos;
+    }
+
+    aWDerivs[d] = aWd;
+    if (d == 0)
+    {
+      aInvW0 = 1.0 / aWd;
+      aCDerivs[0] = aNd * aInvW0;
+    }
+    else
+    {
+      gp_XYZ aSum = aNd;
+      double aBinom = 1.0;
+      for (int j = 1; j <= d; ++j)
+      {
+        aBinom = aBinom * double(d - j + 1) / double(j);
+        aSum -= aCDerivs[d - j] * (aBinom * aWDerivs[j]);
+      }
+      aCDerivs[d] = aSum * aInvW0;
+    }
+
+    aAlphaPow *= myAlpha;
+    aBetaPow  *= myBeta;
+  }
+  return gp_Vec(aCDerivs[N]);
 }
 
 //==================================================================================================
