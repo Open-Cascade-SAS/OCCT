@@ -26,7 +26,9 @@ set(OCCT_TKG3d_GTests_FILES
   GeomEval_ParaboloidSurface_Test.cxx
   GeomEval_SineWaveCurve_Test.cxx
   GeomEval_TBezierCurve_Test.cxx
+  GeomEval_TBezierCurve_Perf_Test.cxx
   GeomEval_TBezierSurface_Test.cxx
+  GeomEval_TBezierSurface_Perf_Test.cxx
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
   GeomGridEval_BezierCurve_Test.cxx

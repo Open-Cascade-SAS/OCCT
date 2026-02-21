@@ -13,6 +13,7 @@
 
 #include <GeomEval_TBezierSurface.hxx>
 
+#include <NCollection_LocalArray.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
@@ -35,6 +36,121 @@ namespace
       aMsg += theName;
       aMsg += " pole count must be odd and >= 3";
       throw Standard_ConstructionError(aMsg.ToCString());
+    }
+  }
+
+  inline double powInt(const double theValue, const int thePower)
+  {
+    double aRes = 1.0;
+    for (int i = 0; i < thePower; ++i)
+    {
+      aRes *= theValue;
+    }
+    return aRes;
+  }
+
+  inline void evalTrigPairNthDeriv(const double theSin,
+                                   const double theCos,
+                                   const int    theOrderMod4,
+                                   double&      theSinDeriv,
+                                   double&      theCosDeriv)
+  {
+    switch (theOrderMod4)
+    {
+      case 0:
+        theSinDeriv = theSin;
+        theCosDeriv = theCos;
+        break;
+      case 1:
+        theSinDeriv = theCos;
+        theCosDeriv = -theSin;
+        break;
+      case 2:
+        theSinDeriv = -theSin;
+        theCosDeriv = -theCos;
+        break;
+      default:
+        theSinDeriv = -theCos;
+        theCosDeriv = theSin;
+        break;
+    }
+  }
+
+  template <int theMaxOrder>
+  void evalTrigAxisDerivs(const double theT,
+                          const double theAlpha,
+                          const int    theOrder,
+                          double*      theDerivs)
+  {
+    const int aDim = 2 * theOrder + 1;
+    for (int d = 0; d <= theMaxOrder; ++d)
+    {
+      theDerivs[d * aDim] = (d == 0) ? 1.0 : 0.0;
+    }
+
+    int aIdx = 1;
+    for (int k = 1; k <= theOrder; ++k, aIdx += 2)
+    {
+      const double aFreq  = double(k) * theAlpha;
+      const double anArg  = aFreq * theT;
+      const double aSin   = std::sin(anArg);
+      const double aCos   = std::cos(anArg);
+      const double aFreq2 = aFreq * aFreq;
+      const double aFreq3 = aFreq2 * aFreq;
+
+      theDerivs[aIdx]     = aSin;
+      theDerivs[aIdx + 1] = aCos;
+      if constexpr (theMaxOrder >= 1)
+      {
+        theDerivs[aDim + aIdx]     = aFreq * aCos;
+        theDerivs[aDim + aIdx + 1] = -aFreq * aSin;
+      }
+      if constexpr (theMaxOrder >= 2)
+      {
+        theDerivs[2 * aDim + aIdx]     = -aFreq2 * aSin;
+        theDerivs[2 * aDim + aIdx + 1] = -aFreq2 * aCos;
+      }
+      if constexpr (theMaxOrder >= 3)
+      {
+        theDerivs[3 * aDim + aIdx]     = -aFreq3 * aCos;
+        theDerivs[3 * aDim + aIdx + 1] = aFreq3 * aSin;
+      }
+    }
+  }
+
+  void evalTrigAxisNthDeriv(const double theT,
+                            const double theAlpha,
+                            const int    theOrder,
+                            const int    theDerivOrder,
+                            double*      theDerivs)
+  {
+    theDerivs[0] = (theDerivOrder == 0) ? 1.0 : 0.0;
+    if (theDerivOrder == 0)
+    {
+      int aIdx = 1;
+      for (int k = 1; k <= theOrder; ++k, aIdx += 2)
+      {
+        const double anArg = double(k) * theAlpha * theT;
+        theDerivs[aIdx]     = std::sin(anArg);
+        theDerivs[aIdx + 1] = std::cos(anArg);
+      }
+      return;
+    }
+
+    const int aOrderMod4 = theDerivOrder & 3;
+    int       aIdx       = 1;
+    for (int k = 1; k <= theOrder; ++k, aIdx += 2)
+    {
+      const double aFreq = double(k) * theAlpha;
+      const double anArg = aFreq * theT;
+      const double aSin  = std::sin(anArg);
+      const double aCos  = std::cos(anArg);
+      const double aPow  = powInt(aFreq, theDerivOrder);
+      double       aSinDeriv = 0.0;
+      double       aCosDeriv = 0.0;
+      evalTrigPairNthDeriv(aSin, aCos, aOrderMod4, aSinDeriv, aCosDeriv);
+      theDerivs[aIdx]     = aPow * aSinDeriv;
+      theDerivs[aIdx + 1] = aPow * aCosDeriv;
     }
   }
 }
@@ -317,20 +433,12 @@ void GeomEval_TBezierSurface::evalTrigBasisDeriv(double                      the
                                                   int                         theDerivOrder,
                                                   NCollection_Array1<double>& theBasisDeriv)
 {
-  // Derivative of constant T_0 = 1 is 0.
-  theBasisDeriv.SetValue(theBasisDeriv.Lower(), 0.0);
-
-  for (int k = 1; k <= theOrder; ++k)
+  const int aDim = 2 * theOrder + 1;
+  NCollection_LocalArray<double, 16> aDerivs(aDim);
+  evalTrigAxisNthDeriv(theT, theAlpha, theOrder, theDerivOrder, aDerivs);
+  for (int i = 0; i < aDim; ++i)
   {
-    const double aFreq    = k * theAlpha;
-    const double anArg    = aFreq * theT;
-    const double aFreqPow = std::pow(aFreq, theDerivOrder);
-    const double aPhase   = theDerivOrder * M_PI / 2.0;
-
-    theBasisDeriv.SetValue(theBasisDeriv.Lower() + 2 * k - 1,
-                           aFreqPow * std::sin(anArg + aPhase));
-    theBasisDeriv.SetValue(theBasisDeriv.Lower() + 2 * k,
-                           aFreqPow * std::cos(anArg + aPhase));
+    theBasisDeriv.SetValue(theBasisDeriv.Lower() + i, aDerivs[i]);
   }
 }
 
@@ -374,20 +482,20 @@ gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
 {
   const int aNbU = myPoles.NbRows();
   const int aNbV = myPoles.NbColumns();
-  NCollection_Array1<double> aBasisU(1, aNbU);
-  NCollection_Array1<double> aBasisV(1, aNbV);
-  evalBasisU(U, aBasisU);
-  evalBasisV(V, aBasisV);
+  NCollection_LocalArray<double, 16> aBasisU(aNbU);
+  NCollection_LocalArray<double, 16> aBasisV(aNbV);
+  evalTrigAxisDerivs<0>(U, myAlphaU, (aNbU - 1) / 2, aBasisU);
+  evalTrigAxisDerivs<0>(V, myAlphaV, (aNbV - 1) / 2, aBasisV);
 
   if (!myRational)
   {
     gp_XYZ aSum(0.0, 0.0, 0.0);
     for (int i = 0; i < aNbU; ++i)
     {
-      const double aBu = aBasisU.Value(1 + i);
+      const double aBu = aBasisU[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        aSum += (aBu * aBasisV.Value(1 + j))
+        aSum += (aBu * aBasisV[j])
                 * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
       }
     }
@@ -399,11 +507,11 @@ gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
   double  aDenom = 0.0;
   for (int i = 0; i < aNbU; ++i)
   {
-    const double aBu = aBasisU.Value(1 + i);
+    const double aBu = aBasisU[i];
     for (int j = 0; j < aNbV; ++j)
     {
       const double aWBuBv = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j)
-                            * aBu * aBasisV.Value(1 + j);
+                          * aBu * aBasisV[j];
       aNumer += aWBuBv * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
       aDenom += aWBuBv;
     }
@@ -417,14 +525,15 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
 {
   const int aNbU = myPoles.NbRows();
   const int aNbV = myPoles.NbColumns();
-  NCollection_Array1<double> aBasisU(1, aNbU);
-  NCollection_Array1<double> aBasisV(1, aNbV);
-  NCollection_Array1<double> aBasisDU(1, aNbU);
-  NCollection_Array1<double> aBasisDV(1, aNbV);
-  evalBasisU(U, aBasisU);
-  evalBasisV(V, aBasisV);
-  evalBasisDerivU(U, 1, aBasisDU);
-  evalBasisDerivV(V, 1, aBasisDV);
+  NCollection_LocalArray<double, 16> aBUDerivs((1 + 1) * aNbU);
+  NCollection_LocalArray<double, 16> aBVDerivs((1 + 1) * aNbV);
+  evalTrigAxisDerivs<1>(U, myAlphaU, (aNbU - 1) / 2, aBUDerivs);
+  evalTrigAxisDerivs<1>(V, myAlphaV, (aNbV - 1) / 2, aBVDerivs);
+
+  const double* aBasisU  = aBUDerivs;
+  const double* aBasisDU = aBUDerivs + aNbU;
+  const double* aBasisV  = aBVDerivs;
+  const double* aBasisDV = aBVDerivs + aNbV;
 
   Geom_Surface::ResD1 aResult;
 
@@ -435,12 +544,12 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
     gp_XYZ aDV(0.0, 0.0, 0.0);
     for (int i = 0; i < aNbU; ++i)
     {
-      const double aBu  = aBasisU.Value(1 + i);
-      const double aBuD = aBasisDU.Value(1 + i);
+      const double aBu  = aBasisU[i];
+      const double aBuD = aBasisDU[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        const double aBv  = aBasisV.Value(1 + j);
-        const double aBvD = aBasisDV.Value(1 + j);
+        const double aBv  = aBasisV[j];
+        const double aBvD = aBasisDV[j];
         const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
                                             myPoles.LowerCol() + j).XYZ();
         aS  += (aBu * aBv)  * aPij;
@@ -463,12 +572,12 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
   double  aWDV = 0.0;
   for (int i = 0; i < aNbU; ++i)
   {
-    const double aBu  = aBasisU.Value(1 + i);
-    const double aBuD = aBasisDU.Value(1 + i);
+    const double aBu  = aBasisU[i];
+    const double aBuD = aBasisDU[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aBv  = aBasisV.Value(1 + j);
-      const double aBvD = aBasisDV.Value(1 + j);
+      const double aBv  = aBasisV[j];
+      const double aBvD = aBasisDV[j];
       const double aWij = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
       const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
                                           myPoles.LowerCol() + j).XYZ();
@@ -497,18 +606,17 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
 {
   const int aNbU = myPoles.NbRows();
   const int aNbV = myPoles.NbColumns();
-  NCollection_Array1<double> aBasisU(1, aNbU);
-  NCollection_Array1<double> aBasisV(1, aNbV);
-  NCollection_Array1<double> aBasisDU(1, aNbU);
-  NCollection_Array1<double> aBasisDV(1, aNbV);
-  NCollection_Array1<double> aBasisD2U(1, aNbU);
-  NCollection_Array1<double> aBasisD2V(1, aNbV);
-  evalBasisU(U, aBasisU);
-  evalBasisV(V, aBasisV);
-  evalBasisDerivU(U, 1, aBasisDU);
-  evalBasisDerivV(V, 1, aBasisDV);
-  evalBasisDerivU(U, 2, aBasisD2U);
-  evalBasisDerivV(V, 2, aBasisD2V);
+  NCollection_LocalArray<double, 16> aBUDerivs((2 + 1) * aNbU);
+  NCollection_LocalArray<double, 16> aBVDerivs((2 + 1) * aNbV);
+  evalTrigAxisDerivs<2>(U, myAlphaU, (aNbU - 1) / 2, aBUDerivs);
+  evalTrigAxisDerivs<2>(V, myAlphaV, (aNbV - 1) / 2, aBVDerivs);
+
+  const double* aBasisU  = aBUDerivs;
+  const double* aBasisDU = aBUDerivs + aNbU;
+  const double* aBasisD2U = aBUDerivs + 2 * aNbU;
+  const double* aBasisV  = aBVDerivs;
+  const double* aBasisDV = aBVDerivs + aNbV;
+  const double* aBasisD2V = aBVDerivs + 2 * aNbV;
 
   Geom_Surface::ResD2 aResult;
 
@@ -522,14 +630,14 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
     gp_XYZ aD2UV(0.0, 0.0, 0.0);
     for (int i = 0; i < aNbU; ++i)
     {
-      const double aBu   = aBasisU.Value(1 + i);
-      const double aBuD  = aBasisDU.Value(1 + i);
-      const double aBuD2 = aBasisD2U.Value(1 + i);
+      const double aBu   = aBasisU[i];
+      const double aBuD  = aBasisDU[i];
+      const double aBuD2 = aBasisD2U[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        const double aBv   = aBasisV.Value(1 + j);
-        const double aBvD  = aBasisDV.Value(1 + j);
-        const double aBvD2 = aBasisD2V.Value(1 + j);
+        const double aBv   = aBasisV[j];
+        const double aBvD  = aBasisDV[j];
+        const double aBvD2 = aBasisD2V[j];
         const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
                                             myPoles.LowerCol() + j).XYZ();
         aS    += (aBu   * aBv)   * aPij;
@@ -564,14 +672,14 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
   double  aWDUV  = 0.0;
   for (int i = 0; i < aNbU; ++i)
   {
-    const double aBu   = aBasisU.Value(1 + i);
-    const double aBuD  = aBasisDU.Value(1 + i);
-    const double aBuD2 = aBasisD2U.Value(1 + i);
+    const double aBu   = aBasisU[i];
+    const double aBuD  = aBasisDU[i];
+    const double aBuD2 = aBasisD2U[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aBv   = aBasisV.Value(1 + j);
-      const double aBvD  = aBasisDV.Value(1 + j);
-      const double aBvD2 = aBasisD2V.Value(1 + j);
+      const double aBv   = aBasisV[j];
+      const double aBvD  = aBasisDV[j];
+      const double aBvD2 = aBasisD2V[j];
       const double aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
       const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
                                           myPoles.LowerCol() + j).XYZ();
@@ -619,22 +727,19 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
 {
   const int aNbU = myPoles.NbRows();
   const int aNbV = myPoles.NbColumns();
-  NCollection_Array1<double> aBasisU(1, aNbU);
-  NCollection_Array1<double> aBasisV(1, aNbV);
-  NCollection_Array1<double> aBasisDU(1, aNbU);
-  NCollection_Array1<double> aBasisDV(1, aNbV);
-  NCollection_Array1<double> aBasisD2U(1, aNbU);
-  NCollection_Array1<double> aBasisD2V(1, aNbV);
-  NCollection_Array1<double> aBasisD3U(1, aNbU);
-  NCollection_Array1<double> aBasisD3V(1, aNbV);
-  evalBasisU(U, aBasisU);
-  evalBasisV(V, aBasisV);
-  evalBasisDerivU(U, 1, aBasisDU);
-  evalBasisDerivV(V, 1, aBasisDV);
-  evalBasisDerivU(U, 2, aBasisD2U);
-  evalBasisDerivV(V, 2, aBasisD2V);
-  evalBasisDerivU(U, 3, aBasisD3U);
-  evalBasisDerivV(V, 3, aBasisD3V);
+  NCollection_LocalArray<double, 16> aBUDerivs((3 + 1) * aNbU);
+  NCollection_LocalArray<double, 16> aBVDerivs((3 + 1) * aNbV);
+  evalTrigAxisDerivs<3>(U, myAlphaU, (aNbU - 1) / 2, aBUDerivs);
+  evalTrigAxisDerivs<3>(V, myAlphaV, (aNbV - 1) / 2, aBVDerivs);
+
+  const double* aBasisU   = aBUDerivs;
+  const double* aBasisDU  = aBUDerivs + aNbU;
+  const double* aBasisD2U = aBUDerivs + 2 * aNbU;
+  const double* aBasisD3U = aBUDerivs + 3 * aNbU;
+  const double* aBasisV   = aBVDerivs;
+  const double* aBasisDV  = aBVDerivs + aNbV;
+  const double* aBasisD2V = aBVDerivs + 2 * aNbV;
+  const double* aBasisD3V = aBVDerivs + 3 * aNbV;
 
   Geom_Surface::ResD3 aResult;
 
@@ -653,16 +758,16 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
 
     for (int i = 0; i < aNbU; ++i)
     {
-      const double aBu   = aBasisU.Value(1 + i);
-      const double aBuD  = aBasisDU.Value(1 + i);
-      const double aBuD2 = aBasisD2U.Value(1 + i);
-      const double aBuD3 = aBasisD3U.Value(1 + i);
+      const double aBu   = aBasisU[i];
+      const double aBuD  = aBasisDU[i];
+      const double aBuD2 = aBasisD2U[i];
+      const double aBuD3 = aBasisD3U[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        const double aBv   = aBasisV.Value(1 + j);
-        const double aBvD  = aBasisDV.Value(1 + j);
-        const double aBvD2 = aBasisD2V.Value(1 + j);
-        const double aBvD3 = aBasisD3V.Value(1 + j);
+        const double aBv   = aBasisV[j];
+        const double aBvD  = aBasisDV[j];
+        const double aBvD2 = aBasisD2V[j];
+        const double aBvD3 = aBasisD3V[j];
         const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
                                             myPoles.LowerCol() + j).XYZ();
 
@@ -715,16 +820,16 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
 
   for (int i = 0; i < aNbU; ++i)
   {
-    const double aBu   = aBasisU.Value(1 + i);
-    const double aBuD  = aBasisDU.Value(1 + i);
-    const double aBuD2 = aBasisD2U.Value(1 + i);
-    const double aBuD3 = aBasisD3U.Value(1 + i);
+    const double aBu   = aBasisU[i];
+    const double aBuD  = aBasisDU[i];
+    const double aBuD2 = aBasisD2U[i];
+    const double aBuD3 = aBasisD3U[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aBv   = aBasisV.Value(1 + j);
-      const double aBvD  = aBasisDV.Value(1 + j);
-      const double aBvD2 = aBasisD2V.Value(1 + j);
-      const double aBvD3 = aBasisD3V.Value(1 + j);
+      const double aBv   = aBasisV[j];
+      const double aBvD  = aBasisDV[j];
+      const double aBvD2 = aBasisD2V[j];
+      const double aBvD3 = aBasisD3V[j];
       const double aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
       const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
                                           myPoles.LowerCol() + j).XYZ();
@@ -817,34 +922,18 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
   {
     const int aNbU = myPoles.NbRows();
     const int aNbV = myPoles.NbColumns();
-    NCollection_Array1<double> aBasisU(1, aNbU);
-    NCollection_Array1<double> aBasisV(1, aNbV);
-
-    if (Nu == 0)
-    {
-      evalBasisU(U, aBasisU);
-    }
-    else
-    {
-      evalBasisDerivU(U, Nu, aBasisU);
-    }
-
-    if (Nv == 0)
-    {
-      evalBasisV(V, aBasisV);
-    }
-    else
-    {
-      evalBasisDerivV(V, Nv, aBasisV);
-    }
+    NCollection_LocalArray<double, 16> aBasisU(aNbU);
+    NCollection_LocalArray<double, 16> aBasisV(aNbV);
+    evalTrigAxisNthDeriv(U, myAlphaU, (aNbU - 1) / 2, Nu, aBasisU);
+    evalTrigAxisNthDeriv(V, myAlphaV, (aNbV - 1) / 2, Nv, aBasisV);
 
     gp_XYZ aSum(0.0, 0.0, 0.0);
     for (int i = 0; i < aNbU; ++i)
     {
-      const double aBu = aBasisU.Value(1 + i);
+      const double aBu = aBasisU[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        aSum += (aBu * aBasisV.Value(1 + j))
+        aSum += (aBu * aBasisV[j])
                 * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
       }
     }
