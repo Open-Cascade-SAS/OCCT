@@ -27,13 +27,13 @@
 
 namespace
 {
-constexpr double THE_FD_TOL  = 1e-5;
+constexpr double THE_FD_TOL = 1e-5;
 } // namespace
 
 // Test construction with valid parameters
 TEST(GeomEval_HypParaboloidSurfaceTest, Construction_ValidParams)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_NEAR(aSurf.SemiAxisA(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aSurf.SemiAxisB(), 3.0, Precision::Confusion());
@@ -51,9 +51,9 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Construction_InvalidAxes_Throws)
 // Test EvalD0 at u=0, v=0: P = O + 0*X + 0*Y + 0*Z = origin
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD0_Origin)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
-  gp_Pnt aP = aSurf.EvalD0(0.0, 0.0);
+  gp_Pnt                        aP = aSurf.EvalD0(0.0, 0.0);
   EXPECT_NEAR(aP.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), 0.0, Precision::Confusion());
@@ -62,10 +62,10 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD0_Origin)
 // Test EvalD0 at u=1, v=0: P = (1, 0, 1/A^2)
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD0_KnownPoint_U)
 {
-  gp_Ax3 anAx3;
-  const double aA = 2.0, aB = 3.0;
+  gp_Ax3                        anAx3;
+  const double                  aA = 2.0, aB = 3.0;
   GeomEval_HypParaboloidSurface aSurf(anAx3, aA, aB);
-  gp_Pnt aP = aSurf.EvalD0(1.0, 0.0);
+  gp_Pnt                        aP = aSurf.EvalD0(1.0, 0.0);
   EXPECT_NEAR(aP.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), 1.0 / (aA * aA), Precision::Confusion()); // u^2/A^2 = 1/4
@@ -74,10 +74,10 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD0_KnownPoint_U)
 // Test EvalD0 at u=0, v=1: P = (0, 1, -1/B^2)
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD0_KnownPoint_V)
 {
-  gp_Ax3 anAx3;
-  const double aA = 2.0, aB = 3.0;
+  gp_Ax3                        anAx3;
+  const double                  aA = 2.0, aB = 3.0;
   GeomEval_HypParaboloidSurface aSurf(anAx3, aA, aB);
-  gp_Pnt aP = aSurf.EvalD0(0.0, 1.0);
+  gp_Pnt                        aP = aSurf.EvalD0(0.0, 1.0);
   EXPECT_NEAR(aP.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), -1.0 / (aB * aB), Precision::Confusion()); // -v^2/B^2 = -1/9
@@ -87,15 +87,15 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD0_KnownPoint_V)
 // Since the surface is polynomial, derivatives should be very accurate
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
-  const double aU = 1.5, aV = 0.7;
+  const double                  aU = 1.5, aV = 0.7;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Pnt aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
-  gp_Pnt aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
-  gp_Pnt aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
-  gp_Pnt aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
+  Geom_Surface::ResD1 aD1  = aSurf.EvalD1(aU, aV);
+  gp_Pnt              aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
+  gp_Pnt              aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
+  gp_Pnt              aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
+  gp_Pnt              aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
 
   gp_Vec aFDU((aPu1.XYZ() - aPu2.XYZ()) / (2.0 * Precision::Confusion()));
   gp_Vec aFDV((aPv1.XYZ() - aPv2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -111,8 +111,8 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD1_ConsistentWithD0)
 // Test D2 has constant Z component: d2Z/du2 = 2/A^2, d2Z/dv2 = -2/B^2
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_ConstantZComponent)
 {
-  gp_Ax3 anAx3;
-  const double aA = 2.0, aB = 3.0;
+  gp_Ax3                        anAx3;
+  const double                  aA = 2.0, aB = 3.0;
   GeomEval_HypParaboloidSurface aSurf(anAx3, aA, aB);
 
   // Evaluate at several parameter values: D2 should be constant
@@ -135,9 +135,9 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_ConstantZComponent)
 // Test Bounds: all infinite, not periodic, not closed
 TEST(GeomEval_HypParaboloidSurfaceTest, Bounds_Periodicity)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 1.0, 1.0);
-  double aU1, aU2, aV1, aV2;
+  double                        aU1, aU2, aV1, aV2;
   aSurf.Bounds(aU1, aU2, aV1, aV2);
   EXPECT_TRUE(aU1 < -1e10);
   EXPECT_TRUE(aU2 > 1e10);
@@ -151,7 +151,7 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Bounds_Periodicity)
 
 TEST(GeomEval_HypParaboloidSurfaceTest, Iso_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
@@ -159,7 +159,7 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Iso_NotImplemented)
 
 TEST(GeomEval_HypParaboloidSurfaceTest, Reverse_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
@@ -170,9 +170,9 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Reverse_NotImplemented)
 // Test implicit equation at evaluated points
 TEST(GeomEval_HypParaboloidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
-  double aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
+  double                        aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
   aSurf.Coefficients(aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD);
 
   for (double u = -2.0; u <= 2.0; u += 1.0)
@@ -181,9 +181,9 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
     {
       gp_Pnt aP = aSurf.EvalD0(u, v);
       double aX = aP.X(), aY = aP.Y(), aZ = aP.Z();
-      double aVal = aA1*aX*aX + aA2*aY*aY + aA3*aZ*aZ
-                  + 2.0*(aB1*aX*aY + aB2*aX*aZ + aB3*aY*aZ)
-                  + 2.0*(aC1*aX + aC2*aY + aC3*aZ) + aD;
+      double aVal = aA1 * aX * aX + aA2 * aY * aY + aA3 * aZ * aZ
+                    + 2.0 * (aB1 * aX * aY + aB2 * aX * aZ + aB3 * aY * aZ)
+                    + 2.0 * (aC1 * aX + aC2 * aY + aC3 * aZ) + aD;
       EXPECT_NEAR(aVal, 0.0, Precision::Intersection());
     }
   }
@@ -192,9 +192,9 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
 // Test Transform/Transformed are not implemented.
 TEST(GeomEval_HypParaboloidSurfaceTest, Transform_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
-  gp_Trsf aTrsf;
+  gp_Trsf                       aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
@@ -204,9 +204,9 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(GeomEval_HypParaboloidSurfaceTest, Copy_Independent)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
-  occ::handle<Geom_Geometry> aCopy = aSurf.Copy();
+  occ::handle<Geom_Geometry>    aCopy = aSurf.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const GeomEval_HypParaboloidSurface* aCopySurf =
     dynamic_cast<const GeomEval_HypParaboloidSurface*>(aCopy.get());
@@ -218,16 +218,16 @@ TEST(GeomEval_HypParaboloidSurfaceTest, Copy_Independent)
 // Test DumpJson does not crash
 TEST(GeomEval_HypParaboloidSurfaceTest, DumpJson_NoCrash)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
-  Standard_SStream aSS;
+  Standard_SStream              aSS;
   EXPECT_NO_THROW(aSurf.DumpJson(aSS));
 }
 
 // Test D3 components are zero for degree-2 polynomial surface
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD3_Zero)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
 
   Geom_Surface::ResD3 aD3 = aSurf.EvalD3(1.0, 1.0);
@@ -241,7 +241,7 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD3_Zero)
 // Test D2UV cross derivative is zero since u and v terms are separated
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_CrossDerivative)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, 2.0, 3.0);
 
   const double aTestPoints[][2] = {{0.0, 0.0}, {1.5, -2.0}, {-3.0, 4.5}};
@@ -257,8 +257,8 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_CrossDerivative)
 // Test D2 known values including X,Y components (should be zero)
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_KnownValues)
 {
-  gp_Ax3 anAx3;
-  const double aA = 2.0, aB = 3.0;
+  gp_Ax3                        anAx3;
+  const double                  aA = 2.0, aB = 3.0;
   GeomEval_HypParaboloidSurface aSurf(anAx3, aA, aB);
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(1.5, -2.7);
@@ -277,10 +277,10 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_KnownValues)
 // Test EvalDN consistency with D2 and higher-order zero
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalDN_HigherOrder)
 {
-  gp_Ax3 anAx3;
-  const double aA = 2.0, aB = 3.0;
+  gp_Ax3                        anAx3;
+  const double                  aA = 2.0, aB = 3.0;
   GeomEval_HypParaboloidSurface aSurf(anAx3, aA, aB);
-  const double aU = 1.0, aV = 1.0;
+  const double                  aU = 1.0, aV = 1.0;
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(aU, aV);
 
@@ -305,8 +305,8 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalDN_HigherOrder)
 // P(u,v) = (u, v, u^2/A^2 - v^2/B^2) is exactly representable as degree-2 Bezier.
 TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_MatchesBezierSurface)
 {
-  const double aA = 2.0, aB = 3.0;
-  gp_Ax3 anAx3;
+  const double                  aA = 2.0, aB = 3.0;
+  gp_Ax3                        anAx3;
   GeomEval_HypParaboloidSurface aSurf(anAx3, aA, aB);
 
   // Build equivalent bi-quadratic Bezier surface.
@@ -318,19 +318,19 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_MatchesBezierSurface)
   NCollection_Array2<gp_Pnt> aBPoles(1, 3, 1, 3);
   for (int i = 1; i <= 3; ++i)
   {
-    const double aXi = 0.5 * (i - 1); // {0, 0.5, 1}
+    const double aXi = 0.5 * (i - 1);           // {0, 0.5, 1}
     const double aZu = (i == 3) ? aInvA2 : 0.0; // Bernstein coeff of u^2
     for (int j = 1; j <= 3; ++j)
     {
-      const double aYj = 0.5 * (j - 1); // {0, 0.5, 1}
+      const double aYj = 0.5 * (j - 1);            // {0, 0.5, 1}
       const double aZv = (j == 3) ? -aInvB2 : 0.0; // Bernstein coeff of -v^2
       aBPoles.SetValue(i, j, gp_Pnt(aXi, aYj, aZu + aZv));
     }
   }
   Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aBPoles);
 
-  const double aParams[][2] = {{0.0, 0.0}, {0.25, 0.25}, {0.5, 0.5},
-                                {0.75, 0.25}, {0.3, 0.7}, {1.0, 1.0}};
+  const double aParams[][2] =
+    {{0.0, 0.0}, {0.25, 0.25}, {0.5, 0.5}, {0.75, 0.25}, {0.3, 0.7}, {1.0, 1.0}};
   for (const auto& aUV : aParams)
   {
     Geom_Surface::ResD2 aD2H = aSurf.EvalD2(aUV[0], aUV[1]);

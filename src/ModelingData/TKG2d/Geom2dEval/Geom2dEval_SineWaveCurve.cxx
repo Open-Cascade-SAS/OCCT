@@ -54,9 +54,9 @@ inline double sinShiftByQuarterTurns(const double theSin, const double theCos, c
 //==================================================================================================
 
 Geom2dEval_SineWaveCurve::Geom2dEval_SineWaveCurve(const gp_Ax2d& thePosition,
-                                            double         theAmplitude,
-                                            double         theOmega,
-                                            double         thePhase)
+                                                   double         theAmplitude,
+                                                   double         theOmega,
+                                                   double         thePhase)
     : myPosition(thePosition),
       myAmplitude(theAmplitude),
       myOmega(theOmega),
@@ -64,13 +64,11 @@ Geom2dEval_SineWaveCurve::Geom2dEval_SineWaveCurve(const gp_Ax2d& thePosition,
 {
   if (theAmplitude <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "Geom2dEval_SineWaveCurve: amplitude must be > 0");
+    throw Standard_ConstructionError("Geom2dEval_SineWaveCurve: amplitude must be > 0");
   }
   if (theOmega <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "Geom2dEval_SineWaveCurve: omega must be > 0");
+    throw Standard_ConstructionError("Geom2dEval_SineWaveCurve: omega must be > 0");
   }
 }
 
@@ -191,7 +189,7 @@ Geom2d_Curve::ResD1 Geom2dEval_SineWaveCurve::EvalD1(const double U) const
 
   Geom2d_Curve::ResD1 aResult;
   aResult.Point = gp_Pnt2d(anO + U * aXD + myAmplitude * std::sin(aArg) * aYD);
-  aResult.D1 = gp_Vec2d(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
+  aResult.D1    = gp_Vec2d(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
 
   return aResult;
 }
@@ -209,8 +207,8 @@ Geom2d_Curve::ResD2 Geom2dEval_SineWaveCurve::EvalD2(const double U) const
 
   Geom2d_Curve::ResD2 aResult;
   aResult.Point = gp_Pnt2d(anO + U * aXD + myAmplitude * std::sin(aArg) * aYD);
-  aResult.D1 = gp_Vec2d(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
-  aResult.D2 = gp_Vec2d(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
+  aResult.D1    = gp_Vec2d(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
+  aResult.D2    = gp_Vec2d(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
 
   return aResult;
 }
@@ -229,9 +227,9 @@ Geom2d_Curve::ResD3 Geom2dEval_SineWaveCurve::EvalD3(const double U) const
 
   Geom2d_Curve::ResD3 aResult;
   aResult.Point = gp_Pnt2d(anO + U * aXD + myAmplitude * std::sin(aArg) * aYD);
-  aResult.D1 = gp_Vec2d(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
-  aResult.D2 = gp_Vec2d(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
-  aResult.D3 = gp_Vec2d(myAmplitude * (-aOm3) * std::cos(aArg) * aYD);
+  aResult.D1    = gp_Vec2d(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
+  aResult.D2    = gp_Vec2d(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
+  aResult.D3    = gp_Vec2d(myAmplitude * (-aOm3) * std::cos(aArg) * aYD);
 
   return aResult;
 }

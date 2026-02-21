@@ -426,7 +426,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveDNMapped(
   {
     aScaleN *= theDesc.ParamMap.Scale;
   }
-  theResult              = aRepVec * aScaleN;
+  theResult = aRepVec * aScaleN;
   return true;
 }
 

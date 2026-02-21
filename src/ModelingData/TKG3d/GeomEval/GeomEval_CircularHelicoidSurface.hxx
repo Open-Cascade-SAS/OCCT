@@ -34,13 +34,11 @@
 class GeomEval_CircularHelicoidSurface : public Geom_ElementarySurface
 {
 public:
-
   //! Creates a circular helicoid surface.
   //! @param[in] thePosition the local coordinate system
   //! @param[in] thePitch the axial advance per 2*Pi turn (must be != 0)
   //! @throw Standard_ConstructionError if thePitch == 0
-  Standard_EXPORT GeomEval_CircularHelicoidSurface(const gp_Ax3& thePosition,
-                                                   double        thePitch);
+  Standard_EXPORT GeomEval_CircularHelicoidSurface(const gp_Ax3& thePosition, double thePitch);
 
   //! Returns the pitch.
   Standard_EXPORT double Pitch() const;
@@ -121,7 +119,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_CircularHelicoidSurface, Geom_ElementarySurface)
 
 private:
-
   double myPitch; //!< Axial advance per 2*Pi turn
 };
 

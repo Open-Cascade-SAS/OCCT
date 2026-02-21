@@ -34,8 +34,7 @@ GeomEval_CircularHelixCurve::GeomEval_CircularHelixCurve(const gp_Ax2& thePositi
 {
   if (theRadius <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_CircularHelixCurve: radius must be > 0");
+    throw Standard_ConstructionError("GeomEval_CircularHelixCurve: radius must be > 0");
   }
 }
 
@@ -131,9 +130,7 @@ gp_Pnt GeomEval_CircularHelixCurve::EvalD0(const double U) const
 
   const double aZComp = myPitch * U / (2.0 * M_PI);
 
-  return gp_Pnt(anO + myRadius * aCosU * aXD
-                     + myRadius * aSinU * aYD
-                     + aZComp * aZD);
+  return gp_Pnt(anO + myRadius * aCosU * aXD + myRadius * aSinU * aYD + aZComp * aZD);
 }
 
 //==================================================================================================
@@ -152,14 +149,10 @@ Geom_Curve::ResD1 GeomEval_CircularHelixCurve::EvalD1(const double U) const
   const double aZRate = myPitch / (2.0 * M_PI);
 
   Geom_Curve::ResD1 aResult;
-  aResult.Point = gp_Pnt(anO + myRadius * aCosU * aXD
-                              + myRadius * aSinU * aYD
-                              + aZComp * aZD);
+  aResult.Point = gp_Pnt(anO + myRadius * aCosU * aXD + myRadius * aSinU * aYD + aZComp * aZD);
 
   // D1 = -R*sin(t)*XDir + R*cos(t)*YDir + P/(2*Pi)*ZDir
-  aResult.D1 = gp_Vec(myRadius * (-aSinU) * aXD
-                     + myRadius * aCosU * aYD
-                     + aZRate * aZD);
+  aResult.D1 = gp_Vec(myRadius * (-aSinU) * aXD + myRadius * aCosU * aYD + aZRate * aZD);
 
   return aResult;
 }
@@ -180,17 +173,12 @@ Geom_Curve::ResD2 GeomEval_CircularHelixCurve::EvalD2(const double U) const
   const double aZRate = myPitch / (2.0 * M_PI);
 
   Geom_Curve::ResD2 aResult;
-  aResult.Point = gp_Pnt(anO + myRadius * aCosU * aXD
-                              + myRadius * aSinU * aYD
-                              + aZComp * aZD);
+  aResult.Point = gp_Pnt(anO + myRadius * aCosU * aXD + myRadius * aSinU * aYD + aZComp * aZD);
 
-  aResult.D1 = gp_Vec(myRadius * (-aSinU) * aXD
-                     + myRadius * aCosU * aYD
-                     + aZRate * aZD);
+  aResult.D1 = gp_Vec(myRadius * (-aSinU) * aXD + myRadius * aCosU * aYD + aZRate * aZD);
 
   // D2 = -R*cos(t)*XDir - R*sin(t)*YDir
-  aResult.D2 = gp_Vec(myRadius * (-aCosU) * aXD
-                     + myRadius * (-aSinU) * aYD);
+  aResult.D2 = gp_Vec(myRadius * (-aCosU) * aXD + myRadius * (-aSinU) * aYD);
 
   return aResult;
 }
@@ -211,20 +199,14 @@ Geom_Curve::ResD3 GeomEval_CircularHelixCurve::EvalD3(const double U) const
   const double aZRate = myPitch / (2.0 * M_PI);
 
   Geom_Curve::ResD3 aResult;
-  aResult.Point = gp_Pnt(anO + myRadius * aCosU * aXD
-                              + myRadius * aSinU * aYD
-                              + aZComp * aZD);
+  aResult.Point = gp_Pnt(anO + myRadius * aCosU * aXD + myRadius * aSinU * aYD + aZComp * aZD);
 
-  aResult.D1 = gp_Vec(myRadius * (-aSinU) * aXD
-                     + myRadius * aCosU * aYD
-                     + aZRate * aZD);
+  aResult.D1 = gp_Vec(myRadius * (-aSinU) * aXD + myRadius * aCosU * aYD + aZRate * aZD);
 
-  aResult.D2 = gp_Vec(myRadius * (-aCosU) * aXD
-                     + myRadius * (-aSinU) * aYD);
+  aResult.D2 = gp_Vec(myRadius * (-aCosU) * aXD + myRadius * (-aSinU) * aYD);
 
   // D3 = R*sin(t)*XDir - R*cos(t)*YDir
-  aResult.D3 = gp_Vec(myRadius * aSinU * aXD
-                     + myRadius * (-aCosU) * aYD);
+  aResult.D3 = gp_Vec(myRadius * aSinU * aXD + myRadius * (-aCosU) * aYD);
 
   return aResult;
 }
@@ -246,7 +228,7 @@ gp_Vec GeomEval_CircularHelixCurve::EvalDN(const double U, const int N) const
   // d^N/dt^N[cos(t)] = cos(t + N*Pi/2)
   // d^N/dt^N[sin(t)] = sin(t + N*Pi/2)
   // Z component is P/(2*Pi) for N=1, 0 otherwise.
-  const double aPhase = N * M_PI / 2.0;
+  const double aPhase  = N * M_PI / 2.0;
   const double aCoeffX = myRadius * std::cos(U + aPhase);
   const double aCoeffY = myRadius * std::sin(U + aPhase);
 

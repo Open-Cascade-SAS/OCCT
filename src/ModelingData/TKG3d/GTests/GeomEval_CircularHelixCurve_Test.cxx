@@ -33,7 +33,7 @@ constexpr double THE_FD_TOL = 1e-5;
 
 TEST(GeomEval_CircularHelixCurveTest, Construction_ValidParams)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
   EXPECT_NEAR(aCurve.Radius(), 5.0, Precision::Confusion());
   EXPECT_NEAR(aCurve.Pitch(), 10.0, Precision::Confusion());
@@ -54,8 +54,8 @@ TEST(GeomEval_CircularHelixCurveTest, Construction_NegativePitch_NoThrow)
 
 TEST(GeomEval_CircularHelixCurveTest, EvalD0_AtKnownPoints)
 {
-  gp_Ax2 anAx2;
-  const double aR = 5.0, aP = 10.0;
+  gp_Ax2                      anAx2;
+  const double                aR = 5.0, aP = 10.0;
   GeomEval_CircularHelixCurve aCurve(anAx2, aR, aP);
 
   // t=0: C(0) = (R, 0, 0)
@@ -85,12 +85,12 @@ TEST(GeomEval_CircularHelixCurveTest, EvalD0_AtKnownPoints)
 
 TEST(GeomEval_CircularHelixCurveTest, EvalD1_ConstantSpeed)
 {
-  gp_Ax2 anAx2;
-  const double aR = 5.0, aP = 10.0;
+  gp_Ax2                      anAx2;
+  const double                aR = 5.0, aP = 10.0;
   GeomEval_CircularHelixCurve aCurve(anAx2, aR, aP);
 
   // |D1| should be constant = sqrt(R^2 + (P/(2*Pi))^2)
-  const double aZRate = aP / (2.0 * M_PI);
+  const double aZRate    = aP / (2.0 * M_PI);
   const double aExpSpeed = std::sqrt(aR * aR + aZRate * aZRate);
 
   const double aParams[] = {0.0, 0.5, 1.0, M_PI, 2.0 * M_PI};
@@ -103,14 +103,14 @@ TEST(GeomEval_CircularHelixCurveTest, EvalD1_ConstantSpeed)
 
 TEST(GeomEval_CircularHelixCurveTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
-  const double aT = 1.5;
+  const double                aT = 1.5;
 
   Geom_Curve::ResD1 aD1 = aCurve.EvalD1(aT);
-  gp_Pnt aP1 = aCurve.EvalD0(aT + Precision::Confusion());
-  gp_Pnt aP2 = aCurve.EvalD0(aT - Precision::Confusion());
-  gp_Vec aFD((aP1.XYZ() - aP2.XYZ()) / (2.0 * Precision::Confusion()));
+  gp_Pnt            aP1 = aCurve.EvalD0(aT + Precision::Confusion());
+  gp_Pnt            aP2 = aCurve.EvalD0(aT - Precision::Confusion());
+  gp_Vec            aFD((aP1.XYZ() - aP2.XYZ()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD1.D1.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD1.D1.Y(), aFD.Y(), THE_FD_TOL);
@@ -119,7 +119,7 @@ TEST(GeomEval_CircularHelixCurveTest, EvalD1_ConsistentWithD0)
 
 TEST(GeomEval_CircularHelixCurveTest, D1_D2_Orthogonal)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
 
   // D2 has no Z component, so D1.D2 = R^2*(-sin*(-cos) + cos*(-sin)) = 0
@@ -134,10 +134,10 @@ TEST(GeomEval_CircularHelixCurveTest, D1_D2_Orthogonal)
 
 TEST(GeomEval_CircularHelixCurveTest, ComparisonWithCircle_ZeroPitch)
 {
-  gp_Ax2 anAx2;
-  const double aR = 5.0;
+  gp_Ax2                      anAx2;
+  const double                aR = 5.0;
   GeomEval_CircularHelixCurve aHelix(anAx2, aR, 0.0);
-  Handle(Geom_Circle) aCircle = new Geom_Circle(anAx2, aR);
+  Handle(Geom_Circle)         aCircle = new Geom_Circle(anAx2, aR);
 
   const double aParams[] = {0.0, M_PI / 4.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
   for (double aT : aParams)
@@ -170,9 +170,9 @@ TEST(GeomEval_CircularHelixCurveTest, ComparisonWithCircle_ZeroPitch)
 
 TEST(GeomEval_CircularHelixCurveTest, EvalDN_CyclesPeriod4)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
-  const double aT = 1.0;
+  const double                aT = 1.0;
 
   // DN(t,4) XY-components should equal DN(t,0) XY = D0 XY contribution
   // More specifically: DN cycles with period 4 in XY
@@ -186,9 +186,9 @@ TEST(GeomEval_CircularHelixCurveTest, EvalDN_CyclesPeriod4)
 
 TEST(GeomEval_CircularHelixCurveTest, Transform_NotImplemented)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
-  gp_Trsf aTrsf;
+  gp_Trsf                     aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
@@ -197,9 +197,9 @@ TEST(GeomEval_CircularHelixCurveTest, Transform_NotImplemented)
 
 TEST(GeomEval_CircularHelixCurveTest, Copy_Independent)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
-  occ::handle<Geom_Geometry> aCopy = aCurve.Copy();
+  occ::handle<Geom_Geometry>  aCopy = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const GeomEval_CircularHelixCurve* aCopyCurve =
     dynamic_cast<const GeomEval_CircularHelixCurve*>(aCopy.get());
@@ -210,7 +210,7 @@ TEST(GeomEval_CircularHelixCurveTest, Copy_Independent)
 
 TEST(GeomEval_CircularHelixCurveTest, Reverse_NotImplemented)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
   EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
   EXPECT_THROW(aCurve.ReversedParameter(3.0), Standard_NotImplemented);
@@ -218,7 +218,7 @@ TEST(GeomEval_CircularHelixCurveTest, Reverse_NotImplemented)
 
 TEST(GeomEval_CircularHelixCurveTest, Properties)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
   EXPECT_FALSE(aCurve.IsClosed());
   EXPECT_FALSE(aCurve.IsPeriodic());
@@ -228,8 +228,8 @@ TEST(GeomEval_CircularHelixCurveTest, Properties)
 
 TEST(GeomEval_CircularHelixCurveTest, DumpJson_NoCrash)
 {
-  gp_Ax2 anAx2;
+  gp_Ax2                      anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
-  Standard_SStream aSS;
+  Standard_SStream            aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }

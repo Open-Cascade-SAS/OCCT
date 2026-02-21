@@ -44,15 +44,14 @@ class Geom_Curve;
 class GeomEval_TBezierSurface : public Geom_BoundedSurface
 {
 public:
-
   //! Constructs a non-rational T-Bezier surface from poles and alpha parameters.
   //! @param[in] thePoles control points grid (row count and col count must be odd >= 3)
   //! @param[in] theAlphaU frequency parameter in U direction (must be > 0)
   //! @param[in] theAlphaV frequency parameter in V direction (must be > 0)
   //! @throw Standard_ConstructionError if validation fails
   Standard_EXPORT GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
-                                          double theAlphaU,
-                                          double theAlphaV);
+                                          double                            theAlphaU,
+                                          double                            theAlphaV);
 
   //! Constructs a rational T-Bezier surface.
   //! @param[in] thePoles control points grid
@@ -62,8 +61,8 @@ public:
   //! @throw Standard_ConstructionError if validation fails
   Standard_EXPORT GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
                                           const NCollection_Array2<double>& theWeights,
-                                          double theAlphaU,
-                                          double theAlphaV);
+                                          double                            theAlphaU,
+                                          double                            theAlphaV);
 
   //! Returns the poles grid.
   Standard_EXPORT const NCollection_Array2<gp_Pnt>& Poles() const;
@@ -183,7 +182,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_TBezierSurface, Geom_BoundedSurface)
 
 private:
-
   //! Evaluate trigonometric basis functions in U at parameter theU.
   void evalBasisU(double theU, NCollection_Array1<double>& theBasis) const;
 
@@ -191,14 +189,10 @@ private:
   void evalBasisV(double theV, NCollection_Array1<double>& theBasis) const;
 
   //! Evaluate derivative of order theOrder of U-basis functions at theU.
-  void evalBasisDerivU(double                      theU,
-                       int                         theOrder,
-                       NCollection_Array1<double>& theBasisDeriv) const;
+  void evalBasisDerivU(double theU, int theOrder, NCollection_Array1<double>& theBasisDeriv) const;
 
   //! Evaluate derivative of order theOrder of V-basis functions at theV.
-  void evalBasisDerivV(double                      theV,
-                       int                         theOrder,
-                       NCollection_Array1<double>& theBasisDeriv) const;
+  void evalBasisDerivV(double theV, int theOrder, NCollection_Array1<double>& theBasisDeriv) const;
 
   //! Helper: evaluate a single trigonometric basis array for given alpha.
   static void evalTrigBasis(double                      theT,
@@ -215,9 +209,9 @@ private:
 
   NCollection_Array2<gp_Pnt> myPoles;    //!< Control points grid
   NCollection_Array2<double> myWeights;  //!< Weights grid (empty if non-rational)
-  double myAlphaU;                       //!< Frequency parameter in U
-  double myAlphaV;                       //!< Frequency parameter in V
-  bool   myRational;                     //!< True if surface is rational
+  double                     myAlphaU;   //!< Frequency parameter in U
+  double                     myAlphaV;   //!< Frequency parameter in V
+  bool                       myRational; //!< True if surface is rational
 };
 
 #endif // _GeomEval_TBezierSurface_HeaderFile

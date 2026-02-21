@@ -27,139 +27,139 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomEval_TBezierSurface, Geom_BoundedSurface)
 
 namespace
 {
-  //! Validate that a dimension count is odd and >= 3.
-  void validateDimension(int theSize, const char* theName)
+//! Validate that a dimension count is odd and >= 3.
+void validateDimension(int theSize, const char* theName)
+{
+  if (theSize < 3 || (theSize % 2) == 0)
   {
-    if (theSize < 3 || (theSize % 2) == 0)
-    {
-      TCollection_AsciiString aMsg("GeomEval_TBezierSurface: ");
-      aMsg += theName;
-      aMsg += " pole count must be odd and >= 3";
-      throw Standard_ConstructionError(aMsg.ToCString());
-    }
+    TCollection_AsciiString aMsg("GeomEval_TBezierSurface: ");
+    aMsg += theName;
+    aMsg += " pole count must be odd and >= 3";
+    throw Standard_ConstructionError(aMsg.ToCString());
+  }
+}
+
+inline double powInt(const double theValue, const int thePower)
+{
+  double aRes = 1.0;
+  for (int i = 0; i < thePower; ++i)
+  {
+    aRes *= theValue;
+  }
+  return aRes;
+}
+
+inline void evalTrigPairNthDeriv(const double theSin,
+                                 const double theCos,
+                                 const int    theOrderMod4,
+                                 double&      theSinDeriv,
+                                 double&      theCosDeriv)
+{
+  switch (theOrderMod4)
+  {
+    case 0:
+      theSinDeriv = theSin;
+      theCosDeriv = theCos;
+      break;
+    case 1:
+      theSinDeriv = theCos;
+      theCosDeriv = -theSin;
+      break;
+    case 2:
+      theSinDeriv = -theSin;
+      theCosDeriv = -theCos;
+      break;
+    default:
+      theSinDeriv = -theCos;
+      theCosDeriv = theSin;
+      break;
+  }
+}
+
+template <int theMaxOrder>
+void evalTrigAxisDerivs(const double theT,
+                        const double theAlpha,
+                        const int    theOrder,
+                        double*      theDerivs)
+{
+  const int aDim = 2 * theOrder + 1;
+  for (int d = 0; d <= theMaxOrder; ++d)
+  {
+    theDerivs[d * aDim] = (d == 0) ? 1.0 : 0.0;
   }
 
-  inline double powInt(const double theValue, const int thePower)
+  int aIdx = 1;
+  for (int k = 1; k <= theOrder; ++k, aIdx += 2)
   {
-    double aRes = 1.0;
-    for (int i = 0; i < thePower; ++i)
+    const double aFreq  = double(k) * theAlpha;
+    const double anArg  = aFreq * theT;
+    const double aSin   = std::sin(anArg);
+    const double aCos   = std::cos(anArg);
+    const double aFreq2 = aFreq * aFreq;
+    const double aFreq3 = aFreq2 * aFreq;
+
+    theDerivs[aIdx]     = aSin;
+    theDerivs[aIdx + 1] = aCos;
+    if constexpr (theMaxOrder >= 1)
     {
-      aRes *= theValue;
+      theDerivs[aDim + aIdx]     = aFreq * aCos;
+      theDerivs[aDim + aIdx + 1] = -aFreq * aSin;
     }
-    return aRes;
-  }
-
-  inline void evalTrigPairNthDeriv(const double theSin,
-                                   const double theCos,
-                                   const int    theOrderMod4,
-                                   double&      theSinDeriv,
-                                   double&      theCosDeriv)
-  {
-    switch (theOrderMod4)
+    if constexpr (theMaxOrder >= 2)
     {
-      case 0:
-        theSinDeriv = theSin;
-        theCosDeriv = theCos;
-        break;
-      case 1:
-        theSinDeriv = theCos;
-        theCosDeriv = -theSin;
-        break;
-      case 2:
-        theSinDeriv = -theSin;
-        theCosDeriv = -theCos;
-        break;
-      default:
-        theSinDeriv = -theCos;
-        theCosDeriv = theSin;
-        break;
+      theDerivs[2 * aDim + aIdx]     = -aFreq2 * aSin;
+      theDerivs[2 * aDim + aIdx + 1] = -aFreq2 * aCos;
     }
-  }
-
-  template <int theMaxOrder>
-  void evalTrigAxisDerivs(const double theT,
-                          const double theAlpha,
-                          const int    theOrder,
-                          double*      theDerivs)
-  {
-    const int aDim = 2 * theOrder + 1;
-    for (int d = 0; d <= theMaxOrder; ++d)
+    if constexpr (theMaxOrder >= 3)
     {
-      theDerivs[d * aDim] = (d == 0) ? 1.0 : 0.0;
-    }
-
-    int aIdx = 1;
-    for (int k = 1; k <= theOrder; ++k, aIdx += 2)
-    {
-      const double aFreq  = double(k) * theAlpha;
-      const double anArg  = aFreq * theT;
-      const double aSin   = std::sin(anArg);
-      const double aCos   = std::cos(anArg);
-      const double aFreq2 = aFreq * aFreq;
-      const double aFreq3 = aFreq2 * aFreq;
-
-      theDerivs[aIdx]     = aSin;
-      theDerivs[aIdx + 1] = aCos;
-      if constexpr (theMaxOrder >= 1)
-      {
-        theDerivs[aDim + aIdx]     = aFreq * aCos;
-        theDerivs[aDim + aIdx + 1] = -aFreq * aSin;
-      }
-      if constexpr (theMaxOrder >= 2)
-      {
-        theDerivs[2 * aDim + aIdx]     = -aFreq2 * aSin;
-        theDerivs[2 * aDim + aIdx + 1] = -aFreq2 * aCos;
-      }
-      if constexpr (theMaxOrder >= 3)
-      {
-        theDerivs[3 * aDim + aIdx]     = -aFreq3 * aCos;
-        theDerivs[3 * aDim + aIdx + 1] = aFreq3 * aSin;
-      }
-    }
-  }
-
-  void evalTrigAxisNthDeriv(const double theT,
-                            const double theAlpha,
-                            const int    theOrder,
-                            const int    theDerivOrder,
-                            double*      theDerivs)
-  {
-    theDerivs[0] = (theDerivOrder == 0) ? 1.0 : 0.0;
-    if (theDerivOrder == 0)
-    {
-      int aIdx = 1;
-      for (int k = 1; k <= theOrder; ++k, aIdx += 2)
-      {
-        const double anArg = double(k) * theAlpha * theT;
-        theDerivs[aIdx]     = std::sin(anArg);
-        theDerivs[aIdx + 1] = std::cos(anArg);
-      }
-      return;
-    }
-
-    const int aOrderMod4 = theDerivOrder & 3;
-    int       aIdx       = 1;
-    for (int k = 1; k <= theOrder; ++k, aIdx += 2)
-    {
-      const double aFreq = double(k) * theAlpha;
-      const double anArg = aFreq * theT;
-      const double aSin  = std::sin(anArg);
-      const double aCos  = std::cos(anArg);
-      const double aPow  = powInt(aFreq, theDerivOrder);
-      double       aSinDeriv = 0.0;
-      double       aCosDeriv = 0.0;
-      evalTrigPairNthDeriv(aSin, aCos, aOrderMod4, aSinDeriv, aCosDeriv);
-      theDerivs[aIdx]     = aPow * aSinDeriv;
-      theDerivs[aIdx + 1] = aPow * aCosDeriv;
+      theDerivs[3 * aDim + aIdx]     = -aFreq3 * aCos;
+      theDerivs[3 * aDim + aIdx + 1] = aFreq3 * aSin;
     }
   }
 }
 
+void evalTrigAxisNthDeriv(const double theT,
+                          const double theAlpha,
+                          const int    theOrder,
+                          const int    theDerivOrder,
+                          double*      theDerivs)
+{
+  theDerivs[0] = (theDerivOrder == 0) ? 1.0 : 0.0;
+  if (theDerivOrder == 0)
+  {
+    int aIdx = 1;
+    for (int k = 1; k <= theOrder; ++k, aIdx += 2)
+    {
+      const double anArg  = double(k) * theAlpha * theT;
+      theDerivs[aIdx]     = std::sin(anArg);
+      theDerivs[aIdx + 1] = std::cos(anArg);
+    }
+    return;
+  }
+
+  const int aOrderMod4 = theDerivOrder & 3;
+  int       aIdx       = 1;
+  for (int k = 1; k <= theOrder; ++k, aIdx += 2)
+  {
+    const double aFreq     = double(k) * theAlpha;
+    const double anArg     = aFreq * theT;
+    const double aSin      = std::sin(anArg);
+    const double aCos      = std::cos(anArg);
+    const double aPow      = powInt(aFreq, theDerivOrder);
+    double       aSinDeriv = 0.0;
+    double       aCosDeriv = 0.0;
+    evalTrigPairNthDeriv(aSin, aCos, aOrderMod4, aSinDeriv, aCosDeriv);
+    theDerivs[aIdx]     = aPow * aSinDeriv;
+    theDerivs[aIdx + 1] = aPow * aCosDeriv;
+  }
+}
+} // namespace
+
 //==================================================================================================
 
 GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
-                                                  double theAlphaU,
-                                                  double theAlphaV)
+                                                 double                            theAlphaU,
+                                                 double                            theAlphaV)
     : myPoles(thePoles),
       myAlphaU(theAlphaU),
       myAlphaV(theAlphaV),
@@ -169,22 +169,20 @@ GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt
   validateDimension(thePoles.NbColumns(), "V");
   if (theAlphaU <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierSurface: alphaU must be > 0");
+    throw Standard_ConstructionError("GeomEval_TBezierSurface: alphaU must be > 0");
   }
   if (theAlphaV <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierSurface: alphaV must be > 0");
+    throw Standard_ConstructionError("GeomEval_TBezierSurface: alphaV must be > 0");
   }
 }
 
 //==================================================================================================
 
 GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
-                                                  const NCollection_Array2<double>& theWeights,
-                                                  double theAlphaU,
-                                                  double theAlphaV)
+                                                 const NCollection_Array2<double>& theWeights,
+                                                 double                            theAlphaU,
+                                                 double                            theAlphaV)
     : myPoles(thePoles),
       myWeights(theWeights),
       myAlphaU(theAlphaU),
@@ -195,16 +193,13 @@ GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt
   validateDimension(thePoles.NbColumns(), "V");
   if (theAlphaU <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierSurface: alphaU must be > 0");
+    throw Standard_ConstructionError("GeomEval_TBezierSurface: alphaU must be > 0");
   }
   if (theAlphaV <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierSurface: alphaV must be > 0");
+    throw Standard_ConstructionError("GeomEval_TBezierSurface: alphaV must be > 0");
   }
-  if (theWeights.NbRows() != thePoles.NbRows()
-      || theWeights.NbColumns() != thePoles.NbColumns())
+  if (theWeights.NbRows() != thePoles.NbRows() || theWeights.NbColumns() != thePoles.NbColumns())
   {
     throw Standard_ConstructionError(
       "GeomEval_TBezierSurface: weights dimensions must match poles dimensions");
@@ -215,8 +210,7 @@ GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt
     {
       if (theWeights.Value(i, j) <= 0.0)
       {
-        throw Standard_ConstructionError(
-          "GeomEval_TBezierSurface: all weights must be > 0");
+        throw Standard_ConstructionError("GeomEval_TBezierSurface: all weights must be > 0");
       }
     }
   }
@@ -428,12 +422,12 @@ void GeomEval_TBezierSurface::evalTrigBasis(double                      theT,
 //==================================================================================================
 
 void GeomEval_TBezierSurface::evalTrigBasisDeriv(double                      theT,
-                                                  double                      theAlpha,
-                                                  int                         theOrder,
-                                                  int                         theDerivOrder,
-                                                  NCollection_Array1<double>& theBasisDeriv)
+                                                 double                      theAlpha,
+                                                 int                         theOrder,
+                                                 int                         theDerivOrder,
+                                                 NCollection_Array1<double>& theBasisDeriv)
 {
-  const int aDim = 2 * theOrder + 1;
+  const int                          aDim = 2 * theOrder + 1;
   NCollection_LocalArray<double, 16> aDerivs(aDim);
   evalTrigAxisNthDeriv(theT, theAlpha, theOrder, theDerivOrder, aDerivs);
   for (int i = 0; i < aDim; ++i)
@@ -444,16 +438,14 @@ void GeomEval_TBezierSurface::evalTrigBasisDeriv(double                      the
 
 //==================================================================================================
 
-void GeomEval_TBezierSurface::evalBasisU(double                      theU,
-                                         NCollection_Array1<double>& theBasis) const
+void GeomEval_TBezierSurface::evalBasisU(double theU, NCollection_Array1<double>& theBasis) const
 {
   evalTrigBasis(theU, myAlphaU, OrderU(), theBasis);
 }
 
 //==================================================================================================
 
-void GeomEval_TBezierSurface::evalBasisV(double                      theV,
-                                         NCollection_Array1<double>& theBasis) const
+void GeomEval_TBezierSurface::evalBasisV(double theV, NCollection_Array1<double>& theBasis) const
 {
   evalTrigBasis(theV, myAlphaV, OrderV(), theBasis);
 }
@@ -480,8 +472,8 @@ void GeomEval_TBezierSurface::evalBasisDerivV(double                      theV,
 
 gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
 {
-  const int aNbU = myPoles.NbRows();
-  const int aNbV = myPoles.NbColumns();
+  const int                          aNbU = myPoles.NbRows();
+  const int                          aNbV = myPoles.NbColumns();
   NCollection_LocalArray<double, 16> aBasisU(aNbU);
   NCollection_LocalArray<double, 16> aBasisV(aNbV);
   evalTrigAxisDerivs<0>(U, myAlphaU, (aNbU - 1) / 2, aBasisU);
@@ -495,8 +487,8 @@ gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
       const double aBu = aBasisU[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        aSum += (aBu * aBasisV[j])
-                * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
+        aSum +=
+          (aBu * aBasisV[j]) * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
       }
     }
     return gp_Pnt(aSum);
@@ -504,14 +496,14 @@ gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
 
   // Rational evaluation.
   gp_XYZ aNumer(0.0, 0.0, 0.0);
-  double  aDenom = 0.0;
+  double aDenom = 0.0;
   for (int i = 0; i < aNbU; ++i)
   {
     const double aBu = aBasisU[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aWBuBv = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j)
-                          * aBu * aBasisV[j];
+      const double aWBuBv =
+        myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j) * aBu * aBasisV[j];
       aNumer += aWBuBv * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
       aDenom += aWBuBv;
     }
@@ -523,8 +515,8 @@ gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
 
 Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double V) const
 {
-  const int aNbU = myPoles.NbRows();
-  const int aNbV = myPoles.NbColumns();
+  const int                          aNbU = myPoles.NbRows();
+  const int                          aNbV = myPoles.NbColumns();
   NCollection_LocalArray<double, 16> aBUDerivs((1 + 1) * aNbU);
   NCollection_LocalArray<double, 16> aBVDerivs((1 + 1) * aNbV);
   evalTrigAxisDerivs<1>(U, myAlphaU, (aNbU - 1) / 2, aBUDerivs);
@@ -548,11 +540,10 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
       const double aBuD = aBasisDU[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        const double aBv  = aBasisV[j];
-        const double aBvD = aBasisDV[j];
-        const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
-                                            myPoles.LowerCol() + j).XYZ();
-        aS  += (aBu * aBv)  * aPij;
+        const double  aBv  = aBasisV[j];
+        const double  aBvD = aBasisDV[j];
+        const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
+        aS += (aBu * aBv) * aPij;
         aDU += (aBuD * aBv) * aPij;
         aDV += (aBu * aBvD) * aPij;
       }
@@ -567,36 +558,35 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
   gp_XYZ aSw(0.0, 0.0, 0.0);
   gp_XYZ aSwDU(0.0, 0.0, 0.0);
   gp_XYZ aSwDV(0.0, 0.0, 0.0);
-  double  aW   = 0.0;
-  double  aWDU = 0.0;
-  double  aWDV = 0.0;
+  double aW   = 0.0;
+  double aWDU = 0.0;
+  double aWDV = 0.0;
   for (int i = 0; i < aNbU; ++i)
   {
     const double aBu  = aBasisU[i];
     const double aBuD = aBasisDU[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aBv  = aBasisV[j];
-      const double aBvD = aBasisDV[j];
-      const double aWij = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
-      const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
-                                          myPoles.LowerCol() + j).XYZ();
-      const double aWBuBv   = aWij * aBu  * aBv;
-      const double aWBuDBv  = aWij * aBuD * aBv;
-      const double aWBuBvD  = aWij * aBu  * aBvD;
-      aSw   += aWBuBv  * aPij;
+      const double  aBv     = aBasisV[j];
+      const double  aBvD    = aBasisDV[j];
+      const double  aWij    = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
+      const gp_XYZ& aPij    = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
+      const double  aWBuBv  = aWij * aBu * aBv;
+      const double  aWBuDBv = aWij * aBuD * aBv;
+      const double  aWBuBvD = aWij * aBu * aBvD;
+      aSw += aWBuBv * aPij;
       aSwDU += aWBuDBv * aPij;
       aSwDV += aWBuBvD * aPij;
-      aW    += aWBuBv;
-      aWDU  += aWBuDBv;
-      aWDV  += aWBuBvD;
+      aW += aWBuBv;
+      aWDU += aWBuDBv;
+      aWDV += aWBuBvD;
     }
   }
 
   const gp_XYZ aS = aSw / aW;
-  aResult.Point = gp_Pnt(aS);
-  aResult.D1U   = gp_Vec((aSwDU - aWDU * aS) / aW);
-  aResult.D1V   = gp_Vec((aSwDV - aWDV * aS) / aW);
+  aResult.Point   = gp_Pnt(aS);
+  aResult.D1U     = gp_Vec((aSwDU - aWDU * aS) / aW);
+  aResult.D1V     = gp_Vec((aSwDV - aWDV * aS) / aW);
   return aResult;
 }
 
@@ -604,18 +594,18 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
 
 Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double V) const
 {
-  const int aNbU = myPoles.NbRows();
-  const int aNbV = myPoles.NbColumns();
+  const int                          aNbU = myPoles.NbRows();
+  const int                          aNbV = myPoles.NbColumns();
   NCollection_LocalArray<double, 16> aBUDerivs((2 + 1) * aNbU);
   NCollection_LocalArray<double, 16> aBVDerivs((2 + 1) * aNbV);
   evalTrigAxisDerivs<2>(U, myAlphaU, (aNbU - 1) / 2, aBUDerivs);
   evalTrigAxisDerivs<2>(V, myAlphaV, (aNbV - 1) / 2, aBVDerivs);
 
-  const double* aBasisU  = aBUDerivs;
-  const double* aBasisDU = aBUDerivs + aNbU;
+  const double* aBasisU   = aBUDerivs;
+  const double* aBasisDU  = aBUDerivs + aNbU;
   const double* aBasisD2U = aBUDerivs + 2 * aNbU;
-  const double* aBasisV  = aBVDerivs;
-  const double* aBasisDV = aBVDerivs + aNbV;
+  const double* aBasisV   = aBVDerivs;
+  const double* aBasisDV  = aBVDerivs + aNbV;
   const double* aBasisD2V = aBVDerivs + 2 * aNbV;
 
   Geom_Surface::ResD2 aResult;
@@ -635,17 +625,16 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
       const double aBuD2 = aBasisD2U[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        const double aBv   = aBasisV[j];
-        const double aBvD  = aBasisDV[j];
-        const double aBvD2 = aBasisD2V[j];
-        const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
-                                            myPoles.LowerCol() + j).XYZ();
-        aS    += (aBu   * aBv)   * aPij;
-        aDU   += (aBuD  * aBv)   * aPij;
-        aDV   += (aBu   * aBvD)  * aPij;
-        aD2U  += (aBuD2 * aBv)   * aPij;
-        aD2V  += (aBu   * aBvD2) * aPij;
-        aD2UV += (aBuD  * aBvD)  * aPij;
+        const double  aBv   = aBasisV[j];
+        const double  aBvD  = aBasisDV[j];
+        const double  aBvD2 = aBasisD2V[j];
+        const gp_XYZ& aPij  = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
+        aS += (aBu * aBv) * aPij;
+        aDU += (aBuD * aBv) * aPij;
+        aDV += (aBu * aBvD) * aPij;
+        aD2U += (aBuD2 * aBv) * aPij;
+        aD2V += (aBu * aBvD2) * aPij;
+        aD2UV += (aBuD * aBvD) * aPij;
       }
     }
     aResult.Point = gp_Pnt(aS);
@@ -664,12 +653,12 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
   gp_XYZ aSwD2U(0.0, 0.0, 0.0);
   gp_XYZ aSwD2V(0.0, 0.0, 0.0);
   gp_XYZ aSwDUV(0.0, 0.0, 0.0);
-  double  aW     = 0.0;
-  double  aWDU   = 0.0;
-  double  aWDV   = 0.0;
-  double  aWD2U  = 0.0;
-  double  aWD2V  = 0.0;
-  double  aWDUV  = 0.0;
+  double aW    = 0.0;
+  double aWDU  = 0.0;
+  double aWDV  = 0.0;
+  double aWD2U = 0.0;
+  double aWD2V = 0.0;
+  double aWDUV = 0.0;
   for (int i = 0; i < aNbU; ++i)
   {
     const double aBu   = aBasisU[i];
@@ -677,25 +666,24 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
     const double aBuD2 = aBasisD2U[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aBv   = aBasisV[j];
-      const double aBvD  = aBasisDV[j];
-      const double aBvD2 = aBasisD2V[j];
-      const double aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
-      const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
-                                          myPoles.LowerCol() + j).XYZ();
+      const double  aBv   = aBasisV[j];
+      const double  aBvD  = aBasisDV[j];
+      const double  aBvD2 = aBasisD2V[j];
+      const double  aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
+      const gp_XYZ& aPij  = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
 
-      aSw    += (aWij * aBu   * aBv)   * aPij;
-      aSwDU  += (aWij * aBuD  * aBv)   * aPij;
-      aSwDV  += (aWij * aBu   * aBvD)  * aPij;
-      aSwD2U += (aWij * aBuD2 * aBv)   * aPij;
-      aSwD2V += (aWij * aBu   * aBvD2) * aPij;
-      aSwDUV += (aWij * aBuD  * aBvD)  * aPij;
-      aW     += aWij * aBu   * aBv;
-      aWDU   += aWij * aBuD  * aBv;
-      aWDV   += aWij * aBu   * aBvD;
-      aWD2U  += aWij * aBuD2 * aBv;
-      aWD2V  += aWij * aBu   * aBvD2;
-      aWDUV  += aWij * aBuD  * aBvD;
+      aSw += (aWij * aBu * aBv) * aPij;
+      aSwDU += (aWij * aBuD * aBv) * aPij;
+      aSwDV += (aWij * aBu * aBvD) * aPij;
+      aSwD2U += (aWij * aBuD2 * aBv) * aPij;
+      aSwD2V += (aWij * aBu * aBvD2) * aPij;
+      aSwDUV += (aWij * aBuD * aBvD) * aPij;
+      aW += aWij * aBu * aBv;
+      aWDU += aWij * aBuD * aBv;
+      aWDV += aWij * aBu * aBvD;
+      aWD2U += aWij * aBuD2 * aBv;
+      aWD2V += aWij * aBu * aBvD2;
+      aWDUV += aWij * aBuD * aBvD;
     }
   }
 
@@ -725,8 +713,8 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
 
 Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double V) const
 {
-  const int aNbU = myPoles.NbRows();
-  const int aNbV = myPoles.NbColumns();
+  const int                          aNbU = myPoles.NbRows();
+  const int                          aNbV = myPoles.NbColumns();
   NCollection_LocalArray<double, 16> aBUDerivs((3 + 1) * aNbU);
   NCollection_LocalArray<double, 16> aBVDerivs((3 + 1) * aNbV);
   evalTrigAxisDerivs<3>(U, myAlphaU, (aNbU - 1) / 2, aBUDerivs);
@@ -764,23 +752,22 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
       const double aBuD3 = aBasisD3U[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        const double aBv   = aBasisV[j];
-        const double aBvD  = aBasisDV[j];
-        const double aBvD2 = aBasisD2V[j];
-        const double aBvD3 = aBasisD3V[j];
-        const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
-                                            myPoles.LowerCol() + j).XYZ();
+        const double  aBv   = aBasisV[j];
+        const double  aBvD  = aBasisDV[j];
+        const double  aBvD2 = aBasisD2V[j];
+        const double  aBvD3 = aBasisD3V[j];
+        const gp_XYZ& aPij  = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
 
-        aS     += (aBu   * aBv)   * aPij;
-        aDU    += (aBuD  * aBv)   * aPij;
-        aDV    += (aBu   * aBvD)  * aPij;
-        aD2U   += (aBuD2 * aBv)   * aPij;
-        aD2V   += (aBu   * aBvD2) * aPij;
-        aD2UV  += (aBuD  * aBvD)  * aPij;
-        aD3U   += (aBuD3 * aBv)   * aPij;
-        aD3V   += (aBu   * aBvD3) * aPij;
-        aD3UUV += (aBuD2 * aBvD)  * aPij;
-        aD3UVV += (aBuD  * aBvD2) * aPij;
+        aS += (aBu * aBv) * aPij;
+        aDU += (aBuD * aBv) * aPij;
+        aDV += (aBu * aBvD) * aPij;
+        aD2U += (aBuD2 * aBv) * aPij;
+        aD2V += (aBu * aBvD2) * aPij;
+        aD2UV += (aBuD * aBvD) * aPij;
+        aD3U += (aBuD3 * aBv) * aPij;
+        aD3V += (aBu * aBvD3) * aPij;
+        aD3UUV += (aBuD2 * aBvD) * aPij;
+        aD3UVV += (aBuD * aBvD2) * aPij;
       }
     }
     aResult.Point = gp_Pnt(aS);
@@ -807,16 +794,16 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
   gp_XYZ aSwD3V(0.0, 0.0, 0.0);
   gp_XYZ aSwD2UDV(0.0, 0.0, 0.0);
   gp_XYZ aSwDUD2V(0.0, 0.0, 0.0);
-  double  aW      = 0.0;
-  double  aWDU    = 0.0;
-  double  aWDV    = 0.0;
-  double  aWD2U   = 0.0;
-  double  aWD2V   = 0.0;
-  double  aWDUV   = 0.0;
-  double  aWD3U   = 0.0;
-  double  aWD3V   = 0.0;
-  double  aWD2UDV = 0.0;
-  double  aWDUD2V = 0.0;
+  double aW      = 0.0;
+  double aWDU    = 0.0;
+  double aWDV    = 0.0;
+  double aWD2U   = 0.0;
+  double aWD2V   = 0.0;
+  double aWDUV   = 0.0;
+  double aWD3U   = 0.0;
+  double aWD3V   = 0.0;
+  double aWD2UDV = 0.0;
+  double aWDUD2V = 0.0;
 
   for (int i = 0; i < aNbU; ++i)
   {
@@ -826,34 +813,33 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
     const double aBuD3 = aBasisD3U[i];
     for (int j = 0; j < aNbV; ++j)
     {
-      const double aBv   = aBasisV[j];
-      const double aBvD  = aBasisDV[j];
-      const double aBvD2 = aBasisD2V[j];
-      const double aBvD3 = aBasisD3V[j];
-      const double aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
-      const gp_XYZ& aPij = myPoles.Value(myPoles.LowerRow() + i,
-                                          myPoles.LowerCol() + j).XYZ();
+      const double  aBv   = aBasisV[j];
+      const double  aBvD  = aBasisDV[j];
+      const double  aBvD2 = aBasisD2V[j];
+      const double  aBvD3 = aBasisD3V[j];
+      const double  aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
+      const gp_XYZ& aPij  = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
 
-      aSw      += (aWij * aBu   * aBv)   * aPij;
-      aSwDU    += (aWij * aBuD  * aBv)   * aPij;
-      aSwDV    += (aWij * aBu   * aBvD)  * aPij;
-      aSwD2U   += (aWij * aBuD2 * aBv)   * aPij;
-      aSwD2V   += (aWij * aBu   * aBvD2) * aPij;
-      aSwDUV   += (aWij * aBuD  * aBvD)  * aPij;
-      aSwD3U   += (aWij * aBuD3 * aBv)   * aPij;
-      aSwD3V   += (aWij * aBu   * aBvD3) * aPij;
-      aSwD2UDV += (aWij * aBuD2 * aBvD)  * aPij;
-      aSwDUD2V += (aWij * aBuD  * aBvD2) * aPij;
-      aW       += aWij * aBu   * aBv;
-      aWDU     += aWij * aBuD  * aBv;
-      aWDV     += aWij * aBu   * aBvD;
-      aWD2U    += aWij * aBuD2 * aBv;
-      aWD2V    += aWij * aBu   * aBvD2;
-      aWDUV    += aWij * aBuD  * aBvD;
-      aWD3U    += aWij * aBuD3 * aBv;
-      aWD3V    += aWij * aBu   * aBvD3;
-      aWD2UDV  += aWij * aBuD2 * aBvD;
-      aWDUD2V  += aWij * aBuD  * aBvD2;
+      aSw += (aWij * aBu * aBv) * aPij;
+      aSwDU += (aWij * aBuD * aBv) * aPij;
+      aSwDV += (aWij * aBu * aBvD) * aPij;
+      aSwD2U += (aWij * aBuD2 * aBv) * aPij;
+      aSwD2V += (aWij * aBu * aBvD2) * aPij;
+      aSwDUV += (aWij * aBuD * aBvD) * aPij;
+      aSwD3U += (aWij * aBuD3 * aBv) * aPij;
+      aSwD3V += (aWij * aBu * aBvD3) * aPij;
+      aSwD2UDV += (aWij * aBuD2 * aBvD) * aPij;
+      aSwDUD2V += (aWij * aBuD * aBvD2) * aPij;
+      aW += aWij * aBu * aBv;
+      aWDU += aWij * aBuD * aBv;
+      aWDV += aWij * aBu * aBvD;
+      aWD2U += aWij * aBuD2 * aBv;
+      aWD2V += aWij * aBu * aBvD2;
+      aWDUV += aWij * aBuD * aBvD;
+      aWD3U += aWij * aBuD3 * aBv;
+      aWD3V += aWij * aBu * aBvD3;
+      aWD2UDV += aWij * aBuD2 * aBvD;
+      aWDUD2V += aWij * aBuD * aBvD2;
     }
   }
 
@@ -868,11 +854,9 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
   const gp_XYZ aSD2UV = (aSwDUV - aWDU * aSD1V - aWDV * aSD1U - aWDUV * aS) / aW;
   // Third derivatives: S_uuu, S_vvv, S_uuv, S_uvv
   // S_uuu = (Sw_uuu - 3*w_u*S_uu - 3*w_uu*S_u - w_uuu*S) / w
-  const gp_XYZ aSD3U =
-    (aSwD3U - 3.0 * aWDU * aSD2U - 3.0 * aWD2U * aSD1U - aWD3U * aS) / aW;
+  const gp_XYZ aSD3U = (aSwD3U - 3.0 * aWDU * aSD2U - 3.0 * aWD2U * aSD1U - aWD3U * aS) / aW;
   // S_vvv = (Sw_vvv - 3*w_v*S_vv - 3*w_vv*S_v - w_vvv*S) / w
-  const gp_XYZ aSD3V =
-    (aSwD3V - 3.0 * aWDV * aSD2V - 3.0 * aWD2V * aSD1V - aWD3V * aS) / aW;
+  const gp_XYZ aSD3V = (aSwD3V - 3.0 * aWDV * aSD2V - 3.0 * aWD2V * aSD1V - aWD3V * aS) / aW;
   // S_uuv = (Sw_uuv - w_uuv*S - 2*w_u*S_uv - w_v*S_uu - 2*w_uv*S_u - w_uu*S_v) / w
   // Using the general formula for mixed partials:
   // d/dv[S_uu] = (Sw_uuv - w_v*S_uu - 2*w_uv*S_u - 2*w_u*S_uv - w_uu*S_v - w_uuv*S) / w
@@ -881,15 +865,13 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
   // Use the direct formula:
   // S_uuv = (Sw_uuv - w_uuv*S - 2*w_u*S_uv - w_v*S_uu - w_uu*S_v - 2*w_uv*S_u) / w
   // This follows from differentiating w*S_uu = Sw_uu - 2*w_u*S_u - w_uu*S with respect to v.
-  const gp_XYZ aSD3UUV =
-    (aSwD2UDV - aWD2UDV * aS - 2.0 * aWDU * aSD2UV - aWDV * aSD2U
-     - aWD2U * aSD1V - 2.0 * aWDUV * aSD1U)
-    / aW;
+  const gp_XYZ aSD3UUV = (aSwD2UDV - aWD2UDV * aS - 2.0 * aWDU * aSD2UV - aWDV * aSD2U
+                          - aWD2U * aSD1V - 2.0 * aWDUV * aSD1U)
+                         / aW;
   // S_uvv: differentiate w*S_vv = Sw_vv - 2*w_v*S_v - w_vv*S with respect to u.
-  const gp_XYZ aSD3UVV =
-    (aSwDUD2V - aWDUD2V * aS - 2.0 * aWDV * aSD2UV - aWDU * aSD2V
-     - aWD2V * aSD1U - 2.0 * aWDUV * aSD1V)
-    / aW;
+  const gp_XYZ aSD3UVV = (aSwDUD2V - aWDUD2V * aS - 2.0 * aWDV * aSD2UV - aWDU * aSD2V
+                          - aWD2V * aSD1U - 2.0 * aWDUV * aSD1V)
+                         / aW;
 
   aResult.Point = gp_Pnt(aS);
   aResult.D1U   = gp_Vec(aSD1U);
@@ -913,15 +895,14 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
-    throw Geom_UndefinedDerivative(
-      "GeomEval_TBezierSurface::EvalDN: invalid derivative order");
+    throw Geom_UndefinedDerivative("GeomEval_TBezierSurface::EvalDN: invalid derivative order");
   }
 
   // For non-rational surfaces, compute directly from basis derivatives.
   if (!myRational)
   {
-    const int aNbU = myPoles.NbRows();
-    const int aNbV = myPoles.NbColumns();
+    const int                          aNbU = myPoles.NbRows();
+    const int                          aNbV = myPoles.NbColumns();
     NCollection_LocalArray<double, 16> aBasisU(aNbU);
     NCollection_LocalArray<double, 16> aBasisV(aNbV);
     evalTrigAxisNthDeriv(U, myAlphaU, (aNbU - 1) / 2, Nu, aBasisU);
@@ -933,8 +914,8 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
       const double aBu = aBasisU[i];
       for (int j = 0; j < aNbV; ++j)
       {
-        aSum += (aBu * aBasisV[j])
-                * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
+        aSum +=
+          (aBu * aBasisV[j]) * myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
       }
     }
     return gp_Vec(aSum);
@@ -943,15 +924,42 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
   // For rational surfaces, delegate to the specialized methods for low orders.
   if (Nu + Nv <= 3)
   {
-    if (Nu == 1 && Nv == 0) { return EvalD1(U, V).D1U; }
-    if (Nu == 0 && Nv == 1) { return EvalD1(U, V).D1V; }
-    if (Nu == 2 && Nv == 0) { return EvalD2(U, V).D2U; }
-    if (Nu == 0 && Nv == 2) { return EvalD2(U, V).D2V; }
-    if (Nu == 1 && Nv == 1) { return EvalD2(U, V).D2UV; }
-    if (Nu == 3 && Nv == 0) { return EvalD3(U, V).D3U; }
-    if (Nu == 0 && Nv == 3) { return EvalD3(U, V).D3V; }
-    if (Nu == 2 && Nv == 1) { return EvalD3(U, V).D3UUV; }
-    if (Nu == 1 && Nv == 2) { return EvalD3(U, V).D3UVV; }
+    if (Nu == 1 && Nv == 0)
+    {
+      return EvalD1(U, V).D1U;
+    }
+    if (Nu == 0 && Nv == 1)
+    {
+      return EvalD1(U, V).D1V;
+    }
+    if (Nu == 2 && Nv == 0)
+    {
+      return EvalD2(U, V).D2U;
+    }
+    if (Nu == 0 && Nv == 2)
+    {
+      return EvalD2(U, V).D2V;
+    }
+    if (Nu == 1 && Nv == 1)
+    {
+      return EvalD2(U, V).D2UV;
+    }
+    if (Nu == 3 && Nv == 0)
+    {
+      return EvalD3(U, V).D3U;
+    }
+    if (Nu == 0 && Nv == 3)
+    {
+      return EvalD3(U, V).D3V;
+    }
+    if (Nu == 2 && Nv == 1)
+    {
+      return EvalD3(U, V).D3UUV;
+    }
+    if (Nu == 1 && Nv == 2)
+    {
+      return EvalD3(U, V).D3UVV;
+    }
   }
 
   // For higher-order rational derivatives, throw.

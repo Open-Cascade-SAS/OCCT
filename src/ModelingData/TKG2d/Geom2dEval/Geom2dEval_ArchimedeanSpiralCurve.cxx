@@ -56,8 +56,8 @@ inline void trigShiftByQuarterTurns(const double theSin,
 //==================================================================================================
 
 Geom2dEval_ArchimedeanSpiralCurve::Geom2dEval_ArchimedeanSpiralCurve(const gp_Ax2d& thePosition,
-                                                                     double         theInitialRadius,
-                                                                     double         theGrowthRate)
+                                                                     double theInitialRadius,
+                                                                     double theGrowthRate)
     : myPosition(thePosition),
       myInitialRadius(theInitialRadius),
       myGrowthRate(theGrowthRate)
@@ -69,8 +69,7 @@ Geom2dEval_ArchimedeanSpiralCurve::Geom2dEval_ArchimedeanSpiralCurve(const gp_Ax
   }
   if (theGrowthRate <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "Geom2dEval_ArchimedeanSpiralCurve: growth rate must be > 0");
+    throw Standard_ConstructionError("Geom2dEval_ArchimedeanSpiralCurve: growth rate must be > 0");
   }
 }
 
@@ -160,7 +159,7 @@ gp_Pnt2d Geom2dEval_ArchimedeanSpiralCurve::EvalD0(const double U) const
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aR = myInitialRadius + myGrowthRate * U;
+  const double aR    = myInitialRadius + myGrowthRate * U;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
@@ -175,8 +174,8 @@ Geom2d_Curve::ResD1 Geom2dEval_ArchimedeanSpiralCurve::EvalD1(const double U) co
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aR = myInitialRadius + myGrowthRate * U;
-  const double aB = myGrowthRate;
+  const double aR    = myInitialRadius + myGrowthRate * U;
+  const double aB    = myGrowthRate;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
@@ -184,8 +183,7 @@ Geom2d_Curve::ResD1 Geom2dEval_ArchimedeanSpiralCurve::EvalD1(const double U) co
   aResult.Point = gp_Pnt2d(anO + aR * aCosU * aXD + aR * aSinU * aYD);
 
   // D1 = (b*cos(t) - r*sin(t))*XDir + (b*sin(t) + r*cos(t))*YDir
-  aResult.D1 = gp_Vec2d((aB * aCosU - aR * aSinU) * aXD
-                       + (aB * aSinU + aR * aCosU) * aYD);
+  aResult.D1 = gp_Vec2d((aB * aCosU - aR * aSinU) * aXD + (aB * aSinU + aR * aCosU) * aYD);
 
   return aResult;
 }
@@ -198,19 +196,18 @@ Geom2d_Curve::ResD2 Geom2dEval_ArchimedeanSpiralCurve::EvalD2(const double U) co
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aR = myInitialRadius + myGrowthRate * U;
-  const double aB = myGrowthRate;
+  const double aR    = myInitialRadius + myGrowthRate * U;
+  const double aB    = myGrowthRate;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD2 aResult;
   aResult.Point = gp_Pnt2d(anO + aR * aCosU * aXD + aR * aSinU * aYD);
-  aResult.D1 = gp_Vec2d((aB * aCosU - aR * aSinU) * aXD
-                       + (aB * aSinU + aR * aCosU) * aYD);
+  aResult.D1    = gp_Vec2d((aB * aCosU - aR * aSinU) * aXD + (aB * aSinU + aR * aCosU) * aYD);
 
   // D2 = (-2*b*sin(t) - r*cos(t))*XDir + (2*b*cos(t) - r*sin(t))*YDir
-  aResult.D2 = gp_Vec2d((-2.0 * aB * aSinU - aR * aCosU) * aXD
-                       + (2.0 * aB * aCosU - aR * aSinU) * aYD);
+  aResult.D2 =
+    gp_Vec2d((-2.0 * aB * aSinU - aR * aCosU) * aXD + (2.0 * aB * aCosU - aR * aSinU) * aYD);
 
   return aResult;
 }
@@ -223,21 +220,20 @@ Geom2d_Curve::ResD3 Geom2dEval_ArchimedeanSpiralCurve::EvalD3(const double U) co
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aR = myInitialRadius + myGrowthRate * U;
-  const double aB = myGrowthRate;
+  const double aR    = myInitialRadius + myGrowthRate * U;
+  const double aB    = myGrowthRate;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD3 aResult;
   aResult.Point = gp_Pnt2d(anO + aR * aCosU * aXD + aR * aSinU * aYD);
-  aResult.D1 = gp_Vec2d((aB * aCosU - aR * aSinU) * aXD
-                       + (aB * aSinU + aR * aCosU) * aYD);
-  aResult.D2 = gp_Vec2d((-2.0 * aB * aSinU - aR * aCosU) * aXD
-                       + (2.0 * aB * aCosU - aR * aSinU) * aYD);
+  aResult.D1    = gp_Vec2d((aB * aCosU - aR * aSinU) * aXD + (aB * aSinU + aR * aCosU) * aYD);
+  aResult.D2 =
+    gp_Vec2d((-2.0 * aB * aSinU - aR * aCosU) * aXD + (2.0 * aB * aCosU - aR * aSinU) * aYD);
 
   // D3 = (-3*b*cos(t) + r*sin(t))*XDir + (-3*b*sin(t) - r*cos(t))*YDir
-  aResult.D3 = gp_Vec2d((-3.0 * aB * aCosU + aR * aSinU) * aXD
-                       + (-3.0 * aB * aSinU - aR * aCosU) * aYD);
+  aResult.D3 =
+    gp_Vec2d((-3.0 * aB * aCosU + aR * aSinU) * aXD + (-3.0 * aB * aSinU - aR * aCosU) * aYD);
 
   return aResult;
 }
@@ -248,8 +244,7 @@ gp_Vec2d Geom2dEval_ArchimedeanSpiralCurve::EvalDN(const double U, const int N) 
 {
   if (N < 1)
   {
-    throw Standard_RangeError(
-      "Geom2dEval_ArchimedeanSpiralCurve::EvalDN: N must be >= 1");
+    throw Standard_RangeError("Geom2dEval_ArchimedeanSpiralCurve::EvalDN: N must be >= 1");
   }
 
   // Use the general formula for d^N/dt^N[(a+b*t)*cos(t)] and [(a+b*t)*sin(t)].
@@ -263,10 +258,10 @@ gp_Vec2d Geom2dEval_ArchimedeanSpiralCurve::EvalDN(const double U, const int N) 
   const double aR = myInitialRadius + myGrowthRate * U;
   const double aB = myGrowthRate;
 
-  const double aSinU = std::sin(U);
-  const double aCosU = std::cos(U);
-  double       aSinN = 0.0;
-  double       aCosN = 0.0;
+  const double aSinU   = std::sin(U);
+  const double aCosU   = std::cos(U);
+  double       aSinN   = 0.0;
+  double       aCosN   = 0.0;
   double       aSinNm1 = 0.0;
   double       aCosNm1 = 0.0;
   trigShiftByQuarterTurns(aSinU, aCosU, N, aSinN, aCosN);
@@ -297,8 +292,7 @@ occ::handle<Geom2d_Geometry> Geom2dEval_ArchimedeanSpiralCurve::Copy() const
 
 //==================================================================================================
 
-void Geom2dEval_ArchimedeanSpiralCurve::DumpJson(Standard_OStream& theOStream,
-                                                  int               theDepth) const
+void Geom2dEval_ArchimedeanSpiralCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

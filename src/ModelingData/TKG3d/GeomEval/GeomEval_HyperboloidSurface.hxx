@@ -47,12 +47,11 @@
 class GeomEval_HyperboloidSurface : public Geom_ElementarySurface
 {
 public:
-
   //! Sheet mode selector.
   enum class SheetMode
   {
-    OneSheet,  //!< hyperboloid of one sheet
-    TwoSheets  //!< hyperboloid of two sheets (one sheet only)
+    OneSheet, //!< hyperboloid of one sheet
+    TwoSheets //!< hyperboloid of two sheets (one sheet only)
   };
 
   //! Creates a hyperboloid surface with the given local coordinate system,
@@ -192,7 +191,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_HyperboloidSurface, Geom_ElementarySurface)
 
 private:
-
   double    myR1;
   double    myR2;
   SheetMode myMode;

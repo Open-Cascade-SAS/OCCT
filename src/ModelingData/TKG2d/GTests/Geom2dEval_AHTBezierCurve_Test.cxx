@@ -26,12 +26,12 @@
 namespace
 {
 
-constexpr double THE_FD_TOL_D1  = 1e-5;
-constexpr double THE_FD_TOL_D2  = 1e-4;
-constexpr double THE_FD_TOL_D3  = 1e-3;
+constexpr double THE_FD_TOL_D1 = 1e-5;
+constexpr double THE_FD_TOL_D2 = 1e-4;
+constexpr double THE_FD_TOL_D3 = 1e-3;
 
-// Helper to create a curve with basis {1, t, sinh(alpha*t), cosh(alpha*t), sin(beta*t), cos(beta*t)}
-// algDegree=1, alpha=1.0, beta=1.0 => basisDim = 2 + 2 + 2 = 6 poles needed
+// Helper to create a curve with basis {1, t, sinh(alpha*t), cosh(alpha*t), sin(beta*t),
+// cos(beta*t)} algDegree=1, alpha=1.0, beta=1.0 => basisDim = 2 + 2 + 2 = 6 poles needed
 Geom2dEval_AHTBezierCurve createFullBasisCurve()
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 6);
@@ -149,7 +149,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, EvalD0_Endpoints)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalD0_KnownPoint)
 {
   Geom2dEval_AHTBezierCurve aCurve = createPolynomialCurve();
-  gp_Pnt2d aPnt = aCurve.EvalD0(0.5);
+  gp_Pnt2d                  aPnt   = aCurve.EvalD0(0.5);
   EXPECT_NEAR(aPnt.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aPnt.Y(), 0.5, Precision::Confusion());
 }
@@ -158,12 +158,11 @@ TEST(Geom2dEval_AHTBezierCurveTest, EvalD0_KnownPoint)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalD1_ConsistentWithD0)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.4;
-
+  const double              aU     = 0.4;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aU + Precision::Confusion());
-  gp_Pnt2d aP2 = aCurve.EvalD0(aU - Precision::Confusion());
+  gp_Pnt2d            aP1 = aCurve.EvalD0(aU + Precision::Confusion());
+  gp_Pnt2d            aP2 = aCurve.EvalD0(aU - Precision::Confusion());
 
   gp_Vec2d aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
 
@@ -175,12 +174,11 @@ TEST(Geom2dEval_AHTBezierCurveTest, EvalD1_ConsistentWithD0)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalD1_Polynomial_ConsistentWithD0)
 {
   Geom2dEval_AHTBezierCurve aCurve = createPolynomialCurve();
-  const double aU = 0.3;
-
+  const double              aU     = 0.3;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aU + Precision::Confusion());
-  gp_Pnt2d aP2 = aCurve.EvalD0(aU - Precision::Confusion());
+  gp_Pnt2d            aP1 = aCurve.EvalD0(aU + Precision::Confusion());
+  gp_Pnt2d            aP2 = aCurve.EvalD0(aU - Precision::Confusion());
 
   gp_Vec2d aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
 
@@ -192,12 +190,11 @@ TEST(Geom2dEval_AHTBezierCurveTest, EvalD1_Polynomial_ConsistentWithD0)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalD1_Rational_ConsistentWithD0)
 {
   Geom2dEval_AHTBezierCurve aCurve = createRationalCurve();
-  const double aU = 0.5;
-
+  const double              aU     = 0.5;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aU + Precision::Confusion());
-  gp_Pnt2d aP2 = aCurve.EvalD0(aU - Precision::Confusion());
+  gp_Pnt2d            aP1 = aCurve.EvalD0(aU + Precision::Confusion());
+  gp_Pnt2d            aP2 = aCurve.EvalD0(aU - Precision::Confusion());
 
   gp_Vec2d aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
 
@@ -243,7 +240,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, Continuity)
 TEST(Geom2dEval_AHTBezierCurveTest, Transform_NotImplemented)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  gp_Trsf2d aTrsf;
+  gp_Trsf2d                 aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
 
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
@@ -253,8 +250,8 @@ TEST(Geom2dEval_AHTBezierCurveTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(Geom2dEval_AHTBezierCurveTest, Copy_Independent)
 {
-  Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  occ::handle<Geom2d_Geometry> aCopy = aCurve.Copy();
+  Geom2dEval_AHTBezierCurve    aCurve = createFullBasisCurve();
+  occ::handle<Geom2d_Geometry> aCopy  = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const Geom2dEval_AHTBezierCurve* aCopyCurve =
     dynamic_cast<const Geom2dEval_AHTBezierCurve*>(aCopy.get());
@@ -285,8 +282,8 @@ TEST(Geom2dEval_AHTBezierCurveTest, Copy_Independent)
 // Test Copy of rational curve preserves rationality
 TEST(Geom2dEval_AHTBezierCurveTest, Copy_Rational)
 {
-  Geom2dEval_AHTBezierCurve aCurve = createRationalCurve();
-  occ::handle<Geom2d_Geometry> aCopy = aCurve.Copy();
+  Geom2dEval_AHTBezierCurve        aCurve = createRationalCurve();
+  occ::handle<Geom2d_Geometry>     aCopy  = aCurve.Copy();
   const Geom2dEval_AHTBezierCurve* aCopyCurve =
     dynamic_cast<const Geom2dEval_AHTBezierCurve*>(aCopy.get());
   ASSERT_TRUE(aCopyCurve != nullptr);
@@ -297,7 +294,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, Copy_Rational)
 TEST(Geom2dEval_AHTBezierCurveTest, DumpJson_NoCrash)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  Standard_SStream aSS;
+  Standard_SStream          aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }
 
@@ -305,7 +302,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, DumpJson_NoCrash)
 TEST(Geom2dEval_AHTBezierCurveTest, DumpJson_Rational_NoCrash)
 {
   Geom2dEval_AHTBezierCurve aCurve = createRationalCurve();
-  Standard_SStream aSS;
+  Standard_SStream          aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }
 
@@ -318,8 +315,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, Construction_PoleCountMismatch_Throws)
   aPoles.SetValue(3, gp_Pnt2d(1.0, 1.0));
   aPoles.SetValue(4, gp_Pnt2d(0.0, 1.0));
   // algDegree=1, alpha=1.0, beta=1.0 => basisDim = 2+2+2 = 6, but only 4 poles
-  EXPECT_THROW(Geom2dEval_AHTBezierCurve(aPoles, 1, 1.0, 1.0),
-               Standard_ConstructionError);
+  EXPECT_THROW(Geom2dEval_AHTBezierCurve(aPoles, 1, 1.0, 1.0), Standard_ConstructionError);
 }
 
 // Test invalid construction: negative alpha throws
@@ -329,8 +325,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, Construction_NegativeAlpha_Throws)
   aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
   aPoles.SetValue(2, gp_Pnt2d(1.0, 0.0));
   aPoles.SetValue(3, gp_Pnt2d(2.0, 0.0));
-  EXPECT_THROW(Geom2dEval_AHTBezierCurve(aPoles, 2, -1.0, 0.0),
-               Standard_ConstructionError);
+  EXPECT_THROW(Geom2dEval_AHTBezierCurve(aPoles, 2, -1.0, 0.0), Standard_ConstructionError);
 }
 
 // Test invalid construction: negative beta throws
@@ -340,8 +335,7 @@ TEST(Geom2dEval_AHTBezierCurveTest, Construction_NegativeBeta_Throws)
   aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
   aPoles.SetValue(2, gp_Pnt2d(1.0, 0.0));
   aPoles.SetValue(3, gp_Pnt2d(2.0, 0.0));
-  EXPECT_THROW(Geom2dEval_AHTBezierCurve(aPoles, 2, 0.0, -1.0),
-               Standard_ConstructionError);
+  EXPECT_THROW(Geom2dEval_AHTBezierCurve(aPoles, 2, 0.0, -1.0), Standard_ConstructionError);
 }
 
 // Test invalid construction: weight count mismatch throws
@@ -385,10 +379,9 @@ TEST(Geom2dEval_AHTBezierCurveTest, Reverse_NotImplemented)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalD2_ConsistentWithD1)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.3;
+  const double              aU     = 0.3;
 
-
-  Geom2d_Curve::ResD2 aD2 = aCurve.EvalD2(aU);
+  Geom2d_Curve::ResD2 aD2      = aCurve.EvalD2(aU);
   Geom2d_Curve::ResD1 aD1Plus  = aCurve.EvalD1(aU + Precision::Confusion());
   Geom2d_Curve::ResD1 aD1Minus = aCurve.EvalD1(aU - Precision::Confusion());
 
@@ -402,10 +395,9 @@ TEST(Geom2dEval_AHTBezierCurveTest, EvalD2_ConsistentWithD1)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalD3_ConsistentWithD2)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.4;
+  const double              aU     = 0.4;
 
-
-  Geom2d_Curve::ResD3 aD3 = aCurve.EvalD3(aU);
+  Geom2d_Curve::ResD3 aD3      = aCurve.EvalD3(aU);
   Geom2d_Curve::ResD2 aD2Plus  = aCurve.EvalD2(aU + Precision::Confusion());
   Geom2d_Curve::ResD2 aD2Minus = aCurve.EvalD2(aU - Precision::Confusion());
 
@@ -419,10 +411,10 @@ TEST(Geom2dEval_AHTBezierCurveTest, EvalD3_ConsistentWithD2)
 TEST(Geom2dEval_AHTBezierCurveTest, EvalDN_ConsistentWithD1)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.5;
+  const double              aU     = 0.5;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Vec2d aDN = aCurve.EvalDN(aU, 1);
+  gp_Vec2d            aDN = aCurve.EvalDN(aU, 1);
 
   EXPECT_NEAR(aD1.D1.X(), aDN.X(), Precision::Confusion());
   EXPECT_NEAR(aD1.D1.Y(), aDN.Y(), Precision::Confusion());

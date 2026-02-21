@@ -38,7 +38,6 @@ class Geom2d_Geometry;
 class Geom2dEval_ArchimedeanSpiralCurve : public Geom2d_Curve
 {
 public:
-
   //! Creates an Archimedean spiral.
   //! @param[in] thePosition the local coordinate system
   //! @param[in] theInitialRadius the initial radius (must be >= 0)
@@ -112,10 +111,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom2dEval_ArchimedeanSpiralCurve, Geom2d_Curve)
 
 private:
-
   gp_Ax2d myPosition;      //!< Local coordinate system
-  double  myInitialRadius;  //!< Initial radius (>= 0)
-  double  myGrowthRate;     //!< Growth rate per radian (> 0)
+  double  myInitialRadius; //!< Initial radius (>= 0)
+  double  myGrowthRate;    //!< Growth rate per radian (> 0)
 };
 
 #endif // _Geom2dEval_ArchimedeanSpiralCurve_HeaderFile

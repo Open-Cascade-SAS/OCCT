@@ -30,8 +30,7 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomEval_ParaboloidSurface, Geom_ElementarySurface)
 
 //==================================================================================================
 
-GeomEval_ParaboloidSurface::GeomEval_ParaboloidSurface(const gp_Ax3& thePosition,
-                                                       double        theFocal)
+GeomEval_ParaboloidSurface::GeomEval_ParaboloidSurface(const gp_Ax3& thePosition, double theFocal)
     : myFocal(theFocal)
 {
   if (theFocal <= 0.0)
@@ -54,7 +53,8 @@ void GeomEval_ParaboloidSurface::SetFocal(double theFocal)
 {
   if (theFocal <= 0.0)
   {
-    throw Standard_ConstructionError("GeomEval_ParaboloidSurface::SetFocal: focal distance must be > 0");
+    throw Standard_ConstructionError(
+      "GeomEval_ParaboloidSurface::SetFocal: focal distance must be > 0");
   }
   myFocal = theFocal;
 }
@@ -89,10 +89,7 @@ double GeomEval_ParaboloidSurface::VReversedParameter(const double /*V*/) const
 
 //==================================================================================================
 
-void GeomEval_ParaboloidSurface::Bounds(double& U1,
-                                        double& U2,
-                                        double& V1,
-                                        double& V2) const
+void GeomEval_ParaboloidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = 0.0;
   U2 = 2.0 * M_PI;
@@ -151,8 +148,8 @@ gp_Pnt GeomEval_ParaboloidSurface::EvalD0(const double U, const double V) const
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aCosU = std::cos(U);
-  const double aSinU = std::sin(U);
+  const double aCosU  = std::cos(U);
+  const double aSinU  = std::sin(U);
   const double aZComp = V * V / (4.0 * myFocal);
 
   return gp_Pnt(anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
@@ -169,30 +166,28 @@ Geom_Surface::ResD1 GeomEval_ParaboloidSurface::EvalD1(const double U, const dou
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aCosU = std::cos(U);
-  const double aSinU = std::sin(U);
-  const double aZComp = V * V / (4.0 * myFocal);
+  const double aCosU    = std::cos(U);
+  const double aSinU    = std::sin(U);
+  const double aZComp   = V * V / (4.0 * myFocal);
   const double aVOver2F = V / (2.0 * myFocal);
 
   Geom_Surface::ResD1 aResult;
 
   // P = O + V*cosU*XD + V*sinU*YD + V^2/(4F)*ZD
-  aResult.Point = gp_Pnt(
-    anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
-    anO.Y() + V * aCosU * aXDir.Y() + V * aSinU * aYDir.Y() + aZComp * aZDir.Y(),
-    anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
+  aResult.Point =
+    gp_Pnt(anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
+           anO.Y() + V * aCosU * aXDir.Y() + V * aSinU * aYDir.Y() + aZComp * aZDir.Y(),
+           anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
 
   // dP/du = -V*sinU*XD + V*cosU*YD
-  aResult.D1U = gp_Vec(
-    -V * aSinU * aXDir.X() + V * aCosU * aYDir.X(),
-    -V * aSinU * aXDir.Y() + V * aCosU * aYDir.Y(),
-    -V * aSinU * aXDir.Z() + V * aCosU * aYDir.Z());
+  aResult.D1U = gp_Vec(-V * aSinU * aXDir.X() + V * aCosU * aYDir.X(),
+                       -V * aSinU * aXDir.Y() + V * aCosU * aYDir.Y(),
+                       -V * aSinU * aXDir.Z() + V * aCosU * aYDir.Z());
 
   // dP/dv = cosU*XD + sinU*YD + V/(2F)*ZD
-  aResult.D1V = gp_Vec(
-    aCosU * aXDir.X() + aSinU * aYDir.X() + aVOver2F * aZDir.X(),
-    aCosU * aXDir.Y() + aSinU * aYDir.Y() + aVOver2F * aZDir.Y(),
-    aCosU * aXDir.Z() + aSinU * aYDir.Z() + aVOver2F * aZDir.Z());
+  aResult.D1V = gp_Vec(aCosU * aXDir.X() + aSinU * aYDir.X() + aVOver2F * aZDir.X(),
+                       aCosU * aXDir.Y() + aSinU * aYDir.Y() + aVOver2F * aZDir.Y(),
+                       aCosU * aXDir.Z() + aSinU * aYDir.Z() + aVOver2F * aZDir.Z());
 
   return aResult;
 }
@@ -206,49 +201,42 @@ Geom_Surface::ResD2 GeomEval_ParaboloidSurface::EvalD2(const double U, const dou
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aCosU = std::cos(U);
-  const double aSinU = std::sin(U);
-  const double aZComp = V * V / (4.0 * myFocal);
+  const double aCosU    = std::cos(U);
+  const double aSinU    = std::sin(U);
+  const double aZComp   = V * V / (4.0 * myFocal);
   const double aVOver2F = V / (2.0 * myFocal);
-  const double aInv2F = 1.0 / (2.0 * myFocal);
+  const double aInv2F   = 1.0 / (2.0 * myFocal);
 
   Geom_Surface::ResD2 aResult;
 
   // P
-  aResult.Point = gp_Pnt(
-    anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
-    anO.Y() + V * aCosU * aXDir.Y() + V * aSinU * aYDir.Y() + aZComp * aZDir.Y(),
-    anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
+  aResult.Point =
+    gp_Pnt(anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
+           anO.Y() + V * aCosU * aXDir.Y() + V * aSinU * aYDir.Y() + aZComp * aZDir.Y(),
+           anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
 
   // dP/du
-  aResult.D1U = gp_Vec(
-    -V * aSinU * aXDir.X() + V * aCosU * aYDir.X(),
-    -V * aSinU * aXDir.Y() + V * aCosU * aYDir.Y(),
-    -V * aSinU * aXDir.Z() + V * aCosU * aYDir.Z());
+  aResult.D1U = gp_Vec(-V * aSinU * aXDir.X() + V * aCosU * aYDir.X(),
+                       -V * aSinU * aXDir.Y() + V * aCosU * aYDir.Y(),
+                       -V * aSinU * aXDir.Z() + V * aCosU * aYDir.Z());
 
   // dP/dv
-  aResult.D1V = gp_Vec(
-    aCosU * aXDir.X() + aSinU * aYDir.X() + aVOver2F * aZDir.X(),
-    aCosU * aXDir.Y() + aSinU * aYDir.Y() + aVOver2F * aZDir.Y(),
-    aCosU * aXDir.Z() + aSinU * aYDir.Z() + aVOver2F * aZDir.Z());
+  aResult.D1V = gp_Vec(aCosU * aXDir.X() + aSinU * aYDir.X() + aVOver2F * aZDir.X(),
+                       aCosU * aXDir.Y() + aSinU * aYDir.Y() + aVOver2F * aZDir.Y(),
+                       aCosU * aXDir.Z() + aSinU * aYDir.Z() + aVOver2F * aZDir.Z());
 
   // d2P/du2 = -V*cosU*XD - V*sinU*YD
-  aResult.D2U = gp_Vec(
-    -V * aCosU * aXDir.X() - V * aSinU * aYDir.X(),
-    -V * aCosU * aXDir.Y() - V * aSinU * aYDir.Y(),
-    -V * aCosU * aXDir.Z() - V * aSinU * aYDir.Z());
+  aResult.D2U = gp_Vec(-V * aCosU * aXDir.X() - V * aSinU * aYDir.X(),
+                       -V * aCosU * aXDir.Y() - V * aSinU * aYDir.Y(),
+                       -V * aCosU * aXDir.Z() - V * aSinU * aYDir.Z());
 
   // d2P/dv2 = 1/(2F)*ZD
-  aResult.D2V = gp_Vec(
-    aInv2F * aZDir.X(),
-    aInv2F * aZDir.Y(),
-    aInv2F * aZDir.Z());
+  aResult.D2V = gp_Vec(aInv2F * aZDir.X(), aInv2F * aZDir.Y(), aInv2F * aZDir.Z());
 
   // d2P/dudv = -sinU*XD + cosU*YD
-  aResult.D2UV = gp_Vec(
-    -aSinU * aXDir.X() + aCosU * aYDir.X(),
-    -aSinU * aXDir.Y() + aCosU * aYDir.Y(),
-    -aSinU * aXDir.Z() + aCosU * aYDir.Z());
+  aResult.D2UV = gp_Vec(-aSinU * aXDir.X() + aCosU * aYDir.X(),
+                        -aSinU * aXDir.Y() + aCosU * aYDir.Y(),
+                        -aSinU * aXDir.Z() + aCosU * aYDir.Z());
 
   return aResult;
 }
@@ -262,64 +250,55 @@ Geom_Surface::ResD3 GeomEval_ParaboloidSurface::EvalD3(const double U, const dou
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aCosU = std::cos(U);
-  const double aSinU = std::sin(U);
-  const double aZComp = V * V / (4.0 * myFocal);
+  const double aCosU    = std::cos(U);
+  const double aSinU    = std::sin(U);
+  const double aZComp   = V * V / (4.0 * myFocal);
   const double aVOver2F = V / (2.0 * myFocal);
-  const double aInv2F = 1.0 / (2.0 * myFocal);
+  const double aInv2F   = 1.0 / (2.0 * myFocal);
 
   Geom_Surface::ResD3 aResult;
 
   // P
-  aResult.Point = gp_Pnt(
-    anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
-    anO.Y() + V * aCosU * aXDir.Y() + V * aSinU * aYDir.Y() + aZComp * aZDir.Y(),
-    anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
+  aResult.Point =
+    gp_Pnt(anO.X() + V * aCosU * aXDir.X() + V * aSinU * aYDir.X() + aZComp * aZDir.X(),
+           anO.Y() + V * aCosU * aXDir.Y() + V * aSinU * aYDir.Y() + aZComp * aZDir.Y(),
+           anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
 
   // dP/du
-  aResult.D1U = gp_Vec(
-    -V * aSinU * aXDir.X() + V * aCosU * aYDir.X(),
-    -V * aSinU * aXDir.Y() + V * aCosU * aYDir.Y(),
-    -V * aSinU * aXDir.Z() + V * aCosU * aYDir.Z());
+  aResult.D1U = gp_Vec(-V * aSinU * aXDir.X() + V * aCosU * aYDir.X(),
+                       -V * aSinU * aXDir.Y() + V * aCosU * aYDir.Y(),
+                       -V * aSinU * aXDir.Z() + V * aCosU * aYDir.Z());
 
   // dP/dv
-  aResult.D1V = gp_Vec(
-    aCosU * aXDir.X() + aSinU * aYDir.X() + aVOver2F * aZDir.X(),
-    aCosU * aXDir.Y() + aSinU * aYDir.Y() + aVOver2F * aZDir.Y(),
-    aCosU * aXDir.Z() + aSinU * aYDir.Z() + aVOver2F * aZDir.Z());
+  aResult.D1V = gp_Vec(aCosU * aXDir.X() + aSinU * aYDir.X() + aVOver2F * aZDir.X(),
+                       aCosU * aXDir.Y() + aSinU * aYDir.Y() + aVOver2F * aZDir.Y(),
+                       aCosU * aXDir.Z() + aSinU * aYDir.Z() + aVOver2F * aZDir.Z());
 
   // d2P/du2
-  aResult.D2U = gp_Vec(
-    -V * aCosU * aXDir.X() - V * aSinU * aYDir.X(),
-    -V * aCosU * aXDir.Y() - V * aSinU * aYDir.Y(),
-    -V * aCosU * aXDir.Z() - V * aSinU * aYDir.Z());
+  aResult.D2U = gp_Vec(-V * aCosU * aXDir.X() - V * aSinU * aYDir.X(),
+                       -V * aCosU * aXDir.Y() - V * aSinU * aYDir.Y(),
+                       -V * aCosU * aXDir.Z() - V * aSinU * aYDir.Z());
 
   // d2P/dv2
-  aResult.D2V = gp_Vec(
-    aInv2F * aZDir.X(),
-    aInv2F * aZDir.Y(),
-    aInv2F * aZDir.Z());
+  aResult.D2V = gp_Vec(aInv2F * aZDir.X(), aInv2F * aZDir.Y(), aInv2F * aZDir.Z());
 
   // d2P/dudv
-  aResult.D2UV = gp_Vec(
-    -aSinU * aXDir.X() + aCosU * aYDir.X(),
-    -aSinU * aXDir.Y() + aCosU * aYDir.Y(),
-    -aSinU * aXDir.Z() + aCosU * aYDir.Z());
+  aResult.D2UV = gp_Vec(-aSinU * aXDir.X() + aCosU * aYDir.X(),
+                        -aSinU * aXDir.Y() + aCosU * aYDir.Y(),
+                        -aSinU * aXDir.Z() + aCosU * aYDir.Z());
 
   // d3P/du3 = V*sinU*XD - V*cosU*YD
-  aResult.D3U = gp_Vec(
-    V * aSinU * aXDir.X() - V * aCosU * aYDir.X(),
-    V * aSinU * aXDir.Y() - V * aCosU * aYDir.Y(),
-    V * aSinU * aXDir.Z() - V * aCosU * aYDir.Z());
+  aResult.D3U = gp_Vec(V * aSinU * aXDir.X() - V * aCosU * aYDir.X(),
+                       V * aSinU * aXDir.Y() - V * aCosU * aYDir.Y(),
+                       V * aSinU * aXDir.Z() - V * aCosU * aYDir.Z());
 
   // d3P/dv3 = 0
   aResult.D3V = gp_Vec(0.0, 0.0, 0.0);
 
   // d3P/du2dv = -cosU*XD - sinU*YD
-  aResult.D3UUV = gp_Vec(
-    -aCosU * aXDir.X() - aSinU * aYDir.X(),
-    -aCosU * aXDir.Y() - aSinU * aYDir.Y(),
-    -aCosU * aXDir.Z() - aSinU * aYDir.Z());
+  aResult.D3UUV = gp_Vec(-aCosU * aXDir.X() - aSinU * aYDir.X(),
+                         -aCosU * aXDir.Y() - aSinU * aYDir.Y(),
+                         -aCosU * aXDir.Z() - aSinU * aYDir.Z());
 
   // d3P/dudv2 = 0
   aResult.D3UVV = gp_Vec(0.0, 0.0, 0.0);
@@ -336,8 +315,7 @@ gp_Vec GeomEval_ParaboloidSurface::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
-    throw Geom_UndefinedDerivative(
-      "GeomEval_ParaboloidSurface::EvalDN: invalid derivative order");
+    throw Geom_UndefinedDerivative("GeomEval_ParaboloidSurface::EvalDN: invalid derivative order");
   }
 
   const gp_Dir& aXDir = pos.XDirection();

@@ -29,9 +29,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomEval_HyperboloidSurface, Geom_ElementarySurface)
 //==================================================================================================
 
 GeomEval_HyperboloidSurface::GeomEval_HyperboloidSurface(const gp_Ax3& thePosition,
-                                                          double        theR1,
-                                                          double        theR2,
-                                                          SheetMode     theMode)
+                                                         double        theR1,
+                                                         double        theR2,
+                                                         SheetMode     theMode)
     : myR1(theR1),
       myR2(theR2),
       myMode(theMode)
@@ -123,10 +123,7 @@ double GeomEval_HyperboloidSurface::VReversedParameter(const double /*V*/) const
 
 //==================================================================================================
 
-void GeomEval_HyperboloidSurface::Bounds(double& U1,
-                                          double& U2,
-                                          double& V1,
-                                          double& V2) const
+void GeomEval_HyperboloidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = 0.0;
   U2 = 2.0 * M_PI;
@@ -185,27 +182,21 @@ gp_Pnt GeomEval_HyperboloidSurface::EvalD0(const double U, const double V) const
   const double aCosH = std::cosh(V);
   const double aSinH = std::sinh(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   gp_XYZ aP;
   if (myMode == SheetMode::OneSheet)
   {
     // P = O + R1*cosh(v)*cos(u)*XD + R1*cosh(v)*sin(u)*YD + R2*sinh(v)*ZD
-    aP = anO
-         + aXD * (myR1 * aCosH * aCosU)
-         + aYD * (myR1 * aCosH * aSinU)
-         + aZD * (myR2 * aSinH);
+    aP = anO + aXD * (myR1 * aCosH * aCosU) + aYD * (myR1 * aCosH * aSinU) + aZD * (myR2 * aSinH);
   }
   else
   {
     // P = O + R2*sinh(v)*cos(u)*XD + R2*sinh(v)*sin(u)*YD + R1*cosh(v)*ZD
-    aP = anO
-         + aXD * (myR2 * aSinH * aCosU)
-         + aYD * (myR2 * aSinH * aSinU)
-         + aZD * (myR1 * aCosH);
+    aP = anO + aXD * (myR2 * aSinH * aCosU) + aYD * (myR2 * aSinH * aSinU) + aZD * (myR1 * aCosH);
   }
   return gp_Pnt(aP);
 }
@@ -219,39 +210,31 @@ Geom_Surface::ResD1 GeomEval_HyperboloidSurface::EvalD1(const double U, const do
   const double aCosH = std::cosh(V);
   const double aSinH = std::sinh(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   Geom_Surface::ResD1 aResult;
   if (myMode == SheetMode::OneSheet)
   {
-    aResult.Point = gp_Pnt(anO
-                           + aXD * (myR1 * aCosH * aCosU)
-                           + aYD * (myR1 * aCosH * aSinU)
+    aResult.Point = gp_Pnt(anO + aXD * (myR1 * aCosH * aCosU) + aYD * (myR1 * aCosH * aSinU)
                            + aZD * (myR2 * aSinH));
     // dP/du = R1*cosh(v)*(-sin(u))*XD + R1*cosh(v)*cos(u)*YD
-    aResult.D1U = gp_Vec(aXD * (myR1 * aCosH * (-aSinU))
-                         + aYD * (myR1 * aCosH * aCosU));
+    aResult.D1U = gp_Vec(aXD * (myR1 * aCosH * (-aSinU)) + aYD * (myR1 * aCosH * aCosU));
     // dP/dv = R1*sinh(v)*cos(u)*XD + R1*sinh(v)*sin(u)*YD + R2*cosh(v)*ZD
-    aResult.D1V = gp_Vec(aXD * (myR1 * aSinH * aCosU)
-                         + aYD * (myR1 * aSinH * aSinU)
-                         + aZD * (myR2 * aCosH));
+    aResult.D1V =
+      gp_Vec(aXD * (myR1 * aSinH * aCosU) + aYD * (myR1 * aSinH * aSinU) + aZD * (myR2 * aCosH));
   }
   else
   {
-    aResult.Point = gp_Pnt(anO
-                           + aXD * (myR2 * aSinH * aCosU)
-                           + aYD * (myR2 * aSinH * aSinU)
+    aResult.Point = gp_Pnt(anO + aXD * (myR2 * aSinH * aCosU) + aYD * (myR2 * aSinH * aSinU)
                            + aZD * (myR1 * aCosH));
     // dP/du = R2*sinh(v)*(-sin(u))*XD + R2*sinh(v)*cos(u)*YD
-    aResult.D1U = gp_Vec(aXD * (myR2 * aSinH * (-aSinU))
-                         + aYD * (myR2 * aSinH * aCosU));
+    aResult.D1U = gp_Vec(aXD * (myR2 * aSinH * (-aSinU)) + aYD * (myR2 * aSinH * aCosU));
     // dP/dv = R2*cosh(v)*cos(u)*XD + R2*cosh(v)*sin(u)*YD + R1*sinh(v)*ZD
-    aResult.D1V = gp_Vec(aXD * (myR2 * aCosH * aCosU)
-                         + aYD * (myR2 * aCosH * aSinU)
-                         + aZD * (myR1 * aSinH));
+    aResult.D1V =
+      gp_Vec(aXD * (myR2 * aCosH * aCosU) + aYD * (myR2 * aCosH * aSinU) + aZD * (myR1 * aSinH));
   }
   return aResult;
 }
@@ -265,55 +248,41 @@ Geom_Surface::ResD2 GeomEval_HyperboloidSurface::EvalD2(const double U, const do
   const double aCosH = std::cosh(V);
   const double aSinH = std::sinh(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   Geom_Surface::ResD2 aResult;
   if (myMode == SheetMode::OneSheet)
   {
-    aResult.Point = gp_Pnt(anO
-                           + aXD * (myR1 * aCosH * aCosU)
-                           + aYD * (myR1 * aCosH * aSinU)
+    aResult.Point = gp_Pnt(anO + aXD * (myR1 * aCosH * aCosU) + aYD * (myR1 * aCosH * aSinU)
                            + aZD * (myR2 * aSinH));
-    aResult.D1U = gp_Vec(aXD * (myR1 * aCosH * (-aSinU))
-                         + aYD * (myR1 * aCosH * aCosU));
-    aResult.D1V = gp_Vec(aXD * (myR1 * aSinH * aCosU)
-                         + aYD * (myR1 * aSinH * aSinU)
-                         + aZD * (myR2 * aCosH));
+    aResult.D1U   = gp_Vec(aXD * (myR1 * aCosH * (-aSinU)) + aYD * (myR1 * aCosH * aCosU));
+    aResult.D1V =
+      gp_Vec(aXD * (myR1 * aSinH * aCosU) + aYD * (myR1 * aSinH * aSinU) + aZD * (myR2 * aCosH));
     // d2P/du2 = R1*cosh(v)*(-cos(u))*XD + R1*cosh(v)*(-sin(u))*YD
-    aResult.D2U = gp_Vec(aXD * (myR1 * aCosH * (-aCosU))
-                         + aYD * (myR1 * aCosH * (-aSinU)));
+    aResult.D2U = gp_Vec(aXD * (myR1 * aCosH * (-aCosU)) + aYD * (myR1 * aCosH * (-aSinU)));
     // d2P/dv2 = R1*cosh(v)*cos(u)*XD + R1*cosh(v)*sin(u)*YD + R2*sinh(v)*ZD
-    aResult.D2V = gp_Vec(aXD * (myR1 * aCosH * aCosU)
-                         + aYD * (myR1 * aCosH * aSinU)
-                         + aZD * (myR2 * aSinH));
+    aResult.D2V =
+      gp_Vec(aXD * (myR1 * aCosH * aCosU) + aYD * (myR1 * aCosH * aSinU) + aZD * (myR2 * aSinH));
     // d2P/dudv = R1*sinh(v)*(-sin(u))*XD + R1*sinh(v)*cos(u)*YD
-    aResult.D2UV = gp_Vec(aXD * (myR1 * aSinH * (-aSinU))
-                          + aYD * (myR1 * aSinH * aCosU));
+    aResult.D2UV = gp_Vec(aXD * (myR1 * aSinH * (-aSinU)) + aYD * (myR1 * aSinH * aCosU));
   }
   else
   {
-    aResult.Point = gp_Pnt(anO
-                           + aXD * (myR2 * aSinH * aCosU)
-                           + aYD * (myR2 * aSinH * aSinU)
+    aResult.Point = gp_Pnt(anO + aXD * (myR2 * aSinH * aCosU) + aYD * (myR2 * aSinH * aSinU)
                            + aZD * (myR1 * aCosH));
-    aResult.D1U = gp_Vec(aXD * (myR2 * aSinH * (-aSinU))
-                         + aYD * (myR2 * aSinH * aCosU));
-    aResult.D1V = gp_Vec(aXD * (myR2 * aCosH * aCosU)
-                         + aYD * (myR2 * aCosH * aSinU)
-                         + aZD * (myR1 * aSinH));
+    aResult.D1U   = gp_Vec(aXD * (myR2 * aSinH * (-aSinU)) + aYD * (myR2 * aSinH * aCosU));
+    aResult.D1V =
+      gp_Vec(aXD * (myR2 * aCosH * aCosU) + aYD * (myR2 * aCosH * aSinU) + aZD * (myR1 * aSinH));
     // d2P/du2 = R2*sinh(v)*(-cos(u))*XD + R2*sinh(v)*(-sin(u))*YD
-    aResult.D2U = gp_Vec(aXD * (myR2 * aSinH * (-aCosU))
-                         + aYD * (myR2 * aSinH * (-aSinU)));
+    aResult.D2U = gp_Vec(aXD * (myR2 * aSinH * (-aCosU)) + aYD * (myR2 * aSinH * (-aSinU)));
     // d2P/dv2 = R2*sinh(v)*cos(u)*XD + R2*sinh(v)*sin(u)*YD + R1*cosh(v)*ZD
-    aResult.D2V = gp_Vec(aXD * (myR2 * aSinH * aCosU)
-                         + aYD * (myR2 * aSinH * aSinU)
-                         + aZD * (myR1 * aCosH));
+    aResult.D2V =
+      gp_Vec(aXD * (myR2 * aSinH * aCosU) + aYD * (myR2 * aSinH * aSinU) + aZD * (myR1 * aCosH));
     // d2P/dudv = R2*cosh(v)*(-sin(u))*XD + R2*cosh(v)*cos(u)*YD
-    aResult.D2UV = gp_Vec(aXD * (myR2 * aCosH * (-aSinU))
-                          + aYD * (myR2 * aCosH * aCosU));
+    aResult.D2UV = gp_Vec(aXD * (myR2 * aCosH * (-aSinU)) + aYD * (myR2 * aCosH * aCosU));
   }
   return aResult;
 }
@@ -327,75 +296,53 @@ Geom_Surface::ResD3 GeomEval_HyperboloidSurface::EvalD3(const double U, const do
   const double aCosH = std::cosh(V);
   const double aSinH = std::sinh(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   Geom_Surface::ResD3 aResult;
   if (myMode == SheetMode::OneSheet)
   {
-    aResult.Point = gp_Pnt(anO
-                           + aXD * (myR1 * aCosH * aCosU)
-                           + aYD * (myR1 * aCosH * aSinU)
+    aResult.Point = gp_Pnt(anO + aXD * (myR1 * aCosH * aCosU) + aYD * (myR1 * aCosH * aSinU)
                            + aZD * (myR2 * aSinH));
-    aResult.D1U = gp_Vec(aXD * (myR1 * aCosH * (-aSinU))
-                         + aYD * (myR1 * aCosH * aCosU));
-    aResult.D1V = gp_Vec(aXD * (myR1 * aSinH * aCosU)
-                         + aYD * (myR1 * aSinH * aSinU)
-                         + aZD * (myR2 * aCosH));
-    aResult.D2U = gp_Vec(aXD * (myR1 * aCosH * (-aCosU))
-                         + aYD * (myR1 * aCosH * (-aSinU)));
-    aResult.D2V = gp_Vec(aXD * (myR1 * aCosH * aCosU)
-                         + aYD * (myR1 * aCosH * aSinU)
-                         + aZD * (myR2 * aSinH));
-    aResult.D2UV = gp_Vec(aXD * (myR1 * aSinH * (-aSinU))
-                          + aYD * (myR1 * aSinH * aCosU));
+    aResult.D1U   = gp_Vec(aXD * (myR1 * aCosH * (-aSinU)) + aYD * (myR1 * aCosH * aCosU));
+    aResult.D1V =
+      gp_Vec(aXD * (myR1 * aSinH * aCosU) + aYD * (myR1 * aSinH * aSinU) + aZD * (myR2 * aCosH));
+    aResult.D2U = gp_Vec(aXD * (myR1 * aCosH * (-aCosU)) + aYD * (myR1 * aCosH * (-aSinU)));
+    aResult.D2V =
+      gp_Vec(aXD * (myR1 * aCosH * aCosU) + aYD * (myR1 * aCosH * aSinU) + aZD * (myR2 * aSinH));
+    aResult.D2UV = gp_Vec(aXD * (myR1 * aSinH * (-aSinU)) + aYD * (myR1 * aSinH * aCosU));
     // d3P/du3 = R1*cosh(v)*sin(u)*XD + R1*cosh(v)*(-cos(u))*YD
-    aResult.D3U = gp_Vec(aXD * (myR1 * aCosH * aSinU)
-                         + aYD * (myR1 * aCosH * (-aCosU)));
+    aResult.D3U = gp_Vec(aXD * (myR1 * aCosH * aSinU) + aYD * (myR1 * aCosH * (-aCosU)));
     // d3P/dv3 = R1*sinh(v)*cos(u)*XD + R1*sinh(v)*sin(u)*YD + R2*cosh(v)*ZD
-    aResult.D3V = gp_Vec(aXD * (myR1 * aSinH * aCosU)
-                         + aYD * (myR1 * aSinH * aSinU)
-                         + aZD * (myR2 * aCosH));
+    aResult.D3V =
+      gp_Vec(aXD * (myR1 * aSinH * aCosU) + aYD * (myR1 * aSinH * aSinU) + aZD * (myR2 * aCosH));
     // d3P/du2dv = R1*sinh(v)*(-cos(u))*XD + R1*sinh(v)*(-sin(u))*YD
-    aResult.D3UUV = gp_Vec(aXD * (myR1 * aSinH * (-aCosU))
-                           + aYD * (myR1 * aSinH * (-aSinU)));
+    aResult.D3UUV = gp_Vec(aXD * (myR1 * aSinH * (-aCosU)) + aYD * (myR1 * aSinH * (-aSinU)));
     // d3P/dudv2 = R1*cosh(v)*(-sin(u))*XD + R1*cosh(v)*cos(u)*YD
-    aResult.D3UVV = gp_Vec(aXD * (myR1 * aCosH * (-aSinU))
-                           + aYD * (myR1 * aCosH * aCosU));
+    aResult.D3UVV = gp_Vec(aXD * (myR1 * aCosH * (-aSinU)) + aYD * (myR1 * aCosH * aCosU));
   }
   else
   {
-    aResult.Point = gp_Pnt(anO
-                           + aXD * (myR2 * aSinH * aCosU)
-                           + aYD * (myR2 * aSinH * aSinU)
+    aResult.Point = gp_Pnt(anO + aXD * (myR2 * aSinH * aCosU) + aYD * (myR2 * aSinH * aSinU)
                            + aZD * (myR1 * aCosH));
-    aResult.D1U = gp_Vec(aXD * (myR2 * aSinH * (-aSinU))
-                         + aYD * (myR2 * aSinH * aCosU));
-    aResult.D1V = gp_Vec(aXD * (myR2 * aCosH * aCosU)
-                         + aYD * (myR2 * aCosH * aSinU)
-                         + aZD * (myR1 * aSinH));
-    aResult.D2U = gp_Vec(aXD * (myR2 * aSinH * (-aCosU))
-                         + aYD * (myR2 * aSinH * (-aSinU)));
-    aResult.D2V = gp_Vec(aXD * (myR2 * aSinH * aCosU)
-                         + aYD * (myR2 * aSinH * aSinU)
-                         + aZD * (myR1 * aCosH));
-    aResult.D2UV = gp_Vec(aXD * (myR2 * aCosH * (-aSinU))
-                          + aYD * (myR2 * aCosH * aCosU));
+    aResult.D1U   = gp_Vec(aXD * (myR2 * aSinH * (-aSinU)) + aYD * (myR2 * aSinH * aCosU));
+    aResult.D1V =
+      gp_Vec(aXD * (myR2 * aCosH * aCosU) + aYD * (myR2 * aCosH * aSinU) + aZD * (myR1 * aSinH));
+    aResult.D2U = gp_Vec(aXD * (myR2 * aSinH * (-aCosU)) + aYD * (myR2 * aSinH * (-aSinU)));
+    aResult.D2V =
+      gp_Vec(aXD * (myR2 * aSinH * aCosU) + aYD * (myR2 * aSinH * aSinU) + aZD * (myR1 * aCosH));
+    aResult.D2UV = gp_Vec(aXD * (myR2 * aCosH * (-aSinU)) + aYD * (myR2 * aCosH * aCosU));
     // d3P/du3 = R2*sinh(v)*sin(u)*XD + R2*sinh(v)*(-cos(u))*YD
-    aResult.D3U = gp_Vec(aXD * (myR2 * aSinH * aSinU)
-                         + aYD * (myR2 * aSinH * (-aCosU)));
+    aResult.D3U = gp_Vec(aXD * (myR2 * aSinH * aSinU) + aYD * (myR2 * aSinH * (-aCosU)));
     // d3P/dv3 = R2*cosh(v)*cos(u)*XD + R2*cosh(v)*sin(u)*YD + R1*sinh(v)*ZD
-    aResult.D3V = gp_Vec(aXD * (myR2 * aCosH * aCosU)
-                         + aYD * (myR2 * aCosH * aSinU)
-                         + aZD * (myR1 * aSinH));
+    aResult.D3V =
+      gp_Vec(aXD * (myR2 * aCosH * aCosU) + aYD * (myR2 * aCosH * aSinU) + aZD * (myR1 * aSinH));
     // d3P/du2dv = R2*cosh(v)*(-cos(u))*XD + R2*cosh(v)*(-sin(u))*YD
-    aResult.D3UUV = gp_Vec(aXD * (myR2 * aCosH * (-aCosU))
-                           + aYD * (myR2 * aCosH * (-aSinU)));
+    aResult.D3UUV = gp_Vec(aXD * (myR2 * aCosH * (-aCosU)) + aYD * (myR2 * aCosH * (-aSinU)));
     // d3P/dudv2 = R2*sinh(v)*(-sin(u))*XD + R2*sinh(v)*cos(u)*YD
-    aResult.D3UVV = gp_Vec(aXD * (myR2 * aSinH * (-aSinU))
-                           + aYD * (myR2 * aSinH * aCosU));
+    aResult.D3UVV = gp_Vec(aXD * (myR2 * aSinH * (-aSinU)) + aYD * (myR2 * aSinH * aCosU));
   }
   return aResult;
 }
@@ -403,9 +350,9 @@ Geom_Surface::ResD3 GeomEval_HyperboloidSurface::EvalD3(const double U, const do
 //==================================================================================================
 
 gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
-                                            const double V,
-                                            const int    Nu,
-                                            const int    Nv) const
+                                           const double V,
+                                           const int    Nu,
+                                           const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
@@ -424,8 +371,8 @@ gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
 
   // d^n/dv^n[cosh(v)] = (n%2==0 ? cosh(v) : sinh(v))
   // d^n/dv^n[sinh(v)] = (n%2==0 ? sinh(v) : cosh(v))
-  const double aCosH = std::cosh(V);
-  const double aSinH = std::sinh(V);
+  const double aCosH   = std::cosh(V);
+  const double aSinH   = std::sinh(V);
   const double aDnCosH = (Nv % 2 == 0) ? aCosH : aSinH;
   const double aDnSinH = (Nv % 2 == 0) ? aSinH : aCosH;
 
@@ -438,7 +385,7 @@ gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
     const double aXCoeff = myR1 * aDnCosH * aDnCosU;
     const double aYCoeff = myR1 * aDnCosH * aDnSinU;
     const double aZCoeff = (Nu == 0) ? myR2 * aDnSinH : 0.0;
-    aVec = aXD * aXCoeff + aYD * aYCoeff + aZD * aZCoeff;
+    aVec                 = aXD * aXCoeff + aYD * aYCoeff + aZD * aZCoeff;
   }
   else
   {
@@ -448,7 +395,7 @@ gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
     const double aXCoeff = myR2 * aDnSinH * aDnCosU;
     const double aYCoeff = myR2 * aDnSinH * aDnSinU;
     const double aZCoeff = (Nu == 0) ? myR1 * aDnCosH : 0.0;
-    aVec = aXD * aXCoeff + aYD * aYCoeff + aZD * aZCoeff;
+    aVec                 = aXD * aXCoeff + aYD * aYCoeff + aZD * aZCoeff;
   }
   return gp_Vec(aVec);
 }
@@ -486,15 +433,15 @@ void GeomEval_HyperboloidSurface::DumpJson(Standard_OStream& theOStream, int the
 //==================================================================================================
 
 void GeomEval_HyperboloidSurface::Coefficients(double& A1,
-                                                double& A2,
-                                                double& A3,
-                                                double& B1,
-                                                double& B2,
-                                                double& B3,
-                                                double& C1,
-                                                double& C2,
-                                                double& C3,
-                                                double& D) const
+                                               double& A2,
+                                               double& A3,
+                                               double& B1,
+                                               double& B2,
+                                               double& B3,
+                                               double& C1,
+                                               double& C2,
+                                               double& C3,
+                                               double& D) const
 {
   // Local coordinate equation:
   // 1-sheet: X^2/R1^2 + Y^2/R1^2 - Z^2/R2^2 - 1 = 0

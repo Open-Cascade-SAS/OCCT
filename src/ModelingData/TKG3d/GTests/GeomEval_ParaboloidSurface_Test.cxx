@@ -32,7 +32,7 @@ constexpr double THE_FD_TOL_D3 = 1e-4;
 // Test construction with valid parameters
 TEST(GeomEval_ParaboloidSurfaceTest, Construction_ValidParams)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
   EXPECT_NEAR(aSurf.Focal(), 1.0, Precision::Confusion());
 }
@@ -48,9 +48,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, Construction_InvalidFocal_Throws)
 // Test EvalD0 at known point: u=0, v=0 should give origin
 TEST(GeomEval_ParaboloidSurfaceTest, EvalD0_Origin)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
-  gp_Pnt aP = aSurf.EvalD0(0.0, 0.0);
+  gp_Pnt                     aP = aSurf.EvalD0(0.0, 0.0);
   EXPECT_NEAR(aP.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), 0.0, Precision::Confusion());
@@ -59,9 +59,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, EvalD0_Origin)
 // Test EvalD0 at known point: u=0, v=2, F=1 -> P=(2,0,1)
 TEST(GeomEval_ParaboloidSurfaceTest, EvalD0_KnownPoint)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
-  gp_Pnt aP = aSurf.EvalD0(0.0, 2.0);
+  gp_Pnt                     aP = aSurf.EvalD0(0.0, 2.0);
   EXPECT_NEAR(aP.X(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), 1.0, Precision::Confusion()); // v^2/(4*F) = 4/4 = 1
@@ -70,15 +70,15 @@ TEST(GeomEval_ParaboloidSurfaceTest, EvalD0_KnownPoint)
 // Test derivative consistency: compare EvalD1 vs finite difference of EvalD0
 TEST(GeomEval_ParaboloidSurfaceTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 2.0);
-  const double aU = 1.0, aV = 1.5;
+  const double               aU = 1.0, aV = 1.5;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Pnt aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
-  gp_Pnt aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
-  gp_Pnt aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
-  gp_Pnt aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
+  Geom_Surface::ResD1 aD1  = aSurf.EvalD1(aU, aV);
+  gp_Pnt              aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
+  gp_Pnt              aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
+  gp_Pnt              aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
+  gp_Pnt              aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
 
   gp_Vec aFDU((aPu1.XYZ() - aPu2.XYZ()) / (2.0 * Precision::Confusion()));
   gp_Vec aFDV((aPv1.XYZ() - aPv2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -94,9 +94,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, EvalD1_ConsistentWithD0)
 // Test Bounds and periodicity
 TEST(GeomEval_ParaboloidSurfaceTest, Bounds_Periodicity)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
-  double aU1, aU2, aV1, aV2;
+  double                     aU1, aU2, aV1, aV2;
   aSurf.Bounds(aU1, aU2, aV1, aV2);
   EXPECT_NEAR(aU1, 0.0, Precision::Confusion());
   EXPECT_NEAR(aU2, 2.0 * M_PI, Precision::Confusion());
@@ -108,7 +108,7 @@ TEST(GeomEval_ParaboloidSurfaceTest, Bounds_Periodicity)
 
 TEST(GeomEval_ParaboloidSurfaceTest, Iso_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
   EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
@@ -116,7 +116,7 @@ TEST(GeomEval_ParaboloidSurfaceTest, Iso_NotImplemented)
 
 TEST(GeomEval_ParaboloidSurfaceTest, Reverse_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
   EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
@@ -127,9 +127,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, Reverse_NotImplemented)
 // Test implicit equation at evaluated points
 TEST(GeomEval_ParaboloidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.5);
-  double aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
+  double                     aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
   aSurf.Coefficients(aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD);
 
   for (double u = 0.0; u < 6.0; u += 1.0)
@@ -138,9 +138,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
     {
       gp_Pnt aP = aSurf.EvalD0(u, v);
       double aX = aP.X(), aY = aP.Y(), aZ = aP.Z();
-      double aVal = aA1*aX*aX + aA2*aY*aY + aA3*aZ*aZ
-                  + 2.0*(aB1*aX*aY + aB2*aX*aZ + aB3*aY*aZ)
-                  + 2.0*(aC1*aX + aC2*aY + aC3*aZ) + aD;
+      double aVal = aA1 * aX * aX + aA2 * aY * aY + aA3 * aZ * aZ
+                    + 2.0 * (aB1 * aX * aY + aB2 * aX * aZ + aB3 * aY * aZ)
+                    + 2.0 * (aC1 * aX + aC2 * aY + aC3 * aZ) + aD;
       EXPECT_NEAR(aVal, 0.0, Precision::Intersection());
     }
   }
@@ -149,9 +149,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, Coefficients_SatisfiedAtEvalPoints)
 // Test Transform/Transformed are not implemented.
 TEST(GeomEval_ParaboloidSurfaceTest, Transform_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
-  gp_Trsf aTrsf;
+  gp_Trsf                    aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
@@ -161,7 +161,7 @@ TEST(GeomEval_ParaboloidSurfaceTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(GeomEval_ParaboloidSurfaceTest, Copy_Independent)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 2.0);
   occ::handle<Geom_Geometry> aCopy = aSurf.Copy();
   EXPECT_FALSE(aCopy.IsNull());
@@ -174,18 +174,18 @@ TEST(GeomEval_ParaboloidSurfaceTest, Copy_Independent)
 // Test DumpJson does not crash
 TEST(GeomEval_ParaboloidSurfaceTest, DumpJson_NoCrash)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
-  Standard_SStream aSS;
+  Standard_SStream           aSS;
   EXPECT_NO_THROW(aSurf.DumpJson(aSS));
 }
 
 // Test D2 consistency with finite differences of D1
 TEST(GeomEval_ParaboloidSurfaceTest, EvalD2_ConsistentWithD1)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 2.0);
-  const double aU = 1.0, aV = 1.5;
+  const double               aU = 1.0, aV = 1.5;
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(aU, aV);
 
@@ -212,9 +212,9 @@ TEST(GeomEval_ParaboloidSurfaceTest, EvalD2_ConsistentWithD1)
 // Test D3 consistency with finite differences of D2
 TEST(GeomEval_ParaboloidSurfaceTest, EvalD3_ConsistentWithD2)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 2.0);
-  const double aU = 0.7, aV = 1.2;
+  const double               aU = 0.7, aV = 1.2;
 
   Geom_Surface::ResD3 aD3 = aSurf.EvalD3(aU, aV);
 
@@ -247,10 +247,10 @@ TEST(GeomEval_ParaboloidSurfaceTest, EvalD3_ConsistentWithD2)
 // D2UU = -v*cos(u)*X - v*sin(u)*Y => magnitude = v
 TEST(GeomEval_ParaboloidSurfaceTest, EvalD2_KnownAnalytical)
 {
-  gp_Ax3 anAx3;
-  const double aFocal = 2.0;
+  gp_Ax3                     anAx3;
+  const double               aFocal = 2.0;
   GeomEval_ParaboloidSurface aSurf(anAx3, aFocal);
-  const double aU = M_PI / 4.0, aV = 2.0;
+  const double               aU = M_PI / 4.0, aV = 2.0;
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(aU, aV);
 
@@ -268,13 +268,13 @@ TEST(GeomEval_ParaboloidSurfaceTest, EvalD2_KnownAnalytical)
 // Test EvalDN consistency with D1 components
 TEST(GeomEval_ParaboloidSurfaceTest, EvalDN_Consistency)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                     anAx3;
   GeomEval_ParaboloidSurface aSurf(anAx3, 2.0);
-  const double aU = 1.0, aV = 1.0;
+  const double               aU = 1.0, aV = 1.0;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Vec aDN10 = aSurf.EvalDN(aU, aV, 1, 0);
-  gp_Vec aDN01 = aSurf.EvalDN(aU, aV, 0, 1);
+  Geom_Surface::ResD1 aD1   = aSurf.EvalD1(aU, aV);
+  gp_Vec              aDN10 = aSurf.EvalDN(aU, aV, 1, 0);
+  gp_Vec              aDN01 = aSurf.EvalDN(aU, aV, 0, 1);
 
   EXPECT_NEAR(aDN10.X(), aD1.D1U.X(), Precision::Confusion());
   EXPECT_NEAR(aDN10.Y(), aD1.D1U.Y(), Precision::Confusion());

@@ -27,13 +27,13 @@
 
 namespace
 {
-constexpr double THE_FD_TOL = 1e-5;
+constexpr double THE_FD_TOL    = 1e-5;
 constexpr double THE_FD_TOL_DN = 1e-4;
 } // namespace
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, Construction_ValidParams)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
   EXPECT_NEAR(aCurve.Scale(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aCurve.GrowthExponent(), 0.2, Precision::Confusion());
@@ -50,14 +50,14 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, Construction_InvalidParams_Throws)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, SelfSimilarity)
 {
-  gp_Ax2d anAx2d;
-  const double aA = 1.0, aB = 0.2;
+  gp_Ax2d                           anAx2d;
+  const double                      aA = 1.0, aB = 0.2;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, aA, aB);
 
   // C(t+k) should be a scaled version of C(t) by factor e^(b*k)
-  const double aK = 2.0;
-  const double aScaleFactor = std::exp(aB * aK);
-  const gp_Pnt2d anO = anAx2d.Location();
+  const double   aK           = 2.0;
+  const double   aScaleFactor = std::exp(aB * aK);
+  const gp_Pnt2d anO          = anAx2d.Location();
 
   const double aParams[] = {0.0, 1.0, 2.0, M_PI};
   for (double aT : aParams)
@@ -77,36 +77,36 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, SelfSimilarity)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, ConstantAngle)
 {
-  gp_Ax2d anAx2d;
-  const double aA = 1.0, aB = 0.2;
+  gp_Ax2d                           anAx2d;
+  const double                      aA = 1.0, aB = 0.2;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, aA, aB);
 
   // Angle between tangent and radial direction = atan(1/b)
-  const double aExpAngle = std::atan(1.0 / aB);
-  const gp_Pnt2d anO = anAx2d.Location();
+  const double   aExpAngle = std::atan(1.0 / aB);
+  const gp_Pnt2d anO       = anAx2d.Location();
 
   const double aParams[] = {1.0, 2.0, M_PI, 5.0};
   for (double aT : aParams)
   {
     Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aT);
-    gp_Vec2d aRadial(anO, aD1.Point);
-    const double aDot = aD1.D1.Dot(aRadial);
-    const double aCross = aD1.D1.Crossed(aRadial);
-    const double anAngle = std::abs(std::atan2(std::abs(aCross), aDot));
+    gp_Vec2d            aRadial(anO, aD1.Point);
+    const double        aDot    = aD1.D1.Dot(aRadial);
+    const double        aCross  = aD1.D1.Crossed(aRadial);
+    const double        anAngle = std::abs(std::atan2(std::abs(aCross), aDot));
     EXPECT_NEAR(anAngle, aExpAngle, 1e-10);
   }
 }
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.3);
-  const double aT = 2.0;
+  const double                      aT = 2.0;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aT);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aT + Precision::Confusion());
-  gp_Pnt2d aP2 = aCurve.EvalD0(aT - Precision::Confusion());
-  gp_Vec2d aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
+  gp_Pnt2d            aP1 = aCurve.EvalD0(aT + Precision::Confusion());
+  gp_Pnt2d            aP2 = aCurve.EvalD0(aT - Precision::Confusion());
+  gp_Vec2d            aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD1.D1.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD1.D1.Y(), aFD.Y(), THE_FD_TOL);
@@ -114,14 +114,14 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalD1_ConsistentWithD0)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalD2_ConsistentWithD1)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.3);
-  const double aT = 2.0;
+  const double                      aT = 2.0;
 
   Geom2d_Curve::ResD2 aD2  = aCurve.EvalD2(aT);
   Geom2d_Curve::ResD1 aD1p = aCurve.EvalD1(aT + Precision::Confusion());
   Geom2d_Curve::ResD1 aD1m = aCurve.EvalD1(aT - Precision::Confusion());
-  gp_Vec2d aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
+  gp_Vec2d            aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD2.D2.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD2.D2.Y(), aFD.Y(), THE_FD_TOL);
@@ -129,14 +129,14 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalD2_ConsistentWithD1)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalD3_ConsistentWithD2)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.3);
-  const double aT = 2.0;
+  const double                      aT = 2.0;
 
   Geom2d_Curve::ResD3 aD3  = aCurve.EvalD3(aT);
   Geom2d_Curve::ResD2 aD2p = aCurve.EvalD2(aT + Precision::Confusion());
   Geom2d_Curve::ResD2 aD2m = aCurve.EvalD2(aT - Precision::Confusion());
-  gp_Vec2d aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
+  gp_Vec2d            aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD3.D3.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD3.D3.Y(), aFD.Y(), THE_FD_TOL);
@@ -144,12 +144,12 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalD3_ConsistentWithD2)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalDN_HigherOrder_ConsistentWithPreviousOrder)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.3);
-  const double aT = 1.2;
-  const int    aN = 6;
+  const double                      aT = 1.2;
+  const int                         aN = 6;
 
-  const gp_Vec2d aDN = aCurve.EvalDN(aT, aN);
+  const gp_Vec2d aDN    = aCurve.EvalDN(aT, aN);
   const gp_Vec2d aDNm1P = aCurve.EvalDN(aT + Precision::Confusion(), aN - 1);
   const gp_Vec2d aDNm1M = aCurve.EvalDN(aT - Precision::Confusion(), aN - 1);
   const gp_Vec2d aFD((aDNm1P.XY() - aDNm1M.XY()) / (2.0 * Precision::Confusion()));
@@ -160,7 +160,7 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, EvalDN_HigherOrder_ConsistentWithPre
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, Properties)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
   EXPECT_FALSE(aCurve.IsClosed());
   EXPECT_FALSE(aCurve.IsPeriodic());
@@ -169,7 +169,7 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, Properties)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, Reverse_NotImplemented)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
   EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
   EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
@@ -177,9 +177,9 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, Reverse_NotImplemented)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, Transform_NotImplemented)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
-  gp_Trsf2d aTrsf;
+  gp_Trsf2d                         aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
   EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
@@ -187,9 +187,9 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, Transform_NotImplemented)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, Copy_Independent)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
-  occ::handle<Geom2d_Geometry> aCopy = aCurve.Copy();
+  occ::handle<Geom2d_Geometry>      aCopy = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const Geom2dEval_LogarithmicSpiralCurve* aCopyCurve =
     dynamic_cast<const Geom2dEval_LogarithmicSpiralCurve*>(aCopy.get());
@@ -200,8 +200,8 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, Copy_Independent)
 
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, DumpJson_NoCrash)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
-  Standard_SStream aSS;
+  Standard_SStream                  aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }

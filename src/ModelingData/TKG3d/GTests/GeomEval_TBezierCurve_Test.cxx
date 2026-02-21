@@ -122,11 +122,11 @@ TEST(GeomEval_TBezierCurveTest, ParameterRange)
 TEST(GeomEval_TBezierCurveTest, EvalD1_ConsistentWithD0)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  const double aU = M_PI / 3.0;
+  const double          aU     = M_PI / 3.0;
 
   Geom_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Pnt aP1 = aCurve.EvalD0(aU + Precision::Confusion());
-  gp_Pnt aP2 = aCurve.EvalD0(aU - Precision::Confusion());
+  gp_Pnt            aP1 = aCurve.EvalD0(aU + Precision::Confusion());
+  gp_Pnt            aP2 = aCurve.EvalD0(aU - Precision::Confusion());
 
   gp_Vec aFD((aP1.XYZ() - aP2.XYZ()) / (2.0 * Precision::Confusion()));
 
@@ -169,7 +169,7 @@ TEST(GeomEval_TBezierCurveTest, Construction_Rational)
 TEST(GeomEval_TBezierCurveTest, Transform_NotImplemented)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  gp_Trsf aTrsf;
+  gp_Trsf               aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
@@ -179,11 +179,10 @@ TEST(GeomEval_TBezierCurveTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(GeomEval_TBezierCurveTest, Copy_Independent)
 {
-  GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  occ::handle<Geom_Geometry> aCopy = aCurve.Copy();
+  GeomEval_TBezierCurve      aCurve = createSimpleCurve();
+  occ::handle<Geom_Geometry> aCopy  = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
-  const GeomEval_TBezierCurve* aCopyCurve =
-    dynamic_cast<const GeomEval_TBezierCurve*>(aCopy.get());
+  const GeomEval_TBezierCurve* aCopyCurve = dynamic_cast<const GeomEval_TBezierCurve*>(aCopy.get());
   EXPECT_TRUE(aCopyCurve != nullptr);
   EXPECT_EQ(aCopyCurve->NbPoles(), 3);
   EXPECT_NEAR(aCopyCurve->Alpha(), 1.0, Precision::Confusion());
@@ -193,7 +192,7 @@ TEST(GeomEval_TBezierCurveTest, Copy_Independent)
 TEST(GeomEval_TBezierCurveTest, DumpJson_NoCrash)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  Standard_SStream aSS;
+  Standard_SStream      aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }
 
@@ -201,10 +200,10 @@ TEST(GeomEval_TBezierCurveTest, DumpJson_NoCrash)
 TEST(GeomEval_TBezierCurveTest, EvalD2_ConsistentWithD1)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  const double aU = M_PI / 4.0;
+  const double          aU     = M_PI / 4.0;
 
-  Geom_Curve::ResD2 aD2 = aCurve.EvalD2(aU);
-  Geom_Curve::ResD1 aD1Plus = aCurve.EvalD1(aU + Precision::Confusion());
+  Geom_Curve::ResD2 aD2      = aCurve.EvalD2(aU);
+  Geom_Curve::ResD1 aD1Plus  = aCurve.EvalD1(aU + Precision::Confusion());
   Geom_Curve::ResD1 aD1Minus = aCurve.EvalD1(aU - Precision::Confusion());
 
   gp_Vec aFD((aD1Plus.D1.XYZ() - aD1Minus.D1.XYZ()) / (2.0 * Precision::Confusion()));
@@ -218,10 +217,10 @@ TEST(GeomEval_TBezierCurveTest, EvalD2_ConsistentWithD1)
 TEST(GeomEval_TBezierCurveTest, EvalD3_ConsistentWithD2)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  const double aU = M_PI / 3.0;
+  const double          aU     = M_PI / 3.0;
 
-  Geom_Curve::ResD3 aD3 = aCurve.EvalD3(aU);
-  Geom_Curve::ResD2 aD2Plus = aCurve.EvalD2(aU + Precision::Confusion());
+  Geom_Curve::ResD3 aD3      = aCurve.EvalD3(aU);
+  Geom_Curve::ResD2 aD2Plus  = aCurve.EvalD2(aU + Precision::Confusion());
   Geom_Curve::ResD2 aD2Minus = aCurve.EvalD2(aU - Precision::Confusion());
 
   gp_Vec aFD((aD2Plus.D2.XYZ() - aD2Minus.D2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -235,10 +234,10 @@ TEST(GeomEval_TBezierCurveTest, EvalD3_ConsistentWithD2)
 TEST(GeomEval_TBezierCurveTest, EvalDN_ConsistentWithD1)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  const double aU = M_PI / 6.0;
+  const double          aU     = M_PI / 6.0;
 
   Geom_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Vec aDN = aCurve.EvalDN(aU, 1);
+  gp_Vec            aDN = aCurve.EvalDN(aU, 1);
 
   EXPECT_NEAR(aD1.D1.X(), aDN.X(), Precision::Confusion());
   EXPECT_NEAR(aD1.D1.Y(), aDN.Y(), Precision::Confusion());
@@ -248,25 +247,24 @@ TEST(GeomEval_TBezierCurveTest, EvalDN_ConsistentWithD1)
 // Test T-Bezier semicircle matches Geom_Circle D0
 TEST(GeomEval_TBezierCurveTest, EvalD0_MatchesCircle)
 {
-  GeomEval_TBezierCurve aTBez = createSemicircle();
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_TBezierCurve aTBez   = createSemicircle();
+  Handle(Geom_Circle)   aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
-  const double aParams[] = {0.0, M_PI / 6.0, M_PI / 4.0, M_PI / 3.0, M_PI / 2.0,
-                             2.0 * M_PI / 3.0, 3.0 * M_PI / 4.0, M_PI};
+  const double aParams[] =
+    {0.0, M_PI / 6.0, M_PI / 4.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0, 3.0 * M_PI / 4.0, M_PI};
   for (const double aU : aParams)
   {
     gp_Pnt aPT = aTBez.EvalD0(aU);
     gp_Pnt aPC = aCircle->EvalD0(aU);
-    EXPECT_NEAR(aPT.Distance(aPC), 0.0, Precision::Angular())
-      << "D0 mismatch at u=" << aU;
+    EXPECT_NEAR(aPT.Distance(aPC), 0.0, Precision::Angular()) << "D0 mismatch at u=" << aU;
   }
 }
 
 // Test T-Bezier semicircle matches Geom_Circle D1/D2/D3
 TEST(GeomEval_TBezierCurveTest, EvalD3_MatchesCircle)
 {
-  GeomEval_TBezierCurve aTBez = createSemicircle();
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_TBezierCurve aTBez   = createSemicircle();
+  Handle(Geom_Circle)   aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] = {M_PI / 6.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0};
   for (const double aU : aParams)
@@ -290,8 +288,8 @@ TEST(GeomEval_TBezierCurveTest, EvalD3_MatchesCircle)
 // Test T-Bezier semi-ellipse matches Geom_Ellipse D0/D1/D2
 TEST(GeomEval_TBezierCurveTest, EvalD2_MatchesEllipse)
 {
-  GeomEval_TBezierCurve aTBez = createSemiEllipse();
-  Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
+  GeomEval_TBezierCurve aTBez     = createSemiEllipse();
+  Handle(Geom_Ellipse)  anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
 
   const double aParams[] = {M_PI / 6.0, M_PI / 4.0, M_PI / 2.0, 3.0 * M_PI / 4.0};
   for (const double aU : aParams)
@@ -312,17 +310,17 @@ TEST(GeomEval_TBezierCurveTest, EvalD2_MatchesEllipse)
 // Test EvalD0 at multiple evenly-spaced points
 TEST(GeomEval_TBezierCurveTest, EvalD0_MultiplePoints)
 {
-  GeomEval_TBezierCurve aCurve = createSimpleCurve();
-  const double aFirst = aCurve.FirstParameter();
-  const double aLast = aCurve.LastParameter();
-  const int aNbSamples = 10;
-  const double aStep = (aLast - aFirst) / aNbSamples;
+  GeomEval_TBezierCurve aCurve     = createSimpleCurve();
+  const double          aFirst     = aCurve.FirstParameter();
+  const double          aLast      = aCurve.LastParameter();
+  const int             aNbSamples = 10;
+  const double          aStep      = (aLast - aFirst) / aNbSamples;
 
   gp_Pnt aPrev = aCurve.EvalD0(aFirst);
   for (int i = 1; i <= aNbSamples; ++i)
   {
-    const double aU = aFirst + aStep * i;
-    gp_Pnt aPnt = aCurve.EvalD0(aU);
+    const double aU   = aFirst + aStep * i;
+    gp_Pnt       aPnt = aCurve.EvalD0(aU);
 
     // Verify the point has finite coordinates
     EXPECT_TRUE(std::isfinite(aPnt.X()));

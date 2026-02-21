@@ -68,8 +68,7 @@ Geom2dEval_LogarithmicSpiralCurve::Geom2dEval_LogarithmicSpiralCurve(const gp_Ax
 {
   if (theScale <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "Geom2dEval_LogarithmicSpiralCurve: scale must be > 0");
+    throw Standard_ConstructionError("Geom2dEval_LogarithmicSpiralCurve: scale must be > 0");
   }
   if (theGrowthExponent <= 0.0)
   {
@@ -164,7 +163,7 @@ gp_Pnt2d Geom2dEval_LogarithmicSpiralCurve::EvalD0(const double U) const
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aExp = myScale * std::exp(myGrowthExponent * U);
+  const double aExp  = myScale * std::exp(myGrowthExponent * U);
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
@@ -179,8 +178,8 @@ Geom2d_Curve::ResD1 Geom2dEval_LogarithmicSpiralCurve::EvalD1(const double U) co
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aExp = myScale * std::exp(myGrowthExponent * U);
-  const double aB = myGrowthExponent;
+  const double aExp  = myScale * std::exp(myGrowthExponent * U);
+  const double aB    = myGrowthExponent;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
@@ -188,8 +187,7 @@ Geom2d_Curve::ResD1 Geom2dEval_LogarithmicSpiralCurve::EvalD1(const double U) co
   aResult.Point = gp_Pnt2d(anO + aExp * aCosU * aXD + aExp * aSinU * aYD);
 
   // D1 = a*e^(b*t)*[(b*cos(t)-sin(t))*XDir + (b*sin(t)+cos(t))*YDir]
-  aResult.D1 = gp_Vec2d(aExp * (aB * aCosU - aSinU) * aXD
-                       + aExp * (aB * aSinU + aCosU) * aYD);
+  aResult.D1 = gp_Vec2d(aExp * (aB * aCosU - aSinU) * aXD + aExp * (aB * aSinU + aCosU) * aYD);
 
   return aResult;
 }
@@ -202,21 +200,20 @@ Geom2d_Curve::ResD2 Geom2dEval_LogarithmicSpiralCurve::EvalD2(const double U) co
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aExp = myScale * std::exp(myGrowthExponent * U);
-  const double aB = myGrowthExponent;
-  const double aB2 = aB * aB;
+  const double aExp  = myScale * std::exp(myGrowthExponent * U);
+  const double aB    = myGrowthExponent;
+  const double aB2   = aB * aB;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD2 aResult;
   aResult.Point = gp_Pnt2d(anO + aExp * aCosU * aXD + aExp * aSinU * aYD);
-  aResult.D1 = gp_Vec2d(aExp * (aB * aCosU - aSinU) * aXD
-                       + aExp * (aB * aSinU + aCosU) * aYD);
+  aResult.D1    = gp_Vec2d(aExp * (aB * aCosU - aSinU) * aXD + aExp * (aB * aSinU + aCosU) * aYD);
 
   // D2 = a*e^(b*t)*[((b^2-1)*cos(t) - 2*b*sin(t))*XDir
   //                + ((b^2-1)*sin(t) + 2*b*cos(t))*YDir]
   aResult.D2 = gp_Vec2d(aExp * ((aB2 - 1.0) * aCosU - 2.0 * aB * aSinU) * aXD
-                       + aExp * ((aB2 - 1.0) * aSinU + 2.0 * aB * aCosU) * aYD);
+                        + aExp * ((aB2 - 1.0) * aSinU + 2.0 * aB * aCosU) * aYD);
 
   return aResult;
 }
@@ -229,24 +226,23 @@ Geom2d_Curve::ResD3 Geom2dEval_LogarithmicSpiralCurve::EvalD3(const double U) co
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aExp = myScale * std::exp(myGrowthExponent * U);
-  const double aB = myGrowthExponent;
-  const double aB2 = aB * aB;
-  const double aB3 = aB2 * aB;
+  const double aExp  = myScale * std::exp(myGrowthExponent * U);
+  const double aB    = myGrowthExponent;
+  const double aB2   = aB * aB;
+  const double aB3   = aB2 * aB;
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD3 aResult;
   aResult.Point = gp_Pnt2d(anO + aExp * aCosU * aXD + aExp * aSinU * aYD);
-  aResult.D1 = gp_Vec2d(aExp * (aB * aCosU - aSinU) * aXD
-                       + aExp * (aB * aSinU + aCosU) * aYD);
-  aResult.D2 = gp_Vec2d(aExp * ((aB2 - 1.0) * aCosU - 2.0 * aB * aSinU) * aXD
-                       + aExp * ((aB2 - 1.0) * aSinU + 2.0 * aB * aCosU) * aYD);
+  aResult.D1    = gp_Vec2d(aExp * (aB * aCosU - aSinU) * aXD + aExp * (aB * aSinU + aCosU) * aYD);
+  aResult.D2    = gp_Vec2d(aExp * ((aB2 - 1.0) * aCosU - 2.0 * aB * aSinU) * aXD
+                        + aExp * ((aB2 - 1.0) * aSinU + 2.0 * aB * aCosU) * aYD);
 
   // D3 = a*e^(b*t)*[((b^3-3*b)*cos(t) - (3*b^2-1)*sin(t))*XDir
   //                + ((b^3-3*b)*sin(t) + (3*b^2-1)*cos(t))*YDir]
   aResult.D3 = gp_Vec2d(aExp * ((aB3 - 3.0 * aB) * aCosU - (3.0 * aB2 - 1.0) * aSinU) * aXD
-                       + aExp * ((aB3 - 3.0 * aB) * aSinU + (3.0 * aB2 - 1.0) * aCosU) * aYD);
+                        + aExp * ((aB3 - 3.0 * aB) * aSinU + (3.0 * aB2 - 1.0) * aCosU) * aYD);
 
   return aResult;
 }
@@ -257,8 +253,7 @@ gp_Vec2d Geom2dEval_LogarithmicSpiralCurve::EvalDN(const double U, const int N) 
 {
   if (N < 1)
   {
-    throw Standard_RangeError(
-      "Geom2dEval_LogarithmicSpiralCurve::EvalDN: N must be >= 1");
+    throw Standard_RangeError("Geom2dEval_LogarithmicSpiralCurve::EvalDN: N must be >= 1");
   }
 
   // For low orders, delegate to explicit implementations.
@@ -278,7 +273,7 @@ gp_Vec2d Geom2dEval_LogarithmicSpiralCurve::EvalDN(const double U, const int N) 
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aB = myGrowthExponent;
+  const double aB     = myGrowthExponent;
   const double aScale = myScale * std::exp(aB * U);
   const double aCosU  = std::cos(U);
   const double aSinU  = std::sin(U);
@@ -311,8 +306,7 @@ occ::handle<Geom2d_Geometry> Geom2dEval_LogarithmicSpiralCurve::Copy() const
 
 //==================================================================================================
 
-void Geom2dEval_LogarithmicSpiralCurve::DumpJson(Standard_OStream& theOStream,
-                                                  int               theDepth) const
+void Geom2dEval_LogarithmicSpiralCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

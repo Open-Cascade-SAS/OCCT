@@ -38,7 +38,6 @@ class Geom_Geometry;
 class GeomEval_CircularHelixCurve : public Geom_Curve
 {
 public:
-
   //! Creates a circular helix with the given coordinate system, radius, and pitch.
   //! @param[in] thePosition the local coordinate system
   //! @param[in] theRadius the helix radius (must be > 0)
@@ -116,10 +115,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_CircularHelixCurve, Geom_Curve)
 
 private:
-
   gp_Ax2 myPosition; //!< Local coordinate system
-  double myRadius;    //!< Helix radius (> 0)
-  double myPitch;     //!< Axial advance per 2*Pi turn
+  double myRadius;   //!< Helix radius (> 0)
+  double myPitch;    //!< Axial advance per 2*Pi turn
 };
 
 #endif // _GeomEval_CircularHelixCurve_HeaderFile

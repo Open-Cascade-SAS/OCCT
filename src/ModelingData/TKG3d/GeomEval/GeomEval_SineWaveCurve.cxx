@@ -26,9 +26,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomEval_SineWaveCurve, Geom_Curve)
 //==================================================================================================
 
 GeomEval_SineWaveCurve::GeomEval_SineWaveCurve(const gp_Ax2& thePosition,
-                                       double        theAmplitude,
-                                       double        theOmega,
-                                       double        thePhase)
+                                               double        theAmplitude,
+                                               double        theOmega,
+                                               double        thePhase)
     : myPosition(thePosition),
       myAmplitude(theAmplitude),
       myOmega(theOmega),
@@ -36,13 +36,11 @@ GeomEval_SineWaveCurve::GeomEval_SineWaveCurve(const gp_Ax2& thePosition,
 {
   if (theAmplitude <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_SineWaveCurve: amplitude must be > 0");
+    throw Standard_ConstructionError("GeomEval_SineWaveCurve: amplitude must be > 0");
   }
   if (theOmega <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_SineWaveCurve: omega must be > 0");
+    throw Standard_ConstructionError("GeomEval_SineWaveCurve: omega must be > 0");
   }
 }
 
@@ -183,7 +181,7 @@ Geom_Curve::ResD2 GeomEval_SineWaveCurve::EvalD2(const double U) const
 
   Geom_Curve::ResD2 aResult;
   aResult.Point = gp_Pnt(anO + U * aXD + myAmplitude * std::sin(aArg) * aYD);
-  aResult.D1 = gp_Vec(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
+  aResult.D1    = gp_Vec(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
 
   // D2 = -A*omega^2*sin(omega*t + phi)*YDir
   aResult.D2 = gp_Vec(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
@@ -205,8 +203,8 @@ Geom_Curve::ResD3 GeomEval_SineWaveCurve::EvalD3(const double U) const
 
   Geom_Curve::ResD3 aResult;
   aResult.Point = gp_Pnt(anO + U * aXD + myAmplitude * std::sin(aArg) * aYD);
-  aResult.D1 = gp_Vec(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
-  aResult.D2 = gp_Vec(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
+  aResult.D1    = gp_Vec(aXD + myAmplitude * myOmega * std::cos(aArg) * aYD);
+  aResult.D2    = gp_Vec(myAmplitude * (-aOm2) * std::sin(aArg) * aYD);
 
   // D3 = -A*omega^3*cos(omega*t + phi)*YDir
   aResult.D3 = gp_Vec(myAmplitude * (-aOm3) * std::cos(aArg) * aYD);
@@ -228,7 +226,7 @@ gp_Vec GeomEval_SineWaveCurve::EvalDN(const double U, const int N) const
 
   // d^N/dt^N[t] = 1 if N=1, 0 if N>=2
   // d^N/dt^N[A*sin(omega*t+phi)] = A*omega^N*sin(omega*t+phi+N*Pi/2)
-  const double aOmN = std::pow(myOmega, N);
+  const double aOmN   = std::pow(myOmega, N);
   const double aPhase = myOmega * U + myPhase + N * M_PI / 2.0;
 
   gp_XYZ aResult = myAmplitude * aOmN * std::sin(aPhase) * aYD;

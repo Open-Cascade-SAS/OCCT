@@ -28,7 +28,6 @@ class Geom_Geometry;
 class GeomEval_AHTBezierCurve : public Geom_BoundedCurve
 {
 public:
-
   //! Non-rational constructor.
   //! @param[in] thePoles control points
   //! @param[in] theAlgDegree algebraic polynomial degree (>= 0)
@@ -45,7 +44,7 @@ public:
   //! @param[in] theAlgDegree algebraic polynomial degree (>= 0)
   //! @param[in] theAlpha hyperbolic frequency (>= 0, 0 = no hyperbolic terms)
   //! @param[in] theBeta trigonometric frequency (>= 0, 0 = no trig terms)
-  Standard_EXPORT GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt>&  thePoles,
+  Standard_EXPORT GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
                                           const NCollection_Array1<double>& theWeights,
                                           int                               theAlgDegree,
                                           double                            theAlpha,
@@ -135,7 +134,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_AHTBezierCurve, Geom_BoundedCurve)
 
 private:
-
   //! Compute the number of basis functions for the given parameters.
   static int basisDimension(int theAlgDegree, double theAlpha, double theBeta);
 

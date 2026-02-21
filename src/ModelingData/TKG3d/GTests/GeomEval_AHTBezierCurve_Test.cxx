@@ -33,8 +33,8 @@ namespace
 constexpr double THE_FD_TOL_D1 = 1e-5;
 constexpr double THE_FD_TOL_D2 = 1e-4;
 
-// Helper to create a curve with basis {1, t, sinh(alpha*t), cosh(alpha*t), sin(beta*t), cos(beta*t)}
-// algDegree=1, alpha=1.0, beta=1.0 => basisDim = 2 + 2 + 2 = 6 poles needed
+// Helper to create a curve with basis {1, t, sinh(alpha*t), cosh(alpha*t), sin(beta*t),
+// cos(beta*t)} algDegree=1, alpha=1.0, beta=1.0 => basisDim = 2 + 2 + 2 = 6 poles needed
 GeomEval_AHTBezierCurve createFullBasisCurve()
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 6);
@@ -126,11 +126,11 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD0_Endpoints)
 TEST(GeomEval_AHTBezierCurveTest, EvalD1_ConsistentWithD0)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.4;
+  const double            aU     = 0.4;
 
   Geom_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Pnt aP1 = aCurve.EvalD0(aU + Precision::Confusion());
-  gp_Pnt aP2 = aCurve.EvalD0(aU - Precision::Confusion());
+  gp_Pnt            aP1 = aCurve.EvalD0(aU + Precision::Confusion());
+  gp_Pnt            aP2 = aCurve.EvalD0(aU - Precision::Confusion());
 
   gp_Vec aFD((aP1.XYZ() - aP2.XYZ()) / (2.0 * Precision::Confusion()));
 
@@ -172,7 +172,7 @@ TEST(GeomEval_AHTBezierCurveTest, Construction_Rational)
 TEST(GeomEval_AHTBezierCurveTest, Transform_NotImplemented)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  gp_Trsf aTrsf;
+  gp_Trsf                 aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
@@ -182,8 +182,8 @@ TEST(GeomEval_AHTBezierCurveTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(GeomEval_AHTBezierCurveTest, Copy_Independent)
 {
-  GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  occ::handle<Geom_Geometry> aCopy = aCurve.Copy();
+  GeomEval_AHTBezierCurve    aCurve = createFullBasisCurve();
+  occ::handle<Geom_Geometry> aCopy  = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const GeomEval_AHTBezierCurve* aCopyCurve =
     dynamic_cast<const GeomEval_AHTBezierCurve*>(aCopy.get());
@@ -196,7 +196,7 @@ TEST(GeomEval_AHTBezierCurveTest, Copy_Independent)
 TEST(GeomEval_AHTBezierCurveTest, DumpJson_NoCrash)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  Standard_SStream aSS;
+  Standard_SStream        aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }
 
@@ -204,10 +204,10 @@ TEST(GeomEval_AHTBezierCurveTest, DumpJson_NoCrash)
 TEST(GeomEval_AHTBezierCurveTest, EvalD2_ConsistentWithD1)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.3;
+  const double            aU     = 0.3;
 
-  Geom_Curve::ResD2 aD2 = aCurve.EvalD2(aU);
-  Geom_Curve::ResD1 aD1Plus = aCurve.EvalD1(aU + Precision::Confusion());
+  Geom_Curve::ResD2 aD2      = aCurve.EvalD2(aU);
+  Geom_Curve::ResD1 aD1Plus  = aCurve.EvalD1(aU + Precision::Confusion());
   Geom_Curve::ResD1 aD1Minus = aCurve.EvalD1(aU - Precision::Confusion());
 
   gp_Vec aFD((aD1Plus.D1.XYZ() - aD1Minus.D1.XYZ()) / (2.0 * Precision::Confusion()));
@@ -221,10 +221,10 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD2_ConsistentWithD1)
 TEST(GeomEval_AHTBezierCurveTest, EvalD3_ConsistentWithD2)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.4;
+  const double            aU     = 0.4;
 
-  Geom_Curve::ResD3 aD3 = aCurve.EvalD3(aU);
-  Geom_Curve::ResD2 aD2Plus = aCurve.EvalD2(aU + Precision::Confusion());
+  Geom_Curve::ResD3 aD3      = aCurve.EvalD3(aU);
+  Geom_Curve::ResD2 aD2Plus  = aCurve.EvalD2(aU + Precision::Confusion());
   Geom_Curve::ResD2 aD2Minus = aCurve.EvalD2(aU - Precision::Confusion());
 
   gp_Vec aFD((aD2Plus.D2.XYZ() - aD2Minus.D2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -238,10 +238,10 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD3_ConsistentWithD2)
 TEST(GeomEval_AHTBezierCurveTest, EvalDN_ConsistentWithD1)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  const double aU = 0.5;
+  const double            aU     = 0.5;
 
   Geom_Curve::ResD1 aD1 = aCurve.EvalD1(aU);
-  gp_Vec aDN = aCurve.EvalDN(aU, 1);
+  gp_Vec            aDN = aCurve.EvalDN(aU, 1);
 
   EXPECT_NEAR(aD1.D1.X(), aDN.X(), Precision::Confusion());
   EXPECT_NEAR(aD1.D1.Y(), aDN.Y(), Precision::Confusion());
@@ -284,24 +284,23 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD0_PurePolynomial_KnownValues)
 // Test AHT-Bezier trigonometric circle arc matches Geom_Circle D0
 TEST(GeomEval_AHTBezierCurveTest, EvalD0_MatchesCircle)
 {
-  GeomEval_AHTBezierCurve aAHT = createTrigCircleArc();
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_AHTBezierCurve aAHT    = createTrigCircleArc();
+  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0};
   for (const double aU : aParams)
   {
-    gp_Pnt aPAHT = aAHT.EvalD0(aU);
+    gp_Pnt aPAHT  = aAHT.EvalD0(aU);
     gp_Pnt aPCirc = aCircle->EvalD0(aU);
-    EXPECT_NEAR(aPAHT.Distance(aPCirc), 0.0, Precision::Angular())
-      << "D0 mismatch at u=" << aU;
+    EXPECT_NEAR(aPAHT.Distance(aPCirc), 0.0, Precision::Angular()) << "D0 mismatch at u=" << aU;
   }
 }
 
 // Test AHT-Bezier trigonometric circle arc matches Geom_Circle D1/D2/D3
 TEST(GeomEval_AHTBezierCurveTest, EvalD3_MatchesCircle)
 {
-  GeomEval_AHTBezierCurve aAHT = createTrigCircleArc();
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_AHTBezierCurve aAHT    = createTrigCircleArc();
+  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] = {0.1, 0.25, 0.5, 0.75, 0.9};
   for (const double aU : aParams)
@@ -325,8 +324,8 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD3_MatchesCircle)
 // Test AHT-Bezier trigonometric ellipse arc matches Geom_Ellipse D0/D1/D2
 TEST(GeomEval_AHTBezierCurveTest, EvalD2_MatchesEllipse)
 {
-  GeomEval_AHTBezierCurve aAHT = createTrigEllipseArc();
-  Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
+  GeomEval_AHTBezierCurve aAHT      = createTrigEllipseArc();
+  Handle(Geom_Ellipse)    anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
 
   const double aParams[] = {0.1, 0.25, 0.5, 0.75, 0.9};
   for (const double aU : aParams)

@@ -37,7 +37,6 @@ class Geom2d_Geometry;
 class Geom2dEval_SineWaveCurve : public Geom2d_Curve
 {
 public:
-
   //! Creates a 2D sine wave curve.
   //! @param[in] thePosition the local coordinate system
   //! @param[in] theAmplitude the wave amplitude (must be > 0)
@@ -45,9 +44,9 @@ public:
   //! @param[in] thePhase the phase shift (default 0)
   //! @throw Standard_ConstructionError if theAmplitude <= 0 or theOmega <= 0
   Standard_EXPORT Geom2dEval_SineWaveCurve(const gp_Ax2d& thePosition,
-                                       double         theAmplitude,
-                                       double         theOmega,
-                                       double         thePhase = 0.0);
+                                           double         theAmplitude,
+                                           double         theOmega,
+                                           double         thePhase = 0.0);
 
   //! Returns the local coordinate system.
   Standard_EXPORT const gp_Ax2d& Position() const;
@@ -120,11 +119,10 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom2dEval_SineWaveCurve, Geom2d_Curve)
 
 private:
-
   gp_Ax2d myPosition;  //!< Local coordinate system
-  double  myAmplitude;  //!< Wave amplitude (> 0)
-  double  myOmega;      //!< Angular frequency (> 0)
-  double  myPhase;      //!< Phase shift
+  double  myAmplitude; //!< Wave amplitude (> 0)
+  double  myOmega;     //!< Angular frequency (> 0)
+  double  myPhase;     //!< Phase shift
 };
 
 #endif // _Geom2dEval_SineWaveCurve_HeaderFile

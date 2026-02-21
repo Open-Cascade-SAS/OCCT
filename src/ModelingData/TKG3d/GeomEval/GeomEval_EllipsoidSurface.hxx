@@ -44,7 +44,6 @@
 class GeomEval_EllipsoidSurface : public Geom_ElementarySurface
 {
 public:
-
   //! Creates a triaxial ellipsoid surface with the given local coordinate system
   //! and three semi-axes.
   //! @param[in] thePosition the local coordinate system
@@ -187,7 +186,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_EllipsoidSurface, Geom_ElementarySurface)
 
 private:
-
   double myA; //!< Semi-axis along XDir
   double myB; //!< Semi-axis along YDir
   double myC; //!< Semi-axis along ZDir

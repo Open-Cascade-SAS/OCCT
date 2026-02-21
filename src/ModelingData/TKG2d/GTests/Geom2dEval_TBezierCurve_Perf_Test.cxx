@@ -47,10 +47,10 @@ int geom2dPerfEnvIntOrDefault(const char* theName, const int theDefault, const i
 }
 
 template <typename FuncT>
-Geom2dTBezierBenchSummary runGeom2dBench(const char*                        theName,
-                                         const int                          theRepeats,
+Geom2dTBezierBenchSummary runGeom2dBench(const char*                       theName,
+                                         const int                         theRepeats,
                                          const NCollection_Array1<double>& theParams,
-                                         FuncT&&                            theFunc)
+                                         FuncT&&                           theFunc)
 {
   volatile double aSink = 0.0;
   const auto      aBeg  = PerfClockGeom2dTBezier::now();
@@ -61,7 +61,7 @@ Geom2dTBezierBenchSummary runGeom2dBench(const char*                        theN
       aSink += theFunc(theParams.Value(i));
     }
   }
-  const auto aEnd = PerfClockGeom2dTBezier::now();
+  const auto                                      aEnd = PerfClockGeom2dTBezier::now();
   const std::chrono::duration<double, std::milli> aDur = aEnd - aBeg;
   return {theName, aDur.count(), aSink};
 }
@@ -69,19 +69,17 @@ Geom2dTBezierBenchSummary runGeom2dBench(const char*                        theN
 void printGeom2dBenchHeader(const char* theTitle)
 {
   std::cout << "\n=== " << theTitle << " ===\n";
-  std::cout << std::left << std::setw(36) << "Path"
-            << std::right << std::setw(12) << "ms"
-            << std::setw(14) << "MCalls/s"
-            << std::setw(16) << "sink" << '\n';
+  std::cout << std::left << std::setw(36) << "Path" << std::right << std::setw(12) << "ms"
+            << std::setw(14) << "MCalls/s" << std::setw(16) << "sink" << '\n';
 }
 
 void printGeom2dBenchRow(const Geom2dTBezierBenchSummary& theResult, const int theCalls)
 {
   const double aMcallsPerSec = double(theCalls) / (theResult.Ms * 1000.0);
-  std::cout << std::left << std::setw(36) << theResult.Name
-            << std::right << std::setw(12) << std::fixed << std::setprecision(3) << theResult.Ms
-            << std::setw(14) << std::setprecision(3) << aMcallsPerSec
-            << std::setw(16) << std::setprecision(6) << theResult.Sink << '\n';
+  std::cout << std::left << std::setw(36) << theResult.Name << std::right << std::setw(12)
+            << std::fixed << std::setprecision(3) << theResult.Ms << std::setw(14)
+            << std::setprecision(3) << aMcallsPerSec << std::setw(16) << std::setprecision(6)
+            << theResult.Sink << '\n';
 }
 
 double vec2dDiff(const gp_Vec2d& theV1, const gp_Vec2d& theV2)
@@ -92,19 +90,16 @@ double vec2dDiff(const gp_Vec2d& theV1, const gp_Vec2d& theV2)
 
 TEST(Geom2dEval_TBezierCurvePerfTest, DISABLED_D0ToD2_EquivalentCircleAndAdaptorPaths)
 {
-  const int aRepeats =
-    geom2dPerfEnvIntOrDefault("OCCT_GEOM2DEVAL_PERF_REPEATS", 2000, 1);
-  const int aNbSamples =
-    geom2dPerfEnvIntOrDefault("OCCT_GEOM2DEVAL_PERF_SAMPLES", 2048, 8);
+  const int aRepeats   = geom2dPerfEnvIntOrDefault("OCCT_GEOM2DEVAL_PERF_REPEATS", 2000, 1);
+  const int aNbSamples = geom2dPerfEnvIntOrDefault("OCCT_GEOM2DEVAL_PERF_SAMPLES", 2048, 8);
 
   NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
   aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
   aPoles.SetValue(2, gp_Pnt2d(0.0, 1.0));
   aPoles.SetValue(3, gp_Pnt2d(1.0, 0.0));
-  const Handle(Geom2dEval_TBezierCurve) aTBezierCurve =
-    new Geom2dEval_TBezierCurve(aPoles, 1.0);
+  const Handle(Geom2dEval_TBezierCurve) aTBezierCurve = new Geom2dEval_TBezierCurve(aPoles, 1.0);
 
-  const Handle(Geom2d_Circle) aCircleCurve = new Geom2d_Circle(gp_Ax2d(), 1.0);
+  const Handle(Geom2d_Circle)       aCircleCurve = new Geom2d_Circle(gp_Ax2d(), 1.0);
   const Handle(Geom2d_BSplineCurve) aBSplineCurve =
     Geom2dConvert::CurveToBSplineCurve(aCircleCurve);
 
@@ -113,7 +108,7 @@ TEST(Geom2dEval_TBezierCurvePerfTest, DISABLED_D0ToD2_EquivalentCircleAndAdaptor
   ASSERT_FALSE(aBSplineWithRep.IsNull());
 
   const Handle(Geom2dEval_RepCurveDesc::Full) aBspDesc = new Geom2dEval_RepCurveDesc::Full();
-  aBspDesc->Representation = aTBezierCurve;
+  aBspDesc->Representation                             = aTBezierCurve;
   aBSplineWithRep->SetEvalRepresentation(aBspDesc);
 
   Geom2dAdaptor_Curve anAdaptorCircle(aCircleCurve);
@@ -167,12 +162,10 @@ TEST(Geom2dEval_TBezierCurvePerfTest, DISABLED_D0ToD2_EquivalentCircleAndAdaptor
   std::cout << "Equivalence check (TBezier vs Circle/BSpline)\n";
   std::cout << "  max |D0(TBezier)-D0(Circle)|  = " << std::setprecision(12) << aMaxD0Circle
             << '\n';
-  std::cout << "  max |D0(TBezier)-D0(BSpline)| = " << std::setprecision(12) << aMaxD0Bsp
-            << '\n';
+  std::cout << "  max |D0(TBezier)-D0(BSpline)| = " << std::setprecision(12) << aMaxD0Bsp << '\n';
   std::cout << "  max |D1(TBezier)-D1(Circle)|  = " << std::setprecision(12) << aMaxD1Circle
             << '\n';
-  std::cout << "  max |D1(TBezier)-D1(BSpline)| = " << std::setprecision(12) << aMaxD1Bsp
-            << '\n';
+  std::cout << "  max |D1(TBezier)-D1(BSpline)| = " << std::setprecision(12) << aMaxD1Bsp << '\n';
 
   printGeom2dBenchHeader("D0");
   const Geom2dTBezierBenchSummary aDirectTBezD0 =
@@ -328,4 +321,3 @@ TEST(Geom2dEval_TBezierCurvePerfTest, DISABLED_D0ToD2_EquivalentCircleAndAdaptor
   EXPECT_TRUE(std::isfinite(aDirectTBezD1.Sink));
   EXPECT_TRUE(std::isfinite(aDirectTBezD2.Sink));
 }
-

@@ -34,7 +34,7 @@ constexpr double THE_FD_TOL = 1e-5;
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Construction_ValidParams)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
   EXPECT_NEAR(aSurf.Pitch(), 10.0, Precision::Confusion());
 }
@@ -53,8 +53,8 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Construction_NegativePitch_NoThrow)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, EvalD0_AtKnownPoints)
 {
-  gp_Ax3 anAx3;
-  const double aP = 10.0;
+  gp_Ax3                           anAx3;
+  const double                     aP = 10.0;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, aP);
 
   // S(0, 1) = (1, 0, 0)
@@ -78,7 +78,7 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, EvalD0_AtKnownPoints)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, D2V_IsZero_RuledSurface)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
 
   const double aParams[][2] = {{0.0, 1.0}, {1.0, 2.0}, {M_PI, -1.0}};
@@ -91,7 +91,7 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, D2V_IsZero_RuledSurface)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, D1V_UnitRadial)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
 
   // |dS/dv| = |cos(u)*XDir + sin(u)*YDir| = 1
@@ -105,11 +105,11 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, D1V_UnitRadial)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, ComparisonWithHelix_ConstantV)
 {
-  gp_Ax3 anAx3;
-  gp_Ax2 anAx2(anAx3.Location(), anAx3.Direction(), anAx3.XDirection());
-  const double aP = 10.0, aR = 3.0;
+  gp_Ax3                           anAx3;
+  gp_Ax2                           anAx2(anAx3.Location(), anAx3.Direction(), anAx3.XDirection());
+  const double                     aP = 10.0, aR = 3.0;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, aP);
-  GeomEval_CircularHelixCurve aHelix(anAx2, aR, aP);
+  GeomEval_CircularHelixCurve      aHelix(anAx2, aR, aP);
 
   // S(u, R) should trace the same path as the helix C(u)
   const double aParams[] = {0.0, 0.5, 1.0, M_PI, 2.0 * M_PI};
@@ -123,15 +123,15 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, ComparisonWithHelix_ConstantV)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
-  const double aU = 1.0, aV = 2.0;
+  const double                     aU = 1.0, aV = 2.0;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Pnt aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
-  gp_Pnt aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
-  gp_Pnt aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
-  gp_Pnt aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
+  Geom_Surface::ResD1 aD1  = aSurf.EvalD1(aU, aV);
+  gp_Pnt              aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
+  gp_Pnt              aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
+  gp_Pnt              aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
+  gp_Pnt              aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
 
   gp_Vec aFDU((aPu1.XYZ() - aPu2.XYZ()) / (2.0 * Precision::Confusion()));
   gp_Vec aFDV((aPv1.XYZ() - aPv2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -146,9 +146,9 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, EvalD1_ConsistentWithD0)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Bounds_Infinite)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
-  double aU1, aU2, aV1, aV2;
+  double                           aU1, aU2, aV1, aV2;
   aSurf.Bounds(aU1, aU2, aV1, aV2);
   EXPECT_TRUE(Precision::IsInfinite(aU1));
   EXPECT_TRUE(Precision::IsInfinite(aU2));
@@ -158,7 +158,7 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Bounds_Infinite)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Properties)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
   EXPECT_FALSE(aSurf.IsUClosed());
   EXPECT_FALSE(aSurf.IsVClosed());
@@ -170,7 +170,7 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Properties)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Reverse_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
   EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
@@ -180,9 +180,9 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Reverse_NotImplemented)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Transform_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
-  gp_Trsf aTrsf;
+  gp_Trsf                          aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
@@ -191,9 +191,9 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Transform_NotImplemented)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Copy_Independent)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
-  occ::handle<Geom_Geometry> aCopy = aSurf.Copy();
+  occ::handle<Geom_Geometry>       aCopy = aSurf.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const GeomEval_CircularHelicoidSurface* aCopySurf =
     dynamic_cast<const GeomEval_CircularHelicoidSurface*>(aCopy.get());
@@ -203,8 +203,8 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Copy_Independent)
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, DumpJson_NoCrash)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
-  Standard_SStream aSS;
+  Standard_SStream                 aSS;
   EXPECT_NO_THROW(aSurf.DumpJson(aSS));
 }

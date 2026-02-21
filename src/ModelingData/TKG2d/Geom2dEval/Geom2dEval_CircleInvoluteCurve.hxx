@@ -38,13 +38,11 @@ class Geom2d_Geometry;
 class Geom2dEval_CircleInvoluteCurve : public Geom2d_Curve
 {
 public:
-
   //! Creates an involute of a circle.
   //! @param[in] thePosition the local coordinate system
   //! @param[in] theRadius the base circle radius (must be > 0)
   //! @throw Standard_ConstructionError if theRadius <= 0
-  Standard_EXPORT Geom2dEval_CircleInvoluteCurve(const gp_Ax2d& thePosition,
-                                           double         theRadius);
+  Standard_EXPORT Geom2dEval_CircleInvoluteCurve(const gp_Ax2d& thePosition, double theRadius);
 
   //! Returns the local coordinate system.
   Standard_EXPORT const gp_Ax2d& Position() const;
@@ -107,9 +105,8 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom2dEval_CircleInvoluteCurve, Geom2d_Curve)
 
 private:
-
   gp_Ax2d myPosition; //!< Local coordinate system
-  double  myRadius;    //!< Base circle radius (> 0)
+  double  myRadius;   //!< Base circle radius (> 0)
 };
 
 #endif // _Geom2dEval_CircleInvoluteCurve_HeaderFile

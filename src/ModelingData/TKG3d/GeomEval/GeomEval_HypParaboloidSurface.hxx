@@ -45,7 +45,6 @@
 class GeomEval_HypParaboloidSurface : public Geom_ElementarySurface
 {
 public:
-
   //! Creates a hyperbolic paraboloid surface with the given local coordinate system
   //! and semi-axis lengths.
   //! @param[in] thePosition the local coordinate system
@@ -176,7 +175,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_HypParaboloidSurface, Geom_ElementarySurface)
 
 private:
-
   double myA;
   double myB;
 };

@@ -38,7 +38,6 @@ class Geom2d_Geometry;
 class Geom2dEval_LogarithmicSpiralCurve : public Geom2d_Curve
 {
 public:
-
   //! Creates a logarithmic spiral.
   //! @param[in] thePosition the local coordinate system
   //! @param[in] theScale the scale factor (must be > 0)
@@ -112,10 +111,9 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom2dEval_LogarithmicSpiralCurve, Geom2d_Curve)
 
 private:
-
   gp_Ax2d myPosition;       //!< Local coordinate system
-  double  myScale;           //!< Scale factor (> 0)
-  double  myGrowthExponent;  //!< Growth exponent (> 0)
+  double  myScale;          //!< Scale factor (> 0)
+  double  myGrowthExponent; //!< Growth exponent (> 0)
 };
 
 #endif // _Geom2dEval_LogarithmicSpiralCurve_HeaderFile

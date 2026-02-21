@@ -31,20 +31,18 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomEval_HypParaboloidSurface, Geom_ElementarySurface
 //==================================================================================================
 
 GeomEval_HypParaboloidSurface::GeomEval_HypParaboloidSurface(const gp_Ax3& thePosition,
-                                                              double        theA,
-                                                              double        theB)
+                                                             double        theA,
+                                                             double        theB)
     : myA(theA),
       myB(theB)
 {
   if (theA <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_HypParaboloidSurface: semi-axis A must be > 0");
+    throw Standard_ConstructionError("GeomEval_HypParaboloidSurface: semi-axis A must be > 0");
   }
   if (theB <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_HypParaboloidSurface: semi-axis B must be > 0");
+    throw Standard_ConstructionError("GeomEval_HypParaboloidSurface: semi-axis B must be > 0");
   }
   pos = thePosition;
 }
@@ -117,10 +115,7 @@ double GeomEval_HypParaboloidSurface::VReversedParameter(const double /*V*/) con
 
 //==================================================================================================
 
-void GeomEval_HypParaboloidSurface::Bounds(double& U1,
-                                            double& U2,
-                                            double& V1,
-                                            double& V2) const
+void GeomEval_HypParaboloidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = -Precision::Infinite();
   U2 = Precision::Infinite();
@@ -179,8 +174,8 @@ gp_Pnt GeomEval_HypParaboloidSurface::EvalD0(const double U, const double V) con
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aA2 = myA * myA;
-  const double aB2 = myB * myB;
+  const double aA2    = myA * myA;
+  const double aB2    = myB * myB;
   const double aZComp = U * U / aA2 - V * V / aB2;
 
   return gp_Pnt(anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
@@ -197,31 +192,28 @@ Geom_Surface::ResD1 GeomEval_HypParaboloidSurface::EvalD1(const double U, const 
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aA2 = myA * myA;
-  const double aB2 = myB * myB;
+  const double aA2    = myA * myA;
+  const double aB2    = myB * myB;
   const double aZComp = U * U / aA2 - V * V / aB2;
-  const double aZdU = 2.0 * U / aA2;
-  const double aZdV = -2.0 * V / aB2;
+  const double aZdU   = 2.0 * U / aA2;
+  const double aZdV   = -2.0 * V / aB2;
 
   Geom_Surface::ResD1 aResult;
 
   // P = O + U*XD + V*YD + (U^2/A^2 - V^2/B^2)*ZD
-  aResult.Point = gp_Pnt(
-    anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
-    anO.Y() + U * aXDir.Y() + V * aYDir.Y() + aZComp * aZDir.Y(),
-    anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
+  aResult.Point = gp_Pnt(anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
+                         anO.Y() + U * aXDir.Y() + V * aYDir.Y() + aZComp * aZDir.Y(),
+                         anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
 
   // dP/du = XD + (2U/A^2)*ZD
-  aResult.D1U = gp_Vec(
-    aXDir.X() + aZdU * aZDir.X(),
-    aXDir.Y() + aZdU * aZDir.Y(),
-    aXDir.Z() + aZdU * aZDir.Z());
+  aResult.D1U = gp_Vec(aXDir.X() + aZdU * aZDir.X(),
+                       aXDir.Y() + aZdU * aZDir.Y(),
+                       aXDir.Z() + aZdU * aZDir.Z());
 
   // dP/dv = YD - (2V/B^2)*ZD
-  aResult.D1V = gp_Vec(
-    aYDir.X() + aZdV * aZDir.X(),
-    aYDir.Y() + aZdV * aZDir.Y(),
-    aYDir.Z() + aZdV * aZDir.Z());
+  aResult.D1V = gp_Vec(aYDir.X() + aZdV * aZDir.X(),
+                       aYDir.Y() + aZdV * aZDir.Y(),
+                       aYDir.Z() + aZdV * aZDir.Z());
 
   return aResult;
 }
@@ -235,45 +227,36 @@ Geom_Surface::ResD2 GeomEval_HypParaboloidSurface::EvalD2(const double U, const 
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aA2 = myA * myA;
-  const double aB2 = myB * myB;
+  const double aA2    = myA * myA;
+  const double aB2    = myB * myB;
   const double aZComp = U * U / aA2 - V * V / aB2;
-  const double aZdU = 2.0 * U / aA2;
-  const double aZdV = -2.0 * V / aB2;
-  const double aZd2U = 2.0 / aA2;
-  const double aZd2V = -2.0 / aB2;
+  const double aZdU   = 2.0 * U / aA2;
+  const double aZdV   = -2.0 * V / aB2;
+  const double aZd2U  = 2.0 / aA2;
+  const double aZd2V  = -2.0 / aB2;
 
   Geom_Surface::ResD2 aResult;
 
   // P
-  aResult.Point = gp_Pnt(
-    anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
-    anO.Y() + U * aXDir.Y() + V * aYDir.Y() + aZComp * aZDir.Y(),
-    anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
+  aResult.Point = gp_Pnt(anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
+                         anO.Y() + U * aXDir.Y() + V * aYDir.Y() + aZComp * aZDir.Y(),
+                         anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
 
   // dP/du = XD + (2U/A^2)*ZD
-  aResult.D1U = gp_Vec(
-    aXDir.X() + aZdU * aZDir.X(),
-    aXDir.Y() + aZdU * aZDir.Y(),
-    aXDir.Z() + aZdU * aZDir.Z());
+  aResult.D1U = gp_Vec(aXDir.X() + aZdU * aZDir.X(),
+                       aXDir.Y() + aZdU * aZDir.Y(),
+                       aXDir.Z() + aZdU * aZDir.Z());
 
   // dP/dv = YD - (2V/B^2)*ZD
-  aResult.D1V = gp_Vec(
-    aYDir.X() + aZdV * aZDir.X(),
-    aYDir.Y() + aZdV * aZDir.Y(),
-    aYDir.Z() + aZdV * aZDir.Z());
+  aResult.D1V = gp_Vec(aYDir.X() + aZdV * aZDir.X(),
+                       aYDir.Y() + aZdV * aZDir.Y(),
+                       aYDir.Z() + aZdV * aZDir.Z());
 
   // d2P/du2 = (2/A^2)*ZD
-  aResult.D2U = gp_Vec(
-    aZd2U * aZDir.X(),
-    aZd2U * aZDir.Y(),
-    aZd2U * aZDir.Z());
+  aResult.D2U = gp_Vec(aZd2U * aZDir.X(), aZd2U * aZDir.Y(), aZd2U * aZDir.Z());
 
   // d2P/dv2 = -(2/B^2)*ZD
-  aResult.D2V = gp_Vec(
-    aZd2V * aZDir.X(),
-    aZd2V * aZDir.Y(),
-    aZd2V * aZDir.Z());
+  aResult.D2V = gp_Vec(aZd2V * aZDir.X(), aZd2V * aZDir.Y(), aZd2V * aZDir.Z());
 
   // d2P/dudv = 0
   aResult.D2UV = gp_Vec(0.0, 0.0, 0.0);
@@ -290,45 +273,36 @@ Geom_Surface::ResD3 GeomEval_HypParaboloidSurface::EvalD3(const double U, const 
   const gp_Dir& aYDir = pos.YDirection();
   const gp_Dir& aZDir = pos.Direction();
 
-  const double aA2 = myA * myA;
-  const double aB2 = myB * myB;
+  const double aA2    = myA * myA;
+  const double aB2    = myB * myB;
   const double aZComp = U * U / aA2 - V * V / aB2;
-  const double aZdU = 2.0 * U / aA2;
-  const double aZdV = -2.0 * V / aB2;
-  const double aZd2U = 2.0 / aA2;
-  const double aZd2V = -2.0 / aB2;
+  const double aZdU   = 2.0 * U / aA2;
+  const double aZdV   = -2.0 * V / aB2;
+  const double aZd2U  = 2.0 / aA2;
+  const double aZd2V  = -2.0 / aB2;
 
   Geom_Surface::ResD3 aResult;
 
   // P
-  aResult.Point = gp_Pnt(
-    anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
-    anO.Y() + U * aXDir.Y() + V * aYDir.Y() + aZComp * aZDir.Y(),
-    anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
+  aResult.Point = gp_Pnt(anO.X() + U * aXDir.X() + V * aYDir.X() + aZComp * aZDir.X(),
+                         anO.Y() + U * aXDir.Y() + V * aYDir.Y() + aZComp * aZDir.Y(),
+                         anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
 
   // dP/du
-  aResult.D1U = gp_Vec(
-    aXDir.X() + aZdU * aZDir.X(),
-    aXDir.Y() + aZdU * aZDir.Y(),
-    aXDir.Z() + aZdU * aZDir.Z());
+  aResult.D1U = gp_Vec(aXDir.X() + aZdU * aZDir.X(),
+                       aXDir.Y() + aZdU * aZDir.Y(),
+                       aXDir.Z() + aZdU * aZDir.Z());
 
   // dP/dv
-  aResult.D1V = gp_Vec(
-    aYDir.X() + aZdV * aZDir.X(),
-    aYDir.Y() + aZdV * aZDir.Y(),
-    aYDir.Z() + aZdV * aZDir.Z());
+  aResult.D1V = gp_Vec(aYDir.X() + aZdV * aZDir.X(),
+                       aYDir.Y() + aZdV * aZDir.Y(),
+                       aYDir.Z() + aZdV * aZDir.Z());
 
   // d2P/du2 = (2/A^2)*ZD
-  aResult.D2U = gp_Vec(
-    aZd2U * aZDir.X(),
-    aZd2U * aZDir.Y(),
-    aZd2U * aZDir.Z());
+  aResult.D2U = gp_Vec(aZd2U * aZDir.X(), aZd2U * aZDir.Y(), aZd2U * aZDir.Z());
 
   // d2P/dv2 = -(2/B^2)*ZD
-  aResult.D2V = gp_Vec(
-    aZd2V * aZDir.X(),
-    aZd2V * aZDir.Y(),
-    aZd2V * aZDir.Z());
+  aResult.D2V = gp_Vec(aZd2V * aZDir.X(), aZd2V * aZDir.Y(), aZd2V * aZDir.Z());
 
   // d2P/dudv = 0
   aResult.D2UV = gp_Vec(0.0, 0.0, 0.0);
@@ -345,9 +319,9 @@ Geom_Surface::ResD3 GeomEval_HypParaboloidSurface::EvalD3(const double U, const 
 //==================================================================================================
 
 gp_Vec GeomEval_HypParaboloidSurface::EvalDN(const double U,
-                                              const double V,
-                                              const int    Nu,
-                                              const int    Nv) const
+                                             const double V,
+                                             const int    Nu,
+                                             const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
@@ -450,15 +424,15 @@ void GeomEval_HypParaboloidSurface::DumpJson(Standard_OStream& theOStream, int t
 //==================================================================================================
 
 void GeomEval_HypParaboloidSurface::Coefficients(double& A1,
-                                                  double& A2,
-                                                  double& A3,
-                                                  double& B1,
-                                                  double& B2,
-                                                  double& B3,
-                                                  double& C1,
-                                                  double& C2,
-                                                  double& C3,
-                                                  double& D) const
+                                                 double& A2,
+                                                 double& A3,
+                                                 double& B1,
+                                                 double& B2,
+                                                 double& B3,
+                                                 double& C1,
+                                                 double& C2,
+                                                 double& C3,
+                                                 double& D) const
 {
   // In the local coordinate system of the hyperbolic paraboloid:
   //   X_L^2/A^2 - Y_L^2/B^2 - Z_L = 0

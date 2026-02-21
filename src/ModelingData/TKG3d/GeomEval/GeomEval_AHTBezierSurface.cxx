@@ -28,13 +28,9 @@ IMPLEMENT_STANDARD_RTTIEXT(GeomEval_AHTBezierSurface, Geom_BoundedSurface)
 
 //==================================================================================================
 
-int GeomEval_AHTBezierSurface::basisDimension(int    theAlgDegree,
-                                               double theAlpha,
-                                               double theBeta)
+int GeomEval_AHTBezierSurface::basisDimension(int theAlgDegree, double theAlpha, double theBeta)
 {
-  return theAlgDegree + 1
-       + (theAlpha > 0.0 ? 2 : 0)
-       + (theBeta > 0.0 ? 2 : 0);
+  return theAlgDegree + 1 + (theAlpha > 0.0 ? 2 : 0) + (theBeta > 0.0 ? 2 : 0);
 }
 
 //==================================================================================================
@@ -86,10 +82,7 @@ gp_XYZ cubicD2(const gp_XYZ& theC0,
   return theC3 * (6.0 * theT) + theC2 * 2.0;
 }
 
-gp_XYZ cubicD3(const gp_XYZ& theC0,
-               const gp_XYZ& theC1,
-               const gp_XYZ& theC2,
-               const gp_XYZ& theC3)
+gp_XYZ cubicD3(const gp_XYZ& theC0, const gp_XYZ& theC1, const gp_XYZ& theC2, const gp_XYZ& theC3)
 {
   (void)theC0;
   (void)theC1;
@@ -99,9 +92,9 @@ gp_XYZ cubicD3(const gp_XYZ& theC0,
 
 template <int theMaxOrder>
 void evalPolynomialSurfaceCubicNonRational(const NCollection_Array2<gp_Pnt>& thePoles,
-                                           const double                       theU,
-                                           const double                       theV,
-                                           PolySurfaceDerivData&              theData)
+                                           const double                      theU,
+                                           const double                      theV,
+                                           PolySurfaceDerivData&             theData)
 {
   theData.S00 = gp_XYZ(0.0, 0.0, 0.0);
   theData.S10 = gp_XYZ(0.0, 0.0, 0.0);
@@ -179,11 +172,11 @@ void evalPolynomialSurfaceCubicNonRational(const NCollection_Array2<gp_Pnt>& the
 
 template <int theMaxOrder>
 void evalPolynomialSurfaceNonRational(const NCollection_Array2<gp_Pnt>& thePoles,
-                                      const int                          theDegreeU,
-                                      const int                          theDegreeV,
-                                      const double                       theU,
-                                      const double                       theV,
-                                      PolySurfaceDerivData&              theData)
+                                      const int                         theDegreeU,
+                                      const int                         theDegreeV,
+                                      const double                      theU,
+                                      const double                      theV,
+                                      PolySurfaceDerivData&             theData)
 {
   theData.S00 = gp_XYZ(0.0, 0.0, 0.0);
   theData.S10 = gp_XYZ(0.0, 0.0, 0.0);
@@ -354,13 +347,13 @@ void evalAxisDerivs(const double theT,
 
   if (theAlpha > 0.0)
   {
-    const double aAlphaT = theAlpha * theT;
-    const double aSinh   = std::sinh(aAlphaT);
-    const double aCosh   = std::cosh(aAlphaT);
+    const double aAlphaT   = theAlpha * theT;
+    const double aSinh     = std::sinh(aAlphaT);
+    const double aCosh     = std::cosh(aAlphaT);
     double       aAlphaPow = 1.0;
     for (int d = 0; d <= theMaxOrder; ++d)
     {
-      const bool isEven = (d % 2 == 0);
+      const bool isEven                        = (d % 2 == 0);
       axisVal(theDerivs, theDim, d, anIdx)     = aAlphaPow * (isEven ? aSinh : aCosh);
       axisVal(theDerivs, theDim, d, anIdx + 1) = aAlphaPow * (isEven ? aCosh : aSinh);
       aAlphaPow *= theAlpha;
@@ -370,9 +363,9 @@ void evalAxisDerivs(const double theT,
 
   if (theBeta > 0.0)
   {
-    const double aBetaT = theBeta * theT;
-    const double aSin   = std::sin(aBetaT);
-    const double aCos   = std::cos(aBetaT);
+    const double aBetaT   = theBeta * theT;
+    const double aSin     = std::sin(aBetaT);
+    const double aCos     = std::cos(aBetaT);
     double       aBetaPow = 1.0;
     for (int d = 0; d <= theMaxOrder; ++d)
     {
@@ -380,10 +373,22 @@ void evalAxisDerivs(const double theT,
       double aDCos = 0.0;
       switch (d & 3)
       {
-        case 0: aDSin = aSin;  aDCos = aCos;  break;
-        case 1: aDSin = aCos;  aDCos = -aSin; break;
-        case 2: aDSin = -aSin; aDCos = -aCos; break;
-        case 3: aDSin = -aCos; aDCos = aSin;  break;
+        case 0:
+          aDSin = aSin;
+          aDCos = aCos;
+          break;
+        case 1:
+          aDSin = aCos;
+          aDCos = -aSin;
+          break;
+        case 2:
+          aDSin = -aSin;
+          aDCos = -aCos;
+          break;
+        case 3:
+          aDSin = -aCos;
+          aDCos = aSin;
+          break;
       }
       axisVal(theDerivs, theDim, d, anIdx)     = aBetaPow * aDSin;
       axisVal(theDerivs, theDim, d, anIdx + 1) = aBetaPow * aDCos;
@@ -397,16 +402,16 @@ int tensorIdx(const int theDu, const int theDv, const int theMaxV)
   return theDu * (theMaxV + 1) + theDv;
 }
 
-void evalTensorDerivs(const NCollection_Array2<gp_Pnt>&   thePoles,
+void evalTensorDerivs(const NCollection_Array2<gp_Pnt>& thePoles,
                       const NCollection_Array2<double>* theWeights,
-                      const int                          theMaxU,
-                      const int                          theMaxV,
-                      const int                          theDimU,
-                      const int                          theDimV,
-                      const double*                      theBUDerivs,
-                      const double*                      theBVDerivs,
-                      gp_XYZ*                            theNDerivs,
-                      double*                            theWDerivs)
+                      const int                         theMaxU,
+                      const int                         theMaxV,
+                      const int                         theDimU,
+                      const int                         theDimV,
+                      const double*                     theBUDerivs,
+                      const double*                     theBVDerivs,
+                      gp_XYZ*                           theNDerivs,
+                      double*                           theWDerivs)
 {
   const int aTensorSize = (theMaxU + 1) * (theMaxV + 1);
   for (int idx = 0; idx < aTensorSize; ++idx)
@@ -489,9 +494,7 @@ void computeRationalDerivs(const gp_XYZ* theNDerivs,
           {
             aBinV = aBinV * double(dv - m) / double(m + 1);
           }
-          const double aCoeff = aBinU
-                              * aBinV
-                              * theWDerivs[tensorIdx(p, q, theMaxV)];
+          const double aCoeff = aBinU * aBinV * theWDerivs[tensorIdx(p, q, theMaxV)];
           aSum -= theCDerivs[tensorIdx(du - p, dv - q, theMaxV)] * aCoeff;
         }
       }
@@ -504,14 +507,13 @@ void computeRationalDerivs(const gp_XYZ* theNDerivs,
 
 //==================================================================================================
 
-GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
-  const NCollection_Array2<gp_Pnt>& thePoles,
-  int                               theAlgDegreeU,
-  int                               theAlgDegreeV,
-  double                            theAlphaU,
-  double                            theAlphaV,
-  double                            theBetaU,
-  double                            theBetaV)
+GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
+                                                     int    theAlgDegreeU,
+                                                     int    theAlgDegreeV,
+                                                     double theAlphaU,
+                                                     double theAlphaV,
+                                                     double theBetaU,
+                                                     double theBetaV)
     : myPoles(thePoles),
       myWeights(1, 1, 1, 1),
       myAlgDegreeU(theAlgDegreeU),
@@ -525,18 +527,15 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
 {
   if (theAlgDegreeU < 0 || theAlgDegreeV < 0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierSurface: algebraic degree must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierSurface: algebraic degree must be >= 0");
   }
   if (theAlphaU < 0.0 || theAlphaV < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierSurface: alpha must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierSurface: alpha must be >= 0");
   }
   if (theBetaU < 0.0 || theBetaV < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierSurface: beta must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierSurface: beta must be >= 0");
   }
   const int aDimU = basisDimension(theAlgDegreeU, theAlphaU, theBetaU);
   const int aDimV = basisDimension(theAlgDegreeV, theAlphaV, theBetaV);
@@ -549,15 +548,14 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
 
 //==================================================================================================
 
-GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
-  const NCollection_Array2<gp_Pnt>&  thePoles,
-  const NCollection_Array2<double>& theWeights,
-  int                               theAlgDegreeU,
-  int                               theAlgDegreeV,
-  double                            theAlphaU,
-  double                            theAlphaV,
-  double                            theBetaU,
-  double                            theBetaV)
+GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
+                                                     const NCollection_Array2<double>& theWeights,
+                                                     int    theAlgDegreeU,
+                                                     int    theAlgDegreeV,
+                                                     double theAlphaU,
+                                                     double theAlphaV,
+                                                     double theBetaU,
+                                                     double theBetaV)
     : myPoles(thePoles),
       myWeights(theWeights),
       myAlgDegreeU(theAlgDegreeU),
@@ -571,18 +569,15 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
 {
   if (theAlgDegreeU < 0 || theAlgDegreeV < 0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierSurface: algebraic degree must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierSurface: algebraic degree must be >= 0");
   }
   if (theAlphaU < 0.0 || theAlphaV < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierSurface: alpha must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierSurface: alpha must be >= 0");
   }
   if (theBetaU < 0.0 || theBetaV < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierSurface: beta must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierSurface: beta must be >= 0");
   }
   const int aDimU = basisDimension(theAlgDegreeU, theAlphaU, theBetaU);
   const int aDimV = basisDimension(theAlgDegreeV, theAlphaV, theBetaV);
@@ -591,8 +586,7 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
     throw Standard_ConstructionError(
       "GeomEval_AHTBezierSurface: poles array dimensions must match basis dimensions");
   }
-  if (theWeights.NbRows() != thePoles.NbRows()
-   || theWeights.NbColumns() != thePoles.NbColumns())
+  if (theWeights.NbRows() != thePoles.NbRows() || theWeights.NbColumns() != thePoles.NbColumns())
   {
     throw Standard_ConstructionError(
       "GeomEval_AHTBezierSurface: weights array dimensions must match poles");
@@ -603,8 +597,7 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(
     {
       if (theWeights.Value(i, j) <= 0.0)
       {
-        throw Standard_ConstructionError(
-          "GeomEval_AHTBezierSurface: all weights must be > 0");
+        throw Standard_ConstructionError("GeomEval_AHTBezierSurface: all weights must be > 0");
       }
     }
   }
@@ -726,8 +719,7 @@ double GeomEval_AHTBezierSurface::VReversedParameter(const double V) const
 
 //==================================================================================================
 
-void GeomEval_AHTBezierSurface::Bounds(double& U1, double& U2,
-                                        double& V1, double& V2) const
+void GeomEval_AHTBezierSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = 0.0;
   U2 = 1.0;
@@ -802,12 +794,11 @@ bool GeomEval_AHTBezierSurface::IsCNv(const int /*N*/) const
 
 gp_Pnt GeomEval_AHTBezierSurface::EvalD0(const double U, const double V) const
 {
-  const int  aDimU = NbPolesU();
-  const int  aDimV = NbPolesV();
+  const int  aDimU      = NbPolesU();
+  const int  aDimV      = NbPolesV();
   const bool isRational = (myURational || myVRational);
-  const bool isPurePolynomial = !isRational
-                             && myAlphaU <= 0.0 && myBetaU <= 0.0
-                             && myAlphaV <= 0.0 && myBetaV <= 0.0;
+  const bool isPurePolynomial =
+    !isRational && myAlphaU <= 0.0 && myBetaU <= 0.0 && myAlphaV <= 0.0 && myBetaV <= 0.0;
 
   if (isPurePolynomial)
   {
@@ -852,12 +843,11 @@ gp_Pnt GeomEval_AHTBezierSurface::EvalD0(const double U, const double V) const
 
 Geom_Surface::ResD1 GeomEval_AHTBezierSurface::EvalD1(const double U, const double V) const
 {
-  const int  aDimU = NbPolesU();
-  const int  aDimV = NbPolesV();
+  const int  aDimU      = NbPolesU();
+  const int  aDimV      = NbPolesV();
   const bool isRational = (myURational || myVRational);
-  const bool isPurePolynomial = !isRational
-                             && myAlphaU <= 0.0 && myBetaU <= 0.0
-                             && myAlphaV <= 0.0 && myBetaV <= 0.0;
+  const bool isPurePolynomial =
+    !isRational && myAlphaU <= 0.0 && myBetaU <= 0.0 && myAlphaV <= 0.0 && myBetaV <= 0.0;
   Geom_Surface::ResD1 aResult;
 
   if (isPurePolynomial)
@@ -918,12 +908,11 @@ Geom_Surface::ResD1 GeomEval_AHTBezierSurface::EvalD1(const double U, const doub
 
 Geom_Surface::ResD2 GeomEval_AHTBezierSurface::EvalD2(const double U, const double V) const
 {
-  const int  aDimU = NbPolesU();
-  const int  aDimV = NbPolesV();
+  const int  aDimU      = NbPolesU();
+  const int  aDimV      = NbPolesV();
   const bool isRational = (myURational || myVRational);
-  const bool isPurePolynomial = !isRational
-                             && myAlphaU <= 0.0 && myBetaU <= 0.0
-                             && myAlphaV <= 0.0 && myBetaV <= 0.0;
+  const bool isPurePolynomial =
+    !isRational && myAlphaU <= 0.0 && myBetaU <= 0.0 && myAlphaV <= 0.0 && myBetaV <= 0.0;
   Geom_Surface::ResD2 aResult;
 
   if (isPurePolynomial)
@@ -979,19 +968,15 @@ Geom_Surface::ResD2 GeomEval_AHTBezierSurface::EvalD2(const double U, const doub
   const gp_XYZ aC00    = aN[tensorIdx(0, 0, 2)] * aInvW00;
   const gp_XYZ aC10    = (aN[tensorIdx(1, 0, 2)] - aC00 * aW[tensorIdx(1, 0, 2)]) * aInvW00;
   const gp_XYZ aC01    = (aN[tensorIdx(0, 1, 2)] - aC00 * aW[tensorIdx(0, 1, 2)]) * aInvW00;
-  const gp_XYZ aC20    = (aN[tensorIdx(2, 0, 2)]
-                        - aC10 * (2.0 * aW[tensorIdx(1, 0, 2)])
-                        - aC00 * aW[tensorIdx(2, 0, 2)])
-                       * aInvW00;
-  const gp_XYZ aC02    = (aN[tensorIdx(0, 2, 2)]
-                        - aC01 * (2.0 * aW[tensorIdx(0, 1, 2)])
-                        - aC00 * aW[tensorIdx(0, 2, 2)])
-                       * aInvW00;
-  const gp_XYZ aC11    = (aN[tensorIdx(1, 1, 2)]
-                        - aC10 * aW[tensorIdx(0, 1, 2)]
-                        - aC01 * aW[tensorIdx(1, 0, 2)]
-                        - aC00 * aW[tensorIdx(1, 1, 2)])
-                       * aInvW00;
+  const gp_XYZ aC20 =
+    (aN[tensorIdx(2, 0, 2)] - aC10 * (2.0 * aW[tensorIdx(1, 0, 2)]) - aC00 * aW[tensorIdx(2, 0, 2)])
+    * aInvW00;
+  const gp_XYZ aC02 =
+    (aN[tensorIdx(0, 2, 2)] - aC01 * (2.0 * aW[tensorIdx(0, 1, 2)]) - aC00 * aW[tensorIdx(0, 2, 2)])
+    * aInvW00;
+  const gp_XYZ aC11 = (aN[tensorIdx(1, 1, 2)] - aC10 * aW[tensorIdx(0, 1, 2)]
+                       - aC01 * aW[tensorIdx(1, 0, 2)] - aC00 * aW[tensorIdx(1, 1, 2)])
+                      * aInvW00;
 
   aResult.Point = gp_Pnt(aC00);
   aResult.D1U   = gp_Vec(aC10);
@@ -1006,12 +991,11 @@ Geom_Surface::ResD2 GeomEval_AHTBezierSurface::EvalD2(const double U, const doub
 
 Geom_Surface::ResD3 GeomEval_AHTBezierSurface::EvalD3(const double U, const double V) const
 {
-  const int  aDimU = NbPolesU();
-  const int  aDimV = NbPolesV();
+  const int  aDimU      = NbPolesU();
+  const int  aDimV      = NbPolesV();
   const bool isRational = (myURational || myVRational);
-  const bool isPurePolynomial = !isRational
-                             && myAlphaU <= 0.0 && myBetaU <= 0.0
-                             && myAlphaV <= 0.0 && myBetaV <= 0.0;
+  const bool isPurePolynomial =
+    !isRational && myAlphaU <= 0.0 && myBetaU <= 0.0 && myAlphaV <= 0.0 && myBetaV <= 0.0;
   Geom_Surface::ResD3 aResult;
 
   if (isPurePolynomial)
@@ -1075,43 +1059,29 @@ Geom_Surface::ResD3 GeomEval_AHTBezierSurface::EvalD3(const double U, const doub
   const gp_XYZ aC00    = aN[tensorIdx(0, 0, 3)] * aInvW00;
   const gp_XYZ aC10    = (aN[tensorIdx(1, 0, 3)] - aC00 * aW[tensorIdx(1, 0, 3)]) * aInvW00;
   const gp_XYZ aC01    = (aN[tensorIdx(0, 1, 3)] - aC00 * aW[tensorIdx(0, 1, 3)]) * aInvW00;
-  const gp_XYZ aC20    = (aN[tensorIdx(2, 0, 3)]
-                        - aC10 * (2.0 * aW[tensorIdx(1, 0, 3)])
-                        - aC00 * aW[tensorIdx(2, 0, 3)])
-                       * aInvW00;
-  const gp_XYZ aC02    = (aN[tensorIdx(0, 2, 3)]
-                        - aC01 * (2.0 * aW[tensorIdx(0, 1, 3)])
-                        - aC00 * aW[tensorIdx(0, 2, 3)])
-                       * aInvW00;
-  const gp_XYZ aC11    = (aN[tensorIdx(1, 1, 3)]
-                        - aC10 * aW[tensorIdx(0, 1, 3)]
-                        - aC01 * aW[tensorIdx(1, 0, 3)]
-                        - aC00 * aW[tensorIdx(1, 1, 3)])
-                       * aInvW00;
-  const gp_XYZ aC30    = (aN[tensorIdx(3, 0, 3)]
-                        - aC20 * (3.0 * aW[tensorIdx(1, 0, 3)])
-                        - aC10 * (3.0 * aW[tensorIdx(2, 0, 3)])
-                        - aC00 * aW[tensorIdx(3, 0, 3)])
-                       * aInvW00;
-  const gp_XYZ aC03    = (aN[tensorIdx(0, 3, 3)]
-                        - aC02 * (3.0 * aW[tensorIdx(0, 1, 3)])
-                        - aC01 * (3.0 * aW[tensorIdx(0, 2, 3)])
-                        - aC00 * aW[tensorIdx(0, 3, 3)])
-                       * aInvW00;
-  const gp_XYZ aC21    = (aN[tensorIdx(2, 1, 3)]
-                        - aC11 * (2.0 * aW[tensorIdx(1, 0, 3)])
-                        - aC20 * aW[tensorIdx(0, 1, 3)]
-                        - aC01 * aW[tensorIdx(2, 0, 3)]
-                        - aC10 * (2.0 * aW[tensorIdx(1, 1, 3)])
-                        - aC00 * aW[tensorIdx(2, 1, 3)])
-                       * aInvW00;
-  const gp_XYZ aC12    = (aN[tensorIdx(1, 2, 3)]
-                        - aC11 * (2.0 * aW[tensorIdx(0, 1, 3)])
-                        - aC02 * aW[tensorIdx(1, 0, 3)]
-                        - aC10 * aW[tensorIdx(0, 2, 3)]
-                        - aC01 * (2.0 * aW[tensorIdx(1, 1, 3)])
-                        - aC00 * aW[tensorIdx(1, 2, 3)])
-                       * aInvW00;
+  const gp_XYZ aC20 =
+    (aN[tensorIdx(2, 0, 3)] - aC10 * (2.0 * aW[tensorIdx(1, 0, 3)]) - aC00 * aW[tensorIdx(2, 0, 3)])
+    * aInvW00;
+  const gp_XYZ aC02 =
+    (aN[tensorIdx(0, 2, 3)] - aC01 * (2.0 * aW[tensorIdx(0, 1, 3)]) - aC00 * aW[tensorIdx(0, 2, 3)])
+    * aInvW00;
+  const gp_XYZ aC11 = (aN[tensorIdx(1, 1, 3)] - aC10 * aW[tensorIdx(0, 1, 3)]
+                       - aC01 * aW[tensorIdx(1, 0, 3)] - aC00 * aW[tensorIdx(1, 1, 3)])
+                      * aInvW00;
+  const gp_XYZ aC30 = (aN[tensorIdx(3, 0, 3)] - aC20 * (3.0 * aW[tensorIdx(1, 0, 3)])
+                       - aC10 * (3.0 * aW[tensorIdx(2, 0, 3)]) - aC00 * aW[tensorIdx(3, 0, 3)])
+                      * aInvW00;
+  const gp_XYZ aC03 = (aN[tensorIdx(0, 3, 3)] - aC02 * (3.0 * aW[tensorIdx(0, 1, 3)])
+                       - aC01 * (3.0 * aW[tensorIdx(0, 2, 3)]) - aC00 * aW[tensorIdx(0, 3, 3)])
+                      * aInvW00;
+  const gp_XYZ aC21 = (aN[tensorIdx(2, 1, 3)] - aC11 * (2.0 * aW[tensorIdx(1, 0, 3)])
+                       - aC20 * aW[tensorIdx(0, 1, 3)] - aC01 * aW[tensorIdx(2, 0, 3)]
+                       - aC10 * (2.0 * aW[tensorIdx(1, 1, 3)]) - aC00 * aW[tensorIdx(2, 1, 3)])
+                      * aInvW00;
+  const gp_XYZ aC12 = (aN[tensorIdx(1, 2, 3)] - aC11 * (2.0 * aW[tensorIdx(0, 1, 3)])
+                       - aC02 * aW[tensorIdx(1, 0, 3)] - aC10 * aW[tensorIdx(0, 2, 3)]
+                       - aC01 * (2.0 * aW[tensorIdx(1, 1, 3)]) - aC00 * aW[tensorIdx(1, 2, 3)])
+                      * aInvW00;
 
   aResult.Point = gp_Pnt(aC00);
   aResult.D1U   = gp_Vec(aC10);
@@ -1129,14 +1099,13 @@ Geom_Surface::ResD3 GeomEval_AHTBezierSurface::EvalD3(const double U, const doub
 //==================================================================================================
 
 gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
-                                          const double V,
-                                          const int    Nu,
-                                          const int    Nv) const
+                                         const double V,
+                                         const int    Nu,
+                                         const int    Nv) const
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
-    throw Geom_UndefinedDerivative(
-      "GeomEval_AHTBezierSurface::EvalDN: invalid derivative order");
+    throw Geom_UndefinedDerivative("GeomEval_AHTBezierSurface::EvalDN: invalid derivative order");
   }
 
   const int aTotOrd = Nu + Nv;
@@ -1185,7 +1154,7 @@ gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
 
   if (!isRational)
   {
-    gp_XYZ aSum(0.0, 0.0, 0.0);
+    gp_XYZ    aSum(0.0, 0.0, 0.0);
     const int aLR = myPoles.LowerRow();
     const int aLC = myPoles.LowerCol();
     for (int i = 0; i < aDimU; ++i)
@@ -1230,15 +1199,22 @@ occ::handle<Geom_Geometry> GeomEval_AHTBezierSurface::Copy() const
 {
   if (myURational || myVRational)
   {
-    return new GeomEval_AHTBezierSurface(myPoles, myWeights,
-                                          myAlgDegreeU, myAlgDegreeV,
-                                          myAlphaU, myAlphaV,
-                                          myBetaU, myBetaV);
+    return new GeomEval_AHTBezierSurface(myPoles,
+                                         myWeights,
+                                         myAlgDegreeU,
+                                         myAlgDegreeV,
+                                         myAlphaU,
+                                         myAlphaV,
+                                         myBetaU,
+                                         myBetaV);
   }
   return new GeomEval_AHTBezierSurface(myPoles,
-                                        myAlgDegreeU, myAlgDegreeV,
-                                        myAlphaU, myAlphaV,
-                                        myBetaU, myBetaV);
+                                       myAlgDegreeU,
+                                       myAlgDegreeV,
+                                       myAlphaU,
+                                       myAlphaV,
+                                       myBetaU,
+                                       myBetaV);
 }
 
 //==================================================================================================

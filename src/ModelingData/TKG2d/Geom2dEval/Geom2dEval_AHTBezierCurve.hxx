@@ -28,16 +28,15 @@ class Geom2d_Geometry;
 class Geom2dEval_AHTBezierCurve : public Geom2d_BoundedCurve
 {
 public:
-
   //! Non-rational constructor.
   //! @param[in] thePoles control points
   //! @param[in] theAlgDegree algebraic polynomial degree (>= 0)
   //! @param[in] theAlpha hyperbolic frequency (>= 0, 0 = no hyperbolic terms)
   //! @param[in] theBeta trigonometric frequency (>= 0, 0 = no trig terms)
   Standard_EXPORT Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt2d>& thePoles,
-                                             int                                 theAlgDegree,
-                                             double                              theAlpha,
-                                             double                              theBeta);
+                                            int                                 theAlgDegree,
+                                            double                              theAlpha,
+                                            double                              theBeta);
 
   //! Rational constructor.
   //! @param[in] thePoles control points
@@ -46,10 +45,10 @@ public:
   //! @param[in] theAlpha hyperbolic frequency (>= 0, 0 = no hyperbolic terms)
   //! @param[in] theBeta trigonometric frequency (>= 0, 0 = no trig terms)
   Standard_EXPORT Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt2d>& thePoles,
-                                             const NCollection_Array1<double>&   theWeights,
-                                             int                                 theAlgDegree,
-                                             double                              theAlpha,
-                                             double                              theBeta);
+                                            const NCollection_Array1<double>&   theWeights,
+                                            int                                 theAlgDegree,
+                                            double                              theAlpha,
+                                            double                              theBeta);
 
   //! Returns the array of poles.
   Standard_EXPORT const NCollection_Array1<gp_Pnt2d>& Poles() const;
@@ -135,7 +134,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(Geom2dEval_AHTBezierCurve, Geom2d_BoundedCurve)
 
 private:
-
   //! Compute the number of basis functions for the given parameters.
   static int basisDimension(int theAlgDegree, double theAlpha, double theBeta);
 
@@ -143,7 +141,8 @@ private:
   void evalBasis(double theT, NCollection_Array1<double>& theBasis) const;
 
   //! Evaluate d-th derivative of basis at t.
-  void evalBasisDeriv(double theT, int theDerivOrder,
+  void evalBasisDeriv(double                      theT,
+                      int                         theDerivOrder,
                       NCollection_Array1<double>& theBasisDeriv) const;
 
   NCollection_Array1<gp_Pnt2d> myPoles;

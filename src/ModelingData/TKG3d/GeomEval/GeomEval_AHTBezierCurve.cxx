@@ -61,13 +61,13 @@ double fallingFactorial(const int theN, const int theK)
 
 template <int theMaxOrder>
 void evalPolynomialNonRational(const NCollection_Array1<gp_Pnt>& thePoles,
-                               const int                          theDegree,
-                               const double                       theU,
-                               PolyEvalData&                      theData)
+                               const int                         theDegree,
+                               const double                      theU,
+                               PolyEvalData&                     theData)
 {
-  theData = PolyEvalData();
+  theData            = PolyEvalData();
   const int aPoleLow = thePoles.Lower();
-  theData.N0 = thePoles.Value(aPoleLow + theDegree).XYZ();
+  theData.N0         = thePoles.Value(aPoleLow + theDegree).XYZ();
 
   for (int k = theDegree - 1; k >= 0; --k)
   {
@@ -88,19 +88,19 @@ void evalPolynomialNonRational(const NCollection_Array1<gp_Pnt>& thePoles,
 }
 
 template <int theMaxOrder>
-void evalPolynomialRational(const NCollection_Array1<gp_Pnt>&   thePoles,
+void evalPolynomialRational(const NCollection_Array1<gp_Pnt>& thePoles,
                             const NCollection_Array1<double>& theWeights,
-                            const int                          theDegree,
-                            const double                       theU,
-                            PolyEvalData&                      theData)
+                            const int                         theDegree,
+                            const double                      theU,
+                            PolyEvalData&                     theData)
 {
-  theData = PolyEvalData();
+  theData              = PolyEvalData();
   const int aPoleLow   = thePoles.Lower();
   const int aWeightLow = theWeights.Lower();
 
   const double aWLead = theWeights.Value(aWeightLow + theDegree);
-  theData.N0 = thePoles.Value(aPoleLow + theDegree).XYZ() * aWLead;
-  theData.W0 = aWLead;
+  theData.N0          = thePoles.Value(aPoleLow + theDegree).XYZ() * aWLead;
+  theData.W0          = aWLead;
 
   for (int k = theDegree - 1; k >= 0; --k)
   {
@@ -121,19 +121,19 @@ void evalPolynomialRational(const NCollection_Array1<gp_Pnt>&   thePoles,
     }
 
     const double aWk = theWeights.Value(aWeightLow + k);
-    theData.N0 = theData.N0 * theU + thePoles.Value(aPoleLow + k).XYZ() * aWk;
-    theData.W0 = theData.W0 * theU + aWk;
+    theData.N0       = theData.N0 * theU + thePoles.Value(aPoleLow + k).XYZ() * aWk;
+    theData.W0       = theData.W0 * theU + aWk;
   }
 }
 
 template <int theMaxOrder, bool theIsRational>
-void evalMixedAHT(const NCollection_Array1<gp_Pnt>&   thePoles,
+void evalMixedAHT(const NCollection_Array1<gp_Pnt>& thePoles,
                   const NCollection_Array1<double>& theWeights,
-                  const int                          theAlgDegree,
-                  const double                       theAlpha,
-                  const double                       theBeta,
-                  const double                       theU,
-                  PolyEvalData&                      theData)
+                  const int                         theAlgDegree,
+                  const double                      theAlpha,
+                  const double                      theBeta,
+                  const double                      theU,
+                  PolyEvalData&                     theData)
 {
   theData = PolyEvalData();
 
@@ -141,7 +141,7 @@ void evalMixedAHT(const NCollection_Array1<gp_Pnt>&   thePoles,
   int aWeightIdx = theWeights.Lower();
 
   // Polynomial part: {1, t, ..., t^k}.
-  double aPow = 1.0;
+  double aPow   = 1.0;
   double aPowM1 = 0.0;
   double aPowM2 = 0.0;
   double aPowM3 = 0.0;
@@ -360,21 +360,17 @@ void evalMixedAHT(const NCollection_Array1<gp_Pnt>&   thePoles,
 
 //==================================================================================================
 
-int GeomEval_AHTBezierCurve::basisDimension(int    theAlgDegree,
-                                             double theAlpha,
-                                             double theBeta)
+int GeomEval_AHTBezierCurve::basisDimension(int theAlgDegree, double theAlpha, double theBeta)
 {
-  return theAlgDegree + 1
-       + (theAlpha > 0.0 ? 2 : 0)
-       + (theBeta > 0.0 ? 2 : 0);
+  return theAlgDegree + 1 + (theAlpha > 0.0 ? 2 : 0) + (theBeta > 0.0 ? 2 : 0);
 }
 
 //==================================================================================================
 
 GeomEval_AHTBezierCurve::GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
-                                                   int                               theAlgDegree,
-                                                   double                            theAlpha,
-                                                   double                            theBeta)
+                                                 int                               theAlgDegree,
+                                                 double                            theAlpha,
+                                                 double                            theBeta)
     : myPoles(thePoles),
       myWeights(1, 1),
       myAlgDegree(theAlgDegree),
@@ -384,34 +380,30 @@ GeomEval_AHTBezierCurve::GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt
 {
   if (theAlgDegree < 0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: algebraic degree must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: algebraic degree must be >= 0");
   }
   if (theAlpha < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: alpha must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: alpha must be >= 0");
   }
   if (theBeta < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: beta must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: beta must be >= 0");
   }
   const int aDim = basisDimension(theAlgDegree, theAlpha, theBeta);
   if (thePoles.Size() != aDim)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: NbPoles must equal basisDimension");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: NbPoles must equal basisDimension");
   }
 }
 
 //==================================================================================================
 
-GeomEval_AHTBezierCurve::GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt>&  thePoles,
-                                                   const NCollection_Array1<double>& theWeights,
-                                                   int                               theAlgDegree,
-                                                   double                            theAlpha,
-                                                   double                            theBeta)
+GeomEval_AHTBezierCurve::GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
+                                                 const NCollection_Array1<double>& theWeights,
+                                                 int                               theAlgDegree,
+                                                 double                            theAlpha,
+                                                 double                            theBeta)
     : myPoles(thePoles),
       myWeights(theWeights),
       myAlgDegree(theAlgDegree),
@@ -421,24 +413,20 @@ GeomEval_AHTBezierCurve::GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt
 {
   if (theAlgDegree < 0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: algebraic degree must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: algebraic degree must be >= 0");
   }
   if (theAlpha < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: alpha must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: alpha must be >= 0");
   }
   if (theBeta < 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: beta must be >= 0");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: beta must be >= 0");
   }
   const int aDim = basisDimension(theAlgDegree, theAlpha, theBeta);
   if (thePoles.Size() != aDim)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_AHTBezierCurve: NbPoles must equal basisDimension");
+    throw Standard_ConstructionError("GeomEval_AHTBezierCurve: NbPoles must equal basisDimension");
   }
   if (theWeights.Size() != thePoles.Size())
   {
@@ -449,8 +437,7 @@ GeomEval_AHTBezierCurve::GeomEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt
   {
     if (theWeights.Value(anIdx) <= 0.0)
     {
-      throw Standard_ConstructionError(
-        "GeomEval_AHTBezierCurve: all weights must be > 0");
+      throw Standard_ConstructionError("GeomEval_AHTBezierCurve: all weights must be > 0");
     }
   }
 }
@@ -608,7 +595,7 @@ Geom_Curve::ResD1 GeomEval_AHTBezierCurve::EvalD1(const double U) const
 {
   if (myAlpha <= 0.0 && myBeta <= 0.0)
   {
-    PolyEvalData        aPoly;
+    PolyEvalData      aPoly;
     Geom_Curve::ResD1 aResult;
     if (!myRational)
     {
@@ -620,13 +607,13 @@ Geom_Curve::ResD1 GeomEval_AHTBezierCurve::EvalD1(const double U) const
 
     evalPolynomialRational<1>(myPoles, myWeights, myAlgDegree, U, aPoly);
     const double aInvW = 1.0 / aPoly.W0;
-    aResult.Point = gp_Pnt(aPoly.N0 * aInvW);
-    aResult.D1    = gp_Vec((aPoly.N1 * aPoly.W0 - aPoly.N0 * aPoly.W1) * (aInvW * aInvW));
+    aResult.Point      = gp_Pnt(aPoly.N0 * aInvW);
+    aResult.D1         = gp_Vec((aPoly.N1 * aPoly.W0 - aPoly.N0 * aPoly.W1) * (aInvW * aInvW));
     return aResult;
   }
 
   Geom_Curve::ResD1 aResult;
-  PolyEvalData aMixed;
+  PolyEvalData      aMixed;
   if (!myRational)
   {
     evalMixedAHT<1, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
@@ -637,8 +624,8 @@ Geom_Curve::ResD1 GeomEval_AHTBezierCurve::EvalD1(const double U) const
 
   evalMixedAHT<1, true>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
   const double aInvW = 1.0 / aMixed.W0;
-  aResult.Point = gp_Pnt(aMixed.N0 * aInvW);
-  aResult.D1    = gp_Vec((aMixed.N1 * aMixed.W0 - aMixed.N0 * aMixed.W1) * (aInvW * aInvW));
+  aResult.Point      = gp_Pnt(aMixed.N0 * aInvW);
+  aResult.D1         = gp_Vec((aMixed.N1 * aMixed.W0 - aMixed.N0 * aMixed.W1) * (aInvW * aInvW));
   return aResult;
 }
 
@@ -648,7 +635,7 @@ Geom_Curve::ResD2 GeomEval_AHTBezierCurve::EvalD2(const double U) const
 {
   if (myAlpha <= 0.0 && myBeta <= 0.0)
   {
-    PolyEvalData        aPoly;
+    PolyEvalData      aPoly;
     Geom_Curve::ResD2 aResult;
     if (!myRational)
     {
@@ -663,14 +650,14 @@ Geom_Curve::ResD2 GeomEval_AHTBezierCurve::EvalD2(const double U) const
     const double aInvW = 1.0 / aPoly.W0;
     const gp_XYZ aC    = aPoly.N0 * aInvW;
     const gp_XYZ aCD1  = (aPoly.N1 * aPoly.W0 - aPoly.N0 * aPoly.W1) * (aInvW * aInvW);
-    aResult.Point = gp_Pnt(aC);
-    aResult.D1    = gp_Vec(aCD1);
-    aResult.D2    = gp_Vec((aPoly.N2 - aCD1 * (2.0 * aPoly.W1) - aC * aPoly.W2) * aInvW);
+    aResult.Point      = gp_Pnt(aC);
+    aResult.D1         = gp_Vec(aCD1);
+    aResult.D2         = gp_Vec((aPoly.N2 - aCD1 * (2.0 * aPoly.W1) - aC * aPoly.W2) * aInvW);
     return aResult;
   }
 
   Geom_Curve::ResD2 aResult;
-  PolyEvalData aMixed;
+  PolyEvalData      aMixed;
   if (!myRational)
   {
     evalMixedAHT<2, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
@@ -697,7 +684,7 @@ Geom_Curve::ResD3 GeomEval_AHTBezierCurve::EvalD3(const double U) const
 {
   if (myAlpha <= 0.0 && myBeta <= 0.0)
   {
-    PolyEvalData        aPoly;
+    PolyEvalData      aPoly;
     Geom_Curve::ResD3 aResult;
     if (!myRational)
     {
@@ -714,10 +701,8 @@ Geom_Curve::ResD3 GeomEval_AHTBezierCurve::EvalD3(const double U) const
     const gp_XYZ aC    = aPoly.N0 * aInvW;
     const gp_XYZ aCD1  = (aPoly.N1 - aC * aPoly.W1) * aInvW;
     const gp_XYZ aCD2  = (aPoly.N2 - aCD1 * (2.0 * aPoly.W1) - aC * aPoly.W2) * aInvW;
-    const gp_XYZ aCD3  = (aPoly.N3 - aCD2 * (3.0 * aPoly.W1)
-                                  - aCD1 * (3.0 * aPoly.W2)
-                                  - aC * aPoly.W3)
-                         * aInvW;
+    const gp_XYZ aCD3 =
+      (aPoly.N3 - aCD2 * (3.0 * aPoly.W1) - aCD1 * (3.0 * aPoly.W2) - aC * aPoly.W3) * aInvW;
 
     aResult.Point = gp_Pnt(aC);
     aResult.D1    = gp_Vec(aCD1);
@@ -727,7 +712,7 @@ Geom_Curve::ResD3 GeomEval_AHTBezierCurve::EvalD3(const double U) const
   }
 
   Geom_Curve::ResD3 aResult;
-  PolyEvalData aMixed;
+  PolyEvalData      aMixed;
   if (!myRational)
   {
     evalMixedAHT<3, false>(myPoles, myWeights, myAlgDegree, myAlpha, myBeta, U, aMixed);
@@ -743,10 +728,8 @@ Geom_Curve::ResD3 GeomEval_AHTBezierCurve::EvalD3(const double U) const
   const gp_XYZ aC    = aMixed.N0 * aInvW;
   const gp_XYZ aCD1  = (aMixed.N1 - aC * aMixed.W1) * aInvW;
   const gp_XYZ aCD2  = (aMixed.N2 - aCD1 * (2.0 * aMixed.W1) - aC * aMixed.W2) * aInvW;
-  const gp_XYZ aCD3  = (aMixed.N3 - aCD2 * (3.0 * aMixed.W1)
-                                  - aCD1 * (3.0 * aMixed.W2)
-                                  - aC * aMixed.W3)
-                         * aInvW;
+  const gp_XYZ aCD3 =
+    (aMixed.N3 - aCD2 * (3.0 * aMixed.W1) - aCD1 * (3.0 * aMixed.W2) - aC * aMixed.W3) * aInvW;
 
   aResult.Point = gp_Pnt(aC);
   aResult.D1    = gp_Vec(aCD1);
@@ -826,10 +809,22 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
       double       aCosN    = 0.0;
       switch (N & 3)
       {
-        case 0: aSinN = aSin;  aCosN = aCos;  break;
-        case 1: aSinN = aCos;  aCosN = -aSin; break;
-        case 2: aSinN = -aSin; aCosN = -aCos; break;
-        case 3: aSinN = -aCos; aCosN = aSin;  break;
+        case 0:
+          aSinN = aSin;
+          aCosN = aCos;
+          break;
+        case 1:
+          aSinN = aCos;
+          aCosN = -aSin;
+          break;
+        case 2:
+          aSinN = -aSin;
+          aCosN = -aCos;
+          break;
+        case 3:
+          aSinN = -aCos;
+          aCosN = aSin;
+          break;
       }
       aSum += myPoles.Value(aPoleIdx++).XYZ() * (aBetaPow * aSinN);
       aSum += myPoles.Value(aPoleIdx++).XYZ() * (aBetaPow * aCosN);
@@ -868,10 +863,10 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
   if (myBeta > 0.0)
   {
     const int aTrigWIdx = aWeightLow + aPolyCount + (myAlpha > 0.0 ? 2 : 0);
-    aPoleSin = &myPoles.Value(aTrigIdx).XYZ();
-    aPoleCos = &myPoles.Value(aTrigIdx + 1).XYZ();
-    aWiSin   = myWeights.Value(aTrigWIdx);
-    aWiCos   = myWeights.Value(aTrigWIdx + 1);
+    aPoleSin            = &myPoles.Value(aTrigIdx).XYZ();
+    aPoleCos            = &myPoles.Value(aTrigIdx + 1).XYZ();
+    aWiSin              = myWeights.Value(aTrigWIdx);
+    aWiCos              = myWeights.Value(aTrigWIdx + 1);
   }
 
   const double aAlphaU = myAlpha * U;
@@ -892,8 +887,8 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
     // Polynomial part: d/dt^d [t^k].
     for (int k = 0; k <= myAlgDegree; ++k)
     {
-      const gp_XYZ& aPole = myPoles.Value(aPoleLow + k).XYZ();
-      const double  aWi   = myWeights.Value(aWeightLow + k);
+      const gp_XYZ& aPole   = myPoles.Value(aPoleLow + k).XYZ();
+      const double  aWi     = myWeights.Value(aWeightLow + k);
       double        aBasisD = 0.0;
       if (d <= k)
       {
@@ -926,10 +921,22 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
       double aDCos = 0.0;
       switch (d & 3)
       {
-        case 0: aDSin = aSin;  aDCos = aCos;  break;
-        case 1: aDSin = aCos;  aDCos = -aSin; break;
-        case 2: aDSin = -aSin; aDCos = -aCos; break;
-        case 3: aDSin = -aCos; aDCos = aSin;  break;
+        case 0:
+          aDSin = aSin;
+          aDCos = aCos;
+          break;
+        case 1:
+          aDSin = aCos;
+          aDCos = -aSin;
+          break;
+        case 2:
+          aDSin = -aSin;
+          aDCos = -aCos;
+          break;
+        case 3:
+          aDSin = -aCos;
+          aDCos = aSin;
+          break;
       }
       aNd += (*aPoleSin) * (aWiSin * aBetaPow * aDSin) + (*aPoleCos) * (aWiCos * aBetaPow * aDCos);
       aWd += aWiSin * aBetaPow * aDSin + aWiCos * aBetaPow * aDCos;
@@ -938,12 +945,12 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
     aWDerivs[d] = aWd;
     if (d == 0)
     {
-      aInvW0 = 1.0 / aWd;
+      aInvW0      = 1.0 / aWd;
       aCDerivs[0] = aNd * aInvW0;
     }
     else
     {
-      gp_XYZ aSum = aNd;
+      gp_XYZ aSum   = aNd;
       double aBinom = 1.0;
       for (int j = 1; j <= d; ++j)
       {
@@ -954,7 +961,7 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
     }
 
     aAlphaPow *= myAlpha;
-    aBetaPow  *= myBeta;
+    aBetaPow *= myBeta;
   }
   return gp_Vec(aCDerivs[N]);
 }

@@ -28,13 +28,13 @@
 
 namespace
 {
-constexpr double THE_FD_TOL = 1e-5;
+constexpr double THE_FD_TOL    = 1e-5;
 constexpr double THE_FD_TOL_DN = 1e-4;
 } // namespace
 
 TEST(Geom2dEval_SineWaveCurveTest, Construction_ValidParams)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
   EXPECT_NEAR(aCurve.Amplitude(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aCurve.Omega(), 3.0, Precision::Confusion());
@@ -49,8 +49,8 @@ TEST(Geom2dEval_SineWaveCurveTest, Construction_InvalidParams_Throws)
 
 TEST(Geom2dEval_SineWaveCurveTest, EvalD0_AtKnownPoints)
 {
-  gp_Ax2d anAx2d;
-  const double aA = 2.0, aOm = 3.0;
+  gp_Ax2d                  anAx2d;
+  const double             aA = 2.0, aOm = 3.0;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, aA, aOm, 0.0);
 
   // t=0: C(0) = (0, 0)
@@ -60,14 +60,14 @@ TEST(Geom2dEval_SineWaveCurveTest, EvalD0_AtKnownPoints)
 
   // t = Pi/(2*omega): C = (Pi/(2*omega), A)
   const double aT1 = M_PI / (2.0 * aOm);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aT1);
+  gp_Pnt2d     aP1 = aCurve.EvalD0(aT1);
   EXPECT_NEAR(aP1.X(), aT1, Precision::Confusion());
   EXPECT_NEAR(aP1.Y(), aA, Precision::Confusion());
 }
 
 TEST(Geom2dEval_SineWaveCurveTest, IsPeriodic)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
   EXPECT_FALSE(aCurve.IsPeriodic());
   EXPECT_THROW(aCurve.Period(), Standard_NoSuchObject);
@@ -75,7 +75,7 @@ TEST(Geom2dEval_SineWaveCurveTest, IsPeriodic)
 
 TEST(Geom2dEval_SineWaveCurveTest, Reverse_NotImplemented)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
   EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
   EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
@@ -83,9 +83,9 @@ TEST(Geom2dEval_SineWaveCurveTest, Reverse_NotImplemented)
 
 TEST(Geom2dEval_SineWaveCurveTest, Transform_NotImplemented)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
-  gp_Trsf2d aTrsf;
+  gp_Trsf2d                aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
   EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
@@ -93,14 +93,14 @@ TEST(Geom2dEval_SineWaveCurveTest, Transform_NotImplemented)
 
 TEST(Geom2dEval_SineWaveCurveTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.5);
-  const double aT = 1.0;
+  const double             aT = 1.0;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aT);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aT + Precision::Confusion());
-  gp_Pnt2d aP2 = aCurve.EvalD0(aT - Precision::Confusion());
-  gp_Vec2d aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
+  gp_Pnt2d            aP1 = aCurve.EvalD0(aT + Precision::Confusion());
+  gp_Pnt2d            aP2 = aCurve.EvalD0(aT - Precision::Confusion());
+  gp_Vec2d            aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD1.D1.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD1.D1.Y(), aFD.Y(), THE_FD_TOL);
@@ -108,14 +108,14 @@ TEST(Geom2dEval_SineWaveCurveTest, EvalD1_ConsistentWithD0)
 
 TEST(Geom2dEval_SineWaveCurveTest, EvalD2_ConsistentWithD1)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.5);
-  const double aT = 1.0;
+  const double             aT = 1.0;
 
   Geom2d_Curve::ResD2 aD2  = aCurve.EvalD2(aT);
   Geom2d_Curve::ResD1 aD1p = aCurve.EvalD1(aT + Precision::Confusion());
   Geom2d_Curve::ResD1 aD1m = aCurve.EvalD1(aT - Precision::Confusion());
-  gp_Vec2d aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
+  gp_Vec2d            aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD2.D2.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD2.D2.Y(), aFD.Y(), THE_FD_TOL);
@@ -123,14 +123,14 @@ TEST(Geom2dEval_SineWaveCurveTest, EvalD2_ConsistentWithD1)
 
 TEST(Geom2dEval_SineWaveCurveTest, EvalD3_ConsistentWithD2)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.5);
-  const double aT = 1.0;
+  const double             aT = 1.0;
 
   Geom2d_Curve::ResD3 aD3  = aCurve.EvalD3(aT);
   Geom2d_Curve::ResD2 aD2p = aCurve.EvalD2(aT + Precision::Confusion());
   Geom2d_Curve::ResD2 aD2m = aCurve.EvalD2(aT - Precision::Confusion());
-  gp_Vec2d aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
+  gp_Vec2d            aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD3.D3.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD3.D3.Y(), aFD.Y(), THE_FD_TOL);
@@ -138,12 +138,12 @@ TEST(Geom2dEval_SineWaveCurveTest, EvalD3_ConsistentWithD2)
 
 TEST(Geom2dEval_SineWaveCurveTest, EvalDN_HigherOrder_ConsistentWithPreviousOrder)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.5);
-  const double aT = 1.2;
-  const int    aN = 6;
+  const double             aT = 1.2;
+  const int                aN = 6;
 
-  const gp_Vec2d aDN = aCurve.EvalDN(aT, aN);
+  const gp_Vec2d aDN    = aCurve.EvalDN(aT, aN);
   const gp_Vec2d aDNm1P = aCurve.EvalDN(aT + Precision::Confusion(), aN - 1);
   const gp_Vec2d aDNm1M = aCurve.EvalDN(aT - Precision::Confusion(), aN - 1);
   const gp_Vec2d aFD((aDNm1P.XY() - aDNm1M.XY()) / (2.0 * Precision::Confusion()));
@@ -154,8 +154,8 @@ TEST(Geom2dEval_SineWaveCurveTest, EvalDN_HigherOrder_ConsistentWithPreviousOrde
 
 TEST(Geom2dEval_SineWaveCurveTest, Copy_Independent)
 {
-  gp_Ax2d anAx2d;
-  Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.5);
+  gp_Ax2d                      anAx2d;
+  Geom2dEval_SineWaveCurve     aCurve(anAx2d, 2.0, 3.0, 0.5);
   occ::handle<Geom2d_Geometry> aCopy = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const Geom2dEval_SineWaveCurve* aCopyCurve =
@@ -166,8 +166,8 @@ TEST(Geom2dEval_SineWaveCurveTest, Copy_Independent)
 
 TEST(Geom2dEval_SineWaveCurveTest, DumpJson_NoCrash)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
-  Standard_SStream aSS;
+  Standard_SStream         aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }

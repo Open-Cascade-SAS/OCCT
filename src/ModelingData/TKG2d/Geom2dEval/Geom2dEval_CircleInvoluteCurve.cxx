@@ -56,14 +56,13 @@ inline void trigShiftByQuarterTurns(const double theSin,
 //==================================================================================================
 
 Geom2dEval_CircleInvoluteCurve::Geom2dEval_CircleInvoluteCurve(const gp_Ax2d& thePosition,
-                                                   double         theRadius)
+                                                               double         theRadius)
     : myPosition(thePosition),
       myRadius(theRadius)
 {
   if (theRadius <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "Geom2dEval_CircleInvoluteCurve: radius must be > 0");
+    throw Standard_ConstructionError("Geom2dEval_CircleInvoluteCurve: radius must be > 0");
   }
 }
 
@@ -151,7 +150,7 @@ gp_Pnt2d Geom2dEval_CircleInvoluteCurve::EvalD0(const double U) const
 
   // C(t) = O + R*(cos(t) + t*sin(t))*XDir + R*(sin(t) - t*cos(t))*YDir
   return gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD
-                      + myRadius * (aSinU - U * aCosU) * aYD);
+                  + myRadius * (aSinU - U * aCosU) * aYD);
 }
 
 //==================================================================================================
@@ -166,12 +165,11 @@ Geom2d_Curve::ResD1 Geom2dEval_CircleInvoluteCurve::EvalD1(const double U) const
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD1 aResult;
-  aResult.Point = gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD
-                               + myRadius * (aSinU - U * aCosU) * aYD);
+  aResult.Point =
+    gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD + myRadius * (aSinU - U * aCosU) * aYD);
 
   // D1 = R*t*cos(t)*XDir + R*t*sin(t)*YDir
-  aResult.D1 = gp_Vec2d(myRadius * U * aCosU * aXD
-                       + myRadius * U * aSinU * aYD);
+  aResult.D1 = gp_Vec2d(myRadius * U * aCosU * aXD + myRadius * U * aSinU * aYD);
 
   return aResult;
 }
@@ -188,15 +186,14 @@ Geom2d_Curve::ResD2 Geom2dEval_CircleInvoluteCurve::EvalD2(const double U) const
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD2 aResult;
-  aResult.Point = gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD
-                               + myRadius * (aSinU - U * aCosU) * aYD);
+  aResult.Point =
+    gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD + myRadius * (aSinU - U * aCosU) * aYD);
 
-  aResult.D1 = gp_Vec2d(myRadius * U * aCosU * aXD
-                       + myRadius * U * aSinU * aYD);
+  aResult.D1 = gp_Vec2d(myRadius * U * aCosU * aXD + myRadius * U * aSinU * aYD);
 
   // D2 = R*(cos(t) - t*sin(t))*XDir + R*(sin(t) + t*cos(t))*YDir
-  aResult.D2 = gp_Vec2d(myRadius * (aCosU - U * aSinU) * aXD
-                       + myRadius * (aSinU + U * aCosU) * aYD);
+  aResult.D2 =
+    gp_Vec2d(myRadius * (aCosU - U * aSinU) * aXD + myRadius * (aSinU + U * aCosU) * aYD);
 
   return aResult;
 }
@@ -213,18 +210,17 @@ Geom2d_Curve::ResD3 Geom2dEval_CircleInvoluteCurve::EvalD3(const double U) const
   const double aSinU = std::sin(U);
 
   Geom2d_Curve::ResD3 aResult;
-  aResult.Point = gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD
-                               + myRadius * (aSinU - U * aCosU) * aYD);
+  aResult.Point =
+    gp_Pnt2d(anO + myRadius * (aCosU + U * aSinU) * aXD + myRadius * (aSinU - U * aCosU) * aYD);
 
-  aResult.D1 = gp_Vec2d(myRadius * U * aCosU * aXD
-                       + myRadius * U * aSinU * aYD);
+  aResult.D1 = gp_Vec2d(myRadius * U * aCosU * aXD + myRadius * U * aSinU * aYD);
 
-  aResult.D2 = gp_Vec2d(myRadius * (aCosU - U * aSinU) * aXD
-                       + myRadius * (aSinU + U * aCosU) * aYD);
+  aResult.D2 =
+    gp_Vec2d(myRadius * (aCosU - U * aSinU) * aXD + myRadius * (aSinU + U * aCosU) * aYD);
 
   // D3 = R*(-2*sin(t) - t*cos(t))*XDir + R*(2*cos(t) - t*sin(t))*YDir
   aResult.D3 = gp_Vec2d(myRadius * (-2.0 * aSinU - U * aCosU) * aXD
-                       + myRadius * (2.0 * aCosU - U * aSinU) * aYD);
+                        + myRadius * (2.0 * aCosU - U * aSinU) * aYD);
 
   return aResult;
 }
@@ -235,8 +231,7 @@ gp_Vec2d Geom2dEval_CircleInvoluteCurve::EvalDN(const double U, const int N) con
 {
   if (N < 1)
   {
-    throw Standard_RangeError(
-      "Geom2dEval_CircleInvoluteCurve::EvalDN: N must be >= 1");
+    throw Standard_RangeError("Geom2dEval_CircleInvoluteCurve::EvalDN: N must be >= 1");
   }
 
   // For low orders, delegate to explicit implementations.
@@ -262,10 +257,10 @@ gp_Vec2d Geom2dEval_CircleInvoluteCurve::EvalDN(const double U, const int N) con
   const gp_XY& aXD = myPosition.Direction().XY();
   const gp_XY  aYD(-aXD.Y(), aXD.X());
 
-  const double aSinU = std::sin(U);
-  const double aCosU = std::cos(U);
-  double       aSinN = 0.0;
-  double       aCosN = 0.0;
+  const double aSinU   = std::sin(U);
+  const double aCosU   = std::cos(U);
+  double       aSinN   = 0.0;
+  double       aCosN   = 0.0;
   double       aSinNm1 = 0.0;
   double       aCosNm1 = 0.0;
   trigShiftByQuarterTurns(aSinU, aCosU, N, aSinN, aCosN);

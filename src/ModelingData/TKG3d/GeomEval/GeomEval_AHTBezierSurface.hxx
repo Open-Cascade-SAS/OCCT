@@ -35,7 +35,6 @@ class Geom_Curve;
 class GeomEval_AHTBezierSurface : public Geom_BoundedSurface
 {
 public:
-
   //! Non-rational constructor.
   //! @param[in] thePoles 2D array of control points
   //! @param[in] theAlgDegreeU algebraic polynomial degree in U (>= 0)
@@ -61,7 +60,7 @@ public:
   //! @param[in] theAlphaV hyperbolic frequency in V (>= 0)
   //! @param[in] theBetaU trigonometric frequency in U (>= 0)
   //! @param[in] theBetaV trigonometric frequency in V (>= 0)
-  Standard_EXPORT GeomEval_AHTBezierSurface(const NCollection_Array2<gp_Pnt>&  thePoles,
+  Standard_EXPORT GeomEval_AHTBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
                                             const NCollection_Array2<double>& theWeights,
                                             int                               theAlgDegreeU,
                                             int                               theAlgDegreeV,
@@ -196,20 +195,19 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_AHTBezierSurface, Geom_BoundedSurface)
 
 private:
-
   //! Compute the number of basis functions for the given parameters.
   static int basisDimension(int theAlgDegree, double theAlpha, double theBeta);
 
-  NCollection_Array2<gp_Pnt>  myPoles;
-  NCollection_Array2<double>  myWeights;
-  int                         myAlgDegreeU;
-  int                         myAlgDegreeV;
-  double                      myAlphaU;
-  double                      myAlphaV;
-  double                      myBetaU;
-  double                      myBetaV;
-  bool                        myURational;
-  bool                        myVRational;
+  NCollection_Array2<gp_Pnt> myPoles;
+  NCollection_Array2<double> myWeights;
+  int                        myAlgDegreeU;
+  int                        myAlgDegreeV;
+  double                     myAlphaU;
+  double                     myAlphaV;
+  double                     myBetaU;
+  double                     myBetaV;
+  bool                       myURational;
+  bool                       myVRational;
 };
 
 #endif // _GeomEval_AHTBezierSurface_HeaderFile

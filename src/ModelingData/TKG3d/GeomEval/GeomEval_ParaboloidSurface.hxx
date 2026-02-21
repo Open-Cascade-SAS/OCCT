@@ -42,7 +42,6 @@
 class GeomEval_ParaboloidSurface : public Geom_ElementarySurface
 {
 public:
-
   //! Creates a paraboloid surface with the given local coordinate system
   //! and focal distance.
   //! @param[in] thePosition the local coordinate system
@@ -164,7 +163,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_ParaboloidSurface, Geom_ElementarySurface)
 
 private:
-
   double myFocal;
 };
 

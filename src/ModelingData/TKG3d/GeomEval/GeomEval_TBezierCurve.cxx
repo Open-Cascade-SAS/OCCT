@@ -77,21 +77,20 @@ inline void evalTrigPairNthDeriv(const double theSin,
 }
 
 template <int theMaxOrder>
-void evalCurveBasis(const NCollection_Array1<gp_Pnt>&    thePoles,
+void evalCurveBasis(const NCollection_Array1<gp_Pnt>& thePoles,
                     const NCollection_Array1<double>* theWeights,
-                    const double                        theAlpha,
-                    const double                        theU,
-                    CurveBasisEval<theMaxOrder>&        theData)
+                    const double                      theAlpha,
+                    const double                      theU,
+                    CurveBasisEval<theMaxOrder>&      theData)
 {
-  theData = CurveBasisEval<theMaxOrder>();
-  const int aPoleLow = thePoles.Lower();
-  const int aNbPoles = thePoles.Size();
-  const gp_Pnt* aPoles = &thePoles.Value(aPoleLow);
+  theData                = CurveBasisEval<theMaxOrder>();
+  const int     aPoleLow = thePoles.Lower();
+  const int     aNbPoles = thePoles.Size();
+  const gp_Pnt* aPoles   = &thePoles.Value(aPoleLow);
 
   const int     aWeightLow = (theWeights != nullptr) ? theWeights->Lower() : 0;
-  const double* aWeights =
-    (theWeights != nullptr) ? &theWeights->Value(aWeightLow) : nullptr;
-  const gp_XYZ& aPole0 = aPoles[0].XYZ();
+  const double* aWeights   = (theWeights != nullptr) ? &theWeights->Value(aWeightLow) : nullptr;
+  const gp_XYZ& aPole0     = aPoles[0].XYZ();
   if (theWeights == nullptr)
   {
     theData.N0 += aPole0;
@@ -169,8 +168,8 @@ void evalCurveBasis(const NCollection_Array1<gp_Pnt>&    thePoles,
     }
     else
     {
-      const double aWSin      = aWeights[aIdx];
-      const double aWCos      = aWeights[aIdx + 1];
+      const double aWSin = aWeights[aIdx];
+      const double aWCos = aWeights[aIdx + 1];
 
       theData.N0 += aPoleSin * (aWSin * aB0Sin) + aPoleCos * (aWCos * aB0Cos);
       theData.W0 += aWSin * aB0Sin + aWCos * aB0Cos;
@@ -195,8 +194,8 @@ void evalCurveBasis(const NCollection_Array1<gp_Pnt>&    thePoles,
     {
       const double aSinNext = aSinK * aCos1 + aCosK * aSin1;
       const double aCosNext = aCosK * aCos1 - aSinK * aSin1;
-      aSinK = aSinNext;
-      aCosK = aCosNext;
+      aSinK                 = aSinNext;
+      aCosK                 = aCosNext;
     }
   }
 }
@@ -205,7 +204,7 @@ void evalCurveBasis(const NCollection_Array1<gp_Pnt>&    thePoles,
 //==================================================================================================
 
 GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
-                                              double theAlpha)
+                                             double                            theAlpha)
     : myPoles(thePoles),
       myAlpha(theAlpha),
       myRational(false)
@@ -213,21 +212,19 @@ GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& t
   const int aNbPoles = thePoles.Size();
   if (aNbPoles < 3 || (aNbPoles % 2) == 0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierCurve: number of poles must be odd and >= 3");
+    throw Standard_ConstructionError("GeomEval_TBezierCurve: number of poles must be odd and >= 3");
   }
   if (theAlpha <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierCurve: alpha must be > 0");
+    throw Standard_ConstructionError("GeomEval_TBezierCurve: alpha must be > 0");
   }
 }
 
 //==================================================================================================
 
 GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
-                                              const NCollection_Array1<double>& theWeights,
-                                              double theAlpha)
+                                             const NCollection_Array1<double>& theWeights,
+                                             double                            theAlpha)
     : myPoles(thePoles),
       myWeights(theWeights),
       myAlpha(theAlpha),
@@ -236,25 +233,21 @@ GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& t
   const int aNbPoles = thePoles.Size();
   if (aNbPoles < 3 || (aNbPoles % 2) == 0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierCurve: number of poles must be odd and >= 3");
+    throw Standard_ConstructionError("GeomEval_TBezierCurve: number of poles must be odd and >= 3");
   }
   if (theAlpha <= 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierCurve: alpha must be > 0");
+    throw Standard_ConstructionError("GeomEval_TBezierCurve: alpha must be > 0");
   }
   if (theWeights.Size() != aNbPoles)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_TBezierCurve: weights size must equal poles size");
+    throw Standard_ConstructionError("GeomEval_TBezierCurve: weights size must equal poles size");
   }
   for (int i = theWeights.Lower(); i <= theWeights.Upper(); ++i)
   {
     if (theWeights.Value(i) <= 0.0)
     {
-      throw Standard_ConstructionError(
-        "GeomEval_TBezierCurve: all weights must be > 0");
+      throw Standard_ConstructionError("GeomEval_TBezierCurve: all weights must be > 0");
     }
   }
 }
@@ -374,14 +367,13 @@ bool GeomEval_TBezierCurve::IsCN(const int /*N*/) const
 
 //==================================================================================================
 
-void GeomEval_TBezierCurve::evalBasis(double                      theT,
-                                      NCollection_Array1<double>& theBasis) const
+void GeomEval_TBezierCurve::evalBasis(double theT, NCollection_Array1<double>& theBasis) const
 {
   // T_0(t) = 1
   const int aBasisLow = theBasis.Lower();
   double*   aBasis    = &theBasis.ChangeValue(aBasisLow);
-  aBasis[0] = 1.0;
-  const int anOrder = Order();
+  aBasis[0]           = 1.0;
+  const int anOrder   = Order();
   if (anOrder <= 0)
   {
     return;
@@ -400,8 +392,8 @@ void GeomEval_TBezierCurve::evalBasis(double                      theT,
     {
       const double aSinNext = aSinK * aCos1 + aCosK * aSin1;
       const double aCosNext = aCosK * aCos1 - aSinK * aSin1;
-      aSinK = aSinNext;
-      aCosK = aCosNext;
+      aSinK                 = aSinNext;
+      aCosK                 = aCosNext;
     }
   }
 }
@@ -415,7 +407,7 @@ void GeomEval_TBezierCurve::evalBasisDeriv(double                      theT,
   // Derivative of constant basis function T_0 = 1 is always 0.
   const int aBasisLow = theBasisDeriv.Lower();
   double*   aBasis    = &theBasisDeriv.ChangeValue(aBasisLow);
-  aBasis[0] = 0.0;
+  aBasis[0]           = 0.0;
 
   const int anOrder = Order();
   if (anOrder <= 0)
@@ -423,18 +415,18 @@ void GeomEval_TBezierCurve::evalBasisDeriv(double                      theT,
     return;
   }
 
-  const int anOrderMod4 = theDerivOrder & 3;
-  const double aTheta   = myAlpha * theT;
-  const double aSin1    = std::sin(aTheta);
-  const double aCos1    = std::cos(aTheta);
-  double       aSinK    = aSin1;
-  double       aCosK    = aCos1;
-  double       aFreq    = myAlpha;
+  const int    anOrderMod4 = theDerivOrder & 3;
+  const double aTheta      = myAlpha * theT;
+  const double aSin1       = std::sin(aTheta);
+  const double aCos1       = std::cos(aTheta);
+  double       aSinK       = aSin1;
+  double       aCosK       = aCos1;
+  double       aFreq       = myAlpha;
   for (int k = 1; k <= anOrder; ++k)
   {
-    const double aSin  = aSinK;
-    const double aCos  = aCosK;
-    const double aFreqPow = powInt(aFreq, theDerivOrder);
+    const double aSin      = aSinK;
+    const double aCos      = aCosK;
+    const double aFreqPow  = powInt(aFreq, theDerivOrder);
     double       aSinDeriv = 0.0;
     double       aCosDeriv = 0.0;
     evalTrigPairNthDeriv(aSin, aCos, anOrderMod4, aSinDeriv, aCosDeriv);
@@ -445,21 +437,20 @@ void GeomEval_TBezierCurve::evalBasisDeriv(double                      theT,
     {
       const double aSinNext = aSinK * aCos1 + aCosK * aSin1;
       const double aCosNext = aCosK * aCos1 - aSinK * aSin1;
-      aSinK = aSinNext;
-      aCosK = aCosNext;
+      aSinK                 = aSinNext;
+      aCosK                 = aCosNext;
     }
   }
 }
 
 //==================================================================================================
 
-gp_Pnt GeomEval_TBezierCurve::evalNonRationalPoint(
-  const NCollection_Array1<double>& theBasis) const
+gp_Pnt GeomEval_TBezierCurve::evalNonRationalPoint(const NCollection_Array1<double>& theBasis) const
 {
-  gp_XYZ aSum(0.0, 0.0, 0.0);
-  const int        aNbPoles   = myPoles.Size();
-  const gp_Pnt*    aPolesData = &myPoles.Value(myPoles.Lower());
-  const double*    aBasisData = &theBasis.Value(theBasis.Lower());
+  gp_XYZ        aSum(0.0, 0.0, 0.0);
+  const int     aNbPoles   = myPoles.Size();
+  const gp_Pnt* aPolesData = &myPoles.Value(myPoles.Lower());
+  const double* aBasisData = &theBasis.Value(theBasis.Lower());
   for (int i = 0; i < aNbPoles; ++i)
   {
     aSum += aBasisData[i] * aPolesData[i].XYZ();
@@ -472,10 +463,10 @@ gp_Pnt GeomEval_TBezierCurve::evalNonRationalPoint(
 gp_Vec GeomEval_TBezierCurve::evalNonRationalDeriv(
   const NCollection_Array1<double>& theBasisDeriv) const
 {
-  gp_XYZ aSum(0.0, 0.0, 0.0);
-  const int        aNbPoles   = myPoles.Size();
-  const gp_Pnt*    aPolesData = &myPoles.Value(myPoles.Lower());
-  const double*    aBasisData = &theBasisDeriv.Value(theBasisDeriv.Lower());
+  gp_XYZ        aSum(0.0, 0.0, 0.0);
+  const int     aNbPoles   = myPoles.Size();
+  const gp_Pnt* aPolesData = &myPoles.Value(myPoles.Lower());
+  const double* aBasisData = &theBasisDeriv.Value(theBasisDeriv.Lower());
   for (int i = 0; i < aNbPoles; ++i)
   {
     aSum += aBasisData[i] * aPolesData[i].XYZ();
@@ -514,8 +505,8 @@ Geom_Curve::ResD1 GeomEval_TBezierCurve::EvalD1(const double U) const
 
   evalCurveBasis<1>(myPoles, &myWeights, myAlpha, U, aData);
   const gp_XYZ aC = aData.N0 / aData.W0;
-  aResult.Point = gp_Pnt(aC);
-  aResult.D1    = gp_Vec((aData.N1 - aData.W1 * aC) / aData.W0);
+  aResult.Point   = gp_Pnt(aC);
+  aResult.D1      = gp_Vec((aData.N1 - aData.W1 * aC) / aData.W0);
   return aResult;
 }
 
@@ -583,15 +574,14 @@ gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
   {
-    throw Geom_UndefinedDerivative(
-      "GeomEval_TBezierCurve::EvalDN: derivative order must be >= 1");
+    throw Geom_UndefinedDerivative("GeomEval_TBezierCurve::EvalDN: derivative order must be >= 1");
   }
 
   // For non-rational curves, compute directly.
   if (!myRational)
   {
-    gp_XYZ aSum(0.0, 0.0, 0.0);
-    const int anOrder  = Order();
+    gp_XYZ    aSum(0.0, 0.0, 0.0);
+    const int anOrder    = Order();
     const int aOrderMod4 = N & 3;
     if (anOrder <= 0)
     {
@@ -599,13 +589,13 @@ gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
     }
 
     const gp_Pnt* aPolesData = &myPoles.Value(myPoles.Lower());
-    const double aTheta = myAlpha * U;
-    const double aSin1  = std::sin(aTheta);
-    const double aCos1  = std::cos(aTheta);
-    double       aSinK  = aSin1;
-    double       aCosK  = aCos1;
-    double       aFreq  = myAlpha;
-    int          aIdx   = 1;
+    const double  aTheta     = myAlpha * U;
+    const double  aSin1      = std::sin(aTheta);
+    const double  aCos1      = std::cos(aTheta);
+    double        aSinK      = aSin1;
+    double        aCosK      = aCos1;
+    double        aFreq      = myAlpha;
+    int           aIdx       = 1;
 
     for (int k = 1; k <= anOrder; ++k, aIdx += 2, aFreq += myAlpha)
     {
@@ -624,8 +614,8 @@ gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
       {
         const double aSinNext = aSinK * aCos1 + aCosK * aSin1;
         const double aCosNext = aCosK * aCos1 - aSinK * aSin1;
-        aSinK = aSinNext;
-        aCosK = aCosNext;
+        aSinK                 = aSinNext;
+        aCosK                 = aCosNext;
       }
     }
     return gp_Vec(aSum);
@@ -672,17 +662,17 @@ gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
   const double*              aWeightsData = &myWeights.Value(myWeights.Lower());
   for (int d = 0; d <= N; ++d)
   {
-    const NCollection_Array1<double>& aBasisD = aBasisDerivs.Value(d);
+    const NCollection_Array1<double>& aBasisD    = aBasisDerivs.Value(d);
     const double*                     aBasisData = &aBasisD.Value(1);
-    double  aWd(0.0);
-    gp_XYZ  aCwd(0.0, 0.0, 0.0);
+    double                            aWd(0.0);
+    gp_XYZ                            aCwd(0.0, 0.0, 0.0);
     for (int i = 0; i < aNbPoles; ++i)
     {
       const double  aWi = aWeightsData[i];
       const double  aBd = aBasisData[i];
       const gp_XYZ& aPi = aPolesData[i].XYZ();
       aCwd += (aWi * aBd) * aPi;
-      aWd  += aWi * aBd;
+      aWd += aWi * aBd;
     }
     aWDerivs.SetValue(d, aWd);
     aCwDerivs.SetValue(d, aCwd);

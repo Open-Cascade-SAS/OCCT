@@ -45,13 +45,12 @@ class Geom_Geometry;
 class GeomEval_TBezierCurve : public Geom_BoundedCurve
 {
 public:
-
   //! Constructs a non-rational T-Bezier curve from poles and alpha.
   //! @param[in] thePoles control points (1-based, size must be odd >= 3)
   //! @param[in] theAlpha frequency parameter (must be > 0)
   //! @throw Standard_ConstructionError if NbPoles is not odd or < 3 or theAlpha <= 0
   Standard_EXPORT GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
-                                        double theAlpha);
+                                        double                            theAlpha);
 
   //! Constructs a rational T-Bezier curve.
   //! @param[in] thePoles control points (1-based, size must be odd >= 3)
@@ -60,7 +59,7 @@ public:
   //! @throw Standard_ConstructionError if validation fails
   Standard_EXPORT GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
                                         const NCollection_Array1<double>& theWeights,
-                                        double theAlpha);
+                                        double                            theAlpha);
 
   //! Returns the poles array.
   Standard_EXPORT const NCollection_Array1<gp_Pnt>& Poles() const;
@@ -148,7 +147,6 @@ public:
   DEFINE_STANDARD_RTTIEXT(GeomEval_TBezierCurve, Geom_BoundedCurve)
 
 private:
-
   //! Evaluate trigonometric basis functions at parameter theT.
   //! Returns array of size 2*n+1:
   //! {T_0(t), T_1(t), ..., T_{2n}(t)}

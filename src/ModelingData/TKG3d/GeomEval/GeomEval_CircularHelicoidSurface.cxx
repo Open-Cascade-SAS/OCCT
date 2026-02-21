@@ -32,8 +32,7 @@ GeomEval_CircularHelicoidSurface::GeomEval_CircularHelicoidSurface(const gp_Ax3&
 {
   if (thePitch == 0.0)
   {
-    throw Standard_ConstructionError(
-      "GeomEval_CircularHelicoidSurface: pitch must be != 0");
+    throw Standard_ConstructionError("GeomEval_CircularHelicoidSurface: pitch must be != 0");
   }
   pos = thePosition;
 }
@@ -87,10 +86,7 @@ double GeomEval_CircularHelicoidSurface::VReversedParameter(const double /*V*/) 
 
 //==================================================================================================
 
-void GeomEval_CircularHelicoidSurface::Bounds(double& U1,
-                                              double& U2,
-                                              double& V1,
-                                              double& V2) const
+void GeomEval_CircularHelicoidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
   U1 = -Precision::Infinite();
   U2 = Precision::Infinite();
@@ -154,15 +150,12 @@ gp_Pnt GeomEval_CircularHelicoidSurface::EvalD0(const double U, const double V) 
 
   const double aZComp = myPitch * U / (2.0 * M_PI);
 
-  return gp_Pnt(anO + V * aCosU * aXD
-                     + V * aSinU * aYD
-                     + aZComp * aZD);
+  return gp_Pnt(anO + V * aCosU * aXD + V * aSinU * aYD + aZComp * aZD);
 }
 
 //==================================================================================================
 
-Geom_Surface::ResD1 GeomEval_CircularHelicoidSurface::EvalD1(const double U,
-                                                             const double V) const
+Geom_Surface::ResD1 GeomEval_CircularHelicoidSurface::EvalD1(const double U, const double V) const
 {
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
@@ -176,14 +169,10 @@ Geom_Surface::ResD1 GeomEval_CircularHelicoidSurface::EvalD1(const double U,
   const double aZRate = myPitch / (2.0 * M_PI);
 
   Geom_Surface::ResD1 aResult;
-  aResult.Point = gp_Pnt(anO + V * aCosU * aXD
-                              + V * aSinU * aYD
-                              + aZComp * aZD);
+  aResult.Point = gp_Pnt(anO + V * aCosU * aXD + V * aSinU * aYD + aZComp * aZD);
 
   // dS/du = -v*sin(u)*XDir + v*cos(u)*YDir + P/(2*Pi)*ZDir
-  aResult.D1U = gp_Vec(V * (-aSinU) * aXD
-                      + V * aCosU * aYD
-                      + aZRate * aZD);
+  aResult.D1U = gp_Vec(V * (-aSinU) * aXD + V * aCosU * aYD + aZRate * aZD);
 
   // dS/dv = cos(u)*XDir + sin(u)*YDir
   aResult.D1V = gp_Vec(aCosU * aXD + aSinU * aYD);
@@ -193,8 +182,7 @@ Geom_Surface::ResD1 GeomEval_CircularHelicoidSurface::EvalD1(const double U,
 
 //==================================================================================================
 
-Geom_Surface::ResD2 GeomEval_CircularHelicoidSurface::EvalD2(const double U,
-                                                             const double V) const
+Geom_Surface::ResD2 GeomEval_CircularHelicoidSurface::EvalD2(const double U, const double V) const
 {
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
@@ -208,19 +196,14 @@ Geom_Surface::ResD2 GeomEval_CircularHelicoidSurface::EvalD2(const double U,
   const double aZRate = myPitch / (2.0 * M_PI);
 
   Geom_Surface::ResD2 aResult;
-  aResult.Point = gp_Pnt(anO + V * aCosU * aXD
-                              + V * aSinU * aYD
-                              + aZComp * aZD);
+  aResult.Point = gp_Pnt(anO + V * aCosU * aXD + V * aSinU * aYD + aZComp * aZD);
 
-  aResult.D1U = gp_Vec(V * (-aSinU) * aXD
-                      + V * aCosU * aYD
-                      + aZRate * aZD);
+  aResult.D1U = gp_Vec(V * (-aSinU) * aXD + V * aCosU * aYD + aZRate * aZD);
 
   aResult.D1V = gp_Vec(aCosU * aXD + aSinU * aYD);
 
   // d2S/dudu = -v*cos(u)*XDir - v*sin(u)*YDir
-  aResult.D2U = gp_Vec(V * (-aCosU) * aXD
-                      + V * (-aSinU) * aYD);
+  aResult.D2U = gp_Vec(V * (-aCosU) * aXD + V * (-aSinU) * aYD);
 
   // d2S/dvdv = 0 (ruled surface)
   aResult.D2V = gp_Vec(0.0, 0.0, 0.0);
@@ -233,8 +216,7 @@ Geom_Surface::ResD2 GeomEval_CircularHelicoidSurface::EvalD2(const double U,
 
 //==================================================================================================
 
-Geom_Surface::ResD3 GeomEval_CircularHelicoidSurface::EvalD3(const double U,
-                                                             const double V) const
+Geom_Surface::ResD3 GeomEval_CircularHelicoidSurface::EvalD3(const double U, const double V) const
 {
   const double aCosU = std::cos(U);
   const double aSinU = std::sin(U);
@@ -249,26 +231,20 @@ Geom_Surface::ResD3 GeomEval_CircularHelicoidSurface::EvalD3(const double U,
 
   Geom_Surface::ResD3 aResult;
 
-  aResult.Point = gp_Pnt(anO + V * aCosU * aXD
-                              + V * aSinU * aYD
-                              + aZComp * aZD);
+  aResult.Point = gp_Pnt(anO + V * aCosU * aXD + V * aSinU * aYD + aZComp * aZD);
 
-  aResult.D1U = gp_Vec(V * (-aSinU) * aXD
-                      + V * aCosU * aYD
-                      + aZRate * aZD);
+  aResult.D1U = gp_Vec(V * (-aSinU) * aXD + V * aCosU * aYD + aZRate * aZD);
 
   aResult.D1V = gp_Vec(aCosU * aXD + aSinU * aYD);
 
-  aResult.D2U = gp_Vec(V * (-aCosU) * aXD
-                      + V * (-aSinU) * aYD);
+  aResult.D2U = gp_Vec(V * (-aCosU) * aXD + V * (-aSinU) * aYD);
 
   aResult.D2V = gp_Vec(0.0, 0.0, 0.0);
 
   aResult.D2UV = gp_Vec((-aSinU) * aXD + aCosU * aYD);
 
   // d3S/du3 = v*sin(u)*XDir - v*cos(u)*YDir
-  aResult.D3U = gp_Vec(V * aSinU * aXD
-                      + V * (-aCosU) * aYD);
+  aResult.D3U = gp_Vec(V * aSinU * aXD + V * (-aCosU) * aYD);
 
   // d3S/dv3 = 0
   aResult.D3V = gp_Vec(0.0, 0.0, 0.0);
@@ -353,8 +329,7 @@ occ::handle<Geom_Geometry> GeomEval_CircularHelicoidSurface::Copy() const
 
 //==================================================================================================
 
-void GeomEval_CircularHelicoidSurface::DumpJson(Standard_OStream& theOStream,
-                                                int               theDepth) const
+void GeomEval_CircularHelicoidSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)
 

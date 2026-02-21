@@ -42,8 +42,7 @@ GeomEval_AHTBezierSurface createPolynomialSurface()
   {
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles.SetValue(i, j, gp_Pnt(double(i - 1), double(j - 1),
-                                    double((i - 1) * (j - 1)) * 0.1));
+      aPoles.SetValue(i, j, gp_Pnt(double(i - 1), double(j - 1), double((i - 1) * (j - 1)) * 0.1));
     }
   }
   return GeomEval_AHTBezierSurface(aPoles, 2, 2, 0.0, 0.0, 0.0, 0.0);
@@ -57,8 +56,7 @@ GeomEval_AHTBezierSurface createPolynomialSurfaceRationalUniformWeight(const dou
   {
     for (int j = 1; j <= 3; ++j)
     {
-      aPoles.SetValue(i, j, gp_Pnt(double(i - 1), double(j - 1),
-                                    double((i - 1) * (j - 1)) * 0.1));
+      aPoles.SetValue(i, j, gp_Pnt(double(i - 1), double(j - 1), double((i - 1) * (j - 1)) * 0.1));
       aWeights.SetValue(i, j, theWeight);
     }
   }
@@ -85,7 +83,7 @@ TEST(GeomEval_AHTBezierSurfaceTest, Construction_ValidParams)
 TEST(GeomEval_AHTBezierSurfaceTest, ParameterRange)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  double aU1, aU2, aV1, aV2;
+  double                    aU1, aU2, aV1, aV2;
   aSurf.Bounds(aU1, aU2, aV1, aV2);
   EXPECT_NEAR(aU1, 0.0, Precision::Confusion());
   EXPECT_NEAR(aU2, 1.0, Precision::Confusion());
@@ -113,13 +111,13 @@ TEST(GeomEval_AHTBezierSurfaceTest, EvalD0_Corners)
 TEST(GeomEval_AHTBezierSurfaceTest, EvalD1_ConsistentWithD0)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  const double aU = 0.3, aV = 0.7;
+  const double              aU = 0.3, aV = 0.7;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Pnt aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
-  gp_Pnt aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
-  gp_Pnt aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
-  gp_Pnt aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
+  Geom_Surface::ResD1 aD1  = aSurf.EvalD1(aU, aV);
+  gp_Pnt              aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
+  gp_Pnt              aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
+  gp_Pnt              aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
+  gp_Pnt              aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
 
   gp_Vec aFDU((aPu1.XYZ() - aPu2.XYZ()) / (2.0 * Precision::Confusion()));
   gp_Vec aFDV((aPv1.XYZ() - aPv2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -162,7 +160,7 @@ TEST(GeomEval_AHTBezierSurfaceTest, Iso_NotImplemented)
 TEST(GeomEval_AHTBezierSurfaceTest, Transform_NotImplemented)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  gp_Trsf aTrsf;
+  gp_Trsf                   aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
@@ -172,7 +170,7 @@ TEST(GeomEval_AHTBezierSurfaceTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(GeomEval_AHTBezierSurfaceTest, Copy_Independent)
 {
-  GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
+  GeomEval_AHTBezierSurface  aSurf = createPolynomialSurface();
   occ::handle<Geom_Geometry> aCopy = aSurf.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const GeomEval_AHTBezierSurface* aCopySurf =
@@ -187,7 +185,7 @@ TEST(GeomEval_AHTBezierSurfaceTest, Copy_Independent)
 TEST(GeomEval_AHTBezierSurfaceTest, DumpJson_NoCrash)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  Standard_SStream aSS;
+  Standard_SStream          aSS;
   EXPECT_NO_THROW(aSurf.DumpJson(aSS));
 }
 
@@ -195,12 +193,12 @@ TEST(GeomEval_AHTBezierSurfaceTest, DumpJson_NoCrash)
 TEST(GeomEval_AHTBezierSurfaceTest, EvalD2_ConsistentWithD1)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  const double aU = 0.3, aV = 0.4;
+  const double              aU = 0.3, aV = 0.4;
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(aU, aV);
 
   // D2U: finite difference of D1U w.r.t. U
-  Geom_Surface::ResD1 aD1Uplus = aSurf.EvalD1(aU + Precision::Confusion(), aV);
+  Geom_Surface::ResD1 aD1Uplus  = aSurf.EvalD1(aU + Precision::Confusion(), aV);
   Geom_Surface::ResD1 aD1Uminus = aSurf.EvalD1(aU - Precision::Confusion(), aV);
   gp_Vec aFD_D2U((aD1Uplus.D1U.XYZ() - aD1Uminus.D1U.XYZ()) / (2.0 * Precision::Confusion()));
 
@@ -209,7 +207,7 @@ TEST(GeomEval_AHTBezierSurfaceTest, EvalD2_ConsistentWithD1)
   EXPECT_NEAR(aD2.D2U.Z(), aFD_D2U.Z(), THE_FD_TOL_D2);
 
   // D2V: finite difference of D1V w.r.t. V
-  Geom_Surface::ResD1 aD1Vplus = aSurf.EvalD1(aU, aV + Precision::Confusion());
+  Geom_Surface::ResD1 aD1Vplus  = aSurf.EvalD1(aU, aV + Precision::Confusion());
   Geom_Surface::ResD1 aD1Vminus = aSurf.EvalD1(aU, aV - Precision::Confusion());
   gp_Vec aFD_D2V((aD1Vplus.D1V.XYZ() - aD1Vminus.D1V.XYZ()) / (2.0 * Precision::Confusion()));
 
@@ -229,12 +227,12 @@ TEST(GeomEval_AHTBezierSurfaceTest, EvalD2_ConsistentWithD1)
 TEST(GeomEval_AHTBezierSurfaceTest, EvalD3_ConsistentWithD2)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  const double aU = 0.4, aV = 0.3;
+  const double              aU = 0.4, aV = 0.3;
 
   Geom_Surface::ResD3 aD3 = aSurf.EvalD3(aU, aV);
 
   // D3U: finite difference of D2U w.r.t. U
-  Geom_Surface::ResD2 aD2Uplus = aSurf.EvalD2(aU + Precision::Confusion(), aV);
+  Geom_Surface::ResD2 aD2Uplus  = aSurf.EvalD2(aU + Precision::Confusion(), aV);
   Geom_Surface::ResD2 aD2Uminus = aSurf.EvalD2(aU - Precision::Confusion(), aV);
   gp_Vec aFD_D3U((aD2Uplus.D2U.XYZ() - aD2Uminus.D2U.XYZ()) / (2.0 * Precision::Confusion()));
 
@@ -243,7 +241,7 @@ TEST(GeomEval_AHTBezierSurfaceTest, EvalD3_ConsistentWithD2)
   EXPECT_NEAR(aD3.D3U.Z(), aFD_D3U.Z(), THE_FD_TOL_D2);
 
   // D3V: finite difference of D2V w.r.t. V
-  Geom_Surface::ResD2 aD2Vplus = aSurf.EvalD2(aU, aV + Precision::Confusion());
+  Geom_Surface::ResD2 aD2Vplus  = aSurf.EvalD2(aU, aV + Precision::Confusion());
   Geom_Surface::ResD2 aD2Vminus = aSurf.EvalD2(aU, aV - Precision::Confusion());
   gp_Vec aFD_D3V((aD2Vplus.D2V.XYZ() - aD2Vminus.D2V.XYZ()) / (2.0 * Precision::Confusion()));
 
@@ -270,11 +268,11 @@ TEST(GeomEval_AHTBezierSurfaceTest, EvalD3_ConsistentWithD2)
 TEST(GeomEval_AHTBezierSurfaceTest, EvalDN_ConsistentWithD1)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
-  const double aU = 0.5, aV = 0.5;
+  const double              aU = 0.5, aV = 0.5;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Vec aDN_U = aSurf.EvalDN(aU, aV, 1, 0);
-  gp_Vec aDN_V = aSurf.EvalDN(aU, aV, 0, 1);
+  Geom_Surface::ResD1 aD1   = aSurf.EvalD1(aU, aV);
+  gp_Vec              aDN_U = aSurf.EvalDN(aU, aV, 1, 0);
+  gp_Vec              aDN_V = aSurf.EvalDN(aU, aV, 0, 1);
 
   EXPECT_NEAR(aD1.D1U.X(), aDN_U.X(), Precision::Confusion());
   EXPECT_NEAR(aD1.D1U.Y(), aDN_U.Y(), Precision::Confusion());

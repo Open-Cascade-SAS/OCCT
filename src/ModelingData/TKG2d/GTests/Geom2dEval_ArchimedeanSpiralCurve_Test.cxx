@@ -27,13 +27,13 @@
 
 namespace
 {
-constexpr double THE_FD_TOL = 1e-5;
+constexpr double THE_FD_TOL    = 1e-5;
 constexpr double THE_FD_TOL_DN = 1e-4;
 } // namespace
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Construction_ValidParams)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
   EXPECT_NEAR(aCurve.InitialRadius(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aCurve.GrowthRate(), 1.0, Precision::Confusion());
@@ -49,13 +49,13 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Construction_InvalidParams_Throws)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD0_DistanceGrowsLinearly)
 {
-  gp_Ax2d anAx2d;
-  const double aA = 0.0, aB = 1.0;
+  gp_Ax2d                           anAx2d;
+  const double                      aA = 0.0, aB = 1.0;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, aA, aB);
 
   // |C(t) - O| = a + b*t
-  const gp_Pnt2d anO = anAx2d.Location();
-  const double aParams[] = {0.0, 1.0, 2.0, M_PI, 10.0};
+  const gp_Pnt2d anO       = anAx2d.Location();
+  const double   aParams[] = {0.0, 1.0, 2.0, M_PI, 10.0};
   for (double aT : aParams)
   {
     gp_Pnt2d aP = aCurve.EvalD0(aT);
@@ -65,8 +65,8 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD0_DistanceGrowsLinearly)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD0_WithInitialRadius)
 {
-  gp_Ax2d anAx2d;
-  const double aA = 2.0, aB = 0.5;
+  gp_Ax2d                           anAx2d;
+  const double                      aA = 2.0, aB = 0.5;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, aA, aB);
 
   // t=0: C(0) = (a, 0)
@@ -77,14 +77,14 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD0_WithInitialRadius)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
-  const double aT = 3.0;
+  const double                      aT = 3.0;
 
   Geom2d_Curve::ResD1 aD1 = aCurve.EvalD1(aT);
-  gp_Pnt2d aP1 = aCurve.EvalD0(aT + Precision::Confusion());
-  gp_Pnt2d aP2 = aCurve.EvalD0(aT - Precision::Confusion());
-  gp_Vec2d aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
+  gp_Pnt2d            aP1 = aCurve.EvalD0(aT + Precision::Confusion());
+  gp_Pnt2d            aP2 = aCurve.EvalD0(aT - Precision::Confusion());
+  gp_Vec2d            aFD((aP1.XY() - aP2.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD1.D1.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD1.D1.Y(), aFD.Y(), THE_FD_TOL);
@@ -92,14 +92,14 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD1_ConsistentWithD0)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD2_ConsistentWithD1)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
-  const double aT = 3.0;
+  const double                      aT = 3.0;
 
   Geom2d_Curve::ResD2 aD2  = aCurve.EvalD2(aT);
   Geom2d_Curve::ResD1 aD1p = aCurve.EvalD1(aT + Precision::Confusion());
   Geom2d_Curve::ResD1 aD1m = aCurve.EvalD1(aT - Precision::Confusion());
-  gp_Vec2d aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
+  gp_Vec2d            aFD((aD1p.D1.XY() - aD1m.D1.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD2.D2.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD2.D2.Y(), aFD.Y(), THE_FD_TOL);
@@ -107,14 +107,14 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD2_ConsistentWithD1)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD3_ConsistentWithD2)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
-  const double aT = 3.0;
+  const double                      aT = 3.0;
 
   Geom2d_Curve::ResD3 aD3  = aCurve.EvalD3(aT);
   Geom2d_Curve::ResD2 aD2p = aCurve.EvalD2(aT + Precision::Confusion());
   Geom2d_Curve::ResD2 aD2m = aCurve.EvalD2(aT - Precision::Confusion());
-  gp_Vec2d aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
+  gp_Vec2d            aFD((aD2p.D2.XY() - aD2m.D2.XY()) / (2.0 * Precision::Confusion()));
 
   EXPECT_NEAR(aD3.D3.X(), aFD.X(), THE_FD_TOL);
   EXPECT_NEAR(aD3.D3.Y(), aFD.Y(), THE_FD_TOL);
@@ -122,12 +122,12 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalD3_ConsistentWithD2)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalDN_HigherOrder_ConsistentWithPreviousOrder)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 0.5);
-  const double aT = 2.0;
-  const int    aN = 6;
+  const double                      aT = 2.0;
+  const int                         aN = 6;
 
-  const gp_Vec2d aDN = aCurve.EvalDN(aT, aN);
+  const gp_Vec2d aDN    = aCurve.EvalDN(aT, aN);
   const gp_Vec2d aDNm1P = aCurve.EvalDN(aT + Precision::Confusion(), aN - 1);
   const gp_Vec2d aDNm1M = aCurve.EvalDN(aT - Precision::Confusion(), aN - 1);
   const gp_Vec2d aFD((aDNm1P.XY() - aDNm1M.XY()) / (2.0 * Precision::Confusion()));
@@ -138,7 +138,7 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, EvalDN_HigherOrder_ConsistentWithPre
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Properties)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
   EXPECT_FALSE(aCurve.IsClosed());
   EXPECT_FALSE(aCurve.IsPeriodic());
@@ -149,9 +149,9 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Properties)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Copy_Independent)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 1.0, 2.0);
-  occ::handle<Geom2d_Geometry> aCopy = aCurve.Copy();
+  occ::handle<Geom2d_Geometry>      aCopy = aCurve.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const Geom2dEval_ArchimedeanSpiralCurve* aCopyCurve =
     dynamic_cast<const Geom2dEval_ArchimedeanSpiralCurve*>(aCopy.get());
@@ -162,15 +162,15 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Copy_Independent)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, DumpJson_NoCrash)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
-  Standard_SStream aSS;
+  Standard_SStream                  aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
 }
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Reverse_NotImplemented)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
   EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
   EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
@@ -178,9 +178,9 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Reverse_NotImplemented)
 
 TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Transform_NotImplemented)
 {
-  gp_Ax2d anAx2d;
+  gp_Ax2d                           anAx2d;
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
-  gp_Trsf2d aTrsf;
+  gp_Trsf2d                         aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
   EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
   EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);

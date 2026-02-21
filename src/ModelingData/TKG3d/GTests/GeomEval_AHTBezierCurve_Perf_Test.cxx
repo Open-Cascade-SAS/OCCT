@@ -47,10 +47,10 @@ int envIntOrDefault(const char* theName, const int theDefault, const int theMin)
 }
 
 template <typename FuncT>
-BenchSummary runBench(const char*                        theName,
-                      const int                          theRepeats,
+BenchSummary runBench(const char*                       theName,
+                      const int                         theRepeats,
                       const NCollection_Array1<double>& theParams,
-                      FuncT&&                            theFunc)
+                      FuncT&&                           theFunc)
 {
   volatile double aSink = 0.0;
   const auto      aBeg  = Clock::now();
@@ -62,7 +62,7 @@ BenchSummary runBench(const char*                        theName,
     }
   }
 
-  const auto aEnd = Clock::now();
+  const auto                                      aEnd = Clock::now();
   const std::chrono::duration<double, std::milli> aDur = aEnd - aBeg;
   return {theName, aDur.count(), aSink};
 }
@@ -70,19 +70,17 @@ BenchSummary runBench(const char*                        theName,
 void printRow(const BenchSummary& theResult, const int theCalls)
 {
   const double aMcallsPerSec = double(theCalls) / (theResult.Ms * 1000.0);
-  std::cout << std::left << std::setw(34) << theResult.Name
-            << std::right << std::setw(12) << std::fixed << std::setprecision(3) << theResult.Ms
-            << std::setw(14) << std::setprecision(3) << aMcallsPerSec
-            << std::setw(16) << std::setprecision(6) << theResult.Sink << '\n';
+  std::cout << std::left << std::setw(34) << theResult.Name << std::right << std::setw(12)
+            << std::fixed << std::setprecision(3) << theResult.Ms << std::setw(14)
+            << std::setprecision(3) << aMcallsPerSec << std::setw(16) << std::setprecision(6)
+            << theResult.Sink << '\n';
 }
 
 void printHeader(const char* theTitle)
 {
   std::cout << "\n=== " << theTitle << " ===\n";
-  std::cout << std::left << std::setw(34) << "Path"
-            << std::right << std::setw(12) << "ms"
-            << std::setw(14) << "MCalls/s"
-            << std::setw(16) << "sink" << '\n';
+  std::cout << std::left << std::setw(34) << "Path" << std::right << std::setw(12) << "ms"
+            << std::setw(14) << "MCalls/s" << std::setw(16) << "sink" << '\n';
 }
 
 double vecDiff(const gp_Vec& theV1, const gp_Vec& theV2)
@@ -131,11 +129,11 @@ TEST(GeomEval_AHTBezierCurvePerfTest, DISABLED_D0ToD3_EquivalentCubicAndAdaptorP
   ASSERT_FALSE(aBSplineWithRep.IsNull());
 
   const Handle(GeomEval_RepCurveDesc::Full) aBezDesc = new GeomEval_RepCurveDesc::Full();
-  aBezDesc->Representation = anAhtCurve;
+  aBezDesc->Representation                           = anAhtCurve;
   aBezierWithRep->SetEvalRepresentation(aBezDesc);
 
   const Handle(GeomEval_RepCurveDesc::Full) aBspDesc = new GeomEval_RepCurveDesc::Full();
-  aBspDesc->Representation = anAhtCurve;
+  aBspDesc->Representation                           = anAhtCurve;
   aBSplineWithRep->SetEvalRepresentation(aBspDesc);
 
   GeomAdaptor_Curve anAdaptorBezier(aBezierCurve);
@@ -202,26 +200,30 @@ TEST(GeomEval_AHTBezierCurvePerfTest, DISABLED_D0ToD3_EquivalentCubicAndAdaptorP
     anAhtCurve->D0(theU, aP);
     return aP.X() + aP.Y() + aP.Z();
   });
-  const BenchSummary aDirectBezD0 = runBench("Direct_Bezier_D0", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    aBezierCurve->D0(theU, aP);
-    return aP.X() + aP.Y() + aP.Z();
-  });
-  const BenchSummary aDirectBspD0 = runBench("Direct_BSpline_D0", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    aBSplineCurve->D0(theU, aP);
-    return aP.X() + aP.Y() + aP.Z();
-  });
-  const BenchSummary anAdaptorBezD0 = runBench("Adaptor_Bezier_D0", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    anAdaptorBezier.D0(theU, aP);
-    return aP.X() + aP.Y() + aP.Z();
-  });
-  const BenchSummary anAdaptorBspD0 = runBench("Adaptor_BSpline_D0", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    anAdaptorBSpline.D0(theU, aP);
-    return aP.X() + aP.Y() + aP.Z();
-  });
+  const BenchSummary aDirectBezD0 =
+    runBench("Direct_Bezier_D0", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      aBezierCurve->D0(theU, aP);
+      return aP.X() + aP.Y() + aP.Z();
+    });
+  const BenchSummary aDirectBspD0 =
+    runBench("Direct_BSpline_D0", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      aBSplineCurve->D0(theU, aP);
+      return aP.X() + aP.Y() + aP.Z();
+    });
+  const BenchSummary anAdaptorBezD0 =
+    runBench("Adaptor_Bezier_D0", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      anAdaptorBezier.D0(theU, aP);
+      return aP.X() + aP.Y() + aP.Z();
+    });
+  const BenchSummary anAdaptorBspD0 =
+    runBench("Adaptor_BSpline_D0", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      anAdaptorBSpline.D0(theU, aP);
+      return aP.X() + aP.Y() + aP.Z();
+    });
   const BenchSummary anAdaptorBezD0Rep =
     runBench("Adaptor_Bezier_D0_WithEvalRep", aRepeats, aParams, [&](double theU) {
       gp_Pnt aP;
@@ -249,30 +251,34 @@ TEST(GeomEval_AHTBezierCurvePerfTest, DISABLED_D0ToD3_EquivalentCubicAndAdaptorP
     anAhtCurve->D1(theU, aP, aV);
     return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
   });
-  const BenchSummary aDirectBezD1 = runBench("Direct_Bezier_D1", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV;
-    aBezierCurve->D1(theU, aP, aV);
-    return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
-  });
-  const BenchSummary aDirectBspD1 = runBench("Direct_BSpline_D1", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV;
-    aBSplineCurve->D1(theU, aP, aV);
-    return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
-  });
-  const BenchSummary anAdaptorBezD1 = runBench("Adaptor_Bezier_D1", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV;
-    anAdaptorBezier.D1(theU, aP, aV);
-    return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
-  });
-  const BenchSummary anAdaptorBspD1 = runBench("Adaptor_BSpline_D1", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV;
-    anAdaptorBSpline.D1(theU, aP, aV);
-    return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
-  });
+  const BenchSummary aDirectBezD1 =
+    runBench("Direct_Bezier_D1", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV;
+      aBezierCurve->D1(theU, aP, aV);
+      return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
+    });
+  const BenchSummary aDirectBspD1 =
+    runBench("Direct_BSpline_D1", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV;
+      aBSplineCurve->D1(theU, aP, aV);
+      return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
+    });
+  const BenchSummary anAdaptorBezD1 =
+    runBench("Adaptor_Bezier_D1", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV;
+      anAdaptorBezier.D1(theU, aP, aV);
+      return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
+    });
+  const BenchSummary anAdaptorBspD1 =
+    runBench("Adaptor_BSpline_D1", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV;
+      anAdaptorBSpline.D1(theU, aP, aV);
+      return aP.X() + aP.Y() + aP.Z() + aV.X() + aV.Y() + aV.Z();
+    });
   const BenchSummary anAdaptorBezD1Rep =
     runBench("Adaptor_Bezier_D1_WithEvalRep", aRepeats, aParams, [&](double theU) {
       gp_Pnt aP;
@@ -303,34 +309,38 @@ TEST(GeomEval_AHTBezierCurvePerfTest, DISABLED_D0ToD3_EquivalentCubicAndAdaptorP
     anAhtCurve->D2(theU, aP, aV1, aV2);
     return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
   });
-  const BenchSummary aDirectBezD2 = runBench("Direct_Bezier_D2", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    aBezierCurve->D2(theU, aP, aV1, aV2);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
-  });
-  const BenchSummary aDirectBspD2 = runBench("Direct_BSpline_D2", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    aBSplineCurve->D2(theU, aP, aV1, aV2);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
-  });
-  const BenchSummary anAdaptorBezD2 = runBench("Adaptor_Bezier_D2", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    anAdaptorBezier.D2(theU, aP, aV1, aV2);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
-  });
-  const BenchSummary anAdaptorBspD2 = runBench("Adaptor_BSpline_D2", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    anAdaptorBSpline.D2(theU, aP, aV1, aV2);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
-  });
+  const BenchSummary aDirectBezD2 =
+    runBench("Direct_Bezier_D2", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      aBezierCurve->D2(theU, aP, aV1, aV2);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
+    });
+  const BenchSummary aDirectBspD2 =
+    runBench("Direct_BSpline_D2", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      aBSplineCurve->D2(theU, aP, aV1, aV2);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
+    });
+  const BenchSummary anAdaptorBezD2 =
+    runBench("Adaptor_Bezier_D2", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      anAdaptorBezier.D2(theU, aP, aV1, aV2);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
+    });
+  const BenchSummary anAdaptorBspD2 =
+    runBench("Adaptor_BSpline_D2", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      anAdaptorBSpline.D2(theU, aP, aV1, aV2);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z();
+    });
   const BenchSummary anAdaptorBezD2Rep =
     runBench("Adaptor_Bezier_D2_WithEvalRep", aRepeats, aParams, [&](double theU) {
       gp_Pnt aP;
@@ -365,42 +375,46 @@ TEST(GeomEval_AHTBezierCurvePerfTest, DISABLED_D0ToD3_EquivalentCubicAndAdaptorP
     return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
            + aV3.X() + aV3.Y() + aV3.Z();
   });
-  const BenchSummary aDirectBezD3 = runBench("Direct_Bezier_D3", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    gp_Vec aV3;
-    aBezierCurve->D3(theU, aP, aV1, aV2, aV3);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
-           + aV3.X() + aV3.Y() + aV3.Z();
-  });
-  const BenchSummary aDirectBspD3 = runBench("Direct_BSpline_D3", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    gp_Vec aV3;
-    aBSplineCurve->D3(theU, aP, aV1, aV2, aV3);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
-           + aV3.X() + aV3.Y() + aV3.Z();
-  });
-  const BenchSummary anAdaptorBezD3 = runBench("Adaptor_Bezier_D3", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    gp_Vec aV3;
-    anAdaptorBezier.D3(theU, aP, aV1, aV2, aV3);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
-           + aV3.X() + aV3.Y() + aV3.Z();
-  });
-  const BenchSummary anAdaptorBspD3 = runBench("Adaptor_BSpline_D3", aRepeats, aParams, [&](double theU) {
-    gp_Pnt aP;
-    gp_Vec aV1;
-    gp_Vec aV2;
-    gp_Vec aV3;
-    anAdaptorBSpline.D3(theU, aP, aV1, aV2, aV3);
-    return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
-           + aV3.X() + aV3.Y() + aV3.Z();
-  });
+  const BenchSummary aDirectBezD3 =
+    runBench("Direct_Bezier_D3", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      gp_Vec aV3;
+      aBezierCurve->D3(theU, aP, aV1, aV2, aV3);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
+             + aV3.X() + aV3.Y() + aV3.Z();
+    });
+  const BenchSummary aDirectBspD3 =
+    runBench("Direct_BSpline_D3", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      gp_Vec aV3;
+      aBSplineCurve->D3(theU, aP, aV1, aV2, aV3);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
+             + aV3.X() + aV3.Y() + aV3.Z();
+    });
+  const BenchSummary anAdaptorBezD3 =
+    runBench("Adaptor_Bezier_D3", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      gp_Vec aV3;
+      anAdaptorBezier.D3(theU, aP, aV1, aV2, aV3);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
+             + aV3.X() + aV3.Y() + aV3.Z();
+    });
+  const BenchSummary anAdaptorBspD3 =
+    runBench("Adaptor_BSpline_D3", aRepeats, aParams, [&](double theU) {
+      gp_Pnt aP;
+      gp_Vec aV1;
+      gp_Vec aV2;
+      gp_Vec aV3;
+      anAdaptorBSpline.D3(theU, aP, aV1, aV2, aV3);
+      return aP.X() + aP.Y() + aP.Z() + aV1.X() + aV1.Y() + aV1.Z() + aV2.X() + aV2.Y() + aV2.Z()
+             + aV3.X() + aV3.Y() + aV3.Z();
+    });
   const BenchSummary anAdaptorBezD3Rep =
     runBench("Adaptor_Bezier_D3_WithEvalRep", aRepeats, aParams, [&](double theU) {
       gp_Pnt aP;

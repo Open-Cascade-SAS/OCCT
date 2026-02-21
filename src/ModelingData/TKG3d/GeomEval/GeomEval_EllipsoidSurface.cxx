@@ -182,14 +182,12 @@ gp_Pnt GeomEval_EllipsoidSurface::EvalD0(const double U, const double V) const
   const double aCosV = std::cos(V);
   const double aSinV = std::sin(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
-  return gp_Pnt(anO + myA * aCosV * aCosU * aXD
-                     + myB * aCosV * aSinU * aYD
-                     + myC * aSinV * aZD);
+  return gp_Pnt(anO + myA * aCosV * aCosU * aXD + myB * aCosV * aSinU * aYD + myC * aSinV * aZD);
 }
 
 //==================================================================================================
@@ -201,24 +199,21 @@ Geom_Surface::ResD1 GeomEval_EllipsoidSurface::EvalD1(const double U, const doub
   const double aCosV = std::cos(V);
   const double aSinV = std::sin(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   Geom_Surface::ResD1 aResult;
-  aResult.Point = gp_Pnt(anO + myA * aCosV * aCosU * aXD
-                              + myB * aCosV * aSinU * aYD
-                              + myC * aSinV * aZD);
+  aResult.Point =
+    gp_Pnt(anO + myA * aCosV * aCosU * aXD + myB * aCosV * aSinU * aYD + myC * aSinV * aZD);
 
   // dP/du = -A*cv*su*XD + B*cv*cu*YD
-  aResult.D1U = gp_Vec(myA * aCosV * (-aSinU) * aXD
-                      + myB * aCosV * aCosU * aYD);
+  aResult.D1U = gp_Vec(myA * aCosV * (-aSinU) * aXD + myB * aCosV * aCosU * aYD);
 
   // dP/dv = -A*sv*cu*XD - B*sv*su*YD + C*cv*ZD
-  aResult.D1V = gp_Vec(myA * (-aSinV) * aCosU * aXD
-                      + myB * (-aSinV) * aSinU * aYD
-                      + myC * aCosV * aZD);
+  aResult.D1V =
+    gp_Vec(myA * (-aSinV) * aCosU * aXD + myB * (-aSinV) * aSinU * aYD + myC * aCosV * aZD);
 
   return aResult;
 }
@@ -232,37 +227,31 @@ Geom_Surface::ResD2 GeomEval_EllipsoidSurface::EvalD2(const double U, const doub
   const double aCosV = std::cos(V);
   const double aSinV = std::sin(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   Geom_Surface::ResD2 aResult;
-  aResult.Point = gp_Pnt(anO + myA * aCosV * aCosU * aXD
-                              + myB * aCosV * aSinU * aYD
-                              + myC * aSinV * aZD);
+  aResult.Point =
+    gp_Pnt(anO + myA * aCosV * aCosU * aXD + myB * aCosV * aSinU * aYD + myC * aSinV * aZD);
 
   // dP/du
-  aResult.D1U = gp_Vec(myA * aCosV * (-aSinU) * aXD
-                      + myB * aCosV * aCosU * aYD);
+  aResult.D1U = gp_Vec(myA * aCosV * (-aSinU) * aXD + myB * aCosV * aCosU * aYD);
 
   // dP/dv
-  aResult.D1V = gp_Vec(myA * (-aSinV) * aCosU * aXD
-                      + myB * (-aSinV) * aSinU * aYD
-                      + myC * aCosV * aZD);
+  aResult.D1V =
+    gp_Vec(myA * (-aSinV) * aCosU * aXD + myB * (-aSinV) * aSinU * aYD + myC * aCosV * aZD);
 
   // d2P/du2 = -A*cv*cu*XD - B*cv*su*YD
-  aResult.D2U = gp_Vec(myA * aCosV * (-aCosU) * aXD
-                      + myB * aCosV * (-aSinU) * aYD);
+  aResult.D2U = gp_Vec(myA * aCosV * (-aCosU) * aXD + myB * aCosV * (-aSinU) * aYD);
 
   // d2P/dv2 = -A*cv*cu*XD - B*cv*su*YD - C*sv*ZD
-  aResult.D2V = gp_Vec(myA * (-aCosV) * aCosU * aXD
-                      + myB * (-aCosV) * aSinU * aYD
-                      + myC * (-aSinV) * aZD);
+  aResult.D2V =
+    gp_Vec(myA * (-aCosV) * aCosU * aXD + myB * (-aCosV) * aSinU * aYD + myC * (-aSinV) * aZD);
 
   // d2P/dudv = A*sv*su*XD - B*sv*cu*YD
-  aResult.D2UV = gp_Vec(myA * aSinV * aSinU * aXD
-                       + myB * (-aSinV) * aCosU * aYD);
+  aResult.D2UV = gp_Vec(myA * aSinV * aSinU * aXD + myB * (-aSinV) * aCosU * aYD);
 
   return aResult;
 }
@@ -276,56 +265,46 @@ Geom_Surface::ResD3 GeomEval_EllipsoidSurface::EvalD3(const double U, const doub
   const double aCosV = std::cos(V);
   const double aSinV = std::sin(V);
 
-  const gp_XYZ& anO  = pos.Location().XYZ();
-  const gp_XYZ& aXD  = pos.XDirection().XYZ();
-  const gp_XYZ& aYD  = pos.YDirection().XYZ();
-  const gp_XYZ& aZD  = pos.Direction().XYZ();
+  const gp_XYZ& anO = pos.Location().XYZ();
+  const gp_XYZ& aXD = pos.XDirection().XYZ();
+  const gp_XYZ& aYD = pos.YDirection().XYZ();
+  const gp_XYZ& aZD = pos.Direction().XYZ();
 
   Geom_Surface::ResD3 aResult;
 
   // P
-  aResult.Point = gp_Pnt(anO + myA * aCosV * aCosU * aXD
-                              + myB * aCosV * aSinU * aYD
-                              + myC * aSinV * aZD);
+  aResult.Point =
+    gp_Pnt(anO + myA * aCosV * aCosU * aXD + myB * aCosV * aSinU * aYD + myC * aSinV * aZD);
 
   // dP/du
-  aResult.D1U = gp_Vec(myA * aCosV * (-aSinU) * aXD
-                      + myB * aCosV * aCosU * aYD);
+  aResult.D1U = gp_Vec(myA * aCosV * (-aSinU) * aXD + myB * aCosV * aCosU * aYD);
 
   // dP/dv
-  aResult.D1V = gp_Vec(myA * (-aSinV) * aCosU * aXD
-                      + myB * (-aSinV) * aSinU * aYD
-                      + myC * aCosV * aZD);
+  aResult.D1V =
+    gp_Vec(myA * (-aSinV) * aCosU * aXD + myB * (-aSinV) * aSinU * aYD + myC * aCosV * aZD);
 
   // d2P/du2
-  aResult.D2U = gp_Vec(myA * aCosV * (-aCosU) * aXD
-                      + myB * aCosV * (-aSinU) * aYD);
+  aResult.D2U = gp_Vec(myA * aCosV * (-aCosU) * aXD + myB * aCosV * (-aSinU) * aYD);
 
   // d2P/dv2
-  aResult.D2V = gp_Vec(myA * (-aCosV) * aCosU * aXD
-                      + myB * (-aCosV) * aSinU * aYD
-                      + myC * (-aSinV) * aZD);
+  aResult.D2V =
+    gp_Vec(myA * (-aCosV) * aCosU * aXD + myB * (-aCosV) * aSinU * aYD + myC * (-aSinV) * aZD);
 
   // d2P/dudv
-  aResult.D2UV = gp_Vec(myA * aSinV * aSinU * aXD
-                       + myB * (-aSinV) * aCosU * aYD);
+  aResult.D2UV = gp_Vec(myA * aSinV * aSinU * aXD + myB * (-aSinV) * aCosU * aYD);
 
   // d3P/du3 = A*cv*su*XD - B*cv*cu*YD
-  aResult.D3U = gp_Vec(myA * aCosV * aSinU * aXD
-                      + myB * aCosV * (-aCosU) * aYD);
+  aResult.D3U = gp_Vec(myA * aCosV * aSinU * aXD + myB * aCosV * (-aCosU) * aYD);
 
   // d3P/dv3 = A*sv*cu*XD + B*sv*su*YD - C*cv*ZD
-  aResult.D3V = gp_Vec(myA * aSinV * aCosU * aXD
-                      + myB * aSinV * aSinU * aYD
-                      + myC * (-aCosV) * aZD);
+  aResult.D3V =
+    gp_Vec(myA * aSinV * aCosU * aXD + myB * aSinV * aSinU * aYD + myC * (-aCosV) * aZD);
 
   // d3P/du2dv = A*sv*cu*XD + B*sv*su*YD
-  aResult.D3UUV = gp_Vec(myA * aSinV * aCosU * aXD
-                        + myB * aSinV * aSinU * aYD);
+  aResult.D3UUV = gp_Vec(myA * aSinV * aCosU * aXD + myB * aSinV * aSinU * aYD);
 
   // d3P/dudv2 = A*cv*su*XD - B*cv*cu*YD
-  aResult.D3UVV = gp_Vec(myA * aCosV * aSinU * aXD
-                        + myB * (-aCosV) * aCosU * aYD);
+  aResult.D3UVV = gp_Vec(myA * aCosV * aSinU * aXD + myB * (-aCosV) * aCosU * aYD);
 
   return aResult;
 }
@@ -339,8 +318,7 @@ gp_Vec GeomEval_EllipsoidSurface::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
-    throw Geom_UndefinedDerivative(
-      "GeomEval_EllipsoidSurface::EvalDN: invalid derivative order");
+    throw Geom_UndefinedDerivative("GeomEval_EllipsoidSurface::EvalDN: invalid derivative order");
   }
 
   const gp_XYZ& aXD = pos.XDirection().XYZ();

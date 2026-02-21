@@ -34,7 +34,7 @@ constexpr double THE_FD_TOL_D3 = 1e-4;
 // Test construction with valid parameters (one-sheet default)
 TEST(GeomEval_HyperboloidSurfaceTest, Construction_ValidParams_OneSheet)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_NEAR(aSurf.R1(), 2.0, Precision::Confusion());
   EXPECT_NEAR(aSurf.R2(), 3.0, Precision::Confusion());
@@ -44,9 +44,11 @@ TEST(GeomEval_HyperboloidSurfaceTest, Construction_ValidParams_OneSheet)
 // Test construction with two-sheet mode
 TEST(GeomEval_HyperboloidSurfaceTest, Construction_ValidParams_TwoSheets)
 {
-  gp_Ax3 anAx3;
-  GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0,
-    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
+  gp_Ax3                      anAx3;
+  GeomEval_HyperboloidSurface aSurf(anAx3,
+                                    2.0,
+                                    3.0,
+                                    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
   EXPECT_TRUE(aSurf.Mode() == GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
 }
 
@@ -63,20 +65,20 @@ TEST(GeomEval_HyperboloidSurfaceTest, Construction_InvalidRadii_Throws)
 
 TEST(GeomEval_HyperboloidSurfaceTest, Setters_ZeroRadii_Throw)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_THROW(aSurf.SetR1(0.0), Standard_ConstructionError);
   EXPECT_THROW(aSurf.SetR2(0.0), Standard_ConstructionError);
 }
 
-// Test EvalD0 at u=0, v=0 for one-sheet: P = O + R1*cosh(0)*cos(0)*X + R1*cosh(0)*sin(0)*Y + R2*sinh(0)*Z
-// cosh(0)=1, sinh(0)=0 -> P = (R1, 0, 0)
+// Test EvalD0 at u=0, v=0 for one-sheet: P = O + R1*cosh(0)*cos(0)*X + R1*cosh(0)*sin(0)*Y +
+// R2*sinh(0)*Z cosh(0)=1, sinh(0)=0 -> P = (R1, 0, 0)
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD0_OneSheet_Origin)
 {
-  gp_Ax3 anAx3;
-  const double aR1 = 2.0, aR2 = 3.0;
+  gp_Ax3                      anAx3;
+  const double                aR1 = 2.0, aR2 = 3.0;
   GeomEval_HyperboloidSurface aSurf(anAx3, aR1, aR2);
-  gp_Pnt aP = aSurf.EvalD0(0.0, 0.0);
+  gp_Pnt                      aP = aSurf.EvalD0(0.0, 0.0);
   EXPECT_NEAR(aP.X(), aR1, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), 0.0, Precision::Confusion());
@@ -85,24 +87,26 @@ TEST(GeomEval_HyperboloidSurfaceTest, EvalD0_OneSheet_Origin)
 // Test EvalD0 at u=PI/2, v=0 for one-sheet: P = (0, R1, 0)
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD0_OneSheet_HalfPi)
 {
-  gp_Ax3 anAx3;
-  const double aR1 = 2.0, aR2 = 3.0;
+  gp_Ax3                      anAx3;
+  const double                aR1 = 2.0, aR2 = 3.0;
   GeomEval_HyperboloidSurface aSurf(anAx3, aR1, aR2);
-  gp_Pnt aP = aSurf.EvalD0(M_PI / 2.0, 0.0);
+  gp_Pnt                      aP = aSurf.EvalD0(M_PI / 2.0, 0.0);
   EXPECT_NEAR(aP.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), aR1, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), 0.0, Precision::Confusion());
 }
 
-// Test EvalD0 at u=0, v=0 for two-sheet: P = O + R2*sinh(0)*cos(0)*X + R2*sinh(0)*sin(0)*Y + R1*cosh(0)*Z
-// sinh(0)=0, cosh(0)=1 -> P = (0, 0, R1)
+// Test EvalD0 at u=0, v=0 for two-sheet: P = O + R2*sinh(0)*cos(0)*X + R2*sinh(0)*sin(0)*Y +
+// R1*cosh(0)*Z sinh(0)=0, cosh(0)=1 -> P = (0, 0, R1)
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD0_TwoSheets_Origin)
 {
-  gp_Ax3 anAx3;
-  const double aR1 = 2.0, aR2 = 3.0;
-  GeomEval_HyperboloidSurface aSurf(anAx3, aR1, aR2,
-    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
-  gp_Pnt aP = aSurf.EvalD0(0.0, 0.0);
+  gp_Ax3                      anAx3;
+  const double                aR1 = 2.0, aR2 = 3.0;
+  GeomEval_HyperboloidSurface aSurf(anAx3,
+                                    aR1,
+                                    aR2,
+                                    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
+  gp_Pnt                      aP = aSurf.EvalD0(0.0, 0.0);
   EXPECT_NEAR(aP.X(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Y(), 0.0, Precision::Confusion());
   EXPECT_NEAR(aP.Z(), aR1, Precision::Confusion());
@@ -111,15 +115,15 @@ TEST(GeomEval_HyperboloidSurfaceTest, EvalD0_TwoSheets_Origin)
 // Test derivative consistency: compare EvalD1 vs finite difference of EvalD0
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD1_ConsistentWithD0)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  const double aU = 1.0, aV = 0.5;
+  const double                aU = 1.0, aV = 0.5;
 
-  Geom_Surface::ResD1 aD1 = aSurf.EvalD1(aU, aV);
-  gp_Pnt aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
-  gp_Pnt aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
-  gp_Pnt aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
-  gp_Pnt aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
+  Geom_Surface::ResD1 aD1  = aSurf.EvalD1(aU, aV);
+  gp_Pnt              aPu1 = aSurf.EvalD0(aU + Precision::Confusion(), aV);
+  gp_Pnt              aPu2 = aSurf.EvalD0(aU - Precision::Confusion(), aV);
+  gp_Pnt              aPv1 = aSurf.EvalD0(aU, aV + Precision::Confusion());
+  gp_Pnt              aPv2 = aSurf.EvalD0(aU, aV - Precision::Confusion());
 
   gp_Vec aFDU((aPu1.XYZ() - aPu2.XYZ()) / (2.0 * Precision::Confusion()));
   gp_Vec aFDV((aPv1.XYZ() - aPv2.XYZ()) / (2.0 * Precision::Confusion()));
@@ -135,9 +139,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, EvalD1_ConsistentWithD0)
 // Test Bounds and periodicity
 TEST(GeomEval_HyperboloidSurfaceTest, Bounds_Periodicity)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 1.0, 1.0);
-  double aU1, aU2, aV1, aV2;
+  double                      aU1, aU2, aV1, aV2;
   aSurf.Bounds(aU1, aU2, aV1, aV2);
   EXPECT_NEAR(aU1, 0.0, Precision::Confusion());
   EXPECT_NEAR(aU2, 2.0 * M_PI, Precision::Confusion());
@@ -149,7 +153,7 @@ TEST(GeomEval_HyperboloidSurfaceTest, Bounds_Periodicity)
 
 TEST(GeomEval_HyperboloidSurfaceTest, Iso_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
@@ -157,7 +161,7 @@ TEST(GeomEval_HyperboloidSurfaceTest, Iso_NotImplemented)
 
 TEST(GeomEval_HyperboloidSurfaceTest, Reverse_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
   EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
   EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
@@ -168,9 +172,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, Reverse_NotImplemented)
 // Test implicit equation at evaluated points for one-sheet
 TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_OneSheet_SatisfiedAtEvalPoints)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  double aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
+  double                      aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
   aSurf.Coefficients(aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD);
 
   for (double u = 0.0; u < 6.0; u += 1.0)
@@ -179,9 +183,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_OneSheet_SatisfiedAtEvalPoint
     {
       gp_Pnt aP = aSurf.EvalD0(u, v);
       double aX = aP.X(), aY = aP.Y(), aZ = aP.Z();
-      double aVal = aA1*aX*aX + aA2*aY*aY + aA3*aZ*aZ
-                  + 2.0*(aB1*aX*aY + aB2*aX*aZ + aB3*aY*aZ)
-                  + 2.0*(aC1*aX + aC2*aY + aC3*aZ) + aD;
+      double aVal = aA1 * aX * aX + aA2 * aY * aY + aA3 * aZ * aZ
+                    + 2.0 * (aB1 * aX * aY + aB2 * aX * aZ + aB3 * aY * aZ)
+                    + 2.0 * (aC1 * aX + aC2 * aY + aC3 * aZ) + aD;
       EXPECT_NEAR(aVal, 0.0, Precision::Intersection());
     }
   }
@@ -190,10 +194,12 @@ TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_OneSheet_SatisfiedAtEvalPoint
 // Test implicit equation at evaluated points for two-sheet
 TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_TwoSheets_SatisfiedAtEvalPoints)
 {
-  gp_Ax3 anAx3;
-  GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0,
-    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
-  double aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
+  gp_Ax3                      anAx3;
+  GeomEval_HyperboloidSurface aSurf(anAx3,
+                                    2.0,
+                                    3.0,
+                                    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
+  double                      aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD;
   aSurf.Coefficients(aA1, aA2, aA3, aB1, aB2, aB3, aC1, aC2, aC3, aD);
 
   for (double u = 0.0; u < 6.0; u += 1.0)
@@ -202,9 +208,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_TwoSheets_SatisfiedAtEvalPoin
     {
       gp_Pnt aP = aSurf.EvalD0(u, v);
       double aX = aP.X(), aY = aP.Y(), aZ = aP.Z();
-      double aVal = aA1*aX*aX + aA2*aY*aY + aA3*aZ*aZ
-                  + 2.0*(aB1*aX*aY + aB2*aX*aZ + aB3*aY*aZ)
-                  + 2.0*(aC1*aX + aC2*aY + aC3*aZ) + aD;
+      double aVal = aA1 * aX * aX + aA2 * aY * aY + aA3 * aZ * aZ
+                    + 2.0 * (aB1 * aX * aY + aB2 * aX * aZ + aB3 * aY * aZ)
+                    + 2.0 * (aC1 * aX + aC2 * aY + aC3 * aZ) + aD;
       EXPECT_NEAR(aVal, 0.0, Precision::Intersection());
     }
   }
@@ -213,9 +219,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_TwoSheets_SatisfiedAtEvalPoin
 // Test Transform/Transformed are not implemented.
 TEST(GeomEval_HyperboloidSurfaceTest, Transform_NotImplemented)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  gp_Trsf aTrsf;
+  gp_Trsf                     aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
   EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
@@ -225,9 +231,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, Transform_NotImplemented)
 // Test Copy produces independent identical object
 TEST(GeomEval_HyperboloidSurfaceTest, Copy_Independent)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  occ::handle<Geom_Geometry> aCopy = aSurf.Copy();
+  occ::handle<Geom_Geometry>  aCopy = aSurf.Copy();
   EXPECT_FALSE(aCopy.IsNull());
   const GeomEval_HyperboloidSurface* aCopySurf =
     dynamic_cast<const GeomEval_HyperboloidSurface*>(aCopy.get());
@@ -239,18 +245,18 @@ TEST(GeomEval_HyperboloidSurfaceTest, Copy_Independent)
 // Test DumpJson does not crash
 TEST(GeomEval_HyperboloidSurfaceTest, DumpJson_NoCrash)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  Standard_SStream aSS;
+  Standard_SStream            aSS;
   EXPECT_NO_THROW(aSurf.DumpJson(aSS));
 }
 
 // Test D2 consistency with finite differences of D1
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD2_ConsistentWithD1)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  const double aU = 0.7, aV = 0.5;
+  const double                aU = 0.7, aV = 0.5;
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(aU, aV);
 
@@ -277,9 +283,9 @@ TEST(GeomEval_HyperboloidSurfaceTest, EvalD2_ConsistentWithD1)
 // Test D3 consistency with finite differences of D2
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD3_ConsistentWithD2)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                      anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
-  const double aU = 1.0, aV = 0.3;
+  const double                aU = 1.0, aV = 0.3;
 
   Geom_Surface::ResD3 aD3 = aSurf.EvalD3(aU, aV);
 
@@ -310,10 +316,12 @@ TEST(GeomEval_HyperboloidSurfaceTest, EvalD3_ConsistentWithD2)
 // Test D2 consistency with finite differences of D1 for TwoSheets mode
 TEST(GeomEval_HyperboloidSurfaceTest, EvalD2_TwoSheets_ConsistentWithD1)
 {
-  gp_Ax3 anAx3;
-  GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0,
-    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
-  const double aU = 0.7, aV = 0.5;
+  gp_Ax3                      anAx3;
+  GeomEval_HyperboloidSurface aSurf(anAx3,
+                                    2.0,
+                                    3.0,
+                                    GeomEval_HyperboloidSurface::SheetMode::TwoSheets);
+  const double                aU = 0.7, aV = 0.5;
 
   Geom_Surface::ResD2 aD2 = aSurf.EvalD2(aU, aV);
 
