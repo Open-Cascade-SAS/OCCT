@@ -26,6 +26,9 @@
 #include <GeomAbs_Shape.hxx>
 #include <BSplSLib.hxx>
 
+#include <atomic>
+
+class BSplSLib_Cache;
 class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
@@ -630,9 +633,15 @@ protected:
             const NCollection_Array2<double>* theWeights);
 
 private:
+  //! Builds the evaluation cache for this Bezier surface.
+  //! @return the newly built cache handle
+  Handle(BSplSLib_Cache) buildEvalCache() const;
+
   NCollection_Array2<gp_Pnt>                 myPoles;
   NCollection_Array2<double>                 myWeights;
   occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  mutable Handle(BSplSLib_Cache)             myEvalCache;
+  mutable std::atomic<bool>                  myEvalCacheBuilding{false};
   bool                                       myURational     = false;
   bool                                       myVRational     = false;
   double                                     myUMaxDerivInv  = 0.0;

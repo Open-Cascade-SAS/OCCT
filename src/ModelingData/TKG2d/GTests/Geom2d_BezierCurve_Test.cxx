@@ -11,16 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
+#include <BSplCLib.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <gp_Trsf2d.hxx>
 #include <NCollection_Array1.hxx>
+#include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+
+#include <atomic>
+
+#include <gtest/gtest.h>
 
 class Geom2d_BezierCurve_Test : public ::testing::Test
 {
@@ -492,4 +494,52 @@ TEST_F(Geom2d_BezierCurve_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
   EXPECT_DOUBLE_EQ(aWeights(3), 1.0);
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+TEST_F(Geom2d_BezierCurve_Test, ParallelEvalD0_SameObject)
+{
+  const int        aNbSamples = 1000;
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbSamples, [&](int theIndex) {
+    const double aU      = static_cast<double>(theIndex) / (aNbSamples - 1);
+    gp_Pnt2d     aCached = myOriginalCurve->Value(aU);
+    gp_Pnt2d     aRef;
+    BSplCLib::D0(aU, myOriginalCurve->Poles(), myOriginalCurve->Weights(), aRef);
+    if (!aCached.IsEqual(aRef, Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
+}
+
+TEST(Geom2d_BezierCurve_ParallelTest, RationalCurve_ParallelEval)
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles(1) = gp_Pnt2d(0, 0);
+  aPoles(2) = gp_Pnt2d(1, 2);
+  aPoles(3) = gp_Pnt2d(3, 2);
+  aPoles(4) = gp_Pnt2d(4, 0);
+
+  NCollection_Array1<double> aWeights(1, 4);
+  aWeights(1) = 1.0;
+  aWeights(2) = 3.0;
+  aWeights(3) = 3.0;
+  aWeights(4) = 1.0;
+
+  occ::handle<Geom2d_BezierCurve> aCurve = new Geom2d_BezierCurve(aPoles, aWeights);
+
+  const int        aNbSamples = 1000;
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbSamples, [&](int theIndex) {
+    const double aU      = static_cast<double>(theIndex) / (aNbSamples - 1);
+    gp_Pnt2d     aCached = aCurve->Value(aU);
+    gp_Pnt2d     aRef;
+    BSplCLib::D0(aU, aCurve->Poles(), aCurve->Weights(), aRef);
+    if (!aCached.IsEqual(aRef, Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
 }

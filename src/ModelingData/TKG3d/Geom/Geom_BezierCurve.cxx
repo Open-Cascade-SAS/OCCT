@@ -24,9 +24,11 @@
 // Suppressed Swaps, added Init, removed typedefs
 
 #include <Geom_BezierCurve.hxx>
+
 #include "Geom_EvalRepCurveDesc.hxx"
 #include "Geom_EvalRepUtils.pxx"
 #include <Geom_Geometry.hxx>
+#include <BSplCLib_Cache.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -45,6 +47,16 @@
 #include <array>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
+
+//=================================================================================================
+
+Handle(BSplCLib_Cache) Geom_BezierCurve::buildEvalCache() const
+{
+  Handle(BSplCLib_Cache) aCache =
+    new BSplCLib_Cache(Degree(), false, KnotSequence(), myPoles, Weights());
+  aCache->BuildCache(0.0, KnotSequence(), myPoles, Weights());
+  return aCache;
+}
 
 //=================================================================================================
 
@@ -329,6 +341,7 @@ void Geom_BezierCurve::Reverse()
       myWeights(nbpoles - i + 1) = w;
     }
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -377,6 +390,7 @@ void Geom_BezierCurve::Segment(const double U1, const double U2)
     PLib::Trimming(U1, U2, coeffs, PLib::NoWeights());
     PLib::CoefficientsPoles(coeffs, PLib::NoWeights(), myPoles, PLib::NoWeights());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -393,6 +407,7 @@ void Geom_BezierCurve::SetPole(const int Index, const gp_Pnt& P)
   {
     myClosed = (myPoles(1).Distance(myPoles(NbPoles())) <= Precision::Confusion());
   }
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -437,6 +452,7 @@ void Geom_BezierCurve::SetWeight(const int Index, const double Weight)
   }
   else
     myRational = true;
+  myEvalCache.Nullify();
   myMaxDerivInvOk = false;
 }
 
@@ -492,8 +508,25 @@ gp_Pnt Geom_BezierCurve::EvalD0(const double U) const
     return aEvalRepResult;
   }
 
+  Handle(BSplCLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      gp_Pnt P;
+      BSplCLib::D0(U, Poles(), Weights(), P);
+      return P;
+    }
+  }
   gp_Pnt P;
-  BSplCLib::D0(U, Poles(), Weights(), P);
+  aCache->D0(U, P);
   return P;
 }
 
@@ -507,8 +540,25 @@ Geom_Curve::ResD1 Geom_BezierCurve::EvalD1(const double U) const
     return aEvalRepResult;
   }
 
+  Handle(BSplCLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      Geom_Curve::ResD1 aResult;
+      BSplCLib::D1(U, Poles(), Weights(), aResult.Point, aResult.D1);
+      return aResult;
+    }
+  }
   Geom_Curve::ResD1 aResult;
-  BSplCLib::D1(U, Poles(), Weights(), aResult.Point, aResult.D1);
+  aCache->D1(U, aResult.Point, aResult.D1);
   return aResult;
 }
 
@@ -522,8 +572,25 @@ Geom_Curve::ResD2 Geom_BezierCurve::EvalD2(const double U) const
     return aEvalRepResult;
   }
 
+  Handle(BSplCLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      Geom_Curve::ResD2 aResult;
+      BSplCLib::D2(U, Poles(), Weights(), aResult.Point, aResult.D1, aResult.D2);
+      return aResult;
+    }
+  }
   Geom_Curve::ResD2 aResult;
-  BSplCLib::D2(U, Poles(), Weights(), aResult.Point, aResult.D1, aResult.D2);
+  aCache->D2(U, aResult.Point, aResult.D1, aResult.D2);
   return aResult;
 }
 
@@ -537,8 +604,25 @@ Geom_Curve::ResD3 Geom_BezierCurve::EvalD3(const double U) const
     return aEvalRepResult;
   }
 
+  Handle(BSplCLib_Cache) aCache = myEvalCache;
+  if (aCache.IsNull())
+  {
+    bool anExpected = false;
+    if (myEvalCacheBuilding.compare_exchange_strong(anExpected, true))
+    {
+      aCache      = buildEvalCache();
+      myEvalCache = aCache;
+      myEvalCacheBuilding.store(false);
+    }
+    else
+    {
+      Geom_Curve::ResD3 aResult;
+      BSplCLib::D3(U, Poles(), Weights(), aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+      return aResult;
+    }
+  }
   Geom_Curve::ResD3 aResult;
-  BSplCLib::D3(U, Poles(), Weights(), aResult.Point, aResult.D1, aResult.D2, aResult.D3);
+  aCache->D3(U, aResult.Point, aResult.D1, aResult.D2, aResult.D3);
   return aResult;
 }
 
@@ -660,6 +744,7 @@ void Geom_BezierCurve::Transform(const gp_Trsf& T)
 
   for (int i = 1; i <= nbpoles; i++)
     myPoles(i).Transform(T);
+  myEvalCache.Nullify();
   ClearEvalRepresentation();
   myMaxDerivInvOk = false;
 }
@@ -722,6 +807,7 @@ void Geom_BezierCurve::init(const NCollection_Array1<gp_Pnt>& thePoles,
 
   myMaxDerivInv   = 0.0;
   myMaxDerivInvOk = false;
+  myEvalCache.Nullify();
   ClearEvalRepresentation();
 }
 

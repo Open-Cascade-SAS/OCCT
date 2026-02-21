@@ -11,16 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <gtest/gtest.h>
-
-#include <cmath>
-
+#include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
+#include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+
+#include <atomic>
+
+#include <gtest/gtest.h>
 
 class Geom_BezierCurve_Test : public ::testing::Test
 {
@@ -523,4 +525,93 @@ TEST_F(Geom_BezierCurve_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(2), 2.0);
   EXPECT_DOUBLE_EQ(aWeights(3), 1.0);
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+TEST_F(Geom_BezierCurve_Test, ParallelEvalD0_SameObject)
+{
+  const int        aNbSamples = 1000;
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbSamples, [&](int theIndex) {
+    const double aU      = static_cast<double>(theIndex) / (aNbSamples - 1);
+    gp_Pnt       aCached = myOriginalCurve->Value(aU);
+    gp_Pnt       aRef;
+    BSplCLib::D0(aU, myOriginalCurve->Poles(), myOriginalCurve->Weights(), aRef);
+    if (!aCached.IsEqual(aRef, Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
+}
+
+TEST_F(Geom_BezierCurve_Test, ParallelEvalD1_SameObject)
+{
+  const int        aNbSamples = 1000;
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbSamples, [&](int theIndex) {
+    const double aU = static_cast<double>(theIndex) / (aNbSamples - 1);
+    gp_Pnt       aPnt;
+    gp_Vec       aV1;
+    myOriginalCurve->D1(aU, aPnt, aV1);
+    gp_Pnt aRefPnt;
+    gp_Vec aRefV1;
+    BSplCLib::D1(aU, myOriginalCurve->Poles(), myOriginalCurve->Weights(), aRefPnt, aRefV1);
+    if (!aPnt.IsEqual(aRefPnt, Precision::Confusion())
+        || !aV1.IsEqual(aRefV1, Precision::Confusion(), Precision::Angular()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
+}
+
+TEST_F(Geom_BezierCurve_Test, ParallelEvalD2_SameObject)
+{
+  const int        aNbSamples = 1000;
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbSamples, [&](int theIndex) {
+    const double aU = static_cast<double>(theIndex) / (aNbSamples - 1);
+    gp_Pnt       aPnt;
+    gp_Vec       aV1, aV2;
+    myOriginalCurve->D2(aU, aPnt, aV1, aV2);
+    gp_Pnt aRefPnt;
+    gp_Vec aRefV1, aRefV2;
+    BSplCLib::D2(aU, myOriginalCurve->Poles(), myOriginalCurve->Weights(), aRefPnt, aRefV1, aRefV2);
+    if (!aPnt.IsEqual(aRefPnt, Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
+}
+
+TEST(Geom_BezierCurve_ParallelTest, RationalCurve_ParallelEval)
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1) = gp_Pnt(0, 0, 0);
+  aPoles(2) = gp_Pnt(1, 2, 0);
+  aPoles(3) = gp_Pnt(3, 2, 0);
+  aPoles(4) = gp_Pnt(4, 0, 0);
+
+  NCollection_Array1<double> aWeights(1, 4);
+  aWeights(1) = 1.0;
+  aWeights(2) = 3.0;
+  aWeights(3) = 3.0;
+  aWeights(4) = 1.0;
+
+  occ::handle<Geom_BezierCurve> aCurve = new Geom_BezierCurve(aPoles, aWeights);
+
+  const int        aNbSamples = 1000;
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbSamples, [&](int theIndex) {
+    const double aU      = static_cast<double>(theIndex) / (aNbSamples - 1);
+    gp_Pnt       aCached = aCurve->Value(aU);
+    gp_Pnt       aRef;
+    BSplCLib::D0(aU, aCurve->Poles(), aCurve->Weights(), aRef);
+    if (!aCached.IsEqual(aRef, Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
 }

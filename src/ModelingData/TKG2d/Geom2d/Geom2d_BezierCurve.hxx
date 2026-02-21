@@ -25,6 +25,9 @@
 #include <GeomAbs_Shape.hxx>
 #include <BSplCLib.hxx>
 
+#include <atomic>
+
+class BSplCLib_Cache;
 class gp_Trsf2d;
 class Geom2d_Geometry;
 
@@ -340,9 +343,15 @@ protected:
             const NCollection_Array1<double>*   theWeights);
 
 private:
+  //! Builds the evaluation cache for this Bezier curve.
+  //! @return the newly built cache handle
+  Handle(BSplCLib_Cache) buildEvalCache() const;
+
   NCollection_Array1<gp_Pnt2d>               myPoles;
   NCollection_Array1<double>                 myWeights;
   occ::handle<Geom2d_EvalRepCurveDesc::Base> myEvalRep;
+  mutable Handle(BSplCLib_Cache)             myEvalCache;
+  mutable std::atomic<bool>                  myEvalCacheBuilding{false};
   bool                                       myRational      = false;
   bool                                       myClosed        = false;
   double                                     myMaxDerivInv   = 0.0;
