@@ -20,6 +20,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -163,8 +164,8 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Properties)
   EXPECT_FALSE(aSurf.IsVClosed());
   EXPECT_FALSE(aSurf.IsUPeriodic());
   EXPECT_FALSE(aSurf.IsVPeriodic());
-  EXPECT_TRUE(aSurf.UIso(0.0).IsNull());
-  EXPECT_TRUE(aSurf.VIso(0.0).IsNull());
+  EXPECT_THROW(aSurf.UIso(0.0), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VIso(0.0), Standard_NotImplemented);
 }
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Transform_PreservesEvaluation)

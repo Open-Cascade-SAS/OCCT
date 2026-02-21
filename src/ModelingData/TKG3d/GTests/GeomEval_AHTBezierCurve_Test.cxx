@@ -22,6 +22,7 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -143,6 +144,13 @@ TEST(GeomEval_AHTBezierCurveTest, Periodicity)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
   EXPECT_FALSE(aCurve.IsPeriodic());
+}
+
+TEST(GeomEval_AHTBezierCurveTest, Reverse_NotImplemented)
+{
+  GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
 // Test rational construction

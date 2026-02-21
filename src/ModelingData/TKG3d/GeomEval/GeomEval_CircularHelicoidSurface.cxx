@@ -19,6 +19,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_CircularHelicoidSurface, Geom_ElementarySurface)
@@ -115,14 +116,14 @@ bool GeomEval_CircularHelicoidSurface::IsVPeriodic() const
 
 occ::handle<Geom_Curve> GeomEval_CircularHelicoidSurface::UIso(const double /*U*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::UIso");
 }
 
 //==================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_CircularHelicoidSurface::VIso(const double /*V*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::VIso");
 }
 
 //==================================================================================================

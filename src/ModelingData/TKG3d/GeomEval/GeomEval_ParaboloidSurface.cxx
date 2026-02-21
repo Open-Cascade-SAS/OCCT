@@ -20,6 +20,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -117,14 +118,14 @@ bool GeomEval_ParaboloidSurface::IsVPeriodic() const
 
 occ::handle<Geom_Curve> GeomEval_ParaboloidSurface::UIso(const double /*U*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_ParaboloidSurface::UIso");
 }
 
 //==================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_ParaboloidSurface::VIso(const double /*V*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_ParaboloidSurface::VIso");
 }
 
 //==================================================================================================

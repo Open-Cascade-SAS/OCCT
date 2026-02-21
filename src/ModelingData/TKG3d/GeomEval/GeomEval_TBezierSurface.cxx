@@ -19,6 +19,7 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_TBezierSurface, Geom_BoundedSurface)
@@ -172,84 +173,30 @@ bool GeomEval_TBezierSurface::IsRational() const
 
 void GeomEval_TBezierSurface::UReverse()
 {
-  const int aLR = myPoles.LowerRow();
-  const int aUR = myPoles.UpperRow();
-  const int aLC = myPoles.LowerCol();
-  const int aUC = myPoles.UpperCol();
-  for (int i = aLR, i2 = aUR; i < i2; ++i, --i2)
-  {
-    for (int j = aLC; j <= aUC; ++j)
-    {
-      gp_Pnt aTmp = myPoles.Value(i, j);
-      myPoles.SetValue(i, j, myPoles.Value(i2, j));
-      myPoles.SetValue(i2, j, aTmp);
-    }
-  }
-  if (myRational)
-  {
-    const int aWLR = myWeights.LowerRow();
-    const int aWUR = myWeights.UpperRow();
-    const int aWLC = myWeights.LowerCol();
-    const int aWUC = myWeights.UpperCol();
-    for (int i = aWLR, i2 = aWUR; i < i2; ++i, --i2)
-    {
-      for (int j = aWLC; j <= aWUC; ++j)
-      {
-        double aTmpW = myWeights.Value(i, j);
-        myWeights.SetValue(i, j, myWeights.Value(i2, j));
-        myWeights.SetValue(i2, j, aTmpW);
-      }
-    }
-  }
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::UReverse");
 }
 
 //==================================================================================================
 
 double GeomEval_TBezierSurface::UReversedParameter(const double U) const
 {
-  return M_PI / myAlphaU - U;
+  (void)U;
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::UReversedParameter");
 }
 
 //==================================================================================================
 
 void GeomEval_TBezierSurface::VReverse()
 {
-  const int aLR = myPoles.LowerRow();
-  const int aUR = myPoles.UpperRow();
-  const int aLC = myPoles.LowerCol();
-  const int aUC = myPoles.UpperCol();
-  for (int j = aLC, j2 = aUC; j < j2; ++j, --j2)
-  {
-    for (int i = aLR; i <= aUR; ++i)
-    {
-      gp_Pnt aTmp = myPoles.Value(i, j);
-      myPoles.SetValue(i, j, myPoles.Value(i, j2));
-      myPoles.SetValue(i, j2, aTmp);
-    }
-  }
-  if (myRational)
-  {
-    const int aWLR = myWeights.LowerRow();
-    const int aWUR = myWeights.UpperRow();
-    const int aWLC = myWeights.LowerCol();
-    const int aWUC = myWeights.UpperCol();
-    for (int j = aWLC, j2 = aWUC; j < j2; ++j, --j2)
-    {
-      for (int i = aWLR; i <= aWUR; ++i)
-      {
-        double aTmpW = myWeights.Value(i, j);
-        myWeights.SetValue(i, j, myWeights.Value(i, j2));
-        myWeights.SetValue(i, j2, aTmpW);
-      }
-    }
-  }
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::VReverse");
 }
 
 //==================================================================================================
 
 double GeomEval_TBezierSurface::VReversedParameter(const double V) const
 {
-  return M_PI / myAlphaV - V;
+  (void)V;
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::VReversedParameter");
 }
 
 //==================================================================================================
@@ -335,14 +282,14 @@ bool GeomEval_TBezierSurface::IsCNv(int /*N*/) const
 
 occ::handle<Geom_Curve> GeomEval_TBezierSurface::UIso(const double /*U*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::UIso");
 }
 
 //==================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_TBezierSurface::VIso(const double /*V*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::VIso");
 }
 
 //==================================================================================================

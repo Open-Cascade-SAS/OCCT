@@ -17,6 +17,7 @@
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -54,16 +55,15 @@ double Geom2dEval_CircleInvoluteCurve::Radius() const
 
 void Geom2dEval_CircleInvoluteCurve::Reverse()
 {
-  gp_Dir2d aDir = myPosition.Direction();
-  aDir.Reverse();
-  myPosition.SetDirection(aDir);
+  throw Standard_NotImplemented("Geom2dEval_CircleInvoluteCurve::Reverse");
 }
 
 //==================================================================================================
 
 double Geom2dEval_CircleInvoluteCurve::ReversedParameter(const double U) const
 {
-  return -U;
+  (void)U;
+  throw Standard_NotImplemented("Geom2dEval_CircleInvoluteCurve::ReversedParameter");
 }
 
 //==================================================================================================

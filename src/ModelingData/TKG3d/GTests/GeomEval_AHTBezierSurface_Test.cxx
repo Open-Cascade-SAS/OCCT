@@ -17,6 +17,7 @@
 #include <gp_Vec.hxx>
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -118,6 +119,22 @@ TEST(GeomEval_AHTBezierSurfaceTest, Periodicity)
   EXPECT_FALSE(aSurf.IsVPeriodic());
   EXPECT_FALSE(aSurf.IsUClosed());
   EXPECT_FALSE(aSurf.IsVClosed());
+}
+
+TEST(GeomEval_AHTBezierSurfaceTest, Reverse_NotImplemented)
+{
+  GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
+  EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.UReversedParameter(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReversedParameter(0.5), Standard_NotImplemented);
+}
+
+TEST(GeomEval_AHTBezierSurfaceTest, Iso_NotImplemented)
+{
+  GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
+  EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
 // Test Transform preserves evaluation

@@ -23,6 +23,7 @@
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -139,6 +140,13 @@ TEST(GeomEval_TBezierCurveTest, PeriodicityAndClosure)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
   EXPECT_FALSE(aCurve.IsPeriodic());
+}
+
+TEST(GeomEval_TBezierCurveTest, Reverse_NotImplemented)
+{
+  GeomEval_TBezierCurve aCurve = createSimpleCurve();
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
 // Test rational construction

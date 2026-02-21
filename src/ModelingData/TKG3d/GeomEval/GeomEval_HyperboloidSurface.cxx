@@ -15,6 +15,7 @@
 #include <Geom_UndefinedDerivative.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
@@ -35,7 +36,7 @@ GeomEval_HyperboloidSurface::GeomEval_HyperboloidSurface(const gp_Ax3& thePositi
       myR2(theR2),
       myMode(theMode)
 {
-  if (theR1 < 0.0 || theR2 < 0.0)
+  if (theR1 <= 0.0 || theR2 <= 0.0)
   {
     throw Standard_ConstructionError();
   }
@@ -67,7 +68,7 @@ GeomEval_HyperboloidSurface::SheetMode GeomEval_HyperboloidSurface::Mode() const
 
 void GeomEval_HyperboloidSurface::SetR1(double theR1)
 {
-  if (theR1 < 0.0)
+  if (theR1 <= 0.0)
   {
     throw Standard_ConstructionError();
   }
@@ -78,7 +79,7 @@ void GeomEval_HyperboloidSurface::SetR1(double theR1)
 
 void GeomEval_HyperboloidSurface::SetR2(double theR2)
 {
-  if (theR2 < 0.0)
+  if (theR2 <= 0.0)
   {
     throw Standard_ConstructionError();
   }
@@ -151,14 +152,14 @@ bool GeomEval_HyperboloidSurface::IsVPeriodic() const
 
 occ::handle<Geom_Curve> GeomEval_HyperboloidSurface::UIso(const double /*U*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::UIso");
 }
 
 //==================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_HyperboloidSurface::VIso(const double /*V*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::VIso");
 }
 
 //==================================================================================================

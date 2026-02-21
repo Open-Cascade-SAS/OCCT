@@ -19,7 +19,6 @@ set(OCCT_TKG3d_GTests_FILES
   GeomEval_CircularHelicoidSurface_Test.cxx
   GeomEval_CircularHelixCurve_Test.cxx
   GeomEval_EllipsoidSurface_Test.cxx
-  GeomEval_GregorySurface_Test.cxx
   GeomEval_HypParaboloidSurface_Test.cxx
   GeomEval_HyperboloidSurface_Test.cxx
   GeomEval_ParaboloidSurface_Test.cxx

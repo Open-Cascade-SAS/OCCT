@@ -17,6 +17,7 @@
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -77,17 +78,15 @@ double Geom2dEval_SineWaveCurve::Phase() const
 
 void Geom2dEval_SineWaveCurve::Reverse()
 {
-  gp_Dir2d aDir = myPosition.Direction();
-  aDir.Reverse();
-  myPosition.SetDirection(aDir);
-  myPhase = -myPhase;
+  throw Standard_NotImplemented("Geom2dEval_SineWaveCurve::Reverse");
 }
 
 //==================================================================================================
 
 double Geom2dEval_SineWaveCurve::ReversedParameter(const double U) const
 {
-  return -U;
+  (void)U;
+  throw Standard_NotImplemented("Geom2dEval_SineWaveCurve::ReversedParameter");
 }
 
 //==================================================================================================
@@ -115,14 +114,14 @@ bool Geom2dEval_SineWaveCurve::IsClosed() const
 
 bool Geom2dEval_SineWaveCurve::IsPeriodic() const
 {
-  return true;
+  return false;
 }
 
 //==================================================================================================
 
 double Geom2dEval_SineWaveCurve::Period() const
 {
-  return 2.0 * M_PI / myOmega;
+  return Geom2d_Curve::Period();
 }
 
 //==================================================================================================

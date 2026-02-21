@@ -19,6 +19,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -211,13 +212,12 @@ TEST(GeomEval_CircularHelixCurveTest, Copy_Independent)
   EXPECT_NEAR(aCopyCurve->Pitch(), 10.0, Precision::Confusion());
 }
 
-TEST(GeomEval_CircularHelixCurveTest, Reverse_NegatesPitch)
+TEST(GeomEval_CircularHelixCurveTest, Reverse_NotImplemented)
 {
   gp_Ax2 anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
-  aCurve.Reverse();
-  EXPECT_NEAR(aCurve.Pitch(), -10.0, Precision::Confusion());
-  EXPECT_NEAR(aCurve.ReversedParameter(3.0), -3.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(3.0), Standard_NotImplemented);
 }
 
 TEST(GeomEval_CircularHelixCurveTest, Properties)

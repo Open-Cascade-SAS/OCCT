@@ -17,6 +17,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -186,33 +187,15 @@ gp_Pnt GeomEval_AHTBezierCurve::EndPoint() const
 
 void GeomEval_AHTBezierCurve::Reverse()
 {
-  // Reverse the poles array.
-  const int aLower = myPoles.Lower();
-  const int aUpper = myPoles.Upper();
-  for (int i = aLower, j = aUpper; i < j; ++i, --j)
-  {
-    gp_Pnt aTmp = myPoles.Value(i);
-    myPoles.ChangeValue(i) = myPoles.Value(j);
-    myPoles.ChangeValue(j) = aTmp;
-  }
-  if (myRational)
-  {
-    const int aWLower = myWeights.Lower();
-    const int aWUpper = myWeights.Upper();
-    for (int i = aWLower, j = aWUpper; i < j; ++i, --j)
-    {
-      double aTmp = myWeights.Value(i);
-      myWeights.ChangeValue(i) = myWeights.Value(j);
-      myWeights.ChangeValue(j) = aTmp;
-    }
-  }
+  throw Standard_NotImplemented("GeomEval_AHTBezierCurve::Reverse");
 }
 
 //==================================================================================================
 
 double GeomEval_AHTBezierCurve::ReversedParameter(const double U) const
 {
-  return 1.0 - U;
+  (void)U;
+  throw Standard_NotImplemented("GeomEval_AHTBezierCurve::ReversedParameter");
 }
 
 //==================================================================================================

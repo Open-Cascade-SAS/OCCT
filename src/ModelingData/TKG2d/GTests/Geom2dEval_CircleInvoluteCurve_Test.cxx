@@ -18,6 +18,7 @@
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -119,6 +120,14 @@ TEST(Geom2dEval_CircleInvoluteCurveTest, Properties)
   EXPECT_EQ(aCurve.Continuity(), GeomAbs_CN);
   EXPECT_NEAR(aCurve.FirstParameter(), 0.0, Precision::Confusion());
   EXPECT_TRUE(Precision::IsInfinite(aCurve.LastParameter()));
+}
+
+TEST(Geom2dEval_CircleInvoluteCurveTest, Reverse_NotImplemented)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_CircleInvoluteCurve aCurve(anAx2d, 1.0);
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
 TEST(Geom2dEval_CircleInvoluteCurveTest, Copy_Independent)

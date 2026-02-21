@@ -17,6 +17,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
@@ -63,17 +64,15 @@ double GeomEval_CircularHelixCurve::Pitch() const
 
 void GeomEval_CircularHelixCurve::Reverse()
 {
-  gp_Dir aXDir = myPosition.XDirection();
-  aXDir.Reverse();
-  myPosition.SetXDirection(aXDir);
-  myPitch = -myPitch;
+  throw Standard_NotImplemented("GeomEval_CircularHelixCurve::Reverse");
 }
 
 //==================================================================================================
 
 double GeomEval_CircularHelixCurve::ReversedParameter(const double U) const
 {
-  return -U;
+  (void)U;
+  throw Standard_NotImplemented("GeomEval_CircularHelixCurve::ReversedParameter");
 }
 
 //==================================================================================================

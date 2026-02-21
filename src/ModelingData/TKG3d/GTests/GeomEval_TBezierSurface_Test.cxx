@@ -21,6 +21,7 @@
 #include <NCollection_Array2.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -152,6 +153,22 @@ TEST(GeomEval_TBezierSurfaceTest, Periodicity)
   GeomEval_TBezierSurface aSurf = createSimpleSurface();
   EXPECT_FALSE(aSurf.IsUPeriodic());
   EXPECT_FALSE(aSurf.IsVPeriodic());
+}
+
+TEST(GeomEval_TBezierSurfaceTest, Reverse_NotImplemented)
+{
+  GeomEval_TBezierSurface aSurf = createSimpleSurface();
+  EXPECT_THROW(aSurf.UReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReverse(), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.UReversedParameter(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VReversedParameter(0.5), Standard_NotImplemented);
+}
+
+TEST(GeomEval_TBezierSurfaceTest, Iso_NotImplemented)
+{
+  GeomEval_TBezierSurface aSurf = createSimpleSurface();
+  EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
 // Test Transform preserves evaluation

@@ -18,6 +18,7 @@
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -118,4 +119,12 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, DumpJson_NoCrash)
   Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
   Standard_SStream aSS;
   EXPECT_NO_THROW(aCurve.DumpJson(aSS));
+}
+
+TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Reverse_NotImplemented)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }

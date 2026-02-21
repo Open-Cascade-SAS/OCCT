@@ -18,6 +18,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -103,6 +104,14 @@ TEST(GeomEval_ParaboloidSurfaceTest, Bounds_Periodicity)
   EXPECT_TRUE(aSurf.IsUClosed());
   EXPECT_FALSE(aSurf.IsVPeriodic());
   EXPECT_FALSE(aSurf.IsVClosed());
+}
+
+TEST(GeomEval_ParaboloidSurfaceTest, Iso_NotImplemented)
+{
+  gp_Ax3 anAx3;
+  GeomEval_ParaboloidSurface aSurf(anAx3, 1.0);
+  EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
 // Test implicit equation at evaluated points

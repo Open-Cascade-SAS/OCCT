@@ -17,6 +17,7 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_EllipsoidSurface, Geom_ElementarySurface)
@@ -148,14 +149,14 @@ bool GeomEval_EllipsoidSurface::IsVPeriodic() const
 
 occ::handle<Geom_Curve> GeomEval_EllipsoidSurface::UIso(const double /*U*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::UIso");
 }
 
 //==================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_EllipsoidSurface::VIso(const double /*V*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::VIso");
 }
 
 //==================================================================================================

@@ -18,6 +18,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -53,9 +54,19 @@ TEST(GeomEval_HyperboloidSurfaceTest, Construction_ValidParams_TwoSheets)
 TEST(GeomEval_HyperboloidSurfaceTest, Construction_InvalidRadii_Throws)
 {
   gp_Ax3 anAx3;
+  EXPECT_THROW(GeomEval_HyperboloidSurface(anAx3, 0.0, 1.0), Standard_ConstructionError);
+  EXPECT_THROW(GeomEval_HyperboloidSurface(anAx3, 1.0, 0.0), Standard_ConstructionError);
   EXPECT_THROW(GeomEval_HyperboloidSurface(anAx3, -1.0, 1.0), Standard_ConstructionError);
   EXPECT_THROW(GeomEval_HyperboloidSurface(anAx3, 1.0, -1.0), Standard_ConstructionError);
   EXPECT_THROW(GeomEval_HyperboloidSurface(anAx3, -2.0, -3.0), Standard_ConstructionError);
+}
+
+TEST(GeomEval_HyperboloidSurfaceTest, Setters_ZeroRadii_Throw)
+{
+  gp_Ax3 anAx3;
+  GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
+  EXPECT_THROW(aSurf.SetR1(0.0), Standard_ConstructionError);
+  EXPECT_THROW(aSurf.SetR2(0.0), Standard_ConstructionError);
 }
 
 // Test EvalD0 at u=0, v=0 for one-sheet: P = O + R1*cosh(0)*cos(0)*X + R1*cosh(0)*sin(0)*Y + R2*sinh(0)*Z
@@ -134,6 +145,14 @@ TEST(GeomEval_HyperboloidSurfaceTest, Bounds_Periodicity)
   EXPECT_TRUE(aSurf.IsUClosed());
   EXPECT_FALSE(aSurf.IsVPeriodic());
   EXPECT_FALSE(aSurf.IsVClosed());
+}
+
+TEST(GeomEval_HyperboloidSurfaceTest, Iso_NotImplemented)
+{
+  gp_Ax3 anAx3;
+  GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
+  EXPECT_THROW(aSurf.UIso(0.5), Standard_NotImplemented);
+  EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
 // Test implicit equation at evaluated points for one-sheet

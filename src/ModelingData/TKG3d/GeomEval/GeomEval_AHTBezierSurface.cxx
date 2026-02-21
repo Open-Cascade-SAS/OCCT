@@ -18,6 +18,7 @@
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_AHTBezierSurface, Geom_BoundedSurface)
@@ -320,84 +321,30 @@ bool GeomEval_AHTBezierSurface::IsVRational() const
 
 void GeomEval_AHTBezierSurface::UReverse()
 {
-  const int aLR = myPoles.LowerRow();
-  const int aUR = myPoles.UpperRow();
-  const int aLC = myPoles.LowerCol();
-  const int aUC = myPoles.UpperCol();
-  for (int j = aLC; j <= aUC; ++j)
-  {
-    for (int i = aLR, k = aUR; i < k; ++i, --k)
-    {
-      gp_Pnt aTmp = myPoles.Value(i, j);
-      myPoles.ChangeValue(i, j) = myPoles.Value(k, j);
-      myPoles.ChangeValue(k, j) = aTmp;
-    }
-  }
-  if (myURational || myVRational)
-  {
-    const int aWLR = myWeights.LowerRow();
-    const int aWUR = myWeights.UpperRow();
-    const int aWLC = myWeights.LowerCol();
-    const int aWUC = myWeights.UpperCol();
-    for (int j = aWLC; j <= aWUC; ++j)
-    {
-      for (int i = aWLR, k = aWUR; i < k; ++i, --k)
-      {
-        double aTmp = myWeights.Value(i, j);
-        myWeights.ChangeValue(i, j) = myWeights.Value(k, j);
-        myWeights.ChangeValue(k, j) = aTmp;
-      }
-    }
-  }
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::UReverse");
 }
 
 //==================================================================================================
 
 void GeomEval_AHTBezierSurface::VReverse()
 {
-  const int aLR = myPoles.LowerRow();
-  const int aUR = myPoles.UpperRow();
-  const int aLC = myPoles.LowerCol();
-  const int aUC = myPoles.UpperCol();
-  for (int i = aLR; i <= aUR; ++i)
-  {
-    for (int j = aLC, k = aUC; j < k; ++j, --k)
-    {
-      gp_Pnt aTmp = myPoles.Value(i, j);
-      myPoles.ChangeValue(i, j) = myPoles.Value(i, k);
-      myPoles.ChangeValue(i, k) = aTmp;
-    }
-  }
-  if (myURational || myVRational)
-  {
-    const int aWLR = myWeights.LowerRow();
-    const int aWUR = myWeights.UpperRow();
-    const int aWLC = myWeights.LowerCol();
-    const int aWUC = myWeights.UpperCol();
-    for (int i = aWLR; i <= aWUR; ++i)
-    {
-      for (int j = aWLC, k = aWUC; j < k; ++j, --k)
-      {
-        double aTmp = myWeights.Value(i, j);
-        myWeights.ChangeValue(i, j) = myWeights.Value(i, k);
-        myWeights.ChangeValue(i, k) = aTmp;
-      }
-    }
-  }
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::VReverse");
 }
 
 //==================================================================================================
 
 double GeomEval_AHTBezierSurface::UReversedParameter(const double U) const
 {
-  return 1.0 - U;
+  (void)U;
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::UReversedParameter");
 }
 
 //==================================================================================================
 
 double GeomEval_AHTBezierSurface::VReversedParameter(const double V) const
 {
-  return 1.0 - V;
+  (void)V;
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::VReversedParameter");
 }
 
 //==================================================================================================
@@ -443,14 +390,14 @@ bool GeomEval_AHTBezierSurface::IsVPeriodic() const
 
 occ::handle<Geom_Curve> GeomEval_AHTBezierSurface::UIso(const double /*U*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::UIso");
 }
 
 //==================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_AHTBezierSurface::VIso(const double /*V*/) const
 {
-  return nullptr;
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::VIso");
 }
 
 //==================================================================================================

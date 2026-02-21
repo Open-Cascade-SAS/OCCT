@@ -18,6 +18,7 @@
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -393,13 +394,12 @@ TEST(Geom2dEval_AHTBezierCurveTest, Construction_NonPositiveWeight_Throws)
                Standard_ConstructionError);
 }
 
-// Test ReversedParameter
-TEST(Geom2dEval_AHTBezierCurveTest, ReversedParameter)
+// Reverse semantics are intentionally unsupported for this evaluator.
+TEST(Geom2dEval_AHTBezierCurveTest, Reverse_NotImplemented)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
-  EXPECT_NEAR(aCurve.ReversedParameter(0.0), 1.0, Precision::Confusion());
-  EXPECT_NEAR(aCurve.ReversedParameter(1.0), 0.0, Precision::Confusion());
-  EXPECT_NEAR(aCurve.ReversedParameter(0.3), 0.7, Precision::Confusion());
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
 // Test EvalD2 consistency: compare D2 vs finite difference of D1

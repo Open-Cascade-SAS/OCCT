@@ -12,8 +12,6 @@ set(OCCT_GeomEval_FILES
   GeomEval_CircularHelixCurve.hxx
   GeomEval_EllipsoidSurface.cxx
   GeomEval_EllipsoidSurface.hxx
-  GeomEval_GregorySurface.cxx
-  GeomEval_GregorySurface.hxx
   GeomEval_HypParaboloidSurface.cxx
   GeomEval_HypParaboloidSurface.hxx
   GeomEval_HyperboloidSurface.cxx

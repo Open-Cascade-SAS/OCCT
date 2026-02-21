@@ -19,6 +19,7 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_TBezierCurve, Geom2d_BoundedCurve)
@@ -140,32 +141,15 @@ gp_Pnt2d Geom2dEval_TBezierCurve::EndPoint() const
 
 void Geom2dEval_TBezierCurve::Reverse()
 {
-  const int aLower = myPoles.Lower();
-  const int aUpper = myPoles.Upper();
-  for (int i = aLower, j = aUpper; i < j; ++i, --j)
-  {
-    gp_Pnt2d aTmp = myPoles.Value(i);
-    myPoles.SetValue(i, myPoles.Value(j));
-    myPoles.SetValue(j, aTmp);
-  }
-  if (myRational)
-  {
-    const int aWLower = myWeights.Lower();
-    const int aWUpper = myWeights.Upper();
-    for (int i = aWLower, j = aWUpper; i < j; ++i, --j)
-    {
-      double aTmpW = myWeights.Value(i);
-      myWeights.SetValue(i, myWeights.Value(j));
-      myWeights.SetValue(j, aTmpW);
-    }
-  }
+  throw Standard_NotImplemented("Geom2dEval_TBezierCurve::Reverse");
 }
 
 //==================================================================================================
 
 double Geom2dEval_TBezierCurve::ReversedParameter(const double U) const
 {
-  return M_PI / myAlpha - U;
+  (void)U;
+  throw Standard_NotImplemented("Geom2dEval_TBezierCurve::ReversedParameter");
 }
 
 //==================================================================================================

@@ -18,6 +18,8 @@
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
+#include <Standard_NoSuchObject.hxx>
+#include <Standard_NotImplemented.hxx>
 #include <Standard_SStream.hxx>
 
 #include <gtest/gtest.h>
@@ -66,8 +68,16 @@ TEST(Geom2dEval_SineWaveCurveTest, IsPeriodic)
 {
   gp_Ax2d anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
-  EXPECT_TRUE(aCurve.IsPeriodic());
-  EXPECT_NEAR(aCurve.Period(), 2.0 * M_PI / 3.0, Precision::Confusion());
+  EXPECT_FALSE(aCurve.IsPeriodic());
+  EXPECT_THROW(aCurve.Period(), Standard_NoSuchObject);
+}
+
+TEST(Geom2dEval_SineWaveCurveTest, Reverse_NotImplemented)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
+  EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
+  EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
 TEST(Geom2dEval_SineWaveCurveTest, EvalD1_ConsistentWithD0)
