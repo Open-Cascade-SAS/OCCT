@@ -170,7 +170,8 @@ public:
                                 const int    Nu,
                                 const int    Nv) const final;
 
-  //! Applies the transformation T to all control points.
+  //! Transformation is not supported for this eval geometry.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Transform(const gp_Trsf& T) final;
 
   //! Creates a new object which is a copy of this T-Bezier surface.

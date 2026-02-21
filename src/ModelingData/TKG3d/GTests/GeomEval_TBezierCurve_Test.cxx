@@ -165,20 +165,15 @@ TEST(GeomEval_TBezierCurveTest, Construction_Rational)
   EXPECT_EQ(aCurve.Weights().Size(), 3);
 }
 
-// Test Transform preserves evaluation
-TEST(GeomEval_TBezierCurveTest, Transform_PreservesEvaluation)
+// Test Transform/Transformed are not implemented.
+TEST(GeomEval_TBezierCurveTest, Transform_NotImplemented)
 {
   GeomEval_TBezierCurve aCurve = createSimpleCurve();
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  const double aU = M_PI / 4.0;
-  gp_Pnt aPBefore = aCurve.EvalD0(aU);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt aPAfter = aCurve.EvalD0(aU);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 // Test Copy produces independent identical object

@@ -340,8 +340,8 @@ gp_Vec GeomEval_CircularHelicoidSurface::EvalDN(const double U,
 
 void GeomEval_CircularHelicoidSurface::Transform(const gp_Trsf& T)
 {
-  myPitch *= T.ScaleFactor();
-  pos.Transform(T);
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::Transform");
 }
 
 //==================================================================================================

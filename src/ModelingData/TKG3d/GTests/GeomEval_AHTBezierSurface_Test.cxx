@@ -158,20 +158,15 @@ TEST(GeomEval_AHTBezierSurfaceTest, Iso_NotImplemented)
   EXPECT_THROW(aSurf.VIso(0.5), Standard_NotImplemented);
 }
 
-// Test Transform preserves evaluation
-TEST(GeomEval_AHTBezierSurfaceTest, Transform_PreservesEvaluation)
+// Test Transform/Transformed are not implemented.
+TEST(GeomEval_AHTBezierSurfaceTest, Transform_NotImplemented)
 {
   GeomEval_AHTBezierSurface aSurf = createPolynomialSurface();
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  const double aU = 0.5, aV = 0.5;
-  gp_Pnt aPBefore = aSurf.EvalD0(aU, aV);
-  aPBefore.Transform(aTrsf);
-  aSurf.Transform(aTrsf);
-  gp_Pnt aPAfter = aSurf.EvalD0(aU, aV);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aSurf.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 // Test Copy produces independent identical object

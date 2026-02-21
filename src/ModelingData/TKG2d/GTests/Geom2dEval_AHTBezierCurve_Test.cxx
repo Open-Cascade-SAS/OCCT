@@ -239,36 +239,15 @@ TEST(Geom2dEval_AHTBezierCurveTest, Continuity)
   EXPECT_TRUE(aCurve.IsCN(100));
 }
 
-// Test Transform preserves evaluation
-TEST(Geom2dEval_AHTBezierCurveTest, Transform_PreservesEvaluation)
+// Test Transform/Transformed are not implemented
+TEST(Geom2dEval_AHTBezierCurveTest, Transform_NotImplemented)
 {
   Geom2dEval_AHTBezierCurve aCurve = createFullBasisCurve();
   gp_Trsf2d aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
 
-  const double aU = 0.5;
-  gp_Pnt2d aPBefore = aCurve.EvalD0(aU);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt2d aPAfter = aCurve.EvalD0(aU);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
-}
-
-// Test Transform with rotation preserves evaluation
-TEST(Geom2dEval_AHTBezierCurveTest, Transform_Rotation)
-{
-  Geom2dEval_AHTBezierCurve aCurve = createPolynomialCurve();
-  gp_Trsf2d aTrsf;
-  aTrsf.SetRotation(gp_Pnt2d(0.0, 0.0), M_PI / 4.0);
-
-  const double aU = 0.7;
-  gp_Pnt2d aPBefore = aCurve.EvalD0(aU);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt2d aPAfter = aCurve.EvalD0(aU);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 // Test Copy produces independent identical object
@@ -291,16 +270,16 @@ TEST(Geom2dEval_AHTBezierCurveTest, Copy_Independent)
     EXPECT_NEAR(aOrigPnt.Distance(aCopyPnt), 0.0, Precision::Confusion());
   }
 
-  // Verify independence: transforming the copy does not affect the original
+  // Verify behavior: transformation is not supported on the copy either.
   gp_Trsf2d aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(10.0, 10.0));
   Handle(Geom2dEval_AHTBezierCurve) aCopyHandle =
     Handle(Geom2dEval_AHTBezierCurve)::DownCast(aCopy);
-  aCopyHandle->Transform(aTrsf);
+  EXPECT_THROW(aCopyHandle->Transform(aTrsf), Standard_NotImplemented);
 
   gp_Pnt2d aOrigMid = aCurve.EvalD0(0.5);
   gp_Pnt2d aCopyMid = aCopyHandle->EvalD0(0.5);
-  EXPECT_TRUE(aOrigMid.Distance(aCopyMid) > 1.0);
+  EXPECT_NEAR(aOrigMid.Distance(aCopyMid), 0.0, Precision::Confusion());
 }
 
 // Test Copy of rational curve preserves rationality

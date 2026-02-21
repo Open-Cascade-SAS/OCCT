@@ -210,20 +210,16 @@ TEST(GeomEval_HyperboloidSurfaceTest, Coefficients_TwoSheets_SatisfiedAtEvalPoin
   }
 }
 
-// Test Transform preserves evaluation
-TEST(GeomEval_HyperboloidSurfaceTest, Transform_PreservesEvaluation)
+// Test Transform/Transformed are not implemented.
+TEST(GeomEval_HyperboloidSurfaceTest, Transform_NotImplemented)
 {
   gp_Ax3 anAx3;
   GeomEval_HyperboloidSurface aSurf(anAx3, 2.0, 3.0);
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  gp_Pnt aPBefore = aSurf.EvalD0(1.0, 0.5);
-  aPBefore.Transform(aTrsf);
-  aSurf.Transform(aTrsf);
-  gp_Pnt aPAfter = aSurf.EvalD0(1.0, 0.5);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aSurf.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 // Test Copy produces independent identical object

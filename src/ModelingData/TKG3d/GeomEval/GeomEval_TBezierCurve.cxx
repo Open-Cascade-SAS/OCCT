@@ -712,24 +712,8 @@ gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
 
 void GeomEval_TBezierCurve::Transform(const gp_Trsf& T)
 {
-  // The trigonometric basis {1, sin(k*alpha*t), cos(k*alpha*t)} does not form
-  // a partition of unity. Only the first basis function is constant (= 1).
-  // For translation V: P'(t) = (P_0 + V) + sum_{i>0} P_i * B_i(t)
-  // So only the first pole gets the full affine transform (including translation),
-  // while other poles get only the linear part (rotation/scaling).
-  gp_Pnt anOrigin(0.0, 0.0, 0.0);
-  anOrigin.Transform(T);
-  const gp_XYZ aTransVec = anOrigin.XYZ();
-
-  for (int i = myPoles.Lower(); i <= myPoles.Upper(); ++i)
-  {
-    myPoles.ChangeValue(i).Transform(T);
-  }
-  // Remove the translation component from non-constant basis poles.
-  for (int i = myPoles.Lower() + 1; i <= myPoles.Upper(); ++i)
-  {
-    myPoles.ChangeValue(i).SetXYZ(myPoles.Value(i).XYZ() - aTransVec);
-  }
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_TBezierCurve::Transform");
 }
 
 //==================================================================================================

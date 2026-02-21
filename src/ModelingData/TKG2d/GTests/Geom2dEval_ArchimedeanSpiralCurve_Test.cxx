@@ -175,3 +175,13 @@ TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Reverse_NotImplemented)
   EXPECT_THROW(aCurve.Reverse(), Standard_NotImplemented);
   EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
+
+TEST(Geom2dEval_ArchimedeanSpiralCurveTest, Transform_NotImplemented)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_ArchimedeanSpiralCurve aCurve(anAx2d, 0.0, 1.0);
+  gp_Trsf2d aTrsf;
+  aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
+}

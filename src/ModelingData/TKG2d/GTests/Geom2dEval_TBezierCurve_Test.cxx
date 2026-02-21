@@ -259,36 +259,15 @@ TEST(Geom2dEval_TBezierCurveTest, NbPoles_Alpha)
   EXPECT_NEAR(aCurve2.Alpha(), 0.5, Precision::Confusion());
 }
 
-// Test Transform preserves evaluation
-TEST(Geom2dEval_TBezierCurveTest, Transform_PreservesEvaluation)
+// Test Transform/Transformed are not implemented
+TEST(Geom2dEval_TBezierCurveTest, Transform_NotImplemented)
 {
   Geom2dEval_TBezierCurve aCurve = createSimpleCurve();
   gp_Trsf2d aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
 
-  const double aU = M_PI / 4.0;
-  gp_Pnt2d aPBefore = aCurve.EvalD0(aU);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt2d aPAfter = aCurve.EvalD0(aU);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
-}
-
-// Test Transform with rotation preserves evaluation
-TEST(Geom2dEval_TBezierCurveTest, Transform_Rotation_PreservesEvaluation)
-{
-  Geom2dEval_TBezierCurve aCurve = createSimpleCurve();
-  gp_Trsf2d aTrsf;
-  aTrsf.SetRotation(gp_Pnt2d(0.0, 0.0), M_PI / 6.0);
-
-  const double aU = M_PI / 3.0;
-  gp_Pnt2d aPBefore = aCurve.EvalD0(aU);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt2d aPAfter = aCurve.EvalD0(aU);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 // Test Copy produces independent identical object
@@ -310,7 +289,7 @@ TEST(Geom2dEval_TBezierCurveTest, Copy_Independent)
   EXPECT_NEAR(aOrigPt.Distance(aCopyPt), 0.0, Precision::Confusion());
 }
 
-// Test Copy produces a truly independent object (modifying copy does not affect original)
+// Test Copy behavior with unsupported transform.
 TEST(Geom2dEval_TBezierCurveTest, Copy_Modification_Independent)
 {
   Geom2dEval_TBezierCurve aCurve = createSimpleCurve();
@@ -319,16 +298,16 @@ TEST(Geom2dEval_TBezierCurveTest, Copy_Modification_Independent)
     dynamic_cast<Geom2dEval_TBezierCurve*>(aCopy.get());
   ASSERT_TRUE(aCopyCurve != nullptr);
 
-  // Transform the copy
+  // Transform is unsupported on the copy as well.
   gp_Trsf2d aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(10.0, 10.0));
-  aCopyCurve->Transform(aTrsf);
+  EXPECT_THROW(aCopyCurve->Transform(aTrsf), Standard_NotImplemented);
 
-  // Original should remain unchanged
+  // Copy and original remain identical.
   const double aU = M_PI / 4.0;
   gp_Pnt2d aOrigPt = aCurve.EvalD0(aU);
   gp_Pnt2d aCopyPt = aCopyCurve->EvalD0(aU);
-  EXPECT_TRUE(aOrigPt.Distance(aCopyPt) > 1.0);
+  EXPECT_NEAR(aOrigPt.Distance(aCopyPt), 0.0, Precision::Confusion());
 }
 
 // Test DumpJson does not crash

@@ -963,22 +963,8 @@ gp_Vec GeomEval_AHTBezierCurve::EvalDN(const double U, const int N) const
 
 void GeomEval_AHTBezierCurve::Transform(const gp_Trsf& T)
 {
-  // The AHT basis {1, t, ..., t^k, sinh, cosh, sin, cos} does not form
-  // a partition of unity. Only the first basis function is constant (= 1).
-  // Only the first pole gets the full affine transform; the rest get
-  // only the linear part (rotation/scaling, no translation).
-  gp_Pnt anOrigin(0.0, 0.0, 0.0);
-  anOrigin.Transform(T);
-  const gp_XYZ aTransVec = anOrigin.XYZ();
-
-  for (int i = myPoles.Lower(); i <= myPoles.Upper(); ++i)
-  {
-    myPoles.ChangeValue(i).Transform(T);
-  }
-  for (int i = myPoles.Lower() + 1; i <= myPoles.Upper(); ++i)
-  {
-    myPoles.ChangeValue(i).SetXYZ(myPoles.Value(i).XYZ() - aTransVec);
-  }
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_AHTBezierCurve::Transform");
 }
 
 //==================================================================================================

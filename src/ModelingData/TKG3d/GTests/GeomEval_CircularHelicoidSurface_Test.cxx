@@ -178,19 +178,15 @@ TEST(GeomEval_CircularHelicoidSurfaceTest, Reverse_NotImplemented)
   EXPECT_THROW(aSurf.VReversedParameter(0.5), Standard_NotImplemented);
 }
 
-TEST(GeomEval_CircularHelicoidSurfaceTest, Transform_PreservesEvaluation)
+TEST(GeomEval_CircularHelicoidSurfaceTest, Transform_NotImplemented)
 {
   gp_Ax3 anAx3;
   GeomEval_CircularHelicoidSurface aSurf(anAx3, 10.0);
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  gp_Pnt aPBefore = aSurf.EvalD0(1.0, 2.0);
-  aPBefore.Transform(aTrsf);
-  aSurf.Transform(aTrsf);
-  gp_Pnt aPAfter = aSurf.EvalD0(1.0, 2.0);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aSurf.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aSurf.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 TEST(GeomEval_CircularHelicoidSurfaceTest, Copy_Independent)

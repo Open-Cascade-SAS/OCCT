@@ -175,6 +175,16 @@ TEST(Geom2dEval_LogarithmicSpiralCurveTest, Reverse_NotImplemented)
   EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
+TEST(Geom2dEval_LogarithmicSpiralCurveTest, Transform_NotImplemented)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_LogarithmicSpiralCurve aCurve(anAx2d, 1.0, 0.2);
+  gp_Trsf2d aTrsf;
+  aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
+}
+
 TEST(Geom2dEval_LogarithmicSpiralCurveTest, Copy_Independent)
 {
   gp_Ax2d anAx2d;

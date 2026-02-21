@@ -244,8 +244,8 @@ gp_Vec GeomEval_SineWaveCurve::EvalDN(const double U, const int N) const
 
 void GeomEval_SineWaveCurve::Transform(const gp_Trsf& T)
 {
-  myPosition.Transform(T);
-  myAmplitude *= std::abs(T.ScaleFactor());
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_SineWaveCurve::Transform");
 }
 
 //==================================================================================================

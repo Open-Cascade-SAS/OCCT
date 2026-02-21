@@ -184,19 +184,15 @@ TEST(GeomEval_CircularHelixCurveTest, EvalDN_CyclesPeriod4)
   EXPECT_NEAR(aD5.Z(), 0.0, Precision::Confusion());
 }
 
-TEST(GeomEval_CircularHelixCurveTest, Transform_PreservesEvaluation)
+TEST(GeomEval_CircularHelixCurveTest, Transform_NotImplemented)
 {
   gp_Ax2 anAx2;
   GeomEval_CircularHelixCurve aCurve(anAx2, 5.0, 10.0);
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  gp_Pnt aPBefore = aCurve.EvalD0(1.0);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt aPAfter = aCurve.EvalD0(1.0);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 TEST(GeomEval_CircularHelixCurveTest, Copy_Independent)

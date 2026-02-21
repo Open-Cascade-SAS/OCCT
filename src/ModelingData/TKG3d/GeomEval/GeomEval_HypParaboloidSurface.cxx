@@ -424,9 +424,8 @@ gp_Vec GeomEval_HypParaboloidSurface::EvalDN(const double U,
 
 void GeomEval_HypParaboloidSurface::Transform(const gp_Trsf& T)
 {
-  myA *= std::abs(T.ScaleFactor());
-  myB *= std::abs(T.ScaleFactor());
-  pos.Transform(T);
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::Transform");
 }
 
 //==================================================================================================

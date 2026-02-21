@@ -168,20 +168,15 @@ TEST(GeomEval_AHTBezierCurveTest, Construction_Rational)
   EXPECT_TRUE(aCurve.IsRational());
 }
 
-// Test Transform preserves evaluation
-TEST(GeomEval_AHTBezierCurveTest, Transform_PreservesEvaluation)
+// Test Transform/Transformed are not implemented.
+TEST(GeomEval_AHTBezierCurveTest, Transform_NotImplemented)
 {
   GeomEval_AHTBezierCurve aCurve = createFullBasisCurve();
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  const double aU = 0.5;
-  gp_Pnt aPBefore = aCurve.EvalD0(aU);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt aPAfter = aCurve.EvalD0(aU);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 // Test Copy produces independent identical object

@@ -1220,31 +1220,8 @@ gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
 
 void GeomEval_AHTBezierSurface::Transform(const gp_Trsf& T)
 {
-  // The tensor-product AHT basis does not form a partition of unity.
-  // Only the (LowerRow, LowerCol) pole corresponds to the constant basis 1*1 = 1.
-  // That pole gets the full affine transform; all others get only the linear part.
-  gp_Pnt anOrigin(0.0, 0.0, 0.0);
-  anOrigin.Transform(T);
-  const gp_XYZ aTransVec = anOrigin.XYZ();
-
-  for (int i = myPoles.LowerRow(); i <= myPoles.UpperRow(); ++i)
-  {
-    for (int j = myPoles.LowerCol(); j <= myPoles.UpperCol(); ++j)
-    {
-      myPoles.ChangeValue(i, j).Transform(T);
-    }
-  }
-  for (int i = myPoles.LowerRow(); i <= myPoles.UpperRow(); ++i)
-  {
-    for (int j = myPoles.LowerCol(); j <= myPoles.UpperCol(); ++j)
-    {
-      if (i == myPoles.LowerRow() && j == myPoles.LowerCol())
-      {
-        continue;
-      }
-      myPoles.ChangeValue(i, j).SetXYZ(myPoles.Value(i, j).XYZ() - aTransVec);
-    }
-  }
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_AHTBezierSurface::Transform");
 }
 
 //==================================================================================================

@@ -133,19 +133,15 @@ TEST(GeomEval_SineWaveCurveTest, ComparisonWithLine_ZeroAmplitude_Like)
   EXPECT_NEAR(aD3.D3.Magnitude(), 0.0, 1e-5);
 }
 
-TEST(GeomEval_SineWaveCurveTest, Transform_PreservesEvaluation)
+TEST(GeomEval_SineWaveCurveTest, Transform_NotImplemented)
 {
   gp_Ax2 anAx2;
   GeomEval_SineWaveCurve aCurve(anAx2, 2.0, 3.0, 0.5);
   gp_Trsf aTrsf;
   aTrsf.SetTranslation(gp_Vec(1.0, 2.0, 3.0));
 
-  gp_Pnt aPBefore = aCurve.EvalD0(1.0);
-  aPBefore.Transform(aTrsf);
-  aCurve.Transform(aTrsf);
-  gp_Pnt aPAfter = aCurve.EvalD0(1.0);
-
-  EXPECT_NEAR(aPBefore.Distance(aPAfter), 0.0, Precision::Confusion());
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
 }
 
 TEST(GeomEval_SineWaveCurveTest, Copy_Independent)

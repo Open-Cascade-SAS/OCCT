@@ -963,32 +963,8 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
 
 void GeomEval_TBezierSurface::Transform(const gp_Trsf& T)
 {
-  // The tensor-product trigonometric basis does not form a partition of unity.
-  // Only the (LowerRow, LowerCol) pole corresponds to the constant basis B_0(u)*B_0(v) = 1.
-  // That pole gets the full affine transform; all others get only the linear part.
-  gp_Pnt anOrigin(0.0, 0.0, 0.0);
-  anOrigin.Transform(T);
-  const gp_XYZ aTransVec = anOrigin.XYZ();
-
-  for (int i = myPoles.LowerRow(); i <= myPoles.UpperRow(); ++i)
-  {
-    for (int j = myPoles.LowerCol(); j <= myPoles.UpperCol(); ++j)
-    {
-      myPoles.ChangeValue(i, j).Transform(T);
-    }
-  }
-  // Remove translation from all non-constant basis poles.
-  for (int i = myPoles.LowerRow(); i <= myPoles.UpperRow(); ++i)
-  {
-    for (int j = myPoles.LowerCol(); j <= myPoles.UpperCol(); ++j)
-    {
-      if (i == myPoles.LowerRow() && j == myPoles.LowerCol())
-      {
-        continue;
-      }
-      myPoles.ChangeValue(i, j).SetXYZ(myPoles.Value(i, j).XYZ() - aTransVec);
-    }
-  }
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_TBezierSurface::Transform");
 }
 
 //==================================================================================================

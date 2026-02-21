@@ -122,7 +122,8 @@ public:
   //! @return the N-th derivative vector
   Standard_EXPORT gp_Vec2d EvalDN(const double U, const int N) const final;
 
-  //! Applies the transformation T to this curve.
+  //! Transformation is not supported for this eval geometry.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Transform(const gp_Trsf2d& T) final;
 
   //! Creates a new object which is a copy of this curve.

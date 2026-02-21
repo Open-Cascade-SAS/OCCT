@@ -281,8 +281,8 @@ gp_Vec2d Geom2dEval_CircleInvoluteCurve::EvalDN(const double U, const int N) con
 
 void Geom2dEval_CircleInvoluteCurve::Transform(const gp_Trsf2d& T)
 {
-  myPosition.Transform(T);
-  myRadius *= std::abs(T.ScaleFactor());
+  (void)T;
+  throw Standard_NotImplemented("Geom2dEval_CircleInvoluteCurve::Transform");
 }
 
 //==================================================================================================

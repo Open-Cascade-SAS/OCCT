@@ -284,10 +284,8 @@ gp_Vec2d Geom2dEval_ArchimedeanSpiralCurve::EvalDN(const double U, const int N) 
 
 void Geom2dEval_ArchimedeanSpiralCurve::Transform(const gp_Trsf2d& T)
 {
-  myPosition.Transform(T);
-  const double aScale = std::abs(T.ScaleFactor());
-  myInitialRadius *= aScale;
-  myGrowthRate *= aScale;
+  (void)T;
+  throw Standard_NotImplemented("Geom2dEval_ArchimedeanSpiralCurve::Transform");
 }
 
 //==================================================================================================

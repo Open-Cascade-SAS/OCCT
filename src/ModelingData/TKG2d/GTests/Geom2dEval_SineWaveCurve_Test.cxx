@@ -81,6 +81,16 @@ TEST(Geom2dEval_SineWaveCurveTest, Reverse_NotImplemented)
   EXPECT_THROW(aCurve.ReversedParameter(0.5), Standard_NotImplemented);
 }
 
+TEST(Geom2dEval_SineWaveCurveTest, Transform_NotImplemented)
+{
+  gp_Ax2d anAx2d;
+  Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
+  gp_Trsf2d aTrsf;
+  aTrsf.SetTranslation(gp_Vec2d(1.0, 2.0));
+  EXPECT_THROW(aCurve.Transform(aTrsf), Standard_NotImplemented);
+  EXPECT_THROW((void)aCurve.Transformed(aTrsf), Standard_NotImplemented);
+}
+
 TEST(Geom2dEval_SineWaveCurveTest, EvalD1_ConsistentWithD0)
 {
   gp_Ax2d anAx2d;

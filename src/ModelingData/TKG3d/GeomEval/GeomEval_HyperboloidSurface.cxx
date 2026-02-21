@@ -457,9 +457,8 @@ gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
 
 void GeomEval_HyperboloidSurface::Transform(const gp_Trsf& T)
 {
-  myR1 *= std::abs(T.ScaleFactor());
-  myR2 *= std::abs(T.ScaleFactor());
-  pos.Transform(T);
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_HyperboloidSurface::Transform");
 }
 
 //==================================================================================================

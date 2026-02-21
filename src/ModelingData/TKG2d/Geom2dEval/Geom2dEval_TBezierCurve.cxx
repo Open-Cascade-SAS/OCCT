@@ -713,21 +713,8 @@ gp_Vec2d Geom2dEval_TBezierCurve::EvalDN(const double U, const int N) const
 
 void Geom2dEval_TBezierCurve::Transform(const gp_Trsf2d& T)
 {
-  // The trigonometric basis does not form a partition of unity.
-  // Only the first pole (constant basis = 1) gets the full affine transform;
-  // the rest get only the linear part (rotation/scaling, no translation).
-  gp_Pnt2d anOrigin(0.0, 0.0);
-  anOrigin.Transform(T);
-  const gp_XY aTransVec = anOrigin.Coord();
-
-  for (int i = myPoles.Lower(); i <= myPoles.Upper(); ++i)
-  {
-    myPoles.ChangeValue(i).Transform(T);
-  }
-  for (int i = myPoles.Lower() + 1; i <= myPoles.Upper(); ++i)
-  {
-    myPoles.ChangeValue(i).SetXY(myPoles.Value(i).XY() - aTransVec);
-  }
+  (void)T;
+  throw Standard_NotImplemented("Geom2dEval_TBezierCurve::Transform");
 }
 
 //==================================================================================================

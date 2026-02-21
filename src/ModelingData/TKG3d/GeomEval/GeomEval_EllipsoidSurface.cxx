@@ -369,11 +369,8 @@ gp_Vec GeomEval_EllipsoidSurface::EvalDN(const double U,
 
 void GeomEval_EllipsoidSurface::Transform(const gp_Trsf& T)
 {
-  const double aScaleFactor = std::abs(T.ScaleFactor());
-  myA = myA * aScaleFactor;
-  myB = myB * aScaleFactor;
-  myC = myC * aScaleFactor;
-  pos.Transform(T);
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_EllipsoidSurface::Transform");
 }
 
 //==================================================================================================

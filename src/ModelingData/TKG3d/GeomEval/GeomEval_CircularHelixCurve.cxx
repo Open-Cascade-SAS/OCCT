@@ -263,9 +263,8 @@ gp_Vec GeomEval_CircularHelixCurve::EvalDN(const double U, const int N) const
 
 void GeomEval_CircularHelixCurve::Transform(const gp_Trsf& T)
 {
-  myPosition.Transform(T);
-  myRadius *= std::abs(T.ScaleFactor());
-  myPitch *= T.ScaleFactor();
+  (void)T;
+  throw Standard_NotImplemented("GeomEval_CircularHelixCurve::Transform");
 }
 
 //==================================================================================================

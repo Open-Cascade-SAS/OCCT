@@ -39,7 +39,7 @@
 //! @code
 //!   X^2/R2^2 + Y^2/R2^2 - Z^2/R1^2 = -1
 //! @endcode
-//! The other sheet is obtained via Transform (mirror through origin).
+//! The second sheet is not represented by this class.
 //!
 //! The parametric range is:
 //! - [0, 2*Pi] for u (periodic, closed), and
@@ -160,7 +160,8 @@ public:
                                 const int    Nu,
                                 const int    Nv) const final;
 
-  //! Applies the transformation T to this hyperboloid.
+  //! Transformation is not supported for this eval geometry.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Transform(const gp_Trsf& T) final;
 
   //! Creates a new object which is a copy of this hyperboloid.
