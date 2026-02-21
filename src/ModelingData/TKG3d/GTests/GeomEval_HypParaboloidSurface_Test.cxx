@@ -327,7 +327,7 @@ TEST(GeomEval_HypParaboloidSurfaceTest, EvalD2_MatchesBezierSurface)
       aBPoles.SetValue(i, j, gp_Pnt(aXi, aYj, aZu + aZv));
     }
   }
-  Handle(Geom_BezierSurface) aBezier = new Geom_BezierSurface(aBPoles);
+  occ::handle<Geom_BezierSurface> aBezier = new Geom_BezierSurface(aBPoles);
 
   const double aParams[][2] =
     {{0.0, 0.0}, {0.25, 0.25}, {0.5, 0.5}, {0.75, 0.25}, {0.3, 0.7}, {1.0, 1.0}};

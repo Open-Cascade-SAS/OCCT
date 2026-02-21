@@ -206,10 +206,10 @@ TEST(GeomEval_EllipsoidSurfaceTest, DumpJson_NoCrash)
 // When A=B=C=R the ellipsoid degenerates to a sphere; EvalD0 must match
 TEST(GeomEval_EllipsoidSurfaceTest, EvalD0_MatchesSphere)
 {
-  gp_Ax3                        anAx3;
-  const double                  aR = 5.0;
-  GeomEval_EllipsoidSurface     anEllipsoid(anAx3, aR, aR, aR);
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAx3, aR);
+  gp_Ax3                             anAx3;
+  const double                       aR = 5.0;
+  GeomEval_EllipsoidSurface          anEllipsoid(anAx3, aR, aR, aR);
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAx3, aR);
 
   const double aParams[][2] = {{0.0, 0.0},
                                {M_PI / 4.0, M_PI / 4.0},
@@ -233,10 +233,10 @@ TEST(GeomEval_EllipsoidSurfaceTest, EvalD0_MatchesSphere)
 // When A=B=C=R, EvalD1 must match the sphere
 TEST(GeomEval_EllipsoidSurfaceTest, EvalD1_MatchesSphere)
 {
-  gp_Ax3                        anAx3;
-  const double                  aR = 5.0;
-  GeomEval_EllipsoidSurface     anEllipsoid(anAx3, aR, aR, aR);
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAx3, aR);
+  gp_Ax3                             anAx3;
+  const double                       aR = 5.0;
+  GeomEval_EllipsoidSurface          anEllipsoid(anAx3, aR, aR, aR);
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAx3, aR);
 
   const double aParams[][2] = {{0.0, 0.0},
                                {M_PI / 4.0, M_PI / 4.0},
@@ -267,10 +267,10 @@ TEST(GeomEval_EllipsoidSurfaceTest, EvalD1_MatchesSphere)
 // When A=B=C=R, EvalD2 must match the sphere
 TEST(GeomEval_EllipsoidSurfaceTest, EvalD2_MatchesSphere)
 {
-  gp_Ax3                        anAx3;
-  const double                  aR = 5.0;
-  GeomEval_EllipsoidSurface     anEllipsoid(anAx3, aR, aR, aR);
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAx3, aR);
+  gp_Ax3                             anAx3;
+  const double                       aR = 5.0;
+  GeomEval_EllipsoidSurface          anEllipsoid(anAx3, aR, aR, aR);
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAx3, aR);
 
   const double aParams[][2] = {{0.0, 0.0}, {M_PI / 4.0, M_PI / 4.0}, {1.0, 0.3}};
 
@@ -310,10 +310,10 @@ TEST(GeomEval_EllipsoidSurfaceTest, EvalD2_MatchesSphere)
 // When A=B=C=R, EvalD3 must match the sphere
 TEST(GeomEval_EllipsoidSurfaceTest, EvalD3_MatchesSphere)
 {
-  gp_Ax3                        anAx3;
-  const double                  aR = 5.0;
-  GeomEval_EllipsoidSurface     anEllipsoid(anAx3, aR, aR, aR);
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(anAx3, aR);
+  gp_Ax3                             anAx3;
+  const double                       aR = 5.0;
+  GeomEval_EllipsoidSurface          anEllipsoid(anAx3, aR, aR, aR);
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(anAx3, aR);
 
   const double aParams[][2] = {{M_PI / 4.0, M_PI / 4.0}, {1.0, 0.3}};
 

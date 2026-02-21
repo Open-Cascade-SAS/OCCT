@@ -438,8 +438,8 @@ TEST(Geom2dEval_TBezierCurveTest, EvalD0_MultiplePoints)
 // Test 2D T-Bezier semicircle matches Geom2d_Circle D0/D1/D2/D3
 TEST(Geom2dEval_TBezierCurveTest, EvalD3_MatchesCircle)
 {
-  Geom2dEval_TBezierCurve aTBez   = createSemicircle2d();
-  Handle(Geom2d_Circle)   aCircle = new Geom2d_Circle(gp_Ax22d(), 1.0);
+  Geom2dEval_TBezierCurve    aTBez   = createSemicircle2d();
+  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(gp_Ax22d(), 1.0);
 
   const double aParams[] = {M_PI / 6.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0};
   for (const double aU : aParams)
@@ -460,8 +460,8 @@ TEST(Geom2dEval_TBezierCurveTest, EvalD3_MatchesCircle)
 // Test 2D T-Bezier semi-ellipse matches Geom2d_Ellipse D0/D1/D2
 TEST(Geom2dEval_TBezierCurveTest, EvalD2_MatchesEllipse)
 {
-  Geom2dEval_TBezierCurve aTBez     = createSemiEllipse2d();
-  Handle(Geom2d_Ellipse)  anEllipse = new Geom2d_Ellipse(gp_Ax22d(), 3.0, 2.0);
+  Geom2dEval_TBezierCurve     aTBez     = createSemiEllipse2d();
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(gp_Ax22d(), 3.0, 2.0);
 
   const double aParams[] = {M_PI / 6.0, M_PI / 4.0, M_PI / 2.0, 3.0 * M_PI / 4.0};
   for (const double aU : aParams)

@@ -247,8 +247,8 @@ TEST(GeomEval_TBezierCurveTest, EvalDN_ConsistentWithD1)
 // Test T-Bezier semicircle matches Geom_Circle D0
 TEST(GeomEval_TBezierCurveTest, EvalD0_MatchesCircle)
 {
-  GeomEval_TBezierCurve aTBez   = createSemicircle();
-  Handle(Geom_Circle)   aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_TBezierCurve    aTBez   = createSemicircle();
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] =
     {0.0, M_PI / 6.0, M_PI / 4.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0, 3.0 * M_PI / 4.0, M_PI};
@@ -263,8 +263,8 @@ TEST(GeomEval_TBezierCurveTest, EvalD0_MatchesCircle)
 // Test T-Bezier semicircle matches Geom_Circle D1/D2/D3
 TEST(GeomEval_TBezierCurveTest, EvalD3_MatchesCircle)
 {
-  GeomEval_TBezierCurve aTBez   = createSemicircle();
-  Handle(Geom_Circle)   aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_TBezierCurve    aTBez   = createSemicircle();
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] = {M_PI / 6.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0};
   for (const double aU : aParams)
@@ -288,8 +288,8 @@ TEST(GeomEval_TBezierCurveTest, EvalD3_MatchesCircle)
 // Test T-Bezier semi-ellipse matches Geom_Ellipse D0/D1/D2
 TEST(GeomEval_TBezierCurveTest, EvalD2_MatchesEllipse)
 {
-  GeomEval_TBezierCurve aTBez     = createSemiEllipse();
-  Handle(Geom_Ellipse)  anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
+  GeomEval_TBezierCurve     aTBez     = createSemiEllipse();
+  occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
 
   const double aParams[] = {M_PI / 6.0, M_PI / 4.0, M_PI / 2.0, 3.0 * M_PI / 4.0};
   for (const double aU : aParams)

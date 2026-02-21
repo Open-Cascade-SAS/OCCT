@@ -76,7 +76,9 @@ TEST(GeomEval_SineWaveCurveTest, IsPeriodic)
   gp_Ax2                 anAx2;
   GeomEval_SineWaveCurve aCurve(anAx2, 2.0, 3.0, 0.0);
   EXPECT_FALSE(aCurve.IsPeriodic());
+#ifndef No_Exception
   EXPECT_THROW(aCurve.Period(), Standard_NoSuchObject);
+#endif
   EXPECT_FALSE(aCurve.IsClosed());
 }
 

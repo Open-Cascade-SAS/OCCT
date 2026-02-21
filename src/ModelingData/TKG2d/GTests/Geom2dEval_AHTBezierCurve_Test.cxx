@@ -270,8 +270,8 @@ TEST(Geom2dEval_AHTBezierCurveTest, Copy_Independent)
   // Verify behavior: transformation is not supported on the copy either.
   gp_Trsf2d aTrsf;
   aTrsf.SetTranslation(gp_Vec2d(10.0, 10.0));
-  Handle(Geom2dEval_AHTBezierCurve) aCopyHandle =
-    Handle(Geom2dEval_AHTBezierCurve)::DownCast(aCopy);
+  occ::handle<Geom2dEval_AHTBezierCurve> aCopyHandle =
+    occ::down_cast<Geom2dEval_AHTBezierCurve>(aCopy);
   EXPECT_THROW(aCopyHandle->Transform(aTrsf), Standard_NotImplemented);
 
   gp_Pnt2d aOrigMid = aCurve.EvalD0(0.5);

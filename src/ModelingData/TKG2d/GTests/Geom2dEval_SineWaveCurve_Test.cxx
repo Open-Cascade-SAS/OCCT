@@ -70,7 +70,9 @@ TEST(Geom2dEval_SineWaveCurveTest, IsPeriodic)
   gp_Ax2d                  anAx2d;
   Geom2dEval_SineWaveCurve aCurve(anAx2d, 2.0, 3.0, 0.0);
   EXPECT_FALSE(aCurve.IsPeriodic());
+#ifndef No_Exception
   EXPECT_THROW(aCurve.Period(), Standard_NoSuchObject);
+#endif
 }
 
 TEST(Geom2dEval_SineWaveCurveTest, Reverse_NotImplemented)

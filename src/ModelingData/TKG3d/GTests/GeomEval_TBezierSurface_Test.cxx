@@ -300,8 +300,8 @@ TEST(GeomEval_TBezierSurfaceTest, EvalDN_ConsistentWithD1)
 // Test T-Bezier sphere patch matches Geom_SphericalSurface D0
 TEST(GeomEval_TBezierSurfaceTest, EvalD0_MatchesSphere)
 {
-  GeomEval_TBezierSurface       aTBez   = createSpherePatch();
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(gp_Ax3(), 1.0);
+  GeomEval_TBezierSurface            aTBez   = createSpherePatch();
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 1.0);
 
   const double aUParams[] =
     {0.1, M_PI / 6.0, M_PI / 4.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0, 2.5};
@@ -321,8 +321,8 @@ TEST(GeomEval_TBezierSurfaceTest, EvalD0_MatchesSphere)
 // Test T-Bezier sphere patch matches Geom_SphericalSurface D1
 TEST(GeomEval_TBezierSurfaceTest, EvalD1_MatchesSphere)
 {
-  GeomEval_TBezierSurface       aTBez   = createSpherePatch();
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(gp_Ax3(), 1.0);
+  GeomEval_TBezierSurface            aTBez   = createSpherePatch();
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 1.0);
 
   const double aUParams[] = {M_PI / 6.0, M_PI / 3.0, M_PI / 2.0, 2.0 * M_PI / 3.0};
   const double aVParams[] = {0.2, M_PI / 4.0, M_PI / 3.0, 1.0};
@@ -347,8 +347,8 @@ TEST(GeomEval_TBezierSurfaceTest, EvalD1_MatchesSphere)
 // Test T-Bezier sphere patch matches Geom_SphericalSurface D2
 TEST(GeomEval_TBezierSurfaceTest, EvalD2_MatchesSphere)
 {
-  GeomEval_TBezierSurface       aTBez   = createSpherePatch();
-  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(gp_Ax3(), 1.0);
+  GeomEval_TBezierSurface            aTBez   = createSpherePatch();
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 1.0);
 
   const double aUParams[] = {M_PI / 6.0, M_PI / 3.0, M_PI / 2.0};
   const double aVParams[] = {0.3, M_PI / 4.0, 1.0};

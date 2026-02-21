@@ -284,8 +284,8 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD0_PurePolynomial_KnownValues)
 // Test AHT-Bezier trigonometric circle arc matches Geom_Circle D0
 TEST(GeomEval_AHTBezierCurveTest, EvalD0_MatchesCircle)
 {
-  GeomEval_AHTBezierCurve aAHT    = createTrigCircleArc();
-  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_AHTBezierCurve  aAHT    = createTrigCircleArc();
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] = {0.0, 0.1, 0.25, 0.5, 0.75, 0.9, 1.0};
   for (const double aU : aParams)
@@ -299,8 +299,8 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD0_MatchesCircle)
 // Test AHT-Bezier trigonometric circle arc matches Geom_Circle D1/D2/D3
 TEST(GeomEval_AHTBezierCurveTest, EvalD3_MatchesCircle)
 {
-  GeomEval_AHTBezierCurve aAHT    = createTrigCircleArc();
-  Handle(Geom_Circle)     aCircle = new Geom_Circle(gp_Ax2(), 1.0);
+  GeomEval_AHTBezierCurve  aAHT    = createTrigCircleArc();
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(), 1.0);
 
   const double aParams[] = {0.1, 0.25, 0.5, 0.75, 0.9};
   for (const double aU : aParams)
@@ -324,8 +324,8 @@ TEST(GeomEval_AHTBezierCurveTest, EvalD3_MatchesCircle)
 // Test AHT-Bezier trigonometric ellipse arc matches Geom_Ellipse D0/D1/D2
 TEST(GeomEval_AHTBezierCurveTest, EvalD2_MatchesEllipse)
 {
-  GeomEval_AHTBezierCurve aAHT      = createTrigEllipseArc();
-  Handle(Geom_Ellipse)    anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
+  GeomEval_AHTBezierCurve   aAHT      = createTrigEllipseArc();
+  occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(gp_Ax2(), 3.0, 2.0);
 
   const double aParams[] = {0.1, 0.25, 0.5, 0.75, 0.9};
   for (const double aU : aParams)

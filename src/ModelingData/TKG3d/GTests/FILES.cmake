@@ -15,9 +15,7 @@ set(OCCT_TKG3d_GTests_FILES
   Geom_SurfaceEval_Test.cxx
   GeomAdaptor_Curve_Test.cxx
   GeomEval_AHTBezierCurve_Test.cxx
-  GeomEval_AHTBezierCurve_Perf_Test.cxx
   GeomEval_AHTBezierSurface_Test.cxx
-  GeomEval_AHTBezierSurface_Perf_Test.cxx
   GeomEval_CircularHelicoidSurface_Test.cxx
   GeomEval_CircularHelixCurve_Test.cxx
   GeomEval_EllipsoidSurface_Test.cxx
@@ -26,9 +24,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomEval_ParaboloidSurface_Test.cxx
   GeomEval_SineWaveCurve_Test.cxx
   GeomEval_TBezierCurve_Test.cxx
-  GeomEval_TBezierCurve_Perf_Test.cxx
   GeomEval_TBezierSurface_Test.cxx
-  GeomEval_TBezierSurface_Perf_Test.cxx
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
   GeomGridEval_BezierCurve_Test.cxx

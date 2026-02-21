@@ -137,7 +137,7 @@ TEST(GeomEval_CircularHelixCurveTest, ComparisonWithCircle_ZeroPitch)
   gp_Ax2                      anAx2;
   const double                aR = 5.0;
   GeomEval_CircularHelixCurve aHelix(anAx2, aR, 0.0);
-  Handle(Geom_Circle)         aCircle = new Geom_Circle(anAx2, aR);
+  occ::handle<Geom_Circle>    aCircle = new Geom_Circle(anAx2, aR);
 
   const double aParams[] = {0.0, M_PI / 4.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
   for (double aT : aParams)
