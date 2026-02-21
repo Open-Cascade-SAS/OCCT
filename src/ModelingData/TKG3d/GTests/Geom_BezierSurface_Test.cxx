@@ -18,7 +18,10 @@
 #include <gp_Trsf.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_Array2.hxx>
+#include <OSD_Parallel.hxx>
 #include <Precision.hxx>
+
+#include <atomic>
 
 #include <gtest/gtest.h>
 
@@ -724,4 +727,112 @@ TEST_F(Geom_BezierSurface_Test, WeightsArray_Rational_ReturnsOwning)
   EXPECT_DOUBLE_EQ(aWeights(1, 2), 2.0);
   EXPECT_DOUBLE_EQ(aWeights(1, 1), 1.0);
   EXPECT_EQ(&aWeights, &aRational->WeightsArray());
+}
+
+TEST_F(Geom_BezierSurface_Test, ParallelEvalD0_SameObject)
+{
+  const int aNbSamples = 50;
+  const int aNbTotal   = aNbSamples * aNbSamples;
+
+  // Pre-compute reference values serially.
+  NCollection_Array1<gp_Pnt> aRefPnts(0, aNbTotal - 1);
+  for (int i = 0; i < aNbTotal; ++i)
+  {
+    const double aU = static_cast<double>(i / aNbSamples) / (aNbSamples - 1);
+    const double aV = static_cast<double>(i % aNbSamples) / (aNbSamples - 1);
+    aRefPnts(i)     = myOriginalSurface->Value(aU, aV);
+  }
+
+  // Invalidate cache to test concurrent cache build.
+  occ::handle<Geom_BezierSurface> aCopy =
+    Handle(Geom_BezierSurface)::DownCast(myOriginalSurface->Copy());
+
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbTotal, [&](int theIndex) {
+    const double aU   = static_cast<double>(theIndex / aNbSamples) / (aNbSamples - 1);
+    const double aV   = static_cast<double>(theIndex % aNbSamples) / (aNbSamples - 1);
+    gp_Pnt       aPnt = aCopy->Value(aU, aV);
+    if (!aPnt.IsEqual(aRefPnts(theIndex), Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
+}
+
+TEST_F(Geom_BezierSurface_Test, ParallelEvalD1_SameObject)
+{
+  const int aNbSamples = 50;
+  const int aNbTotal   = aNbSamples * aNbSamples;
+
+  // Pre-compute reference values serially.
+  NCollection_Array1<gp_Pnt> aRefPnts(0, aNbTotal - 1);
+  for (int i = 0; i < aNbTotal; ++i)
+  {
+    const double aU = static_cast<double>(i / aNbSamples) / (aNbSamples - 1);
+    const double aV = static_cast<double>(i % aNbSamples) / (aNbSamples - 1);
+    gp_Pnt       aPnt;
+    gp_Vec       aDU, aDV;
+    myOriginalSurface->D1(aU, aV, aPnt, aDU, aDV);
+    aRefPnts(i) = aPnt;
+  }
+
+  occ::handle<Geom_BezierSurface> aCopy =
+    Handle(Geom_BezierSurface)::DownCast(myOriginalSurface->Copy());
+
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbTotal, [&](int theIndex) {
+    const double aU = static_cast<double>(theIndex / aNbSamples) / (aNbSamples - 1);
+    const double aV = static_cast<double>(theIndex % aNbSamples) / (aNbSamples - 1);
+    gp_Pnt       aPnt;
+    gp_Vec       aDU, aDV;
+    aCopy->D1(aU, aV, aPnt, aDU, aDV);
+    if (!aPnt.IsEqual(aRefPnts(theIndex), Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
+}
+
+TEST(Geom_BezierSurface_ParallelTest, RationalSurface_ParallelEval)
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 3, 1, 3);
+  NCollection_Array2<double> aWeights(1, 3, 1, 3);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 3; ++j)
+    {
+      aPoles(i, j)   = gp_Pnt((i - 1) * 5.0, (j - 1) * 5.0, (i == 2 && j == 2) ? 3.0 : 0.0);
+      aWeights(i, j) = (i == 2 && j == 2) ? 3.0 : 1.0;
+    }
+  }
+
+  occ::handle<Geom_BezierSurface> aSurface = new Geom_BezierSurface(aPoles, aWeights);
+
+  // Pre-compute reference values serially.
+  const int                  aNbSamples = 50;
+  const int                  aNbTotal   = aNbSamples * aNbSamples;
+  NCollection_Array1<gp_Pnt> aRefPnts(0, aNbTotal - 1);
+  for (int i = 0; i < aNbTotal; ++i)
+  {
+    const double aU = static_cast<double>(i / aNbSamples) / (aNbSamples - 1);
+    const double aV = static_cast<double>(i % aNbSamples) / (aNbSamples - 1);
+    aRefPnts(i)     = aSurface->Value(aU, aV);
+  }
+
+  // Copy to get a fresh object with no cache.
+  occ::handle<Geom_BezierSurface> aCopy = Handle(Geom_BezierSurface)::DownCast(aSurface->Copy());
+
+  std::atomic<int> aNbErrors(0);
+  OSD_Parallel::For(0, aNbTotal, [&](int theIndex) {
+    const double aU   = static_cast<double>(theIndex / aNbSamples) / (aNbSamples - 1);
+    const double aV   = static_cast<double>(theIndex % aNbSamples) / (aNbSamples - 1);
+    gp_Pnt       aPnt = aCopy->Value(aU, aV);
+    if (!aPnt.IsEqual(aRefPnts(theIndex), Precision::Confusion()))
+    {
+      ++aNbErrors;
+    }
+  });
+  EXPECT_EQ(aNbErrors.load(), 0);
 }
