@@ -28,8 +28,8 @@
 #include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BezierSurface.hxx>
-#include "Geom_EvalRepSurfaceDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
@@ -53,9 +53,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierSurface, Geom_BoundedSurface)
 //=================================================================================================
 
 void Geom_BezierSurface::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -375,7 +375,7 @@ Geom_BezierSurface::Geom_BezierSurface(const Geom_BezierSurface& theOther)
         (theOther.myURational || theOther.myVRational)
           ? NCollection_Array2<double>(theOther.myWeights)
           : BSplSLib::UnitWeights(theOther.myPoles.ColLength(), theOther.myPoles.RowLength())),
-      myEvalRep(Geom_EvalRepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
+      myEvalRep(GeomEval_RepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
       myURational(theOther.myURational),
       myVRational(theOther.myVRational),
       myUMaxDerivInv(theOther.myUMaxDerivInv),
@@ -1346,7 +1346,7 @@ GeomAbs_Shape Geom_BezierSurface::Continuity() const
 gp_Pnt Geom_BezierSurface::EvalD0(const double U, const double V) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -1400,7 +1400,7 @@ gp_Pnt Geom_BezierSurface::EvalD0(const double U, const double V) const
 Geom_Surface::ResD1 Geom_BezierSurface::EvalD1(const double U, const double V) const
 {
   Geom_Surface::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -1458,7 +1458,7 @@ Geom_Surface::ResD1 Geom_BezierSurface::EvalD1(const double U, const double V) c
 Geom_Surface::ResD2 Geom_BezierSurface::EvalD2(const double U, const double V) const
 {
   Geom_Surface::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -1524,7 +1524,7 @@ Geom_Surface::ResD2 Geom_BezierSurface::EvalD2(const double U, const double V) c
 Geom_Surface::ResD3 Geom_BezierSurface::EvalD3(const double U, const double V) const
 {
   Geom_Surface::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -1596,7 +1596,7 @@ Geom_Surface::ResD3 Geom_BezierSurface::EvalD3(const double U, const double V) c
 gp_Vec Geom_BezierSurface::EvalDN(const double U, const double V, const int Nu, const int Nv) const
 {
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }

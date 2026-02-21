@@ -32,7 +32,7 @@ class gp_Trsf;
 class gp_GTrsf2d;
 class Geom_Geometry;
 
-namespace Geom_EvalRepSurfaceDesc
+namespace GeomEval_RepSurfaceDesc
 {
 class Base;
 }
@@ -95,12 +95,12 @@ public:
   bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
 
   //! Returns the current evaluation representation descriptor (may be null).
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
   Standard_EXPORT void SetEvalRepresentation(
-    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+    const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -371,7 +371,7 @@ public:
 
 private:
   occ::handle<Geom_Surface>                  basisSurf;
-  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  occ::handle<GeomEval_RepSurfaceDesc::Base> myEvalRep;
   double                                     offsetValue;
   std::unique_ptr<Geom_OsculatingSurface>    myOscSurf;
   GeomAbs_Shape                              myBasisSurfContinuity;

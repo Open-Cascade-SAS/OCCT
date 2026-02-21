@@ -25,8 +25,8 @@
 #include <Geom_Curve.hxx>
 #include <Geom_CylindricalSurface.hxx>
 #include <Geom_ElementarySurface.hxx>
-#include "Geom_EvalRepSurfaceDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -69,26 +69,26 @@ static const double MyAngularToleranceForG1 = Precision::Angular();
 
 namespace
 {
-occ::handle<Geom_EvalRepSurfaceDesc::Base> makeFullSurfaceRep(
+occ::handle<GeomEval_RepSurfaceDesc::Base> makeFullSurfaceRep(
   const occ::handle<Geom_Surface>& theSurface)
 {
   if (theSurface.IsNull())
   {
-    return occ::handle<Geom_EvalRepSurfaceDesc::Base>();
+    return occ::handle<GeomEval_RepSurfaceDesc::Base>();
   }
-  occ::handle<Geom_EvalRepSurfaceDesc::Full> aDesc = new Geom_EvalRepSurfaceDesc::Full();
+  occ::handle<GeomEval_RepSurfaceDesc::Full> aDesc = new GeomEval_RepSurfaceDesc::Full();
   aDesc->Representation                            = theSurface;
   return aDesc;
 }
 
 occ::handle<Geom_Surface> directRepSurface(const Geom_OffsetSurface& theSurface)
 {
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& aDesc = theSurface.EvalRepresentation();
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& aDesc = theSurface.EvalRepresentation();
   if (aDesc.IsNull())
   {
     return occ::handle<Geom_Surface>();
   }
-  if (aDesc->GetKind() != Geom_EvalRepSurfaceDesc::Base::Kind::Full)
+  if (aDesc->GetKind() != GeomEval_RepSurfaceDesc::Base::Kind::Full)
   {
     return occ::handle<Geom_Surface>();
   }
@@ -99,9 +99,9 @@ occ::handle<Geom_Surface> directRepSurface(const Geom_OffsetSurface& theSurface)
 //=================================================================================================
 
 void Geom_OffsetSurface::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -120,7 +120,7 @@ occ::handle<Geom_Geometry> Geom_OffsetSurface::Copy() const
 
 Geom_OffsetSurface::Geom_OffsetSurface(const Geom_OffsetSurface& theOther)
     : basisSurf(occ::down_cast<Geom_Surface>(theOther.basisSurf->Copy())),
-      myEvalRep(Geom_EvalRepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
+      myEvalRep(GeomEval_RepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
       offsetValue(theOther.offsetValue),
       myOscSurf(theOther.myOscSurf ? std::make_unique<Geom_OsculatingSurface>(*theOther.myOscSurf)
                                    : nullptr),
@@ -347,7 +347,7 @@ gp_Pnt Geom_OffsetSurface::EvalD0(const double U, const double V) const
   }
 #endif
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -371,7 +371,7 @@ Geom_Surface::ResD1 Geom_OffsetSurface::EvalD1(const double U, const double V) c
   }
 #endif
   Geom_Surface::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -403,7 +403,7 @@ Geom_Surface::ResD2 Geom_OffsetSurface::EvalD2(const double U, const double V) c
   }
 #endif
   Geom_Surface::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -437,7 +437,7 @@ Geom_Surface::ResD3 Geom_OffsetSurface::EvalD3(const double U, const double V) c
   }
 #endif
   Geom_Surface::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -477,7 +477,7 @@ gp_Vec Geom_OffsetSurface::EvalDN(const double U, const double V, const int Nu, 
   }
 #endif
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }

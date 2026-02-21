@@ -27,7 +27,7 @@
 class gp_Trsf;
 class Geom_Geometry;
 
-namespace Geom_EvalRepCurveDesc
+namespace GeomEval_RepCurveDesc
 {
 class Base;
 }
@@ -107,12 +107,12 @@ public:
   bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
 
   //! Returns the current evaluation representation descriptor (may be null).
-  const occ::handle<Geom_EvalRepCurveDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+  const occ::handle<GeomEval_RepCurveDesc::Base>& EvalRepresentation() const { return myEvalRep; }
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
   Standard_EXPORT void SetEvalRepresentation(
-    const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc);
+    const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -293,7 +293,7 @@ public:
 
 private:
   occ::handle<Geom_Curve>                  basisCurve;
-  occ::handle<Geom_EvalRepCurveDesc::Base> myEvalRep;
+  occ::handle<GeomEval_RepCurveDesc::Base> myEvalRep;
   gp_Dir                                   direction;
   double                                   offsetValue;
   GeomAbs_Shape                            myBasisCurveContinuity;

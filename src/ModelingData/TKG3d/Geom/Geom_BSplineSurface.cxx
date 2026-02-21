@@ -24,8 +24,8 @@
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
 #include <Geom_BSplineSurface.hxx>
-#include "Geom_EvalRepSurfaceDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
@@ -44,9 +44,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BSplineSurface, Geom_BoundedSurface)
 //=================================================================================================
 
 void Geom_BSplineSurface::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -154,7 +154,7 @@ Geom_BSplineSurface::Geom_BSplineSurface(const Geom_BSplineSurface& theOther)
       myVFlatKnots(theOther.myVFlatKnots),
       myUMults(theOther.myUMults),
       myVMults(theOther.myVMults),
-      myEvalRep(Geom_EvalRepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
+      myEvalRep(GeomEval_RepUtils::CloneSurfaceDesc(theOther.myEvalRep)),
       myUDeg(theOther.myUDeg),
       myVDeg(theOther.myVDeg),
       myUPeriodic(theOther.myUPeriodic),

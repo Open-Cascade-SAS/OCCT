@@ -18,8 +18,8 @@
 #include <BSplSLib.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_Curve.hxx>
-#include "Geom_EvalRepSurfaceDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include "Geom_ExtrusionUtils.pxx"
 #include <Geom_Geometry.hxx>
 #include <Geom_Line.hxx>
@@ -59,9 +59,9 @@ typedef gp_XYZ                        XYZ;
 //=================================================================================================
 
 void Geom_SurfaceOfLinearExtrusion::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -71,7 +71,7 @@ occ::handle<Geom_Geometry> Geom_SurfaceOfLinearExtrusion::Copy() const
 {
   occ::handle<Geom_SurfaceOfLinearExtrusion> aCopy =
     new SurfaceOfLinearExtrusion(basisCurve, direction);
-  aCopy->myEvalRep = Geom_EvalRepUtils::CloneSurfaceDesc(myEvalRep);
+  aCopy->myEvalRep = GeomEval_RepUtils::CloneSurfaceDesc(myEvalRep);
   return aCopy;
 }
 
@@ -150,7 +150,7 @@ void Geom_SurfaceOfLinearExtrusion::Bounds(double& U1, double& U2, double& V1, d
 gp_Pnt Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, const double V) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -166,7 +166,7 @@ gp_Pnt Geom_SurfaceOfLinearExtrusion::EvalD0(const double U, const double V) con
 Geom_Surface::ResD1 Geom_SurfaceOfLinearExtrusion::EvalD1(const double U, const double V) const
 {
   Geom_Surface::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -188,7 +188,7 @@ Geom_Surface::ResD1 Geom_SurfaceOfLinearExtrusion::EvalD1(const double U, const 
 Geom_Surface::ResD2 Geom_SurfaceOfLinearExtrusion::EvalD2(const double U, const double V) const
 {
   Geom_Surface::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -214,7 +214,7 @@ Geom_Surface::ResD2 Geom_SurfaceOfLinearExtrusion::EvalD2(const double U, const 
 Geom_Surface::ResD3 Geom_SurfaceOfLinearExtrusion::EvalD3(const double U, const double V) const
 {
   Geom_Surface::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -251,7 +251,7 @@ gp_Vec Geom_SurfaceOfLinearExtrusion::EvalDN(const double U,
     throw Geom_UndefinedDerivative();
 
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }
