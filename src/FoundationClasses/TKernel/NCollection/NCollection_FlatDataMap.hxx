@@ -39,10 +39,20 @@
  * - Power-of-2 sizing for fast modulo operations
  * - No per-element allocations
  *
- * Best suited for:
+ * Typical faster usage patterns:
  * - POD or small key/value types
  * - Performance-critical code paths
  * - Lookup-heavy workloads
+ * - Full traversal / iteration-heavy workloads
+ * - Stable-size maps with Reserve() called once before bulk Bind()
+ *
+ * Container-specific implementation notes:
+ * - UnBind() keeps probe clusters consistent using backward-shift compaction.
+ *
+ * Relative to NCollection_DataMap:
+ * - Bind()/UnBind() can be faster in many workloads thanks to contiguous storage and
+ *   no per-element node allocation.
+ * - Iteration is often faster due to contiguous slot scanning and reduced pointer chasing.
  *
  * Limitations:
  * - Keys and values must be movable
@@ -83,11 +93,11 @@ private:
 #endif
   struct Slot
   {
-    alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)];
-    alignas(TheItemType) char myItemStorage[sizeof(TheItemType)];
     size_t myHash; //!< Cached hash code
     //! Distance from ideal bucket plus one; 0 means Empty, otherwise Used.
     size_t myProbeDistancePlus1;
+    alignas(TheKeyType) char myKeyStorage[sizeof(TheKeyType)];
+    alignas(TheItemType) char myItemStorage[sizeof(TheItemType)];
 
     Slot() noexcept
         : myHash(0),
@@ -832,13 +842,11 @@ private:
   //! @return true if key was found
   bool findSlotIndex(const TheKeyType& theKey, size_t& theIndex) const
   {
-    const size_t aHash     = myHasher(theKey);
-    const size_t aMask     = myCapacity - 1;
-    size_t       aIndex    = aHash & aMask;
-    size_t       aProbe    = 0;
-    const size_t aMaxProbe = myCapacity;
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
 
-    while (aProbe < aMaxProbe)
+    while (true)
     {
       const Slot& aSlot = mySlots[aIndex];
 
@@ -852,16 +860,8 @@ private:
         theIndex = aIndex;
         return true;
       }
-
-      if (aProbe > aSlot.ProbeDistance())
-      {
-        return false;
-      }
-
-      ++aProbe;
       aIndex = (aIndex + 1) & aMask;
     }
-    return false;
   }
 
   template <typename K, typename V, bool CheckExisting, bool UpdateExisting>

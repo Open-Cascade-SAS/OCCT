@@ -37,10 +37,20 @@
  * - Power-of-2 sizing for fast modulo operations
  * - No per-element allocations
  *
- * Best suited for:
+ * Typical faster usage patterns:
  * - POD or small key types
  * - Performance-critical code paths
- * - Membership testing workloads
+ * - Lookup-heavy workloads (Contains()/Seek())
+ * - Full traversal / iteration-heavy workloads
+ * - Stable-size maps with Reserve() called once before bulk insert
+ *
+ * Container-specific implementation notes:
+ * - Remove() keeps probe clusters consistent using backward-shift compaction.
+ *
+ * Relative to NCollection_Map:
+ * - Add()/Remove() can be faster in many workloads thanks to contiguous storage and
+ *   no per-element node allocation.
+ * - Iteration is often faster due to contiguous slot scanning and reduced pointer chasing.
  *
  * Limitations:
  * - Keys must be movable
@@ -606,13 +616,11 @@ private:
   //! @return true if key was found
   bool findSlotIndex(const TheKeyType& theKey, size_t& theIndex) const
   {
-    const size_t aHash     = myHasher(theKey);
-    const size_t aMask     = myCapacity - 1;
-    size_t       aIndex    = aHash & aMask;
-    size_t       aProbe    = 0;
-    const size_t aMaxProbe = myCapacity;
+    const size_t aHash  = myHasher(theKey);
+    const size_t aMask  = myCapacity - 1;
+    size_t       aIndex = aHash & aMask;
 
-    while (aProbe < aMaxProbe)
+    while (true)
     {
       const Slot& aSlot = mySlots[aIndex];
 
@@ -626,17 +634,8 @@ private:
         theIndex = aIndex;
         return true;
       }
-
-      // Robin Hood optimization: if current probe > slot's probe, key can't exist further
-      if (aProbe > aSlot.ProbeDistance())
-      {
-        return false;
-      }
-
-      ++aProbe;
       aIndex = (aIndex + 1) & aMask;
     }
-    return false;
   }
 
   template <typename K, bool CheckExisting>
