@@ -49,7 +49,10 @@
 static bool IsGrowthShell(const TopoDS_Shape&,
                           const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&);
 static bool IsHole(const TopoDS_Shape&, occ::handle<IntTools_Context>&);
-static bool IsInside(const TopoDS_Shape&, const TopoDS_Shape&, occ::handle<IntTools_Context>&);
+static bool IsInside(const TopoDS_Shape&,
+                     const TopoDS_Shape&,
+                     const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&,
+                     occ::handle<IntTools_Context>&);
 static void MakeInternalShells(const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>&,
                                NCollection_List<TopoDS_Shape>&);
 
@@ -478,6 +481,19 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
   // Find outer growth shell that is most close to each hole shell
   NCollection_IndexedDataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher> aHoleSolidMap;
 
+  // Pre-compute edge bounds for each solid to avoid redundant TopExp::MapShapes
+  // calls when the same solid is checked against multiple holes.
+  NCollection_DataMap<TopoDS_Shape,
+                      NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>,
+                      TopTools_ShapeMapHasher>
+    aSolidEdgesCache;
+  for (NCollection_List<TopoDS_Shape>::Iterator aIt(aNewSolids); aIt.More(); aIt.Next())
+  {
+    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> anEdges;
+    TopExp::MapShapes(aIt.Value(), TopAbs_EDGE, anEdges);
+    aSolidEdgesCache.Bind(aIt.Value(), anEdges);
+  }
+
   Message_ProgressScope aPSH(aMainScope.Next(4), "Adding holes", aNewSolids.Size());
   NCollection_List<TopoDS_Shape>::Iterator aItLS(aNewSolids);
   for (; aItLS.More(); aItLS.Next(), aPSH.Next())
@@ -499,6 +515,9 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
     aSelector.SetBVHSet(&aBBTree);
     aSelector.Select();
 
+    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& aSolidEdges =
+      aSolidEdgesCache.Find(aSolid);
+
     const NCollection_List<int>&    aLI = aSelector.Indices();
     NCollection_List<int>::Iterator aItLI(aLI);
     for (; aItLI.More(); aItLI.Next())
@@ -506,14 +525,14 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
       int                 k     = aItLI.Value();
       const TopoDS_Shape& aHole = aHoleShells(k);
       // Check if it is inside
-      if (!IsInside(aHole, aSolid, myContext))
+      if (!IsInside(aHole, aSolid, aSolidEdges, myContext))
         continue;
 
       // Save the relation
       TopoDS_Shape* pSolidWas = aHoleSolidMap.ChangeSeek(aHole);
       if (pSolidWas)
       {
-        if (IsInside(aSolid, *pSolidWas, myContext))
+        if (IsInside(aSolid, *pSolidWas, aSolidEdgesCache.Find(*pSolidWas), myContext))
         {
           *pSolidWas = aSolid;
         }
@@ -808,9 +827,10 @@ bool IsHole(const TopoDS_Shape& theS2, occ::handle<IntTools_Context>& theContext
 
 //=================================================================================================
 
-bool IsInside(const TopoDS_Shape&            theS1,
-              const TopoDS_Shape&            theS2,
-              occ::handle<IntTools_Context>& theContext)
+bool IsInside(const TopoDS_Shape&                                                  theS1,
+              const TopoDS_Shape&                                                  theS2,
+              const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theSolidEdges,
+              occ::handle<IntTools_Context>&                                       theContext)
 {
   TopExp_Explorer aExp;
   TopAbs_State    aState;
@@ -826,11 +846,9 @@ bool IsInside(const TopoDS_Shape&            theS1,
   }
   else
   {
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> aBounds;
-    TopExp::MapShapes(*pS2, TopAbs_EDGE, aBounds);
     const TopoDS_Face& aF = (*(TopoDS_Face*)(&aExp.Current()));
     aState =
-      BOPTools_AlgoTools::ComputeState(aF, *pS2, Precision::Confusion(), aBounds, theContext);
+      BOPTools_AlgoTools::ComputeState(aF, *pS2, Precision::Confusion(), theSolidEdges, theContext);
   }
   return (aState == TopAbs_IN);
 }

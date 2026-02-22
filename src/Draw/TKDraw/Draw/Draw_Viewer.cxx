@@ -21,34 +21,37 @@
 #include <gp_Pnt2d.hxx>
 #include <Draw_Window.hxx>
 #include <Draw_Display.hxx>
+#include <NCollection_Allocator.hxx>
+
+#include <vector>
+
+using XSegmentVectorType = std::vector<Draw_XSegment, NCollection_Allocator<Draw_XSegment>>;
 
 #define precpers 0.95
 #define ButtonPress 4
 #define MotionNotify 6
-static const double  DRAWINFINITE = 1e50;
-Standard_EXPORT bool Draw_Bounds  = true;
-extern bool          Draw_Batch;
-const int            MAXSEGMENT = 1000;
-Draw_XSegment        segm[MAXSEGMENT];
-static int           nbseg     = 0;
-static Draw_View*    curview   = nullptr;
-static int           curviewId = 0;
-static char          blank[2]  = "";
-static double        xmin, xmax, ymin, ymax;
-static bool          found = false;
-static int           xpick, ypick, precpick;
-static gp_Pnt        lastPickP1;
-static gp_Pnt        lastPickP2;
-static double        lastPickParam;
-static Draw_Color    highlightcol;
-static Draw_Color    currentcolor;
-static bool          highlight = false;
-static int           ps_vx, ps_vy;
-static double        ps_kx, ps_ky;
-static int           ps_px, ps_py;
-static std::ostream* ps_stream;
-static int           ps_width[MAXCOLOR];
-static double        ps_gray[MAXCOLOR];
+static const double       DRAWINFINITE = 1e50;
+Standard_EXPORT bool      Draw_Bounds  = true;
+extern bool               Draw_Batch;
+static XSegmentVectorType segm(1000);
+static Draw_View*         curview   = nullptr;
+static int                curviewId = 0;
+static char               blank[2]  = "";
+static double             xmin, xmax, ymin, ymax;
+static bool               found = false;
+static int                xpick, ypick, precpick;
+static gp_Pnt             lastPickP1;
+static gp_Pnt             lastPickP2;
+static double             lastPickParam;
+static Draw_Color         highlightcol;
+static Draw_Color         currentcolor;
+static bool               highlight = false;
+static int                ps_vx, ps_vy;
+static double             ps_kx, ps_ky;
+static int                ps_px, ps_py;
+static std::ostream*      ps_stream;
+static int                ps_width[MAXCOLOR];
+static double             ps_gray[MAXCOLOR];
 
 enum DrawingMode
 {
@@ -887,7 +890,7 @@ Draw_Display Draw_Viewer::MakeDisplay(const int id) const
   }
   curviewId = id;
   curview   = myViews[id];
-  nbseg     = 0;
+  segm.clear();
   Draw_Color initcol(Draw_blanc);
   // to force setting the color
   currentcolor = Draw_Color(Draw_rouge);
@@ -1167,10 +1170,12 @@ void Draw_Flush()
 {
   if (Draw_Batch)
     return;
+  if (segm.empty())
+    return;
   if (highlight)
     curview->SetColor(highlightcol.ID());
-  curview->DrawSegments(segm, nbseg);
-  nbseg = 0;
+  curview->DrawSegments(segm.data(), static_cast<int>(segm.size()));
+  segm.clear();
 }
 
 //=================================================================================================
@@ -1540,7 +1545,6 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
 
     case DRAW: {
 
-#if 1
       int x0, y0, x1, y1;
       curview->GetFrame(x0, y0, x1, y1);
 
@@ -1555,23 +1559,12 @@ void Draw_Display::DrawTo(const gp_Pnt2d& pp2)
 
       if (Trim(PI1, PI2, x0, y0, x1, y1))
       {
-        segm[nbseg].Init(static_cast<int>(PI1.X() + curview->GetDx()),
-                         static_cast<int>(-PI1.Y() - curview->GetDy()),
-                         static_cast<int>(PI2.X() + curview->GetDx()),
-                         static_cast<int>(-PI2.Y() - curview->GetDy()));
-        ++nbseg;
+        segm.emplace_back(static_cast<short>(PI1.X() + curview->GetDx()),
+                          static_cast<short>(-PI1.Y() - curview->GetDy()),
+                          static_cast<short>(PI2.X() + curview->GetDx()),
+                          static_cast<short>(-PI2.Y() - curview->GetDy()));
       }
-#else
-      segm[nbseg].Init(static_cast<int>(p1.X() + curview->GetDx()),
-                       static_cast<int>(-p1.Y() - curview->GetDy()),
-                       static_cast<int>(p2.X() + curview->GetDx()),
-                       static_cast<int>(-p2.Y() - curview->GetDy()));
-      nbseg++;
-#endif
-      if (nbseg == MAXSEGMENT)
-      {
-        Draw_Flush();
-      }
+
       if (Draw_Bounds)
       {
         if (p2.X() > xmax)
