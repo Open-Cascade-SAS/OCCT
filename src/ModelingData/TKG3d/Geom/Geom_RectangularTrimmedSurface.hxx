@@ -186,10 +186,14 @@ public:
   //! CN : the order of continuity is infinite.
   Standard_EXPORT GeomAbs_Shape Continuity() const final;
 
-  //! Returns true if this patch is closed in the given parametric direction.
+  //! Returns true if this patch is closed in U: either not trimmed in U
+  //! and the basis surface is U-closed, or trimmed with a length that is
+  //! an integer multiple of the U period of a U-periodic basis surface.
   Standard_EXPORT bool IsUClosed() const final;
 
-  //! Returns true if this patch is closed in the given parametric direction.
+  //! Returns true if this patch is closed in V: either not trimmed in V
+  //! and the basis surface is V-closed, or trimmed with a length that is
+  //! an integer multiple of the V period of a V-periodic basis surface.
   Standard_EXPORT bool IsVClosed() const final;
 
   //! Returns true if the order of derivation in the U parametric
@@ -202,8 +206,8 @@ public:
   //! Raised if N < 0.
   Standard_EXPORT bool IsCNv(const int N) const final;
 
-  //! Returns true if this patch is periodic and not trimmed in the given
-  //! parametric direction.
+  //! Returns true if the basis surface is U-periodic and either not trimmed
+  //! in U, or the trim spans an integer multiple of the U period.
   Standard_EXPORT bool IsUPeriodic() const final;
 
   //! Returns the period of this patch in the u
@@ -211,8 +215,8 @@ public:
   //! raises if the surface is not uperiodic.
   Standard_EXPORT double UPeriod() const final;
 
-  //! Returns true if this patch is periodic and not trimmed in the given
-  //! parametric direction.
+  //! Returns true if the basis surface is V-periodic and either not trimmed
+  //! in V, or the trim spans an integer multiple of the V period.
   Standard_EXPORT bool IsVPeriodic() const final;
 
   //! Returns the period of this patch in the v

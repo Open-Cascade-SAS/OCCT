@@ -144,14 +144,29 @@ void Geom_TrimmedCurve::SetTrim(const double U1,
 
 bool Geom_TrimmedCurve::IsClosed() const
 {
-  return (StartPoint().Distance(EndPoint()) <= gp::Resolution());
+  if (basisCurve->IsPeriodic())
+  {
+    const double aPeriod = basisCurve->Period();
+    const double aLength = LastParameter() - FirstParameter();
+    if (aLength > Precision::PConfusion()
+        && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+      return true;
+  }
+  return StartPoint().SquareDistance(EndPoint()) <= Precision::SquareComputational();
 }
 
 //=================================================================================================
 
 bool Geom_TrimmedCurve::IsPeriodic() const
 {
-  // return basisCurve->IsPeriodic();
+  if (basisCurve->IsPeriodic())
+  {
+    const double aPeriod = basisCurve->Period();
+    const double aLength = LastParameter() - FirstParameter();
+    if (aLength > Precision::PConfusion()
+        && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+      return true;
+  }
   return false;
 }
 

@@ -151,12 +151,13 @@ public:
   //! of the trimmed curve.
   Standard_EXPORT double FirstParameter() const final;
 
-  //! Returns True if the distance between the StartPoint and
-  //! the EndPoint is lower or equal to Resolution from package
-  //! gp.
+  //! Returns TRUE if the basis curve is periodic and the trim spans
+  //! exactly one full period, or if the distance between the StartPoint
+  //! and the EndPoint is within computational precision.
   Standard_EXPORT bool IsClosed() const final;
 
-  //! Always returns FALSE (independently of the type of basis curve).
+  //! Returns TRUE if the basis curve is periodic and the trim
+  //! spans exactly one full period. Returns FALSE otherwise.
   Standard_EXPORT bool IsPeriodic() const final;
 
   //! Returns the period of the basis curve of this trimmed curve.

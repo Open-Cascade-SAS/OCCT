@@ -476,15 +476,18 @@ void Geom_RectangularTrimmedSurface::Transform(const Trsf& T)
   basisSurf->TransformParameters(utrim2, vtrim2, T);
 }
 
-//=======================================================================
-// function : IsUPeriodic
-// purpose  :
-// 24/11/98: pmn : Compare la periode a la longeur de l'intervalle
-//=======================================================================
+//=================================================================================================
 
 bool Geom_RectangularTrimmedSurface::IsUPeriodic() const
 {
-  return basisSurf->IsUPeriodic() && !isutrimmed;
+  if (!basisSurf->IsUPeriodic())
+    return false;
+  if (!isutrimmed)
+    return true;
+  const double aPeriod = basisSurf->UPeriod();
+  const double aLength = utrim2 - utrim1;
+  return aLength > Precision::PConfusion()
+         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion();
 }
 
 //=================================================================================================
@@ -498,7 +501,14 @@ double Geom_RectangularTrimmedSurface::UPeriod() const
 
 bool Geom_RectangularTrimmedSurface::IsVPeriodic() const
 {
-  return basisSurf->IsVPeriodic() && !isvtrimmed;
+  if (!basisSurf->IsVPeriodic())
+    return false;
+  if (!isvtrimmed)
+    return true;
+  const double aPeriod = basisSurf->VPeriod();
+  const double aLength = vtrim2 - vtrim1;
+  return aLength > Precision::PConfusion()
+         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion();
 }
 
 //=================================================================================================
@@ -512,22 +522,34 @@ double Geom_RectangularTrimmedSurface::VPeriod() const
 
 bool Geom_RectangularTrimmedSurface::IsUClosed() const
 {
-
-  if (isutrimmed)
-    return false;
-  else
+  if (!isutrimmed)
     return basisSurf->IsUClosed();
+  if (basisSurf->IsUPeriodic())
+  {
+    const double aPeriod = basisSurf->UPeriod();
+    const double aLength = utrim2 - utrim1;
+    if (aLength > Precision::PConfusion()
+        && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+      return true;
+  }
+  return false;
 }
 
 //=================================================================================================
 
 bool Geom_RectangularTrimmedSurface::IsVClosed() const
 {
-
-  if (isvtrimmed)
-    return false;
-  else
+  if (!isvtrimmed)
     return basisSurf->IsVClosed();
+  if (basisSurf->IsVPeriodic())
+  {
+    const double aPeriod = basisSurf->VPeriod();
+    const double aLength = vtrim2 - vtrim1;
+    if (aLength > Precision::PConfusion()
+        && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+      return true;
+  }
+  return false;
 }
 
 //=================================================================================================
