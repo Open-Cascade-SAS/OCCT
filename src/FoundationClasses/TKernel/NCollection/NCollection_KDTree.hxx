@@ -181,13 +181,13 @@ public:
   //! Clears the tree.
   void Clear()
   {
-    mySize = 0;
-    myPoints.Resize(1, 0, false);
-    myIndices.Resize(1, 0, false);
+    mySize    = 0;
+    myPoints  = NCollection_Array1<ThePointType>();
+    myIndices = NCollection_Array1<size_t>();
     if constexpr (HasRadii)
     {
-      myRadii.Resize(1, 0, false);
-      myMaxRadius.Resize(1, 0, false);
+      myRadii     = NCollection_Array1<double>();
+      myMaxRadius = NCollection_Array1<double>();
     }
   }
 
@@ -315,8 +315,8 @@ public:
   {
     if (IsEmpty() || theK == 0)
     {
-      theIndices.Resize(1, 0, false);
-      theSqDistances.Resize(1, 0, false);
+      theIndices     = NCollection_Array1<size_t>();
+      theSqDistances = NCollection_Array1<double>();
       return 0;
     }
     const size_t anActualK = std::min(theK, mySize);
