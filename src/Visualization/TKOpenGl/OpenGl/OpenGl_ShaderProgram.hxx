@@ -496,6 +496,23 @@ public:
                                   GLuint                             theCount,
                                   const NCollection_Mat3<float>*     theData);
 
+  //! Specifies the value of the float uniform 3x3 matrix.
+  //! Wrapper for glUniformMatrix3fv()
+  bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                  const GLchar*                      theName,
+                  const NCollection_Mat3<float>&     theValue,
+                  GLboolean                          theTranspose = GL_FALSE)
+  {
+    return SetUniform(theCtx, GetUniformLocation(theCtx, theName), theValue, theTranspose);
+  }
+
+  //! Specifies the value of the float uniform 3x3 matrix.
+  //! Wrapper for glUniformMatrix3fv()
+  Standard_EXPORT bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                                  GLint                              theLocation,
+                                  const NCollection_Mat3<float>&     theValue,
+                                  GLboolean                          theTranspose = GL_FALSE);
+
   //! Specifies the value of the float uniform 4x4 matrix.
   //! Wrapper for glUniformMatrix4fv()
   bool SetUniform(const occ::handle<OpenGl_Context>& theCtx,

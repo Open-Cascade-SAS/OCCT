@@ -24,6 +24,7 @@
 
 #include <NCollection_Vec4.hxx>
 
+#include <NCollection_Mat3.hxx>
 #include <NCollection_Mat4.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
@@ -101,6 +102,18 @@ struct Graphic3d_UniformValueTypeID<NCollection_Vec4<int>>
   static const size_t ID = __LINE__;
 };
 
+template <>
+struct Graphic3d_UniformValueTypeID<NCollection_Mat3<float>>
+{
+  static const size_t ID = __LINE__;
+};
+
+template <>
+struct Graphic3d_UniformValueTypeID<NCollection_Mat4<float>>
+{
+  static const size_t ID = __LINE__;
+};
+
 //! Describes specific value of custom uniform variable.
 template <class T>
 struct Graphic3d_UniformValue : public Graphic3d_ValueInterface
@@ -141,6 +154,12 @@ typedef Graphic3d_UniformValue<NCollection_Vec3<float>> Graphic3d_UniformVec3;
 
 //! Floating-point uniform 4D vector.
 typedef Graphic3d_UniformValue<NCollection_Vec4<float>> Graphic3d_UniformVec4;
+
+//! Floating-point uniform 3x3 matrix.
+typedef Graphic3d_UniformValue<NCollection_Mat3<float>> Graphic3d_UniformMat3;
+
+//! Floating-point uniform 4x4 matrix.
+typedef Graphic3d_UniformValue<NCollection_Mat4<float>> Graphic3d_UniformMat4;
 
 //! Describes custom uniform shader variable.
 class Graphic3d_ShaderVariable : public Standard_Transient

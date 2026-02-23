@@ -135,7 +135,11 @@ OpenGl_VariableSetterSelector::OpenGl_VariableSetterSelector()
     Graphic3d_UniformValueTypeID<NCollection_Vec3<int>>::ID,
     new OpenGl_VariableSetter<NCollection_Vec3<int>>())(
     Graphic3d_UniformValueTypeID<NCollection_Vec4<int>>::ID,
-    new OpenGl_VariableSetter<NCollection_Vec4<int>>());
+    new OpenGl_VariableSetter<NCollection_Vec4<int>>())(
+    Graphic3d_UniformValueTypeID<NCollection_Mat3<float>>::ID,
+    new OpenGl_VariableSetter<NCollection_Mat3<float>>())(
+    Graphic3d_UniformValueTypeID<NCollection_Mat4<float>>::ID,
+    new OpenGl_VariableSetter<NCollection_Mat4<float>>());
 }
 
 // =======================================================================
@@ -1264,6 +1268,26 @@ bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
   }
 
   theCtx->core20fwd->glUniformMatrix3fv(theLocation, theCount, GL_FALSE, theData->GetData());
+  return true;
+}
+
+//=================================================================================================
+
+bool OpenGl_ShaderProgram::SetUniform(const occ::handle<OpenGl_Context>& theCtx,
+                                      GLint                              theLocation,
+                                      const NCollection_Mat3<float>&     theValue,
+                                      GLboolean                          theTranspose)
+{
+  if (myProgramID == NO_PROGRAM || theLocation == INVALID_LOCATION)
+  {
+    return false;
+  }
+
+  theCtx->core20fwd->glUniformMatrix3fv(theLocation,
+                                        1,
+                                        GL_FALSE,
+                                        theTranspose ? theValue.Transposed().GetData()
+                                                     : theValue.GetData());
   return true;
 }
 

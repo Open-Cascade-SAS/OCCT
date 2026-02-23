@@ -26,6 +26,8 @@ template struct Graphic3d_UniformValue<NCollection_Vec4<float>>;
 template struct Graphic3d_UniformValue<NCollection_Vec2<int>>;
 template struct Graphic3d_UniformValue<NCollection_Vec3<int>>;
 template struct Graphic3d_UniformValue<NCollection_Vec4<int>>;
+template struct Graphic3d_UniformValue<NCollection_Mat3<float>>;
+template struct Graphic3d_UniformValue<NCollection_Mat4<float>>;
 
 // =======================================================================
 // function : ~Graphic3d_ValueInterface

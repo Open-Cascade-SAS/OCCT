@@ -25,6 +25,8 @@
 #include <V3d_View.hxx>
 #include <V3d_Viewer.hxx>
 
+#include <NCollection_Mat3.hxx>
+#include <NCollection_Mat4.hxx>
 #include <Standard_Transient.hxx>
 #include <TCollection_AsciiString.hxx>
 #include <NCollection_DoubleMap.hxx>
@@ -295,6 +297,59 @@ static int VShaderProg(Draw_Interpretor&, int theArgNb, const char** theArgVec)
     {
       TCollection_AsciiString aName = theArgVec[++anArgIter];
       aProgram->PushVariableFloat(aName, float(Draw::Atof(theArgVec[++anArgIter])));
+    }
+    else if (!aProgram.IsNull() && anArg == "-vec2" && anArgIter + 3 < theArgNb)
+    {
+      const TCollection_AsciiString aName = theArgVec[++anArgIter];
+      const NCollection_Vec2<float> aVec(float(Draw::Atof(theArgVec[anArgIter + 1])),
+                                         float(Draw::Atof(theArgVec[anArgIter + 2])));
+      anArgIter += 2;
+      aProgram->PushVariableVec2(aName, aVec);
+    }
+    else if (!aProgram.IsNull() && anArg == "-vec3" && anArgIter + 4 < theArgNb)
+    {
+      const TCollection_AsciiString aName = theArgVec[++anArgIter];
+      const NCollection_Vec3<float> aVec(float(Draw::Atof(theArgVec[anArgIter + 1])),
+                                         float(Draw::Atof(theArgVec[anArgIter + 2])),
+                                         float(Draw::Atof(theArgVec[anArgIter + 3])));
+      anArgIter += 3;
+      aProgram->PushVariableVec3(aName, aVec);
+    }
+    else if (!aProgram.IsNull() && anArg == "-vec4" && anArgIter + 5 < theArgNb)
+    {
+      const TCollection_AsciiString aName = theArgVec[++anArgIter];
+      const NCollection_Vec4<float> aVec(float(Draw::Atof(theArgVec[anArgIter + 1])),
+                                         float(Draw::Atof(theArgVec[anArgIter + 2])),
+                                         float(Draw::Atof(theArgVec[anArgIter + 3])),
+                                         float(Draw::Atof(theArgVec[anArgIter + 4])));
+      anArgIter += 4;
+      aProgram->PushVariableVec4(aName, aVec);
+    }
+    else if (!aProgram.IsNull() && anArg == "-mat3" && anArgIter + 10 < theArgNb)
+    {
+      const TCollection_AsciiString aName = theArgVec[++anArgIter];
+      NCollection_Mat3<float>       aMat;
+      for (int aRowIter = 0; aRowIter < 3; ++aRowIter)
+      {
+        for (int aColIter = 0; aColIter < 3; ++aColIter)
+        {
+          aMat.SetValue(aRowIter, aColIter, float(Draw::Atof(theArgVec[++anArgIter])));
+        }
+      }
+      aProgram->PushVariableMat3(aName, aMat);
+    }
+    else if (!aProgram.IsNull() && anArg == "-mat4" && anArgIter + 17 < theArgNb)
+    {
+      const TCollection_AsciiString aName = theArgVec[++anArgIter];
+      NCollection_Mat4<float>       aMat;
+      for (int aRowIter = 0; aRowIter < 4; ++aRowIter)
+      {
+        for (int aColIter = 0; aColIter < 4; ++aColIter)
+        {
+          aMat.SetValue(aRowIter, aColIter, float(Draw::Atof(theArgVec[++anArgIter])));
+        }
+      }
+      aProgram->PushVariableMat4(aName, aMat);
     }
     else if (!aProgram.IsNull() && aProgram->ShaderObjects().IsEmpty()
              && (anArg == "-off" || anArg == "off"))
@@ -1175,6 +1230,8 @@ vshader name -vert VertexShader -frag FragmentShader [-geom GeometryShader]
         [-header VersionHeader]
         [-tessControl TessControlShader -tessEval TessEvaluationShader]
         [-uniform Name FloatValue]
+        [-vec2 Name X Y] [-vec3 Name X Y Z] [-vec4 Name X Y Z W]
+        [-mat3 Name V1..V9] [-mat4 Name V1..V16]
         [-defaultSampler {0|1}]=1
 Assign custom GLSL program to presentation aspects.
 )" /* [vshader] */);

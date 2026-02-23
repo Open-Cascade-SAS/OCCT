@@ -244,6 +244,20 @@ public:
     return PushVariable(theName, theValue);
   }
 
+  //! Pushes mat3 uniform.
+  bool PushVariableMat3(const TCollection_AsciiString& theName,
+                        const NCollection_Mat3<float>& theValue)
+  {
+    return PushVariable(theName, theValue);
+  }
+
+  //! Pushes mat4 uniform.
+  bool PushVariableMat4(const TCollection_AsciiString& theName,
+                        const NCollection_Mat4<float>& theValue)
+  {
+    return PushVariable(theName, theValue);
+  }
+
 public:
   //! The path to GLSL programs determined from CSF_ShadersDirectory or CASROOT environment
   //! variables.
