@@ -20,6 +20,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_EllipsoidSurface, Geom_ElementarySurface)
 
 //==================================================================================================

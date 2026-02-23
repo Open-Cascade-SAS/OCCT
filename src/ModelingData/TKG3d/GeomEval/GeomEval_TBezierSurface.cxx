@@ -21,7 +21,10 @@
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
+
+#include <cmath>
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_TBezierSurface, Geom_BoundedSurface)
 
@@ -895,7 +898,7 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
-    throw Geom_UndefinedDerivative("GeomEval_TBezierSurface::EvalDN: invalid derivative order");
+    throw Standard_RangeError("GeomEval_TBezierSurface::EvalDN: invalid derivative order");
   }
 
   // For non-rational surfaces, compute directly from basis derivatives.

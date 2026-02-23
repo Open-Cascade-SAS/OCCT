@@ -12,15 +12,16 @@
 // commercial license or contractual agreement.
 
 #include <GeomEval_HyperboloidSurface.hxx>
+
 #include <Geom_UndefinedDerivative.hxx>
-#include <Precision.hxx>
-#include <Standard_ConstructionError.hxx>
-#include <Standard_NotImplemented.hxx>
-#include <Standard_Type.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
+#include <Precision.hxx>
+#include <Standard_ConstructionError.hxx>
+#include <Standard_NotImplemented.hxx>
+#include <Standard_Type.hxx>
 
 #include <cmath>
 

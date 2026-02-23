@@ -13,14 +13,16 @@
 
 #include <Geom2dEval_TBezierCurve.hxx>
 
-#include <Geom2d_UndefinedDerivative.hxx>
 #include <gp_Trsf2d.hxx>
 #include <gp_Vec2d.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_Dump.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
+
+#include <cmath>
 
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_TBezierCurve, Geom2d_BoundedCurve)
 
@@ -578,8 +580,7 @@ gp_Vec2d Geom2dEval_TBezierCurve::EvalDN(const double U, const int N) const
 {
   if (N < 1)
   {
-    throw Geom2d_UndefinedDerivative(
-      "Geom2dEval_TBezierCurve::EvalDN: derivative order must be >= 1");
+    throw Standard_RangeError("Geom2dEval_TBezierCurve::EvalDN: derivative order must be >= 1");
   }
 
   // For non-rational curves, compute directly.

@@ -80,10 +80,6 @@ public:
   //! Returns false.
   Standard_EXPORT bool IsPeriodic() const final;
 
-  //! Not available for non-periodic curve.
-  //! @throw Standard_NoSuchObject
-  Standard_EXPORT double Period() const final;
-
   //! Returns GeomAbs_CN.
   Standard_EXPORT GeomAbs_Shape Continuity() const final;
 

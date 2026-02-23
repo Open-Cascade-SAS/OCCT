@@ -56,13 +56,12 @@ public:
   //! Returns the pitch (axial advance per 2*Pi turn).
   Standard_EXPORT double Pitch() const;
 
-  //! Reverses the direction of parametrization.
-  //! Negates XDir and the pitch.
+  //! Reversal of parametrization is not supported for this eval geometry.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT void Reverse() final;
 
-  //! Returns the parameter on the reversed curve for
-  //! the point of parameter U on this curve.
-  //! @return -U
+  //! Reversal of parametrization is not supported for this eval geometry.
+  //! @throw Standard_NotImplemented
   Standard_EXPORT double ReversedParameter(const double U) const final;
 
   //! Returns -Precision::Infinite().

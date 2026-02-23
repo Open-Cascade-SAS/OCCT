@@ -14,12 +14,12 @@
 #include <GeomEval_AHTBezierSurface.hxx>
 
 #include <NCollection_LocalArray.hxx>
-#include <Geom_UndefinedDerivative.hxx>
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 #include <Standard_NotImplemented.hxx>
+#include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
 #include <algorithm>
@@ -1105,7 +1105,7 @@ gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
 {
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
   {
-    throw Geom_UndefinedDerivative("GeomEval_AHTBezierSurface::EvalDN: invalid derivative order");
+    throw Standard_RangeError("GeomEval_AHTBezierSurface::EvalDN: invalid derivative order");
   }
 
   const int aTotOrd = Nu + Nv;

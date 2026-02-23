@@ -131,7 +131,7 @@ public:
   //! @param[in] U parameter value
   //! @param[in] N derivative order (must be >= 1)
   //! @return the N-th derivative vector
-  //! @throw Geom2d_UndefinedDerivative if N < 1
+  //! @throw Standard_RangeError if N < 1
   Standard_EXPORT gp_Vec2d EvalDN(const double U, const int N) const final;
 
   //! Transformation is not supported for this eval geometry.

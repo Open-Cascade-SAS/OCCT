@@ -163,7 +163,7 @@ public:
   //! @param[in] Nu derivative order in U (must be >= 0)
   //! @param[in] Nv derivative order in V (must be >= 0)
   //! @return the derivative vector
-  //! @throw Geom_UndefinedDerivative if Nu + Nv < 1 or Nu < 0 or Nv < 0
+  //! @throw Standard_RangeError if Nu + Nv < 1 or Nu < 0 or Nv < 0
   Standard_EXPORT gp_Vec EvalDN(const double U,
                                 const double V,
                                 const int    Nu,

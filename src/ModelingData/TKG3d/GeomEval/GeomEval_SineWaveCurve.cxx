@@ -21,6 +21,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_SineWaveCurve, Geom_Curve)
 
 //==================================================================================================
@@ -113,13 +115,6 @@ bool GeomEval_SineWaveCurve::IsClosed() const
 bool GeomEval_SineWaveCurve::IsPeriodic() const
 {
   return false;
-}
-
-//==================================================================================================
-
-double GeomEval_SineWaveCurve::Period() const
-{
-  return Geom_Curve::Period();
 }
 
 //==================================================================================================
@@ -226,7 +221,11 @@ gp_Vec GeomEval_SineWaveCurve::EvalDN(const double U, const int N) const
 
   // d^N/dt^N[t] = 1 if N=1, 0 if N>=2
   // d^N/dt^N[A*sin(omega*t+phi)] = A*omega^N*sin(omega*t+phi+N*Pi/2)
-  const double aOmN   = std::pow(myOmega, N);
+  double aOmN = 1.0;
+  for (int i = 0; i < N; ++i)
+  {
+    aOmN *= myOmega;
+  }
   const double aPhase = myOmega * U + myPhase + N * M_PI / 2.0;
 
   gp_XYZ aResult = myAmplitude * aOmN * std::sin(aPhase) * aYD;

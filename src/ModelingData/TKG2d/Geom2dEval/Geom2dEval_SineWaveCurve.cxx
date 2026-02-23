@@ -21,6 +21,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_SineWaveCurve, Geom2d_Curve)
 
 namespace
@@ -141,13 +143,6 @@ bool Geom2dEval_SineWaveCurve::IsClosed() const
 bool Geom2dEval_SineWaveCurve::IsPeriodic() const
 {
   return false;
-}
-
-//==================================================================================================
-
-double Geom2dEval_SineWaveCurve::Period() const
-{
-  return Geom2d_Curve::Period();
 }
 
 //==================================================================================================

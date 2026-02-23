@@ -23,6 +23,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_AHTBezierCurve, Geom2d_BoundedCurve)
 
 namespace
@@ -633,7 +635,7 @@ void Geom2dEval_AHTBezierCurve::evalBasisDeriv(double                      theT,
   if (myAlpha > 0.0)
   {
     const double aAlphaT     = myAlpha * theT;
-    const double aAlphaPow   = std::pow(myAlpha, theDerivOrder);
+    const double aAlphaPow   = powInt(myAlpha, theDerivOrder);
     const double aSinh       = std::sinh(aAlphaT);
     const double aCosh       = std::cosh(aAlphaT);
     const bool   isEvenDeriv = (theDerivOrder % 2 == 0);
@@ -648,7 +650,7 @@ void Geom2dEval_AHTBezierCurve::evalBasisDeriv(double                      theT,
   if (myBeta > 0.0)
   {
     const double aBetaT   = myBeta * theT;
-    const double aBetaPow = std::pow(myBeta, theDerivOrder);
+    const double aBetaPow = powInt(myBeta, theDerivOrder);
     const double aPhase   = theDerivOrder * M_PI / 2.0;
 
     theBasisDeriv.ChangeValue(anIdx++) = aBetaPow * std::sin(aBetaT + aPhase);

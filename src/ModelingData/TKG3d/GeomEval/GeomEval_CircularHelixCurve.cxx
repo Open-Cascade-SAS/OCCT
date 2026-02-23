@@ -21,6 +21,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_CircularHelixCurve, Geom_Curve)
 
 //==================================================================================================

@@ -21,6 +21,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(Geom2dEval_ArchimedeanSpiralCurve, Geom2d_Curve)
 
 namespace

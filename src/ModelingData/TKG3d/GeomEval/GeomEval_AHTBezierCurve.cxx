@@ -22,6 +22,8 @@
 #include <Standard_RangeError.hxx>
 #include <Standard_Type.hxx>
 
+#include <cmath>
+
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_AHTBezierCurve, Geom_BoundedCurve)
 
 namespace

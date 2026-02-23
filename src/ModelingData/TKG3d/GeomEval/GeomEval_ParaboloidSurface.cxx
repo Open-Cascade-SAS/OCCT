@@ -11,9 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <GeomEval_ParaboloidSurface.hxx>
+
 #include <Geom_Geometry.hxx>
 #include <Geom_UndefinedDerivative.hxx>
-#include <GeomEval_ParaboloidSurface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
