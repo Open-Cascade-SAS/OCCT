@@ -54,7 +54,7 @@ TEST_F(Geom2d_CircleTest, ConstructFromAxisAndRadius)
 
 TEST_F(Geom2d_CircleTest, ConstructFromAx22d)
 {
-  gp_Ax22d anAxis(gp_Pnt2d(3.0, 4.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
+  gp_Ax22d                   anAxis(gp_Pnt2d(3.0, 4.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0));
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(anAxis, 7.0);
 
   EXPECT_NEAR(aCircle->Radius(), 7.0, Precision::Confusion());
@@ -136,7 +136,7 @@ TEST_F(Geom2d_CircleTest, EvalDN_Order1)
 
 TEST_F(Geom2d_CircleTest, ReversedParameter)
 {
-  const double aU = M_PI / 3.0;
+  const double aU   = M_PI / 3.0;
   const double aRev = myCircle->ReversedParameter(aU);
   EXPECT_NEAR(aRev, 2.0 * M_PI - aU, Precision::Confusion());
 }
@@ -170,7 +170,7 @@ TEST_F(Geom2d_CircleTest, PointOnCircle_DistanceFromCenter)
   // All points on circle should be at distance R from center
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 6.0)
   {
-    const gp_Pnt2d aPnt = myCircle->EvalD0(u);
+    const gp_Pnt2d aPnt  = myCircle->EvalD0(u);
     const double   aDist = aPnt.Distance(myCircle->Location());
     EXPECT_NEAR(aDist, 5.0, Precision::Confusion());
   }

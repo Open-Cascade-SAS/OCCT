@@ -75,7 +75,7 @@ TEST_F(Geom2d_ParabolaTest, EvalD0_AtZero)
 TEST_F(Geom2d_ParabolaTest, EvalD0_Symmetric)
 {
   // Parabola is symmetric: P(U) and P(-U) should have same X, opposite Y
-  const double   aU   = 3.0;
+  const double   aU      = 3.0;
   const gp_Pnt2d aPntPos = myParabola->EvalD0(aU);
   const gp_Pnt2d aPntNeg = myParabola->EvalD0(-aU);
 
@@ -101,13 +101,13 @@ TEST_F(Geom2d_ParabolaTest, EvalD2_AtZero)
 TEST_F(Geom2d_ParabolaTest, PointOnParabola_FocusDirectrixProperty)
 {
   // For any point P on parabola: distance(P, Focus) = distance(P, Directrix)
-  const gp_Pnt2d aFocus = myParabola->Focus();
+  const gp_Pnt2d aFocus     = myParabola->Focus();
   const gp_Ax2d  aDirectrix = myParabola->Directrix();
   const gp_Lin2d aDirLine(aDirectrix);
 
   for (double u = -5.0; u <= 5.0; u += 1.0)
   {
-    const gp_Pnt2d aPnt      = myParabola->EvalD0(u);
+    const gp_Pnt2d aPnt       = myParabola->EvalD0(u);
     const double   aDistFocus = aPnt.Distance(aFocus);
     const double   aDistDir   = aDirLine.Distance(aPnt);
     EXPECT_NEAR(aDistFocus, aDistDir, 1e-6);

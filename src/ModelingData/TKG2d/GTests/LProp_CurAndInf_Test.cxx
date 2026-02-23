@@ -75,9 +75,9 @@ TEST(LProp_CurAndInfTest, MultiplePoints_SortedByParameter)
 TEST(LProp_CurAndInfTest, MultiplePoints_CorrectTypes)
 {
   LProp_CurAndInf aResult;
-  aResult.AddExtCur(1.0, true);    // MinCur
-  aResult.AddInflection(3.0);      // Inflection
-  aResult.AddExtCur(5.0, false);   // MaxCur
+  aResult.AddExtCur(1.0, true);  // MinCur
+  aResult.AddInflection(3.0);    // Inflection
+  aResult.AddExtCur(5.0, false); // MaxCur
 
   EXPECT_EQ(aResult.NbPoints(), 3);
   EXPECT_EQ(aResult.Type(1), LProp_MinCur);

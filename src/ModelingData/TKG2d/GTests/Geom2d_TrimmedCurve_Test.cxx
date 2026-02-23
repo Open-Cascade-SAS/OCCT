@@ -124,8 +124,7 @@ TEST_F(Geom2d_TrimmedCurveTest, IsClosed_OpenArc)
 TEST_F(Geom2d_TrimmedCurveTest, IsClosed_FullCircle)
 {
   // Full-period trim on a periodic curve should be reported as closed
-  occ::handle<Geom2d_TrimmedCurve> aTrim =
-    new Geom2d_TrimmedCurve(myCircle, 0.0, 2.0 * M_PI);
+  occ::handle<Geom2d_TrimmedCurve> aTrim = new Geom2d_TrimmedCurve(myCircle, 0.0, 2.0 * M_PI);
 
   EXPECT_TRUE(aTrim->IsClosed());
 }
@@ -139,8 +138,7 @@ TEST_F(Geom2d_TrimmedCurveTest, IsPeriodic_PartialArc)
 TEST_F(Geom2d_TrimmedCurveTest, IsPeriodic_FullPeriod)
 {
   // Full-period trim on a periodic curve should be reported as periodic
-  occ::handle<Geom2d_TrimmedCurve> aTrim =
-    new Geom2d_TrimmedCurve(myCircle, 0.0, 2.0 * M_PI);
+  occ::handle<Geom2d_TrimmedCurve> aTrim = new Geom2d_TrimmedCurve(myCircle, 0.0, 2.0 * M_PI);
   EXPECT_TRUE(aTrim->IsPeriodic());
 }
 
@@ -162,9 +160,9 @@ TEST_F(Geom2d_TrimmedCurveTest, SetTrim)
 
 TEST_F(Geom2d_TrimmedCurveTest, Copy)
 {
-  occ::handle<Geom2d_TrimmedCurve> aTrim = new Geom2d_TrimmedCurve(myCircle, 0.0, M_PI);
+  occ::handle<Geom2d_TrimmedCurve> aTrim     = new Geom2d_TrimmedCurve(myCircle, 0.0, M_PI);
   occ::handle<Geom2d_Geometry>     aCopyGeom = aTrim->Copy();
-  occ::handle<Geom2d_TrimmedCurve> aCopy = occ::down_cast<Geom2d_TrimmedCurve>(aCopyGeom);
+  occ::handle<Geom2d_TrimmedCurve> aCopy     = occ::down_cast<Geom2d_TrimmedCurve>(aCopyGeom);
 
   ASSERT_FALSE(aCopy.IsNull());
   EXPECT_DOUBLE_EQ(aCopy->FirstParameter(), 0.0);
@@ -187,8 +185,7 @@ TEST_F(Geom2d_TrimmedCurveTest, Transform_Translation)
 TEST_F(Geom2d_TrimmedCurveTest, CircleArc_StartEndPoints)
 {
   // Quarter circle arc
-  occ::handle<Geom2d_TrimmedCurve> aTrim =
-    new Geom2d_TrimmedCurve(myCircle, 0.0, M_PI / 2.0);
+  occ::handle<Geom2d_TrimmedCurve> aTrim = new Geom2d_TrimmedCurve(myCircle, 0.0, M_PI / 2.0);
 
   const gp_Pnt2d aStart = aTrim->StartPoint();
   const gp_Pnt2d anEnd  = aTrim->EndPoint();

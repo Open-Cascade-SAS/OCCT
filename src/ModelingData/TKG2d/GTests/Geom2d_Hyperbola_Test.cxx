@@ -65,7 +65,7 @@ TEST_F(Geom2d_HyperbolaTest, Focal)
 
 TEST_F(Geom2d_HyperbolaTest, Foci)
 {
-  const double   c  = std::sqrt(25.0 + 9.0);
+  const double   c   = std::sqrt(25.0 + 9.0);
   const gp_Pnt2d aF1 = myHyperbola->Focus1();
   const gp_Pnt2d aF2 = myHyperbola->Focus2();
 
@@ -103,7 +103,7 @@ TEST_F(Geom2d_HyperbolaTest, PointOnHyperbola_FociDistanceDifference)
 
   for (double u = -2.0; u <= 2.0; u += 0.5)
   {
-    const gp_Pnt2d aPnt = myHyperbola->EvalD0(u);
+    const gp_Pnt2d aPnt  = myHyperbola->EvalD0(u);
     const double   aDiff = std::abs(aPnt.Distance(aF1) - aPnt.Distance(aF2));
     EXPECT_NEAR(aDiff, 2.0 * 5.0, Precision::Confusion());
   }

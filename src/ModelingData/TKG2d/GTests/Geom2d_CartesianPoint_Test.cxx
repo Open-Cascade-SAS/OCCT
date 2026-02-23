@@ -30,8 +30,7 @@ TEST(Geom2d_CartesianPointTest, ConstructFromCoords)
 
 TEST(Geom2d_CartesianPointTest, ConstructFromPnt2d)
 {
-  occ::handle<Geom2d_CartesianPoint> aPnt =
-    new Geom2d_CartesianPoint(gp_Pnt2d(5.0, 6.0));
+  occ::handle<Geom2d_CartesianPoint> aPnt = new Geom2d_CartesianPoint(gp_Pnt2d(5.0, 6.0));
   EXPECT_NEAR(aPnt->X(), 5.0, Precision::Confusion());
   EXPECT_NEAR(aPnt->Y(), 6.0, Precision::Confusion());
 }
@@ -64,7 +63,7 @@ TEST(Geom2d_CartesianPointTest, SetX_SetY)
 TEST(Geom2d_CartesianPointTest, Coord)
 {
   occ::handle<Geom2d_CartesianPoint> aPnt = new Geom2d_CartesianPoint(3.0, 4.0);
-  double aX = 0.0, aY = 0.0;
+  double                             aX = 0.0, aY = 0.0;
   aPnt->Coord(aX, aY);
   EXPECT_NEAR(aX, 3.0, Precision::Confusion());
   EXPECT_NEAR(aY, 4.0, Precision::Confusion());
@@ -72,7 +71,7 @@ TEST(Geom2d_CartesianPointTest, Coord)
 
 TEST(Geom2d_CartesianPointTest, Pnt2d)
 {
-  occ::handle<Geom2d_CartesianPoint> aPnt = new Geom2d_CartesianPoint(3.0, 4.0);
+  occ::handle<Geom2d_CartesianPoint> aPnt   = new Geom2d_CartesianPoint(3.0, 4.0);
   const gp_Pnt2d                     aGpPnt = aPnt->Pnt2d();
   EXPECT_NEAR(aGpPnt.X(), 3.0, Precision::Confusion());
   EXPECT_NEAR(aGpPnt.Y(), 4.0, Precision::Confusion());
@@ -124,10 +123,9 @@ TEST(Geom2d_CartesianPointTest, Transform_Rotation)
 
 TEST(Geom2d_CartesianPointTest, Copy)
 {
-  occ::handle<Geom2d_CartesianPoint> aPnt = new Geom2d_CartesianPoint(3.0, 4.0);
+  occ::handle<Geom2d_CartesianPoint> aPnt      = new Geom2d_CartesianPoint(3.0, 4.0);
   occ::handle<Geom2d_Geometry>       aCopyGeom = aPnt->Copy();
-  occ::handle<Geom2d_CartesianPoint> aCopy =
-    occ::down_cast<Geom2d_CartesianPoint>(aCopyGeom);
+  occ::handle<Geom2d_CartesianPoint> aCopy     = occ::down_cast<Geom2d_CartesianPoint>(aCopyGeom);
 
   ASSERT_FALSE(aCopy.IsNull());
   EXPECT_NEAR(aCopy->X(), 3.0, Precision::Confusion());

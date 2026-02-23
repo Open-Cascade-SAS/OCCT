@@ -219,7 +219,7 @@ TEST(Geom2d_TransformationTest, Trsf2d_RoundTrip)
   aGpTrsf.SetRotation(gp_Pnt2d(1.0, 2.0), M_PI / 3.0);
 
   occ::handle<Geom2d_Transformation> aTrsf = new Geom2d_Transformation(aGpTrsf);
-  gp_Trsf2d                           aBack = aTrsf->Trsf2d();
+  gp_Trsf2d                          aBack = aTrsf->Trsf2d();
 
   // Verify the round-trip preserves the transformation
   double aX1 = 5.0, aY1 = 7.0;

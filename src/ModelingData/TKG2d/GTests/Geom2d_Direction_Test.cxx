@@ -66,7 +66,7 @@ TEST(Geom2d_DirectionTest, SetCoord_Zero_Throws)
 
 TEST(Geom2d_DirectionTest, Dir2d)
 {
-  occ::handle<Geom2d_Direction> aDir = new Geom2d_Direction(1.0, 0.0);
+  occ::handle<Geom2d_Direction> aDir   = new Geom2d_Direction(1.0, 0.0);
   const gp_Dir2d                aGpDir = aDir->Dir2d();
   EXPECT_NEAR(aGpDir.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aGpDir.Y(), 0.0, Precision::Confusion());
@@ -126,7 +126,7 @@ TEST(Geom2d_DirectionTest, CrossedWithVectorWithMagnitude)
 
 TEST(Geom2d_DirectionTest, Copy)
 {
-  occ::handle<Geom2d_Direction> aDir     = new Geom2d_Direction(1.0, 0.0);
+  occ::handle<Geom2d_Direction> aDir      = new Geom2d_Direction(1.0, 0.0);
   occ::handle<Geom2d_Geometry>  aCopyGeom = aDir->Copy();
   occ::handle<Geom2d_Direction> aCopy     = occ::down_cast<Geom2d_Direction>(aCopyGeom);
 

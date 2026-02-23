@@ -132,16 +132,16 @@ TEST_F(Geom2d_VectorWithMagnitudeTest, Dot)
 TEST_F(Geom2d_VectorWithMagnitudeTest, Angle)
 {
   // Angle from (1,0) to (0,1) = PI/2
-  occ::handle<Geom2d_VectorWithMagnitude> aVecY = new Geom2d_VectorWithMagnitude(0.0, 1.0);
-  const double anAngle = myVec2->Angle(aVecY);
+  occ::handle<Geom2d_VectorWithMagnitude> aVecY   = new Geom2d_VectorWithMagnitude(0.0, 1.0);
+  const double                            anAngle = myVec2->Angle(aVecY);
   EXPECT_NEAR(anAngle, M_PI / 2.0, Precision::Confusion());
 }
 
 TEST_F(Geom2d_VectorWithMagnitudeTest, Angle_Negative)
 {
   // Angle from (0,1) to (1,0) = -PI/2
-  occ::handle<Geom2d_VectorWithMagnitude> aVecY = new Geom2d_VectorWithMagnitude(0.0, 1.0);
-  const double anAngle = aVecY->Angle(myVec2);
+  occ::handle<Geom2d_VectorWithMagnitude> aVecY   = new Geom2d_VectorWithMagnitude(0.0, 1.0);
+  const double                            anAngle = aVecY->Angle(myVec2);
   EXPECT_NEAR(anAngle, -M_PI / 2.0, Precision::Confusion());
 }
 

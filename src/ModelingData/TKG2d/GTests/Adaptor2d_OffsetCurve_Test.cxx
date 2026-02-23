@@ -175,7 +175,7 @@ TEST_F(Adaptor2d_OffsetCurveTest, LoadOffsetWithBounds)
 
 TEST_F(Adaptor2d_OffsetCurveTest, Curve_ReturnsBaseCurve)
 {
-  Adaptor2d_OffsetCurve              anOffset(myBaseLine, 3.0);
+  Adaptor2d_OffsetCurve                 anOffset(myBaseLine, 3.0);
   const occ::handle<Adaptor2d_Curve2d>& aCurve = anOffset.Curve();
   EXPECT_FALSE(aCurve.IsNull());
   EXPECT_EQ(aCurve->GetType(), GeomAbs_Line);
@@ -183,7 +183,7 @@ TEST_F(Adaptor2d_OffsetCurveTest, Curve_ReturnsBaseCurve)
 
 TEST_F(Adaptor2d_OffsetCurveTest, Trim)
 {
-  Adaptor2d_OffsetCurve            anOffset(myBaseLine, 3.0);
+  Adaptor2d_OffsetCurve          anOffset(myBaseLine, 3.0);
   occ::handle<Adaptor2d_Curve2d> aTrimmed = anOffset.Trim(2.0, 7.0, Precision::Confusion());
 
   EXPECT_DOUBLE_EQ(aTrimmed->FirstParameter(), 2.0);
@@ -192,7 +192,7 @@ TEST_F(Adaptor2d_OffsetCurveTest, Trim)
 
 TEST_F(Adaptor2d_OffsetCurveTest, ShallowCopy)
 {
-  Adaptor2d_OffsetCurve            anOffset(myBaseLine, 3.0, 1.0, 9.0);
+  Adaptor2d_OffsetCurve          anOffset(myBaseLine, 3.0, 1.0, 9.0);
   occ::handle<Adaptor2d_Curve2d> aCopy = anOffset.ShallowCopy();
 
   EXPECT_DOUBLE_EQ(aCopy->FirstParameter(), 1.0);

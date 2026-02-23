@@ -139,8 +139,8 @@ TEST_F(Geom2d_EllipseTest, PointOnEllipse_FociDistanceSum)
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 6.0)
   {
-    const gp_Pnt2d aPnt  = myEllipse->EvalD0(u);
-    const double   aSum  = aPnt.Distance(aF1) + aPnt.Distance(aF2);
+    const gp_Pnt2d aPnt = myEllipse->EvalD0(u);
+    const double   aSum = aPnt.Distance(aF1) + aPnt.Distance(aF2);
     EXPECT_NEAR(aSum, 2.0 * 10.0, Precision::Confusion());
   }
 }

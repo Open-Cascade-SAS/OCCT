@@ -25,7 +25,7 @@
 
 TEST(Geom2d_AxisPlacementTest, ConstructFromAx2d)
 {
-  gp_Ax2d anAxis(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0));
+  gp_Ax2d                           anAxis(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0));
   occ::handle<Geom2d_AxisPlacement> anAP = new Geom2d_AxisPlacement(anAxis);
 
   EXPECT_NEAR(anAP->Location().X(), 1.0, Precision::Confusion());
@@ -173,8 +173,7 @@ TEST(Geom2d_AxisPlacementTest, Copy)
   occ::handle<Geom2d_AxisPlacement> anAP =
     new Geom2d_AxisPlacement(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
   occ::handle<Geom2d_Geometry>      aCopyGeom = anAP->Copy();
-  occ::handle<Geom2d_AxisPlacement> aCopy =
-    occ::down_cast<Geom2d_AxisPlacement>(aCopyGeom);
+  occ::handle<Geom2d_AxisPlacement> aCopy     = occ::down_cast<Geom2d_AxisPlacement>(aCopyGeom);
 
   ASSERT_FALSE(aCopy.IsNull());
   EXPECT_NEAR(aCopy->Location().X(), 1.0, Precision::Confusion());

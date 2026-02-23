@@ -47,7 +47,7 @@ TEST_F(Geom2d_LineTest, ConstructFromPointAndDir)
 
 TEST_F(Geom2d_LineTest, ConstructFromLin2d)
 {
-  gp_Lin2d                  aLin(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
+  gp_Lin2d                 aLin(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(aLin);
 
   EXPECT_NEAR(aLine->Direction().X(), 0.0, Precision::Confusion());
@@ -56,7 +56,7 @@ TEST_F(Geom2d_LineTest, ConstructFromLin2d)
 
 TEST_F(Geom2d_LineTest, ConstructFromAxis)
 {
-  gp_Ax2d                   anAxis(gp_Pnt2d(3.0, 4.0), gp_Dir2d(1.0, 0.0));
+  gp_Ax2d                  anAxis(gp_Pnt2d(3.0, 4.0), gp_Dir2d(1.0, 0.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(anAxis);
 
   EXPECT_NEAR(aLine->Location().X(), 3.0, Precision::Confusion());
@@ -180,10 +180,9 @@ TEST_F(Geom2d_LineTest, ReversedParameter)
 
 TEST_F(Geom2d_LineTest, DiagonalLine_Value)
 {
-  occ::handle<Geom2d_Line> aDiag =
-    new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
+  occ::handle<Geom2d_Line> aDiag = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
 
-  const gp_Pnt2d aPnt  = aDiag->EvalD0(std::sqrt(2.0));
+  const gp_Pnt2d aPnt = aDiag->EvalD0(std::sqrt(2.0));
   EXPECT_NEAR(aPnt.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aPnt.Y(), 1.0, Precision::Confusion());
 }
