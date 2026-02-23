@@ -315,8 +315,8 @@ public:
   {
     if (IsEmpty() || theK == 0)
     {
-      theIndices.Resize(1, 0, false);
-      theSqDistances.Resize(1, 0, false);
+      theIndices     = NCollection_Array1<size_t>();
+      theSqDistances = NCollection_Array1<double>();
       return 0;
     }
     const size_t anActualK = std::min(theK, mySize);
