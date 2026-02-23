@@ -40,7 +40,11 @@ TEST(Geom2d_DirectionTest, ConstructFromDir2d)
 
 TEST(Geom2d_DirectionTest, ConstructFromZero_Throws)
 {
+#ifndef No_Exception
   EXPECT_THROW(new Geom2d_Direction(0.0, 0.0), Standard_ConstructionError);
+#else
+  GTEST_SKIP() << "No_Exception is defined; exception behavior is disabled in this build.";
+#endif
 }
 
 TEST(Geom2d_DirectionTest, MagnitudeAlwaysOne)
@@ -60,8 +64,12 @@ TEST(Geom2d_DirectionTest, SetCoord)
 
 TEST(Geom2d_DirectionTest, SetCoord_Zero_Throws)
 {
+#ifndef No_Exception
   occ::handle<Geom2d_Direction> aDir = new Geom2d_Direction(1.0, 0.0);
   EXPECT_THROW(aDir->SetCoord(0.0, 0.0), Standard_ConstructionError);
+#else
+  GTEST_SKIP() << "No_Exception is defined; exception behavior is disabled in this build.";
+#endif
 }
 
 TEST(Geom2d_DirectionTest, Dir2d)
