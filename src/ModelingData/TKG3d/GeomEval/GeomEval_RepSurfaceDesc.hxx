@@ -11,8 +11,8 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom_EvalRepSurfaceDesc_HeaderFile
-#define _Geom_EvalRepSurfaceDesc_HeaderFile
+#ifndef _GeomEval_RepSurfaceDesc_HeaderFile
+#define _GeomEval_RepSurfaceDesc_HeaderFile
 
 #include <Geom_Surface.hxx>
 #include <Precision.hxx>
@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <optional>
 
-namespace Geom_EvalRepSurfaceDesc
+namespace GeomEval_RepSurfaceDesc
 {
 //! 2D diagonal affine parameter map with optional UV swap.
 //! Without swap: uRep = ScaleU*u + OffsetU, vRep = ScaleV*v + OffsetV.
@@ -138,6 +138,6 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE(Mapped, Base)
 };
-} // namespace Geom_EvalRepSurfaceDesc
+} // namespace GeomEval_RepSurfaceDesc
 
-#endif // _Geom_EvalRepSurfaceDesc_HeaderFile
+#endif // _GeomEval_RepSurfaceDesc_HeaderFile

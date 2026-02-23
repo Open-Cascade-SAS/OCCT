@@ -28,8 +28,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
-#include "Geom_EvalRepSurfaceDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Trsf.hxx>
@@ -111,7 +111,7 @@ bool Geom_BSplineSurface::IsCNv(const int N) const
 gp_Pnt Geom_BSplineSurface::EvalD0(const double U, const double V) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -146,7 +146,7 @@ gp_Pnt Geom_BSplineSurface::EvalD0(const double U, const double V) const
 Geom_Surface::ResD1 Geom_BSplineSurface::EvalD1(const double U, const double V) const
 {
   Geom_Surface::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -191,7 +191,7 @@ Geom_Surface::ResD1 Geom_BSplineSurface::EvalD1(const double U, const double V) 
 Geom_Surface::ResD2 Geom_BSplineSurface::EvalD2(const double U, const double V) const
 {
   Geom_Surface::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -239,7 +239,7 @@ Geom_Surface::ResD2 Geom_BSplineSurface::EvalD2(const double U, const double V) 
 Geom_Surface::ResD3 Geom_BSplineSurface::EvalD3(const double U, const double V) const
 {
   Geom_Surface::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -282,7 +282,7 @@ gp_Vec Geom_BSplineSurface::EvalDN(const double U, const double V, const int Nu,
     throw Geom_UndefinedDerivative();
 
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }

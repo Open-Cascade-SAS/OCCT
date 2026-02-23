@@ -11,10 +11,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#ifndef _Geom_EvalRepCurveDesc_HeaderFile
-#define _Geom_EvalRepCurveDesc_HeaderFile
+#ifndef _Geom2dEval_RepCurveDesc_HeaderFile
+#define _Geom2dEval_RepCurveDesc_HeaderFile
 
-#include <Geom_Curve.hxx>
+#include <Geom2d_Curve.hxx>
 #include <Precision.hxx>
 #include <Standard_Transient.hxx>
 
@@ -22,7 +22,7 @@
 #include <cstddef>
 #include <optional>
 
-namespace Geom_EvalRepCurveDesc
+namespace Geom2dEval_RepCurveDesc
 {
 //! 1D affine parameter map: uRep = Scale * u + Offset.
 struct Map1d
@@ -53,7 +53,7 @@ struct Domain1d
   }
 };
 
-//! Abstract base descriptor for curve evaluation representation.
+//! Abstract base descriptor for 2D curve evaluation representation.
 //! Holds the representation handle and a Kind tag for switch-based dispatch.
 class Base : public Standard_Transient
 {
@@ -66,7 +66,7 @@ public:
     Mapped        //!< has MaxDerivOrder + optional Domain + ParamMap
   };
 
-  occ::handle<Geom_Curve> Representation; //!< geometry used for evaluation
+  occ::handle<Geom2d_Curve> Representation; //!< geometry used for evaluation
 
   //! Returns the descriptor kind.
   virtual Kind GetKind() const = 0;
@@ -98,9 +98,8 @@ public:
   DEFINE_STANDARD_RTTI_INLINE(DerivBounded, Base)
 };
 
-//! Mapped descriptor for curve evaluation representation.
+//! Mapped descriptor for 2D curve evaluation representation.
 //! Adds optional bounded domain and affine parameter map.
-//! Evaluation requires: domain check -> map parameter -> evaluate -> scale derivatives.
 class Mapped : public Base
 {
 public:
@@ -112,6 +111,6 @@ public:
 
   DEFINE_STANDARD_RTTI_INLINE(Mapped, Base)
 };
-} // namespace Geom_EvalRepCurveDesc
+} // namespace Geom2dEval_RepCurveDesc
 
-#endif // _Geom_EvalRepCurveDesc_HeaderFile
+#endif // _Geom2dEval_RepCurveDesc_HeaderFile

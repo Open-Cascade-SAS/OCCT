@@ -31,7 +31,7 @@ class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
 
-namespace Geom_EvalRepSurfaceDesc
+namespace GeomEval_RepSurfaceDesc
 {
 class Base;
 }
@@ -229,12 +229,12 @@ public:
   bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
 
   //! Returns the current evaluation representation descriptor (may be null).
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
   Standard_EXPORT void SetEvalRepresentation(
-    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+    const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -1304,7 +1304,7 @@ private:
   NCollection_Array1<double>                 myVFlatKnots;
   NCollection_Array1<int>                    myUMults;
   NCollection_Array1<int>                    myVMults;
-  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  occ::handle<GeomEval_RepSurfaceDesc::Base> myEvalRep;
   int                                        myUDeg          = 0;
   int                                        myVDeg          = 0;
   bool                                       myUPeriodic     = false;

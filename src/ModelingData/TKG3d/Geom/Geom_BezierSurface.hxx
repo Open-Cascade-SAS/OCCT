@@ -30,7 +30,7 @@ class Geom_Curve;
 class gp_Trsf;
 class Geom_Geometry;
 
-namespace Geom_EvalRepSurfaceDesc
+namespace GeomEval_RepSurfaceDesc
 {
 class Base;
 }
@@ -130,12 +130,12 @@ public:
   bool HasEvalRepresentation() const { return !myEvalRep.IsNull(); }
 
   //! Returns the current evaluation representation descriptor (may be null).
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& EvalRepresentation() const { return myEvalRep; }
 
   //! Sets a new evaluation representation.
   //! Validates descriptor data and ensures no circular references.
   Standard_EXPORT void SetEvalRepresentation(
-    const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc);
+    const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc);
 
   //! Removes the evaluation representation.
   void ClearEvalRepresentation() { myEvalRep.Nullify(); }
@@ -632,7 +632,7 @@ protected:
 private:
   NCollection_Array2<gp_Pnt>                 myPoles;
   NCollection_Array2<double>                 myWeights;
-  occ::handle<Geom_EvalRepSurfaceDesc::Base> myEvalRep;
+  occ::handle<GeomEval_RepSurfaceDesc::Base> myEvalRep;
   bool                                       myURational     = false;
   bool                                       myVRational     = false;
   double                                     myUMaxDerivInv  = 0.0;

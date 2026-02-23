@@ -21,8 +21,8 @@
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
-#include "Geom_EvalRepCurveDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepCurveDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Geometry.hxx>
 #include <Geom_OffsetCurve.hxx>
 #include <Geom_OffsetCurveUtils.pxx>
@@ -49,9 +49,9 @@ static const double MyAngularToleranceForG1 = Precision::Angular();
 //==================================================================================================
 
 void Geom_OffsetCurve::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -70,7 +70,7 @@ occ::handle<Geom_Geometry> Geom_OffsetCurve::Copy() const
 
 Geom_OffsetCurve::Geom_OffsetCurve(const Geom_OffsetCurve& theOther)
     : basisCurve(occ::down_cast<Geom_Curve>(theOther.basisCurve->Copy())),
-      myEvalRep(Geom_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
+      myEvalRep(GeomEval_RepUtils::CloneCurveDesc(theOther.myEvalRep)),
       direction(theOther.direction),
       offsetValue(theOther.offsetValue),
       myBasisCurveContinuity(theOther.myBasisCurveContinuity)
@@ -261,7 +261,7 @@ GeomAbs_Shape Geom_OffsetCurve::Continuity() const
 gp_Pnt Geom_OffsetCurve::EvalD0(const double theU) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, theU, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD0(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -278,7 +278,7 @@ gp_Pnt Geom_OffsetCurve::EvalD0(const double theU) const
 Geom_Curve::ResD1 Geom_OffsetCurve::EvalD1(const double theU) const
 {
   Geom_Curve::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, theU, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD1(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -296,7 +296,7 @@ Geom_Curve::ResD1 Geom_OffsetCurve::EvalD1(const double theU) const
 Geom_Curve::ResD2 Geom_OffsetCurve::EvalD2(const double theU) const
 {
   Geom_Curve::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, theU, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD2(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -334,7 +334,7 @@ Geom_Curve::ResD2 Geom_OffsetCurve::EvalD2(const double theU) const
 Geom_Curve::ResD3 Geom_OffsetCurve::EvalD3(const double theU) const
 {
   Geom_Curve::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, theU, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD3(myEvalRep, theU, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -376,7 +376,7 @@ gp_Vec Geom_OffsetCurve::EvalDN(const double U, const int N) const
   if (N < 1)
     throw Geom_UndefinedDerivative("Geom_OffsetCurve::EvalDN");
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }

@@ -16,8 +16,8 @@
 
 #include <BSplCLib.hxx>
 #include <Geom_BSplineCurve.hxx>
-#include "Geom_EvalRepCurveDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepCurveDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_UndefinedDerivative.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -163,7 +163,7 @@ int Geom_BSplineCurve::Degree() const
 gp_Pnt Geom_BSplineCurve::EvalD0(const double U) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -185,7 +185,7 @@ gp_Pnt Geom_BSplineCurve::EvalD0(const double U) const
 Geom_Curve::ResD1 Geom_BSplineCurve::EvalD1(const double U) const
 {
   Geom_Curve::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -216,7 +216,7 @@ Geom_Curve::ResD1 Geom_BSplineCurve::EvalD1(const double U) const
 Geom_Curve::ResD2 Geom_BSplineCurve::EvalD2(const double U) const
 {
   Geom_Curve::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -248,7 +248,7 @@ Geom_Curve::ResD2 Geom_BSplineCurve::EvalD2(const double U) const
 Geom_Curve::ResD3 Geom_BSplineCurve::EvalD3(const double U) const
 {
   Geom_Curve::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -284,7 +284,7 @@ gp_Vec Geom_BSplineCurve::EvalDN(const double U, const int N) const
     throw Geom_UndefinedDerivative();
 
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }

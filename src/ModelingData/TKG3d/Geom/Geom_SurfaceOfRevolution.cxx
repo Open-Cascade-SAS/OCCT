@@ -19,8 +19,8 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
-#include "Geom_EvalRepSurfaceDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepSurfaceDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Geometry.hxx>
 #include "Geom_RevolutionUtils.pxx"
 #include <Geom_SurfaceOfRevolution.hxx>
@@ -66,9 +66,9 @@ typedef gp_XYZ                   XYZ;
 //=================================================================================================
 
 void Geom_SurfaceOfRevolution::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepSurfaceDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateSurfaceDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateSurfaceDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -77,7 +77,7 @@ void Geom_SurfaceOfRevolution::SetEvalRepresentation(
 occ::handle<Geom_Geometry> Geom_SurfaceOfRevolution::Copy() const
 {
   occ::handle<Geom_SurfaceOfRevolution> aCopy = new Geom_SurfaceOfRevolution(basisCurve, Axis());
-  aCopy->myEvalRep                            = Geom_EvalRepUtils::CloneSurfaceDesc(myEvalRep);
+  aCopy->myEvalRep                            = GeomEval_RepUtils::CloneSurfaceDesc(myEvalRep);
   return aCopy;
 }
 
@@ -236,7 +236,7 @@ void Geom_SurfaceOfRevolution::Bounds(double& U1, double& U2, double& V1, double
 gp_Pnt Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD0(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -252,7 +252,7 @@ gp_Pnt Geom_SurfaceOfRevolution::EvalD0(const double U, const double V) const
 Geom_Surface::ResD1 Geom_SurfaceOfRevolution::EvalD1(const double U, const double V) const
 {
   Geom_Surface::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD1(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -274,7 +274,7 @@ Geom_Surface::ResD1 Geom_SurfaceOfRevolution::EvalD1(const double U, const doubl
 Geom_Surface::ResD2 Geom_SurfaceOfRevolution::EvalD2(const double U, const double V) const
 {
   Geom_Surface::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD2(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -300,7 +300,7 @@ Geom_Surface::ResD2 Geom_SurfaceOfRevolution::EvalD2(const double U, const doubl
 Geom_Surface::ResD3 Geom_SurfaceOfRevolution::EvalD3(const double U, const double V) const
 {
   Geom_Surface::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceD3(myEvalRep, U, V, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -336,7 +336,7 @@ gp_Vec Geom_SurfaceOfRevolution::EvalDN(const double U,
   if (Nu + Nv < 1 || Nu < 0 || Nv < 0)
     throw Geom_UndefinedDerivative();
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalSurfaceDN(myEvalRep, U, V, Nu, Nv, aEvalRepResult))
   {
     return aEvalRepResult;
   }

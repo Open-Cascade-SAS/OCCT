@@ -24,8 +24,8 @@
 // Suppressed Swaps, added Init, removed typedefs
 
 #include <Geom_BezierCurve.hxx>
-#include "Geom_EvalRepCurveDesc.hxx"
-#include "Geom_EvalRepUtils.pxx"
+#include <GeomEval_RepCurveDesc.hxx>
+#include <GeomEval_RepUtils.pxx>
 #include <Geom_Geometry.hxx>
 #include <gp.hxx>
 #include <gp_Pnt.hxx>
@@ -49,9 +49,9 @@ IMPLEMENT_STANDARD_RTTIEXT(Geom_BezierCurve, Geom_BoundedCurve)
 //=================================================================================================
 
 void Geom_BezierCurve::SetEvalRepresentation(
-  const occ::handle<Geom_EvalRepCurveDesc::Base>& theDesc)
+  const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc)
 {
-  Geom_EvalRepUtils::ValidateCurveDesc(theDesc, this);
+  GeomEval_RepUtils::ValidateCurveDesc(theDesc, this);
   myEvalRep = theDesc;
 }
 
@@ -76,7 +76,7 @@ Geom_BezierCurve::Geom_BezierCurve(const Geom_BezierCurve& theOther)
     : myPoles(theOther.myPoles),
       myWeights(theOther.myRational ? NCollection_Array1<double>(theOther.myWeights)
                                     : BSplCLib::UnitWeights(theOther.myPoles.Length())),
-      myEvalRep(Geom_EvalRepUtils::CloneCurveDesc(theOther.myEvalRep)),
+      myEvalRep(GeomEval_RepUtils::CloneCurveDesc(theOther.myEvalRep)),
       myRational(theOther.myRational),
       myClosed(theOther.myClosed),
       myMaxDerivInvOk(false)
@@ -487,7 +487,7 @@ int Geom_BezierCurve::Degree() const
 gp_Pnt Geom_BezierCurve::EvalD0(const double U) const
 {
   gp_Pnt aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD0(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -502,7 +502,7 @@ gp_Pnt Geom_BezierCurve::EvalD0(const double U) const
 Geom_Curve::ResD1 Geom_BezierCurve::EvalD1(const double U) const
 {
   Geom_Curve::ResD1 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD1(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -517,7 +517,7 @@ Geom_Curve::ResD1 Geom_BezierCurve::EvalD1(const double U) const
 Geom_Curve::ResD2 Geom_BezierCurve::EvalD2(const double U) const
 {
   Geom_Curve::ResD2 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD2(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -532,7 +532,7 @@ Geom_Curve::ResD2 Geom_BezierCurve::EvalD2(const double U) const
 Geom_Curve::ResD3 Geom_BezierCurve::EvalD3(const double U) const
 {
   Geom_Curve::ResD3 aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveD3(myEvalRep, U, aEvalRepResult))
   {
     return aEvalRepResult;
   }
@@ -550,7 +550,7 @@ gp_Vec Geom_BezierCurve::EvalDN(const double U, const int N) const
     throw Geom_UndefinedDerivative();
 
   gp_Vec aEvalRepResult;
-  if (Geom_EvalRepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
+  if (GeomEval_RepUtils::TryEvalCurveDN(myEvalRep, U, N, aEvalRepResult))
   {
     return aEvalRepResult;
   }
