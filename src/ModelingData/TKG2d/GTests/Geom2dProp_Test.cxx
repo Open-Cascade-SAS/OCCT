@@ -694,7 +694,7 @@ TEST_F(Geom2dProp_CurveHyperbolaTest, TangentAtVertex)
 
 TEST_F(Geom2dProp_CurveHyperbolaTest, CurvatureAtVertex)
 {
-  // At vertex (t=0): curvature = b^2/a^2 * 1/a * a = b^2/(a * a) ... actually κ = b²/a
+  // At vertex (t=0): curvature = b^2/a^2 * 1/a * a = b^2/(a * a) ... actually K = b^2/a
   // For hyperbola x=a*cosh(t), y=b*sinh(t):
   // K(0) = b^2/(a^2 * (b^2/a^2)^(3/2)) ... Just verify it's defined and positive.
   const Geom2dProp::CurvatureResult aCurv = myProp.Curvature(0.0, Precision::Confusion());
