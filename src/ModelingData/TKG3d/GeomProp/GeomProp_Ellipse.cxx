@@ -40,7 +40,7 @@ GeomProp::TangentResult GeomProp_Ellipse::Tangent(const double theParam, const d
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Ellipse::Curvature(const double theParam,
-                                                       const double theTol) const
+                                                      const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -69,7 +69,7 @@ GeomProp::NormalResult GeomProp_Ellipse::Normal(const double theParam, const dou
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp_Ellipse::CentreOfCurvature(const double theParam,
-                                                            const double theTol) const
+                                                           const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

@@ -16,8 +16,8 @@
 //==================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_SurfaceOfRevolution::Normal(const double theU,
-                                                                    const double theV,
-                                                                    const double theTol) const
+                                                                   const double theV,
+                                                                   const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -32,8 +32,8 @@ GeomProp::SurfaceNormalResult GeomProp_SurfaceOfRevolution::Normal(const double 
 //==================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfRevolution::Curvatures(const double theU,
-                                                                           const double theV,
-                                                                           const double theTol) const
+                                                                          const double theV,
+                                                                          const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -48,8 +48,8 @@ GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfRevolution::Curvatures(const 
 //==================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_SurfaceOfRevolution::MeanGaussian(const double theU,
-                                                                         const double theV,
-                                                                         const double theTol) const
+                                                                        const double theV,
+                                                                        const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

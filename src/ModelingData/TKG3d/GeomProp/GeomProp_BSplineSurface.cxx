@@ -16,8 +16,8 @@
 //==================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_BSplineSurface::Normal(const double theU,
-                                                               const double theV,
-                                                               const double theTol) const
+                                                              const double theV,
+                                                              const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -32,8 +32,8 @@ GeomProp::SurfaceNormalResult GeomProp_BSplineSurface::Normal(const double theU,
 //==================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_BSplineSurface::Curvatures(const double theU,
-                                                                      const double theV,
-                                                                      const double theTol) const
+                                                                     const double theV,
+                                                                     const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -48,8 +48,8 @@ GeomProp::SurfaceCurvatureResult GeomProp_BSplineSurface::Curvatures(const doubl
 //==================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_BSplineSurface::MeanGaussian(const double theU,
-                                                                     const double theV,
-                                                                     const double theTol) const
+                                                                   const double theV,
+                                                                   const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

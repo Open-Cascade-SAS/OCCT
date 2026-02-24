@@ -146,9 +146,7 @@ Standard_EXPORT CurvatureResult ComputeCurvature(const gp_Vec& theD1,
 //! @param[in] theD2 second derivative vector
 //! @param[in] theTol linear tolerance for zero-vector detection
 //! @return normal result with validity flag
-Standard_EXPORT NormalResult ComputeNormal(const gp_Vec& theD1,
-                                           const gp_Vec& theD2,
-                                           double        theTol);
+Standard_EXPORT NormalResult ComputeNormal(const gp_Vec& theD1, const gp_Vec& theD2, double theTol);
 
 //! Compute centre of curvature from point and derivative vectors.
 //! Centre = Point + Normal / Curvature
@@ -186,11 +184,11 @@ Standard_EXPORT SurfaceNormalResult ComputeSurfaceNormal(const gp_Vec& theD1U,
 //! @param[in] theTol linear tolerance for zero-vector detection
 //! @return surface curvature result with principal curvatures and directions
 Standard_EXPORT SurfaceCurvatureResult ComputeSurfaceCurvatures(const gp_Vec& theD1U,
-                                                                 const gp_Vec& theD1V,
-                                                                 const gp_Vec& theD2U,
-                                                                 const gp_Vec& theD2V,
-                                                                 const gp_Vec& theDUV,
-                                                                 double        theTol);
+                                                                const gp_Vec& theD1V,
+                                                                const gp_Vec& theD2U,
+                                                                const gp_Vec& theD2V,
+                                                                const gp_Vec& theDUV,
+                                                                double        theTol);
 
 //! Compute mean and Gaussian curvatures from surface derivatives.
 //! Mean curvature H = (EN - 2FM + GL) / (2(EG - F^2))
@@ -203,11 +201,11 @@ Standard_EXPORT SurfaceCurvatureResult ComputeSurfaceCurvatures(const gp_Vec& th
 //! @param[in] theTol linear tolerance for zero-vector detection
 //! @return mean and Gaussian curvature result
 Standard_EXPORT MeanGaussianResult ComputeMeanGaussian(const gp_Vec& theD1U,
-                                                        const gp_Vec& theD1V,
-                                                        const gp_Vec& theD2U,
-                                                        const gp_Vec& theD2V,
-                                                        const gp_Vec& theDUV,
-                                                        double        theTol);
+                                                       const gp_Vec& theD1V,
+                                                       const gp_Vec& theD2U,
+                                                       const gp_Vec& theD2V,
+                                                       const gp_Vec& theDUV,
+                                                       double        theTol);
 
 } // namespace GeomProp
 

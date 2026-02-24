@@ -146,8 +146,8 @@ private:
   //! a non-owning pointer to myAdaptor; their lifetime is managed by the variant.
   Standard_EXPORT void initFromAdaptor();
 
-  occ::handle<GeomAdaptor_Surface> myAdaptor;     //!< Owns the adaptor (ensures lifetime).
-  EvaluatorVariant  myEvaluator;    //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
+  occ::handle<GeomAdaptor_Surface> myAdaptor; //!< Owns the adaptor (ensures lifetime).
+  EvaluatorVariant    myEvaluator; //!< Per-geometry evaluator (non-owning pointer to myAdaptor).
   GeomAbs_SurfaceType mySurfaceType;
 };
 

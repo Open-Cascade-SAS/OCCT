@@ -16,7 +16,7 @@
 //==================================================================================================
 
 GeomProp::TangentResult GeomProp_Hyperbola::Tangent(const double theParam,
-                                                     const double theTol) const
+                                                    const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -31,7 +31,7 @@ GeomProp::TangentResult GeomProp_Hyperbola::Tangent(const double theParam,
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Hyperbola::Curvature(const double theParam,
-                                                         const double theTol) const
+                                                        const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -60,7 +60,7 @@ GeomProp::NormalResult GeomProp_Hyperbola::Normal(const double theParam, const d
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp_Hyperbola::CentreOfCurvature(const double theParam,
-                                                              const double theTol) const
+                                                             const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

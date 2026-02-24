@@ -67,7 +67,7 @@ public:
       return true;
     }
     const double aDCrossDU = aCPV1V2.Dot(aCPV1V3) / aCPMag;
-    F = aDCrossDU / aV13 - THE_CURVATURE_DERIV_COEFF * aCPMag * aV1V2 / aV15;
+    F                      = aDCrossDU / aV13 - THE_CURVATURE_DERIV_COEFF * aCPMag * aV1V2 / aV15;
     return true;
   }
 
@@ -190,7 +190,7 @@ private:
 //==================================================================================================
 
 GeomProp::TangentResult GeomProp_OtherCurve::Tangent(const double theParam,
-                                                      const double theTol) const
+                                                     const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -205,7 +205,7 @@ GeomProp::TangentResult GeomProp_OtherCurve::Tangent(const double theParam,
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp_OtherCurve::Curvature(const double theParam,
-                                                          const double theTol) const
+                                                         const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -219,8 +219,7 @@ GeomProp::CurvatureResult GeomProp_OtherCurve::Curvature(const double theParam,
 
 //==================================================================================================
 
-GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam,
-                                                    const double theTol) const
+GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam, const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -235,7 +234,7 @@ GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam,
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp_OtherCurve::CentreOfCurvature(const double theParam,
-                                                               const double theTol) const
+                                                              const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

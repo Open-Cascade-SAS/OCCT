@@ -16,8 +16,8 @@
 //==================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_SurfaceOfExtrusion::Normal(const double theU,
-                                                                   const double theV,
-                                                                   const double theTol) const
+                                                                  const double theV,
+                                                                  const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -32,8 +32,8 @@ GeomProp::SurfaceNormalResult GeomProp_SurfaceOfExtrusion::Normal(const double t
 //==================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfExtrusion::Curvatures(const double theU,
-                                                                          const double theV,
-                                                                          const double theTol) const
+                                                                         const double theV,
+                                                                         const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -48,8 +48,8 @@ GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfExtrusion::Curvatures(const d
 //==================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_SurfaceOfExtrusion::MeanGaussian(const double theU,
-                                                                        const double theV,
-                                                                        const double theTol) const
+                                                                       const double theV,
+                                                                       const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

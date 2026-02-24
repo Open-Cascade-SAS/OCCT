@@ -18,9 +18,9 @@
 //==================================================================================================
 
 GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
-                                                  const gp_Vec& theD2,
-                                                  const gp_Vec& theD3,
-                                                  const double  theTol)
+                                                 const gp_Vec& theD2,
+                                                 const gp_Vec& theD3,
+                                                 const double  theTol)
 {
   const double aTol2 = theTol * theTol;
 
@@ -48,8 +48,8 @@ GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp::ComputeCurvature(const gp_Vec& theD1,
-                                                      const gp_Vec& theD2,
-                                                      const double  theTol)
+                                                     const gp_Vec& theD2,
+                                                     const double  theTol)
 {
   const double aTol2 = theTol * theTol;
   const double aDD1  = theD1.SquareMagnitude();
@@ -87,8 +87,8 @@ GeomProp::CurvatureResult GeomProp::ComputeCurvature(const gp_Vec& theD1,
 //==================================================================================================
 
 GeomProp::NormalResult GeomProp::ComputeNormal(const gp_Vec& theD1,
-                                                const gp_Vec& theD2,
-                                                const double  theTol)
+                                               const gp_Vec& theD2,
+                                               const double  theTol)
 {
   // First compute curvature to check if normal is defined.
   const CurvatureResult aCurvRes = ComputeCurvature(theD1, theD2, theTol);
@@ -110,9 +110,9 @@ GeomProp::NormalResult GeomProp::ComputeNormal(const gp_Vec& theD1,
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
-                                                           const gp_Vec& theD1,
-                                                           const gp_Vec& theD2,
-                                                           const double  theTol)
+                                                          const gp_Vec& theD1,
+                                                          const gp_Vec& theD2,
+                                                          const double  theTol)
 {
   const CurvatureResult aCurvRes = ComputeCurvature(theD1, theD2, theTol);
   if (!aCurvRes.IsDefined || aCurvRes.IsInfinite || std::abs(aCurvRes.Value) <= theTol)
@@ -131,8 +131,8 @@ GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
 //==================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp::ComputeSurfaceNormal(const gp_Vec& theD1U,
-                                                              const gp_Vec& theD1V,
-                                                              const double  theTol)
+                                                             const gp_Vec& theD1V,
+                                                             const double  theTol)
 {
   const gp_Vec aCross = theD1U.Crossed(theD1V);
   if (aCross.SquareMagnitude() <= theTol * theTol)
@@ -145,11 +145,11 @@ GeomProp::SurfaceNormalResult GeomProp::ComputeSurfaceNormal(const gp_Vec& theD1
 //==================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec& theD1U,
-                                                                     const gp_Vec& theD1V,
-                                                                     const gp_Vec& theD2U,
-                                                                     const gp_Vec& theD2V,
-                                                                     const gp_Vec& theDUV,
-                                                                     const double  theTol)
+                                                                    const gp_Vec& theD1V,
+                                                                    const gp_Vec& theD2U,
+                                                                    const gp_Vec& theD2V,
+                                                                    const gp_Vec& theDUV,
+                                                                    const double  theTol)
 {
   // Compute surface normal.
   const SurfaceNormalResult aNormRes = ComputeSurfaceNormal(theD1U, theD1V, theTol);
@@ -275,11 +275,11 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
 //==================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp::ComputeMeanGaussian(const gp_Vec& theD1U,
-                                                            const gp_Vec& theD1V,
-                                                            const gp_Vec& theD2U,
-                                                            const gp_Vec& theD2V,
-                                                            const gp_Vec& theDUV,
-                                                            const double  theTol)
+                                                           const gp_Vec& theD1V,
+                                                           const gp_Vec& theD2U,
+                                                           const gp_Vec& theD2V,
+                                                           const gp_Vec& theDUV,
+                                                           const double  theTol)
 {
   // Compute surface normal.
   const SurfaceNormalResult aNormRes = ComputeSurfaceNormal(theD1U, theD1V, theTol);

@@ -69,7 +69,7 @@ public:
       return true;
     }
     const double aDCrossDU = aCPV1V2.Dot(aCPV1V3) / aCPMag;
-    F = aDCrossDU / aV13 - THE_CURVATURE_DERIV_COEFF * aCPMag * aV1V2 / aV15;
+    F                      = aDCrossDU / aV13 - THE_CURVATURE_DERIV_COEFF * aCPMag * aV1V2 / aV15;
     return true;
   }
 
@@ -211,7 +211,7 @@ void numericCurvatureExtrema(const GeomAdaptor_Curve* theCurve,
   {
     for (int j = 0; j < aRoots.NbRoots(); ++j)
     {
-      double aParam = aRoots[j];
+      double            aParam = aRoots[j];
       MathUtils::Config aBrentCfg;
       aBrentCfg.XTolerance = Precision::PConfusion();
       aBrentCfg.FTolerance = Precision::PConfusion();
@@ -313,7 +313,7 @@ void removeDuplicatePoints(GeomProp::CurveAnalysis& theResult, const double theT
 //==================================================================================================
 
 GeomProp::TangentResult GeomProp_BSplineCurve::Tangent(const double theParam,
-                                                        const double theTol) const
+                                                       const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -328,7 +328,7 @@ GeomProp::TangentResult GeomProp_BSplineCurve::Tangent(const double theParam,
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp_BSplineCurve::Curvature(const double theParam,
-                                                            const double theTol) const
+                                                           const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -343,7 +343,7 @@ GeomProp::CurvatureResult GeomProp_BSplineCurve::Curvature(const double theParam
 //==================================================================================================
 
 GeomProp::NormalResult GeomProp_BSplineCurve::Normal(const double theParam,
-                                                      const double theTol) const
+                                                     const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -358,7 +358,7 @@ GeomProp::NormalResult GeomProp_BSplineCurve::Normal(const double theParam,
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp_BSplineCurve::CentreOfCurvature(const double theParam,
-                                                                 const double theTol) const
+                                                                const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

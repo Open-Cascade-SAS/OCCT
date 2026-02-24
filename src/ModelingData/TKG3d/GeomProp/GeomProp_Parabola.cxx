@@ -30,7 +30,7 @@ GeomProp::TangentResult GeomProp_Parabola::Tangent(const double theParam, const 
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Parabola::Curvature(const double theParam,
-                                                        const double theTol) const
+                                                       const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -59,7 +59,7 @@ GeomProp::NormalResult GeomProp_Parabola::Normal(const double theParam, const do
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp_Parabola::CentreOfCurvature(const double theParam,
-                                                             const double theTol) const
+                                                            const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

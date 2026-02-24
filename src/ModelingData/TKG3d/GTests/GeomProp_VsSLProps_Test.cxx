@@ -34,13 +34,12 @@
 
 namespace
 {
-constexpr double THE_LIN_TOL   = Precision::PConfusion();
-constexpr double THE_CURV_TOL  = 1.0e-6;
-constexpr double THE_DIR_TOL   = 1.0e-4;
+constexpr double THE_LIN_TOL  = Precision::PConfusion();
+constexpr double THE_CURV_TOL = 1.0e-6;
+constexpr double THE_DIR_TOL  = 1.0e-4;
 
 //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                   const double theU, const double theV)
+void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
 {
   GeomProp_Surface aProp;
   aProp.Initialize(theSurf);
@@ -51,7 +50,7 @@ void compareNormal(const occ::handle<Geom_Surface>& theSurf,
   {
     ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
     const gp_Dir anOldNorm = anOld.Normal();
-    const double aDot = aNew.Direction.Dot(anOldNorm);
+    const double aDot      = aNew.Direction.Dot(anOldNorm);
     EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
       << "Normal mismatch at (" << theU << "," << theV << ")";
   }
@@ -59,7 +58,8 @@ void compareNormal(const occ::handle<Geom_Surface>& theSurf,
 
 //! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
 void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
-                       const double theU, const double theV)
+                       const double                     theU,
+                       const double                     theV)
 {
   GeomProp_Surface aProp;
   aProp.Initialize(theSurf);
@@ -80,7 +80,8 @@ void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
 
 //! Compare mean and Gaussian curvatures.
 void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                         const double theU, const double theV)
+                         const double                     theU,
+                         const double                     theV)
 {
   GeomProp_Surface aProp;
   aProp.Initialize(theSurf);
@@ -99,9 +100,12 @@ void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
 
 //! Run all surface comparisons at a grid of parameter values.
 void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                       const double theUMin, const double theUMax,
-                       const double theVMin, const double theVMax,
-                       const int theNbU = 5, const int theNbV = 5)
+                       const double                     theUMin,
+                       const double                     theUMax,
+                       const double                     theVMin,
+                       const double                     theVMax,
+                       const int                        theNbU = 5,
+                       const int                        theNbV = 5)
 {
   const double aUStep = (theUMax - theUMin) / theNbU;
   const double aVStep = (theVMax - theVMin) / theNbV;
@@ -182,10 +186,14 @@ TEST(GeomProp_VsSLPropsTest, BSplineSurface)
   NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
   NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
 
-  aUKnots(1) = 0.0; aUKnots(2) = 1.0;
-  aVKnots(1) = 0.0; aVKnots(2) = 1.0;
-  aUMults(1) = 4; aUMults(2) = 4;
-  aVMults(1) = 4; aVMults(2) = 4;
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+  aUMults(1) = 4;
+  aUMults(2) = 4;
+  aVMults(1) = 4;
+  aVMults(2) = 4;
 
   for (int i = 1; i <= 4; ++i)
   {
@@ -198,8 +206,8 @@ TEST(GeomProp_VsSLPropsTest, BSplineSurface)
     }
   }
 
-  occ::handle<Geom_BSplineSurface> aSurf = new Geom_BSplineSurface(
-    aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+  occ::handle<Geom_BSplineSurface> aSurf =
+    new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
 
   compareAllSurface(aSurf, 0.0, 1.0, 0.0, 1.0, 4, 4);
 }

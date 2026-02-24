@@ -54,10 +54,11 @@
 
 TEST(GeomPropTest, ComputeTangent_D1NonZero)
 {
-  const gp_Vec aD1(1.0, 0.0, 0.0);
-  const gp_Vec aD2(0.0, 1.0, 0.0);
-  const gp_Vec aD3(0.0, 0.0, 1.0);
-  const GeomProp::TangentResult aRes = GeomProp::ComputeTangent(aD1, aD2, aD3, Precision::Confusion());
+  const gp_Vec                  aD1(1.0, 0.0, 0.0);
+  const gp_Vec                  aD2(0.0, 1.0, 0.0);
+  const gp_Vec                  aD3(0.0, 0.0, 1.0);
+  const GeomProp::TangentResult aRes =
+    GeomProp::ComputeTangent(aD1, aD2, aD3, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   EXPECT_NEAR(aRes.Direction.X(), 1.0, Precision::Confusion());
   EXPECT_NEAR(aRes.Direction.Y(), 0.0, Precision::Confusion());
@@ -66,20 +67,22 @@ TEST(GeomPropTest, ComputeTangent_D1NonZero)
 
 TEST(GeomPropTest, ComputeTangent_D1Zero_D2NonZero)
 {
-  const gp_Vec aD1(0.0, 0.0, 0.0);
-  const gp_Vec aD2(0.0, 1.0, 0.0);
-  const gp_Vec aD3(0.0, 0.0, 1.0);
-  const GeomProp::TangentResult aRes = GeomProp::ComputeTangent(aD1, aD2, aD3, Precision::Confusion());
+  const gp_Vec                  aD1(0.0, 0.0, 0.0);
+  const gp_Vec                  aD2(0.0, 1.0, 0.0);
+  const gp_Vec                  aD3(0.0, 0.0, 1.0);
+  const GeomProp::TangentResult aRes =
+    GeomProp::ComputeTangent(aD1, aD2, aD3, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   EXPECT_NEAR(aRes.Direction.Y(), 1.0, Precision::Confusion());
 }
 
 TEST(GeomPropTest, ComputeTangent_AllZero)
 {
-  const gp_Vec aD1(0.0, 0.0, 0.0);
-  const gp_Vec aD2(0.0, 0.0, 0.0);
-  const gp_Vec aD3(0.0, 0.0, 0.0);
-  const GeomProp::TangentResult aRes = GeomProp::ComputeTangent(aD1, aD2, aD3, Precision::Confusion());
+  const gp_Vec                  aD1(0.0, 0.0, 0.0);
+  const gp_Vec                  aD2(0.0, 0.0, 0.0);
+  const gp_Vec                  aD3(0.0, 0.0, 0.0);
+  const GeomProp::TangentResult aRes =
+    GeomProp::ComputeTangent(aD1, aD2, aD3, Precision::Confusion());
   EXPECT_FALSE(aRes.IsDefined);
 }
 
@@ -90,8 +93,8 @@ TEST(GeomPropTest, ComputeTangent_AllZero)
 TEST(GeomPropTest, ComputeCurvature_CircularArc)
 {
   // At (1,0,0) on unit circle in XY plane: D1=(0,1,0), D2=(-1,0,0)
-  const gp_Vec aD1(0.0, 1.0, 0.0);
-  const gp_Vec aD2(-1.0, 0.0, 0.0);
+  const gp_Vec                    aD1(0.0, 1.0, 0.0);
+  const gp_Vec                    aD2(-1.0, 0.0, 0.0);
   const GeomProp::CurvatureResult aRes =
     GeomProp::ComputeCurvature(aD1, aD2, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
@@ -101,8 +104,8 @@ TEST(GeomPropTest, ComputeCurvature_CircularArc)
 
 TEST(GeomPropTest, ComputeCurvature_ZeroD1)
 {
-  const gp_Vec aD1(0.0, 0.0, 0.0);
-  const gp_Vec aD2(1.0, 0.0, 0.0);
+  const gp_Vec                    aD1(0.0, 0.0, 0.0);
+  const gp_Vec                    aD2(1.0, 0.0, 0.0);
   const GeomProp::CurvatureResult aRes =
     GeomProp::ComputeCurvature(aD1, aD2, Precision::Confusion());
   EXPECT_TRUE(aRes.IsDefined);
@@ -111,8 +114,8 @@ TEST(GeomPropTest, ComputeCurvature_ZeroD1)
 
 TEST(GeomPropTest, ComputeCurvature_StraightLine)
 {
-  const gp_Vec aD1(1.0, 0.0, 0.0);
-  const gp_Vec aD2(0.0, 0.0, 0.0);
+  const gp_Vec                    aD1(1.0, 0.0, 0.0);
+  const gp_Vec                    aD2(0.0, 0.0, 0.0);
   const GeomProp::CurvatureResult aRes =
     GeomProp::ComputeCurvature(aD1, aD2, Precision::Confusion());
   EXPECT_TRUE(aRes.IsDefined);
@@ -125,10 +128,9 @@ TEST(GeomPropTest, ComputeCurvature_StraightLine)
 
 TEST(GeomPropTest, ComputeNormal_CircularArc)
 {
-  const gp_Vec aD1(0.0, 1.0, 0.0);
-  const gp_Vec aD2(-1.0, 0.0, 0.0);
-  const GeomProp::NormalResult aRes =
-    GeomProp::ComputeNormal(aD1, aD2, Precision::Confusion());
+  const gp_Vec                 aD1(0.0, 1.0, 0.0);
+  const gp_Vec                 aD2(-1.0, 0.0, 0.0);
+  const GeomProp::NormalResult aRes = GeomProp::ComputeNormal(aD1, aD2, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   EXPECT_NEAR(aRes.Direction.X(), -1.0, Precision::Confusion());
 }
@@ -139,8 +141,8 @@ TEST(GeomPropTest, ComputeNormal_CircularArc)
 
 TEST(GeomPropTest, ComputeSurfaceNormal_XYPlane)
 {
-  const gp_Vec aD1U(1.0, 0.0, 0.0);
-  const gp_Vec aD1V(0.0, 1.0, 0.0);
+  const gp_Vec                        aD1U(1.0, 0.0, 0.0);
+  const gp_Vec                        aD1V(0.0, 1.0, 0.0);
   const GeomProp::SurfaceNormalResult aRes =
     GeomProp::ComputeSurfaceNormal(aD1U, aD1V, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
@@ -149,8 +151,8 @@ TEST(GeomPropTest, ComputeSurfaceNormal_XYPlane)
 
 TEST(GeomPropTest, ComputeSurfaceNormal_DegeneratePoint)
 {
-  const gp_Vec aD1U(0.0, 0.0, 0.0);
-  const gp_Vec aD1V(0.0, 1.0, 0.0);
+  const gp_Vec                        aD1U(0.0, 0.0, 0.0);
+  const gp_Vec                        aD1V(0.0, 1.0, 0.0);
   const GeomProp::SurfaceNormalResult aRes =
     GeomProp::ComputeSurfaceNormal(aD1U, aD1V, Precision::Confusion());
   EXPECT_FALSE(aRes.IsDefined);
@@ -163,11 +165,11 @@ TEST(GeomPropTest, ComputeSurfaceNormal_DegeneratePoint)
 TEST(GeomPropTest, ComputeMeanGaussian_Sphere)
 {
   // At north pole of unit sphere, D1U and D1V are orthogonal unit vectors
-  const gp_Vec aD1U(1.0, 0.0, 0.0);
-  const gp_Vec aD1V(0.0, 1.0, 0.0);
-  const gp_Vec aD2U(0.0, 0.0, -1.0);
-  const gp_Vec aD2V(0.0, 0.0, -1.0);
-  const gp_Vec aDUV(0.0, 0.0, 0.0);
+  const gp_Vec                       aD1U(1.0, 0.0, 0.0);
+  const gp_Vec                       aD1V(0.0, 1.0, 0.0);
+  const gp_Vec                       aD2U(0.0, 0.0, -1.0);
+  const gp_Vec                       aD2V(0.0, 0.0, -1.0);
+  const gp_Vec                       aDUV(0.0, 0.0, 0.0);
   const GeomProp::MeanGaussianResult aRes =
     GeomProp::ComputeMeanGaussian(aD1U, aD1V, aD2U, aD2V, aDUV, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
@@ -187,7 +189,7 @@ TEST(GeomPropCurveTest, UninitializedState)
 
 TEST(GeomPropCurveTest, InitializeFromNullHandle)
 {
-  GeomProp_Curve            aProp;
+  GeomProp_Curve          aProp;
   occ::handle<Geom_Curve> aNullCurve;
   aProp.Initialize(aNullCurve);
   EXPECT_FALSE(aProp.IsInitialized());
@@ -196,7 +198,7 @@ TEST(GeomPropCurveTest, InitializeFromNullHandle)
 TEST(GeomPropCurveTest, Line_ZeroCurvature)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomProp_Curve aProp;
+  GeomProp_Curve         aProp;
   aProp.Initialize(aLine);
   ASSERT_TRUE(aProp.IsInitialized());
   EXPECT_EQ(aProp.GetType(), GeomAbs_Line);
@@ -208,8 +210,8 @@ TEST(GeomPropCurveTest, Line_ZeroCurvature)
 
 TEST(GeomPropCurveTest, Circle_ConstantCurvature)
 {
-  const double aRadius = 5.0;
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
+  const double             aRadius = 5.0;
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   GeomProp_Curve aProp;
@@ -224,9 +226,9 @@ TEST(GeomPropCurveTest, Circle_ConstantCurvature)
 
 TEST(GeomPropCurveTest, Ellipse_CurvatureExtrema)
 {
-  const double aMajor = 10.0;
-  const double aMinor = 5.0;
-  gp_Elips anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aMajor, aMinor);
+  const double              aMajor = 10.0;
+  const double              aMinor = 5.0;
+  gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aMajor, aMinor);
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
 
   GeomProp_Curve aProp;
@@ -240,7 +242,7 @@ TEST(GeomPropCurveTest, Ellipse_CurvatureExtrema)
 
 TEST(GeomPropCurveTest, Hyperbola_SingleExtremum)
 {
-  gp_Hypr anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
+  gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
 
   GeomProp_Curve aProp;
@@ -255,7 +257,7 @@ TEST(GeomPropCurveTest, Hyperbola_SingleExtremum)
 
 TEST(GeomPropCurveTest, Parabola_SingleExtremum)
 {
-  gp_Parab aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
 
   GeomProp_Curve aProp;
@@ -270,7 +272,7 @@ TEST(GeomPropCurveTest, Parabola_SingleExtremum)
 
 TEST(GeomPropCurveTest, Circle_NoExtrema)
 {
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   GeomProp_Curve aProp;
@@ -282,7 +284,7 @@ TEST(GeomPropCurveTest, Circle_NoExtrema)
 
 TEST(GeomPropCurveTest, Circle_NoInflections)
 {
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   GeomProp_Curve aProp;
@@ -295,10 +297,10 @@ TEST(GeomPropCurveTest, Circle_NoInflections)
 TEST(GeomPropCurveTest, BezierCurve_Inflections)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 4);
-  aPoles(1) = gp_Pnt(0, 0, 0);
-  aPoles(2) = gp_Pnt(1, 2, 0);
-  aPoles(3) = gp_Pnt(3, -1, 0);
-  aPoles(4) = gp_Pnt(4, 1, 0);
+  aPoles(1)                             = gp_Pnt(0, 0, 0);
+  aPoles(2)                             = gp_Pnt(1, 2, 0);
+  aPoles(3)                             = gp_Pnt(3, -1, 0);
+  aPoles(4)                             = gp_Pnt(4, 1, 0);
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
 
   GeomProp_Curve aProp;
@@ -314,7 +316,7 @@ TEST(GeomPropCurveTest, BezierCurve_Inflections)
 TEST(GeomPropCurveTest, Line_TangentDirection)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
-  GeomProp_Curve aProp;
+  GeomProp_Curve         aProp;
   aProp.Initialize(aLine);
 
   const GeomProp::TangentResult aTan = aProp.Tangent(5.0, Precision::Confusion());
@@ -324,7 +326,7 @@ TEST(GeomPropCurveTest, Line_TangentDirection)
 
 TEST(GeomPropCurveTest, Circle_Normal)
 {
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   GeomProp_Curve aProp;
@@ -338,7 +340,7 @@ TEST(GeomPropCurveTest, Circle_Normal)
 
 TEST(GeomPropCurveTest, Circle_CentreOfCurvature)
 {
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
   GeomProp_Curve aProp;
@@ -363,7 +365,7 @@ TEST(GeomPropSurfaceTest, UninitializedState)
 
 TEST(GeomPropSurfaceTest, InitializeFromNullHandle)
 {
-  GeomProp_Surface              aProp;
+  GeomProp_Surface          aProp;
   occ::handle<Geom_Surface> aNullSurf;
   aProp.Initialize(aNullSurf);
   EXPECT_FALSE(aProp.IsInitialized());
@@ -412,7 +414,7 @@ TEST(GeomPropSurfaceTest, Plane_MeanGaussian)
 
 TEST(GeomPropSurfaceTest, Sphere_ConstantCurvature)
 {
-  const double aRadius = 5.0;
+  const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), aRadius);
 
   GeomProp_Surface aProp;
@@ -430,14 +432,13 @@ TEST(GeomPropSurfaceTest, Sphere_ConstantCurvature)
 
 TEST(GeomPropSurfaceTest, Sphere_MeanGaussian)
 {
-  const double aRadius = 5.0;
+  const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), aRadius);
 
   GeomProp_Surface aProp;
   aProp.Initialize(aSphere);
 
-  const GeomProp::MeanGaussianResult aRes =
-    aProp.MeanGaussian(0.5, 0.5, Precision::Confusion());
+  const GeomProp::MeanGaussianResult aRes = aProp.MeanGaussian(0.5, 0.5, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   EXPECT_NEAR(std::abs(aRes.MeanCurvature), 1.0 / aRadius, 1.0e-10);
   EXPECT_NEAR(aRes.GaussianCurvature, 1.0 / (aRadius * aRadius), 1.0e-10);
@@ -445,8 +446,8 @@ TEST(GeomPropSurfaceTest, Sphere_MeanGaussian)
 
 TEST(GeomPropSurfaceTest, Cylinder_Curvatures)
 {
-  const double aRadius = 3.0;
-  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  const double                         aRadius = 3.0;
+  occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
 
   GeomProp_Surface aProp;
   aProp.Initialize(aCyl);
@@ -464,14 +465,13 @@ TEST(GeomPropSurfaceTest, Cylinder_Curvatures)
 
 TEST(GeomPropSurfaceTest, Cylinder_MeanGaussian)
 {
-  const double aRadius = 3.0;
-  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
+  const double                         aRadius = 3.0;
+  occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
 
   GeomProp_Surface aProp;
   aProp.Initialize(aCyl);
 
-  const GeomProp::MeanGaussianResult aRes =
-    aProp.MeanGaussian(0.5, 1.0, Precision::Confusion());
+  const GeomProp::MeanGaussianResult aRes = aProp.MeanGaussian(0.5, 1.0, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   EXPECT_NEAR(std::abs(aRes.MeanCurvature), 1.0 / (2.0 * aRadius), 1.0e-10);
   EXPECT_NEAR(aRes.GaussianCurvature, 0.0, Precision::Confusion());
@@ -479,7 +479,7 @@ TEST(GeomPropSurfaceTest, Cylinder_MeanGaussian)
 
 TEST(GeomPropSurfaceTest, Cone_CurvaturesVaryAlongV)
 {
-  gp_Ax3 anAx3;
+  gp_Ax3                           anAx3;
   occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(anAx3, M_PI / 6.0, 5.0);
 
   GeomProp_Surface aProp;
@@ -487,8 +487,10 @@ TEST(GeomPropSurfaceTest, Cone_CurvaturesVaryAlongV)
   ASSERT_TRUE(aProp.IsInitialized());
   EXPECT_EQ(aProp.GetType(), GeomAbs_Cone);
 
-  const GeomProp::SurfaceCurvatureResult aCurv1 = aProp.Curvatures(0.5, 0.0, Precision::Confusion());
-  const GeomProp::SurfaceCurvatureResult aCurv2 = aProp.Curvatures(0.5, 5.0, Precision::Confusion());
+  const GeomProp::SurfaceCurvatureResult aCurv1 =
+    aProp.Curvatures(0.5, 0.0, Precision::Confusion());
+  const GeomProp::SurfaceCurvatureResult aCurv2 =
+    aProp.Curvatures(0.5, 5.0, Precision::Confusion());
   ASSERT_TRUE(aCurv1.IsDefined);
   ASSERT_TRUE(aCurv2.IsDefined);
   // One curvature is zero (along ruling), the other varies with V.
@@ -500,8 +502,8 @@ TEST(GeomPropSurfaceTest, Cone_CurvaturesVaryAlongV)
 
 TEST(GeomPropSurfaceTest, Torus_CurvaturesVaryAlongV)
 {
-  const double aMajor = 10.0;
-  const double aMinor = 3.0;
+  const double                      aMajor = 10.0;
+  const double                      aMinor = 3.0;
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp_Ax3(), aMajor, aMinor);
 
   GeomProp_Surface aProp;

@@ -60,7 +60,8 @@ void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double thePar
     anOld.Tangent(anOldDir);
     // Tangent directions may differ by sign
     const double aDot = aNew.Direction.Dot(anOldDir);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Tangent direction mismatch at param=" << theParam;
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Tangent direction mismatch at param=" << theParam;
   }
 }
 
@@ -94,7 +95,8 @@ void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double thePara
     gp_Dir anOldNorm;
     anOld.Normal(anOldNorm);
     const double aDot = aNew.Direction.Dot(anOldNorm);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Normal direction mismatch at param=" << theParam;
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Normal direction mismatch at param=" << theParam;
   }
 }
 
@@ -118,9 +120,9 @@ void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double thePara
 
 //! Run all comparisons at several parameter values.
 void compareAll(const occ::handle<Geom_Curve>& theCurve,
-                const double                    theFirst,
-                const double                    theLast,
-                const int                       theNbSamples = 10)
+                const double                   theFirst,
+                const double                   theLast,
+                const int                      theNbSamples = 10)
 {
   const double aStep = (theLast - theFirst) / theNbSamples;
   for (int i = 0; i <= theNbSamples; ++i)
@@ -150,7 +152,7 @@ TEST(GeomProp_VsCLPropsTest, Line)
 
 TEST(GeomProp_VsCLPropsTest, Circle)
 {
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 5.0);
+  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
   compareAll(aCircle, 0.0, 2.0 * M_PI);
 }
@@ -161,7 +163,7 @@ TEST(GeomProp_VsCLPropsTest, Circle)
 
 TEST(GeomProp_VsCLPropsTest, Ellipse)
 {
-  gp_Elips anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
+  gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 5.0);
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
   compareAll(anEllipse, 0.0, 2.0 * M_PI);
 }
@@ -172,7 +174,7 @@ TEST(GeomProp_VsCLPropsTest, Ellipse)
 
 TEST(GeomProp_VsCLPropsTest, Hyperbola)
 {
-  gp_Hypr anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
+  gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
   compareAll(aHyperbola, -2.0, 2.0);
 }
@@ -183,7 +185,7 @@ TEST(GeomProp_VsCLPropsTest, Hyperbola)
 
 TEST(GeomProp_VsCLPropsTest, Parabola)
 {
-  gp_Parab aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
+  gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
   compareAll(aParabola, -5.0, 5.0);
 }
@@ -195,10 +197,10 @@ TEST(GeomProp_VsCLPropsTest, Parabola)
 TEST(GeomProp_VsCLPropsTest, BezierCubic)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 4);
-  aPoles(1) = gp_Pnt(0, 0, 0);
-  aPoles(2) = gp_Pnt(1, 2, 1);
-  aPoles(3) = gp_Pnt(3, -1, 0);
-  aPoles(4) = gp_Pnt(4, 1, 1);
+  aPoles(1)                             = gp_Pnt(0, 0, 0);
+  aPoles(2)                             = gp_Pnt(1, 2, 1);
+  aPoles(3)                             = gp_Pnt(3, -1, 0);
+  aPoles(4)                             = gp_Pnt(4, 1, 1);
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
   compareAll(aBezier, 0.0, 1.0);
 }
@@ -239,8 +241,8 @@ TEST(GeomProp_VsCLPropsTest, BSplineCubic)
 
 TEST(GeomProp_VsCLPropsTest, OffsetCircle)
 {
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  occ::handle<Geom_Circle>      aCircle = new Geom_Circle(aCirc);
+  gp_Circ                       aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  occ::handle<Geom_Circle>      aCircle  = new Geom_Circle(aCirc);
   occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aCircle, 2.0, gp_Dir(0, 0, 1));
   compareAll(anOffset, 0.0, 2.0 * M_PI);
 }

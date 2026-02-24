@@ -118,7 +118,7 @@ GeomProp::TangentResult GeomProp_Curve::Tangent(const double theParam, const dou
 //==================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Curve::Curvature(const double theParam,
-                                                     const double theTol) const
+                                                    const double theTol) const
 {
   return std::visit(
     [theParam, theTol](const auto& theEval) -> GeomProp::CurvatureResult {
@@ -157,7 +157,7 @@ GeomProp::NormalResult GeomProp_Curve::Normal(const double theParam, const doubl
 //==================================================================================================
 
 GeomProp::CentreResult GeomProp_Curve::CentreOfCurvature(const double theParam,
-                                                          const double theTol) const
+                                                         const double theTol) const
 {
   return std::visit(
     [theParam, theTol](const auto& theEval) -> GeomProp::CentreResult {

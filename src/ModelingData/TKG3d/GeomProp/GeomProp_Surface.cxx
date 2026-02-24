@@ -53,7 +53,7 @@ void GeomProp_Surface::Initialize(const occ::handle<Geom_Surface>& theSurface)
 
 void GeomProp_Surface::initFromAdaptor()
 {
-  mySurfaceType                        = myAdaptor->GetType();
+  mySurfaceType                   = myAdaptor->GetType();
   const GeomAdaptor_Surface* aPtr = myAdaptor.get();
 
   switch (mySurfaceType)
@@ -104,8 +104,8 @@ bool GeomProp_Surface::IsInitialized() const
 //==================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_Surface::Normal(const double theU,
-                                                        const double theV,
-                                                        const double theTol) const
+                                                       const double theV,
+                                                       const double theTol) const
 {
   return std::visit(
     [theU, theV, theTol](const auto& theEval) -> GeomProp::SurfaceNormalResult {
@@ -125,8 +125,8 @@ GeomProp::SurfaceNormalResult GeomProp_Surface::Normal(const double theU,
 //==================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_Surface::Curvatures(const double theU,
-                                                               const double theV,
-                                                               const double theTol) const
+                                                              const double theV,
+                                                              const double theTol) const
 {
   return std::visit(
     [theU, theV, theTol](const auto& theEval) -> GeomProp::SurfaceCurvatureResult {
@@ -146,8 +146,8 @@ GeomProp::SurfaceCurvatureResult GeomProp_Surface::Curvatures(const double theU,
 //==================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_Surface::MeanGaussian(const double theU,
-                                                              const double theV,
-                                                              const double theTol) const
+                                                            const double theV,
+                                                            const double theTol) const
 {
   return std::visit(
     [theU, theV, theTol](const auto& theEval) -> GeomProp::MeanGaussianResult {
