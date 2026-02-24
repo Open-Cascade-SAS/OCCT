@@ -44,4 +44,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomGridEval_Torus_Test.cxx
   GeomHash_CurveHasher_Test.cxx
   GeomHash_SurfaceHasher_Test.cxx
+  GeomProp_Test.cxx
+  GeomProp_VsCLProps_Test.cxx
+  GeomProp_VsSLProps_Test.cxx
 )

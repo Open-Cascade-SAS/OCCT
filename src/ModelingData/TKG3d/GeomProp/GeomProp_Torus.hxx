@@ -1,0 +1,71 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef _GeomProp_Torus_HeaderFile
+#define _GeomProp_Torus_HeaderFile
+
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomProp.hxx>
+#include <Standard.hxx>
+#include <Standard_DefineAlloc.hxx>
+
+//! @brief Local differential properties for a toroidal surface.
+//!
+//! Uses analytical formulas. Curvature varies along the meridian (V direction):
+//! - k1 = 1/r (constant, along the minor circle direction)
+//! - k2 = cos(V) / (R + r*cos(V)) (varies, along the major circle direction)
+//! where R is the major radius and r is the minor radius.
+//!
+//! @warning The caller must ensure that the adaptor pointer remains valid
+//! for the entire lifetime of this object.
+class GeomProp_Torus
+{
+public:
+  DEFINE_STANDARD_ALLOC
+
+  //! Constructor with adaptor pointer (non-owning).
+  //! @param theAdaptor the surface adaptor (must not be null)
+  GeomProp_Torus(const GeomAdaptor_Surface* theAdaptor)
+      : myAdaptor(theAdaptor)
+  {
+  }
+
+  //! Non-copyable and non-movable.
+  GeomProp_Torus(const GeomProp_Torus&)            = delete;
+  GeomProp_Torus& operator=(const GeomProp_Torus&) = delete;
+  GeomProp_Torus(GeomProp_Torus&&)                 = delete;
+  GeomProp_Torus& operator=(GeomProp_Torus&&)      = delete;
+
+  //! Returns the adaptor pointer.
+  const GeomAdaptor_Surface* Adaptor() const { return myAdaptor; }
+
+  //! Compute surface normal at given parameter.
+  Standard_EXPORT GeomProp::SurfaceNormalResult Normal(double theU,
+                                                       double theV,
+                                                       double theTol) const;
+
+  //! Compute principal curvatures at given parameter.
+  Standard_EXPORT GeomProp::SurfaceCurvatureResult Curvatures(double theU,
+                                                              double theV,
+                                                              double theTol) const;
+
+  //! Compute mean and Gaussian curvatures at given parameter.
+  Standard_EXPORT GeomProp::MeanGaussianResult MeanGaussian(double theU,
+                                                            double theV,
+                                                            double theTol) const;
+
+private:
+  const GeomAdaptor_Surface* myAdaptor;
+};
+
+#endif // _GeomProp_Torus_HeaderFile
