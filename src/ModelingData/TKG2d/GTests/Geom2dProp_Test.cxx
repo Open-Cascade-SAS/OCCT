@@ -620,17 +620,17 @@ TEST_F(Geom2dProp_CurveEllipseTest, FindCurvatureExtrema)
 
   if (aRes.Points.Length() >= 4)
   {
-    EXPECT_NEAR(aRes.Points.Value(1).Parameter, 0.0, 1.0e-10);
-    EXPECT_EQ(aRes.Points.Value(1).Type, Geom2dProp::CIType::MinCurvature);
+    EXPECT_NEAR(aRes.Points.Value(0).Parameter, 0.0, 1.0e-10);
+    EXPECT_EQ(aRes.Points.Value(0).Type, Geom2dProp::CIType::MinCurvature);
 
-    EXPECT_NEAR(aRes.Points.Value(2).Parameter, M_PI / 2.0, 1.0e-10);
-    EXPECT_EQ(aRes.Points.Value(2).Type, Geom2dProp::CIType::MaxCurvature);
+    EXPECT_NEAR(aRes.Points.Value(1).Parameter, M_PI / 2.0, 1.0e-10);
+    EXPECT_EQ(aRes.Points.Value(1).Type, Geom2dProp::CIType::MaxCurvature);
 
-    EXPECT_NEAR(aRes.Points.Value(3).Parameter, M_PI, 1.0e-10);
-    EXPECT_EQ(aRes.Points.Value(3).Type, Geom2dProp::CIType::MinCurvature);
+    EXPECT_NEAR(aRes.Points.Value(2).Parameter, M_PI, 1.0e-10);
+    EXPECT_EQ(aRes.Points.Value(2).Type, Geom2dProp::CIType::MinCurvature);
 
-    EXPECT_NEAR(aRes.Points.Value(4).Parameter, 3.0 * M_PI / 2.0, 1.0e-10);
-    EXPECT_EQ(aRes.Points.Value(4).Type, Geom2dProp::CIType::MaxCurvature);
+    EXPECT_NEAR(aRes.Points.Value(3).Parameter, 3.0 * M_PI / 2.0, 1.0e-10);
+    EXPECT_EQ(aRes.Points.Value(3).Type, Geom2dProp::CIType::MaxCurvature);
   }
 }
 
@@ -738,8 +738,8 @@ TEST_F(Geom2dProp_CurveHyperbolaTest, CurvatureExtremaAtVertex)
   EXPECT_EQ(aExtrema.Points.Length(), 1);
   if (!aExtrema.Points.IsEmpty())
   {
-    EXPECT_NEAR(aExtrema.Points.Value(1).Parameter, 0.0, 1.0e-10);
-    EXPECT_EQ(aExtrema.Points.Value(1).Type, Geom2dProp::CIType::MinCurvature);
+    EXPECT_NEAR(aExtrema.Points.Value(0).Parameter, 0.0, 1.0e-10);
+    EXPECT_EQ(aExtrema.Points.Value(0).Type, Geom2dProp::CIType::MinCurvature);
   }
 }
 
@@ -837,8 +837,8 @@ TEST_F(Geom2dProp_CurveParabolaTest, CurvatureExtremaAtVertex)
   EXPECT_EQ(aExtrema.Points.Length(), 1);
   if (!aExtrema.Points.IsEmpty())
   {
-    EXPECT_NEAR(aExtrema.Points.Value(1).Parameter, 0.0, 1.0e-10);
-    EXPECT_EQ(aExtrema.Points.Value(1).Type, Geom2dProp::CIType::MinCurvature);
+    EXPECT_NEAR(aExtrema.Points.Value(0).Parameter, 0.0, 1.0e-10);
+    EXPECT_EQ(aExtrema.Points.Value(0).Type, Geom2dProp::CIType::MinCurvature);
   }
 }
 
@@ -947,7 +947,7 @@ TEST_F(Geom2dProp_CurveBezierTest, InflectionPoints)
   EXPECT_GE(aInflections.Points.Length(), 1);
   if (!aInflections.Points.IsEmpty())
   {
-    for (int i = 1; i <= aInflections.Points.Length(); ++i)
+    for (int i = 0; i < aInflections.Points.Length(); ++i)
     {
       EXPECT_EQ(aInflections.Points.Value(i).Type, Geom2dProp::CIType::Inflection);
       // Should be within the parameter range [0, 1]
@@ -962,7 +962,7 @@ TEST_F(Geom2dProp_CurveBezierTest, CurvatureExtrema)
   const Geom2dProp::CurveAnalysis aExtrema = myProp.FindCurvatureExtrema();
   EXPECT_TRUE(aExtrema.IsDone);
   // S-shaped cubic should have curvature extrema
-  for (int i = 1; i <= aExtrema.Points.Length(); ++i)
+  for (int i = 0; i < aExtrema.Points.Length(); ++i)
   {
     EXPECT_TRUE(aExtrema.Points.Value(i).Type == Geom2dProp::CIType::MinCurvature
                 || aExtrema.Points.Value(i).Type == Geom2dProp::CIType::MaxCurvature);
@@ -1086,7 +1086,7 @@ TEST_F(Geom2dProp_CurveBSplineTest, CurvatureExtrema)
   const Geom2dProp::CurveAnalysis aExtrema = myProp.FindCurvatureExtrema();
   EXPECT_TRUE(aExtrema.IsDone);
   // Verify all extrema parameters are within [0, 1]
-  for (int i = 1; i <= aExtrema.Points.Length(); ++i)
+  for (int i = 0; i < aExtrema.Points.Length(); ++i)
   {
     EXPECT_GE(aExtrema.Points.Value(i).Parameter, 0.0 - 1.0e-6);
     EXPECT_LE(aExtrema.Points.Value(i).Parameter, 1.0 + 1.0e-6);
@@ -1097,7 +1097,7 @@ TEST_F(Geom2dProp_CurveBSplineTest, InflectionPoints)
 {
   const Geom2dProp::CurveAnalysis aInfl = myProp.FindInflections();
   EXPECT_TRUE(aInfl.IsDone);
-  for (int i = 1; i <= aInfl.Points.Length(); ++i)
+  for (int i = 0; i < aInfl.Points.Length(); ++i)
   {
     EXPECT_EQ(aInfl.Points.Value(i).Type, Geom2dProp::CIType::Inflection);
     EXPECT_GE(aInfl.Points.Value(i).Parameter, 0.0 - 1.0e-6);

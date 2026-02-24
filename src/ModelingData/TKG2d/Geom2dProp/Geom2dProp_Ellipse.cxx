@@ -17,6 +17,12 @@
 
 #include <cmath>
 
+namespace
+{
+constexpr int    THE_ELLIPSE_NB_EXTREMA = 4; //!< Number of curvature extrema on full ellipse
+constexpr double THE_ELLIPSE_PERIOD     = 2.0 * M_PI; //!< One full period of ellipse parameter
+} // namespace
+
 //==================================================================================================
 
 Geom2dProp::TangentResult Geom2dProp_Ellipse::Tangent(const double theParam,
@@ -92,7 +98,7 @@ Geom2dProp::CurveAnalysis Geom2dProp_Ellipse::FindCurvatureExtrema() const
 
   const double aUFirst    = myAdaptor->FirstParameter();
   const double aULast     = myAdaptor->LastParameter();
-  const double aUFPlus2PI = aUFirst + 2.0 * M_PI;
+  const double aUFPlus2PI = aUFirst + THE_ELLIPSE_PERIOD;
 
   // Ellipse curvature extrema at 0, PI/2, PI, 3*PI/2
   // At 0 and PI (major axis endpoints): min radius of curvature -> max |curvature| -> MinCurvature
@@ -101,7 +107,7 @@ Geom2dProp::CurveAnalysis Geom2dProp_Ellipse::FindCurvatureExtrema() const
   const double aCandidates[] = {0.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0};
   const bool   aIsMin[]      = {true, false, true, false};
 
-  for (int i = 0; i < 4; ++i)
+  for (int i = 0; i < THE_ELLIPSE_NB_EXTREMA; ++i)
   {
     const double aU = ElCLib::InPeriod(aCandidates[i], aUFirst, aUFPlus2PI);
     if (aU >= aUFirst && aU <= aULast)

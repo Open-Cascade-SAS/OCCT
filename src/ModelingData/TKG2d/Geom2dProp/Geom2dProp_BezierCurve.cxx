@@ -14,9 +14,8 @@
 #include <Geom2dProp_BezierCurve.hxx>
 
 #include <gp.hxx>
-#include <math_BracketedRoot.hxx>
-#include <math_FunctionRoots.hxx>
-#include <math_FunctionWithDerivative.hxx>
+#include <MathRoot_Brent.hxx>
+#include <MathRoot_Multiple.hxx>
 #include <Precision.hxx>
 
 #include <cmath>
@@ -24,10 +23,18 @@
 namespace
 {
 
+constexpr double THE_CURVATURE_DERIV_COEFF  = 3.0;   //!< Coefficient in d(KC)/dU formula
+constexpr double THE_DIFF_STEP_DIVISOR      = 100.0; //!< Divisor for numerical differentiation step
+constexpr double THE_D2_MAGNITUDE_THRESHOLD = 1.0e-4; //!< Threshold for second derivative magnitude
+constexpr double THE_EPSILON_SCALE      = 1.0e-4; //!< Scale factor for epsilon relative to domain
+constexpr int    THE_EXTREMA_NB_SAMPLES = 100;   //!< Number of samples for curvature extrema search
+constexpr int    THE_INFLECTION_NB_SAMPLES = 30; //!< Number of samples for inflection search
+constexpr double THE_INFLECTION_TOLERANCE  = 1.0e-6; //!< Tolerance for inflection point finding
+
 //! Function for finding curvature extrema: F = d(curvature)/dU = 0
 //! KC = (V1^V2) / ||V1||^3
 //! F  = d KC / dU
-class FuncCurExt : public math_FunctionWithDerivative
+class FuncCurExt
 {
 public:
   FuncCurExt(const Geom2dAdaptor_Curve* theCurve, const double theTol)
@@ -36,7 +43,7 @@ public:
   {
   }
 
-  bool Value(const double X, double& F) override
+  bool Value(const double X, double& F)
   {
     gp_Pnt2d aP;
     gp_Vec2d aV1, aV2, aV3;
@@ -55,19 +62,13 @@ public:
       return false;
     }
 
-    F = aCPV1V3 / aV13 - 3.0 * aCPV1V2 * aV1V2 / aV15;
+    F = aCPV1V3 / aV13 - THE_CURVATURE_DERIV_COEFF * aCPV1V2 * aV1V2 / aV15;
     return true;
   }
 
-  bool Derivative(const double X, double& D) override
+  bool Values(const double X, double& F, double& D)
   {
-    double aF;
-    return Values(X, aF, D);
-  }
-
-  bool Values(const double X, double& F, double& D) override
-  {
-    double aDx = myEpsX / 100.0;
+    double aDx = myEpsX / THE_DIFF_STEP_DIVISOR;
     if (X + aDx > myCurve->LastParameter())
     {
       aDx = -aDx;
@@ -126,7 +127,7 @@ private:
 };
 
 //! Function for finding inflection points: F = (V1^V2) / (||V1|| * ||V2||) = 0
-class FuncCurNul : public math_FunctionWithDerivative
+class FuncCurNul
 {
 public:
   FuncCurNul(const Geom2dAdaptor_Curve* theCurve)
@@ -134,19 +135,13 @@ public:
   {
   }
 
-  bool Value(const double X, double& F) override
+  bool Value(const double X, double& F)
   {
     double aD;
     return Values(X, F, aD);
   }
 
-  bool Derivative(const double X, double& D) override
-  {
-    double aF;
-    return Values(X, aF, D);
-  }
-
-  bool Values(const double X, double& F, double& D) override
+  bool Values(const double X, double& F, double& D)
   {
     gp_Pnt2d aP;
     gp_Vec2d aV1, aV2, aV3;
@@ -162,7 +157,7 @@ public:
     F = 0.0;
     D = 0.0;
 
-    if (aNV2 < 1.0e-4)
+    if (aNV2 < THE_D2_MAGNITUDE_THRESHOLD)
     {
       return true;
     }
@@ -186,24 +181,31 @@ void numericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
                              const double               theUMax,
                              Geom2dProp::CurveAnalysis& theResult)
 {
-  const double     aEpsH = 1.0e-4 * (theUMax - theUMin);
-  constexpr double aTol  = Precision::PConfusion();
+  const double aEpsH = THE_EPSILON_SCALE * (theUMax - theUMin);
 
-  FuncCurExt    aFunc(theCurve, aEpsH);
-  constexpr int aNbSamples = 100;
+  FuncCurExt aFunc(theCurve, aEpsH);
 
-  math_FunctionRoots aSolRoot(aFunc, theUMin, theUMax, aNbSamples, aEpsH, aEpsH, aEpsH);
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples  = THE_EXTREMA_NB_SAMPLES;
+  aConfig.XTolerance = aEpsH;
+  aConfig.FTolerance = aEpsH;
 
-  if (aSolRoot.IsDone())
+  MathRoot::MultipleResult aRoots =
+    MathRoot::FindAllRootsWithDerivative(aFunc, theUMin, theUMax, aConfig);
+
+  if (aRoots.IsDone())
   {
-    for (int j = 1; j <= aSolRoot.NbSolutions(); ++j)
+    for (int j = 0; j < aRoots.NbRoots(); ++j)
     {
-      double aParam = aSolRoot.Value(j);
+      double aParam = aRoots[j];
       // Refine the solution.
-      math_BracketedRoot aBS(aFunc, aParam - aEpsH, aParam + aEpsH, aTol);
-      if (aBS.IsDone())
+      MathUtils::Config aBrentCfg;
+      aBrentCfg.XTolerance = Precision::PConfusion();
+      aBrentCfg.FTolerance = Precision::PConfusion();
+      auto aBrent          = MathRoot::Brent(aFunc, aParam - aEpsH, aParam + aEpsH, aBrentCfg);
+      if (aBrent.IsDone() && aBrent.Root.has_value())
       {
-        aParam = aBS.Root();
+        aParam = *aBrent.Root;
       }
       const bool               aIsMin = aFunc.IsMinKC(aParam);
       const Geom2dProp::CIType aType =
@@ -223,16 +225,20 @@ void numericInflections(const Geom2dAdaptor_Curve* theCurve,
                         const double               theUMax,
                         Geom2dProp::CurveAnalysis& theResult)
 {
-  FuncCurNul    aFunc(theCurve);
-  constexpr int aNbSamples = 30;
+  FuncCurNul aFunc(theCurve);
 
-  math_FunctionRoots aSolRoot(aFunc, theUMin, theUMax, aNbSamples, 1.0e-6, 1.0e-6, 1.0e-6);
+  MathRoot::MultipleConfig aConfig;
+  aConfig.NbSamples  = THE_INFLECTION_NB_SAMPLES;
+  aConfig.XTolerance = THE_INFLECTION_TOLERANCE;
+  aConfig.FTolerance = THE_INFLECTION_TOLERANCE;
 
-  if (aSolRoot.IsDone())
+  MathRoot::MultipleResult aRoots = MathRoot::FindAllRoots(aFunc, theUMin, theUMax, aConfig);
+
+  if (aRoots.IsDone())
   {
-    for (int j = 1; j <= aSolRoot.NbSolutions(); ++j)
+    for (int j = 0; j < aRoots.NbRoots(); ++j)
     {
-      theResult.Points.Append({aSolRoot.Value(j), Geom2dProp::CIType::Inflection});
+      theResult.Points.Append({aRoots[j], Geom2dProp::CIType::Inflection});
     }
   }
   else

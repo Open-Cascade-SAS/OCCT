@@ -17,7 +17,7 @@
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec2d.hxx>
-#include <NCollection_Sequence.hxx>
+#include <NCollection_DynamicArray.hxx>
 #include <Standard.hxx>
 
 //! @brief Namespace containing result structures and free functions for 2D curve
@@ -76,8 +76,8 @@ struct CurveSpecialPoint
 //! Result of global curve analysis (curvature extrema and inflection points).
 struct CurveAnalysis
 {
-  NCollection_Sequence<CurveSpecialPoint> Points;         //!< Special points sorted by parameter
-  bool                                    IsDone = false; //!< True if analysis completed
+  NCollection_DynamicArray<CurveSpecialPoint> Points; //!< Special points sorted by parameter
+  bool                                        IsDone = false; //!< True if analysis completed
 };
 
 //! Compute tangent direction from derivative vectors.
