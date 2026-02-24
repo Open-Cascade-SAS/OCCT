@@ -243,6 +243,56 @@ void numericInflections(const Geom2dAdaptor_Curve* theCurve,
   }
 }
 
+//! Remove duplicate points that may appear at shared interval boundaries.
+//! Points are considered duplicates if their parameters are within theTol.
+void removeDuplicatePoints(Geom2dProp::CurveAnalysis& theResult, const double theTol)
+{
+  const int aNbPts = theResult.Points.Size();
+  if (aNbPts <= 1)
+  {
+    return;
+  }
+
+  // Pre-check: detect if any duplicates exist before allocating.
+  bool aHasDuplicates = false;
+  for (int i = 1; i < aNbPts && !aHasDuplicates; ++i)
+  {
+    for (int j = 0; j < i; ++j)
+    {
+      if (std::abs(theResult.Points[i].Parameter - theResult.Points[j].Parameter) < theTol)
+      {
+        aHasDuplicates = true;
+        break;
+      }
+    }
+  }
+  if (!aHasDuplicates)
+  {
+    return;
+  }
+
+  NCollection_DynamicArray<Geom2dProp::CurveSpecialPoint> aFiltered;
+  aFiltered.Append(theResult.Points[0]);
+  for (int i = 1; i < aNbPts; ++i)
+  {
+    bool aIsDuplicate = false;
+    for (int j = static_cast<int>(aFiltered.Size()) - 1; j >= 0; --j)
+    {
+      if (std::abs(theResult.Points[i].Parameter - aFiltered[j].Parameter) < theTol)
+      {
+        aIsDuplicate = true;
+        break;
+      }
+    }
+    if (!aIsDuplicate)
+    {
+      aFiltered.Append(theResult.Points[i]);
+    }
+  }
+
+  theResult.Points = std::move(aFiltered);
+}
+
 } // namespace
 
 //==================================================================================================
@@ -335,6 +385,10 @@ Geom2dProp::CurveAnalysis Geom2dProp_BSplineCurve::FindCurvatureExtrema() const
     {
       numericCurvatureExtrema(myAdaptor, aParams(i), aParams(i + 1), aResult);
     }
+    // Remove duplicate roots that may appear at shared interval boundaries.
+    const double aEpsH =
+      THE_EPSILON_SCALE * (myAdaptor->LastParameter() - myAdaptor->FirstParameter());
+    removeDuplicatePoints(aResult, aEpsH);
   }
 
   return aResult;
@@ -367,6 +421,8 @@ Geom2dProp::CurveAnalysis Geom2dProp_BSplineCurve::FindInflections() const
     {
       numericInflections(myAdaptor, aParams(i), aParams(i + 1), aResult);
     }
+    // Remove duplicate roots that may appear at shared interval boundaries.
+    removeDuplicatePoints(aResult, THE_INFLECTION_TOLERANCE);
   }
 
   return aResult;
