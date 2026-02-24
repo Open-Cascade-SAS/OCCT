@@ -1,0 +1,46 @@
+# Source files for GeomProp package
+set(OCCT_GeomProp_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
+
+set(OCCT_GeomProp_FILES
+  GeomProp.hxx
+  GeomProp.cxx
+  GeomProp_BezierCurve.hxx
+  GeomProp_BezierCurve.cxx
+  GeomProp_BezierSurface.hxx
+  GeomProp_BezierSurface.cxx
+  GeomProp_BSplineCurve.hxx
+  GeomProp_BSplineCurve.cxx
+  GeomProp_BSplineSurface.hxx
+  GeomProp_BSplineSurface.cxx
+  GeomProp_Circle.hxx
+  GeomProp_Cone.hxx
+  GeomProp_Cone.cxx
+  GeomProp_Curve.hxx
+  GeomProp_Curve.cxx
+  GeomProp_Cylinder.hxx
+  GeomProp_Ellipse.hxx
+  GeomProp_Ellipse.cxx
+  GeomProp_Hyperbola.hxx
+  GeomProp_Hyperbola.cxx
+  GeomProp_Line.hxx
+  GeomProp_OffsetCurve.hxx
+  GeomProp_OffsetCurve.cxx
+  GeomProp_OffsetSurface.hxx
+  GeomProp_OffsetSurface.cxx
+  GeomProp_OtherCurve.hxx
+  GeomProp_OtherCurve.cxx
+  GeomProp_OtherSurface.hxx
+  GeomProp_OtherSurface.cxx
+  GeomProp_Parabola.hxx
+  GeomProp_Parabola.cxx
+  GeomProp_Plane.hxx
+  GeomProp_Sphere.hxx
+  GeomProp_Surface.hxx
+  GeomProp_Surface.cxx
+  GeomProp_SurfaceOfExtrusion.hxx
+  GeomProp_SurfaceOfExtrusion.cxx
+  GeomProp_SurfaceOfRevolution.hxx
+  GeomProp_SurfaceOfRevolution.cxx
+  GeomProp_Torus.hxx
+  GeomProp_Torus.cxx
+)

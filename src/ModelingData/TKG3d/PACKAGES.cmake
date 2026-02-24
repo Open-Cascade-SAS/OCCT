@@ -11,4 +11,5 @@ set(OCCT_TKG3d_LIST_OF_PACKAGES
   GProp
   GeomHash
   GeomEval
+  GeomProp
 )
