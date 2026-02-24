@@ -424,7 +424,7 @@ bool Geom_OffsetCurve::IsClosed() const
   gp_Pnt PF, PL;
   Geom_Curve::D0(FirstParameter(), PF);
   Geom_Curve::D0(LastParameter(), PL);
-  return PF.SquareDistance(PL) <= Precision::SquareComputational();
+  return PF.SquareDistance(PL) <= Precision::Computational();
 }
 
 //==================================================================================================

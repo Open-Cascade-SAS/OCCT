@@ -370,7 +370,7 @@ bool Geom2d_OffsetCurve::IsClosed() const
   gp_Pnt2d PF, PL;
   Geom2d_Curve::D0(FirstParameter(), PF);
   Geom2d_Curve::D0(LastParameter(), PL);
-  return PF.SquareDistance(PL) <= Precision::SquareComputational();
+  return PF.SquareDistance(PL) <= Precision::Computational();
 }
 
 //==================================================================================================

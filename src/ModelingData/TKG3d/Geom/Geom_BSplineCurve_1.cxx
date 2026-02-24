@@ -133,7 +133,7 @@ bool Geom_BSplineCurve::IsG1(const double theTf, const double theTl, const doubl
 
 bool Geom_BSplineCurve::IsClosed() const
 {
-  return StartPoint().SquareDistance(EndPoint()) <= Precision::SquareComputational();
+  return StartPoint().SquareDistance(EndPoint()) <= Precision::Computational();
 }
 
 //=================================================================================================

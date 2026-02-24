@@ -190,7 +190,7 @@ bool Geom2d_TrimmedCurve::IsClosed() const
       return true;
   }
   return Value(FirstParameter()).SquareDistance(Value(LastParameter()))
-         <= Precision::SquareComputational();
+         <= Precision::Computational();
 }
 
 //=================================================================================================

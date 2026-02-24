@@ -152,7 +152,7 @@ bool Geom_TrimmedCurve::IsClosed() const
         && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
       return true;
   }
-  return StartPoint().SquareDistance(EndPoint()) <= Precision::SquareComputational();
+  return StartPoint().SquareDistance(EndPoint()) <= Precision::Computational();
 }
 
 //=================================================================================================
