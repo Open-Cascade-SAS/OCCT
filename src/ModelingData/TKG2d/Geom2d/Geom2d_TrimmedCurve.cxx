@@ -181,15 +181,30 @@ double Geom2d_TrimmedCurve::FirstParameter() const
 
 bool Geom2d_TrimmedCurve::IsClosed() const
 {
-  double Dist = Value(FirstParameter()).Distance(Value(LastParameter()));
-  return (Dist <= gp::Resolution());
+  if (basisCurve->IsPeriodic())
+  {
+    const double aPeriod = basisCurve->Period();
+    const double aLength = LastParameter() - FirstParameter();
+    if (aLength > Precision::PConfusion()
+        && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+      return true;
+  }
+  return Value(FirstParameter()).SquareDistance(Value(LastParameter()))
+         <= Precision::Computational();
 }
 
 //=================================================================================================
 
 bool Geom2d_TrimmedCurve::IsPeriodic() const
 {
-  // return basisCurve->IsPeriodic();
+  if (basisCurve->IsPeriodic())
+  {
+    const double aPeriod = basisCurve->Period();
+    const double aLength = LastParameter() - FirstParameter();
+    if (aLength > Precision::PConfusion()
+        && std::abs(std::remainder(aLength, aPeriod)) <= Precision::PConfusion())
+      return true;
+  }
   return false;
 }
 
