@@ -19,7 +19,6 @@
 #include <MathUtils_Core.hxx>
 #include <MathRoot_Brent.hxx>
 #include <math_Vector.hxx>
-#include <math_IntegerVector.hxx>
 
 #include <NCollection_Vector.hxx>
 
@@ -69,6 +68,167 @@ struct MultipleConfig
   double Offset        = 0.0;   //!< Find roots of f(x) - Offset = 0
 };
 
+namespace detail
+{
+
+//! In-place insertion sort of roots and corresponding values by ascending root value.
+inline void sortRoots(MultipleResult& theResult)
+{
+  for (int i = 1; i < theResult.Roots.Length(); ++i)
+  {
+    const double aKeyRoot = theResult.Roots[i];
+    const double aKeyVal  = theResult.Values[i];
+    int          j        = i - 1;
+    while (j >= 0 && theResult.Roots[j] > aKeyRoot)
+    {
+      theResult.Roots[j + 1]  = theResult.Roots[j];
+      theResult.Values[j + 1] = theResult.Values[j];
+      --j;
+    }
+    theResult.Roots[j + 1]  = aKeyRoot;
+    theResult.Values[j + 1] = aKeyVal;
+  }
+}
+
+//! Helper to add a root if it is not a duplicate of an already found root.
+inline void addRoot(MultipleResult& theResult, double theEpsX, double theRoot, double theValue)
+{
+  for (int k = 0; k < theResult.Roots.Length(); ++k)
+  {
+    if (std::abs(theRoot - theResult.Roots.Value(k)) < theEpsX)
+    {
+      return;
+    }
+  }
+  theResult.Roots.Append(theRoot);
+  theResult.Values.Append(theValue);
+}
+
+//! No-op interval handler for functions without derivative.
+struct NoExtraHandler
+{
+  void operator()(int, double, double, double, double, MultipleResult&, double) const {}
+};
+
+//! Core implementation for finding all roots in an interval.
+//! Shared logic for both Value-only and Values (with derivative) interfaces.
+//!
+//! @tparam SampleFn callable (int theIndex, double theX) -> bool
+//! @tparam GetValueFn callable (int theIndex) -> double, returns f(x)-offset at sample
+//! @tparam BrentWrapperT type with Value(double, double&) for Brent root finding
+//! @tparam GetRootValueFn callable (double theX) -> double, returns original f(x)
+//! @tparam IntervalExtraFn callable (int, x0, x1, f0, f1, result, epsX) -> void
+template <typename SampleFn,
+          typename GetValueFn,
+          typename BrentWrapperT,
+          typename GetRootValueFn,
+          typename IntervalExtraFn>
+MultipleResult findAllRootsImpl(double                theLower,
+                                double                theUpper,
+                                const MultipleConfig& theConfig,
+                                SampleFn              theSampleFn,
+                                GetValueFn            theGetValue,
+                                BrentWrapperT&        theBrentWrapper,
+                                GetRootValueFn        theGetRootValue,
+                                IntervalExtraFn       theIntervalExtra)
+{
+  MultipleResult aResult;
+  aResult.Status = MathUtils::Status::OK;
+
+  // Ensure proper ordering
+  const double aLower = std::min(theLower, theUpper);
+  const double aUpper = std::max(theLower, theUpper);
+
+  // Minimum samples
+  const int    aNbSamples = std::max(theConfig.NbSamples, 10);
+  const double aDx        = (aUpper - aLower) / aNbSamples;
+
+  // Ensure EpsX is not too small relative to interval
+  const double aMinEpsX = 1e-10 * (std::abs(aLower) + std::abs(aUpper));
+  const double aEpsX    = std::max(theConfig.XTolerance, aMinEpsX);
+
+  // Sample function values
+  math_Vector aXValues(0, aNbSamples);
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    double aX = aLower + i * aDx;
+    if (aX > aUpper)
+      aX = aUpper;
+    aXValues(i) = aX;
+
+    if (!theSampleFn(i, aX))
+    {
+      aResult.Status = MathUtils::Status::NumericalError;
+      return aResult;
+    }
+  }
+
+  // Check if function is essentially null everywhere
+  aResult.IsAllNull = true;
+  for (int i = 0; i <= aNbSamples; ++i)
+  {
+    if (std::abs(theGetValue(i)) > theConfig.NullTolerance)
+    {
+      aResult.IsAllNull = false;
+      break;
+    }
+  }
+
+  if (aResult.IsAllNull)
+  {
+    return aResult;
+  }
+
+  // Find sign changes
+  for (int i = 0; i < aNbSamples; ++i)
+  {
+    const double aF0 = theGetValue(i);
+    const double aF1 = theGetValue(i + 1);
+    const double aX0 = aXValues(i);
+    const double aX1 = aXValues(i + 1);
+
+    // Exact zero at sample point
+    if (std::abs(aF0) < theConfig.FTolerance)
+    {
+      addRoot(aResult, aEpsX, aX0, aF0 + theConfig.Offset);
+      continue;
+    }
+
+    // Sign change detected
+    if (aF0 * aF1 < 0.0)
+    {
+      MathUtils::Config aBrentConfig;
+      aBrentConfig.XTolerance    = aEpsX;
+      aBrentConfig.FTolerance    = theConfig.FTolerance;
+      aBrentConfig.MaxIterations = theConfig.MaxIterations;
+
+      MathUtils::ScalarResult aBrentResult = Brent(theBrentWrapper, aX0, aX1, aBrentConfig);
+      aResult.NbIterations += aBrentResult.NbIterations;
+
+      if (aBrentResult.IsDone() && aBrentResult.Root.has_value())
+      {
+        addRoot(aResult, aEpsX, *aBrentResult.Root, theGetRootValue(*aBrentResult.Root));
+      }
+    }
+    else
+    {
+      // Additional per-interval processing (e.g., tangential root detection)
+      theIntervalExtra(i, aX0, aX1, aF0, aF1, aResult, aEpsX);
+    }
+  }
+
+  // Check last sample point
+  if (std::abs(theGetValue(aNbSamples)) < theConfig.FTolerance)
+  {
+    addRoot(aResult, aEpsX, aXValues(aNbSamples), theGetValue(aNbSamples) + theConfig.Offset);
+  }
+
+  sortRoots(aResult);
+  return aResult;
+}
+
+} // namespace detail
+
 //! Finds all real roots of a function within the range [theLower, theUpper].
 //! Uses uniform sampling to detect sign changes, then refines each root using Brent's method.
 //!
@@ -90,87 +250,39 @@ MultipleResult FindAllRoots(Function&             theFunc,
                             double                theUpper,
                             const MultipleConfig& theConfig = MultipleConfig())
 {
-  MultipleResult aResult;
-  aResult.Status = MathUtils::Status::OK;
-
-  // Ensure proper ordering
-  double aLower = std::min(theLower, theUpper);
-  double aUpper = std::max(theLower, theUpper);
-
-  // Minimum samples
-  const int    aNbSamples = std::max(theConfig.NbSamples, 10);
-  const double aDx        = (aUpper - aLower) / aNbSamples;
-
-  // Ensure EpsX is not too small relative to interval
-  const double aMinEpsX = 1e-10 * (std::abs(aLower) + std::abs(aUpper));
-  const double aEpsX    = std::max(theConfig.XTolerance, aMinEpsX);
-
-  // Sample function values
+  const int   aNbSamples = std::max(theConfig.NbSamples, 10);
   math_Vector aSamples(0, aNbSamples);
-  math_Vector aXValues(0, aNbSamples);
 
-  bool aAllValid = true;
-  for (int i = 0; i <= aNbSamples; ++i)
+  // Functor that samples the function at a given point
+  struct SampleFn
   {
-    double aX = aLower + i * aDx;
-    if (aX > aUpper)
-      aX = aUpper;
-    aXValues(i) = aX;
+    Function&    myFunc;
+    math_Vector& mySamples;
+    const double myOffset;
 
-    double aF = 0.0;
-    if (!theFunc.Value(aX, aF))
+    bool operator()(int theIndex, double theX) const
     {
-      aAllValid = false;
-      break;
+      double aF = 0.0;
+      if (!myFunc.Value(theX, aF))
+        return false;
+      mySamples(theIndex) = aF - myOffset;
+      return true;
     }
-    aSamples(i) = aF - theConfig.Offset;
-  }
-
-  if (!aAllValid)
-  {
-    aResult.Status = MathUtils::Status::NumericalError;
-    return aResult;
-  }
-
-  // Check if function is essentially null everywhere
-  aResult.IsAllNull = true;
-  for (int i = 0; i <= aNbSamples; ++i)
-  {
-    if (std::abs(aSamples(i)) > theConfig.NullTolerance)
-    {
-      aResult.IsAllNull = false;
-      break;
-    }
-  }
-
-  if (aResult.IsAllNull)
-  {
-    return aResult;
-  }
-
-  // Helper to add root if not duplicate
-  auto addRoot = [&](double theRoot, double theValue) {
-    // Check for duplicates
-    for (int k = 0; k < aResult.Roots.Length(); ++k)
-    {
-      if (std::abs(theRoot - aResult.Roots.Value(k)) < aEpsX)
-      {
-        return;
-      }
-    }
-    aResult.Roots.Append(theRoot);
-    aResult.Values.Append(theValue);
   };
 
-  // Create wrapper for Brent that uses Value-only interface
-  class BrentWrapper
+  // Functor that returns the sampled f(x)-offset value
+  struct GetValueFn
   {
-  public:
-    BrentWrapper(Function& theF, double theOffset)
-        : myFunc(theF),
-          myOffset(theOffset)
-    {
-    }
+    const math_Vector& mySamples;
+
+    double operator()(int theIndex) const { return mySamples(theIndex); }
+  };
+
+  // Wrapper for Brent that uses Value-only interface
+  struct BrentWrapper
+  {
+    Function& myFunc;
+    double    myOffset;
 
     bool Value(double theX, double& theY) const
     {
@@ -179,89 +291,34 @@ MultipleResult FindAllRoots(Function&             theFunc,
       theY -= myOffset;
       return true;
     }
-
-  private:
-    Function& myFunc;
-    double    myOffset;
   };
 
-  BrentWrapper aWrapper(theFunc, theConfig.Offset);
-
-  // Find sign changes
-  for (int i = 0; i < aNbSamples; ++i)
+  // Functor that evaluates the original function value at a root point
+  struct GetRootValueFn
   {
-    const double aF0 = aSamples(i);
-    const double aF1 = aSamples(i + 1);
-    const double aX0 = aXValues(i);
-    const double aX1 = aXValues(i + 1);
+    Function& myFunc;
 
-    // Exact zero at sample point
-    if (std::abs(aF0) < theConfig.FTolerance)
+    double operator()(double theX) const
     {
-      addRoot(aX0, aF0 + theConfig.Offset);
-      continue;
+      double aF = 0.0;
+      myFunc.Value(theX, aF);
+      return aF;
     }
+  };
 
-    // Sign change detected
-    if (aF0 * aF1 < 0.0)
-    {
-      MathUtils::Config aBrentConfig;
-      aBrentConfig.XTolerance    = aEpsX;
-      aBrentConfig.FTolerance    = theConfig.FTolerance;
-      aBrentConfig.MaxIterations = theConfig.MaxIterations;
+  SampleFn       aSampleFn{theFunc, aSamples, theConfig.Offset};
+  GetValueFn     aGetValue{aSamples};
+  BrentWrapper   aWrapper{theFunc, theConfig.Offset};
+  GetRootValueFn aGetRootValue{theFunc};
 
-      auto aBrentResult = Brent(aWrapper, aX0, aX1, aBrentConfig);
-      aResult.NbIterations += aBrentResult.NbIterations;
-
-      if (aBrentResult.IsDone() && aBrentResult.Root.has_value())
-      {
-        double aRootValue = 0.0;
-        theFunc.Value(*aBrentResult.Root, aRootValue);
-        addRoot(*aBrentResult.Root, aRootValue);
-      }
-    }
-  }
-
-  // Check last sample point
-  if (std::abs(aSamples(aNbSamples)) < theConfig.FTolerance)
-  {
-    addRoot(aXValues(aNbSamples), aSamples(aNbSamples) + theConfig.Offset);
-  }
-
-  // Sort roots using indices
-  const int aNbRoots = aResult.Roots.Length();
-  if (aNbRoots > 1)
-  {
-    math_IntegerVector aIndices(0, aNbRoots - 1);
-    for (int i = 0; i < aNbRoots; ++i)
-    {
-      aIndices(i) = i;
-    }
-
-    // Simple insertion sort for small arrays
-    for (int i = 1; i < aNbRoots; ++i)
-    {
-      int aKey = aIndices(i);
-      int j    = i - 1;
-      while (j >= 0 && aResult.Roots.Value(aIndices(j)) > aResult.Roots.Value(aKey))
-      {
-        aIndices(j + 1) = aIndices(j);
-        --j;
-      }
-      aIndices(j + 1) = aKey;
-    }
-
-    NCollection_Vector<double> aSortedRoots, aSortedValues;
-    for (int i = 0; i < aNbRoots; ++i)
-    {
-      aSortedRoots.Append(aResult.Roots.Value(aIndices(i)));
-      aSortedValues.Append(aResult.Values.Value(aIndices(i)));
-    }
-    aResult.Roots  = aSortedRoots;
-    aResult.Values = aSortedValues;
-  }
-
-  return aResult;
+  return detail::findAllRootsImpl(theLower,
+                                  theUpper,
+                                  theConfig,
+                                  aSampleFn,
+                                  aGetValue,
+                                  aWrapper,
+                                  aGetRootValue,
+                                  detail::NoExtraHandler());
 }
 
 //! Finds all real roots of a function with derivative within range [theLower, theUpper].
@@ -281,85 +338,42 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
                                           double                theUpper,
                                           const MultipleConfig& theConfig = MultipleConfig())
 {
-  MultipleResult aResult;
-  aResult.Status = MathUtils::Status::OK;
-
-  double aLower = std::min(theLower, theUpper);
-  double aUpper = std::max(theLower, theUpper);
-
-  const int    aNbSamples = std::max(theConfig.NbSamples, 10);
-  const double aDx        = (aUpper - aLower) / aNbSamples;
-
-  const double aMinEpsX = 1e-10 * (std::abs(aLower) + std::abs(aUpper));
-  const double aEpsX    = std::max(theConfig.XTolerance, aMinEpsX);
-
-  // Sample function values and derivatives
+  const int   aNbSamples = std::max(theConfig.NbSamples, 10);
   math_Vector aFValues(0, aNbSamples);
   math_Vector aDFValues(0, aNbSamples);
-  math_Vector aXValues(0, aNbSamples);
 
-  bool aAllValid = true;
-  for (int i = 0; i <= aNbSamples; ++i)
+  // Functor that samples function value and derivative at a given point
+  struct SampleFn
   {
-    double aX = aLower + i * aDx;
-    if (aX > aUpper)
-      aX = aUpper;
-    aXValues(i) = aX;
+    Function&    myFunc;
+    math_Vector& myFValues;
+    math_Vector& myDFValues;
+    const double myOffset;
 
-    double aF = 0.0, aDF = 0.0;
-    if (!theFunc.Values(aX, aF, aDF))
+    bool operator()(int theIndex, double theX) const
     {
-      aAllValid = false;
-      break;
+      double aF = 0.0, aDF = 0.0;
+      if (!myFunc.Values(theX, aF, aDF))
+        return false;
+      myFValues(theIndex)  = aF - myOffset;
+      myDFValues(theIndex) = aDF;
+      return true;
     }
-    aFValues(i)  = aF - theConfig.Offset;
-    aDFValues(i) = aDF;
-  }
+  };
 
-  if (!aAllValid)
+  // Functor that returns the sampled f(x)-offset value
+  struct GetValueFn
   {
-    aResult.Status = MathUtils::Status::NumericalError;
-    return aResult;
-  }
+    const math_Vector& myFValues;
 
-  // Check if function is essentially null
-  aResult.IsAllNull = true;
-  for (int i = 0; i <= aNbSamples; ++i)
-  {
-    if (std::abs(aFValues(i)) > theConfig.NullTolerance)
-    {
-      aResult.IsAllNull = false;
-      break;
-    }
-  }
-
-  if (aResult.IsAllNull)
-  {
-    return aResult;
-  }
-
-  // Helper to add root if not duplicate
-  auto addRoot = [&](double theRoot, double theValue) {
-    for (int k = 0; k < aResult.Roots.Length(); ++k)
-    {
-      if (std::abs(theRoot - aResult.Roots.Value(k)) < aEpsX)
-      {
-        return;
-      }
-    }
-    aResult.Roots.Append(theRoot);
-    aResult.Values.Append(theValue);
+    double operator()(int theIndex) const { return myFValues(theIndex); }
   };
 
   // Wrapper for Brent using Values interface
-  class BrentWrapper
+  struct BrentWrapper
   {
-  public:
-    BrentWrapper(Function& theF, double theOffset)
-        : myFunc(theF),
-          myOffset(theOffset)
-    {
-    }
+    Function& myFunc;
+    double    myOffset;
 
     bool Value(double theX, double& theY) const
     {
@@ -369,156 +383,112 @@ MultipleResult FindAllRootsWithDerivative(Function&             theFunc,
       theY -= myOffset;
       return true;
     }
-
-  private:
-    Function& myFunc;
-    double    myOffset;
   };
 
-  BrentWrapper aWrapper(theFunc, theConfig.Offset);
-
-  // Find sign changes
-  for (int i = 0; i < aNbSamples; ++i)
+  // Functor that evaluates the original function value at a root point
+  struct GetRootValueFn
   {
-    const double aF0 = aFValues(i);
-    const double aF1 = aFValues(i + 1);
-    const double aX0 = aXValues(i);
-    const double aX1 = aXValues(i + 1);
+    Function& myFunc;
 
-    // Exact zero at sample point
-    if (std::abs(aF0) < theConfig.FTolerance)
+    double operator()(double theX) const
     {
-      addRoot(aX0, aF0 + theConfig.Offset);
-      continue;
+      double aF = 0.0, aDF = 0.0;
+      myFunc.Values(theX, aF, aDF);
+      return aF;
     }
+  };
 
-    // Sign change
-    if (aF0 * aF1 < 0.0)
+  // Tangential root detection: find extrema that touch zero without sign change
+  struct TangentialExtraHandler
+  {
+    Function&          myFunc;
+    const math_Vector& myDFValues;
+    const double       myOffset;
+    const double       myFTolerance;
+
+    void operator()(int             theIndex,
+                    double          theX0,
+                    double          theX1,
+                    double          theF0,
+                    double          theF1,
+                    MultipleResult& theResult,
+                    double          theEpsX) const
     {
-      MathUtils::Config aBrentConfig;
-      aBrentConfig.XTolerance    = aEpsX;
-      aBrentConfig.FTolerance    = theConfig.FTolerance;
-      aBrentConfig.MaxIterations = theConfig.MaxIterations;
-
-      auto aBrentResult = Brent(aWrapper, aX0, aX1, aBrentConfig);
-      aResult.NbIterations += aBrentResult.NbIterations;
-
-      if (aBrentResult.IsDone() && aBrentResult.Root.has_value())
+      if (theF0 > 0.0 && theF1 > 0.0)
       {
-        double aRootValue = 0.0, aDummy = 0.0;
-        theFunc.Values(*aBrentResult.Root, aRootValue, aDummy);
-        addRoot(*aBrentResult.Root, aRootValue);
-      }
-    }
-    // Check for potential extrema touching zero
-    else if (aF0 > 0.0 && aF1 > 0.0)
-    {
-      // Potential minimum - check if derivative changes sign
-      if (aDFValues(i) < 0.0 && aDFValues(i + 1) > 0.0)
-      {
-        // Find the minimum using bisection on derivative
-        double aXL = aX0, aXR = aX1;
-
-        for (int anIter = 0; anIter < 20; ++anIter)
+        // Potential minimum - check if derivative changes sign (negative to positive)
+        if (myDFValues(theIndex) < 0.0 && myDFValues(theIndex + 1) > 0.0)
         {
-          double aXM = 0.5 * (aXL + aXR);
-          double aFM = 0.0, aDFM = 0.0;
-          if (!theFunc.Values(aXM, aFM, aDFM))
-            break;
-          aFM -= theConfig.Offset;
-
-          if (aDFM < 0.0)
-          {
-            aXL = aXM;
-          }
-          else
-          {
-            aXR = aXM;
-          }
-
-          // Check if minimum is close enough to zero
-          if (std::abs(aFM) < theConfig.FTolerance)
-          {
-            addRoot(aXM, aFM + theConfig.Offset);
-            break;
-          }
+          findTangentialRoot(theX0, theX1, true, theResult, theEpsX);
+        }
+      }
+      else if (theF0 < 0.0 && theF1 < 0.0)
+      {
+        // Potential maximum - check if derivative changes sign (positive to negative)
+        if (myDFValues(theIndex) > 0.0 && myDFValues(theIndex + 1) < 0.0)
+        {
+          findTangentialRoot(theX0, theX1, false, theResult, theEpsX);
         }
       }
     }
-    else if (aF0 < 0.0 && aF1 < 0.0)
+
+  private:
+    //! Bisects derivative to locate an extremum and checks if it touches zero.
+    //! @param theIsMinimum true for minimum (derivative negative->positive),
+    //!                     false for maximum (derivative positive->negative)
+    void findTangentialRoot(double          theX0,
+                            double          theX1,
+                            bool            theIsMinimum,
+                            MultipleResult& theResult,
+                            double          theEpsX) const
     {
-      // Potential maximum - check if derivative changes sign
-      if (aDFValues(i) > 0.0 && aDFValues(i + 1) < 0.0)
+      double aXL = theX0, aXR = theX1;
+      for (int anIter = 0; anIter < 20; ++anIter)
       {
-        double aXL = aX0, aXR = aX1;
+        double aXM = 0.5 * (aXL + aXR);
+        double aFM = 0.0, aDFM = 0.0;
+        if (!myFunc.Values(aXM, aFM, aDFM))
+          break;
+        aFM -= myOffset;
 
-        for (int anIter = 0; anIter < 20; ++anIter)
+        // For minimum: derivative goes from negative to positive
+        // For maximum: derivative goes from positive to negative
+        const bool isMoveRight = theIsMinimum ? (aDFM < 0.0) : (aDFM > 0.0);
+        if (isMoveRight)
         {
-          double aXM = 0.5 * (aXL + aXR);
-          double aFM = 0.0, aDFM = 0.0;
-          if (!theFunc.Values(aXM, aFM, aDFM))
-            break;
-          aFM -= theConfig.Offset;
+          aXL = aXM;
+        }
+        else
+        {
+          aXR = aXM;
+        }
 
-          if (aDFM > 0.0)
-          {
-            aXL = aXM;
-          }
-          else
-          {
-            aXR = aXM;
-          }
-
-          if (std::abs(aFM) < theConfig.FTolerance)
-          {
-            addRoot(aXM, aFM + theConfig.Offset);
-            break;
-          }
+        if (std::abs(aFM) < myFTolerance)
+        {
+          detail::addRoot(theResult, theEpsX, aXM, aFM + myOffset);
+          break;
         }
       }
     }
-  }
+  };
 
-  // Check last sample point
-  if (std::abs(aFValues(aNbSamples)) < theConfig.FTolerance)
-  {
-    addRoot(aXValues(aNbSamples), aFValues(aNbSamples) + theConfig.Offset);
-  }
+  SampleFn               aSampleFn{theFunc, aFValues, aDFValues, theConfig.Offset};
+  GetValueFn             aGetValue{aFValues};
+  BrentWrapper           aWrapper{theFunc, theConfig.Offset};
+  GetRootValueFn         aGetRootValue{theFunc};
+  TangentialExtraHandler aTangentialExtra{theFunc,
+                                          aDFValues,
+                                          theConfig.Offset,
+                                          theConfig.FTolerance};
 
-  // Sort roots using indices
-  const int aNbRoots = aResult.Roots.Length();
-  if (aNbRoots > 1)
-  {
-    math_IntegerVector aIndices(0, aNbRoots - 1);
-    for (int i = 0; i < aNbRoots; ++i)
-    {
-      aIndices(i) = i;
-    }
-
-    // Simple insertion sort for small arrays
-    for (int i = 1; i < aNbRoots; ++i)
-    {
-      int aKey = aIndices(i);
-      int j    = i - 1;
-      while (j >= 0 && aResult.Roots.Value(aIndices(j)) > aResult.Roots.Value(aKey))
-      {
-        aIndices(j + 1) = aIndices(j);
-        --j;
-      }
-      aIndices(j + 1) = aKey;
-    }
-
-    NCollection_Vector<double> aSortedRoots, aSortedValues;
-    for (int i = 0; i < aNbRoots; ++i)
-    {
-      aSortedRoots.Append(aResult.Roots.Value(aIndices(i)));
-      aSortedValues.Append(aResult.Values.Value(aIndices(i)));
-    }
-    aResult.Roots  = aSortedRoots;
-    aResult.Values = aSortedValues;
-  }
-
-  return aResult;
+  return detail::findAllRootsImpl(theLower,
+                                  theUpper,
+                                  theConfig,
+                                  aSampleFn,
+                                  aGetValue,
+                                  aWrapper,
+                                  aGetRootValue,
+                                  aTangentialExtra);
 }
 
 //! Convenience alias using default configuration.
