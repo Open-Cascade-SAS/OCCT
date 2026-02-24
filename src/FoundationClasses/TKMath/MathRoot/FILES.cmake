@@ -6,6 +6,7 @@ set(OCCT_MathRoot_FILES
   MathRoot_Bisection.hxx
   MathRoot_Brent.hxx
   MathRoot_Multiple.hxx
+  MathRoot_MultipleUtils.hxx
   MathRoot_Newton.hxx
   MathRoot_Secant.hxx
   MathRoot_Trig.hxx
