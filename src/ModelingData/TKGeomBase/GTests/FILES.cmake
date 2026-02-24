@@ -2,6 +2,7 @@
 set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomBase_GTests_FILES
+  AppCont_ContMatrices_Test.cxx
   BndLib_Test.cxx
   Extrema_ExtPC_Test.cxx
   GCPnts_AbscissaPoint_Test.cxx
