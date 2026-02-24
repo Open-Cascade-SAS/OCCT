@@ -61,7 +61,7 @@ Geom2dProp::NormalResult Geom2dProp_Hyperbola::Normal(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_Hyperbola::CentreOfCurvature(const double theParam,
-                                                                  const double theTol) const
+                                                                 const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

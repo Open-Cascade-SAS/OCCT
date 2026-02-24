@@ -23,7 +23,7 @@ void Geom2dProp_Curve::Initialize(const Adaptor2d_Curve2d& theCurve)
   if (theCurve.IsKind(STANDARD_TYPE(Geom2dAdaptor_Curve)))
   {
     const auto& aGeomAdaptor = static_cast<const Geom2dAdaptor_Curve&>(theCurve);
-    myAdaptor = new Geom2dAdaptor_Curve(aGeomAdaptor);
+    myAdaptor                = new Geom2dAdaptor_Curve(aGeomAdaptor);
     initFromAdaptor();
     return;
   }
@@ -54,7 +54,7 @@ void Geom2dProp_Curve::Initialize(const occ::handle<Geom2d_Curve>& theCurve)
 
 void Geom2dProp_Curve::initFromAdaptor()
 {
-  myCurveType = myAdaptor->GetType();
+  myCurveType                     = myAdaptor->GetType();
   const Geom2dAdaptor_Curve* aPtr = myAdaptor.get();
 
   switch (myCurveType)
@@ -119,7 +119,7 @@ Geom2dProp::TangentResult Geom2dProp_Curve::Tangent(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp_Curve::Curvature(const double theParam,
-                                                         const double theTol) const
+                                                        const double theTol) const
 {
   return std::visit(
     [theParam, theTol](const auto& theEval) -> Geom2dProp::CurvatureResult {
@@ -138,8 +138,7 @@ Geom2dProp::CurvatureResult Geom2dProp_Curve::Curvature(const double theParam,
 
 //==================================================================================================
 
-Geom2dProp::NormalResult Geom2dProp_Curve::Normal(const double theParam,
-                                                  const double theTol) const
+Geom2dProp::NormalResult Geom2dProp_Curve::Normal(const double theParam, const double theTol) const
 {
   return std::visit(
     [theParam, theTol](const auto& theEval) -> Geom2dProp::NormalResult {
@@ -159,7 +158,7 @@ Geom2dProp::NormalResult Geom2dProp_Curve::Normal(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_Curve::CentreOfCurvature(const double theParam,
-                                                              const double theTol) const
+                                                             const double theTol) const
 {
   return std::visit(
     [theParam, theTol](const auto& theEval) -> Geom2dProp::CentreResult {

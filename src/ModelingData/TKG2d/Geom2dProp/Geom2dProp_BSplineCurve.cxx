@@ -118,7 +118,7 @@ public:
 
 private:
   const Geom2dAdaptor_Curve* myCurve;
-  double                           myEpsX;
+  double                     myEpsX;
 };
 
 //! Function for finding inflection points: F = (V1^V2) / (||V1|| * ||V2||) = 0
@@ -178,9 +178,9 @@ private:
 
 //! Perform numeric curvature extrema finding on a curve interval.
 void numericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
-                             const double                            theUMin,
-                             const double                            theUMax,
-                             Geom2dProp::CurveAnalysis&              theResult)
+                             const double               theUMin,
+                             const double               theUMax,
+                             Geom2dProp::CurveAnalysis& theResult)
 {
   const double     aEpsH = 1.0e-4 * (theUMax - theUMin);
   constexpr double aTol  = Precision::PConfusion();
@@ -194,7 +194,7 @@ void numericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
   {
     for (int j = 1; j <= aSolRoot.NbSolutions(); ++j)
     {
-      double aParam = aSolRoot.Value(j);
+      double             aParam = aSolRoot.Value(j);
       math_BracketedRoot aBS(aFunc, aParam - aEpsH, aParam + aEpsH, aTol);
       if (aBS.IsDone())
       {
@@ -214,9 +214,9 @@ void numericCurvatureExtrema(const Geom2dAdaptor_Curve* theCurve,
 
 //! Perform numeric inflection finding on a curve interval.
 void numericInflections(const Geom2dAdaptor_Curve* theCurve,
-                        const double                            theUMin,
-                        const double                            theUMax,
-                        Geom2dProp::CurveAnalysis&              theResult)
+                        const double               theUMin,
+                        const double               theUMax,
+                        Geom2dProp::CurveAnalysis& theResult)
 {
   FuncCurNul    aFunc(theCurve);
   constexpr int aNbSamples = 30;
@@ -256,7 +256,7 @@ Geom2dProp::TangentResult Geom2dProp_BSplineCurve::Tangent(const double theParam
 //==================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp_BSplineCurve::Curvature(const double theParam,
-                                                                const double theTol) const
+                                                               const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -286,7 +286,7 @@ Geom2dProp::NormalResult Geom2dProp_BSplineCurve::Normal(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_BSplineCurve::CentreOfCurvature(const double theParam,
-                                                                     const double theTol) const
+                                                                    const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -313,7 +313,10 @@ Geom2dProp::CurveAnalysis Geom2dProp_BSplineCurve::FindCurvatureExtrema() const
 
   if (myAdaptor->Continuity() >= GeomAbs_C3)
   {
-    numericCurvatureExtrema(myAdaptor, myAdaptor->FirstParameter(), myAdaptor->LastParameter(), aResult);
+    numericCurvatureExtrema(myAdaptor,
+                            myAdaptor->FirstParameter(),
+                            myAdaptor->LastParameter(),
+                            aResult);
   }
   else
   {

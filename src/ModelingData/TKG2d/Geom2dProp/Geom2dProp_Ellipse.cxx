@@ -65,7 +65,7 @@ Geom2dProp::NormalResult Geom2dProp_Ellipse::Normal(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_Ellipse::CentreOfCurvature(const double theParam,
-                                                                const double theTol) const
+                                                               const double theTol) const
 {
   if (myAdaptor == nullptr)
   {

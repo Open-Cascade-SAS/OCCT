@@ -114,7 +114,7 @@ public:
 
 private:
   const Geom2dAdaptor_Curve* myCurve;
-  double                           myEpsX;
+  double                     myEpsX;
 };
 
 //! Function for finding inflection points on offset curves.
@@ -192,7 +192,7 @@ Geom2dProp::TangentResult Geom2dProp_OffsetCurve::Tangent(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp_OffsetCurve::Curvature(const double theParam,
-                                                               const double theTol) const
+                                                              const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -222,7 +222,7 @@ Geom2dProp::NormalResult Geom2dProp_OffsetCurve::Normal(const double theParam,
 //==================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_OffsetCurve::CentreOfCurvature(const double theParam,
-                                                                    const double theTol) const
+                                                                   const double theTol) const
 {
   if (myAdaptor == nullptr)
   {
@@ -260,7 +260,7 @@ Geom2dProp::CurveAnalysis Geom2dProp_OffsetCurve::FindCurvatureExtrema() const
   {
     for (int j = 1; j <= aSolRoot.NbSolutions(); ++j)
     {
-      double aParam = aSolRoot.Value(j);
+      double             aParam = aSolRoot.Value(j);
       math_BracketedRoot aBS(aFunc, aParam - aEpsH, aParam + aEpsH, aTol);
       if (aBS.IsDone())
       {
@@ -296,8 +296,13 @@ Geom2dProp::CurveAnalysis Geom2dProp_OffsetCurve::FindInflections() const
   FuncCurNul    aFunc(myAdaptor);
   constexpr int aNbSamples = 30;
 
-  math_FunctionRoots aSolRoot(
-    aFunc, myAdaptor->FirstParameter(), myAdaptor->LastParameter(), aNbSamples, 1.0e-6, 1.0e-6, 1.0e-6);
+  math_FunctionRoots aSolRoot(aFunc,
+                              myAdaptor->FirstParameter(),
+                              myAdaptor->LastParameter(),
+                              aNbSamples,
+                              1.0e-6,
+                              1.0e-6,
+                              1.0e-6);
 
   if (aSolRoot.IsDone())
   {

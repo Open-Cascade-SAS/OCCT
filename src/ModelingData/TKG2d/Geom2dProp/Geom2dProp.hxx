@@ -32,7 +32,7 @@ namespace Geom2dProp
 //! Result of tangent direction computation.
 struct TangentResult
 {
-  gp_Dir2d Direction; //!< Tangent direction (valid only when IsDefined is true)
+  gp_Dir2d Direction;         //!< Tangent direction (valid only when IsDefined is true)
   bool     IsDefined = false; //!< True if the tangent is well-defined
 };
 
@@ -47,14 +47,14 @@ struct CurvatureResult
 //! Result of normal direction computation.
 struct NormalResult
 {
-  gp_Dir2d Direction; //!< Normal direction (valid only when IsDefined is true)
+  gp_Dir2d Direction;         //!< Normal direction (valid only when IsDefined is true)
   bool     IsDefined = false; //!< True if the normal is well-defined
 };
 
 //! Result of centre of curvature computation.
 struct CentreResult
 {
-  gp_Pnt2d Centre; //!< Centre of curvature (valid only when IsDefined is true)
+  gp_Pnt2d Centre;            //!< Centre of curvature (valid only when IsDefined is true)
   bool     IsDefined = false; //!< True if the centre is well-defined
 };
 
@@ -76,7 +76,7 @@ struct CurveSpecialPoint
 //! Result of global curve analysis (curvature extrema and inflection points).
 struct CurveAnalysis
 {
-  NCollection_Sequence<CurveSpecialPoint> Points; //!< Special points sorted by parameter
+  NCollection_Sequence<CurveSpecialPoint> Points;         //!< Special points sorted by parameter
   bool                                    IsDone = false; //!< True if analysis completed
 };
 

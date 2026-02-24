@@ -80,9 +80,8 @@ TEST(Geom2dPropTest, ComputeTangent_FallbackToD3)
 
 TEST(Geom2dPropTest, ComputeTangent_Undefined)
 {
-  const gp_Vec2d aZero(0.0, 0.0);
-  const Geom2dProp::TangentResult aRes =
-    Geom2dProp::ComputeTangent(aZero, aZero, aZero, 1.0e-7);
+  const gp_Vec2d                  aZero(0.0, 0.0);
+  const Geom2dProp::TangentResult aRes = Geom2dProp::ComputeTangent(aZero, aZero, aZero, 1.0e-7);
   EXPECT_FALSE(aRes.IsDefined);
 }
 
@@ -163,8 +162,7 @@ TEST(Geom2dPropTest, ComputeNormal_Circle)
   const gp_Vec2d aD1(0.0, 1.0);
   const gp_Vec2d aD2(-1.0, 0.0);
 
-  const Geom2dProp::NormalResult aRes =
-    Geom2dProp::ComputeNormal(aD1, aD2, Precision::Confusion());
+  const Geom2dProp::NormalResult aRes = Geom2dProp::ComputeNormal(aD1, aD2, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   // Normal perpendicular to tangent
   EXPECT_NEAR(std::abs(aRes.Direction.X() * aD1.X() + aRes.Direction.Y() * aD1.Y()),
@@ -177,8 +175,7 @@ TEST(Geom2dPropTest, ComputeNormal_Line_Undefined)
   const gp_Vec2d aD1(1.0, 0.0);
   const gp_Vec2d aD2(0.0, 0.0);
 
-  const Geom2dProp::NormalResult aRes =
-    Geom2dProp::ComputeNormal(aD1, aD2, Precision::Confusion());
+  const Geom2dProp::NormalResult aRes = Geom2dProp::ComputeNormal(aD1, aD2, Precision::Confusion());
   EXPECT_FALSE(aRes.IsDefined);
 }
 
@@ -320,7 +317,7 @@ TEST_F(Geom2dProp_CurveLineTest, NoInflections)
 // Diagonal line
 TEST(Geom2dProp_LineTest, DiagonalLine_TangentDirection)
 {
-  gp_Lin2d aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
+  gp_Lin2d                 aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(aLin);
 
   Geom2dProp_Curve aProp;
@@ -454,7 +451,7 @@ TEST_F(Geom2dProp_CurveCircleTest, NoInflections)
 // Different radius circle
 TEST(Geom2dProp_CircleTest, SmallRadius_HighCurvature)
 {
-  gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 0.1);
+  gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 0.1);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
   Geom2dProp_Curve aProp;
@@ -468,7 +465,7 @@ TEST(Geom2dProp_CircleTest, SmallRadius_HighCurvature)
 // Off-center circle
 TEST(Geom2dProp_CircleTest, OffCenter_CentreOfCurvature)
 {
-  gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(3.0, 7.0), gp_Dir2d(1.0, 0.0)), 4.0);
+  gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(3.0, 7.0), gp_Dir2d(1.0, 0.0)), 4.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
   Geom2dProp_Curve aProp;
@@ -526,7 +523,7 @@ TEST_F(Geom2dProp_CurveEllipseTest, TangentPerpToNormal)
 {
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 6.0)
   {
-    const Geom2dProp::TangentResult aTan = myProp.Tangent(u, Precision::Confusion());
+    const Geom2dProp::TangentResult aTan  = myProp.Tangent(u, Precision::Confusion());
     const Geom2dProp::NormalResult  aNorm = myProp.Normal(u, Precision::Confusion());
     ASSERT_TRUE(aTan.IsDefined);
     ASSERT_TRUE(aNorm.IsDefined);
@@ -647,7 +644,7 @@ TEST_F(Geom2dProp_CurveEllipseTest, NoInflections)
 // Ellipse with equal semi-axes is a circle
 TEST(Geom2dProp_EllipseTest, EqualSemiAxes_BehavesLikeCircle)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0, 5.0);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0, 5.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
   Geom2dProp_Curve aProp;
@@ -698,8 +695,8 @@ TEST_F(Geom2dProp_CurveHyperbolaTest, TangentAtVertex)
 TEST_F(Geom2dProp_CurveHyperbolaTest, CurvatureAtVertex)
 {
   // At vertex (t=0): curvature = b^2/a^2 * 1/a * a = b^2/(a * a) ... actually κ = b²/a
-  // Wait, for hyperbola x=a*cosh(t), y=b*sinh(t):
-  // κ(0) = b²/(a² * (b²/a²)^(3/2)) ... Let me just verify it's defined and positive.
+  // For hyperbola x=a*cosh(t), y=b*sinh(t):
+  // K(0) = b^2/(a^2 * (b^2/a^2)^(3/2)) ... Just verify it's defined and positive.
   const Geom2dProp::CurvatureResult aCurv = myProp.Curvature(0.0, Precision::Confusion());
   ASSERT_TRUE(aCurv.IsDefined);
   EXPECT_GT(aCurv.Value, 0.0);
@@ -723,15 +720,14 @@ TEST_F(Geom2dProp_CurveHyperbolaTest, NormalAtVertex)
   ASSERT_TRUE(aNorm.IsDefined);
   // Normal should be perpendicular to tangent
   const Geom2dProp::TangentResult aTan = myProp.Tangent(0.0, Precision::Confusion());
-  const double aDot =
+  const double                    aDot =
     aTan.Direction.X() * aNorm.Direction.X() + aTan.Direction.Y() * aNorm.Direction.Y();
   EXPECT_NEAR(aDot, 0.0, 1.0e-10);
 }
 
 TEST_F(Geom2dProp_CurveHyperbolaTest, CentreOfCurvatureAtVertex)
 {
-  const Geom2dProp::CentreResult aCentre =
-    myProp.CentreOfCurvature(0.0, Precision::Confusion());
+  const Geom2dProp::CentreResult aCentre = myProp.CentreOfCurvature(0.0, Precision::Confusion());
   ASSERT_TRUE(aCentre.IsDefined);
 }
 
@@ -823,7 +819,7 @@ TEST_F(Geom2dProp_CurveParabolaTest, NormalAtVertex)
   const Geom2dProp::NormalResult aNorm = myProp.Normal(0.0, Precision::Confusion());
   ASSERT_TRUE(aNorm.IsDefined);
   const Geom2dProp::TangentResult aTan = myProp.Tangent(0.0, Precision::Confusion());
-  const double aDot =
+  const double                    aDot =
     aTan.Direction.X() * aNorm.Direction.X() + aTan.Direction.Y() * aNorm.Direction.Y();
   EXPECT_NEAR(aDot, 0.0, 1.0e-10);
 }
@@ -868,7 +864,7 @@ protected:
     aPoles(2) = gp_Pnt2d(1.0, 2.0);
     aPoles(3) = gp_Pnt2d(3.0, -2.0);
     aPoles(4) = gp_Pnt2d(4.0, 0.0);
-    myBezier = new Geom2d_BezierCurve(aPoles);
+    myBezier  = new Geom2d_BezierCurve(aPoles);
     myProp.Initialize(myBezier);
   }
 
@@ -930,8 +926,8 @@ TEST_F(Geom2dProp_CurveBezierTest, NormalPerpendicularToTangent)
 
 TEST_F(Geom2dProp_CurveBezierTest, CentreOfCurvature_DistanceIsRadiusOfCurvature)
 {
-  const double u = 0.3;
-  const Geom2dProp::CurvatureResult aCurv = myProp.Curvature(u, Precision::Confusion());
+  const double                      u       = 0.3;
+  const Geom2dProp::CurvatureResult aCurv   = myProp.Curvature(u, Precision::Confusion());
   const Geom2dProp::CentreResult    aCentre = myProp.CentreOfCurvature(u, Precision::Confusion());
   if (aCurv.IsDefined && aCentre.IsDefined && !aCurv.IsInfinite && std::abs(aCurv.Value) > 1.0e-10)
   {
@@ -979,9 +975,9 @@ TEST_F(Geom2dProp_CurveBezierTest, CurvatureExtrema)
 TEST(Geom2dProp_BezierTest, StraightLine_ZeroCurvature)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
-  aPoles(1) = gp_Pnt2d(0.0, 0.0);
-  aPoles(2) = gp_Pnt2d(2.0, 0.0);
-  aPoles(3) = gp_Pnt2d(4.0, 0.0);
+  aPoles(1)                               = gp_Pnt2d(0.0, 0.0);
+  aPoles(2)                               = gp_Pnt2d(2.0, 0.0);
+  aPoles(3)                               = gp_Pnt2d(4.0, 0.0);
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
 
   Geom2dProp_Curve aProp;
@@ -996,9 +992,9 @@ TEST(Geom2dProp_BezierTest, StraightLine_ZeroCurvature)
 TEST(Geom2dProp_BezierTest, QuadraticBezier_Properties)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
-  aPoles(1) = gp_Pnt2d(0.0, 0.0);
-  aPoles(2) = gp_Pnt2d(1.0, 2.0);
-  aPoles(3) = gp_Pnt2d(2.0, 0.0);
+  aPoles(1)                               = gp_Pnt2d(0.0, 0.0);
+  aPoles(2)                               = gp_Pnt2d(1.0, 2.0);
+  aPoles(3)                               = gp_Pnt2d(2.0, 0.0);
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
 
   Geom2dProp_Curve aProp;
@@ -1131,8 +1127,7 @@ TEST(Geom2dProp_BSplineTest, LowContinuity_C1)
   aMults(3) = 1;
   aMults(4) = 3;
 
-  occ::handle<Geom2d_BSplineCurve> aBSpline =
-    new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom2d_BSplineCurve> aBSpline = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
 
   Geom2dProp_Curve aProp;
   aProp.Initialize(aBSpline);
@@ -1152,8 +1147,8 @@ TEST(Geom2dProp_BSplineTest, LowContinuity_C1)
 
 TEST(Geom2dProp_OffsetCurveTest, IsInitialized)
 {
-  gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  occ::handle<Geom2d_Circle>      aCircle = new Geom2d_Circle(aCirc);
+  gp_Circ2d                       aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  occ::handle<Geom2d_Circle>      aCircle  = new Geom2d_Circle(aCirc);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aCircle, 2.0);
 
   Geom2dProp_Curve aProp;
@@ -1165,8 +1160,8 @@ TEST(Geom2dProp_OffsetCurveTest, IsInitialized)
 TEST(Geom2dProp_OffsetCurveTest, OffsetCircle_ConstantCurvature)
 {
   // Offset of circle R=5 by +2 gives circle R=7, curvature=1/7
-  gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  occ::handle<Geom2d_Circle>      aCircle = new Geom2d_Circle(aCirc);
+  gp_Circ2d                       aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  occ::handle<Geom2d_Circle>      aCircle  = new Geom2d_Circle(aCirc);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aCircle, 2.0);
 
   Geom2dProp_Curve aProp;
@@ -1182,8 +1177,8 @@ TEST(Geom2dProp_OffsetCurveTest, OffsetCircle_ConstantCurvature)
 
 TEST(Geom2dProp_OffsetCurveTest, TangentAndNormalDefined)
 {
-  gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  occ::handle<Geom2d_Circle>      aCircle = new Geom2d_Circle(aCirc);
+  gp_Circ2d                       aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  occ::handle<Geom2d_Circle>      aCircle  = new Geom2d_Circle(aCirc);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aCircle, 2.0);
 
   Geom2dProp_Curve aProp;
@@ -1206,8 +1201,8 @@ TEST(Geom2dProp_OffsetCurveTest, TangentAndNormalDefined)
 
 TEST(Geom2dProp_OffsetCurveTest, OffsetEllipse_ExtremaAndInflections)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
-  occ::handle<Geom2d_Ellipse>     anEllipse = new Geom2d_Ellipse(anElips);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
+  occ::handle<Geom2d_Ellipse> anEllipse    = new Geom2d_Ellipse(anElips);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(anEllipse, 1.0);
 
   Geom2dProp_Curve aProp;
@@ -1228,7 +1223,7 @@ TEST(Geom2dProp_OffsetCurveTest, OffsetEllipse_ExtremaAndInflections)
 TEST(Geom2dProp_TrimmedCurveTest, UnwrapsToCircle)
 {
   gp_Circ2d                        aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  occ::handle<Geom2d_Circle>      aCircle = new Geom2d_Circle(aCirc);
+  occ::handle<Geom2d_Circle>       aCircle  = new Geom2d_Circle(aCirc);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI);
 
   Geom2dProp_Curve aProp;
@@ -1243,8 +1238,8 @@ TEST(Geom2dProp_TrimmedCurveTest, UnwrapsToCircle)
 
 TEST(Geom2dProp_TrimmedCurveTest, UnwrapsToEllipse)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
-  occ::handle<Geom2d_Ellipse>     anEllipse = new Geom2d_Ellipse(anElips);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
+  occ::handle<Geom2d_Ellipse> anEllipse     = new Geom2d_Ellipse(anElips);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(anEllipse, 0.0, M_PI);
 
   Geom2dProp_Curve aProp;
@@ -1256,7 +1251,7 @@ TEST(Geom2dProp_TrimmedCurveTest, UnwrapsToEllipse)
 TEST(Geom2dProp_TrimmedCurveTest, NestedTrimmedCurve)
 {
   gp_Circ2d                        aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
-  occ::handle<Geom2d_Circle>      aCircle = new Geom2d_Circle(aCirc);
+  occ::handle<Geom2d_Circle>       aCircle   = new Geom2d_Circle(aCirc);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed1 = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed2 = new Geom2d_TrimmedCurve(aTrimmed1, 0.1, 1.0);
 
@@ -1276,7 +1271,7 @@ TEST(Geom2dProp_TrimmedCurveTest, NestedTrimmedCurve)
 
 TEST(Geom2dProp_CurveTest, NullHandle_NotInitialized)
 {
-  Geom2dProp_Curve              aProp;
+  Geom2dProp_Curve          aProp;
   occ::handle<Geom2d_Curve> aNullCurve;
   aProp.Initialize(aNullCurve);
   EXPECT_FALSE(aProp.IsInitialized());
@@ -1311,13 +1306,13 @@ TEST(Geom2dProp_CurveTest, ReInitialize_ChangesType)
   Geom2dProp_Curve aProp;
 
   // First: circle
-  gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
   aProp.Initialize(aCircle);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Circle);
 
   // Re-initialize with line
-  gp_Lin2d                   aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  gp_Lin2d                 aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(aLin);
   aProp.Initialize(aLine);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Line);
@@ -1330,9 +1325,9 @@ TEST(Geom2dProp_CurveTest, ReInitialize_ChangesType)
 
 TEST(Geom2dProp_AdaptorTest, InitFromGeom2dAdaptor)
 {
-  gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
-  Geom2dAdaptor_Curve          anAdaptor(aCircle);
+  Geom2dAdaptor_Curve        anAdaptor(aCircle);
 
   Geom2dProp_Curve aProp;
   aProp.Initialize(anAdaptor);
@@ -1346,9 +1341,9 @@ TEST(Geom2dProp_AdaptorTest, InitFromGeom2dAdaptor)
 
 TEST(Geom2dProp_AdaptorTest, InitFromGeom2dAdaptor_Ellipse)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 8.0, 3.0);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 8.0, 3.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dAdaptor_Curve          anAdaptor(anEllipse);
+  Geom2dAdaptor_Curve         anAdaptor(anEllipse);
 
   Geom2dProp_Curve aProp;
   aProp.Initialize(anAdaptor);
@@ -1379,9 +1374,8 @@ TEST(Geom2dProp_AdaptorTest, InitFromGeom2dAdaptor_BSpline)
   aMults(2) = 1;
   aMults(3) = 3;
 
-  occ::handle<Geom2d_BSplineCurve> aBSpline =
-    new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
-  Geom2dAdaptor_Curve anAdaptor(aBSpline);
+  occ::handle<Geom2d_BSplineCurve> aBSpline = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  Geom2dAdaptor_Curve              anAdaptor(aBSpline);
 
   Geom2dProp_Curve aProp;
   aProp.Initialize(anAdaptor);
@@ -1395,7 +1389,7 @@ TEST(Geom2dProp_AdaptorTest, InitFromGeom2dAdaptor_BSpline)
 
 TEST(Geom2dProp_CrossValidationTest, Circle_MatchesLProp)
 {
-  gp_Circ2d                    aCirc(gp_Ax2d(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0)), 7.0);
+  gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0)), 7.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
   Geom2dProp_Curve aProp;
@@ -1416,7 +1410,7 @@ TEST(Geom2dProp_CrossValidationTest, Circle_MatchesLProp)
 
 TEST(Geom2dProp_CrossValidationTest, Ellipse_MatchesLProp)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
   Geom2dProp_Curve aProp;
@@ -1428,8 +1422,7 @@ TEST(Geom2dProp_CrossValidationTest, Ellipse_MatchesLProp)
   EXPECT_NEAR(aCurv0.Value, 10.0 / 25.0, 1.0e-6);
 
   // At minor vertex (U=PI/2): curvature = b/a^2 = 5/100 = 0.05
-  const Geom2dProp::CurvatureResult aCurvPi2 =
-    aProp.Curvature(M_PI / 2.0, Precision::Confusion());
+  const Geom2dProp::CurvatureResult aCurvPi2 = aProp.Curvature(M_PI / 2.0, Precision::Confusion());
   ASSERT_TRUE(aCurvPi2.IsDefined);
   EXPECT_NEAR(aCurvPi2.Value, 5.0 / 100.0, 1.0e-6);
 }
@@ -1437,7 +1430,7 @@ TEST(Geom2dProp_CrossValidationTest, Ellipse_MatchesLProp)
 // Cross-validate: free function vs. dispatcher give same result
 TEST(Geom2dProp_CrossValidationTest, FreeFunctionVsDispatcher)
 {
-  gp_Circ2d aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
+  gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 3.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
   Geom2dProp_Curve aProp;
@@ -1462,7 +1455,7 @@ TEST(Geom2dProp_CrossValidationTest, FreeFunctionVsDispatcher)
 // Cross-validate centre of curvature consistency: distance from point = 1/|curvature|
 TEST(Geom2dProp_CrossValidationTest, CentreDistanceConsistency)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 8.0, 4.0);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 8.0, 4.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
   Geom2dProp_Curve aProp;
@@ -1470,7 +1463,7 @@ TEST(Geom2dProp_CrossValidationTest, CentreDistanceConsistency)
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 8.0)
   {
-    const Geom2dProp::CurvatureResult aCurv = aProp.Curvature(u, Precision::Confusion());
+    const Geom2dProp::CurvatureResult aCurv   = aProp.Curvature(u, Precision::Confusion());
     const Geom2dProp::CentreResult    aCentre = aProp.CentreOfCurvature(u, Precision::Confusion());
     if (aCurv.IsDefined && aCentre.IsDefined && !aCurv.IsInfinite
         && std::abs(aCurv.Value) > 1.0e-10)
@@ -1488,7 +1481,7 @@ TEST(Geom2dProp_CrossValidationTest, CentreDistanceConsistency)
 // Cross-validate: adaptor init and geometry init give same results
 TEST(Geom2dProp_CrossValidationTest, AdaptorVsGeometryInit)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
   Geom2dProp_Curve aPropGeom;
