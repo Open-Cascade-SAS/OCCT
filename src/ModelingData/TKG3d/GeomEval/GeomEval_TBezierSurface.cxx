@@ -675,32 +675,36 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
       const double  aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
       const gp_XYZ& aPij  = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
 
-      aSw += (aWij * aBu * aBv) * aPij;
-      aSwDU += (aWij * aBuD * aBv) * aPij;
-      aSwDV += (aWij * aBu * aBvD) * aPij;
-      aSwD2U += (aWij * aBuD2 * aBv) * aPij;
-      aSwD2V += (aWij * aBu * aBvD2) * aPij;
-      aSwDUV += (aWij * aBuD * aBvD) * aPij;
-      aW += aWij * aBu * aBv;
-      aWDU += aWij * aBuD * aBv;
-      aWDV += aWij * aBu * aBvD;
-      aWD2U += aWij * aBuD2 * aBv;
-      aWD2V += aWij * aBu * aBvD2;
-      aWDUV += aWij * aBuD * aBvD;
+      const double aWBuBv   = aWij * aBu * aBv;
+      const double aWBuDBv  = aWij * aBuD * aBv;
+      const double aWBuBvD  = aWij * aBu * aBvD;
+      const double aWBuD2Bv = aWij * aBuD2 * aBv;
+      const double aWBuBvD2 = aWij * aBu * aBvD2;
+      const double aWBuDBvD = aWij * aBuD * aBvD;
+
+      aSw += aWBuBv * aPij;
+      aSwDU += aWBuDBv * aPij;
+      aSwDV += aWBuBvD * aPij;
+      aSwD2U += aWBuD2Bv * aPij;
+      aSwD2V += aWBuBvD2 * aPij;
+      aSwDUV += aWBuDBvD * aPij;
+      aW += aWBuBv;
+      aWDU += aWBuDBv;
+      aWDV += aWBuBvD;
+      aWD2U += aWBuD2Bv;
+      aWD2V += aWBuBvD2;
+      aWDUV += aWBuDBvD;
     }
   }
 
   // S = Sw / w
   const gp_XYZ aS = aSw / aW;
-  // S_u = (Sw_u - w_u * S) / w
+  // First derivatives: S_u = (Sw_u - w_u * S) / w
   const gp_XYZ aSD1U = (aSwDU - aWDU * aS) / aW;
-  // S_v = (Sw_v - w_v * S) / w
   const gp_XYZ aSD1V = (aSwDV - aWDV * aS) / aW;
-  // S_uu = (Sw_uu - 2*w_u*S_u - w_uu*S) / w
-  const gp_XYZ aSD2U = (aSwD2U - 2.0 * aWDU * aSD1U - aWD2U * aS) / aW;
-  // S_vv = (Sw_vv - 2*w_v*S_v - w_vv*S) / w
-  const gp_XYZ aSD2V = (aSwD2V - 2.0 * aWDV * aSD1V - aWD2V * aS) / aW;
-  // S_uv = (Sw_uv - w_u*S_v - w_v*S_u - w_uv*S) / w
+  // Second derivatives: S_uu = (Sw_uu - 2*w_u*S_u - w_uu*S) / w
+  const gp_XYZ aSD2U  = (aSwD2U - 2.0 * aWDU * aSD1U - aWD2U * aS) / aW;
+  const gp_XYZ aSD2V  = (aSwD2V - 2.0 * aWDV * aSD1V - aWD2V * aS) / aW;
   const gp_XYZ aSD2UV = (aSwDUV - aWDU * aSD1V - aWDV * aSD1U - aWDUV * aS) / aW;
 
   aResult.Point = gp_Pnt(aS);
@@ -823,51 +827,55 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
       const double  aWij  = myWeights.Value(myWeights.LowerRow() + i, myWeights.LowerCol() + j);
       const gp_XYZ& aPij  = myPoles.Value(myPoles.LowerRow() + i, myPoles.LowerCol() + j).XYZ();
 
-      aSw += (aWij * aBu * aBv) * aPij;
-      aSwDU += (aWij * aBuD * aBv) * aPij;
-      aSwDV += (aWij * aBu * aBvD) * aPij;
-      aSwD2U += (aWij * aBuD2 * aBv) * aPij;
-      aSwD2V += (aWij * aBu * aBvD2) * aPij;
-      aSwDUV += (aWij * aBuD * aBvD) * aPij;
-      aSwD3U += (aWij * aBuD3 * aBv) * aPij;
-      aSwD3V += (aWij * aBu * aBvD3) * aPij;
-      aSwD2UDV += (aWij * aBuD2 * aBvD) * aPij;
-      aSwDUD2V += (aWij * aBuD * aBvD2) * aPij;
-      aW += aWij * aBu * aBv;
-      aWDU += aWij * aBuD * aBv;
-      aWDV += aWij * aBu * aBvD;
-      aWD2U += aWij * aBuD2 * aBv;
-      aWD2V += aWij * aBu * aBvD2;
-      aWDUV += aWij * aBuD * aBvD;
-      aWD3U += aWij * aBuD3 * aBv;
-      aWD3V += aWij * aBu * aBvD3;
-      aWD2UDV += aWij * aBuD2 * aBvD;
-      aWDUD2V += aWij * aBuD * aBvD2;
+      const double aWBuBv    = aWij * aBu * aBv;
+      const double aWBuDBv   = aWij * aBuD * aBv;
+      const double aWBuBvD   = aWij * aBu * aBvD;
+      const double aWBuD2Bv  = aWij * aBuD2 * aBv;
+      const double aWBuBvD2  = aWij * aBu * aBvD2;
+      const double aWBuDBvD  = aWij * aBuD * aBvD;
+      const double aWBuD3Bv  = aWij * aBuD3 * aBv;
+      const double aWBuBvD3  = aWij * aBu * aBvD3;
+      const double aWBuD2BvD = aWij * aBuD2 * aBvD;
+      const double aWBuDBvD2 = aWij * aBuD * aBvD2;
+
+      aSw += aWBuBv * aPij;
+      aSwDU += aWBuDBv * aPij;
+      aSwDV += aWBuBvD * aPij;
+      aSwD2U += aWBuD2Bv * aPij;
+      aSwD2V += aWBuBvD2 * aPij;
+      aSwDUV += aWBuDBvD * aPij;
+      aSwD3U += aWBuD3Bv * aPij;
+      aSwD3V += aWBuBvD3 * aPij;
+      aSwD2UDV += aWBuD2BvD * aPij;
+      aSwDUD2V += aWBuDBvD2 * aPij;
+      aW += aWBuBv;
+      aWDU += aWBuDBv;
+      aWDV += aWBuBvD;
+      aWD2U += aWBuD2Bv;
+      aWD2V += aWBuBvD2;
+      aWDUV += aWBuDBvD;
+      aWD3U += aWBuD3Bv;
+      aWD3V += aWBuBvD3;
+      aWD2UDV += aWBuD2BvD;
+      aWDUD2V += aWBuDBvD2;
     }
   }
 
   // S = Sw / w
   const gp_XYZ aS = aSw / aW;
-  // First derivatives
+  // First derivatives: S_u = (Sw_u - w_u * S) / w
   const gp_XYZ aSD1U = (aSwDU - aWDU * aS) / aW;
   const gp_XYZ aSD1V = (aSwDV - aWDV * aS) / aW;
-  // Second derivatives
+  // Second derivatives: S_uu = (Sw_uu - 2*w_u*S_u - w_uu*S) / w
   const gp_XYZ aSD2U  = (aSwD2U - 2.0 * aWDU * aSD1U - aWD2U * aS) / aW;
   const gp_XYZ aSD2V  = (aSwD2V - 2.0 * aWDV * aSD1V - aWD2V * aS) / aW;
   const gp_XYZ aSD2UV = (aSwDUV - aWDU * aSD1V - aWDV * aSD1U - aWDUV * aS) / aW;
-  // Third derivatives: S_uuu, S_vvv, S_uuv, S_uvv
+  // Third derivatives: obtained by differentiating the Leibniz rule expressions.
   // S_uuu = (Sw_uuu - 3*w_u*S_uu - 3*w_uu*S_u - w_uuu*S) / w
   const gp_XYZ aSD3U = (aSwD3U - 3.0 * aWDU * aSD2U - 3.0 * aWD2U * aSD1U - aWD3U * aS) / aW;
   // S_vvv = (Sw_vvv - 3*w_v*S_vv - 3*w_vv*S_v - w_vvv*S) / w
   const gp_XYZ aSD3V = (aSwD3V - 3.0 * aWDV * aSD2V - 3.0 * aWD2V * aSD1V - aWD3V * aS) / aW;
-  // S_uuv = (Sw_uuv - w_uuv*S - 2*w_u*S_uv - w_v*S_uu - 2*w_uv*S_u - w_uu*S_v) / w
-  // Using the general formula for mixed partials:
-  // d/dv[S_uu] = (Sw_uuv - w_v*S_uu - 2*w_uv*S_u - 2*w_u*S_uv - w_uu*S_v - w_uuv*S) / w
-  // Wait, let's apply the product rule to S_uu carefully.
-  // Actually the standard recurrence for d^(p+q)/du^p dv^q of a rational function is complex.
-  // Use the direct formula:
-  // S_uuv = (Sw_uuv - w_uuv*S - 2*w_u*S_uv - w_v*S_uu - w_uu*S_v - 2*w_uv*S_u) / w
-  // This follows from differentiating w*S_uu = Sw_uu - 2*w_u*S_u - w_uu*S with respect to v.
+  // S_uuv: differentiate w*S_uu = Sw_uu - 2*w_u*S_u - w_uu*S with respect to v.
   const gp_XYZ aSD3UUV = (aSwD2UDV - aWD2UDV * aS - 2.0 * aWDU * aSD2UV - aWDV * aSD2U
                           - aWD2U * aSD1V - 2.0 * aWDUV * aSD1U)
                          / aW;
