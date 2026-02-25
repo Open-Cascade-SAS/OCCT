@@ -141,10 +141,10 @@ public:
     PClear(ListNode::delNode);
     freeCachedNodes();
     this->myAllocator = theOther.myAllocator;
-    myFirst          = theOther.myFirst;
-    myLast           = theOther.myLast;
-    myCachedData     = theOther.myCachedData;
-    myLength         = theOther.myLength;
+    myFirst           = theOther.myFirst;
+    myLast            = theOther.myLast;
+    myCachedData      = theOther.myCachedData;
+    myLength          = theOther.myLength;
     theOther.myFirst = theOther.myLast = nullptr;
     theOther.myCachedData              = nullptr;
     theOther.myLength                  = 0;

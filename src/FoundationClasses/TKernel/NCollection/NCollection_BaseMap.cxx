@@ -62,8 +62,7 @@ void NCollection_BaseMap::EndResize(const int              theNbBuckets,
 
 //=================================================================================================
 
-void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel,
-                                  bool                   doReleaseMemory)
+void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory)
 {
   if (!IsEmpty())
   {

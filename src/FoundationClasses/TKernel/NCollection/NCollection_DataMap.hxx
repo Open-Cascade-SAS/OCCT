@@ -687,10 +687,7 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false)
-  {
-    Destroy(DataMapNode::delNode, doReleaseMemory);
-  }
+  void Clear(const bool doReleaseMemory = false) { Destroy(DataMapNode::delNode, doReleaseMemory); }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)

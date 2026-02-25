@@ -240,12 +240,12 @@ public:
     ClearSeq(delNode);
     freeCachedSeqNodes();
     this->myAllocator = theOther.myAllocator;
-    myFirstItem    = theOther.myFirstItem;
-    myLastItem     = theOther.myLastItem;
-    myCurrentItem  = theOther.myCurrentItem;
-    myCachedData   = theOther.myCachedData;
-    myCurrentIndex = theOther.myCurrentIndex;
-    mySize         = theOther.mySize;
+    myFirstItem       = theOther.myFirstItem;
+    myLastItem        = theOther.myLastItem;
+    myCurrentItem     = theOther.myCurrentItem;
+    myCachedData      = theOther.myCachedData;
+    myCurrentIndex    = theOther.myCurrentIndex;
+    mySize            = theOther.mySize;
 
     theOther.myFirstItem    = nullptr;
     theOther.myLastItem     = nullptr;

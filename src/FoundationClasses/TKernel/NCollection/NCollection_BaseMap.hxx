@@ -215,8 +215,7 @@ protected:
   int Decrement() noexcept { return --mySize; }
 
   //! Destroy
-  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
-                               bool                   doReleaseMemory = true);
+  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true);
 
   //! NextPrimeForMap
   Standard_EXPORT int NextPrimeForMap(const int N) const noexcept;
