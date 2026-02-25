@@ -14,163 +14,74 @@
 #ifndef AppCont_ContMatrices_HeaderFile
 #define AppCont_ContMatrices_HeaderFile
 
-#include <math.hxx>
 #include <math_Matrix.hxx>
-#include <math_Vector.hxx>
+#include <Standard_DimensionError.hxx>
 
-#include <array>
-
-// Legacy pre-computed data for InvMMatrix, IBPMatrix, IBTMatrix.
+#include <AppCont_ContMatrices_BB.pxx>
 #include <AppCont_ContMatrices_InvM.pxx>
 #include <AppCont_ContMatrices_IBP.pxx>
 #include <AppCont_ContMatrices_IBT.pxx>
+#include <AppCont_ContMatrices_VB.pxx>
 
 namespace AppCont_ContMatrices
 {
 
-constexpr int THE_MAX_CLASSE = 26;
-
-//! Compute binomial coefficient C(n, k) using multiplicative formula.
-constexpr double BinomCoeff(int theN, int theK)
-{
-  if (theK < 0 || theK > theN)
-  {
-    return 0.0;
-  }
-  if (theK > theN - theK)
-  {
-    theK = theN - theK;
-  }
-  double aResult = 1.0;
-  for (int i = 0; i < theK; ++i)
-  {
-    aResult = aResult * (theN - i) / (i + 1);
-  }
-  return aResult;
-}
-
-//! Compute Bernstein basis mass matrix entry M(i,j) for degree n.
-//! M(i,j) = C(n,i) * C(n,j) / ((2n+1) * C(2n, i+j))
-//! where i, j are 0-based indices.
-constexpr double BernsteinMassEntry(int theN, int theI, int theJ)
-{
-  return BinomCoeff(theN, theI) * BinomCoeff(theN, theJ)
-         / ((2 * theN + 1) * BinomCoeff(2 * theN, theI + theJ));
-}
-
-//! Integer power: theBase^theExp via repeated multiplication.
-constexpr double intPow(double theBase, int theExp)
-{
-  double aResult = 1.0;
-  for (int i = 0; i < theExp; ++i)
-  {
-    aResult *= theBase;
-  }
-  return aResult;
-}
+constexpr int THE_MAX_CLASSE         = 26;
+constexpr int THE_MAX_MMATRIX_CLASSE = 24;
+constexpr int THE_MAX_NBPOINTS       = 24;
 
 //! Compute offset into the flat MMatrix/InvMMatrix array for a given classe.
-//! Data for classe values 2..THE_MAX_CLASSE are packed sequentially,
+//! Data for classe values 2..24 are packed sequentially,
 //! each block having classe*classe entries.
-constexpr int MMatrixOffset(int theClasse)
+constexpr int MMatrixOffset(const int theClasse)
 {
   int anOffset = 0;
-  for (int i = 2; i < theClasse; i++)
+  for (int i = 2; i < theClasse; ++i)
   {
     anOffset += i * i;
   }
   return anOffset;
 }
 
-//! Total number of entries for MMatrix/InvMMatrix flat arrays (classe 2..26).
-constexpr int THE_MMATRIX_TOTAL = MMatrixOffset(THE_MAX_CLASSE + 1);
-
-//! Pre-computed offset table to avoid recomputing the loop each time.
-constexpr std::array<int, THE_MAX_CLASSE + 2> initMMatrixOffsets()
-{
-  std::array<int, THE_MAX_CLASSE + 2> aOffsets{};
-  for (int i = 0; i <= THE_MAX_CLASSE + 1; i++)
-  {
-    aOffsets[i] = MMatrixOffset(i);
-  }
-  return aOffsets;
-}
-
-constexpr std::array<int, THE_MAX_CLASSE + 2> THE_MMATRIX_OFFSETS = initMMatrixOffsets();
-
 //! Compute offset into the flat IBPMatrix array for a given classe.
 //! IBP result has size (classe-2)^2, starting from classe=3.
-constexpr int IBPMatrixOffset(int theClasse)
+constexpr int IBPMatrixOffset(const int theClasse)
 {
   int anOffset = 0;
-  for (int c = 3; c < theClasse; c++)
+  for (int i = 1; i < theClasse - 2; ++i)
   {
-    const int d = c - 2;
-    anOffset += d * d;
+    anOffset += i * i;
   }
   return anOffset;
 }
 
 //! Compute offset into the flat IBTMatrix array for a given classe.
 //! IBT result has size (classe-4)^2, starting from classe=5.
-constexpr int IBTMatrixOffset(int theClasse)
+constexpr int IBTMatrixOffset(const int theClasse)
 {
   int anOffset = 0;
-  for (int c = 5; c < theClasse; c++)
+  for (int i = 1; i < theClasse - 4; ++i)
   {
-    const int d = c - 4;
-    anOffset += d * d;
+    anOffset += i * i;
   }
   return anOffset;
 }
 
-//! Initialize flat array of Bernstein mass matrix entries for classe 2..THE_MAX_CLASSE.
-constexpr std::array<double, THE_MMATRIX_TOTAL> initMMatrixData()
-{
-  std::array<double, THE_MMATRIX_TOTAL> aData{};
-  int                                   anIdx = 0;
-  for (int aClasse = 2; aClasse <= THE_MAX_CLASSE; aClasse++)
-  {
-    const int n = aClasse - 1;
-    for (int i = 0; i < aClasse; i++)
-    {
-      for (int j = 0; j < aClasse; j++)
-      {
-        aData[anIdx++] = BernsteinMassEntry(n, i, j);
-      }
-    }
-  }
-  return aData;
-}
-
-constexpr std::array<double, THE_MMATRIX_TOTAL> THE_MMATRIX_DATA = initMMatrixData();
-
 //! Compute Bernstein basis mass matrix of size classe x classe.
 inline void MMatrix(const int classe, math_Matrix& M)
 {
-  const double* aData = (classe >= 2 && classe <= THE_MAX_CLASSE)
-                          ? THE_MMATRIX_DATA.data() + THE_MMATRIX_OFFSETS[classe]
-                          : nullptr;
-  if (aData != nullptr)
+  if (classe > THE_MAX_MMATRIX_CLASSE)
   {
-    int k = 0;
-    for (int i = 1; i <= classe; i++)
-    {
-      for (int j = 1; j <= classe; j++)
-      {
-        M(i + M.LowerRow() - 1, j + M.LowerCol() - 1) = aData[k++];
-      }
-    }
-    return;
+    throw Standard_DimensionError("MMatrix: classe > 24");
   }
 
-  // Fallback for classe > THE_MAX_CLASSE: compute from formula.
-  const int n = classe - 1;
-  for (int i = 1; i <= classe; i++)
+  const double* aData = THE_BBMATRIX_DATA + MMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= classe; ++i)
   {
-    for (int j = 1; j <= classe; j++)
+    for (int j = 1; j <= classe; ++j)
     {
-      M(i + M.LowerRow() - 1, j + M.LowerCol() - 1) = BernsteinMassEntry(n, i - 1, j - 1);
+      M(i + M.LowerRow() - 1, j + M.LowerCol() - 1) = aData[k++];
     }
   }
 }
@@ -178,31 +89,18 @@ inline void MMatrix(const int classe, math_Matrix& M)
 //! Compute inverse of the Bernstein basis mass matrix.
 inline void InvMMatrix(const int classe, math_Matrix& InvM)
 {
-  const double* aData = (classe >= 2 && classe <= THE_MAX_CLASSE)
-                          ? THE_INV_MMATRIX_DATA + THE_MMATRIX_OFFSETS[classe]
-                          : nullptr;
-  if (aData != nullptr)
+  if (classe > THE_MAX_MMATRIX_CLASSE)
   {
-    int k = 0;
-    for (int i = 1; i <= classe; i++)
-    {
-      for (int j = 1; j <= classe; j++)
-      {
-        InvM(i + InvM.LowerRow() - 1, j + InvM.LowerCol() - 1) = aData[k++];
-      }
-    }
-    return;
+    throw Standard_DimensionError("InvMMatrix: classe > 24");
   }
 
-  // Fallback for classe > THE_MAX_CLASSE: compute M then invert.
-  math_Matrix aMat(1, classe, 1, classe);
-  MMatrix(classe, aMat);
-  math_Matrix anInv = aMat.Inverse();
-  for (int i = 1; i <= classe; i++)
+  const double* aData = THE_INV_MMATRIX_DATA + MMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= classe; ++i)
   {
-    for (int j = 1; j <= classe; j++)
+    for (int j = 1; j <= classe; ++j)
     {
-      InvM(i + InvM.LowerRow() - 1, j + InvM.LowerCol() - 1) = anInv(i, j);
+      InvM(i + InvM.LowerRow() - 1, j + InvM.LowerCol() - 1) = aData[k++];
     }
   }
 }
@@ -212,42 +110,19 @@ inline void InvMMatrix(const int classe, math_Matrix& InvM)
 //! Result size: (classe-2) x (classe-2).
 inline void IBPMatrix(const int classe, math_Matrix& IBPMa)
 {
-  const int aDim = classe - 2;
-  if (classe >= 3 && classe <= THE_MAX_CLASSE)
+  if (classe > THE_MAX_CLASSE)
   {
-    const double* aData = THE_IBPMATRIX_DATA + IBPMatrixOffset(classe);
-    int           k     = 0;
-    for (int i = 1; i <= aDim; i++)
-    {
-      for (int j = 1; j <= aDim; j++)
-      {
-        IBPMa(i + IBPMa.LowerRow() - 1, j + IBPMa.LowerCol() - 1) = aData[k++];
-      }
-    }
-    return;
+    throw Standard_DimensionError("IBPMatrix: classe > 26");
   }
 
-  // Fallback for classe > THE_MAX_CLASSE.
-  math_Matrix aMat(1, classe, 1, classe);
-  MMatrix(classe, aMat);
-
-  math_Matrix aMP(1, classe, 1, aDim);
-  for (int i = 1; i <= classe; i++)
+  const int     aDim  = classe - 2;
+  const double* aData = THE_IBPMATRIX_DATA + IBPMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= aDim; ++i)
   {
-    for (int j = 1; j <= aDim; j++)
+    for (int j = 1; j <= aDim; ++j)
     {
-      aMP(i, j) = aMat(i, j + 1);
-    }
-  }
-
-  math_Matrix aProduct(1, aDim, 1, aDim);
-  aProduct          = aMP.Transposed() * aMP;
-  math_Matrix anInv = aProduct.Inverse();
-  for (int i = 1; i <= aDim; i++)
-  {
-    for (int j = 1; j <= aDim; j++)
-    {
-      IBPMa(i + IBPMa.LowerRow() - 1, j + IBPMa.LowerCol() - 1) = anInv(i, j);
+      IBPMa(i + IBPMa.LowerRow() - 1, j + IBPMa.LowerCol() - 1) = aData[k++];
     }
   }
 }
@@ -257,42 +132,19 @@ inline void IBPMatrix(const int classe, math_Matrix& IBPMa)
 //! Result size: (classe-4) x (classe-4).
 inline void IBTMatrix(const int classe, math_Matrix& IBTMa)
 {
-  const int aDim = classe - 4;
-  if (classe >= 5 && classe <= THE_MAX_CLASSE)
+  if (classe > THE_MAX_CLASSE)
   {
-    const double* aData = THE_IBTMATRIX_DATA + IBTMatrixOffset(classe);
-    int           k     = 0;
-    for (int i = 1; i <= aDim; i++)
-    {
-      for (int j = 1; j <= aDim; j++)
-      {
-        IBTMa(i + IBTMa.LowerRow() - 1, j + IBTMa.LowerCol() - 1) = aData[k++];
-      }
-    }
-    return;
+    throw Standard_DimensionError("IBTMatrix: classe > 26");
   }
 
-  // Fallback for classe > THE_MAX_CLASSE.
-  math_Matrix aMat(1, classe, 1, classe);
-  MMatrix(classe, aMat);
-
-  math_Matrix aMT(1, classe, 1, aDim);
-  for (int i = 1; i <= classe; i++)
+  const int     aDim  = classe - 4;
+  const double* aData = THE_IBTMATRIX_DATA + IBTMatrixOffset(classe);
+  int           k     = 0;
+  for (int i = 1; i <= aDim; ++i)
   {
-    for (int j = 1; j <= aDim; j++)
+    for (int j = 1; j <= aDim; ++j)
     {
-      aMT(i, j) = aMat(i, j + 2);
-    }
-  }
-
-  math_Matrix aProduct(1, aDim, 1, aDim);
-  aProduct          = aMT.Transposed() * aMT;
-  math_Matrix anInv = aProduct.Inverse();
-  for (int i = 1; i <= aDim; i++)
-  {
-    for (int j = 1; j <= aDim; j++)
-    {
-      IBTMa(i + IBTMa.LowerRow() - 1, j + IBTMa.LowerCol() - 1) = anInv(i, j);
+      IBTMa(i + IBTMa.LowerRow() - 1, j + IBTMa.LowerCol() - 1) = aData[k++];
     }
   }
 }
@@ -301,39 +153,25 @@ inline void IBTMatrix(const int classe, math_Matrix& IBTMa)
 //! Result size: classe x nbpoints.
 inline void VBernstein(const int classe, const int nbpoints, math_Matrix& M)
 {
-  const int n = classe - 1;
-
-  // Get Gauss-Legendre points on [-1, 1].
-  math_Vector aGaussP(1, nbpoints);
-  math::GaussPoints(nbpoints, aGaussP);
-
-  // Map to [0, 1] and reorder to match the convention in AppCont_LeastSquare:
-  // points with index <= (nbpoints+1)/2 go to positions LastP-i+1,
-  // points with index > (nbpoints+1)/2 go to positions i-(nbpoints+1)/2.
-  math_Vector aParams(1, nbpoints);
-  const int   aHalf = (nbpoints + 1) / 2;
-  for (int i = 1; i <= nbpoints; i++)
+  if (classe > THE_MAX_CLASSE)
   {
-    const double aT = 0.5 * (1.0 + aGaussP(i));
-    if (i <= aHalf)
-    {
-      aParams(nbpoints - i + 1) = aT;
-    }
-    else
-    {
-      aParams(i - aHalf) = aT;
-    }
+    throw Standard_DimensionError("VBernstein: classe > 26");
+  }
+  if (nbpoints > THE_MAX_NBPOINTS)
+  {
+    throw Standard_DimensionError("VBernstein: nbpoints > 24");
   }
 
-  // Evaluate Bernstein polynomials B_i^n(t) = C(n,i) * t^i * (1-t)^(n-i).
-  for (int i = 1; i <= classe; i++)
+  const int Som = static_cast<int>(300.0 * ((classe - 1) * classe / 2.0 - 1.0)
+                                   + classe * (nbpoints - 1) * nbpoints / 2.0);
+
+  const double* aData = THE_VBMATRIX_DATA + Som;
+  for (int i = 1; i <= classe; ++i)
   {
-    const int    aI     = i - 1;
-    const double aBinom = BinomCoeff(n, aI);
-    for (int j = 1; j <= nbpoints; j++)
+    for (int j = 1; j <= nbpoints; ++j)
     {
-      const double aT = aParams(j);
-      M(i, j)         = aBinom * intPow(aT, aI) * intPow(1.0 - aT, n - aI);
+      M(i, j) = *aData;
+      ++aData;
     }
   }
 }
