@@ -22,7 +22,7 @@
 
 #include <math.hxx>
 #include <AppParCurves_MultiPoint.hxx>
-#include <AppCont_ContMatrices.hxx>
+#include <AppCont_ContMatrices.pxx>
 #include <PLib.hxx>
 
 //=================================================================================================
@@ -212,7 +212,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
     }
   }
 
-  VBernstein(classe, myNbPoints, myVB);
+  AppCont_ContMatrices::VBernstein(classe, myNbPoints, myVB);
 
   // Traitement du second membre:
   NCollection_Array1<double> tmppoints(1, nbcol);
@@ -238,7 +238,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   {
 
     math_Matrix InvM(1, classe, 1, classe);
-    InvMMatrix(classe, InvM);
+    AppCont_ContMatrices::InvMMatrix(classe, InvM);
     // Calcul direct des poles:
 
     for (i = 1; i <= classe; i++)
@@ -257,7 +257,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
   else
   {
     math_Matrix M(1, classe, 1, classe);
-    MMatrix(classe, M);
+    AppCont_ContMatrices::MMatrix(classe, M);
     NCollection_Array1<gp_Pnt2d> aFixP2d(1, std::max(myNbP2d, 1));
     NCollection_Array1<gp_Pnt>   aFixP(1, std::max(myNbP, 1));
 
@@ -453,11 +453,11 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 
       if (bdeb == 2 && bfin == classe - 1 && classe <= 26)
       {
-        IBPMatrix(classe, IBP);
+        AppCont_ContMatrices::IBPMatrix(classe, IBP);
       }
       else if (bdeb == 3 && bfin == classe - 2 && classe <= 26)
       {
-        IBTMatrix(classe, IBP);
+        AppCont_ContMatrices::IBTMatrix(classe, IBP);
       }
       else
       {
