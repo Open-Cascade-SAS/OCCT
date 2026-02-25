@@ -127,6 +127,12 @@ public:
       theAl->Free(theNode);
     }
 
+    //! Static destructor-only callback: destructs node but does NOT free memory.
+    static void destroyNode(NCollection_ListNode* theNode) noexcept
+    {
+      ((DoubleMapNode*)theNode)->~DoubleMapNode();
+    }
+
   private:
     TheKey1Type    myKey1;
     DoubleMapNode* myNext2;
@@ -217,14 +223,17 @@ public:
       Iterator anIter(theOther);
       for (; anIter.More(); anIter.Next())
       {
-        TheKey1Type    aKey1 = anIter.Key1();
-        TheKey2Type    aKey2 = anIter.Key2();
-        const size_t   iK1   = HashCode1(aKey1, NbBuckets());
-        const size_t   iK2   = HashCode2(aKey2, NbBuckets());
-        DoubleMapNode* pNode =
-          new (this->myAllocator) DoubleMapNode(aKey1, aKey2, myData1[iK1], myData2[iK2]);
-        myData1[iK1] = pNode;
-        myData2[iK2] = pNode;
+        TheKey1Type           aKey1   = anIter.Key1();
+        TheKey2Type           aKey2   = anIter.Key2();
+        const size_t          iK1     = HashCode1(aKey1, NbBuckets());
+        const size_t          iK2     = HashCode2(aKey2, NbBuckets());
+        NCollection_ListNode* aCached = this->allocateFromCache();
+        DoubleMapNode*        pNode   = aCached ? ::new (static_cast<void*>(aCached))
+                                           DoubleMapNode(aKey1, aKey2, myData1[iK1], myData2[iK2])
+                                                : new (this->myAllocator)
+                                           DoubleMapNode(aKey1, aKey2, myData1[iK1], myData2[iK2]);
+        myData1[iK1]                  = pNode;
+        myData2[iK2]                  = pNode;
         Increment();
       }
     }
@@ -443,8 +452,7 @@ public:
           q2 = p2;
           p2 = (DoubleMapNode*)p2->Next2();
         }
-        p1->~DoubleMapNode();
-        this->myAllocator->Free(p1);
+        this->cacheNode(p1, DoubleMapNode::destroyNode);
         Decrement();
         return true;
       }
@@ -490,8 +498,7 @@ public:
           q1 = p1;
           p1 = (DoubleMapNode*)p1->Next();
         }
-        p2->~DoubleMapNode();
-        this->myAllocator->Free(p2);
+        this->cacheNode(p2, DoubleMapNode::destroyNode);
         Decrement();
         return true;
       }
@@ -696,12 +703,18 @@ protected:
       else
         throw Standard_MultiplyDefined("NCollection_DoubleMap:Bind");
     }
-    DoubleMapNode* pNode = new (this->myAllocator) DoubleMapNode(std::forward<K1>(theKey1),
-                                                                 std::forward<K2>(theKey2),
-                                                                 myData1[iK1],
-                                                                 myData2[iK2]);
-    myData1[iK1]         = pNode;
-    myData2[iK2]         = pNode;
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    DoubleMapNode*        pNode =
+      aCached ? ::new (static_cast<void*>(aCached)) DoubleMapNode(std::forward<K1>(theKey1),
+                                                                  std::forward<K2>(theKey2),
+                                                                  myData1[iK1],
+                                                                  myData2[iK2])
+                     : new (this->myAllocator) DoubleMapNode(std::forward<K1>(theKey1),
+                                                      std::forward<K2>(theKey2),
+                                                      myData1[iK1],
+                                                      myData2[iK2]);
+    myData1[iK1] = pNode;
+    myData2[iK2] = pNode;
     Increment();
     return true;
   }

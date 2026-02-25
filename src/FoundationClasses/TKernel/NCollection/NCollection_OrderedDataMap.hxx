@@ -146,6 +146,12 @@ public:
       theAl->Free(theNode);
     }
 
+    //! Static destroy-only callback: destructs node but does NOT free memory.
+    static void destroyNode(NCollection_ListNode* theNode) noexcept
+    {
+      ((OrderedDataMapNode*)theNode)->~OrderedDataMapNode();
+    }
+
     OrderedDataMapNode* myOrderPrev; //!< Previous node in insertion order
     OrderedDataMapNode* myOrderNext; //!< Next node in insertion order
 
@@ -643,8 +649,7 @@ public:
         else
           data[k] = (OrderedDataMapNode*)p->Next();
         unlinkFromList(p);
-        p->~OrderedDataMapNode();
-        this->myAllocator->Free(p);
+        this->cacheNode(p, OrderedDataMapNode::destroyNode);
         return true;
       }
       q = p;
@@ -890,11 +895,19 @@ protected:
       else
         return false;
     }
-    OrderedDataMapNode** data = (OrderedDataMapNode**)myData1;
-    data[aHash]               = new (this->myAllocator) OrderedDataMapNode(std::forward<K>(theKey),
-                                                             std::in_place,
-                                                             data[aHash],
-                                                             std::forward<Args>(theArgs)...);
+    OrderedDataMapNode**  data    = (OrderedDataMapNode**)myData1;
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    if (aCached)
+      data[aHash] =
+        ::new (static_cast<void*>(aCached)) OrderedDataMapNode(std::forward<K>(theKey),
+                                                               std::in_place,
+                                                               data[aHash],
+                                                               std::forward<Args>(theArgs)...);
+    else
+      data[aHash] = new (this->myAllocator) OrderedDataMapNode(std::forward<K>(theKey),
+                                                               std::in_place,
+                                                               data[aHash],
+                                                               std::forward<Args>(theArgs)...);
     appendToList(data[aHash]);
     Increment();
     if constexpr (ReturnRef)

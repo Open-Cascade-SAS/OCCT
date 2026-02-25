@@ -50,6 +50,10 @@ private:
 typedef void (*NCollection_DelSeqNode)(NCollection_SeqNode*,
                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
+//! Destruct-only callback: destructs node values but does NOT free memory.
+//! Used by free-list caching to retain node memory for reuse.
+typedef void (*NCollection_DestroySeqNode)(NCollection_SeqNode*);
+
 /**
  * Purpose:     This  is  a base  class  for  the  Sequence.  It  deals with
  *              an indexed bidirectional list of NCollection_SeqNode's.
@@ -116,6 +120,7 @@ protected:
       : myFirstItem(nullptr),
         myLastItem(nullptr),
         myCurrentItem(nullptr),
+        myCachedData(nullptr),
         myCurrentIndex(0),
         mySize(0)
   {
@@ -142,6 +147,35 @@ protected:
   Standard_EXPORT void PExchange(const int I, const int J);
   Standard_EXPORT NCollection_SeqNode* Find(const int) const noexcept;
 
+  //! Clear sequence, caching nodes for reuse (destruct values only).
+  Standard_EXPORT void ClearSeqToCache(NCollection_DestroySeqNode fDestroy);
+
+  //! Remove at iterator position, caching node for reuse.
+  Standard_EXPORT void RemoveSeqToCache(Iterator& thePosition, NCollection_DestroySeqNode fDestroy);
+
+  //! Remove by index, caching node for reuse.
+  Standard_EXPORT void RemoveSeqToCache(const int theIndex, NCollection_DestroySeqNode fDestroy);
+
+  //! Remove range, caching nodes for reuse.
+  Standard_EXPORT void RemoveSeqToCache(const int                  theFrom,
+                                        const int                  theTo,
+                                        NCollection_DestroySeqNode fDestroy);
+
+  //! Pop a node from the free-list cache, or return nullptr if empty.
+  NCollection_SeqNode* allocateFromSeqCache() noexcept
+  {
+    if (myCachedData == nullptr)
+    {
+      return nullptr;
+    }
+    NCollection_SeqNode* aNode = myCachedData;
+    myCachedData               = myCachedData->Next();
+    return aNode;
+  }
+
+  //! Walk the free-list calling allocator Free on each cached node.
+  Standard_EXPORT void freeCachedSeqNodes();
+
 protected:
   // Fields PROTECTED
   //
@@ -149,6 +183,7 @@ protected:
   NCollection_SeqNode*                   myFirstItem;
   NCollection_SeqNode*                   myLastItem;
   NCollection_SeqNode*                   myCurrentItem;
+  NCollection_SeqNode*                   myCachedData; //!< Free-list cache of removed nodes
   int                                    myCurrentIndex;
   int                                    mySize;
 

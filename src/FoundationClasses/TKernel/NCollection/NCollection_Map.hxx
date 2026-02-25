@@ -371,8 +371,7 @@ public:
           q->Next() = p->Next();
         else
           data[k] = (MapNode*)p->Next();
-        p->~MapNode();
-        this->myAllocator->Free(p);
+        this->cacheNode(p, MapNode::destroyNode);
         return true;
       }
       q = p;
@@ -383,7 +382,10 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false) { Destroy(MapNode::delNode, doReleaseMemory); }
+  void Clear(const bool doReleaseMemory = false)
+  {
+    Destroy(MapNode::delNode, doReleaseMemory);
+  }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)
@@ -584,8 +586,13 @@ protected:
       else
         return false;
     }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash]    = new (this->myAllocator) MapNode(std::forward<K>(theKey), data[aHash]);
+    MapNode**             data    = (MapNode**)myData1;
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    if (aCached)
+      data[aHash] =
+        ::new (static_cast<void*>(aCached)) MapNode(std::forward<K>(theKey), data[aHash]);
+    else
+      data[aHash] = new (this->myAllocator) MapNode(std::forward<K>(theKey), data[aHash]);
     Increment();
     if constexpr (ReturnRef)
       return data[aHash]->Key();
@@ -621,8 +628,12 @@ protected:
       else
         return false;
     }
-    MapNode** data = (MapNode**)myData1;
-    data[aHash]    = new (this->myAllocator) MapNode(std::move(aTempKey), data[aHash]);
+    MapNode**             data    = (MapNode**)myData1;
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    if (aCached)
+      data[aHash] = ::new (static_cast<void*>(aCached)) MapNode(std::move(aTempKey), data[aHash]);
+    else
+      data[aHash] = new (this->myAllocator) MapNode(std::move(aTempKey), data[aHash]);
     Increment();
     if constexpr (ReturnRef)
       return data[aHash]->Key();

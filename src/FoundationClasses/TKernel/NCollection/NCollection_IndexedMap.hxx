@@ -93,6 +93,12 @@ protected:
       theAl->Free(theNode);
     }
 
+    //! Static destructor-only callback: destructs node but does NOT free memory.
+    static void destroyNode(NCollection_ListNode* theNode) noexcept
+    {
+      ((IndexedMapNode*)theNode)->~IndexedMapNode();
+    }
+
   private:
     int myIndex;
   };
@@ -271,12 +277,15 @@ public:
       ReSize(anExt - 1); // mySize is same after resize
       for (int anIndexIter = 1; anIndexIter <= anExt; ++anIndexIter)
       {
-        const TheKeyType& aKey1 = theOther.FindKey(anIndexIter);
-        const size_t      iK1   = HashCode(aKey1, NbBuckets());
-        IndexedMapNode*   pNode =
-          new (this->myAllocator) IndexedMapNode(aKey1, anIndexIter, myData1[iK1]);
-        myData1[iK1]             = pNode;
-        myData2[anIndexIter - 1] = pNode;
+        const TheKeyType&     aKey1   = theOther.FindKey(anIndexIter);
+        const size_t          iK1     = HashCode(aKey1, NbBuckets());
+        NCollection_ListNode* aCached = this->allocateFromCache();
+        IndexedMapNode*       pNode   = aCached ? ::new (static_cast<void*>(aCached))
+                                            IndexedMapNode(aKey1, anIndexIter, myData1[iK1])
+                                                : new (this->myAllocator)
+                                            IndexedMapNode(aKey1, anIndexIter, myData1[iK1]);
+        myData1[iK1]                  = pNode;
+        myData2[anIndexIter - 1]      = pNode;
         Increment();
       }
     }
@@ -491,8 +500,7 @@ public:
         q = (IndexedMapNode*)q->Next();
       q->Next() = p->Next();
     }
-    p->~IndexedMapNode();
-    this->myAllocator->Free(p);
+    this->cacheNode(p, IndexedMapNode::destroyNode);
     Decrement();
   }
 
@@ -639,9 +647,14 @@ protected:
       else
         return aNode->Index();
     }
-    const int aNewIndex = Extent() + 1;
-    aNode =
-      new (this->myAllocator) IndexedMapNode(std::forward<K>(theKey1), aNewIndex, myData1[aHash]);
+    const int             aNewIndex = Extent() + 1;
+    NCollection_ListNode* aCached   = this->allocateFromCache();
+    if (aCached)
+      aNode = ::new (static_cast<void*>(aCached))
+        IndexedMapNode(std::forward<K>(theKey1), aNewIndex, myData1[aHash]);
+    else
+      aNode =
+        new (this->myAllocator) IndexedMapNode(std::forward<K>(theKey1), aNewIndex, myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();
@@ -675,8 +688,14 @@ protected:
       else
         return aNode->Index();
     }
-    const int aNewIndex = Extent() + 1;
-    aNode = new (this->myAllocator) IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
+    const int             aNewIndex = Extent() + 1;
+    NCollection_ListNode* aCached   = this->allocateFromCache();
+    if (aCached)
+      aNode = ::new (static_cast<void*>(aCached))
+        IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
+    else
+      aNode =
+        new (this->myAllocator) IndexedMapNode(std::move(aTempKey), aNewIndex, myData1[aHash]);
     myData1[aHash]         = aNode;
     myData2[aNewIndex - 1] = aNode;
     Increment();

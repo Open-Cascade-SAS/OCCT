@@ -105,6 +105,12 @@ public:
       theAl->Free(theNode);
     }
 
+    //! Static destroy-only callback: destructs node but does NOT free memory.
+    static void destroyNode(NCollection_ListNode* theNode) noexcept
+    {
+      ((OrderedMapNode*)theNode)->~OrderedMapNode();
+    }
+
     OrderedMapNode* myOrderPrev; //!< Previous node in insertion order
     OrderedMapNode* myOrderNext; //!< Next node in insertion order
   };
@@ -430,8 +436,7 @@ public:
         else
           data[k] = (OrderedMapNode*)p->Next();
         unlinkFromList(p);
-        p->~OrderedMapNode();
-        this->myAllocator->Free(p);
+        this->cacheNode(p, OrderedMapNode::destroyNode);
         return true;
       }
       q = p;
@@ -579,8 +584,13 @@ protected:
       else
         return false;
     }
-    OrderedMapNode** data = (OrderedMapNode**)myData1;
-    data[aHash] = new (this->myAllocator) OrderedMapNode(std::forward<K>(theKey), data[aHash]);
+    OrderedMapNode**      data    = (OrderedMapNode**)myData1;
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    if (aCached)
+      data[aHash] =
+        ::new (static_cast<void*>(aCached)) OrderedMapNode(std::forward<K>(theKey), data[aHash]);
+    else
+      data[aHash] = new (this->myAllocator) OrderedMapNode(std::forward<K>(theKey), data[aHash]);
     appendToList(data[aHash]);
     Increment();
     if constexpr (ReturnRef)
@@ -615,8 +625,13 @@ protected:
       else
         return false;
     }
-    OrderedMapNode** data = (OrderedMapNode**)myData1;
-    data[aHash] = new (this->myAllocator) OrderedMapNode(std::move(aTempKey), data[aHash]);
+    OrderedMapNode**      data     = (OrderedMapNode**)myData1;
+    NCollection_ListNode* aCached2 = this->allocateFromCache();
+    if (aCached2)
+      data[aHash] =
+        ::new (static_cast<void*>(aCached2)) OrderedMapNode(std::move(aTempKey), data[aHash]);
+    else
+      data[aHash] = new (this->myAllocator) OrderedMapNode(std::move(aTempKey), data[aHash]);
     appendToList(data[aHash]);
     Increment();
     if constexpr (ReturnRef)

@@ -24,6 +24,10 @@
 typedef void (*NCollection_DelMapNode)(NCollection_ListNode*,
                                        occ::handle<NCollection_BaseAllocator>& theAl);
 
+//! Destruct-only callback: destructs node values but does NOT free memory.
+//! Used by free-list caching to retain node memory for reuse.
+typedef void (*NCollection_DestroyMapNode)(NCollection_ListNode*);
+
 /**
  * Purpose:     This is a base class for all Maps:
  *                Map
@@ -162,6 +166,7 @@ protected:
                                           : theAllocator),
         myData1(nullptr),
         myData2(nullptr),
+        myCachedData(nullptr),
         myNbBuckets(NbBuckets),
         mySize(0),
         isDouble(!single)
@@ -173,14 +178,16 @@ protected:
       : myAllocator(theOther.myAllocator),
         myData1(theOther.myData1),
         myData2(theOther.myData2),
+        myCachedData(theOther.myCachedData),
         myNbBuckets(theOther.myNbBuckets),
         mySize(theOther.mySize),
         isDouble(theOther.isDouble)
   {
-    theOther.myData1     = nullptr;
-    theOther.myData2     = nullptr;
-    theOther.mySize      = 0;
-    theOther.myNbBuckets = 0;
+    theOther.myData1      = nullptr;
+    theOther.myData2      = nullptr;
+    theOther.myCachedData = nullptr;
+    theOther.mySize       = 0;
+    theOther.myNbBuckets  = 0;
   }
 
   //! Destructor
@@ -208,10 +215,34 @@ protected:
   int Decrement() noexcept { return --mySize; }
 
   //! Destroy
-  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory = true);
+  Standard_EXPORT void Destroy(NCollection_DelMapNode fDel,
+                               bool                   doReleaseMemory = true);
 
   //! NextPrimeForMap
   Standard_EXPORT int NextPrimeForMap(const int N) const noexcept;
+
+  //! Pop a node from the free-list cache, or return nullptr if empty.
+  NCollection_ListNode* allocateFromCache() noexcept
+  {
+    if (myCachedData == nullptr)
+    {
+      return nullptr;
+    }
+    NCollection_ListNode* aNode = myCachedData;
+    myCachedData                = myCachedData->Next();
+    return aNode;
+  }
+
+  //! Destruct node values and push node memory onto the free-list cache.
+  void cacheNode(NCollection_ListNode* theNode, NCollection_DestroyMapNode fDestroy) noexcept
+  {
+    fDestroy(theNode);
+    theNode->Next() = myCachedData;
+    myCachedData    = theNode;
+  }
+
+  //! Walk the free-list calling allocator Free on each cached node.
+  Standard_EXPORT void freeCachedNodes();
 
   //! Exchange content of two maps without data copying
   void exchangeMapsData(NCollection_BaseMap& theOther) noexcept
@@ -219,6 +250,7 @@ protected:
     std::swap(myAllocator, theOther.myAllocator);
     std::swap(myData1, theOther.myData1);
     std::swap(myData2, theOther.myData2);
+    std::swap(myCachedData, theOther.myCachedData);
     std::swap(myNbBuckets, theOther.myNbBuckets);
     std::swap(mySize, theOther.mySize);
   }
@@ -237,6 +269,7 @@ protected:
   occ::handle<NCollection_BaseAllocator> myAllocator;
   NCollection_ListNode**                 myData1;
   NCollection_ListNode**                 myData2;
+  NCollection_ListNode*                  myCachedData; //!< Free-list cache of removed nodes
 
 private:
   // ---------- PRIVATE FIELDS ------------

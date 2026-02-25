@@ -61,6 +61,13 @@ public:
     theAl->Free(theNode);
   }
 
+  //! Static destructor-only callback: destructs value but does NOT free memory.
+  //! Used by free-list caching to retain node memory for reuse.
+  static void destroyNode(NCollection_ListNode* theNode) noexcept
+  {
+    ((NCollection_TListNode*)theNode)->myValue.~TheItemType();
+  }
+
 protected:
   TheItemType myValue; //!< The item stored in the node
 };

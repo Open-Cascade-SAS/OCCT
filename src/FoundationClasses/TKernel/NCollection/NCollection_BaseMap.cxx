@@ -62,23 +62,46 @@ void NCollection_BaseMap::EndResize(const int              theNbBuckets,
 
 //=================================================================================================
 
-void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMemory)
+void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel,
+                                  bool                   doReleaseMemory)
 {
   if (!IsEmpty())
   {
     const int aNbBuckets = NbBuckets();
-    for (int anInd = 0; anInd <= aNbBuckets; anInd++)
+    if (doReleaseMemory)
     {
-      if (myData1[anInd])
+      // Full release: destruct + free each node via fDel
+      for (int anInd = 0; anInd <= aNbBuckets; anInd++)
       {
-        NCollection_ListNode* aCur = myData1[anInd];
-        while (aCur)
+        if (myData1[anInd])
         {
-          NCollection_ListNode* aNext = aCur->Next();
-          fDel(aCur, myAllocator);
-          aCur = aNext;
+          NCollection_ListNode* aCur = myData1[anInd];
+          while (aCur)
+          {
+            NCollection_ListNode* aNext = aCur->Next();
+            fDel(aCur, myAllocator);
+            aCur = aNext;
+          }
+          myData1[anInd] = nullptr;
         }
-        myData1[anInd] = nullptr;
+      }
+    }
+    else
+    {
+      // Bucket-only release: destruct + free each node, keep bucket arrays
+      for (int anInd = 0; anInd <= aNbBuckets; anInd++)
+      {
+        if (myData1[anInd])
+        {
+          NCollection_ListNode* aCur = myData1[anInd];
+          while (aCur)
+          {
+            NCollection_ListNode* aNext = aCur->Next();
+            fDel(aCur, myAllocator);
+            aCur = aNext;
+          }
+          myData1[anInd] = nullptr;
+        }
       }
     }
     if (myData2)
@@ -89,9 +112,22 @@ void NCollection_BaseMap::Destroy(NCollection_DelMapNode fDel, bool doReleaseMem
   }
   if (doReleaseMemory)
   {
+    freeCachedNodes();
     Standard::Free(myData1);
     Standard::Free(myData2);
     myData1 = myData2 = nullptr;
+  }
+}
+
+//=================================================================================================
+
+void NCollection_BaseMap::freeCachedNodes()
+{
+  while (myCachedData)
+  {
+    NCollection_ListNode* aNext = myCachedData->Next();
+    myAllocator->Free(myCachedData);
+    myCachedData = aNext;
   }
 }
 

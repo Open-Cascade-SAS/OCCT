@@ -112,6 +112,12 @@ public:
       theAl->Free(theNode);
     }
 
+    //! Static destructor-only callback: destructs node but does NOT free memory.
+    static void destroyNode(NCollection_ListNode* theNode) noexcept
+    {
+      ((DataMapNode*)theNode)->~DataMapNode();
+    }
+
   private:
     TheKeyType myKey;
   };
@@ -614,8 +620,7 @@ public:
           q->Next() = p->Next();
         else
           data[k] = (DataMapNode*)p->Next();
-        p->~DataMapNode();
-        this->myAllocator->Free(p);
+        this->cacheNode(p, DataMapNode::destroyNode);
         return true;
       }
       q = p;
@@ -682,7 +687,10 @@ public:
 
   //! Clear data. If doReleaseMemory is false then the table of
   //! buckets is not released and will be reused.
-  void Clear(const bool doReleaseMemory = false) { Destroy(DataMapNode::delNode, doReleaseMemory); }
+  void Clear(const bool doReleaseMemory = false)
+  {
+    Destroy(DataMapNode::delNode, doReleaseMemory);
+  }
 
   //! Clear data and reset allocator
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator)
@@ -775,11 +783,18 @@ protected:
       else
         return false;
     }
-    DataMapNode** data = (DataMapNode**)myData1;
-    data[aHash]        = new (this->myAllocator) DataMapNode(std::forward<K>(theKey),
-                                                      std::in_place,
-                                                      data[aHash],
-                                                      std::forward<Args>(theArgs)...);
+    DataMapNode**         data    = (DataMapNode**)myData1;
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    if (aCached)
+      data[aHash] = ::new (static_cast<void*>(aCached)) DataMapNode(std::forward<K>(theKey),
+                                                                    std::in_place,
+                                                                    data[aHash],
+                                                                    std::forward<Args>(theArgs)...);
+    else
+      data[aHash] = new (this->myAllocator) DataMapNode(std::forward<K>(theKey),
+                                                        std::in_place,
+                                                        data[aHash],
+                                                        std::forward<Args>(theArgs)...);
     Increment();
     if constexpr (ReturnRef)
       return data[aHash]->ChangeValue();

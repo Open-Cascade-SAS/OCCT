@@ -34,6 +34,10 @@
 typedef void (*NCollection_DelListNode)(NCollection_ListNode*,
                                         occ::handle<NCollection_BaseAllocator>& theAl);
 
+//! Destruct-only callback: destructs node values but does NOT free memory.
+//! Used by free-list caching to retain node memory for reuse.
+typedef void (*NCollection_DestroyListNode)(NCollection_ListNode*);
+
 // ********************************************************** BaseList class
 class NCollection_BaseList
 {
@@ -118,6 +122,7 @@ protected:
   NCollection_BaseList(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
       : myFirst(nullptr),
         myLast(nullptr),
+        myCachedData(nullptr),
         myLength(0)
   {
     myAllocator =
@@ -198,15 +203,44 @@ protected:
     std::swap(myAllocator, theOther.myAllocator);
     std::swap(myFirst, theOther.myFirst);
     std::swap(myLast, theOther.myLast);
+    std::swap(myCachedData, theOther.myCachedData);
     std::swap(myLength, theOther.myLength);
   }
+
+  // ******** PClearToCache
+  // Purpose: Destructs all node values and moves them to the free-list cache
+  Standard_EXPORT void PClearToCache(NCollection_DestroyListNode fDestroy);
+
+  // ******** PRemoveFirstToCache
+  // Purpose: Removes first node, caching its memory
+  Standard_EXPORT void PRemoveFirstToCache(NCollection_DestroyListNode fDestroy);
+
+  // ******** PRemoveToCache
+  // Purpose: Removes the node at iterator, caching its memory
+  Standard_EXPORT void PRemoveToCache(Iterator& theIter, NCollection_DestroyListNode fDestroy);
+
+  //! Pop a node from the free-list cache, or return nullptr if empty.
+  NCollection_ListNode* allocateFromCache() noexcept
+  {
+    if (myCachedData == nullptr)
+    {
+      return nullptr;
+    }
+    NCollection_ListNode* aNode = myCachedData;
+    myCachedData                = myCachedData->Next();
+    return aNode;
+  }
+
+  //! Walk the free-list calling allocator Free on each cached node.
+  Standard_EXPORT void freeCachedNodes();
 
 protected:
   // ------------ PROTECTED FIELDS ------------
   occ::handle<NCollection_BaseAllocator> myAllocator;
-  NCollection_ListNode*                  myFirst;  // Pointer to the head
-  NCollection_ListNode*                  myLast;   // Pointer to the tail
-  int                                    myLength; // Actual length
+  NCollection_ListNode*                  myFirst;      // Pointer to the head
+  NCollection_ListNode*                  myLast;       // Pointer to the tail
+  NCollection_ListNode*                  myCachedData; // Free-list cache of removed nodes
+  int                                    myLength;     // Actual length
 
   // ------------ FRIEND CLASSES ------------
   friend class Iterator;

@@ -92,8 +92,10 @@ public:
   {
     myFirst          = theOther.myFirst;
     myLast           = theOther.myLast;
+    myCachedData     = theOther.myCachedData;
     myLength         = theOther.myLength;
     theOther.myFirst = theOther.myLast = nullptr;
+    theOther.myCachedData              = nullptr;
     theOther.myLength                  = 0;
   }
 
@@ -136,11 +138,15 @@ public:
     {
       return *this;
     }
-    Clear(theOther.myAllocator);
+    PClear(ListNode::delNode);
+    freeCachedNodes();
+    this->myAllocator = theOther.myAllocator;
     myFirst          = theOther.myFirst;
     myLast           = theOther.myLast;
+    myCachedData     = theOther.myCachedData;
     myLength         = theOther.myLength;
     theOther.myFirst = theOther.myLast = nullptr;
+    theOther.myCachedData              = nullptr;
     theOther.myLength                  = 0;
     return *this;
   }
@@ -149,8 +155,12 @@ public:
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
   {
     PClear(ListNode::delNode);
-    if (!theAllocator.IsNull())
+    if (!theAllocator.IsNull() && theAllocator != this->myAllocator)
+    {
+      // Allocator is changing: must fully free cached nodes too
+      freeCachedNodes();
       this->myAllocator = theAllocator;
+    }
   }
 
   //! First item
@@ -184,7 +194,7 @@ public:
   //! Append one item at the end
   TheItemType& Append(const TheItemType& theItem)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(theItem);
+    ListNode* pNew = allocNode(theItem);
     PAppend(pNew);
     return ((ListNode*)PLast())->ChangeValue();
   }
@@ -192,7 +202,7 @@ public:
   //! Append one item at the end
   TheItemType& Append(TheItemType&& theItem)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    ListNode* pNew = allocNode(std::forward<TheItemType>(theItem));
     PAppend(pNew);
     return ((ListNode*)PLast())->ChangeValue();
   }
@@ -201,7 +211,7 @@ public:
   //!   pointing at the appended item
   void Append(const TheItemType& theItem, Iterator& theIter)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(theItem);
+    ListNode* pNew = allocNode(theItem);
     PAppend(pNew, theIter);
   }
 
@@ -209,7 +219,7 @@ public:
   //!   pointing at the appended item
   void Append(TheItemType&& theItem, Iterator& theIter)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    ListNode* pNew = allocNode(std::forward<TheItemType>(theItem));
     PAppend(pNew, theIter);
   }
 
@@ -236,7 +246,7 @@ public:
   //! Prepend one item at the beginning
   TheItemType& Prepend(const TheItemType& theItem)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(theItem);
+    ListNode* pNew = allocNode(theItem);
     PPrepend(pNew);
     return ((ListNode*)PFirst())->ChangeValue();
   }
@@ -244,7 +254,7 @@ public:
   //! Prepend one item at the beginning
   TheItemType& Prepend(TheItemType&& theItem)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    ListNode* pNew = allocNode(std::forward<TheItemType>(theItem));
     PPrepend(pNew);
     return ((ListNode*)PFirst())->ChangeValue();
   }
@@ -270,11 +280,11 @@ public:
   }
 
   //! RemoveFirst item
-  void RemoveFirst() { PRemoveFirst(ListNode::delNode); }
+  void RemoveFirst() { PRemoveFirstToCache(ListNode::destroyNode); }
 
   //! Remove item pointed by iterator theIter;
   //! theIter is then set to the next item
-  void Remove(Iterator& theIter) { PRemove(theIter, ListNode::delNode); }
+  void Remove(Iterator& theIter) { PRemoveToCache(theIter, ListNode::destroyNode); }
 
   //! Remove the first occurrence of the object.
   template <typename TheValueType> // instantiate this method on first call only for types defining
@@ -295,7 +305,7 @@ public:
   //! InsertBefore
   TheItemType& InsertBefore(const TheItemType& theItem, Iterator& theIter)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(theItem);
+    ListNode* pNew = allocNode(theItem);
     PInsertBefore(pNew, theIter);
     return pNew->ChangeValue();
   }
@@ -303,7 +313,7 @@ public:
   //! InsertBefore
   TheItemType& InsertBefore(TheItemType&& theItem, Iterator& theIter)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    ListNode* pNew = allocNode(std::forward<TheItemType>(theItem));
     PInsertBefore(pNew, theIter);
     return pNew->ChangeValue();
   }
@@ -331,7 +341,7 @@ public:
   //! InsertAfter
   TheItemType& InsertAfter(const TheItemType& theItem, Iterator& theIter)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(theItem);
+    ListNode* pNew = allocNode(theItem);
     PInsertAfter(pNew, theIter);
     return pNew->ChangeValue();
   }
@@ -339,7 +349,7 @@ public:
   //! InsertAfter
   TheItemType& InsertAfter(TheItemType&& theItem, Iterator& theIter)
   {
-    ListNode* pNew = new (this->myAllocator) ListNode(std::forward<TheItemType>(theItem));
+    ListNode* pNew = allocNode(std::forward<TheItemType>(theItem));
     PInsertAfter(pNew, theIter);
     return pNew->ChangeValue();
   }
@@ -375,8 +385,7 @@ public:
   template <typename... Args>
   TheItemType& EmplaceAppend(Args&&... theArgs)
   {
-    ListNode* pNew =
-      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    ListNode* pNew = allocNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
     PAppend(pNew);
     return ((ListNode*)PLast())->ChangeValue();
   }
@@ -387,8 +396,7 @@ public:
   template <typename... Args>
   TheItemType& EmplacePrepend(Args&&... theArgs)
   {
-    ListNode* pNew =
-      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    ListNode* pNew = allocNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
     PPrepend(pNew);
     return ((ListNode*)PFirst())->ChangeValue();
   }
@@ -400,8 +408,7 @@ public:
   template <typename... Args>
   TheItemType& EmplaceBefore(Iterator& theIter, Args&&... theArgs)
   {
-    ListNode* pNew =
-      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    ListNode* pNew = allocNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
     PInsertBefore(pNew, theIter);
     return pNew->ChangeValue();
   }
@@ -413,8 +420,7 @@ public:
   template <typename... Args>
   TheItemType& EmplaceAfter(Iterator& theIter, Args&&... theArgs)
   {
-    ListNode* pNew =
-      new (this->myAllocator) ListNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
+    ListNode* pNew = allocNode(std::in_place, nullptr, std::forward<Args>(theArgs)...);
     PInsertAfter(pNew, theIter);
     return pNew->ChangeValue();
   }
@@ -444,18 +450,31 @@ public:
   }
 
   //! Destructor - clears the List
-  ~NCollection_List() override { Clear(); }
+  ~NCollection_List() override
+  {
+    PClear(ListNode::delNode);
+    freeCachedNodes();
+  }
 
 private:
   // ----------- PRIVATE METHODS -----------
+
+  //! Allocate a list node, reusing cached memory if available.
+  template <typename... Args>
+  ListNode* allocNode(Args&&... theArgs)
+  {
+    NCollection_ListNode* aCached = this->allocateFromCache();
+    if (aCached)
+      return ::new (static_cast<void*>(aCached)) ListNode(std::forward<Args>(theArgs)...);
+    return new (this->myAllocator) ListNode(std::forward<Args>(theArgs)...);
+  }
 
   //! append the list headed by the given ListNode
   void appendList(const NCollection_ListNode* pCur)
   {
     while (pCur)
     {
-      NCollection_ListNode* pNew =
-        new (this->myAllocator) ListNode(((const ListNode*)(pCur))->Value());
+      ListNode* pNew = allocNode(((const ListNode*)(pCur))->Value());
       PAppend(pNew);
       pCur = pCur->Next();
     }
@@ -466,8 +485,7 @@ private:
   {
     while (pCur)
     {
-      NCollection_ListNode* pNew =
-        new (this->myAllocator) ListNode(((const ListNode*)(pCur))->Value());
+      ListNode* pNew = allocNode(((const ListNode*)(pCur))->Value());
       PInsertBefore(pNew, theIter);
       pCur = pCur->Next();
     }

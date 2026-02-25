@@ -218,6 +218,75 @@ void NCollection_BaseList::PInsertAfter(NCollection_BaseList& theOther, Iterator
 
 //=================================================================================================
 
+void NCollection_BaseList::PClearToCache(NCollection_DestroyListNode fDestroy)
+{
+  NCollection_ListNode* pCur  = myFirst;
+  NCollection_ListNode* pNext = nullptr;
+  while (pCur)
+  {
+    pNext = pCur->Next();
+    fDestroy(pCur);
+    pCur->Next() = myCachedData;
+    myCachedData = pCur;
+    pCur         = pNext;
+  }
+  myLength = 0;
+  myFirst = myLast = nullptr;
+}
+
+//=================================================================================================
+
+void NCollection_BaseList::PRemoveFirstToCache(NCollection_DestroyListNode fDestroy)
+{
+  Standard_NoSuchObject_Raise_if(IsEmpty(), "NCollection_BaseList::PRemoveFirstToCache");
+  NCollection_ListNode* pItem = myFirst;
+  myFirst                     = pItem->Next();
+  fDestroy(pItem);
+  pItem->Next() = myCachedData;
+  myCachedData  = pItem;
+  myLength--;
+  if (myLength == 0)
+    myLast = nullptr;
+}
+
+//=================================================================================================
+
+void NCollection_BaseList::PRemoveToCache(Iterator& theIter, NCollection_DestroyListNode fDestroy)
+{
+  Standard_NoSuchObject_Raise_if(!theIter.More(), "NCollection_BaseList::PRemoveToCache");
+  if (theIter.myPrevious == nullptr)
+  {
+    PRemoveFirstToCache(fDestroy);
+    theIter.myCurrent = myFirst;
+  }
+  else
+  {
+    NCollection_ListNode* pNode  = (theIter.myCurrent)->Next();
+    (theIter.myPrevious)->Next() = pNode;
+    fDestroy(theIter.myCurrent);
+    theIter.myCurrent->Next() = myCachedData;
+    myCachedData              = theIter.myCurrent;
+    theIter.myCurrent         = pNode;
+    if (pNode == nullptr)
+      myLast = theIter.myPrevious;
+    myLength--;
+  }
+}
+
+//=================================================================================================
+
+void NCollection_BaseList::freeCachedNodes()
+{
+  while (myCachedData)
+  {
+    NCollection_ListNode* aNext = myCachedData->Next();
+    myAllocator->Free(myCachedData);
+    myCachedData = aNext;
+  }
+}
+
+//=================================================================================================
+
 void NCollection_BaseList::PReverse() noexcept
 {
   if (myLength > 1)

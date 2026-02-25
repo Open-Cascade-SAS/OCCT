@@ -200,12 +200,19 @@ public:
     theAl->Free(theNode);
   }
 
+  //! Static destructor-only callback: destructs node but does NOT free memory.
+  static void destroyNode(NCollection_SeqNode* theNode) noexcept { ((Node*)theNode)->~Node(); }
+
   //! Clear the items out, take a new allocator if non null
   void Clear(const occ::handle<NCollection_BaseAllocator>& theAllocator = nullptr)
   {
     ClearSeq(delNode);
-    if (!theAllocator.IsNull())
+    if (!theAllocator.IsNull() && theAllocator != this->myAllocator)
+    {
+      // Allocator is changing: must fully free cached nodes too
+      freeCachedSeqNodes();
       this->myAllocator = theAllocator;
+    }
   }
 
   //! Replace this sequence by the items of theOther.
@@ -230,41 +237,42 @@ public:
     {
       return *this;
     }
-    Clear(theOther.myAllocator);
+    ClearSeq(delNode);
+    freeCachedSeqNodes();
+    this->myAllocator = theOther.myAllocator;
     myFirstItem    = theOther.myFirstItem;
     myLastItem     = theOther.myLastItem;
     myCurrentItem  = theOther.myCurrentItem;
+    myCachedData   = theOther.myCachedData;
     myCurrentIndex = theOther.myCurrentIndex;
     mySize         = theOther.mySize;
 
     theOther.myFirstItem    = nullptr;
     theOther.myLastItem     = nullptr;
     theOther.myCurrentItem  = nullptr;
+    theOther.myCachedData   = nullptr;
     theOther.myCurrentIndex = 0;
     theOther.mySize         = 0;
     return *this;
   }
 
   //! Remove one item
-  void Remove(Iterator& thePosition) { RemoveSeq(thePosition, delNode); }
+  void Remove(Iterator& thePosition) { RemoveSeqToCache(thePosition, destroyNode); }
 
   //! Remove one item
-  void Remove(const int theIndex) { RemoveSeq(theIndex, delNode); }
+  void Remove(const int theIndex) { RemoveSeqToCache(theIndex, destroyNode); }
 
   //! Remove range of items
   void Remove(const int theFromIndex, const int theToIndex)
   {
-    RemoveSeq(theFromIndex, theToIndex, delNode);
+    RemoveSeqToCache(theFromIndex, theToIndex, destroyNode);
   }
 
   //! Append one item
-  void Append(const TheItemType& theItem) { PAppend(new (this->myAllocator) Node(theItem)); }
+  void Append(const TheItemType& theItem) { PAppend(allocNode(theItem)); }
 
   //! Append one item
-  void Append(TheItemType&& theItem)
-  {
-    PAppend(new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
-  }
+  void Append(TheItemType&& theItem) { PAppend(allocNode(std::forward<TheItemType>(theItem))); }
 
   //! Append another sequence (making it empty)
   void Append(NCollection_Sequence& theSeq)
@@ -286,13 +294,10 @@ public:
   }
 
   //! Prepend one item
-  void Prepend(const TheItemType& theItem) { PPrepend(new (this->myAllocator) Node(theItem)); }
+  void Prepend(const TheItemType& theItem) { PPrepend(allocNode(theItem)); }
 
   //! Prepend one item
-  void Prepend(TheItemType&& theItem)
-  {
-    PPrepend(new (this->myAllocator) Node(std::forward<TheItemType>(theItem)));
-  }
+  void Prepend(TheItemType&& theItem) { PPrepend(allocNode(std::forward<TheItemType>(theItem))); }
 
   //! Prepend another sequence (making it empty)
   void Prepend(NCollection_Sequence& theSeq)
@@ -334,13 +339,13 @@ public:
   //! InsertAfter the position of iterator
   void InsertAfter(Iterator& thePosition, const TheItemType& theItem)
   {
-    PInsertAfter(thePosition, new (this->myAllocator) Node(theItem));
+    PInsertAfter(thePosition, allocNode(theItem));
   }
 
   //! InsertAfter the position of iterator
   void InsertAfter(Iterator& thePosition, TheItemType&& theItem)
   {
-    PInsertAfter(thePosition, new (this->myAllocator) Node(theItem));
+    PInsertAfter(thePosition, allocNode(std::forward<TheItemType>(theItem)));
   }
 
   //! InsertAfter theIndex another sequence (making it empty)
@@ -367,7 +372,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex > mySize,
                                  "NCollection_Sequence::InsertAfter");
-    PInsertAfter(theIndex, new (this->myAllocator) Node(theItem));
+    PInsertAfter(theIndex, allocNode(theItem));
   }
 
   //! InsertAfter theIndex theItem
@@ -375,7 +380,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex > mySize,
                                  "NCollection_Sequence::InsertAfter");
-    PInsertAfter(theIndex, new (this->myAllocator) Node(theItem));
+    PInsertAfter(theIndex, allocNode(std::forward<TheItemType>(theItem)));
   }
 
   //! Emplace one item at the end, constructing it in-place
@@ -384,7 +389,7 @@ public:
   template <typename... Args>
   TheItemType& EmplaceAppend(Args&&... theArgs)
   {
-    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    Node* pNew = allocNode(std::in_place, std::forward<Args>(theArgs)...);
     PAppend(pNew);
     return ((Node*)myLastItem)->ChangeValue();
   }
@@ -395,7 +400,7 @@ public:
   template <typename... Args>
   TheItemType& EmplacePrepend(Args&&... theArgs)
   {
-    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    Node* pNew = allocNode(std::in_place, std::forward<Args>(theArgs)...);
     PPrepend(pNew);
     return ((Node*)myFirstItem)->ChangeValue();
   }
@@ -407,7 +412,7 @@ public:
   template <typename... Args>
   TheItemType& EmplaceAfter(Iterator& thePosition, Args&&... theArgs)
   {
-    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    Node* pNew = allocNode(std::in_place, std::forward<Args>(theArgs)...);
     PInsertAfter(thePosition, pNew);
     return pNew->ChangeValue();
   }
@@ -421,7 +426,7 @@ public:
   {
     Standard_OutOfRange_Raise_if(theIndex < 0 || theIndex > mySize,
                                  "NCollection_Sequence::EmplaceAfter");
-    Node* pNew = new (this->myAllocator) Node(std::in_place, std::forward<Args>(theArgs)...);
+    Node* pNew = allocNode(std::in_place, std::forward<Args>(theArgs)...);
     PInsertAfter(theIndex, pNew);
     return pNew->ChangeValue();
   }
@@ -503,7 +508,11 @@ public:
   void SetValue(const int theIndex, const TheItemType& theItem) { ChangeValue(theIndex) = theItem; }
 
   // ******** Destructor - clears the Sequence
-  ~NCollection_Sequence() override { Clear(); }
+  ~NCollection_Sequence() override
+  {
+    ClearSeq(delNode);
+    freeCachedSeqNodes();
+  }
 
 private:
   // ---------- FRIEND CLASSES ------------
@@ -511,12 +520,22 @@ private:
 
   // ----------- PRIVATE METHODS -----------
 
+  //! Allocate a sequence node, reusing cached memory if available.
+  template <typename... Args>
+  Node* allocNode(Args&&... theArgs)
+  {
+    NCollection_SeqNode* aCached = this->allocateFromSeqCache();
+    if (aCached)
+      return ::new (static_cast<void*>(aCached)) Node(std::forward<Args>(theArgs)...);
+    return new (this->myAllocator) Node(std::forward<Args>(theArgs)...);
+  }
+
   //! append the sequence headed by the given Node
   void appendSeq(const Node* pCur)
   {
     while (pCur)
     {
-      Node* pNew = new (this->myAllocator) Node(pCur->Value());
+      Node* pNew = allocNode(pCur->Value());
       PAppend(pNew);
       pCur = (const Node*)pCur->Next();
     }
@@ -528,7 +547,7 @@ private:
     ind--;
     while (pCur)
     {
-      Node* pNew = new (this->myAllocator) Node(pCur->Value());
+      Node* pNew = allocNode(pCur->Value());
       PInsertAfter(ind++, pNew);
       pCur = (const Node*)pCur->Next();
     }

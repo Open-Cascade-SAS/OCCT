@@ -438,6 +438,149 @@ void NCollection_BaseSequence::RemoveSeq(const int From, const int To, NCollecti
 
 //=================================================================================================
 
+void NCollection_BaseSequence::ClearSeqToCache(NCollection_DestroySeqNode fDestroy)
+{
+  NCollection_SeqNode* p = myFirstItem;
+  while (p)
+  {
+    NCollection_SeqNode* q = p;
+    p                      = p->Next();
+    fDestroy(q);
+    q->SetNext(myCachedData);
+    myCachedData = q;
+  }
+  Nullify();
+}
+
+//=================================================================================================
+
+void NCollection_BaseSequence::RemoveSeqToCache(NCollection_BaseSequence::Iterator& thePosition,
+                                                NCollection_DestroySeqNode          fDestroy)
+{
+  NCollection_SeqNode* aPos = thePosition.myCurrent;
+  if (aPos == nullptr)
+    return;
+  thePosition.myCurrent = aPos->Next();
+
+  if (aPos->Previous())
+    aPos->Previous()->SetNext(aPos->Next());
+  else
+    myFirstItem = aPos->Next();
+
+  if (aPos->Next())
+    aPos->Next()->SetPrevious(aPos->Previous());
+  else
+    myLastItem = aPos->Previous();
+
+  --mySize;
+  myCurrentItem  = myLastItem;
+  myCurrentIndex = mySize;
+
+  fDestroy(aPos);
+  aPos->SetNext(myCachedData);
+  myCachedData = aPos;
+}
+
+//=================================================================================================
+
+void NCollection_BaseSequence::RemoveSeqToCache(const int                  theIndex,
+                                                NCollection_DestroySeqNode fDestroy)
+{
+  Standard_OutOfRange_Raise_if(
+    theIndex <= 0 || theIndex > mySize,
+    "NCollection_BaseSequence::RemoveSeqToCache() - index is out of range");
+
+  NCollection_SeqNode* p = Find(theIndex);
+  if (p->Previous())
+    p->Previous()->SetNext(p->Next());
+  else
+    myFirstItem = p->Next();
+  if (p->Next())
+    p->Next()->SetPrevious(p->Previous());
+  else
+    myLastItem = p->Previous();
+
+  --mySize;
+  if (myCurrentIndex > theIndex)
+    --myCurrentIndex;
+  else if (myCurrentIndex == theIndex)
+  {
+    if (p->Next())
+      myCurrentItem = p->Next();
+    else
+    {
+      myCurrentItem  = myLastItem;
+      myCurrentIndex = mySize;
+    }
+  }
+  fDestroy(p);
+  p->SetNext(myCachedData);
+  myCachedData = p;
+}
+
+//=================================================================================================
+
+void NCollection_BaseSequence::RemoveSeqToCache(const int                  theFrom,
+                                                const int                  theTo,
+                                                NCollection_DestroySeqNode fDestroy)
+{
+  Standard_OutOfRange_Raise_if(
+    theFrom <= 0 || theTo > mySize || theFrom > theTo,
+    "NCollection_BaseSequence::RemoveSeqToCache() - invalid input range");
+
+  NCollection_SeqNode* pfrom = Find(theFrom);
+  NCollection_SeqNode* pto   = Find(theTo);
+
+  if (pfrom->Previous())
+    pfrom->Previous()->SetNext(pto->Next());
+  else
+    myFirstItem = pto->Next();
+  if (pto->Next())
+    pto->Next()->SetPrevious(pfrom->Previous());
+  else
+    myLastItem = pfrom->Previous();
+
+  mySize -= theTo - theFrom + 1;
+  if (myCurrentIndex > theTo)
+    myCurrentIndex -= theTo - theFrom + 1;
+  else if (myCurrentIndex >= theFrom)
+  {
+    if (pto->Next())
+    {
+      myCurrentItem  = pto->Next();
+      myCurrentIndex = theFrom;
+    }
+    else
+    {
+      myCurrentItem  = myLastItem;
+      myCurrentIndex = mySize;
+    }
+  }
+
+  for (int i = theFrom; i <= theTo; i++)
+  {
+    NCollection_SeqNode* tmp = pfrom;
+    pfrom                    = pfrom->Next();
+    fDestroy(tmp);
+    tmp->SetNext(myCachedData);
+    myCachedData = tmp;
+  }
+}
+
+//=================================================================================================
+
+void NCollection_BaseSequence::freeCachedSeqNodes()
+{
+  while (myCachedData)
+  {
+    NCollection_SeqNode* aNext = myCachedData->Next();
+    myAllocator->Free(myCachedData);
+    myCachedData = aNext;
+  }
+}
+
+//=================================================================================================
+
 NCollection_SeqNode* NCollection_BaseSequence::Find(const int theIndex) const noexcept
 {
   int                  i;
