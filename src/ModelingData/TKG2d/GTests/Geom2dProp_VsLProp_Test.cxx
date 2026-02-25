@@ -89,7 +89,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Circle_NoExtrema)
   ASSERT_TRUE(anOld.IsDone());
   EXPECT_EQ(anOld.NbPoints(), 0);
 
-  Geom2dProp_Curve aProp(aCircle);
+  Geom2dProp_Curve                aProp(aCircle);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
   EXPECT_EQ(aNew.Points.Length(), 0);
@@ -105,7 +105,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Circle_NoInflections)
   ASSERT_TRUE(anOld.IsDone());
   EXPECT_EQ(anOld.NbPoints(), 0);
 
-  Geom2dProp_Curve aProp(aCircle);
+  Geom2dProp_Curve                aProp(aCircle);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
   EXPECT_EQ(aNew.Points.Length(), 0);
@@ -124,7 +124,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Ellipse_Extrema)
   anOld.PerformCurExt(anEllipse);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve                aProp(anEllipse);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -141,7 +141,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Ellipse_NoInflections)
   ASSERT_TRUE(anOld.IsDone());
   EXPECT_EQ(anOld.NbPoints(), 0);
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve                aProp(anEllipse);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
   EXPECT_EQ(aNew.Points.Length(), 0);
@@ -156,7 +156,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Ellipse_HighEccentricity_Extrema)
   anOld.PerformCurExt(anEllipse);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve                aProp(anEllipse);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -172,7 +172,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Ellipse_FullPerform)
   anOld.Perform(anEllipse);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve                aProp(anEllipse);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -195,7 +195,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Hyperbola_Extrema)
   anOld.PerformCurExt(aHyperbola);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aHyperbola);
+  Geom2dProp_Curve                aProp(aHyperbola);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -212,7 +212,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Hyperbola_NoInflections)
   ASSERT_TRUE(anOld.IsDone());
   EXPECT_EQ(anOld.NbPoints(), 0);
 
-  Geom2dProp_Curve aProp(aHyperbola);
+  Geom2dProp_Curve                aProp(aHyperbola);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
   EXPECT_EQ(aNew.Points.Length(), 0);
@@ -231,7 +231,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Parabola_Extrema)
   anOld.PerformCurExt(aParabola);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aParabola);
+  Geom2dProp_Curve                aProp(aParabola);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -248,7 +248,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Parabola_NoInflections)
   ASSERT_TRUE(anOld.IsDone());
   EXPECT_EQ(anOld.NbPoints(), 0);
 
-  Geom2dProp_Curve aProp(aParabola);
+  Geom2dProp_Curve                aProp(aParabola);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
   EXPECT_EQ(aNew.Points.Length(), 0);
@@ -263,7 +263,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Parabola_FullPerform)
   anOld.Perform(aParabola);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aParabola);
+  Geom2dProp_Curve                aProp(aParabola);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -290,7 +290,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Bezier_CubicS_Inflections)
   anOld.PerformInf(aBezier);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve                aProp(aBezier);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -310,7 +310,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Bezier_CubicS_Extrema)
   anOld.PerformCurExt(aBezier);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve                aProp(aBezier);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -330,7 +330,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Bezier_CubicS_FullPerform)
   anOld.Perform(aBezier);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve                aProp(aBezier);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -352,7 +352,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Bezier_Quadratic_NoInflections)
   anOld.PerformInf(aBezier);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve                aProp(aBezier);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -374,7 +374,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, Bezier_HighDegree_FullPerform)
   anOld.Perform(aBezier);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve                aProp(aBezier);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -411,7 +411,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, BSpline_Degree4_FullPerform)
   anOld.Perform(aBSpline);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                aProp(aBSpline);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -449,7 +449,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, BSpline_Cubic_Extrema)
   anOld.PerformCurExt(aBSpline);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                aProp(aBSpline);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -484,7 +484,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, BSpline_Cubic_Inflections)
   anOld.PerformInf(aBSpline);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                aProp(aBSpline);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -518,7 +518,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, BSpline_LowContinuity_FullPerform)
   anOld.Perform(aBSpline);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                aProp(aBSpline);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -573,7 +573,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, TrimmedEllipse_Extrema)
   anOld.PerformCurExt(aTrimmed);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aTrimmed);
+  Geom2dProp_Curve                aProp(aTrimmed);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -594,7 +594,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, TrimmedBezier_FullPerform)
   anOld.Perform(aTrimmed);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(aTrimmed);
+  Geom2dProp_Curve                aProp(aTrimmed);
   const Geom2dProp::CurveAnalysis aNewExt  = aProp.FindCurvatureExtrema();
   const Geom2dProp::CurveAnalysis aNewInfl = aProp.FindInflections();
   ASSERT_TRUE(aNewExt.IsDone);
@@ -618,7 +618,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, OffsetEllipse_Extrema)
   anOld.PerformCurExt(anOffset);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(anOffset);
+  Geom2dProp_Curve                aProp(anOffset);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -635,7 +635,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, OffsetEllipse_Inflections)
   anOld.PerformInf(anOffset);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(anOffset);
+  Geom2dProp_Curve                aProp(anOffset);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindInflections();
   ASSERT_TRUE(aNew.IsDone);
 
@@ -652,7 +652,7 @@ TEST(Geom2dProp_VsCurAndInf2dTest, OffsetCircle_NoExtrema)
   anOld.PerformCurExt(anOffset);
   ASSERT_TRUE(anOld.IsDone());
 
-  Geom2dProp_Curve aProp(anOffset);
+  Geom2dProp_Curve                aProp(anOffset);
   const Geom2dProp::CurveAnalysis aNew = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aNew.IsDone);
 

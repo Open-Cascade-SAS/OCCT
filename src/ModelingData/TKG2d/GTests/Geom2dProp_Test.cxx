@@ -251,8 +251,8 @@ protected:
     myProp.emplace(myLine);
   }
 
-  occ::handle<Geom2d_Line>         myLine;
-  std::optional<Geom2dProp_Curve>  myProp;
+  occ::handle<Geom2d_Line>        myLine;
+  std::optional<Geom2dProp_Curve> myProp;
 };
 
 TEST_F(Geom2dProp_CurveLineTest, IsInitialized)
@@ -343,8 +343,8 @@ protected:
     myProp.emplace(myCircle);
   }
 
-  occ::handle<Geom2d_Circle>        myCircle;
-  std::optional<Geom2dProp_Curve>   myProp;
+  occ::handle<Geom2d_Circle>      myCircle;
+  std::optional<Geom2dProp_Curve> myProp;
 };
 
 TEST_F(Geom2dProp_CurveCircleTest, IsInitialized)
@@ -395,7 +395,7 @@ TEST_F(Geom2dProp_CurveCircleTest, ConstantCurvature)
 
 TEST_F(Geom2dProp_CurveCircleTest, Normal)
 {
-  const Geom2dProp::NormalResult  aRes = myProp->Normal(0.0, Precision::Confusion());
+  const Geom2dProp::NormalResult aRes = myProp->Normal(0.0, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
   const Geom2dProp::TangentResult aTan = myProp->Tangent(0.0, Precision::Confusion());
   EXPECT_NEAR(
@@ -487,8 +487,8 @@ protected:
     myProp.emplace(myEllipse);
   }
 
-  occ::handle<Geom2d_Ellipse>       myEllipse;
-  std::optional<Geom2dProp_Curve>   myProp;
+  occ::handle<Geom2d_Ellipse>     myEllipse;
+  std::optional<Geom2dProp_Curve> myProp;
 };
 
 TEST_F(Geom2dProp_CurveEllipseTest, IsInitialized)
@@ -667,8 +667,8 @@ protected:
     myProp.emplace(myHyperbola);
   }
 
-  occ::handle<Geom2d_Hyperbola>     myHyperbola;
-  std::optional<Geom2dProp_Curve>   myProp;
+  occ::handle<Geom2d_Hyperbola>   myHyperbola;
+  std::optional<Geom2dProp_Curve> myProp;
 };
 
 TEST_F(Geom2dProp_CurveHyperbolaTest, IsInitialized)
@@ -709,7 +709,7 @@ TEST_F(Geom2dProp_CurveHyperbolaTest, CurvatureDecreasesFromVertex)
 
 TEST_F(Geom2dProp_CurveHyperbolaTest, NormalAtVertex)
 {
-  const Geom2dProp::NormalResult  aNorm = myProp->Normal(0.0, Precision::Confusion());
+  const Geom2dProp::NormalResult aNorm = myProp->Normal(0.0, Precision::Confusion());
   ASSERT_TRUE(aNorm.IsDefined);
   // Normal should be perpendicular to tangent
   const Geom2dProp::TangentResult aTan = myProp->Tangent(0.0, Precision::Confusion());
@@ -758,8 +758,8 @@ protected:
     myProp.emplace(myParabola);
   }
 
-  occ::handle<Geom2d_Parabola>      myParabola;
-  std::optional<Geom2dProp_Curve>   myProp;
+  occ::handle<Geom2d_Parabola>    myParabola;
+  std::optional<Geom2dProp_Curve> myProp;
 };
 
 TEST_F(Geom2dProp_CurveParabolaTest, IsInitialized)
@@ -808,7 +808,7 @@ TEST_F(Geom2dProp_CurveParabolaTest, CurvatureSymmetric)
 
 TEST_F(Geom2dProp_CurveParabolaTest, NormalAtVertex)
 {
-  const Geom2dProp::NormalResult  aNorm = myProp->Normal(0.0, Precision::Confusion());
+  const Geom2dProp::NormalResult aNorm = myProp->Normal(0.0, Precision::Confusion());
   ASSERT_TRUE(aNorm.IsDefined);
   const Geom2dProp::TangentResult aTan = myProp->Tangent(0.0, Precision::Confusion());
   const double                    aDot =
@@ -860,8 +860,8 @@ protected:
     myProp.emplace(myBezier);
   }
 
-  occ::handle<Geom2d_BezierCurve>   myBezier;
-  std::optional<Geom2dProp_Curve>   myProp;
+  occ::handle<Geom2d_BezierCurve> myBezier;
+  std::optional<Geom2dProp_Curve> myProp;
 };
 
 TEST_F(Geom2dProp_CurveBezierTest, IsInitialized)
@@ -1028,8 +1028,8 @@ protected:
     myProp.emplace(myBSpline);
   }
 
-  occ::handle<Geom2d_BSplineCurve>  myBSpline;
-  std::optional<Geom2dProp_Curve>   myProp;
+  occ::handle<Geom2d_BSplineCurve> myBSpline;
+  std::optional<Geom2dProp_Curve>  myProp;
 };
 
 TEST_F(Geom2dProp_CurveBSplineTest, IsInitialized)

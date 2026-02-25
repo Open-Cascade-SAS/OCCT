@@ -160,7 +160,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Line_Tangent)
   gp_Lin2d                 aLin(gp_Pnt2d(1.0, 2.0), gp_Dir2d(3.0, 4.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(aLin);
 
-  Geom2dProp_Curve aProp(aLine);
+  Geom2dProp_Curve      aProp(aLine);
   Geom2dLProp_CLProps2d aOld(aLine, 2, THE_PARAM_TOL);
 
   for (double u = -10.0; u <= 10.0; u += 2.5)
@@ -174,7 +174,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Line_Curvature)
   gp_Lin2d                 aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(aLin);
 
-  Geom2dProp_Curve aProp(aLine);
+  Geom2dProp_Curve      aProp(aLine);
   Geom2dLProp_CLProps2d aOld(aLine, 2, THE_PARAM_TOL);
 
   for (double u = -5.0; u <= 5.0; u += 1.0)
@@ -192,7 +192,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Circle_AllProperties)
   gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(3.0, 4.0), gp_Dir2d(1.0, 0.0)), 7.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
-  Geom2dProp_Curve aProp(aCircle);
+  Geom2dProp_Curve      aProp(aCircle);
   Geom2dLProp_CLProps2d aOld(aCircle, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 6.0)
@@ -206,7 +206,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Circle_SmallRadius)
   gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 0.01);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
-  Geom2dProp_Curve aProp(aCircle);
+  Geom2dProp_Curve      aProp(aCircle);
   Geom2dLProp_CLProps2d aOld(aCircle, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 4.0)
@@ -220,7 +220,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Circle_LargeRadius)
   gp_Circ2d                  aCirc(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 1000.0);
   occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(aCirc);
 
-  Geom2dProp_Curve aProp(aCircle);
+  Geom2dProp_Curve      aProp(aCircle);
   Geom2dLProp_CLProps2d aOld(aCircle, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 4.0)
@@ -238,7 +238,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Ellipse_AllProperties)
   gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 5.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve      aProp(anEllipse);
   Geom2dLProp_CLProps2d aOld(anEllipse, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 12.0)
@@ -252,7 +252,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Ellipse_HighEccentricity)
   gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 100.0, 1.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve      aProp(anEllipse);
   Geom2dLProp_CLProps2d aOld(anEllipse, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 8.0)
@@ -266,7 +266,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Ellipse_OffCenter)
   gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(100.0, -50.0), gp_Dir2d(1.0, 0.0)), 8.0, 3.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
 
-  Geom2dProp_Curve aProp(anEllipse);
+  Geom2dProp_Curve      aProp(anEllipse);
   Geom2dLProp_CLProps2d aOld(anEllipse, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 8.0)
@@ -284,7 +284,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Hyperbola_AllProperties)
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve aProp(aHyperbola);
+  Geom2dProp_Curve      aProp(aHyperbola);
   Geom2dLProp_CLProps2d aOld(aHyperbola, 2, THE_PARAM_TOL);
 
   for (double u = -2.0; u <= 2.0; u += 0.5)
@@ -298,7 +298,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Hyperbola_NearVertex)
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 4.0, 2.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve aProp(aHyperbola);
+  Geom2dProp_Curve      aProp(aHyperbola);
   Geom2dLProp_CLProps2d aOld(aHyperbola, 2, THE_PARAM_TOL);
 
   // Fine-grained near vertex
@@ -317,7 +317,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Parabola_AllProperties)
   gp_Parab2d                   aParab(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 2.0);
   occ::handle<Geom2d_Parabola> aParabola = new Geom2d_Parabola(aParab);
 
-  Geom2dProp_Curve aProp(aParabola);
+  Geom2dProp_Curve      aProp(aParabola);
   Geom2dLProp_CLProps2d aOld(aParabola, 2, THE_PARAM_TOL);
 
   for (double u = -5.0; u <= 5.0; u += 1.0)
@@ -331,7 +331,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Parabola_SmallFocal)
   gp_Parab2d                   aParab(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 0.1);
   occ::handle<Geom2d_Parabola> aParabola = new Geom2d_Parabola(aParab);
 
-  Geom2dProp_Curve aProp(aParabola);
+  Geom2dProp_Curve      aProp(aParabola);
   Geom2dLProp_CLProps2d aOld(aParabola, 2, THE_PARAM_TOL);
 
   for (double u = -3.0; u <= 3.0; u += 0.5)
@@ -345,7 +345,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Parabola_LargeFocal)
   gp_Parab2d                   aParab(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 50.0);
   occ::handle<Geom2d_Parabola> aParabola = new Geom2d_Parabola(aParab);
 
-  Geom2dProp_Curve aProp(aParabola);
+  Geom2dProp_Curve      aProp(aParabola);
   Geom2dLProp_CLProps2d aOld(aParabola, 2, THE_PARAM_TOL);
 
   for (double u = -10.0; u <= 10.0; u += 2.0)
@@ -367,7 +367,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Bezier_CubicSShape)
   aPoles(4)                               = gp_Pnt2d(4.0, 0.0);
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve      aProp(aBezier);
   Geom2dLProp_CLProps2d aOld(aBezier, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.1)
@@ -384,7 +384,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Bezier_Quadratic)
   aPoles(3)                               = gp_Pnt2d(4.0, 0.0);
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve      aProp(aBezier);
   Geom2dLProp_CLProps2d aOld(aBezier, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.1)
@@ -404,7 +404,7 @@ TEST(Geom2dProp_VsCLProps2dTest, Bezier_HighDegree)
   aPoles(6)                               = gp_Pnt2d(5.0, 1.0);
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
 
-  Geom2dProp_Curve aProp(aBezier);
+  Geom2dProp_Curve      aProp(aBezier);
   Geom2dLProp_CLProps2d aOld(aBezier, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.05)
@@ -437,7 +437,7 @@ TEST(Geom2dProp_VsCLProps2dTest, BSpline_Quadratic)
 
   occ::handle<Geom2d_BSplineCurve> aBSpline = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve      aProp(aBSpline);
   Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.1)
@@ -470,7 +470,7 @@ TEST(Geom2dProp_VsCLProps2dTest, BSpline_Cubic)
 
   occ::handle<Geom2d_BSplineCurve> aBSpline = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve      aProp(aBSpline);
   Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.05)
@@ -498,7 +498,7 @@ TEST(Geom2dProp_VsCLProps2dTest, BSpline_Degree4)
 
   occ::handle<Geom2d_BSplineCurve> aBSpline = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 4);
 
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve      aProp(aBSpline);
   Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.05)
@@ -517,7 +517,7 @@ TEST(Geom2dProp_VsCLProps2dTest, OffsetCircle_AllProperties)
   occ::handle<Geom2d_Circle>      aCircle  = new Geom2d_Circle(aCirc);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aCircle, 2.0);
 
-  Geom2dProp_Curve aProp(anOffset);
+  Geom2dProp_Curve      aProp(anOffset);
   Geom2dLProp_CLProps2d aOld(anOffset, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 6.0)
@@ -532,7 +532,7 @@ TEST(Geom2dProp_VsCLProps2dTest, OffsetEllipse_AllProperties)
   occ::handle<Geom2d_Ellipse> anEllipse    = new Geom2d_Ellipse(anElips);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(anEllipse, 1.0);
 
-  Geom2dProp_Curve aProp(anOffset);
+  Geom2dProp_Curve      aProp(anOffset);
   Geom2dLProp_CLProps2d aOld(anOffset, 2, THE_PARAM_TOL);
 
   for (double u = 0.0; u < 2.0 * M_PI; u += M_PI / 8.0)
@@ -551,7 +551,7 @@ TEST(Geom2dProp_VsCLProps2dTest, TrimmedEllipse_AllProperties)
   occ::handle<Geom2d_Ellipse> anEllipse     = new Geom2d_Ellipse(anElips);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(anEllipse, 0.5, 2.5);
 
-  Geom2dProp_Curve aProp(aTrimmed);
+  Geom2dProp_Curve      aProp(aTrimmed);
   Geom2dLProp_CLProps2d aOld(aTrimmed, 2, THE_PARAM_TOL);
 
   for (double u = 0.5; u <= 2.5; u += 0.2)
@@ -570,7 +570,7 @@ TEST(Geom2dProp_VsCLProps2dTest, TrimmedBezier_AllProperties)
   occ::handle<Geom2d_BezierCurve>  aBezier  = new Geom2d_BezierCurve(aPoles);
   occ::handle<Geom2d_TrimmedCurve> aTrimmed = new Geom2d_TrimmedCurve(aBezier, 0.2, 0.8);
 
-  Geom2dProp_Curve aProp(aTrimmed);
+  Geom2dProp_Curve      aProp(aTrimmed);
   Geom2dLProp_CLProps2d aOld(aTrimmed, 2, THE_PARAM_TOL);
 
   for (double u = 0.2; u <= 0.8; u += 0.1)

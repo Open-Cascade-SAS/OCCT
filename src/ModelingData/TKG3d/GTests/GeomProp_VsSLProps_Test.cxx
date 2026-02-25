@@ -41,7 +41,7 @@ constexpr double THE_DIR_TOL  = 1.0e-4;
 //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
 void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
 {
-  GeomProp_Surface aProp(theSurf);
+  GeomProp_Surface                    aProp(theSurf);
   const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
 
   GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
@@ -60,7 +60,7 @@ void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
                        const double                     theU,
                        const double                     theV)
 {
-  GeomProp_Surface aProp(theSurf);
+  GeomProp_Surface                       aProp(theSurf);
   const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
 
   GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
@@ -81,7 +81,7 @@ void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
                          const double                     theU,
                          const double                     theV)
 {
-  GeomProp_Surface aProp(theSurf);
+  GeomProp_Surface                   aProp(theSurf);
   const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
 
   GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);

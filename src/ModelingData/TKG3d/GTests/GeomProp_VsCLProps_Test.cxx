@@ -48,7 +48,7 @@ constexpr double THE_POINT_TOL = 1.0e-6;
 //! Compare tangent from new GeomProp_Curve vs old GeomLProp_CLProps.
 void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
 {
-  GeomProp_Curve aProp(theCurve);
+  GeomProp_Curve                aProp(theCurve);
   const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
 
   GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
@@ -67,7 +67,7 @@ void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double thePar
 //! Compare curvature from new GeomProp_Curve vs old GeomLProp_CLProps.
 void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
 {
-  GeomProp_Curve aProp(theCurve);
+  GeomProp_Curve                  aProp(theCurve);
   const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
 
   GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
@@ -82,7 +82,7 @@ void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theP
 //! Compare normal from new GeomProp_Curve vs old GeomLProp_CLProps.
 void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
 {
-  GeomProp_Curve aProp(theCurve);
+  GeomProp_Curve               aProp(theCurve);
   const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
 
   GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
@@ -100,7 +100,7 @@ void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double thePara
 //! Compare centre of curvature from new vs old.
 void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
 {
-  GeomProp_Curve aProp(theCurve);
+  GeomProp_Curve               aProp(theCurve);
   const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
 
   GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);

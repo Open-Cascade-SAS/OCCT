@@ -136,7 +136,6 @@ TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
 
   GeomGridEval_Surface anEval(anOffset);
 
-
   // Assuming GetType() returns OffsetSurface or similar identifier
   // (GeomGridEval_Surface::GetType logic might need checking, usually delegates to adaptor or
   // stored type) Since we added OffsetSurface to variant, it should be supported.

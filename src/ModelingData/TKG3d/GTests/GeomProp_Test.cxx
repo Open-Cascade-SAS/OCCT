@@ -251,7 +251,7 @@ TEST(GeomPropCurveTest, Circle_NoExtrema)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp(aCircle);
+  GeomProp_Curve                aProp(aCircle);
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
   EXPECT_EQ(aResult.Points.Length(), 0);
@@ -262,7 +262,7 @@ TEST(GeomPropCurveTest, Circle_NoInflections)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp(aCircle);
+  GeomProp_Curve                aProp(aCircle);
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
   EXPECT_EQ(aResult.Points.Length(), 0);

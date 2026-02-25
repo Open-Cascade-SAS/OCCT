@@ -150,7 +150,7 @@ TEST(BRepProp_CurveTest, CylinderEdge_Curvature)
   for (TopExp_Explorer anExp(aCyl, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-    BRepProp_Curve aProp(anEdge);
+    BRepProp_Curve     aProp(anEdge);
 
     double aFirst = 0.0, aLast = 0.0;
     BRep_Tool::Range(anEdge, aFirst, aLast);

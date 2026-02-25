@@ -47,7 +47,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D1 (offset D0 requires basis D1)
-  GeomGridEval_Surface aBasisEval(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD1> aBasisD1 =
     aBasisEval.EvaluateGridD1(theUParams, theVParams);
 
@@ -113,7 +113,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D2 (offset D1 requires basis D2)
-  GeomGridEval_Surface aBasisEval(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD2> aBasisD2 =
     aBasisEval.EvaluateGridD2(theUParams, theVParams);
 
@@ -180,7 +180,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D3 (offset D2 requires basis D3)
-  GeomGridEval_Surface aBasisEval(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD3> aBasisD3 =
     aBasisEval.EvaluateGridD3(theUParams, theVParams);
 
@@ -317,7 +317,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D1 (offset DN requires basis D1)
-  GeomGridEval_Surface aBasisEval(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD1> aBasisD1 =
     aBasisEval.EvaluateGridD1(theUParams, theVParams);
 
