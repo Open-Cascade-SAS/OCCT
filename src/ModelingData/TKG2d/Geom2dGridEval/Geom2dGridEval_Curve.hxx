@@ -52,10 +52,9 @@
 //!
 //! Usage:
 //! @code
-//!   Geom2dGridEval_Curve anEval;
-//!   anEval.Initialize(myAdaptorCurve2d);
+//!   Geom2dGridEval_Curve anEval(myAdaptorCurve2d);
 //!   // OR
-//!   anEval.Initialize(myGeom2dCurve);
+//!   Geom2dGridEval_Curve anEval(myGeom2dCurve);
 //!   NCollection_Array1<gp_Pnt2d> aGrid = anEval.EvaluateGrid(myParams);
 //! @endcode
 class Geom2dGridEval_Curve
@@ -75,33 +74,23 @@ public:
                                         Geom2dGridEval_OffsetCurve,  // Offset curve
                                         Geom2dGridEval_OtherCurve>;  // Fallback for other types
 
-  //! Default constructor - uninitialized state.
-  Geom2dGridEval_Curve()
-      : myEvaluator(std::monostate{}),
-        myCurveType(GeomAbs_OtherCurve)
-  {
-  }
+  //! Construct from 2D adaptor reference (auto-detects curve type).
+  //! For Geom2dAdaptor_Curve, extracts underlying Geom2d_Curve for optimized evaluation.
+  //! For other adaptors, stores reference for fallback evaluation.
+  //! @note The curve adaptor reference must remain valid during the lifetime
+  //!       of this evaluator when using fallback evaluation.
+  //! @param[in] theCurve 2D curve adaptor reference to evaluate
+  Standard_EXPORT Geom2dGridEval_Curve(const Adaptor2d_Curve2d& theCurve);
+
+  //! Construct from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve 2D geometry to evaluate
+  Standard_EXPORT Geom2dGridEval_Curve(const occ::handle<Geom2d_Curve>& theCurve);
 
   //! Non-copyable and non-movable.
   Geom2dGridEval_Curve(const Geom2dGridEval_Curve&)            = delete;
   Geom2dGridEval_Curve& operator=(const Geom2dGridEval_Curve&) = delete;
   Geom2dGridEval_Curve(Geom2dGridEval_Curve&&)                 = delete;
   Geom2dGridEval_Curve& operator=(Geom2dGridEval_Curve&&)      = delete;
-
-  //! Initialize from 2D adaptor reference (auto-detects curve type).
-  //! For Geom2dAdaptor_Curve, extracts underlying Geom2d_Curve for optimized evaluation.
-  //! For other adaptors, stores reference for fallback evaluation.
-  //! @note The curve adaptor reference must remain valid during the lifetime
-  //!       of this evaluator when using fallback evaluation.
-  //! @param theCurve 2D curve adaptor reference to evaluate
-  Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theCurve);
-
-  //! Initialize from geometry handle (auto-detects curve type).
-  //! @param theCurve 2D geometry to evaluate
-  Standard_EXPORT void Initialize(const occ::handle<Geom2d_Curve>& theCurve);
-
-  //! Returns true if properly initialized.
-  Standard_EXPORT bool IsInitialized() const;
 
   //! Evaluate grid points at all parameters.
   //! @param theParams array of parameter values
@@ -137,6 +126,15 @@ public:
 
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
+
+protected:
+  //! Initialize from 2D adaptor reference (auto-detects curve type).
+  //! @param[in] theCurve 2D curve adaptor reference to evaluate
+  Standard_EXPORT void initialization(const Adaptor2d_Curve2d& theCurve);
+
+  //! Initialize from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve 2D geometry to evaluate
+  Standard_EXPORT void initialization(const occ::handle<Geom2d_Curve>& theCurve);
 
 private:
   EvaluatorVariant  myEvaluator;

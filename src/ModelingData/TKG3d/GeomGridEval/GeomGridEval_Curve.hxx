@@ -51,10 +51,9 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEval_Curve anEval;
-//!   anEval.Initialize(myAdaptorCurve);
+//!   GeomGridEval_Curve anEval(myAdaptorCurve);
 //!   // OR
-//!   anEval.Initialize(myGeomCurve);
+//!   GeomGridEval_Curve anEval(myGeomCurve);
 //!   NCollection_Array1<gp_Pnt> aGrid = anEval.EvaluateGrid(myParams);
 //! @endcode
 class GeomGridEval_Curve
@@ -74,33 +73,23 @@ public:
                                         GeomGridEval_OffsetCurve,  // Offset curve
                                         GeomGridEval_OtherCurve>;  // Fallback for other types
 
-  //! Default constructor - uninitialized state.
-  GeomGridEval_Curve()
-      : myEvaluator(std::monostate{}),
-        myCurveType(GeomAbs_OtherCurve)
-  {
-  }
+  //! Construct from adaptor reference (auto-detects curve type).
+  //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
+  //! For other adaptors, stores reference for fallback evaluation.
+  //! @note The curve adaptor reference must remain valid during the lifetime
+  //!       of this evaluator when using fallback evaluation.
+  //! @param[in] theCurve curve adaptor reference to evaluate
+  Standard_EXPORT GeomGridEval_Curve(const Adaptor3d_Curve& theCurve);
+
+  //! Construct from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve geometry to evaluate
+  Standard_EXPORT GeomGridEval_Curve(const occ::handle<Geom_Curve>& theCurve);
 
   //! Non-copyable and non-movable.
   GeomGridEval_Curve(const GeomGridEval_Curve&)            = delete;
   GeomGridEval_Curve& operator=(const GeomGridEval_Curve&) = delete;
   GeomGridEval_Curve(GeomGridEval_Curve&&)                 = delete;
   GeomGridEval_Curve& operator=(GeomGridEval_Curve&&)      = delete;
-
-  //! Initialize from adaptor reference (auto-detects curve type).
-  //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
-  //! For other adaptors, stores reference for fallback evaluation.
-  //! @note The curve adaptor reference must remain valid during the lifetime
-  //!       of this evaluator when using fallback evaluation.
-  //! @param theCurve curve adaptor reference to evaluate
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& theCurve);
-
-  //! Initialize from geometry handle (auto-detects curve type).
-  //! @param theCurve geometry to evaluate
-  Standard_EXPORT void Initialize(const occ::handle<Geom_Curve>& theCurve);
-
-  //! Returns true if properly initialized.
-  Standard_EXPORT bool IsInitialized() const;
 
   //! Evaluate grid points at all parameters.
   //! @param theParams array of parameter values
@@ -136,6 +125,15 @@ public:
 
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
+
+protected:
+  //! Initialize from adaptor reference (auto-detects curve type).
+  //! @param[in] theCurve curve adaptor reference to evaluate
+  Standard_EXPORT void initialization(const Adaptor3d_Curve& theCurve);
+
+  //! Initialize from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve geometry to evaluate
+  Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve);
 
 private:
   EvaluatorVariant  myEvaluator;

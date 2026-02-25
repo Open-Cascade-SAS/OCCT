@@ -86,8 +86,7 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface* Surface,
                                              const double     V1)
 {
   // Initialize grid evaluator with the underlying BRepAdaptor_Surface
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(Surface->Surface());
+  GeomGridEval_Surface anEval(Surface->Surface());
 
   PolyUtils::InitUniform(anEval,
                          U0,
@@ -117,8 +116,7 @@ void HLRBRep_ThePolyhedronOfInterCSurf::Init(HLRBRep_Surface*                  S
                                              const NCollection_Array1<double>& Vpars)
 {
   // Initialize grid evaluator with the underlying BRepAdaptor_Surface
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(Surface->Surface());
+  GeomGridEval_Surface anEval(Surface->Surface());
 
   PolyUtils::InitWithParams(anEval,
                             Upars,

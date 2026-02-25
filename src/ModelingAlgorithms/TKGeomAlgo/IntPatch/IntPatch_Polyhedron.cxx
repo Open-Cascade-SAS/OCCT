@@ -108,8 +108,7 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
   }
 
   // Use grid evaluator for batch point evaluation
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(*Surface);
+  GeomGridEval_Surface       anEval(*Surface);
   NCollection_Array2<gp_Pnt> aGridPnts = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Copy to internal arrays and build bounding box
@@ -179,8 +178,7 @@ IntPatch_Polyhedron::IntPatch_Polyhedron(const occ::handle<Adaptor3d_Surface>& S
   }
 
   // Use grid evaluator for batch point evaluation
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(*Surface);
+  GeomGridEval_Surface       anEval(*Surface);
   NCollection_Array2<gp_Pnt> aGridPnts = anEval.EvaluateGrid(aUParams, aVParams);
 
   // Copy to internal arrays and build bounding box

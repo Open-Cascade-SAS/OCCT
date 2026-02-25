@@ -17,7 +17,25 @@
 
 //==================================================================================================
 
-void GeomProp_Surface::Initialize(const Adaptor3d_Surface& theSurface)
+GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface& theSurface)
+    : myEvaluator(std::monostate{}),
+      mySurfaceType(GeomAbs_OtherSurface)
+{
+  initialization(theSurface);
+}
+
+//==================================================================================================
+
+GeomProp_Surface::GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface)
+    : myEvaluator(std::monostate{}),
+      mySurfaceType(GeomAbs_OtherSurface)
+{
+  initialization(theSurface);
+}
+
+//==================================================================================================
+
+void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
 {
   if (theSurface.IsKind(STANDARD_TYPE(GeomAdaptor_Surface)))
   {
@@ -35,7 +53,7 @@ void GeomProp_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
 //==================================================================================================
 
-void GeomProp_Surface::Initialize(const occ::handle<Geom_Surface>& theSurface)
+void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurface)
 {
   if (theSurface.IsNull())
   {
@@ -92,13 +110,6 @@ void GeomProp_Surface::initFromAdaptor()
       myEvaluator.emplace<GeomProp_OtherSurface>(aPtr);
       break;
   }
-}
-
-//==================================================================================================
-
-bool GeomProp_Surface::IsInitialized() const
-{
-  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

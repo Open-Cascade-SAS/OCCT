@@ -115,7 +115,25 @@ occ::handle<Geom_Surface> CreateExtrusionSurface(
 
 //==================================================================================================
 
-void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
+GeomGridEval_Surface::GeomGridEval_Surface(const Adaptor3d_Surface& theSurface)
+    : myEvaluator(std::monostate{}),
+      mySurfaceType(GeomAbs_OtherSurface)
+{
+  initialization(theSurface);
+}
+
+//==================================================================================================
+
+GeomGridEval_Surface::GeomGridEval_Surface(const occ::handle<Geom_Surface>& theSurface)
+    : myEvaluator(std::monostate{}),
+      mySurfaceType(GeomAbs_OtherSurface)
+{
+  initialization(theSurface);
+}
+
+//==================================================================================================
+
+void GeomGridEval_Surface::initialization(const Adaptor3d_Surface& theSurface)
 {
   // Reset transformation
   myTrsf.reset();
@@ -134,7 +152,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     }
 
     // Initialize with the underlying Geom_Surface
-    Initialize(aTransformed.GeomSurface());
+    initialization(aTransformed.GeomSurface());
     return;
   }
 
@@ -147,7 +165,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     occ::handle<Geom_Surface> aGeomSurf = CreateGeomSurfaceFromAdaptor(aRevAdaptor);
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -155,7 +173,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     aGeomSurf = aRevAdaptor.Surface();
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -163,7 +181,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     aGeomSurf = CreateRevolutionSurface(aRevAdaptor);
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -182,7 +200,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     occ::handle<Geom_Surface> aGeomSurf = CreateGeomSurfaceFromAdaptor(aExtAdaptor);
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -190,7 +208,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     aGeomSurf = aExtAdaptor.Surface();
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -198,7 +216,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
     aGeomSurf = CreateExtrusionSurface(aExtAdaptor);
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -222,7 +240,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
     if (!aGeomSurf.IsNull())
     {
-      Initialize(aGeomSurf);
+      initialization(aGeomSurf);
       return;
     }
 
@@ -236,7 +254,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
   occ::handle<Geom_Surface> aGeomSurf = CreateGeomSurfaceFromAdaptor(theSurface);
   if (!aGeomSurf.IsNull())
   {
-    Initialize(aGeomSurf);
+    initialization(aGeomSurf);
     return;
   }
 
@@ -247,7 +265,7 @@ void GeomGridEval_Surface::Initialize(const Adaptor3d_Surface& theSurface)
 
 //==================================================================================================
 
-void GeomGridEval_Surface::Initialize(const occ::handle<Geom_Surface>& theSurface)
+void GeomGridEval_Surface::initialization(const occ::handle<Geom_Surface>& theSurface)
 {
   if (theSurface.IsNull())
   {
@@ -315,13 +333,6 @@ void GeomGridEval_Surface::Initialize(const occ::handle<Geom_Surface>& theSurfac
     mySurfaceType = GeomAbs_OtherSurface;
     myEvaluator.emplace<GeomGridEval_OtherSurface>(aBasisSurf);
   }
-}
-
-//==================================================================================================
-
-bool GeomGridEval_Surface::IsInitialized() const
-{
-  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

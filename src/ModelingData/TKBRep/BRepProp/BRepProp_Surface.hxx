@@ -34,8 +34,7 @@ class TopoDS_Face;
 //!
 //! Usage:
 //! @code
-//!   BRepProp_Surface aProp;
-//!   aProp.Initialize(myFace);
+//!   BRepProp_Surface aProp(myFace);
 //!   GeomProp::SurfaceNormalResult aNorm = aProp.Normal(0.5, 0.5, Precision::Confusion());
 //!   if (aNorm.IsDefined)
 //!   {
@@ -47,33 +46,27 @@ class BRepProp_Surface
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - uninitialized state.
-  BRepProp_Surface() = default;
+  //! Construct from a TopoDS_Face.
+  //! Creates an internal BRepAdaptor_Surface (owning).
+  //! @param[in] theFace the face to evaluate
+  Standard_EXPORT BRepProp_Surface(const TopoDS_Face& theFace);
+
+  //! Construct from an existing BRepAdaptor_Surface.
+  //! The adaptor is referenced without copying (non-owning);
+  //! the caller must ensure the adaptor outlives this object.
+  //! @param[in] theSurface the adaptor to reference
+  Standard_EXPORT BRepProp_Surface(const BRepAdaptor_Surface& theSurface);
+
+  //! Construct from a handle to BRepAdaptor_Surface.
+  //! Shares ownership of the adaptor (no copy).
+  //! @param[in] theSurface handle to the adaptor
+  Standard_EXPORT BRepProp_Surface(const occ::handle<BRepAdaptor_Surface>& theSurface);
 
   //! Non-copyable and non-movable.
   BRepProp_Surface(const BRepProp_Surface&)            = delete;
   BRepProp_Surface& operator=(const BRepProp_Surface&) = delete;
   BRepProp_Surface(BRepProp_Surface&&)                 = delete;
   BRepProp_Surface& operator=(BRepProp_Surface&&)      = delete;
-
-  //! Initialize from a TopoDS_Face.
-  //! Creates an internal BRepAdaptor_Surface (owning).
-  //! @param[in] theFace the face to evaluate
-  Standard_EXPORT void Initialize(const TopoDS_Face& theFace);
-
-  //! Initialize from an existing BRepAdaptor_Surface.
-  //! The adaptor is referenced without copying (non-owning);
-  //! the caller must ensure the adaptor outlives this object.
-  //! @param[in] theSurface the adaptor to reference
-  Standard_EXPORT void Initialize(const BRepAdaptor_Surface& theSurface);
-
-  //! Initialize from a handle to BRepAdaptor_Surface.
-  //! Shares ownership of the adaptor (no copy).
-  //! @param[in] theSurface handle to the adaptor
-  Standard_EXPORT void Initialize(const occ::handle<BRepAdaptor_Surface>& theSurface);
-
-  //! Returns true if properly initialized.
-  bool IsInitialized() const { return myPtr != nullptr; }
 
   //! Returns the underlying adaptor.
   const BRepAdaptor_Surface& Adaptor() const { return *myPtr; }
@@ -104,6 +97,19 @@ public:
   Standard_EXPORT GeomProp::MeanGaussianResult MeanGaussian(double theU,
                                                             double theV,
                                                             double theTol) const;
+
+protected:
+  //! Initialize from a TopoDS_Face.
+  //! @param[in] theFace the face to evaluate
+  Standard_EXPORT void initialization(const TopoDS_Face& theFace);
+
+  //! Initialize from an existing BRepAdaptor_Surface (non-owning).
+  //! @param[in] theSurface the adaptor to reference
+  Standard_EXPORT void initialization(const BRepAdaptor_Surface& theSurface);
+
+  //! Initialize from a handle to BRepAdaptor_Surface.
+  //! @param[in] theSurface handle to the adaptor
+  Standard_EXPORT void initialization(const occ::handle<BRepAdaptor_Surface>& theSurface);
 
 private:
   occ::handle<BRepAdaptor_Surface> myOwned; //!< Owns the adaptor when created from TopoDS_Face.

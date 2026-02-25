@@ -60,10 +60,9 @@
 //!
 //! Usage:
 //! @code
-//!   GeomGridEval_Surface anEval;
-//!   anEval.Initialize(myAdaptorSurface);
+//!   GeomGridEval_Surface anEval(myAdaptorSurface);
 //!   // OR
-//!   anEval.Initialize(myGeomSurface);
+//!   GeomGridEval_Surface anEval(myGeomSurface);
 //!   // Grid evaluation
 //!   NCollection_Array2<gp_Pnt> aGrid = anEval.EvaluateGrid(myUParams, myVParams);
 //! @endcode
@@ -86,33 +85,23 @@ public:
                                         GeomGridEval_SurfaceOfExtrusion,  // Surface of extrusion
                                         GeomGridEval_OtherSurface>; // Fallback for other types
 
-  //! Default constructor - uninitialized state.
-  GeomGridEval_Surface()
-      : myEvaluator(std::monostate{}),
-        mySurfaceType(GeomAbs_OtherSurface)
-  {
-  }
+  //! Construct from adaptor reference (auto-detects surface type).
+  //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
+  //! For other adaptors, stores reference for fallback evaluation.
+  //! @note The surface adaptor reference must remain valid during the lifetime
+  //!       of this evaluator when using fallback evaluation.
+  //! @param[in] theSurface surface adaptor reference to evaluate
+  Standard_EXPORT GeomGridEval_Surface(const Adaptor3d_Surface& theSurface);
+
+  //! Construct from geometry handle (auto-detects surface type).
+  //! @param[in] theSurface geometry to evaluate
+  Standard_EXPORT GeomGridEval_Surface(const occ::handle<Geom_Surface>& theSurface);
 
   //! Non-copyable and non-movable.
   GeomGridEval_Surface(const GeomGridEval_Surface&)            = delete;
   GeomGridEval_Surface& operator=(const GeomGridEval_Surface&) = delete;
   GeomGridEval_Surface(GeomGridEval_Surface&&)                 = delete;
   GeomGridEval_Surface& operator=(GeomGridEval_Surface&&)      = delete;
-
-  //! Initialize from adaptor reference (auto-detects surface type).
-  //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
-  //! For other adaptors, stores reference for fallback evaluation.
-  //! @note The surface adaptor reference must remain valid during the lifetime
-  //!       of this evaluator when using fallback evaluation.
-  //! @param theSurface surface adaptor reference to evaluate
-  Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
-
-  //! Initialize from geometry handle (auto-detects surface type).
-  //! @param theSurface geometry to evaluate
-  Standard_EXPORT void Initialize(const occ::handle<Geom_Surface>& theSurface);
-
-  //! Returns true if properly initialized.
-  Standard_EXPORT bool IsInitialized() const;
 
   //! Evaluate grid points at all specified parameters.
   //! @param[in] theUParams array of U parameter values
@@ -166,6 +155,15 @@ public:
 
   //! Returns the transformation (empty if not set).
   const std::optional<gp_Trsf>& GetTransformation() const { return myTrsf; }
+
+protected:
+  //! Initialize from adaptor reference (auto-detects surface type).
+  //! @param[in] theSurface surface adaptor reference to evaluate
+  Standard_EXPORT void initialization(const Adaptor3d_Surface& theSurface);
+
+  //! Initialize from geometry handle (auto-detects surface type).
+  //! @param[in] theSurface geometry to evaluate
+  Standard_EXPORT void initialization(const occ::handle<Geom_Surface>& theSurface);
 
 private:
   //! Apply transformation to grid of points.

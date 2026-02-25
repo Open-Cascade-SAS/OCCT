@@ -18,7 +18,25 @@
 
 //==================================================================================================
 
-void Geom2dProp_Curve::Initialize(const Adaptor2d_Curve2d& theCurve)
+Geom2dProp_Curve::Geom2dProp_Curve(const Adaptor2d_Curve2d& theCurve)
+    : myEvaluator(std::monostate{}),
+      myCurveType(GeomAbs_OtherCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+Geom2dProp_Curve::Geom2dProp_Curve(const occ::handle<Geom2d_Curve>& theCurve)
+    : myEvaluator(std::monostate{}),
+      myCurveType(GeomAbs_OtherCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
 {
   if (theCurve.IsKind(STANDARD_TYPE(Geom2dAdaptor_Curve)))
   {
@@ -36,7 +54,7 @@ void Geom2dProp_Curve::Initialize(const Adaptor2d_Curve2d& theCurve)
 
 //==================================================================================================
 
-void Geom2dProp_Curve::Initialize(const occ::handle<Geom2d_Curve>& theCurve)
+void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
@@ -87,13 +105,6 @@ void Geom2dProp_Curve::initFromAdaptor()
       myEvaluator.emplace<Geom2dProp_OtherCurve>(aPtr);
       break;
   }
-}
-
-//==================================================================================================
-
-bool Geom2dProp_Curve::IsInitialized() const
-{
-  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

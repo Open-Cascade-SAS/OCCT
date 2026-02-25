@@ -451,8 +451,7 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
         aVParams.SetValue(j, VMin + ((VMax - VMin) * (j - 1) / (Nv - 1)));
       }
 
-      GeomGridEval_Surface anEvaluator;
-      anEvaluator.Initialize(S);
+      GeomGridEval_Surface anEvaluator(S);
 
       const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
       for (int i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
@@ -577,8 +576,7 @@ void BndLib_AddSurface::AddGenSurf(const Adaptor3d_Surface& S,
     aVParams.SetValue(j, VMin + (j - 1) * dv2);
   }
 
-  GeomGridEval_Surface anEvaluator;
-  anEvaluator.Initialize(S);
+  GeomGridEval_Surface anEvaluator(S);
 
   const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
 

@@ -53,8 +53,7 @@
 //!
 //! Usage:
 //! @code
-//!   GeomProp_Curve aProp;
-//!   aProp.Initialize(myGeomCurve);
+//!   GeomProp_Curve aProp(myGeomCurve);
 //!   GeomProp::CurvatureResult aCurv = aProp.Curvature(0.5, Precision::Confusion());
 //!   if (aCurv.IsDefined)
 //!   {
@@ -78,30 +77,20 @@ public:
                                         GeomProp_OffsetCurve,
                                         GeomProp_OtherCurve>;
 
-  //! Default constructor - uninitialized state.
-  GeomProp_Curve()
-      : myEvaluator(std::monostate{}),
-        myCurveType(GeomAbs_OtherCurve)
-  {
-  }
+  //! Construct from 3D adaptor reference (auto-detects curve type).
+  //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
+  //! @param[in] theCurve 3D curve adaptor reference
+  Standard_EXPORT GeomProp_Curve(const Adaptor3d_Curve& theCurve);
+
+  //! Construct from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve 3D geometry to evaluate
+  Standard_EXPORT GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve);
 
   //! Non-copyable and non-movable.
   GeomProp_Curve(const GeomProp_Curve&)            = delete;
   GeomProp_Curve& operator=(const GeomProp_Curve&) = delete;
   GeomProp_Curve(GeomProp_Curve&&)                 = delete;
   GeomProp_Curve& operator=(GeomProp_Curve&&)      = delete;
-
-  //! Initialize from 3D adaptor reference (auto-detects curve type).
-  //! For GeomAdaptor_Curve, extracts underlying Geom_Curve for optimized evaluation.
-  //! @param[in] theCurve 3D curve adaptor reference
-  Standard_EXPORT void Initialize(const Adaptor3d_Curve& theCurve);
-
-  //! Initialize from geometry handle (auto-detects curve type).
-  //! @param[in] theCurve 3D geometry to evaluate
-  Standard_EXPORT void Initialize(const occ::handle<Geom_Curve>& theCurve);
-
-  //! Returns true if properly initialized.
-  Standard_EXPORT bool IsInitialized() const;
 
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
@@ -137,6 +126,15 @@ public:
   //! Find inflection points on the curve.
   //! @return analysis result with inflection points sorted by parameter
   Standard_EXPORT GeomProp::CurveAnalysis FindInflections() const;
+
+protected:
+  //! Initialize from 3D adaptor reference (auto-detects curve type).
+  //! @param[in] theCurve 3D curve adaptor reference
+  Standard_EXPORT void initialization(const Adaptor3d_Curve& theCurve);
+
+  //! Initialize from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve 3D geometry to evaluate
+  Standard_EXPORT void initialization(const occ::handle<Geom_Curve>& theCurve);
 
 private:
   //! Initialize from stored adaptor (dispatches to per-geometry evaluator).

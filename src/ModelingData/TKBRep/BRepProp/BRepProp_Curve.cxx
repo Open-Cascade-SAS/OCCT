@@ -22,7 +22,28 @@
 
 //==================================================================================================
 
-void BRepProp_Curve::Initialize(const TopoDS_Edge& theEdge)
+BRepProp_Curve::BRepProp_Curve(const TopoDS_Edge& theEdge)
+{
+  initialization(theEdge);
+}
+
+//==================================================================================================
+
+BRepProp_Curve::BRepProp_Curve(const BRepAdaptor_Curve& theCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+BRepProp_Curve::BRepProp_Curve(const occ::handle<BRepAdaptor_Curve>& theCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+void BRepProp_Curve::initialization(const TopoDS_Edge& theEdge)
 {
   if (theEdge.IsNull())
   {
@@ -36,7 +57,7 @@ void BRepProp_Curve::Initialize(const TopoDS_Edge& theEdge)
 
 //==================================================================================================
 
-void BRepProp_Curve::Initialize(const BRepAdaptor_Curve& theCurve)
+void BRepProp_Curve::initialization(const BRepAdaptor_Curve& theCurve)
 {
   myOwned.Nullify();
   myPtr = &theCurve;
@@ -44,7 +65,7 @@ void BRepProp_Curve::Initialize(const BRepAdaptor_Curve& theCurve)
 
 //==================================================================================================
 
-void BRepProp_Curve::Initialize(const occ::handle<BRepAdaptor_Curve>& theCurve)
+void BRepProp_Curve::initialization(const occ::handle<BRepAdaptor_Curve>& theCurve)
 {
   myOwned = theCurve;
   myPtr   = myOwned.get();
@@ -54,10 +75,6 @@ void BRepProp_Curve::Initialize(const occ::handle<BRepAdaptor_Curve>& theCurve)
 
 GeomProp::TangentResult BRepProp_Curve::Tangent(const double theParam, const double theTol) const
 {
-  if (!IsInitialized())
-  {
-    return {{}, false};
-  }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2, aD3;
   myPtr->D3(theParam, aPnt, aD1, aD2, aD3);
@@ -69,10 +86,6 @@ GeomProp::TangentResult BRepProp_Curve::Tangent(const double theParam, const dou
 GeomProp::CurvatureResult BRepProp_Curve::Curvature(const double theParam,
                                                     const double theTol) const
 {
-  if (!IsInitialized())
-  {
-    return {};
-  }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2;
   myPtr->D2(theParam, aPnt, aD1, aD2);
@@ -83,10 +96,6 @@ GeomProp::CurvatureResult BRepProp_Curve::Curvature(const double theParam,
 
 GeomProp::NormalResult BRepProp_Curve::Normal(const double theParam, const double theTol) const
 {
-  if (!IsInitialized())
-  {
-    return {{}, false};
-  }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2;
   myPtr->D2(theParam, aPnt, aD1, aD2);
@@ -98,10 +107,6 @@ GeomProp::NormalResult BRepProp_Curve::Normal(const double theParam, const doubl
 GeomProp::CentreResult BRepProp_Curve::CentreOfCurvature(const double theParam,
                                                          const double theTol) const
 {
-  if (!IsInitialized())
-  {
-    return {{}, false};
-  }
   gp_Pnt aPnt;
   gp_Vec aD1, aD2;
   myPtr->D2(theParam, aPnt, aD1, aD2);
@@ -139,9 +144,8 @@ GeomAbs_Shape BRepProp_Curve::Continuity(const BRepAdaptor_Curve& theCurve1,
     aN2 = 1;
 
   // Evaluate properties at junction points.
-  BRepProp_Curve aProp1, aProp2;
-  aProp1.Initialize(theCurve1);
-  aProp2.Initialize(theCurve2);
+  BRepProp_Curve aProp1(theCurve1);
+  BRepProp_Curve aProp2(theCurve2);
 
   // Check point coincidence.
   gp_Pnt aPnt1, aPnt2;

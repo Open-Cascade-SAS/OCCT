@@ -36,8 +36,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
       // Use the equivalent surface directly
-      GeomGridEval_Surface anEquivEval;
-      anEquivEval.Initialize(anEquivSurf);
+      GeomGridEval_Surface anEquivEval(anEquivSurf);
       return anEquivEval.EvaluateGrid(theUParams, theVParams);
     }
   }
@@ -48,8 +47,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
   NCollection_Array2<gp_Pnt> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D1 (offset D0 requires basis D1)
-  GeomGridEval_Surface aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD1> aBasisD1 =
     aBasisEval.EvaluateGridD1(theUParams, theVParams);
 
@@ -105,8 +103,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
     occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
-      GeomGridEval_Surface anEquivEval;
-      anEquivEval.Initialize(anEquivSurf);
+      GeomGridEval_Surface anEquivEval(anEquivSurf);
       return anEquivEval.EvaluateGridD1(theUParams, theVParams);
     }
   }
@@ -116,8 +113,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
   NCollection_Array2<GeomGridEval::SurfD1> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D2 (offset D1 requires basis D2)
-  GeomGridEval_Surface aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD2> aBasisD2 =
     aBasisEval.EvaluateGridD2(theUParams, theVParams);
 
@@ -174,8 +170,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
     occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
-      GeomGridEval_Surface anEquivEval;
-      anEquivEval.Initialize(anEquivSurf);
+      GeomGridEval_Surface anEquivEval(anEquivSurf);
       return anEquivEval.EvaluateGridD2(theUParams, theVParams);
     }
   }
@@ -185,8 +180,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
   NCollection_Array2<GeomGridEval::SurfD2> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D3 (offset D2 requires basis D3)
-  GeomGridEval_Surface aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD3> aBasisD3 =
     aBasisEval.EvaluateGridD3(theUParams, theVParams);
 
@@ -250,8 +244,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
     occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
-      GeomGridEval_Surface anEquivEval;
-      anEquivEval.Initialize(anEquivSurf);
+      GeomGridEval_Surface anEquivEval(anEquivSurf);
       return anEquivEval.EvaluateGridD3(theUParams, theVParams);
     }
   }
@@ -313,8 +306,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
     occ::handle<Geom_Surface> anEquivSurf = myGeom->Surface();
     if (!anEquivSurf.IsNull() && anEquivSurf.get() != myGeom.get())
     {
-      GeomGridEval_Surface anEquivEval;
-      anEquivEval.Initialize(anEquivSurf);
+      GeomGridEval_Surface anEquivEval(anEquivSurf);
       return anEquivEval.EvaluateGridDN(theUParams, theVParams, theNU, theNV);
     }
   }
@@ -325,8 +317,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
   NCollection_Array2<gp_Vec> aResult(1, aNbU, 1, aNbV);
 
   // Batch evaluate basis surface D1 (offset DN requires basis D1)
-  GeomGridEval_Surface aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Surface                     aBasisEval(myBasis);
   NCollection_Array2<GeomGridEval::SurfD1> aBasisD1 =
     aBasisEval.EvaluateGridD1(theUParams, theVParams);
 

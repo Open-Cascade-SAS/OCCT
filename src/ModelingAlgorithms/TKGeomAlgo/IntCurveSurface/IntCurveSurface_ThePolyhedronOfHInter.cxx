@@ -87,8 +87,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const occ::handle<Adaptor3d_Sur
                                                  const double                          V1)
 {
   // Initialize grid evaluator with surface
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(*Surface);
+  GeomGridEval_Surface anEval(*Surface);
 
   PolyUtils::InitUniform(anEval,
                          U0,
@@ -118,8 +117,7 @@ void IntCurveSurface_ThePolyhedronOfHInter::Init(const occ::handle<Adaptor3d_Sur
                                                  const NCollection_Array1<double>&     Vpars)
 {
   // Initialize grid evaluator with surface
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(*Surface);
+  GeomGridEval_Surface anEval(*Surface);
 
   PolyUtils::InitWithParams(anEval,
                             Upars,

@@ -58,8 +58,7 @@ void compareCurveTangent(const TopoDS_Edge& theEdge, const double theParam)
   BRepAdaptor_Curve anAdaptor(theEdge);
 
   // New API
-  BRepProp_Curve aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Curve                aNewProp(anAdaptor);
   const GeomProp::TangentResult aNew = aNewProp.Tangent(theParam, THE_LIN_TOL);
 
   // Old API
@@ -79,8 +78,7 @@ void compareCurveCurvature(const TopoDS_Edge& theEdge, const double theParam)
 {
   BRepAdaptor_Curve anAdaptor(theEdge);
 
-  BRepProp_Curve aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Curve                  aNewProp(anAdaptor);
   const GeomProp::CurvatureResult aNew = aNewProp.Curvature(theParam, THE_LIN_TOL);
 
   BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
@@ -96,8 +94,7 @@ void compareCurveNormal(const TopoDS_Edge& theEdge, const double theParam)
 {
   BRepAdaptor_Curve anAdaptor(theEdge);
 
-  BRepProp_Curve aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Curve               aNewProp(anAdaptor);
   const GeomProp::NormalResult aNew = aNewProp.Normal(theParam, THE_LIN_TOL);
 
   BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
@@ -116,8 +113,7 @@ void compareCurveCentre(const TopoDS_Edge& theEdge, const double theParam)
 {
   BRepAdaptor_Curve anAdaptor(theEdge);
 
-  BRepProp_Curve aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Curve               aNewProp(anAdaptor);
   const GeomProp::CentreResult aNew = aNewProp.CentreOfCurvature(theParam, THE_LIN_TOL);
 
   BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
@@ -139,8 +135,7 @@ void compareSurfaceNormal(const TopoDS_Face& theFace, const double theU, const d
 {
   BRepAdaptor_Surface anAdaptor(theFace);
 
-  BRepProp_Surface aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Surface                    aNewProp(anAdaptor);
   const GeomProp::SurfaceNormalResult aNew = aNewProp.Normal(theU, theV, THE_LIN_TOL);
 
   BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
@@ -159,8 +154,7 @@ void compareSurfaceCurvatures(const TopoDS_Face& theFace, const double theU, con
 {
   BRepAdaptor_Surface anAdaptor(theFace);
 
-  BRepProp_Surface aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Surface                       aNewProp(anAdaptor);
   const GeomProp::SurfaceCurvatureResult aNew = aNewProp.Curvatures(theU, theV, THE_LIN_TOL);
 
   BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
@@ -178,8 +172,7 @@ void compareSurfaceMeanGaussian(const TopoDS_Face& theFace, const double theU, c
 {
   BRepAdaptor_Surface anAdaptor(theFace);
 
-  BRepProp_Surface aNewProp;
-  aNewProp.Initialize(anAdaptor);
+  BRepProp_Surface                   aNewProp(anAdaptor);
   const GeomProp::MeanGaussianResult aNew = aNewProp.MeanGaussian(theU, theV, THE_LIN_TOL);
 
   BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);

@@ -53,8 +53,7 @@
 //!
 //! Usage:
 //! @code
-//!   Geom2dProp_Curve aProp;
-//!   aProp.Initialize(myGeom2dCurve);
+//!   Geom2dProp_Curve aProp(myGeom2dCurve);
 //!   Geom2dProp::CurvatureResult aCurv = aProp.Curvature(0.5, Precision::Confusion());
 //!   if (aCurv.IsDefined)
 //!   {
@@ -78,30 +77,20 @@ public:
                                         Geom2dProp_OffsetCurve,
                                         Geom2dProp_OtherCurve>;
 
-  //! Default constructor - uninitialized state.
-  Geom2dProp_Curve()
-      : myEvaluator(std::monostate{}),
-        myCurveType(GeomAbs_OtherCurve)
-  {
-  }
+  //! Construct from 2D adaptor reference (auto-detects curve type).
+  //! For Geom2dAdaptor_Curve, extracts underlying Geom2d_Curve for optimized evaluation.
+  //! @param[in] theCurve 2D curve adaptor reference
+  Standard_EXPORT Geom2dProp_Curve(const Adaptor2d_Curve2d& theCurve);
+
+  //! Construct from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve 2D geometry to evaluate
+  Standard_EXPORT Geom2dProp_Curve(const occ::handle<Geom2d_Curve>& theCurve);
 
   //! Non-copyable and non-movable.
   Geom2dProp_Curve(const Geom2dProp_Curve&)            = delete;
   Geom2dProp_Curve& operator=(const Geom2dProp_Curve&) = delete;
   Geom2dProp_Curve(Geom2dProp_Curve&&)                 = delete;
   Geom2dProp_Curve& operator=(Geom2dProp_Curve&&)      = delete;
-
-  //! Initialize from 2D adaptor reference (auto-detects curve type).
-  //! For Geom2dAdaptor_Curve, extracts underlying Geom2d_Curve for optimized evaluation.
-  //! @param[in] theCurve 2D curve adaptor reference
-  Standard_EXPORT void Initialize(const Adaptor2d_Curve2d& theCurve);
-
-  //! Initialize from geometry handle (auto-detects curve type).
-  //! @param[in] theCurve 2D geometry to evaluate
-  Standard_EXPORT void Initialize(const occ::handle<Geom2d_Curve>& theCurve);
-
-  //! Returns true if properly initialized.
-  Standard_EXPORT bool IsInitialized() const;
 
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
@@ -137,6 +126,15 @@ public:
   //! Find inflection points on the curve.
   //! @return analysis result with inflection points sorted by parameter
   Standard_EXPORT Geom2dProp::CurveAnalysis FindInflections() const;
+
+protected:
+  //! Initialize from 2D adaptor reference (auto-detects curve type).
+  //! @param[in] theCurve 2D curve adaptor reference
+  Standard_EXPORT void initialization(const Adaptor2d_Curve2d& theCurve);
+
+  //! Initialize from geometry handle (auto-detects curve type).
+  //! @param[in] theCurve 2D geometry to evaluate
+  Standard_EXPORT void initialization(const occ::handle<Geom2d_Curve>& theCurve);
 
 private:
   //! Initialize from stored adaptor (dispatches to per-geometry evaluator).
