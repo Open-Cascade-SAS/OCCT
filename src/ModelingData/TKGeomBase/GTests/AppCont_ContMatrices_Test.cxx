@@ -15,6 +15,7 @@
 #include <math.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
+#include <Standard_DimensionError.hxx>
 
 #include <gtest/gtest.h>
 
@@ -113,7 +114,7 @@ TEST(AppCont_ContMatricesTest, InvMMatrix_IsInverse)
 // Verify InvMMatrix is symmetric (inverse of symmetric matrix is symmetric).
 TEST(AppCont_ContMatricesTest, InvMMatrix_Symmetric)
 {
-  for (int aClasse = 2; aClasse <= 26; aClasse++)
+  for (int aClasse = 2; aClasse <= 24; aClasse++)
   {
     math_Matrix anInvMat(1, aClasse, 1, aClasse);
     AppCont_ContMatrices::InvMMatrix(aClasse, anInvMat);
@@ -126,6 +127,47 @@ TEST(AppCont_ContMatricesTest, InvMMatrix_Symmetric)
           << "classe=" << aClasse << " i=" << i << " j=" << j;
       }
     }
+  }
+}
+
+// Verify strict legacy class limits for matrix providers.
+TEST(AppCont_ContMatricesTest, LegacyRangeLimits)
+{
+  {
+    math_Matrix aMat24(1, 24, 1, 24);
+    math_Matrix aMat25(1, 25, 1, 25);
+    EXPECT_NO_THROW(AppCont_ContMatrices::MMatrix(24, aMat24));
+    EXPECT_THROW(AppCont_ContMatrices::MMatrix(25, aMat25), Standard_DimensionError);
+  }
+
+  {
+    math_Matrix anInv24(1, 24, 1, 24);
+    math_Matrix anInv25(1, 25, 1, 25);
+    EXPECT_NO_THROW(AppCont_ContMatrices::InvMMatrix(24, anInv24));
+    EXPECT_THROW(AppCont_ContMatrices::InvMMatrix(25, anInv25), Standard_DimensionError);
+  }
+
+  {
+    math_Matrix anIBP26(1, 24, 1, 24);
+    math_Matrix anIBP27(1, 25, 1, 25);
+    EXPECT_NO_THROW(AppCont_ContMatrices::IBPMatrix(26, anIBP26));
+    EXPECT_THROW(AppCont_ContMatrices::IBPMatrix(27, anIBP27), Standard_DimensionError);
+  }
+
+  {
+    math_Matrix anIBT26(1, 22, 1, 22);
+    math_Matrix anIBT27(1, 23, 1, 23);
+    EXPECT_NO_THROW(AppCont_ContMatrices::IBTMatrix(26, anIBT26));
+    EXPECT_THROW(AppCont_ContMatrices::IBTMatrix(27, anIBT27), Standard_DimensionError);
+  }
+
+  {
+    math_Matrix aVB26x24(1, 26, 1, 24);
+    math_Matrix aVB27x24(1, 27, 1, 24);
+    math_Matrix aVB26x25(1, 26, 1, 25);
+    EXPECT_NO_THROW(AppCont_ContMatrices::VBernstein(26, 24, aVB26x24));
+    EXPECT_THROW(AppCont_ContMatrices::VBernstein(27, 24, aVB27x24), Standard_DimensionError);
+    EXPECT_THROW(AppCont_ContMatrices::VBernstein(26, 25, aVB26x25), Standard_DimensionError);
   }
 }
 
