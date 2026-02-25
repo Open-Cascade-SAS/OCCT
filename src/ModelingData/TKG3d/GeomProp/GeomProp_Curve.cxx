@@ -18,7 +18,25 @@
 
 //==================================================================================================
 
-void GeomProp_Curve::Initialize(const Adaptor3d_Curve& theCurve)
+GeomProp_Curve::GeomProp_Curve(const Adaptor3d_Curve& theCurve)
+    : myEvaluator(std::monostate{}),
+      myCurveType(GeomAbs_OtherCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve)
+    : myEvaluator(std::monostate{}),
+      myCurveType(GeomAbs_OtherCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
 {
   if (theCurve.IsKind(STANDARD_TYPE(GeomAdaptor_Curve)))
   {
@@ -36,7 +54,7 @@ void GeomProp_Curve::Initialize(const Adaptor3d_Curve& theCurve)
 
 //==================================================================================================
 
-void GeomProp_Curve::Initialize(const occ::handle<Geom_Curve>& theCurve)
+void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
@@ -87,13 +105,6 @@ void GeomProp_Curve::initFromAdaptor()
       myEvaluator.emplace<GeomProp_OtherCurve>(aPtr);
       break;
   }
-}
-
-//==================================================================================================
-
-bool GeomProp_Curve::IsInitialized() const
-{
-  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

@@ -52,31 +52,13 @@ constexpr double THE_POINT_TOL = Precision::Confusion();
 // BRepProp_Curve tests
 // ============================================================
 
-TEST(BRepProp_CurveTest, UninitializedState)
-{
-  BRepProp_Curve aProp;
-  EXPECT_FALSE(aProp.IsInitialized());
-
-  const GeomProp::TangentResult   aTan  = aProp.Tangent(0.0, THE_LIN_TOL);
-  const GeomProp::CurvatureResult aCurv = aProp.Curvature(0.0, THE_LIN_TOL);
-  const GeomProp::NormalResult    aNorm = aProp.Normal(0.0, THE_LIN_TOL);
-  const GeomProp::CentreResult    aCent = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
-
-  EXPECT_FALSE(aTan.IsDefined);
-  EXPECT_FALSE(aCurv.IsDefined);
-  EXPECT_FALSE(aNorm.IsDefined);
-  EXPECT_FALSE(aCent.IsDefined);
-}
-
 TEST(BRepProp_CurveTest, InitializeFromEdge_Line)
 {
   BRepBuilderAPI_MakeEdge aMakeEdge(gp_Lin(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0)), 0.0, 10.0);
   ASSERT_TRUE(aMakeEdge.IsDone());
   const TopoDS_Edge& anEdge = aMakeEdge.Edge();
 
-  BRepProp_Curve aProp;
-  aProp.Initialize(anEdge);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Curve aProp(anEdge);
 
   // Tangent on a line should be defined.
   const GeomProp::TangentResult aTan = aProp.Tangent(5.0, THE_LIN_TOL);
@@ -97,9 +79,7 @@ TEST(BRepProp_CurveTest, InitializeFromEdge_Circle)
   ASSERT_TRUE(aMakeEdge.IsDone());
   const TopoDS_Edge& anEdge = aMakeEdge.Edge();
 
-  BRepProp_Curve aProp;
-  aProp.Initialize(anEdge);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Curve aProp(anEdge);
 
   // Check curvature = 1/R at midpoint.
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(M_PI, THE_LIN_TOL);
@@ -125,9 +105,7 @@ TEST(BRepProp_CurveTest, InitializeFromAdaptor)
 
   BRepAdaptor_Curve anAdaptor(aMakeEdge.Edge());
 
-  BRepProp_Curve aProp;
-  aProp.Initialize(anAdaptor);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Curve aProp(anAdaptor);
 
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(M_PI / 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -145,9 +123,7 @@ TEST(BRepProp_CurveTest, BoxEdge_Tangent)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
 
-  BRepProp_Curve aProp;
-  aProp.Initialize(anEdge);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Curve aProp(anEdge);
 
   double aFirst = 0.0, aLast = 0.0;
   BRep_Tool::Range(anEdge, aFirst, aLast);
@@ -174,9 +150,7 @@ TEST(BRepProp_CurveTest, CylinderEdge_Curvature)
   for (TopExp_Explorer anExp(aCyl, TopAbs_EDGE); anExp.More(); anExp.Next())
   {
     const TopoDS_Edge& anEdge = TopoDS::Edge(anExp.Current());
-    BRepProp_Curve     aProp;
-    aProp.Initialize(anEdge);
-    ASSERT_TRUE(aProp.IsInitialized());
+    BRepProp_Curve aProp(anEdge);
 
     double aFirst = 0.0, aLast = 0.0;
     BRep_Tool::Range(anEdge, aFirst, aLast);
@@ -198,21 +172,6 @@ TEST(BRepProp_CurveTest, CylinderEdge_Curvature)
 // BRepProp_Surface tests
 // ============================================================
 
-TEST(BRepProp_SurfaceTest, UninitializedState)
-{
-  BRepProp_Surface aProp;
-  EXPECT_FALSE(aProp.IsInitialized());
-
-  const GeomProp::SurfaceNormalResult aNorm = aProp.Normal(0.0, 0.0, THE_LIN_TOL);
-  EXPECT_FALSE(aNorm.IsDefined);
-
-  const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.0, 0.0, THE_LIN_TOL);
-  EXPECT_FALSE(aCurv.IsDefined);
-
-  const GeomProp::MeanGaussianResult aMG = aProp.MeanGaussian(0.0, 0.0, THE_LIN_TOL);
-  EXPECT_FALSE(aMG.IsDefined);
-}
-
 TEST(BRepProp_SurfaceTest, BoxFace_PlanarNormal)
 {
   BRepPrimAPI_MakeBox aBoxMaker(10.0, 20.0, 30.0);
@@ -223,9 +182,7 @@ TEST(BRepProp_SurfaceTest, BoxFace_PlanarNormal)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
 
-  BRepProp_Surface aProp;
-  aProp.Initialize(aFace);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Surface aProp(aFace);
 
   const GeomProp::SurfaceNormalResult aNorm = aProp.Normal(0.5, 0.5, THE_LIN_TOL);
   ASSERT_TRUE(aNorm.IsDefined);
@@ -253,9 +210,7 @@ TEST(BRepProp_SurfaceTest, InitializeFromAdaptor)
   const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
 
   BRepAdaptor_Surface anAdaptor(aFace);
-  BRepProp_Surface    aProp;
-  aProp.Initialize(anAdaptor);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Surface    aProp(anAdaptor);
 
   const GeomProp::SurfaceNormalResult aNorm = aProp.Normal(0.5, 0.5, THE_LIN_TOL);
   ASSERT_TRUE(aNorm.IsDefined);
@@ -273,9 +228,7 @@ TEST(BRepProp_SurfaceTest, SphereFace_Curvatures)
   ASSERT_TRUE(anExp.More());
   const TopoDS_Face& aFace = TopoDS::Face(anExp.Current());
 
-  BRepProp_Surface aProp;
-  aProp.Initialize(aFace);
-  ASSERT_TRUE(aProp.IsInitialized());
+  BRepProp_Surface aProp(aFace);
 
   // Evaluate at equator-like parameter (away from poles).
   const double aU = M_PI;
@@ -313,9 +266,7 @@ TEST(BRepProp_SurfaceTest, CylinderFace_Curvatures)
       continue;
     }
 
-    BRepProp_Surface aProp;
-    aProp.Initialize(aFace);
-    ASSERT_TRUE(aProp.IsInitialized());
+    BRepProp_Surface aProp(aFace);
 
     const double aU = M_PI / 4.0;
     const double aV = aHeight / 2.0;

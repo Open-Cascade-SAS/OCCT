@@ -57,8 +57,7 @@
 //!
 //! Usage:
 //! @code
-//!   GeomProp_Surface aProp;
-//!   aProp.Initialize(myGeomSurface);
+//!   GeomProp_Surface aProp(myGeomSurface);
 //!   GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.5, 0.5, Precision::Confusion());
 //!   if (aCurv.IsDefined)
 //!   {
@@ -85,30 +84,20 @@ public:
                                         GeomProp_OffsetSurface,
                                         GeomProp_OtherSurface>;
 
-  //! Default constructor - uninitialized state.
-  GeomProp_Surface()
-      : myEvaluator(std::monostate{}),
-        mySurfaceType(GeomAbs_OtherSurface)
-  {
-  }
+  //! Construct from 3D adaptor reference (auto-detects surface type).
+  //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
+  //! @param[in] theSurface 3D surface adaptor reference
+  Standard_EXPORT GeomProp_Surface(const Adaptor3d_Surface& theSurface);
+
+  //! Construct from geometry handle (auto-detects surface type).
+  //! @param[in] theSurface 3D geometry to evaluate
+  Standard_EXPORT GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface);
 
   //! Non-copyable and non-movable.
   GeomProp_Surface(const GeomProp_Surface&)            = delete;
   GeomProp_Surface& operator=(const GeomProp_Surface&) = delete;
   GeomProp_Surface(GeomProp_Surface&&)                 = delete;
   GeomProp_Surface& operator=(GeomProp_Surface&&)      = delete;
-
-  //! Initialize from 3D adaptor reference (auto-detects surface type).
-  //! For GeomAdaptor_Surface, extracts underlying Geom_Surface for optimized evaluation.
-  //! @param[in] theSurface 3D surface adaptor reference
-  Standard_EXPORT void Initialize(const Adaptor3d_Surface& theSurface);
-
-  //! Initialize from geometry handle (auto-detects surface type).
-  //! @param[in] theSurface 3D geometry to evaluate
-  Standard_EXPORT void Initialize(const occ::handle<Geom_Surface>& theSurface);
-
-  //! Returns true if properly initialized.
-  Standard_EXPORT bool IsInitialized() const;
 
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
@@ -139,6 +128,15 @@ public:
   Standard_EXPORT GeomProp::MeanGaussianResult MeanGaussian(double theU,
                                                             double theV,
                                                             double theTol) const;
+
+protected:
+  //! Initialize from 3D adaptor reference (auto-detects surface type).
+  //! @param[in] theSurface 3D surface adaptor reference
+  Standard_EXPORT void initialization(const Adaptor3d_Surface& theSurface);
+
+  //! Initialize from geometry handle (auto-detects surface type).
+  //! @param[in] theSurface 3D geometry to evaluate
+  Standard_EXPORT void initialization(const occ::handle<Geom_Surface>& theSurface);
 
 private:
   //! Initialize from stored adaptor (dispatches to per-geometry evaluator).

@@ -404,9 +404,7 @@ TEST(Geom2dGridEval_CurveTest, LineDispatch)
   occ::handle<Geom2d_Line> aGeomLine = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
   Geom2dAdaptor_Curve      anAdaptor(aGeomLine);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_Line);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 10.0, 11);
@@ -427,9 +425,7 @@ TEST(Geom2dGridEval_CurveTest, CircleDispatch)
     new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)), 2.0);
   Geom2dAdaptor_Curve anAdaptor(aGeomCircle);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_Circle);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 17);
@@ -449,9 +445,7 @@ TEST(Geom2dGridEval_CurveTest, EllipseDispatch)
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)), 3.0, 2.0);
   Geom2dAdaptor_Curve anAdaptor(anEllipse);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_Ellipse);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 13);
@@ -471,9 +465,7 @@ TEST(Geom2dGridEval_CurveTest, HyperbolaDispatch)
     new Geom2d_Hyperbola(gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)), 3.0, 2.0);
   Geom2dAdaptor_Curve anAdaptor(aHypr);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_Hyperbola);
 
   NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 11);
@@ -493,9 +485,7 @@ TEST(Geom2dGridEval_CurveTest, ParabolaDispatch)
     new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)), 1.0);
   Geom2dAdaptor_Curve anAdaptor(aParab);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_Parabola);
 
   NCollection_Array1<double> aParams = CreateUniformParams(-2.0, 2.0, 11);
@@ -514,9 +504,7 @@ TEST(Geom2dGridEval_CurveTest, BSplineDispatch)
   occ::handle<Geom2d_BSplineCurve> aCurve = CreateSimpleBSpline2d();
   Geom2dAdaptor_Curve              anAdaptor(aCurve);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_BSplineCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 21);
@@ -540,9 +528,7 @@ TEST(Geom2dGridEval_CurveTest, BezierCurveDispatch)
   occ::handle<Geom2d_BezierCurve> aBezier = new Geom2d_BezierCurve(aPoles);
   Geom2dAdaptor_Curve             anAdaptor(aBezier);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_BezierCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
@@ -561,9 +547,7 @@ TEST(Geom2dGridEval_CurveTest, OffsetCurveDispatch)
   occ::handle<Geom2d_Line>        aLine    = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aLine, 1.0);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anOffset);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anOffset);
   EXPECT_EQ(anEval.GetType(), GeomAbs_OffsetCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 5.0, 6);
@@ -581,9 +565,7 @@ TEST(Geom2dGridEval_CurveTest, DirectHandleInit)
 {
   occ::handle<Geom2d_Line> aGeomLine = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(aGeomLine);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(aGeomLine);
   EXPECT_EQ(anEval.GetType(), GeomAbs_Line);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 10.0, 11);
@@ -593,24 +575,12 @@ TEST(Geom2dGridEval_CurveTest, DirectHandleInit)
   EXPECT_NEAR(aGrid.Value(1).X(), 0.0, THE_TOLERANCE);
 }
 
-TEST(Geom2dGridEval_CurveTest, UninitializedState)
-{
-  Geom2dGridEval_Curve anEval;
-  EXPECT_FALSE(anEval.IsInitialized());
-
-  NCollection_Array1<double>   aEmptyParams;
-  NCollection_Array1<gp_Pnt2d> aGrid = anEval.EvaluateGrid(aEmptyParams);
-  EXPECT_TRUE(aGrid.IsEmpty());
-}
-
 TEST(Geom2dGridEval_CurveTest, EmptyParams)
 {
   occ::handle<Geom2d_Line> aGeomLine = new Geom2d_Line(gp_Pnt2d(0, 0), gp_Dir2d(1, 0));
   Geom2dAdaptor_Curve      anAdaptor(aGeomLine);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
-  EXPECT_TRUE(anEval.IsInitialized());
+  Geom2dGridEval_Curve anEval(anAdaptor);
 
   NCollection_Array1<double>   aEmptyParams;
   NCollection_Array1<gp_Pnt2d> aGrid = anEval.EvaluateGrid(aEmptyParams);
@@ -623,8 +593,7 @@ TEST(Geom2dGridEval_CurveTest, UnifiedDerivativeD1)
     new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)), 2.0);
   Geom2dAdaptor_Curve anAdaptor(aGeomCircle);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
+  Geom2dGridEval_Curve anEval(anAdaptor);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);
 
@@ -645,8 +614,7 @@ TEST(Geom2dGridEval_CurveTest, UnifiedDerivativeD2)
   occ::handle<Geom2d_BSplineCurve> aCurve = CreateSimpleBSpline2d();
   Geom2dAdaptor_Curve              anAdaptor(aCurve);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
+  Geom2dGridEval_Curve anEval(anAdaptor);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -668,8 +636,7 @@ TEST(Geom2dGridEval_CurveTest, UnifiedDerivativeD3)
   occ::handle<Geom2d_BSplineCurve> aCurve = CreateSimpleBSpline2d();
   Geom2dAdaptor_Curve              anAdaptor(aCurve);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anAdaptor);
+  Geom2dGridEval_Curve anEval(anAdaptor);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 1.0, 11);
 
@@ -693,8 +660,7 @@ TEST(Geom2dGridEval_CurveTest, OffsetCurveDerivativeD3)
     new Geom2d_Circle(gp_Ax22d(gp_Pnt2d(0, 0), gp_Dir2d(1, 0)), 2.0);
   occ::handle<Geom2d_OffsetCurve> anOffset = new Geom2d_OffsetCurve(aCircle, 0.5);
 
-  Geom2dGridEval_Curve anEval;
-  anEval.Initialize(anOffset);
+  Geom2dGridEval_Curve anEval(anOffset);
   EXPECT_EQ(anEval.GetType(), GeomAbs_OffsetCurve);
 
   NCollection_Array1<double> aParams = CreateUniformParams(0.0, 2 * M_PI, 9);

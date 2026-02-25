@@ -27,8 +27,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_OffsetCurve::EvaluateGrid(
   }
 
   // Offset D0 requires basis D1 to compute offset normal direction
-  Geom2dGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  Geom2dGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<Geom2dGridEval::CurveD1> aBasisD1 = aBasisEval.EvaluateGridD1(theParams);
   if (aBasisD1.IsEmpty())
@@ -64,8 +63,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OffsetCurve::Evaluate
   }
 
   // Offset D1 requires basis D2
-  Geom2dGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  Geom2dGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<Geom2dGridEval::CurveD2> aBasisD2 = aBasisEval.EvaluateGridD2(theParams);
   if (aBasisD2.IsEmpty())
@@ -102,8 +100,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OffsetCurve::Evaluate
   }
 
   // Offset D2 requires basis D3
-  Geom2dGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  Geom2dGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<Geom2dGridEval::CurveD3> aBasisD3 = aBasisEval.EvaluateGridD3(theParams);
   if (aBasisD3.IsEmpty())
@@ -161,8 +158,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OffsetCurve::Evaluate
   }
 
   // Offset D3 requires basis D3 + D4
-  Geom2dGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  Geom2dGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<Geom2dGridEval::CurveD3> aBasisD3 = aBasisEval.EvaluateGridD3(theParams);
   if (aBasisD3.IsEmpty())
@@ -270,8 +266,7 @@ NCollection_Array1<gp_Vec2d> Geom2dGridEval_OffsetCurve::EvaluateGridDN(
   else
   {
     // For orders > 3, batch evaluate basis curve DN
-    Geom2dGridEval_Curve aBasisEval;
-    aBasisEval.Initialize(myBasis);
+    Geom2dGridEval_Curve aBasisEval(myBasis);
     return aBasisEval.EvaluateGridDN(theParams, theN);
   }
 }

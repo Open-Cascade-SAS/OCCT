@@ -81,8 +81,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
       if (!aCurve.IsNull())
       {
         // Use unified curve evaluator
-        GeomGridEval_Curve aCurveEval;
-        aCurveEval.Initialize(aCurve);
+        GeomGridEval_Curve aCurveEval(aCurve);
 
         NCollection_Array1<gp_Pnt> aCurveResult = aCurveEval.EvaluateGrid(theUParams);
 

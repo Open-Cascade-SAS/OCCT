@@ -43,8 +43,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
   const int aNbV = theVParams.Size();
 
   // Batch evaluate curve points using optimized curve evaluator
-  GeomGridEval_Curve aCurveEval;
-  aCurveEval.Initialize(myBasisCurve);
+  GeomGridEval_Curve aCurveEval(myBasisCurve);
 
   NCollection_Array1<gp_Pnt> aCurvePoints = aCurveEval.EvaluateGrid(theUParams);
   if (aCurvePoints.IsEmpty())
@@ -87,8 +86,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
   const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D1 using optimized curve evaluator
-  GeomGridEval_Curve aCurveEval;
-  aCurveEval.Initialize(myBasisCurve);
+  GeomGridEval_Curve aCurveEval(myBasisCurve);
 
   NCollection_Array1<GeomGridEval::CurveD1> aCurveD1 = aCurveEval.EvaluateGridD1(theUParams);
   if (aCurveD1.IsEmpty())
@@ -138,8 +136,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
   const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D2 using optimized curve evaluator
-  GeomGridEval_Curve aCurveEval;
-  aCurveEval.Initialize(myBasisCurve);
+  GeomGridEval_Curve aCurveEval(myBasisCurve);
 
   NCollection_Array1<GeomGridEval::CurveD2> aCurveD2 = aCurveEval.EvaluateGridD2(theUParams);
   if (aCurveD2.IsEmpty())
@@ -194,8 +191,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
   const int aNbV = theVParams.Size();
 
   // Batch evaluate curve D3 using optimized curve evaluator
-  GeomGridEval_Curve aCurveEval;
-  aCurveEval.Initialize(myBasisCurve);
+  GeomGridEval_Curve aCurveEval(myBasisCurve);
 
   NCollection_Array1<GeomGridEval::CurveD3> aCurveD3 = aCurveEval.EvaluateGridD3(theUParams);
   if (aCurveD3.IsEmpty())
@@ -266,8 +262,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(
   if (theNV == 0)
   {
     // Pure U derivative = curve derivative
-    GeomGridEval_Curve aCurveEval;
-    aCurveEval.Initialize(myBasisCurve);
+    GeomGridEval_Curve aCurveEval(myBasisCurve);
 
     NCollection_Array1<gp_Vec> aCurveDN = aCurveEval.EvaluateGridDN(theUParams, theNU);
 

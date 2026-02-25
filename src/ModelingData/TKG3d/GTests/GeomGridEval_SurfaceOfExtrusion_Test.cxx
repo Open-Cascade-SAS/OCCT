@@ -245,10 +245,7 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, UnifiedDispatch)
     new Geom_SurfaceOfLinearExtrusion(aLine, aDirection);
 
   // Test dispatch via unified evaluator
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(anExtSurf);
-
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEval_Surface anEval(anExtSurf);
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfExtrusion);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);
@@ -275,10 +272,7 @@ TEST(GeomGridEval_SurfaceOfExtrusionTest, AdaptorDispatch)
 
   // Test dispatch via adaptor
   GeomAdaptor_Surface  anAdaptor(anExtSurf);
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(anAdaptor);
-
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEval_Surface anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfExtrusion);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, 10.0, 5);

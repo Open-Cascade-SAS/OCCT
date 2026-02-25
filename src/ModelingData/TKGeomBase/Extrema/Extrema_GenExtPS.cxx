@@ -538,8 +538,7 @@ void Extrema_GenExtPS::BuildGrid(const gp_Pnt& thePoint)
     // If flag was changed and extrema not reinitialized Extrema would fail
     myPoints.Resize(0, myusample + 1, 0, myvsample + 1, false);
 
-    GeomGridEval_Surface aGridEval;
-    aGridEval.Initialize(*myS);
+    GeomGridEval_Surface aGridEval(*myS);
 
     NCollection_Array2<gp_Pnt> aGridPoints =
       aGridEval.EvaluateGrid(myUParams->Array1(), myVParams->Array1());
@@ -870,8 +869,7 @@ void Extrema_GenExtPS::BuildTree()
   mySphereArray = new NCollection_HArray1<Bnd_Sphere>(0, myusample * myvsample);
 
   // Use unified grid evaluator for all surface types (optimized for BSpline, Bezier, etc.)
-  GeomGridEval_Surface aGridEval;
-  aGridEval.Initialize(*myS);
+  GeomGridEval_Surface aGridEval(*myS);
 
   const NCollection_Array2<gp_Pnt> aGridPoints =
     aGridEval.EvaluateGrid(myUParams->Array1(), myVParams->Array1());

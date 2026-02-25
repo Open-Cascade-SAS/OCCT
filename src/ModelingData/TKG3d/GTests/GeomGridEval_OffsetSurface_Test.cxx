@@ -134,10 +134,9 @@ TEST(GeomGridEval_OffsetSurfaceTest, NestedDispatch)
   occ::handle<Geom_Plane>         aPlane   = new Geom_Plane(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   occ::handle<Geom_OffsetSurface> anOffset = new Geom_OffsetSurface(aPlane, 5.0);
 
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(anOffset);
+  GeomGridEval_Surface anEval(anOffset);
 
-  EXPECT_TRUE(anEval.IsInitialized());
+
   // Assuming GetType() returns OffsetSurface or similar identifier
   // (GeomGridEval_Surface::GetType logic might need checking, usually delegates to adaptor or
   // stored type) Since we added OffsetSurface to variant, it should be supported.

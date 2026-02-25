@@ -35,8 +35,7 @@ class TopoDS_Edge;
 //!
 //! Usage:
 //! @code
-//!   BRepProp_Curve aProp;
-//!   aProp.Initialize(myEdge);
+//!   BRepProp_Curve aProp(myEdge);
 //!   GeomProp::CurvatureResult aCurv = aProp.Curvature(0.5, Precision::Confusion());
 //!   if (aCurv.IsDefined)
 //!   {
@@ -48,33 +47,27 @@ class BRepProp_Curve
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Default constructor - uninitialized state.
-  BRepProp_Curve() = default;
+  //! Construct from a TopoDS_Edge.
+  //! Creates an internal BRepAdaptor_Curve (owning).
+  //! @param[in] theEdge the edge to evaluate
+  Standard_EXPORT BRepProp_Curve(const TopoDS_Edge& theEdge);
+
+  //! Construct from an existing BRepAdaptor_Curve.
+  //! The adaptor is referenced without copying (non-owning);
+  //! the caller must ensure the adaptor outlives this object.
+  //! @param[in] theCurve the adaptor to reference
+  Standard_EXPORT BRepProp_Curve(const BRepAdaptor_Curve& theCurve);
+
+  //! Construct from a handle to BRepAdaptor_Curve.
+  //! Shares ownership of the adaptor (no copy).
+  //! @param[in] theCurve handle to the adaptor
+  Standard_EXPORT BRepProp_Curve(const occ::handle<BRepAdaptor_Curve>& theCurve);
 
   //! Non-copyable and non-movable.
   BRepProp_Curve(const BRepProp_Curve&)            = delete;
   BRepProp_Curve& operator=(const BRepProp_Curve&) = delete;
   BRepProp_Curve(BRepProp_Curve&&)                 = delete;
   BRepProp_Curve& operator=(BRepProp_Curve&&)      = delete;
-
-  //! Initialize from a TopoDS_Edge.
-  //! Creates an internal BRepAdaptor_Curve (owning).
-  //! @param[in] theEdge the edge to evaluate
-  Standard_EXPORT void Initialize(const TopoDS_Edge& theEdge);
-
-  //! Initialize from an existing BRepAdaptor_Curve.
-  //! The adaptor is referenced without copying (non-owning);
-  //! the caller must ensure the adaptor outlives this object.
-  //! @param[in] theCurve the adaptor to reference
-  Standard_EXPORT void Initialize(const BRepAdaptor_Curve& theCurve);
-
-  //! Initialize from a handle to BRepAdaptor_Curve.
-  //! Shares ownership of the adaptor (no copy).
-  //! @param[in] theCurve handle to the adaptor
-  Standard_EXPORT void Initialize(const occ::handle<BRepAdaptor_Curve>& theCurve);
-
-  //! Returns true if properly initialized.
-  bool IsInitialized() const { return myPtr != nullptr; }
 
   //! Returns the underlying adaptor.
   const BRepAdaptor_Curve& Adaptor() const { return *myPtr; }
@@ -124,6 +117,19 @@ public:
                                                   const BRepAdaptor_Curve& theCurve2,
                                                   double                   theU1,
                                                   double                   theU2);
+
+protected:
+  //! Initialize from a TopoDS_Edge.
+  //! @param[in] theEdge the edge to evaluate
+  Standard_EXPORT void initialization(const TopoDS_Edge& theEdge);
+
+  //! Initialize from an existing BRepAdaptor_Curve (non-owning).
+  //! @param[in] theCurve the adaptor to reference
+  Standard_EXPORT void initialization(const BRepAdaptor_Curve& theCurve);
+
+  //! Initialize from a handle to BRepAdaptor_Curve.
+  //! @param[in] theCurve handle to the adaptor
+  Standard_EXPORT void initialization(const occ::handle<BRepAdaptor_Curve>& theCurve);
 
 private:
   occ::handle<BRepAdaptor_Curve> myOwned; //!< Owns the adaptor when created from TopoDS_Edge.

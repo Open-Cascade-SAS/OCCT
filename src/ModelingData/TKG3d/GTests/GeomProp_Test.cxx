@@ -181,26 +181,10 @@ TEST(GeomPropTest, ComputeMeanGaussian_Sphere)
 // GeomProp_Curve - initialization and basic queries
 // ============================================================================
 
-TEST(GeomPropCurveTest, UninitializedState)
-{
-  GeomProp_Curve aProp;
-  EXPECT_FALSE(aProp.IsInitialized());
-}
-
-TEST(GeomPropCurveTest, InitializeFromNullHandle)
-{
-  GeomProp_Curve          aProp;
-  occ::handle<Geom_Curve> aNullCurve;
-  aProp.Initialize(aNullCurve);
-  EXPECT_FALSE(aProp.IsInitialized());
-}
-
 TEST(GeomPropCurveTest, Line_ZeroCurvature)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(1, 0, 0));
-  GeomProp_Curve         aProp;
-  aProp.Initialize(aLine);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Curve         aProp(aLine);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Line);
 
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(0.5, Precision::Confusion());
@@ -214,9 +198,7 @@ TEST(GeomPropCurveTest, Circle_ConstantCurvature)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aRadius);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aCircle);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Curve aProp(aCircle);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Circle);
 
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(1.0, Precision::Confusion());
@@ -231,9 +213,7 @@ TEST(GeomPropCurveTest, Ellipse_CurvatureExtrema)
   gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aMajor, aMinor);
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(anEllipse);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Curve aProp(anEllipse);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -245,9 +225,7 @@ TEST(GeomPropCurveTest, Hyperbola_SingleExtremum)
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aHyperbola);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Curve aProp(aHyperbola);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -260,9 +238,7 @@ TEST(GeomPropCurveTest, Parabola_SingleExtremum)
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aParabola);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Curve aProp(aParabola);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -275,8 +251,7 @@ TEST(GeomPropCurveTest, Circle_NoExtrema)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aCircle);
+  GeomProp_Curve aProp(aCircle);
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
   EXPECT_EQ(aResult.Points.Length(), 0);
@@ -287,8 +262,7 @@ TEST(GeomPropCurveTest, Circle_NoInflections)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aCircle);
+  GeomProp_Curve aProp(aCircle);
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
   EXPECT_EQ(aResult.Points.Length(), 0);
@@ -303,9 +277,7 @@ TEST(GeomPropCurveTest, BezierCurve_Inflections)
   aPoles(4)                             = gp_Pnt(4, 1, 0);
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aBezier);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Curve aProp(aBezier);
   EXPECT_EQ(aProp.GetType(), GeomAbs_BezierCurve);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
@@ -316,8 +288,7 @@ TEST(GeomPropCurveTest, BezierCurve_Inflections)
 TEST(GeomPropCurveTest, Line_TangentDirection)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0, 0, 0), gp_Dir(0, 1, 0));
-  GeomProp_Curve         aProp;
-  aProp.Initialize(aLine);
+  GeomProp_Curve         aProp(aLine);
 
   const GeomProp::TangentResult aTan = aProp.Tangent(5.0, Precision::Confusion());
   ASSERT_TRUE(aTan.IsDefined);
@@ -329,8 +300,7 @@ TEST(GeomPropCurveTest, Circle_Normal)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aCircle);
+  GeomProp_Curve aProp(aCircle);
 
   // At param=0, point is (5,0,0), normal should point toward center (-1,0,0)
   const GeomProp::NormalResult aNorm = aProp.Normal(0.0, Precision::Confusion());
@@ -343,8 +313,7 @@ TEST(GeomPropCurveTest, Circle_CentreOfCurvature)
   gp_Circ                  aCirc(gp_Ax2(gp_Pnt(1, 2, 3), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
 
-  GeomProp_Curve aProp;
-  aProp.Initialize(aCircle);
+  GeomProp_Curve aProp(aCircle);
 
   const GeomProp::CentreResult aCentre = aProp.CentreOfCurvature(0.0, Precision::Confusion());
   ASSERT_TRUE(aCentre.IsDefined);
@@ -357,27 +326,11 @@ TEST(GeomPropCurveTest, Circle_CentreOfCurvature)
 // GeomProp_Surface - initialization and basic queries
 // ============================================================================
 
-TEST(GeomPropSurfaceTest, UninitializedState)
-{
-  GeomProp_Surface aProp;
-  EXPECT_FALSE(aProp.IsInitialized());
-}
-
-TEST(GeomPropSurfaceTest, InitializeFromNullHandle)
-{
-  GeomProp_Surface          aProp;
-  occ::handle<Geom_Surface> aNullSurf;
-  aProp.Initialize(aNullSurf);
-  EXPECT_FALSE(aProp.IsInitialized());
-}
-
 TEST(GeomPropSurfaceTest, Plane_ZeroCurvatures)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aPlane);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Surface aProp(aPlane);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Plane);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.0, 0.0, Precision::Confusion());
@@ -391,8 +344,7 @@ TEST(GeomPropSurfaceTest, Plane_Normal)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aPlane);
+  GeomProp_Surface aProp(aPlane);
 
   const GeomProp::SurfaceNormalResult aNorm = aProp.Normal(0.0, 0.0, Precision::Confusion());
   ASSERT_TRUE(aNorm.IsDefined);
@@ -403,8 +355,7 @@ TEST(GeomPropSurfaceTest, Plane_MeanGaussian)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aPlane);
+  GeomProp_Surface aProp(aPlane);
 
   const GeomProp::MeanGaussianResult aRes = aProp.MeanGaussian(0.0, 0.0, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
@@ -417,9 +368,7 @@ TEST(GeomPropSurfaceTest, Sphere_ConstantCurvature)
   const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), aRadius);
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aSphere);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Surface aProp(aSphere);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Sphere);
 
   // Curvature sign depends on normal orientation. For outward-pointing normal,
@@ -435,8 +384,7 @@ TEST(GeomPropSurfaceTest, Sphere_MeanGaussian)
   const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), aRadius);
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aSphere);
+  GeomProp_Surface aProp(aSphere);
 
   const GeomProp::MeanGaussianResult aRes = aProp.MeanGaussian(0.5, 0.5, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
@@ -449,9 +397,7 @@ TEST(GeomPropSurfaceTest, Cylinder_Curvatures)
   const double                         aRadius = 3.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aCyl);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Surface aProp(aCyl);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Cylinder);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.5, 1.0, Precision::Confusion());
@@ -468,8 +414,7 @@ TEST(GeomPropSurfaceTest, Cylinder_MeanGaussian)
   const double                         aRadius = 3.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aCyl);
+  GeomProp_Surface aProp(aCyl);
 
   const GeomProp::MeanGaussianResult aRes = aProp.MeanGaussian(0.5, 1.0, Precision::Confusion());
   ASSERT_TRUE(aRes.IsDefined);
@@ -482,9 +427,7 @@ TEST(GeomPropSurfaceTest, Cone_CurvaturesVaryAlongV)
   gp_Ax3                           anAx3;
   occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(anAx3, M_PI / 6.0, 5.0);
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aCone);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Surface aProp(aCone);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Cone);
 
   const GeomProp::SurfaceCurvatureResult aCurv1 =
@@ -506,9 +449,7 @@ TEST(GeomPropSurfaceTest, Torus_CurvaturesVaryAlongV)
   const double                      aMinor = 3.0;
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp_Ax3(), aMajor, aMinor);
 
-  GeomProp_Surface aProp;
-  aProp.Initialize(aTorus);
-  ASSERT_TRUE(aProp.IsInitialized());
+  GeomProp_Surface aProp(aTorus);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Torus);
 
   // At V=0 (outer edge): k1=1/r, k2=1/(R+r)

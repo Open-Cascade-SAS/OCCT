@@ -44,11 +44,29 @@ occ::handle<Geom2d_Curve> ExtractBasisCurve(const occ::handle<Geom2d_Curve>& the
 
 //==================================================================================================
 
-void Geom2dGridEval_Curve::Initialize(const Adaptor2d_Curve2d& theCurve)
+Geom2dGridEval_Curve::Geom2dGridEval_Curve(const Adaptor2d_Curve2d& theCurve)
+    : myEvaluator(std::monostate{}),
+      myCurveType(GeomAbs_OtherCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+Geom2dGridEval_Curve::Geom2dGridEval_Curve(const occ::handle<Geom2d_Curve>& theCurve)
+    : myEvaluator(std::monostate{}),
+      myCurveType(GeomAbs_OtherCurve)
+{
+  initialization(theCurve);
+}
+
+//==================================================================================================
+
+void Geom2dGridEval_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
 {
   if (theCurve.IsKind(STANDARD_TYPE(Geom2dAdaptor_Curve)))
   {
-    Initialize(static_cast<const Geom2dAdaptor_Curve&>(theCurve).Curve());
+    initialization(static_cast<const Geom2dAdaptor_Curve&>(theCurve).Curve());
     return;
   }
 
@@ -60,7 +78,7 @@ void Geom2dGridEval_Curve::Initialize(const Adaptor2d_Curve2d& theCurve)
 
 //==================================================================================================
 
-void Geom2dGridEval_Curve::Initialize(const occ::handle<Geom2d_Curve>& theCurve)
+void Geom2dGridEval_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
 {
   if (theCurve.IsNull())
   {
@@ -118,13 +136,6 @@ void Geom2dGridEval_Curve::Initialize(const occ::handle<Geom2d_Curve>& theCurve)
     myEvaluator.emplace<std::monostate>();
     myCurveType = GeomAbs_OtherCurve;
   }
-}
-
-//==================================================================================================
-
-bool Geom2dGridEval_Curve::IsInitialized() const
-{
-  return !std::holds_alternative<std::monostate>(myEvaluator);
 }
 
 //==================================================================================================

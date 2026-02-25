@@ -28,8 +28,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OffsetCurve::EvaluateGrid(
 
   // Offset D0 requires basis D1 to compute offset direction
   // Batch evaluate basis curve D1
-  GeomGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<GeomGridEval::CurveD1> aBasisD1 = aBasisEval.EvaluateGridD1(theParams);
   if (aBasisD1.IsEmpty())
@@ -66,8 +65,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OffsetCurve::EvaluateGrid
 
   // Offset D1 requires basis D2
   // Batch evaluate basis curve D2
-  GeomGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<GeomGridEval::CurveD2> aBasisD2 = aBasisEval.EvaluateGridD2(theParams);
   if (aBasisD2.IsEmpty())
@@ -105,8 +103,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OffsetCurve::EvaluateGrid
 
   // Offset D2 requires basis D3
   // Batch evaluate basis curve D3
-  GeomGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<GeomGridEval::CurveD3> aBasisD3 = aBasisEval.EvaluateGridD3(theParams);
   if (aBasisD3.IsEmpty())
@@ -169,8 +166,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OffsetCurve::EvaluateGrid
 
   // Offset D3 requires basis D3 + D4
   // Batch evaluate basis curve D3, get D4 individually
-  GeomGridEval_Curve aBasisEval;
-  aBasisEval.Initialize(myBasis);
+  GeomGridEval_Curve aBasisEval(myBasis);
 
   NCollection_Array1<GeomGridEval::CurveD3> aBasisD3 = aBasisEval.EvaluateGridD3(theParams);
   if (aBasisD3.IsEmpty())
@@ -272,8 +268,7 @@ NCollection_Array1<gp_Vec> GeomGridEval_OffsetCurve::EvaluateGridDN(
   {
     // For orders > 3, offset curve DN = basis curve DN (no offset contribution)
     // Batch evaluate basis curve DN
-    GeomGridEval_Curve aBasisEval;
-    aBasisEval.Initialize(myBasis);
+    GeomGridEval_Curve aBasisEval(myBasis);
     return aBasisEval.EvaluateGridDN(theParams, theN);
   }
 }

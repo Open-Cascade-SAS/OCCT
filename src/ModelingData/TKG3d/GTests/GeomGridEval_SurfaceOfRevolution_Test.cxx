@@ -213,10 +213,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, UnifiedDispatch)
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, aRevAxis);
 
   // Test dispatch via unified evaluator
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(aRevSurf);
-
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEval_Surface anEval(aRevSurf);
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfRevolution);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
@@ -242,10 +239,7 @@ TEST(GeomGridEval_SurfaceOfRevolutionTest, AdaptorDispatch)
 
   // Test dispatch via adaptor
   GeomAdaptor_Surface  anAdaptor(aRevSurf);
-  GeomGridEval_Surface anEval;
-  anEval.Initialize(anAdaptor);
-
-  EXPECT_TRUE(anEval.IsInitialized());
+  GeomGridEval_Surface anEval(anAdaptor);
   EXPECT_EQ(anEval.GetType(), GeomAbs_SurfaceOfRevolution);
 
   NCollection_Array1<double> aUParams = CreateUniformParams(0.0, M_PI, 5);
