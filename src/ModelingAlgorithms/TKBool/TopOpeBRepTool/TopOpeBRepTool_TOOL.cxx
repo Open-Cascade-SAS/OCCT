@@ -868,7 +868,9 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
   }
 
   const GeomProp::NormalResult aNormRes = aCurveProp.Normal(par, Precision::Confusion());
-  gp_Dir                       N        = aNormRes.IsDefined ? aNormRes.Direction : gp_Dir();
+  if (!aNormRes.IsDefined)
+    return false;
+  gp_Dir N = aNormRes.Direction;
   gp_Dir                       T        = aTangRes.Direction;
   gp_Dir                       axis     = N ^ T;
   double                       dot      = std::abs(axis.Dot(tg0));

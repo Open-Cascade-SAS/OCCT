@@ -181,7 +181,43 @@ Geom2dProp::TangentResult Geom2dProp_OtherCurve::Tangent(const double theParam,
   gp_Pnt2d aPnt;
   gp_Vec2d aD1, aD2, aD3;
   myAdaptor->D3(theParam, aPnt, aD1, aD2, aD3);
-  return Geom2dProp::ComputeTangent(aD1, aD2, aD3, theTol);
+
+  const double aTol2 = theTol * theTol;
+
+  // If D1 is non-null, use it directly — no sign ambiguity.
+  if (aD1.SquareMagnitude() > aTol2)
+  {
+    return {gp_Dir2d(aD1), true};
+  }
+
+  // D1 is null — find first non-null higher derivative.
+  gp_Vec2d aVec;
+  if (aD2.SquareMagnitude() > aTol2)
+    aVec = aD2;
+  else if (aD3.SquareMagnitude() > aTol2)
+    aVec = aD3;
+  else
+    return {{}, false};
+
+  // Correct sign of higher-order derivative by sampling nearby points.
+  constexpr double THE_DIV_FACTOR = 1.e-3;
+  constexpr double THE_MIN_STEP   = 1.e-7;
+  const double     anUFirst       = myAdaptor->FirstParameter();
+  const double     anULast        = myAdaptor->LastParameter();
+  double           aDu            = 0.0;
+  if (anULast < RealLast() && anUFirst > RealFirst())
+    aDu = anULast - anUFirst;
+  const double aDelta = std::max(aDu * THE_DIV_FACTOR, THE_MIN_STEP);
+  const double aU = (theParam - anUFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
+
+  gp_Pnt2d aP1, aP2;
+  myAdaptor->D0(std::min(theParam, aU), aP1);
+  myAdaptor->D0(std::max(theParam, aU), aP2);
+  const gp_Vec2d aFiniteDiff(aP1, aP2);
+  if (aVec.Dot(aFiniteDiff) < 0.0)
+    aVec.Reverse();
+
+  return {gp_Dir2d(aVec), true};
 }
 
 //==================================================================================================

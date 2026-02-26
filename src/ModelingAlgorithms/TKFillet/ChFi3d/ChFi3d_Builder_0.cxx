@@ -5481,12 +5481,15 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       Curvature = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
       if (Curvature > Resolution)
       {
-        C->D0(t, P1);
         const GeomProp::CentreResult aCentreRes = aCurveProp.CentreOfCurvature(t, Resolution);
-        P2                                      = aCentreRes.Centre;
-        PrevVec                                 = gp_Vec(P1, P2);
-        prevVecFound                            = true;
-        break;
+        if (aCentreRes.IsDefined)
+        {
+          C->D0(t, P1);
+          P2           = aCentreRes.Centre;
+          PrevVec      = gp_Vec(P1, P2);
+          prevVecFound = true;
+          break;
+        }
       }
       t += step;
     }
@@ -5505,7 +5508,7 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
   {
     double t    = TI(intrv);
     double step = (TI(intrv + 1) - t) / Discretisation;
-    for (ii = 1; ii <= Discretisation; ii++)
+    for (ii = 1; ii <= Discretisation; ii++, t += step)
     {
       const GeomProp::TangentResult aTanRes = aCurveProp.Tangent(t, Resolution);
       if (!aTanRes.IsDefined)
@@ -5514,9 +5517,11 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       Curvature = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
       if (Curvature > Resolution)
       {
-        C->D0(t, P1);
         const GeomProp::CentreResult aCentreRes = aCurveProp.CentreOfCurvature(t, Resolution);
-        P2                                      = aCentreRes.Centre;
+        if (!aCentreRes.IsDefined)
+          continue;
+        C->D0(t, P1);
+        P2 = aCentreRes.Centre;
         gp_Vec Vec(P1, P2);
         double Angle = PrevVec.Angle(Vec);
         if (Angle > M_PI / 3.)
@@ -5528,7 +5533,6 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
           return false;
         PrevVec = Vec;
       }
-      t += step;
     }
   }
 

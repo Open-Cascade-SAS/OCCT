@@ -801,7 +801,7 @@ double Angle2D(const TopoDS_Vertex&                 aV,
     {
       const Geom2dProp::CurvatureResult aCurvRes =
         aCurveProp.Curvature(aTV, Precision::PConfusion());
-      double R = aCurvRes.Value;
+      double R = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
       if (R > Precision::PConfusion())
       {
         R             = 1. / R;

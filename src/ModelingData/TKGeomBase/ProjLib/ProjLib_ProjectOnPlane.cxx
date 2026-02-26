@@ -1431,7 +1431,9 @@ bool ProjLib_ProjectOnPlane::BuildParabolaByApex(occ::handle<Geom_Curve>& theGeo
     return false;
   }
   const GeomProp::NormalResult aNormRes = aCurveProp.Normal(aT, Precision::Confusion());
-  anXDir                                = aNormRes.Direction;
+  if (!aNormRes.IsDefined)
+    return false;
+  anXDir = aNormRes.Direction;
   //
   gp_Lin anXLine(aP0, anXDir);
   gp_Pnt aP1 = Value(aT + 10. * aF);

@@ -613,16 +613,17 @@ occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
     GeomAdaptor_Surface aGAsurf(basisSurf);
     if (aGAsurf.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
-      occ::handle<Geom_Curve>             aL = basisSurf->UIso(UU);
       GeomProp_Surface                    aSurfProp(basisSurf);
       const GeomProp::SurfaceNormalResult aNormRes =
         aSurfProp.Normal(UU, 0., Precision::Confusion());
-
-      gp_Vec aDir(aNormRes.Direction);
-      aDir *= offsetValue;
-
-      aL->Translate(aDir);
-      return aL;
+      if (aNormRes.IsDefined)
+      {
+        occ::handle<Geom_Curve> aL = basisSurf->UIso(UU);
+        gp_Vec                  aDir(aNormRes.Direction);
+        aDir *= offsetValue;
+        aL->Translate(aDir);
+        return aL;
+      }
     }
     const int                                Num1 = 0, Num2 = 0, Num3 = 1;
     occ::handle<NCollection_HArray1<double>> T1, T2, T3 = new NCollection_HArray1<double>(1, Num3);

@@ -1162,9 +1162,27 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   Vm                                           = (V1 + V2) / 2.;
   occ::handle<IGESData_IGESEntity>    Surface  = TransferSurface(TheSurf, Udeb, Ufin, Vdeb, Vfin);
   double                              Distance = start->Offset() / GetUnit();
-  GeomProp_Surface                    aProp(TheSurf);
-  const GeomProp::SurfaceNormalResult aNormRes = aProp.Normal(Um, Vm, Precision::Confusion());
-  gp_Dir                              Dir      = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
+  GeomProp_Surface aProp(TheSurf);
+  // Try midpoint first; if the normal is undefined there (singular point),
+  // try a few alternative sample points before giving up.
+  gp_Dir Dir;
+  bool   isDirDefined = false;
+  {
+    const double aUVSamples[][2] = {
+      {Um, Vm}, {U1, V1}, {U2, V2}, {U1, V2}, {U2, V1}};
+    for (const auto& [aU, aV] : aUVSamples)
+    {
+      const GeomProp::SurfaceNormalResult aNormRes = aProp.Normal(aU, aV, Precision::Confusion());
+      if (aNormRes.IsDefined)
+      {
+        Dir          = aNormRes.Direction;
+        isDirDefined = true;
+        break;
+      }
+    }
+  }
+  if (!isDirDefined)
+    return res;
   double                              Xd, Yd, Zd;
   Dir.Coord(Xd, Yd, Zd);
   gp_XYZ Indicator = gp_XYZ(Xd / GetUnit(), Yd / GetUnit(), Zd / GetUnit());

@@ -33,15 +33,20 @@
 
 //=================================================================================================
 
-static gp_Dir getNormalOnFace(const TopoDS_Face& theFace, const double theU, const double theV)
+static bool getNormalOnFace(const TopoDS_Face& theFace,
+                            const double       theU,
+                            const double       theV,
+                            gp_Dir&            theNormal)
 {
-  const double                        aPrec = gp::Resolution();
+  const double                        aPrec    = gp::Resolution();
   BRepProp_Surface                    aProps(theFace);
   const GeomProp::SurfaceNormalResult aNormRes = aProps.Normal(theU, theV, aPrec);
-  gp_Dir                              aNormal  = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
+  if (!aNormRes.IsDefined)
+    return false;
+  theNormal = aNormRes.Direction;
   if (theFace.Orientation() == TopAbs_REVERSED)
-    aNormal.Reverse();
-  return aNormal;
+    theNormal.Reverse();
+  return true;
 }
 
 //=======================================================================
@@ -67,8 +72,9 @@ static bool getNormalFromEdge(const TopoDS_Shape& theShape,
         double                    f, l;
         occ::handle<Geom2d_Curve> aC2d  = BRep_Tool::CurveOnSurface(theEdge, aF, f, l);
         gp_Pnt2d                  aP2d  = aC2d->Value(thePar);
-        gp_Dir                    aNorm = getNormalOnFace(aF, aP2d.X(), aP2d.Y());
-        aSum += aNorm.XYZ();
+        gp_Dir aNorm;
+        if (getNormalOnFace(aF, aP2d.X(), aP2d.Y(), aNorm))
+          aSum += aNorm.XYZ();
       }
     }
   }
@@ -99,9 +105,10 @@ static bool getNormalFromVertex(const TopoDS_Shape&  theShape,
     {
       if (ex1.Current().IsSame(theVer))
       {
-        gp_Pnt2d aP2d  = BRep_Tool::Parameters(theVer, aF);
-        gp_Dir   aNorm = getNormalOnFace(aF, aP2d.X(), aP2d.Y());
-        aSum += aNorm.XYZ();
+        gp_Pnt2d aP2d = BRep_Tool::Parameters(theVer, aF);
+        gp_Dir   aNorm;
+        if (getNormalOnFace(aF, aP2d.X(), aP2d.Y(), aNorm))
+          aSum += aNorm.XYZ();
       }
     }
   }
@@ -142,11 +149,13 @@ static bool FindExtrema(const gp_Pnt&       thePnt,
     if (ext.SupportTypeShape2(iext) == BRepExtrema_IsInFace)
     {
       TopoDS_Face aF = TopoDS::Face(ext.SupportOnShape2(iext));
-      theMinPnt      = ext.PointOnShape2(iext);
       double aU, aV;
       ext.ParOnFaceS2(iext, aU, aV);
-      theNormal = getNormalOnFace(aF, aU, aV);
-      return true;
+      if (getNormalOnFace(aF, aU, aV, theNormal))
+      {
+        theMinPnt = ext.PointOnShape2(iext);
+        return true;
+      }
     }
   }
 
