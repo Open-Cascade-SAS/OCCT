@@ -82,9 +82,9 @@ math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
   math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
   Sol.Perform(Ff, V);
   Done   = Sol.IsDone();
-  NbIter = Sol.NbIterations();
   if (Done)
   {
+    NbIter = Sol.NbIterations();
     F.GetStateNumber();
     TheRoot       = Sol.Root()(1);
     TheDerivative = Sol.Derivative()(1, 1);
@@ -108,9 +108,9 @@ math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
   math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
   Sol.Perform(Ff, V, Aa, Bb);
   Done   = Sol.IsDone();
-  NbIter = Sol.NbIterations();
   if (Done)
   {
+    NbIter = Sol.NbIterations();
     F.GetStateNumber();
     TheRoot       = Sol.Root()(1);
     TheDerivative = Sol.Derivative()(1, 1);
