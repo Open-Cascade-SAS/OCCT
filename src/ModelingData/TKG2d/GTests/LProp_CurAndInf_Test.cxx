@@ -11,12 +11,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Standard_Macro.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
 #include <LProp_CurAndInf.hxx>
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-TEST(LProp_CurAndInfTest, DefaultConstructor_IsEmpty)
+  TEST(LProp_CurAndInfTest, DefaultConstructor_IsEmpty)
 {
   LProp_CurAndInf aResult;
   EXPECT_TRUE(aResult.IsEmpty());

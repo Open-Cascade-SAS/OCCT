@@ -12,15 +12,17 @@
 // commercial license or contractual agreement.
 
 #include <GeomAbs_CurveType.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_AnalyticCurInf.hxx>
 #include <LProp_CIType.hxx>
 #include <LProp_CurAndInf.hxx>
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
 #include <cmath>
 
-TEST(LProp_AnalyticCurInfTest, Line_NoExtrema)
+  TEST(LProp_AnalyticCurInfTest, Line_NoExtrema)
 {
   // A line has constant zero curvature - no extrema
   LProp_AnalyticCurInf anAnalyzer;
