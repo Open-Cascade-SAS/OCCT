@@ -6,6 +6,7 @@ set(OCCT_Geom2dProp_FILES
   Geom2dProp.cxx
   Geom2dProp_BezierCurve.hxx
   Geom2dProp_BezierCurve.cxx
+  Geom2dProp_CurveAnalysisTools.pxx
   Geom2dProp_BSplineCurve.hxx
   Geom2dProp_BSplineCurve.cxx
   Geom2dProp_Circle.hxx

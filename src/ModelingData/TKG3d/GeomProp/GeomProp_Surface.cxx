@@ -114,6 +114,21 @@ void GeomProp_Surface::initFromAdaptor()
 
 //==================================================================================================
 
+const GeomAdaptor_Surface* GeomProp_Surface::Adaptor() const
+{
+  return std::visit(
+    [](const auto& theEval) -> const GeomAdaptor_Surface* {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+        return nullptr;
+      else
+        return theEval.Adaptor();
+    },
+    myEvaluator);
+}
+
+//==================================================================================================
+
 GeomProp::SurfaceNormalResult GeomProp_Surface::Normal(const double theU,
                                                        const double theV,
                                                        const double theTol) const

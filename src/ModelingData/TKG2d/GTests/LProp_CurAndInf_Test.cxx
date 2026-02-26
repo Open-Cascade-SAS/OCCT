@@ -11,6 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+#include <Standard_Macro.hxx>
 #include <LProp_CIType.hxx>
 #include <LProp_CurAndInf.hxx>
 

@@ -120,6 +120,9 @@ struct MeanGaussianResult
 
 //! Compute tangent direction from derivative vectors.
 //! Tries D1 first; if D1 magnitude^2 <= theTol^2, tries D2, then D3.
+//! @note When D1 is null and a higher-order derivative is used, the sign of
+//!   the direction may be wrong. Use the overload with finite-difference points
+//!   for sign correction when the curve parameterization is available.
 //! @param[in] theD1 first derivative vector
 //! @param[in] theD2 second derivative vector
 //! @param[in] theD3 third derivative vector
@@ -129,6 +132,23 @@ Standard_EXPORT TangentResult ComputeTangent(const gp_Vec& theD1,
                                              const gp_Vec& theD2,
                                              const gp_Vec& theD3,
                                              double        theTol);
+
+//! Compute tangent direction with sign correction for higher-order derivatives.
+//! Same as ComputeTangent, but when D1 is null and a higher-order derivative is
+//! used, corrects the sign by comparing with a finite-difference direction vector.
+//! @param[in] theD1 first derivative vector
+//! @param[in] theD2 second derivative vector
+//! @param[in] theD3 third derivative vector
+//! @param[in] theTol linear tolerance for zero-vector detection
+//! @param[in] thePntBefore point on the curve before the evaluation point
+//! @param[in] thePntAfter point on the curve after the evaluation point
+//! @return tangent result with validity flag and corrected sign
+Standard_EXPORT TangentResult ComputeTangent(const gp_Vec& theD1,
+                                             const gp_Vec& theD2,
+                                             const gp_Vec& theD3,
+                                             double        theTol,
+                                             const gp_Pnt& thePntBefore,
+                                             const gp_Pnt& thePntAfter);
 
 //! Compute curvature from first and second derivative vectors.
 //! Curvature = |D1 x D2| / |D1|^3

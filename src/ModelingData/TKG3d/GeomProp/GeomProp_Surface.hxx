@@ -102,6 +102,9 @@ public:
   //! Returns the detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfaceType; }
 
+  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
+  Standard_EXPORT const GeomAdaptor_Surface* Adaptor() const;
+
   //! Compute surface normal at given (U, V) parameter.
   //! @param[in] theU U parameter on the surface
   //! @param[in] theV V parameter on the surface

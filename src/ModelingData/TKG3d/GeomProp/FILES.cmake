@@ -6,6 +6,7 @@ set(OCCT_GeomProp_FILES
   GeomProp.cxx
   GeomProp_BezierCurve.hxx
   GeomProp_BezierCurve.cxx
+  GeomProp_CurveAnalysisTools.pxx
   GeomProp_BezierSurface.hxx
   GeomProp_BezierSurface.cxx
   GeomProp_BSplineCurve.hxx

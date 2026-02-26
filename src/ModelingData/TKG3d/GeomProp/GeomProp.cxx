@@ -47,6 +47,40 @@ GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
 
 //==================================================================================================
 
+GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
+                                                 const gp_Vec& theD2,
+                                                 const gp_Vec& theD3,
+                                                 const double  theTol,
+                                                 const gp_Pnt& thePntBefore,
+                                                 const gp_Pnt& thePntAfter)
+{
+  const double aTol2 = theTol * theTol;
+
+  // If D1 is non-null, use it directly (no sign ambiguity).
+  if (theD1.SquareMagnitude() > aTol2)
+  {
+    return {gp_Dir(theD1), true};
+  }
+
+  // D1 is null: find first non-null higher derivative.
+  gp_Vec aVec;
+  if (theD2.SquareMagnitude() > aTol2)
+    aVec = theD2;
+  else if (theD3.SquareMagnitude() > aTol2)
+    aVec = theD3;
+  else
+    return {{}, false};
+
+  // Correct sign of higher-order derivative using finite-difference direction.
+  const gp_Vec aFiniteDiff(thePntBefore, thePntAfter);
+  if (aVec.Dot(aFiniteDiff) < 0.0)
+    aVec.Reverse();
+
+  return {gp_Dir(aVec), true};
+}
+
+//==================================================================================================
+
 GeomProp::CurvatureResult GeomProp::ComputeCurvature(const gp_Vec& theD1,
                                                      const gp_Vec& theD2,
                                                      const double  theTol)
@@ -122,6 +156,10 @@ GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
 
   // Normal vector (unnormalized) = D2 * (D1.D1) - D1 * (D1.D2)
   gp_Vec aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  {
+    return {{}, false};
+  }
   aNorm.Normalize();
   aNorm.Divide(aCurvRes.Value);
 
@@ -165,6 +203,15 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   const double aF = theD1U.Dot(theD1V);
   const double aG = theD1V.Dot(theD1V);
 
+  // Check that both tangent directions are non-degenerate.
+  // This matches the old LProp_SLProps guard against "pointed patches"
+  // where one tangent is degenerate, preventing division by zero below.
+  const double aTol2 = theTol * theTol;
+  if (aE <= aTol2 || aG <= aTol2)
+  {
+    return {};
+  }
+
   // Second fundamental form coefficients.
   const double aL  = aNormal.Dot(theD2U);
   const double aM  = aNormal.Dot(theDUV);
@@ -172,102 +219,186 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
 
   // Discriminant of first fundamental form.
   const double aDet = aE * aG - aF * aF;
-  if (std::abs(aDet) <= theTol * theTol)
+  if (std::abs(aDet) <= aTol2)
   {
     return {};
   }
 
-  // Mean curvature: H = (EN - 2FM + GL) / (2 * det)
-  const double aH = (aE * aN_ - 2.0 * aF * aM + aG * aL) / (2.0 * aDet);
+  // Compute principal curvatures and directions using the directional equation
+  // approach (matching the legacy LProp_SLProps algorithm).
+  //
+  // The principal directions satisfy the equation:
+  //   A*t^2 + B*t + C = 0
+  // where A = E*M - F*L, B = E*N - G*L, C = F*N - G*M,
+  // and t is the ratio defining the direction in parameter space.
+  const double aA = aE * aM - aF * aL;
+  const double aB = aE * aN_ - aG * aL;
+  const double aC = aF * aN_ - aG * aM;
 
-  // Gaussian curvature: K = (LN - M^2) / det
-  const double aK = (aL * aN_ - aM * aM) / aDet;
-
-  // Principal curvatures from: k^2 - 2Hk + K = 0
-  const double aDiscriminant = aH * aH - aK;
+  const double aMaxABC = std::max({std::abs(aA), std::abs(aB), std::abs(aC)});
 
   SurfaceCurvatureResult aResult;
   aResult.IsDefined = true;
 
-  if (aDiscriminant <= theTol * theTol)
+  if (aMaxABC < RealEpsilon())
   {
     // Umbilic point: both principal curvatures are equal.
-    aResult.MinCurvature = aH;
-    aResult.MaxCurvature = aH;
-    aResult.IsUmbilic    = true;
-    // At umbilic points, directions are undefined - use U and V directions.
+    const double aUmbilicCurv = (std::abs(aG) > theTol * theTol) ? aN_ / aG : 0.0;
+    aResult.MinCurvature      = aUmbilicCurv;
+    aResult.MaxCurvature      = aUmbilicCurv;
+    aResult.IsUmbilic         = true;
     if (theD1U.SquareMagnitude() > theTol * theTol)
     {
       aResult.MinDirection = gp_Dir(theD1U);
-    }
-    if (theD1V.SquareMagnitude() > theTol * theTol)
-    {
-      aResult.MaxDirection = gp_Dir(theD1V);
+      const gp_Vec aMaxDir = theD1U.Crossed(aNormal);
+      if (aMaxDir.SquareMagnitude() > theTol * theTol)
+      {
+        aResult.MaxDirection = gp_Dir(aMaxDir);
+      }
     }
     return aResult;
   }
 
-  const double aSqrtDisc = std::sqrt(std::max(aDiscriminant, 0.0));
-  const double aK1       = aH - aSqrtDisc; // min curvature
-  const double aK2       = aH + aSqrtDisc; // max curvature
-
-  aResult.MinCurvature = aK1;
-  aResult.MaxCurvature = aK2;
-  aResult.IsUmbilic    = false;
-
-  // Compute principal directions from the shape operator (Weingarten map).
-  // For each principal curvature k, the principal direction (a, b) satisfies:
-  // (L - kE)*a + (M - kF)*b = 0
-  // (M - kF)*a + (N - kG)*b = 0
-  // We pick the equation with the largest coefficient to avoid division by near-zero.
-  for (int i = 0; i < 2; ++i)
-  {
-    const double aKi     = (i == 0) ? aK1 : aK2;
-    const double aCoeffA = aL - aKi * aE;
-    const double aCoeffB = aM - aKi * aF;
-    // TODO: aCoeffC is always equal to aCoeffB (symmetric shape operator matrix).
-    //   Consider removing the redundant variable and using aCoeffB directly.
-    const double aCoeffC = aM - aKi * aF;
-    const double aCoeffD = aN_ - aKi * aG;
-
-    gp_Vec aDir;
-    if (std::abs(aCoeffA) > std::abs(aCoeffD))
+  // Lambda to handle umbilic (double root or degenerate) cases.
+  auto handleUmbilic = [&]() {
+    const double aUmbilicCurv = (std::abs(aG) > theTol * theTol) ? aN_ / aG : 0.0;
+    aResult.MinCurvature      = aUmbilicCurv;
+    aResult.MaxCurvature      = aUmbilicCurv;
+    aResult.IsUmbilic         = true;
+    if (theD1U.SquareMagnitude() > theTol * theTol)
     {
-      // From first equation: a*coeff_a + b*coeff_b = 0 => b/a = -coeff_a/coeff_b
-      if (std::abs(aCoeffB) > theTol)
+      aResult.MinDirection = gp_Dir(theD1U);
+      const gp_Vec aMaxDir = theD1U.Crossed(aNormal);
+      if (aMaxDir.SquareMagnitude() > theTol * theTol)
       {
-        aDir = theD1U * (-aCoeffB) + theD1V * aCoeffA;
+        aResult.MaxDirection = gp_Dir(aMaxDir);
       }
-      else
-      {
-        aDir = theD1V;
-      }
+    }
+    return aResult;
+  };
+
+  double aCurv1, aCurv2;
+  gp_Vec aVecCurv1, aVecCurv2;
+
+  // Normalize coefficients for numerical stability.
+  const double aNormA = aA / aMaxABC;
+  const double aNormB = aB / aMaxABC;
+  const double aNormC = aC / aMaxABC;
+
+  if (std::abs(aNormA) > RealEpsilon())
+  {
+    // Solve A*t^2 + B*t + C = 0; direction = t * D1U + D1V.
+    // Use error-bounded discriminant check matching math_DirectPolynomialRoots behavior:
+    // clamp discriminant to zero when within floating-point noise threshold.
+    const double aP    = aNormB / aNormA;
+    const double aQ    = aNormC / aNormA;
+    const double aEpsD = 3.0 * RealEpsilon() * (aP * aP + std::abs(4.0 * aQ));
+    double       aDisc = aP * aP - 4.0 * aQ;
+    if (std::abs(aDisc) <= aEpsD)
+    {
+      aDisc = 0.0;
+    }
+    if (aDisc < 0.0)
+    {
+      return handleUmbilic();
+    }
+    if (aDisc == 0.0)
+    {
+      return handleUmbilic();
+    }
+    const double aSqrtDisc = std::sqrt(aDisc);
+    // Use numerically stable root formula (same as math_DirectPolynomialRoots).
+    double aRoot1, aRoot2;
+    if (aP > 0.0)
+    {
+      aRoot1 = -(aP + aSqrtDisc) / 2.0;
     }
     else
     {
-      // From second equation: a*coeff_c + b*coeff_d = 0 => a/b = -coeff_d/coeff_c
-      if (std::abs(aCoeffC) > theTol)
-      {
-        aDir = theD1U * aCoeffD + theD1V * (-aCoeffC);
-      }
-      else
-      {
-        aDir = theD1U;
-      }
+      aRoot1 = -(aP - aSqrtDisc) / 2.0;
     }
-
-    if (aDir.SquareMagnitude() > theTol * theTol)
+    aRoot2               = aQ / aRoot1;
+    const double aDenom1 = (aE * aRoot1 + 2.0 * aF) * aRoot1 + aG;
+    const double aDenom2 = (aE * aRoot2 + 2.0 * aF) * aRoot2 + aG;
+    if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())
     {
-      if (i == 0)
-      {
-        aResult.MinDirection = gp_Dir(aDir);
-      }
-      else
-      {
-        aResult.MaxDirection = gp_Dir(aDir);
-      }
+      return handleUmbilic();
     }
+    aCurv1    = ((aL * aRoot1 + 2.0 * aM) * aRoot1 + aN_) / aDenom1;
+    aCurv2    = ((aL * aRoot2 + 2.0 * aM) * aRoot2 + aN_) / aDenom2;
+    aVecCurv1 = theD1U * aRoot1 + theD1V;
+    aVecCurv2 = theD1U * aRoot2 + theD1V;
   }
+  else if (std::abs(aNormC) > RealEpsilon())
+  {
+    // Solve C*t^2 + B*t + A = 0; direction = D1U + t * D1V.
+    const double aP    = aNormB / aNormC;
+    const double aQ    = aNormA / aNormC;
+    const double aEpsD = 3.0 * RealEpsilon() * (aP * aP + std::abs(4.0 * aQ));
+    double       aDisc = aP * aP - 4.0 * aQ;
+    if (std::abs(aDisc) <= aEpsD)
+    {
+      aDisc = 0.0;
+    }
+    if (aDisc < 0.0)
+    {
+      return handleUmbilic();
+    }
+    if (aDisc == 0.0)
+    {
+      return handleUmbilic();
+    }
+    const double aSqrtDisc = std::sqrt(aDisc);
+    double       aRoot1, aRoot2;
+    if (aP > 0.0)
+    {
+      aRoot1 = -(aP + aSqrtDisc) / 2.0;
+    }
+    else
+    {
+      aRoot1 = -(aP - aSqrtDisc) / 2.0;
+    }
+    aRoot2               = aQ / aRoot1;
+    const double aDenom1 = (aG * aRoot1 + 2.0 * aF) * aRoot1 + aE;
+    const double aDenom2 = (aG * aRoot2 + 2.0 * aF) * aRoot2 + aE;
+    if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())
+    {
+      return handleUmbilic();
+    }
+    aCurv1    = ((aN_ * aRoot1 + 2.0 * aM) * aRoot1 + aL) / aDenom1;
+    aCurv2    = ((aN_ * aRoot2 + 2.0 * aM) * aRoot2 + aL) / aDenom2;
+    aVecCurv1 = theD1U + theD1V * aRoot1;
+    aVecCurv2 = theD1U + theD1V * aRoot2;
+  }
+  else
+  {
+    // Both A and C are near zero: principal directions align with D1U and D1V.
+    aCurv1    = aL / aE;
+    aCurv2    = aN_ / aG;
+    aVecCurv1 = theD1U;
+    aVecCurv2 = theD1V;
+  }
+
+  // Sort so that min curvature is first.
+  if (aCurv1 < aCurv2)
+  {
+    aResult.MinCurvature = aCurv1;
+    aResult.MaxCurvature = aCurv2;
+    if (aVecCurv1.SquareMagnitude() > theTol * theTol)
+      aResult.MinDirection = gp_Dir(aVecCurv1);
+    if (aVecCurv2.SquareMagnitude() > theTol * theTol)
+      aResult.MaxDirection = gp_Dir(aVecCurv2);
+  }
+  else
+  {
+    aResult.MinCurvature = aCurv2;
+    aResult.MaxCurvature = aCurv1;
+    if (aVecCurv2.SquareMagnitude() > theTol * theTol)
+      aResult.MinDirection = gp_Dir(aVecCurv2);
+    if (aVecCurv1.SquareMagnitude() > theTol * theTol)
+      aResult.MaxDirection = gp_Dir(aVecCurv1);
+  }
+  aResult.IsUmbilic = false;
 
   return aResult;
 }
