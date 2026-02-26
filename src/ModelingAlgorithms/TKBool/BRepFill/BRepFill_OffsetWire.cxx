@@ -2541,13 +2541,13 @@ static void CheckBadEdges(const TopoDS_Face&              Spine,
             continue;
           }
 
-          P          = G2d->Value(f);
+          P                                           = G2d->Value(f);
           const Geom2dProp::CurvatureResult aCurvResF = aCurveProp.Curvature(f, eps);
-          double Crv = aCurvResF.Value;
+          double                            Crv       = aCurvResF.Value;
 
           if (Crv >= eps)
           {
-            N = aTanResF.Direction;
+            N        = aTanResF.Direction;
             double x = N.Y(), y = -N.X();
             N.SetCoord(x, y);
             if (reverse)
@@ -2575,13 +2575,13 @@ static void CheckBadEdges(const TopoDS_Face&              Spine,
             continue;
           }
 
-          P   = G2d->Value(l);
+          P                                           = G2d->Value(l);
           const Geom2dProp::CurvatureResult aCurvResL = aCurveProp.Curvature(l, eps);
-          Crv = aCurvResL.Value;
+          Crv                                         = aCurvResL.Value;
 
           if (Crv >= eps)
           {
-            N = aTanResL.Direction;
+            N        = aTanResL.Direction;
             double x = N.Y(), y = -N.X();
             N.SetCoord(x, y);
             if (reverse)

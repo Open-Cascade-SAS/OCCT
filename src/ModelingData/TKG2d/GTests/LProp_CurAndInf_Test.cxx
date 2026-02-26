@@ -15,11 +15,11 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
 #include <LProp_CurAndInf.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-TEST(LProp_CurAndInfTest, DefaultConstructor_IsEmpty)
+  TEST(LProp_CurAndInfTest, DefaultConstructor_IsEmpty)
 {
   LProp_CurAndInf aResult;
   EXPECT_TRUE(aResult.IsEmpty());

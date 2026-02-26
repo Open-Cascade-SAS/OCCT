@@ -33,6 +33,6 @@ Standard_HEADER_DEPRECATED("LProp_NotDefined.hxx is deprecated since OCCT 8.0.0.
   #define LProp_NotDefined_Raise_if(CONDITION, MESSAGE)
 #endif
 
-DEFINE_STANDARD_EXCEPTION(LProp_NotDefined, Standard_Failure)
+  DEFINE_STANDARD_EXCEPTION(LProp_NotDefined, Standard_Failure)
 
 #endif // _LProp_NotDefined_HeaderFile

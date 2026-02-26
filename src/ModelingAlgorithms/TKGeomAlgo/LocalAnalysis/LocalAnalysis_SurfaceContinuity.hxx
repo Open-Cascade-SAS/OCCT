@@ -209,26 +209,26 @@ private:
   Standard_EXPORT void SurfC0(const gp_Pnt& theP1, const gp_Pnt& theP2);
 
   Standard_EXPORT void SurfC1(const gp_Vec& theD1U1,
-                               const gp_Vec& theD1V1,
-                               const gp_Vec& theD1U2,
-                               const gp_Vec& theD1V2);
+                              const gp_Vec& theD1V1,
+                              const gp_Vec& theD1U2,
+                              const gp_Vec& theD1V2);
 
   Standard_EXPORT void SurfC2(const gp_Vec& theD1U1,
-                               const gp_Vec& theD1V1,
-                               const gp_Vec& theD2U1,
-                               const gp_Vec& theD2V1,
-                               const gp_Vec& theD1U2,
-                               const gp_Vec& theD1V2,
-                               const gp_Vec& theD2U2,
-                               const gp_Vec& theD2V2);
+                              const gp_Vec& theD1V1,
+                              const gp_Vec& theD2U1,
+                              const gp_Vec& theD2V1,
+                              const gp_Vec& theD1U2,
+                              const gp_Vec& theD1V2,
+                              const gp_Vec& theD2U2,
+                              const gp_Vec& theD2V2);
 
   Standard_EXPORT void SurfG1(const gp_Dir& theNorm1,
-                               bool          theNormDef1,
-                               const gp_Dir& theNorm2,
-                               bool          theNormDef2);
+                              bool          theNormDef1,
+                              const gp_Dir& theNorm2,
+                              bool          theNormDef2);
 
   Standard_EXPORT void SurfG2(const GeomProp::SurfaceCurvatureResult& theCurv1,
-                               const GeomProp::SurfaceCurvatureResult& theCurv2);
+                              const GeomProp::SurfaceCurvatureResult& theCurv2);
 
   double                        myContC0;
   double                        myContC1U;

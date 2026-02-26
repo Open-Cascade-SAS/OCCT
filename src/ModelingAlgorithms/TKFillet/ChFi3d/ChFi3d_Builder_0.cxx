@@ -5460,10 +5460,10 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
   int                        intrv, nbintv = GAC.NbIntervals(GeomAbs_CN);
   NCollection_Array1<double> TI(1, nbintv + 1);
   GAC.Intervals(TI, GeomAbs_CN);
-  double           Resolution = gp::Resolution(), Curvature;
-  GeomProp_Curve   aCurveProp(C);
-  gp_Pnt           P1, P2;
-  int              Discretisation = 30;
+  double         Resolution = gp::Resolution(), Curvature;
+  GeomProp_Curve aCurveProp(C);
+  gp_Pnt         P1, P2;
+  int            Discretisation = 30;
 
   gp_Vec PrevVec;
   bool   prevVecFound = false;
@@ -5483,9 +5483,9 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       {
         C->D0(t, P1);
         const GeomProp::CentreResult aCentreRes = aCurveProp.CentreOfCurvature(t, Resolution);
-        P2           = aCentreRes.Centre;
-        PrevVec      = gp_Vec(P1, P2);
-        prevVecFound = true;
+        P2                                      = aCentreRes.Centre;
+        PrevVec                                 = gp_Vec(P1, P2);
+        prevVecFound                            = true;
         break;
       }
       t += step;
@@ -5516,7 +5516,7 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
       {
         C->D0(t, P1);
         const GeomProp::CentreResult aCentreRes = aCurveProp.CentreOfCurvature(t, Resolution);
-        P2 = aCentreRes.Centre;
+        P2                                      = aCentreRes.Centre;
         gp_Vec Vec(P1, P2);
         double Angle = PrevVec.Angle(Vec);
         if (Angle > M_PI / 3.)

@@ -30,8 +30,8 @@ class gp_Vec2d;
 Standard_HEADER_DEPRECATED("Geom2dLProp_Curve2dTool.hxx is deprecated since OCCT 8.0.0. "
                            "Use Geom2dProp_Curve instead.")
 
-//! @deprecated Use Geom2dProp_Curve instead.
-Standard_DEPRECATED("Geom2dLProp_Curve2dTool is deprecated, use Geom2dProp_Curve instead")
+  //! @deprecated Use Geom2dProp_Curve instead.
+  Standard_DEPRECATED("Geom2dLProp_Curve2dTool is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_Curve2dTool
 {
 public:

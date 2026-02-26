@@ -31,7 +31,7 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_CLProps.hxx>
 #include <HLRBRep_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Standard_Real.hxx>
 #include <HLRBRep_FaceIterator.hxx>
 #include <GeomAbs_SurfaceType.hxx>
@@ -46,7 +46,7 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #include <NCollection_DataMap.hxx>
 #include <TopAbs_State.hxx>
 #include <NCollection_List.hxx>
-class BRepTopAdaptor_TopolTool;
+  class BRepTopAdaptor_TopolTool;
 class gp_Dir2d;
 class HLRBRep_EdgeData;
 class HLRBRep_FaceData;

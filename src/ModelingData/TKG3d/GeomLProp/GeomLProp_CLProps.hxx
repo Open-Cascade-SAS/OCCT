@@ -42,8 +42,8 @@ class GeomLProp_CurveTool;
 Standard_HEADER_DEPRECATED("GeomLProp_CLProps.hxx is deprecated since OCCT 8.0.0. "
                            "Use GeomProp_Curve instead.")
 
-//! @deprecated Use GeomProp_Curve instead.
-Standard_DEPRECATED("GeomLProp_CLProps is deprecated, use GeomProp_Curve instead")
+  //! @deprecated Use GeomProp_Curve instead.
+  Standard_DEPRECATED("GeomLProp_CLProps is deprecated, use GeomProp_Curve instead")
 class GeomLProp_CLProps
 {
 public:

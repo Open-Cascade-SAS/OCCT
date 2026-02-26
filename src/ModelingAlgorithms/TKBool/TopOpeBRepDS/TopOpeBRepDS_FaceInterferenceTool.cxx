@@ -99,7 +99,7 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
   bool plane  = FUN_tool_plane(F);
 
   // Getting the principle directions, the normal and the curvatures
-  BRepProp_Surface aSurfProp(surf);
+  BRepProp_Surface                       aSurfProp(surf);
   const GeomProp::SurfaceCurvatureResult aCurvRes =
     aSurfProp.Curvatures(uu, vv, Precision::Confusion());
   if (!aCurvRes.IsDefined)

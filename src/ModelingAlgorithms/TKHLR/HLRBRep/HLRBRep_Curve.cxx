@@ -26,7 +26,7 @@
 #include <HLRAlgo_Projector.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_Curve.hxx>
 #include <Precision.hxx>
 #include <ProjLib.hxx>
@@ -35,10 +35,10 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #include <NCollection_Array1.hxx>
 #include <TopoDS_Edge.hxx>
 
-// OCC155 // jfa 05.03.2002 // bad vectors projection
-//=================================================================================================
+  // OCC155 // jfa 05.03.2002 // bad vectors projection
+  //=================================================================================================
 
-HLRBRep_Curve::HLRBRep_Curve() = default;
+  HLRBRep_Curve::HLRBRep_Curve() = default;
 
 //=================================================================================================
 

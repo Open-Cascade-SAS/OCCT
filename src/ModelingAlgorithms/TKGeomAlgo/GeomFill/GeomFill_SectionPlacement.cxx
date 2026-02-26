@@ -861,9 +861,9 @@ occ::handle<Geom_Curve> GeomFill_SectionPlacement::ModifiedSection(const bool Wi
 
 void GeomFill_SectionPlacement::SectionAxis(const gp_Mat& M, gp_Vec& T, gp_Vec& N, gp_Vec& BN) const
 {
-  constexpr double  Eps = 1.e-10;
-  gp_Vec            PathNormal;
-  GeomProp_Curve    aCurveProp(mySection);
+  constexpr double        Eps = 1.e-10;
+  gp_Vec                  PathNormal;
+  GeomProp_Curve          aCurveProp(mySection);
   GeomProp::TangentResult aTangent = aCurveProp.Tangent(SecParam, Eps);
   if (aTangent.IsDefined)
   {

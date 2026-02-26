@@ -65,9 +65,8 @@ gp_Dir RWMesh_FaceIterator::normal(int theNode) const
   }
   else if (myHasNormals && myPolyTriang->HasUVNodes() && mySLTool.has_value())
   {
-    const gp_XY anUV = myPolyTriang->UVNode(theNode).XY();
-    const GeomProp::SurfaceNormalResult aNormRes =
-      mySLTool->Normal(anUV.X(), anUV.Y(), 1e-12);
+    const gp_XY                         anUV     = myPolyTriang->UVNode(theNode).XY();
+    const GeomProp::SurfaceNormalResult aNormRes = mySLTool->Normal(anUV.X(), anUV.Y(), 1e-12);
     if (aNormRes.IsDefined)
     {
       aNormal = aNormRes.Direction;

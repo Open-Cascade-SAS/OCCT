@@ -25,7 +25,7 @@
 #include <Geom2d_TrimmedCurve.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CLProps2d.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
 #include <gp_Ax2d.hxx>
@@ -43,113 +43,121 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <cmath>
 
-namespace
+  namespace
 {
-constexpr double THE_PARAM_TOL = Precision::Confusion();
-constexpr double THE_VALUE_TOL = 1.0e-10;
-constexpr double THE_DIR_TOL   = 1.0e-10;
-constexpr double THE_POINT_TOL = 1.0e-8;
+  constexpr double THE_PARAM_TOL = Precision::Confusion();
+  constexpr double THE_VALUE_TOL = 1.0e-10;
+  constexpr double THE_DIR_TOL   = 1.0e-10;
+  constexpr double THE_POINT_TOL = 1.0e-8;
 
-//! Compare tangent from new Geom2dProp vs old CLProps2d at given parameter.
-void compareTangent(Geom2dProp_Curve&      theProp,
-                    Geom2dLProp_CLProps2d& theOld,
-                    const double           theParam,
-                    const ::testing::TestInfo* = nullptr)
-{
-  theOld.SetParameter(theParam);
-
-  const Geom2dProp::TangentResult aNewTan     = theProp.Tangent(theParam, THE_PARAM_TOL);
-  const bool                      aOldDefined = theOld.IsTangentDefined();
-
-  EXPECT_EQ(aNewTan.IsDefined, aOldDefined) << "Tangent defined mismatch at U=" << theParam;
-
-  if (aNewTan.IsDefined && aOldDefined)
+  //! Compare tangent from new Geom2dProp vs old CLProps2d at given parameter.
+  void compareTangent(Geom2dProp_Curve & theProp,
+                      Geom2dLProp_CLProps2d & theOld,
+                      const double theParam,
+                      const ::testing::TestInfo* = nullptr)
   {
-    gp_Dir2d aOldDir;
-    theOld.Tangent(aOldDir);
-    // Tangent directions may differ by sign; compare absolute dot product
-    const double aDot = aNewTan.Direction.X() * aOldDir.X() + aNewTan.Direction.Y() * aOldDir.Y();
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Tangent direction mismatch at U=" << theParam;
-  }
-}
+    theOld.SetParameter(theParam);
 
-//! Compare curvature from new Geom2dProp vs old CLProps2d at given parameter.
-void compareCurvature(Geom2dProp_Curve&      theProp,
-                      Geom2dLProp_CLProps2d& theOld,
-                      const double           theParam)
-{
-  theOld.SetParameter(theParam);
+    const Geom2dProp::TangentResult aNewTan     = theProp.Tangent(theParam, THE_PARAM_TOL);
+    const bool                      aOldDefined = theOld.IsTangentDefined();
 
-  const Geom2dProp::CurvatureResult aNewCurv = theProp.Curvature(theParam, THE_PARAM_TOL);
-  const double                      aOldCurv = theOld.Curvature();
+    EXPECT_EQ(aNewTan.IsDefined, aOldDefined) << "Tangent defined mismatch at U=" << theParam;
 
-  if (aNewCurv.IsDefined && !aNewCurv.IsInfinite)
-  {
-    EXPECT_NEAR(aNewCurv.Value, aOldCurv, THE_VALUE_TOL) << "Curvature mismatch at U=" << theParam;
-  }
-}
-
-//! Compare normal from new Geom2dProp vs old CLProps2d at given parameter.
-void compareNormal(Geom2dProp_Curve& theProp, Geom2dLProp_CLProps2d& theOld, const double theParam)
-{
-  theOld.SetParameter(theParam);
-
-  const Geom2dProp::NormalResult aNewNorm = theProp.Normal(theParam, THE_PARAM_TOL);
-
-  // Old API: Normal() throws if curvature is nearly zero; curvature check needed
-  const double aOldCurv = theOld.Curvature();
-  if (std::abs(aOldCurv) < THE_PARAM_TOL)
-  {
-    // Old API would throw - new API returns IsDefined=false
-    EXPECT_FALSE(aNewNorm.IsDefined) << "Normal should be undefined at U=" << theParam;
-    return;
+    if (aNewTan.IsDefined && aOldDefined)
+    {
+      gp_Dir2d aOldDir;
+      theOld.Tangent(aOldDir);
+      // Tangent directions may differ by sign; compare absolute dot product
+      const double aDot = aNewTan.Direction.X() * aOldDir.X() + aNewTan.Direction.Y() * aOldDir.Y();
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Tangent direction mismatch at U=" << theParam;
+    }
   }
 
-  if (aNewNorm.IsDefined)
+  //! Compare curvature from new Geom2dProp vs old CLProps2d at given parameter.
+  void compareCurvature(Geom2dProp_Curve & theProp,
+                        Geom2dLProp_CLProps2d & theOld,
+                        const double theParam)
   {
-    gp_Dir2d aOldDir;
-    theOld.Normal(aOldDir);
-    const double aDot = aNewNorm.Direction.X() * aOldDir.X() + aNewNorm.Direction.Y() * aOldDir.Y();
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Normal direction mismatch at U=" << theParam;
-  }
-}
+    theOld.SetParameter(theParam);
 
-//! Compare centre of curvature from new Geom2dProp vs old CLProps2d at given parameter.
-void compareCentre(Geom2dProp_Curve& theProp, Geom2dLProp_CLProps2d& theOld, const double theParam)
-{
-  theOld.SetParameter(theParam);
+    const Geom2dProp::CurvatureResult aNewCurv = theProp.Curvature(theParam, THE_PARAM_TOL);
+    const double                      aOldCurv = theOld.Curvature();
 
-  const Geom2dProp::CentreResult aNewCentre = theProp.CentreOfCurvature(theParam, THE_PARAM_TOL);
-
-  // Old API: CentreOfCurvature() throws if curvature is nearly zero
-  const double aOldCurv = theOld.Curvature();
-  if (std::abs(aOldCurv) < THE_PARAM_TOL)
-  {
-    EXPECT_FALSE(aNewCentre.IsDefined) << "Centre should be undefined at U=" << theParam;
-    return;
+    if (aNewCurv.IsDefined && !aNewCurv.IsInfinite)
+    {
+      EXPECT_NEAR(aNewCurv.Value, aOldCurv, THE_VALUE_TOL)
+        << "Curvature mismatch at U=" << theParam;
+    }
   }
 
-  if (aNewCentre.IsDefined)
+  //! Compare normal from new Geom2dProp vs old CLProps2d at given parameter.
+  void compareNormal(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
-    gp_Pnt2d aOldCentre;
-    theOld.CentreOfCurvature(aOldCentre);
-    EXPECT_NEAR(aNewCentre.Centre.X(), aOldCentre.X(), THE_POINT_TOL)
-      << "Centre X mismatch at U=" << theParam;
-    EXPECT_NEAR(aNewCentre.Centre.Y(), aOldCentre.Y(), THE_POINT_TOL)
-      << "Centre Y mismatch at U=" << theParam;
-  }
-}
+    theOld.SetParameter(theParam);
 
-//! Run all four property comparisons at given parameter.
-void compareAllProperties(Geom2dProp_Curve&      theProp,
-                          Geom2dLProp_CLProps2d& theOld,
-                          const double           theParam)
-{
-  compareTangent(theProp, theOld, theParam);
-  compareCurvature(theProp, theOld, theParam);
-  compareNormal(theProp, theOld, theParam);
-  compareCentre(theProp, theOld, theParam);
-}
+    const Geom2dProp::NormalResult aNewNorm = theProp.Normal(theParam, THE_PARAM_TOL);
+
+    // Old API: Normal() throws if curvature is nearly zero; curvature check needed
+    const double aOldCurv = theOld.Curvature();
+    if (std::abs(aOldCurv) < THE_PARAM_TOL)
+    {
+      // Old API would throw - new API returns IsDefined=false
+      EXPECT_FALSE(aNewNorm.IsDefined) << "Normal should be undefined at U=" << theParam;
+      return;
+    }
+
+    if (aNewNorm.IsDefined)
+    {
+      gp_Dir2d aOldDir;
+      theOld.Normal(aOldDir);
+      const double aDot =
+        aNewNorm.Direction.X() * aOldDir.X() + aNewNorm.Direction.Y() * aOldDir.Y();
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Normal direction mismatch at U=" << theParam;
+    }
+  }
+
+  //! Compare centre of curvature from new Geom2dProp vs old CLProps2d at given parameter.
+  void compareCentre(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
+  {
+    theOld.SetParameter(theParam);
+
+    const Geom2dProp::CentreResult aNewCentre = theProp.CentreOfCurvature(theParam, THE_PARAM_TOL);
+
+    // Old API: CentreOfCurvature() throws if curvature is nearly zero
+    const double aOldCurv = theOld.Curvature();
+    if (std::abs(aOldCurv) < THE_PARAM_TOL)
+    {
+      EXPECT_FALSE(aNewCentre.IsDefined) << "Centre should be undefined at U=" << theParam;
+      return;
+    }
+
+    if (aNewCentre.IsDefined)
+    {
+      gp_Pnt2d aOldCentre;
+      theOld.CentreOfCurvature(aOldCentre);
+      EXPECT_NEAR(aNewCentre.Centre.X(), aOldCentre.X(), THE_POINT_TOL)
+        << "Centre X mismatch at U=" << theParam;
+      EXPECT_NEAR(aNewCentre.Centre.Y(), aOldCentre.Y(), THE_POINT_TOL)
+        << "Centre Y mismatch at U=" << theParam;
+    }
+  }
+
+  //! Run all four property comparisons at given parameter.
+  void compareAllProperties(Geom2dProp_Curve & theProp,
+                            Geom2dLProp_CLProps2d & theOld,
+                            const double theParam)
+  {
+    compareTangent(theProp, theOld, theParam);
+    compareCurvature(theProp, theOld, theParam);
+    compareNormal(theProp, theOld, theParam);
+    compareCentre(theProp, theOld, theParam);
+  }
 
 } // namespace
 

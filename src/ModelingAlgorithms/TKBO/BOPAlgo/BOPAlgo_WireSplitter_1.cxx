@@ -795,7 +795,7 @@ double Angle2D(const TopoDS_Vertex&                 aV,
   aType = aGAC2D.GetType();
   if (aType != GeomAbs_Line)
   {
-    Geom2dProp_Curve aCurveProp(aC2D);
+    Geom2dProp_Curve                aCurveProp(aC2D);
     const Geom2dProp::TangentResult aTanRes = aCurveProp.Tangent(aTV, Precision::PConfusion());
     if (aTanRes.IsDefined)
     {

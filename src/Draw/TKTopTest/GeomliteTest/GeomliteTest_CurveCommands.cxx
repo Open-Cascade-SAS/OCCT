@@ -1215,7 +1215,7 @@ static int minmaxcurandinf(Draw_Interpretor& di, int argc, const char** argv)
   if (C1.IsNull())
     return 1;
 
-  Draw_Color     Couleur;
+  Draw_Color       Couleur;
   Geom2dProp_Curve aProp(C1);
 
   const Geom2dProp::CurveAnalysis anExtrema = aProp.FindCurvatureExtrema();
@@ -1376,7 +1376,7 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
     if (C3d.IsNull())
       return 1;
     GeomProp_Curve aProp(C3d);
-    gp_Pnt aPnt;
+    gp_Pnt         aPnt;
     C3d->D0(U, aPnt);
     occ::handle<Draw_Marker3D> drp = new Draw_Marker3D(aPnt, Draw_Plus, Draw_vert);
     dout << drp;
@@ -1384,19 +1384,19 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
     if (aTangRes.IsDefined)
     {
       const GeomProp::CurvatureResult aCurvRes = aProp.Curvature(U, Precision::Confusion());
-      const double K = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
+      const double                    K        = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
       di << " Curvature : " << K << "\n";
 
       if (std::abs(K) > Precision::Confusion())
       {
-        double R = 1 / std::abs(K);
+        double                       R        = 1 / std::abs(K);
         const GeomProp::CentreResult aCentRes = aProp.CentreOfCurvature(U, Precision::Confusion());
         const GeomProp::NormalResult aNormRes = aProp.Normal(U, Precision::Confusion());
         if (aCentRes.IsDefined && aNormRes.IsDefined)
         {
-          gp_Dir Tang = aTangRes.Direction;
-          gp_Dir Nor  = aNormRes.Direction;
-          gp_Dir                        AxC = Nor ^ Tang;
+          gp_Dir                        Tang = aTangRes.Direction;
+          gp_Dir                        Nor  = aNormRes.Direction;
+          gp_Dir                        AxC  = Nor ^ Tang;
           gp_Ax2                        Axe(aCentRes.Centre, AxC, Nor);
           occ::handle<Geom_Circle>      Cir3d = new Geom_Circle(Axe, R);
           occ::handle<DrawTrSurf_Curve> dr;
@@ -1412,7 +1412,7 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
   else
   {
     Geom2dProp_Curve aProp2d(C2d);
-    gp_Pnt2d aPnt2d;
+    gp_Pnt2d         aPnt2d;
     C2d->D0(U, aPnt2d);
     occ::handle<Draw_Marker2D> drp = new Draw_Marker2D(aPnt2d, Draw_Plus, Draw_vert);
     dout << drp;
@@ -1420,14 +1420,15 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
     if (aTangRes.IsDefined)
     {
       const Geom2dProp::CurvatureResult aCurvRes = aProp2d.Curvature(U, Precision::Confusion());
-      const double K = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
+      const double                      K        = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
 
       di << " Curvature : " << K << "\n";
 
       if (std::abs(K) > Precision::Confusion())
       {
-        double R = 1 / std::abs(K);
-        const Geom2dProp::CentreResult aCentRes = aProp2d.CentreOfCurvature(U, Precision::Confusion());
+        double                         R = 1 / std::abs(K);
+        const Geom2dProp::CentreResult aCentRes =
+          aProp2d.CentreOfCurvature(U, Precision::Confusion());
         if (aCentRes.IsDefined)
         {
           gp_Ax2d                         Axe(aCentRes.Centre, gp::DX2d());

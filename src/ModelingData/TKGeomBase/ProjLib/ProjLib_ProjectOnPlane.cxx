@@ -287,7 +287,7 @@ public:
   bool Value(const double X, double& F) override
   {
     const GeomProp::CurvatureResult aCurvRes = myProp->Curvature(X, myTol);
-    F = aCurvRes.IsDefined ? -aCurvRes.Value : 0.0;
+    F                                        = aCurvRes.IsDefined ? -aCurvRes.Value : 0.0;
     return true;
   }
 
@@ -1421,9 +1421,9 @@ bool ProjLib_ProjectOnPlane::BuildParabolaByApex(occ::handle<Geom_Curve>& theGeo
   gp_Pnt aPnt;
   gp_Vec aDY;
   aProjCrv->D1(aT, aPnt, aDY);
-  gp_Pnt aP0 = aPnt;
-  gp_Dir anYDir(aDY);
-  gp_Dir anXDir;
+  gp_Pnt                          aP0 = aPnt;
+  gp_Dir                          anYDir(aDY);
+  gp_Dir                          anXDir;
   const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(aT, Precision::Confusion());
   double                          aCurv    = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
   if (Precision::IsInfinite(aCurv) || aCurv < Precision::Confusion())
@@ -1475,7 +1475,7 @@ bool ProjLib_ProjectOnPlane::BuildHyperbolaByApex(occ::handle<Geom_Curve>& theGe
   if (aSolver.IsDone())
   {
     double aT;
-    aT = aSolver.Location();
+    aT                                       = aSolver.Location();
     const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(aT, Precision::Confusion());
     double                          aCurv    = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
     if (Precision::IsInfinite(aCurv) || aCurv < Precision::Confusion())
@@ -1491,9 +1491,9 @@ bool ProjLib_ProjectOnPlane::BuildHyperbolaByApex(occ::handle<Geom_Curve>& theGe
       gp_Pnt  aPnt;
       gp_Vec  aD1Vec;
       aProjCrv->D1(aT, aPnt, aD1Vec);
-      gp_Pnt  aP0    = aPnt;
-      gp_Dir  anXDir = gce_MakeDir(P, aP0);
-      gp_Dir  anYDir = gce_MakeDir(aD1Vec);
+      gp_Pnt aP0    = aPnt;
+      gp_Dir anXDir = gce_MakeDir(P, aP0);
+      gp_Dir anYDir = gce_MakeDir(aD1Vec);
       //
       double  aMajRad = P.Distance(aP0);
       gp_Pnt  aP1     = Value(aT + 1.);

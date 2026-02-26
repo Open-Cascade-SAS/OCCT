@@ -574,16 +574,16 @@ double TopOpeBRepTool_ShapeTool::EdgeData(const BRepAdaptor_Curve& BAC,
 {
   const double aTol = Precision::Angular();
 
-  BRepProp_Curve aCurveProp(BAC);
+  BRepProp_Curve                aCurveProp(BAC);
   const GeomProp::TangentResult aTangRes = aCurveProp.Tangent(P, aTol);
   if (aTangRes.IsDefined)
     T = aTangRes.Direction;
   const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(P, aTol);
-  C = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
+  C                                        = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
 
   // xpu150399 cto900R4
-  const double     tol1 = Epsilon(0.);
-  constexpr double tol2 = RealLast();
+  const double     tol1  = Epsilon(0.);
+  constexpr double tol2  = RealLast();
   const double     aTolm = std::max(aTol, std::max(tol1, tol2));
 
   if (std::abs(C) > aTolm)

@@ -22,7 +22,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Standard_OutOfRange.hxx>
 #include <LProp_NotDefined.hxx>
 #include <HLRBRep_SLPropsATool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>

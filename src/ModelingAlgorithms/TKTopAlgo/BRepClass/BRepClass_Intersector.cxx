@@ -450,15 +450,15 @@ void BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
 {
   double                    fpar, lpar;
   occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
-  Geom2dProp_Curve aCurveProp(aPCurve);
+  Geom2dProp_Curve          aCurveProp(aPCurve);
 
-  C = 0.;
+  C                                       = 0.;
   const Geom2dProp::TangentResult aTanRes = aCurveProp.Tangent(U, Precision::PConfusion());
   if (aTanRes.IsDefined)
   {
-    Tang = aTanRes.Direction;
+    Tang                                       = aTanRes.Direction;
     const Geom2dProp::CurvatureResult aCurvRes = aCurveProp.Curvature(U, Precision::PConfusion());
-    C = aCurvRes.Value;
+    C                                          = aCurvRes.Value;
   }
   else
     GetTangentAsChord(aPCurve, Tang, U, fpar, lpar);

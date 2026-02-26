@@ -634,7 +634,7 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
 
       // Find a normal.
       C2d->D0((f + l) / 2, P2d);
-      GeomProp_Surface aSurfProp(S);
+      GeomProp_Surface              aSurfProp(S);
       GeomProp::SurfaceNormalResult aNormRes = aSurfProp.Normal(P2d.X(), P2d.Y(), 1.e-12);
       if (!aNormRes.IsDefined)
       {

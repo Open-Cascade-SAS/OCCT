@@ -456,9 +456,9 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
     }
 
     case GeomFill_IsFixed: {
-      constexpr double  Eps = 1.e-9;
-      gp_Vec            V1(0, 0, 1), V2(0, 1, 0);
-      GeomProp_Curve    aCurveProp(Path);
+      constexpr double        Eps = 1.e-9;
+      gp_Vec                  V1(0, 0, 1), V2(0, 1, 0);
+      GeomProp_Curve          aCurveProp(Path);
       GeomProp::TangentResult aTangent = aCurveProp.Tangent(param, Eps);
       if (aTangent.IsDefined)
       {
@@ -495,9 +495,9 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
       Place.Perform(Precision::Confusion());
       double ponsec = Place.ParameterOnSection();
 
-      constexpr double  Eps = 1.e-9;
-      gp_Vec            V(0, 1, 0);
-      GeomProp_Curve    aCurveProp(FirstSect);
+      constexpr double        Eps = 1.e-9;
+      gp_Vec                  V(0, 1, 0);
+      GeomProp_Curve          aCurveProp(FirstSect);
       GeomProp::TangentResult aTangent = aCurveProp.Tangent(ponsec, Eps);
       if (aTangent.IsDefined)
       {

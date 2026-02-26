@@ -148,20 +148,20 @@ protected:
 
 private:
   std::optional<GeomProp_Surface> mySurfProp;
-  gp_Pnt                    myPoint;
-  gp_Pnt2d                  myPt2d;
-  occ::handle<Geom_Surface> mySurf;
-  gp_Vec                    myD11;
-  gp_Vec                    myD12;
-  gp_Vec                    myD21;
-  gp_Vec                    myD22;
-  gp_Vec                    myD23;
-  double                    myU;
-  double                    myV;
-  double                    myTolDist;
-  double                    myTolAng;
-  double                    myTolCurv;
-  bool                      hasPnt2dOnSurf;
+  gp_Pnt                          myPoint;
+  gp_Pnt2d                        myPt2d;
+  occ::handle<Geom_Surface>       mySurf;
+  gp_Vec                          myD11;
+  gp_Vec                          myD12;
+  gp_Vec                          myD21;
+  gp_Vec                          myD22;
+  gp_Vec                          myD23;
+  double                          myU;
+  double                          myV;
+  double                          myTolDist;
+  double                          myTolAng;
+  double                          myTolCurv;
+  bool                            hasPnt2dOnSurf;
 };
 
 #endif // _GeomPlate_PointConstraint_HeaderFile

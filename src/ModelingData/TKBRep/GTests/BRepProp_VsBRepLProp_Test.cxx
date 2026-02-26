@@ -21,7 +21,7 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_CLProps.hxx>
 #include <BRepLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>
@@ -44,150 +44,152 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL   = Precision::PConfusion();
-constexpr double THE_CURV_TOL  = 1.0e-8;
-constexpr double THE_DIR_TOL   = 1.0e-6;
-constexpr double THE_POINT_TOL = 1.0e-6;
+  constexpr double THE_LIN_TOL   = Precision::PConfusion();
+  constexpr double THE_CURV_TOL  = 1.0e-8;
+  constexpr double THE_DIR_TOL   = 1.0e-6;
+  constexpr double THE_POINT_TOL = 1.0e-6;
 
-// ============================================================
-// Curve cross-validation helpers
-// ============================================================
+  // ============================================================
+  // Curve cross-validation helpers
+  // ============================================================
 
-void compareCurveTangent(const TopoDS_Edge& theEdge, const double theParam)
-{
-  BRepAdaptor_Curve anAdaptor(theEdge);
-
-  // New API
-  BRepProp_Curve                aNewProp(anAdaptor);
-  const GeomProp::TangentResult aNew = aNewProp.Tangent(theParam, THE_LIN_TOL);
-
-  // Old API
-  BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  void compareCurveTangent(const TopoDS_Edge& theEdge, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New tangent undefined but old is defined at param=" << theParam;
-    gp_Dir anOldDir;
-    anOld.Tangent(anOldDir);
-    const double aDot = aNew.Direction.Dot(anOldDir);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Tangent direction mismatch at param=" << theParam;
+    BRepAdaptor_Curve anAdaptor(theEdge);
+
+    // New API
+    BRepProp_Curve                aNewProp(anAdaptor);
+    const GeomProp::TangentResult aNew = aNewProp.Tangent(theParam, THE_LIN_TOL);
+
+    // Old API
+    BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New tangent undefined but old is defined at param="
+                                  << theParam;
+      gp_Dir anOldDir;
+      anOld.Tangent(anOldDir);
+      const double aDot = aNew.Direction.Dot(anOldDir);
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Tangent direction mismatch at param=" << theParam;
+    }
   }
-}
 
-void compareCurveCurvature(const TopoDS_Edge& theEdge, const double theParam)
-{
-  BRepAdaptor_Curve anAdaptor(theEdge);
-
-  BRepProp_Curve                  aNewProp(anAdaptor);
-  const GeomProp::CurvatureResult aNew = aNewProp.Curvature(theParam, THE_LIN_TOL);
-
-  BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  void compareCurveCurvature(const TopoDS_Edge& theEdge, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New curvature undefined at param=" << theParam;
-    EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL)
-      << "Curvature mismatch at param=" << theParam;
+    BRepAdaptor_Curve anAdaptor(theEdge);
+
+    BRepProp_Curve                  aNewProp(anAdaptor);
+    const GeomProp::CurvatureResult aNew = aNewProp.Curvature(theParam, THE_LIN_TOL);
+
+    BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New curvature undefined at param=" << theParam;
+      EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL)
+        << "Curvature mismatch at param=" << theParam;
+    }
   }
-}
 
-void compareCurveNormal(const TopoDS_Edge& theEdge, const double theParam)
-{
-  BRepAdaptor_Curve anAdaptor(theEdge);
-
-  BRepProp_Curve               aNewProp(anAdaptor);
-  const GeomProp::NormalResult aNew = aNewProp.Normal(theParam, THE_LIN_TOL);
-
-  BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  void compareCurveNormal(const TopoDS_Edge& theEdge, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined but old is defined at param=" << theParam;
-    gp_Dir anOldDir;
-    anOld.Normal(anOldDir);
-    const double aDot = aNew.Direction.Dot(anOldDir);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Normal direction mismatch at param=" << theParam;
+    BRepAdaptor_Curve anAdaptor(theEdge);
+
+    BRepProp_Curve               aNewProp(anAdaptor);
+    const GeomProp::NormalResult aNew = aNewProp.Normal(theParam, THE_LIN_TOL);
+
+    BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined but old is defined at param="
+                                  << theParam;
+      gp_Dir anOldDir;
+      anOld.Normal(anOldDir);
+      const double aDot = aNew.Direction.Dot(anOldDir);
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Normal direction mismatch at param=" << theParam;
+    }
   }
-}
 
-void compareCurveCentre(const TopoDS_Edge& theEdge, const double theParam)
-{
-  BRepAdaptor_Curve anAdaptor(theEdge);
-
-  BRepProp_Curve               aNewProp(anAdaptor);
-  const GeomProp::CentreResult aNew = aNewProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-
-  BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  void compareCurveCentre(const TopoDS_Edge& theEdge, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New centre undefined at param=" << theParam;
-    gp_Pnt anOldPnt;
-    anOld.CentreOfCurvature(anOldPnt);
-    EXPECT_NEAR(aNew.Centre.Distance(anOldPnt), 0.0, THE_POINT_TOL)
-      << "Centre of curvature mismatch at param=" << theParam;
+    BRepAdaptor_Curve anAdaptor(theEdge);
+
+    BRepProp_Curve               aNewProp(anAdaptor);
+    const GeomProp::CentreResult aNew = aNewProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+
+    BRepLProp_CLProps anOld(anAdaptor, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New centre undefined at param=" << theParam;
+      gp_Pnt anOldPnt;
+      anOld.CentreOfCurvature(anOldPnt);
+      EXPECT_NEAR(aNew.Centre.Distance(anOldPnt), 0.0, THE_POINT_TOL)
+        << "Centre of curvature mismatch at param=" << theParam;
+    }
   }
-}
 
-// ============================================================
-// Surface cross-validation helpers
-// ============================================================
+  // ============================================================
+  // Surface cross-validation helpers
+  // ============================================================
 
-void compareSurfaceNormal(const TopoDS_Face& theFace, const double theU, const double theV)
-{
-  BRepAdaptor_Surface anAdaptor(theFace);
-
-  BRepProp_Surface                    aNewProp(anAdaptor);
-  const GeomProp::SurfaceNormalResult aNew = aNewProp.Normal(theU, theV, THE_LIN_TOL);
-
-  BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsNormalDefined())
+  void compareSurfaceNormal(const TopoDS_Face& theFace, const double theU, const double theV)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined but old is defined at (" << theU << ", "
-                                << theV << ")";
-    const gp_Dir& anOldDir = anOld.Normal();
-    const double  aDot     = aNew.Direction.Dot(anOldDir);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Surface normal mismatch at (" << theU << ", " << theV << ")";
+    BRepAdaptor_Surface anAdaptor(theFace);
+
+    BRepProp_Surface                    aNewProp(anAdaptor);
+    const GeomProp::SurfaceNormalResult aNew = aNewProp.Normal(theU, theV, THE_LIN_TOL);
+
+    BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsNormalDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined but old is defined at (" << theU << ", "
+                                  << theV << ")";
+      const gp_Dir& anOldDir = anOld.Normal();
+      const double  aDot     = aNew.Direction.Dot(anOldDir);
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Surface normal mismatch at (" << theU << ", " << theV << ")";
+    }
   }
-}
 
-void compareSurfaceCurvatures(const TopoDS_Face& theFace, const double theU, const double theV)
-{
-  BRepAdaptor_Surface anAdaptor(theFace);
-
-  BRepProp_Surface                       aNewProp(anAdaptor);
-  const GeomProp::SurfaceCurvatureResult aNew = aNewProp.Curvatures(theU, theV, THE_LIN_TOL);
-
-  BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
+  void compareSurfaceCurvatures(const TopoDS_Face& theFace, const double theU, const double theV)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << ", " << theV << ")";
-    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-      << "Min curvature mismatch at (" << theU << ", " << theV << ")";
-    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-      << "Max curvature mismatch at (" << theU << ", " << theV << ")";
+    BRepAdaptor_Surface anAdaptor(theFace);
+
+    BRepProp_Surface                       aNewProp(anAdaptor);
+    const GeomProp::SurfaceCurvatureResult aNew = aNewProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+    BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << ", " << theV << ")";
+      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+        << "Min curvature mismatch at (" << theU << ", " << theV << ")";
+      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+        << "Max curvature mismatch at (" << theU << ", " << theV << ")";
+    }
   }
-}
 
-void compareSurfaceMeanGaussian(const TopoDS_Face& theFace, const double theU, const double theV)
-{
-  BRepAdaptor_Surface anAdaptor(theFace);
-
-  BRepProp_Surface                   aNewProp(anAdaptor);
-  const GeomProp::MeanGaussianResult aNew = aNewProp.MeanGaussian(theU, theV, THE_LIN_TOL);
-
-  BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
+  void compareSurfaceMeanGaussian(const TopoDS_Face& theFace, const double theU, const double theV)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New mean/gaussian undefined at (" << theU << ", " << theV
-                                << ")";
-    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-      << "Mean curvature mismatch at (" << theU << ", " << theV << ")";
-    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-      << "Gaussian curvature mismatch at (" << theU << ", " << theV << ")";
+    BRepAdaptor_Surface anAdaptor(theFace);
+
+    BRepProp_Surface                   aNewProp(anAdaptor);
+    const GeomProp::MeanGaussianResult aNew = aNewProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+
+    BRepLProp_SLProps anOld(anAdaptor, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New mean/gaussian undefined at (" << theU << ", " << theV
+                                  << ")";
+      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+        << "Mean curvature mismatch at (" << theU << ", " << theV << ")";
+      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+        << "Gaussian curvature mismatch at (" << theU << ", " << theV << ")";
+    }
   }
-}
 } // namespace
 
 // ============================================================

@@ -232,13 +232,20 @@ static int geomAbsToInteger(const GeomAbs_Shape theCont)
 {
   switch (theCont)
   {
-    case GeomAbs_C0: return 0;
-    case GeomAbs_G1: return 1;
-    case GeomAbs_C1: return 2;
-    case GeomAbs_G2: return 3;
-    case GeomAbs_C2: return 4;
-    case GeomAbs_C3: return 5;
-    case GeomAbs_CN: return 6;
+    case GeomAbs_C0:
+      return 0;
+    case GeomAbs_G1:
+      return 1;
+    case GeomAbs_C1:
+      return 2;
+    case GeomAbs_G2:
+      return 3;
+    case GeomAbs_C2:
+      return 4;
+    case GeomAbs_C3:
+      return 5;
+    case GeomAbs_CN:
+      return 6;
   }
   return 0;
 }
@@ -276,9 +283,9 @@ GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
   // For BSpline curves, refine continuity from knot multiplicity.
   if (aCurve1->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    const occ::handle<Geom_BSplineCurve> aBSpl = occ::down_cast<Geom_BSplineCurve>(aCurve1);
-    double aTolerance = 0.0;
-    int    anIdx1 = 0, anIdx2 = 0;
+    const occ::handle<Geom_BSplineCurve> aBSpl      = occ::down_cast<Geom_BSplineCurve>(aCurve1);
+    double                               aTolerance = 0.0;
+    int                                  anIdx1 = 0, anIdx2 = 0;
     aBSpl->Resolution(theTolLinear, aTolerance);
     aBSpl->LocateU(theU1, aTolerance, anIdx1, anIdx2);
     if (anIdx1 > 1 && anIdx2 < aBSpl->NbKnots() && anIdx1 == anIdx2)
@@ -292,9 +299,9 @@ GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
   }
   if (aCurve2->IsKind(STANDARD_TYPE(Geom_BSplineCurve)))
   {
-    const occ::handle<Geom_BSplineCurve> aBSpl = occ::down_cast<Geom_BSplineCurve>(aCurve2);
-    double aTolerance = 0.0;
-    int    anIdx1 = 0, anIdx2 = 0;
+    const occ::handle<Geom_BSplineCurve> aBSpl      = occ::down_cast<Geom_BSplineCurve>(aCurve2);
+    double                               aTolerance = 0.0;
+    int                                  anIdx1 = 0, anIdx2 = 0;
     aBSpl->Resolution(theTolLinear, aTolerance);
     aBSpl->LocateU(theU2, aTolerance, anIdx1, anIdx2);
     if (anIdx1 > 1 && anIdx2 < aBSpl->NbKnots() && anIdx1 == anIdx2)
@@ -355,8 +362,8 @@ GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
     else
     {
       // Check G1 continuity via tangent directions.
-      GeomProp_Curve aProp1(theC1);
-      GeomProp_Curve aProp2(theC2);
+      GeomProp_Curve                aProp1(theC1);
+      GeomProp_Curve                aProp2(theC2);
       const GeomProp::TangentResult aTan1 = aProp1.Tangent(theU1, theTolLinear);
       const GeomProp::TangentResult aTan2 = aProp2.Tangent(theU2, theTolLinear);
       if (aTan1.IsDefined && aTan2.IsDefined)
@@ -402,6 +409,12 @@ GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
                                          const bool                     theR1,
                                          const bool                     theR2)
 {
-  return Continuity(theC1, theC2, theU1, theU2, theR1, theR2,
-                    Precision::Confusion(), Precision::Angular());
+  return Continuity(theC1,
+                    theC2,
+                    theU1,
+                    theU2,
+                    theR1,
+                    theR2,
+                    Precision::Confusion(),
+                    Precision::Angular());
 }

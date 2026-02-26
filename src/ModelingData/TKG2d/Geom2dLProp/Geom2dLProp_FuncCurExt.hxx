@@ -29,8 +29,8 @@ class Geom2d_Curve;
 Standard_HEADER_DEPRECATED("Geom2dLProp_FuncCurExt.hxx is deprecated since OCCT 8.0.0. "
                            "Use Geom2dProp_Curve instead.")
 
-//! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() instead.
-Standard_DEPRECATED("Geom2dLProp_FuncCurExt is deprecated, use Geom2dProp_Curve instead")
+  //! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() instead.
+  Standard_DEPRECATED("Geom2dLProp_FuncCurExt is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_FuncCurExt : public math_FunctionWithDerivative
 {
 public:

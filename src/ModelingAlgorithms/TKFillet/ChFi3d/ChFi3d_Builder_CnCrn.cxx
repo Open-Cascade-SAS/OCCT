@@ -504,12 +504,12 @@ static void CalculBatten(const occ::handle<GeomAdaptor_Surface>& ASurf,
   bool isplane;
   bool anglebig = false;
   isplane       = ASurf->GetType() == GeomAbs_Plane;
-  gp_Dir2d              dir1(xdir, ydir);
-  Geom2dProp_Curve aCurveProp1(curv2d1);
-  Geom2dProp_Curve aCurveProp2(curv2d2);
+  gp_Dir2d                        dir1(xdir, ydir);
+  Geom2dProp_Curve                aCurveProp1(curv2d1);
+  Geom2dProp_Curve                aCurveProp2(curv2d2);
   const Geom2dProp::TangentResult aTanRes1 = aCurveProp1.Tangent(picicplus, 1.e-4);
   const Geom2dProp::TangentResult aTanRes2 = aCurveProp2.Tangent(picplusic, 1.e-4);
-  gp_Dir2d              dir3 = aTanRes1.Direction, dir4 = aTanRes2.Direction;
+  gp_Dir2d                        dir3 = aTanRes1.Direction, dir4 = aTanRes2.Direction;
   if (inverseic)
     dir3.Reverse();
   if (inverseicplus)

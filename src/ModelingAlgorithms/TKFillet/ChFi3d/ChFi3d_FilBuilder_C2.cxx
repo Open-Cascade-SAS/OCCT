@@ -192,11 +192,11 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   BRepAdaptor_Curve BCurv2(E2);
   parE1 = BRep_Tool::Parameter(Vtx, E1);
   parE2 = BRep_Tool::Parameter(Vtx, E2);
-  BRepProp_Curve aCurveProp1(BCurv1);
-  BRepProp_Curve aCurveProp2(BCurv2);
+  BRepProp_Curve                aCurveProp1(BCurv1);
+  BRepProp_Curve                aCurveProp2(BCurv2);
   const GeomProp::TangentResult aTanRes1 = aCurveProp1.Tangent(parE1, 1.e-4);
   const GeomProp::TangentResult aTanRes2 = aCurveProp2.Tangent(parE2, 1.e-4);
-  gp_Dir            dir1 = aTanRes1.Direction, dir2 = aTanRes2.Direction;
+  gp_Dir                        dir1 = aTanRes1.Direction, dir2 = aTanRes2.Direction;
   if (Sens1 == -1)
     dir1.Reverse();
   if (Sens2 == -1)

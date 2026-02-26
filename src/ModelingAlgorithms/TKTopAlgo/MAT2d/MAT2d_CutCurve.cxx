@@ -51,7 +51,7 @@ void MAT2d_CutCurve::Perform(const occ::handle<Geom2d_Curve>& C)
   bool                             YaCut = false;
 
   // Collect both curvature extrema and inflection points, then sort by parameter.
-  Geom2dProp::CurveAnalysis aExtrema    = aCurveProp.FindCurvatureExtrema();
+  Geom2dProp::CurveAnalysis aExtrema     = aCurveProp.FindCurvatureExtrema();
   Geom2dProp::CurveAnalysis aInflections = aCurveProp.FindInflections();
 
   NCollection_DynamicArray<Geom2dProp::CurveSpecialPoint> aAllPoints;
@@ -69,10 +69,12 @@ void MAT2d_CutCurve::Perform(const occ::handle<Geom2d_Curve>& C)
       aAllPoints.Append(aPt);
     }
   }
-  std::sort(aAllPoints.begin(),
-            aAllPoints.end(),
-            [](const Geom2dProp::CurveSpecialPoint& theA,
-               const Geom2dProp::CurveSpecialPoint& theB) { return theA.Parameter < theB.Parameter; });
+  std::sort(
+    aAllPoints.begin(),
+    aAllPoints.end(),
+    [](const Geom2dProp::CurveSpecialPoint& theA, const Geom2dProp::CurveSpecialPoint& theB) {
+      return theA.Parameter < theB.Parameter;
+    });
 
   if (!aAllPoints.IsEmpty())
   {

@@ -90,7 +90,7 @@ static int surface_radius(Draw_Interpretor& di, int n, const char** a)
   occ::handle<Geom_Surface> SurfacePtr = DrawTrSurf::GetSurface(a[1]);
   if (!SurfacePtr.IsNull())
   {
-    GeomProp_Surface aProp(SurfacePtr);
+    GeomProp_Surface                       aProp(SurfacePtr);
     const GeomProp::SurfaceCurvatureResult aCurvRes =
       aProp.Curvatures(UParameter, VParameter, tolerance);
     if (aCurvRes.IsDefined)

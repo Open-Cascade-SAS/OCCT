@@ -147,10 +147,10 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
     int                        intrv, nbintv = C2d.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C2d.Intervals(TI, GeomAbs_CN);
-    constexpr double   Resolution = 1.0e-9;
-    double             Curvature;
-    Geom2dProp_Curve   aProp(curv);
-    gp_Pnt2d           P1;
+    constexpr double Resolution = 1.0e-9;
+    double           Curvature;
+    Geom2dProp_Curve aProp(curv);
+    gp_Pnt2d         P1;
 
     for (intrv = 1; intrv <= nbintv; intrv++)
     {

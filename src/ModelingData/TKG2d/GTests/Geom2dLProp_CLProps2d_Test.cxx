@@ -16,23 +16,23 @@
 #include <Geom2d_Line.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CLProps2d.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_NotDefined.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+      Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Precision.hxx>
 
 #include <gtest/gtest.h>
 
 #include <cmath>
 
-class Geom2dLProp_CLProps2dTest : public ::testing::Test
+  class Geom2dLProp_CLProps2dTest : public ::testing::Test
 {
 protected:
   void SetUp() override

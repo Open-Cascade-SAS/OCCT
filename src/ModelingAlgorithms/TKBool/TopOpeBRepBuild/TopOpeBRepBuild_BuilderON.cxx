@@ -480,7 +480,7 @@ static bool ComputeFaceCrvtInSec(const TopoDS_Face& aFace,
   const GeomAbs_Shape aCn = std::min(aSurf.UContinuity(), aSurf.VContinuity());
   if (aCn < GeomAbs_C2)
     return false;
-  BRepProp_Surface aSurfProp(aSurf);
+  BRepProp_Surface                       aSurfProp(aSurf);
   const GeomProp::SurfaceCurvatureResult aCurvRes =
     aSurfProp.Curvatures(aP2d.X(), aP2d.Y(), Precision::Confusion());
   if (!aCurvRes.IsDefined)
@@ -496,7 +496,7 @@ static bool ComputeFaceCrvtInSec(const TopoDS_Face& aFace,
   const double aMinCrv = aCurvRes.MinCurvature;
   const double aCosMax = aSecDir * aCurvRes.MaxDirection;
   const double aCosMin = aSecDir * aCurvRes.MinDirection;
-  aCrvt = aMaxCrv * aCosMax + aMinCrv * aCosMin;
+  aCrvt                = aMaxCrv * aCosMax + aMinCrv * aCosMin;
   return true;
 }
 

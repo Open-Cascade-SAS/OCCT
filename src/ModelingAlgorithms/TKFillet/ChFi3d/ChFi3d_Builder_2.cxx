@@ -1095,7 +1095,7 @@ static void ChFi3d_BuildPlane(TopOpeBRepDS_DataStructure&         DStr,
     const occ::handle<Geom2d_Curve> Hc =
       BRep_Tool::CurveOnSurface(SD->Vertex(isfirst, ons).Arc(), F, u, v);
     Hc->Value(SD->Vertex(isfirst, ons).ParameterOnArc()).Coord(u, v);
-    BRepProp_Surface aSurfProp(*HS);
+    BRepProp_Surface                    aSurfProp(*HS);
     const GeomProp::SurfaceNormalResult aNormRes = aSurfProp.Normal(u, v, 1.e-12);
     if (aNormRes.IsDefined)
     {

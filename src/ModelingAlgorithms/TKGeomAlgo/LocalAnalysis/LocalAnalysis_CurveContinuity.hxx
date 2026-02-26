@@ -176,29 +176,29 @@ private:
   Standard_EXPORT void CurvC1(const gp_Vec& theD1_1, const gp_Vec& theD1_2);
 
   Standard_EXPORT void CurvC2(const gp_Vec& theD1_1,
-                               const gp_Vec& theD1_2,
-                               const gp_Vec& theD2_1,
-                               const gp_Vec& theD2_2);
+                              const gp_Vec& theD1_2,
+                              const gp_Vec& theD2_1,
+                              const gp_Vec& theD2_2);
 
   Standard_EXPORT void CurvG1(const gp_Dir& theTang1,
-                               bool          theTangDef1,
-                               const gp_Dir& theTang2,
-                               bool          theTangDef2);
+                              bool          theTangDef1,
+                              const gp_Dir& theTang2,
+                              bool          theTangDef2);
 
   Standard_EXPORT void CurvG2(const gp_Dir& theTang1,
-                               bool          theTangDef1,
-                               double        theCurv1,
-                               bool          theCurvDef1,
-                               const gp_Dir& theNorm1,
-                               bool          theNormDef1,
-                               const gp_Vec& theD1_1,
-                               const gp_Dir& theTang2,
-                               bool          theTangDef2,
-                               double        theCurv2,
-                               bool          theCurvDef2,
-                               const gp_Dir& theNorm2,
-                               bool          theNormDef2,
-                               const gp_Vec& theD1_2);
+                              bool          theTangDef1,
+                              double        theCurv1,
+                              bool          theCurvDef1,
+                              const gp_Dir& theNorm1,
+                              bool          theNormDef1,
+                              const gp_Vec& theD1_1,
+                              const gp_Dir& theTang2,
+                              bool          theTangDef2,
+                              double        theCurv2,
+                              bool          theCurvDef2,
+                              const gp_Dir& theNorm2,
+                              bool          theNormDef2,
+                              const gp_Vec& theD1_2);
 
   double                        myContC0;
   double                        myContC1;

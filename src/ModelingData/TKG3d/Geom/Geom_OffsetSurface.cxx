@@ -613,7 +613,7 @@ occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
     GeomAdaptor_Surface aGAsurf(basisSurf);
     if (aGAsurf.GetType() == GeomAbs_SurfaceOfExtrusion)
     {
-      occ::handle<Geom_Curve> aL = basisSurf->UIso(UU);
+      occ::handle<Geom_Curve>             aL = basisSurf->UIso(UU);
       GeomProp_Surface                    aSurfProp(basisSurf);
       const GeomProp::SurfaceNormalResult aNormRes =
         aSurfProp.Normal(UU, 0., Precision::Confusion());

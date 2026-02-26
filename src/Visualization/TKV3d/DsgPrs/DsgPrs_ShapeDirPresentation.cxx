@@ -147,9 +147,9 @@ static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const
     occ::handle<Geom_Curve> curv0 = BRep_Tool::Curve(TopoDS::Edge(shape), loc, first, last);
     occ::handle<Geom_Curve> curve = occ::down_cast<Geom_Curve>(curv0->Copy());
     curve->Transform(loc.Transformation());
-    const double                   aParam = (mode == 0) ? last : first;
-    GeomProp_Curve                 aProp(curve);
-    const GeomProp::TangentResult  aTangRes = aProp.Tangent(aParam, gp::Resolution());
+    const double                  aParam = (mode == 0) ? last : first;
+    GeomProp_Curve                aProp(curve);
+    const GeomProp::TangentResult aTangRes = aProp.Tangent(aParam, gp::Resolution());
     if (!aTangRes.IsDefined)
       return false;
     curve->D0(aParam, pt);
@@ -172,7 +172,8 @@ static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const
     }
 
     GeomProp_Surface                    aProp(surface);
-    const GeomProp::SurfaceNormalResult aNormRes = aProp.Normal(pt2d.X(), pt2d.Y(), gp::Resolution());
+    const GeomProp::SurfaceNormalResult aNormRes =
+      aProp.Normal(pt2d.X(), pt2d.Y(), gp::Resolution());
     if (!aNormRes.IsDefined)
       return false;
 

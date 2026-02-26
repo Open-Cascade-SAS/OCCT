@@ -33,6 +33,6 @@ Standard_HEADER_DEPRECATED("LProp_BadContinuity.hxx is deprecated since OCCT 8.0
   #define LProp_BadContinuity_Raise_if(CONDITION, MESSAGE)
 #endif
 
-DEFINE_STANDARD_EXCEPTION(LProp_BadContinuity, Standard_Failure)
+  DEFINE_STANDARD_EXCEPTION(LProp_BadContinuity, Standard_Failure)
 
 #endif // _LProp_BadContinuity_HeaderFile

@@ -1158,14 +1158,14 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   occ::handle<Geom_Surface>           TheSurf = start->BasisSurface();
   double                              U1, U2, V1, V2, Um, Vm;
   start->Bounds(U1, U2, V1, V2);
-  Um                                        = (U1 + U2) / 2.;
-  Vm                                        = (V1 + V2) / 2.;
-  occ::handle<IGESData_IGESEntity> Surface  = TransferSurface(TheSurf, Udeb, Ufin, Vdeb, Vfin);
-  double                           Distance = start->Offset() / GetUnit();
+  Um                                           = (U1 + U2) / 2.;
+  Vm                                           = (V1 + V2) / 2.;
+  occ::handle<IGESData_IGESEntity>    Surface  = TransferSurface(TheSurf, Udeb, Ufin, Vdeb, Vfin);
+  double                              Distance = start->Offset() / GetUnit();
   GeomProp_Surface                    aProp(TheSurf);
   const GeomProp::SurfaceNormalResult aNormRes = aProp.Normal(Um, Vm, Precision::Confusion());
-  gp_Dir                              Dir = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
-  double            Xd, Yd, Zd;
+  gp_Dir                              Dir      = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
+  double                              Xd, Yd, Zd;
   Dir.Coord(Xd, Yd, Zd);
   gp_XYZ Indicator = gp_XYZ(Xd / GetUnit(), Yd / GetUnit(), Zd / GetUnit());
 

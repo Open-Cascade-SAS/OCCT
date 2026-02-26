@@ -766,8 +766,12 @@ void GeomConvert::ConcatG1(
     if (i >= 1)
     {
       First = ArrayOfCurves(i)->FirstParameter();
-      Cont =
-        GeomProp_Curve::Continuity(ArrayOfCurves(i - 1), ArrayOfCurves(i), PreLast, First, true, true);
+      Cont  = GeomProp_Curve::Continuity(ArrayOfCurves(i - 1),
+                                        ArrayOfCurves(i),
+                                        PreLast,
+                                        First,
+                                        true,
+                                        true);
       if (Cont < GeomAbs_C0)
         throw Standard_ConstructionError("GeomConvert curves not C0");
       else
@@ -995,13 +999,13 @@ void GeomConvert::ConcatC1(
     {
       First = ArrayOfCurves(i)->FirstParameter();
       Cont  = GeomProp_Curve::Continuity(ArrayOfCurves(i - 1),
-                                   ArrayOfCurves(i),
-                                   PreLast,
-                                   First,
-                                   true,
-                                   true,
-                                   local_tolerance(i - 1),
-                                   AngularTolerance);
+                                        ArrayOfCurves(i),
+                                        PreLast,
+                                        First,
+                                        true,
+                                        true,
+                                        local_tolerance(i - 1),
+                                        AngularTolerance);
       if (Cont < GeomAbs_C0)
         throw Standard_ConstructionError("GeomConvert curves not C0");
       else

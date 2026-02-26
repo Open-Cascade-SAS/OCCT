@@ -2458,7 +2458,7 @@ bool BRepLib::EnsureNormalConsistency(const TopoDS_Shape& theShape,
     GeomProp_Surface aSLP(aSurf);
     for (int i = 1; i <= aPT->NbNodes(); i++)
     {
-      const gp_Pnt2d                       aP2d    = aPT->UVNode(i);
+      const gp_Pnt2d                      aP2d = aPT->UVNode(i);
       const GeomProp::SurfaceNormalResult aNormRes =
         aSLP.Normal(aP2d.X(), aP2d.Y(), Precision::Confusion());
 

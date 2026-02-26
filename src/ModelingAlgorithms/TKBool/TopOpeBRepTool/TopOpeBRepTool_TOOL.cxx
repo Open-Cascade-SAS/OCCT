@@ -852,12 +852,12 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
     return std::abs(1 - dot) >= tola;
   }
 
-  BRepProp_Curve aCurveProp(BAC);
+  BRepProp_Curve                aCurveProp(BAC);
   const GeomProp::TangentResult aTangRes = aCurveProp.Tangent(par, Precision::Confusion());
   if (!aTangRes.IsDefined)
     return false;
   const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(par, Precision::Confusion());
-  curv = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
+  curv                                     = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
 
   double tol      = Precision::Confusion() * 1.e+2; // NYITOLXPU
   bool   nullcurv = (curv < tol);
@@ -868,12 +868,12 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
   }
 
   const GeomProp::NormalResult aNormRes = aCurveProp.Normal(par, Precision::Confusion());
-  gp_Dir N = aNormRes.IsDefined ? aNormRes.Direction : gp_Dir();
-  gp_Dir T = aTangRes.Direction;
-  gp_Dir axis  = N ^ T;
-  double dot   = std::abs(axis.Dot(tg0));
-  nullcurv     = dot < tola;
-  bool maxcurv = std::abs(1 - dot) < tola;
+  gp_Dir                       N        = aNormRes.IsDefined ? aNormRes.Direction : gp_Dir();
+  gp_Dir                       T        = aTangRes.Direction;
+  gp_Dir                       axis     = N ^ T;
+  double                       dot      = std::abs(axis.Dot(tg0));
+  nullcurv                              = dot < tola;
+  bool maxcurv                          = std::abs(1 - dot) < tola;
   if (nullcurv)
   {
     curv = 0.;
@@ -971,7 +971,7 @@ static bool FUN_analyticcS(const gp_Pnt2d&                  uv0,
     }
     if (isMaxAcurv)
     {
-      GeomProp_Surface aSurfProp(S);
+      GeomProp_Surface                       aSurfProp(S);
       const GeomProp::SurfaceCurvatureResult aSCurvRes =
         aSurfProp.Curvatures(uv0.X(), uv0.Y(), Precision::Confusion());
       if (aSCurvRes.IsDefined)
@@ -1017,7 +1017,7 @@ bool TopOpeBRepTool_TOOL::CurvF(const TopoDS_Face& F,
   if (analyticcontour)
     return true;
 
-  GeomProp_Surface aSurfProp(S);
+  GeomProp_Surface                       aSurfProp(S);
   const GeomProp::SurfaceCurvatureResult aCurvRes =
     aSurfProp.Curvatures(uv.X(), uv.Y(), Precision::Confusion());
   bool curdef = aCurvRes.IsDefined;

@@ -40,8 +40,8 @@ class gp_Dir;
 Standard_HEADER_DEPRECATED("GeomLProp_SLProps.hxx is deprecated since OCCT 8.0.0. "
                            "Use GeomProp_Surface instead.")
 
-//! @deprecated Use GeomProp_Surface instead.
-Standard_DEPRECATED("GeomLProp_SLProps is deprecated, use GeomProp_Surface instead")
+  //! @deprecated Use GeomProp_Surface instead.
+  Standard_DEPRECATED("GeomLProp_SLProps is deprecated, use GeomProp_Surface instead")
 class GeomLProp_SLProps
 {
 public:

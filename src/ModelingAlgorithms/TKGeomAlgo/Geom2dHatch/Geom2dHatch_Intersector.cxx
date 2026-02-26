@@ -79,9 +79,9 @@ void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
   if (!aTangent.IsDefined)
     return;
 
-  Tang = aTangent.Direction;
+  Tang                                   = aTangent.Direction;
   Geom2dProp::CurvatureResult aCurvature = aCurveProp.Curvature(U, Precision::PConfusion());
-  C = aCurvature.IsDefined ? aCurvature.Value : 0.0;
+  C                                      = aCurvature.IsDefined ? aCurvature.Value : 0.0;
   if (C > Precision::PConfusion() && C < RealLast())
   {
     Geom2dProp::NormalResult aNormal = aCurveProp.Normal(U, Precision::PConfusion());

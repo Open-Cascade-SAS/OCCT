@@ -25,7 +25,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <HLRBRep_CLPropsATool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #define Curve HLRBRep_Curve*
 #define Curve_hxx <HLRBRep_Curve.hxx>

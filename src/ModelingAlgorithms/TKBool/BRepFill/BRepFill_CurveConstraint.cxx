@@ -42,7 +42,7 @@ BRepFill_CurveConstraint ::BRepFill_CurveConstraint(
   myTolDist   = TolDist;
   myTolAng    = TolAng;
   myTolCurv   = TolCurv;
-  myOrder = Tang;
+  myOrder     = Tang;
   if ((Tang < -1) || (Tang > 2))
     throw Standard_Failure("BRepFill : The continuity is not G0 G1 or G2");
   myNbPoints = NPt;

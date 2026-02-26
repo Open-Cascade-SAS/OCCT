@@ -22,12 +22,12 @@
 Standard_HEADER_DEPRECATED("LProp_CIType.hxx is deprecated since OCCT 8.0.0. "
                            "Use Geom2dProp::CIType or GeomProp::CIType instead.")
 
-//! Identifies the type of a particular point on a curve:
-//! @deprecated Use Geom2dProp::CIType or GeomProp::CIType instead.
-//! - LProp_Inflection: a point of inflection
-//! - LProp_MinCur: a minimum of curvature
-//! - LProp_MaxCur: a maximum of curvature.
-enum LProp_CIType
+  //! Identifies the type of a particular point on a curve:
+  //! @deprecated Use Geom2dProp::CIType or GeomProp::CIType instead.
+  //! - LProp_Inflection: a point of inflection
+  //! - LProp_MinCur: a minimum of curvature
+  //! - LProp_MaxCur: a maximum of curvature.
+  enum LProp_CIType
 {
   LProp_Inflection,
   LProp_MinCur,

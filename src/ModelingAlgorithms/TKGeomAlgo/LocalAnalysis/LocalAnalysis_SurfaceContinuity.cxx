@@ -198,20 +198,20 @@ void LocalAnalysis_SurfaceContinuity::SurfG2(const GeomProp::SurfaceCurvatureRes
                 (std::abs(y1) + std::abs(y2)) / 2,
                 (std::abs(z1) + std::abs(z2)) / 2);
 
-    myAlpha       = MCD1.Angle(MCD2);
-    double RMIN1  = theCurv1.MinCurvature;
-    double RMAX1  = theCurv1.MaxCurvature;
-    double RMIN2  = theCurv2.MinCurvature;
-    double RMAX2  = theCurv2.MaxCurvature;
-    myETA1        = (RMIN1 + RMAX1) / 2;
-    myETA2        = (RMIN2 + RMAX2) / 2;
-    myETA         = (myETA1 + myETA2) / 2;
-    myZETA1       = (RMAX1 - RMIN1) / 2;
-    myZETA2       = (RMAX2 - RMIN2) / 2;
-    myZETA        = (myZETA1 + myZETA2) / 2;
-    double DETA   = (myETA1 - myETA2) / 2;
-    double DZETA  = (myZETA1 - myZETA2) / 2;
-    myGap = std::abs(DETA)
+    myAlpha      = MCD1.Angle(MCD2);
+    double RMIN1 = theCurv1.MinCurvature;
+    double RMAX1 = theCurv1.MaxCurvature;
+    double RMIN2 = theCurv2.MinCurvature;
+    double RMAX2 = theCurv2.MaxCurvature;
+    myETA1       = (RMIN1 + RMAX1) / 2;
+    myETA2       = (RMIN2 + RMAX2) / 2;
+    myETA        = (myETA1 + myETA2) / 2;
+    myZETA1      = (RMAX1 - RMIN1) / 2;
+    myZETA2      = (RMAX2 - RMIN2) / 2;
+    myZETA       = (myZETA1 + myZETA2) / 2;
+    double DETA  = (myETA1 - myETA2) / 2;
+    double DZETA = (myZETA1 - myZETA2) / 2;
+    myGap        = std::abs(DETA)
             + sqrt(DZETA * DZETA * std::cos(myAlpha) * std::cos(myAlpha)
                    + myZETA * myZETA * std::sin(myAlpha) * std::sin(myAlpha));
   }
@@ -301,8 +301,8 @@ void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(const occ::handle<Geom_Sur
       theSurf1->D0(theU1, theV1, P1);
       theSurf2->D0(theU2, theV2, P2);
       SurfC0(P1, P2);
-      GeomProp_Surface aProp1(theSurf1);
-      GeomProp_Surface aProp2(theSurf2);
+      GeomProp_Surface              aProp1(theSurf1);
+      GeomProp_Surface              aProp2(theSurf2);
       GeomProp::SurfaceNormalResult aNorm1 = aProp1.Normal(theU1, theV1, myepsnul);
       GeomProp::SurfaceNormalResult aNorm2 = aProp2.Normal(theU2, theV2, myepsnul);
       SurfG1(aNorm1.Direction, aNorm1.IsDefined, aNorm2.Direction, aNorm2.IsDefined);
@@ -313,8 +313,8 @@ void LocalAnalysis_SurfaceContinuity::ComputeAnalysis(const occ::handle<Geom_Sur
       theSurf1->D0(theU1, theV1, P1);
       theSurf2->D0(theU2, theV2, P2);
       SurfC0(P1, P2);
-      GeomProp_Surface aProp1(theSurf1);
-      GeomProp_Surface aProp2(theSurf2);
+      GeomProp_Surface              aProp1(theSurf1);
+      GeomProp_Surface              aProp2(theSurf2);
       GeomProp::SurfaceNormalResult aNorm1 = aProp1.Normal(theU1, theV1, myepsnul);
       GeomProp::SurfaceNormalResult aNorm2 = aProp2.Normal(theU2, theV2, myepsnul);
       SurfG1(aNorm1.Direction, aNorm1.IsDefined, aNorm2.Direction, aNorm2.IsDefined);

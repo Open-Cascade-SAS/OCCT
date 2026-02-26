@@ -60,9 +60,9 @@ void LocalAnalysis_CurveContinuity::CurvC1(const gp_Vec& theD1_1, const gp_Vec& 
 /*********************************************************************************/
 
 void LocalAnalysis_CurveContinuity::CurvC2(const gp_Vec& theD1_1,
-                                            const gp_Vec& theD1_2,
-                                            const gp_Vec& theD2_1,
-                                            const gp_Vec& theD2_2)
+                                           const gp_Vec& theD1_2,
+                                           const gp_Vec& theD2_1,
+                                           const gp_Vec& theD2_2)
 {
   double norm1  = theD1_1.Magnitude();
   double norm2  = theD1_2.Magnitude();
@@ -108,9 +108,9 @@ void LocalAnalysis_CurveContinuity::CurvC2(const gp_Vec& theD1_1,
 /*********************************************************************************/
 
 void LocalAnalysis_CurveContinuity::CurvG1(const gp_Dir& theTang1,
-                                            bool          theTangDef1,
-                                            const gp_Dir& theTang2,
-                                            bool          theTangDef2)
+                                           bool          theTangDef1,
+                                           const gp_Dir& theTang2,
+                                           bool          theTangDef2)
 {
   if (theTangDef1 && theTangDef2)
   {
@@ -130,19 +130,19 @@ void LocalAnalysis_CurveContinuity::CurvG1(const gp_Dir& theTang1,
 /*********************************************************************************/
 
 void LocalAnalysis_CurveContinuity::CurvG2(const gp_Dir& theTang1,
-                                            bool          theTangDef1,
-                                            double        theCurv1,
-                                            bool          theCurvDef1,
-                                            const gp_Dir& theNorm1,
-                                            bool          theNormDef1,
-                                            const gp_Vec& theD1_1,
-                                            const gp_Dir& theTang2,
-                                            bool          theTangDef2,
-                                            double        theCurv2,
-                                            bool          theCurvDef2,
-                                            const gp_Dir& theNorm2,
-                                            bool          theNormDef2,
-                                            const gp_Vec& theD1_2)
+                                           bool          theTangDef1,
+                                           double        theCurv1,
+                                           bool          theCurvDef1,
+                                           const gp_Dir& theNorm1,
+                                           bool          theNormDef1,
+                                           const gp_Vec& theD1_1,
+                                           const gp_Dir& theTang2,
+                                           bool          theTangDef2,
+                                           double        theCurv2,
+                                           bool          theCurvDef2,
+                                           const gp_Dir& theNorm2,
+                                           bool          theNormDef2,
+                                           const gp_Vec& theD1_2)
 {
   (void)theD1_1;
   (void)theD1_2;

@@ -30,8 +30,8 @@ class LProp_CurAndInf;
 Standard_HEADER_DEPRECATED("Geom2dLProp_NumericCurInf2d.hxx is deprecated since OCCT 8.0.0. "
                            "Use Geom2dProp_Curve instead.")
 
-//! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() / FindInflections() instead.
-Standard_DEPRECATED("Geom2dLProp_NumericCurInf2d is deprecated, use Geom2dProp_Curve instead")
+  //! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() / FindInflections() instead.
+  Standard_DEPRECATED("Geom2dLProp_NumericCurInf2d is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_NumericCurInf2d
 {
 public:

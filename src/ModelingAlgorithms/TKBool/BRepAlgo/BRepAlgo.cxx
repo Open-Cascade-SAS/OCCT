@@ -318,14 +318,8 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
     Plast  = BRep_Tool::Pnt(Vlast);
 
     if ((Pfirst.Distance(Plast) <= toler) && // C0 continuity test at the closing point
-        (GeomProp_Curve::Continuity(tab(nb_curve - 1),
-                                    tab(0),
-                                    Last,
-                                    First0,
-                                    true,
-                                    true,
-                                    toler,
-                                    TolAngular)
+        (GeomProp_Curve::
+           Continuity(tab(nb_curve - 1), tab(0), Last, First0, true, true, toler, TolAngular)
          >= GeomAbs_G1))
     {
       // clang-format off
@@ -700,13 +694,13 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     double closed_tolerance = 0.;
     if (FirstVertex.IsSame(LastVertex)
         && GeomProp_Curve::Continuity(tab(0),
-                                 tab(nb_curve - 1),
-                                 tab(0)->FirstParameter(),
-                                 tab(nb_curve - 1)->LastParameter(),
-                                 false,
-                                 false,
-                                 LinTol,
-                                 AngTol)
+                                      tab(nb_curve - 1),
+                                      tab(0)->FirstParameter(),
+                                      tab(nb_curve - 1)->LastParameter(),
+                                      false,
+                                      false,
+                                      LinTol,
+                                      AngTol)
              >= GeomAbs_G1)
     {
       closed_flag      = true;

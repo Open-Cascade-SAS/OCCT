@@ -35,10 +35,10 @@
 
 static gp_Dir getNormalOnFace(const TopoDS_Face& theFace, const double theU, const double theV)
 {
-  const double     aPrec = gp::Resolution();
-  BRepProp_Surface aProps(theFace);
+  const double                        aPrec = gp::Resolution();
+  BRepProp_Surface                    aProps(theFace);
   const GeomProp::SurfaceNormalResult aNormRes = aProps.Normal(theU, theV, aPrec);
-  gp_Dir           aNormal = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
+  gp_Dir                              aNormal  = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
   if (theFace.Orientation() == TopAbs_REVERSED)
     aNormal.Reverse();
   return aNormal;
