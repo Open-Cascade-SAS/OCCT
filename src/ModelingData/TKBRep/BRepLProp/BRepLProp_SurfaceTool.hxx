@@ -30,7 +30,7 @@ Standard_HEADER_DEPRECATED("BRepLProp_SurfaceTool.hxx is deprecated since OCCT 8
                            "Use BRepProp_Surface instead.")
 
   //! @deprecated Use BRepProp_Surface instead.
-  Standard_DEPRECATED("BRepLProp_SurfaceTool is deprecated, use BRepProp_Surface instead")
+Standard_DEPRECATED("BRepLProp_SurfaceTool is deprecated, use BRepProp_Surface instead")
 class BRepLProp_SurfaceTool
 {
 public:

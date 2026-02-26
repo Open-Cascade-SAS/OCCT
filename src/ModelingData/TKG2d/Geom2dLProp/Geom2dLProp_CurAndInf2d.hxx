@@ -37,7 +37,7 @@ Standard_HEADER_DEPRECATED("Geom2dLProp_CurAndInf2d.hxx is deprecated since OCCT
   //! - implementing the computation algorithms
   //! - consulting the results.
   //! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() / FindInflections() instead.
-  Standard_DEPRECATED("Geom2dLProp_CurAndInf2d is deprecated, use Geom2dProp_Curve instead")
+Standard_DEPRECATED("Geom2dLProp_CurAndInf2d is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_CurAndInf2d : public LProp_CurAndInf
 {
 public:

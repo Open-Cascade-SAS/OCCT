@@ -40,7 +40,7 @@ Standard_HEADER_DEPRECATED("BRepLProp_CLProps.hxx is deprecated since OCCT 8.0.0
                            "Use BRepProp_Curve instead.")
 
   //! @deprecated Use BRepProp_Curve instead.
-  Standard_DEPRECATED("BRepLProp_CLProps is deprecated, use BRepProp_Curve instead")
+Standard_DEPRECATED("BRepLProp_CLProps is deprecated, use BRepProp_Curve instead")
 class BRepLProp_CLProps
 {
 public:

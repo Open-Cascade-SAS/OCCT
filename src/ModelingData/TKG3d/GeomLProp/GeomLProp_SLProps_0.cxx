@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
+#include <GeomLProp_SurfaceTool.hxx>
+#include <LProp_BadContinuity.hxx>
+#include <LProp_NotDefined.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Geom_Surface.hxx>
-#include <LProp_BadContinuity.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <LProp_NotDefined.hxx>
-#include <GeomLProp_SurfaceTool.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
 
 #define Surface occ::handle<Geom_Surface>
 #define Surface_hxx <Geom_Surface.hxx>
@@ -32,4 +34,6 @@
 #define Tool_hxx <GeomLProp_SurfaceTool.hxx>
 #define LProp_SLProps GeomLProp_SLProps
 #define LProp_SLProps_hxx <GeomLProp_SLProps.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_SLProps.gxx>
+Standard_ENABLE_DEPRECATION_WARNINGS

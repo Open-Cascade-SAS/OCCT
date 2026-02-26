@@ -15,9 +15,12 @@
 // commercial license or contractual agreement.
 
 #include <Geom2d_Curve.hxx>
+#include <gp_Pnt2d.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_Curve2dTool.hxx>
 #include <Geom2dLProp_FuncCurNul.hxx>
-#include <gp_Pnt2d.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=================================================================================================
 

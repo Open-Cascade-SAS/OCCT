@@ -15,9 +15,12 @@
 // commercial license or contractual agreement.
 
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepLProp_CurveTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
+#include <BRepLProp_CurveTool.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=================================================================================================
 

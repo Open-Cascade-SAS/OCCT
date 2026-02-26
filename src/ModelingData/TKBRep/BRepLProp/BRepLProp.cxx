@@ -14,9 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp.hxx>
-
 #include <BRepLProp_CLProps.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
+
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>

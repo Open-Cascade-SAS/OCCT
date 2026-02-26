@@ -17,7 +17,10 @@
 #include <Adaptor3d_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp3d_CurveTool.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=================================================================================================
 

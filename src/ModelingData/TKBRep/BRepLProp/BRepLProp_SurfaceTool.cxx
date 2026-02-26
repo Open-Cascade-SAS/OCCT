@@ -15,9 +15,12 @@
 // commercial license or contractual agreement.
 
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepLProp_SurfaceTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
+#include <BRepLProp_SurfaceTool.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=================================================================================================
 

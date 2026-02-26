@@ -41,7 +41,7 @@ Standard_HEADER_DEPRECATED("BRepLProp_SLProps.hxx is deprecated since OCCT 8.0.0
                            "Use BRepProp_Surface instead.")
 
   //! @deprecated Use BRepProp_Surface instead.
-  Standard_DEPRECATED("BRepLProp_SLProps is deprecated, use BRepProp_Surface instead")
+Standard_DEPRECATED("BRepLProp_SLProps is deprecated, use BRepProp_Surface instead")
 class BRepLProp_SLProps
 {
 public:

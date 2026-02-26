@@ -16,9 +16,12 @@
 
 #include <Geom_Surface.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomLProp_SurfaceTool.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
+#include <GeomLProp_SurfaceTool.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 void GeomLProp_SurfaceTool::Value(const occ::handle<Geom_Surface>& S,
                                   const double                     U,

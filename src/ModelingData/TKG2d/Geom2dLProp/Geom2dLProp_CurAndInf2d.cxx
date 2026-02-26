@@ -15,10 +15,13 @@
 // commercial license or contractual agreement.
 
 #include <Geom2dAdaptor_Curve.hxx>
+#include <NCollection_Array1.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CurAndInf2d.hxx>
 #include <Geom2dLProp_NumericCurInf2d.hxx>
 #include <LProp_AnalyticCurInf.hxx>
-#include <NCollection_Array1.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=================================================================================================
 

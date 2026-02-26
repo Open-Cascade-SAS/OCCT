@@ -31,7 +31,7 @@ Standard_HEADER_DEPRECATED("GeomLProp_SurfaceTool.hxx is deprecated since OCCT 8
                            "Use GeomProp_Surface instead.")
 
   //! @deprecated Use GeomProp_Surface instead.
-  Standard_DEPRECATED("GeomLProp_SurfaceTool is deprecated, use GeomProp_Surface instead")
+Standard_DEPRECATED("GeomLProp_SurfaceTool is deprecated, use GeomProp_Surface instead")
 class GeomLProp_SurfaceTool
 {
 public:

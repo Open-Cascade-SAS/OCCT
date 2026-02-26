@@ -13,17 +13,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp3d_SLProps.hxx>
+#include <LProp3d_SurfaceTool.hxx>
+#include <LProp_BadContinuity.hxx>
+#include <LProp_NotDefined.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Adaptor3d_Surface.hxx>
-#include <LProp_BadContinuity.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <LProp_NotDefined.hxx>
-#include <LProp3d_SurfaceTool.hxx>
+#include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
-#include <gp_Dir.hxx>
 
 #define Surface occ::handle<Adaptor3d_Surface>
 #define Surface_hxx <Adaptor3d_Surface.hxx>
@@ -31,4 +33,6 @@
 #define Tool_hxx <LProp3d_SurfaceTool.hxx>
 #define LProp_SLProps LProp3d_SLProps
 #define LProp_SLProps_hxx <LProp3d_SLProps.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_SLProps.gxx>
+Standard_ENABLE_DEPRECATION_WARNINGS

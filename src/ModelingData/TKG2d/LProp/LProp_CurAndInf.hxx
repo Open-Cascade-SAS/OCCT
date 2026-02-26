@@ -32,8 +32,7 @@ Standard_HEADER_DEPRECATED("LProp_CurAndInf.hxx is deprecated since OCCT 8.0.0. 
   //! Stores the parameters of a curve 2d or 3d corresponding
   //! to the curvature's extremas and the Inflection's Points.
   //! @deprecated Use Geom2dProp or GeomProp CurveAnalysis instead.
-  Standard_DEPRECATED(
-    "LProp_CurAndInf is deprecated, use Geom2dProp or GeomProp CurveAnalysis instead")
+Standard_DEPRECATED("LProp_CurAndInf is deprecated, use Geom2dProp or GeomProp CurveAnalysis instead")
 class LProp_CurAndInf
 {
 public:

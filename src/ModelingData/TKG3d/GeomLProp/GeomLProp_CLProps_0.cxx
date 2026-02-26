@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
+#include <GeomLProp_CurveTool.hxx>
+#include <LProp_BadContinuity.hxx>
+#include <LProp_NotDefined.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Geom_Curve.hxx>
-#include <LProp_BadContinuity.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <LProp_NotDefined.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-#include <GeomLProp_CurveTool.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 #define Curve occ::handle<Geom_Curve>
 #define Curve_hxx <Geom_Curve.hxx>
@@ -38,4 +40,6 @@
 #define Tool_hxx <GeomLProp_CurveTool.hxx>
 #define LProp_CLProps GeomLProp_CLProps
 #define LProp_CLProps_hxx <GeomLProp_CLProps.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CLProps.gxx>
+Standard_ENABLE_DEPRECATION_WARNINGS

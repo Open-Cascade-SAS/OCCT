@@ -15,14 +15,17 @@
 // commercial license or contractual agreement.
 
 #include <Geom2d_Curve.hxx>
+#include <math_BracketedRoot.hxx>
+#include <math_FunctionRoots.hxx>
+#include <Precision.hxx>
+
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_Curve2dTool.hxx>
 #include <Geom2dLProp_FuncCurExt.hxx>
 #include <Geom2dLProp_FuncCurNul.hxx>
 #include <Geom2dLProp_NumericCurInf2d.hxx>
 #include <LProp_CurAndInf.hxx>
-#include <math_BracketedRoot.hxx>
-#include <math_FunctionRoots.hxx>
-#include <Precision.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 //=================================================================================================
 

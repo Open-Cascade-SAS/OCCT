@@ -14,13 +14,15 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp.hxx>
+#include <GeomLProp_CLProps.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAbs_Shape.hxx>
-#include <GeomLProp_CLProps.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
 #include <Precision.hxx>

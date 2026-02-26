@@ -33,7 +33,7 @@ Standard_HEADER_DEPRECATED("BRepLProp.hxx is deprecated since OCCT 8.0.0. "
                            "Use BRepProp_Curve::Continuity() instead.")
 
   //! @deprecated Use BRepProp_Curve::Continuity() instead.
-  Standard_DEPRECATED("BRepLProp is deprecated, use BRepProp_Curve::Continuity() instead")
+Standard_DEPRECATED("BRepLProp is deprecated, use BRepProp_Curve::Continuity() instead")
 class BRepLProp
 {
 public:

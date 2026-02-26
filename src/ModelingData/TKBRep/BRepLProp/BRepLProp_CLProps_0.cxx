@@ -14,17 +14,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_CLProps.hxx>
-
+#include <BRepLProp_CurveTool.hxx>
 #include <LProp_BadContinuity.hxx>
+#include <LProp_NotDefined.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
+
+#include <BRepAdaptor_Curve.hxx>
 #include <Standard_DomainError.hxx>
 #include <Standard_OutOfRange.hxx>
-#include <LProp_NotDefined.hxx>
-#include <BRepAdaptor_Curve.hxx>
-#include <gp_Vec.hxx>
-#include <gp_Pnt.hxx>
 #include <gp_Dir.hxx>
-#include <BRepLProp_CurveTool.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 
 #define Curve BRepAdaptor_Curve
 #define Curve_hxx <BRepAdaptor_Curve.hxx>
@@ -38,4 +40,6 @@
 #define Tool_hxx <BRepLProp_CurveTool.hxx>
 #define LProp_CLProps BRepLProp_CLProps
 #define LProp_CLProps_hxx <BRepLProp_CLProps.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CLProps.gxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
