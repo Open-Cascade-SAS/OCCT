@@ -320,7 +320,7 @@ inline Geom2dProp::TangentResult EvaluateTangent(const Geom2dAdaptor_Curve* theC
     return {gp_Dir2d(aD1), true};
   }
 
-  // D1 is null — use sign-correcting overload with nearby D0 samples.
+  // D1 is null: use sign-correcting overload with nearby D0 samples.
   constexpr double THE_DIV_FACTOR = 1.e-3;
   constexpr double THE_MIN_STEP   = 1.e-7;
   const double     anUFirst       = theCurve->FirstParameter();

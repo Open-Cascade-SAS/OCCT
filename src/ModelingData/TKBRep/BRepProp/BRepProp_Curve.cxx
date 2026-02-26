@@ -79,13 +79,13 @@ GeomProp::TangentResult BRepProp_Curve::Tangent(const double theParam, const dou
   gp_Vec aD1, aD2, aD3;
   myPtr->D3(theParam, aPnt, aD1, aD2, aD3);
 
-  // If D1 is non-null, use it directly — no sign ambiguity.
+  // If D1 is non-null, use it directly (no sign ambiguity).
   if (aD1.SquareMagnitude() > theTol * theTol)
   {
     return {gp_Dir(aD1), true};
   }
 
-  // D1 is null — sample nearby D0 points for sign correction of higher derivatives.
+  // D1 is null: sample nearby D0 points for sign correction of higher derivatives.
   constexpr double THE_DIV_FACTOR = 1.e-3;
   constexpr double THE_MIN_STEP   = 1.e-7;
   const double     anUFirst       = myPtr->FirstParameter();

@@ -56,13 +56,13 @@ Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
 {
   const double aTol2 = theTol * theTol;
 
-  // If D1 is non-null, use it directly — no sign ambiguity.
+  // If D1 is non-null, use it directly (no sign ambiguity).
   if (theD1.SquareMagnitude() > aTol2)
   {
     return {gp_Dir2d(theD1), true};
   }
 
-  // D1 is null — find first non-null higher derivative.
+  // D1 is null: find first non-null higher derivative.
   gp_Vec2d aVec;
   if (theD2.SquareMagnitude() > aTol2)
     aVec = theD2;

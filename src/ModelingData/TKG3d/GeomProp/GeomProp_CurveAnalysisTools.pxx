@@ -348,7 +348,7 @@ inline GeomProp::TangentResult EvaluateTangent(const GeomAdaptor_Curve* theCurve
     return {gp_Dir(aD1), true};
   }
 
-  // D1 is null — use sign-correcting overload with nearby D0 samples.
+  // D1 is null: use sign-correcting overload with nearby D0 samples.
   constexpr double THE_DIV_FACTOR = 1.e-3;
   constexpr double THE_MIN_STEP   = 1.e-7;
   const double     anUFirst       = theCurve->FirstParameter();
