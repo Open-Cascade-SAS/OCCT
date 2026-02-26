@@ -144,6 +144,8 @@ void LocalAnalysis_CurveContinuity::CurvG2(const gp_Dir& theTang1,
                                            bool          theNormDef2,
                                            const gp_Vec& theD1_2)
 {
+  (void)theTang1;
+  (void)theTang2;
   (void)theD1_1;
   (void)theD1_2;
   double epscrb = 8 * myepsC0 / (myMaxLon * myMaxLon);
