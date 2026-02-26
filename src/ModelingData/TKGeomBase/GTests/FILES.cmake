@@ -7,4 +7,5 @@ set(OCCT_TKGeomBase_GTests_FILES
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   Hermit_Test.cxx
   IntAna_IntQuadQuad_Test.cxx
+  gce_MakeHypr_Test.cxx
 )

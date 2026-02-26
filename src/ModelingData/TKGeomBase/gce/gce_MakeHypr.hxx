@@ -90,6 +90,7 @@ public:
   //! Warning
   //! If an error occurs (that is, when IsDone returns
   //! false), the Status function returns:
+  //! -   gce_ConfusedPoints if any two of S1, S2 and Center are coincident;
   //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
   Standard_EXPORT gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
 
