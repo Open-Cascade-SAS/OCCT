@@ -29,25 +29,25 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <gp_Dir2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Pnt2d.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
+      Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Precision.hxx>
 
 #include <cmath>
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
   constexpr double THE_DIR_TOL   = 1.0e-6;
   constexpr double THE_POINT_TOL = 1.0e-6;
 
-  void compareTangent(Geom2dProp_Curve&      theProp,
-                      Geom2dLProp_CLProps2d&  theOld,
-                      const double            theParam)
+  void compareTangent(Geom2dProp_Curve & theProp,
+                      Geom2dLProp_CLProps2d & theOld,
+                      const double theParam)
   {
     theOld.SetParameter(theParam);
     const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
@@ -61,26 +61,26 @@ namespace
     }
   }
 
-  void compareCurvature(Geom2dProp_Curve&      theProp,
-                        Geom2dLProp_CLProps2d&  theOld,
-                        const double            theParam)
+  void compareCurvature(Geom2dProp_Curve & theProp,
+                        Geom2dLProp_CLProps2d & theOld,
+                        const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CurvatureResult aNew = theProp.Curvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
+    const double                      aOldCurv = theOld.Curvature();
     if (aNew.IsDefined && !aNew.IsInfinite)
     {
       EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL);
     }
   }
 
-  void compareNormal(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareNormal(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::NormalResult aNew = theProp.Normal(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -94,13 +94,13 @@ namespace
     }
   }
 
-  void compareCentre(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareCentre(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CentreResult aNew = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -114,11 +114,11 @@ namespace
     }
   }
 
-  void compareAll(Geom2dProp_Curve&      theProp,
-                  Geom2dLProp_CLProps2d&  theOld,
-                  const double            theFirst,
-                  const double            theLast,
-                  const int               theNbSamples = 10)
+  void compareAll(Geom2dProp_Curve & theProp,
+                  Geom2dLProp_CLProps2d & theOld,
+                  const double theFirst,
+                  const double theLast,
+                  const int    theNbSamples = 10)
   {
     const double aStep = (theLast - theFirst) / theNbSamples;
     for (int i = 0; i <= theNbSamples; ++i)
@@ -136,9 +136,12 @@ namespace
   {
     switch (theType)
     {
-      case LProp_Inflection: return Geom2dProp::CIType::Inflection;
-      case LProp_MinCur:     return Geom2dProp::CIType::MinCurvature;
-      case LProp_MaxCur:     return Geom2dProp::CIType::MaxCurvature;
+      case LProp_Inflection:
+        return Geom2dProp::CIType::Inflection;
+      case LProp_MinCur:
+        return Geom2dProp::CIType::MinCurvature;
+      case LProp_MaxCur:
+        return Geom2dProp::CIType::MaxCurvature;
     }
     return Geom2dProp::CIType::Inflection;
   }
@@ -163,11 +166,11 @@ namespace
 // Test 1: Curvature at major vertex (param=0): k = a/b^2
 TEST(Geom2dProp_EllipseTest, Curvature_AtMajorVertex)
 {
-  const double                  a = 10.0;
-  const double                  b = 5.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 10.0;
+  const double                b = 5.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   const Geom2dProp::CurvatureResult aCurv = aProp.Curvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -177,11 +180,11 @@ TEST(Geom2dProp_EllipseTest, Curvature_AtMajorVertex)
 // Test 2: Curvature at minor vertex (param=PI/2): k = b/a^2
 TEST(Geom2dProp_EllipseTest, Curvature_AtMinorVertex)
 {
-  const double                  a = 10.0;
-  const double                  b = 5.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 10.0;
+  const double                b = 5.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   const Geom2dProp::CurvatureResult aCurv = aProp.Curvature(M_PI / 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -191,11 +194,11 @@ TEST(Geom2dProp_EllipseTest, Curvature_AtMinorVertex)
 // Test 3: Curvature symmetry: k(t) = k(-t)
 TEST(Geom2dProp_EllipseTest, Curvature_Symmetry)
 {
-  const double                  a = 10.0;
-  const double                  b = 5.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 10.0;
+  const double                b = 5.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   for (double t = 0.1; t < M_PI; t += 0.3)
   {
@@ -203,8 +206,7 @@ TEST(Geom2dProp_EllipseTest, Curvature_Symmetry)
     const Geom2dProp::CurvatureResult aCurvNeg = aProp.Curvature(-t, THE_LIN_TOL);
     ASSERT_TRUE(aCurvPos.IsDefined);
     ASSERT_TRUE(aCurvNeg.IsDefined);
-    EXPECT_NEAR(std::abs(aCurvPos.Value), std::abs(aCurvNeg.Value), THE_CURV_TOL)
-      << "at t=" << t;
+    EXPECT_NEAR(std::abs(aCurvPos.Value), std::abs(aCurvNeg.Value), THE_CURV_TOL) << "at t=" << t;
   }
 }
 
@@ -267,11 +269,11 @@ TEST(Geom2dProp_EllipseTest, Normal_AtMinorVertex)
 // Test 8: Centre at major vertex: radius of curvature = b^2/a
 TEST(Geom2dProp_EllipseTest, Centre_AtMajorVertex)
 {
-  const double                  a = 10.0;
-  const double                  b = 5.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 10.0;
+  const double                b = 5.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   const Geom2dProp::CentreResult aCentre = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCentre.IsDefined);
@@ -285,11 +287,11 @@ TEST(Geom2dProp_EllipseTest, Centre_AtMajorVertex)
 // Test 9: Centre at minor vertex: radius of curvature = a^2/b
 TEST(Geom2dProp_EllipseTest, Centre_AtMinorVertex)
 {
-  const double                  a = 10.0;
-  const double                  b = 5.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 10.0;
+  const double                b = 5.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   const Geom2dProp::CentreResult aCentre = aProp.CentreOfCurvature(M_PI / 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aCentre.IsDefined);
@@ -336,11 +338,11 @@ TEST(Geom2dProp_EllipseTest, GetType_IsEllipse)
 // Test 13: Curvature for high eccentricity ellipse (a=100, b=1)
 TEST(Geom2dProp_EllipseTest, Curvature_HighEccentricity)
 {
-  const double                  a = 100.0;
-  const double                  b = 1.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 100.0;
+  const double                b = 1.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   // At major vertex: k = a/b^2 = 100
   const Geom2dProp::CurvatureResult aCurvMaj = aProp.Curvature(0.0, THE_LIN_TOL);
@@ -356,11 +358,11 @@ TEST(Geom2dProp_EllipseTest, Curvature_HighEccentricity)
 // Test 14: Curvature for nearly circular ellipse (a=5, b=4.99)
 TEST(Geom2dProp_EllipseTest, Curvature_NearlyCircular)
 {
-  const double                  a = 5.0;
-  const double                  b = 4.99;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 5.0;
+  const double                b = 4.99;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   const Geom2dProp::CurvatureResult aCurvMaj = aProp.Curvature(0.0, THE_LIN_TOL);
   const Geom2dProp::CurvatureResult aCurvMin = aProp.Curvature(M_PI / 2.0, THE_LIN_TOL);
@@ -456,36 +458,44 @@ TEST(Geom2dProp_EllipseTest, VsCurAndInf2d_NoInflections)
 // Test 21: Curvature matches analytical formula k(t) = ab/(a^2*sin^2(t) + b^2*cos^2(t))^(3/2)
 TEST(Geom2dProp_EllipseTest, Curvature_MatchesAnalytical)
 {
-  const double                  a = 10.0;
-  const double                  b = 5.0;
-  gp_Elips2d                    anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
-  occ::handle<Geom2d_Ellipse>   anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve              aProp(anEllipse);
+  const double                a = 10.0;
+  const double                b = 5.0;
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), a, b);
+  occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
+  Geom2dProp_Curve            aProp(anEllipse);
 
   for (double t = 0.0; t < 2.0 * M_PI; t += M_PI / 12.0)
   {
-    const double aSin = std::sin(t);
-    const double aCos = std::cos(t);
-    const double aDenom = a * a * aSin * aSin + b * b * aCos * aCos;
+    const double aSin       = std::sin(t);
+    const double aCos       = std::cos(t);
+    const double aDenom     = a * a * aSin * aSin + b * b * aCos * aCos;
     const double aExpectedK = (a * b) / (aDenom * std::sqrt(aDenom));
 
     const Geom2dProp::CurvatureResult aCurv = aProp.Curvature(t, THE_LIN_TOL);
     ASSERT_TRUE(aCurv.IsDefined) << "at t=" << t;
-    EXPECT_NEAR(std::abs(aCurv.Value), aExpectedK, THE_CURV_TOL)
-      << "at t=" << t;
+    EXPECT_NEAR(std::abs(aCurv.Value), aExpectedK, THE_CURV_TOL) << "at t=" << t;
   }
 }
 
 TEST(Geom2dProp_EllipseTest, VsCLProps2d_CriticalPoints)
 {
-  gp_Elips2d anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 3.0);
+  gp_Elips2d                  anElips(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0, 3.0);
   occ::handle<Geom2d_Ellipse> anEllipse = new Geom2d_Ellipse(anElips);
-  Geom2dProp_Curve aProp(anEllipse);
-  Geom2dLProp_CLProps2d aOld(anEllipse, 2, THE_LIN_TOL);
-  const double aParams[] = {0.0, 1.0e-10, -1.0e-10, M_PI / 2.0, M_PI / 2.0 + 1.0e-10,
-                            M_PI / 2.0 - 1.0e-10, M_PI, M_PI + 1.0e-6, 3.0 * M_PI / 2.0,
-                            3.0 * M_PI / 2.0 + 1.0e-6, M_PI / 4.0, 3.0 * M_PI / 4.0,
-                            2.0 * M_PI - 1.0e-10};
+  Geom2dProp_Curve            aProp(anEllipse);
+  Geom2dLProp_CLProps2d       aOld(anEllipse, 2, THE_LIN_TOL);
+  const double                aParams[] = {0.0,
+                                           1.0e-10,
+                                           -1.0e-10,
+                                           M_PI / 2.0,
+                                           M_PI / 2.0 + 1.0e-10,
+                                           M_PI / 2.0 - 1.0e-10,
+                                           M_PI,
+                                           M_PI + 1.0e-6,
+                                           3.0 * M_PI / 2.0,
+                                           3.0 * M_PI / 2.0 + 1.0e-6,
+                                           M_PI / 4.0,
+                                           3.0 * M_PI / 4.0,
+                                           2.0 * M_PI - 1.0e-10};
   for (const double aParam : aParams)
   {
     compareTangent(aProp, aOld, aParam);

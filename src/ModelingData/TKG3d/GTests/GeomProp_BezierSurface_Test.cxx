@@ -18,7 +18,7 @@
 #include <Geom_BezierSurface.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -31,16 +31,14 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL  = Precision::PConfusion();
   constexpr double THE_CURV_TOL = 1.0e-6;
   constexpr double THE_DIR_TOL  = 1.0e-4;
 
   //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                     const double                     theU,
-                     const double                     theV)
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
     GeomProp_Surface                    aProp(theSurf);
     const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
@@ -186,8 +184,8 @@ TEST(GeomProp_BezierSurfaceTest, Normal_Grid)
   {
     for (int j = 0; j <= 3; ++j)
     {
-      const double aU = i / 3.0;
-      const double aV = j / 3.0;
+      const double                        aU      = i / 3.0;
+      const double                        aV      = j / 3.0;
       const GeomProp::SurfaceNormalResult aResult = aProp.Normal(aU, aV, THE_LIN_TOL);
       ASSERT_TRUE(aResult.IsDefined) << "Normal undefined at (" << aU << "," << aV << ")";
     }
@@ -215,10 +213,8 @@ TEST(GeomProp_BezierSurfaceTest, Curvatures_AtCorners)
   const double aCorners[][2] = {{0.0, 0.0}, {1.0, 0.0}, {0.0, 1.0}, {1.0, 1.0}};
   for (const auto& aUV : aCorners)
   {
-    const GeomProp::SurfaceCurvatureResult aResult =
-      aProp.Curvatures(aUV[0], aUV[1], THE_LIN_TOL);
-    ASSERT_TRUE(aResult.IsDefined) << "Curvatures undefined at (" << aUV[0] << "," << aUV[1]
-                                   << ")";
+    const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(aUV[0], aUV[1], THE_LIN_TOL);
+    ASSERT_TRUE(aResult.IsDefined) << "Curvatures undefined at (" << aUV[0] << "," << aUV[1] << ")";
     EXPECT_LE(aResult.MinCurvature, aResult.MaxCurvature);
   }
 }
@@ -250,10 +246,9 @@ TEST(GeomProp_BezierSurfaceTest, MeanGaussian_AtCorners)
   const double aCorners[][2] = {{0.0, 0.0}, {1.0, 0.0}, {0.0, 1.0}, {1.0, 1.0}};
   for (const auto& aUV : aCorners)
   {
-    const GeomProp::MeanGaussianResult aResult =
-      aProp.MeanGaussian(aUV[0], aUV[1], THE_LIN_TOL);
-    ASSERT_TRUE(aResult.IsDefined) << "MeanGaussian undefined at (" << aUV[0] << "," << aUV[1]
-                                   << ")";
+    const GeomProp::MeanGaussianResult aResult = aProp.MeanGaussian(aUV[0], aUV[1], THE_LIN_TOL);
+    ASSERT_TRUE(aResult.IsDefined)
+      << "MeanGaussian undefined at (" << aUV[0] << "," << aUV[1] << ")";
   }
 }
 
@@ -387,8 +382,7 @@ TEST(GeomProp_BezierSurfaceTest, Curvatures_CurvedPatch)
   const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(0.5, 0.5, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
   // At least one principal curvature should be non-zero for a curved patch
-  const double aMaxAbsK =
-    std::max(std::abs(aResult.MinCurvature), std::abs(aResult.MaxCurvature));
+  const double aMaxAbsK = std::max(std::abs(aResult.MinCurvature), std::abs(aResult.MaxCurvature));
   EXPECT_GT(aMaxAbsK, THE_CURV_TOL) << "Curved patch has zero curvatures at center";
 }
 
@@ -446,10 +440,19 @@ TEST(GeomProp_BezierSurfaceTest, VsSLProps_CriticalPoints)
 {
   occ::handle<Geom_BezierSurface> aSurf = makeCurvedPatch();
   // Critical: corners, edge midpoints, center, near-corners
-  const double aParams[][2] = {{0.0, 0.0}, {1.0, 0.0}, {0.0, 1.0}, {1.0, 1.0},
-                                {0.5, 0.0}, {0.5, 1.0}, {0.0, 0.5}, {1.0, 0.5},
-                                {0.5, 0.5}, {1.0e-10, 1.0e-10}, {1.0 - 1.0e-10, 1.0 - 1.0e-10},
-                                {1.0e-6, 0.5}, {0.5, 1.0e-6}};
+  const double aParams[][2] = {{0.0, 0.0},
+                               {1.0, 0.0},
+                               {0.0, 1.0},
+                               {1.0, 1.0},
+                               {0.5, 0.0},
+                               {0.5, 1.0},
+                               {0.0, 0.5},
+                               {1.0, 0.5},
+                               {0.5, 0.5},
+                               {1.0e-10, 1.0e-10},
+                               {1.0 - 1.0e-10, 1.0 - 1.0e-10},
+                               {1.0e-6, 0.5},
+                               {0.5, 1.0e-6}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aSurf, aUV[0], aUV[1]);

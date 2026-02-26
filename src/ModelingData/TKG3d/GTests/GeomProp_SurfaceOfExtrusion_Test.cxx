@@ -23,7 +23,7 @@
 #include <Geom_SurfaceOfLinearExtrusion.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax2.hxx>
@@ -39,16 +39,14 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL  = Precision::PConfusion();
   constexpr double THE_CURV_TOL = 1.0e-6;
   constexpr double THE_DIR_TOL  = 1.0e-4;
 
   //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                     const double                     theU,
-                     const double                     theV)
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
     GeomProp_Surface                    aProp(theSurf);
     const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
@@ -157,10 +155,10 @@ namespace
   occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeBezier()
   {
     NCollection_Array1<gp_Pnt> aPoles(1, 4);
-    aPoles(1) = gp_Pnt(0.0, 0.0, 0.0);
-    aPoles(2) = gp_Pnt(1.0, 3.0, 0.0);
-    aPoles(3) = gp_Pnt(3.0, -1.0, 0.0);
-    aPoles(4) = gp_Pnt(4.0, 1.0, 0.0);
+    aPoles(1)                             = gp_Pnt(0.0, 0.0, 0.0);
+    aPoles(2)                             = gp_Pnt(1.0, 3.0, 0.0);
+    aPoles(3)                             = gp_Pnt(3.0, -1.0, 0.0);
+    aPoles(4)                             = gp_Pnt(4.0, 1.0, 0.0);
     occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
     return new Geom_SurfaceOfLinearExtrusion(aBezier, THE_EXTRUSION_DIR);
   }
@@ -187,8 +185,8 @@ TEST(GeomProp_SurfaceOfExtrusionTest, Curvatures_ExtrudeCircle)
   occ::handle<Geom_SurfaceOfLinearExtrusion> aSurf = makeExtrudeCircle();
   GeomProp_Surface                           aProp(aSurf);
 
-  const double                         aExpectedK = 1.0 / 5.0;
-  const GeomProp::SurfaceCurvatureResult aResult  = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
+  const double                           aExpectedK = 1.0 / 5.0;
+  const GeomProp::SurfaceCurvatureResult aResult    = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
   // MinCurvature = -1/R (concave, signed), MaxCurvature = 0 (along extrusion).
   EXPECT_NEAR(aResult.MinCurvature, -aExpectedK, THE_CURV_TOL);
@@ -371,7 +369,7 @@ TEST(GeomProp_SurfaceOfExtrusionTest, Curvatures_ConstantAlongV)
   occ::handle<Geom_SurfaceOfLinearExtrusion> aSurf = makeExtrudeCircle();
   GeomProp_Surface                           aProp(aSurf);
 
-  const double                         aU        = 1.0;
+  const double                           aU         = 1.0;
   const GeomProp::SurfaceCurvatureResult aRefResult = aProp.Curvatures(aU, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aRefResult.IsDefined);
 
@@ -397,12 +395,19 @@ TEST(GeomProp_SurfaceOfExtrusionTest, VsSLProps_CriticalPoints)
 {
   // Extrude a circle along Z
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  occ::handle<Geom_SurfaceOfLinearExtrusion> aSurf = new Geom_SurfaceOfLinearExtrusion(aCircle, gp_Dir(0, 0, 1));
+  occ::handle<Geom_SurfaceOfLinearExtrusion> aSurf =
+    new Geom_SurfaceOfLinearExtrusion(aCircle, gp_Dir(0, 0, 1));
   // Critical: seam, various angles, near-seam
-  const double aParams[][2] = {{0.0, 0.0}, {1.0e-10, 0.0}, {2.0 * M_PI - 1.0e-10, 0.0},
-                                {M_PI / 2.0, 0.0}, {M_PI, 0.0},
-                                {0.0, 1.0e-10}, {0.0, 1.0e6}, {0.0, -1.0e6},
-                                {M_PI / 4.0, 0.5}, {M_PI / 4.0, -0.5}};
+  const double aParams[][2] = {{0.0, 0.0},
+                               {1.0e-10, 0.0},
+                               {2.0 * M_PI - 1.0e-10, 0.0},
+                               {M_PI / 2.0, 0.0},
+                               {M_PI, 0.0},
+                               {0.0, 1.0e-10},
+                               {0.0, 1.0e6},
+                               {0.0, -1.0e6},
+                               {M_PI / 4.0, 0.5},
+                               {M_PI / 4.0, -0.5}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aSurf, aUV[0], aUV[1]);

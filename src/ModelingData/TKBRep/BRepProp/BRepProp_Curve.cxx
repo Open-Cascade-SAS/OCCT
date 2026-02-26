@@ -94,7 +94,7 @@ GeomProp::TangentResult BRepProp_Curve::Tangent(const double theParam, const dou
   if (anULast < RealLast() && anUFirst > RealFirst())
     aDu = anULast - anUFirst;
   const double aDelta = std::max(aDu * THE_DIV_FACTOR, THE_MIN_STEP);
-  const double aU = (theParam - anUFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
+  const double aU     = (theParam - anUFirst < aDelta) ? theParam + aDelta : theParam - aDelta;
 
   gp_Pnt aP1, aP2;
   myPtr->D0(std::min(theParam, aU), aP1);

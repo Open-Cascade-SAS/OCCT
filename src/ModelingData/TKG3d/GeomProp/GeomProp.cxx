@@ -48,11 +48,11 @@ GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
 //==================================================================================================
 
 GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
-                                                  const gp_Vec& theD2,
-                                                  const gp_Vec& theD3,
-                                                  const double  theTol,
-                                                  const gp_Pnt& thePntBefore,
-                                                  const gp_Pnt& thePntAfter)
+                                                 const gp_Vec& theD2,
+                                                 const gp_Vec& theD3,
+                                                 const double  theTol,
+                                                 const gp_Pnt& thePntBefore,
+                                                 const gp_Pnt& thePntAfter)
 {
   const double aTol2 = theTol * theTol;
 
@@ -317,7 +317,7 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     {
       aRoot1 = -(aP - aSqrtDisc) / 2.0;
     }
-    aRoot2 = aQ / aRoot1;
+    aRoot2               = aQ / aRoot1;
     const double aDenom1 = (aE * aRoot1 + 2.0 * aF) * aRoot1 + aG;
     const double aDenom2 = (aE * aRoot2 + 2.0 * aF) * aRoot2 + aG;
     if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())
@@ -358,7 +358,7 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     {
       aRoot1 = -(aP - aSqrtDisc) / 2.0;
     }
-    aRoot2 = aQ / aRoot1;
+    aRoot2               = aQ / aRoot1;
     const double aDenom1 = (aG * aRoot1 + 2.0 * aF) * aRoot1 + aE;
     const double aDenom2 = (aG * aRoot2 + 2.0 * aF) * aRoot2 + aE;
     if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())

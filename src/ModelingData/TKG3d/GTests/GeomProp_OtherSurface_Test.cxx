@@ -23,7 +23,7 @@
 #include <Geom_ToroidalSurface.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -35,16 +35,14 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL  = Precision::PConfusion();
   constexpr double THE_CURV_TOL = 1.0e-6;
   constexpr double THE_DIR_TOL  = 1.0e-4;
 
   //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                     const double                     theU,
-                     const double                     theV)
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
     GeomProp_Surface                    aProp(theSurf);
     const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
@@ -155,7 +153,7 @@ namespace
 TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedSphere)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedSphere();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::SurfaceNormalResult aResult = aProp.Normal(1.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -165,10 +163,10 @@ TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedSphere)
 TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedSphere)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedSphere();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
-  const double                         aExpectedK = 1.0 / 8.0;
-  const GeomProp::SurfaceCurvatureResult aResult  = aProp.Curvatures(1.5, 0.0, THE_LIN_TOL);
+  const double                           aExpectedK = 1.0 / 8.0;
+  const GeomProp::SurfaceCurvatureResult aResult    = aProp.Curvatures(1.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
   EXPECT_NEAR(std::abs(aResult.MinCurvature), aExpectedK, THE_CURV_TOL);
   EXPECT_NEAR(std::abs(aResult.MaxCurvature), aExpectedK, THE_CURV_TOL);
@@ -178,7 +176,7 @@ TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedSphere)
 TEST(GeomProp_OtherSurfaceTest, MeanGaussian_TrimmedSphere)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedSphere();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::MeanGaussianResult aResult = aProp.MeanGaussian(1.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -192,7 +190,7 @@ TEST(GeomProp_OtherSurfaceTest, MeanGaussian_TrimmedSphere)
 TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedCylinder)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedCylinder();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::SurfaceNormalResult aResult = aProp.Normal(1.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -204,10 +202,10 @@ TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedCylinder)
 TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedCylinder)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedCylinder();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
-  const double                         aExpectedK = 1.0 / 5.0;
-  const GeomProp::SurfaceCurvatureResult aResult  = aProp.Curvatures(1.5, 0.0, THE_LIN_TOL);
+  const double                           aExpectedK = 1.0 / 5.0;
+  const GeomProp::SurfaceCurvatureResult aResult    = aProp.Curvatures(1.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
   // MinCurvature = -1/R (concave, signed), MaxCurvature = 0 (along axis).
   EXPECT_NEAR(aResult.MinCurvature, -aExpectedK, THE_CURV_TOL);
@@ -218,7 +216,7 @@ TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedCylinder)
 TEST(GeomProp_OtherSurfaceTest, MeanGaussian_TrimmedCylinder)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedCylinder();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::MeanGaussianResult aResult = aProp.MeanGaussian(1.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -230,7 +228,7 @@ TEST(GeomProp_OtherSurfaceTest, MeanGaussian_TrimmedCylinder)
 TEST(GeomProp_OtherSurfaceTest, GetType_IsOtherSurface)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedSphere();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Sphere);
 }
 
@@ -266,7 +264,7 @@ TEST(GeomProp_OtherSurfaceTest, VsSLProps_AllProperties_Cylinder)
 TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedPlane)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedPlane();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const gp_Dir aExpected(0.0, 0.0, 1.0);
   for (double aU = -3.0; aU <= 3.0; aU += 1.5)
@@ -285,7 +283,7 @@ TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedPlane)
 TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedPlane)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedPlane();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(0.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -297,7 +295,7 @@ TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedPlane)
 TEST(GeomProp_OtherSurfaceTest, MeanGaussian_TrimmedPlane)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedPlane();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::MeanGaussianResult aResult = aProp.MeanGaussian(0.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -316,7 +314,7 @@ TEST(GeomProp_OtherSurfaceTest, VsSLProps_TrimmedPlane)
 TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedTorus)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedTorus();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::SurfaceNormalResult aResult = aProp.Normal(2.0, 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -326,7 +324,7 @@ TEST(GeomProp_OtherSurfaceTest, Normal_TrimmedTorus)
 TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedTorus)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedTorus();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(2.0, 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -340,7 +338,7 @@ TEST(GeomProp_OtherSurfaceTest, Curvatures_TrimmedTorus)
 TEST(GeomProp_OtherSurfaceTest, MeanGaussian_TrimmedTorus)
 {
   occ::handle<Geom_RectangularTrimmedSurface> aSurf = makeTrimmedTorus();
-  GeomProp_Surface                             aProp(aSurf);
+  GeomProp_Surface                            aProp(aSurf);
 
   const GeomProp::MeanGaussianResult aResult = aProp.MeanGaussian(2.0, 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -363,20 +361,30 @@ TEST(GeomProp_OtherSurfaceTest, VsSLProps_DenseGrid_Sphere)
 TEST(GeomProp_OtherSurfaceTest, VsSLProps_CriticalPoints)
 {
   // Trimmed sphere
-  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 5.0);
-  occ::handle<Geom_RectangularTrimmedSurface> aSurf = new Geom_RectangularTrimmedSurface(
-    aSphere, M_PI / 4.0, 3.0 * M_PI / 4.0, -M_PI / 4.0, M_PI / 4.0);
+  occ::handle<Geom_SphericalSurface>          aSphere = new Geom_SphericalSurface(gp_Ax3(), 5.0);
+  occ::handle<Geom_RectangularTrimmedSurface> aSurf =
+    new Geom_RectangularTrimmedSurface(aSphere,
+                                       M_PI / 4.0,
+                                       3.0 * M_PI / 4.0,
+                                       -M_PI / 4.0,
+                                       M_PI / 4.0);
   double aUF, aUL, aVF, aVL;
   aSurf->Bounds(aUF, aUL, aVF, aVL);
   const double aUMid = (aUF + aUL) / 2.0;
   const double aVMid = (aVF + aVL) / 2.0;
   // Critical: corners, edge midpoints, center, near-corners
-  const double aParams[][2] = {{aUF, aVF}, {aUL, aVF}, {aUF, aVL}, {aUL, aVL},
-                                {aUMid, aVF}, {aUMid, aVL}, {aUF, aVMid}, {aUL, aVMid},
-                                {aUMid, aVMid},
-                                {aUF + 1.0e-10, aVF + 1.0e-10},
-                                {aUL - 1.0e-10, aVL - 1.0e-10},
-                                {aUMid, aVMid + 1.0e-6}};
+  const double aParams[][2] = {{aUF, aVF},
+                               {aUL, aVF},
+                               {aUF, aVL},
+                               {aUL, aVL},
+                               {aUMid, aVF},
+                               {aUMid, aVL},
+                               {aUF, aVMid},
+                               {aUL, aVMid},
+                               {aUMid, aVMid},
+                               {aUF + 1.0e-10, aVF + 1.0e-10},
+                               {aUL - 1.0e-10, aVL - 1.0e-10},
+                               {aUMid, aVMid + 1.0e-6}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aSurf, aUV[0], aUV[1]);

@@ -16,7 +16,7 @@
 #include <Geom_ConicalSurface.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -28,87 +28,86 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL  = Precision::PConfusion();
-constexpr double THE_CURV_TOL = 1.0e-6;
-constexpr double THE_DIR_TOL  = 1.0e-4;
+  constexpr double THE_LIN_TOL  = Precision::PConfusion();
+  constexpr double THE_CURV_TOL = 1.0e-6;
+  constexpr double THE_DIR_TOL  = 1.0e-4;
 
-void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                   const double                     theU,
-                   const double                     theV)
-{
-  GeomProp_Surface                    aProp(theSurf);
-  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsNormalDefined())
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-    const double aDot = aNew.Direction.Dot(anOld.Normal());
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Normal mismatch at (" << theU << "," << theV << ")";
-  }
-}
+    GeomProp_Surface                    aProp(theSurf);
+    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
 
-void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
-                       const double                     theU,
-                       const double                     theV)
-{
-  GeomProp_Surface                       aProp(theSurf);
-  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
-  {
-    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
-  }
-}
-
-void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theU,
-                         const double                     theV)
-{
-  GeomProp_Surface                   aProp(theSurf);
-  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
-  {
-    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
-  }
-}
-
-void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                       const double                     theUMin,
-                       const double                     theUMax,
-                       const double                     theVMin,
-                       const double                     theVMax,
-                       const int                        theNbU = 5,
-                       const int                        theNbV = 5)
-{
-  const double aUStep = (theUMax - theUMin) / theNbU;
-  const double aVStep = (theVMax - theVMin) / theNbV;
-  for (int i = 0; i <= theNbU; ++i)
-  {
-    for (int j = 0; j <= theNbV; ++j)
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsNormalDefined())
     {
-      const double aU = theUMin + i * aUStep;
-      const double aV = theVMin + j * aVStep;
-      compareNormal(theSurf, aU, aV);
-      compareCurvatures(theSurf, aU, aV);
-      compareMeanGaussian(theSurf, aU, aV);
+      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+      const double aDot = aNew.Direction.Dot(anOld.Normal());
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Normal mismatch at (" << theU << "," << theV << ")";
     }
   }
-}
+
+  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                         const double                     theU,
+                         const double                     theV)
+  {
+    GeomProp_Surface                       aProp(theSurf);
+    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+    }
+  }
+
+  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
+                           const double                     theU,
+                           const double                     theV)
+  {
+    GeomProp_Surface                   aProp(theSurf);
+    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
+                                  << ")";
+      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+    }
+  }
+
+  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                         const double                     theUMin,
+                         const double                     theUMax,
+                         const double                     theVMin,
+                         const double                     theVMax,
+                         const int                        theNbU = 5,
+                         const int                        theNbV = 5)
+  {
+    const double aUStep = (theUMax - theUMin) / theNbU;
+    const double aVStep = (theVMax - theVMin) / theNbV;
+    for (int i = 0; i <= theNbU; ++i)
+    {
+      for (int j = 0; j <= theNbV; ++j)
+      {
+        const double aU = theUMin + i * aUStep;
+        const double aV = theVMin + j * aVStep;
+        compareNormal(theSurf, aU, aV);
+        compareCurvatures(theSurf, aU, aV);
+        compareMeanGaussian(theSurf, aU, aV);
+      }
+    }
+  }
 } // namespace
 
 // ============================================================================
@@ -117,8 +116,8 @@ void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
 
 TEST(GeomProp_ConeTest, Normal_NotParallelToAxis)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -131,8 +130,8 @@ TEST(GeomProp_ConeTest, Normal_NotParallelToAxis)
 
 TEST(GeomProp_ConeTest, Normal_Grid)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -151,8 +150,8 @@ TEST(GeomProp_ConeTest, Normal_Grid)
 
 TEST(GeomProp_ConeTest, Curvatures_OneZero)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -166,8 +165,8 @@ TEST(GeomProp_ConeTest, Curvatures_OneZero)
 
 TEST(GeomProp_ConeTest, Curvatures_VaryWithV)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -182,8 +181,8 @@ TEST(GeomProp_ConeTest, Curvatures_VaryWithV)
 
 TEST(GeomProp_ConeTest, Curvatures_DecreasesWithV)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -202,8 +201,8 @@ TEST(GeomProp_ConeTest, Curvatures_DecreasesWithV)
 
 TEST(GeomProp_ConeTest, MeanGaussian_GaussianZero)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -215,8 +214,8 @@ TEST(GeomProp_ConeTest, MeanGaussian_GaussianZero)
 
 TEST(GeomProp_ConeTest, MeanGaussian_MeanVaries)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -230,17 +229,16 @@ TEST(GeomProp_ConeTest, MeanGaussian_MeanVaries)
 
 TEST(GeomProp_ConeTest, GetType_IsCone)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
-  GeomProp_Surface aProp(aCone);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
+  GeomProp_Surface                 aProp(aCone);
 
   EXPECT_EQ(aProp.GetType(), GeomAbs_Cone);
 }
 
 TEST(GeomProp_ConeTest, Curvatures_AwayFromApex)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -258,8 +256,8 @@ TEST(GeomProp_ConeTest, Curvatures_AwayFromApex)
 
 TEST(GeomProp_ConeTest, Normal_Symmetric)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -280,9 +278,8 @@ TEST(GeomProp_ConeTest, Normal_Symmetric)
 
 TEST(GeomProp_ConeTest, VsSLProps_Normal)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
-  const double aUStep = M_PI / 3.0;
+  occ::handle<Geom_ConicalSurface> aCone  = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
+  const double                     aUStep = M_PI / 3.0;
   for (int i = 0; i <= 6; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -294,9 +291,8 @@ TEST(GeomProp_ConeTest, VsSLProps_Normal)
 
 TEST(GeomProp_ConeTest, VsSLProps_Curvatures)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
-  const double aUStep = M_PI / 3.0;
+  occ::handle<Geom_ConicalSurface> aCone  = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
+  const double                     aUStep = M_PI / 3.0;
   for (int i = 0; i <= 6; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -308,9 +304,8 @@ TEST(GeomProp_ConeTest, VsSLProps_Curvatures)
 
 TEST(GeomProp_ConeTest, VsSLProps_MeanGaussian)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
-  const double aUStep = M_PI / 3.0;
+  occ::handle<Geom_ConicalSurface> aCone  = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
+  const double                     aUStep = M_PI / 3.0;
   for (int i = 0; i <= 6; ++i)
   {
     for (int j = 1; j <= 5; ++j)
@@ -322,43 +317,38 @@ TEST(GeomProp_ConeTest, VsSLProps_MeanGaussian)
 
 TEST(GeomProp_ConeTest, VsSLProps_AllProperties)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
   compareAllSurface(aCone, 0.0, 2.0 * M_PI, 1.0, 10.0, 8, 8);
 }
 
 TEST(GeomProp_ConeTest, VsSLProps_SmallAngle)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 12.0, 5.0);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 12.0, 5.0);
   compareAllSurface(aCone, 0.0, 2.0 * M_PI, 1.0, 10.0);
 }
 
 TEST(GeomProp_ConeTest, VsSLProps_LargeAngle)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 3.0, 5.0);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 3.0, 5.0);
   compareAllSurface(aCone, 0.0, 2.0 * M_PI, 1.0, 10.0);
 }
 
 TEST(GeomProp_ConeTest, VsSLProps_LargeRadius)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 100.0);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 100.0);
   compareAllSurface(aCone, 0.0, 2.0 * M_PI, 1.0, 20.0);
 }
 
 TEST(GeomProp_ConeTest, VsSLProps_SmallRadius)
 {
-  occ::handle<Geom_ConicalSurface> aCone =
-    new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 0.5);
+  occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 0.5);
   compareAllSurface(aCone, 0.0, 2.0 * M_PI, 1.0, 10.0);
 }
 
 TEST(GeomProp_ConeTest, Curvatures_CompareV0_V5)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -374,8 +364,8 @@ TEST(GeomProp_ConeTest, Curvatures_CompareV0_V5)
 
 TEST(GeomProp_ConeTest, MeanGaussian_Consistent)
 {
-  const double                          aHalfAngle = M_PI / 6.0;
-  const double                          aRefRadius = 5.0;
+  const double                     aHalfAngle = M_PI / 6.0;
+  const double                     aRefRadius = 5.0;
   occ::handle<Geom_ConicalSurface> aCone =
     new Geom_ConicalSurface(gp_Ax3(), aHalfAngle, aRefRadius);
   GeomProp_Surface aProp(aCone);
@@ -383,12 +373,12 @@ TEST(GeomProp_ConeTest, MeanGaussian_Consistent)
   // Verify H = (k1+k2)/2 and K = k1*k2 = 0.
   for (int j = 1; j <= 5; ++j)
   {
-    const double                         aV    = j * 2.0;
+    const double                           aV    = j * 2.0;
     const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.0, aV, THE_LIN_TOL);
-    const GeomProp::MeanGaussianResult   aMG   = aProp.MeanGaussian(0.0, aV, THE_LIN_TOL);
+    const GeomProp::MeanGaussianResult     aMG   = aProp.MeanGaussian(0.0, aV, THE_LIN_TOL);
     ASSERT_TRUE(aCurv.IsDefined);
     ASSERT_TRUE(aMG.IsDefined);
-    const double aExpectedMean = (aCurv.MinCurvature + aCurv.MaxCurvature) / 2.0;
+    const double aExpectedMean  = (aCurv.MinCurvature + aCurv.MaxCurvature) / 2.0;
     const double aExpectedGauss = aCurv.MinCurvature * aCurv.MaxCurvature;
     EXPECT_NEAR(aMG.MeanCurvature, aExpectedMean, THE_CURV_TOL) << "H != (k1+k2)/2 at v=" << aV;
     EXPECT_NEAR(aMG.GaussianCurvature, aExpectedGauss, THE_CURV_TOL) << "K != k1*k2 at v=" << aV;
@@ -399,10 +389,18 @@ TEST(GeomProp_ConeTest, VsSLProps_CriticalPoints)
 {
   occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(gp_Ax3(), M_PI / 6.0, 5.0);
   // Critical: near apex (small v), seam, various angles
-  const double aParams[][2] = {{0.0, 0.0}, {1.0e-10, 0.0}, {0.0, 1.0e-10},
-                                {0.0, 0.1}, {0.0, 1.0}, {0.0, 10.0}, {0.0, 100.0},
-                                {M_PI / 2.0, 0.5}, {M_PI, 1.0}, {3.0 * M_PI / 2.0, 2.0},
-                                {2.0 * M_PI - 1.0e-10, 0.5}, {M_PI / 4.0, 1.0e-6}};
+  const double aParams[][2] = {{0.0, 0.0},
+                               {1.0e-10, 0.0},
+                               {0.0, 1.0e-10},
+                               {0.0, 0.1},
+                               {0.0, 1.0},
+                               {0.0, 10.0},
+                               {0.0, 100.0},
+                               {M_PI / 2.0, 0.5},
+                               {M_PI, 1.0},
+                               {3.0 * M_PI / 2.0, 2.0},
+                               {2.0 * M_PI - 1.0e-10, 0.5},
+                               {M_PI / 4.0, 1.0e-6}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aCone, aUV[0], aUV[1]);

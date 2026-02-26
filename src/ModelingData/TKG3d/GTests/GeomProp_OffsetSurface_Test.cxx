@@ -22,7 +22,7 @@
 #include <Geom_SphericalSurface.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -34,16 +34,14 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL  = Precision::PConfusion();
   constexpr double THE_CURV_TOL = 1.0e-6;
   constexpr double THE_DIR_TOL  = 1.0e-4;
 
   //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                     const double                     theU,
-                     const double                     theV)
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
     GeomProp_Surface                    aProp(theSurf);
     const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
@@ -146,10 +144,10 @@ namespace
 // Normal of offset sphere: same direction as base sphere
 TEST(GeomProp_OffsetSurfaceTest, Normal_OffsetSphere)
 {
-  occ::handle<Geom_OffsetSurface>      aOffSurf = makeOffsetSphere();
+  occ::handle<Geom_OffsetSurface>    aOffSurf  = makeOffsetSphere();
   occ::handle<Geom_SphericalSurface> aBaseSurf = new Geom_SphericalSurface(gp_Ax3(), 10.0);
-  GeomProp_Surface                     aOffProp(aOffSurf);
-  GeomProp_Surface                     aBaseProp(aBaseSurf);
+  GeomProp_Surface                   aOffProp(aOffSurf);
+  GeomProp_Surface                   aBaseProp(aBaseSurf);
 
   // Avoid poles
   for (double aU = 0.5; aU < 2.0 * M_PI; aU += M_PI / 3.0)
@@ -170,10 +168,10 @@ TEST(GeomProp_OffsetSurfaceTest, Normal_OffsetSphere)
 // Curvatures of offset sphere: k = 1/(R+d) for both principal curvatures
 TEST(GeomProp_OffsetSurfaceTest, Curvatures_OffsetSphere)
 {
-  const double                     aR      = 10.0;
-  const double                     aD      = 2.0;
-  occ::handle<Geom_OffsetSurface> aSurf   = makeOffsetSphere(aD);
-  GeomProp_Surface                 aProp(aSurf);
+  const double                    aR    = 10.0;
+  const double                    aD    = 2.0;
+  occ::handle<Geom_OffsetSurface> aSurf = makeOffsetSphere(aD);
+  GeomProp_Surface                aProp(aSurf);
 
   // Avoid poles
   const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
@@ -186,10 +184,10 @@ TEST(GeomProp_OffsetSurfaceTest, Curvatures_OffsetSphere)
 // Mean and Gaussian curvature of offset sphere
 TEST(GeomProp_OffsetSurfaceTest, MeanGaussian_OffsetSphere)
 {
-  const double                     aR    = 10.0;
-  const double                     aD    = 2.0;
+  const double                    aR    = 10.0;
+  const double                    aD    = 2.0;
   occ::handle<Geom_OffsetSurface> aSurf = makeOffsetSphere(aD);
-  GeomProp_Surface                 aProp(aSurf);
+  GeomProp_Surface                aProp(aSurf);
 
   const GeomProp::MeanGaussianResult aResult = aProp.MeanGaussian(1.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -281,10 +279,10 @@ TEST(GeomProp_OffsetSurfaceTest, VsSLProps_AllProperties_Plane)
 // Normal of offset cylinder: same as base cylinder
 TEST(GeomProp_OffsetSurfaceTest, Normal_OffsetCylinder)
 {
-  occ::handle<Geom_OffsetSurface>        aOffSurf = makeOffsetCylinder();
+  occ::handle<Geom_OffsetSurface>      aOffSurf  = makeOffsetCylinder();
   occ::handle<Geom_CylindricalSurface> aBaseSurf = new Geom_CylindricalSurface(gp_Ax3(), 4.0);
-  GeomProp_Surface                       aOffProp(aOffSurf);
-  GeomProp_Surface                       aBaseProp(aBaseSurf);
+  GeomProp_Surface                     aOffProp(aOffSurf);
+  GeomProp_Surface                     aBaseProp(aBaseSurf);
 
   for (double aU = 0.5; aU < 2.0 * M_PI; aU += M_PI / 3.0)
   {
@@ -303,8 +301,8 @@ TEST(GeomProp_OffsetSurfaceTest, Curvatures_OffsetCylinder)
   occ::handle<Geom_OffsetSurface> aSurf = makeOffsetCylinder();
   GeomProp_Surface                aProp(aSurf);
 
-  const double                         aExpectedK = 1.0 / (4.0 + 1.0); // 1/(R+d)
-  const GeomProp::SurfaceCurvatureResult aResult  = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
+  const double                           aExpectedK = 1.0 / (4.0 + 1.0); // 1/(R+d)
+  const GeomProp::SurfaceCurvatureResult aResult    = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
   // MinCurvature = -1/(R+d) (concave, signed), MaxCurvature = 0 (along axis).
   EXPECT_NEAR(aResult.MinCurvature, -aExpectedK, THE_CURV_TOL);
@@ -333,9 +331,9 @@ TEST(GeomProp_OffsetSurfaceTest, VsSLProps_OffsetCylinder)
 // Large offset on sphere (d=100)
 TEST(GeomProp_OffsetSurfaceTest, Curvatures_OffsetSphere_LargeOffset)
 {
-  const double                     aD    = 100.0;
+  const double                    aD    = 100.0;
   occ::handle<Geom_OffsetSurface> aSurf = makeOffsetSphere(aD);
-  GeomProp_Surface                 aProp(aSurf);
+  GeomProp_Surface                aProp(aSurf);
 
   const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -347,9 +345,9 @@ TEST(GeomProp_OffsetSurfaceTest, Curvatures_OffsetSphere_LargeOffset)
 // Small offset on sphere (d=0.01)
 TEST(GeomProp_OffsetSurfaceTest, Curvatures_OffsetSphere_SmallOffset)
 {
-  const double                     aD    = 0.01;
+  const double                    aD    = 0.01;
   occ::handle<Geom_OffsetSurface> aSurf = makeOffsetSphere(aD);
-  GeomProp_Surface                 aProp(aSurf);
+  GeomProp_Surface                aProp(aSurf);
 
   const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(1.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
@@ -401,13 +399,19 @@ TEST(GeomProp_OffsetSurfaceTest, VsSLProps_CriticalPoints)
 {
   // Offset of a sphere
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 5.0);
-  occ::handle<Geom_OffsetSurface> aSurf = new Geom_OffsetSurface(aSphere, 2.0);
+  occ::handle<Geom_OffsetSurface>    aSurf   = new Geom_OffsetSurface(aSphere, 2.0);
   // Critical: near poles, equator, seam
-  const double aParams[][2] = {{0.0, 0.0}, {1.0e-10, 0.0}, {0.0, 1.0e-10},
-                                {M_PI / 2.0, 0.0}, {M_PI, 0.0},
-                                {0.0, M_PI / 4.0}, {0.0, -M_PI / 4.0},
-                                {0.0, M_PI / 2.0 - 1.0e-6}, {0.0, -(M_PI / 2.0 - 1.0e-6)},
-                                {2.0 * M_PI - 1.0e-10, 0.0}, {M_PI / 4.0, M_PI / 3.0}};
+  const double aParams[][2] = {{0.0, 0.0},
+                               {1.0e-10, 0.0},
+                               {0.0, 1.0e-10},
+                               {M_PI / 2.0, 0.0},
+                               {M_PI, 0.0},
+                               {0.0, M_PI / 4.0},
+                               {0.0, -M_PI / 4.0},
+                               {0.0, M_PI / 2.0 - 1.0e-6},
+                               {0.0, -(M_PI / 2.0 - 1.0e-6)},
+                               {2.0 * M_PI - 1.0e-10, 0.0},
+                               {M_PI / 4.0, M_PI / 3.0}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aSurf, aUV[0], aUV[1]);

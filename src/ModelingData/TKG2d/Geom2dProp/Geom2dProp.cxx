@@ -47,12 +47,12 @@ Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
 
 //==================================================================================================
 
-Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d&  theD1,
-                                                      const gp_Vec2d&  theD2,
-                                                      const gp_Vec2d&  theD3,
-                                                      const double     theTol,
-                                                      const gp_Pnt2d&  thePntBefore,
-                                                      const gp_Pnt2d&  thePntAfter)
+Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
+                                                     const gp_Vec2d& theD2,
+                                                     const gp_Vec2d& theD3,
+                                                     const double    theTol,
+                                                     const gp_Pnt2d& thePntBefore,
+                                                     const gp_Pnt2d& thePntAfter)
 {
   const double aTol2 = theTol * theTol;
 

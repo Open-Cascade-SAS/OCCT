@@ -16,7 +16,7 @@
 #include <Geom_CylindricalSurface.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -28,87 +28,86 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL  = Precision::PConfusion();
-constexpr double THE_CURV_TOL = 1.0e-6;
-constexpr double THE_DIR_TOL  = 1.0e-4;
+  constexpr double THE_LIN_TOL  = Precision::PConfusion();
+  constexpr double THE_CURV_TOL = 1.0e-6;
+  constexpr double THE_DIR_TOL  = 1.0e-4;
 
-void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                   const double                     theU,
-                   const double                     theV)
-{
-  GeomProp_Surface                    aProp(theSurf);
-  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsNormalDefined())
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-    const double aDot = aNew.Direction.Dot(anOld.Normal());
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Normal mismatch at (" << theU << "," << theV << ")";
-  }
-}
+    GeomProp_Surface                    aProp(theSurf);
+    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
 
-void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
-                       const double                     theU,
-                       const double                     theV)
-{
-  GeomProp_Surface                       aProp(theSurf);
-  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
-  {
-    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
-  }
-}
-
-void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theU,
-                         const double                     theV)
-{
-  GeomProp_Surface                   aProp(theSurf);
-  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
-  {
-    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
-  }
-}
-
-void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                       const double                     theUMin,
-                       const double                     theUMax,
-                       const double                     theVMin,
-                       const double                     theVMax,
-                       const int                        theNbU = 5,
-                       const int                        theNbV = 5)
-{
-  const double aUStep = (theUMax - theUMin) / theNbU;
-  const double aVStep = (theVMax - theVMin) / theNbV;
-  for (int i = 0; i <= theNbU; ++i)
-  {
-    for (int j = 0; j <= theNbV; ++j)
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsNormalDefined())
     {
-      const double aU = theUMin + i * aUStep;
-      const double aV = theVMin + j * aVStep;
-      compareNormal(theSurf, aU, aV);
-      compareCurvatures(theSurf, aU, aV);
-      compareMeanGaussian(theSurf, aU, aV);
+      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+      const double aDot = aNew.Direction.Dot(anOld.Normal());
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Normal mismatch at (" << theU << "," << theV << ")";
     }
   }
-}
+
+  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                         const double                     theU,
+                         const double                     theV)
+  {
+    GeomProp_Surface                       aProp(theSurf);
+    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+    }
+  }
+
+  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
+                           const double                     theU,
+                           const double                     theV)
+  {
+    GeomProp_Surface                   aProp(theSurf);
+    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
+                                  << ")";
+      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+    }
+  }
+
+  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                         const double                     theUMin,
+                         const double                     theUMax,
+                         const double                     theVMin,
+                         const double                     theVMax,
+                         const int                        theNbU = 5,
+                         const int                        theNbV = 5)
+  {
+    const double aUStep = (theUMax - theUMin) / theNbU;
+    const double aVStep = (theVMax - theVMin) / theNbV;
+    for (int i = 0; i <= theNbU; ++i)
+    {
+      for (int j = 0; j <= theNbV; ++j)
+      {
+        const double aU = theUMin + i * aUStep;
+        const double aV = theVMin + j * aVStep;
+        compareNormal(theSurf, aU, aV);
+        compareCurvatures(theSurf, aU, aV);
+        compareMeanGaussian(theSurf, aU, aV);
+      }
+    }
+  }
 } // namespace
 
 // ============================================================================
@@ -117,9 +116,9 @@ void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
 
 TEST(GeomProp_CylinderTest, Normal_PointsOutward)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   // At u=0, v=0, the surface point is (R,0,0), normal should point radially outward.
   const GeomProp::SurfaceNormalResult aNorm = aProp.Normal(0.0, 0.0, THE_LIN_TOL);
@@ -131,9 +130,9 @@ TEST(GeomProp_CylinderTest, Normal_PointsOutward)
 
 TEST(GeomProp_CylinderTest, Normal_AllParams)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   for (int i = 0; i < 12; ++i)
   {
@@ -152,9 +151,9 @@ TEST(GeomProp_CylinderTest, Normal_AllParams)
 
 TEST(GeomProp_CylinderTest, Curvatures_OneZero)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(1.0, 1.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -165,9 +164,9 @@ TEST(GeomProp_CylinderTest, Curvatures_OneZero)
 
 TEST(GeomProp_CylinderTest, Curvatures_OtherIsInvR)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(1.0, 1.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -177,9 +176,9 @@ TEST(GeomProp_CylinderTest, Curvatures_OtherIsInvR)
 
 TEST(GeomProp_CylinderTest, Curvatures_Constant)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::SurfaceCurvatureResult aRef = aProp.Curvatures(0.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aRef.IsDefined);
@@ -188,8 +187,8 @@ TEST(GeomProp_CylinderTest, Curvatures_Constant)
   {
     for (int j = -3; j <= 3; ++j)
     {
-      const double                         aU    = i * M_PI / 4.0;
-      const double                         aV    = j * 3.0;
+      const double                           aU    = i * M_PI / 4.0;
+      const double                           aV    = j * 3.0;
       const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(aU, aV, THE_LIN_TOL);
       ASSERT_TRUE(aCurv.IsDefined);
       EXPECT_NEAR(aCurv.MinCurvature, aRef.MinCurvature, THE_CURV_TOL)
@@ -202,9 +201,9 @@ TEST(GeomProp_CylinderTest, Curvatures_Constant)
 
 TEST(GeomProp_CylinderTest, MeanGaussian_GaussianZero)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::MeanGaussianResult aMG = aProp.MeanGaussian(1.0, 1.0, THE_LIN_TOL);
   ASSERT_TRUE(aMG.IsDefined);
@@ -213,9 +212,9 @@ TEST(GeomProp_CylinderTest, MeanGaussian_GaussianZero)
 
 TEST(GeomProp_CylinderTest, MeanGaussian_MeanHalfInvR)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::MeanGaussianResult aMG = aProp.MeanGaussian(1.0, 1.0, THE_LIN_TOL);
   ASSERT_TRUE(aMG.IsDefined);
@@ -225,16 +224,16 @@ TEST(GeomProp_CylinderTest, MeanGaussian_MeanHalfInvR)
 TEST(GeomProp_CylinderTest, GetType_IsCylinder)
 {
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   EXPECT_EQ(aProp.GetType(), GeomAbs_Cylinder);
 }
 
 TEST(GeomProp_CylinderTest, Curvatures_SmallRadius)
 {
-  const double                             aRadius = 0.1;
+  const double                         aRadius = 0.1;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.5, 0.5, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -245,9 +244,9 @@ TEST(GeomProp_CylinderTest, Curvatures_SmallRadius)
 
 TEST(GeomProp_CylinderTest, Curvatures_LargeRadius)
 {
-  const double                             aRadius = 100.0;
+  const double                         aRadius = 100.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(0.5, 0.5, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -258,9 +257,9 @@ TEST(GeomProp_CylinderTest, Curvatures_LargeRadius)
 
 TEST(GeomProp_CylinderTest, VsSLProps_Normal)
 {
-  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
-  const double                             aUStep = M_PI / 3.0;
-  const double                             aVStep = 2.0;
+  occ::handle<Geom_CylindricalSurface> aCyl   = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
+  const double                         aUStep = M_PI / 3.0;
+  const double                         aVStep = 2.0;
   for (int i = 0; i <= 6; ++i)
   {
     for (int j = -3; j <= 3; ++j)
@@ -272,9 +271,9 @@ TEST(GeomProp_CylinderTest, VsSLProps_Normal)
 
 TEST(GeomProp_CylinderTest, VsSLProps_Curvatures)
 {
-  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
-  const double                             aUStep = M_PI / 3.0;
-  const double                             aVStep = 2.0;
+  occ::handle<Geom_CylindricalSurface> aCyl   = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
+  const double                         aUStep = M_PI / 3.0;
+  const double                         aVStep = 2.0;
   for (int i = 0; i <= 6; ++i)
   {
     for (int j = -3; j <= 3; ++j)
@@ -286,9 +285,9 @@ TEST(GeomProp_CylinderTest, VsSLProps_Curvatures)
 
 TEST(GeomProp_CylinderTest, VsSLProps_MeanGaussian)
 {
-  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
-  const double                             aUStep = M_PI / 3.0;
-  const double                             aVStep = 2.0;
+  occ::handle<Geom_CylindricalSurface> aCyl   = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
+  const double                         aUStep = M_PI / 3.0;
+  const double                         aVStep = 2.0;
   for (int i = 0; i <= 6; ++i)
   {
     for (int j = -3; j <= 3; ++j)
@@ -318,9 +317,9 @@ TEST(GeomProp_CylinderTest, VsSLProps_LargeRadius)
 
 TEST(GeomProp_CylinderTest, Normal_ConsistentOrientation)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   // Normal at any (u, v) should be radial and independent of v.
   for (int i = 0; i < 8; ++i)
@@ -331,16 +330,15 @@ TEST(GeomProp_CylinderTest, Normal_ConsistentOrientation)
     ASSERT_TRUE(aNorm1.IsDefined);
     ASSERT_TRUE(aNorm2.IsDefined);
     const double aDot = aNorm1.Direction.Dot(aNorm2.Direction);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Normal varies along v at u=" << aU;
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Normal varies along v at u=" << aU;
   }
 }
 
 TEST(GeomProp_CylinderTest, MeanGaussian_Constant)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::MeanGaussianResult aRef = aProp.MeanGaussian(0.0, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aRef.IsDefined);
@@ -349,8 +347,8 @@ TEST(GeomProp_CylinderTest, MeanGaussian_Constant)
   {
     for (int j = -3; j <= 3; ++j)
     {
-      const double                     aU  = i * M_PI / 3.0;
-      const double                     aV  = j * 3.0;
+      const double                       aU  = i * M_PI / 3.0;
+      const double                       aV  = j * 3.0;
       const GeomProp::MeanGaussianResult aMG = aProp.MeanGaussian(aU, aV, THE_LIN_TOL);
       ASSERT_TRUE(aMG.IsDefined);
       EXPECT_NEAR(aMG.MeanCurvature, aRef.MeanCurvature, THE_CURV_TOL);
@@ -361,9 +359,9 @@ TEST(GeomProp_CylinderTest, MeanGaussian_Constant)
 
 TEST(GeomProp_CylinderTest, Curvatures_IsNotUmbilic)
 {
-  const double                             aRadius = 5.0;
+  const double                         aRadius = 5.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp_Ax3(), aRadius);
-  GeomProp_Surface                         aProp(aCyl);
+  GeomProp_Surface                     aProp(aCyl);
 
   const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(1.0, 1.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -381,11 +379,18 @@ TEST(GeomProp_CylinderTest, VsSLProps_CriticalPoints)
 {
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 5.0);
   // Critical: seam (u=0, near 2PI), axis extremes, various v
-  const double aParams[][2] = {{0.0, 0.0}, {1.0e-10, 0.0}, {2.0 * M_PI - 1.0e-10, 0.0},
-                                {M_PI / 2.0, 0.0}, {M_PI, 0.0}, {3.0 * M_PI / 2.0, 0.0},
-                                {0.0, 1.0e-10}, {0.0, 1.0e6}, {0.0, -1.0e6},
-                                {M_PI / 4.0, 100.0}, {M_PI / 4.0, -100.0},
-                                {M_PI, 1.0e-6}};
+  const double aParams[][2] = {{0.0, 0.0},
+                               {1.0e-10, 0.0},
+                               {2.0 * M_PI - 1.0e-10, 0.0},
+                               {M_PI / 2.0, 0.0},
+                               {M_PI, 0.0},
+                               {3.0 * M_PI / 2.0, 0.0},
+                               {0.0, 1.0e-10},
+                               {0.0, 1.0e6},
+                               {0.0, -1.0e6},
+                               {M_PI / 4.0, 100.0},
+                               {M_PI / 4.0, -100.0},
+                               {M_PI, 1.0e-6}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aCyl, aUV[0], aUV[1]);

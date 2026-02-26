@@ -105,12 +105,12 @@ Standard_EXPORT TangentResult ComputeTangent(const gp_Vec2d& theD1,
 //! @param[in] thePntBefore point on the curve before the evaluation point
 //! @param[in] thePntAfter point on the curve after the evaluation point
 //! @return tangent result with validity flag and corrected sign
-Standard_EXPORT TangentResult ComputeTangent(const gp_Vec2d&  theD1,
-                                             const gp_Vec2d&  theD2,
-                                             const gp_Vec2d&  theD3,
-                                             double           theTol,
-                                             const gp_Pnt2d&  thePntBefore,
-                                             const gp_Pnt2d&  thePntAfter);
+Standard_EXPORT TangentResult ComputeTangent(const gp_Vec2d& theD1,
+                                             const gp_Vec2d& theD2,
+                                             const gp_Vec2d& theD3,
+                                             double          theTol,
+                                             const gp_Pnt2d& thePntBefore,
+                                             const gp_Pnt2d& thePntAfter);
 
 //! Compute curvature from first and second derivative vectors.
 //! Curvature = |D1 x D2| / |D1|^3

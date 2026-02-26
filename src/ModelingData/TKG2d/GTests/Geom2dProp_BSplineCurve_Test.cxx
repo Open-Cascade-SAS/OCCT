@@ -24,9 +24,9 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dProp_Curve.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
+      Standard_ENABLE_DEPRECATION_WARNINGS
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 
@@ -34,7 +34,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
@@ -42,9 +42,9 @@ namespace
   constexpr double THE_POINT_TOL = 1.0e-6;
   constexpr double THE_PARAM_TOL = 1.0e-4;
 
-  void compareTangent(Geom2dProp_Curve&      theProp,
-                      Geom2dLProp_CLProps2d&  theOld,
-                      const double            theParam)
+  void compareTangent(Geom2dProp_Curve & theProp,
+                      Geom2dLProp_CLProps2d & theOld,
+                      const double theParam)
   {
     theOld.SetParameter(theParam);
     const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
@@ -53,32 +53,31 @@ namespace
       ASSERT_TRUE(aNew.IsDefined) << "Tangent undefined at U=" << theParam;
       gp_Dir2d anOldDir;
       theOld.Tangent(anOldDir);
-      const double aDot = aNew.Direction.X() * anOldDir.X()
-                        + aNew.Direction.Y() * anOldDir.Y();
+      const double aDot = aNew.Direction.X() * anOldDir.X() + aNew.Direction.Y() * anOldDir.Y();
       EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Tangent mismatch at U=" << theParam;
     }
   }
 
-  void compareCurvature(Geom2dProp_Curve&      theProp,
-                        Geom2dLProp_CLProps2d&  theOld,
-                        const double            theParam)
+  void compareCurvature(Geom2dProp_Curve & theProp,
+                        Geom2dLProp_CLProps2d & theOld,
+                        const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CurvatureResult aNew = theProp.Curvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
+    const double                      aOldCurv = theOld.Curvature();
     if (aNew.IsDefined && !aNew.IsInfinite)
     {
       EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL) << "Curvature mismatch at U=" << theParam;
     }
   }
 
-  void compareNormal(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareNormal(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::NormalResult aNew = theProp.Normal(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -87,19 +86,18 @@ namespace
     {
       gp_Dir2d anOldNorm;
       theOld.Normal(anOldNorm);
-      const double aDot = aNew.Direction.X() * anOldNorm.X()
-                        + aNew.Direction.Y() * anOldNorm.Y();
+      const double aDot = aNew.Direction.X() * anOldNorm.X() + aNew.Direction.Y() * anOldNorm.Y();
       EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "Normal mismatch at U=" << theParam;
     }
   }
 
-  void compareCentre(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareCentre(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CentreResult aNew = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -115,11 +113,11 @@ namespace
     }
   }
 
-  void compareAll(Geom2dProp_Curve&      theProp,
-                  Geom2dLProp_CLProps2d&  theOld,
-                  const double            theFirst,
-                  const double            theLast,
-                  const int               theNbSamples = 10)
+  void compareAll(Geom2dProp_Curve & theProp,
+                  Geom2dLProp_CLProps2d & theOld,
+                  const double theFirst,
+                  const double theLast,
+                  const int    theNbSamples = 10)
   {
     const double aStep = (theLast - theFirst) / theNbSamples;
     for (int i = 0; i <= theNbSamples; ++i)
@@ -136,9 +134,12 @@ namespace
   {
     switch (theType)
     {
-      case LProp_Inflection: return Geom2dProp::CIType::Inflection;
-      case LProp_MinCur:     return Geom2dProp::CIType::MinCurvature;
-      case LProp_MaxCur:     return Geom2dProp::CIType::MaxCurvature;
+      case LProp_Inflection:
+        return Geom2dProp::CIType::Inflection;
+      case LProp_MinCur:
+        return Geom2dProp::CIType::MinCurvature;
+      case LProp_MaxCur:
+        return Geom2dProp::CIType::MaxCurvature;
     }
     return Geom2dProp::CIType::Inflection;
   }
@@ -242,7 +243,7 @@ namespace
 TEST(Geom2dProp_BSplineCurveTest, Tangent_CubicEndpoints)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   const Geom2dProp::TangentResult aTanFirst = aProp.Tangent(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aTanFirst.IsDefined);
@@ -260,7 +261,7 @@ TEST(Geom2dProp_BSplineCurveTest, Tangent_CubicEndpoints)
 TEST(Geom2dProp_BSplineCurveTest, Tangent_AtKnots)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   // Tangent should be defined at internal knots
   const Geom2dProp::TangentResult aTan1 = aProp.Tangent(0.33, THE_LIN_TOL);
@@ -270,8 +271,8 @@ TEST(Geom2dProp_BSplineCurveTest, Tangent_AtKnots)
   ASSERT_TRUE(aTan2.IsDefined);
 
   // Directions at different knots should generally differ
-  const double aDot = aTan1.Direction.X() * aTan2.Direction.X()
-                    + aTan1.Direction.Y() * aTan2.Direction.Y();
+  const double aDot =
+    aTan1.Direction.X() * aTan2.Direction.X() + aTan1.Direction.Y() * aTan2.Direction.Y();
   EXPECT_LT(std::abs(aDot), 1.0 - 1.0e-10);
 }
 
@@ -282,7 +283,7 @@ TEST(Geom2dProp_BSplineCurveTest, Tangent_AtKnots)
 TEST(Geom2dProp_BSplineCurveTest, Curvature_CubicSmooth)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   for (double u = 0.0; u <= 1.0; u += 0.2)
   {
@@ -295,7 +296,7 @@ TEST(Geom2dProp_BSplineCurveTest, Curvature_CubicSmooth)
 TEST(Geom2dProp_BSplineCurveTest, Curvature_AtKnots)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   // Curvature at internal knots should be defined for C2 cubic
   const Geom2dProp::CurvatureResult aCurv1 = aProp.Curvature(0.33, THE_LIN_TOL);
@@ -312,7 +313,7 @@ TEST(Geom2dProp_BSplineCurveTest, Curvature_AtKnots)
 TEST(Geom2dProp_BSplineCurveTest, Normal_CubicSmooth)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   for (double u = 0.1; u <= 0.9; u += 0.2)
   {
@@ -322,8 +323,8 @@ TEST(Geom2dProp_BSplineCurveTest, Normal_CubicSmooth)
       // Normal must be perpendicular to tangent
       const Geom2dProp::TangentResult aTan = aProp.Tangent(u, THE_LIN_TOL);
       ASSERT_TRUE(aTan.IsDefined);
-      const double aDot = aNorm.Direction.X() * aTan.Direction.X()
-                        + aNorm.Direction.Y() * aTan.Direction.Y();
+      const double aDot =
+        aNorm.Direction.X() * aTan.Direction.X() + aNorm.Direction.Y() * aTan.Direction.Y();
       EXPECT_NEAR(aDot, 0.0, THE_DIR_TOL) << "Normal not perpendicular at U=" << u;
     }
   }
@@ -336,7 +337,7 @@ TEST(Geom2dProp_BSplineCurveTest, Normal_CubicSmooth)
 TEST(Geom2dProp_BSplineCurveTest, Centre_CubicSmooth)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   for (double u = 0.1; u <= 0.9; u += 0.2)
   {
@@ -356,7 +357,7 @@ TEST(Geom2dProp_BSplineCurveTest, Centre_CubicSmooth)
 TEST(Geom2dProp_BSplineCurveTest, FindCurvatureExtrema_Cubic)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   const Geom2dProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -373,7 +374,7 @@ TEST(Geom2dProp_BSplineCurveTest, FindCurvatureExtrema_Cubic)
 TEST(Geom2dProp_BSplineCurveTest, FindInflections_Cubic)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   const Geom2dProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -389,7 +390,7 @@ TEST(Geom2dProp_BSplineCurveTest, FindInflections_Cubic)
 TEST(Geom2dProp_BSplineCurveTest, FindCurvatureExtrema_LowContinuity)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeQuadraticBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   const Geom2dProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -404,7 +405,7 @@ TEST(Geom2dProp_BSplineCurveTest, FindCurvatureExtrema_LowContinuity)
 TEST(Geom2dProp_BSplineCurveTest, FindInflections_LowContinuity)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeQuadraticBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
 
   const Geom2dProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -424,7 +425,7 @@ TEST(Geom2dProp_BSplineCurveTest, FindInflections_LowContinuity)
 TEST(Geom2dProp_BSplineCurveTest, GetType_IsBSpline)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve aProp(aBSpline);
+  Geom2dProp_Curve                 aProp(aBSpline);
   EXPECT_EQ(aProp.GetType(), GeomAbs_BSplineCurve);
 }
 
@@ -435,8 +436,8 @@ TEST(Geom2dProp_BSplineCurveTest, GetType_IsBSpline)
 TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_CubicSmooth)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve      aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.1)
   {
@@ -448,8 +449,8 @@ TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_CubicSmooth)
 TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_Quadratic)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeQuadraticBSpline();
-  Geom2dProp_Curve      aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.1)
   {
@@ -461,8 +462,8 @@ TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_Quadratic)
 TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_Degree4)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeDegree4BSpline();
-  Geom2dProp_Curve      aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
 
   for (double u = 0.0; u <= 1.0; u += 0.1)
   {
@@ -474,8 +475,8 @@ TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_Degree4)
 TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_AllProperties_Cubic)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeCubicBSpline();
-  Geom2dProp_Curve      aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
 
   compareAll(aProp, aOld, 0.0, 1.0, 20);
 }
@@ -483,8 +484,8 @@ TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_AllProperties_Cubic)
 TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_AllProperties_Degree4)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeDegree4BSpline();
-  Geom2dProp_Curve      aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
 
   compareAll(aProp, aOld, 0.0, 1.0, 20);
 }
@@ -492,8 +493,8 @@ TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_AllProperties_Degree4)
 TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_LowContinuity)
 {
   occ::handle<Geom2d_BSplineCurve> aBSpline = makeQuadraticBSpline();
-  Geom2dProp_Curve      aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
 
   compareAll(aProp, aOld, 0.0, 1.0, 15);
 }
@@ -560,17 +561,33 @@ TEST(Geom2dProp_BSplineCurveTest, VsCLProps2d_CriticalPoints)
   aPoles(5) = gp_Pnt2d(4.0, -2.0);
   aPoles(6) = gp_Pnt2d(5.0, 0.0);
   NCollection_Array1<double> aKnots(1, 4);
-  aKnots(1) = 0.0; aKnots(2) = 0.33; aKnots(3) = 0.66; aKnots(4) = 1.0;
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.33;
+  aKnots(3) = 0.66;
+  aKnots(4) = 1.0;
   NCollection_Array1<int> aMults(1, 4);
-  aMults(1) = 4; aMults(2) = 1; aMults(3) = 1; aMults(4) = 4;
+  aMults(1)                                 = 4;
+  aMults(2)                                 = 1;
+  aMults(3)                                 = 1;
+  aMults(4)                                 = 4;
   occ::handle<Geom2d_BSplineCurve> aBSpline = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 3);
-  Geom2dProp_Curve aProp(aBSpline);
-  Geom2dLProp_CLProps2d aOld(aBSpline, 2, THE_LIN_TOL);
-  const double aParams[] = {0.0, 1.0e-10, 1.0e-6,
-                            0.33, 0.33 + 1.0e-6, 0.33 - 1.0e-6,
-                            0.66, 0.66 + 1.0e-6, 0.66 - 1.0e-6,
-                            1.0 - 1.0e-6, 1.0 - 1.0e-10, 1.0,
-                            0.165, 0.495, 0.83};
+  Geom2dProp_Curve                 aProp(aBSpline);
+  Geom2dLProp_CLProps2d            aOld(aBSpline, 2, THE_LIN_TOL);
+  const double                     aParams[] = {0.0,
+                                                1.0e-10,
+                                                1.0e-6,
+                                                0.33,
+                                                0.33 + 1.0e-6,
+                                                0.33 - 1.0e-6,
+                                                0.66,
+                                                0.66 + 1.0e-6,
+                                                0.66 - 1.0e-6,
+                                                1.0 - 1.0e-6,
+                                                1.0 - 1.0e-10,
+                                                1.0,
+                                                0.165,
+                                                0.495,
+                                                0.83};
   for (const double aParam : aParams)
   {
     compareTangent(aProp, aOld, aParam);

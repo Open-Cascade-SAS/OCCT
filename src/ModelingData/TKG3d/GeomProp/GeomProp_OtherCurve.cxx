@@ -32,8 +32,7 @@ GeomProp::CurvatureResult GeomProp_OtherCurve::Curvature(const double theParam,
 
 //==================================================================================================
 
-GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam,
-                                                   const double theTol) const
+GeomProp::NormalResult GeomProp_OtherCurve::Normal(const double theParam, const double theTol) const
 {
   return GeomProp_CurveAnalysisTools::EvaluateNormal(myAdaptor, theParam, theTol);
 }

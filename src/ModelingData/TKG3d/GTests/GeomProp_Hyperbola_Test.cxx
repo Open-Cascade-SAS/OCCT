@@ -18,7 +18,7 @@
 #include <Geom_Hyperbola.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>
@@ -31,7 +31,7 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
@@ -132,7 +132,7 @@ TEST(GeomProp_HyperbolaTest, Curvature_AtVertex)
   const double                    aB = 3.0;
   gp_Hypr                         anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aA, aB);
   occ::handle<Geom_Hyperbola>     aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve                   aProp(aHyperbola);
+  GeomProp_Curve                  aProp(aHyperbola);
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
   const double aExpected = aA / (aB * aB);
@@ -144,7 +144,7 @@ TEST(GeomProp_HyperbolaTest, Curvature_Symmetric)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   for (double aT = 0.1; aT <= 2.0; aT += 0.3)
   {
@@ -161,7 +161,7 @@ TEST(GeomProp_HyperbolaTest, Curvature_DecreasesFromVertex)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::CurvatureResult aCurvVertex = aProp.Curvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurvVertex.IsDefined);
@@ -182,7 +182,7 @@ TEST(GeomProp_HyperbolaTest, Tangent_AtVertex)
   gp_Ax2                      anAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Hypr                     anHypr(anAx2, 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::TangentResult aTan = aProp.Tangent(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aTan.IsDefined);
@@ -196,7 +196,7 @@ TEST(GeomProp_HyperbolaTest, Tangent_Symmetric)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   for (double aT = 0.2; aT <= 2.0; aT += 0.3)
   {
@@ -217,7 +217,7 @@ TEST(GeomProp_HyperbolaTest, Normal_AtVertex)
   gp_Ax2                      anAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Hypr                     anHypr(anAx2, 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::NormalResult aNorm = aProp.Normal(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aNorm.IsDefined);
@@ -233,7 +233,7 @@ TEST(GeomProp_HyperbolaTest, Centre_AtVertex)
   const double                aB = 3.0;
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aA, aB);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::CentreResult    aCentre = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
   const GeomProp::CurvatureResult aCurv   = aProp.Curvature(0.0, THE_LIN_TOL);
@@ -252,7 +252,7 @@ TEST(GeomProp_HyperbolaTest, FindCurvatureExtrema_OnePoint)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -265,7 +265,7 @@ TEST(GeomProp_HyperbolaTest, FindInflections_Empty)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -277,7 +277,7 @@ TEST(GeomProp_HyperbolaTest, GetType_IsHyperbola)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Hyperbola);
 }
 
@@ -286,7 +286,7 @@ TEST(GeomProp_HyperbolaTest, Curvature_LargeParam)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(10.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -340,7 +340,7 @@ TEST(GeomProp_HyperbolaTest, Curvature_NearVertex)
   const double                aB = 3.0;
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aA, aB);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   const double aExpectedMax = aA / (aB * aB);
   for (double aT = 0.01; aT <= 0.1; aT += 0.01)
@@ -360,7 +360,7 @@ TEST(GeomProp_HyperbolaTest, Tangent_FarFromVertex)
   gp_Ax2                      anAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Hypr                     anHypr(anAx2, aA, aB);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   // For large t, the asymptote direction is (a*sinh(t), b*cosh(t), 0) -> (a, b, 0) normalized
   const gp_Dir aAsymptote(aA, aB, 0.0);
@@ -373,7 +373,7 @@ TEST(GeomProp_HyperbolaTest, Tangent_FarFromVertex)
 // Cross-validate with off-center hyperbola
 TEST(GeomProp_HyperbolaTest, VsCLProps_OffCenter)
 {
-  gp_Hypr anHypr(gp_Ax2(gp_Pnt(5.0, 5.0, 5.0), gp_Dir(0, 0, 1)), 6.0, 3.0);
+  gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(5.0, 5.0, 5.0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
   compareAll(aHyperbola, -2.0, 2.0);
 }
@@ -383,7 +383,7 @@ TEST(GeomProp_HyperbolaTest, Centre_MovesAwayFromVertex)
 {
   gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  GeomProp_Curve               aProp(aHyperbola);
+  GeomProp_Curve              aProp(aHyperbola);
 
   gp_Pnt aVertex;
   aHyperbola->D0(0.0, aVertex);
@@ -405,10 +405,23 @@ TEST(GeomProp_HyperbolaTest, Centre_MovesAwayFromVertex)
 
 TEST(GeomProp_HyperbolaTest, VsCLProps_CriticalPoints)
 {
-  gp_Hypr aHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 3.0);
+  gp_Hypr                     aHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0, 3.0);
   occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(aHypr);
-  const double aParams[] = {0.0, 1.0e-10, -1.0e-10, 1.0e-6, -1.0e-6, 0.1, -0.1,
-                            0.5, -0.5, 1.0, -1.0, 3.0, -3.0, 5.0, -5.0};
+  const double                aParams[]  = {0.0,
+                                            1.0e-10,
+                                            -1.0e-10,
+                                            1.0e-6,
+                                            -1.0e-6,
+                                            0.1,
+                                            -0.1,
+                                            0.5,
+                                            -0.5,
+                                            1.0,
+                                            -1.0,
+                                            3.0,
+                                            -3.0,
+                                            5.0,
+                                            -5.0};
   for (const double aParam : aParams)
   {
     compareTangent(aHyperbola, aParam);

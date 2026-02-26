@@ -19,7 +19,7 @@
 #include <Geom_OffsetCurve.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>
@@ -33,106 +33,106 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL   = Precision::PConfusion();
-constexpr double THE_CURV_TOL  = 1.0e-8;
-constexpr double THE_DIR_TOL   = 1.0e-6;
-constexpr double THE_POINT_TOL = 1.0e-6;
+  constexpr double THE_LIN_TOL   = Precision::PConfusion();
+  constexpr double THE_CURV_TOL  = 1.0e-8;
+  constexpr double THE_DIR_TOL   = 1.0e-6;
+  constexpr double THE_POINT_TOL = 1.0e-6;
 
-void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve                aProp(theCurve);
-  const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps             anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    gp_Dir anOldDir;
-    anOld.Tangent(anOldDir);
-    EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldDir)), 1.0, THE_DIR_TOL);
+    GeomProp_Curve                aProp(theCurve);
+    const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps             anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      gp_Dir anOldDir;
+      anOld.Tangent(anOldDir);
+      EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldDir)), 1.0, THE_DIR_TOL);
+    }
   }
-}
 
-void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve                  aProp(theCurve);
-  const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps               anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL);
+    GeomProp_Curve                  aProp(theCurve);
+    const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps               anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL);
+    }
   }
-}
 
-void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve               aProp(theCurve);
-  const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    gp_Dir anOldNorm;
-    anOld.Normal(anOldNorm);
-    EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldNorm)), 1.0, THE_DIR_TOL);
+    GeomProp_Curve               aProp(theCurve);
+    const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      gp_Dir anOldNorm;
+      anOld.Normal(anOldNorm);
+      EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldNorm)), 1.0, THE_DIR_TOL);
+    }
   }
-}
 
-void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve               aProp(theCurve);
-  const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    gp_Pnt anOldCentre;
-    anOld.CentreOfCurvature(anOldCentre);
-    EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL);
+    GeomProp_Curve               aProp(theCurve);
+    const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      gp_Pnt anOldCentre;
+      anOld.CentreOfCurvature(anOldCentre);
+      EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL);
+    }
   }
-}
 
-void compareAll(const occ::handle<Geom_Curve>& theCurve,
-                const double                   theFirst,
-                const double                   theLast,
-                const int                      theNbSamples = 10)
-{
-  const double aStep = (theLast - theFirst) / theNbSamples;
-  for (int i = 0; i <= theNbSamples; ++i)
+  void compareAll(const occ::handle<Geom_Curve>& theCurve,
+                  const double                   theFirst,
+                  const double                   theLast,
+                  const int                      theNbSamples = 10)
   {
-    const double aParam = theFirst + i * aStep;
-    compareTangent(theCurve, aParam);
-    compareCurvature(theCurve, aParam);
-    compareNormal(theCurve, aParam);
-    compareCentre(theCurve, aParam);
+    const double aStep = (theLast - theFirst) / theNbSamples;
+    for (int i = 0; i <= theNbSamples; ++i)
+    {
+      const double aParam = theFirst + i * aStep;
+      compareTangent(theCurve, aParam);
+      compareCurvature(theCurve, aParam);
+      compareNormal(theCurve, aParam);
+      compareCentre(theCurve, aParam);
+    }
   }
-}
 
-//! Create a circle in the XY plane with given radius and center.
-occ::handle<Geom_Circle> makeCircle(const double theRadius,
-                                    const double theCX = 0.0,
-                                    const double theCY = 0.0,
-                                    const double theCZ = 0.0)
-{
-  gp_Circ aCirc(gp_Ax2(gp_Pnt(theCX, theCY, theCZ), gp_Dir(0, 0, 1)), theRadius);
-  return new Geom_Circle(aCirc);
-}
+  //! Create a circle in the XY plane with given radius and center.
+  occ::handle<Geom_Circle> makeCircle(const double theRadius,
+                                      const double theCX = 0.0,
+                                      const double theCY = 0.0,
+                                      const double theCZ = 0.0)
+  {
+    gp_Circ aCirc(gp_Ax2(gp_Pnt(theCX, theCY, theCZ), gp_Dir(0, 0, 1)), theRadius);
+    return new Geom_Circle(aCirc);
+  }
 
-//! Create an ellipse in the XY plane with given semi-axes.
-occ::handle<Geom_Ellipse> makeEllipse(const double theMajor, const double theMinor)
-{
-  gp_Elips anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), theMajor, theMinor);
-  return new Geom_Ellipse(anElips);
-}
+  //! Create an ellipse in the XY plane with given semi-axes.
+  occ::handle<Geom_Ellipse> makeEllipse(const double theMajor, const double theMinor)
+  {
+    gp_Elips anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), theMajor, theMinor);
+    return new Geom_Ellipse(anElips);
+  }
 
-//! Create an offset curve from a base curve in the Z direction.
-occ::handle<Geom_OffsetCurve> makeOffset(const occ::handle<Geom_Curve>& theBase,
-                                          const double                   theOffset)
-{
-  return new Geom_OffsetCurve(theBase, theOffset, gp_Dir(0, 0, 1));
-}
+  //! Create an offset curve from a base curve in the Z direction.
+  occ::handle<Geom_OffsetCurve> makeOffset(const occ::handle<Geom_Curve>& theBase,
+                                           const double                   theOffset)
+  {
+    return new Geom_OffsetCurve(theBase, theOffset, gp_Dir(0, 0, 1));
+  }
 
 } // namespace
 
@@ -142,9 +142,9 @@ occ::handle<Geom_OffsetCurve> makeOffset(const occ::handle<Geom_Curve>& theBase,
 
 TEST(GeomProp_OffsetCurveTest, Curvature_OffsetCircle_Constant)
 {
-  const double                      aRadius = 5.0;
-  const double                      aDist   = 2.0;
-  occ::handle<Geom_Circle>      aCircle = makeCircle(aRadius);
+  const double                  aRadius  = 5.0;
+  const double                  aDist    = 2.0;
+  occ::handle<Geom_Circle>      aCircle  = makeCircle(aRadius);
   occ::handle<Geom_OffsetCurve> anOffset = makeOffset(aCircle, aDist);
 
   GeomProp_Curve aProp(anOffset);
@@ -162,9 +162,9 @@ TEST(GeomProp_OffsetCurveTest, Curvature_OffsetCircle_Constant)
 
 TEST(GeomProp_OffsetCurveTest, Curvature_OffsetCircle_Positive)
 {
-  const double                      aRadius = 3.0;
-  const double                      aDist   = 4.0;
-  occ::handle<Geom_Circle>      aCircle = makeCircle(aRadius);
+  const double                  aRadius  = 3.0;
+  const double                  aDist    = 4.0;
+  occ::handle<Geom_Circle>      aCircle  = makeCircle(aRadius);
   occ::handle<Geom_OffsetCurve> anOffset = makeOffset(aCircle, aDist);
 
   GeomProp_Curve                  aProp(anOffset);
@@ -175,9 +175,9 @@ TEST(GeomProp_OffsetCurveTest, Curvature_OffsetCircle_Positive)
 
 TEST(GeomProp_OffsetCurveTest, Curvature_OffsetCircle_Negative)
 {
-  const double                      aRadius = 5.0;
-  const double                      aDist   = -2.0;
-  occ::handle<Geom_Circle>      aCircle = makeCircle(aRadius);
+  const double                  aRadius  = 5.0;
+  const double                  aDist    = -2.0;
+  occ::handle<Geom_Circle>      aCircle  = makeCircle(aRadius);
   occ::handle<Geom_OffsetCurve> anOffset = makeOffset(aCircle, aDist);
 
   GeomProp_Curve                  aProp(anOffset);
@@ -238,8 +238,8 @@ TEST(GeomProp_OffsetCurveTest, Normal_OffsetCircle)
 
 TEST(GeomProp_OffsetCurveTest, Centre_OffsetCircle)
 {
-  const gp_Pnt                      aCenter(1.0, 2.0, 0.0);
-  occ::handle<Geom_Circle>      aCircle = makeCircle(5.0, 1.0, 2.0, 0.0);
+  const gp_Pnt                  aCenter(1.0, 2.0, 0.0);
+  occ::handle<Geom_Circle>      aCircle  = makeCircle(5.0, 1.0, 2.0, 0.0);
   occ::handle<Geom_OffsetCurve> anOffset = makeOffset(aCircle, 2.0);
 
   GeomProp_Curve aProp(anOffset);
@@ -320,8 +320,8 @@ TEST(GeomProp_OffsetCurveTest, Curvature_OffsetEllipse)
   GeomProp_Curve aProp(anOffset);
 
   // Curvature should vary along the offset ellipse
-  const GeomProp::CurvatureResult aCurv0    = aProp.Curvature(0.0, THE_LIN_TOL);
-  const GeomProp::CurvatureResult aCurvPi2  = aProp.Curvature(M_PI / 2.0, THE_LIN_TOL);
+  const GeomProp::CurvatureResult aCurv0   = aProp.Curvature(0.0, THE_LIN_TOL);
+  const GeomProp::CurvatureResult aCurvPi2 = aProp.Curvature(M_PI / 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv0.IsDefined);
   ASSERT_TRUE(aCurvPi2.IsDefined);
   EXPECT_NE(aCurv0.Value, aCurvPi2.Value);
@@ -422,10 +422,17 @@ TEST(GeomProp_OffsetCurveTest, VsCLProps_CriticalPoints)
 {
   // Offset of a circle
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  occ::handle<Geom_OffsetCurve> anOffset = new Geom_OffsetCurve(aCircle, 2.0, gp_Dir(0, 0, 1));
-  const double aParams[] = {0.0, 1.0e-10, M_PI / 4.0, M_PI / 2.0, M_PI / 2.0 + 1.0e-6,
-                            M_PI, 3.0 * M_PI / 2.0, 2.0 * M_PI - 1.0e-10,
-                            M_PI / 6.0, 5.0 * M_PI / 6.0};
+  occ::handle<Geom_OffsetCurve> anOffset  = new Geom_OffsetCurve(aCircle, 2.0, gp_Dir(0, 0, 1));
+  const double                  aParams[] = {0.0,
+                                             1.0e-10,
+                                             M_PI / 4.0,
+                                             M_PI / 2.0,
+                                             M_PI / 2.0 + 1.0e-6,
+                                             M_PI,
+                                             3.0 * M_PI / 2.0,
+                                             2.0 * M_PI - 1.0e-10,
+                                             M_PI / 6.0,
+                                             5.0 * M_PI / 6.0};
   for (const double aParam : aParams)
   {
     compareTangent(anOffset, aParam);

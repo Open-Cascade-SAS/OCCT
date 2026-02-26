@@ -16,7 +16,7 @@
 #include <Geom_Plane.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
@@ -29,87 +29,86 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL  = Precision::PConfusion();
-constexpr double THE_CURV_TOL = 1.0e-6;
-constexpr double THE_DIR_TOL  = 1.0e-4;
+  constexpr double THE_LIN_TOL  = Precision::PConfusion();
+  constexpr double THE_CURV_TOL = 1.0e-6;
+  constexpr double THE_DIR_TOL  = 1.0e-4;
 
-void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                   const double                     theU,
-                   const double                     theV)
-{
-  GeomProp_Surface                    aProp(theSurf);
-  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsNormalDefined())
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-    const double aDot = aNew.Direction.Dot(anOld.Normal());
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Normal mismatch at (" << theU << "," << theV << ")";
-  }
-}
+    GeomProp_Surface                    aProp(theSurf);
+    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
 
-void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
-                       const double                     theU,
-                       const double                     theV)
-{
-  GeomProp_Surface                       aProp(theSurf);
-  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
-  {
-    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
-  }
-}
-
-void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theU,
-                         const double                     theV)
-{
-  GeomProp_Surface                   aProp(theSurf);
-  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
-
-  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-  if (anOld.IsCurvatureDefined())
-  {
-    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
-  }
-}
-
-void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                       const double                     theUMin,
-                       const double                     theUMax,
-                       const double                     theVMin,
-                       const double                     theVMax,
-                       const int                        theNbU = 5,
-                       const int                        theNbV = 5)
-{
-  const double aUStep = (theUMax - theUMin) / theNbU;
-  const double aVStep = (theVMax - theVMin) / theNbV;
-  for (int i = 0; i <= theNbU; ++i)
-  {
-    for (int j = 0; j <= theNbV; ++j)
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsNormalDefined())
     {
-      const double aU = theUMin + i * aUStep;
-      const double aV = theVMin + j * aVStep;
-      compareNormal(theSurf, aU, aV);
-      compareCurvatures(theSurf, aU, aV);
-      compareMeanGaussian(theSurf, aU, aV);
+      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+      const double aDot = aNew.Direction.Dot(anOld.Normal());
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Normal mismatch at (" << theU << "," << theV << ")";
     }
   }
-}
+
+  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                         const double                     theU,
+                         const double                     theV)
+  {
+    GeomProp_Surface                       aProp(theSurf);
+    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+    }
+  }
+
+  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
+                           const double                     theU,
+                           const double                     theV)
+  {
+    GeomProp_Surface                   aProp(theSurf);
+    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+
+    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+    if (anOld.IsCurvatureDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
+                                  << ")";
+      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+    }
+  }
+
+  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                         const double                     theUMin,
+                         const double                     theUMax,
+                         const double                     theVMin,
+                         const double                     theVMax,
+                         const int                        theNbU = 5,
+                         const int                        theNbV = 5)
+  {
+    const double aUStep = (theUMax - theUMin) / theNbU;
+    const double aVStep = (theVMax - theVMin) / theNbV;
+    for (int i = 0; i <= theNbU; ++i)
+    {
+      for (int j = 0; j <= theNbV; ++j)
+      {
+        const double aU = theUMin + i * aUStep;
+        const double aV = theVMin + j * aVStep;
+        compareNormal(theSurf, aU, aV);
+        compareCurvatures(theSurf, aU, aV);
+        compareMeanGaussian(theSurf, aU, aV);
+      }
+    }
+  }
 } // namespace
 
 // ============================================================================
@@ -172,8 +171,8 @@ TEST(GeomProp_PlaneTest, Curvatures_IsUmbilic)
   {
     for (int j = -3; j <= 3; ++j)
     {
-      const double                         aU    = i * 1.5;
-      const double                         aV    = j * 1.5;
+      const double                           aU    = i * 1.5;
+      const double                           aV    = j * 1.5;
       const GeomProp::SurfaceCurvatureResult aCurv = aProp.Curvatures(aU, aV, THE_LIN_TOL);
       ASSERT_TRUE(aCurv.IsDefined);
       EXPECT_NEAR(aCurv.MinCurvature, aCurv.MaxCurvature, THE_CURV_TOL)
@@ -357,10 +356,15 @@ TEST(GeomProp_PlaneTest, MeanGaussian_ExactlyZero)
 
 TEST(GeomProp_PlaneTest, VsSLProps_CriticalPoints)
 {
-  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
-  const double aParams[][2] = {{0.0, 0.0}, {1.0e-10, 1.0e-10}, {-1.0e-10, -1.0e-10},
-                                {1.0e6, 1.0e6}, {-1.0e6, -1.0e6}, {1.0e-10, 1.0e6},
-                                {0.5, 0.5}, {-100.0, 100.0}};
+  occ::handle<Geom_Plane> aPlane       = new Geom_Plane(gp_Ax3());
+  const double            aParams[][2] = {{0.0, 0.0},
+                                          {1.0e-10, 1.0e-10},
+                                          {-1.0e-10, -1.0e-10},
+                                          {1.0e6, 1.0e6},
+                                          {-1.0e6, -1.0e6},
+                                          {1.0e-10, 1.0e6},
+                                          {0.5, 0.5},
+                                          {-100.0, 100.0}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aPlane, aUV[0], aUV[1]);

@@ -16,7 +16,7 @@
 #include <Geom_Ellipse.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>
@@ -29,108 +29,109 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL   = Precision::PConfusion();
-constexpr double THE_CURV_TOL  = 1.0e-8;
-constexpr double THE_DIR_TOL   = 1.0e-6;
-constexpr double THE_POINT_TOL = 1.0e-6;
+  constexpr double THE_LIN_TOL   = Precision::PConfusion();
+  constexpr double THE_CURV_TOL  = 1.0e-8;
+  constexpr double THE_DIR_TOL   = 1.0e-6;
+  constexpr double THE_POINT_TOL = 1.0e-6;
 
-//! Analytical curvature of an ellipse at parameter t.
-//! k(t) = a*b / (a^2*sin^2(t) + b^2*cos^2(t))^(3/2)
-double ellipseCurvature(const double theMajor, const double theMinor, const double theParam)
-{
-  const double aSin = std::sin(theParam);
-  const double aCos = std::cos(theParam);
-  const double aDenom =
-    std::pow(theMajor * theMajor * aSin * aSin + theMinor * theMinor * aCos * aCos, 1.5);
-  return theMajor * theMinor / aDenom;
-}
-
-//! Compare tangent from new GeomProp_Curve vs old GeomLProp_CLProps.
-void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve                aProp(theCurve);
-  const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
-
-  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  //! Analytical curvature of an ellipse at parameter t.
+  //! k(t) = a*b / (a^2*sin^2(t) + b^2*cos^2(t))^(3/2)
+  double ellipseCurvature(const double theMajor, const double theMinor, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New tangent undefined but old is defined at param=" << theParam;
-    gp_Dir anOldDir;
-    anOld.Tangent(anOldDir);
-    const double aDot = aNew.Direction.Dot(anOldDir);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Tangent direction mismatch at param=" << theParam;
+    const double aSin = std::sin(theParam);
+    const double aCos = std::cos(theParam);
+    const double aDenom =
+      std::pow(theMajor * theMajor * aSin * aSin + theMinor * theMinor * aCos * aCos, 1.5);
+    return theMajor * theMinor / aDenom;
   }
-}
 
-//! Compare curvature from new GeomProp_Curve vs old GeomLProp_CLProps.
-void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve                  aProp(theCurve);
-  const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
-
-  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  //! Compare tangent from new GeomProp_Curve vs old GeomLProp_CLProps.
+  void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New curvature undefined at param=" << theParam;
-    EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL)
-      << "Curvature mismatch at param=" << theParam;
+    GeomProp_Curve                aProp(theCurve);
+    const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
+
+    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New tangent undefined but old is defined at param="
+                                  << theParam;
+      gp_Dir anOldDir;
+      anOld.Tangent(anOldDir);
+      const double aDot = aNew.Direction.Dot(anOldDir);
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Tangent direction mismatch at param=" << theParam;
+    }
   }
-}
 
-//! Compare normal from new GeomProp_Curve vs old GeomLProp_CLProps.
-void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve               aProp(theCurve);
-  const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
-
-  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  //! Compare curvature from new GeomProp_Curve vs old GeomLProp_CLProps.
+  void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at param=" << theParam;
-    gp_Dir anOldNorm;
-    anOld.Normal(anOldNorm);
-    const double aDot = aNew.Direction.Dot(anOldNorm);
-    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-      << "Normal direction mismatch at param=" << theParam;
+    GeomProp_Curve                  aProp(theCurve);
+    const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
+
+    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New curvature undefined at param=" << theParam;
+      EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL)
+        << "Curvature mismatch at param=" << theParam;
+    }
   }
-}
 
-//! Compare centre of curvature from new vs old.
-void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve               aProp(theCurve);
-  const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-
-  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  //! Compare normal from new GeomProp_Curve vs old GeomLProp_CLProps.
+  void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined) << "New centre undefined at param=" << theParam;
-    gp_Pnt anOldCentre;
-    anOld.CentreOfCurvature(anOldCentre);
-    EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL)
-      << "Centre mismatch at param=" << theParam;
-  }
-}
+    GeomProp_Curve               aProp(theCurve);
+    const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
 
-//! Run all comparisons at several parameter values.
-void compareAll(const occ::handle<Geom_Curve>& theCurve,
-                const double                   theFirst,
-                const double                   theLast,
-                const int                      theNbSamples = 10)
-{
-  const double aStep = (theLast - theFirst) / theNbSamples;
-  for (int i = 0; i <= theNbSamples; ++i)
-  {
-    const double aParam = theFirst + i * aStep;
-    compareTangent(theCurve, aParam);
-    compareCurvature(theCurve, aParam);
-    compareNormal(theCurve, aParam);
-    compareCentre(theCurve, aParam);
+    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at param=" << theParam;
+      gp_Dir anOldNorm;
+      anOld.Normal(anOldNorm);
+      const double aDot = aNew.Direction.Dot(anOldNorm);
+      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+        << "Normal direction mismatch at param=" << theParam;
+    }
   }
-}
+
+  //! Compare centre of curvature from new vs old.
+  void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+  {
+    GeomProp_Curve               aProp(theCurve);
+    const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+
+    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined) << "New centre undefined at param=" << theParam;
+      gp_Pnt anOldCentre;
+      anOld.CentreOfCurvature(anOldCentre);
+      EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL)
+        << "Centre mismatch at param=" << theParam;
+    }
+  }
+
+  //! Run all comparisons at several parameter values.
+  void compareAll(const occ::handle<Geom_Curve>& theCurve,
+                  const double                   theFirst,
+                  const double                   theLast,
+                  const int                      theNbSamples = 10)
+  {
+    const double aStep = (theLast - theFirst) / theNbSamples;
+    for (int i = 0; i <= theNbSamples; ++i)
+    {
+      const double aParam = theFirst + i * aStep;
+      compareTangent(theCurve, aParam);
+      compareCurvature(theCurve, aParam);
+      compareNormal(theCurve, aParam);
+      compareCentre(theCurve, aParam);
+    }
+  }
 } // namespace
 
 // ============================================================================
@@ -255,9 +256,9 @@ TEST(GeomProp_EllipseTest, Centre_AtMajorVertex)
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
   GeomProp_Curve            aProp(anEllipse);
 
-  const double                 aRoc     = aMinor * aMinor / aMajor; // b^2/a
-  const double                 aExpX    = aMajor - aRoc;            // a - b^2/a
-  const GeomProp::CentreResult aCentre  = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
+  const double                 aRoc    = aMinor * aMinor / aMajor; // b^2/a
+  const double                 aExpX   = aMajor - aRoc;            // a - b^2/a
+  const GeomProp::CentreResult aCentre = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCentre.IsDefined);
   EXPECT_NEAR(aCentre.Centre.X(), aExpX, THE_POINT_TOL);
   EXPECT_NEAR(aCentre.Centre.Y(), 0.0, THE_POINT_TOL);
@@ -273,9 +274,9 @@ TEST(GeomProp_EllipseTest, Centre_AtMinorVertex)
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
   GeomProp_Curve            aProp(anEllipse);
 
-  const double                 aRoc     = aMajor * aMajor / aMinor; // a^2/b
-  const double                 aExpY    = aMinor - aRoc;            // b - a^2/b
-  const GeomProp::CentreResult aCentre  = aProp.CentreOfCurvature(M_PI / 2.0, THE_LIN_TOL);
+  const double                 aRoc    = aMajor * aMajor / aMinor; // a^2/b
+  const double                 aExpY   = aMinor - aRoc;            // b - a^2/b
+  const GeomProp::CentreResult aCentre = aProp.CentreOfCurvature(M_PI / 2.0, THE_LIN_TOL);
   ASSERT_TRUE(aCentre.IsDefined);
   EXPECT_NEAR(aCentre.Centre.X(), 0.0, THE_POINT_TOL);
   EXPECT_NEAR(aCentre.Centre.Y(), aExpY, THE_POINT_TOL);
@@ -376,7 +377,7 @@ TEST(GeomProp_EllipseTest, Curvature_MonotonicBetweenExtrema)
   double aPrevCurv = 0.0;
   for (int i = 0; i <= 20; ++i)
   {
-    const double                  aParam = i * M_PI / (2.0 * 20);
+    const double                    aParam = i * M_PI / (2.0 * 20);
     const GeomProp::CurvatureResult aCurv  = aProp.Curvature(aParam, THE_LIN_TOL);
     ASSERT_TRUE(aCurv.IsDefined);
     if (i > 0)
@@ -440,8 +441,8 @@ TEST(GeomProp_EllipseTest, Curvature_MatchesAnalytical)
 
   for (int i = 0; i <= 20; ++i)
   {
-    const double                  aParam    = i * 2.0 * M_PI / 20.0;
-    const double                  aExpected = ellipseCurvature(aMajor, aMinor, aParam);
+    const double                    aParam    = i * 2.0 * M_PI / 20.0;
+    const double                    aExpected = ellipseCurvature(aMajor, aMinor, aParam);
     const GeomProp::CurvatureResult aCurv     = aProp.Curvature(aParam, THE_LIN_TOL);
     ASSERT_TRUE(aCurv.IsDefined) << "Curvature undefined at param=" << aParam;
     EXPECT_NEAR(aCurv.Value, aExpected, THE_CURV_TOL)
@@ -451,12 +452,21 @@ TEST(GeomProp_EllipseTest, Curvature_MatchesAnalytical)
 
 TEST(GeomProp_EllipseTest, VsCLProps_CriticalPoints)
 {
-  gp_Elips anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 3.0);
+  gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 10.0, 3.0);
   occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
-  const double aParams[] = {0.0, 1.0e-10, -1.0e-10, M_PI / 2.0, M_PI / 2.0 + 1.0e-10,
-                            M_PI / 2.0 - 1.0e-10, M_PI, M_PI + 1.0e-6, 3.0 * M_PI / 2.0,
-                            3.0 * M_PI / 2.0 + 1.0e-6, M_PI / 4.0, 3.0 * M_PI / 4.0,
-                            2.0 * M_PI - 1.0e-10};
+  const double              aParams[] = {0.0,
+                                         1.0e-10,
+                                         -1.0e-10,
+                                         M_PI / 2.0,
+                                         M_PI / 2.0 + 1.0e-10,
+                                         M_PI / 2.0 - 1.0e-10,
+                                         M_PI,
+                                         M_PI + 1.0e-6,
+                                         3.0 * M_PI / 2.0,
+                                         3.0 * M_PI / 2.0 + 1.0e-6,
+                                         M_PI / 4.0,
+                                         3.0 * M_PI / 4.0,
+                                         2.0 * M_PI - 1.0e-10};
   for (const double aParam : aParams)
   {
     compareTangent(anEllipse, aParam);

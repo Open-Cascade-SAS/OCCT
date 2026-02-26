@@ -18,7 +18,7 @@
 #include <Geom_Parabola.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>
@@ -31,7 +31,7 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
@@ -131,7 +131,7 @@ TEST(GeomProp_ParabolaTest, Curvature_AtVertex)
   const double                    aFocal = 2.0;
   gp_Parab                        aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aFocal);
   occ::handle<Geom_Parabola>      aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve                   aProp(aParabola);
+  GeomProp_Curve                  aProp(aParabola);
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
   const double aExpected = 1.0 / (2.0 * aFocal);
@@ -143,7 +143,7 @@ TEST(GeomProp_ParabolaTest, Curvature_Symmetric)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   for (double aT = 0.5; aT <= 5.0; aT += 0.5)
   {
@@ -160,7 +160,7 @@ TEST(GeomProp_ParabolaTest, Curvature_DecreasesFromVertex)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::CurvatureResult aCurvVertex = aProp.Curvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurvVertex.IsDefined);
@@ -181,7 +181,7 @@ TEST(GeomProp_ParabolaTest, Tangent_AtVertex)
   gp_Ax2                     anAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Parab                   aParab(anAx2, 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::TangentResult aTan = aProp.Tangent(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aTan.IsDefined);
@@ -196,7 +196,7 @@ TEST(GeomProp_ParabolaTest, Normal_AtVertex)
   gp_Ax2                     anAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Parab                   aParab(anAx2, 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::NormalResult aNorm = aProp.Normal(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aNorm.IsDefined);
@@ -211,7 +211,7 @@ TEST(GeomProp_ParabolaTest, Centre_AtVertex)
   const double               aFocal = 2.0;
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aFocal);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::CentreResult aCentre = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCentre.IsDefined);
@@ -230,7 +230,7 @@ TEST(GeomProp_ParabolaTest, FindCurvatureExtrema_OnePoint)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -243,7 +243,7 @@ TEST(GeomProp_ParabolaTest, FindInflections_Empty)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -255,7 +255,7 @@ TEST(GeomProp_ParabolaTest, GetType_IsParabola)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
   EXPECT_EQ(aProp.GetType(), GeomAbs_Parabola);
 }
 
@@ -264,7 +264,7 @@ TEST(GeomProp_ParabolaTest, Curvature_LargeParam)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(50.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv.IsDefined);
@@ -306,7 +306,7 @@ TEST(GeomProp_ParabolaTest, VsCLProps_LargeFocal)
 // Cross-validate with off-center parabola
 TEST(GeomProp_ParabolaTest, VsCLProps_OffCenter)
 {
-  gp_Parab aParab(gp_Ax2(gp_Pnt(3.0, 4.0, 5.0), gp_Dir(0, 0, 1)), 2.0);
+  gp_Parab                   aParab(gp_Ax2(gp_Pnt(3.0, 4.0, 5.0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
   compareAll(aParabola, -5.0, 5.0);
 }
@@ -317,7 +317,7 @@ TEST(GeomProp_ParabolaTest, Tangent_LargeParam)
   gp_Ax2                     anAx2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1));
   gp_Parab                   aParab(anAx2, 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   // For large t, the parabola tangent approaches the axis direction (X direction)
   const gp_Dir anAxis = anAx2.XDirection();
@@ -332,7 +332,7 @@ TEST(GeomProp_ParabolaTest, Centre_MovesAway)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   gp_Pnt aVertex;
   aParabola->D0(0.0, aVertex);
@@ -358,7 +358,7 @@ TEST(GeomProp_ParabolaTest, Curvature_NearVertex)
   const double               aFocal = 2.0;
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), aFocal);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   const double aExpectedMax = 1.0 / (2.0 * aFocal);
   for (double aT = 0.01; aT <= 0.1; aT += 0.01)
@@ -373,7 +373,7 @@ TEST(GeomProp_ParabolaTest, Curvature_NearVertex)
 // Cross-validate with tilted plane parabola
 TEST(GeomProp_ParabolaTest, VsCLProps_TiltedPlane)
 {
-  gp_Ax2 anAx2(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
+  gp_Ax2                     anAx2(gp_Pnt(0, 0, 0), gp_Dir(1, 1, 1));
   gp_Parab                   aParab(anAx2, 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
   compareAll(aParabola, -5.0, 5.0);
@@ -384,7 +384,7 @@ TEST(GeomProp_ParabolaTest, Normal_Symmetric)
 {
   gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 2.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  GeomProp_Curve              aProp(aParabola);
+  GeomProp_Curve             aProp(aParabola);
 
   for (double aT = 1.0; aT <= 4.0; aT += 1.0)
   {
@@ -401,10 +401,23 @@ TEST(GeomProp_ParabolaTest, Normal_Symmetric)
 
 TEST(GeomProp_ParabolaTest, VsCLProps_CriticalPoints)
 {
-  gp_Parab aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
+  gp_Parab                   aParab(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
   occ::handle<Geom_Parabola> aParabola = new Geom_Parabola(aParab);
-  const double aParams[] = {0.0, 1.0e-10, -1.0e-10, 1.0e-6, -1.0e-6, 0.1, -0.1,
-                            0.5, -0.5, 1.0, -1.0, 5.0, -5.0, 10.0, -10.0};
+  const double               aParams[] = {0.0,
+                                          1.0e-10,
+                                          -1.0e-10,
+                                          1.0e-6,
+                                          -1.0e-6,
+                                          0.1,
+                                          -0.1,
+                                          0.5,
+                                          -0.5,
+                                          1.0,
+                                          -1.0,
+                                          5.0,
+                                          -5.0,
+                                          10.0,
+                                          -10.0};
   for (const double aParam : aParams)
   {
     compareTangent(aParabola, aParam);

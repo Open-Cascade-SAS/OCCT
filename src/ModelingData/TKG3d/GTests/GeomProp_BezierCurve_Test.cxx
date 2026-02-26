@@ -19,7 +19,7 @@
 #include <Geom_BezierCurve.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Dir.hxx>
@@ -31,7 +31,7 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
@@ -172,16 +172,16 @@ namespace
 TEST(GeomProp_BezierCurveTest, Tangent_CubicEndpoints)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeCubicS();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   // At t=0, tangent should align with P1->P2 direction
-  const gp_Dir aDirStart(gp_Pnt(1, 2, 1).XYZ() - gp_Pnt(0, 0, 0).XYZ());
+  const gp_Dir                  aDirStart(gp_Pnt(1, 2, 1).XYZ() - gp_Pnt(0, 0, 0).XYZ());
   const GeomProp::TangentResult aTan0 = aProp.Tangent(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aTan0.IsDefined);
   EXPECT_NEAR(std::abs(aTan0.Direction.Dot(aDirStart)), 1.0, THE_DIR_TOL);
 
   // At t=1, tangent should align with P3->P4 direction
-  const gp_Dir aDirEnd(gp_Pnt(4, 1, 1).XYZ() - gp_Pnt(3, -1, 0).XYZ());
+  const gp_Dir                  aDirEnd(gp_Pnt(4, 1, 1).XYZ() - gp_Pnt(3, -1, 0).XYZ());
   const GeomProp::TangentResult aTan1 = aProp.Tangent(1.0, THE_LIN_TOL);
   ASSERT_TRUE(aTan1.IsDefined);
   EXPECT_NEAR(std::abs(aTan1.Direction.Dot(aDirEnd)), 1.0, THE_DIR_TOL);
@@ -191,7 +191,7 @@ TEST(GeomProp_BezierCurveTest, Tangent_CubicEndpoints)
 TEST(GeomProp_BezierCurveTest, Tangent_QuadraticMidpoint)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeQuadratic();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::TangentResult aTan = aProp.Tangent(0.5, THE_LIN_TOL);
   ASSERT_TRUE(aTan.IsDefined);
@@ -204,7 +204,7 @@ TEST(GeomProp_BezierCurveTest, Tangent_QuadraticMidpoint)
 TEST(GeomProp_BezierCurveTest, Curvature_QuadraticConstantSign)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeQuadratic();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurvatureResult aCurv0 = aProp.Curvature(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aCurv0.IsDefined);
@@ -221,7 +221,7 @@ TEST(GeomProp_BezierCurveTest, Curvature_QuadraticConstantSign)
 TEST(GeomProp_BezierCurveTest, Curvature_CubicInflection)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeCubicS();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   // Sample curvature at many points and check if it gets very small near inflection
   bool aFoundSmall = false;
@@ -241,7 +241,7 @@ TEST(GeomProp_BezierCurveTest, Curvature_CubicInflection)
 TEST(GeomProp_BezierCurveTest, Normal_Cubic)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeCubicS();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   // At endpoints, curvature is typically non-zero for an S-curve
   const GeomProp::CurvatureResult aCurv = aProp.Curvature(0.0, THE_LIN_TOL);
@@ -260,7 +260,7 @@ TEST(GeomProp_BezierCurveTest, Normal_Cubic)
 TEST(GeomProp_BezierCurveTest, Centre_Cubic)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeCubicS();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   for (double aT = 0.0; aT <= 1.0; aT += 0.25)
   {
@@ -283,7 +283,7 @@ TEST(GeomProp_BezierCurveTest, Centre_Cubic)
 TEST(GeomProp_BezierCurveTest, FindCurvatureExtrema_Cubic)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeCubicS();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -295,7 +295,7 @@ TEST(GeomProp_BezierCurveTest, FindCurvatureExtrema_Cubic)
 TEST(GeomProp_BezierCurveTest, FindInflections_CubicS)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeCubicS();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -306,7 +306,7 @@ TEST(GeomProp_BezierCurveTest, FindInflections_CubicS)
 TEST(GeomProp_BezierCurveTest, FindInflections_QuadraticNone)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeQuadratic();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -317,7 +317,7 @@ TEST(GeomProp_BezierCurveTest, FindInflections_QuadraticNone)
 TEST(GeomProp_BezierCurveTest, FindCurvatureExtrema_Quadratic)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeQuadratic();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -329,7 +329,7 @@ TEST(GeomProp_BezierCurveTest, FindCurvatureExtrema_Quadratic)
 TEST(GeomProp_BezierCurveTest, GetType_IsBezier)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeQuadratic();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
   EXPECT_EQ(aProp.GetType(), GeomAbs_BezierCurve);
 }
 
@@ -372,7 +372,7 @@ TEST(GeomProp_BezierCurveTest, VsCLProps_AllProperties_Degree5)
 TEST(GeomProp_BezierCurveTest, Curvature_LinearBezier)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeLinear();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   for (double aT = 0.0; aT <= 1.0; aT += 0.1)
   {
@@ -386,7 +386,7 @@ TEST(GeomProp_BezierCurveTest, Curvature_LinearBezier)
 TEST(GeomProp_BezierCurveTest, Tangent_LinearBezier)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeLinear();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::TangentResult aTanRef = aProp.Tangent(0.0, THE_LIN_TOL);
   ASSERT_TRUE(aTanRef.IsDefined);
@@ -404,7 +404,7 @@ TEST(GeomProp_BezierCurveTest, Tangent_LinearBezier)
 TEST(GeomProp_BezierCurveTest, FindInflections_HighDegree)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeDegree5();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindInflections();
   ASSERT_TRUE(aResult.IsDone);
@@ -417,7 +417,7 @@ TEST(GeomProp_BezierCurveTest, FindInflections_HighDegree)
 TEST(GeomProp_BezierCurveTest, FindCurvatureExtrema_HighDegree)
 {
   occ::handle<Geom_BezierCurve> aBezier = makeDegree5();
-  GeomProp_Curve                 aProp(aBezier);
+  GeomProp_Curve                aProp(aBezier);
 
   const GeomProp::CurveAnalysis aResult = aProp.FindCurvatureExtrema();
   ASSERT_TRUE(aResult.IsDone);
@@ -433,9 +433,9 @@ TEST(GeomProp_BezierCurveTest, Curvature_PlanarVs3D)
 
   // 3D quadratic with z-variation
   NCollection_Array1<gp_Pnt> aPoles3D(1, 3);
-  aPoles3D(1) = gp_Pnt(0, 0, 0);
-  aPoles3D(2) = gp_Pnt(2, 4, 3);
-  aPoles3D(3) = gp_Pnt(4, 0, 0);
+  aPoles3D(1)                       = gp_Pnt(0, 0, 0);
+  aPoles3D(2)                       = gp_Pnt(2, 4, 3);
+  aPoles3D(3)                       = gp_Pnt(4, 0, 0);
   occ::handle<Geom_BezierCurve> a3D = new Geom_BezierCurve(aPoles3D);
 
   GeomProp_Curve aPropPlanar(aPlanar);
@@ -455,13 +455,13 @@ TEST(GeomProp_BezierCurveTest, Curvature_PlanarVs3D)
 TEST(GeomProp_BezierCurveTest, VsCLProps_CriticalPoints)
 {
   NCollection_Array1<gp_Pnt> aPoles(1, 4);
-  aPoles(1) = gp_Pnt(0, 0, 0);
-  aPoles(2) = gp_Pnt(1, 2, 0);
-  aPoles(3) = gp_Pnt(3, -1, 0);
-  aPoles(4) = gp_Pnt(4, 0, 0);
+  aPoles(1)                             = gp_Pnt(0, 0, 0);
+  aPoles(2)                             = gp_Pnt(1, 2, 0);
+  aPoles(3)                             = gp_Pnt(3, -1, 0);
+  aPoles(4)                             = gp_Pnt(4, 0, 0);
   occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-  const double aParams[] = {0.0, 1.0e-10, 1.0e-6, 0.01, 0.25, 0.5, 0.75, 0.99,
-                            1.0 - 1.0e-6, 1.0 - 1.0e-10, 1.0};
+  const double                  aParams[] =
+    {0.0, 1.0e-10, 1.0e-6, 0.01, 0.25, 0.5, 0.75, 0.99, 1.0 - 1.0e-6, 1.0 - 1.0e-10, 1.0};
   for (const double aParam : aParams)
   {
     compareTangent(aBezier, aParam);

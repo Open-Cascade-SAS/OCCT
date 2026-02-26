@@ -23,7 +23,7 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax1.hxx>
@@ -40,16 +40,14 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL  = Precision::PConfusion();
   constexpr double THE_CURV_TOL = 1.0e-6;
   constexpr double THE_DIR_TOL  = 1.0e-4;
 
   //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf,
-                     const double                     theU,
-                     const double                     theV)
+  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
   {
     GeomProp_Surface                    aProp(theSurf);
     const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
@@ -186,8 +184,8 @@ TEST(GeomProp_SurfaceOfRevolutionTest, Curvatures_RevolveLine_IsCylinder)
   occ::handle<Geom_SurfaceOfRevolution> aSurf = makeRevolveLine();
   GeomProp_Surface                      aProp(aSurf);
 
-  const double aExpectedK = 1.0 / 5.0; // 1/R where R=5
-  const GeomProp::SurfaceCurvatureResult aResult = aProp.Curvatures(0.5, 0.0, THE_LIN_TOL);
+  const double                           aExpectedK = 1.0 / 5.0; // 1/R where R=5
+  const GeomProp::SurfaceCurvatureResult aResult    = aProp.Curvatures(0.5, 0.0, THE_LIN_TOL);
   ASSERT_TRUE(aResult.IsDefined);
   // MinCurvature = -1/R (concave, signed), MaxCurvature = 0 (along axis).
   EXPECT_NEAR(aResult.MinCurvature, -aExpectedK, THE_CURV_TOL);
@@ -215,8 +213,8 @@ TEST(GeomProp_SurfaceOfRevolutionTest, Normal_RevolveCircle_IsTorus)
   {
     for (int j = 0; j <= 4; ++j)
     {
-      const double aU = i * M_PI / 2.0;
-      const double aV = j * M_PI / 2.0;
+      const double                        aU      = i * M_PI / 2.0;
+      const double                        aV      = j * M_PI / 2.0;
       const GeomProp::SurfaceNormalResult aResult = aProp.Normal(aU, aV, THE_LIN_TOL);
       ASSERT_TRUE(aResult.IsDefined) << "Normal undefined at (" << aU << "," << aV << ")";
     }
@@ -295,7 +293,7 @@ TEST(GeomProp_SurfaceOfRevolutionTest, Normal_RevolveEllipse)
 
   for (int i = 0; i <= 4; ++i)
   {
-    const double aU = 0.5 + i * M_PI / 2.0;
+    const double                        aU      = 0.5 + i * M_PI / 2.0;
     const GeomProp::SurfaceNormalResult aResult = aProp.Normal(aU, 0.0, THE_LIN_TOL);
     ASSERT_TRUE(aResult.IsDefined) << "Normal undefined at u=" << aU;
   }
@@ -387,13 +385,20 @@ TEST(GeomProp_SurfaceOfRevolutionTest, Curvatures_ConstantAlongU)
 TEST(GeomProp_SurfaceOfRevolutionTest, VsSLProps_CriticalPoints)
 {
   // Revolve a line to get a cylinder
-  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1));
-  occ::handle<Geom_SurfaceOfRevolution> aSurf = new Geom_SurfaceOfRevolution(aLine, gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
+  occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(5, 0, 0), gp_Dir(0, 0, 1));
+  occ::handle<Geom_SurfaceOfRevolution> aSurf =
+    new Geom_SurfaceOfRevolution(aLine, gp_Ax1(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)));
   // Critical: seam, various v, near-seam
-  const double aParams[][2] = {{0.0, 0.0}, {1.0e-10, 0.0}, {2.0 * M_PI - 1.0e-10, 0.0},
-                                {M_PI / 2.0, 0.0}, {M_PI, 0.0}, {M_PI / 4.0, 1.0},
-                                {M_PI / 4.0, -1.0}, {M_PI / 4.0, 100.0},
-                                {0.0, 1.0e-10}, {M_PI, 1.0e-10}};
+  const double aParams[][2] = {{0.0, 0.0},
+                               {1.0e-10, 0.0},
+                               {2.0 * M_PI - 1.0e-10, 0.0},
+                               {M_PI / 2.0, 0.0},
+                               {M_PI, 0.0},
+                               {M_PI / 4.0, 1.0},
+                               {M_PI / 4.0, -1.0},
+                               {M_PI / 4.0, 100.0},
+                               {0.0, 1.0e-10},
+                               {M_PI, 1.0e-10}};
   for (const auto& aUV : aParams)
   {
     compareNormal(aSurf, aUV[0], aUV[1]);

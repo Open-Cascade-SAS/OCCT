@@ -22,7 +22,7 @@
 #include <Geom_TrimmedCurve.hxx>
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>
@@ -38,125 +38,125 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
-constexpr double THE_LIN_TOL   = Precision::PConfusion();
-constexpr double THE_CURV_TOL  = 1.0e-8;
-constexpr double THE_DIR_TOL   = 1.0e-6;
-constexpr double THE_POINT_TOL = 1.0e-6;
+  constexpr double THE_LIN_TOL   = Precision::PConfusion();
+  constexpr double THE_CURV_TOL  = 1.0e-8;
+  constexpr double THE_DIR_TOL   = 1.0e-6;
+  constexpr double THE_POINT_TOL = 1.0e-6;
 
-void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve                aProp(theCurve);
-  const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps             anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    gp_Dir anOldDir;
-    anOld.Tangent(anOldDir);
-    EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldDir)), 1.0, THE_DIR_TOL);
+    GeomProp_Curve                aProp(theCurve);
+    const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps             anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      gp_Dir anOldDir;
+      anOld.Tangent(anOldDir);
+      EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldDir)), 1.0, THE_DIR_TOL);
+    }
   }
-}
 
-void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve                  aProp(theCurve);
-  const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps               anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined())
+  void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL);
+    GeomProp_Curve                  aProp(theCurve);
+    const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps               anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined())
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL);
+    }
   }
-}
 
-void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve               aProp(theCurve);
-  const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    gp_Dir anOldNorm;
-    anOld.Normal(anOldNorm);
-    EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldNorm)), 1.0, THE_DIR_TOL);
+    GeomProp_Curve               aProp(theCurve);
+    const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      gp_Dir anOldNorm;
+      anOld.Normal(anOldNorm);
+      EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldNorm)), 1.0, THE_DIR_TOL);
+    }
   }
-}
 
-void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
-{
-  GeomProp_Curve               aProp(theCurve);
-  const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-  GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
-  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+  void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
   {
-    ASSERT_TRUE(aNew.IsDefined);
-    gp_Pnt anOldCentre;
-    anOld.CentreOfCurvature(anOldCentre);
-    EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL);
+    GeomProp_Curve               aProp(theCurve);
+    const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
+    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
+    {
+      ASSERT_TRUE(aNew.IsDefined);
+      gp_Pnt anOldCentre;
+      anOld.CentreOfCurvature(anOldCentre);
+      EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL);
+    }
   }
-}
 
-void compareAll(const occ::handle<Geom_Curve>& theCurve,
-                const double                   theFirst,
-                const double                   theLast,
-                const int                      theNbSamples = 10)
-{
-  const double aStep = (theLast - theFirst) / theNbSamples;
-  for (int i = 0; i <= theNbSamples; ++i)
+  void compareAll(const occ::handle<Geom_Curve>& theCurve,
+                  const double                   theFirst,
+                  const double                   theLast,
+                  const int                      theNbSamples = 10)
   {
-    const double aParam = theFirst + i * aStep;
-    compareTangent(theCurve, aParam);
-    compareCurvature(theCurve, aParam);
-    compareNormal(theCurve, aParam);
-    compareCentre(theCurve, aParam);
+    const double aStep = (theLast - theFirst) / theNbSamples;
+    for (int i = 0; i <= theNbSamples; ++i)
+    {
+      const double aParam = theFirst + i * aStep;
+      compareTangent(theCurve, aParam);
+      compareCurvature(theCurve, aParam);
+      compareNormal(theCurve, aParam);
+      compareCentre(theCurve, aParam);
+    }
   }
-}
 
-//! Create a trimmed circle (quarter arc from 0 to PI/2).
-occ::handle<Geom_TrimmedCurve> makeTrimmedCircle(const double theRadius = 5.0)
-{
-  gp_Circ                  aCirc(gp_Ax2(gp_Pnt(1, 2, 0), gp_Dir(0, 0, 1)), theRadius);
-  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
-  return new Geom_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
-}
+  //! Create a trimmed circle (quarter arc from 0 to PI/2).
+  occ::handle<Geom_TrimmedCurve> makeTrimmedCircle(const double theRadius = 5.0)
+  {
+    gp_Circ                  aCirc(gp_Ax2(gp_Pnt(1, 2, 0), gp_Dir(0, 0, 1)), theRadius);
+    occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCirc);
+    return new Geom_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
+  }
 
-//! Create a trimmed ellipse (from PI/4 to 3*PI/4).
-occ::handle<Geom_TrimmedCurve> makeTrimmedEllipse(const double theMajor = 10.0,
+  //! Create a trimmed ellipse (from PI/4 to 3*PI/4).
+  occ::handle<Geom_TrimmedCurve> makeTrimmedEllipse(const double theMajor = 10.0,
                                                     const double theMinor = 5.0)
-{
-  gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), theMajor, theMinor);
-  occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
-  return new Geom_TrimmedCurve(anEllipse, M_PI / 4.0, 3.0 * M_PI / 4.0);
-}
+  {
+    gp_Elips                  anElips(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), theMajor, theMinor);
+    occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anElips);
+    return new Geom_TrimmedCurve(anEllipse, M_PI / 4.0, 3.0 * M_PI / 4.0);
+  }
 
-//! Create an S-shaped Bezier curve with inflection point.
-occ::handle<Geom_BezierCurve> makeSBezier()
-{
-  NCollection_Array1<gp_Pnt> aPoles(1, 4);
-  aPoles(1) = gp_Pnt(0, 0, 0);
-  aPoles(2) = gp_Pnt(1, 3, 0);
-  aPoles(3) = gp_Pnt(3, -2, 0);
-  aPoles(4) = gp_Pnt(4, 1, 0);
-  return new Geom_BezierCurve(aPoles);
-}
+  //! Create an S-shaped Bezier curve with inflection point.
+  occ::handle<Geom_BezierCurve> makeSBezier()
+  {
+    NCollection_Array1<gp_Pnt> aPoles(1, 4);
+    aPoles(1) = gp_Pnt(0, 0, 0);
+    aPoles(2) = gp_Pnt(1, 3, 0);
+    aPoles(3) = gp_Pnt(3, -2, 0);
+    aPoles(4) = gp_Pnt(4, 1, 0);
+    return new Geom_BezierCurve(aPoles);
+  }
 
-//! Create a trimmed Bezier curve (from 0.1 to 0.9).
-occ::handle<Geom_TrimmedCurve> makeTrimmedBezier()
-{
-  occ::handle<Geom_BezierCurve> aBezier = makeSBezier();
-  return new Geom_TrimmedCurve(aBezier, 0.1, 0.9);
-}
+  //! Create a trimmed Bezier curve (from 0.1 to 0.9).
+  occ::handle<Geom_TrimmedCurve> makeTrimmedBezier()
+  {
+    occ::handle<Geom_BezierCurve> aBezier = makeSBezier();
+    return new Geom_TrimmedCurve(aBezier, 0.1, 0.9);
+  }
 
-//! Create a trimmed hyperbola (from -1.0 to 1.0).
-occ::handle<Geom_TrimmedCurve> makeTrimmedHyperbola()
-{
-  gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
-  occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
-  return new Geom_TrimmedCurve(aHyperbola, -1.0, 1.0);
-}
+  //! Create a trimmed hyperbola (from -1.0 to 1.0).
+  occ::handle<Geom_TrimmedCurve> makeTrimmedHyperbola()
+  {
+    gp_Hypr                     anHypr(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 6.0, 3.0);
+    occ::handle<Geom_Hyperbola> aHyperbola = new Geom_Hyperbola(anHypr);
+    return new Geom_TrimmedCurve(aHyperbola, -1.0, 1.0);
+  }
 
 } // namespace
 
@@ -179,9 +179,9 @@ TEST(GeomProp_OtherCurveTest, Tangent_TrimmedCircle)
 
 TEST(GeomProp_OtherCurveTest, Curvature_TrimmedCircle)
 {
-  const double                     aRadius  = 5.0;
+  const double                   aRadius  = 5.0;
   occ::handle<Geom_TrimmedCurve> aTrimmed = makeTrimmedCircle(aRadius);
-  GeomProp_Curve                   aProp(aTrimmed);
+  GeomProp_Curve                 aProp(aTrimmed);
 
   // Curvature should be constant 1/R within the trimmed range
   for (double aParam = 0.0; aParam <= M_PI / 2.0; aParam += M_PI / 8.0)
@@ -411,13 +411,20 @@ TEST(GeomProp_OtherCurveTest, VsCLProps_CriticalPoints)
 {
   // Trimmed circle
   occ::handle<Geom_Circle> aCircle = new Geom_Circle(gp_Ax2(gp_Pnt(0, 0, 0), gp_Dir(0, 0, 1)), 5.0);
-  occ::handle<Geom_TrimmedCurve> aTrimmed = new Geom_TrimmedCurve(aCircle, M_PI / 4.0, 3.0 * M_PI / 4.0);
-  const double aFirst = aTrimmed->FirstParameter();
-  const double aLast  = aTrimmed->LastParameter();
-  const double aMid   = (aFirst + aLast) / 2.0;
-  const double aParams[] = {aFirst, aFirst + 1.0e-10, aFirst + 1.0e-6,
-                            aMid, aMid + 1.0e-6, aMid - 1.0e-6,
-                            aLast - 1.0e-6, aLast - 1.0e-10, aLast};
+  occ::handle<Geom_TrimmedCurve> aTrimmed =
+    new Geom_TrimmedCurve(aCircle, M_PI / 4.0, 3.0 * M_PI / 4.0);
+  const double aFirst    = aTrimmed->FirstParameter();
+  const double aLast     = aTrimmed->LastParameter();
+  const double aMid      = (aFirst + aLast) / 2.0;
+  const double aParams[] = {aFirst,
+                            aFirst + 1.0e-10,
+                            aFirst + 1.0e-6,
+                            aMid,
+                            aMid + 1.0e-6,
+                            aMid - 1.0e-6,
+                            aLast - 1.0e-6,
+                            aLast - 1.0e-10,
+                            aLast};
   for (const double aParam : aParams)
   {
     compareTangent(aTrimmed, aParam);

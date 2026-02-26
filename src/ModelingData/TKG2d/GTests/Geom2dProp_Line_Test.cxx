@@ -29,16 +29,16 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
   constexpr double THE_DIR_TOL   = 1.0e-6;
   constexpr double THE_POINT_TOL = 1.0e-6;
 
-  void compareTangent(Geom2dProp_Curve&      theProp,
-                      Geom2dLProp_CLProps2d&  theOld,
-                      const double            theParam)
+  void compareTangent(Geom2dProp_Curve & theProp,
+                      Geom2dLProp_CLProps2d & theOld,
+                      const double theParam)
   {
     theOld.SetParameter(theParam);
     const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
@@ -52,26 +52,26 @@ namespace
     }
   }
 
-  void compareCurvature(Geom2dProp_Curve&      theProp,
-                        Geom2dLProp_CLProps2d&  theOld,
-                        const double            theParam)
+  void compareCurvature(Geom2dProp_Curve & theProp,
+                        Geom2dLProp_CLProps2d & theOld,
+                        const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CurvatureResult aNew = theProp.Curvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
+    const double                      aOldCurv = theOld.Curvature();
     if (aNew.IsDefined && !aNew.IsInfinite)
     {
       EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL);
     }
   }
 
-  void compareNormal(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareNormal(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::NormalResult aNew = theProp.Normal(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -85,13 +85,13 @@ namespace
     }
   }
 
-  void compareCentre(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareCentre(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CentreResult aNew = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -105,11 +105,11 @@ namespace
     }
   }
 
-  void compareAll(Geom2dProp_Curve&      theProp,
-                  Geom2dLProp_CLProps2d&  theOld,
-                  const double            theFirst,
-                  const double            theLast,
-                  const int               theNbSamples = 10)
+  void compareAll(Geom2dProp_Curve & theProp,
+                  Geom2dLProp_CLProps2d & theOld,
+                  const double theFirst,
+                  const double theLast,
+                  const int    theNbSamples = 10)
   {
     const double aStep = (theLast - theFirst) / theNbSamples;
     for (int i = 0; i <= theNbSamples; ++i)
@@ -393,10 +393,10 @@ TEST(Geom2dProp_LineTest, VsCLProps2d_OffCenter)
 
 TEST(Geom2dProp_LineTest, VsCLProps2d_CriticalPoints)
 {
-  gp_Lin2d aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
+  gp_Lin2d                 aLin(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
   occ::handle<Geom2d_Line> aLine = new Geom2d_Line(aLin);
-  Geom2dProp_Curve aProp(aLine);
-  Geom2dLProp_CLProps2d aOld(aLine, 2, THE_LIN_TOL);
+  Geom2dProp_Curve         aProp(aLine);
+  Geom2dLProp_CLProps2d    aOld(aLine, 2, THE_LIN_TOL);
   const double aParams[] = {0.0, 1.0e-10, -1.0e-10, 1.0e-6, -1.0e-6, 1.0e6, -1.0e6, 0.5, -0.5};
   for (const double aParam : aParams)
   {

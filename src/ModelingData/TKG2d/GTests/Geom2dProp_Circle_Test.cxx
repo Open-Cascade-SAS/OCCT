@@ -26,25 +26,25 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
+      Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Precision.hxx>
 
 #include <cmath>
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
   constexpr double THE_DIR_TOL   = 1.0e-6;
   constexpr double THE_POINT_TOL = 1.0e-6;
 
-  void compareTangent(Geom2dProp_Curve&      theProp,
-                      Geom2dLProp_CLProps2d&  theOld,
-                      const double            theParam)
+  void compareTangent(Geom2dProp_Curve & theProp,
+                      Geom2dLProp_CLProps2d & theOld,
+                      const double theParam)
   {
     theOld.SetParameter(theParam);
     const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
@@ -58,26 +58,26 @@ namespace
     }
   }
 
-  void compareCurvature(Geom2dProp_Curve&      theProp,
-                        Geom2dLProp_CLProps2d&  theOld,
-                        const double            theParam)
+  void compareCurvature(Geom2dProp_Curve & theProp,
+                        Geom2dLProp_CLProps2d & theOld,
+                        const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CurvatureResult aNew = theProp.Curvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
+    const double                      aOldCurv = theOld.Curvature();
     if (aNew.IsDefined && !aNew.IsInfinite)
     {
       EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL);
     }
   }
 
-  void compareNormal(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareNormal(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::NormalResult aNew = theProp.Normal(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -91,13 +91,13 @@ namespace
     }
   }
 
-  void compareCentre(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareCentre(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CentreResult aNew = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -111,11 +111,11 @@ namespace
     }
   }
 
-  void compareAll(Geom2dProp_Curve&      theProp,
-                  Geom2dLProp_CLProps2d&  theOld,
-                  const double            theFirst,
-                  const double            theLast,
-                  const int               theNbSamples = 10)
+  void compareAll(Geom2dProp_Curve & theProp,
+                  Geom2dLProp_CLProps2d & theOld,
+                  const double theFirst,
+                  const double theLast,
+                  const int    theNbSamples = 10)
   {
     const double aStep = (theLast - theFirst) / theNbSamples;
     for (int i = 0; i <= theNbSamples; ++i)
@@ -253,7 +253,7 @@ TEST(Geom2dProp_CircleTest, Normal_AllParams)
 
   for (int i = 0; i < 12; ++i)
   {
-    const double u = i * M_PI / 6.0;
+    const double                   u     = i * M_PI / 6.0;
     const Geom2dProp::NormalResult aNorm = aProp.Normal(u, THE_LIN_TOL);
     ASSERT_TRUE(aNorm.IsDefined) << "at u=" << u;
 
@@ -265,8 +265,7 @@ TEST(Geom2dProp_CircleTest, Normal_AllParams)
     const double aDy  = aCenter.Y() - aPy;
     const double aLen = std::sqrt(aDx * aDx + aDy * aDy);
     // Normal should be parallel to this direction
-    const double aDot =
-      aNorm.Direction.X() * (aDx / aLen) + aNorm.Direction.Y() * (aDy / aLen);
+    const double aDot = aNorm.Direction.X() * (aDx / aLen) + aNorm.Direction.Y() * (aDy / aLen);
     EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL) << "at u=" << u;
   }
 }
@@ -281,7 +280,7 @@ TEST(Geom2dProp_CircleTest, Centre_IsCircleCenter)
 
   for (int i = 0; i < 12; ++i)
   {
-    const double                     u       = i * M_PI / 6.0;
+    const double                   u       = i * M_PI / 6.0;
     const Geom2dProp::CentreResult aCentre = aProp.CentreOfCurvature(u, THE_LIN_TOL);
     ASSERT_TRUE(aCentre.IsDefined) << "at u=" << u;
     EXPECT_NEAR(aCentre.Centre.X(), aCenter.X(), THE_POINT_TOL) << "at u=" << u;
@@ -299,7 +298,7 @@ TEST(Geom2dProp_CircleTest, Centre_OffCenter)
 
   for (int i = 0; i < 8; ++i)
   {
-    const double                     u       = i * M_PI / 4.0;
+    const double                   u       = i * M_PI / 4.0;
     const Geom2dProp::CentreResult aCentre = aProp.CentreOfCurvature(u, THE_LIN_TOL);
     ASSERT_TRUE(aCentre.IsDefined) << "at u=" << u;
     EXPECT_NEAR(aCentre.Centre.X(), aCenter.X(), THE_POINT_TOL) << "at u=" << u;
@@ -400,7 +399,7 @@ TEST(Geom2dProp_CircleTest, Tangent_Perpendicular)
 
   for (int i = 0; i < 12; ++i)
   {
-    const double u = i * M_PI / 6.0;
+    const double                    u    = i * M_PI / 6.0;
     const Geom2dProp::TangentResult aTan = aProp.Tangent(u, THE_LIN_TOL);
     ASSERT_TRUE(aTan.IsDefined) << "at u=" << u;
 
@@ -432,11 +431,19 @@ TEST(Geom2dProp_CircleTest, VsCurAndInf2d_NoExtrema)
 
 TEST(Geom2dProp_CircleTest, VsCLProps2d_CriticalPoints)
 {
-  occ::handle<Geom2d_Circle> aCircle = new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
-  Geom2dProp_Curve aProp(aCircle);
+  occ::handle<Geom2d_Circle> aCircle =
+    new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
+  Geom2dProp_Curve      aProp(aCircle);
   Geom2dLProp_CLProps2d aOld(aCircle, 2, THE_LIN_TOL);
-  const double aParams[] = {0.0, 1.0e-10, M_PI / 4.0, M_PI / 2.0, M_PI, 3.0 * M_PI / 2.0,
-                            2.0 * M_PI - 1.0e-10, M_PI / 2.0 + 1.0e-6, M_PI / 2.0 - 1.0e-6};
+  const double          aParams[] = {0.0,
+                                     1.0e-10,
+                                     M_PI / 4.0,
+                                     M_PI / 2.0,
+                                     M_PI,
+                                     3.0 * M_PI / 2.0,
+                                     2.0 * M_PI - 1.0e-10,
+                                     M_PI / 2.0 + 1.0e-6,
+                                     M_PI / 2.0 - 1.0e-6};
   for (const double aParam : aParams)
   {
     compareTangent(aProp, aOld, aParam);

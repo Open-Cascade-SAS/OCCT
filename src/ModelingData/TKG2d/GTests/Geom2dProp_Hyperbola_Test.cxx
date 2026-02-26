@@ -15,32 +15,32 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <Geom2dLProp_CurAndInf2d.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Hypr2d.hxx>
 #include <gp_Pnt2d.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+      Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Precision.hxx>
 
 #include <cmath>
 
 #include <gtest/gtest.h>
 
-namespace
+  namespace
 {
   constexpr double THE_LIN_TOL   = Precision::PConfusion();
   constexpr double THE_CURV_TOL  = 1.0e-8;
   constexpr double THE_DIR_TOL   = 1.0e-6;
   constexpr double THE_POINT_TOL = 1.0e-6;
 
-  void compareTangent(Geom2dProp_Curve&      theProp,
-                      Geom2dLProp_CLProps2d&  theOld,
-                      const double            theParam)
+  void compareTangent(Geom2dProp_Curve & theProp,
+                      Geom2dLProp_CLProps2d & theOld,
+                      const double theParam)
   {
     theOld.SetParameter(theParam);
     const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
@@ -54,26 +54,26 @@ namespace
     }
   }
 
-  void compareCurvature(Geom2dProp_Curve&      theProp,
-                        Geom2dLProp_CLProps2d&  theOld,
-                        const double            theParam)
+  void compareCurvature(Geom2dProp_Curve & theProp,
+                        Geom2dLProp_CLProps2d & theOld,
+                        const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CurvatureResult aNew = theProp.Curvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
+    const double                      aOldCurv = theOld.Curvature();
     if (aNew.IsDefined && !aNew.IsInfinite)
     {
       EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL);
     }
   }
 
-  void compareNormal(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareNormal(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::NormalResult aNew = theProp.Normal(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -87,13 +87,13 @@ namespace
     }
   }
 
-  void compareCentre(Geom2dProp_Curve&      theProp,
-                     Geom2dLProp_CLProps2d&  theOld,
-                     const double            theParam)
+  void compareCentre(Geom2dProp_Curve & theProp,
+                     Geom2dLProp_CLProps2d & theOld,
+                     const double theParam)
   {
     theOld.SetParameter(theParam);
-    const Geom2dProp::CentreResult aNew = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    const double aOldCurv = theOld.Curvature();
+    const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+    const double                   aOldCurv = theOld.Curvature();
     if (std::abs(aOldCurv) < THE_LIN_TOL)
     {
       return;
@@ -107,11 +107,11 @@ namespace
     }
   }
 
-  void compareAll(Geom2dProp_Curve&      theProp,
-                  Geom2dLProp_CLProps2d&  theOld,
-                  const double            theFirst,
-                  const double            theLast,
-                  const int               theNbSamples = 10)
+  void compareAll(Geom2dProp_Curve & theProp,
+                  Geom2dLProp_CLProps2d & theOld,
+                  const double theFirst,
+                  const double theLast,
+                  const int    theNbSamples = 10)
   {
     const double aStep = (theLast - theFirst) / theNbSamples;
     for (int i = 0; i <= theNbSamples; ++i)
@@ -128,9 +128,12 @@ namespace
   {
     switch (theType)
     {
-      case LProp_Inflection: return Geom2dProp::CIType::Inflection;
-      case LProp_MinCur:     return Geom2dProp::CIType::MinCurvature;
-      case LProp_MaxCur:     return Geom2dProp::CIType::MaxCurvature;
+      case LProp_Inflection:
+        return Geom2dProp::CIType::Inflection;
+      case LProp_MinCur:
+        return Geom2dProp::CIType::MinCurvature;
+      case LProp_MaxCur:
+        return Geom2dProp::CIType::MaxCurvature;
     }
     return Geom2dProp::CIType::Inflection;
   }
@@ -156,12 +159,12 @@ TEST(Geom2dProp_HyperbolaTest, Curvature_AtVertex)
 {
   // For hyperbola with semi-axes a (real) and b (imaginary),
   // curvature at vertex (t=0) is k = a / b^2.
-  const double anA = 6.0;
-  const double aB  = 3.0;
+  const double                  anA = 6.0;
+  const double                  aB  = 3.0;
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), anA, aB);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve                    aProp(aHyperbola);
+  Geom2dProp_Curve                  aProp(aHyperbola);
   const Geom2dProp::CurvatureResult aCurv = aProp.Curvature(0.0, THE_LIN_TOL);
 
   ASSERT_TRUE(aCurv.IsDefined);
@@ -173,8 +176,8 @@ TEST(Geom2dProp_HyperbolaTest, Curvature_AtVertex)
 TEST(Geom2dProp_HyperbolaTest, Curvature_Symmetric)
 {
   // k(t) = k(-t) for a centered hyperbola.
-  const double anA = 5.0;
-  const double aB  = 2.0;
+  const double                  anA = 5.0;
+  const double                  aB  = 2.0;
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), anA, aB);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
@@ -192,8 +195,8 @@ TEST(Geom2dProp_HyperbolaTest, Curvature_Symmetric)
 TEST(Geom2dProp_HyperbolaTest, Curvature_DecreasesFromVertex)
 {
   // Curvature magnitude decreases as |t| increases from vertex.
-  const double anA = 8.0;
-  const double aB  = 4.0;
+  const double                  anA = 8.0;
+  const double                  aB  = 4.0;
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), anA, aB);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
@@ -215,7 +218,7 @@ TEST(Geom2dProp_HyperbolaTest, Tangent_AtVertex)
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve                   aProp(aHyperbola);
+  Geom2dProp_Curve                aProp(aHyperbola);
   const Geom2dProp::TangentResult aTan = aProp.Tangent(0.0, THE_LIN_TOL);
 
   ASSERT_TRUE(aTan.IsDefined);
@@ -250,7 +253,7 @@ TEST(Geom2dProp_HyperbolaTest, Normal_AtVertex)
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve                  aProp(aHyperbola);
+  Geom2dProp_Curve               aProp(aHyperbola);
   const Geom2dProp::NormalResult aNorm = aProp.Normal(0.0, THE_LIN_TOL);
 
   ASSERT_TRUE(aNorm.IsDefined);
@@ -262,12 +265,12 @@ TEST(Geom2dProp_HyperbolaTest, Normal_AtVertex)
 TEST(Geom2dProp_HyperbolaTest, Centre_AtVertex)
 {
   // Centre of curvature at vertex is at distance 1/k = b^2/a from vertex along axis.
-  const double anA = 6.0;
-  const double aB  = 3.0;
+  const double                  anA = 6.0;
+  const double                  aB  = 3.0;
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), anA, aB);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve                  aProp(aHyperbola);
+  Geom2dProp_Curve               aProp(aHyperbola);
   const Geom2dProp::CentreResult aCentre = aProp.CentreOfCurvature(0.0, THE_LIN_TOL);
 
   ASSERT_TRUE(aCentre.IsDefined);
@@ -324,7 +327,7 @@ TEST(Geom2dProp_HyperbolaTest, Curvature_LargeParam)
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
-  Geom2dProp_Curve aProp(aHyperbola);
+  Geom2dProp_Curve                  aProp(aHyperbola);
   const Geom2dProp::CurvatureResult aCurv = aProp.Curvature(10.0, THE_LIN_TOL);
 
   ASSERT_TRUE(aCurv.IsDefined);
@@ -358,7 +361,7 @@ TEST(Geom2dProp_HyperbolaTest, VsCLProps2d_AllProperties)
 TEST(Geom2dProp_HyperbolaTest, VsCLProps2d_LargeAxes)
 {
   // Cross-validate with a=100, b=50.
-  gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 100.0, 50.0);
+  gp_Hypr2d anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 100.0, 50.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
   Geom2dProp_Curve      aProp(aHyperbola);
@@ -394,8 +397,8 @@ TEST(Geom2dProp_HyperbolaTest, VsCLProps2d_AsymmetricAxes)
 TEST(Geom2dProp_HyperbolaTest, Curvature_NearVertex)
 {
   // Fine-grained curvature check near vertex.
-  const double anA = 6.0;
-  const double aB  = 3.0;
+  const double                  anA = 6.0;
+  const double                  aB  = 3.0;
   gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), anA, aB);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
@@ -414,7 +417,7 @@ TEST(Geom2dProp_HyperbolaTest, Curvature_NearVertex)
 TEST(Geom2dProp_HyperbolaTest, VsCLProps2d_OffCenter)
 {
   // Cross-validate hyperbola centered at (5,5).
-  gp_Hypr2d anHypr(gp_Ax2d(gp_Pnt2d(5.0, 5.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
+  gp_Hypr2d                     anHypr(gp_Ax2d(gp_Pnt2d(5.0, 5.0), gp_Dir2d(1.0, 0.0)), 6.0, 3.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(anHypr);
 
   Geom2dProp_Curve      aProp(aHyperbola);
@@ -459,12 +462,25 @@ TEST(Geom2dProp_HyperbolaTest, VsCurAndInf2d_NoInflections)
 
 TEST(Geom2dProp_HyperbolaTest, VsCLProps2d_CriticalPoints)
 {
-  gp_Hypr2d aHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0, 3.0);
+  gp_Hypr2d                     aHypr(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0, 3.0);
   occ::handle<Geom2d_Hyperbola> aHyperbola = new Geom2d_Hyperbola(aHypr);
-  Geom2dProp_Curve aProp(aHyperbola);
-  Geom2dLProp_CLProps2d aOld(aHyperbola, 2, THE_LIN_TOL);
-  const double aParams[] = {0.0, 1.0e-10, -1.0e-10, 1.0e-6, -1.0e-6, 0.1, -0.1,
-                            0.5, -0.5, 1.0, -1.0, 3.0, -3.0, 5.0, -5.0};
+  Geom2dProp_Curve              aProp(aHyperbola);
+  Geom2dLProp_CLProps2d         aOld(aHyperbola, 2, THE_LIN_TOL);
+  const double                  aParams[] = {0.0,
+                                             1.0e-10,
+                                             -1.0e-10,
+                                             1.0e-6,
+                                             -1.0e-6,
+                                             0.1,
+                                             -0.1,
+                                             0.5,
+                                             -0.5,
+                                             1.0,
+                                             -1.0,
+                                             3.0,
+                                             -3.0,
+                                             5.0,
+                                             -5.0};
   for (const double aParam : aParams)
   {
     compareTangent(aProp, aOld, aParam);
