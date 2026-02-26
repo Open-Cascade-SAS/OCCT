@@ -153,15 +153,17 @@
   #define Standard_DISABLE_DEPRECATION_WARNINGS                                                    \
     __pragma(warning(push)) __pragma(warning(disable : 1478))
   #define Standard_ENABLE_DEPRECATION_WARNINGS __pragma(warning(pop))
-#elif (defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6)))              \
-  || defined(__clang__)
-  // available since at least gcc 4.2 (maybe earlier), however only gcc 4.6+ supports this pragma
-  // inside the function body CLang also supports this gcc syntax (in addition to "clang diagnostic
-  // ignored")
+#elif defined(__clang__)
   #define Standard_DISABLE_DEPRECATION_WARNINGS                                                    \
     _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"") \
       _Pragma("GCC diagnostic ignored \"-W#pragma-messages\"")                                     \
         _Pragma("GCC diagnostic ignored \"-Wignored-attributes\"")
+  #define Standard_ENABLE_DEPRECATION_WARNINGS _Pragma("GCC diagnostic pop")
+#elif defined(__GNUC__) && (__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 6))
+  // available since at least gcc 4.2 (maybe earlier), however only gcc 4.6+ supports this pragma
+  // inside the function body
+  #define Standard_DISABLE_DEPRECATION_WARNINGS                                                    \
+    _Pragma("GCC diagnostic push") _Pragma("GCC diagnostic ignored \"-Wdeprecated-declarations\"")
   #define Standard_ENABLE_DEPRECATION_WARNINGS _Pragma("GCC diagnostic pop")
 #elif defined(_MSC_VER)
   #define Standard_DISABLE_DEPRECATION_WARNINGS                                                    \
