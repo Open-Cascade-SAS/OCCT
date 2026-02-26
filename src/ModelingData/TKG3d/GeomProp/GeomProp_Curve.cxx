@@ -320,13 +320,13 @@ GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
     aN1 = 3;
   else if (aCont1 == 4)
     aN1 = 2;
-  else if (aCont1 == 2)
+  else if (aCont1 >= 2)
     aN1 = 1;
   if (aCont2 >= 5)
     aN2 = 3;
   else if (aCont2 == 4)
     aN2 = 2;
-  else if (aCont2 == 2)
+  else if (aCont2 >= 2)
     aN2 = 1;
 
   // Evaluate derivatives at junction points.

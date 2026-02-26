@@ -47,6 +47,40 @@ GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
 
 //==================================================================================================
 
+GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
+                                                  const gp_Vec& theD2,
+                                                  const gp_Vec& theD3,
+                                                  const double  theTol,
+                                                  const gp_Pnt& thePntBefore,
+                                                  const gp_Pnt& thePntAfter)
+{
+  const double aTol2 = theTol * theTol;
+
+  // If D1 is non-null, use it directly — no sign ambiguity.
+  if (theD1.SquareMagnitude() > aTol2)
+  {
+    return {gp_Dir(theD1), true};
+  }
+
+  // D1 is null — find first non-null higher derivative.
+  gp_Vec aVec;
+  if (theD2.SquareMagnitude() > aTol2)
+    aVec = theD2;
+  else if (theD3.SquareMagnitude() > aTol2)
+    aVec = theD3;
+  else
+    return {{}, false};
+
+  // Correct sign of higher-order derivative using finite-difference direction.
+  const gp_Vec aFiniteDiff(thePntBefore, thePntAfter);
+  if (aVec.Dot(aFiniteDiff) < 0.0)
+    aVec.Reverse();
+
+  return {gp_Dir(aVec), true};
+}
+
+//==================================================================================================
+
 GeomProp::CurvatureResult GeomProp::ComputeCurvature(const gp_Vec& theD1,
                                                      const gp_Vec& theD2,
                                                      const double  theTol)
@@ -122,6 +156,10 @@ GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
 
   // Normal vector (unnormalized) = D2 * (D1.D1) - D1 * (D1.D2)
   gp_Vec aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  {
+    return {{}, false};
+  }
   aNorm.Normalize();
   aNorm.Divide(aCurvRes.Value);
 
@@ -250,18 +288,36 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   if (std::abs(aNormA) > RealEpsilon())
   {
     // Solve A*t^2 + B*t + C = 0; direction = t * D1U + D1V.
-    const double aDisc = aNormB * aNormB - 4.0 * aNormA * aNormC;
+    // Use error-bounded discriminant check matching math_DirectPolynomialRoots behavior:
+    // clamp discriminant to zero when within floating-point noise threshold.
+    const double aP    = aNormB / aNormA;
+    const double aQ    = aNormC / aNormA;
+    const double aEpsD = 3.0 * RealEpsilon() * (aP * aP + std::abs(4.0 * aQ));
+    double       aDisc = aP * aP - 4.0 * aQ;
+    if (std::abs(aDisc) <= aEpsD)
+    {
+      aDisc = 0.0;
+    }
     if (aDisc < 0.0)
     {
       return handleUmbilic();
     }
-    const double aSqrtDisc = std::sqrt(std::max(aDisc, 0.0));
-    if (aSqrtDisc < RealEpsilon())
+    if (aDisc == 0.0)
     {
       return handleUmbilic();
     }
-    const double aRoot1  = (-aNormB + aSqrtDisc) / (2.0 * aNormA);
-    const double aRoot2  = (-aNormB - aSqrtDisc) / (2.0 * aNormA);
+    const double aSqrtDisc = std::sqrt(aDisc);
+    // Use numerically stable root formula (same as math_DirectPolynomialRoots).
+    double aRoot1, aRoot2;
+    if (aP > 0.0)
+    {
+      aRoot1 = -(aP + aSqrtDisc) / 2.0;
+    }
+    else
+    {
+      aRoot1 = -(aP - aSqrtDisc) / 2.0;
+    }
+    aRoot2 = aQ / aRoot1;
     const double aDenom1 = (aE * aRoot1 + 2.0 * aF) * aRoot1 + aG;
     const double aDenom2 = (aE * aRoot2 + 2.0 * aF) * aRoot2 + aG;
     if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())
@@ -276,18 +332,33 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   else if (std::abs(aNormC) > RealEpsilon())
   {
     // Solve C*t^2 + B*t + A = 0; direction = D1U + t * D1V.
-    const double aDisc = aNormB * aNormB - 4.0 * aNormC * aNormA;
+    const double aP    = aNormB / aNormC;
+    const double aQ    = aNormA / aNormC;
+    const double aEpsD = 3.0 * RealEpsilon() * (aP * aP + std::abs(4.0 * aQ));
+    double       aDisc = aP * aP - 4.0 * aQ;
+    if (std::abs(aDisc) <= aEpsD)
+    {
+      aDisc = 0.0;
+    }
     if (aDisc < 0.0)
     {
       return handleUmbilic();
     }
-    const double aSqrtDisc = std::sqrt(std::max(aDisc, 0.0));
-    if (aSqrtDisc < RealEpsilon())
+    if (aDisc == 0.0)
     {
       return handleUmbilic();
     }
-    const double aRoot1  = (-aNormB + aSqrtDisc) / (2.0 * aNormC);
-    const double aRoot2  = (-aNormB - aSqrtDisc) / (2.0 * aNormC);
+    const double aSqrtDisc = std::sqrt(aDisc);
+    double       aRoot1, aRoot2;
+    if (aP > 0.0)
+    {
+      aRoot1 = -(aP + aSqrtDisc) / 2.0;
+    }
+    else
+    {
+      aRoot1 = -(aP - aSqrtDisc) / 2.0;
+    }
+    aRoot2 = aQ / aRoot1;
     const double aDenom1 = (aG * aRoot1 + 2.0 * aF) * aRoot1 + aE;
     const double aDenom2 = (aG * aRoot2 + 2.0 * aF) * aRoot2 + aE;
     if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())

@@ -47,6 +47,40 @@ Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
 
 //==================================================================================================
 
+Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d&  theD1,
+                                                      const gp_Vec2d&  theD2,
+                                                      const gp_Vec2d&  theD3,
+                                                      const double     theTol,
+                                                      const gp_Pnt2d&  thePntBefore,
+                                                      const gp_Pnt2d&  thePntAfter)
+{
+  const double aTol2 = theTol * theTol;
+
+  // If D1 is non-null, use it directly — no sign ambiguity.
+  if (theD1.SquareMagnitude() > aTol2)
+  {
+    return {gp_Dir2d(theD1), true};
+  }
+
+  // D1 is null — find first non-null higher derivative.
+  gp_Vec2d aVec;
+  if (theD2.SquareMagnitude() > aTol2)
+    aVec = theD2;
+  else if (theD3.SquareMagnitude() > aTol2)
+    aVec = theD3;
+  else
+    return {{}, false};
+
+  // Correct sign of higher-order derivative using finite-difference direction.
+  const gp_Vec2d aFiniteDiff(thePntBefore, thePntAfter);
+  if (aVec.Dot(aFiniteDiff) < 0.0)
+    aVec.Reverse();
+
+  return {gp_Dir2d(aVec), true};
+}
+
+//==================================================================================================
+
 Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
                                                          const gp_Vec2d& theD2,
                                                          const double    theTol)
@@ -99,6 +133,10 @@ Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
   // Normal = D2 * (D1.D1) - D1 * (D1.D2)
   // This is equivalent to D1 x (D2 x D1) in 2D using the vector triple product identity.
   const gp_Vec2d aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  {
+    return {{}, false};
+  }
   return {gp_Dir2d(aNorm), true};
 }
 
@@ -117,6 +155,10 @@ Geom2dProp::CentreResult Geom2dProp::ComputeCentreOfCurvature(const gp_Pnt2d& th
 
   // Normal vector (unnormalized) = D2 * (D1.D1) - D1 * (D1.D2)
   gp_Vec2d aNorm = theD2 * theD1.Dot(theD1) - theD1 * theD1.Dot(theD2);
+  if (aNorm.SquareMagnitude() <= theTol * theTol)
+  {
+    return {{}, false};
+  }
   aNorm.Normalize();
   aNorm.Divide(aCurvRes.Value);
 
