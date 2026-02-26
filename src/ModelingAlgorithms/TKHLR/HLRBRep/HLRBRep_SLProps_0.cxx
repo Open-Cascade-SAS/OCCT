@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_SLProps.hxx>
 
 #include <LProp_BadContinuity.hxx>
@@ -21,6 +22,7 @@
 #include <Standard_OutOfRange.hxx>
 #include <LProp_NotDefined.hxx>
 #include <HLRBRep_SLPropsATool.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>

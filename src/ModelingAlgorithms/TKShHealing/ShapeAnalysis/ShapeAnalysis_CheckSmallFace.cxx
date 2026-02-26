@@ -51,8 +51,6 @@
 #include <NCollection_Sequence.hxx>
 #include <NCollection_HSequence.hxx>
 
-// #include <GeomLProp_SLProps.hxx>
-// #include <ShapeFix_Wire.hxx>
 //=================================================================================================
 
 ShapeAnalysis_CheckSmallFace::ShapeAnalysis_CheckSmallFace()
@@ -841,7 +839,6 @@ bool ShapeAnalysis_CheckSmallFace::CheckTwisted(const TopoDS_Face& F,
   double toler = myPrecision;
   if (toler < 0)
     toler = 1.e-4;
-  ////  GeomLProp_SLProps GLS (surf,2,toler);
   GeomAdaptor_Surface GAS(surf);
 
   // to be done : on isos of the surface

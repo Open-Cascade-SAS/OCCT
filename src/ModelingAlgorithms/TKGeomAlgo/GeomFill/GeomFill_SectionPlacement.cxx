@@ -33,7 +33,7 @@
 #include <GeomFill_LocationLaw.hxx>
 #include <GeomFill_SectionPlacement.hxx>
 #include <GeomLib.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <GeomProp_Curve.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
@@ -861,19 +861,22 @@ occ::handle<Geom_Curve> GeomFill_SectionPlacement::ModifiedSection(const bool Wi
 
 void GeomFill_SectionPlacement::SectionAxis(const gp_Mat& M, gp_Vec& T, gp_Vec& N, gp_Vec& BN) const
 {
-  double            Eps = 1.e-10;
-  gp_Dir            D;
+  constexpr double  Eps = 1.e-10;
   gp_Vec            PathNormal;
-  GeomLProp_CLProps CP(mySection, SecParam, 2, Eps);
-  if (CP.IsTangentDefined())
+  GeomProp_Curve    aCurveProp(mySection);
+  GeomProp::TangentResult aTangent = aCurveProp.Tangent(SecParam, Eps);
+  if (aTangent.IsDefined)
   {
-    CP.Tangent(D);
-    T.SetXYZ(D.XYZ());
+    T.SetXYZ(aTangent.Direction.XYZ());
     T.Normalize();
-    if (CP.Curvature() > Eps)
+    GeomProp::CurvatureResult aCurvature = aCurveProp.Curvature(SecParam, Eps);
+    if (aCurvature.IsDefined && aCurvature.Value > Eps)
     {
-      CP.Normal(D);
-      N.SetXYZ(D.XYZ());
+      GeomProp::NormalResult aNormal = aCurveProp.Normal(SecParam, Eps);
+      if (aNormal.IsDefined)
+      {
+        N.SetXYZ(aNormal.Direction.XYZ());
+      }
     }
     else
     {

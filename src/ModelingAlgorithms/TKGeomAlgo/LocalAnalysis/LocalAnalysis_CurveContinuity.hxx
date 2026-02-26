@@ -22,9 +22,11 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomAbs_Shape.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <LocalAnalysis_StatusErrorType.hxx>
 class Geom_Curve;
-class GeomLProp_CLProps;
 
 //! This class gives tools to check local continuity C0
 //! C1 C2 G1 G2 between two points situated on two curves
@@ -169,15 +171,34 @@ public:
   Standard_EXPORT bool IsG2() const;
 
 private:
-  Standard_EXPORT void CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC0(const gp_Pnt& theP1, const gp_Pnt& theP2);
 
-  Standard_EXPORT void CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC1(const gp_Vec& theD1_1, const gp_Vec& theD1_2);
 
-  Standard_EXPORT void CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvC2(const gp_Vec& theD1_1,
+                               const gp_Vec& theD1_2,
+                               const gp_Vec& theD2_1,
+                               const gp_Vec& theD2_2);
 
-  Standard_EXPORT void CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvG1(const gp_Dir& theTang1,
+                               bool          theTangDef1,
+                               const gp_Dir& theTang2,
+                               bool          theTangDef2);
 
-  Standard_EXPORT void CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2);
+  Standard_EXPORT void CurvG2(const gp_Dir& theTang1,
+                               bool          theTangDef1,
+                               double        theCurv1,
+                               bool          theCurvDef1,
+                               const gp_Dir& theNorm1,
+                               bool          theNormDef1,
+                               const gp_Vec& theD1_1,
+                               const gp_Dir& theTang2,
+                               bool          theTangDef2,
+                               double        theCurv2,
+                               bool          theCurvDef2,
+                               const gp_Dir& theNorm2,
+                               bool          theNormDef2,
+                               const gp_Vec& theD1_2);
 
   double                        myContC0;
   double                        myContC1;

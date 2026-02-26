@@ -35,7 +35,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert_ApproxCurve.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomLProp.hxx>
+#include <GeomProp_Curve.hxx>
 #include <gp.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Circ2d.hxx>
@@ -767,7 +767,7 @@ void GeomConvert::ConcatG1(
     {
       First = ArrayOfCurves(i)->FirstParameter();
       Cont =
-        GeomLProp::Continuity(ArrayOfCurves(i - 1), ArrayOfCurves(i), PreLast, First, true, true);
+        GeomProp_Curve::Continuity(ArrayOfCurves(i - 1), ArrayOfCurves(i), PreLast, First, true, true);
       if (Cont < GeomAbs_C0)
         throw Standard_ConstructionError("GeomConvert curves not C0");
       else
@@ -994,7 +994,7 @@ void GeomConvert::ConcatC1(
     if (i >= 1)
     {
       First = ArrayOfCurves(i)->FirstParameter();
-      Cont  = GeomLProp::Continuity(ArrayOfCurves(i - 1),
+      Cont  = GeomProp_Curve::Continuity(ArrayOfCurves(i - 1),
                                    ArrayOfCurves(i),
                                    PreLast,
                                    First,

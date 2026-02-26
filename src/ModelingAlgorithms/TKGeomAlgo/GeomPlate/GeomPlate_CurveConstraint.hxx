@@ -18,11 +18,14 @@
 #define _GeomPlate_CurveConstraint_HeaderFile
 
 #include <Adaptor3d_CurveOnSurface.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
+
+#include <optional>
 
 class Geom2d_Curve;
 class Law_Function;
 class gp_Pnt;
+class gp_Pnt2d;
 class gp_Vec;
 
 //! Defines curves as constraints to be used to deform a surface.
@@ -108,7 +111,16 @@ public:
 
   Standard_EXPORT double Length() const;
 
-  Standard_EXPORT GeomLProp_SLProps& LPropSurf(const double U);
+  Standard_EXPORT GeomProp_Surface& LPropSurf(const double U);
+
+  //! Returns the surface handle and 2D parameter point for
+  //! the given curve parameter U.
+  //! @param[in] U curve parameter
+  //! @param[out] theSurf underlying surface handle
+  //! @param[out] theUV surface parameters (U, V)
+  Standard_EXPORT void SurfacePoint(const double               U,
+                                    occ::handle<Geom_Surface>& theSurf,
+                                    gp_Pnt2d&                  theUV) const;
 
   Standard_EXPORT void D0(const double U, gp_Pnt& P) const;
 
@@ -156,7 +168,7 @@ protected:
   bool                                  myConstG0;
   bool                                  myConstG1;
   bool                                  myConstG2;
-  GeomLProp_SLProps                     myLProp;
+  std::optional<GeomProp_Surface>       mySurfProp;
   double                                myTolDist;
   double                                myTolAng;
   double                                myTolCurv;

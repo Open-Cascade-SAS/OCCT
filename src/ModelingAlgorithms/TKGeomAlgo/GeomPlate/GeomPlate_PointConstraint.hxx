@@ -20,7 +20,9 @@
 #include <Standard.hxx>
 #include <Standard_Type.hxx>
 
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
+
+#include <optional>
 #include <gp_Pnt.hxx>
 #include <gp_Pnt2d.hxx>
 #include <gp_Vec.hxx>
@@ -129,7 +131,15 @@ public:
 
   Standard_EXPORT gp_Pnt2d Pnt2dOnSurf() const;
 
-  Standard_EXPORT GeomLProp_SLProps& LPropSurf();
+  Standard_EXPORT GeomProp_Surface& LPropSurf();
+
+  //! Returns the surface handle and parameters for this point constraint.
+  //! @param[out] theSurf underlying surface handle
+  //! @param[out] theU U parameter on surface
+  //! @param[out] theV V parameter on surface
+  Standard_EXPORT void SurfacePoint(occ::handle<Geom_Surface>& theSurf,
+                                    double&                    theU,
+                                    double&                    theV) const;
 
   DEFINE_STANDARD_RTTIEXT(GeomPlate_PointConstraint, Standard_Transient)
 
@@ -137,7 +147,7 @@ protected:
   int myOrder;
 
 private:
-  GeomLProp_SLProps         myLProp;
+  std::optional<GeomProp_Surface> mySurfProp;
   gp_Pnt                    myPoint;
   gp_Pnt2d                  myPt2d;
   occ::handle<Geom_Surface> mySurf;

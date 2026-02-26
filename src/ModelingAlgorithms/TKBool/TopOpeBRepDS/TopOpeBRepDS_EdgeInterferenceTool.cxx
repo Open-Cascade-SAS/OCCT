@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Tool.hxx>
-#include <BRepLProp_CLProps.hxx>
+#include <BRepProp_Curve.hxx>
 #include <Standard_ProgramError.hxx>
 #include <TopoDS.hxx>
 #include <TopoDS_Iterator.hxx>

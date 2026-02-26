@@ -21,7 +21,7 @@
 #include <Geom2d_Geometry.hxx>
 #include <Geom2d_UndefinedDerivative.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Pnt2d.hxx>

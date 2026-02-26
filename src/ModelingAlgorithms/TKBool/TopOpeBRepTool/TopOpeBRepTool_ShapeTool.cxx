@@ -16,7 +16,7 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
-#include <BRepLProp_CLProps.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepTools.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
@@ -572,20 +572,27 @@ double TopOpeBRepTool_ShapeTool::EdgeData(const BRepAdaptor_Curve& BAC,
                                           double&                  C)
 
 {
-  double tol = Precision::Angular();
+  const double aTol = Precision::Angular();
 
-  BRepLProp_CLProps BL(BAC, P, 2, tol);
-  BL.Tangent(T);
-  C = BL.Curvature();
+  BRepProp_Curve aCurveProp(BAC);
+  const GeomProp::TangentResult aTangRes = aCurveProp.Tangent(P, aTol);
+  if (aTangRes.IsDefined)
+    T = aTangRes.Direction;
+  const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(P, aTol);
+  C = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
 
   // xpu150399 cto900R4
   const double     tol1 = Epsilon(0.);
   constexpr double tol2 = RealLast();
-  double           tolm = std::max(tol, std::max(tol1, tol2));
+  const double     aTolm = std::max(aTol, std::max(tol1, tol2));
 
-  if (std::abs(C) > tolm)
-    BL.Normal(N);
-  return tol;
+  if (std::abs(C) > aTolm)
+  {
+    const GeomProp::NormalResult aNormRes = aCurveProp.Normal(P, aTol);
+    if (aNormRes.IsDefined)
+      N = aNormRes.Direction;
+  }
+  return aTol;
 }
 
 //=================================================================================================

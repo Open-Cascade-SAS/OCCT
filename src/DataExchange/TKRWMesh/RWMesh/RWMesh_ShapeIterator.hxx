@@ -14,7 +14,6 @@
 #ifndef _RWMesh_ShapeIterator_HeaderFile
 #define _RWMesh_ShapeIterator_HeaderFile
 
-#include <BRepLProp_SLProps.hxx>
 #include <NCollection_DataMap.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopExp_Explorer.hxx>

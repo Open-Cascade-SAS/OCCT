@@ -66,7 +66,7 @@
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <Geom_Curve.hxx>
@@ -505,11 +505,11 @@ static void CalculBatten(const occ::handle<GeomAdaptor_Surface>& ASurf,
   bool anglebig = false;
   isplane       = ASurf->GetType() == GeomAbs_Plane;
   gp_Dir2d              dir1(xdir, ydir);
-  Geom2dLProp_CLProps2d CL1(curv2d1, picicplus, 1, 1.e-4);
-  Geom2dLProp_CLProps2d CL2(curv2d2, picplusic, 1, 1.e-4);
-  gp_Dir2d              dir3, dir4;
-  CL1.Tangent(dir3);
-  CL2.Tangent(dir4);
+  Geom2dProp_Curve aCurveProp1(curv2d1);
+  Geom2dProp_Curve aCurveProp2(curv2d2);
+  const Geom2dProp::TangentResult aTanRes1 = aCurveProp1.Tangent(picicplus, 1.e-4);
+  const Geom2dProp::TangentResult aTanRes2 = aCurveProp2.Tangent(picplusic, 1.e-4);
+  gp_Dir2d              dir3 = aTanRes1.Direction, dir4 = aTanRes2.Direction;
   if (inverseic)
     dir3.Reverse();
   if (inverseicplus)

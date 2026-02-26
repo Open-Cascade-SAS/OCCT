@@ -56,7 +56,7 @@
 #include <GeomConvert_CompBezierSurfacesToBSplineSurface.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom2dConvert_BSplineCurveToBezierCurve.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <GeomConvert_SurfToAnaSurf.hxx>
 #include <GeomConvert_CurveToAnaCurve.hxx>
 #include <GeomConvert_ConvType.hxx>
@@ -90,10 +90,12 @@ static int surface_radius(Draw_Interpretor& di, int n, const char** a)
   occ::handle<Geom_Surface> SurfacePtr = DrawTrSurf::GetSurface(a[1]);
   if (!SurfacePtr.IsNull())
   {
-    GeomLProp_SLProps myProperties(SurfacePtr, UParameter, VParameter, 2, tolerance);
-    if (myProperties.IsCurvatureDefined())
+    GeomProp_Surface aProp(SurfacePtr);
+    const GeomProp::SurfaceCurvatureResult aCurvRes =
+      aProp.Curvatures(UParameter, VParameter, tolerance);
+    if (aCurvRes.IsDefined)
     {
-      radius = myProperties.MinCurvature();
+      radius = aCurvRes.MinCurvature;
 
       if (report_curvature)
         Draw::Set(a[4], radius);
@@ -108,7 +110,7 @@ static int surface_radius(Draw_Interpretor& di, int n, const char** a)
         di << "Min Radius of Curvature :  infinite\n";
       }
 
-      radius = myProperties.MaxCurvature();
+      radius = aCurvRes.MaxCurvature;
       if (report_curvature)
         Draw::Set(a[5], radius);
       if (std::abs(radius) > tolerance)

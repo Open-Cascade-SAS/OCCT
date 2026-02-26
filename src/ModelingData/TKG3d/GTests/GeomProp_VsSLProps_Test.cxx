@@ -21,7 +21,9 @@
 #include <Geom_Plane.hxx>
 #include <Geom_SphericalSurface.hxx>
 #include <Geom_ToroidalSurface.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>

@@ -44,7 +44,6 @@ GeomPlate_CurveConstraint ::GeomPlate_CurveConstraint()
       myConstG0(false),
       myConstG1(false),
       myConstG2(false),
-      myLProp(2, 1.e-4),
       myTolDist(0.0),
       myTolAng(0.0),
       myTolCurv(0.0),
@@ -62,8 +61,7 @@ GeomPlate_CurveConstraint ::GeomPlate_CurveConstraint(const occ::handle<Adaptor3
                                                       const double                        TolDist,
                                                       const double                        TolAng,
                                                       const double                        TolCurv)
-    : myLProp(2, TolDist),
-      myTolDist(TolDist),
+    : myTolDist(TolDist),
       myTolAng(TolAng),
       myTolCurv(TolCurv)
 {
@@ -93,14 +91,10 @@ GeomPlate_CurveConstraint ::GeomPlate_CurveConstraint(const occ::handle<Adaptor3
     }
     else
     {
-      //      occ::handle<BRepAdaptor_Surface> BS1;
-      //      BS1=occ::down_cast<BRepAdaptor_Surface>(myFrontiere->
-      //                                            ChangeCurve().GetSurface());
-      //      Surf = BRep_Tool::Surface(BS1->ChangeSurface().Face());
       throw Standard_Failure("GeomPlate_CurveConstraint : Surface must be GeomAdaptor_Surface");
     }
 
-    myLProp.SetSurface(Surf);
+    mySurfProp.emplace(Surf);
   }
 
   my2dCurve.Nullify();
@@ -377,11 +371,28 @@ void GeomPlate_CurveConstraint::SetOrder(const int Order)
 //------------------------------------------------------------
 // Fonction : LPropSurf
 //------------------------------------------------------------
-GeomLProp_SLProps& GeomPlate_CurveConstraint::LPropSurf(const double U)
+GeomProp_Surface& GeomPlate_CurveConstraint::LPropSurf(const double U)
+{
+  (void)U;
+  if (myFrontiere.IsNull() || !mySurfProp.has_value())
+    throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
+  return *mySurfProp;
+}
+
+//------------------------------------------------------------
+// Fonction : SurfacePoint
+//------------------------------------------------------------
+void GeomPlate_CurveConstraint::SurfacePoint(const double               U,
+                                             occ::handle<Geom_Surface>& theSurf,
+                                             gp_Pnt2d&                  theUV) const
 {
   if (myFrontiere.IsNull())
     throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
-  gp_Pnt2d P2d = myFrontiere->GetCurve()->Value(U);
-  myLProp.SetParameters(P2d.X(), P2d.Y());
-  return myLProp;
+  theUV = myFrontiere->GetCurve()->Value(U);
+  occ::handle<GeomAdaptor_Surface> aGS =
+    occ::down_cast<GeomAdaptor_Surface>(myFrontiere->GetSurface());
+  if (!aGS.IsNull())
+    theSurf = aGS->Surface();
+  else
+    throw Standard_Failure("GeomPlate_CurveConstraint : Surface must be GeomAdaptor_Surface");
 }

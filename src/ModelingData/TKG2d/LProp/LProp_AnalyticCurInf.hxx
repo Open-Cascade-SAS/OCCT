@@ -19,12 +19,18 @@
 
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
+#include <Standard_Macro.hxx>
 
 #include <GeomAbs_CurveType.hxx>
 class LProp_CurAndInf;
 
+Standard_HEADER_DEPRECATED("LProp_AnalyticCurInf.hxx is deprecated since OCCT 8.0.0. "
+                           "Use Geom2dProp_Curve or GeomProp_Curve instead.")
+
 //! Computes the locals extremas of curvature of a gp curve
 //! Remark : a gp curve has not inflection.
+//! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() or GeomProp_Curve instead.
+Standard_DEPRECATED("LProp_AnalyticCurInf is deprecated, use Geom2dProp_Curve or GeomProp_Curve instead")
 class LProp_AnalyticCurInf
 {
 public:

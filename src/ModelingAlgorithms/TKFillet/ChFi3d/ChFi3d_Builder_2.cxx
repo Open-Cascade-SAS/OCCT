@@ -18,7 +18,7 @@
 #include <Blend_FuncInv.hxx>
 #include <BRepBlend_Line.hxx>
 #include <BRepLib_MakeFace.hxx>
-#include <BRepLProp_SLProps.hxx>
+#include <BRepProp_Surface.hxx>
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
@@ -1095,10 +1095,11 @@ static void ChFi3d_BuildPlane(TopOpeBRepDS_DataStructure&         DStr,
     const occ::handle<Geom2d_Curve> Hc =
       BRep_Tool::CurveOnSurface(SD->Vertex(isfirst, ons).Arc(), F, u, v);
     Hc->Value(SD->Vertex(isfirst, ons).ParameterOnArc()).Coord(u, v);
-    BRepLProp_SLProps theProp(*HS, u, v, 1, 1.e-12);
-    if (theProp.IsNormalDefined())
+    BRepProp_Surface aSurfProp(*HS);
+    const GeomProp::SurfaceNormalResult aNormRes = aSurfProp.Normal(u, v, 1.e-12);
+    if (aNormRes.IsDefined)
     {
-      const occ::handle<Geom_Plane> Pln  = new Geom_Plane(theProp.Value(), theProp.Normal());
+      const occ::handle<Geom_Plane> Pln  = new Geom_Plane(HS->Value(u, v), aNormRes.Direction);
       TopoDS_Face                   NewF = BRepLib_MakeFace(Pln, Precision::Confusion());
       NewF.Orientation(F.Orientation());
       pons.SetCoord(0., 0.);

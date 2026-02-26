@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Tool.hxx>
-#include <BRepLProp_SLProps.hxx>
+#include <BRepProp_Surface.hxx>
 #include <Extrema_ExtPS.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Sphere.hxx>
@@ -98,15 +98,17 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
   bool sphere = FUN_sphere(F);
   bool plane  = FUN_tool_plane(F);
 
-  // Getting the principle directions,the normal and the curvatures
-  BRepLProp_SLProps props(surf, uu, vv, 2, Precision::Confusion());
-  bool              curdef = props.IsCurvatureDefined();
-  if (!curdef)
+  // Getting the principle directions, the normal and the curvatures
+  BRepProp_Surface aSurfProp(surf);
+  const GeomProp::SurfaceCurvatureResult aCurvRes =
+    aSurfProp.Curvatures(uu, vv, Precision::Confusion());
+  if (!aCurvRes.IsDefined)
     throw Standard_ProgramError("TopOpeBRepDS_FaceInterferenceTool::Init");
-  bool umbilic = props.IsUmbilic();
-  if (umbilic)
+  if (aCurvRes.IsUmbilic)
   {
-    Cur1 = Cur2 = props.MeanCurvature();
+    const GeomProp::MeanGaussianResult aMGRes =
+      aSurfProp.MeanGaussian(uu, vv, Precision::Confusion());
+    Cur1 = Cur2 = aMGRes.MeanCurvature;
 
     // xpu030998 : cto901A3
     double toll    = 1.e-8;
@@ -139,9 +141,10 @@ Standard_EXPORT void FUN_ComputeGeomData(const TopoDS_Shape& F,
   }
   else
   {
-    Cur1 = props.MaxCurvature();
-    Cur2 = props.MinCurvature();
-    props.CurvatureDirections(D1, D2);
+    Cur1 = aCurvRes.MaxCurvature;
+    Cur2 = aCurvRes.MinCurvature;
+    D1   = aCurvRes.MaxDirection;
+    D2   = aCurvRes.MinDirection;
     Norm = FUN_tool_nggeomF(uv, TopoDS::Face(F));
   }
 }

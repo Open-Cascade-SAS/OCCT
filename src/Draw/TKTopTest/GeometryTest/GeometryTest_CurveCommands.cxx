@@ -31,7 +31,6 @@
 #include <GeomAPI_IntCS.hxx>
 #include <GeomAPI_IntSS.hxx>
 
-// #include <GeomLProp.hxx>
 #include <GeomProjLib.hxx>
 #include <BSplCLib.hxx>
 
@@ -92,7 +91,6 @@
 #include <AIS_Shape.hxx>
 #include <TopoDS.hxx>
 #include <BRepAdaptor_CompCurve.hxx>
-#include <GeomLProp_CLProps.hxx>
 #include <GCPnts_AbscissaPoint.hxx>
 #include <GCPnts_UniformAbscissa.hxx>
 #include <DBRep.hxx>
@@ -1092,9 +1090,6 @@ static int uniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 
   try
   {
-    GeomLProp_CLProps Prop(ellip, 2, Precision::Intersection());
-    Prop.SetCurve(ellip);
-
     GeomAdaptor_Curve GAC(ellip);
     di << "Type Of curve: " << GAC.GetType() << "\n";
     constexpr double Tol = Precision::Confusion();
@@ -1168,9 +1163,6 @@ static int EllipsUniformAbscissa(Draw_Interpretor& di, int n, const char** a)
 
   try
   {
-    GeomLProp_CLProps Prop(ellip, 2, Precision::Intersection());
-    Prop.SetCurve(ellip);
-
     GeomAdaptor_Curve GAC(ellip);
     di << "Type Of curve: " << GAC.GetType() << "\n";
     constexpr double Tol = Precision::Confusion();

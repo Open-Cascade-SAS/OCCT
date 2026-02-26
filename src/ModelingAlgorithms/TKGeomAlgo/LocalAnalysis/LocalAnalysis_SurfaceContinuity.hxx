@@ -22,10 +22,13 @@
 #include <Standard_Handle.hxx>
 
 #include <GeomAbs_Shape.hxx>
+#include <GeomProp.hxx>
+#include <gp_Dir.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Vec.hxx>
 #include <LocalAnalysis_StatusErrorType.hxx>
 class Geom_Surface;
 class Geom2d_Curve;
-class GeomLProp_SLProps;
 
 //! This class gives tools to check local continuity C0
 //! C1 C2 G1 G2 between two points situated on two surfaces
@@ -156,9 +159,13 @@ public:
                                                   const double Percent = 0.01,
                                                   const double Maxlen  = 10000);
 
-  Standard_EXPORT void ComputeAnalysis(GeomLProp_SLProps&  Surf1,
-                                       GeomLProp_SLProps&  Surf2,
-                                       const GeomAbs_Shape Order);
+  Standard_EXPORT void ComputeAnalysis(const occ::handle<Geom_Surface>& theSurf1,
+                                       double                           theU1,
+                                       double                           theV1,
+                                       const occ::handle<Geom_Surface>& theSurf2,
+                                       double                           theU2,
+                                       double                           theV2,
+                                       const GeomAbs_Shape              Order);
 
   Standard_EXPORT bool IsDone() const;
 
@@ -199,15 +206,29 @@ public:
   Standard_EXPORT bool IsG2() const;
 
 private:
-  Standard_EXPORT void SurfC0(const GeomLProp_SLProps& Surf1, const GeomLProp_SLProps& Surf2);
+  Standard_EXPORT void SurfC0(const gp_Pnt& theP1, const gp_Pnt& theP2);
 
-  Standard_EXPORT void SurfC1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
+  Standard_EXPORT void SurfC1(const gp_Vec& theD1U1,
+                               const gp_Vec& theD1V1,
+                               const gp_Vec& theD1U2,
+                               const gp_Vec& theD1V2);
 
-  Standard_EXPORT void SurfC2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
+  Standard_EXPORT void SurfC2(const gp_Vec& theD1U1,
+                               const gp_Vec& theD1V1,
+                               const gp_Vec& theD2U1,
+                               const gp_Vec& theD2V1,
+                               const gp_Vec& theD1U2,
+                               const gp_Vec& theD1V2,
+                               const gp_Vec& theD2U2,
+                               const gp_Vec& theD2V2);
 
-  Standard_EXPORT void SurfG1(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
+  Standard_EXPORT void SurfG1(const gp_Dir& theNorm1,
+                               bool          theNormDef1,
+                               const gp_Dir& theNorm2,
+                               bool          theNormDef2);
 
-  Standard_EXPORT void SurfG2(GeomLProp_SLProps& Surf1, GeomLProp_SLProps& Surf2);
+  Standard_EXPORT void SurfG2(const GeomProp::SurfaceCurvatureResult& theCurv1,
+                               const GeomProp::SurfaceCurvatureResult& theCurv2);
 
   double                        myContC0;
   double                        myContC1U;

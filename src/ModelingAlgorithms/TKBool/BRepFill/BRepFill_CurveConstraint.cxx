@@ -42,8 +42,6 @@ BRepFill_CurveConstraint ::BRepFill_CurveConstraint(
   myTolDist   = TolDist;
   myTolAng    = TolAng;
   myTolCurv   = TolCurv;
-  GeomLProp_SLProps SLP(2, TolDist);
-  myLProp = SLP;
   myOrder = Tang;
   if ((Tang < -1) || (Tang > 2))
     throw Standard_Failure("BRepFill : The continuity is not G0 G1 or G2");
@@ -66,7 +64,7 @@ BRepFill_CurveConstraint ::BRepFill_CurveConstraint(
     BS1  = occ::down_cast<BRepAdaptor_Surface>(myFrontiere->GetSurface());
     Surf = BRep_Tool::Surface(BS1->Face());
   }
-  myLProp.SetSurface(Surf);
+  mySurfProp.emplace(Surf);
 }
 
 //---------------------------------------------------------

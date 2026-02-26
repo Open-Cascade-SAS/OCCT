@@ -16,7 +16,7 @@
 
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
-#include <BRepLProp.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepSweep_Iterator.hxx>
 #include <BRepSweep_Trsf.hxx>
 #include <GeomAbs_Shape.hxx>
@@ -113,7 +113,7 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
         e.Initialize(E);
         ud   = BRep_Tool::Parameter(d, TopoDS::Edge(aGenS));
         uf   = BRep_Tool::Parameter(f, TopoDS::Edge(aGenS));
-        cont = BRepLProp::Continuity(e, e, ud, uf, tol3d, ta);
+        cont = BRepProp_Curve::Continuity(e, e, ud, uf, tol3d, ta);
         if (cont >= 1)
         {
           TopoDS_Shape s_wnt = Shape(d, aDirS);
@@ -178,7 +178,7 @@ void BRepSweep_Trsf::SetContinuity(const TopoDS_Shape& aGenS, const Sweep_NumSha
               std::max(tl, 2. * BRep_Tool::Tolerance(V)); // IFV 24.05.00 buc60684
             e1.Initialize(E1);
             e2.Initialize(E2);
-            cont = BRepLProp::Continuity(e1, e2, u1, u2, tol3d, ta);
+            cont = BRepProp_Curve::Continuity(e1, e2, u1, u2, tol3d, ta);
             if (cont >= 1)
             {
               TopoDS_Shape s_wnt = Shape(V, aDirS);

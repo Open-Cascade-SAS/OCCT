@@ -33,7 +33,7 @@
 #include <Geom_Surface.hxx>
 #include <GeomAdaptor.hxx>
 #include <GeomAdaptor_Surface.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <GeomPlate_BuildAveragePlane.hxx>
 #include <GeomPlate_CurveConstraint.hxx>
 #include <NCollection_Sequence.hxx>
@@ -789,8 +789,16 @@ void GeomPlate_BuildPlateSurface::EcartContraintesMil(
           else
             P2d = ProjectPoint(Pi);
         }
-        GeomLProp_SLProps Prop(Splate, P2d.Coord(1), P2d.Coord(2), 2, 0.001);
-        CG2.ComputeAnalysis(Prop, myLinCont->Value(c)->LPropSurf(U), GeomAbs_G2);
+        occ::handle<Geom_Surface> aConstraintSurf;
+        gp_Pnt2d                  aConstraintUV;
+        myLinCont->Value(c)->SurfacePoint(U, aConstraintSurf, aConstraintUV);
+        CG2.ComputeAnalysis(Splate,
+                            P2d.Coord(1),
+                            P2d.Coord(2),
+                            aConstraintSurf,
+                            aConstraintUV.X(),
+                            aConstraintUV.Y(),
+                            GeomAbs_G2);
         d->ChangeValue(i)     = CG2.C0Value();
         an->ChangeValue(i)    = CG2.G1Angle();
         courb->ChangeValue(i) = CG2.G2CurvatureGap();
@@ -2548,8 +2556,16 @@ void GeomPlate_BuildPlateSurface::VerifPoints(double& Dist, double& Ang, double&
         occ::handle<Geom_Surface>       Splate(myGeomPlateSurface);
         LocalAnalysis_SurfaceContinuity CG2;
         P2d = PntCont->Pnt2dOnSurf();
-        GeomLProp_SLProps Prop(Splate, P2d.Coord(1), P2d.Coord(2), 2, 0.001);
-        CG2.ComputeAnalysis(Prop, PntCont->LPropSurf(), GeomAbs_G2);
+        occ::handle<Geom_Surface> aConstraintSurf;
+        double                    aConstraintU, aConstraintV;
+        PntCont->SurfacePoint(aConstraintSurf, aConstraintU, aConstraintV);
+        CG2.ComputeAnalysis(Splate,
+                            P2d.Coord(1),
+                            P2d.Coord(2),
+                            aConstraintSurf,
+                            aConstraintU,
+                            aConstraintV,
+                            GeomAbs_G2);
         Dist = CG2.C0Value();
         Ang  = CG2.G1Angle();
         Curv = CG2.G2CurvatureGap();

@@ -50,7 +50,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomLib.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Pln.hxx>
@@ -1963,7 +1963,8 @@ public:
                     const gp_Trsf&                   theSurfaceTrsf,
                     const occ::handle<Geom2d_Curve>& theCurve2D,
                     const bool                       theReversed)
-      : mySurfaceProps(theSurface, 2, Precision::Confusion()),
+      : mySurfaceProp(theSurface),
+        mySurface(theSurface),
         mySurfaceTrsf(theSurfaceTrsf),
         myCurve2d(theCurve2D),
         myIsReversed(theReversed)
@@ -1975,11 +1976,17 @@ public:
   {
     gp_Pnt2d aUV;
     myCurve2d->D1(theParamOnCurve, aUV, myCurveTangent);
-    mySurfaceProps.SetParameters(aUV.X(), aUV.Y());
+    myU = aUV.X();
+    myV = aUV.Y();
   }
 
   // Returns point just calculated
-  gp_Pnt Value() { return mySurfaceProps.Value().Transformed(mySurfaceTrsf); }
+  gp_Pnt Value()
+  {
+    gp_Pnt aPnt;
+    mySurface->D0(myU, myV, aPnt);
+    return aPnt.Transformed(mySurfaceTrsf);
+  }
 
   // Calculate a derivative orthogonal to curve's tangent vector
   gp_Vec Derivative()
@@ -1994,13 +2001,20 @@ public:
     if (myIsReversed)
       anOrtho.Reverse();
 
-    aDeriv.SetLinearForm(anOrtho.X(), mySurfaceProps.D1U(), anOrtho.Y(), mySurfaceProps.D1V());
+    gp_Pnt aPnt;
+    gp_Vec aD1U, aD1V;
+    mySurface->D1(myU, myV, aPnt, aD1U, aD1V);
+    aDeriv.SetLinearForm(anOrtho.X(), aD1U, anOrtho.Y(), aD1V);
     return aDeriv.Transformed(mySurfaceTrsf);
   }
 
   gp_Dir Normal()
   {
-    gp_Dir aNormal = mySurfaceProps.Normal();
+    const GeomProp::SurfaceNormalResult aResult =
+      mySurfaceProp.Normal(myU, myV, Precision::Confusion());
+    if (!aResult.IsDefined)
+      throw Standard_Failure("BRepLib: surface normal is not defined");
+    gp_Dir aNormal = aResult.Direction;
     return aNormal.Transformed(mySurfaceTrsf);
   }
 
@@ -2011,9 +2025,14 @@ public:
                  gp_Dir& thePrincipalDir2,
                  double& theCurvature2)
   {
-    mySurfaceProps.CurvatureDirections(thePrincipalDir1, thePrincipalDir2);
-    theCurvature1 = mySurfaceProps.MaxCurvature();
-    theCurvature2 = mySurfaceProps.MinCurvature();
+    const GeomProp::SurfaceCurvatureResult aResult =
+      mySurfaceProp.Curvatures(myU, myV, Precision::Confusion());
+    if (!aResult.IsDefined)
+      throw Standard_Failure("BRepLib: surface curvature is not defined");
+    thePrincipalDir1 = aResult.MaxDirection;
+    thePrincipalDir2 = aResult.MinDirection;
+    theCurvature1    = aResult.MaxCurvature;
+    theCurvature2    = aResult.MinCurvature;
     if (myIsReversed)
     {
       theCurvature1 = -theCurvature1;
@@ -2030,10 +2049,13 @@ public:
   }
 
 private:
-  GeomLProp_SLProps         mySurfaceProps; // properties calculator
+  GeomProp_Surface          mySurfaceProp; // properties calculator
+  occ::handle<Geom_Surface> mySurface;     // surface for direct derivative evaluation
   gp_Trsf                   mySurfaceTrsf;
   occ::handle<Geom2d_Curve> myCurve2d;
   bool                      myIsReversed; // the face based on the surface is reversed
+  double                    myU = 0.0;    // current U parameter
+  double                    myV = 0.0;    // current V parameter
 
   // tangent vector to Pcurve in UV
   gp_Vec2d myCurveTangent;
@@ -2433,13 +2455,14 @@ bool BRepLib::EnsureNormalConsistency(const TopoDS_Shape& theShape,
     }
 
     aPT->AddNormals();
-    GeomLProp_SLProps aSLP(aSurf, 2, Precision::Confusion());
+    GeomProp_Surface aSLP(aSurf);
     for (int i = 1; i <= aPT->NbNodes(); i++)
     {
-      const gp_Pnt2d aP2d = aPT->UVNode(i);
-      aSLP.SetParameters(aP2d.X(), aP2d.Y());
+      const gp_Pnt2d                       aP2d    = aPT->UVNode(i);
+      const GeomProp::SurfaceNormalResult aNormRes =
+        aSLP.Normal(aP2d.X(), aP2d.Y(), Precision::Confusion());
 
-      if (!aSLP.IsNormalDefined())
+      if (!aNormRes.IsDefined)
       {
 #ifdef OCCT_DEBUG
         std::cout << "BRepLib::EnsureNormalConsistency(): Cannot find normal!" << std::endl;
@@ -2448,7 +2471,7 @@ bool BRepLib::EnsureNormalConsistency(const TopoDS_Shape& theShape,
       }
       else
       {
-        gp_Dir aNorm = aSLP.Normal();
+        gp_Dir aNorm = aNormRes.Direction;
         if (aFace.Orientation() == TopAbs_REVERSED)
         {
           aNorm.Reverse();

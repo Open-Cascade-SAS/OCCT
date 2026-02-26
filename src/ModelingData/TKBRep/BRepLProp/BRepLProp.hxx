@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <GeomAbs_Shape.hxx>
 #include <Standard_Real.hxx>
@@ -28,6 +29,11 @@ class BRepAdaptor_Curve;
 //! These global functions compute the degree of
 //! continuity of a curve built by concatenation of two
 //! edges at their junction point.
+Standard_HEADER_DEPRECATED("BRepLProp.hxx is deprecated since OCCT 8.0.0. "
+                           "Use BRepProp_Curve::Continuity() instead.")
+
+//! @deprecated Use BRepProp_Curve::Continuity() instead.
+Standard_DEPRECATED("BRepLProp is deprecated, use BRepProp_Curve::Continuity() instead")
 class BRepLProp
 {
 public:

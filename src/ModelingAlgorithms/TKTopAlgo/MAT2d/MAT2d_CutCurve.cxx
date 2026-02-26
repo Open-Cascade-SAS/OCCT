@@ -16,12 +16,14 @@
 
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-#include <Geom2dLProp_CurAndInf2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <gp_Pnt2d.hxx>
 #include <MAT2d_CutCurve.hxx>
 #include <Precision.hxx>
 #include <Standard_OutOfRange.hxx>
 #include <NCollection_Sequence.hxx>
+
+#include <algorithm>
 
 //=================================================================================================
 
@@ -40,25 +42,48 @@ void MAT2d_CutCurve::Perform(const occ::handle<Geom2d_Curve>& C)
 {
   theCurves.Clear();
 
-  Geom2dLProp_CurAndInf2d          Sommets;
+  Geom2dProp_Curve                 aCurveProp(C);
   occ::handle<Geom2d_TrimmedCurve> TrimC;
   double                           UF, UL, UC;
   gp_Pnt2d                         PF, PL, PC;
   constexpr double                 PTol  = Precision::PConfusion() * 10;
   constexpr double                 Tol   = Precision::Confusion() * 10;
   bool                             YaCut = false;
-  Sommets.Perform(C);
 
-  if (Sommets.IsDone() && !Sommets.IsEmpty())
+  // Collect both curvature extrema and inflection points, then sort by parameter.
+  Geom2dProp::CurveAnalysis aExtrema    = aCurveProp.FindCurvatureExtrema();
+  Geom2dProp::CurveAnalysis aInflections = aCurveProp.FindInflections();
+
+  NCollection_DynamicArray<Geom2dProp::CurveSpecialPoint> aAllPoints;
+  if (aExtrema.IsDone)
+  {
+    for (const Geom2dProp::CurveSpecialPoint& aPt : aExtrema.Points)
+    {
+      aAllPoints.Append(aPt);
+    }
+  }
+  if (aInflections.IsDone)
+  {
+    for (const Geom2dProp::CurveSpecialPoint& aPt : aInflections.Points)
+    {
+      aAllPoints.Append(aPt);
+    }
+  }
+  std::sort(aAllPoints.begin(),
+            aAllPoints.end(),
+            [](const Geom2dProp::CurveSpecialPoint& theA,
+               const Geom2dProp::CurveSpecialPoint& theB) { return theA.Parameter < theB.Parameter; });
+
+  if (!aAllPoints.IsEmpty())
   {
     UF = C->FirstParameter();
     UL = C->LastParameter();
     PF = C->Value(UF);
     PL = C->Value(UL);
 
-    for (int i = 1; i <= Sommets.NbPoints(); i++)
+    for (const Geom2dProp::CurveSpecialPoint& aSP : aAllPoints)
     {
-      UC = Sommets.Parameter(i);
+      UC = aSP.Parameter;
 
       PC = C->Value(UC);
       if (UC - UF > PTol && PC.Distance(PF) > Tol)

@@ -20,12 +20,18 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <Standard_Integer.hxx>
 class Geom_Surface;
 class gp_Pnt;
 class gp_Vec;
 
+Standard_HEADER_DEPRECATED("GeomLProp_SurfaceTool.hxx is deprecated since OCCT 8.0.0. "
+                           "Use GeomProp_Surface instead.")
+
+//! @deprecated Use GeomProp_Surface instead.
+Standard_DEPRECATED("GeomLProp_SurfaceTool is deprecated, use GeomProp_Surface instead")
 class GeomLProp_SurfaceTool
 {
 public:

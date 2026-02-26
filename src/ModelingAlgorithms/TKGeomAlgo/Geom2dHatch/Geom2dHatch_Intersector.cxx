@@ -17,7 +17,7 @@
 #include <ElCLib.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dHatch_Intersector.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <Precision.hxx>
@@ -73,16 +73,23 @@ void Geom2dHatch_Intersector::LocalGeometry(const Geom2dAdaptor_Curve& E,
                                             gp_Dir2d&                  Norm,
                                             double&                    C) const
 {
-  // double f,l;
-  Geom2dLProp_CLProps2d Prop(E.Curve(), U, 2, Precision::PConfusion());
+  Geom2dProp_Curve aCurveProp(E.Curve());
 
-  if (!Prop.IsTangentDefined())
+  Geom2dProp::TangentResult aTangent = aCurveProp.Tangent(U, Precision::PConfusion());
+  if (!aTangent.IsDefined)
     return;
 
-  Prop.Tangent(Tang);
-  C = Prop.Curvature();
+  Tang = aTangent.Direction;
+  Geom2dProp::CurvatureResult aCurvature = aCurveProp.Curvature(U, Precision::PConfusion());
+  C = aCurvature.IsDefined ? aCurvature.Value : 0.0;
   if (C > Precision::PConfusion() && C < RealLast())
-    Prop.Normal(Norm);
+  {
+    Geom2dProp::NormalResult aNormal = aCurveProp.Normal(U, Precision::PConfusion());
+    if (aNormal.IsDefined)
+      Norm = aNormal.Direction;
+    else
+      Norm.SetCoord(Tang.Y(), -Tang.X());
+  }
   else
     Norm.SetCoord(Tang.Y(), -Tang.X());
 }

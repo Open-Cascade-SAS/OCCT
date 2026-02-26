@@ -49,7 +49,7 @@
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_OffsetCurve.hxx>
@@ -2531,27 +2531,30 @@ static void CheckBadEdges(const TopoDS_Face&              Spine,
           gp_Pnt2d P, Pc;
           gp_Dir2d N;
 
-          Geom2dLProp_CLProps2d aCLProps(G2d, 2, eps);
+          Geom2dProp_Curve aCurveProp(G2d);
 
-          aCLProps.SetParameter(f);
-          if (!aCLProps.IsTangentDefined())
+          const Geom2dProp::TangentResult aTanResF = aCurveProp.Tangent(f, eps);
+          if (!aTanResF.IsDefined)
           {
             BadEdges.Append(SE);
             aMap.Add(SE);
             continue;
           }
 
-          P          = aCLProps.Value();
-          double Crv = aCLProps.Curvature();
+          P          = G2d->Value(f);
+          const Geom2dProp::CurvatureResult aCurvResF = aCurveProp.Curvature(f, eps);
+          double Crv = aCurvResF.Value;
 
           if (Crv >= eps)
           {
-            aCLProps.Tangent(N);
+            N = aTanResF.Direction;
             double x = N.Y(), y = -N.X();
             N.SetCoord(x, y);
             if (reverse)
               N.Reverse();
-            aCLProps.CentreOfCurvature(Pc);
+            const Geom2dProp::CentreResult aCentResF = aCurveProp.CentreOfCurvature(f, eps);
+            if (aCentResF.IsDefined)
+              Pc = aCentResF.Centre;
             gp_Vec2d Dir(P, Pc);
             if (N.Dot(Dir) > 0.)
             {
@@ -2564,25 +2567,28 @@ static void CheckBadEdges(const TopoDS_Face&              Spine,
             }
           }
 
-          aCLProps.SetParameter(l);
-          if (!aCLProps.IsTangentDefined())
+          const Geom2dProp::TangentResult aTanResL = aCurveProp.Tangent(l, eps);
+          if (!aTanResL.IsDefined)
           {
             BadEdges.Append(SE);
             aMap.Add(SE);
             continue;
           }
 
-          P   = aCLProps.Value();
-          Crv = aCLProps.Curvature();
+          P   = G2d->Value(l);
+          const Geom2dProp::CurvatureResult aCurvResL = aCurveProp.Curvature(l, eps);
+          Crv = aCurvResL.Value;
 
           if (Crv >= eps)
           {
-            aCLProps.Tangent(N);
+            N = aTanResL.Direction;
             double x = N.Y(), y = -N.X();
             N.SetCoord(x, y);
             if (reverse)
               N.Reverse();
-            aCLProps.CentreOfCurvature(Pc);
+            const Geom2dProp::CentreResult aCentResL = aCurveProp.CentreOfCurvature(l, eps);
+            if (aCentResL.IsDefined)
+              Pc = aCentResL.Centre;
             gp_Vec2d Dir(P, Pc);
             if (N.Dot(Dir) > 0.)
             {

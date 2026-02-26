@@ -27,7 +27,7 @@
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dInt_GInter.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <IntRes2d_Domain.hxx>
@@ -450,19 +450,27 @@ void BRepClass_Intersector::LocalGeometry(const BRepClass_Edge& E,
 {
   double                    fpar, lpar;
   occ::handle<Geom2d_Curve> aPCurve = BRep_Tool::CurveOnSurface(E.Edge(), E.Face(), fpar, lpar);
-  Geom2dLProp_CLProps2d     Prop(aPCurve, U, 2, Precision::PConfusion());
+  Geom2dProp_Curve aCurveProp(aPCurve);
 
   C = 0.;
-  if (Prop.IsTangentDefined())
+  const Geom2dProp::TangentResult aTanRes = aCurveProp.Tangent(U, Precision::PConfusion());
+  if (aTanRes.IsDefined)
   {
-    Prop.Tangent(Tang);
-    C = Prop.Curvature();
+    Tang = aTanRes.Direction;
+    const Geom2dProp::CurvatureResult aCurvRes = aCurveProp.Curvature(U, Precision::PConfusion());
+    C = aCurvRes.Value;
   }
   else
     GetTangentAsChord(aPCurve, Tang, U, fpar, lpar);
 
   if (C > Precision::PConfusion() && !Precision::IsInfinite(C))
-    Prop.Normal(Norm);
+  {
+    const Geom2dProp::NormalResult aNormRes = aCurveProp.Normal(U, Precision::PConfusion());
+    if (aNormRes.IsDefined)
+      Norm = aNormRes.Direction;
+    else
+      Norm.SetCoord(Tang.Y(), -Tang.X());
+  }
   else
     Norm.SetCoord(Tang.Y(), -Tang.X());
 }

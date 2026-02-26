@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <Standard_Integer.hxx>
 #include <gp_Pnt.hxx>
@@ -36,6 +37,11 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Dir;
 
+Standard_HEADER_DEPRECATED("GeomLProp_SLProps.hxx is deprecated since OCCT 8.0.0. "
+                           "Use GeomProp_Surface instead.")
+
+//! @deprecated Use GeomProp_Surface instead.
+Standard_DEPRECATED("GeomLProp_SLProps is deprecated, use GeomProp_Surface instead")
 class GeomLProp_SLProps
 {
 public:

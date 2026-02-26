@@ -39,7 +39,7 @@
 #include <BRepLib_MakeFace.hxx>
 #include <BRepLib_MakeVertex.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <BRepLProp.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepMAT2d_BisectingLocus.hxx>
 #include <BRepMAT2d_Explorer.hxx>
 #include <BRepMAT2d_LinkTopoBilo.hxx>
@@ -2383,7 +2383,7 @@ void BRepFill_Evolved::ContinuityOnOffsetEdge(const NCollection_List<TopoDS_Shap
       double            U2 = BRep_Tool::Parameter(V, PrecE);
       BRepAdaptor_Curve Curve1(CurE);
       BRepAdaptor_Curve Curve2(PrecE);
-      GeomAbs_Shape     Continuity = BRepLProp::Continuity(Curve1, Curve2, U1, U2);
+      GeomAbs_Shape     Continuity = BRepProp_Curve::Continuity(Curve1, Curve2, U1, U2);
 
       if (Continuity >= 1)
       {
@@ -2417,7 +2417,7 @@ void BRepFill_Evolved::ContinuityOnOffsetEdge(const NCollection_List<TopoDS_Shap
     double            U2 = BRep_Tool::Parameter(VF, FirstE);
     BRepAdaptor_Curve Curve1(CurE);
     BRepAdaptor_Curve Curve2(FirstE);
-    GeomAbs_Shape     Continuity = BRepLProp::Continuity(Curve1, Curve2, U1, U2);
+    GeomAbs_Shape     Continuity = BRepProp_Curve::Continuity(Curve1, Curve2, U1, U2);
 
     if (Continuity >= 1)
     {

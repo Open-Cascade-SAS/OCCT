@@ -18,7 +18,7 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepBuilderAPI_Transform.hxx>
 #include <BRepFill_ShapeLaw.hxx>
-#include <BRepLProp.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
@@ -447,7 +447,7 @@ GeomAbs_Shape BRepFill_ShapeLaw::Continuity(const int Index, const double TolAng
   BRepAdaptor_Curve Curve2(Edge2);
   double            Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
   GeomAbs_Shape     cont;
-  cont = BRepLProp::Continuity(Curve1, Curve2, U1, U2, Eps, TolAngular);
+  cont = BRepProp_Curve::Continuity(Curve1, Curve2, U1, U2, Eps, TolAngular);
 
   return cont;
 }

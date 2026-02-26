@@ -16,11 +16,12 @@
 
 #include <RWMesh_ShapeIterator.hxx>
 
-#include <BRepLProp_SLProps.hxx>
+#include <BRepProp_Surface.hxx>
 #include <Poly_Triangulation.hxx>
 #include <TopoDS_Face.hxx>
 
 #include <algorithm>
+#include <optional>
 
 class TDF_Label;
 
@@ -167,10 +168,10 @@ private:
 
 private:
   // clang-format off
-  TopoDS_Face                myFace;        //!< current face
-  occ::handle<Poly_Triangulation> myPolyTriang;  //!< triangulation of current face
-  mutable BRepLProp_SLProps  mySLTool;      //!< auxiliary tool for fetching normals from surface
-  BRepAdaptor_Surface        myFaceAdaptor; //!< surface adaptor for fetching normals from surface
+  TopoDS_Face                          myFace;        //!< current face
+  occ::handle<Poly_Triangulation>      myPolyTriang;  //!< triangulation of current face
+  mutable std::optional<BRepProp_Surface> mySLTool;   //!< auxiliary tool for fetching normals from surface
+  BRepAdaptor_Surface                  myFaceAdaptor; //!< surface adaptor for fetching normals from surface
   bool           myHasNormals;  //!< flag indicating that current face has normals
   bool           myIsMirrored;  //!< flag indicating that face triangles should be mirrored
   // clang-format on

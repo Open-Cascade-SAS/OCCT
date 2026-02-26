@@ -19,12 +19,12 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBndLib.hxx>
-#include <BRepLProp_CLProps.hxx>
+#include <BRepProp_Curve.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAPI_ProjectPointOnCurve.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Cone.hxx>
 #include <gp_Cylinder.hxx>
@@ -852,11 +852,12 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
     return std::abs(1 - dot) >= tola;
   }
 
-  BRepLProp_CLProps clprops(BAC, par, 2, Precision::Confusion());
-  bool              tgdef = clprops.IsTangentDefined();
-  if (!tgdef)
+  BRepProp_Curve aCurveProp(BAC);
+  const GeomProp::TangentResult aTangRes = aCurveProp.Tangent(par, Precision::Confusion());
+  if (!aTangRes.IsDefined)
     return false;
-  curv = std::abs(clprops.Curvature());
+  const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(par, Precision::Confusion());
+  curv = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
 
   double tol      = Precision::Confusion() * 1.e+2; // NYITOLXPU
   bool   nullcurv = (curv < tol);
@@ -866,10 +867,9 @@ bool TopOpeBRepTool_TOOL::CurvE(const TopoDS_Edge& E,
     return true;
   }
 
-  gp_Dir N;
-  clprops.Normal(N);
-  gp_Dir T;
-  clprops.Tangent(T);
+  const GeomProp::NormalResult aNormRes = aCurveProp.Normal(par, Precision::Confusion());
+  gp_Dir N = aNormRes.IsDefined ? aNormRes.Direction : gp_Dir();
+  gp_Dir T = aTangRes.Direction;
   gp_Dir axis  = N ^ T;
   double dot   = std::abs(axis.Dot(tg0));
   nullcurv     = dot < tola;
@@ -971,14 +971,15 @@ static bool FUN_analyticcS(const gp_Pnt2d&                  uv0,
     }
     if (isMaxAcurv)
     {
-      GeomLProp_SLProps slprops(S, uv0.X(), uv0.Y(), 2, Precision::Confusion());
-      bool              curdef = slprops.IsCurvatureDefined();
-      if (curdef)
+      GeomProp_Surface aSurfProp(S);
+      const GeomProp::SurfaceCurvatureResult aSCurvRes =
+        aSurfProp.Curvatures(uv0.X(), uv0.Y(), Precision::Confusion());
+      if (aSCurvRes.IsDefined)
       {
-        double minAcurv = std::abs(slprops.MinCurvature());
-        double maxAcurv = std::abs(slprops.MaxCurvature());
-        bool   isAmax   = (maxAcurv > minAcurv);
-        curv            = isAmax ? maxAcurv : minAcurv;
+        const double aMinAcurv = std::abs(aSCurvRes.MinCurvature);
+        const double aMaxAcurv = std::abs(aSCurvRes.MaxCurvature);
+        const bool   isAmax    = (aMaxAcurv > aMinAcurv);
+        curv                   = isAmax ? aMaxAcurv : aMinAcurv;
       }
       curvdone = true;
     }
@@ -1016,16 +1017,18 @@ bool TopOpeBRepTool_TOOL::CurvF(const TopoDS_Face& F,
   if (analyticcontour)
     return true;
 
-  GeomLProp_SLProps slprops(S, uv.X(), uv.Y(), 2, Precision::Confusion());
-  bool              curdef = slprops.IsCurvatureDefined();
+  GeomProp_Surface aSurfProp(S);
+  const GeomProp::SurfaceCurvatureResult aCurvRes =
+    aSurfProp.Curvatures(uv.X(), uv.Y(), Precision::Confusion());
+  bool curdef = aCurvRes.IsDefined;
   if (curdef)
   {
     gp_Dir npl = tg0;
 
-    gp_Dir MaxD, MinD;
-    slprops.CurvatureDirections(MaxD, MinD);
-    double mincurv = slprops.MinCurvature();
-    double maxcurv = slprops.MaxCurvature();
+    const gp_Dir& MaxD    = aCurvRes.MaxDirection;
+    const gp_Dir& MinD    = aCurvRes.MinDirection;
+    const double  mincurv = aCurvRes.MinCurvature;
+    const double  maxcurv = aCurvRes.MaxCurvature;
 
     gp_Vec Dmax = ngS ^ MaxD, Dmin = ngS ^ MinD; // xpu180898 : cto015G2
     double dotmax   = Dmax.Dot(npl);             // MaxD.Dot(npl); -xpu180898

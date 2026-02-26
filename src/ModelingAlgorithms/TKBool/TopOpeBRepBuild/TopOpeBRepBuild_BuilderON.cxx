@@ -15,8 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <BRep_Tool.hxx>
-#include <BRepLProp_SLProps.hxx>
-#include <BRepLProp_SurfaceTool.hxx>
+#include <BRepProp_Surface.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <Precision.hxx>
 #include <TopoDS.hxx>
@@ -478,26 +477,26 @@ static bool ComputeFaceCrvtInSec(const TopoDS_Face& aFace,
                                  double&            aCrvt)
 {
   BRepAdaptor_Surface aSurf(aFace);
-  int                 cn = BRepLProp_SurfaceTool::Continuity(aSurf);
-  if (cn < 2)
+  const GeomAbs_Shape aCn = std::min(aSurf.UContinuity(), aSurf.VContinuity());
+  if (aCn < GeomAbs_C2)
     return false;
-  BRepLProp_SLProps aProp(aSurf, aP2d.X(), aP2d.Y(), 2, Precision::Confusion());
-  if (!aProp.IsCurvatureDefined())
+  BRepProp_Surface aSurfProp(aSurf);
+  const GeomProp::SurfaceCurvatureResult aCurvRes =
+    aSurfProp.Curvatures(aP2d.X(), aP2d.Y(), Precision::Confusion());
+  if (!aCurvRes.IsDefined)
     return false;
 
-  if (aProp.IsUmbilic())
+  if (aCurvRes.IsUmbilic)
   {
-    aCrvt = aProp.MaxCurvature();
+    aCrvt = aCurvRes.MaxCurvature;
     return true;
   }
 
-  double maxCrv = aProp.MaxCurvature();
-  double minCrv = aProp.MinCurvature();
-  gp_Dir maxDir, minDir;
-  aProp.CurvatureDirections(maxDir, minDir);
-  double cosMax = aSecDir * maxDir;
-  double cosMin = aSecDir * minDir;
-  aCrvt         = maxCrv * cosMax + minCrv * cosMin;
+  const double aMaxCrv = aCurvRes.MaxCurvature;
+  const double aMinCrv = aCurvRes.MinCurvature;
+  const double aCosMax = aSecDir * aCurvRes.MaxDirection;
+  const double aCosMin = aSecDir * aCurvRes.MinDirection;
+  aCrvt = aMaxCrv * aCosMax + aMinCrv * aCosMin;
   return true;
 }
 

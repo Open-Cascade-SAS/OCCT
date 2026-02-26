@@ -45,7 +45,7 @@
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
 #include <Extrema_ExtElC.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <gp_XYZ.hxx>
 #include <NCollection_HArray1.hxx>
 #include <math_Vector.hxx>
@@ -386,36 +386,38 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
     aPoints = new NCollection_HArray1<gp_XYZ>(1, theNbU * theNbU);
   }
   //
-  GeomLProp_SLProps aProps(theSurf, 2, Precision::Confusion());
-  double            anAvMaxCurv = 0., anAvMinCurv = 0., anAvR = 0, aSign = 1.;
-  gp_XYZ            anAvDir;
-  gp_Dir            aMinD, aMaxD;
-  int               i, j, n = 0;
-  double            anU, aV;
+  GeomProp_Surface aSurfProp(theSurf);
+  double           anAvMaxCurv = 0., anAvMinCurv = 0., anAvR = 0, aSign = 1.;
+  gp_XYZ           anAvDir;
+  gp_Dir           aMinD, aMaxD;
+  int              i, j, n = 0;
+  double           anU, aV;
   for (i = 1, anU = theU1 + du / 2.; i <= theNbU; ++i, anU += du)
   {
     for (j = 1, aV = theV1 + dv / 2.; j <= theNbV; ++j, aV += dv)
     {
-      aProps.SetParameters(anU, aV);
-      if (!aProps.IsCurvatureDefined())
+      const GeomProp::SurfaceCurvatureResult aCurvRes =
+        aSurfProp.Curvatures(anU, aV, Precision::Confusion());
+      if (!aCurvRes.IsDefined)
       {
         return aNewSurf;
       }
-      if (aProps.IsUmbilic())
+      if (aCurvRes.IsUmbilic)
       {
         return aNewSurf;
       }
       ++n;
-      double aMinCurv   = aProps.MinCurvature();
-      double aMaxCurv   = aProps.MaxCurvature();
-      double aGaussCurv = std::abs(aProps.GaussianCurvature());
+      double aMinCurv   = aCurvRes.MinCurvature;
+      double aMaxCurv   = aCurvRes.MaxCurvature;
+      double aGaussCurv = std::abs(aMinCurv * aMaxCurv);
       double aK1        = std::sqrt(aGaussCurv);
       if (aK1 > theToler)
       {
         return aNewSurf;
       }
       gp_XYZ aD;
-      aProps.CurvatureDirections(aMaxD, aMinD);
+      aMaxD    = aCurvRes.MaxDirection;
+      aMinD    = aCurvRes.MinDirection;
       aMinCurv = std::abs(aMinCurv);
       aMaxCurv = std::abs(aMaxCurv);
       if (aMinCurv > aMaxCurv)
@@ -449,7 +451,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
       anAvMinCurv += aMinCurv;
       if (theLeastSquare)
       {
-        aPoints->SetValue(n, aProps.Value().XYZ());
+        aPoints->SetValue(n, theSurf->Value(anU, aV).XYZ());
       }
     }
   }
@@ -474,13 +476,16 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
   {
     return aNewSurf;
   }
-  aProps.SetParameters(theU1, theV1);
-  if (!aProps.IsCurvatureDefined())
+  const GeomProp::SurfaceCurvatureResult aCurvRes0 =
+    aSurfProp.Curvatures(theU1, theV1, Precision::Confusion());
+  if (!aCurvRes0.IsDefined)
   {
     return aNewSurf;
   }
-  gp_Dir aNorm = aProps.Normal();
-  gp_Pnt aLoc  = aProps.Value();
+  const GeomProp::SurfaceNormalResult aNormRes =
+    aSurfProp.Normal(theU1, theV1, Precision::Confusion());
+  gp_Dir aNorm = aNormRes.Direction;
+  gp_Pnt aLoc  = theSurf->Value(theU1, theV1);
   gp_Dir anAxD(anAvDir);
   gp_Vec aT(aSign * anAvR * aNorm.XYZ());
   aLoc.Translate(aT);

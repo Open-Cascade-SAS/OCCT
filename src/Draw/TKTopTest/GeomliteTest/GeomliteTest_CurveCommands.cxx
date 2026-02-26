@@ -53,10 +53,8 @@
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 
-#include <GeomLProp.hxx>
-#include <GeomLProp_CLProps.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
-#include <Geom2dLProp_CurAndInf2d.hxx>
+#include <Geom2dProp_Curve.hxx>
+#include <GeomProp_Curve.hxx>
 
 #include <gp_Pnt.hxx>
 #include <NCollection_Array1.hxx>
@@ -1217,42 +1215,40 @@ static int minmaxcurandinf(Draw_Interpretor& di, int argc, const char** argv)
   if (C1.IsNull())
     return 1;
 
-  Draw_Color              Couleur;
-  Geom2dLProp_CurAndInf2d Sommets;
+  Draw_Color     Couleur;
+  Geom2dProp_Curve aProp(C1);
 
-  Sommets.PerformCurExt(C1);
-  if (Sommets.IsDone() && !Sommets.IsEmpty())
+  const Geom2dProp::CurveAnalysis anExtrema = aProp.FindCurvatureExtrema();
+  if (anExtrema.IsDone && !anExtrema.Points.IsEmpty())
   {
-    for (int i = 1; i <= Sommets.NbPoints(); i++)
+    for (const auto& aPt : anExtrema.Points)
     {
       Couleur = Draw_vert;
-      if (Sommets.Type(i) == LProp_MinCur)
+      if (aPt.Type == Geom2dProp::CIType::MinCurvature)
       {
         Couleur = Draw_orange;
-        di << "  Maximum of curvature at U =" << Sommets.Parameter(i) << "\n";
+        di << "  Maximum of curvature at U =" << aPt.Parameter << "\n";
       }
       else
       {
-        di << "  Minimum of curvature at U =" << Sommets.Parameter(i) << "\n";
+        di << "  Minimum of curvature at U =" << aPt.Parameter << "\n";
       }
-      gp_Pnt2d                   P  = C1->Value(Sommets.Parameter(i));
+      gp_Pnt2d                   P  = C1->Value(aPt.Parameter);
       occ::handle<Draw_Marker2D> dr = new Draw_Marker2D(P, Draw_Plus, Couleur);
       dout << dr;
     }
     dout.Flush();
   }
 
-  Geom2dLProp_CurAndInf2d Sommets2;
-  Sommets2.PerformInf(C1);
-
-  if (Sommets2.IsDone() && !Sommets2.IsEmpty())
+  const Geom2dProp::CurveAnalysis anInflections = aProp.FindInflections();
+  if (anInflections.IsDone && !anInflections.Points.IsEmpty())
   {
-    for (int i = 1; i <= Sommets2.NbPoints(); i++)
+    for (const auto& aPt : anInflections.Points)
     {
-      gp_Pnt2d                   P  = C1->Value(Sommets2.Parameter(i));
+      gp_Pnt2d                   P  = C1->Value(aPt.Parameter);
       occ::handle<Draw_Marker2D> dr = new Draw_Marker2D(P, Draw_Plus, Draw_bleu);
       dout << dr;
-      di << "  Inflexion at U =" << Sommets2.Parameter(i) << "\n";
+      di << "  Inflexion at U =" << aPt.Parameter << "\n";
     }
     dout.Flush();
   }
@@ -1379,31 +1375,35 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
     C3d = DrawTrSurf::GetCurve(argv[1]);
     if (C3d.IsNull())
       return 1;
-    GeomLProp_CLProps Prop(C3d, 2, Precision::Confusion());
-    Prop.SetParameter(U);
-    occ::handle<Draw_Marker3D> drp = new Draw_Marker3D(Prop.Value(), Draw_Plus, Draw_vert);
+    GeomProp_Curve aProp(C3d);
+    gp_Pnt aPnt;
+    C3d->D0(U, aPnt);
+    occ::handle<Draw_Marker3D> drp = new Draw_Marker3D(aPnt, Draw_Plus, Draw_vert);
     dout << drp;
-    if (Prop.IsTangentDefined())
+    const GeomProp::TangentResult aTangRes = aProp.Tangent(U, Precision::Confusion());
+    if (aTangRes.IsDefined)
     {
-      double K = Prop.Curvature();
+      const GeomProp::CurvatureResult aCurvRes = aProp.Curvature(U, Precision::Confusion());
+      const double K = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
       di << " Curvature : " << K << "\n";
 
       if (std::abs(K) > Precision::Confusion())
       {
         double R = 1 / std::abs(K);
-        gp_Pnt Center;
-        Prop.CentreOfCurvature(Center);
-        gp_Dir Tang;
-        gp_Dir Nor;
-        Prop.Tangent(Tang);
-        Prop.Normal(Nor);
-        gp_Dir                        AxC = Nor ^ Tang;
-        gp_Ax2                        Axe(Center, AxC, Nor);
-        occ::handle<Geom_Circle>      Cir3d = new Geom_Circle(Axe, R);
-        occ::handle<DrawTrSurf_Curve> dr;
-        dr = new DrawTrSurf_Curve(Cir3d);
-        dout << dr;
-        dout.Flush();
+        const GeomProp::CentreResult aCentRes = aProp.CentreOfCurvature(U, Precision::Confusion());
+        const GeomProp::NormalResult aNormRes = aProp.Normal(U, Precision::Confusion());
+        if (aCentRes.IsDefined && aNormRes.IsDefined)
+        {
+          gp_Dir Tang = aTangRes.Direction;
+          gp_Dir Nor  = aNormRes.Direction;
+          gp_Dir                        AxC = Nor ^ Tang;
+          gp_Ax2                        Axe(aCentRes.Centre, AxC, Nor);
+          occ::handle<Geom_Circle>      Cir3d = new Geom_Circle(Axe, R);
+          occ::handle<DrawTrSurf_Curve> dr;
+          dr = new DrawTrSurf_Curve(Cir3d);
+          dout << dr;
+          dout.Flush();
+        }
       }
     }
     else
@@ -1411,27 +1411,32 @@ static int localprop(Draw_Interpretor& di, int argc, const char** argv)
   }
   else
   {
-    Geom2dLProp_CLProps2d Prop(C2d, 2, Precision::Confusion());
-    Prop.SetParameter(U);
-    occ::handle<Draw_Marker2D> drp = new Draw_Marker2D(Prop.Value(), Draw_Plus, Draw_vert);
+    Geom2dProp_Curve aProp2d(C2d);
+    gp_Pnt2d aPnt2d;
+    C2d->D0(U, aPnt2d);
+    occ::handle<Draw_Marker2D> drp = new Draw_Marker2D(aPnt2d, Draw_Plus, Draw_vert);
     dout << drp;
-    if (Prop.IsTangentDefined())
+    const Geom2dProp::TangentResult aTangRes = aProp2d.Tangent(U, Precision::Confusion());
+    if (aTangRes.IsDefined)
     {
-      double   K = Prop.Curvature();
-      gp_Pnt2d Center;
+      const Geom2dProp::CurvatureResult aCurvRes = aProp2d.Curvature(U, Precision::Confusion());
+      const double K = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
 
       di << " Curvature : " << K << "\n";
 
       if (std::abs(K) > Precision::Confusion())
       {
         double R = 1 / std::abs(K);
-        Prop.CentreOfCurvature(Center);
-        gp_Ax2d                         Axe(Center, gp::DX2d());
-        occ::handle<Geom2d_Circle>      Cir2d = new Geom2d_Circle(Axe, R);
-        occ::handle<DrawTrSurf_Curve2d> dr;
-        dr = new DrawTrSurf_Curve2d(Cir2d, Draw_rouge, 30, false);
-        dout << dr;
-        dout.Flush();
+        const Geom2dProp::CentreResult aCentRes = aProp2d.CentreOfCurvature(U, Precision::Confusion());
+        if (aCentRes.IsDefined)
+        {
+          gp_Ax2d                         Axe(aCentRes.Centre, gp::DX2d());
+          occ::handle<Geom2d_Circle>      Cir2d = new Geom2d_Circle(Axe, R);
+          occ::handle<DrawTrSurf_Curve2d> dr;
+          dr = new DrawTrSurf_Curve2d(Cir2d, Draw_rouge, 30, false);
+          dout << dr;
+          dout.Flush();
+        }
       }
     }
     else
@@ -1460,14 +1465,14 @@ static int rawcont(Draw_Interpretor& di, int n, const char** a)
   GC2->D0(param2, a_point2);
   if (a_point2.SquareDistance(a_point1) < Precision::Confusion())
   {
-    GeomAbs_Shape cont = GeomLProp::Continuity(GC1,
-                                               GC2,
-                                               param1,
-                                               param2,
-                                               true,
-                                               true,
-                                               Precision::Confusion(),
-                                               Precision::Angular());
+    GeomAbs_Shape cont = GeomProp_Curve::Continuity(GC1,
+                                                    GC2,
+                                                    param1,
+                                                    param2,
+                                                    true,
+                                                    true,
+                                                    Precision::Confusion(),
+                                                    Precision::Angular());
     switch (cont)
     {
       case GeomAbs_C0:

@@ -28,8 +28,10 @@
 #include <HLRBRep_FaceData.hxx>
 #include <Standard_ShortReal.hxx>
 #include <HLRAlgo_Projector.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_CLProps.hxx>
 #include <HLRBRep_SLProps.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Standard_Real.hxx>
 #include <HLRBRep_FaceIterator.hxx>
 #include <GeomAbs_SurfaceType.hxx>

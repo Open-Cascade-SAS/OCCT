@@ -18,7 +18,13 @@
 
 #include <Adaptor3d_Surface.hxx>
 #include <LProp_Status.hxx>
+#include <Standard_Macro.hxx>
 
+Standard_HEADER_DEPRECATED("LProp3d_SLProps.hxx is deprecated since OCCT 8.0.0. "
+                           "Use GeomProp_Surface instead.")
+
+//! @deprecated Use GeomProp_Surface instead.
+Standard_DEPRECATED("LProp3d_SLProps is deprecated, use GeomProp_Surface instead")
 class LProp3d_SLProps
 {
 public:

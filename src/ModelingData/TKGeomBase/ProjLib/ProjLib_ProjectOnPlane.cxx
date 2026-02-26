@@ -39,7 +39,7 @@
 #include <math_Matrix.hxx>
 #include <gce_MakeParab.hxx>
 #include <gce_MakeDir.hxx>
-#include <LProp3d_CLProps.hxx>
+#include <GeomProp_Curve.hxx>
 #include <math_Function.hxx>
 #include <math_BrentMinimum.hxx>
 
@@ -276,24 +276,24 @@ public:
 //=======================================================================
 
 class ProjLib_MaxCurvature : public math_Function
-
 {
-
 public:
-  ProjLib_MaxCurvature(LProp3d_CLProps& theProps)
-      : myProps(&theProps)
+  ProjLib_MaxCurvature(const GeomProp_Curve& theProp, double theTol)
+      : myProp(&theProp),
+        myTol(theTol)
   {
   }
 
   bool Value(const double X, double& F) override
   {
-    myProps->SetParameter(X);
-    F = -myProps->Curvature();
+    const GeomProp::CurvatureResult aCurvRes = myProp->Curvature(X, myTol);
+    F = aCurvRes.IsDefined ? -aCurvRes.Value : 0.0;
     return true;
   }
 
 private:
-  LProp3d_CLProps* myProps;
+  const GeomProp_Curve* myProp;
+  double                myTol;
 };
 
 //=====================================================================//
@@ -1406,8 +1406,8 @@ bool ProjLib_ProjectOnPlane::BuildParabolaByApex(occ::handle<Geom_Curve>& theGeo
                                // copy of instance;
   occ::handle<Adaptor3d_Curve> aProjCrv = ShallowCopy();
   myType                                = aCurType;
-  LProp3d_CLProps      aProps(aProjCrv, 2, Precision::Confusion());
-  ProjLib_MaxCurvature aMaxCur(aProps);
+  GeomProp_Curve       aCurveProp(*aProjCrv);
+  ProjLib_MaxCurvature aMaxCur(aCurveProp, Precision::Confusion());
   math_BrentMinimum    aSolver(Precision::PConfusion());
   aSolver.Perform(aMaxCur, -10. * aF, 0., 10. * aF);
 
@@ -1418,17 +1418,20 @@ bool ProjLib_ProjectOnPlane::BuildParabolaByApex(occ::handle<Geom_Curve>& theGeo
 
   double aT;
   aT = aSolver.Location();
-  aProps.SetParameter(aT);
-  gp_Pnt aP0 = aProps.Value();
-  gp_Vec aDY = aProps.D1();
+  gp_Pnt aPnt;
+  gp_Vec aDY;
+  aProjCrv->D1(aT, aPnt, aDY);
+  gp_Pnt aP0 = aPnt;
   gp_Dir anYDir(aDY);
   gp_Dir anXDir;
-  double aCurv = aProps.Curvature();
+  const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(aT, Precision::Confusion());
+  double                          aCurv    = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
   if (Precision::IsInfinite(aCurv) || aCurv < Precision::Confusion())
   {
     return false;
   }
-  aProps.Normal(anXDir);
+  const GeomProp::NormalResult aNormRes = aCurveProp.Normal(aT, Precision::Confusion());
+  anXDir                                = aNormRes.Direction;
   //
   gp_Lin anXLine(aP0, anXDir);
   gp_Pnt aP1 = Value(aT + 10. * aF);
@@ -1464,8 +1467,8 @@ bool ProjLib_ProjectOnPlane::BuildHyperbolaByApex(occ::handle<Geom_Curve>& theGe
   occ::handle<Adaptor3d_Curve> aProjCrv = ShallowCopy();
   myType                                = aCurType;
   // Searching hyperbola apex as point with maximal curvature
-  LProp3d_CLProps      aProps(aProjCrv, 2, Precision::Confusion());
-  ProjLib_MaxCurvature aMaxCur(aProps);
+  GeomProp_Curve       aCurveProp(*aProjCrv);
+  ProjLib_MaxCurvature aMaxCur(aCurveProp, Precision::Confusion());
   math_BrentMinimum    aSolver(Precision::PConfusion());
   aSolver.Perform(aMaxCur, -5., 0., 5.);
 
@@ -1473,8 +1476,8 @@ bool ProjLib_ProjectOnPlane::BuildHyperbolaByApex(occ::handle<Geom_Curve>& theGe
   {
     double aT;
     aT = aSolver.Location();
-    aProps.SetParameter(aT);
-    double aCurv = aProps.Curvature();
+    const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(aT, Precision::Confusion());
+    double                          aCurv    = aCurvRes.IsDefined ? aCurvRes.Value : 0.0;
     if (Precision::IsInfinite(aCurv) || aCurv < Precision::Confusion())
     {
       return false;
@@ -1485,9 +1488,12 @@ bool ProjLib_ProjectOnPlane::BuildHyperbolaByApex(occ::handle<Geom_Curve>& theGe
       gp_Ax2  AxeRef = Hypr.Position();
       gp_Pnt  P      = ProjectPnt(myPlane, myDirection, AxeRef.Location());
       gp_Dir  Z      = myPlane.Direction();
-      gp_Pnt  aP0    = aProps.Value();
+      gp_Pnt  aPnt;
+      gp_Vec  aD1Vec;
+      aProjCrv->D1(aT, aPnt, aD1Vec);
+      gp_Pnt  aP0    = aPnt;
       gp_Dir  anXDir = gce_MakeDir(P, aP0);
-      gp_Dir  anYDir = gce_MakeDir(aProps.D1());
+      gp_Dir  anYDir = gce_MakeDir(aD1Vec);
       //
       double  aMajRad = P.Distance(aP0);
       gp_Pnt  aP1     = Value(aT + 1.);

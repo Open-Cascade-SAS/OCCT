@@ -34,7 +34,7 @@
 #include <GeomAbs_CurveType.hxx>
 #include <GeomConvert.hxx>
 #include <GeomConvert_CompCurveToBSplineCurve.hxx>
-#include <GeomLProp.hxx>
+#include <GeomProp_Curve.hxx>
 #include <NCollection_Vector.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
@@ -318,8 +318,14 @@ TopoDS_Wire BRepAlgo::ConcatenateWire(const TopoDS_Wire&  W,
     Plast  = BRep_Tool::Pnt(Vlast);
 
     if ((Pfirst.Distance(Plast) <= toler) && // C0 continuity test at the closing point
-        (GeomLProp::
-           Continuity(tab(nb_curve - 1), tab(0), Last, First0, true, true, toler, TolAngular)
+        (GeomProp_Curve::Continuity(tab(nb_curve - 1),
+                                    tab(0),
+                                    Last,
+                                    First0,
+                                    true,
+                                    true,
+                                    toler,
+                                    TolAngular)
          >= GeomAbs_G1))
     {
       // clang-format off
@@ -693,7 +699,7 @@ TopoDS_Edge BRepAlgo::ConcatenateWireC0(const TopoDS_Wire& aWire)
     bool   closed_flag      = false;
     double closed_tolerance = 0.;
     if (FirstVertex.IsSame(LastVertex)
-        && GeomLProp::Continuity(tab(0),
+        && GeomProp_Curve::Continuity(tab(0),
                                  tab(nb_curve - 1),
                                  tab(0)->FirstParameter(),
                                  tab(nb_curve - 1)->LastParameter(),

@@ -19,6 +19,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
@@ -26,6 +27,11 @@
 class gp_Pnt;
 class gp_Vec;
 
+Standard_HEADER_DEPRECATED("LProp3d_CurveTool.hxx is deprecated since OCCT 8.0.0. "
+                           "Use GeomProp_Curve instead.")
+
+//! @deprecated Use GeomProp_Curve instead.
+Standard_DEPRECATED("LProp3d_CurveTool is deprecated, use GeomProp_Curve instead")
 class LProp3d_CurveTool
 {
 public:

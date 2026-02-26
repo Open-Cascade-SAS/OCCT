@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <GeomAbs_Shape.hxx>
 class Geom_Curve;
@@ -27,6 +28,11 @@ class Geom_Curve;
 //! These global functions compute the degree of
 //! continuity of a 3D curve built by concatenation of two
 //! other curves (or portions of curves) at their junction point.
+Standard_HEADER_DEPRECATED("GeomLProp.hxx is deprecated since OCCT 8.0.0. "
+                           "Use GeomProp namespace instead.")
+
+//! @deprecated Use GeomProp namespace instead.
+Standard_DEPRECATED("GeomLProp is deprecated, use GeomProp namespace instead")
 class GeomLProp
 {
 public:

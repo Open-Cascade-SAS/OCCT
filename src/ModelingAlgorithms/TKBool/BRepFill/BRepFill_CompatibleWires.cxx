@@ -28,7 +28,7 @@
 #include <BRepLib_FindSurface.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <BRepLProp.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <Geom_Plane.hxx>
 #include <Geom_Surface.hxx>
@@ -336,7 +336,7 @@ static void WireContinuity(const TopoDS_Wire& W, GeomAbs_Shape& contW)
 
       if (testconti)
       {
-        cont = BRepLProp::Continuity(Curve1, Curve2, U1, U2, Eps, Precision::Angular());
+        cont = BRepProp_Curve::Continuity(Curve1, Curve2, U1, U2, Eps, Precision::Angular());
         if (cont <= contW)
           contW = cont;
       }

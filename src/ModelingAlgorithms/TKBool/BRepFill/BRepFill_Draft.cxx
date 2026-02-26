@@ -43,7 +43,7 @@
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomAdaptor_Surface.hxx>
 #include <GeomFill_LocationDraft.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Mat.hxx>
@@ -634,22 +634,23 @@ bool BRepFill_Draft::Fuse(const TopoDS_Shape& StopShape, const bool KeepOutSide)
 
       // Find a normal.
       C2d->D0((f + l) / 2, P2d);
-      GeomLProp_SLProps SP(S, P2d.X(), P2d.Y(), 1, 1.e-12);
-      if (!SP.IsNormalDefined())
+      GeomProp_Surface aSurfProp(S);
+      GeomProp::SurfaceNormalResult aNormRes = aSurfProp.Normal(P2d.X(), P2d.Y(), 1.e-12);
+      if (!aNormRes.IsDefined)
       {
         C2d->D0((3 * f + l) / 4, P2d);
-        SP.SetParameters(P2d.X(), P2d.Y());
-        if (!SP.IsNormalDefined())
+        aNormRes = aSurfProp.Normal(P2d.X(), P2d.Y(), 1.e-12);
+        if (!aNormRes.IsDefined)
         {
           C2d->D0((f + 3 * l) / 4, P2d);
-          SP.SetParameters(P2d.X(), P2d.Y());
+          aNormRes = aSurfProp.Normal(P2d.X(), P2d.Y(), 1.e-12);
         }
       }
 
-      if (SP.IsNormalDefined())
+      if (aNormRes.IsDefined)
       {
         // Subtract State1
-        if (myDir.Angle(SP.Normal()) < M_PI / 2)
+        if (myDir.Angle(aNormRes.Direction) < M_PI / 2)
           State1 = TopAbs_IN;
         else
           State1 = TopAbs_OUT;

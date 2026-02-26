@@ -59,7 +59,7 @@
 #include <GeomFill_SweepSectionGenerator.hxx>
 #include <GeomFill_UniformSection.hxx>
 #include <GeomLib.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax3.hxx>
 #include <gp_Dir.hxx>
@@ -456,26 +456,29 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
     }
 
     case GeomFill_IsFixed: {
-      double            Eps = 1.e-9;
+      constexpr double  Eps = 1.e-9;
       gp_Vec            V1(0, 0, 1), V2(0, 1, 0);
-      gp_Dir            D;
-      GeomLProp_CLProps CP(Path, param, 2, Eps);
-      if (CP.IsTangentDefined())
+      GeomProp_Curve    aCurveProp(Path);
+      GeomProp::TangentResult aTangent = aCurveProp.Tangent(param, Eps);
+      if (aTangent.IsDefined)
       {
-        CP.Tangent(D);
-        V1.SetXYZ(D.XYZ());
+        V1.SetXYZ(aTangent.Direction.XYZ());
         V1.Normalize();
-        if (CP.Curvature() > Eps)
+        GeomProp::CurvatureResult aCurvature = aCurveProp.Curvature(param, Eps);
+        if (aCurvature.IsDefined && aCurvature.Value > Eps)
         {
-          CP.Normal(D);
-          V2.SetXYZ(D.XYZ());
-          V2.Normalize();
+          GeomProp::NormalResult aNormal = aCurveProp.Normal(param, Eps);
+          if (aNormal.IsDefined)
+          {
+            V2.SetXYZ(aNormal.Direction.XYZ());
+            V2.Normalize();
+          }
         }
         else
         {
           gp_Pnt P0(0., 0., 0.);
-          gp_Ax2 Axe(P0, D);
-          D = Axe.XDirection();
+          gp_Ax2 Axe(P0, aTangent.Direction);
+          gp_Dir D = Axe.XDirection();
           V2.SetXYZ(D.XYZ());
           V2.Normalize();
         }
@@ -492,24 +495,27 @@ void GeomFill_Pipe::Init(const occ::handle<Geom_Curve>& Path,
       Place.Perform(Precision::Confusion());
       double ponsec = Place.ParameterOnSection();
 
-      double            Eps = 1.e-9;
+      constexpr double  Eps = 1.e-9;
       gp_Vec            V(0, 1, 0);
-      gp_Dir            D;
-      GeomLProp_CLProps CP(FirstSect, ponsec, 2, Eps);
-      if (CP.IsTangentDefined())
+      GeomProp_Curve    aCurveProp(FirstSect);
+      GeomProp::TangentResult aTangent = aCurveProp.Tangent(ponsec, Eps);
+      if (aTangent.IsDefined)
       {
-        CP.Tangent(D);
-        if (CP.Curvature() > Eps)
+        GeomProp::CurvatureResult aCurvature = aCurveProp.Curvature(ponsec, Eps);
+        if (aCurvature.IsDefined && aCurvature.Value > Eps)
         {
-          CP.Normal(D);
-          V.SetXYZ(D.XYZ());
-          V.Normalize();
+          GeomProp::NormalResult aNormal = aCurveProp.Normal(ponsec, Eps);
+          if (aNormal.IsDefined)
+          {
+            V.SetXYZ(aNormal.Direction.XYZ());
+            V.Normalize();
+          }
         }
         else
         {
           gp_Pnt P0(0., 0., 0.);
-          gp_Ax2 Axe(P0, D);
-          D = Axe.XDirection();
+          gp_Ax2 Axe(P0, aTangent.Direction);
+          gp_Dir D = Axe.XDirection();
           V.SetXYZ(D.XYZ());
           V.Normalize();
         }

@@ -18,6 +18,7 @@
 #define _BRepLProp_SLProps_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_Macro.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <BRepAdaptor_Surface.hxx>
@@ -36,6 +37,11 @@ class gp_Pnt;
 class gp_Vec;
 class gp_Dir;
 
+Standard_HEADER_DEPRECATED("BRepLProp_SLProps.hxx is deprecated since OCCT 8.0.0. "
+                           "Use BRepProp_Surface instead.")
+
+//! @deprecated Use BRepProp_Surface instead.
+Standard_DEPRECATED("BRepLProp_SLProps is deprecated, use BRepProp_Surface instead")
 class BRepLProp_SLProps
 {
 public:

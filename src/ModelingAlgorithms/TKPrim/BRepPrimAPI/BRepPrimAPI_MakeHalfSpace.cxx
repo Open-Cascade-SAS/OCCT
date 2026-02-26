@@ -18,8 +18,8 @@
 #include <BRep_Tool.hxx>
 #include <BRepBuilderAPI_MakeVertex.hxx>
 #include <BRepExtrema_DistShapeShape.hxx>
-#include <BRepLProp_SLProps.hxx>
 #include <BRepPrimAPI_MakeHalfSpace.hxx>
+#include <BRepProp_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
@@ -35,9 +35,10 @@
 
 static gp_Dir getNormalOnFace(const TopoDS_Face& theFace, const double theU, const double theV)
 {
-  double            aPrec = gp::Resolution();
-  BRepLProp_SLProps aProps(BRepAdaptor_Surface(theFace), theU, theV, 2, aPrec);
-  gp_Dir            aNormal = aProps.Normal();
+  const double     aPrec = gp::Resolution();
+  BRepProp_Surface aProps(theFace);
+  const GeomProp::SurfaceNormalResult aNormRes = aProps.Normal(theU, theV, aPrec);
+  gp_Dir           aNormal = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
   if (theFace.Orientation() == TopAbs_REVERSED)
     aNormal.Reverse();
   return aNormal;

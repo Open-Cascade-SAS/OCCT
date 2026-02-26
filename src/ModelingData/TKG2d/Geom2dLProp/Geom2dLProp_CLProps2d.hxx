@@ -20,6 +20,7 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
@@ -38,6 +39,11 @@ class gp_Pnt2d;
 class gp_Dir2d;
 class Geom2dLProp_Curve2dTool;
 
+Standard_HEADER_DEPRECATED("Geom2dLProp_CLProps2d.hxx is deprecated since OCCT 8.0.0. "
+                           "Use Geom2dProp_Curve instead.")
+
+//! @deprecated Use Geom2dProp_Curve instead.
+Standard_DEPRECATED("Geom2dLProp_CLProps2d is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_CLProps2d
 {
 public:

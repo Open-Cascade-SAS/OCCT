@@ -23,7 +23,9 @@
 #include <Geom2d_OffsetCurve.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CLProps2d.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
 #include <gp_Ax2d.hxx>

@@ -23,8 +23,8 @@
 #include <Geom2d_Line.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Surface.hxx>
-#include <GeomLProp_CLProps.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Curve.hxx>
+#include <GeomProp_Surface.hxx>
 #include <gp.hxx>
 #include <gp_Dir.hxx>
 #include <Graphic3d_Group.hxx>
@@ -147,12 +147,13 @@ static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const
     occ::handle<Geom_Curve> curv0 = BRep_Tool::Curve(TopoDS::Edge(shape), loc, first, last);
     occ::handle<Geom_Curve> curve = occ::down_cast<Geom_Curve>(curv0->Copy());
     curve->Transform(loc.Transformation());
-    GeomLProp_CLProps lProps(curve, 1, gp::Resolution());
-    lProps.SetParameter((mode == 0) ? last : first);
-    if (!lProps.IsTangentDefined())
+    const double                   aParam = (mode == 0) ? last : first;
+    GeomProp_Curve                 aProp(curve);
+    const GeomProp::TangentResult  aTangRes = aProp.Tangent(aParam, gp::Resolution());
+    if (!aTangRes.IsDefined)
       return false;
-    pt = lProps.Value();
-    lProps.Tangent(dir);
+    curve->D0(aParam, pt);
+    dir = aTangRes.Direction;
   }
   else if (shape.ShapeType() == TopAbs_FACE)
   {
@@ -170,12 +171,13 @@ static bool ComputeDir(const TopoDS_Shape& shape, gp_Pnt& pt, gp_Dir& dir, const
         return false;
     }
 
-    GeomLProp_SLProps lProps(surface, pt2d.X(), pt2d.Y(), 1, gp::Resolution());
-    if (!lProps.IsNormalDefined())
+    GeomProp_Surface                    aProp(surface);
+    const GeomProp::SurfaceNormalResult aNormRes = aProp.Normal(pt2d.X(), pt2d.Y(), gp::Resolution());
+    if (!aNormRes.IsDefined)
       return false;
 
-    pt  = lProps.Value();
-    dir = lProps.Normal();
+    surface->D0(pt2d.X(), pt2d.Y(), pt);
+    dir = aNormRes.Direction;
   }
   if (((shape.Orientation() == TopAbs_FORWARD) && (mode == 1))
       || ((shape.Orientation() == TopAbs_REVERSED) && (mode == 0)))

@@ -13,13 +13,17 @@
 
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Ellipse.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CurAndInf2d.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Elips2d.hxx>
 #include <gp_Pnt2d.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CIType.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Precision.hxx>
 
 #include <gtest/gtest.h>

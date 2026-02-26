@@ -24,7 +24,9 @@
 #include <gp_Vec2d.hxx>
 #include <HLRAlgo.hxx>
 #include <HLRAlgo_Projector.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_CLProps.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_Curve.hxx>
 #include <Precision.hxx>
 #include <ProjLib.hxx>

@@ -21,6 +21,7 @@
 #include <gp_Vec.hxx>
 #include <gp_Dir.hxx>
 #include <LProp_Status.hxx>
+#include <Standard_Macro.hxx>
 
 class LProp_BadContinuity;
 class Standard_DomainError;
@@ -31,6 +32,11 @@ class gp_Pnt;
 class gp_Dir;
 class LProp3d_CurveTool;
 
+Standard_HEADER_DEPRECATED("LProp3d_CLProps.hxx is deprecated since OCCT 8.0.0. "
+                           "Use GeomProp_Curve instead.")
+
+//! @deprecated Use GeomProp_Curve instead.
+Standard_DEPRECATED("LProp3d_CLProps is deprecated, use GeomProp_Curve instead")
 class LProp3d_CLProps
 {
 public:

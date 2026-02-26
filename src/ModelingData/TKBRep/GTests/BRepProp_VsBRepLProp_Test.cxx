@@ -18,8 +18,10 @@
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepAdaptor_Surface.hxx>
 #include <BRepBuilderAPI_MakeEdge.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_CLProps.hxx>
 #include <BRepLProp_SLProps.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 #include <BRepPrimAPI_MakeBox.hxx>
 #include <BRepPrimAPI_MakeCylinder.hxx>
 #include <BRepPrimAPI_MakeSphere.hxx>

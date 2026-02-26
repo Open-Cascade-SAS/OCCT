@@ -14,6 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <HLRBRep_CLProps.hxx>
 
 #include <LProp_BadContinuity.hxx>
@@ -24,6 +25,7 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <HLRBRep_CLPropsATool.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 #define Curve HLRBRep_Curve*
 #define Curve_hxx <HLRBRep_Curve.hxx>

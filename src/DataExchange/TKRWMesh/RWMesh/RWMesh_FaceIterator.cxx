@@ -32,7 +32,6 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
                            TopAbs_SHAPE,
                            theToMapColors,
                            theStyle),
-      mySLTool(1, 1e-12),
       myHasNormals(false),
       myIsMirrored(false)
 {
@@ -44,7 +43,6 @@ RWMesh_FaceIterator::RWMesh_FaceIterator(const TDF_Label&       theLabel,
 RWMesh_FaceIterator::RWMesh_FaceIterator(const TopoDS_Shape&  theShape,
                                          const XCAFPrs_Style& theStyle)
     : RWMesh_ShapeIterator(theShape, TopAbs_FACE, TopAbs_SHAPE, theStyle),
-      mySLTool(1, 1e-12),
       myHasNormals(false),
       myIsMirrored(false)
 {
@@ -65,13 +63,14 @@ gp_Dir RWMesh_FaceIterator::normal(int theNode) const
       aNormal.SetCoord(aNormVec3.x(), aNormVec3.y(), aNormVec3.z());
     }
   }
-  else if (myHasNormals && myPolyTriang->HasUVNodes())
+  else if (myHasNormals && myPolyTriang->HasUVNodes() && mySLTool.has_value())
   {
     const gp_XY anUV = myPolyTriang->UVNode(theNode).XY();
-    mySLTool.SetParameters(anUV.X(), anUV.Y());
-    if (mySLTool.IsNormalDefined())
+    const GeomProp::SurfaceNormalResult aNormRes =
+      mySLTool->Normal(anUV.X(), anUV.Y(), 1e-12);
+    if (aNormRes.IsDefined)
     {
-      aNormal = mySLTool.Normal();
+      aNormal = aNormRes.Direction;
     }
   }
   return aNormal;
@@ -118,7 +117,7 @@ void RWMesh_FaceIterator::initFace()
     if (!BRep_Tool::Surface(aFaceFwd, aLoc).IsNull())
     {
       myFaceAdaptor.Initialize(aFaceFwd, false);
-      mySLTool.SetSurface(myFaceAdaptor);
+      mySLTool.emplace(myFaceAdaptor);
       myHasNormals = true;
     }
   }

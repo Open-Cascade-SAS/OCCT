@@ -40,7 +40,7 @@
 #include <Geom_ToroidalSurface.hxx>
 #include <Geom_TrimmedCurve.hxx>
 #include <GeomConvert.hxx>
-#include <GeomLProp_SLProps.hxx>
+#include <GeomProp_Surface.hxx>
 #include <GeomToIGES_GeomCurve.hxx>
 #include <GeomToIGES_GeomEntity.hxx>
 #include <GeomToIGES_GeomPoint.hxx>
@@ -1162,8 +1162,9 @@ occ::handle<IGESData_IGESEntity> GeomToIGES_GeomSurface::TransferSurface(
   Vm                                        = (V1 + V2) / 2.;
   occ::handle<IGESData_IGESEntity> Surface  = TransferSurface(TheSurf, Udeb, Ufin, Vdeb, Vfin);
   double                           Distance = start->Offset() / GetUnit();
-  GeomLProp_SLProps Prop = GeomLProp_SLProps(TheSurf, Um, Vm, 1, Precision::Confusion());
-  gp_Dir            Dir  = Prop.Normal();
+  GeomProp_Surface                    aProp(TheSurf);
+  const GeomProp::SurfaceNormalResult aNormRes = aProp.Normal(Um, Vm, Precision::Confusion());
+  gp_Dir                              Dir = aNormRes.IsDefined ? aNormRes.Direction : gp::DZ();
   double            Xd, Yd, Zd;
   Dir.Coord(Xd, Yd, Zd);
   gp_XYZ Indicator = gp_XYZ(Xd / GetUnit(), Yd / GetUnit(), Zd / GetUnit());

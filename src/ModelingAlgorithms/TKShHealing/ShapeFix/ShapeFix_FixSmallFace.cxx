@@ -51,9 +51,6 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(ShapeFix_FixSmallFace, ShapeFix_Root)
 
-// #include <GeomLProp_SLProps.hxx>
-// #include <NCollection_Array2<double>.hxx>
-// #include <NCollection_Array1<double>.hxx>
 ShapeFix_FixSmallFace::ShapeFix_FixSmallFace()
 {
   myStatus = ShapeExtend::EncodeStatus(ShapeExtend_OK);

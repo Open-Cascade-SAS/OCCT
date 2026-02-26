@@ -20,7 +20,7 @@
 #include <Blend_FuncInv.hxx>
 #include <Blend_RstRstFunction.hxx>
 #include <BRepBlend_Line.hxx>
-#include <BRepLProp_SLProps.hxx>
+#include <BRepProp_Surface.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <ChFi3d.hxx>
 #include <ChFi3d_Builder.hxx>
@@ -603,10 +603,11 @@ static bool TangentExtremity(const TopoDS_Vertex&                    V,
   gp_Vec                    n1, n2; //   gp_Pnt pt1,pt2;
   occ::handle<Geom2d_Curve> pc1 = BRep_Tool::CurveOnSurface(e1, f1, f, l);
   pc1->Value(p1).Coord(u, v);
-  BRepLProp_SLProps theProp1(*hs1, u, v, 1, Eps);
-  if (theProp1.IsNormalDefined())
+  BRepProp_Surface aSurfProp1(*hs1);
+  const GeomProp::SurfaceNormalResult aNormRes1 = aSurfProp1.Normal(u, v, Eps);
+  if (aNormRes1.IsDefined)
   {
-    n1.SetXYZ(theProp1.Normal().XYZ());
+    n1.SetXYZ(aNormRes1.Direction.XYZ());
     if (O1 == TopAbs_REVERSED)
       n1.Reverse();
   }
@@ -615,10 +616,11 @@ static bool TangentExtremity(const TopoDS_Vertex&                    V,
 
   occ::handle<Geom2d_Curve> pc2 = BRep_Tool::CurveOnSurface(e2, f2, f, l);
   pc2->Value(p2).Coord(u, v);
-  BRepLProp_SLProps theProp2(*hs2, u, v, 1, Eps);
-  if (theProp2.IsNormalDefined())
+  BRepProp_Surface aSurfProp2(*hs2);
+  const GeomProp::SurfaceNormalResult aNormRes2 = aSurfProp2.Normal(u, v, Eps);
+  if (aNormRes2.IsDefined)
   {
-    n2.SetXYZ(theProp2.Normal().XYZ());
+    n2.SetXYZ(aNormRes2.Direction.XYZ());
     if (O2 == TopAbs_REVERSED)
       n2.Reverse();
   }

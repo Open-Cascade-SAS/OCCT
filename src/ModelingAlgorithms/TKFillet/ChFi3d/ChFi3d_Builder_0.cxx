@@ -52,7 +52,7 @@
 #include <GeomInt_IntSS.hxx>
 #include <GeomInt_WLApprox.hxx>
 #include <GeomLib.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <GeomProp_Curve.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Line.hxx>
 #include <Geom_RectangularTrimmedSurface.hxx>
@@ -5460,10 +5460,10 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
   int                        intrv, nbintv = GAC.NbIntervals(GeomAbs_CN);
   NCollection_Array1<double> TI(1, nbintv + 1);
   GAC.Intervals(TI, GeomAbs_CN);
-  double            Resolution = gp::Resolution(), Curvature;
-  GeomLProp_CLProps LProp(C, 2, Resolution);
-  gp_Pnt            P1, P2;
-  int               Discretisation = 30;
+  double           Resolution = gp::Resolution(), Curvature;
+  GeomProp_Curve   aCurveProp(C);
+  gp_Pnt           P1, P2;
+  int              Discretisation = 30;
 
   gp_Vec PrevVec;
   bool   prevVecFound = false;
@@ -5474,14 +5474,16 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
     double step = (TI(intrv + 1) - t) / Discretisation;
     for (ii = 1; ii <= Discretisation; ii++)
     {
-      LProp.SetParameter(t);
-      if (!LProp.IsTangentDefined())
+      const GeomProp::TangentResult aTanRes = aCurveProp.Tangent(t, Resolution);
+      if (!aTanRes.IsDefined)
         return false;
-      Curvature = std::abs(LProp.Curvature());
+      const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(t, Resolution);
+      Curvature = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
       if (Curvature > Resolution)
       {
         C->D0(t, P1);
-        LProp.CentreOfCurvature(P2);
+        const GeomProp::CentreResult aCentreRes = aCurveProp.CentreOfCurvature(t, Resolution);
+        P2           = aCentreRes.Centre;
         PrevVec      = gp_Vec(P1, P2);
         prevVecFound = true;
         break;
@@ -5505,14 +5507,16 @@ bool ChFi3d_IsSmooth(const occ::handle<Geom_Curve>& C)
     double step = (TI(intrv + 1) - t) / Discretisation;
     for (ii = 1; ii <= Discretisation; ii++)
     {
-      LProp.SetParameter(t);
-      if (!LProp.IsTangentDefined())
+      const GeomProp::TangentResult aTanRes = aCurveProp.Tangent(t, Resolution);
+      if (!aTanRes.IsDefined)
         return false;
-      Curvature = std::abs(LProp.Curvature());
+      const GeomProp::CurvatureResult aCurvRes = aCurveProp.Curvature(t, Resolution);
+      Curvature = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
       if (Curvature > Resolution)
       {
         C->D0(t, P1);
-        LProp.CentreOfCurvature(P2);
+        const GeomProp::CentreResult aCentreRes = aCurveProp.CentreOfCurvature(t, Resolution);
+        P2 = aCentreRes.Centre;
         gp_Vec Vec(P1, P2);
         double Angle = PrevVec.Angle(Vec);
         if (Angle > M_PI / 3.)

@@ -20,7 +20,7 @@
 #include <BRepFill_NSections.hxx>
 #include <BRepLib_MakeEdge.hxx>
 #include <BRepLib_MakeWire.hxx>
-#include <BRepLProp.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <BSplCLib.hxx>
 #include <Geom_BezierCurve.hxx>
@@ -789,7 +789,7 @@ GeomAbs_Shape BRepFill_NSections::Continuity(const int Index, const double TolAn
       BRepAdaptor_Curve Curve1(Edge1);
       BRepAdaptor_Curve Curve2(Edge2);
       double            Eps = BRep_Tool::Tolerance(V2) + BRep_Tool::Tolerance(V1);
-      cont_jj               = BRepLProp::Continuity(Curve1, Curve2, U1, U2, Eps, TolAngular);
+      cont_jj               = BRepProp_Curve::Continuity(Curve1, Curve2, U1, U2, Eps, TolAngular);
     }
 
     if (jj == 1)

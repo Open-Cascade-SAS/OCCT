@@ -20,11 +20,17 @@
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 #include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
 #include <math_FunctionWithDerivative.hxx>
 class Geom2d_Curve;
 
 //! Function used to find the inflections in 2d.
+Standard_HEADER_DEPRECATED("Geom2dLProp_FuncCurNul.hxx is deprecated since OCCT 8.0.0. "
+                           "Use Geom2dProp_Curve instead.")
+
+//! @deprecated Use Geom2dProp_Curve::FindInflections() instead.
+Standard_DEPRECATED("Geom2dLProp_FuncCurNul is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_FuncCurNul : public math_FunctionWithDerivative
 {
 public:

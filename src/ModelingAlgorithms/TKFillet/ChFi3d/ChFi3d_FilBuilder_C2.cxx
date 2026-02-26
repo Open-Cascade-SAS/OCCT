@@ -17,7 +17,7 @@
 #include <Adaptor3d_CurveOnSurface.hxx>
 #include <BRep_Tool.hxx>
 #include <BRepBlend_Line.hxx>
-#include <BRepLProp_CLProps.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <BSplCLib.hxx>
 #include <ChFi3d.hxx>
@@ -192,11 +192,11 @@ void ChFi3d_FilBuilder::PerformTwoCorner(const int Index)
   BRepAdaptor_Curve BCurv2(E2);
   parE1 = BRep_Tool::Parameter(Vtx, E1);
   parE2 = BRep_Tool::Parameter(Vtx, E2);
-  BRepLProp_CLProps CL1(BCurv1, parE1, 1, 1.e-4);
-  BRepLProp_CLProps CL2(BCurv2, parE2, 1, 1.e-4);
-  gp_Dir            dir1, dir2;
-  CL1.Tangent(dir1);
-  CL2.Tangent(dir2);
+  BRepProp_Curve aCurveProp1(BCurv1);
+  BRepProp_Curve aCurveProp2(BCurv2);
+  const GeomProp::TangentResult aTanRes1 = aCurveProp1.Tangent(parE1, 1.e-4);
+  const GeomProp::TangentResult aTanRes2 = aCurveProp2.Tangent(parE2, 1.e-4);
+  gp_Dir            dir1 = aTanRes1.Direction, dir2 = aTanRes2.Direction;
   if (Sens1 == -1)
     dir1.Reverse();
   if (Sens2 == -1)

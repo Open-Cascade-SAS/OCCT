@@ -18,6 +18,7 @@
 #define _BRepLProp_CLProps_HeaderFile
 
 #include <Standard.hxx>
+#include <Standard_Macro.hxx>
 #include <Standard_DefineAlloc.hxx>
 
 #include <BRepAdaptor_Curve.hxx>
@@ -35,6 +36,11 @@ class gp_Pnt;
 class gp_Dir;
 class BRepLProp_CurveTool;
 
+Standard_HEADER_DEPRECATED("BRepLProp_CLProps.hxx is deprecated since OCCT 8.0.0. "
+                           "Use BRepProp_Curve instead.")
+
+//! @deprecated Use BRepProp_Curve instead.
+Standard_DEPRECATED("BRepLProp_CLProps is deprecated, use BRepProp_Curve instead")
 class BRepLProp_CLProps
 {
 public:

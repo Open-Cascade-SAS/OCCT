@@ -23,7 +23,7 @@
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
-#include <Geom2dLProp_CLProps2d.hxx>
+#include <Geom2dProp_Curve.hxx>
 #include <Geom_Plane.hxx>
 #include <GeomTools_Curve2dSet.hxx>
 #include <gp.hxx>
@@ -147,9 +147,10 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
     int                        intrv, nbintv = C2d.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C2d.Intervals(TI, GeomAbs_CN);
-    double                Resolution = 1.0e-9, Curvature;
-    Geom2dLProp_CLProps2d LProp(curv, 2, Resolution);
-    gp_Pnt2d              P1, P2;
+    constexpr double   Resolution = 1.0e-9;
+    double             Curvature;
+    Geom2dProp_Curve   aProp(curv);
+    gp_Pnt2d           P1;
 
     for (intrv = 1; intrv <= nbintv; intrv++)
     {
@@ -158,10 +159,11 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
       double LRad, ratio;
       for (ii = 1; ii <= GetDiscretisation(); ii++)
       {
-        LProp.SetParameter(t);
-        if (LProp.IsTangentDefined())
+        const Geom2dProp::TangentResult aTangRes = aProp.Tangent(t, Resolution);
+        if (aTangRes.IsDefined)
         {
-          Curvature = std::abs(LProp.Curvature());
+          const Geom2dProp::CurvatureResult aCurvRes = aProp.Curvature(t, Resolution);
+          Curvature = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
           if (Curvature > Resolution)
           {
             curv->D0(t, P1);
@@ -169,9 +171,12 @@ void DrawTrSurf_Curve2d::DrawOn(Draw_Display& dis) const
             LRad  = 1. / Curvature;
             ratio = ((LRad > radiusmax) ? radiusmax / LRad : 1);
             ratio *= radiusratio;
-            LProp.CentreOfCurvature(P2);
-            gp_Vec2d V(P1, P2);
-            dis.DrawTo(P1.Translated(ratio * V));
+            const Geom2dProp::CentreResult aCentRes = aProp.CentreOfCurvature(t, Resolution);
+            if (aCentRes.IsDefined)
+            {
+              gp_Vec2d V(P1, aCentRes.Centre);
+              dis.DrawTo(P1.Translated(ratio * V));
+            }
           }
         }
         t += step;

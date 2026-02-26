@@ -32,7 +32,6 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const gp_Pnt& Pt,
                                                      const int     Order,
                                                      const double  TolDist)
     : myOrder(Order),
-      myLProp(2, TolDist),
       myPoint(Pt),
       myU(0.0),
       myV(0.0),
@@ -56,7 +55,6 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const double               
                                                      const double                     TolAng,
                                                      const double                     TolCurv)
     : myOrder(Order),
-      myLProp(2, TolDist),
       mySurf(Surf),
       myU(U),
       myV(V),
@@ -67,7 +65,7 @@ GeomPlate_PointConstraint::GeomPlate_PointConstraint(const double               
 
 {
   Surf->D2(myU, myV, myPoint, myD11, myD12, myD21, myD22, myD23);
-  myLProp.SetSurface(Surf);
+  mySurfProp.emplace(Surf);
 }
 
 //---------------------------------------------------------
@@ -163,12 +161,23 @@ double GeomPlate_PointConstraint::G2Criterion() const
 //------------------------------------------------------------
 // Fonction : LPropSurf
 //------------------------------------------------------------
-GeomLProp_SLProps& GeomPlate_PointConstraint::LPropSurf()
-{ // if (myFrontiere.IsNull())
-  //  throw Standard_Failure("GeomPlate_CurveConstraint.cxx : Curve must be on a Surface");
-  // gp_Pnt2d P2d= myFrontiere->ChangeCurve().GetCurve()->Value(U);
-  myLProp.SetParameters(myU, myV);
-  return myLProp;
+GeomProp_Surface& GeomPlate_PointConstraint::LPropSurf()
+{
+  if (!mySurfProp.has_value())
+    throw Standard_Failure("GeomPlate_PointConstraint : no surface available");
+  return *mySurfProp;
+}
+
+//------------------------------------------------------------
+// Fonction : SurfacePoint
+//------------------------------------------------------------
+void GeomPlate_PointConstraint::SurfacePoint(occ::handle<Geom_Surface>& theSurf,
+                                             double&                    theU,
+                                             double&                    theV) const
+{
+  theSurf = mySurf;
+  theU    = myU;
+  theV    = myV;
 }
 
 //------------------------------------------------------------

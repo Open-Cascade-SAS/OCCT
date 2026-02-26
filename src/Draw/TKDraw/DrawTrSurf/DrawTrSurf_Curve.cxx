@@ -17,7 +17,7 @@
 #include <Draw_Color.hxx>
 #include <Draw_Display.hxx>
 #include <GeomAdaptor_Curve.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <GeomProp_Curve.hxx>
 #include <GeomTools_CurveSet.hxx>
 #include <gp.hxx>
 #include <gp_Dir2d.hxx>
@@ -150,9 +150,10 @@ void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
     int                        intrv, nbintv = C.NbIntervals(GeomAbs_CN);
     NCollection_Array1<double> TI(1, nbintv + 1);
     C.Intervals(TI, GeomAbs_CN);
-    double            Resolution = 1.0e-9, Curvature;
-    GeomLProp_CLProps LProp(curv, 2, Resolution);
-    gp_Pnt            P1, P2;
+    constexpr double Resolution = 1.0e-9;
+    double           Curvature;
+    GeomProp_Curve   aProp(curv);
+    gp_Pnt           P1;
 
     for (intrv = 1; intrv <= nbintv; intrv++)
     {
@@ -161,10 +162,11 @@ void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
       double LRad, ratio;
       for (ii = 1; ii <= GetDiscretisation(); ii++)
       {
-        LProp.SetParameter(t);
-        if (LProp.IsTangentDefined())
+        const GeomProp::TangentResult aTangRes = aProp.Tangent(t, Resolution);
+        if (aTangRes.IsDefined)
         {
-          Curvature = std::abs(LProp.Curvature());
+          const GeomProp::CurvatureResult aCurvRes = aProp.Curvature(t, Resolution);
+          Curvature = aCurvRes.IsDefined ? std::abs(aCurvRes.Value) : 0.0;
           if (Curvature > Resolution)
           {
             curv->D0(t, P1);
@@ -172,9 +174,12 @@ void DrawTrSurf_Curve::DrawOn(Draw_Display& dis) const
             LRad  = 1. / Curvature;
             ratio = ((LRad > radiusmax) ? radiusmax / LRad : 1);
             ratio *= radiusratio;
-            LProp.CentreOfCurvature(P2);
-            gp_Vec V(P1, P2);
-            dis.DrawTo(P1.Translated(ratio * V));
+            const GeomProp::CentreResult aCentRes = aProp.CentreOfCurvature(t, Resolution);
+            if (aCentRes.IsDefined)
+            {
+              gp_Vec V(P1, aCentRes.Centre);
+              dis.DrawTo(P1.Translated(ratio * V));
+            }
           }
         }
         t += step;

@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 #include <Geom_Curve.hxx>
-#include <GeomLProp_CLProps.hxx>
+#include <GeomProp_Curve.hxx>
 #include <gp_Dir.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
@@ -22,21 +22,17 @@
 #include <StdFail_NotDone.hxx>
 
 /***********************************************************************/
-void LocalAnalysis_CurveContinuity::CurvC0(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
+void LocalAnalysis_CurveContinuity::CurvC0(const gp_Pnt& theP1, const gp_Pnt& theP2)
 {
-  myContC0 = (Curv1.Value()).Distance(Curv2.Value());
+  myContC0 = theP1.Distance(theP2);
 }
 
 /****************************************************************************/
-void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
+void LocalAnalysis_CurveContinuity::CurvC1(const gp_Vec& theD1_1, const gp_Vec& theD1_2)
 {
-  gp_Vec V1, V2;
   double ang;
-  V1 = Curv1.D1();
-  V2 = Curv2.D1();
-  double norm1, norm2;
-  norm1 = V1.Magnitude();
-  norm2 = V2.Magnitude();
+  double norm1 = theD1_1.Magnitude();
+  double norm2 = theD1_2.Magnitude();
 
   if ((norm1 > myepsnul) && (norm2 > myepsnul))
   {
@@ -48,7 +44,7 @@ void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_C
     {
       myLambda1 = norm1 / norm2;
     }
-    ang = V1.Angle(V2);
+    ang = theD1_1.Angle(theD1_2);
     if (ang > M_PI / 2)
       myContC1 = M_PI - ang;
     else
@@ -63,19 +59,15 @@ void LocalAnalysis_CurveContinuity::CurvC1(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 /*********************************************************************************/
 
-void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
+void LocalAnalysis_CurveContinuity::CurvC2(const gp_Vec& theD1_1,
+                                            const gp_Vec& theD1_2,
+                                            const gp_Vec& theD2_1,
+                                            const gp_Vec& theD2_2)
 {
-  gp_Vec V1, V2, V12, V22;
-  //  gp_Dir D1, D2;
-  double norm1, norm2, norm12, norm22, ang;
-  V1     = Curv1.D1();
-  V2     = Curv2.D1();
-  V12    = Curv1.D2();
-  V22    = Curv2.D2();
-  norm1  = V1.Magnitude();
-  norm2  = V2.Magnitude();
-  norm12 = V12.Magnitude();
-  norm22 = V22.Magnitude();
+  double norm1  = theD1_1.Magnitude();
+  double norm2  = theD1_2.Magnitude();
+  double norm12 = theD2_1.Magnitude();
+  double norm22 = theD2_2.Magnitude();
 
   if ((norm1 > myepsnul) && (norm2 > myepsnul))
   {
@@ -92,7 +84,7 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
         myLambda1 = norm1 / norm2;
         myLambda2 = norm12 / norm22;
       }
-      ang = V12.Angle(V22);
+      double ang = theD2_1.Angle(theD2_2);
       if (ang > M_PI / 2)
         myContC2 = M_PI - ang;
       else
@@ -115,15 +107,14 @@ void LocalAnalysis_CurveContinuity::CurvC2(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 /*********************************************************************************/
 
-void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
+void LocalAnalysis_CurveContinuity::CurvG1(const gp_Dir& theTang1,
+                                            bool          theTangDef1,
+                                            const gp_Dir& theTang2,
+                                            bool          theTangDef2)
 {
-  gp_Dir Tang1, Tang2;
-  double ang;
-  if (Curv1.IsTangentDefined() && Curv2.IsTangentDefined())
+  if (theTangDef1 && theTangDef2)
   {
-    Curv1.Tangent(Tang1);
-    Curv2.Tangent(Tang2);
-    ang = Tang1.Angle(Tang2);
+    double ang = theTang1.Angle(theTang2);
     if (ang > M_PI / 2)
       myContG1 = M_PI - ang;
     else
@@ -138,31 +129,45 @@ void LocalAnalysis_CurveContinuity::CurvG1(GeomLProp_CLProps& Curv1, GeomLProp_C
 
 /*********************************************************************************/
 
-void LocalAnalysis_CurveContinuity::CurvG2(GeomLProp_CLProps& Curv1, GeomLProp_CLProps& Curv2)
+void LocalAnalysis_CurveContinuity::CurvG2(const gp_Dir& theTang1,
+                                            bool          theTangDef1,
+                                            double        theCurv1,
+                                            bool          theCurvDef1,
+                                            const gp_Dir& theNorm1,
+                                            bool          theNormDef1,
+                                            const gp_Vec& theD1_1,
+                                            const gp_Dir& theTang2,
+                                            bool          theTangDef2,
+                                            double        theCurv2,
+                                            bool          theCurvDef2,
+                                            const gp_Dir& theNorm2,
+                                            bool          theNormDef2,
+                                            const gp_Vec& theD1_2)
 {
-  gp_Vec V1, V2;
-  gp_Dir D1, D2;
-  double ang;
+  (void)theD1_1;
+  (void)theD1_2;
   double epscrb = 8 * myepsC0 / (myMaxLon * myMaxLon);
 
-  if (Curv1.IsTangentDefined() && Curv2.IsTangentDefined())
+  if (theTangDef1 && theTangDef2)
   {
-    myCourbC1 = Curv1.Curvature();
-    myCourbC2 = Curv2.Curvature();
+    myCourbC1 = theCurvDef1 ? theCurv1 : 0.0;
+    myCourbC2 = theCurvDef2 ? theCurv2 : 0.0;
     if ((std::abs(myCourbC1) > epscrb) && (std::abs(myCourbC2) > epscrb))
     {
-      V1 = Curv1.D1();
-      V2 = Curv2.D1();
-      Curv1.Normal(D1);
-      Curv2.Normal(D2);
-      ang = D1.Angle(D2);
-      if (ang > M_PI / 2)
-        myContG2 = M_PI - ang;
+      if (theNormDef1 && theNormDef2)
+      {
+        double ang = theNorm1.Angle(theNorm2);
+        if (ang > M_PI / 2)
+          myContG2 = M_PI - ang;
+        else
+          myContG2 = ang;
+        myG2Variation = std::abs(myCourbC1 - myCourbC2) / sqrt(myCourbC1 * myCourbC2);
+      }
       else
-        myContG2 = ang;
-      myCourbC1     = Curv1.Curvature();
-      myCourbC2     = Curv2.Curvature();
-      myG2Variation = std::abs(myCourbC1 - myCourbC2) / sqrt(myCourbC1 * myCourbC2);
+      {
+        myIsDone      = false;
+        myErrorStatus = LocalAnalysis_NormalNotDefined;
+      }
     }
     else
     {
@@ -215,44 +220,74 @@ LocalAnalysis_CurveContinuity::LocalAnalysis_CurveContinuity(const occ::handle<G
 
   myIsDone = true;
 
+  GeomProp_Curve aProp1(Curv1);
+  GeomProp_Curve aProp2(Curv2);
+
   switch (Order)
   {
-    case GeomAbs_C0: { // TypeCont=GeomAbs_C0;
-      GeomLProp_CLProps Curve1(Curv1, u1, 0, myepsnul);
-      GeomLProp_CLProps Curve2(Curv2, u2, 0, myepsnul);
-      CurvC0(Curve1, Curve2);
+    case GeomAbs_C0: {
+      gp_Pnt P1, P2;
+      Curv1->D0(u1, P1);
+      Curv2->D0(u2, P2);
+      CurvC0(P1, P2);
     }
     break;
-    case GeomAbs_C1: { // TypeCont=GeomAbs_C1;
-
-      GeomLProp_CLProps Curve1(Curv1, u1, 1, myepsnul);
-      GeomLProp_CLProps Curve2(Curv2, u2, 1, myepsnul);
-      CurvC0(Curve1, Curve2);
-      CurvC1(Curve1, Curve2);
+    case GeomAbs_C1: {
+      gp_Pnt P1, P2;
+      gp_Vec D1_1, D1_2;
+      Curv1->D1(u1, P1, D1_1);
+      Curv2->D1(u2, P2, D1_2);
+      CurvC0(P1, P2);
+      CurvC1(D1_1, D1_2);
     }
     break;
-    case GeomAbs_C2: { // TypeCont=GeomAbs_C2;
-
-      GeomLProp_CLProps Curve1(Curv1, u1, 2, myepsnul);
-      GeomLProp_CLProps Curve2(Curv2, u2, 2, myepsnul);
-      CurvC0(Curve1, Curve2);
-      CurvC1(Curve1, Curve2);
-      CurvC2(Curve1, Curve2);
+    case GeomAbs_C2: {
+      gp_Pnt P1, P2;
+      gp_Vec D1_1, D1_2, D2_1, D2_2;
+      Curv1->D2(u1, P1, D1_1, D2_1);
+      Curv2->D2(u2, P2, D1_2, D2_2);
+      CurvC0(P1, P2);
+      CurvC1(D1_1, D1_2);
+      CurvC2(D1_1, D1_2, D2_1, D2_2);
     }
     break;
-    case GeomAbs_G1: { // TypeCont=GeomAbs_G1;
-      GeomLProp_CLProps Curve1(Curv1, u1, 1, myepsnul);
-      GeomLProp_CLProps Curve2(Curv2, u2, 1, myepsnul);
-      CurvC0(Curve1, Curve2);
-      CurvG1(Curve1, Curve2);
+    case GeomAbs_G1: {
+      gp_Pnt P1, P2;
+      Curv1->D0(u1, P1);
+      Curv2->D0(u2, P2);
+      CurvC0(P1, P2);
+      GeomProp::TangentResult aTang1 = aProp1.Tangent(u1, myepsnul);
+      GeomProp::TangentResult aTang2 = aProp2.Tangent(u2, myepsnul);
+      CurvG1(aTang1.Direction, aTang1.IsDefined, aTang2.Direction, aTang2.IsDefined);
     }
     break;
-    case GeomAbs_G2: { // TypeCont=GeomAbs_G2;
-      GeomLProp_CLProps Curve1(Curv1, u1, 2, myepsnul);
-      GeomLProp_CLProps Curve2(Curv2, u2, 2, myepsnul);
-      CurvC0(Curve1, Curve2);
-      CurvG1(Curve1, Curve2);
-      CurvG2(Curve1, Curve2);
+    case GeomAbs_G2: {
+      gp_Pnt P1, P2;
+      gp_Vec D1_1, D1_2;
+      Curv1->D1(u1, P1, D1_1);
+      Curv2->D1(u2, P2, D1_2);
+      CurvC0(P1, P2);
+      GeomProp::TangentResult   aTang1 = aProp1.Tangent(u1, myepsnul);
+      GeomProp::TangentResult   aTang2 = aProp2.Tangent(u2, myepsnul);
+      GeomProp::CurvatureResult aCurv1 = aProp1.Curvature(u1, myepsnul);
+      GeomProp::CurvatureResult aCurv2 = aProp2.Curvature(u2, myepsnul);
+      GeomProp::NormalResult    aNorm1 = aProp1.Normal(u1, myepsnul);
+      GeomProp::NormalResult    aNorm2 = aProp2.Normal(u2, myepsnul);
+      CurvG1(aTang1.Direction, aTang1.IsDefined, aTang2.Direction, aTang2.IsDefined);
+      CurvG2(aTang1.Direction,
+             aTang1.IsDefined,
+             aCurv1.Value,
+             aCurv1.IsDefined,
+             aNorm1.Direction,
+             aNorm1.IsDefined,
+             D1_1,
+             aTang2.Direction,
+             aTang2.IsDefined,
+             aCurv2.Value,
+             aCurv2.IsDefined,
+             aNorm2.Direction,
+             aNorm2.IsDefined,
+             D1_2);
     }
     break;
     default: {

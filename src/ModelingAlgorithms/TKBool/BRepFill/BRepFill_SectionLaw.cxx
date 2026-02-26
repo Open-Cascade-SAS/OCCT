@@ -17,7 +17,7 @@
 #include <BRep_Tool.hxx>
 #include <BRepAdaptor_Curve.hxx>
 #include <BRepFill_SectionLaw.hxx>
-#include <BRepLProp.hxx>
+#include <BRepProp_Curve.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <GeomFill_SectionLaw.hxx>
 #include <Standard_Type.hxx>

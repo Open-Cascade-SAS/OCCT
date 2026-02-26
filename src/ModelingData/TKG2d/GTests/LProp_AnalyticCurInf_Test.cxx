@@ -12,9 +12,11 @@
 // commercial license or contractual agreement.
 
 #include <GeomAbs_CurveType.hxx>
+Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_AnalyticCurInf.hxx>
 #include <LProp_CIType.hxx>
 #include <LProp_CurAndInf.hxx>
+Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gtest/gtest.h>
 
