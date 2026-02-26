@@ -96,6 +96,9 @@ public:
   //! Returns the detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
+  //! Returns the adaptor pointer from the active evaluator, or null if not initialized.
+  Standard_EXPORT const GeomAdaptor_Curve* Adaptor() const;
+
   //! Compute tangent at given parameter.
   //! @param[in] theParam curve parameter
   //! @param[in] theTol linear tolerance

@@ -109,6 +109,21 @@ void Geom2dProp_Curve::initFromAdaptor()
 
 //==================================================================================================
 
+const Geom2dAdaptor_Curve* Geom2dProp_Curve::Adaptor() const
+{
+  return std::visit(
+    [](const auto& theEval) -> const Geom2dAdaptor_Curve* {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+        return nullptr;
+      else
+        return theEval.Adaptor();
+    },
+    myEvaluator);
+}
+
+//==================================================================================================
+
 Geom2dProp::TangentResult Geom2dProp_Curve::Tangent(const double theParam,
                                                     const double theTol) const
 {
