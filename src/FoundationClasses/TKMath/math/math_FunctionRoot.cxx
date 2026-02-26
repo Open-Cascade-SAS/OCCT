@@ -81,10 +81,10 @@ math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
   Tol(1) = Tolerance;
   math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
   Sol.Perform(Ff, V);
-  Done   = Sol.IsDone();
-  NbIter = Sol.NbIterations();
+  Done = Sol.IsDone();
   if (Done)
   {
+    NbIter = Sol.NbIterations();
     F.GetStateNumber();
     TheRoot       = Sol.Root()(1);
     TheDerivative = Sol.Derivative()(1, 1);
@@ -107,10 +107,10 @@ math_FunctionRoot::math_FunctionRoot(math_FunctionWithDerivative& F,
   Bb(1)  = B;
   math_FunctionSetRoot Sol(Ff, Tol, NbIterations);
   Sol.Perform(Ff, V, Aa, Bb);
-  Done   = Sol.IsDone();
-  NbIter = Sol.NbIterations();
+  Done = Sol.IsDone();
   if (Done)
   {
+    NbIter = Sol.NbIterations();
     F.GetStateNumber();
     TheRoot       = Sol.Root()(1);
     TheDerivative = Sol.Derivative()(1, 1);
