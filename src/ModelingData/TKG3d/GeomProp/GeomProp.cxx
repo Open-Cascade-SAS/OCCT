@@ -165,6 +165,15 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   const double aF = theD1U.Dot(theD1V);
   const double aG = theD1V.Dot(theD1V);
 
+  // Check that both tangent directions are non-degenerate.
+  // This matches the old LProp_SLProps guard against "pointed patches"
+  // where one tangent is degenerate, preventing division by zero below.
+  const double aTol2 = theTol * theTol;
+  if (aE <= aTol2 || aG <= aTol2)
+  {
+    return {};
+  }
+
   // Second fundamental form coefficients.
   const double aL  = aNormal.Dot(theD2U);
   const double aM  = aNormal.Dot(theDUV);
@@ -172,7 +181,7 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
 
   // Discriminant of first fundamental form.
   const double aDet = aE * aG - aF * aF;
-  if (std::abs(aDet) <= theTol * theTol)
+  if (std::abs(aDet) <= aTol2)
   {
     return {};
   }
@@ -251,10 +260,16 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     {
       return handleUmbilic();
     }
-    const double aRoot1 = (-aNormB + aSqrtDisc) / (2.0 * aNormA);
-    const double aRoot2 = (-aNormB - aSqrtDisc) / (2.0 * aNormA);
-    aCurv1 = ((aL * aRoot1 + 2.0 * aM) * aRoot1 + aN_) / ((aE * aRoot1 + 2.0 * aF) * aRoot1 + aG);
-    aCurv2 = ((aL * aRoot2 + 2.0 * aM) * aRoot2 + aN_) / ((aE * aRoot2 + 2.0 * aF) * aRoot2 + aG);
+    const double aRoot1  = (-aNormB + aSqrtDisc) / (2.0 * aNormA);
+    const double aRoot2  = (-aNormB - aSqrtDisc) / (2.0 * aNormA);
+    const double aDenom1 = (aE * aRoot1 + 2.0 * aF) * aRoot1 + aG;
+    const double aDenom2 = (aE * aRoot2 + 2.0 * aF) * aRoot2 + aG;
+    if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())
+    {
+      return handleUmbilic();
+    }
+    aCurv1    = ((aL * aRoot1 + 2.0 * aM) * aRoot1 + aN_) / aDenom1;
+    aCurv2    = ((aL * aRoot2 + 2.0 * aM) * aRoot2 + aN_) / aDenom2;
     aVecCurv1 = theD1U * aRoot1 + theD1V;
     aVecCurv2 = theD1U * aRoot2 + theD1V;
   }
@@ -271,10 +286,16 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
     {
       return handleUmbilic();
     }
-    const double aRoot1 = (-aNormB + aSqrtDisc) / (2.0 * aNormC);
-    const double aRoot2 = (-aNormB - aSqrtDisc) / (2.0 * aNormC);
-    aCurv1 = ((aN_ * aRoot1 + 2.0 * aM) * aRoot1 + aL) / ((aG * aRoot1 + 2.0 * aF) * aRoot1 + aE);
-    aCurv2 = ((aN_ * aRoot2 + 2.0 * aM) * aRoot2 + aL) / ((aG * aRoot2 + 2.0 * aF) * aRoot2 + aE);
+    const double aRoot1  = (-aNormB + aSqrtDisc) / (2.0 * aNormC);
+    const double aRoot2  = (-aNormB - aSqrtDisc) / (2.0 * aNormC);
+    const double aDenom1 = (aG * aRoot1 + 2.0 * aF) * aRoot1 + aE;
+    const double aDenom2 = (aG * aRoot2 + 2.0 * aF) * aRoot2 + aE;
+    if (std::abs(aDenom1) < RealEpsilon() || std::abs(aDenom2) < RealEpsilon())
+    {
+      return handleUmbilic();
+    }
+    aCurv1    = ((aN_ * aRoot1 + 2.0 * aM) * aRoot1 + aL) / aDenom1;
+    aCurv2    = ((aN_ * aRoot2 + 2.0 * aM) * aRoot2 + aL) / aDenom2;
     aVecCurv1 = theD1U + theD1V * aRoot1;
     aVecCurv2 = theD1U + theD1V * aRoot2;
   }
