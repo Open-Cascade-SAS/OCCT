@@ -26,11 +26,7 @@ class BRepAdaptor_Curve;
 class gp_Pnt;
 class gp_Vec;
 
-Standard_HEADER_DEPRECATED("BRepLProp_CurveTool.hxx is deprecated since OCCT 8.0.0. "
-                           "Use BRepProp_Curve instead.")
-
   //! @deprecated Use BRepProp_Curve instead.
-  Standard_DEPRECATED("BRepLProp_CurveTool is deprecated, use BRepProp_Curve instead")
 class BRepLProp_CurveTool
 {
 public:

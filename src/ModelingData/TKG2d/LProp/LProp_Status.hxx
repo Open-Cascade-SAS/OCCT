@@ -19,9 +19,6 @@
 
 #include <Standard_Macro.hxx>
 
-Standard_HEADER_DEPRECATED("LProp_Status.hxx is deprecated since OCCT 8.0.0. "
-                           "Use GeomProp/Geom2dProp result structs with IsDefined flags instead.")
-
   //! @deprecated Use GeomProp/Geom2dProp result structs with IsDefined flags instead.
   enum LProp_Status
 {

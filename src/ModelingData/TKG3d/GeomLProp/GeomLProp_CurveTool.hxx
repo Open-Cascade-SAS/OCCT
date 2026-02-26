@@ -27,11 +27,7 @@ class Geom_Curve;
 class gp_Pnt;
 class gp_Vec;
 
-Standard_HEADER_DEPRECATED("GeomLProp_CurveTool.hxx is deprecated since OCCT 8.0.0. "
-                           "Use GeomProp_Curve instead.")
-
   //! @deprecated Use GeomProp_Curve instead.
-  Standard_DEPRECATED("GeomLProp_CurveTool is deprecated, use GeomProp_Curve instead")
 class GeomLProp_CurveTool
 {
 public:

@@ -22,9 +22,6 @@
 #include <Standard_SStream.hxx>
 #include <Standard_Failure.hxx>
 
-Standard_HEADER_DEPRECATED("LProp_BadContinuity.hxx is deprecated since OCCT 8.0.0. "
-                           "Use GeomProp/Geom2dProp APIs which handle continuity internally.")
-
 #if !defined No_Exception && !defined No_LProp_BadContinuity
   #define LProp_BadContinuity_Raise_if(CONDITION, MESSAGE)                                         \
     if (CONDITION)                                                                                 \

@@ -25,9 +25,6 @@
 #include <LProp_CurAndInf.hxx>
 class Geom2d_Curve;
 
-Standard_HEADER_DEPRECATED("Geom2dLProp_CurAndInf2d.hxx is deprecated since OCCT 8.0.0. "
-                           "Use Geom2dProp_Curve::FindCurvatureExtrema/FindInflections instead.")
-
   //! An algorithm for computing local properties of a curve.
   //! These properties include:
   //! - the maximum and minimum curvatures
@@ -37,7 +34,6 @@ Standard_HEADER_DEPRECATED("Geom2dLProp_CurAndInf2d.hxx is deprecated since OCCT
   //! - implementing the computation algorithms
   //! - consulting the results.
   //! @deprecated Use Geom2dProp_Curve::FindCurvatureExtrema() / FindInflections() instead.
-  Standard_DEPRECATED("Geom2dLProp_CurAndInf2d is deprecated, use Geom2dProp_Curve instead")
 class Geom2dLProp_CurAndInf2d : public LProp_CurAndInf
 {
 public:
