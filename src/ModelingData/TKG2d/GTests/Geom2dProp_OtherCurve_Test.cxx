@@ -19,10 +19,8 @@
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CLProps2d.hxx>
 #include <Geom2dLProp_CurAndInf2d.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
 #include <gp_Ax2d.hxx>
@@ -31,9 +29,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr2d.hxx>
 #include <gp_Pnt2d.hxx>
-    Standard_DISABLE_DEPRECATION_WARNINGS
-#include <LProp_CIType.hxx>
-      Standard_ENABLE_DEPRECATION_WARNINGS
+    #include <LProp_CIType.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 

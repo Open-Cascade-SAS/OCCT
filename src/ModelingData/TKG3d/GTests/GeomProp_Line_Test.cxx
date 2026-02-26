@@ -14,9 +14,7 @@
 // Unit tests for GeomProp_Curve with Line geometry.
 
 #include <Geom_Line.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Dir.hxx>

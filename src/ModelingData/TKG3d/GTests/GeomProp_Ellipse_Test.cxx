@@ -14,9 +14,7 @@
 // Unit tests for GeomProp_Curve with Ellipse geometry.
 
 #include <Geom_Ellipse.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Ax2.hxx>

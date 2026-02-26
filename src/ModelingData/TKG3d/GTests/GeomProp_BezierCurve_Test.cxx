@@ -17,9 +17,7 @@
 // Cross-validates against GeomLProp_CLProps.
 
 #include <Geom_BezierCurve.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Dir.hxx>

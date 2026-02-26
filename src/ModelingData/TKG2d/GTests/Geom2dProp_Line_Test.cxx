@@ -15,9 +15,7 @@
 // Lines have zero curvature, constant tangent, and no normal or centre of curvature.
 
 #include <Geom2d_Line.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_CLProps2d.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <Geom2dProp.hxx>
 #include <Geom2dProp_Curve.hxx>
 #include <gp_Dir2d.hxx>

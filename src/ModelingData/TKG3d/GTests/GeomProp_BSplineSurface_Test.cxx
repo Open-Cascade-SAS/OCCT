@@ -16,9 +16,7 @@
 // bicubic BSpline patches. Cross-validates against GeomLProp_SLProps.
 
 #include <Geom_BSplineSurface.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SLProps.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Surface.hxx>
 #include <gp_Ax3.hxx>

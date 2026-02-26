@@ -15,9 +15,7 @@
 // with knots, span-by-span analysis, and numerical property evaluation.
 
 #include <Geom_BSplineCurve.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CLProps.hxx>
-  Standard_ENABLE_DEPRECATION_WARNINGS
 #include <GeomProp.hxx>
 #include <GeomProp_Curve.hxx>
 #include <gp_Dir.hxx>
