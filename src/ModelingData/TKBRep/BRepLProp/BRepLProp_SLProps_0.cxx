@@ -19,7 +19,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_SurfaceTool.hxx>
 #include <LProp_BadContinuity.hxx>
 #include <LProp_NotDefined.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <BRepAdaptor_Surface.hxx>
 #include <Standard_DomainError.hxx>
@@ -34,6 +34,6 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #define Tool_hxx <BRepLProp_SurfaceTool.hxx>
 #define LProp_SLProps BRepLProp_SLProps
 #define LProp_SLProps_hxx <BRepLProp_SLProps.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_SLProps.gxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS

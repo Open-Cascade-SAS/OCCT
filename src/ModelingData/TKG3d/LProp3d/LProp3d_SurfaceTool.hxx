@@ -23,7 +23,7 @@ Standard_HEADER_DEPRECATED("LProp3d_SurfaceTool.hxx is deprecated since OCCT 8.0
                            "Use GeomProp_Surface instead.")
 
   //! @deprecated Use GeomProp_Surface instead.
-Standard_DEPRECATED("LProp3d_SurfaceTool is deprecated, use GeomProp_Surface instead")
+  Standard_DEPRECATED("LProp3d_SurfaceTool is deprecated, use GeomProp_Surface instead")
 class LProp3d_SurfaceTool
 {
 public:

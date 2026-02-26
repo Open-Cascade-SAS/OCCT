@@ -19,7 +19,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_CurveTool.hxx>
 #include <LProp_BadContinuity.hxx>
 #include <LProp_NotDefined.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Geom_Curve.hxx>
 #include <Standard_DomainError.hxx>
@@ -40,6 +40,6 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #define Tool_hxx <GeomLProp_CurveTool.hxx>
 #define LProp_CLProps GeomLProp_CLProps
 #define LProp_CLProps_hxx <GeomLProp_CLProps.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CLProps.gxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS

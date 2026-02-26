@@ -17,7 +17,7 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp.hxx>
 #include <GeomLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_Curve.hxx>
@@ -27,7 +27,8 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #include <gp_Vec.hxx>
 #include <Precision.hxx>
 
-static int GeomAbsToInteger(const GeomAbs_Shape gcont)
+  static int
+  GeomAbsToInteger(const GeomAbs_Shape gcont)
 {
   int cont = 0;
   switch (gcont)

@@ -32,7 +32,7 @@ Standard_HEADER_DEPRECATED("GeomLProp.hxx is deprecated since OCCT 8.0.0. "
                            "Use GeomProp namespace instead.")
 
   //! @deprecated Use GeomProp namespace instead.
-Standard_DEPRECATED("GeomLProp is deprecated, use GeomProp namespace instead")
+  Standard_DEPRECATED("GeomLProp is deprecated, use GeomProp namespace instead")
 class GeomLProp
 {
 public:

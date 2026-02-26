@@ -20,14 +20,15 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_SurfaceTool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-void BRepLProp_SurfaceTool::Value(const BRepAdaptor_Surface& S,
-                                  const double               U,
-                                  const double               V,
-                                  gp_Pnt&                    P)
+  void
+  BRepLProp_SurfaceTool::Value(const BRepAdaptor_Surface& S,
+                               const double               U,
+                               const double               V,
+                               gp_Pnt&                    P)
 {
   P = S.Value(U, V);
 }

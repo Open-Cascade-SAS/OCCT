@@ -19,7 +19,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_CurveTool.hxx>
 #include <LProp_BadContinuity.hxx>
 #include <LProp_NotDefined.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <BRepAdaptor_Curve.hxx>
 #include <Standard_DomainError.hxx>
@@ -40,6 +40,6 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #define Tool_hxx <BRepLProp_CurveTool.hxx>
 #define LProp_CLProps BRepLProp_CLProps
 #define LProp_CLProps_hxx <BRepLProp_CLProps.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CLProps.gxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS

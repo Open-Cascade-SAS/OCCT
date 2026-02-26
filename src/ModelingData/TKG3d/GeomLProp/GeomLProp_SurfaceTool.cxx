@@ -21,12 +21,13 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <GeomLProp_SurfaceTool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-void GeomLProp_SurfaceTool::Value(const occ::handle<Geom_Surface>& S,
-                                  const double                     U,
-                                  const double                     V,
-                                  gp_Pnt&                          P)
+  void
+  GeomLProp_SurfaceTool::Value(const occ::handle<Geom_Surface>& S,
+                               const double                     U,
+                               const double                     V,
+                               gp_Pnt&                          P)
 {
   P = S->Value(U, V);
 }

@@ -18,7 +18,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp3d_CurveTool.hxx>
 #include <LProp_BadContinuity.hxx>
 #include <LProp_NotDefined.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Adaptor3d_Curve.hxx>
 #include <Standard_DomainError.hxx>
@@ -39,6 +39,6 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #define Tool_hxx <LProp3d_CurveTool.hxx>
 #define LProp_CLProps LProp3d_CLProps
 #define LProp_CLProps_hxx <LProp3d_CLProps.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CLProps.gxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS

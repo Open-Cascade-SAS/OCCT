@@ -25,11 +25,11 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_FuncCurNul.hxx>
 #include <Geom2dLProp_NumericCurInf2d.hxx>
 #include <LProp_CurAndInf.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-Geom2dLProp_NumericCurInf2d::Geom2dLProp_NumericCurInf2d()
+  Geom2dLProp_NumericCurInf2d::Geom2dLProp_NumericCurInf2d()
     : isDone(false)
 {
 }

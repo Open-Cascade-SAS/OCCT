@@ -20,11 +20,12 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_Curve2dTool.hxx>
 #include <Geom2dLProp_FuncCurExt.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& C, const double Tol)
+  Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& C,
+                                                 const double                     Tol)
     : theCurve(C)
 {
   epsX = Tol;

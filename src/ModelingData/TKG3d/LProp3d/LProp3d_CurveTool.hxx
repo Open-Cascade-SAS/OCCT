@@ -31,7 +31,7 @@ Standard_HEADER_DEPRECATED("LProp3d_CurveTool.hxx is deprecated since OCCT 8.0.0
                            "Use GeomProp_Curve instead.")
 
   //! @deprecated Use GeomProp_Curve instead.
-Standard_DEPRECATED("LProp3d_CurveTool is deprecated, use GeomProp_Curve instead")
+  Standard_DEPRECATED("LProp3d_CurveTool is deprecated, use GeomProp_Curve instead")
 class LProp3d_CurveTool
 {
 public:

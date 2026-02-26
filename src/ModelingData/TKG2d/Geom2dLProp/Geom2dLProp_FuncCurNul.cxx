@@ -20,11 +20,11 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_Curve2dTool.hxx>
 #include <Geom2dLProp_FuncCurNul.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-Geom2dLProp_FuncCurNul::Geom2dLProp_FuncCurNul(const occ::handle<Geom2d_Curve>& C)
+  Geom2dLProp_FuncCurNul::Geom2dLProp_FuncCurNul(const occ::handle<Geom2d_Curve>& C)
     : theCurve(C)
 {
 }

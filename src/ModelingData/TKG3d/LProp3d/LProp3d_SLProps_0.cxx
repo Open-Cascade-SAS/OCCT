@@ -18,7 +18,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp3d_SurfaceTool.hxx>
 #include <LProp_BadContinuity.hxx>
 #include <LProp_NotDefined.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Adaptor3d_Surface.hxx>
 #include <Standard_DomainError.hxx>
@@ -33,6 +33,6 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #define Tool_hxx <LProp3d_SurfaceTool.hxx>
 #define LProp_SLProps LProp3d_SLProps
 #define LProp_SLProps_hxx <LProp3d_SLProps.hxx>
-Standard_DISABLE_DEPRECATION_WARNINGS
+    Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_SLProps.gxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS

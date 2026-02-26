@@ -20,11 +20,12 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp3d_CurveTool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-void LProp3d_CurveTool::Value(const occ::handle<Adaptor3d_Curve>& C, const double U, gp_Pnt& P)
+  void
+  LProp3d_CurveTool::Value(const occ::handle<Adaptor3d_Curve>& C, const double U, gp_Pnt& P)
 {
   P = C->Value(U);
 }

@@ -17,7 +17,7 @@
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp.hxx>
 #include <BRepLProp_CLProps.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <gp_Dir.hxx>
 #include <gp_Vec.hxx>
@@ -25,14 +25,15 @@ Standard_ENABLE_DEPRECATION_WARNINGS
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Edge.hxx>
 
-//=================================================================================================
+    //=================================================================================================
 
-GeomAbs_Shape BRepLProp::Continuity(const BRepAdaptor_Curve& C1,
-                                    const BRepAdaptor_Curve& C2,
-                                    const double             u1,
-                                    const double             u2,
-                                    const double             tl,
-                                    const double             ta)
+    GeomAbs_Shape
+  BRepLProp::Continuity(const BRepAdaptor_Curve& C1,
+                        const BRepAdaptor_Curve& C2,
+                        const double             u1,
+                        const double             u2,
+                        const double             tl,
+                        const double             ta)
 {
   GeomAbs_Shape cont = GeomAbs_C0;
   bool          fini = false;

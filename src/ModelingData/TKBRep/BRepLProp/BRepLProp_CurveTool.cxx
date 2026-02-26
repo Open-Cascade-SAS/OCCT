@@ -20,11 +20,12 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <BRepLProp_CurveTool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-void BRepLProp_CurveTool::Value(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P)
+  void
+  BRepLProp_CurveTool::Value(const BRepAdaptor_Curve& C, const double U, gp_Pnt& P)
 {
   P = C.Value(U);
 }

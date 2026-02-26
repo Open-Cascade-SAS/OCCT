@@ -16,13 +16,13 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp_CurAndInf.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
 #include <Standard_OutOfRange.hxx>
 
-//=================================================================================================
+  //=================================================================================================
 
-LProp_CurAndInf::LProp_CurAndInf() = default;
+  LProp_CurAndInf::LProp_CurAndInf() = default;
 
 //=================================================================================================
 

@@ -19,14 +19,15 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <LProp3d_SurfaceTool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-//=================================================================================================
+  //=================================================================================================
 
-void LProp3d_SurfaceTool::Value(const occ::handle<Adaptor3d_Surface>& S,
-                                const double                          U,
-                                const double                          V,
-                                gp_Pnt&                               P)
+  void
+  LProp3d_SurfaceTool::Value(const occ::handle<Adaptor3d_Surface>& S,
+                             const double                          U,
+                             const double                          V,
+                             gp_Pnt&                               P)
 {
   P = S->Value(U, V);
 }

@@ -21,9 +21,10 @@
 
 Standard_DISABLE_DEPRECATION_WARNINGS
 #include <Geom2dLProp_Curve2dTool.hxx>
-Standard_ENABLE_DEPRECATION_WARNINGS
+  Standard_ENABLE_DEPRECATION_WARNINGS
 
-void Geom2dLProp_Curve2dTool::Value(const occ::handle<Geom2d_Curve>& C, const double U, gp_Pnt2d& P)
+  void
+  Geom2dLProp_Curve2dTool::Value(const occ::handle<Geom2d_Curve>& C, const double U, gp_Pnt2d& P)
 {
   P = C->Value(U);
 }
