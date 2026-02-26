@@ -20,7 +20,7 @@
 
 #include <cmath>
 
-  TEST(LProp_AnalyticCurInfTest, Line_NoExtrema)
+TEST(LProp_AnalyticCurInfTest, Line_NoExtrema)
 {
   // A line has constant zero curvature - no extrema
   LProp_AnalyticCurInf anAnalyzer;

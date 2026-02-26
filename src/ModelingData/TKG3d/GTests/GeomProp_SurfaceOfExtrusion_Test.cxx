@@ -37,129 +37,128 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL  = Precision::PConfusion();
-  constexpr double THE_CURV_TOL = 1.0e-6;
-  constexpr double THE_DIR_TOL  = 1.0e-4;
+constexpr double THE_LIN_TOL  = Precision::PConfusion();
+constexpr double THE_CURV_TOL = 1.0e-6;
+constexpr double THE_DIR_TOL  = 1.0e-4;
 
-  //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+//! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+{
+  GeomProp_Surface                    aProp(theSurf);
+  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsNormalDefined())
   {
-    GeomProp_Surface                    aProp(theSurf);
-    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsNormalDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-      const double aDot = aNew.Direction.Dot(anOld.Normal());
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-        << "Normal mismatch at (" << theU << "," << theV << ")";
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+    const double aDot = aNew.Direction.Dot(anOld.Normal());
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Normal mismatch at (" << theU << "," << theV << ")";
   }
+}
 
-  //! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+//! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theU,
+                       const double                     theV)
+{
+  GeomProp_Surface                       aProp(theSurf);
+  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Compare mean and Gaussian curvatures.
+void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
                          const double                     theU,
                          const double                     theV)
-  {
-    GeomProp_Surface                       aProp(theSurf);
-    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+{
+  GeomProp_Surface                   aProp(theSurf);
+  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Run all surface comparisons at a grid of parameter values.
+void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theUMin,
+                       const double                     theUMax,
+                       const double                     theVMin,
+                       const double                     theVMax,
+                       const int                        theNbU = 5,
+                       const int                        theNbV = 5)
+{
+  const double aUStep = (theUMax - theUMin) / theNbU;
+  const double aVStep = (theVMax - theVMin) / theNbV;
+  for (int i = 0; i <= theNbU; ++i)
+  {
+    for (int j = 0; j <= theNbV; ++j)
     {
-      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+      const double aU = theUMin + i * aUStep;
+      const double aV = theVMin + j * aVStep;
+      compareNormal(theSurf, aU, aV);
+      compareCurvatures(theSurf, aU, aV);
+      compareMeanGaussian(theSurf, aU, aV);
     }
   }
+}
 
-  //! Compare mean and Gaussian curvatures.
-  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                           const double                     theU,
-                           const double                     theV)
-  {
-    GeomProp_Surface                   aProp(theSurf);
-    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+//! Extrusion direction: along Z.
+const gp_Dir THE_EXTRUSION_DIR(0.0, 0.0, 1.0);
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
-                                  << ")";
-      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
-    }
-  }
+//! Create cylinder by extruding a circle along Z.
+//! Circle of radius 5 in XY plane, extruded along Z.
+occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeCircle()
+{
+  gp_Ax2                   aCircAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircAx, 5.0);
+  return new Geom_SurfaceOfLinearExtrusion(aCircle, THE_EXTRUSION_DIR);
+}
 
-  //! Run all surface comparisons at a grid of parameter values.
-  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theUMin,
-                         const double                     theUMax,
-                         const double                     theVMin,
-                         const double                     theVMax,
-                         const int                        theNbU = 5,
-                         const int                        theNbV = 5)
-  {
-    const double aUStep = (theUMax - theUMin) / theNbU;
-    const double aVStep = (theVMax - theVMin) / theNbV;
-    for (int i = 0; i <= theNbU; ++i)
-    {
-      for (int j = 0; j <= theNbV; ++j)
-      {
-        const double aU = theUMin + i * aUStep;
-        const double aV = theVMin + j * aVStep;
-        compareNormal(theSurf, aU, aV);
-        compareCurvatures(theSurf, aU, aV);
-        compareMeanGaussian(theSurf, aU, aV);
-      }
-    }
-  }
+//! Create plane by extruding a line along Z.
+occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeLine()
+{
+  occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  return new Geom_SurfaceOfLinearExtrusion(aLine, THE_EXTRUSION_DIR);
+}
 
-  //! Extrusion direction: along Z.
-  const gp_Dir THE_EXTRUSION_DIR(0.0, 0.0, 1.0);
+//! Create surface by extruding an ellipse along Z.
+occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeEllipse()
+{
+  gp_Ax2                    anEllAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
+  occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anEllAx, 6.0, 3.0);
+  return new Geom_SurfaceOfLinearExtrusion(anEllipse, THE_EXTRUSION_DIR);
+}
 
-  //! Create cylinder by extruding a circle along Z.
-  //! Circle of radius 5 in XY plane, extruded along Z.
-  occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeCircle()
-  {
-    gp_Ax2                   aCircAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-    occ::handle<Geom_Circle> aCircle = new Geom_Circle(aCircAx, 5.0);
-    return new Geom_SurfaceOfLinearExtrusion(aCircle, THE_EXTRUSION_DIR);
-  }
-
-  //! Create plane by extruding a line along Z.
-  occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeLine()
-  {
-    occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-    return new Geom_SurfaceOfLinearExtrusion(aLine, THE_EXTRUSION_DIR);
-  }
-
-  //! Create surface by extruding an ellipse along Z.
-  occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeEllipse()
-  {
-    gp_Ax2                    anEllAx(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0));
-    occ::handle<Geom_Ellipse> anEllipse = new Geom_Ellipse(anEllAx, 6.0, 3.0);
-    return new Geom_SurfaceOfLinearExtrusion(anEllipse, THE_EXTRUSION_DIR);
-  }
-
-  //! Create surface by extruding a cubic Bezier curve along Z.
-  occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeBezier()
-  {
-    NCollection_Array1<gp_Pnt> aPoles(1, 4);
-    aPoles(1)                             = gp_Pnt(0.0, 0.0, 0.0);
-    aPoles(2)                             = gp_Pnt(1.0, 3.0, 0.0);
-    aPoles(3)                             = gp_Pnt(3.0, -1.0, 0.0);
-    aPoles(4)                             = gp_Pnt(4.0, 1.0, 0.0);
-    occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
-    return new Geom_SurfaceOfLinearExtrusion(aBezier, THE_EXTRUSION_DIR);
-  }
+//! Create surface by extruding a cubic Bezier curve along Z.
+occ::handle<Geom_SurfaceOfLinearExtrusion> makeExtrudeBezier()
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 4);
+  aPoles(1)                             = gp_Pnt(0.0, 0.0, 0.0);
+  aPoles(2)                             = gp_Pnt(1.0, 3.0, 0.0);
+  aPoles(3)                             = gp_Pnt(3.0, -1.0, 0.0);
+  aPoles(4)                             = gp_Pnt(4.0, 1.0, 0.0);
+  occ::handle<Geom_BezierCurve> aBezier = new Geom_BezierCurve(aPoles);
+  return new Geom_SurfaceOfLinearExtrusion(aBezier, THE_EXTRUSION_DIR);
+}
 } // namespace
 
 // Normal on extruded circle (cylinder) points radially outward

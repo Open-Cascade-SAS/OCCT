@@ -29,98 +29,97 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL   = Precision::PConfusion();
-  constexpr double THE_CURV_TOL  = 1.0e-8;
-  constexpr double THE_DIR_TOL   = 1.0e-6;
-  constexpr double THE_POINT_TOL = 1.0e-6;
+constexpr double THE_LIN_TOL   = Precision::PConfusion();
+constexpr double THE_CURV_TOL  = 1.0e-8;
+constexpr double THE_DIR_TOL   = 1.0e-6;
+constexpr double THE_POINT_TOL = 1.0e-6;
 
-  //! Compare tangent from new GeomProp_Curve vs old GeomLProp_CLProps.
-  void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+//! Compare tangent from new GeomProp_Curve vs old GeomLProp_CLProps.
+void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve                aProp(theCurve);
+  const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
+
+  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined())
   {
-    GeomProp_Curve                aProp(theCurve);
-    const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
-
-    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New tangent undefined but old is defined at param="
-                                  << theParam;
-      gp_Dir anOldDir;
-      anOld.Tangent(anOldDir);
-      const double aDot = aNew.Direction.Dot(anOldDir);
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-        << "Tangent direction mismatch at param=" << theParam;
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New tangent undefined but old is defined at param=" << theParam;
+    gp_Dir anOldDir;
+    anOld.Tangent(anOldDir);
+    const double aDot = aNew.Direction.Dot(anOldDir);
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Tangent direction mismatch at param=" << theParam;
   }
+}
 
-  //! Compare curvature from new GeomProp_Curve vs old GeomLProp_CLProps.
-  void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+//! Compare curvature from new GeomProp_Curve vs old GeomLProp_CLProps.
+void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve                  aProp(theCurve);
+  const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
+
+  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined())
   {
-    GeomProp_Curve                  aProp(theCurve);
-    const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
-
-    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New curvature undefined at param=" << theParam;
-      EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL)
-        << "Curvature mismatch at param=" << theParam;
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New curvature undefined at param=" << theParam;
+    EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL)
+      << "Curvature mismatch at param=" << theParam;
   }
+}
 
-  //! Compare normal from new GeomProp_Curve vs old GeomLProp_CLProps.
-  void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+//! Compare normal from new GeomProp_Curve vs old GeomLProp_CLProps.
+void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve               aProp(theCurve);
+  const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
+
+  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
   {
-    GeomProp_Curve               aProp(theCurve);
-    const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
-
-    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at param=" << theParam;
-      gp_Dir anOldNorm;
-      anOld.Normal(anOldNorm);
-      const double aDot = aNew.Direction.Dot(anOldNorm);
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-        << "Normal direction mismatch at param=" << theParam;
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at param=" << theParam;
+    gp_Dir anOldNorm;
+    anOld.Normal(anOldNorm);
+    const double aDot = aNew.Direction.Dot(anOldNorm);
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Normal direction mismatch at param=" << theParam;
   }
+}
 
-  //! Compare centre of curvature from new vs old.
-  void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+//! Compare centre of curvature from new vs old.
+void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve               aProp(theCurve);
+  const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+
+  GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
   {
-    GeomProp_Curve               aProp(theCurve);
-    const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-
-    GeomLProp_CLProps anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New centre undefined at param=" << theParam;
-      gp_Pnt anOldCentre;
-      anOld.CentreOfCurvature(anOldCentre);
-      EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL)
-        << "Centre mismatch at param=" << theParam;
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New centre undefined at param=" << theParam;
+    gp_Pnt anOldCentre;
+    anOld.CentreOfCurvature(anOldCentre);
+    EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL)
+      << "Centre mismatch at param=" << theParam;
   }
+}
 
-  //! Run all comparisons at several parameter values.
-  void compareAll(const occ::handle<Geom_Curve>& theCurve,
-                  const double                   theFirst,
-                  const double                   theLast,
-                  const int                      theNbSamples = 10)
+//! Run all comparisons at several parameter values.
+void compareAll(const occ::handle<Geom_Curve>& theCurve,
+                const double                   theFirst,
+                const double                   theLast,
+                const int                      theNbSamples = 10)
+{
+  const double aStep = (theLast - theFirst) / theNbSamples;
+  for (int i = 0; i <= theNbSamples; ++i)
   {
-    const double aStep = (theLast - theFirst) / theNbSamples;
-    for (int i = 0; i <= theNbSamples; ++i)
-    {
-      const double aParam = theFirst + i * aStep;
-      compareTangent(theCurve, aParam);
-      compareCurvature(theCurve, aParam);
-      compareNormal(theCurve, aParam);
-      compareCentre(theCurve, aParam);
-    }
+    const double aParam = theFirst + i * aStep;
+    compareTangent(theCurve, aParam);
+    compareCurvature(theCurve, aParam);
+    compareNormal(theCurve, aParam);
+    compareCentre(theCurve, aParam);
   }
+}
 } // namespace
 
 // Curvature at vertex (t=0): k = 1/(2f)

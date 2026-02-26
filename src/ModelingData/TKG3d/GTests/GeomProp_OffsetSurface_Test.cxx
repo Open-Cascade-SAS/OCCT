@@ -32,111 +32,110 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL  = Precision::PConfusion();
-  constexpr double THE_CURV_TOL = 1.0e-6;
-  constexpr double THE_DIR_TOL  = 1.0e-4;
+constexpr double THE_LIN_TOL  = Precision::PConfusion();
+constexpr double THE_CURV_TOL = 1.0e-6;
+constexpr double THE_DIR_TOL  = 1.0e-4;
 
-  //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+//! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+{
+  GeomProp_Surface                    aProp(theSurf);
+  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsNormalDefined())
   {
-    GeomProp_Surface                    aProp(theSurf);
-    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsNormalDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-      const double aDot = aNew.Direction.Dot(anOld.Normal());
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-        << "Normal mismatch at (" << theU << "," << theV << ")";
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+    const double aDot = aNew.Direction.Dot(anOld.Normal());
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Normal mismatch at (" << theU << "," << theV << ")";
   }
+}
 
-  //! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+//! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theU,
+                       const double                     theV)
+{
+  GeomProp_Surface                       aProp(theSurf);
+  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Compare mean and Gaussian curvatures.
+void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
                          const double                     theU,
                          const double                     theV)
-  {
-    GeomProp_Surface                       aProp(theSurf);
-    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+{
+  GeomProp_Surface                   aProp(theSurf);
+  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Run all surface comparisons at a grid of parameter values.
+void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theUMin,
+                       const double                     theUMax,
+                       const double                     theVMin,
+                       const double                     theVMax,
+                       const int                        theNbU = 5,
+                       const int                        theNbV = 5)
+{
+  const double aUStep = (theUMax - theUMin) / theNbU;
+  const double aVStep = (theVMax - theVMin) / theNbV;
+  for (int i = 0; i <= theNbU; ++i)
+  {
+    for (int j = 0; j <= theNbV; ++j)
     {
-      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+      const double aU = theUMin + i * aUStep;
+      const double aV = theVMin + j * aVStep;
+      compareNormal(theSurf, aU, aV);
+      compareCurvatures(theSurf, aU, aV);
+      compareMeanGaussian(theSurf, aU, aV);
     }
   }
+}
 
-  //! Compare mean and Gaussian curvatures.
-  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                           const double                     theU,
-                           const double                     theV)
-  {
-    GeomProp_Surface                   aProp(theSurf);
-    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+//! Create offset sphere: sphere R=10, offset d=2.
+occ::handle<Geom_OffsetSurface> makeOffsetSphere(const double theOffset = 2.0)
+{
+  occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 10.0);
+  return new Geom_OffsetSurface(aSphere, theOffset);
+}
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
-                                  << ")";
-      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
-    }
-  }
+//! Create offset plane: XY plane with offset d=5.
+occ::handle<Geom_OffsetSurface> makeOffsetPlane()
+{
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
+  return new Geom_OffsetSurface(aPlane, 5.0);
+}
 
-  //! Run all surface comparisons at a grid of parameter values.
-  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theUMin,
-                         const double                     theUMax,
-                         const double                     theVMin,
-                         const double                     theVMax,
-                         const int                        theNbU = 5,
-                         const int                        theNbV = 5)
-  {
-    const double aUStep = (theUMax - theUMin) / theNbU;
-    const double aVStep = (theVMax - theVMin) / theNbV;
-    for (int i = 0; i <= theNbU; ++i)
-    {
-      for (int j = 0; j <= theNbV; ++j)
-      {
-        const double aU = theUMin + i * aUStep;
-        const double aV = theVMin + j * aVStep;
-        compareNormal(theSurf, aU, aV);
-        compareCurvatures(theSurf, aU, aV);
-        compareMeanGaussian(theSurf, aU, aV);
-      }
-    }
-  }
-
-  //! Create offset sphere: sphere R=10, offset d=2.
-  occ::handle<Geom_OffsetSurface> makeOffsetSphere(const double theOffset = 2.0)
-  {
-    occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp_Ax3(), 10.0);
-    return new Geom_OffsetSurface(aSphere, theOffset);
-  }
-
-  //! Create offset plane: XY plane with offset d=5.
-  occ::handle<Geom_OffsetSurface> makeOffsetPlane()
-  {
-    occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp_Ax3());
-    return new Geom_OffsetSurface(aPlane, 5.0);
-  }
-
-  //! Create offset cylinder: radius 4, offset d=1.
-  occ::handle<Geom_OffsetSurface> makeOffsetCylinder()
-  {
-    occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 4.0);
-    return new Geom_OffsetSurface(aCyl, 1.0);
-  }
+//! Create offset cylinder: radius 4, offset d=1.
+occ::handle<Geom_OffsetSurface> makeOffsetCylinder()
+{
+  occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp_Ax3(), 4.0);
+  return new Geom_OffsetSurface(aCyl, 1.0);
+}
 } // namespace
 
 // Normal of offset sphere: same direction as base sphere

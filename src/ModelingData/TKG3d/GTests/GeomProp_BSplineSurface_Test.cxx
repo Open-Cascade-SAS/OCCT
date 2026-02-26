@@ -30,145 +30,144 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL  = Precision::PConfusion();
-  constexpr double THE_CURV_TOL = 1.0e-6;
-  constexpr double THE_DIR_TOL  = 1.0e-4;
+constexpr double THE_LIN_TOL  = Precision::PConfusion();
+constexpr double THE_CURV_TOL = 1.0e-6;
+constexpr double THE_DIR_TOL  = 1.0e-4;
 
-  //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+//! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+{
+  GeomProp_Surface                    aProp(theSurf);
+  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsNormalDefined())
   {
-    GeomProp_Surface                    aProp(theSurf);
-    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsNormalDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-      const double aDot = aNew.Direction.Dot(anOld.Normal());
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-        << "Normal mismatch at (" << theU << "," << theV << ")";
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+    const double aDot = aNew.Direction.Dot(anOld.Normal());
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Normal mismatch at (" << theU << "," << theV << ")";
   }
+}
 
-  //! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+//! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theU,
+                       const double                     theV)
+{
+  GeomProp_Surface                       aProp(theSurf);
+  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Compare mean and Gaussian curvatures.
+void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
                          const double                     theU,
                          const double                     theV)
-  {
-    GeomProp_Surface                       aProp(theSurf);
-    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+{
+  GeomProp_Surface                   aProp(theSurf);
+  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Run all surface comparisons at a grid of parameter values.
+void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theUMin,
+                       const double                     theUMax,
+                       const double                     theVMin,
+                       const double                     theVMax,
+                       const int                        theNbU = 5,
+                       const int                        theNbV = 5)
+{
+  const double aUStep = (theUMax - theUMin) / theNbU;
+  const double aVStep = (theVMax - theVMin) / theNbV;
+  for (int i = 0; i <= theNbU; ++i)
+  {
+    for (int j = 0; j <= theNbV; ++j)
     {
-      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+      const double aU = theUMin + i * aUStep;
+      const double aV = theVMin + j * aVStep;
+      compareNormal(theSurf, aU, aV);
+      compareCurvatures(theSurf, aU, aV);
+      compareMeanGaussian(theSurf, aU, aV);
+    }
+  }
+}
+
+//! Create a flat (planar) 4x4 bicubic BSpline patch.
+occ::handle<Geom_BSplineSurface> makeFlatBSpline()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
+    {
+      aPoles.SetValue(i, j, gp_Pnt((i - 1) * 1.0, (j - 1) * 1.0, 0.0));
     }
   }
 
-  //! Compare mean and Gaussian curvatures.
-  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                           const double                     theU,
-                           const double                     theV)
-  {
-    GeomProp_Surface                   aProp(theSurf);
-    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+  aUMults(1) = 4;
+  aUMults(2) = 4;
+  aVMults(1) = 4;
+  aVMults(2) = 4;
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
+  return new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+}
+
+//! Create a curved 4x4 bicubic BSpline patch with wavy Z variation.
+occ::handle<Geom_BSplineSurface> makeCurvedBSpline()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
+  {
+    for (int j = 1; j <= 4; ++j)
     {
-      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
-                                  << ")";
-      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+      const double aX = (i - 1) * 1.0;
+      const double aY = (j - 1) * 1.0;
+      const double aZ = std::sin(aX * 0.5) * std::cos(aY * 0.5);
+      aPoles.SetValue(i, j, gp_Pnt(aX, aY, aZ));
     }
   }
 
-  //! Run all surface comparisons at a grid of parameter values.
-  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theUMin,
-                         const double                     theUMax,
-                         const double                     theVMin,
-                         const double                     theVMax,
-                         const int                        theNbU = 5,
-                         const int                        theNbV = 5)
-  {
-    const double aUStep = (theUMax - theUMin) / theNbU;
-    const double aVStep = (theVMax - theVMin) / theNbV;
-    for (int i = 0; i <= theNbU; ++i)
-    {
-      for (int j = 0; j <= theNbV; ++j)
-      {
-        const double aU = theUMin + i * aUStep;
-        const double aV = theVMin + j * aVStep;
-        compareNormal(theSurf, aU, aV);
-        compareCurvatures(theSurf, aU, aV);
-        compareMeanGaussian(theSurf, aU, aV);
-      }
-    }
-  }
+  NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
+  NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
+  aUKnots(1) = 0.0;
+  aUKnots(2) = 1.0;
+  aVKnots(1) = 0.0;
+  aVKnots(2) = 1.0;
+  aUMults(1) = 4;
+  aUMults(2) = 4;
+  aVMults(1) = 4;
+  aVMults(2) = 4;
 
-  //! Create a flat (planar) 4x4 bicubic BSpline patch.
-  occ::handle<Geom_BSplineSurface> makeFlatBSpline()
-  {
-    NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
-    for (int i = 1; i <= 4; ++i)
-    {
-      for (int j = 1; j <= 4; ++j)
-      {
-        aPoles.SetValue(i, j, gp_Pnt((i - 1) * 1.0, (j - 1) * 1.0, 0.0));
-      }
-    }
-
-    NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
-    NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
-    aUKnots(1) = 0.0;
-    aUKnots(2) = 1.0;
-    aVKnots(1) = 0.0;
-    aVKnots(2) = 1.0;
-    aUMults(1) = 4;
-    aUMults(2) = 4;
-    aVMults(1) = 4;
-    aVMults(2) = 4;
-
-    return new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
-  }
-
-  //! Create a curved 4x4 bicubic BSpline patch with wavy Z variation.
-  occ::handle<Geom_BSplineSurface> makeCurvedBSpline()
-  {
-    NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
-    for (int i = 1; i <= 4; ++i)
-    {
-      for (int j = 1; j <= 4; ++j)
-      {
-        const double aX = (i - 1) * 1.0;
-        const double aY = (j - 1) * 1.0;
-        const double aZ = std::sin(aX * 0.5) * std::cos(aY * 0.5);
-        aPoles.SetValue(i, j, gp_Pnt(aX, aY, aZ));
-      }
-    }
-
-    NCollection_Array1<double> aUKnots(1, 2), aVKnots(1, 2);
-    NCollection_Array1<int>    aUMults(1, 2), aVMults(1, 2);
-    aUKnots(1) = 0.0;
-    aUKnots(2) = 1.0;
-    aVKnots(1) = 0.0;
-    aVKnots(2) = 1.0;
-    aUMults(1) = 4;
-    aUMults(2) = 4;
-    aVMults(1) = 4;
-    aVMults(2) = 4;
-
-    return new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
-  }
+  return new Geom_BSplineSurface(aPoles, aUKnots, aVKnots, aUMults, aVMults, 3, 3);
+}
 } // namespace
 
 // Normal at center of curved BSpline patch

@@ -19,7 +19,7 @@
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Pnt2d.hxx>
-    #include <LProp_CIType.hxx>
+#include <LProp_CIType.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 
@@ -27,170 +27,164 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL   = Precision::PConfusion();
-  constexpr double THE_CURV_TOL  = 1.0e-8;
-  constexpr double THE_DIR_TOL   = 1.0e-6;
-  constexpr double THE_POINT_TOL = 1.0e-6;
+constexpr double THE_LIN_TOL   = Precision::PConfusion();
+constexpr double THE_CURV_TOL  = 1.0e-8;
+constexpr double THE_DIR_TOL   = 1.0e-6;
+constexpr double THE_POINT_TOL = 1.0e-6;
 
-  void compareTangent(Geom2dProp_Curve & theProp,
-                      Geom2dLProp_CLProps2d & theOld,
-                      const double theParam)
+void compareTangent(Geom2dProp_Curve& theProp, Geom2dLProp_CLProps2d& theOld, const double theParam)
+{
+  theOld.SetParameter(theParam);
+  const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
+  if (theOld.IsTangentDefined())
   {
-    theOld.SetParameter(theParam);
-    const Geom2dProp::TangentResult aNew = theProp.Tangent(theParam, THE_LIN_TOL);
-    if (theOld.IsTangentDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined);
-      gp_Dir2d anOldDir;
-      theOld.Tangent(anOldDir);
-      const double aDot = aNew.Direction.X() * anOldDir.X() + aNew.Direction.Y() * anOldDir.Y();
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL);
-    }
+    ASSERT_TRUE(aNew.IsDefined);
+    gp_Dir2d anOldDir;
+    theOld.Tangent(anOldDir);
+    const double aDot = aNew.Direction.X() * anOldDir.X() + aNew.Direction.Y() * anOldDir.Y();
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL);
   }
+}
 
-  void compareCurvature(Geom2dProp_Curve & theProp,
-                        Geom2dLProp_CLProps2d & theOld,
-                        const double theParam)
+void compareCurvature(Geom2dProp_Curve&      theProp,
+                      Geom2dLProp_CLProps2d& theOld,
+                      const double           theParam)
+{
+  theOld.SetParameter(theParam);
+  const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
+  const double                      aOldCurv = theOld.Curvature();
+  if (aNew.IsDefined && !aNew.IsInfinite)
   {
-    theOld.SetParameter(theParam);
-    const Geom2dProp::CurvatureResult aNew     = theProp.Curvature(theParam, THE_LIN_TOL);
-    const double                      aOldCurv = theOld.Curvature();
-    if (aNew.IsDefined && !aNew.IsInfinite)
-    {
-      EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL);
-    }
+    EXPECT_NEAR(aNew.Value, aOldCurv, THE_CURV_TOL);
   }
+}
 
-  void compareNormal(Geom2dProp_Curve & theProp,
-                     Geom2dLProp_CLProps2d & theOld,
-                     const double theParam)
+void compareNormal(Geom2dProp_Curve& theProp, Geom2dLProp_CLProps2d& theOld, const double theParam)
+{
+  theOld.SetParameter(theParam);
+  const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
+  const double                   aOldCurv = theOld.Curvature();
+  if (std::abs(aOldCurv) < THE_LIN_TOL)
   {
-    theOld.SetParameter(theParam);
-    const Geom2dProp::NormalResult aNew     = theProp.Normal(theParam, THE_LIN_TOL);
-    const double                   aOldCurv = theOld.Curvature();
-    if (std::abs(aOldCurv) < THE_LIN_TOL)
-    {
-      return;
-    }
-    if (aNew.IsDefined)
-    {
-      gp_Dir2d anOldNorm;
-      theOld.Normal(anOldNorm);
-      const double aDot = aNew.Direction.X() * anOldNorm.X() + aNew.Direction.Y() * anOldNorm.Y();
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL);
-    }
+    return;
   }
+  if (aNew.IsDefined)
+  {
+    gp_Dir2d anOldNorm;
+    theOld.Normal(anOldNorm);
+    const double aDot = aNew.Direction.X() * anOldNorm.X() + aNew.Direction.Y() * anOldNorm.Y();
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL);
+  }
+}
 
-  void compareCentre(Geom2dProp_Curve & theProp,
-                     Geom2dLProp_CLProps2d & theOld,
-                     const double theParam)
+void compareCentre(Geom2dProp_Curve& theProp, Geom2dLProp_CLProps2d& theOld, const double theParam)
+{
+  theOld.SetParameter(theParam);
+  const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+  const double                   aOldCurv = theOld.Curvature();
+  if (std::abs(aOldCurv) < THE_LIN_TOL)
   {
-    theOld.SetParameter(theParam);
-    const Geom2dProp::CentreResult aNew     = theProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    const double                   aOldCurv = theOld.Curvature();
-    if (std::abs(aOldCurv) < THE_LIN_TOL)
-    {
-      return;
-    }
-    if (aNew.IsDefined)
-    {
-      gp_Pnt2d anOldCentre;
-      theOld.CentreOfCurvature(anOldCentre);
-      EXPECT_NEAR(aNew.Centre.X(), anOldCentre.X(), THE_POINT_TOL);
-      EXPECT_NEAR(aNew.Centre.Y(), anOldCentre.Y(), THE_POINT_TOL);
-    }
+    return;
   }
+  if (aNew.IsDefined)
+  {
+    gp_Pnt2d anOldCentre;
+    theOld.CentreOfCurvature(anOldCentre);
+    EXPECT_NEAR(aNew.Centre.X(), anOldCentre.X(), THE_POINT_TOL);
+    EXPECT_NEAR(aNew.Centre.Y(), anOldCentre.Y(), THE_POINT_TOL);
+  }
+}
 
-  void compareAll(Geom2dProp_Curve & theProp,
-                  Geom2dLProp_CLProps2d & theOld,
-                  const double theFirst,
-                  const double theLast,
-                  const int    theNbSamples = 10)
+void compareAll(Geom2dProp_Curve&      theProp,
+                Geom2dLProp_CLProps2d& theOld,
+                const double           theFirst,
+                const double           theLast,
+                const int              theNbSamples = 10)
+{
+  const double aStep = (theLast - theFirst) / theNbSamples;
+  for (int i = 0; i <= theNbSamples; ++i)
   {
-    const double aStep = (theLast - theFirst) / theNbSamples;
-    for (int i = 0; i <= theNbSamples; ++i)
-    {
-      const double aParam = theFirst + i * aStep;
-      compareTangent(theProp, theOld, aParam);
-      compareCurvature(theProp, theOld, aParam);
-      compareNormal(theProp, theOld, aParam);
-      compareCentre(theProp, theOld, aParam);
-    }
+    const double aParam = theFirst + i * aStep;
+    compareTangent(theProp, theOld, aParam);
+    compareCurvature(theProp, theOld, aParam);
+    compareNormal(theProp, theOld, aParam);
+    compareCentre(theProp, theOld, aParam);
   }
+}
 
-  Geom2dProp::CIType mapLPropType(const LProp_CIType theType)
+Geom2dProp::CIType mapLPropType(const LProp_CIType theType)
+{
+  switch (theType)
   {
-    switch (theType)
-    {
-      case LProp_Inflection:
-        return Geom2dProp::CIType::Inflection;
-      case LProp_MinCur:
-        return Geom2dProp::CIType::MinCurvature;
-      case LProp_MaxCur:
-        return Geom2dProp::CIType::MaxCurvature;
-    }
-    return Geom2dProp::CIType::Inflection;
+    case LProp_Inflection:
+      return Geom2dProp::CIType::Inflection;
+    case LProp_MinCur:
+      return Geom2dProp::CIType::MinCurvature;
+    case LProp_MaxCur:
+      return Geom2dProp::CIType::MaxCurvature;
   }
+  return Geom2dProp::CIType::Inflection;
+}
 
-  void compareExtrema(const Geom2dProp::CurveAnalysis& theNew,
-                      const Geom2dLProp_CurAndInf2d&   theOld,
-                      const double                     theTol = 1.0e-4)
+void compareExtrema(const Geom2dProp::CurveAnalysis& theNew,
+                    const Geom2dLProp_CurAndInf2d&   theOld,
+                    const double                     theTol = 1.0e-4)
+{
+  EXPECT_EQ(theNew.Points.Length(), theOld.NbPoints());
+  const int aNb = std::min(theNew.Points.Length(), theOld.NbPoints());
+  for (int i = 0; i < aNb; ++i)
   {
-    EXPECT_EQ(theNew.Points.Length(), theOld.NbPoints());
-    const int aNb = std::min(theNew.Points.Length(), theOld.NbPoints());
-    for (int i = 0; i < aNb; ++i)
-    {
-      EXPECT_NEAR(theNew.Points.Value(i).Parameter, theOld.Parameter(i + 1), theTol)
-        << "Parameter mismatch at index " << i;
-      EXPECT_EQ(theNew.Points.Value(i).Type, mapLPropType(theOld.Type(i + 1)))
-        << "Type mismatch at index " << i;
-    }
+    EXPECT_NEAR(theNew.Points.Value(i).Parameter, theOld.Parameter(i + 1), theTol)
+      << "Parameter mismatch at index " << i;
+    EXPECT_EQ(theNew.Points.Value(i).Type, mapLPropType(theOld.Type(i + 1)))
+      << "Type mismatch at index " << i;
   }
+}
 
-  //! Create a linear Bezier (degree 1): P1(0,0), P2(4,0).
-  occ::handle<Geom2d_BezierCurve> makeLinearBezier()
-  {
-    NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
-    aPoles(1) = gp_Pnt2d(0.0, 0.0);
-    aPoles(2) = gp_Pnt2d(4.0, 0.0);
-    return new Geom2d_BezierCurve(aPoles);
-  }
+//! Create a linear Bezier (degree 1): P1(0,0), P2(4,0).
+occ::handle<Geom2d_BezierCurve> makeLinearBezier()
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 2);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(4.0, 0.0);
+  return new Geom2d_BezierCurve(aPoles);
+}
 
-  //! Create a quadratic Bezier: P1(0,0), P2(2,4), P3(4,0).
-  occ::handle<Geom2d_BezierCurve> makeQuadraticBezier()
-  {
-    NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
-    aPoles(1) = gp_Pnt2d(0.0, 0.0);
-    aPoles(2) = gp_Pnt2d(2.0, 4.0);
-    aPoles(3) = gp_Pnt2d(4.0, 0.0);
-    return new Geom2d_BezierCurve(aPoles);
-  }
+//! Create a quadratic Bezier: P1(0,0), P2(2,4), P3(4,0).
+occ::handle<Geom2d_BezierCurve> makeQuadraticBezier()
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 3);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(2.0, 4.0);
+  aPoles(3) = gp_Pnt2d(4.0, 0.0);
+  return new Geom2d_BezierCurve(aPoles);
+}
 
-  //! Create a cubic S-shaped Bezier: P1(0,0), P2(1,2), P3(3,-1), P4(4,1).
-  occ::handle<Geom2d_BezierCurve> makeCubicSBezier()
-  {
-    NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
-    aPoles(1) = gp_Pnt2d(0.0, 0.0);
-    aPoles(2) = gp_Pnt2d(1.0, 2.0);
-    aPoles(3) = gp_Pnt2d(3.0, -1.0);
-    aPoles(4) = gp_Pnt2d(4.0, 1.0);
-    return new Geom2d_BezierCurve(aPoles);
-  }
+//! Create a cubic S-shaped Bezier: P1(0,0), P2(1,2), P3(3,-1), P4(4,1).
+occ::handle<Geom2d_BezierCurve> makeCubicSBezier()
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(1.0, 2.0);
+  aPoles(3) = gp_Pnt2d(3.0, -1.0);
+  aPoles(4) = gp_Pnt2d(4.0, 1.0);
+  return new Geom2d_BezierCurve(aPoles);
+}
 
-  //! Create a degree 5 Bezier: P1(0,0), P2(1,3), P3(2,-1), P4(3,2), P5(4,-2), P6(5,1).
-  occ::handle<Geom2d_BezierCurve> makeDegree5Bezier()
-  {
-    NCollection_Array1<gp_Pnt2d> aPoles(1, 6);
-    aPoles(1) = gp_Pnt2d(0.0, 0.0);
-    aPoles(2) = gp_Pnt2d(1.0, 3.0);
-    aPoles(3) = gp_Pnt2d(2.0, -1.0);
-    aPoles(4) = gp_Pnt2d(3.0, 2.0);
-    aPoles(5) = gp_Pnt2d(4.0, -2.0);
-    aPoles(6) = gp_Pnt2d(5.0, 1.0);
-    return new Geom2d_BezierCurve(aPoles);
-  }
+//! Create a degree 5 Bezier: P1(0,0), P2(1,3), P3(2,-1), P4(3,2), P5(4,-2), P6(5,1).
+occ::handle<Geom2d_BezierCurve> makeDegree5Bezier()
+{
+  NCollection_Array1<gp_Pnt2d> aPoles(1, 6);
+  aPoles(1) = gp_Pnt2d(0.0, 0.0);
+  aPoles(2) = gp_Pnt2d(1.0, 3.0);
+  aPoles(3) = gp_Pnt2d(2.0, -1.0);
+  aPoles(4) = gp_Pnt2d(3.0, 2.0);
+  aPoles(5) = gp_Pnt2d(4.0, -2.0);
+  aPoles(6) = gp_Pnt2d(5.0, 1.0);
+  return new Geom2d_BezierCurve(aPoles);
+}
 
 } // namespace
 

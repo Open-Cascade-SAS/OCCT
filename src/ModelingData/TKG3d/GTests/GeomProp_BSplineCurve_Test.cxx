@@ -27,186 +27,186 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL   = Precision::PConfusion();
-  constexpr double THE_CURV_TOL  = 1.0e-8;
-  constexpr double THE_DIR_TOL   = 1.0e-6;
-  constexpr double THE_POINT_TOL = 1.0e-6;
+constexpr double THE_LIN_TOL   = Precision::PConfusion();
+constexpr double THE_CURV_TOL  = 1.0e-8;
+constexpr double THE_DIR_TOL   = 1.0e-6;
+constexpr double THE_POINT_TOL = 1.0e-6;
 
-  void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+void compareTangent(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve                aProp(theCurve);
+  const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
+  GeomLProp_CLProps             anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined())
   {
-    GeomProp_Curve                aProp(theCurve);
-    const GeomProp::TangentResult aNew = aProp.Tangent(theParam, THE_LIN_TOL);
-    GeomLProp_CLProps             anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined);
-      gp_Dir anOldDir;
-      anOld.Tangent(anOldDir);
-      EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldDir)), 1.0, THE_DIR_TOL);
-    }
+    ASSERT_TRUE(aNew.IsDefined);
+    gp_Dir anOldDir;
+    anOld.Tangent(anOldDir);
+    EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldDir)), 1.0, THE_DIR_TOL);
   }
+}
 
-  void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+void compareCurvature(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve                  aProp(theCurve);
+  const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
+  GeomLProp_CLProps               anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined())
   {
-    GeomProp_Curve                  aProp(theCurve);
-    const GeomProp::CurvatureResult aNew = aProp.Curvature(theParam, THE_LIN_TOL);
-    GeomLProp_CLProps               anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined);
-      EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL);
-    }
+    ASSERT_TRUE(aNew.IsDefined);
+    EXPECT_NEAR(aNew.Value, anOld.Curvature(), THE_CURV_TOL);
   }
+}
 
-  void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+void compareNormal(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve               aProp(theCurve);
+  const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
+  GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
   {
-    GeomProp_Curve               aProp(theCurve);
-    const GeomProp::NormalResult aNew = aProp.Normal(theParam, THE_LIN_TOL);
-    GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
-    {
-      ASSERT_TRUE(aNew.IsDefined);
-      gp_Dir anOldNorm;
-      anOld.Normal(anOldNorm);
-      EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldNorm)), 1.0, THE_DIR_TOL);
-    }
+    ASSERT_TRUE(aNew.IsDefined);
+    gp_Dir anOldNorm;
+    anOld.Normal(anOldNorm);
+    EXPECT_NEAR(std::abs(aNew.Direction.Dot(anOldNorm)), 1.0, THE_DIR_TOL);
   }
+}
 
-  void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+void compareCentre(const occ::handle<Geom_Curve>& theCurve, const double theParam)
+{
+  GeomProp_Curve               aProp(theCurve);
+  const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
+  GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
+  if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
   {
-    GeomProp_Curve               aProp(theCurve);
-    const GeomProp::CentreResult aNew = aProp.CentreOfCurvature(theParam, THE_LIN_TOL);
-    GeomLProp_CLProps            anOld(theCurve, theParam, 2, THE_LIN_TOL);
-    if (anOld.IsTangentDefined() && std::abs(anOld.Curvature()) > THE_LIN_TOL)
-    {
-      ASSERT_TRUE(aNew.IsDefined);
-      gp_Pnt anOldCentre;
-      anOld.CentreOfCurvature(anOldCentre);
-      EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL);
-    }
+    ASSERT_TRUE(aNew.IsDefined);
+    gp_Pnt anOldCentre;
+    anOld.CentreOfCurvature(anOldCentre);
+    EXPECT_NEAR(aNew.Centre.Distance(anOldCentre), 0.0, THE_POINT_TOL);
   }
+}
 
-  void compareAll(const occ::handle<Geom_Curve>& theCurve,
-                  const double                   theFirst,
-                  const double                   theLast,
-                  const int                      theNbSamples = 10)
+void compareAll(const occ::handle<Geom_Curve>& theCurve,
+                const double                   theFirst,
+                const double                   theLast,
+                const int                      theNbSamples = 10)
+{
+  const double aStep = (theLast - theFirst) / theNbSamples;
+  for (int i = 0; i <= theNbSamples; ++i)
   {
-    const double aStep = (theLast - theFirst) / theNbSamples;
-    for (int i = 0; i <= theNbSamples; ++i)
-    {
-      const double aParam = theFirst + i * aStep;
-      compareTangent(theCurve, aParam);
-      compareCurvature(theCurve, aParam);
-      compareNormal(theCurve, aParam);
-      compareCentre(theCurve, aParam);
-    }
+    const double aParam = theFirst + i * aStep;
+    compareTangent(theCurve, aParam);
+    compareCurvature(theCurve, aParam);
+    compareNormal(theCurve, aParam);
+    compareCentre(theCurve, aParam);
   }
+}
 
-  //! Create a cubic C2 BSpline with 6 poles, knots [0, 0.33, 0.66, 1], mults [4,1,1,4].
-  occ::handle<Geom_BSplineCurve> makeCubicC2()
-  {
-    NCollection_Array1<gp_Pnt> aPoles(1, 6);
-    aPoles(1) = gp_Pnt(0, 0, 0);
-    aPoles(2) = gp_Pnt(1, 3, 0);
-    aPoles(3) = gp_Pnt(2, 1, 1);
-    aPoles(4) = gp_Pnt(3, 4, 0);
-    aPoles(5) = gp_Pnt(4, 2, 1);
-    aPoles(6) = gp_Pnt(5, 0, 0);
+//! Create a cubic C2 BSpline with 6 poles, knots [0, 0.33, 0.66, 1], mults [4,1,1,4].
+occ::handle<Geom_BSplineCurve> makeCubicC2()
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 6);
+  aPoles(1) = gp_Pnt(0, 0, 0);
+  aPoles(2) = gp_Pnt(1, 3, 0);
+  aPoles(3) = gp_Pnt(2, 1, 1);
+  aPoles(4) = gp_Pnt(3, 4, 0);
+  aPoles(5) = gp_Pnt(4, 2, 1);
+  aPoles(6) = gp_Pnt(5, 0, 0);
 
-    NCollection_Array1<double> aKnots(1, 4);
-    aKnots(1) = 0.0;
-    aKnots(2) = 0.33;
-    aKnots(3) = 0.66;
-    aKnots(4) = 1.0;
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.33;
+  aKnots(3) = 0.66;
+  aKnots(4) = 1.0;
 
-    NCollection_Array1<int> aMults(1, 4);
-    aMults(1) = 4;
-    aMults(2) = 1;
-    aMults(3) = 1;
-    aMults(4) = 4;
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 4;
 
-    return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  }
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+}
 
-  //! Create a quadratic C1 BSpline with 5 poles, knots [0, 0.33, 0.66, 1], mults [3,1,1,3].
-  occ::handle<Geom_BSplineCurve> makeQuadraticC1()
-  {
-    NCollection_Array1<gp_Pnt> aPoles(1, 5);
-    aPoles(1) = gp_Pnt(0, 0, 0);
-    aPoles(2) = gp_Pnt(1, 2, 0);
-    aPoles(3) = gp_Pnt(2, -1, 1);
-    aPoles(4) = gp_Pnt(3, 3, 0);
-    aPoles(5) = gp_Pnt(4, 0, 0);
+//! Create a quadratic C1 BSpline with 5 poles, knots [0, 0.33, 0.66, 1], mults [3,1,1,3].
+occ::handle<Geom_BSplineCurve> makeQuadraticC1()
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
+  aPoles(1) = gp_Pnt(0, 0, 0);
+  aPoles(2) = gp_Pnt(1, 2, 0);
+  aPoles(3) = gp_Pnt(2, -1, 1);
+  aPoles(4) = gp_Pnt(3, 3, 0);
+  aPoles(5) = gp_Pnt(4, 0, 0);
 
-    NCollection_Array1<double> aKnots(1, 4);
-    aKnots(1) = 0.0;
-    aKnots(2) = 0.33;
-    aKnots(3) = 0.66;
-    aKnots(4) = 1.0;
+  NCollection_Array1<double> aKnots(1, 4);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.33;
+  aKnots(3) = 0.66;
+  aKnots(4) = 1.0;
 
-    NCollection_Array1<int> aMults(1, 4);
-    aMults(1) = 3;
-    aMults(2) = 1;
-    aMults(3) = 1;
-    aMults(4) = 3;
+  NCollection_Array1<int> aMults(1, 4);
+  aMults(1) = 3;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 3;
 
-    return new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  }
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+}
 
-  //! Create a degree 4 single-span BSpline (Bezier-like), knots [0,1], mults [5,5].
-  occ::handle<Geom_BSplineCurve> makeDegree4()
-  {
-    NCollection_Array1<gp_Pnt> aPoles(1, 5);
-    aPoles(1) = gp_Pnt(0, 0, 0);
-    aPoles(2) = gp_Pnt(1, 4, 0);
-    aPoles(3) = gp_Pnt(2, -2, 1);
-    aPoles(4) = gp_Pnt(3, 3, 0);
-    aPoles(5) = gp_Pnt(4, 0, 0);
+//! Create a degree 4 single-span BSpline (Bezier-like), knots [0,1], mults [5,5].
+occ::handle<Geom_BSplineCurve> makeDegree4()
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 5);
+  aPoles(1) = gp_Pnt(0, 0, 0);
+  aPoles(2) = gp_Pnt(1, 4, 0);
+  aPoles(3) = gp_Pnt(2, -2, 1);
+  aPoles(4) = gp_Pnt(3, 3, 0);
+  aPoles(5) = gp_Pnt(4, 0, 0);
 
-    NCollection_Array1<double> aKnots(1, 2);
-    aKnots(1) = 0.0;
-    aKnots(2) = 1.0;
+  NCollection_Array1<double> aKnots(1, 2);
+  aKnots(1) = 0.0;
+  aKnots(2) = 1.0;
 
-    NCollection_Array1<int> aMults(1, 2);
-    aMults(1) = 5;
-    aMults(2) = 5;
+  NCollection_Array1<int> aMults(1, 2);
+  aMults(1) = 5;
+  aMults(2) = 5;
 
-    return new Geom_BSplineCurve(aPoles, aKnots, aMults, 4);
-  }
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 4);
+}
 
-  //! Create a multi-span cubic BSpline with 8 poles and 6 knots.
-  occ::handle<Geom_BSplineCurve> makeMultiSpanCubic()
-  {
-    NCollection_Array1<gp_Pnt> aPoles(1, 8);
-    aPoles(1) = gp_Pnt(0, 0, 0);
-    aPoles(2) = gp_Pnt(1, 3, 0);
-    aPoles(3) = gp_Pnt(2, -1, 1);
-    aPoles(4) = gp_Pnt(3, 2, 0);
-    aPoles(5) = gp_Pnt(4, -2, 1);
-    aPoles(6) = gp_Pnt(5, 3, 0);
-    aPoles(7) = gp_Pnt(6, 1, 1);
-    aPoles(8) = gp_Pnt(7, 0, 0);
+//! Create a multi-span cubic BSpline with 8 poles and 6 knots.
+occ::handle<Geom_BSplineCurve> makeMultiSpanCubic()
+{
+  NCollection_Array1<gp_Pnt> aPoles(1, 8);
+  aPoles(1) = gp_Pnt(0, 0, 0);
+  aPoles(2) = gp_Pnt(1, 3, 0);
+  aPoles(3) = gp_Pnt(2, -1, 1);
+  aPoles(4) = gp_Pnt(3, 2, 0);
+  aPoles(5) = gp_Pnt(4, -2, 1);
+  aPoles(6) = gp_Pnt(5, 3, 0);
+  aPoles(7) = gp_Pnt(6, 1, 1);
+  aPoles(8) = gp_Pnt(7, 0, 0);
 
-    NCollection_Array1<double> aKnots(1, 6);
-    aKnots(1) = 0.0;
-    aKnots(2) = 0.2;
-    aKnots(3) = 0.4;
-    aKnots(4) = 0.6;
-    aKnots(5) = 0.8;
-    aKnots(6) = 1.0;
+  NCollection_Array1<double> aKnots(1, 6);
+  aKnots(1) = 0.0;
+  aKnots(2) = 0.2;
+  aKnots(3) = 0.4;
+  aKnots(4) = 0.6;
+  aKnots(5) = 0.8;
+  aKnots(6) = 1.0;
 
-    NCollection_Array1<int> aMults(1, 6);
-    aMults(1) = 4;
-    aMults(2) = 1;
-    aMults(3) = 1;
-    aMults(4) = 1;
-    aMults(5) = 1;
-    aMults(6) = 4;
+  NCollection_Array1<int> aMults(1, 6);
+  aMults(1) = 4;
+  aMults(2) = 1;
+  aMults(3) = 1;
+  aMults(4) = 1;
+  aMults(5) = 1;
+  aMults(6) = 4;
 
-    return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
-  }
+  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
+}
 
 } // namespace
 

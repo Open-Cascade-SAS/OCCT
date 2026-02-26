@@ -29,121 +29,120 @@
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_LIN_TOL  = Precision::PConfusion();
-  constexpr double THE_CURV_TOL = 1.0e-6;
-  constexpr double THE_DIR_TOL  = 1.0e-4;
+constexpr double THE_LIN_TOL  = Precision::PConfusion();
+constexpr double THE_CURV_TOL = 1.0e-6;
+constexpr double THE_DIR_TOL  = 1.0e-4;
 
-  //! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+//! Compare surface normal from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareNormal(const occ::handle<Geom_Surface>& theSurf, const double theU, const double theV)
+{
+  GeomProp_Surface                    aProp(theSurf);
+  const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsNormalDefined())
   {
-    GeomProp_Surface                    aProp(theSurf);
-    const GeomProp::SurfaceNormalResult aNew = aProp.Normal(theU, theV, THE_LIN_TOL);
-
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsNormalDefined())
-    {
-      ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
-      const double aDot = aNew.Direction.Dot(anOld.Normal());
-      EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
-        << "Normal mismatch at (" << theU << "," << theV << ")";
-    }
+    ASSERT_TRUE(aNew.IsDefined) << "New normal undefined at (" << theU << "," << theV << ")";
+    const double aDot = aNew.Direction.Dot(anOld.Normal());
+    EXPECT_NEAR(std::abs(aDot), 1.0, THE_DIR_TOL)
+      << "Normal mismatch at (" << theU << "," << theV << ")";
   }
+}
 
-  //! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
-  void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+//! Compare curvatures from new GeomProp_Surface vs old GeomLProp_SLProps.
+void compareCurvatures(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theU,
+                       const double                     theV)
+{
+  GeomProp_Surface                       aProp(theSurf);
+  const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
+      << "MinCurvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
+      << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Compare mean and Gaussian curvatures.
+void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
                          const double                     theU,
                          const double                     theV)
-  {
-    GeomProp_Surface                       aProp(theSurf);
-    const GeomProp::SurfaceCurvatureResult aNew = aProp.Curvatures(theU, theV, THE_LIN_TOL);
+{
+  GeomProp_Surface                   aProp(theSurf);
+  const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
 
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
+  GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
+  if (anOld.IsCurvatureDefined())
+  {
+    ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
+      << "Mean curvature mismatch at (" << theU << "," << theV << ")";
+    EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
+      << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+  }
+}
+
+//! Run all surface comparisons at a grid of parameter values.
+void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
+                       const double                     theUMin,
+                       const double                     theUMax,
+                       const double                     theVMin,
+                       const double                     theVMax,
+                       const int                        theNbU = 5,
+                       const int                        theNbV = 5)
+{
+  const double aUStep = (theUMax - theUMin) / theNbU;
+  const double aVStep = (theVMax - theVMin) / theNbV;
+  for (int i = 0; i <= theNbU; ++i)
+  {
+    for (int j = 0; j <= theNbV; ++j)
     {
-      ASSERT_TRUE(aNew.IsDefined) << "New curvatures undefined at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MinCurvature, anOld.MinCurvature(), THE_CURV_TOL)
-        << "MinCurvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.MaxCurvature, anOld.MaxCurvature(), THE_CURV_TOL)
-        << "MaxCurvature mismatch at (" << theU << "," << theV << ")";
+      const double aU = theUMin + i * aUStep;
+      const double aV = theVMin + j * aVStep;
+      compareNormal(theSurf, aU, aV);
+      compareCurvatures(theSurf, aU, aV);
+      compareMeanGaussian(theSurf, aU, aV);
     }
   }
+}
 
-  //! Compare mean and Gaussian curvatures.
-  void compareMeanGaussian(const occ::handle<Geom_Surface>& theSurf,
-                           const double                     theU,
-                           const double                     theV)
+//! Create a flat (planar) 4x4 Bezier patch on the XY plane.
+occ::handle<Geom_BezierSurface> makeFlatPatch()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
   {
-    GeomProp_Surface                   aProp(theSurf);
-    const GeomProp::MeanGaussianResult aNew = aProp.MeanGaussian(theU, theV, THE_LIN_TOL);
-
-    GeomLProp_SLProps anOld(theSurf, theU, theV, 2, THE_LIN_TOL);
-    if (anOld.IsCurvatureDefined())
+    for (int j = 1; j <= 4; ++j)
     {
-      ASSERT_TRUE(aNew.IsDefined) << "New MeanGaussian undefined at (" << theU << "," << theV
-                                  << ")";
-      EXPECT_NEAR(aNew.MeanCurvature, anOld.MeanCurvature(), THE_CURV_TOL)
-        << "Mean curvature mismatch at (" << theU << "," << theV << ")";
-      EXPECT_NEAR(aNew.GaussianCurvature, anOld.GaussianCurvature(), THE_CURV_TOL)
-        << "Gaussian curvature mismatch at (" << theU << "," << theV << ")";
+      aPoles.SetValue(i, j, gp_Pnt((i - 1) * 1.0, (j - 1) * 1.0, 0.0));
     }
   }
+  return new Geom_BezierSurface(aPoles);
+}
 
-  //! Run all surface comparisons at a grid of parameter values.
-  void compareAllSurface(const occ::handle<Geom_Surface>& theSurf,
-                         const double                     theUMin,
-                         const double                     theUMax,
-                         const double                     theVMin,
-                         const double                     theVMax,
-                         const int                        theNbU = 5,
-                         const int                        theNbV = 5)
+//! Create a curved 4x4 Bezier patch with z = sin(x)*cos(y) variation.
+occ::handle<Geom_BezierSurface> makeCurvedPatch()
+{
+  NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
+  for (int i = 1; i <= 4; ++i)
   {
-    const double aUStep = (theUMax - theUMin) / theNbU;
-    const double aVStep = (theVMax - theVMin) / theNbV;
-    for (int i = 0; i <= theNbU; ++i)
+    for (int j = 1; j <= 4; ++j)
     {
-      for (int j = 0; j <= theNbV; ++j)
-      {
-        const double aU = theUMin + i * aUStep;
-        const double aV = theVMin + j * aVStep;
-        compareNormal(theSurf, aU, aV);
-        compareCurvatures(theSurf, aU, aV);
-        compareMeanGaussian(theSurf, aU, aV);
-      }
+      const double aX = (i - 1) * 1.0;
+      const double aY = (j - 1) * 1.0;
+      const double aZ = std::sin(aX) * std::cos(aY);
+      aPoles.SetValue(i, j, gp_Pnt(aX, aY, aZ));
     }
   }
-
-  //! Create a flat (planar) 4x4 Bezier patch on the XY plane.
-  occ::handle<Geom_BezierSurface> makeFlatPatch()
-  {
-    NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
-    for (int i = 1; i <= 4; ++i)
-    {
-      for (int j = 1; j <= 4; ++j)
-      {
-        aPoles.SetValue(i, j, gp_Pnt((i - 1) * 1.0, (j - 1) * 1.0, 0.0));
-      }
-    }
-    return new Geom_BezierSurface(aPoles);
-  }
-
-  //! Create a curved 4x4 Bezier patch with z = sin(x)*cos(y) variation.
-  occ::handle<Geom_BezierSurface> makeCurvedPatch()
-  {
-    NCollection_Array2<gp_Pnt> aPoles(1, 4, 1, 4);
-    for (int i = 1; i <= 4; ++i)
-    {
-      for (int j = 1; j <= 4; ++j)
-      {
-        const double aX = (i - 1) * 1.0;
-        const double aY = (j - 1) * 1.0;
-        const double aZ = std::sin(aX) * std::cos(aY);
-        aPoles.SetValue(i, j, gp_Pnt(aX, aY, aZ));
-      }
-    }
-    return new Geom_BezierSurface(aPoles);
-  }
+  return new Geom_BezierSurface(aPoles);
+}
 } // namespace
 
 // Normal at center of curved Bezier patch

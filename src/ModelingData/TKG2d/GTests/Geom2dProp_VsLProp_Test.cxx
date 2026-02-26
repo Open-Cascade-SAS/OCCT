@@ -32,46 +32,46 @@
 #include <gp_Hypr2d.hxx>
 #include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
-    #include <LProp_CIType.hxx>
+#include <LProp_CIType.hxx>
 #include <NCollection_Array1.hxx>
 
 #include <gtest/gtest.h>
 
-  namespace
+namespace
 {
-  constexpr double THE_PARAM_TOL = 1.0e-4;
+constexpr double THE_PARAM_TOL = 1.0e-4;
 
-  //! Map LProp_CIType to Geom2dProp::CIType for comparison.
-  Geom2dProp::CIType mapLPropType(const LProp_CIType theType)
+//! Map LProp_CIType to Geom2dProp::CIType for comparison.
+Geom2dProp::CIType mapLPropType(const LProp_CIType theType)
+{
+  switch (theType)
   {
-    switch (theType)
-    {
-      case LProp_Inflection:
-        return Geom2dProp::CIType::Inflection;
-      case LProp_MinCur:
-        return Geom2dProp::CIType::MinCurvature;
-      case LProp_MaxCur:
-        return Geom2dProp::CIType::MaxCurvature;
-    }
-    return Geom2dProp::CIType::Inflection;
+    case LProp_Inflection:
+      return Geom2dProp::CIType::Inflection;
+    case LProp_MinCur:
+      return Geom2dProp::CIType::MinCurvature;
+    case LProp_MaxCur:
+      return Geom2dProp::CIType::MaxCurvature;
   }
+  return Geom2dProp::CIType::Inflection;
+}
 
-  //! Compare extrema results from old and new APIs.
-  void compareExtrema(const Geom2dProp::CurveAnalysis& theNew,
-                      const Geom2dLProp_CurAndInf2d&   theOld,
-                      const double                     theTol = THE_PARAM_TOL)
+//! Compare extrema results from old and new APIs.
+void compareExtrema(const Geom2dProp::CurveAnalysis& theNew,
+                    const Geom2dLProp_CurAndInf2d&   theOld,
+                    const double                     theTol = THE_PARAM_TOL)
+{
+  EXPECT_EQ(theNew.Points.Length(), theOld.NbPoints());
+
+  const int aNb = std::min(theNew.Points.Length(), theOld.NbPoints());
+  for (int i = 0; i < aNb; ++i)
   {
-    EXPECT_EQ(theNew.Points.Length(), theOld.NbPoints());
-
-    const int aNb = std::min(theNew.Points.Length(), theOld.NbPoints());
-    for (int i = 0; i < aNb; ++i)
-    {
-      EXPECT_NEAR(theNew.Points.Value(i).Parameter, theOld.Parameter(i + 1), theTol)
-        << "Parameter mismatch at index " << i;
-      EXPECT_EQ(theNew.Points.Value(i).Type, mapLPropType(theOld.Type(i + 1)))
-        << "Type mismatch at index " << i;
-    }
+    EXPECT_NEAR(theNew.Points.Value(i).Parameter, theOld.Parameter(i + 1), theTol)
+      << "Parameter mismatch at index " << i;
+    EXPECT_EQ(theNew.Points.Value(i).Type, mapLPropType(theOld.Type(i + 1)))
+      << "Type mismatch at index " << i;
   }
+}
 
 } // namespace
 

@@ -17,7 +17,7 @@
 
 #include <gtest/gtest.h>
 
-  TEST(LProp_CurAndInfTest, DefaultConstructor_IsEmpty)
+TEST(LProp_CurAndInfTest, DefaultConstructor_IsEmpty)
 {
   LProp_CurAndInf aResult;
   EXPECT_TRUE(aResult.IsEmpty());
