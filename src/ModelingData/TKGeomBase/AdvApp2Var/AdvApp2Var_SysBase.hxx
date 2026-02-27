@@ -28,41 +28,33 @@ public:
 
   Standard_EXPORT static int macinit_(int*, int*);
   //
-  Standard_EXPORT int mcrdelt_(int*  iunit,
-                               int*  isize,
-                               void*     t,
-                               intptr_t* iofset,
-                               int*  iercod);
+  Standard_EXPORT int mcrdelt_(int* iunit, int* isize, void* t, intptr_t* iofset, int* iercod);
 
   Standard_EXPORT static int mcrfill_(int* size, void* tin, void* tout);
 
-  Standard_EXPORT int            mcrrqst_(int*  iunit,
-                                          int*  isize,
-                                          void*     t,
-                                          intptr_t* iofset,
-                                          int*  iercod);
+  Standard_EXPORT int mcrrqst_(int* iunit, int* isize, void* t, intptr_t* iofset, int* iercod);
   Standard_EXPORT static int mnfndeb_();
-  Standard_EXPORT int        macrai4_(int*  nbelem,
-                                      int*  maxelm,
-                                      int*  itablo,
+  Standard_EXPORT int        macrai4_(int*      nbelem,
+                                      int*      maxelm,
+                                      int*      itablo,
                                       intptr_t* iofset,
-                                      int*  iercod);
-  Standard_EXPORT int        macrar8_(int*    nbelem,
-                                      int*    maxelm,
-                                      double* xtablo,
-                                      intptr_t*   iofset,
-                                      int*    iercod);
-  Standard_EXPORT int        macrdi4_(int*  nbelem,
-                                      int*  maxelm,
-                                      int*  itablo,
+                                      int*      iercod);
+  Standard_EXPORT int        macrar8_(int*      nbelem,
+                                      int*      maxelm,
+                                      double*   xtablo,
                                       intptr_t* iofset,
-                                      int*  iercod);
+                                      int*      iercod);
+  Standard_EXPORT int        macrdi4_(int*      nbelem,
+                                      int*      maxelm,
+                                      int*      itablo,
+                                      intptr_t* iofset,
+                                      int*      iercod);
 
-  Standard_EXPORT int        macrdr8_(int*    nbelem,
-                                      int*    maxelm,
-                                      double* xtablo,
-                                      intptr_t*   iofset,
-                                      int*    iercod);
+  Standard_EXPORT int        macrdr8_(int*      nbelem,
+                                      int*      maxelm,
+                                      double*   xtablo,
+                                      intptr_t* iofset,
+                                      int*      iercod);
   Standard_EXPORT static int maermsg_(const char* cnompg, int* icoder, long cnompg_len);
   Standard_EXPORT static int maitbr8_(int* itaill, double* xtab, double* xval);
   Standard_EXPORT static int maovsr8_(int* ivalcs);
@@ -107,22 +99,22 @@ private:
   {
     unsigned char prot;
     unsigned char unit; // unit of allocation: 1, 2, 4 or 8
-    int       reqsize;
+    int           reqsize;
     intptr_t      loc;
     intptr_t      offset;
     unsigned char alloctype; // static_allocation or heap_allocation
-    int       size;
+    int           size;
     intptr_t      addr;
-    int       userzone; // not used
+    int           userzone; // not used
     intptr_t      startaddr;
     intptr_t      endaddr;
-    int       rank;
+    int           rank;
   };
 
   struct
   {
     mitem         icore[MAX_ALLOC_NB];
-    int       ncore;
+    int           ncore;
     unsigned char lprot;
   } mcrgene_;
 

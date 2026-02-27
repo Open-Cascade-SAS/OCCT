@@ -73,8 +73,8 @@ void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
   for (int j = 1; j < myVParameters.Length(); j++)
   {
     // Modify the patch impacted by the cut.
-    const int aPatchIndex = aNbPatchInU * (j - 1) + i - 1;
-    const occ::handle<AdvApp2Var_Patch>& aPat = myNet.Value(aPatchIndex);
+    const int                            aPatchIndex = aNbPatchInU * (j - 1) + i - 1;
+    const occ::handle<AdvApp2Var_Patch>& aPat        = myNet.Value(aPatchIndex);
     aPat->ChangeDomain(aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
     aPat->ResetApprox();
 
@@ -107,8 +107,8 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
   // Modify the patches affected by the cut.
   for (int i = 1; i <= aNbPatchInU; i++)
   {
-    const int aPatchIndex = aNbPatchInU * (j - 2) + i;
-    const occ::handle<AdvApp2Var_Patch>& aPatch = myNet.Value(aPatchIndex);
+    const int                            aPatchIndex = aNbPatchInU * (j - 2) + i;
+    const occ::handle<AdvApp2Var_Patch>& aPatch      = myNet.Value(aPatchIndex);
     aPatch->ChangeDomain(aPatch->U0(), aPatch->U1(), aPatch->V0(), CuttingValue);
     aPatch->ResetApprox();
   }
@@ -116,9 +116,9 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
   // Insert the top patches.
   for (int i = 1; i <= aNbPatchInU; i++)
   {
-    const int aPatchIndex = aNbPatchInU * (j - 1) + i - 1;
+    const int                            aPatchIndex  = aNbPatchInU * (j - 1) + i - 1;
     const occ::handle<AdvApp2Var_Patch>& aSourcePatch = myNet.Value(aNbPatchInU * (j - 2) + i);
-    occ::handle<AdvApp2Var_Patch> aNewPat = new AdvApp2Var_Patch(myUParameters.Value(i),
+    occ::handle<AdvApp2Var_Patch>        aNewPat      = new AdvApp2Var_Patch(myUParameters.Value(i),
                                                                  myUParameters.Value(i + 1),
                                                                  CuttingValue,
                                                                  myVParameters.Value(j + 1),

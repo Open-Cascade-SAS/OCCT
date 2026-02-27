@@ -30,9 +30,9 @@ struct minombr_1_
 struct maovpar_1_
 {
   double r8und, r8ovr, x4und, x4ovr;
-  float       r4und, r4ovr;
+  float  r4und, r4ovr;
   int    r4nbe, r8nbm, r8nbe, i4ovr, i4ovn, r4exp, r8exp, r4exn, r8exn, r4ncs, r8ncs, r4nbm;
-  short   i2ovr, i2ovn;
+  short  i2ovr, i2ovn;
 };
 
 //
@@ -45,7 +45,7 @@ struct maovpch_1_
 struct mlgdrtl_1_
 {
   double rootab[930], // was [465][2]
-    hiltab[930],          // was [465][2]
+    hiltab[930],      // was [465][2]
     hi0tab[31];
 };
 

@@ -26,28 +26,18 @@ TEST(AdvApp2Var_ContextTest, Tolerances_AreAggregatedAndRescaledForBorderConstra
   aTol2D->SetValue(1, 12.0);
   aTol3D->SetValue(1, 18.0);
 
-  const occ::handle<NCollection_HArray2<double>> aTof1D = new NCollection_HArray2<double>(1, 1, 1, 4);
-  const occ::handle<NCollection_HArray2<double>> aTof2D = new NCollection_HArray2<double>(1, 1, 1, 4);
-  const occ::handle<NCollection_HArray2<double>> aTof3D = new NCollection_HArray2<double>(1, 1, 1, 4);
+  const occ::handle<NCollection_HArray2<double>> aTof1D =
+    new NCollection_HArray2<double>(1, 1, 1, 4);
+  const occ::handle<NCollection_HArray2<double>> aTof2D =
+    new NCollection_HArray2<double>(1, 1, 1, 4);
+  const occ::handle<NCollection_HArray2<double>> aTof3D =
+    new NCollection_HArray2<double>(1, 1, 1, 4);
   aTof1D->Init(100.0);
   aTof2D->Init(100.0);
   aTof3D->Init(100.0);
 
-  const AdvApp2Var_Context aContext(0,
-                                    0,
-                                    0,
-                                    2,
-                                    2,
-                                    0,
-                                    1,
-                                    1,
-                                    1,
-                                    aTol1D,
-                                    aTol2D,
-                                    aTol3D,
-                                    aTof1D,
-                                    aTof2D,
-                                    aTof3D);
+  const AdvApp2Var_Context
+    aContext(0, 0, 0, 2, 2, 0, 1, 1, 1, aTol1D, aTol2D, aTol3D, aTof1D, aTof2D, aTof3D);
 
   EXPECT_EQ(aContext.TotalNumberSSP(), 3);
   EXPECT_EQ(aContext.TotalDimension(), 6);

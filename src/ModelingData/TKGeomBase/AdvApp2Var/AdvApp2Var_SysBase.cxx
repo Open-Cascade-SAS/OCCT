@@ -48,12 +48,12 @@ static int macrclw_(intptr_t* iadfld, intptr_t* iadflf, int* nalloc);
 static int macrerr_(intptr_t* iad, intptr_t* nalloc);
 static int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, int* iphase, int* iznuti);
 static int macrmsg_(const char* crout,
-                    int*    num,
-                    int*    it,
-                    double* xt,
+                    int*        num,
+                    int*        it,
+                    double*     xt,
                     const char* ct,
-                    long      crout_len,
-                    long      ct_len);
+                    long        crout_len,
+                    long        ct_len);
 
 static int macrstw_(intptr_t* iadfld, intptr_t* iadflf, int* nalloc);
 
@@ -61,10 +61,10 @@ static int madbtbk_(int* indice);
 
 static int magtlog_(const char* cnmlog,
                     const char* chaine,
-                    int*    long__,
-                    int*    iercod,
-                    long      cnmlog_len,
-                    long      chaine_len);
+                    int*        long__,
+                    int*        iercod,
+                    long        cnmlog_len,
+                    long        chaine_len);
 
 static int mamdlng_(char* cmdlng, long cmdlng_len);
 
@@ -76,17 +76,17 @@ static int maoverf_(int* nbentr, double* dtable);
 
 static int matrlog_(const char* cnmlog,
                     const char* chaine,
-                    int*    length,
-                    int*    iercod,
-                    long      cnmlog_len,
-                    long      chaine_len);
+                    int*        length,
+                    int*        iercod,
+                    long        cnmlog_len,
+                    long        chaine_len);
 
 static int matrsym_(const char* cnmsym,
                     const char* chaine,
-                    int*    length,
-                    int*    iercod,
-                    long      cnmsym_len,
-                    long      chaine_len);
+                    int*        length,
+                    int*        iercod,
+                    long        cnmsym_len,
+                    long        chaine_len);
 
 static int mcrcomm_(int* kop, int* noct, intptr_t* iadr, int* ier);
 
@@ -198,11 +198,11 @@ int AdvApp2Var_SysBase::macinit_(int* imode, int* ival)
 
 //=================================================================================================
 
-int AdvApp2Var_SysBase::macrai4_(int*  nbelem,
-                                 int*  maxelm,
-                                 int*  itablo,
+int AdvApp2Var_SysBase::macrai4_(int*      nbelem,
+                                 int*      maxelm,
+                                 int*      itablo,
                                  intptr_t* iofset,
-                                 int*  iercod)
+                                 int*      iercod)
 
 {
 
@@ -266,11 +266,11 @@ int AdvApp2Var_SysBase::macrai4_(int*  nbelem,
 
 //=================================================================================================
 
-int AdvApp2Var_SysBase::macrar8_(int*    nbelem,
-                                 int*    maxelm,
-                                 double* xtablo,
-                                 intptr_t*   iofset,
-                                 int*    iercod)
+int AdvApp2Var_SysBase::macrar8_(int*      nbelem,
+                                 int*      maxelm,
+                                 double*   xtablo,
+                                 intptr_t* iofset,
+                                 int*      iercod)
 
 {
   int c__8 = 8;
@@ -461,7 +461,7 @@ int AdvApp2Var_SysBase::macrchk_()
 
 int macrclw_(intptr_t*, // iadfld,
              intptr_t*, // iadflf,
-             int*)  // nalloc)
+             int*)      // nalloc)
 
 {
   return 0;
@@ -471,9 +471,9 @@ int macrclw_(intptr_t*, // iadfld,
 
 int AdvApp2Var_SysBase::macrdi4_(int* nbelem,
                                  int*, // maxelm,
-                                 int*  itablo,
+                                 int*      itablo,
                                  intptr_t* iofset, /* Offset long (pmn) */
-                                 int*  iercod)
+                                 int*      iercod)
 
 {
 
@@ -532,9 +532,9 @@ int AdvApp2Var_SysBase::macrdi4_(int* nbelem,
 
 int AdvApp2Var_SysBase::macrdr8_(int* nbelem,
                                  int*, // maxelm,
-                                 double* xtablo,
-                                 intptr_t*   iofset,
-                                 int*    iercod)
+                                 double*   xtablo,
+                                 intptr_t* iofset,
+                                 int*      iercod)
 
 {
   int c__8 = 8;
@@ -656,9 +656,9 @@ int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, int* iphase, int* iznuti)
   */
   int ifois = 1;
 
-  char    cbid[1] = {};
-  int ibid, ienr;
-  int novfl = 0;
+  char cbid[1] = {};
+  int  ibid, ienr;
+  int  novfl = 0;
 
   /* ***********************************************************************/
 
@@ -769,9 +769,9 @@ int macrgfl_(intptr_t* iadfld, intptr_t* iadflf, int* iphase, int* iznuti)
 //=================================================================================================
 
 int macrmsg_(const char*, // crout,
-             int*,    // num,
-             int*    it,
-             double* xt,
+             int*,        // num,
+             int*        it,
+             double*     xt,
              const char* ct,
              long, // crout_len,
              long ct_len)
@@ -779,7 +779,7 @@ int macrmsg_(const char*, // crout,
 {
 
   /* Local variables */
-  int           inum;
+  int               inum;
   char /*cfm[80],*/ cln[3];
 
   /* ***********************************************************************/
@@ -1037,7 +1037,7 @@ int macrmsg_(const char*, // crout,
 
 int macrstw_(intptr_t*, // iadfld,
              intptr_t*, // iadflf,
-             int*)  // nalloc)
+             int*)      // nalloc)
 
 {
   return 0;
@@ -1054,8 +1054,8 @@ int madbtbk_(int* indice)
 //=================================================================================================
 
 int AdvApp2Var_SysBase::maermsg_(const char*, // cnompg,
-                                 int*,    // icoder,
-                                 long)      // cnompg_len)
+                                 int*,        // icoder,
+                                 long)        // cnompg_len)
 
 {
   return 0;
@@ -1067,14 +1067,14 @@ int magtlog_(const char* cnmlog,
              const char*, // chaine,
              int* long__,
              int* iercod,
-             long   cnmlog_len,
+             long cnmlog_len,
              long) // chaine_len)
 
 {
 
   /* Local variables */
-  char    cbid[255];
-  int ibid, ier;
+  char cbid[255];
+  int  ibid, ier;
 
   /* ***********************************************************************/
 
@@ -1208,9 +1208,9 @@ int AdvApp2Var_SysBase::maitbr8_(int* itaill, double* xtab, double* xval)
   /* Initialized data */
 
   double buff0[63] = {0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-                          0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-                          0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
-                          0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
+                      0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                      0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.,
+                      0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0., 0.};
 
   /* System generated locals */
   int i__1;
@@ -1320,8 +1320,8 @@ int AdvApp2Var_SysBase::maitbr8_(int* itaill, double* xtab, double* xval)
 
 //=================================================================================================
 
-int mamdlng_(char*,  // cmdlng,
-             long) // cmdlng_len)
+int mamdlng_(char*, // cmdlng,
+             long)  // cmdlng_len)
 
 {
 
@@ -1722,7 +1722,7 @@ int matrsym_(const char* cnmsym,
              const char*, // chaine,
              int* length,
              int* iercod,
-             long   cnmsym_len,
+             long cnmsym_len,
              long) // chaine_len)
 
 {
@@ -1813,11 +1813,11 @@ int mcrcomm_(int* kop, int* noct, intptr_t* iadr, int* ier)
   int i__1, i__2;
 
   /* Local variables */
-  intptr_t                       ideb;
-  NCollection_Array1<double> dtab(0, 32000 - 1);
+  intptr_t                     ideb;
+  NCollection_Array1<double>   dtab(0, 32000 - 1);
   NCollection_Array1<intptr_t> itab(0, 160 - 1); // was [4][40] but now flattened to a single array
   intptr_t                     ipre;
-  int                      i__, j, k;
+  int                          i__, j, k;
 
   /* ***********************************************************************/
 
@@ -1988,18 +1988,14 @@ L9900:
 
 //=================================================================================================
 
-int AdvApp2Var_SysBase::mcrdelt_(int*  iunit,
-                                 int*  isize,
-                                 void*     t,
-                                 intptr_t* iofset,
-                                 int*  iercod)
+int AdvApp2Var_SysBase::mcrdelt_(int* iunit, int* isize, void* t, intptr_t* iofset, int* iercod)
 
 {
-  int    ibid;
-  double xbid;
-  int    noct, iver, ksys, i__, n, nrang, ibyte, ier;
-  intptr_t   iadfd, iadff, iaddr, loc; /* Les adrresses en long*/
-  int    kop;
+  int      ibid;
+  double   xbid;
+  int      noct, iver, ksys, i__, n, nrang, ibyte, ier;
+  intptr_t iadfd, iadff, iaddr, loc; /* Les adrresses en long*/
+  int      kop;
 
   /* ***********************************************************************/
 
@@ -2320,7 +2316,7 @@ int AdvApp2Var_SysBase::mcrfill_(int* size, void* tin, void* tout)
 
 int mcrfree_(int*, // ibyte,
              intptr_t iadr,
-             int* ier)
+             int*     ier)
 
 {
   *ier = 0;
@@ -2378,10 +2374,10 @@ int AdvApp2Var_SysBase::mcrlist_(int* ier) const
   /* Builtin functions */
 
   /* Local variables */
-  char       cfmt[1]{};
+  char   cfmt[1]{};
   double dfmt;
   int    ifmt, i__, nufmt, ntotal;
-  char       subrou[7];
+  char   subrou[7];
 
   /* ***********************************************************************/
 
@@ -2497,23 +2493,19 @@ int AdvApp2Var_SysBase::mcrlist_(int* ier) const
 
 //=================================================================================================
 
-int AdvApp2Var_SysBase::mcrrqst_(int*  iunit,
-                                 int*  isize,
-                                 void*     t,
-                                 intptr_t* iofset,
-                                 int*  iercod)
+int AdvApp2Var_SysBase::mcrrqst_(int* iunit, int* isize, void* t, intptr_t* iofset, int* iercod)
 
 {
 
   int i__1, i__2;
 
   /* Local variables */
-  double dfmt;
-  int    ifmt, iver;
-  char       subr[7];
-  int    ksys, ibyte, irest, ier;
-  intptr_t   iadfd, iadff, iaddr, lofset, loc;
-  int    izu;
+  double   dfmt;
+  int      ifmt, iver;
+  char     subr[7];
+  int      ksys, ibyte, irest, ier;
+  intptr_t iadfd, iadff, iaddr, lofset, loc;
+  int      izu;
 
   /* ***********************************************************************/
 
@@ -2823,7 +2815,7 @@ L9900:
 //=================================================================================================
 
 int AdvApp2Var_SysBase::mgenmsg_(const char*, // nomprg,
-                                 long)      // nomprg_len)
+                                 long)        // nomprg_len)
 
 {
   return 0;
@@ -2832,7 +2824,7 @@ int AdvApp2Var_SysBase::mgenmsg_(const char*, // nomprg,
 //=================================================================================================
 
 int AdvApp2Var_SysBase::mgsomsg_(const char*, // nomprg,
-                                 long)      // nomprg_len)
+                                 long)        // nomprg_len)
 
 {
   return 0;
@@ -2992,7 +2984,7 @@ int AdvApp2Var_SysBase::msrfill_(int* nbreel, double* vecent, double* vecsor)
 //=================================================================================================
 
 int AdvApp2Var_SysBase::mswrdbg_(const char*, // ctexte,
-                                 long)      // ctexte_len)
+                                 long)        // ctexte_len)
 
 {
 

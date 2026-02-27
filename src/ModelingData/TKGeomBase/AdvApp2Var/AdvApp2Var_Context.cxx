@@ -199,7 +199,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
     NbPntV = myNbVRoot - 2;
 
   // myJMaxV
-  aSize                                           = JDegV - 2 * iv - 1;
+  aSize                                          = JDegV - 2 * iv - 1;
   occ::handle<NCollection_HArray1<double>> JMaxV = new NCollection_HArray1<double>(1, aSize);
   double* JV_array                               = (double*)&JMaxV->ChangeArray1()(JMaxV->Lower());
   AdvApp2Var_ApproxF2var::mma2jmx_(&JDegV, (int*)&iv, JV_array);
@@ -215,7 +215,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   myVRoots = VRoots;
 
   // myUGauss
-  aSize                                            = (NbPntU / 2 + 1) * (myJDegU - 2 * iu - 1);
+  aSize                                           = (NbPntU / 2 + 1) * (myJDegU - 2 * iu - 1);
   occ::handle<NCollection_HArray1<double>> UGauss = new NCollection_HArray1<double>(1, aSize);
   double* UG_array = (double*)&UGauss->ChangeArray1()(UGauss->Lower());
   AdvApp2Var_ApproxF2var::mmapptt_(&JDegU, &NbPntU, &iu, UG_array, &anErrorCode);
@@ -226,7 +226,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   myUGauss = UGauss;
 
   // myVGauss
-  aSize                                            = (NbPntV / 2 + 1) * (myJDegV - 2 * iv - 1);
+  aSize                                           = (NbPntV / 2 + 1) * (myJDegV - 2 * iv - 1);
   occ::handle<NCollection_HArray1<double>> VGauss = new NCollection_HArray1<double>(1, aSize);
   double* VG_array = (double*)&VGauss->ChangeArray1()(VGauss->Lower());
   AdvApp2Var_ApproxF2var::mmapptt_(&JDegV, &NbPntV, &iv, VG_array, &anErrorCode);
@@ -238,7 +238,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
 
   // myInternalTol, myFrontierTol, myCuttingTol
   const int                                aNbSSP = nb1Dss + nb2Dss + nb3Dss;
-  occ::handle<NCollection_HArray1<double>> ITol  = new NCollection_HArray1<double>(1, aNbSSP);
+  occ::handle<NCollection_HArray1<double>> ITol   = new NCollection_HArray1<double>(1, aNbSSP);
   appendInternalTolerance(tol1D, nb1Dss, 0, ITol);
   appendInternalTolerance(tol2D, nb2Dss, nb1Dss, ITol);
   appendInternalTolerance(tol3D, nb3Dss, nb1Dss + nb2Dss, ITol);
@@ -256,7 +256,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   appendFrontierTolerance(tof3D, nb3Dss, nb1Dss + nb2Dss, FTol, CTol);
   if (iu > -1 || iv > -1)
   {
-    double aTolMin;
+    double       aTolMin;
     const double aHMaxU  = hMaxFactor(iu);
     const double aHMaxV  = hMaxFactor(iv);
     const double aWeight = aHMaxU * aHMaxV + aHMaxU + aHMaxV;

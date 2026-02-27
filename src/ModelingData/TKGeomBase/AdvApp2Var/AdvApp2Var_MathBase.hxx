@@ -23,38 +23,13 @@ public:
   ///
   Standard_EXPORT static int mmapcmp_(int*, int*, int*, double*, double*);
 
-  Standard_EXPORT static int mmdrc11_(int*,
-                                      int*,
-                                      int*,
-                                      double*,
-                                      double*,
-                                      double*);
+  Standard_EXPORT static int mmdrc11_(int*, int*, int*, double*, double*, double*);
 
-  Standard_EXPORT static int mmfmca9_(int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      double*,
-                                      double*);
+  Standard_EXPORT static int mmfmca9_(int*, int*, int*, int*, int*, int*, double*, double*);
 
-  Standard_EXPORT static int mmfmcb5_(int*,
-                                      int*,
-                                      int*,
-                                      double*,
-                                      int*,
-                                      int*,
-                                      int*,
-                                      double*,
-                                      int*);
+  Standard_EXPORT static int mmfmcb5_(int*, int*, int*, double*, int*, int*, int*, double*, int*);
 
-  Standard_EXPORT static void mmwprcs_(double*,
-                                       double*,
-                                       double*,
-                                       double*,
-                                       int*,
-                                       int*);
+  Standard_EXPORT static void mmwprcs_(double*, double*, double*, double*, int*, int*);
   ///
   Standard_EXPORT static int mmcglc1_(int*    ndimax,
                                       int*    ndimen,
@@ -67,10 +42,7 @@ public:
                                       double* erreur,
                                       int*    iercod);
 
-  Standard_EXPORT static int mmbulld_(int*    nbcoln,
-                                      int*    nblign,
-                                      double* dtabtr,
-                                      int*    numcle);
+  Standard_EXPORT static int mmbulld_(int* nbcoln, int* nblign, double* dtabtr, int* numcle);
 
   Standard_EXPORT static int mmcdriv_(int*    ndimen,
                                       int*    ncoeff,
@@ -88,10 +60,7 @@ public:
                                       double* xmatri,
                                       int*    iercod);
 
-  Standard_EXPORT static int mdsptpt_(int*    ndimen,
-                                      double* point1,
-                                      double* point2,
-                                      double* distan);
+  Standard_EXPORT static int mdsptpt_(int* ndimen, double* point1, double* point2, double* distan);
 
   Standard_EXPORT static int mmaperx_(int*    ncofmx,
                                       int*    ndimen,
@@ -143,20 +112,19 @@ public:
                                       int*    jsize2,
                                       int*    iercod);
 
-  Standard_EXPORT static int mmgaus1_(
-    int* ndimf,
-    int (*bfunx)(int*    ninteg,
-                 double* parame,
-                 double* vfunj1,
-                 int*    iercod), // mmfunj1_() from Smoothing.cxx
-    int*    k,
-    double* xd,
-    double* xf,
-    double* saux1,
-    double* saux2,
-    double* somme,
-    int*    niter,
-    int*    iercod);
+  Standard_EXPORT static int mmgaus1_(int* ndimf,
+                                      int (*bfunx)(int*    ninteg,
+                                                   double* parame,
+                                                   double* vfunj1,
+                                                   int*    iercod), // mmfunj1_() from Smoothing.cxx
+                                      int*    k,
+                                      double* xd,
+                                      double* xf,
+                                      double* saux1,
+                                      double* saux2,
+                                      double* somme,
+                                      int*    niter,
+                                      int*    iercod);
 
   Standard_EXPORT static int mmhjcan_(int*    ndimen,
                                       int*    ncourb,
@@ -247,10 +215,7 @@ public:
                                       double* epsiln,
                                       int*    iercod);
 
-  Standard_EXPORT static int mmvncol_(int*    ndimen,
-                                      double* vecin,
-                                      double* vecout,
-                                      int*    iercod);
+  Standard_EXPORT static int mmvncol_(int* ndimen, double* vecin, double* vecout, int* iercod);
 
   Standard_EXPORT static double msc_(int* ndimen, double* vecte1, double* vecte2);
 
@@ -271,10 +236,7 @@ public:
                                       double* curveo,
                                       double* curve);
 
-  Standard_EXPORT static int mmjacan_(const int* ideriv,
-                                      int*       ndeg,
-                                      double*    poljac,
-                                      double*    polcan);
+  Standard_EXPORT static int mmjacan_(const int* ideriv, int* ndeg, double* poljac, double* polcan);
 
   Standard_EXPORT static int mmpocrb_(int*    ndimax,
                                       int*    ncoeff,

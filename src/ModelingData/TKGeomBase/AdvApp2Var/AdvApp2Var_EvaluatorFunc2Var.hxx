@@ -86,7 +86,7 @@ public:
   }
 
 private:
-  AdvApp2Var_EvaluatorFunc2Var(const AdvApp2Var_EvaluatorFunc2Var&) = delete;
+  AdvApp2Var_EvaluatorFunc2Var(const AdvApp2Var_EvaluatorFunc2Var&)            = delete;
   AdvApp2Var_EvaluatorFunc2Var& operator=(const AdvApp2Var_EvaluatorFunc2Var&) = delete;
 };
 

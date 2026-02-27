@@ -127,38 +127,38 @@ static int mma2moy_(int*    ndgumx,
                     double* patjac,
                     double* errmoy);
 
-static int mma2ds2_(int*                            ndimen,
-                    double*                         uintfn,
-                    double*                         vintfn,
+static int mma2ds2_(int*                                ndimen,
+                    double*                             uintfn,
+                    double*                             vintfn,
                     const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                    int*                            nbpntu,
-                    int*                            nbpntv,
-                    double*                         urootb,
-                    double*                         vrootb,
-                    int*                            iiuouv,
-                    double*                         sosotb,
-                    double*                         disotb,
-                    double*                         soditb,
-                    double*                         diditb,
-                    double*                         fpntab,
-                    double*                         ttable,
-                    int*                            iercod);
+                    int*                                nbpntu,
+                    int*                                nbpntv,
+                    double*                             urootb,
+                    double*                             vrootb,
+                    int*                                iiuouv,
+                    double*                             sosotb,
+                    double*                             disotb,
+                    double*                             soditb,
+                    double*                             diditb,
+                    double*                             fpntab,
+                    double*                             ttable,
+                    int*                                iercod);
 
-static int mma1fdi_(int*                            ndimen,
-                    double*                         uvfonc,
+static int mma1fdi_(int*                                ndimen,
+                    double*                             uvfonc,
                     const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                    int*                            isofav,
-                    double*                         tconst,
-                    int*                            nbroot,
-                    double*                         ttable,
-                    int*                            iordre,
-                    int*                            ideriv,
-                    double*                         fpntab,
-                    double*                         somtab,
-                    double*                         diftab,
-                    double*                         contr1,
-                    double*                         contr2,
-                    int*                            iercod);
+                    int*                                isofav,
+                    double*                             tconst,
+                    int*                                nbroot,
+                    double*                             ttable,
+                    int*                                iordre,
+                    int*                                ideriv,
+                    double*                             fpntab,
+                    double*                             somtab,
+                    double*                             diftab,
+                    double*                             contr1,
+                    double*                             contr2,
+                    int*                                iercod);
 
 static int mma1cdi_(int*    ndimen,
                     int*    nbroot,
@@ -593,21 +593,21 @@ int mma1cnt_(int*    ndimen,
 
 //=================================================================================================
 
-int mma1fdi_(int*                            ndimen,
-             double*                         uvfonc,
+int mma1fdi_(int*                                ndimen,
+             double*                             uvfonc,
              const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-             int*                            isofav,
-             double*                         tconst,
-             int*                            nbroot,
-             double*                         ttable,
-             int*                            iordre,
-             int*                            ideriv,
-             double*                         fpntab,
-             double*                         somtab,
-             double*                         diftab,
-             double*                         contr1,
-             double*                         contr2,
-             int*                            iercod)
+             int*                                isofav,
+             double*                             tconst,
+             int*                                nbroot,
+             double*                             ttable,
+             int*                                iordre,
+             int*                                ideriv,
+             double*                             fpntab,
+             double*                             somtab,
+             double*                             diftab,
+             double*                             contr1,
+             double*                             contr2,
+             int*                                iercod)
 {
   /* System generated locals */
   int fpntab_dim1, somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, contr1_dim1,
@@ -1624,12 +1624,7 @@ int mma1noc_(double* dfuvin,
 
 //=================================================================================================
 
-int mma1nop_(int*    nbroot,
-             double* rootlg,
-             double* uvfonc,
-             int*    isofav,
-             double* ttable,
-             int*    iercod)
+int mma1nop_(int* nbroot, double* rootlg, double* uvfonc, int* isofav, double* ttable, int* iercod)
 
 {
   /* System generated locals */
@@ -1755,13 +1750,13 @@ int AdvApp2Var_ApproxF2var::mma2ac1_(int const*    ndimen,
 
 {
   /* System generated locals */
-  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset,
-    contr3_dim1, contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1,
-    uhermt_offset, vhermt_dim1, vhermt_offset, patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2,
-    i__3, i__4, i__5;
+  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset, contr3_dim1,
+    contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1, uhermt_offset,
+    vhermt_dim1, vhermt_offset, patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3, i__4,
+    i__5;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    ndgu, ndgv;
   double bidu1, bidu2, bidv1, bidv2;
   int    ioru1, iorv1, ii, nd, jj, ku, kv;
@@ -1924,11 +1919,11 @@ int AdvApp2Var_ApproxF2var::mma2ac2_(const int*    ndimen,
 
 {
   /* System generated locals */
-  int crbiv1_dim1, crbiv1_dim2, crbiv1_offset, crbiv2_dim1, crbiv2_dim2, crbiv2_offset,
-    patjac_dim1, patjac_dim2, patjac_offset, vhermt_dim1, vhermt_offset, i__1, i__2, i__3, i__4;
+  int crbiv1_dim1, crbiv1_dim2, crbiv1_offset, crbiv2_dim1, crbiv2_dim2, crbiv2_offset, patjac_dim1,
+    patjac_dim2, patjac_offset, vhermt_dim1, vhermt_offset, i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    ndgv1, ndgv2, ii, jj, nd, kk;
   double bid1, bid2;
 
@@ -2070,11 +2065,11 @@ int AdvApp2Var_ApproxF2var::mma2ac3_(const int*    ndimen,
 
 {
   /* System generated locals */
-  int crbiu1_dim1, crbiu1_dim2, crbiu1_offset, crbiu2_dim1, crbiu2_dim2, crbiu2_offset,
-    patjac_dim1, patjac_dim2, patjac_offset, uhermt_dim1, uhermt_offset, i__1, i__2, i__3, i__4;
+  int crbiu1_dim1, crbiu1_dim2, crbiu1_offset, crbiu2_dim1, crbiu2_dim2, crbiu2_offset, patjac_dim1,
+    patjac_dim2, patjac_offset, uhermt_dim1, uhermt_offset, i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    ndgu1, ndgu2, ii, jj, nd, kk;
   double bid1, bid2;
 
@@ -2221,12 +2216,11 @@ int AdvApp2Var_ApproxF2var::mma2can_(const int*    ncfmxu,
 
 {
   /* System generated locals */
-  int patjac_dim1, patjac_dim2, patjac_offset, patcan_dim1, patcan_dim2, patcan_offset, i__1,
-    i__2;
+  int patjac_dim1, patjac_dim2, patjac_offset, patcan_dim1, patcan_dim2, patcan_offset, i__1, i__2;
 
   /* Local variables */
   long ldbg;
-  int ilon1, ilon2, ii, nd;
+  int  ilon1, ilon2, ii, nd;
 
   /* **********************************************************************
    */
@@ -2392,12 +2386,11 @@ int mma2cd1_(int*    ndimen,
   int c__1 = 1;
 
   /* System generated locals */
-  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset,
-    contr3_dim1, contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1,
-    uhermt_offset, vhermt_dim1, vhermt_offset, fpntbu_dim1, fpntbu_offset, fpntbv_dim1,
-    fpntbv_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2, disotb_offset, i__1, i__2,
-    i__3, i__4, i__5;
+  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset, contr3_dim1,
+    contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1, uhermt_offset,
+    vhermt_dim1, vhermt_offset, fpntbu_dim1, fpntbu_offset, fpntbv_dim1, fpntbv_offset, sosotb_dim1,
+    sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2,
+    soditb_offset, disotb_dim1, disotb_dim2, disotb_offset, i__1, i__2, i__3, i__4, i__5;
 
   /* Local variables */
   int    ncfhu, ncfhv, nuroo, nvroo, nd, ii, jj, kk, ll, ibb, kkm, llm, kkp, llp;
@@ -2746,11 +2739,11 @@ int mma2cd2_(int*    ndimen,
 {
   int c__1 = 1;
   /* System generated locals */
-  int sotbv1_dim1, sotbv1_dim2, sotbv1_offset, sotbv2_dim1, sotbv2_dim2, sotbv2_offset,
-    ditbv1_dim1, ditbv1_dim2, ditbv1_offset, ditbv2_dim1, ditbv2_dim2, ditbv2_offset, fpntab_dim1,
-    fpntab_offset, vhermt_dim1, vhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1,
-    diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2,
-    disotb_offset, i__1, i__2, i__3, i__4;
+  int sotbv1_dim1, sotbv1_dim2, sotbv1_offset, sotbv2_dim1, sotbv2_dim2, sotbv2_offset, ditbv1_dim1,
+    ditbv1_dim2, ditbv1_offset, ditbv2_dim1, ditbv2_dim2, ditbv2_offset, fpntab_dim1, fpntab_offset,
+    vhermt_dim1, vhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2,
+    diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2, disotb_offset,
+    i__1, i__2, i__3, i__4;
 
   /* Local variables */
   int    ncfhv, nuroo, nvroo, ii, nd, jj, kk, ibb, jjm, jjp;
@@ -3067,11 +3060,11 @@ int mma2cd3_(int*    ndimen,
   int c__1 = 1;
 
   /* System generated locals */
-  int sotbu1_dim1, sotbu1_dim2, sotbu1_offset, sotbu2_dim1, sotbu2_dim2, sotbu2_offset,
-    ditbu1_dim1, ditbu1_dim2, ditbu1_offset, ditbu2_dim1, ditbu2_dim2, ditbu2_offset, fpntab_dim1,
-    fpntab_offset, uhermt_dim1, uhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1,
-    diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2,
-    disotb_offset, i__1, i__2, i__3, i__4;
+  int sotbu1_dim1, sotbu1_dim2, sotbu1_offset, sotbu2_dim1, sotbu2_dim2, sotbu2_offset, ditbu1_dim1,
+    ditbu1_dim2, ditbu1_offset, ditbu2_dim1, ditbu2_dim2, ditbu2_offset, fpntab_dim1, fpntab_offset,
+    uhermt_dim1, uhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2,
+    diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2, disotb_offset,
+    i__1, i__2, i__3, i__4;
 
   /* Local variables */
   int    ncfhu, nuroo, nvroo, ii, nd, jj, kk, ibb, kkm, kkp;
@@ -3399,20 +3392,20 @@ int AdvApp2Var_ApproxF2var::mma2cdi_(int*    ndimen,
   int c__8 = 8;
 
   /* System generated locals */
-  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset,
-    contr3_dim1, contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, sosotb_dim1,
-    sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2,
-    soditb_offset, disotb_dim1, disotb_dim2, disotb_offset;
+  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset, contr3_dim1,
+    contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, sosotb_dim1, sosotb_dim2,
+    sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2, soditb_offset,
+    disotb_dim1, disotb_dim2, disotb_offset;
 
   /* Local variables */
-  int     ilong;
-  intptr_t    iofwr;
-  double* wrkar = nullptr;
-  double* wrkar_off;
-  int     iszwr;
-  int     ibb, ier = 0;
-  int     isz1, isz2, isz3, isz4;
-  intptr_t    ipt1, ipt2, ipt3;
+  int      ilong;
+  intptr_t iofwr;
+  double*  wrkar = nullptr;
+  double*  wrkar_off;
+  int      iszwr;
+  int      ibb, ier = 0;
+  int      isz1, isz2, isz3, isz4;
+  intptr_t ipt1, ipt2, ipt3;
 
   /* **********************************************************************
    */
@@ -3754,19 +3747,19 @@ int AdvApp2Var_ApproxF2var::mma2ce1_(int*    numdec,
   int c__8 = 8;
 
   /* System generated locals */
-  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, patjac_dim1,
-    patjac_dim2, patjac_offset;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, patjac_dim1, patjac_dim2,
+    patjac_offset;
 
   /* Local variables */
   long     ldbg;
-  intptr_t    iofwr;
-  double* wrkar = nullptr;
-  double* wrkar_off;
-  int     iszwr;
-  int     ier;
-  int     isz1, isz2, isz3, isz4, isz5, isz6, isz7;
-  intptr_t    ipt1, ipt2, ipt3, ipt4, ipt5, ipt6;
+  intptr_t iofwr;
+  double*  wrkar = nullptr;
+  double*  wrkar_off;
+  int      iszwr;
+  int      ier;
+  int      isz1, isz2, isz3, isz4, isz5, isz6, isz7;
+  intptr_t ipt1, ipt2, ipt3, ipt4, ipt5, ipt6;
 
   /* **********************************************************************
    */
@@ -4063,13 +4056,13 @@ int mma2ce2_(int*    numdec,
 
 {
   /* System generated locals */
-  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, gssutb_dim1,
-    gssvtb_dim1, chpair_dim1, chpair_dim2, chpair_offset, chimpr_dim1, chimpr_dim2, chimpr_offset,
-    patjac_dim1, patjac_dim2, patjac_offset, vecerr_dim1, vecerr_offset, i__1, i__2, i__3, i__4;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, gssutb_dim1, gssvtb_dim1,
+    chpair_dim1, chpair_dim2, chpair_offset, chimpr_dim1, chimpr_dim2, chimpr_offset, patjac_dim1,
+    patjac_dim2, patjac_offset, vecerr_dim1, vecerr_offset, i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    idim, igsu, minu, minv, maxu, maxv, igsv;
   double vaux[3];
   int    i2rdu, i2rdv, ndses, nd, ii, jj, kk, nu, nv;
@@ -5015,11 +5008,10 @@ int mma2cfu_(int*    ndujac,
 
 {
   /* System generated locals */
-  int sosotb_dim1, disotb_dim1, disotb_offset, soditb_dim1, soditb_offset, diditb_dim1, i__1,
-    i__2;
+  int sosotb_dim1, disotb_dim1, disotb_offset, soditb_dim1, soditb_offset, diditb_dim1, i__1, i__2;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    nptu2, nptv2, ii, jj;
   double bid0, bid1, bid2;
 
@@ -5247,7 +5239,7 @@ int mma2cfv_(int*    ndvjac,
   int chpair_dim1, chpair_offset, chimpr_dim1, chimpr_offset, patjac_offset, i__1, i__2;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    nptv2, ii, jj;
   double bid1;
 
@@ -5388,33 +5380,33 @@ int mma2cfv_(int*    ndvjac,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2ds1_(int*                            ndimen,
-                                     double*                         uintfn,
-                                     double*                         vintfn,
+int AdvApp2Var_ApproxF2var::mma2ds1_(int*                                ndimen,
+                                     double*                             uintfn,
+                                     double*                             vintfn,
                                      const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                                     int*                            nbpntu,
-                                     int*                            nbpntv,
-                                     double*                         urootb,
-                                     double*                         vrootb,
-                                     int*                            isofav,
-                                     double*                         sosotb,
-                                     double*                         disotb,
-                                     double*                         soditb,
-                                     double*                         diditb,
-                                     double*                         fpntab,
-                                     double*                         ttable,
-                                     int*                            iercod)
+                                     int*                                nbpntu,
+                                     int*                                nbpntv,
+                                     double*                             urootb,
+                                     double*                             vrootb,
+                                     int*                                isofav,
+                                     double*                             sosotb,
+                                     double*                             disotb,
+                                     double*                             soditb,
+                                     double*                             diditb,
+                                     double*                             fpntab,
+                                     double*                             ttable,
+                                     int*                                iercod)
 
 {
   /* System generated locals */
-  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1,
-    fpntab_offset, i__1;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1, fpntab_offset,
+    i__1;
 
   /* Local variables */
   long ldbg;
-  int ibid1, ibid2, iuouv, nd;
-  int isz1, isz2;
+  int  ibid1, ibid2, iuouv, nd;
+  int  isz1, isz2;
 
   /* **********************************************************************
    */
@@ -5794,33 +5786,33 @@ L9999:
 
 //=================================================================================================
 
-int mma2ds2_(int*                            ndimen,
-             double*                         uintfn,
-             double*                         vintfn,
+int mma2ds2_(int*                                ndimen,
+             double*                             uintfn,
+             double*                             vintfn,
              const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-             int*                            nbpntu,
-             int*                            nbpntv,
-             double*                         urootb,
-             double*                         vrootb,
-             int*                            iiuouv,
-             double*                         sosotb,
-             double*                         disotb,
-             double*                         soditb,
-             double*                         diditb,
-             double*                         fpntab,
-             double*                         ttable,
-             int*                            iercod)
+             int*                                nbpntu,
+             int*                                nbpntv,
+             double*                             urootb,
+             double*                             vrootb,
+             int*                                iiuouv,
+             double*                             sosotb,
+             double*                             disotb,
+             double*                             soditb,
+             double*                             diditb,
+             double*                             fpntab,
+             double*                             ttable,
+             int*                                iercod)
 
 {
   int c__0 = 0;
   /* System generated locals */
-  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1,
-    fpntab_offset, i__1, i__2, i__3;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1, fpntab_offset,
+    i__1, i__2, i__3;
 
   /* Local variables */
   int    jdec;
-  long    ldbg;
+  long   ldbg;
   double alinu, blinu, alinv, blinv, tcons;
   double dbfn1[2], dbfn2[2];
   int    nuroo, nvroo, id, iu, iv;
@@ -6235,7 +6227,7 @@ int mma2er1_(int*    ndjacu,
   double d__1;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    minu, minv;
   double vaux[2];
   int    ii, nd, jj;
@@ -6403,7 +6395,7 @@ int mma2er2_(int*    ndjacu,
   double d__1;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   double vaux[2];
   int    i2rdu, i2rdv;
   double errnu, errnv;
@@ -6523,11 +6515,11 @@ L1001:
   if (nv > *mindgv)
   {
     double bid0 = xmaxjv[nv - i2rdv];
-    i__1            = *ndimen;
+    i__1        = *ndimen;
     for (nd = 1; nd <= i__1; ++nd)
     {
       double bid1 = 0.;
-      i__2            = nu;
+      i__2        = nu;
       for (ii = i2rdu; ii <= i__2; ++ii)
       {
         bid1 += (d__1 = patjac[ii + (nv + nd * patjac_dim2) * patjac_dim1], std::abs(d__1))
@@ -6552,11 +6544,11 @@ L1001:
   if (nu > *mindgu)
   {
     double bid0 = xmaxju[nu - i2rdu];
-    i__1            = *ndimen;
+    i__1        = *ndimen;
     for (nd = 1; nd <= i__1; ++nd)
     {
       double bid1 = 0.;
-      i__2            = nv;
+      i__2        = nv;
       for (jj = i2rdv; jj <= i__2; ++jj)
       {
         bid1 += (d__1 = patjac[nu + (jj + nd * patjac_dim2) * patjac_dim1], std::abs(d__1))
@@ -6629,59 +6621,59 @@ L2001:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2fnc_(int*                            ndimen,
-                                     int*                            nbsesp,
-                                     int*                            ndimse,
-                                     double*                         uvfonc,
+int AdvApp2Var_ApproxF2var::mma2fnc_(int*                                ndimen,
+                                     int*                                nbsesp,
+                                     int*                                ndimse,
+                                     double*                             uvfonc,
                                      const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                                     double*                         tconst,
-                                     int*                            isofav,
-                                     int*                            nbroot,
-                                     double*                         rootlg,
-                                     int*                            iordre,
-                                     int*                            ideriv,
-                                     int*                            ndgjac,
-                                     int*                            nbcrmx,
-                                     int*                            ncflim,
-                                     double*                         epsapr,
-                                     int*                            ncoeff,
-                                     double*                         courbe,
-                                     int*                            nbcrbe,
-                                     double*                         somtab,
-                                     double*                         diftab,
-                                     double*                         contr1,
-                                     double*                         contr2,
-                                     double*                         tabdec,
-                                     double*                         errmax,
-                                     double*                         errmoy,
-                                     int*                            iercod)
+                                     double*                             tconst,
+                                     int*                                isofav,
+                                     int*                                nbroot,
+                                     double*                             rootlg,
+                                     int*                                iordre,
+                                     int*                                ideriv,
+                                     int*                                ndgjac,
+                                     int*                                nbcrmx,
+                                     int*                                ncflim,
+                                     double*                             epsapr,
+                                     int*                                ncoeff,
+                                     double*                             courbe,
+                                     int*                                nbcrbe,
+                                     double*                             somtab,
+                                     double*                             diftab,
+                                     double*                             contr1,
+                                     double*                             contr2,
+                                     double*                             tabdec,
+                                     double*                             errmax,
+                                     double*                             errmoy,
+                                     int*                                iercod)
 
 {
   int c__8 = 8;
 
   /* System generated locals */
-  int courbe_dim1, courbe_dim2, courbe_offset, somtab_dim1, somtab_dim2, somtab_offset,
-    diftab_dim1, diftab_dim2, diftab_offset, contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1,
-    contr2_dim2, contr2_offset, errmax_dim1, errmax_offset, errmoy_dim1, errmoy_offset, i__1;
+  int courbe_dim1, courbe_dim2, courbe_offset, somtab_dim1, somtab_dim2, somtab_offset, diftab_dim1,
+    diftab_dim2, diftab_offset, contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2,
+    contr2_offset, errmax_dim1, errmax_offset, errmoy_dim1, errmoy_offset, i__1;
   double d__1;
 
   /* Local variables */
-  int     ideb;
-  double  tmil;
-  int     ideb1, ibid1, ibid2, ncfja, ndgre, ilong, ndwrk;
-  double* wrkar = nullptr;
-  double* wrkar_off;
-  int     nupil;
-  intptr_t    iofwr;
-  double  uvpav[4] /* was [2][2] */;
-  int     nd, ii;
-  int     ibb;
-  int     ier = 0;
-  double  uv11[4] /* was [2][2] */;
-  int     ncb1;
-  double  eps3;
-  int     isz1, isz2, isz3, isz4, isz5;
-  intptr_t    ipt1, ipt2, ipt3, ipt4, iptt, jptt;
+  int      ideb;
+  double   tmil;
+  int      ideb1, ibid1, ibid2, ncfja, ndgre, ilong, ndwrk;
+  double*  wrkar = nullptr;
+  double*  wrkar_off;
+  int      nupil;
+  intptr_t iofwr;
+  double   uvpav[4] /* was [2][2] */;
+  int      nd, ii;
+  int      ibb;
+  int      ier = 0;
+  double   uv11[4] /* was [2][2] */;
+  int      ncb1;
+  double   eps3;
+  int      isz1, isz2, isz3, isz4, isz5;
+  intptr_t ipt1, ipt2, ipt3, ipt4, iptt, jptt;
 
   /* **********************************************************************
    */
@@ -7308,9 +7300,9 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(int*    ncfmxu,
 
 {
   /* System generated locals */
-  int epsfro_dim1, epsfro_offset, patcan_dim1, patcan_dim2, patcan_dim3, patcan_dim4,
-    patcan_offset, errmax_dim1, errmax_dim2, errmax_offset, ncoefu_dim1, ncoefu_offset, ncoefv_dim1,
-    ncoefv_offset, i__1, i__2, i__3, i__4, i__5;
+  int epsfro_dim1, epsfro_offset, patcan_dim1, patcan_dim2, patcan_dim3, patcan_dim4, patcan_offset,
+    errmax_dim1, errmax_dim2, errmax_offset, ncoefu_dim1, ncoefu_offset, ncoefv_dim1, ncoefv_offset,
+    i__1, i__2, i__3, i__4, i__5;
   double d__1, d__2;
 
   /* Local variables */
@@ -7585,99 +7577,96 @@ int AdvApp2Var_ApproxF2var::mma2jmx_(int* ndgjac, int* iordre, double* xjacmx)
 {
   /* Initialized data */
 
-  static double xmax2[57] = {
-    .9682458365518542212948163499456,   .986013297183269340427888048593603,
-    1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
-    1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
-    1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
-    1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
-    1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
-    1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
-    1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
-    2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
-    2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
-    2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
-    2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
-    2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
-    2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
-    2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
-    2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
-    2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
-    2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
-    3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
-    3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
-    3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
-    3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
-    3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
-    3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
-    3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
-    3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
-    3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
-    3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
-    3.72184531357268220291630708234186};
-  static double xmax4[55] = {
-    1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
-    1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
-    1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
-    1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
-    1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
-    1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
-    1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
-    1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
-    1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
-    1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
-    1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
-    2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
-    2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
-    2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
-    2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
-    2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
-    2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
-    2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
-    2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
-    2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
-    2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
-    2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
-    2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
-    2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
-    2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
-    2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
-    3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
-    3.05886060707437081434964933864149};
-  static double xmax6[53] = {
-    1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
-    1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
-    1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
-    1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
-    1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
-    1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
-    1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
-    1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
-    1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
-    1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
-    1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
-    1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
-    1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
-    2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
-    2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
-    2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
-    2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
-    2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
-    2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
-    2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
-    2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
-    2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
-    2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
-    2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
-    2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
-    2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
-    2.71238965987606292679677228666411};
+  static double xmax2[57] = {.9682458365518542212948163499456,   .986013297183269340427888048593603,
+                             1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
+                             1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
+                             1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
+                             1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
+                             1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
+                             1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
+                             1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
+                             2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
+                             2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
+                             2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
+                             2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
+                             2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
+                             2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
+                             2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
+                             2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
+                             2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
+                             2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
+                             3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
+                             3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
+                             3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
+                             3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
+                             3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
+                             3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
+                             3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
+                             3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
+                             3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
+                             3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
+                             3.72184531357268220291630708234186};
+  static double xmax4[55] = {1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
+                             1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
+                             1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
+                             1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
+                             1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
+                             1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
+                             1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
+                             1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
+                             1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
+                             1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
+                             1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
+                             2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
+                             2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
+                             2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
+                             2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
+                             2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
+                             2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
+                             2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
+                             2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
+                             2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
+                             2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
+                             2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
+                             2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
+                             2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
+                             2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
+                             2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
+                             3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
+                             3.05886060707437081434964933864149};
+  static double xmax6[53] = {1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
+                             1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
+                             1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
+                             1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
+                             1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
+                             1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
+                             1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
+                             1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
+                             1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
+                             1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
+                             1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
+                             1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
+                             1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
+                             2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
+                             2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
+                             2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
+                             2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
+                             2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
+                             2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
+                             2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
+                             2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
+                             2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
+                             2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
+                             2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
+                             2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
+                             2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
+                             2.71238965987606292679677228666411};
 
   /* System generated locals */
   int i__1;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    numax, ii;
   double bid;
 
@@ -7791,7 +7780,7 @@ int mma2moy_(int*    ndgumx,
   int patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3;
 
   /* Local variables */
-  long    ldbg;
+  long   ldbg;
   int    minu, minv, idebu, idebv, ii, nd, jj;
   double bid0, bid1;
 
@@ -7933,10 +7922,7 @@ int mma2moy_(int*    ndgumx,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2roo_(int*    nbpntu,
-                                     int*    nbpntv,
-                                     double* urootl,
-                                     double* vrootl)
+int AdvApp2Var_ApproxF2var::mma2roo_(int* nbpntu, int* nbpntv, double* urootl, double* vrootl)
 {
   /* System generated locals */
   int i__1;
@@ -8666,8 +8652,8 @@ int mmjacpt_(const int*    ndimen,
              double*       ptccan)
 {
   /* System generated locals */
-  int ptccan_dim1, ptccan_dim2, ptccan_offset, ptclgd_dim1, ptclgd_dim2, ptclgd_offset,
-    ptcaux_dim1, ptcaux_dim2, ptcaux_dim3, ptcaux_offset, i__1, i__2, i__3;
+  int ptccan_dim1, ptccan_dim2, ptccan_offset, ptclgd_dim1, ptclgd_dim2, ptclgd_offset, ptcaux_dim1,
+    ptcaux_dim2, ptcaux_dim3, ptcaux_offset, i__1, i__2, i__3;
 
   /* Local variables */
   int kdim, nd, ii, jj, ibb;

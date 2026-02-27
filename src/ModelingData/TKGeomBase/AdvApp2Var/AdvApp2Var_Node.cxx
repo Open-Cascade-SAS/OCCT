@@ -20,7 +20,8 @@ IMPLEMENT_STANDARD_RTTIEXT(AdvApp2Var_Node, Standard_Transient)
 
 namespace
 {
-void initNodeFields(NCollection_Array2<gp_Pnt>& theTruePoints, NCollection_Array2<double>& theErrors)
+void initNodeFields(NCollection_Array2<gp_Pnt>& theTruePoints,
+                    NCollection_Array2<double>& theErrors)
 {
   const gp_Pnt aZeroPoint(0.0, 0.0, 0.0);
   theTruePoints.Init(aZeroPoint);
