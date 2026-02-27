@@ -164,6 +164,8 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
 {
   int anErrorCode = 0, NbPntU = 0, JDegU = 0, NbPntV = 0, JDegV = 0;
   int aCoeffLimit;
+  int anOrderU = iu;
+  int anOrderV = iv;
 
   // myNbURoot,myJDegU
   aCoeffLimit = nlimu;
@@ -182,7 +184,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   int                                      aSize = JDegU - 2 * iu - 1;
   occ::handle<NCollection_HArray1<double>> JMaxU = new NCollection_HArray1<double>(1, aSize);
   double* JU_array                               = (double*)&JMaxU->ChangeArray1()(JMaxU->Lower());
-  AdvApp2Var_ApproxF2var::mma2jmx_(&JDegU, (int*)&iu, JU_array);
+  AdvApp2Var_ApproxF2var::mma2jmx_(&JDegU, &anOrderU, JU_array);
   myJMaxU = JMaxU;
 
   // myNbVRoot,myJDegV
@@ -202,7 +204,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   aSize                                          = JDegV - 2 * iv - 1;
   occ::handle<NCollection_HArray1<double>> JMaxV = new NCollection_HArray1<double>(1, aSize);
   double* JV_array                               = (double*)&JMaxV->ChangeArray1()(JMaxV->Lower());
-  AdvApp2Var_ApproxF2var::mma2jmx_(&JDegV, (int*)&iv, JV_array);
+  AdvApp2Var_ApproxF2var::mma2jmx_(&JDegV, &anOrderV, JV_array);
   myJMaxV = JMaxV;
 
   // myURoots, myVRoots
@@ -218,7 +220,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   aSize                                           = (NbPntU / 2 + 1) * (myJDegU - 2 * iu - 1);
   occ::handle<NCollection_HArray1<double>> UGauss = new NCollection_HArray1<double>(1, aSize);
   double* UG_array = (double*)&UGauss->ChangeArray1()(UGauss->Lower());
-  AdvApp2Var_ApproxF2var::mmapptt_(&JDegU, &NbPntU, &iu, UG_array, &anErrorCode);
+  AdvApp2Var_ApproxF2var::mmapptt_(&JDegU, &NbPntU, &anOrderU, UG_array, &anErrorCode);
   if (anErrorCode != 0)
   {
     throw Standard_ConstructionError("AdvApp2Var_Context : Error in FORTRAN");
@@ -229,7 +231,7 @@ AdvApp2Var_Context::AdvApp2Var_Context(const int                                
   aSize                                           = (NbPntV / 2 + 1) * (myJDegV - 2 * iv - 1);
   occ::handle<NCollection_HArray1<double>> VGauss = new NCollection_HArray1<double>(1, aSize);
   double* VG_array = (double*)&VGauss->ChangeArray1()(VGauss->Lower());
-  AdvApp2Var_ApproxF2var::mmapptt_(&JDegV, &NbPntV, &iv, VG_array, &anErrorCode);
+  AdvApp2Var_ApproxF2var::mmapptt_(&JDegV, &NbPntV, &anOrderV, VG_array, &anErrorCode);
   if (anErrorCode != 0)
   {
     throw Standard_ConstructionError("AdvApp2Var_Context : Error in FORTRAN");
