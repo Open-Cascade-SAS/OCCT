@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 
 //=================================================================================================
 
-mlgdrtl_1_& AdvApp2Var_Data::Getmlgdrtl()
+inline mlgdrtl_1_& AdvApp2Var_Data::Getmlgdrtl()
 {
-  static doublereal s_e_1[1891] = {.577350269189625764509148780501958,
+  static double s_e_1[1891] = {.577350269189625764509148780501958,
                                    .339981043584856264802665759103245,
                                    .86113631159405257522394648889281,
                                    .238619186083196908630501721680712,

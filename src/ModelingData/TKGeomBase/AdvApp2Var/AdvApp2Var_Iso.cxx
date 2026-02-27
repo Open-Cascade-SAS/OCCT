@@ -48,6 +48,13 @@ AdvApp2Var_Iso::AdvApp2Var_Iso()
 
 //=================================================================================================
 
+AdvApp2Var_Iso::AdvApp2Var_Iso(const GeomAbs_IsoType type, const int iu, const int iv)
+    : AdvApp2Var_Iso(type, 0.5, 0.0, 1.0, 0.0, 1.0, 0, iu, iv)
+{
+}
+
+//=================================================================================================
+
 AdvApp2Var_Iso::AdvApp2Var_Iso(const GeomAbs_IsoType type,
                                const double          cte,
                                const double          Ufirst,

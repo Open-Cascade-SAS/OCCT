@@ -18,6 +18,16 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(AdvApp2Var_Node, Standard_Transient)
 
+namespace
+{
+void initNodeFields(NCollection_Array2<gp_Pnt>& theTruePoints, NCollection_Array2<double>& theErrors)
+{
+  const gp_Pnt aZeroPoint(0.0, 0.0, 0.0);
+  theTruePoints.Init(aZeroPoint);
+  theErrors.Init(0.0);
+}
+} // namespace
+
 //=================================================================================================
 
 AdvApp2Var_Node::AdvApp2Var_Node()
@@ -26,9 +36,7 @@ AdvApp2Var_Node::AdvApp2Var_Node()
       myOrdInU(2),
       myOrdInV(2)
 {
-  gp_Pnt P0(0., 0., 0.);
-  myTruePoints.Init(P0);
-  myErrors.Init(0.);
+  initNodeFields(myTruePoints, myErrors);
 }
 
 //=================================================================================================
@@ -39,9 +47,7 @@ AdvApp2Var_Node::AdvApp2Var_Node(const int iu, const int iv)
       myOrdInU(iu),
       myOrdInV(iv)
 {
-  gp_Pnt P0(0., 0., 0.);
-  myTruePoints.Init(P0);
-  myErrors.Init(0.);
+  initNodeFields(myTruePoints, myErrors);
 }
 
 //=================================================================================================
@@ -53,7 +59,5 @@ AdvApp2Var_Node::AdvApp2Var_Node(const gp_XY& UV, const int iu, const int iv)
       myOrdInU(iu),
       myOrdInV(iv)
 {
-  gp_Pnt P0(0., 0., 0.);
-  myTruePoints.Init(P0);
-  myErrors.Init(0.);
+  initNodeFields(myTruePoints, myErrors);
 }

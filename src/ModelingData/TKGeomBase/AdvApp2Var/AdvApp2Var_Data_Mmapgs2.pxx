@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 
 //=================================================================================================
 
-mmapgs2_1_& AdvApp2Var_Data::Getmmapgs2()
+inline mmapgs2_1_& AdvApp2Var_Data::Getmmapgs2()
 {
-  static doublereal e_1[4292] = {
+  static double e_1[4292] = {
     .39632048021637914764176155847957,      .144052361182505130848899984065313,
     .0131292459415739298593344566233794,    5.78203737578765418998616263243096e-5,
     .281561650684809260829575792995744,     .29320104590888050097485497216268,

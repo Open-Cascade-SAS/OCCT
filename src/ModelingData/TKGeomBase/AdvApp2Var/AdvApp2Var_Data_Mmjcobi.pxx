@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 
 //=================================================================================================
 
-mmjcobi_1_& AdvApp2Var_Data::Getmmjcobi()
+inline mmjcobi_1_& AdvApp2Var_Data::Getmmjcobi()
 {
-  static doublereal s_e_1[7936] = {.70710678118654752440084436210485,
+  static double s_e_1[7936] = {.70710678118654752440084436210485,
                                    -.79056941504209483299972338610818,
                                    .79549512883486596495094990736796,
                                    -.79672179899887262969191001703481,

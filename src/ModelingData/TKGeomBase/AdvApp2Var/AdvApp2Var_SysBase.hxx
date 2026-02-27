@@ -16,7 +16,6 @@
 #define AdvApp2Var_SysBase_HeaderFile
 
 #include <Standard_TypeDef.hxx>
-#include <AdvApp2Var_Data_f2c.hxx>
 
 class AdvApp2Var_SysBase
 {
@@ -29,59 +28,56 @@ public:
 
   Standard_EXPORT static int macinit_(int*, int*);
   //
-  Standard_EXPORT int mcrdelt_(integer*  iunit,
-                               integer*  isize,
+  Standard_EXPORT int mcrdelt_(int*  iunit,
+                               int*  isize,
                                void*     t,
                                intptr_t* iofset,
-                               integer*  iercod);
+                               int*  iercod);
 
-  Standard_EXPORT static int mcrfill_(integer* size, void* tin, void* tout);
+  Standard_EXPORT static int mcrfill_(int* size, void* tin, void* tout);
 
-  Standard_EXPORT int            mcrrqst_(integer*  iunit,
-                                          integer*  isize,
+  Standard_EXPORT int            mcrrqst_(int*  iunit,
+                                          int*  isize,
                                           void*     t,
                                           intptr_t* iofset,
-                                          integer*  iercod);
-  Standard_EXPORT static integer mnfndeb_();
-
-  Standard_EXPORT static int do__fio();
-  Standard_EXPORT static int do__lio();
-  Standard_EXPORT int        macrai4_(integer*  nbelem,
-                                      integer*  maxelm,
-                                      integer*  itablo,
+                                          int*  iercod);
+  Standard_EXPORT static int mnfndeb_();
+  Standard_EXPORT int        macrai4_(int*  nbelem,
+                                      int*  maxelm,
+                                      int*  itablo,
                                       intptr_t* iofset,
-                                      integer*  iercod);
-  Standard_EXPORT int        macrar8_(integer*    nbelem,
-                                      integer*    maxelm,
-                                      doublereal* xtablo,
+                                      int*  iercod);
+  Standard_EXPORT int        macrar8_(int*    nbelem,
+                                      int*    maxelm,
+                                      double* xtablo,
                                       intptr_t*   iofset,
-                                      integer*    iercod);
-  Standard_EXPORT int        macrdi4_(integer*  nbelem,
-                                      integer*  maxelm,
-                                      integer*  itablo,
+                                      int*    iercod);
+  Standard_EXPORT int        macrdi4_(int*  nbelem,
+                                      int*  maxelm,
+                                      int*  itablo,
                                       intptr_t* iofset,
-                                      integer*  iercod);
+                                      int*  iercod);
 
-  Standard_EXPORT int        macrdr8_(integer*    nbelem,
-                                      integer*    maxelm,
-                                      doublereal* xtablo,
+  Standard_EXPORT int        macrdr8_(int*    nbelem,
+                                      int*    maxelm,
+                                      double* xtablo,
                                       intptr_t*   iofset,
-                                      integer*    iercod);
-  Standard_EXPORT static int maermsg_(const char* cnompg, integer* icoder, ftnlen cnompg_len);
-  Standard_EXPORT static int maitbr8_(integer* itaill, doublereal* xtab, doublereal* xval);
-  Standard_EXPORT static int maovsr8_(integer* ivalcs);
-  Standard_EXPORT static int mgenmsg_(const char* nomprg, ftnlen nomprg_len);
+                                      int*    iercod);
+  Standard_EXPORT static int maermsg_(const char* cnompg, int* icoder, long cnompg_len);
+  Standard_EXPORT static int maitbr8_(int* itaill, double* xtab, double* xval);
+  Standard_EXPORT static int maovsr8_(int* ivalcs);
+  Standard_EXPORT static int mgenmsg_(const char* nomprg, long nomprg_len);
 
-  Standard_EXPORT static int  mgsomsg_(const char* nomprg, ftnlen nomprg_len);
-  Standard_EXPORT static void miraz_(integer* taille, void* adt);
-  Standard_EXPORT static int  msifill_(integer* nbintg, integer* ivecin, integer* ivecou);
-  Standard_EXPORT static int  msrfill_(integer* nbreel, doublereal* vecent, doublereal* vecsor);
-  Standard_EXPORT static int  mswrdbg_(const char* ctexte, ftnlen ctexte_len);
-  Standard_EXPORT static void mvriraz_(integer* taille, void* adt);
+  Standard_EXPORT static int  mgsomsg_(const char* nomprg, long nomprg_len);
+  Standard_EXPORT static void miraz_(int* taille, void* adt);
+  Standard_EXPORT static int  msifill_(int* nbintg, int* ivecin, int* ivecou);
+  Standard_EXPORT static int  msrfill_(int* nbreel, double* vecent, double* vecsor);
+  Standard_EXPORT static int  mswrdbg_(const char* ctexte, long ctexte_len);
+  Standard_EXPORT static void mvriraz_(int* taille, void* adt);
 
 private:
   int macrchk_();
-  int mcrlist_(integer* ier) const;
+  int mcrlist_(int* ier) const;
 
   /* Maximum number of allowed allocation requests.
      Currently the maximum known number of requests is 7 - see
@@ -111,22 +107,22 @@ private:
   {
     unsigned char prot;
     unsigned char unit; // unit of allocation: 1, 2, 4 or 8
-    integer       reqsize;
+    int       reqsize;
     intptr_t      loc;
     intptr_t      offset;
     unsigned char alloctype; // static_allocation or heap_allocation
-    integer       size;
+    int       size;
     intptr_t      addr;
-    integer       userzone; // not used
+    int       userzone; // not used
     intptr_t      startaddr;
     intptr_t      endaddr;
-    integer       rank;
+    int       rank;
   };
 
   struct
   {
     mitem         icore[MAX_ALLOC_NB];
-    integer       ncore;
+    int       ncore;
     unsigned char lprot;
   } mcrgene_;
 
@@ -139,7 +135,7 @@ private:
   */
   struct
   {
-    integer nrqst[2], ndelt[2], nbyte[2], mbyte[2];
+    int nrqst[2], ndelt[2], nbyte[2], mbyte[2];
   } mcrstac_;
 };
 

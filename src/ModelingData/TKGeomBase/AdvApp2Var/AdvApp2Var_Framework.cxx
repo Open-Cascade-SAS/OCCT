@@ -26,6 +26,36 @@
 #include <NCollection_HArray1.hxx>
 #include <gp_XY.hxx>
 
+namespace
+{
+int findStripByBounds(
+  const NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>& theConstraints,
+  const double                                                                    theFirst,
+  const double                                                                    theLast)
+{
+  int aStripIndex = 1;
+  while (aStripIndex < theConstraints.Length()
+         && (theConstraints.Value(aStripIndex).First()->T0() != theFirst
+             || theConstraints.Value(aStripIndex).First()->T1() != theLast))
+  {
+    ++aStripIndex;
+  }
+  return aStripIndex;
+}
+
+int findIsoByConstant(const NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& theStrip,
+                      const int                                                 theNbIso,
+                      const double                                              theConst)
+{
+  int anIsoIndex = 1;
+  while (anIsoIndex <= theNbIso && theStrip.Value(anIsoIndex)->Constante() != theConst)
+  {
+    ++anIsoIndex;
+  }
+  return anIsoIndex;
+}
+} // namespace
+
 //=================================================================================================
 
 AdvApp2Var_Framework::AdvApp2Var_Framework() = default;
@@ -82,18 +112,12 @@ int AdvApp2Var_Framework::FirstNode(const GeomAbs_IsoType Type,
                                     const int             IndexIso,
                                     const int             IndexStrip) const
 {
-  int NbIso, Index;
-  NbIso = myUConstraints.Length() + 1;
+  const int aNbIsoInV = myUConstraints.Length() + 1;
   if (Type == GeomAbs_IsoU)
   {
-    Index = NbIso * (IndexStrip - 1) + IndexIso;
-    return Index;
+    return aNbIsoInV * (IndexStrip - 1) + IndexIso;
   }
-  else
-  {
-    Index = NbIso * (IndexIso - 1) + IndexStrip;
-    return Index;
-  }
+  return aNbIsoInV * (IndexIso - 1) + IndexStrip;
 }
 
 //=================================================================================================
@@ -102,18 +126,12 @@ int AdvApp2Var_Framework::LastNode(const GeomAbs_IsoType Type,
                                    const int             IndexIso,
                                    const int             IndexStrip) const
 {
-  int NbIso, Index;
-  NbIso = myUConstraints.Length() + 1;
+  const int aNbIsoInV = myUConstraints.Length() + 1;
   if (Type == GeomAbs_IsoU)
   {
-    Index = NbIso * IndexStrip + IndexIso;
-    return Index;
+    return aNbIsoInV * IndexStrip + IndexIso;
   }
-  else
-  {
-    Index = NbIso * (IndexIso - 1) + IndexStrip + 1;
-    return Index;
-  }
+  return aNbIsoInV * (IndexIso - 1) + IndexStrip + 1;
 }
 
 //=================================================================================================
@@ -122,10 +140,10 @@ void AdvApp2Var_Framework::ChangeIso(const int                          IndexIso
                                      const int                          IndexStrip,
                                      const occ::handle<AdvApp2Var_Iso>& theIso)
 {
-  NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& S0 =
+  NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip =
     theIso->Type() == GeomAbs_IsoV ? myUConstraints.ChangeValue(IndexStrip)
                                    : myVConstraints.ChangeValue(IndexStrip);
-  S0.SetValue(IndexIso, theIso);
+  aStrip.SetValue(IndexIso, theIso);
 }
 
 //=================================================================================================
@@ -151,20 +169,10 @@ const AdvApp2Var_Iso& AdvApp2Var_Framework::IsoU(const double U,
                                                  const double V0,
                                                  const double V1) const
 {
-  int IndexStrip = 1;
-  while (IndexStrip < myVConstraints.Length()
-         && (myVConstraints.Value(IndexStrip).First()->T0() != V0
-             || myVConstraints.Value(IndexStrip).First()->T1() != V1))
-  {
-    IndexStrip++;
-  }
-  int IndexIso = 1;
-  while (IndexIso <= myUConstraints.Length()
-         && myVConstraints.Value(IndexStrip).Value(IndexIso)->Constante() != U)
-  {
-    IndexIso++;
-  }
-  return *(myVConstraints.Value(IndexStrip).Value(IndexIso));
+  const int aStripIndex = findStripByBounds(myVConstraints, V0, V1);
+  const NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip = myVConstraints.Value(aStripIndex);
+  const int aIsoIndex = findIsoByConstant(aStrip, myUConstraints.Length(), U);
+  return *(aStrip.Value(aIsoIndex));
 }
 
 //=================================================================================================
@@ -173,31 +181,21 @@ const AdvApp2Var_Iso& AdvApp2Var_Framework::IsoV(const double U0,
                                                  const double U1,
                                                  const double V) const
 {
-  int IndexStrip = 1;
-  while (IndexStrip < myUConstraints.Length()
-         && (myUConstraints.Value(IndexStrip).First()->T0() != U0
-             || myUConstraints.Value(IndexStrip).First()->T1() != U1))
-  {
-    IndexStrip++;
-  }
-  int IndexIso = 1;
-  while (IndexIso <= myVConstraints.Length()
-         && myUConstraints.Value(IndexStrip).Value(IndexIso)->Constante() != V)
-  {
-    IndexIso++;
-  }
-  return *(myUConstraints.Value(IndexStrip).Value(IndexIso));
+  const int aStripIndex = findStripByBounds(myUConstraints, U0, U1);
+  const NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip = myUConstraints.Value(aStripIndex);
+  const int aIsoIndex = findIsoByConstant(aStrip, myVConstraints.Length(), V);
+  return *(aStrip.Value(aIsoIndex));
 }
 
 //=================================================================================================
 
 void AdvApp2Var_Framework::UpdateInU(const double CuttingValue)
 {
-  int i = 1;
+  int aUStripIndex = 1;
   for (NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>::Iterator
          anUConstIter(myUConstraints);
        anUConstIter.More();
-       anUConstIter.Next(), ++i)
+       anUConstIter.Next(), ++aUStripIndex)
   {
     if (anUConstIter.Value().First()->U0() <= CuttingValue
         && anUConstIter.Value().First()->U1() >= CuttingValue)
@@ -207,22 +205,23 @@ void AdvApp2Var_Framework::UpdateInU(const double CuttingValue)
   }
 
   {
-    const NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& S0 = myUConstraints.Value(i);
-    const double Udeb = S0.First()->U0(), Ufin = S0.First()->U1();
+    const NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip = myUConstraints.Value(aUStripIndex);
+    const double aUFirst = aStrip.First()->U0();
+    const double aULast  = aStrip.First()->U1();
 
-    // Modify the V isos of the U strip at index i
-    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator aStripIter(S0);
+    // Modify the V isos of the U strip at aUStripIndex.
+    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator aStripIter(aStrip);
          aStripIter.More();
          aStripIter.Next())
     {
       const occ::handle<AdvApp2Var_Iso>& anIso = aStripIter.Value();
-      anIso->ChangeDomain(Udeb, CuttingValue);
+      anIso->ChangeDomain(aUFirst, CuttingValue);
       anIso->ResetApprox();
     }
 
-    // Insert a new U strip after index i
+    // Insert a new U strip after aUStripIndex.
     NCollection_Sequence<occ::handle<AdvApp2Var_Iso>> aNewStrip;
-    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator aStripIter(S0);
+    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator aStripIter(aStrip);
          aStripIter.More();
          aStripIter.Next())
     {
@@ -230,7 +229,7 @@ void AdvApp2Var_Framework::UpdateInU(const double CuttingValue)
       occ::handle<AdvApp2Var_Iso>        aNewIso = new AdvApp2Var_Iso(anIso->Type(),
                                                                anIso->Constante(),
                                                                CuttingValue,
-                                                               Ufin,
+                                                               aULast,
                                                                anIso->V0(),
                                                                anIso->V1(),
                                                                0,
@@ -239,15 +238,16 @@ void AdvApp2Var_Framework::UpdateInU(const double CuttingValue)
       aNewIso->ResetApprox();
       aNewStrip.Append(aNewIso);
     }
-    myUConstraints.InsertAfter(i, aNewStrip);
+    myUConstraints.InsertAfter(aUStripIndex, aNewStrip);
   }
 
-  //  Insert a new Iso U=U* in each V strip after index i
+  //  Insert a new Iso U=U* in each V strip after aUStripIndex
   //  and restrict the domains of the adjacent Isos
-  for (int j = 1; j <= myVConstraints.Length(); j++)
+  for (int aVStripIndex = 1; aVStripIndex <= myVConstraints.Length(); aVStripIndex++)
   {
-    NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& S0    = myVConstraints.ChangeValue(j);
-    occ::handle<AdvApp2Var_Iso>                        anIso = S0.Value(i);
+    NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip =
+      myVConstraints.ChangeValue(aVStripIndex);
+    occ::handle<AdvApp2Var_Iso> anIso = aStrip.Value(aUStripIndex);
     anIso->ChangeDomain(anIso->U0(), CuttingValue, anIso->V0(), anIso->V1());
 
     occ::handle<AdvApp2Var_Iso> aNewIso = new AdvApp2Var_Iso(anIso->Type(),
@@ -260,25 +260,25 @@ void AdvApp2Var_Framework::UpdateInU(const double CuttingValue)
                                                              anIso->UOrder(),
                                                              anIso->VOrder());
     aNewIso->ResetApprox();
-    S0.InsertAfter(i, aNewIso);
+    aStrip.InsertAfter(aUStripIndex, aNewIso);
 
-    anIso = S0.Value(i + 2);
+    anIso = aStrip.Value(aUStripIndex + 2);
     anIso->ChangeDomain(CuttingValue, anIso->U1(), anIso->V0(), anIso->V1());
   }
 
   //  Insert the new nodes (U*,Vj)
   occ::handle<AdvApp2Var_Node> aNext;
   occ::handle<AdvApp2Var_Node> aPrev = myNodeConstraints.First();
-  for (int j = 1; j < myNodeConstraints.Length(); j++)
+  for (int aNodeIndex = 1; aNodeIndex < myNodeConstraints.Length(); aNodeIndex++)
   {
-    aNext = myNodeConstraints.Value(j + 1);
+    aNext = myNodeConstraints.Value(aNodeIndex + 1);
     if (aPrev->Coord().X() < CuttingValue && aNext->Coord().X() > CuttingValue
         && aPrev->Coord().Y() == aNext->Coord().Y())
     {
       gp_XY                        aNewUV(CuttingValue, aPrev->Coord().Y());
       occ::handle<AdvApp2Var_Node> aNewNode =
         new AdvApp2Var_Node(aNewUV, aPrev->UOrder(), aPrev->VOrder());
-      myNodeConstraints.InsertAfter(j, aNewNode);
+      myNodeConstraints.InsertAfter(aNodeIndex, aNewNode);
     }
     aPrev = aNext;
   }
@@ -288,30 +288,32 @@ void AdvApp2Var_Framework::UpdateInU(const double CuttingValue)
 
 void AdvApp2Var_Framework::UpdateInV(const double CuttingValue)
 {
-  int j = 1;
-  while (myVConstraints.Value(j).First()->V0() > CuttingValue
-         || myVConstraints.Value(j).First()->V1() < CuttingValue)
+  int aVStripIndex = 1;
+  while (myVConstraints.Value(aVStripIndex).First()->V0() > CuttingValue
+         || myVConstraints.Value(aVStripIndex).First()->V1() < CuttingValue)
   {
-    j++;
+    aVStripIndex++;
   }
 
   {
-    NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& S0 = myVConstraints.ChangeValue(j);
-    const double Vdeb = S0.First()->V0(), Vfin = S0.First()->V1();
+    NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip =
+      myVConstraints.ChangeValue(aVStripIndex);
+    const double aVFirst = aStrip.First()->V0();
+    const double aVLast  = aStrip.First()->V1();
 
-    // Modify the U isos of the V strip at index j
-    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator anIsoIter(S0);
+    // Modify the U isos of the V strip at aVStripIndex.
+    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator anIsoIter(aStrip);
          anIsoIter.More();
          anIsoIter.Next())
     {
       const occ::handle<AdvApp2Var_Iso>& anIso = anIsoIter.Value();
-      anIso->ChangeDomain(Vdeb, CuttingValue);
+      anIso->ChangeDomain(aVFirst, CuttingValue);
       anIso->ResetApprox();
     }
 
-    // Insert a new V strip after index j
+    // Insert a new V strip after aVStripIndex.
     NCollection_Sequence<occ::handle<AdvApp2Var_Iso>> aNewStrip;
-    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator anIsoIter(S0);
+    for (NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>::Iterator anIsoIter(aStrip);
          anIsoIter.More();
          anIsoIter.Next())
     {
@@ -321,25 +323,25 @@ void AdvApp2Var_Framework::UpdateInV(const double CuttingValue)
                                                                anIso->U0(),
                                                                anIso->U1(),
                                                                CuttingValue,
-                                                               Vfin,
+                                                               aVLast,
                                                                0,
                                                                anIso->UOrder(),
                                                                anIso->VOrder());
       aNewIso->ResetApprox();
       aNewStrip.Append(aNewIso);
     }
-    myVConstraints.InsertAfter(j, aNewStrip);
+    myVConstraints.InsertAfter(aVStripIndex, aNewStrip);
   }
 
-  // Insert a new Iso V=V* in each U strip after index j
+  // Insert a new Iso V=V* in each U strip after aVStripIndex
   // and restrict the domains of the adjacent Isos
   for (NCollection_Sequence<NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>>::Iterator
          anUConstIter(myUConstraints);
        anUConstIter.More();
        anUConstIter.Next())
   {
-    NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& S0    = anUConstIter.ChangeValue();
-    occ::handle<AdvApp2Var_Iso>                        anIso = S0.Value(j);
+    NCollection_Sequence<occ::handle<AdvApp2Var_Iso>>& aStrip = anUConstIter.ChangeValue();
+    occ::handle<AdvApp2Var_Iso>                        anIso   = aStrip.Value(aVStripIndex);
     anIso->ChangeDomain(anIso->U0(), anIso->U1(), anIso->V0(), CuttingValue);
 
     occ::handle<AdvApp2Var_Iso> aNewIso = new AdvApp2Var_Iso(anIso->Type(),
@@ -352,25 +354,26 @@ void AdvApp2Var_Framework::UpdateInV(const double CuttingValue)
                                                              anIso->UOrder(),
                                                              anIso->VOrder());
     aNewIso->ResetApprox();
-    S0.InsertAfter(j, aNewIso);
+    aStrip.InsertAfter(aVStripIndex, aNewIso);
 
-    anIso = S0.Value(j + 2);
+    anIso = aStrip.Value(aVStripIndex + 2);
     anIso->ChangeDomain(anIso->U0(), anIso->U1(), CuttingValue, anIso->V1());
   }
 
   //  Insert the new nodes (Ui,V*)
-  int i = 1;
-  while (i <= myNodeConstraints.Length() && myNodeConstraints.Value(i)->Coord().Y() < CuttingValue)
+  int aNodeStartIndex = 1;
+  while (aNodeStartIndex <= myNodeConstraints.Length()
+         && myNodeConstraints.Value(aNodeStartIndex)->Coord().Y() < CuttingValue)
   {
-    i += myUConstraints.Length() + 1;
+    aNodeStartIndex += myUConstraints.Length() + 1;
   }
-  for (j = 1; j <= myUConstraints.Length() + 1; j++)
+  for (int anIsoIndex = 1; anIsoIndex <= myUConstraints.Length() + 1; anIsoIndex++)
   {
-    const occ::handle<AdvApp2Var_Node>& aJNode = myNodeConstraints.Value(j);
-    gp_XY                               NewUV(aJNode->Coord().X(), CuttingValue);
+    const occ::handle<AdvApp2Var_Node>& aJNode = myNodeConstraints.Value(anIsoIndex);
+    gp_XY                                NewUV(aJNode->Coord().X(), CuttingValue);
     occ::handle<AdvApp2Var_Node>        aNewNode =
       new AdvApp2Var_Node(NewUV, aJNode->UOrder(), aJNode->VOrder());
-    myNodeConstraints.InsertAfter(i + j - 2, aNewNode);
+    myNodeConstraints.InsertAfter(aNodeStartIndex + anIsoIndex - 2, aNewNode);
   }
 }
 

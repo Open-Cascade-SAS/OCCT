@@ -11,13 +11,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 
 //=================================================================================================
 
-mmcmcnp_1_& AdvApp2Var_Data::Getmmcmcnp()
+inline mmcmcnp_1_& AdvApp2Var_Data::Getmmcmcnp()
 {
-  static doublereal e_1[3721] = {1.,
+  static double e_1[3721] = {1.,
                                  1.,
                                  1.,
                                  1.,
