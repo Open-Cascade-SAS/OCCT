@@ -15,6 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <gce_MakeHypr2d.hxx>
+#include <gp.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Ax22d.hxx>
 #include <gp_Hypr2d.hxx>
@@ -22,30 +23,36 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une Hyperbola 2d de gp de centre <Center> et de sommets   +
-//   <S1> et <S2>.                                                        +
-//   <CenterS1> donne le grand axe .                                      +
-//   <S1> donne le grand rayon et <S2> le petit rayon.                    +
-//=========================================================================
+//==================================================================================================
+
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
 {
-  gp_Dir2d XAxis(gp_XY(S1.XY() - Center.XY()));
-  gp_Dir2d YAxis(gp_XY(S2.XY() - Center.XY()));
-  gp_Ax22d Axis(Center, XAxis, YAxis);
-  gp_Lin2d L(Center, XAxis);
-  double   D1 = S1.Distance(Center);
-  double   D2 = L.Distance(S2);
-  if (D1 >= D2)
+  const gp_XY  aVecS1  = S1.XY() - Center.XY();
+  const gp_XY  aVecS2  = S2.XY() - Center.XY();
+  const double aDistS1 = aVecS1.Modulus();
+  const double aDistS2 = aVecS2.Modulus();
+  if (aDistS1 <= gp::Resolution() || aDistS2 <= gp::Resolution()
+      || S1.Distance(S2) <= gp::Resolution())
   {
-    TheHypr2d = gp_Hypr2d(Axis, D1, D2);
-    TheError  = gce_Done;
+    TheError = gce_ConfusedPoints;
+    return;
   }
-  else
+
+  const gp_Dir2d aXAxis(aVecS1);
+  const gp_Dir2d aYAxis(aVecS2);
+  const gp_Ax22d anAxis(Center, aXAxis, aYAxis);
+  const gp_Lin2d aLine(Center, aXAxis);
+  const double   aMinorDist = aLine.Distance(S2);
+  if (aMinorDist <= gp::Resolution())
   {
-    TheError = gce_InvertAxis;
+    TheError = gce_ColinearPoints;
+    return;
   }
+  TheHypr2d = gp_Hypr2d(anAxis, aDistS1, aMinorDist);
+  TheError  = gce_Done;
 }
+
+//==================================================================================================
 
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax2d& MajorAxis,
                                const double   MajorRadius,
@@ -63,6 +70,8 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax2d& MajorAxis,
   }
 }
 
+//==================================================================================================
+
 gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax22d& A,
                                const double    MajorRadius,
                                const double    MinorRadius)
@@ -78,16 +87,22 @@ gce_MakeHypr2d::gce_MakeHypr2d(const gp_Ax22d& A,
   }
 }
 
+//==================================================================================================
+
 const gp_Hypr2d& gce_MakeHypr2d::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeHypr2d::Value() - no result");
   return TheHypr2d;
 }
 
+//==================================================================================================
+
 const gp_Hypr2d& gce_MakeHypr2d::Operator() const
 {
   return Value();
 }
+
+//==================================================================================================
 
 gce_MakeHypr2d::operator gp_Hypr2d() const
 {

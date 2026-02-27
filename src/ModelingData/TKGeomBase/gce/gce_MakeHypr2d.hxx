@@ -70,6 +70,11 @@ public:
   //! -   the major axis of the hyperbola is defined by Center and point S1,
   //! -   the major radius is the distance between Center and S1, and
   //! -   the minor radius is the distance between point S2 and the major axis.
+  //! Warning
+  //! If an error occurs (that is, when IsDone returns
+  //! false), the Status function returns:
+  //! -   gce_ConfusedPoints if any two of S1, S2 and Center are coincident;
+  //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
   Standard_EXPORT gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center);
 
   //! Constructs a hyperbola with major and minor radii MajorRadius and

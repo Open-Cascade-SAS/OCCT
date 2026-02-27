@@ -15,43 +15,46 @@
 // commercial license or contractual agreement.
 
 #include <gce_MakeHypr.hxx>
+#include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une Hyperbole 3d de gp de centre <Center> et de sommets   +
-//   <S1> et <S2>.                                                        +
-//   <CenterS1> donne le grand axe .                                      +
-//   <S1> donne le grand rayon et <S2> le petit rayon.                    +
-//=========================================================================
+//==================================================================================================
+
 gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
-  gp_Dir XAxis(gp_XYZ(S1.XYZ() - Center.XYZ()));
-  gp_Lin L(Center, XAxis);
-  double D = S1.Distance(Center);
-  double d = L.Distance(S2);
-  if (d > D)
+  const gp_XYZ aVecS1  = S1.XYZ() - Center.XYZ();
+  const gp_XYZ aVecS2  = S2.XYZ() - Center.XYZ();
+  const double aDistS1 = aVecS1.Modulus();
+  const double aDistS2 = aVecS2.Modulus();
+  if (aDistS1 <= gp::Resolution() || aDistS2 <= gp::Resolution()
+      || S1.Distance(S2) <= gp::Resolution())
   {
-    TheError = gce_InvertAxis;
+    TheError = gce_ConfusedPoints;
+    return;
   }
-  else
+
+  const gp_Dir aXAxis(aVecS1);
+  const gp_Lin aLine(Center, aXAxis);
+  const double aMinorDist = aLine.Distance(S2);
+  if (aMinorDist <= gp::Resolution())
   {
-    gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
-    TheHypr  = gp_Hypr(gp_Ax2(Center, Norm, XAxis), D, d);
-    TheError = gce_Done;
+    TheError = gce_ColinearPoints;
+    return;
   }
+  const gp_Dir aNorm(aXAxis.Crossed(gp_Dir(aVecS2)));
+  TheHypr  = gp_Hypr(gp_Ax2(Center, aNorm, aXAxis), aDistS1, aMinorDist);
+  TheError = gce_Done;
 }
+
+//==================================================================================================
 
 gce_MakeHypr::gce_MakeHypr(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
-  if (MajorRadius < MinorRadius)
-  {
-    TheError = gce_InvertRadius;
-  }
-  else if (MajorRadius < 0.0)
+  if (MajorRadius < 0.0 || MinorRadius < 0.0)
   {
     TheError = gce_NegativeRadius;
   }
@@ -62,16 +65,22 @@ gce_MakeHypr::gce_MakeHypr(const gp_Ax2& A2, const double MajorRadius, const dou
   }
 }
 
+//==================================================================================================
+
 const gp_Hypr& gce_MakeHypr::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeHypr::Value() - no result");
   return TheHypr;
 }
 
+//==================================================================================================
+
 const gp_Hypr& gce_MakeHypr::Operator() const
 {
   return Value();
 }
+
+//==================================================================================================
 
 gce_MakeHypr::operator gp_Hypr() const
 {
