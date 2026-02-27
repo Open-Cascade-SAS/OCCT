@@ -844,7 +844,7 @@ void AdvApp2Var_Patch::MakeApprox(const AdvApp2Var_Context&   Conditions,
   int iun = 1, itrois = 3;
   NCOEFU = 0;
   NCOEFV = 0;
-  AdvApp2Var_ApproxF2var::mma2ce1_((integer*)&NumDec,
+  AdvApp2Var_ApproxF2var::mma2ce1_((int*)&NumDec,
                                    &NDIMEN,
                                    &NBSESP,
                                    &NDIMSE,

@@ -12,216 +12,238 @@
 // commercial license or contractual agreement.
 
 // AdvApp2Var_MathBase.cxx
+#include <algorithm>
 #include <cmath>
 #include <AdvApp2Var_SysBase.hxx>
-#include <AdvApp2Var_Data_f2c.hxx>
 #include <AdvApp2Var_MathBase.hxx>
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 #include <NCollection_Array1.hxx>
 
+namespace
+{
+// Keep legacy behavior: numerical thresholds are configured once before first public use.
+void initMathBasePrecision()
+{
+  constexpr double THE_EPSILON_1 = 1.0e-9;
+  constexpr double THE_EPSILON_2 = 1.0e-8;
+  constexpr double THE_EPSILON_3 = 1.0e-9;
+  constexpr double THE_EPSILON_4 = 1.0e-4;
+  constexpr int    THE_ITER_1    = 8;
+  constexpr int    THE_ITER_2    = 40;
+
+  double anEpsilon1 = THE_EPSILON_1;
+  double anEpsilon2 = THE_EPSILON_2;
+  double anEpsilon3 = THE_EPSILON_3;
+  double anEpsilon4 = THE_EPSILON_4;
+  int    anIter1    = THE_ITER_1;
+  int    anIter2    = THE_ITER_2;
+  AdvApp2Var_MathBase::mmwprcs_(&anEpsilon1,
+                                &anEpsilon2,
+                                &anEpsilon3,
+                                &anEpsilon4,
+                                &anIter1,
+                                &anIter2);
+}
+
+// One-time static initialization trigger for this translation unit.
+[[maybe_unused]] const bool THE_STMAT_LIB_INIT = []() {
+  initMathBasePrecision();
+  return true;
+}();
+} // namespace
+
 // statics
-static int mmchole_(integer*    mxcoef,
-                    integer*    dimens,
-                    doublereal* amatri,
-                    integer*    aposit,
-                    integer*    posuiv,
-                    doublereal* chomat,
-                    integer*    iercod);
+static int mmchole_(int*    mxcoef,
+                    int*    dimens,
+                    double* amatri,
+                    int*    aposit,
+                    int*    posuiv,
+                    double* chomat,
+                    int*    iercod);
 
-static int mmrslss_(integer*    mxcoef,
-                    integer*    dimens,
-                    doublereal* smatri,
-                    integer*    sposit,
-                    integer*    posuiv,
-                    doublereal* mscnmbr,
-                    doublereal* soluti,
-                    integer*    iercod);
+static int mmrslss_(int*    mxcoef,
+                    int*    dimens,
+                    double* smatri,
+                    int*    sposit,
+                    int*    posuiv,
+                    double* mscnmbr,
+                    double* soluti,
+                    int*    iercod);
 
-static int mfac_(doublereal* f, integer* n);
+static int mfac_(double* f, int* n);
 
-static int mmaper0_(integer*    ncofmx,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* crvlgd,
-                    integer*    ncfnew,
-                    doublereal* ycvmax,
-                    doublereal* errmax);
-static int mmaper2_(integer*    ncofmx,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* crvjac,
-                    integer*    ncfnew,
-                    doublereal* ycvmax,
-                    doublereal* errmax);
+static int mmaper0_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* crvlgd,
+                    int*    ncfnew,
+                    double* ycvmax,
+                    double* errmax);
+static int mmaper2_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* crvjac,
+                    int*    ncfnew,
+                    double* ycvmax,
+                    double* errmax);
 
-static int mmaper4_(integer*    ncofmx,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* crvjac,
-                    integer*    ncfnew,
-                    doublereal* ycvmax,
-                    doublereal* errmax);
+static int mmaper4_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* crvjac,
+                    int*    ncfnew,
+                    double* ycvmax,
+                    double* errmax);
 
-static int mmaper6_(integer*    ncofmx,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* crvjac,
-                    integer*    ncfnew,
-                    doublereal* ycvmax,
-                    doublereal* errmax);
+static int mmaper6_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* crvjac,
+                    int*    ncfnew,
+                    double* ycvmax,
+                    double* errmax);
 
-static int mmarc41_(integer*    ndimax,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* crvold,
-                    doublereal* upara0,
-                    doublereal* upara1,
-                    doublereal* crvnew,
-                    integer*    iercod);
+static int mmarc41_(int*    ndimax,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* crvold,
+                    double* upara0,
+                    double* upara1,
+                    double* crvnew,
+                    int*    iercod);
 
-static int mmatvec_(integer*    nligne,
-                    integer*    ncolon,
-                    integer*    gposit,
-                    integer*    gnstoc,
-                    doublereal* gmatri,
-                    doublereal* vecin,
-                    integer*    deblig,
-                    doublereal* vecout,
-                    integer*    iercod);
+static int mmatvec_(int*    nligne,
+                    int*    ncolon,
+                    int*    gposit,
+                    int*    gnstoc,
+                    double* gmatri,
+                    double* vecin,
+                    int*    deblig,
+                    double* vecout,
+                    int*    iercod);
 
-static int mmcvstd_(integer*    ncofmx,
-                    integer*    ndimax,
-                    integer*    ncoeff,
-                    integer*    ndimen,
-                    doublereal* crvcan,
-                    doublereal* courbe);
+static int mmcvstd_(int*    ncofmx,
+                    int*    ndimax,
+                    int*    ncoeff,
+                    int*    ndimen,
+                    double* crvcan,
+                    double* courbe);
 
-static int mmdrvcb_(integer*    ideriv,
-                    integer*    ndim,
-                    integer*    ncoeff,
-                    doublereal* courbe,
-                    doublereal* tparam,
-                    doublereal* tabpnt,
-                    integer*    iercod);
+static int mmdrvcb_(int*    ideriv,
+                    int*    ndim,
+                    int*    ncoeff,
+                    double* courbe,
+                    double* tparam,
+                    double* tabpnt,
+                    int*    iercod);
 
-static int mmexthi_(integer* ndegre, NCollection_Array1<doublereal>& hwgaus);
+static int mmexthi_(int* ndegre, NCollection_Array1<double>& hwgaus);
 
-static int mmextrl_(integer* ndegre, NCollection_Array1<doublereal>& rootlg);
+static int mmextrl_(int* ndegre, NCollection_Array1<double>& rootlg);
 
-static int mmherm0_(doublereal* debfin, integer* iercod);
+static int mmherm0_(double* debfin, int* iercod);
 
-static int mmherm1_(doublereal* debfin,
-                    integer*    ordrmx,
-                    integer*    iordre,
-                    doublereal* hermit,
-                    integer*    iercod);
-static int mmloncv_(integer*    ndimax,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* courbe,
-                    doublereal* tdebut,
-                    doublereal* tfinal,
-                    doublereal* xlongc,
-                    integer*    iercod);
-static int mmpojac_(doublereal*                     tparam,
-                    integer*                        iordre,
-                    integer*                        ncoeff,
-                    integer*                        nderiv,
-                    NCollection_Array1<doublereal>& valjac,
-                    integer*                        iercod);
+static int mmherm1_(double* debfin, int* ordrmx, int* iordre, double* hermit, int* iercod);
+static int mmloncv_(int*    ndimax,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* courbe,
+                    double* tdebut,
+                    double* tfinal,
+                    double* xlongc,
+                    int*    iercod);
+static int mmpojac_(double*                     tparam,
+                    int*                        iordre,
+                    int*                        ncoeff,
+                    int*                        nderiv,
+                    NCollection_Array1<double>& valjac,
+                    int*                        iercod);
 
-static int mmrslw_(integer*    normax,
-                   integer*    nordre,
-                   integer*    ndimen,
-                   doublereal* epspiv,
-                   doublereal* abmatr,
-                   doublereal* xmatri,
-                   integer*    iercod);
-static int mmtmave_(integer*    nligne,
-                    integer*    ncolon,
-                    integer*    gposit,
-                    integer*    gnstoc,
-                    doublereal* gmatri,
-                    doublereal* vecin,
-                    doublereal* vecout,
-                    integer*    iercod);
-static int mmtrpj0_(integer*    ncofmx,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* epsi3d,
-                    doublereal* crvlgd,
-                    doublereal* ycvmax,
-                    doublereal* epstrc,
-                    integer*    ncfnew);
-static int mmtrpj2_(integer*    ncofmx,
-                    integer*    ndimen,
-                    integer*    ncoeff,
-                    doublereal* epsi3d,
-                    doublereal* crvlgd,
-                    doublereal* ycvmax,
-                    doublereal* epstrc,
-                    integer*    ncfnew);
+static int mmrslw_(int*    normax,
+                   int*    nordre,
+                   int*    ndimen,
+                   double* epspiv,
+                   double* abmatr,
+                   double* xmatri,
+                   int*    iercod);
+static int mmtmave_(int*    nligne,
+                    int*    ncolon,
+                    int*    gposit,
+                    int*    gnstoc,
+                    double* gmatri,
+                    double* vecin,
+                    double* vecout,
+                    int*    iercod);
+static int mmtrpj0_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* epsi3d,
+                    double* crvlgd,
+                    double* ycvmax,
+                    double* epstrc,
+                    int*    ncfnew);
+static int mmtrpj2_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* epsi3d,
+                    double* crvlgd,
+                    double* ycvmax,
+                    double* epstrc,
+                    int*    ncfnew);
 
-static int     mmtrpj4_(integer*    ncofmx,
-                        integer*    ndimen,
-                        integer*    ncoeff,
-                        doublereal* epsi3d,
-                        doublereal* crvlgd,
-                        doublereal* ycvmax,
-                        doublereal* epstrc,
-                        integer*    ncfnew);
-static int     mmtrpj6_(integer*    ncofmx,
-                        integer*    ndimen,
-                        integer*    ncoeff,
-                        doublereal* epsi3d,
-                        doublereal* crvlgd,
-                        doublereal* ycvmax,
-                        doublereal* epstrc,
-                        integer*    ncfnew);
-static integer pow__ii(integer* x, integer* n);
+static int mmtrpj4_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* epsi3d,
+                    double* crvlgd,
+                    double* ycvmax,
+                    double* epstrc,
+                    int*    ncfnew);
+static int mmtrpj6_(int*    ncofmx,
+                    int*    ndimen,
+                    int*    ncoeff,
+                    double* epsi3d,
+                    double* crvlgd,
+                    double* ycvmax,
+                    double* epstrc,
+                    int*    ncfnew);
+static int pow__ii(int* x, int* n);
 
-static int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* iercod);
+static int mvcvin2_(int* ncoeff, double* crvold, double* crvnew, int* iercod);
 
-static int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* iercod);
+static int mvcvinv_(int* ncoeff, double* crvold, double* crvnew, int* iercod);
 
-static int mvgaus0_(integer*    kindic,
-                    doublereal* urootl,
-                    doublereal* hiltab,
-                    integer*    nbrval,
-                    integer*    iercod);
-static int mvpscr2_(integer* ncoeff, doublereal* curve2, doublereal* tparam, doublereal* pntcrb);
+static int mvgaus0_(int* kindic, double* urootl, double* hiltab, int* nbrval, int* iercod);
+static int mvpscr2_(int* ncoeff, double* curve2, double* tparam, double* pntcrb);
 
-static int mvpscr3_(integer* ncoeff, doublereal* curve2, doublereal* tparam, doublereal* pntcrb);
+static int mvpscr3_(int* ncoeff, double* curve2, double* tparam, double* pntcrb);
 
 static struct
 {
-  doublereal eps1, eps2, eps3, eps4;
-  integer    niterm, niterr;
+  double eps1, eps2, eps3, eps4;
+  int    niterm, niterr;
 } mmprcsn_;
 
 static struct
 {
-  doublereal tdebut, tfinal, verifi, cmherm[576];
+  double tdebut, tfinal, verifi, cmherm[576];
 } mmcmher_;
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mdsptpt_(integer*    ndimen,
-                                  doublereal* point1,
-                                  doublereal* point2,
-                                  doublereal* distan)
+int AdvApp2Var_MathBase::mdsptpt_(int* ndimen, double* point1, double* point2, double* distan)
 
 {
-  integer c__8 = 8;
+  int c__8 = 8;
   /* System generated locals */
-  integer    i__1;
-  doublereal d__1;
+  int    i__1;
+  double d__1;
 
   /* Local variables */
-  integer     i__;
-  doublereal* differ = nullptr;
-  integer     ier;
-  intptr_t    iofset, j;
+  int      i__;
+  double*  differ = nullptr;
+  int      ier;
+  intptr_t iofset, j;
 
   /* ***********************************************************************/
 
@@ -322,14 +344,14 @@ int AdvApp2Var_MathBase::mdsptpt_(integer*    ndimen,
 
 //=================================================================================================
 
-int mfac_(doublereal* f, integer* n)
+int mfac_(double* f, int* n)
 
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  integer i__;
+  int i__;
 
   /*    FORTRAN CONFORME AU TEXT */
   /*     CALCUL DE MFACTORIEL N */
@@ -349,18 +371,18 @@ int mfac_(doublereal* f, integer* n)
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmapcmp_(integer*    ndim,
-                                  integer*    ncofmx,
-                                  integer*    ncoeff,
-                                  doublereal* crvold,
-                                  doublereal* crvnew)
+int AdvApp2Var_MathBase::mmapcmp_(int*    ndim,
+                                  int*    ncofmx,
+                                  int*    ncoeff,
+                                  double* crvold,
+                                  double* crvnew)
 
 {
   /* System generated locals */
-  integer crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, i__2;
+  int crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, i__2;
 
   /* Local variables */
-  integer ipair, nd, ndegre, impair, ibb, idg;
+  int ipair, nd, ndegre, impair, ibb, idg;
   // extern  int  mgsomsg_();//mgenmsg_(),
 
   /* **********************************************************************/
@@ -462,23 +484,23 @@ int AdvApp2Var_MathBase::mmapcmp_(integer*    ndim,
 
 //=================================================================================================
 
-int mmaper0_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* crvlgd,
-             integer*    ncfnew,
-             doublereal* ycvmax,
-             doublereal* errmax)
+int mmaper0_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* crvlgd,
+             int*    ncfnew,
+             double* ycvmax,
+             double* errmax)
 
 {
   /* System generated locals */
-  integer    crvlgd_dim1, crvlgd_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    ncut;
-  doublereal bidon;
-  integer    ii, nd;
+  int    ncut;
+  double bidon;
+  int    ii, nd;
 
   /* **********************************************************************/
 
@@ -553,7 +575,7 @@ int mmaper0_(integer*    ncofmx,
     i__2 = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvlgd[ii + nd * crvlgd_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvlgd[ii + nd * crvlgd_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /* L300: */
@@ -570,56 +592,55 @@ int mmaper0_(integer*    ncofmx,
 
 //=================================================================================================
 
-int mmaper2_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* crvjac,
-             integer*    ncfnew,
-             doublereal* ycvmax,
-             doublereal* errmax)
+int mmaper2_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* crvjac,
+             int*    ncfnew,
+             double* ycvmax,
+             double* errmax)
 
 {
   /* Initialized data */
 
-  static doublereal xmaxj[57] = {
-    .9682458365518542212948163499456,   .986013297183269340427888048593603,
-    1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
-    1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
-    1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
-    1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
-    1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
-    1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
-    1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
-    2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
-    2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
-    2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
-    2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
-    2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
-    2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
-    2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
-    2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
-    2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
-    2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
-    3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
-    3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
-    3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
-    3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
-    3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
-    3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
-    3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
-    3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
-    3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
-    3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
-    3.72184531357268220291630708234186};
+  static double xmaxj[57] = {.9682458365518542212948163499456,   .986013297183269340427888048593603,
+                             1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
+                             1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
+                             1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
+                             1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
+                             1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
+                             1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
+                             1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
+                             2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
+                             2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
+                             2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
+                             2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
+                             2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
+                             2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
+                             2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
+                             2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
+                             2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
+                             2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
+                             3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
+                             3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
+                             3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
+                             3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
+                             3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
+                             3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
+                             3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
+                             3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
+                             3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
+                             3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
+                             3.72184531357268220291630708234186};
 
   /* System generated locals */
-  integer    crvjac_dim1, crvjac_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvjac_dim1, crvjac_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    idec, ncut;
-  doublereal bidon;
-  integer    ii, nd;
+  int    idec, ncut;
+  double bidon;
+  int    ii, nd;
 
   /* **********************************************************************/
 
@@ -678,7 +699,7 @@ int mmaper2_(integer*    ncofmx,
   idec = 3;
   /* Computing MAX */
   i__1 = idec, i__2 = *ncfnew + 1;
-  ncut = advapp_max(i__1, i__2);
+  ncut = std::max(i__1, i__2);
 
   /* -------------- Removal of coefficients of high degree -------------- */
   /* ----------- Loop on the series of Jacobi :NCUT --> NCOEFF ---------- */
@@ -691,7 +712,7 @@ int mmaper2_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /* L300: */
@@ -714,54 +735,53 @@ int mmaper2_(integer*    ncofmx,
 /* Subroutine */
 //=================================================================================================
 
-int mmaper4_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* crvjac,
-             integer*    ncfnew,
-             doublereal* ycvmax,
-             doublereal* errmax)
+int mmaper4_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* crvjac,
+             int*    ncfnew,
+             double* ycvmax,
+             double* errmax)
 {
   /* Initialized data */
 
-  static doublereal xmaxj[55] = {
-    1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
-    1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
-    1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
-    1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
-    1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
-    1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
-    1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
-    1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
-    1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
-    1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
-    1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
-    2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
-    2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
-    2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
-    2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
-    2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
-    2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
-    2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
-    2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
-    2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
-    2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
-    2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
-    2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
-    2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
-    2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
-    2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
-    3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
-    3.05886060707437081434964933864149};
+  static double xmaxj[55] = {1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
+                             1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
+                             1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
+                             1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
+                             1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
+                             1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
+                             1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
+                             1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
+                             1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
+                             1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
+                             1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
+                             2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
+                             2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
+                             2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
+                             2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
+                             2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
+                             2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
+                             2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
+                             2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
+                             2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
+                             2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
+                             2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
+                             2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
+                             2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
+                             2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
+                             2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
+                             3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
+                             3.05886060707437081434964933864149};
 
   /* System generated locals */
-  integer    crvjac_dim1, crvjac_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvjac_dim1, crvjac_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    idec, ncut;
-  doublereal bidon;
-  integer    ii, nd;
+  int    idec, ncut;
+  double bidon;
+  int    ii, nd;
 
   /* ***********************************************************************/
 
@@ -821,7 +841,7 @@ int mmaper4_(integer*    ncofmx,
   idec = 5;
   /* Computing MAX */
   i__1 = idec, i__2 = *ncfnew + 1;
-  ncut = advapp_max(i__1, i__2);
+  ncut = std::max(i__1, i__2);
 
   /* -------------- Removal of high degree coefficients ------------------ */
   /* ----------- Loop on the series of Jacobi :NCUT --> NCOEFF ----------- */
@@ -834,7 +854,7 @@ int mmaper4_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /* L300: */
@@ -851,54 +871,53 @@ int mmaper4_(integer*    ncofmx,
 
 //=================================================================================================
 
-int mmaper6_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* crvjac,
-             integer*    ncfnew,
-             doublereal* ycvmax,
-             doublereal* errmax)
+int mmaper6_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* crvjac,
+             int*    ncfnew,
+             double* ycvmax,
+             double* errmax)
 
 {
   /* Initialized data */
 
-  static doublereal xmaxj[53] = {
-    1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
-    1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
-    1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
-    1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
-    1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
-    1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
-    1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
-    1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
-    1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
-    1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
-    1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
-    1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
-    1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
-    2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
-    2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
-    2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
-    2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
-    2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
-    2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
-    2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
-    2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
-    2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
-    2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
-    2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
-    2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
-    2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
-    2.71238965987606292679677228666411};
+  static double xmaxj[53] = {1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
+                             1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
+                             1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
+                             1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
+                             1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
+                             1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
+                             1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
+                             1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
+                             1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
+                             1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
+                             1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
+                             1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
+                             1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
+                             2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
+                             2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
+                             2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
+                             2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
+                             2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
+                             2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
+                             2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
+                             2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
+                             2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
+                             2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
+                             2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
+                             2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
+                             2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
+                             2.71238965987606292679677228666411};
 
   /* System generated locals */
-  integer    crvjac_dim1, crvjac_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvjac_dim1, crvjac_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    idec, ncut;
-  doublereal bidon;
-  integer    ii, nd;
+  int    idec, ncut;
+  double bidon;
+  int    ii, nd;
 
   /* ***********************************************************************/
   /*     FUNCTION : */
@@ -957,7 +976,7 @@ int mmaper6_(integer*    ncofmx,
   idec = 7;
   /* Computing MAX */
   i__1 = idec, i__2 = *ncfnew + 1;
-  ncut = advapp_max(i__1, i__2);
+  ncut = std::max(i__1, i__2);
 
   /* -------------- Removal of high degree coefficients ------------------ */
   /* ----------- Loop on the series of Jacobi :NCUT --> NCOEFF ----------- */
@@ -970,7 +989,7 @@ int mmaper6_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvjac[ii + nd * crvjac_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /* L300: */
@@ -987,22 +1006,22 @@ int mmaper6_(integer*    ncofmx,
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmaperx_(integer*    ncofmx,
-                                  integer*    ndimen,
-                                  integer*    ncoeff,
-                                  integer*    iordre,
-                                  doublereal* crvjac,
-                                  integer*    ncfnew,
-                                  doublereal* ycvmax,
-                                  doublereal* errmax,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmaperx_(int*    ncofmx,
+                                  int*    ndimen,
+                                  int*    ncoeff,
+                                  int*    iordre,
+                                  double* crvjac,
+                                  int*    ncfnew,
+                                  double* ycvmax,
+                                  double* errmax,
+                                  int*    iercod)
 
 {
   /* System generated locals */
-  integer crvjac_dim1, crvjac_offset;
+  int crvjac_dim1, crvjac_offset;
 
   /* Local variables */
-  integer jord;
+  int jord;
 
   /* ***********************************************************************/
   /*     FUNCTION : */
@@ -1080,25 +1099,25 @@ int AdvApp2Var_MathBase::mmaperx_(integer*    ncofmx,
 
 //=================================================================================================
 
-int mmarc41_(integer*    ndimax,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* crvold,
-             doublereal* upara0,
-             doublereal* upara1,
-             doublereal* crvnew,
-             integer*    iercod)
+int mmarc41_(int*    ndimax,
+             int*    ndimen,
+             int*    ncoeff,
+             double* crvold,
+             double* upara0,
+             double* upara1,
+             double* crvnew,
+             int*    iercod)
 
 {
   /* System generated locals */
-  integer crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, i__2, i__3;
+  int crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, i__2, i__3;
 
   /* Local variables */
-  integer    nboct;
-  doublereal tbaux[61];
-  integer    nd;
-  doublereal bid;
-  integer    ncf, ncj;
+  int    nboct;
+  double tbaux[61];
+  int    nd;
+  double bid;
+  int    ncf, ncj;
 
   /*      IMPLICIT DOUBLE PRECISION(A-H,O-Z) */
   /*      IMPLICIT INTEGER (I-N) */
@@ -1307,29 +1326,29 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmarcin_(integer*    ndimax,
-                                  integer*    ndim,
-                                  integer*    ncoeff,
-                                  doublereal* crvold,
-                                  doublereal* u0,
-                                  doublereal* u1,
-                                  doublereal* crvnew,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmarcin_(int*    ndimax,
+                                  int*    ndim,
+                                  int*    ncoeff,
+                                  double* crvold,
+                                  double* u0,
+                                  double* u1,
+                                  double* crvnew,
+                                  int*    iercod)
 
 {
   /* System generated locals */
-  integer    crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, i__2, i__3;
-  doublereal d__1;
+  int    crvold_dim1, crvold_offset, crvnew_dim1, crvnew_offset, i__1, i__2, i__3;
+  double d__1;
 
   /* Local variables */
-  doublereal x0, x1;
-  integer    nd;
-  doublereal tabaux[61];
-  integer    ibb;
-  doublereal bid;
-  integer    ncf;
-  integer    ncj;
-  doublereal eps3;
+  double x0, x1;
+  int    nd;
+  double tabaux[61];
+  int    ibb;
+  double bid;
+  int    ncf;
+  int    ncj;
+  double eps3;
 
   /* ***********************************************************************/
   /*     FUNCTION : */
@@ -1390,7 +1409,7 @@ int AdvApp2Var_MathBase::mmarcin_(integer*    ndimax,
   /* At zero machine it is tested if the output interval is not null */
 
   AdvApp2Var_MathBase::mmveps3_(&eps3);
-  if ((d__1 = *u1 - *u0, advapp_abs(d__1)) < eps3)
+  if ((d__1 = *u1 - *u0, std::abs(d__1)) < eps3)
   {
     *iercod = 13;
     goto L9999;
@@ -1525,25 +1544,25 @@ L9999:
 
 //=================================================================================================
 
-int mmatvec_(integer* nligne,
-             integer*, // ncolon,
-             integer* gposit,
-             integer*, // gnstoc,
-             doublereal* gmatri,
-             doublereal* vecin,
-             integer*    deblig,
-             doublereal* vecout,
-             integer*    iercod)
+int mmatvec_(int* nligne,
+             int*, // ncolon,
+             int* gposit,
+             int*, // gnstoc,
+             double* gmatri,
+             double* vecin,
+             int*    deblig,
+             double* vecout,
+             int*    iercod)
 
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  logical    ldbg;
-  integer    jmin, jmax, i__, j, k;
-  doublereal somme;
-  integer    aux;
+  long   ldbg;
+  int    jmin, jmax, i__, j, k;
+  double somme;
+  int    aux;
 
   /* ***********************************************************************/
 
@@ -1656,19 +1675,16 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmbulld_(integer*    nbcoln,
-                                  integer*    nblign,
-                                  doublereal* dtabtr,
-                                  integer*    numcle)
+int AdvApp2Var_MathBase::mmbulld_(int* nbcoln, int* nblign, double* dtabtr, int* numcle)
 
 {
   /* System generated locals */
-  integer dtabtr_dim1, dtabtr_offset, i__1, i__2;
+  int dtabtr_dim1, dtabtr_offset, i__1, i__2;
 
   /* Local variables */
-  logical    ldbg;
-  doublereal daux;
-  integer    nite1, nite2, nchan, i1, i2;
+  long   ldbg;
+  double daux;
+  int    nite1, nite2, nchan, i1, i2;
 
   /* ************************************************************************/
 
@@ -1799,20 +1815,20 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmcdriv_(integer*    ndimen,
-                                  integer*    ncoeff,
-                                  doublereal* courbe,
-                                  integer*    ideriv,
-                                  integer*    ncofdv,
-                                  doublereal* crvdrv)
+int AdvApp2Var_MathBase::mmcdriv_(int*    ndimen,
+                                  int*    ncoeff,
+                                  double* courbe,
+                                  int*    ideriv,
+                                  int*    ncofdv,
+                                  double* crvdrv)
 
 {
   /* System generated locals */
-  integer courbe_dim1, courbe_offset, crvdrv_dim1, crvdrv_offset, i__1, i__2;
+  int courbe_dim1, courbe_offset, crvdrv_dim1, crvdrv_offset, i__1, i__2;
 
   /* Local variables */
-  integer    i__, j, k;
-  doublereal mfactk, bid;
+  int    i__, j, k;
+  double mfactk, bid;
 
   /* ***********************************************************************/
 
@@ -1935,7 +1951,7 @@ int AdvApp2Var_MathBase::mmcdriv_(integer*    ndimen,
   i__1 = *ncoeff;
   for (j = k + 1; j <= i__1; ++j)
   {
-    bid  = mmcmcnp_.cnp[j - 1 + k * 61] * mfactk;
+    bid  = AdvApp2Var_Data::Getmmcmcnp().cnp[j - 1 + k * 61] * mfactk;
     i__2 = *ndimen;
     for (i__ = 1; i__ <= i__2; ++i__)
     {
@@ -1955,32 +1971,32 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmcglc1_(integer*    ndimax,
-                                  integer*    ndimen,
-                                  integer*    ncoeff,
-                                  doublereal* courbe,
-                                  doublereal* tdebut,
-                                  doublereal* tfinal,
-                                  doublereal* epsiln,
-                                  doublereal* xlongc,
-                                  doublereal* erreur,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmcglc1_(int*    ndimax,
+                                  int*    ndimen,
+                                  int*    ncoeff,
+                                  double* courbe,
+                                  double* tdebut,
+                                  double* tfinal,
+                                  double* epsiln,
+                                  double* xlongc,
+                                  double* erreur,
+                                  int*    iercod)
 
 {
   /* System generated locals */
-  integer    courbe_dim1, courbe_offset, i__1;
-  doublereal d__1;
+  int    courbe_dim1, courbe_offset, i__1;
+  double d__1;
 
   /* Local variables */
-  integer    ndec;
-  doublereal tdeb, tfin;
-  integer    iter;
-  doublereal oldso = 0.;
-  integer    itmax;
-  doublereal sottc;
-  integer    kk, ibb;
-  doublereal dif, pas;
-  doublereal som;
+  int    ndec;
+  double tdeb, tfin;
+  int    iter;
+  double oldso = 0.;
+  int    itmax;
+  double sottc;
+  int    kk, ibb;
+  double dif, pas;
+  double som;
 
   /* ***********************************************************************/
 
@@ -2128,7 +2144,7 @@ L5000:
     /* ------ Take into account DIF - Test of convergence */
 
     ++iter;
-    dif = (d__1 = sottc - oldso, advapp_abs(d__1));
+    dif = (d__1 = sottc - oldso, std::abs(d__1));
 
     /* ------ If DIF is OK, leave..., otherwise: */
 
@@ -2189,27 +2205,27 @@ L9999:
 
 //=================================================================================================
 
-int mmchole_(integer*, // mxcoef,
-             integer*    dimens,
-             doublereal* amatri,
-             integer*    aposit,
-             integer*    posuiv,
-             doublereal* chomat,
-             integer*    iercod)
+int mmchole_(int*, // mxcoef,
+             int*    dimens,
+             double* amatri,
+             int*    aposit,
+             int*    posuiv,
+             double* chomat,
+             int*    iercod)
 
 {
   /* System generated locals */
-  integer    i__1, i__2, i__3;
-  doublereal d__1;
+  int    i__1, i__2, i__3;
+  double d__1;
 
   /* Builtin functions */
   // double sqrt();
 
   /* Local variables */
-  logical    ldbg;
-  integer    kmin, i__, j, k;
-  doublereal somme;
-  integer    ptini, ptcou;
+  long   ldbg;
+  int    kmin, i__, j, k;
+  double somme;
+  int    ptini, ptcou;
 
   /* ***********************************************************************/
 
@@ -2310,7 +2326,7 @@ int mmchole_(integer*, // mxcoef,
       somme = 0.;
       /* Computing MAX */
       i__2 = i__ - aposit[(i__ << 1) + 1], i__3 = j - aposit[(j << 1) + 1];
-      kmin = advapp_max(i__2, i__3);
+      kmin = std::max(i__2, i__3);
       i__2 = j - 1;
       for (k = kmin; k <= i__2; ++k)
       {
@@ -2349,25 +2365,25 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmcvctx_(integer*    ndimen,
-                                  integer*    ncofmx,
-                                  integer*    nderiv,
-                                  doublereal* ctrtes,
-                                  doublereal* crvres,
-                                  doublereal* tabaux,
-                                  doublereal* xmatri,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmcvctx_(int*    ndimen,
+                                  int*    ncofmx,
+                                  int*    nderiv,
+                                  double* ctrtes,
+                                  double* crvres,
+                                  double* tabaux,
+                                  double* xmatri,
+                                  int*    iercod)
 
 {
   /* System generated locals */
-  integer ctrtes_dim1, ctrtes_offset, crvres_dim1, crvres_offset, xmatri_dim1, xmatri_offset,
+  int ctrtes_dim1, ctrtes_offset, crvres_dim1, crvres_offset, xmatri_dim1, xmatri_offset,
     tabaux_dim1, tabaux_offset, i__1, i__2;
 
   /* Local variables */
-  integer    moup1, nordr;
-  integer    nd;
-  integer    ibb, ncf, ndv;
-  doublereal eps1;
+  int    moup1, nordr;
+  int    nd;
+  int    ibb, ncf, ndv;
+  double eps1;
 
   /* ***********************************************************************/
 
@@ -2472,7 +2488,7 @@ int AdvApp2Var_MathBase::mmcvctx_(integer*    ndimen,
     for (ncf = 1; ncf <= i__2; ++ncf)
     {
       tabaux[ncf + ndv * tabaux_dim1] =
-        tabaux[ncf + (ndv - 1) * tabaux_dim1] * (doublereal)((ncf << 1) - ndv);
+        tabaux[ncf + (ndv - 1) * tabaux_dim1] * (double)((ncf << 1) - ndv);
       /* L300: */
     }
     /* L200: */
@@ -2535,7 +2551,7 @@ int AdvApp2Var_MathBase::mmcvctx_(integer*    ndimen,
     for (ncf = 1; ncf <= i__2; ++ncf)
     {
       tabaux[ncf + ndv * tabaux_dim1] =
-        tabaux[ncf + (ndv - 1) * tabaux_dim1] * (doublereal)((ncf << 1) - ndv + 1);
+        tabaux[ncf + (ndv - 1) * tabaux_dim1] * (double)((ncf << 1) - ndv + 1);
       /* L1300: */
     }
     /* L1200: */
@@ -2596,11 +2612,7 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmcvinv_(integer*    ndimax,
-                                  integer*    ncoef,
-                                  integer*    ndim,
-                                  doublereal* curveo,
-                                  doublereal* curve)
+int AdvApp2Var_MathBase::mmcvinv_(int* ndimax, int* ncoef, int* ndim, double* curveo, double* curve)
 
 {
   /* Initialized data */
@@ -2608,10 +2620,10 @@ int AdvApp2Var_MathBase::mmcvinv_(integer*    ndimax,
   static char nomprg[8 + 1] = "MMCVINV ";
 
   /* System generated locals */
-  integer curve_dim1, curve_offset, curveo_dim1, curveo_offset, i__1, i__2;
+  int curve_dim1, curve_offset, curveo_dim1, curveo_offset, i__1, i__2;
 
   /* Local variables */
-  integer i__, nd, ibb;
+  int i__, nd, ibb;
 
   /* ***********************************************************************/
 
@@ -2676,20 +2688,15 @@ int AdvApp2Var_MathBase::mmcvinv_(integer*    ndimax,
 
 //=================================================================================================
 
-int mmcvstd_(integer*    ncofmx,
-             integer*    ndimax,
-             integer*    ncoeff,
-             integer*    ndimen,
-             doublereal* crvcan,
-             doublereal* courbe)
+int mmcvstd_(int* ncofmx, int* ndimax, int* ncoeff, int* ndimen, double* crvcan, double* courbe)
 
 {
   /* System generated locals */
-  integer courbe_dim1, crvcan_dim1, crvcan_offset, i__1, i__2, i__3;
+  int courbe_dim1, crvcan_dim1, crvcan_offset, i__1, i__2, i__3;
 
   /* Local variables */
-  integer    ndeg, i__, j, j1, nd, ibb;
-  doublereal bid;
+  int    ndeg, i__, j, j1, nd, ibb;
+  double bid;
 
   /* ***********************************************************************/
 
@@ -2775,7 +2782,7 @@ int mmcvstd_(integer*    ncofmx,
       i__3 = ndeg;
       for (i__ = j; i__ <= i__3; i__ += 2)
       {
-        bid += crvcan[i__ + nd * crvcan_dim1] * mmcmcnp_.cnp[i__ + j * 61];
+        bid += crvcan[i__ + nd * crvcan_dim1] * AdvApp2Var_Data::Getmmcmcnp().cnp[i__ + j * 61];
         /* L410: */
       }
       courbe[nd + j * courbe_dim1] = bid;
@@ -2785,7 +2792,7 @@ int mmcvstd_(integer*    ncofmx,
       i__3 = ndeg;
       for (i__ = j1; i__ <= i__3; i__ += 2)
       {
-        bid += crvcan[i__ + nd * crvcan_dim1] * mmcmcnp_.cnp[i__ + j * 61];
+        bid += crvcan[i__ + nd * crvcan_dim1] * AdvApp2Var_Data::Getmmcmcnp().cnp[i__ + j * 61];
         /* L420: */
       }
       courbe[nd + j * courbe_dim1] -= bid;
@@ -2821,20 +2828,20 @@ int mmcvstd_(integer*    ncofmx,
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmdrc11_(integer*    iordre,
-                                  integer*    ndimen,
-                                  integer*    ncoeff,
-                                  doublereal* courbe,
-                                  doublereal* points,
-                                  doublereal* mfactab)
+int AdvApp2Var_MathBase::mmdrc11_(int*    iordre,
+                                  int*    ndimen,
+                                  int*    ncoeff,
+                                  double* courbe,
+                                  double* points,
+                                  double* mfactab)
 
 {
   /* System generated locals */
-  integer courbe_dim1, courbe_offset, points_dim2, points_offset, i__1, i__2;
+  int courbe_dim1, courbe_offset, points_dim2, points_offset, i__1, i__2;
 
   /* Local variables */
 
-  integer ndeg, i__, j, ndgcb, nd, ibb;
+  int ndeg, i__, j, ndgcb, nd, ibb;
 
   /* ***********************************************************************/
 
@@ -3007,20 +3014,20 @@ L9999:
 
 //=================================================================================================
 
-int mmdrvcb_(integer*    ideriv,
-             integer*    ndim,
-             integer*    ncoeff,
-             doublereal* courbe,
-             doublereal* tparam,
-             doublereal* tabpnt,
-             integer*    iercod)
+int mmdrvcb_(int*    ideriv,
+             int*    ndim,
+             int*    ncoeff,
+             double* courbe,
+             double* tparam,
+             double* tabpnt,
+             int*    iercod)
 
 {
   /* System generated locals */
-  integer courbe_dim1, tabpnt_dim1, i__1, i__2, i__3;
+  int courbe_dim1, tabpnt_dim1, i__1, i__2, i__3;
 
   /* Local variables */
-  integer ndeg, i__, j, nd, ndgcrb, iptpnt, ibb;
+  int ndeg, i__, j, nd, ndgcrb, iptpnt, ibb;
 
   /* *********************************************************************** */
   /*     FUNCTION : */
@@ -3161,7 +3168,7 @@ L200:
       i__3 = *ndim;
       for (nd = 1; nd <= i__3; ++nd)
       {
-        tabpnt[nd + i__ * tabpnt_dim1] = (doublereal)j * tabpnt[nd + i__ * tabpnt_dim1];
+        tabpnt[nd + i__ * tabpnt_dim1] = (double)j * tabpnt[nd + i__ * tabpnt_dim1];
         /* L1200: */
       }
       /* L1100: */
@@ -3181,44 +3188,44 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmdrvck_(integer*    ncoeff,
-                                  integer*    ndimen,
-                                  doublereal* courbe,
-                                  integer*    ideriv,
-                                  doublereal* tparam,
-                                  doublereal* pntcrb)
+int AdvApp2Var_MathBase::mmdrvck_(int*    ncoeff,
+                                  int*    ndimen,
+                                  double* courbe,
+                                  int*    ideriv,
+                                  double* tparam,
+                                  double* pntcrb)
 
 {
   /* Initialized data */
 
-  static doublereal mmfack[21] = {1.,
-                                  2.,
-                                  6.,
-                                  24.,
-                                  120.,
-                                  720.,
-                                  5040.,
-                                  40320.,
-                                  362880.,
-                                  3628800.,
-                                  39916800.,
-                                  479001600.,
-                                  6227020800.,
-                                  87178291200.,
-                                  1.307674368e12,
-                                  2.0922789888e13,
-                                  3.55687428096e14,
-                                  6.402373705728e15,
-                                  1.21645100408832e17,
-                                  2.43290200817664e18,
-                                  5.109094217170944e19};
+  static double mmfack[21] = {1.,
+                              2.,
+                              6.,
+                              24.,
+                              120.,
+                              720.,
+                              5040.,
+                              40320.,
+                              362880.,
+                              3628800.,
+                              39916800.,
+                              479001600.,
+                              6227020800.,
+                              87178291200.,
+                              1.307674368e12,
+                              2.0922789888e13,
+                              3.55687428096e14,
+                              6.402373705728e15,
+                              1.21645100408832e17,
+                              2.43290200817664e18,
+                              5.109094217170944e19};
 
   /* System generated locals */
-  integer courbe_dim1, courbe_offset, i__1, i__2;
+  int courbe_dim1, courbe_offset, i__1, i__2;
 
   /* Local variables */
-  integer    i__, j, k, nd;
-  doublereal mfactk, bid;
+  int    i__, j, k, nd;
+  double mfactk, bid;
 
   /*      IMPLICIT INTEGER (I-N) */
   /*      IMPLICIT DOUBLE PRECISION(A-H,O-Z) */
@@ -3347,14 +3354,15 @@ int AdvApp2Var_MathBase::mmdrvck_(integer*    ncoeff,
   i__1 = *ndimen;
   for (nd = 1; nd <= i__1; ++nd)
   {
-    pntcrb[nd] = courbe[nd + *ncoeff * courbe_dim1] * mmcmcnp_.cnp[*ncoeff - 1 + k * 61] * mfactk;
+    pntcrb[nd] = courbe[nd + *ncoeff * courbe_dim1]
+                 * AdvApp2Var_Data::Getmmcmcnp().cnp[*ncoeff - 1 + k * 61] * mfactk;
     /* L300: */
   }
 
   i__1 = k + 1;
   for (j = *ncoeff - 1; j >= i__1; --j)
   {
-    bid  = mmcmcnp_.cnp[j - 1 + k * 61] * mfactk;
+    bid  = AdvApp2Var_Data::Getmmcmcnp().cnp[j - 1 + k * 61] * mfactk;
     i__2 = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
@@ -3374,7 +3382,7 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmeps1_(doublereal* epsilo)
+int AdvApp2Var_MathBase::mmeps1_(double* epsilo)
 
 {
   /* ***********************************************************************/
@@ -3459,15 +3467,15 @@ int AdvApp2Var_MathBase::mmeps1_(doublereal* epsilo)
 
 //=================================================================================================
 
-int mmexthi_(integer* ndegre, NCollection_Array1<doublereal>& hwgaus)
+int mmexthi_(int* ndegre, NCollection_Array1<double>& hwgaus)
 
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  integer iadd, ideb, ndeg2, nmod2, ii, ibb;
-  integer kpt;
+  int iadd, ideb, ndeg2, nmod2, ii, ibb;
+  int kpt;
 
   /* ***********************************************************************/
 
@@ -3566,7 +3574,7 @@ int mmexthi_(integer* ndegre, NCollection_Array1<doublereal>& hwgaus)
   for (ii = ideb; ii <= i__1; ++ii)
   {
     kpt        = iadd + ii - ideb;
-    hwgaus(ii) = mlgdrtl_.hiltab[kpt + nmod2 * 465 - 1];
+    hwgaus(ii) = AdvApp2Var_Data::Getmlgdrtl().hiltab[kpt + nmod2 * 465 - 1];
     /* L100: */
   }
 
@@ -3585,7 +3593,7 @@ int mmexthi_(integer* ndegre, NCollection_Array1<doublereal>& hwgaus)
 
   if (nmod2 == 1)
   {
-    hwgaus(ndeg2 + 1) = mlgdrtl_.hi0tab[ndeg2];
+    hwgaus(ndeg2 + 1) = AdvApp2Var_Data::Getmlgdrtl().hi0tab[ndeg2];
   }
 
   /* --------------------------- The end --------------------------------- */
@@ -3599,14 +3607,14 @@ int mmexthi_(integer* ndegre, NCollection_Array1<doublereal>& hwgaus)
 
 //=================================================================================================
 
-int mmextrl_(integer* ndegre, NCollection_Array1<doublereal>& rootlg)
+int mmextrl_(int* ndegre, NCollection_Array1<double>& rootlg)
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  integer iadd, ideb, ndeg2, nmod2, ii, ibb;
-  integer kpt;
+  int iadd, ideb, ndeg2, nmod2, ii, ibb;
+  int kpt;
 
   /* ***********************************************************************/
 
@@ -3702,7 +3710,7 @@ int mmextrl_(integer* ndegre, NCollection_Array1<doublereal>& rootlg)
   for (ii = ideb; ii <= i__1; ++ii)
   {
     kpt        = iadd + ii - ideb;
-    rootlg(ii) = mlgdrtl_.rootab[kpt + nmod2 * 465 - 1];
+    rootlg(ii) = AdvApp2Var_Data::Getmlgdrtl().rootab[kpt + nmod2 * 465 - 1];
     /* L100: */
   }
 
@@ -3734,21 +3742,21 @@ int mmextrl_(integer* ndegre, NCollection_Array1<doublereal>& rootlg)
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmfmca8_(const integer* ndimen,
-                                  const integer* ncoefu,
-                                  const integer* ncoefv,
-                                  const integer* ndimax,
-                                  const integer* ncfumx,
-                                  const integer*, // ncfvmx,
-                                  doublereal* tabini,
-                                  doublereal* tabres)
+int AdvApp2Var_MathBase::mmfmca8_(const int* ndimen,
+                                  const int* ncoefu,
+                                  const int* ncoefv,
+                                  const int* ndimax,
+                                  const int* ncfumx,
+                                  const int*, // ncfvmx,
+                                  double* tabini,
+                                  double* tabres)
 
 {
   /* System generated locals */
-  integer tabini_dim1, tabini_dim2, tabini_offset, tabres_dim1, tabres_dim2, tabres_offset;
+  int tabini_dim1, tabini_dim2, tabini_offset, tabres_dim1, tabres_dim2, tabres_offset;
 
   /* Local variables */
-  integer i__, j, k, ilong;
+  int i__, j, k, ilong;
 
   /* ***********************************************************************/
 
@@ -3862,22 +3870,22 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmfmca9_(integer* ndimax,
-                                  integer* ncfumx,
-                                  integer*, // ncfvmx,
-                                  integer*    ndimen,
-                                  integer*    ncoefu,
-                                  integer*    ncoefv,
-                                  doublereal* tabini,
-                                  doublereal* tabres)
+int AdvApp2Var_MathBase::mmfmca9_(int* ndimax,
+                                  int* ncfumx,
+                                  int*, // ncfvmx,
+                                  int*    ndimen,
+                                  int*    ncoefu,
+                                  int*    ncoefv,
+                                  double* tabini,
+                                  double* tabres)
 
 {
   /* System generated locals */
-  integer tabini_dim1, tabini_dim2, tabini_offset, tabres_dim1, tabres_dim2, tabres_offset, i__1,
-    i__2, i__3;
+  int tabini_dim1, tabini_dim2, tabini_offset, tabres_dim1, tabres_dim2, tabres_offset, i__1, i__2,
+    i__3;
 
   /* Local variables */
-  integer i__, j, k, ilong;
+  int i__, j, k, ilong;
 
   /* ***********************************************************************/
 
@@ -3998,28 +4006,28 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmfmcar_(integer*    ndimen,
-                                  integer*    ncofmx,
-                                  integer*    ncoefu,
-                                  integer*    ncoefv,
-                                  doublereal* patold,
-                                  doublereal* upara1,
-                                  doublereal* upara2,
-                                  doublereal* vpara1,
-                                  doublereal* vpara2,
-                                  doublereal* patnew,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmfmcar_(int*    ndimen,
+                                  int*    ncofmx,
+                                  int*    ncoefu,
+                                  int*    ncoefv,
+                                  double* patold,
+                                  double* upara1,
+                                  double* upara2,
+                                  double* vpara1,
+                                  double* vpara2,
+                                  double* patnew,
+                                  int*    iercod)
 
 {
-  integer c__8 = 8;
+  int c__8 = 8;
   /* System generated locals */
-  integer patold_dim1, patold_dim2, patnew_dim1, patnew_dim2, i__1, patold_offset, patnew_offset;
+  int patold_dim1, patold_dim2, patnew_dim1, patnew_dim2, i__1, patold_offset, patnew_offset;
 
   /* Local variables */
-  doublereal* tbaux = nullptr;
-  integer     ksize, numax, kk;
-  intptr_t    iofst;
-  integer     ibb, ier;
+  double*  tbaux = nullptr;
+  int      ksize, numax, kk;
+  intptr_t iofst;
+  int      ibb, ier;
 
   /* ***********************************************************************/
 
@@ -4257,22 +4265,22 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmfmcb5_(integer*    isenmsc,
-                                  integer*    ndimax,
-                                  integer*    ncf1mx,
-                                  doublereal* courb1,
-                                  integer*    ncoeff,
-                                  integer*    ncf2mx,
-                                  integer*    ndimen,
-                                  doublereal* courb2,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmfmcb5_(int*    isenmsc,
+                                  int*    ndimax,
+                                  int*    ncf1mx,
+                                  double* courb1,
+                                  int*    ncoeff,
+                                  int*    ncf2mx,
+                                  int*    ndimen,
+                                  double* courb2,
+                                  int*    iercod)
 
 {
   /* System generated locals */
-  integer courb1_dim1, courb1_offset, courb2_dim1, courb2_offset, i__1, i__2;
+  int courb1_dim1, courb1_offset, courb2_dim1, courb2_offset, i__1, i__2;
 
   /* Local variables */
-  integer i__, nboct, nd;
+  int i__, nboct, nd;
 
   /* ***********************************************************************/
 
@@ -4401,25 +4409,25 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmfmtb1_(integer*    maxsz1,
-                                  doublereal* table1,
-                                  integer*    isize1,
-                                  integer*    jsize1,
-                                  integer*    maxsz2,
-                                  doublereal* table2,
-                                  integer*    isize2,
-                                  integer*    jsize2,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmfmtb1_(int*    maxsz1,
+                                  double* table1,
+                                  int*    isize1,
+                                  int*    jsize1,
+                                  int*    maxsz2,
+                                  double* table2,
+                                  int*    isize2,
+                                  int*    jsize2,
+                                  int*    iercod)
 {
-  integer c__8 = 8;
+  int c__8 = 8;
 
   /* System generated locals */
-  integer table1_dim1, table1_offset, table2_dim1, table2_offset, i__1, i__2;
+  int table1_dim1, table1_offset, table2_dim1, table2_offset, i__1, i__2;
 
   /* Local variables */
-  doublereal* work = nullptr;
-  integer     ilong, isize, ii, jj, ier = 0;
-  intptr_t    iofst = 0, iipt, jjpt;
+  double*  work = nullptr;
+  int      ilong, isize, ii, jj, ier = 0;
+  intptr_t iofst = 0, iipt, jjpt;
 
   /*************************************************************************/
 
@@ -4544,28 +4552,28 @@ L9999:
 //=================================================================================================
 
 int AdvApp2Var_MathBase::mmgaus1_(
-  integer* ndimf,
-  int (*bfunx)(integer* ninteg, doublereal* parame, doublereal* vfunj1, integer* iercod),
+  int* ndimf,
+  int (*bfunx)(int* ninteg, double* parame, double* vfunj1, int* iercod),
 
-  integer*    k,
-  doublereal* xd,
-  doublereal* xf,
-  doublereal* saux1,
-  doublereal* saux2,
-  doublereal* somme,
-  integer*    niter,
-  integer*    iercod)
+  int*    k,
+  double* xd,
+  double* xf,
+  double* saux1,
+  double* saux2,
+  double* somme,
+  int*    niter,
+  int*    iercod)
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  integer    ndeg;
-  doublereal h__[20];
-  integer    j;
-  doublereal t, u[20], x;
-  integer    idimf;
-  doublereal c1x, c2x;
+  int    ndeg;
+  double h__[20];
+  int    j;
+  double t, u[20], x;
+  int    idimf;
+  double c1x, c2x;
   /* ***********************************************************************/
 
   /*      FUNCTION : */
@@ -4724,29 +4732,29 @@ L9999:
 
 //=================================================================================================
 
-int mmherm0_(doublereal* debfin, integer* iercod)
+int mmherm0_(double* debfin, int* iercod)
 {
-  integer c__576 = 576;
-  integer c__6   = 6;
+  int c__576 = 576;
+  int c__6   = 6;
 
   /* System generated locals */
-  integer    i__1, i__2;
-  doublereal d__1;
+  int    i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  doublereal amat[36] /* was [6][6] */;
-  integer    iord[2];
-  doublereal prod;
-  integer    iord1, iord2;
-  doublereal miden[36] /* was [6][6] */;
-  integer    ncmat;
-  doublereal epspi, d1, d2;
-  integer    ii, jj, pp, ncf;
-  doublereal cof[6];
-  integer    iof[2], ier;
-  doublereal mat[36] /* was [6][6] */;
-  integer    cot;
-  doublereal abid[72] /* was [12][6] */;
+  double amat[36] /* was [6][6] */;
+  int    iord[2];
+  double prod;
+  int    iord1, iord2;
+  double miden[36] /* was [6][6] */;
+  int    ncmat;
+  double epspi, d1, d2;
+  int    ii, jj, pp, ncf;
+  double cof[6];
+  int    iof[2], ier;
+  double mat[36] /* was [6][6] */;
+  int    cot;
+  double abid[72] /* was [12][6] */;
   /* ***********************************************************************/
 
   /*     FUNCTION : */
@@ -4824,13 +4832,13 @@ int mmherm0_(doublereal* debfin, integer* iercod)
   --debfin;
 
   /* Function Body */
-  d1 = advapp_abs(debfin[1]);
+  d1 = std::abs(debfin[1]);
   if (d1 > (float)100.)
   {
     goto L9101;
   }
 
-  d2 = advapp_abs(debfin[2]);
+  d2 = std::abs(debfin[2]);
   if (d2 > (float)100.)
   {
     goto L9101;
@@ -4842,7 +4850,7 @@ int mmherm0_(doublereal* debfin, integer* iercod)
     goto L9101;
   }
 
-  d1 = (d__1 = debfin[2] - debfin[1], advapp_abs(d__1));
+  d1 = (d__1 = debfin[2] - debfin[1], std::abs(d__1));
   if (d1 / d2 < (float).01)
   {
     goto L9101;
@@ -4860,7 +4868,7 @@ int mmherm0_(doublereal* debfin, integer* iercod)
 
   /*     IS IT ALREADY INITIALIZED ? */
 
-  d1 = advapp_abs(debfin[1]) + advapp_abs(debfin[2]);
+  d1 = std::abs(debfin[1]) + std::abs(debfin[2]);
   d1 *= 16111959;
 
   if (debfin[1] != mmcmher_.tdebut)
@@ -4998,12 +5006,12 @@ L100:
 
   /* ***********************************************************************/
 
-  /*     The initialized flag is located: */
+  /*     The initialized long is located: */
 
   mmcmher_.tdebut = debfin[1];
   mmcmher_.tfinal = debfin[2];
 
-  d1              = advapp_abs(debfin[1]) + advapp_abs(debfin[2]);
+  d1              = std::abs(debfin[1]) + std::abs(debfin[2]);
   mmcmher_.verifi = d1 * 16111959;
 
   /* ***********************************************************************/
@@ -5032,19 +5040,15 @@ L9999:
 
 //=================================================================================================
 
-int mmherm1_(doublereal* debfin,
-             integer*    ordrmx,
-             integer*    iordre,
-             doublereal* hermit,
-             integer*    iercod)
+int mmherm1_(double* debfin, int* ordrmx, int* iordre, double* hermit, int* iercod)
 {
   /* System generated locals */
-  integer hermit_dim1, hermit_dim2, hermit_offset;
+  int hermit_dim1, hermit_dim2, hermit_offset;
 
   /* Local variables */
-  integer    nbval;
-  doublereal d1;
-  integer    cot;
+  int    nbval;
+  double d1;
+  int    cot;
 
   /* ***********************************************************************/
 
@@ -5166,7 +5170,7 @@ int mmherm1_(doublereal* debfin,
 
   /*     IS-IT CORRECTLY INITIALIZED ? */
 
-  d1 = advapp_abs(debfin[1]) + advapp_abs(debfin[2]);
+  d1 = std::abs(debfin[1]) + std::abs(debfin[2]);
   d1 *= 16111959;
 
   /*     OTHERWISE IT IS INITIALIZED */
@@ -5218,35 +5222,35 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmhjcan_(integer*    ndimen,
-                                  integer*    ncourb,
-                                  integer*    ncftab,
-                                  integer*    orcont,
-                                  integer*    ncflim,
-                                  doublereal* tcbold,
-                                  doublereal* tdecop,
-                                  doublereal* tcbnew,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmhjcan_(int*    ndimen,
+                                  int*    ncourb,
+                                  int*    ncftab,
+                                  int*    orcont,
+                                  int*    ncflim,
+                                  double* tcbold,
+                                  double* tdecop,
+                                  double* tcbnew,
+                                  int*    iercod)
 
 {
-  integer c__2  = 2;
-  integer c__21 = 21;
+  int c__2  = 2;
+  int c__21 = 21;
   /* System generated locals */
-  integer tcbold_dim1, tcbold_dim2, tcbold_offset, tcbnew_dim1, tcbnew_dim2, tcbnew_offset, i__1,
-    i__2, i__3, i__4, i__5;
+  int tcbold_dim1, tcbold_dim2, tcbold_offset, tcbnew_dim1, tcbnew_dim2, tcbnew_offset, i__1, i__2,
+    i__3, i__4, i__5;
 
   /* Local variables */
-  logical    ldbg;
-  integer    ndeg;
-  doublereal taux1[21];
-  integer    d__, e, i__, k;
-  doublereal mfact;
-  integer    ncoeff;
-  doublereal tjacap[21];
-  integer    iordre[2];
-  doublereal hermit[36] /* was [6][3][2] */, ctenor, bornes[2];
-  integer    ier;
-  integer    aux1, aux2;
+  long   ldbg;
+  int    ndeg;
+  double taux1[21];
+  int    d__, e, i__, k;
+  double mfact;
+  int    ncoeff;
+  double tjacap[21];
+  int    iordre[2];
+  double hermit[36] /* was [6][3][2] */, ctenor, bornes[2];
+  int    ier;
+  int    aux1, aux2;
 
   /* ***********************************************************************/
 
@@ -5399,7 +5403,11 @@ int AdvApp2Var_MathBase::mmhjcan_(integer*    ndimen,
       /*     CONVERSION OF THE COEFFICIENTS OF THE PART OF THE CURVE EXPRESSED */
       /*     IN CANONIC-JACOBI BASE, INTO THE CANONIC BASE */
 
-      AdvApp2Var_MathBase::mmapcmp_(&minombr_.nbr[1], &c__21, &ncoeff, taux1, tjacap);
+      AdvApp2Var_MathBase::mmapcmp_(&AdvApp2Var_Data::Getminombr().nbr[1],
+                                    &c__21,
+                                    &ncoeff,
+                                    taux1,
+                                    tjacap);
       AdvApp2Var_MathBase::mmjacan_(orcont, &ndeg, tjacap, taux1);
 
       /*        RECOPY THE COEFS RESULTING FROM THE CONVERSION IN THE TABLE */
@@ -5442,23 +5450,23 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mminltt_(integer*    ncolmx,
-                                  integer*    nlgnmx,
-                                  doublereal* tabtri,
-                                  integer*    nbrcol,
-                                  integer*    nbrlgn,
-                                  doublereal* ajoute,
-                                  doublereal*, // epseg,
-                                  integer* iercod)
+int AdvApp2Var_MathBase::mminltt_(int*    ncolmx,
+                                  int*    nlgnmx,
+                                  double* tabtri,
+                                  int*    nbrcol,
+                                  int*    nbrlgn,
+                                  double* ajoute,
+                                  double*, // epseg,
+                                  int* iercod)
 {
   /* System generated locals */
-  integer tabtri_dim1, tabtri_offset, i__1, i__2;
+  int tabtri_dim1, tabtri_offset, i__1, i__2;
 
   /* Local variables */
-  logical    idbg;
-  integer    icol, ilgn, nlgn, noct, inser;
-  doublereal epsega = 0.;
-  integer    ibb;
+  long   idbg;
+  int    icol, ilgn, nlgn, noct, inser;
+  double epsega = 0.;
+  int    ibb;
 
   /* ***********************************************************************/
 
@@ -5649,17 +5657,14 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmjacan_(const integer* ideriv,
-                                  integer*       ndeg,
-                                  doublereal*    poljac,
-                                  doublereal*    polcan)
+int AdvApp2Var_MathBase::mmjacan_(const int* ideriv, int* ndeg, double* poljac, double* polcan)
 {
   /* System generated locals */
-  integer poljac_dim1, i__1, i__2;
+  int poljac_dim1, i__1, i__2;
 
   /* Local variables */
-  integer    iptt, i__, j, ibb;
-  doublereal bid;
+  int    iptt, i__, j, ibb;
+  double bid;
 
   /* ***********************************************************************/
 
@@ -5742,7 +5747,7 @@ int AdvApp2Var_MathBase::mmjacan_(const integer* ideriv,
     i__2 = *ndeg / 2;
     for (j = i__; j <= i__2; ++j)
     {
-      bid += mmjcobi_.plgcan[iptt + j + *ideriv * 992 + 991] * poljac[j];
+      bid += AdvApp2Var_Data::Getmmjcobi().plgcan[iptt + j + *ideriv * 992 + 991] * poljac[j];
       /* L310: */
     }
     polcan[i__ * 2] = bid;
@@ -5764,7 +5769,8 @@ int AdvApp2Var_MathBase::mmjacan_(const integer* ideriv,
     i__2 = (*ndeg - 1) / 2;
     for (j = i__; j <= i__2; ++j)
     {
-      bid += mmjcobi_.plgcan[iptt + j + ((*ideriv << 1) + 1) * 496 + 991] * poljac[j + poljac_dim1];
+      bid += AdvApp2Var_Data::Getmmjcobi().plgcan[iptt + j + ((*ideriv << 1) + 1) * 496 + 991]
+             * poljac[j + poljac_dim1];
       /* L410: */
     }
     polcan[(i__ << 1) + 1] = bid;
@@ -5783,12 +5789,12 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmjaccv_(const integer*    ncoef,
-                                  const integer*    ndim,
-                                  const integer*    ider,
-                                  const doublereal* crvlgd,
-                                  doublereal*       polaux,
-                                  doublereal*       crvcan)
+int AdvApp2Var_MathBase::mmjaccv_(const int*    ncoef,
+                                  const int*    ndim,
+                                  const int*    ider,
+                                  const double* crvlgd,
+                                  double*       polaux,
+                                  double*       crvcan)
 
 {
   /* Initialized data */
@@ -5796,10 +5802,10 @@ int AdvApp2Var_MathBase::mmjaccv_(const integer*    ncoef,
   static char nomprg[8 + 1] = "MMJACCV ";
 
   /* System generated locals */
-  integer crvlgd_dim1, crvlgd_offset, crvcan_dim1, crvcan_offset, polaux_dim1, i__1, i__2;
+  int crvlgd_dim1, crvlgd_offset, crvcan_dim1, crvcan_offset, polaux_dim1, i__1, i__2;
 
   /* Local variables */
-  integer ndeg, i__, nd, ii, ibb;
+  int ndeg, i__, nd, ii, ibb;
 
   /* ***********************************************************************/
 
@@ -5890,30 +5896,30 @@ int AdvApp2Var_MathBase::mmjaccv_(const integer*    ncoef,
 
 //=================================================================================================
 
-int mmloncv_(integer*    ndimax,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* courbe,
-             doublereal* tdebut,
-             doublereal* tfinal,
-             doublereal* xlongc,
-             integer*    iercod)
+int mmloncv_(int*    ndimax,
+             int*    ndimen,
+             int*    ncoeff,
+             double* courbe,
+             double* tdebut,
+             double* tfinal,
+             double* xlongc,
+             int*    iercod)
 
 {
   /* Initialized data */
 
-  integer kgar = 0;
+  int kgar = 0;
 
   /* System generated locals */
-  integer courbe_dim1, courbe_offset, i__1, i__2;
+  int courbe_dim1, courbe_offset, i__1, i__2;
 
   /* Local variables */
-  doublereal tran;
-  integer    ngaus = 0;
-  doublereal c1, c2, d1, d2, wgaus[20] = {0.}, uroot[20] = {0.}, x1, x2, dd;
-  integer    ii, jj, kk;
-  doublereal som;
-  doublereal der1, der2;
+  double tran;
+  int    ngaus = 0;
+  double c1, c2, d1, d2, wgaus[20] = {0.}, uroot[20] = {0.}, x1, x2, dd;
+  int    ii, jj, kk;
+  double som;
+  double der1, der2;
 
   /* ***********************************************************************/
 
@@ -6031,7 +6037,7 @@ int mmloncv_(integer*    ndimax,
   /* ****** Calculate the optimal degree ** */
 
   kk = *ncoeff / 4 + 1;
-  kk = advapp_min(kk, 10);
+  kk = std::min(kk, 10);
 
   /* ****** Return the coefficients for the integral (DEGRE=4*KK) */
   /*       if KK <> KGAR. */
@@ -6129,36 +6135,36 @@ L9900:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmpobas_(doublereal* tparam,
-                                  integer*    iordre,
-                                  integer*    ncoeff,
-                                  integer*    nderiv,
-                                  doublereal* valbas,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmpobas_(double* tparam,
+                                  int*    iordre,
+                                  int*    ncoeff,
+                                  int*    nderiv,
+                                  double* valbas,
+                                  int*    iercod)
 
 {
-  integer c__2 = 2;
-  integer c__1 = 1;
+  int c__2 = 2;
+  int c__1 = 1;
 
   /* Initialized data */
 
-  doublereal moin11[2] = {-1., 1.};
+  double moin11[2] = {-1., 1.};
 
   /* System generated locals */
-  integer valbas_dim1 = 0, i__1 = 0;
+  int valbas_dim1 = 0, i__1 = 0;
 
   /* Local variables */
-  doublereal                     vjacc[80] = {};
-  doublereal                     herm[24]  = {};
-  NCollection_Array1<doublereal> vjac(vjacc[0], 1, 80);
-  integer                        iord[2] = {};
-  doublereal                     wval[4] = {};
-  integer                        nwcof = 0, iunit = 0;
-  doublereal                     wpoly[7] = {};
-  integer                        ii = 0, jj = 0, iorjac = 0;
-  doublereal                     hermit[36] = {}; // was [6][3][2]
-  integer                        kk1 = 0, kk2 = 0, kk3 = 0;
-  integer                        khe = 0, ier = 0;
+  double                     vjacc[80] = {};
+  double                     herm[24]  = {};
+  NCollection_Array1<double> vjac(vjacc[0], 1, 80);
+  int                        iord[2] = {};
+  double                     wval[4] = {};
+  int                        nwcof = 0, iunit = 0;
+  double                     wpoly[7] = {};
+  int                        ii = 0, jj = 0, iorjac = 0;
+  double                     hermit[36] = {}; // was [6][3][2]
+  int                        kk1 = 0, kk2 = 0, kk3 = 0;
+  int                        khe = 0, ier = 0;
 
   /* ***********************************************************************/
 
@@ -6322,7 +6328,7 @@ int AdvApp2Var_MathBase::mmpobas_(doublereal* tparam,
 
   /* Computing MAX */
   i__1  = iorjac + 1;
-  nwcof = advapp_max(i__1, 1);
+  nwcof = std::max(i__1, 1);
   AdvApp2Var_SysBase::mvriraz_(&nwcof, wpoly);
   wpoly[0] = 1.;
   if (*iordre == 2)
@@ -6455,20 +6461,20 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmpocrb_(integer*    ndimax,
-                                  integer*    ncoeff,
-                                  doublereal* courbe,
-                                  integer*    ndim,
-                                  doublereal* tparam,
-                                  doublereal* pntcrb)
+int AdvApp2Var_MathBase::mmpocrb_(int*    ndimax,
+                                  int*    ncoeff,
+                                  double* courbe,
+                                  int*    ndim,
+                                  double* tparam,
+                                  double* pntcrb)
 
 {
   /* System generated locals */
-  integer courbe_dim1, courbe_offset, i__1, i__2;
+  int courbe_dim1, courbe_offset, i__1, i__2;
 
   /* Local variables */
-  integer ncof2;
-  integer isize, nd, kcf, ncf;
+  int ncof2;
+  int isize, nd, kcf, ncf;
 
   /* ***********************************************************************/
 
@@ -6587,20 +6593,20 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmmpocur_(integer*    ncofmx,
-                                   integer*    ndim,
-                                   integer*    ndeg,
-                                   doublereal* courbe,
-                                   doublereal* tparam,
-                                   doublereal* tabval)
+int AdvApp2Var_MathBase::mmmpocur_(int*    ncofmx,
+                                   int*    ndim,
+                                   int*    ndeg,
+                                   double* courbe,
+                                   double* tparam,
+                                   double* tabval)
 
 {
   /* System generated locals */
-  integer courbe_dim1, courbe_offset, i__1;
+  int courbe_dim1, courbe_offset, i__1;
 
   /* Local variables */
-  integer    i__, nd;
-  doublereal fu;
+  int    i__, nd;
+  double fu;
 
   /* ***********************************************************************/
 
@@ -6672,23 +6678,23 @@ int AdvApp2Var_MathBase::mmmpocur_(integer*    ncofmx,
 
 //=================================================================================================
 
-int mmpojac_(doublereal*                     tparam,
-             integer*                        iordre,
-             integer*                        ncoeff,
-             integer*                        nderiv,
-             NCollection_Array1<doublereal>& valjac,
-             integer*                        iercod)
+int mmpojac_(double*                     tparam,
+             int*                        iordre,
+             int*                        ncoeff,
+             int*                        nderiv,
+             NCollection_Array1<double>& valjac,
+             int*                        iercod)
 
 {
-  integer c__2 = 2;
+  int c__2 = 2;
 
   /* System generated locals */
-  integer valjac_dim1, i__1, i__2;
+  int valjac_dim1, i__1, i__2;
 
   /* Local variables */
-  doublereal cofa, cofb, denom, tnorm[100];
-  integer    ii, jj, kk1, kk2;
-  doublereal aux1, aux2;
+  double cofa, cofb, denom, tnorm[100];
+  int    ii, jj, kk1, kk2;
+  double aux1, aux2;
 
   /* ***********************************************************************/
 
@@ -6775,7 +6781,7 @@ int mmpojac_(doublereal*                     tparam,
     i__2 = *iordre;
     for (jj = 1; jj <= i__2; ++jj)
     {
-      aux2 = aux2 * (doublereal)(kk1 + *iordre + jj) / (doublereal)(kk1 + jj);
+      aux2 = aux2 * (double)(kk1 + *iordre + jj) / (double)(kk1 + jj);
     }
     i__2          = (*iordre << 1) + 1;
     tnorm[ii - 1] = sqrt(aux2 * (kk1 * 2. + (*iordre << 1) + 1) / pow__ii(&c__2, &i__2));
@@ -6786,7 +6792,7 @@ int mmpojac_(doublereal*                     tparam,
   /*  --- Trivial Positions ----- */
 
   valjac(1) = 1.;
-  aux1      = (doublereal)(*iordre + 1);
+  aux1      = (double)(*iordre + 1);
   valjac(2) = aux1 * *tparam;
 
   if (*nderiv >= 1)
@@ -6815,7 +6821,7 @@ int mmpojac_(doublereal*                     tparam,
 
     kk1   = ii - 1;
     kk2   = ii - 2;
-    aux1  = (doublereal)(*iordre + kk2);
+    aux1  = (double)(*iordre + kk2);
     aux2  = aux1 * 2;
     cofa  = aux2 * (aux2 + 1) * (aux2 + 2);
     cofb  = (aux2 + 2) * -2. * aux1 * aux1;
@@ -6886,20 +6892,20 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmposui_(integer* dimmat,
-                                  integer*, // nistoc,
-                                  integer* aposit,
-                                  integer* posuiv,
-                                  integer* iercod)
+int AdvApp2Var_MathBase::mmposui_(int* dimmat,
+                                  int*, // nistoc,
+                                  int* aposit,
+                                  int* posuiv,
+                                  int* iercod)
 
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  logical ldbg;
-  integer imin, jmin, i__, j, k;
-  logical trouve;
+  long ldbg;
+  int  imin, jmin, i__, j, k;
+  long trouve;
 
   /* ***********************************************************************/
 
@@ -6972,12 +6978,12 @@ int AdvApp2Var_MathBase::mmposui_(integer* dimmat,
     for (j = jmin; j <= i__2; ++j)
     {
       imin   = i__ + 1;
-      trouve = FALSE_;
+      trouve = false;
       while (!trouve && imin <= *dimmat)
       {
         if (imin - aposit[(imin << 1) + 1] <= j)
         {
-          trouve = TRUE_;
+          trouve = true;
         }
         else
         {
@@ -7020,41 +7026,41 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmresol_(integer*    hdimen,
-                                  integer*    gdimen,
-                                  integer*    hnstoc,
-                                  integer*    gnstoc,
-                                  integer*    mnstoc,
-                                  doublereal* matsyh,
-                                  doublereal* matsyg,
-                                  doublereal* vecsyh,
-                                  doublereal* vecsyg,
-                                  integer*    hposit,
-                                  integer*    hposui,
-                                  integer*    gposit,
-                                  integer*    mmposui,
-                                  integer*    mposit,
-                                  doublereal* vecsol,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmresol_(int*    hdimen,
+                                  int*    gdimen,
+                                  int*    hnstoc,
+                                  int*    gnstoc,
+                                  int*    mnstoc,
+                                  double* matsyh,
+                                  double* matsyg,
+                                  double* vecsyh,
+                                  double* vecsyg,
+                                  int*    hposit,
+                                  int*    hposui,
+                                  int*    gposit,
+                                  int*    mmposui,
+                                  int*    mposit,
+                                  double* vecsol,
+                                  int*    iercod)
 
 {
-  integer c__100 = 100;
+  int c__100 = 100;
 
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  logical     ldbg;
-  doublereal* mcho = nullptr;
-  integer     jmin, jmax, i__, j, k, l;
-  intptr_t    iofv1, iofv2, iofv3, iofv4;
-  doublereal *v1 = nullptr, *v2 = nullptr, *v3 = nullptr, *v4 = nullptr;
-  integer     deblig, dimhch;
-  doublereal* hchole = nullptr;
-  intptr_t    iofmch, iofmam, iofhch;
-  doublereal* matsym = nullptr;
-  integer     ier;
-  integer     aux;
+  long     ldbg;
+  double*  mcho = nullptr;
+  int      jmin, jmax, i__, j, k, l;
+  intptr_t iofv1, iofv2, iofv3, iofv4;
+  double * v1 = nullptr, *v2 = nullptr, *v3 = nullptr, *v4 = nullptr;
+  int      deblig, dimhch;
+  double*  hchole = nullptr;
+  intptr_t iofmch, iofmam, iofhch;
+  double*  matsym = nullptr;
+  int      ier;
+  int      aux;
 
   /* ***********************************************************************/
 
@@ -7407,23 +7413,23 @@ L9999:
 
 //=================================================================================================
 
-int mmrslss_(integer*, // mxcoef,
-             integer*    dimens,
-             doublereal* smatri,
-             integer*    sposit,
-             integer*    posuiv,
-             doublereal* mscnmbr,
-             doublereal* soluti,
-             integer*    iercod)
+int mmrslss_(int*, // mxcoef,
+             int*    dimens,
+             double* smatri,
+             int*    sposit,
+             int*    posuiv,
+             double* mscnmbr,
+             double* soluti,
+             int*    iercod)
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  logical    ldbg;
-  integer    i__, j;
-  doublereal somme;
-  integer    pointe, ptcour;
+  long   ldbg;
+  int    i__, j;
+  double somme;
+  int    pointe, ptcour;
 
   /* ***********************************************************************/
 
@@ -7552,23 +7558,23 @@ L9999:
 
 //=================================================================================================
 
-int mmrslw_(integer*    normax,
-            integer*    nordre,
-            integer*    ndimen,
-            doublereal* epspiv,
-            doublereal* abmatr,
-            doublereal* xmatri,
-            integer*    iercod)
+int mmrslw_(int*    normax,
+            int*    nordre,
+            int*    ndimen,
+            double* epspiv,
+            double* abmatr,
+            double* xmatri,
+            int*    iercod)
 {
   /* System generated locals */
-  integer    abmatr_dim1, abmatr_offset, xmatri_dim1, xmatri_offset, i__1, i__2, i__3;
-  doublereal d__1;
+  int    abmatr_dim1, abmatr_offset, xmatri_dim1, xmatri_offset, i__1, i__2, i__3;
+  double d__1;
 
   /* Local variables */
-  integer    kpiv;
-  doublereal pivot;
-  integer    ii, jj, kk;
-  doublereal akj;
+  int    kpiv;
+  double pivot;
+  int    ii, jj, kk;
+  double akj;
 
   /* ***********************************************************************/
 
@@ -7598,7 +7604,7 @@ int mmrslw_(integer*    normax,
   /*   EPSPIV : Minimal value of a pivot. If during the calculation  */
   /*            the absolute value of the pivot is below EPSPIV, the */
   /*            system of equations is declared singular. EPSPIV should */
-  /*            be a "small" real. */
+  /*            be a "small" float. */
 
   /*   ABMATR(NORDRE+NDIMEN,NORDRE) : Auxiliary matrix containing  */
   /*                                  matrix A and matrix B. */
@@ -7672,7 +7678,7 @@ int mmrslw_(integer*    normax,
     i__2  = *nordre;
     for (jj = kk; jj <= i__2; ++jj)
     {
-      akj = (d__1 = abmatr[kk + jj * abmatr_dim1], advapp_abs(d__1));
+      akj = (d__1 = abmatr[kk + jj * abmatr_dim1], std::abs(d__1));
       if (akj > pivot)
       {
         pivot = akj;
@@ -7763,24 +7769,24 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmmrslwd_(integer*    normax,
-                                   integer*    nordre,
-                                   integer*    ndim,
-                                   doublereal* amat,
-                                   doublereal* bmat,
-                                   doublereal* epspiv,
-                                   doublereal* aaux,
-                                   doublereal* xmat,
-                                   integer*    iercod)
+int AdvApp2Var_MathBase::mmmrslwd_(int*    normax,
+                                   int*    nordre,
+                                   int*    ndim,
+                                   double* amat,
+                                   double* bmat,
+                                   double* epspiv,
+                                   double* aaux,
+                                   double* xmat,
+                                   int*    iercod)
 
 {
   /* System generated locals */
-  integer amat_dim1, amat_offset, bmat_dim1, bmat_offset, xmat_dim1, xmat_offset, aaux_dim1,
+  int amat_dim1, amat_offset, bmat_dim1, bmat_offset, xmat_dim1, xmat_offset, aaux_dim1,
     aaux_offset, i__1, i__2;
 
   /* Local variables */
-  integer i__, j;
-  integer ibb;
+  int i__, j;
+  int ibb;
 
   /*      IMPLICIT DOUBLE PRECISION (A-H,O-Z) */
   /*      IMPLICIT INTEGER (I-N) */
@@ -7912,10 +7918,10 @@ int AdvApp2Var_MathBase::mmmrslwd_(integer*    normax,
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmrtptt_(integer* ndglgd, doublereal* rtlegd)
+int AdvApp2Var_MathBase::mmrtptt_(int* ndglgd, double* rtlegd)
 
 {
-  integer ideb, nmod2, nsur2, ilong, ibb;
+  int ideb, nmod2, nsur2, ilong, ibb;
 
   /* ***********************************************************************/
 
@@ -8006,7 +8012,9 @@ int AdvApp2Var_MathBase::mmrtptt_(integer* ndglgd, doublereal* rtlegd)
 
   ilong = nsur2 << 3;
   ideb  = nsur2 * (nsur2 - 1) / 2 + 1;
-  AdvApp2Var_SysBase::mcrfill_(&ilong, &mlgdrtl_.rootab[ideb + nmod2 * 465 - 1], &rtlegd[1]);
+  AdvApp2Var_SysBase::mcrfill_(&ilong,
+                               &AdvApp2Var_Data::Getmlgdrtl().rootab[ideb + nmod2 * 465 - 1],
+                               &rtlegd[1]);
 
   /* ----------------------------- The end ------------------------------- */
 
@@ -8020,19 +8028,19 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmsrre2_(doublereal* tparam,
-                                  integer*    nbrval,
-                                  doublereal* tablev,
-                                  doublereal* epsil,
-                                  integer*    numint,
-                                  integer*    itypen,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmsrre2_(double* tparam,
+                                  int*    nbrval,
+                                  double* tablev,
+                                  double* epsil,
+                                  int*    numint,
+                                  int*    itypen,
+                                  int*    iercod)
 {
   /* System generated locals */
-  doublereal d__1;
+  double d__1;
 
   /* Local variables */
-  integer ideb, ifin, imil, ibb;
+  int ideb, ifin, imil, ibb;
 
   /* ***********************************************************************/
 
@@ -8040,7 +8048,7 @@ int AdvApp2Var_MathBase::mmsrre2_(doublereal* tparam,
   /*     -------- */
 
   /*     Find the interval corresponding to a valueb given in  */
-  /*     increasing order of real numbers with double precision. */
+  /*     increasing order of float numbers with double precision. */
 
   /*     KEYWORDS : */
   /*     --------- */
@@ -8147,12 +8155,12 @@ L1000:
   /* ------------------------OF TABLEV UP TO EPSIL ---------------------- */
 
 L2000:
-  if ((d__1 = *tparam - tablev[ideb], advapp_abs(d__1)) < *epsil)
+  if ((d__1 = *tparam - tablev[ideb], std::abs(d__1)) < *epsil)
   {
     *itypen = 1;
     goto L9999;
   }
-  if ((d__1 = *tparam - tablev[ifin], advapp_abs(d__1)) < *epsil)
+  if ((d__1 = *tparam - tablev[ifin], std::abs(d__1)) < *epsil)
   {
     *itypen = 2;
     goto L9999;
@@ -8174,24 +8182,24 @@ L9999:
 
 //=================================================================================================
 
-int mmtmave_(integer* nligne,
-             integer* ncolon,
-             integer* gposit,
-             integer*, // gnstoc,
-             doublereal* gmatri,
-             doublereal* vecin,
-             doublereal* vecout,
-             integer*    iercod)
+int mmtmave_(int* nligne,
+             int* ncolon,
+             int* gposit,
+             int*, // gnstoc,
+             double* gmatri,
+             double* vecin,
+             double* vecout,
+             int*    iercod)
 
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  logical    ldbg;
-  integer    imin, imax, i__, j, k;
-  doublereal somme;
-  integer    aux;
+  long   ldbg;
+  int    imin, imax, i__, j, k;
+  double somme;
+  int    aux;
 
   /* ***********************************************************************/
 
@@ -8303,24 +8311,24 @@ L9999:
 
 //=================================================================================================
 
-int mmtrpj0_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* epsi3d,
-             doublereal* crvlgd,
-             doublereal* ycvmax,
-             doublereal* epstrc,
-             integer*    ncfnew)
+int mmtrpj0_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* epsi3d,
+             double* crvlgd,
+             double* ycvmax,
+             double* epstrc,
+             int*    ncfnew)
 
 {
   /* System generated locals */
-  integer    crvlgd_dim1, crvlgd_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    ncut, i__;
-  doublereal bidon, error;
-  integer    nd;
+  int    ncut, i__;
+  double bidon, error;
+  int    nd;
 
   /* ************************************************************************/
 
@@ -8390,7 +8398,7 @@ int mmtrpj0_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /*   Cutting is stopped if the norm becomes too great. */
@@ -8416,58 +8424,57 @@ L9999:
 
 //=================================================================================================
 
-int mmtrpj2_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* epsi3d,
-             doublereal* crvlgd,
-             doublereal* ycvmax,
-             doublereal* epstrc,
-             integer*    ncfnew)
+int mmtrpj2_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* epsi3d,
+             double* crvlgd,
+             double* ycvmax,
+             double* epstrc,
+             int*    ncfnew)
 
 {
   /* Initialized data */
 
-  static doublereal xmaxj[57] = {
-    .9682458365518542212948163499456,   .986013297183269340427888048593603,
-    1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
-    1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
-    1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
-    1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
-    1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
-    1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
-    1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
-    2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
-    2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
-    2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
-    2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
-    2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
-    2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
-    2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
-    2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
-    2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
-    2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
-    3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
-    3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
-    3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
-    3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
-    3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
-    3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
-    3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
-    3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
-    3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
-    3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
-    3.72184531357268220291630708234186};
+  static double xmaxj[57] = {.9682458365518542212948163499456,   .986013297183269340427888048593603,
+                             1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
+                             1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
+                             1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
+                             1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
+                             1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
+                             1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
+                             1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
+                             2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
+                             2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
+                             2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
+                             2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
+                             2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
+                             2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
+                             2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
+                             2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
+                             2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
+                             2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
+                             3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
+                             3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
+                             3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
+                             3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
+                             3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
+                             3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
+                             3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
+                             3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
+                             3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
+                             3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
+                             3.72184531357268220291630708234186};
 
   /* System generated locals */
-  integer    crvlgd_dim1, crvlgd_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    ncut, i__;
-  doublereal bidon, error;
-  integer    ia, nd;
-  doublereal bid, eps1;
+  int    ncut, i__;
+  double bidon, error;
+  int    ia, nd;
+  double bid, eps1;
 
   /* ***********************************************************************/
 
@@ -8538,7 +8545,7 @@ int mmtrpj2_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /*   One stops to cut if the norm becomes too great. */
@@ -8568,7 +8575,7 @@ L400:
       i__1 = *ndimen;
       for (nd = 1; nd <= i__1; ++nd)
       {
-        bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1));
+        bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1));
         /* L600: */
       }
       if (bid > eps1)
@@ -8590,56 +8597,55 @@ L9999:
 
 //=================================================================================================
 
-int mmtrpj4_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* epsi3d,
-             doublereal* crvlgd,
-             doublereal* ycvmax,
-             doublereal* epstrc,
-             integer*    ncfnew)
+int mmtrpj4_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* epsi3d,
+             double* crvlgd,
+             double* ycvmax,
+             double* epstrc,
+             int*    ncfnew)
 {
   /* Initialized data */
 
-  static doublereal xmaxj[55] = {
-    1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
-    1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
-    1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
-    1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
-    1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
-    1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
-    1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
-    1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
-    1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
-    1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
-    1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
-    2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
-    2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
-    2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
-    2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
-    2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
-    2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
-    2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
-    2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
-    2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
-    2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
-    2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
-    2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
-    2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
-    2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
-    2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
-    3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
-    3.05886060707437081434964933864149};
+  static double xmaxj[55] = {1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
+                             1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
+                             1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
+                             1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
+                             1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
+                             1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
+                             1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
+                             1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
+                             1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
+                             1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
+                             1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
+                             2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
+                             2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
+                             2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
+                             2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
+                             2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
+                             2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
+                             2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
+                             2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
+                             2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
+                             2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
+                             2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
+                             2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
+                             2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
+                             2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
+                             2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
+                             3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
+                             3.05886060707437081434964933864149};
 
   /* System generated locals */
-  integer    crvlgd_dim1, crvlgd_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    ncut, i__;
-  doublereal bidon, error;
-  integer    ia, nd;
-  doublereal bid, eps1;
+  int    ncut, i__;
+  double bidon, error;
+  int    ia, nd;
+  double bid, eps1;
 
   /* ***********************************************************************/
 
@@ -8711,7 +8717,7 @@ int mmtrpj4_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /*   Stop cutting if the norm becomes too great. */
@@ -8741,7 +8747,7 @@ L400:
       i__1 = *ndimen;
       for (nd = 1; nd <= i__1; ++nd)
       {
-        bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1));
+        bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1));
         /* L600: */
       }
       if (bid > eps1)
@@ -8763,56 +8769,55 @@ L9999:
 
 //=================================================================================================
 
-int mmtrpj6_(integer*    ncofmx,
-             integer*    ndimen,
-             integer*    ncoeff,
-             doublereal* epsi3d,
-             doublereal* crvlgd,
-             doublereal* ycvmax,
-             doublereal* epstrc,
-             integer*    ncfnew)
+int mmtrpj6_(int*    ncofmx,
+             int*    ndimen,
+             int*    ncoeff,
+             double* epsi3d,
+             double* crvlgd,
+             double* ycvmax,
+             double* epstrc,
+             int*    ncfnew)
 
 {
   /* Initialized data */
 
-  static doublereal xmaxj[53] = {
-    1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
-    1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
-    1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
-    1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
-    1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
-    1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
-    1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
-    1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
-    1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
-    1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
-    1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
-    1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
-    1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
-    2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
-    2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
-    2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
-    2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
-    2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
-    2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
-    2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
-    2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
-    2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
-    2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
-    2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
-    2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
-    2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
-    2.71238965987606292679677228666411};
+  static double xmaxj[53] = {1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
+                             1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
+                             1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
+                             1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
+                             1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
+                             1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
+                             1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
+                             1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
+                             1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
+                             1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
+                             1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
+                             1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
+                             1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
+                             2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
+                             2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
+                             2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
+                             2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
+                             2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
+                             2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
+                             2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
+                             2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
+                             2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
+                             2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
+                             2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
+                             2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
+                             2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
+                             2.71238965987606292679677228666411};
 
   /* System generated locals */
-  integer    crvlgd_dim1, crvlgd_offset, i__1, i__2;
-  doublereal d__1;
+  int    crvlgd_dim1, crvlgd_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  integer    ncut, i__;
-  doublereal bidon, error;
-  integer    ia, nd;
-  doublereal bid, eps1;
+  int    ncut, i__;
+  double bidon, error;
+  int    ia, nd;
+  double bid, eps1;
 
   /* ***********************************************************************/
 
@@ -8883,7 +8888,7 @@ int mmtrpj6_(integer*    ncofmx,
     i__2  = *ndimen;
     for (nd = 1; nd <= i__2; ++nd)
     {
-      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1)) * bidon;
+      ycvmax[nd] += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1)) * bidon;
       /* L310: */
     }
     /*   Stop cutting if the norm becomes too great. */
@@ -8913,7 +8918,7 @@ L400:
       i__1 = *ndimen;
       for (nd = 1; nd <= i__1; ++nd)
       {
-        bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], advapp_abs(d__1));
+        bid += (d__1 = crvlgd[i__ + nd * crvlgd_dim1], std::abs(d__1));
         /* L600: */
       }
       if (bid > eps1)
@@ -8935,21 +8940,21 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmtrpjj_(integer*    ncofmx,
-                                  integer*    ndimen,
-                                  integer*    ncoeff,
-                                  doublereal* epsi3d,
-                                  integer*    iordre,
-                                  doublereal* crvlgd,
-                                  doublereal* ycvmax,
-                                  doublereal* errmax,
-                                  integer*    ncfnew)
+int AdvApp2Var_MathBase::mmtrpjj_(int*    ncofmx,
+                                  int*    ndimen,
+                                  int*    ncoeff,
+                                  double* epsi3d,
+                                  int*    iordre,
+                                  double* crvlgd,
+                                  double* ycvmax,
+                                  double* errmax,
+                                  int*    ncfnew)
 {
   /* System generated locals */
-  integer crvlgd_dim1, crvlgd_offset;
+  int crvlgd_dim1, crvlgd_offset;
 
   /* Local variables */
-  integer ia;
+  int ia;
 
   /* ***********************************************************************/
 
@@ -9020,25 +9025,25 @@ int AdvApp2Var_MathBase::mmtrpjj_(integer*    ncofmx,
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
-                                  doublereal* vector,
-                                  doublereal* vecnrm,
-                                  doublereal* epsiln,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmunivt_(int*    ndimen,
+                                  double* vector,
+                                  double* vecnrm,
+                                  double* epsiln,
+                                  int*    iercod)
 {
 
-  doublereal c_b2 = 10.;
+  double c_b2 = 10.;
 
   /* System generated locals */
-  integer    i__1;
-  doublereal d__1;
+  int    i__1;
+  double d__1;
 
   /* Local variables */
-  integer    nchif, iunit = 1, izero;
-  doublereal vnorm;
-  integer    ii;
-  doublereal bid;
-  doublereal eps0;
+  int    nchif, iunit = 1, izero;
+  double vnorm;
+  int    ii;
+  double bid;
+  double eps0;
 
   /* ***********************************************************************/
 
@@ -9122,7 +9127,7 @@ int AdvApp2Var_MathBase::mmunivt_(integer*    ndimen,
   for (ii = 1; ii <= i__1; ++ii)
   {
     vecnrm[ii] = vector[ii] / vnorm;
-    if ((d__1 = vecnrm[ii], advapp_abs(d__1)) <= eps0)
+    if ((d__1 = vecnrm[ii], std::abs(d__1)) <= eps0)
     {
       ++izero;
     }
@@ -9163,13 +9168,13 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmveps3_(doublereal* eps03)
+int AdvApp2Var_MathBase::mmveps3_(double* eps03)
 {
   /* Initialized data */
 
   static char nomprg[8 + 1] = "MMEPS1  ";
 
-  integer ibb;
+  int ibb;
 
   /*************************************************************************/
 
@@ -9255,22 +9260,19 @@ int AdvApp2Var_MathBase::mmveps3_(doublereal* eps03)
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
-                                  doublereal* vecin,
-                                  doublereal* vecout,
-                                  integer*    iercod)
+int AdvApp2Var_MathBase::mmvncol_(int* ndimen, double* vecin, double* vecout, int* iercod)
 
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  logical    ldbg;
-  integer    d__;
-  doublereal vaux1[3], vaux2[3];
-  logical    colin;
-  doublereal valaux;
-  integer    aux;
+  long   ldbg;
+  int    d__;
+  double vaux1[3], vaux2[3];
+  long   colin;
+  double valaux;
+  int    aux;
 
   /* ***********************************************************************/
 
@@ -9354,7 +9356,7 @@ int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
     vaux1[d__ - 1] = vecin[d__];
     vaux2[d__ - 1] = vecin[d__];
   }
-  colin = TRUE_;
+  colin = true;
   d__   = 0;
   while (colin)
   {
@@ -9373,17 +9375,17 @@ int AdvApp2Var_MathBase::mmvncol_(integer*    ndimen,
         valaux = vaux1[0] * vaux2[1] - vaux1[1] * vaux2[0];
         if (valaux != 0.)
         {
-          colin = FALSE_;
+          colin = false;
         }
       }
       else
       {
-        colin = FALSE_;
+        colin = false;
       }
     }
     else
     {
-      colin = FALSE_;
+      colin = false;
     }
   }
   if (colin)
@@ -9422,12 +9424,12 @@ L9999:
 
 //=================================================================================================
 
-void AdvApp2Var_MathBase::mmwprcs_(doublereal* epsil1,
-                                   doublereal* epsil2,
-                                   doublereal* epsil3,
-                                   doublereal* epsil4,
-                                   integer*    niter1,
-                                   integer*    niter2)
+void AdvApp2Var_MathBase::mmwprcs_(double* epsil1,
+                                   double* epsil2,
+                                   double* epsil3,
+                                   double* epsil4,
+                                   int*    niter1,
+                                   int*    niter2)
 
 {
 
@@ -9526,10 +9528,10 @@ void AdvApp2Var_MathBase::mmwprcs_(doublereal* epsil1,
 
 //=================================================================================================
 
-doublereal AdvApp2Var_MathBase::pow__di(doublereal* x, integer* n)
+double AdvApp2Var_MathBase::pow__di(double* x, int* n)
 {
-  doublereal result;
-  integer    absolute;
+  double result;
+  int    absolute;
   result = 1.0e0;
   if (*n > 0)
   {
@@ -9540,7 +9542,7 @@ doublereal AdvApp2Var_MathBase::pow__di(doublereal* x, integer* n)
     absolute = -*n;
   }
   /* System generated locals */
-  for (integer ii = 0; ii < absolute; ii++)
+  for (int ii = 0; ii < absolute; ii++)
   {
     result *= *x;
   }
@@ -9555,7 +9557,7 @@ doublereal AdvApp2Var_MathBase::pow__di(doublereal* x, integer* n)
 
 /*     FUNCTION : */
 /*     ---------- */
-/*        Calculate integer function power not obligatory in the most */
+/*        Calculate int function power not obligatory in the most */
 /*        efficient way */
 
 /*     KEYWORDS : */
@@ -9585,11 +9587,11 @@ doublereal AdvApp2Var_MathBase::pow__di(doublereal* x, integer* n)
 
 //=================================================================================================
 
-integer pow__ii(integer* x, integer* n)
+int pow__ii(int* x, int* n)
 
 {
-  integer result;
-  integer absolute;
+  int result;
+  int absolute;
   result = 1;
   if (*n > 0)
   {
@@ -9600,7 +9602,7 @@ integer pow__ii(integer* x, integer* n)
     absolute = -*n;
   }
   /* System generated locals */
-  for (integer ii = 0; ii < absolute; ii++)
+  for (int ii = 0; ii < absolute; ii++)
   {
     result *= *x;
   }
@@ -9617,7 +9619,7 @@ integer pow__ii(integer* x, integer* n)
 
 /*     FUNCTION : */
 /*     ---------- */
-/*        Calculate integer function power not obligatory in the most */
+/*        Calculate int function power not obligatory in the most */
 /*        efficient way */
 
 /*     KEYWORDS : */
@@ -9647,16 +9649,16 @@ integer pow__ii(integer* x, integer* n)
 
 //=================================================================================================
 
-doublereal AdvApp2Var_MathBase::msc_(integer* ndimen, doublereal* vecte1, doublereal* vecte2)
+double AdvApp2Var_MathBase::msc_(int* ndimen, double* vecte1, double* vecte2)
 
 {
   /* System generated locals */
-  integer    i__1;
-  doublereal ret_val;
+  int    i__1;
+  double ret_val;
 
   /* Local variables */
-  integer    i__;
-  doublereal x;
+  int    i__;
+  double x;
 
   /*************************************************************************/
 
@@ -9712,16 +9714,16 @@ doublereal AdvApp2Var_MathBase::msc_(integer* ndimen, doublereal* vecte1, double
 
 //=================================================================================================
 
-int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* iercod)
+int mvcvin2_(int* ncoeff, double* crvold, double* crvnew, int* iercod)
 
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  integer    m1jm1, ncfm1, j, k;
-  doublereal bid;
-  doublereal cij1, cij2;
+  int    m1jm1, ncfm1, j, k;
+  double bid;
+  double cij1, cij2;
 
   /*************************************************************************/
 
@@ -9828,7 +9830,7 @@ int mvcvin2_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
     i__2  = *ncoeff;
     for (k = j + 1; k <= i__2; ++k)
     {
-      bid = mmcmcnp_.cnp[k - 1 + (j - 1) * 61];
+      bid = AdvApp2Var_Data::Getmmcmcnp().cnp[k - 1 + (j - 1) * 61];
       cij1 += crvold[(k << 1) + 1] * bid;
       cij2 += crvold[(k << 1) + 2] * bid;
     }
@@ -9851,17 +9853,17 @@ L9999:
 
 //=================================================================================================
 
-int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* iercod)
+int mvcvinv_(int* ncoeff, double* crvold, double* crvnew, int* iercod)
 
 {
   /* System generated locals */
-  integer i__1, i__2;
+  int i__1, i__2;
 
   /* Local variables */
-  integer    m1jm1, ncfm1, j, k;
-  doublereal bid;
+  int    m1jm1, ncfm1, j, k;
+  double bid;
   // extern /* Subroutine */ int maermsg_();
-  doublereal cij1, cij2, cij3;
+  double cij1, cij2, cij3;
 
   /* ***********************************************************************/
 
@@ -9972,7 +9974,7 @@ int mvcvinv_(integer* ncoeff, doublereal* crvold, doublereal* crvnew, integer* i
     i__2  = *ncoeff;
     for (k = j + 1; k <= i__2; ++k)
     {
-      bid = mmcmcnp_.cnp[k - 1 + (j - 1) * 61];
+      bid = AdvApp2Var_Data::Getmmcmcnp().cnp[k - 1 + (j - 1) * 61];
       cij1 += crvold[k * 3 + 1] * bid;
       cij2 += crvold[k * 3 + 2] * bid;
       cij3 += crvold[k * 3 + 3] * bid;
@@ -9997,20 +9999,16 @@ L9999:
 
 //=================================================================================================
 
-int mvgaus0_(integer*    kindic,
-             doublereal* urootl,
-             doublereal* hiltab,
-             integer*    nbrval,
-             integer*    iercod)
+int mvgaus0_(int* kindic, double* urootl, double* hiltab, int* nbrval, int* iercod)
 
 {
   /* System generated locals */
-  integer i__1 = 0;
+  int i__1 = 0;
 
   /* Local variables */
-  doublereal                     tampc[40] = {};
-  NCollection_Array1<doublereal> tamp(tampc[0], 1, 40);
-  integer                        ndegl = 0, kg = 0, ii = 0;
+  double                     tampc[40] = {};
+  NCollection_Array1<double> tamp(tampc[0], 1, 40);
+  int                        ndegl = 0, kg = 0, ii = 0;
 
   /* ***********************************************************************/
 
@@ -10123,14 +10121,14 @@ int mvgaus0_(integer*    kindic,
 
 //=================================================================================================
 
-int mvpscr2_(integer* ncoeff, doublereal* curve2, doublereal* tparam, doublereal* pntcrb)
+int mvpscr2_(int* ncoeff, double* curve2, double* tparam, double* pntcrb)
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  integer    ndeg, kk;
-  doublereal xxx, yyy;
+  int    ndeg, kk;
+  double xxx, yyy;
 
   /* ***********************************************************************/
 
@@ -10244,15 +10242,15 @@ L9999:
 
 //=================================================================================================
 
-int mvpscr3_(integer* ncoeff, doublereal* curve3, doublereal* tparam, doublereal* pntcrb)
+int mvpscr3_(int* ncoeff, double* curve3, double* tparam, double* pntcrb)
 
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  integer    ndeg, kk;
-  doublereal xxx, yyy, zzz;
+  int    ndeg, kk;
+  double xxx, yyy, zzz;
 
   /* ***********************************************************************/
 
@@ -10376,16 +10374,16 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_MathBase::mvsheld_(integer* n, integer* is, doublereal* dtab, integer* icle)
+int AdvApp2Var_MathBase::mvsheld_(int* n, int* is, double* dtab, int* icle)
 
 {
   /* System generated locals */
-  integer dtab_dim1, dtab_offset, i__1, i__2;
+  int dtab_dim1, dtab_offset, i__1, i__2;
 
   /* Local variables */
-  integer    incr;
-  doublereal dsave;
-  integer    i3, i4, i5, incrp1;
+  int    incr;
+  double dsave;
+  int    i3, i4, i5, incrp1;
 
   /*************************************************************************/
 
@@ -10503,16 +10501,16 @@ L9900:
 
 //=================================================================================================
 
-doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
+double AdvApp2Var_MathBase::mzsnorm_(int* ndimen, double* vecteu)
 
 {
   /* System generated locals */
-  integer    i__1;
-  doublereal ret_val, d__1, d__2;
+  int    i__1;
+  double ret_val, d__1, d__2;
 
   /* Local variables */
-  doublereal xsom;
-  integer    i__, irmax;
+  double xsom;
+  int    i__, irmax;
 
   /* ***********************************************************************/
 
@@ -10571,7 +10569,7 @@ doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
   i__1  = *ndimen;
   for (i__ = 2; i__ <= i__1; ++i__)
   {
-    if ((d__1 = vecteu[irmax], advapp_abs(d__1)) < (d__2 = vecteu[i__], advapp_abs(d__2)))
+    if ((d__1 = vecteu[irmax], std::abs(d__1)) < (d__2 = vecteu[i__], std::abs(d__2)))
     {
       irmax = i__;
     }
@@ -10580,7 +10578,7 @@ doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
 
   /* ___ Calculate the norme */
 
-  if ((d__1 = vecteu[irmax], advapp_abs(d__1)) < 1.)
+  if ((d__1 = vecteu[irmax], std::abs(d__1)) < 1.)
   {
     xsom = 0.;
     i__1 = *ndimen;
@@ -10611,7 +10609,7 @@ doublereal AdvApp2Var_MathBase::mzsnorm_(integer* ndimen, doublereal* vecteu)
       }
       /* L300: */
     }
-    ret_val = (d__1 = vecteu[irmax], advapp_abs(d__1)) * sqrt(xsom);
+    ret_val = (d__1 = vecteu[irmax], std::abs(d__1)) * sqrt(xsom);
   }
 
   /* ***********************************************************************/

@@ -61,24 +61,24 @@ bool AdvApp2Var_Network::FirstNotApprox(int& theIndex) const
 
 void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
 {
-
-  //  Insert the new cutting parameter
-  int i = 1, j;
+  // Insert the new cutting parameter.
+  int i = 1;
   while (myUParameters.Value(i) < CuttingValue)
   {
     i++;
   }
   myUParameters.InsertBefore(i, CuttingValue);
 
-  for (j = 1; j < myVParameters.Length(); j++)
+  const int aNbPatchInU = myUParameters.Length() - 1;
+  for (int j = 1; j < myVParameters.Length(); j++)
   {
-    //    Modify the patches affected by the cut
-    int                                  indice = (myUParameters.Length() - 1) * (j - 1) + i - 1;
-    const occ::handle<AdvApp2Var_Patch>& aPat   = myNet.Value(indice);
+    // Modify the patch impacted by the cut.
+    const int                            aPatchIndex = aNbPatchInU * (j - 1) + i - 1;
+    const occ::handle<AdvApp2Var_Patch>& aPat        = myNet.Value(aPatchIndex);
     aPat->ChangeDomain(aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
     aPat->ResetApprox();
 
-    //    Insert the new patches
+    // Insert the right-side patch.
     occ::handle<AdvApp2Var_Patch> aNewPat = new AdvApp2Var_Patch(CuttingValue,
                                                                  myUParameters.Value(i + 1),
                                                                  myVParameters.Value(j),
@@ -86,7 +86,7 @@ void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
                                                                  aPat->UOrder(),
                                                                  aPat->VOrder());
     aNewPat->ResetApprox();
-    myNet.InsertAfter(indice, aNewPat);
+    myNet.InsertAfter(aPatchIndex, aNewPat);
   }
 }
 
@@ -94,37 +94,38 @@ void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
 
 void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
 {
-
-  //  Insert the new cutting parameter
-  int                           j = 1;
-  occ::handle<AdvApp2Var_Patch> Pat;
+  // Insert the new cutting parameter.
+  int j = 1;
   while (myVParameters.Value(j) < CuttingValue)
   {
     j++;
   }
   myVParameters.InsertBefore(j, CuttingValue);
 
-  //  Modify the patches affected by the cut
-  for (int i = 1; i < myUParameters.Length(); i++)
+  const int aNbPatchInU = myUParameters.Length() - 1;
+
+  // Modify the patches affected by the cut.
+  for (int i = 1; i <= aNbPatchInU; i++)
   {
-    const int indice = (myUParameters.Length() - 1) * (j - 2) + i;
-    Pat              = myNet.Value(indice);
-    Pat->ChangeDomain(Pat->U0(), Pat->U1(), Pat->V0(), CuttingValue);
-    Pat->ResetApprox();
+    const int                            aPatchIndex = aNbPatchInU * (j - 2) + i;
+    const occ::handle<AdvApp2Var_Patch>& aPatch      = myNet.Value(aPatchIndex);
+    aPatch->ChangeDomain(aPatch->U0(), aPatch->U1(), aPatch->V0(), CuttingValue);
+    aPatch->ResetApprox();
   }
 
-  //  Insert the new patches
-  for (int i = 1; i < myUParameters.Length(); i++)
+  // Insert the top patches.
+  for (int i = 1; i <= aNbPatchInU; i++)
   {
-    const int                     indice  = (myUParameters.Length() - 1) * (j - 1) + i - 1;
-    occ::handle<AdvApp2Var_Patch> aNewPat = new AdvApp2Var_Patch(myUParameters.Value(i),
+    const int                            aPatchIndex  = aNbPatchInU * (j - 1) + i - 1;
+    const occ::handle<AdvApp2Var_Patch>& aSourcePatch = myNet.Value(aNbPatchInU * (j - 2) + i);
+    occ::handle<AdvApp2Var_Patch>        aNewPat      = new AdvApp2Var_Patch(myUParameters.Value(i),
                                                                  myUParameters.Value(i + 1),
                                                                  CuttingValue,
                                                                  myVParameters.Value(j + 1),
-                                                                 Pat->UOrder(),
-                                                                 Pat->VOrder());
+                                                                 aSourcePatch->UOrder(),
+                                                                 aSourcePatch->VOrder());
     aNewPat->ResetApprox();
-    myNet.InsertAfter(indice, aNewPat);
+    myNet.InsertAfter(aPatchIndex, aNewPat);
   }
 }
 

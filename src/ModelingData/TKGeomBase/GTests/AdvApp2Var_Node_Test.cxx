@@ -1,7 +1,4 @@
-// Created on: 1996-05-21
-// Created by: Philippe MANGIN
-// Copyright (c) 1996-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,22 +11,23 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_SysBase.hxx>
+#include <gtest/gtest.h>
 
-static int init_STBAS()
+#include <AdvApp2Var_Node.hxx>
+#include <gp_Pnt.hxx>
+
+TEST(AdvApp2Var_NodeTest, Constructor_InitializesValuesToZero)
 {
-  int ICODE = 0;
-  // allocation tables are now local, so no global initialization is required
-  // Init de LEC IBB IMP
-  AdvApp2Var_SysBase::macinit_(&ICODE, &ICODE);
-  //
-  return 1;
+  AdvApp2Var_Node aNode(1, 2);
+  for (int aUOrder = 0; aUOrder <= 1; ++aUOrder)
+  {
+    for (int aVOrder = 0; aVOrder <= 2; ++aVOrder)
+    {
+      const gp_Pnt& aPoint = aNode.Point(aUOrder, aVOrder);
+      EXPECT_DOUBLE_EQ(aPoint.X(), 0.0);
+      EXPECT_DOUBLE_EQ(aPoint.Y(), 0.0);
+      EXPECT_DOUBLE_EQ(aPoint.Z(), 0.0);
+      EXPECT_DOUBLE_EQ(aNode.Error(aUOrder, aVOrder), 0.0);
+    }
+  }
 }
-
-//
-class STBASLibInit
-{
-  static int var_STBASLibINIT;
-};
-
-int STBASLibInit::var_STBASLibINIT = init_STBAS();

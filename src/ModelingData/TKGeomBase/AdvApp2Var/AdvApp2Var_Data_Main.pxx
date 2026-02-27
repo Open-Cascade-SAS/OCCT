@@ -11,11 +11,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 
 //=================================================================================================
 
-mdnombr_1_& AdvApp2Var_Data::Getmdnombr()
+inline mdnombr_1_& AdvApp2Var_Data::Getmdnombr()
 {
   static mdnombr_1_ s_mdnombr = {3.141592653589793,
                                  6.283185307179586,
@@ -32,7 +32,7 @@ mdnombr_1_& AdvApp2Var_Data::Getmdnombr()
 
 //=================================================================================================
 
-minombr_1_& AdvApp2Var_Data::Getminombr()
+inline minombr_1_& AdvApp2Var_Data::Getminombr()
 {
   static minombr_1_ s_minombr_1 = {
     {0,   1,   2,   3,   4,   5,   6,   7,   8,   9,   10,  11,  12,  13,  14,  15,  16,  17,  18,
@@ -93,7 +93,7 @@ minombr_1_& AdvApp2Var_Data::Getminombr()
 
 //=================================================================================================
 
-maovpar_1_& AdvApp2Var_Data::Getmaovpar()
+inline maovpar_1_& AdvApp2Var_Data::Getmaovpar()
 {
   static maovpar_1_ s_maovpar = {2.225073858507201e-307,
                                  1.797693134862315e307,
@@ -120,7 +120,7 @@ maovpar_1_& AdvApp2Var_Data::Getmaovpar()
 
 //=================================================================================================
 
-maovpch_1_& AdvApp2Var_Data::Getmaovpch()
+inline maovpch_1_& AdvApp2Var_Data::Getmaovpch()
 {
   static maovpch_1_ s_maovpch_1_ = {
     {'S', 'G', 'I', '_', 'I', 'R', 'I', 'S', ' ', ' ', ' ', ' ', ' ', ' ', ' ', ' '},

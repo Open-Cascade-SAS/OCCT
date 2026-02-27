@@ -112,8 +112,8 @@ public:
   Standard_EXPORT occ::handle<NCollection_HArray2<double>> MoyErrors() const;
 
 private:
-  AdvApp2Var_Iso(const AdvApp2Var_Iso& Other);
-  AdvApp2Var_Iso& operator=(const AdvApp2Var_Iso& theOther);
+  AdvApp2Var_Iso(const AdvApp2Var_Iso& theOther)            = delete;
+  AdvApp2Var_Iso& operator=(const AdvApp2Var_Iso& theOther) = delete;
 
 private:
   GeomAbs_IsoType                          myType;

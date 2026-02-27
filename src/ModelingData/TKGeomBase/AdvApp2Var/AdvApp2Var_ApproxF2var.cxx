@@ -13,251 +13,246 @@
 
 #include <AdvApp2Var_SysBase.hxx>
 #include <AdvApp2Var_MathBase.hxx>
-#include <AdvApp2Var_Data_f2c.hxx>
-#include <AdvApp2Var_Data.hxx>
+#include "AdvApp2Var_Data.pxx"
 #include <AdvApp2Var_ApproxF2var.hxx>
 
+#include <algorithm>
 #include <cmath>
 
-static int mmjacpt_(const integer*    ndimen,
-                    const integer*    ncoefu,
-                    const integer*    ncoefv,
-                    const integer*    iordru,
-                    const integer*    iordrv,
-                    const doublereal* ptclgd,
-                    doublereal*       ptcaux,
-                    doublereal*       ptccan);
+static int mmjacpt_(const int*    ndimen,
+                    const int*    ncoefu,
+                    const int*    ncoefv,
+                    const int*    iordru,
+                    const int*    iordrv,
+                    const double* ptclgd,
+                    double*       ptcaux,
+                    double*       ptccan);
 
-static int mma2ce2_(integer*    numdec,
-                    integer*    ndimen,
-                    integer*    nbsesp,
-                    integer*    ndimse,
-                    integer*    ndminu,
-                    integer*    ndminv,
-                    integer*    ndguli,
-                    integer*    ndgvli,
-                    integer*    ndjacu,
-                    integer*    ndjacv,
-                    integer*    iordru,
-                    integer*    iordrv,
-                    integer*    nbpntu,
-                    integer*    nbpntv,
-                    doublereal* epsapr,
-                    doublereal* sosotb,
-                    doublereal* disotb,
-                    doublereal* soditb,
-                    doublereal* diditb,
-                    doublereal* gssutb,
-                    doublereal* gssvtb,
-                    doublereal* xmaxju,
-                    doublereal* xmaxjv,
-                    doublereal* vecerr,
-                    doublereal* chpair,
-                    doublereal* chimpr,
-                    doublereal* patjac,
-                    doublereal* errmax,
-                    doublereal* errmoy,
-                    integer*    ndegpu,
-                    integer*    ndegpv,
-                    integer*    itydec,
-                    integer*    iercod);
+static int mma2ce2_(int*    numdec,
+                    int*    ndimen,
+                    int*    nbsesp,
+                    int*    ndimse,
+                    int*    ndminu,
+                    int*    ndminv,
+                    int*    ndguli,
+                    int*    ndgvli,
+                    int*    ndjacu,
+                    int*    ndjacv,
+                    int*    iordru,
+                    int*    iordrv,
+                    int*    nbpntu,
+                    int*    nbpntv,
+                    double* epsapr,
+                    double* sosotb,
+                    double* disotb,
+                    double* soditb,
+                    double* diditb,
+                    double* gssutb,
+                    double* gssvtb,
+                    double* xmaxju,
+                    double* xmaxjv,
+                    double* vecerr,
+                    double* chpair,
+                    double* chimpr,
+                    double* patjac,
+                    double* errmax,
+                    double* errmoy,
+                    int*    ndegpu,
+                    int*    ndegpv,
+                    int*    itydec,
+                    int*    iercod);
 
-static int mma2cfu_(integer*    ndujac,
-                    integer*    nbpntu,
-                    integer*    nbpntv,
-                    doublereal* sosotb,
-                    doublereal* disotb,
-                    doublereal* soditb,
-                    doublereal* diditb,
-                    doublereal* gssutb,
-                    doublereal* chpair,
-                    doublereal* chimpr);
+static int mma2cfu_(int*    ndujac,
+                    int*    nbpntu,
+                    int*    nbpntv,
+                    double* sosotb,
+                    double* disotb,
+                    double* soditb,
+                    double* diditb,
+                    double* gssutb,
+                    double* chpair,
+                    double* chimpr);
 
-static int mma2cfv_(integer*    ndvjac,
-                    integer*    mindgu,
-                    integer*    maxdgu,
-                    integer*    nbpntv,
-                    doublereal* gssvtb,
-                    doublereal* chpair,
-                    doublereal* chimpr,
-                    doublereal* patjac);
+static int mma2cfv_(int*    ndvjac,
+                    int*    mindgu,
+                    int*    maxdgu,
+                    int*    nbpntv,
+                    double* gssvtb,
+                    double* chpair,
+                    double* chimpr,
+                    double* patjac);
 
-static int mma2er1_(integer*    ndjacu,
-                    integer*    ndjacv,
-                    integer*    ndimen,
-                    integer*    mindgu,
-                    integer*    maxdgu,
-                    integer*    mindgv,
-                    integer*    maxdgv,
-                    integer*    iordru,
-                    integer*    iordrv,
-                    doublereal* xmaxju,
-                    doublereal* xmaxjv,
-                    doublereal* patjac,
-                    doublereal* vecerr,
-                    doublereal* erreur);
+static int mma2er1_(int*    ndjacu,
+                    int*    ndjacv,
+                    int*    ndimen,
+                    int*    mindgu,
+                    int*    maxdgu,
+                    int*    mindgv,
+                    int*    maxdgv,
+                    int*    iordru,
+                    int*    iordrv,
+                    double* xmaxju,
+                    double* xmaxjv,
+                    double* patjac,
+                    double* vecerr,
+                    double* erreur);
 
-static int mma2er2_(integer*    ndjacu,
-                    integer*    ndjacv,
-                    integer*    ndimen,
-                    integer*    mindgu,
-                    integer*    maxdgu,
-                    integer*    mindgv,
-                    integer*    maxdgv,
-                    integer*    iordru,
-                    integer*    iordrv,
-                    doublereal* xmaxju,
-                    doublereal* xmaxjv,
-                    doublereal* patjac,
-                    doublereal* epmscut,
-                    doublereal* vecerr,
-                    doublereal* erreur,
-                    integer*    newdgu,
-                    integer*    newdgv);
+static int mma2er2_(int*    ndjacu,
+                    int*    ndjacv,
+                    int*    ndimen,
+                    int*    mindgu,
+                    int*    maxdgu,
+                    int*    mindgv,
+                    int*    maxdgv,
+                    int*    iordru,
+                    int*    iordrv,
+                    double* xmaxju,
+                    double* xmaxjv,
+                    double* patjac,
+                    double* epmscut,
+                    double* vecerr,
+                    double* erreur,
+                    int*    newdgu,
+                    int*    newdgv);
 
-static int mma2moy_(integer*    ndgumx,
-                    integer*    ndgvmx,
-                    integer*    ndimen,
-                    integer*    mindgu,
-                    integer*    maxdgu,
-                    integer*    mindgv,
-                    integer*    maxdgv,
-                    integer*    iordru,
-                    integer*    iordrv,
-                    doublereal* patjac,
-                    doublereal* errmoy);
+static int mma2moy_(int*    ndgumx,
+                    int*    ndgvmx,
+                    int*    ndimen,
+                    int*    mindgu,
+                    int*    maxdgu,
+                    int*    mindgv,
+                    int*    maxdgv,
+                    int*    iordru,
+                    int*    iordrv,
+                    double* patjac,
+                    double* errmoy);
 
-static int mma2ds2_(integer*                            ndimen,
-                    doublereal*                         uintfn,
-                    doublereal*                         vintfn,
+static int mma2ds2_(int*                                ndimen,
+                    double*                             uintfn,
+                    double*                             vintfn,
                     const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                    integer*                            nbpntu,
-                    integer*                            nbpntv,
-                    doublereal*                         urootb,
-                    doublereal*                         vrootb,
-                    integer*                            iiuouv,
-                    doublereal*                         sosotb,
-                    doublereal*                         disotb,
-                    doublereal*                         soditb,
-                    doublereal*                         diditb,
-                    doublereal*                         fpntab,
-                    doublereal*                         ttable,
-                    integer*                            iercod);
+                    int*                                nbpntu,
+                    int*                                nbpntv,
+                    double*                             urootb,
+                    double*                             vrootb,
+                    int*                                iiuouv,
+                    double*                             sosotb,
+                    double*                             disotb,
+                    double*                             soditb,
+                    double*                             diditb,
+                    double*                             fpntab,
+                    double*                             ttable,
+                    int*                                iercod);
 
-static int mma1fdi_(integer*                            ndimen,
-                    doublereal*                         uvfonc,
+static int mma1fdi_(int*                                ndimen,
+                    double*                             uvfonc,
                     const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                    integer*                            isofav,
-                    doublereal*                         tconst,
-                    integer*                            nbroot,
-                    doublereal*                         ttable,
-                    integer*                            iordre,
-                    integer*                            ideriv,
-                    doublereal*                         fpntab,
-                    doublereal*                         somtab,
-                    doublereal*                         diftab,
-                    doublereal*                         contr1,
-                    doublereal*                         contr2,
-                    integer*                            iercod);
+                    int*                                isofav,
+                    double*                             tconst,
+                    int*                                nbroot,
+                    double*                             ttable,
+                    int*                                iordre,
+                    int*                                ideriv,
+                    double*                             fpntab,
+                    double*                             somtab,
+                    double*                             diftab,
+                    double*                             contr1,
+                    double*                             contr2,
+                    int*                                iercod);
 
-static int mma1cdi_(integer*    ndimen,
-                    integer*    nbroot,
-                    doublereal* rootlg,
-                    integer*    iordre,
-                    doublereal* contr1,
-                    doublereal* contr2,
-                    doublereal* somtab,
-                    doublereal* diftab,
-                    doublereal* fpntab,
-                    doublereal* hermit,
-                    integer*    iercod);
-static int mma1jak_(integer*    ndimen,
-                    integer*    nbroot,
-                    integer*    iordre,
-                    integer*    ndgjac,
-                    doublereal* somtab,
-                    doublereal* diftab,
-                    doublereal* cgauss,
-                    doublereal* crvjac,
-                    integer*    iercod);
-static int mma1cnt_(integer*    ndimen,
-                    integer*    iordre,
-                    doublereal* contr1,
-                    doublereal* contr2,
-                    doublereal* hermit,
-                    integer*    ndgjac,
-                    doublereal* crvjac);
+static int mma1cdi_(int*    ndimen,
+                    int*    nbroot,
+                    double* rootlg,
+                    int*    iordre,
+                    double* contr1,
+                    double* contr2,
+                    double* somtab,
+                    double* diftab,
+                    double* fpntab,
+                    double* hermit,
+                    int*    iercod);
+static int mma1jak_(int*    ndimen,
+                    int*    nbroot,
+                    int*    iordre,
+                    int*    ndgjac,
+                    double* somtab,
+                    double* diftab,
+                    double* cgauss,
+                    double* crvjac,
+                    int*    iercod);
+static int mma1cnt_(int*    ndimen,
+                    int*    iordre,
+                    double* contr1,
+                    double* contr2,
+                    double* hermit,
+                    int*    ndgjac,
+                    double* crvjac);
 
-static int mma1fer_(integer*    ndimen,
-                    integer*    nbsesp,
-                    integer*    ndimse,
-                    integer*    iordre,
-                    integer*    ndgjac,
-                    doublereal* crvjac,
-                    integer*    ncflim,
-                    doublereal* epsapr,
-                    doublereal* ycvmax,
-                    doublereal* errmax,
-                    doublereal* errmoy,
-                    integer*    ncoeff,
-                    integer*    iercod);
+static int mma1fer_(int*    ndimen,
+                    int*    nbsesp,
+                    int*    ndimse,
+                    int*    iordre,
+                    int*    ndgjac,
+                    double* crvjac,
+                    int*    ncflim,
+                    double* epsapr,
+                    double* ycvmax,
+                    double* errmax,
+                    double* errmoy,
+                    int*    ncoeff,
+                    int*    iercod);
 
-static int mma1noc_(doublereal* dfuvin,
-                    integer*    ndimen,
-                    integer*    iordre,
-                    doublereal* cntrin,
-                    doublereal* duvout,
-                    integer*    isofav,
-                    integer*    ideriv,
-                    doublereal* cntout);
+static int mma1noc_(double* dfuvin,
+                    int*    ndimen,
+                    int*    iordre,
+                    double* cntrin,
+                    double* duvout,
+                    int*    isofav,
+                    int*    ideriv,
+                    double* cntout);
 
-static int mmmapcoe_(integer*    ndim,
-                     integer*    ndgjac,
-                     integer*    iordre,
-                     integer*    nbpnts,
-                     doublereal* somtab,
-                     doublereal* diftab,
-                     doublereal* gsstab,
-                     doublereal* crvjac);
+static int mmmapcoe_(int*    ndim,
+                     int*    ndgjac,
+                     int*    iordre,
+                     int*    nbpnts,
+                     double* somtab,
+                     double* diftab,
+                     double* gsstab,
+                     double* crvjac);
 
-static int mmaperm_(integer*    ncofmx,
-                    integer*    ndim,
-                    integer*    ncoeff,
-                    integer*    iordre,
-                    doublereal* crvjac,
-                    integer*    ncfnew,
-                    doublereal* errmoy);
-
-#define mmapgss_1 mmapgss_
-#define mmapgs0_1 mmapgs0_
-#define mmapgs1_1 mmapgs1_
-#define mmapgs2_1 mmapgs2_
+static int mmaperm_(int*    ncofmx,
+                    int*    ndim,
+                    int*    ncoeff,
+                    int*    iordre,
+                    double* crvjac,
+                    int*    ncfnew,
+                    double* errmoy);
 
 //=================================================================================================
 
-int mma1cdi_(integer*    ndimen,
-             integer*    nbroot,
-             doublereal* rootlg,
-             integer*    iordre,
-             doublereal* contr1,
-             doublereal* contr2,
-             doublereal* somtab,
-             doublereal* diftab,
-             doublereal* fpntab,
-             doublereal* hermit,
-             integer*    iercod)
+int mma1cdi_(int*    ndimen,
+             int*    nbroot,
+             double* rootlg,
+             int*    iordre,
+             double* contr1,
+             double* contr2,
+             double* somtab,
+             double* diftab,
+             double* fpntab,
+             double* hermit,
+             int*    iercod)
 {
-  integer c__1 = 1;
+  int c__1 = 1;
 
   /* System generated locals */
-  integer contr1_dim1, contr1_offset, contr2_dim1, contr2_offset, somtab_dim1, somtab_offset,
+  int contr1_dim1, contr1_offset, contr2_dim1, contr2_offset, somtab_dim1, somtab_offset,
     diftab_dim1, diftab_offset, fpntab_dim1, fpntab_offset, hermit_dim1, hermit_offset, i__1, i__2,
     i__3;
 
   /* Local variables */
-  integer    nroo2, ncfhe, nd, ii, kk;
-  integer    ibb, kkm, kkp;
-  doublereal bid1, bid2, bid3 = 0.;
+  int    nroo2, ncfhe, nd, ii, kk;
+  int    ibb, kkm, kkp;
+  double bid1, bid2, bid3 = 0.;
 
   /* **********************************************************************
    */
@@ -471,21 +466,21 @@ L9999:
 
 //=================================================================================================
 
-int mma1cnt_(integer*    ndimen,
-             integer*    iordre,
-             doublereal* contr1,
-             doublereal* contr2,
-             doublereal* hermit,
-             integer*    ndgjac,
-             doublereal* crvjac)
+int mma1cnt_(int*    ndimen,
+             int*    iordre,
+             double* contr1,
+             double* contr2,
+             double* hermit,
+             int*    ndgjac,
+             double* crvjac)
 {
   /* System generated locals */
-  integer contr1_dim1, contr1_offset, contr2_dim1, contr2_offset, hermit_dim1, hermit_offset,
+  int contr1_dim1, contr1_offset, contr2_dim1, contr2_offset, hermit_dim1, hermit_offset,
     crvjac_dim1, crvjac_offset, i__1, i__2, i__3;
 
   /* Local variables */
-  integer    nd, ii, jj, ibb;
-  doublereal bid;
+  int    nd, ii, jj, ibb;
+  double bid;
 
   /* ***********************************************************************
    */
@@ -598,32 +593,32 @@ int mma1cnt_(integer*    ndimen,
 
 //=================================================================================================
 
-int mma1fdi_(integer*                            ndimen,
-             doublereal*                         uvfonc,
+int mma1fdi_(int*                                ndimen,
+             double*                             uvfonc,
              const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-             integer*                            isofav,
-             doublereal*                         tconst,
-             integer*                            nbroot,
-             doublereal*                         ttable,
-             integer*                            iordre,
-             integer*                            ideriv,
-             doublereal*                         fpntab,
-             doublereal*                         somtab,
-             doublereal*                         diftab,
-             doublereal*                         contr1,
-             doublereal*                         contr2,
-             integer*                            iercod)
+             int*                                isofav,
+             double*                             tconst,
+             int*                                nbroot,
+             double*                             ttable,
+             int*                                iordre,
+             int*                                ideriv,
+             double*                             fpntab,
+             double*                             somtab,
+             double*                             diftab,
+             double*                             contr1,
+             double*                             contr2,
+             int*                                iercod)
 {
   /* System generated locals */
-  integer fpntab_dim1, somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, contr1_dim1,
+  int fpntab_dim1, somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, contr1_dim1,
     contr1_offset, contr2_dim1, contr2_offset, i__1, i__2;
-  doublereal d__1;
+  double d__1;
 
   /* Local variables */
-  integer    ideb, ifin, nroo2, ideru, iderv;
-  doublereal renor;
-  integer    ii, nd, ibb, iim, nbp, iip;
-  doublereal bid1, bid2;
+  int    ideb, ifin, nroo2, ideru, iderv;
+  double renor;
+  int    ii, nd, ibb, iim, nbp, iip;
+  double bid1, bid2;
 
   /* **********************************************************************
    */
@@ -987,26 +982,26 @@ L9999:
 
 //=================================================================================================
 
-int mma1fer_(integer*, // ndimen,
-             integer*    nbsesp,
-             integer*    ndimse,
-             integer*    iordre,
-             integer*    ndgjac,
-             doublereal* crvjac,
-             integer*    ncflim,
-             doublereal* epsapr,
-             doublereal* ycvmax,
-             doublereal* errmax,
-             doublereal* errmoy,
-             integer*    ncoeff,
-             integer*    iercod)
+int mma1fer_(int*, // ndimen,
+             int*    nbsesp,
+             int*    ndimse,
+             int*    iordre,
+             int*    ndgjac,
+             double* crvjac,
+             int*    ncflim,
+             double* epsapr,
+             double* ycvmax,
+             double* errmax,
+             double* errmoy,
+             int*    ncoeff,
+             int*    iercod)
 {
   /* System generated locals */
-  integer crvjac_dim1, crvjac_offset, i__1, i__2;
+  int crvjac_dim1, crvjac_offset, i__1, i__2;
 
   /* Local variables */
-  integer idim, ncfja, ncfnw, ndses, ii, kk, ibb, ier;
-  integer nbr0;
+  int idim, ncfja, ncfnw, ndses, ii, kk, ibb, ier;
+  int nbr0;
 
   /* ***********************************************************************
    */
@@ -1124,7 +1119,7 @@ int mma1fer_(integer*, // ndimen,
     if (ncfnw <= *ncflim)
     {
       mmaperm_(&ncfja, &ndses, &ncfja, iordre, &crvjac[idim * crvjac_dim1], &ncfnw, &errmoy[ii]);
-      *ncoeff = advapp_max(ncfnw, *ncoeff);
+      *ncoeff = std::max(ncfnw, *ncoeff);
 
       /* ------------- Set the declined coefficients to 0.D0 -----------
       -------- */
@@ -1206,13 +1201,13 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma1her_(const integer* iordre, doublereal* hermit, integer* iercod)
+int AdvApp2Var_ApproxF2var::mma1her_(const int* iordre, double* hermit, int* iercod)
 {
   /* System generated locals */
-  integer hermit_dim1, hermit_offset;
+  int hermit_dim1, hermit_offset;
 
   /* Local variables */
-  integer ibb;
+  int ibb;
 
   /* **********************************************************************
    */
@@ -1370,21 +1365,21 @@ int AdvApp2Var_ApproxF2var::mma1her_(const integer* iordre, doublereal* hermit, 
 
 //=================================================================================================
 
-int mma1jak_(integer*    ndimen,
-             integer*    nbroot,
-             integer*    iordre,
-             integer*    ndgjac,
-             doublereal* somtab,
-             doublereal* diftab,
-             doublereal* cgauss,
-             doublereal* crvjac,
-             integer*    iercod)
+int mma1jak_(int*    ndimen,
+             int*    nbroot,
+             int*    iordre,
+             int*    ndgjac,
+             double* somtab,
+             double* diftab,
+             double* cgauss,
+             double* crvjac,
+             int*    iercod)
 {
   /* System generated locals */
-  integer somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, crvjac_dim1, crvjac_offset;
+  int somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, crvjac_dim1, crvjac_offset;
 
   /* Local variables */
-  integer ibb;
+  int ibb;
 
   /* **********************************************************************
    */
@@ -1492,23 +1487,23 @@ L9999:
 
 //=================================================================================================
 
-int mma1noc_(doublereal* dfuvin,
-             integer*    ndimen,
-             integer*    iordre,
-             doublereal* cntrin,
-             doublereal* duvout,
-             integer*    isofav,
-             integer*    ideriv,
-             doublereal* cntout)
+int mma1noc_(double* dfuvin,
+             int*    ndimen,
+             int*    iordre,
+             double* cntrin,
+             double* duvout,
+             int*    isofav,
+             int*    ideriv,
+             double* cntout)
 {
   /* System generated locals */
-  integer    i__1;
-  doublereal d__1;
+  int    i__1;
+  double d__1;
 
   /* Local variables */
-  doublereal rider, riord;
-  integer    nd, ibb;
-  doublereal bid;
+  double rider, riord;
+  int    nd, ibb;
+  double bid;
   /* **********************************************************************
    */
 
@@ -1629,20 +1624,15 @@ int mma1noc_(doublereal* dfuvin,
 
 //=================================================================================================
 
-int mma1nop_(integer*    nbroot,
-             doublereal* rootlg,
-             doublereal* uvfonc,
-             integer*    isofav,
-             doublereal* ttable,
-             integer*    iercod)
+int mma1nop_(int* nbroot, double* rootlg, double* uvfonc, int* isofav, double* ttable, int* iercod)
 
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  doublereal alinu, blinu, alinv, blinv;
-  integer    ii, ibb;
+  double alinu, blinu, alinv, blinv;
+  int    ii, ibb;
 
   /* ***********************************************************************
    */
@@ -1745,32 +1735,32 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2ac1_(integer const*    ndimen,
-                                     integer const*    mxujac,
-                                     integer const*    mxvjac,
-                                     integer const*    iordru,
-                                     integer const*    iordrv,
-                                     doublereal const* contr1,
-                                     doublereal const* contr2,
-                                     doublereal const* contr3,
-                                     doublereal const* contr4,
-                                     doublereal const* uhermt,
-                                     doublereal const* vhermt,
-                                     doublereal*       patjac)
+int AdvApp2Var_ApproxF2var::mma2ac1_(int const*    ndimen,
+                                     int const*    mxujac,
+                                     int const*    mxvjac,
+                                     int const*    iordru,
+                                     int const*    iordrv,
+                                     double const* contr1,
+                                     double const* contr2,
+                                     double const* contr3,
+                                     double const* contr4,
+                                     double const* uhermt,
+                                     double const* vhermt,
+                                     double*       patjac)
 
 {
   /* System generated locals */
-  integer contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset,
-    contr3_dim1, contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1,
-    uhermt_offset, vhermt_dim1, vhermt_offset, patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2,
-    i__3, i__4, i__5;
+  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset, contr3_dim1,
+    contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1, uhermt_offset,
+    vhermt_dim1, vhermt_offset, patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3, i__4,
+    i__5;
 
   /* Local variables */
-  logical    ldbg;
-  integer    ndgu, ndgv;
-  doublereal bidu1, bidu2, bidv1, bidv2;
-  integer    ioru1, iorv1, ii, nd, jj, ku, kv;
-  doublereal cnt1, cnt2, cnt3, cnt4;
+  long   ldbg;
+  int    ndgu, ndgv;
+  double bidu1, bidu2, bidv1, bidv2;
+  int    ioru1, iorv1, ii, nd, jj, ku, kv;
+  double cnt1, cnt2, cnt3, cnt4;
 
   /* **********************************************************************
    */
@@ -1915,27 +1905,27 @@ int AdvApp2Var_ApproxF2var::mma2ac1_(integer const*    ndimen,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2ac2_(const integer*    ndimen,
-                                     const integer*    mxujac,
-                                     const integer*    mxvjac,
-                                     const integer*    iordrv,
-                                     const integer*    nclimu,
-                                     const integer*    ncfiv1,
-                                     const doublereal* crbiv1,
-                                     const integer*    ncfiv2,
-                                     const doublereal* crbiv2,
-                                     const doublereal* vhermt,
-                                     doublereal*       patjac)
+int AdvApp2Var_ApproxF2var::mma2ac2_(const int*    ndimen,
+                                     const int*    mxujac,
+                                     const int*    mxvjac,
+                                     const int*    iordrv,
+                                     const int*    nclimu,
+                                     const int*    ncfiv1,
+                                     const double* crbiv1,
+                                     const int*    ncfiv2,
+                                     const double* crbiv2,
+                                     const double* vhermt,
+                                     double*       patjac)
 
 {
   /* System generated locals */
-  integer crbiv1_dim1, crbiv1_dim2, crbiv1_offset, crbiv2_dim1, crbiv2_dim2, crbiv2_offset,
-    patjac_dim1, patjac_dim2, patjac_offset, vhermt_dim1, vhermt_offset, i__1, i__2, i__3, i__4;
+  int crbiv1_dim1, crbiv1_dim2, crbiv1_offset, crbiv2_dim1, crbiv2_dim2, crbiv2_offset, patjac_dim1,
+    patjac_dim2, patjac_offset, vhermt_dim1, vhermt_offset, i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  logical    ldbg;
-  integer    ndgv1, ndgv2, ii, jj, nd, kk;
-  doublereal bid1, bid2;
+  long   ldbg;
+  int    ndgv1, ndgv2, ii, jj, nd, kk;
+  double bid1, bid2;
 
   /* **********************************************************************
    */
@@ -2061,27 +2051,27 @@ int AdvApp2Var_ApproxF2var::mma2ac2_(const integer*    ndimen,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2ac3_(const integer*    ndimen,
-                                     const integer*    mxujac,
-                                     const integer*    mxvjac,
-                                     const integer*    iordru,
-                                     const integer*    nclimv,
-                                     const integer*    ncfiu1,
-                                     const doublereal* crbiu1,
-                                     const integer*    ncfiu2,
-                                     const doublereal* crbiu2,
-                                     const doublereal* uhermt,
-                                     doublereal*       patjac)
+int AdvApp2Var_ApproxF2var::mma2ac3_(const int*    ndimen,
+                                     const int*    mxujac,
+                                     const int*    mxvjac,
+                                     const int*    iordru,
+                                     const int*    nclimv,
+                                     const int*    ncfiu1,
+                                     const double* crbiu1,
+                                     const int*    ncfiu2,
+                                     const double* crbiu2,
+                                     const double* uhermt,
+                                     double*       patjac)
 
 {
   /* System generated locals */
-  integer crbiu1_dim1, crbiu1_dim2, crbiu1_offset, crbiu2_dim1, crbiu2_dim2, crbiu2_offset,
-    patjac_dim1, patjac_dim2, patjac_offset, uhermt_dim1, uhermt_offset, i__1, i__2, i__3, i__4;
+  int crbiu1_dim1, crbiu1_dim2, crbiu1_offset, crbiu2_dim1, crbiu2_dim2, crbiu2_offset, patjac_dim1,
+    patjac_dim2, patjac_offset, uhermt_dim1, uhermt_offset, i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  logical    ldbg;
-  integer    ndgu1, ndgu2, ii, jj, nd, kk;
-  doublereal bid1, bid2;
+  long   ldbg;
+  int    ndgu1, ndgu2, ii, jj, nd, kk;
+  double bid1, bid2;
 
   /* **********************************************************************
    */
@@ -2212,26 +2202,25 @@ int AdvApp2Var_ApproxF2var::mma2ac3_(const integer*    ndimen,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2can_(const integer*    ncfmxu,
-                                     const integer*    ncfmxv,
-                                     const integer*    ndimen,
-                                     const integer*    iordru,
-                                     const integer*    iordrv,
-                                     const integer*    ncoefu,
-                                     const integer*    ncoefv,
-                                     const doublereal* patjac,
-                                     doublereal*       pataux,
-                                     doublereal*       patcan,
-                                     integer*          iercod)
+int AdvApp2Var_ApproxF2var::mma2can_(const int*    ncfmxu,
+                                     const int*    ncfmxv,
+                                     const int*    ndimen,
+                                     const int*    iordru,
+                                     const int*    iordrv,
+                                     const int*    ncoefu,
+                                     const int*    ncoefv,
+                                     const double* patjac,
+                                     double*       pataux,
+                                     double*       patcan,
+                                     int*          iercod)
 
 {
   /* System generated locals */
-  integer patjac_dim1, patjac_dim2, patjac_offset, patcan_dim1, patcan_dim2, patcan_offset, i__1,
-    i__2;
+  int patjac_dim1, patjac_dim2, patjac_offset, patcan_dim1, patcan_dim2, patcan_offset, i__1, i__2;
 
   /* Local variables */
-  logical ldbg;
-  integer ilon1, ilon2, ii, nd;
+  long ldbg;
+  int  ilon1, ilon2, ii, nd;
 
   /* **********************************************************************
    */
@@ -2373,41 +2362,40 @@ L9999:
 
 //=================================================================================================
 
-int mma2cd1_(integer*    ndimen,
-             integer*    nbpntu,
-             doublereal* urootl,
-             integer*    nbpntv,
-             doublereal* vrootl,
-             integer*    iordru,
-             integer*    iordrv,
-             doublereal* contr1,
-             doublereal* contr2,
-             doublereal* contr3,
-             doublereal* contr4,
-             doublereal* fpntbu,
-             doublereal* fpntbv,
-             doublereal* uhermt,
-             doublereal* vhermt,
-             doublereal* sosotb,
-             doublereal* soditb,
-             doublereal* disotb,
-             doublereal* diditb)
+int mma2cd1_(int*    ndimen,
+             int*    nbpntu,
+             double* urootl,
+             int*    nbpntv,
+             double* vrootl,
+             int*    iordru,
+             int*    iordrv,
+             double* contr1,
+             double* contr2,
+             double* contr3,
+             double* contr4,
+             double* fpntbu,
+             double* fpntbv,
+             double* uhermt,
+             double* vhermt,
+             double* sosotb,
+             double* soditb,
+             double* disotb,
+             double* diditb)
 
 {
-  integer c__1 = 1;
+  int c__1 = 1;
 
   /* System generated locals */
-  integer contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset,
-    contr3_dim1, contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1,
-    uhermt_offset, vhermt_dim1, vhermt_offset, fpntbu_dim1, fpntbu_offset, fpntbv_dim1,
-    fpntbv_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2, disotb_offset, i__1, i__2,
-    i__3, i__4, i__5;
+  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset, contr3_dim1,
+    contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, uhermt_dim1, uhermt_offset,
+    vhermt_dim1, vhermt_offset, fpntbu_dim1, fpntbu_offset, fpntbv_dim1, fpntbv_offset, sosotb_dim1,
+    sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2,
+    soditb_offset, disotb_dim1, disotb_dim2, disotb_offset, i__1, i__2, i__3, i__4, i__5;
 
   /* Local variables */
-  integer    ncfhu, ncfhv, nuroo, nvroo, nd, ii, jj, kk, ll, ibb, kkm, llm, kkp, llp;
-  doublereal bid1, bid2, bid3, bid4;
-  doublereal diu1, diu2, div1, div2, sou1, sou2, sov1, sov2;
+  int    ncfhu, ncfhv, nuroo, nvroo, nd, ii, jj, kk, ll, ibb, kkm, llm, kkp, llp;
+  double bid1, bid2, bid3, bid4;
+  double diu1, diu2, div1, div2, sou1, sou2, sov1, sov2;
 
   /* **********************************************************************
    */
@@ -2732,34 +2720,34 @@ L9999:
 
 //=================================================================================================
 
-int mma2cd2_(integer*    ndimen,
-             integer*    nbpntu,
-             integer*    nbpntv,
-             doublereal* vrootl,
-             integer*    iordrv,
-             doublereal* sotbv1,
-             doublereal* sotbv2,
-             doublereal* ditbv1,
-             doublereal* ditbv2,
-             doublereal* fpntab,
-             doublereal* vhermt,
-             doublereal* sosotb,
-             doublereal* soditb,
-             doublereal* disotb,
-             doublereal* diditb)
+int mma2cd2_(int*    ndimen,
+             int*    nbpntu,
+             int*    nbpntv,
+             double* vrootl,
+             int*    iordrv,
+             double* sotbv1,
+             double* sotbv2,
+             double* ditbv1,
+             double* ditbv2,
+             double* fpntab,
+             double* vhermt,
+             double* sosotb,
+             double* soditb,
+             double* disotb,
+             double* diditb)
 
 {
-  integer c__1 = 1;
+  int c__1 = 1;
   /* System generated locals */
-  integer sotbv1_dim1, sotbv1_dim2, sotbv1_offset, sotbv2_dim1, sotbv2_dim2, sotbv2_offset,
-    ditbv1_dim1, ditbv1_dim2, ditbv1_offset, ditbv2_dim1, ditbv2_dim2, ditbv2_offset, fpntab_dim1,
-    fpntab_offset, vhermt_dim1, vhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1,
-    diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2,
-    disotb_offset, i__1, i__2, i__3, i__4;
+  int sotbv1_dim1, sotbv1_dim2, sotbv1_offset, sotbv2_dim1, sotbv2_dim2, sotbv2_offset, ditbv1_dim1,
+    ditbv1_dim2, ditbv1_offset, ditbv2_dim1, ditbv2_dim2, ditbv2_offset, fpntab_dim1, fpntab_offset,
+    vhermt_dim1, vhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2,
+    diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2, disotb_offset,
+    i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  integer    ncfhv, nuroo, nvroo, ii, nd, jj, kk, ibb, jjm, jjp;
-  doublereal bid1, bid2, bid3, bid4;
+  int    ncfhv, nuroo, nvroo, ii, nd, jj, kk, ibb, jjm, jjp;
+  double bid1, bid2, bid3, bid4;
 
   /* **********************************************************************
    */
@@ -3052,35 +3040,35 @@ L9999:
 
 //=================================================================================================
 
-int mma2cd3_(integer*    ndimen,
-             integer*    nbpntu,
-             doublereal* urootl,
-             integer*    nbpntv,
-             integer*    iordru,
-             doublereal* sotbu1,
-             doublereal* sotbu2,
-             doublereal* ditbu1,
-             doublereal* ditbu2,
-             doublereal* fpntab,
-             doublereal* uhermt,
-             doublereal* sosotb,
-             doublereal* soditb,
-             doublereal* disotb,
-             doublereal* diditb)
+int mma2cd3_(int*    ndimen,
+             int*    nbpntu,
+             double* urootl,
+             int*    nbpntv,
+             int*    iordru,
+             double* sotbu1,
+             double* sotbu2,
+             double* ditbu1,
+             double* ditbu2,
+             double* fpntab,
+             double* uhermt,
+             double* sosotb,
+             double* soditb,
+             double* disotb,
+             double* diditb)
 
 {
-  integer c__1 = 1;
+  int c__1 = 1;
 
   /* System generated locals */
-  integer sotbu1_dim1, sotbu1_dim2, sotbu1_offset, sotbu2_dim1, sotbu2_dim2, sotbu2_offset,
-    ditbu1_dim1, ditbu1_dim2, ditbu1_offset, ditbu2_dim1, ditbu2_dim2, ditbu2_offset, fpntab_dim1,
-    fpntab_offset, uhermt_dim1, uhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1,
-    diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2,
-    disotb_offset, i__1, i__2, i__3, i__4;
+  int sotbu1_dim1, sotbu1_dim2, sotbu1_offset, sotbu2_dim1, sotbu2_dim2, sotbu2_offset, ditbu1_dim1,
+    ditbu1_dim2, ditbu1_offset, ditbu2_dim1, ditbu2_dim2, ditbu2_offset, fpntab_dim1, fpntab_offset,
+    uhermt_dim1, uhermt_offset, sosotb_dim1, sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2,
+    diditb_offset, soditb_dim1, soditb_dim2, soditb_offset, disotb_dim1, disotb_dim2, disotb_offset,
+    i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  integer    ncfhu, nuroo, nvroo, ii, nd, jj, kk, ibb, kkm, kkp;
-  doublereal bid1, bid2, bid3, bid4;
+  int    ncfhu, nuroo, nvroo, ii, nd, jj, kk, ibb, kkm, kkp;
+  double bid1, bid2, bid3, bid4;
 
   /* **********************************************************************
    */
@@ -3375,49 +3363,49 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2cdi_(integer*    ndimen,
-                                     integer*    nbpntu,
-                                     doublereal* urootl,
-                                     integer*    nbpntv,
-                                     doublereal* vrootl,
-                                     integer*    iordru,
-                                     integer*    iordrv,
-                                     doublereal* contr1,
-                                     doublereal* contr2,
-                                     doublereal* contr3,
-                                     doublereal* contr4,
-                                     doublereal* sotbu1,
-                                     doublereal* sotbu2,
-                                     doublereal* ditbu1,
-                                     doublereal* ditbu2,
-                                     doublereal* sotbv1,
-                                     doublereal* sotbv2,
-                                     doublereal* ditbv1,
-                                     doublereal* ditbv2,
-                                     doublereal* sosotb,
-                                     doublereal* soditb,
-                                     doublereal* disotb,
-                                     doublereal* diditb,
-                                     integer*    iercod)
+int AdvApp2Var_ApproxF2var::mma2cdi_(int*    ndimen,
+                                     int*    nbpntu,
+                                     double* urootl,
+                                     int*    nbpntv,
+                                     double* vrootl,
+                                     int*    iordru,
+                                     int*    iordrv,
+                                     double* contr1,
+                                     double* contr2,
+                                     double* contr3,
+                                     double* contr4,
+                                     double* sotbu1,
+                                     double* sotbu2,
+                                     double* ditbu1,
+                                     double* ditbu2,
+                                     double* sotbv1,
+                                     double* sotbv2,
+                                     double* ditbv1,
+                                     double* ditbv2,
+                                     double* sosotb,
+                                     double* soditb,
+                                     double* disotb,
+                                     double* diditb,
+                                     int*    iercod)
 
 {
-  integer c__8 = 8;
+  int c__8 = 8;
 
   /* System generated locals */
-  integer contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset,
-    contr3_dim1, contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, sosotb_dim1,
-    sosotb_dim2, sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2,
-    soditb_offset, disotb_dim1, disotb_dim2, disotb_offset;
+  int contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2, contr2_offset, contr3_dim1,
+    contr3_dim2, contr3_offset, contr4_dim1, contr4_dim2, contr4_offset, sosotb_dim1, sosotb_dim2,
+    sosotb_offset, diditb_dim1, diditb_dim2, diditb_offset, soditb_dim1, soditb_dim2, soditb_offset,
+    disotb_dim1, disotb_dim2, disotb_offset;
 
   /* Local variables */
-  integer     ilong;
-  intptr_t    iofwr;
-  doublereal* wrkar = nullptr;
-  doublereal* wrkar_off;
-  integer     iszwr;
-  integer     ibb, ier = 0;
-  integer     isz1, isz2, isz3, isz4;
-  intptr_t    ipt1, ipt2, ipt3;
+  int      ilong;
+  intptr_t iofwr;
+  double*  wrkar = nullptr;
+  double*  wrkar_off;
+  int      iszwr;
+  int      ibb, ier = 0;
+  int      isz1, isz2, isz3, isz4;
+  intptr_t ipt1, ipt2, ipt3;
 
   /* **********************************************************************
    */
@@ -3728,50 +3716,50 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2ce1_(integer*    numdec,
-                                     integer*    ndimen,
-                                     integer*    nbsesp,
-                                     integer*    ndimse,
-                                     integer*    ndminu,
-                                     integer*    ndminv,
-                                     integer*    ndguli,
-                                     integer*    ndgvli,
-                                     integer*    ndjacu,
-                                     integer*    ndjacv,
-                                     integer*    iordru,
-                                     integer*    iordrv,
-                                     integer*    nbpntu,
-                                     integer*    nbpntv,
-                                     doublereal* epsapr,
-                                     doublereal* sosotb,
-                                     doublereal* disotb,
-                                     doublereal* soditb,
-                                     doublereal* diditb,
-                                     doublereal* patjac,
-                                     doublereal* errmax,
-                                     doublereal* errmoy,
-                                     integer*    ndegpu,
-                                     integer*    ndegpv,
-                                     integer*    itydec,
-                                     integer*    iercod)
+int AdvApp2Var_ApproxF2var::mma2ce1_(int*    numdec,
+                                     int*    ndimen,
+                                     int*    nbsesp,
+                                     int*    ndimse,
+                                     int*    ndminu,
+                                     int*    ndminv,
+                                     int*    ndguli,
+                                     int*    ndgvli,
+                                     int*    ndjacu,
+                                     int*    ndjacv,
+                                     int*    iordru,
+                                     int*    iordrv,
+                                     int*    nbpntu,
+                                     int*    nbpntv,
+                                     double* epsapr,
+                                     double* sosotb,
+                                     double* disotb,
+                                     double* soditb,
+                                     double* diditb,
+                                     double* patjac,
+                                     double* errmax,
+                                     double* errmoy,
+                                     int*    ndegpu,
+                                     int*    ndegpv,
+                                     int*    itydec,
+                                     int*    iercod)
 
 {
-  integer c__8 = 8;
+  int c__8 = 8;
 
   /* System generated locals */
-  integer sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, patjac_dim1,
-    patjac_dim2, patjac_offset;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, patjac_dim1, patjac_dim2,
+    patjac_offset;
 
   /* Local variables */
-  logical     ldbg;
-  intptr_t    iofwr;
-  doublereal* wrkar = nullptr;
-  doublereal* wrkar_off;
-  integer     iszwr;
-  integer     ier;
-  integer     isz1, isz2, isz3, isz4, isz5, isz6, isz7;
-  intptr_t    ipt1, ipt2, ipt3, ipt4, ipt5, ipt6;
+  long     ldbg;
+  intptr_t iofwr;
+  double*  wrkar = nullptr;
+  double*  wrkar_off;
+  int      iszwr;
+  int      ier;
+  int      isz1, isz2, isz3, isz4, isz5, isz6, isz7;
+  intptr_t ipt1, ipt2, ipt3, ipt4, ipt5, ipt6;
 
   /* **********************************************************************
    */
@@ -4032,54 +4020,54 @@ L9999:
 
 //=================================================================================================
 
-int mma2ce2_(integer*    numdec,
-             integer*    ndimen,
-             integer*    nbsesp,
-             integer*    ndimse,
-             integer*    ndminu,
-             integer*    ndminv,
-             integer*    ndguli,
-             integer*    ndgvli,
-             integer*    ndjacu,
-             integer*    ndjacv,
-             integer*    iordru,
-             integer*    iordrv,
-             integer*    nbpntu,
-             integer*    nbpntv,
-             doublereal* epsapr,
-             doublereal* sosotb,
-             doublereal* disotb,
-             doublereal* soditb,
-             doublereal* diditb,
-             doublereal* gssutb,
-             doublereal* gssvtb,
-             doublereal* xmaxju,
-             doublereal* xmaxjv,
-             doublereal* vecerr,
-             doublereal* chpair,
-             doublereal* chimpr,
-             doublereal* patjac,
-             doublereal* errmax,
-             doublereal* errmoy,
-             integer*    ndegpu,
-             integer*    ndegpv,
-             integer*    itydec,
-             integer*    iercod)
+int mma2ce2_(int*    numdec,
+             int*    ndimen,
+             int*    nbsesp,
+             int*    ndimse,
+             int*    ndminu,
+             int*    ndminv,
+             int*    ndguli,
+             int*    ndgvli,
+             int*    ndjacu,
+             int*    ndjacv,
+             int*    iordru,
+             int*    iordrv,
+             int*    nbpntu,
+             int*    nbpntv,
+             double* epsapr,
+             double* sosotb,
+             double* disotb,
+             double* soditb,
+             double* diditb,
+             double* gssutb,
+             double* gssvtb,
+             double* xmaxju,
+             double* xmaxjv,
+             double* vecerr,
+             double* chpair,
+             double* chimpr,
+             double* patjac,
+             double* errmax,
+             double* errmoy,
+             int*    ndegpu,
+             int*    ndegpv,
+             int*    itydec,
+             int*    iercod)
 
 {
   /* System generated locals */
-  integer sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, gssutb_dim1,
-    gssvtb_dim1, chpair_dim1, chpair_dim2, chpair_offset, chimpr_dim1, chimpr_dim2, chimpr_offset,
-    patjac_dim1, patjac_dim2, patjac_offset, vecerr_dim1, vecerr_offset, i__1, i__2, i__3, i__4;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, gssutb_dim1, gssvtb_dim1,
+    chpair_dim1, chpair_dim2, chpair_offset, chimpr_dim1, chimpr_dim2, chimpr_offset, patjac_dim1,
+    patjac_dim2, patjac_offset, vecerr_dim1, vecerr_offset, i__1, i__2, i__3, i__4;
 
   /* Local variables */
-  logical    ldbg;
-  integer    idim, igsu, minu, minv, maxu, maxv, igsv;
-  doublereal vaux[3];
-  integer    i2rdu, i2rdv, ndses, nd, ii, jj, kk, nu, nv;
-  doublereal zu, zv;
-  integer    nu1, nv1;
+  long   ldbg;
+  int    idim, igsu, minu, minv, maxu, maxv, igsv;
+  double vaux[3];
+  int    i2rdu, i2rdv, ndses, nd, ii, jj, kk, nu, nv;
+  double zu, zv;
+  int    nu1, nv1;
 
   /* **********************************************************************
    */
@@ -4650,12 +4638,12 @@ int mma2ce2_(integer*    numdec,
 
   L600:
     /* Computing MAX */
-    i__1 = 1, i__2 = (*iordru << 1) + 1, i__1 = advapp_max(i__1, i__2);
-    minu = advapp_max(i__1, *ndminu);
+    i__1 = 1, i__2 = (*iordru << 1) + 1, i__1 = std::max(i__1, i__2);
+    minu = std::max(i__1, *ndminu);
     maxu = *ndguli;
     /* Computing MAX */
-    i__1 = 1, i__2 = (*iordrv << 1) + 1, i__1 = advapp_max(i__1, i__2);
-    minv = advapp_max(i__1, *ndminv);
+    i__1 = 1, i__2 = (*iordrv << 1) + 1, i__1 = std::max(i__1, i__2);
+    minv = std::max(i__1, *ndminv);
     maxv = *ndgvli;
     idim = 1;
     i__1 = *nbsesp;
@@ -4722,8 +4710,8 @@ int mma2ce2_(integer*    numdec,
       }
 
       /* --> Return the nb of coeffs of approximation. */
-      *ndegpu = advapp_max(*ndegpu, nu);
-      *ndegpv = advapp_max(*ndegpv, nv);
+      *ndegpu = std::max(*ndegpu, nu);
+      *ndegpv = std::max(*ndegpv, nv);
       idim += ndses;
       /* L610: */
     }
@@ -4849,12 +4837,12 @@ int mma2ce2_(integer*    numdec,
       else
       {
         /* Computing MAX */
-        i__2 = 1, i__3 = (*iordru << 1) + 1, i__2 = advapp_max(i__2, i__3);
-        minu = advapp_max(i__2, *ndminu);
+        i__2 = 1, i__3 = (*iordru << 1) + 1, i__2 = std::max(i__2, i__3);
+        minu = std::max(i__2, *ndminu);
         maxu = *ndguli;
         /* Computing MAX */
-        i__2 = 1, i__3 = (*iordrv << 1) + 1, i__2 = advapp_max(i__2, i__3);
-        minv = advapp_max(i__2, *ndminv);
+        i__2 = 1, i__3 = (*iordrv << 1) + 1, i__2 = std::max(i__2, i__3);
+        minv = std::max(i__2, *ndminv);
         maxv = *ndgvli;
         if (maxu >= (*iordru + 1) << 1 && maxv >= (*iordrv + 1) << 1)
         {
@@ -4923,8 +4911,8 @@ int mma2ce2_(integer*    numdec,
       /* --------------- Return the nb of coeff of approximation ---
       -------- */
 
-      *ndegpu = advapp_max(*ndegpu, nu);
-      *ndegpv = advapp_max(*ndegpv, nv);
+      *ndegpu = std::max(*ndegpu, nu);
+      *ndegpv = std::max(*ndegpv, nv);
       idim += ndses;
       /* L730: */
     }
@@ -5007,26 +4995,25 @@ L9999:
 
 //=================================================================================================
 
-int mma2cfu_(integer*    ndujac,
-             integer*    nbpntu,
-             integer*    nbpntv,
-             doublereal* sosotb,
-             doublereal* disotb,
-             doublereal* soditb,
-             doublereal* diditb,
-             doublereal* gssutb,
-             doublereal* chpair,
-             doublereal* chimpr)
+int mma2cfu_(int*    ndujac,
+             int*    nbpntu,
+             int*    nbpntv,
+             double* sosotb,
+             double* disotb,
+             double* soditb,
+             double* diditb,
+             double* gssutb,
+             double* chpair,
+             double* chimpr)
 
 {
   /* System generated locals */
-  integer sosotb_dim1, disotb_dim1, disotb_offset, soditb_dim1, soditb_offset, diditb_dim1, i__1,
-    i__2;
+  int sosotb_dim1, disotb_dim1, disotb_offset, soditb_dim1, soditb_offset, diditb_dim1, i__1, i__2;
 
   /* Local variables */
-  logical    ldbg;
-  integer    nptu2, nptv2, ii, jj;
-  doublereal bid0, bid1, bid2;
+  long   ldbg;
+  int    nptu2, nptv2, ii, jj;
+  double bid0, bid1, bid2;
 
   /* **********************************************************************
    */
@@ -5238,23 +5225,23 @@ int mma2cfu_(integer*    ndujac,
 
 //=================================================================================================
 
-int mma2cfv_(integer*    ndvjac,
-             integer*    mindgu,
-             integer*    maxdgu,
-             integer*    nbpntv,
-             doublereal* gssvtb,
-             doublereal* chpair,
-             doublereal* chimpr,
-             doublereal* patjac)
+int mma2cfv_(int*    ndvjac,
+             int*    mindgu,
+             int*    maxdgu,
+             int*    nbpntv,
+             double* gssvtb,
+             double* chpair,
+             double* chimpr,
+             double* patjac)
 
 {
   /* System generated locals */
-  integer chpair_dim1, chpair_offset, chimpr_dim1, chimpr_offset, patjac_offset, i__1, i__2;
+  int chpair_dim1, chpair_offset, chimpr_dim1, chimpr_offset, patjac_offset, i__1, i__2;
 
   /* Local variables */
-  logical    ldbg;
-  integer    nptv2, ii, jj;
-  doublereal bid1;
+  long   ldbg;
+  int    nptv2, ii, jj;
+  double bid1;
 
   /* **********************************************************************
    */
@@ -5393,33 +5380,33 @@ int mma2cfv_(integer*    ndvjac,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2ds1_(integer*                            ndimen,
-                                     doublereal*                         uintfn,
-                                     doublereal*                         vintfn,
+int AdvApp2Var_ApproxF2var::mma2ds1_(int*                                ndimen,
+                                     double*                             uintfn,
+                                     double*                             vintfn,
                                      const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                                     integer*                            nbpntu,
-                                     integer*                            nbpntv,
-                                     doublereal*                         urootb,
-                                     doublereal*                         vrootb,
-                                     integer*                            isofav,
-                                     doublereal*                         sosotb,
-                                     doublereal*                         disotb,
-                                     doublereal*                         soditb,
-                                     doublereal*                         diditb,
-                                     doublereal*                         fpntab,
-                                     doublereal*                         ttable,
-                                     integer*                            iercod)
+                                     int*                                nbpntu,
+                                     int*                                nbpntv,
+                                     double*                             urootb,
+                                     double*                             vrootb,
+                                     int*                                isofav,
+                                     double*                             sosotb,
+                                     double*                             disotb,
+                                     double*                             soditb,
+                                     double*                             diditb,
+                                     double*                             fpntab,
+                                     double*                             ttable,
+                                     int*                                iercod)
 
 {
   /* System generated locals */
-  integer sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1,
-    fpntab_offset, i__1;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1, fpntab_offset,
+    i__1;
 
   /* Local variables */
-  logical ldbg;
-  integer ibid1, ibid2, iuouv, nd;
-  integer isz1, isz2;
+  long ldbg;
+  int  ibid1, ibid2, iuouv, nd;
+  int  isz1, isz2;
 
   /* **********************************************************************
    */
@@ -5496,7 +5483,7 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer*                            ndimen,
   /*    SUBROUTINE FONCNP(NDIMEN,UINTFN,VINTFN,ISOFAV,TCONST,NBPTAB */
   /*                     ,TTABLE,IDERIU,IDERIV,PPNTAB,IERCOD) */
   /*    with the following input arguments : */
-  /*      - NDIMEN is integer defined as the sum of dimensions of */
+  /*      - NDIMEN is int defined as the sum of dimensions of */
   /*               sub-spaces (i.e. total dimension of the problem). */
   /*      - UINTFN(2) is a table of 2 reals containing the interval */
   /*                  by u where the function to be approximated is defined */
@@ -5507,17 +5494,17 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer*                            ndimen,
   /*      - ISOFAV, is 1 if it is necessary to calculate points with constant u, */
   /*                is 2 if it is necessary to calculate points with constant v. */
   /*                Any other value is an error. */
-  /*      - TCONST, real, value of the fixed parameter. Takes values */
+  /*      - TCONST, float, value of the fixed parameter. Takes values */
   /*                in (UIFONC(1),UIFONC(2)) if ISOFAV = 1 or  */
   /*                ins (VIFONC(1),VIFONC(2)) if ISOFAV = 2. */
-  /*      - NBPTAB, integer. Shows the number of points to be calculated. */
+  /*      - NBPTAB, int. Shows the number of points to be calculated. */
   /*      - TTABLE, a table of reals NBPTAB. These are the values of */
   /*                'free' parameter of discretization (v if IISOFAV=1, */
   /*                u if IISOFAV=2). */
-  /*      - IDERIU, integer, takes values between 0 (position) */
+  /*      - IDERIU, int, takes values between 0 (position) */
   /*                and IORDRE(1) (partial derivative of the function by u */
   /*                of order IORDRE(1) if IORDRE(1) > 0). */
-  /*      - IDERIV, integer, takes values between 0 (position) */
+  /*      - IDERIV, int, takes values between 0 (position) */
   /*                and IORDRE(2) (partial derivative of the function by v */
   /*                of order IORDRE(2) if IORDRE(2) > 0). */
   /*                If IDERIU=i and IDERIV=j, FONCNP should calculate the */
@@ -5532,7 +5519,7 @@ int AdvApp2Var_ApproxF2var::mma2ds1_(integer*                            ndimen,
   /*        - FPNTAB(NDIMEN,NBPTAB) contains, at output, the table of */
   /*                                NBPTAB points calculated in FONCNP. */
   /*        - IERCOD is, at output the error code of FONCNP. This code */
-  /*                 (integer) should be strictly positive if there is a problem. */
+  /*                 (int) should be strictly positive if there is a problem. */
 
   /*     The input arguments SHOULD NOT be modified under FONCNP.
    */
@@ -5799,37 +5786,37 @@ L9999:
 
 //=================================================================================================
 
-int mma2ds2_(integer*                            ndimen,
-             doublereal*                         uintfn,
-             doublereal*                         vintfn,
+int mma2ds2_(int*                                ndimen,
+             double*                             uintfn,
+             double*                             vintfn,
              const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-             integer*                            nbpntu,
-             integer*                            nbpntv,
-             doublereal*                         urootb,
-             doublereal*                         vrootb,
-             integer*                            iiuouv,
-             doublereal*                         sosotb,
-             doublereal*                         disotb,
-             doublereal*                         soditb,
-             doublereal*                         diditb,
-             doublereal*                         fpntab,
-             doublereal*                         ttable,
-             integer*                            iercod)
+             int*                                nbpntu,
+             int*                                nbpntv,
+             double*                             urootb,
+             double*                             vrootb,
+             int*                                iiuouv,
+             double*                             sosotb,
+             double*                             disotb,
+             double*                             soditb,
+             double*                             diditb,
+             double*                             fpntab,
+             double*                             ttable,
+             int*                                iercod)
 
 {
-  integer c__0 = 0;
+  int c__0 = 0;
   /* System generated locals */
-  integer sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset,
-    soditb_dim1, soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1,
-    fpntab_offset, i__1, i__2, i__3;
+  int sosotb_dim1, sosotb_dim2, sosotb_offset, disotb_dim1, disotb_dim2, disotb_offset, soditb_dim1,
+    soditb_dim2, soditb_offset, diditb_dim1, diditb_dim2, diditb_offset, fpntab_dim1, fpntab_offset,
+    i__1, i__2, i__3;
 
   /* Local variables */
-  integer    jdec;
-  logical    ldbg;
-  doublereal alinu, blinu, alinv, blinv, tcons;
-  doublereal dbfn1[2], dbfn2[2];
-  integer    nuroo, nvroo, id, iu, iv;
-  doublereal um, up;
+  int    jdec;
+  long   ldbg;
+  double alinu, blinu, alinv, blinv, tcons;
+  double dbfn1[2], dbfn2[2];
+  int    nuroo, nvroo, id, iu, iv;
+  double um, up;
 
   /* **********************************************************************
    */
@@ -5905,7 +5892,7 @@ int mma2ds2_(integer*                            ndimen,
   /*    SUBROUTINE FONCNP(NDIMEN,UINTFN,VINTFN,IIIUOUV,TCONST,NBPTAB */
   /*                     ,TTABLE,IDERIU,IDERIV,PPNTAB,IERCOD) */
   /*    with the following input arguments : */
-  /*      - NDIMEN is integer defined as the sum of dimensions of */
+  /*      - NDIMEN is int defined as the sum of dimensions of */
   /*               sub-spaces (i.e. total dimension of the problem). */
   /*      - UINTFN(2) is a table of 2 reals containing the interval */
   /*                  by u where the function to be approximated is defined */
@@ -5916,17 +5903,17 @@ int mma2ds2_(integer*                            ndimen,
   /*      - IIIUOUV, is 1 if it is necessary to calculate points with constant u, */
   /*                 is 2 if it is necessary to calculate points with constant v. */
   /*                 Any other value is an error. */
-  /*      - TCONST, real, value of the fixed parameter. Takes values */
+  /*      - TCONST, float, value of the fixed parameter. Takes values */
   /*                in (UIFONC(1),UIFONC(2)) if ISOFAV = 1 or  */
   /*                ins (VIFONC(1),VIFONC(2)) if ISOFAV = 2. */
-  /*      - NBPTAB, integer. Shows the number of points to be calculated. */
+  /*      - NBPTAB, int. Shows the number of points to be calculated. */
   /*      - TTABLE, a table of reals NBPTAB. These are the values of */
   /*                'free' parameter of discretization (v if IIIUOUV=1, */
   /*                u if IIIUOUV=2). */
-  /*      - IDERIU, integer, takes values between 0 (position) */
+  /*      - IDERIU, int, takes values between 0 (position) */
   /*                and IORDRE(1) (partial derivative of the function by u */
   /*                of order IORDRE(1) if IORDRE(1) > 0). */
-  /*      - IDERIV, integer, takes values between 0 (position) */
+  /*      - IDERIV, int, takes values between 0 (position) */
   /*                and IORDRE(2) (partial derivative of the function by v */
   /*                of order IORDRE(2) if IORDRE(2) > 0). */
   /*                If IDERIU=i and IDERIV=j, FONCNP should calculate the */
@@ -5941,7 +5928,7 @@ int mma2ds2_(integer*                            ndimen,
   /*        - FPNTAB(NDIMEN,NBPTAB) contains, at output, the table of */
   /*                                NBPTAB points calculated in FONCNP. */
   /*        - IERCOD is, at output the error code of FONCNP. This code */
-  /*                 (integer) should be strictly positive if there is a problem. */
+  /*                 (int) should be strictly positive if there is a problem. */
 
   /*     The input arguments SHOULD NOT be modified under FONCNP.
    */
@@ -6219,32 +6206,32 @@ L9999:
 
 //=================================================================================================
 
-int mma2er1_(integer*    ndjacu,
-             integer*    ndjacv,
-             integer*    ndimen,
-             integer*    mindgu,
-             integer*    maxdgu,
-             integer*    mindgv,
-             integer*    maxdgv,
-             integer*    iordru,
-             integer*    iordrv,
-             doublereal* xmaxju,
-             doublereal* xmaxjv,
-             doublereal* patjac,
-             doublereal* vecerr,
-             doublereal* erreur)
+int mma2er1_(int*    ndjacu,
+             int*    ndjacv,
+             int*    ndimen,
+             int*    mindgu,
+             int*    maxdgu,
+             int*    mindgv,
+             int*    maxdgv,
+             int*    iordru,
+             int*    iordrv,
+             double* xmaxju,
+             double* xmaxjv,
+             double* patjac,
+             double* vecerr,
+             double* erreur)
 
 {
   /* System generated locals */
-  integer    patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3;
-  doublereal d__1;
+  int    patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3;
+  double d__1;
 
   /* Local variables */
-  logical    ldbg;
-  integer    minu, minv;
-  doublereal vaux[2];
-  integer    ii, nd, jj;
-  doublereal bid0, bid1;
+  long   ldbg;
+  int    minu, minv;
+  double vaux[2];
+  int    ii, nd, jj;
+  double bid0, bid1;
 
   /* **********************************************************************
    */
@@ -6352,7 +6339,7 @@ int mma2er1_(integer*    ndjacu,
       i__3 = *maxdgu;
       for (ii = *mindgu; ii <= i__3; ++ii)
       {
-        bid0 += (d__1 = patjac[ii + (jj + nd * patjac_dim2) * patjac_dim1], advapp_abs(d__1))
+        bid0 += (d__1 = patjac[ii + (jj + nd * patjac_dim2) * patjac_dim1], std::abs(d__1))
                 * xmaxju[ii - minu];
         /* L300: */
       }
@@ -6384,35 +6371,35 @@ int mma2er1_(integer*    ndjacu,
 
 //=================================================================================================
 
-int mma2er2_(integer*    ndjacu,
-             integer*    ndjacv,
-             integer*    ndimen,
-             integer*    mindgu,
-             integer*    maxdgu,
-             integer*    mindgv,
-             integer*    maxdgv,
-             integer*    iordru,
-             integer*    iordrv,
-             doublereal* xmaxju,
-             doublereal* xmaxjv,
-             doublereal* patjac,
-             doublereal* epmscut,
-             doublereal* vecerr,
-             doublereal* erreur,
-             integer*    newdgu,
-             integer*    newdgv)
+int mma2er2_(int*    ndjacu,
+             int*    ndjacv,
+             int*    ndimen,
+             int*    mindgu,
+             int*    maxdgu,
+             int*    mindgv,
+             int*    maxdgv,
+             int*    iordru,
+             int*    iordrv,
+             double* xmaxju,
+             double* xmaxjv,
+             double* patjac,
+             double* epmscut,
+             double* vecerr,
+             double* erreur,
+             int*    newdgu,
+             int*    newdgv)
 
 {
   /* System generated locals */
-  integer    patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2;
-  doublereal d__1;
+  int    patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2;
+  double d__1;
 
   /* Local variables */
-  logical    ldbg;
-  doublereal vaux[2];
-  integer    i2rdu, i2rdv;
-  doublereal errnu, errnv;
-  integer    ii, nd, jj, nu, nv;
+  long   ldbg;
+  double vaux[2];
+  int    i2rdu, i2rdv;
+  double errnu, errnv;
+  int    ii, nd, jj, nu, nv;
 
   /* **********************************************************************
    */
@@ -6527,15 +6514,15 @@ L1001:
 
   if (nv > *mindgv)
   {
-    doublereal bid0 = xmaxjv[nv - i2rdv];
-    i__1            = *ndimen;
+    double bid0 = xmaxjv[nv - i2rdv];
+    i__1        = *ndimen;
     for (nd = 1; nd <= i__1; ++nd)
     {
-      doublereal bid1 = 0.;
-      i__2            = nu;
+      double bid1 = 0.;
+      i__2        = nu;
       for (ii = i2rdu; ii <= i__2; ++ii)
       {
-        bid1 += (d__1 = patjac[ii + (nv + nd * patjac_dim2) * patjac_dim1], advapp_abs(d__1))
+        bid1 += (d__1 = patjac[ii + (nv + nd * patjac_dim2) * patjac_dim1], std::abs(d__1))
                 * xmaxju[ii - i2rdu] * bid0;
         /* L200: */
       }
@@ -6556,15 +6543,15 @@ L1001:
 
   if (nu > *mindgu)
   {
-    doublereal bid0 = xmaxju[nu - i2rdu];
-    i__1            = *ndimen;
+    double bid0 = xmaxju[nu - i2rdu];
+    i__1        = *ndimen;
     for (nd = 1; nd <= i__1; ++nd)
     {
-      doublereal bid1 = 0.;
-      i__2            = nv;
+      double bid1 = 0.;
+      i__2        = nv;
       for (jj = i2rdv; jj <= i__2; ++jj)
       {
-        bid1 += (d__1 = patjac[nu + (jj + nd * patjac_dim2) * patjac_dim1], advapp_abs(d__1))
+        bid1 += (d__1 = patjac[nu + (jj + nd * patjac_dim2) * patjac_dim1], std::abs(d__1))
                 * xmaxjv[jj - i2rdv] * bid0;
         /* L400: */
       }
@@ -6619,8 +6606,8 @@ L1001:
    */
 
 L2001:
-  *newdgu = advapp_max(nu, 1);
-  *newdgv = advapp_max(nv, 1);
+  *newdgu = std::max(nu, 1);
+  *newdgv = std::max(nv, 1);
 
   /* ----------------------------------- The end --------------------------
    */
@@ -6634,59 +6621,59 @@ L2001:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
-                                     integer*                            nbsesp,
-                                     integer*                            ndimse,
-                                     doublereal*                         uvfonc,
+int AdvApp2Var_ApproxF2var::mma2fnc_(int*                                ndimen,
+                                     int*                                nbsesp,
+                                     int*                                ndimse,
+                                     double*                             uvfonc,
                                      const AdvApp2Var_EvaluatorFunc2Var& foncnp,
-                                     doublereal*                         tconst,
-                                     integer*                            isofav,
-                                     integer*                            nbroot,
-                                     doublereal*                         rootlg,
-                                     integer*                            iordre,
-                                     integer*                            ideriv,
-                                     integer*                            ndgjac,
-                                     integer*                            nbcrmx,
-                                     integer*                            ncflim,
-                                     doublereal*                         epsapr,
-                                     integer*                            ncoeff,
-                                     doublereal*                         courbe,
-                                     integer*                            nbcrbe,
-                                     doublereal*                         somtab,
-                                     doublereal*                         diftab,
-                                     doublereal*                         contr1,
-                                     doublereal*                         contr2,
-                                     doublereal*                         tabdec,
-                                     doublereal*                         errmax,
-                                     doublereal*                         errmoy,
-                                     integer*                            iercod)
+                                     double*                             tconst,
+                                     int*                                isofav,
+                                     int*                                nbroot,
+                                     double*                             rootlg,
+                                     int*                                iordre,
+                                     int*                                ideriv,
+                                     int*                                ndgjac,
+                                     int*                                nbcrmx,
+                                     int*                                ncflim,
+                                     double*                             epsapr,
+                                     int*                                ncoeff,
+                                     double*                             courbe,
+                                     int*                                nbcrbe,
+                                     double*                             somtab,
+                                     double*                             diftab,
+                                     double*                             contr1,
+                                     double*                             contr2,
+                                     double*                             tabdec,
+                                     double*                             errmax,
+                                     double*                             errmoy,
+                                     int*                                iercod)
 
 {
-  integer c__8 = 8;
+  int c__8 = 8;
 
   /* System generated locals */
-  integer courbe_dim1, courbe_dim2, courbe_offset, somtab_dim1, somtab_dim2, somtab_offset,
-    diftab_dim1, diftab_dim2, diftab_offset, contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1,
-    contr2_dim2, contr2_offset, errmax_dim1, errmax_offset, errmoy_dim1, errmoy_offset, i__1;
-  doublereal d__1;
+  int courbe_dim1, courbe_dim2, courbe_offset, somtab_dim1, somtab_dim2, somtab_offset, diftab_dim1,
+    diftab_dim2, diftab_offset, contr1_dim1, contr1_dim2, contr1_offset, contr2_dim1, contr2_dim2,
+    contr2_offset, errmax_dim1, errmax_offset, errmoy_dim1, errmoy_offset, i__1;
+  double d__1;
 
   /* Local variables */
-  integer     ideb;
-  doublereal  tmil;
-  integer     ideb1, ibid1, ibid2, ncfja, ndgre, ilong, ndwrk;
-  doublereal* wrkar = nullptr;
-  doublereal* wrkar_off;
-  integer     nupil;
-  intptr_t    iofwr;
-  doublereal  uvpav[4] /* was [2][2] */;
-  integer     nd, ii;
-  integer     ibb;
-  integer     ier = 0;
-  doublereal  uv11[4] /* was [2][2] */;
-  integer     ncb1;
-  doublereal  eps3;
-  integer     isz1, isz2, isz3, isz4, isz5;
-  intptr_t    ipt1, ipt2, ipt3, ipt4, iptt, jptt;
+  int      ideb;
+  double   tmil;
+  int      ideb1, ibid1, ibid2, ncfja, ndgre, ilong, ndwrk;
+  double*  wrkar = nullptr;
+  double*  wrkar_off;
+  int      nupil;
+  intptr_t iofwr;
+  double   uvpav[4] /* was [2][2] */;
+  int      nd, ii;
+  int      ibb;
+  int      ier = 0;
+  double   uv11[4] /* was [2][2] */;
+  int      ncb1;
+  double   eps3;
+  int      isz1, isz2, isz3, isz4, isz5;
+  intptr_t ipt1, ipt2, ipt3, ipt4, iptt, jptt;
 
   /* **********************************************************************
    */
@@ -6802,7 +6789,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
   /*          SUBROUTINE FONCNP(NDIMEN,UINTFN,VINTFN,IIUOUV,TCONST,NBPTAB */
   /*                           ,TTABLE,IDERIU,IDERIV,IERCOD) */
   /*     where the input arguments are : */
-  /*      - NDIMEN is integer defined as the sum of dimensions of */
+  /*      - NDIMEN is int defined as the sum of dimensions of */
   /*               sub-spaces (i.e. total dimension of the problem). */
   /*      - UINTFN(2) is a table of 2 reals containing the interval */
   /*                  by u where the function to be approximated is defined */
@@ -6812,23 +6799,23 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
   /*                  (so it is equal to VIFONC). */
   /*      - IIUOUV, shows that the points to be calculated have a constant U */
   /*                (IIUOUV=1) or a constant V (IIUOUV=2). */
-  /*      - TCONST, real, value of the fixed discretisation parameter. Takes values */
+  /*      - TCONST, float, value of the fixed discretisation parameter. Takes values */
   /*                in  (UINTFN(1),UINTFN(2)) if IIUOUV=1, */
   /*                or in (VINTFN(1),VINTFN(2)) if IIUOUV=2. */
   /*      - NBPTAB, the nb of point of discretisation following the free variable */
   /*                : V if IIUOUV=1 or U if IIUOUV = 2. */
   /*      - TTABLE, Table of NBPTAB parametres of discretisation. . */
-  /*      - IDERIU, integer, takes values between 0 (position) */
+  /*      - IDERIU, int, takes values between 0 (position) */
   /*                and IORDREU (partial derivative of the function by u */
   /*                of order IORDREU if IORDREU > 0). */
-  /*      - IDERIV, integer, takes values between 0 (position) */
+  /*      - IDERIV, int, takes values between 0 (position) */
   /*                and IORDREV (partial derivative of the function by v */
   /*                of order IORDREV if IORDREV > 0). */
   /*     and the output arguments are : */
   /*        - FPNTAB(NDIMEN,NBPTAB) contains, at output, the table of */
   /*                                NBPTAB points calculated in FONCNP. */
   /*        - IERCOD is, at output the error code of FONCNP. This code */
-  /*                 (integer) should be strictly positive if there is a problem. */
+  /*                 (int) should be strictly positive if there is a problem. */
 
   /*     The input arguments SHOULD NOT BE modified under FONCNP.
    */
@@ -6901,11 +6888,11 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
    */
 
   AdvApp2Var_MathBase::mmveps3_(&eps3);
-  if ((d__1 = uvfonc[4] - uvfonc[3], advapp_abs(d__1)) < eps3)
+  if ((d__1 = uvfonc[4] - uvfonc[3], std::abs(d__1)) < eps3)
   {
     goto L9100;
   }
-  if ((d__1 = uvfonc[6] - uvfonc[5], advapp_abs(d__1)) < eps3)
+  if ((d__1 = uvfonc[6] - uvfonc[5], std::abs(d__1)) < eps3)
   {
     goto L9100;
   }
@@ -6928,9 +6915,9 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
   /*    the auxiliary curve for MMAPCMP */
   ibid1 = *ndimen * (*nbroot + 2);
   ibid2 = ((*iordre + 1) << 1) * *nbroot;
-  isz2  = advapp_max(ibid1, ibid2);
+  isz2  = std::max(ibid1, ibid2);
   ibid1 = (((*ncflim - 1) / 2 + 1) << 1) * *ndimen;
-  isz2  = advapp_max(ibid1, isz2);
+  isz2  = std::max(ibid1, isz2);
   /* --> To return the polynoms of hermit. */
   isz3 = ((*iordre + 1) << 2) * (*iordre + 1);
   /* --> For the Gauss  coeff. of integration. */
@@ -7145,7 +7132,7 @@ L1000:
     AdvApp2Var_MathBase::mmapcmp_(ndimen,
     &ncfja, &ncoeff[ncb1], &wrkar[ipt5], &wrkar[ipt2]);
     */
-    AdvApp2Var_MathBase::mmapcmp_((integer*)ndimen,
+    AdvApp2Var_MathBase::mmapcmp_((int*)ndimen,
                                   &ncfja,
                                   &ncoeff[ncb1],
                                   &wrkar_off[ipt4],
@@ -7295,33 +7282,33 @@ L9999:
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
-                                     integer*    ncfmxv,
-                                     integer*    ndimen,
-                                     integer*    nbsesp,
-                                     integer*    ndimse,
-                                     integer*    nbupat,
-                                     integer*    nbvpat,
-                                     integer*    iordru,
-                                     integer*    iordrv,
-                                     doublereal* epsapr,
-                                     doublereal* epsfro,
-                                     doublereal* patcan,
-                                     doublereal* errmax,
-                                     integer*    ncoefu,
-                                     integer*    ncoefv)
+int AdvApp2Var_ApproxF2var::mma2fx6_(int*    ncfmxu,
+                                     int*    ncfmxv,
+                                     int*    ndimen,
+                                     int*    nbsesp,
+                                     int*    ndimse,
+                                     int*    nbupat,
+                                     int*    nbvpat,
+                                     int*    iordru,
+                                     int*    iordrv,
+                                     double* epsapr,
+                                     double* epsfro,
+                                     double* patcan,
+                                     double* errmax,
+                                     int*    ncoefu,
+                                     int*    ncoefv)
 
 {
   /* System generated locals */
-  integer epsfro_dim1, epsfro_offset, patcan_dim1, patcan_dim2, patcan_dim3, patcan_dim4,
-    patcan_offset, errmax_dim1, errmax_dim2, errmax_offset, ncoefu_dim1, ncoefu_offset, ncoefv_dim1,
-    ncoefv_offset, i__1, i__2, i__3, i__4, i__5;
-  doublereal d__1, d__2;
+  int epsfro_dim1, epsfro_offset, patcan_dim1, patcan_dim2, patcan_dim3, patcan_dim4, patcan_offset,
+    errmax_dim1, errmax_dim2, errmax_offset, ncoefu_dim1, ncoefu_offset, ncoefv_dim1, ncoefv_offset,
+    i__1, i__2, i__3, i__4, i__5;
+  double d__1, d__2;
 
   /* Local variables */
-  integer    idim, ncfu, ncfv, id, ii, nd, jj, ku, kv, ns, ibb;
-  doublereal bid;
-  doublereal tol;
+  int    idim, ncfu, ncfv, id, ii, nd, jj, ku, kv, ns, ibb;
+  double bid;
+  double tol;
 
   /* **********************************************************************
    */
@@ -7436,30 +7423,30 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
           tol = epsapr[ns];
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 9];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 10];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 11];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 12];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           if (ii == 1 || ii == *nbupat || jj == 1 || jj == *nbvpat)
           {
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 5];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 6];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 7];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + (epsfro_dim1 << 3)];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
           }
           bid = 0.;
 
@@ -7474,7 +7461,7 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
                 (d__1 = patcan[ncfu
                                + (kv + (id + (ii + jj * patcan_dim4) * patcan_dim3) * patcan_dim2)
                                    * patcan_dim1],
-                 advapp_abs(d__1));
+                 std::abs(d__1));
               /* L230: */
             }
             /* L220: */
@@ -7507,30 +7494,30 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
           tol = epsapr[ns];
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 9];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 10];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 11];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           /* Computing MIN */
           d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 12];
-          tol = advapp_min(d__1, d__2);
+          tol = std::min(d__1, d__2);
           if (ii == 1 || ii == *nbupat || jj == 1 || jj == *nbvpat)
           {
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 5];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 6];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + epsfro_dim1 * 7];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
             /* Computing MIN */
             d__1 = tol, d__2 = epsfro[ns + (epsfro_dim1 << 3)];
-            tol = advapp_min(d__1, d__2);
+            tol = std::min(d__1, d__2);
           }
           bid = 0.;
 
@@ -7545,7 +7532,7 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
                 (d__1 = patcan[ku
                                + (ncfv + (id + (ii + jj * patcan_dim4) * patcan_dim3) * patcan_dim2)
                                    * patcan_dim1],
-                 advapp_abs(d__1));
+                 std::abs(d__1));
               /* L330: */
             }
             /* L320: */
@@ -7566,8 +7553,8 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
       /* --- Return the nbs of coeff. and pass to the next square --- */
 
     L400:
-      ncoefu[ii + jj * ncoefu_dim1] = advapp_max(ncfu, 2);
-      ncoefv[ii + jj * ncoefv_dim1] = advapp_max(ncfv, 2);
+      ncoefu[ii + jj * ncoefu_dim1] = std::max(ncfu, 2);
+      ncoefv[ii + jj * ncoefv_dim1] = std::max(ncfv, 2);
       /* L110: */
     }
     /* L100: */
@@ -7586,105 +7573,102 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2jmx_(integer* ndgjac, integer* iordre, doublereal* xjacmx)
+int AdvApp2Var_ApproxF2var::mma2jmx_(int* ndgjac, int* iordre, double* xjacmx)
 {
   /* Initialized data */
 
-  static doublereal xmax2[57] = {
-    .9682458365518542212948163499456,   .986013297183269340427888048593603,
-    1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
-    1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
-    1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
-    1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
-    1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
-    1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
-    1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
-    2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
-    2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
-    2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
-    2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
-    2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
-    2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
-    2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
-    2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
-    2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
-    2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
-    3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
-    3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
-    3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
-    3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
-    3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
-    3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
-    3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
-    3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
-    3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
-    3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
-    3.72184531357268220291630708234186};
-  static doublereal xmax4[55] = {
-    1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
-    1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
-    1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
-    1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
-    1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
-    1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
-    1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
-    1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
-    1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
-    1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
-    1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
-    2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
-    2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
-    2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
-    2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
-    2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
-    2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
-    2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
-    2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
-    2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
-    2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
-    2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
-    2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
-    2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
-    2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
-    2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
-    3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
-    3.05886060707437081434964933864149};
-  static doublereal xmax6[53] = {
-    1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
-    1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
-    1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
-    1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
-    1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
-    1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
-    1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
-    1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
-    1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
-    1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
-    1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
-    1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
-    1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
-    2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
-    2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
-    2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
-    2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
-    2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
-    2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
-    2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
-    2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
-    2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
-    2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
-    2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
-    2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
-    2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
-    2.71238965987606292679677228666411};
+  static double xmax2[57] = {.9682458365518542212948163499456,   .986013297183269340427888048593603,
+                             1.07810420343739860362585159028115, 1.17325804490920057010925920756025,
+                             1.26476561266905634732910520370741, 1.35169950227289626684434056681946,
+                             1.43424378958284137759129885012494, 1.51281316274895465689402798226634,
+                             1.5878364329591908800533936587012,  1.65970112228228167018443636171226,
+                             1.72874345388622461848433443013543, 1.7952515611463877544077632304216,
+                             1.85947199025328260370244491818047, 1.92161634324190018916351663207101,
+                             1.98186713586472025397859895825157, 2.04038269834980146276967984252188,
+                             2.09730119173852573441223706382076, 2.15274387655763462685970799663412,
+                             2.20681777186342079455059961912859, 2.25961782459354604684402726624239,
+                             2.31122868752403808176824020121524, 2.36172618435386566570998793688131,
+                             2.41117852396114589446497298177554, 2.45964731268663657873849811095449,
+                             2.50718840313973523778244737914028, 2.55385260994795361951813645784034,
+                             2.59968631659221867834697883938297, 2.64473199258285846332860663371298,
+                             2.68902863641518586789566216064557, 2.73261215675199397407027673053895,
+                             2.77551570192374483822124304745691, 2.8177699459714315371037628127545,
+                             2.85940333797200948896046563785957, 2.90044232019793636101516293333324,
+                             2.94091151970640874812265419871976, 2.98083391718088702956696303389061,
+                             3.02023099621926980436221568258656, 3.05912287574998661724731962377847,
+                             3.09752842783622025614245706196447, 3.13546538278134559341444834866301,
+                             3.17295042316122606504398054547289, 3.2099992681699613513775259670214,
+                             3.24662674946606137764916854570219, 3.28284687953866689817670991319787,
+                             3.31867291347259485044591136879087, 3.35411740487202127264475726990106,
+                             3.38919225660177218727305224515862, 3.42390876691942143189170489271753,
+                             3.45827767149820230182596660024454, 3.49230918177808483937957161007792,
+                             3.5260130200285724149540352829756,  3.55939845146044235497103883695448,
+                             3.59247431368364585025958062194665, 3.62524904377393592090180712976368,
+                             3.65773070318071087226169680450936, 3.68992700068237648299565823810245,
+                             3.72184531357268220291630708234186};
+  static double xmax4[55] = {1.1092649593311780079813740546678,  1.05299572648705464724876659688996,
+                             1.0949715351434178709281698645813,  1.15078388379719068145021100764647,
+                             1.2094863084718701596278219811869,  1.26806623151369531323304177532868,
+                             1.32549784426476978866302826176202, 1.38142537365039019558329304432581,
+                             1.43575531950773585146867625840552, 1.48850442653629641402403231015299,
+                             1.53973611681876234549146350844736, 1.58953193485272191557448229046492,
+                             1.63797820416306624705258190017418, 1.68515974143594899185621942934906,
+                             1.73115699602477936547107755854868, 1.77604489805513552087086912113251,
+                             1.81989256661534438347398400420601, 1.86276344480103110090865609776681,
+                             1.90471563564740808542244678597105, 1.94580231994751044968731427898046,
+                             1.98607219357764450634552790950067, 2.02556989246317857340333585562678,
+                             2.06433638992049685189059517340452, 2.10240936014742726236706004607473,
+                             2.13982350649113222745523925190532, 2.17661085564771614285379929798896,
+                             2.21280102016879766322589373557048, 2.2484214321456956597803794333791,
+                             2.28349755104077956674135810027654, 2.31805304852593774867640120860446,
+                             2.35210997297725685169643559615022, 2.38568889602346315560143377261814,
+                             2.41880904328694215730192284109322, 2.45148841120796359750021227795539,
+                             2.48374387161372199992570528025315, 2.5155912654873773953959098501893,
+                             2.54704548720896557684101746505398, 2.57812056037881628390134077704127,
+                             2.60882970619319538196517982945269, 2.63918540521920497868347679257107,
+                             2.66919945330942891495458446613851, 2.69888301230439621709803756505788,
+                             2.72824665609081486737132853370048, 2.75730041251405791603760003778285,
+                             2.78605380158311346185098508516203, 2.81451587035387403267676338931454,
+                             2.84269522483114290814009184272637, 2.87060005919012917988363332454033,
+                             2.89823818258367657739520912946934, 2.92561704377132528239806135133273,
+                             2.95274375377994262301217318010209, 2.97962510678256471794289060402033,
+                             3.00626759936182712291041810228171, 3.03267744830655121818899164295959,
+                             3.05886060707437081434964933864149};
+  static double xmax6[53] = {1.21091229812484768570102219548814, 1.11626917091567929907256116528817,
+                             1.1327140810290884106278510474203,  1.1679452722668028753522098022171,
+                             1.20910611986279066645602153641334, 1.25228283758701572089625983127043,
+                             1.29591971597287895911380446311508, 1.3393138157481884258308028584917,
+                             1.3821288728999671920677617491385,  1.42420414683357356104823573391816,
+                             1.46546895108549501306970087318319, 1.50590085198398789708599726315869,
+                             1.54550385142820987194251585145013, 1.58429644271680300005206185490937,
+                             1.62230484071440103826322971668038, 1.65955905239130512405565733793667,
+                             1.69609056468292429853775667485212, 1.73193098017228915881592458573809,
+                             1.7671112206990325429863426635397,  1.80166107681586964987277458875667,
+                             1.83560897003644959204940535551721, 1.86898184653271388435058371983316,
+                             1.90180515174518670797686768515502, 1.93410285411785808749237200054739,
+                             1.96589749778987993293150856865539, 1.99721027139062501070081653790635,
+                             2.02806108474738744005306947877164, 2.05846864831762572089033752595401,
+                             2.08845055210580131460156962214748, 2.11802334209486194329576724042253,
+                             2.14720259305166593214642386780469, 2.17600297710595096918495785742803,
+                             2.20443832785205516555772788192013, 2.2325216999457379530416998244706,
+                             2.2602654243075083168599953074345,  2.28768115912702794202525264301585,
+                             2.3147799369092684021274946755348,  2.34157220782483457076721300512406,
+                             2.36806787963276257263034969490066, 2.39427635443992520016789041085844,
+                             2.42020656255081863955040620243062, 2.44586699364757383088888037359254,
+                             2.47126572552427660024678584642791, 2.49641045058324178349347438430311,
+                             2.52130850028451113942299097584818, 2.54596686772399937214920135190177,
+                             2.5703922285006754089328998222275,  2.59459096001908861492582631591134,
+                             2.61856915936049852435394597597773, 2.64233265984385295286445444361827,
+                             2.66588704638685848486056711408168, 2.68923766976735295746679957665724,
+                             2.71238965987606292679677228666411};
 
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  logical    ldbg;
-  integer    numax, ii;
-  doublereal bid;
+  long   ldbg;
+  int    numax, ii;
+  double bid;
 
   /* **********************************************************************
    */
@@ -7780,25 +7764,25 @@ int AdvApp2Var_ApproxF2var::mma2jmx_(integer* ndgjac, integer* iordre, doublerea
 
 //=================================================================================================
 
-int mma2moy_(integer*    ndgumx,
-             integer*    ndgvmx,
-             integer*    ndimen,
-             integer*    mindgu,
-             integer*    maxdgu,
-             integer*    mindgv,
-             integer*    maxdgv,
-             integer*    iordru,
-             integer*    iordrv,
-             doublereal* patjac,
-             doublereal* errmoy)
+int mma2moy_(int*    ndgumx,
+             int*    ndgvmx,
+             int*    ndimen,
+             int*    mindgu,
+             int*    maxdgu,
+             int*    mindgv,
+             int*    maxdgv,
+             int*    iordru,
+             int*    iordrv,
+             double* patjac,
+             double* errmoy)
 {
   /* System generated locals */
-  integer patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3;
+  int patjac_dim1, patjac_dim2, patjac_offset, i__1, i__2, i__3;
 
   /* Local variables */
-  logical    ldbg;
-  integer    minu, minv, idebu, idebv, ii, nd, jj;
-  doublereal bid0, bid1;
+  long   ldbg;
+  int    minu, minv, idebu, idebv, ii, nd, jj;
+  double bid0, bid1;
 
   /* **********************************************************************
    */
@@ -7875,8 +7859,8 @@ int mma2moy_(integer*    ndgumx,
 
   idebu   = (*iordru + 1) << 1;
   idebv   = (*iordrv + 1) << 1;
-  minu    = advapp_max(idebu, *mindgu);
-  minv    = advapp_max(idebv, *mindgv);
+  minu    = std::max(idebu, *mindgu);
+  minv    = std::max(idebv, *mindgv);
   bid0    = 0.;
   *errmoy = 0.;
 
@@ -7938,16 +7922,13 @@ int mma2moy_(integer*    ndgumx,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mma2roo_(integer*    nbpntu,
-                                     integer*    nbpntv,
-                                     doublereal* urootl,
-                                     doublereal* vrootl)
+int AdvApp2Var_ApproxF2var::mma2roo_(int* nbpntu, int* nbpntv, double* urootl, double* vrootl)
 {
   /* System generated locals */
-  integer i__1;
+  int i__1;
 
   /* Local variables */
-  integer ii, ibb;
+  int ii, ibb;
 
   /* **********************************************************************
    */
@@ -8044,24 +8025,24 @@ int AdvApp2Var_ApproxF2var::mma2roo_(integer*    nbpntu,
 
 //=================================================================================================
 
-int mmmapcoe_(integer*    ndim,
-              integer*    ndgjac,
-              integer*    iordre,
-              integer*    nbpnts,
-              doublereal* somtab,
-              doublereal* diftab,
-              doublereal* gsstab,
-              doublereal* crvjac)
+int mmmapcoe_(int*    ndim,
+              int*    ndgjac,
+              int*    iordre,
+              int*    nbpnts,
+              double* somtab,
+              double* diftab,
+              double* gsstab,
+              double* crvjac)
 
 {
   /* System generated locals */
-  integer somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, crvjac_dim1, crvjac_offset,
+  int somtab_dim1, somtab_offset, diftab_dim1, diftab_offset, crvjac_dim1, crvjac_offset,
     gsstab_dim1, i__1, i__2, i__3;
 
   /* Local variables */
-  integer    igss, ikdeb;
-  doublereal bidon;
-  integer    nd, ik, ir, nbroot, ibb;
+  int    igss, ikdeb;
+  double bidon;
+  int    nd, ik, ir, nbroot, ibb;
 
   /* **********************************************************************
    */
@@ -8214,21 +8195,21 @@ L9999:
 
 //=================================================================================================
 
-int mmaperm_(integer*    ncofmx,
-             integer*    ndim,
-             integer*    ncoeff,
-             integer*    iordre,
-             doublereal* crvjac,
-             integer*    ncfnew,
-             doublereal* errmoy)
+int mmaperm_(int*    ncofmx,
+             int*    ndim,
+             int*    ncoeff,
+             int*    iordre,
+             double* crvjac,
+             int*    ncfnew,
+             double* errmoy)
 {
   /* System generated locals */
-  integer crvjac_dim1, crvjac_offset, i__1, i__2;
+  int crvjac_dim1, crvjac_offset, i__1, i__2;
 
   /* Local variables */
-  doublereal bidj;
-  integer    i__, ia, nd, ncfcut, ibb;
-  doublereal bid;
+  double bidj;
+  int    i__, ia, nd, ncfcut, ibb;
+  double bid;
 
   /* **********************************************************************
    */
@@ -8329,17 +8310,17 @@ int mmaperm_(integer*    ncofmx,
 
 //=================================================================================================
 
-int AdvApp2Var_ApproxF2var::mmapptt_(const integer* ndgjac,
-                                     const integer* nbpnts,
-                                     const integer* jordre,
-                                     doublereal*    cgauss,
-                                     integer*       iercod)
+int AdvApp2Var_ApproxF2var::mmapptt_(const int* ndgjac,
+                                     const int* nbpnts,
+                                     const int* jordre,
+                                     double*    cgauss,
+                                     int*       iercod)
 {
   /* System generated locals */
-  integer cgauss_dim1, i__1;
+  int cgauss_dim1, i__1;
 
   /* Local variables */
-  integer kjac, iptt, ipdb0, infdg, iptdb, mxjac, ilong, ibb;
+  int kjac, iptt, ipdb0, infdg, iptdb, mxjac, ilong, ibb;
 
   /* **********************************************************************
    */
@@ -8373,7 +8354,7 @@ int AdvApp2Var_ApproxF2var::mmapptt_(const integer* ndgjac,
   /*     OUTPUT ARGUMENTS : */
   /*     ------------------- */
   /*        CGAUSS(i,k) : Table of coefficients of integration by */
-  /*                      Gauss method : i varies from 0 to the integer part */
+  /*                      Gauss method : i varies from 0 to the int part */
   /*                      of NBPNTS/2 and k varies from 0 to NDGJAC-2*(JORDRE+1). */
   /*                      These are the coeff. of integration associated to */
   /*                      positive roots of the polynom of Legendre of degree */
@@ -8499,7 +8480,7 @@ L1000:
   {
     iptt = iptdb + kjac * (*nbpnts / 2) + 1;
     AdvApp2Var_SysBase::mcrfill_(&ilong,
-                                 &mmapgss_.gslxjs[iptt - 1],
+                                 &AdvApp2Var_Data::Getmmapgss().gslxjs[iptt - 1],
                                  &cgauss[kjac * cgauss_dim1 + 1]);
     /* L100: */
   }
@@ -8510,7 +8491,7 @@ L1000:
     i__1 = *ndgjac;
     for (kjac = 0; kjac <= i__1; kjac += 2)
     {
-      cgauss[kjac * cgauss_dim1] = mmapgss_.gsl0js[iptt - 1];
+      cgauss[kjac * cgauss_dim1] = AdvApp2Var_Data::Getmmapgss().gsl0js[iptt - 1];
       ++iptt;
       /* L150: */
     }
@@ -8534,7 +8515,7 @@ L2000:
   {
     iptt = iptdb + kjac * (*nbpnts / 2) + 1;
     AdvApp2Var_SysBase::mcrfill_(&ilong,
-                                 &mmapgs0_.gslxj0[iptt - 1],
+                                 &AdvApp2Var_Data::Getmmapgs0().gslxj0[iptt - 1],
                                  &cgauss[kjac * cgauss_dim1 + 1]);
     /* L200: */
   }
@@ -8545,7 +8526,7 @@ L2000:
     i__1 = mxjac;
     for (kjac = 0; kjac <= i__1; kjac += 2)
     {
-      cgauss[kjac * cgauss_dim1] = mmapgs0_.gsl0j0[iptt - 1];
+      cgauss[kjac * cgauss_dim1] = AdvApp2Var_Data::Getmmapgs0().gsl0j0[iptt - 1];
       ++iptt;
       /* L250: */
     }
@@ -8569,7 +8550,7 @@ L3000:
   {
     iptt = iptdb + kjac * (*nbpnts / 2) + 1;
     AdvApp2Var_SysBase::mcrfill_(&ilong,
-                                 &mmapgs1_.gslxj1[iptt - 1],
+                                 &AdvApp2Var_Data::Getmmapgs1().gslxj1[iptt - 1],
                                  &cgauss[kjac * cgauss_dim1 + 1]);
     /* L300: */
   }
@@ -8580,7 +8561,7 @@ L3000:
     i__1 = mxjac;
     for (kjac = 0; kjac <= i__1; kjac += 2)
     {
-      cgauss[kjac * cgauss_dim1] = mmapgs1_.gsl0j1[iptt - 1];
+      cgauss[kjac * cgauss_dim1] = AdvApp2Var_Data::Getmmapgs1().gsl0j1[iptt - 1];
       ++iptt;
       /* L350: */
     }
@@ -8604,7 +8585,7 @@ L4000:
   {
     iptt = iptdb + kjac * (*nbpnts / 2) + 1;
     AdvApp2Var_SysBase::mcrfill_(&ilong,
-                                 &mmapgs2_.gslxj2[iptt - 1],
+                                 &AdvApp2Var_Data::Getmmapgs2().gslxj2[iptt - 1],
                                  &cgauss[kjac * cgauss_dim1 + 1]);
     /* L400: */
   }
@@ -8615,7 +8596,7 @@ L4000:
     i__1 = mxjac;
     for (kjac = 0; kjac <= i__1; kjac += 2)
     {
-      cgauss[kjac * cgauss_dim1] = mmapgs2_.gsl0j2[iptt - 1];
+      cgauss[kjac * cgauss_dim1] = AdvApp2Var_Data::Getmmapgs2().gsl0j2[iptt - 1];
       ++iptt;
       /* L450: */
     }
@@ -8661,21 +8642,21 @@ L9999:
 
 //=================================================================================================
 
-int mmjacpt_(const integer*    ndimen,
-             const integer*    ncoefu,
-             const integer*    ncoefv,
-             const integer*    iordru,
-             const integer*    iordrv,
-             const doublereal* ptclgd,
-             doublereal*       ptcaux,
-             doublereal*       ptccan)
+int mmjacpt_(const int*    ndimen,
+             const int*    ncoefu,
+             const int*    ncoefv,
+             const int*    iordru,
+             const int*    iordrv,
+             const double* ptclgd,
+             double*       ptcaux,
+             double*       ptccan)
 {
   /* System generated locals */
-  integer ptccan_dim1, ptccan_dim2, ptccan_offset, ptclgd_dim1, ptclgd_dim2, ptclgd_offset,
-    ptcaux_dim1, ptcaux_dim2, ptcaux_dim3, ptcaux_offset, i__1, i__2, i__3;
+  int ptccan_dim1, ptccan_dim2, ptccan_offset, ptclgd_dim1, ptclgd_dim2, ptclgd_offset, ptcaux_dim1,
+    ptcaux_dim2, ptcaux_dim3, ptcaux_offset, i__1, i__2, i__3;
 
   /* Local variables */
-  integer kdim, nd, ii, jj, ibb;
+  int kdim, nd, ii, jj, ibb;
 
   /* ***********************************************************************
    */
