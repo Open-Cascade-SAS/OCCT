@@ -84,10 +84,7 @@ struct aFuncStruct
   double                         myPeriod[2]; // U and V period correspondingly.
 };
 
-//=======================================================================
-// function : computePeriodicity
-// purpose  : Compute period information on adaptor.
-//=======================================================================
+//=================================================================================================
 static void computePeriodicity(const occ::handle<Adaptor3d_Surface>& theSurf,
                                double&                               theUPeriod,
                                double&                               theVPeriod)
@@ -143,10 +140,7 @@ static void computePeriodicity(const occ::handle<Adaptor3d_Surface>& theSurf,
   }
 }
 
-//=======================================================================
-// function : aFuncValue
-// purpose  : compute functional value in (theU,theV) point
-//=======================================================================
+//=================================================================================================
 static double anOrthogSqValue(const gp_Pnt&                         aBasePnt,
                               const occ::handle<Adaptor3d_Surface>& Surf,
                               const double                          theU,
@@ -173,11 +167,7 @@ static double anOrthogSqValue(const gp_Pnt&                         aBasePnt,
   return (aFirstPart * aFirstPart + aSecondPart * aSecondPart);
 }
 
-//=======================================================================
-// function : Value
-// purpose  : (OCC217 - apo)- Compute Point2d that project on polar surface(<Surf>) 3D<Curve>
-//            <InitCurve2d> use for calculate start 2D point.
-//=======================================================================
+//=================================================================================================
 static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
 {
   gp_Pnt2d p2d          = theData.myInitCurve2d->Value(theU);
@@ -420,10 +410,7 @@ static gp_Pnt2d Function_Value(const double theU, const aFuncStruct& theData)
   return p2d;
 }
 
-//=======================================================================
-// function : ProjLib_PolarFunction
-// purpose  : (OCC217 - apo)- This class produce interface to call "gp_Pnt2d Function_Value(...)"
-//=======================================================================
+//=================================================================================================
 
 class ProjLib_PolarFunction : public AppCont_Function
 {
@@ -507,10 +494,7 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(
   myBSpline = Perform(theInitialCurve2d, theCurve, theSurface);
 }
 
-//=======================================================================
-// function : ProjLib_ComputeApproxOnPolarSurface
-// purpose  : case without curve of initialization
-//=======================================================================
+//=================================================================================================
 
 ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(
   const occ::handle<Adaptor3d_Curve>&   theCurve,
@@ -530,10 +514,7 @@ ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(
   myBSpline = Perform(anInitCurve2d, theCurve, theSurface);
 }
 
-//=======================================================================
-// function : ProjLib_ComputeApproxOnPolarSurface
-// purpose  : Process the case of sewing
-//=======================================================================
+//=================================================================================================
 
 ProjLib_ComputeApproxOnPolarSurface::ProjLib_ComputeApproxOnPolarSurface(
   const occ::handle<Adaptor2d_Curve2d>& theInitialCurve2d,

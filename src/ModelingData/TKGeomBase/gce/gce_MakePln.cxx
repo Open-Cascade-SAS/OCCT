@@ -24,17 +24,23 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 gce_MakePln::gce_MakePln(const gp_Ax2& A2)
 {
   ThePln   = gp_Pln(gp_Ax3(A2));
   TheError = gce_Done;
 }
 
+//=================================================================================================
+
 gce_MakePln::gce_MakePln(const gp_Pnt& P, const gp_Dir& V)
 {
   ThePln   = gp_Pln(P, V);
   TheError = gce_Done;
 }
+
+//=================================================================================================
 
 gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2)
 {
@@ -50,6 +56,8 @@ gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2)
   }
 }
 
+//=================================================================================================
+
 gce_MakePln::gce_MakePln(const double A, const double B, const double C, const double D)
 {
   if (A * A + B * B + C * C <= gp::Resolution())
@@ -63,9 +71,7 @@ gce_MakePln::gce_MakePln(const double A, const double B, const double C, const d
   }
 }
 
-//=========================================================================
-//   Creation d un gp_pln passant par trois points.                       +
-//=========================================================================
+//=================================================================================================
 
 gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 {
@@ -85,9 +91,7 @@ gce_MakePln::gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
   }
 }
 
-//=========================================================================
-//   Creation d un gp_pln parallele a un autre pln a une distance donnee. +
-//=========================================================================
+//=================================================================================================
 
 gce_MakePln::gce_MakePln(const gp_Pln& Pl, const double Dist)
 {
@@ -96,10 +100,7 @@ gce_MakePln::gce_MakePln(const gp_Pln& Pl, const double Dist)
   TheError = gce_Done;
 }
 
-//=========================================================================
-//   Creation d un gp_pln parallele a un autre pln passant par un point   +
-//   <Point1>.                                                            +
-//=========================================================================
+//=================================================================================================
 
 gce_MakePln::gce_MakePln(const gp_Pln& Pl, const gp_Pnt& Point)
 {
@@ -107,9 +108,7 @@ gce_MakePln::gce_MakePln(const gp_Pln& Pl, const gp_Pnt& Point)
   TheError = gce_Done;
 }
 
-//=========================================================================
-//  Creation d un gp_pln a partir d un Ax1 (Point + Normale).             +
-//=========================================================================
+//=================================================================================================
 
 gce_MakePln::gce_MakePln(const gp_Ax1& Axis)
 {
@@ -117,27 +116,22 @@ gce_MakePln::gce_MakePln(const gp_Ax1& Axis)
   TheError = gce_Done;
 }
 
-//=========================================================================
-//  Creation d un gp_pln par un tableau de points.                        +
-//=========================================================================
+//=================================================================================================
 
-/*gce_MakePln::gce_MakePln(const gp_Array1OfPnt& Pts     ,
-                   double   ErrMax  ,
-                   double   ErrMean )
-{
-  TheError = gce_ConfusedPoints;
-}
-*/
 const gp_Pln& gce_MakePln::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakePln::Value() - no result");
   return ThePln;
 }
 
+//=================================================================================================
+
 const gp_Pln& gce_MakePln::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakePln::operator gp_Pln() const
 {

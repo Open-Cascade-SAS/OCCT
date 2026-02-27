@@ -50,7 +50,7 @@ occ::handle<BSplSLib_Cache> buildBezierCache(const occ::handle<Geom_BezierSurfac
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -120,7 +120,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_BezierSurface::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -154,7 +154,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_BezierSurface::EvaluateGri
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -189,7 +189,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_BezierSurface::EvaluateGri
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -259,7 +259,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_BezierSurface::EvaluateGri
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_BezierSurface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

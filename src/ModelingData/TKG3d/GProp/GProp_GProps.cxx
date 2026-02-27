@@ -171,7 +171,7 @@ GProp_PrincipalProps GProp_GProps::PrincipalProperties() const
   gp_Vec Vyy(DiagMat(1, 2), DiagMat(2, 2), DiagMat(3, 2));
   gp_Vec Vzz(DiagMat(1, 3), DiagMat(2, 3), DiagMat(3, 3));
   //
-  // protection contre dim == 0.0e0 au cas ou on aurait rentre qu'un point
+  // Protection against dim == 0.0e0 in case only a single point was provided
   //
   double Rxx = 0.0e0;
   double Ryy = 0.0e0;

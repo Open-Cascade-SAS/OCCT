@@ -20,7 +20,7 @@
 
 GeomLib_PolyFunc::GeomLib_PolyFunc(const math_Vector& Coeffs)
     : myCoeffs(1, Coeffs.Length() - 1)
-{ // On construit le polynome derive
+{ // Construct the derivative polynomial
   for (int ii = 1; ii <= myCoeffs.Length(); ii++)
     myCoeffs(ii) = ii * Coeffs(ii + 1);
 }

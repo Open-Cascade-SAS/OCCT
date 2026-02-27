@@ -286,7 +286,7 @@ void Extrema_GenExtCS::Perform(const Adaptor3d_Curve& C,
   mytsup    = tsup;
   mytol1    = Tol1;
   mytsample = NbT;
-  // Modif de lvt pour trimer la surface non pas aux infinis mais  a +/- 10000
+  // Modification by lvt to trim the surface not to infinity but to +/- 10000
 
   double trimusup = myusup, trimumin = myumin, trimvsup = myvsup, trimvmin = myvmin;
   double aCMaxVal = GetCurvMaxParamVal(C);

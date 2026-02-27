@@ -40,9 +40,9 @@
 #include <NCollection_Array2.hxx>
 #include <Standard_Integer.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // Test fixture for ShapeConstruct_ProjectCurveOnSurface
-//==================================================================================================
+//=================================================================================================
 
 class ShapeConstruct_ProjectCurveOnSurfaceTest : public ::testing::Test
 {
@@ -107,9 +107,9 @@ protected:
   double                                            myTolerance;
 };
 
-//==================================================================================================
+//=================================================================================================
 // Basic projection tests - lines and circles on analytical surfaces
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project diagonal line on horizontal plane, verify 2D coordinates match X,Y of 3D points
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LineOnPlane_A1)
@@ -189,9 +189,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, IsoparametricLineOnCylinder_A3)
   EXPECT_NEAR(aStart.X(), aEnd.X(), 0.01) << "U should be constant for isoparametric curve";
 }
 
-//==================================================================================================
+//=================================================================================================
 // B-Spline curve projection tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project planar B-spline on plane, endpoints should match original curve
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, BSplineOnPlane_B1)
@@ -273,9 +273,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, HighDegreeBSpline_B3)
   verifyProjection(aBSpline, aPCurve, aSAS, 0.5);
 }
 
-//==================================================================================================
+//=================================================================================================
 // Periodic surface tests - sphere, torus
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project equator circle on sphere
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EquatorOnSphere_C1)
@@ -346,9 +346,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnTorus_C3)
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Conical surface tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project circle on cone at specific height
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnCone_D1)
@@ -373,9 +373,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, CircleOnCone_D1)
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Trimmed curve tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project 90-degree arc on plane
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, ArcOnPlane_E1)
@@ -435,9 +435,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, DoublyTrimmedCurve_E2)
   ASSERT_FALSE(aPCurve.IsNull()) << "PCurve should not be null";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Ellipse projection tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project ellipse on plane, verify quadrant points
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EllipseOnPlane_F1)
@@ -468,9 +468,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, EllipseOnPlane_F1)
   EXPECT_NEAR(aP1.Y(), 5.0, 0.01);
 }
 
-//==================================================================================================
+//=================================================================================================
 // API method tests - Init, SetSurface, SetPrecision
-//==================================================================================================
+//=================================================================================================
 
 // Test: Init with Geom_Surface directly (not wrapped in ShapeAnalysis_Surface)
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, InitWithGeomSurface_G1)
@@ -536,9 +536,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, StatusMethod_G4)
     << "Status should indicate OK or DONE";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Tolerance and precision tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Projection with very tight tolerance on exact curve
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, TightTolerance_H1)
@@ -587,9 +587,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, DifferentEndpointTolerances_H2)
   ASSERT_FALSE(aPCurve.IsNull());
 }
 
-//==================================================================================================
+//=================================================================================================
 // Partial curve projection tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project only first quarter of full circle
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, PartialCircle_I1)
@@ -640,9 +640,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MiddlePortionBSpline_I2)
   ASSERT_FALSE(aPCurve.IsNull());
 }
 
-//==================================================================================================
+//=================================================================================================
 // Multiple projection and reinitialization tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Multiple projections on same surface reuse setup correctly
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, MultipleProjections_J1)
@@ -691,9 +691,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, SurfaceReinitialization_J2)
   ASSERT_FALSE(aPCurve2.IsNull());
 }
 
-//==================================================================================================
+//=================================================================================================
 // Near-singularity tests (poles, degenerate regions)
-//==================================================================================================
+//=================================================================================================
 
 // Test: Project small circle near north pole of sphere
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, NearPoleOnSphere_K1)
@@ -720,9 +720,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, NearPoleOnSphere_K1)
   ASSERT_FALSE(aPCurve.IsNull());
 }
 
-//==================================================================================================
+//=================================================================================================
 // Edge case tests
-//==================================================================================================
+//=================================================================================================
 
 // Test: Very short curve projection should not crash
 TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, VeryShortCurve_L1)
@@ -779,9 +779,9 @@ TEST_F(ShapeConstruct_ProjectCurveOnSurfaceTest, LargeTolerance_L3)
   ASSERT_FALSE(aPCurve.IsNull());
 }
 
-//==================================================================================================
+//=================================================================================================
 // Regression tests from bug reports
-//==================================================================================================
+//=================================================================================================
 
 // Test: Bug 27569 - B-spline with many knots on B-spline surface
 // This test verifies that normal B-spline curves with many knots

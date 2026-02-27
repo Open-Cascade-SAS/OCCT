@@ -29,10 +29,10 @@ constexpr double THE_NEWTON_STEP_TOL_FACTOR = 1.0e-16;
 //! Default maximum iterations for Newton solvers.
 constexpr size_t THE_NEWTON_MAX_ITER = 100;
 
-//==================================================================================================
+//=================================================================================================
 //! @name Newton 2D Solver Constants
 //! Constants for 2D Newton-Raphson solver (MathSys_Newton2D).
-//==================================================================================================
+//=================================================================================================
 
 //! Determinant threshold below which 2x2 Jacobian matrix is considered singular.
 //! When |det(J)| < threshold, falls back to SVD or gradient descent.
@@ -79,10 +79,10 @@ constexpr double THE_NEWTON2D_BACKTRACK_ACCEPT = 1.2;
 //! Maximum relaxation factor for solutions at max iterations.
 constexpr double THE_NEWTON2D_MAXITER_RELAX = 10.0;
 
-//==================================================================================================
+//=================================================================================================
 //! @name Hessian Classification Constants
 //! Constants for extremum classification using second derivatives.
-//==================================================================================================
+//=================================================================================================
 
 //! Relative tolerance for Hessian degeneracy detection.
 //! If |det(H)| < threshold * |H_ii| * |H_jj|, Hessian is considered degenerate.
@@ -92,10 +92,10 @@ constexpr double THE_HESSIAN_DEGENERACY_REL = 1.0e-8;
 //! Minimum threshold for determinant comparison.
 constexpr double THE_HESSIAN_DEGENERACY_ABS = 1.0e-20;
 
-//==================================================================================================
+//=================================================================================================
 //! @name Line Search Constants
 //! Constants for line search acceptance conditions.
-//==================================================================================================
+//=================================================================================================
 
 //! Armijo condition constant (sufficient decrease).
 //! Step accepted if: f(x + alpha*d) <= f(x) + c1 * alpha * grad_f . d

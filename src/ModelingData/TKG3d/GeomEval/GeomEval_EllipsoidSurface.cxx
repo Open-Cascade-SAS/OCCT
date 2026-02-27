@@ -24,7 +24,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_EllipsoidSurface, Geom_ElementarySurface)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_EllipsoidSurface::GeomEval_EllipsoidSurface(const gp_Ax3& thePosition,
                                                      double        theA,
@@ -41,28 +41,28 @@ GeomEval_EllipsoidSurface::GeomEval_EllipsoidSurface(const gp_Ax3& thePosition,
   pos = thePosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_EllipsoidSurface::SemiAxisA() const
 {
   return myA;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_EllipsoidSurface::SemiAxisB() const
 {
   return myB;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_EllipsoidSurface::SemiAxisC() const
 {
   return myC;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::SetSemiAxisA(double theA)
 {
@@ -73,7 +73,7 @@ void GeomEval_EllipsoidSurface::SetSemiAxisA(double theA)
   myA = theA;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::SetSemiAxisB(double theB)
 {
@@ -84,7 +84,7 @@ void GeomEval_EllipsoidSurface::SetSemiAxisB(double theB)
   myB = theB;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::SetSemiAxisC(double theC)
 {
@@ -95,35 +95,35 @@ void GeomEval_EllipsoidSurface::SetSemiAxisC(double theC)
   myC = theC;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_EllipsoidSurface::UReversedParameter(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_EllipsoidSurface::VReversedParameter(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -133,49 +133,49 @@ void GeomEval_EllipsoidSurface::Bounds(double& U1, double& U2, double& V1, doubl
   V2 = M_PI / 2.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_EllipsoidSurface::IsUClosed() const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_EllipsoidSurface::IsVClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_EllipsoidSurface::IsUPeriodic() const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_EllipsoidSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_EllipsoidSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_EllipsoidSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_EllipsoidSurface::EvalD0(const double U, const double V) const
 {
@@ -192,7 +192,7 @@ gp_Pnt GeomEval_EllipsoidSurface::EvalD0(const double U, const double V) const
   return gp_Pnt(anO + myA * aCosV * aCosU * aXD + myB * aCosV * aSinU * aYD + myC * aSinV * aZD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_EllipsoidSurface::EvalD1(const double U, const double V) const
 {
@@ -220,7 +220,7 @@ Geom_Surface::ResD1 GeomEval_EllipsoidSurface::EvalD1(const double U, const doub
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_EllipsoidSurface::EvalD2(const double U, const double V) const
 {
@@ -258,7 +258,7 @@ Geom_Surface::ResD2 GeomEval_EllipsoidSurface::EvalD2(const double U, const doub
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_EllipsoidSurface::EvalD3(const double U, const double V) const
 {
@@ -311,7 +311,7 @@ Geom_Surface::ResD3 GeomEval_EllipsoidSurface::EvalD3(const double U, const doub
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_EllipsoidSurface::EvalDN(const double U,
                                          const double V,
@@ -345,7 +345,7 @@ gp_Vec GeomEval_EllipsoidSurface::EvalDN(const double U,
   return gp_Vec(aCoeffX * aXD + aCoeffY * aYD + aCoeffZ * aZD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::Transform(const gp_Trsf& T)
 {
@@ -353,14 +353,14 @@ void GeomEval_EllipsoidSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_EllipsoidSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_EllipsoidSurface::Copy() const
 {
   return new GeomEval_EllipsoidSurface(pos, myA, myB, myC);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
@@ -373,7 +373,7 @@ void GeomEval_EllipsoidSurface::DumpJson(Standard_OStream& theOStream, int theDe
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myC)
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_EllipsoidSurface::Coefficients(double& A1,
                                              double& A2,

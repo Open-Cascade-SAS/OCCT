@@ -176,7 +176,7 @@ void Geom_SphericalSurface::Coefficients(double& A1,
                                          double& D) const
 {
 
-  // Dans le repere local de la sphere :
+  // In the local coordinate system of the sphere:
   // X*X + Y*Y + Z*Z - radius * radius = 0
 
   Trsf T;

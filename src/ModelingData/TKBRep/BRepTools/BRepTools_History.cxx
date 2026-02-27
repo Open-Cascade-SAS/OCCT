@@ -25,10 +25,10 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepTools_History, Standard_Transient)
 namespace
 {
 
-//==============================================================================
+//=================================================================================================
 // function : add
 // purpose  : Adds the elements of the list to the map.
-//==============================================================================
+//=================================================================================================
 void add(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
          const NCollection_List<TopoDS_Shape>&                   theList)
 {
@@ -38,10 +38,10 @@ void add(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theMap,
   }
 }
 
-//==============================================================================
+//=================================================================================================
 // function : add
 // purpose  : Adds the elements of the collection to the list.
-//==============================================================================
+//=================================================================================================
 template <typename TCollection>
 void add(NCollection_List<TopoDS_Shape>& theList, const TCollection& theCollection)
 {

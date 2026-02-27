@@ -16,7 +16,7 @@
 #include <StepShape_AdvancedFace.hxx>
 #include <StepGeom_Pcurve.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_PlaneReducer::StepTidy_PlaneReducer(const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_Plane, StepTidy_PlaneHasher>(theWS)
@@ -25,7 +25,7 @@ StepTidy_PlaneReducer::StepTidy_PlaneReducer(const occ::handle<XSControl_WorkSes
   registerReplacer(STANDARD_TYPE(StepGeom_Pcurve), replacePcurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_PlaneReducer::replaceAdvancedFace(const occ::handle<StepGeom_Plane>&     theOldEntity,
                                                 const occ::handle<StepGeom_Plane>&     theNewEntity,
@@ -40,7 +40,7 @@ bool StepTidy_PlaneReducer::replaceAdvancedFace(const occ::handle<StepGeom_Plane
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 bool StepTidy_PlaneReducer::replacePcurve(const occ::handle<StepGeom_Plane>&     theOldEntity,
                                           const occ::handle<StepGeom_Plane>&     theNewEntity,
                                           const occ::handle<Standard_Transient>& theSharing)

@@ -23,11 +23,15 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& C)
 {
   TheError  = gce_Done;
   TheCircle = new Geom2d_Circle(C);
 }
+
+//=================================================================================================
 
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const bool Sense)
 {
@@ -42,6 +46,8 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const 
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius)
 {
   if (Radius < 0.0)
@@ -55,12 +61,16 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius)
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 {
   gp_Circ2d C = gce_MakeCirc2d(Circ, Point);
   TheCircle   = new Geom2d_Circle(C);
   TheError    = gce_Done;
 }
+
+//=================================================================================================
 
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist)
 {
@@ -72,6 +82,8 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist)
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(P1, P2, P3);
@@ -81,6 +93,8 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const
     TheCircle = new Geom2d_Circle(C.Value());
   }
 }
+
+//=================================================================================================
 
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Point, const double Radius, const bool Sense)
 {
@@ -92,6 +106,8 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Point, const double Radius, c
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Center, Point, Sense);
@@ -101,6 +117,8 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Center, const gp_Pnt2d& Point
     TheCircle = new Geom2d_Circle(C.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom2d_Circle>& GCE2d_MakeCircle::Value() const
 {

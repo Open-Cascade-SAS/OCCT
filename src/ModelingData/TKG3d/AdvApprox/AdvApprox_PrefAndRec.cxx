@@ -35,7 +35,7 @@ AdvApprox_PrefAndRec::AdvApprox_PrefAndRec(const NCollection_Array1<double>& Rec
 
 bool AdvApprox_PrefAndRec::Value(const double a, const double b, double& cuttingvalue) const
 {
-  //  longueur minimum d'un intervalle parametrique : 10*PConfusion()
+  //  Minimum length of a parametric interval: 10*PConfusion()
   constexpr double lgmin = 10 * Precision::PConfusion();
   int              i;
   double           cut, mil = (a + b) / 2, dist;
@@ -43,7 +43,7 @@ bool AdvApprox_PrefAndRec::Value(const double a, const double b, double& cutting
 
   cut = mil;
 
-  // Recheche d'une decoupe preferentiel
+  // Search for a preferred cutting point
   dist = std::abs((a * myWeight + b) / (1 + myWeight) - mil);
   for (i = 1; i <= myPrefCutting.Length(); i++)
   {
@@ -55,7 +55,7 @@ bool AdvApprox_PrefAndRec::Value(const double a, const double b, double& cutting
     }
   }
 
-  // Recheche d'une decoupe recommende
+  // Search for a recommended cutting point
   if (!isfound)
   {
     dist = std::abs((a - b) / 2);
@@ -69,7 +69,7 @@ bool AdvApprox_PrefAndRec::Value(const double a, const double b, double& cutting
     }
   }
 
-  // Resultat
+  // Result
   cuttingvalue = cut;
   return (std::abs(cut - a) >= lgmin && std::abs(b - cut) >= lgmin);
 }

@@ -449,14 +449,14 @@ occ::handle<Geom_BSplineCurve> BRepAdaptor_CompCurve::BSpline() const
   return myCurves->Value(1).BSpline();
 }
 
-//=======================================================================
+//=================================================================================================
 // function : Prepare
 // purpose  :
 // When the parameter is close to "node" the rule is determined
 // depending on the sign of tol:
 //   - negative -> Rule preceding to the node.
 //   - positive -> Rule following after the node.
-//=======================================================================
+//=================================================================================================
 
 void BRepAdaptor_CompCurve::Prepare(double& W, double& Delta, int& theCurIndex) const
 {

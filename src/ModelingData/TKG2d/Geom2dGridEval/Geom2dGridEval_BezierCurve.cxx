@@ -35,7 +35,7 @@ occ::handle<BSplCLib_Cache> CreateBezierCache2d(const occ::handle<Geom2d_BezierC
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt2d> Geom2dGridEval_BezierCurve::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -59,7 +59,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_BezierCurve::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_BezierCurve::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -84,7 +84,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_BezierCurve::Evaluate
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_BezierCurve::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -109,7 +109,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_BezierCurve::Evaluate
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_BezierCurve::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -134,7 +134,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_BezierCurve::Evaluate
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec2d> Geom2dGridEval_BezierCurve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

@@ -26,7 +26,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_CircularHelicoidSurface, Geom_ElementarySurface)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_CircularHelicoidSurface::GeomEval_CircularHelicoidSurface(const gp_Ax3& thePosition,
                                                                    double        thePitch)
@@ -39,14 +39,14 @@ GeomEval_CircularHelicoidSurface::GeomEval_CircularHelicoidSurface(const gp_Ax3&
   pos = thePosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelicoidSurface::Pitch() const
 {
   return myPitch;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelicoidSurface::SetPitch(double thePitch)
 {
@@ -58,35 +58,35 @@ void GeomEval_CircularHelicoidSurface::SetPitch(double thePitch)
   myPitch = thePitch;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelicoidSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelicoidSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelicoidSurface::UReversedParameter(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelicoidSurface::VReversedParameter(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelicoidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -96,49 +96,49 @@ void GeomEval_CircularHelicoidSurface::Bounds(double& U1, double& U2, double& V1
   V2 = Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelicoidSurface::IsUClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelicoidSurface::IsVClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelicoidSurface::IsUPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelicoidSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_CircularHelicoidSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_CircularHelicoidSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_CircularHelicoidSurface::EvalD0(const double U, const double V) const
 {
@@ -155,7 +155,7 @@ gp_Pnt GeomEval_CircularHelicoidSurface::EvalD0(const double U, const double V) 
   return gp_Pnt(anO + V * aCosU * aXD + V * aSinU * aYD + aZComp * aZD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_CircularHelicoidSurface::EvalD1(const double U, const double V) const
 {
@@ -182,7 +182,7 @@ Geom_Surface::ResD1 GeomEval_CircularHelicoidSurface::EvalD1(const double U, con
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_CircularHelicoidSurface::EvalD2(const double U, const double V) const
 {
@@ -216,7 +216,7 @@ Geom_Surface::ResD2 GeomEval_CircularHelicoidSurface::EvalD2(const double U, con
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_CircularHelicoidSurface::EvalD3(const double U, const double V) const
 {
@@ -260,7 +260,7 @@ Geom_Surface::ResD3 GeomEval_CircularHelicoidSurface::EvalD3(const double U, con
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_CircularHelicoidSurface::EvalDN(const double U,
                                                 const double V,
@@ -314,7 +314,7 @@ gp_Vec GeomEval_CircularHelicoidSurface::EvalDN(const double U,
   return gp_Vec(aCoeffX * aXD + aCoeffY * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelicoidSurface::Transform(const gp_Trsf& T)
 {
@@ -322,14 +322,14 @@ void GeomEval_CircularHelicoidSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_CircularHelicoidSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_CircularHelicoidSurface::Copy() const
 {
   return new GeomEval_CircularHelicoidSurface(pos, myPitch);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelicoidSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

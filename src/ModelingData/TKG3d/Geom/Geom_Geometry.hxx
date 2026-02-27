@@ -104,7 +104,7 @@ public:
                                                                       const gp_Pnt& P2) const;
 
   //! Creates a new object which is a copy of this geometric object.
-  Standard_EXPORT virtual occ::handle<Geom_Geometry> Copy() const = 0;
+  [[nodiscard]] Standard_EXPORT virtual occ::handle<Geom_Geometry> Copy() const = 0;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;

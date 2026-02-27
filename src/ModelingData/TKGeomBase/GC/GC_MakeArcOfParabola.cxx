@@ -22,6 +22,8 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab& Parab,
                                            const gp_Pnt&   P1,
                                            const gp_Pnt&   P2,
@@ -34,6 +36,8 @@ GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab& Parab,
   TheError                          = gce_Done;
 }
 
+//=================================================================================================
+
 GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab& Parab,
                                            const gp_Pnt&   P,
                                            const double    Alpha,
@@ -45,6 +49,8 @@ GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab& Parab,
   TheError                              = gce_Done;
 }
 
+//=================================================================================================
+
 GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab& Parab,
                                            const double    Alpha1,
                                            const double    Alpha2,
@@ -54,6 +60,8 @@ GC_MakeArcOfParabola::GC_MakeArcOfParabola(const gp_Parab& Parab,
   TheArc                       = new Geom_TrimmedCurve(P, Alpha1, Alpha2, Sense);
   TheError                     = gce_Done;
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_TrimmedCurve>& GC_MakeArcOfParabola::Value() const
 {

@@ -16,7 +16,7 @@
 
 #include <GeomAbs_Shape.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp_BSplineCurve::Tangent(const double theParam,
                                                        const double theTol) const
@@ -24,7 +24,7 @@ GeomProp::TangentResult GeomProp_BSplineCurve::Tangent(const double theParam,
   return GeomProp_CurveAnalysisTools::EvaluateTangent(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp_BSplineCurve::Curvature(const double theParam,
                                                            const double theTol) const
@@ -32,7 +32,7 @@ GeomProp::CurvatureResult GeomProp_BSplineCurve::Curvature(const double theParam
   return GeomProp_CurveAnalysisTools::EvaluateCurvature(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp_BSplineCurve::Normal(const double theParam,
                                                      const double theTol) const
@@ -40,7 +40,7 @@ GeomProp::NormalResult GeomProp_BSplineCurve::Normal(const double theParam,
   return GeomProp_CurveAnalysisTools::EvaluateNormal(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp_BSplineCurve::CentreOfCurvature(const double theParam,
                                                                 const double theTol) const
@@ -48,14 +48,14 @@ GeomProp::CentreResult GeomProp_BSplineCurve::CentreOfCurvature(const double the
   return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvature(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_BSplineCurve::FindCurvatureExtrema() const
 {
   return GeomProp_CurveAnalysisTools::FindCurvatureExtremaBySpans(myAdaptor, GeomAbs_C3);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_BSplineCurve::FindInflections() const
 {

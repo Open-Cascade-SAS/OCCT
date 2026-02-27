@@ -14,12 +14,12 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// 14-Mar-96 : xab  portage hp
-// pmn : 28-Jun-96 Distinction entre la continuite en U et V (bug PRO4625)
-// pmn : 07-Jan-97 Centralisation des verif rational (PRO6834)
-//       et ajout des InvalideCache() dans les SetWeight*(PRO6833)
-// RBD : 15-10-98 ; Le cache est maintenant calcule sur [-1,1] (pro15537).
-// jct : 19-01-99 ; permutation de myURational et myVRational dans Rational.
+// 14-Mar-96 : xab  HP port
+// pmn : 28-Jun-96 Distinguish between U and V continuity (bug PRO4625)
+// pmn : 07-Jan-97 Centralized rational checks (PRO6834)
+//       and added InvalidateCache() in SetWeight* methods (PRO6833)
+// RBD : 15-10-98 ; The cache is now computed on [-1,1] (pro15537).
+// jct : 19-01-99 ; Swapped myURational and myVRational in Rational.
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
@@ -1292,7 +1292,7 @@ void Geom_BSplineSurface::SetWeightCol(const int                         VIndex,
     myWeights(I + myWeights.LowerRow() - 1, VIndex + myWeights.LowerCol() - 1) = CPoleWeights(I);
     I++;
   }
-  // Verifie si c'est rationnel
+  // Check if it is rational
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());
@@ -1331,7 +1331,7 @@ void Geom_BSplineSurface::SetWeightRow(const int                         UIndex,
     myWeights(UIndex + myWeights.LowerRow() - 1, I + myWeights.LowerCol() - 1) = CPoleWeights(I);
     I++;
   }
-  // Verifie si c'est rationnel
+  // Check if it is rational
   Rational(myWeights, myURational, myVRational);
   if (!myURational && !myVRational)
     myWeights = BSplSLib::UnitWeights(myPoles.ColLength(), myPoles.RowLength());

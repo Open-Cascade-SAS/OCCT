@@ -37,7 +37,7 @@ struct FactoryInitializer
 static FactoryInitializer THE_FACTORY_INIT;
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 BRepMesh_IncrementalMeshFactory::BRepMesh_IncrementalMeshFactory()
     : BRepMesh_DiscretAlgoFactory("FastDiscret")
@@ -45,7 +45,7 @@ BRepMesh_IncrementalMeshFactory::BRepMesh_IncrementalMeshFactory()
   RegisterFactory(this, true);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<BRepMesh_DiscretRoot> BRepMesh_IncrementalMeshFactory::CreateAlgorithm(
   const TopoDS_Shape& theShape,

@@ -37,9 +37,9 @@
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_Map.hxx>
 
-//=======================================================================
+//=================================================================================================
 // forward declarations of aux functions
-//=======================================================================
+//=================================================================================================
 static bool SelectDouble(NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& Doubles,
                          NCollection_List<TopoDS_Shape>&                         L,
                          TopoDS_Edge&                                            E);

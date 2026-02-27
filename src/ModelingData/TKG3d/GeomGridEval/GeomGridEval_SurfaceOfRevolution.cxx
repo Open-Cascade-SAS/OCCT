@@ -15,7 +15,7 @@
 
 #include <Geom_RevolutionUtils.pxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_SurfaceOfRevolution::GeomGridEval_SurfaceOfRevolution(
   const occ::handle<Geom_SurfaceOfRevolution>& theRevolution)
@@ -30,7 +30,7 @@ GeomGridEval_SurfaceOfRevolution::GeomGridEval_SurfaceOfRevolution(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -70,7 +70,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfRevolution::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -119,7 +119,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfRevolution::Evalu
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -172,7 +172,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfRevolution::Evalu
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -230,7 +230,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfRevolution::Evalu
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfRevolution::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

@@ -13,7 +13,7 @@
 
 #include <GeomProp_Hyperbola.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp_Hyperbola::Tangent(const double theParam,
                                                     const double theTol) const
@@ -28,7 +28,7 @@ GeomProp::TangentResult GeomProp_Hyperbola::Tangent(const double theParam,
   return GeomProp::ComputeTangent(aD1, aD2, aD3, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Hyperbola::Curvature(const double theParam,
                                                         const double theTol) const
@@ -43,7 +43,7 @@ GeomProp::CurvatureResult GeomProp_Hyperbola::Curvature(const double theParam,
   return GeomProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp_Hyperbola::Normal(const double theParam, const double theTol) const
 {
@@ -57,7 +57,7 @@ GeomProp::NormalResult GeomProp_Hyperbola::Normal(const double theParam, const d
   return GeomProp::ComputeNormal(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp_Hyperbola::CentreOfCurvature(const double theParam,
                                                              const double theTol) const
@@ -72,7 +72,7 @@ GeomProp::CentreResult GeomProp_Hyperbola::CentreOfCurvature(const double thePar
   return GeomProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_Hyperbola::FindCurvatureExtrema() const
 {

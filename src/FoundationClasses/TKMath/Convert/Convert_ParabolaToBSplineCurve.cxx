@@ -27,7 +27,7 @@ constexpr int TheDegree  = 2;
 constexpr int MaxNbKnots = 2;
 constexpr int MaxNbPoles = 3;
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_ParabolaToBSplineCurve::Convert_ParabolaToBSplineCurve(const gp_Parab2d& Prb,
                                                                const double      U1,

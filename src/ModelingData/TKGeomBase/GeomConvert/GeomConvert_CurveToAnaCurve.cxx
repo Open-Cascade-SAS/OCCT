@@ -243,7 +243,7 @@ bool GeomConvert_CurveToAnaCurve::GetCircle(gp_Circ&      crc,
   crc = mkc.Value();
   if (crc.Radius() < gp::Resolution())
     return false;
-  //  Recalage sur P0
+  //  Align to P0
   gp_Pnt PC  = crc.Location();
   gp_Ax2 axe = crc.Position();
   gp_Vec VX(PC, P0);
@@ -321,10 +321,6 @@ occ::handle<Geom_Curve> GeomConvert_CurveToAnaCurve::ComputeCircle(
   return circ;
 }
 
-//=======================================================================
-//              Compute Ellipse
-//=======================================================================
-
 //=================================================================================================
 
 static bool IsArrayPntPlanar(const occ::handle<NCollection_HArray1<gp_Pnt>>& HAP,
@@ -397,20 +393,20 @@ static bool ConicDefinition(const double a,
   // Equation (a,b,c,d,e,f);
   b = b1 / 2.;
   d = d1 / 2.;
-  e = e1 / 2.; // chgt de variable
+  e = e1 / 2.; // change of variable
 
-  double eps = 1.E-08; // ?? comme ComputedForm
+  double eps = 1.E-08; // ?? same as ComputedForm
 
   if (IsParab)
   {
   }
   else
   {
-    //   -> Conique a centre, cas general
-    //  On utilise les Determinants des matrices :
+    //   -> Central conic, general case
+    //  We use the determinants of the matrices:
     //               | a b d |
-    //  gdet (3x3) = | b c e |  et pdet (2X2) = | a b |
-    //               | d e f |                  | b c |
+    //  gdet (3x3) = | b c e |  and pdet (2x2) = | a b |
+    //               | d e f |                    | b c |
 
     double gdet = a * c * f + 2 * b * d * e - c * d * d - a * e * e - b * b * f;
     double pdet = a * c - b * b;

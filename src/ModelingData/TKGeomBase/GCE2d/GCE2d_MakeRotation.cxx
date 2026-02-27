@@ -18,15 +18,15 @@
 #include <Geom2d_Transformation.hxx>
 #include <gp_Pnt2d.hxx>
 
-//=========================================================================
-//   Creation d une rotation 3d de gp d angle Angle par rapport a une     +
-//   droite Line.                                                         +
-//=========================================================================
+//=================================================================================================
+
 GCE2d_MakeRotation::GCE2d_MakeRotation(const gp_Pnt2d& Point, const double Angle)
 {
   TheRotation = new Geom2d_Transformation();
   TheRotation->SetRotation(Point, Angle);
 }
+
+//=================================================================================================
 
 const occ::handle<Geom2d_Transformation>& GCE2d_MakeRotation::Value() const
 {

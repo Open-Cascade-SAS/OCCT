@@ -64,9 +64,9 @@
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomAbs_CurveType.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // Surface Recognition Tests (cr/approx tests)
-//==================================================================================================
+//=================================================================================================
 
 class CanonicalRecognitionApproxTest : public ::testing::Test
 {
@@ -190,9 +190,9 @@ TEST_F(CanonicalRecognitionApproxTest, SphericalSurfaceRecognition_A4)
   EXPECT_NEAR(aResultSphere.Radius(), 1.0, myTolerance) << "Sphere radius should match";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Curve Recognition Tests (cr/base A-series tests)
-//==================================================================================================
+//=================================================================================================
 
 class CanonicalRecognitionBaseCurveTest : public ::testing::Test
 {
@@ -392,9 +392,9 @@ TEST_F(CanonicalRecognitionBaseCurveTest, MultiSegmentEllipseWireRecognition_A6)
   EXPECT_NEAR(aResultEllipse.MinorRadius(), 0.5, 1.0e-7) << "Minor radius should match";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Surface Recognition Tests (cr/base B-series tests)
-//==================================================================================================
+//=================================================================================================
 
 class CanonicalRecognitionBaseSurfaceTest : public ::testing::Test
 {

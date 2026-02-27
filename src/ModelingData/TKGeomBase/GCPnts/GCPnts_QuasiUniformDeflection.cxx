@@ -99,7 +99,7 @@ static void QuasiFleche(const TheCurve&               theC,
   bool         isFlecheOk = false;
   if (aNorme > theEps && aNorme > 16. * theDeflection2)
   {
-    // Evaluation de la fleche par interpolation. Voir IntWalk_IWalking::TestDeflection
+    // Evaluation of the deflection by interpolation. See IntWalk_IWalking::TestDeflection
     double N1 = theVdeb.SquareMagnitude();
     double N2 = aVdelta.SquareMagnitude();
     if (N1 > theEps && N2 > theEps)
@@ -405,7 +405,7 @@ static bool PerformCurve(NCollection_Sequence<double>& theParameters,
                 thePoints,
                 aNbCallQF);
   }
-  //  cout << "Nb de pts: " << Points.Length()<< endl;
+  //  cout << "Nb of pts: " << Points.Length()<< endl;
   return true;
 }
 
@@ -421,9 +421,7 @@ static bool PerformComposite(NCollection_Sequence<double>& theParameters,
                              const double                  theEPSILON,
                              const GeomAbs_Shape           theContinuity)
 {
-  //
-  //  coherence avec Intervals
-  //
+  // Consistency with Intervals
   const int                  aNbIntervals = theC.NbIntervals(GeomAbs_C2);
   int                        aPIndex      = 0;
   NCollection_Array1<double> aTI(1, aNbIntervals + 1);

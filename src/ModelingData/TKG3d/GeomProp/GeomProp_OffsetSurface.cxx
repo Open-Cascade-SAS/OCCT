@@ -13,7 +13,7 @@
 
 #include <GeomProp_OffsetSurface.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_OffsetSurface::Normal(const double theU,
                                                              const double theV,
@@ -29,7 +29,7 @@ GeomProp::SurfaceNormalResult GeomProp_OffsetSurface::Normal(const double theU,
   return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_OffsetSurface::Curvatures(const double theU,
                                                                     const double theV,
@@ -45,7 +45,7 @@ GeomProp::SurfaceCurvatureResult GeomProp_OffsetSurface::Curvatures(const double
   return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_OffsetSurface::MeanGaussian(const double theU,
                                                                   const double theV,

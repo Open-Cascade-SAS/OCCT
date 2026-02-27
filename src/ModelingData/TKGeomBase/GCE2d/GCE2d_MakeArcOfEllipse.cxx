@@ -22,6 +22,8 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
                                                const gp_Pnt2d&   P1,
                                                const gp_Pnt2d&   P2,
@@ -34,6 +36,8 @@ GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
   TheError                           = gce_Done;
 }
 
+//=================================================================================================
+
 GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
                                                const gp_Pnt2d&   P,
                                                const double      Alpha,
@@ -45,6 +49,8 @@ GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
   TheError                               = gce_Done;
 }
 
+//=================================================================================================
+
 GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
                                                const double      Alpha1,
                                                const double      Alpha2,
@@ -54,6 +60,8 @@ GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
   TheArc                        = new Geom2d_TrimmedCurve(E, Alpha1, Alpha2, Sense);
   TheError                      = gce_Done;
 }
+
+//=================================================================================================
 
 const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfEllipse::Value() const
 {

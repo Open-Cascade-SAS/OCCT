@@ -363,14 +363,14 @@ void evalMixedAHT(const NCollection_Array1<gp_Pnt2d>& thePoles,
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 int Geom2dEval_AHTBezierCurve::basisDimension(int theAlgDegree, double theAlpha, double theBeta)
 {
   return theAlgDegree + 1 + (theAlpha > 0.0 ? 2 : 0) + (theBeta > 0.0 ? 2 : 0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dEval_AHTBezierCurve::Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt2d>& thePoles,
                                                      int    theAlgDegree,
@@ -403,7 +403,7 @@ Geom2dEval_AHTBezierCurve::Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dEval_AHTBezierCurve::Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp_Pnt2d>& thePoles,
                                                      const NCollection_Array1<double>&   theWeights,
@@ -449,77 +449,77 @@ Geom2dEval_AHTBezierCurve::Geom2dEval_AHTBezierCurve(const NCollection_Array1<gp
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<gp_Pnt2d>& Geom2dEval_AHTBezierCurve::Poles() const
 {
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Geom2dEval_AHTBezierCurve::Weights() const
 {
   return myWeights;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Geom2dEval_AHTBezierCurve::AlgDegree() const
 {
   return myAlgDegree;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_AHTBezierCurve::Alpha() const
 {
   return myAlpha;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_AHTBezierCurve::Beta() const
 {
   return myBeta;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Geom2dEval_AHTBezierCurve::NbPoles() const
 {
   return myPoles.Size();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_AHTBezierCurve::IsRational() const
 {
   return myRational;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt2d Geom2dEval_AHTBezierCurve::StartPoint() const
 {
   return EvalD0(0.0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt2d Geom2dEval_AHTBezierCurve::EndPoint() const
 {
   return EvalD0(1.0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_AHTBezierCurve::Reverse()
 {
   throw Standard_NotImplemented("Geom2dEval_AHTBezierCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_AHTBezierCurve::ReversedParameter(const double U) const
 {
@@ -527,49 +527,49 @@ double Geom2dEval_AHTBezierCurve::ReversedParameter(const double U) const
   throw Standard_NotImplemented("Geom2dEval_AHTBezierCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_AHTBezierCurve::FirstParameter() const
 {
   return 0.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_AHTBezierCurve::LastParameter() const
 {
   return 1.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_AHTBezierCurve::IsClosed() const
 {
   return StartPoint().Distance(EndPoint()) <= Precision::Confusion();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_AHTBezierCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape Geom2dEval_AHTBezierCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_AHTBezierCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_AHTBezierCurve::evalBasis(double theT, NCollection_Array1<double>& theBasis) const
 {
@@ -601,7 +601,7 @@ void Geom2dEval_AHTBezierCurve::evalBasis(double theT, NCollection_Array1<double
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_AHTBezierCurve::evalBasisDeriv(double                      theT,
                                                int                         theDerivOrder,
@@ -658,7 +658,7 @@ void Geom2dEval_AHTBezierCurve::evalBasisDeriv(double                      theT,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt2d Geom2dEval_AHTBezierCurve::EvalD0(const double U) const
 {
@@ -686,7 +686,7 @@ gp_Pnt2d Geom2dEval_AHTBezierCurve::EvalD0(const double U) const
   return gp_Pnt2d(aMixed.N0 / aMixed.W0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD1 Geom2dEval_AHTBezierCurve::EvalD1(const double U) const
 {
@@ -726,7 +726,7 @@ Geom2d_Curve::ResD1 Geom2dEval_AHTBezierCurve::EvalD1(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD2 Geom2dEval_AHTBezierCurve::EvalD2(const double U) const
 {
@@ -775,7 +775,7 @@ Geom2d_Curve::ResD2 Geom2dEval_AHTBezierCurve::EvalD2(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD3 Geom2dEval_AHTBezierCurve::EvalD3(const double U) const
 {
@@ -835,7 +835,7 @@ Geom2d_Curve::ResD3 Geom2dEval_AHTBezierCurve::EvalD3(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec2d Geom2dEval_AHTBezierCurve::EvalDN(const double U, const int N) const
 {
@@ -1059,7 +1059,7 @@ gp_Vec2d Geom2dEval_AHTBezierCurve::EvalDN(const double U, const int N) const
   return gp_Vec2d(aCDerivs[N]);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_AHTBezierCurve::Transform(const gp_Trsf2d& T)
 {
@@ -1067,7 +1067,7 @@ void Geom2dEval_AHTBezierCurve::Transform(const gp_Trsf2d& T)
   throw Standard_NotImplemented("Geom2dEval_AHTBezierCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom2d_Geometry> Geom2dEval_AHTBezierCurve::Copy() const
 {
@@ -1078,7 +1078,7 @@ occ::handle<Geom2d_Geometry> Geom2dEval_AHTBezierCurve::Copy() const
   return new Geom2dEval_AHTBezierCurve(myPoles, myAlgDegree, myAlpha, myBeta);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_AHTBezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

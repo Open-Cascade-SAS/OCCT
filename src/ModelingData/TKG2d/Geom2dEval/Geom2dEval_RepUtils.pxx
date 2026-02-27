@@ -63,7 +63,7 @@ void ValidateCurveDesc(const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc
                        const Geom2d_Curve*                               theOwner);
 } // namespace Geom2dEval_RepUtils
 
-//==================================================================================================
+//=================================================================================================
 
 inline void Geom2dEval_RepUtils::ValidateCurveDesc(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc,
@@ -91,7 +91,7 @@ inline void Geom2dEval_RepUtils::ValidateCurveDesc(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline occ::handle<Geom2dEval_RepCurveDesc::Base> Geom2dEval_RepUtils::CloneCurveDesc(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc)
@@ -136,7 +136,7 @@ inline occ::handle<Geom2dEval_RepCurveDesc::Base> Geom2dEval_RepUtils::CloneCurv
   return occ::handle<Geom2dEval_RepCurveDesc::Base>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD0(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc,
@@ -163,7 +163,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD0(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD1(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc,
@@ -202,7 +202,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD1(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD2(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc,
@@ -241,7 +241,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD2(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD3(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc,
@@ -280,7 +280,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD3(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveDN(
   const occ::handle<Geom2dEval_RepCurveDesc::Base>& theDesc,
@@ -320,7 +320,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveDN(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD0Mapped(
   const Geom2dEval_RepCurveDesc::Mapped& theDesc,
@@ -337,7 +337,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD0Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD1Mapped(
   const Geom2dEval_RepCurveDesc::Mapped& theDesc,
@@ -358,7 +358,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD1Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD2Mapped(
   const Geom2dEval_RepCurveDesc::Mapped& theDesc,
@@ -381,7 +381,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD2Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveD3Mapped(
   const Geom2dEval_RepCurveDesc::Mapped& theDesc,
@@ -406,7 +406,7 @@ inline bool Geom2dEval_RepUtils::TryEvalCurveD3Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool Geom2dEval_RepUtils::TryEvalCurveDNMapped(
   const Geom2dEval_RepCurveDesc::Mapped& theDesc,

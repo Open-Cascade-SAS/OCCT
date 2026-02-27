@@ -16,7 +16,7 @@
 #include <Standard_DimensionError.hxx>
 #include <Standard_DivideByZero.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 inline Standard_OStream& operator<<(Standard_OStream& o, const math_Matrix& mat)
 {
@@ -24,70 +24,70 @@ inline Standard_OStream& operator<<(Standard_OStream& o, const math_Matrix& mat)
   return o;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix operator*(const double Left, const math_Matrix& Right)
 {
   return Right.Multiplied(Left);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline const double& math_Matrix::Value(const int Row, const int Col) const
 {
   return Array.Value(Row, Col);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline double& math_Matrix::Value(const int Row, const int Col)
 {
   return Array.Value(Row, Col);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline int math_Matrix::RowNumber() const noexcept
 {
   return Array.NbRows();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline int math_Matrix::ColNumber() const noexcept
 {
   return Array.NbColumns();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline int math_Matrix::LowerRow() const noexcept
 {
   return Array.LowerRow();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline int math_Matrix::UpperRow() const noexcept
 {
   return Array.UpperRow();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline int math_Matrix::LowerCol() const noexcept
 {
   return Array.LowerCol();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline int math_Matrix::UpperCol() const noexcept
 {
   return Array.UpperCol();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::SetLower(const int LowerRow, const int LowerCol) noexcept
 {
@@ -95,7 +95,7 @@ inline void math_Matrix::SetLower(const int LowerRow, const int LowerCol) noexce
   SetLowerCol(LowerCol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix::math_Matrix(const int LowerRow,
                                 const int UpperRow,
@@ -105,7 +105,7 @@ inline math_Matrix::math_Matrix(const int LowerRow,
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix::math_Matrix(const int    LowerRow,
                                 const int    UpperRow,
@@ -117,7 +117,7 @@ inline math_Matrix::math_Matrix(const int    LowerRow,
   Array.Init(InitialValue);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix::math_Matrix(void* const Tab,
                                 const int   LowerRow,
@@ -128,41 +128,41 @@ inline math_Matrix::math_Matrix(void* const Tab,
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix::math_Matrix(const math_Matrix& Other)
 
   = default;
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix::math_Matrix(math_Matrix&& Other) noexcept
     : Array(std::move(Other.Array))
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Init(const double InitialValue) noexcept
 {
   Array.Init(InitialValue);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::SetLowerRow(const int LowerRow) noexcept
 {
   Array.SetLowerRow(LowerRow);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::SetLowerCol(const int LowerCol) noexcept
 {
   Array.SetLowerCol(LowerCol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Multiply(const double Right) noexcept
 {
@@ -180,7 +180,7 @@ inline void math_Matrix::Multiply(const double Right) noexcept
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Multiplied(const double Right) const noexcept
 {
@@ -200,7 +200,7 @@ inline math_Matrix math_Matrix::Multiplied(const double Right) const noexcept
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::TMultiplied(const double Right) const noexcept
 {
@@ -220,7 +220,7 @@ inline math_Matrix math_Matrix::TMultiplied(const double Right) const noexcept
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Divide(const double Right)
 {
@@ -241,7 +241,7 @@ inline void math_Matrix::Divide(const double Right)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Divided(const double Right) const
 {
@@ -251,7 +251,7 @@ inline math_Matrix math_Matrix::Divided(const double Right) const
   return temp;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Add(const math_Matrix& Right)
 {
@@ -277,7 +277,7 @@ inline void math_Matrix::Add(const math_Matrix& Right)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Added(const math_Matrix& Right) const
 {
@@ -306,7 +306,7 @@ inline math_Matrix math_Matrix::Added(const math_Matrix& Right) const
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Add(const math_Matrix& Left, const math_Matrix& Right)
 {
@@ -337,7 +337,7 @@ inline void math_Matrix::Add(const math_Matrix& Left, const math_Matrix& Right)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Subtract(const math_Matrix& Right)
 {
@@ -363,7 +363,7 @@ inline void math_Matrix::Subtract(const math_Matrix& Right)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Subtracted(const math_Matrix& Right) const
 {
@@ -392,7 +392,7 @@ inline math_Matrix math_Matrix::Subtracted(const math_Matrix& Right) const
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Subtract(const math_Matrix& Left, const math_Matrix& Right)
 {
@@ -423,7 +423,7 @@ inline void math_Matrix::Subtract(const math_Matrix& Left, const math_Matrix& Ri
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Opposite() const
 {
@@ -444,7 +444,7 @@ inline math_Matrix math_Matrix::Opposite() const
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Set(const int          I1,
                              const int          I2,
@@ -469,7 +469,7 @@ inline void math_Matrix::Set(const int          I1,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::SetDiag(const double Value)
 {
@@ -485,7 +485,7 @@ inline void math_Matrix::SetDiag(const double Value)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Transposed() const
 {
@@ -506,7 +506,7 @@ inline math_Matrix math_Matrix::Transposed() const
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Right)
 {
@@ -546,7 +546,7 @@ inline void math_Matrix::Multiply(const math_Matrix& Left, const math_Matrix& Ri
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Multiply(const math_Matrix& Right)
 {
@@ -584,7 +584,7 @@ inline void math_Matrix::Multiply(const math_Matrix& Right)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
 {
@@ -621,7 +621,7 @@ inline math_Matrix math_Matrix::Multiplied(const math_Matrix& Right) const
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
 {
@@ -654,7 +654,7 @@ inline math_Matrix math_Matrix::TMultiply(const math_Matrix& Right) const
   return Result;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& Right)
 {
@@ -691,7 +691,7 @@ inline void math_Matrix::TMultiply(const math_Matrix& TLeft, const math_Matrix& 
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix& math_Matrix::Initialized(const math_Matrix& Other)
 {
@@ -703,7 +703,7 @@ inline math_Matrix& math_Matrix::Initialized(const math_Matrix& Other)
   return *this;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline math_Matrix& math_Matrix::operator=(math_Matrix&& Other)
 {
@@ -725,7 +725,7 @@ inline math_Matrix& math_Matrix::operator=(math_Matrix&& Other)
   return *this;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Transpose()
 {
@@ -754,7 +754,7 @@ inline void math_Matrix::Transpose()
   SetLowerCol(Row);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void math_Matrix::Dump(Standard_OStream& o) const
 {

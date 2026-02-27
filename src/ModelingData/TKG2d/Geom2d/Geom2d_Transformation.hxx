@@ -188,7 +188,7 @@ public:
   Standard_EXPORT void Transforms(double& X, double& Y) const;
 
   //! Creates a new object, which is a copy of this transformation.
-  Standard_EXPORT occ::handle<Geom2d_Transformation> Copy() const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Transformation> Copy() const;
 
   DEFINE_STANDARD_RTTIEXT(Geom2d_Transformation, Standard_Transient)
 

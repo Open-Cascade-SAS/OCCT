@@ -18,23 +18,28 @@
 #include <gp_Pnt2d.hxx>
 #include <gp_Trsf2d.hxx>
 
-//=========================================================================
-//   Creation d un homothetie de gp de centre Point et de rapport Scale.  +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeScale2d::gce_MakeScale2d(const gp_Pnt2d& Point, const double Scale)
 {
   TheScale2d.SetScale(Point, Scale);
 }
+
+//=================================================================================================
 
 const gp_Trsf2d& gce_MakeScale2d::Value() const
 {
   return TheScale2d;
 }
 
+//=================================================================================================
+
 const gp_Trsf2d& gce_MakeScale2d::Operator() const
 {
   return TheScale2d;
 }
+
+//=================================================================================================
 
 gce_MakeScale2d::operator gp_Trsf2d() const
 {

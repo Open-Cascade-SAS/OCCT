@@ -22,6 +22,8 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
                                                  const gp_Pnt2d&   P1,
                                                  const gp_Pnt2d&   P2,
@@ -34,6 +36,8 @@ GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
   TheError                            = gce_Done;
 }
 
+//=================================================================================================
+
 GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
                                                  const gp_Pnt2d&   P,
                                                  const double      Alpha,
@@ -45,6 +49,8 @@ GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
   TheError = gce_Done;
 }
 
+//=================================================================================================
+
 GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
                                                  const double      Alpha1,
                                                  const double      Alpha2,
@@ -54,6 +60,8 @@ GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
   TheArc                         = new Geom2d_TrimmedCurve(P, Alpha1, Alpha2, Sense);
   TheError                       = gce_Done;
 }
+
+//=================================================================================================
 
 const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfParabola::Value() const
 {

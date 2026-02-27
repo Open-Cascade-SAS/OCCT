@@ -76,7 +76,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
   {
     PbPossible = true;
   }
-  //-- On recherche le plus petit coeff entre A4 et A0
+  //-- Search for the smallest coefficient between A4 and A0
   if (PbPossible)
   {
     //  Modified by Sergey KHROMOV - Thu Oct 24 12:45:35 2002 Begin
@@ -96,7 +96,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
     if (MATH_A4321.IsDone())
     {
       nbp = MATH_A4321.NbSolutions();
-      //-- On Ajoute les valeurs au tableau
+      //-- Add the values to the array
       for (i = 1; i <= nbp; i++)
       {
         double x   = MATH_A4321.Value(i);
@@ -121,7 +121,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
     if (MATH_A3210.IsDone())
     {
       nbp = MATH_A3210.NbSolutions();
-      //-- On Ajoute les valeurs au tableau
+      //-- Add the values to the array
       for (i = 1; i <= nbp; i++)
       {
         double x   = MATH_A3210.Value(i);
@@ -146,7 +146,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
     if (MATH_A210.IsDone())
     {
       nbp = MATH_A210.NbSolutions();
-      //-- On Ajoute les valeurs au tableau
+      //-- Add the values to the array
       for (i = 1; i <= nbp; i++)
       {
         double x   = MATH_A210.Value(i);
@@ -168,7 +168,7 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
       }
     }
     //------------------------------------------------------------
-    //-- On trie les valeurs par ordre decroissant de val
+    //-- Sort values by decreasing order of val
     //-- for(i=0;i<nbsol;i++) {
     //--  std::cout<<" IntAna2d Sol,Val"<<sol[i]<<"  "<<val[i]<<std::endl;
     //-- }
@@ -192,8 +192,8 @@ MyDirectPolynomialRoots::MyDirectPolynomialRoots(const double A4,
       }
     } while (!TriOK);
     //-----------------------------------------------------------
-    //-- On garde les premieres valeurs
-    //-- Au moins autant que le polynome Complet
+    //-- Keep the first values
+    //-- At least as many as the complete polynomial
     //--
     for (nbsol = 0; nbsol < NbsolPolyComplet || std::abs(val[nbsol]) < Epsilon(10000.0); nbsol++)
       ;
@@ -255,9 +255,9 @@ bool Points_Confondus(const double x1, const double y1, const double x2, const d
   return (false);
 }
 
-//-----------------------------------------------------------------------------
-//--- Les points confondus sont supprimes
-//--- Le nombre de points est mis a jour
+//=================================================================================================
+//--- Coincident points are removed
+//--- The number of points is updated
 
 void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts)
 {
@@ -267,7 +267,7 @@ void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts)
     bool Non_Egalite = true;
     for (j = i - 1; (j > 0) && Non_Egalite; j--)
     {
-      //                                        <--- Deja Teste --->
+      //                                        <--- Already Tested --->
       //             | 1  |2  |  | J |  |I-1| I |I+1|          |NPTS|
       //             | 1  |2  |  | J |  |I-1|XXX|I+1|          |NPTS|
       //             | 1  |2  |  | J |  |I-1|I+1|I+2|     |NPTS|
@@ -292,14 +292,15 @@ void Traitement_Points_Confondus(int& nb_pts, IntAna2d_IntPoint* pts)
   }
 }
 
-//-----------------------------------------------------------------------------
+//=================================================================================================
+
 void Coord_Ancien_Repere(double& x1, double& y1, const gp_Ax2d& Dir1)
 {
   double t11, t12, t21, t22, t13, t23;
   double x0, y0;
 
-  // x1 et y1 Sont les Coordonnees dans le repere lie a Dir1
-  // On Renvoie ces Coordonnees dans le repere "absolu"
+  // x1 and y1 are the coordinates in the reference frame associated with Dir1
+  // We return these coordinates in the "absolute" reference frame
 
   Dir1.Direction().Coord(t11, t21);
   Dir1.Location().Coord(t13, t23);

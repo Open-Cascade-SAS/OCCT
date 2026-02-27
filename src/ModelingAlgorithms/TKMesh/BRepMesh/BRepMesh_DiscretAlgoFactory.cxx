@@ -26,7 +26,7 @@ static NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& getFactories(
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& BRepMesh_DiscretAlgoFactory::
   Factories()
@@ -34,7 +34,7 @@ const NCollection_List<occ::handle<BRepMesh_DiscretAlgoFactory>>& BRepMesh_Discr
   return getFactories();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepMesh_DiscretAlgoFactory::RegisterFactory(
   const occ::handle<BRepMesh_DiscretAlgoFactory>& theFactory,
@@ -61,7 +61,7 @@ void BRepMesh_DiscretAlgoFactory::RegisterFactory(
   aFactories.Append(theFactory);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepMesh_DiscretAlgoFactory::UnregisterFactory(const TCollection_AsciiString& theName)
 {
@@ -80,7 +80,7 @@ void BRepMesh_DiscretAlgoFactory::UnregisterFactory(const TCollection_AsciiStrin
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<BRepMesh_DiscretAlgoFactory> BRepMesh_DiscretAlgoFactory::DefaultFactory()
 {
@@ -88,7 +88,7 @@ occ::handle<BRepMesh_DiscretAlgoFactory> BRepMesh_DiscretAlgoFactory::DefaultFac
   return !aFactories.IsEmpty() ? aFactories.First() : occ::handle<BRepMesh_DiscretAlgoFactory>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<BRepMesh_DiscretAlgoFactory> BRepMesh_DiscretAlgoFactory::FindFactory(
   const TCollection_AsciiString& theName)
@@ -106,7 +106,7 @@ occ::handle<BRepMesh_DiscretAlgoFactory> BRepMesh_DiscretAlgoFactory::FindFactor
   return occ::handle<BRepMesh_DiscretAlgoFactory>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepMesh_DiscretAlgoFactory::BRepMesh_DiscretAlgoFactory(const TCollection_AsciiString& theName)
     : myName(theName)

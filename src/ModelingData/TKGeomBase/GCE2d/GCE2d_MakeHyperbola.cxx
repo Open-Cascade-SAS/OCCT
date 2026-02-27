@@ -23,11 +23,15 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Hypr2d& H)
 {
   TheError     = gce_Done;
   TheHyperbola = new Geom2d_Hyperbola(H);
 }
+
+//=================================================================================================
 
 GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax2d& MajorAxis,
                                          const double   MajorRadius,
@@ -42,6 +46,8 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax2d& MajorAxis,
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax22d& Axis,
                                          const double    MajorRadius,
                                          const double    MinorRadius)
@@ -54,6 +60,8 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Ax22d& Axis,
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Pnt2d& S1,
                                          const gp_Pnt2d& S2,
                                          const gp_Pnt2d& Center)
@@ -65,6 +73,8 @@ GCE2d_MakeHyperbola::GCE2d_MakeHyperbola(const gp_Pnt2d& S1,
     TheHyperbola = new Geom2d_Hyperbola(H.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom2d_Hyperbola>& GCE2d_MakeHyperbola::Value() const
 {

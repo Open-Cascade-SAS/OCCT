@@ -23,10 +23,8 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//  Construction d un cone par son axe , le rayon de sa base et le demi   +
-//  angle d ouverture.                                                    +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeCone::gce_MakeCone(const gp_Ax2& A2, const double Ang, const double Radius)
 {
   if (Radius < 0.0)
@@ -47,15 +45,14 @@ gce_MakeCone::gce_MakeCone(const gp_Ax2& A2, const double Ang, const double Radi
   }
 }
 
-//=========================================================================
-//  Constructions d un cone de gp par quatre points P1, P2, P3 et P4.     +
-//  P1 et P2 donnent l axe du cone, la distance de P3 a l axe donne       +
-//  le rayon de la base du cone et la distance de P4 a l axe donne le     +
-//  rayon du cone pour la section passant par P4.                         +
-//=========================================================================
+//=================================================================================================
+
 
 gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3, const gp_Pnt& P4)
 {
+  // P1 and P2 define the cone axis. The distance from P3 to the axis gives
+  // the base radius, and the distance from P4 to the axis gives the radius
+  // of the section passing through P4.
   if (P1.Distance(P2) < RealEpsilon() || P3.Distance(P4) < RealEpsilon())
   {
     TheError = gce_ConfusedPoints;
@@ -119,15 +116,12 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3,
   TheError = gce_Done;
 }
 
-//=========================================================================
-//  Constructions d un cone de gp par son axe et deux points P1, P2.      +
-//  La distance de P1 a l axe donne le rayon de la base du cone et la     +
-//  distance de P2 a l axe donne le rayon du cone pour la section passant +
-//  par P2.                                                               +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeCone::gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P2)
 {
+  // The distance from P1 to the axis gives the base radius, and
+  // the distance from P2 to the axis gives the section radius at P2.
   gp_Pnt       P3(Axis.Location());
   gp_Pnt       P4(P3.XYZ() + Axis.Direction().XYZ());
   gce_MakeCone Cone(P3, P4, P1, P2);
@@ -142,10 +136,8 @@ gce_MakeCone::gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P
   }
 }
 
-//=========================================================================
-//  Constructions d un cone parallele a un autre cone passant par un      +
-//  donne.                                                                +
-//=========================================================================
+//=================================================================================================
+
 
 // gce_MakeCone::gce_MakeCone(const gp_Cone&  cone ,
 //			   const gp_Pnt&   P    )
@@ -154,10 +146,8 @@ gce_MakeCone::gce_MakeCone(const gp_Cone&, const gp_Pnt&)
   TheError = gce_ConfusedPoints;
 }
 
-//=========================================================================
-//  Constructions d un cone parallele a un autre cone a une distance      +
-//  donnee.                                                               +
-//=========================================================================
+//=================================================================================================
+
 
 // gce_MakeCone::gce_MakeCone(const gp_Cone&      cone ,
 //			   const double Dist )
@@ -166,12 +156,7 @@ gce_MakeCone::gce_MakeCone(const gp_Cone&, const double)
   TheError = gce_Done;
 }
 
-//=========================================================================
-//  Constructions d un cone de gp par son axe et deux points P1, P2.      +
-//  La distance de P1 a l axe donne le rayon de la base du cone et la     +
-//  distance de P2 a l axe donne le rayon du cone pour la section passant +
-//  par P2.                                                               +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeCone::gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P2)
 {
@@ -189,13 +174,12 @@ gce_MakeCone::gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P
   }
 }
 
-//=========================================================================
-//  cone par deux points (axe du cone.) et deux rayons (rayon des         +
-//  sections passant par chacun de ces points).                           +
-//=========================================================================
+//=================================================================================================
+
 
 gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const double R1, const double R2)
 {
+  // Cone defined by two points (axis) and two radii (section radii at each point).
   double dist = P1.Distance(P2);
   if (dist < RealEpsilon())
   {
@@ -244,16 +228,22 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const double R1, 
   }
 }
 
+//=================================================================================================
+
 const gp_Cone& gce_MakeCone::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeCone::Value() - no result");
   return TheCone;
 }
 
+//=================================================================================================
+
 const gp_Cone& gce_MakeCone::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeCone::operator gp_Cone() const
 {

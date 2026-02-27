@@ -86,7 +86,7 @@ void GeomConvert_ApproxSurface_Eval::Evaluate(int* Dimension,
     *ErrorCode = 1;
   }
 
-  // Parametres incorrects
+  // Incorrect parameters
   /* if (*FavorIso==1) {
       Upar = *ConstParam;
       if (( Upar < UStartEnd[0] ) || ( Upar > UStartEnd[1] )) {
@@ -357,7 +357,7 @@ void GeomConvert_ApproxSurface::Approximate(const occ::handle<Adaptor3d_Surface>
   double V0 = theSurf->FirstVParameter();
   double V1 = theSurf->LastVParameter();
 
-  // " Init des nombres de sous-espaces et des tolerances"
+  // "Init of subspace counts and tolerances"
   int                                      nb1 = 0, nb2 = 0, nb3 = 1;
   occ::handle<NCollection_HArray1<double>> nul1 = new NCollection_HArray1<double>(1, 1);
   nul1->SetValue(1, 0.);
@@ -392,12 +392,12 @@ void GeomConvert_ApproxSurface::Approximate(const occ::handle<Adaptor3d_Surface>
   NbDec = theSurf->NbVIntervals(GeomAbs_C3);
   NCollection_Array1<double> VDec_C3(1, NbDec + 1);
   theSurf->VIntervals(VDec_C3, GeomAbs_C3);
-  // Approximation avec decoupe preferentiel
-  // aux lieux de discontinuitees C2
+  // Approximation with preferential splitting
+  // at C2 discontinuity locations
   AdvApprox_PrefAndRec pUDec(UDec_C2, UDec_C3);
   AdvApprox_PrefAndRec pVDec(VDec_C2, VDec_C3);
 
-  // POP pour WNT
+  // POP for WNT
   GeomConvert_ApproxSurface_Eval ev(theSurf);
   AdvApp2Var_ApproxAFunc2Var     approx(nb1,
                                     nb2,

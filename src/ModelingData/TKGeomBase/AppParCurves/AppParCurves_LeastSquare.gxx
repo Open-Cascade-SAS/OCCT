@@ -13,11 +13,11 @@
 // commercial license or contractual agreement.
 
 // lpa, le 27/07/91
-// pmn, 30/10/98 : Protection dans les cas surcontraint -> "isready"
+// pmn, 30/10/98 : Protection for overconstrained cases -> "isready"
 
-// Approximation d une MultiLine de points decrite par le tool MLineTool.
-// Ce programme utilise les moindres carres pour le cas suivant:
-// passage et tangences aux extremites.
+// Approximation of a MultiLine of points described by the tool MLineTool.
+// This program uses the least squares method for the following case:
+// passing points and tangencies at extremities.
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -282,7 +282,7 @@ void AppParCurves_LeastSquare::Init(const MultiLine& SSP, const int FirstPoint, 
   FirstP   = TheFirstPoint(FirstConstraint, myfirstp);
   LastP    = TheLastPoint(LastConstraint, mylastp);
 
-  // Reperage des contraintes aux extremites:
+  // Identification of constraints at extremities:
   // ========================================
   int i, j, k, i2;
 
@@ -522,7 +522,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
   //  gp_Pnt2d Pt2d;
   iscalculated = false;
 
-  // calcul de la matrice A et DA des fonctions d approximation:
+  // Calculation of matrix A and DA of approximation functions:
   ComputeFunction(Parameters);
 
   if (FirstConstraint != AppParCurves_TangencyPoint && LastConstraint != AppParCurves_TangencyPoint)
@@ -676,7 +676,7 @@ void AppParCurves_LeastSquare::Perform(const math_Vector& Parameters)
   else if (LastConstraint >= AppParCurves_TangencyPoint)
     lambda2 = myTAB.Value(Ninc);
 
-  // Les resultats sont stockes dans mypoles.
+  // The results are stored in mypoles.
   //=========================================
   k  = 1;
   i2 = 1;
@@ -1422,7 +1422,7 @@ const AppParCurves_MultiBSpCurve& AppParCurves_LeastSquare::BSplineValue()
   if (ifin <= nbpoles - 1)
     ifin = nbpoles - 1;
 
-  // On met le resultat dans les curves correspondantes
+  // Put the result in the corresponding curves
   for (i = ideb; i <= ifin; i++)
   {
     j2 = 1;

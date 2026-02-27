@@ -14,18 +14,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Avril 1991 : constructeurs + methodes de lecture.
-// Mai 1991   : revue des specifs + debut de realisation des classes tool =>
-//              implementation des methodes Set et calcul du point courant.
-// Juillet 1991 : voir egalement File Geom_BSplineCurve_1.cxx
-// Juin    1992 : mise a plat des valeurs nodales - amelioration des
-//                performances sur calcul du point courant
+// April 1991 : constructors + read methods.
+// May 1991   : spec review + start of tool class implementation =>
+//              implementation of Set methods and current point computation.
+// July 1991 : see also file Geom_BSplineCurve_1.cxx
+// June 1992 : flattening of nodal values - performance improvements
+//             on current point computation
 
 // RLE Aug 1993  Remove Swaps, Remove typedefs, Update BSplCLib
 //               debug periodic, IncreaseDegree
 //  21-Mar-95 : xab implemented cache
 //  14-Mar-96 : xab implemented MovePointAndTangent
-//  13-Oct-96 : pmn Bug dans SetPeriodic (PRO6088) et Segment (PRO6250)
+//  13-Oct-96 : pmn Bug in SetPeriodic (PRO6088) and Segment (PRO6250)
 
 #include <BSplCLib.hxx>
 #include <ElCLib.hxx>
@@ -560,8 +560,8 @@ void Geom_BSplineCurve::Segment(const double U1, const double U2, const double t
                               myKnots.Upper(),
                               index,
                               U);
-    // Test si l'insertion est Ok et decalage sinon.
-    if (std::abs(myKnots.Value(index + 1) - U) <= Eps) // <= pour etre homogene a InsertKnots
+    // Test if the insertion is OK, shift otherwise.
+    if (std::abs(myKnots.Value(index + 1) - U) <= Eps) // <= to be consistent with InsertKnots
       index++;
     SetOrigin(index);
     SetNotPeriodic();
@@ -836,7 +836,7 @@ void Geom_BSplineCurve::SetOrigin(const double U, const double Tol)
 {
   if (!myPeriodic)
     throw Standard_NoSuchObject("Geom_BSplineCurve::SetOrigin");
-  // U est il dans la period.
+  // Is U within the period?
   double uf = FirstParameter(), ul = LastParameter();
   double u = U, period = ul - uf;
   while (Tol < (uf - u))
@@ -845,7 +845,7 @@ void Geom_BSplineCurve::SetOrigin(const double U, const double Tol)
     u -= period;
 
   if (std::abs(U - u) > Tol)
-  { // On reparametre la courbe
+  { // Reparametrize the curve
     ClearEvalRepresentation();
     double delta = U - u;
     uf += delta;

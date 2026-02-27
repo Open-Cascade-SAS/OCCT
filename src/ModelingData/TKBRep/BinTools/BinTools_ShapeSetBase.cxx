@@ -22,10 +22,10 @@ const char* const BinTools_ShapeSetBase::THE_ASCII_VERSIONS[BinTools_FormatVersi
   "Open CASCADE Topology V3 (c)",
   "Open CASCADE Topology V4, (c) Open Cascade"};
 
-//=======================================================================
+//=================================================================================================
 // function : operator << (gp_Pnt)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 Standard_OStream& operator<<(Standard_OStream& OS, const gp_Pnt& P)
 {
   BinTools::PutReal(OS, P.X());

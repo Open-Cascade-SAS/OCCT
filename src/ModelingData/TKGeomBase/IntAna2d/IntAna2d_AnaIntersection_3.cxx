@@ -41,7 +41,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
     nbp  = 0;
   }
   else
-  { // Au moins 1 solution
+  { // At least 1 solution
     empt = false;
     //
     // modified by NIZNHY-PKV Fri Jun 15 09:55:00 2007f
@@ -50,7 +50,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
     // ang = ang + M_PI / 2.0;
     // modified by NIZNHY-PKV Fri Jun 15 09:55:29 2007t
     if (std::abs(std::abs(d) - C.Radius()) <= Epsilon(C.Radius()))
-    { // Cas de tangence
+    { // Tangency case
 
       double u, XS, YS, ang;
       //
@@ -77,7 +77,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const gp_Circ2d& C)
       lpnt[0].SetValue(XS, YS, u, ang);
     }
     else
-    { // 2 points d intersection
+    { // 2 intersection points
       // clang-format off
       double h, XS1,YS1, XS2,YS2, ang1,ang2, u1,u2;//,cost,sint angt;
       // clang-format on

@@ -28,7 +28,7 @@
 
 #include <gtest/gtest.h>
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomFill_CorrectedFrenet, EndlessLoopPrevention)
 {
@@ -72,7 +72,7 @@ TEST(GeomFill_CorrectedFrenet, EndlessLoopPrevention)
   EXPECT_GT(aBinormal2.Magnitude(), 1e-10);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomFill_CorrectedFrenet, SmallStepHandling)
 {
@@ -99,7 +99,7 @@ TEST(GeomFill_CorrectedFrenet, SmallStepHandling)
   EXPECT_NO_THROW({ aCorrectedFrenet.D0(0.5, aTangent, aNormal, aBinormal); });
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomFill_CorrectedFrenet, ParameterProgressionGuarantee)
 {
@@ -134,7 +134,7 @@ TEST(GeomFill_CorrectedFrenet, ParameterProgressionGuarantee)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomFill_CorrectedFrenet, ActualReproducerCase)
 {

@@ -16,7 +16,7 @@
 #include <Geom2dAdaptor_Curve.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp_Curve::Geom2dProp_Curve(const Adaptor2d_Curve2d& theCurve)
     : myEvaluator(std::monostate{}),
@@ -25,7 +25,7 @@ Geom2dProp_Curve::Geom2dProp_Curve(const Adaptor2d_Curve2d& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp_Curve::Geom2dProp_Curve(const occ::handle<Geom2d_Curve>& theCurve)
     : myEvaluator(std::monostate{}),
@@ -34,7 +34,7 @@ Geom2dProp_Curve::Geom2dProp_Curve(const occ::handle<Geom2d_Curve>& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
 {
@@ -52,7 +52,7 @@ void Geom2dProp_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
   myEvaluator.emplace<std::monostate>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
 {
@@ -68,7 +68,7 @@ void Geom2dProp_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
   initFromAdaptor();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dProp_Curve::initFromAdaptor()
 {
@@ -107,7 +107,7 @@ void Geom2dProp_Curve::initFromAdaptor()
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const Geom2dAdaptor_Curve* Geom2dProp_Curve::Adaptor() const
 {
@@ -122,7 +122,7 @@ const Geom2dAdaptor_Curve* Geom2dProp_Curve::Adaptor() const
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::TangentResult Geom2dProp_Curve::Tangent(const double theParam,
                                                     const double theTol) const
@@ -142,7 +142,7 @@ Geom2dProp::TangentResult Geom2dProp_Curve::Tangent(const double theParam,
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp_Curve::Curvature(const double theParam,
                                                         const double theTol) const
@@ -162,7 +162,7 @@ Geom2dProp::CurvatureResult Geom2dProp_Curve::Curvature(const double theParam,
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::NormalResult Geom2dProp_Curve::Normal(const double theParam, const double theTol) const
 {
@@ -181,7 +181,7 @@ Geom2dProp::NormalResult Geom2dProp_Curve::Normal(const double theParam, const d
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_Curve::CentreOfCurvature(const double theParam,
                                                              const double theTol) const
@@ -201,7 +201,7 @@ Geom2dProp::CentreResult Geom2dProp_Curve::CentreOfCurvature(const double thePar
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurveAnalysis Geom2dProp_Curve::FindCurvatureExtrema() const
 {
@@ -220,7 +220,7 @@ Geom2dProp::CurveAnalysis Geom2dProp_Curve::FindCurvatureExtrema() const
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurveAnalysis Geom2dProp_Curve::FindInflections() const
 {

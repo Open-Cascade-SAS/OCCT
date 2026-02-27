@@ -16,7 +16,7 @@
 #include <Geom2d_OffsetCurveUtils.pxx>
 #include <Geom2dGridEval_Curve.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt2d> Geom2dGridEval_OffsetCurve::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -52,7 +52,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_OffsetCurve::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OffsetCurve::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -89,7 +89,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_OffsetCurve::Evaluate
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OffsetCurve::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -147,7 +147,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_OffsetCurve::Evaluate
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OffsetCurve::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -207,7 +207,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_OffsetCurve::Evaluate
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec2d> Geom2dGridEval_OffsetCurve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

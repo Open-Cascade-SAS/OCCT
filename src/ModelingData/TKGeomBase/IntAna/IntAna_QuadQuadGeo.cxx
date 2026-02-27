@@ -64,7 +64,7 @@ static double EstimDist(const gp_Cone& theCon1, const gp_Cone& theCon2);
 
 //=======================================================================
 // class :  AxeOperator
-// purpose  : O p e r a t i o n s   D i v e r s e s  s u r   d e s   A x 1
+// purpose  : V a r i o u s   O p e r a t i o n s   o n   A x 1
 //=======================================================================
 class AxeOperator
 {
@@ -203,7 +203,7 @@ AxeOperator::AxeOperator(const gp_Ax1& A1,
   }
   else
   {
-    ptintersect.SetCoord(0, 0, 0); //-- Pour eviter des FPE
+    ptintersect.SetCoord(0, 0, 0); //-- To avoid FPE
   }
 }
 
@@ -212,7 +212,7 @@ AxeOperator::AxeOperator(const gp_Ax1& A1,
 void AxeOperator::Distance(double& dist, double& Param1, double& Param2)
 {
   gp_Vec O1O2(Axe1.Location(), Axe2.Location());
-  gp_Dir U1 = Axe1.Direction(); //-- juste pour voir.
+  gp_Dir U1 = Axe1.Direction(); //-- just to see.
   gp_Dir U2 = Axe2.Direction();
 
   gp_Dir N = U1.Crossed(U2);
@@ -223,9 +223,9 @@ void AxeOperator::Distance(double& dist, double& Param1, double& Param2)
     Param1 =
       Det33(O1O2.X(), U2.X(), N.X(), O1O2.Y(), U2.Y(), N.Y(), O1O2.Z(), U2.Z(), N.Z()) / (-D);
     //------------------------------------------------------------
-    //-- On resout P1 * Dir1 + P2 * Dir2 + d * N = O1O2
-    //-- soit : Segment perpendiculaire : O1+P1 D1
-    //--                                  O2-P2 D2
+    //-- We solve P1 * Dir1 + P2 * Dir2 + d * N = O1O2
+    //-- i.e.: Perpendicular segment: O1+P1 D1
+    //--                               O2-P2 D2
     Param2 = Det33(U1.X(), O1O2.X(), N.X(), U1.Y(), O1O2.Y(), N.Y(), U1.Z(), O1O2.Z(), N.Z()) / (D);
   }
 }
@@ -559,7 +559,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
 
   P.Coefficients(A, B, C, D);
   axec.Location().Coord(X, Y, Z);
-  // la distance axe/plan est evaluee a l origine de l axe.
+  // The axis/plane distance is evaluated at the origin of the axis.
   dist = A * X + B * Y + C * Z + D;
 
   double tolang    = Tolang;
@@ -589,8 +589,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
 
   if (inter.IsParallel())
   {
-    // Le resultat de l intersection Plan-Cylindre est de type droite.
-    // il y a 1 ou 2 droites
+    // The result of the Plane-Cylinder intersection is of line type.
+    // There are 1 or 2 lines
 
     typeres = IntAna_Line;
     omega.SetCoord(X - dist * A, Y - dist * B, Z - dist * C);
@@ -623,7 +623,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
     {
       nbint = 2;
       h     = std::sqrt(radius * radius - dist * dist);
-      axey  = axec.Direction().XYZ().Crossed(normp); // axey est normalise
+      axey  = axec.Direction().XYZ().Crossed(normp); // axey is normalized
 
       pt1.SetXYZ(omega - h * axey);
       pt2.SetXYZ(omega + h * axey);
@@ -659,8 +659,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
     }
     //  else nbint = 0
 
-    // debug JAG : le nbint = 0 doit etre remplace par typeres = IntAna_Empty
-    // et ne pas etre seulement supprime...
+    // debug JAG : nbint = 0 should be replaced by typeres = IntAna_Empty
+    // and not just be removed...
 
     else
     {
@@ -668,8 +668,8 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
     }
   }
   else
-  { // Il y a un point d intersection. C est le centre du cercle
-    // ou de l ellipse solution.
+  { // There is one intersection point. It is the center of the circle
+    // or of the solution ellipse.
 
     nbint = 1;
     axey  = normp.Crossed(axec.Direction().XYZ());
@@ -680,22 +680,22 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&      P,
     if (sint < Tol / radius)
     {
 
-      // on construit un cercle avec comme axes X et Y ceux du cylindre
+      // Construct a circle with the X and Y axes of the cylinder
       typeres = IntAna_Circle;
 
-      dir1   = axec.Direction(); // axe Z
+      dir1   = axec.Direction(); // Z axis
       dir2   = Cl.Position().XDirection();
       param1 = radius;
     }
     else
     {
 
-      // on construit un ellipse
+      // construct an ellipse
       typeres = IntAna_Ellipse;
       cost    = std::abs(axec.Direction().XYZ().Dot(normp));
       axex    = axey.Crossed(normp);
 
-      dir1.SetXYZ(normp); // Modif ds ce bloc
+      dir1.SetXYZ(normp); // Modified in this block
       dir2.SetXYZ(axex);
 
       param1    = radius / cost;
@@ -754,11 +754,11 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
   gp_Pnt apex(Co.Apex());
 
   apex.Coord(X, Y, Z);
-  dist = A * X + B * Y + C * Z + D; // distance signee sommet du cone/ Plan
+  dist = A * X + B * Y + C * Z + D; // signed distance from cone apex to plane
 
   gp_XYZ normp = P.Axis().Direction().XYZ();
   if (!P.Direct())
-  { //-- lbr le 14 jan 97
+  { //-- lbr 14 Jan 97
     normp.Reverse();
   }
 
@@ -770,7 +770,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
   cosa = std::cos(angl);
   sina = std::abs(std::sin(angl));
 
-  // Angle entre la normale au plan et l axe du cone, ramene entre 0. et PI/2.
+  // Angle between the plane normal and the cone axis, brought between 0 and PI/2.
 
   sint = axey.Modulus();
   cost = std::abs(Co.Axis().Direction().XYZ().Dot(normp));
@@ -866,7 +866,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
         param1 = deltacenter * sina * sina;
       }
       else if (sint < Tolang)
-      { // plan perpendiculaire a l axe
+      { // plane perpendicular to the axis
         typeres = IntAna_Circle;
         nbint   = 1;
         pt1     = center;
@@ -889,7 +889,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
         param1bis = param2bis = cost * sina * distance / std::sqrt(sina * sina - cost * cost);
       }
       else
-      { // on a alors cost > sina
+      { // here cost > sina
         typeres       = IntAna_Ellipse;
         nbint         = 1;
         double radius = cost * sina * cosa * distance / (cost * cost - sina * sina);
@@ -904,9 +904,9 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln&  P,
     }
   }
 
-  //-- On a du mal a gerer plus loin (Value ProjLib, Params ... )
-  //-- des hyperboles trop bizarres
-  //-- On retourne False -> Traitement par biparametree
+  //-- Difficult to handle further (Value ProjLib, Params ... )
+  //-- hyperbolas that are too extreme
+  //-- Return False -> Treatment by biparametric method
   static double EllipseLimit   = 1.0E+9; // OCC513(apo) 1000000
   static double HyperbolaLimit = 2.0E+6; // OCC537(apo) 50000
   if (typeres == IntAna_Ellipse && nbint >= 1)
@@ -999,7 +999,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Pln& P, const gp_Sphere& S)
     dir2   = P.Position().XDirection();
     param1 = std::sqrt(radius * radius - dist * dist);
   }
-  param2bis = 0.0; //-- pour eviter param2bis not used ....
+  param2bis = 0.0; //-- to avoid param2bis unused warning
   done      = true;
 }
 
@@ -2034,7 +2034,7 @@ void IntAna_QuadQuadGeo::Perform(const gp_Sphere& Sph1, const gp_Sphere& Sph2, c
   double R2    = Sph2.Radius();
   double Rmin, Rmax;
   typeres   = IntAna_Empty;
-  param2bis = 0.0; //-- pour eviter param2bis not used ....
+  param2bis = 0.0; //-- to avoid param2bis unused warning
 
   if (R1 > R2)
   {

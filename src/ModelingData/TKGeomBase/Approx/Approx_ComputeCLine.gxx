@@ -138,7 +138,7 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
     while (!Finish)
     {
 
-      // Gestion du decoupage de la multiline pour approximer:
+      // Management of the multiline splitting for approximation:
       if (!begin)
       {
         if (Ok)
@@ -178,7 +178,7 @@ void Approx_ComputeCLine::Perform(const MultiLine& Line)
         }
       }
 
-      // Calcul des parametres sur ce nouvel intervalle.
+      // Calculation of parameters on this new interval.
       Ok = Compute(Line, myfirstU, mylastU, thetol3d, thetol2d);
       if (Ok)
       {

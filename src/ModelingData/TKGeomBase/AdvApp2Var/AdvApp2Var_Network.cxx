@@ -38,10 +38,7 @@ AdvApp2Var_Network::AdvApp2Var_Network(
   myVParameters = TheV;
 }
 
-//==========================================================================================
-// function : FirstNotApprox
-// purpose  : return the first Patch not approximated
-//==========================================================================================
+//=================================================================================================
 
 bool AdvApp2Var_Network::FirstNotApprox(int& theIndex) const
 {
@@ -60,15 +57,12 @@ bool AdvApp2Var_Network::FirstNotApprox(int& theIndex) const
   return false;
 }
 
-//==========================================================================================
-// function : UpdateInU
-// purpose  : modification and insertion of patches and parameters
-//==========================================================================================
+//=================================================================================================
 
 void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
 {
 
-  //  insertion du nouveau parametre de decoupe
+  //  Insert the new cutting parameter
   int i = 1, j;
   while (myUParameters.Value(i) < CuttingValue)
   {
@@ -78,13 +72,13 @@ void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
 
   for (j = 1; j < myVParameters.Length(); j++)
   {
-    //    modification des patches concernes par la decoupe
+    //    Modify the patches affected by the cut
     int                                  indice = (myUParameters.Length() - 1) * (j - 1) + i - 1;
     const occ::handle<AdvApp2Var_Patch>& aPat   = myNet.Value(indice);
     aPat->ChangeDomain(aPat->U0(), CuttingValue, aPat->V0(), aPat->V1());
     aPat->ResetApprox();
 
-    //    insertion des nouveaux patches
+    //    Insert the new patches
     occ::handle<AdvApp2Var_Patch> aNewPat = new AdvApp2Var_Patch(CuttingValue,
                                                                  myUParameters.Value(i + 1),
                                                                  myVParameters.Value(j),
@@ -96,15 +90,12 @@ void AdvApp2Var_Network::UpdateInU(const double CuttingValue)
   }
 }
 
-//==========================================================================================
-// function : UpdateInV
-// purpose  : modification and insertion of patches and parameters
-//==========================================================================================
+//=================================================================================================
 
 void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
 {
 
-  //  insertion du nouveau parametre de decoupe
+  //  Insert the new cutting parameter
   int                           j = 1;
   occ::handle<AdvApp2Var_Patch> Pat;
   while (myVParameters.Value(j) < CuttingValue)
@@ -113,7 +104,7 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
   }
   myVParameters.InsertBefore(j, CuttingValue);
 
-  //  modification des patches concernes par la decoupe
+  //  Modify the patches affected by the cut
   for (int i = 1; i < myUParameters.Length(); i++)
   {
     const int indice = (myUParameters.Length() - 1) * (j - 2) + i;
@@ -122,7 +113,7 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
     Pat->ResetApprox();
   }
 
-  //  insertion des nouveaux patches
+  //  Insert the new patches
   for (int i = 1; i < myUParameters.Length(); i++)
   {
     const int                     indice  = (myUParameters.Length() - 1) * (j - 1) + i - 1;
@@ -137,14 +128,11 @@ void AdvApp2Var_Network::UpdateInV(const double CuttingValue)
   }
 }
 
-//=======================================================================
-// function : SameDegree
-// purpose  : same numbers of coefficients for all patches
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_Network::SameDegree(const int iu, const int iv, int& ncfu, int& ncfv)
 {
-  //  calcul des coeff. max avec init selon l'ordre de continuite
+  //  Compute the max coefficients, initialized according to the continuity order
   ncfu = 2 * iu + 2;
   ncfv = 2 * iv + 2;
   for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatIter(myNet);
@@ -156,7 +144,7 @@ void AdvApp2Var_Network::SameDegree(const int iu, const int iv, int& ncfu, int& 
     ncfv                                      = std::max(ncfv, aPat->NbCoeffInV());
   }
 
-  //  augmentation des nombres de coeff.
+  //  Increase the number of coefficients
   for (NCollection_Sequence<occ::handle<AdvApp2Var_Patch>>::Iterator aPatIter(myNet);
        aPatIter.More();
        aPatIter.Next())

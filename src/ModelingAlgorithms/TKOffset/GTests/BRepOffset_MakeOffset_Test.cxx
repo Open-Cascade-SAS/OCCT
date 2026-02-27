@@ -41,9 +41,9 @@
 #include <TopExp_Explorer.hxx>
 #include <NCollection_List.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // Helper function to create a circular wire
-//==================================================================================================
+//=================================================================================================
 
 static TopoDS_Wire MakeCircularWire(const gp_Pnt& theCenter,
                                     const gp_Dir& theNormal,
@@ -67,9 +67,9 @@ static TopoDS_Wire MakeCircularWire(const gp_Pnt& theCenter,
   return aWireMaker.Wire();
 }
 
-//==================================================================================================
+//=================================================================================================
 // Helper function to create a rectangular wire
-//==================================================================================================
+//=================================================================================================
 
 static TopoDS_Wire MakeRectangularWire(const gp_Pnt& theCenter,
                                        const gp_Dir& theNormal,
@@ -103,11 +103,11 @@ static TopoDS_Wire MakeRectangularWire(const gp_Pnt& theCenter,
   return aWireMaker.Wire();
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft from circle to rectangle - thickness operation
 // This test reproduces a regression introduced by commit 44be1230391
 // where a "mixed connectivity" error is incorrectly reported for valid loft geometry.
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft)
 {
@@ -177,10 +177,10 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft from circle to rectangle - thickness with intersection mode
 // Intersection mode was specifically mentioned in the original bug report (0030055)
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_IntersectionMode)
 {
@@ -243,9 +243,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_IntersectionMod
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Simple box thickness - should always work (baseline test)
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_SimpleBox_Baseline)
 {
@@ -295,9 +295,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_SimpleBox_Baseline)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 // Helper function to create an elliptical wire
-//==================================================================================================
+//=================================================================================================
 
 static TopoDS_Wire MakeEllipticalWire(const gp_Pnt& theCenter,
                                       const gp_Dir& theNormal,
@@ -322,9 +322,9 @@ static TopoDS_Wire MakeEllipticalWire(const gp_Pnt& theCenter,
   return aWireMaker.Wire();
 }
 
-//==================================================================================================
+//=================================================================================================
 // Helper function to create a polygonal wire (regular polygon)
-//==================================================================================================
+//=================================================================================================
 
 static TopoDS_Wire MakePolygonalWire(const gp_Pnt& theCenter,
                                      const gp_Dir& theNormal,
@@ -355,9 +355,9 @@ static TopoDS_Wire MakePolygonalWire(const gp_Pnt& theCenter,
   return aPolygon.Wire();
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft from circle to ellipse - smooth transition, should work
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToEllipseLoft)
 {
@@ -400,9 +400,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToEllipseLoft)
     << "This is a smooth transition and should not trigger mixed connectivity.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft from circle to hexagon - sharp corners transition
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToHexagonLoft)
 {
@@ -444,9 +444,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToHexagonLoft)
                                     << "This may be affected by the mixed connectivity regression.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft from circle to square - 4 corners, most problematic case
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToSquareLoft)
 {
@@ -488,9 +488,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToSquareLoft)
                                     << "This is a regression from commit 44be1230391.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft from ellipse to rectangle - both have different aspect ratios
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_EllipseToRectangleLoft)
 {
@@ -531,9 +531,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_EllipseToRectangleLoft)
                                     << "This may be affected by the mixed connectivity regression.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Loft with three sections - circle, ellipse, rectangle
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_ThreeSectionLoft)
 {
@@ -577,9 +577,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_ThreeSectionLoft)
     << "Complex multi-section lofts are prone to mixed connectivity issues.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Ruled loft from circle to rectangle (should be less problematic)
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_Ruled)
 {
@@ -621,9 +621,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_Ruled)
   EXPECT_TRUE(aThickMaker.IsDone()) << "ThickSolid on ruled circle-to-rectangle loft failed.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Small offset value - edge case for tolerance
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_SmallOffset)
 {
@@ -664,9 +664,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_SmallOffset)
     << "ThickSolid with small offset failed on circle-to-rectangle loft.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Large offset value - stress test
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_LargeOffset)
 {
@@ -707,9 +707,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_LargeOffset)
     << "ThickSolid with large offset failed on circle-to-rectangle loft.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Negative offset (inward thickness)
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_NegativeOffset)
 {
@@ -750,9 +750,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangleLoft_NegativeOffset)
     << "ThickSolid with negative offset failed on circle-to-rectangle loft.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Cylinder thickness - baseline for analytic surfaces (should always work)
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_Cylinder_Baseline)
 {
@@ -783,9 +783,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_Cylinder_Baseline)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Sphere thickness - baseline for analytic surfaces
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_Sphere_Baseline)
 {
@@ -815,9 +815,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_Sphere_Baseline)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Fused box and cylinder - mixed analytic surfaces
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_FusedBoxCylinder)
 {
@@ -851,11 +851,11 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_FusedBoxCylinder)
   EXPECT_TRUE(aThickMaker.IsDone()) << "ThickSolid on fused box+cylinder failed.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Very thin loft (small height) - edge case
 // This tests that the algorithm doesn't crash on very thin lofts where edges may not
 // have valid PCurves on all faces.
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_ThinLoft)
 {
@@ -901,9 +901,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_ThinLoft)
   (void)aThickMaker.IsDone(); // Suppress unused warning
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Tall loft (large height) - edge case
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_TallLoft)
 {
@@ -943,9 +943,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToRectangle_TallLoft)
   EXPECT_TRUE(aThickMaker.IsDone()) << "ThickSolid on tall circle-to-rectangle loft failed.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Circle to triangle - most extreme corner case (3 corners)
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToTriangleLoft)
 {
@@ -986,9 +986,9 @@ TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToTriangleLoft)
                                     << "Triangle corners create extreme curvature transitions.";
 }
 
-//==================================================================================================
+//=================================================================================================
 // Test: Circle to octagon - many corners but more gradual
-//==================================================================================================
+//=================================================================================================
 
 TEST(BRepOffset_MakeOffsetTest, ThickSolid_CircleToOctagonLoft)
 {

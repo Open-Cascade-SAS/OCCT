@@ -83,10 +83,10 @@ int BinTools_Curve2dSet::Index(const occ::handle<Geom2d_Curve>& S) const
   return myMap.FindIndex(S);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator << ((Geom2d_Line)& L)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Line>& L)
 {
@@ -98,10 +98,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator << ((Geom2d_Circle)& C)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Circle>& C)
 {
@@ -114,10 +114,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom2d_Ellipse)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Ellipse>& E)
 {
@@ -131,10 +131,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function :  operator << (Geom2d_Parabola)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Parabola>& P)
 {
@@ -147,10 +147,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom2d_Hyperbola)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_Hyperbola>& H)
 {
@@ -164,10 +164,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom2d_BezierCurve)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BezierCurve>& B)
 {
@@ -186,10 +186,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom2d_BSplineCurve)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_BSplineCurve>& B)
 {
@@ -222,10 +222,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom2d_TrimmedCurve)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_TrimmedCurve>& C)
 {
@@ -236,10 +236,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom2d_OffsetCurve)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom2d_OffsetCurve>& C)
 {

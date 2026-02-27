@@ -19,7 +19,7 @@
 #include <algorithm>
 #include <cstring>
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::allocData(const size_t iBlock)
 {
@@ -42,7 +42,7 @@ void NCollection_SparseArrayBase::allocData(const size_t iBlock)
   myNbBlocks = newNbBlocks;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::freeBlock(const size_t iBlock, DestroyItemFunc theDestroyItem)
 {
@@ -64,7 +64,7 @@ void NCollection_SparseArrayBase::freeBlock(const size_t iBlock, DestroyItemFunc
   anAddr = nullptr;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::clearItems(DestroyItemFunc theDestroyItem)
 {
@@ -84,7 +84,7 @@ void NCollection_SparseArrayBase::clearItems(DestroyItemFunc theDestroyItem)
   mySize     = 0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theOther,
                                          CreateItemFunc                     theCreateItem,
@@ -172,7 +172,7 @@ void NCollection_SparseArrayBase::assign(const NCollection_SparseArrayBase& theO
       freeBlock(iBlock, theDestroyItem);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::exchange(NCollection_SparseArrayBase& theOther) noexcept
 {
@@ -188,7 +188,7 @@ void NCollection_SparseArrayBase::exchange(NCollection_SparseArrayBase& theOther
   std::swap(myDestroyItem, theOther.myDestroyItem);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void* NCollection_SparseArrayBase::setValue(const size_t   theIndex,
                                             void* const    theValue,
@@ -232,7 +232,7 @@ void* NCollection_SparseArrayBase::setValue(const size_t   theIndex,
   return anItem;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool NCollection_SparseArrayBase::HasValue(const size_t theIndex) const
 {
@@ -242,7 +242,7 @@ bool NCollection_SparseArrayBase::HasValue(const size_t theIndex) const
   return getBlock(myData[iBlock]).IsSet(theIndex % myBlockSize) != 0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool NCollection_SparseArrayBase::unsetValue(const size_t theIndex, DestroyItemFunc theDestroyItem)
 {
@@ -268,7 +268,7 @@ bool NCollection_SparseArrayBase::unsetValue(const size_t theIndex, DestroyItemF
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_SparseArrayBase::Iterator::Iterator(const NCollection_SparseArrayBase* theArray)
     : myArr((NCollection_SparseArrayBase*)theArray),
@@ -280,7 +280,7 @@ NCollection_SparseArrayBase::Iterator::Iterator(const NCollection_SparseArrayBas
   init(theArray);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::Iterator::Next()
 {
@@ -314,7 +314,7 @@ void NCollection_SparseArrayBase::Iterator::Next()
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void NCollection_SparseArrayBase::Iterator::init(const NCollection_SparseArrayBase* theArray)
 {

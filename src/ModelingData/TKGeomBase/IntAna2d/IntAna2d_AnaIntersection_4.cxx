@@ -41,8 +41,8 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L, const IntAna2d_Conic& 
   X0 = L.Location().X();
   Y0 = L.Location().Y();
 
-  // Parametre: L
-  // X = Xo - L DR_B    et     Y = Yo + L DR_A
+  // Parameter: L
+  // X = Xo - L*DR_B  and  Y = Yo + L*DR_A
 
   px0 = F + X0 * (D + D + A * X0 + 2.0 * C * Y0) + Y0 * (E + E + B * Y0);
   px1 = 2.0 * (E * DR_A - D * DR_B + X0 * (C * DR_A - A * DR_B) + Y0 * (B * DR_A - C * DR_B));

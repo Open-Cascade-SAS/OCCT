@@ -345,8 +345,8 @@ int AppDef_LinearCriteria::QualityValues(const double J1min,
 
   int ICDANA = 0;
 
-  //   (2) Test l'amelioration des estimations
-  //       (critere sureleve => Non minimisation )
+  //   (2) Test the improvement of estimates
+  //       (overestimated criterion => No minimization)
 
   for (i = 0; i <= 2; i++)
   {
@@ -360,8 +360,8 @@ int AppDef_LinearCriteria::QualityValues(const double J1min,
     }
   }
 
-  //  (3) Mise a jours des Estimation
-  //     (critere sous-estimer => mauvais conditionement)
+  //  (3) Update the Estimates
+  //     (underestimated criterion => poor conditioning)
   if (ValCri[0] > myEstimation[0] * 2)
   {
     myEstimation[0] += ValCri[0] * .1;

@@ -1543,7 +1543,7 @@ int mma1noc_(doublereal* dfuvin,
   /*     ISOFAV: Isoparameter fixed for the discretization; */
   /*             = 1, discretization with fixed U=Uc and variable V. */
   /*             = 2, discretization with fixed V=Vc and variable U. */
-  /*     IDERIV: Ordre de derivee transverse a l'iso fixee (Si Iso-U=Uc */
+  /*     IDERIV: Order of transverse derivative to the fixed iso (If Iso-U=Uc */
   /*             is fixed, the derivative of order IDERIV is discretized by U */
   /*             of F(Uc,v). The same if iso-V is fixed). */
   /*             Varies from (positioning) to 2 (2nd derivative). */
@@ -6773,7 +6773,7 @@ int AdvApp2Var_ApproxF2var::mma2fnc_(integer*                            ndimen,
   /*              1 = Pb of incoherence of inputs. */
   /*             10 = Pb of calculation of the interpolation of constraints. */
   /*             13 = Pb in the dynamic allocation. */
-  /*             33 = Pb in the data recuperation from block data */
+  /*             33 = Pb in the data retrieval from block data */
   /*                  of coeff. of integration by GAUSS method. */
   /*             >100 Pb in the evaluation of FONCNP, the returned error code */
   /*                  is equal to the error code of FONCNP + 100. */
@@ -7129,7 +7129,7 @@ L1000:
 
     /* ******************************************************************
     **** */
-    /* ----------------------- Compression du resultat ------------------
+    /* ----------------------- Result compression ------------------
     ---- */
     /* ******************************************************************
     **** */
@@ -7350,8 +7350,8 @@ int AdvApp2Var_ApproxF2var::mma2fx6_(integer*    ncfmxu,
   /*         = 0, the extremities of iso-V are calculated */
   /*         = 1, additionally the 1st derivative in the direction of iso-V is calculated */
   /*         = 2, additionally the 2nd derivative in the direction of iso-V is calculated  */
-  /* IORDRV: Ordre de contrainte impose aux extremites de l'iso-U */
-  /*         = 0, on calcule les extremites de l'iso-U. */
+  /* IORDRV: Order of constraint imposed at extremities of iso-U */
+  /*         = 0, the extremities of iso-U are calculated. */
   /*         = 1, additionally the 1st derivative in the direction of iso-U is calculated */
   /*         = 2, additionally the 2nd derivative in the direction of iso-U is calculated  */
   /* EPSAPR: Table of imposed precisions, sub-space by sub-space. */

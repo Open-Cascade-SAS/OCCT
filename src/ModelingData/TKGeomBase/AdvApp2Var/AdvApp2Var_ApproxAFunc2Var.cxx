@@ -159,10 +159,7 @@ AdvApp2Var_ApproxAFunc2Var::AdvApp2Var_ApproxAFunc2Var(
   ConvertBS();
 }
 
-//=======================================================================
-// function : Init
-// purpose  : Initialisation of the approximation
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::Init()
 {
@@ -233,10 +230,7 @@ void AdvApp2Var_ApproxAFunc2Var::Init()
   InitGrid(1);
 }
 
-//=======================================================================
-// function : InitGrid
-// purpose  : Initialisation of the approximation with regular cuttings
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::InitGrid(const int NbInt)
 {
@@ -333,10 +327,7 @@ void AdvApp2Var_ApproxAFunc2Var::InitGrid(const int NbInt)
   myConstraints = Constraints;
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Computation of the approximation
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::Perform(const AdvApprox_Cutting&            UChoice,
                                          const AdvApprox_Cutting&            VChoice,
@@ -347,10 +338,7 @@ void AdvApp2Var_ApproxAFunc2Var::Perform(const AdvApprox_Cutting&            UCh
   Compute3DErrors();
 }
 
-//=======================================================================
-// function : Perform
-// purpose  : Computation of the approximation
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::Perform(const AdvApprox_Cutting&            UChoice,
                                          const AdvApprox_Cutting&            VChoice,
@@ -363,10 +351,7 @@ void AdvApp2Var_ApproxAFunc2Var::Perform(const AdvApprox_Cutting&            UCh
   ComputeCritError();
 }
 
-//=======================================================================
-// function : ComputePatches
-// purpose  : Computation of the polynomial approximations
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&            UChoice,
                                                 const AdvApprox_Cutting&            VChoice,
@@ -469,10 +454,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
   }
 }
 
-//=======================================================================
-// function : ComputePatches
-// purpose  : Computation of the polynomial approximations
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&            UChoice,
                                                 const AdvApprox_Cutting&            VChoice,
@@ -607,10 +589,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputePatches(const AdvApprox_Cutting&        
   }
 }
 
-//=======================================================================
-// function : ComputeConstraints without Criterion
-// purpose  : Approximation of the constraints
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&            UChoice,
                                                     const AdvApprox_Cutting&            VChoice,
@@ -699,10 +678,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
   }
 }
 
-//=======================================================================
-// function : ComputeConstraints with Criterion
-// purpose  : Approximation of the constraints
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&            UChoice,
                                                     const AdvApprox_Cutting&            VChoice,
@@ -797,10 +773,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeConstraints(const AdvApprox_Cutting&    
   }
 }
 
-//=======================================================================
-// function : Compute3DErrors
-// purpose  : Computation of the 3D errors
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
 {
@@ -850,10 +823,7 @@ void AdvApp2Var_ApproxAFunc2Var::Compute3DErrors()
   }
 }
 
-//=======================================================================
-// function : ComputeCritError
-// purpose  : Computation of the max value of the Criterion
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
 {
@@ -874,10 +844,7 @@ void AdvApp2Var_ApproxAFunc2Var::ComputeCritError()
   }
 }
 
-//=======================================================================
-// function : ConvertBS
-// purpose  : Conversion of the approximation in BSpline Surface
-//=======================================================================
+//=================================================================================================
 
 void AdvApp2Var_ApproxAFunc2Var::ConvertBS()
 {

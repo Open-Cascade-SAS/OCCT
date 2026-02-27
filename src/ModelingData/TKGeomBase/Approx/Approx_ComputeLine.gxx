@@ -478,7 +478,7 @@ void Approx_ComputeLine::FirstTangencyVector(const MultiLine& Line,
   else
   {
 
-    // recherche d un vecteur tangent par construction d une parabole:
+    // Search for a tangent vector by construction of a parabola:
     AppParCurves_Constraint firstC, lastC;
     firstC = lastC      = AppParCurves_PassPoint;
     int         nbpoles = 3;
@@ -561,7 +561,7 @@ void Approx_ComputeLine::LastTangencyVector(const MultiLine& Line,
   else
   {
 
-    // recherche d un vecteur tangent par construction d une parabole:
+    // Search for a tangent vector by construction of a parabola:
     AppParCurves_Constraint firstC, lastC;
     firstC = lastC      = AppParCurves_PassPoint;
     int         nbpoles = 3;
@@ -918,7 +918,7 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
     while (!Finish)
     {
       oldlastpt = mylastpt;
-      // Gestion du decoupage de la multiline pour approximer:
+      // Management of the multiline splitting for approximation:
       if (!begin)
       {
         if (!GoUp)
@@ -979,7 +979,7 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
           int nbpdsotherligne =
             LineTool::FirstPoint(anOtherLine1) - LineTool::LastPoint(anOtherLine1);
 
-          //-- Si MakeML a echoue   on retourne une ligne vide
+          //-- If MakeML failed, return an empty line
           if ((nbpdsotherligne == 0) || myMultiLineNb >= 3)
           {
             //-- cout<<" ** ApproxComputeLine MakeML Echec ** LBR lbr "<<endl;
@@ -1148,9 +1148,9 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
 
         else if (MyStatus == Approx_NoApproximation)
         {
-          // On ne fait pas d approximation entre myfirstpt et mylastpt.
+          // No approximation is done between myfirstpt and mylastpt.
           // ===========================================================
-          // On stocke pour pouvoir en informer l utilisateur.
+          // Store to be able to inform the user.
           GoUp      = true;
           myfirstpt = mylastpt;
           mylastpt  = Thelastpt;
@@ -1173,8 +1173,8 @@ void Approx_ComputeLine::Perform(const MultiLine& Line)
         myConstraints->SetValue(1, myCouple1);
         myConstraints->SetValue(2, myCouple2);
 
-        // Calcul des parametres sur ce nouvel intervalle.
-        // On recupere les parametres initiaux lors du decoupage.
+        // Calculation of parameters on this new interval.
+        // Retrieve the initial parameters during splitting.
 
         math_Vector Param(myfirstpt, mylastpt);
         if (begin)
@@ -1408,7 +1408,7 @@ bool Approx_ComputeLine::Compute(const MultiLine& Line,
         else
         {
           myMultiCurves.Append(mySCU);
-          // Stockage des parametres de la partie de MultiLine approximee:
+          // Storage of parameters of the approximated MultiLine part:
           // A ameliorer !! (bq trop de recopies)
           occ::handle<NCollection_HArray1<double>> ThePar =
             new NCollection_HArray1<double>(Para.Lower(), Para.Upper());
@@ -1493,8 +1493,8 @@ bool Approx_ComputeLine::ComputeCurve(const MultiLine& Line, const int firstpt, 
   }
   if (nbp == 2)
   {
-    // S il n y a que 2 points, on verifie quand meme que les tangentes sont
-    // alignees.
+    // If there are only 2 points, we still verify that the tangents are
+    // aligned.
 #ifdef OCCT_DEBUG
     Parallel = true;
 #endif
@@ -1642,7 +1642,7 @@ bool Approx_ComputeLine::ComputeCurve(const MultiLine& Line, const int firstpt, 
     return mydone;
   }
 
-  // avec les tangentes.
+  // with the tangents.
   deg = nbp + 1;
   AppParCurves_MultiCurve mySCU(deg + 1);
   AppParCurves_Constraint Cons = AppParCurves_TangencyPoint;

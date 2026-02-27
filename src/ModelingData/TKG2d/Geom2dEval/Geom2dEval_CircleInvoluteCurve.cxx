@@ -55,7 +55,7 @@ inline void trigShiftByQuarterTurns(const double theSin,
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dEval_CircleInvoluteCurve::Geom2dEval_CircleInvoluteCurve(const gp_Ax2d& thePosition,
                                                                double         theRadius)
@@ -68,28 +68,28 @@ Geom2dEval_CircleInvoluteCurve::Geom2dEval_CircleInvoluteCurve(const gp_Ax2d& th
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const gp_Ax2d& Geom2dEval_CircleInvoluteCurve::Position() const
 {
   return myPosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_CircleInvoluteCurve::Radius() const
 {
   return myRadius;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_CircleInvoluteCurve::Reverse()
 {
   throw Standard_NotImplemented("Geom2dEval_CircleInvoluteCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_CircleInvoluteCurve::ReversedParameter(const double U) const
 {
@@ -97,49 +97,49 @@ double Geom2dEval_CircleInvoluteCurve::ReversedParameter(const double U) const
   throw Standard_NotImplemented("Geom2dEval_CircleInvoluteCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_CircleInvoluteCurve::FirstParameter() const
 {
   return 0.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_CircleInvoluteCurve::LastParameter() const
 {
   return Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_CircleInvoluteCurve::IsClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_CircleInvoluteCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape Geom2dEval_CircleInvoluteCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_CircleInvoluteCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt2d Geom2dEval_CircleInvoluteCurve::EvalD0(const double U) const
 {
@@ -155,7 +155,7 @@ gp_Pnt2d Geom2dEval_CircleInvoluteCurve::EvalD0(const double U) const
                   + myRadius * (aSinU - U * aCosU) * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD1 Geom2dEval_CircleInvoluteCurve::EvalD1(const double U) const
 {
@@ -176,7 +176,7 @@ Geom2d_Curve::ResD1 Geom2dEval_CircleInvoluteCurve::EvalD1(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD2 Geom2dEval_CircleInvoluteCurve::EvalD2(const double U) const
 {
@@ -200,7 +200,7 @@ Geom2d_Curve::ResD2 Geom2dEval_CircleInvoluteCurve::EvalD2(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD3 Geom2dEval_CircleInvoluteCurve::EvalD3(const double U) const
 {
@@ -227,7 +227,7 @@ Geom2d_Curve::ResD3 Geom2dEval_CircleInvoluteCurve::EvalD3(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec2d Geom2dEval_CircleInvoluteCurve::EvalDN(const double U, const int N) const
 {
@@ -274,7 +274,7 @@ gp_Vec2d Geom2dEval_CircleInvoluteCurve::EvalDN(const double U, const int N) con
   return gp_Vec2d(myRadius * aFN * aXD + myRadius * aGN * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_CircleInvoluteCurve::Transform(const gp_Trsf2d& T)
 {
@@ -282,14 +282,14 @@ void Geom2dEval_CircleInvoluteCurve::Transform(const gp_Trsf2d& T)
   throw Standard_NotImplemented("Geom2dEval_CircleInvoluteCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom2d_Geometry> Geom2dEval_CircleInvoluteCurve::Copy() const
 {
   return new Geom2dEval_CircleInvoluteCurve(myPosition, myRadius);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_CircleInvoluteCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

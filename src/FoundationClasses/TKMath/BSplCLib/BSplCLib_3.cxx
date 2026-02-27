@@ -31,14 +31,14 @@
 // Explicit template instantiations for 3D types
 // This replaces the old macro-based approach with modern C++ templates
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Reverse(NCollection_Array1<gp_Pnt>& Poles, const int L)
 {
   BSplCLib_Reverse(Poles, L);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool BSplCLib::RemoveKnot(const int                         Index,
                           const int                         Mult,
@@ -69,7 +69,7 @@ bool BSplCLib::RemoveKnot(const int                         Index,
                                                                             Tolerance);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::InsertKnots(const int                         Degree,
                            const bool                        Periodic,
@@ -102,7 +102,7 @@ void BSplCLib::InsertKnots(const int                         Degree,
                                                                       Add);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::InsertKnot(const int,
                           const double                      U,
@@ -129,7 +129,7 @@ void BSplCLib::InsertKnot(const int,
                                                                      NewWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::RaiseMultiplicity(const int                         KnotIndex,
                                  const int                         Mult,
@@ -154,7 +154,7 @@ void BSplCLib::RaiseMultiplicity(const int                         KnotIndex,
                                                                             NewWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::IncreaseDegree(const int                         Degree,
                               const int                         NewDegree,
@@ -181,7 +181,7 @@ void BSplCLib::IncreaseDegree(const int                         Degree,
                                                                          NewMults);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Unperiodize(const int                         Degree,
                            const NCollection_Array1<int>&    Mults,
@@ -204,7 +204,7 @@ void BSplCLib::Unperiodize(const int                         Degree,
                                                                       NewWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Trimming(const int                         Degree,
                         const bool                        Periodic,
@@ -233,7 +233,7 @@ void BSplCLib::Trimming(const int                         Degree,
                                                                    NewWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::BuildEval(const int                         Degree,
                          const int                         Index,
@@ -248,7 +248,7 @@ void BSplCLib::BuildEval(const int                         Degree,
                                                                     LP);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::D0(const double                      U,
                   const int                         Index,
@@ -271,7 +271,7 @@ void BSplCLib::D0(const double                      U,
                                                              P);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::D1(const double                      U,
                   const int                         Index,
@@ -296,7 +296,7 @@ void BSplCLib::D1(const double                      U,
                                                              V);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::D2(const double                      U,
                   const int                         Index,
@@ -323,7 +323,7 @@ void BSplCLib::D2(const double                      U,
                                                              V2);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::D3(const double                      U,
                   const int                         Index,
@@ -352,7 +352,7 @@ void BSplCLib::D3(const double                      U,
                                                              V3);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::DN(const double                      U,
                   const int                         N,
@@ -377,7 +377,7 @@ void BSplCLib::DN(const double                      U,
                                                              VN);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int BSplCLib::SolveBandedSystem(const math_Matrix&          Matrix,
                                 const int                   UpperBandWidth,
@@ -390,7 +390,7 @@ int BSplCLib::SolveBandedSystem(const math_Matrix&          Matrix,
                                                                                    PolesArray);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int BSplCLib::SolveBandedSystem(const math_Matrix&          Matrix,
                                 const int                   UpperBandWidth,
@@ -407,7 +407,7 @@ int BSplCLib::SolveBandedSystem(const math_Matrix&          Matrix,
                                                                                    WeightsArray);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Eval(const double                      Parameter,
                     const bool                        PeriodicFlag,
@@ -432,7 +432,7 @@ void BSplCLib::Eval(const double                      Parameter,
                                                                aWeight);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::CacheD0(const double                      Parameter,
                        const int                         Degree,
@@ -451,7 +451,7 @@ void BSplCLib::CacheD0(const double                      Parameter,
                                                                   aPoint);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::CacheD1(const double                      Parameter,
                        const int                         Degree,
@@ -472,7 +472,7 @@ void BSplCLib::CacheD1(const double                      Parameter,
                                                                   aVector);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::CacheD2(const double                      Parameter,
                        const int                         Degree,
@@ -495,7 +495,7 @@ void BSplCLib::CacheD2(const double                      Parameter,
                                                                   aVector2);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::CacheD3(const double                      Parameter,
                        const int                         Degree,
@@ -520,7 +520,7 @@ void BSplCLib::CacheD3(const double                      Parameter,
                                                                   aVector3);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::BuildCache(const double                      U,
                           const double                      SpanDomain,
@@ -543,7 +543,7 @@ void BSplCLib::BuildCache(const double                      U,
                                                                      CacheWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::BuildCache(const double                      theParameter,
                           const double                      theSpanDomain,
@@ -566,7 +566,7 @@ void BSplCLib::BuildCache(const double                      theParameter,
                                                                      theCacheArray);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Interpolate(const int                         Degree,
                            const NCollection_Array1<double>& FlatKnots,
@@ -583,7 +583,7 @@ void BSplCLib::Interpolate(const int                         Degree,
                                                                       InversionProblem);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Interpolate(const int                         Degree,
                            const NCollection_Array1<double>& FlatKnots,
@@ -602,7 +602,7 @@ void BSplCLib::Interpolate(const int                         Degree,
                                                                       InversionProblem);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::MovePoint(const double                      U,
                          const gp_Vec&                     Displ,
@@ -629,7 +629,7 @@ void BSplCLib::MovePoint(const double                      U,
                                                                     NewPoles);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::MovePointAndTangent(const double                      U,
                                    const gp_Vec&                     Delta,
@@ -658,7 +658,7 @@ void BSplCLib::MovePointAndTangent(const double                      U,
                                                                               ErrorStatus);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::Resolution(const NCollection_Array1<gp_Pnt>& Poles,
                           const NCollection_Array1<double>* Weights,
@@ -677,7 +677,7 @@ void BSplCLib::Resolution(const NCollection_Array1<gp_Pnt>& Poles,
                                                                      UTolerance);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                 const int                         BSplineDegree,
@@ -698,7 +698,7 @@ void BSplCLib::FunctionMultiply(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                                                            theStatus);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib::FunctionReparameterise(const BSplCLib_EvaluatorFunction& FunctionPtr,
                                       const int                         BSplineDegree,

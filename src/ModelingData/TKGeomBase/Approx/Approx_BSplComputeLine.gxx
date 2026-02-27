@@ -112,7 +112,7 @@ static void DUMP(const MultiLine& Line)
       }
     }
 
-    // le cas des tangentes aux extremites:
+    // The case of tangents at extremities:
     if (i == firstP || i == lastP)
     {
       if (nbP3d != 0 && nbP2d != 0)
@@ -244,7 +244,7 @@ void Approx_BSplComputeLine::FirstTangencyVector(const MultiLine& Line,
   else
   {
 
-    // recherche d un vecteur tangent par construction d une parabole:
+    // Search for a tangent vector by construction of a parabola:
     AppParCurves_Constraint firstC, lastC;
     firstC = lastC      = AppParCurves_PassPoint;
     int         nbpoles = 3;
@@ -330,7 +330,7 @@ void Approx_BSplComputeLine::LastTangencyVector(const MultiLine& Line,
   else
   {
 
-    // recherche d un vecteur tangent par construction d une parabole:
+    // Search for a tangent vector by construction of a parabola:
     AppParCurves_Constraint firstC, lastC;
     firstC = lastC      = AppParCurves_PassPoint;
     int         nbpoles = 3;
@@ -644,7 +644,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
   int  i, Thefirstpt, Thelastpt;
   bool Finish = false, begin = true;
 
-  // recherche des vraies contraintes donnees par la Line:
+  // Search for the actual constraints given by the Line:
   FindRealConstraints(Line);
 
   Thefirstpt    = LineTool::FirstPoint(Line);
@@ -682,7 +682,7 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
   if (!mycut)
   {
 
-    // cas ou on ne desire pas de noeuds supplementaires.
+    // Case where no additional knots are desired.
     // ==================================================
 
     if (!myhasknots)
@@ -725,9 +725,9 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
         if (!myhasmults)
         {
 
-          // 1er cas: l''utilisateur donne des noeuds de depart mais
-          // a nous de fixer  les multiplicites  en  fonction  de  la
-          // continuite desiree.
+          // 1st case: the user provides starting knots but
+          // it is up to us to set the multiplicities according to the
+          // desired continuity.
           // ========================================================
 
           NCollection_Array1<int> TheMults(1, myknots->Length());
@@ -736,8 +736,8 @@ void Approx_BSplComputeLine::Perform(const MultiLine& Line)
         else
         {
 
-          // 2eme cas: l''utilisateur donne des noeuds de depart
-          // avec leurs multiplicites.
+          // 2nd case: the user provides starting knots
+          // with their multiplicities.
           // ===================================================
 
           alldone = Compute(Line,

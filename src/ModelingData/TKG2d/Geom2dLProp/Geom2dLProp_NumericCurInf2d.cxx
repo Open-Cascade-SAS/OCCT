@@ -54,8 +54,8 @@ void Geom2dLProp_NumericCurInf2d::PerformCurExt(const occ::handle<Geom2d_Curve>&
   double           EpsH = 1.e-4 * (UMax - UMin);
   constexpr double Tol  = Precision::PConfusion();
 
-  // la premiere recherce se fait avec une tolerance assez grande
-  // car la derivee de la fonction est estimee assez grossierement.
+  // The first search is done with a rather large tolerance
+  // because the function derivative is estimated rather roughly.
 
   Geom2dLProp_FuncCurExt F(C, EpsH);
   int                    NbSamples = 100;

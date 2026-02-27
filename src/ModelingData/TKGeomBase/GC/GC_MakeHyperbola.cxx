@@ -22,11 +22,15 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GC_MakeHyperbola::GC_MakeHyperbola(const gp_Hypr& H)
 {
   TheError     = gce_Done;
   TheHyperbola = new Geom_Hyperbola(H);
 }
+
+//=================================================================================================
 
 GC_MakeHyperbola::GC_MakeHyperbola(const gp_Ax2& A2,
                                    const double  MajorRadius,
@@ -43,6 +47,8 @@ GC_MakeHyperbola::GC_MakeHyperbola(const gp_Ax2& A2,
   }
 }
 
+//=================================================================================================
+
 GC_MakeHyperbola::GC_MakeHyperbola(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
   gce_MakeHypr H = gce_MakeHypr(S1, S2, Center);
@@ -52,6 +58,8 @@ GC_MakeHyperbola::GC_MakeHyperbola(const gp_Pnt& S1, const gp_Pnt& S2, const gp_
     TheHyperbola = new Geom_Hyperbola(H.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_Hyperbola>& GC_MakeHyperbola::Value() const
 {

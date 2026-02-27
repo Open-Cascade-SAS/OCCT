@@ -15,7 +15,7 @@
 
 #include <GeomAdaptor_Surface.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface& theSurface)
     : myEvaluator(std::monostate{}),
@@ -24,7 +24,7 @@ GeomProp_Surface::GeomProp_Surface(const Adaptor3d_Surface& theSurface)
   initialization(theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp_Surface::GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface)
     : myEvaluator(std::monostate{}),
@@ -33,7 +33,7 @@ GeomProp_Surface::GeomProp_Surface(const occ::handle<Geom_Surface>& theSurface)
   initialization(theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
 {
@@ -51,7 +51,7 @@ void GeomProp_Surface::initialization(const Adaptor3d_Surface& theSurface)
   myEvaluator.emplace<std::monostate>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurface)
 {
@@ -67,7 +67,7 @@ void GeomProp_Surface::initialization(const occ::handle<Geom_Surface>& theSurfac
   initFromAdaptor();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomProp_Surface::initFromAdaptor()
 {
@@ -112,7 +112,7 @@ void GeomProp_Surface::initFromAdaptor()
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const GeomAdaptor_Surface* GeomProp_Surface::Adaptor() const
 {
@@ -127,7 +127,7 @@ const GeomAdaptor_Surface* GeomProp_Surface::Adaptor() const
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_Surface::Normal(const double theU,
                                                        const double theV,
@@ -148,7 +148,7 @@ GeomProp::SurfaceNormalResult GeomProp_Surface::Normal(const double theU,
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_Surface::Curvatures(const double theU,
                                                               const double theV,
@@ -169,7 +169,7 @@ GeomProp::SurfaceCurvatureResult GeomProp_Surface::Curvatures(const double theU,
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_Surface::MeanGaussian(const double theU,
                                                             const double theV,

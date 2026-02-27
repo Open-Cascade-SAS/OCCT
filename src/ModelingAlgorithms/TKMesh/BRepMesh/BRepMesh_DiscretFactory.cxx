@@ -17,14 +17,14 @@
 
 #include <BRepMesh_DiscretAlgoFactory.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 BRepMesh_DiscretFactory::BRepMesh_DiscretFactory()
     : myDefaultName("FastDiscret")
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
 {
@@ -32,7 +32,7 @@ BRepMesh_DiscretFactory& BRepMesh_DiscretFactory::Get()
   return THE_GLOBAL_FACTORY;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool BRepMesh_DiscretFactory::SetDefaultName(const TCollection_AsciiString& theName)
 {
@@ -47,7 +47,7 @@ bool BRepMesh_DiscretFactory::SetDefaultName(const TCollection_AsciiString& theN
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<BRepMesh_DiscretRoot> BRepMesh_DiscretFactory::Discret(const TopoDS_Shape& theShape,
                                                                    double theLinDeflection,

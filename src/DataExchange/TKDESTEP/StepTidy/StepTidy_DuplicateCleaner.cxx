@@ -25,14 +25,14 @@
 #include <StepData_StepModel.hxx>
 #include <utility>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_DuplicateCleaner::StepTidy_DuplicateCleaner(occ::handle<XSControl_WorkSession> theWS)
     : myWS(std::move(theWS))
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void StepTidy_DuplicateCleaner::Perform()
 {
@@ -78,7 +78,7 @@ void StepTidy_DuplicateCleaner::Perform()
   removeEntities(aReplacedEntities);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void StepTidy_DuplicateCleaner::removeEntities(
   const NCollection_Map<occ::handle<Standard_Transient>>& theToRemove)

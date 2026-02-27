@@ -42,7 +42,7 @@ occ::handle<Geom_Curve> ExtractBasisCurve(const occ::handle<Geom_Curve>& theCurv
 
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Curve::GeomGridEval_Curve(const Adaptor3d_Curve& theCurve)
     : myEvaluator(std::monostate{}),
@@ -51,7 +51,7 @@ GeomGridEval_Curve::GeomGridEval_Curve(const Adaptor3d_Curve& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Curve::GeomGridEval_Curve(const occ::handle<Geom_Curve>& theCurve)
     : myEvaluator(std::monostate{}),
@@ -60,7 +60,7 @@ GeomGridEval_Curve::GeomGridEval_Curve(const occ::handle<Geom_Curve>& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Curve::initialization(const Adaptor3d_Curve& theCurve)
 {
@@ -76,7 +76,7 @@ void GeomGridEval_Curve::initialization(const Adaptor3d_Curve& theCurve)
   myEvaluator.emplace<GeomGridEval_OtherCurve>(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
 {
@@ -139,7 +139,7 @@ void GeomGridEval_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -159,7 +159,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Curve::EvaluateGrid(
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -179,7 +179,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Curve::EvaluateGridD1(
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -199,7 +199,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Curve::EvaluateGridD2(
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -219,7 +219,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Curve::EvaluateGridD3(
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_Curve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

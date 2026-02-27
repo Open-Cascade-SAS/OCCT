@@ -15,7 +15,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
                                                      const gp_Vec2d& theD2,
@@ -45,7 +45,7 @@ Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
   return {{}, false};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
                                                      const gp_Vec2d& theD2,
@@ -79,7 +79,7 @@ Geom2dProp::TangentResult Geom2dProp::ComputeTangent(const gp_Vec2d& theD1,
   return {gp_Dir2d(aVec), true};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
                                                          const gp_Vec2d& theD2,
@@ -117,7 +117,7 @@ Geom2dProp::CurvatureResult Geom2dProp::ComputeCurvature(const gp_Vec2d& theD1,
   return {aCurvature, true, false};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
                                                    const gp_Vec2d& theD2,
@@ -140,7 +140,7 @@ Geom2dProp::NormalResult Geom2dProp::ComputeNormal(const gp_Vec2d& theD1,
   return {gp_Dir2d(aNorm), true};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp::ComputeCentreOfCurvature(const gp_Pnt2d& thePnt,
                                                               const gp_Vec2d& theD1,

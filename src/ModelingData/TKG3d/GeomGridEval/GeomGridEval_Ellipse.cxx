@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -62,7 +62,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_Ellipse::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -112,7 +112,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_Ellipse::EvaluateGridD1(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -166,7 +166,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_Ellipse::EvaluateGridD2(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -224,7 +224,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_Ellipse::EvaluateGridD3(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_Ellipse::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

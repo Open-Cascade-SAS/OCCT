@@ -228,7 +228,7 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
         TopoDS_Iterator ite(W, false);
         double          UFirst, ULast;
 
-        // Reconstruction des wires.
+        // Reconstruction of wires.
 
         for (; ite.More(); ite.Next())
         {
@@ -247,11 +247,11 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
             }
             else
             {
-              // Si NE est REVERSED
-              // => les curve3d n ont pas la meme orientation.
-              // ( C est une convention cf BRepTools_Quilt.cdl. et la methode
-              // Bind.)
-              // => la PCurve de E sur F doit etre inversee.
+              // If NE is REVERSED
+              // => the 3D curves do not have the same orientation.
+              // (This is a convention, cf. BRepTools_Quilt.cdl and the Bind
+              // method.)
+              // => the PCurve of E on F must be reversed.
 
               OE                            = TopAbs::Reverse(OE);
               occ::handle<Geom2d_Curve> CE  = BRep_Tool::CurveOnSurface(E, F, UFirst, ULast);

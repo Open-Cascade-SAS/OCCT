@@ -23,12 +23,8 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une Ellipse 2d de gp de centre <Center> et de sommets     +
-//   <S1> et <S2>.                                                        +
-//   <CenterS1> donne le grand axe .                                      +
-//   <S1> donne le grand rayon et <S2> le petit rayon.                    +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeElips2d::gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
 {
   double   D1 = S1.Distance(Center);
@@ -50,6 +46,8 @@ gce_MakeElips2d::gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const g
   }
 }
 
+//=================================================================================================
+
 gce_MakeElips2d::gce_MakeElips2d(const gp_Ax2d& MajorAxis,
                                  const double   MajorRadius,
                                  const double   MinorRadius,
@@ -70,6 +68,8 @@ gce_MakeElips2d::gce_MakeElips2d(const gp_Ax2d& MajorAxis,
   }
 }
 
+//=================================================================================================
+
 gce_MakeElips2d::gce_MakeElips2d(const gp_Ax22d& A,
                                  const double    MajorRadius,
                                  const double    MinorRadius)
@@ -89,16 +89,22 @@ gce_MakeElips2d::gce_MakeElips2d(const gp_Ax22d& A,
   }
 }
 
+//=================================================================================================
+
 const gp_Elips2d& gce_MakeElips2d::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeElips2d::Value() - no result");
   return TheElips2d;
 }
 
+//=================================================================================================
+
 const gp_Elips2d& gce_MakeElips2d::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeElips2d::operator gp_Elips2d() const
 {

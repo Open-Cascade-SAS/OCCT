@@ -196,7 +196,7 @@ public:
   }
 
   //! Creates a new object which is a copy of this transformation.
-  Standard_EXPORT occ::handle<Geom_Transformation> Copy() const;
+  [[nodiscard]] Standard_EXPORT occ::handle<Geom_Transformation> Copy() const;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;

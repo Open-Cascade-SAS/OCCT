@@ -126,7 +126,7 @@ GeomAbs_Shape LocalContinuity(int                         Degree,
     Index1++;
   if (std::abs(newLast - TK(Index2)) < EpsKnot)
     Index2--;
-  // attention aux courbes peridiques.
+  // Handle periodic curves.
   if ((IsPeriodic) && (Index1 == Nb))
     Index1 = 1;
 
@@ -1854,7 +1854,7 @@ double GeomAdaptor_Surface::UResolution(const double R3d) const
     case GeomAbs_Cone: {
       if (myVLast - myVFirst > 1.e10)
       {
-        // Pas vraiment borne => resolution inconnue
+        // Not truly bounded => unknown resolution
         return Precision::Parametric(R3d);
       }
       occ::handle<Geom_ConicalSurface> S(occ::down_cast<Geom_ConicalSurface>(mySurface));

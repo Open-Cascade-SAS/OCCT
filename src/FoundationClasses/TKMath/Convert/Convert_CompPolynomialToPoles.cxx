@@ -31,7 +31,7 @@
 #include <Standard_ConstructionError.hxx>
 #include <StdFail_NotDone.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_CompPolynomialToPoles::Convert_CompPolynomialToPoles(
   const int                                       NumCurves,
@@ -260,7 +260,7 @@ void Convert_CompPolynomialToPoles::Perform(const int                         Nu
   myDone = true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_CompPolynomialToPoles::NbPoles() const
 {
@@ -271,7 +271,7 @@ int Convert_CompPolynomialToPoles::NbPoles() const
   return 0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<double>& Convert_CompPolynomialToPoles::Poles() const
 {
@@ -279,7 +279,7 @@ const NCollection_Array2<double>& Convert_CompPolynomialToPoles::Poles() const
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Standard_DISABLE_DEPRECATION_WARNINGS void Convert_CompPolynomialToPoles::Poles(
   occ::handle<NCollection_HArray2<double>>& P) const
@@ -290,7 +290,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS void Convert_CompPolynomialToPoles::Poles(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_CompPolynomialToPoles::NbKnots() const
 {
@@ -301,7 +301,7 @@ int Convert_CompPolynomialToPoles::NbKnots() const
   return 0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_CompPolynomialToPoles::Knots() const
 {
@@ -309,7 +309,7 @@ const NCollection_Array1<double>& Convert_CompPolynomialToPoles::Knots() const
   return myKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_CompPolynomialToPoles::Knots(occ::handle<NCollection_HArray1<double>>& K) const
 {
@@ -319,7 +319,7 @@ void Convert_CompPolynomialToPoles::Knots(occ::handle<NCollection_HArray1<double
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<int>& Convert_CompPolynomialToPoles::Multiplicities() const
 {
@@ -327,7 +327,7 @@ const NCollection_Array1<int>& Convert_CompPolynomialToPoles::Multiplicities() c
   return myMults;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_CompPolynomialToPoles::Multiplicities(occ::handle<NCollection_HArray1<int>>& M) const
 {
@@ -339,7 +339,7 @@ void Convert_CompPolynomialToPoles::Multiplicities(occ::handle<NCollection_HArra
 
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-  //==================================================================================================
+  //=================================================================================================
 
   bool
   Convert_CompPolynomialToPoles::IsDone() const
@@ -347,7 +347,7 @@ Standard_ENABLE_DEPRECATION_WARNINGS
   return myDone;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_CompPolynomialToPoles::Degree() const
 {

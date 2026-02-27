@@ -74,7 +74,7 @@ public:
     const int                                       MaxSeg,
     const AdvApprox_EvaluatorFunction&              Func);
 
-  //! Approximation with user methode of cutting
+  //! Approximation with user method of cutting
   Standard_EXPORT AdvApprox_ApproxAFunction(
     const int                                       Num1DSS,
     const int                                       Num2DSS,

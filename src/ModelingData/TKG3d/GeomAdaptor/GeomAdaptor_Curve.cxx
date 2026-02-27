@@ -14,9 +14,9 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// 20/02/97 : PMN -> Positionement local sur BSpline (PRO6902)
-// 10/07/97 : PMN -> Pas de calcul de resolution dans Nb(Intervals)(PRO9248)
-// 20/10/97 : RBV -> traitement des offset curves
+// 20/02/97 : PMN -> Local positioning on BSpline (PRO6902)
+// 10/07/97 : PMN -> No resolution computation in Nb(Intervals) (PRO9248)
+// 20/10/97 : RBV -> Handling of offset curves
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -176,13 +176,13 @@ GeomAbs_Shape GeomAdaptor_Curve::LocalContinuity(const double U1, const double U
   if (std::abs(newLast - TK(Index2)) < Precision::PConfusion())
     Index2--;
   int MultMax;
-  // attention aux courbes peridiques.
+  // Handle periodic curves.
   if ((aBSpl->IsPeriodic()) && (Index1 == Nb))
     Index1 = 1;
 
   if ((Index2 - Index1 <= 0) && (!aBSpl->IsPeriodic()))
   {
-    MultMax = 100; // CN entre 2 Noeuds consecutifs
+    MultMax = 100; // CN between 2 consecutive nodes
   }
   else
   {

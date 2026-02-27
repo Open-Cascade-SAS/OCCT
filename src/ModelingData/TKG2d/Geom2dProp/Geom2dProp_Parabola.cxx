@@ -13,7 +13,7 @@
 
 #include <Geom2dProp_Parabola.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::TangentResult Geom2dProp_Parabola::Tangent(const double theParam,
                                                        const double theTol) const
@@ -28,7 +28,7 @@ Geom2dProp::TangentResult Geom2dProp_Parabola::Tangent(const double theParam,
   return Geom2dProp::ComputeTangent(aD1, aD2, aD3, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp_Parabola::Curvature(const double theParam,
                                                            const double theTol) const
@@ -43,7 +43,7 @@ Geom2dProp::CurvatureResult Geom2dProp_Parabola::Curvature(const double theParam
   return Geom2dProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::NormalResult Geom2dProp_Parabola::Normal(const double theParam,
                                                      const double theTol) const
@@ -58,7 +58,7 @@ Geom2dProp::NormalResult Geom2dProp_Parabola::Normal(const double theParam,
   return Geom2dProp::ComputeNormal(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_Parabola::CentreOfCurvature(const double theParam,
                                                                 const double theTol) const
@@ -73,7 +73,7 @@ Geom2dProp::CentreResult Geom2dProp_Parabola::CentreOfCurvature(const double the
   return Geom2dProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurveAnalysis Geom2dProp_Parabola::FindCurvatureExtrema() const
 {

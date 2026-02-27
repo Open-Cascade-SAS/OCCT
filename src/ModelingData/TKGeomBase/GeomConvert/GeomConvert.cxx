@@ -162,8 +162,8 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
     double U1                            = Ctrim->FirstParameter();
     double U2                            = Ctrim->LastParameter();
 
-    // Si la courbe n'est pas vraiment restreinte, on ne risque pas
-    // le Raise dans le BS->Segment.
+    // If the curve is not truly restricted, there is no risk of
+    // a Raise in BS->Segment.
     if (!Curv->IsPeriodic())
     {
       if (U1 < Curv->FirstParameter())
@@ -431,10 +431,7 @@ occ::handle<Geom_BSplineCurve> GeomConvert::CurveToBSplineCurve(
   return TheCurve;
 }
 
-//=======================================================================
-// class : law_evaluator
-// purpose  : useful to estimate the value of a function
-//=======================================================================
+//=================================================================================================
 
 class GeomConvert_law_evaluator : public BSplCLib_EvaluatorFunction
 {
@@ -467,10 +464,7 @@ private:
   occ::handle<Geom2d_BSplineCurve> myAncore;
 };
 
-//=======================================================================
-// function : MultNumandDenom
-// purpose  : Multiply two BSpline curves to make one
-//=======================================================================
+//=================================================================================================
 
 static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_BSplineCurve>& a,
                                                       const occ::handle<Geom_BSplineCurve>&   BS)
@@ -521,7 +515,7 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
   for (ii = 1; ii <= BS->NbPoles(); ii++)
     for (jj = 1; jj <= 3; jj++)
       BSPoles(ii).SetCoord(jj, BSPoles(ii).Coord(jj) * BSWeights(ii));
-  // POP pour WNT
+  // POP for WNT
   GeomConvert_law_evaluator ev(anAncore);
 
   BSplCLib::FunctionMultiply(ev,
@@ -549,11 +543,7 @@ static occ::handle<Geom_BSplineCurve> MultNumandDenom(const occ::handle<Geom2d_B
   return res;
 }
 
-//=======================================================================
-// function : Pretreatment
-// purpose  : Put the two first and two last weights at one if they are
-//           equal
-//=======================================================================
+//=================================================================================================
 
 static void Pretreatment(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& tab)
 
@@ -575,11 +565,7 @@ static void Pretreatment(NCollection_Array1<occ::handle<Geom_BSplineCurve>>& tab
   }
 }
 
-//=======================================================================
-// function : NeedToBeTreated
-// purpose  : Say if the BSpline is rational and if the two first and two
-//           last weights are different
-//=======================================================================
+//=================================================================================================
 
 static bool NeedToBeTreated(const occ::handle<Geom_BSplineCurve>& BS)
 
@@ -601,11 +587,7 @@ static bool NeedToBeTreated(const occ::handle<Geom_BSplineCurve>& BS)
     return false;
 }
 
-//=======================================================================
-// function : Need2DegRepara
-// purpose  : in the case of wire closed G1 it says if you will to use a
-//           two degree reparametrisation to close it C1
-//=======================================================================
+//=================================================================================================
 
 static bool Need2DegRepara(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& tab)
 
@@ -625,10 +607,7 @@ static bool Need2DegRepara(const NCollection_Array1<occ::handle<Geom_BSplineCurv
          || (Rapport < (1.0e0 - Precision::Confusion()));
 }
 
-//=======================================================================
-// function : Indexmin
-// purpose  : Give the index of the curve which has the lowest degree
-//=======================================================================
+//=================================================================================================
 
 static int Indexmin(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& tab)
 {
@@ -644,10 +623,7 @@ static int Indexmin(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& ta
   return index;
 }
 
-//=======================================================================
-// function : NewTabClosedG1
-// purpose  : Sort the array of BSplines to start at the nb_vertex_group0 index
-//=======================================================================
+//=================================================================================================
 
 static void ReorderArrayOfG1Curves(
   NCollection_Array1<occ::handle<Geom_BSplineCurve>>& ArrayOfCurves,
@@ -868,7 +844,7 @@ void GeomConvert::ConcatG1(
         for (ii = 1; ii <= Curve1->NbPoles(); ii++)
           for (jj = 1; jj <= 3; jj++)
             Curve1Poles(ii).SetCoord(jj, Curve1Poles(ii).Coord(jj) * Curve1Weights(ii));
-        // POP pour WNT
+        // POP for WNT
         GeomConvert_reparameterise_evaluator ev(aPolynomialCoefficient);
         //       BSplCLib::FunctionReparameterise(reparameterise_evaluator,
         BSplCLib::FunctionReparameterise(ev,
@@ -1113,7 +1089,7 @@ void GeomConvert::ConcatC1(
           for (ii = 1; ii <= Curve1->NbPoles(); ii++)
             for (jj = 1; jj <= 3; jj++)
               Curve1Poles(ii).SetCoord(jj, Curve1Poles(ii).Coord(jj) * Curve1Weights(ii));
-          // POP pour WNT
+          // POP for WNT
           GeomConvert_reparameterise_evaluator ev(aPolynomialCoefficient);
 
           BSplCLib::FunctionReparameterise(ev,

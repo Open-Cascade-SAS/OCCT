@@ -654,7 +654,7 @@ void Geom_BSplineCurve::LocateU(const double U,
   double                            NewU   = U;
   const NCollection_Array1<double>& CKnots = WithKnotRepetition ? myFlatKnots : myKnots;
 
-  PeriodicNormalization(NewU); // Attention a la periode
+  PeriodicNormalization(NewU); // Handle periodicity
 
   double UFirst               = CKnots(1);
   double ULast                = CKnots(CKnots.Length());

@@ -17,7 +17,7 @@
 #include <Geom_OffsetSurfaceUtils.pxx>
 #include <GeomGridEval_Surface.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -86,7 +86,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OffsetSurface::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -153,7 +153,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OffsetSurface::EvaluateGri
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -227,7 +227,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OffsetSurface::EvaluateGri
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -286,7 +286,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OffsetSurface::EvaluateGri
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_OffsetSurface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

@@ -139,7 +139,7 @@ private:
   NCollection_DataMap<TheObjType, TreeNode*> myObjNodeMap; ///< map of object to node pointer
 };
 
-//==================================================================================================
+//=================================================================================================
 
 template <class TheObjType, class TheBndType>
 bool NCollection_EBTree<TheObjType, TheBndType>::Remove(const TheObjType& theObj)

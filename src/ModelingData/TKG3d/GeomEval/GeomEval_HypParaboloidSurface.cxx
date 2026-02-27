@@ -29,7 +29,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_HypParaboloidSurface, Geom_ElementarySurface)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_HypParaboloidSurface::GeomEval_HypParaboloidSurface(const gp_Ax3& thePosition,
                                                              double        theA,
@@ -48,21 +48,21 @@ GeomEval_HypParaboloidSurface::GeomEval_HypParaboloidSurface(const gp_Ax3& thePo
   pos = thePosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HypParaboloidSurface::SemiAxisA() const
 {
   return myA;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HypParaboloidSurface::SemiAxisB() const
 {
   return myB;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::SetSemiAxisA(double theA)
 {
@@ -74,7 +74,7 @@ void GeomEval_HypParaboloidSurface::SetSemiAxisA(double theA)
   myA = theA;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::SetSemiAxisB(double theB)
 {
@@ -86,35 +86,35 @@ void GeomEval_HypParaboloidSurface::SetSemiAxisB(double theB)
   myB = theB;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HypParaboloidSurface::UReversedParameter(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HypParaboloidSurface::VReversedParameter(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -124,49 +124,49 @@ void GeomEval_HypParaboloidSurface::Bounds(double& U1, double& U2, double& V1, d
   V2 = Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HypParaboloidSurface::IsUClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HypParaboloidSurface::IsVClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HypParaboloidSurface::IsUPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HypParaboloidSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_HypParaboloidSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_HypParaboloidSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_HypParaboloidSurface::EvalD0(const double U, const double V) const
 {
@@ -184,7 +184,7 @@ gp_Pnt GeomEval_HypParaboloidSurface::EvalD0(const double U, const double V) con
                 anO.Z() + U * aXDir.Z() + V * aYDir.Z() + aZComp * aZDir.Z());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_HypParaboloidSurface::EvalD1(const double U, const double V) const
 {
@@ -219,7 +219,7 @@ Geom_Surface::ResD1 GeomEval_HypParaboloidSurface::EvalD1(const double U, const 
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_HypParaboloidSurface::EvalD2(const double U, const double V) const
 {
@@ -265,7 +265,7 @@ Geom_Surface::ResD2 GeomEval_HypParaboloidSurface::EvalD2(const double U, const 
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_HypParaboloidSurface::EvalD3(const double U, const double V) const
 {
@@ -317,7 +317,7 @@ Geom_Surface::ResD3 GeomEval_HypParaboloidSurface::EvalD3(const double U, const 
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_HypParaboloidSurface::EvalDN(const double U,
                                              const double V,
@@ -395,7 +395,7 @@ gp_Vec GeomEval_HypParaboloidSurface::EvalDN(const double U,
                 aXCoeff * aXDir.Z() + aYCoeff * aYDir.Z() + aZCoeff * aZDir.Z());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::Transform(const gp_Trsf& T)
 {
@@ -403,14 +403,14 @@ void GeomEval_HypParaboloidSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_HypParaboloidSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_HypParaboloidSurface::Copy() const
 {
   return new GeomEval_HypParaboloidSurface(pos, myA, myB);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
@@ -422,7 +422,7 @@ void GeomEval_HypParaboloidSurface::DumpJson(Standard_OStream& theOStream, int t
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myB)
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HypParaboloidSurface::Coefficients(double& A1,
                                                  double& A2,

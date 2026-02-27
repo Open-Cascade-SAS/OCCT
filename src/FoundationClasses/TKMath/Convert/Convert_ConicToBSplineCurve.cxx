@@ -27,7 +27,7 @@
 #include <Standard_Integer.hxx>
 #include <Standard_OutOfRange.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int theNumberOfPoles,
                                                          const int theNumberOfKnots,
@@ -46,35 +46,35 @@ Convert_ConicToBSplineCurve::Convert_ConicToBSplineCurve(const int theNumberOfPo
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ConicToBSplineCurve::Degree() const
 {
   return myDegree;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ConicToBSplineCurve::NbPoles() const
 {
   return myPoles.Length();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ConicToBSplineCurve::NbKnots() const
 {
   return myKnots.Length();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Convert_ConicToBSplineCurve::IsPeriodic() const
 {
   return myIsPeriodic;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt2d
   Convert_ConicToBSplineCurve::Pole(const int theIndex) const
@@ -84,7 +84,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt2d
   return myPoles(theIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Convert_ConicToBSplineCurve::Weight(const int theIndex) const
 {
@@ -93,7 +93,7 @@ double Convert_ConicToBSplineCurve::Weight(const int theIndex) const
   return myWeights(theIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Convert_ConicToBSplineCurve::Knot(const int theIndex) const
 {
@@ -102,7 +102,7 @@ double Convert_ConicToBSplineCurve::Knot(const int theIndex) const
   return myKnots(theIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ConicToBSplineCurve::Multiplicity(const int theIndex) const
 {
@@ -113,7 +113,7 @@ int Convert_ConicToBSplineCurve::Multiplicity(const int theIndex) const
 
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-  //==================================================================================================
+  //=================================================================================================
 
   const NCollection_Array1<gp_Pnt2d>&
         Convert_ConicToBSplineCurve::Poles() const
@@ -121,28 +121,28 @@ Standard_ENABLE_DEPRECATION_WARNINGS
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Weights() const
 {
   return myWeights;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_ConicToBSplineCurve::Knots() const
 {
   return myKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<int>& Convert_ConicToBSplineCurve::Multiplicities() const
 {
   return myMults;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_ConicToBSplineCurve::BuildCosAndSin(
   const Convert_ParameterisationType        theParametrisation,
@@ -172,7 +172,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   theMults        = new NCollection_HArray1<int>(aMults);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_ConicToBSplineCurve::BuildCosAndSin(
   const Convert_ParameterisationType        theParametrisation,
@@ -346,7 +346,7 @@ static void AlgorithmicCosAndSin(int                                 Degree,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_ConicToBSplineCurve::BuildCosAndSin(
   const Convert_ParameterisationType Parameterisation,
@@ -613,7 +613,7 @@ void Convert_ConicToBSplineCurve::BuildCosAndSin(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_ConicToBSplineCurve::BuildCosAndSin(
   const Convert_ParameterisationType Parameterisation,

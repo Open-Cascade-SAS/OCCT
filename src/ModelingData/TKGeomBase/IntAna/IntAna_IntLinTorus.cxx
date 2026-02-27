@@ -13,8 +13,8 @@
 // commercial license or contractual agreement.
 
 //-- IntAna_IntLinTorus.cxx
-//-- lbr : la methode avec les coefficients est catastrophique.
-//--       Mise en place d'une vraie solution.
+//-- lbr : the method using coefficients is catastrophic.
+//--       Implementation of a proper solution.
 
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
@@ -52,7 +52,7 @@ void IntAna_IntLinTorus::Perform(const gp_Lin& L, const gp_Torus& T)
   gp_Pnt NewPL(PL.XYZ() + ParamOfNewPL * DL.XYZ());
 
   //--------------------------------------------------------------
-  //-- Coefficients de la ligne dans le repere du cone
+  //-- Coefficients of the line in the torus reference frame
   //--
   gp_Trsf trsf;
   trsf.SetTransformation(T.Position());

@@ -26,31 +26,19 @@
 #include <IntAna2d_IntPoint.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d un cercle 2d de gp passant par trois points.              +
-//   Trois cas de figures :                                               +
-//      1/ Les trois points sont confondus.                               +
-//      -----------------------------------                               +
-//      Le resultat est le cercle centre en Point1 de rayon zero.         +
-//      2/ Deux des trois points sont confondus.                          +
-//      ----------------------------------------                          +
-//      On cree la mediatrice a deux points non confondus ainsi que la    +
-//      droite passant par ces deux points.                               +
-//      La solution a pour centre l intersection de ces deux droite et    +
-//      pour rayon la distance entre ce centre et l un des trois points.  +
-//      3/ Les trois points sont distinct.                                +
-//      ----------------------------------                                +
-//      On cree la mediatrice a P1P2 ainsi que la mediatrice a P1P3.      +
-//      La solution a pour centre l intersection de ces deux droite et    +
-//      pour rayon la distance entre ce centre et l un des trois points.  +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3)
 {
   gp_Dir2d dirx(gp_Dir2d::D::X);
 
-  //=========================================================================
-  //   Traitement.                                                          +
-  //=========================================================================
+  // Three cases:
+  // 1) All three points are coincident: result is a circle centered at P1 with zero radius.
+  // 2) Two of the three points are coincident: create the perpendicular bisector of the two
+  //    distinct points and the line through them. The center is their intersection.
+  // 3) All three points are distinct: create the perpendicular bisector of P1P2 and
+  //    the perpendicular bisector of P1P3. The center is their intersection and
+  //    the radius is the distance from that center to any of the three points.
 
   double dist1 = P1.Distance(P2);
   double dist2 = P1.Distance(P3);
@@ -122,9 +110,8 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
   }
 }
 
-//==========================================================================
-//   Creation d un gp_Circ2d par son Axe <XAxis> et son rayon  <Radius>.   +
-//==========================================================================
+//=================================================================================================
+
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d& XAxis, const double Radius, const bool Sense)
 {
@@ -139,9 +126,8 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d& XAxis, const double Radius, const 
   }
 }
 
-//==========================================================================
-//   Creation d un gp_Circ2d par son Repere <Axis> et son rayon  <Radius>. +
-//==========================================================================
+//=================================================================================================
+
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const double Radius)
 {
@@ -156,10 +142,8 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const double Radius)
   }
 }
 
-//==========================================================================
-//   Creation d un gp_Circ2d par son centre <Center> et son rayon          +
-//   <Radius>.                                                             +
-//==========================================================================
+//=================================================================================================
+
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const double Radius, const bool Sense)
 {
@@ -174,10 +158,8 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const double Radius, cons
   }
 }
 
-//==========================================================================
-//   Creation d un gp_Circ2d par son centre <Center> et un point de sa     +
-//   circonference <Point>.                                                +
-//==========================================================================
+//=================================================================================================
+
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
 {
@@ -185,10 +167,8 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const gp_Pnt2d& Point, co
   TheError  = gce_Done;
 }
 
-//==========================================================================
-//   Creation d un cercle <TheCirc2d> concentrique a <Circ> passant par le +
-//   point <Point1>.                                                       +
-//==========================================================================
+//=================================================================================================
+
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 {
@@ -196,10 +176,8 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
   TheError  = gce_Done;
 }
 
-//==========================================================================
-//   Creation d un cercle <TheCirc2d> concentrique a <Circ> a une distance +
-//   <Dist1>.                                                              +
-//==========================================================================
+//=================================================================================================
+
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const double Dist1)
 {
@@ -207,16 +185,22 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const double Dist1)
   TheError  = gce_Done;
 }
 
+//=================================================================================================
+
 const gp_Circ2d& gce_MakeCirc2d::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeCirc2d::Value() - no result");
   return TheCirc2d;
 }
 
+//=================================================================================================
+
 const gp_Circ2d& gce_MakeCirc2d::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeCirc2d::operator gp_Circ2d() const
 {

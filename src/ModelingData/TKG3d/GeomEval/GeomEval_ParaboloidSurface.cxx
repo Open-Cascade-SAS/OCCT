@@ -29,7 +29,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_ParaboloidSurface, Geom_ElementarySurface)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_ParaboloidSurface::GeomEval_ParaboloidSurface(const gp_Ax3& thePosition, double theFocal)
     : myFocal(theFocal)
@@ -41,14 +41,14 @@ GeomEval_ParaboloidSurface::GeomEval_ParaboloidSurface(const gp_Ax3& thePosition
   pos = thePosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_ParaboloidSurface::Focal() const
 {
   return myFocal;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::SetFocal(double theFocal)
 {
@@ -60,35 +60,35 @@ void GeomEval_ParaboloidSurface::SetFocal(double theFocal)
   myFocal = theFocal;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_ParaboloidSurface::UReversedParameter(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_ParaboloidSurface::VReversedParameter(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -98,49 +98,49 @@ void GeomEval_ParaboloidSurface::Bounds(double& U1, double& U2, double& V1, doub
   V2 = Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_ParaboloidSurface::IsUClosed() const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_ParaboloidSurface::IsVClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_ParaboloidSurface::IsUPeriodic() const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_ParaboloidSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_ParaboloidSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_ParaboloidSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_ParaboloidSurface::EvalD0(const double U, const double V) const
 {
@@ -158,7 +158,7 @@ gp_Pnt GeomEval_ParaboloidSurface::EvalD0(const double U, const double V) const
                 anO.Z() + V * aCosU * aXDir.Z() + V * aSinU * aYDir.Z() + aZComp * aZDir.Z());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_ParaboloidSurface::EvalD1(const double U, const double V) const
 {
@@ -193,7 +193,7 @@ Geom_Surface::ResD1 GeomEval_ParaboloidSurface::EvalD1(const double U, const dou
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_ParaboloidSurface::EvalD2(const double U, const double V) const
 {
@@ -242,7 +242,7 @@ Geom_Surface::ResD2 GeomEval_ParaboloidSurface::EvalD2(const double U, const dou
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_ParaboloidSurface::EvalD3(const double U, const double V) const
 {
@@ -307,7 +307,7 @@ Geom_Surface::ResD3 GeomEval_ParaboloidSurface::EvalD3(const double U, const dou
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_ParaboloidSurface::EvalDN(const double U,
                                           const double V,
@@ -381,7 +381,7 @@ gp_Vec GeomEval_ParaboloidSurface::EvalDN(const double U,
                 aXCoeff * aXDir.Z() + aYCoeff * aYDir.Z() + aZCoeff * aZDir.Z());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::Transform(const gp_Trsf& T)
 {
@@ -389,14 +389,14 @@ void GeomEval_ParaboloidSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_ParaboloidSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_ParaboloidSurface::Copy() const
 {
   return new GeomEval_ParaboloidSurface(pos, myFocal);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
@@ -407,7 +407,7 @@ void GeomEval_ParaboloidSurface::DumpJson(Standard_OStream& theOStream, int theD
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myFocal)
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_ParaboloidSurface::Coefficients(double& A1,
                                               double& A2,

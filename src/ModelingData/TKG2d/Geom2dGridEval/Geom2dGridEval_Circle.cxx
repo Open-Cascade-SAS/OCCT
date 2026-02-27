@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Circle::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -58,7 +58,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Circle::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Circle::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -100,7 +100,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Circle::EvaluateGridD
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Circle::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -144,7 +144,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Circle::EvaluateGridD
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Circle::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -190,7 +190,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Circle::EvaluateGridD
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec2d> Geom2dGridEval_Circle::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

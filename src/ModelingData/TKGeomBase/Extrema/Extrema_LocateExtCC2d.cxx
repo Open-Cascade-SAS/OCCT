@@ -34,7 +34,7 @@ Extrema_LocateExtCC2d::Extrema_LocateExtCC2d(const Adaptor2d_Curve2d& C1,
   double            TolV = Extrema_Curve2dTool::Resolution(C2, Precision::Confusion());
   Extrema_POnCurv2d P1, P2;
 
-  // Non implemente pour l instant: l appel a Geom2dExtrema_ExtCC.
+  // Not implemented for now: the call to Geom2dExtrema_ExtCC.
 
   Extrema_LocECC2d Xtrem(C1, C2, U0, V0, TolU, TolV);
   // Exploitation

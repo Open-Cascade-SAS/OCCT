@@ -14,7 +14,7 @@
 #include "MathUtils_GaussKronrodWeights.hxx"
 #include <math.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 bool MathUtils::GetKronrodPointsAndWeights(int          theNbKronrod,
                                            math_Vector& thePoints,
@@ -23,7 +23,7 @@ bool MathUtils::GetKronrodPointsAndWeights(int          theNbKronrod,
   return math::KronrodPointsAndWeights(theNbKronrod, thePoints, theWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool MathUtils::GetOrderedGaussPointsAndWeights(int          theNbGauss,
                                                 math_Vector& thePoints,

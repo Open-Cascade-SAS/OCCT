@@ -59,7 +59,7 @@ inline double safeIncrement(const double theValue,
   return aNextValue == theValue ? std::nextafter(theValue, theDirection) : aNextValue;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Checks whether the curve is degenerated between theStartParam and theEndParam.
 // The check is performed by sampling the curve at several points and measuring the distance to the

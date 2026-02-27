@@ -13,7 +13,7 @@
 // commercial license or contractual agreement.
 
 // Jean-Claude Vauthier 27 November 1991
-// Passage sur C1 Aout 1992
+// Switch to C1 August 1992
 
 #include <BSplCLib.hxx>
 #include <Geom2d_BSplineCurve.hxx>

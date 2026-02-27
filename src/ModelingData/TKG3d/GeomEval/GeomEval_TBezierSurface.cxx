@@ -158,7 +158,7 @@ void evalTrigAxisNthDeriv(const double theT,
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
                                                  double                            theAlphaU,
@@ -180,7 +180,7 @@ GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
                                                  const NCollection_Array2<double>& theWeights,
@@ -219,77 +219,77 @@ GeomEval_TBezierSurface::GeomEval_TBezierSurface(const NCollection_Array2<gp_Pnt
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<gp_Pnt>& GeomEval_TBezierSurface::Poles() const
 {
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<double>& GeomEval_TBezierSurface::Weights() const
 {
   return myWeights;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierSurface::AlphaU() const
 {
   return myAlphaU;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierSurface::AlphaV() const
 {
   return myAlphaV;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_TBezierSurface::NbUPoles() const
 {
   return myPoles.NbRows();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_TBezierSurface::NbVPoles() const
 {
   return myPoles.NbColumns();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_TBezierSurface::OrderU() const
 {
   return (myPoles.NbRows() - 1) / 2;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_TBezierSurface::OrderV() const
 {
   return (myPoles.NbColumns() - 1) / 2;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsRational() const
 {
   return myRational;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_TBezierSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierSurface::UReversedParameter(const double U) const
 {
@@ -297,14 +297,14 @@ double GeomEval_TBezierSurface::UReversedParameter(const double U) const
   throw Standard_NotImplemented("GeomEval_TBezierSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_TBezierSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierSurface::VReversedParameter(const double V) const
 {
@@ -312,7 +312,7 @@ double GeomEval_TBezierSurface::VReversedParameter(const double V) const
   throw Standard_NotImplemented("GeomEval_TBezierSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -322,7 +322,7 @@ void GeomEval_TBezierSurface::Bounds(double& U1, double& U2, double& V1, double&
   V2 = M_PI / myAlphaV;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsUClosed() const
 {
@@ -339,7 +339,7 @@ bool GeomEval_TBezierSurface::IsUClosed() const
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsVClosed() const
 {
@@ -356,56 +356,56 @@ bool GeomEval_TBezierSurface::IsVClosed() const
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsUPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomEval_TBezierSurface::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsCNu(int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierSurface::IsCNv(int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_TBezierSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_TBezierSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_TBezierSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_TBezierSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::evalTrigBasis(double                      theT,
                                             double                      theAlpha,
@@ -422,7 +422,7 @@ void GeomEval_TBezierSurface::evalTrigBasis(double                      theT,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::evalTrigBasisDeriv(double                      theT,
                                                  double                      theAlpha,
@@ -439,21 +439,21 @@ void GeomEval_TBezierSurface::evalTrigBasisDeriv(double                      the
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::evalBasisU(double theU, NCollection_Array1<double>& theBasis) const
 {
   evalTrigBasis(theU, myAlphaU, OrderU(), theBasis);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::evalBasisV(double theV, NCollection_Array1<double>& theBasis) const
 {
   evalTrigBasis(theV, myAlphaV, OrderV(), theBasis);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::evalBasisDerivU(double                      theU,
                                               int                         theOrder,
@@ -462,7 +462,7 @@ void GeomEval_TBezierSurface::evalBasisDerivU(double                      theU,
   evalTrigBasisDeriv(theU, myAlphaU, OrderU(), theOrder, theBasisDeriv);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::evalBasisDerivV(double                      theV,
                                               int                         theOrder,
@@ -471,7 +471,7 @@ void GeomEval_TBezierSurface::evalBasisDerivV(double                      theV,
   evalTrigBasisDeriv(theV, myAlphaV, OrderV(), theOrder, theBasisDeriv);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
 {
@@ -514,7 +514,7 @@ gp_Pnt GeomEval_TBezierSurface::EvalD0(const double U, const double V) const
   return gp_Pnt(aNumer / aDenom);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double V) const
 {
@@ -593,7 +593,7 @@ Geom_Surface::ResD1 GeomEval_TBezierSurface::EvalD1(const double U, const double
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double V) const
 {
@@ -716,7 +716,7 @@ Geom_Surface::ResD2 GeomEval_TBezierSurface::EvalD2(const double U, const double
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double V) const
 {
@@ -897,7 +897,7 @@ Geom_Surface::ResD3 GeomEval_TBezierSurface::EvalD3(const double U, const double
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
                                        const double V,
@@ -978,7 +978,7 @@ gp_Vec GeomEval_TBezierSurface::EvalDN(const double U,
     "GeomEval_TBezierSurface::EvalDN: rational derivatives of order > 3 not implemented");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::Transform(const gp_Trsf& T)
 {
@@ -986,7 +986,7 @@ void GeomEval_TBezierSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_TBezierSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_TBezierSurface::Copy() const
 {
@@ -997,7 +997,7 @@ occ::handle<Geom_Geometry> GeomEval_TBezierSurface::Copy() const
   return new GeomEval_TBezierSurface(myPoles, myAlphaU, myAlphaV);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

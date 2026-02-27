@@ -112,11 +112,7 @@ occ::handle<Geom_Geometry> Geom_OffsetSurface::Copy() const
   return new Geom_OffsetSurface(*this);
 }
 
-//=======================================================================
-// function : Geom_OffsetSurface
-// purpose  : Basis surface cannot be an Offset surface or trimmed from
-//            offset surface.
-//=======================================================================
+//=================================================================================================
 
 Geom_OffsetSurface::Geom_OffsetSurface(const Geom_OffsetSurface& theOther)
     : basisSurf(occ::down_cast<Geom_Surface>(theOther.basisSurf->Copy())),
@@ -261,10 +257,10 @@ void Geom_OffsetSurface::SetBasisSurface(const occ::handle<Geom_Surface>& S,
   if (aCheckingSurf->IsKind(STANDARD_TYPE(Geom_BSplineSurface))
       || aCheckingSurf->IsKind(STANDARD_TYPE(Geom_BezierSurface)))
   {
-    // Tolerance en dur pour l'instant ,mais on devrait la proposer dans le constructeur
-    // et la mettre en champ, on pourrait utiliser par exemple pour l'extraction d'iso
-    // et aussi pour les singularite. Pour les surfaces osculatrices, on l'utilise pour
-    // detecter si une iso est degeneree.
+    // Hard-coded tolerance for now, but it should be offered in the constructor
+    // and stored as a field. It could be used, for example, for iso-curve extraction
+    // and also for singularity detection. For osculating surfaces, it is used to
+    // detect whether an iso-curve is degenerate.
     constexpr double Tol = Precision::Confusion(); // 0.0001;
     myOscSurf            = std::make_unique<Geom_OsculatingSurface>(aCheckingSurf, Tol);
   }
@@ -597,13 +593,7 @@ void Geom_OffsetSurface_VIsoEvaluator::Evaluate(int*, /*Dimension*/
   *ReturnCode = 0;
 }
 
-//=======================================================================
-// function : UIso
-// purpose  : The Uiso or the VIso of an OffsetSurface can't be clearly
-//           exprimed as a curve from Geom (except some particular cases).
-//           So, to extract the U or VIso an Approximation is needed.
-//           This approx always will return a BSplineCurve from Geom.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> Geom_OffsetSurface::UIso(const double UU) const
 {
@@ -865,7 +855,7 @@ gp_GTrsf2d Geom_OffsetSurface::ParametricTransformation(const gp_Trsf& T) const
   return basisSurf->ParametricTransformation(T);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Surface> Geom_OffsetSurface::Surface() const
 {

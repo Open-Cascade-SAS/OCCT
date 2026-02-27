@@ -23,7 +23,7 @@
 #include <IntCurveSurface_TheHCurveTool.hxx>
 #include <Standard_OutOfRange.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   const occ::handle<Adaptor3d_Curve>& Curve,
@@ -37,7 +37,7 @@ IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   Init(Curve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   const occ::handle<Adaptor3d_Curve>& Curve,
@@ -53,7 +53,7 @@ IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   Init(Curve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   const occ::handle<Adaptor3d_Curve>& Curve,
@@ -67,7 +67,7 @@ IntCurveSurface_ThePolygonOfHInter::IntCurveSurface_ThePolygonOfHInter(
   Init(Curve, Upars);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>& Curve)
 {
@@ -82,7 +82,7 @@ void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>
   ClosedPolygon = false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>& Curve,
                                               const NCollection_Array1<double>&   Upars)
@@ -98,7 +98,7 @@ void IntCurveSurface_ThePolygonOfHInter::Init(const occ::handle<Adaptor3d_Curve>
   ClosedPolygon = false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double IntCurveSurface_ThePolygonOfHInter::ApproxParamOnCurve(const int    Index,
                                                               const double ParamOnLine) const
@@ -111,6 +111,6 @@ double IntCurveSurface_ThePolygonOfHInter::ApproxParamOnCurve(const int    Index
                                                           myParams);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void IntCurveSurface_ThePolygonOfHInter::Dump() const {}

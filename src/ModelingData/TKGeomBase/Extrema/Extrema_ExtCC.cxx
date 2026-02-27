@@ -14,10 +14,10 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Modified by MPS (june 96) : correction du trap dans le cas droite/Bezier
-// Modified by MPS (mai 97) : PRO 7598
-//                            tri des solutions pour eviter de rendre plusieurs
-//                            fois la meme solution
+// Modified by MPS (june 96) : fix for the trap in the case line/Bezier
+// Modified by MPS (may 97) : PRO 7598
+//                            sort solutions to avoid returning the same
+//                            solution multiple times
 
 #include <Adaptor3d_Curve.hxx>
 #include <Bnd_Range.hxx>
@@ -815,7 +815,7 @@ void Extrema_ExtCC::PrepareResults(const Extrema_ExtElC& AlgExt,
       NbExt = AlgExt.NbExt();
       for (i = 1; i <= NbExt; i++)
       {
-        // Verification de la validite des parametres
+        // Verification of the validity of parameters
         AlgExt.Points(i, P1, P2);
         if (!theIsInverse)
         {

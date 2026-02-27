@@ -241,8 +241,8 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
   TopAbs_Orientation ResOr = TopAbs_FORWARD;
   BRep_Builder       B;
   double             tol;
-  bool               No3DCurve = false; // en fait, si on n`a pas de
-  // modif geometry 3d , it is necessary to test the existence of a curve 3d.
+  bool               No3DCurve = false; // in fact, if we have no
+  // 3D geometry modification, it is necessary to test the existence of a 3D curve.
 
   // new geometry ?
 
@@ -502,7 +502,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
               TopAbs_Orientation vtxrelat = vertex.Orientation();
               if (edge.Orientation() == TopAbs_REVERSED)
               {
-                // Update considere l'edge FORWARD, et le vertex en relatif
+                // Update considers the edge as FORWARD, and the vertex relatively
                 vtxrelat = TopAbs::Reverse(vtxrelat);
               }
               // if (myMap(edge).Orientation() == TopAbs_REVERSED) {
@@ -577,7 +577,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
         TopAbs_Orientation vtxrelat = vertex.Orientation();
         if (edor == TopAbs_REVERSED)
         {
-          // Update considere l'edge FORWARD, et le vertex en relatif
+          // Update considers the edge as FORWARD, and the vertex relatively
           vtxrelat = TopAbs::Reverse(vtxrelat);
         }
 

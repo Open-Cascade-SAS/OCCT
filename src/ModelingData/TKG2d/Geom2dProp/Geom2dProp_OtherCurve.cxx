@@ -14,7 +14,7 @@
 #include <Geom2dProp_OtherCurve.hxx>
 #include <Geom2dProp_CurveAnalysisTools.pxx>
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::TangentResult Geom2dProp_OtherCurve::Tangent(const double theParam,
                                                          const double theTol) const
@@ -22,7 +22,7 @@ Geom2dProp::TangentResult Geom2dProp_OtherCurve::Tangent(const double theParam,
   return Geom2dProp_CurveAnalysisTools::EvaluateTangent(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurvatureResult Geom2dProp_OtherCurve::Curvature(const double theParam,
                                                              const double theTol) const
@@ -30,7 +30,7 @@ Geom2dProp::CurvatureResult Geom2dProp_OtherCurve::Curvature(const double thePar
   return Geom2dProp_CurveAnalysisTools::EvaluateCurvature(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::NormalResult Geom2dProp_OtherCurve::Normal(const double theParam,
                                                        const double theTol) const
@@ -38,7 +38,7 @@ Geom2dProp::NormalResult Geom2dProp_OtherCurve::Normal(const double theParam,
   return Geom2dProp_CurveAnalysisTools::EvaluateNormal(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CentreResult Geom2dProp_OtherCurve::CentreOfCurvature(const double theParam,
                                                                   const double theTol) const
@@ -46,14 +46,14 @@ Geom2dProp::CentreResult Geom2dProp_OtherCurve::CentreOfCurvature(const double t
   return Geom2dProp_CurveAnalysisTools::EvaluateCentreOfCurvature(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurveAnalysis Geom2dProp_OtherCurve::FindCurvatureExtrema() const
 {
   return Geom2dProp_CurveAnalysisTools::FindCurvatureExtrema(myAdaptor);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dProp::CurveAnalysis Geom2dProp_OtherCurve::FindInflections() const
 {

@@ -268,7 +268,7 @@ static void Function_SetUVBounds(double&                               myU1,
   W1 = myCurve->FirstParameter();
   W2 = myCurve->LastParameter();
   W  = 0.5 * (W1 + W2);
-  // on ouvre l`intervalle
+  // open the interval
   // W1 += 1.0e-9;
   // W2 -= 1.0e-9;
   P1 = myCurve->Value(W1);
@@ -575,8 +575,8 @@ static void Function_SetUVBounds(double&                               myU1,
         // A x + B y + C z + D = 0    (2)
         // x > 0                      (3)
         // y = 0                      (4)
-        // REM : (1) (2)     : equation du cercle
-        //       (1) (3) (4) : equation de la couture.
+        // REM : (1) (2)     : equation of the circle
+        //       (1) (3) (4) : equation of the seam.
         int     NbSolutions = 0;
         double  A, B, C, D, R, Tol = 1.e-10;
         double  U1, U2, V1, V2;
@@ -689,7 +689,7 @@ static void Function_SetUVBounds(double&                               myU1,
         if (NbSolutions == 1)
         {
           if (std::abs(U1 - U2) > M_PI)
-          { // on traverse la couture
+          { // crossing the seam
             if (U1 > M_PI)
             {
               myU1 = U1;
@@ -702,7 +702,7 @@ static void Function_SetUVBounds(double&                               myU1,
             }
           }
           else
-          { // on ne traverse pas la couture
+          { // not crossing the seam
             if (U1 > U2)
             {
               myU2 = U1;
@@ -716,7 +716,7 @@ static void Function_SetUVBounds(double&                               myU1,
           }
         }
         else
-        { // 0 ou 2 solutions
+        { // 0 or 2 solutions
           gp_Pnt Center = Circle.Location();
           double U, V;
           ElSLib::SphereParameters(gp_Ax3(gp::XOY()), 1, Center, U, V);
@@ -1268,7 +1268,7 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
       int i;
       int NbCurves = Fit.NbMultiCurves();
 
-      // on essaie de rendre la courbe au moins C1
+      // try to make the curve at least C1
       Convert_CompBezierCurves2dToBSplineCurve2d Conv;
 
       double Tol3d, Tol2d;
@@ -1276,13 +1276,13 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
       {
         Fit.Error(i, Tol3d, Tol2d);
         aNewTol2d                       = std::max(aNewTol2d, Tol2d);
-        AppParCurves_MultiCurve      MC = Fit.Value(i);           // Charge la Ieme Curve
-        NCollection_Array1<gp_Pnt2d> Poles2d(1, MC.Degree() + 1); // Recupere les poles
+        AppParCurves_MultiCurve      MC = Fit.Value(i);           // Load the i-th Curve
+        NCollection_Array1<gp_Pnt2d> Poles2d(1, MC.Degree() + 1); // Retrieve the poles
         MC.Curve(1, Poles2d);
         Conv.AddCurve(Poles2d);
       }
 
-      // mise a jour des fields de ProjLib_Approx
+      // update the fields of ProjLib_Approx
       Conv.Perform();
       NbPoles = Conv.NbPoles();
       NbKnots = Conv.NbKnots();
@@ -1305,11 +1305,11 @@ void ProjLib_ComputeApprox::Perform(const occ::handle<Adaptor3d_Curve>&   C,
       // to avoid problems if trim is used.
       NewKnots(NbKnots) = C->LastParameter();
 
-      // il faut recadrer les poles de debut et de fin:
-      // ( Car pour les problemes de couture, on a du ouvrir l`intervalle
-      // de definition de la courbe.)
-      // On choisit de calculer ces poles par prolongement de la courbe
-      // approximee.
+      // The start and end poles need to be adjusted:
+      // (Due to seam issues, we had to open the definition interval
+      // of the curve.)
+      // We choose to compute these poles by extending the approximated
+      // curve.
       myBSpline = new Geom2d_BSplineCurve(NewPoles, NewKnots, NewMults, Conv.Degree());
 
       if (aFistC == AppParCurves_PassPoint || aLastC == AppParCurves_PassPoint)

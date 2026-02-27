@@ -79,7 +79,7 @@ BRepBlend_AppFuncRoot::BRepBlend_AppFuncRoot(occ::handle<BRepBlend_Line>& Line,
   mySolver = std::make_unique<math_FunctionSetRoot>(Func, myTolerance, 30);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepBlend_AppFuncRoot::~BRepBlend_AppFuncRoot() = default;
 

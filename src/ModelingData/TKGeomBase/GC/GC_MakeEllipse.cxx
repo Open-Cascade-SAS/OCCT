@@ -22,11 +22,15 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GC_MakeEllipse::GC_MakeEllipse(const gp_Elips& E)
 {
   TheError   = gce_Done;
   TheEllipse = new Geom_Ellipse(E);
 }
+
+//=================================================================================================
 
 GC_MakeEllipse::GC_MakeEllipse(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
@@ -45,6 +49,8 @@ GC_MakeEllipse::GC_MakeEllipse(const gp_Ax2& A2, const double MajorRadius, const
   }
 }
 
+//=================================================================================================
+
 GC_MakeEllipse::GC_MakeEllipse(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
   gce_MakeElips E = gce_MakeElips(S1, S2, Center);
@@ -54,6 +60,8 @@ GC_MakeEllipse::GC_MakeEllipse(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt&
     TheEllipse = new Geom_Ellipse(E.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_Ellipse>& GC_MakeEllipse::Value() const
 {

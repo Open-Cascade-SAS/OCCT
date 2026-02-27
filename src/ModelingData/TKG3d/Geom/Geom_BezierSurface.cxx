@@ -14,14 +14,14 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Passage en classe persistante - 23/01/91
-// Modif suite a la deuxieme revue de projet toolkit Geometry -23/01/91
-//  pmn : 21/10/95 ; Correction de la methode segment (PRO5853)
-//  pmn : 31-Dec-96; Bonne gestion des poids (bug PRO4622)
-//  xab : 07-Jul-97; le cache est instable en degree 21
-//        a partir du degree 15 on ne l'utilise plus
-//  RBD : 15/10/98 ; Le cache est desormais defini sur [-1,1] (pro15537).
-//  pmn : 10/12/98 ; Update de la methode segment (suite a la modif de cache).
+// Converted to persistent class - 23/01/91
+// Modified after second review of toolkit Geometry project - 23/01/91
+//  pmn : 21/10/95 ; Fix of the Segment method (PRO5853)
+//  pmn : 31-Dec-96; Proper weight management (bug PRO4622)
+//  xab : 07-Jul-97; the cache is unstable at degree 21,
+//        from degree 15 onwards it is no longer used
+//  RBD : 15/10/98 ; The cache is now defined on [-1,1] (pro15537).
+//  pmn : 10/12/98 ; Update of the Segment method (following cache modification).
 
 #include <array>
 
@@ -1466,7 +1466,7 @@ Geom_Surface::ResD2 Geom_BezierSurface::EvalD2(const double U, const double V) c
   Geom_Surface::ResD2 aResult;
   if (myURational || myVRational)
   {
-    //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
+    //-- WARNING: pay attention to the ORDER of arguments in BSPLSLIB
     BSplSLib::D2(U,
                  V,
                  1,
@@ -1492,7 +1492,7 @@ Geom_Surface::ResD2 Geom_BezierSurface::EvalD2(const double U, const double V) c
   }
   else
   {
-    //-- ATTENTION a l'ORDRE d'appel ds BSPLSLIB
+    //-- WARNING: pay attention to the ORDER of arguments in BSPLSLIB
     BSplSLib::D2(U,
                  V,
                  1,

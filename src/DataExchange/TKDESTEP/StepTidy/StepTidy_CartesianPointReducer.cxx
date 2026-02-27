@@ -27,7 +27,7 @@
 #include <StepVisual_PresentationLayerAssignment.hxx>
 #include <StepVisual_StyledItem.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_CartesianPointReducer::StepTidy_CartesianPointReducer(
   const occ::handle<XSControl_WorkSession>& theWS)
@@ -50,7 +50,7 @@ StepTidy_CartesianPointReducer::StepTidy_CartesianPointReducer(
   registerReplacer(STANDARD_TYPE(StepRepr_Representation), replaceRepresentation);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceAxis2Placement3d(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -67,7 +67,7 @@ bool StepTidy_CartesianPointReducer::replaceAxis2Placement3d(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceVertexPoint(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -83,7 +83,7 @@ bool StepTidy_CartesianPointReducer::replaceVertexPoint(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -104,7 +104,7 @@ bool StepTidy_CartesianPointReducer::replaceGeometricCurveSet(
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replacePresentationLayerAssignment(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -126,7 +126,7 @@ bool StepTidy_CartesianPointReducer::replacePresentationLayerAssignment(
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceStyledItem(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -142,7 +142,7 @@ bool StepTidy_CartesianPointReducer::replaceStyledItem(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -165,7 +165,7 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnots(
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceLine(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -181,7 +181,7 @@ bool StepTidy_CartesianPointReducer::replaceLine(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -209,7 +209,7 @@ bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnots(
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -226,7 +226,7 @@ bool StepTidy_CartesianPointReducer::replaceAxis1Placement(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceRepresentation(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -250,7 +250,7 @@ bool StepTidy_CartesianPointReducer::replaceRepresentation(
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSplineCurve(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,
@@ -273,7 +273,7 @@ bool StepTidy_CartesianPointReducer::replaceBSplineCurveWithKnotsAndRationalBSpl
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CartesianPointReducer::replaceBSplineSurfaceWithKnotsAndRationalBSplineSurface(
   const occ::handle<StepGeom_CartesianPoint>& theOldEntity,

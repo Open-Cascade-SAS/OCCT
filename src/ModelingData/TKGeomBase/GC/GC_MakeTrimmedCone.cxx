@@ -24,12 +24,8 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation of a cone by four points.                                   +
-//   First two give the axis.                                             +
-//   The third gives the base radius.                                     +
-//   the third and the fourth demi-angle.                                 +
-//=========================================================================
+//=================================================================================================
+
 GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1,
                                        const gp_Pnt& P2,
                                        const gp_Pnt& P3,
@@ -50,8 +46,7 @@ GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1,
   }
 }
 
-//=========================================================================
-//=========================================================================
+//=================================================================================================
 
 GC_MakeTrimmedCone::GC_MakeTrimmedCone(const gp_Pnt& P1,
                                        const gp_Pnt& P2,

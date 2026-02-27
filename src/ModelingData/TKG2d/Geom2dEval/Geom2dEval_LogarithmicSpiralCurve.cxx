@@ -59,7 +59,7 @@ inline void powComplexInt(const double theBaseRe,
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dEval_LogarithmicSpiralCurve::Geom2dEval_LogarithmicSpiralCurve(const gp_Ax2d& thePosition,
                                                                      double         theScale,
@@ -79,35 +79,35 @@ Geom2dEval_LogarithmicSpiralCurve::Geom2dEval_LogarithmicSpiralCurve(const gp_Ax
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const gp_Ax2d& Geom2dEval_LogarithmicSpiralCurve::Position() const
 {
   return myPosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_LogarithmicSpiralCurve::Scale() const
 {
   return myScale;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_LogarithmicSpiralCurve::GrowthExponent() const
 {
   return myGrowthExponent;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_LogarithmicSpiralCurve::Reverse()
 {
   throw Standard_NotImplemented("Geom2dEval_LogarithmicSpiralCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_LogarithmicSpiralCurve::ReversedParameter(const double U) const
 {
@@ -115,49 +115,49 @@ double Geom2dEval_LogarithmicSpiralCurve::ReversedParameter(const double U) cons
   throw Standard_NotImplemented("Geom2dEval_LogarithmicSpiralCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_LogarithmicSpiralCurve::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_LogarithmicSpiralCurve::LastParameter() const
 {
   return Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_LogarithmicSpiralCurve::IsClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_LogarithmicSpiralCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape Geom2dEval_LogarithmicSpiralCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_LogarithmicSpiralCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt2d Geom2dEval_LogarithmicSpiralCurve::EvalD0(const double U) const
 {
@@ -172,7 +172,7 @@ gp_Pnt2d Geom2dEval_LogarithmicSpiralCurve::EvalD0(const double U) const
   return gp_Pnt2d(anO + aExp * aCosU * aXD + aExp * aSinU * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD1 Geom2dEval_LogarithmicSpiralCurve::EvalD1(const double U) const
 {
@@ -194,7 +194,7 @@ Geom2d_Curve::ResD1 Geom2dEval_LogarithmicSpiralCurve::EvalD1(const double U) co
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD2 Geom2dEval_LogarithmicSpiralCurve::EvalD2(const double U) const
 {
@@ -220,7 +220,7 @@ Geom2d_Curve::ResD2 Geom2dEval_LogarithmicSpiralCurve::EvalD2(const double U) co
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD3 Geom2dEval_LogarithmicSpiralCurve::EvalD3(const double U) const
 {
@@ -249,7 +249,7 @@ Geom2d_Curve::ResD3 Geom2dEval_LogarithmicSpiralCurve::EvalD3(const double U) co
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec2d Geom2dEval_LogarithmicSpiralCurve::EvalDN(const double U, const int N) const
 {
@@ -291,7 +291,7 @@ gp_Vec2d Geom2dEval_LogarithmicSpiralCurve::EvalDN(const double U, const int N) 
   return gp_Vec2d(aScale * aCoeffX * aXD + aScale * aCoeffY * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_LogarithmicSpiralCurve::Transform(const gp_Trsf2d& T)
 {
@@ -299,14 +299,14 @@ void Geom2dEval_LogarithmicSpiralCurve::Transform(const gp_Trsf2d& T)
   throw Standard_NotImplemented("Geom2dEval_LogarithmicSpiralCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom2d_Geometry> Geom2dEval_LogarithmicSpiralCurve::Copy() const
 {
   return new Geom2dEval_LogarithmicSpiralCurve(myPosition, myScale, myGrowthExponent);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_LogarithmicSpiralCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

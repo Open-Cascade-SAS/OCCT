@@ -27,28 +27,16 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-// function : gce_MakeCirc
-// purpose  :
-//   Creation d un cercle 3d de gp passant par trois points.              +
-//   Trois cas de figures :                                               +
-//      1/ Les trois points sont confondus.                               +
-//      -----------------------------------                               +
-//      Le resultat est le cercle centre en Point1 de rayon zero.         +
-//      2/ Deux des trois points sont confondus.                          +
-//      ----------------------------------------                          +
-//      Pas de solution (Erreur : Points confondus).                      +
-//      3/ Les trois points sont distinct.                                +
-//      ----------------------------------                                +
-//      On cree la mediatrice a P1P2 ainsi que la mediatrice a P1P3.      +
-//      La solution a pour centre l intersection de ces deux droite et    +
-//      pour rayon la distance entre ce centre et l un des trois points.  +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 {
-  //=========================================================================
-  //   Traitement.                                                          +
-  //=========================================================================
+  // Three cases:
+  // 1) All three points are coincident: result is a circle centered at P1 with zero radius.
+  // 2) Two of the three points are coincident: no solution (error: ConfusedPoints).
+  // 3) All three points are distinct: create the perpendicular bisector of P1P2 and
+  //    the perpendicular bisector of P2P3. The center is their intersection and
+  //    the radius is the distance from that center to any of the three points.
   double dist1, dist2, dist3, aResolution;
   //
   aResolution = gp::Resolution();
@@ -182,10 +170,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax2& A2, const double Radius)
   }
 }
 
-//=========================================================================
-//   Creation d un gp_Circ par son centre <Center>, son plan <Plane> et   +
-//   son rayon <Radius>.                                                  +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Center, Plane.Position().Direction(), Radius);
@@ -193,11 +179,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const doub
   TheError       = C.Status();
 }
 
-//=======================================================================
-// function : gce_MakeCirc
-// purpose  : Creation d un gp_Circ par son centre <Center>,
-// sa normale <Norm> et son rayon <Radius>.
-//=======================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius)
 {
   if (Radius < 0.)
@@ -214,12 +197,10 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const doubl
     double Cabs = std::abs(C);
     gp_Ax2 Pos;
 
-    //=========================================================================
-    //  pour determiner l'axe X :                                             +
-    //  on dit que le produit scalaire Vx.Norm = 0.                           +
-    //  et on recherche le max(A,B,C) pour faire la division.                 +
-    //  l'une des coordonnees du vecteur est nulle.                           +
-    //=========================================================================
+    // To determine the X axis:
+    // the dot product Vx.Norm = 0.
+    // find the max(A,B,C) for the division.
+    // one of the vector coordinates is zero.
 
     if (Babs <= Aabs && Babs <= Cabs)
     {
@@ -259,11 +240,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const doubl
   }
 }
 
-//=======================================================================
-// function : gce_MakeCirc
-// purpose  :  Creation d un gp_Circ par son centre <Center>,
-// sa normale <Ptaxis> et  son rayon <Radius>
-//=======================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const double Radius)
 {
   if (Radius < 0.)
@@ -286,12 +264,10 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const dou
       double Cabs = std::abs(C);
       gp_Ax2 Pos;
 
-      //=========================================================================
-      //  pour determiner l'axe X :                                             +
-      //  on dit que le produit scalaire Vx.Norm = 0.                           +
-      //  et on recherche le max(A,B,C) pour faire la division.                 +
-      //  l'une des coordonnees du vecteur est nulle.                           +
-      //=========================================================================
+      // To determine the X axis:
+      // the dot product Vx.Norm = 0.
+      // find the max(A,B,C) for the division.
+      // one of the vector coordinates is zero.
 
       gp_Dir Norm = gce_MakeDir(Center, Ptaxis);
       if (Babs <= Aabs && Babs <= Cabs)
@@ -333,10 +309,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const dou
   }
 }
 
-//=======================================================================
-// function : gce_MakeCirc
-// purpose  : Creation d un gp_Circ par son axe <Axis> et son rayon <Radius>.
-//=======================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const double Radius)
 {
   if (Radius < 0.)
@@ -355,12 +329,10 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const double Radius)
     double Cabs = std::abs(C);
     gp_Ax2 Pos;
 
-    //=========================================================================
-    //  pour determiner l'axe X :                                             +
-    //  on dit que le produit scalaire Vx.Norm = 0.                           +
-    //  et on recherche le max(A,B,C) pour faire la division.                 +
-    //  l'une des coordonnees du vecteur est nulle.                           +
-    //=========================================================================
+    // To determine the X axis:
+    // the dot product Vx.Norm = 0.
+    // find the max(A,B,C) for the division.
+    // one of the vector coordinates is zero.
 
     if (Babs <= Aabs && Babs <= Cabs)
     {
@@ -400,11 +372,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Ax1& Axis, const double Radius)
   }
 }
 
-//=======================================================================
-// function : gce_MakeCirc
-// purpose  : Creation d un gp_Circ concentrique a un autre gp_circ a une distance +
-//   donnee.
-//=======================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const double Dist)
 {
   double Rad = Circ.Radius() + Dist;
@@ -419,11 +388,8 @@ gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const double Dist)
   }
 }
 
-//=======================================================================
-// function : gce_MakeCirc
-// purpose  : Creation d un gp_Circ concentrique a un autre gp_circ dont le rayon
-//   est egal a la distance de <Point> a l axe de <Circ>.
-//=======================================================================
+//=================================================================================================
+
 gce_MakeCirc::gce_MakeCirc(const gp_Circ& Circ, const gp_Pnt& P)
 {
   double Rad = gp_Lin(Circ.Axis()).Distance(P);

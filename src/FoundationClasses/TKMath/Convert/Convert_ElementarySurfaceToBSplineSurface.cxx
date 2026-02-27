@@ -18,7 +18,7 @@
 #include <gp_Pnt.hxx>
 #include <Standard_OutOfRange.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 void Convert_ElementarySurfaceToBSplineSurface::Finalize()
 {
@@ -49,7 +49,7 @@ void Convert_ElementarySurfaceToBSplineSurface::Finalize()
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_ElementarySurfaceToBSplineSurface::Convert_ElementarySurfaceToBSplineSurface(
   const int theNbUPoles,
@@ -73,63 +73,63 @@ Convert_ElementarySurfaceToBSplineSurface::Convert_ElementarySurfaceToBSplineSur
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::UDegree() const
 {
   return myUDegree;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::VDegree() const
 {
   return myVDegree;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::NbUPoles() const
 {
   return myNbUPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::NbVPoles() const
 {
   return myNbVPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::NbUKnots() const
 {
   return myNbUKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::NbVKnots() const
 {
   return myNbVKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Convert_ElementarySurfaceToBSplineSurface::IsUPeriodic() const
 {
   return myIsUPeriodic;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Convert_ElementarySurfaceToBSplineSurface::IsVPeriodic() const
 {
   return myIsVPeriodic;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt
   Convert_ElementarySurfaceToBSplineSurface::Pole(const int UIndex, const int VIndex) const
@@ -140,7 +140,7 @@ Standard_DISABLE_DEPRECATION_WARNINGS gp_Pnt
   return myPoles(UIndex, VIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Convert_ElementarySurfaceToBSplineSurface::Weight(const int UIndex, const int VIndex) const
 {
@@ -150,7 +150,7 @@ double Convert_ElementarySurfaceToBSplineSurface::Weight(const int UIndex, const
   return myWeights(UIndex, VIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Convert_ElementarySurfaceToBSplineSurface::UKnot(const int UIndex) const
 {
@@ -160,7 +160,7 @@ double Convert_ElementarySurfaceToBSplineSurface::UKnot(const int UIndex) const
   return myUKnots(UIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Convert_ElementarySurfaceToBSplineSurface::VKnot(const int VIndex) const
 {
@@ -170,7 +170,7 @@ double Convert_ElementarySurfaceToBSplineSurface::VKnot(const int VIndex) const
   return myVKnots(VIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::UMultiplicity(const int UIndex) const
 {
@@ -180,7 +180,7 @@ int Convert_ElementarySurfaceToBSplineSurface::UMultiplicity(const int UIndex) c
   return myUMults(UIndex);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_ElementarySurfaceToBSplineSurface::VMultiplicity(const int VIndex) const
 {
@@ -192,7 +192,7 @@ int Convert_ElementarySurfaceToBSplineSurface::VMultiplicity(const int VIndex) c
 
 Standard_ENABLE_DEPRECATION_WARNINGS
 
-  //==================================================================================================
+  //=================================================================================================
 
   const NCollection_Array2<gp_Pnt>&
         Convert_ElementarySurfaceToBSplineSurface::Poles() const
@@ -200,35 +200,35 @@ Standard_ENABLE_DEPRECATION_WARNINGS
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<double>& Convert_ElementarySurfaceToBSplineSurface::Weights() const
 {
   return myWeights;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_ElementarySurfaceToBSplineSurface::UKnots() const
 {
   return myUKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_ElementarySurfaceToBSplineSurface::VKnots() const
 {
   return myVKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<int>& Convert_ElementarySurfaceToBSplineSurface::UMultiplicities() const
 {
   return myUMults;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<int>& Convert_ElementarySurfaceToBSplineSurface::VMultiplicities() const
 {

@@ -36,7 +36,6 @@ GCPnts_DistFunction::GCPnts_DistFunction(const Adaptor3d_Curve& theCurve,
   }
 }
 
-//
 //=================================================================================================
 
 bool GCPnts_DistFunction::Value(const double X, double& F)

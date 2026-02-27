@@ -14,10 +14,10 @@
 
 // lpa, le 11/09/91
 
-// Application de la methode du gradient corrige pour minimiser
-// F  = somme(||C(ui, Poles(ui)) - ptli||2.
-// La methode de gradient conjugue est programmee dans la bibliotheque
-// mathematique: math_BFGS.
+// Application of the corrected gradient method to minimize
+// F  = sum(||C(ui, Poles(ui)) - ptli||2.
+// The conjugate gradient method is implemented in the mathematical
+// library: math_BFGS.
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -179,9 +179,9 @@ void AppParCurves_BSpGradient::Perform(
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
   NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
-  // Calcul de la fonction F= somme(||C(ui)-Ptli||2):
-  // Appel a une fonction heritant de MultipleVarFunctionWithGradient
-  // pour calculer F et grad_F.
+  // Calculation of the function F= sum(||C(ui)-Ptli||2):
+  // Call to a function inheriting from MultipleVarFunctionWithGradient
+  // to compute F and grad_F.
   // ================================================================
 
   int nbpoles = -Deg - 1;
@@ -234,7 +234,7 @@ void AppParCurves_BSpGradient::Perform(
   if (MError3d > Tol3d || MError2d > Tol2d)
   {
 
-    // Stockage des Poles des courbes pour projeter:
+    // Storage of curve poles for projection:
     // ============================================
     i2 = 0;
     for (k = 1; k <= nbP3d; k++)

@@ -118,7 +118,7 @@ void ValidateSurfaceDesc(const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDe
                          const Geom_Surface*                               theOwner);
 } // namespace GeomEval_RepUtils
 
-//==================================================================================================
+//=================================================================================================
 
 inline void GeomEval_RepUtils::ValidateCurveDesc(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
@@ -146,7 +146,7 @@ inline void GeomEval_RepUtils::ValidateCurveDesc(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline void GeomEval_RepUtils::ValidateSurfaceDesc(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
@@ -174,7 +174,7 @@ inline void GeomEval_RepUtils::ValidateSurfaceDesc(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline occ::handle<GeomEval_RepCurveDesc::Base> GeomEval_RepUtils::CloneCurveDesc(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc)
@@ -219,7 +219,7 @@ inline occ::handle<GeomEval_RepCurveDesc::Base> GeomEval_RepUtils::CloneCurveDes
   return occ::handle<GeomEval_RepCurveDesc::Base>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline occ::handle<GeomEval_RepSurfaceDesc::Base> GeomEval_RepUtils::CloneSurfaceDesc(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc)
@@ -264,7 +264,7 @@ inline occ::handle<GeomEval_RepSurfaceDesc::Base> GeomEval_RepUtils::CloneSurfac
   return occ::handle<GeomEval_RepSurfaceDesc::Base>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD0(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
@@ -290,7 +290,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD0(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD1(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
@@ -328,7 +328,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD1(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD2(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
@@ -366,7 +366,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD2(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD3(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
@@ -404,7 +404,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD3(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveDN(
   const occ::handle<GeomEval_RepCurveDesc::Base>& theDesc,
@@ -443,7 +443,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveDN(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD0(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
@@ -472,7 +472,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD0(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD1(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
@@ -512,7 +512,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD1(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD2(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
@@ -552,7 +552,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD2(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD3(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
@@ -592,7 +592,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD3(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceDN(
   const occ::handle<GeomEval_RepSurfaceDesc::Base>& theDesc,
@@ -635,7 +635,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceDN(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD0Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
                                                     const double                         theU,
@@ -651,7 +651,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD0Mapped(const GeomEval_RepCurveDesc:
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD1Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
                                                     const double                         theU,
@@ -671,7 +671,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD1Mapped(const GeomEval_RepCurveDesc:
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD2Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
                                                     const double                         theU,
@@ -693,7 +693,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD2Mapped(const GeomEval_RepCurveDesc:
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveD3Mapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
                                                     const double                         theU,
@@ -717,7 +717,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveD3Mapped(const GeomEval_RepCurveDesc:
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalCurveDNMapped(const GeomEval_RepCurveDesc::Mapped& theDesc,
                                                     const double                         theU,
@@ -736,7 +736,7 @@ inline bool GeomEval_RepUtils::TryEvalCurveDNMapped(const GeomEval_RepCurveDesc:
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD0Mapped(
   const GeomEval_RepSurfaceDesc::Mapped& theDesc,
@@ -757,7 +757,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD0Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD1Mapped(
   const GeomEval_RepSurfaceDesc::Mapped& theDesc,
@@ -790,7 +790,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD1Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD2Mapped(
   const GeomEval_RepSurfaceDesc::Mapped& theDesc,
@@ -835,7 +835,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD2Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceD3Mapped(
   const GeomEval_RepSurfaceDesc::Mapped& theDesc,
@@ -885,7 +885,7 @@ inline bool GeomEval_RepUtils::TryEvalSurfaceD3Mapped(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 inline bool GeomEval_RepUtils::TryEvalSurfaceDNMapped(
   const GeomEval_RepSurfaceDesc::Mapped& theDesc,

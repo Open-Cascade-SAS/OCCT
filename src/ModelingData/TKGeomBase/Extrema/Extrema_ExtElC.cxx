@@ -37,14 +37,13 @@
 
 static void RefineDir(gp_Dir& aDir);
 
-//=======================================================================
+//=================================================================================================
 // class    : ExtremaExtElC_TrigonometricRoots
-// purpose  :
-//==  Classe Interne (Donne des racines classees d un polynome trigo)
-//==  Code duplique avec IntAna_IntQuadQuad.cxx (lbr le 26 mars 98)
-//==  Solution fiable aux problemes de coefficients proches de 0
-//==  avec essai de rattrapage si coeff<1.e-10 (jct le 27 avril 98)
-//=======================================================================
+// purpose  : Internal class (provides sorted roots of a trigonometric polynomial).
+//            Code duplicated from IntAna_IntQuadQuad.cxx.
+//            Reliable solution for near-zero coefficient problems
+//            with recovery attempt if coeff < 1.e-10.
+//=================================================================================================
 class ExtremaExtElC_TrigonometricRoots
 {
 private:
@@ -172,7 +171,7 @@ ExtremaExtElC_TrigonometricRoots::ExtremaExtElC_TrigonometricRoots(const double 
           }
         }
         //
-        //-- La recherche directe donne n importe quoi.
+        //-- The direct search gives unreliable results.
         aMaxCoef   = std::max(CC, SC);
         aMaxCoef   = std::max(aMaxCoef, C);
         aMaxCoef   = std::max(aMaxCoef, S);
@@ -435,38 +434,36 @@ bool Extrema_ExtElC::PlanarLineCircleExtrema(const gp_Lin& theLin, const gp_Circ
   return true;
 }
 
-//=======================================================================
-// function : Extrema_ExtElC
-// purpose  :
+//=================================================================================================
 // Find extreme distances between straight line C1 and circle C2.
 //
 // Method:
 //   Let P1=C1(u1) and P2=C2(u2) be two solution points
 //        D the direction of straight line C1
-//	T tangent at point P2;
+//        T tangent at point P2;
 //  Then, ( P1P2.D = 0. (1)
 //         ( P1P2.T = 0. (2)
 //  Let O1 and O2 be the origins of C1 and C2;
 //  Then, (1) <=> (O1P2-u1*D).D = 0.         as O1P1 = u1*D
-//	     <=> u1 = O1P2.D                as D.D = 1.
+//             <=> u1 = O1P2.D                as D.D = 1.
 //         (2) <=> P1O2.T = 0.                as O2P2.T = 0.
 //             <=> ((P2O1.D)D+O1O2).T = 0.    as P1O1 = -u1*D = (P2O1.D)D
-//	     <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
-//	     <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
-//  We are in the reference of the circle; let:
+//             <=> (((P2O2+O2O1).D)D+O1O2).T = 0.
+//             <=> ((P2O2.D)(D.T)+((O2O1.D)D-O2O1).T = 0.
+//  We are in the reference frame of the circle; let:
 //         Cos = std::cos(u2) and Sin = std::sin(u2),
 //         P2 (R*Cos,R*Sin,0.),
 //         T (-R*Sin,R*Cos,0.),
-//	 D (Dx,Dy,Dz),
-//	 V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
+//         D (Dx,Dy,Dz),
+//         V (Vx,Vy,Vz) = (O2O1.D)D-O2O1;
 //  Then, the equation by Cos and Sin is as follows:
 //    -(2*R*R*Dx*Dy)   * Cos**2  +       A1
 //   R*R*(Dx**2-Dy**2) * Cos*Sin +    2* A2
 //         R*Vy        * Cos     +       A3
-//	-R*Vx        * Sin     +       A4
+//        -R*Vx        * Sin     +       A4
 //      R*R*Dx*Dy                = 0.    A5
 // Use the algorithm math_TrigonometricFunctionRoots to solve this equation.
-//=======================================================================
+//=================================================================================================
 Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double)
 {
   double Dx, Dy, Dz, aRO2O1, aTolRO2O1;
@@ -500,7 +497,7 @@ Extrema_ExtElC::Extrema_ExtElC(const gp_Lin& C1, const gp_Circ& C2, const double
   RefineDir(D);
   D.Coord(Dx, Dy, Dz);
   //
-  // Calcul de V dans le repere du cercle:
+  // Calculate V in the reference frame of the circle:
   gp_Pnt O1 = C1.Location();
   gp_Pnt O2 = C2.Location();
   gp_Vec O2O1(O2, O1);

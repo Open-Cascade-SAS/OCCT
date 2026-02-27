@@ -118,7 +118,7 @@ private:
   DuplicateMap                       myDuplicateMap; //!< Map of duplicate entities.
 };
 
-//==================================================================================================
+//=================================================================================================
 
 template <typename ProcessedType, typename ProcessedTypeHasher>
 StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::StepTidy_EntityReducer(
@@ -129,7 +129,7 @@ StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::StepTidy_EntityReduc
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 template <typename ProcessedType, typename ProcessedTypeHasher>
 bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::ProcessEntity(
@@ -161,7 +161,7 @@ bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::ProcessEntity(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 template <typename ProcessedType, typename ProcessedTypeHasher>
 void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
@@ -194,7 +194,7 @@ void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::Perform(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 template <typename ProcessedType, typename ProcessedTypeHasher>
 void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::registerReplacer(
@@ -204,7 +204,7 @@ void StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::registerReplace
   myReplacerMap.Bind(theType, theReplacer);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 template <typename ProcessedType, typename ProcessedTypeHasher>
 bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::hasAllReplacers(
@@ -221,7 +221,7 @@ bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::hasAllReplacers
                      });
 }
 
-//==================================================================================================
+//=================================================================================================
 template <typename ProcessedType, typename ProcessedTypeHasher>
 bool StepTidy_EntityReducer<ProcessedType, ProcessedTypeHasher>::replaceInSharings(
   const occ::handle<ProcessedType>&                                          theOldEntity,

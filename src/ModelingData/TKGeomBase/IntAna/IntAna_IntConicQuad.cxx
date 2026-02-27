@@ -71,16 +71,16 @@ PERFORM(const gp_Lin& L, const IntAna_Quadric& Quad)
   done = inquadric = parallel = false;
 
   //----------------------------------------------------------------------
-  //-- Substitution de x=t Lx + Lx0       ( exprime dans                 )
-  //--                 y=t Ly + Ly0       (  le systeme de coordonnees   )
-  //--                 z=t Lz + Lz0       (  canonique                   )
+  //-- Substitution of x=t Lx + Lx0       ( expressed in                 )
+  //--                  y=t Ly + Ly0       (  the canonical coordinate   )
+  //--                  z=t Lz + Lz0       (  system                     )
   //--
-  //-- Dans     Qxx x**2 + Qyy y**2 + Qzz z**2
+  //-- Into     Qxx x**2 + Qyy y**2 + Qzz z**2
   //--          + 2 ( Qxy x y  + Qxz x z  + Qyz y z  )
   //--          + 2 ( Qx x + Qy y + Qz z )
   //--          + QCte
   //--
-  //-- Done un polynome en t : A2 t**2 + A1 t + A0 avec :
+  //-- Gives a polynomial in t: A2 t**2 + A1 t + A0 with:
   //----------------------------------------------------------------------
 
   double Lx0, Ly0, Lz0, Lx, Ly, Lz;
@@ -140,15 +140,15 @@ PERFORM(const gp_Circ& C, const IntAna_Quadric& Quad)
   double Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, QCte;
 
   //----------------------------------------------------------------------
-  //-- Dans le repere liee a C.Position() :
+  //-- In the reference frame associated with C.Position():
   //-- xC = R * Cos[t]
   //-- yC = R * Sin[t]
   //-- zC = 0
   //--
-  //-- On exprime la quadrique dans ce repere et on substitue
-  //-- xC,yC et zC    a    x,y et z
+  //-- We express the quadric in this frame and substitute
+  //-- xC, yC and zC for x, y and z
   //--
-  //-- On Obtient un polynome en Cos[t] et Sin[t] de degre 2
+  //-- We obtain a polynomial in Cos[t] and Sin[t] of degree 2
   //----------------------------------------------------------------------
   done = inquadric = parallel = false;
 
@@ -210,15 +210,15 @@ PERFORM(const gp_Elips& E, const IntAna_Quadric& Quad)
   done = inquadric = parallel = false;
 
   //----------------------------------------------------------------------
-  //-- Dans le repere liee a E.Position() :
+  //-- In the reference frame associated with E.Position():
   //-- xE = R * Cos[t]
   //-- yE = r * Sin[t]
   //-- zE = 0
   //--
-  //-- On exprime la quadrique dans ce repere et on substitue
-  //-- xE,yE et zE    a    x,y et z
+  //-- We express the quadric in this frame and substitute
+  //-- xE, yE and zE for x, y and z
   //--
-  //-- On Obtient un polynome en Cos[t] et Sin[t] de degre 2
+  //-- We obtain a polynomial in Cos[t] and Sin[t] of degree 2
   //----------------------------------------------------------------------
 
   Quad.Coefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, QCte);
@@ -278,15 +278,15 @@ PERFORM(const gp_Parab& P, const IntAna_Quadric& Quad)
   done = inquadric = parallel = false;
 
   //----------------------------------------------------------------------
-  //-- Dans le repere liee a P.Position() :
+  //-- In the reference frame associated with P.Position():
   //-- xP = y*y / (2 p)
   //-- yP = y
   //-- zP = 0
   //--
-  //-- On exprime la quadrique dans ce repere et on substitue
-  //-- xP,yP et zP    a    x,y et z
+  //-- We express the quadric in this frame and substitute
+  //-- xP, yP and zP for x, y and z
   //--
-  //-- On Obtient un polynome en y de degre 4
+  //-- We obtain a polynomial in y of degree 4
   //----------------------------------------------------------------------
 
   Quad.Coefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, QCte);
@@ -340,15 +340,15 @@ PERFORM(const gp_Hypr& H, const IntAna_Quadric& Quad)
   done = inquadric = parallel = false;
 
   //----------------------------------------------------------------------
-  //-- Dans le repere liee a P.Position() :
+  //-- In the reference frame associated with H.Position():
   //-- xH = R Ch[t]
   //-- yH = r Sh[t]
   //-- zH = 0
   //--
-  //-- On exprime la quadrique dans ce repere et on substitue
-  //-- xP,yP et zP    a    x,y et z
+  //-- We express the quadric in this frame and substitute
+  //-- xH, yH and zH for x, y and z
   //--
-  //-- On Obtient un polynome en Exp[t] de degre 4
+  //-- We obtain a polynomial in Exp[t] of degree 4
   //----------------------------------------------------------------------
 
   Quad.Coefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, QCte);

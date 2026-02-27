@@ -34,10 +34,10 @@ using SurfD1  = Geom_Surface::ResD1;
 using SurfD2  = Geom_Surface::ResD2;
 using SurfD3  = Geom_Surface::ResD3;
 
-//==================================================================================================
+//=================================================================================================
 // Template helpers for parametric surface evaluation.
 // These provide the iteration pattern, while the actual computation is delegated to a functor.
-//==================================================================================================
+//=================================================================================================
 
 //! Evaluate grid points using a point evaluator functor.
 //! @tparam Evaluator functor type with operator()(double theU, double theV) -> gp_Pnt

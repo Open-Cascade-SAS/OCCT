@@ -115,10 +115,10 @@ static void AddSpecialPoints(const IntAna_Quadric& theQuad,
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // class : TrigonometricRoots
-// purpose: Classe Interne (Donne des racines classees d un polynome trigo)
-//======================================================================
+// purpose: Internal class (provides sorted roots of a trigonometric polynomial)
+//=================================================================================================
 class TrigonometricRoots
 {
 
@@ -238,7 +238,7 @@ TrigonometricRoots::TrigonometricRoots(const double CC,
     }
   }
   //
-  //-- La recherche directe donne n importe quoi.
+  //-- The direct search gives unreliable results.
   SvNbRoots = NbRoots;
   for (i = 0; i < SvNbRoots; ++i)
   {
@@ -282,12 +282,11 @@ TrigonometricRoots::TrigonometricRoots(const double CC,
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // class    : MyTrigonometricFunction
-// purpose  :
-//  Classe interne : Donne Value et Derivative sur un polynome
-//                   trigonometrique
-//======================================================================
+// purpose  : Internal class: provides Value and Derivative for a
+//            trigonometric polynomial
+//=================================================================================================
 class MyTrigonometricFunction
 {
 
@@ -338,10 +337,10 @@ public:
 };
 
 //////////
-//=======================================================================
+//=================================================================================================
 // function : IntAna_IntQuadQuad::IntAna_IntQuadQuad
-// purpose  : C o n s t r u c t e u r    v i d e
-//=======================================================================
+// purpose  : Empty constructor
+//=================================================================================================
 IntAna_IntQuadQuad::IntAna_IntQuadQuad()
 {
   done                   = false;
@@ -355,10 +354,10 @@ IntAna_IntQuadQuad::IntAna_IntQuadQuad()
   memset(previouscurve, 0, sizeof(previouscurve));
 }
 
-//=======================================================================
+//=================================================================================================
 // function : IntAna_IntQuadQuad::IntAna_IntQuadQuad
-// purpose  : I n t e r s e c t i o n   C y l i n d r e   Q u a d r i q u e
-//=======================================================================
+// purpose  : Intersection Cylinder - Quadric
+//=================================================================================================
 IntAna_IntQuadQuad::IntAna_IntQuadQuad(const gp_Cylinder&    Cyl,
                                        const IntAna_Quadric& Quad,
                                        const double          Tol)
@@ -369,10 +368,10 @@ IntAna_IntQuadQuad::IntAna_IntQuadQuad(const gp_Cylinder&    Cyl,
   Perform(Cyl, Quad, Tol);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : Perform
-// purpose  : I n t e r s e c t i o n   C y l i n d r e   Q u a d r i q u e
-//=======================================================================
+// purpose  : Intersection Cylinder - Quadric
+//=================================================================================================
 void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Quad, const double)
 {
   done      = true;
@@ -399,7 +398,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
   RCyl         = Cyl.Radius();
   aRealEpsilon = RealEpsilon();
   //----------------------------------------------------------------------
-  //-- Coefficients de la quadrique :
+  //-- Coefficients of the quadric:
   //--      2       2       2
   //-- Qxx x + Qyy y + Qzz z + 2 ( Qxy x y + Qxz x z + Qyz y z )
   //-- + 2 ( Qx x + Qy y + Qz z ) + Q1
@@ -407,21 +406,21 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
   Quad.Coefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, Q1);
 
   //----------------------------------------------------------------------
-  //-- Ecriture des Coefficients de la Quadrique dans le repere liee
-  //-- au Cylindre
+  //-- Writing the quadric coefficients in the reference frame
+  //-- associated with the Cylinder
   //--                 Cyl.Position() -> Ax2
   //----------------------------------------------------------------------
   Quad.NewCoefficients(Qxx, Qyy, Qzz, Qxy, Qxz, Qyz, Qx, Qy, Qz, Q1, Cyl.Position());
 
   //----------------------------------------------------------------------
-  //-- Parametrage du Cylindre Cyl :
+  //-- Parameterization of Cylinder Cyl:
   //--     X = Rcyl * std::cos(Theta)
   //--     Y = Rcyl * std::sin(Theta)
   //--     Z = Z
   //----------------------------------------------------------------------
-  //-- Donne une Equation de la forme :
+  //-- Gives an equation of the form:
   //--   F(std::sin(Theta),std::cos(Theta),ZCyl) = 0
-  //--   (Equation du second degre en ZCyl)
+  //--   (Quadratic equation in ZCyl)
   //--    ZCyl**2  CoeffZ2(Theta) + ZCyl CoeffZ1(Theta) + CoeffZ0(Theta)
   //----------------------------------------------------------------------
   //-- CoeffZ0 = Q1 + 2*Qx*RCyl*Cos[Theta] + Qxx*RCyl^2*Cos[Theta]^2
@@ -429,13 +428,13 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
   //--           Qyy*RCyl^2*Sin[Theta]^2;
   //-- CoeffZ1 =2.0 * ( Qz + RCyl*(Qxz*Cos[Theta] + Sin[Theta]*Qyz)) ;
   //-- CoeffZ2 =  Qzz;
-  //-- !!!! Attention , si on norme sur Qzz pour detecter le cas 1er degre
+  //-- !!!! Warning: if normalizing by Qzz to detect the linear case
   //----------------------------------------------------------------------
-  //-- On Cherche Les Racines en Theta du discriminant de cette equation :
+  //-- We search for the Theta roots of the discriminant of this equation:
   //-- DIS(Theta) = C_1 + C_SS std::sin()**2 + C_CC std::cos()**2 + 2 C_SC std::sin() std::cos()
   //--                  + 2 C_S  std::sin()    + 2 C_C std::cos()
   //--
-  //-- Si Qzz = 0   Alors  On Resout Z=Fct(Theta)  sur le domaine de Theta
+  //-- If Qzz = 0   Then we solve Z=Fct(Theta) on the Theta domain
   //----------------------------------------------------------------------
 
   if (std::abs(Qzz) < myEpsilonCoeffPolyNull)
@@ -446,7 +445,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
   else
   { // #0
     //----------------------------------------------------------------------
-    //--- Cas  ou  F(Z,Theta) est du second degre en Z                  ----
+    //--- Case where F(Z,Theta) is quadratic in Z                       ----
     //----------------------------------------------------------------------
     R2 = RCyl * RCyl;
 
@@ -506,16 +505,16 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
     else
     { // #1
       //---------------------------------------------------------------
-      //-- La Recherche des Zero de DIS a reussi
+      //-- The search for zeros of DIS has succeeded
       //---------------------------------------------------------------
       int nbsolDIS = PolDIS.NbSolutions();
       if (nbsolDIS == 0)
       {
         //--------------------------------------------------------------
-        //-- Le Discriminant a un signe constant :
+        //-- The Discriminant has a constant sign:
         //--
-        //-- Si Positif  ---> 2 Courbes
-        //-- Sinon       ---> Pas de solution
+        //-- If Positive ---> 2 Curves
+        //-- Otherwise   ---> No solution
         //--------------------------------------------------------------
         if (MTF.Value(M_PI) >= -aRealEpsilon)
         {
@@ -558,7 +557,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
         else
         {
           //------------------------------------------------------------
-          //-- Le Discriminant est toujours Negatif
+          //-- The Discriminant is always negative
           //------------------------------------------------------------
           NbCurves = 0;
         }
@@ -566,23 +565,23 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
       else
       { // #2
         //------------------------------------------------------------
-        //-- Le Discriminant a des racines
-        //-- (Le Discriminant est une fonction periodique donc ... )
+        //-- The Discriminant has roots
+        //-- (The Discriminant is a periodic function, hence ...)
         //------------------------------------------------------------
         if (nbsolDIS == 1)
         {
           //------------------------------------------------------------
-          //-- Point de Tangence pour ce Theta Solution
-          //-- Si Signe de Discriminant >=0 pour tout Theta
-          //--     Alors
-          //--       Courbe Solution pour la partie Positive
-          //--       entre les 2 racines ( Ici Tout le domaine )
-          //-- Sinon Seulement un point Tangent
+          //-- Tangent point for this Theta solution
+          //-- If Discriminant sign >= 0 for all Theta
+          //--     Then
+          //--       Solution curve for the positive part
+          //--       between the 2 roots (here the entire domain)
+          //-- Otherwise only a tangent point
           //------------------------------------------------------------
           if (MTF.Value(PolDIS.Value(1) + M_PI) >= -aRealEpsilon)
           {
             //------------------------------------------------------------
-            //-- On a Un Point de Tangence + Une Courbe Solution
+            //-- We have a tangent point + a solution curve
             //------------------------------------------------------------
             TheCurve[0].SetCylinderQuadValues(Cyl,
                                               Qxx,
@@ -622,7 +621,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
           else
           {
             //------------------------------------------------------------
-            //-- On a simplement un Point de tangence
+            //-- We simply have a tangent point
             //------------------------------------------------------------
             //--double Theta = PolDIS(1);
             //--double SecPar= -0.5 * MTFZ1.Value(Theta) / MTFZ2.Value(Theta);
@@ -635,22 +634,22 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
         else
         { // #3
           //------------------------------------------------------------
-          //-- On detecte   :  Les racines double
-          //--              :  Les Zones Positives [Modulo 2 PI]
-          //-- Les Courbes solutions seront obtenues pour les valeurs
-          //-- de Theta ou Discriminant(Theta) > 0  (>=0? en limite)
-          //-- Par la resolution de l equation implicite avec Theta fixe
+          //-- We detect   :  Double roots
+          //--              :  Positive zones [modulo 2 PI]
+          //-- The solution curves will be obtained for the values
+          //-- of Theta where Discriminant(Theta) > 0 (>=0? at boundary)
+          //-- By solving the implicit equation with fixed Theta
           //------------------------------------------------------------
-          //-- Si tout est solution, Alors on est sur une iso
-          //-- Ce cas devrait etre traite en amont
+          //-- If everything is a solution, then we are on an iso
+          //-- This case should be handled upstream
           //------------------------------------------------------------
-          //-- On construit la fonction permettant connaissant un Theta
-          //-- de calculer les Z+ et Z- Correspondants.
+          //-- We build the function that, given a Theta, computes
+          //-- the corresponding Z+ and Z-.
           //-------------------------------------------------------------
 
           //-------------------------------------------------------------
-          //-- Calcul des Intervalles ou Discriminant >=0
-          //-- On a au plus nbsol intervalles ( en fait 2 )
+          //-- Computation of intervals where Discriminant >= 0
+          //-- At most nbsol intervals (in practice 2)
           //--  (1,2) (2,3) .. (nbsol,1+2PI)
           //-------------------------------------------------------------
           int    i;
@@ -665,8 +664,8 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
               Theta1 = PolDIS.Value(i);
               Theta2 = (i < nbsolDIS) ? PolDIS.Value(i + 1) : (PolDIS.Value(1) + PIpPI);
               //----------------------------------------------------------------
-              //-- On detecte les racines doubles
-              //-- Si il n y a que 2 racines alors on prend tout l interval
+              //-- We detect double roots
+              //-- If there are only 2 roots then we take the entire interval
               //----------------------------------------------------------------
               if (std::abs(Theta2 - Theta1) <= aRealEpsilon)
               {
@@ -735,23 +734,23 @@ void IntAna_IntQuadQuad::Perform(const gp_Cylinder& Cyl, const IntAna_Quadric& Q
               //-- i++;
             }
             else
-            { //-- On evite les pbs numeriques (Tout est du meme signe entre les racines)
+            { //-- We avoid numerical issues (everything has the same sign between the roots)
               qwet = MTF.Value(0.5 * (Theta1 + Theta2)) + MTF.Value(0.4 * Theta1 + 0.6 * Theta2)
                      + MTF.Value(0.6 * Theta1 + 0.4 * Theta2);
               if (qwet >= 0.)
               {
                 //------------------------------------------------------------
-                //-- On est positif a partir de Theta1
-                //-- L intervalle Theta1,Theta2 est retenu
+                //-- We are positive starting from Theta1
+                //-- The interval Theta1, Theta2 is retained
                 //------------------------------------------------------------
 
-                //-- le 8 octobre 1997 :
-                //-- PB: Racine en 0    pi/2 pi/2  et 2pi
-                //-- On cree 2 courbes : 0    -> pi/2    2zpartheta
-                //--                     pi/2 -> 2pi     2zpartheta
+                //-- October 8, 1997:
+                //-- PB: Root at 0    pi/2 pi/2  and 2pi
+                //-- We create 2 curves: 0    -> pi/2    2zpertheta
+                //--                     pi/2 -> 2pi     2zpertheta
                 //--
-                //-- la courbe 0 pi/2   passe par le double pt de tangence pi/2
-                //-- il faut donc couper cette courbe en 2
+                //-- The curve 0 pi/2 passes through the double tangent point pi/2
+                //-- so this curve must be split in 2
                 //--
                 Theta3 = ((i + 1) < nbsolDIS) ? PolDIS.Value(i + 2) : (PolDIS.Value(1) + PIpPI);
                 // ft
@@ -932,7 +931,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
     {
       if (!nbsol1)
       {
-        //-- B(t)*z + C(t) = 0    avec C(t) != 0
+        //-- B(t)*z + C(t) = 0    with C(t) != 0
         TheCurve[0].SetConeQuadValues(Cone,
                                       Qxx,
                                       Qyy,
@@ -961,7 +960,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
       }
       else
       {
-        //-- Pas de Solutions
+        //-- No solutions
       }
     }
     return;
@@ -970,7 +969,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
   // else { //#5
   //
   //                2
-  //-- f(z,t)=A(t)*z + B(t)*z + C(t)=0   avec A n est pas toujours nul
+  //-- f(z,t)=A(t)*z + B(t)*z + C(t)=0   where A is not always zero
   //
   //                                              2
   // 3. Try to explore s.c. Discriminant:  D(t)=B(t)-4*A(t)*C(t) => Pol
@@ -1047,13 +1046,13 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
   //
   if (!nbsol && (MTF.Value(M_PI) < 0.))
   {
-    //-- Discriminant signe constant negatif
+    //-- Discriminant has constant negative sign
     return;
   }
   // else {//# 3
   //
-  //-- On Traite le cas : Discriminant(t) > 0 pour tout t en simulant 1
-  //    racine double en 0
+  //-- We handle the case: Discriminant(t) > 0 for all t by simulating
+  //   a double root at 0
   bool DiscriminantConstantPositif = false;
   if (!nbsol)
   {
@@ -1061,8 +1060,8 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
     DiscriminantConstantPositif = true;
   }
   //----------------------------------------------------------------------
-  //-- Le discriminant admet au moins une racine ( -> Point de Tangence )
-  //-- ou est constant positif.
+  //-- The discriminant has at least one root ( -> Tangent Point )
+  //-- or is constant positive.
   //----------------------------------------------------------------------
   for (i = 1; i <= nbsol; ++i)
   {
@@ -1090,15 +1089,15 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
       continue;
     }
     //---------------------------------------------------------------------
-    //-- On a des Solutions entre Theta1 et Theta 2
+    //-- We have solutions between Theta1 and Theta2
     //---------------------------------------------------------------------
 
     //---------------------------------------------------------------------
-    //-- On Subdivise si necessaire Theta1-->Theta2
-    //-- en Theta1-->t1   t1--->t2   ...  tn--->Theta2
-    //--  ou t1,t2,...tn sont des racines de A(t)
+    //-- We subdivide if necessary Theta1-->Theta2
+    //-- into Theta1-->t1   t1--->t2   ...  tn--->Theta2
+    //--  where t1,t2,...tn are roots of A(t)
     //--
-    //-- Seule la courbe Z_NEGATIF est affectee
+    //-- Only the Z_NEGATIF curve is affected
     //----------------------------------------------------------------------
     bool   RacinesdePolZ2DansTheta1Theta2;
     int    i2;
@@ -1126,7 +1125,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
     if (!RacinesdePolZ2DansTheta1Theta2)
     {
       //--------------------------------------------------------------------
-      //-- Pas de Branches Infinies
+      //-- No infinite branches
       TheCurve[NbCurves].SetConeQuadValues(Cone,
                                            Qxx,
                                            Qyy,
@@ -1192,7 +1191,7 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
         if (to < NewMax && to > NewMin)
         {
           //-----------------------------------------------------------------
-          //-- On coupe au moins une fois le domaine Theta1 Theta2
+          //-- We split at least once the domain Theta1 Theta2
           //-----------------------------------------------------------------
           NoChanges = false;
           TheCurve[NbCurves].SetConeQuadValues(Cone,
@@ -1296,8 +1295,8 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
                                              Z_POSITIF);
         //------------------------------------------------------------
         //-- A == 0
-        //-- Si B < 0    Alors Infini sur   Z+
-        //-- Sinon             Infini sur   Z-
+        //-- If B < 0    Then infinity on   Z+
+        //-- Otherwise         infinity on   Z-
         //------------------------------------------------------------
         if (PolZ2.IsARoot(Theta1))
         {
@@ -1361,8 +1360,8 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
                                              Z_POSITIF);
         //------------------------------------------------------------
         //-- A == 0
-        //-- Si B < 0    Alors Infini sur   Z+
-        //-- Sinon             Infini sur   Z-
+        //-- If B < 0    Then infinity on   Z+
+        //-- Otherwise         infinity on   Z-
         //------------------------------------------------------------
         if (PolZ2.IsARoot(NewMin))
         {
@@ -1396,18 +1395,17 @@ void IntAna_IntQuadQuad::Perform(const gp_Cone& Cone, const IntAna_Quadric& Quad
   InternalSetNextAndPrevious();
 }
 
-//=======================================================================
-// function :InternalSetNextAndPrevious
-// purpose  :
-//-- Raccordement des courbes bout a bout
-//--    - Utilisation du champ : IsFirstOpen
-//--    -                        IsLastOpen
-//-- Pas de verification si ces champs retournent Vrai.
+//=================================================================================================
+// function : InternalSetNextAndPrevious
+// purpose  : End-to-end connection of curves
+//--    - Uses the field: IsFirstOpen
+//--    -                 IsLastOpen
+//-- No verification if these fields return True.
 //--
 //--
-//-- 1: Test de      Fin(C1)    = Debut(C2)   ->N(C1) et P(C2)
-//-- 2:              Debut(C1)  = Fin(C2)     ->P(C1) et N(C2)
-//=======================================================================
+//-- 1: Test if  End(C1)   = Start(C2)   ->N(C1) and P(C2)
+//-- 2:          Start(C1) = End(C2)     ->P(C1) and N(C2)
+//=================================================================================================
 void IntAna_IntQuadQuad::InternalSetNextAndPrevious()
 {
   bool   NotLastOpenC2, NotFirstOpenC2;

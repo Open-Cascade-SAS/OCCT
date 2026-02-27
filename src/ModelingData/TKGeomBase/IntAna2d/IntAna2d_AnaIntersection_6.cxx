@@ -44,7 +44,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Elips2d& Elips, const IntAna2d_C
   Conic.Coefficients(A, B, C, D, E, F);
   Conic.NewCoefficients(A, B, C, D, E, F, Axe_rep);
 
-  // Parametre : a avec x=MajorRadius std::cos(a)  et y=MinorRadius std::sin(a)
+  // Parameter: a with x=MajorRadius*cos(a) and y=MinorRadius*sin(a)
 
   pss  = B * minor_radius * minor_radius;       // SIN ^2
   pcc  = A * major_radius * major_radius - pss; // COS ^2

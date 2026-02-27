@@ -22,9 +22,8 @@
 #include <gp_XYZ.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une direction 3d (Dir) de gp a partir de 2 Pnt de gp.     +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeDir::gce_MakeDir(const gp_Pnt& P1, const gp_Pnt& P2)
 {
   if (P1.Distance(P2) <= gp::Resolution())
@@ -37,6 +36,8 @@ gce_MakeDir::gce_MakeDir(const gp_Pnt& P1, const gp_Pnt& P2)
     TheError = gce_Done;
   }
 }
+
+//=================================================================================================
 
 gce_MakeDir::gce_MakeDir(const gp_XYZ& Coord)
 {
@@ -51,6 +52,8 @@ gce_MakeDir::gce_MakeDir(const gp_XYZ& Coord)
   }
 }
 
+//=================================================================================================
+
 gce_MakeDir::gce_MakeDir(const gp_Vec& V)
 {
   if (V.Magnitude() <= gp::Resolution())
@@ -63,6 +66,8 @@ gce_MakeDir::gce_MakeDir(const gp_Vec& V)
     TheError = gce_Done;
   }
 }
+
+//=================================================================================================
 
 gce_MakeDir::gce_MakeDir(const double Xv, const double Yv, const double Zv)
 {
@@ -77,16 +82,22 @@ gce_MakeDir::gce_MakeDir(const double Xv, const double Yv, const double Zv)
   }
 }
 
+//=================================================================================================
+
 const gp_Dir& gce_MakeDir::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeDir::Value() - no result");
   return TheDir;
 }
 
+//=================================================================================================
+
 const gp_Dir& gce_MakeDir::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeDir::operator gp_Dir() const
 {

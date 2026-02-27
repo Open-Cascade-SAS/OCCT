@@ -37,10 +37,7 @@ GeomLib_DenominatorMultiplier::GeomLib_DenominatorMultiplier(
     myKnotFlatVector.SetValue(i, KnotVector(i));
 }
 
-//=======================================================================
-// function : value
-// purpose  : give the value of a(UParameter,VParameter)
-//=======================================================================
+//=================================================================================================
 
 double GeomLib_DenominatorMultiplier::Value(const double UParameter, const double VParameter) const
 

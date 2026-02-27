@@ -23,7 +23,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(BSplCLib_Cache, Standard_Transient)
 
-//==================================================================================================
+//=================================================================================================
 
 BSplCLib_Cache::BSplCLib_Cache(
   const int&                        theDegree,
@@ -37,7 +37,7 @@ BSplCLib_Cache::BSplCLib_Cache(
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BSplCLib_Cache::BSplCLib_Cache(
   const int&                        theDegree,
@@ -51,14 +51,14 @@ BSplCLib_Cache::BSplCLib_Cache(
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool BSplCLib_Cache::IsCacheValid(double theParameter) const
 {
   return myParams.IsCacheValid(theParameter);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::BuildCache(const double&                       theParameter,
                                 const NCollection_Array1<double>&   theFlatKnots,
@@ -116,7 +116,7 @@ void BSplCLib_Cache::BuildCache(const double&                     theParameter,
                        aPolesWeights);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::calculateDerivative(double  theParameter,
                                          int     theDerivative,
@@ -127,7 +127,7 @@ void BSplCLib_Cache::calculateDerivative(double  theParameter,
   calculateDerivativeLocal(aLocalParam, theDerivative, theDerivArray);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::calculateDerivativeLocal(double  theLocalParam,
                                               int     theDerivative,
@@ -185,7 +185,7 @@ void BSplCLib_Cache::calculateDerivativeLocal(double  theLocalParam,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D0(const double& theParameter, gp_Pnt2d& thePoint) const
 {
@@ -194,7 +194,7 @@ void BSplCLib_Cache::D0(const double& theParameter, gp_Pnt2d& thePoint) const
   D0Local(aLocalParam, thePoint);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D0(const double& theParameter, gp_Pnt& thePoint) const
 {
@@ -203,7 +203,7 @@ void BSplCLib_Cache::D0(const double& theParameter, gp_Pnt& thePoint) const
   D0Local(aLocalParam, thePoint);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt& thePoint) const
 {
@@ -238,7 +238,7 @@ void BSplCLib_Cache::D1(const double& theParameter, gp_Pnt& thePoint, gp_Vec& th
   D1Local(aLocalParam, thePoint, theTangent);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt& thePoint, gp_Vec& theTangent) const
 {
@@ -270,7 +270,7 @@ void BSplCLib_Cache::D2(const double& theParameter,
   D2Local(aLocalParam, thePoint, theTangent, theCurvature);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D2Local(double  theLocalParam,
                              gp_Pnt& thePoint,
@@ -309,7 +309,7 @@ void BSplCLib_Cache::D3(const double& theParameter,
   D3Local(aLocalParam, thePoint, theTangent, theCurvature, theTorsion);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D3Local(double  theLocalParam,
                              gp_Pnt& thePoint,
@@ -329,7 +329,7 @@ void BSplCLib_Cache::D3Local(double  theLocalParam,
   theTorsion.SetCoord(aDerivArray[aShift3], aDerivArray[aShift3 + 1], aDerivArray[aShift3 + 2]);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt2d& thePoint) const
 {
@@ -349,7 +349,7 @@ void BSplCLib_Cache::D0Local(double theLocalParam, gp_Pnt2d& thePoint) const
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt2d& thePoint, gp_Vec2d& theTangent) const
 {
@@ -361,7 +361,7 @@ void BSplCLib_Cache::D1Local(double theLocalParam, gp_Pnt2d& thePoint, gp_Vec2d&
   theTangent.SetCoord(aDerivArray[aDim], aDerivArray[aDim + 1]);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D2Local(double    theLocalParam,
                              gp_Pnt2d& thePoint,
@@ -378,7 +378,7 @@ void BSplCLib_Cache::D2Local(double    theLocalParam,
   theCurvature.SetCoord(aDerivArray[aShift], aDerivArray[aShift + 1]);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplCLib_Cache::D3Local(double    theLocalParam,
                              gp_Pnt2d& thePoint,

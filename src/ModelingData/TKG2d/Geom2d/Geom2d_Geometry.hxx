@@ -103,7 +103,7 @@ public:
   [[nodiscard]] Standard_EXPORT occ::handle<Geom2d_Geometry> Translated(const gp_Pnt2d& P1,
                                                                         const gp_Pnt2d& P2) const;
 
-  Standard_EXPORT virtual occ::handle<Geom2d_Geometry> Copy() const = 0;
+  [[nodiscard]] Standard_EXPORT virtual occ::handle<Geom2d_Geometry> Copy() const = 0;
 
   //! Dumps the content of me into the stream
   Standard_EXPORT virtual void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const;

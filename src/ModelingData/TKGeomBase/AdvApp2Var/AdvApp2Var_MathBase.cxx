@@ -625,9 +625,9 @@ int mmaper2_(integer*    ncofmx,
 
   /*     FONCTION : */
   /*     ---------- */
-  /*        Calculate max approximation error i faite lorsque l' on */
-  /*        ne conserve que les premiers NCFNEW coefficients d' une courbe */
-  /*        de degre NCOEFF-1 ecrite dans la base de Jacobi d' ordre 2. */
+  /*        Calculate max approximation error made when keeping only */
+  /*        the first NCFNEW coefficients of a curve of degree NCOEFF-1 */
+  /*        written in the Jacobi basis of order 2. */
 
   /*     KEYWORDS : */
   /*     ----------- */
