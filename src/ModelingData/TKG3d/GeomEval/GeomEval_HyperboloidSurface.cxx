@@ -27,7 +27,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_HyperboloidSurface, Geom_ElementarySurface)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_HyperboloidSurface::GeomEval_HyperboloidSurface(const gp_Ax3& thePosition,
                                                          double        theR1,
@@ -44,28 +44,28 @@ GeomEval_HyperboloidSurface::GeomEval_HyperboloidSurface(const gp_Ax3& thePositi
   pos = thePosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HyperboloidSurface::R1() const
 {
   return myR1;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HyperboloidSurface::R2() const
 {
   return myR2;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_HyperboloidSurface::SheetMode GeomEval_HyperboloidSurface::Mode() const
 {
   return myMode;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::SetR1(double theR1)
 {
@@ -76,7 +76,7 @@ void GeomEval_HyperboloidSurface::SetR1(double theR1)
   myR1 = theR1;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::SetR2(double theR2)
 {
@@ -87,42 +87,42 @@ void GeomEval_HyperboloidSurface::SetR2(double theR2)
   myR2 = theR2;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::SetMode(SheetMode theMode)
 {
   myMode = theMode;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HyperboloidSurface::UReversedParameter(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_HyperboloidSurface::VReversedParameter(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -132,49 +132,49 @@ void GeomEval_HyperboloidSurface::Bounds(double& U1, double& U2, double& V1, dou
   V2 = Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HyperboloidSurface::IsUClosed() const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HyperboloidSurface::IsVClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HyperboloidSurface::IsUPeriodic() const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_HyperboloidSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_HyperboloidSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_HyperboloidSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_HyperboloidSurface::EvalD0(const double U, const double V) const
 {
@@ -202,7 +202,7 @@ gp_Pnt GeomEval_HyperboloidSurface::EvalD0(const double U, const double V) const
   return gp_Pnt(aP);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_HyperboloidSurface::EvalD1(const double U, const double V) const
 {
@@ -240,7 +240,7 @@ Geom_Surface::ResD1 GeomEval_HyperboloidSurface::EvalD1(const double U, const do
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_HyperboloidSurface::EvalD2(const double U, const double V) const
 {
@@ -288,7 +288,7 @@ Geom_Surface::ResD2 GeomEval_HyperboloidSurface::EvalD2(const double U, const do
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_HyperboloidSurface::EvalD3(const double U, const double V) const
 {
@@ -348,7 +348,7 @@ Geom_Surface::ResD3 GeomEval_HyperboloidSurface::EvalD3(const double U, const do
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
                                            const double V,
@@ -401,7 +401,7 @@ gp_Vec GeomEval_HyperboloidSurface::EvalDN(const double U,
   return gp_Vec(aVec);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::Transform(const gp_Trsf& T)
 {
@@ -409,7 +409,7 @@ void GeomEval_HyperboloidSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_HyperboloidSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_HyperboloidSurface::Copy() const
 {
@@ -418,7 +418,7 @@ occ::handle<Geom_Geometry> GeomEval_HyperboloidSurface::Copy() const
   return aCopy;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
@@ -431,7 +431,7 @@ void GeomEval_HyperboloidSurface::DumpJson(Standard_OStream& theOStream, int the
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, (int)myMode)
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_HyperboloidSurface::Coefficients(double& A1,
                                                double& A2,

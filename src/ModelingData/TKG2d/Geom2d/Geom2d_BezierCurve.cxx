@@ -14,11 +14,11 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// Passage en classe persistante - 23/01/91
-// Modif suite a la deuxieme revue de projet toolkit Geometry -23/01/91
-// Infos :
-// Actuellement pour les champs de la courbe le tableau des poles est
-// declare de 1 a NbPoles et le tableau des poids est declare de 1 a NbPoles
+// Transition to persistent class - 23/01/91
+// Modification following the second project review of toolkit Geometry - 23/01/91
+// Notes:
+// Currently for the curve fields the poles array is
+// declared from 1 to NbPoles and the weights array is declared from 1 to NbPoles
 
 // Revised RLE  Aug 19 1993
 // Suppressed Swaps, added Init, removed typedefs

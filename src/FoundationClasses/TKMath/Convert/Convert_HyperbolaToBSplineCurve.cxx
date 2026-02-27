@@ -27,7 +27,7 @@ constexpr int TheDegree  = 2;
 constexpr int MaxNbKnots = 2;
 constexpr int MaxNbPoles = 3;
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_HyperbolaToBSplineCurve::Convert_HyperbolaToBSplineCurve(const gp_Hypr2d& H,
                                                                  const double     U1,

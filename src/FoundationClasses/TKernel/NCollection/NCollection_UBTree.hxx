@@ -416,7 +416,7 @@ private:
   occ::handle<NCollection_BaseAllocator> myAlloc;    ///< Allocator for TreeNode
 };
 
-//==================================================================================================
+//=================================================================================================
 
 template <class TheObjType, class TheBndType>
 bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
@@ -474,7 +474,7 @@ bool NCollection_UBTree<TheObjType, TheBndType>::Add(const TheObjType& theObj,
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 template <class TheObjType, class TheBndType>
 int NCollection_UBTree<TheObjType, TheBndType>::Select(const TreeNode& theBranch,

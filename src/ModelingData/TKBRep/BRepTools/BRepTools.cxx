@@ -481,10 +481,10 @@ void BRepTools::Update(const TopoDS_Shape& S)
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateFaceUVPoints
 // purpose  : Reset the UV points of edges on the Face
-//=======================================================================
+//=================================================================================================
 void BRepTools::UpdateFaceUVPoints(const TopoDS_Face& theF)
 {
   // For each edge of the face <F> reset the UV points to the bounding
@@ -1330,11 +1330,11 @@ TopAbs_Orientation BRepTools::OriEdgeInFace(const TopoDS_Edge& E, const TopoDS_F
 
 namespace
 {
-//=======================================================================
+//=================================================================================================
 // function : findInternalsToKeep
 // purpose  : Looks for internal sub-shapes which has to be kept to preserve
 //           topological connectivity.
-//=======================================================================
+//=================================================================================================
 static void findInternalsToKeep(
   const TopoDS_Shape&                                     theS,
   NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& theAllNonInternals,
@@ -1356,10 +1356,10 @@ static void findInternalsToKeep(
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : removeShapes
 // purpose  : Removes sub-shapes from the shape
-//=======================================================================
+//=================================================================================================
 static void removeShapes(TopoDS_Shape& theS, const NCollection_List<TopoDS_Shape>& theLS)
 {
   BRep_Builder aBB;
@@ -1373,11 +1373,11 @@ static void removeShapes(TopoDS_Shape& theS, const NCollection_List<TopoDS_Shape
   theS.Free(isFree);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : removeInternals
 // purpose  : Removes recursively all internal sub-shapes from the given shape.
 //           Returns true if all sub-shapes have been removed from the shape.
-//=======================================================================
+//=================================================================================================
 static bool removeInternals(
   TopoDS_Shape&                                                 theS,
   const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>* theShapesToKeep)

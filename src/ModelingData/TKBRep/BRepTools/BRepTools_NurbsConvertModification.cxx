@@ -306,7 +306,7 @@ bool BRepTools_NurbsConvertModification::NewSurface(const TopoDS_Face&         F
   BS->Resolution(Tol, UTol, VTol);
 
   //
-  // on recadre les bornes de S  sinon les anciennes PCurves sont aux fraises
+  // Readjust the bounds of S, otherwise the old PCurves become invalid
   //
 
   if (std::abs(curvU1 - surfU1) > UTol && !BS->IsUPeriodic())
@@ -430,7 +430,7 @@ bool BRepTools_NurbsConvertModification::NewCurve(const TopoDS_Edge&       E,
   else
     C = new Geom_TrimmedCurve(C, f, l);
 
-  // modif WOK++ portage hp (fbi du 14/03/97)
+  // modification for WOK++ HP porting (fbi 14/03/97)
   //   gp_Trsf trsf(L);
   //   gp_Trsf trsf = L.Transformation();
 
@@ -639,7 +639,7 @@ bool BRepTools_NurbsConvertModification::NewCurve2d(const TopoDS_Edge&         E
     }
     else
     {
-      S = BRep_Tool::Surface(F); // Si S est un plan, pas de changement de parametrisation
+      S = BRep_Tool::Surface(F); // If S is a plane, no change of parametrization
       GeomAdaptor_Surface              GAS(S);
       occ::handle<GeomAdaptor_Surface> GAHS = new GeomAdaptor_Surface(GAS);
       ProjLib_ComputeApprox            ProjOnCurve(G3dAHC, GAHS, Tol);
@@ -732,12 +732,12 @@ bool BRepTools_NurbsConvertModification::NewCurve2d(const TopoDS_Edge&         E
     {
       if (itled.Value().IsSame(E))
       {
-        // deja traitee
+        // already processed
         break;
       }
     }
     if (!itled.More())
-    { // on stocke l`edge et la curve2d
+    { // store the edge and the 2D curve
       occ::handle<Geom2d_Curve> C2dBis;
       double                    f2dBis, l2dBis;
       C2d = new Geom2d_TrimmedCurve(C2d, f2d, l2d);
@@ -806,7 +806,7 @@ bool BRepTools_NurbsConvertModification::NewCurve2d(const TopoDS_Edge&         E
       }
       else
       {
-        S = BRep_Tool::Surface(newF); // S est une BSplineSurface : pas besoin de la trimmed
+        S = BRep_Tool::Surface(newF); // S is a BSplineSurface: no need for the trimmed one
       }
       double Uinf, Usup, Vinf, Vsup, u = 0, v = 0;
       S->Bounds(Uinf, Usup, Vinf, Vsup);
@@ -869,7 +869,7 @@ bool BRepTools_NurbsConvertModification::NewCurve2d(const TopoDS_Edge&         E
       }
     }
     else
-    { // on est au 2ieme tour
+    { // we are on the second pass
       C2d                           = occ::down_cast<Geom2d_Curve>(itlcu.Value());
       occ::handle<Standard_Type> st = C2d->DynamicType();
       if (!(st == STANDARD_TYPE(Geom2d_BSplineCurve)) && !(st == STANDARD_TYPE(Geom2d_BezierCurve)))

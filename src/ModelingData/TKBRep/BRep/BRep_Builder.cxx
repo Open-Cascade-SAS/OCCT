@@ -50,11 +50,11 @@
 
 //=================================================================================================
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateCurves
 // purpose  : Insert a 3d curve <C> with location <L>
 //           in a list of curve representations <lcr>
-//=======================================================================
+//=================================================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
                          const occ::handle<Geom_Curve>&                           C,
                          const TopLoc_Location&                                   L)
@@ -92,12 +92,12 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateCurves
 // purpose  : Insert a pcurve <C> on surface <S> with location <L>
 //           in a list of curve representations <lcr>
 //           Remove the pcurve on <S> from <lcr> if <C> is null
-//=======================================================================
+//=================================================================================================
 
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
                          const occ::handle<Geom2d_Curve>&                         C,
@@ -118,7 +118,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
     {
       if (GC->IsCurve3D())
       {
-        //      if (!C.IsNull()) { //xpu031198, edge degeneree
+        //      if (!C.IsNull()) { //xpu031198, degenerate edge
 
         // xpu151298 : parameters can be set for null curves
         //             see lbo & flo, to determine whether range is defined
@@ -164,12 +164,12 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateCurves
 // purpose  : Insert a pcurve <C> on surface <S> with location <L>
 //           in a list of curve representations <lcr>
 //           Remove the pcurve on <S> from <lcr> if <C> is null
-//=======================================================================
+//=================================================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
                          const occ::handle<Geom2d_Curve>&                         C,
                          const occ::handle<Geom_Surface>&                         S,
@@ -192,7 +192,7 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
     {
       if (GC->IsCurve3D())
       {
-        //      if (!C.IsNull()) { //xpu031198, edge degeneree
+        //      if (!C.IsNull()) { //xpu031198, degenerate edge
 
         // xpu151298 : parameters can be set for null curves
         //             see lbo & flo, to determine whether range is defined
@@ -239,12 +239,12 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateCurves
 // purpose  : Insert two pcurves <C1,C2> on surface <S> with location <L>
 //           in a list of curve representations <lcr>
 //           Remove the pcurves on <S> from <lcr> if <C1> or <C2> is null
-//=======================================================================
+//=================================================================================================
 
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
                          const occ::handle<Geom2d_Curve>&                         C1,
@@ -302,12 +302,12 @@ static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateCurves
 // purpose  : Insert two pcurves <C1,C2> on surface <S> with location <L>
 //           in a list of curve representations <lcr>
 //           Remove the pcurves on <S> from <lcr> if <C1> or <C2> is null
-//=======================================================================
+//=================================================================================================
 static void UpdateCurves(NCollection_List<occ::handle<BRep_CurveRepresentation>>& lcr,
                          const occ::handle<Geom2d_Curve>&                         C1,
                          const occ::handle<Geom2d_Curve>&                         C2,
@@ -657,10 +657,10 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
   TE->Modified(true);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateEdge
 // purpose  : for the second format (for XML Persistence)
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
                               const occ::handle<Geom2d_Curve>& C,
@@ -705,10 +705,10 @@ void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
   TE->Modified(true);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateEdge
 // purpose  : for the second format (for XML Persistence)
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateEdge(const TopoDS_Edge&               E,
                               const occ::handle<Geom2d_Curve>& C1,
@@ -1168,10 +1168,10 @@ void BRep_Builder::Transfert(const TopoDS_Edge& Ein, const TopoDS_Edge& Eout) co
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateVertex
 // purpose  : update vertex with 3d point
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V, const gp_Pnt& P, const double Tol) const
 {
@@ -1185,10 +1185,10 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V, const gp_Pnt& P, const d
   TV->Modified(true);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateVertex
 // purpose  : update vertex with parameter on edge
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
                                 const double         Par,
@@ -1272,10 +1272,10 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V,
   TE->Modified(true);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateVertex
 // purpose  : update vertex with parameter on edge on face
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex&             V,
                                 const double                     Par,
@@ -1358,10 +1358,10 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex&             V,
   TE->Modified(true);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateVertex
 // purpose  : update vertex with parameters on face
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& Ve,
                                 const double         U,
@@ -1386,10 +1386,10 @@ void BRep_Builder::UpdateVertex(const TopoDS_Vertex& Ve,
   TV->Modified(true);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : UpdateVertex
 // purpose  : update vertex with 3d point
-//=======================================================================
+//=================================================================================================
 
 void BRep_Builder::UpdateVertex(const TopoDS_Vertex& V, const double Tol) const
 {

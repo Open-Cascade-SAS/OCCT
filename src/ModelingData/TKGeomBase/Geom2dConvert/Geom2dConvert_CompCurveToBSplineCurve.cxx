@@ -130,7 +130,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
                                                 occ::handle<Geom2d_BSplineCurve>& SecondCurve,
                                                 const bool                        After)
 {
-  // Harmonisation des degres.
+  // Harmonize the degrees.
   int Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
   if (FirstCurve->Degree() < Deg)
   {
@@ -141,7 +141,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
     SecondCurve->IncreaseDegree(Deg);
   }
 
-  // Declarationd
+  // Declarations
   double                       L1, L2, U_de_raccord;
   int                          ii, jj;
   double                       Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
@@ -152,7 +152,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
   NCollection_Array1<double>   Poids(1, NbP1 + NbP2 - 1);
   NCollection_Array1<int>      Mults(1, NbK1 + NbK2 - 1);
 
-  // Ratio de reparametrisation (C1 si possible)
+  // Reparameterization ratio (C1 if possible)
   L1 = FirstCurve->DN(FirstCurve->LastParameter(), 1).Magnitude();
   L2 = SecondCurve->DN(SecondCurve->FirstParameter(), 1).Magnitude();
 
@@ -167,7 +167,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
 
   if (After)
   {
-    // On ne bouge pas la premiere courbe
+    // Do not move the first curve
     Ratio1       = 1;
     Delta1       = 0;
     Ratio2       = 1 / Ratio;
@@ -176,7 +176,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
   }
   else
   {
-    // On ne bouge pas la seconde courbe
+    // Do not move the second curve
     Ratio1       = Ratio;
     Delta1       = Ratio1 * FirstCurve->Knot(NbK1) - SecondCurve->Knot(1);
     Ratio2       = 1;
@@ -184,7 +184,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
     U_de_raccord = SecondCurve->FirstParameter();
   }
 
-  // Les Noeuds
+  // The Knots
 
   for (ii = 1; ii < NbK1; ii++)
   {
@@ -200,7 +200,7 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
   }
   Ratio = FirstCurve->Weight(NbP1);
   Ratio /= SecondCurve->Weight(1);
-  // Les Poles et Poids
+  // The Poles and Weights
   for (ii = 1; ii < NbP1; ii++)
   {
     Poles(ii) = FirstCurve->Pole(ii);
@@ -210,16 +210,16 @@ void Geom2dConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom2d_BSplineCurve>
   {
     Poles(jj) = SecondCurve->Pole(ii);
     //
-    // attentiion les poids ne se raccord pas forcement C0
-    // d'ou Ratio
+    // Note: the weights may not necessarily connect with C0 continuity,
+    // hence the use of Ratio
     //
     Poids(jj) = Ratio * SecondCurve->Weight(ii);
   }
 
-  // Creation de la BSpline
+  // Create the BSpline
   myCurve = new (Geom2d_BSplineCurve)(Poles, Poids, Noeuds, Mults, Deg);
 
-  // Reduction eventuelle de la multiplicite
+  // Optionally reduce multiplicity
   bool Ok = true;
   int  M  = Mults(NbK1);
   while ((M > 0) && Ok)

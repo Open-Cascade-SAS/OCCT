@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Torus::Data GeomGridEval_Torus::extractData() const
 {
@@ -43,7 +43,7 @@ GeomGridEval_Torus::Data GeomGridEval_Torus::extractData() const
           aTorus.MinorRadius()};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Torus::UContext GeomGridEval_Torus::computeUContext(const Data& theData, double theU)
 {
@@ -60,7 +60,7 @@ GeomGridEval_Torus::UContext GeomGridEval_Torus::computeUContext(const Data& the
           -sinU * theData.XZ + cosU * theData.YZ}; // dDirUZ
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomGridEval_Torus::computeD0(const Data& theData, const UContext& theUCtx, double theV)
 {
@@ -76,7 +76,7 @@ gp_Pnt GeomGridEval_Torus::computeD0(const Data& theData, const UContext& theUCt
                 theData.CZ + K * theUCtx.dirUZ + theData.MinorRadius * sinV * theData.ZZ);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval::SurfD1 GeomGridEval_Torus::computeD1(const Data&     theData,
                                                    const UContext& theUCtx,
@@ -107,7 +107,7 @@ GeomGridEval::SurfD1 GeomGridEval_Torus::computeD1(const Data&     theData,
           gp_Vec(dV1, dV2, dV3)};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval::SurfD2 GeomGridEval_Torus::computeD2(const Data&     theData,
                                                    const UContext& theUCtx,
@@ -159,7 +159,7 @@ GeomGridEval::SurfD2 GeomGridEval_Torus::computeD2(const Data&     theData,
           gp_Vec(d2UV1, d2UV2, d2UV3)};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval::SurfD3 GeomGridEval_Torus::computeD3(const Data&     theData,
                                                    const UContext& theUCtx,
@@ -251,7 +251,7 @@ GeomGridEval::SurfD3 GeomGridEval_Torus::computeD3(const Data&     theData,
           gp_Vec(d3UVV1, d3UVV2, d3UVV3)};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomGridEval_Torus::computeDN(const Data&     theData,
                                      const UContext& theUCtx,
@@ -383,7 +383,7 @@ gp_Vec GeomGridEval_Torus::computeDN(const Data&     theData,
   return gp_Vec(resX, resY, resZ);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -414,7 +414,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Torus::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -445,7 +445,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Torus::EvaluateGridD1(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -476,7 +476,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Torus::EvaluateGridD2(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -507,7 +507,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Torus::EvaluateGridD3(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_Torus::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

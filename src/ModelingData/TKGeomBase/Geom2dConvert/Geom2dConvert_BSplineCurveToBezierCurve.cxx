@@ -62,14 +62,14 @@ Geom2dConvert_BSplineCurveToBezierCurve::Geom2dConvert_BSplineCurveToBezierCurve
 
   myCurve->LocateU(U1, PTol, I1, I2);
   if (I1 == I2)
-  { // On est sur le noeud
+  { // We are on the knot
     if (myCurve->Knot(I1) > U1)
       Uf = myCurve->Knot(I1);
   }
 
   myCurve->LocateU(U2, PTol, I1, I2);
   if (I1 == I2)
-  { // On est sur le noeud
+  { // We are on the knot
     if (myCurve->Knot(I1) < U2)
       Ul = myCurve->Knot(I1);
   }

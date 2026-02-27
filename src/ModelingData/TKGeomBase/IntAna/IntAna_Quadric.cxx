@@ -26,7 +26,7 @@
 
 //----------------------------------------------------------------------
 //--
-//--  Equation generale des quadriques :
+//-- General equation of quadrics:
 //--
 //--   f(x,y,z) =       CXX X**2  + CYY Y**2  + CZZ Z**2
 //--
@@ -39,7 +39,7 @@
 //--
 //----------------------------------------------------------------------
 //----------------------------------------------------------------------
-//-- Quadric Vide
+//-- Empty Quadric
 //----------------------------------------------------------------------
 IntAna_Quadric::IntAna_Quadric()
 {
@@ -50,10 +50,10 @@ IntAna_Quadric::IntAna_Quadric()
 //----------------------------------------------------------------------
 //-- Pln  -----> Quadric
 //--
-//-- Coefficients sur gp_Pln retourne A,B,C,D
-//-- 	          avec f(x,y,z)  =    A x    + B y   +  C z   + D
+//-- Coefficients from gp_Pln return A,B,C,D
+//--              with f(x,y,z)  =    A x    + B y   +  C z   + D
 //--
-//--  que l on identifie a        2(  CX x   + CY y  +  CZ z ) + CCte
+//--  which we identify as        2(  CX x   + CY y  +  CZ z ) + CCte
 //----------------------------------------------------------------------
 void IntAna_Quadric::SetQuadric(const gp_Pln& P)
 {
@@ -117,7 +117,7 @@ IntAna_Quadric::IntAna_Quadric(const gp_Sphere& Sph)
 }
 
 //----------------------------------------------------------------------
-//-- Returns the Coefficients of the Quadric
+//-- Returns the coefficients of the quadric
 //----------------------------------------------------------------------
 void IntAna_Quadric::Coefficients(double& _CXX,
                                   double& _CYY,
@@ -143,7 +143,7 @@ void IntAna_Quadric::Coefficients(double& _CXX,
 }
 
 //----------------------------------------------------------------------
-//-- Computes the Coefficients in a new coordinate system
+//-- Computes the coefficients in a new coordinate system
 //----------------------------------------------------------------------
 void IntAna_Quadric::NewCoefficients(double&       _CXX,
                                      double&       _CYY,

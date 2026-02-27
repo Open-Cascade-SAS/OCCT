@@ -27,9 +27,9 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // Basic concatenation tests
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateClampedBSplines)
 {
@@ -75,7 +75,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateClampedBSplines)
   EXPECT_NEAR(aEnd.Distance(gp_Pnt(6., 0., 0.)), 0., Precision::Confusion());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateTrimmedCircleArcs)
 {
@@ -114,7 +114,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateTrimmedCircleArcs)
   EXPECT_NEAR(aEnd.Distance(gp_Pnt(-5., 0., 0.)), 0., Precision::Confusion());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateWithReversal)
 {
@@ -161,7 +161,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateWithReversal)
   EXPECT_NEAR(aEnd.Distance(gp_Pnt(6., 0., 0.)), 0., Precision::Confusion());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, FailsForDisjointCurves)
 {
@@ -197,7 +197,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, FailsForDisjointCurves)
   EXPECT_FALSE(isAdded) << "Should fail to concatenate disjoint curves";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateNonClampedBSpline_Bug30007)
 {
@@ -264,7 +264,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, ConcatenateNonClampedBSpline_Bug30
   EXPECT_NEAR(aEnd.Distance(gp_Pnt(8., 0., 0.)), 0., Precision::Confusion());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, PrependCurve)
 {
@@ -310,7 +310,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, PrependCurve)
   EXPECT_NEAR(aEnd.Distance(gp_Pnt(6., 0., 0.)), 0., Precision::Confusion());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, EmptyInitialCurve)
 {
@@ -341,7 +341,7 @@ TEST(GeomConvert_CompCurveToBSplineCurveTest, EmptyInitialCurve)
   ASSERT_FALSE(aResult.IsNull()) << "Result curve should not be null";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST(GeomConvert_CompCurveToBSplineCurveTest, ClearAndReuse)
 {

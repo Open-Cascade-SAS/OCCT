@@ -15,28 +15,28 @@
 
 #include <TopoDS_Face.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 BRepProp_Surface::BRepProp_Surface(const TopoDS_Face& theFace)
 {
   initialization(theFace);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepProp_Surface::BRepProp_Surface(const BRepAdaptor_Surface& theSurface)
 {
   initialization(theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepProp_Surface::BRepProp_Surface(const occ::handle<BRepAdaptor_Surface>& theSurface)
 {
   initialization(theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepProp_Surface::initialization(const TopoDS_Face& theFace)
 {
@@ -50,7 +50,7 @@ void BRepProp_Surface::initialization(const TopoDS_Face& theFace)
   myPtr   = myOwned.get();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepProp_Surface::initialization(const BRepAdaptor_Surface& theSurface)
 {
@@ -58,7 +58,7 @@ void BRepProp_Surface::initialization(const BRepAdaptor_Surface& theSurface)
   myPtr = &theSurface;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepProp_Surface::initialization(const occ::handle<BRepAdaptor_Surface>& theSurface)
 {
@@ -66,7 +66,7 @@ void BRepProp_Surface::initialization(const occ::handle<BRepAdaptor_Surface>& th
   myPtr   = myOwned.get();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceNormalResult BRepProp_Surface::Normal(const double theU,
                                                        const double theV,
@@ -82,7 +82,7 @@ GeomProp::SurfaceNormalResult BRepProp_Surface::Normal(const double theU,
   return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceCurvatureResult BRepProp_Surface::Curvatures(const double theU,
                                                               const double theV,
@@ -98,7 +98,7 @@ GeomProp::SurfaceCurvatureResult BRepProp_Surface::Curvatures(const double theU,
   return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::MeanGaussianResult BRepProp_Surface::MeanGaussian(const double theU,
                                                             const double theV,

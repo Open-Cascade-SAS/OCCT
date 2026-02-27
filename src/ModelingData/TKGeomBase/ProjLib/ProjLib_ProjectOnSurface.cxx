@@ -29,10 +29,7 @@
 #include <NCollection_Array1.hxx>
 #include <Standard_Integer.hxx>
 
-//=======================================================================
-// function : OnSurface_Value
-// purpose  : Evaluate current point of the projected curve
-//=======================================================================
+//=================================================================================================
 static gp_Pnt OnSurface_Value(const double                        U,
                               const occ::handle<Adaptor3d_Curve>& myCurve,
                               Extrema_ExtPS*                      myExtPS)
@@ -73,10 +70,7 @@ static bool OnSurface_D1(const double,                        // U,
   return false;
 }
 
-//=======================================================================
-//  class  : ProjLib_OnSurface
-// purpose  : Use to approximate the projection on a plane
-//=======================================================================
+//=================================================================================================
 
 class ProjLib_OnSurface : public AppCont_Function
 

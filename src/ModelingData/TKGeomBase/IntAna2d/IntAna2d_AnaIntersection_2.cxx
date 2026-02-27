@@ -30,22 +30,22 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
   double dif = std::abs(R1 - R2);
 
   if (d <= RealEpsilon())
-  { // Cercle concentriques
+  { // Concentric circles
     para = true;
     nbp  = 0;
     if (dif <= RealEpsilon())
-    { // Cercles confondus
+    { // Coincident circles
       empt = false;
       iden = true;
     }
     else
-    { // Cercles paralleles
+    { // Parallel circles
       empt = true;
       iden = false;
     }
   }
   else if ((d - sum) > Epsilon(sum))
-  { // Cercles exterieurs l un a l autre
+  { // Circles exterior to each other
     // et No solution
     empt = true;
     para = false;
@@ -53,7 +53,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     nbp  = 0;
   }
   else if (std::abs(d - sum) <= Epsilon(sum))
-  { // Cercles exterieurs et tangents
+  { // Externally tangent circles
     empt = false;
     para = false;
     iden = false;
@@ -64,12 +64,12 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
 
     double XS   = (C1.Location().X() * R2 + C2.Location().X() * R1) / sum;
     double YS   = (C1.Location().Y() * R2 + C2.Location().Y() * R1) / sum;
-    double ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double ang1 = Ox1.Angle(ax); // Result between -PI and +PI
     double ang2 = Ox2.Angle(ax) + M_PI;
     if (ang1 < 0)
     {
       ang1 = 2 * M_PI + ang1;
-    } // On revient entre 0 et 2PI
+    } // Normalize to range [0, 2PI]
     lpnt[0].SetValue(XS, YS, ang1, ang2);
   }
   else if (((sum - d) > Epsilon(sum)) && ((d - dif) > Epsilon(d + dif)))
@@ -81,8 +81,8 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     gp_Vec2d ax(C1.Location(), C2.Location());
     gp_Vec2d Ox1(C1.XAxis().Direction());
     gp_Vec2d Ox2(C2.XAxis().Direction());
-    double   ref1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
-    double   ref2 = Ox2.Angle(ax); // Resultat entre -PI et +PI
+    double   ref1 = Ox1.Angle(ax); // Result between -PI and +PI
+    double   ref2 = Ox2.Angle(ax); // Result between -PI and +PI
 
     double l1 = (d * d + R1 * R1 - R2 * R2) / (2.0 * d);
     if (R1 * R1 - l1 * l1 < 0.)
@@ -105,9 +105,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
 
     double ang1, ang2;
 
-    // ang1 et ang2 correspondent aux solutions avec sinus positif
-    // si l'axe de reference est l'axe des centres C1C2
-    // On prend l'arccos entre pi/2 et 3pi/2, l'arcsin sinon.
+    // ang1 and ang2 correspond to the solutions with positive sine
+    // when the reference axis is the axis of centers C1C2.
+    // We use arccos between pi/2 and 3pi/2, arcsin otherwise.
 
     if (std::abs(cost1) <= 0.707)
     {
@@ -173,7 +173,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
     lpnt[1].SetValue(XS2, YS2, ang12, ang22);
   }
   else if (std::abs(d - dif) <= Epsilon(sum))
-  { // Cercles tangents interieurs
+  { // Internally tangent circles
     empt = false;
     para = false;
     iden = false;
@@ -184,23 +184,23 @@ void IntAna2d_AnaIntersection::Perform(const gp_Circ2d& C1, const gp_Circ2d& C2)
 
     gp_Vec2d Ox1(C1.XAxis().Direction());
     gp_Vec2d Ox2(C2.XAxis().Direction());
-    double   ang1 = Ox1.Angle(ax); // Resultat entre -PI et +PI
+    double   ang1 = Ox1.Angle(ax); // Result between -PI and +PI
     double   ang2 = Ox2.Angle(ax);
     if (ang1 < 0)
     {
       ang1 = 2 * M_PI + ang1;
-    } // On revient entre 0 et 2PI
+    } // Normalize to range [0, 2PI]
     if (ang2 < 0)
     {
       ang2 = 2 * M_PI + ang2;
-    } // On revient entre 0 et 2PI
+    } // Normalize to range [0, 2PI]
     double XS = (C1.Location().X() * R2 - C2.Location().X() * R1) / (R2 - R1);
     double YS = (C1.Location().Y() * R2 - C2.Location().Y() * R1) / (R2 - R1);
     lpnt[0].SetValue(XS, YS, ang1, ang2);
   }
   else
-  { // On doit avoir d<dif-Resol et d<>0 donc
-    // 1 cercle dans l autre et no solution
+  { // We must have d<dif-Resol and d<>0, therefore
+    // one circle inside the other and no solution
     empt = true;
     para = false;
     iden = false;

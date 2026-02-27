@@ -214,7 +214,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 
   AppCont_ContMatrices::VBernstein(classe, myNbPoints, myVB);
 
-  // Traitement du second membre:
+  // Processing of the right-hand side:
   NCollection_Array1<double> tmppoints(1, nbcol);
 
   for (c = 1; c <= classe; c++)
@@ -239,7 +239,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 
     math_Matrix InvM(1, classe, 1, classe);
     AppCont_ContMatrices::InvMMatrix(classe, InvM);
-    // Calcul direct des poles:
+    // Direct computation of poles:
 
     for (i = 1; i <= classe; i++)
     {
@@ -334,7 +334,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
     if (myFirstC == AppParCurves_PassPoint)
     {
       bdeb = 2;
-      // mise a jour du second membre:
+      // Update the right-hand side:
       for (i = 1; i <= classe; i++)
       {
         Coeff = M(i, 1);
@@ -360,7 +360,7 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
 
     if (myFirstC == AppParCurves_TangencyPoint)
     {
-      // On fixe le second pole::
+      // Fix the second pole:
       bdeb = 3;
       SSP.D1(U0, aTabV2d, aTabV);
 
@@ -448,8 +448,8 @@ AppCont_LeastSquare::AppCont_LeastSquare(const AppCont_Function&       SSP,
       // ===========
       math_Matrix IBP(bdeb, bfin, bdeb, bfin);
 
-      // dans IBPMatrix at IBTMatrix ne sont stockees que les resultats pour
-      // une classe inferieure ou egale a 26 (pour l instant du moins.)
+      // In IBPMatrix and IBTMatrix only results for a degree
+      // less than or equal to 26 are stored (for now at least).
 
       if (bdeb == 2 && bfin == classe - 1 && classe <= 26)
       {
@@ -500,7 +500,7 @@ const AppParCurves_MultiCurve& AppCont_LeastSquare::Value()
   gp_Pnt2d Pt2d;
   int      ideb = 1, ifin = myDegre + 1;
 
-  // On met le resultat dans les curves correspondantes
+  // Store the result in the corresponding curves
   for (i = ideb; i <= ifin; i++)
   {
     j2 = 1;

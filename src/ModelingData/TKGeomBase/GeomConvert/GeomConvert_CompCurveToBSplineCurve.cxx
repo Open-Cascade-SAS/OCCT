@@ -93,16 +93,16 @@ bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurv
   avant = ((aCurveStart.Distance(aBsStart) < myTol) || (aCurveStart.Distance(aBsEnd) < myTol));
   apres = ((aCurveEnd.Distance(aBsStart) < myTol) || (aCurveEnd.Distance(aBsEnd) < myTol));
 
-  // myCurve est (sera) elle fermee ?
+  // Will myCurve be (or become) closed?
   if (avant && apres)
-  { // On leve l'ambiguite
+  { // Resolve the ambiguity
     if (After)
       avant = false;
     else
       apres = false;
   }
 
-  // Ajout Apres ?
+  // Append after?
   if (apres)
   {
     if (aCurveEnd.Distance(aBsEnd) < myTol)
@@ -112,7 +112,7 @@ bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurv
     Add(myCurve, Bs, true, WithRatio, MinM);
     return true;
   }
-  // Ajout avant ?
+  // Prepend before?
   else if (avant)
   {
     if (aCurveStart.Distance(aBsStart) < myTol)
@@ -126,13 +126,15 @@ bool GeomConvert_CompCurveToBSplineCurve::Add(const occ::handle<Geom_BoundedCurv
   return false;
 }
 
+//=================================================================================================
+
 void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& FirstCurve,
                                               occ::handle<Geom_BSplineCurve>& SecondCurve,
                                               const bool                      After,
                                               const bool                      WithRatio,
                                               const int                       MinM)
 {
-  // Harmonisation des degres.
+  // Harmonize the degrees.
   int Deg = std::max(FirstCurve->Degree(), SecondCurve->Degree());
   if (FirstCurve->Degree() < Deg)
   {
@@ -143,7 +145,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
     SecondCurve->IncreaseDegree(Deg);
   }
 
-  // Declarationd
+  // Declarations
   double                     L1, L2;
   int                        ii, jj;
   double                     Ratio = 1, Ratio1, Ratio2, Delta1, Delta2;
@@ -154,7 +156,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
   NCollection_Array1<double> Poids(1, NbP1 + NbP2 - 1);
   NCollection_Array1<int>    Mults(1, NbK1 + NbK2 - 1);
 
-  // Ratio de reparametrisation (C1 si possible)
+  // Reparameterization ratio (C1 if possible)
   if (WithRatio)
   {
     L1 = FirstCurve->DN(FirstCurve->LastParameter(), 1).Magnitude();
@@ -172,7 +174,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
 
   if (After)
   {
-    // On ne bouge pas la premiere courbe
+    // Do not move the first curve
     Ratio1 = 1;
     Delta1 = 0;
     Ratio2 = 1 / Ratio;
@@ -180,14 +182,14 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
   }
   else
   {
-    // On ne bouge pas la seconde courbe
+    // Do not move the second curve
     Ratio1 = Ratio;
     Delta1 = Ratio1 * FirstCurve->Knot(NbK1) - SecondCurve->Knot(1);
     Ratio2 = 1;
     Delta2 = 0;
   }
 
-  // Les Noeuds
+  // The Knots
   double eps;
   for (ii = 1; ii <= NbK1; ii++)
   {
@@ -220,7 +222,7 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
 
   Ratio = FirstCurve->Weight(NbP1);
   Ratio /= SecondCurve->Weight(1);
-  // Les Poles et Poids
+  // The Poles and Weights
   for (ii = 1; ii < NbP1; ii++)
   {
     Poles(ii) = FirstCurve->Pole(ii);
@@ -230,16 +232,16 @@ void GeomConvert_CompCurveToBSplineCurve::Add(occ::handle<Geom_BSplineCurve>& Fi
   {
     Poles(jj) = SecondCurve->Pole(ii);
     //
-    // attentiion les poids ne se raccord pas forcement C0
-    // d'ou Ratio
+    // Note: the weights may not necessarily connect with C0 continuity,
+    // hence the use of Ratio
     //
     Poids(jj) = Ratio * SecondCurve->Weight(ii);
   }
 
-  // Creation de la BSpline
+  // Create the BSpline
   myCurve = new (Geom_BSplineCurve)(Poles, Poids, Noeuds, Mults, Deg);
 
-  // Reduction eventuelle de la multiplicite jusqu'a MinM
+  // Optionally reduce multiplicity down to MinM
   bool Ok = true;
   int  M  = Mults(NbK1);
   while ((M > MinM) && Ok)

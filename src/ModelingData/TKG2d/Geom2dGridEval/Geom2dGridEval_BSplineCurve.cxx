@@ -179,7 +179,7 @@ NCollection_Array1<ResultT> evaluateGridCached(const CurveData&                 
 
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt2d> Geom2dGridEval_BSplineCurve::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -209,7 +209,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_BSplineCurve::EvaluateGrid(
     });
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_BSplineCurve::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -245,7 +245,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_BSplineCurve::Evaluat
     });
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_BSplineCurve::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -282,7 +282,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_BSplineCurve::Evaluat
     });
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_BSplineCurve::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -320,7 +320,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_BSplineCurve::Evaluat
     });
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec2d> Geom2dGridEval_BSplineCurve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

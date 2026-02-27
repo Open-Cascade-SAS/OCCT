@@ -23,11 +23,15 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Elips2d& E)
 {
   TheError   = gce_Done;
   TheEllipse = new Geom2d_Ellipse(E);
 }
+
+//=================================================================================================
 
 GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d& Axis,
                                      const double    MajorRadius,
@@ -40,6 +44,8 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d& Axis,
     TheEllipse = new Geom2d_Ellipse(E.Value());
   }
 }
+
+//=================================================================================================
 
 GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
                                      const double   MajorRadius,
@@ -54,6 +60,8 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
   }
 }
 
+//=================================================================================================
+
 GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
 {
   gce_MakeElips2d E = gce_MakeElips2d(S1, S2, Center);
@@ -63,6 +71,8 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Pnt2d& S1, const gp_Pnt2d& S2, con
     TheEllipse = new Geom2d_Ellipse(E.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom2d_Ellipse>& GCE2d_MakeEllipse::Value() const
 {

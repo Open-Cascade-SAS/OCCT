@@ -37,7 +37,7 @@ struct FactoryInitializer
 static FactoryInitializer THE_FACTORY_INIT;
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 XBRepMesh_Factory::XBRepMesh_Factory()
     : BRepMesh_DiscretAlgoFactory("XBRepMesh")
@@ -45,7 +45,7 @@ XBRepMesh_Factory::XBRepMesh_Factory()
   RegisterFactory(this);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<BRepMesh_DiscretRoot> XBRepMesh_Factory::CreateAlgorithm(const TopoDS_Shape& theShape,
                                                                      double theLinDeflection,

@@ -23,11 +23,11 @@
 #include <BRepAlgoAPI_Section.hxx>
 #include <BRepAlgoAPI_Splitter.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // BRepAlgoAPI_BuilderAlgo Non-Copyability Tests
 // These tests verify that BRepAlgoAPI_BuilderAlgo and its derived classes
 // are not copyable or movable, preventing double-free issues with raw pointers.
-//==================================================================================================
+//=================================================================================================
 
 // Test that BRepAlgoAPI_BuilderAlgo is not copy constructible
 TEST(BRepAlgoAPI_BuilderAlgoTest, NotCopyConstructible)

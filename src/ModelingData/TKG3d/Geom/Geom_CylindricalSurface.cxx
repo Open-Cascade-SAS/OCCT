@@ -174,7 +174,7 @@ void Geom_CylindricalSurface::Coefficients(double& A1,
                                            double& C3,
                                            double& D) const
 {
-  // Dans le repere local du cylindre :
+  // In the local coordinate system of the cylinder:
   // X**2 + Y**2 - radius = 0.0
 
   Trsf T;

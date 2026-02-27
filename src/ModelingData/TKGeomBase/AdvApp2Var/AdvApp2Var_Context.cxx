@@ -280,160 +280,112 @@ int AdvApp2Var_Context::TotalNumberSSP() const
   return myNb1DSS + myNb2DSS + myNb3DSS;
 }
 
-//============================================================================
-// function : FavorIso
-// purpose  : return 1 for IsoU, 2 for IsoV, 2 by default
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::FavorIso() const
 {
   return myFav;
 }
 
-//============================================================================
-// function : UOrder
-// purpose  : return the order of continuity requested in U
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::UOrder() const
 {
   return myOrdU;
 }
 
-//============================================================================
-// function : VOrder
-// purpose  : return the order of continuity requested in V
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::VOrder() const
 {
   return myOrdV;
 }
 
-//============================================================================
-// function : ULimit
-// purpose  : return the max number of coeff. in U of the polynomial approx.
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::ULimit() const
 {
   return myLimU;
 }
 
-//============================================================================
-// function : VLimit
-// purpose  : return the max number of coeff. in V of the polynomial approx.
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::VLimit() const
 {
   return myLimV;
 }
 
-//============================================================================
-// function : UJacDeg
-// purpose  : return the max degree of the Jacobi functions for U parameter
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::UJacDeg() const
 {
   return myJDegU;
 }
 
-//============================================================================
-// function : VJacDeg
-// purpose  : return the max degree of the Jacobi functions for V parameter
-//============================================================================
+//=================================================================================================
 
 int AdvApp2Var_Context::VJacDeg() const
 {
   return myJDegV;
 }
 
-//============================================================================
-// function : UJacMax
-// purpose  : return the max value of the Jacobi functions for U parameter
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::UJacMax() const
 {
   return myJMaxU;
 }
 
-//============================================================================
-// function : VJacMax
-// purpose  : return the max value of the Jacobi functions for V parameter
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::VJacMax() const
 {
   return myJMaxV;
 }
 
-//============================================================================
-// function : URoots
-// purpose  : return Legendre roots for U parameter
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::URoots() const
 {
   return myURoots;
 }
 
-//============================================================================
-// function : VRoots
-// purpose  : return Legendre roots for V parameter
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::VRoots() const
 {
   return myVRoots;
 }
 
-//============================================================================
-// function : UGauss
-// purpose  : return Gauss roots for U parameter
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::UGauss() const
 {
   return myUGauss;
 }
 
-//============================================================================
-// function : VGauss
-// purpose  : return Gauss roots for V parameter
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::VGauss() const
 {
   return myVGauss;
 }
 
-//============================================================================
-// function : IToler
-// purpose  : return tolerances for the approximation of patches
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray1<double>> AdvApp2Var_Context::IToler() const
 {
   return myInternalTol;
 }
 
-//============================================================================
-// function : FToler
-// purpose  : return tolerances for the approximation of frontiers
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray2<double>> AdvApp2Var_Context::FToler() const
 {
   return myFrontierTol;
 }
 
-//============================================================================
-// function : CToler
-// purpose  : return tolerances for the approximation of cutting lines
-//============================================================================
+//=================================================================================================
 
 occ::handle<NCollection_HArray2<double>> AdvApp2Var_Context::CToler() const
 {

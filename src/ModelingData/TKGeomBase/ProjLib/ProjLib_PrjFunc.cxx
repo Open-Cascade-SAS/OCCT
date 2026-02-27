@@ -153,6 +153,6 @@ gp_Pnt2d ProjLib_PrjFunc::Solution() const
     case 3:
       return gp_Pnt2d(myt, myU);
   }
-  // pout NT, meme si on n'y passe pas.
+  // For NT, even if we never reach this point.
   return gp_Pnt2d(0., 0.);
 }

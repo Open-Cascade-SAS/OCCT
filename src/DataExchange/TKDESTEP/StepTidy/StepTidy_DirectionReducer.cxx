@@ -18,7 +18,7 @@
 #include <StepGeom_Axis2Placement3d.hxx>
 #include <StepGeom_Vector.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_DirectionReducer::StepTidy_DirectionReducer(
   const occ::handle<XSControl_WorkSession>& theWS)
@@ -29,7 +29,7 @@ StepTidy_DirectionReducer::StepTidy_DirectionReducer(
   registerReplacer(STANDARD_TYPE(StepGeom_Vector), replaceVector);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_DirectionReducer::replaceAxis1Placement(
   const occ::handle<StepGeom_Direction>& theOldEntity,
@@ -46,7 +46,7 @@ bool StepTidy_DirectionReducer::replaceAxis1Placement(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_DirectionReducer::replaceAxis2Placement3d(
   const occ::handle<StepGeom_Direction>& theOldEntity,
@@ -68,7 +68,7 @@ bool StepTidy_DirectionReducer::replaceAxis2Placement3d(
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_DirectionReducer::replaceVector(const occ::handle<StepGeom_Direction>& theOldEntity,
                                               const occ::handle<StepGeom_Direction>& theNewEntity,

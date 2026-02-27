@@ -55,7 +55,7 @@ inline void trigShiftByQuarterTurns(const double theSin,
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dEval_ArchimedeanSpiralCurve::Geom2dEval_ArchimedeanSpiralCurve(const gp_Ax2d& thePosition,
                                                                      double theInitialRadius,
@@ -75,35 +75,35 @@ Geom2dEval_ArchimedeanSpiralCurve::Geom2dEval_ArchimedeanSpiralCurve(const gp_Ax
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const gp_Ax2d& Geom2dEval_ArchimedeanSpiralCurve::Position() const
 {
   return myPosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_ArchimedeanSpiralCurve::InitialRadius() const
 {
   return myInitialRadius;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_ArchimedeanSpiralCurve::GrowthRate() const
 {
   return myGrowthRate;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_ArchimedeanSpiralCurve::Reverse()
 {
   throw Standard_NotImplemented("Geom2dEval_ArchimedeanSpiralCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_ArchimedeanSpiralCurve::ReversedParameter(const double U) const
 {
@@ -111,49 +111,49 @@ double Geom2dEval_ArchimedeanSpiralCurve::ReversedParameter(const double U) cons
   throw Standard_NotImplemented("Geom2dEval_ArchimedeanSpiralCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_ArchimedeanSpiralCurve::FirstParameter() const
 {
   return 0.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double Geom2dEval_ArchimedeanSpiralCurve::LastParameter() const
 {
   return Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_ArchimedeanSpiralCurve::IsClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_ArchimedeanSpiralCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape Geom2dEval_ArchimedeanSpiralCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Geom2dEval_ArchimedeanSpiralCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt2d Geom2dEval_ArchimedeanSpiralCurve::EvalD0(const double U) const
 {
@@ -168,7 +168,7 @@ gp_Pnt2d Geom2dEval_ArchimedeanSpiralCurve::EvalD0(const double U) const
   return gp_Pnt2d(anO + aR * aCosU * aXD + aR * aSinU * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD1 Geom2dEval_ArchimedeanSpiralCurve::EvalD1(const double U) const
 {
@@ -190,7 +190,7 @@ Geom2d_Curve::ResD1 Geom2dEval_ArchimedeanSpiralCurve::EvalD1(const double U) co
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD2 Geom2dEval_ArchimedeanSpiralCurve::EvalD2(const double U) const
 {
@@ -214,7 +214,7 @@ Geom2d_Curve::ResD2 Geom2dEval_ArchimedeanSpiralCurve::EvalD2(const double U) co
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2d_Curve::ResD3 Geom2dEval_ArchimedeanSpiralCurve::EvalD3(const double U) const
 {
@@ -240,7 +240,7 @@ Geom2d_Curve::ResD3 Geom2dEval_ArchimedeanSpiralCurve::EvalD3(const double U) co
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec2d Geom2dEval_ArchimedeanSpiralCurve::EvalDN(const double U, const int N) const
 {
@@ -277,7 +277,7 @@ gp_Vec2d Geom2dEval_ArchimedeanSpiralCurve::EvalDN(const double U, const int N) 
   return gp_Vec2d(aCoeffX * aXD + aCoeffY * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_ArchimedeanSpiralCurve::Transform(const gp_Trsf2d& T)
 {
@@ -285,14 +285,14 @@ void Geom2dEval_ArchimedeanSpiralCurve::Transform(const gp_Trsf2d& T)
   throw Standard_NotImplemented("Geom2dEval_ArchimedeanSpiralCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom2d_Geometry> Geom2dEval_ArchimedeanSpiralCurve::Copy() const
 {
   return new Geom2dEval_ArchimedeanSpiralCurve(myPosition, myInitialRadius, myGrowthRate);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dEval_ArchimedeanSpiralCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

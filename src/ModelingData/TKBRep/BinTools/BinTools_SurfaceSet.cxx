@@ -84,10 +84,10 @@ int BinTools_SurfaceSet::Index(const occ::handle<Geom_Surface>& S) const
   return myMap.FindIndex(S);
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_Plane)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_Plane>& S)
 {
@@ -100,10 +100,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_CylindricalSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream&                           OS,
                                     const occ::handle<Geom_CylindricalSurface>& S)
@@ -118,10 +118,10 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_ConicalSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_ConicalSurface>& S)
 {
@@ -136,10 +136,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_SphericalSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream&                         OS,
                                     const occ::handle<Geom_SphericalSurface>& S)
@@ -154,10 +154,10 @@ static BinTools_OStream& operator<<(BinTools_OStream&                         OS
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_ToroidalSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream&                        OS,
                                     const occ::handle<Geom_ToroidalSurface>& S)
@@ -173,10 +173,10 @@ static BinTools_OStream& operator<<(BinTools_OStream&                        OS,
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_SurfaceOfLinearExtrusion)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream&                                 OS,
                                     const occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
@@ -187,10 +187,10 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_SurfaceOfRevolution)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream&                            OS,
                                     const occ::handle<Geom_SurfaceOfRevolution>& S)
@@ -202,10 +202,10 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_BezierSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BezierSurface>& S)
 {
@@ -235,10 +235,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_BSplineSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_BSplineSurface>& S)
 {
@@ -290,10 +290,10 @@ static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function :  operator <<(Geom_RectangularTrimmedSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream&                                  OS,
                                     const occ::handle<Geom_RectangularTrimmedSurface>& S)
@@ -306,10 +306,10 @@ static BinTools_OStream& operator<<(BinTools_OStream&                           
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator <<(Geom_OffsetSurface)
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static BinTools_OStream& operator<<(BinTools_OStream& OS, const occ::handle<Geom_OffsetSurface>& S)
 {
@@ -438,10 +438,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, gp_Ax3& A3)
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Plane>& S)
 {
@@ -451,10 +451,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Plane
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_CylindricalSurface>& S)
 {
@@ -466,10 +466,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Cylin
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_ConicalSurface>& S)
 {
@@ -482,10 +482,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Conic
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SphericalSurface>& S)
 {
@@ -497,10 +497,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Spher
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_ToroidalSurface>& S)
 {
@@ -513,10 +513,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Toroi
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream&                           IS,
                                     occ::handle<Geom_SurfaceOfLinearExtrusion>& S)
@@ -529,10 +529,10 @@ static Standard_IStream& operator>>(Standard_IStream&                           
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_SurfaceOfRevolution>& S)
 {
@@ -545,10 +545,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Surfa
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BezierSurface>& S)
 {
@@ -590,10 +590,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_Bezie
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSplineSurface>& S)
 {
@@ -668,10 +668,10 @@ static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_BSpli
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream&                            IS,
                                     occ::handle<Geom_RectangularTrimmedSurface>& S)
@@ -687,10 +687,10 @@ static Standard_IStream& operator>>(Standard_IStream&                           
   return IS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : operator>>
 // purpose  :
-//=======================================================================
+//=================================================================================================
 
 static Standard_IStream& operator>>(Standard_IStream& IS, occ::handle<Geom_OffsetSurface>& S)
 {

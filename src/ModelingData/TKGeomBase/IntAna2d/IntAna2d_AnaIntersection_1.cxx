@@ -75,16 +75,16 @@ void IntAna2d_AnaIntersection::Perform(const gp_Lin2d& L1, const gp_Lin2d& L2)
   double denom = be2 - rap * be1;
 
   if (std::abs(denom) <= RealEpsilon())
-  { // Directions confondues
+  { // Coincident directions
     para = true;
     nbp  = 0;
     if (std::abs(ga2 - rap * ga1) <= RealEpsilon())
-    { // Droites confondues
+    { // Coincident lines
       iden = true;
       empt = false;
     }
     else
-    { // Droites paralleles
+    { // Parallel lines
       iden = false;
       empt = true;
     }

@@ -533,7 +533,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       }
       else
       {
-        // Nombre de spans : ouverture maximale = 150 degres ( = PI / 1.2 rds)
+        // Number of spans: maximum opening = 150 degrees ( = PI / 1.2 rad)
         const int nbUSpans = (int)std::trunc(1.2 * (ULast - UFirst) / M_PI) + 1;
         AlfaU              = (ULast - UFirst) / (nbUSpans * 2);
         NbUPoles           = 2 * nbUSpans + 1;
@@ -728,7 +728,7 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       GeomConvert_ApproxSurface BSpS(Sr, Tol3d, cont, cont, MaxDegree, MaxDegree, MaxSeg, 1);
       TheSurface = BSpS.Surface();
     }
-  } // Fin du cas Rectangular::TrimmedSurface
+  } // End of Rectangular::TrimmedSurface case
 
   else
   {
@@ -902,6 +902,6 @@ occ::handle<Geom_BSplineSurface> GeomConvert::SurfaceToBSplineSurface(
       GeomConvert_ApproxSurface BSpS(Sr, Tol3d, ucont, vcont, MaxDegree, MaxDegree, MaxSeg, 1);
       TheSurface = BSpS.Surface();
     }
-  } // Fin du cas direct
+  } // End of direct case
   return TheSurface;
 }

@@ -18,7 +18,7 @@
 #include <StepGeom_SurfaceCurve.hxx>
 #include <StepGeom_SeamCurve.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_CircleReducer::StepTidy_CircleReducer(const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_Circle, StepTidy_CircleHasher>(theWS)
@@ -28,7 +28,7 @@ StepTidy_CircleReducer::StepTidy_CircleReducer(const occ::handle<XSControl_WorkS
   registerReplacer(STANDARD_TYPE(StepGeom_SeamCurve), replaceSeamCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CircleReducer::replaceEdgeCurve(const occ::handle<StepGeom_Circle>&    theOldEntity,
                                               const occ::handle<StepGeom_Circle>&    theNewEntity,
@@ -43,7 +43,7 @@ bool StepTidy_CircleReducer::replaceEdgeCurve(const occ::handle<StepGeom_Circle>
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CircleReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Circle>& theOldEntity,
                                                  const occ::handle<StepGeom_Circle>& theNewEntity,
@@ -58,7 +58,7 @@ bool StepTidy_CircleReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Circ
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_CircleReducer::replaceSeamCurve(const occ::handle<StepGeom_Circle>&    theOldEntity,
                                               const occ::handle<StepGeom_Circle>&    theNewEntity,

@@ -24,11 +24,15 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GC_MakeCircle::GC_MakeCircle(const gp_Circ& C)
 {
   TheError  = gce_Done;
   TheCircle = new Geom_Circle(C);
 }
+
+//=================================================================================================
 
 GC_MakeCircle::GC_MakeCircle(const gp_Ax2& A2, const double Radius)
 {
@@ -43,12 +47,16 @@ GC_MakeCircle::GC_MakeCircle(const gp_Ax2& A2, const double Radius)
   }
 }
 
+//=================================================================================================
+
 GC_MakeCircle::GC_MakeCircle(const gp_Circ& Circ, const gp_Pnt& Point)
 {
   gp_Circ C = gce_MakeCirc(Circ, Point);
   TheCircle = new Geom_Circle(C);
   TheError  = gce_Done;
 }
+
+//=================================================================================================
 
 GC_MakeCircle::GC_MakeCircle(const gp_Circ& Circ, const double Dist)
 {
@@ -60,6 +68,8 @@ GC_MakeCircle::GC_MakeCircle(const gp_Circ& Circ, const double Dist)
   }
 }
 
+//=================================================================================================
+
 GC_MakeCircle::GC_MakeCircle(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 {
   gce_MakeCirc C = gce_MakeCirc(P1, P2, P3);
@@ -69,6 +79,8 @@ GC_MakeCircle::GC_MakeCircle(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P
     TheCircle = new Geom_Circle(C.Value());
   }
 }
+
+//=================================================================================================
 
 GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Dir& Norm, const double Radius)
 {
@@ -80,6 +92,8 @@ GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Dir& Norm, const doub
   }
 }
 
+//=================================================================================================
+
 GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Pnt& PtAxis, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Point, PtAxis, Radius);
@@ -90,6 +104,8 @@ GC_MakeCircle::GC_MakeCircle(const gp_Pnt& Point, const gp_Pnt& PtAxis, const do
   }
 }
 
+//=================================================================================================
+
 GC_MakeCircle::GC_MakeCircle(const gp_Ax1& Axis, const double Radius)
 {
   gce_MakeCirc C = gce_MakeCirc(Axis, Radius);
@@ -99,6 +115,8 @@ GC_MakeCircle::GC_MakeCircle(const gp_Ax1& Axis, const double Radius)
     TheCircle = new Geom_Circle(C.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_Circle>& GC_MakeCircle::Value() const
 {

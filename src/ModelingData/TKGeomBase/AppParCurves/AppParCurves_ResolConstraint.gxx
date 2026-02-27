@@ -14,9 +14,9 @@
 
 // lpa, le 11/09/91
 
-// Approximation d un ensemble de points contraints (MultiLine) avec une
-// solution approchee (MultiCurve). L algorithme utilise est l algorithme
-// d Uzawa du package mathematique.
+// Approximation of a constrained set of points (MultiLine) with an
+// approximate solution (MultiCurve). The algorithm used is the
+// Uzawa algorithm from the mathematical package.
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -130,7 +130,7 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
   math_Vector             Start(1, CCol * Npol);
   NCollection_Array2<int> Ibont(1, NbCu, 1, IncTan);
 
-  // Remplissage de Cont pour les points de passage:
+  // Filling Cont for the passing points:
   // =================================================
   for (i = 1; i <= IncPass; i++)
   { // Cette partie ne depend que de Bernstein
@@ -145,9 +145,9 @@ AppParCurves_ResolConstraint::AppParCurves_ResolConstraint(
     Cont.Set(IncPass * (i - 1) + 1, IncPass * i, Npol * (i - 1) + 1, Npol * i, ContInit);
   }
 
-  // recuperation des vecteurs de depart pour Uzawa. Ce vecteur represente les
-  // poles de SCurv.
-  // Remplissage de secont et resolution.
+  // Retrieval of starting vectors for Uzawa. This vector represents the
+  // poles of SCurv.
+  // Filling of secont and resolution.
 
   NCollection_Array1<gp_Vec>   tabV(1, mynb3d);
   NCollection_Array1<gp_Vec2d> tabV2d(1, mynb2d);

@@ -46,10 +46,7 @@
 const double aParabolaLimit  = 20000.;
 const double aHyperbolaLimit = 10.;
 
-//=======================================================================
-// function : OnPlane_Value
-// purpose  : Evaluate current point of the projected curve
-//=======================================================================
+//=================================================================================================
 
 static gp_Pnt OnPlane_Value(const double                        U,
                             const occ::handle<Adaptor3d_Curve>& aCurvePtr,
@@ -71,10 +68,7 @@ static gp_Pnt OnPlane_Value(const double                        U,
   return Point;
 }
 
-//=======================================================================
-// function : OnPlane_DN
-// purpose  : Evaluate current point of the projected curve
-//=======================================================================
+//=================================================================================================
 
 static gp_Vec OnPlane_DN(const double                        U,
                          const int                           DerivativeRequest,
@@ -226,10 +220,7 @@ static bool OnPlane_D3(const double                        U,
   return true;
 }
 
-//=======================================================================
-//  class  : ProjLib_OnPlane
-// purpose  : Use to approximate the projection on a plane
-//=======================================================================
+//=================================================================================================
 
 class ProjLib_OnPlane : public AppCont_Function
 
@@ -269,11 +260,7 @@ public:
   }
 };
 
-//=======================================================================
-//  class  : ProjLib_MaxCurvature
-// purpose  : Use to search apex of parabola or hyperbola, which is its projection
-//           on a plane. Apex is point with maximal curvature
-//=======================================================================
+//=================================================================================================
 
 class ProjLib_MaxCurvature : public math_Function
 
@@ -493,11 +480,7 @@ occ::handle<Adaptor3d_Curve> ProjLib_ProjectOnPlane::ShallowCopy() const
   return aCopy;
 }
 
-//=======================================================================
-// function : Project
-// purpose  : Returns the projection of a point <Point> on a plane
-//           <ThePlane>  along a direction <TheDir>.
-//=======================================================================
+//=================================================================================================
 
 static gp_Pnt ProjectPnt(const gp_Ax3& ThePlane, const gp_Dir& TheDir, const gp_Pnt& Point)
 {
@@ -512,11 +495,7 @@ static gp_Pnt ProjectPnt(const gp_Ax3& ThePlane, const gp_Dir& TheDir, const gp_
   return P;
 }
 
-//=======================================================================
-// function : Project
-// purpose  : Returns the projection of a Vector <Vec> on a plane
-//           <ThePlane> along a direction <TheDir>.
-//=======================================================================
+//=================================================================================================
 
 static gp_Vec ProjectVec(const gp_Ax3& ThePlane, const gp_Dir& TheDir, const gp_Vec& Vec)
 {
@@ -571,7 +550,7 @@ void ProjLib_ProjectOnPlane::Load(const occ::handle<Adaptor3d_Curve>& C,
       gp_Vec Xc = ProjectVec(myPlane, myDirection, gp_Vec(L.Direction()));
 
       if (Xc.Magnitude() < Precision::Confusion())
-      { // line orthog au plan
+      { // line orthogonal to the plane
         myType                    = GeomAbs_BSplineCurve;
         gp_Pnt                  P = ProjectPnt(myPlane, myDirection, L.Location());
         NCollection_Array1<int> Mults(1, 2);

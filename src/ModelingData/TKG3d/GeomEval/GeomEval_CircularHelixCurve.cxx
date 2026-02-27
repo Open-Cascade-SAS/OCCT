@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_CircularHelixCurve, Geom_Curve)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_CircularHelixCurve::GeomEval_CircularHelixCurve(const gp_Ax2& thePosition,
                                                          double        theRadius,
@@ -40,35 +40,35 @@ GeomEval_CircularHelixCurve::GeomEval_CircularHelixCurve(const gp_Ax2& thePositi
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const gp_Ax2& GeomEval_CircularHelixCurve::Position() const
 {
   return myPosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelixCurve::Radius() const
 {
   return myRadius;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelixCurve::Pitch() const
 {
   return myPitch;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelixCurve::Reverse()
 {
   throw Standard_NotImplemented("GeomEval_CircularHelixCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelixCurve::ReversedParameter(const double U) const
 {
@@ -76,49 +76,49 @@ double GeomEval_CircularHelixCurve::ReversedParameter(const double U) const
   throw Standard_NotImplemented("GeomEval_CircularHelixCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelixCurve::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_CircularHelixCurve::LastParameter() const
 {
   return Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelixCurve::IsClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelixCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomEval_CircularHelixCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_CircularHelixCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_CircularHelixCurve::EvalD0(const double U) const
 {
@@ -135,7 +135,7 @@ gp_Pnt GeomEval_CircularHelixCurve::EvalD0(const double U) const
   return gp_Pnt(anO + myRadius * aCosU * aXD + myRadius * aSinU * aYD + aZComp * aZD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD1 GeomEval_CircularHelixCurve::EvalD1(const double U) const
 {
@@ -159,7 +159,7 @@ Geom_Curve::ResD1 GeomEval_CircularHelixCurve::EvalD1(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD2 GeomEval_CircularHelixCurve::EvalD2(const double U) const
 {
@@ -185,7 +185,7 @@ Geom_Curve::ResD2 GeomEval_CircularHelixCurve::EvalD2(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD3 GeomEval_CircularHelixCurve::EvalD3(const double U) const
 {
@@ -213,7 +213,7 @@ Geom_Curve::ResD3 GeomEval_CircularHelixCurve::EvalD3(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_CircularHelixCurve::EvalDN(const double U, const int N) const
 {
@@ -243,7 +243,7 @@ gp_Vec GeomEval_CircularHelixCurve::EvalDN(const double U, const int N) const
   return gp_Vec(aResult);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelixCurve::Transform(const gp_Trsf& T)
 {
@@ -251,14 +251,14 @@ void GeomEval_CircularHelixCurve::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_CircularHelixCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_CircularHelixCurve::Copy() const
 {
   return new GeomEval_CircularHelixCurve(myPosition, myRadius, myPitch);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_CircularHelixCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

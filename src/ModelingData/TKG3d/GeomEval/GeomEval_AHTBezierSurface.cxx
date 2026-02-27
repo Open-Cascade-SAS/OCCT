@@ -26,14 +26,14 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_AHTBezierSurface, Geom_BoundedSurface)
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_AHTBezierSurface::basisDimension(int theAlgDegree, double theAlpha, double theBeta)
 {
   return theAlgDegree + 1 + (theAlpha > 0.0 ? 2 : 0) + (theBeta > 0.0 ? 2 : 0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 namespace
 {
@@ -505,7 +505,7 @@ void computeRationalDerivs(const gp_XYZ* theNDerivs,
 
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
                                                      int    theAlgDegreeU,
@@ -546,7 +546,7 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(const NCollection_Array2<gp
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(const NCollection_Array2<gp_Pnt>& thePoles,
                                                      const NCollection_Array2<double>& theWeights,
@@ -603,105 +603,105 @@ GeomEval_AHTBezierSurface::GeomEval_AHTBezierSurface(const NCollection_Array2<gp
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<gp_Pnt>& GeomEval_AHTBezierSurface::Poles() const
 {
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<double>& GeomEval_AHTBezierSurface::Weights() const
 {
   return myWeights;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_AHTBezierSurface::AlgDegreeU() const
 {
   return myAlgDegreeU;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_AHTBezierSurface::AlgDegreeV() const
 {
   return myAlgDegreeV;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_AHTBezierSurface::AlphaU() const
 {
   return myAlphaU;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_AHTBezierSurface::AlphaV() const
 {
   return myAlphaV;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_AHTBezierSurface::BetaU() const
 {
   return myBetaU;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_AHTBezierSurface::BetaV() const
 {
   return myBetaV;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_AHTBezierSurface::NbPolesU() const
 {
   return myPoles.NbRows();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_AHTBezierSurface::NbPolesV() const
 {
   return myPoles.NbColumns();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsURational() const
 {
   return myURational;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsVRational() const
 {
   return myVRational;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_AHTBezierSurface::UReverse()
 {
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::UReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_AHTBezierSurface::VReverse()
 {
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::VReverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_AHTBezierSurface::UReversedParameter(const double U) const
 {
@@ -709,7 +709,7 @@ double GeomEval_AHTBezierSurface::UReversedParameter(const double U) const
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::UReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_AHTBezierSurface::VReversedParameter(const double V) const
 {
@@ -717,7 +717,7 @@ double GeomEval_AHTBezierSurface::VReversedParameter(const double V) const
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::VReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_AHTBezierSurface::Bounds(double& U1, double& U2, double& V1, double& V2) const
 {
@@ -727,70 +727,70 @@ void GeomEval_AHTBezierSurface::Bounds(double& U1, double& U2, double& V1, doubl
   V2 = 1.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsUClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsVClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsUPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsVPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_AHTBezierSurface::UIso(const double /*U*/) const
 {
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::UIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Curve> GeomEval_AHTBezierSurface::VIso(const double /*V*/) const
 {
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::VIso");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomEval_AHTBezierSurface::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsCNu(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_AHTBezierSurface::IsCNv(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_AHTBezierSurface::EvalD0(const double U, const double V) const
 {
@@ -839,7 +839,7 @@ gp_Pnt GeomEval_AHTBezierSurface::EvalD0(const double U, const double V) const
   return gp_Pnt(aN[0] / aW[0]);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD1 GeomEval_AHTBezierSurface::EvalD1(const double U, const double V) const
 {
@@ -904,7 +904,7 @@ Geom_Surface::ResD1 GeomEval_AHTBezierSurface::EvalD1(const double U, const doub
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD2 GeomEval_AHTBezierSurface::EvalD2(const double U, const double V) const
 {
@@ -987,7 +987,7 @@ Geom_Surface::ResD2 GeomEval_AHTBezierSurface::EvalD2(const double U, const doub
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Surface::ResD3 GeomEval_AHTBezierSurface::EvalD3(const double U, const double V) const
 {
@@ -1096,7 +1096,7 @@ Geom_Surface::ResD3 GeomEval_AHTBezierSurface::EvalD3(const double U, const doub
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
                                          const double V,
@@ -1185,7 +1185,7 @@ gp_Vec GeomEval_AHTBezierSurface::EvalDN(const double U,
   return gp_Vec(aCDerivs[tensorIdx(Nu, Nv, Nv)]);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_AHTBezierSurface::Transform(const gp_Trsf& T)
 {
@@ -1193,7 +1193,7 @@ void GeomEval_AHTBezierSurface::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_AHTBezierSurface::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_AHTBezierSurface::Copy() const
 {
@@ -1217,7 +1217,7 @@ occ::handle<Geom_Geometry> GeomEval_AHTBezierSurface::Copy() const
                                        myBetaV);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_AHTBezierSurface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

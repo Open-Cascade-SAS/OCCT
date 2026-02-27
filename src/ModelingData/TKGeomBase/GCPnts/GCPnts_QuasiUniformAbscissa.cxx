@@ -140,7 +140,7 @@ void GCPnts_QuasiUniformAbscissa::initialize(const TheCurve& theC,
   typename GCPnts_TCurveTypes<TheCurve>::Point aP1, aP2;
   aP1 = theC.Value(theU1);
 
-  // On additionne toutes les distances
+  // Sum all distances
   for (int i = 0; i < 2 * theNbPoints; ++i)
   {
     aP2                = theC.Value(theU1 + i * dU);
@@ -150,8 +150,8 @@ void GCPnts_QuasiUniformAbscissa::initialize(const TheCurve& theC,
     aP1        = aP2;
   }
 
-  // On cherche a mettre NbPoints dans la curve.
-  // on met les points environ a Length/NbPoints.
+  // Try to distribute NbPoints on the curve.
+  // Place points approximately at intervals of Length/NbPoints.
   if (IsEqual(aLength, 0.0))
   { // use usual analytical grid
     double aStep = (theU2 - theU1) / (theNbPoints - 1);

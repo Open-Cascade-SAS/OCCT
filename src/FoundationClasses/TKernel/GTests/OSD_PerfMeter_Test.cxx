@@ -66,7 +66,7 @@ protected:
   }
 };
 
-//==================================================================================================
+//=================================================================================================
 
 // Test basic creation and auto-start functionality
 TEST_F(OSD_PerfMeterTest, BasicCreationWithAutoStart)
@@ -85,7 +85,7 @@ TEST_F(OSD_PerfMeterTest, BasicCreationWithAutoStart)
   EXPECT_GT(elapsed, 0.0) << "Elapsed time should be positive";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test manual start/stop functionality
 TEST_F(OSD_PerfMeterTest, ManualStartStop)
@@ -107,7 +107,7 @@ TEST_F(OSD_PerfMeterTest, ManualStartStop)
   EXPECT_GT(elapsed, 0.0) << "Elapsed time should be positive";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test default constructor and Init
 TEST_F(OSD_PerfMeterTest, DefaultConstructorAndInit)
@@ -129,7 +129,7 @@ TEST_F(OSD_PerfMeterTest, DefaultConstructorAndInit)
   EXPECT_GT(meter.Elapsed(), 0.0) << "Initialized meter should have positive elapsed time";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test that two meters with the same name refer to the same internal meter
 TEST_F(OSD_PerfMeterTest, SharedMetersByName)
@@ -163,7 +163,7 @@ TEST_F(OSD_PerfMeterTest, SharedMetersByName)
   EXPECT_DOUBLE_EQ(elapsed, elapsed2) << "Both meter instances should show same elapsed time";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test restarting a meter
 TEST_F(OSD_PerfMeterTest, RestartMeter)
@@ -194,7 +194,7 @@ TEST_F(OSD_PerfMeterTest, RestartMeter)
   EXPECT_NE(elapsed1, elapsed2) << "After restart, elapsed time should be different";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test relative timing accuracy
 TEST_F(OSD_PerfMeterTest, RelativeTimingAccuracy)
@@ -220,7 +220,7 @@ TEST_F(OSD_PerfMeterTest, RelativeTimingAccuracy)
   EXPECT_GT(longElapsed, shortElapsed) << "Long work should take more time than short work";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test the static PrintALL method
 TEST_F(OSD_PerfMeterTest, PrintALL)
@@ -250,7 +250,7 @@ TEST_F(OSD_PerfMeterTest, PrintALL)
     << "PrintALL output should contain Meter3";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test the static ResetALL method
 TEST_F(OSD_PerfMeterTest, ResetALL)
@@ -276,7 +276,7 @@ TEST_F(OSD_PerfMeterTest, ResetALL)
   EXPECT_EQ(meter2.Elapsed(), 0.0) << "Elapsed time should be zero after ResetALL";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test unused meter behavior
 TEST_F(OSD_PerfMeterTest, UnusedMeter)
@@ -292,7 +292,7 @@ TEST_F(OSD_PerfMeterTest, UnusedMeter)
   EXPECT_EQ(meter.Elapsed(), 0.0) << "Stopping an unused meter should leave elapsed time at zero";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test the Print() method
 TEST_F(OSD_PerfMeterTest, PrintMethod)
@@ -323,7 +323,7 @@ TEST_F(OSD_PerfMeterTest, PrintMethod)
     << "Print output should contain millisecond units";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test the Kill() method
 TEST_F(OSD_PerfMeterTest, KillMethod)
@@ -354,7 +354,7 @@ TEST_F(OSD_PerfMeterTest, KillMethod)
     << "Killed meter should not appear in PrintALL output";
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Test Kill method on a running meter
 TEST_F(OSD_PerfMeterTest, KillRunningMeter)

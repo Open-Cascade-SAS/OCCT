@@ -23,7 +23,7 @@ constexpr int    THE_ELLIPSE_NB_EXTREMA = 4; //!< Number of curvature extrema on
 constexpr double THE_ELLIPSE_PERIOD     = 2.0 * M_PI; //!< One full period of ellipse parameter
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp_Ellipse::Tangent(const double theParam, const double theTol) const
 {
@@ -37,7 +37,7 @@ GeomProp::TangentResult GeomProp_Ellipse::Tangent(const double theParam, const d
   return GeomProp::ComputeTangent(aD1, aD2, aD3, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Ellipse::Curvature(const double theParam,
                                                       const double theTol) const
@@ -52,7 +52,7 @@ GeomProp::CurvatureResult GeomProp_Ellipse::Curvature(const double theParam,
   return GeomProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp_Ellipse::Normal(const double theParam, const double theTol) const
 {
@@ -66,7 +66,7 @@ GeomProp::NormalResult GeomProp_Ellipse::Normal(const double theParam, const dou
   return GeomProp::ComputeNormal(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp_Ellipse::CentreOfCurvature(const double theParam,
                                                            const double theTol) const
@@ -81,7 +81,7 @@ GeomProp::CentreResult GeomProp_Ellipse::CentreOfCurvature(const double theParam
   return GeomProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_Ellipse::FindCurvatureExtrema() const
 {

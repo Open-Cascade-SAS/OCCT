@@ -13,7 +13,7 @@
 
 #include <GeomProp_Parabola.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp_Parabola::Tangent(const double theParam, const double theTol) const
 {
@@ -27,7 +27,7 @@ GeomProp::TangentResult GeomProp_Parabola::Tangent(const double theParam, const 
   return GeomProp::ComputeTangent(aD1, aD2, aD3, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Parabola::Curvature(const double theParam,
                                                        const double theTol) const
@@ -42,7 +42,7 @@ GeomProp::CurvatureResult GeomProp_Parabola::Curvature(const double theParam,
   return GeomProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp_Parabola::Normal(const double theParam, const double theTol) const
 {
@@ -56,7 +56,7 @@ GeomProp::NormalResult GeomProp_Parabola::Normal(const double theParam, const do
   return GeomProp::ComputeNormal(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp_Parabola::CentreOfCurvature(const double theParam,
                                                             const double theTol) const
@@ -71,7 +71,7 @@ GeomProp::CentreResult GeomProp_Parabola::CentreOfCurvature(const double thePara
   return GeomProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_Parabola::FindCurvatureExtrema() const
 {

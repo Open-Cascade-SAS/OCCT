@@ -59,28 +59,28 @@ GeomConvert_BSplineSurfaceToBezierSurface::GeomConvert_BSplineSurfaceToBezierSur
 
   mySurface->LocateU(U1, PTol, I1, I2);
   if (I1 == I2)
-  { // On est sur le noeud
+  { // We are on the knot
     if (mySurface->UKnot(I1) > U1)
       Uf = mySurface->UKnot(I1);
   }
 
   mySurface->LocateU(U2, PTol, I1, I2);
   if (I1 == I2)
-  { // On est sur le noeud
+  { // We are on the knot
     if (mySurface->UKnot(I1) < U2)
       Ul = mySurface->UKnot(I1);
   }
 
   mySurface->LocateV(V1, PTol, I1, I2);
   if (I1 == I2)
-  { // On est sur le noeud
+  { // We are on the knot
     if (mySurface->VKnot(I1) > V1)
       Vf = mySurface->VKnot(I1);
   }
 
   mySurface->LocateV(V2, PTol, I1, I2);
   if (I1 == I2)
-  { // On est sur le noeud
+  { // We are on the knot
     if (mySurface->VKnot(I1) < V2)
       Vl = mySurface->VKnot(I1);
   }

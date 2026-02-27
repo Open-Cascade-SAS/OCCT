@@ -3845,7 +3845,7 @@ void BSplSLib::FunctionMultiply(const BSplSLib_EvaluatorFunction& Function,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<double> BSplSLib::UnitWeights(const int theNbUPoles, const int theNbVPoles)
 {

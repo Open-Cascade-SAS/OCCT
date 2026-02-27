@@ -48,7 +48,6 @@ bool GCPnts_DistFunction2d::Value(const double X, double& F)
   return true;
 }
 
-//
 //=================================================================================================
 
 GCPnts_DistFunction2dMV::GCPnts_DistFunction2dMV(GCPnts_DistFunction2d& theCurvLinDist)

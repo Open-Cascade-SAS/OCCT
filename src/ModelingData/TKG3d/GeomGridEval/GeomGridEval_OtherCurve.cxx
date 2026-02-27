@@ -13,7 +13,7 @@
 
 #include <GeomGridEval_OtherCurve.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -34,7 +34,7 @@ NCollection_Array1<gp_Pnt> GeomGridEval_OtherCurve::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -58,7 +58,7 @@ NCollection_Array1<GeomGridEval::CurveD1> GeomGridEval_OtherCurve::EvaluateGridD
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -82,7 +82,7 @@ NCollection_Array1<GeomGridEval::CurveD2> GeomGridEval_OtherCurve::EvaluateGridD
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -106,7 +106,7 @@ NCollection_Array1<GeomGridEval::CurveD3> GeomGridEval_OtherCurve::EvaluateGridD
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec> GeomGridEval_OtherCurve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

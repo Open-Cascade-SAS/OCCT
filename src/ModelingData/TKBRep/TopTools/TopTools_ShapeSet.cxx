@@ -233,10 +233,10 @@ static void PrintOrientation(const TopAbs_Orientation O, Standard_OStream& S, bo
   }
 }
 
-//=======================================================================
+//=================================================================================================
 // function : DumpExtent
 // purpose  : Dump number of shapes.
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TopTools_ShapeSet::DumpExtent(Standard_OStream& OS) const
 {
@@ -307,10 +307,10 @@ Standard_OStream& TopTools_ShapeSet::DumpExtent(Standard_OStream& OS) const
   return OS;
 }
 
-//=======================================================================
+//=================================================================================================
 // function : DumpExtent
 // purpose  : Dump number of shapes.
-//=======================================================================
+//=================================================================================================
 
 void TopTools_ShapeSet::DumpExtent(TCollection_AsciiString& S) const
 {
@@ -647,7 +647,7 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   if (aPS.UserBreak())
   {
     std::cout << "Interrupted by the user" << std::endl;
-    // on remet le LC_NUMERIC a la precedente valeur
+    // restore LC_NUMERIC to the previous value
     IS.imbue(anOldLocale);
     return;
   }
@@ -673,7 +673,7 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
   if (strcmp(buffer, "TShapes"))
   {
     std::cout << "Not a TShape table" << std::endl;
-    // on remet le LC_NUMERIC a la precedente valeur
+    // restore LC_NUMERIC to the previous value
     IS.imbue(anOldLocale);
     return;
   }
@@ -723,7 +723,7 @@ void TopTools_ShapeSet::Read(Standard_IStream& IS, const Message_ProgressRange& 
     myShapes.Add(S);
   }
 
-  // on remet le LC_NUMERIC a la precedente valeur
+  // restore LC_NUMERIC to the previous value
   IS.imbue(anOldLocale);
 
   if (aPS.UserBreak())

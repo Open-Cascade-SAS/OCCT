@@ -42,7 +42,7 @@ void IntAna2d_AnaIntersection::Perform(const gp_Parab2d& P, const IntAna2d_Conic
   Conic.Coefficients(A, B, C, D, E, F);
   Conic.NewCoefficients(A, B, C, D, E, F, Axe_rep);
 
-  //-------- 'Parametre'  y avec y=y  x=y^2/(2 p)
+  //-------- Parameter y with y=y, x=y^2/(2p)
 
   px0 = F;
   px1 = E + E;

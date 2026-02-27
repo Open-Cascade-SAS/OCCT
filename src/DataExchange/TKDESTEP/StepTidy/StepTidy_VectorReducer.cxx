@@ -17,7 +17,7 @@
 #include <StepGeom_Line.hxx>
 #include <StepGeom_Vector.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_VectorReducer::StepTidy_VectorReducer(const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_Vector, StepTidy_VectorHasher>(theWS)
@@ -25,7 +25,7 @@ StepTidy_VectorReducer::StepTidy_VectorReducer(const occ::handle<XSControl_WorkS
   registerReplacer(STANDARD_TYPE(StepGeom_Line), replaceLine);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_VectorReducer::replaceLine(const occ::handle<StepGeom_Vector>&    theOldEntity,
                                          const occ::handle<StepGeom_Vector>&    theNewEntity,

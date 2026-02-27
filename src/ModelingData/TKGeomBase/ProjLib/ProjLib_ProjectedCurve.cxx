@@ -410,8 +410,8 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
       Project(P, myCurve);
       if (P.IsDone())
       {
-        // on met dans la pseudo-periode ( car Sphere n'est pas
-        // periodique en V !)
+        // Place into the pseudo-period (since Sphere is not
+        // periodic in V!)
         P.SetInBounds(myCurve->FirstParameter());
       }
       else
@@ -628,7 +628,7 @@ void ProjLib_ProjectedCurve::Perform(const occ::handle<Adaptor3d_Curve>& C)
       {
         return;
       }
-      // Approximons cette courbe algorithmique.
+      // Approximate this algorithmic curve.
       bool          Only3d     = false;
       bool          Only2d     = true;
       GeomAbs_Shape Continuity = GeomAbs_C1;
@@ -1078,7 +1078,7 @@ int ProjLib_ProjectedCurve::Degree() const
     return myResult.Bezier()->Degree();
   }
 
-  // portage WNT
+  // porting WNT
   return 0;
 }
 
@@ -1097,7 +1097,7 @@ bool ProjLib_ProjectedCurve::IsRational() const
   {
     return myResult.Bezier()->IsRational();
   }
-  // portage WNT
+  // porting WNT
   return false;
 }
 
@@ -1117,7 +1117,7 @@ int ProjLib_ProjectedCurve::NbPoles() const
     return myResult.Bezier()->NbPoles();
   }
 
-  // portage WNT
+  // porting WNT
   return 0;
 }
 

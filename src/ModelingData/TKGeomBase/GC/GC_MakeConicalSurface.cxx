@@ -25,6 +25,8 @@
 #include <Standard_NotImplemented.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2& A2,
                                              const double  Ang,
                                              const double  Radius)
@@ -44,18 +46,15 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Ax2& A2,
   }
 }
 
+//=================================================================================================
+
 GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Cone& C)
 {
   TheError = gce_Done;
   TheCone  = new Geom_ConicalSurface(C);
 }
 
-//=========================================================================
-//   Creation of a cone by four points.                                +
-//   two first give the axis.                                     +
-//   the third gives the base radius.                              +
-//   the third and the fourth the half-angle.                          +
-//=========================================================================
+//=================================================================================================
 
 GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
                                              const gp_Pnt& P2,
@@ -70,8 +69,7 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
   }
 }
 
-//=========================================================================
-//=========================================================================
+//=================================================================================================
 
 GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
                                              const gp_Pnt& P2,
@@ -85,6 +83,8 @@ GC_MakeConicalSurface::GC_MakeConicalSurface(const gp_Pnt& P1,
     TheCone = new Geom_ConicalSurface(C);
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_ConicalSurface>& GC_MakeConicalSurface::Value() const
 {

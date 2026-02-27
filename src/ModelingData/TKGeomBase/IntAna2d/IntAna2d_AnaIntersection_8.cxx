@@ -24,19 +24,19 @@
 #include <StdFail_NotDone.hxx>
 
 // -----------------------------------------------------------------
-// ------ Verification de la validite des points obtenus  ----------
-// --- Methode a implementer dans les autres routines si on constate
-// --- des problemes d'instabilite numerique sur
-// ---      * la construction des polynomes en t (t:parametre)
-// ---      * la resolution du polynome
-// ---      * le retour : parametre t -> point d'intersection
-// --- Probleme : A partir de quelle Tolerance un point n'est
-// ---            plus un point de la courbe. (f(x,y)=1e-10 ??)
-// ---            ne donne pas d'info. sur la dist. du pt a la courbe
+// ------ Verification of the validity of obtained points ----------
+// --- Method to implement in other routines if numerical
+// --- instability problems are observed in:
+// ---      * polynomial construction in t (t: parameter)
+// ---      * polynomial solving
+// ---      * reverse mapping: parameter t -> intersection point
+// --- Problem: From which tolerance is a point no longer
+// ---          a point on the curve? (f(x,y)=1e-10 ??)
+// ---          gives no info on the distance from pt to curve
 // -----------------------------------------------------------------
-// ------ Methode non implementee pour les autres Intersections
-// --- Si un probleme est constate : Dupliquer le code entre les
-// --- commentaires VERIF-VALID
+// ------ Method not implemented for other Intersections
+// --- If a problem is observed: Duplicate the code between
+// --- the VERIF-VALID comments
 // -----------------------------------------------------------------
 void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic& Conic)
 {
@@ -62,9 +62,9 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
   double B_minor_radiusP2       = B * minor_radius * minor_radius;
   double C_2_major_minor_radius = C * 2.0 * major_radius * minor_radius;
 
-  // Parametre : t avec x=MajorRadius*Ch(t)  y=:minorRadius*Sh(t)
-  // Le polynome est reecrit en Exp(t)
-  // Suivent les Coeffs du polynome P multiplie par 4*Exp(t)^2
+  // Parameter: t with x=MajorRadius*Ch(t)  y=minorRadius*Sh(t)
+  // The polynomial is rewritten in Exp(t)
+  // The following are the coefficients of polynomial P multiplied by 4*Exp(t)^2
 
   px0 = A_major_radiusP2 - C_2_major_minor_radius + B_minor_radiusP2;
   px1 = 4.0 * (D * major_radius - E * minor_radius);
@@ -88,8 +88,8 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
       done = true;
       return;
     }
-    // On a X=(CosH(t)*major_radius)/2 , Y=(SinH(t)*minor_radius)/2
-    //      la Resolution est en S=Exp(t)
+    // We have X=(CosH(t)*major_radius)/2, Y=(SinH(t)*minor_radius)/2
+    //         the resolution is in S=Exp(t)
     nbp                = Sol.NbSolutions();
     int nb_sol_valides = 0;
     for (i = 1; i <= nbp; i++)
@@ -100,11 +100,11 @@ void IntAna2d_AnaIntersection::Perform(const gp_Hypr2d& H, const IntAna2d_Conic&
         tx = 0.5 * major_radius * (S + 1 / S);
         ty = 0.5 * minor_radius * (S - 1 / S);
 
-        //--- Est-on sur la bonne branche de l'Hyperbole
-        //--------------- VERIF-VALIDITE-INTERSECTION ----------
-        //--- On Suppose que l'ecart sur la courbe1 est nul
-        //--- (le point a ete obtenu par parametrage)
-        //--- ??? la tolerance a ete fixee a 1e-10 ?????????????
+        //--- Are we on the correct branch of the Hyperbola?
+        //--------------- VERIF-VALIDITY-INTERSECTION ----------
+        //--- We assume that the deviation on curve1 is zero
+        //--- (the point was obtained by parameterization)
+        //--- ??? the tolerance was set to 1e-10 ?????????????
 
         nb_sol_valides++;
         Coord_Ancien_Repere(tx, ty, Axe_rep);

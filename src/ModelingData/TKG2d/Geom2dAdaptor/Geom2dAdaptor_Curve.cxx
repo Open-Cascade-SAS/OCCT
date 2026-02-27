@@ -15,8 +15,8 @@
 // commercial license or contractual agreement.
 
 // 20/02/97 : PMN -> Positionement local sur BSpline (PRO6902)
-// 10/07/97 : PMN -> Pas de calcul de resolution dans Nb(Intervals) (PRO9248)
-// 20/10/97 : JPI -> traitement des offset curves
+// 10/07/97 : PMN -> No resolution calculation in Nb(Intervals) (PRO9248)
+// 20/10/97 : JPI -> handling of offset curves
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -178,13 +178,13 @@ GeomAbs_Shape Geom2dAdaptor_Curve::LocalContinuity(const double U1, const double
   if (std::abs(newLast - TK(Index2)) < Precision::PConfusion())
     Index2--;
   int MultMax;
-  // attention aux courbes peridiques.
+  // beware of periodic curves.
   if (aBSpline->IsPeriodic() && Index1 == Nb)
     Index1 = 1;
 
   if ((Index2 - Index1 <= 0) && (!aBSpline->IsPeriodic()))
   {
-    MultMax = 100; // CN entre 2 Noeuds consecutifs
+    MultMax = 100; // CN between 2 consecutive nodes
   }
   else
   {

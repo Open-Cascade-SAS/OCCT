@@ -52,7 +52,7 @@ static bool Controle(const NCollection_Array1<gp_Pnt>& Poles,
 
     if (DU.SquareMagnitude() > gp::Resolution() && DV.SquareMagnitude() > gp::Resolution())
     {
-      // On prend DX le plus proche possible de DU
+      // Choose DX as close as possible to DU
       gp_Dir du(DU);
       double Angle1 = du.Angle(DX);
       double Angle2 = du.Angle(DY);

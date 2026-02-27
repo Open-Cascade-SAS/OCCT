@@ -23,14 +23,15 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Constructions of 3d geometrical elements from Geom.
-//=========================================================================
+//=================================================================================================
+
 GC_MakeLine::GC_MakeLine(const gp_Pnt& P, const gp_Dir& V)
 {
   TheError = gce_Done;
   TheLine  = new Geom_Line(P, V);
 }
+
+//=================================================================================================
 
 GC_MakeLine::GC_MakeLine(const gp_Ax1& A1)
 {
@@ -38,11 +39,15 @@ GC_MakeLine::GC_MakeLine(const gp_Ax1& A1)
   TheLine  = new Geom_Line(A1);
 }
 
+//=================================================================================================
+
 GC_MakeLine::GC_MakeLine(const gp_Lin& L)
 {
   TheError = gce_Done;
   TheLine  = new Geom_Line(L);
 }
+
+//=================================================================================================
 
 GC_MakeLine::GC_MakeLine(const gp_Pnt& P1, const gp_Pnt& P2)
 {
@@ -54,6 +59,8 @@ GC_MakeLine::GC_MakeLine(const gp_Pnt& P1, const gp_Pnt& P2)
   }
 }
 
+//=================================================================================================
+
 GC_MakeLine::GC_MakeLine(const gp_Lin& Lin, const gp_Pnt& Point)
 {
   gce_MakeLin L(Lin, Point);
@@ -63,6 +70,8 @@ GC_MakeLine::GC_MakeLine(const gp_Lin& Lin, const gp_Pnt& Point)
     TheLine = new Geom_Line(L.Value());
   }
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_Line>& GC_MakeLine::Value() const
 {

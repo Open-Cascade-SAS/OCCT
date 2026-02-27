@@ -14,7 +14,7 @@
 #include <GeomProp_BezierCurve.hxx>
 #include <GeomProp_CurveAnalysisTools.pxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp_BezierCurve::Tangent(const double theParam,
                                                       const double theTol) const
@@ -22,7 +22,7 @@ GeomProp::TangentResult GeomProp_BezierCurve::Tangent(const double theParam,
   return GeomProp_CurveAnalysisTools::EvaluateTangent(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp_BezierCurve::Curvature(const double theParam,
                                                           const double theTol) const
@@ -30,7 +30,7 @@ GeomProp::CurvatureResult GeomProp_BezierCurve::Curvature(const double theParam,
   return GeomProp_CurveAnalysisTools::EvaluateCurvature(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp_BezierCurve::Normal(const double theParam,
                                                     const double theTol) const
@@ -38,7 +38,7 @@ GeomProp::NormalResult GeomProp_BezierCurve::Normal(const double theParam,
   return GeomProp_CurveAnalysisTools::EvaluateNormal(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp_BezierCurve::CentreOfCurvature(const double theParam,
                                                                const double theTol) const
@@ -46,14 +46,14 @@ GeomProp::CentreResult GeomProp_BezierCurve::CentreOfCurvature(const double theP
   return GeomProp_CurveAnalysisTools::EvaluateCentreOfCurvature(myAdaptor, theParam, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_BezierCurve::FindCurvatureExtrema() const
 {
   return GeomProp_CurveAnalysisTools::FindCurvatureExtrema(myAdaptor);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_BezierCurve::FindInflections() const
 {

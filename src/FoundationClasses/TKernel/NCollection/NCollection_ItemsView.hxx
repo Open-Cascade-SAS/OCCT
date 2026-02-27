@@ -30,7 +30,7 @@
 namespace NCollection_ItemsView
 {
 
-//==================================================================================================
+//=================================================================================================
 
 //! Key-value pair reference for structured binding support.
 //! Enables: for (auto [key, value] : map.Items())
@@ -55,7 +55,7 @@ struct KeyValueRef
   }
 };
 
-//==================================================================================================
+//=================================================================================================
 
 //! Key-value-index tuple reference for structured binding support.
 //! Enables: for (auto [key, value, index] : map.IndexedItems())
@@ -83,7 +83,7 @@ struct KeyValueIndexRef
   }
 };
 
-//==================================================================================================
+//=================================================================================================
 
 //! Key-index pair reference for structured binding support (key-only indexed maps).
 //! Enables: for (auto [key, index] : map.IndexedItems())
@@ -104,7 +104,7 @@ struct KeyIndexRef
   }
 };
 
-//==================================================================================================
+//=================================================================================================
 
 //! Generic forward iterator for View classes.
 //! @tparam BaseIterator the map's native Iterator type
@@ -162,7 +162,7 @@ private:
   mutable BaseIterator myInner;
 };
 
-//==================================================================================================
+//=================================================================================================
 
 //! Generic view class for Items() iteration.
 //! @tparam MapType   the map class type
@@ -194,7 +194,7 @@ private:
 
 } // namespace NCollection_ItemsView
 
-//==================================================================================================
+//=================================================================================================
 
 // Structured binding support (std::tuple_size and std::tuple_element specializations)
 

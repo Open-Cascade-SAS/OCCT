@@ -100,7 +100,7 @@ occ::handle<TopoDS_TShape> BRep_TEdge::EmptyCopy() const
 
   while (itr.More())
   {
-    // on ne recopie PAS les polygones
+    // do NOT copy polygons
     if (itr.Value()->IsKind(STANDARD_TYPE(BRep_GCurve))
         || itr.Value()->IsKind(STANDARD_TYPE(BRep_CurveOn2Surfaces)))
     {

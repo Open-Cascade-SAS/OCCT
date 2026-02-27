@@ -23,9 +23,9 @@
 #include <Precision.hxx>
 #include <Standard_ConstructionError.hxx>
 
-//==================================================================================================
+//=================================================================================================
 // Test fixture for Geom2dAdaptor_Curve degenerated curve handling
-//==================================================================================================
+//=================================================================================================
 
 class Geom2dAdaptor_Curve_Test : public ::testing::Test
 {
@@ -47,7 +47,7 @@ protected:
   occ::handle<Geom2d_Circle> myCircle;
 };
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_ValidParameters_Success)
 {
@@ -59,7 +59,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_ValidParameters_Success)
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), 10.0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_EqualParameters_Success)
 {
@@ -77,7 +77,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_EqualParameters_Success)
   EXPECT_TRUE(aP1.IsEqual(aP2, Precision::Confusion()));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_ParametersWithinConfusion_Success)
 {
@@ -93,7 +93,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_ParametersWithinConfusion_Success)
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), aParam2);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_ParametersAtConfusionBoundary_Success)
 {
@@ -108,7 +108,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_ParametersAtConfusionBoundary_Success)
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), aParam2);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_FirstGreaterThanLastWithinConfusion_Success)
 {
@@ -124,7 +124,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_FirstGreaterThanLastWithinConfusion_Succes
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), aParam2);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_FirstGreaterThanLastBeyondConfusion_ThrowsException)
 {
@@ -137,7 +137,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_FirstGreaterThanLastBeyondConfusion_Throws
   EXPECT_THROW(anAdaptor.Load(myLine, aParam1, aParam2), Standard_ConstructionError);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_FirstSlightlyGreaterThanLast_ThrowsException)
 {
@@ -149,7 +149,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_FirstSlightlyGreaterThanLast_ThrowsExcepti
   EXPECT_THROW(anAdaptor.Load(myLine, aParam1, aParam2), Standard_ConstructionError);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Constructor_DegeneratedCurve_Success)
 {
@@ -161,7 +161,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Constructor_DegeneratedCurve_Success)
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), 0.0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Constructor_InvalidParameters_ThrowsException)
 {
@@ -169,7 +169,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Constructor_InvalidParameters_ThrowsException)
   EXPECT_THROW(Geom2dAdaptor_Curve anAdaptor(myCircle, 10.0, 0.0), Standard_ConstructionError);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, Load_NullCurve_ThrowsException)
 {
@@ -180,7 +180,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, Load_NullCurve_ThrowsException)
   EXPECT_THROW(anAdaptor.Load(aNullCurve, 0.0, 10.0), Standard_NullObject);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_CircleAtZeroLength_Success)
 {
@@ -198,7 +198,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_CircleAtZeroLength_Success)
   EXPECT_TRUE(anAdaptor.IsClosed() || anAdaptor.FirstParameter() == anAdaptor.LastParameter());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_TrimmedCurve_Success)
 {
@@ -213,7 +213,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, DegeneratedCurve_TrimmedCurve_Success)
   EXPECT_DOUBLE_EQ(anAdaptor.LastParameter(), aParam);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, ToleranceBoundary_NegativeCase_ThrowsException)
 {
@@ -225,7 +225,7 @@ TEST_F(Geom2dAdaptor_Curve_Test, ToleranceBoundary_NegativeCase_ThrowsException)
   EXPECT_THROW(anAdaptor.Load(myLine, aParam1, aParam2), Standard_ConstructionError);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 TEST_F(Geom2dAdaptor_Curve_Test, LoadWithoutParameters_Success)
 {

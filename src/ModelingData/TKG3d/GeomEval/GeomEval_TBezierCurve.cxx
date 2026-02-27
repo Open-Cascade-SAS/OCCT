@@ -203,7 +203,7 @@ void evalCurveBasis(const NCollection_Array1<gp_Pnt>& thePoles,
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
                                              double                            theAlpha)
@@ -222,7 +222,7 @@ GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& t
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& thePoles,
                                              const NCollection_Array1<double>& theWeights,
@@ -254,70 +254,70 @@ GeomEval_TBezierCurve::GeomEval_TBezierCurve(const NCollection_Array1<gp_Pnt>& t
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<gp_Pnt>& GeomEval_TBezierCurve::Poles() const
 {
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& GeomEval_TBezierCurve::Weights() const
 {
   return myWeights;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierCurve::Alpha() const
 {
   return myAlpha;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_TBezierCurve::NbPoles() const
 {
   return myPoles.Size();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int GeomEval_TBezierCurve::Order() const
 {
   return (myPoles.Size() - 1) / 2;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierCurve::IsRational() const
 {
   return myRational;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_TBezierCurve::StartPoint() const
 {
   return EvalD0(0.0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_TBezierCurve::EndPoint() const
 {
   return EvalD0(M_PI / myAlpha);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierCurve::Reverse()
 {
   throw Standard_NotImplemented("GeomEval_TBezierCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierCurve::ReversedParameter(const double U) const
 {
@@ -325,49 +325,49 @@ double GeomEval_TBezierCurve::ReversedParameter(const double U) const
   throw Standard_NotImplemented("GeomEval_TBezierCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierCurve::FirstParameter() const
 {
   return 0.0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_TBezierCurve::LastParameter() const
 {
   return M_PI / myAlpha;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierCurve::IsClosed() const
 {
   return StartPoint().Distance(EndPoint()) <= Precision::Confusion();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomEval_TBezierCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_TBezierCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierCurve::evalBasis(double theT, NCollection_Array1<double>& theBasis) const
 {
@@ -400,7 +400,7 @@ void GeomEval_TBezierCurve::evalBasis(double theT, NCollection_Array1<double>& t
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierCurve::evalBasisDeriv(double                      theT,
                                            int                         theDerivOrder,
@@ -445,7 +445,7 @@ void GeomEval_TBezierCurve::evalBasisDeriv(double                      theT,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_TBezierCurve::evalNonRationalPoint(const NCollection_Array1<double>& theBasis) const
 {
@@ -460,7 +460,7 @@ gp_Pnt GeomEval_TBezierCurve::evalNonRationalPoint(const NCollection_Array1<doub
   return gp_Pnt(aSum);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_TBezierCurve::evalNonRationalDeriv(
   const NCollection_Array1<double>& theBasisDeriv) const
@@ -476,7 +476,7 @@ gp_Vec GeomEval_TBezierCurve::evalNonRationalDeriv(
   return gp_Vec(aSum);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_TBezierCurve::EvalD0(const double U) const
 {
@@ -490,7 +490,7 @@ gp_Pnt GeomEval_TBezierCurve::EvalD0(const double U) const
   return gp_Pnt(aData.N0 / aData.W0);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD1 GeomEval_TBezierCurve::EvalD1(const double U) const
 {
@@ -512,7 +512,7 @@ Geom_Curve::ResD1 GeomEval_TBezierCurve::EvalD1(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD2 GeomEval_TBezierCurve::EvalD2(const double U) const
 {
@@ -539,7 +539,7 @@ Geom_Curve::ResD2 GeomEval_TBezierCurve::EvalD2(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD3 GeomEval_TBezierCurve::EvalD3(const double U) const
 {
@@ -570,7 +570,7 @@ Geom_Curve::ResD3 GeomEval_TBezierCurve::EvalD3(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
 {
@@ -700,7 +700,7 @@ gp_Vec GeomEval_TBezierCurve::EvalDN(const double U, const int N) const
   return gp_Vec(aCDerivs.Value(N));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierCurve::Transform(const gp_Trsf& T)
 {
@@ -708,7 +708,7 @@ void GeomEval_TBezierCurve::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_TBezierCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_TBezierCurve::Copy() const
 {
@@ -719,7 +719,7 @@ occ::handle<Geom_Geometry> GeomEval_TBezierCurve::Copy() const
   return new GeomEval_TBezierCurve(myPoles, myAlpha);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_TBezierCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

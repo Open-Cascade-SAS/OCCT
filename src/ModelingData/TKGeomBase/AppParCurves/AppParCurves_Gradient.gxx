@@ -14,15 +14,15 @@
 
 // lpa, le 11/09/91
 
-// Application de la methode du gradient corrige pour minimiser
-// F  = somme(||C(ui, Poles(ui)) - ptli||2.
-// La methode de gradient conjugue est programmee dans la bibliotheque
-// mathematique: math_BFGS.
-// cet algorithme doit etre appele uniquement lorsque on a affaire a un set
-// de points contraints (ailleurs qu aux extremites). En effet, l appel de la
-// fonction F a minimiser implique un appel a ParLeastSquare et ResConstraint.
-// Si ce n est pas le cas, l appel a ResConstraint est equivalent a une
-// seconde resolution par les moindres carres donc beaucoup de temps perdu.
+// Application of the corrected gradient method to minimize
+// F  = sum(||C(ui, Poles(ui)) - ptli||2.
+// The conjugate gradient method is implemented in the mathematical
+// library: math_BFGS.
+// This algorithm must be called only when dealing with a set
+// of constrained points (other than at extremities). Indeed, the call to the
+// function F to minimize implies a call to ParLeastSquare and ResConstraint.
+// If this is not the case, the call to ResConstraint is equivalent to a
+// second least squares resolution, thus wasting a lot of time.
 
 #define No_Standard_RangeError
 #define No_Standard_OutOfRange
@@ -83,9 +83,9 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   NCollection_Array1<gp_Vec>   TabV(1, mynbP3d);
   NCollection_Array1<gp_Vec2d> TabV2d(1, mynbP2d);
 
-  // Calcul de la fonction F= somme(||C(ui)-Ptli||2):
-  // Appel a une fonction heritant de MultipleVarFunctionWithGradient
-  // pour calculer F et grad_F.
+  // Calculation of the function F= sum(||C(ui)-Ptli||2):
+  // Call to a function inheriting from MultipleVarFunctionWithGradient
+  // to compute F and grad_F.
   // ================================================================
 
   AppParCurves_ParFunction MyF(SSP, FirstPoint, LastPoint, TheConstraints, Parameters, Deg);
@@ -103,7 +103,7 @@ AppParCurves_Gradient::AppParCurves_Gradient(
   NCollection_Array1<gp_Pnt>   TheCoef(1, (deg + 1) * mynbP3d);
   NCollection_Array1<gp_Pnt2d> TheCoef2d(1, (deg + 1) * mynbP2d);
 
-  // Stockage des Poles des courbes pour projeter:
+  // Storage of curve poles for projection:
   // ============================================
   i2 = 0;
   for (k = 1; k <= nbP3d; k++)

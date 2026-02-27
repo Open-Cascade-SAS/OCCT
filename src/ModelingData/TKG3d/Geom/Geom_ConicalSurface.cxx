@@ -222,7 +222,7 @@ void Geom_ConicalSurface::Coefficients(double& A1,
                                        double& C3,
                                        double& D) const
 {
-  // Dans le repere du cone :
+  // In the local coordinate system of the cone:
   // X**2 + Y**2 - (Myradius - Z * std::tan(semiAngle))**2 = 0.0
 
   Trsf T;

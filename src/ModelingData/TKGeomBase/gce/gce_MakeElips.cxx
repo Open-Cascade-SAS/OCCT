@@ -22,10 +22,8 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une Ellipse 3d de gp a partir de son Ax2 et de son        +
-//   grand rayon <MajorRadius> et son petit rayon <MinorRadius>.          +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeElips::gce_MakeElips(const gp_Ax2& A2, const double MajorRadius, const double MinorRadius)
 {
   if (MajorRadius < MinorRadius)
@@ -43,11 +41,7 @@ gce_MakeElips::gce_MakeElips(const gp_Ax2& A2, const double MajorRadius, const d
   }
 }
 
-//=========================================================================
-//   Creation d une Ellipse 3d de gp de centre <Center> et de sommets     +
-//   <S1> et <S2>.                                                        +
-//   <S1> donne le grand rayon et <S2> le petit rayon.                    +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeElips::gce_MakeElips(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
@@ -73,16 +67,22 @@ gce_MakeElips::gce_MakeElips(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& C
   }
 }
 
+//=================================================================================================
+
 const gp_Elips& gce_MakeElips::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeElips::Value() - no result");
   return TheElips;
 }
 
+//=================================================================================================
+
 const gp_Elips& gce_MakeElips::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeElips::operator gp_Elips() const
 {

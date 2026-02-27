@@ -479,7 +479,7 @@ static bool FindCoordBounds(
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Returns the start and end points of the edge in parametric space of the face.
 // The orientation of the edge is taken into account, so the start and end points
@@ -503,7 +503,7 @@ static std::pair<gp_Pnt2d, gp_Pnt2d> getCurveParams(const TopoDS_Edge& theEdge,
   return {aFirstPoint, aLastPoint};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 static void RelocatePCurvesToNewUorigin(
   const NCollection_Sequence<TopoDS_Shape>& theEdges,

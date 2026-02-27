@@ -82,11 +82,7 @@ void ProjLib_Plane::Init(const gp_Pln& Pl)
   myPlane      = Pl;
 }
 
-//=======================================================================
-// function : EvalPnt2d / EvalDir2d
-// purpose  : returns the Projected Pnt / Dir in the parametrization range
-//           of myPlane.
-//=======================================================================
+//=================================================================================================
 
 static gp_Pnt2d EvalPnt2d(const gp_Pnt& P, const gp_Pln& Pl)
 {

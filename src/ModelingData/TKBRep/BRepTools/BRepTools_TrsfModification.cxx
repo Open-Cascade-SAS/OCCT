@@ -387,7 +387,7 @@ bool BRepTools_TrsfModification::NewCurve2d(const TopoDS_Edge& E,
       newl = NewC->LastParameter();
     }
   }
-  // il faut parfois recadrer les ranges 3d / 2d
+  // sometimes need to readjust the 3D / 2D ranges
   TopoDS_Vertex V1, V2;
   TopExp::Vertices(E, V1, V2);
   TopoDS_Shape initEFOR = E.Oriented(TopAbs_FORWARD);                            // skl

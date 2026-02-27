@@ -13,7 +13,7 @@
 
 #include <GeomProp_SurfaceOfRevolution.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp_SurfaceOfRevolution::Normal(const double theU,
                                                                    const double theV,
@@ -29,7 +29,7 @@ GeomProp::SurfaceNormalResult GeomProp_SurfaceOfRevolution::Normal(const double 
   return GeomProp::ComputeSurfaceNormal(aD1U, aD1V, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfRevolution::Curvatures(const double theU,
                                                                           const double theV,
@@ -45,7 +45,7 @@ GeomProp::SurfaceCurvatureResult GeomProp_SurfaceOfRevolution::Curvatures(const 
   return GeomProp::ComputeSurfaceCurvatures(aD1U, aD1V, aD2U, aD2V, aD2UV, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp_SurfaceOfRevolution::MeanGaussian(const double theU,
                                                                         const double theV,

@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Hyperbola::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -57,7 +57,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Hyperbola::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Hyperbola::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -102,7 +102,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Hyperbola::EvaluateGr
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Hyperbola::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -148,7 +148,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Hyperbola::EvaluateGr
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Hyperbola::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -196,7 +196,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Hyperbola::EvaluateGr
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec2d> Geom2dGridEval_Hyperbola::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

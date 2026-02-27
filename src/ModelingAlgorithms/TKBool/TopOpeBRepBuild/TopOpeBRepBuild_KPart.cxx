@@ -2166,10 +2166,10 @@ int TopOpeBRepBuild_Builder::KPreturn(const int b)
 }
 
 // modified by NIZHNY-MKK  Tue May 23 09:48:47 2000.BEGIN
-//======================================================================================================
+//=====================================================================================================
 //  static function : LocalKPisdisjanalyse
 //  purpose:
-//======================================================================================================
+//=====================================================================================================
 static void LocalKPisdisjanalyse(const TopAbs_State                     Stsol1,
                                  const TopAbs_State                     Stsol2,
                                  const TopOpeBRepBuild_KPart_Operation& theOperation,
@@ -2267,10 +2267,10 @@ static void LocalKPisdisjanalyse(const TopAbs_State                     Stsol1,
   } // end switch
 }
 
-//======================================================================================================
+//=====================================================================================================
 // static function : BuildNewSolid
 // purpose: Build new solid based on sol1 and sol2 according to the states
-//======================================================================================================
+//=====================================================================================================
 static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
                                   const TopoDS_Solid& sol2,
                                   const TopAbs_State  stsol1,
@@ -2409,11 +2409,11 @@ static TopoDS_Solid BuildNewSolid(const TopoDS_Solid& sol1,
   return newsol;
 }
 
-//======================================================================================================
+//=====================================================================================================
 // static function : disjPerformFuse
 // purpose: is needed in case of KPart==2
 // attention: theMapOfResult is cleared before computations
-//======================================================================================================
+//=====================================================================================================
 static bool disjPerformFuse(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfSolid1,
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfSolid2,
@@ -2520,11 +2520,11 @@ static bool disjPerformFuse(
   return true;
 }
 
-//======================================================================================================
+//=====================================================================================================
 // static function : disjPerformCommon
 // purpose: is needed in case of KPart==2
 // attention: theMapOfResult is cleared before computations
-//======================================================================================================
+//=====================================================================================================
 static bool disjPerformCommon(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfSolid1,
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfSolid2,
@@ -2610,11 +2610,11 @@ static bool disjPerformCommon(
   return true;
 }
 
-//======================================================================================================
+//=====================================================================================================
 // static function : disjPerformCut
 // purpose: is needed in case of KPart==2
 // attention: theMapOfResult is cleared before computations
-//======================================================================================================
+//=====================================================================================================
 static bool disjPerformCut(
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfSolid1,
   const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMapOfSolid2,

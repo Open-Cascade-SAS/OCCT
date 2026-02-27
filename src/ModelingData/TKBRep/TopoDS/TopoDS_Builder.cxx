@@ -23,7 +23,7 @@
 #include <TopoDS_TWire.hxx>
 #include <TopoDS_UnCompatibleShapes.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>& T) const
 {
@@ -32,7 +32,7 @@ void TopoDS_Builder::MakeShape(TopoDS_Shape& S, const occ::handle<TopoDS_TShape>
   S.Orientation(TopAbs_FORWARD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {
@@ -98,7 +98,7 @@ void TopoDS_Builder::Add(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) c
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void TopoDS_Builder::Remove(TopoDS_Shape& aShape, const TopoDS_Shape& aComponent) const
 {

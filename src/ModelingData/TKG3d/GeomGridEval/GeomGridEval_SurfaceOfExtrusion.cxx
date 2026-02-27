@@ -15,7 +15,7 @@
 
 #include <Geom_ExtrusionUtils.pxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_SurfaceOfExtrusion::GeomGridEval_SurfaceOfExtrusion(
   const occ::handle<Geom_SurfaceOfLinearExtrusion>& theExtrusion)
@@ -28,7 +28,7 @@ GeomGridEval_SurfaceOfExtrusion::GeomGridEval_SurfaceOfExtrusion(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -71,7 +71,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_SurfaceOfExtrusion::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -121,7 +121,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_SurfaceOfExtrusion::Evalua
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -176,7 +176,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_SurfaceOfExtrusion::Evalua
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -237,7 +237,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_SurfaceOfExtrusion::Evalua
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_SurfaceOfExtrusion::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

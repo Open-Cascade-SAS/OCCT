@@ -25,7 +25,7 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomEval_SineWaveCurve, Geom_Curve)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomEval_SineWaveCurve::GeomEval_SineWaveCurve(const gp_Ax2& thePosition,
                                                double        theAmplitude,
@@ -46,42 +46,42 @@ GeomEval_SineWaveCurve::GeomEval_SineWaveCurve(const gp_Ax2& thePosition,
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const gp_Ax2& GeomEval_SineWaveCurve::Position() const
 {
   return myPosition;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_SineWaveCurve::Amplitude() const
 {
   return myAmplitude;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_SineWaveCurve::Omega() const
 {
   return myOmega;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_SineWaveCurve::Phase() const
 {
   return myPhase;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_SineWaveCurve::Reverse()
 {
   throw Standard_NotImplemented("GeomEval_SineWaveCurve::Reverse");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_SineWaveCurve::ReversedParameter(const double U) const
 {
@@ -89,49 +89,49 @@ double GeomEval_SineWaveCurve::ReversedParameter(const double U) const
   throw Standard_NotImplemented("GeomEval_SineWaveCurve::ReversedParameter");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_SineWaveCurve::FirstParameter() const
 {
   return -Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomEval_SineWaveCurve::LastParameter() const
 {
   return Precision::Infinite();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_SineWaveCurve::IsClosed() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_SineWaveCurve::IsPeriodic() const
 {
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomEval_SineWaveCurve::Continuity() const
 {
   return GeomAbs_CN;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool GeomEval_SineWaveCurve::IsCN(const int /*N*/) const
 {
   return true;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomEval_SineWaveCurve::EvalD0(const double U) const
 {
@@ -144,7 +144,7 @@ gp_Pnt GeomEval_SineWaveCurve::EvalD0(const double U) const
   return gp_Pnt(anO + U * aXD + myAmplitude * std::sin(aArg) * aYD);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD1 GeomEval_SineWaveCurve::EvalD1(const double U) const
 {
@@ -163,7 +163,7 @@ Geom_Curve::ResD1 GeomEval_SineWaveCurve::EvalD1(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD2 GeomEval_SineWaveCurve::EvalD2(const double U) const
 {
@@ -184,7 +184,7 @@ Geom_Curve::ResD2 GeomEval_SineWaveCurve::EvalD2(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom_Curve::ResD3 GeomEval_SineWaveCurve::EvalD3(const double U) const
 {
@@ -207,7 +207,7 @@ Geom_Curve::ResD3 GeomEval_SineWaveCurve::EvalD3(const double U) const
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomEval_SineWaveCurve::EvalDN(const double U, const int N) const
 {
@@ -237,7 +237,7 @@ gp_Vec GeomEval_SineWaveCurve::EvalDN(const double U, const int N) const
   return gp_Vec(aResult);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_SineWaveCurve::Transform(const gp_Trsf& T)
 {
@@ -245,14 +245,14 @@ void GeomEval_SineWaveCurve::Transform(const gp_Trsf& T)
   throw Standard_NotImplemented("GeomEval_SineWaveCurve::Transform");
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_Geometry> GeomEval_SineWaveCurve::Copy() const
 {
   return new GeomEval_SineWaveCurve(myPosition, myAmplitude, myOmega, myPhase);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomEval_SineWaveCurve::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {

@@ -29,7 +29,7 @@ Geom2dLProp_FuncCurExt::Geom2dLProp_FuncCurExt(const occ::handle<Geom2d_Curve>& 
 
 //=============================================================================
 // function : Value
-// purpose : KC = (V1^V2.Z) / ||V1||^3  avec V1 tangente etV2 derivee seconde.
+// purpose : KC = (V1^V2.Z) / ||V1||^3  with V1 tangent and V2 second derivative.
 //           F  = d KC/ dU.
 //=============================================================================
 bool Geom2dLProp_FuncCurExt::Value(const double X, double& F)
@@ -84,8 +84,8 @@ bool Geom2dLProp_FuncCurExt::Values(const double X, double& F, double& D)
 
 //=============================================================================
 // function : IsMinKC
-// purpose : Teste si le parametere coorespond a un minimum du rayon de courbure
-//           par comparaison avec un point voisin.
+// purpose : Tests if the parameter corresponds to a minimum of the radius of curvature
+//           by comparison with a nearby point.
 //=============================================================================
 bool Geom2dLProp_FuncCurExt::IsMinKC(const double X) const
 {

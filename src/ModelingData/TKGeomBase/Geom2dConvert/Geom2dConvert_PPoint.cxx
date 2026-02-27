@@ -28,20 +28,14 @@ Geom2dConvert_PPoint::Geom2dConvert_PPoint(const double             theParameter
   theAdaptor.D1(theParameter, myPoint, myD1);
 }
 
-//=======================================================================
-// function : Geom2dConvert_PPoint::operator ==
-// purpose  : Compare two values of this type.
-//=======================================================================
+//=================================================================================================
 
 bool Geom2dConvert_PPoint::operator==(const Geom2dConvert_PPoint& theOther) const
 {
   return (fabs(myParameter - theOther.Parameter()) <= Precision::PConfusion());
 }
 
-//=======================================================================
-// function : Geom2dConvert_PPoint::operator !=
-// purpose  : Compare two values of this type.
-//=======================================================================
+//=================================================================================================
 
 bool Geom2dConvert_PPoint::operator!=(const Geom2dConvert_PPoint& theOther) const
 {

@@ -60,17 +60,7 @@ void ProjLib_Sphere::Init(const gp_Sphere& Sp)
   isDone       = false;
 }
 
-//=======================================================================
-// function : EvalPnt2d / EvalDir2d
-// purpose  : returns the Projected Pnt / Dir in the parametrization range
-//           of mySphere.
-//           P is a point on a sphere with the same Position as Sp,
-//           but with a radius equal to 1. ( in order to avoid to divide
-//           by Radius)
-//                / X = cosV cosU        U = Atan(Y/X)
-//            P = | Y = cosV sinU   ==>
-//                \ Z = sinV             V = std::asin( Z)
-//=======================================================================
+//=================================================================================================
 
 static gp_Pnt2d EvalPnt2d(const gp_Vec& P, const gp_Sphere& Sp)
 {
@@ -239,7 +229,7 @@ void ProjLib_Sphere::SetInBounds(const double U)
 
   myLin.Translate(gp_Vec2d(M_PI, 0.));
 
-  // il faut maintenant recadrer en U
+  // Now we need to adjust the U parameter
   double newX, X = ElCLib::Value(U, myLin).X();
   newX = ElCLib::InPeriod(X, 0., 2. * M_PI);
   myLin.Translate(gp_Vec2d(newX - X, 0.));

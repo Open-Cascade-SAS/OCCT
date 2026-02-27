@@ -22,9 +22,8 @@
 #include <gp_XY.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une direction 2d (Dir2d) de gp a partir de 2 Pnt2d de gp. +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeDir2d::gce_MakeDir2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
   if (P1.Distance(P2) <= gp::Resolution())
@@ -37,6 +36,8 @@ gce_MakeDir2d::gce_MakeDir2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
     TheError = gce_Done;
   }
 }
+
+//=================================================================================================
 
 gce_MakeDir2d::gce_MakeDir2d(const gp_XY& Coord)
 {
@@ -51,6 +52,8 @@ gce_MakeDir2d::gce_MakeDir2d(const gp_XY& Coord)
   }
 }
 
+//=================================================================================================
+
 gce_MakeDir2d::gce_MakeDir2d(const gp_Vec2d& V)
 {
   if (V.Magnitude() <= gp::Resolution())
@@ -63,6 +66,8 @@ gce_MakeDir2d::gce_MakeDir2d(const gp_Vec2d& V)
     TheError = gce_Done;
   }
 }
+
+//=================================================================================================
 
 gce_MakeDir2d::gce_MakeDir2d(const double Xv, const double Yv)
 {
@@ -77,16 +82,22 @@ gce_MakeDir2d::gce_MakeDir2d(const double Xv, const double Yv)
   }
 }
 
+//=================================================================================================
+
 const gp_Dir2d& gce_MakeDir2d::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeDir2d::Value() - no result");
   return TheDir2d;
 }
 
+//=================================================================================================
+
 const gp_Dir2d& gce_MakeDir2d::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeDir2d::operator gp_Dir2d() const
 {

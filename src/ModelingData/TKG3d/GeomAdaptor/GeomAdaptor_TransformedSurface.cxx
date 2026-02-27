@@ -18,11 +18,11 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(GeomAdaptor_TransformedSurface, Adaptor3d_Surface)
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface() = default;
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
   const occ::handle<Geom_Surface>& theSurface,
@@ -32,7 +32,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
   const occ::handle<Geom_Surface>& theSurface,
@@ -48,7 +48,7 @@ GeomAdaptor_TransformedSurface::GeomAdaptor_TransformedSurface(
 {
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::ShallowCopy() const
 {
@@ -62,7 +62,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::ShallowCopy() con
   return aCopy;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomAdaptor_TransformedSurface::UIntervals(NCollection_Array1<double>& theT,
                                                 const GeomAbs_Shape         theS) const
@@ -70,7 +70,7 @@ void GeomAdaptor_TransformedSurface::UIntervals(NCollection_Array1<double>& theT
   mySurf.UIntervals(theT, theS);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomAdaptor_TransformedSurface::VIntervals(NCollection_Array1<double>& theT,
                                                 const GeomAbs_Shape         theS) const
@@ -78,7 +78,7 @@ void GeomAdaptor_TransformedSurface::VIntervals(NCollection_Array1<double>& theT
   mySurf.VIntervals(theT, theS);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::UTrim(const double theFirst,
                                                                      const double theLast,
@@ -89,7 +89,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::UTrim(const doubl
   return HS->UTrim(theFirst, theLast, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const double theFirst,
                                                                      const double theLast,
@@ -100,14 +100,14 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const doubl
   return HS->VTrim(theFirst, theLast, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomAdaptor_TransformedSurface::Value(const double theU, const double theV) const
 {
   return mySurf.Value(theU, theV).Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomAdaptor_TransformedSurface::D0(const double theU, const double theV, gp_Pnt& theP) const
 {
@@ -115,7 +115,7 @@ void GeomAdaptor_TransformedSurface::D0(const double theU, const double theV, gp
   theP.Transform(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomAdaptor_TransformedSurface::D1(const double theU,
                                         const double theV,
@@ -129,7 +129,7 @@ void GeomAdaptor_TransformedSurface::D1(const double theU,
   theD1V.Transform(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomAdaptor_TransformedSurface::D2(const double theU,
                                         const double theV,
@@ -149,7 +149,7 @@ void GeomAdaptor_TransformedSurface::D2(const double theU,
   theD2UV.Transform(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomAdaptor_TransformedSurface::D3(const double theU,
                                         const double theV,
@@ -188,7 +188,7 @@ void GeomAdaptor_TransformedSurface::D3(const double theU,
   theD3UVV.Transform(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomAdaptor_TransformedSurface::DN(const double theU,
                                           const double theV,
@@ -198,70 +198,70 @@ gp_Vec GeomAdaptor_TransformedSurface::DN(const double theU,
   return mySurf.DN(theU, theV, theNu, theNv).Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pln GeomAdaptor_TransformedSurface::Plane() const
 {
   return mySurf.Plane().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Cylinder GeomAdaptor_TransformedSurface::Cylinder() const
 {
   return mySurf.Cylinder().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Cone GeomAdaptor_TransformedSurface::Cone() const
 {
   return mySurf.Cone().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Sphere GeomAdaptor_TransformedSurface::Sphere() const
 {
   return mySurf.Sphere().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Torus GeomAdaptor_TransformedSurface::Torus() const
 {
   return mySurf.Torus().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_BezierSurface> GeomAdaptor_TransformedSurface::Bezier() const
 {
   return occ::down_cast<Geom_BezierSurface>(mySurf.Bezier()->Transformed(myTrsf));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Geom_BSplineSurface> GeomAdaptor_TransformedSurface::BSpline() const
 {
   return occ::down_cast<Geom_BSplineSurface>(mySurf.BSpline()->Transformed(myTrsf));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Ax1 GeomAdaptor_TransformedSurface::AxeOfRevolution() const
 {
   return mySurf.AxeOfRevolution().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Dir GeomAdaptor_TransformedSurface::Direction() const
 {
   return mySurf.Direction().Transformed(myTrsf);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Curve> GeomAdaptor_TransformedSurface::BasisCurve() const
 {
@@ -270,7 +270,7 @@ occ::handle<Adaptor3d_Curve> GeomAdaptor_TransformedSurface::BasisCurve() const
   return HS->BasisCurve();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::BasisSurface() const
 {
@@ -279,7 +279,7 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::BasisSurface() co
   return HS->BasisSurface();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 double GeomAdaptor_TransformedSurface::OffsetValue() const
 {

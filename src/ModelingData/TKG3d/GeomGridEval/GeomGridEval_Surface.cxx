@@ -113,7 +113,7 @@ occ::handle<Geom_Surface> CreateExtrusionSurface(
 
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Surface::GeomGridEval_Surface(const Adaptor3d_Surface& theSurface)
     : myEvaluator(std::monostate{}),
@@ -122,7 +122,7 @@ GeomGridEval_Surface::GeomGridEval_Surface(const Adaptor3d_Surface& theSurface)
   initialization(theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Surface::GeomGridEval_Surface(const occ::handle<Geom_Surface>& theSurface)
     : myEvaluator(std::monostate{}),
@@ -131,7 +131,7 @@ GeomGridEval_Surface::GeomGridEval_Surface(const occ::handle<Geom_Surface>& theS
   initialization(theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::initialization(const Adaptor3d_Surface& theSurface)
 {
@@ -263,7 +263,7 @@ void GeomGridEval_Surface::initialization(const Adaptor3d_Surface& theSurface)
   myEvaluator.emplace<GeomGridEval_OtherSurface>(&theSurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::initialization(const occ::handle<Geom_Surface>& theSurface)
 {
@@ -335,7 +335,7 @@ void GeomGridEval_Surface::initialization(const occ::handle<Geom_Surface>& theSu
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_Surface::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -363,7 +363,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Surface::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Surface::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -391,7 +391,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Surface::EvaluateGridD1(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Surface::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -419,7 +419,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Surface::EvaluateGridD2(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Surface::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -447,7 +447,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Surface::EvaluateGridD3(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_Surface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,
@@ -477,7 +477,7 @@ NCollection_Array2<gp_Vec> GeomGridEval_Surface::EvaluateGridDN(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::applyTransformation(NCollection_Array2<gp_Pnt>& theGrid) const
 {
@@ -496,7 +496,7 @@ void GeomGridEval_Surface::applyTransformation(NCollection_Array2<gp_Pnt>& theGr
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::applyTransformation(
   NCollection_Array2<GeomGridEval::SurfD1>& theGrid) const
@@ -519,7 +519,7 @@ void GeomGridEval_Surface::applyTransformation(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::applyTransformation(
   NCollection_Array2<GeomGridEval::SurfD2>& theGrid) const
@@ -545,7 +545,7 @@ void GeomGridEval_Surface::applyTransformation(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::applyTransformation(
   NCollection_Array2<GeomGridEval::SurfD3>& theGrid) const
@@ -575,7 +575,7 @@ void GeomGridEval_Surface::applyTransformation(
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_Surface::applyTransformation(NCollection_Array2<gp_Vec>& theGrid) const
 {

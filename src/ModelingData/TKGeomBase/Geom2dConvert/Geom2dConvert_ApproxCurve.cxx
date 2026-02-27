@@ -28,10 +28,7 @@
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 
-//=======================================================================
-// class : Geom2dConvert_ApproxCurve_Eval
-// purpose: evaluator class for approximation
-//=======================================================================
+//=================================================================================================
 class Geom2dConvert_ApproxCurve_Eval : public AdvApprox_EvaluatorFunction
 {
 public:

@@ -13,7 +13,7 @@
 
 #include <GeomGridEval_OtherSurface.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_OtherSurface::evaluateD0(double theU, double theV, gp_Pnt& thePoint) const
 {
@@ -21,7 +21,7 @@ void GeomGridEval_OtherSurface::evaluateD0(double theU, double theV, gp_Pnt& the
              mySurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_OtherSurface::evaluateD1(double  theU,
                                            double  theV,
@@ -34,7 +34,7 @@ void GeomGridEval_OtherSurface::evaluateD1(double  theU,
              mySurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_OtherSurface::evaluateD2(double  theU,
                                            double  theV,
@@ -52,7 +52,7 @@ void GeomGridEval_OtherSurface::evaluateD2(double  theU,
     mySurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomGridEval_OtherSurface::evaluateD3(double  theU,
                                            double  theV,
@@ -96,7 +96,7 @@ void GeomGridEval_OtherSurface::evaluateD3(double  theU,
     mySurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomGridEval_OtherSurface::evaluateDN(double theU, double theV, int theNU, int theNV) const
 {
@@ -107,7 +107,7 @@ gp_Vec GeomGridEval_OtherSurface::evaluateDN(double theU, double theV, int theNU
     mySurface);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -137,7 +137,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_OtherSurface::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -168,7 +168,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_OtherSurface::EvaluateGrid
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -199,7 +199,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_OtherSurface::EvaluateGrid
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -231,7 +231,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_OtherSurface::EvaluateGrid
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_OtherSurface::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

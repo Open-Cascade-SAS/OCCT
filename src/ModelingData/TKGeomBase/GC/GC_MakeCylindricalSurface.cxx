@@ -25,11 +25,15 @@
 #include <gp_Pnt.hxx>
 #include <StdFail_NotDone.hxx>
 
+//=================================================================================================
+
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& C)
 {
   TheError    = gce_Done;
   TheCylinder = new Geom_CylindricalSurface(C);
 }
+
+//=================================================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2, const double Radius)
 {
@@ -44,9 +48,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax2& A2, const dou
   }
 }
 
-//=========================================================================
-//   Construction of a cylinder by axis <A1> et radius <Radius>.          +
-//=========================================================================
+//=================================================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1, const double Radius)
 {
@@ -58,9 +60,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Ax1& A1, const dou
   }
 }
 
-//=========================================================================
-//   Construction of a cylinder by a circle <Cir>.                        +
-//=========================================================================
+//=================================================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Circ& Circ)
 {
@@ -69,11 +69,7 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Circ& Circ)
   TheError        = gce_Done;
 }
 
-//=========================================================================
-//   Construction of a cylinder by tree points <P1>, <P2>, <P3>.          +
-//   Two first points define the axis.                                    +
-//   The third gives the radius.                                          +
-//=========================================================================
+//=================================================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Pnt& P1,
                                                      const gp_Pnt& P2,
@@ -87,6 +83,8 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Pnt& P1,
   }
 }
 
+//=================================================================================================
+
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const double Dist)
 {
   TheError    = gce_Done;
@@ -94,6 +92,8 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, con
   TheCylinder = new Geom_CylindricalSurface(Cyl);
   TheCylinder->SetRadius(R);
 }
+
+//=================================================================================================
 
 GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, const gp_Pnt& Point)
 {
@@ -104,6 +104,8 @@ GC_MakeCylindricalSurface::GC_MakeCylindricalSurface(const gp_Cylinder& Cyl, con
   C.SetRadius(R);
   TheCylinder = new Geom_CylindricalSurface(C);
 }
+
+//=================================================================================================
 
 const occ::handle<Geom_CylindricalSurface>& GC_MakeCylindricalSurface::Value() const
 {

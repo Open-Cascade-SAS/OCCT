@@ -22,19 +22,15 @@
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
-//=========================================================================
-//   Creation d une ligne 2d de gp a partir d un Ax2d de gp.              +
-//=========================================================================
+//=================================================================================================
+
 gce_MakeLin2d::gce_MakeLin2d(const gp_Ax2d& A)
 {
   TheLin2d = gp_Lin2d(A);
   TheError = gce_Done;
 }
 
-//=========================================================================
-//   Creation d une ligne 2d de gp a partir de son origine P (Pnt2d de gp)+
-//   et d une direction V (Dir2d de gp).                                  +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeLin2d::gce_MakeLin2d(const gp_Pnt2d& P, const gp_Dir2d& V)
 {
@@ -42,10 +38,7 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Pnt2d& P, const gp_Dir2d& V)
   TheError = gce_Done;
 }
 
-//=========================================================================
-//   Creation d une ligne 2d de gp a partir des parametres de son         +
-//    equation.                                                           +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeLin2d::gce_MakeLin2d(const double A, const double B, const double C)
 {
@@ -60,10 +53,7 @@ gce_MakeLin2d::gce_MakeLin2d(const double A, const double B, const double C)
   }
 }
 
-//=========================================================================
-//   Creation d une ligne 2d de gp passant par les deux points <P1> et    +
-//   <P2>.                                                                +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeLin2d::gce_MakeLin2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
@@ -78,10 +68,7 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
   }
 }
 
-//=========================================================================
-//   Creation d une ligne 2d de gp <TheLine> parallele a une autre ligne  +
-//   <Line1> passant par le point <Point1>.                               +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const gp_Pnt2d& Point)
 {
@@ -89,10 +76,7 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const gp_Pnt2d& Point)
   TheError = gce_Done;
 }
 
-//=========================================================================
-//   Creation d une ligne 2d de gp <TheLine> parallele a une autre ligne  +
-//   <Line1> a une distance <Dist1>.                                      +
-//=========================================================================
+//=================================================================================================
 
 gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const double Dist)
 {
@@ -101,16 +85,22 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const double Dist)
   TheError = gce_Done;
 }
 
+//=================================================================================================
+
 gp_Lin2d gce_MakeLin2d::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeLin2d::Value() - no result");
   return TheLin2d;
 }
 
+//=================================================================================================
+
 gp_Lin2d gce_MakeLin2d::Operator() const
 {
   return Value();
 }
+
+//=================================================================================================
 
 gce_MakeLin2d::operator gp_Lin2d() const
 {

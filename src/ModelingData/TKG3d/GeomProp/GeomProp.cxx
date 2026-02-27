@@ -15,7 +15,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
                                                  const gp_Vec& theD2,
@@ -45,7 +45,7 @@ GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
   return {{}, false};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
                                                  const gp_Vec& theD2,
@@ -79,7 +79,7 @@ GeomProp::TangentResult GeomProp::ComputeTangent(const gp_Vec& theD1,
   return {gp_Dir(aVec), true};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp::ComputeCurvature(const gp_Vec& theD1,
                                                      const gp_Vec& theD2,
@@ -118,7 +118,7 @@ GeomProp::CurvatureResult GeomProp::ComputeCurvature(const gp_Vec& theD1,
   return {aCurvature, true, false};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp::ComputeNormal(const gp_Vec& theD1,
                                                const gp_Vec& theD2,
@@ -141,7 +141,7 @@ GeomProp::NormalResult GeomProp::ComputeNormal(const gp_Vec& theD1,
   return {gp_Dir(aNorm), true};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
                                                           const gp_Vec& theD1,
@@ -166,7 +166,7 @@ GeomProp::CentreResult GeomProp::ComputeCentreOfCurvature(const gp_Pnt& thePnt,
   return {thePnt.Translated(aNorm), true};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceNormalResult GeomProp::ComputeSurfaceNormal(const gp_Vec& theD1U,
                                                              const gp_Vec& theD1V,
@@ -180,7 +180,7 @@ GeomProp::SurfaceNormalResult GeomProp::ComputeSurfaceNormal(const gp_Vec& theD1
   return {gp_Dir(aCross), true};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec& theD1U,
                                                                     const gp_Vec& theD1V,
@@ -403,7 +403,7 @@ GeomProp::SurfaceCurvatureResult GeomProp::ComputeSurfaceCurvatures(const gp_Vec
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::MeanGaussianResult GeomProp::ComputeMeanGaussian(const gp_Vec& theD1U,
                                                            const gp_Vec& theD1V,

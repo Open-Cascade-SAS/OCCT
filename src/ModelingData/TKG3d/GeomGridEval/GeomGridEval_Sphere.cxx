@@ -17,7 +17,7 @@
 
 #include <cmath>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Sphere::Data GeomGridEval_Sphere::extractData() const
 {
@@ -42,7 +42,7 @@ GeomGridEval_Sphere::Data GeomGridEval_Sphere::extractData() const
           aSph.Radius()};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval_Sphere::UContext GeomGridEval_Sphere::computeUContext(const Data& theData, double theU)
 {
@@ -61,7 +61,7 @@ GeomGridEval_Sphere::UContext GeomGridEval_Sphere::computeUContext(const Data& t
           -sinU * theData.XZ + cosU * theData.YZ};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Pnt GeomGridEval_Sphere::computeD0(const Data& theData, const UContext& theUCtx, double theV)
 {
@@ -77,7 +77,7 @@ gp_Pnt GeomGridEval_Sphere::computeD0(const Data& theData, const UContext& theUC
                 theData.CZ + RcosV * theUCtx.dirUZ + RsinV * theData.ZZ);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval::SurfD1 GeomGridEval_Sphere::computeD1(const Data&     theData,
                                                     const UContext& theUCtx,
@@ -100,7 +100,7 @@ GeomGridEval::SurfD1 GeomGridEval_Sphere::computeD1(const Data&     theData,
                  -RsinV * theUCtx.dirUZ + RcosV * theData.ZZ)};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval::SurfD2 GeomGridEval_Sphere::computeD2(const Data&     theData,
                                                     const UContext& theUCtx,
@@ -129,7 +129,7 @@ GeomGridEval::SurfD2 GeomGridEval_Sphere::computeD2(const Data&     theData,
           gp_Vec(-RsinV * theUCtx.dDirUX, -RsinV * theUCtx.dDirUY, -RsinV * theUCtx.dDirUZ)};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomGridEval::SurfD3 GeomGridEval_Sphere::computeD3(const Data&     theData,
                                                     const UContext& theUCtx,
@@ -165,7 +165,7 @@ GeomGridEval::SurfD3 GeomGridEval_Sphere::computeD3(const Data&     theData,
           gp_Vec(-RcosV * theUCtx.dDirUX, -RcosV * theUCtx.dDirUY, -RcosV * theUCtx.dDirUZ)};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 gp_Vec GeomGridEval_Sphere::computeDN(const Data&     theData,
                                       const UContext& theUCtx,
@@ -255,7 +255,7 @@ gp_Vec GeomGridEval_Sphere::computeDN(const Data&     theData,
                 theData.Radius * (aCoeffVXY * dirZ + aZTermZ));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Pnt> GeomGridEval_Sphere::EvaluateGrid(
   const NCollection_Array1<double>& theUParams,
@@ -287,7 +287,7 @@ NCollection_Array2<gp_Pnt> GeomGridEval_Sphere::EvaluateGrid(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Sphere::EvaluateGridD1(
   const NCollection_Array1<double>& theUParams,
@@ -319,7 +319,7 @@ NCollection_Array2<GeomGridEval::SurfD1> GeomGridEval_Sphere::EvaluateGridD1(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Sphere::EvaluateGridD2(
   const NCollection_Array1<double>& theUParams,
@@ -351,7 +351,7 @@ NCollection_Array2<GeomGridEval::SurfD2> GeomGridEval_Sphere::EvaluateGridD2(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Sphere::EvaluateGridD3(
   const NCollection_Array1<double>& theUParams,
@@ -383,7 +383,7 @@ NCollection_Array2<GeomGridEval::SurfD3> GeomGridEval_Sphere::EvaluateGridD3(
   return aResult;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array2<gp_Vec> GeomGridEval_Sphere::EvaluateGridDN(
   const NCollection_Array1<double>& theUParams,

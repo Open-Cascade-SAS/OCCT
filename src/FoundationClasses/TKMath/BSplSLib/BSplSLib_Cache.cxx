@@ -34,7 +34,7 @@ double* ConvertArray(const occ::handle<NCollection_HArray2<double>>& theHArray)
   return (double*)&(anArray(anArray.LowerRow(), anArray.LowerCol()));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 //! Computes local UV parameters for D0 evaluation (no derivative scaling needed).
 //! BSplSLib uses different convention for span parameters than BSplCLib
@@ -76,7 +76,7 @@ std::pair<double, double> toLocalParams(double                      theU,
   return {(aNewU - aSpanStartU) * theInvU, (aNewV - aSpanStartV) * theInvV};
 }
 
-//==================================================================================================
+//=================================================================================================
 
 //! Evaluates the polynomials and their derivatives.
 //! @param[in] thePolesWeights handle to the array of poles and weights
@@ -227,7 +227,7 @@ void EvaluatePolynomials(const occ::handle<NCollection_HArray2<double>>& thePole
 }
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
                                const bool&                       thePeriodicU,
@@ -247,14 +247,14 @@ BSplSLib_Cache::BSplSLib_Cache(const int&                        theDegreeU,
     new NCollection_HArray2<double>(1, aMaxDegree + 1, 1, aPWColNumber * (aMinDegree + 1));
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool BSplSLib_Cache::IsCacheValid(double theParameterU, double theParameterV) const
 {
   return myParamsU.IsCacheValid(theParameterU) && myParamsV.IsCacheValid(theParameterV);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
                                 const double&                     theParameterV,
@@ -296,7 +296,7 @@ void BSplSLib_Cache::BuildCache(const double&                     theParameterU,
                        myPolesWeights->ChangeArray2());
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::D0(const double& theU, const double& theV, gp_Pnt& thePoint) const
 {
@@ -304,7 +304,7 @@ void BSplSLib_Cache::D0(const double& theU, const double& theV, gp_Pnt& thePoint
   D0Local(aLocalU, aLocalV, thePoint);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoint) const
 {
@@ -344,7 +344,7 @@ void BSplSLib_Cache::D0Local(double theLocalU, double theLocalV, gp_Pnt& thePoin
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::D1Local(double  theLocalU,
                              double  theLocalV,
@@ -399,7 +399,7 @@ void BSplSLib_Cache::D1Local(double  theLocalU,
   theTangentV.Divide(aSpanLengthV);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::D2Local(double  theLocalU,
                              double  theLocalV,
@@ -470,7 +470,7 @@ void BSplSLib_Cache::D2Local(double  theLocalU,
   theCurvatureUV.Divide(aSpanLengthU * aSpanLengthV);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::D1(const double& theU,
                         const double& theV,
@@ -521,7 +521,7 @@ void BSplSLib_Cache::D1(const double& theU,
   theTangentV.Multiply(anInvV);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BSplSLib_Cache::D2(const double& theU,
                         const double& theV,

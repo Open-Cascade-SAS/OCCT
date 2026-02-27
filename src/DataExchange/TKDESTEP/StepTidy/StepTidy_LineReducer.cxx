@@ -20,7 +20,7 @@
 #include <StepRepr_DefinitionalRepresentation.hxx>
 #include <StepGeom_SeamCurve.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 StepTidy_LineReducer::StepTidy_LineReducer(const occ::handle<XSControl_WorkSession>& theWS)
     : StepTidy_EntityReducer<StepGeom_Line, StepTidy_LineHasher>(theWS)
@@ -33,7 +33,7 @@ StepTidy_LineReducer::StepTidy_LineReducer(const occ::handle<XSControl_WorkSessi
   registerReplacer(STANDARD_TYPE(StepGeom_SeamCurve), replaceSeamCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_LineReducer::replaceEdgeCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
                                             const occ::handle<StepGeom_Line>&      theNewEntity,
@@ -48,7 +48,7 @@ bool StepTidy_LineReducer::replaceEdgeCurve(const occ::handle<StepGeom_Line>&   
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_LineReducer::replaceTrimmedCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
                                                const occ::handle<StepGeom_Line>&      theNewEntity,
@@ -63,7 +63,7 @@ bool StepTidy_LineReducer::replaceTrimmedCurve(const occ::handle<StepGeom_Line>&
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_LineReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
                                                const occ::handle<StepGeom_Line>&      theNewEntity,
@@ -78,7 +78,7 @@ bool StepTidy_LineReducer::replaceSurfaceCurve(const occ::handle<StepGeom_Line>&
   return false;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_LineReducer::replaceDefinitionalRepresentation(
   const occ::handle<StepGeom_Line>&      theOldEntity,
@@ -102,7 +102,7 @@ bool StepTidy_LineReducer::replaceDefinitionalRepresentation(
   return isReplaced;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool StepTidy_LineReducer::replaceSeamCurve(const occ::handle<StepGeom_Line>&      theOldEntity,
                                             const occ::handle<StepGeom_Line>&      theNewEntity,

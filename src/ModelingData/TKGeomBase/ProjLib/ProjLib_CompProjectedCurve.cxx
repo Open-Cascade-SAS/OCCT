@@ -127,19 +127,13 @@ static void SplitOnDirection(SplitDS& theSplitDS);
 //! Perform recursive search of the split points.
 static void FindSplitPoint(SplitDS& theSplitDS, const double theMinParam, const double theMaxParam);
 
-//=======================================================================
-// function : Comparator
-// purpose  : used in sort algorithm
-//=======================================================================
+//=================================================================================================
 inline bool Comparator(const double theA, const double theB)
 {
   return theA < theB;
 }
 
-//=======================================================================
-// function : d1
-// purpose  : computes first derivative of the projected curve
-//=======================================================================
+//=================================================================================================
 
 static void d1(const double                          t,
                const double                          u,
@@ -167,10 +161,7 @@ static void d1(const double                          t,
   V = -gp_Vec2d(gp_Vec2d(M.Row(1)) * dE_dt, gp_Vec2d(M.Row(2)) * dE_dt);
 }
 
-//=======================================================================
-// function : d2
-// purpose  : computes second derivative of the projected curve
-//=======================================================================
+//=================================================================================================
 
 static void d2(const double                          t,
                const double                          u,
@@ -233,15 +224,9 @@ static void d2(const double                          t,
   V2 = -gp_Vec2d(gp_Vec2d(M.Row(1)) * Sum, gp_Vec2d(M.Row(2)) * Sum);
 }
 
-//=======================================================================
-// function : d1CurveOnSurf
-// purpose  : computes first derivative of the 3d projected curve
-//=======================================================================
+//=================================================================================================
 
-//=======================================================================
-// function : d2CurveOnSurf
-// purpose  : computes second derivative of the 3D projected curve
-//=======================================================================
+//=================================================================================================
 
 static void d2CurvOnSurf(const double                          t,
                          const double                          u,
@@ -310,10 +295,7 @@ static void d2CurvOnSurf(const double                          t,
        + DS2_v * V12d.Y() * V12d.Y() + DS1_v * V22d.Y();
 }
 
-//=======================================================================
-// function : ExactBound
-// purpose  : computes exact boundary point
-//=======================================================================
+//=================================================================================================
 
 static bool ExactBound(gp_Pnt&                               Sol,
                        const double                          NotSol,
@@ -427,10 +409,7 @@ static bool ExactBound(gp_Pnt&                               Sol,
   return isDone;
 }
 
-//=======================================================================
-// function : DichExactBound
-// purpose  : computes exact boundary point
-//=======================================================================
+//=================================================================================================
 
 static void DichExactBound(gp_Pnt&                               Sol,
                            const double                          NotSol,
@@ -2159,11 +2138,7 @@ void BuildCurveSplits(const occ::handle<Adaptor3d_Curve>&   theCurve,
   std::sort(aDS.mySplits.begin(), aDS.mySplits.end(), Comparator);
 }
 
-//=======================================================================
-// function : SplitOnDirection
-// purpose  : This method compute points in the parameter space of the curve
-//           on which curve should be split since period jump is happen.
-//=======================================================================
+//=================================================================================================
 void SplitOnDirection(SplitDS& theSplitDS)
 {
   // Algorithm:

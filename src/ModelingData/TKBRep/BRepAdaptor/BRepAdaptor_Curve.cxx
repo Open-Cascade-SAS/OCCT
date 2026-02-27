@@ -274,7 +274,7 @@ occ::handle<Adaptor3d_Curve> BRepAdaptor_Curve::Trim(const double First,
                                                      const double Last,
                                                      const double Tol) const
 {
-  // On fait une copie de this pour garder la trsf.
+  // Make a copy of this to keep the transformation.
   occ::handle<BRepAdaptor_Curve> res;
   if (myConSurf.IsNull())
   {

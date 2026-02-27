@@ -16,7 +16,7 @@
 
 #include <Convert_CompBezierCurves2dToBSplineCurve2d.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 Convert_CompBezierCurves2dToBSplineCurve2d::Convert_CompBezierCurves2dToBSplineCurve2d(
   const double theAngularTolerance)

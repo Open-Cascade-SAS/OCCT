@@ -53,12 +53,7 @@
 #include <math_Powell.hxx>
 #include <GeomConvert_FuncCylinderLSDist.hxx>
 
-//=======================================================================
-// function : CheckVTrimForRevSurf
-// purpose  :
-// static method for checking surface of revolution
-// To avoid two-parts cone-like surface
-//=======================================================================
+//=================================================================================================
 void GeomConvert_SurfToAnaSurf::CheckVTrimForRevSurf(
   const occ::handle<Geom_SurfaceOfRevolution>& aRevSurf,
   double&                                      V1,
@@ -107,11 +102,7 @@ void GeomConvert_SurfToAnaSurf::CheckVTrimForRevSurf(
   }
 }
 
-//=======================================================================
-// function : TryCylinderCone
-// purpose  :
-// static method to try create cylindrical or conical surface
-//=======================================================================
+//=================================================================================================
 occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(
   const occ::handle<Geom_Surface>& theSurf,
   const bool                       theVCase,
@@ -224,11 +215,9 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinerCone(
   return aNewSurf;
 }
 
-//=======================================================================
-// function : GetCylByLS
-// purpose  :
-// static method to create cylinrical surface using least square method
-//=======================================================================
+//=================================================================================================
+//=================================================================================================
+
 static void GetLSGap(const occ::handle<NCollection_HArray1<gp_XYZ>>& thePoints,
                      const gp_Ax3&                                   thePos,
                      const double                                    theR,
@@ -358,11 +347,7 @@ bool GeomConvert_SurfToAnaSurf::GetCylByLS(
   return false;
 }
 
-//=======================================================================
-// function : TryCylinderByGaussField
-// purpose  :
-// static method to try create cylinrical surface based on its Gauss field
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
   const occ::handle<Geom_Surface>& theSurf,
@@ -507,12 +492,7 @@ occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryCylinderByGaussField(
   return aNewSurf;
 }
 
-//=======================================================================
-// function : TryTorusSphere
-// purpose  :
-// static method to try create toroidal surface.
-// In case <isTryUMajor> = true try to use V isoline radius as minor radaius.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<Geom_Surface> GeomConvert_SurfToAnaSurf::TryTorusSphere(
   const occ::handle<Geom_Surface>& theSurf,

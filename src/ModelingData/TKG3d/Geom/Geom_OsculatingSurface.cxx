@@ -580,8 +580,8 @@ bool Geom_OsculatingSurface::buildOsculatingSurface(double theParam,
     vspanlength     = theBS->VKnot(theSVKnot + 1) - theBS->VKnot(theSVKnot);
     uspanlength     = theBS->UKnot(theSUKnot + 1) - theBS->UKnot(theSUKnot);
 
-    // On se ramene toujours a un parametrage tel que localement ce soit l'iso
-    // u=0 ou v=0 qui soit degeneree
+    // Always reduce to a parametrization such that locally it is the iso
+    // u=0 or v=0 that is degenerate
 
     bool IsVNegative = theParam > vcacheparameter + vspanlength / 2;
     bool IsUNegative = theParam > ucacheparameter + uspanlength / 2;

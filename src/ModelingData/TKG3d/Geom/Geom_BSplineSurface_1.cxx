@@ -16,12 +16,12 @@
 
 // xab : 30-Mar-95 introduced cache mechanism for surfaces
 // xab : 21-Jun-95 in remove knots sync size of weights and poles
-// pmn : 28-Jun-96 Distinction entre la continuite en U et V (bug PRO4625)
-// pmn : 07-Jan-97 Centralisation des verif rational (PRO6834)
-//       et ajout des InvalideCache() dans les SetPole* (PRO6833)
-// pmn : 03-Feb-97 Prise en compte de la periode dans Locate(U/V) (PRO6963)
-//                 + bon appel a LocateParameter (PRO6973).
-// RBD : 15/10/98 ; Le cache est desormais defini sur [-1,1] (pro15537).
+// pmn : 28-Jun-96 Distinguish between U and V continuity (bug PRO4625)
+// pmn : 07-Jan-97 Centralized rational checks (PRO6834)
+//       and added InvalidateCache() in SetPole* methods (PRO6833)
+// pmn : 03-Feb-97 Account for the period in Locate(U/V) (PRO6963)
+//                 + correct call to LocateParameter (PRO6973).
+// RBD : 15/10/98 ; The cache is now defined on [-1,1] (pro15537).
 
 #include <BSplCLib.hxx>
 #include <BSplSLib.hxx>
@@ -1420,7 +1420,7 @@ void Geom_BSplineSurface::LocateU(const double U,
   double                            NewU = U, vbid = myVKnots.Value(1);
   const NCollection_Array1<double>& TheKnots = WithKnotRepetition ? myUFlatKnots : myUKnots;
 
-  PeriodicNormalization(NewU, vbid); // Attention a la periode
+  PeriodicNormalization(NewU, vbid); // Handle periodicity
 
   double UFirst               = TheKnots(1);
   double ULast                = TheKnots(TheKnots.Length());
@@ -1474,7 +1474,7 @@ void Geom_BSplineSurface::LocateV(const double V,
   double                            NewV = V, ubid = myUKnots.Value(1);
   const NCollection_Array1<double>& TheKnots = WithKnotRepetition ? myVFlatKnots : myVKnots;
 
-  PeriodicNormalization(ubid, NewV); // Attention a la periode
+  PeriodicNormalization(ubid, NewV); // Handle periodicity
 
   double VFirst               = TheKnots(1);
   double VLast                = TheKnots(TheKnots.Length());

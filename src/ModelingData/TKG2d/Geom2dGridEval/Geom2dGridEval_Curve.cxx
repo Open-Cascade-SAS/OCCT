@@ -42,7 +42,7 @@ occ::handle<Geom2d_Curve> ExtractBasisCurve(const occ::handle<Geom2d_Curve>& the
 
 } // namespace
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dGridEval_Curve::Geom2dGridEval_Curve(const Adaptor2d_Curve2d& theCurve)
     : myEvaluator(std::monostate{}),
@@ -51,7 +51,7 @@ Geom2dGridEval_Curve::Geom2dGridEval_Curve(const Adaptor2d_Curve2d& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 Geom2dGridEval_Curve::Geom2dGridEval_Curve(const occ::handle<Geom2d_Curve>& theCurve)
     : myEvaluator(std::monostate{}),
@@ -60,7 +60,7 @@ Geom2dGridEval_Curve::Geom2dGridEval_Curve(const occ::handle<Geom2d_Curve>& theC
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dGridEval_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
 {
@@ -76,7 +76,7 @@ void Geom2dGridEval_Curve::initialization(const Adaptor2d_Curve2d& theCurve)
   myEvaluator.emplace<Geom2dGridEval_OtherCurve>(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void Geom2dGridEval_Curve::initialization(const occ::handle<Geom2d_Curve>& theCurve)
 {
@@ -138,7 +138,7 @@ void Geom2dGridEval_Curve::initialization(const occ::handle<Geom2d_Curve>& theCu
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Curve::EvaluateGrid(
   const NCollection_Array1<double>& theParams) const
@@ -158,7 +158,7 @@ NCollection_Array1<gp_Pnt2d> Geom2dGridEval_Curve::EvaluateGrid(
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Curve::EvaluateGridD1(
   const NCollection_Array1<double>& theParams) const
@@ -178,7 +178,7 @@ NCollection_Array1<Geom2dGridEval::CurveD1> Geom2dGridEval_Curve::EvaluateGridD1
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Curve::EvaluateGridD2(
   const NCollection_Array1<double>& theParams) const
@@ -198,7 +198,7 @@ NCollection_Array1<Geom2dGridEval::CurveD2> Geom2dGridEval_Curve::EvaluateGridD2
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Curve::EvaluateGridD3(
   const NCollection_Array1<double>& theParams) const
@@ -218,7 +218,7 @@ NCollection_Array1<Geom2dGridEval::CurveD3> Geom2dGridEval_Curve::EvaluateGridD3
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 NCollection_Array1<gp_Vec2d> Geom2dGridEval_Curve::EvaluateGridDN(
   const NCollection_Array1<double>& theParams,

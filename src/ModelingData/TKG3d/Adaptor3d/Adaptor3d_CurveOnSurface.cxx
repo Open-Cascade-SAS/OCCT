@@ -1639,15 +1639,15 @@ void Adaptor3d_CurveOnSurface::EvalKPart()
           gp_Sphere Sph  = mySurface->Sphere();
           gp_Pnt2d  P    = myCurve->Line().Location();
           gp_Ax3    Axis = Sph.Position();
-          // calcul de l'iso 0.
+          // Compute the iso 0.
           myCirc = ElSLib::SphereUIso(Axis, Sph.Radius(), 0.);
 
-          // mise a sameparameter (rotation du cercle - decalage du Y)
+          // Same-parametrization (circle rotation - Y offset)
           gp_Dir DRev = Axis.XDirection().Crossed(Axis.Direction());
           gp_Ax1 AxeRev(Axis.Location(), DRev);
           myCirc.Rotate(AxeRev, P.Y());
 
-          // transformation en iso U ( = P.X())
+          // Transform to iso U ( = P.X())
           DRev   = Axis.XDirection().Crossed(Axis.YDirection());
           AxeRev = gp_Ax1(Axis.Location(), DRev);
           myCirc.Rotate(AxeRev, P.X());

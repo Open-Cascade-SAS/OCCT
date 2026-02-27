@@ -18,7 +18,7 @@
 #include <GeomAdaptor_Curve.hxx>
 #include <Precision.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp_Curve::GeomProp_Curve(const Adaptor3d_Curve& theCurve)
     : myEvaluator(std::monostate{}),
@@ -27,7 +27,7 @@ GeomProp_Curve::GeomProp_Curve(const Adaptor3d_Curve& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve)
     : myEvaluator(std::monostate{}),
@@ -36,7 +36,7 @@ GeomProp_Curve::GeomProp_Curve(const occ::handle<Geom_Curve>& theCurve)
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
 {
@@ -54,7 +54,7 @@ void GeomProp_Curve::initialization(const Adaptor3d_Curve& theCurve)
   myEvaluator.emplace<std::monostate>();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
 {
@@ -70,7 +70,7 @@ void GeomProp_Curve::initialization(const occ::handle<Geom_Curve>& theCurve)
   initFromAdaptor();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void GeomProp_Curve::initFromAdaptor()
 {
@@ -109,7 +109,7 @@ void GeomProp_Curve::initFromAdaptor()
   }
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const GeomAdaptor_Curve* GeomProp_Curve::Adaptor() const
 {
@@ -124,7 +124,7 @@ const GeomAdaptor_Curve* GeomProp_Curve::Adaptor() const
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult GeomProp_Curve::Tangent(const double theParam, const double theTol) const
 {
@@ -143,7 +143,7 @@ GeomProp::TangentResult GeomProp_Curve::Tangent(const double theParam, const dou
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult GeomProp_Curve::Curvature(const double theParam,
                                                     const double theTol) const
@@ -163,7 +163,7 @@ GeomProp::CurvatureResult GeomProp_Curve::Curvature(const double theParam,
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult GeomProp_Curve::Normal(const double theParam, const double theTol) const
 {
@@ -182,7 +182,7 @@ GeomProp::NormalResult GeomProp_Curve::Normal(const double theParam, const doubl
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult GeomProp_Curve::CentreOfCurvature(const double theParam,
                                                          const double theTol) const
@@ -202,7 +202,7 @@ GeomProp::CentreResult GeomProp_Curve::CentreOfCurvature(const double theParam,
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_Curve::FindCurvatureExtrema() const
 {
@@ -221,7 +221,7 @@ GeomProp::CurveAnalysis GeomProp_Curve::FindCurvatureExtrema() const
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurveAnalysis GeomProp_Curve::FindInflections() const
 {
@@ -240,7 +240,7 @@ GeomProp::CurveAnalysis GeomProp_Curve::FindInflections() const
     myEvaluator);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 // Helper to convert GeomAbs_Shape to integer for comparison.
 static int geomAbsToInteger(const GeomAbs_Shape theCont)
@@ -265,7 +265,7 @@ static int geomAbsToInteger(const GeomAbs_Shape theCont)
   return 0;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
                                          const occ::handle<Geom_Curve>& theC2,
@@ -415,7 +415,7 @@ GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
   return aCont;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape GeomProp_Curve::Continuity(const occ::handle<Geom_Curve>& theC1,
                                          const occ::handle<Geom_Curve>& theC2,

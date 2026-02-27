@@ -32,12 +32,7 @@
 // value can't be too high to be not in conflict with previous rule.
 static const double PARTOLERANCE = 1.e-9;
 
-//=======================================================================
-// function : Parameter
-// purpose  : Get parameter on curve of given point
-//           return FALSE if point is far from curve than MaxDist
-//           or computation fails
-//=======================================================================
+//=================================================================================================
 
 bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
                              const gp_Pnt&                  Point,
@@ -82,12 +77,7 @@ bool GeomLib_Tool::Parameter(const occ::handle<Geom_Curve>& Curve,
   return true;
 }
 
-//=======================================================================
-// function : Parameters
-// purpose  : Get parameters on surface of given point
-//           return FALSE if point is far from surface than MaxDist
-//           or computation fails
-//=======================================================================
+//=================================================================================================
 
 bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
                               const gp_Pnt&                    Point,
@@ -136,12 +126,7 @@ bool GeomLib_Tool::Parameters(const occ::handle<Geom_Surface>& Surface,
   return true;
 }
 
-//=======================================================================
-// function : Parameter
-// purpose  : Get parameter on curve of given point
-//           return FALSE if point is far from curve than MaxDist
-//           or computation fails
-//=======================================================================
+//=================================================================================================
 
 bool GeomLib_Tool::Parameter(const occ::handle<Geom2d_Curve>& Curve,
                              const gp_Pnt2d&                  Point,
@@ -289,19 +274,7 @@ private:
 };
 } // namespace
 
-//=======================================================================
-// function : ComputeDeviation
-// purpose  : Computes parameter on curve (*thePrmOnCurve) where maximal deviation
-//           (maximal value of correspond function FuncSolveDeviation) is obtained.
-//           ALGORITHM!
-//           The point is looked for where 1st derivative of the function
-//            FuncSolveDeviation is equal to 0. It is made by iterative formula:
-//
-//                U(n+1)=U(n) - D1/D2,
-//
-//            where D1 and D2 are 1st and 2nd derivative of the function, computed in
-//            the point U(n). U(0) = theStartParameter.
-//=======================================================================
+//=================================================================================================
 double GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
                                       const double               theFPar,
                                       const double               theLPar,
@@ -396,13 +369,7 @@ double GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
   return std::sqrt(aSqDefl);
 }
 
-//=======================================================================
-// function : ComputeDeviation
-// purpose  : Computes parameter on curve (*thePrmOnCurve) where maximal deviation
-//           (maximal value of correspond function FuncSolveDeviation) is obtained
-//           (fast but not precisely).
-//           math_PSO Algorithm is used.
-//=======================================================================
+//=================================================================================================
 double GeomLib_Tool::ComputeDeviation(const Geom2dAdaptor_Curve& theCurve,
                                       const double               theFPar,
                                       const double               theLPar,

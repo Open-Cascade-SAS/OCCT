@@ -20,28 +20,28 @@
 #include <TopAbs_Orientation.hxx>
 #include <TopoDS_Edge.hxx>
 
-//==================================================================================================
+//=================================================================================================
 
 BRepProp_Curve::BRepProp_Curve(const TopoDS_Edge& theEdge)
 {
   initialization(theEdge);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepProp_Curve::BRepProp_Curve(const BRepAdaptor_Curve& theCurve)
 {
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 BRepProp_Curve::BRepProp_Curve(const occ::handle<BRepAdaptor_Curve>& theCurve)
 {
   initialization(theCurve);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepProp_Curve::initialization(const TopoDS_Edge& theEdge)
 {
@@ -55,7 +55,7 @@ void BRepProp_Curve::initialization(const TopoDS_Edge& theEdge)
   myPtr   = myOwned.get();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepProp_Curve::initialization(const BRepAdaptor_Curve& theCurve)
 {
@@ -63,7 +63,7 @@ void BRepProp_Curve::initialization(const BRepAdaptor_Curve& theCurve)
   myPtr = &theCurve;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 void BRepProp_Curve::initialization(const occ::handle<BRepAdaptor_Curve>& theCurve)
 {
@@ -71,7 +71,7 @@ void BRepProp_Curve::initialization(const occ::handle<BRepAdaptor_Curve>& theCur
   myPtr   = myOwned.get();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::TangentResult BRepProp_Curve::Tangent(const double theParam, const double theTol) const
 {
@@ -102,7 +102,7 @@ GeomProp::TangentResult BRepProp_Curve::Tangent(const double theParam, const dou
   return GeomProp::ComputeTangent(aD1, aD2, aD3, theTol, aP1, aP2);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CurvatureResult BRepProp_Curve::Curvature(const double theParam,
                                                     const double theTol) const
@@ -113,7 +113,7 @@ GeomProp::CurvatureResult BRepProp_Curve::Curvature(const double theParam,
   return GeomProp::ComputeCurvature(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::NormalResult BRepProp_Curve::Normal(const double theParam, const double theTol) const
 {
@@ -123,7 +123,7 @@ GeomProp::NormalResult BRepProp_Curve::Normal(const double theParam, const doubl
   return GeomProp::ComputeNormal(aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomProp::CentreResult BRepProp_Curve::CentreOfCurvature(const double theParam,
                                                          const double theTol) const
@@ -134,7 +134,7 @@ GeomProp::CentreResult BRepProp_Curve::CentreOfCurvature(const double theParam,
   return GeomProp::ComputeCentreOfCurvature(aPnt, aD1, aD2, theTol);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape BRepProp_Curve::Continuity(const BRepAdaptor_Curve& theCurve1,
                                          const BRepAdaptor_Curve& theCurve2,
@@ -242,7 +242,7 @@ GeomAbs_Shape BRepProp_Curve::Continuity(const BRepAdaptor_Curve& theCurve1,
   return aCont;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 GeomAbs_Shape BRepProp_Curve::Continuity(const BRepAdaptor_Curve& theCurve1,
                                          const BRepAdaptor_Curve& theCurve2,

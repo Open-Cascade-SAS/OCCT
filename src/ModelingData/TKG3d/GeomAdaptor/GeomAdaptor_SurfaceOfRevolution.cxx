@@ -130,7 +130,7 @@ void GeomAdaptor_SurfaceOfRevolution::Load(const gp_Ax1& V)
   else
   {
     double First = myBasisCurve->FirstParameter();
-    P            = Value(0., 0.); // ce qui ne veut pas dire grand chose
+    P            = Value(0., 0.); // which does not mean much
     if (GetType() == GeomAbs_Cone)
     {
       if (gp_Lin(myAxis).Distance(P) <= Precision::Confusion())
@@ -387,7 +387,7 @@ GeomAbs_SurfaceType GeomAdaptor_SurfaceOfRevolution::GetType() const
           gp_Pnt pf  = myBasisCurve->Value(uf);
           gp_Pnt pl  = myBasisCurve->Value(ul);
           double len = pf.Distance(pl);
-          // on calcule la distance projetee sur l axe.
+          // Compute the distance projected onto the axis.
           gp_Vec vlin(pf, pl);
           gp_Vec vaxe(myAxis.Direction());
           double projlen = std::abs(vaxe.Dot(vlin));

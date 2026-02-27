@@ -43,7 +43,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRepTools_GTrsfModification, BRepTools_Modification)
 BRepTools_GTrsfModification::BRepTools_GTrsfModification(const gp_GTrsf& T)
     : myGTrsf(T)
 {
-  // on prend comme dilatation maximale pour la tolerance la norme sup
+  // use the sup norm as the maximum dilation for the tolerance
   double loc1, loc2, loc3, loc4;
 
   loc1 = std::max(std::abs(T.Value(1, 1)), std::abs(T.Value(1, 2)));

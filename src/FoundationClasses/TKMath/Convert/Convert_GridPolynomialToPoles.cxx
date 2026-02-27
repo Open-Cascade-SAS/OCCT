@@ -278,7 +278,7 @@ void Convert_GridPolynomialToPoles::BuildArray(const int                        
   BSplCLib::BuildSchoenbergPoints(Degree, FlatKnots, Parameters);
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_GridPolynomialToPoles::NbUPoles() const
 {
@@ -286,7 +286,7 @@ int Convert_GridPolynomialToPoles::NbUPoles() const
   return myPoles.ColLength();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_GridPolynomialToPoles::NbVPoles() const
 {
@@ -294,7 +294,7 @@ int Convert_GridPolynomialToPoles::NbVPoles() const
   return myPoles.RowLength();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array2<gp_Pnt>& Convert_GridPolynomialToPoles::Poles() const
 {
@@ -302,7 +302,7 @@ const NCollection_Array2<gp_Pnt>& Convert_GridPolynomialToPoles::Poles() const
   return myPoles;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_GridPolynomialToPoles::UDegree() const
 {
@@ -310,7 +310,7 @@ int Convert_GridPolynomialToPoles::UDegree() const
   return myUDegree;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_GridPolynomialToPoles::VDegree() const
 {
@@ -318,7 +318,7 @@ int Convert_GridPolynomialToPoles::VDegree() const
   return myVDegree;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_GridPolynomialToPoles::NbUKnots() const
 {
@@ -326,7 +326,7 @@ int Convert_GridPolynomialToPoles::NbUKnots() const
   return myUKnots.Length();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 int Convert_GridPolynomialToPoles::NbVKnots() const
 {
@@ -334,7 +334,7 @@ int Convert_GridPolynomialToPoles::NbVKnots() const
   return myVKnots.Length();
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_GridPolynomialToPoles::UKnots() const
 {
@@ -342,7 +342,7 @@ const NCollection_Array1<double>& Convert_GridPolynomialToPoles::UKnots() const
   return myUKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<double>& Convert_GridPolynomialToPoles::VKnots() const
 {
@@ -350,7 +350,7 @@ const NCollection_Array1<double>& Convert_GridPolynomialToPoles::VKnots() const
   return myVKnots;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<int>& Convert_GridPolynomialToPoles::UMultiplicities() const
 {
@@ -358,7 +358,7 @@ const NCollection_Array1<int>& Convert_GridPolynomialToPoles::UMultiplicities() 
   return myUMults;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 const NCollection_Array1<int>& Convert_GridPolynomialToPoles::VMultiplicities() const
 {
@@ -366,7 +366,7 @@ const NCollection_Array1<int>& Convert_GridPolynomialToPoles::VMultiplicities() 
   return myVMults;
 }
 
-//==================================================================================================
+//=================================================================================================
 
 bool Convert_GridPolynomialToPoles::IsDone() const
 {
