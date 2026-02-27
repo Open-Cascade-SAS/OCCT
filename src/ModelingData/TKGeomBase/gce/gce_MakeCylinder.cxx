@@ -41,7 +41,6 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax2& A2, const double Radius)
 
 //=================================================================================================
 
-
 gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const double Radius)
 {
   if (Radius < 0.0)
@@ -74,7 +73,6 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const double Radius)
 
 //=================================================================================================
 
-
 gce_MakeCylinder::gce_MakeCylinder(const gp_Circ& Circ)
 {
   TheCylinder = gp_Cylinder(Circ.Position(), Circ.Radius());
@@ -82,7 +80,6 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Circ& Circ)
 }
 
 //=================================================================================================
-
 
 gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3)
 {
@@ -118,7 +115,6 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_
 
 //=================================================================================================
 
-
 gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist)
 {
   double Rad = Cyl.Radius() + Dist;
@@ -135,7 +131,6 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist)
 }
 
 //=================================================================================================
-
 
 gce_MakeCylinder::gce_MakeCylinder(const gp_Cylinder& Cyl, const gp_Pnt& P)
 {

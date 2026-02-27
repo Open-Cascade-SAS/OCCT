@@ -112,7 +112,6 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
 
 //=================================================================================================
 
-
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d& XAxis, const double Radius, const bool Sense)
 {
   if (Radius >= 0.)
@@ -127,7 +126,6 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax2d& XAxis, const double Radius, const 
 }
 
 //=================================================================================================
-
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const double Radius)
 {
@@ -144,7 +142,6 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Ax22d& Axis, const double Radius)
 
 //=================================================================================================
 
-
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const double Radius, const bool Sense)
 {
   if (Radius >= 0.)
@@ -160,7 +157,6 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const double Radius, cons
 
 //=================================================================================================
 
-
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
 {
   TheCirc2d = gp_Circ2d(gp_Ax2d(Center, gp_Dir2d(gp_Dir2d::D::X)), Point.Distance(Center), Sense);
@@ -169,7 +165,6 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& Center, const gp_Pnt2d& Point, co
 
 //=================================================================================================
 
-
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 {
   TheCirc2d = gp_Circ2d(Circ.Axis(), Point.Distance(Circ.Location()));
@@ -177,7 +172,6 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 }
 
 //=================================================================================================
-
 
 gce_MakeCirc2d::gce_MakeCirc2d(const gp_Circ2d& Circ, const double Dist1)
 {

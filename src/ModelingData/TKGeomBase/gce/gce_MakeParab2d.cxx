@@ -62,7 +62,6 @@ gce_MakeParab2d::gce_MakeParab2d(const gp_Ax2d& D, const gp_Pnt2d& F, const bool
 
 //=================================================================================================
 
-
 gce_MakeParab2d::gce_MakeParab2d(const gp_Pnt2d& S, const gp_Pnt2d& Center, const bool Sense)
 {
   if (S.Distance(Center) >= gp::Resolution())

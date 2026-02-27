@@ -43,7 +43,6 @@ gce_MakeElips::gce_MakeElips(const gp_Ax2& A2, const double MajorRadius, const d
 
 //=================================================================================================
 
-
 gce_MakeElips::gce_MakeElips(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center)
 {
   double D1 = S1.Distance(Center);

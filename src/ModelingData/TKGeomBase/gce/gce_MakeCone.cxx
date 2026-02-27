@@ -47,7 +47,6 @@ gce_MakeCone::gce_MakeCone(const gp_Ax2& A2, const double Ang, const double Radi
 
 //=================================================================================================
 
-
 gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3, const gp_Pnt& P4)
 {
   // P1 and P2 define the cone axis. The distance from P3 to the axis gives
@@ -138,7 +137,6 @@ gce_MakeCone::gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P
 
 //=================================================================================================
 
-
 // gce_MakeCone::gce_MakeCone(const gp_Cone&  cone ,
 //			   const gp_Pnt&   P    )
 gce_MakeCone::gce_MakeCone(const gp_Cone&, const gp_Pnt&)
@@ -147,7 +145,6 @@ gce_MakeCone::gce_MakeCone(const gp_Cone&, const gp_Pnt&)
 }
 
 //=================================================================================================
-
 
 // gce_MakeCone::gce_MakeCone(const gp_Cone&      cone ,
 //			   const double Dist )
@@ -175,7 +172,6 @@ gce_MakeCone::gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P
 }
 
 //=================================================================================================
-
 
 gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const double R1, const double R2)
 {
