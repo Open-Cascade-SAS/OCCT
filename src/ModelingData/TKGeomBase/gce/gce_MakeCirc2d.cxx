@@ -57,25 +57,25 @@ gce_MakeCirc2d::gce_MakeCirc2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_
     P1.Coord(x1, y1);
     P2.Coord(x2, y2);
     P3.Coord(x3, y3);
-    if (dist1 >= RealEpsilon())
+    if (dist1 > gp::Resolution())
     {
       L1 =
         gp_Lin2d(gp_Pnt2d((P1.XY() + P2.XY()) / 2.0), gp_Dir2d(P1.Y() - P2.Y(), P2.X() - P1.X()));
     }
-    if (dist2 >= RealEpsilon())
+    if (dist2 > gp::Resolution())
     {
       L2 =
         gp_Lin2d(gp_Pnt2d((P1.XY() + P3.XY()) / 2.0), gp_Dir2d(P1.Y() - P3.Y(), P3.X() - P1.X()));
     }
-    if (dist2 <= RealEpsilon())
+    if (dist2 <= gp::Resolution())
     {
       L2 = gp_Lin2d(P1, gp_Dir2d(P1.Y() - P2.Y(), P2.X() - P1.X()));
     }
-    else if (dist1 <= RealEpsilon())
+    else if (dist1 <= gp::Resolution())
     {
       L1 = gp_Lin2d(P1, gp_Dir2d(P1.Y() - P3.Y(), P3.X() - P1.X()));
     }
-    else if (dist3 <= RealEpsilon())
+    else if (dist3 <= gp::Resolution())
     {
       L2 = gp_Lin2d(P1, gp_Dir2d(P1.Y() - P2.Y(), P2.X() - P1.X()));
     }

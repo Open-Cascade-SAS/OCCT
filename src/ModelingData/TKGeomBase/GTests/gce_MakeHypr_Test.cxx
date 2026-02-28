@@ -13,6 +13,7 @@
 
 #include <gce_MakeHypr.hxx>
 #include <gce_MakeHypr2d.hxx>
+#include <gp.hxx>
 #include <gp_Ax2.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Ax22d.hxx>
@@ -151,6 +152,18 @@ TEST(gce_MakeHyprTest, FromPoints_Collinear_ColinearPoints)
   const gp_Pnt aCenter(0.0, 0.0, 0.0);
   const gp_Pnt aS1(10.0, 0.0, 0.0);
   const gp_Pnt aS2(5.0, 0.0, 0.0);
+
+  gce_MakeHypr aMaker(aS1, aS2, aCenter);
+  EXPECT_FALSE(aMaker.IsDone());
+  EXPECT_EQ(aMaker.Status(), gce_ColinearPoints);
+}
+
+TEST(gce_MakeHyprTest, FromPoints_TinyCrossProduct_ColinearPoints)
+{
+  const double aRes = gp::Resolution();
+  const gp_Pnt aCenter(0.0, 0.0, 0.0);
+  const gp_Pnt aS1(2.0 * aRes, 0.0, 0.0);
+  const gp_Pnt aS2(0.0, 1.1 * aRes, 0.0);
 
   gce_MakeHypr aMaker(aS1, aS2, aCenter);
   EXPECT_FALSE(aMaker.IsDone());

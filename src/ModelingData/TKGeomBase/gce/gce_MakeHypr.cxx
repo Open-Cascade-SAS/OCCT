@@ -45,7 +45,14 @@ gce_MakeHypr::gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Cen
     TheError = gce_ColinearPoints;
     return;
   }
-  const gp_Dir aNorm(aXAxis.Crossed(gp_Dir(aVecS2)));
+  const gp_XYZ aCross = aXAxis.XYZ().Crossed(aVecS2);
+  if (aCross.Modulus() <= gp::Resolution())
+  {
+    TheError = gce_ColinearPoints;
+    return;
+  }
+
+  const gp_Dir aNorm(aCross);
   TheHypr  = gp_Hypr(gp_Ax2(Center, aNorm, aXAxis), aDistS1, aMinorDist);
   TheError = gce_Done;
 }

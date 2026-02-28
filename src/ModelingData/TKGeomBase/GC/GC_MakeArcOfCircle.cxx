@@ -25,6 +25,7 @@
 #include <gp_Circ.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
+#include <Precision.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=================================================================================================
@@ -77,8 +78,7 @@ GC_MakeArcOfCircle::GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const 
                Dir1);
     gp_Dir d(dbid ^ Daxe);
     gp_Lin norm(P1, d);
-    double Tol = 0.000000001;
-    Extrema_ExtElC distmin(bis, norm, Tol);
+    Extrema_ExtElC distmin(bis, norm, Precision::Confusion());
     if (!distmin.IsDone())
     {
       TheError = gce_IntersectionError;

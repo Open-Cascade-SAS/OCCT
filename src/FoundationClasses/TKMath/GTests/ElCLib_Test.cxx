@@ -20,12 +20,15 @@
 #include <gp_Elips2d.hxx>
 #include <gp_Hypr.hxx>
 #include <gp_Hypr2d.hxx>
+#include <gp.hxx>
 #include <gp_Lin.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Parab.hxx>
 #include <gp_Parab2d.hxx>
 #include <Standard_Real.hxx>
 #include <Standard_Integer.hxx>
+
+#include <cmath>
 
 namespace
 {
@@ -328,4 +331,84 @@ TEST(ElClibTests, To3dConversion)
   const gp_Circ   aCirc3d = ElCLib::To3d(anAxis, aCirc2d);
   EXPECT_NEAR(aCirc3d.Radius(), aRadius, Precision::Confusion());
   checkPointsEqual(aCirc3d.Location(), aLoc, Precision::Confusion());
+}
+
+TEST(ElClibTests, Parabola3D_NearZeroFocal_DegeneratesToLine)
+{
+  const gp_Ax2 anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
+  const double aFocal = 0.5 * gp::Resolution();
+  const double aU     = 4.0;
+
+  const gp_Pnt aValue = ElCLib::ParabolaValue(aU, anAxis, aFocal);
+  checkPointsEqual(aValue, gp_Pnt(1.0 + aU, 2.0, 3.0));
+
+  gp_Pnt aP;
+  gp_Vec aD1;
+  ElCLib::ParabolaD1(aU, anAxis, aFocal, aP, aD1);
+  checkPointsEqual(aP, gp_Pnt(1.0 + aU, 2.0, 3.0));
+  checkVectorsEqual(aD1, gp_Vec(1.0, 0.0, 0.0));
+
+  gp_Vec aD2;
+  ElCLib::ParabolaD2(aU, anAxis, aFocal, aP, aD1, aD2);
+  checkVectorsEqual(aD2, gp_Vec(0.0, 0.0, 0.0));
+
+  checkVectorsEqual(ElCLib::ParabolaDN(aU, anAxis, aFocal, 1), gp_Vec(1.0, 0.0, 0.0));
+  checkVectorsEqual(ElCLib::ParabolaDN(aU, anAxis, aFocal, 2), gp_Vec(0.0, 0.0, 0.0));
+}
+
+TEST(ElClibTests, Parabola2D_NearZeroFocal_DegeneratesToLine)
+{
+  const gp_Ax22d anAxis(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0), true);
+  const double   aFocal = 0.5 * gp::Resolution();
+  const double   aU     = 3.0;
+
+  const gp_Pnt2d aValue = ElCLib::ParabolaValue(aU, anAxis, aFocal);
+  EXPECT_NEAR(aValue.X(), 1.0 + aU, Precision::Confusion());
+  EXPECT_NEAR(aValue.Y(), 2.0, Precision::Confusion());
+
+  gp_Pnt2d aP;
+  gp_Vec2d aD1;
+  ElCLib::ParabolaD1(aU, anAxis, aFocal, aP, aD1);
+  EXPECT_NEAR(aP.X(), 1.0 + aU, Precision::Confusion());
+  EXPECT_NEAR(aP.Y(), 2.0, Precision::Confusion());
+  EXPECT_NEAR(aD1.X(), 1.0, Precision::Confusion());
+  EXPECT_NEAR(aD1.Y(), 0.0, Precision::Confusion());
+
+  gp_Vec2d aD2;
+  ElCLib::ParabolaD2(aU, anAxis, aFocal, aP, aD1, aD2);
+  EXPECT_NEAR(aD2.X(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aD2.Y(), 0.0, Precision::Confusion());
+
+  const gp_Vec2d aDN1 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 1);
+  const gp_Vec2d aDN2 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 2);
+  EXPECT_NEAR(aDN1.X(), 1.0, Precision::Confusion());
+  EXPECT_NEAR(aDN1.Y(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aDN2.X(), 0.0, Precision::Confusion());
+  EXPECT_NEAR(aDN2.Y(), 0.0, Precision::Confusion());
+}
+
+TEST(ElClibTests, Parabola3D_AboveResolutionFocal_NotDegenerate)
+{
+  const gp_Ax2 anAxis(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0));
+  const double aFocal = 2.0 * gp::Resolution();
+  const double aU     = 1.0;
+
+  const gp_Pnt aValue = ElCLib::ParabolaValue(aU, anAxis, aFocal);
+  EXPECT_GT(std::abs(aValue.Y() - 2.0), 1.0);
+
+  const gp_Vec aD2 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 2);
+  EXPECT_GT(aD2.Magnitude(), 1.0);
+}
+
+TEST(ElClibTests, Parabola2D_AboveResolutionFocal_NotDegenerate)
+{
+  const gp_Ax22d anAxis(gp_Pnt2d(1.0, 2.0), gp_Dir2d(1.0, 0.0), true);
+  const double   aFocal = 2.0 * gp::Resolution();
+  const double   aU     = 1.0;
+
+  const gp_Pnt2d aValue = ElCLib::ParabolaValue(aU, anAxis, aFocal);
+  EXPECT_GT(std::abs(aValue.Y() - 2.0), 1.0);
+
+  const gp_Vec2d aD2 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 2);
+  EXPECT_GT(aD2.Magnitude(), 1.0);
 }

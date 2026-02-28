@@ -19,10 +19,13 @@
 #include <GCE2d_MakeSegment.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
+#include <gp.hxx>
 #include <gp_Dir2d.hxx>
 #include <gp_Lin2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
+
+#include <cmath>
 
 //=================================================================================================
 
@@ -30,7 +33,7 @@ GCE2d_MakeSegment::GCE2d_MakeSegment(const gp_Pnt2d& P1, const gp_Dir2d& V, cons
 {
   gp_Lin2d Line(P1, V);
   double   Ulast = ElCLib::Parameter(Line, P2);
-  if (Ulast != 0.0)
+  if (std::abs(Ulast) > gp::Resolution())
   {
     occ::handle<Geom2d_Line> L = new Geom2d_Line(Line);
     TheSegment                 = new Geom2d_TrimmedCurve(L, 0.0, Ulast, true);
@@ -47,7 +50,7 @@ GCE2d_MakeSegment::GCE2d_MakeSegment(const gp_Pnt2d& P1, const gp_Dir2d& V, cons
 GCE2d_MakeSegment::GCE2d_MakeSegment(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
 {
   double dist = P1.Distance(P2);
-  if (dist != 0.0)
+  if (dist > gp::Resolution())
   {
     occ::handle<Geom2d_Line> L = GCE2d_MakeLine(P1, P2);
     TheSegment                 = new Geom2d_TrimmedCurve(L, 0., dist, true);

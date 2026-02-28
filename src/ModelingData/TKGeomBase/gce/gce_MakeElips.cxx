@@ -60,9 +60,17 @@ gce_MakeElips::gce_MakeElips(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& C
     }
     else
     {
-      gp_Dir Norm(XAxis.Crossed(gp_Dir(gp_XYZ(S2.XYZ() - Center.XYZ()))));
-      TheElips = gp_Elips(gp_Ax2(Center, Norm, XAxis), D1, D2);
-      TheError = gce_Done;
+      const gp_XYZ aCross = XAxis.XYZ().Crossed(S2.XYZ() - Center.XYZ());
+      if (aCross.Modulus() <= gp::Resolution())
+      {
+        TheError = gce_InvertAxis;
+      }
+      else
+      {
+        gp_Dir Norm(aCross);
+        TheElips = gp_Elips(gp_Ax2(Center, Norm, XAxis), D1, D2);
+        TheError = gce_Done;
+      }
     }
   }
 }

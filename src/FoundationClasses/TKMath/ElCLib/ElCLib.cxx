@@ -209,7 +209,7 @@ gp_Pnt ElCLib::HyperbolaValue(const double  U,
 
 gp_Pnt ElCLib::ParabolaValue(const double U, const gp_Ax2& Pos, const double Focal)
 {
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   {
     const gp_XYZ& XDir = Pos.XDirection().XYZ();
     const gp_XYZ& PLoc = Pos.Location().XYZ();
@@ -304,7 +304,7 @@ void ElCLib::ParabolaD1(const double  U,
                         gp_Vec&       V1)
 {
   gp_XYZ Coord1(Pos.XDirection().XYZ());
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   { // Parabole degenere en une droite
     V1.SetXYZ(Coord1);
     Coord1.Multiply(U);
@@ -409,7 +409,7 @@ void ElCLib::ParabolaD2(const double  U,
                         gp_Vec&       V2)
 {
   gp_XYZ Coord1(Pos.XDirection().XYZ());
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   {
     V2.SetCoord(0.0, 0.0, 0.0);
     V1.SetXYZ(Coord1);
@@ -574,7 +574,7 @@ gp_Pnt2d ElCLib::HyperbolaValue(const double    U,
 
 gp_Pnt2d ElCLib::ParabolaValue(const double U, const gp_Ax22d& Pos, const double Focal)
 {
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   {
     const gp_XY& XDir = Pos.XDirection().XY();
     const gp_XY& PLoc = Pos.Location().XY();
@@ -674,7 +674,7 @@ void ElCLib::ParabolaD1(const double    U,
 {
   gp_XY        Vxy;
   const gp_XY& Xdir(Pos.XDirection().XY());
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   { // Parabole degenere en une droite
     V1.SetXY(Xdir);
     Vxy.SetLinearForm(U, Xdir, Pos.Location().XY());
@@ -785,7 +785,7 @@ void ElCLib::ParabolaD2(const double    U,
 {
   gp_XY        Vxy;
   const gp_XY& Xdir(Pos.XDirection().XY());
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   {
     V2.SetCoord(0.0, 0.0);
     V1.SetXY(Xdir);
@@ -1027,7 +1027,7 @@ gp_Vec ElCLib::ParabolaDN(const double U, const gp_Ax2& Pos, const double Focal,
   gp_XYZ Coord1(Pos.XDirection().XYZ());
   if (N == 1)
   {
-    if (Focal == 0.0)
+    if (std::abs(Focal) <= gp::Resolution())
     {
       return gp_Vec(Coord1);
     }
@@ -1035,7 +1035,7 @@ gp_Vec ElCLib::ParabolaDN(const double U, const gp_Ax2& Pos, const double Focal,
     return gp_Vec(Coord1);
   }
 
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   {
     return gp_Vec(0.0, 0.0, 0.0);
   }
@@ -1168,7 +1168,7 @@ gp_Vec2d ElCLib::ParabolaDN(const double U, const gp_Ax22d& Pos, const double Fo
   gp_XY Xdir(Pos.XDirection().XY());
   if (N == 1)
   {
-    if (Focal == 0.0)
+    if (std::abs(Focal) <= gp::Resolution())
     {
       return gp_Vec2d(Xdir);
     }
@@ -1178,7 +1178,7 @@ gp_Vec2d ElCLib::ParabolaDN(const double U, const gp_Ax22d& Pos, const double Fo
     return gp_Vec2d(Xdir);
   }
 
-  if (Focal == 0.0)
+  if (std::abs(Focal) <= gp::Resolution())
   {
     return gp_Vec2d(0.0, 0.0);
   }
