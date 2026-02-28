@@ -394,7 +394,7 @@ TEST(ElClibTests, Parabola3D_AboveResolutionFocal_NotDegenerate)
   const double aU     = 1.0;
 
   const gp_Pnt aValue = ElCLib::ParabolaValue(aU, anAxis, aFocal);
-  EXPECT_GT(std::abs(aValue.Y() - 2.0), 1.0);
+  EXPECT_GT(std::abs(aValue.X() - (1.0 + aU)), 1.0);
 
   const gp_Vec aD2 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 2);
   EXPECT_GT(aD2.Magnitude(), 1.0);
@@ -407,7 +407,7 @@ TEST(ElClibTests, Parabola2D_AboveResolutionFocal_NotDegenerate)
   const double   aU     = 1.0;
 
   const gp_Pnt2d aValue = ElCLib::ParabolaValue(aU, anAxis, aFocal);
-  EXPECT_GT(std::abs(aValue.Y() - 2.0), 1.0);
+  EXPECT_GT(std::abs(aValue.X() - (1.0 + aU)), 1.0);
 
   const gp_Vec2d aD2 = ElCLib::ParabolaDN(aU, anAxis, aFocal, 2);
   EXPECT_GT(aD2.Magnitude(), 1.0);

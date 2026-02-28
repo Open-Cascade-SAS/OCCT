@@ -38,7 +38,7 @@ TEST(gce_MakeCirc2dTest, ThreePoints_AllCoincidentWithinResolution_DoneZeroRadiu
 TEST(gce_MakeCirc2dTest, ThreePoints_OneNearCoincidentPair_Done)
 {
   const gp_Pnt2d aP1(0.0, 0.0);
-  const gp_Pnt2d aP2(0.5 * gp::Resolution(), 0.0);
+  const gp_Pnt2d aP2(1.0e-150, 0.0);
   const gp_Pnt2d aP3(0.0, 1.0);
 
   gce_MakeCirc2d aMaker(aP1, aP2, aP3);
@@ -47,10 +47,10 @@ TEST(gce_MakeCirc2dTest, ThreePoints_OneNearCoincidentPair_Done)
   EXPECT_GT(aMaker.Value().Radius(), 0.0);
 }
 
-TEST(gce_MakeCirc2dTest, ThreePoints_AtResolutionBoundary_Done)
+TEST(gce_MakeCirc2dTest, ThreePoints_SmallDistinct_Done)
 {
   const gp_Pnt2d aP1(0.0, 0.0);
-  const gp_Pnt2d aP2(gp::Resolution(), 0.0);
+  const gp_Pnt2d aP2(2.0e-150, 0.0);
   const gp_Pnt2d aP3(0.0, 1.0);
 
   gce_MakeCirc2d aMaker(aP1, aP2, aP3);

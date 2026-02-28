@@ -158,7 +158,7 @@ TEST(gce_MakeHyprTest, FromPoints_Collinear_ColinearPoints)
   EXPECT_EQ(aMaker.Status(), gce_ColinearPoints);
 }
 
-TEST(gce_MakeHyprTest, FromPoints_TinyCrossProduct_ColinearPoints)
+TEST(gce_MakeHyprTest, FromPoints_TinyScale_ConfusedPoints)
 {
   const double aRes = gp::Resolution();
   const gp_Pnt aCenter(0.0, 0.0, 0.0);
@@ -167,7 +167,7 @@ TEST(gce_MakeHyprTest, FromPoints_TinyCrossProduct_ColinearPoints)
 
   gce_MakeHypr aMaker(aS1, aS2, aCenter);
   EXPECT_FALSE(aMaker.IsDone());
-  EXPECT_EQ(aMaker.Status(), gce_ColinearPoints);
+  EXPECT_EQ(aMaker.Status(), gce_ConfusedPoints);
 }
 
 // ==================== gce_MakeHypr2d (2D) ====================

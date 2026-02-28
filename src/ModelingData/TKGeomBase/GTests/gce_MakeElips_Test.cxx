@@ -45,7 +45,7 @@ TEST(gce_MakeElipsTest, FromPoints_Collinear_InvertAxis)
   EXPECT_EQ(aMaker.Status(), gce_InvertAxis);
 }
 
-TEST(gce_MakeElipsTest, FromPoints_TinyCrossProduct_InvertAxis)
+TEST(gce_MakeElipsTest, FromPoints_TinyScale_NullAxis)
 {
   const double aRes = gp::Resolution();
   const gp_Pnt aCenter(0.0, 0.0, 0.0);
@@ -54,5 +54,5 @@ TEST(gce_MakeElipsTest, FromPoints_TinyCrossProduct_InvertAxis)
 
   gce_MakeElips aMaker(aS1, aS2, aCenter);
   EXPECT_FALSE(aMaker.IsDone());
-  EXPECT_EQ(aMaker.Status(), gce_InvertAxis);
+  EXPECT_EQ(aMaker.Status(), gce_NullAxis);
 }

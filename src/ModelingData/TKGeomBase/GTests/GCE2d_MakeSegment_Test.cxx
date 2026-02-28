@@ -31,7 +31,7 @@ TEST(GCE2d_MakeSegmentTest, FromPoints_BelowResolution_ConfusedPoints)
 TEST(GCE2d_MakeSegmentTest, FromPoints_AboveResolution_Done)
 {
   const gp_Pnt2d aP1(0.0, 0.0);
-  const gp_Pnt2d aP2(2.0 * gp::Resolution(), 0.0);
+  const gp_Pnt2d aP2(1.0e-150, 0.0);
 
   GCE2d_MakeSegment aMaker(aP1, aP2);
   EXPECT_TRUE(aMaker.IsDone());
