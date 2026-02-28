@@ -106,7 +106,7 @@ static void computePeriodicity(const occ::handle<Adaptor3d_Surface>& theSurf,
   {
     theUPeriod = theSurf->LastUParameter() - theSurf->FirstUParameter();
   }
-  if (theUPeriod != 0.0)
+  if (std::abs(theUPeriod) > Precision::PConfusion())
   {
     aTrimF = theSurf->FirstUParameter();          // Trimmed first
     aTrimL = theSurf->LastUParameter();           // Trimmed last
@@ -127,7 +127,7 @@ static void computePeriodicity(const occ::handle<Adaptor3d_Surface>& theSurf,
   {
     theVPeriod = theSurf->LastVParameter() - theSurf->FirstVParameter();
   }
-  if (theVPeriod != 0.0)
+  if (std::abs(theVPeriod) > Precision::PConfusion())
   {
     aTrimF = theSurf->FirstVParameter();          // Trimmed first
     aTrimL = theSurf->LastVParameter();           // Trimmed last

@@ -60,11 +60,11 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Ax1& Axis, const double Radius)
     }
     else if (std::abs(y) > gp::Resolution())
     {
-      Direc = gp_Dir(-y, x, 0.0);
+      Direc = gp_Dir(0.0, -z, y);
     }
     else if (std::abs(z) > gp::Resolution())
     {
-      Direc = gp_Dir(0.0, -z, y);
+      Direc = gp_Dir(z, 0.0, -x);
     }
     TheCylinder = gp_Cylinder(gp_Ax2(Axis.Location(), D, Direc), Radius);
     TheError    = gce_Done;
@@ -102,11 +102,11 @@ gce_MakeCylinder::gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_
     }
     else if (std::abs(y) > gp::Resolution())
     {
-      D2 = gp_Dir(-y, x, 0.0);
+      D2 = gp_Dir(0.0, -z, y);
     }
     else if (std::abs(z) > gp::Resolution())
     {
-      D2 = gp_Dir(0.0, -z, y);
+      D2 = gp_Dir(z, 0.0, -x);
     }
     TheCylinder = gp_Cylinder(gp_Ax2(P1, D1, D2), gp_Lin(P1, D1).Distance(P3));
     TheError    = gce_Done;

@@ -65,9 +65,12 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius)
 
 GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 {
-  gp_Circ2d C = gce_MakeCirc2d(Circ, Point);
-  TheCircle   = new Geom2d_Circle(C);
-  TheError    = gce_Done;
+  gce_MakeCirc2d C = gce_MakeCirc2d(Circ, Point);
+  TheError         = C.Status();
+  if (TheError == gce_Done)
+  {
+    TheCircle = new Geom2d_Circle(C.Value());
+  }
 }
 
 //=================================================================================================

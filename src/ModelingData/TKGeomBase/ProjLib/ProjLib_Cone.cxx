@@ -25,6 +25,8 @@
 #include <Precision.hxx>
 #include <ProjLib_Cone.hxx>
 
+#include <cmath>
+
 //=================================================================================================
 
 ProjLib_Cone::ProjLib_Cone() = default;
@@ -126,7 +128,9 @@ void ProjLib_Cone::Project(const gp_Circ& C)
 
   // to find point U V, we use the code from ElSLib
   // without applying the Trsf to the point (unnecessary round trip).
-  if (x == 0.0 && y == 0.0)
+  // x/y are direction cosines (dimensionless); use angular tolerance
+  // to avoid unstable atan2() around zero.
+  if (std::abs(x) <= Precision::Angular() && std::abs(y) <= Precision::Angular())
   {
     U = 0.;
   }
