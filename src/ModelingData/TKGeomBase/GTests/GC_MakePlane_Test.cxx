@@ -48,5 +48,6 @@ TEST(GC_MakePlaneTest, FromAxis_Done)
   GC_MakePlane aMaker(aAxis);
   ASSERT_TRUE(aMaker.IsDone());
   EXPECT_EQ(aMaker.Status(), gce_Done);
-  EXPECT_TRUE(aMaker.Value()->Pln().Axis().Direction().IsParallel(aAxis.Direction(), Precision::Angular()));
+  EXPECT_TRUE(
+    aMaker.Value()->Pln().Axis().Direction().IsParallel(aAxis.Direction(), Precision::Angular()));
 }

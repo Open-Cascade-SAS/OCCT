@@ -26,8 +26,9 @@
 TEST(ProjLib_ConeTest, ProjectCircle_ParallelAxes_DoneLine)
 {
   const gp_Cone aCone(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), M_PI / 6.0, 5.0);
-  const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 10.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
-                        2.0);
+  const gp_Circ aCircle(
+    gp_Ax2(gp_Pnt(0.0, 0.0, 10.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
+    2.0);
 
   ProjLib_Cone aProjector(aCone, aCircle);
   ASSERT_TRUE(aProjector.IsDone());
@@ -38,8 +39,9 @@ TEST(ProjLib_ConeTest, ProjectCircle_ParallelAxes_DoneLine)
 TEST(ProjLib_ConeTest, ProjectCircle_NonParallelAxes_NotDone)
 {
   const gp_Cone aCone(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), M_PI / 6.0, 5.0);
-  const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 10.0), gp_Dir(1.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)),
-                        2.0);
+  const gp_Circ aCircle(
+    gp_Ax2(gp_Pnt(0.0, 0.0, 10.0), gp_Dir(1.0, 0.0, 0.0), gp_Dir(0.0, 1.0, 0.0)),
+    2.0);
 
   ProjLib_Cone aProjector(aCone, aCircle);
   EXPECT_FALSE(aProjector.IsDone());
@@ -48,8 +50,9 @@ TEST(ProjLib_ConeTest, ProjectCircle_NonParallelAxes_NotDone)
 TEST(ProjLib_ConeTest, ProjectCircle_OppositeNormal_DoneLineWithNegativeDirection)
 {
   const gp_Cone aCone(gp_Ax2(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0)), M_PI / 6.0, 5.0);
-  const gp_Circ aCircle(gp_Ax2(gp_Pnt(0.0, 0.0, 6.0), gp_Dir(0.0, 0.0, -1.0), gp_Dir(1.0, 0.0, 0.0)),
-                        2.0);
+  const gp_Circ aCircle(
+    gp_Ax2(gp_Pnt(0.0, 0.0, 6.0), gp_Dir(0.0, 0.0, -1.0), gp_Dir(1.0, 0.0, 0.0)),
+    2.0);
 
   ProjLib_Cone aProjector(aCone, aCircle);
   ASSERT_TRUE(aProjector.IsDone());

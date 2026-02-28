@@ -37,8 +37,8 @@ namespace
 static void checkProjectionAtParam(const occ::handle<Geom2d_BSplineCurve>&     thePCurve,
                                    const occ::handle<Geom_CylindricalSurface>& theSurface,
                                    const occ::handle<Geom_Circle>&             theCurve,
-                                   const double                                 theParam,
-                                   const double                                 theTol)
+                                   const double                                theParam,
+                                   const double                                theTol)
 {
   const gp_Pnt2d aUV    = thePCurve->Value(theParam);
   const gp_Pnt   aProjP = theSurface->Value(aUV.X(), aUV.Y());
@@ -52,11 +52,9 @@ TEST(ProjLib_ComputeApproxOnPolarSurfaceTest, BuildInitialCurveAndProjectOnCylin
   occ::handle<Geom_Circle> aCurve =
     new Geom_Circle(gp_Ax2(gp_Pnt(0.0, 0.0, 2.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
                     5.0);
-  occ::handle<Geom_CylindricalSurface> aSurface =
-    new Geom_CylindricalSurface(gp_Ax3(gp_Pnt(0.0, 0.0, 0.0),
-                                       gp_Dir(0.0, 0.0, 1.0),
-                                       gp_Dir(1.0, 0.0, 0.0)),
-                                5.0);
+  occ::handle<Geom_CylindricalSurface> aSurface = new Geom_CylindricalSurface(
+    gp_Ax3(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(0.0, 0.0, 1.0), gp_Dir(1.0, 0.0, 0.0)),
+    5.0);
 
   occ::handle<Adaptor3d_Curve>   aCurveAdaptor = new GeomAdaptor_Curve(aCurve);
   occ::handle<Adaptor3d_Surface> aSurfAdaptor  = new GeomAdaptor_Surface(aSurface);

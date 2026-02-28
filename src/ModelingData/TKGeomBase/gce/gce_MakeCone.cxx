@@ -152,10 +152,10 @@ gce_MakeCone::gce_MakeCone(const gp_Cone& Cone, const gp_Pnt& P)
 
   // Accept tiny negative values as zero (rounding noise from analytic formulas),
   // then clamp to 0.0 before constructing gp_Cone.
-  const auto isNonNegativeWithTol = [](const double theValue)
-  { return theValue >= -gp::Resolution(); };
-  const auto clampToZero = [](const double theValue)
-  { return theValue < 0.0 ? 0.0 : theValue; };
+  const auto isNonNegativeWithTol = [](const double theValue) {
+    return theValue >= -gp::Resolution();
+  };
+  const auto clampToZero = [](const double theValue) { return theValue < 0.0 ? 0.0 : theValue; };
 
   double aResultRadius = -1.0;
   if (isNonNegativeWithTol(aCandidate1) && isNonNegativeWithTol(aCandidate2))
@@ -194,7 +194,7 @@ gce_MakeCone::gce_MakeCone(const gp_Cone& Cone, const double Dist)
 {
   // gp_Cone keeps |SemiAngle| in ]gp::Resolution(), PI/2 - gp::Resolution()[,
   // thus aCos is expected to be positive and not too small.
-  const double aCos    = std::cos(Cone.SemiAngle());
+  const double aCos = std::cos(Cone.SemiAngle());
   if (std::abs(aCos) <= gp::Resolution())
   {
     TheError = gce_NullAngle;
@@ -248,8 +248,7 @@ gce_MakeCone::gce_MakeCone(const gp_Pnt& P1, const gp_Pnt& P2, const double R1, 
     else
     {
       double Angle = std::abs(atan((R1 - R2) / dist));
-      if (std::abs(M_PI / 2. - Angle) < gp::Resolution()
-          || std::abs(Angle) < gp::Resolution())
+      if (std::abs(M_PI / 2. - Angle) < gp::Resolution() || std::abs(Angle) < gp::Resolution())
       {
         TheError = gce_NullAngle;
       }

@@ -32,12 +32,13 @@ TEST(gce_MakeConeTest, FromConeAndDist_Valid_Done)
   EXPECT_TRUE(aMaker.IsDone());
   EXPECT_EQ(aMaker.Status(), gce_Done);
 
-  const gp_Cone& aCone = aMaker.Value();
+  const gp_Cone& aCone            = aMaker.Value();
   const double   anExpectedRadius = aBaseCone.RefRadius() + aDist / std::cos(aBaseCone.SemiAngle());
   EXPECT_NEAR(aCone.RefRadius(), anExpectedRadius, Precision::Confusion());
   EXPECT_NEAR(aCone.SemiAngle(), aBaseCone.SemiAngle(), Precision::Confusion());
   EXPECT_TRUE(aCone.Location().IsEqual(aBaseCone.Location(), Precision::Confusion()));
-  EXPECT_TRUE(aCone.Axis().Direction().IsParallel(aBaseCone.Axis().Direction(), Precision::Angular()));
+  EXPECT_TRUE(
+    aCone.Axis().Direction().IsParallel(aBaseCone.Axis().Direction(), Precision::Angular()));
 }
 
 TEST(gce_MakeConeTest, FromConeAndDist_TooNegative_NegativeRadius)
@@ -86,14 +87,15 @@ TEST(gce_MakeConeTest, FromConeAndPoint_TwoCandidates_ChoosesNearestToBaseCone)
   EXPECT_EQ(aMaker.Status(), gce_Done);
 
   const double aRadius = gp_Lin(aBaseCone.Axis()).Distance(aPoint);
-  const double aVParam = (aPoint.XYZ() - aBaseCone.Location().XYZ()).Dot(aBaseCone.Axis().Direction().XYZ());
-  const double aTan    = std::tan(aBaseCone.SemiAngle());
-  const double aCos    = std::cos(aBaseCone.SemiAngle());
-  const double aCand1  = aRadius - aVParam * aTan;
-  const double aCand2  = -aRadius - aVParam * aTan;
-  const double aDist1  = std::abs((aCand1 - aBaseCone.RefRadius()) * aCos);
-  const double aDist2  = std::abs((aCand2 - aBaseCone.RefRadius()) * aCos);
-  const double anExpR  = (aDist1 <= aDist2) ? aCand1 : aCand2;
+  const double aVParam =
+    (aPoint.XYZ() - aBaseCone.Location().XYZ()).Dot(aBaseCone.Axis().Direction().XYZ());
+  const double aTan   = std::tan(aBaseCone.SemiAngle());
+  const double aCos   = std::cos(aBaseCone.SemiAngle());
+  const double aCand1 = aRadius - aVParam * aTan;
+  const double aCand2 = -aRadius - aVParam * aTan;
+  const double aDist1 = std::abs((aCand1 - aBaseCone.RefRadius()) * aCos);
+  const double aDist2 = std::abs((aCand2 - aBaseCone.RefRadius()) * aCos);
+  const double anExpR = (aDist1 <= aDist2) ? aCand1 : aCand2;
 
   EXPECT_NEAR(aMaker.Value().RefRadius(), anExpR, Precision::Confusion());
 }
@@ -124,7 +126,8 @@ TEST(gce_MakeConeTest, FromTwoPointsAndTwoRadii_ZBranch_DoneAndOrthogonalXAxis)
   EXPECT_EQ(aMaker.Status(), gce_Done);
 
   const gp_Cone& aCone = aMaker.Value();
-  EXPECT_TRUE(aCone.Axis().Direction().IsParallel(gp_Dir(aP2.XYZ() - aP1.XYZ()), Precision::Angular()));
+  EXPECT_TRUE(
+    aCone.Axis().Direction().IsParallel(gp_Dir(aP2.XYZ() - aP1.XYZ()), Precision::Angular()));
   const double aDot = aCone.Axis().Direction().XYZ().Dot(aCone.Position().XDirection().XYZ());
   EXPECT_NEAR(aDot, 0.0, Precision::Angular());
 }
@@ -159,7 +162,8 @@ TEST(gce_MakeConeTest, FromFourPoints_ZBranch_DoneAndOrthogonalXAxis)
   EXPECT_EQ(aMaker.Status(), gce_Done);
 
   const gp_Cone& aCone = aMaker.Value();
-  EXPECT_TRUE(aCone.Axis().Direction().IsParallel(gp_Dir(aP2.XYZ() - aP1.XYZ()), Precision::Angular()));
+  EXPECT_TRUE(
+    aCone.Axis().Direction().IsParallel(gp_Dir(aP2.XYZ() - aP1.XYZ()), Precision::Angular()));
   const double aDot = aCone.Axis().Direction().XYZ().Dot(aCone.Position().XDirection().XYZ());
   EXPECT_NEAR(aDot, 0.0, Precision::Angular());
 }
