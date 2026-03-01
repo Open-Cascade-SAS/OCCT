@@ -49,7 +49,7 @@
 
 //
 static Standard_Boolean IsGrowthShell(const TopoDS_Shape&, const TopTools_IndexedMapOfShape&);
-static Standard_Boolean IsHole(const TopoDS_Shape&, Handle(IntTools_Context)&);
+static Standard_Boolean IsHole(const TopoDS_Shape&);
 static Standard_Boolean IsInside(const TopoDS_Shape&,
                                  const TopoDS_Shape&,
                                  Handle(IntTools_Context)&);
@@ -421,7 +421,7 @@ void BOPAlgo_BuilderSolid::PerformAreas(const Message_ProgressRange& theRange)
     if (!bIsGrowth)
     {
       // Fast check did not give the result, run classification
-      bIsGrowth = !IsHole(aShell, myContext);
+      bIsGrowth = !IsHole(aShell);
     }
 
     // Save the solid
@@ -791,13 +791,13 @@ void MakeInternalShells(const TopTools_IndexedMapOfShape& theMF, TopTools_ListOf
 
 //=================================================================================================
 
-Standard_Boolean IsHole(const TopoDS_Shape& theS2, Handle(IntTools_Context)& theContext)
+Standard_Boolean IsHole(const TopoDS_Shape& theS2)
 {
-  TopoDS_Solid*                pS2   = (TopoDS_Solid*)&theS2;
-  BRepClass3d_SolidClassifier& aClsf = theContext->SolidClassifier(*pS2);
-  //
+  TopoDS_Solid* pS2 = (TopoDS_Solid*)&theS2;
+
+  BRepClass3d_SolidClassifier aClsf(*pS2);
   aClsf.PerformInfinitePoint(::RealSmall());
-  //
+
   return (aClsf.State() == TopAbs_IN);
 }
 
