@@ -689,6 +689,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   NCollection_Map<int>                                 aMVStick(100, aTmpAllocator);
   NCollection_Map<int>                                 aMVEF(100, aTmpAllocator);
   NCollection_Map<int>                                 aMVBounds(100, aTmpAllocator);
+  NCollection_Map<int>                                 aMI(100, aTmpAllocator);
   NCollection_IndexedMap<occ::handle<BOPDS_PaveBlock>> aMPBOnIn(100, aTmpAllocator);
   NCollection_Map<occ::handle<BOPDS_PaveBlock>>        aMPBCommon(100, aTmpAllocator);
   NCollection_DataMap<int, NCollection_List<int>>      aDMBV(100, aTmpAllocator);
@@ -696,7 +697,6 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   NCollection_DataMap<int, double> aMVTol(100, aDefaultAllocator);
   //
   // Cross-iteration collections (use main allocator, persist through entire loop)
-  NCollection_Map<int>                          aMI(100, aAllocator);
   NCollection_Map<occ::handle<BOPDS_PaveBlock>> aMPBAdd(100, aAllocator);
   // aLPB has Remove() operations - must use default allocator for proper Free()
   NCollection_List<occ::handle<BOPDS_PaveBlock>> aLPB(aDefaultAllocator);
@@ -762,6 +762,7 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
     aMVStick.Clear();
     aMVEF.Clear();
     aMVBounds.Clear();
+    aMI.Clear();
     aTmpAllocator->Reset(false);
     //
     myDS->SubShapesOnIn(nF1, nF2, aMVOnIn, aMVCommon, aMPBOnIn, aMPBCommon);
@@ -1119,15 +1120,6 @@ void BOPAlgo_PaveFiller::MakeBlocks(const Message_ProgressRange& theRange)
   // into all faces, not participated in creation of that edge, as IN edge
 
   PutSEInOtherFaces(aPSOuter.Next());
-  //
-  //-----------------------------------------------------scope t
-  aMVStick.Clear();
-  aMPBOnIn.Clear();
-  aMVOnIn.Clear();
-  aMVCommon.Clear();
-  aDMExEdges.Clear();
-  aMI.Clear();
-  aDMNewSD.Clear();
 }
 
 //=================================================================================================
