@@ -27,19 +27,19 @@ class gp_Ax1;
 class gp_Pnt;
 class gp_Dir;
 
-//! This class implements the following algorithms used
-//! to create a Lin from gp.
-//! * Create a Lin parallel to another and passing
-//! through a point.
-//! * Create a Lin passing through 2 points.
-//! * Create a lin from its axis (Ax1 from gp).
-//! * Create a lin from a point and a direction.
+//! This class implements construction algorithms for `gp_Lin`.
+//! Supported constructions include:
+//! - line from axis placement;
+//! - line from point and direction;
+//! - parallel line through point;
+//! - line through two points.
 class gce_MakeLin : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a line located along the axis A1.
+  //! @note The location of `A1` is the line origin.
   //! @param[in] A1 axis placement
   Standard_EXPORT gce_MakeLin(const gp_Ax1& A1);
 
@@ -49,15 +49,13 @@ public:
   //! @param[in] V direction vector
   Standard_EXPORT gce_MakeLin(const gp_Pnt& P, const gp_Dir& V);
 
-  //! Make a Lin from gp <TheLin> parallel to another
-  //! Lin <Lin> and passing through a Pnt <Point>.
+  //! Creates a line parallel to input line and passing through a point.
   //! @param[in] Lin source line
   //! @param[in] Point reference point
   Standard_EXPORT gce_MakeLin(const gp_Lin& Lin, const gp_Pnt& Point);
 
-  //! Make a Lin from gp <TheLin> passing through 2
-  //! Pnt <P1>,<P2>.
-  //! It returns false if <p1> and <P2> are confused.
+  //! Creates a line passing through two points.
+  //! @note Construction fails with `gce_ConfusedPoints` if points are coincident.
   //! @param[in] P1 first point
   //! @param[in] P2 second point
   Standard_EXPORT gce_MakeLin(const gp_Pnt& P1, const gp_Pnt& P2);

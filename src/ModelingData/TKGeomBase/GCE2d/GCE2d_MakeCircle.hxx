@@ -29,75 +29,86 @@ class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;
 
-//! This class implements the following algorithms used
-//! to create Circle from Geom2d.
-//!
-//! * Create a Circle parallel to another and passing
-//! though a point.
-//! * Create a Circle parallel to another at the distance
-//! Dist.
-//! * Create a Circle passing through 3 points.
-//! * Create a Circle with its center and the normal of its
-//! plane and its radius.
-//! * Create a Circle with its axis and radius.
+//! This class implements construction algorithms for circles in the plane.
+//! The result is a `Geom2d_Circle`.
+//! A `GCE2d_MakeCircle` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and the resulting circle via `Value()`.
+//! @note A circle is parameterized in the range [0, 2*PI], and the X axis
+//!       of its local coordinate system defines the parameter origin.
 class GCE2d_MakeCircle : public GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! creates a circle from a non persistent one.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& C);
+  //! Creates a circle from a non-persistent one from package gp.
+  //! @param[in] theCircle source circle
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& theCircle);
 
-  //! A is the "XAxis" of the circle which defines the origin
-  //! of parametrization.
-  //! It is not forbidden to create a circle with Radius = 0.0
-  //! The status is "NegativeRadius" if Radius < 0.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const bool Sense = true);
+  //! Creates a circle from an axis placement and radius.
+  //! @param[in] theAxis axis placement
+  //! @param[in] theRadius radius value
+  //! @param[in] theSense orientation flag
+  //! @note Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax2d& theAxis,
+                                   const double   theRadius,
+                                   const bool     theSense = true);
 
-  //! A is the local coordinate system of the circle which defines
-  //! the origin of parametrization.
-  //! It is not forbidden to create a circle with Radius = 0.0
-  //! The status is "NegativeRadius" if Radius < 0.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius);
+  //! Creates a circle from a local coordinate system and radius.
+  //! @param[in] theAxis local coordinate system
+  //! @param[in] theRadius radius value
+  //! @note Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Ax22d& theAxis, const double theRadius);
 
-  //! Make a Circle from Geom2d <TheCirc> parallel to another
-  //! Circ <Circ> with a distance <Dist>.
-  //! If Dist is greater than zero the result is enclosing
-  //! the circle <Circ>, else the result is enclosed by the
-  //! circle <Circ>.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist);
+  //! Creates a circle parallel to another one at signed distance.
+  //! @param[in] theCircle source circle
+  //! @param[in] theDist signed distance
+  //! @note If `theDist` is positive, the resulting circle encloses `theCircle`.
+  //! @note If `theDist` is negative, the resulting circle is enclosed by `theCircle`.
+  //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& theCircle, const double theDist);
 
-  //! Make a Circle from Geom2d <TheCirc> parallel to another
-  //! Circ <Circ> and passing through a Pnt <Point>.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& Circ, const gp_Pnt2d& Point);
+  //! Creates a circle parallel to another one and passing through a point.
+  //! @param[in] theCircle source circle
+  //! @param[in] thePoint point on resulting circle
+  //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Circ2d& theCircle, const gp_Pnt2d& thePoint);
 
-  //! Make a Circ from gp <TheCirc> passing through 3
-  //! Pnt2d <P1>,<P2>,<P3>.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3);
+  //! Creates a circle passing through three points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theP3 third point
+  //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& theP1,
+                                   const gp_Pnt2d& theP2,
+                                   const gp_Pnt2d& theP3);
 
-  //! Make a Circ from geom2d <TheCirc> by its center an radius.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& P, const double Radius, const bool Sense = true);
+  //! Creates a circle from center point and radius.
+  //! @param[in] theCenter center point
+  //! @param[in] theRadius radius value
+  //! @param[in] theSense orientation flag
+  //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& theCenter,
+                                   const double    theRadius,
+                                   const bool      theSense = true);
 
-  //! Makes a Circle from geom2d <TheCirc> with its center
-  //! <Center> and a point giving the radius.
-  //! If Sense is true the local coordinate system of
-  //! the solution is direct and non direct in the other case.
-  //! Warning
-  //! The MakeCircle class does not prevent the
-  //! construction of a circle with a null radius.
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_NegativeRadius if Radius is less than 0.0, or
-  //! -   gce_IntersectionError if points P1, P2 and P3
-  //! are collinear and the three are not coincident.
-  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& Center,
-                                   const gp_Pnt2d& Point,
-                                   const bool      Sense = true);
+  //! Creates a circle from center point and one point on the circle.
+  //! @param[in] theCenter center point
+  //! @param[in] thePoint point on resulting circle
+  //! @param[in] theSense orientation flag
+  //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
+  Standard_EXPORT GCE2d_MakeCircle(const gp_Pnt2d& theCenter,
+                                   const gp_Pnt2d& thePoint,
+                                   const bool      theSense = true);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
+  //! @return resulting circle
   Standard_EXPORT const occ::handle<Geom2d_Circle>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting circle
   operator const occ::handle<Geom2d_Circle>&() const { return Value(); }
 
 private:

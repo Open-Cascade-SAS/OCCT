@@ -26,12 +26,10 @@
 class gp_Ax2;
 class gp_Pnt;
 
-//! This class implements the following algorithms used to
-//! create an ellipse from gp.
-//!
-//! * Create an ellipse from its center, and two points:
-//! one on the ciconference giving the major radius, the
-//! other giving the value of the small radius.
+//! This class implements construction algorithms for `gp_Elips`.
+//! Supported constructions include:
+//! - ellipse from local coordinate system and radii;
+//! - ellipse from center and two points.
 class gce_MakeElips : public gce_Root
 {
 public:
@@ -41,9 +39,12 @@ public:
   //! minor radius is on the "YAxis" of the ellipse. The "XAxis"
   //! is defined with the "XDirection" of A2 and the "YAxis" is
   //! defined with the "YDirection" of A2.
-  //! Warnings :
-  //! It is not forbidden to create an ellipse with
-  //! MajorRadius = MinorRadius.
+  //! @note It is possible to create an ellipse with
+  //!       `MajorRadius == MinorRadius`.
+  //! @note Construction fails with `gce_InvertRadius` if
+  //!       `MajorRadius < MinorRadius`.
+  //! @note Construction fails with `gce_NegativeRadius` if
+  //!       `MinorRadius < 0.0`.
   //! @param[in] A2 local coordinate system
   //! @param[in] MajorRadius major radius value
   //! @param[in] MinorRadius minor radius value
@@ -51,20 +52,12 @@ public:
                                 const double  MajorRadius,
                                 const double  MinorRadius);
 
-  //! Make an ellipse with its center and two points.
-  //! Warning
-  //! The MakeElips class does not prevent the
-  //! construction of an ellipse where the MajorRadius is
-  //! equal to the MinorRadius.
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_InvertRadius if MajorRadius is less than MinorRadius;
-  //! -   gce_NegativeRadius if MinorRadius is less than 0.0;
-  //! -   gce_NullAxis if the points S1 and Center are coincident; or
-  //! -   gce_InvertAxis if:
-  //! -   the major radius computed with Center and S1
-  //! is less than the minor radius computed with Center, S1 and S2, or
-  //! -   Center, S1 and S2 are collinear.
+  //! Creates an ellipse from center and two points.
+  //! @note `S1` defines major radius direction and value.
+  //! @note Minor radius is computed as distance from `S2` to major axis.
+  //! @note Construction fails with `gce_NullAxis` if `S1` and `Center` coincide.
+  //! @note Construction fails with `gce_InvertAxis` when computed minor radius
+  //!       is null/greater than major radius, or when points are collinear.
   //! @param[in] S1 first point
   //! @param[in] S2 second point
   //! @param[in] Center center point

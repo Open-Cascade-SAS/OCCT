@@ -29,84 +29,63 @@ class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;
 
-//! This class implements the following algorithms used to
-//! create Hyperbola from Geom2d.
-//! * Create an Hyperbola from two apex and the center.
-//! Defines the main branch of an hyperbola.
-//! The parameterization range is ]-infinite,+infinite[
-//! It is possible to get the other branch and the two conjugate
-//! branches of the main branch.
-//!
-//! ^YAxis
-//! |
-//! FirstConjugateBranch
-//! |
-//! Other            |                Main
-//! --------------------- C ------------------------------>XAxis
-//! Branch           |                Branch
-//! |
-//! SecondConjugateBranch
-//! |
-//!
-//! The major radius is the distance between the Location point
-//! of the hyperbola C and the apex of the main Branch (or the
-//! Other branch). The major axis is the "XAxis".
-//! The minor radius is the distance between the Location point
-//! of the hyperbola C and the apex of the First (or Second)
-//! Conjugate branch. The minor axis is the "YAxis".
-//! The major radius can be lower than the minor radius.
+//! This class implements construction algorithms for hyperbolas in the plane.
+//! The result is a `Geom2d_Hyperbola` (main branch).
+//! A `GCE2d_MakeHyperbola` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and the resulting hyperbola via `Value()`.
+//! @note Hyperbola parameterization range is ]-infinite, +infinite[.
+//! @note In the local coordinate system, the X axis is the major axis
+//!       and the Y axis is the minor axis.
 class GCE2d_MakeHyperbola : public GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an Hyperbola from a non persistent one from package gp
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Hypr2d& H);
+  //! Creates a hyperbola from a non-persistent one from package gp.
+  //! @param[in] theHyperbola source hyperbola
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Hypr2d& theHyperbola);
 
-  //! MajorAxis is the "XAxis" of the hyperbola.
-  //! The major radius of the hyperbola is on this "XAxis" and
-  //! the minor radius is on the "YAxis" of the hyperbola.
-  //! The status is "NegativeRadius" if MajorRadius < 0.0 or if
-  //! MinorRadius < 0.0
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax2d& MajorAxis,
-                                      const double   MajorRadius,
-                                      const double   MinorRadius,
-                                      const bool     Sense);
+  //! Creates a hyperbola from major axis placement and radii.
+  //! @param[in] theMajorAxis major axis placement
+  //! @param[in] theMajorRadius major radius value
+  //! @param[in] theMinorRadius minor radius value
+  //! @param[in] theSense orientation flag
+  //! @note Error status is provided by the underlying `gce_MakeHypr2d`
+  //!       (for example `gce_NegativeRadius`).
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax2d& theMajorAxis,
+                                      const double   theMajorRadius,
+                                      const double   theMinorRadius,
+                                      const bool     theSense);
 
-  //! Axis is the local coordinate system of the hyperbola.
-  //! The major radius of the hyperbola is on this "XAxis" and
-  //! the minor radius is on the "YAxis" of the hyperbola.
-  //! The status is "NegativeRadius" if MajorRadius < 0.0 or if
-  //! MinorRadius < 0.0
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax22d& Axis,
-                                      const double    MajorRadius,
-                                      const double    MinorRadius);
+  //! Creates a hyperbola from local coordinate system and radii.
+  //! @param[in] theAxis local coordinate system
+  //! @param[in] theMajorRadius major radius value
+  //! @param[in] theMinorRadius minor radius value
+  //! @note Error status is provided by the underlying `gce_MakeHypr2d`
+  //!       (for example `gce_NegativeRadius`).
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Ax22d& theAxis,
+                                      const double    theMajorRadius,
+                                      const double    theMinorRadius);
 
-  //! Creates a hyperbol centered on the origin of the coordinate system
-  //! Axis, with major and minor radii MajorRadius and
-  //! MinorRadius, where the major axis is the "X Axis"
-  //! of Axis (Axis is the local coordinate system of the hyperbola).
-  //! The implicit orientation of the ellipse is:
-  //! -   the sense defined by Axis or H,
-  //! -   the sense defined by points Center, S1 and S2,
-  //! -   the trigonometric sense if Sense is not given or is true, or
-  //! -   the opposite sense if Sense is false.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_NegativeRadius if MajorRadius or
-  //! MinorRadius is less than 0.0, or
-  //! -   gce_InvertAxis if the major radius defined by
-  //! Center and S1 is less than the minor radius
-  //! defined by Center, S1 and S2.Make an Hyperbola with its center and two apexes.
-  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Pnt2d& S1,
-                                      const gp_Pnt2d& S2,
-                                      const gp_Pnt2d& Center);
+  //! Creates a hyperbola from two apex points and center point.
+  //! @param[in] theS1 first apex point
+  //! @param[in] theS2 second point defining conjugate radius
+  //! @param[in] theCenter center point
+  //! @note Error status is provided by the underlying `gce_MakeHypr2d`
+  //!       (for example `gce_ConfusedPoints` or `gce_ColinearPoints`).
+  Standard_EXPORT GCE2d_MakeHyperbola(const gp_Pnt2d& theS1,
+                                      const gp_Pnt2d& theS2,
+                                      const gp_Pnt2d& theCenter);
 
   //! Returns the constructed hyperbola.
   //! Exceptions: StdFail_NotDone if no hyperbola is constructed.
+  //! @return resulting hyperbola
   Standard_EXPORT const occ::handle<Geom2d_Hyperbola>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting hyperbola
   operator const occ::handle<Geom2d_Hyperbola>&() const { return Value(); }
 
 private:

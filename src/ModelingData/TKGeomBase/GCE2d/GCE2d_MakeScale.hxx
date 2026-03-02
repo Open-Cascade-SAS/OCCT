@@ -25,26 +25,29 @@
 class Geom2d_Transformation;
 class gp_Pnt2d;
 
-//! This class implements an elementary construction algorithm for
-//! a scaling transformation in 2D space. The result is a
-//! Geom2d_Transformation transformation.
-//! A MakeScale object provides a framework for:
-//! -   defining the construction of the transformation,
-//! -   implementing the construction algorithm, and
-//! -   consulting the result.
+//! This class implements elementary construction algorithms for
+//! scaling transformations in 2D space.
+//! The result is a `Geom2d_Transformation`.
+//! A `GCE2d_MakeScale` object provides a framework for:
+//! - defining the transformation parameters;
+//! - running the construction algorithm;
+//! - querying the resulting transformation via `Value()`.
 class GCE2d_MakeScale
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a scaling transformation with
-  //! -   Point as the center of the transformation, and
-  //! -   Scale as the scale factor.
-  Standard_EXPORT GCE2d_MakeScale(const gp_Pnt2d& Point, const double Scale);
+  //! Constructs a scaling transformation.
+  //! @param[in] thePoint center point
+  //! @param[in] theScale scale factor
+  Standard_EXPORT GCE2d_MakeScale(const gp_Pnt2d& thePoint, const double theScale);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting transformation
   operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
 private:

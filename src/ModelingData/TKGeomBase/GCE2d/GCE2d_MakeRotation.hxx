@@ -25,23 +25,29 @@
 class Geom2d_Transformation;
 class gp_Pnt2d;
 
-//! This class implements an elementary construction algorithm for
-//! a rotation in 2D space. The result is a Geom2d_Transformation transformation.
-//! A MakeRotation object provides a framework for:
-//! -   defining the construction of the transformation,
-//! -   implementing the construction algorithm, and
-//! -   consulting the result.
+//! This class implements elementary construction algorithms for
+//! rotations in 2D space.
+//! The result is a `Geom2d_Transformation`.
+//! A `GCE2d_MakeRotation` object provides a framework for:
+//! - defining the transformation parameters;
+//! - running the construction algorithm;
+//! - querying the resulting transformation via `Value()`.
 class GCE2d_MakeRotation
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Constructs a rotation through angle Angle about the center Point.
-  Standard_EXPORT GCE2d_MakeRotation(const gp_Pnt2d& Point, const double Angle);
+  //! @param[in] thePoint rotation center
+  //! @param[in] theAngle rotation angle in radians
+  Standard_EXPORT GCE2d_MakeRotation(const gp_Pnt2d& thePoint, const double theAngle);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting transformation
   operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
 private:

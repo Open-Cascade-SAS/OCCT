@@ -49,18 +49,10 @@ public:
   //! the "X Axis" and "Y Axis" of the coordinate system A2, where:
   //! -   its center is the origin of A2, and
   //! -   its major axis is the "X Axis" of A2;
-  //! Warnings :
-  //! The MakeEllipse class does not prevent the
-  //! construction of an ellipse where MajorRadius is equal to MinorRadius.
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_InvertRadius if MajorRadius is less than MinorRadius;
-  //! -   gce_NegativeRadius if MinorRadius is less than 0.0;
-  //! -   gce_NullAxis if the points S1 and Center are coincident; or
-  //! -   gce_InvertAxis if:
-  //! -   the major radius computed with Center and S1
-  //! is less than the minor radius computed with Center, S1 and S2, or
-  //! -   Center, S1 and S2 are collinear.
+  //! @note Construction with `theMajorRadius == theMinorRadius` is allowed.
+  //! @note Construction fails with `gce_NegativeRadius` if `theMinorRadius < 0.0`.
+  //! @note Construction fails with `gce_InvertAxis` if
+  //!       `theMajorRadius < theMinorRadius`.
   //! @param[in] theA2 ellipse local coordinate system
   //! @param[in] theMajorRadius major radius
   //! @param[in] theMinorRadius minor radius

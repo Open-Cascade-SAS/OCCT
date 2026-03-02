@@ -31,5 +31,4 @@ set(OCCT_GCE2d_FILES
   GCE2d_MakeTranslation.cxx
   GCE2d_MakeTranslation.hxx
   GCE2d_Root.hxx
-  GCE2d_Root.lxx
 )

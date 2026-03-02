@@ -25,28 +25,33 @@ class Geom2d_Transformation;
 class gp_Vec2d;
 class gp_Pnt2d;
 
-//! This class implements elementary construction algorithms for a
-//! translation in 2D space. The result is a
-//! Geom2d_Transformation transformation.
-//! A MakeTranslation object provides a framework for:
-//! -   defining the construction of the transformation,
-//! -   implementing the construction algorithm, and
-//! -   consulting the result.
+//! This class implements elementary construction algorithms for
+//! translations in 2D space.
+//! The result is a `Geom2d_Transformation`.
+//! A `GCE2d_MakeTranslation` object provides a framework for:
+//! - defining the transformation parameters;
+//! - running the construction algorithm;
+//! - querying the resulting transformation via `Value()`.
 class GCE2d_MakeTranslation
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a translation along the vector Vect.
-  Standard_EXPORT GCE2d_MakeTranslation(const gp_Vec2d& Vect);
+  //! Constructs a translation along a vector.
+  //! @param[in] theVect translation vector
+  Standard_EXPORT GCE2d_MakeTranslation(const gp_Vec2d& theVect);
 
-  //! Constructs a translation along the vector
-  //! (Point1,Point2) defined from the point Point1 to the point Point2.
-  Standard_EXPORT GCE2d_MakeTranslation(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2);
+  //! Constructs a translation along the vector from one point to another.
+  //! @param[in] thePoint1 first point
+  //! @param[in] thePoint2 second point
+  Standard_EXPORT GCE2d_MakeTranslation(const gp_Pnt2d& thePoint1, const gp_Pnt2d& thePoint2);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting transformation
   operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
 private:

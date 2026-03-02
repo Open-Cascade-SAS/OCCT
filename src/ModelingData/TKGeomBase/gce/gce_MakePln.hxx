@@ -28,23 +28,17 @@ class gp_Pnt;
 class gp_Dir;
 class gp_Ax1;
 
-//! This class implements the following algorithms used
-//! to create a Plane from gp.
-//! * Create a Pln parallel to another and passing
-//! through a point.
-//! * Create a Pln passing through 3 points.
-//! * Create a Pln by its normal.
-//! Defines a non-persistent plane.
-//! The plane is located in 3D space with an axis placement
-//! two axis. It is the local coordinate system of the plane.
-//!
-//! The "Location" point and the main direction of this axis
-//! placement define the "Axis" of the plane. It is the axis
-//! normal to the plane which gives the orientation of the
-//! plane.
-//!
-//! The "XDirection" and the "YDirection" of the axis
-//! placement define the plane ("XAxis" and "YAxis") .
+//! This class implements construction algorithms for `gp_Pln`.
+//! Supported constructions include:
+//! - plane from axis placement or point+normal;
+//! - plane from cartesian equation;
+//! - plane parallel to another plane through point or at signed distance;
+//! - plane through two or three points;
+//! - plane through axis location normal to axis direction.
+//! @note A plane is positioned by local coordinate system (`gp_Ax3`):
+//!       - `Location` is the origin,
+//!       - main direction is the plane normal,
+//!       - `XDirection` and `YDirection` define in-plane axes.
 class gce_MakePln : public gce_Root
 {
 public:
@@ -68,54 +62,41 @@ public:
   //! Creates a plane from its cartesian equation :
   //! A * X + B * Y + C * Z + D = 0.0
   //!
-  //! the status is "BadEquation" if std::sqrt(A*A + B*B + C*C) <=
-  //! Resolution from gp.
+  //! @note Construction fails with `gce_BadEquation` if
+  //!       `A*A + B*B + C*C <= gp::Resolution()`.
   //! @param[in] A equation coefficient A
   //! @param[in] B equation coefficient B
   //! @param[in] C equation coefficient C
   //! @param[in] D equation constant term
   Standard_EXPORT gce_MakePln(const double A, const double B, const double C, const double D);
 
-  //! Make a Pln from gp <ThePln> parallel to another
-  //! Pln <Pln> and passing through a Pnt <Point>.
+  //! Creates a plane parallel to input plane and passing through a point.
   //! @param[in] Pln source plane
   //! @param[in] Point reference point
   Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const gp_Pnt& Point);
 
-  //! Make a Pln from gp <ThePln> parallel to another
-  //! Pln <Pln> at the distance <Dist> which can be greater
-  //! or less than zero.
-  //! In the first case the result is at the distance
-  //! <Dist> to the plane <Pln> in the direction of the
-  //! normal to <Pln>.
-  //! Otherwise it is in the opposite direction.
+  //! Creates a plane parallel to input plane at signed distance.
+  //! @note Positive `Dist` shifts along the plane normal, negative in opposite direction.
   //! @param[in] Pln source plane
   //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const double Dist);
 
-  //! Make a Pln from gp <ThePln> passing through 3
-  //! Pnt <P1>,<P2>,<P3>.
-  //! It returns false if <P1> <P2> <P3> are confused.
+  //! Creates a plane through three points.
+  //! @note Construction fails with `gce_ColinearPoints` if points are collinear.
   //! @param[in] P1 first point
   //! @param[in] P2 second point
   //! @param[in] P3 third point
   Standard_EXPORT gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
-  //! Make a Pln from gp <ThePln> perpendicular to the line
-  //! passing through <P1>,<P2>.
-  //! The status is "ConfusedPoints" if <P1> <P2> are confused.
+  //! Creates a plane through `P1`, normal to direction (`P1`,`P2`).
+  //! @note Construction fails with `gce_ConfusedPoints` if `P1` and `P2` coincide.
   //! @param[in] P1 first point
   //! @param[in] P2 second point
   Standard_EXPORT gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Make a pln passing through the location of <Axis>and
   //! normal to the Direction of <Axis>.
-  //! Warning - If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_BadEquation if std::sqrt(A*A + B*B + C*C)
-  //!     is less than or equal to gp::Resolution(),
-  //! -   gce_ConfusedPoints if P1 and P2 are coincident, or
-  //! -   gce_ColinearPoints if P1, P2 and P3 are collinear.
+  //! @note This constructor always succeeds for valid `Axis`.
   //! @param[in] Axis axis definition
   Standard_EXPORT gce_MakePln(const gp_Ax1& Axis);
 

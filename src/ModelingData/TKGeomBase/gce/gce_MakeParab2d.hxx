@@ -23,7 +23,7 @@
 
 #include <gp_Parab2d.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Boolean.hxx>
+
 class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;

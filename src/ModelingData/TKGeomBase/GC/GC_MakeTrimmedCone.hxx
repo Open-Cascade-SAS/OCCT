@@ -62,8 +62,8 @@ public:
   //! @param[in] theR1 radius at P1
   //! @param[in] theR2 radius at P2
   //! @note The two radii correspond to sections passing through the two axis points.
-  //! @note If an error occurs (that is, when IsDone returns false),
-  //!       status is propagated from `GC_MakeConicalSurface(theP1, theP2, theR1, theR2)`.
+  //! @note On failure, status is propagated from
+  //!       `GC_MakeConicalSurface(theP1, theP2, theR1, theR2)`.
   Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1,
                                      const gp_Pnt& theP2,
                                      const double  theR1,

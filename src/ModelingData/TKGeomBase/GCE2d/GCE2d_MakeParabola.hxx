@@ -29,75 +29,61 @@ class gp_Ax22d;
 class gp_Ax2d;
 class gp_Pnt2d;
 
-//! This class implements the following algorithms used to
-//! create Parabola from Geom2d.
-//! * Create an Parabola from two apex and the center.
-//! Defines the parabola in the parameterization range:
-//! ]-infinite,+infinite[
-//! The vertex of the parabola is the "Location" point of the
-//! local coordinate system "XAxis" of the parabola.
-//! The "XAxis" of the parabola is its axis of symmetry.
-//! The "Xaxis" is oriented from the vertex of the parabola to the
-//! Focus of the parabola.
-//! The equation of the parabola in the local coordinate system is
-//! Y**2 = (2*P) * X
-//! P is the distance between the focus and the directrix of the
-//! parabola called Parameter).
-//! The focal length F = P/2 is the distance between the vertex
-//! and the focus of the parabola.
+//! This class implements construction algorithms for parabolas in the plane.
+//! The result is a `Geom2d_Parabola`.
+//! A `GCE2d_MakeParabola` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and the resulting parabola via `Value()`.
+//! @note Parabola parameterization range is ]-infinite, +infinite[.
+//! @note In the local coordinate system, the parabola equation is
+//!       Y**2 = (2*P) * X, where P is the parameter and F = P/2 is focal length.
 class GCE2d_MakeParabola : public GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates a parabola from a non persistent one.
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Parab2d& Prb);
+  //! Creates a parabola from a non-persistent one from package gp.
+  //! @param[in] theParabola source parabola
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Parab2d& theParabola);
 
-  //! Creates a parabola with its local coordinate system and it's focal
-  //! length "Focal".
-  //! The "Location" point of "Axis" is the vertex of the parabola
-  //! Status is "NegativeFocusLength" if Focal < 0.0
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax22d& Axis, const double Focal);
+  //! Creates a parabola from a local coordinate system and focal length.
+  //! @param[in] theAxis local coordinate system
+  //! @param[in] theFocal focal length
+  //! @note Construction fails with `gce_NullFocusLength` if `theFocal` is negative.
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax22d& theAxis, const double theFocal);
 
-  //! Creates a parabola with its "MirrorAxis" and it's focal length "Focal".
-  //! MirrorAxis is the axis of symmetry of the curve, it is the
-  //! "XAxis". The "YAxis" is parallel to the directrix of the
-  //! parabola. The "Location" point of "MirrorAxis" is the vertex of the parabola
-  //! Status is "NegativeFocusLength" if Focal < 0.0
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& MirrorAxis,
-                                     const double   Focal,
-                                     const bool     Sense);
+  //! Creates a parabola from symmetry axis and focal length.
+  //! @param[in] theMirrorAxis symmetry axis placement
+  //! @param[in] theFocal focal length
+  //! @param[in] theSense orientation flag
+  //! @note Construction fails with `gce_NullFocusLength` if `theFocal` is negative.
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& theMirrorAxis,
+                                     const double   theFocal,
+                                     const bool     theSense);
 
-  //! D is the directrix of the parabola and F the focus point.
-  //! The symmetry axis "XAxis" of the parabola is normal to the
-  //! directrix and pass through the focus point F, but its
-  //! "Location" point is the vertex of the parabola.
-  //! The "YAxis" of the parabola is parallel to D and its "Location"
-  //! point is the vertex of the parabola.
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& D, const gp_Pnt2d& F, const bool Sense = true);
+  //! Creates a parabola from directrix and focus point.
+  //! @param[in] theDirectrix directrix axis
+  //! @param[in] theFocus focus point
+  //! @param[in] theSense orientation flag
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Ax2d& theDirectrix,
+                                     const gp_Pnt2d& theFocus,
+                                     const bool      theSense = true);
 
-  //! Make a parabola with focal point S1 and
-  //! center O
-  //! The branch of the parabola returned will have <S1> as
-  //! focal point
-  //! The implicit orientation of the parabola is:
-  //! -   the same one as the parabola Prb,
-  //! -   the sense defined by the coordinate system Axis or the directrix D,
-  //! -   the trigonometric sense if Sense is not given or is true, or
-  //! -   the opposite sense if Sense is false.
-  //! Warning
-  //! The MakeParabola class does not prevent the
-  //! construction of a parabola with a null focal distance.
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_NullFocusLength if Focal is less than 0.0, or
-  //! -   gce_NullAxis if points S1 and O are coincident.
-  Standard_EXPORT GCE2d_MakeParabola(const gp_Pnt2d& S1, const gp_Pnt2d& O);
+  //! Creates a parabola from focus and vertex points.
+  //! @param[in] theFocus focus point
+  //! @param[in] theVertex vertex point
+  //! @note Error status is provided by the underlying `gce_MakeParab2d`
+  //!       (for example `gce_NullAxis`).
+  Standard_EXPORT GCE2d_MakeParabola(const gp_Pnt2d& theFocus, const gp_Pnt2d& theVertex);
 
   //! Returns the constructed parabola.
   //! Exceptions StdFail_NotDone if no parabola is constructed.
+  //! @return resulting parabola
   Standard_EXPORT const occ::handle<Geom2d_Parabola>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting parabola
   operator const occ::handle<Geom2d_Parabola>&() const { return Value(); }
 
 private:

@@ -27,15 +27,12 @@
 class gp_Pnt;
 class gp_Lin;
 
-//! Implements construction algorithms for a line
-//! segment in 3D space.
-//! Makes a segment of Line from the 2 points <P1> and <P2>.
-//! The result is a Geom_TrimmedCurve curve.
-//! A MakeSegment object provides a framework for:
-//! -   defining the construction of the line segment,
-//! -   implementing the construction algorithm, and
-//! -   consulting the results. In particular, the Value
-//! function returns the constructed line segment.
+//! Implements construction algorithms for line segments in 3D space.
+//! The result is a `Geom_TrimmedCurve`.
+//! A `GC_MakeSegment` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and resulting segment via `Value()`.
 class GC_MakeSegment : public GC_Root
 {
 public:

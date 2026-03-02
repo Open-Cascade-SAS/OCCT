@@ -27,31 +27,41 @@ class gp_Ax2d;
 class gp_Lin2d;
 class gp_Dir2d;
 
-//! This class implements elementary construction algorithms for a
-//! symmetrical transformation in 2D space about a point
-//! or axis. The result is a Geom2d_Transformation transformation.
-//! A MakeMirror object provides a framework for:
-//! -   defining the construction of the transformation,
-//! -   implementing the construction algorithm, and
-//! -   consulting the result.
+//! This class implements elementary construction algorithms for
+//! symmetric transformations in 2D space about a point, axis, or line.
+//! The result is a `Geom2d_Transformation`.
+//! A `GCE2d_MakeMirror` object provides a framework for:
+//! - defining the transformation parameters;
+//! - running the construction algorithm;
+//! - querying the resulting transformation via `Value()`.
 class GCE2d_MakeMirror
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GCE2d_MakeMirror(const gp_Pnt2d& Point);
+  //! Constructs a central symmetry about a point.
+  //! @param[in] thePoint center point
+  Standard_EXPORT GCE2d_MakeMirror(const gp_Pnt2d& thePoint);
 
-  Standard_EXPORT GCE2d_MakeMirror(const gp_Ax2d& Axis);
+  //! Constructs an axial symmetry about an axis.
+  //! @param[in] theAxis symmetry axis
+  Standard_EXPORT GCE2d_MakeMirror(const gp_Ax2d& theAxis);
 
-  Standard_EXPORT GCE2d_MakeMirror(const gp_Lin2d& Line);
+  //! Constructs an axial symmetry about a line.
+  //! @param[in] theLine symmetry line
+  Standard_EXPORT GCE2d_MakeMirror(const gp_Lin2d& theLine);
 
-  //! Make a symmetry transformation af axis defined by
-  //! <Point> and <Direc>.
-  Standard_EXPORT GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc);
+  //! Constructs an axial symmetry about a line defined by point and direction.
+  //! @param[in] thePoint point on symmetry axis
+  //! @param[in] theDirec symmetry direction
+  Standard_EXPORT GCE2d_MakeMirror(const gp_Pnt2d& thePoint, const gp_Dir2d& theDirec);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting transformation
   operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
 
 private:

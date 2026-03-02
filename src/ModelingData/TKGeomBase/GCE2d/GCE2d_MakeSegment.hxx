@@ -28,57 +28,64 @@ class gp_Pnt2d;
 class gp_Dir2d;
 class gp_Lin2d;
 
-//! Implements construction algorithms for a line
-//! segment in the plane. The result is a
-//! Geom2d_TrimmedCurve curve.
-//! A MakeSegment object provides a framework for:
-//! -   defining the construction of the line segment,
-//! -   implementing the construction algorithm, and
-//! -   consulting the results. In particular, the Value
-//! function returns the constructed line segment.
+//! This class implements construction algorithms for line segments in the plane.
+//! The result is a `Geom2d_TrimmedCurve`.
+//! A `GCE2d_MakeSegment` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and the resulting segment via `Value()`.
 class GCE2d_MakeSegment : public GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make a segment of Line from the 2 points <P1> and <P2>.
-  //! Status is "ConfusedPoints" if <P1> and <P2> are confused.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
+  //! Creates a segment between two points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @note Construction fails with `gce_ConfusedPoints` if points are coincident.
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2);
 
-  //! Make a segment of Line from the point <P1> with
-  //! the direction <P> and ended by the projection of
-  //! <P2> on the line <P1,V>.
-  //! Status is "ConfusedPoints" if <P1> and <P2> are confused.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Pnt2d& P1, const gp_Dir2d& V, const gp_Pnt2d& P2);
+  //! Creates a segment on a line defined by point and direction.
+  //! The segment starts at `theP1` and ends at the orthogonal projection
+  //! of `theP2` onto that line.
+  //! @param[in] theP1 first point
+  //! @param[in] theV direction vector
+  //! @param[in] theP2 second point
+  //! @note Construction fails with `gce_ConfusedPoints` if the projected
+  //!       endpoint is coincident with `theP1` within resolution.
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Pnt2d& theP1,
+                                    const gp_Dir2d& theV,
+                                    const gp_Pnt2d& theP2);
 
-  //! Make a segment of Line from the line <Line>
-  //! between the two parameters U1 and U2.
-  //! Status is "SameParameters" if <U1> is equal <U2>.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& Line, const double U1, const double U2);
+  //! Creates a segment on a line between two parameter values.
+  //! @param[in] theLine source line
+  //! @param[in] theU1 first parameter
+  //! @param[in] theU2 second parameter
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& theLine, const double theU1, const double theU2);
 
-  //! Make a segment of Line from the line <Line>
-  //! between the point <Point> and the parameter Ulast.
-  //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& Line,
-                                    const gp_Pnt2d& Point,
-                                    const double    Ulast);
+  //! Creates a segment on a line between point parameter and target parameter.
+  //! @param[in] theLine source line
+  //! @param[in] thePoint first point on segment support line
+  //! @param[in] theUlast last parameter
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& theLine,
+                                    const gp_Pnt2d& thePoint,
+                                    const double    theUlast);
 
-  //! Make a segment of Line from the line <Line>
-  //! between the two points <P1> and <P2>.
-  //! It returns NullObject if <P1> and <P2> are confused.
-  //! Warning
-  //! If the points which limit the segment are coincident
-  //! for given points or for the projection of given points
-  //! on the line which supports the line segment (that is,
-  //! when IsDone returns false), the Status function
-  //! returns gce_ConfusedPoints. This warning only
-  //! concerns the first two constructors.
-  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& Line, const gp_Pnt2d& P1, const gp_Pnt2d& P2);
+  //! Creates a segment on a line between projections of two points.
+  //! @param[in] theLine source line
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  Standard_EXPORT GCE2d_MakeSegment(const gp_Lin2d& theLine,
+                                    const gp_Pnt2d& theP1,
+                                    const gp_Pnt2d& theP2);
 
   //! Returns the constructed line segment.
   //! Exceptions StdFail_NotDone if no line segment is constructed.
+  //! @return resulting trimmed curve
   Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting trimmed curve
   operator const occ::handle<Geom2d_TrimmedCurve>&() const { return Value(); }
 
 private:

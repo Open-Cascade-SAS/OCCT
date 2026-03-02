@@ -29,62 +29,62 @@ class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;
 
-//! This class implements the following algorithms used to
-//! create Ellipse from Geom2d.
-//! * Create an Ellipse from two apex and the center.
-//! Defines an ellipse in 2D space.
-//! The parametrization range is [0,2*PI].
-//! The ellipse is a closed and periodic curve.
-//! The center of the ellipse is the "Location" point of its
-//! axis placement "XAxis".
-//! The "XAxis" of the ellipse defines the origin of the
-//! parametrization, it is the major axis of the ellipse.
-//! The YAxis is the minor axis of the ellipse.
+//! This class implements construction algorithms for ellipses in the plane.
+//! The result is a `Geom2d_Ellipse`.
+//! A `GCE2d_MakeEllipse` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and the resulting ellipse via `Value()`.
+//! @note Ellipse parameterization range is [0, 2*PI].
+//! @note The X axis of the local coordinate system is the major axis,
+//!       and the Y axis is the minor axis.
 class GCE2d_MakeEllipse : public GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an ellipse from a non persistent one from package gp
-  Standard_EXPORT GCE2d_MakeEllipse(const gp_Elips2d& E);
+  //! Creates an ellipse from a non-persistent one from package gp.
+  //! @param[in] theEllipse source ellipse
+  Standard_EXPORT GCE2d_MakeEllipse(const gp_Elips2d& theEllipse);
 
-  //! MajorAxis is the local coordinate system of the ellipse.
-  //! It is the "XAxis". The minor axis is the YAxis of the
-  //! ellipse.
-  //! Sense give the sense of parametrization of the Ellipse.
-  //! It is not forbidden to create an ellipse with MajorRadius =
-  //! MinorRadius.
-  //! The status is "InvertRadius" if MajorRadius < MinorRadius or
-  //! "NegativeRadius" if MinorRadius < 0.
-  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
-                                    const double   MajorRadius,
-                                    const double   MinorRadius,
-                                    const bool     Sense = true);
+  //! Creates an ellipse from major axis placement and radii.
+  //! @param[in] theMajorAxis major axis placement
+  //! @param[in] theMajorRadius major radius value
+  //! @param[in] theMinorRadius minor radius value
+  //! @param[in] theSense orientation flag
+  //! @note Error status is provided by the underlying `gce_MakeElips2d`
+  //!       (for example `gce_InvertRadius` or `gce_NegativeRadius`).
+  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax2d& theMajorAxis,
+                                    const double   theMajorRadius,
+                                    const double   theMinorRadius,
+                                    const bool     theSense = true);
 
-  //! Axis is the local coordinate system of the ellipse.
-  //! It is not forbidden to create an ellipse with MajorRadius =
-  //! MinorRadius.
-  //! The status is "InvertRadius" if MajorRadius < MinorRadius or
-  //! "NegativeRadius" if MinorRadius < 0.
-  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax22d& Axis,
-                                    const double    MajorRadius,
-                                    const double    MinorRadius);
+  //! Creates an ellipse from a local coordinate system and radii.
+  //! @param[in] theAxis local coordinate system
+  //! @param[in] theMajorRadius major radius value
+  //! @param[in] theMinorRadius minor radius value
+  //! @note Error status is provided by the underlying `gce_MakeElips2d`
+  //!       (for example `gce_InvertRadius` or `gce_NegativeRadius`).
+  Standard_EXPORT GCE2d_MakeEllipse(const gp_Ax22d& theAxis,
+                                    const double    theMajorRadius,
+                                    const double    theMinorRadius);
 
-  //! Make an Ellipse centered on the point Center, where
-  //! -   the major axis of the ellipse is defined by Center and S1,
-  //! -   its major radius is the distance between Center and S1, and
-  //! -   its minor radius is the distance between S2 and the major axis.
-  //! The implicit orientation of the ellipse is:
-  //! -   the sense defined by Axis or E,
-  //! -   the sense defined by points Center, S1 and S2,
-  //! -   the trigonometric sense if Sense is not given or is true, or
-  //! -   the opposite sense if Sense is false.
-  Standard_EXPORT GCE2d_MakeEllipse(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center);
+  //! Creates an ellipse from two apex points and center point.
+  //! @param[in] theS1 first apex point
+  //! @param[in] theS2 second point defining minor radius
+  //! @param[in] theCenter center point
+  //! @note Error status is provided by the underlying `gce_MakeElips2d`.
+  Standard_EXPORT GCE2d_MakeEllipse(const gp_Pnt2d& theS1,
+                                    const gp_Pnt2d& theS2,
+                                    const gp_Pnt2d& theCenter);
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
+  //! @return resulting ellipse
   Standard_EXPORT const occ::handle<Geom2d_Ellipse>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting ellipse
   operator const occ::handle<Geom2d_Ellipse>&() const { return Value(); }
 
 private:

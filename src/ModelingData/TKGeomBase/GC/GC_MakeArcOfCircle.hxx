@@ -88,14 +88,10 @@ public:
   //! -   the sense of the source circle if the orientation flag is true, or
   //! -   the opposite sense if `theSense` is false.
   //! @note Angles are expressed in radians.
-  //! @note If an error occurs (that is, when IsDone returns false),
-  //!       Status() returns:
-  //! -   `gce_ConfusedPoints` if:
-  //! -   any two of the three input points are coincident, or
-  //! -   the start and end points are coincident; or
-  //! -   `gce_IntersectionError` if:
-  //! -   the three points are collinear and not coincident, or
-  //! -   the chord direction is collinear with the tangent vector.
+  //! @note Construction fails with `gce_ConfusedPoints` if `theP1` and `theP2`
+  //!       are coincident.
+  //! @note Construction fails with `gce_IntersectionError` if the supporting
+  //!       lines used to define circle center do not intersect.
   Standard_EXPORT GC_MakeArcOfCircle(const gp_Pnt& theP1, const gp_Vec& theV, const gp_Pnt& theP2);
 
   //! Returns the constructed arc of circle.

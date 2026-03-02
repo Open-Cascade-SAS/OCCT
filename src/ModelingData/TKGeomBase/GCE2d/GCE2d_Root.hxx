@@ -27,26 +27,38 @@
   #undef Status
 #endif
 
-//! This class implements the common services for
-//! all classes of gce which report error.
+//! Provides common status services for all `GCE2d` construction classes.
 class GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns true if the construction is successful.
-  bool IsDone() const;
+  //! @return true if status is `gce_Done`
+  bool IsDone() const
+  {
+    return TheError == gce_Done;
+  }
+
+  //! Returns true if the construction has failed.
+  //! @return true if status is not `gce_Done`
+  bool IsError() const
+  {
+    return TheError != gce_Done;
+  }
 
   //! Returns the status of the construction
   //! -   gce_Done, if the construction is successful, or
   //! -   another value of the gce_ErrorType enumeration
   //! indicating why the construction failed.
-  gce_ErrorType Status() const;
+  //! @return construction status
+  gce_ErrorType Status() const
+  {
+    return TheError;
+  }
 
 protected:
   gce_ErrorType TheError;
 };
-
-#include <GCE2d_Root.lxx>
 
 #endif // _GCE2d_Root_HeaderFile

@@ -27,48 +27,57 @@
 class gp_Parab2d;
 class gp_Pnt2d;
 
-//! Implements construction algorithms for an arc of
-//! parabola in the plane. The result is a Geom2d_TrimmedCurve curve.
-//! A MakeArcOfParabola object provides a framework for:
-//! -   defining the construction of the arc of parabola,
-//! -   implementing the construction algorithm, and
-//! -   consulting the results. In particular, the Value
-//! function returns the constructed arc of parabola.
+//! This class implements construction algorithms for arcs of parabolas in the plane.
+//! The result is a `Geom2d_TrimmedCurve`.
+//! A `GCE2d_MakeArcOfParabola` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and the resulting arc via `Value()`.
+//! @note Angular parameters are expressed in radians.
 class GCE2d_MakeArcOfParabola : public GCE2d_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make an arc of Parabola (TrimmedCurve from Geom2d) from
-  //! a Parabola between two parameters Alpha1 and Alpha2.
-  Standard_EXPORT GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
-                                          const double      Alpha1,
-                                          const double      Alpha2,
-                                          const bool        Sense = true);
+  //! Constructs an arc from angular bounds on a parabola.
+  //! @param[in] theParabola source parabola
+  //! @param[in] theAlpha1 first angle (radians)
+  //! @param[in] theAlpha2 second angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GCE2d_MakeArcOfParabola(const gp_Parab2d& theParabola,
+                                          const double      theAlpha1,
+                                          const double      theAlpha2,
+                                          const bool        theSense = true);
 
-  //! Make an arc of Parabola (TrimmedCurve from Geom2d) from
-  //! a Parabola between point <P> and the parameter
-  //! Alpha.
-  Standard_EXPORT GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
-                                          const gp_Pnt2d&   P,
-                                          const double      Alpha,
-                                          const bool        Sense = true);
+  //! Constructs an arc from a point and angular bound on a parabola.
+  //! @param[in] theParabola source parabola
+  //! @param[in] thePoint point on source parabola
+  //! @param[in] theAlpha angle value (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GCE2d_MakeArcOfParabola(const gp_Parab2d& theParabola,
+                                          const gp_Pnt2d&   thePoint,
+                                          const double      theAlpha,
+                                          const bool        theSense = true);
 
-  //! Make an arc of Parabola (TrimmedCurve from Geom2d) from
-  //! a Parabola between two points P1 and P2.
-  //! Please, note: the orientation of the arc of parabola is:
-  //! -   the trigonometric sense if Sense is not defined
-  //! or is true (default value), or
-  //! -   the opposite sense if Sense is false.
-  //! - IsDone always returns true.
-  Standard_EXPORT GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
-                                          const gp_Pnt2d&   P1,
-                                          const gp_Pnt2d&   P2,
-                                          const bool        Sense = true);
+  //! Constructs an arc between two points on a parabola.
+  //! @param[in] theParabola source parabola
+  //! @param[in] theP1 first point on source parabola
+  //! @param[in] theP2 second point on source parabola
+  //! @param[in] theSense orientation of resulting arc
+  //! @note Orientation is trigonometric when `theSense` is true,
+  //!       otherwise opposite.
+  //! @note IsDone always returns true.
+  Standard_EXPORT GCE2d_MakeArcOfParabola(const gp_Parab2d& theParabola,
+                                          const gp_Pnt2d&   theP1,
+                                          const gp_Pnt2d&   theP2,
+                                          const bool        theSense = true);
 
   //! Returns the constructed arc of parabola.
+  //! @return resulting trimmed curve
   Standard_EXPORT const occ::handle<Geom2d_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting trimmed curve
   operator const occ::handle<Geom2d_TrimmedCurve>&() const { return Value(); }
 
 private:
