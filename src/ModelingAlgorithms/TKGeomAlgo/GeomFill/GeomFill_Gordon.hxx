@@ -27,7 +27,7 @@
 //! High-level Gordon surface construction from arbitrary curve networks.
 //!
 //! A Gordon surface (transfinite interpolation) constructs a smooth B-spline
-//! surface from a network of intersecting profile (U) and guide (V) curves
+//! surface from a network of intersecting profile (V) and guide (U) curves
 //! using the Boolean sum formula:
 //!   S = S_profiles + S_guides - S_tensor
 //!
@@ -46,7 +46,7 @@
 //!   aGordon.Perform();
 //!   if (aGordon.IsDone())
 //!   {
-//!     const Handle(Geom_BSplineSurface)& aSurf = aGordon.Surface();
+//!     const occ::handle<Geom_BSplineSurface>& aSurf = aGordon.Surface();
 //!   }
 //! @endcode
 //!
@@ -61,8 +61,8 @@ public:
   Standard_EXPORT GeomFill_Gordon();
 
   //! Initializes the algorithm with profile and guide curves.
-  //! @param[in] theProfiles  array of profile curves (must be >= 2)
-  //! @param[in] theGuides    array of guide curves (must be >= 2)
+  //! @param[in] theProfiles  array of profile curves (V-direction sections, must be >= 2)
+  //! @param[in] theGuides    array of guide curves (U-direction sections, must be >= 2)
   //! @param[in] theTolerance geometric tolerance for intersection detection
   Standard_EXPORT void Init(const NCollection_Array1<occ::handle<Geom_Curve>>& theProfiles,
                             const NCollection_Array1<occ::handle<Geom_Curve>>& theGuides,

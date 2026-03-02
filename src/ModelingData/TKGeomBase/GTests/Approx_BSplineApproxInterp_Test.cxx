@@ -72,7 +72,7 @@ TEST(Approx_BSplineApproxInterpTest, PureApprox_LinePoints_ProducesLowError)
   ASSERT_TRUE(anApprox.IsDone());
   EXPECT_LT(anApprox.MaxError(), 1.0e-10);
 
-  const Handle(Geom_BSplineCurve)& aCurve = anApprox.Curve();
+  const occ::handle<Geom_BSplineCurve>& aCurve = anApprox.Curve();
   ASSERT_FALSE(aCurve.IsNull());
   EXPECT_EQ(aCurve->Degree(), 3);
 
@@ -94,7 +94,7 @@ TEST(Approx_BSplineApproxInterpTest, InterpolateEndpoints_ExactMatch)
 
   ASSERT_TRUE(anApprox.IsDone());
 
-  const Handle(Geom_BSplineCurve)& aCurve = anApprox.Curve();
+  const occ::handle<Geom_BSplineCurve>& aCurve = anApprox.Curve();
   ASSERT_FALSE(aCurve.IsNull());
 
   // Endpoints must be interpolated exactly.
@@ -119,7 +119,7 @@ TEST(Approx_BSplineApproxInterpTest, InterpolateMidpoint_ExactMatch)
 
   ASSERT_TRUE(anApprox.IsDone());
 
-  const Handle(Geom_BSplineCurve)& aCurve = anApprox.Curve();
+  const occ::handle<Geom_BSplineCurve>& aCurve = anApprox.Curve();
   ASSERT_FALSE(aCurve.IsNull());
 
   // Midpoint must be interpolated exactly.
@@ -150,7 +150,7 @@ TEST(Approx_BSplineApproxInterpTest, KinkInsertion_PreservesC0Break)
 
   ASSERT_TRUE(anApprox.IsDone());
 
-  const Handle(Geom_BSplineCurve)& aCurve = anApprox.Curve();
+  const occ::handle<Geom_BSplineCurve>& aCurve = anApprox.Curve();
   ASSERT_FALSE(aCurve.IsNull());
 
   // The V-apex must be interpolated exactly.
@@ -198,6 +198,47 @@ TEST(Approx_BSplineApproxInterpTest, PerformOptimal_ImprovesError)
   EXPECT_LE(anOptimalError, aBaseError + Precision::Confusion());
 }
 
+TEST(Approx_BSplineApproxInterpTest, Perform_AutoParameters_ProducesValidCurve)
+{
+  const int                  aNbPts = 30;
+  NCollection_Array1<gp_Pnt> aPts   = makeSinePoints(aNbPts);
+
+  Approx_BSplineApproxInterp anApprox(aPts, 10, 3, false);
+  anApprox.InterpolatePoint(0);
+  anApprox.InterpolatePoint(aNbPts - 1);
+  anApprox.Perform();
+
+  ASSERT_TRUE(anApprox.IsDone());
+  ASSERT_FALSE(anApprox.Curve().IsNull());
+
+  // Endpoints must remain exact due to interpolation constraints.
+  EXPECT_NEAR(anApprox.Curve()->Value(0.0).Distance(aPts.Value(1)), 0.0, 1.0e-12);
+  EXPECT_NEAR(anApprox.Curve()->Value(1.0).Distance(aPts.Value(aNbPts)), 0.0, 1.0e-12);
+}
+
+TEST(Approx_BSplineApproxInterpTest, PerformOptimal_AutoParameters_ImprovesError)
+{
+  const int                  aNbPts = 50;
+  NCollection_Array1<gp_Pnt> aPts   = makeSinePoints(aNbPts);
+
+  // Baseline with automatic parameters.
+  Approx_BSplineApproxInterp anApprox1(aPts, 10, 3, false);
+  anApprox1.InterpolatePoint(0);
+  anApprox1.InterpolatePoint(aNbPts - 1);
+  anApprox1.Perform();
+  ASSERT_TRUE(anApprox1.IsDone());
+  const double aBaseError = anApprox1.MaxError();
+
+  // Optimized run with automatic initial parameters.
+  Approx_BSplineApproxInterp anApprox2(aPts, 10, 3, false);
+  anApprox2.InterpolatePoint(0);
+  anApprox2.InterpolatePoint(aNbPts - 1);
+  anApprox2.PerformOptimal(10);
+  ASSERT_TRUE(anApprox2.IsDone());
+
+  EXPECT_LE(anApprox2.MaxError(), aBaseError + Precision::Confusion());
+}
+
 TEST(Approx_BSplineApproxInterpTest, PureInterpolation_AllPointsExact)
 {
   // When nControlPoints == nPoints and all are interpolated, this is pure interpolation.
@@ -216,7 +257,7 @@ TEST(Approx_BSplineApproxInterpTest, PureInterpolation_AllPointsExact)
 
   ASSERT_TRUE(anApprox.IsDone());
 
-  const Handle(Geom_BSplineCurve)& aCurve = anApprox.Curve();
+  const occ::handle<Geom_BSplineCurve>& aCurve = anApprox.Curve();
   ASSERT_FALSE(aCurve.IsNull());
 
   // All points must be interpolated exactly.

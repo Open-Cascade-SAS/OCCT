@@ -309,7 +309,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   }
   else
   {
-    // No breaks — uniform sampling.
+    // No breaks - uniform sampling.
     for (int k = 0; k < aNbSamples; ++k)
     {
       aSampleParams.Append(static_cast<double>(k) / static_cast<double>(aNbSamples - 1));
@@ -657,8 +657,10 @@ bool GeomFill_Gordon::computeIntersections()
         double aDist = aP1.Distance(aP2);
         if (aDist < myTolerance)
         {
-          anExtrema.LowerDistanceParameters(aProfParam, aGuidParam);
-          isFound = true;
+          if (anExtrema.TotalLowerDistanceParameters(aProfParam, aGuidParam))
+          {
+            isFound = true;
+          }
         }
       }
     }

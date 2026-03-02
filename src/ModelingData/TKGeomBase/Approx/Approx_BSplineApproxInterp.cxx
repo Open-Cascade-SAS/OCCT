@@ -143,6 +143,14 @@ void Approx_BSplineApproxInterp::InterpolatePoint(int thePointIndex, bool theWit
 
 //=================================================================================================
 
+void Approx_BSplineApproxInterp::Perform()
+{
+  const NCollection_Array1<double> aParams = computeParameters(myAlpha);
+  Perform(aParams);
+}
+
+//=================================================================================================
+
 void Approx_BSplineApproxInterp::Perform(const NCollection_Array1<double>& theParams)
 {
   myIsDone   = false;
@@ -160,6 +168,14 @@ void Approx_BSplineApproxInterp::Perform(const NCollection_Array1<double>& thePa
   computeKnots(myNbControlPts, theParams, aKnots, aMults);
 
   myIsDone = solve(theParams, aKnots, aMults);
+}
+
+//=================================================================================================
+
+void Approx_BSplineApproxInterp::PerformOptimal(int theMaxIter)
+{
+  const NCollection_Array1<double> aParams = computeParameters(myAlpha);
+  PerformOptimal(aParams, theMaxIter);
 }
 
 //=================================================================================================

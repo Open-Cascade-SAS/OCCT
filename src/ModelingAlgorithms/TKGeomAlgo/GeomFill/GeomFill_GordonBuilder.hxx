@@ -21,6 +21,7 @@
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
 #include <NCollection_Array1.hxx>
+#include <NCollection_Array2.hxx>
 #include <gp_Pnt.hxx>
 
 //! Core mathematical kernel for Gordon surface construction via the Boolean sum method.

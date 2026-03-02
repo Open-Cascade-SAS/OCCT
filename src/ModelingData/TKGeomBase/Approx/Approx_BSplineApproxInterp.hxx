@@ -56,7 +56,7 @@
 //!   anApprox.Perform(aParams);
 //!   if (anApprox.IsDone())
 //!   {
-//!     const Handle(Geom_BSplineCurve)& aCurve = anApprox.Curve();
+//!     const occ::handle<Geom_BSplineCurve>& aCurve = anApprox.Curve();
 //!     double aMaxErr = anApprox.MaxError();
 //!   }
 //! @endcode
@@ -80,17 +80,25 @@ public:
   //! @param[in] theWithKink    if true, a kink (C0 break) is inserted at this parameter
   Standard_EXPORT void InterpolatePoint(int thePointIndex, bool theWithKink = false);
 
+  //! Performs the fit using automatically computed parameters.
+  //! Parameters are computed from input points using current parametrization alpha.
+  Standard_EXPORT void Perform();
+
   //! Performs the fit with given parameters.
   //! @param[in] theParams  parameter values for each point (size must match point count)
   Standard_EXPORT void Perform(const NCollection_Array1<double>& theParams);
+
+  //! Performs the fit with iterative parameter optimization using automatically
+  //! computed initial parameters.
+  //! @param[in] theMaxIter  maximum number of optimization iterations
+  Standard_EXPORT void PerformOptimal(int theMaxIter);
 
   //! Performs the fit with iterative parameter optimization.
   //! Parameters of approximated points are re-projected onto the curve
   //! after each iteration to improve the fit.
   //! @param[in] theParams   initial parameter values
   //! @param[in] theMaxIter  maximum number of optimization iterations
-  Standard_EXPORT void PerformOptimal(const NCollection_Array1<double>& theParams,
-                                      int                               theMaxIter = 10);
+  Standard_EXPORT void PerformOptimal(const NCollection_Array1<double>& theParams, int theMaxIter);
 
   //! Returns true if the fit was successfully computed.
   [[nodiscard]] bool IsDone() const { return myIsDone; }
