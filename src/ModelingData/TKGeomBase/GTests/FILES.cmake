@@ -11,11 +11,11 @@ set(OCCT_TKGeomBase_GTests_FILES
   BndLib_Test.cxx
   Extrema_ExtPC_Test.cxx
   GC_MakeArcOfCircle_Test.cxx
+  GC_MakeCircle2d_Test.cxx
   GC_MakeConicalSurface_Test.cxx
   GC_MakePlane_Test.cxx
+  GC_MakeSegment2d_Test.cxx
   GCPnts_AbscissaPoint_Test.cxx
-  GCE2d_MakeCircle_Test.cxx
-  GCE2d_MakeSegment_Test.cxx
   GeomConvert_CompCurveToBSplineCurve_Test.cxx
   GeomConvert_Test.cxx
   Hermit_Test.cxx

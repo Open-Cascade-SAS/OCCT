@@ -14,79 +14,80 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeLine.hxx>
-#include <gce_MakeLin2d.hxx>
-#include <Geom2d_Line.hxx>
+#include <GC_MakeParabola2d.hxx>
+#include <gce_MakeParab2d.hxx>
+#include <Geom2d_Parabola.hxx>
 #include <gp_Ax2d.hxx>
-#include <gp_Dir2d.hxx>
-#include <gp_Lin2d.hxx>
+#include <gp_Ax22d.hxx>
+#include <gp_Parab2d.hxx>
 #include <gp_Pnt2d.hxx>
 #include <StdFail_NotDone.hxx>
 
 //=================================================================================================
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Ax2d& A)
+GC_MakeParabola2d::GC_MakeParabola2d(const gp_Parab2d& Prb)
 {
-  TheError = gce_Done;
-  TheLine  = new Geom2d_Line(A);
+  TheError    = gce_Done;
+  TheParabola = new Geom2d_Parabola(Prb);
 }
 
 //=================================================================================================
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& L)
+GC_MakeParabola2d::GC_MakeParabola2d(const gp_Ax2d& MirrorAxis,
+                                       const double   Focal,
+                                       const bool     Sense)
 {
-  TheError = gce_Done;
-  TheLine  = new Geom2d_Line(L);
-}
-
-//=================================================================================================
-
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Pnt2d& P, const gp_Dir2d& V)
-{
-  TheError = gce_Done;
-  TheLine  = new Geom2d_Line(P, V);
-}
-
-//=================================================================================================
-
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Pnt2d& P1, const gp_Pnt2d& P2)
-{
-  gce_MakeLin2d L(P1, P2);
-  TheError = L.Status();
-  if (TheError == gce_Done)
+  if (Focal < 0.0)
   {
-    TheLine = new Geom2d_Line(L.Value());
+    TheError = gce_NullFocusLength;
+  }
+  else
+  {
+    TheError    = gce_Done;
+    TheParabola = new Geom2d_Parabola(MirrorAxis, Focal, Sense);
   }
 }
 
 //=================================================================================================
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const gp_Pnt2d& Point)
+GC_MakeParabola2d::GC_MakeParabola2d(const gp_Ax22d& Axis, const double Focal)
 {
-  gce_MakeLin2d L(Lin, Point);
-  TheError = L.Status();
-  if (TheError == gce_Done)
+  if (Focal < 0.0)
   {
-    TheLine = new Geom2d_Line(L.Value());
+    TheError = gce_NullFocusLength;
+  }
+  else
+  {
+    TheError    = gce_Done;
+    TheParabola = new Geom2d_Parabola(Axis, Focal);
   }
 }
 
 //=================================================================================================
 
-GCE2d_MakeLine::GCE2d_MakeLine(const gp_Lin2d& Lin, const double Dist)
+GC_MakeParabola2d::GC_MakeParabola2d(const gp_Ax2d& D, const gp_Pnt2d& F, const bool Sense)
 {
-  gce_MakeLin2d L(Lin, Dist);
-  TheError = L.Status();
+  TheError = gce_Done;
+  gp_Parab2d para(D, F, Sense);
+  TheParabola = new Geom2d_Parabola(para);
+}
+
+//=================================================================================================
+
+GC_MakeParabola2d::GC_MakeParabola2d(const gp_Pnt2d& S1, const gp_Pnt2d& O)
+{
+  gce_MakeParab2d P = gce_MakeParab2d(S1, O);
+  TheError          = P.Status();
   if (TheError == gce_Done)
   {
-    TheLine = new Geom2d_Line(L.Value());
+    TheParabola = new Geom2d_Parabola(P.Value());
   }
 }
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Line>& GCE2d_MakeLine::Value() const
+const occ::handle<Geom2d_Parabola>& GC_MakeParabola2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeLine::Value() - no result");
-  return TheLine;
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeParabola2d::Value() - no result");
+  return TheParabola;
 }

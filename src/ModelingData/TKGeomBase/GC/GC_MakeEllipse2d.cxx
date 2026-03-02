@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeEllipse.hxx>
+#include <GC_MakeEllipse2d.hxx>
 #include <gce_MakeElips2d.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <gp_Ax2d.hxx>
@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Elips2d& E)
+GC_MakeEllipse2d::GC_MakeEllipse2d(const gp_Elips2d& E)
 {
   TheError   = gce_Done;
   TheEllipse = new Geom2d_Ellipse(E);
@@ -33,7 +33,7 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Elips2d& E)
 
 //=================================================================================================
 
-GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d& Axis,
+GC_MakeEllipse2d::GC_MakeEllipse2d(const gp_Ax22d& Axis,
                                      const double    MajorRadius,
                                      const double    MinorRadius)
 {
@@ -47,7 +47,7 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax22d& Axis,
 
 //=================================================================================================
 
-GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
+GC_MakeEllipse2d::GC_MakeEllipse2d(const gp_Ax2d& MajorAxis,
                                      const double   MajorRadius,
                                      const double   MinorRadius,
                                      const bool     Sense)
@@ -62,7 +62,7 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Ax2d& MajorAxis,
 
 //=================================================================================================
 
-GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
+GC_MakeEllipse2d::GC_MakeEllipse2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center)
 {
   gce_MakeElips2d E = gce_MakeElips2d(S1, S2, Center);
   TheError          = E.Status();
@@ -74,8 +74,8 @@ GCE2d_MakeEllipse::GCE2d_MakeEllipse(const gp_Pnt2d& S1, const gp_Pnt2d& S2, con
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Ellipse>& GCE2d_MakeEllipse::Value() const
+const occ::handle<Geom2d_Ellipse>& GC_MakeEllipse2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeEllipse::Value() - no result");
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeEllipse2d::Value() - no result");
   return TheEllipse;
 }

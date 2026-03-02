@@ -18,8 +18,8 @@
 
 #include <Adaptor2d_Curve2d.hxx>
 #include <ElCLib.hxx>
-#include <GCE2d_MakeArcOfCircle.hxx>
-#include <GCE2d_MakeSegment.hxx>
+#include <GC_MakeArcOfCircle2d.hxx>
+#include <GC_MakeSegment2d.hxx>
 #include <GCPnts_QuasiUniformDeflection.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Line.hxx>
@@ -120,7 +120,7 @@ occ::handle<Geom2d_Curve> Geom2dConvert_ApproxArcsSegments::makeCircle(
   gp_Pnt2d                  aPointM(0.0, 0.0);
   const double              aParaM = (theFirst.Parameter() + theLast.Parameter()) * .5;
   myCurve.D0(aParaM, aPointM);
-  GCE2d_MakeArcOfCircle aMakeArc1(theFirst.Point(), aPointM, theLast.Point());
+  GC_MakeArcOfCircle2d aMakeArc1(theFirst.Point(), aPointM, theLast.Point());
 
   if (aMakeArc1.IsDone())
     aResult = aMakeArc1.Value();
@@ -251,7 +251,7 @@ occ::handle<Geom2d_TrimmedCurve> Geom2dConvert_ApproxArcsSegments::makeLine(
   } // end if (isCheck)
 
   // building segment of line
-  GCE2d_MakeSegment aMakeSeg(theFirst.Point(), theLast.Point());
+  GC_MakeSegment2d aMakeSeg(theFirst.Point(), theLast.Point());
   if (aMakeSeg.IsDone())
   {
     occ::handle<Geom2d_TrimmedCurve> aCurve = aMakeSeg.Value();

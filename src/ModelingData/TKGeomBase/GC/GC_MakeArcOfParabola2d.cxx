@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <ElCLib.hxx>
-#include <GCE2d_MakeArcOfParabola.hxx>
+#include <GC_MakeArcOfParabola2d.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <gp_Parab2d.hxx>
@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
+GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
                                                  const gp_Pnt2d&   P1,
                                                  const gp_Pnt2d&   P2,
                                                  const bool        Sense)
@@ -38,7 +38,7 @@ GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
+GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
                                                  const gp_Pnt2d&   P,
                                                  const double      Alpha,
                                                  const bool        Sense)
@@ -51,7 +51,7 @@ GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
+GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
                                                  const double      Alpha1,
                                                  const double      Alpha2,
                                                  const bool        Sense)
@@ -63,8 +63,8 @@ GCE2d_MakeArcOfParabola::GCE2d_MakeArcOfParabola(const gp_Parab2d& Parab,
 
 //=================================================================================================
 
-const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfParabola::Value() const
+const occ::handle<Geom2d_TrimmedCurve>& GC_MakeArcOfParabola2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeArcOfParabola::Value() - no result");
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfParabola2d::Value() - no result");
   return TheArc;
 }

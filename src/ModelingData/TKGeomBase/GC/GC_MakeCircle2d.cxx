@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeCircle.hxx>
+#include <GC_MakeCircle2d.hxx>
 #include <gce_MakeCirc2d.hxx>
 #include <Geom2d_Circle.hxx>
 #include <gp_Ax2d.hxx>
@@ -25,7 +25,7 @@
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& C)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Circ2d& C)
 {
   TheError  = gce_Done;
   TheCircle = new Geom2d_Circle(C);
@@ -33,7 +33,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& C)
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const bool Sense)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Ax2d& A, const double Radius, const bool Sense)
 {
   if (Radius < 0.0)
   {
@@ -48,7 +48,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax2d& A, const double Radius, const 
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Ax22d& A, const double Radius)
 {
   if (Radius < 0.0)
   {
@@ -63,7 +63,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Ax22d& A, const double Radius)
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Circ, Point);
   TheError         = C.Status();
@@ -75,7 +75,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const gp_Pnt2d& Point)
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Circ2d& Circ, const double Dist)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Circ, Dist);
   TheError         = C.Status();
@@ -87,7 +87,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Circ2d& Circ, const double Dist)
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const gp_Pnt2d& P3)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(P1, P2, P3);
   TheError         = C.Status();
@@ -99,7 +99,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& P1, const gp_Pnt2d& P2, const
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Point, const double Radius, const bool Sense)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Pnt2d& Point, const double Radius, const bool Sense)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Point, Radius, Sense);
   TheError         = C.Status();
@@ -111,7 +111,7 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Point, const double Radius, c
 
 //=================================================================================================
 
-GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
+GC_MakeCircle2d::GC_MakeCircle2d(const gp_Pnt2d& Center, const gp_Pnt2d& Point, const bool Sense)
 {
   gce_MakeCirc2d C = gce_MakeCirc2d(Center, Point, Sense);
   TheError         = C.Status();
@@ -123,8 +123,8 @@ GCE2d_MakeCircle::GCE2d_MakeCircle(const gp_Pnt2d& Center, const gp_Pnt2d& Point
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Circle>& GCE2d_MakeCircle::Value() const
+const occ::handle<Geom2d_Circle>& GC_MakeCircle2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeCircle::Value() - no result");
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeCircle2d::Value() - no result");
   return TheCircle;
 }

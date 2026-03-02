@@ -14,13 +14,13 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeScale.hxx>
+#include <GC_MakeScale2d.hxx>
 #include <Geom2d_Transformation.hxx>
 #include <gp_Pnt2d.hxx>
 
 //=================================================================================================
 
-GCE2d_MakeScale::GCE2d_MakeScale(const gp_Pnt2d& Point, const double Scale)
+GC_MakeScale2d::GC_MakeScale2d(const gp_Pnt2d& Point, const double Scale)
 {
   TheScale = new Geom2d_Transformation();
   TheScale->SetScale(Point, Scale);
@@ -28,7 +28,7 @@ GCE2d_MakeScale::GCE2d_MakeScale(const gp_Pnt2d& Point, const double Scale)
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Transformation>& GCE2d_MakeScale::Value() const
+const occ::handle<Geom2d_Transformation>& GC_MakeScale2d::Value() const
 {
   return TheScale;
 }

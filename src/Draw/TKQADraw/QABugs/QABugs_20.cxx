@@ -2133,7 +2133,7 @@ static int OCC27466(Draw_Interpretor& theDI, int theNArg, const char** theArgVal
   return 0;
 }
 
-#include <GCE2d_MakeParabola.hxx>
+#include <GC_MakeParabola2d.hxx>
 #include <gp_Ax22d.hxx>
 #include <Geom2d_Parabola.hxx>
 #include <gp_Parab2d.hxx>
@@ -2170,7 +2170,7 @@ static void OCC26747_CheckParabola(Draw_Interpretor& theDI,
   const double aCompareTol = 1.0e-12;
 
   //                      Directrix,                    Focus
-  GCE2d_MakeParabola aPrb(Parab2d_Bug26747::Axes, Parab2d_Bug26747::FocusPoint, theSense);
+  GC_MakeParabola2d aPrb(Parab2d_Bug26747::Axes, Parab2d_Bug26747::FocusPoint, theSense);
 
   DrawTrSurf::Set(theName, aPrb.Value());
 
@@ -3565,7 +3565,7 @@ static int OCC30435(Draw_Interpretor& di, int, const char** a)
 
 //=================================================================================================
 
-#include <GCE2d_MakeCircle.hxx>
+#include <GC_MakeCircle2d.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
 
@@ -3576,7 +3576,7 @@ static int OCC30747(Draw_Interpretor& theDI, int theArgc, const char** theArgV)
     return 1;
   }
 
-  const occ::handle<Geom2d_Circle> aCirc = GCE2d_MakeCircle(gp_Pnt2d(0, 0), 50);
+  const occ::handle<Geom2d_Circle> aCirc = GC_MakeCircle2d(gp_Pnt2d(0, 0), 50);
 
   double                                aF     = aCirc->FirstParameter();
   double                                aL     = aCirc->LastParameter();

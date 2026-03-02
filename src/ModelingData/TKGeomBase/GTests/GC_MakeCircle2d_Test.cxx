@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeCircle.hxx>
+#include <GC_MakeCircle2d.hxx>
 #include <Precision.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Circ2d.hxx>
@@ -20,32 +20,32 @@
 
 #include <gtest/gtest.h>
 
-TEST(GCE2d_MakeCircleTest, FromCircAndPoint_Done)
+TEST(GC_MakeCircle2dTest, FromCircAndPoint_Done)
 {
   const gp_Circ2d aBase(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
   const gp_Pnt2d  aPoint(0.0, 10.0);
 
-  GCE2d_MakeCircle aMaker(aBase, aPoint);
+  GC_MakeCircle2d aMaker(aBase, aPoint);
   ASSERT_TRUE(aMaker.IsDone());
   EXPECT_EQ(aMaker.Status(), gce_Done);
   EXPECT_NEAR(aMaker.Value()->Circ2d().Radius(), 10.0, Precision::Confusion());
 }
 
-TEST(GCE2d_MakeCircleTest, FromCircAndDist_Done)
+TEST(GC_MakeCircle2dTest, FromCircAndDist_Done)
 {
   const gp_Circ2d aBase(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
 
-  GCE2d_MakeCircle aMaker(aBase, -2.0);
+  GC_MakeCircle2d aMaker(aBase, -2.0);
   ASSERT_TRUE(aMaker.IsDone());
   EXPECT_EQ(aMaker.Status(), gce_Done);
   EXPECT_NEAR(aMaker.Value()->Circ2d().Radius(), 3.0, Precision::Confusion());
 }
 
-TEST(GCE2d_MakeCircleTest, FromCircAndPoint_AtCenter_DoneZeroRadius)
+TEST(GC_MakeCircle2dTest, FromCircAndPoint_AtCenter_DoneZeroRadius)
 {
   const gp_Circ2d aBase(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 5.0);
 
-  GCE2d_MakeCircle aMaker(aBase, gp_Pnt2d(0.0, 0.0));
+  GC_MakeCircle2d aMaker(aBase, gp_Pnt2d(0.0, 0.0));
   ASSERT_TRUE(aMaker.IsDone());
   EXPECT_EQ(aMaker.Status(), gce_Done);
   ASSERT_FALSE(aMaker.Value().IsNull());

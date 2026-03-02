@@ -1,7 +1,4 @@
-// Created on: 1992-09-28
-// Created by: Remi GILET
-// Copyright (c) 1992-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,48 +11,18 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//! @file GCE2d_MakeTranslation.hxx
+//! @brief Deprecated compatibility alias.
+//! @deprecated This header is deprecated since OCCT 8.0.0.
+//!             Use GC_MakeTranslation2d.hxx instead.
+
 #ifndef _GCE2d_MakeTranslation_HeaderFile
 #define _GCE2d_MakeTranslation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
+#include <GC_MakeTranslation2d.hxx>
 
-class Geom2d_Transformation;
-class gp_Vec2d;
-class gp_Pnt2d;
 
-//! This class implements elementary construction algorithms for
-//! translations in 2D space.
-//! The result is a `Geom2d_Transformation`.
-//! A `GCE2d_MakeTranslation` object provides a framework for:
-//! - defining the transformation parameters;
-//! - running the construction algorithm;
-//! - querying the resulting transformation via `Value()`.
-class GCE2d_MakeTranslation
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  //! Constructs a translation along a vector.
-  //! @param[in] theVect translation vector
-  Standard_EXPORT GCE2d_MakeTranslation(const gp_Vec2d& theVect);
-
-  //! Constructs a translation along the vector from one point to another.
-  //! @param[in] thePoint1 first point
-  //! @param[in] thePoint2 second point
-  Standard_EXPORT GCE2d_MakeTranslation(const gp_Pnt2d& thePoint1, const gp_Pnt2d& thePoint2);
-
-  //! Returns the constructed transformation.
-  //! @return resulting transformation
-  Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
-
-  //! Conversion operator returning the constructed object.
-  //! @return resulting transformation
-  operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
-
-private:
-  occ::handle<Geom2d_Transformation> TheTranslation;
-};
+using GCE2d_MakeTranslation Standard_DEPRECATED("GCE2d_MakeTranslation is deprecated since OCCT 8.0.0. Use GC_MakeTranslation2d instead.") = GC_MakeTranslation2d;
 
 #endif // _GCE2d_MakeTranslation_HeaderFile

@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <ElCLib.hxx>
-#include <GCE2d_MakeArcOfEllipse.hxx>
+#include <GC_MakeArcOfEllipse2d.hxx>
 #include <Geom2d_Ellipse.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <gp_Elips2d.hxx>
@@ -24,7 +24,7 @@
 
 //=================================================================================================
 
-GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
+GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
                                                const gp_Pnt2d&   P1,
                                                const gp_Pnt2d&   P2,
                                                const bool        Sense)
@@ -38,7 +38,7 @@ GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
+GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
                                                const gp_Pnt2d&   P,
                                                const double      Alpha,
                                                const bool        Sense)
@@ -51,7 +51,7 @@ GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
+GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
                                                const double      Alpha1,
                                                const double      Alpha2,
                                                const bool        Sense)
@@ -63,8 +63,8 @@ GCE2d_MakeArcOfEllipse::GCE2d_MakeArcOfEllipse(const gp_Elips2d& Elips,
 
 //=================================================================================================
 
-const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfEllipse::Value() const
+const occ::handle<Geom2d_TrimmedCurve>& GC_MakeArcOfEllipse2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeArcOfEllipse::Value() - no result");
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfEllipse2d::Value() - no result");
   return TheArc;
 }

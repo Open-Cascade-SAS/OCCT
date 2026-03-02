@@ -14,7 +14,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeMirror.hxx>
+#include <GC_MakeMirror2d.hxx>
 #include <Geom2d_Transformation.hxx>
 #include <gp_Ax2d.hxx>
 #include <gp_Dir2d.hxx>
@@ -23,7 +23,7 @@
 
 //=================================================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point)
+GC_MakeMirror2d::GC_MakeMirror2d(const gp_Pnt2d& Point)
 {
   TheMirror = new Geom2d_Transformation();
   TheMirror->SetMirror(Point);
@@ -31,7 +31,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point)
 
 //=================================================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d& Axis)
+GC_MakeMirror2d::GC_MakeMirror2d(const gp_Ax2d& Axis)
 {
   TheMirror = new Geom2d_Transformation();
   TheMirror->SetMirror(Axis);
@@ -39,7 +39,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Ax2d& Axis)
 
 //=================================================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d& Line)
+GC_MakeMirror2d::GC_MakeMirror2d(const gp_Lin2d& Line)
 {
   TheMirror = new Geom2d_Transformation();
   TheMirror->SetMirror(gp_Ax2d(Line.Location(), Line.Direction()));
@@ -47,7 +47,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Lin2d& Line)
 
 //=================================================================================================
 
-GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc)
+GC_MakeMirror2d::GC_MakeMirror2d(const gp_Pnt2d& Point, const gp_Dir2d& Direc)
 {
   TheMirror = new Geom2d_Transformation();
   TheMirror->SetMirror(gp_Ax2d(Point, Direc));
@@ -55,7 +55,7 @@ GCE2d_MakeMirror::GCE2d_MakeMirror(const gp_Pnt2d& Point, const gp_Dir2d& Direc)
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Transformation>& GCE2d_MakeMirror::Value() const
+const occ::handle<Geom2d_Transformation>& GC_MakeMirror2d::Value() const
 {
   return TheMirror;
 }

@@ -54,7 +54,7 @@
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
 #include <GC_MakeCylindricalSurface.hxx>
-#include <GCE2d_MakeLine.hxx>
+#include <GC_MakeLine2d.hxx>
 #include <gce_MakeCone.hxx>
 #include <gce_MakeDir.hxx>
 #include <Geom2d_Line.hxx>
@@ -3394,7 +3394,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
           const TopoDS_Edge& anE4   = (ToReverse) ? E3 : E4;
           gp_Pnt2d           fp2d   = EdgeLine2d->Value(fpar);
           gp_Pnt2d           fp2dOE = OELine2d->Value(fparOE);
-          aLine2d2                  = GCE2d_MakeLine(fp2d, fp2dOE).Value();
+          aLine2d2                  = GC_MakeLine2d(fp2d, fp2dOE).Value();
           occ::handle<Geom_Curve>          aCurve;
           double                           FirstPar = 0., LastPar = fp2d.Distance(fp2dOE);
           Geom2dAdaptor_Curve              AC2d(aLine2d2, FirstPar, LastPar);
@@ -3419,7 +3419,7 @@ void BRepOffset_MakeOffset::MakeMissingWalls(const Message_ProgressRange& theRan
           const TopoDS_Edge& anE3   = (ToReverse) ? E4 : E3;
           gp_Pnt2d           lp2d   = EdgeLine2d->Value(lpar);
           gp_Pnt2d           lp2dOE = OELine2d->Value(lparOE);
-          aLine2d                   = GCE2d_MakeLine(lp2d, lp2dOE).Value();
+          aLine2d                   = GC_MakeLine2d(lp2d, lp2dOE).Value();
           occ::handle<Geom_Curve>          aCurve;
           double                           FirstPar = 0., LastPar = lp2d.Distance(lp2dOE);
           Geom2dAdaptor_Curve              AC2d(aLine2d, FirstPar, LastPar);

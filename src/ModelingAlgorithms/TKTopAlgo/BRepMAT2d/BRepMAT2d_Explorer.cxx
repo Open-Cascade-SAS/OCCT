@@ -20,7 +20,7 @@
 #include <BRepLib.hxx>
 #include <BRepMAT2d_Explorer.hxx>
 #include <BRepTools_WireExplorer.hxx>
-#include <GCE2d_MakeSegment.hxx>
+#include <GC_MakeSegment2d.hxx>
 #include <Geom2d_BezierCurve.hxx>
 #include <Geom2d_BoundedCurve.hxx>
 #include <Geom2d_Circle.hxx>
@@ -556,12 +556,12 @@ occ::handle<Geom2d_TrimmedCurve> AdjustCurveEnd(const occ::handle<Geom2d_Bounded
     if (isFirst)
     {
       gp_Pnt2d aP = theC2d->Value(theC2d->LastParameter());
-      return GCE2d_MakeSegment(theP, aP);
+      return GC_MakeSegment2d(theP, aP);
     }
     else
     {
       gp_Pnt2d aP = theC2d->Value(theC2d->FirstParameter());
-      return GCE2d_MakeSegment(aP, theP);
+      return GC_MakeSegment2d(aP, theP);
     }
   }
   else

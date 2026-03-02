@@ -21,7 +21,7 @@
 #include <BRepTopAdaptor_TopolTool.hxx>
 #include <GC_MakeCircle.hxx>
 #include <Geom2d_Circle.hxx>
-#include <GCE2d_MakeLine.hxx>
+#include <GC_MakeLine2d.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <Geom2dConvert.hxx>
 #include <Geom2dConvert_CompCurveToBSplineCurve.hxx>
@@ -2089,7 +2089,7 @@ bool ShapeUpgrade_UnifySameDomain::MergeSubSeq(
         EndPoint     = Tmp;
       }
 
-      occ::handle<Geom2d_Line> aLine = GCE2d_MakeLine(StartPoint, EndPoint);
+      occ::handle<Geom2d_Line> aLine = GC_MakeLine2d(StartPoint, EndPoint);
 
       TopoDS_Vertex aVertex     = TopExp::FirstVertex(edgeFirst);
       TopoDS_Vertex StartVertex = aVertex, EndVertex = aVertex;

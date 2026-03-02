@@ -14,21 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeRotation.hxx>
+#include <GC_MakeTranslation2d.hxx>
 #include <Geom2d_Transformation.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
 //=================================================================================================
 
-GCE2d_MakeRotation::GCE2d_MakeRotation(const gp_Pnt2d& Point, const double Angle)
+GC_MakeTranslation2d::GC_MakeTranslation2d(const gp_Vec2d& Vec)
 {
-  TheRotation = new Geom2d_Transformation();
-  TheRotation->SetRotation(Point, Angle);
+  TheTranslation = new Geom2d_Transformation();
+  TheTranslation->SetTranslation(Vec);
 }
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Transformation>& GCE2d_MakeRotation::Value() const
+GC_MakeTranslation2d::GC_MakeTranslation2d(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2)
 {
-  return TheRotation;
+  TheTranslation = new Geom2d_Transformation();
+  TheTranslation->SetTranslation(Point1, Point2);
+}
+
+//=================================================================================================
+
+const occ::handle<Geom2d_Transformation>& GC_MakeTranslation2d::Value() const
+{
+  return TheTranslation;
 }
