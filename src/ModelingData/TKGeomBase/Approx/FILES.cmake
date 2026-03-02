@@ -3,6 +3,8 @@ set(OCCT_Approx_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_Approx_FILES
 
+  Approx_BSplineApproxInterp.cxx
+  Approx_BSplineApproxInterp.hxx
   Approx_BSplComputeLine.gxx
   Approx_ComputeCLine.gxx
   Approx_ComputeLine.gxx
