@@ -1191,7 +1191,7 @@ TEST(GeomFill_Gordon, RepeatPerform_GivesSameResult)
 
 TEST(GeomFill_Gordon, HighDensityNetwork_SixBySix)
 {
-  // 6 profiles + 6 guides — tests performance and correctness with denser grids.
+  // 6 profiles + 6 guides - tests performance and correctness with denser grids.
   constexpr int                               THE_NB = 6;
   NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, THE_NB);
   for (int i = 0; i < THE_NB; ++i)

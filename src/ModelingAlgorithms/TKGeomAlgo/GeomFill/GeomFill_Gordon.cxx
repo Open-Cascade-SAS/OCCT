@@ -397,7 +397,7 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
 
   if (aNbProf < 2 || aNbGuid < 2)
   {
-    // Store counts but don't try to convert — Perform() will check and return.
+    // Store counts but don't try to convert - Perform() will check and return.
     myProfiles = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, std::max(aNbProf, 0));
     myGuides   = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, std::max(aNbGuid, 0));
     return;

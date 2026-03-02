@@ -206,7 +206,7 @@ TEST(Approx_BSplineApproxInterpTest, PureInterpolation_AllPointsExact)
   NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
   // For pure interpolation: nCP must equal nInterpolated + nContinuity.
-  // nCP = 8, all 8 points interpolated, nContinuity = 0 → 8 == 8.
+  // nCP = 8, all 8 points interpolated, nContinuity = 0 -> 8 == 8.
   Approx_BSplineApproxInterp anApprox(aPts, aNbPts, 3, false);
   for (int i = 0; i < aNbPts; ++i)
   {

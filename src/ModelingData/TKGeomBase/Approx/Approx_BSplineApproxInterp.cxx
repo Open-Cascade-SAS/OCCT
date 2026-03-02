@@ -48,13 +48,13 @@ void insertKinkKnot(double                      theKnot,
   {
     if (std::abs(theKnots(i) - theKnot) < theTol)
     {
-      // Existing knot found — raise multiplicity up to degree.
+      // Existing knot found - raise multiplicity up to degree.
       theMults(i) = std::min(theMults(i) + theDegree, theDegree);
       return;
     }
   }
 
-  // New knot — find insertion position to keep sorted order.
+  // New knot - find insertion position to keep sorted order.
   int aPos = theKnots.Lower();
   while (aPos <= theKnots.Upper() && theKnots(aPos) < theKnot)
   {
@@ -296,7 +296,7 @@ void Approx_BSplineApproxInterp::computeKnots(int                               
   for (int i = 0; i < myKinks.Length(); ++i)
   {
     const int aKinkIdx = myKinks.Value(i);
-    // 0-based point index → 1-based param array index
+    // 0-based point index -> 1-based param array index
     const double aKinkParam = theParams.Value(theParams.Lower() + aKinkIdx);
     insertKinkKnot(aKinkParam, myDegree, theKnots, theMults, myKnotInsertTol);
   }
@@ -425,7 +425,7 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
     aNbContinuity = 3; // C0 + C1 + C2
     if (isFirstAndLastInterpolated())
     {
-      aNbContinuity = 2; // Remove C0 — already enforced by interpolation.
+      aNbContinuity = 2; // Remove C0 - already enforced by interpolation.
     }
   }
 

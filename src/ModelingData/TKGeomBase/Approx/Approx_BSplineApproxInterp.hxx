@@ -28,7 +28,7 @@
 //!
 //! This class fits a B-spline curve through a set of 3D points, where each point
 //! can be either approximated (in the least-squares sense) or exactly interpolated.
-//! Selected interpolation points can additionally be marked as "kinks" — the solver
+//! Selected interpolation points can additionally be marked as "kinks" - the solver
 //! then inserts high-multiplicity knots at the corresponding parameters to preserve
 //! C0 discontinuities.
 //!
