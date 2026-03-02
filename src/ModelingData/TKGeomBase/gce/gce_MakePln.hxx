@@ -124,16 +124,16 @@ public:
   //! @return resulting plane
   Standard_EXPORT const gp_Pln& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting object
-  const gp_Pln& Operator() const
+  gp_Pln Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator const gp_Pln&() const
+  operator gp_Pln() const
   {
     return Operator();
   }

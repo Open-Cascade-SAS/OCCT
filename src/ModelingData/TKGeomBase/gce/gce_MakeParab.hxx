@@ -67,16 +67,16 @@ public:
   //! @throw StdFail_NotDone if construction has failed
   Standard_EXPORT const gp_Parab& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting parabola
-  const gp_Parab& Operator() const
+  gp_Parab Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed parabola.
   //! @return resulting parabola
-  operator const gp_Parab&() const
+  operator gp_Parab() const
   {
     return Operator();
   }

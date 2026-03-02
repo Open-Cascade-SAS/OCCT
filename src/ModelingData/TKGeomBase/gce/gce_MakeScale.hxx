@@ -44,16 +44,16 @@ public:
   //! @return resulting transformation
   Standard_EXPORT const gp_Trsf& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting transformation
-  const gp_Trsf& Operator() const
+  gp_Trsf Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed transformation.
   //! @return resulting transformation
-  operator const gp_Trsf&() const
+  operator gp_Trsf() const
   {
     return Operator();
   }

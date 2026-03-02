@@ -128,16 +128,16 @@ public:
   //! @return resulting circle
   Standard_EXPORT const gp_Circ& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting object
-  const gp_Circ& Operator() const
+  gp_Circ Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator const gp_Circ&() const
+  operator gp_Circ() const
   {
     return Operator();
   }

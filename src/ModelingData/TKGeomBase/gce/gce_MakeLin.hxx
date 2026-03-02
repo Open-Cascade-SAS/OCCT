@@ -67,16 +67,16 @@ public:
   //! @return resulting line
   Standard_EXPORT const gp_Lin& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting object
-  const gp_Lin& Operator() const
+  gp_Lin Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator const gp_Lin&() const
+  operator gp_Lin() const
   {
     return Operator();
   }

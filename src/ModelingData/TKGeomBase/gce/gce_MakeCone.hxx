@@ -161,16 +161,16 @@ public:
   //! @return resulting cone
   Standard_EXPORT const gp_Cone& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting object
-  const gp_Cone& Operator() const
+  gp_Cone Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator const gp_Cone&() const
+  operator gp_Cone() const
   {
     return Operator();
   }

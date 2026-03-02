@@ -94,16 +94,16 @@ public:
   //! @return resulting cylinder
   Standard_EXPORT const gp_Cylinder& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting object
-  const gp_Cylinder& Operator() const
+  gp_Cylinder Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator const gp_Cylinder&() const
+  operator gp_Cylinder() const
   {
     return Operator();
   }

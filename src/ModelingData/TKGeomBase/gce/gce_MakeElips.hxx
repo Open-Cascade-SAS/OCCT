@@ -75,16 +75,16 @@ public:
   //! @return resulting ellipse
   Standard_EXPORT const gp_Elips& Value() const;
 
-  //! Alias for Value().
+  //! Alias for Value() returning a copy.
   //! @return resulting object
-  const gp_Elips& Operator() const
+  gp_Elips Operator() const
   {
     return Value();
   }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator const gp_Elips&() const
+  operator gp_Elips() const
   {
     return Operator();
   }
