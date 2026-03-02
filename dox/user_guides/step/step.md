@@ -627,11 +627,11 @@ Not all entities defining the assembly structure in the STEP file are translated
 | STEP entity type | CASCADE shape | Comments |
 | :--------------- | :-------------- | :------ |
 | product_definition |  A *TopoDS_Compound* for assemblies, a CASCADE shape corresponding to the component type of  for components, | Each assembly or component has its own *product_definition*. It is used as a starting point for translation when *read.step.product.mode* is ON. |
-| product_definition_shape | | This entity provides a link between *product_definition* and corresponding *shape_definition_representation*,  or between *next_assembly_usage_occurence* and corresponding *context_dependent_shape_representation*. | 
+| product_definition_shape | | This entity provides a link between *product_definition* and corresponding *shape_definition_representation*,  or between *next_assembly_usage_occurrence* and corresponding *context_dependent_shape_representation*. | 
 | shape_definition_representation | A TopoDS_Compound for assemblies, a CASCADE shape corresponding to the component type for components. | Each assembly or component has its own *shape_definition_representation*. The graph of dependencies is modified in such a way that *shape_definition_representations* of all components of the assembly are referred by the *shape_definition_representation* of the assembly.  |
-| next_assembly_usage_occurence | | This entity defines a relationship between the assembly and its component. It is used to introduce (in the dependencies graph) the links between *shape_definition_representation* of the assembly and *shape_definition_representations* and *context_dependent_shape_representations* of all its components. |
+| next_assembly_usage_occurrence | | This entity defines a relationship between the assembly and its component. It is used to introduce (in the dependencies graph) the links between *shape_definition_representation* of the assembly and *shape_definition_representations* and *context_dependent_shape_representations* of all its components. |
 | mapped_item | TopoDS_Shape | This entity defines a mapping of the assembly component into the *shape_representation* of the assembly. The result of translation is a CASCADE shape translated from the component, to which transformation defined by the *mapped_item* is applied. |
-| context_dependent_shape_representation | TopoDS_Shape | This entity is associated with the *next_assembly_usage_occurence* entity and defines a placement of the component in the assembly. The graph of dependencies is modified so that each *context_dependent_shape_representation* is referred by shape_definition_representation of the corresponding assembly. |
+| context_dependent_shape_representation | TopoDS_Shape | This entity is associated with the *next_assembly_usage_occurrence* entity and defines a placement of the component in the assembly. The graph of dependencies is modified so that each *context_dependent_shape_representation* is referred by shape_definition_representation of the corresponding assembly. |
 | shape_representation_relationship_with_transformation | | This entity is associated with *context_dependent_shape_representation* and defines a transformation necessary to apply to the component in order to locate it in its place in the assembly. |
 | item_defined_transformation | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
 | cartesian_transformation_operator | | This entity defines a transformation operator used by *shape_representation_relationship_with_transformation* or *mapped_item* entity |
@@ -1093,10 +1093,10 @@ The table below describes STEP entities, which are created when the assembly str
 | :--------- | :------ | :----- | 
 | | application_protocol_definition | One per STEP file, defines the application protocol used (depends on the schema version) | 
 | | application_context | One per STEP file, defines the application generating the file (AP214 or AP203) | 
-| TopoDS_Compound | shape_representation  | Empty *shape_representation* describing the assembly. The components of that assembly are written as subtypes of shape_representation and are included to the assembly using *next_assembly_usage_occurence* entities. | 
+| TopoDS_Compound | shape_representation  | Empty *shape_representation* describing the assembly. The components of that assembly are written as subtypes of shape_representation and are included to the assembly using *next_assembly_usage_occurrence* entities. | 
 | TopoDS_Shape  | subtypes of shape_representation  |  Depending on the shape type, see the tables below for mapping details  |
-|  | next_assembly_usage_occurence | Describes the instance of component in the assembly by referring corresponding *product_definitions*. If the same component is included in the assembly several times (for example, with different locations), several *next_assembly_usage_occurences* are created. |
-| | context_dependent_shape_representation | Describes the placement of a component in the assembly. One *context_dependent_shape_representation* corresponds to each  *next_assembly_usage_occurence* entity. | 
+|  | next_assembly_usage_occurrence | Describes the instance of component in the assembly by referring corresponding *product_definitions*. If the same component is included in the assembly several times (for example, with different locations), several *next_assembly_usage_occurrences* are created. |
+| | context_dependent_shape_representation | Describes the placement of a component in the assembly. One *context_dependent_shape_representation* corresponds to each  *next_assembly_usage_occurrence* entity. | 
 | | shape_representation_relationship_with_transformation | Together with the *context_dependent_shape_representation* describes the location of a component in the assembly. | 
 | | item_defined_transformation | Defines a transformation used for the location of a component in the assembly. Is referred by *shape_representation_relationship_with_transformation*.  |
 | | shape_definition_representation | One per *shape_representation*. | 
@@ -1422,7 +1422,7 @@ Entities in the STEP file are numbered in the succeeding order. An entity can be
 * *Draw: estat \#* outputs the list of entities referenced by a given entity and the list of entities referencing to it. 
 * *Draw: dumpassembly* prints a STEP assembly as a tree.
 
-Information about product names, *next_assembly_usage_occurence, shape_definition_representation, context_dependent_shape_representation* or *mapped_item entities* that are involved into the assembly structure will be printed. 
+Information about product names, *next_assembly_usage_occurrence, shape_definition_representation, context_dependent_shape_representation* or *mapped_item entities* that are involved into the assembly structure will be printed. 
 
 @subsubsection occt_step_6_4_2 Estimating the results of reading STEP
 All the following commands are available only after data is converted into OCCT shapes (i.e. after command 214read). 

@@ -193,7 +193,7 @@ TEST(NCollection_Array1Test, Move)
   EXPECT_EQ(1, anArray2.Lower());
   EXPECT_EQ(5, anArray2.Upper());
 
-  // Original array is not keep referecing the same data
+  // Original array is not keep referencing the same data
   EXPECT_EQ(anArray1.Length(), 0);
   EXPECT_EQ(anArray1.Lower(), 1);
 }

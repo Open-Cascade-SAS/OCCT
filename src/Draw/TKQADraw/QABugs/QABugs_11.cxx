@@ -975,13 +975,13 @@ static int OCC377(Draw_Interpretor& di, int argc, const char** argv)
     TopoDS_Shape Shape;
     BRepTools::Read(Shape, argv[1], B);
 
-    // 4. Verify whether enrtry point is on wire and reversed ones (indeed results of veridying must
-    // be same)
+    // 4. Verify whether entry point is on wire and reversed ones (indeed results of verifying must
+    // be the same)
     TopExp_Explorer exp;
     int             i = 1;
     for (exp.Init(Shape.Oriented(TopAbs_FORWARD), TopAbs_WIRE); exp.More(); exp.Next(), i++)
     {
-      // 4.1. Verify whether enrtry point is on wire
+      // 4.1. Verify whether entry point is on wire
       const TopoDS_Wire& wir     = TopoDS::Wire(exp.Current());
       TopoDS_Face        newFace = TopoDS::Face(Shape.EmptyCopied());
 
@@ -1015,7 +1015,7 @@ static int OCC377(Draw_Interpretor& di, int argc, const char** argv)
       di << "Wire " << i << ": point ( " << p2d.X() << ", " << p2d.Y() << " ) is "
          << TmpString.ToCString() << "\n";
 
-      // 4.2. Verify whether enrtry point is on reversed wire
+      // 4.2. Verify whether entry point is on reversed wire
       newFace = TopoDS::Face(Shape.EmptyCopied());
       newFace.Orientation(TopAbs_FORWARD);
       orWire = TopAbs::Reverse(orWire);
@@ -1085,7 +1085,7 @@ static int OCC22(Draw_Interpretor& di, int argc, const char** argv)
     bool aConsiderLocation;
     aConsiderLocation = strcmp(argv[4], "0") != 0;
 
-    // 2. Iniitialize aShapeUpgrade
+    // 2. Initialize aShapeUpgrade
     ShapeUpgrade_ShapeDivideAngle aShapeUpgrade(M_PI / 2.);
     // precision
     aShapeUpgrade.SetPrecision(Precision::Confusion());

@@ -593,7 +593,7 @@ TCollection_AsciiString DESTEP_ConfigurationNode::Save() const
 
   aResult += "!\n";
   aResult += "!Setting up a flag that indicates whether or not duplicate entities should be "
-             "removed from the model befor writing.\n";
+             "removed from the model before writing.\n";
   aResult += "!Default value: -. Available values: \"-\", \"+\"\n";
   aResult += aScope + "write.cleanduplicates :\t " + InternalParameters.CleanDuplicates + "\n";
   aResult += "!\n";

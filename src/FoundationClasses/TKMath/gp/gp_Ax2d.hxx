@@ -44,7 +44,7 @@ class gp_Ax2d
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an axis object representing X axis of the reference co-ordinate system.
+  //! Creates an axis object representing X axis of the reference coordinate system.
   constexpr gp_Ax2d() noexcept
       : loc(0., 0.)
   // vdir(1.,0.) use default ctor of gp_Dir2d, as it creates the same dir (1,0)

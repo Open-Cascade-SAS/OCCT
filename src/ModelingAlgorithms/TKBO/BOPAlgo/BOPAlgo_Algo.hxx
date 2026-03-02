@@ -55,7 +55,7 @@ protected:
 protected: //! @name Analyzing operations to fill progress indicator
   //! Analyze progress steps of the whole operation.
   //! @param theWhole - sum of progress of all operations.
-  //! @oaram theSteps - steps of the operations supported by PI
+  //! @param theSteps - steps of the operations supported by PI
   //!
   //! To use this method, one has to override the following methods:
   //! * fillPIConstants - method filling values for constant operations.
