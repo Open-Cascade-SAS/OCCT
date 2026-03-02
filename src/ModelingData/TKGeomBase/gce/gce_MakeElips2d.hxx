@@ -48,6 +48,10 @@ public:
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
+  //! @param[in] MajorAxis major axis placement
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
+  //! @param[in] Sense orientation flag
   Standard_EXPORT gce_MakeElips2d(const gp_Ax2d& MajorAxis,
                                   const double   MajorRadius,
                                   const double   MinorRadius,
@@ -61,6 +65,9 @@ public:
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
   //! the status is "InvertRadius" if MajorRadius < MinorRadius or
   //! "NegativeRadius" if MinorRadius < 0.0
+  //! @param[in] A local coordinate system
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
   Standard_EXPORT gce_MakeElips2d(const gp_Ax22d& A,
                                   const double    MajorRadius,
                                   const double    MinorRadius);
@@ -85,10 +92,14 @@ public:
   //! -   gce_InvertAxis if the major radius computed with
   //! Center and S1 is less than the minor radius
   //! computed with Center, S1 and S2.
+  //! @param[in] S1 first point
+  //! @param[in] S2 second point
+  //! @param[in] Center center point
   Standard_EXPORT gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center);
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
+  //! @return resulting ellipse
   Standard_EXPORT const gp_Elips2d& Value() const;
 
   //! Alias for Value().
@@ -100,7 +111,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Elips2d() const
+  operator const gp_Elips2d&() const
   {
     return Operator();
   }

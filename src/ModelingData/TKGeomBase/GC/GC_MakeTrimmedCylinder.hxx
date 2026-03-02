@@ -28,9 +28,8 @@ class gp_Pnt;
 class gp_Circ;
 class gp_Ax1;
 
-//! Implements construction algorithms for a trimmed
-//! cylinder limited by two planes orthogonal to its axis.
-//! The result is a Geom_RectangularTrimmedSurface surface.
+//! Implements construction algorithms for trimmed cylinders.
+//! The result is a `Geom_RectangularTrimmedSurface`.
 //! A MakeTrimmedCylinder provides a framework for:
 //! -   defining the construction of the trimmed cylinder,
 //! -   implementing the construction algorithm, and
@@ -41,36 +40,44 @@ class GC_MakeTrimmedCylinder : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make a cylindricalSurface <Cyl> from Geom
-  //! Its axis is <P1P2> and its radius is the distance
-  //! between <P3> and <P1P2>.
-  //! The height is the distance between P1 and P2.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
+  //! Creates a trimmed cylindrical surface from three points.
+  //! @param[in] theP1 first axis point
+  //! @param[in] theP2 second axis point
+  //! @param[in] theP3 point defining radius
+  //! @note The axis is the line passing through `theP1` and `theP2`.
+  //! @note The radius is the distance from `theP3` to that axis.
+  //! @note The height is the distance between `theP1` and `theP2`.
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3);
 
-  //! Make a cylindricalSurface <Cyl> from gp by its base <Circ>.
-  //! Its axis is the normal to the plane defined bi <Circ>.
-  //! <Height> can be greater than zero or lower than zero.
-  //! In the first case the V parametric direction of the
-  //! result has the same orientation as the normal to <Circ>.
-  //! In the other case it has the opposite orientation.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Circ& Circ, const double Height);
+  //! Creates a trimmed cylindrical surface from a base circle and height.
+  //! @param[in] theCirc base circle
+  //! @param[in] theHeight trimming height
+  //! @note The axis is the normal to the plane defined by `theCirc`.
+  //! @note `theHeight` can be positive or negative.
+  //! @note If `theHeight` is positive, the V parametric direction of
+  //!       result has the same orientation as the normal to `theCirc`.
+  //! @note If `theHeight` is negative, it has the opposite orientation.
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Circ& theCirc, const double theHeight);
 
-  //! Make a cylindricalSurface <Cyl> from gp by its
-  //! axis <A1> and its radius <Radius>.
-  //! It returns NullObject if <Radius> is lower than zero.
-  //! <Height> can be greater than zero or lower than zero.
-  //! In the first case the V parametric direction of the
-  //! result has the same orientation as <A1>.
-  //! In the other case it has the opposite orientation.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1& A1,
-                                         const double  Radius,
-                                         const double  Height);
+  //! Creates a trimmed cylindrical surface from axis, radius and height.
+  //! @param[in] theA1 cylinder axis
+  //! @param[in] theRadius cylinder radius
+  //! @param[in] theHeight trimming height
+  //! @note Status is `gce_NegativeRadius` if `theRadius` is less than zero.
+  //! @note `theHeight` can be positive or negative.
+  //! @note If `theHeight` is positive, the V parametric direction of
+  //!       result has the same orientation as `theA1`.
+  //! @note If `theHeight` is negative, it has the opposite orientation.
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1& theA1, const double  theRadius, const double  theHeight);
 
   //! Returns the constructed trimmed cylinder.
   //! Exceptions
   //! StdFail_NotDone if no trimmed cylinder is constructed.
+  //! @return resulting trimmed cylindrical surface
   Standard_EXPORT const occ::handle<Geom_RectangularTrimmedSurface>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_RectangularTrimmedSurface>&() const { return Value(); }
 
 private:

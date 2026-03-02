@@ -37,16 +37,21 @@ class GC_MakeTranslation
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a translation along the vector " Vect "
-  Standard_EXPORT GC_MakeTranslation(const gp_Vec& Vect);
+  //! Constructs a translation from a vector.
+  //! @param[in] theVect translation vector
+  Standard_EXPORT GC_MakeTranslation(const gp_Vec& theVect);
 
-  //! Constructs a translation along the vector (Point1,Point2)
-  //! defined from the point Point1 to the point Point2.
-  Standard_EXPORT GC_MakeTranslation(const gp_Pnt& Point1, const gp_Pnt& Point2);
+  //! Constructs a translation from two points.
+  //! @param[in] thePoint1 start point
+  //! @param[in] thePoint2 end point
+  Standard_EXPORT GC_MakeTranslation(const gp_Pnt& thePoint1, const gp_Pnt& thePoint2);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Transformation>&() const { return Value(); }
 
 private:

@@ -75,6 +75,9 @@ public:
   //! false), the Status function returns:
   //! -   gce_ConfusedPoints if any two of S1, S2 and Center are coincident;
   //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
+  //! @param[in] S1 first point
+  //! @param[in] S2 second point
+  //! @param[in] Center center point
   Standard_EXPORT gce_MakeHypr2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center);
 
   //! Constructs a hyperbola with major and minor radii MajorRadius and
@@ -86,6 +89,10 @@ public:
   //! A, with major and minor radii MajorRadius and
   //! MinorRadius, where its major axis is the "X Axis"
   //! of A (A is the local coordinate system of the hyperbola).
+  //! @param[in] MajorAxis major axis placement
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
+  //! @param[in] Sense orientation flag
   Standard_EXPORT gce_MakeHypr2d(const gp_Ax2d& MajorAxis,
                                  const double   MajorRadius,
                                  const double   MinorRadius,
@@ -95,12 +102,16 @@ public:
   //! A, with major and minor radii MajorRadius and
   //! MinorRadius, where its major axis is the "X Axis"
   //! of A (A is the local coordinate system of the hyperbola).
+  //! @param[in] A local coordinate system
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
   Standard_EXPORT gce_MakeHypr2d(const gp_Ax22d& A,
                                  const double    MajorRadius,
                                  const double    MinorRadius);
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
+  //! @return resulting hyperbola
   Standard_EXPORT const gp_Hypr2d& Value() const;
 
   //! Alias for Value().
@@ -112,7 +123,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Hypr2d() const
+  operator const gp_Hypr2d&() const
   {
     return Operator();
   }

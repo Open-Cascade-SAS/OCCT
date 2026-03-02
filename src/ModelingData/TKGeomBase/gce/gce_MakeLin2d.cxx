@@ -87,9 +87,8 @@ gce_MakeLin2d::gce_MakeLin2d(const gp_Lin2d& Line, const double Dist)
 
 //=================================================================================================
 
-gp_Lin2d gce_MakeLin2d::Value() const
+const gp_Lin2d& gce_MakeLin2d::Value() const
 {
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeLin2d::Value() - no result");
   return TheLin2d;
 }
-

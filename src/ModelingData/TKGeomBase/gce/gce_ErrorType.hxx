@@ -17,24 +17,21 @@
 #ifndef _gce_ErrorType_HeaderFile
 #define _gce_ErrorType_HeaderFile
 
-//! Indicates the outcome of a construction, i.e.
-//! whether it is successful or not, as explained below.
-//! gce_Done: Construction was successful.
-//! gce_ConfusedPoints: Two points are coincident.
-//! gce_NegativeRadius: Radius value is negative.
-//! gce_ColinearPoints: Three points are collinear.
-//! gce_IntersectionError: Intersection cannot be computed.
-//! gce_NullAxis: Axis is undefined.
-//! gce_NullAngle: Angle value is invalid (usually null).
-//! gce_NullRadius: Radius is null.
-//! gce_InvertAxis: Axis value is invalid.
-//! gce_BadAngle: Angle value is invalid.
-//! gce_InvertRadius: Radius value is incorrect
-//! (usually with respect to another radius).
-//! gce_NullFocusLength: Focal distance is null.
-//! gce_NullVector: Vector is null.
-//! gce_BadEquation: Coefficients are
-//! incorrect (applies to the equation of a geometric object).
+//! Defines status codes returned by `gce` construction algorithms.
+//! - `gce_Done`: construction completed successfully.
+//! - `gce_ConfusedPoints`: two points are coincident.
+//! - `gce_NegativeRadius`: a radius value is negative.
+//! - `gce_ColinearPoints`: three points are collinear.
+//! - `gce_IntersectionError`: intersection cannot be computed.
+//! - `gce_NullAxis`: axis is undefined.
+//! - `gce_NullAngle`: angle value is invalid (usually null).
+//! - `gce_NullRadius`: radius is null.
+//! - `gce_InvertAxis`: axis value is invalid.
+//! - `gce_BadAngle`: angle value is invalid.
+//! - `gce_InvertRadius`: radius values are inconsistent.
+//! - `gce_NullFocusLength`: focal distance is null.
+//! - `gce_NullVector`: vector is null.
+//! - `gce_BadEquation`: coefficients of an equation are invalid.
 enum gce_ErrorType
 {
   gce_Done,

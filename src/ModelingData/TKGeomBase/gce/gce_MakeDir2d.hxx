@@ -40,16 +40,20 @@ public:
 
   //! Normalizes the vector V and creates a direction.
   //! Status is "NullVector" if V.Magnitude() <= Resolution.
+  //! @param[in] V direction vector
   Standard_EXPORT gce_MakeDir2d(const gp_Vec2d& V);
 
   //! Creates a direction from a triplet of coordinates.
   //! Status is "NullVector" if Coord.Modulus() <=
   //! Resolution from gp.
+  //! @param[in] Coord coordinate vector
   Standard_EXPORT gce_MakeDir2d(const gp_XY& Coord);
 
   //! Creates a direction with its 3 cartesian coordinates.
   //! Status is "NullVector" if std::sqrt(Xv*Xv + Yv*Yv )
   //! <= Resolution
+  //! @param[in] Xv X coordinate value
+  //! @param[in] Yv Y coordinate value
   Standard_EXPORT gce_MakeDir2d(const double Xv, const double Yv);
 
   //! Make a Dir2d from gp <TheDir> passing through 2
@@ -64,10 +68,13 @@ public:
   //! -   the magnitude of vector V,
   //! -   the modulus of Coord,
   //! -   std::sqrt(Xv*Xv + Yv*Yv).
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeDir2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
   //! Returns the constructed unit vector.
   //! Exceptions StdFail_NotDone if no unit vector is constructed.
+  //! @return resulting direction
   Standard_EXPORT const gp_Dir2d& Value() const;
 
   //! Alias for Value().
@@ -79,7 +86,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Dir2d() const
+  operator const gp_Dir2d&() const
   {
     return Operator();
   }

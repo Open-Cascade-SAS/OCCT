@@ -29,12 +29,11 @@ class gp_Pnt;
 class gp_Dir;
 class gp_Ax1;
 
-//! This class implements the following algorithms used
-//! to create a Plane from gp.
-//! * Create a Plane parallel to another and passing
-//! through a point.
-//! * Create a Plane passing through 3 points.
-//! * Create a Plane by its normal
+//! Implements construction algorithms for planes in 3D space.
+//! Supported constructions include:
+//! - a plane parallel to another plane and passing through a point;
+//! - a plane passing through three points;
+//! - a plane defined by a point and normal direction.
 //! A MakePlane object provides a framework for:
 //! -   defining the construction of the plane,
 //! -   implementing the construction algorithm, and
@@ -45,45 +44,54 @@ class GC_MakePlane : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates a plane from a non persistent plane from package gp.
-  Standard_EXPORT GC_MakePlane(const gp_Pln& Pl);
+  //! Creates a plane from a non-persistent plane from package gp.
+  //! @param[in] thePl source plane
+  Standard_EXPORT GC_MakePlane(const gp_Pln& thePl);
 
-  //! P is the "Location" point or origin of the plane.
-  //! V is the direction normal to the plane.
-  Standard_EXPORT GC_MakePlane(const gp_Pnt& P, const gp_Dir& V);
+  //! Creates a plane from point and normal direction.
+  //! @param[in] theP location point of the plane
+  //! @param[in] theV normal direction
+  Standard_EXPORT GC_MakePlane(const gp_Pnt& theP, const gp_Dir& theV);
 
-  //! Creates a plane from its cartesian equation :
-  //! Ax + By + Cz + D = 0.0
-  //! Status is "BadEquation" if std::sqrt(A*A + B*B + C*C)
-  //! <= Resolution from gp
-  Standard_EXPORT GC_MakePlane(const double A, const double B, const double C, const double D);
+  //! Creates a plane from its cartesian equation:
+  //! `A * x + B * y + C * z + D = 0.0`.
+  //! @param[in] theA equation coefficient A
+  //! @param[in] theB equation coefficient B
+  //! @param[in] theC equation coefficient C
+  //! @param[in] theD equation coefficient D
+  //! @note Status is `gce_BadEquation` if `sqrt(theA*theA + theB*theB + theC*theC)`
+  //!       is below gp resolution.
+  Standard_EXPORT GC_MakePlane(const double theA, const double theB, const double theC, const double theD);
 
-  //! Make a Plane from Geom <ThePlane> parallel to another
-  //! Pln <Pln> and passing through a Pnt <Point>.
-  Standard_EXPORT GC_MakePlane(const gp_Pln& Pln, const gp_Pnt& Point);
+  //! Creates a plane parallel to the input plane and passing through the input point.
+  //! @param[in] thePln source plane
+  //! @param[in] thePoint point on resulting plane
+  Standard_EXPORT GC_MakePlane(const gp_Pln& thePln, const gp_Pnt& thePoint);
 
-  //! Make a Plane from Geom <ThePlane> parallel to another
-  //! Pln <Pln> at the distance <Dist> which can be greater
-  //! or lower than zero.
-  //! In the first case the result is at the distance
-  //! <Dist> to the plane <Pln> in the direction of the
-  //! normal to <Pln>.
-  //! Otherwise it is in the opposite direction.
-  Standard_EXPORT GC_MakePlane(const gp_Pln& Pln, const double Dist);
+  //! Creates a plane parallel to the input plane at signed distance.
+  //! @param[in] thePln source plane
+  //! @param[in] theDist signed distance
+  //! @note Positive distance follows the normal of the input plane.
+  Standard_EXPORT GC_MakePlane(const gp_Pln& thePln, const double theDist);
 
-  //! Make a Plane from Geom <ThePlane> passing through 3
-  //! Pnt <P1>,<P2>,<P3>.
-  //! It returns false if <P1> <P2> <P3> are confused.
-  Standard_EXPORT GC_MakePlane(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
+  //! Creates a plane passing through three points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theP3 third point
+  //! @note Construction fails when points are confused/collinear.
+  Standard_EXPORT GC_MakePlane(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3);
 
-  //! Make a Plane passing through the location of <Axis>and
-  //! normal to the Direction of <Axis>.
-  Standard_EXPORT GC_MakePlane(const gp_Ax1& Axis);
+  //! Creates a plane through axis location and normal to axis direction.
+  //! @param[in] theAxis axis defining location and normal
+  Standard_EXPORT GC_MakePlane(const gp_Ax1& theAxis);
 
   //! Returns the constructed plane.
   //! Exceptions StdFail_NotDone if no plane is constructed.
+  //! @return resulting plane
   Standard_EXPORT const occ::handle<Geom_Plane>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Plane>&() const { return Value(); }
 
 private:

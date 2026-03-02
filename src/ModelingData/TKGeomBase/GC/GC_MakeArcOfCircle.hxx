@@ -40,59 +40,62 @@ class GC_MakeArcOfCircle : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make an arc of circle (TrimmedCurve from Geom) from
-  //! a circle between two angles Alpha1 and Alpha2
-  //! given in radiians.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                     const double   Alpha1,
-                                     const double   Alpha2,
-                                     const bool     Sense);
+  //! Creates an arc of circle from angular bounds.
+  //! @param[in] theCirc source circle
+  //! @param[in] theAlpha1 first angle (radians)
+  //! @param[in] theAlpha2 second angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc, const double   theAlpha1, const double   theAlpha2, const bool     theSense);
 
-  //! Make an arc of circle (TrimmedCurve from Geom) from
-  //! a circle between point <P> and the angle Alpha
-  //! given in radians.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                     const gp_Pnt&  P,
-                                     const double   Alpha,
-                                     const bool     Sense);
+  //! Creates an arc of circle from a point and an angular bound.
+  //! @param[in] theCirc source circle
+  //! @param[in] theP point on circle
+  //! @param[in] theAlpha target angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc, const gp_Pnt&  theP, const double   theAlpha, const bool     theSense);
 
-  //! Make an arc of circle (TrimmedCurve from Geom) from
-  //! a circle between two points P1 and P2.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& Circ,
-                                     const gp_Pnt&  P1,
-                                     const gp_Pnt&  P2,
-                                     const bool     Sense);
+  //! Creates an arc of circle from two points on the circle.
+  //! @param[in] theCirc source circle
+  //! @param[in] theP1 first point on circle
+  //! @param[in] theP2 second point on circle
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc, const gp_Pnt&  theP1, const gp_Pnt&  theP2, const bool     theSense);
 
-  //! Make an arc of circle (TrimmedCurve from Geom) from
-  //! three points P1,P2,P3 between two points P1 and P2.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
+  //! Creates an arc of circle passing through three points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theP3 third point
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3);
 
-  //! Make an arc of circle (TrimmedCurve from Geom) from
-  //! two points P1,P2 and the tangente to the solution at
-  //! the point P1.
+  //! Creates an arc of circle from two points and a tangent at the first point.
+  //! @param[in] theP1 start point
+  //! @param[in] theV tangent vector at start point
+  //! @param[in] theP2 end point
+  //! @note The tangent direction is given by the input vector.
   //! The orientation of the arc is:
-  //! -   the sense determined by the order of the points P1, P3 and P2;
-  //! -   the sense defined by the vector V; or
-  //! -   for other syntaxes:
-  //! -   the sense of Circ if Sense is true, or
-  //! -   the opposite sense if Sense is false.
-  //! Note: Alpha1, Alpha2 and Alpha are angle values, given in radians.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_ConfusedPoints if:
-  //! -   any 2 of the 3 points P1, P2 and P3 are coincident, or
-  //! -   P1 and P2 are coincident; or
-  //! -   gce_IntersectionError if:
-  //! -   P1, P2 and P3 are collinear and not coincident, or
-  //! -   the vector defined by the points P1 and
-  //! P2 is collinear with the vector V.
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Pnt& P1, const gp_Vec& V, const gp_Pnt& P2);
+  //! -   the sense determined by the order of the three input points;
+  //! -   the sense defined by the input vector; or
+  //! -   for the other constructors:
+  //! -   the sense of the source circle if the orientation flag is true, or
+  //! -   the opposite sense if `theSense` is false.
+  //! @note Angles are expressed in radians.
+  //! @note If an error occurs (that is, when IsDone returns false),
+  //!       Status() returns:
+  //! -   `gce_ConfusedPoints` if:
+  //! -   any two of the three input points are coincident, or
+  //! -   the start and end points are coincident; or
+  //! -   `gce_IntersectionError` if:
+  //! -   the three points are collinear and not coincident, or
+  //! -   the chord direction is collinear with the tangent vector.
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Pnt& theP1, const gp_Vec& theV, const gp_Pnt& theP2);
 
   //! Returns the constructed arc of circle.
   //! Exceptions StdFail_NotDone if no arc of circle is constructed.
+  //! @return resulting arc
   Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:

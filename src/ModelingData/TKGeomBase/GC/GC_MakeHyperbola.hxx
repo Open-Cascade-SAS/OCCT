@@ -28,14 +28,14 @@ class gp_Hypr;
 class gp_Ax2;
 class gp_Pnt;
 
-//! This class implements construction algorithms for a hyperbola in
-//! 3D space. The result is a Geom_Hyperbola hyperbola.
+//! Implements construction algorithms for hyperbolas in 3D space.
+//! The result is a `Geom_Hyperbola`.
 //! A MakeHyperbola object provides a framework for:
 //! -   defining the construction of the hyperbola,
 //! -   implementing the construction algorithm, and
 //! -   consulting the results. In particular, the Value
 //! function returns the constructed hyperbola.
-//! To define the main branch of an hyperbola.
+//! To define the main branch of a hyperbola.
 //! The parameterization range is ]-infinite,+infinite[
 //! It is possible to get the other branch and the two conjugate
 //! branches of the main branch.
@@ -63,28 +63,36 @@ class GC_MakeHyperbola : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an Hyperbola from a non persistent hyperbola from package gp by conversion.
-  Standard_EXPORT GC_MakeHyperbola(const gp_Hypr& H);
+  //! Creates a hyperbola from a `gp_Hypr`.
+  //! @param[in] theH source hyperbola
+  Standard_EXPORT GC_MakeHyperbola(const gp_Hypr& theH);
 
   //! Constructs a hyperbola centered on the origin of the coordinate system
   //! A2, with major and minor radii MajorRadius and MinorRadius, where:
   //! the plane of the hyperbola is defined by the "X Axis" and "Y Axis" of A2,
   //! -   its major axis is the "X Axis" of A2.
-  Standard_EXPORT GC_MakeHyperbola(const gp_Ax2& A2,
-                                   const double  MajorRadius,
-                                   const double  MinorRadius);
+  //! @param[in] theA2 hyperbola local coordinate system
+  //! @param[in] theMajorRadius major radius
+  //! @param[in] theMinorRadius minor radius
+  Standard_EXPORT GC_MakeHyperbola(const gp_Ax2& theA2, const double  theMajorRadius, const double  theMinorRadius);
 
   //! Constructs a hyperbola centered on the point Center, where
   //! -   the plane of the hyperbola is defined by Center, S1 and S2,
   //! -   its major axis is defined by Center and S1,
   //! -   its major radius is the distance between Center and S1, and
   //! -   its minor radius is the distance between S2 and the major axis;
-  Standard_EXPORT GC_MakeHyperbola(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
+  //! @param[in] theS1 point defining the major axis
+  //! @param[in] theS2 point defining the minor radius
+  //! @param[in] theCenter hyperbola center
+  Standard_EXPORT GC_MakeHyperbola(const gp_Pnt& theS1, const gp_Pnt& theS2, const gp_Pnt& theCenter);
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
+  //! @return resulting hyperbola
   Standard_EXPORT const occ::handle<Geom_Hyperbola>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Hyperbola>&() const { return Value(); }
 
 private:

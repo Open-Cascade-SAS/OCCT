@@ -27,8 +27,8 @@
 class gp_Parab;
 class gp_Pnt;
 
-//! Implements construction algorithms for an arc
-//! of parabola in 3D space. The result is a Geom_TrimmedCurve curve.
+//! Implements construction algorithms for parabola arcs in 3D space.
+//! The result is a `Geom_TrimmedCurve`.
 //! A MakeArcOfParabola object provides a framework for:
 //! -   defining the construction of the arc of parabola,
 //! -   implementing the construction algorithm, and
@@ -39,32 +39,33 @@ class GC_MakeArcOfParabola : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an arc of Parabola (TrimmedCurve from Geom) from
-  //! a Parabola between two parameters Alpha1 and Alpha2
-  //! (given in radians).
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& Parab,
-                                       const double    Alpha1,
-                                       const double    Alpha2,
-                                       const bool      Sense);
+  //! Constructs an arc from angular bounds on a parabola.
+  //! @param[in] theParab source parabola
+  //! @param[in] theAlpha1 first angle (radians)
+  //! @param[in] theAlpha2 second angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab, const double    theAlpha1, const double    theAlpha2, const bool      theSense);
 
-  //! Creates an arc of Parabola (TrimmedCurve from Geom) from
-  //! a Parabola between point <P> and the parameter
-  //! Alpha (given in radians).
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& Parab,
-                                       const gp_Pnt&   P,
-                                       const double    Alpha,
-                                       const bool      Sense);
+  //! Constructs an arc from a point and angle on a parabola.
+  //! @param[in] theParab source parabola
+  //! @param[in] theP point on parabola
+  //! @param[in] theAlpha target angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab, const gp_Pnt&   theP, const double    theAlpha, const bool      theSense);
 
-  //! Creates an arc of Parabola (TrimmedCurve from Geom) from
-  //! a Parabola between two points P1 and P2.
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& Parab,
-                                       const gp_Pnt&   P1,
-                                       const gp_Pnt&   P2,
-                                       const bool      Sense);
+  //! Constructs an arc between two points on a parabola.
+  //! @param[in] theParab source parabola
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab, const gp_Pnt&   theP1, const gp_Pnt&   theP2, const bool      theSense);
 
   //! Returns the constructed arc of parabola.
+  //! @return resulting arc
   Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:

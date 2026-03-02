@@ -51,15 +51,22 @@ public:
   //! the cone.
   //! If Radius is lower than 0.0 the status is "
   //! If Ang < Resolution from gp or Ang >= (PI/2) - Resolution.
+  //! @param[in] A2 local coordinate system
+  //! @param[in] Ang angle value
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCone(const gp_Ax2& A2, const double Ang, const double Radius);
 
   //! Makes a Cone from gp <TheCone> coaxial to another
   //! Cone <Cone> and passing through a Pnt <Point>.
+  //! @param[in] Cone source cone
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const gp_Pnt& Point);
 
   //! Makes a Cone from gp <TheCone> coaxial to another
   //! Cone <Cone> at the distance <Dist> which can
   //! be greater or lower than zero.
+  //! @param[in] Cone source cone
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const double Dist);
 
   //! Makes a Cone from gp <TheCone> by four points <P1>,
@@ -76,6 +83,10 @@ public:
   //! status "NullAngle".
   //! <P3P4> is colinear to <P1P2> we have the status
   //! "NullAngle".
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
+  //! @param[in] P4 fourth point
   Standard_EXPORT gce_MakeCone(const gp_Pnt& P1,
                                const gp_Pnt& P2,
                                const gp_Pnt& P3,
@@ -92,6 +103,9 @@ public:
   //! "NullAngle"
   //! If <P1> and <P2> are confused we have the status
   //! "ConfusedPoints"
+  //! @param[in] Axis axis definition
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Makes a Cone by its axis <Axis> and two points.
@@ -105,6 +119,9 @@ public:
   //! "NullAngle"
   //! If <P1> and <P2> are confused we have the status
   //! "ConfusedPoints"
+  //! @param[in] Axis axis definition
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Makes a Cone with two points and two radius.
@@ -130,6 +147,10 @@ public:
   //! -   the vector joining P1 to P2 is perpendicular to the line joining P3 to P4,
   //! -   the vector joining P1 to P2 is perpendicular to Axis, or
   //! -   P1, P2, P3, and P4 are collinear.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] R1 first radius value
+  //! @param[in] R2 second radius value
   Standard_EXPORT gce_MakeCone(const gp_Pnt& P1,
                                const gp_Pnt& P2,
                                const double  R1,
@@ -137,6 +158,7 @@ public:
 
   //! Returns the constructed cone.
   //! Exceptions StdFail_NotDone if no cone is constructed.
+  //! @return resulting cone
   Standard_EXPORT const gp_Cone& Value() const;
 
   //! Alias for Value().
@@ -148,7 +170,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Cone() const
+  operator const gp_Cone&() const
   {
     return Operator();
   }

@@ -44,6 +44,9 @@ public:
   //! Warnings :
   //! It is not forbidden to create an ellipse with
   //! MajorRadius = MinorRadius.
+  //! @param[in] A2 local coordinate system
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
   Standard_EXPORT gce_MakeElips(const gp_Ax2& A2,
                                 const double  MajorRadius,
                                 const double  MinorRadius);
@@ -62,10 +65,14 @@ public:
   //! -   the major radius computed with Center and S1
   //! is less than the minor radius computed with Center, S1 and S2, or
   //! -   Center, S1 and S2 are collinear.
+  //! @param[in] S1 first point
+  //! @param[in] S2 second point
+  //! @param[in] Center center point
   Standard_EXPORT gce_MakeElips(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
+  //! @return resulting ellipse
   Standard_EXPORT const gp_Elips& Value() const;
 
   //! Alias for Value().
@@ -77,7 +84,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Elips() const
+  operator const gp_Elips&() const
   {
     return Operator();
   }

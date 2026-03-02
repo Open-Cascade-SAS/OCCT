@@ -53,6 +53,8 @@ public:
   //! Warnings :
   //! It is not forbidden to create a circle with Radius = 0.0
   //! The status is "NegativeRadius" if Radius < 0.0
+  //! @param[in] A2 local coordinate system
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Ax2& A2, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> coaxial to another
@@ -60,29 +62,45 @@ public:
   //! If Dist is greater than zero the result is encloses
   //! the circle <Circ>, else the result is enclosed by the
   //! circle <Circ>.
+  //! @param[in] Circ source circle
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakeCirc(const gp_Circ& Circ, const double Dist);
 
   //! Makes a Circ from gp <TheCirc> coaxial to another
   //! Circ <Circ> and passing through a Pnt2d <Point>.
+  //! @param[in] Circ source circle
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeCirc(const gp_Circ& Circ, const gp_Pnt& Point);
 
   //! Makes a Circ from gp <TheCirc> passing through 3
   //! Pnt2d <P1>,<P2>,<P3>.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and the normal of its plane <Norm> and
   //! its radius <Radius>.
+  //! @param[in] Center center point
+  //! @param[in] Norm input value
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and the normal of its plane <Plane> and
   //! its radius <Radius>.
+  //! @param[in] Center center point
+  //! @param[in] Plane reference plane
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
   //! <Center> and a point <Ptaxis> giving the normal
   //! of its plane <Plane> and its radius <Radius>.
+  //! @param[in] Center center point
+  //! @param[in] Ptaxis point defining axis direction
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const double Radius);
 
   //! Makes a Circ from gp <TheCirc> with its center
@@ -101,10 +119,13 @@ public:
   //! -   gce_ConfusedPoints if two of the three points
   //! P1, P2 and P3 are coincident; or
   //! -   gce_NullAxis if Center and Ptaxis are coincident.
+  //! @param[in] Axis axis definition
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Ax1& Axis, const double Radius);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
+  //! @return resulting circle
   Standard_EXPORT const gp_Circ& Value() const;
 
   //! Alias for Value().
@@ -116,7 +137,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Circ() const
+  operator const gp_Circ&() const
   {
     return Operator();
   }

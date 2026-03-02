@@ -56,10 +56,13 @@ public:
   //! The "Location" of A2 defines the location (origin) of the plane.
   //! The "XDirection" and "YDirection" of A2 define the "XAxis" and
   //! the "YAxis" of the plane used to parametrize the plane.
+  //! @param[in] A2 local coordinate system
   Standard_EXPORT gce_MakePln(const gp_Ax2& A2);
 
   //! Creates a plane with the "Location" point <P>
   //! and the normal direction <V>.
+  //! @param[in] P point
+  //! @param[in] V direction vector
   Standard_EXPORT gce_MakePln(const gp_Pnt& P, const gp_Dir& V);
 
   //! Creates a plane from its cartesian equation :
@@ -67,10 +70,16 @@ public:
   //!
   //! the status is "BadEquation" if std::sqrt(A*A + B*B + C*C) <=
   //! Resolution from gp.
+  //! @param[in] A local coordinate system
+  //! @param[in] B equation coefficient B
+  //! @param[in] C equation coefficient C
+  //! @param[in] D equation constant term
   Standard_EXPORT gce_MakePln(const double A, const double B, const double C, const double D);
 
   //! Make a Pln from gp <ThePln> parallel to another
   //! Pln <Pln> and passing through a Pnt <Point>.
+  //! @param[in] Pln source plane
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const gp_Pnt& Point);
 
   //! Make a Pln from gp <ThePln> parallel to another
@@ -80,16 +89,23 @@ public:
   //! <Dist> to the plane <Pln> in the direction of the
   //! normal to <Pln>.
   //! Otherwise it is in the opposite direction.
+  //! @param[in] Pln source plane
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakePln(const gp_Pln& Pln, const double Dist);
 
   //! Make a Pln from gp <ThePln> passing through 3
   //! Pnt <P1>,<P2>,<P3>.
   //! It returns false if <P1> <P2> <P3> are confused.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
   Standard_EXPORT gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
   //! Make a Pln from gp <ThePln> perpendicular to the line
   //! passing through <P1>,<P2>.
   //! The status is "ConfusedPoints" if <P1> <P2> are confused.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakePln(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Make a pln passing through the location of <Axis>and
@@ -100,10 +116,12 @@ public:
   //!     is less than or equal to gp::Resolution(),
   //! -   gce_ConfusedPoints if P1 and P2 are coincident, or
   //! -   gce_ColinearPoints if P1, P2 and P3 are collinear.
+  //! @param[in] Axis axis definition
   Standard_EXPORT gce_MakePln(const gp_Ax1& Axis);
 
   //! Returns the constructed plane.
   //! Exceptions StdFail_NotDone if no plane is constructed.
+  //! @return resulting plane
   Standard_EXPORT const gp_Pln& Value() const;
 
   //! Alias for Value().
@@ -115,7 +133,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Pln() const
+  operator const gp_Pln&() const
   {
     return Operator();
   }

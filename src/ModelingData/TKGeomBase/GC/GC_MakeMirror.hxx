@@ -41,25 +41,37 @@ class GC_MakeMirror
 public:
   DEFINE_STANDARD_ALLOC
 
-  Standard_EXPORT GC_MakeMirror(const gp_Pnt& Point);
+  //! Constructs a central symmetry about a point.
+  //! @param[in] thePoint center point
+  Standard_EXPORT GC_MakeMirror(const gp_Pnt& thePoint);
 
-  Standard_EXPORT GC_MakeMirror(const gp_Ax1& Axis);
+  //! Constructs an axial symmetry about an axis.
+  //! @param[in] theAxis mirror axis
+  Standard_EXPORT GC_MakeMirror(const gp_Ax1& theAxis);
 
-  Standard_EXPORT GC_MakeMirror(const gp_Lin& Line);
+  //! Constructs an axial symmetry about a line.
+  //! @param[in] theLine mirror line
+  Standard_EXPORT GC_MakeMirror(const gp_Lin& theLine);
 
-  //! Make a symmetry transformation af axis defined by
-  //! <Point> and <Direc>.
-  Standard_EXPORT GC_MakeMirror(const gp_Pnt& Point, const gp_Dir& Direc);
+  //! Constructs an axial symmetry about an axis defined by point and direction.
+  //! @param[in] thePoint point on the axis
+  //! @param[in] theDirec axis direction
+  Standard_EXPORT GC_MakeMirror(const gp_Pnt& thePoint, const gp_Dir& theDirec);
 
-  //! Make a symmetry transformation of plane <Plane>.
-  Standard_EXPORT GC_MakeMirror(const gp_Pln& Plane);
+  //! Constructs a planar symmetry about a plane.
+  //! @param[in] thePlane mirror plane
+  Standard_EXPORT GC_MakeMirror(const gp_Pln& thePlane);
 
-  //! Make a symmetry transformation of plane <Plane>.
-  Standard_EXPORT GC_MakeMirror(const gp_Ax2& Plane);
+  //! Constructs a planar symmetry about a plane.
+  //! @param[in] thePlane mirror plane
+  Standard_EXPORT GC_MakeMirror(const gp_Ax2& thePlane);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Transformation>&() const { return Value(); }
 
 private:

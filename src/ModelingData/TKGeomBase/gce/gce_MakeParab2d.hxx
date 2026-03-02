@@ -93,7 +93,7 @@ public:
 
   //! Conversion operator returning the constructed parabola.
   //! @return resulting parabola
-  operator gp_Parab2d() const
+  operator const gp_Parab2d&() const
   {
     return Operator();
   }

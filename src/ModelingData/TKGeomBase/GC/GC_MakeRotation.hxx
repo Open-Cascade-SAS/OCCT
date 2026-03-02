@@ -40,19 +40,28 @@ class GC_MakeRotation
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a rotation through angle Angle about the axis defined by the line Line.
-  Standard_EXPORT GC_MakeRotation(const gp_Lin& Line, const double Angle);
+  //! Constructs a rotation around the axis defined by a line.
+  //! @param[in] theLine rotation axis
+  //! @param[in] theAngle rotation angle in radians
+  Standard_EXPORT GC_MakeRotation(const gp_Lin& theLine, const double theAngle);
 
-  //! Constructs a rotation through angle Angle about the axis defined by the axis Axis.
-  Standard_EXPORT GC_MakeRotation(const gp_Ax1& Axis, const double Angle);
+  //! Constructs a rotation around an axis.
+  //! @param[in] theAxis rotation axis
+  //! @param[in] theAngle rotation angle in radians
+  Standard_EXPORT GC_MakeRotation(const gp_Ax1& theAxis, const double theAngle);
 
-  //! Constructs a rotation through angle Angle about the axis
-  //! defined by the point Point and the unit vector Direc.
-  Standard_EXPORT GC_MakeRotation(const gp_Pnt& Point, const gp_Dir& Direc, const double Angle);
+  //! Constructs a rotation around an axis defined by point and direction.
+  //! @param[in] thePoint point on the axis
+  //! @param[in] theDirec axis direction
+  //! @param[in] theAngle rotation angle in radians
+  Standard_EXPORT GC_MakeRotation(const gp_Pnt& thePoint, const gp_Dir& theDirec, const double theAngle);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const occ::handle<Geom_Transformation>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Transformation>&() const { return Value(); }
 
 private:

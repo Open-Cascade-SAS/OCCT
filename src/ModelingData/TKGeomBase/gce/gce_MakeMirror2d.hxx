@@ -68,7 +68,7 @@ public:
 
   //! Conversion operator returning the constructed transformation.
   //! @return resulting transformation
-  operator gp_Trsf2d() const
+  operator const gp_Trsf2d&() const
   {
     return Operator();
   }

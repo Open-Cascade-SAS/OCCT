@@ -77,6 +77,9 @@ public:
   //! For the hyperbola the MajorRadius can be lower than the
   //! MinorRadius.
   //! The status is "NegativeRadius" if MajorRadius < 0.0 or MinorRadius < 0.0
+  //! @param[in] A2 local coordinate system
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
   Standard_EXPORT gce_MakeHypr(const gp_Ax2& A2,
                                const double  MajorRadius,
                                const double  MinorRadius);
@@ -92,10 +95,14 @@ public:
   //! false), the Status function returns:
   //! -   gce_ConfusedPoints if any two of S1, S2 and Center are coincident;
   //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
+  //! @param[in] S1 first point
+  //! @param[in] S2 second point
+  //! @param[in] Center center point
   Standard_EXPORT gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
+  //! @return resulting hyperbola
   Standard_EXPORT const gp_Hypr& Value() const;
 
   //! Alias for Value().
@@ -107,7 +114,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Hypr() const
+  operator const gp_Hypr&() const
   {
     return Operator();
   }

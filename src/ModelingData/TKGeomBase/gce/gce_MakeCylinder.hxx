@@ -44,10 +44,14 @@ public:
 
   //! <A2> is the local cartesian coordinate system of <me>.
   //! The status is "NegativeRadius" if R < 0.0
+  //! @param[in] A2 local coordinate system
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCylinder(const gp_Ax2& A2, const double Radius);
 
   //! Makes a Cylinder from gp <TheCylinder> coaxial to another
   //! Cylinder <Cylinder> and passing through a Pnt <Point>.
+  //! @param[in] Cyl source cylinder
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeCylinder(const gp_Cylinder& Cyl, const gp_Pnt& Point);
 
   //! Makes a Cylinder from gp <TheCylinder> coaxial to another
@@ -55,15 +59,22 @@ public:
   //! be greater or lower than zero.
   //! The radius of the result is the absolute value of the
   //! radius of <Cyl> plus <Dist>
+  //! @param[in] Cyl source cylinder
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist);
 
   //! Makes a Cylinder from gp <TheCylinder> with 3 points
   //! <P1>,<P2>,<P3>.
   //! Its axis is <P1P2> and its radius is the distance
   //! between <P3> and <P1P2>
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
   Standard_EXPORT gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
   //! Makes a Cylinder by its axis <Axis> and radius <Radius>.
+  //! @param[in] Axis axis definition
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCylinder(const gp_Ax1& Axis, const double Radius);
 
   //! Makes a Cylinder by its circular base.
@@ -75,10 +86,12 @@ public:
   //! -   Dist is negative and has an absolute value
   //! which is greater than the radius of Cyl; or
   //! -   gce_ConfusedPoints if points P1 and P2 are coincident.
+  //! @param[in] Circ source circle
   Standard_EXPORT gce_MakeCylinder(const gp_Circ& Circ);
 
   //! Returns the constructed cylinder.
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
+  //! @return resulting cylinder
   Standard_EXPORT const gp_Cylinder& Value() const;
 
   //! Alias for Value().
@@ -90,7 +103,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Cylinder() const
+  operator const gp_Cylinder&() const
   {
     return Operator();
   }

@@ -40,23 +40,31 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a line located along the axis A1.
+  //! @param[in] A1 axis placement
   Standard_EXPORT gce_MakeLin(const gp_Ax1& A1);
 
   //! <P> is the location point (origin) of the line and
   //! <V> is the direction of the line.
+  //! @param[in] P point
+  //! @param[in] V direction vector
   Standard_EXPORT gce_MakeLin(const gp_Pnt& P, const gp_Dir& V);
 
   //! Make a Lin from gp <TheLin> parallel to another
   //! Lin <Lin> and passing through a Pnt <Point>.
+  //! @param[in] Lin source line
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeLin(const gp_Lin& Lin, const gp_Pnt& Point);
 
   //! Make a Lin from gp <TheLin> passing through 2
   //! Pnt <P1>,<P2>.
   //! It returns false if <p1> and <P2> are confused.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeLin(const gp_Pnt& P1, const gp_Pnt& P2);
 
   //! Returns the constructed line.
   //! Exceptions StdFail_NotDone is raised if no line is constructed.
+  //! @return resulting line
   Standard_EXPORT const gp_Lin& Value() const;
 
   //! Alias for Value().
@@ -68,7 +76,7 @@ public:
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Lin() const
+  operator const gp_Lin&() const
   {
     return Operator();
   }

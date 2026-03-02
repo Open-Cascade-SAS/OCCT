@@ -27,8 +27,8 @@
 class gp_Elips;
 class gp_Pnt;
 
-//! Implements construction algorithms for an arc
-//! of ellipse in 3D space. The result is a Geom_TrimmedCurve curve.
+//! Implements construction algorithms for ellipse arcs in 3D space.
+//! The result is a `Geom_TrimmedCurve`.
 //! A MakeArcOfEllipse object provides a framework for:
 //! -   defining the construction of the arc of ellipse,
 //! -   implementing the construction algorithm, and
@@ -39,37 +39,38 @@ class GC_MakeArcOfEllipse : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs an arc of Ellipse (TrimmedCurve from Geom) from
-  //! a Ellipse between two parameters Alpha1 and Alpha2.
-  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& Elips,
-                                      const double    Alpha1,
-                                      const double    Alpha2,
-                                      const bool      Sense);
+  //! Constructs an arc from angular bounds on an ellipse.
+  //! @param[in] theElips source ellipse
+  //! @param[in] theAlpha1 first angle (radians)
+  //! @param[in] theAlpha2 second angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips, const double    theAlpha1, const double    theAlpha2, const bool      theSense);
 
-  //! Constructs an arc of Ellipse (TrimmedCurve from Geom) from
-  //! a Ellipse between point <P> and the angle Alpha
-  //! given in radians.
-  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& Elips,
-                                      const gp_Pnt&   P,
-                                      const double    Alpha,
-                                      const bool      Sense);
+  //! Constructs an arc from a point and angle on an ellipse.
+  //! @param[in] theElips source ellipse
+  //! @param[in] theP point on ellipse
+  //! @param[in] theAlpha target angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips, const gp_Pnt&   theP, const double    theAlpha, const bool      theSense);
 
-  //! Constructs an arc of Ellipse (TrimmedCurve from Geom) from
-  //! a Ellipse between two points P1 and P2.
-  //! The orientation of the arc of ellipse is:
-  //! -   the sense of Elips if Sense is true, or
-  //! -   the opposite sense if Sense is false.
-  //! Notes:
-  //! -   Alpha1, Alpha2 and Alpha are angle values, given in radians.
-  //! -   IsDone always returns true.
-  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& Elips,
-                                      const gp_Pnt&   P1,
-                                      const gp_Pnt&   P2,
-                                      const bool      Sense);
+  //! Constructs an arc between two points on an ellipse.
+  //! @param[in] theElips source ellipse
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theSense orientation of resulting arc
+  //! @note The orientation of the arc of ellipse is:
+  //! -   the orientation of ellipse if `theSense` is true, or
+  //! -   the opposite orientation if `theSense` is false.
+  //! @note Alpha1, Alpha2 and Alpha are angle values, given in radians.
+  //! @note IsDone always returns true.
+  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips, const gp_Pnt&   theP1, const gp_Pnt&   theP2, const bool      theSense);
 
   //! Returns the constructed arc of ellipse.
+  //! @return resulting arc
   Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:

@@ -27,8 +27,8 @@
 class gp_Hypr;
 class gp_Pnt;
 
-//! Implements construction algorithms for an arc
-//! of hyperbola in 3D space. The result is a Geom_TrimmedCurve curve.
+//! Implements construction algorithms for hyperbola arcs in 3D space.
+//! The result is a `Geom_TrimmedCurve`.
 //! A MakeArcOfHyperbola object provides a framework for:
 //! -   defining the construction of the arc of hyperbola,
 //! -   implementing the construction algorithm, and
@@ -39,35 +39,36 @@ class GC_MakeArcOfHyperbola : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an arc of Hyperbola (TrimmedCurve from Geom) from
-  //! a Hyperbola between two parameters Alpha1 and Alpha2
-  //! (given in radians).
-  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& Hypr,
-                                        const double   Alpha1,
-                                        const double   Alpha2,
-                                        const bool     Sense);
+  //! Constructs an arc from angular bounds on a hyperbola.
+  //! @param[in] theHypr source hyperbola
+  //! @param[in] theAlpha1 first angle (radians)
+  //! @param[in] theAlpha2 second angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr, const double   theAlpha1, const double   theAlpha2, const bool     theSense);
 
-  //! Creates an arc of Hyperbola (TrimmedCurve from Geom) from
-  //! a Hyperbola between point <P> and the parameter
-  //! Alpha (given in radians).
-  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& Hypr,
-                                        const gp_Pnt&  P,
-                                        const double   Alpha,
-                                        const bool     Sense);
+  //! Constructs an arc from a point and angle on a hyperbola.
+  //! @param[in] theHypr source hyperbola
+  //! @param[in] theP point on hyperbola
+  //! @param[in] theAlpha target angle (radians)
+  //! @param[in] theSense orientation of resulting arc
+  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr, const gp_Pnt&  theP, const double   theAlpha, const bool     theSense);
 
-  //! Creates an arc of Hyperbola (TrimmedCurve from Geom) from
-  //! a Hyperbola between two points P1 and P2.
-  //! The orientation of the arc of hyperbola is:
-  //! -   the sense of Hypr if Sense is true, or
-  //! -   the opposite sense if Sense is false.
-  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& Hypr,
-                                        const gp_Pnt&  P1,
-                                        const gp_Pnt&  P2,
-                                        const bool     Sense);
+  //! Constructs an arc between two points on a hyperbola.
+  //! @param[in] theHypr source hyperbola
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theSense orientation of resulting arc
+  //! @note The orientation of the arc of hyperbola is:
+  //! -   the orientation of hyperbola if `theSense` is true, or
+  //! -   the opposite orientation if `theSense` is false.
+  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr, const gp_Pnt&  theP1, const gp_Pnt&  theP2, const bool     theSense);
 
   //! Returns the constructed arc of hyperbola.
+  //! @return resulting arc
   Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:

@@ -53,7 +53,7 @@ public:
 
   //! Conversion operator returning the constructed transformation.
   //! @return resulting transformation
-  operator gp_Trsf() const
+  operator const gp_Trsf&() const
   {
     return Operator();
   }
