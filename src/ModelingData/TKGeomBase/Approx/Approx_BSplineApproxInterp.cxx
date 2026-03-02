@@ -48,8 +48,8 @@ void insertKinkKnot(double                      theKnot,
   {
     if (std::abs(theKnots(i) - theKnot) < theTol)
     {
-      // Existing knot found - raise multiplicity up to degree.
-      theMults(i) = std::min(theMults(i) + theDegree, theDegree);
+      // Existing knot found - raise multiplicity to at least degree (never decrease).
+      theMults(i) = std::max(theMults(i), theDegree);
       return;
     }
   }
@@ -102,6 +102,11 @@ Approx_BSplineApproxInterp::Approx_BSplineApproxInterp(const NCollection_Array1<
 {
   // Clamp control point count: must be >= degree + 1 and <= number of points.
   myNbControlPts = std::min(myNbControlPts, thePoints.Length());
+  // If clamping reduced control points below degree + 1, reduce degree accordingly.
+  if (myNbControlPts < myDegree + 1)
+  {
+    myDegree = std::max(myNbControlPts - 1, 1);
+  }
 
   // Copy points to 1-based internal array and initialize all as approximated.
   for (int i = 0; i < thePoints.Length(); ++i)

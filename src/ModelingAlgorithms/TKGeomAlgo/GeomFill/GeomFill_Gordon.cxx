@@ -279,21 +279,11 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   const int aNbKinks          = aKinks.Length();
   const int aNbBreaks         = aNbInteriorParams + aNbKinks;
 
-  // Build break list: interior new-params + kink params mapped to new space.
-  NCollection_Array1<double> aBreaks(1, std::max(aNbBreaks, 1));
-  int                        aBrkIdx = 1;
-  for (int j = theNewParams.Lower() + 1; j < theNewParams.Upper(); ++j)
-  {
-    aBreaks(aBrkIdx++) = theNewParams(j);
-  }
-
   // Map kink old-parameters to new-parameter space via bisection inversion.
   NCollection_Array1<double> aKinksInNew(1, std::max(aNbKinks, 1));
   for (int k = 0; k < aNbKinks; ++k)
   {
-    double aKinkNew    = invertReparamBisection(aReparamFunc, aKinks[k]);
-    aKinksInNew(k + 1) = aKinkNew;
-    aBreaks(aBrkIdx++) = aKinkNew;
+    aKinksInNew(k + 1) = invertReparamBisection(aReparamFunc, aKinks[k]);
   }
 
   // Determine sample count: max(max_cp + 10, nBreaks + 2), clamped to [30, 200].
@@ -301,10 +291,30 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   int       aNbSamples = std::max(aMaxCp + 10, aNbBreaks + 2);
   aNbSamples           = std::max(30, std::min(200, aNbSamples));
 
-  // Use linspaceWithBreaks for intelligent sample distribution.
-  // Kink params are already included in aBreaks, so no separate insertion needed.
-  NCollection_DynamicArray<double> aSampleParams =
-    linspaceWithBreaks(0.0, 1.0, aNbSamples, aBreaks);
+  // Build break list: interior new-params + kink params mapped to new space.
+  NCollection_DynamicArray<double> aSampleParams;
+  if (aNbBreaks > 0)
+  {
+    NCollection_Array1<double> aBreaks(1, aNbBreaks);
+    int                        aBrkIdx = 1;
+    for (int j = theNewParams.Lower() + 1; j < theNewParams.Upper(); ++j)
+    {
+      aBreaks(aBrkIdx++) = theNewParams(j);
+    }
+    for (int k = 0; k < aNbKinks; ++k)
+    {
+      aBreaks(aBrkIdx++) = aKinksInNew(k + 1);
+    }
+    aSampleParams = linspaceWithBreaks(0.0, 1.0, aNbSamples, aBreaks);
+  }
+  else
+  {
+    // No breaks — uniform sampling.
+    for (int k = 0; k < aNbSamples; ++k)
+    {
+      aSampleParams.Append(static_cast<double>(k) / static_cast<double>(aNbSamples - 1));
+    }
+  }
 
   const int aNbActual = aSampleParams.Length();
 
