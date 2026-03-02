@@ -31,4 +31,3 @@ const gp_Trsf2d& gce_MakeRotation2d::Value() const
 {
   return TheRotation2d;
 }
-

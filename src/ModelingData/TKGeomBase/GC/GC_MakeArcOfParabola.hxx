@@ -44,21 +44,30 @@ public:
   //! @param[in] theAlpha1 first angle (radians)
   //! @param[in] theAlpha2 second angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab, const double    theAlpha1, const double    theAlpha2, const bool      theSense);
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab,
+                                       const double    theAlpha1,
+                                       const double    theAlpha2,
+                                       const bool      theSense);
 
   //! Constructs an arc from a point and angle on a parabola.
   //! @param[in] theParab source parabola
   //! @param[in] theP point on parabola
   //! @param[in] theAlpha target angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab, const gp_Pnt&   theP, const double    theAlpha, const bool      theSense);
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab,
+                                       const gp_Pnt&   theP,
+                                       const double    theAlpha,
+                                       const bool      theSense);
 
   //! Constructs an arc between two points on a parabola.
   //! @param[in] theParab source parabola
   //! @param[in] theP1 first point
   //! @param[in] theP2 second point
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab, const gp_Pnt&   theP1, const gp_Pnt&   theP2, const bool      theSense);
+  Standard_EXPORT GC_MakeArcOfParabola(const gp_Parab& theParab,
+                                       const gp_Pnt&   theP1,
+                                       const gp_Pnt&   theP2,
+                                       const bool      theSense);
 
   //! Returns the constructed arc of parabola.
   //! @return resulting arc

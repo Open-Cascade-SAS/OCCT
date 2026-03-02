@@ -45,21 +45,30 @@ public:
   //! @param[in] theAlpha1 first angle (radians)
   //! @param[in] theAlpha2 second angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc, const double   theAlpha1, const double   theAlpha2, const bool     theSense);
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc,
+                                     const double   theAlpha1,
+                                     const double   theAlpha2,
+                                     const bool     theSense);
 
   //! Creates an arc of circle from a point and an angular bound.
   //! @param[in] theCirc source circle
   //! @param[in] theP point on circle
   //! @param[in] theAlpha target angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc, const gp_Pnt&  theP, const double   theAlpha, const bool     theSense);
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc,
+                                     const gp_Pnt&  theP,
+                                     const double   theAlpha,
+                                     const bool     theSense);
 
   //! Creates an arc of circle from two points on the circle.
   //! @param[in] theCirc source circle
   //! @param[in] theP1 first point on circle
   //! @param[in] theP2 second point on circle
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc, const gp_Pnt&  theP1, const gp_Pnt&  theP2, const bool     theSense);
+  Standard_EXPORT GC_MakeArcOfCircle(const gp_Circ& theCirc,
+                                     const gp_Pnt&  theP1,
+                                     const gp_Pnt&  theP2,
+                                     const bool     theSense);
 
   //! Creates an arc of circle passing through three points.
   //! @param[in] theP1 first point

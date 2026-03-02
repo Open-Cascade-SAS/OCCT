@@ -120,17 +120,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Circ2d Operator() const
-  {
-    return Value();
-  }
+  gp_Circ2d Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Circ2d() const
-  {
-    return Operator();
-  }
+  operator gp_Circ2d() const { return Operator(); }
 
 private:
   gp_Circ2d TheCirc2d;

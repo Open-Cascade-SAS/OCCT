@@ -39,4 +39,3 @@ const gp_Trsf2d& gce_MakeTranslation2d::Value() const
 {
   return TheTranslation2d;
 }
-

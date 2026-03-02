@@ -46,17 +46,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting transformation
-  gp_Trsf Operator() const
-  {
-    return Value();
-  }
+  gp_Trsf Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed transformation.
   //! @return resulting transformation
-  operator gp_Trsf() const
-  {
-    return Operator();
-  }
+  operator gp_Trsf() const { return Operator(); }
 
 private:
   gp_Trsf TheScale;

@@ -104,17 +104,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Elips2d Operator() const
-  {
-    return Value();
-  }
+  gp_Elips2d Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Elips2d() const
-  {
-    return Operator();
-  }
+  operator gp_Elips2d() const { return Operator(); }
 
 private:
   gp_Elips2d TheElips2d;

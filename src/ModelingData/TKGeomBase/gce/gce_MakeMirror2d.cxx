@@ -55,4 +55,3 @@ const gp_Trsf2d& gce_MakeMirror2d::Value() const
 {
   return TheMirror2d;
 }
-

@@ -126,17 +126,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Pln Operator() const
-  {
-    return Value();
-  }
+  gp_Pln Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Pln() const
-  {
-    return Operator();
-  }
+  operator gp_Pln() const { return Operator(); }
 
 private:
   gp_Pln ThePln;

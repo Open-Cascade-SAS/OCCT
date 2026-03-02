@@ -44,14 +44,20 @@ public:
   //! @param[in] theAlpha1 first angle (radians)
   //! @param[in] theAlpha2 second angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips, const double    theAlpha1, const double    theAlpha2, const bool      theSense);
+  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips,
+                                      const double    theAlpha1,
+                                      const double    theAlpha2,
+                                      const bool      theSense);
 
   //! Constructs an arc from a point and angle on an ellipse.
   //! @param[in] theElips source ellipse
   //! @param[in] theP point on ellipse
   //! @param[in] theAlpha target angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips, const gp_Pnt&   theP, const double    theAlpha, const bool      theSense);
+  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips,
+                                      const gp_Pnt&   theP,
+                                      const double    theAlpha,
+                                      const bool      theSense);
 
   //! Constructs an arc between two points on an ellipse.
   //! @param[in] theElips source ellipse
@@ -63,7 +69,10 @@ public:
   //! -   the opposite orientation if `theSense` is false.
   //! @note Alpha1, Alpha2 and Alpha are angle values, given in radians.
   //! @note IsDone always returns true.
-  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips, const gp_Pnt&   theP1, const gp_Pnt&   theP2, const bool      theSense);
+  Standard_EXPORT GC_MakeArcOfEllipse(const gp_Elips& theElips,
+                                      const gp_Pnt&   theP1,
+                                      const gp_Pnt&   theP2,
+                                      const bool      theSense);
 
   //! Returns the constructed arc of ellipse.
   //! @return resulting arc

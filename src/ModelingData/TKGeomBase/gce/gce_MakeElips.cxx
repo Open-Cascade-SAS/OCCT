@@ -82,4 +82,3 @@ const gp_Elips& gce_MakeElips::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeElips::Value() - no result");
   return TheElips;
 }
-

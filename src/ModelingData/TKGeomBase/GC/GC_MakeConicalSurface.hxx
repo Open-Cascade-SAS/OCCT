@@ -74,7 +74,9 @@ public:
   //!       (`N = D1U ^ D1V`) is oriented towards the "outside region".
   //! @note Status is `gce_NegativeRadius` if `theRadius < 0.0`, or
   //!       `gce_BadAngle` if `theAng` is outside valid range.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& theA2, const double theAng, const double theRadius);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& theA2,
+                                        const double  theAng,
+                                        const double  theRadius);
 
   //! Creates a conical surface from a `gp_Cone`.
   //! @param[in] theC source cone
@@ -92,7 +94,10 @@ public:
   //! @note Construction fails if points `theP1`, `theP2`, `theP3` and `theP4` are
   //!       collinear, or if vector (`theP3`,`theP4`) is perpendicular/collinear
   //!       to vector (`theP1`,`theP2`).
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3, const gp_Pnt& theP4);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& theP1,
+                                        const gp_Pnt& theP2,
+                                        const gp_Pnt& theP3,
+                                        const gp_Pnt& theP4);
 
   //! Creates a conical surface with two points and two radii.
   //! @param[in] theP1 first axis point
@@ -102,7 +107,10 @@ public:
   //! @note The axis of the solution is the line passing through `theP1` and `theP2`.
   //! @note `theR1` and `theR2` are radii of sections passing through
   //!       `theP1` and `theP2`.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& theP1, const gp_Pnt& theP2, const double  theR1, const double  theR2);
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& theP1,
+                                        const gp_Pnt& theP2,
+                                        const double  theR1,
+                                        const double  theR2);
 
   //! Returns the constructed cone.
   //! Exceptions

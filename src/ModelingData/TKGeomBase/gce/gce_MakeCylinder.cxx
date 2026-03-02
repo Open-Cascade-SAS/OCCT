@@ -148,4 +148,3 @@ const gp_Cylinder& gce_MakeCylinder::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeCylinder::Value() - no result");
   return TheCylinder;
 }
-

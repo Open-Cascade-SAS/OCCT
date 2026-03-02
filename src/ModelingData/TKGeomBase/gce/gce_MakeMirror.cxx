@@ -68,4 +68,3 @@ const gp_Trsf& gce_MakeMirror::Value() const
 {
   return TheMirror;
 }
-

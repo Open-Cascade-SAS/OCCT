@@ -59,7 +59,9 @@ public:
   //! @param[in] thePoint start point on line
   //! @param[in] theUlast end parameter
   //! @note Construction fails if trimming parameters are equal.
-  Standard_EXPORT GC_MakeSegment(const gp_Lin& theLine, const gp_Pnt& thePoint, const double theUlast);
+  Standard_EXPORT GC_MakeSegment(const gp_Lin& theLine,
+                                 const gp_Pnt& thePoint,
+                                 const double  theUlast);
 
   //! Creates a segment of the input line between two points.
   //! @param[in] theLine source line

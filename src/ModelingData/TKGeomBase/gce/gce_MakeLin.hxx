@@ -69,17 +69,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Lin Operator() const
-  {
-    return Value();
-  }
+  gp_Lin Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Lin() const
-  {
-    return Operator();
-  }
+  operator gp_Lin() const { return Operator(); }
 
 private:
   gp_Lin TheLin;

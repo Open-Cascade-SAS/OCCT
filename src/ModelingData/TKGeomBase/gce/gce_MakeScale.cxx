@@ -31,4 +31,3 @@ const gp_Trsf& gce_MakeScale::Value() const
 {
   return TheScale;
 }
-

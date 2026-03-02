@@ -86,17 +86,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting parabola
-  gp_Parab2d Operator() const
-  {
-    return Value();
-  }
+  gp_Parab2d Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed parabola.
   //! @return resulting parabola
-  operator gp_Parab2d() const
-  {
-    return Operator();
-  }
+  operator gp_Parab2d() const { return Operator(); }
 
 private:
   gp_Parab2d TheParab2d;

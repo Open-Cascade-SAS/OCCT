@@ -95,17 +95,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Lin2d Operator() const
-  {
-    return Value();
-  }
+  gp_Lin2d Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Lin2d() const
-  {
-    return Operator();
-  }
+  operator gp_Lin2d() const { return Operator(); }
 
 private:
   gp_Lin2d TheLin2d;

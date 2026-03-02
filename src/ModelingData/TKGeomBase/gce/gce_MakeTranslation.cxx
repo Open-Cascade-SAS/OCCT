@@ -39,4 +39,3 @@ const gp_Trsf& gce_MakeTranslation::Value() const
 {
   return TheTranslation;
 }
-

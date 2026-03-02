@@ -89,4 +89,3 @@ const gp_Dir2d& gce_MakeDir2d::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeDir2d::Value() - no result");
   return TheDir2d;
 }
-

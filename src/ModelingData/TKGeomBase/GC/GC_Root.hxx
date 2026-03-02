@@ -35,25 +35,16 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns true if the construction is successful.
-  bool IsDone() const
-  {
-    return TheError == gce_Done;
-  }
+  bool IsDone() const { return TheError == gce_Done; }
 
   //! Returns true if the construction has failed.
-  bool IsError() const
-  {
-    return TheError != gce_Done;
-  }
+  bool IsError() const { return TheError != gce_Done; }
 
   //! Returns the status of the construction:
   //! -   gce_Done, if the construction is successful, or
   //! -   another value of the gce_ErrorType enumeration
   //! indicating why the construction failed.
-  gce_ErrorType Status() const
-  {
-    return TheError;
-  }
+  gce_ErrorType Status() const { return TheError; }
 
 protected:
   gce_ErrorType TheError;

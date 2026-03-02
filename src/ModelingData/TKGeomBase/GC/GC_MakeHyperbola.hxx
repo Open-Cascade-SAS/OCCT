@@ -74,7 +74,9 @@ public:
   //! @param[in] theA2 hyperbola local coordinate system
   //! @param[in] theMajorRadius major radius
   //! @param[in] theMinorRadius minor radius
-  Standard_EXPORT GC_MakeHyperbola(const gp_Ax2& theA2, const double  theMajorRadius, const double  theMinorRadius);
+  Standard_EXPORT GC_MakeHyperbola(const gp_Ax2& theA2,
+                                   const double  theMajorRadius,
+                                   const double  theMinorRadius);
 
   //! Constructs a hyperbola centered on the point Center, where
   //! -   the plane of the hyperbola is defined by Center, S1 and S2,
@@ -84,7 +86,9 @@ public:
   //! @param[in] theS1 point defining the major axis
   //! @param[in] theS2 point defining the minor radius
   //! @param[in] theCenter hyperbola center
-  Standard_EXPORT GC_MakeHyperbola(const gp_Pnt& theS1, const gp_Pnt& theS2, const gp_Pnt& theCenter);
+  Standard_EXPORT GC_MakeHyperbola(const gp_Pnt& theS1,
+                                   const gp_Pnt& theS2,
+                                   const gp_Pnt& theCenter);
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.

@@ -69,17 +69,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting parabola
-  gp_Parab Operator() const
-  {
-    return Value();
-  }
+  gp_Parab Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed parabola.
   //! @return resulting parabola
-  operator gp_Parab() const
-  {
-    return Operator();
-  }
+  operator gp_Parab() const { return Operator(); }
 
 private:
   gp_Parab TheParab;

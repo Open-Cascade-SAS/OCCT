@@ -31,4 +31,3 @@ const gp_Trsf2d& gce_MakeScale2d::Value() const
 {
   return TheScale2d;
 }
-

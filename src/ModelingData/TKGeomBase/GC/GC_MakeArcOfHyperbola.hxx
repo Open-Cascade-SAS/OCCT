@@ -44,14 +44,20 @@ public:
   //! @param[in] theAlpha1 first angle (radians)
   //! @param[in] theAlpha2 second angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr, const double   theAlpha1, const double   theAlpha2, const bool     theSense);
+  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr,
+                                        const double   theAlpha1,
+                                        const double   theAlpha2,
+                                        const bool     theSense);
 
   //! Constructs an arc from a point and angle on a hyperbola.
   //! @param[in] theHypr source hyperbola
   //! @param[in] theP point on hyperbola
   //! @param[in] theAlpha target angle (radians)
   //! @param[in] theSense orientation of resulting arc
-  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr, const gp_Pnt&  theP, const double   theAlpha, const bool     theSense);
+  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr,
+                                        const gp_Pnt&  theP,
+                                        const double   theAlpha,
+                                        const bool     theSense);
 
   //! Constructs an arc between two points on a hyperbola.
   //! @param[in] theHypr source hyperbola
@@ -61,7 +67,10 @@ public:
   //! @note The orientation of the arc of hyperbola is:
   //! -   the orientation of hyperbola if `theSense` is true, or
   //! -   the opposite orientation if `theSense` is false.
-  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr, const gp_Pnt&  theP1, const gp_Pnt&  theP2, const bool     theSense);
+  Standard_EXPORT GC_MakeArcOfHyperbola(const gp_Hypr& theHypr,
+                                        const gp_Pnt&  theP1,
+                                        const gp_Pnt&  theP2,
+                                        const bool     theSense);
 
   //! Returns the constructed arc of hyperbola.
   //! @return resulting arc

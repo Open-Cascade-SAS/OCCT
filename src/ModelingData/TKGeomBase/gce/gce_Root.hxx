@@ -37,27 +37,18 @@ public:
 
   //! Returns true if the construction is successful.
   //! @return true if status is `gce_Done`
-  bool IsDone() const
-  {
-    return TheError == gce_Done;
-  }
+  bool IsDone() const { return TheError == gce_Done; }
 
   //! Returns true if the construction has failed.
   //! @return true if status is not `gce_Done`
-  bool IsError() const
-  {
-    return TheError != gce_Done;
-  }
+  bool IsError() const { return TheError != gce_Done; }
 
   //! Returns the status of the construction:
   //! -   gce_Done, if the construction is successful, or
   //! -   another value of the gce_ErrorType enumeration
   //! indicating why the construction failed.
   //! @return construction status
-  gce_ErrorType Status() const
-  {
-    return TheError;
-  }
+  gce_ErrorType Status() const { return TheError; }
 
 protected:
   gce_ErrorType TheError;

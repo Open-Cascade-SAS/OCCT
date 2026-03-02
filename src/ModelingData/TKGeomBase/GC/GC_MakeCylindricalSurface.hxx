@@ -73,7 +73,8 @@ public:
   //! @param[in] theC source cylinder
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& theC);
 
-  //! Creates a cylindrical surface parallel to the input cylinder and passing through the input point.
+  //! Creates a cylindrical surface parallel to the input cylinder and passing through the input
+  //! point.
   //! @param[in] theCyl source cylinder
   //! @param[in] thePoint point on resulting surface
   Standard_EXPORT GC_MakeCylindricalSurface(const gp_Cylinder& theCyl, const gp_Pnt& thePoint);
@@ -91,7 +92,9 @@ public:
   //! @param[in] theP3 point defining radius
   //! @note The axis is defined by points `theP1` and `theP2`, and radius is the
   //!       distance between point `theP3` and that axis.
-  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3);
+  Standard_EXPORT GC_MakeCylindricalSurface(const gp_Pnt& theP1,
+                                            const gp_Pnt& theP2,
+                                            const gp_Pnt& theP3);
 
   //! Creates a cylindrical surface from axis and radius.
   //! @param[in] theAxis cylinder axis

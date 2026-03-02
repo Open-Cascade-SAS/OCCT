@@ -47,7 +47,9 @@ public:
   //! @note The axis is the line passing through `theP1` and `theP2`.
   //! @note The radius is the distance from `theP3` to that axis.
   //! @note The height is the distance between `theP1` and `theP2`.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3);
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Pnt& theP1,
+                                         const gp_Pnt& theP2,
+                                         const gp_Pnt& theP3);
 
   //! Creates a trimmed cylindrical surface from a base circle and height.
   //! @param[in] theCirc base circle
@@ -68,7 +70,9 @@ public:
   //! @note If `theHeight` is positive, the V parametric direction of
   //!       result has the same orientation as `theA1`.
   //! @note If `theHeight` is negative, it has the opposite orientation.
-  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1& theA1, const double  theRadius, const double  theHeight);
+  Standard_EXPORT GC_MakeTrimmedCylinder(const gp_Ax1& theA1,
+                                         const double  theRadius,
+                                         const double  theHeight);
 
   //! Returns the constructed trimmed cylinder.
   //! Exceptions

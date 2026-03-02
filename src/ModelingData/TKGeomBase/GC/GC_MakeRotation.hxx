@@ -54,7 +54,9 @@ public:
   //! @param[in] thePoint point on the axis
   //! @param[in] theDirec axis direction
   //! @param[in] theAngle rotation angle in radians
-  Standard_EXPORT GC_MakeRotation(const gp_Pnt& thePoint, const gp_Dir& theDirec, const double theAngle);
+  Standard_EXPORT GC_MakeRotation(const gp_Pnt& thePoint,
+                                  const gp_Dir& theDirec,
+                                  const double  theAngle);
 
   //! Returns the constructed transformation.
   //! @return resulting transformation

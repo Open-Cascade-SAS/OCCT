@@ -64,7 +64,9 @@ public:
   //! @param[in] theA2 ellipse local coordinate system
   //! @param[in] theMajorRadius major radius
   //! @param[in] theMinorRadius minor radius
-  Standard_EXPORT GC_MakeEllipse(const gp_Ax2& theA2, const double  theMajorRadius, const double  theMinorRadius);
+  Standard_EXPORT GC_MakeEllipse(const gp_Ax2& theA2,
+                                 const double  theMajorRadius,
+                                 const double  theMinorRadius);
 
   //! Constructs an ellipse centered on the point Center, where
   //! -   the plane of the ellipse is defined by Center, S1 and S2,

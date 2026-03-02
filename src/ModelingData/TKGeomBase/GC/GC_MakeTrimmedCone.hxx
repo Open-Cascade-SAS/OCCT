@@ -51,7 +51,10 @@ public:
   //! @note Construction fails if points P1, P2, P3 and P4 are
   //!       collinear, or if vector P3P4 is perpendicular/collinear
   //!       to vector P1P2.
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3, const gp_Pnt& theP4);
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1,
+                                     const gp_Pnt& theP2,
+                                     const gp_Pnt& theP3,
+                                     const gp_Pnt& theP4);
 
   //! Creates a rectangular trimmed conical surface from two points and two radii.
   //! @param[in] theP1 first axis point
@@ -61,7 +64,10 @@ public:
   //! @note The two radii correspond to sections passing through the two axis points.
   //! @note If an error occurs (that is, when IsDone returns false),
   //!       status is propagated from `GC_MakeConicalSurface(theP1, theP2, theR1, theR2)`.
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1, const gp_Pnt& theP2, const double  theR1, const double  theR2);
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1,
+                                     const gp_Pnt& theP2,
+                                     const double  theR1,
+                                     const double  theR2);
 
   //! Returns the constructed trimmed cone.
   //! StdFail_NotDone if no trimmed cone is constructed.

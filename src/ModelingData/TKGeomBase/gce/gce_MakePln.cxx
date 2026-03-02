@@ -123,4 +123,3 @@ const gp_Pln& gce_MakePln::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakePln::Value() - no result");
   return ThePln;
 }
-

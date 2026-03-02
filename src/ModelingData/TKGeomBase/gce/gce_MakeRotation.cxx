@@ -47,4 +47,3 @@ const gp_Trsf& gce_MakeRotation::Value() const
 {
   return TheRotation;
 }
-

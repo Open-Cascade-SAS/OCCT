@@ -82,14 +82,18 @@ public:
   //! @param[in] theCenter circle center
   //! @param[in] theNorm normal direction of circle plane
   //! @param[in] theRadius circle radius
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theCenter, const gp_Dir& theNorm, const double theRadius);
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theCenter,
+                                const gp_Dir& theNorm,
+                                const double  theRadius);
 
   //! Creates a circle from center point, axis point and radius.
   //! @param[in] theCenter circle center
   //! @param[in] thePtAxis point defining normal direction
   //! @param[in] theRadius circle radius
   //! @note The direction is defined by vector (`theCenter`,`thePtAxis`).
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theCenter, const gp_Pnt& thePtAxis, const double theRadius);
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theCenter,
+                                const gp_Pnt& thePtAxis,
+                                const double  theRadius);
 
   //! Creates a circle from axis and radius.
   //! @param[in] theAxis circle axis

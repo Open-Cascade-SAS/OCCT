@@ -107,17 +107,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Hypr Operator() const
-  {
-    return Value();
-  }
+  gp_Hypr Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Hypr() const
-  {
-    return Operator();
-  }
+  operator gp_Hypr() const { return Operator(); }
 
 private:
   gp_Hypr TheHypr;

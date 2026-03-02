@@ -96,17 +96,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Cylinder Operator() const
-  {
-    return Value();
-  }
+  gp_Cylinder Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Cylinder() const
-  {
-    return Operator();
-  }
+  operator gp_Cylinder() const { return Operator(); }
 
 private:
   gp_Cylinder TheCylinder;

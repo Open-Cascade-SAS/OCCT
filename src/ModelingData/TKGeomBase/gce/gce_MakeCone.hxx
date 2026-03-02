@@ -163,17 +163,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Cone Operator() const
-  {
-    return Value();
-  }
+  gp_Cone Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Cone() const
-  {
-    return Operator();
-  }
+  operator gp_Cone() const { return Operator(); }
 
 private:
   gp_Cone TheCone;

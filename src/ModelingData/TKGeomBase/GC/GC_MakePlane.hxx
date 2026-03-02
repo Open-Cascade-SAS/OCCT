@@ -61,7 +61,10 @@ public:
   //! @param[in] theD equation coefficient D
   //! @note Status is `gce_BadEquation` if `sqrt(theA*theA + theB*theB + theC*theC)`
   //!       is below gp resolution.
-  Standard_EXPORT GC_MakePlane(const double theA, const double theB, const double theC, const double theD);
+  Standard_EXPORT GC_MakePlane(const double theA,
+                               const double theB,
+                               const double theC,
+                               const double theD);
 
   //! Creates a plane parallel to the input plane and passing through the input point.
   //! @param[in] thePln source plane

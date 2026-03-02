@@ -81,17 +81,11 @@ public:
 
   //! Alias for Value() returning a copy.
   //! @return resulting object
-  gp_Dir Operator() const
-  {
-    return Value();
-  }
+  gp_Dir Operator() const { return Value(); }
 
   //! Conversion operator returning the constructed object.
   //! @return resulting object
-  operator gp_Dir() const
-  {
-    return Operator();
-  }
+  operator gp_Dir() const { return Operator(); }
 
 private:
   gp_Dir TheDir;
