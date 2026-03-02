@@ -96,7 +96,7 @@ void GeomFill_GordonBuilder::Perform()
     const occ::handle<Geom_BSplineCurve>& aProfile = myProfiles(myProfiles.Lower() + iProf);
     for (int iGuid = 0; iGuid < aNbGuides; ++iGuid)
     {
-      double aParam = myGuideParams(myGuideParams.Lower() + iGuid);
+      double aParam                            = myGuideParams(myGuideParams.Lower() + iGuid);
       anIntersectionPnts(iGuid + 1, iProf + 1) = aProfile->Value(aParam);
     }
   }
@@ -119,9 +119,11 @@ void GeomFill_GordonBuilder::Perform()
   myGuideSurface->ExchangeUV();
 
   // Step 3: Build tensor product surface from intersection grid.
-  myTensorSurface =
-    buildTensorSurface(anIntersectionPnts, myGuideParams, myProfileParams,
-                       myIsUClosed, myIsVClosed);
+  myTensorSurface = buildTensorSurface(anIntersectionPnts,
+                                       myGuideParams,
+                                       myProfileParams,
+                                       myIsUClosed,
+                                       myIsVClosed);
   if (myTensorSurface.IsNull())
   {
     return;
@@ -232,11 +234,12 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildSkinSurface(
     new NCollection_HArray1<gp_Pnt>(1, aNbInterpPts);
   for (int iSec = 0; iSec < aNbInterpPts; ++iSec)
   {
-    aFirstPnts->SetValue(iSec + 1,
-                         theSections(theSections.Lower() + iSec)->Pole(1));
+    aFirstPnts->SetValue(iSec + 1, theSections(theSections.Lower() + iSec)->Pole(1));
   }
 
-  GeomAPI_Interpolate aFirstInterp(aFirstPnts, aSectionParamsH, aMakeClosed,
+  GeomAPI_Interpolate aFirstInterp(aFirstPnts,
+                                   aSectionParamsH,
+                                   aMakeClosed,
                                    Precision::Confusion());
   aFirstInterp.Perform();
   if (!aFirstInterp.IsDone())
@@ -245,7 +248,7 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildSkinSurface(
   }
 
   occ::handle<Geom_BSplineCurve> aFirstInterpCurve = aFirstInterp.Curve();
-  const int aNbPolesV = aFirstInterpCurve->NbPoles();
+  const int                      aNbPolesV         = aFirstInterpCurve->NbPoles();
 
   // Pre-allocate surface poles array and store first column.
   NCollection_Array2<gp_Pnt> aSurfPoles(1, aNbPolesU, 1, aNbPolesV);
@@ -257,8 +260,7 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildSkinSurface(
   // Interpolate remaining pole columns in parallel.
   std::atomic<bool> isOk{true};
 
-  OSD_Parallel::For(2, aNbPolesU + 1, [&](int iPoleU)
-  {
+  OSD_Parallel::For(2, aNbPolesU + 1, [&](int iPoleU) {
     if (!isOk.load(std::memory_order_relaxed))
     {
       return;
@@ -268,11 +270,12 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildSkinSurface(
       new NCollection_HArray1<gp_Pnt>(1, aNbInterpPts);
     for (int iSec = 0; iSec < aNbInterpPts; ++iSec)
     {
-      anInterpPnts->SetValue(iSec + 1,
-                             theSections(theSections.Lower() + iSec)->Pole(iPoleU));
+      anInterpPnts->SetValue(iSec + 1, theSections(theSections.Lower() + iSec)->Pole(iPoleU));
     }
 
-    GeomAPI_Interpolate anInterp(anInterpPnts, aSectionParamsH, aMakeClosed,
+    GeomAPI_Interpolate anInterp(anInterpPnts,
+                                 aSectionParamsH,
+                                 aMakeClosed,
                                  Precision::Confusion());
     anInterp.Perform();
     if (!anInterp.IsDone())
@@ -332,8 +335,7 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildTensorSurface(
     for (int iV = 1; iV <= aNbV; ++iV)
     {
       if (!thePoints(thePoints.LowerRow(), thePoints.LowerCol() + iV - 1)
-             .IsEqual(thePoints(thePoints.LowerRow() + aNbU - 1,
-                                thePoints.LowerCol() + iV - 1),
+             .IsEqual(thePoints(thePoints.LowerRow() + aNbU - 1, thePoints.LowerCol() + iV - 1),
                       Precision::Confusion()))
       {
         aMakeUClosed = false;
@@ -361,12 +363,11 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildTensorSurface(
       new NCollection_HArray1<gp_Pnt>(1, aNbInterpU);
     for (int iU = 1; iU <= aNbInterpU; ++iU)
     {
-      aRowPnts->SetValue(iU, thePoints(thePoints.LowerRow() + iU - 1,
-                                       thePoints.LowerCol() + iV - 1));
+      aRowPnts->SetValue(iU,
+                         thePoints(thePoints.LowerRow() + iU - 1, thePoints.LowerCol() + iV - 1));
     }
 
-    GeomAPI_Interpolate anInterp(aRowPnts, aUParamsH, aMakeUClosed,
-                                 Precision::Confusion());
+    GeomAPI_Interpolate anInterp(aRowPnts, aUParamsH, aMakeUClosed, Precision::Confusion());
     anInterp.Perform();
     if (!anInterp.IsDone())
     {
@@ -392,17 +393,13 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildTensorSurface(
   {
     NCollection_Array1<double> aKnots(aRowCurves(i)->Knots());
     NCollection_Array1<int>    aMults(aRowCurves(i)->Multiplicities());
-    aRowCurves(aRowCurves.Lower())->InsertKnots(aKnots, aMults,
-                                                 Precision::PConfusion(), false);
+    aRowCurves(aRowCurves.Lower())->InsertKnots(aKnots, aMults, Precision::PConfusion(), false);
   }
-  const NCollection_Array1<double>& aUnifiedKnots =
-    aRowCurves(aRowCurves.Lower())->Knots();
-  const NCollection_Array1<int>& aUnifiedMults =
-    aRowCurves(aRowCurves.Lower())->Multiplicities();
+  const NCollection_Array1<double>& aUnifiedKnots = aRowCurves(aRowCurves.Lower())->Knots();
+  const NCollection_Array1<int>& aUnifiedMults = aRowCurves(aRowCurves.Lower())->Multiplicities();
   for (int i = aRowCurves.Lower() + 1; i <= aRowCurves.Upper(); ++i)
   {
-    aRowCurves(i)->InsertKnots(aUnifiedKnots, aUnifiedMults,
-                               Precision::PConfusion(), false);
+    aRowCurves(i)->InsertKnots(aUnifiedKnots, aUnifiedMults, Precision::PConfusion(), false);
   }
 
   // Skin row curves in V-direction, passing V-closedness.
@@ -461,8 +458,8 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::computeBooleanSum(
   const int aNbVPoles = aResult->NbVPoles();
 
   // Access weight arrays (for non-rational surfaces, these are all 1.0 via BSplCLib).
-  const NCollection_Array2<double>& aProfWeights  = theProfileSurf->WeightsArray();
-  const NCollection_Array2<double>& aGuideWeights = theGuideSurf->WeightsArray();
+  const NCollection_Array2<double>& aProfWeights   = theProfileSurf->WeightsArray();
+  const NCollection_Array2<double>& aGuideWeights  = theGuideSurf->WeightsArray();
   const NCollection_Array2<double>& aTensorWeights = theTensorSurf->WeightsArray();
 
   // Boolean sum: S_gordon = S_profiles + S_guides - S_tensor.

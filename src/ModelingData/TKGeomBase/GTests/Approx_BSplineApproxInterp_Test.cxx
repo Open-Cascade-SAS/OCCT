@@ -62,9 +62,9 @@ NCollection_Array1<double> makeUniformParams(int theNbPts)
 
 TEST(Approx_BSplineApproxInterpTest, PureApprox_LinePoints_ProducesLowError)
 {
-  const int aNbPts = 20;
-  NCollection_Array1<gp_Pnt>  aPts    = makeLinePoints(aNbPts);
-  NCollection_Array1<double>  aParams = makeUniformParams(aNbPts);
+  const int                  aNbPts  = 20;
+  NCollection_Array1<gp_Pnt> aPts    = makeLinePoints(aNbPts);
+  NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
   Approx_BSplineApproxInterp anApprox(aPts, 6, 3, false);
   anApprox.Perform(aParams);
@@ -83,9 +83,9 @@ TEST(Approx_BSplineApproxInterpTest, PureApprox_LinePoints_ProducesLowError)
 
 TEST(Approx_BSplineApproxInterpTest, InterpolateEndpoints_ExactMatch)
 {
-  const int aNbPts = 30;
-  NCollection_Array1<gp_Pnt>  aPts    = makeSinePoints(aNbPts);
-  NCollection_Array1<double>  aParams = makeUniformParams(aNbPts);
+  const int                  aNbPts  = 30;
+  NCollection_Array1<gp_Pnt> aPts    = makeSinePoints(aNbPts);
+  NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
   Approx_BSplineApproxInterp anApprox(aPts, 10, 3, false);
   anApprox.InterpolatePoint(0);          // first point
@@ -107,9 +107,9 @@ TEST(Approx_BSplineApproxInterpTest, InterpolateEndpoints_ExactMatch)
 
 TEST(Approx_BSplineApproxInterpTest, InterpolateMidpoint_ExactMatch)
 {
-  const int aNbPts = 21;
-  NCollection_Array1<gp_Pnt>  aPts    = makeSinePoints(aNbPts);
-  NCollection_Array1<double>  aParams = makeUniformParams(aNbPts);
+  const int                  aNbPts  = 21;
+  NCollection_Array1<gp_Pnt> aPts    = makeSinePoints(aNbPts);
+  NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
   Approx_BSplineApproxInterp anApprox(aPts, 12, 3, false);
   anApprox.InterpolatePoint(0);
@@ -128,7 +128,7 @@ TEST(Approx_BSplineApproxInterpTest, InterpolateMidpoint_ExactMatch)
 
 TEST(Approx_BSplineApproxInterpTest, KinkInsertion_PreservesC0Break)
 {
-  const int aNbPts = 21;
+  const int                  aNbPts = 21;
   NCollection_Array1<gp_Pnt> aPts(1, aNbPts);
   NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
@@ -172,9 +172,9 @@ TEST(Approx_BSplineApproxInterpTest, KinkInsertion_PreservesC0Break)
 
 TEST(Approx_BSplineApproxInterpTest, PerformOptimal_ImprovesError)
 {
-  const int aNbPts = 50;
-  NCollection_Array1<gp_Pnt>  aPts    = makeSinePoints(aNbPts);
-  NCollection_Array1<double>  aParams = makeUniformParams(aNbPts);
+  const int                  aNbPts  = 50;
+  NCollection_Array1<gp_Pnt> aPts    = makeSinePoints(aNbPts);
+  NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
   // First, a single Perform to get baseline error.
   Approx_BSplineApproxInterp anApprox1(aPts, 10, 3, false);
@@ -201,9 +201,9 @@ TEST(Approx_BSplineApproxInterpTest, PerformOptimal_ImprovesError)
 TEST(Approx_BSplineApproxInterpTest, PureInterpolation_AllPointsExact)
 {
   // When nControlPoints == nPoints and all are interpolated, this is pure interpolation.
-  const int aNbPts = 8;
-  NCollection_Array1<gp_Pnt>  aPts    = makeSinePoints(aNbPts);
-  NCollection_Array1<double>  aParams = makeUniformParams(aNbPts);
+  const int                  aNbPts  = 8;
+  NCollection_Array1<gp_Pnt> aPts    = makeSinePoints(aNbPts);
+  NCollection_Array1<double> aParams = makeUniformParams(aNbPts);
 
   // For pure interpolation: nCP must equal nInterpolated + nContinuity.
   // nCP = 8, all 8 points interpolated, nContinuity = 0 → 8 == 8.
@@ -223,6 +223,6 @@ TEST(Approx_BSplineApproxInterpTest, PureInterpolation_AllPointsExact)
   for (int i = 1; i <= aNbPts; ++i)
   {
     EXPECT_NEAR(aCurve->Value(aParams.Value(i)).Distance(aPts.Value(i)), 0.0, 1.0e-10)
-        << "Point " << i << " not interpolated exactly";
+      << "Point " << i << " not interpolated exactly";
   }
 }

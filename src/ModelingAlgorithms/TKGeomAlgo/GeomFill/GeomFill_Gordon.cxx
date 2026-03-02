@@ -54,13 +54,13 @@ constexpr double THE_REL_TOL_CLOSED = 1.0e-8;
 NCollection_DynamicArray<double> getKinkParameters(const occ::handle<Geom_BSplineCurve>& theCurve)
 {
   NCollection_DynamicArray<double> aKinks;
-  const int aDegree = theCurve->Degree();
+  const int                        aDegree = theCurve->Degree();
 
   for (int iKnot = 2; iKnot < theCurve->NbKnots(); ++iKnot)
   {
     if (theCurve->Multiplicity(iKnot) == aDegree)
     {
-      double aKnot = theCurve->Knot(iKnot);
+      double aKnot     = theCurve->Knot(iKnot);
       gp_Vec aTanLeft  = theCurve->DN(aKnot - THE_KINK_EPS, 1);
       gp_Vec aTanRight = theCurve->DN(aKnot + THE_KINK_EPS, 1);
 
@@ -86,13 +86,13 @@ NCollection_DynamicArray<double> getKinkParameters(const occ::handle<Geom_BSplin
 //! @param[in] theNbValues  desired number of uniform grid points
 //! @param[in] theBreaks    break parameters to capture exactly
 //! @return sorted, deduplicated parameter array
-NCollection_DynamicArray<double> linspaceWithBreaks(double                              theUMin,
-                                                    double                              theUMax,
-                                                    int                                 theNbValues,
-                                                    const NCollection_Array1<double>&   theBreaks)
+NCollection_DynamicArray<double> linspaceWithBreaks(double                            theUMin,
+                                                    double                            theUMax,
+                                                    int                               theNbValues,
+                                                    const NCollection_Array1<double>& theBreaks)
 {
   // Create uniform grid.
-  const double aDu = (theUMax - theUMin) / static_cast<double>(theNbValues - 1);
+  const double                     aDu = (theUMax - theUMin) / static_cast<double>(theNbValues - 1);
   NCollection_DynamicArray<double> aResult;
   for (int i = 0; i < theNbValues; ++i)
   {
@@ -153,10 +153,10 @@ NCollection_DynamicArray<double> linspaceWithBreaks(double                      
 //! @param[in] theOldParam     old parameter value to invert
 //! @return corresponding new parameter value
 double invertReparamBisection(const occ::handle<Geom2d_BSplineCurve>& theReparamFunc,
-                              double                                   theOldParam)
+                              double                                  theOldParam)
 {
-  double aLo = theReparamFunc->FirstParameter();
-  double aHi = theReparamFunc->LastParameter();
+  double aLo  = theReparamFunc->FirstParameter();
+  double aHi  = theReparamFunc->LastParameter();
   double aFLo = theReparamFunc->Value(aLo).X();
   double aFHi = theReparamFunc->Value(aHi).X();
 
@@ -205,7 +205,7 @@ double invertReparamBisection(const occ::handle<Geom2d_BSplineCurve>& theReparam
 //! @param[in]     theOldParams old intersection parameters on the curve
 //! @param[in]     theNewParams target intersection parameters in [0,1]
 //! @return true if reparametrization succeeded
-bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
+bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
                   const NCollection_Array1<double>& theOldParams,
                   const NCollection_Array1<double>& theNewParams)
 {
@@ -230,8 +230,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
     {
       continue;
     }
-    if (std::abs(anOld - theCurve->LastParameter()) < aTolParam
-        || std::abs(aNew - 1.0) < aTolParam)
+    if (std::abs(anOld - theCurve->LastParameter()) < aTolParam || std::abs(aNew - 1.0) < aTolParam)
     {
       continue;
     }
@@ -241,8 +240,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
   }
 
   // End of curve.
-  if (anOldSeq.Length() < 2
-      || std::abs(anOldSeq.Last() - theCurve->LastParameter()) > aTolParam)
+  if (anOldSeq.Length() < 2 || std::abs(anOldSeq.Last() - theCurve->LastParameter()) > aTolParam)
   {
     anOldSeq.Append(theCurve->LastParameter());
     aNewSeq.Append(1.0);
@@ -254,19 +252,17 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
   }
 
   // Build 2D interpolation: newParam -> (oldParam, 0).
-  const int aNbPts = anOldSeq.Length();
+  const int                                  aNbPts = anOldSeq.Length();
   occ::handle<NCollection_HArray1<gp_Pnt2d>> aOldPnts2d =
     new NCollection_HArray1<gp_Pnt2d>(1, aNbPts);
-  occ::handle<NCollection_HArray1<double>> aNewParamsH =
-    new NCollection_HArray1<double>(1, aNbPts);
+  occ::handle<NCollection_HArray1<double>> aNewParamsH = new NCollection_HArray1<double>(1, aNbPts);
   for (int k = 0; k < aNbPts; ++k)
   {
     aOldPnts2d->SetValue(k + 1, gp_Pnt2d(anOldSeq[k], 0.0));
     aNewParamsH->SetValue(k + 1, aNewSeq[k]);
   }
 
-  Geom2dAPI_Interpolate anInterp2d(aOldPnts2d, aNewParamsH, false,
-                                   Precision::PConfusion());
+  Geom2dAPI_Interpolate anInterp2d(aOldPnts2d, aNewParamsH, false, Precision::PConfusion());
   anInterp2d.Perform();
   if (!anInterp2d.IsDone())
   {
@@ -285,7 +281,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
 
   // Build break list: interior new-params + kink params mapped to new space.
   NCollection_Array1<double> aBreaks(1, std::max(aNbBreaks, 1));
-  int aBrkIdx = 1;
+  int                        aBrkIdx = 1;
   for (int j = theNewParams.Lower() + 1; j < theNewParams.Upper(); ++j)
   {
     aBreaks(aBrkIdx++) = theNewParams(j);
@@ -295,19 +291,20 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
   NCollection_Array1<double> aKinksInNew(1, std::max(aNbKinks, 1));
   for (int k = 0; k < aNbKinks; ++k)
   {
-    double aKinkNew = invertReparamBisection(aReparamFunc, aKinks[k]);
+    double aKinkNew    = invertReparamBisection(aReparamFunc, aKinks[k]);
     aKinksInNew(k + 1) = aKinkNew;
-    aBreaks(aBrkIdx++)  = aKinkNew;
+    aBreaks(aBrkIdx++) = aKinkNew;
   }
 
   // Determine sample count: max(max_cp + 10, nBreaks + 2), clamped to [30, 200].
-  const int aMaxCp = theCurve->NbPoles();
-  int aNbSamples = std::max(aMaxCp + 10, aNbBreaks + 2);
-  aNbSamples = std::max(30, std::min(200, aNbSamples));
+  const int aMaxCp     = theCurve->NbPoles();
+  int       aNbSamples = std::max(aMaxCp + 10, aNbBreaks + 2);
+  aNbSamples           = std::max(30, std::min(200, aNbSamples));
 
   // Use linspaceWithBreaks for intelligent sample distribution.
   // Kink params are already included in aBreaks, so no separate insertion needed.
-  NCollection_DynamicArray<double> aSampleParams = linspaceWithBreaks(0.0, 1.0, aNbSamples, aBreaks);
+  NCollection_DynamicArray<double> aSampleParams =
+    linspaceWithBreaks(0.0, 1.0, aNbSamples, aBreaks);
 
   const int aNbActual = aSampleParams.Length();
 
@@ -317,24 +314,24 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
 
   for (int k = 0; k < aNbActual; ++k)
   {
-    double aNewParam = aSampleParams[k];
-    gp_Pnt2d anOldPt = aReparamFunc->Value(aNewParam);
-    double anOldParam = anOldPt.X();
+    double   aNewParam  = aSampleParams[k];
+    gp_Pnt2d anOldPt    = aReparamFunc->Value(aNewParam);
+    double   anOldParam = anOldPt.X();
 
     // Clamp to valid range.
-    anOldParam = std::max(theCurve->FirstParameter(),
-                          std::min(theCurve->LastParameter(), anOldParam));
+    anOldParam =
+      std::max(theCurve->FirstParameter(), std::min(theCurve->LastParameter(), anOldParam));
 
-    aSampledPnts(k + 1) = theCurve->Value(anOldParam);
+    aSampledPnts(k + 1)      = theCurve->Value(anOldParam);
     aSampledNewParams(k + 1) = aNewParam;
   }
 
   // Determine number of control points.
   // Must be >= nInterpolated + degree + 1 for the KKT system to be solvable.
-  const int aNbInterp = 2 + aNbKinks; // endpoints + kinks
+  const int     aNbInterp         = 2 + aNbKinks; // endpoints + kinks
   constexpr int THE_APPROX_DEGREE = 3;
-  int aNbCP = std::max(theCurve->NbPoles(),
-                       std::max(aNbActual / 3, aNbInterp + THE_APPROX_DEGREE + 1));
+  int           aNbCP =
+    std::max(theCurve->NbPoles(), std::max(aNbActual / 3, aNbInterp + THE_APPROX_DEGREE + 1));
   aNbCP = std::max(aNbCP, THE_APPROX_DEGREE + 1);
 
   // Use constrained least-squares approximation with interpolation at endpoints and kinks.
@@ -349,7 +346,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
   {
     double aKinkNew = aKinksInNew(k);
     // Find the closest sample index for this kink parameter.
-    int aBestIdx = 0;
+    int    aBestIdx  = 0;
     double aBestDist = RealLast();
     for (int s = 1; s <= aNbActual; ++s)
     {
@@ -357,7 +354,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&  theCurve,
       if (aDist < aBestDist)
       {
         aBestDist = aDist;
-        aBestIdx = s - 1; // 0-based index for InterpolatePoint
+        aBestIdx  = s - 1; // 0-based index for InterpolatePoint
       }
     }
     if (aBestIdx > 0 && aBestIdx < aNbActual - 1) // not endpoints (already interpolated)
@@ -412,13 +409,11 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
 
   for (int i = theProfiles.Lower(); i <= theProfiles.Upper(); ++i)
   {
-    myProfiles(i - theProfiles.Lower() + 1) =
-      GeomConvert::CurveToBSplineCurve(theProfiles(i));
+    myProfiles(i - theProfiles.Lower() + 1) = GeomConvert::CurveToBSplineCurve(theProfiles(i));
   }
   for (int i = theGuides.Lower(); i <= theGuides.Upper(); ++i)
   {
-    myGuides(i - theGuides.Lower() + 1) =
-      GeomConvert::CurveToBSplineCurve(theGuides(i));
+    myGuides(i - theGuides.Lower() + 1) = GeomConvert::CurveToBSplineCurve(theGuides(i));
   }
 
   // Initialize parameter matrices.
@@ -531,8 +526,13 @@ void GeomFill_Gordon::Perform()
 
   // Step 12: Delegate to GordonBuilder.
   GeomFill_GordonBuilder aBuilder;
-  aBuilder.Init(myProfiles, myGuides, aProfileParamValues, aGuideParamValues, myTolerance,
-                myIsUClosed, myIsVClosed);
+  aBuilder.Init(myProfiles,
+                myGuides,
+                aProfileParamValues,
+                aGuideParamValues,
+                myTolerance,
+                myIsUClosed,
+                myIsVClosed);
   aBuilder.Perform();
 
   if (!aBuilder.IsDone())
@@ -600,15 +600,14 @@ bool GeomFill_Gordon::convertToBSpline()
 
 bool GeomFill_Gordon::computeIntersections()
 {
-  const int aNbProf = myProfiles.Length();
-  const int aNbGuid = myGuides.Length();
+  const int aNbProf  = myProfiles.Length();
+  const int aNbGuid  = myGuides.Length();
   const int aNbTotal = aNbProf * aNbGuid;
 
   // Use atomic flag for thread-safe error reporting.
   std::atomic<bool> isOk{true};
 
-  OSD_Parallel::For(0, aNbTotal, [&](int theIdx)
-  {
+  OSD_Parallel::For(0, aNbTotal, [&](int theIdx) {
     if (!isOk.load(std::memory_order_relaxed))
     {
       return;
@@ -623,8 +622,8 @@ bool GeomFill_Gordon::computeIntersections()
     GeomAPI_ExtremaCurveCurve anExtrema(aProfile, aGuide);
 
     // Find the extremum with distance below tolerance.
-    bool   isFound   = false;
-    double aMinDist  = RealLast();
+    bool   isFound    = false;
+    double aMinDist   = RealLast();
     double aProfParam = 0.0;
     double aGuidParam = 0.0;
 
@@ -672,13 +671,16 @@ bool GeomFill_Gordon::computeIntersections()
 void GeomFill_Gordon::computeScale()
 {
   // Compute bounding box diagonal from all curve start/end points.
-  double aXMin =  RealLast(), aYMin =  RealLast(), aZMin =  RealLast();
+  double aXMin = RealLast(), aYMin = RealLast(), aZMin = RealLast();
   double aXMax = -RealLast(), aYMax = -RealLast(), aZMax = -RealLast();
 
   auto updateBBox = [&](const gp_Pnt& thePnt) {
-    aXMin = std::min(aXMin, thePnt.X()); aXMax = std::max(aXMax, thePnt.X());
-    aYMin = std::min(aYMin, thePnt.Y()); aYMax = std::max(aYMax, thePnt.Y());
-    aZMin = std::min(aZMin, thePnt.Z()); aZMax = std::max(aZMax, thePnt.Z());
+    aXMin = std::min(aXMin, thePnt.X());
+    aXMax = std::max(aXMax, thePnt.X());
+    aYMin = std::min(aYMin, thePnt.Y());
+    aYMax = std::max(aYMax, thePnt.Y());
+    aZMin = std::min(aZMin, thePnt.Z());
+    aZMax = std::max(aZMax, thePnt.Z());
   };
 
   for (int i = myProfiles.Lower(); i <= myProfiles.Upper(); ++i)
@@ -693,15 +695,15 @@ void GeomFill_Gordon::computeScale()
   }
 
   double aDiag = gp_Pnt(aXMin, aYMin, aZMin).Distance(gp_Pnt(aXMax, aYMax, aZMax));
-  myScale = std::max(aDiag, 1.0);
+  myScale      = std::max(aDiag, 1.0);
 }
 
 //=================================================================================================
 
 void GeomFill_Gordon::detectClosedness()
 {
-  const int aNbProf = myProfiles.Length();
-  const int aNbGuid = myGuides.Length();
+  const int    aNbProf   = myProfiles.Length();
+  const int    aNbGuid   = myGuides.Length();
   const double aCloseTol = THE_REL_TOL_CLOSED * myScale;
 
   // U-direction closure: first and last guides are geometrically equal
@@ -718,8 +720,8 @@ void GeomFill_Gordon::detectClosedness()
     bool isGridClosed = true;
     for (int iProf = 1; iProf <= aNbProf && isGridClosed; ++iProf)
     {
-      gp_Pnt aP1 = myProfiles(iProf)->Value(myProfileParams(iProf, 1));
-      gp_Pnt aP2 = myProfiles(iProf)->Value(myProfileParams(iProf, aNbGuid));
+      gp_Pnt aP1   = myProfiles(iProf)->Value(myProfileParams(iProf, 1));
+      gp_Pnt aP2   = myProfiles(iProf)->Value(myProfileParams(iProf, aNbGuid));
       isGridClosed = aP1.IsEqual(aP2, aCloseTol);
     }
 
@@ -740,8 +742,8 @@ void GeomFill_Gordon::detectClosedness()
     bool isGridClosed = true;
     for (int jGuid = 1; jGuid <= aNbGuid && isGridClosed; ++jGuid)
     {
-      gp_Pnt aP1 = myGuides(jGuid)->Value(myGuideParams(1, jGuid));
-      gp_Pnt aP2 = myGuides(jGuid)->Value(myGuideParams(aNbProf, jGuid));
+      gp_Pnt aP1   = myGuides(jGuid)->Value(myGuideParams(1, jGuid));
+      gp_Pnt aP2   = myGuides(jGuid)->Value(myGuideParams(aNbProf, jGuid));
       isGridClosed = aP1.IsEqual(aP2, aCloseTol);
     }
 
@@ -837,10 +839,10 @@ bool GeomFill_Gordon::sortNetwork()
 
   // Find starting curves: profile and guide that share their minimum parameter
   // at their intersection.
-  int  aStartProf         = 1;
-  int  aStartGuid         = 1;
-  bool aGuideMustReverse  = false;
-  bool isStartFound       = false;
+  int  aStartProf        = 1;
+  int  aStartGuid        = 1;
+  bool aGuideMustReverse = false;
+  bool isStartFound      = false;
 
   for (int iProf = 1; iProf <= aNbProf && !isStartFound; ++iProf)
   {
@@ -922,7 +924,8 @@ bool GeomFill_Gordon::sortNetwork()
 
   // Helper lambdas for swapping.
   auto swapProfiles = [this, aNbGuid](int i1, int i2) {
-    if (i1 == i2) return;
+    if (i1 == i2)
+      return;
     std::swap(myProfiles(i1), myProfiles(i2));
     for (int j = 1; j <= aNbGuid; ++j)
     {
@@ -932,7 +935,8 @@ bool GeomFill_Gordon::sortNetwork()
   };
 
   auto swapGuides = [this, aNbProf](int j1, int j2) {
-    if (j1 == j2) return;
+    if (j1 == j2)
+      return;
     std::swap(myGuides(j1), myGuides(j2));
     for (int i = 1; i <= aNbProf; ++i)
     {

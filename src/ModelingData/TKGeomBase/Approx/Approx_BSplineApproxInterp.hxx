@@ -72,8 +72,8 @@ public:
   //! @param[in] theContinuousIfClosed  if true, enforces C2 continuity for closed curves
   Standard_EXPORT Approx_BSplineApproxInterp(const NCollection_Array1<gp_Pnt>& thePoints,
                                              int                               theNbControlPts,
-                                             int                               theDegree          = 3,
-                                             bool                              theContinuousIfClosed = false);
+                                             int                               theDegree = 3,
+                                             bool theContinuousIfClosed                  = false);
 
   //! Marks a point to be exactly interpolated rather than approximated.
   //! @param[in] thePointIndex  0-based index of the point
@@ -142,10 +142,10 @@ private:
   //! @param[in]  theParams  parameter values
   //! @param[out] theKnots   computed knot values
   //! @param[out] theMults   computed knot multiplicities
-  void computeKnots(int                         theNbCP,
+  void computeKnots(int                               theNbCP,
                     const NCollection_Array1<double>& theParams,
-                    NCollection_Array1<double>&  theKnots,
-                    NCollection_Array1<int>&     theMults) const;
+                    NCollection_Array1<double>&       theKnots,
+                    NCollection_Array1<int>&          theMults) const;
 
   //! Solves the constrained least-squares system.
   //! @param[in] theParams    parameter values
@@ -180,7 +180,7 @@ private:
   //! @param[in]     theCurve   current fitted curve
   //! @param[in,out] theParams  parameters to optimize
   void optimizeParameters(const occ::handle<Geom_BSplineCurve>& theCurve,
-                          NCollection_Array1<double>&            theParams) const;
+                          NCollection_Array1<double>&           theParams) const;
 
   //! Projects a point onto a curve using Newton iteration.
   //! @param[in] thePnt       point to project
@@ -188,10 +188,10 @@ private:
   //! @param[in] theInitParam initial parameter guess
   //! @param[out] theParam    optimized parameter
   //! @return projection distance
-  double projectOnCurve(const gp_Pnt&                      thePnt,
+  double projectOnCurve(const gp_Pnt&                         thePnt,
                         const occ::handle<Geom_BSplineCurve>& theCurve,
-                        double                              theInitParam,
-                        double&                             theParam) const;
+                        double                                theInitParam,
+                        double&                               theParam) const;
 
   //! Returns true if the point set represents a closed curve.
   bool isClosed() const;
@@ -202,22 +202,22 @@ private:
   //! Computes the diagonal of the bounding box of the points.
   double boundingBoxDiagonal() const;
 
-  NCollection_Array1<gp_Pnt>                myPoints;
-  NCollection_DynamicArray<int>             myInterpolated;
-  NCollection_DynamicArray<int>             myApproximated;
-  NCollection_DynamicArray<int>             myKinks;
-  occ::handle<Geom_BSplineCurve>            myCurve;
-  int                                       myDegree          = 3;
-  int                                       myNbControlPts    = 0;
-  double                                    myMaxError        = 0.0;
-  double                                    myAlpha           = 0.5;
-  double                                    myMinPivot        = 1.0e-20;
-  double                                    myClosedRelTol    = 1.0e-12;
-  double                                    myKnotInsertTol   = 1.0e-4;
-  double                                    myConvergenceTol  = 1.0e-3;
-  double                                    myProjectionTol   = 1.0e-6;
-  bool                                      myContinuousIfClosed = false;
-  bool                                      myIsDone          = false;
+  NCollection_Array1<gp_Pnt>     myPoints;
+  NCollection_DynamicArray<int>  myInterpolated;
+  NCollection_DynamicArray<int>  myApproximated;
+  NCollection_DynamicArray<int>  myKinks;
+  occ::handle<Geom_BSplineCurve> myCurve;
+  int                            myDegree             = 3;
+  int                            myNbControlPts       = 0;
+  double                         myMaxError           = 0.0;
+  double                         myAlpha              = 0.5;
+  double                         myMinPivot           = 1.0e-20;
+  double                         myClosedRelTol       = 1.0e-12;
+  double                         myKnotInsertTol      = 1.0e-4;
+  double                         myConvergenceTol     = 1.0e-3;
+  double                         myProjectionTol      = 1.0e-6;
+  bool                           myContinuousIfClosed = false;
+  bool                           myIsDone             = false;
 };
 
 #endif // _Approx_BSplineApproxInterp_HeaderFile

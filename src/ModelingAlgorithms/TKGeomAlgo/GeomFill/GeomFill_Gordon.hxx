@@ -66,7 +66,7 @@ public:
   //! @param[in] theTolerance geometric tolerance for intersection detection
   Standard_EXPORT void Init(const NCollection_Array1<occ::handle<Geom_Curve>>& theProfiles,
                             const NCollection_Array1<occ::handle<Geom_Curve>>& theGuides,
-                            double theTolerance);
+                            double                                             theTolerance);
 
   //! Performs the Gordon surface construction.
   Standard_EXPORT void Perform();
@@ -120,11 +120,11 @@ private:
   NCollection_Array2<double>                         myProfileParams;
   NCollection_Array2<double>                         myGuideParams;
   occ::handle<Geom_BSplineSurface>                   mySurface;
-  double                                             myTolerance  = 0.0;
-  double                                             myScale      = 1.0;
-  bool                                               myIsUClosed  = false;
-  bool                                               myIsVClosed  = false;
-  bool                                               myIsDone     = false;
+  double                                             myTolerance = 0.0;
+  double                                             myScale     = 1.0;
+  bool                                               myIsUClosed = false;
+  bool                                               myIsVClosed = false;
+  bool                                               myIsDone    = false;
 };
 
 #endif // _GeomFill_Gordon_HeaderFile

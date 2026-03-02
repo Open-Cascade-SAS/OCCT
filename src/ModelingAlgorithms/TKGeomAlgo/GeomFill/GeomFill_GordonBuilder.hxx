@@ -63,9 +63,9 @@ public:
                             const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theGuides,
                             const NCollection_Array1<double>& theProfileParams,
                             const NCollection_Array1<double>& theGuideParams,
-                            double theTolerance,
-                            bool   theIsUClosed = false,
-                            bool   theIsVClosed = false);
+                            double                            theTolerance,
+                            bool                              theIsUClosed = false,
+                            bool                              theIsVClosed = false);
 
   //! Performs the Gordon surface construction.
   Standard_EXPORT void Perform();
@@ -94,8 +94,8 @@ private:
   //! @return the skinned B-spline surface, or null handle on failure
   occ::handle<Geom_BSplineSurface> buildSkinSurface(
     const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theSections,
-    const NCollection_Array1<double>& theSectionParams,
-    bool theIsClosed = false) const;
+    const NCollection_Array1<double>&                         theSectionParams,
+    bool                                                      theIsClosed = false) const;
 
   //! Builds a tensor product surface interpolating a grid of intersection points.
   //! @param[in] thePoints     2D array of intersection points (NGuides x NProfiles)
@@ -104,12 +104,11 @@ private:
   //! @param[in] theIsUClosed  if true, use periodic interpolation in U-direction
   //! @param[in] theIsVClosed  if true, use periodic interpolation in V-direction
   //! @return the tensor product B-spline surface, or null handle on failure
-  occ::handle<Geom_BSplineSurface> buildTensorSurface(
-    const NCollection_Array2<gp_Pnt>& thePoints,
-    const NCollection_Array1<double>& theUParams,
-    const NCollection_Array1<double>& theVParams,
-    bool theIsUClosed = false,
-    bool theIsVClosed = false) const;
+  occ::handle<Geom_BSplineSurface> buildTensorSurface(const NCollection_Array2<gp_Pnt>& thePoints,
+                                                      const NCollection_Array1<double>& theUParams,
+                                                      const NCollection_Array1<double>& theVParams,
+                                                      bool theIsUClosed = false,
+                                                      bool theIsVClosed = false) const;
 
   //! Unifies knot vectors of two surfaces so they share the same degrees and knots
   //! in both U and V directions.

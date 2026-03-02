@@ -37,11 +37,11 @@ constexpr int THE_MAX_PROJECTION_ITER = 10;
 //! @param[in,out] theKnots  knot values (may be reallocated)
 //! @param[in,out] theMults  multiplicities (may be reallocated)
 //! @param[in]     theTol    tolerance for matching existing knots
-void insertKinkKnot(double                    theKnot,
-                    int                       theDegree,
+void insertKinkKnot(double                      theKnot,
+                    int                         theDegree,
                     NCollection_Array1<double>& theKnots,
                     NCollection_Array1<int>&    theMults,
-                    double                    theTol)
+                    double                      theTol)
 {
   // Search for an existing knot within tolerance.
   for (int i = theKnots.Lower(); i <= theKnots.Upper(); ++i)
@@ -62,7 +62,7 @@ void insertKinkKnot(double                    theKnot,
   }
 
   // Build new arrays with one extra element.
-  const int aNbOld = theKnots.Length();
+  const int                  aNbOld = theKnots.Length();
   NCollection_Array1<double> aNewKnots(theKnots.Lower(), theKnots.Lower() + aNbOld);
   NCollection_Array1<int>    aNewMults(theMults.Lower(), theMults.Lower() + aNbOld);
 
@@ -91,15 +91,14 @@ void insertKinkKnot(double                    theKnot,
 
 //=================================================================================================
 
-Approx_BSplineApproxInterp::Approx_BSplineApproxInterp(
-  const NCollection_Array1<gp_Pnt>& thePoints,
-  int                               theNbControlPts,
-  int                               theDegree,
-  bool                              theContinuousIfClosed)
-: myPoints(1, std::max(thePoints.Length(), 1)),
-  myDegree(std::max(theDegree, 1)),
-  myNbControlPts(std::max(theNbControlPts, theDegree + 1)),
-  myContinuousIfClosed(theContinuousIfClosed)
+Approx_BSplineApproxInterp::Approx_BSplineApproxInterp(const NCollection_Array1<gp_Pnt>& thePoints,
+                                                       int  theNbControlPts,
+                                                       int  theDegree,
+                                                       bool theContinuousIfClosed)
+    : myPoints(1, std::max(thePoints.Length(), 1)),
+      myDegree(std::max(theDegree, 1)),
+      myNbControlPts(std::max(theNbControlPts, theDegree + 1)),
+      myContinuousIfClosed(theContinuousIfClosed)
 {
   // Clamp control point count: must be >= degree + 1 and <= number of points.
   myNbControlPts = std::min(myNbControlPts, thePoints.Length());
@@ -141,7 +140,7 @@ void Approx_BSplineApproxInterp::InterpolatePoint(int thePointIndex, bool theWit
 
 void Approx_BSplineApproxInterp::Perform(const NCollection_Array1<double>& theParams)
 {
-  myIsDone  = false;
+  myIsDone   = false;
   myMaxError = 0.0;
   myCurve.Nullify();
 
@@ -161,9 +160,9 @@ void Approx_BSplineApproxInterp::Perform(const NCollection_Array1<double>& thePa
 //=================================================================================================
 
 void Approx_BSplineApproxInterp::PerformOptimal(const NCollection_Array1<double>& theParams,
-                                                 int                               theMaxIter)
+                                                int                               theMaxIter)
 {
-  myIsDone  = false;
+  myIsDone   = false;
   myMaxError = 0.0;
   myCurve.Nullify();
 
@@ -221,7 +220,7 @@ const occ::handle<Geom_BSplineCurve>& Approx_BSplineApproxInterp::Curve() const
 
 NCollection_Array1<double> Approx_BSplineApproxInterp::computeParameters(double theAlpha) const
 {
-  const int aNbPts = myPoints.Length();
+  const int                  aNbPts = myPoints.Length();
   NCollection_Array1<double> aParams(1, aNbPts);
 
   aParams.SetValue(1, 0.0);
@@ -249,9 +248,9 @@ NCollection_Array1<double> Approx_BSplineApproxInterp::computeParameters(double 
 //=================================================================================================
 
 void Approx_BSplineApproxInterp::computeKnots(int                               theNbCP,
-                                               const NCollection_Array1<double>& theParams,
-                                               NCollection_Array1<double>&       theKnots,
-                                               NCollection_Array1<int>&          theMults) const
+                                              const NCollection_Array1<double>& theParams,
+                                              NCollection_Array1<double>&       theKnots,
+                                              NCollection_Array1<int>&          theMults) const
 {
   const int anOrder = myDegree + 1;
   if (theNbCP < anOrder)
@@ -269,7 +268,7 @@ void Approx_BSplineApproxInterp::computeKnots(int                               
   }
 
   // Number of internal knots (simple multiplicity).
-  const int aNbInternal = theNbCP - anOrder;
+  const int aNbInternal  = theNbCP - anOrder;
   const int aNbBaseKnots = aNbInternal + 2; // start + internal + end
 
   // Build base knot vector as Array1 with known size.
@@ -283,8 +282,8 @@ void Approx_BSplineApproxInterp::computeKnots(int                               
   // Uniform internal knots.
   for (int i = 1; i <= aNbInternal; ++i)
   {
-    double aKnot = aUMin + (aUMax - aUMin) * static_cast<double>(i)
-                           / static_cast<double>(aNbInternal + 1);
+    double aKnot =
+      aUMin + (aUMax - aUMin) * static_cast<double>(i) / static_cast<double>(aNbInternal + 1);
     theKnots(i + 1) = aKnot;
     theMults(i + 1) = 1;
   }
@@ -310,7 +309,7 @@ math_Matrix Approx_BSplineApproxInterp::buildBasisMatrix(
   const NCollection_Array1<double>& theParams,
   int                               theDerivOrder) const
 {
-  const int aNbCP = theFlatKnots.Length() - myDegree - 1;
+  const int   aNbCP = theFlatKnots.Length() - myDegree - 1;
   math_Matrix aBasisMat(1, theParams.Length(), 1, aNbCP, 0.0);
 
   math_Matrix aBspBasis(1, theDerivOrder + 1, 1, myDegree + 1, 0.0);
@@ -319,9 +318,12 @@ math_Matrix Approx_BSplineApproxInterp::buildBasisMatrix(
   {
     aBspBasis.Init(0.0);
     int aFirstNonZero = 0;
-    BSplCLib::EvalBsplineBasis(theDerivOrder, myDegree + 1, theFlatKnots,
+    BSplCLib::EvalBsplineBasis(theDerivOrder,
+                               myDegree + 1,
+                               theFlatKnots,
                                theParams.Value(theParams.Lower() + iParm - 1),
-                               aFirstNonZero, aBspBasis);
+                               aFirstNonZero,
+                               aBspBasis);
 
     if (theDerivOrder > 0)
     {
@@ -405,19 +407,19 @@ math_Matrix Approx_BSplineApproxInterp::buildContinuityMatrix(
 //=================================================================================================
 
 bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& theParams,
-                                        const NCollection_Array1<double>& theKnots,
-                                        const NCollection_Array1<int>&    theMults)
+                                       const NCollection_Array1<double>& theKnots,
+                                       const NCollection_Array1<int>&    theMults)
 {
   // Compute flat knots.
-  const int aNbFlatKnots = BSplCLib::KnotSequenceLength(theMults, myDegree, false);
+  const int                  aNbFlatKnots = BSplCLib::KnotSequenceLength(theMults, myDegree, false);
   NCollection_Array1<double> aFlatKnots(1, aNbFlatKnots);
   BSplCLib::KnotSequence(theKnots, theMults, myDegree, false, aFlatKnots);
 
-  const int aNbApprox   = myApproximated.Length();
-  const int aNbInterp   = myInterpolated.Length();
+  const int aNbApprox = myApproximated.Length();
+  const int aNbInterp = myInterpolated.Length();
 
-  const bool aMakeClosed = isClosed();
-  int aNbContinuity = 0;
+  const bool aMakeClosed   = isClosed();
+  int        aNbContinuity = 0;
   if (aMakeClosed)
   {
     aNbContinuity = 3; // C0 + C1 + C2
@@ -438,7 +440,7 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
   }
 
   // Build KKT system.
-  const int aNbVars = aNbCtrPnts + aNbInterp + aNbContinuity;
+  const int   aNbVars = aNbCtrPnts + aNbInterp + aNbContinuity;
   math_Matrix aLHS(1, aNbVars, 1, aNbVars, 0.0);
 
   math_Vector aRHSx(1, aNbVars, 0.0);
@@ -449,17 +451,17 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
   if (aNbApprox > 0)
   {
     NCollection_Array1<double> anApproxParams(1, aNbApprox);
-    math_Vector aBx(1, aNbApprox);
-    math_Vector aBy(1, aNbApprox);
-    math_Vector aBz(1, aNbApprox);
+    math_Vector                aBx(1, aNbApprox);
+    math_Vector                aBy(1, aNbApprox);
+    math_Vector                aBz(1, aNbApprox);
 
     for (int i = 0; i < aNbApprox; ++i)
     {
-      const int aIdx = myApproximated.Value(i); // 0-based point index
+      const int     aIdx = myApproximated.Value(i); // 0-based point index
       const gp_Pnt& aPnt = myPoints.Value(aIdx + 1);
-      aBx(i + 1) = aPnt.X();
-      aBy(i + 1) = aPnt.Y();
-      aBz(i + 1) = aPnt.Z();
+      aBx(i + 1)         = aPnt.X();
+      aBy(i + 1)         = aPnt.Y();
+      aBz(i + 1)         = aPnt.Z();
       anApproxParams.SetValue(i + 1, theParams.Value(theParams.Lower() + aIdx));
     }
 
@@ -489,11 +491,11 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
       NCollection_Array1<double> anInterpParams(1, aNbInterp);
       for (int i = 0; i < aNbInterp; ++i)
       {
-        const int aIdx = myInterpolated.Value(i); // 0-based point index
+        const int     aIdx = myInterpolated.Value(i); // 0-based point index
         const gp_Pnt& aPnt = myPoints.Value(aIdx + 1);
-        aDx(i + 1) = aPnt.X();
-        aDy(i + 1) = aPnt.Y();
-        aDz(i + 1) = aPnt.Z();
+        aDx(i + 1)         = aPnt.X();
+        aDy(i + 1)         = aPnt.Y();
+        aDz(i + 1)         = aPnt.Z();
         anInterpParams.SetValue(i + 1, theParams.Value(theParams.Lower() + aIdx));
       }
 
@@ -508,7 +510,8 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
     // Continuity constraints for closed curves.
     if (aMakeClosed && aNbContinuity > 0)
     {
-      math_Matrix aContMat = buildContinuityMatrix(aNbCtrPnts, aNbContinuity, theParams, aFlatKnots);
+      math_Matrix aContMat =
+        buildContinuityMatrix(aNbCtrPnts, aNbContinuity, theParams, aFlatKnots);
       math_Matrix aContMatT = aContMat.Transposed();
 
       const int aContRowStart = aNbCtrPnts + aNbInterp + 1;
@@ -537,8 +540,8 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
 
   // Helper: solve LU * x = b using pre-computed factorization.
   auto solveLU = [&](const math_Vector& theRHS) -> math_Vector {
-    math_Vector aX = theRHS;
-    int aFirstNonZero = 0;
+    math_Vector aX            = theRHS;
+    int         aFirstNonZero = 0;
     for (int i = aX.Lower(); i <= aX.Upper(); ++i)
     {
       const int aPivotIdx = aPivot(i);
@@ -586,11 +589,11 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
   myMaxError = 0.0;
   for (int i = 0; i < aNbApprox; ++i)
   {
-    const int aIdx = myApproximated.Value(i);
-    const gp_Pnt& aPnt = myPoints.Value(aIdx + 1);
-    const double aParam = theParams.Value(theParams.Lower() + aIdx);
-    const double anError = myCurve->Value(aParam).Distance(aPnt);
-    myMaxError = std::max(myMaxError, anError);
+    const int     aIdx    = myApproximated.Value(i);
+    const gp_Pnt& aPnt    = myPoints.Value(aIdx + 1);
+    const double  aParam  = theParams.Value(theParams.Lower() + aIdx);
+    const double  anError = myCurve->Value(aParam).Distance(aPnt);
+    myMaxError            = std::max(myMaxError, anError);
   }
 
   return true;
@@ -599,11 +602,11 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
 //=================================================================================================
 
 double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                         thePnt,
-                                                    const occ::handle<Geom_BSplineCurve>& theCurve,
-                                                    double                                theInitParam,
-                                                    double&                               theParam) const
+                                                  const occ::handle<Geom_BSplineCurve>& theCurve,
+                                                  double  theInitParam,
+                                                  double& theParam) const
 {
-  double aT = theInitParam;
+  double aT  = theInitParam;
   double aDt = 0.0;
   double aF  = 0.0;
 
@@ -614,7 +617,7 @@ double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                 
     theCurve->D2(aT, aPnt2, aDP, aD2P);
 
     const gp_XYZ aDiff = aPnt2.XYZ() - thePnt.XYZ();
-    aF = aDiff.SquareModulus();
+    aF                 = aDiff.SquareModulus();
 
     const double aDF  = aDiff.Dot(aDP.XYZ());
     const double aD2F = aDiff.Dot(aD2P.XYZ()) + aDP.SquareMagnitude();
@@ -624,7 +627,7 @@ double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                 
       break;
     }
 
-    aDt = -aDF / aD2F;
+    aDt          = -aDF / aD2F;
     double aNewT = aT + aDt;
 
     // Clamp to curve domain.
@@ -650,15 +653,14 @@ double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                 
 
 //=================================================================================================
 
-void Approx_BSplineApproxInterp::optimizeParameters(
-  const occ::handle<Geom_BSplineCurve>& theCurve,
-  NCollection_Array1<double>&            theParams) const
+void Approx_BSplineApproxInterp::optimizeParameters(const occ::handle<Geom_BSplineCurve>& theCurve,
+                                                    NCollection_Array1<double>& theParams) const
 {
   for (int i = 0; i < myApproximated.Length(); ++i)
   {
-    const int aIdx = myApproximated.Value(i);
-    const gp_Pnt& aPnt = myPoints.Value(aIdx + 1);
-    const double anOldParam = theParams.Value(theParams.Lower() + aIdx);
+    const int     aIdx       = myApproximated.Value(i);
+    const gp_Pnt& aPnt       = myPoints.Value(aIdx + 1);
+    const double  anOldParam = theParams.Value(theParams.Lower() + aIdx);
 
     double aNewParam = anOldParam;
     projectOnCurve(aPnt, theCurve, anOldParam, aNewParam);
@@ -683,8 +685,8 @@ bool Approx_BSplineApproxInterp::isClosed() const
 
 bool Approx_BSplineApproxInterp::isFirstAndLastInterpolated() const
 {
-  bool aFirst = false;
-  bool aLast  = false;
+  bool      aFirst   = false;
+  bool      aLast    = false;
   const int aLastIdx = myPoints.Length() - 1; // 0-based
   for (int i = 0; i < myInterpolated.Length(); ++i)
   {
