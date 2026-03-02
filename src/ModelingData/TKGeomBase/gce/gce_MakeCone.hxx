@@ -49,8 +49,10 @@ public:
   //! Ang is the conical surface semi-angle between 0 and PI/2 radians.
   //! Radius is the radius of the circle in the reference plane of
   //! the cone.
-  //! If Radius is lower than 0.0 the status is "
-  //! If Ang < Resolution from gp or Ang >= (PI/2) - Resolution.
+  //! If Radius is lower than 0.0, the construction fails with status
+  //! `gce_NegativeRadius`.
+  //! If Ang < Resolution from gp or Ang >= (PI/2) - Resolution,
+  //! the construction fails with status `gce_BadAngle`.
   //! @param[in] A2 local coordinate system
   //! @param[in] Ang angle value
   //! @param[in] Radius radius value

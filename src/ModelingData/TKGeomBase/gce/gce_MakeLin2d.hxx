@@ -54,8 +54,8 @@ public:
   Standard_EXPORT gce_MakeLin2d(const gp_Pnt2d& P, const gp_Dir2d& V);
 
   //! Creates the line from the equation A*X + B*Y + C = 0.0
-  //! the status is "NullAxis"if std::sqrt(A*A + B*B) <= Resolution from gp.
-  //! @param[in] A local coordinate system
+  //! the status is "NullAxis" if std::sqrt(A*A + B*B) <= Resolution from gp.
+  //! @param[in] A equation coefficient A
   //! @param[in] B equation coefficient B
   //! @param[in] C equation coefficient C
   Standard_EXPORT gce_MakeLin2d(const double A, const double B, const double C);

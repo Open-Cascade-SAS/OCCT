@@ -70,7 +70,7 @@ public:
   //!
   //! the status is "BadEquation" if std::sqrt(A*A + B*B + C*C) <=
   //! Resolution from gp.
-  //! @param[in] A local coordinate system
+  //! @param[in] A equation coefficient A
   //! @param[in] B equation coefficient B
   //! @param[in] C equation coefficient C
   //! @param[in] D equation constant term
