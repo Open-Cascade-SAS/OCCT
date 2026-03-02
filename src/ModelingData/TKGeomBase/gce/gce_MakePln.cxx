@@ -124,16 +124,3 @@ const gp_Pln& gce_MakePln::Value() const
   return ThePln;
 }
 
-//=================================================================================================
-
-const gp_Pln& gce_MakePln::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakePln::operator gp_Pln() const
-{
-  return Value();
-}

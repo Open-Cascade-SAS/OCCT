@@ -80,16 +80,3 @@ const gp_Hypr& gce_MakeHypr::Value() const
   return TheHypr;
 }
 
-//=================================================================================================
-
-const gp_Hypr& gce_MakeHypr::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeHypr::operator gp_Hypr() const
-{
-  return Value();
-}

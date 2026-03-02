@@ -98,8 +98,19 @@ public:
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
   Standard_EXPORT const gp_Hypr& Value() const;
 
-  Standard_EXPORT const gp_Hypr& Operator() const;
-  Standard_EXPORT                operator gp_Hypr() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Hypr& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Hypr() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Hypr TheHypr;

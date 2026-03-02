@@ -36,18 +36,32 @@ class gce_MakeTranslation
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a translation along the vector " Vect"
+  //! Constructs a translation from a vector.
+  //! @param[in] Vect translation vector
   Standard_EXPORT gce_MakeTranslation(const gp_Vec& Vect);
 
-  //! Constructs a translation along the vector
-  //! (Point1,Point2) defined from the point Point1 to the point Point2.
+  //! Constructs a translation from two points.
+  //! @param[in] Point1 start point
+  //! @param[in] Point2 end point
   Standard_EXPORT gce_MakeTranslation(const gp_Pnt& Point1, const gp_Pnt& Point2);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const gp_Trsf& Value() const;
 
-  Standard_EXPORT const gp_Trsf& Operator() const;
-  Standard_EXPORT                operator gp_Trsf() const;
+  //! Alias for Value().
+  //! @return resulting transformation
+  const gp_Trsf& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed transformation.
+  //! @return resulting transformation
+  operator gp_Trsf() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Trsf TheTranslation;

@@ -91,8 +91,19 @@ public:
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const gp_Elips2d& Value() const;
 
-  Standard_EXPORT const gp_Elips2d& Operator() const;
-  Standard_EXPORT                   operator gp_Elips2d() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Elips2d& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Elips2d() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Elips2d TheElips2d;

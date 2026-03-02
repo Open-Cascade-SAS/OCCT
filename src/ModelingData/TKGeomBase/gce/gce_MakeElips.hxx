@@ -68,8 +68,19 @@ public:
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
   Standard_EXPORT const gp_Elips& Value() const;
 
-  Standard_EXPORT const gp_Elips& Operator() const;
-  Standard_EXPORT                 operator gp_Elips() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Elips& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Elips() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Elips TheElips;

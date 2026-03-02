@@ -103,8 +103,19 @@ public:
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
   Standard_EXPORT const gp_Hypr2d& Value() const;
 
-  Standard_EXPORT const gp_Hypr2d& Operator() const;
-  Standard_EXPORT                  operator gp_Hypr2d() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Hypr2d& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Hypr2d() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Hypr2d TheHypr2d;

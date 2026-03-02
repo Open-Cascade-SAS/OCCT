@@ -70,8 +70,19 @@ public:
   //! Exceptions StdFail_NotDone if no unit vector is constructed.
   Standard_EXPORT const gp_Dir2d& Value() const;
 
-  Standard_EXPORT const gp_Dir2d& Operator() const;
-  Standard_EXPORT                 operator gp_Dir2d() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Dir2d& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Dir2d() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Dir2d TheDir2d;

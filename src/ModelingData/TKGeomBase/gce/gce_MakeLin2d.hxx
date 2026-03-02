@@ -80,8 +80,19 @@ public:
   //! Exceptions StdFail_NotDone if no line is constructed.
   Standard_EXPORT gp_Lin2d Value() const;
 
-  Standard_EXPORT gp_Lin2d Operator() const;
-  Standard_EXPORT          operator gp_Lin2d() const;
+  //! Alias for Value().
+  //! @return resulting object
+  gp_Lin2d Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Lin2d() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Lin2d TheLin2d;

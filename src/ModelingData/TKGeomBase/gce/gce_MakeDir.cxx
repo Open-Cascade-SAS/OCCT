@@ -90,16 +90,3 @@ const gp_Dir& gce_MakeDir::Value() const
   return TheDir;
 }
 
-//=================================================================================================
-
-const gp_Dir& gce_MakeDir::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeDir::operator gp_Dir() const
-{
-  return Value();
-}

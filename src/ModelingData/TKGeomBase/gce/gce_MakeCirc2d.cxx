@@ -187,16 +187,3 @@ const gp_Circ2d& gce_MakeCirc2d::Value() const
   return TheCirc2d;
 }
 
-//=================================================================================================
-
-const gp_Circ2d& gce_MakeCirc2d::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeCirc2d::operator gp_Circ2d() const
-{
-  return Value();
-}

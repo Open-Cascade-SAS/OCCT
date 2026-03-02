@@ -97,16 +97,3 @@ const gp_Elips2d& gce_MakeElips2d::Value() const
   return TheElips2d;
 }
 
-//=================================================================================================
-
-const gp_Elips2d& gce_MakeElips2d::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeElips2d::operator gp_Elips2d() const
-{
-  return Value();
-}

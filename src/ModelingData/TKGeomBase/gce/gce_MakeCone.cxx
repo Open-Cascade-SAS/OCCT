@@ -290,16 +290,3 @@ const gp_Cone& gce_MakeCone::Value() const
   return TheCone;
 }
 
-//=================================================================================================
-
-const gp_Cone& gce_MakeCone::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeCone::operator gp_Cone() const
-{
-  return Value();
-}

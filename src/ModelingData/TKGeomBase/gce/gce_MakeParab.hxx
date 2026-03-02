@@ -27,64 +27,59 @@ class gp_Ax2;
 class gp_Ax1;
 class gp_Pnt;
 
-//! This class implements the following algorithms used to
-//! create Parab from gp.
-//! Defines the parabola in the parameterization range:
-//! ]-infinite, +infinite[
-//! The vertex of the parabola is the "Location" point of the
-//! local coordinate system (axis placement) of the parabola.
+//! Implements construction algorithms for `gp_Parab`.
+//! The parabola is infinite in the parameter range ]-infinite, +infinite[.
+//! The vertex is the `Location` point of the local coordinate system.
 //!
-//! The "XDirection" and the "YDirection" of this system define
-//! the plane of the parabola.
+//! The `XDirection` and `YDirection` define the parabola plane.
 //!
-//! The "XAxis" of the parabola ("Location", "XDirection") is
-//! the axis of symmetry of the parabola. The Xaxis is oriented
-//! from the vertex of the parabola to the Focus of the parabola.
+//! The `XAxis` (`Location`, `XDirection`) is the symmetry axis and is oriented
+//! from the vertex to the focus.
 //!
-//! The "YAxis" of the parabola ("Location", "YDirection") is
-//! parallel to the directrix of the parabola.
+//! The `YAxis` (`Location`, `YDirection`) is parallel to the directrix.
 //!
-//! The equation of the parabola in the local coordinates system is
-//! Y**2 = (2*P) * X
-//! P is the distance between the focus and the directrix of the
-//! parabola (called Parameter).
-//! The focal length F = P/2 is the distance between the vertex
-//! and the focus of the parabola.
+//! The equation in the local coordinate system is:
+//! `Y**2 = (2*P) * X`, where `P` is the parameter
+//! (distance between focus and directrix).
+//! The focal length `F = P / 2` is the distance from vertex to focus.
 //!
-//! * Creates a parabola with its local coordinate system "A2"
-//! and it's focal length "Focal".
-//! * Create a parabola with its directrix and its focus point.
+//! Supported constructions:
+//! - from local coordinate system and focal length;
+//! - from directrix and focus.
 class gce_MakeParab : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! --- Purpose ;
-  //! Creates a parabola with its local coordinate system "A2"
-  //! and it's focal length "Focal".
-  //! The XDirection of A2 defines the axis of symmetry of the
-  //! parabola. The YDirection of A2 is parallel to the directrix
-  //! of the parabola. The Location point of A2 is the vertex of
-  //! the parabola
-  //! The status is "NullFocusLength" if Focal < 0.0
+  //! Creates a parabola from local coordinate system and focal length.
+  //! @param[in] A2 local coordinate system of the parabola
+  //! @param[in] Focal focal length
+  //! @note `TheError` is set to `gce_NullFocusLength` if `Focal < 0.0`.
   Standard_EXPORT gce_MakeParab(const gp_Ax2& A2, const double Focal);
 
-  //! D is the directrix of the parabola and F the focus point.
-  //! The symmetry axis (XAxis) of the parabola is normal to the
-  //! directrix and pass through the focus point F, but its
-  //! location point is the vertex of the parabola.
-  //! The YAxis of the parabola is parallel to D and its location
-  //! point is the vertex of the parabola. The normal to the plane
-  //! of the parabola is the cross product between the XAxis and the
-  //! YAxis.
+  //! Creates a parabola from directrix and focus.
+  //! @param[in] D directrix of the parabola
+  //! @param[in] F focus point of the parabola
   Standard_EXPORT gce_MakeParab(const gp_Ax1& D, const gp_Pnt& F);
 
   //! Returns the constructed parabola.
-  //! Exceptions StdFail_NotDone if no parabola is constructed.
+  //! @return resulting parabola
+  //! @throw StdFail_NotDone if construction has failed
   Standard_EXPORT const gp_Parab& Value() const;
 
-  Standard_EXPORT const gp_Parab& Operator() const;
-  Standard_EXPORT                 operator gp_Parab() const;
+  //! Alias for Value().
+  //! @return resulting parabola
+  const gp_Parab& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed parabola.
+  //! @return resulting parabola
+  operator gp_Parab() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Parab TheParab;

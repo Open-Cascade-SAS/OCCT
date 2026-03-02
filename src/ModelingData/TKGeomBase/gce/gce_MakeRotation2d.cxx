@@ -32,16 +32,3 @@ const gp_Trsf2d& gce_MakeRotation2d::Value() const
   return TheRotation2d;
 }
 
-//=================================================================================================
-
-const gp_Trsf2d& gce_MakeRotation2d::Operator() const
-{
-  return TheRotation2d;
-}
-
-//=================================================================================================
-
-gce_MakeRotation2d::operator gp_Trsf2d() const
-{
-  return TheRotation2d;
-}

@@ -405,16 +405,3 @@ const gp_Circ& gce_MakeCirc::Value() const
   return TheCirc;
 }
 
-//=================================================================================================
-
-const gp_Circ& gce_MakeCirc::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeCirc::operator gp_Circ() const
-{
-  return Value();
-}

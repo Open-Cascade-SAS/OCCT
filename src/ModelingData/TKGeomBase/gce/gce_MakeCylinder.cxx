@@ -149,16 +149,3 @@ const gp_Cylinder& gce_MakeCylinder::Value() const
   return TheCylinder;
 }
 
-//=================================================================================================
-
-const gp_Cylinder& gce_MakeCylinder::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeCylinder::operator gp_Cylinder() const
-{
-  return Value();
-}

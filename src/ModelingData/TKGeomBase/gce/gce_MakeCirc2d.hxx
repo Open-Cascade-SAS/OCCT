@@ -99,8 +99,19 @@ public:
   //! Exceptions StdFail_NotDone if no circle is constructed.
   Standard_EXPORT const gp_Circ2d& Value() const;
 
-  Standard_EXPORT const gp_Circ2d& Operator() const;
-  Standard_EXPORT                  operator gp_Circ2d() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Circ2d& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Circ2d() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Circ2d TheCirc2d;

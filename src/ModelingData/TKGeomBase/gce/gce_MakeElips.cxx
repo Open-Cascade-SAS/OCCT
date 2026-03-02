@@ -83,16 +83,3 @@ const gp_Elips& gce_MakeElips::Value() const
   return TheElips;
 }
 
-//=================================================================================================
-
-const gp_Elips& gce_MakeElips::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeElips::operator gp_Elips() const
-{
-  return Value();
-}

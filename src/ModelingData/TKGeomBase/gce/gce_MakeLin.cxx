@@ -69,16 +69,3 @@ const gp_Lin& gce_MakeLin::Value() const
   return TheLin;
 }
 
-//=================================================================================================
-
-const gp_Lin& gce_MakeLin::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeLin::operator gp_Lin() const
-{
-  return Value();
-}

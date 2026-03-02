@@ -81,8 +81,19 @@ public:
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
   Standard_EXPORT const gp_Cylinder& Value() const;
 
-  Standard_EXPORT const gp_Cylinder& Operator() const;
-  Standard_EXPORT                    operator gp_Cylinder() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Cylinder& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Cylinder() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Cylinder TheCylinder;

@@ -106,8 +106,19 @@ public:
   //! Exceptions StdFail_NotDone if no plane is constructed.
   Standard_EXPORT const gp_Pln& Value() const;
 
-  Standard_EXPORT const gp_Pln& Operator() const;
-  Standard_EXPORT               operator gp_Pln() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Pln& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Pln() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Pln ThePln;

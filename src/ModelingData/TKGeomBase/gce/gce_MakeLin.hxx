@@ -59,8 +59,19 @@ public:
   //! Exceptions StdFail_NotDone is raised if no line is constructed.
   Standard_EXPORT const gp_Lin& Value() const;
 
-  Standard_EXPORT const gp_Lin& Operator() const;
-  Standard_EXPORT               operator gp_Lin() const;
+  //! Alias for Value().
+  //! @return resulting object
+  const gp_Lin& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Lin() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Lin TheLin;

@@ -95,16 +95,3 @@ const gp_Hypr2d& gce_MakeHypr2d::Value() const
   return TheHypr2d;
 }
 
-//=================================================================================================
-
-const gp_Hypr2d& gce_MakeHypr2d::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeHypr2d::operator gp_Hypr2d() const
-{
-  return Value();
-}

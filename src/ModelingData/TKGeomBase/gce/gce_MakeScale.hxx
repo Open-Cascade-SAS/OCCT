@@ -35,16 +35,28 @@ class gce_MakeScale
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a scaling transformation with
-  //! -   Point as the center of the transformation, and
-  //! -   Scale as the scale factor.
+  //! Constructs a scaling transformation.
+  //! @param[in] Point center of scaling
+  //! @param[in] Scale scale factor
   Standard_EXPORT gce_MakeScale(const gp_Pnt& Point, const double Scale);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const gp_Trsf& Value() const;
 
-  Standard_EXPORT const gp_Trsf& Operator() const;
-  Standard_EXPORT                operator gp_Trsf() const;
+  //! Alias for Value().
+  //! @return resulting transformation
+  const gp_Trsf& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed transformation.
+  //! @return resulting transformation
+  operator gp_Trsf() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Trsf TheScale;

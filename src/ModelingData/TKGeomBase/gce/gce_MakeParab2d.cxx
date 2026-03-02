@@ -84,16 +84,3 @@ const gp_Parab2d& gce_MakeParab2d::Value() const
   return TheParab2d;
 }
 
-//=================================================================================================
-
-const gp_Parab2d& gce_MakeParab2d::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeParab2d::operator gp_Parab2d() const
-{
-  return Value();
-}

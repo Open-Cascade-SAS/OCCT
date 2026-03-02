@@ -93,16 +93,3 @@ gp_Lin2d gce_MakeLin2d::Value() const
   return TheLin2d;
 }
 
-//=================================================================================================
-
-gp_Lin2d gce_MakeLin2d::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeLin2d::operator gp_Lin2d() const
-{
-  return Value();
-}

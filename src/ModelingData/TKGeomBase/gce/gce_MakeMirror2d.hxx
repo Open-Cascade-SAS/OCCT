@@ -38,21 +38,40 @@ class gce_MakeMirror2d
 public:
   DEFINE_STANDARD_ALLOC
 
+  //! Constructs a central symmetry about a point.
+  //! @param[in] Point center point
   Standard_EXPORT gce_MakeMirror2d(const gp_Pnt2d& Point);
 
+  //! Constructs an axial symmetry about an axis.
+  //! @param[in] Axis mirror axis
   Standard_EXPORT gce_MakeMirror2d(const gp_Ax2d& Axis);
 
+  //! Constructs an axial symmetry about a line.
+  //! @param[in] Line mirror line
   Standard_EXPORT gce_MakeMirror2d(const gp_Lin2d& Line);
 
-  //! Makes a symmetry transformation af axis defined by
-  //! <Point> and <Direc>.
+  //! Constructs an axial symmetry about an axis defined by point and direction.
+  //! @param[in] Point point on the axis
+  //! @param[in] Direc axis direction
   Standard_EXPORT gce_MakeMirror2d(const gp_Pnt2d& Point, const gp_Dir2d& Direc);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const gp_Trsf2d& Value() const;
 
-  Standard_EXPORT const gp_Trsf2d& Operator() const;
-  Standard_EXPORT                  operator gp_Trsf2d() const;
+  //! Alias for Value().
+  //! @return resulting transformation
+  const gp_Trsf2d& Operator() const
+  {
+    return Value();
+  }
+
+  //! Conversion operator returning the constructed transformation.
+  //! @return resulting transformation
+  operator gp_Trsf2d() const
+  {
+    return Operator();
+  }
 
 private:
   gp_Trsf2d TheMirror2d;
