@@ -17,7 +17,7 @@
 #ifndef _ChFiDS_ErrorStatus_HeaderFile
 #define _ChFiDS_ErrorStatus_HeaderFile
 
-//! --- Purpose statuts concernant la cause de l'erreur
+//! --- Purpose status concerning the cause of the error
 enum ChFiDS_ErrorStatus
 {
   ChFiDS_Ok,

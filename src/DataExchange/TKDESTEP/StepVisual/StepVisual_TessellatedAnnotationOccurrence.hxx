@@ -23,7 +23,7 @@
 class StepVisual_TessellatedAnnotationOccurrence : public StepVisual_StyledItem
 {
 public:
-  //! Returns a TesselatedAnnotationOccurence
+  //! Returns a TesselatedAnnotationOccurrence
   Standard_EXPORT StepVisual_TessellatedAnnotationOccurrence();
 
   DEFINE_STANDARD_RTTIEXT(StepVisual_TessellatedAnnotationOccurrence, StepVisual_StyledItem)

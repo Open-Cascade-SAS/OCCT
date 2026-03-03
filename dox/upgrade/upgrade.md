@@ -1274,7 +1274,7 @@ In most cases this change should be transparent, however applications implementi
 * Types GeomPlate_Array1OfHCurveOnSurface and GeomPlate_HArray1OfHCurveOnSurface have been replaced with GeomPlate_Array1OfHCurve and GeomPlate_HArray1OfHCurve correspondingly (accept base class Adaptor3d_HCurve instead of Adaptor3d_HCurveOnSurface).
 * Enumeration *Image_PixMap::ImgFormat*, previously declared as nested enumeration within class *Image_PixMap*, has been moved to global namespace as *Image_Format* following OCCT coding rules.
   The enumeration values have suffix Image_Format_ and preserve previous name scheme for easy renaming of old values - e.g. Image_PixMap::ImgGray become Image_Format_Gray.
-  Old definitions are preserved as depreacated aliases to the new ones;
+  Old definitions are preserved as deprecated aliases to the new ones;
 * Methods *Image_PixMap::PixelColor()* and *Image_PixMap::SetPixelColor()* now take/return Quantity_ColorRGBA instead of Quantity_Color/NCollection_Vec4.
 * The method BOPAlgo_Builder::Origins() returns BOPCol_DataMapOfShapeListOfShape instead of BOPCol_DataMapOfShapeShape.
 * The methods BOPDS_DS::IsToSort(const Handle(BOPDS_CommonBlock)&, Standard_Integer&) and BOPDS_DS::SortPaveBlocks(const Handle(BOPDS_CommonBlock)&) have been removed. The sorting is now performed during the addition of the Pave Blocks into Common Block.
