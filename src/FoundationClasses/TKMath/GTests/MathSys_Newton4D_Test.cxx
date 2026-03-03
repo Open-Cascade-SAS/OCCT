@@ -135,6 +135,7 @@ TEST_F(MathSys_Newton4DTest, Solve4D_SmallStepAtRoot_ReturnsOK)
   aOptions.FTolerance    = 1.0e-12;
   aOptions.XTolerance    = 100.0;
   aOptions.MaxIterations = 5;
+  aOptions.MaxStepRatio  = 100.0;
 
   const MathSys::NewtonResultN<4> aResult =
     MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
