@@ -2,6 +2,7 @@
 set(OCCT_TKGeomBase_GTests_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 
 set(OCCT_TKGeomBase_GTests_FILES
+  Approx_BSplineApproxInterp_Test.cxx
   AdvApp2Var_Context_Test.cxx
   AdvApp2Var_Framework_Test.cxx
   AdvApp2Var_Iso_Test.cxx

@@ -62,6 +62,10 @@ set(OCCT_GeomFill_FILES
   GeomFill_Generator.cxx
   GeomFill_Generator.hxx
   GeomFill_Generator.lxx
+  GeomFill_Gordon.cxx
+  GeomFill_Gordon.hxx
+  GeomFill_GordonBuilder.cxx
+  GeomFill_GordonBuilder.hxx
   GeomFill_GuideTrihedronAC.cxx
   GeomFill_GuideTrihedronAC.hxx
   GeomFill_GuideTrihedronPlan.cxx
