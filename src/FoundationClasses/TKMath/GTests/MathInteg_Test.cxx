@@ -370,8 +370,13 @@ TEST(MathInteg_GaussAdaptiveTest, ProvidesErrorEstimate)
 
   MathInteg::IntegResult aResult = MathInteg::GaussAdaptive(aFunc, 0.0, THE_PI, aConfig);
   ASSERT_TRUE(aResult.IsDone());
-  EXPECT_GT(aResult.AbsoluteError, 0.0);
-  EXPECT_LT(aResult.AbsoluteError, 1.0e-6);
+  ASSERT_TRUE(aResult.AbsoluteError.has_value());
+  ASSERT_TRUE(aResult.RelativeError.has_value());
+  EXPECT_TRUE(std::isfinite(*aResult.AbsoluteError));
+  EXPECT_TRUE(std::isfinite(*aResult.RelativeError));
+  EXPECT_GE(*aResult.AbsoluteError, 0.0);
+  EXPECT_GE(*aResult.RelativeError, 0.0);
+  EXPECT_LT(*aResult.AbsoluteError, 1.0e-6);
 }
 
 TEST(MathInteg_GaussAdaptiveTest, UsesConfiguredOrders)
