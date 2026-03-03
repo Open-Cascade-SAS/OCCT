@@ -116,7 +116,7 @@ struct LinearResult
 struct LinearMultipleResult
 {
   MathUtils::Status          Status = MathUtils::Status::NotConverged; //!< Computation status
-  std::optional<math_Matrix> Solutions; //!< Solution matrix X in AX = B (set by solver)
+  std::optional<math_Matrix> Solutions;   //!< Solution matrix X in AX = B (set by solver)
   std::optional<double>      Determinant; //!< Determinant of matrix (if computed)
 
   //! Returns true if computation succeeded.

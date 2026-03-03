@@ -133,9 +133,11 @@ TEST_F(MathSys_Newton3DTest, Solve3D_SmallStepAtRoot_ReturnsOK)
 
 TEST_F(MathSys_Newton3DTest, Solve3D_TinyStepLargeResidual_ReturnsMaxIterations)
 {
-  auto aFunc =
-    [](double /*theX1*/, double /*theX2*/, double /*theX3*/, double theF[3], double theJ[3][3])
-    -> bool {
+  auto aFunc = [](double /*theX1*/,
+                  double /*theX2*/,
+                  double /*theX3*/,
+                  double theF[3],
+                  double theJ[3][3]) -> bool {
     theF[0]    = 1.0;
     theF[1]    = 1.0;
     theF[2]    = 1.0;

@@ -50,8 +50,8 @@ math_Matrix BuildSymmetricTridiagonal(const math_Vector& theDiag, const math_Vec
   return aM;
 }
 
-void BuildLegacyArrays(const math_Vector&       theDiag,
-                       const math_Vector&       theSubdiag,
+void BuildLegacyArrays(const math_Vector&          theDiag,
+                       const math_Vector&          theSubdiag,
                        NCollection_Array1<double>& theDiagLegacy,
                        NCollection_Array1<double>& theSubdiagLegacy)
 {
@@ -65,7 +65,7 @@ void BuildLegacyArrays(const math_Vector&       theDiag,
 
 std::vector<double> SortedEigenValuesFromLegacy(const math_EigenValuesSearcher& theLegacy)
 {
-  const int               aN = theLegacy.Dimension();
+  const int           aN = theLegacy.Dimension();
   std::vector<double> aVals;
   aVals.reserve(static_cast<size_t>(aN));
   for (int i = 1; i <= aN; ++i)
@@ -104,9 +104,11 @@ double VectorNorm2(const math_Vector& theVec)
   return std::sqrt(aNorm2);
 }
 
-double PairResidualInfinity(const math_Matrix& theMatrix, double theLambda, const math_Vector& theVector)
+double PairResidualInfinity(const math_Matrix& theMatrix,
+                            double             theLambda,
+                            const math_Vector& theVector)
 {
-  const int aN = theMatrix.RowNumber();
+  const int aN   = theMatrix.RowNumber();
   double    aMax = 0.0;
   for (int i = 1; i <= aN; ++i)
   {
@@ -126,7 +128,7 @@ double PairResidualInfinity(const math_Matrix& theMatrix, double theLambda, cons
 
 double DotProduct(const math_Vector& theV1, const math_Vector& theV2)
 {
-  const int aN = theV1.Length();
+  const int aN   = theV1.Length();
   double    aDot = 0.0;
   for (int i = 1; i <= aN; ++i)
   {
@@ -168,7 +170,7 @@ TEST(MathLin_EigenSearch_Test, BasicParityWithLegacy_3x3)
     EXPECT_NEAR(aLegacySorted[i], aModernSorted[i], THE_EIGEN_TOL);
   }
 
-  const math_Matrix aA = BuildSymmetricTridiagonal(aDiag, aSubdiag);
+  const math_Matrix  aA       = BuildSymmetricTridiagonal(aDiag, aSubdiag);
   const math_Vector& aEigVals = *aModern.EigenValues;
   for (int i = 1; i <= 3; ++i)
   {
@@ -218,8 +220,8 @@ TEST(MathLin_EigenSearch_Test, HandlesNonOneLowerBounds)
 
 TEST(MathLin_EigenSearch_Test, RandomParityAndOrthogonality)
 {
-  std::mt19937                     aGen(123456u);
-  std::uniform_int_distribution<int> aDimDist(2, 32);
+  std::mt19937                           aGen(123456u);
+  std::uniform_int_distribution<int>     aDimDist(2, 32);
   std::uniform_real_distribution<double> aValDist(-100.0, 100.0);
 
   for (int aCase = 0; aCase < THE_RANDOM_NB_CASES; ++aCase)
@@ -258,7 +260,7 @@ TEST(MathLin_EigenSearch_Test, RandomParityAndOrthogonality)
       EXPECT_NEAR(aLegacySorted[i], aModernSorted[i], THE_EIGEN_TOL) << "case=" << aCase;
     }
 
-    const math_Matrix aA = BuildSymmetricTridiagonal(aDiag, aSubdiag);
+    const math_Matrix  aA       = BuildSymmetricTridiagonal(aDiag, aSubdiag);
     const math_Vector& aEigVals = *aModern.EigenValues;
 
     for (int i = 1; i <= aN; ++i)

@@ -277,7 +277,7 @@ TEST(MathInteg_GaussTest, Order21)
 
 TEST(MathInteg_GaussTest, Order9)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 9);
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_EQ(aResult.NbPoints, 9);
@@ -511,7 +511,7 @@ TEST(MathInteg_BoolConversionTest, SuccessfulResultIsTrue)
 
 TEST(MathInteg_BoolConversionTest, InvalidInputIsFalse)
 {
-  SinFunc aFunc;
+  SinFunc                aFunc;
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 0);
   EXPECT_FALSE(static_cast<bool>(aResult));
 }

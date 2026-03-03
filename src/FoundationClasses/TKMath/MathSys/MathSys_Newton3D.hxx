@@ -255,10 +255,10 @@ NewtonResultN<3> Solve3D(const Function&              theFunc,
         return aRes;
       }
 
-      aRes.ResidualNorm = std::sqrt(aCheckF[0] * aCheckF[0] + aCheckF[1] * aCheckF[1]
-                                    + aCheckF[2] * aCheckF[2]);
-      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
-                                                                       : MathUtils::Status::MaxIterations;
+      aRes.ResidualNorm =
+        std::sqrt(aCheckF[0] * aCheckF[0] + aCheckF[1] * aCheckF[1] + aCheckF[2] * aCheckF[2]);
+      aRes.Status = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                 : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }

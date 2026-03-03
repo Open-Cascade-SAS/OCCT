@@ -168,10 +168,10 @@ bool LimitAndMayBeSwap(Function&                theFunc,
 //! @param theOptions bracketing options
 //! @return bracketing result
 template <typename Function>
-MinBracketResult BracketMinimum(Function&                    theFunc,
-                                double                       theA,
-                                double                       theB,
-                                const MinBracketOptions&     theOptions = MinBracketOptions())
+MinBracketResult BracketMinimum(Function&                theFunc,
+                                double                   theA,
+                                double                   theB,
+                                const MinBracketOptions& theOptions = MinBracketOptions())
 {
   MinBracketResult aResult;
   if (theOptions.MaxIterations < 1)
@@ -224,8 +224,13 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
   aResult.C = aResult.B + THE_GOLDEN_RATIO * (aResult.B - aResult.A);
   if (theOptions.UseLimits)
   {
-    if (!detail::LimitAndMayBeSwap(
-          theFunc, theOptions, aResult.A, aResult.B, aResult.Fb, aResult.C, aResult.Fc))
+    if (!detail::LimitAndMayBeSwap(theFunc,
+                                   theOptions,
+                                   aResult.A,
+                                   aResult.B,
+                                   aResult.Fb,
+                                   aResult.C,
+                                   aResult.Fc))
     {
       return aResult;
     }
@@ -245,12 +250,12 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
 
     double aU = aResult.B - ((aResult.B - aResult.C) * aQ - (aResult.B - aResult.A) * aR) / aDenom;
 
-    double       aULim = aResult.B + 100.0 * (aResult.C - aResult.B);
+    double aULim = aResult.B + 100.0 * (aResult.C - aResult.B);
     if (theOptions.UseLimits)
     {
       aULim = detail::Limited(aULim, theOptions);
     }
-    double       aFu   = 0.0;
+    double aFu = 0.0;
 
     if ((aResult.B - aU) * (aU - aResult.C) > 0.0)
     {
@@ -281,7 +286,13 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
       aU = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
       if (theOptions.UseLimits)
       {
-        if (!detail::LimitAndMayBeSwap(theFunc, theOptions, aResult.B, aResult.C, aResult.Fc, aU, aFu))
+        if (!detail::LimitAndMayBeSwap(theFunc,
+                                       theOptions,
+                                       aResult.B,
+                                       aResult.C,
+                                       aResult.Fc,
+                                       aU,
+                                       aFu))
         {
           return aResult;
         }
@@ -296,7 +307,13 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
       // U is between C and limit
       if (theOptions.UseLimits)
       {
-        if (!detail::LimitAndMayBeSwap(theFunc, theOptions, aResult.B, aResult.C, aResult.Fc, aU, aFu))
+        if (!detail::LimitAndMayBeSwap(theFunc,
+                                       theOptions,
+                                       aResult.B,
+                                       aResult.C,
+                                       aResult.Fc,
+                                       aU,
+                                       aFu))
         {
           return aResult;
         }
@@ -315,8 +332,13 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
         aResult.Fc = aFu;
         if (theOptions.UseLimits)
         {
-          if (!detail::LimitAndMayBeSwap(
-                theFunc, theOptions, aResult.B, aResult.C, aResult.Fc, aU, aFu))
+          if (!detail::LimitAndMayBeSwap(theFunc,
+                                         theOptions,
+                                         aResult.B,
+                                         aResult.C,
+                                         aResult.Fc,
+                                         aU,
+                                         aFu))
           {
             return aResult;
           }
@@ -333,7 +355,13 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
       aU = aULim;
       if (theOptions.UseLimits)
       {
-        if (!detail::LimitAndMayBeSwap(theFunc, theOptions, aResult.B, aResult.C, aResult.Fc, aU, aFu))
+        if (!detail::LimitAndMayBeSwap(theFunc,
+                                       theOptions,
+                                       aResult.B,
+                                       aResult.C,
+                                       aResult.Fc,
+                                       aU,
+                                       aFu))
         {
           return aResult;
         }
@@ -349,7 +377,13 @@ MinBracketResult BracketMinimum(Function&                    theFunc,
       aU = aResult.C + THE_GOLDEN_RATIO * (aResult.C - aResult.B);
       if (theOptions.UseLimits)
       {
-        if (!detail::LimitAndMayBeSwap(theFunc, theOptions, aResult.B, aResult.C, aResult.Fc, aU, aFu))
+        if (!detail::LimitAndMayBeSwap(theFunc,
+                                       theOptions,
+                                       aResult.B,
+                                       aResult.C,
+                                       aResult.Fc,
+                                       aU,
+                                       aFu))
         {
           return aResult;
         }
