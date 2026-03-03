@@ -34,8 +34,8 @@ GC_MakeParabola2d::GC_MakeParabola2d(const gp_Parab2d& Prb)
 //=================================================================================================
 
 GC_MakeParabola2d::GC_MakeParabola2d(const gp_Ax2d& MirrorAxis,
-                                       const double   Focal,
-                                       const bool     Sense)
+                                     const double   Focal,
+                                     const bool     Sense)
 {
   if (Focal < 0.0)
   {

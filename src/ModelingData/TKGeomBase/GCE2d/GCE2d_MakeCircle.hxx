@@ -22,7 +22,8 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeCircle2d.hxx>
 
-
-using GCE2d_MakeCircle Standard_DEPRECATED("GCE2d_MakeCircle is deprecated since OCCT 8.0.0. Use GC_MakeCircle2d instead.") = GC_MakeCircle2d;
+using GCE2d_MakeCircle Standard_DEPRECATED(
+  "GCE2d_MakeCircle is deprecated since OCCT 8.0.0. Use GC_MakeCircle2d instead.")
+= GC_MakeCircle2d;
 
 #endif // _GCE2d_MakeCircle_HeaderFile

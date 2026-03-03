@@ -55,9 +55,9 @@ public:
   //! @note Error status is provided by the underlying `gce_MakeElips2d`
   //!       (for example `gce_InvertRadius` or `gce_NegativeRadius`).
   Standard_EXPORT GC_MakeEllipse2d(const gp_Ax2d& theMajorAxis,
-                                    const double   theMajorRadius,
-                                    const double   theMinorRadius,
-                                    const bool     theSense = true);
+                                   const double   theMajorRadius,
+                                   const double   theMinorRadius,
+                                   const bool     theSense = true);
 
   //! Creates an ellipse from a local coordinate system and radii.
   //! @param[in] theAxis local coordinate system
@@ -66,8 +66,8 @@ public:
   //! @note Error status is provided by the underlying `gce_MakeElips2d`
   //!       (for example `gce_InvertRadius` or `gce_NegativeRadius`).
   Standard_EXPORT GC_MakeEllipse2d(const gp_Ax22d& theAxis,
-                                    const double    theMajorRadius,
-                                    const double    theMinorRadius);
+                                   const double    theMajorRadius,
+                                   const double    theMinorRadius);
 
   //! Creates an ellipse from two apex points and center point.
   //! @param[in] theS1 first apex point
@@ -75,8 +75,8 @@ public:
   //! @param[in] theCenter center point
   //! @note Error status is provided by the underlying `gce_MakeElips2d`.
   Standard_EXPORT GC_MakeEllipse2d(const gp_Pnt2d& theS1,
-                                    const gp_Pnt2d& theS2,
-                                    const gp_Pnt2d& theCenter);
+                                   const gp_Pnt2d& theS2,
+                                   const gp_Pnt2d& theCenter);
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.

@@ -54,8 +54,8 @@ public:
   //! @note Construction fails with `gce_ConfusedPoints` if the projected
   //!       endpoint is coincident with `theP1` within resolution.
   Standard_EXPORT GC_MakeSegment2d(const gp_Pnt2d& theP1,
-                                    const gp_Dir2d& theV,
-                                    const gp_Pnt2d& theP2);
+                                   const gp_Dir2d& theV,
+                                   const gp_Pnt2d& theP2);
 
   //! Creates a segment on a line between two parameter values.
   //! @param[in] theLine source line
@@ -68,16 +68,16 @@ public:
   //! @param[in] thePoint first point on segment support line
   //! @param[in] theUlast last parameter
   Standard_EXPORT GC_MakeSegment2d(const gp_Lin2d& theLine,
-                                    const gp_Pnt2d& thePoint,
-                                    const double    theUlast);
+                                   const gp_Pnt2d& thePoint,
+                                   const double    theUlast);
 
   //! Creates a segment on a line between projections of two points.
   //! @param[in] theLine source line
   //! @param[in] theP1 first point
   //! @param[in] theP2 second point
   Standard_EXPORT GC_MakeSegment2d(const gp_Lin2d& theLine,
-                                    const gp_Pnt2d& theP1,
-                                    const gp_Pnt2d& theP2);
+                                   const gp_Pnt2d& theP1,
+                                   const gp_Pnt2d& theP2);
 
   //! Returns the constructed line segment.
   //! Exceptions StdFail_NotDone if no line segment is constructed.

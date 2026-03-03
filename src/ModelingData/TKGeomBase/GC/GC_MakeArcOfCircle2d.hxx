@@ -46,9 +46,9 @@ public:
   //! @param[in] theAlpha2 second angle (radians)
   //! @param[in] theSense orientation of resulting arc
   Standard_EXPORT GC_MakeArcOfCircle2d(const gp_Circ2d& theCircle,
-                                        const double     theAlpha1,
-                                        const double     theAlpha2,
-                                        const bool       theSense = true);
+                                       const double     theAlpha1,
+                                       const double     theAlpha2,
+                                       const bool       theSense = true);
 
   //! Constructs an arc from a point and angular bound on a circle.
   //! @param[in] theCircle source circle
@@ -56,9 +56,9 @@ public:
   //! @param[in] theAlpha angle value (radians)
   //! @param[in] theSense orientation of resulting arc
   Standard_EXPORT GC_MakeArcOfCircle2d(const gp_Circ2d& theCircle,
-                                        const gp_Pnt2d&  thePoint,
-                                        const double     theAlpha,
-                                        const bool       theSense = true);
+                                       const gp_Pnt2d&  thePoint,
+                                       const double     theAlpha,
+                                       const bool       theSense = true);
 
   //! Constructs an arc between two points on a circle.
   //! @param[in] theCircle source circle
@@ -66,25 +66,25 @@ public:
   //! @param[in] theP2 second point on source circle
   //! @param[in] theSense orientation of resulting arc
   Standard_EXPORT GC_MakeArcOfCircle2d(const gp_Circ2d& theCircle,
-                                        const gp_Pnt2d&  theP1,
-                                        const gp_Pnt2d&  theP2,
-                                        const bool       theSense = true);
+                                       const gp_Pnt2d&  theP1,
+                                       const gp_Pnt2d&  theP2,
+                                       const bool       theSense = true);
 
   //! Constructs an arc passing through three points.
   //! @param[in] theP1 first point
   //! @param[in] theP2 intermediate point
   //! @param[in] theP3 last point
   Standard_EXPORT GC_MakeArcOfCircle2d(const gp_Pnt2d& theP1,
-                                        const gp_Pnt2d& theP2,
-                                        const gp_Pnt2d& theP3);
+                                       const gp_Pnt2d& theP2,
+                                       const gp_Pnt2d& theP3);
 
   //! Constructs an arc from two points and tangent vector at start point.
   //! @param[in] theP1 start point
   //! @param[in] theV tangent vector at start point
   //! @param[in] theP2 end point
   Standard_EXPORT GC_MakeArcOfCircle2d(const gp_Pnt2d& theP1,
-                                        const gp_Vec2d& theV,
-                                        const gp_Pnt2d& theP2);
+                                       const gp_Vec2d& theV,
+                                       const gp_Pnt2d& theP2);
 
   //! Returns the constructed arc of circle.
   //! Exceptions StdFail_NotDone if no arc of circle is constructed.

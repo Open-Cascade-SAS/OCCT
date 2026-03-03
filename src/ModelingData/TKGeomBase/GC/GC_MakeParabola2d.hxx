@@ -59,16 +59,16 @@ public:
   //! @param[in] theSense orientation flag
   //! @note Construction fails with `gce_NullFocusLength` if `theFocal` is negative.
   Standard_EXPORT GC_MakeParabola2d(const gp_Ax2d& theMirrorAxis,
-                                     const double   theFocal,
-                                     const bool     theSense);
+                                    const double   theFocal,
+                                    const bool     theSense);
 
   //! Creates a parabola from directrix and focus point.
   //! @param[in] theDirectrix directrix axis
   //! @param[in] theFocus focus point
   //! @param[in] theSense orientation flag
-  Standard_EXPORT GC_MakeParabola2d(const gp_Ax2d& theDirectrix,
-                                     const gp_Pnt2d& theFocus,
-                                     const bool      theSense = true);
+  Standard_EXPORT GC_MakeParabola2d(const gp_Ax2d&  theDirectrix,
+                                    const gp_Pnt2d& theFocus,
+                                    const bool      theSense = true);
 
   //! Creates a parabola from focus and vertex points.
   //! @param[in] theFocus focus point

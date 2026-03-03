@@ -192,7 +192,7 @@ void MAT2d_Circuit::Perform(
     {
       occ::handle<Geom2d_TrimmedCurve> edge;
       edge = GC_MakeSegment2d(Road.Path().Value(i)->PointOnFirst(),
-                               Road.Path().Value(i)->PointOnSecond());
+                              Road.Path().Value(i)->PointOnSecond());
       MAT2d_DrawCurve(edge, 2);
     }
   }

@@ -25,9 +25,9 @@
 //=================================================================================================
 
 GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
-                                                 const gp_Pnt2d&   P1,
-                                                 const gp_Pnt2d&   P2,
-                                                 const bool        Sense)
+                                               const gp_Pnt2d&   P1,
+                                               const gp_Pnt2d&   P2,
+                                               const bool        Sense)
 {
   double                       Alpha1 = ElCLib::Parameter(Parab, P1);
   double                       Alpha2 = ElCLib::Parameter(Parab, P2);
@@ -39,9 +39,9 @@ GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
 //=================================================================================================
 
 GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
-                                                 const gp_Pnt2d&   P,
-                                                 const double      Alpha,
-                                                 const bool        Sense)
+                                               const gp_Pnt2d&   P,
+                                               const double      Alpha,
+                                               const bool        Sense)
 {
   double                       Alphafirst = ElCLib::Parameter(Parab, P);
   occ::handle<Geom2d_Parabola> Parabola   = new Geom2d_Parabola(Parab);
@@ -52,9 +52,9 @@ GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
 //=================================================================================================
 
 GC_MakeArcOfParabola2d::GC_MakeArcOfParabola2d(const gp_Parab2d& Parab,
-                                                 const double      Alpha1,
-                                                 const double      Alpha2,
-                                                 const bool        Sense)
+                                               const double      Alpha1,
+                                               const double      Alpha2,
+                                               const bool        Sense)
 {
   occ::handle<Geom2d_Parabola> P = new Geom2d_Parabola(Parab);
   TheArc                         = new Geom2d_TrimmedCurve(P, Alpha1, Alpha2, Sense);

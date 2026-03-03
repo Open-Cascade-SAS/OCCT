@@ -25,9 +25,9 @@
 //=================================================================================================
 
 GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
-                                               const gp_Pnt2d&   P1,
-                                               const gp_Pnt2d&   P2,
-                                               const bool        Sense)
+                                             const gp_Pnt2d&   P1,
+                                             const gp_Pnt2d&   P2,
+                                             const bool        Sense)
 {
   double                      Alpha1 = ElCLib::Parameter(Elips, P1);
   double                      Alpha2 = ElCLib::Parameter(Elips, P2);
@@ -39,9 +39,9 @@ GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
 //=================================================================================================
 
 GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
-                                               const gp_Pnt2d&   P,
-                                               const double      Alpha,
-                                               const bool        Sense)
+                                             const gp_Pnt2d&   P,
+                                             const double      Alpha,
+                                             const bool        Sense)
 {
   double                      Alphafirst = ElCLib::Parameter(Elips, P);
   occ::handle<Geom2d_Ellipse> E          = new Geom2d_Ellipse(Elips);
@@ -52,9 +52,9 @@ GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
 //=================================================================================================
 
 GC_MakeArcOfEllipse2d::GC_MakeArcOfEllipse2d(const gp_Elips2d& Elips,
-                                               const double      Alpha1,
-                                               const double      Alpha2,
-                                               const bool        Sense)
+                                             const double      Alpha1,
+                                             const double      Alpha2,
+                                             const bool        Sense)
 {
   occ::handle<Geom2d_Ellipse> E = new Geom2d_Ellipse(Elips);
   TheArc                        = new Geom2d_TrimmedCurve(E, Alpha1, Alpha2, Sense);

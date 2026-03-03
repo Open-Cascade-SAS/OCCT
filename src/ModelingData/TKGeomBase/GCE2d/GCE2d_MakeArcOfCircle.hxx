@@ -22,7 +22,8 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeArcOfCircle2d.hxx>
 
-
-using GCE2d_MakeArcOfCircle Standard_DEPRECATED("GCE2d_MakeArcOfCircle is deprecated since OCCT 8.0.0. Use GC_MakeArcOfCircle2d instead.") = GC_MakeArcOfCircle2d;
+using GCE2d_MakeArcOfCircle Standard_DEPRECATED(
+  "GCE2d_MakeArcOfCircle is deprecated since OCCT 8.0.0. Use GC_MakeArcOfCircle2d instead.")
+= GC_MakeArcOfCircle2d;
 
 #endif // _GCE2d_MakeArcOfCircle_HeaderFile

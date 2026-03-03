@@ -130,7 +130,7 @@ static int OCC230(Draw_Interpretor& di, int argc, const char** argv)
     return 1;
   }
 
-  GC_MakeSegment2d                       MakeSegment(P1, P2);
+  GC_MakeSegment2d                        MakeSegment(P1, P2);
   const occ::handle<Geom2d_TrimmedCurve>& TrimmedCurve = MakeSegment.Value();
   DrawTrSurf::Set(argv[1], TrimmedCurve);
   return 0;

@@ -34,9 +34,9 @@ GC_MakeHyperbola2d::GC_MakeHyperbola2d(const gp_Hypr2d& H)
 //=================================================================================================
 
 GC_MakeHyperbola2d::GC_MakeHyperbola2d(const gp_Ax2d& MajorAxis,
-                                         const double   MajorRadius,
-                                         const double   MinorRadius,
-                                         const bool     Sense)
+                                       const double   MajorRadius,
+                                       const double   MinorRadius,
+                                       const bool     Sense)
 {
   gce_MakeHypr2d H = gce_MakeHypr2d(MajorAxis, MajorRadius, MinorRadius, Sense);
   TheError         = H.Status();
@@ -49,8 +49,8 @@ GC_MakeHyperbola2d::GC_MakeHyperbola2d(const gp_Ax2d& MajorAxis,
 //=================================================================================================
 
 GC_MakeHyperbola2d::GC_MakeHyperbola2d(const gp_Ax22d& Axis,
-                                         const double    MajorRadius,
-                                         const double    MinorRadius)
+                                       const double    MajorRadius,
+                                       const double    MinorRadius)
 {
   gce_MakeHypr2d H = gce_MakeHypr2d(Axis, MajorRadius, MinorRadius);
   TheError         = H.Status();
@@ -63,8 +63,8 @@ GC_MakeHyperbola2d::GC_MakeHyperbola2d(const gp_Ax22d& Axis,
 //=================================================================================================
 
 GC_MakeHyperbola2d::GC_MakeHyperbola2d(const gp_Pnt2d& S1,
-                                         const gp_Pnt2d& S2,
-                                         const gp_Pnt2d& Center)
+                                       const gp_Pnt2d& S2,
+                                       const gp_Pnt2d& Center)
 {
   gce_MakeHypr2d H = gce_MakeHypr2d(S1, S2, Center);
   TheError         = H.Status();

@@ -22,7 +22,8 @@
 #include <Standard_Macro.hxx>
 #include <GC_MakeArcOfHyperbola2d.hxx>
 
-
-using GCE2d_MakeArcOfHyperbola Standard_DEPRECATED("GCE2d_MakeArcOfHyperbola is deprecated since OCCT 8.0.0. Use GC_MakeArcOfHyperbola2d instead.") = GC_MakeArcOfHyperbola2d;
+using GCE2d_MakeArcOfHyperbola Standard_DEPRECATED(
+  "GCE2d_MakeArcOfHyperbola is deprecated since OCCT 8.0.0. Use GC_MakeArcOfHyperbola2d instead.")
+= GC_MakeArcOfHyperbola2d;
 
 #endif // _GCE2d_MakeArcOfHyperbola_HeaderFile

@@ -45,9 +45,9 @@ public:
   //! @param[in] theAlpha2 second angle (radians)
   //! @param[in] theSense orientation of resulting arc
   Standard_EXPORT GC_MakeArcOfEllipse2d(const gp_Elips2d& theEllipse,
-                                         const double      theAlpha1,
-                                         const double      theAlpha2,
-                                         const bool        theSense = true);
+                                        const double      theAlpha1,
+                                        const double      theAlpha2,
+                                        const bool        theSense = true);
 
   //! Constructs an arc from a point and angular bound on an ellipse.
   //! @param[in] theEllipse source ellipse
@@ -55,9 +55,9 @@ public:
   //! @param[in] theAlpha angle value (radians)
   //! @param[in] theSense orientation of resulting arc
   Standard_EXPORT GC_MakeArcOfEllipse2d(const gp_Elips2d& theEllipse,
-                                         const gp_Pnt2d&   thePoint,
-                                         const double      theAlpha,
-                                         const bool        theSense = true);
+                                        const gp_Pnt2d&   thePoint,
+                                        const double      theAlpha,
+                                        const bool        theSense = true);
 
   //! Constructs an arc between two points on an ellipse.
   //! @param[in] theEllipse source ellipse
@@ -68,9 +68,9 @@ public:
   //!       otherwise opposite.
   //! @note IsDone always returns true.
   Standard_EXPORT GC_MakeArcOfEllipse2d(const gp_Elips2d& theEllipse,
-                                         const gp_Pnt2d&   theP1,
-                                         const gp_Pnt2d&   theP2,
-                                         const bool        theSense = true);
+                                        const gp_Pnt2d&   theP1,
+                                        const gp_Pnt2d&   theP2,
+                                        const bool        theSense = true);
 
   //! Returns the constructed arc of ellipse.
   //! @return resulting trimmed curve

@@ -52,8 +52,8 @@ public:
   //! @param[in] theSense orientation flag
   //! @note Construction fails with `gce_NegativeRadius` if `theRadius` is negative.
   Standard_EXPORT GC_MakeCircle2d(const gp_Ax2d& theAxis,
-                                   const double   theRadius,
-                                   const bool     theSense = true);
+                                  const double   theRadius,
+                                  const bool     theSense = true);
 
   //! Creates a circle from a local coordinate system and radius.
   //! @param[in] theAxis local coordinate system
@@ -81,8 +81,8 @@ public:
   //! @param[in] theP3 third point
   //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
   Standard_EXPORT GC_MakeCircle2d(const gp_Pnt2d& theP1,
-                                   const gp_Pnt2d& theP2,
-                                   const gp_Pnt2d& theP3);
+                                  const gp_Pnt2d& theP2,
+                                  const gp_Pnt2d& theP3);
 
   //! Creates a circle from center point and radius.
   //! @param[in] theCenter center point
@@ -90,8 +90,8 @@ public:
   //! @param[in] theSense orientation flag
   //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
   Standard_EXPORT GC_MakeCircle2d(const gp_Pnt2d& theCenter,
-                                   const double    theRadius,
-                                   const bool      theSense = true);
+                                  const double    theRadius,
+                                  const bool      theSense = true);
 
   //! Creates a circle from center point and one point on the circle.
   //! @param[in] theCenter center point
@@ -99,8 +99,8 @@ public:
   //! @param[in] theSense orientation flag
   //! @note Error status is provided by the underlying `gce_MakeCirc2d`.
   Standard_EXPORT GC_MakeCircle2d(const gp_Pnt2d& theCenter,
-                                   const gp_Pnt2d& thePoint,
-                                   const bool      theSense = true);
+                                  const gp_Pnt2d& thePoint,
+                                  const bool      theSense = true);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
