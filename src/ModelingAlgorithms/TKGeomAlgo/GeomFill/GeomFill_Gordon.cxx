@@ -17,6 +17,7 @@
 #include <BSplCLib.hxx>
 #include <Geom2dAPI_Interpolate.hxx>
 #include <Geom2d_BSplineCurve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomAPI_ExtremaCurveCurve.hxx>
 #include <GeomConvert.hxx>
 #include <GeomFill_GordonBuilder.hxx>
@@ -46,6 +47,52 @@ constexpr double THE_SNAP_TOL = 1.0e-5;
 //! Relative tolerance for closedness detection.
 constexpr double THE_REL_TOL_CLOSED = 1.0e-8;
 
+//! Relative threshold for replacing uniform samples by break points.
+constexpr double THE_REPLACE_EPS = 0.3;
+
+//! Epsilon for duplicate-parameter compaction.
+constexpr double THE_PARAM_UNIQUE_EPS = 1.0e-14;
+
+//! Maximum iterations for reparametrization inversion by bisection.
+constexpr int THE_MAX_BISECT_ITER = 50;
+
+//! Convergence tolerance for bisection-based inversion.
+constexpr double THE_BISECT_TOL = 1.0e-12;
+
+//! Parameter tolerance for duplicate/interior filtering.
+constexpr double THE_REPARAM_PARAM_TOL = 1.0e-10;
+
+//! Offset added to current control-point count when selecting sample count.
+constexpr int THE_SAMPLE_COUNT_CP_OFFSET = 10;
+
+//! Offset added to break count when selecting sample count.
+constexpr int THE_SAMPLE_COUNT_BREAK_OFFSET = 2;
+
+//! Minimum sample count for robust approximation.
+constexpr int THE_SAMPLE_COUNT_MIN = 30;
+
+//! Maximum sample count for robust approximation.
+constexpr int THE_SAMPLE_COUNT_MAX = 200;
+
+//! Target approximation degree during curve reparametrization.
+constexpr int THE_APPROX_DEGREE = 3;
+
+//! Divisor used for rough control-point estimation from sample count.
+constexpr int THE_CP_ESTIMATE_DIV = 3;
+
+//! Relative tolerance factor for post-reparametrization compatibility checks.
+constexpr double THE_NETWORK_CHECK_TOL_FACTOR = 1.0e-5;
+
+//! Initializes adaptor arrays for fast repeated curve evaluations.
+void loadCurveAdaptors(const NCollection_Array1<occ::handle<Geom_BSplineCurve>>& theCurves,
+                       NCollection_Array1<GeomAdaptor_Curve>&                    theAdaptors)
+{
+  for (int aCurveIdx = theCurves.Lower(); aCurveIdx <= theCurves.Upper(); ++aCurveIdx)
+  {
+    theAdaptors(aCurveIdx).Load(theCurves(aCurveIdx));
+  }
+}
+
 //! Detects kink (C0 discontinuity) parameters on a B-spline curve.
 //! A kink exists where knot multiplicity equals the curve degree
 //! and the tangent vectors on either side differ by more than 6 degrees.
@@ -56,11 +103,11 @@ NCollection_DynamicArray<double> getKinkParameters(const occ::handle<Geom_BSplin
   NCollection_DynamicArray<double> aKinks;
   const int                        aDegree = theCurve->Degree();
 
-  for (int iKnot = 2; iKnot < theCurve->NbKnots(); ++iKnot)
+  for (int aKnotIdx = 2; aKnotIdx < theCurve->NbKnots(); ++aKnotIdx)
   {
-    if (theCurve->Multiplicity(iKnot) == aDegree)
+    if (theCurve->Multiplicity(aKnotIdx) == aDegree)
     {
-      double aKnot     = theCurve->Knot(iKnot);
+      double aKnot     = theCurve->Knot(aKnotIdx);
       gp_Vec aTanLeft  = theCurve->DN(aKnot - THE_KINK_EPS, 1);
       gp_Vec aTanRight = theCurve->DN(aKnot + THE_KINK_EPS, 1);
 
@@ -94,25 +141,23 @@ NCollection_DynamicArray<double> linspaceWithBreaks(double                      
   // Create uniform grid.
   const double                     aDu = (theUMax - theUMin) / static_cast<double>(theNbValues - 1);
   NCollection_DynamicArray<double> aResult;
-  for (int i = 0; i < theNbValues; ++i)
+  for (int aValueIdx = 0; aValueIdx < theNbValues; ++aValueIdx)
   {
-    aResult.Append(theUMin + i * aDu);
+    aResult.Append(theUMin + aValueIdx * aDu);
   }
 
-  constexpr double THE_REPLACE_EPS = 0.3;
-
-  for (int iBrk = theBreaks.Lower(); iBrk <= theBreaks.Upper(); ++iBrk)
+  for (int aBreakIdx = theBreaks.Lower(); aBreakIdx <= theBreaks.Upper(); ++aBreakIdx)
   {
-    double aBreak = theBreaks(iBrk);
+    double aBreak = theBreaks(aBreakIdx);
 
     // Try to find a grid point within replace tolerance.
     bool isReplaced = false;
-    for (int k = 0; k < aResult.Length(); ++k)
+    for (int aGridIdx = 0; aGridIdx < aResult.Length(); ++aGridIdx)
     {
-      if (std::abs(aResult[k] - aBreak) < aDu * THE_REPLACE_EPS)
+      if (std::abs(aResult[aGridIdx] - aBreak) < aDu * THE_REPLACE_EPS)
       {
-        aResult[k] = aBreak;
-        isReplaced = true;
+        aResult[aGridIdx] = aBreak;
+        isReplaced        = true;
         break;
       }
     }
@@ -129,12 +174,12 @@ NCollection_DynamicArray<double> linspaceWithBreaks(double                      
 
   // Compact duplicates in-place.
   int aWriteIdx = 0;
-  for (int k = 1; k < aResult.Length(); ++k)
+  for (int aUniqueIdx = 1; aUniqueIdx < aResult.Length(); ++aUniqueIdx)
   {
-    if (std::abs(aResult[k] - aResult[aWriteIdx]) > 1.0e-14)
+    if (std::abs(aResult[aUniqueIdx] - aResult[aWriteIdx]) > THE_PARAM_UNIQUE_EPS)
     {
       ++aWriteIdx;
-      aResult[aWriteIdx] = aResult[k];
+      aResult[aWriteIdx] = aResult[aUniqueIdx];
     }
   }
   // Trim to unique count.
@@ -162,9 +207,6 @@ double invertReparamBisection(const occ::handle<Geom2d_BSplineCurve>& theReparam
 
   // Determine monotonicity direction.
   const bool isIncreasing = (aFHi > aFLo);
-
-  constexpr int    THE_MAX_BISECT_ITER = 50;
-  constexpr double THE_BISECT_TOL      = 1.0e-12;
 
   for (int anIter = 0; anIter < THE_MAX_BISECT_ITER; ++anIter)
   {
@@ -209,8 +251,6 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
                   const NCollection_Array1<double>& theOldParams,
                   const NCollection_Array1<double>& theNewParams)
 {
-  const double aTolParam = 1.0e-10;
-
   NCollection_DynamicArray<double> anOldSeq;
   NCollection_DynamicArray<double> aNewSeq;
 
@@ -219,18 +259,19 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   aNewSeq.Append(0.0);
 
   // Interior intersection points.
-  for (int j = theOldParams.Lower(); j <= theOldParams.Upper(); ++j)
+  for (int aParamIdx = theOldParams.Lower(); aParamIdx <= theOldParams.Upper(); ++aParamIdx)
   {
-    double anOld = theOldParams(j);
-    double aNew  = theNewParams(j);
+    double anOld = theOldParams(aParamIdx);
+    double aNew  = theNewParams(aParamIdx);
 
     if (!anOldSeq.IsEmpty()
-        && (std::abs(anOld - anOldSeq.Last()) < aTolParam
-            || std::abs(aNew - aNewSeq.Last()) < aTolParam))
+        && (std::abs(anOld - anOldSeq.Last()) < THE_REPARAM_PARAM_TOL
+            || std::abs(aNew - aNewSeq.Last()) < THE_REPARAM_PARAM_TOL))
     {
       continue;
     }
-    if (std::abs(anOld - theCurve->LastParameter()) < aTolParam || std::abs(aNew - 1.0) < aTolParam)
+    if (std::abs(anOld - theCurve->LastParameter()) < THE_REPARAM_PARAM_TOL
+        || std::abs(aNew - 1.0) < THE_REPARAM_PARAM_TOL)
     {
       continue;
     }
@@ -240,7 +281,8 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   }
 
   // End of curve.
-  if (anOldSeq.Length() < 2 || std::abs(anOldSeq.Last() - theCurve->LastParameter()) > aTolParam)
+  if (anOldSeq.Length() < 2
+      || std::abs(anOldSeq.Last() - theCurve->LastParameter()) > THE_REPARAM_PARAM_TOL)
   {
     anOldSeq.Append(theCurve->LastParameter());
     aNewSeq.Append(1.0);
@@ -256,10 +298,10 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   occ::handle<NCollection_HArray1<gp_Pnt2d>> aOldPnts2d =
     new NCollection_HArray1<gp_Pnt2d>(1, aNbPts);
   occ::handle<NCollection_HArray1<double>> aNewParamsH = new NCollection_HArray1<double>(1, aNbPts);
-  for (int k = 0; k < aNbPts; ++k)
+  for (int aPointIdx = 0; aPointIdx < aNbPts; ++aPointIdx)
   {
-    aOldPnts2d->SetValue(k + 1, gp_Pnt2d(anOldSeq[k], 0.0));
-    aNewParamsH->SetValue(k + 1, aNewSeq[k]);
+    aOldPnts2d->SetValue(aPointIdx + 1, gp_Pnt2d(anOldSeq[aPointIdx], 0.0));
+    aNewParamsH->SetValue(aPointIdx + 1, aNewSeq[aPointIdx]);
   }
 
   Geom2dAPI_Interpolate anInterp2d(aOldPnts2d, aNewParamsH, false, Precision::PConfusion());
@@ -270,6 +312,7 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   }
 
   occ::handle<Geom2d_BSplineCurve> aReparamFunc = anInterp2d.Curve();
+  GeomAdaptor_Curve                aCurveAdaptor(theCurve);
 
   // Detect kinks on the original curve.
   NCollection_DynamicArray<double> aKinks = getKinkParameters(theCurve);
@@ -281,15 +324,16 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
 
   // Map kink old-parameters to new-parameter space via bisection inversion.
   NCollection_Array1<double> aKinksInNew(1, std::max(aNbKinks, 1));
-  for (int k = 0; k < aNbKinks; ++k)
+  for (int aKinkIdx = 0; aKinkIdx < aNbKinks; ++aKinkIdx)
   {
-    aKinksInNew(k + 1) = invertReparamBisection(aReparamFunc, aKinks[k]);
+    aKinksInNew(aKinkIdx + 1) = invertReparamBisection(aReparamFunc, aKinks[aKinkIdx]);
   }
 
-  // Determine sample count: max(max_cp + 10, nBreaks + 2), clamped to [30, 200].
-  const int aMaxCp     = theCurve->NbPoles();
-  int       aNbSamples = std::max(aMaxCp + 10, aNbBreaks + 2);
-  aNbSamples           = std::max(30, std::min(200, aNbSamples));
+  // Determine sample count, clamped to a robust range.
+  const int aMaxCp = theCurve->NbPoles();
+  int       aNbSamples =
+    std::max(aMaxCp + THE_SAMPLE_COUNT_CP_OFFSET, aNbBreaks + THE_SAMPLE_COUNT_BREAK_OFFSET);
+  aNbSamples = std::max(THE_SAMPLE_COUNT_MIN, std::min(THE_SAMPLE_COUNT_MAX, aNbSamples));
 
   // Build break list: interior new-params + kink params mapped to new space.
   NCollection_DynamicArray<double> aSampleParams;
@@ -297,22 +341,23 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   {
     NCollection_Array1<double> aBreaks(1, aNbBreaks);
     int                        aBrkIdx = 1;
-    for (int j = theNewParams.Lower() + 1; j < theNewParams.Upper(); ++j)
+    for (int aNewParamIdx = theNewParams.Lower() + 1; aNewParamIdx < theNewParams.Upper();
+         ++aNewParamIdx)
     {
-      aBreaks(aBrkIdx++) = theNewParams(j);
+      aBreaks(aBrkIdx++) = theNewParams(aNewParamIdx);
     }
-    for (int k = 0; k < aNbKinks; ++k)
+    for (int aKinkIdx = 0; aKinkIdx < aNbKinks; ++aKinkIdx)
     {
-      aBreaks(aBrkIdx++) = aKinksInNew(k + 1);
+      aBreaks(aBrkIdx++) = aKinksInNew(aKinkIdx + 1);
     }
     aSampleParams = linspaceWithBreaks(0.0, 1.0, aNbSamples, aBreaks);
   }
   else
   {
     // No breaks - uniform sampling.
-    for (int k = 0; k < aNbSamples; ++k)
+    for (int aSampleIdx = 0; aSampleIdx < aNbSamples; ++aSampleIdx)
     {
-      aSampleParams.Append(static_cast<double>(k) / static_cast<double>(aNbSamples - 1));
+      aSampleParams.Append(static_cast<double>(aSampleIdx) / static_cast<double>(aNbSamples - 1));
     }
   }
 
@@ -322,26 +367,26 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   NCollection_Array1<gp_Pnt> aSampledPnts(1, aNbActual);
   NCollection_Array1<double> aSampledNewParams(1, aNbActual);
 
-  for (int k = 0; k < aNbActual; ++k)
+  for (int aSampleIdx = 0; aSampleIdx < aNbActual; ++aSampleIdx)
   {
-    double   aNewParam  = aSampleParams[k];
+    double   aNewParam  = aSampleParams[aSampleIdx];
     gp_Pnt2d anOldPt    = aReparamFunc->Value(aNewParam);
     double   anOldParam = anOldPt.X();
 
     // Clamp to valid range.
     anOldParam =
-      std::max(theCurve->FirstParameter(), std::min(theCurve->LastParameter(), anOldParam));
+      std::max(aCurveAdaptor.FirstParameter(), std::min(aCurveAdaptor.LastParameter(), anOldParam));
 
-    aSampledPnts(k + 1)      = theCurve->Value(anOldParam);
-    aSampledNewParams(k + 1) = aNewParam;
+    aSampledPnts(aSampleIdx + 1)      = aCurveAdaptor.EvalD0(anOldParam);
+    aSampledNewParams(aSampleIdx + 1) = aNewParam;
   }
 
   // Determine number of control points.
   // Must be >= nInterpolated + degree + 1 for the KKT system to be solvable.
-  const int     aNbInterp         = 2 + aNbKinks; // endpoints + kinks
-  constexpr int THE_APPROX_DEGREE = 3;
-  int           aNbCP =
-    std::max(theCurve->NbPoles(), std::max(aNbActual / 3, aNbInterp + THE_APPROX_DEGREE + 1));
+  const int aNbInterp = 2 + aNbKinks; // endpoints + kinks
+  int       aNbCP =
+    std::max(theCurve->NbPoles(),
+             std::max(aNbActual / THE_CP_ESTIMATE_DIV, aNbInterp + THE_APPROX_DEGREE + 1));
   aNbCP = std::max(aNbCP, THE_APPROX_DEGREE + 1);
 
   // Use constrained least-squares approximation with interpolation at endpoints and kinks.
@@ -352,19 +397,19 @@ bool reparamCurve(occ::handle<Geom_BSplineCurve>&   theCurve,
   anApprox.InterpolatePoint(aNbActual - 1);
 
   // Interpolate kink points with C0 break.
-  for (int k = 1; k <= aNbKinks; ++k)
+  for (int aKinkArrIdx = 1; aKinkArrIdx <= aNbKinks; ++aKinkArrIdx)
   {
-    double aKinkNew = aKinksInNew(k);
+    double aKinkNew = aKinksInNew(aKinkArrIdx);
     // Find the closest sample index for this kink parameter.
     int    aBestIdx  = 0;
     double aBestDist = RealLast();
-    for (int s = 1; s <= aNbActual; ++s)
+    for (int aSampleArrIdx = 1; aSampleArrIdx <= aNbActual; ++aSampleArrIdx)
     {
-      double aDist = std::abs(aSampledNewParams(s) - aKinkNew);
+      double aDist = std::abs(aSampledNewParams(aSampleArrIdx) - aKinkNew);
       if (aDist < aBestDist)
       {
         aBestDist = aDist;
-        aBestIdx  = s - 1; // 0-based index for InterpolatePoint
+        aBestIdx  = aSampleArrIdx - 1; // 0-based index for InterpolatePoint
       }
     }
     if (aBestIdx > 0 && aBestIdx < aNbActual - 1) // not endpoints (already interpolated)
@@ -417,13 +462,17 @@ void GeomFill_Gordon::Init(const NCollection_Array1<occ::handle<Geom_Curve>>& th
   myProfiles = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, aNbProf);
   myGuides   = NCollection_Array1<occ::handle<Geom_BSplineCurve>>(1, aNbGuid);
 
-  for (int i = theProfiles.Lower(); i <= theProfiles.Upper(); ++i)
+  for (int aProfileInputIdx = theProfiles.Lower(); aProfileInputIdx <= theProfiles.Upper();
+       ++aProfileInputIdx)
   {
-    myProfiles(i - theProfiles.Lower() + 1) = GeomConvert::CurveToBSplineCurve(theProfiles(i));
+    myProfiles(aProfileInputIdx - theProfiles.Lower() + 1) =
+      GeomConvert::CurveToBSplineCurve(theProfiles(aProfileInputIdx));
   }
-  for (int i = theGuides.Lower(); i <= theGuides.Upper(); ++i)
+  for (int aGuideInputIdx = theGuides.Lower(); aGuideInputIdx <= theGuides.Upper();
+       ++aGuideInputIdx)
   {
-    myGuides(i - theGuides.Lower() + 1) = GeomConvert::CurveToBSplineCurve(theGuides(i));
+    myGuides(aGuideInputIdx - theGuides.Lower() + 1) =
+      GeomConvert::CurveToBSplineCurve(theGuides(aGuideInputIdx));
   }
 
   // Initialize parameter matrices.
@@ -483,29 +532,30 @@ void GeomFill_Gordon::Perform()
 
   // Step 9: Make profiles compatible (same degree/knots) using GeomFill_Profiler.
   GeomFill_Profiler aProfileProfiler;
-  for (int i = myProfiles.Lower(); i <= myProfiles.Upper(); ++i)
+  for (int aProfileIdx = myProfiles.Lower(); aProfileIdx <= myProfiles.Upper(); ++aProfileIdx)
   {
-    aProfileProfiler.AddCurve(myProfiles(i));
+    aProfileProfiler.AddCurve(myProfiles(aProfileIdx));
   }
   aProfileProfiler.Perform(Precision::PConfusion());
 
   // Extract unified profile curves.
-  for (int i = myProfiles.Lower(); i <= myProfiles.Upper(); ++i)
+  for (int aProfileIdx = myProfiles.Lower(); aProfileIdx <= myProfiles.Upper(); ++aProfileIdx)
   {
-    myProfiles(i) = occ::down_cast<Geom_BSplineCurve>(aProfileProfiler.Curve(i));
+    myProfiles(aProfileIdx) =
+      occ::down_cast<Geom_BSplineCurve>(aProfileProfiler.Curve(aProfileIdx));
   }
 
   // Step 10: Make guides compatible.
   GeomFill_Profiler aGuideProfiler;
-  for (int i = myGuides.Lower(); i <= myGuides.Upper(); ++i)
+  for (int aGuideIdx = myGuides.Lower(); aGuideIdx <= myGuides.Upper(); ++aGuideIdx)
   {
-    aGuideProfiler.AddCurve(myGuides(i));
+    aGuideProfiler.AddCurve(myGuides(aGuideIdx));
   }
   aGuideProfiler.Perform(Precision::PConfusion());
 
-  for (int i = myGuides.Lower(); i <= myGuides.Upper(); ++i)
+  for (int aGuideIdx = myGuides.Lower(); aGuideIdx <= myGuides.Upper(); ++aGuideIdx)
   {
-    myGuides(i) = occ::down_cast<Geom_BSplineCurve>(aGuideProfiler.Curve(i));
+    myGuides(aGuideIdx) = occ::down_cast<Geom_BSplineCurve>(aGuideProfiler.Curve(aGuideIdx));
   }
 
   // Step 11: Prepare averaged intersection parameters for GordonBuilder.
@@ -513,29 +563,30 @@ void GeomFill_Gordon::Perform()
   const int aNbGuid = myGuides.Length();
 
   NCollection_Array1<double> aGuideParamValues(1, aNbGuid);
-  for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+  for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
   {
     double aSum = 0.0;
-    for (int iProf = 1; iProf <= aNbProf; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      aSum += myProfileParams(iProf, jGuid);
+      aSum += myProfileParams(aProfileIdx, aGuideIdx);
     }
-    aGuideParamValues(jGuid) = aSum / aNbProf;
+    aGuideParamValues(aGuideIdx) = aSum / aNbProf;
   }
 
   NCollection_Array1<double> aProfileParamValues(1, aNbProf);
-  for (int iProf = 1; iProf <= aNbProf; ++iProf)
+  for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
   {
     double aSum = 0.0;
-    for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      aSum += myGuideParams(iProf, jGuid);
+      aSum += myGuideParams(aProfileIdx, aGuideIdx);
     }
-    aProfileParamValues(iProf) = aSum / aNbGuid;
+    aProfileParamValues(aProfileIdx) = aSum / aNbGuid;
   }
 
   // Step 12: Delegate to GordonBuilder.
   GeomFill_GordonBuilder aBuilder;
+  aBuilder.SetParallelMode(myToUseParallel);
   aBuilder.Init(myProfiles,
                 myGuides,
                 aProfileParamValues,
@@ -570,9 +621,9 @@ const occ::handle<Geom_BSplineSurface>& GeomFill_Gordon::Surface() const
 bool GeomFill_Gordon::convertToBSpline()
 {
   // Reparametrize all curves to [0,1].
-  for (int i = myProfiles.Lower(); i <= myProfiles.Upper(); ++i)
+  for (int aProfileIdx = myProfiles.Lower(); aProfileIdx <= myProfiles.Upper(); ++aProfileIdx)
   {
-    occ::handle<Geom_BSplineCurve>& aCurve = myProfiles(i);
+    occ::handle<Geom_BSplineCurve>& aCurve = myProfiles(aProfileIdx);
     if (aCurve.IsNull())
     {
       return false;
@@ -587,9 +638,9 @@ bool GeomFill_Gordon::convertToBSpline()
     aCurve->SetKnots(aKnots);
   }
 
-  for (int i = myGuides.Lower(); i <= myGuides.Upper(); ++i)
+  for (int aGuideIdx = myGuides.Lower(); aGuideIdx <= myGuides.Upper(); ++aGuideIdx)
   {
-    occ::handle<Geom_BSplineCurve>& aCurve = myGuides(i);
+    occ::handle<Geom_BSplineCurve>& aCurve = myGuides(aGuideIdx);
     if (aCurve.IsNull())
     {
       return false;
@@ -614,20 +665,12 @@ bool GeomFill_Gordon::computeIntersections()
   const int aNbGuid  = myGuides.Length();
   const int aNbTotal = aNbProf * aNbGuid;
 
-  // Use atomic flag for thread-safe error reporting.
-  std::atomic<bool> isOk{true};
+  auto processIntersection = [&](int theIdx) -> bool {
+    const int aProfileIdx = theIdx / aNbGuid + 1;
+    const int aGuideIdx   = theIdx % aNbGuid + 1;
 
-  OSD_Parallel::For(0, aNbTotal, [&](int theIdx) {
-    if (!isOk.load(std::memory_order_relaxed))
-    {
-      return;
-    }
-
-    const int iProf = theIdx / aNbGuid + 1;
-    const int jGuid = theIdx % aNbGuid + 1;
-
-    const occ::handle<Geom_BSplineCurve>& aProfile = myProfiles(iProf);
-    const occ::handle<Geom_BSplineCurve>& aGuide   = myGuides(jGuid);
+    const occ::handle<Geom_BSplineCurve>& aProfile = myProfiles(aProfileIdx);
+    const occ::handle<Geom_BSplineCurve>& aGuide   = myGuides(aGuideIdx);
 
     GeomAPI_ExtremaCurveCurve anExtrema(aProfile, aGuide);
 
@@ -637,13 +680,13 @@ bool GeomFill_Gordon::computeIntersections()
     double aProfParam = 0.0;
     double aGuidParam = 0.0;
 
-    for (int iExt = 1; iExt <= anExtrema.NbExtrema(); ++iExt)
+    for (int anExtIdx = 1; anExtIdx <= anExtrema.NbExtrema(); ++anExtIdx)
     {
-      double aDist = anExtrema.Distance(iExt);
+      double aDist = anExtrema.Distance(anExtIdx);
       if (aDist < myTolerance && aDist < aMinDist)
       {
         aMinDist = aDist;
-        anExtrema.Parameters(iExt, aProfParam, aGuidParam);
+        anExtrema.Parameters(anExtIdx, aProfParam, aGuidParam);
         isFound = true;
       }
     }
@@ -667,13 +710,31 @@ bool GeomFill_Gordon::computeIntersections()
 
     if (!isFound)
     {
-      isOk.store(false, std::memory_order_relaxed);
-      return;
+      return false;
     }
 
-    myProfileParams(iProf, jGuid) = aProfParam;
-    myGuideParams(iProf, jGuid)   = aGuidParam;
-  });
+    myProfileParams(aProfileIdx, aGuideIdx) = aProfParam;
+    myGuideParams(aProfileIdx, aGuideIdx)   = aGuidParam;
+    return true;
+  };
+
+  // Use atomic flag for thread-safe error reporting.
+  // OSD_Parallel::For executes in single-thread mode when the force flag is true.
+  std::atomic<bool> isOk{true};
+  OSD_Parallel::For(
+    0,
+    aNbTotal,
+    [&](int theIdx) {
+      if (!isOk.load(std::memory_order_relaxed))
+      {
+        return;
+      }
+      if (!processIntersection(theIdx))
+      {
+        isOk.store(false, std::memory_order_relaxed);
+      }
+    },
+    !myToUseParallel);
 
   return isOk.load();
 }
@@ -683,57 +744,87 @@ bool GeomFill_Gordon::computeIntersections()
 void GeomFill_Gordon::computeScale()
 {
   // Compute bounding box diagonal from all curve start/end points.
-  double aXMin = RealLast(), aYMin = RealLast(), aZMin = RealLast();
-  double aXMax = -RealLast(), aYMax = -RealLast(), aZMax = -RealLast();
+  if (myProfiles.Length() <= 0 && myGuides.Length() <= 0)
+  {
+    myScale = 1.0;
+    return;
+  }
+
+  NCollection_Array1<GeomAdaptor_Curve> aProfileAdaptors(myProfiles.Lower(), myProfiles.Upper());
+  NCollection_Array1<GeomAdaptor_Curve> aGuideAdaptors(myGuides.Lower(), myGuides.Upper());
+  loadCurveAdaptors(myProfiles, aProfileAdaptors);
+  loadCurveAdaptors(myGuides, aGuideAdaptors);
+
+  gp_Pnt aSeedPnt;
+  if (myProfiles.Length() > 0)
+  {
+    const GeomAdaptor_Curve& aSeedAdaptor = aProfileAdaptors(myProfiles.Lower());
+    aSeedPnt                              = aSeedAdaptor.EvalD0(aSeedAdaptor.FirstParameter());
+  }
+  else
+  {
+    const GeomAdaptor_Curve& aSeedAdaptor = aGuideAdaptors(myGuides.Lower());
+    aSeedPnt                              = aSeedAdaptor.EvalD0(aSeedAdaptor.FirstParameter());
+  }
+
+  gp_Pnt aMin = aSeedPnt;
+  gp_Pnt aMax = aSeedPnt;
 
   auto updateBBox = [&](const gp_Pnt& thePnt) {
-    aXMin = std::min(aXMin, thePnt.X());
-    aXMax = std::max(aXMax, thePnt.X());
-    aYMin = std::min(aYMin, thePnt.Y());
-    aYMax = std::max(aYMax, thePnt.Y());
-    aZMin = std::min(aZMin, thePnt.Z());
-    aZMax = std::max(aZMax, thePnt.Z());
+    aMin.SetX(std::min(aMin.X(), thePnt.X()));
+    aMin.SetY(std::min(aMin.Y(), thePnt.Y()));
+    aMin.SetZ(std::min(aMin.Z(), thePnt.Z()));
+    aMax.SetX(std::max(aMax.X(), thePnt.X()));
+    aMax.SetY(std::max(aMax.Y(), thePnt.Y()));
+    aMax.SetZ(std::max(aMax.Z(), thePnt.Z()));
   };
 
-  for (int i = myProfiles.Lower(); i <= myProfiles.Upper(); ++i)
+  for (int aProfileIdx = myProfiles.Lower(); aProfileIdx <= myProfiles.Upper(); ++aProfileIdx)
   {
-    updateBBox(myProfiles(i)->Value(myProfiles(i)->FirstParameter()));
-    updateBBox(myProfiles(i)->Value(myProfiles(i)->LastParameter()));
+    const GeomAdaptor_Curve& aProfileAdaptor = aProfileAdaptors(aProfileIdx);
+    updateBBox(aProfileAdaptor.EvalD0(aProfileAdaptor.FirstParameter()));
+    updateBBox(aProfileAdaptor.EvalD0(aProfileAdaptor.LastParameter()));
   }
-  for (int i = myGuides.Lower(); i <= myGuides.Upper(); ++i)
+  for (int aGuideIdx = myGuides.Lower(); aGuideIdx <= myGuides.Upper(); ++aGuideIdx)
   {
-    updateBBox(myGuides(i)->Value(myGuides(i)->FirstParameter()));
-    updateBBox(myGuides(i)->Value(myGuides(i)->LastParameter()));
+    const GeomAdaptor_Curve& aGuideAdaptor = aGuideAdaptors(aGuideIdx);
+    updateBBox(aGuideAdaptor.EvalD0(aGuideAdaptor.FirstParameter()));
+    updateBBox(aGuideAdaptor.EvalD0(aGuideAdaptor.LastParameter()));
   }
 
-  double aDiag = gp_Pnt(aXMin, aYMin, aZMin).Distance(gp_Pnt(aXMax, aYMax, aZMax));
-  myScale      = std::max(aDiag, 1.0);
+  const double aDiag = aMax.Distance(aMin);
+  myScale            = std::max(aDiag, 1.0);
 }
 
 //=================================================================================================
 
 void GeomFill_Gordon::detectClosedness()
 {
-  const int    aNbProf   = myProfiles.Length();
-  const int    aNbGuid   = myGuides.Length();
-  const double aCloseTol = THE_REL_TOL_CLOSED * myScale;
+  const int                             aNbProf   = myProfiles.Length();
+  const int                             aNbGuid   = myGuides.Length();
+  const double                          aCloseTol = THE_REL_TOL_CLOSED * myScale;
+  NCollection_Array1<GeomAdaptor_Curve> aProfileAdaptors(myProfiles.Lower(), myProfiles.Upper());
+  NCollection_Array1<GeomAdaptor_Curve> aGuideAdaptors(myGuides.Lower(), myGuides.Upper());
+  loadCurveAdaptors(myProfiles, aProfileAdaptors);
+  loadCurveAdaptors(myGuides, aGuideAdaptors);
 
   // U-direction closure: first and last guides are geometrically equal
   // and intersection grid's first/last columns match.
   {
-    gp_Pnt aGuidFirstStart = myGuides(1)->Value(myGuides(1)->FirstParameter());
-    gp_Pnt aGuidFirstEnd   = myGuides(1)->Value(myGuides(1)->LastParameter());
-    gp_Pnt aGuidLastStart  = myGuides(aNbGuid)->Value(myGuides(aNbGuid)->FirstParameter());
-    gp_Pnt aGuidLastEnd    = myGuides(aNbGuid)->Value(myGuides(aNbGuid)->LastParameter());
+    gp_Pnt aGuidFirstStart = aGuideAdaptors(1).EvalD0(aGuideAdaptors(1).FirstParameter());
+    gp_Pnt aGuidFirstEnd   = aGuideAdaptors(1).EvalD0(aGuideAdaptors(1).LastParameter());
+    gp_Pnt aGuidLastStart =
+      aGuideAdaptors(aNbGuid).EvalD0(aGuideAdaptors(aNbGuid).FirstParameter());
+    gp_Pnt aGuidLastEnd = aGuideAdaptors(aNbGuid).EvalD0(aGuideAdaptors(aNbGuid).LastParameter());
 
     bool isGuidesEqual = aGuidFirstStart.IsEqual(aGuidLastStart, aCloseTol)
                          && aGuidFirstEnd.IsEqual(aGuidLastEnd, aCloseTol);
 
     bool isGridClosed = true;
-    for (int iProf = 1; iProf <= aNbProf && isGridClosed; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf && isGridClosed; ++aProfileIdx)
     {
-      gp_Pnt aP1   = myProfiles(iProf)->Value(myProfileParams(iProf, 1));
-      gp_Pnt aP2   = myProfiles(iProf)->Value(myProfileParams(iProf, aNbGuid));
+      gp_Pnt aP1   = aProfileAdaptors(aProfileIdx).EvalD0(myProfileParams(aProfileIdx, 1));
+      gp_Pnt aP2   = aProfileAdaptors(aProfileIdx).EvalD0(myProfileParams(aProfileIdx, aNbGuid));
       isGridClosed = aP1.IsEqual(aP2, aCloseTol);
     }
 
@@ -743,19 +834,21 @@ void GeomFill_Gordon::detectClosedness()
   // V-direction closure: first and last profiles are geometrically equal
   // and intersection grid's first/last rows match.
   {
-    gp_Pnt aProfFirstStart = myProfiles(1)->Value(myProfiles(1)->FirstParameter());
-    gp_Pnt aProfFirstEnd   = myProfiles(1)->Value(myProfiles(1)->LastParameter());
-    gp_Pnt aProfLastStart  = myProfiles(aNbProf)->Value(myProfiles(aNbProf)->FirstParameter());
-    gp_Pnt aProfLastEnd    = myProfiles(aNbProf)->Value(myProfiles(aNbProf)->LastParameter());
+    gp_Pnt aProfFirstStart = aProfileAdaptors(1).EvalD0(aProfileAdaptors(1).FirstParameter());
+    gp_Pnt aProfFirstEnd   = aProfileAdaptors(1).EvalD0(aProfileAdaptors(1).LastParameter());
+    gp_Pnt aProfLastStart =
+      aProfileAdaptors(aNbProf).EvalD0(aProfileAdaptors(aNbProf).FirstParameter());
+    gp_Pnt aProfLastEnd =
+      aProfileAdaptors(aNbProf).EvalD0(aProfileAdaptors(aNbProf).LastParameter());
 
     bool isProfilesEqual = aProfFirstStart.IsEqual(aProfLastStart, aCloseTol)
                            && aProfFirstEnd.IsEqual(aProfLastEnd, aCloseTol);
 
     bool isGridClosed = true;
-    for (int jGuid = 1; jGuid <= aNbGuid && isGridClosed; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid && isGridClosed; ++aGuideIdx)
     {
-      gp_Pnt aP1   = myGuides(jGuid)->Value(myGuideParams(1, jGuid));
-      gp_Pnt aP2   = myGuides(jGuid)->Value(myGuideParams(aNbProf, jGuid));
+      gp_Pnt aP1   = aGuideAdaptors(aGuideIdx).EvalD0(myGuideParams(1, aGuideIdx));
+      gp_Pnt aP2   = aGuideAdaptors(aGuideIdx).EvalD0(myGuideParams(aNbProf, aGuideIdx));
       isGridClosed = aP1.IsEqual(aP2, aCloseTol);
     }
 
@@ -770,15 +863,15 @@ void GeomFill_Gordon::eliminateInaccuracies()
   const int aNbProf = myProfiles.Length();
   const int aNbGuid = myGuides.Length();
 
-  for (int iProf = 1; iProf <= aNbProf; ++iProf)
+  for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
   {
-    const double aFirst = myProfiles(iProf)->FirstParameter();
-    const double aLast  = myProfiles(iProf)->LastParameter();
+    const double aFirst = myProfiles(aProfileIdx)->FirstParameter();
+    const double aLast  = myProfiles(aProfileIdx)->LastParameter();
     const double aRange = aLast - aFirst;
 
-    for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      double& aParam = myProfileParams(iProf, jGuid);
+      double& aParam = myProfileParams(aProfileIdx, aGuideIdx);
       if (std::abs(aParam - aFirst) < THE_SNAP_TOL * aRange)
       {
         aParam = aFirst;
@@ -790,15 +883,15 @@ void GeomFill_Gordon::eliminateInaccuracies()
     }
   }
 
-  for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+  for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
   {
-    const double aFirst = myGuides(jGuid)->FirstParameter();
-    const double aLast  = myGuides(jGuid)->LastParameter();
+    const double aFirst = myGuides(aGuideIdx)->FirstParameter();
+    const double aLast  = myGuides(aGuideIdx)->LastParameter();
     const double aRange = aLast - aFirst;
 
-    for (int iProf = 1; iProf <= aNbProf; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      double& aParam = myGuideParams(iProf, jGuid);
+      double& aParam = myGuideParams(aProfileIdx, aGuideIdx);
       if (std::abs(aParam - aFirst) < THE_SNAP_TOL * aRange)
       {
         aParam = aFirst;
@@ -815,17 +908,22 @@ void GeomFill_Gordon::eliminateInaccuracies()
 
 bool GeomFill_Gordon::checkNetworkCompatibility() const
 {
-  const int aNbProf = myProfiles.Length();
-  const int aNbGuid = myGuides.Length();
+  const int                             aNbProf = myProfiles.Length();
+  const int                             aNbGuid = myGuides.Length();
+  NCollection_Array1<GeomAdaptor_Curve> aProfileAdaptors(myProfiles.Lower(), myProfiles.Upper());
+  NCollection_Array1<GeomAdaptor_Curve> aGuideAdaptors(myGuides.Lower(), myGuides.Upper());
+  loadCurveAdaptors(myProfiles, aProfileAdaptors);
+  loadCurveAdaptors(myGuides, aGuideAdaptors);
 
-  const double aCheckTol = myScale * 1.0e-5;
+  const double aCheckTol = myScale * THE_NETWORK_CHECK_TOL_FACTOR;
 
-  for (int iProf = 1; iProf <= aNbProf; ++iProf)
+  for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
   {
-    for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      gp_Pnt aProfPt = myProfiles(iProf)->Value(myProfileParams(iProf, jGuid));
-      gp_Pnt aGuidPt = myGuides(jGuid)->Value(myGuideParams(iProf, jGuid));
+      gp_Pnt aProfPt =
+        aProfileAdaptors(aProfileIdx).EvalD0(myProfileParams(aProfileIdx, aGuideIdx));
+      gp_Pnt aGuidPt = aGuideAdaptors(aGuideIdx).EvalD0(myGuideParams(aProfileIdx, aGuideIdx));
 
       if (aProfPt.Distance(aGuidPt) > aCheckTol)
       {
@@ -856,36 +954,36 @@ bool GeomFill_Gordon::sortNetwork()
   bool aGuideMustReverse = false;
   bool isStartFound      = false;
 
-  for (int iProf = 1; iProf <= aNbProf && !isStartFound; ++iProf)
+  for (int aProfileIdx = 1; aProfileIdx <= aNbProf && !isStartFound; ++aProfileIdx)
   {
     // Find guide with minimum parameter on this profile.
-    int    jMinGuid = 1;
-    double aMinVal  = myProfileParams(iProf, 1);
-    for (int jGuid = 2; jGuid <= aNbGuid; ++jGuid)
+    int    aMinGuideIdx = 1;
+    double aMinVal      = myProfileParams(aProfileIdx, 1);
+    for (int aGuideIdx = 2; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      if (myProfileParams(iProf, jGuid) < aMinVal)
+      if (myProfileParams(aProfileIdx, aGuideIdx) < aMinVal)
       {
-        aMinVal  = myProfileParams(iProf, jGuid);
-        jMinGuid = jGuid;
+        aMinVal      = myProfileParams(aProfileIdx, aGuideIdx);
+        aMinGuideIdx = aGuideIdx;
       }
     }
 
     // Check if this profile has the minimum parameter on that guide.
-    int    iMinProf     = 1;
-    double aMinGuideVal = myGuideParams(1, jMinGuid);
-    for (int i = 2; i <= aNbProf; ++i)
+    int    aMinProfileIdx = 1;
+    double aMinGuideVal   = myGuideParams(1, aMinGuideIdx);
+    for (int aProfileScanIdx = 2; aProfileScanIdx <= aNbProf; ++aProfileScanIdx)
     {
-      if (myGuideParams(i, jMinGuid) < aMinGuideVal)
+      if (myGuideParams(aProfileScanIdx, aMinGuideIdx) < aMinGuideVal)
       {
-        aMinGuideVal = myGuideParams(i, jMinGuid);
-        iMinProf     = i;
+        aMinGuideVal   = myGuideParams(aProfileScanIdx, aMinGuideIdx);
+        aMinProfileIdx = aProfileScanIdx;
       }
     }
 
-    if (iMinProf == iProf)
+    if (aMinProfileIdx == aProfileIdx)
     {
-      aStartProf        = iProf;
-      aStartGuid        = jMinGuid;
+      aStartProf        = aProfileIdx;
+      aStartGuid        = aMinGuideIdx;
       aGuideMustReverse = false;
       isStartFound      = true;
     }
@@ -894,35 +992,35 @@ bool GeomFill_Gordon::sortNetwork()
   // Fallback: check for reversed guide start.
   if (!isStartFound)
   {
-    for (int iProf = 1; iProf <= aNbProf && !isStartFound; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf && !isStartFound; ++aProfileIdx)
     {
-      int    jMinGuid = 1;
-      double aMinVal  = myProfileParams(iProf, 1);
-      for (int jGuid = 2; jGuid <= aNbGuid; ++jGuid)
+      int    aMinGuideIdx = 1;
+      double aMinVal      = myProfileParams(aProfileIdx, 1);
+      for (int aGuideIdx = 2; aGuideIdx <= aNbGuid; ++aGuideIdx)
       {
-        if (myProfileParams(iProf, jGuid) < aMinVal)
+        if (myProfileParams(aProfileIdx, aGuideIdx) < aMinVal)
         {
-          aMinVal  = myProfileParams(iProf, jGuid);
-          jMinGuid = jGuid;
+          aMinVal      = myProfileParams(aProfileIdx, aGuideIdx);
+          aMinGuideIdx = aGuideIdx;
         }
       }
 
       // Check if this profile has the MAXIMUM parameter on that guide.
-      int    iMaxProf     = 1;
-      double aMaxGuideVal = myGuideParams(1, jMinGuid);
-      for (int i = 2; i <= aNbProf; ++i)
+      int    aMaxProfileIdx = 1;
+      double aMaxGuideVal   = myGuideParams(1, aMinGuideIdx);
+      for (int aProfileScanIdx = 2; aProfileScanIdx <= aNbProf; ++aProfileScanIdx)
       {
-        if (myGuideParams(i, jMinGuid) > aMaxGuideVal)
+        if (myGuideParams(aProfileScanIdx, aMinGuideIdx) > aMaxGuideVal)
         {
-          aMaxGuideVal = myGuideParams(i, jMinGuid);
-          iMaxProf     = i;
+          aMaxGuideVal   = myGuideParams(aProfileScanIdx, aMinGuideIdx);
+          aMaxProfileIdx = aProfileScanIdx;
         }
       }
 
-      if (iMaxProf == iProf)
+      if (aMaxProfileIdx == aProfileIdx)
       {
-        aStartProf        = iProf;
-        aStartGuid        = jMinGuid;
+        aStartProf        = aProfileIdx;
+        aStartGuid        = aMinGuideIdx;
         aGuideMustReverse = true;
         isStartFound      = true;
       }
@@ -935,46 +1033,48 @@ bool GeomFill_Gordon::sortNetwork()
   }
 
   // Helper lambdas for swapping.
-  auto swapProfiles = [this, aNbGuid](int i1, int i2) {
-    if (i1 == i2)
+  auto swapProfiles = [this, aNbGuid](int aProfileIdx1, int aProfileIdx2) {
+    if (aProfileIdx1 == aProfileIdx2)
       return;
-    std::swap(myProfiles(i1), myProfiles(i2));
-    for (int j = 1; j <= aNbGuid; ++j)
+    std::swap(myProfiles(aProfileIdx1), myProfiles(aProfileIdx2));
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      std::swap(myProfileParams(i1, j), myProfileParams(i2, j));
-      std::swap(myGuideParams(i1, j), myGuideParams(i2, j));
+      std::swap(myProfileParams(aProfileIdx1, aGuideIdx), myProfileParams(aProfileIdx2, aGuideIdx));
+      std::swap(myGuideParams(aProfileIdx1, aGuideIdx), myGuideParams(aProfileIdx2, aGuideIdx));
     }
   };
 
-  auto swapGuides = [this, aNbProf](int j1, int j2) {
-    if (j1 == j2)
+  auto swapGuides = [this, aNbProf](int aGuideIdx1, int aGuideIdx2) {
+    if (aGuideIdx1 == aGuideIdx2)
       return;
-    std::swap(myGuides(j1), myGuides(j2));
-    for (int i = 1; i <= aNbProf; ++i)
+    std::swap(myGuides(aGuideIdx1), myGuides(aGuideIdx2));
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      std::swap(myProfileParams(i, j1), myProfileParams(i, j2));
-      std::swap(myGuideParams(i, j1), myGuideParams(i, j2));
+      std::swap(myProfileParams(aProfileIdx, aGuideIdx1), myProfileParams(aProfileIdx, aGuideIdx2));
+      std::swap(myGuideParams(aProfileIdx, aGuideIdx1), myGuideParams(aProfileIdx, aGuideIdx2));
     }
   };
 
-  auto reverseProfile = [this, aNbGuid](int iProf) {
-    double aFirst = myProfiles(iProf)->FirstParameter();
-    double aLast  = myProfiles(iProf)->LastParameter();
-    for (int j = 1; j <= aNbGuid; ++j)
+  auto reverseProfile = [this, aNbGuid](int aProfileIdx) {
+    double aFirst = myProfiles(aProfileIdx)->FirstParameter();
+    double aLast  = myProfiles(aProfileIdx)->LastParameter();
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      myProfileParams(iProf, j) = -myProfileParams(iProf, j) + aFirst + aLast;
+      myProfileParams(aProfileIdx, aGuideIdx) =
+        -myProfileParams(aProfileIdx, aGuideIdx) + aFirst + aLast;
     }
-    myProfiles(iProf)->Reverse();
+    myProfiles(aProfileIdx)->Reverse();
   };
 
-  auto reverseGuide = [this, aNbProf](int jGuid) {
-    double aFirst = myGuides(jGuid)->FirstParameter();
-    double aLast  = myGuides(jGuid)->LastParameter();
-    for (int i = 1; i <= aNbProf; ++i)
+  auto reverseGuide = [this, aNbProf](int aGuideIdx) {
+    double aFirst = myGuides(aGuideIdx)->FirstParameter();
+    double aLast  = myGuides(aGuideIdx)->LastParameter();
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      myGuideParams(i, jGuid) = -myGuideParams(i, jGuid) + aFirst + aLast;
+      myGuideParams(aProfileIdx, aGuideIdx) =
+        -myGuideParams(aProfileIdx, aGuideIdx) + aFirst + aLast;
     }
-    myGuides(jGuid)->Reverse();
+    myGuides(aGuideIdx)->Reverse();
   };
 
   // Move start curves to position 1.
@@ -987,44 +1087,44 @@ bool GeomFill_Gordon::sortNetwork()
   }
 
   // Bubble sort guides by their intersection parameter on the first profile (ascending).
-  for (int n = aNbGuid; n > 1; --n)
+  for (int aGuideSortEnd = aNbGuid; aGuideSortEnd > 1; --aGuideSortEnd)
   {
-    for (int j = 2; j < n; ++j)
+    for (int aGuideIdx = 2; aGuideIdx < aGuideSortEnd; ++aGuideIdx)
     {
-      if (myProfileParams(1, j) > myProfileParams(1, j + 1))
+      if (myProfileParams(1, aGuideIdx) > myProfileParams(1, aGuideIdx + 1))
       {
-        swapGuides(j, j + 1);
+        swapGuides(aGuideIdx, aGuideIdx + 1);
       }
     }
   }
 
   // Bubble sort profiles by their intersection parameter on the first guide (ascending).
-  for (int n = aNbProf; n > 1; --n)
+  for (int aProfileSortEnd = aNbProf; aProfileSortEnd > 1; --aProfileSortEnd)
   {
-    for (int i = 2; i < n; ++i)
+    for (int aProfileIdx = 2; aProfileIdx < aProfileSortEnd; ++aProfileIdx)
     {
-      if (myGuideParams(i, 1) > myGuideParams(i + 1, 1))
+      if (myGuideParams(aProfileIdx, 1) > myGuideParams(aProfileIdx + 1, 1))
       {
-        swapProfiles(i, i + 1);
+        swapProfiles(aProfileIdx, aProfileIdx + 1);
       }
     }
   }
 
   // Reverse individual profiles if their parameters go in the wrong direction.
-  for (int iProf = 2; iProf <= aNbProf; ++iProf)
+  for (int aProfileIdx = 2; aProfileIdx <= aNbProf; ++aProfileIdx)
   {
-    if (myProfileParams(iProf, 1) > myProfileParams(iProf, aNbGuid))
+    if (myProfileParams(aProfileIdx, 1) > myProfileParams(aProfileIdx, aNbGuid))
     {
-      reverseProfile(iProf);
+      reverseProfile(aProfileIdx);
     }
   }
 
   // Reverse individual guides if their parameters go in the wrong direction.
-  for (int jGuid = 2; jGuid <= aNbGuid; ++jGuid)
+  for (int aGuideIdx = 2; aGuideIdx <= aNbGuid; ++aGuideIdx)
   {
-    if (myGuideParams(1, jGuid) > myGuideParams(aNbProf, jGuid))
+    if (myGuideParams(1, aGuideIdx) > myGuideParams(aNbProf, aGuideIdx))
     {
-      reverseGuide(jGuid);
+      reverseGuide(aGuideIdx);
     }
   }
 
@@ -1040,68 +1140,68 @@ bool GeomFill_Gordon::reparametrize()
 
   // Compute averaged intersection parameters.
   NCollection_Array1<double> aAvgProfileParams(1, aNbGuid);
-  for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+  for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
   {
     double aSum = 0.0;
-    for (int iProf = 1; iProf <= aNbProf; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      aSum += myProfileParams(iProf, jGuid);
+      aSum += myProfileParams(aProfileIdx, aGuideIdx);
     }
-    aAvgProfileParams(jGuid) = aSum / aNbProf;
+    aAvgProfileParams(aGuideIdx) = aSum / aNbProf;
   }
 
   NCollection_Array1<double> aAvgGuideParams(1, aNbProf);
-  for (int iProf = 1; iProf <= aNbProf; ++iProf)
+  for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
   {
     double aSum = 0.0;
-    for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      aSum += myGuideParams(iProf, jGuid);
+      aSum += myGuideParams(aProfileIdx, aGuideIdx);
     }
-    aAvgGuideParams(iProf) = aSum / aNbGuid;
+    aAvgGuideParams(aProfileIdx) = aSum / aNbGuid;
   }
 
   // Reparametrize each profile.
-  for (int iProf = 1; iProf <= aNbProf; ++iProf)
+  for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
   {
     NCollection_Array1<double> anOldParams(1, aNbGuid);
     NCollection_Array1<double> aNewParams(1, aNbGuid);
-    for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      anOldParams(jGuid) = myProfileParams(iProf, jGuid);
-      aNewParams(jGuid)  = aAvgProfileParams(jGuid);
+      anOldParams(aGuideIdx) = myProfileParams(aProfileIdx, aGuideIdx);
+      aNewParams(aGuideIdx)  = aAvgProfileParams(aGuideIdx);
     }
 
-    if (!reparamCurve(myProfiles(iProf), anOldParams, aNewParams))
+    if (!reparamCurve(myProfiles(aProfileIdx), anOldParams, aNewParams))
     {
       return false;
     }
 
-    for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+    for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
     {
-      myProfileParams(iProf, jGuid) = aAvgProfileParams(jGuid);
+      myProfileParams(aProfileIdx, aGuideIdx) = aAvgProfileParams(aGuideIdx);
     }
   }
 
   // Reparametrize each guide.
-  for (int jGuid = 1; jGuid <= aNbGuid; ++jGuid)
+  for (int aGuideIdx = 1; aGuideIdx <= aNbGuid; ++aGuideIdx)
   {
     NCollection_Array1<double> anOldParams(1, aNbProf);
     NCollection_Array1<double> aNewParams(1, aNbProf);
-    for (int iProf = 1; iProf <= aNbProf; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      anOldParams(iProf) = myGuideParams(iProf, jGuid);
-      aNewParams(iProf)  = aAvgGuideParams(iProf);
+      anOldParams(aProfileIdx) = myGuideParams(aProfileIdx, aGuideIdx);
+      aNewParams(aProfileIdx)  = aAvgGuideParams(aProfileIdx);
     }
 
-    if (!reparamCurve(myGuides(jGuid), anOldParams, aNewParams))
+    if (!reparamCurve(myGuides(aGuideIdx), anOldParams, aNewParams))
     {
       return false;
     }
 
-    for (int iProf = 1; iProf <= aNbProf; ++iProf)
+    for (int aProfileIdx = 1; aProfileIdx <= aNbProf; ++aProfileIdx)
     {
-      myGuideParams(iProf, jGuid) = aAvgGuideParams(iProf);
+      myGuideParams(aProfileIdx, aGuideIdx) = aAvgGuideParams(aProfileIdx);
     }
   }
 

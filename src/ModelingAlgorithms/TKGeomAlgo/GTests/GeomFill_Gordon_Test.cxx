@@ -457,6 +457,57 @@ TEST(GeomFill_GordonBuilder, NonUniformParams_ProducesCorrectGeometry)
   verifyPointOnSurface(aSurf, 0.5, 0.3, gp_Pnt(0.5, 0.3, 0), 1.0e-3);
 }
 
+TEST(GeomFill_GordonBuilder, ParallelMode_DefaultSingleThreadAndMatchesParallelResult)
+{
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aProfiles(1, 3);
+  aProfiles(1) = makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0.5, 0, 0.4), gp_Pnt(1, 0, 0));
+  aProfiles(2) = makeQuadraticBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(0.5, 0.5, 0.6), gp_Pnt(1, 0.5, 0));
+  aProfiles(3) = makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(0.5, 1, 0.4), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<occ::handle<Geom_BSplineCurve>> aGuides(1, 2);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  makeCompatible(aProfiles);
+  makeCompatible(aGuides);
+
+  NCollection_Array1<double> aProfileParams(1, 3);
+  aProfileParams(1) = 0.0;
+  aProfileParams(2) = 0.5;
+  aProfileParams(3) = 1.0;
+  NCollection_Array1<double> aGuideParams(1, 2);
+  aGuideParams(1) = 0.0;
+  aGuideParams(2) = 1.0;
+
+  GeomFill_GordonBuilder aSingleThread;
+  EXPECT_FALSE(aSingleThread.IsParallelMode());
+  aSingleThread.Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion());
+  aSingleThread.Perform();
+  ASSERT_TRUE(aSingleThread.IsDone());
+
+  GeomFill_GordonBuilder aParallel;
+  aParallel.SetParallelMode(true);
+  EXPECT_TRUE(aParallel.IsParallelMode());
+  aParallel.Init(aProfiles, aGuides, aProfileParams, aGuideParams, Precision::Confusion());
+  aParallel.Perform();
+  ASSERT_TRUE(aParallel.IsDone());
+
+  const occ::handle<Geom_BSplineSurface>& aSurfSingle = aSingleThread.Surface();
+  const occ::handle<Geom_BSplineSurface>& aSurfPar    = aParallel.Surface();
+
+  const gp_Pnt aPntSingle1 = aSurfSingle->Value(0.25, 0.25);
+  const gp_Pnt aPntPar1    = aSurfPar->Value(0.25, 0.25);
+  EXPECT_LT(aPntSingle1.Distance(aPntPar1), 1.0e-9);
+
+  const gp_Pnt aPntSingle2 = aSurfSingle->Value(0.5, 0.5);
+  const gp_Pnt aPntPar2    = aSurfPar->Value(0.5, 0.5);
+  EXPECT_LT(aPntSingle2.Distance(aPntPar2), 1.0e-9);
+
+  const gp_Pnt aPntSingle3 = aSurfSingle->Value(0.75, 0.75);
+  const gp_Pnt aPntPar3    = aSurfPar->Value(0.75, 0.75);
+  EXPECT_LT(aPntSingle3.Distance(aPntPar3), 1.0e-9);
+}
+
 // ============================================================================
 // GeomFill_Gordon tests (high-level, automatic intersection detection)
 // ============================================================================
@@ -521,6 +572,38 @@ TEST(GeomFill_Gordon, NotDone_BeforePerform)
   GeomFill_Gordon aGordon;
   EXPECT_FALSE(aGordon.IsDone());
   EXPECT_THROW((void)aGordon.Surface(), StdFail_NotDone);
+}
+
+TEST(GeomFill_Gordon, ParallelMode_DefaultSingleThreadAndMatchesParallelResult)
+{
+  NCollection_Array1<occ::handle<Geom_Curve>> aProfiles(1, 3);
+  aProfiles(1) = makeQuadraticBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0.5, 0, 0.4), gp_Pnt(1, 0, 0));
+  aProfiles(2) = makeQuadraticBSpline(gp_Pnt(0, 0.5, 0), gp_Pnt(0.5, 0.5, 0.6), gp_Pnt(1, 0.5, 0));
+  aProfiles(3) = makeQuadraticBSpline(gp_Pnt(0, 1, 0), gp_Pnt(0.5, 1, 0.4), gp_Pnt(1, 1, 0));
+
+  NCollection_Array1<occ::handle<Geom_Curve>> aGuides(1, 2);
+  aGuides(1) = makeLinearBSpline(gp_Pnt(0, 0, 0), gp_Pnt(0, 1, 0));
+  aGuides(2) = makeLinearBSpline(gp_Pnt(1, 0, 0), gp_Pnt(1, 1, 0));
+
+  GeomFill_Gordon aSingleThread;
+  EXPECT_FALSE(aSingleThread.IsParallelMode());
+  aSingleThread.Init(aProfiles, aGuides, Precision::Confusion());
+  aSingleThread.Perform();
+  ASSERT_TRUE(aSingleThread.IsDone());
+
+  GeomFill_Gordon aParallel;
+  aParallel.SetParallelMode(true);
+  EXPECT_TRUE(aParallel.IsParallelMode());
+  aParallel.Init(aProfiles, aGuides, Precision::Confusion());
+  aParallel.Perform();
+  ASSERT_TRUE(aParallel.IsDone());
+
+  const occ::handle<Geom_BSplineSurface>& aSurfSingle = aSingleThread.Surface();
+  const occ::handle<Geom_BSplineSurface>& aSurfPar    = aParallel.Surface();
+
+  const gp_Pnt aMidSingle = aSurfSingle->Value(0.5, 0.5);
+  const gp_Pnt aMidPar    = aSurfPar->Value(0.5, 0.5);
+  EXPECT_LT(aMidSingle.Distance(aMidPar), 1.0e-9);
 }
 
 TEST(GeomFill_Gordon, CurvedBSplineNetwork_ProducesValidSurface)

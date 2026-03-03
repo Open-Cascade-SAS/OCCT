@@ -71,6 +71,13 @@ public:
   //! Performs the Gordon surface construction.
   Standard_EXPORT void Perform();
 
+  //! Enables/disables parallel processing in internal stages.
+  //! By default, single-thread mode is used.
+  void SetParallelMode(bool theToUseParallel) { myToUseParallel = theToUseParallel; }
+
+  //! Returns true if internal parallel processing is enabled.
+  [[nodiscard]] bool IsParallelMode() const { return myToUseParallel; }
+
   //! Returns true if the surface was successfully constructed.
   [[nodiscard]] bool IsDone() const { return myIsDone; }
 
@@ -137,10 +144,11 @@ private:
   occ::handle<Geom_BSplineSurface>                   myProfileSurface;
   occ::handle<Geom_BSplineSurface>                   myGuideSurface;
   occ::handle<Geom_BSplineSurface>                   myTensorSurface;
-  double                                             myTolerance = 0.0;
-  bool                                               myIsUClosed = false;
-  bool                                               myIsVClosed = false;
-  bool                                               myIsDone    = false;
+  double                                             myTolerance     = 0.0;
+  bool                                               myIsUClosed     = false;
+  bool                                               myIsVClosed     = false;
+  bool                                               myToUseParallel = false;
+  bool                                               myIsDone        = false;
 };
 
 #endif // _GeomFill_GordonBuilder_HeaderFile

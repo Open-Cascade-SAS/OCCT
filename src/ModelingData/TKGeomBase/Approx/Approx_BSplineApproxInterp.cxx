@@ -14,13 +14,13 @@
 #include <Approx_BSplineApproxInterp.hxx>
 
 #include <BSplCLib.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <MathLin_Gauss.hxx>
 #include <math_Matrix.hxx>
 #include <math_Vector.hxx>
 
 #include <algorithm>
-#include <cfloat>
 #include <cmath>
 
 namespace
@@ -28,6 +28,36 @@ namespace
 
 //! Maximum number of Newton iterations for point-on-curve projection.
 constexpr int THE_MAX_PROJECTION_ITER = 10;
+
+//! Small value to avoid unstable normalization by near-zero error.
+constexpr double THE_ERROR_NORM_EPS = 1.0e-6;
+
+//! Initial multiplier for previous-error bootstrap in optimization loop.
+constexpr double THE_OLD_ERROR_SCALE = 2.0;
+
+//! Threshold for treating LU forward-substitution accumulator as non-zero.
+constexpr double THE_LU_NONZERO_EPS = 1.0e-30;
+
+//! Threshold for Newton denominator degeneracy during projection.
+constexpr double THE_NEWTON_D2F_EPS = 1.0e-30;
+
+//! Number of boundary knots in open knot vector (start and end).
+constexpr int THE_BOUNDARY_KNOT_COUNT = 2;
+
+//! Divisor for alpha exponent in centripetal/chord-length parameterization.
+constexpr double THE_PARAM_ALPHA_DIVISOR = 2.0;
+
+//! Final normalized parameter value.
+constexpr double THE_PARAM_LAST_VALUE = 1.0;
+
+//! Continuity row indices in the continuity constraint matrix.
+constexpr int THE_CONT_ROW_C1 = 1;
+constexpr int THE_CONT_ROW_C2 = 2;
+constexpr int THE_CONT_ROW_C0 = 3;
+
+//! Number of continuity constraints for closed curves.
+constexpr int THE_CONT_COUNT_C0_C1_C2 = 3;
+constexpr int THE_CONT_COUNT_C1_C2    = 2;
 
 //! Inserts a kink knot into pre-built knot/multiplicity arrays.
 //! If a matching knot exists within tolerance, its multiplicity is raised.
@@ -209,11 +239,11 @@ void Approx_BSplineApproxInterp::PerformOptimal(const NCollection_Array1<double>
     return;
   }
 
-  double anOldError = myMaxError * 2.0;
+  double anOldError = myMaxError * THE_OLD_ERROR_SCALE;
   int    anIter     = 0;
 
   while (myMaxError > 0.0
-         && (anOldError - myMaxError) / std::max(myMaxError, 1.0e-6) > myConvergenceTol
+         && (anOldError - myMaxError) / std::max(myMaxError, THE_ERROR_NORM_EPS) > myConvergenceTol
          && anIter < theMaxIter)
   {
     anOldError = myMaxError;
@@ -249,7 +279,7 @@ NCollection_Array1<double> Approx_BSplineApproxInterp::computeParameters(double 
   for (int i = 2; i <= aNbPts; ++i)
   {
     double aLen2 = myPoints.Value(i - 1).SquareDistance(myPoints.Value(i));
-    aSum += std::pow(aLen2, theAlpha / 2.0);
+    aSum += std::pow(aLen2, theAlpha / THE_PARAM_ALPHA_DIVISOR);
     aParams.SetValue(i, aSum);
   }
 
@@ -262,7 +292,7 @@ NCollection_Array1<double> Approx_BSplineApproxInterp::computeParameters(double 
       aParams.SetValue(i, aParams.Value(i) / aTmax);
     }
   }
-  aParams.SetValue(aNbPts, 1.0);
+  aParams.SetValue(aNbPts, THE_PARAM_LAST_VALUE);
   return aParams;
 }
 
@@ -290,7 +320,7 @@ void Approx_BSplineApproxInterp::computeKnots(int                               
 
   // Number of internal knots (simple multiplicity).
   const int aNbInternal  = theNbCP - anOrder;
-  const int aNbBaseKnots = aNbInternal + 2; // start + internal + end
+  const int aNbBaseKnots = aNbInternal + THE_BOUNDARY_KNOT_COUNT; // start + internal + end
 
   // Build base knot vector as Array1 with known size.
   theKnots = NCollection_Array1<double>(1, aNbBaseKnots);
@@ -393,32 +423,32 @@ math_Matrix Approx_BSplineApproxInterp::buildContinuityMatrix(
   aParamLast.SetValue(1, aLastParam);
 
   // C1 condition: first derivative at start equals first derivative at end.
-  math_Matrix aDiff1First = buildBasisMatrix(theFlatKnots, aParamFirst, 1);
-  math_Matrix aDiff1Last  = buildBasisMatrix(theFlatKnots, aParamLast, 1);
+  math_Matrix aDiff1First = buildBasisMatrix(theFlatKnots, aParamFirst, THE_CONT_ROW_C1);
+  math_Matrix aDiff1Last  = buildBasisMatrix(theFlatKnots, aParamLast, THE_CONT_ROW_C1);
   for (int j = 1; j <= theNbCtrPnts; ++j)
   {
-    aContinuity(1, j) = aDiff1First(1, j) - aDiff1Last(1, j);
+    aContinuity(THE_CONT_ROW_C1, j) = aDiff1First(1, j) - aDiff1Last(1, j);
   }
 
   // C2 condition: second derivative at start equals second derivative at end.
-  if (theNbContinuity >= 2)
+  if (theNbContinuity >= THE_CONT_ROW_C2)
   {
-    math_Matrix aDiff2First = buildBasisMatrix(theFlatKnots, aParamFirst, 2);
-    math_Matrix aDiff2Last  = buildBasisMatrix(theFlatKnots, aParamLast, 2);
+    math_Matrix aDiff2First = buildBasisMatrix(theFlatKnots, aParamFirst, THE_CONT_ROW_C2);
+    math_Matrix aDiff2Last  = buildBasisMatrix(theFlatKnots, aParamLast, THE_CONT_ROW_C2);
     for (int j = 1; j <= theNbCtrPnts; ++j)
     {
-      aContinuity(2, j) = aDiff2First(1, j) - aDiff2Last(1, j);
+      aContinuity(THE_CONT_ROW_C2, j) = aDiff2First(1, j) - aDiff2Last(1, j);
     }
   }
 
   // C0 condition (only if first/last not already interpolated).
-  if (theNbContinuity >= 3)
+  if (theNbContinuity >= THE_CONT_ROW_C0)
   {
     math_Matrix aDiff0First = buildBasisMatrix(theFlatKnots, aParamFirst, 0);
     math_Matrix aDiff0Last  = buildBasisMatrix(theFlatKnots, aParamLast, 0);
     for (int j = 1; j <= theNbCtrPnts; ++j)
     {
-      aContinuity(3, j) = aDiff0First(1, j) - aDiff0Last(1, j);
+      aContinuity(THE_CONT_ROW_C0, j) = aDiff0First(1, j) - aDiff0Last(1, j);
     }
   }
 
@@ -443,10 +473,10 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
   int        aNbContinuity = 0;
   if (aMakeClosed)
   {
-    aNbContinuity = 3; // C0 + C1 + C2
+    aNbContinuity = THE_CONT_COUNT_C0_C1_C2; // C0 + C1 + C2
     if (isFirstAndLastInterpolated())
     {
-      aNbContinuity = 2; // Remove C0 - already enforced by interpolation.
+      aNbContinuity = THE_CONT_COUNT_C1_C2; // Remove C0 - already enforced by interpolation.
     }
   }
 
@@ -575,7 +605,7 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
           aSum -= aLU(i, j) * aX(j);
         }
       }
-      else if (std::abs(aSum) > 1.0e-30)
+      else if (std::abs(aSum) > THE_LU_NONZERO_EPS)
       {
         aFirstNonZero = i;
       }
@@ -607,13 +637,14 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
   myCurve = new Geom_BSplineCurve(aPoles, theKnots, theMults, myDegree, false);
 
   // Compute max error at approximated points.
-  myMaxError = 0.0;
+  const GeomAdaptor_Curve& aCurveAdaptor = curveAdaptor(myCurve);
+  myMaxError                             = 0.0;
   for (int i = 0; i < aNbApprox; ++i)
   {
     const int     aIdx    = myApproximated.Value(i);
     const gp_Pnt& aPnt    = myPoints.Value(aIdx + 1);
     const double  aParam  = theParams.Value(theParams.Lower() + aIdx);
-    const double  anError = myCurve->Value(aParam).Distance(aPnt);
+    const double  anError = aCurveAdaptor.EvalD0(aParam).Distance(aPnt);
     myMaxError            = std::max(myMaxError, anError);
   }
 
@@ -622,28 +653,45 @@ bool Approx_BSplineApproxInterp::solve(const NCollection_Array1<double>& thePara
 
 //=================================================================================================
 
-double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                         thePnt,
-                                                  const occ::handle<Geom_BSplineCurve>& theCurve,
-                                                  double  theInitParam,
-                                                  double& theParam) const
+const GeomAdaptor_Curve& Approx_BSplineApproxInterp::curveAdaptor(
+  const occ::handle<Geom_BSplineCurve>& theCurve) const
 {
-  double aT  = theInitParam;
-  double aDt = 0.0;
-  double aF  = 0.0;
+  if (myCurveAdaptorCache.IsNull())
+  {
+    myCurveAdaptorCache = new GeomAdaptor_Curve(theCurve);
+  }
+  else if (myCurveAdaptorCache->Curve() != theCurve)
+  {
+    myCurveAdaptorCache->Load(theCurve);
+  }
+
+  return *myCurveAdaptorCache;
+}
+
+//=================================================================================================
+
+double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&            thePnt,
+                                                  const GeomAdaptor_Curve& theCurveAdaptor,
+                                                  double                   theInitParam,
+                                                  double&                  theParam) const
+{
+  const double aFirstParam = theCurveAdaptor.FirstParameter();
+  const double aLastParam  = theCurveAdaptor.LastParameter();
+  double       aT          = theInitParam;
+  double       aDt         = 0.0;
+  double       aF          = 0.0;
 
   for (int anIter = 0; anIter < THE_MAX_PROJECTION_ITER; ++anIter)
   {
-    gp_Pnt aPnt2;
-    gp_Vec aDP, aD2P;
-    theCurve->D2(aT, aPnt2, aDP, aD2P);
+    const Geom_Curve::ResD2 aCurveD2 = theCurveAdaptor.EvalD2(aT);
 
-    const gp_XYZ aDiff = aPnt2.XYZ() - thePnt.XYZ();
+    const gp_XYZ aDiff = aCurveD2.Point.XYZ() - thePnt.XYZ();
     aF                 = aDiff.SquareModulus();
 
-    const double aDF  = aDiff.Dot(aDP.XYZ());
-    const double aD2F = aDiff.Dot(aD2P.XYZ()) + aDP.SquareMagnitude();
+    const double aDF  = aDiff.Dot(aCurveD2.D1.XYZ());
+    const double aD2F = aDiff.Dot(aCurveD2.D2.XYZ()) + aCurveD2.D1.SquareMagnitude();
 
-    if (std::abs(aD2F) < 1.0e-30)
+    if (std::abs(aD2F) < THE_NEWTON_D2F_EPS)
     {
       break;
     }
@@ -652,13 +700,13 @@ double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                 
     double aNewT = aT + aDt;
 
     // Clamp to curve domain.
-    if (aNewT < theCurve->FirstParameter())
+    if (aNewT < aFirstParam)
     {
-      aNewT = theCurve->FirstParameter();
+      aNewT = aFirstParam;
     }
-    else if (aNewT > theCurve->LastParameter())
+    else if (aNewT > aLastParam)
     {
-      aNewT = theCurve->LastParameter();
+      aNewT = aLastParam;
     }
     aT = aNewT;
 
@@ -677,6 +725,8 @@ double Approx_BSplineApproxInterp::projectOnCurve(const gp_Pnt&                 
 void Approx_BSplineApproxInterp::optimizeParameters(const occ::handle<Geom_BSplineCurve>& theCurve,
                                                     NCollection_Array1<double>& theParams) const
 {
+  const GeomAdaptor_Curve& aCurveAdaptor = curveAdaptor(theCurve);
+
   for (int i = 0; i < myApproximated.Length(); ++i)
   {
     const int     aIdx       = myApproximated.Value(i);
@@ -684,7 +734,7 @@ void Approx_BSplineApproxInterp::optimizeParameters(const occ::handle<Geom_BSpli
     const double  anOldParam = theParams.Value(theParams.Lower() + aIdx);
 
     double aNewParam = anOldParam;
-    projectOnCurve(aPnt, theCurve, anOldParam, aNewParam);
+    projectOnCurve(aPnt, aCurveAdaptor, anOldParam, aNewParam);
     theParams.SetValue(theParams.Lower() + aIdx, aNewParam);
   }
 }
@@ -727,17 +777,24 @@ bool Approx_BSplineApproxInterp::isFirstAndLastInterpolated() const
 
 double Approx_BSplineApproxInterp::boundingBoxDiagonal() const
 {
-  gp_Pnt aMin(DBL_MAX, DBL_MAX, DBL_MAX);
-  gp_Pnt aMax(-DBL_MAX, -DBL_MAX, -DBL_MAX);
-  for (int i = myPoints.Lower(); i <= myPoints.Upper(); ++i)
+  if (myPoints.Length() <= 0)
   {
-    const gp_Pnt& aP = myPoints.Value(i);
-    aMin.SetX(std::min(aMin.X(), aP.X()));
-    aMin.SetY(std::min(aMin.Y(), aP.Y()));
-    aMin.SetZ(std::min(aMin.Z(), aP.Z()));
-    aMax.SetX(std::max(aMax.X(), aP.X()));
-    aMax.SetY(std::max(aMax.Y(), aP.Y()));
-    aMax.SetZ(std::max(aMax.Z(), aP.Z()));
+    return 0.0;
   }
+
+  gp_Pnt aMin = myPoints.Value(myPoints.Lower());
+  gp_Pnt aMax = aMin;
+
+  for (int aPointIdx = myPoints.Lower() + 1; aPointIdx <= myPoints.Upper(); ++aPointIdx)
+  {
+    const gp_Pnt& aPnt = myPoints.Value(aPointIdx);
+    aMin.SetX(std::min(aMin.X(), aPnt.X()));
+    aMin.SetY(std::min(aMin.Y(), aPnt.Y()));
+    aMin.SetZ(std::min(aMin.Z(), aPnt.Z()));
+    aMax.SetX(std::max(aMax.X(), aPnt.X()));
+    aMax.SetY(std::max(aMax.Y(), aPnt.Y()));
+    aMax.SetZ(std::max(aMax.Z(), aPnt.Z()));
+  }
+
   return aMax.Distance(aMin);
 }

@@ -86,18 +86,19 @@ void GeomFill_GordonBuilder::Perform()
   }
 
   // Extract intersection points by evaluating profiles at guide parameters.
-  // intersection_pnts(iGuide, iProfile) = profile[iProfile]->Value(guideParam[iGuide])
+  // intersection_pnts(aGuideIdx, aProfileIdx) =
+  //   profile[aProfileIdx]->Value(guideParam[aGuideIdx])
   const int aNbGuides   = myGuides.Length();
   const int aNbProfiles = myProfiles.Length();
 
   NCollection_Array2<gp_Pnt> anIntersectionPnts(1, aNbGuides, 1, aNbProfiles);
-  for (int iProf = 0; iProf < aNbProfiles; ++iProf)
+  for (int aProfileIdx = 0; aProfileIdx < aNbProfiles; ++aProfileIdx)
   {
-    const occ::handle<Geom_BSplineCurve>& aProfile = myProfiles(myProfiles.Lower() + iProf);
-    for (int iGuid = 0; iGuid < aNbGuides; ++iGuid)
+    const occ::handle<Geom_BSplineCurve>& aProfile = myProfiles(myProfiles.Lower() + aProfileIdx);
+    for (int aGuideIdx = 0; aGuideIdx < aNbGuides; ++aGuideIdx)
     {
-      double aParam                            = myGuideParams(myGuideParams.Lower() + iGuid);
-      anIntersectionPnts(iGuid + 1, iProf + 1) = aProfile->Value(aParam);
+      double aParam = myGuideParams(myGuideParams.Lower() + aGuideIdx);
+      anIntersectionPnts(aGuideIdx + 1, aProfileIdx + 1) = aProfile->Value(aParam);
     }
   }
 
@@ -232,9 +233,9 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildSkinSurface(
   // Interpolate the first pole column to determine V-direction knots/mults/degree.
   occ::handle<NCollection_HArray1<gp_Pnt>> aFirstPnts =
     new NCollection_HArray1<gp_Pnt>(1, aNbInterpPts);
-  for (int iSec = 0; iSec < aNbInterpPts; ++iSec)
+  for (int aSectionIdx = 0; aSectionIdx < aNbInterpPts; ++aSectionIdx)
   {
-    aFirstPnts->SetValue(iSec + 1, theSections(theSections.Lower() + iSec)->Pole(1));
+    aFirstPnts->SetValue(aSectionIdx + 1, theSections(theSections.Lower() + aSectionIdx)->Pole(1));
   }
 
   GeomAPI_Interpolate aFirstInterp(aFirstPnts,
@@ -260,36 +261,41 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildSkinSurface(
   // Interpolate remaining pole columns in parallel.
   std::atomic<bool> isOk{true};
 
-  OSD_Parallel::For(2, aNbPolesU + 1, [&](int iPoleU) {
-    if (!isOk.load(std::memory_order_relaxed))
-    {
-      return;
-    }
+  OSD_Parallel::For(
+    2,
+    aNbPolesU + 1,
+    [&](int aUPoleIdx) {
+      if (!isOk.load(std::memory_order_relaxed))
+      {
+        return;
+      }
 
-    occ::handle<NCollection_HArray1<gp_Pnt>> anInterpPnts =
-      new NCollection_HArray1<gp_Pnt>(1, aNbInterpPts);
-    for (int iSec = 0; iSec < aNbInterpPts; ++iSec)
-    {
-      anInterpPnts->SetValue(iSec + 1, theSections(theSections.Lower() + iSec)->Pole(iPoleU));
-    }
+      occ::handle<NCollection_HArray1<gp_Pnt>> anInterpPnts =
+        new NCollection_HArray1<gp_Pnt>(1, aNbInterpPts);
+      for (int aSectionIdx = 0; aSectionIdx < aNbInterpPts; ++aSectionIdx)
+      {
+        anInterpPnts->SetValue(aSectionIdx + 1,
+                               theSections(theSections.Lower() + aSectionIdx)->Pole(aUPoleIdx));
+      }
 
-    GeomAPI_Interpolate anInterp(anInterpPnts,
-                                 aSectionParamsH,
-                                 aMakeClosed,
-                                 Precision::Confusion());
-    anInterp.Perform();
-    if (!anInterp.IsDone())
-    {
-      isOk.store(false, std::memory_order_relaxed);
-      return;
-    }
+      GeomAPI_Interpolate anInterp(anInterpPnts,
+                                   aSectionParamsH,
+                                   aMakeClosed,
+                                   Precision::Confusion());
+      anInterp.Perform();
+      if (!anInterp.IsDone())
+      {
+        isOk.store(false, std::memory_order_relaxed);
+        return;
+      }
 
-    occ::handle<Geom_BSplineCurve> anInterpCurve = anInterp.Curve();
-    for (int j = 1; j <= anInterpCurve->NbPoles(); ++j)
-    {
-      aSurfPoles.SetValue(iPoleU, j, anInterpCurve->Pole(j));
-    }
-  });
+      occ::handle<Geom_BSplineCurve> anInterpCurve = anInterp.Curve();
+      for (int j = 1; j <= anInterpCurve->NbPoles(); ++j)
+      {
+        aSurfPoles.SetValue(aUPoleIdx, j, anInterpCurve->Pole(j));
+      }
+    },
+    !myToUseParallel);
 
   if (!isOk.load())
   {
@@ -332,10 +338,10 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildTensorSurface(
   if (aMakeUClosed)
   {
     // Verify first and last rows are geometrically identical.
-    for (int iV = 1; iV <= aNbV; ++iV)
+    for (int aVIdx = 1; aVIdx <= aNbV; ++aVIdx)
     {
-      if (!thePoints(thePoints.LowerRow(), thePoints.LowerCol() + iV - 1)
-             .IsEqual(thePoints(thePoints.LowerRow() + aNbU - 1, thePoints.LowerCol() + iV - 1),
+      if (!thePoints(thePoints.LowerRow(), thePoints.LowerCol() + aVIdx - 1)
+             .IsEqual(thePoints(thePoints.LowerRow() + aNbU - 1, thePoints.LowerCol() + aVIdx - 1),
                       Precision::Confusion()))
       {
         aMakeUClosed = false;
@@ -357,14 +363,15 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildTensorSurface(
 
   // Interpolate each row (fixed V-index, varying U) to produce curves in U-direction.
   NCollection_Array1<occ::handle<Geom_BSplineCurve>> aRowCurves(1, aNbV);
-  for (int iV = 1; iV <= aNbV; ++iV)
+  for (int aVIdx = 1; aVIdx <= aNbV; ++aVIdx)
   {
     occ::handle<NCollection_HArray1<gp_Pnt>> aRowPnts =
       new NCollection_HArray1<gp_Pnt>(1, aNbInterpU);
-    for (int iU = 1; iU <= aNbInterpU; ++iU)
+    for (int aUIdx = 1; aUIdx <= aNbInterpU; ++aUIdx)
     {
-      aRowPnts->SetValue(iU,
-                         thePoints(thePoints.LowerRow() + iU - 1, thePoints.LowerCol() + iV - 1));
+      aRowPnts->SetValue(
+        aUIdx,
+        thePoints(thePoints.LowerRow() + aUIdx - 1, thePoints.LowerCol() + aVIdx - 1));
     }
 
     GeomAPI_Interpolate anInterp(aRowPnts, aUParamsH, aMakeUClosed, Precision::Confusion());
@@ -374,7 +381,7 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::buildTensorSurface(
       return nullptr;
     }
 
-    aRowCurves(iV) = anInterp.Curve();
+    aRowCurves(aVIdx) = anInterp.Curve();
   }
 
   // Make row curves compatible (same degree & knots) before skinning.
@@ -467,26 +474,26 @@ occ::handle<Geom_BSplineSurface> GeomFill_GordonBuilder::computeBooleanSum(
   //   w_gordon * P_gordon = w_prof * P_prof + w_guide * P_guide - w_tensor * P_tensor
   //   w_gordon = w_prof + w_guide - w_tensor
   // For non-rational surfaces (all weights = 1.0), this simplifies to P + G - T.
-  for (int iU = 1; iU <= aNbUPoles; ++iU)
+  for (int aUIdx = 1; aUIdx <= aNbUPoles; ++aUIdx)
   {
-    for (int iV = 1; iV <= aNbVPoles; ++iV)
+    for (int aVIdx = 1; aVIdx <= aNbVPoles; ++aVIdx)
     {
-      const double aWProf   = aProfWeights(iU, iV);
-      const double aWGuide  = aGuideWeights(iU, iV);
-      const double aWTensor = aTensorWeights(iU, iV);
+      const double aWProf   = aProfWeights(aUIdx, aVIdx);
+      const double aWGuide  = aGuideWeights(aUIdx, aVIdx);
+      const double aWTensor = aTensorWeights(aUIdx, aVIdx);
       const double aWGordon = aWProf + aWGuide - aWTensor;
       if (std::abs(aWGordon) < Precision::Confusion())
       {
         return nullptr;
       }
 
-      gp_XYZ aProfPole   = theProfileSurf->Pole(iU, iV).XYZ() * aWProf;
-      gp_XYZ aGuidePole  = theGuideSurf->Pole(iU, iV).XYZ() * aWGuide;
-      gp_XYZ aTensorPole = theTensorSurf->Pole(iU, iV).XYZ() * aWTensor;
+      gp_XYZ aProfPole   = theProfileSurf->Pole(aUIdx, aVIdx).XYZ() * aWProf;
+      gp_XYZ aGuidePole  = theGuideSurf->Pole(aUIdx, aVIdx).XYZ() * aWGuide;
+      gp_XYZ aTensorPole = theTensorSurf->Pole(aUIdx, aVIdx).XYZ() * aWTensor;
 
       gp_XYZ aGordonPole = (aProfPole + aGuidePole - aTensorPole) / aWGordon;
-      aResult->SetPole(iU, iV, gp_Pnt(aGordonPole));
-      aResult->SetWeight(iU, iV, aWGordon);
+      aResult->SetPole(aUIdx, aVIdx, gp_Pnt(aGordonPole));
+      aResult->SetWeight(aUIdx, aVIdx, aWGordon);
     }
   }
 

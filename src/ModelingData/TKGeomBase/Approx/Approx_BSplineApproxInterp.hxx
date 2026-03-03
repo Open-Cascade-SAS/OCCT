@@ -24,6 +24,8 @@
 #include <gp_Pnt.hxx>
 #include <math_Matrix.hxx>
 
+class GeomAdaptor_Curve;
+
 //! Constrained least-squares B-spline curve approximation with exact interpolation constraints.
 //!
 //! This class fits a B-spline curve through a set of 3D points, where each point
@@ -192,14 +194,17 @@ private:
 
   //! Projects a point onto a curve using Newton iteration.
   //! @param[in] thePnt       point to project
-  //! @param[in] theCurve     curve to project onto
+  //! @param[in] theCurveAdaptor curve adaptor to project onto
   //! @param[in] theInitParam initial parameter guess
   //! @param[out] theParam    optimized parameter
   //! @return projection distance
-  double projectOnCurve(const gp_Pnt&                         thePnt,
-                        const occ::handle<Geom_BSplineCurve>& theCurve,
-                        double                                theInitParam,
-                        double&                               theParam) const;
+  double projectOnCurve(const gp_Pnt&            thePnt,
+                        const GeomAdaptor_Curve& theCurveAdaptor,
+                        double                   theInitParam,
+                        double&                  theParam) const;
+
+  //! Returns cached adaptor for the given curve, reloading cache when curve changes.
+  const GeomAdaptor_Curve& curveAdaptor(const occ::handle<Geom_BSplineCurve>& theCurve) const;
 
   //! Returns true if the point set represents a closed curve.
   bool isClosed() const;
@@ -210,22 +215,23 @@ private:
   //! Computes the diagonal of the bounding box of the points.
   double boundingBoxDiagonal() const;
 
-  NCollection_Array1<gp_Pnt>     myPoints;
-  NCollection_DynamicArray<int>  myInterpolated;
-  NCollection_DynamicArray<int>  myApproximated;
-  NCollection_DynamicArray<int>  myKinks;
-  occ::handle<Geom_BSplineCurve> myCurve;
-  int                            myDegree             = 3;
-  int                            myNbControlPts       = 0;
-  double                         myMaxError           = 0.0;
-  double                         myAlpha              = 0.5;
-  double                         myMinPivot           = 1.0e-20;
-  double                         myClosedRelTol       = 1.0e-12;
-  double                         myKnotInsertTol      = 1.0e-4;
-  double                         myConvergenceTol     = 1.0e-3;
-  double                         myProjectionTol      = 1.0e-6;
-  bool                           myContinuousIfClosed = false;
-  bool                           myIsDone             = false;
+  NCollection_Array1<gp_Pnt>             myPoints;
+  NCollection_DynamicArray<int>          myInterpolated;
+  NCollection_DynamicArray<int>          myApproximated;
+  NCollection_DynamicArray<int>          myKinks;
+  occ::handle<Geom_BSplineCurve>         myCurve;
+  mutable occ::handle<GeomAdaptor_Curve> myCurveAdaptorCache;
+  int                                    myDegree             = 3;
+  int                                    myNbControlPts       = 0;
+  double                                 myMaxError           = 0.0;
+  double                                 myAlpha              = 0.5;
+  double                                 myMinPivot           = 1.0e-20;
+  double                                 myClosedRelTol       = 1.0e-12;
+  double                                 myKnotInsertTol      = 1.0e-4;
+  double                                 myConvergenceTol     = 1.0e-3;
+  double                                 myProjectionTol      = 1.0e-6;
+  bool                                   myContinuousIfClosed = false;
+  bool                                   myIsDone             = false;
 };
 
 #endif // _Approx_BSplineApproxInterp_HeaderFile
