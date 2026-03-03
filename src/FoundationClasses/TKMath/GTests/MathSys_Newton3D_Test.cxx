@@ -94,6 +94,78 @@ TEST_F(MathSys_Newton3DTest, Solve3D_NonlinearSystem)
   EXPECT_NEAR(aResult.X[2], 1.0, 1.0e-5);
 }
 
+TEST_F(MathSys_Newton3DTest, Solve3D_SmallStepAtRoot_ReturnsOK)
+{
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theF[3], double theJ[3][3]) -> bool {
+    theF[0] = theX1 - 1.0;
+    theF[1] = theX2 - 2.0;
+    theF[2] = theX3 - 3.0;
+
+    theJ[0][0] = 1.0;
+    theJ[0][1] = 0.0;
+    theJ[0][2] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 1.0;
+    theJ[1][2] = 0.0;
+    theJ[2][0] = 0.0;
+    theJ[2][1] = 0.0;
+    theJ[2][2] = 1.0;
+    return true;
+  };
+
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
+
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-12;
+  aOptions.XTolerance    = 100.0;
+  aOptions.MaxIterations = 5;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::OK);
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-14);
+  EXPECT_NEAR(aResult.X[1], 2.0, 1.0e-14);
+  EXPECT_NEAR(aResult.X[2], 3.0, 1.0e-14);
+}
+
+TEST_F(MathSys_Newton3DTest, Solve3D_TinyStepLargeResidual_ReturnsMaxIterations)
+{
+  auto aFunc =
+    [](double /*theX1*/, double /*theX2*/, double /*theX3*/, double theF[3], double theJ[3][3])
+    -> bool {
+    theF[0]    = 1.0;
+    theF[1]    = 1.0;
+    theF[2]    = 1.0;
+    theJ[0][0] = 1.0e20;
+    theJ[0][1] = 0.0;
+    theJ[0][2] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 1.0e20;
+    theJ[1][2] = 0.0;
+    theJ[2][0] = 0.0;
+    theJ[2][1] = 0.0;
+    theJ[2][2] = 1.0e20;
+    return true;
+  };
+
+  MathSys::NewtonBoundsN<3> aBounds;
+  aBounds.HasBounds = false;
+
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-8;
+  aOptions.XTolerance    = 1.0e-16;
+  aOptions.MaxIterations = 10;
+
+  const MathSys::NewtonResultN<3> aResult =
+    MathSys::Solve3D(aFunc, {0.0, 0.0, 0.0}, aBounds, aOptions);
+  EXPECT_FALSE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  EXPECT_GT(aResult.ResidualNorm, 1.0e-2);
+}
+
 TEST_F(MathSys_Newton3DTest, Solve3D_Bounded)
 {
   auto aFunc =

@@ -275,11 +275,28 @@ TEST(MathInteg_GaussTest, Order21)
   EXPECT_NEAR(*aResult.Value, 2.0, THE_TOLERANCE);
 }
 
-TEST(MathInteg_GaussTest, InvalidOrder)
+TEST(MathInteg_GaussTest, Order9)
 {
   SinFunc aFunc;
-  // Order 9 is not supported (supported orders: 3, 4, 5, 6, 7, 8, 10, 15, 21, 31)
   MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 9);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbPoints, 9);
+  EXPECT_NEAR(*aResult.Value, 2.0, THE_TOLERANCE);
+}
+
+TEST(MathInteg_GaussTest, Order61)
+{
+  SinFunc                aFunc;
+  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 61);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbPoints, 61);
+  EXPECT_NEAR(*aResult.Value, 2.0, THE_TOLERANCE);
+}
+
+TEST(MathInteg_GaussTest, InvalidOrderNonPositive)
+{
+  SinFunc                aFunc;
+  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 0);
   EXPECT_EQ(aResult.Status, MathInteg::Status::InvalidInput);
 }
 
@@ -355,6 +372,21 @@ TEST(MathInteg_GaussAdaptiveTest, ProvidesErrorEstimate)
   ASSERT_TRUE(aResult.IsDone());
   EXPECT_GT(aResult.AbsoluteError, 0.0);
   EXPECT_LT(aResult.AbsoluteError, 1.0e-6);
+}
+
+TEST(MathInteg_GaussAdaptiveTest, UsesConfiguredOrders)
+{
+  QuadraticFunc          aFunc;
+  MathInteg::IntegConfig aConfig;
+  aConfig.InitialOrder  = 9;
+  aConfig.MaxOrder      = 18;
+  aConfig.Tolerance     = 1.0e-12;
+  aConfig.MaxIterations = 2;
+
+  MathInteg::IntegResult aResult = MathInteg::GaussAdaptive(aFunc, 0.0, 1.0, aConfig);
+  ASSERT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.NbPoints, 18u);
+  EXPECT_NEAR(*aResult.Value, 1.0 / 3.0, THE_TOLERANCE);
 }
 
 // ============================================================================
@@ -480,8 +512,7 @@ TEST(MathInteg_BoolConversionTest, SuccessfulResultIsTrue)
 TEST(MathInteg_BoolConversionTest, InvalidInputIsFalse)
 {
   SinFunc aFunc;
-  // Order 9 is not supported
-  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 9);
+  MathInteg::IntegResult aResult = MathInteg::Gauss(aFunc, 0.0, THE_PI, 0);
   EXPECT_FALSE(static_cast<bool>(aResult));
 }
 

@@ -165,10 +165,8 @@ inline bool SolveSymmetric2x2SVD(double  theJ11,
 
 //! Solve a general 2x2 nonlinear system by Newton iteration.
 //! Function contract:
-//! bool ValueAndJacobian(double u, double v,
-//!                       double& f1, double& f2,
-//!                       double& j11, double& j12,
-//!                       double& j21, double& j22) const;
+//! bool operator()(double u, double v,
+//!                 double f[2], double j[2][2]) const;
 template <typename Function>
 NewtonResultN<2> Solve2D(const Function&              theFunc,
                          const std::array<double, 2>& theX0,
@@ -193,14 +191,15 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
   {
     aRes.NbIterations = static_cast<size_t>(anIter + 1);
 
-    double aF1, aF2, aJ11, aJ12, aJ21, aJ22;
-    if (!theFunc.ValueAndJacobian(aRes.X[0], aRes.X[1], aF1, aF2, aJ11, aJ12, aJ21, aJ22))
+    double aF[2];
+    double aJ[2][2];
+    if (!theFunc(aRes.X[0], aRes.X[1], aF, aJ))
     {
       aRes.Status = MathUtils::Status::NumericalError;
       return aRes;
     }
 
-    const double aFNormSq = aF1 * aF1 + aF2 * aF2;
+    const double aFNormSq = aF[0] * aF[0] + aF[1] * aF[1];
     aRes.ResidualNorm     = std::sqrt(aFNormSq);
 
     if (aFNormSq <= aTolSq)
@@ -212,11 +211,11 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
     double aDU = 0.0;
     double aDV = 0.0;
 
-    const double aDet = aJ11 * aJ22 - aJ12 * aJ21;
+    const double aDet = aJ[0][0] * aJ[1][1] - aJ[0][1] * aJ[1][0];
     if (std::abs(aDet) < detail::THE_SINGULAR_DET_TOL)
     {
-      const double aGradU  = aJ11 * aF1 + aJ21 * aF2;
-      const double aGradV  = aJ12 * aF1 + aJ22 * aF2;
+      const double aGradU  = aJ[0][0] * aF[0] + aJ[1][0] * aF[1];
+      const double aGradV  = aJ[0][1] * aF[0] + aJ[1][1] * aF[1];
       const double aGradSq = aGradU * aGradU + aGradV * aGradV;
       if (aGradSq < detail::THE_CRITICAL_GRAD_SQ)
       {
@@ -231,8 +230,8 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
     else
     {
       const double aInvDet = 1.0 / aDet;
-      aDU                  = (-aF1 * aJ22 + aF2 * aJ12) * aInvDet;
-      aDV                  = (-aF2 * aJ11 + aF1 * aJ21) * aInvDet;
+      aDU                  = (-aF[0] * aJ[1][1] + aF[1] * aJ[0][1]) * aInvDet;
+      aDV                  = (-aF[1] * aJ[0][0] + aF[0] * aJ[1][0]) * aInvDet;
     }
 
     const double aStepNormSq = aDU * aDU + aDV * aDV;
@@ -254,19 +253,30 @@ NewtonResultN<2> Solve2D(const Function&              theFunc,
     const double aScaleRef = std::max(1.0, std::max(std::abs(aRes.X[0]), std::abs(aRes.X[1])));
     if (aRes.StepNorm <= theOptions.XTolerance * aScaleRef)
     {
-      aRes.Status = MathUtils::Status::MaxIterations;
+      double aCheckF[2];
+      double aCheckJ[2][2];
+      if (!theFunc(aRes.X[0], aRes.X[1], aCheckF, aCheckJ))
+      {
+        aRes.Status = MathUtils::Status::NumericalError;
+        return aRes;
+      }
+
+      aRes.ResidualNorm = std::sqrt(aCheckF[0] * aCheckF[0] + aCheckF[1] * aCheckF[1]);
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }
 
-  double aF1, aF2, aJ11, aJ12, aJ21, aJ22;
-  if (!theFunc.ValueAndJacobian(aRes.X[0], aRes.X[1], aF1, aF2, aJ11, aJ12, aJ21, aJ22))
+  double aF[2];
+  double aJ[2][2];
+  if (!theFunc(aRes.X[0], aRes.X[1], aF, aJ))
   {
     aRes.Status = MathUtils::Status::NumericalError;
     return aRes;
   }
 
-  aRes.ResidualNorm = std::sqrt(aF1 * aF1 + aF2 * aF2);
+  aRes.ResidualNorm = std::sqrt(aF[0] * aF[0] + aF[1] * aF[1]);
   aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
                                                                    : MathUtils::Status::MaxIterations;
   return aRes;

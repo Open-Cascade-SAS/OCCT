@@ -12,6 +12,7 @@
 // commercial license or contractual agreement.
 
 #include "MathUtils_GaussKronrodWeights.hxx"
+#include <MathUtils_Gauss.hxx>
 #include <math.hxx>
 
 //=================================================================================================
@@ -29,5 +30,9 @@ bool MathUtils::GetOrderedGaussPointsAndWeights(int          theNbGauss,
                                                 math_Vector& thePoints,
                                                 math_Vector& theWeights)
 {
-  return math::OrderedGaussPointsAndWeights(theNbGauss, thePoints, theWeights);
+  if (theNbGauss < 1 || thePoints.Length() != theNbGauss || theWeights.Length() != theNbGauss)
+  {
+    return false;
+  }
+  return MathUtils::GetGaussPointsAndWeights(theNbGauss, thePoints, theWeights);
 }

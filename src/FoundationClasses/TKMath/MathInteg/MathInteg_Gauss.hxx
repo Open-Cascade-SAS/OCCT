@@ -19,6 +19,7 @@
 #include <MathUtils_Core.hxx>
 #include <MathUtils_Gauss.hxx>
 
+#include <algorithm>
 #include <cmath>
 
 //! Numerical integration algorithms.
@@ -40,16 +41,21 @@ using namespace MathUtils;
 //! @param theFunc function to integrate
 //! @param theLower lower integration bound
 //! @param theUpper upper integration bound
-//! @param theNbPoints number of quadrature points (3, 4, 5, 6, 7, 8, 10, 15, 21, or 31)
+//! @param theNbPoints number of quadrature points (>= 1)
 //! @return result containing integral value
 template <typename Function>
 IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNbPoints = 15)
 {
   IntegResult aResult;
+  if (theNbPoints < 1)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   // Get quadrature points and weights
-  const double* aPoints  = nullptr;
-  const double* aWeights = nullptr;
+  math_Vector aPoints(1, theNbPoints);
+  math_Vector aWeights(1, theNbPoints);
 
   if (!MathUtils::GetGaussPointsAndWeights(theNbPoints, aPoints, aWeights))
   {
@@ -62,16 +68,16 @@ IntegResult Gauss(Function& theFunc, double theLower, double theUpper, int theNb
   const double aMid     = 0.5 * (theUpper + theLower);
 
   double aSum = 0.0;
-  for (int i = 0; i < theNbPoints; ++i)
+  for (int i = 1; i <= theNbPoints; ++i)
   {
-    const double aX = aMid + aHalfLen * aPoints[i];
+    const double aX = aMid + aHalfLen * aPoints(i);
     double       aF = 0.0;
     if (!theFunc.Value(aX, aF))
     {
       aResult.Status = Status::NumericalError;
       return aResult;
     }
-    aSum += aWeights[i] * aF;
+    aSum += aWeights(i) * aF;
   }
 
   aResult.Status       = Status::OK;
@@ -103,14 +109,35 @@ IntegResult GaussAdaptive(Function&          theFunc,
 {
   IntegResult aResult;
 
+  if (theConfig.InitialOrder < 1 || theConfig.MaxOrder < theConfig.InitialOrder
+      || theConfig.MaxOrder > 61 || theConfig.MaxIterations < 1)
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
+
+  int aCoarseOrder = theConfig.InitialOrder;
+  int aFineOrder   = std::min(theConfig.MaxOrder, std::min(61, 2 * aCoarseOrder));
+  if (aFineOrder == aCoarseOrder)
+  {
+    if (aCoarseOrder > 1)
+    {
+      aCoarseOrder -= 1;
+    }
+    else if (theConfig.MaxOrder > 1)
+    {
+      aFineOrder = 2;
+    }
+  }
+
   // Compute with coarse and fine grids
-  IntegResult aCoarse = Gauss(theFunc, theLower, theUpper, 7);
+  IntegResult aCoarse = Gauss(theFunc, theLower, theUpper, aCoarseOrder);
   if (!aCoarse.IsDone())
   {
     return aCoarse;
   }
 
-  IntegResult aFine = Gauss(theFunc, theLower, theUpper, 15);
+  IntegResult aFine = Gauss(theFunc, theLower, theUpper, aFineOrder);
   if (!aFine.IsDone())
   {
     return aFine;
@@ -126,7 +153,7 @@ IntegResult GaussAdaptive(Function&          theFunc,
     aResult.Value         = *aFine.Value;
     aResult.AbsoluteError = aError;
     aResult.RelativeError = aError / aScale;
-    aResult.NbPoints      = 15;
+    aResult.NbPoints      = static_cast<size_t>(aFineOrder);
     aResult.NbIterations  = 1;
     return aResult;
   }
@@ -138,7 +165,7 @@ IntegResult GaussAdaptive(Function&          theFunc,
     aResult.Value         = *aFine.Value;
     aResult.AbsoluteError = aError;
     aResult.RelativeError = aError / aScale;
-    aResult.NbPoints      = 15;
+    aResult.NbPoints      = static_cast<size_t>(aFineOrder);
     aResult.NbIterations  = 1;
     return aResult;
   }
@@ -183,7 +210,7 @@ IntegResult GaussAdaptive(Function&          theFunc,
 //! @param theLower lower integration bound
 //! @param theUpper upper integration bound
 //! @param theNbIntervals number of subintervals
-//! @param theNbPoints Gauss points per interval (3, 4, 5, 6, 7, 8, 10, 15, 21, or 31)
+//! @param theNbPoints Gauss points per interval (>= 1)
 //! @return result containing integral value
 template <typename Function>
 IntegResult GaussComposite(Function& theFunc,

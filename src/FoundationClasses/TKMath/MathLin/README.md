@@ -8,7 +8,7 @@ The MathLin package provides modern C++ implementations of linear algebra solver
 LU decomposition with partial pivoting for solving general linear systems Ax = b.
 - `LU()` - LU decomposition of a square matrix
 - `Solve()` - Solve linear system using LU decomposition
-- `SolveMultiple()` - Solve multiple right-hand sides
+- `SolveMultiple()` - Solve multiple right-hand sides (returns full solution matrix)
 - `Determinant()` - Compute matrix determinant
 - `Invert()` - Compute matrix inverse
 
@@ -30,7 +30,7 @@ Singular Value Decomposition for general and ill-conditioned matrices.
 QR decomposition using Householder reflections.
 - `QR()` - QR decomposition of a matrix
 - `SolveQR()` - Solve overdetermined system (least squares)
-- `SolveQRMultiple()` - Solve multiple right-hand sides
+- `SolveQRMultiple()` - Solve multiple right-hand sides (returns full solution matrix)
 
 ### MathLin_Jacobi.hxx
 Jacobi method for eigenvalue decomposition of symmetric matrices.
@@ -73,6 +73,9 @@ if (result.IsDone())
   // Use solution x
 }
 ```
+
+For matrix right-hand sides (`SolveMultiple`, `SolveQRMultiple`), APIs return
+`LinearMultipleResult` with `Solutions` (`math_Matrix`) instead of a single vector.
 
 ## Dependencies
 

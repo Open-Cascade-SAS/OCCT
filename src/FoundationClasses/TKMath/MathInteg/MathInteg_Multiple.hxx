@@ -108,7 +108,11 @@ IntegResult GaussMultiple(Func&                     theFunc,
 
     math_Vector aGP(1, aOrd(i));
     math_Vector aGW(1, aOrd(i));
-    GetOrderedGaussPointsAndWeights(aOrd(i), aGP, aGW);
+    if (!GetOrderedGaussPointsAndWeights(aOrd(i), aGP, aGW))
+    {
+      aResult.Status = Status::InvalidInput;
+      return aResult;
+    }
 
     for (int k = 0; k < aOrd(i); ++k)
     {

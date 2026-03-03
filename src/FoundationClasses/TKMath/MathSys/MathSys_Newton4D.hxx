@@ -294,7 +294,18 @@ NewtonResultN<4> Solve4D(const Function&              theFunc,
                std::max(std::abs(aRes.X[1]), std::max(std::abs(aRes.X[2]), std::abs(aRes.X[3])))));
     if (aRes.StepNorm <= theOptions.XTolerance * aScaleRef)
     {
-      aRes.Status = MathUtils::Status::MaxIterations;
+      double aCheckF[4];
+      double aCheckJ[4][4];
+      if (!theFunc(aRes.X[0], aRes.X[1], aRes.X[2], aRes.X[3], aCheckF, aCheckJ))
+      {
+        aRes.Status = MathUtils::Status::NumericalError;
+        return aRes;
+      }
+
+      aRes.ResidualNorm = std::sqrt(aCheckF[0] * aCheckF[0] + aCheckF[1] * aCheckF[1]
+                                    + aCheckF[2] * aCheckF[2] + aCheckF[3] * aCheckF[3]);
+      aRes.Status       = (aRes.ResidualNorm <= theOptions.FTolerance) ? MathUtils::Status::OK
+                                                                       : MathUtils::Status::MaxIterations;
       return aRes;
     }
   }

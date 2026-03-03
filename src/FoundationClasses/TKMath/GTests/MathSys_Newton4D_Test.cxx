@@ -108,6 +108,82 @@ TEST_F(MathSys_Newton4DTest, Solve4D_Bounded)
   EXPECT_NEAR(aResult.X[3], 4.0, 1.0e-12);
 }
 
+TEST_F(MathSys_Newton4DTest, Solve4D_SmallStepAtRoot_ReturnsOK)
+{
+  auto aFunc =
+    [](double theX1, double theX2, double theX3, double theX4, double theF[4], double theJ[4][4])
+    -> bool {
+    theF[0] = theX1 - 1.0;
+    theF[1] = theX2 - 2.0;
+    theF[2] = theX3 - 3.0;
+    theF[3] = theX4 - 4.0;
+
+    for (int r = 0; r < 4; ++r)
+    {
+      for (int c = 0; c < 4; ++c)
+      {
+        theJ[r][c] = (r == c) ? 1.0 : 0.0;
+      }
+    }
+    return true;
+  };
+
+  MathSys::NewtonBoundsN<4> aBounds;
+  aBounds.HasBounds = false;
+
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-12;
+  aOptions.XTolerance    = 100.0;
+  aOptions.MaxIterations = 5;
+
+  const MathSys::NewtonResultN<4> aResult =
+    MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::OK);
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-14);
+  EXPECT_NEAR(aResult.X[1], 2.0, 1.0e-14);
+  EXPECT_NEAR(aResult.X[2], 3.0, 1.0e-14);
+  EXPECT_NEAR(aResult.X[3], 4.0, 1.0e-14);
+}
+
+TEST_F(MathSys_Newton4DTest, Solve4D_TinyStepLargeResidual_ReturnsMaxIterations)
+{
+  auto aFunc = [](double /*theX1*/,
+                  double /*theX2*/,
+                  double /*theX3*/,
+                  double /*theX4*/,
+                  double theF[4],
+                  double theJ[4][4]) -> bool {
+    theF[0] = 1.0;
+    theF[1] = 1.0;
+    theF[2] = 1.0;
+    theF[3] = 1.0;
+
+    for (int r = 0; r < 4; ++r)
+    {
+      for (int c = 0; c < 4; ++c)
+      {
+        theJ[r][c] = (r == c) ? 1.0e20 : 0.0;
+      }
+    }
+    return true;
+  };
+
+  MathSys::NewtonBoundsN<4> aBounds;
+  aBounds.HasBounds = false;
+
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-8;
+  aOptions.XTolerance    = 1.0e-16;
+  aOptions.MaxIterations = 10;
+
+  const MathSys::NewtonResultN<4> aResult =
+    MathSys::Solve4D(aFunc, {0.0, 0.0, 0.0, 0.0}, aBounds, aOptions);
+  EXPECT_FALSE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  EXPECT_GT(aResult.ResidualNorm, 1.0e-2);
+}
+
 TEST_F(MathSys_Newton4DTest, Solve4D_InvalidInput)
 {
   auto aFunc = [](double /*theX1*/,

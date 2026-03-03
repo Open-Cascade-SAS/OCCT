@@ -77,7 +77,11 @@ SetResult GaussSet(Func& theFunc, double theLower, double theUpper, int theOrder
   // Get Gauss points and weights
   math_Vector aGP(1, aOrder);
   math_Vector aGW(1, aOrder);
-  GetOrderedGaussPointsAndWeights(aOrder, aGP, aGW);
+  if (!GetOrderedGaussPointsAndWeights(aOrder, aGP, aGW))
+  {
+    aResult.Status = Status::InvalidInput;
+    return aResult;
+  }
 
   math_Vector aPoints(0, aOrder - 1);
   math_Vector aWeights(0, aOrder - 1);

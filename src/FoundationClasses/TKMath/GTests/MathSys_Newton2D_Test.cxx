@@ -24,21 +24,44 @@ namespace
 class QuadraticFunc
 {
 public:
-  bool ValueAndJacobian(double  theU,
-                        double  theV,
-                        double& theF1,
-                        double& theF2,
-                        double& theJ11,
-                        double& theJ12,
-                        double& theJ21,
-                        double& theJ22) const
+  bool operator()(double theU, double theV, double theF[2], double theJ[2][2]) const
   {
-    theF1  = 2.0 * theU;
-    theF2  = 2.0 * theV;
-    theJ11 = 2.0;
-    theJ12 = 0.0;
-    theJ21 = 0.0;
-    theJ22 = 2.0;
+    theF[0]    = 2.0 * theU;
+    theF[1]    = 2.0 * theV;
+    theJ[0][0] = 2.0;
+    theJ[0][1] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 2.0;
+    return true;
+  }
+};
+
+class GenericLinearExactStep
+{
+public:
+  bool operator()(double theU, double theV, double theF[2], double theJ[2][2]) const
+  {
+    theF[0]    = theU - 1.0;
+    theF[1]    = theV - 2.0;
+    theJ[0][0] = 1.0;
+    theJ[0][1] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 1.0;
+    return true;
+  }
+};
+
+class GenericHugeJacobianConstantResidual
+{
+public:
+  bool operator()(double /*theU*/, double /*theV*/, double theF[2], double theJ[2][2]) const
+  {
+    theF[0]    = 1.0;
+    theF[1]    = 1.0;
+    theJ[0][0] = 1.0e20;
+    theJ[0][1] = 0.0;
+    theJ[1][0] = 0.0;
+    theJ[1][1] = 1.0e20;
     return true;
   }
 };
@@ -160,6 +183,45 @@ TEST(MathSys_Newton2DTest, Solve2D_Quadratic_Converges)
   EXPECT_NEAR(aResult.X[0], 0.0, 1.0e-12);
   EXPECT_NEAR(aResult.X[1], 0.0, 1.0e-12);
   EXPECT_LT(aResult.ResidualNorm, 1.0e-10);
+}
+
+TEST(MathSys_Newton2DTest, Solve2D_SmallStepAtRoot_ReturnsOK)
+{
+  GenericLinearExactStep aFunc;
+
+  MathSys::NewtonBoundsN<2> aBounds;
+  aBounds.Min = {-10.0, -10.0};
+  aBounds.Max = {10.0, 10.0};
+
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-12;
+  aOptions.XTolerance    = 100.0;
+  aOptions.MaxIterations = 5;
+
+  const MathSys::NewtonResultN<2> aResult = MathSys::Solve2D(aFunc, {0.0, 0.0}, aBounds, aOptions);
+  EXPECT_TRUE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::OK);
+  EXPECT_NEAR(aResult.X[0], 1.0, 1.0e-14);
+  EXPECT_NEAR(aResult.X[1], 2.0, 1.0e-14);
+}
+
+TEST(MathSys_Newton2DTest, Solve2D_TinyStepLargeResidual_ReturnsMaxIterations)
+{
+  GenericHugeJacobianConstantResidual aFunc;
+
+  MathSys::NewtonBoundsN<2> aBounds;
+  aBounds.Min = {-1.0, -1.0};
+  aBounds.Max = {1.0, 1.0};
+
+  MathSys::NewtonOptions aOptions;
+  aOptions.FTolerance    = 1.0e-8;
+  aOptions.XTolerance    = 1.0e-16;
+  aOptions.MaxIterations = 10;
+
+  const MathSys::NewtonResultN<2> aResult = MathSys::Solve2D(aFunc, {0.0, 0.0}, aBounds, aOptions);
+  EXPECT_FALSE(aResult.IsDone());
+  EXPECT_EQ(aResult.Status, MathUtils::Status::MaxIterations);
+  EXPECT_GT(aResult.ResidualNorm, 1.0e-2);
 }
 
 TEST(MathSys_Newton2DTest, Solve2DSymmetric_Target_Converges)

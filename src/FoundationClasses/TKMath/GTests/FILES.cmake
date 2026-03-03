@@ -86,6 +86,7 @@ set(OCCT_TKMath_GTests_FILES
   math_Uzawa_Test.cxx
   math_Vector_Test.cxx
   # MathUtils tests
+  MathUtils_Bracket_Test.cxx
   MathUtils_Functor_Test.cxx
   # MathPoly tests
   MathPoly_Test.cxx
@@ -93,6 +94,7 @@ set(OCCT_TKMath_GTests_FILES
   MathPoly_Laguerre_Test.cxx
   # MathLin tests
   MathLin_Test.cxx
+  MathLin_EigenSearch_Test.cxx
   MathLin_Comparison_Test.cxx
   # MathOpt tests
   MathOpt_1D_Test.cxx

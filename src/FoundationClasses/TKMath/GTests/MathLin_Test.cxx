@@ -263,6 +263,121 @@ TEST(MathLin_SVD_Test, ConditionNumber)
 }
 
 // ============================================================================
+// Multi-RHS linear solve tests
+// ============================================================================
+
+TEST(MathLin_Gauss_Test, SolveMultiple_ReturnsFullMatrix)
+{
+  math_Matrix aA(1, 3, 1, 3);
+  aA(1, 1) = 4.0;
+  aA(1, 2) = 1.0;
+  aA(1, 3) = 2.0;
+  aA(2, 1) = 0.0;
+  aA(2, 2) = 3.0;
+  aA(2, 3) = 1.0;
+  aA(3, 1) = 2.0;
+  aA(3, 2) = 1.0;
+  aA(3, 3) = 5.0;
+
+  math_Matrix aXExpected(1, 3, 1, 2);
+  aXExpected(1, 1) = 1.0;
+  aXExpected(2, 1) = 2.0;
+  aXExpected(3, 1) = -1.0;
+  aXExpected(1, 2) = -2.0;
+  aXExpected(2, 2) = 0.5;
+  aXExpected(3, 2) = 3.0;
+
+  const math_Matrix aB = MatMul(aA, aXExpected);
+
+  auto aResult = MathLin::SolveMultiple(aA, aB);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Solutions.has_value());
+
+  const math_Matrix& aX = *aResult.Solutions;
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      EXPECT_NEAR(aX(i, j), aXExpected(i, j), THE_TOLERANCE);
+    }
+  }
+
+  const math_Matrix aCheckB = MatMul(aA, aX);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      EXPECT_NEAR(aCheckB(i, j), aB(i, j), THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(MathLin_Gauss_Test, SolveMultiple_DimensionMismatch)
+{
+  math_Matrix aA(1, 3, 1, 3, 0.0);
+  for (int i = 1; i <= 3; ++i)
+  {
+    aA(i, i) = 1.0;
+  }
+
+  math_Matrix aBWrong(1, 2, 1, 1, 0.0);
+  auto        aResult = MathLin::SolveMultiple(aA, aBWrong);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
+}
+
+TEST(MathLin_Householder_Test, SolveQRMultiple_ReturnsFullMatrix)
+{
+  math_Matrix aA(1, 3, 1, 2);
+  aA(1, 1) = 1.0;
+  aA(1, 2) = 2.0;
+  aA(2, 1) = 3.0;
+  aA(2, 2) = 1.0;
+  aA(3, 1) = -1.0;
+  aA(3, 2) = 1.0;
+
+  math_Matrix aXExpected(1, 2, 1, 2);
+  aXExpected(1, 1) = 2.0;
+  aXExpected(2, 1) = -1.0;
+  aXExpected(1, 2) = -0.5;
+  aXExpected(2, 2) = 3.0;
+
+  const math_Matrix aB = MatMul(aA, aXExpected);
+
+  auto aResult = MathLin::SolveQRMultiple(aA, aB);
+  ASSERT_TRUE(aResult.IsDone());
+  ASSERT_TRUE(aResult.Solutions.has_value());
+
+  const math_Matrix& aX = *aResult.Solutions;
+  for (int i = 1; i <= 2; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      EXPECT_NEAR(aX(i, j), aXExpected(i, j), THE_TOLERANCE);
+    }
+  }
+
+  const math_Matrix aCheckB = MatMul(aA, aX);
+  for (int i = 1; i <= 3; ++i)
+  {
+    for (int j = 1; j <= 2; ++j)
+    {
+      EXPECT_NEAR(aCheckB(i, j), aB(i, j), THE_TOLERANCE);
+    }
+  }
+}
+
+TEST(MathLin_Householder_Test, SolveQRMultiple_DimensionMismatch)
+{
+  math_Matrix aA(1, 3, 1, 2, 0.0);
+  aA(1, 1) = 1.0;
+  aA(2, 2) = 1.0;
+
+  math_Matrix aBWrong(1, 2, 1, 2, 0.0);
+  auto        aResult = MathLin::SolveQRMultiple(aA, aBWrong);
+  EXPECT_EQ(aResult.Status, MathUtils::Status::InvalidInput);
+}
+
+// ============================================================================
 // Householder QR tests
 // ============================================================================
 
