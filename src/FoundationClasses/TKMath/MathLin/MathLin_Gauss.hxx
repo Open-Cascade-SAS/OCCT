@@ -236,11 +236,11 @@ inline LinearResult Solve(const math_Matrix& theA,
 //! @param theB right-hand side matrix
 //! @param theMinPivot minimum pivot value
 //! @return result containing solution matrix
-inline LinearResult SolveMultiple(const math_Matrix& theA,
-                                  const math_Matrix& theB,
-                                  double             theMinPivot = 1.0e-20)
+inline LinearMultipleResult SolveMultiple(const math_Matrix& theA,
+                                          const math_Matrix& theB,
+                                          double             theMinPivot = 1.0e-20)
 {
-  LinearResult aResult;
+  LinearMultipleResult aResult;
 
   // Perform LU decomposition
   LUResult aLURes = LU(theA, theMinPivot);
@@ -264,7 +264,7 @@ inline LinearResult SolveMultiple(const math_Matrix& theA,
   const math_IntegerVector& aPivot = *aLURes.Pivot;
 
   // Solve for each column of B
-  math_Matrix aX(theB.LowerRow(), theB.UpperRow(), theB.LowerCol(), theB.UpperCol());
+  math_Matrix aX(aRowLower, aRowUpper, theB.LowerCol(), theB.UpperCol());
 
   for (int col = theB.LowerCol(); col <= theB.UpperCol(); ++col)
   {
@@ -317,13 +317,7 @@ inline LinearResult SolveMultiple(const math_Matrix& theA,
 
   aResult.Status      = Status::OK;
   aResult.Determinant = aLURes.Determinant;
-  // Store first column as solution vector for compatibility
-  math_Vector aSol(aRowLower, aRowUpper);
-  for (int i = aRowLower; i <= aRowUpper; ++i)
-  {
-    aSol(i) = aX(i, theB.LowerCol());
-  }
-  aResult.Solution = aSol;
+  aResult.Solutions   = aX;
   return aResult;
 }
 

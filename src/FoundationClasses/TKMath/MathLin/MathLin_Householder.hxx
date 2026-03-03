@@ -281,12 +281,14 @@ inline LinearResult SolveQR(const math_Matrix& theA,
 //! @param theB right-hand side matrix (m x p)
 //! @param theTolerance for singularity detection
 //! @return result containing solution matrix (n x p)
-inline LinearResult SolveQRMultiple(const math_Matrix& theA,
-                                    const math_Matrix& theB,
-                                    double             theTolerance = 1.0e-20)
+inline LinearMultipleResult SolveQRMultiple(const math_Matrix& theA,
+                                            const math_Matrix& theB,
+                                            double             theTolerance = 1.0e-20)
 {
-  LinearResult aResult;
+  LinearMultipleResult aResult;
 
+  const int aRowLower = theA.LowerRow();
+  const int aRowUpper = theA.UpperRow();
   const int aColLower = theA.LowerCol();
   const int aColUpper = theA.UpperCol();
 
@@ -305,36 +307,51 @@ inline LinearResult SolveQRMultiple(const math_Matrix& theA,
     return aResult;
   }
 
+  const math_Matrix& aQ = *aQR.Q;
+  const math_Matrix& aR = *aQR.R;
+
   // Solve for each column of B
-  math_Vector aFirstSol(aColLower, aColUpper);
-  bool        aFirstDone = false;
+  math_Matrix aX(aColLower, aColUpper, theB.LowerCol(), theB.UpperCol(), 0.0);
 
   for (int j = theB.LowerCol(); j <= theB.UpperCol(); ++j)
   {
-    // Extract column j of B
-    math_Vector aBj(theB.LowerRow(), theB.UpperRow());
-    for (int i = theB.LowerRow(); i <= theB.UpperRow(); ++i)
+    // Compute c = Q^T * b_j
+    math_Vector aC(aRowLower, aRowUpper, 0.0);
+    for (int i = aRowLower; i <= aRowUpper; ++i)
     {
-      aBj(i) = theB(i, j);
+      double aSum = 0.0;
+      for (int k = aRowLower; k <= aRowUpper; ++k)
+      {
+        const int aBRow = theB.LowerRow() + (k - aRowLower);
+        aSum += aQ(k, i) * theB(aBRow, j);
+      }
+      aC(i) = aSum;
     }
 
-    // Solve with QR (we should refactor to avoid re-decomposition)
-    LinearResult aColResult = SolveQR(theA, aBj, theTolerance);
-    if (!aColResult.IsDone())
+    // Back substitution: R[1:n,1:n] * x_j = c[1:n]
+    for (int i = aColUpper; i >= aColLower; --i)
     {
-      aResult.Status = aColResult.Status;
-      return aResult;
-    }
+      const int aIOffset = i - aColLower;
+      const int aRRow    = aRowLower + aIOffset;
+      double    aDiag    = aR(aRRow, i);
 
-    if (!aFirstDone)
-    {
-      aFirstSol  = *aColResult.Solution;
-      aFirstDone = true;
+      if (std::abs(aDiag) < theTolerance)
+      {
+        aResult.Status = Status::Singular;
+        return aResult;
+      }
+
+      double aSum = aC(aRRow);
+      for (int k = i + 1; k <= aColUpper; ++k)
+      {
+        aSum -= aR(aRRow, k) * aX(k, j);
+      }
+      aX(i, j) = aSum / aDiag;
     }
   }
 
-  aResult.Solution = aFirstSol;
-  aResult.Status   = Status::OK;
+  aResult.Solutions = aX;
+  aResult.Status    = Status::OK;
   return aResult;
 }
 

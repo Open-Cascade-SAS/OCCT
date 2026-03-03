@@ -443,6 +443,19 @@ TEST(MathInteg_ComparisonTest, Order21_Comparison)
   EXPECT_NEAR(anOldInteg.Value(), *aNewResult.Value, THE_TOLERANCE);
 }
 
+TEST(MathInteg_ComparisonTest, Order41_Comparison)
+{
+  SinFuncOld anOldFunc;
+  SinFuncNew aNewFunc;
+
+  math_GaussSingleIntegration anOldInteg(anOldFunc, 0.0, THE_PI, 41);
+  MathInteg::IntegResult      aNewResult = MathInteg::Gauss(aNewFunc, 0.0, THE_PI, 41);
+
+  ASSERT_TRUE(anOldInteg.IsDone());
+  ASSERT_TRUE(aNewResult.IsDone());
+  EXPECT_NEAR(anOldInteg.Value(), *aNewResult.Value, THE_TOLERANCE);
+}
+
 // ============================================================================
 // Higher order accuracy comparison
 // ============================================================================

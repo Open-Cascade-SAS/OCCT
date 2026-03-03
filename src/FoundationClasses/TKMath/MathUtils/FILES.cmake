@@ -13,6 +13,7 @@ set(OCCT_MathUtils_FILES
   MathUtils_Random.hxx
   MathUtils_Bracket.hxx
   MathUtils_Gauss.hxx
+  MathUtils_Gauss.cxx
   MathUtils_Deriv.hxx
   MathUtils_LineSearch.hxx
   MathUtils_GaussKronrodWeights.hxx

@@ -23,8 +23,8 @@ The MathUtils package provides foundational utilities used by all other modern m
 - `MathUtils_Convergence.hxx` - Convergence testing utilities
 - `MathUtils_Poly.hxx` - Polynomial evaluation and manipulation
 - `MathUtils_Domain.hxx` - 1D/2D parameter domain helpers (contains/clamp/normalize/equality checks)
-- `MathUtils_Bracket.hxx` - Root and minimum bracketing algorithms
-- `MathUtils_Gauss.hxx` - Gauss-Legendre quadrature points and weights
+- `MathUtils_Bracket.hxx` - Root and minimum bracketing algorithms (including bounded options for minima)
+- `MathUtils_Gauss.hxx` - Gauss-Legendre quadrature points and weights (orders >= 1)
 - `MathUtils_Deriv.hxx` - Numerical differentiation utilities
 - `MathUtils_LineSearch.hxx` - Line search algorithms for optimization
 
@@ -93,6 +93,7 @@ via `MathSys_NewtonTypes.hxx`.
 - `ScalarResult` - For 1D root finding results
 - `PolyResult` - For polynomial root results (up to 4 roots)
 - `VectorResult` - For N-D optimization results
+- `LinearMultipleResult` - For linear systems with matrix right-hand side (`AX=B`)
 - `IntegResult` - For integration results with error estimate
 
 ### Configuration

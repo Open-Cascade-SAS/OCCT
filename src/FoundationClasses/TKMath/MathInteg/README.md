@@ -10,8 +10,8 @@ The MathInteg package provides a collection of numerical integration methods for
 
 ### MathInteg_Gauss.hxx
 Gauss-Legendre quadrature methods:
-- `Gauss` - Fixed-order Gauss-Legendre integration
-- `GaussAdaptive` - Adaptive subdivision with error control
+- `Gauss` - Fixed-order Gauss-Legendre integration (orders >= 1)
+- `GaussAdaptive` - Adaptive subdivision with error control using `IntegConfig.InitialOrder/MaxOrder`
 - `GaussComposite` - Composite rule over multiple subintervals
 
 ### MathInteg_Kronrod.hxx
