@@ -1,0 +1,226 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef GeomBndLib_SamplingHelpers_HeaderFile
+#define GeomBndLib_SamplingHelpers_HeaderFile
+
+#include <Adaptor2d_Curve2d.hxx>
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Geom2d_BSplineCurve.hxx>
+#include <Geom_BSplineCurve.hxx>
+#include <Geom_BSplineSurface.hxx>
+#include <GeomAbs_CurveType.hxx>
+#include <GeomAbs_SurfaceType.hxx>
+
+//! @file GeomBndLib_SamplingHelpers.pxx
+//! Unified sample count computation for curves and surfaces.
+
+namespace GeomBndLib_SamplingHelpers
+{
+
+//! Compute number of samples for a 3D curve.
+inline int ComputeNbSamples(const Adaptor3d_Curve& theCurve,
+                            const double           theUMin,
+                            const double           theUMax)
+{
+  int               N;
+  GeomAbs_CurveType aType = theCurve.GetType();
+  switch (aType)
+  {
+    case GeomAbs_BezierCurve: {
+      N      = 2 * theCurve.NbPoles();
+      double du = theUMax - theUMin;
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    case GeomAbs_BSplineCurve: {
+      const occ::handle<Geom_BSplineCurve>& aBC = theCurve.BSpline();
+      N = 2 * (aBC->Degree() + 1) * (aBC->NbKnots() - 1);
+      double umin = aBC->FirstParameter(), umax = aBC->LastParameter();
+      double du = (theUMax - theUMin) / (umax - umin);
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    default:
+      N = 33;
+  }
+  return std::min(500, N);
+}
+
+//! Compute number of samples for a 2D curve.
+inline int ComputeNbSamples2d(const Adaptor2d_Curve2d& theCurve,
+                               const double             theUMin,
+                               const double             theUMax)
+{
+  int               N;
+  GeomAbs_CurveType aType = theCurve.GetType();
+  switch (aType)
+  {
+    case GeomAbs_BezierCurve: {
+      N      = 2 * theCurve.NbPoles();
+      double du = theUMax - theUMin;
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    case GeomAbs_BSplineCurve: {
+      const occ::handle<Geom2d_BSplineCurve>& aBC = theCurve.BSpline();
+      N = 2 * (aBC->Degree() + 1) * (aBC->NbKnots() - 1);
+      double umin = aBC->FirstParameter(), umax = aBC->LastParameter();
+      double du = (theUMax - theUMin) / (umax - umin);
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    default:
+      N = 17;
+  }
+  return std::min(23, N);
+}
+
+//! Compute number of U-samples for a surface.
+inline int ComputeNbUSamples(const Adaptor3d_Surface& theSurf,
+                             const double             theUMin,
+                             const double             theUMax)
+{
+  int                 N;
+  GeomAbs_SurfaceType aType = theSurf.GetType();
+  switch (aType)
+  {
+    case GeomAbs_BezierSurface: {
+      N      = 2 * theSurf.NbUPoles();
+      double du = theUMax - theUMin;
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    case GeomAbs_BSplineSurface: {
+      const occ::handle<Geom_BSplineSurface>& aBS = theSurf.BSpline();
+      N = 2 * (aBS->UDegree() + 1) * (aBS->NbUKnots() - 1);
+      double umin, umax, vmin, vmax;
+      aBS->Bounds(umin, umax, vmin, vmax);
+      double du = (theUMax - theUMin) / (umax - umin);
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    default:
+      N = 33;
+  }
+  return std::min(50, N);
+}
+
+//! Compute number of V-samples for a surface.
+inline int ComputeNbVSamples(const Adaptor3d_Surface& theSurf,
+                             const double             theVMin,
+                             const double             theVMax)
+{
+  int                 N;
+  GeomAbs_SurfaceType aType = theSurf.GetType();
+  switch (aType)
+  {
+    case GeomAbs_BezierSurface: {
+      N      = 2 * theSurf.NbVPoles();
+      double dv = theVMax - theVMin;
+      if (dv < .9)
+      {
+        N = RealToInt(dv * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    case GeomAbs_BSplineSurface: {
+      const occ::handle<Geom_BSplineSurface>& aBS = theSurf.BSpline();
+      N = 2 * (aBS->VDegree() + 1) * (aBS->NbVKnots() - 1);
+      double umin, umax, vmin, vmax;
+      aBS->Bounds(umin, umax, vmin, vmax);
+      double dv = (theVMax - theVMin) / (vmax - vmin);
+      if (dv < .9)
+      {
+        N = RealToInt(dv * N) + 1;
+        N = std::max(N, 5);
+      }
+      break;
+    }
+    default:
+      N = 33;
+  }
+  return std::min(50, N);
+}
+
+//! Compute number of U-samples for a surface (full range variant).
+inline int ComputeNbUSamples(const Adaptor3d_Surface& theSurf)
+{
+  int                 N;
+  GeomAbs_SurfaceType aType = theSurf.GetType();
+  switch (aType)
+  {
+    case GeomAbs_BezierSurface:
+      N = 2 * theSurf.NbUPoles();
+      break;
+    case GeomAbs_BSplineSurface: {
+      const occ::handle<Geom_BSplineSurface>& aBS = theSurf.BSpline();
+      N = 2 * (aBS->UDegree() + 1) * (aBS->NbUKnots() - 1);
+      break;
+    }
+    default:
+      N = 33;
+  }
+  return std::min(50, N);
+}
+
+//! Compute number of V-samples for a surface (full range variant).
+inline int ComputeNbVSamples(const Adaptor3d_Surface& theSurf)
+{
+  int                 N;
+  GeomAbs_SurfaceType aType = theSurf.GetType();
+  switch (aType)
+  {
+    case GeomAbs_BezierSurface:
+      N = 2 * theSurf.NbVPoles();
+      break;
+    case GeomAbs_BSplineSurface: {
+      const occ::handle<Geom_BSplineSurface>& aBS = theSurf.BSpline();
+      N = 2 * (aBS->VDegree() + 1) * (aBS->NbVKnots() - 1);
+      break;
+    }
+    default:
+      N = 33;
+  }
+  return std::min(50, N);
+}
+
+} // namespace GeomBndLib_SamplingHelpers
+
+#endif // GeomBndLib_SamplingHelpers_HeaderFile

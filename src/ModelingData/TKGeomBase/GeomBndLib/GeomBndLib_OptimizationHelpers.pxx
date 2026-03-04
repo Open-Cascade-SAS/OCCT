@@ -1,0 +1,353 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef GeomBndLib_OptimizationHelpers_HeaderFile
+#define GeomBndLib_OptimizationHelpers_HeaderFile
+
+#include <Adaptor3d_Curve.hxx>
+#include <Adaptor3d_Surface.hxx>
+#include <Precision.hxx>
+#include <math_BrentMinimum.hxx>
+#include <math_Function.hxx>
+#include <math_MultipleVarFunction.hxx>
+#include <math_PSO.hxx>
+#include <math_Powell.hxx>
+#include <math_Vector.hxx>
+#include <math_Matrix.hxx>
+
+//! @file GeomBndLib_OptimizationHelpers.pxx
+//! PSO+Brent and PSO+Powell optimization wrappers for precise bounding box computation.
+
+namespace GeomBndLib_OptimizationHelpers
+{
+
+// ============================================================
+// Internal function objects for optimization
+// ============================================================
+
+//! 1D function object for coordinate minimization/maximization along a 3D curve.
+class CurveCoordFunc : public math_Function
+{
+public:
+  CurveCoordFunc(const Adaptor3d_Curve& theCurve,
+                 const double           theUMin,
+                 const double           theUMax,
+                 const int              theCoordIdx,
+                 const double           theSign)
+      : myCurve(theCurve),
+        myUMin(theUMin),
+        myUMax(theUMax),
+        myCoordIdx(theCoordIdx),
+        mySign(theSign)
+  {
+  }
+
+  bool Value(const double theX, double& theF) override
+  {
+    if (theX < myUMin || theX > myUMax)
+    {
+      return false;
+    }
+    gp_Pnt aP = myCurve.Value(theX);
+    theF       = mySign * aP.Coord(myCoordIdx);
+    return true;
+  }
+
+private:
+  CurveCoordFunc& operator=(const CurveCoordFunc&) = delete;
+
+  const Adaptor3d_Curve& myCurve;
+  double                 myUMin;
+  double                 myUMax;
+  int                    myCoordIdx;
+  double                 mySign;
+};
+
+//! Multi-variable function for PSO on a 3D curve.
+class CurveCoordMVarFunc : public math_MultipleVarFunction
+{
+public:
+  CurveCoordMVarFunc(const Adaptor3d_Curve& theCurve,
+                     const double           theUMin,
+                     const double           theUMax,
+                     const int              theCoordIdx,
+                     const double           theSign)
+      : myCurve(theCurve),
+        myUMin(theUMin),
+        myUMax(theUMax),
+        myCoordIdx(theCoordIdx),
+        mySign(theSign)
+  {
+  }
+
+  bool Value(const math_Vector& theX, double& theF) override
+  {
+    if (theX(1) < myUMin || theX(1) > myUMax)
+    {
+      return false;
+    }
+    gp_Pnt aP = myCurve.Value(theX(1));
+    theF       = mySign * aP.Coord(myCoordIdx);
+    return true;
+  }
+
+  int NbVariables() const override { return 1; }
+
+private:
+  CurveCoordMVarFunc& operator=(const CurveCoordMVarFunc&) = delete;
+
+  const Adaptor3d_Curve& myCurve;
+  double                 myUMin;
+  double                 myUMax;
+  int                    myCoordIdx;
+  double                 mySign;
+};
+
+//! Multi-variable function for PSO+Powell on a surface.
+class SurfCoordFunc : public math_MultipleVarFunction
+{
+public:
+  SurfCoordFunc(const Adaptor3d_Surface& theSurf,
+                const double             theUMin,
+                const double             theUMax,
+                const double             theVMin,
+                const double             theVMax,
+                const int                theCoordIdx,
+                const double             theSign)
+      : mySurf(theSurf),
+        myUMin(theUMin),
+        myUMax(theUMax),
+        myVMin(theVMin),
+        myVMax(theVMax),
+        myCoordIdx(theCoordIdx),
+        mySign(theSign),
+        myPenalty(0.)
+  {
+    math_Vector aX(1, 2);
+    aX(1) = theUMin;
+    aX(2) = (theVMin + theVMax) / 2.;
+    double aF1, aF2;
+    Value(aX, aF1);
+    aX(1) = theUMax;
+    Value(aX, aF2);
+    double aDU = std::abs((aF2 - aF1) / (theUMax - theUMin));
+    aX(1)      = (theUMin + theUMax) / 2.;
+    aX(2)      = theVMin;
+    Value(aX, aF1);
+    aX(2) = theVMax;
+    Value(aX, aF2);
+    double aDV = std::abs((aF2 - aF1) / (theVMax - theVMin));
+    myPenalty  = 10. * std::max(aDU, aDV);
+    myPenalty  = std::max(myPenalty, 1.);
+  }
+
+  bool Value(const math_Vector& theX, double& theF) override
+  {
+    if (theX(1) >= myUMin && theX(1) <= myUMax && theX(2) >= myVMin && theX(2) <= myVMax)
+    {
+      gp_Pnt aP = mySurf.Value(theX(1), theX(2));
+      theF       = mySign * aP.Coord(myCoordIdx);
+    }
+    else
+    {
+      double aUPen = 0., aVPen = 0., u0, v0;
+      if (theX(1) < myUMin)
+      {
+        aUPen = myPenalty * (myUMin - theX(1));
+        u0    = myUMin;
+      }
+      else if (theX(1) > myUMax)
+      {
+        aUPen = myPenalty * (theX(1) - myUMax);
+        u0    = myUMax;
+      }
+      else
+      {
+        u0 = theX(1);
+      }
+      if (theX(2) < myVMin)
+      {
+        aVPen = myPenalty * (myVMin - theX(2));
+        v0    = myVMin;
+      }
+      else if (theX(2) > myVMax)
+      {
+        aVPen = myPenalty * (theX(2) - myVMax);
+        v0    = myVMax;
+      }
+      else
+      {
+        v0 = theX(2);
+      }
+      gp_Pnt aP = mySurf.Value(u0, v0);
+      theF       = mySign * aP.Coord(myCoordIdx) + aUPen + aVPen;
+    }
+    return true;
+  }
+
+  int NbVariables() const override { return 2; }
+
+private:
+  SurfCoordFunc& operator=(const SurfCoordFunc&) = delete;
+
+  const Adaptor3d_Surface& mySurf;
+  double                   myUMin;
+  double                   myUMax;
+  double                   myVMin;
+  double                   myVMax;
+  int                      myCoordIdx;
+  double                   mySign;
+  double                   myPenalty;
+};
+
+// ============================================================
+// Public helper functions
+// ============================================================
+
+//! Adjust coordinate extremum using PSO + Brent for 1D parameter curves.
+//! @param[in] theCurve    the adaptor curve
+//! @param[in] theUMin     lower parameter bound for search
+//! @param[in] theUMax     upper parameter bound for search
+//! @param[in] theExtr0    current extremum value
+//! @param[in] theCoordIdx coordinate index (1=X, 2=Y, 3=Z)
+//! @param[in] theTol      tolerance
+//! @param[in] theIsMin    true if looking for minimum, false for maximum
+//! @return adjusted extremum value
+inline double AdjustExtrCurve(const Adaptor3d_Curve& theCurve,
+                              const double           theUMin,
+                              const double           theUMax,
+                              const double           theExtr0,
+                              const int              theCoordIdx,
+                              const double           theTol,
+                              const bool             theIsMin)
+{
+  double aSign = theIsMin ? 1. : -1.;
+  double extr  = aSign * theExtr0;
+
+  double uTol = std::max(theCurve.Resolution(theTol), Precision::PConfusion());
+  double Du   = (theCurve.LastParameter() - theCurve.FirstParameter());
+
+  double reltol = uTol / std::max(std::abs(theUMin), std::abs(theUMax));
+  if (theUMax - theUMin < 0.01 * Du)
+  {
+    math_BrentMinimum anOptLoc(reltol, 100, uTol);
+    CurveCoordFunc    aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+    anOptLoc.Perform(aFunc, theUMin, (theUMin + theUMax) / 2., theUMax);
+    if (anOptLoc.IsDone())
+    {
+      extr = anOptLoc.Minimum();
+      return aSign * extr;
+    }
+  }
+
+  int         aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
+  double      aMaxStep     = (theUMax - theUMin) / (aNbParticles + 1);
+  math_Vector aT(1, 1);
+  math_Vector aLowBorder(1, 1);
+  math_Vector aUppBorder(1, 1);
+  math_Vector aSteps(1, 1);
+  aLowBorder(1) = theUMin;
+  aUppBorder(1) = theUMax;
+  aSteps(1)     = std::min(0.1 * Du, aMaxStep);
+
+  CurveCoordMVarFunc aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  math_PSO           aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
+  aFinder.Perform(aSteps, extr, aT);
+
+  math_BrentMinimum anOptLoc(reltol, 100, uTol);
+  CurveCoordFunc    aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  anOptLoc.Perform(aFunc1,
+                   std::max(aT(1) - aSteps(1), theUMin),
+                   aT(1),
+                   std::min(aT(1) + aSteps(1), theUMax));
+
+  if (anOptLoc.IsDone())
+  {
+    extr = anOptLoc.Minimum();
+    return aSign * extr;
+  }
+
+  return aSign * extr;
+}
+
+//! Adjust coordinate extremum using PSO + Powell for 2D parameter surfaces.
+//! @param[in] theSurf     the adaptor surface
+//! @param[in] theUMin     lower U bound
+//! @param[in] theUMax     upper U bound
+//! @param[in] theVMin     lower V bound
+//! @param[in] theVMax     upper V bound
+//! @param[in] theExtr0    current extremum value
+//! @param[in] theCoordIdx coordinate index (1=X, 2=Y, 3=Z)
+//! @param[in] theTol      tolerance
+//! @param[in] theIsMin    true if looking for minimum, false for maximum
+//! @return adjusted extremum value
+inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
+                             const double             theUMin,
+                             const double             theUMax,
+                             const double             theVMin,
+                             const double             theVMax,
+                             const double             theExtr0,
+                             const int                theCoordIdx,
+                             const double             theTol,
+                             const bool               theIsMin)
+{
+  double aSign  = theIsMin ? 1. : -1.;
+  double extr   = aSign * theExtr0;
+  double relTol = 2. * theTol;
+  if (std::abs(extr) > theTol)
+  {
+    relTol /= std::abs(extr);
+  }
+  double Du = (theSurf.LastUParameter() - theSurf.FirstUParameter());
+  double Dv = (theSurf.LastVParameter() - theSurf.FirstVParameter());
+
+  math_Vector aT(1, 2);
+  math_Vector aLowBorder(1, 2);
+  math_Vector aUppBorder(1, 2);
+  math_Vector aSteps(1, 2);
+  aLowBorder(1) = theUMin;
+  aUppBorder(1) = theUMax;
+  aLowBorder(2) = theVMin;
+  aUppBorder(2) = theVMax;
+
+  int    aNbU         = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
+  int    aNbV         = std::max(8, RealToInt(32 * (theVMax - theVMin) / Dv));
+  int    aNbParticles = aNbU * aNbV;
+  double aMaxUStep    = (theUMax - theUMin) / (aNbU + 1);
+  aSteps(1)           = std::min(0.1 * Du, aMaxUStep);
+  double aMaxVStep    = (theVMax - theVMin) / (aNbV + 1);
+  aSteps(2)           = std::min(0.1 * Dv, aMaxVStep);
+
+  SurfCoordFunc aFunc(theSurf, theUMin, theUMax, theVMin, theVMax, theCoordIdx, aSign);
+  math_PSO      aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
+  aFinder.Perform(aSteps, extr, aT);
+
+  math_Matrix aDir(1, 2, 1, 2, 0.0);
+  aDir(1, 1) = 1.;
+  aDir(2, 2) = 1.;
+
+  math_Powell powell(aFunc, relTol, 200, theTol);
+  powell.Perform(aFunc, aT, aDir);
+
+  if (powell.IsDone())
+  {
+    powell.Location(aT);
+    extr = powell.Minimum();
+  }
+
+  return aSign * extr;
+}
+
+} // namespace GeomBndLib_OptimizationHelpers
+
+#endif // GeomBndLib_OptimizationHelpers_HeaderFile

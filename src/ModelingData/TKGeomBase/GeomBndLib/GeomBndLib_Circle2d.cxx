@@ -1,0 +1,101 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#include <GeomBndLib_Circle2d.hxx>
+
+#include <ElCLib.hxx>
+#include <gp.hxx>
+#include <gp_Circ2d.hxx>
+#include <Precision.hxx>
+
+//=================================================================================================
+
+void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc, double theTol, Bnd_Box2d& theBox)
+{
+  const double aR  = theCirc.Radius();
+  const gp_XY  aO  = theCirc.Location().XY();
+  const gp_XY  aXd = theCirc.XAxis().Direction().XY();
+  const gp_XY  aYd = theCirc.YAxis().Direction().XY();
+
+  // For a full circle, compute per-coordinate analytical extrema.
+  double aMin[2], aMax[2];
+  for (int k = 1; k <= 2; ++k)
+  {
+    double aXk = aXd.Coord(k);
+    double aYk = aYd.Coord(k);
+    double aAmp = std::sqrt(aR * aR * aXk * aXk + aR * aR * aYk * aYk);
+    aMin[k - 1] = aO.Coord(k) - aAmp;
+    aMax[k - 1] = aO.Coord(k) + aAmp;
+  }
+  theBox.Update(aMin[0], aMin[1], aMax[0], aMax[1]);
+  theBox.Enlarge(theTol);
+}
+
+//=================================================================================================
+
+void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc,
+                              double           theU1,
+                              double           theU2,
+                              double           theTol,
+                              Bnd_Box2d&       theBox)
+{
+  const double aR  = theCirc.Radius();
+  const gp_XY  aO  = theCirc.Location().XY();
+  const gp_XY  aXd = theCirc.XAxis().Direction().XY();
+  const gp_XY  aYd = theCirc.YAxis().Direction().XY();
+
+  if (theU2 - theU1 >= 2. * M_PI - Precision::PConfusion())
+  {
+    Add(theCirc, theTol, theBox);
+    return;
+  }
+
+  // Add arc endpoints.
+  auto aEval = [&](double theT) -> gp_Pnt2d {
+    return gp_Pnt2d(aO + aR * std::cos(theT) * aXd + aR * std::sin(theT) * aYd);
+  };
+  theBox.Add(aEval(theU1));
+  theBox.Add(aEval(theU2));
+
+  // For each coordinate, check if the extremal parameter lies within the arc.
+  for (int k = 1; k <= 2; ++k)
+  {
+    double aXk = aXd.Coord(k);
+    double aYk = aYd.Coord(k);
+
+    double aTExtrMin;
+    if (std::abs(aXk) > gp::Resolution())
+    {
+      aTExtrMin = std::atan(aYk / aXk);
+      aTExtrMin = ElCLib::InPeriod(aTExtrMin, 0., 2. * M_PI);
+    }
+    else
+    {
+      aTExtrMin = M_PI / 2.;
+    }
+    double aTExtrMax = aTExtrMin <= M_PI ? aTExtrMin + M_PI : aTExtrMin - M_PI;
+
+    double aTk = ElCLib::InPeriod(aTExtrMin, theU1, theU1 + 2. * M_PI);
+    if (aTk >= theU1 && aTk <= theU2)
+    {
+      theBox.Add(aEval(aTExtrMin));
+    }
+    aTk = ElCLib::InPeriod(aTExtrMax, theU1, theU1 + 2. * M_PI);
+    if (aTk >= theU1 && aTk <= theU2)
+    {
+      theBox.Add(aEval(aTExtrMax));
+    }
+  }
+
+  theBox.Enlarge(theTol);
+}
