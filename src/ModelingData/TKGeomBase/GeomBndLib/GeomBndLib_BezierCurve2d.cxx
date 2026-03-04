@@ -37,9 +37,11 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theU1, double theU2, double theTo
   int                 N        = myGeom->Degree();
   Geom2dAdaptor_Curve aGACurve(myGeom);
   Bnd_Box2d           aB1;
-  double              tol = GeomBndLib_SplineHelpers::FillBox<Bnd_Box2d,
-                                                               Geom2dAdaptor_Curve,
-                                                               gp_Pnt2d>(aB1, aGACurve, theU1, theU2, N);
+  double tol = GeomBndLib_SplineHelpers::FillBox<Bnd_Box2d, Geom2dAdaptor_Curve, gp_Pnt2d>(aB1,
+                                                                                           aGACurve,
+                                                                                           theU1,
+                                                                                           theU2,
+                                                                                           N);
   aB1.Enlarge(weakness * tol);
   GeomBndLib_SplineHelpers::ReduceSplineBox(myGeom->Poles(), aB1, aBox);
   aBox.Enlarge(theTol);
@@ -107,12 +109,12 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::BoxOptimal(double theU1, double theU2, doubl
         double umin = theU1 + std::max(0, i - 2) * du;
         double umax = theU1 + std::min(Nu - 1, i) * du;
         double cmin = GeomBndLib_OptimizationHelpers::AdjustExtrCurve2d(aGACurve,
-                                                                         umin,
-                                                                         umax,
-                                                                         CMin,
-                                                                         k + 1,
-                                                                         eps,
-                                                                         true);
+                                                                        umin,
+                                                                        umax,
+                                                                        CMin,
+                                                                        k + 1,
+                                                                        eps,
+                                                                        true);
         if (cmin < CMin)
           CMin = cmin;
       }
@@ -121,12 +123,12 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::BoxOptimal(double theU1, double theU2, doubl
         double umin = theU1 + std::max(0, i - 2) * du;
         double umax = theU1 + std::min(Nu - 1, i) * du;
         double cmax = GeomBndLib_OptimizationHelpers::AdjustExtrCurve2d(aGACurve,
-                                                                         umin,
-                                                                         umax,
-                                                                         CMax,
-                                                                         k + 1,
-                                                                         eps,
-                                                                         false);
+                                                                        umin,
+                                                                        umax,
+                                                                        CMax,
+                                                                        k + 1,
+                                                                        eps,
+                                                                        false);
         if (cmax > CMax)
           CMax = cmax;
       }

@@ -46,8 +46,11 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::Box(double theU1, double theU2, double theT
     occ::handle<Geom2d_Geometry>     aG = myGeom->Copy();
     occ::handle<Geom2d_BSplineCurve> aBs(occ::down_cast<Geom2d_BSplineCurve>(aG));
     double                           aU1 = theU1, aU2 = theU2;
-    ElCLib::AdjustPeriodic(aBs->FirstParameter(), aBs->LastParameter(),
-                           Precision::PConfusion(), aU1, aU2);
+    ElCLib::AdjustPeriodic(aBs->FirstParameter(),
+                           aBs->LastParameter(),
+                           Precision::PConfusion(),
+                           aU1,
+                           aU2);
 
     const double aPeriod           = aBs->LastParameter() - aBs->FirstParameter();
     const double aDirectDiff       = std::abs(aU2 - aU1);
@@ -60,18 +63,21 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::Box(double theU1, double theU2, double theT
     aBs->Segment(aU1, aU2, aSegmentTol);
 
     Bnd_Box2d                         aB1;
-    const int                         aK1     = aBs->FirstUKnotIndex();
-    const int                         aK2     = aBs->LastUKnotIndex();
-    const NCollection_Array1<double>& aKnots  = aBs->Knots();
+    const int                         aK1    = aBs->FirstUKnotIndex();
+    const int                         aK2    = aBs->LastUKnotIndex();
+    const NCollection_Array1<double>& aKnots = aBs->Knots();
     Geom2dAdaptor_Curve               aGACurve(aBs);
-    double                            aFirst  = aKnots(aK1), aLast;
-    double                            aTol    = 0.0;
+    double                            aFirst = aKnots(aK1), aLast;
+    double                            aTol   = 0.0;
     for (int aK = aK1 + 1; aK <= aK2; aK++)
     {
       aLast = aKnots(aK);
       aTol  = std::max(
-        GeomBndLib_SplineHelpers::FillBox<Bnd_Box2d, Geom2dAdaptor_Curve, gp_Pnt2d>(
-          aB1, aGACurve, aFirst, aLast, aDegree),
+        GeomBndLib_SplineHelpers::FillBox<Bnd_Box2d, Geom2dAdaptor_Curve, gp_Pnt2d>(aB1,
+                                                                                    aGACurve,
+                                                                                    aFirst,
+                                                                                    aLast,
+                                                                                    aDegree),
         aTol);
       aFirst = aLast;
     }
@@ -112,8 +118,11 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::Box(double theU1, double theU2, double theT
     if (aLast > aFirst + Precision::PConfusion())
     {
       aTol = std::max(
-        GeomBndLib_SplineHelpers::FillBox<Bnd_Box2d, Geom2dAdaptor_Curve, gp_Pnt2d>(
-          aB1, aGACurve, aFirst, aLast, aDegree),
+        GeomBndLib_SplineHelpers::FillBox<Bnd_Box2d, Geom2dAdaptor_Curve, gp_Pnt2d>(aB1,
+                                                                                    aGACurve,
+                                                                                    aFirst,
+                                                                                    aLast,
+                                                                                    aDegree),
         aTol);
     }
     aFirst = aLast;
@@ -124,8 +133,15 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::Box(double theU1, double theU2, double theT
   {
     aB1.Enlarge(aWeakness * aTol);
     int aPoleMin = 1, aPoleMax = aNbPoles;
-    GeomBndLib_SplineHelpers::ComputePoleIndexRange(
-      aKnots, aMults, aDegree, aU1, aU2, aNbPoles, false, aPoleMin, aPoleMax);
+    GeomBndLib_SplineHelpers::ComputePoleIndexRange(aKnots,
+                                                    aMults,
+                                                    aDegree,
+                                                    aU1,
+                                                    aU2,
+                                                    aNbPoles,
+                                                    false,
+                                                    aPoleMin,
+                                                    aPoleMax);
     GeomBndLib_SplineHelpers::ReduceSplineBox(myGeom->Poles(), aPoleMin, aPoleMax, aB1, aBox);
     aBox.Enlarge(theTol);
   }
@@ -193,12 +209,12 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::BoxOptimal(double theU1, double theU2, doub
         double umin = theU1 + std::max(0, i - 2) * du;
         double umax = theU1 + std::min(Nu - 1, i) * du;
         double cmin = GeomBndLib_OptimizationHelpers::AdjustExtrCurve2d(aGACurve,
-                                                                         umin,
-                                                                         umax,
-                                                                         CMin,
-                                                                         k + 1,
-                                                                         eps,
-                                                                         true);
+                                                                        umin,
+                                                                        umax,
+                                                                        CMin,
+                                                                        k + 1,
+                                                                        eps,
+                                                                        true);
         if (cmin < CMin)
           CMin = cmin;
       }
@@ -207,12 +223,12 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::BoxOptimal(double theU1, double theU2, doub
         double umin = theU1 + std::max(0, i - 2) * du;
         double umax = theU1 + std::min(Nu - 1, i) * du;
         double cmax = GeomBndLib_OptimizationHelpers::AdjustExtrCurve2d(aGACurve,
-                                                                         umin,
-                                                                         umax,
-                                                                         CMax,
-                                                                         k + 1,
-                                                                         eps,
-                                                                         false);
+                                                                        umin,
+                                                                        umax,
+                                                                        CMax,
+                                                                        k + 1,
+                                                                        eps,
+                                                                        false);
         if (cmax > CMax)
           CMax = cmax;
       }

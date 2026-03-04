@@ -171,16 +171,26 @@ Bnd_Box GeomBndLib_OffsetCurve::Box(double theU1, double theU2, double theTol) c
   if (aBox.HasFinitePart())
   {
     const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aBox.FinitePart().Get();
-    aBox.Update(aXmin - aEnlargeX, aYmin - aEnlargeY, aZmin - aEnlargeZ,
-                aXmax + aEnlargeX, aYmax + aEnlargeY, aZmax + aEnlargeZ);
+    aBox.Update(aXmin - aEnlargeX,
+                aYmin - aEnlargeY,
+                aZmin - aEnlargeZ,
+                aXmax + aEnlargeX,
+                aYmax + aEnlargeY,
+                aZmax + aEnlargeZ);
   }
 
-  if (isOpenXmin) aBox.OpenXmin();
-  if (isOpenXmax) aBox.OpenXmax();
-  if (isOpenYmin) aBox.OpenYmin();
-  if (isOpenYmax) aBox.OpenYmax();
-  if (isOpenZmin) aBox.OpenZmin();
-  if (isOpenZmax) aBox.OpenZmax();
+  if (isOpenXmin)
+    aBox.OpenXmin();
+  if (isOpenXmax)
+    aBox.OpenXmax();
+  if (isOpenYmin)
+    aBox.OpenYmin();
+  if (isOpenYmax)
+    aBox.OpenYmax();
+  if (isOpenZmin)
+    aBox.OpenZmin();
+  if (isOpenZmax)
+    aBox.OpenZmax();
 
   aBox.Enlarge(theTol);
   return aBox;
@@ -188,9 +198,7 @@ Bnd_Box GeomBndLib_OffsetCurve::Box(double theU1, double theU2, double theTol) c
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_OffsetCurve::BoxOptimal(double theU1,
-                                           double theU2,
-                                           double theTol) const
+Bnd_Box GeomBndLib_OffsetCurve::BoxOptimal(double theU1, double theU2, double theTol) const
 {
   // Reuse exact fast paths.
   const occ::handle<Geom_Curve>& aBasis = myGeom->BasisCurve();

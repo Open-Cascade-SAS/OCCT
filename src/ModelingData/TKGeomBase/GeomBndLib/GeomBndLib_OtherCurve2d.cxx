@@ -28,10 +28,10 @@ namespace
 
 //! Fill 2D box with sampled points and return maximum deflection.
 double FillBox2d(Bnd_Box2d&               theBox,
-                 const Adaptor2d_Curve2d&  theCurve,
-                 const double              theFirst,
-                 const double              theLast,
-                 const int                 theN)
+                 const Adaptor2d_Curve2d& theCurve,
+                 const double             theFirst,
+                 const double             theLast,
+                 const int                theN)
 {
   gp_Pnt2d aP1, aP2, aP3;
   theCurve.D0(theFirst, aP1);
@@ -87,7 +87,7 @@ public:
       return false;
     }
     gp_Pnt2d aP = myCurve.Value(theX);
-    theF         = mySign * aP.Coord(myCoordIdx);
+    theF        = mySign * aP.Coord(myCoordIdx);
     return true;
   }
 
@@ -125,7 +125,7 @@ public:
       return false;
     }
     gp_Pnt2d aP = myCurve.Value(theX(1));
-    theF         = mySign * aP.Coord(myCoordIdx);
+    theF        = mySign * aP.Coord(myCoordIdx);
     return true;
   }
 
@@ -210,11 +210,9 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box2d GeomBndLib_OtherCurve2d::Box(double theU1,
-                                       double theU2,
-                                       double theTol) const
+Bnd_Box2d GeomBndLib_OtherCurve2d::Box(double theU1, double theU2, double theTol) const
 {
-  Bnd_Box2d aBox;
+  Bnd_Box2d        aBox;
   constexpr double weakness = 1.5;
   constexpr int    N        = 33;
   Bnd_Box2d        aB1;
@@ -229,11 +227,9 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::Box(double theU1,
 
 //=================================================================================================
 
-Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1,
-                                              double theU2,
-                                              double theTol) const
+Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1, double theU2, double theTol) const
 {
-  Bnd_Box2d aBox;
+  Bnd_Box2d                aBox;
   const Adaptor2d_Curve2d& C  = myCurve.get();
   int                      Nu = GeomBndLib_SamplingHelpers::ComputeNbSamples2d(C, theU1, theU2);
 
@@ -241,10 +237,10 @@ Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1,
   double CoordMax[2] = {-RealLast(), -RealLast()};
   double DeflMax[2]  = {-RealLast(), -RealLast()};
 
-  gp_Pnt2d                   P;
-  double                     du = (theU2 - theU1) / (Nu - 1), du2 = du / 2.;
-  NCollection_Array1<gp_XY>  aPnts(1, Nu);
-  double                     u;
+  gp_Pnt2d                  P;
+  double                    du = (theU2 - theU1) / (Nu - 1), du2 = du / 2.;
+  NCollection_Array1<gp_XY> aPnts(1, Nu);
+  double                    u;
   for (int i = 1, j = 0; i <= Nu; i++, j++)
   {
     u = theU1 + j * du;

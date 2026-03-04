@@ -51,11 +51,11 @@ void ExpectContainsCurve2d(const Bnd_Box2d&                  theBox,
                            const int                         theNbSamples)
 {
   const double aStep = (theU2 - theU1) / theNbSamples;
-  double aXmin = 0., aYmin = 0., aXmax = 0., aYmax = 0.;
+  double       aXmin = 0., aYmin = 0., aXmax = 0., aYmax = 0.;
   theBox.Get(aXmin, aYmin, aXmax, aYmax);
   for (int i = 0; i <= theNbSamples; ++i)
   {
-    const double    aU  = theU1 + i * aStep;
+    const double   aU   = theU1 + i * aStep;
     const gp_Pnt2d aPnt = theCurve->Value(aU);
     EXPECT_GE(aPnt.X(), aXmin - Precision::Confusion()) << "Point outside box at U=" << aU;
     EXPECT_LE(aPnt.X(), aXmax + Precision::Confusion()) << "Point outside box at U=" << aU;
@@ -189,7 +189,7 @@ TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Arc_OptimalCompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurve2dTest, Line_CompareWithBndLib)
 {
-  Handle(Geom2d_Line)         aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
+  Handle(Geom2d_Line)        aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0));
   Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(aLine, 3.0);
   Geom2dAdaptor_Curve        anAdaptor(anOff);
 
@@ -225,8 +225,8 @@ TEST(GeomBndLib_OffsetCurve2dTest, BSpline_OptimalCompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  Handle(Geom2d_BSplineCurve)  aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
-  Handle(Geom2d_OffsetCurve)   anOff = new Geom2d_OffsetCurve(aBSpl, 1.0);
+  Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  Handle(Geom2d_OffsetCurve)  anOff = new Geom2d_OffsetCurve(aBSpl, 1.0);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(anOff).AddOptimal(Precision::Confusion(), aNewBox);

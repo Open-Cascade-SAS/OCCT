@@ -40,7 +40,7 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
   Bnd_Box          aBox;
   constexpr double aWeakness = 1.5;
 
-  const int aDegree  = myGeom->Degree();
+  const int  aDegree = myGeom->Degree();
   const bool isPerio = myGeom->IsPeriodic();
 
   if (isPerio)
@@ -49,8 +49,11 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
     occ::handle<Geom_Geometry>     aG = myGeom->Copy();
     occ::handle<Geom_BSplineCurve> aBs(occ::down_cast<Geom_BSplineCurve>(aG));
     double                         aU1 = theU1, aU2 = theU2;
-    ElCLib::AdjustPeriodic(aBs->FirstParameter(), aBs->LastParameter(),
-                           Precision::PConfusion(), aU1, aU2);
+    ElCLib::AdjustPeriodic(aBs->FirstParameter(),
+                           aBs->LastParameter(),
+                           Precision::PConfusion(),
+                           aU1,
+                           aU2);
 
     const double aPeriod           = aBs->LastParameter() - aBs->FirstParameter();
     const double aDirectDiff       = std::abs(aU2 - aU1);
@@ -63,19 +66,22 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
     aBs->Segment(aU1, aU2, aSegmentTol);
 
     Bnd_Box                           aB1;
-    const int                         aK1     = aBs->FirstUKnotIndex();
-    const int                         aK2     = aBs->LastUKnotIndex();
-    const NCollection_Array1<double>& aKnots  = aBs->Knots();
+    const int                         aK1    = aBs->FirstUKnotIndex();
+    const int                         aK2    = aBs->LastUKnotIndex();
+    const NCollection_Array1<double>& aKnots = aBs->Knots();
     GeomAdaptor_Curve                 aGACurve(aBs);
-    double                            aFirst  = aKnots(aK1), aLast;
-    double                            aTol    = 0.0;
+    double                            aFirst = aKnots(aK1), aLast;
+    double                            aTol   = 0.0;
     for (int aK = aK1 + 1; aK <= aK2; aK++)
     {
       aLast = aKnots(aK);
-      aTol  = std::max(
-        GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(
-          aB1, aGACurve, aFirst, aLast, aDegree),
-        aTol);
+      aTol =
+        std::max(GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(aB1,
+                                                                                       aGACurve,
+                                                                                       aFirst,
+                                                                                       aLast,
+                                                                                       aDegree),
+                 aTol);
       aFirst = aLast;
     }
     if (!aB1.IsVoid())
@@ -91,8 +97,8 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
   const double aU1 = std::max(theU1, myGeom->FirstParameter());
   const double aU2 = std::min(theU2, myGeom->LastParameter());
 
-  const NCollection_Array1<double>& aKnots  = myGeom->Knots();
-  const NCollection_Array1<int>&    aMults  = myGeom->Multiplicities();
+  const NCollection_Array1<double>& aKnots   = myGeom->Knots();
+  const NCollection_Array1<int>&    aMults   = myGeom->Multiplicities();
   const int                         aNbPoles = myGeom->NbPoles();
 
   // Find the knot-index span range covering [aU1, aU2].
@@ -114,10 +120,13 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
     const double aLast = (aK < aK2) ? std::min(aU2, aKnots(aK)) : aU2;
     if (aLast > aFirst + Precision::PConfusion())
     {
-      aTol = std::max(
-        GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(
-          aB1, aGACurve, aFirst, aLast, aDegree),
-        aTol);
+      aTol =
+        std::max(GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(aB1,
+                                                                                       aGACurve,
+                                                                                       aFirst,
+                                                                                       aLast,
+                                                                                       aDegree),
+                 aTol);
     }
     aFirst = aLast;
     if (aFirst >= aU2 - Precision::PConfusion())
@@ -127,8 +136,15 @@ Bnd_Box GeomBndLib_BSplineCurve::Box(double theU1, double theU2, double theTol) 
   {
     aB1.Enlarge(aWeakness * aTol);
     int aPoleMin = 1, aPoleMax = aNbPoles;
-    GeomBndLib_SplineHelpers::ComputePoleIndexRange(
-      aKnots, aMults, aDegree, aU1, aU2, aNbPoles, false, aPoleMin, aPoleMax);
+    GeomBndLib_SplineHelpers::ComputePoleIndexRange(aKnots,
+                                                    aMults,
+                                                    aDegree,
+                                                    aU1,
+                                                    aU2,
+                                                    aNbPoles,
+                                                    false,
+                                                    aPoleMin,
+                                                    aPoleMax);
     GeomBndLib_SplineHelpers::ReduceSplineBox(myGeom->Poles(), aPoleMin, aPoleMax, aB1, aBox);
     aBox.Enlarge(theTol);
   }

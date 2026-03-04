@@ -34,16 +34,16 @@ Bnd_Box GeomBndLib_OtherSurface::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_OtherSurface::Box(double   theUMin,
-                                     double   theUMax,
-                                     double   theVMin,
-                                     double   theVMax,
-                                     double   theTol) const
+Bnd_Box GeomBndLib_OtherSurface::Box(double theUMin,
+                                     double theUMax,
+                                     double theVMin,
+                                     double theVMax,
+                                     double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box                  aBox;
   const Adaptor3d_Surface& aSurf = mySurf.get();
-  const int                Nu    = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aSurf, theUMin, theUMax);
-  const int                Nv    = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aSurf, theVMin, theVMax);
+  const int Nu = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aSurf, theUMin, theUMax);
+  const int Nv = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aSurf, theVMin, theVMax);
 
   NCollection_Array1<double> aUParams(1, Nu);
   NCollection_Array1<double> aVParams(1, Nv);
@@ -57,7 +57,7 @@ Bnd_Box GeomBndLib_OtherSurface::Box(double   theUMin,
     aVParams.SetValue(j, theVMin + ((theVMax - theVMin) * (j - 1) / (Nv - 1)));
   }
 
-  GeomGridEval_Surface                anEvaluator(aSurf);
+  GeomGridEval_Surface             anEvaluator(aSurf);
   const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
   for (int i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
   {
@@ -72,16 +72,16 @@ Bnd_Box GeomBndLib_OtherSurface::Box(double   theUMin,
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double   theUMin,
-                                            double   theUMax,
-                                            double   theVMin,
-                                            double   theVMax,
-                                            double   theTol) const
+Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double theUMin,
+                                            double theUMax,
+                                            double theVMin,
+                                            double theVMax,
+                                            double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box                  aBox;
   const Adaptor3d_Surface& aSurf = mySurf.get();
-  const int                Nu    = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aSurf, theUMin, theUMax);
-  const int                Nv    = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aSurf, theVMin, theVMax);
+  const int Nu = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aSurf, theUMin, theUMax);
+  const int Nv = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aSurf, theVMin, theVMax);
 
   double CoordMin[3] = {RealLast(), RealLast(), RealLast()};
   double CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
@@ -108,7 +108,7 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double   theUMin,
     aVParams.SetValue(j, theVMin + (j - 1) * dv2);
   }
 
-  GeomGridEval_Surface                anEvaluator(aSurf);
+  GeomGridEval_Surface             anEvaluator(aSurf);
   const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
 
   NCollection_Array2<gp_XYZ> aPnts(1, Nu, 1, Nv);
@@ -187,9 +187,15 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double   theUMin,
           double umax = theUMin + std::min(Nu - 1, i) * du;
           double vmin = theVMin + std::max(0, j - 2) * dv;
           double vmax = theVMin + std::min(Nv - 1, j) * dv;
-          double cmin =
-            GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aSurf, umin, umax, vmin, vmax,
-                                                       CMin, k + 1, eps, true);
+          double cmin = GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aSurf,
+                                                                       umin,
+                                                                       umax,
+                                                                       vmin,
+                                                                       vmax,
+                                                                       CMin,
+                                                                       k + 1,
+                                                                       eps,
+                                                                       true);
           if (cmin < CMin)
             CMin = cmin;
         }
@@ -199,9 +205,15 @@ Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double   theUMin,
           double umax = theUMin + std::min(Nu - 1, i) * du;
           double vmin = theVMin + std::max(0, j - 2) * dv;
           double vmax = theVMin + std::min(Nv - 1, j) * dv;
-          double cmax =
-            GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aSurf, umin, umax, vmin, vmax,
-                                                       CMax, k + 1, eps, false);
+          double cmax = GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aSurf,
+                                                                       umin,
+                                                                       umax,
+                                                                       vmin,
+                                                                       vmax,
+                                                                       CMax,
+                                                                       k + 1,
+                                                                       eps,
+                                                                       false);
           if (cmax > CMax)
             CMax = cmax;
         }

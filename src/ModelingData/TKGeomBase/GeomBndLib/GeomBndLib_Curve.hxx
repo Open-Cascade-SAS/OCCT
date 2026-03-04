@@ -90,14 +90,14 @@ private:
                                         GeomBndLib_OffsetCurve,
                                         GeomBndLib_OtherCurve>;
   const Adaptor3d_Curve* adaptor() const;
-  double effectiveU1() const;
-  double effectiveU2() const;
+  double                 effectiveU1() const;
+  double                 effectiveU2() const;
 
 private:
-  const Adaptor3d_Curve* myAdaptorRef = nullptr;
+  const Adaptor3d_Curve*       myAdaptorRef = nullptr;
   occ::handle<Adaptor3d_Curve> myAdaptorOwned;
-  EvaluatorVariant  myEvaluator;
-  GeomAbs_CurveType myCurveType;
+  EvaluatorVariant             myEvaluator;
+  GeomAbs_CurveType            myCurveType;
 };
 
 #endif // GeomBndLib_Curve_HeaderFile

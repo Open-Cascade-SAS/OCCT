@@ -21,9 +21,9 @@
 //=================================================================================================
 
 Bnd_Box GeomBndLib_Parabola::Box(const gp_Parab& theParab,
-                                  double          theU1,
-                                  double          theU2,
-                                  double          theTol)
+                                 double          theU1,
+                                 double          theU2,
+                                 double          theTol)
 {
   Bnd_Box aBox;
   if (Precision::IsNegativeInfinite(theU1))

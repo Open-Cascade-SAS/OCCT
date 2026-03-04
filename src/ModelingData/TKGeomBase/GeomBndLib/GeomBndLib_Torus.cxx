@@ -28,21 +28,21 @@
 //! Compute bounding box for a degenerate torus (Ra < Ri) patch
 //! using the extremal-point algorithm.
 static void computeDegeneratedTorus(const gp_Torus& theTorus,
-                                     const double    theUMin,
-                                     const double    theUMax,
-                                     const double    theVMin,
-                                     const double    theVMax,
-                                     Bnd_Box&        theBox)
+                                    const double    theUMin,
+                                    const double    theUMax,
+                                    const double    theVMin,
+                                    const double    theVMax,
+                                    Bnd_Box&        theBox)
 {
-  const gp_Pnt  aP   = theTorus.Location();
-  const double  aRa  = theTorus.MajorRadius();
-  const double  aRi  = theTorus.MinorRadius();
-  const double  aXmin = aP.X() - aRa - aRi;
-  const double  aXmax = aP.X() + aRa + aRi;
-  const double  aYmin = aP.Y() - aRa - aRi;
-  const double  aYmax = aP.Y() + aRa + aRi;
-  const double  aZmin = aP.Z() - aRi;
-  const double  aZmax = aP.Z() + aRi;
+  const gp_Pnt aP    = theTorus.Location();
+  const double aRa   = theTorus.MajorRadius();
+  const double aRi   = theTorus.MinorRadius();
+  const double aXmin = aP.X() - aRa - aRi;
+  const double aXmax = aP.X() + aRa + aRi;
+  const double aYmin = aP.Y() - aRa - aRi;
+  const double aYmax = aP.Y() + aRa + aRi;
+  const double aZmin = aP.Z() - aRi;
+  const double aZmax = aP.Z() + aRi;
 
   const double aPhi = std::acos(-aRa / aRi);
 
@@ -124,7 +124,7 @@ static void computeDegeneratedTorus(const gp_Torus& theTorus,
 
 Bnd_Box GeomBndLib_Torus::Box(double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box        aBox;
   const gp_Torus aTorus = myGeom->Torus();
   const double   aRMa   = aTorus.MajorRadius();
   const double   aRmi   = aTorus.MinorRadius();
@@ -152,13 +152,13 @@ Bnd_Box GeomBndLib_Torus::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Torus::Box(double   theUMin,
-                              double   theUMax,
-                              double   theVMin,
-                              double   theVMax,
-                              double   theTol) const
+Bnd_Box GeomBndLib_Torus::Box(double theUMin,
+                              double theUMax,
+                              double theVMin,
+                              double theVMax,
+                              double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box        aBox;
   const gp_Torus aTorus = myGeom->Torus();
   const double   aRa    = aTorus.MajorRadius();
   const double   aRi    = aTorus.MinorRadius();
@@ -194,8 +194,8 @@ Bnd_Box GeomBndLib_Torus::Box(double   theUMin,
   // Cache direction vectors.
   const gp_XYZ aZDir   = aTorus.Axis().Direction().XYZ();
   const gp_XYZ aLocXYZ = aTorus.Location().XYZ();
-  const gp_Dir aNorm    = aTorus.Axis().Direction();
-  const gp_Dir aXDir    = aTorus.XAxis().Direction();
+  const gp_Dir aNorm   = aTorus.Axis().Direction();
+  const gp_Dir aXDir   = aTorus.XAxis().Direction();
 
   // Multipliers for torus cross-section points at 45-degree intervals.
   constexpr double aRadiusMult[8] =

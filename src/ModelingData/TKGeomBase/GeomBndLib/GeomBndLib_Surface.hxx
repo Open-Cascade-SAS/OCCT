@@ -60,21 +60,15 @@ public:
   [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theTol) const;
 
   //! Compute bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
-  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double   theUMin,
-                                            double   theUMax,
-                                            double   theVMin,
-                                            double   theVMax,
-                                            double   theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box
+    Box(double theUMin, double theUMax, double theVMin, double theVMax, double theTol) const;
 
   //! Compute precise bounding box for full surface.
   [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theTol) const;
 
   //! Compute precise bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
-  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double   theUMin,
-                                                   double   theUMax,
-                                                   double   theVMin,
-                                                   double   theVMax,
-                                                   double   theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box
+    BoxOptimal(double theUMin, double theUMax, double theVMin, double theVMax, double theTol) const;
 
   //! Add bounding box for full surface.
   Standard_EXPORT void Add(double theTol, Bnd_Box& theBox) const;
@@ -112,16 +106,16 @@ private:
                                         GeomBndLib_OffsetSurface,
                                         GeomBndLib_OtherSurface>;
   const Adaptor3d_Surface* adaptor() const;
-  double effectiveU1() const;
-  double effectiveU2() const;
-  double effectiveV1() const;
-  double effectiveV2() const;
+  double                   effectiveU1() const;
+  double                   effectiveU2() const;
+  double                   effectiveV1() const;
+  double                   effectiveV2() const;
 
 private:
-  const Adaptor3d_Surface* myAdaptorRef = nullptr;
+  const Adaptor3d_Surface*       myAdaptorRef = nullptr;
   occ::handle<Adaptor3d_Surface> myAdaptorOwned;
-  EvaluatorVariant    myEvaluator;
-  GeomAbs_SurfaceType mySurfType;
+  EvaluatorVariant               myEvaluator;
+  GeomAbs_SurfaceType            mySurfType;
 };
 
 #endif // GeomBndLib_Surface_HeaderFile

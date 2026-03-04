@@ -34,11 +34,11 @@ Bnd_Box GeomBndLib_Cylinder::Box(double theTol) const
 
 //! Compute bounding box for a finite cylinder patch.
 static void computeCylinder(const gp_Cylinder& theCyl,
-                             const double       theUMin,
-                             const double       theUMax,
-                             const double       theVMin,
-                             const double       theVMax,
-                             Bnd_Box&           theBox)
+                            const double       theUMin,
+                            const double       theUMax,
+                            const double       theVMin,
+                            const double       theVMax,
+                            Bnd_Box&           theBox)
 {
   // Add circle at VMin.
   gp_Circ aC = ElSLib::CylinderVIso(theCyl.Position(), theCyl.Radius(), theVMin);
@@ -51,15 +51,15 @@ static void computeCylinder(const gp_Cylinder& theCyl,
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Cylinder::Box(double   theUMin,
-                                 double   theUMax,
-                                 double   theVMin,
-                                 double   theVMax,
-                                 double   theTol) const
+Bnd_Box GeomBndLib_Cylinder::Box(double theUMin,
+                                 double theUMax,
+                                 double theVMin,
+                                 double theVMax,
+                                 double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box           aBox;
   const gp_Cylinder aCyl = myGeom->Cylinder();
-  const gp_Dir& aDir = aCyl.Axis().Direction();
+  const gp_Dir&     aDir = aCyl.Axis().Direction();
 
   if (Precision::IsNegativeInfinite(theVMin))
   {

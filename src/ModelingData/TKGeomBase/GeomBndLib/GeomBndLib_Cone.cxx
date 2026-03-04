@@ -25,11 +25,11 @@
 
 //! Compute bounding box for a finite cone patch.
 static void computeCone(const gp_Cone& theCone,
-                         const double   theUMin,
-                         const double   theUMax,
-                         const double   theVMin,
-                         const double   theVMax,
-                         Bnd_Box&       theBox)
+                        const double   theUMin,
+                        const double   theUMax,
+                        const double   theVMin,
+                        const double   theVMax,
+                        Bnd_Box&       theBox)
 {
   const gp_Ax3& aPos  = theCone.Position();
   const double  aR    = theCone.RefRadius();
@@ -69,15 +69,15 @@ Bnd_Box GeomBndLib_Cone::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Cone::Box(double   theUMin,
-                             double   theUMax,
-                             double   theVMin,
-                             double   theVMax,
-                             double   theTol) const
+Bnd_Box GeomBndLib_Cone::Box(double theUMin,
+                             double theUMax,
+                             double theVMin,
+                             double theVMax,
+                             double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box       aBox;
   const gp_Cone aCone = myGeom->Cone();
-  const gp_Dir& aDir = aCone.Axis().Direction();
+  const gp_Dir& aDir  = aCone.Axis().Direction();
 
   if (Precision::IsNegativeInfinite(theVMin))
   {

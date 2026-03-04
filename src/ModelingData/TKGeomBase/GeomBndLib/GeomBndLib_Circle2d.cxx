@@ -22,7 +22,7 @@
 
 Bnd_Box2d GeomBndLib_Circle2d::Box(const gp_Circ2d& theCirc, double theTol)
 {
-  Bnd_Box2d aBox;
+  Bnd_Box2d    aBox;
   const double aR  = theCirc.Radius();
   const gp_XY  aO  = theCirc.Location().XY();
   const gp_XY  aXd = theCirc.XAxis().Direction().XY();
@@ -32,8 +32,8 @@ Bnd_Box2d GeomBndLib_Circle2d::Box(const gp_Circ2d& theCirc, double theTol)
   double aMin[2], aMax[2];
   for (int k = 1; k <= 2; ++k)
   {
-    double aXk = aXd.Coord(k);
-    double aYk = aYd.Coord(k);
+    double aXk  = aXd.Coord(k);
+    double aYk  = aYd.Coord(k);
     double aAmp = std::sqrt(aR * aR * aXk * aXk + aR * aR * aYk * aYk);
     aMin[k - 1] = aO.Coord(k) - aAmp;
     aMax[k - 1] = aO.Coord(k) + aAmp;
@@ -50,7 +50,7 @@ Bnd_Box2d GeomBndLib_Circle2d::Box(const gp_Circ2d& theCirc,
                                    double           theU2,
                                    double           theTol)
 {
-  Bnd_Box2d aBox;
+  Bnd_Box2d    aBox;
   const double aR  = theCirc.Radius();
   const gp_XY  aO  = theCirc.Location().XY();
   const gp_XY  aXd = theCirc.XAxis().Direction().XY();

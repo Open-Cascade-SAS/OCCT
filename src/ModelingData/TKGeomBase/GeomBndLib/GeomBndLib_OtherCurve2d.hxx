@@ -51,7 +51,9 @@ public:
   }
 
   //! Compute precise bounding box using PSO + Brent optimization.
-  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1,
+                                                     double theU2,
+                                                     double theTol) const;
 
 private:
   std::reference_wrapper<const Adaptor2d_Curve2d> myCurve;

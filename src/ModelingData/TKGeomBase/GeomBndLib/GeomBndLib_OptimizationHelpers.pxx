@@ -434,15 +434,15 @@ inline double AdjustExtrCurve2d(const Adaptor2d_Curve2d& theCurve,
     }
   }
 
-  const int    aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
+  const int   aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
   math_Vector aLowBorder(1, 1);
   math_Vector aUppBorder(1, 1);
   aLowBorder(1) = theUMin;
   aUppBorder(1) = theUMax;
 
-  Curve2dCoordMVarFunc   aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
-  MathOpt::PSOConfig     aPsoCfg(aNbParticles);
-  MathOpt::VectorResult  aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
+  Curve2dCoordMVarFunc  aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  MathOpt::PSOConfig    aPsoCfg(aNbParticles);
+  MathOpt::VectorResult aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
 
   math_Vector aT(1, 1);
   if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
@@ -465,12 +465,12 @@ inline double AdjustExtrCurve2d(const Adaptor2d_Curve2d& theCurve,
     aT(1) = (theUMin + theUMax) / 2.0;
   }
 
-  const double           aStep = std::min(0.1 * Du, (theUMax - theUMin) / (aNbParticles + 1));
-  Curve2dCoordFunc       aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
-  MathOpt::ScalarResult  anOptLoc = MathOpt::Brent(aFunc1,
-                                                   std::max(aT(1) - aStep, theUMin),
-                                                   std::min(aT(1) + aStep, theUMax),
-                                                   aBrentCfg);
+  const double          aStep = std::min(0.1 * Du, (theUMax - theUMin) / (aNbParticles + 1));
+  Curve2dCoordFunc      aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  MathOpt::ScalarResult anOptLoc = MathOpt::Brent(aFunc1,
+                                                  std::max(aT(1) - aStep, theUMin),
+                                                  std::min(aT(1) + aStep, theUMax),
+                                                  aBrentCfg);
 
   if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
   {

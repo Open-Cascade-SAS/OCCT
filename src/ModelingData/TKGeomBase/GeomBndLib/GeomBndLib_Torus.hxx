@@ -43,18 +43,12 @@ public:
   [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theTol) const;
 
   //! Compute bounding box for torus patch [theUMin, theUMax] x [theVMin, theVMax].
-  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theUMin,
-                                            double theUMax,
-                                            double theVMin,
-                                            double theVMax,
-                                            double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box
+    Box(double theUMin, double theUMax, double theVMin, double theVMax, double theTol) const;
 
   //! Compute precise bounding box for torus patch using PSO + Powell optimization.
-  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theUMin,
-                                                   double theUMax,
-                                                   double theVMin,
-                                                   double theVMax,
-                                                   double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box
+    BoxOptimal(double theUMin, double theUMax, double theVMin, double theVMax, double theTol) const;
 
   //! Compute precise bounding box for full torus.
   [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theTol) const;

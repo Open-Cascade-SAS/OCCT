@@ -24,12 +24,11 @@
 
 Bnd_Box GeomBndLib_Sphere::Box(double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box         aBox;
   const gp_Sphere aSphere = myGeom->Sphere();
   const gp_Pnt    aP      = aSphere.Location();
   const double    aR      = aSphere.Radius();
-  aBox.Update(aP.X() - aR, aP.Y() - aR, aP.Z() - aR,
-              aP.X() + aR, aP.Y() + aR, aP.Z() + aR);
+  aBox.Update(aP.X() - aR, aP.Y() - aR, aP.Z() - aR, aP.X() + aR, aP.Y() + aR, aP.Z() + aR);
   aBox.Enlarge(theTol);
   return aBox;
 }
@@ -38,14 +37,14 @@ Bnd_Box GeomBndLib_Sphere::Box(double theTol) const
 
 //! Compute bounding box for a sphere patch.
 static void computeSphere(const gp_Sphere& theSphere,
-                           const double     theUMin,
-                           const double     theUMax,
-                           const double     theVMin,
-                           const double     theVMax,
-                           Bnd_Box&         theBox)
+                          const double     theUMin,
+                          const double     theUMax,
+                          const double     theVMin,
+                          const double     theVMax,
+                          Bnd_Box&         theBox)
 {
-  const gp_Pnt  aP = theSphere.Location();
-  const double  aR = theSphere.Radius();
+  const gp_Pnt aP = theSphere.Location();
+  const double aR = theSphere.Radius();
 
   const double aXmin = aP.X() - aR;
   const double aXmax = aP.X() + aR;
@@ -64,10 +63,10 @@ static void computeSphere(const gp_Sphere& theSphere,
   }
 
   // Check 6 extremal points (axis-aligned extrema of the full sphere).
-  double           anU, aV;
-  const double     anUmax = theUMin + 2. * M_PI;
-  const gp_Ax3&    aPos   = theSphere.Position();
-  gp_Pnt           aPExt  = aP;
+  double        anU, aV;
+  const double  anUmax = theUMin + 2. * M_PI;
+  const gp_Ax3& aPos   = theSphere.Position();
+  gp_Pnt        aPExt  = aP;
 
   // -X extremum
   aPExt.SetX(aXmin);
@@ -136,11 +135,11 @@ static void computeSphere(const gp_Sphere& theSphere,
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Sphere::Box(double   theUMin,
-                               double   theUMax,
-                               double   theVMin,
-                               double   theVMax,
-                               double   theTol) const
+Bnd_Box GeomBndLib_Sphere::Box(double theUMin,
+                               double theUMax,
+                               double theVMin,
+                               double theVMax,
+                               double theTol) const
 {
   const gp_Sphere aSphere = myGeom->Sphere();
 

@@ -89,12 +89,12 @@ public:
 private:
   //! Compute barycenter point for infinite plane.
   static gp_Pnt BaryCenter(const gp_Pln& thePlane,
-                            double        theUMin,
-                            double        theUMax,
-                            double        theVMin,
-                            double        theVMax)
+                           double        theUMin,
+                           double        theUMax,
+                           double        theVMin,
+                           double        theVMax)
   {
-    double aU, aV;
+    double     aU, aV;
     const bool isU1Inf = Precision::IsInfinite(theUMin);
     const bool isU2Inf = Precision::IsInfinite(theUMax);
     const bool isV1Inf = Precision::IsInfinite(theVMin);

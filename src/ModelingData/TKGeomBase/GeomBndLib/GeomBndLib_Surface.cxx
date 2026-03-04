@@ -45,8 +45,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
       break;
     }
     case GeomAbs_Cylinder: {
-      occ::handle<Geom_CylindricalSurface> aCyl =
-        new Geom_CylindricalSurface(theSurf.Cylinder());
+      occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(theSurf.Cylinder());
       myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
       break;
     }
@@ -56,14 +55,12 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
       break;
     }
     case GeomAbs_Sphere: {
-      occ::handle<Geom_SphericalSurface> aSphere =
-        new Geom_SphericalSurface(theSurf.Sphere());
+      occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(theSurf.Sphere());
       myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
       break;
     }
     case GeomAbs_Torus: {
-      occ::handle<Geom_ToroidalSurface> aTorus =
-        new Geom_ToroidalSurface(theSurf.Torus());
+      occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(theSurf.Torus());
       myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
       break;
     }
@@ -136,7 +133,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const occ::handle<Geom_Surface>& theSurf)
 {
   if (auto aTrim = occ::down_cast<Geom_RectangularTrimmedSurface>(theSurf))
   {
-    myAdaptorOwned = new GeomAdaptor_Surface(theSurf);
+    myAdaptorOwned                          = new GeomAdaptor_Surface(theSurf);
     const occ::handle<Geom_Surface>& aBasis = aTrim->BasisSurface();
     if (auto aPlane = occ::down_cast<Geom_Plane>(aBasis))
     {
@@ -249,7 +246,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const occ::handle<Geom_Surface>& theSurf)
   else
   {
     myAdaptorOwned = new GeomAdaptor_Surface(theSurf);
-    mySurfType = GeomAbs_OtherSurface;
+    mySurfType     = GeomAbs_OtherSurface;
     myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorOwned);
   }
 }
@@ -317,11 +314,11 @@ Bnd_Box GeomBndLib_Surface::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Surface::Box(double   theUMin,
-                                 double   theUMax,
-                                 double   theVMin,
-                                 double   theVMax,
-                                 double   theTol) const
+Bnd_Box GeomBndLib_Surface::Box(double theUMin,
+                                double theUMax,
+                                double theVMin,
+                                double theVMax,
+                                double theTol) const
 {
   return std::visit(
     [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
@@ -358,11 +355,11 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Surface::BoxOptimal(double   theUMin,
-                                        double   theUMax,
-                                        double   theVMin,
-                                        double   theVMax,
-                                        double   theTol) const
+Bnd_Box GeomBndLib_Surface::BoxOptimal(double theUMin,
+                                       double theUMax,
+                                       double theVMin,
+                                       double theVMax,
+                                       double theTol) const
 {
   return std::visit(
     [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {

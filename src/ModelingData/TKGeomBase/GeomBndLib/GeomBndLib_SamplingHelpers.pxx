@@ -39,7 +39,7 @@ inline int ComputeNbSamples(const Adaptor3d_Curve& theCurve,
   switch (aType)
   {
     case GeomAbs_BezierCurve: {
-      N      = 2 * theCurve.NbPoles();
+      N         = 2 * theCurve.NbPoles();
       double du = theUMax - theUMin;
       if (du < .9)
       {
@@ -50,7 +50,7 @@ inline int ComputeNbSamples(const Adaptor3d_Curve& theCurve,
     }
     case GeomAbs_BSplineCurve: {
       const occ::handle<Geom_BSplineCurve>& aBC = theCurve.BSpline();
-      N = 2 * (aBC->Degree() + 1) * (aBC->NbKnots() - 1);
+      N                                         = 2 * (aBC->Degree() + 1) * (aBC->NbKnots() - 1);
       double umin = aBC->FirstParameter(), umax = aBC->LastParameter();
       double du = (theUMax - theUMin) / (umax - umin);
       if (du < .9)
@@ -68,15 +68,15 @@ inline int ComputeNbSamples(const Adaptor3d_Curve& theCurve,
 
 //! Compute number of samples for a 2D curve.
 inline int ComputeNbSamples2d(const Adaptor2d_Curve2d& theCurve,
-                               const double             theUMin,
-                               const double             theUMax)
+                              const double             theUMin,
+                              const double             theUMax)
 {
   int               N;
   GeomAbs_CurveType aType = theCurve.GetType();
   switch (aType)
   {
     case GeomAbs_BezierCurve: {
-      N      = 2 * theCurve.NbPoles();
+      N         = 2 * theCurve.NbPoles();
       double du = theUMax - theUMin;
       if (du < .9)
       {
@@ -87,7 +87,7 @@ inline int ComputeNbSamples2d(const Adaptor2d_Curve2d& theCurve,
     }
     case GeomAbs_BSplineCurve: {
       const occ::handle<Geom2d_BSplineCurve>& aBC = theCurve.BSpline();
-      N = 2 * (aBC->Degree() + 1) * (aBC->NbKnots() - 1);
+      N                                           = 2 * (aBC->Degree() + 1) * (aBC->NbKnots() - 1);
       double umin = aBC->FirstParameter(), umax = aBC->LastParameter();
       double du = (theUMax - theUMin) / (umax - umin);
       if (du < .9)
@@ -113,7 +113,7 @@ inline int ComputeNbUSamples(const Adaptor3d_Surface& theSurf,
   switch (aType)
   {
     case GeomAbs_BezierSurface: {
-      N      = 2 * theSurf.NbUPoles();
+      N         = 2 * theSurf.NbUPoles();
       double du = theUMax - theUMin;
       if (du < .9)
       {
@@ -151,7 +151,7 @@ inline int ComputeNbVSamples(const Adaptor3d_Surface& theSurf,
   switch (aType)
   {
     case GeomAbs_BezierSurface: {
-      N      = 2 * theSurf.NbVPoles();
+      N         = 2 * theSurf.NbVPoles();
       double dv = theVMax - theVMin;
       if (dv < .9)
       {

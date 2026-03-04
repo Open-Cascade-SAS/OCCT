@@ -43,18 +43,18 @@ void ExpectNoLarger(const Bnd_Box& theNew, const Bnd_Box& theOld, const double t
 }
 
 //! Helper: verify box contains all sampled points of the offset curve.
-void ExpectContainsCurve(const Bnd_Box&                theBox,
+void ExpectContainsCurve(const Bnd_Box&                  theBox,
                          const Handle(Geom_OffsetCurve)& theCurve,
-                         const double                  theU1,
-                         const double                  theU2,
-                         const int                     theNbSamples)
+                         const double                    theU1,
+                         const double                    theU2,
+                         const int                       theNbSamples)
 {
   const double aStep = (theU2 - theU1) / theNbSamples;
-  double aXmin = 0., aYmin = 0., aZmin = 0., aXmax = 0., aYmax = 0., aZmax = 0.;
+  double       aXmin = 0., aYmin = 0., aZmin = 0., aXmax = 0., aYmax = 0., aZmax = 0.;
   theBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
   for (int i = 0; i <= theNbSamples; ++i)
   {
-    const double aU = theU1 + i * aStep;
+    const double aU   = theU1 + i * aStep;
     const gp_Pnt aPnt = theCurve->Value(aU);
     EXPECT_GE(aPnt.X(), aXmin - Precision::Confusion()) << "Point outside box at U=" << aU;
     EXPECT_LE(aPnt.X(), aXmax + Precision::Confusion()) << "Point outside box at U=" << aU;
@@ -164,9 +164,8 @@ TEST(GeomBndLib_OffsetCurveTest, CircleOffsetY_Full_Containment)
 TEST(GeomBndLib_OffsetCurveTest, CircleOffsetDiagonal_CompareWithBndLib)
 {
   Handle(Geom_Circle)      aCircle = new Geom_Circle(gp::XOY(), 5.0);
-  Handle(Geom_OffsetCurve) anOff   =
-    new Geom_OffsetCurve(aCircle, 2.0, gp_Dir(1.0, 1.0, 1.0));
-  GeomAdaptor_Curve anAdaptor(anOff);
+  Handle(Geom_OffsetCurve) anOff   = new Geom_OffsetCurve(aCircle, 2.0, gp_Dir(1.0, 1.0, 1.0));
+  GeomAdaptor_Curve        anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Curve(anOff).AddOptimal(Precision::Confusion(), aNewBox);
@@ -240,8 +239,7 @@ TEST(GeomBndLib_OffsetCurveTest, EllipseOffsetX_Arc_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurveTest, LineOffset_CompareWithBndLib)
 {
-  Handle(Geom_Line) aLine =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)        aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_OffsetCurve) anOff = new Geom_OffsetCurve(aLine, 3.0, gp::DZ());
   GeomAdaptor_Curve        anAdaptor(anOff);
 
@@ -279,7 +277,7 @@ TEST(GeomBndLib_OffsetCurveTest, BSplineOffset_CompareWithBndLib)
 
   Handle(Geom_BSplineCurve) aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   Handle(Geom_OffsetCurve)  anOff = new Geom_OffsetCurve(aBSpl, 1.0, gp::DZ());
-  GeomAdaptor_Curve          anAdaptor(anOff);
+  GeomAdaptor_Curve         anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Curve(anOff).AddOptimal(Precision::Confusion(), aNewBox);
@@ -318,7 +316,7 @@ TEST(GeomBndLib_OffsetCurveTest, LargeOffset_CompareWithBndLib)
 TEST(GeomBndLib_OffsetCurveTest, TiltedCircle_CompareWithBndLib)
 {
   // Circle in a tilted plane
-  gp_Ax2 anAx2(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(1.0, 1.0, 1.0));
+  gp_Ax2                   anAx2(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(1.0, 1.0, 1.0));
   Handle(Geom_Circle)      aCircle = new Geom_Circle(anAx2, 4.0);
   Handle(Geom_OffsetCurve) anOff   = new Geom_OffsetCurve(aCircle, 1.5, gp_Dir(1.0, 1.0, 1.0));
   GeomAdaptor_Curve        anAdaptor(anOff);
@@ -335,8 +333,7 @@ TEST(GeomBndLib_OffsetCurveTest, TiltedCircle_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetCurveTest, InfiniteRange_OpennessPreserved)
 {
-  Handle(Geom_Line) aLine =
-    new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
+  Handle(Geom_Line)        aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
   Handle(Geom_OffsetCurve) anOff = new Geom_OffsetCurve(aLine, 3.0, gp::DZ());
   GeomAdaptor_Curve        anAdaptor(anOff);
 

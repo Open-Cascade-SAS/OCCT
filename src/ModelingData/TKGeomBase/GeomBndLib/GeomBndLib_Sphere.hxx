@@ -43,11 +43,8 @@ public:
   [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theTol) const;
 
   //! Compute bounding box for sphere patch [theUMin, theUMax] x [theVMin, theVMax].
-  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theUMin,
-                                            double theUMax,
-                                            double theVMin,
-                                            double theVMax,
-                                            double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box
+    Box(double theUMin, double theUMax, double theVMin, double theVMax, double theTol) const;
 
   //! For analytical surfaces, BoxOptimal is same as Box.
   [[nodiscard]] Bnd_Box BoxOptimal(double theUMin,

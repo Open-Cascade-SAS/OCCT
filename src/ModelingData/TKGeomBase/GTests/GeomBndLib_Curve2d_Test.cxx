@@ -48,7 +48,9 @@ void CompareBoxes2d(const Bnd_Box2d& theNew, const Bnd_Box2d& theOld, const doub
 }
 
 //! Helper: verify that the new box conservatively encloses the old box.
-void ExpectConservativeEnvelope2d(const Bnd_Box2d& theNew, const Bnd_Box2d& theOld, const double theTol)
+void ExpectConservativeEnvelope2d(const Bnd_Box2d& theNew,
+                                  const Bnd_Box2d& theOld,
+                                  const double     theTol)
 {
   const auto [aXminN, aXmaxN, aYminN, aYmaxN] = theNew.Get();
   const auto [aXminO, aXmaxO, aYminO, aYmaxO] = theOld.Get();
@@ -85,8 +87,8 @@ TEST(GeomBndLib_Curve2dTest, Line_FiniteSegment)
 
 TEST(GeomBndLib_Curve2dTest, Line_CompareWithBndLib)
 {
-  Handle(Geom2d_Line)  aLine = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
-  Geom2dAdaptor_Curve  anAdaptor(aLine);
+  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
+  Geom2dAdaptor_Curve anAdaptor(aLine);
 
   Bnd_Box2d aNewBox;
   GeomBndLib_Curve2d(aLine).Add(0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -160,8 +162,8 @@ TEST(GeomBndLib_Curve2dTest, Circle_CompareWithBndLib)
 
 TEST(GeomBndLib_Curve2dTest, Ellipse_Full)
 {
-  const double aMajR = 10.0;
-  const double aMinR = 5.0;
+  const double           aMajR = 10.0;
+  const double           aMinR = 5.0;
   Handle(Geom2d_Ellipse) anEllipse =
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                        aMajR,
@@ -250,8 +252,8 @@ TEST(GeomBndLib_Curve2dTest, Hyperbola_CompareWithBndLib)
 
 TEST(GeomBndLib_Curve2dTest, Parabola_FiniteArc)
 {
-  const double             aFocal = 2.0;
-  Handle(Geom2d_Parabola)  aParab =
+  const double            aFocal = 2.0;
+  Handle(Geom2d_Parabola) aParab =
     new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                         aFocal);
   GeomBndLib_Curve2d aCurve(aParab);
@@ -274,8 +276,7 @@ TEST(GeomBndLib_Curve2dTest, Parabola_FiniteArc)
 TEST(GeomBndLib_Curve2dTest, Parabola_CompareWithBndLib)
 {
   Handle(Geom2d_Parabola) aParab =
-    new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
-                        2.0);
+    new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)), 2.0);
   Geom2dAdaptor_Curve anAdaptor(aParab);
 
   Bnd_Box2d aNewBox;
@@ -299,7 +300,7 @@ TEST(GeomBndLib_Curve2dTest, BezierCurve_Simple)
   aPoles.SetValue(3, gp_Pnt2d(10.0, 0.0));
 
   Handle(Geom2d_BezierCurve) aBez = new Geom2d_BezierCurve(aPoles);
-  GeomBndLib_Curve2d          aCurve(aBez);
+  GeomBndLib_Curve2d         aCurve(aBez);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_BezierCurve);
 
   Bnd_Box2d aBox;
@@ -362,7 +363,7 @@ TEST(GeomBndLib_Curve2dTest, BSplineCurve_Simple)
   aMults.SetValue(3, 3);
 
   Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
-  GeomBndLib_Curve2d           aCurve(aBSpl);
+  GeomBndLib_Curve2d          aCurve(aBSpl);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_BSplineCurve);
 
   Bnd_Box2d aBox;
@@ -510,9 +511,9 @@ TEST(GeomBndLib_Curve2dTest, SamplingHelpers2d_MatchesLegacyPolicy)
   Geom2dAdaptor_Curve aCircleGA(aCircle);
   EXPECT_EQ(GeomBndLib_SamplingHelpers::ComputeNbSamples2d(aCircleGA, 0.0, 1.0), 17);
 
-  constexpr int aDegree  = 3;
-  constexpr int aNbKnots = 40;
-  constexpr int aNbPoles = 42;
+  constexpr int                aDegree  = 3;
+  constexpr int                aNbKnots = 40;
+  constexpr int                aNbPoles = 42;
   NCollection_Array1<gp_Pnt2d> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
@@ -535,7 +536,7 @@ TEST(GeomBndLib_Curve2dTest, SamplingHelpers2d_MatchesLegacyPolicy)
   Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aDegree);
   Geom2dAdaptor_Curve         aBSplGA(aBSpl);
   EXPECT_EQ(GeomBndLib_SamplingHelpers::ComputeNbSamples2d(aBSplGA,
-                                                            aBSpl->FirstParameter(),
-                                                            aBSpl->LastParameter()),
+                                                           aBSpl->FirstParameter(),
+                                                           aBSpl->LastParameter()),
             23);
 }

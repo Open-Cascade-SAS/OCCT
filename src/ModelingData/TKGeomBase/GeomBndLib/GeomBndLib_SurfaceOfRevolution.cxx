@@ -37,12 +37,12 @@ void addRevolutionCircle(const gp_Pnt& theOrigin,
 {
   // Project the basis curve point onto the revolution axis.
   const gp_XYZ aDelta  = theBasisPt.XYZ() - theOrigin.XYZ();
-  const double  aH     = aDelta.Dot(theAxisDir.XYZ());
+  const double aH      = aDelta.Dot(theAxisDir.XYZ());
   const gp_XYZ aCenter = theOrigin.XYZ() + aH * theAxisDir.XYZ();
 
   // Radial vector from axis to basis point.
   const gp_XYZ aRadial = theBasisPt.XYZ() - aCenter;
-  const double  aRadius = aRadial.Modulus();
+  const double aRadius = aRadial.Modulus();
 
   if (aRadius < Precision::Confusion())
   {
@@ -52,8 +52,8 @@ void addRevolutionCircle(const gp_Pnt& theOrigin,
   }
 
   // Construct the revolution circle.
-  const gp_Dir aXDir(aRadial);
-  const gp_Ax2 anAx2(gp_Pnt(aCenter), theAxisDir, aXDir);
+  const gp_Dir  aXDir(aRadial);
+  const gp_Ax2  anAx2(gp_Pnt(aCenter), theAxisDir, aXDir);
   const gp_Circ aCirc(anAx2, aRadius);
 
   theBox.Add(GeomBndLib_Circle::Box(aCirc, theUMin, theUMax, 0.));
@@ -81,25 +81,34 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
     if (theCurveBox.HasFinitePart())
     {
       const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theCurveBox.FinitePart().Get();
-      const double aXVals[2] = {aXmin, aXmax};
-      const double aYVals[2] = {aYmin, aYmax};
-      const double aZVals[2] = {aZmin, aZmax};
+      const double aXVals[2]                                = {aXmin, aXmax};
+      const double aYVals[2]                                = {aYmin, aYmax};
+      const double aZVals[2]                                = {aZmin, aZmax};
       for (int ix = 0; ix < 2; ++ix)
         for (int iy = 0; iy < 2; ++iy)
           for (int iz = 0; iz < 2; ++iz)
           {
-            addRevolutionCircle(theOrigin, theAxisDir,
+            addRevolutionCircle(theOrigin,
+                                theAxisDir,
                                 gp_Pnt(aXVals[ix], aYVals[iy], aZVals[iz]),
-                                theUMin, theUMax, aBox);
+                                theUMin,
+                                theUMax,
+                                aBox);
           }
     }
     // Propagate curve openness: open directions remain open after revolution.
-    if (theCurveBox.IsOpenXmin()) aBox.OpenXmin();
-    if (theCurveBox.IsOpenXmax()) aBox.OpenXmax();
-    if (theCurveBox.IsOpenYmin()) aBox.OpenYmin();
-    if (theCurveBox.IsOpenYmax()) aBox.OpenYmax();
-    if (theCurveBox.IsOpenZmin()) aBox.OpenZmin();
-    if (theCurveBox.IsOpenZmax()) aBox.OpenZmax();
+    if (theCurveBox.IsOpenXmin())
+      aBox.OpenXmin();
+    if (theCurveBox.IsOpenXmax())
+      aBox.OpenXmax();
+    if (theCurveBox.IsOpenYmin())
+      aBox.OpenYmin();
+    if (theCurveBox.IsOpenYmax())
+      aBox.OpenYmax();
+    if (theCurveBox.IsOpenZmin())
+      aBox.OpenZmin();
+    if (theCurveBox.IsOpenZmax())
+      aBox.OpenZmax();
     aBox.Enlarge(theTol);
     return aBox;
   }
@@ -116,9 +125,12 @@ static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
     for (int iy = 0; iy < 2; ++iy)
       for (int iz = 0; iz < 2; ++iz)
       {
-        addRevolutionCircle(theOrigin, theAxisDir,
+        addRevolutionCircle(theOrigin,
+                            theAxisDir,
                             gp_Pnt(aXVals[ix], aYVals[iy], aZVals[iz]),
-                            theUMin, theUMax, aBox);
+                            theUMin,
+                            theUMax,
+                            aBox);
       }
 
   aBox.Enlarge(theTol);
@@ -138,11 +150,11 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double   theUMin,
-                                            double   theUMax,
-                                            double   theVMin,
-                                            double   theVMax,
-                                            double   theTol) const
+Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double theUMin,
+                                            double theUMax,
+                                            double theVMin,
+                                            double theVMax,
+                                            double theTol) const
 {
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
   const gp_Ax1                   anAxis      = myGeom->Axis();
@@ -163,11 +175,11 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double   theUMin,
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_SurfaceOfRevolution::BoxOptimal(double   theUMin,
-                                                   double   theUMax,
-                                                   double   theVMin,
-                                                   double   theVMax,
-                                                   double   theTol) const
+Bnd_Box GeomBndLib_SurfaceOfRevolution::BoxOptimal(double theUMin,
+                                                   double theUMax,
+                                                   double theVMin,
+                                                   double theVMax,
+                                                   double theTol) const
 {
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
   const gp_Ax1                   anAxis      = myGeom->Axis();

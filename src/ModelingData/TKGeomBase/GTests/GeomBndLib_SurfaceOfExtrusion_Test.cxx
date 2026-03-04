@@ -46,7 +46,7 @@ void ExpectNoLarger(const Bnd_Box& theNew, const Bnd_Box& theOld, const double t
 }
 
 //! Helper: verify box contains all sampled points of the surface.
-void ExpectContainsSurface(const Bnd_Box&                                theBox,
+void ExpectContainsSurface(const Bnd_Box&                               theBox,
                            const Handle(Geom_SurfaceOfLinearExtrusion)& theSurf,
                            const double                                 theUMin,
                            const double                                 theUMax,
@@ -64,7 +64,7 @@ void ExpectContainsSurface(const Bnd_Box&                                theBox,
     const double aU = theUMin + i * aUStep;
     for (int j = 0; j <= theNbV; ++j)
     {
-      const double aV  = theVMin + j * aVStep;
+      const double aV   = theVMin + j * aVStep;
       const gp_Pnt aPnt = theSurf->Value(aU, aV);
       EXPECT_GE(aPnt.X(), aXmin - Precision::Confusion())
         << "Point outside box at U=" << aU << " V=" << aV;
@@ -90,7 +90,7 @@ void ExpectContainsSurface(const Bnd_Box&                                theBox,
 
 TEST(GeomBndLib_ExtrusionTest, CircleAlongZ_Full_CompareWithBndLib)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), 5.0);
+  Handle(Geom_Circle)                   aCircle = new Geom_Circle(gp::XOY(), 5.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aCircle, gp::DZ());
   GeomAdaptor_Surface anAdaptor(anExtr);
@@ -107,7 +107,7 @@ TEST(GeomBndLib_ExtrusionTest, CircleAlongZ_Full_CompareWithBndLib)
 
 TEST(GeomBndLib_ExtrusionTest, CircleAlongZ_Arc_CompareWithBndLib)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), 5.0);
+  Handle(Geom_Circle)                   aCircle = new Geom_Circle(gp::XOY(), 5.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aCircle, gp::DZ());
   GeomAdaptor_Surface anAdaptor(anExtr);
@@ -127,17 +127,12 @@ TEST(GeomBndLib_ExtrusionTest, InfiniteU_OpenInExtrusionBasisDirection)
   // Line along Z through (5, 0, 0) extruded along X.
   // P(U, V) = (5 + V, 0, U); U in (-inf, +inf), V in [0, 10].
   // Expected: X in [5, 15], Y finite (= 0), Z open both ways.
-  Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
-    new Geom_SurfaceOfLinearExtrusion(aLine, gp::DX());
+  Handle(Geom_Line)                     aLine  = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
+  Handle(Geom_SurfaceOfLinearExtrusion) anExtr = new Geom_SurfaceOfLinearExtrusion(aLine, gp::DX());
 
   Bnd_Box aNewBox;
-  GeomBndLib_Surface(anExtr).Add(-Precision::Infinite(),
-                                  Precision::Infinite(),
-                                  0.0,
-                                  10.0,
-                                  Precision::Confusion(),
-                                  aNewBox);
+  GeomBndLib_Surface(anExtr)
+    .Add(-Precision::Infinite(), Precision::Infinite(), 0.0, 10.0, Precision::Confusion(), aNewBox);
 
   EXPECT_FALSE(aNewBox.IsVoid());
   EXPECT_FALSE(aNewBox.IsWhole());
@@ -149,10 +144,10 @@ TEST(GeomBndLib_ExtrusionTest, InfiniteU_OpenInExtrusionBasisDirection)
   EXPECT_TRUE(aNewBox.IsOpenZmax());
   const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aNewBox.Get();
   const double aTol = 2.0 * Precision::Confusion(); // box is enlarged by theTol on construction
-  EXPECT_NEAR(aXmin, 5.0,  aTol) << "Xmin";
+  EXPECT_NEAR(aXmin, 5.0, aTol) << "Xmin";
   EXPECT_NEAR(aXmax, 15.0, aTol) << "Xmax";
-  EXPECT_NEAR(aYmin, 0.0,  aTol) << "Ymin";
-  EXPECT_NEAR(aYmax, 0.0,  aTol) << "Ymax";
+  EXPECT_NEAR(aYmin, 0.0, aTol) << "Ymin";
+  EXPECT_NEAR(aYmax, 0.0, aTol) << "Ymax";
 }
 
 // =========================================================================
@@ -161,7 +156,7 @@ TEST(GeomBndLib_ExtrusionTest, InfiniteU_OpenInExtrusionBasisDirection)
 
 TEST(GeomBndLib_ExtrusionTest, CircleAlongDiagonal_CompareWithBndLib)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), 5.0);
+  Handle(Geom_Circle)                   aCircle = new Geom_Circle(gp::XOY(), 5.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aCircle, gp_Dir(1.0, 0.0, 1.0));
   GeomAdaptor_Surface anAdaptor(anExtr);
@@ -182,7 +177,7 @@ TEST(GeomBndLib_ExtrusionTest, CircleAlongDiagonal_CompareWithBndLib)
 
 TEST(GeomBndLib_ExtrusionTest, EllipseAlongZ_CompareWithBndLib)
 {
-  Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(gp::XOY(), 8.0, 3.0);
+  Handle(Geom_Ellipse)                  anEllipse = new Geom_Ellipse(gp::XOY(), 8.0, 3.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(anEllipse, gp::DZ());
   GeomAdaptor_Surface anAdaptor(anExtr);
@@ -199,7 +194,7 @@ TEST(GeomBndLib_ExtrusionTest, EllipseAlongZ_CompareWithBndLib)
 
 TEST(GeomBndLib_ExtrusionTest, EllipseAlongZ_Arc_CompareWithBndLib)
 {
-  Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(gp::XOY(), 8.0, 3.0);
+  Handle(Geom_Ellipse)                  anEllipse = new Geom_Ellipse(gp::XOY(), 8.0, 3.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(anEllipse, gp::DZ());
   GeomAdaptor_Surface anAdaptor(anExtr);
@@ -221,9 +216,8 @@ TEST(GeomBndLib_ExtrusionTest, EllipseAlongZ_Arc_CompareWithBndLib)
 TEST(GeomBndLib_ExtrusionTest, LineAlongZ_CompareWithBndLib)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
-    new Geom_SurfaceOfLinearExtrusion(aLine, gp::DZ());
-  GeomAdaptor_Surface anAdaptor(anExtr);
+  Handle(Geom_SurfaceOfLinearExtrusion) anExtr = new Geom_SurfaceOfLinearExtrusion(aLine, gp::DZ());
+  GeomAdaptor_Surface                   anAdaptor(anExtr);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anExtr).Add(0.0, 10.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -278,10 +272,9 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongZ_CompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  Handle(Geom_BSplineCurve) aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
-    new Geom_SurfaceOfLinearExtrusion(aBSpl, gp::DZ());
-  GeomAdaptor_Surface anAdaptor(anExtr);
+  Handle(Geom_BSplineCurve)             aBSpl  = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  Handle(Geom_SurfaceOfLinearExtrusion) anExtr = new Geom_SurfaceOfLinearExtrusion(aBSpl, gp::DZ());
+  GeomAdaptor_Surface                   anAdaptor(anExtr);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anExtr).AddOptimal(0.0, 1.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -311,7 +304,7 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongDiagonal_CompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  Handle(Geom_BSplineCurve) aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  Handle(Geom_BSplineCurve)             aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aBSpl, gp_Dir(1.0, 1.0, 1.0));
   Bnd_Box aNewBox;
@@ -320,17 +313,17 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongDiagonal_CompareWithBndLib)
   // P(u,v) = C(u) + v*(1,1,1)/sqrt(3), u in [0,1], v in [-3, 7].
   // BSpline C(0)=(0,0,0), C(1)=(10,3,0). Extrusion shifts: v_min/sqrt(3) = -sqrt(3),
   // v_max/sqrt(3) = 7/sqrt(3). Reference bounds derive from endpoint extremes + extrusion range.
-  const double aSqrt3     = std::sqrt(3.0);
-  const double aVminShift = -3.0 / aSqrt3; // ~= -1.7321
-  const double aVmaxShift =  7.0 / aSqrt3; // ~=  4.0415
-  const double aTolRef    = 1e-3;
+  const double aSqrt3                                   = std::sqrt(3.0);
+  const double aVminShift                               = -3.0 / aSqrt3; // ~= -1.7321
+  const double aVmaxShift                               = 7.0 / aSqrt3;  // ~=  4.0415
+  const double aTolRef                                  = 1e-3;
   const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aNewBox.Get();
-  EXPECT_NEAR(aXmin,  0.0 + aVminShift, aTolRef) << "Xmin";
+  EXPECT_NEAR(aXmin, 0.0 + aVminShift, aTolRef) << "Xmin";
   EXPECT_NEAR(aXmax, 10.0 + aVmaxShift, aTolRef) << "Xmax";
-  EXPECT_NEAR(aYmin,  0.0 + aVminShift, aTolRef) << "Ymin";
-  EXPECT_NEAR(aYmax,  3.0 + aVmaxShift, aTolRef) << "Ymax";
-  EXPECT_NEAR(aZmin,        aVminShift,  aTolRef) << "Zmin";
-  EXPECT_NEAR(aZmax,        aVmaxShift,  aTolRef) << "Zmax";
+  EXPECT_NEAR(aYmin, 0.0 + aVminShift, aTolRef) << "Ymin";
+  EXPECT_NEAR(aYmax, 3.0 + aVmaxShift, aTolRef) << "Ymax";
+  EXPECT_NEAR(aZmin, aVminShift, aTolRef) << "Zmin";
+  EXPECT_NEAR(aZmax, aVmaxShift, aTolRef) << "Zmax";
   ExpectContainsSurface(aNewBox, anExtr, 0.0, 1.0, -3.0, 7.0, 10, 10);
 }
 
@@ -340,7 +333,7 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongDiagonal_CompareWithBndLib)
 
 TEST(GeomBndLib_ExtrusionTest, CircleNegativeV_CompareWithBndLib)
 {
-  Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), 5.0);
+  Handle(Geom_Circle)                   aCircle = new Geom_Circle(gp::XOY(), 5.0);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aCircle, gp::DZ());
   GeomAdaptor_Surface anAdaptor(anExtr);

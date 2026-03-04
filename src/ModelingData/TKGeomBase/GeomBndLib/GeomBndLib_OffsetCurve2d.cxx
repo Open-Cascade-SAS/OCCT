@@ -28,9 +28,7 @@
 
 //=================================================================================================
 
-Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1,
-                                        double theU2,
-                                        double theTol) const
+Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1, double theU2, double theTol) const
 {
   // Specialized fast paths for line and circle.
   // For the general fallback, enlarge the basis curve box by |offset|.
@@ -46,7 +44,8 @@ Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1,
       aNormal.Normalize();
       aNormal *= myGeom->Offset();
       const gp_Pnt2d aLoc = aBasisLin.Location().Translated(aNormal);
-      Bnd_Box2d aLocalBox = GeomBndLib_Line2d::Box(gp_Lin2d(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
+      Bnd_Box2d      aLocalBox =
+        GeomBndLib_Line2d::Box(gp_Lin2d(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
       aLocalBox.Enlarge(theTol);
       return aLocalBox;
     }
@@ -104,9 +103,7 @@ Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1,
 
 //=================================================================================================
 
-Bnd_Box2d GeomBndLib_OffsetCurve2d::BoxOptimal(double theU1,
-                                               double theU2,
-                                               double theTol) const
+Bnd_Box2d GeomBndLib_OffsetCurve2d::BoxOptimal(double theU1, double theU2, double theTol) const
 {
   // Sample the actual offset curve directly for a tight bounding box.
   Geom2dAdaptor_Curve     anAdaptor(myGeom);

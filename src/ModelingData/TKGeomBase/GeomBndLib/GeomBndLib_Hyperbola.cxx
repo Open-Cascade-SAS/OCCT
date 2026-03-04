@@ -72,10 +72,7 @@ void computeHyperbolaBox(const gp_Hypr& theHypr,
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Hyperbola::Box(const gp_Hypr& theHypr,
-                                   double         theU1,
-                                   double         theU2,
-                                   double         theTol)
+Bnd_Box GeomBndLib_Hyperbola::Box(const gp_Hypr& theHypr, double theU1, double theU2, double theTol)
 {
   Bnd_Box aBox;
   if (Precision::IsNegativeInfinite(theU1))

@@ -73,7 +73,7 @@ void ExpectConservativeEnvelope(const Bnd_Box& theNew, const Bnd_Box& theOld, co
 TEST(GeomBndLib_CurveTest, Line_FiniteSegment)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 1.0, 0.0));
-  GeomBndLib_Curve   aCurve(aLine);
+  GeomBndLib_Curve  aCurve(aLine);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Line);
 
   Bnd_Box aBox;
@@ -95,7 +95,7 @@ TEST(GeomBndLib_CurveTest, Line_FiniteSegment)
 TEST(GeomBndLib_CurveTest, Line_CompareWithBndLib)
 {
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(1.0, 2.0, 3.0), gp_Dir(0.0, 0.0, 1.0));
-  GeomAdaptor_Curve  anAdaptor(aLine);
+  GeomAdaptor_Curve anAdaptor(aLine);
 
   Bnd_Box aNewBox;
   GeomBndLib_Curve(aLine).Add(0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -112,9 +112,9 @@ TEST(GeomBndLib_CurveTest, Line_CompareWithBndLib)
 
 TEST(GeomBndLib_CurveTest, Circle_Full)
 {
-  const double       aRadius = 5.0;
+  const double        aRadius = 5.0;
   Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), aRadius);
-  GeomBndLib_Curve   aCurve(aCircle);
+  GeomBndLib_Curve    aCurve(aCircle);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Circle);
 
   Bnd_Box aBox;
@@ -132,9 +132,9 @@ TEST(GeomBndLib_CurveTest, Circle_Full)
 
 TEST(GeomBndLib_CurveTest, Circle_Arc)
 {
-  const double       aRadius = 10.0;
+  const double        aRadius = 10.0;
   Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), aRadius);
-  GeomBndLib_Curve   aCurve(aCircle);
+  GeomBndLib_Curve    aCurve(aCircle);
 
   Bnd_Box aBox;
   // Pass 0 tolerance for precise reference comparison
@@ -184,10 +184,10 @@ TEST(GeomBndLib_CurveTest, Circle_Arc_CompareWithBndLib)
 
 TEST(GeomBndLib_CurveTest, Ellipse_Full)
 {
-  const double        aMajR = 10.0;
-  const double        aMinR = 5.0;
+  const double         aMajR     = 10.0;
+  const double         aMinR     = 5.0;
   Handle(Geom_Ellipse) anEllipse = new Geom_Ellipse(gp::XOY(), aMajR, aMinR);
-  GeomBndLib_Curve    aCurve(anEllipse);
+  GeomBndLib_Curve     aCurve(anEllipse);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Ellipse);
 
   Bnd_Box aBox;
@@ -237,10 +237,10 @@ TEST(GeomBndLib_CurveTest, Ellipse_Arc_CompareWithBndLib)
 
 TEST(GeomBndLib_CurveTest, Hyperbola_FiniteArc)
 {
-  const double          aMajR = 5.0;
-  const double          aMinR = 3.0;
-  Handle(Geom_Hyperbola) aHyp = new Geom_Hyperbola(gp::XOY(), aMajR, aMinR);
-  GeomBndLib_Curve      aCurve(aHyp);
+  const double           aMajR = 5.0;
+  const double           aMinR = 3.0;
+  Handle(Geom_Hyperbola) aHyp  = new Geom_Hyperbola(gp::XOY(), aMajR, aMinR);
+  GeomBndLib_Curve       aCurve(aHyp);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Hyperbola);
 
   Bnd_Box      aBox;
@@ -326,7 +326,7 @@ TEST(GeomBndLib_CurveTest, BezierCurve_Simple)
   aPoles.SetValue(3, gp_Pnt(10.0, 0.0, 0.0));
 
   Handle(Geom_BezierCurve) aBez = new Geom_BezierCurve(aPoles);
-  GeomBndLib_Curve          aCurve(aBez);
+  GeomBndLib_Curve         aCurve(aBez);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_BezierCurve);
 
   Bnd_Box aBox;
@@ -386,7 +386,7 @@ TEST(GeomBndLib_CurveTest, BSplineCurve_Simple)
   aMults.SetValue(3, 3);
 
   Handle(Geom_BSplineCurve) aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  GeomBndLib_Curve           aCurve(aBSpl);
+  GeomBndLib_Curve          aCurve(aBSpl);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_BSplineCurve);
 
   Bnd_Box aBox;
@@ -438,8 +438,8 @@ TEST(GeomBndLib_CurveTest, BSplineCurve_CompareWithBndLib)
 
 TEST(GeomBndLib_CurveTest, AdaptorConstructor_Circle)
 {
-  const double         aRadius = 5.0;
-  Handle(Geom_Circle)  aCircle = new Geom_Circle(gp::XOY(), aRadius);
+  const double        aRadius = 5.0;
+  Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), aRadius);
 
   // Construct from handle
   GeomBndLib_Curve aCurveH(aCircle);
@@ -463,9 +463,9 @@ TEST(GeomBndLib_CurveTest, AdaptorConstructor_Circle)
 
 TEST(GeomBndLib_CurveTest, AddOptimal_Circle)
 {
-  const double         aRadius = 5.0;
-  Handle(Geom_Circle)  aCircle = new Geom_Circle(gp::XOY(), aRadius);
-  GeomBndLib_Curve     aCurve(aCircle);
+  const double        aRadius = 5.0;
+  Handle(Geom_Circle) aCircle = new Geom_Circle(gp::XOY(), aRadius);
+  GeomBndLib_Curve    aCurve(aCircle);
 
   Bnd_Box aBox;
   aCurve.Add(Precision::Confusion(), aBox);
@@ -473,7 +473,7 @@ TEST(GeomBndLib_CurveTest, AddOptimal_Circle)
   Bnd_Box aBoxOpt;
   aCurve.AddOptimal(Precision::Confusion(), aBoxOpt);
 
-  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax]          = aBox.Get();
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax]       = aBox.Get();
   const auto [aXminO, aXmaxO, aYminO, aYmaxO, aZminO, aZmaxO] = aBoxOpt.Get();
 
   // AddOptimal should produce a box no larger than Add
@@ -550,9 +550,9 @@ TEST(GeomBndLib_CurveTest, SamplingHelpers3d_MatchesLegacyPolicy)
   GeomAdaptor_Curve   aCircleGA(aCircle);
   EXPECT_EQ(GeomBndLib_SamplingHelpers::ComputeNbSamples(aCircleGA, 0.0, 1.0), 33);
 
-  constexpr int aDegree  = 3;
-  constexpr int aNbKnots = 40;
-  constexpr int aNbPoles = 42;
+  constexpr int              aDegree  = 3;
+  constexpr int              aNbKnots = 40;
+  constexpr int              aNbPoles = 42;
   NCollection_Array1<gp_Pnt> aPoles(1, aNbPoles);
   for (int i = 1; i <= aNbPoles; ++i)
   {
@@ -575,7 +575,7 @@ TEST(GeomBndLib_CurveTest, SamplingHelpers3d_MatchesLegacyPolicy)
   Handle(Geom_BSplineCurve) aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, aDegree);
   GeomAdaptor_Curve         aBSplGA(aBSpl);
   EXPECT_EQ(GeomBndLib_SamplingHelpers::ComputeNbSamples(aBSplGA,
-                                                          aBSpl->FirstParameter(),
-                                                          aBSpl->LastParameter()),
+                                                         aBSpl->FirstParameter(),
+                                                         aBSpl->LastParameter()),
             312);
 }

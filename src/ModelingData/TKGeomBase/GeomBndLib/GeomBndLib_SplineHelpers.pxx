@@ -52,11 +52,11 @@ struct PointOps<gp_Pnt2d>
 
 //! Fill box with sampled points and return maximum deflection.
 template <typename TBox, typename TAdaptor, typename TPoint>
-double FillBox(TBox&                theBox,
-               const TAdaptor&      theCurve,
-               const double         theFirst,
-               const double         theLast,
-               const int            theN)
+double FillBox(TBox&           theBox,
+               const TAdaptor& theCurve,
+               const double    theFirst,
+               const double    theLast,
+               const int       theN)
 {
   theBox.Add(theCurve.EvalD0(theFirst));
   double       aP   = theFirst;
@@ -64,7 +64,7 @@ double FillBox(TBox&                theBox,
   const double aDP  = theLast - theFirst;
   if (std::abs(aDP) > Precision::PConfusion())
   {
-    TPoint        aP1   = theCurve.EvalD0(theFirst);
+    TPoint       aP1   = theCurve.EvalD0(theFirst);
     const double aStep = aDP / (2 * theN);
     for (int anIdx = 1; anIdx <= theN; ++anIdx)
     {
@@ -75,8 +75,8 @@ double FillBox(TBox&                theBox,
       const TPoint aP3 = theCurve.EvalD0(aP);
       theBox.Add(aP3);
       const TPoint aPc = PointOps<TPoint>::Mid(aP1, aP3);
-      aTol = std::max(aTol, aPc.Distance(aP2));
-      aP1  = aP3;
+      aTol             = std::max(aTol, aPc.Distance(aP2));
+      aP1              = aP3;
     }
   }
   else

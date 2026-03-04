@@ -63,10 +63,7 @@ public:
   }
 
   //! Compute bounding box for a line segment [theU1, theU2] defined by gp_Lin.
-  [[nodiscard]] static Bnd_Box Box(const gp_Lin& theLin,
-                                   double        theU1,
-                                   double        theU2,
-                                   double        theTol)
+  [[nodiscard]] static Bnd_Box Box(const gp_Lin& theLin, double theU1, double theU2, double theTol)
   {
     Bnd_Box aBox;
     if (Precision::IsNegativeInfinite(theU1))

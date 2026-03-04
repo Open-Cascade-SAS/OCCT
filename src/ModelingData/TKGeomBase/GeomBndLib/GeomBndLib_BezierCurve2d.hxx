@@ -45,7 +45,9 @@ public:
   [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theU1, double theU2, double theTol) const;
 
   //! Compute precise bounding box using numerical optimization.
-  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1,
+                                                     double theU2,
+                                                     double theTol) const;
 
 private:
   occ::handle<Geom2d_BezierCurve> myGeom;

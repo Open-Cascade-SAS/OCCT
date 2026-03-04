@@ -33,8 +33,8 @@ Bnd_Box GeomBndLib_Ellipse::Box(const gp_Elips& theElips, double theTol)
   double aMin[3], aMax[3];
   for (int k = 1; k <= 3; ++k)
   {
-    double aXk = aXd.Coord(k);
-    double aYk = aYd.Coord(k);
+    double aXk  = aXd.Coord(k);
+    double aYk  = aYd.Coord(k);
     double aAmp = std::sqrt(aMajR * aMajR * aXk * aXk + aMinR * aMinR * aYk * aYk);
     aMin[k - 1] = aO.Coord(k) - aAmp;
     aMax[k - 1] = aO.Coord(k) + aAmp;
@@ -46,10 +46,7 @@ Bnd_Box GeomBndLib_Ellipse::Box(const gp_Elips& theElips, double theTol)
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Ellipse::Box(const gp_Elips& theElips,
-                                 double          theU1,
-                                 double          theU2,
-                                 double          theTol)
+Bnd_Box GeomBndLib_Ellipse::Box(const gp_Elips& theElips, double theU1, double theU2, double theTol)
 {
   Bnd_Box      aBox;
   const double aMajR = theElips.MajorRadius();

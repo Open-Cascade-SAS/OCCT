@@ -153,7 +153,7 @@ GeomBndLib_Curve2d::GeomBndLib_Curve2d(const occ::handle<Geom2d_Curve>& theCurve
   occ::handle<Geom2d_Curve> aCurveForDetection = theCurve;
   if (auto aTrim = occ::down_cast<Geom2d_TrimmedCurve>(theCurve))
   {
-    myAdaptorOwned      = new Geom2dAdaptor_Curve(theCurve);
+    myAdaptorOwned     = new Geom2dAdaptor_Curve(theCurve);
     aCurveForDetection = aTrim->BasisCurve();
   }
 

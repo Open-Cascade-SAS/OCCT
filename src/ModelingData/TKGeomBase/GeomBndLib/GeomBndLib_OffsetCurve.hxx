@@ -54,9 +54,7 @@ public:
   }
 
   //! Compute precise bounding box for arc [theU1, theU2] by sampling the offset curve.
-  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theU1,
-                                                   double theU2,
-                                                   double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theU1, double theU2, double theTol) const;
 
 private:
   occ::handle<Geom_OffsetCurve> myGeom;

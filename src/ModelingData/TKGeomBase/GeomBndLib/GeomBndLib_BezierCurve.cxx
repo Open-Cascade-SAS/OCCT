@@ -41,8 +41,12 @@ Bnd_Box GeomBndLib_BezierCurve::Box(double theU1, double theU2, double theTol) c
   const int         aDegree   = myGeom->Degree();
   GeomAdaptor_Curve aGACurve(myGeom);
   Bnd_Box           aB1;
-  const double      aTol = GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(
-    aB1, aGACurve, theU1, theU2, aDegree);
+  const double      aTol =
+    GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(aB1,
+                                                                          aGACurve,
+                                                                          theU1,
+                                                                          theU2,
+                                                                          aDegree);
   aB1.Enlarge(aWeakness * aTol);
   GeomBndLib_SplineHelpers::ReduceSplineBox(myGeom->Poles(), aB1, aBox);
   aBox.Enlarge(theTol);

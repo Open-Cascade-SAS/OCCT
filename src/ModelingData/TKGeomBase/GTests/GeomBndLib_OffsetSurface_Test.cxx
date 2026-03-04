@@ -61,7 +61,7 @@ void ExpectContainsOffsetSurface(const Bnd_Box&                    theBox,
     const double aU = theUMin + i * aUStep;
     for (int j = 0; j <= theNbV; ++j)
     {
-      const double aV  = theVMin + j * aVStep;
+      const double aV   = theVMin + j * aVStep;
       const gp_Pnt aPnt = theSurf->Value(aU, aV);
       EXPECT_GE(aPnt.X(), aXmin - Precision::Confusion())
         << "Point outside box at U=" << aU << " V=" << aV;
@@ -98,8 +98,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_PositiveOffset_Full_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
 }
 
 TEST(GeomBndLib_OffsetSurfaceTest, Sphere_PositiveOffset_Patch_CompareWithBndLib)
@@ -109,16 +108,20 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_PositiveOffset_Patch_CompareWithBndLib
   GeomAdaptor_Surface           anAdaptor(anOff);
 
   Bnd_Box aNewBox;
-  GeomBndLib_Surface(anOff).Add(0.0, M_PI, -M_PI / 4.0, M_PI / 4.0,
-                                Precision::Confusion(), aNewBox);
+  GeomBndLib_Surface(anOff)
+    .Add(0.0, M_PI, -M_PI / 4.0, M_PI / 4.0, Precision::Confusion(), aNewBox);
 
   Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor, 0.0, M_PI, -M_PI / 4.0, M_PI / 4.0,
-                         Precision::Confusion(), anOldBox);
+  BndLib_AddSurface::Add(anAdaptor,
+                         0.0,
+                         M_PI,
+                         -M_PI / 4.0,
+                         M_PI / 4.0,
+                         Precision::Confusion(),
+                         anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, M_PI, -M_PI / 4.0, M_PI / 4.0, 18, 9);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, M_PI, -M_PI / 4.0, M_PI / 4.0, 18, 9);
 }
 
 // =========================================================================
@@ -138,8 +141,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_NegativeOffset_Full_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
 }
 
 // =========================================================================
@@ -148,9 +150,9 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_NegativeOffset_Full_CompareWithBndLib)
 
 TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_Full_CompareWithBndLib)
 {
-  Handle(Geom_CylindricalSurface) aCyl = new Geom_CylindricalSurface(gp::XOY(), 4.0);
+  Handle(Geom_CylindricalSurface) aCyl  = new Geom_CylindricalSurface(gp::XOY(), 4.0);
   Handle(Geom_OffsetSurface)      anOff = new Geom_OffsetSurface(aCyl, 1.5);
-  GeomAdaptor_Surface              anAdaptor(anOff);
+  GeomAdaptor_Surface             anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, -5.0, 5.0, Precision::Confusion(), aNewBox);
@@ -159,15 +161,14 @@ TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_Full_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, 0.0, 2.0 * M_PI, -5.0, 5.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, 2.0 * M_PI, -5.0, 5.0, 36, 10);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, 2.0 * M_PI, -5.0, 5.0, 36, 10);
 }
 
 TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_Patch_CompareWithBndLib)
 {
-  Handle(Geom_CylindricalSurface) aCyl = new Geom_CylindricalSurface(gp::XOY(), 4.0);
+  Handle(Geom_CylindricalSurface) aCyl  = new Geom_CylindricalSurface(gp::XOY(), 4.0);
   Handle(Geom_OffsetSurface)      anOff = new Geom_OffsetSurface(aCyl, 1.5);
-  GeomAdaptor_Surface              anAdaptor(anOff);
+  GeomAdaptor_Surface             anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, M_PI, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -176,15 +177,14 @@ TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_Patch_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, 0.0, M_PI, 0.0, 5.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, M_PI, 0.0, 5.0, 18, 5);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, M_PI, 0.0, 5.0, 18, 5);
 }
 
 TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_NegativeOffset_CompareWithBndLib)
 {
-  Handle(Geom_CylindricalSurface) aCyl = new Geom_CylindricalSurface(gp::XOY(), 8.0);
+  Handle(Geom_CylindricalSurface) aCyl  = new Geom_CylindricalSurface(gp::XOY(), 8.0);
   Handle(Geom_OffsetSurface)      anOff = new Geom_OffsetSurface(aCyl, -2.0);
-  GeomAdaptor_Surface              anAdaptor(anOff);
+  GeomAdaptor_Surface             anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, 0.0, 10.0, Precision::Confusion(), aNewBox);
@@ -193,8 +193,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_NegativeOffset_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, 0.0, 2.0 * M_PI, 0.0, 10.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, 2.0 * M_PI, 0.0, 10.0, 36, 10);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, 2.0 * M_PI, 0.0, 10.0, 36, 10);
 }
 
 // =========================================================================
@@ -214,8 +213,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Plane_PositiveOffset_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, -5.0, 5.0, -5.0, 5.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              -5.0, 5.0, -5.0, 5.0, 10, 10);
+  ExpectContainsOffsetSurface(aNewBox, anOff, -5.0, 5.0, -5.0, 5.0, 10, 10);
 }
 
 TEST(GeomBndLib_OffsetSurfaceTest, Plane_PositiveOffset_Patch_IsNotArtificiallyThickenedInZ)
@@ -250,8 +248,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Plane_NegativeOffset_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, -10.0, 10.0, -10.0, 10.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              -10.0, 10.0, -10.0, 10.0, 10, 10);
+  ExpectContainsOffsetSurface(aNewBox, anOff, -10.0, 10.0, -10.0, 10.0, 10, 10);
 }
 
 // =========================================================================
@@ -265,16 +262,19 @@ TEST(GeomBndLib_OffsetSurfaceTest, Torus_PositiveOffset_CompareWithBndLib)
   GeomAdaptor_Surface          anAdaptor(anOff);
 
   Bnd_Box aNewBox;
-  GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI,
-                                Precision::Confusion(), aNewBox);
+  GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, Precision::Confusion(), aNewBox);
 
   Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor, 0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI,
-                         Precision::Confusion(), anOldBox);
+  BndLib_AddSurface::Add(anAdaptor,
+                         0.0,
+                         2.0 * M_PI,
+                         0.0,
+                         2.0 * M_PI,
+                         Precision::Confusion(),
+                         anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, 36, 36);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, 36, 36);
 }
 
 TEST(GeomBndLib_OffsetSurfaceTest, Torus_Patch_CompareWithBndLib)
@@ -284,16 +284,13 @@ TEST(GeomBndLib_OffsetSurfaceTest, Torus_Patch_CompareWithBndLib)
   GeomAdaptor_Surface          anAdaptor(anOff);
 
   Bnd_Box aNewBox;
-  GeomBndLib_Surface(anOff).Add(0.0, M_PI, 0.0, M_PI,
-                                Precision::Confusion(), aNewBox);
+  GeomBndLib_Surface(anOff).Add(0.0, M_PI, 0.0, M_PI, Precision::Confusion(), aNewBox);
 
   Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor, 0.0, M_PI, 0.0, M_PI,
-                         Precision::Confusion(), anOldBox);
+  BndLib_AddSurface::Add(anAdaptor, 0.0, M_PI, 0.0, M_PI, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, M_PI, 0.0, M_PI, 18, 18);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, M_PI, 0.0, M_PI, 18, 18);
 }
 
 // =========================================================================
@@ -313,6 +310,5 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_LargeOffset_CompareWithBndLib)
   BndLib_AddSurface::Add(anAdaptor, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
-  ExpectContainsOffsetSurface(aNewBox, anOff,
-                              0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
+  ExpectContainsOffsetSurface(aNewBox, anOff, 0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
 }

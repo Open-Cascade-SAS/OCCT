@@ -64,7 +64,9 @@ public:
   [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theTol) const;
 
   //! Compute precise bounding box for arc [theU1, theU2].
-  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const;
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1,
+                                                     double theU2,
+                                                     double theTol) const;
 
   //! Add bounding box for full curve.
   Standard_EXPORT void Add(double theTol, Bnd_Box2d& theBox) const;
@@ -76,7 +78,10 @@ public:
   Standard_EXPORT void AddOptimal(double theTol, Bnd_Box2d& theBox) const;
 
   //! Add precise bounding box for arc [theU1, theU2].
-  Standard_EXPORT void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const;
+  Standard_EXPORT void AddOptimal(double     theU1,
+                                  double     theU2,
+                                  double     theTol,
+                                  Bnd_Box2d& theBox) const;
 
 private:
   using EvaluatorVariant = std::variant<std::monostate,
@@ -90,14 +95,14 @@ private:
                                         GeomBndLib_OffsetCurve2d,
                                         GeomBndLib_OtherCurve2d>;
   const Adaptor2d_Curve2d* adaptor() const;
-  double effectiveU1() const;
-  double effectiveU2() const;
+  double                   effectiveU1() const;
+  double                   effectiveU2() const;
 
 private:
-  const Adaptor2d_Curve2d* myAdaptorRef = nullptr;
+  const Adaptor2d_Curve2d*       myAdaptorRef = nullptr;
   occ::handle<Adaptor2d_Curve2d> myAdaptorOwned;
-  EvaluatorVariant  myEvaluator;
-  GeomAbs_CurveType myCurveType;
+  EvaluatorVariant               myEvaluator;
+  GeomAbs_CurveType              myCurveType;
 };
 
 #endif // GeomBndLib_Curve2d_HeaderFile

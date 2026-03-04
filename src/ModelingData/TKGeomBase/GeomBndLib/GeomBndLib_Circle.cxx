@@ -32,8 +32,8 @@ Bnd_Box GeomBndLib_Circle::Box(const gp_Circ& theCirc, double theTol)
   double aMin[3], aMax[3];
   for (int k = 1; k <= 3; ++k)
   {
-    double aXk = aXd.Coord(k);
-    double aYk = aYd.Coord(k);
+    double aXk  = aXd.Coord(k);
+    double aYk  = aYd.Coord(k);
     double aAmp = std::sqrt(aR * aR * aXk * aXk + aR * aR * aYk * aYk);
     aMin[k - 1] = aO.Coord(k) - aAmp;
     aMax[k - 1] = aO.Coord(k) + aAmp;
@@ -45,10 +45,7 @@ Bnd_Box GeomBndLib_Circle::Box(const gp_Circ& theCirc, double theTol)
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_Circle::Box(const gp_Circ& theCirc,
-                                double         theU1,
-                                double         theU2,
-                                double         theTol)
+Bnd_Box GeomBndLib_Circle::Box(const gp_Circ& theCirc, double theU1, double theU2, double theTol)
 {
   Bnd_Box      aBox;
   const double aR  = theCirc.Radius();

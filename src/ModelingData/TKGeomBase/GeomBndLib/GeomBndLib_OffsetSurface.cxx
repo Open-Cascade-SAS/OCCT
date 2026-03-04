@@ -29,11 +29,11 @@ Bnd_Box GeomBndLib_OffsetSurface::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_OffsetSurface::Box(double   theUMin,
-                                      double   theUMax,
-                                      double   theVMin,
-                                      double   theVMax,
-                                      double   theTol) const
+Bnd_Box GeomBndLib_OffsetSurface::Box(double theUMin,
+                                      double theUMax,
+                                      double theVMin,
+                                      double theVMax,
+                                      double theTol) const
 {
   const occ::handle<Geom_Surface> anEquiv = myGeom->Surface();
   if (!anEquiv.IsNull())
@@ -49,7 +49,7 @@ Bnd_Box GeomBndLib_OffsetSurface::Box(double   theUMin,
   const occ::handle<Geom_Surface>& aBasis   = myGeom->BasisSurface();
   const double                     anOffset = std::abs(myGeom->Offset());
   GeomBndLib_Surface               aSurfEval(aBasis);
-  Bnd_Box                          aLocalBox = aSurfEval.Box(theUMin, theUMax, theVMin, theVMax, 0.);
+  Bnd_Box aLocalBox = aSurfEval.Box(theUMin, theUMax, theVMin, theVMax, 0.);
 
   aLocalBox.Enlarge(anOffset);
   aLocalBox.Enlarge(theTol);

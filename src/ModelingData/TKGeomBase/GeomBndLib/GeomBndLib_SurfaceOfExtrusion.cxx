@@ -45,12 +45,18 @@ Bnd_Box buildExtrusionBox(const Bnd_Box& theCurveBox,
   if (theCurveBox.IsOpen())
   {
     // Propagate curve openness through the extrusion rather than returning whole space.
-    if (theCurveBox.IsOpenXmin()) aBox.OpenXmin();
-    if (theCurveBox.IsOpenXmax()) aBox.OpenXmax();
-    if (theCurveBox.IsOpenYmin()) aBox.OpenYmin();
-    if (theCurveBox.IsOpenYmax()) aBox.OpenYmax();
-    if (theCurveBox.IsOpenZmin()) aBox.OpenZmin();
-    if (theCurveBox.IsOpenZmax()) aBox.OpenZmax();
+    if (theCurveBox.IsOpenXmin())
+      aBox.OpenXmin();
+    if (theCurveBox.IsOpenXmax())
+      aBox.OpenXmax();
+    if (theCurveBox.IsOpenYmin())
+      aBox.OpenYmin();
+    if (theCurveBox.IsOpenYmax())
+      aBox.OpenYmax();
+    if (theCurveBox.IsOpenZmin())
+      aBox.OpenZmin();
+    if (theCurveBox.IsOpenZmax())
+      aBox.OpenZmax();
     if (isVMinInf && isVMaxInf)
       GeomBndLib_InfiniteHelpers::OpenMinMax(theDir, aBox);
     else if (isVMinInf)
@@ -129,11 +135,11 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double   theUMin,
-                                           double   theUMax,
-                                           double   theVMin,
-                                           double   theVMax,
-                                           double   theTol) const
+Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theUMin,
+                                           double theUMax,
+                                           double theVMin,
+                                           double theVMax,
+                                           double theTol) const
 {
   // P(U, V) = BasisCurve(U) + V * Direction
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
@@ -147,11 +153,11 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double   theUMin,
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_SurfaceOfExtrusion::BoxOptimal(double   theUMin,
-                                                  double   theUMax,
-                                                  double   theVMin,
-                                                  double   theVMax,
-                                                  double   theTol) const
+Bnd_Box GeomBndLib_SurfaceOfExtrusion::BoxOptimal(double theUMin,
+                                                  double theUMax,
+                                                  double theVMin,
+                                                  double theVMax,
+                                                  double theTol) const
 {
   // Use the tight basis curve box for a more precise result.
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
