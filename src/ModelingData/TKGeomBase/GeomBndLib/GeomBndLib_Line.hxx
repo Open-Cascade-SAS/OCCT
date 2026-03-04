@@ -44,82 +44,83 @@ public:
 
   const occ::handle<Geom_Line>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for line segment [theU1, theU2].
-  void Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for line segment [theU1, theU2].
+  [[nodiscard]] Bnd_Box Box(double theU1, double theU2, double theTol) const
   {
-    Add(myGeom->Lin(), theU1, theU2, theTol, theBox);
+    return Box(myGeom->Lin(), theU1, theU2, theTol);
   }
 
-  //! Add bounding box for full curve.
-  void Add(double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Bnd_Box Box(double theTol) const
   {
-    Add(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+    return Box(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
   }
 
-  //! For analytical curves, AddOptimal is same as Add.
-  void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! For analytical curves, BoxOptimal is same as Box.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theU1, double theU2, double theTol) const
   {
-    Add(theU1, theU2, theTol, theBox);
+    return Box(theU1, theU2, theTol);
   }
 
-  //! Add bounding box for a line segment [theU1, theU2] defined by gp_Lin.
-  static void Add(const gp_Lin& theLin,
-                  double        theU1,
-                  double        theU2,
-                  double        theTol,
-                  Bnd_Box&      theBox)
+  //! Compute bounding box for a line segment [theU1, theU2] defined by gp_Lin.
+  [[nodiscard]] static Bnd_Box Box(const gp_Lin& theLin,
+                                   double        theU1,
+                                   double        theU2,
+                                   double        theTol)
   {
+    Bnd_Box aBox;
     if (Precision::IsNegativeInfinite(theU1))
     {
       if (Precision::IsNegativeInfinite(theU2))
       {
-        throw Standard_Failure("GeomBndLib_Line::Add - bad parameter");
+        throw Standard_Failure("GeomBndLib_Line::Box - bad parameter");
       }
       else if (Precision::IsPositiveInfinite(theU2))
       {
-        GeomBndLib_InfiniteHelpers::OpenMinMax(theLin.Direction(), theBox);
-        theBox.Add(ElCLib::Value(0., theLin));
+        GeomBndLib_InfiniteHelpers::OpenMinMax(theLin.Direction(), aBox);
+        aBox.Add(ElCLib::Value(0., theLin));
       }
       else
       {
-        GeomBndLib_InfiniteHelpers::OpenMin(theLin.Direction(), theBox);
-        theBox.Add(ElCLib::Value(theU2, theLin));
+        GeomBndLib_InfiniteHelpers::OpenMin(theLin.Direction(), aBox);
+        aBox.Add(ElCLib::Value(theU2, theLin));
       }
     }
     else if (Precision::IsPositiveInfinite(theU1))
     {
       if (Precision::IsNegativeInfinite(theU2))
       {
-        GeomBndLib_InfiniteHelpers::OpenMinMax(theLin.Direction(), theBox);
-        theBox.Add(ElCLib::Value(0., theLin));
+        GeomBndLib_InfiniteHelpers::OpenMinMax(theLin.Direction(), aBox);
+        aBox.Add(ElCLib::Value(0., theLin));
       }
       else if (Precision::IsPositiveInfinite(theU2))
       {
-        throw Standard_Failure("GeomBndLib_Line::Add - bad parameter");
+        throw Standard_Failure("GeomBndLib_Line::Box - bad parameter");
       }
       else
       {
-        GeomBndLib_InfiniteHelpers::OpenMax(theLin.Direction(), theBox);
-        theBox.Add(ElCLib::Value(theU2, theLin));
+        GeomBndLib_InfiniteHelpers::OpenMax(theLin.Direction(), aBox);
+        aBox.Add(ElCLib::Value(theU2, theLin));
       }
     }
     else
     {
-      theBox.Add(ElCLib::Value(theU1, theLin));
+      aBox.Add(ElCLib::Value(theU1, theLin));
       if (Precision::IsNegativeInfinite(theU2))
       {
-        GeomBndLib_InfiniteHelpers::OpenMin(theLin.Direction(), theBox);
+        GeomBndLib_InfiniteHelpers::OpenMin(theLin.Direction(), aBox);
       }
       else if (Precision::IsPositiveInfinite(theU2))
       {
-        GeomBndLib_InfiniteHelpers::OpenMax(theLin.Direction(), theBox);
+        GeomBndLib_InfiniteHelpers::OpenMax(theLin.Direction(), aBox);
       }
       else
       {
-        theBox.Add(ElCLib::Value(theU2, theLin));
+        aBox.Add(ElCLib::Value(theU2, theLin));
       }
     }
-    theBox.Enlarge(theTol);
+    aBox.Enlarge(theTol);
+    return aBox;
   }
 
 private:

@@ -55,29 +55,29 @@ void addRevolutionCircle(const gp_Pnt& theOrigin,
   const gp_Ax2 anAx2(gp_Pnt(aCenter), theAxisDir, aXDir);
   const gp_Circ aCirc(anAx2, aRadius);
 
-  GeomBndLib_Circle::Add(aCirc, theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aCirc, theUMin, theUMax, 0.));
 }
 
 } // namespace
 
 //=================================================================================================
 
-void GeomBndLib_SurfaceOfRevolution::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double theTol) const
 {
   double aU1 = 0., aU2 = 0., aV1 = 0., aV2 = 0.;
   myGeom->Bounds(aU1, aU2, aV1, aV2);
-  Add(aU1, aU2, aV1, aV2, theTol, theBox);
+  return Box(aU1, aU2, aV1, aV2, theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_SurfaceOfRevolution::Add(double   theUMin,
-                                         double   theUMax,
-                                         double   theVMin,
-                                         double   theVMax,
-                                         double   theTol,
-                                         Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double   theUMin,
+                                            double   theUMax,
+                                            double   theVMin,
+                                            double   theVMax,
+                                            double   theTol) const
 {
+  Bnd_Box aBox;
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
   const gp_Ax1                   anAxis      = myGeom->Axis();
   const gp_Pnt&                  anOrigin    = anAxis.Location();
@@ -94,19 +94,18 @@ void GeomBndLib_SurfaceOfRevolution::Add(double   theUMin,
   // This is conservative: the curve is inside its box, so the revolved box
   // contains the revolved curve. It avoids sampling and captures all curve features.
   GeomBndLib_Curve aCurveEval(aBasisCurve);
-  Bnd_Box          aCurveBox;
-  aCurveEval.Add(aVMin, aVMax, 0., aCurveBox);
+  Bnd_Box          aCurveBox = aCurveEval.Box(aVMin, aVMax, 0.);
 
   if (aCurveBox.IsVoid())
   {
-    theBox.Enlarge(theTol);
-    return;
+    aBox.Enlarge(theTol);
+    return aBox;
   }
   if (aCurveBox.IsOpen())
   {
-    theBox.SetWhole();
-    theBox.Enlarge(theTol);
-    return;
+    aBox.SetWhole();
+    aBox.Enlarge(theTol);
+    return aBox;
   }
 
   // Get() returns {Xmin, Xmax, Ymin, Ymax, Zmin, Zmax}.
@@ -124,10 +123,11 @@ void GeomBndLib_SurfaceOfRevolution::Add(double   theUMin,
       for (int iz = 0; iz < 2; ++iz)
       {
         const gp_Pnt aCorner(aXVals[ix], aYVals[iy], aZVals[iz]);
-        addRevolutionCircle(anOrigin, anAxisDir, aCorner, theUMin, theUMax, theBox);
+        addRevolutionCircle(anOrigin, anAxisDir, aCorner, theUMin, theUMax, aBox);
       }
     }
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

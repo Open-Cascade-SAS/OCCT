@@ -72,65 +72,66 @@ void computeHyperbola2dBox(const gp_Hypr2d& theHypr,
 
 //=================================================================================================
 
-void GeomBndLib_Hyperbola2d::Add(const gp_Hypr2d& theHypr,
-                                 double           theU1,
-                                 double           theU2,
-                                 double           theTol,
-                                 Bnd_Box2d&       theBox)
+Bnd_Box2d GeomBndLib_Hyperbola2d::Box(const gp_Hypr2d& theHypr,
+                                      double           theU1,
+                                      double           theU2,
+                                      double           theTol)
 {
+  Bnd_Box2d aBox;
   if (Precision::IsNegativeInfinite(theU1))
   {
     if (Precision::IsNegativeInfinite(theU2))
     {
-      throw Standard_Failure("GeomBndLib_Hyperbola2d::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Hyperbola2d::Box - bad parameter");
     }
     else if (Precision::IsPositiveInfinite(theU2))
     {
-      theBox.OpenXmax();
-      theBox.OpenYmax();
+      aBox.OpenXmax();
+      aBox.OpenYmax();
     }
     else
     {
-      theBox.Add(ElCLib::Value(theU2, theHypr));
+      aBox.Add(ElCLib::Value(theU2, theHypr));
     }
-    theBox.OpenXmin();
-    theBox.OpenYmin();
+    aBox.OpenXmin();
+    aBox.OpenYmin();
   }
   else if (Precision::IsPositiveInfinite(theU1))
   {
     if (Precision::IsNegativeInfinite(theU2))
     {
-      theBox.OpenXmin();
-      theBox.OpenYmin();
+      aBox.OpenXmin();
+      aBox.OpenYmin();
     }
     else if (Precision::IsPositiveInfinite(theU2))
     {
-      throw Standard_Failure("GeomBndLib_Hyperbola2d::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Hyperbola2d::Box - bad parameter");
     }
     else
     {
-      theBox.Add(ElCLib::Value(theU2, theHypr));
+      aBox.Add(ElCLib::Value(theU2, theHypr));
     }
-    theBox.OpenXmax();
-    theBox.OpenYmax();
+    aBox.OpenXmax();
+    aBox.OpenYmax();
   }
   else
   {
-    theBox.Add(ElCLib::Value(theU1, theHypr));
+    aBox.Add(ElCLib::Value(theU1, theHypr));
     if (Precision::IsNegativeInfinite(theU2))
     {
-      theBox.OpenXmin();
-      theBox.OpenYmin();
+      aBox.OpenXmin();
+      aBox.OpenYmin();
     }
     else if (Precision::IsPositiveInfinite(theU2))
     {
-      theBox.OpenXmax();
-      theBox.OpenYmax();
+      aBox.OpenXmax();
+      aBox.OpenYmax();
     }
     else
     {
-      computeHyperbola2dBox(theHypr, theU1, theU2, theBox);
+      computeHyperbola2dBox(theHypr, theU1, theU2, aBox);
     }
   }
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

@@ -22,14 +22,16 @@
 
 //=================================================================================================
 
-void GeomBndLib_Sphere::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Sphere::Box(double theTol) const
 {
+  Bnd_Box aBox;
   const gp_Sphere aSphere = myGeom->Sphere();
   const gp_Pnt    aP      = aSphere.Location();
   const double    aR      = aSphere.Radius();
-  theBox.Update(aP.X() - aR, aP.Y() - aR, aP.Z() - aR,
-                aP.X() + aR, aP.Y() + aR, aP.Z() + aR);
-  theBox.Enlarge(theTol);
+  aBox.Update(aP.X() - aR, aP.Y() - aR, aP.Z() - aR,
+              aP.X() + aR, aP.Y() + aR, aP.Z() + aR);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
@@ -122,24 +124,23 @@ static void computeSphere(const gp_Sphere& theSphere,
 
   // Add boundary iso-curves of the patch.
   gp_Circ aC = ElSLib::SphereUIso(aPos, aR, theUMin);
-  GeomBndLib_Circle::Add(aC,theVMin, theVMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theVMin, theVMax, 0.));
   aC = ElSLib::SphereUIso(aPos, aR, theUMax);
-  GeomBndLib_Circle::Add(aC,theVMin, theVMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theVMin, theVMax, 0.));
 
   aC = ElSLib::SphereVIso(aPos, aR, theVMin);
-  GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
   aC = ElSLib::SphereVIso(aPos, aR, theVMax);
-  GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
 }
 
 //=================================================================================================
 
-void GeomBndLib_Sphere::Add(double   theUMin,
-                             double   theUMax,
-                             double   theVMin,
-                             double   theVMax,
-                             double   theTol,
-                             Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Sphere::Box(double   theUMin,
+                               double   theUMax,
+                               double   theVMin,
+                               double   theVMax,
+                               double   theTol) const
 {
   const gp_Sphere aSphere = myGeom->Sphere();
 
@@ -149,10 +150,11 @@ void GeomBndLib_Sphere::Add(double   theUMin,
       && std::abs(theVMin + M_PI / 2.) < Precision::Angular()
       && std::abs(theVMax - M_PI / 2.) < Precision::Angular())
   {
-    Add(theTol, theBox);
-    return;
+    return Box(theTol);
   }
 
-  computeSphere(aSphere, theUMin, theUMax, theVMin, theVMax, theBox);
-  theBox.Enlarge(theTol);
+  Bnd_Box aBox;
+  computeSphere(aSphere, theUMin, theUMax, theVMin, theVMax, aBox);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

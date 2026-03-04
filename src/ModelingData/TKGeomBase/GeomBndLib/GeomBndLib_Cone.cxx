@@ -39,7 +39,7 @@ static void computeCone(const gp_Cone& theCone,
   gp_Circ aC = ElSLib::ConeVIso(aPos, aR, aSAng, theVMin);
   if (aC.Radius() > Precision::Confusion())
   {
-    GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+    theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
   }
   else
   {
@@ -50,7 +50,7 @@ static void computeCone(const gp_Cone& theCone,
   aC = ElSLib::ConeVIso(aPos, aR, aSAng, theVMax);
   if (aC.Radius() > Precision::Confusion())
   {
-    GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+    theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
   }
   else
   {
@@ -60,22 +60,22 @@ static void computeCone(const gp_Cone& theCone,
 
 //=================================================================================================
 
-void GeomBndLib_Cone::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Cone::Box(double theTol) const
 {
   double aU1, aU2, aV1, aV2;
   myGeom->Bounds(aU1, aU2, aV1, aV2);
-  Add(aU1, aU2, aV1, aV2, theTol, theBox);
+  return Box(aU1, aU2, aV1, aV2, theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_Cone::Add(double   theUMin,
-                           double   theUMax,
-                           double   theVMin,
-                           double   theVMax,
-                           double   theTol,
-                           Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Cone::Box(double   theUMin,
+                             double   theUMax,
+                             double   theVMin,
+                             double   theVMax,
+                             double   theTol) const
 {
+  Bnd_Box aBox;
   const gp_Cone aCone = myGeom->Cone();
   const gp_Dir& aDir = aCone.Axis().Direction();
 
@@ -83,51 +83,52 @@ void GeomBndLib_Cone::Add(double   theUMin,
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
-      throw Standard_Failure("GeomBndLib_Cone::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Cone::Box - bad parameter");
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
-      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, theBox);
+      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else
     {
-      computeCone(aCone, theUMin, theUMax, 0., theVMax, theBox);
-      GeomBndLib_InfiniteHelpers::OpenMin(aDir, theBox);
+      computeCone(aCone, theUMin, theUMax, 0., theVMax, aBox);
+      GeomBndLib_InfiniteHelpers::OpenMin(aDir, aBox);
     }
   }
   else if (Precision::IsPositiveInfinite(theVMin))
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
-      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, theBox);
+      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
-      throw Standard_Failure("GeomBndLib_Cone::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Cone::Box - bad parameter");
     }
     else
     {
-      computeCone(aCone, theUMin, theUMax, 0., theVMax, theBox);
-      GeomBndLib_InfiniteHelpers::OpenMax(aDir, theBox);
+      computeCone(aCone, theUMin, theUMax, 0., theVMax, aBox);
+      GeomBndLib_InfiniteHelpers::OpenMax(aDir, aBox);
     }
   }
   else
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
-      computeCone(aCone, theUMin, theUMax, theVMin, 0., theBox);
-      GeomBndLib_InfiniteHelpers::OpenMin(aDir, theBox);
+      computeCone(aCone, theUMin, theUMax, theVMin, 0., aBox);
+      GeomBndLib_InfiniteHelpers::OpenMin(aDir, aBox);
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
-      computeCone(aCone, theUMin, theUMax, theVMin, 0., theBox);
-      GeomBndLib_InfiniteHelpers::OpenMax(aDir, theBox);
+      computeCone(aCone, theUMin, theUMax, theVMin, 0., aBox);
+      GeomBndLib_InfiniteHelpers::OpenMax(aDir, aBox);
     }
     else
     {
-      computeCone(aCone, theUMin, theUMax, theVMin, theVMax, theBox);
+      computeCone(aCone, theUMin, theUMax, theVMin, theVMax, aBox);
     }
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

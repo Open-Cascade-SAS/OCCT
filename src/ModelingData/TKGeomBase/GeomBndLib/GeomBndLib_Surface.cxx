@@ -296,22 +296,91 @@ double GeomBndLib_Surface::effectiveV2() const
 
 //=================================================================================================
 
-void GeomBndLib_Surface::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Surface::Box(double theTol) const
 {
   if (adaptor() != nullptr)
   {
-    Add(effectiveU1(), effectiveU2(), effectiveV1(), effectiveV2(), theTol, theBox);
-    return;
+    return Box(effectiveU1(), effectiveU2(), effectiveV1(), effectiveV2(), theTol);
   }
-  std::visit(
-    [theTol, &theBox](const auto& theEval) {
+
+  return std::visit(
+    [theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
       {
-        theEval.Add(theTol, theBox);
+        return theEval.Box(theTol);
       }
+      return Bnd_Box{};
     },
     myEvaluator);
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_Surface::Box(double   theUMin,
+                                 double   theUMax,
+                                 double   theVMin,
+                                 double   theVMax,
+                                 double   theTol) const
+{
+  return std::visit(
+    [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        return theEval.Box(theUMin, theUMax, theVMin, theVMax, theTol);
+      }
+      return Bnd_Box{};
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_Surface::BoxOptimal(double theTol) const
+{
+  if (adaptor() != nullptr)
+  {
+    return BoxOptimal(effectiveU1(), effectiveU2(), effectiveV1(), effectiveV2(), theTol);
+  }
+
+  return std::visit(
+    [theTol](const auto& theEval) -> Bnd_Box {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        return theEval.BoxOptimal(theTol);
+      }
+      return Bnd_Box{};
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_Surface::BoxOptimal(double   theUMin,
+                                        double   theUMax,
+                                        double   theVMin,
+                                        double   theVMax,
+                                        double   theTol) const
+{
+  return std::visit(
+    [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        return theEval.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+      }
+      return Bnd_Box{};
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+void GeomBndLib_Surface::Add(double theTol, Bnd_Box& theBox) const
+{
+  theBox.Add(Box(theTol));
 }
 
 //=================================================================================================
@@ -323,35 +392,14 @@ void GeomBndLib_Surface::Add(double   theUMin,
                              double   theTol,
                              Bnd_Box& theBox) const
 {
-  std::visit(
-    [theUMin, theUMax, theVMin, theVMax, theTol, &theBox](const auto& theEval) {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
-      {
-        theEval.Add(theUMin, theUMax, theVMin, theVMax, theTol, theBox);
-      }
-    },
-    myEvaluator);
+  theBox.Add(Box(theUMin, theUMax, theVMin, theVMax, theTol));
 }
 
 //=================================================================================================
 
 void GeomBndLib_Surface::AddOptimal(double theTol, Bnd_Box& theBox) const
 {
-  if (adaptor() != nullptr)
-  {
-    AddOptimal(effectiveU1(), effectiveU2(), effectiveV1(), effectiveV2(), theTol, theBox);
-    return;
-  }
-  std::visit(
-    [theTol, &theBox](const auto& theEval) {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
-      {
-        theEval.AddOptimal(theTol, theBox);
-      }
-    },
-    myEvaluator);
+  theBox.Add(BoxOptimal(theTol));
 }
 
 //=================================================================================================
@@ -363,13 +411,5 @@ void GeomBndLib_Surface::AddOptimal(double   theUMin,
                                     double   theTol,
                                     Bnd_Box& theBox) const
 {
-  std::visit(
-    [theUMin, theUMax, theVMin, theVMax, theTol, &theBox](const auto& theEval) {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
-      {
-        theEval.AddOptimal(theUMin, theUMax, theVMin, theVMax, theTol, theBox);
-      }
-    },
-    myEvaluator);
+  theBox.Add(BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol));
 }

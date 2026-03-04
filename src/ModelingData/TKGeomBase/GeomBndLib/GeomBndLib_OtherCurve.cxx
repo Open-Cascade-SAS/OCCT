@@ -62,15 +62,16 @@ double FillBox(Bnd_Box&               theBox,
 
 //=================================================================================================
 
-void GeomBndLib_OtherCurve::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OtherCurve::Box(double theTol) const
 {
-  Add(myCurve.get().FirstParameter(), myCurve.get().LastParameter(), theTol, theBox);
+  return Box(myCurve.get().FirstParameter(), myCurve.get().LastParameter(), theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_OtherCurve::Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OtherCurve::Box(double theU1, double theU2, double theTol) const
 {
+  Bnd_Box          aBox;
   constexpr double weakness = 1.5;
   constexpr int    N        = 33;
   Bnd_Box          aB1;
@@ -78,14 +79,16 @@ void GeomBndLib_OtherCurve::Add(double theU1, double theU2, double theTol, Bnd_B
   aB1.Enlarge(weakness * tol);
   double x, y, z, X, Y, Z;
   aB1.Get(x, y, z, X, Y, Z);
-  theBox.Update(x, y, z, X, Y, Z);
-  theBox.Enlarge(theTol);
+  aBox.Update(x, y, z, X, Y, Z);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_OtherCurve::AddOptimal(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OtherCurve::BoxOptimal(double theU1, double theU2, double theTol) const
 {
+  Bnd_Box                aBox;
   const Adaptor3d_Curve& C  = myCurve.get();
   int                    Nu = GeomBndLib_SamplingHelpers::ComputeNbSamples(C, theU1, theU2);
 
@@ -160,7 +163,8 @@ void GeomBndLib_OtherCurve::AddOptimal(double theU1, double theU2, double theTol
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  theBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
+  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

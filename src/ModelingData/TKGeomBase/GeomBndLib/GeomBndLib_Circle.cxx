@@ -20,8 +20,9 @@
 
 //=================================================================================================
 
-void GeomBndLib_Circle::Add(const gp_Circ& theCirc, double theTol, Bnd_Box& theBox)
+Bnd_Box GeomBndLib_Circle::Box(const gp_Circ& theCirc, double theTol)
 {
+  Bnd_Box      aBox;
   const double aR  = theCirc.Radius();
   const gp_XYZ aO  = theCirc.Location().XYZ();
   const gp_XYZ aXd = theCirc.XAxis().Direction().XYZ();
@@ -37,18 +38,19 @@ void GeomBndLib_Circle::Add(const gp_Circ& theCirc, double theTol, Bnd_Box& theB
     aMin[k - 1] = aO.Coord(k) - aAmp;
     aMax[k - 1] = aO.Coord(k) + aAmp;
   }
-  theBox.Update(aMin[0], aMin[1], aMin[2], aMax[0], aMax[1], aMax[2]);
-  theBox.Enlarge(theTol);
+  aBox.Update(aMin[0], aMin[1], aMin[2], aMax[0], aMax[1], aMax[2]);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_Circle::Add(const gp_Circ& theCirc,
-                            double         theU1,
-                            double         theU2,
-                            double         theTol,
-                            Bnd_Box&       theBox)
+Bnd_Box GeomBndLib_Circle::Box(const gp_Circ& theCirc,
+                                double         theU1,
+                                double         theU2,
+                                double         theTol)
 {
+  Bnd_Box      aBox;
   const double aR  = theCirc.Radius();
   const gp_XYZ aO  = theCirc.Location().XYZ();
   const gp_XYZ aXd = theCirc.XAxis().Direction().XYZ();
@@ -58,8 +60,7 @@ void GeomBndLib_Circle::Add(const gp_Circ& theCirc,
 
   if (theU2 - theU1 >= aPeriod)
   {
-    Add(theCirc, theTol, theBox);
-    return;
+    return Box(theCirc, theTol);
   }
 
   double aU1 = theU1, aU2 = theU2;
@@ -68,8 +69,8 @@ void GeomBndLib_Circle::Add(const gp_Circ& theCirc,
 
   // Add arc endpoints.
   const gp_Ax2& aPos = theCirc.Position();
-  theBox.Add(ElCLib::CircleValue(aU1, aPos, aR));
-  theBox.Add(ElCLib::CircleValue(aU2, aPos, aR));
+  aBox.Add(ElCLib::CircleValue(aU1, aPos, aR));
+  aBox.Add(ElCLib::CircleValue(aU2, aPos, aR));
 
   // For each coordinate, check if the extremal parameter lies within the arc.
   for (int k = 1; k <= 3; ++k)
@@ -101,14 +102,15 @@ void GeomBndLib_Circle::Add(const gp_Circ& theCirc,
     double aTk = ElCLib::InPeriod(aTExtrMin, aU1, aU1 + 2. * M_PI);
     if (aTk >= aU1 && aTk <= aU2)
     {
-      theBox.Add(ElCLib::CircleValue(aTExtrMin, aPos, aR));
+      aBox.Add(ElCLib::CircleValue(aTExtrMin, aPos, aR));
     }
     aTk = ElCLib::InPeriod(aTExtrMax, aU1, aU1 + 2. * M_PI);
     if (aTk >= aU1 && aTk <= aU2)
     {
-      theBox.Add(ElCLib::CircleValue(aTExtrMax, aPos, aR));
+      aBox.Add(ElCLib::CircleValue(aTExtrMax, aPos, aR));
     }
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

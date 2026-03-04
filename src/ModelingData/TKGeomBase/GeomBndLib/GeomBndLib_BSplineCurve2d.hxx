@@ -38,14 +38,14 @@ public:
 
   const occ::handle<Geom2d_BSplineCurve>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for full curve.
-  Standard_EXPORT void Add(double theTol, Bnd_Box2d& theBox) const;
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theTol) const;
 
-  //! Add bounding box for arc [theU1, theU2].
-  Standard_EXPORT void Add(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const;
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theU1, double theU2, double theTol) const;
 
-  //! Add precise bounding box using numerical optimization.
-  Standard_EXPORT void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const;
+  //! Compute precise bounding box using numerical optimization.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const;
 
 private:
   occ::handle<Geom2d_BSplineCurve> myGeom;

@@ -56,6 +56,26 @@ public:
   //! Return detected surface type.
   GeomAbs_SurfaceType GetType() const { return mySurfType; }
 
+  //! Compute bounding box for full surface.
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theTol) const;
+
+  //! Compute bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double   theUMin,
+                                            double   theUMax,
+                                            double   theVMin,
+                                            double   theVMax,
+                                            double   theTol) const;
+
+  //! Compute precise bounding box for full surface.
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theTol) const;
+
+  //! Compute precise bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double   theUMin,
+                                                   double   theUMax,
+                                                   double   theVMin,
+                                                   double   theVMax,
+                                                   double   theTol) const;
+
   //! Add bounding box for full surface.
   Standard_EXPORT void Add(double theTol, Bnd_Box& theBox) const;
 

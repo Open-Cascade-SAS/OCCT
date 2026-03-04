@@ -23,11 +23,11 @@
 
 //=================================================================================================
 
-void GeomBndLib_Cylinder::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Cylinder::Box(double theTol) const
 {
   double aU1, aU2, aV1, aV2;
   myGeom->Bounds(aU1, aU2, aV1, aV2);
-  Add(aU1, aU2, aV1, aV2, theTol, theBox);
+  return Box(aU1, aU2, aV1, aV2, theTol);
 }
 
 //=================================================================================================
@@ -42,22 +42,22 @@ static void computeCylinder(const gp_Cylinder& theCyl,
 {
   // Add circle at VMin.
   gp_Circ aC = ElSLib::CylinderVIso(theCyl.Position(), theCyl.Radius(), theVMin);
-  GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
   // Add circle at VMax by translating.
   gp_Vec aT = (theVMax - theVMin) * theCyl.Axis().Direction();
   aC.Translate(aT);
-  GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
 }
 
 //=================================================================================================
 
-void GeomBndLib_Cylinder::Add(double   theUMin,
-                              double   theUMax,
-                              double   theVMin,
-                              double   theVMax,
-                              double   theTol,
-                              Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Cylinder::Box(double   theUMin,
+                                 double   theUMax,
+                                 double   theVMin,
+                                 double   theVMax,
+                                 double   theTol) const
 {
+  Bnd_Box aBox;
   const gp_Cylinder aCyl = myGeom->Cylinder();
   const gp_Dir& aDir = aCyl.Axis().Direction();
 
@@ -65,51 +65,52 @@ void GeomBndLib_Cylinder::Add(double   theUMin,
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
-      throw Standard_Failure("GeomBndLib_Cylinder::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Cylinder::Box - bad parameter");
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
-      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, theBox);
+      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else
     {
-      computeCylinder(aCyl, theUMin, theUMax, 0., theVMax, theBox);
-      GeomBndLib_InfiniteHelpers::OpenMin(aDir, theBox);
+      computeCylinder(aCyl, theUMin, theUMax, 0., theVMax, aBox);
+      GeomBndLib_InfiniteHelpers::OpenMin(aDir, aBox);
     }
   }
   else if (Precision::IsPositiveInfinite(theVMin))
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
-      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, theBox);
+      GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
-      throw Standard_Failure("GeomBndLib_Cylinder::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Cylinder::Box - bad parameter");
     }
     else
     {
-      computeCylinder(aCyl, theUMin, theUMax, 0., theVMax, theBox);
-      GeomBndLib_InfiniteHelpers::OpenMax(aDir, theBox);
+      computeCylinder(aCyl, theUMin, theUMax, 0., theVMax, aBox);
+      GeomBndLib_InfiniteHelpers::OpenMax(aDir, aBox);
     }
   }
   else
   {
     if (Precision::IsNegativeInfinite(theVMax))
     {
-      computeCylinder(aCyl, theUMin, theUMax, theVMin, 0., theBox);
-      GeomBndLib_InfiniteHelpers::OpenMin(aDir, theBox);
+      computeCylinder(aCyl, theUMin, theUMax, theVMin, 0., aBox);
+      GeomBndLib_InfiniteHelpers::OpenMin(aDir, aBox);
     }
     else if (Precision::IsPositiveInfinite(theVMax))
     {
-      computeCylinder(aCyl, theUMin, theUMax, theVMin, 0., theBox);
-      GeomBndLib_InfiniteHelpers::OpenMax(aDir, theBox);
+      computeCylinder(aCyl, theUMin, theUMax, theVMin, 0., aBox);
+      GeomBndLib_InfiniteHelpers::OpenMax(aDir, aBox);
     }
     else
     {
-      computeCylinder(aCyl, theUMin, theUMax, theVMin, theVMax, theBox);
+      computeCylinder(aCyl, theUMin, theUMax, theVMin, theVMax, aBox);
     }
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

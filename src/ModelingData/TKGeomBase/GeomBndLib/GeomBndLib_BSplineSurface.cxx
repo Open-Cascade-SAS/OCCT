@@ -57,22 +57,22 @@ void ComputePolesIndexes(const NCollection_Array1<double>& theKnots,
 
 //=================================================================================================
 
-void GeomBndLib_BSplineSurface::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BSplineSurface::Box(double theTol) const
 {
   double anUMin, anUMax, aVMin, aVMax;
   myGeom->Bounds(anUMin, anUMax, aVMin, aVMax);
-  Add(anUMin, anUMax, aVMin, aVMax, theTol, theBox);
+  return Box(anUMin, anUMax, aVMin, aVMax, theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_BSplineSurface::Add(double   theUMin,
-                                double   theUMax,
-                                double   theVMin,
-                                double   theVMax,
-                                double   theTol,
-                                Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BSplineSurface::Box(double   theUMin,
+                                       double   theUMax,
+                                       double   theVMin,
+                                       double   theVMax,
+                                       double   theTol) const
 {
+  Bnd_Box aBox;
   const double PTol = Precision::Parametric(Precision::Confusion());
 
   // Get geometry bounds.
@@ -126,11 +126,11 @@ void GeomBndLib_BSplineSurface::Add(double   theUMin,
         if (isVPeriodic && jp > aNbVPoles)
           jp = jp - aNbVPoles;
 
-        theBox.Add(aPoles(ip, jp));
+        aBox.Add(aPoles(ip, jp));
       }
     }
-    theBox.Enlarge(theTol);
-    return;
+    aBox.Enlarge(theTol);
+    return aBox;
   }
 
   // Out of geometry bounds: fall back to grid sampling.
@@ -156,30 +156,31 @@ void GeomBndLib_BSplineSurface::Add(double   theUMin,
   {
     for (int j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
     {
-      theBox.Add(aGrid.Value(i, j));
+      aBox.Add(aGrid.Value(i, j));
     }
   }
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_BSplineSurface::AddOptimal(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theTol) const
 {
   double anUMin, anUMax, aVMin, aVMax;
   myGeom->Bounds(anUMin, anUMax, aVMin, aVMax);
-  AddOptimal(anUMin, anUMax, aVMin, aVMax, theTol, theBox);
+  return BoxOptimal(anUMin, anUMax, aVMin, aVMax, theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_BSplineSurface::AddOptimal(double   theUMin,
-                                       double   theUMax,
-                                       double   theVMin,
-                                       double   theVMax,
-                                       double   theTol,
-                                       Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double   theUMin,
+                                              double   theUMax,
+                                              double   theVMin,
+                                              double   theVMax,
+                                              double   theTol) const
 {
+  Bnd_Box aBox;
   GeomAdaptor_Surface aGASurf(myGeom);
   const int           Nu = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
   const int           Nv = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
@@ -312,7 +313,8 @@ void GeomBndLib_BSplineSurface::AddOptimal(double   theUMin,
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  theBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
+  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

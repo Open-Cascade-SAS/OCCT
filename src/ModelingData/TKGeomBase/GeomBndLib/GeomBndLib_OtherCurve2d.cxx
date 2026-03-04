@@ -203,18 +203,18 @@ double AdjustExtr2dCurve(const Adaptor2d_Curve2d& theCurve,
 
 //=================================================================================================
 
-void GeomBndLib_OtherCurve2d::Add(double theTol, Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_OtherCurve2d::Box(double theTol) const
 {
-  Add(myCurve.get().FirstParameter(), myCurve.get().LastParameter(), theTol, theBox);
+  return Box(myCurve.get().FirstParameter(), myCurve.get().LastParameter(), theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_OtherCurve2d::Add(double     theU1,
-                               double     theU2,
-                               double     theTol,
-                               Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_OtherCurve2d::Box(double theU1,
+                                       double theU2,
+                                       double theTol) const
 {
+  Bnd_Box2d aBox;
   constexpr double weakness = 1.5;
   constexpr int    N        = 33;
   Bnd_Box2d        aB1;
@@ -222,17 +222,18 @@ void GeomBndLib_OtherCurve2d::Add(double     theU1,
   aB1.Enlarge(weakness * tol);
   double x, y, X, Y;
   aB1.Get(x, y, X, Y);
-  theBox.Update(x, y, X, Y);
-  theBox.Enlarge(theTol);
+  aBox.Update(x, y, X, Y);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_OtherCurve2d::AddOptimal(double     theU1,
-                                      double     theU2,
-                                      double     theTol,
-                                      Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_OtherCurve2d::BoxOptimal(double theU1,
+                                              double theU2,
+                                              double theTol) const
 {
+  Bnd_Box2d aBox;
   const Adaptor2d_Curve2d& C  = myCurve.get();
   int                      Nu = GeomBndLib_SamplingHelpers::ComputeNbSamples2d(C, theU1, theU2);
 
@@ -305,7 +306,8 @@ void GeomBndLib_OtherCurve2d::AddOptimal(double     theU1,
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt2d(CoordMin[0], CoordMin[1]));
-  theBox.Add(gp_Pnt2d(CoordMax[0], CoordMax[1]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt2d(CoordMin[0], CoordMin[1]));
+  aBox.Add(gp_Pnt2d(CoordMax[0], CoordMax[1]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

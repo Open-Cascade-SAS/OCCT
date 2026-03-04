@@ -26,15 +26,13 @@
 
 //=================================================================================================
 
-void GeomBndLib_OffsetCurve2d::Add(double     theU1,
-                                   double     theU2,
-                                   double     theTol,
-                                   Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1,
+                                        double theU2,
+                                        double theTol) const
 {
   // Compute the bounding box of the basis curve and enlarge by |offset|.
   const occ::handle<Geom2d_Curve>& aBasis  = myGeom->BasisCurve();
   const double                     anOffset = std::abs(myGeom->Offset());
-  Bnd_Box2d                        aLocalBox;
 
   if (const occ::handle<Geom2d_Line> aLine = occ::down_cast<Geom2d_Line>(aBasis))
   {
@@ -45,10 +43,9 @@ void GeomBndLib_OffsetCurve2d::Add(double     theU1,
       aNormal.Normalize();
       aNormal *= myGeom->Offset();
       const gp_Pnt2d aLoc = aBasisLin.Location().Translated(aNormal);
-      GeomBndLib_Line2d::Add(gp_Lin2d(aLoc, aBasisLin.Direction()), theU1, theU2, 0., aLocalBox);
+      Bnd_Box2d aLocalBox = GeomBndLib_Line2d::Box(gp_Lin2d(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
       aLocalBox.Enlarge(theTol);
-      theBox.Add(aLocalBox);
-      return;
+      return aLocalBox;
     }
   }
 
@@ -77,17 +74,16 @@ void GeomBndLib_OffsetCurve2d::Add(double     theU1,
             {
               gp_Circ2d aOffsetCirc = aBasisCirc;
               aOffsetCirc.SetRadius(aNewRadius);
-              GeomBndLib_Circle2d::Add(aOffsetCirc, theU1, theU2, 0., aLocalBox);
+              Bnd_Box2d aLocalBox = GeomBndLib_Circle2d::Box(aOffsetCirc, theU1, theU2, 0.);
               aLocalBox.Enlarge(theTol);
-              theBox.Add(aLocalBox);
-              return;
+              return aLocalBox;
             }
             if (std::abs(aNewRadius) <= Precision::Confusion())
             {
+              Bnd_Box2d aLocalBox;
               aLocalBox.Add(aBasisCirc.Location());
               aLocalBox.Enlarge(theTol);
-              theBox.Add(aLocalBox);
-              return;
+              return aLocalBox;
             }
           }
         }
@@ -96,9 +92,9 @@ void GeomBndLib_OffsetCurve2d::Add(double     theU1,
   }
 
   GeomBndLib_Curve2d aCurveEval(aBasis);
-  aCurveEval.Add(theU1, theU2, 0., aLocalBox);
+  Bnd_Box2d aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
 
   aLocalBox.Enlarge(anOffset);
   aLocalBox.Enlarge(theTol);
-  theBox.Add(aLocalBox);
+  return aLocalBox;
 }

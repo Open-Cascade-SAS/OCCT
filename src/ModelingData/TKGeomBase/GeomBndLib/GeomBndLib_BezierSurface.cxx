@@ -23,29 +23,31 @@
 
 //=================================================================================================
 
-void GeomBndLib_BezierSurface::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierSurface::Box(double theTol) const
 {
+  Bnd_Box aBox;
   // For full Bezier surface, use convex hull of all poles.
   const NCollection_Array2<gp_Pnt>& aPoles = myGeom->Poles();
   for (int i = aPoles.LowerRow(); i <= aPoles.UpperRow(); i++)
   {
     for (int j = aPoles.LowerCol(); j <= aPoles.UpperCol(); j++)
     {
-      theBox.Add(aPoles.Value(i, j));
+      aBox.Add(aPoles.Value(i, j));
     }
   }
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierSurface::Add(double   theUMin,
-                               double   theUMax,
-                               double   theVMin,
-                               double   theVMax,
-                               double   theTol,
-                               Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierSurface::Box(double   theUMin,
+                                      double   theUMax,
+                                      double   theVMin,
+                                      double   theVMax,
+                                      double   theTol) const
 {
+  Bnd_Box aBox;
   const double PTol = Precision::Parametric(Precision::Confusion());
 
   // Check if the parameters match the full surface bounds.
@@ -57,8 +59,7 @@ void GeomBndLib_BezierSurface::Add(double   theUMin,
       && std::abs(theVMax - aV2) <= PTol)
   {
     // Full surface: use convex hull of all poles.
-    Add(theTol, theBox);
-    return;
+    return Box(theTol);
   }
 
   // Trimmed Bezier: fall back to grid sampling.
@@ -84,30 +85,31 @@ void GeomBndLib_BezierSurface::Add(double   theUMin,
   {
     for (int j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
     {
-      theBox.Add(aGrid.Value(i, j));
+      aBox.Add(aGrid.Value(i, j));
     }
   }
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierSurface::AddOptimal(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double theTol) const
 {
   double aU1, aU2, aV1, aV2;
   myGeom->Bounds(aU1, aU2, aV1, aV2);
-  AddOptimal(aU1, aU2, aV1, aV2, theTol, theBox);
+  return BoxOptimal(aU1, aU2, aV1, aV2, theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierSurface::AddOptimal(double   theUMin,
-                                      double   theUMax,
-                                      double   theVMin,
-                                      double   theVMax,
-                                      double   theTol,
-                                      Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierSurface::BoxOptimal(double   theUMin,
+                                             double   theUMax,
+                                             double   theVMin,
+                                             double   theVMax,
+                                             double   theTol) const
 {
+  Bnd_Box aBox;
   GeomAdaptor_Surface aGASurf(myGeom);
   const int           Nu = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
   const int           Nv = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
@@ -240,7 +242,8 @@ void GeomBndLib_BezierSurface::AddOptimal(double   theUMin,
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  theBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
+  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

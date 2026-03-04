@@ -92,29 +92,32 @@ void ReduceSplineBox(const occ::handle<Geom_BezierCurve>& theCurve,
 
 //=================================================================================================
 
-void GeomBndLib_BezierCurve::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierCurve::Box(double theTol) const
 {
-  Add(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+  return Box(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierCurve::Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierCurve::Box(double theU1, double theU2, double theTol) const
 {
+  Bnd_Box          aBox;
   constexpr double weakness = 1.5;
   int              N        = myGeom->Degree();
   GeomAdaptor_Curve aGACurve(myGeom);
   Bnd_Box           aB1;
   double            tol = FillBox(aB1, aGACurve, theU1, theU2, N);
   aB1.Enlarge(weakness * tol);
-  ReduceSplineBox(myGeom, aB1, theBox);
-  theBox.Enlarge(theTol);
+  ReduceSplineBox(myGeom, aB1, aBox);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierCurve::AddOptimal(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_BezierCurve::BoxOptimal(double theU1, double theU2, double theTol) const
 {
+  Bnd_Box           aBox;
   GeomAdaptor_Curve aGACurve(myGeom);
   int               Nu = GeomBndLib_SamplingHelpers::ComputeNbSamples(aGACurve, theU1, theU2);
 
@@ -189,7 +192,8 @@ void GeomBndLib_BezierCurve::AddOptimal(double theU1, double theU2, double theTo
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  theBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
+  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

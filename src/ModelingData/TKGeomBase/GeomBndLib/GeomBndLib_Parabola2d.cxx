@@ -20,67 +20,68 @@
 
 //=================================================================================================
 
-void GeomBndLib_Parabola2d::Add(const gp_Parab2d& theParab,
-                                double            theU1,
-                                double            theU2,
-                                double            theTol,
-                                Bnd_Box2d&        theBox)
+Bnd_Box2d GeomBndLib_Parabola2d::Box(const gp_Parab2d& theParab,
+                                     double            theU1,
+                                     double            theU2,
+                                     double            theTol)
 {
+  Bnd_Box2d aBox;
   if (Precision::IsNegativeInfinite(theU1))
   {
     if (Precision::IsNegativeInfinite(theU2))
     {
-      throw Standard_Failure("GeomBndLib_Parabola2d::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Parabola2d::Box - bad parameter");
     }
     else if (Precision::IsPositiveInfinite(theU2))
     {
-      theBox.OpenXmax();
-      theBox.OpenYmax();
+      aBox.OpenXmax();
+      aBox.OpenYmax();
     }
     else
     {
-      theBox.Add(ElCLib::Value(theU2, theParab));
+      aBox.Add(ElCLib::Value(theU2, theParab));
     }
-    theBox.OpenXmin();
-    theBox.OpenYmin();
+    aBox.OpenXmin();
+    aBox.OpenYmin();
   }
   else if (Precision::IsPositiveInfinite(theU1))
   {
     if (Precision::IsNegativeInfinite(theU2))
     {
-      theBox.OpenXmin();
-      theBox.OpenYmin();
+      aBox.OpenXmin();
+      aBox.OpenYmin();
     }
     else if (Precision::IsPositiveInfinite(theU2))
     {
-      throw Standard_Failure("GeomBndLib_Parabola2d::Add - bad parameter");
+      throw Standard_Failure("GeomBndLib_Parabola2d::Box - bad parameter");
     }
     else
     {
-      theBox.Add(ElCLib::Value(theU2, theParab));
+      aBox.Add(ElCLib::Value(theU2, theParab));
     }
-    theBox.OpenXmax();
-    theBox.OpenYmax();
+    aBox.OpenXmax();
+    aBox.OpenYmax();
   }
   else
   {
-    theBox.Add(ElCLib::Value(theU1, theParab));
+    aBox.Add(ElCLib::Value(theU1, theParab));
     if (Precision::IsNegativeInfinite(theU2))
     {
-      theBox.OpenXmin();
-      theBox.OpenYmin();
+      aBox.OpenXmin();
+      aBox.OpenYmin();
     }
     else if (Precision::IsPositiveInfinite(theU2))
     {
-      theBox.OpenXmax();
-      theBox.OpenYmax();
+      aBox.OpenXmax();
+      aBox.OpenYmax();
     }
     else
     {
-      theBox.Add(ElCLib::Value(theU2, theParab));
+      aBox.Add(ElCLib::Value(theU2, theParab));
       if (theU1 * theU2 < 0)
-        theBox.Add(ElCLib::Value(0., theParab));
+        aBox.Add(ElCLib::Value(0., theParab));
     }
   }
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

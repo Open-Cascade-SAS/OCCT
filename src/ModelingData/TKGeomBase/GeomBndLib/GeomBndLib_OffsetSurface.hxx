@@ -38,29 +38,27 @@ public:
 
   const occ::handle<Geom_OffsetSurface>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for full surface.
-  Standard_EXPORT void Add(double theTol, Bnd_Box& theBox) const;
+  //! Compute bounding box for full surface.
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theTol) const;
 
-  //! Add bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
-  Standard_EXPORT void Add(double   theUMin,
-                           double   theUMax,
-                           double   theVMin,
-                           double   theVMax,
-                           double   theTol,
-                           Bnd_Box& theBox) const;
+  //! Compute bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theUMin,
+                                            double theUMax,
+                                            double theVMin,
+                                            double theVMax,
+                                            double theTol) const;
 
-  //! Add precise bounding box for full surface.
-  void AddOptimal(double theTol, Bnd_Box& theBox) const { Add(theTol, theBox); }
+  //! Compute precise bounding box for full surface.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const { return Box(theTol); }
 
-  //! Add precise bounding box for surface patch.
-  void AddOptimal(double   theUMin,
-                  double   theUMax,
-                  double   theVMin,
-                  double   theVMax,
-                  double   theTol,
-                  Bnd_Box& theBox) const
+  //! Compute precise bounding box for surface patch.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theUMin,
+                                   double theUMax,
+                                   double theVMin,
+                                   double theVMax,
+                                   double theTol) const
   {
-    Add(theUMin, theUMax, theVMin, theVMax, theTol, theBox);
+    return Box(theUMin, theUMax, theVMin, theVMax, theTol);
   }
 
 private:

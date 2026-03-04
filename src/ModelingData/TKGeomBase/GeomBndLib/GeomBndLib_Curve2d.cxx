@@ -196,69 +196,106 @@ double GeomBndLib_Curve2d::effectiveU2() const
 
 //=================================================================================================
 
-void GeomBndLib_Curve2d::Add(double theTol, Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_Curve2d::Box(double theTol) const
 {
   if (adaptor() != nullptr)
   {
-    Add(effectiveU1(), effectiveU2(), theTol, theBox);
-    return;
+    return Box(effectiveU1(), effectiveU2(), theTol);
   }
-  std::visit(
-    [theTol, &theBox](const auto& theEval) {
+
+  return std::visit(
+    [theTol](const auto& theEval) -> Bnd_Box2d {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
       {
-        theEval.Add(theTol, theBox);
+        return theEval.Box(theTol);
+      }
+      return Bnd_Box2d{};
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+Bnd_Box2d GeomBndLib_Curve2d::Box(double theU1, double theU2, double theTol) const
+{
+  return std::visit(
+    [theU1, theU2, theTol](const auto& theEval) -> Bnd_Box2d {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        return theEval.Box(theU1, theU2, theTol);
+      }
+      return Bnd_Box2d{};
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+Bnd_Box2d GeomBndLib_Curve2d::BoxOptimal(double theTol) const
+{
+  if (adaptor() != nullptr)
+  {
+    return BoxOptimal(effectiveU1(), effectiveU2(), theTol);
+  }
+
+  return std::visit(
+    [theTol](const auto& theEval) -> Bnd_Box2d {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (std::is_same_v<T, std::monostate>)
+      {
+        return Bnd_Box2d{};
+      }
+      else if constexpr (std::is_same_v<T, GeomBndLib_OtherCurve2d>)
+      {
+        return theEval.BoxOptimal(theTol);
+      }
+      else
+      {
+        return theEval.BoxOptimal(theEval.Geometry()->FirstParameter(),
+                                  theEval.Geometry()->LastParameter(),
+                                  theTol);
       }
     },
     myEvaluator);
+}
+
+//=================================================================================================
+
+Bnd_Box2d GeomBndLib_Curve2d::BoxOptimal(double theU1, double theU2, double theTol) const
+{
+  return std::visit(
+    [theU1, theU2, theTol](const auto& theEval) -> Bnd_Box2d {
+      using T = std::decay_t<decltype(theEval)>;
+      if constexpr (!std::is_same_v<T, std::monostate>)
+      {
+        return theEval.BoxOptimal(theU1, theU2, theTol);
+      }
+      return Bnd_Box2d{};
+    },
+    myEvaluator);
+}
+
+//=================================================================================================
+
+void GeomBndLib_Curve2d::Add(double theTol, Bnd_Box2d& theBox) const
+{
+  theBox.Add(Box(theTol));
 }
 
 //=================================================================================================
 
 void GeomBndLib_Curve2d::Add(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const
 {
-  std::visit(
-    [theU1, theU2, theTol, &theBox](const auto& theEval) {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
-      {
-        theEval.Add(theU1, theU2, theTol, theBox);
-      }
-    },
-    myEvaluator);
+  theBox.Add(Box(theU1, theU2, theTol));
 }
 
 //=================================================================================================
 
 void GeomBndLib_Curve2d::AddOptimal(double theTol, Bnd_Box2d& theBox) const
 {
-  if (adaptor() != nullptr)
-  {
-    AddOptimal(effectiveU1(), effectiveU2(), theTol, theBox);
-    return;
-  }
-
-  std::visit(
-    [theTol, &theBox](const auto& theEval) {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (std::is_same_v<T, std::monostate>)
-      {
-        return;
-      }
-      else if constexpr (std::is_same_v<T, GeomBndLib_OtherCurve2d>)
-      {
-        theEval.AddOptimal(theTol, theBox);
-      }
-      else
-      {
-        theEval.AddOptimal(theEval.Geometry()->FirstParameter(),
-                           theEval.Geometry()->LastParameter(),
-                           theTol,
-                           theBox);
-      }
-    },
-    myEvaluator);
+  theBox.Add(BoxOptimal(theTol));
 }
 
 //=================================================================================================
@@ -268,13 +305,5 @@ void GeomBndLib_Curve2d::AddOptimal(double     theU1,
                                     double     theTol,
                                     Bnd_Box2d& theBox) const
 {
-  std::visit(
-    [theU1, theU2, theTol, &theBox](const auto& theEval) {
-      using T = std::decay_t<decltype(theEval)>;
-      if constexpr (!std::is_same_v<T, std::monostate>)
-      {
-        theEval.AddOptimal(theU1, theU2, theTol, theBox);
-      }
-    },
-    myEvaluator);
+  theBox.Add(BoxOptimal(theU1, theU2, theTol));
 }

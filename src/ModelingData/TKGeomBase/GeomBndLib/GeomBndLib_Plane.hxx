@@ -40,51 +40,51 @@ public:
 
   const occ::handle<Geom_Plane>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for full plane (infinite).
-  void Add(double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for full plane (infinite).
+  [[nodiscard]] Bnd_Box Box(double theTol) const
   {
     double aU1, aU2, aV1, aV2;
     myGeom->Bounds(aU1, aU2, aV1, aV2);
-    Add(aU1, aU2, aV1, aV2, theTol, theBox);
+    return Box(aU1, aU2, aV1, aV2, theTol);
   }
 
-  //! Add bounding box for plane patch [theUMin, theUMax] x [theVMin, theVMax].
-  void Add(double   theUMin,
-           double   theUMax,
-           double   theVMin,
-           double   theVMax,
-           double   theTol,
-           Bnd_Box& theBox) const
+  //! Compute bounding box for plane patch [theUMin, theUMax] x [theVMin, theVMax].
+  [[nodiscard]] Bnd_Box Box(double theUMin,
+                            double theUMax,
+                            double theVMin,
+                            double theVMax,
+                            double theTol) const
   {
     const gp_Pln& aPln = myGeom->Pln();
+    Bnd_Box       aBox;
 
     if (Precision::IsInfinite(theVMin) || Precision::IsInfinite(theVMax)
         || Precision::IsInfinite(theUMin) || Precision::IsInfinite(theUMax))
     {
-      TreatInfinitePlane(aPln, theUMin, theUMax, theVMin, theVMax, theTol, theBox);
-      return;
+      TreatInfinitePlane(aPln, theUMin, theUMax, theVMin, theVMax, theTol, aBox);
+      return aBox;
     }
 
-    theBox.Add(ElSLib::Value(theUMin, theVMin, aPln));
-    theBox.Add(ElSLib::Value(theUMin, theVMax, aPln));
-    theBox.Add(ElSLib::Value(theUMax, theVMin, aPln));
-    theBox.Add(ElSLib::Value(theUMax, theVMax, aPln));
-    theBox.Enlarge(theTol);
+    aBox.Add(ElSLib::Value(theUMin, theVMin, aPln));
+    aBox.Add(ElSLib::Value(theUMin, theVMax, aPln));
+    aBox.Add(ElSLib::Value(theUMax, theVMin, aPln));
+    aBox.Add(ElSLib::Value(theUMax, theVMax, aPln));
+    aBox.Enlarge(theTol);
+    return aBox;
   }
 
-  //! For analytical surfaces, AddOptimal is same as Add.
-  void AddOptimal(double   theUMin,
-                  double   theUMax,
-                  double   theVMin,
-                  double   theVMax,
-                  double   theTol,
-                  Bnd_Box& theBox) const
+  //! For analytical surfaces, BoxOptimal is same as Box.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theUMin,
+                                   double theUMax,
+                                   double theVMin,
+                                   double theVMax,
+                                   double theTol) const
   {
-    Add(theUMin, theUMax, theVMin, theVMax, theTol, theBox);
+    return Box(theUMin, theUMax, theVMin, theVMax, theTol);
   }
 
-  //! AddOptimal for full surface.
-  void AddOptimal(double theTol, Bnd_Box& theBox) const { Add(theTol, theBox); }
+  //! Compute optimal bounding box for full surface.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const { return Box(theTol); }
 
 private:
   //! Compute barycenter point for infinite plane.

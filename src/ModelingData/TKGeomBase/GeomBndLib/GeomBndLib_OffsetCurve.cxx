@@ -27,7 +27,7 @@
 
 //=================================================================================================
 
-void GeomBndLib_OffsetCurve::Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OffsetCurve::Box(double theU1, double theU2, double theTol) const
 {
   // For a 3D offset curve: P_off(t) = P(t) + d * (T(t) x V) / |T(t) x V|
   // The displacement vector (T x V)/|T x V| is always perpendicular to
@@ -47,10 +47,9 @@ void GeomBndLib_OffsetCurve::Add(double theU1, double theU2, double theTol, Bnd_
       aShift.Normalize();
       aShift *= myGeom->Offset();
       gp_Pnt aLoc = aBasisLin.Location().Translated(aShift);
-      GeomBndLib_Line::Add(gp_Lin(aLoc, aBasisLin.Direction()), theU1, theU2, 0., aLocalBox);
+      aLocalBox = GeomBndLib_Line::Box(gp_Lin(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
       aLocalBox.Enlarge(theTol);
-      theBox.Add(aLocalBox);
-      return;
+      return aLocalBox;
     }
   }
 
@@ -82,17 +81,15 @@ void GeomBndLib_OffsetCurve::Add(double theU1, double theU2, double theTol, Bnd_
               {
                 gp_Circ aOffsetCirc = aBasisCirc;
                 aOffsetCirc.SetRadius(aNewRadius);
-                GeomBndLib_Circle::Add(aOffsetCirc, theU1, theU2, 0., aLocalBox);
+                aLocalBox = GeomBndLib_Circle::Box(aOffsetCirc, theU1, theU2, 0.);
                 aLocalBox.Enlarge(theTol);
-                theBox.Add(aLocalBox);
-                return;
+                return aLocalBox;
               }
               if (std::abs(aNewRadius) <= Precision::Confusion())
               {
                 aLocalBox.Add(aBasisCirc.Location());
                 aLocalBox.Enlarge(theTol);
-                theBox.Add(aLocalBox);
-                return;
+                return aLocalBox;
               }
             }
           }
@@ -102,11 +99,11 @@ void GeomBndLib_OffsetCurve::Add(double theU1, double theU2, double theTol, Bnd_
   }
 
   GeomBndLib_Curve aCurveEval(aBasis);
-  aCurveEval.Add(theU1, theU2, 0., aLocalBox);
+  aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
 
   if (aLocalBox.IsVoid())
   {
-    return;
+    return aLocalBox;
   }
 
   // Per-coordinate enlargement based on reference direction.
@@ -145,5 +142,5 @@ void GeomBndLib_OffsetCurve::Add(double theU1, double theU2, double theTol, Bnd_
     aLocalBox.OpenZmax();
 
   aLocalBox.Enlarge(theTol);
-  theBox.Add(aLocalBox);
+  return aLocalBox;
 }

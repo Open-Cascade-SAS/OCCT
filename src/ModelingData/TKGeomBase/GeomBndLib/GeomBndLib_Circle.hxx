@@ -42,30 +42,29 @@ public:
 
   const occ::handle<Geom_Circle>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for full circle.
-  void Add(double theTol, Bnd_Box& theBox) const { Add(myGeom->Circ(), theTol, theBox); }
+  //! Compute bounding box for full circle.
+  [[nodiscard]] Bnd_Box Box(double theTol) const { return Box(myGeom->Circ(), theTol); }
 
-  //! Add bounding box for arc [theU1, theU2].
-  void Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Bnd_Box Box(double theU1, double theU2, double theTol) const
   {
-    Add(myGeom->Circ(), theU1, theU2, theTol, theBox);
+    return Box(myGeom->Circ(), theU1, theU2, theTol);
   }
 
-  //! For analytical curves, AddOptimal is same as Add.
-  void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! For analytical curves, BoxOptimal is same as Box.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theU1, double theU2, double theTol) const
   {
-    Add(theU1, theU2, theTol, theBox);
+    return Box(theU1, theU2, theTol);
   }
 
-  //! Add bounding box for a full circle defined by gp_Circ.
-  Standard_EXPORT static void Add(const gp_Circ& theCirc, double theTol, Bnd_Box& theBox);
+  //! Compute bounding box for a full circle defined by gp_Circ.
+  [[nodiscard]] Standard_EXPORT static Bnd_Box Box(const gp_Circ& theCirc, double theTol);
 
-  //! Add bounding box for a circle arc [theU1, theU2] defined by gp_Circ.
-  Standard_EXPORT static void Add(const gp_Circ& theCirc,
-                                  double         theU1,
-                                  double         theU2,
-                                  double         theTol,
-                                  Bnd_Box&       theBox);
+  //! Compute bounding box for a circle arc [theU1, theU2] defined by gp_Circ.
+  [[nodiscard]] Standard_EXPORT static Bnd_Box Box(const gp_Circ& theCirc,
+                                                   double         theU1,
+                                                   double         theU2,
+                                                   double         theTol);
 
 private:
   occ::handle<Geom_Circle> myGeom;

@@ -22,7 +22,7 @@
 #include <functional>
 
 //! Computes bounding box for a general 2D curve via adaptor.
-//! Uses sampling + PSO/Brent numerical optimization for AddOptimal.
+//! Uses sampling + PSO/Brent numerical optimization for BoxOptimal.
 class GeomBndLib_OtherCurve2d
 {
 public:
@@ -38,20 +38,20 @@ public:
   GeomBndLib_OtherCurve2d(GeomBndLib_OtherCurve2d&&)                 = delete;
   GeomBndLib_OtherCurve2d& operator=(GeomBndLib_OtherCurve2d&&)      = delete;
 
-  //! Add bounding box for full curve.
-  Standard_EXPORT void Add(double theTol, Bnd_Box2d& theBox) const;
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theTol) const;
 
-  //! Add bounding box for arc [theU1, theU2].
-  Standard_EXPORT void Add(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const;
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theU1, double theU2, double theTol) const;
 
-  //! Add precise bounding box for full curve.
-  void AddOptimal(double theTol, Bnd_Box2d& theBox) const
+  //! Compute precise bounding box for full curve.
+  [[nodiscard]] Bnd_Box2d BoxOptimal(double theTol) const
   {
-    AddOptimal(myCurve.get().FirstParameter(), myCurve.get().LastParameter(), theTol, theBox);
+    return BoxOptimal(myCurve.get().FirstParameter(), myCurve.get().LastParameter(), theTol);
   }
 
-  //! Add precise bounding box using PSO + Brent optimization.
-  Standard_EXPORT void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const;
+  //! Compute precise bounding box using PSO + Brent optimization.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const;
 
 private:
   std::reference_wrapper<const Adaptor2d_Curve2d> myCurve;

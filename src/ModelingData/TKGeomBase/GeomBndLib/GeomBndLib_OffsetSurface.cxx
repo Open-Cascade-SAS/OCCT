@@ -20,21 +20,20 @@
 
 //=================================================================================================
 
-void GeomBndLib_OffsetSurface::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OffsetSurface::Box(double theTol) const
 {
   double aU1 = 0., aU2 = 0., aV1 = 0., aV2 = 0.;
   myGeom->Bounds(aU1, aU2, aV1, aV2);
-  Add(aU1, aU2, aV1, aV2, theTol, theBox);
+  return Box(aU1, aU2, aV1, aV2, theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_OffsetSurface::Add(double   theUMin,
-                                   double   theUMax,
-                                   double   theVMin,
-                                   double   theVMax,
-                                   double   theTol,
-                                   Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OffsetSurface::Box(double   theUMin,
+                                      double   theUMax,
+                                      double   theVMin,
+                                      double   theVMax,
+                                      double   theTol) const
 {
   const occ::handle<Geom_Surface> anEquiv = myGeom->Surface();
   if (!anEquiv.IsNull())
@@ -42,19 +41,17 @@ void GeomBndLib_OffsetSurface::Add(double   theUMin,
     GeomBndLib_Surface aSurfEval(anEquiv);
     if (aSurfEval.GetType() != GeomAbs_OtherSurface)
     {
-      aSurfEval.Add(theUMin, theUMax, theVMin, theVMax, theTol, theBox);
-      return;
+      return aSurfEval.Box(theUMin, theUMax, theVMin, theVMax, theTol);
     }
   }
 
   // Conservative fallback: basis surface box enlarged by |offset|.
   const occ::handle<Geom_Surface>& aBasis   = myGeom->BasisSurface();
   const double                     anOffset = std::abs(myGeom->Offset());
-  Bnd_Box                          aLocalBox;
   GeomBndLib_Surface               aSurfEval(aBasis);
-  aSurfEval.Add(theUMin, theUMax, theVMin, theVMax, 0., aLocalBox);
+  Bnd_Box                          aLocalBox = aSurfEval.Box(theUMin, theUMax, theVMin, theVMax, 0.);
 
   aLocalBox.Enlarge(anOffset);
   aLocalBox.Enlarge(theTol);
-  theBox.Add(aLocalBox);
+  return aLocalBox;
 }

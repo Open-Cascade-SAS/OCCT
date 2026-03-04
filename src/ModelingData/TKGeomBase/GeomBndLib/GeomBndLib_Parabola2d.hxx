@@ -42,30 +42,29 @@ public:
 
   const occ::handle<Geom2d_Parabola>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for arc [theU1, theU2].
-  void Add(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Bnd_Box2d Box(double theU1, double theU2, double theTol) const
   {
-    Add(myGeom->Parab2d(), theU1, theU2, theTol, theBox);
+    return Box(myGeom->Parab2d(), theU1, theU2, theTol);
   }
 
-  //! Add bounding box for full curve.
-  void Add(double theTol, Bnd_Box2d& theBox) const
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Bnd_Box2d Box(double theTol) const
   {
-    Add(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+    return Box(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
   }
 
-  //! For analytical curves, AddOptimal is same as Add.
-  void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const
+  //! For analytical curves, BoxOptimal is same as Box.
+  [[nodiscard]] Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const
   {
-    Add(theU1, theU2, theTol, theBox);
+    return Box(theU1, theU2, theTol);
   }
 
-  //! Add bounding box for a 2D parabola arc [theU1, theU2] defined by gp_Parab2d.
-  Standard_EXPORT static void Add(const gp_Parab2d& theParab,
-                                  double            theU1,
-                                  double            theU2,
-                                  double            theTol,
-                                  Bnd_Box2d&        theBox);
+  //! Compute bounding box for a 2D parabola arc [theU1, theU2] defined by gp_Parab2d.
+  [[nodiscard]] Standard_EXPORT static Bnd_Box2d Box(const gp_Parab2d& theParab,
+                                                     double            theU1,
+                                                     double            theU2,
+                                                     double            theTol);
 
 private:
   occ::handle<Geom2d_Parabola> myGeom;

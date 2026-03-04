@@ -23,25 +23,24 @@
 
 //=================================================================================================
 
-void GeomBndLib_OtherSurface::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OtherSurface::Box(double theTol) const
 {
-  Add(mySurf.get().FirstUParameter(),
-      mySurf.get().LastUParameter(),
-      mySurf.get().FirstVParameter(),
-      mySurf.get().LastVParameter(),
-      theTol,
-      theBox);
+  return Box(mySurf.get().FirstUParameter(),
+             mySurf.get().LastUParameter(),
+             mySurf.get().FirstVParameter(),
+             mySurf.get().LastVParameter(),
+             theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_OtherSurface::Add(double   theUMin,
-                              double   theUMax,
-                              double   theVMin,
-                              double   theVMax,
-                              double   theTol,
-                              Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OtherSurface::Box(double   theUMin,
+                                     double   theUMax,
+                                     double   theVMin,
+                                     double   theVMax,
+                                     double   theTol) const
 {
+  Bnd_Box aBox;
   const Adaptor3d_Surface& aSurf = mySurf.get();
   const int                Nu    = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aSurf, theUMin, theUMax);
   const int                Nv    = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aSurf, theVMin, theVMax);
@@ -64,21 +63,22 @@ void GeomBndLib_OtherSurface::Add(double   theUMin,
   {
     for (int j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
     {
-      theBox.Add(aGrid.Value(i, j));
+      aBox.Add(aGrid.Value(i, j));
     }
   }
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_OtherSurface::AddOptimal(double   theUMin,
-                                     double   theUMax,
-                                     double   theVMin,
-                                     double   theVMax,
-                                     double   theTol,
-                                     Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_OtherSurface::BoxOptimal(double   theUMin,
+                                            double   theUMax,
+                                            double   theVMin,
+                                            double   theVMax,
+                                            double   theTol) const
 {
+  Bnd_Box aBox;
   const Adaptor3d_Surface& aSurf = mySurf.get();
   const int                Nu    = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aSurf, theUMin, theUMax);
   const int                Nv    = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aSurf, theVMin, theVMax);
@@ -211,7 +211,8 @@ void GeomBndLib_OtherSurface::AddOptimal(double   theUMin,
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  theBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
+  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

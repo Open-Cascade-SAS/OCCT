@@ -54,6 +54,18 @@ public:
   //! Return detected curve type.
   GeomAbs_CurveType GetType() const { return myCurveType; }
 
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theTol) const;
+
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d Box(double theU1, double theU2, double theTol) const;
+
+  //! Compute precise bounding box for full curve.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theTol) const;
+
+  //! Compute precise bounding box for arc [theU1, theU2].
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const;
+
   //! Add bounding box for full curve.
   Standard_EXPORT void Add(double theTol, Bnd_Box2d& theBox) const;
 

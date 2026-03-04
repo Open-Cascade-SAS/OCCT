@@ -231,32 +231,34 @@ double AdjustExtr2dCurve(const Adaptor2d_Curve2d& theCurve,
 
 //=================================================================================================
 
-void GeomBndLib_BezierCurve2d::Add(double theTol, Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theTol) const
 {
-  Add(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+  return Box(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierCurve2d::Add(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theU1, double theU2, double theTol) const
 {
+  Bnd_Box2d aBox;
   constexpr double  weakness = 1.5;
   int               N        = myGeom->Degree();
   Geom2dAdaptor_Curve aGACurve(myGeom);
   Bnd_Box2d         aB1;
   double            tol = FillBox2d(aB1, aGACurve, theU1, theU2, N);
   aB1.Enlarge(weakness * tol);
-  ReduceSplineBox2d(myGeom, aB1, theBox);
-  theBox.Enlarge(theTol);
+  ReduceSplineBox2d(myGeom, aB1, aBox);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_BezierCurve2d::AddOptimal(double theU1,
-                                      double theU2,
-                                      double theTol,
-                                      Bnd_Box2d& theBox) const
+Bnd_Box2d GeomBndLib_BezierCurve2d::BoxOptimal(double theU1,
+                                               double theU2,
+                                               double theTol) const
 {
+  Bnd_Box2d aBox;
   Geom2dAdaptor_Curve aGACurve(myGeom);
   int                 Nu = GeomBndLib_SamplingHelpers::ComputeNbSamples2d(aGACurve, theU1, theU2);
 
@@ -329,7 +331,8 @@ void GeomBndLib_BezierCurve2d::AddOptimal(double theU1,
     CoordMax[k] = CMax;
   }
 
-  theBox.Add(gp_Pnt2d(CoordMin[0], CoordMin[1]));
-  theBox.Add(gp_Pnt2d(CoordMax[0], CoordMax[1]));
-  theBox.Enlarge(eps);
+  aBox.Add(gp_Pnt2d(CoordMin[0], CoordMin[1]));
+  aBox.Add(gp_Pnt2d(CoordMax[0], CoordMax[1]));
+  aBox.Enlarge(eps);
+  return aBox;
 }

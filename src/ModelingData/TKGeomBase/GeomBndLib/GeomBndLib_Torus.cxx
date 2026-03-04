@@ -108,20 +108,21 @@ static void computeDegeneratedTorus(const gp_Torus& theTorus,
 
   // Add boundary iso-curves of the patch.
   gp_Circ aC = ElSLib::TorusUIso(aPos, aRa, aRi, theUMin);
-  GeomBndLib_Circle::Add(aC,theVMin, theVMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theVMin, theVMax, 0.));
   aC = ElSLib::TorusUIso(aPos, aRa, aRi, theUMax);
-  GeomBndLib_Circle::Add(aC,theVMin, theVMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theVMin, theVMax, 0.));
 
   aC = ElSLib::TorusVIso(aPos, aRa, aRi, theVMin);
-  GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
   aC = ElSLib::TorusVIso(aPos, aRa, aRi, theVMax);
-  GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+  theBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
 }
 
 //=================================================================================================
 
-void GeomBndLib_Torus::Add(double theTol, Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Torus::Box(double theTol) const
 {
+  Bnd_Box aBox;
   const gp_Torus aTorus = myGeom->Torus();
   const double   aRMa   = aTorus.MajorRadius();
   const double   aRmi   = aTorus.MinorRadius();
@@ -135,35 +136,36 @@ void GeomBndLib_Torus::Add(double theTol, Bnd_Box& theBox) const
   const gp_XYZ aRYd  = aR * aYd;
   const gp_XYZ aRiZd = aRmi * aZd;
   // Add 8 corner points of torus bounding box.
-  theBox.Add(gp_Pnt(aO - aRXd - aRYd + aRiZd));
-  theBox.Add(gp_Pnt(aO - aRXd - aRYd - aRiZd));
-  theBox.Add(gp_Pnt(aO + aRXd - aRYd + aRiZd));
-  theBox.Add(gp_Pnt(aO + aRXd - aRYd - aRiZd));
-  theBox.Add(gp_Pnt(aO - aRXd + aRYd + aRiZd));
-  theBox.Add(gp_Pnt(aO - aRXd + aRYd - aRiZd));
-  theBox.Add(gp_Pnt(aO + aRXd + aRYd + aRiZd));
-  theBox.Add(gp_Pnt(aO + aRXd + aRYd - aRiZd));
-  theBox.Enlarge(theTol);
+  aBox.Add(gp_Pnt(aO - aRXd - aRYd + aRiZd));
+  aBox.Add(gp_Pnt(aO - aRXd - aRYd - aRiZd));
+  aBox.Add(gp_Pnt(aO + aRXd - aRYd + aRiZd));
+  aBox.Add(gp_Pnt(aO + aRXd - aRYd - aRiZd));
+  aBox.Add(gp_Pnt(aO - aRXd + aRYd + aRiZd));
+  aBox.Add(gp_Pnt(aO - aRXd + aRYd - aRiZd));
+  aBox.Add(gp_Pnt(aO + aRXd + aRYd + aRiZd));
+  aBox.Add(gp_Pnt(aO + aRXd + aRYd - aRiZd));
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_Torus::Add(double   theUMin,
-                            double   theUMax,
-                            double   theVMin,
-                            double   theVMax,
-                            double   theTol,
-                            Bnd_Box& theBox) const
+Bnd_Box GeomBndLib_Torus::Box(double   theUMin,
+                              double   theUMax,
+                              double   theVMin,
+                              double   theVMax,
+                              double   theTol) const
 {
+  Bnd_Box aBox;
   const gp_Torus aTorus = myGeom->Torus();
   const double   aRa    = aTorus.MajorRadius();
   const double   aRi    = aTorus.MinorRadius();
 
   if (aRa < aRi)
   {
-    computeDegeneratedTorus(aTorus, theUMin, theUMax, theVMin, theVMax, theBox);
-    theBox.Enlarge(theTol);
-    return;
+    computeDegeneratedTorus(aTorus, theUMin, theUMax, theVMin, theVMax, aBox);
+    aBox.Enlarge(theTol);
+    return aBox;
   }
 
   // Compute cross-section V parameter range as integer multiples of PI/4.
@@ -182,7 +184,7 @@ void GeomBndLib_Torus::Add(double   theUMin,
 
   if (aFi2 < aFi1)
   {
-    return;
+    return aBox;
   }
 
   constexpr double THE_COS_PI4 = 0.70710678118654746;
@@ -206,11 +208,11 @@ void GeomBndLib_Torus::Add(double   theUMin,
     const gp_Pnt aCenter(aLocXYZ + (aRi * aZMult[theIdx]) * aZDir);
     if (aRadius < Precision::Confusion())
     {
-      theBox.Add(aCenter);
+      aBox.Add(aCenter);
       return;
     }
     gp_Circ aC(gp_Ax2(aCenter, aNorm, aXDir), aRadius);
-    GeomBndLib_Circle::Add(aC,theUMin, theUMax, 0., theBox);
+    aBox.Add(GeomBndLib_Circle::Box(aC, theUMin, theUMax, 0.));
   };
 
   for (int i = aFi1; i <= aFi2; ++i)
@@ -218,5 +220,6 @@ void GeomBndLib_Torus::Add(double   theUMin,
     addTorusPoint(((i % 8) + 8) % 8);
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

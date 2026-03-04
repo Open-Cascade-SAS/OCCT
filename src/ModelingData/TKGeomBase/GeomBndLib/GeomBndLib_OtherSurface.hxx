@@ -22,7 +22,7 @@
 #include <functional>
 
 //! Computes bounding box for a general surface via adaptor.
-//! Uses grid sampling for Add and PSO/Powell numerical optimization for AddOptimal.
+//! Uses grid sampling for Box and PSO/Powell numerical optimization for BoxOptimal.
 class GeomBndLib_OtherSurface
 {
 public:
@@ -38,35 +38,32 @@ public:
   GeomBndLib_OtherSurface(GeomBndLib_OtherSurface&&)                 = delete;
   GeomBndLib_OtherSurface& operator=(GeomBndLib_OtherSurface&&)      = delete;
 
-  //! Add bounding box for full surface.
-  Standard_EXPORT void Add(double theTol, Bnd_Box& theBox) const;
+  //! Compute bounding box for full surface.
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theTol) const;
 
-  //! Add bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
-  Standard_EXPORT void Add(double   theUMin,
-                           double   theUMax,
-                           double   theVMin,
-                           double   theVMax,
-                           double   theTol,
-                           Bnd_Box& theBox) const;
+  //! Compute bounding box for surface patch [theUMin, theUMax] x [theVMin, theVMax].
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theUMin,
+                                            double theUMax,
+                                            double theVMin,
+                                            double theVMax,
+                                            double theTol) const;
 
-  //! Add precise bounding box for full surface.
-  void AddOptimal(double theTol, Bnd_Box& theBox) const
+  //! Compute precise bounding box for full surface.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const
   {
-    AddOptimal(mySurf.get().FirstUParameter(),
-               mySurf.get().LastUParameter(),
-               mySurf.get().FirstVParameter(),
-               mySurf.get().LastVParameter(),
-               theTol,
-               theBox);
+    return BoxOptimal(mySurf.get().FirstUParameter(),
+                      mySurf.get().LastUParameter(),
+                      mySurf.get().FirstVParameter(),
+                      mySurf.get().LastVParameter(),
+                      theTol);
   }
 
-  //! Add precise bounding box using PSO + Powell optimization.
-  Standard_EXPORT void AddOptimal(double   theUMin,
-                                  double   theUMax,
-                                  double   theVMin,
-                                  double   theVMax,
-                                  double   theTol,
-                                  Bnd_Box& theBox) const;
+  //! Compute precise bounding box using PSO + Powell optimization.
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theUMin,
+                                                   double theUMax,
+                                                   double theVMin,
+                                                   double theVMax,
+                                                   double theTol) const;
 
 private:
   std::reference_wrapper<const Adaptor3d_Surface> mySurf;

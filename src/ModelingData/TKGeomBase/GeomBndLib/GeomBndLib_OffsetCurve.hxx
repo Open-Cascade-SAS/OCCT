@@ -38,25 +38,25 @@ public:
 
   const occ::handle<Geom_OffsetCurve>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for full curve.
-  void Add(double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Bnd_Box Box(double theTol) const
   {
-    Add(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+    return Box(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
   }
 
-  //! Add bounding box for arc [theU1, theU2].
-  Standard_EXPORT void Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const;
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Standard_EXPORT Bnd_Box Box(double theU1, double theU2, double theTol) const;
 
-  //! Add precise bounding box for full curve.
-  void AddOptimal(double theTol, Bnd_Box& theBox) const
+  //! Compute precise bounding box for full curve.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const
   {
-    AddOptimal(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+    return BoxOptimal(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
   }
 
-  //! Add precise bounding box for arc [theU1, theU2].
-  void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! Compute precise bounding box for arc [theU1, theU2].
+  [[nodiscard]] Bnd_Box BoxOptimal(double theU1, double theU2, double theTol) const
   {
-    Add(theU1, theU2, theTol, theBox);
+    return Box(theU1, theU2, theTol);
   }
 
 private:

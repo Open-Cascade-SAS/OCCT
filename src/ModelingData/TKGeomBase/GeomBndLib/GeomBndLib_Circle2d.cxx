@@ -20,8 +20,9 @@
 
 //=================================================================================================
 
-void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc, double theTol, Bnd_Box2d& theBox)
+Bnd_Box2d GeomBndLib_Circle2d::Box(const gp_Circ2d& theCirc, double theTol)
 {
+  Bnd_Box2d aBox;
   const double aR  = theCirc.Radius();
   const gp_XY  aO  = theCirc.Location().XY();
   const gp_XY  aXd = theCirc.XAxis().Direction().XY();
@@ -37,18 +38,19 @@ void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc, double theTol, Bnd_Box2d
     aMin[k - 1] = aO.Coord(k) - aAmp;
     aMax[k - 1] = aO.Coord(k) + aAmp;
   }
-  theBox.Update(aMin[0], aMin[1], aMax[0], aMax[1]);
-  theBox.Enlarge(theTol);
+  aBox.Update(aMin[0], aMin[1], aMax[0], aMax[1]);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc,
-                              double           theU1,
-                              double           theU2,
-                              double           theTol,
-                              Bnd_Box2d&       theBox)
+Bnd_Box2d GeomBndLib_Circle2d::Box(const gp_Circ2d& theCirc,
+                                   double           theU1,
+                                   double           theU2,
+                                   double           theTol)
 {
+  Bnd_Box2d aBox;
   const double aR  = theCirc.Radius();
   const gp_XY  aO  = theCirc.Location().XY();
   const gp_XY  aXd = theCirc.XAxis().Direction().XY();
@@ -56,16 +58,15 @@ void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc,
 
   if (theU2 - theU1 >= 2. * M_PI - Precision::PConfusion())
   {
-    Add(theCirc, theTol, theBox);
-    return;
+    return Box(theCirc, theTol);
   }
 
   // Add arc endpoints.
   auto aEval = [&](double theT) -> gp_Pnt2d {
     return gp_Pnt2d(aO + aR * std::cos(theT) * aXd + aR * std::sin(theT) * aYd);
   };
-  theBox.Add(aEval(theU1));
-  theBox.Add(aEval(theU2));
+  aBox.Add(aEval(theU1));
+  aBox.Add(aEval(theU2));
 
   // For each coordinate, check if the extremal parameter lies within the arc.
   for (int k = 1; k <= 2; ++k)
@@ -88,14 +89,15 @@ void GeomBndLib_Circle2d::Add(const gp_Circ2d& theCirc,
     double aTk = ElCLib::InPeriod(aTExtrMin, theU1, theU1 + 2. * M_PI);
     if (aTk >= theU1 && aTk <= theU2)
     {
-      theBox.Add(aEval(aTExtrMin));
+      aBox.Add(aEval(aTExtrMin));
     }
     aTk = ElCLib::InPeriod(aTExtrMax, theU1, theU1 + 2. * M_PI);
     if (aTk >= theU1 && aTk <= theU2)
     {
-      theBox.Add(aEval(aTExtrMax));
+      aBox.Add(aEval(aTExtrMax));
     }
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

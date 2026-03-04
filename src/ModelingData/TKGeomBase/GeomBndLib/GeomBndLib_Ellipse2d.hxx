@@ -42,30 +42,29 @@ public:
 
   const occ::handle<Geom2d_Ellipse>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for full ellipse.
-  void Add(double theTol, Bnd_Box2d& theBox) const { Add(myGeom->Elips2d(), theTol, theBox); }
+  //! Compute bounding box for full ellipse.
+  [[nodiscard]] Bnd_Box2d Box(double theTol) const { return Box(myGeom->Elips2d(), theTol); }
 
-  //! Add bounding box for arc [theU1, theU2].
-  void Add(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Bnd_Box2d Box(double theU1, double theU2, double theTol) const
   {
-    Add(myGeom->Elips2d(), theU1, theU2, theTol, theBox);
+    return Box(myGeom->Elips2d(), theU1, theU2, theTol);
   }
 
-  //! For analytical curves, AddOptimal is same as Add.
-  void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box2d& theBox) const
+  //! For analytical curves, BoxOptimal is same as Box.
+  [[nodiscard]] Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const
   {
-    Add(theU1, theU2, theTol, theBox);
+    return Box(theU1, theU2, theTol);
   }
 
-  //! Add bounding box for a full ellipse defined by gp_Elips2d.
-  Standard_EXPORT static void Add(const gp_Elips2d& theElips, double theTol, Bnd_Box2d& theBox);
+  //! Compute bounding box for a full ellipse defined by gp_Elips2d.
+  [[nodiscard]] Standard_EXPORT static Bnd_Box2d Box(const gp_Elips2d& theElips, double theTol);
 
-  //! Add bounding box for an ellipse arc [theU1, theU2] defined by gp_Elips2d.
-  Standard_EXPORT static void Add(const gp_Elips2d& theElips,
-                                  double            theU1,
-                                  double            theU2,
-                                  double            theTol,
-                                  Bnd_Box2d&        theBox);
+  //! Compute bounding box for an ellipse arc [theU1, theU2] defined by gp_Elips2d.
+  [[nodiscard]] Standard_EXPORT static Bnd_Box2d Box(const gp_Elips2d& theElips,
+                                                     double            theU1,
+                                                     double            theU2,
+                                                     double            theTol);
 
 private:
   occ::handle<Geom2d_Ellipse> myGeom;

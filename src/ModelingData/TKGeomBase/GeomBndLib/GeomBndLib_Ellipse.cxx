@@ -20,8 +20,9 @@
 
 //=================================================================================================
 
-void GeomBndLib_Ellipse::Add(const gp_Elips& theElips, double theTol, Bnd_Box& theBox)
+Bnd_Box GeomBndLib_Ellipse::Box(const gp_Elips& theElips, double theTol)
 {
+  Bnd_Box      aBox;
   const double aMajR = theElips.MajorRadius();
   const double aMinR = theElips.MinorRadius();
   const gp_XYZ aO    = theElips.Location().XYZ();
@@ -38,18 +39,19 @@ void GeomBndLib_Ellipse::Add(const gp_Elips& theElips, double theTol, Bnd_Box& t
     aMin[k - 1] = aO.Coord(k) - aAmp;
     aMax[k - 1] = aO.Coord(k) + aAmp;
   }
-  theBox.Update(aMin[0], aMin[1], aMin[2], aMax[0], aMax[1], aMax[2]);
-  theBox.Enlarge(theTol);
+  aBox.Update(aMin[0], aMin[1], aMin[2], aMax[0], aMax[1], aMax[2]);
+  aBox.Enlarge(theTol);
+  return aBox;
 }
 
 //=================================================================================================
 
-void GeomBndLib_Ellipse::Add(const gp_Elips& theElips,
-                             double          theU1,
-                             double          theU2,
-                             double          theTol,
-                             Bnd_Box&        theBox)
+Bnd_Box GeomBndLib_Ellipse::Box(const gp_Elips& theElips,
+                                 double          theU1,
+                                 double          theU2,
+                                 double          theTol)
 {
+  Bnd_Box      aBox;
   const double aMajR = theElips.MajorRadius();
   const double aMinR = theElips.MinorRadius();
   const gp_XYZ aO    = theElips.Location().XYZ();
@@ -60,8 +62,7 @@ void GeomBndLib_Ellipse::Add(const gp_Elips& theElips,
 
   if (theU2 - theU1 >= aPeriod)
   {
-    Add(theElips, theTol, theBox);
-    return;
+    return Box(theElips, theTol);
   }
 
   double aU1 = theU1, aU2 = theU2;
@@ -70,8 +71,8 @@ void GeomBndLib_Ellipse::Add(const gp_Elips& theElips,
 
   // Add arc endpoints.
   const gp_Ax2& aPos = theElips.Position();
-  theBox.Add(ElCLib::EllipseValue(aU1, aPos, aMajR, aMinR));
-  theBox.Add(ElCLib::EllipseValue(aU2, aPos, aMajR, aMinR));
+  aBox.Add(ElCLib::EllipseValue(aU1, aPos, aMajR, aMinR));
+  aBox.Add(ElCLib::EllipseValue(aU2, aPos, aMajR, aMinR));
 
   // For each coordinate, check if the extremal parameter lies within the arc.
   for (int k = 1; k <= 3; ++k)
@@ -103,14 +104,15 @@ void GeomBndLib_Ellipse::Add(const gp_Elips& theElips,
     double aTk = ElCLib::InPeriod(aTExtrMin, aU1, aU1 + 2. * M_PI);
     if (aTk >= aU1 && aTk <= aU2)
     {
-      theBox.Add(ElCLib::EllipseValue(aTExtrMin, aPos, aMajR, aMinR));
+      aBox.Add(ElCLib::EllipseValue(aTExtrMin, aPos, aMajR, aMinR));
     }
     aTk = ElCLib::InPeriod(aTExtrMax, aU1, aU1 + 2. * M_PI);
     if (aTk >= aU1 && aTk <= aU2)
     {
-      theBox.Add(ElCLib::EllipseValue(aTExtrMax, aPos, aMajR, aMinR));
+      aBox.Add(ElCLib::EllipseValue(aTExtrMax, aPos, aMajR, aMinR));
     }
   }
 
-  theBox.Enlarge(theTol);
+  aBox.Enlarge(theTol);
+  return aBox;
 }

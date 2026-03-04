@@ -42,30 +42,29 @@ public:
 
   const occ::handle<Geom_Parabola>& Geometry() const { return myGeom; }
 
-  //! Add bounding box for arc [theU1, theU2].
-  void Add(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for arc [theU1, theU2].
+  [[nodiscard]] Bnd_Box Box(double theU1, double theU2, double theTol) const
   {
-    Add(myGeom->Parab(), theU1, theU2, theTol, theBox);
+    return Box(myGeom->Parab(), theU1, theU2, theTol);
   }
 
-  //! Add bounding box for full curve.
-  void Add(double theTol, Bnd_Box& theBox) const
+  //! Compute bounding box for full curve.
+  [[nodiscard]] Bnd_Box Box(double theTol) const
   {
-    Add(myGeom->FirstParameter(), myGeom->LastParameter(), theTol, theBox);
+    return Box(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
   }
 
-  //! For analytical curves, AddOptimal is same as Add.
-  void AddOptimal(double theU1, double theU2, double theTol, Bnd_Box& theBox) const
+  //! For analytical curves, BoxOptimal is same as Box.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theU1, double theU2, double theTol) const
   {
-    Add(theU1, theU2, theTol, theBox);
+    return Box(theU1, theU2, theTol);
   }
 
-  //! Add bounding box for a parabola arc [theU1, theU2] defined by gp_Parab.
-  Standard_EXPORT static void Add(const gp_Parab& theParab,
-                                  double          theU1,
-                                  double          theU2,
-                                  double          theTol,
-                                  Bnd_Box&        theBox);
+  //! Compute bounding box for a parabola arc [theU1, theU2] defined by gp_Parab.
+  [[nodiscard]] Standard_EXPORT static Bnd_Box Box(const gp_Parab& theParab,
+                                                   double          theU1,
+                                                   double          theU2,
+                                                   double          theTol);
 
 private:
   occ::handle<Geom_Parabola> myGeom;
