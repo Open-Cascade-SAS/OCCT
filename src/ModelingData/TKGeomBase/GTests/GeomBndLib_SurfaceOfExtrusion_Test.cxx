@@ -321,8 +321,8 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongDiagonal_CompareWithBndLib)
   // BSpline C(0)=(0,0,0), C(1)=(10,3,0). Extrusion shifts: v_min/sqrt(3) = -sqrt(3),
   // v_max/sqrt(3) = 7/sqrt(3). Reference bounds derive from endpoint extremes + extrusion range.
   const double aSqrt3     = std::sqrt(3.0);
-  const double aVminShift = -3.0 / aSqrt3; // ≈ -1.7321
-  const double aVmaxShift =  7.0 / aSqrt3; // ≈  4.0415
+  const double aVminShift = -3.0 / aSqrt3; // ~= -1.7321
+  const double aVmaxShift =  7.0 / aSqrt3; // ~=  4.0415
   const double aTolRef    = 1e-3;
   const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aNewBox.Get();
   EXPECT_NEAR(aXmin,  0.0 + aVminShift, aTolRef) << "Xmin";

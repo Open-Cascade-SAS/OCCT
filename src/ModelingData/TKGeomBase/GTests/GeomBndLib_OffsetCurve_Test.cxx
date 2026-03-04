@@ -140,7 +140,7 @@ TEST(GeomBndLib_OffsetCurveTest, CircleOffsetX_Arc_CompareWithBndLib)
 }
 
 // =========================================================================
-// Circle offset in Y direction — degenerate case
+// Circle offset in Y direction - degenerate case
 // Offset direction Y is in the circle plane (XOY), so T(t) x V can be zero.
 // Old BndLib throws "GeomAdaptor_Curve::EvalD0: evaluation failed".
 // Test only containment for our implementation.

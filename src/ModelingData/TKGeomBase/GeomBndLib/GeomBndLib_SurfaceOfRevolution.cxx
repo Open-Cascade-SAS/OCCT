@@ -46,7 +46,7 @@ void addRevolutionCircle(const gp_Pnt& theOrigin,
 
   if (aRadius < Precision::Confusion())
   {
-    // Point is on the axis — revolution is a single point.
+    // Point is on the axis - revolution is a single point.
     theBox.Add(theBasisPt);
     return;
   }
