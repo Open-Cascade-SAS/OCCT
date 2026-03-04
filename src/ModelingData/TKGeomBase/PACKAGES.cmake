@@ -17,6 +17,7 @@ set(OCCT_TKGeomBase_LIST_OF_PACKAGES
   Geom2dConvert
   Hermit
   BndLib
+  GeomBndLib
   AppDef
   GeomTools
   GC

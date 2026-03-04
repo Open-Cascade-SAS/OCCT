@@ -1,0 +1,223 @@
+// Copyright (c) 2025 OPEN CASCADE SAS
+//
+// This file is part of Open CASCADE Technology software library.
+//
+// This library is free software; you can redistribute it and/or modify it under
+// the terms of the GNU Lesser General Public License version 2.1 as published
+// by the Free Software Foundation, with special exception defined in the file
+// OCCT_LGPL_EXCEPTION.txt. Consult the file LICENSE_LGPL_21.txt included in OCCT
+// distribution for complete text of the license and disclaimer of any warranty.
+//
+// Alternatively, this file may be used under the terms of Open CASCADE
+// commercial license or contractual agreement.
+
+#ifndef GeomBndLib_SplineHelpers_HeaderFile
+#define GeomBndLib_SplineHelpers_HeaderFile
+
+#include <Bnd_Box.hxx>
+#include <Bnd_Box2d.hxx>
+#include <BSplCLib.hxx>
+#include <NCollection_Array1.hxx>
+#include <Precision.hxx>
+#include <gp_Pnt.hxx>
+#include <gp_Pnt2d.hxx>
+
+#include <algorithm>
+#include <cmath>
+#include <type_traits>
+
+namespace GeomBndLib_SplineHelpers
+{
+
+template <typename TPoint>
+struct PointOps;
+
+template <>
+struct PointOps<gp_Pnt>
+{
+  static gp_Pnt Mid(const gp_Pnt& theP1, const gp_Pnt& theP2)
+  {
+    return gp_Pnt((theP1.XYZ() + theP2.XYZ()) / 2.0);
+  }
+};
+
+template <>
+struct PointOps<gp_Pnt2d>
+{
+  static gp_Pnt2d Mid(const gp_Pnt2d& theP1, const gp_Pnt2d& theP2)
+  {
+    return gp_Pnt2d((theP1.XY() + theP2.XY()) / 2.0);
+  }
+};
+
+//! Fill box with sampled points and return maximum deflection.
+template <typename TBox, typename TAdaptor, typename TPoint>
+double FillBox(TBox&           theBox,
+               const TAdaptor& theCurve,
+               const double    theFirst,
+               const double    theLast,
+               const int       theN)
+{
+  theBox.Add(theCurve.EvalD0(theFirst));
+  double       aP   = theFirst;
+  double       aTol = 0.0;
+  const double aDP  = theLast - theFirst;
+  if (std::abs(aDP) > Precision::PConfusion())
+  {
+    TPoint       aP1   = theCurve.EvalD0(theFirst);
+    const double aStep = aDP / (2 * theN);
+    for (int anIdx = 1; anIdx <= theN; ++anIdx)
+    {
+      aP += aStep;
+      const TPoint aP2 = theCurve.EvalD0(aP);
+      theBox.Add(aP2);
+      aP += aStep;
+      const TPoint aP3 = theCurve.EvalD0(aP);
+      theBox.Add(aP3);
+      const TPoint aPc = PointOps<TPoint>::Mid(aP1, aP3);
+      aTol             = std::max(aTol, aPc.Distance(aP2));
+      aP1              = aP3;
+    }
+  }
+  else
+  {
+    theBox.Add(theCurve.EvalD0(theLast));
+  }
+  return aTol;
+}
+
+//! Reduce box using poles convex hull.
+template <typename TPoint, typename TBox>
+void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
+                     const TBox&                       theOrigBox,
+                     TBox&                             theReducedBox)
+{
+  TBox aPolesBox;
+  for (int anIdx = thePoles.Lower(); anIdx <= thePoles.Upper(); ++anIdx)
+  {
+    aPolesBox.Add(thePoles.Value(anIdx));
+  }
+
+  if constexpr (std::is_same_v<TBox, Bnd_Box>)
+  {
+    const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = theOrigBox.Get();
+    if (!aPolesBox.IsVoid())
+    {
+      const auto [aPXMin, aPXMax, aPYMin, aPYMax, aPZMin, aPZMax] = aPolesBox.Get();
+      theReducedBox.Update(std::max(aXMin, aPXMin),
+                           std::max(aYMin, aPYMin),
+                           std::max(aZMin, aPZMin),
+                           std::min(aXMax, aPXMax),
+                           std::min(aYMax, aPYMax),
+                           std::min(aZMax, aPZMax));
+    }
+    else
+    {
+      theReducedBox.Update(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+    }
+  }
+  else
+  {
+    const auto [aXMin, aXMax, aYMin, aYMax] = theOrigBox.Get();
+    if (!aPolesBox.IsVoid())
+    {
+      const auto [aPXMin, aPXMax, aPYMin, aPYMax] = aPolesBox.Get();
+      theReducedBox.Update(std::max(aXMin, aPXMin),
+                           std::max(aYMin, aPYMin),
+                           std::min(aXMax, aPXMax),
+                           std::min(aYMax, aPYMax));
+    }
+    else
+    {
+      theReducedBox.Update(aXMin, aYMin, aXMax, aYMax);
+    }
+  }
+}
+
+//! Compute the pole index range [theOutMinIdx, theOutMaxIdx] that covers the parameter
+//! interval [theMin, theMax] in a B-spline defined by theKnots/theMults/theDegree.
+//! For periodic curves theOutMaxIdx may exceed theMaxPoleIdx (wraps into [1, theMaxPoleIdx]).
+inline void ComputePoleIndexRange(const NCollection_Array1<double>& theKnots,
+                                  const NCollection_Array1<int>&    theMults,
+                                  const int                         theDegree,
+                                  const double                      theMin,
+                                  const double                      theMax,
+                                  const int                         theMaxPoleIdx,
+                                  const bool                        theIsPeriodic,
+                                  int&                              theOutMinIdx,
+                                  int&                              theOutMaxIdx)
+{
+  BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
+  theOutMinIdx = std::clamp(theOutMinIdx, theKnots.Lower(), theKnots.Upper());
+
+  BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
+  theOutMaxIdx++;
+  theOutMaxIdx          = std::clamp(theOutMaxIdx, theKnots.Lower(), theKnots.Upper());
+  const int aMultiplier = theMults(theOutMaxIdx);
+
+  theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
+  theOutMinIdx = std::max(theOutMinIdx, 1);
+  theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
+  theOutMaxIdx += theDegree - aMultiplier;
+  if (!theIsPeriodic)
+    theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
+}
+
+//! Reduce box using a selected range of poles [theMinIdx, theMaxIdx].
+//! For periodic curves, indices beyond the array upper bound wrap around.
+template <typename TPoint, typename TBox>
+void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
+                     const int                         theMinIdx,
+                     const int                         theMaxIdx,
+                     const TBox&                       theOrigBox,
+                     TBox&                             theReducedBox)
+{
+  TBox      aPolesBox;
+  const int aNbPoles = thePoles.Size();
+  for (int anIdx = theMinIdx; anIdx <= theMaxIdx; ++anIdx)
+  {
+    int anI = anIdx;
+    if (anI > thePoles.Upper())
+      anI -= aNbPoles;
+    aPolesBox.Add(thePoles.Value(anI));
+  }
+
+  if constexpr (std::is_same_v<TBox, Bnd_Box>)
+  {
+    const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = theOrigBox.Get();
+    if (!aPolesBox.IsVoid())
+    {
+      const auto [aPXMin, aPXMax, aPYMin, aPYMax, aPZMin, aPZMax] = aPolesBox.Get();
+      theReducedBox.Update(std::max(aXMin, aPXMin),
+                           std::max(aYMin, aPYMin),
+                           std::max(aZMin, aPZMin),
+                           std::min(aXMax, aPXMax),
+                           std::min(aYMax, aPYMax),
+                           std::min(aZMax, aPZMax));
+    }
+    else
+    {
+      theReducedBox.Update(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+    }
+  }
+  else
+  {
+    const auto [aXMin, aXMax, aYMin, aYMax] = theOrigBox.Get();
+    if (!aPolesBox.IsVoid())
+    {
+      const auto [aPXMin, aPXMax, aPYMin, aPYMax] = aPolesBox.Get();
+      theReducedBox.Update(std::max(aXMin, aPXMin),
+                           std::max(aYMin, aPYMin),
+                           std::min(aXMax, aPXMax),
+                           std::min(aYMax, aPYMax));
+    }
+    else
+    {
+      theReducedBox.Update(aXMin, aYMin, aXMax, aYMax);
+    }
+  }
+}
+
+} // namespace GeomBndLib_SplineHelpers
+
+#endif // GeomBndLib_SplineHelpers_HeaderFile

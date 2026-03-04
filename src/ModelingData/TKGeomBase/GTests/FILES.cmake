@@ -10,6 +10,14 @@ set(OCCT_TKGeomBase_GTests_FILES
   AdvApp2Var_Node_Test.cxx
   AppCont_ContMatrices_Test.cxx
   BndLib_Test.cxx
+  GeomBndLib_Curve_Test.cxx
+  GeomBndLib_Curve2d_Test.cxx
+  GeomBndLib_OffsetCurve_Test.cxx
+  GeomBndLib_OffsetCurve2d_Test.cxx
+  GeomBndLib_OffsetSurface_Test.cxx
+  GeomBndLib_Surface_Test.cxx
+  GeomBndLib_SurfaceOfExtrusion_Test.cxx
+  GeomBndLib_SurfaceOfRevolution_Test.cxx
   Extrema_ExtPC_Test.cxx
   GC_MakeArcOfCircle_Test.cxx
   GC_MakeConicalSurface_Test.cxx
