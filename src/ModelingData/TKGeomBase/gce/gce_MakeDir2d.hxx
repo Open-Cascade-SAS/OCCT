@@ -27,51 +27,52 @@ class gp_Vec2d;
 class gp_XY;
 class gp_Pnt2d;
 
-//! This class implements the following algorithms used
-//! to create a Dir2d from gp.
-//! * Create a Dir2d with 2 points.
-//! * Create a Dir2d with a Vec2d.
-//! * Create a Dir2d with a XY from gp.
-//! * Create a Dir2d with a 2 Reals (Coordinates).
+//! This class implements construction algorithms for `gp_Dir2d`.
+//! Supported constructions include:
+//! - direction from vector or coordinate components;
+//! - direction from two points.
 class gce_MakeDir2d : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Normalizes the vector V and creates a direction.
-  //! Status is "NullVector" if V.Magnitude() <= Resolution.
+  //! @note Construction fails with `gce_NullVector` if
+  //!       `V.Magnitude() <= gp::Resolution()`.
+  //! @param[in] V direction vector
   Standard_EXPORT gce_MakeDir2d(const gp_Vec2d& V);
 
-  //! Creates a direction from a triplet of coordinates.
-  //! Status is "NullVector" if Coord.Modulus() <=
-  //! Resolution from gp.
+  //! Creates a direction from a coordinate vector.
+  //! @note Construction fails with `gce_NullVector` if
+  //!       `Coord.Modulus() <= gp::Resolution()`.
+  //! @param[in] Coord coordinate vector
   Standard_EXPORT gce_MakeDir2d(const gp_XY& Coord);
 
-  //! Creates a direction with its 3 cartesian coordinates.
-  //! Status is "NullVector" if std::sqrt(Xv*Xv + Yv*Yv )
-  //! <= Resolution
+  //! Creates a direction with its two cartesian coordinates.
+  //! @note Construction fails with `gce_NullVector` if
+  //!       `Xv*Xv + Yv*Yv <= gp::Resolution()`.
+  //! @param[in] Xv X coordinate value
+  //! @param[in] Yv Y coordinate value
   Standard_EXPORT gce_MakeDir2d(const double Xv, const double Yv);
 
-  //! Make a Dir2d from gp <TheDir> passing through 2
-  //! Pnt <P1>,<P2>.
-  //! Status is "ConfusedPoints" if <P1> and <P2> are confused.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_ConfusedPoints if points P1 and P2 are coincident, or
-  //! -   gce_NullVector if one of the following is less
-  //! than or equal to gp::Resolution():
-  //! -   the magnitude of vector V,
-  //! -   the modulus of Coord,
-  //! -   std::sqrt(Xv*Xv + Yv*Yv).
+  //! Creates a direction from two points.
+  //! @note Construction fails with `gce_ConfusedPoints` if points are coincident.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeDir2d(const gp_Pnt2d& P1, const gp_Pnt2d& P2);
 
   //! Returns the constructed unit vector.
   //! Exceptions StdFail_NotDone if no unit vector is constructed.
+  //! @return resulting direction
   Standard_EXPORT const gp_Dir2d& Value() const;
 
-  Standard_EXPORT const gp_Dir2d& Operator() const;
-  Standard_EXPORT                 operator gp_Dir2d() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Dir2d Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Dir2d() const { return Operator(); }
 
 private:
   gp_Dir2d TheDir2d;

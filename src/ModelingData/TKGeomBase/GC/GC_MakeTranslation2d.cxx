@@ -14,21 +14,30 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-#include <GCE2d_MakeScale.hxx>
+#include <GC_MakeTranslation2d.hxx>
 #include <Geom2d_Transformation.hxx>
 #include <gp_Pnt2d.hxx>
+#include <gp_Vec2d.hxx>
 
 //=================================================================================================
 
-GCE2d_MakeScale::GCE2d_MakeScale(const gp_Pnt2d& Point, const double Scale)
+GC_MakeTranslation2d::GC_MakeTranslation2d(const gp_Vec2d& Vec)
 {
-  TheScale = new Geom2d_Transformation();
-  TheScale->SetScale(Point, Scale);
+  TheTranslation = new Geom2d_Transformation();
+  TheTranslation->SetTranslation(Vec);
 }
 
 //=================================================================================================
 
-const occ::handle<Geom2d_Transformation>& GCE2d_MakeScale::Value() const
+GC_MakeTranslation2d::GC_MakeTranslation2d(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2)
 {
-  return TheScale;
+  TheTranslation = new Geom2d_Transformation();
+  TheTranslation->SetTranslation(Point1, Point2);
+}
+
+//=================================================================================================
+
+const occ::handle<Geom2d_Transformation>& GC_MakeTranslation2d::Value() const
+{
+  return TheTranslation;
 }

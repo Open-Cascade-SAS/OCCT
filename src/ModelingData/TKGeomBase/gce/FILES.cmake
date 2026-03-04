@@ -50,5 +50,4 @@ set(OCCT_gce_FILES
   gce_MakeTranslation2d.cxx
   gce_MakeTranslation2d.hxx
   gce_Root.hxx
-  gce_Root.lxx
 )

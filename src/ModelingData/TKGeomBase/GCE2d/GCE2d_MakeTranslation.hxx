@@ -1,7 +1,4 @@
-// Created on: 1992-09-28
-// Created by: Remi GILET
-// Copyright (c) 1992-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,43 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//! @file GCE2d_MakeTranslation.hxx
+//! @brief Deprecated compatibility alias.
+//! @deprecated This header is deprecated since OCCT 8.0.0.
+//!             Use GC_MakeTranslation2d.hxx instead.
+
 #ifndef _GCE2d_MakeTranslation_HeaderFile
 #define _GCE2d_MakeTranslation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
+#include <GC_MakeTranslation2d.hxx>
 
-class Geom2d_Transformation;
-class gp_Vec2d;
-class gp_Pnt2d;
-
-//! This class implements elementary construction algorithms for a
-//! translation in 2D space. The result is a
-//! Geom2d_Transformation transformation.
-//! A MakeTranslation object provides a framework for:
-//! -   defining the construction of the transformation,
-//! -   implementing the construction algorithm, and
-//! -   consulting the result.
-class GCE2d_MakeTranslation
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  //! Constructs a translation along the vector Vect.
-  Standard_EXPORT GCE2d_MakeTranslation(const gp_Vec2d& Vect);
-
-  //! Constructs a translation along the vector
-  //! (Point1,Point2) defined from the point Point1 to the point Point2.
-  Standard_EXPORT GCE2d_MakeTranslation(const gp_Pnt2d& Point1, const gp_Pnt2d& Point2);
-
-  //! Returns the constructed transformation.
-  Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
-
-  operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
-
-private:
-  occ::handle<Geom2d_Transformation> TheTranslation;
-};
+using GCE2d_MakeTranslation Standard_DEPRECATED(
+  "GCE2d_MakeTranslation is deprecated since OCCT 8.0.0. Use GC_MakeTranslation2d instead.")
+= GC_MakeTranslation2d;
 
 #endif // _GCE2d_MakeTranslation_HeaderFile

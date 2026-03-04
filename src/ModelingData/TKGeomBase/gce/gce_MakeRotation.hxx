@@ -38,21 +38,33 @@ class gce_MakeRotation
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a rotation through angle Angle about the axis defined by the line Line.
+  //! Constructs a rotation around the axis defined by a line.
+  //! @param[in] Line rotation axis
+  //! @param[in] Angle rotation angle in radians
   Standard_EXPORT gce_MakeRotation(const gp_Lin& Line, const double Angle);
 
-  //! Constructs a rotation through angle Angle about the axis defined by the axis Axis.
+  //! Constructs a rotation around an axis.
+  //! @param[in] Axis rotation axis
+  //! @param[in] Angle rotation angle in radians
   Standard_EXPORT gce_MakeRotation(const gp_Ax1& Axis, const double Angle);
 
-  //! Constructs a rotation through angle Angle about the axis defined by:
-  //! the point Point and the unit vector Direc.
+  //! Constructs a rotation around an axis defined by point and direction.
+  //! @param[in] Point point on the axis
+  //! @param[in] Direc axis direction
+  //! @param[in] Angle rotation angle in radians
   Standard_EXPORT gce_MakeRotation(const gp_Pnt& Point, const gp_Dir& Direc, const double Angle);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const gp_Trsf& Value() const;
 
-  Standard_EXPORT const gp_Trsf& Operator() const;
-  Standard_EXPORT                operator gp_Trsf() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting transformation
+  gp_Trsf Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed transformation.
+  //! @return resulting transformation
+  operator gp_Trsf() const { return Operator(); }
 
 private:
   gp_Trsf TheRotation;

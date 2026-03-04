@@ -26,14 +26,10 @@
 class gp_Ax2;
 class gp_Pnt;
 
-//! This class implements the following algorithms used to
-//! create Hyperbola from gp.
-//! * Create an Hyperbola from its center, and two points:
-//! one on its axis of symmetry giving the major radius, the
-//! other giving the value of the small radius.
-//! The three points give the plane of the hyperbola.
-//! * Create an hyperbola from its axisplacement and its
-//! MajorRadius and its MinorRadius.
+//! This class implements construction algorithms for `gp_Hypr`.
+//! Supported constructions include:
+//! - hyperbola from center and two points (one on major axis);
+//! - hyperbola from local coordinate system and radii.
 //!
 //! ^YAxis
 //! |
@@ -47,8 +43,8 @@ class gp_Pnt;
 //! SecondConjugateBranch
 //! |
 //!
-//! The local cartesian coordinate system of the ellipse is an
-//! axis placement (two axis).
+//! The local Cartesian coordinate system of the hyperbola is an
+//! axis placement (two axes).
 //!
 //! The "XDirection" and the "YDirection" of the axis placement
 //! define the plane of the hyperbola.
@@ -60,46 +56,51 @@ class gp_Pnt;
 //! major axis and the "YAxis" of the hyperbola ("Location",
 //! "YDirection") is the minor axis.
 //!
-//! Warnings :
-//! The major radius (on the major axis) can be lower than the
-//! minor radius (on the minor axis).
+//! @note The major radius (on major axis) can be lower than the
+//!       minor radius (on minor axis).
 class gce_MakeHypr : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! A2 is the local coordinate system of the hyperbola.
-  //! In the local coordinates system A2 the equation of the
-  //! hyperbola is :
-  //! X*X / MajorRadius*MajorRadius - Y*Y / MinorRadius*MinorRadius = 1.0
-  //! It is not forbidden to create an Hyperbola with MajorRadius =
-  //! MinorRadius.
-  //! For the hyperbola the MajorRadius can be lower than the
-  //! MinorRadius.
-  //! The status is "NegativeRadius" if MajorRadius < 0.0 or MinorRadius < 0.0
+  //! Creates a hyperbola from a local coordinate system and radii.
+  //! @note In the local coordinate system of `A2`, the equation is
+  //!       `X*X / (MajorRadius*MajorRadius) - Y*Y / (MinorRadius*MinorRadius) = 1.0`.
+  //! @note Construction with `MajorRadius == MinorRadius` is valid.
+  //! @note Construction fails with `gce_NegativeRadius` if
+  //!       `MajorRadius < 0.0` or `MinorRadius < 0.0`.
+  //! @param[in] A2 local coordinate system
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
   Standard_EXPORT gce_MakeHypr(const gp_Ax2& A2,
                                const double  MajorRadius,
                                const double  MinorRadius);
 
-  //! Constructs a hyperbola
-  //! -   centered on the point Center, where:
-  //! -   the plane of the hyperbola is defined by Center, S1 and S2,
-  //! -   its major axis is defined by Center and S1,
-  //! -   its major radius is the distance between Center and S1, and
-  //! -   its minor radius is the distance between S2 and the major axis.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_ConfusedPoints if any two of S1, S2 and Center are coincident;
-  //! -   gce_ColinearPoints if S1, S2 and Center are collinear.
+  //! Creates a hyperbola from center and two points.
+  //! @note `Center` is the hyperbola center, `Center`-`S1` defines the major axis,
+  //!       major radius is `Distance(Center, S1)`, and minor radius is distance from
+  //!       `S2` to this major axis.
+  //! @note Construction fails with `gce_ConfusedPoints` if any two of `S1`, `S2`,
+  //!       and `Center` are coincident.
+  //! @note Construction fails with `gce_ColinearPoints` if `S1`, `S2`, and `Center`
+  //!       are collinear.
+  //! @param[in] S1 first point
+  //! @param[in] S2 second point
+  //! @param[in] Center center point
   Standard_EXPORT gce_MakeHypr(const gp_Pnt& S1, const gp_Pnt& S2, const gp_Pnt& Center);
 
   //! Returns the constructed hyperbola.
   //! Exceptions StdFail_NotDone if no hyperbola is constructed.
+  //! @return resulting hyperbola
   Standard_EXPORT const gp_Hypr& Value() const;
 
-  Standard_EXPORT const gp_Hypr& Operator() const;
-  Standard_EXPORT                operator gp_Hypr() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Hypr Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Hypr() const { return Operator(); }
 
 private:
   gp_Hypr TheHypr;

@@ -30,18 +30,17 @@ class gp_Pnt;
 class gp_Dir;
 class gp_Ax1;
 
-//! This class implements the following algorithms used
-//! to create Cirlec from Geom.
+//! Implements construction algorithms for circles in 3D space.
 //!
-//! * Create a Circle parallel to another and passing
-//! though a point.
+//! * Create a circle parallel to another and passing
+//! through a point.
 //! * Create a Circle parallel to another at the distance
 //! Dist.
 //! * Create a Circle passing through 3 points.
 //! * Create a Circle with its center and the normal of its
 //! plane and its radius.
 //! * Create a Circle with its axis and radius.
-//! The circle's parameter is the angle (Radian).
+//! The circle parameter is the angle in radians.
 //! The parametrization range is [0,2*PI].
 //! The circle is a closed and periodic curve.
 //! The center of the circle is the Location point of its axis
@@ -52,48 +51,63 @@ class GC_MakeCircle : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! creates a circle from a non persistent circle C by its conversion.
-  Standard_EXPORT GC_MakeCircle(const gp_Circ& C);
+  //! Creates a circle from a `gp_Circ`.
+  //! @param[in] theC source circle
+  Standard_EXPORT GC_MakeCircle(const gp_Circ& theC);
 
-  //! A2 is the local coordinates system of the circle.
-  //! It is not forbidden to create a circle with Radius = 0.0
-  //! Status is "NegativeRadius" if Radius < 0.
-  Standard_EXPORT GC_MakeCircle(const gp_Ax2& A2, const double Radius);
+  //! Creates a circle from axis placement and radius.
+  //! @param[in] theA2 local coordinate system of the circle
+  //! @param[in] theRadius circle radius
+  //! @note Radius equal to `0.0` is allowed.
+  //! @note The status is `gce_NegativeRadius` if `theRadius < 0.0`.
+  Standard_EXPORT GC_MakeCircle(const gp_Ax2& theA2, const double theRadius);
 
-  //! Make a Circle from Geom <TheCirc> parallel to another
-  //! Circ <Circ> with a distance <Dist>.
-  //! If Dist is greater than zero the result is enclosing
-  //! the circle <Circ>, else the result is enclosed by the
-  //! circle <Circ>.
-  Standard_EXPORT GC_MakeCircle(const gp_Circ& Circ, const double Dist);
+  //! Creates a circle concentric to the input circle with an offset radius.
+  //! @param[in] theCirc reference circle
+  //! @param[in] theDist radius offset
+  Standard_EXPORT GC_MakeCircle(const gp_Circ& theCirc, const double theDist);
 
-  //! Make a Circle from Geom <TheCirc> parallel to another
-  //! Circ <Circ> and passing through a Pnt <Point>.
-  Standard_EXPORT GC_MakeCircle(const gp_Circ& Circ, const gp_Pnt& Point);
+  //! Creates a circle concentric to the input circle and passing through the input point.
+  //! @param[in] theCirc source circle
+  //! @param[in] thePoint point on resulting circle
+  Standard_EXPORT GC_MakeCircle(const gp_Circ& theCirc, const gp_Pnt& thePoint);
 
-  //! Make a Circ from gp <TheCirc> passing through 3
-  //! Pnt2d <P1>,<P2>,<P3>.
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
+  //! Creates a circle passing through three points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @param[in] theP3 third point
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theP1, const gp_Pnt& theP2, const gp_Pnt& theP3);
 
-  //! Make a Circle from Geom <TheCirc> with its center
-  //! <Center> and the normal of its plane <Norm> and
-  //! its radius <Radius>.
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius);
+  //! Creates a circle from center point, normal and radius.
+  //! @param[in] theCenter circle center
+  //! @param[in] theNorm normal direction of circle plane
+  //! @param[in] theRadius circle radius
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theCenter,
+                                const gp_Dir& theNorm,
+                                const double  theRadius);
 
-  //! Make a Circle from Geom <TheCirc> with its center
-  //! <Center> and the normal of its plane defined by the
-  //! two points <Center> and <PtAxis> and its radius <Radius>.
-  Standard_EXPORT GC_MakeCircle(const gp_Pnt& Center, const gp_Pnt& PtAxis, const double Radius);
+  //! Creates a circle from center point, axis point and radius.
+  //! @param[in] theCenter circle center
+  //! @param[in] thePtAxis point defining normal direction
+  //! @param[in] theRadius circle radius
+  //! @note The direction is defined by vector (`theCenter`,`thePtAxis`).
+  Standard_EXPORT GC_MakeCircle(const gp_Pnt& theCenter,
+                                const gp_Pnt& thePtAxis,
+                                const double  theRadius);
 
-  //! Make a Circle from Geom <TheCirc> with its center
-  //! <Center> and its radius <Radius>.
-  Standard_EXPORT GC_MakeCircle(const gp_Ax1& Axis, const double Radius);
+  //! Creates a circle from axis and radius.
+  //! @param[in] theAxis circle axis
+  //! @param[in] theRadius circle radius
+  Standard_EXPORT GC_MakeCircle(const gp_Ax1& theAxis, const double theRadius);
 
   //! Returns the constructed circle.
   //! Exceptions
   //! StdFail_NotDone if no circle is constructed.
+  //! @return resulting circle
   Standard_EXPORT const occ::handle<Geom_Circle>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Circle>&() const { return Value(); }
 
 private:

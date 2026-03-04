@@ -68,17 +68,3 @@ const gp_Trsf& gce_MakeMirror::Value() const
 {
   return TheMirror;
 }
-
-//=================================================================================================
-
-const gp_Trsf& gce_MakeMirror::Operator() const
-{
-  return TheMirror;
-}
-
-//=================================================================================================
-
-gce_MakeMirror::operator gp_Trsf() const
-{
-  return TheMirror;
-}

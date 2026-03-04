@@ -28,108 +28,92 @@ class gp_Pnt;
 class gp_Ax1;
 class gp_Lin;
 
-//! This class implements the following algorithms used
-//! to create a Cone from gp.
-//! * Create a Cone coaxial to another and passing
-//! through a point.
-//! * Create a Cone coaxial to another at a distance
-//! <Dist>.
-//! * Create a Cone by 4 points.
-//! * Create a Cone by its axis and 2 points.
-//! * Create a Cone by 2 points and 2 radius.
-//! * Create a Cone by an Ax2 an angle and the radius of
-//! its reference section.
+//! This class implements construction algorithms for `gp_Cone`.
+//! Supported constructions include:
+//! - from axis placement, semi-angle and reference radius;
+//! - cone coaxial to another cone, through a point or at signed offset;
+//! - cone from four points;
+//! - cone from axis and two points;
+//! - cone from two axis points and two section radii.
 class gce_MakeCone : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Creates an infinite conical surface. A2 locates the cone
-  //! in the space and defines the reference plane of the surface.
-  //! Ang is the conical surface semi-angle between 0 and PI/2 radians.
-  //! Radius is the radius of the circle in the reference plane of
-  //! the cone.
-  //! If Radius is lower than 0.0 the status is "
-  //! If Ang < Resolution from gp or Ang >= (PI/2) - Resolution.
+  //! Creates a cone from axis placement, semi-angle and reference radius.
+  //! @note `A2` defines cone position and reference section plane.
+  //! @note `Ang` is the cone semi-angle (radians), expected in ]0, PI/2[.
+  //! @note Construction fails with `gce_NegativeRadius` if `Radius` is negative.
+  //! @note Construction fails with `gce_BadAngle` if
+  //!       `Ang <= gp::Resolution()` or `PI/2 - Ang <= gp::Resolution()`.
+  //! @param[in] A2 local coordinate system
+  //! @param[in] Ang angle value
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCone(const gp_Ax2& A2, const double Ang, const double Radius);
 
-  //! Makes a Cone from gp <TheCone> coaxial to another
-  //! Cone <Cone> and passing through a Pnt <Point>.
+  //! Creates a cone coaxial to input cone and passing through a point.
+  //! @note Construction fails with `gce_NegativeRadius` when no non-negative
+  //!       solution radius can be found.
+  //! @param[in] Cone source cone
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const gp_Pnt& Point);
 
-  //! Makes a Cone from gp <TheCone> coaxial to another
-  //! Cone <Cone> at the distance <Dist> which can
-  //! be greater or lower than zero.
+  //! Creates a cone coaxial to input cone at signed distance.
+  //! @note Construction fails with `gce_NullAngle` if semi-angle cosine is
+  //!       numerically too small.
+  //! @note Construction fails with `gce_NegativeRadius` if resulting radius is negative.
+  //! @param[in] Cone source cone
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakeCone(const gp_Cone& Cone, const double Dist);
 
-  //! Makes a Cone from gp <TheCone> by four points <P1>,
-  //! <P2>,<P3> and <P4>.
-  //! Its axis is <P1P2> and the radius of its base is
-  //! the distance between <P3> and <P1P2>.
-  //! The distance between <P4> and <P1P2> is the radius of
-  //! the section passing through <P4>.
-  //! If <P1> and <P2> are confused or <P3> and <P4> are
-  //! confused we have the status "ConfusedPoints"
-  //! if <P1>,<P2>,<P3>,<P4> are colinear we have the
-  //! status "ColinearPoints"
-  //! If <P3P4> is perpendicular to <P1P2> we have the
-  //! status "NullAngle".
-  //! <P3P4> is colinear to <P1P2> we have the status
-  //! "NullAngle".
+  //! Creates a cone from four points.
+  //! @note `P1` and `P2` define the axis direction.
+  //! @note Distance from `P3` to that axis defines base radius.
+  //! @note Distance from `P4` to that axis defines radius of section through `P4`.
+  //! @note Construction fails with `gce_ConfusedPoints` if `P1`/`P2` or `P3`/`P4`
+  //!       are coincident.
+  //! @note Construction fails with `gce_NullAngle` if section distances produce
+  //!       zero cone angle.
+  //! @note Construction fails with `gce_NullRadius` for degenerate right-angle
+  //!       or zero-angle radius configuration.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
+  //! @param[in] P4 fourth point
   Standard_EXPORT gce_MakeCone(const gp_Pnt& P1,
                                const gp_Pnt& P2,
                                const gp_Pnt& P3,
                                const gp_Pnt& P4);
 
-  //! Makes a Cone by its axis <Axis> and two points.
-  //! The distance between <P1> and the axis is the radius
-  //! of the section passing through <P1>.
-  //! The distance between <P2> and the axis is the radius
-  //! of the section passing through <P2>.
-  //! If <P1P2> is colinear to <Axis> we have the status
-  //! "NullAngle"
-  //! If <P3P4> is perpendicular to <Axis> we have the status
-  //! "NullAngle"
-  //! If <P1> and <P2> are confused we have the status
-  //! "ConfusedPoints"
+  //! Creates a cone from axis and two points.
+  //! @note Distance from `P1` to axis gives first section radius.
+  //! @note Distance from `P2` to axis gives second section radius.
+  //! @note Error status is propagated from the 4-point construction.
+  //! @param[in] Axis axis definition
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeCone(const gp_Ax1& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
 
-  //! Makes a Cone by its axis <Axis> and two points.
-  //! The distance between <P1> and the axis is the radius
-  //! of the section passing through <P1>
-  //! The distance between <P2> and the axis is the radius
-  //! of the section passing through <P2>
-  //! If <P1P2> is colinear to <Axis> we have the status
-  //! "NullAngle"
-  //! If <P3P4> is perpendicular to <Axis> we have the status
-  //! "NullAngle"
-  //! If <P1> and <P2> are confused we have the status
-  //! "ConfusedPoints"
+  //! Creates a cone from line axis and two points.
+  //! @note Distance from `P1` to axis gives first section radius.
+  //! @note Distance from `P2` to axis gives second section radius.
+  //! @note Error status is propagated from the 4-point construction.
+  //! @param[in] Axis axis definition
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
   Standard_EXPORT gce_MakeCone(const gp_Lin& Axis, const gp_Pnt& P1, const gp_Pnt& P2);
 
-  //! Makes a Cone with two points and two radius.
-  //! The axis of the solution is the line passing through
-  //! <P1> and <P2>.
-  //! <R1> is the radius of the section passing through <P1>
-  //! and <R2> the radius of the section passing through <P2>.
-  //! If <P1> and <P2> are confused we have the status "NullAxis".
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_NegativeRadius if Radius, R1 or R2 is less than 0.0;
-  //! -   gce_BadAngle if Ang is less than
-  //! gp::Resolution() or greater than Pi/2.- gp::Resolution();
-  //! -   gce_ConfusedPoints if P1 and P2 or P3 and P4 are coincident;
-  //! -   gce_NullAxis if the points P1 and P2, are coincident (5th syntax only);
-  //! -   gce_NullAngle if:
-  //! -   the vector joining P1 to P2 is parallel to either
-  //! Axis or the line joining P3 to P4, or
-  //! -   R1 and R2 are equal, (that is, their difference is
-  //! less than gp::Resolution()); or
-  //! -   gce_NullRadius if:
-  //! -   the vector joining P1 to P2 is perpendicular to the line joining P3 to P4,
-  //! -   the vector joining P1 to P2 is perpendicular to Axis, or
-  //! -   P1, P2, P3, and P4 are collinear.
+  //! Creates a cone from two axis points and two section radii.
+  //! @note The axis is the line passing through `P1` and `P2`.
+  //! @note `R1` is section radius at `P1`, `R2` is section radius at `P2`.
+  //! @note Construction fails with `gce_NullAxis` if `P1` and `P2` are coincident.
+  //! @note Construction fails with `gce_NegativeRadius` if `R1` or `R2` is negative.
+  //! @note Construction fails with `gce_NullAngle` for degenerate zero-angle
+  //!       or right-angle configurations.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] R1 first radius value
+  //! @param[in] R2 second radius value
   Standard_EXPORT gce_MakeCone(const gp_Pnt& P1,
                                const gp_Pnt& P2,
                                const double  R1,
@@ -137,10 +121,16 @@ public:
 
   //! Returns the constructed cone.
   //! Exceptions StdFail_NotDone if no cone is constructed.
+  //! @return resulting cone
   Standard_EXPORT const gp_Cone& Value() const;
 
-  Standard_EXPORT const gp_Cone& Operator() const;
-  Standard_EXPORT                operator gp_Cone() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Cone Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Cone() const { return Operator(); }
 
 private:
   gp_Cone TheCone;

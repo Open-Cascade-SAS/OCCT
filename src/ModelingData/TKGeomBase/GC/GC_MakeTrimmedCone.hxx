@@ -26,9 +26,8 @@
 
 class gp_Pnt;
 
-//! Implements construction algorithms for a trimmed
-//! cone limited by two planes orthogonal to its axis. The
-//! result is a Geom_RectangularTrimmedSurface surface.
+//! Implements construction algorithms for trimmed cones.
+//! The result is a `Geom_RectangularTrimmedSurface`.
 //! A MakeTrimmedCone provides a framework for:
 //! -   defining the construction of the trimmed cone,
 //! -   implementing the construction algorithm, and
@@ -39,45 +38,44 @@ class GC_MakeTrimmedCone : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make a RectangularTrimmedSurface <TheCone> from Geom
-  //! It is trimmed by P3 and P4.
-  //! Its axis is <P1P2> and the radius of its base is
-  //! the distance between <P3> and <P1P2>.
-  //! The distance between <P4> and <P1P2> is the radius of
-  //! the section passing through <P4>.
-  //! An error iss raised if <P1>,<P2>,<P3>,<P4> are
-  //! colinear or if <P3P4> is perpendicular to <P1P2> or
-  //! <P3P4> is colinear to <P1P2>.
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& P1,
-                                     const gp_Pnt& P2,
-                                     const gp_Pnt& P3,
-                                     const gp_Pnt& P4);
+  //! Creates a rectangular trimmed conical surface from four points.
+  //! @param[in] theP1 first axis point
+  //! @param[in] theP2 second axis point
+  //! @param[in] theP3 point defining first trimming section
+  //! @param[in] theP4 point defining second trimming section
+  //! @note The surface is trimmed by points P3 and P4.
+  //! @note The axis is defined by points P1 and P2; the base radius is
+  //!       the distance from point P3 to that axis.
+  //! @note The distance from point P4 to that axis is the radius of
+  //!       the section passing through P4.
+  //! @note Construction fails if points P1, P2, P3 and P4 are
+  //!       collinear, or if vector P3P4 is perpendicular/collinear
+  //!       to vector P1P2.
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1,
+                                     const gp_Pnt& theP2,
+                                     const gp_Pnt& theP3,
+                                     const gp_Pnt& theP4);
 
-  //! Make a RectangularTrimmedSurface from Geom <TheCone>
-  //! from a cone and trimmed by two points P1 and P2 and
-  //! the two radius <R1> and <R2> of the sections passing
-  //! through <P1> an <P2>.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_ConfusedPoints if points P1 and P2, or P3 and P4, are coincident;
-  //! -   gce_NullAngle if:
-  //! -   the lines joining P1 to P2 and P3 to P4 are parallel, or
-  //! -   R1 and R2 are equal (i.e. their difference is less than gp::Resolution());
-  //! -   gce_NullRadius if:
-  //! -   the line joining P1 to P2 is perpendicular to the line joining P3 to P4, or
-  //! -   the points P1, P2, P3 and P4 are collinear;
-  //! -   gce_NegativeRadius if R1 or R2 is negative; or
-  //! -   gce_NullAxis if points P1 and P2 are coincident (2nd syntax only).
-  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& P1,
-                                     const gp_Pnt& P2,
-                                     const double  R1,
-                                     const double  R2);
+  //! Creates a rectangular trimmed conical surface from two points and two radii.
+  //! @param[in] theP1 first axis point
+  //! @param[in] theP2 second axis point
+  //! @param[in] theR1 radius at P1
+  //! @param[in] theR2 radius at P2
+  //! @note The two radii correspond to sections passing through the two axis points.
+  //! @note On failure, status is propagated from
+  //!       `GC_MakeConicalSurface(theP1, theP2, theR1, theR2)`.
+  Standard_EXPORT GC_MakeTrimmedCone(const gp_Pnt& theP1,
+                                     const gp_Pnt& theP2,
+                                     const double  theR1,
+                                     const double  theR2);
 
   //! Returns the constructed trimmed cone.
   //! StdFail_NotDone if no trimmed cone is constructed.
+  //! @return resulting trimmed conical surface
   Standard_EXPORT const occ::handle<Geom_RectangularTrimmedSurface>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_RectangularTrimmedSurface>&() const { return Value(); }
 
 private:

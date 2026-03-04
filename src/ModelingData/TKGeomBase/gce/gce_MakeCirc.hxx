@@ -28,87 +28,79 @@ class gp_Dir;
 class gp_Pln;
 class gp_Ax1;
 
-//! This class implements the following algorithms used
-//! to create Circ from gp.
-//!
-//! * Create a Circ coaxial to another and passing
-//! though a point.
-//! * Create a Circ coaxial to another at the distance
-//! Dist.
-//! * Create a Circ passing through 3 points.
-//! * Create a Circ with its center and the normal of its
-//! plane and its radius.
-//! * Create a Circ with its center and its plane and its
-//! radius.
-//! * Create a Circ with its axis and radius.
-//! * Create a Circ with two points giving its axis and
-//! its radius.
-//! * Create a Circ with is Ax2 and its Radius.
+//! This class implements construction algorithms for `gp_Circ`.
+//! Supported constructions include:
+//! - circle from axis and radius;
+//! - circle coaxial to another one, through point or at signed offset;
+//! - circle through three points;
+//! - circle from center and normal/plane;
+//! - circle from center and axis-defining point;
+//! - circle from axis and radius.
 class gce_MakeCirc : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! A2 locates the circle and gives its orientation in 3D space.
-  //! Warnings :
-  //! It is not forbidden to create a circle with Radius = 0.0
-  //! The status is "NegativeRadius" if Radius < 0.0
+  //! Creates a circle from axis placement and radius.
+  //! @note Construction fails with `gce_NegativeRadius` if `Radius` is negative.
+  //! @param[in] A2 local coordinate system
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Ax2& A2, const double Radius);
 
-  //! Makes a Circ from gp <TheCirc> coaxial to another
-  //! Circ <Circ> at a distance <Dist>.
-  //! If Dist is greater than zero the result is encloses
-  //! the circle <Circ>, else the result is enclosed by the
-  //! circle <Circ>.
+  //! Creates a circle coaxial to input circle at signed distance.
+  //! @note If `Dist` is positive, the result encloses `Circ`.
+  //! @note If `Dist` is negative, the result is enclosed by `Circ`.
+  //! @param[in] Circ source circle
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakeCirc(const gp_Circ& Circ, const double Dist);
 
-  //! Makes a Circ from gp <TheCirc> coaxial to another
-  //! Circ <Circ> and passing through a Pnt2d <Point>.
+  //! Creates a circle coaxial to input circle and passing through a point.
+  //! @param[in] Circ source circle
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeCirc(const gp_Circ& Circ, const gp_Pnt& Point);
 
-  //! Makes a Circ from gp <TheCirc> passing through 3
-  //! Pnt2d <P1>,<P2>,<P3>.
+  //! Creates a circle passing through three points.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
-  //! Makes a Circ from gp <TheCirc> with its center
-  //! <Center> and the normal of its plane <Norm> and
-  //! its radius <Radius>.
+  //! Creates a circle from center, plane normal and radius.
+  //! @param[in] Center center point
+  //! @param[in] Norm input value
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Dir& Norm, const double Radius);
 
-  //! Makes a Circ from gp <TheCirc> with its center
-  //! <Center> and the normal of its plane <Plane> and
-  //! its radius <Radius>.
+  //! Creates a circle from center, reference plane and radius.
+  //! @param[in] Center center point
+  //! @param[in] Plane reference plane
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Pln& Plane, const double Radius);
 
-  //! Makes a Circ from gp <TheCirc> with its center
-  //! <Center> and a point <Ptaxis> giving the normal
-  //! of its plane <Plane> and its radius <Radius>.
+  //! Creates a circle from center, axis-defining point and radius.
+  //! @param[in] Center center point
+  //! @param[in] Ptaxis point defining axis direction
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Pnt& Center, const gp_Pnt& Ptaxis, const double Radius);
 
-  //! Makes a Circ from gp <TheCirc> with its center
-  //! <Center> and its radius <Radius>.
-  //! Warning
-  //! The MakeCirc class does not prevent the
-  //! construction of a circle with a null radius.
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_Negative Radius if:
-  //! -   Radius is less than 0.0, or
-  //! -   Dist is less than 0.0 and the absolute value of
-  //! Dist is greater than the radius of Circ;
-  //! -   gce_IntersectionError if the points P1, P2 and
-  //! P3 are collinear, and the three are not coincident;
-  //! -   gce_ConfusedPoints if two of the three points
-  //! P1, P2 and P3 are coincident; or
-  //! -   gce_NullAxis if Center and Ptaxis are coincident.
+  //! Creates a circle from axis and radius.
+  //! @note Construction fails with `gce_NegativeRadius` if `Radius` is negative.
+  //! @param[in] Axis axis definition
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCirc(const gp_Ax1& Axis, const double Radius);
 
   //! Returns the constructed circle.
   //! Exceptions StdFail_NotDone if no circle is constructed.
+  //! @return resulting circle
   Standard_EXPORT const gp_Circ& Value() const;
 
-  Standard_EXPORT const gp_Circ& Operator() const;
-  Standard_EXPORT                operator gp_Circ() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Circ Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Circ() const { return Operator(); }
 
 private:
   gp_Circ TheCirc;

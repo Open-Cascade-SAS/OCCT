@@ -23,7 +23,7 @@
 #include <BRepClass_Intersector.hxx>
 #include <ElCLib.hxx>
 #include <Extrema_ExtPC2d.hxx>
-#include <GCE2d_MakeSegment.hxx>
+#include <GC_MakeSegment2d.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
 #include <Geom2dInt_GInter.hxx>
@@ -282,7 +282,7 @@ void CheckSkip(Geom2dInt_GInter&                theInter,
   else
   {
     anIsLSkip = true;
-    GCE2d_MakeSegment aMkSeg(aP1, aP2);
+    GC_MakeSegment2d aMkSeg(aP1, aP2);
     if (!aMkSeg.IsDone())
     {
       return;

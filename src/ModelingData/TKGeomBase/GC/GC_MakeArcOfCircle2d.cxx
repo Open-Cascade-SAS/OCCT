@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <ElCLib.hxx>
-#include <GCE2d_MakeArcOfCircle.hxx>
+#include <GC_MakeArcOfCircle2d.hxx>
 #include <gce_MakeCirc2d.hxx>
 #include <gce_MakeLin2d.hxx>
 #include <Geom2d_Circle.hxx>
@@ -28,9 +28,9 @@
 
 //=================================================================================================
 
-GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
-                                             const gp_Pnt2d& P2,
-                                             const gp_Pnt2d& P3)
+GC_MakeArcOfCircle2d::GC_MakeArcOfCircle2d(const gp_Pnt2d& P1,
+                                           const gp_Pnt2d& P2,
+                                           const gp_Pnt2d& P3)
 {
   gce_MakeCirc2d Cir = gce_MakeCirc2d(P1, P2, P3);
   TheError           = Cir.Status();
@@ -46,9 +46,9 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
-                                             const gp_Vec2d& V,
-                                             const gp_Pnt2d& P2)
+GC_MakeArcOfCircle2d::GC_MakeArcOfCircle2d(const gp_Pnt2d& P1,
+                                           const gp_Vec2d& V,
+                                           const gp_Pnt2d& P2)
 {
   bool      Sense;
   gp_Circ2d cir;
@@ -86,10 +86,10 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Pnt2d& P1,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
-                                             const gp_Pnt2d&  P1,
-                                             const gp_Pnt2d&  P2,
-                                             const bool       Sense)
+GC_MakeArcOfCircle2d::GC_MakeArcOfCircle2d(const gp_Circ2d& Circ,
+                                           const gp_Pnt2d&  P1,
+                                           const gp_Pnt2d&  P2,
+                                           const bool       Sense)
 {
   double                     Alpha1 = ElCLib::Parameter(Circ, P1);
   double                     Alpha2 = ElCLib::Parameter(Circ, P2);
@@ -100,10 +100,10 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
-                                             const gp_Pnt2d&  P,
-                                             const double     Alpha,
-                                             const bool       Sense)
+GC_MakeArcOfCircle2d::GC_MakeArcOfCircle2d(const gp_Circ2d& Circ,
+                                           const gp_Pnt2d&  P,
+                                           const double     Alpha,
+                                           const bool       Sense)
 {
   double                     Alphafirst = ElCLib::Parameter(Circ, P);
   occ::handle<Geom2d_Circle> C          = new Geom2d_Circle(Circ);
@@ -113,10 +113,10 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
-                                             const double     Alpha1,
-                                             const double     Alpha2,
-                                             const bool       Sense)
+GC_MakeArcOfCircle2d::GC_MakeArcOfCircle2d(const gp_Circ2d& Circ,
+                                           const double     Alpha1,
+                                           const double     Alpha2,
+                                           const bool       Sense)
 {
   occ::handle<Geom2d_Circle> C = new Geom2d_Circle(Circ);
   TheArc                       = new Geom2d_TrimmedCurve(C, Alpha1, Alpha2, Sense);
@@ -125,8 +125,8 @@ GCE2d_MakeArcOfCircle::GCE2d_MakeArcOfCircle(const gp_Circ2d& Circ,
 
 //=================================================================================================
 
-const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfCircle::Value() const
+const occ::handle<Geom2d_TrimmedCurve>& GC_MakeArcOfCircle2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeArcOfCircle::Value() - no result");
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfCircle2d::Value() - no result");
   return TheArc;
 }

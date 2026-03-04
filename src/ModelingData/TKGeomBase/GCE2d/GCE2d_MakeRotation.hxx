@@ -1,7 +1,4 @@
-// Created on: 1992-09-28
-// Created by: Remi GILET
-// Copyright (c) 1992-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,38 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//! @file GCE2d_MakeRotation.hxx
+//! @brief Deprecated compatibility alias.
+//! @deprecated This header is deprecated since OCCT 8.0.0.
+//!             Use GC_MakeRotation2d.hxx instead.
+
 #ifndef _GCE2d_MakeRotation_HeaderFile
 #define _GCE2d_MakeRotation_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
+#include <GC_MakeRotation2d.hxx>
 
-#include <Standard_Real.hxx>
-class Geom2d_Transformation;
-class gp_Pnt2d;
-
-//! This class implements an elementary construction algorithm for
-//! a rotation in 2D space. The result is a Geom2d_Transformation transformation.
-//! A MakeRotation object provides a framework for:
-//! -   defining the construction of the transformation,
-//! -   implementing the construction algorithm, and
-//! -   consulting the result.
-class GCE2d_MakeRotation
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  //! Constructs a rotation through angle Angle about the center Point.
-  Standard_EXPORT GCE2d_MakeRotation(const gp_Pnt2d& Point, const double Angle);
-
-  //! Returns the constructed transformation.
-  Standard_EXPORT const occ::handle<Geom2d_Transformation>& Value() const;
-
-  operator const occ::handle<Geom2d_Transformation>&() const { return Value(); }
-
-private:
-  occ::handle<Geom2d_Transformation> TheRotation;
-};
+using GCE2d_MakeRotation Standard_DEPRECATED(
+  "GCE2d_MakeRotation is deprecated since OCCT 8.0.0. Use GC_MakeRotation2d instead.")
+= GC_MakeRotation2d;
 
 #endif // _GCE2d_MakeRotation_HeaderFile

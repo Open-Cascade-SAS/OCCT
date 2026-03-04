@@ -47,17 +47,3 @@ const gp_Trsf& gce_MakeRotation::Value() const
 {
   return TheRotation;
 }
-
-//=================================================================================================
-
-const gp_Trsf& gce_MakeRotation::Operator() const
-{
-  return TheRotation;
-}
-
-//=================================================================================================
-
-gce_MakeRotation::operator gp_Trsf() const
-{
-  return TheRotation;
-}

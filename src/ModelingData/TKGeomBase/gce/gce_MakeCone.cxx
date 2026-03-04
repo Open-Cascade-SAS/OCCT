@@ -289,17 +289,3 @@ const gp_Cone& gce_MakeCone::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeCone::Value() - no result");
   return TheCone;
 }
-
-//=================================================================================================
-
-const gp_Cone& gce_MakeCone::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeCone::operator gp_Cone() const
-{
-  return Value();
-}

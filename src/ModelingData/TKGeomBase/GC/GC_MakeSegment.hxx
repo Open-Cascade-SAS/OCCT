@@ -27,42 +27,52 @@
 class gp_Pnt;
 class gp_Lin;
 
-//! Implements construction algorithms for a line
-//! segment in 3D space.
-//! Makes a segment of Line from the 2 points <P1> and <P2>.
-//! The result is a Geom_TrimmedCurve curve.
-//! A MakeSegment object provides a framework for:
-//! -   defining the construction of the line segment,
-//! -   implementing the construction algorithm, and
-//! -   consulting the results. In particular, the Value
-//! function returns the constructed line segment.
+//! Implements construction algorithms for line segments in 3D space.
+//! The result is a `Geom_TrimmedCurve`.
+//! A `GC_MakeSegment` object provides a framework for:
+//! - defining the construction parameters;
+//! - running the construction algorithm;
+//! - querying the construction status and resulting segment via `Value()`.
 class GC_MakeSegment : public GC_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Make a segment of Line from the 2 points <P1> and <P2>.
-  //! It returns NullObject if <P1> and <P2> are confused.
-  Standard_EXPORT GC_MakeSegment(const gp_Pnt& P1, const gp_Pnt& P2);
+  //! Creates a segment of a line from two points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @note Construction fails if the two points are coincident.
+  Standard_EXPORT GC_MakeSegment(const gp_Pnt& theP1, const gp_Pnt& theP2);
 
-  //! Make a segment of Line from the line <Line1>
-  //! between the two parameters U1 and U2.
-  //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GC_MakeSegment(const gp_Lin& Line, const double U1, const double U2);
+  //! Creates a segment of the input line between two parameters.
+  //! @param[in] theLine source line
+  //! @param[in] theU1 first parameter
+  //! @param[in] theU2 second parameter
+  //! @note Construction fails when both parameters are equal.
+  Standard_EXPORT GC_MakeSegment(const gp_Lin& theLine, const double theU1, const double theU2);
 
-  //! Make a segment of Line from the line <Line1>
-  //! between the point <Point> and the parameter Ulast.
-  //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GC_MakeSegment(const gp_Lin& Line, const gp_Pnt& Point, const double Ulast);
+  //! Creates a segment of the input line between a point and a parameter.
+  //! @param[in] theLine source line
+  //! @param[in] thePoint start point on line
+  //! @param[in] theUlast end parameter
+  //! @note Construction fails if trimming parameters are equal.
+  Standard_EXPORT GC_MakeSegment(const gp_Lin& theLine,
+                                 const gp_Pnt& thePoint,
+                                 const double  theUlast);
 
-  //! Make a segment of Line from the line <Line1>
-  //! between the two points <P1> and <P2>.
-  //! It returns NullObject if <U1> is equal <U2>.
-  Standard_EXPORT GC_MakeSegment(const gp_Lin& Line, const gp_Pnt& P1, const gp_Pnt& P2);
+  //! Creates a segment of the input line between two points.
+  //! @param[in] theLine source line
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @note Construction fails if trimming parameters are equal.
+  Standard_EXPORT GC_MakeSegment(const gp_Lin& theLine, const gp_Pnt& theP1, const gp_Pnt& theP2);
 
   //! Returns the constructed line segment.
+  //! @return resulting line segment
   Standard_EXPORT const occ::handle<Geom_TrimmedCurve>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_TrimmedCurve>&() const { return Value(); }
 
 private:

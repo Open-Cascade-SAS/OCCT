@@ -22,33 +22,35 @@
 #include <Standard_Handle.hxx>
 
 #include <gce_ErrorType.hxx>
-#include <Standard_Boolean.hxx>
 
 // resolve name collisions with X11 headers
 #ifdef Status
   #undef Status
 #endif
 
-//! This class implements the common services for
-//! all classes of gce which report error.
+//! Provides common status services for all `gce` construction classes.
 class gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
   //! Returns true if the construction is successful.
-  bool IsDone() const;
+  //! @return true if status is `gce_Done`
+  bool IsDone() const { return TheError == gce_Done; }
+
+  //! Returns true if the construction has failed.
+  //! @return true if status is not `gce_Done`
+  bool IsError() const { return TheError != gce_Done; }
 
   //! Returns the status of the construction:
   //! -   gce_Done, if the construction is successful, or
   //! -   another value of the gce_ErrorType enumeration
   //! indicating why the construction failed.
-  gce_ErrorType Status() const;
+  //! @return construction status
+  gce_ErrorType Status() const { return TheError; }
 
 protected:
   gce_ErrorType TheError;
 };
-
-#include <gce_Root.lxx>
 
 #endif // _gce_Root_HeaderFile

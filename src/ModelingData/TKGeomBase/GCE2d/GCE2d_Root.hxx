@@ -1,7 +1,4 @@
-// Created on: 1992-09-29
-// Created by: Remi GILET
-// Copyright (c) 1992-1999 Matra Datavision
-// Copyright (c) 1999-2014 OPEN CASCADE SAS
+// Copyright (c) 2026 OPEN CASCADE SAS
 //
 // This file is part of Open CASCADE Technology software library.
 //
@@ -14,39 +11,19 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
+//! @file GCE2d_Root.hxx
+//! @brief Deprecated compatibility alias.
+//! @deprecated This header is deprecated since OCCT 8.0.0.
+//!             Use GC_Root.hxx instead.
+
 #ifndef _GCE2d_Root_HeaderFile
 #define _GCE2d_Root_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
+#include <Standard_Macro.hxx>
+#include <GC_Root.hxx>
 
-#include <gce_ErrorType.hxx>
-
-// resolve name collisions with X11 headers
-#ifdef Status
-  #undef Status
-#endif
-
-//! This class implements the common services for
-//! all classes of gce which report error.
-class GCE2d_Root
-{
-public:
-  DEFINE_STANDARD_ALLOC
-
-  //! Returns true if the construction is successful.
-  bool IsDone() const;
-
-  //! Returns the status of the construction
-  //! -   gce_Done, if the construction is successful, or
-  //! -   another value of the gce_ErrorType enumeration
-  //! indicating why the construction failed.
-  gce_ErrorType Status() const;
-
-protected:
-  gce_ErrorType TheError;
-};
-
-#include <GCE2d_Root.lxx>
+using GCE2d_Root Standard_DEPRECATED(
+  "GCE2d_Root is deprecated since OCCT 8.0.0. Use GC_Root instead.")
+= GC_Root;
 
 #endif // _GCE2d_Root_HeaderFile

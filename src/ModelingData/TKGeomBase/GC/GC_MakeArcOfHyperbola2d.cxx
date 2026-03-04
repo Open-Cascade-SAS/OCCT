@@ -15,7 +15,7 @@
 // commercial license or contractual agreement.
 
 #include <ElCLib.hxx>
-#include <GCE2d_MakeArcOfHyperbola.hxx>
+#include <GC_MakeArcOfHyperbola2d.hxx>
 #include <Geom2d_Hyperbola.hxx>
 #include <Geom2d_TrimmedCurve.hxx>
 #include <gp_Hypr2d.hxx>
@@ -24,10 +24,10 @@
 
 //=================================================================================================
 
-GCE2d_MakeArcOfHyperbola::GCE2d_MakeArcOfHyperbola(const gp_Hypr2d& Hypr,
-                                                   const gp_Pnt2d&  P1,
-                                                   const gp_Pnt2d&  P2,
-                                                   const bool       Sense)
+GC_MakeArcOfHyperbola2d::GC_MakeArcOfHyperbola2d(const gp_Hypr2d& Hypr,
+                                                 const gp_Pnt2d&  P1,
+                                                 const gp_Pnt2d&  P2,
+                                                 const bool       Sense)
 {
   double                        Alpha1 = ElCLib::Parameter(Hypr, P1);
   double                        Alpha2 = ElCLib::Parameter(Hypr, P2);
@@ -38,10 +38,10 @@ GCE2d_MakeArcOfHyperbola::GCE2d_MakeArcOfHyperbola(const gp_Hypr2d& Hypr,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfHyperbola::GCE2d_MakeArcOfHyperbola(const gp_Hypr2d& Hypr,
-                                                   const gp_Pnt2d&  P,
-                                                   const double     Alpha,
-                                                   const bool       Sense)
+GC_MakeArcOfHyperbola2d::GC_MakeArcOfHyperbola2d(const gp_Hypr2d& Hypr,
+                                                 const gp_Pnt2d&  P,
+                                                 const double     Alpha,
+                                                 const bool       Sense)
 {
   double                        Alphafirst = ElCLib::Parameter(Hypr, P);
   occ::handle<Geom2d_Hyperbola> H          = new Geom2d_Hyperbola(Hypr);
@@ -51,10 +51,10 @@ GCE2d_MakeArcOfHyperbola::GCE2d_MakeArcOfHyperbola(const gp_Hypr2d& Hypr,
 
 //=================================================================================================
 
-GCE2d_MakeArcOfHyperbola::GCE2d_MakeArcOfHyperbola(const gp_Hypr2d& Hypr,
-                                                   const double     Alpha1,
-                                                   const double     Alpha2,
-                                                   const bool       Sense)
+GC_MakeArcOfHyperbola2d::GC_MakeArcOfHyperbola2d(const gp_Hypr2d& Hypr,
+                                                 const double     Alpha1,
+                                                 const double     Alpha2,
+                                                 const bool       Sense)
 {
   occ::handle<Geom2d_Hyperbola> H = new Geom2d_Hyperbola(Hypr);
   TheArc                          = new Geom2d_TrimmedCurve(H, Alpha1, Alpha2, Sense);
@@ -63,8 +63,8 @@ GCE2d_MakeArcOfHyperbola::GCE2d_MakeArcOfHyperbola(const gp_Hypr2d& Hypr,
 
 //=================================================================================================
 
-const occ::handle<Geom2d_TrimmedCurve>& GCE2d_MakeArcOfHyperbola::Value() const
+const occ::handle<Geom2d_TrimmedCurve>& GC_MakeArcOfHyperbola2d::Value() const
 {
-  StdFail_NotDone_Raise_if(TheError != gce_Done, "GCE2d_MakeArcOfHyperbola::Value() - no result");
+  StdFail_NotDone_Raise_if(TheError != gce_Done, "GC_MakeArcOfHyperbola2d::Value() - no result");
   return TheArc;
 }

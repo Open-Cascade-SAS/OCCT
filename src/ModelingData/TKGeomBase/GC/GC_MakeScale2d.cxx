@@ -1,4 +1,4 @@
-// Created on: 1992-09-29
+// Created on: 1992-10-02
 // Created by: Remi GILET
 // Copyright (c) 1992-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
@@ -14,12 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline bool GC_Root::IsDone() const
+#include <GC_MakeScale2d.hxx>
+#include <Geom2d_Transformation.hxx>
+#include <gp_Pnt2d.hxx>
+
+//=================================================================================================
+
+GC_MakeScale2d::GC_MakeScale2d(const gp_Pnt2d& Point, const double Scale)
 {
-  return TheError == gce_Done;
+  TheScale = new Geom2d_Transformation();
+  TheScale->SetScale(Point, Scale);
 }
 
-inline gce_ErrorType GC_Root::Status() const
+//=================================================================================================
+
+const occ::handle<Geom2d_Transformation>& GC_MakeScale2d::Value() const
 {
-  return TheError;
+  return TheScale;
 }

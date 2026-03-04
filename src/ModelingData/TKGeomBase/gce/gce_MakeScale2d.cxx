@@ -31,17 +31,3 @@ const gp_Trsf2d& gce_MakeScale2d::Value() const
 {
   return TheScale2d;
 }
-
-//=================================================================================================
-
-const gp_Trsf2d& gce_MakeScale2d::Operator() const
-{
-  return TheScale2d;
-}
-
-//=================================================================================================
-
-gce_MakeScale2d::operator gp_Trsf2d() const
-{
-  return TheScale2d;
-}

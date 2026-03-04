@@ -1,4 +1,4 @@
-// Created on: 1992-09-29
+// Created on: 1992-10-02
 // Created by: Remi GILET
 // Copyright (c) 1992-1999 Matra Datavision
 // Copyright (c) 1999-2014 OPEN CASCADE SAS
@@ -14,12 +14,21 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-inline bool gce_Root::IsDone() const
+#include <GC_MakeRotation2d.hxx>
+#include <Geom2d_Transformation.hxx>
+#include <gp_Pnt2d.hxx>
+
+//=================================================================================================
+
+GC_MakeRotation2d::GC_MakeRotation2d(const gp_Pnt2d& Point, const double Angle)
 {
-  return TheError == gce_Done;
+  TheRotation = new Geom2d_Transformation();
+  TheRotation->SetRotation(Point, Angle);
 }
 
-inline gce_ErrorType gce_Root::Status() const
+//=================================================================================================
+
+const occ::handle<Geom2d_Transformation>& GC_MakeRotation2d::Value() const
 {
-  return TheError;
+  return TheRotation;
 }

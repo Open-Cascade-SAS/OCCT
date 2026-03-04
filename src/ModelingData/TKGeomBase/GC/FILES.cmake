@@ -4,40 +4,67 @@ set(OCCT_GC_FILES_LOCATION "${CMAKE_CURRENT_LIST_DIR}")
 set(OCCT_GC_FILES
   GC_MakeArcOfCircle.cxx
   GC_MakeArcOfCircle.hxx
+  GC_MakeArcOfCircle2d.cxx
+  GC_MakeArcOfCircle2d.hxx
   GC_MakeArcOfEllipse.cxx
   GC_MakeArcOfEllipse.hxx
+  GC_MakeArcOfEllipse2d.cxx
+  GC_MakeArcOfEllipse2d.hxx
   GC_MakeArcOfHyperbola.cxx
   GC_MakeArcOfHyperbola.hxx
+  GC_MakeArcOfHyperbola2d.cxx
+  GC_MakeArcOfHyperbola2d.hxx
   GC_MakeArcOfParabola.cxx
   GC_MakeArcOfParabola.hxx
+  GC_MakeArcOfParabola2d.cxx
+  GC_MakeArcOfParabola2d.hxx
   GC_MakeCircle.cxx
   GC_MakeCircle.hxx
+  GC_MakeCircle2d.cxx
+  GC_MakeCircle2d.hxx
   GC_MakeConicalSurface.cxx
   GC_MakeConicalSurface.hxx
   GC_MakeCylindricalSurface.cxx
   GC_MakeCylindricalSurface.hxx
   GC_MakeEllipse.cxx
   GC_MakeEllipse.hxx
+  GC_MakeEllipse2d.cxx
+  GC_MakeEllipse2d.hxx
   GC_MakeHyperbola.cxx
   GC_MakeHyperbola.hxx
+  GC_MakeHyperbola2d.cxx
+  GC_MakeHyperbola2d.hxx
   GC_MakeLine.cxx
   GC_MakeLine.hxx
+  GC_MakeLine2d.cxx
+  GC_MakeLine2d.hxx
   GC_MakeMirror.cxx
   GC_MakeMirror.hxx
+  GC_MakeMirror2d.cxx
+  GC_MakeMirror2d.hxx
   GC_MakePlane.cxx
   GC_MakePlane.hxx
   GC_MakeRotation.cxx
   GC_MakeRotation.hxx
+  GC_MakeRotation2d.cxx
+  GC_MakeRotation2d.hxx
   GC_MakeScale.cxx
   GC_MakeScale.hxx
+  GC_MakeScale2d.cxx
+  GC_MakeScale2d.hxx
   GC_MakeSegment.cxx
   GC_MakeSegment.hxx
+  GC_MakeSegment2d.cxx
+  GC_MakeSegment2d.hxx
   GC_MakeTranslation.cxx
   GC_MakeTranslation.hxx
+  GC_MakeTranslation2d.cxx
+  GC_MakeTranslation2d.hxx
   GC_MakeTrimmedCone.cxx
   GC_MakeTrimmedCone.hxx
   GC_MakeTrimmedCylinder.cxx
   GC_MakeTrimmedCylinder.hxx
+  GC_MakeParabola2d.cxx
+  GC_MakeParabola2d.hxx
   GC_Root.hxx
-  GC_Root.lxx
 )

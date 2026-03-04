@@ -186,17 +186,3 @@ const gp_Circ2d& gce_MakeCirc2d::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeCirc2d::Value() - no result");
   return TheCirc2d;
 }
-
-//=================================================================================================
-
-const gp_Circ2d& gce_MakeCirc2d::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeCirc2d::operator gp_Circ2d() const
-{
-  return Value();
-}

@@ -28,15 +28,12 @@ class gp_Ax2;
 class gp_Cone;
 class gp_Pnt;
 
-//! This class implements the following algorithms used
-//! to create a ConicalSurface from Geom.
-//! * Create a ConicalSurface parallel to another and passing
-//! through a point.
-//! * Create a ConicalSurface parallel to another at a distance
-//! <Dist>.
-//! * Create a ConicalSurface by 4 points.
-//! * Create a ConicalSurface by its axis and 2 points.
-//! * Create a ConicalSurface by 2 points and 2 radius.
+//! Implements construction algorithms for conical surfaces.
+//! Supported constructions include:
+//! - a conical surface from axis placement and angle/radius;
+//! - conversion from `gp_Cone`;
+//! - a conical surface through four points;
+//! - a conical surface from two points and two radii.
 //! The local coordinate system of the ConicalSurface is defined
 //! with an axis placement (see class ElementarySurface).
 //!
@@ -61,53 +58,68 @@ class GC_MakeConicalSurface : public GC_Root
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! A2 defines the local coordinate system of the conical surface.
-  //! Ang is the conical surface semi-angle ]0, PI/2[.
-  //! Radius is the radius of the circle Viso in the placement plane
-  //! of the conical surface defined with "XAxis" and "YAxis".
-  //! The "ZDirection" of A2 defines the direction of the surface's
-  //! axis of symmetry.
-  //! If the location point of A2 is the apex of the surface
-  //! Radius = 0 .
-  //! At the creation the parametrization of the surface is defined
-  //! such that the normal Vector (N = D1U ^ D1V) is oriented towards
-  //! the "outside region" of the surface.
-  //! Status is "NegativeRadius" if Radius < 0.0 or "BadAngle" if
-  //! Ang < Resolution from gp or Ang >= PI/ - Resolution
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& A2, const double Ang, const double Radius);
+  //! Creates a conical surface from local frame, semi-angle and radius.
+  //! @param[in] theA2 local coordinate system
+  //! @param[in] theAng semi-angle
+  //! @param[in] theRadius reference radius in placement plane
+  //! @note `theA2` defines the local coordinate system of the conical surface.
+  //! @note `theAng` is the conical surface semi-angle ]0, PI/2[.
+  //! @note `theRadius` is the radius of the circle Viso in the placement plane
+  //!       of the conical surface defined with "XAxis" and "YAxis".
+  //! @note The "ZDirection" of `theA2` defines the direction of the surface axis
+  //!       of symmetry.
+  //! @note If the location point of `theA2` is the apex of the surface,
+  //!       `theRadius` is zero.
+  //! @note The created surface is parametrized such that the normal vector
+  //!       (`N = D1U ^ D1V`) is oriented towards the "outside region".
+  //! @note Status is `gce_NegativeRadius` if `theRadius < 0.0`, or
+  //!       `gce_BadAngle` if `theAng` is outside valid range.
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Ax2& theA2,
+                                        const double  theAng,
+                                        const double  theRadius);
 
-  //! Creates a ConicalSurface from a non persistent Cone from package gp.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Cone& C);
+  //! Creates a conical surface from a `gp_Cone`.
+  //! @param[in] theC source cone
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Cone& theC);
 
-  //! Make a ConicalSurface from Geom <TheCone> passing through 3
-  //! Pnt <P1>,<P2>,<P3>.
-  //! Its axis is <P1P2> and the radius of its base is
-  //! the distance between <P3> and <P1P2>.
-  //! The distance between <P4> and <P1P2> is the radius of
-  //! the section passing through <P4>.
-  //! An error iss raised if <P1>,<P2>,<P3>,<P4> are
-  //! colinear or if <P3P4> is perpendicular to <P1P2> or
-  //! <P3P4> is colinear to <P1P2>.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1,
-                                        const gp_Pnt& P2,
-                                        const gp_Pnt& P3,
-                                        const gp_Pnt& P4);
+  //! Creates a conical surface from four points.
+  //! @param[in] theP1 first point defining axis
+  //! @param[in] theP2 second point defining axis
+  //! @param[in] theP3 point defining first section radius
+  //! @param[in] theP4 point defining second section radius
+  //! @note Axis is defined by points `theP1` and `theP2`, and base radius is
+  //!       the distance between point `theP3` and that axis.
+  //! @note The distance between point `theP4` and that axis is the radius of
+  //!       the section passing through P4.
+  //! @note Construction fails if points `theP1`, `theP2`, `theP3` and `theP4` are
+  //!       collinear, or if vector (`theP3`,`theP4`) is perpendicular/collinear
+  //!       to vector (`theP1`,`theP2`).
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& theP1,
+                                        const gp_Pnt& theP2,
+                                        const gp_Pnt& theP3,
+                                        const gp_Pnt& theP4);
 
-  //! Make a ConicalSurface with two points and two radius.
-  //! The axis of the solution is the line passing through
-  //! <P1> and <P2>.
-  //! <R1> is the radius of the section passing through <P1>
-  //! and <R2> the radius of the section passing through <P2>.
-  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& P1,
-                                        const gp_Pnt& P2,
-                                        const double  R1,
-                                        const double  R2);
+  //! Creates a conical surface with two points and two radii.
+  //! @param[in] theP1 first axis point
+  //! @param[in] theP2 second axis point
+  //! @param[in] theR1 radius at P1
+  //! @param[in] theR2 radius at P2
+  //! @note The axis of the solution is the line passing through `theP1` and `theP2`.
+  //! @note `theR1` and `theR2` are radii of sections passing through
+  //!       `theP1` and `theP2`.
+  Standard_EXPORT GC_MakeConicalSurface(const gp_Pnt& theP1,
+                                        const gp_Pnt& theP2,
+                                        const double  theR1,
+                                        const double  theR2);
 
   //! Returns the constructed cone.
   //! Exceptions
   //! StdFail_NotDone if no cone is constructed.
+  //! @return resulting conical surface
   Standard_EXPORT const occ::handle<Geom_ConicalSurface>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_ConicalSurface>&() const { return Value(); }
 
 private:

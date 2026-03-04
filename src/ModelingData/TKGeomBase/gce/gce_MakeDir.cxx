@@ -89,17 +89,3 @@ const gp_Dir& gce_MakeDir::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeDir::Value() - no result");
   return TheDir;
 }
-
-//=================================================================================================
-
-const gp_Dir& gce_MakeDir::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeDir::operator gp_Dir() const
-{
-  return Value();
-}

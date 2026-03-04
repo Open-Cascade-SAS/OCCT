@@ -79,17 +79,3 @@ const gp_Hypr& gce_MakeHypr::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeHypr::Value() - no result");
   return TheHypr;
 }
-
-//=================================================================================================
-
-const gp_Hypr& gce_MakeHypr::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeHypr::operator gp_Hypr() const
-{
-  return Value();
-}

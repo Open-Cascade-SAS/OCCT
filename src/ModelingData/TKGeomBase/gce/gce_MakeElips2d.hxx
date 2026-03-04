@@ -23,19 +23,14 @@
 
 #include <gp_Elips2d.hxx>
 #include <gce_Root.hxx>
-#include <Standard_Boolean.hxx>
 class gp_Ax2d;
 class gp_Ax22d;
 class gp_Pnt2d;
 
-//! This class implements the following algorithms used to
-//! create Elips2d from gp.
-//!
-//! * Create an ellipse from its center, and two points:
-//! one on the ciconference giving the major radius, the
-//! other giving the value of the small radius.
-//! * Create an ellipse from its major axis and its major
-//! radius and its minor radius.
+//! This class implements construction algorithms for `gp_Elips2d`.
+//! Supported constructions include:
+//! - ellipse from major axis (or local 2D coordinate system) and radii;
+//! - ellipse from center and two points.
 class gce_MakeElips2d : public gce_Root
 {
 public:
@@ -46,8 +41,14 @@ public:
   //! of the ellipse.
   //! The sense of parametrization is given by Sense.
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
-  //! the status is "InvertRadius" if MajorRadius < MinorRadius or
-  //! "NegativeRadius" if MinorRadius < 0.0
+  //! @note Construction fails with `gce_InvertRadius` if
+  //!       `MajorRadius < MinorRadius`.
+  //! @note Construction fails with `gce_NegativeRadius` if
+  //!       `MajorRadius < 0.0`.
+  //! @param[in] MajorAxis major axis placement
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
+  //! @param[in] Sense orientation flag
   Standard_EXPORT gce_MakeElips2d(const gp_Ax2d& MajorAxis,
                                   const double   MajorRadius,
                                   const double   MinorRadius,
@@ -59,40 +60,41 @@ public:
   //! minor radius. The location of Axis is the center
   //! of the ellipse.
   //! It is possible to create an ellipse with MajorRadius = MinorRadius.
-  //! the status is "InvertRadius" if MajorRadius < MinorRadius or
-  //! "NegativeRadius" if MinorRadius < 0.0
+  //! @note Construction fails with `gce_InvertRadius` if
+  //!       `MajorRadius < MinorRadius`.
+  //! @note Construction fails with `gce_NegativeRadius` if
+  //!       `MajorRadius < 0.0`.
+  //! @param[in] A local coordinate system
+  //! @param[in] MajorRadius major radius value
+  //! @param[in] MinorRadius minor radius value
   Standard_EXPORT gce_MakeElips2d(const gp_Ax22d& A,
                                   const double    MajorRadius,
                                   const double    MinorRadius);
 
-  //! Makes an Elips2d with its center and two points.
-  //! The sense of parametrization is given by S1, S2,
-  //! and Center.
-  //! Depending on the constructor, the implicit orientation of the ellipse is:
-  //! -   the sense defined by A,
-  //! -   the sense defined by points Center, S1 and S2,
-  //! -   the trigonometric sense if Sense is not given or is true, or
-  //! -   the opposite if Sense is false.
-  //! It is possible to construct an ellipse where the major
-  //! and minor radii are equal.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_InvertRadius if MajorRadius is less than MinorRadius,
-  //! -   gce_NegativeRadius if MajorRadius or
-  //! MinorRadius is less than 0.0,
-  //! -   gce_NullAxis if points S1, S2 and Center are collinear, or
-  //! -   gce_InvertAxis if the major radius computed with
-  //! Center and S1 is less than the minor radius
-  //! computed with Center, S1 and S2.
+  //! Creates an ellipse from center and two points.
+  //! @note `S1` defines major radius direction and value.
+  //! @note Minor radius is computed as distance from `S2` to major axis.
+  //! @note Construction fails with `gce_NullAxis` when computed minor radius
+  //!       is null.
+  //! @note Construction fails with `gce_InvertAxis` when computed minor radius
+  //!       exceeds major radius.
+  //! @param[in] S1 first point
+  //! @param[in] S2 second point
+  //! @param[in] Center center point
   Standard_EXPORT gce_MakeElips2d(const gp_Pnt2d& S1, const gp_Pnt2d& S2, const gp_Pnt2d& Center);
 
   //! Returns the constructed ellipse.
   //! Exceptions StdFail_NotDone if no ellipse is constructed.
+  //! @return resulting ellipse
   Standard_EXPORT const gp_Elips2d& Value() const;
 
-  Standard_EXPORT const gp_Elips2d& Operator() const;
-  Standard_EXPORT                   operator gp_Elips2d() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Elips2d Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Elips2d() const { return Operator(); }
 
 private:
   gp_Elips2d TheElips2d;

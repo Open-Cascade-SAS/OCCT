@@ -35,14 +35,22 @@ class gce_MakeRotation2d
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! Constructs a rotation through angle Angle about the center Point.
+  //! Constructs a rotation around a point in 2D.
+  //! @param[in] Point rotation center
+  //! @param[in] Angle rotation angle in radians
   Standard_EXPORT gce_MakeRotation2d(const gp_Pnt2d& Point, const double Angle);
 
   //! Returns the constructed transformation.
+  //! @return resulting transformation
   Standard_EXPORT const gp_Trsf2d& Value() const;
 
-  Standard_EXPORT const gp_Trsf2d& Operator() const;
-  Standard_EXPORT                  operator gp_Trsf2d() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting transformation
+  gp_Trsf2d Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed transformation.
+  //! @return resulting transformation
+  operator gp_Trsf2d() const { return Operator(); }
 
 private:
   gp_Trsf2d TheRotation2d;

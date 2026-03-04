@@ -26,7 +26,7 @@
 #include <BRepTools.hxx>
 #include <BRepTools_WireExplorer.hxx>
 #include <GC_MakeCircle.hxx>
-#include <GCE2d_MakeLine.hxx>
+#include <GC_MakeLine2d.hxx>
 #include <gce_MakeLin.hxx>
 #include <Geom2d_Curve.hxx>
 #include <Geom2d_Line.hxx>
@@ -626,7 +626,7 @@ void BRepOffsetAPI_MiddlePath::Build(const Message_ProgressRange& /*theRange*/)
           gp_Pnt2d                  FirstPnt2d = PCurve1->Value(LastPar1);
           gp_Pnt2d                  LastPnt2d  = PCurve2->Value(LastPar2);
           occ::handle<Geom_Surface> theSurf    = BRep_Tool::Surface(theFace);
-          occ::handle<Geom2d_Line>  theLine    = GCE2d_MakeLine(FirstPnt2d, LastPnt2d);
+          occ::handle<Geom2d_Line>  theLine    = GC_MakeLine2d(FirstPnt2d, LastPnt2d);
           double                    len_ne     = FirstPnt2d.Distance(LastPnt2d);
           TopoDS_Edge               NewEdge =
             BRepLib_MakeEdge(theLine, theSurf, PrevVertex, CurVertex, 0., len_ne);
@@ -664,15 +664,15 @@ void BRepOffsetAPI_MiddlePath::Build(const Message_ProgressRange& /*theRange*/)
           gp_Pnt2d                  FirstPnt2d = PCurve1->Value(LastPar1);
           gp_Pnt2d                  LastPnt2d  = PCurve2->Value(LastPar2);
           occ::handle<Geom_Surface> theSurf    = BRep_Tool::Surface(theFace);
-          occ::handle<Geom2d_Line>  theLine    = GCE2d_MakeLine(FirstPnt2d, LastPnt2d);
+          occ::handle<Geom2d_Line>  theLine    = GC_MakeLine2d(FirstPnt2d, LastPnt2d);
           double                    len_ne     = FirstPnt2d.Distance(LastPnt2d);
           TopoDS_Edge               NewEdge =
             BRepLib_MakeEdge(theLine, theSurf, PrevVertex, CurVertex, 0., len_ne);
           BRepLib::BuildCurve3d(NewEdge);
           gp_Pnt2d                 PrevFirstPnt2d = PCurve1->Value(FirstPar1);
           gp_Pnt2d                 PrevLastPnt2d  = PCurve2->Value(FirstPar2);
-          occ::handle<Geom2d_Line> Line1          = GCE2d_MakeLine(PrevFirstPnt2d, LastPnt2d);
-          occ::handle<Geom2d_Line> Line2          = GCE2d_MakeLine(FirstPnt2d, PrevLastPnt2d);
+          occ::handle<Geom2d_Line> Line1          = GC_MakeLine2d(PrevFirstPnt2d, LastPnt2d);
+          occ::handle<Geom2d_Line> Line2          = GC_MakeLine2d(FirstPnt2d, PrevLastPnt2d);
           double                   len_ne1        = PrevFirstPnt2d.Distance(LastPnt2d);
           TopoDS_Edge              NewEdge1 =
             BRepLib_MakeEdge(Line1, theSurf, PrevPrevVer, CurVertex, 0., len_ne1);

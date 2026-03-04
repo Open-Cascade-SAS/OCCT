@@ -45,31 +45,37 @@ public:
   DEFINE_STANDARD_ALLOC
 
   //! Creates a line located in 3D space with the axis placement A1.
-  //! The Location of A1 is the origin of the line.
-  Standard_EXPORT GC_MakeLine(const gp_Ax1& A1);
+  //! @param[in] theA1 line axis placement
+  //! @note The location of `theA1` is the origin of the line.
+  Standard_EXPORT GC_MakeLine(const gp_Ax1& theA1);
 
-  //! Creates a line from a non persistent line from package gp.
-  Standard_EXPORT GC_MakeLine(const gp_Lin& L);
+  //! Creates a line from a non-persistent line from package gp.
+  //! @param[in] theL source line
+  Standard_EXPORT GC_MakeLine(const gp_Lin& theL);
 
-  //! P is the origin and V is the direction of the line.
-  Standard_EXPORT GC_MakeLine(const gp_Pnt& P, const gp_Dir& V);
+  //! Creates a line from point and direction.
+  //! @param[in] theP line origin
+  //! @param[in] theV line direction
+  Standard_EXPORT GC_MakeLine(const gp_Pnt& theP, const gp_Dir& theV);
 
-  //! Make a Line from Geom <TheLin> parallel to another
-  //! Lin <Lin> and passing through a Pnt <Point>.
-  Standard_EXPORT GC_MakeLine(const gp_Lin& Lin, const gp_Pnt& Point);
+  //! Creates a line parallel to the input line and passing through the input point.
+  //! @param[in] theLin source line
+  //! @param[in] thePoint point on resulting line
+  Standard_EXPORT GC_MakeLine(const gp_Lin& theLin, const gp_Pnt& thePoint);
 
-  //! Make a Line from Geom <TheLin> passing through 2
-  //! Pnt <P1>,<P2>.
-  //! It returns false if <p1> and <P2> are confused.
-  //! Warning
-  //! If the points P1 and P2 are coincident (that is, when
-  //! IsDone returns false), the Status function returns gce_ConfusedPoints.
-  Standard_EXPORT GC_MakeLine(const gp_Pnt& P1, const gp_Pnt& P2);
+  //! Creates a line passing through two points.
+  //! @param[in] theP1 first point
+  //! @param[in] theP2 second point
+  //! @note Construction fails with `gce_ConfusedPoints` if the two points are coincident.
+  Standard_EXPORT GC_MakeLine(const gp_Pnt& theP1, const gp_Pnt& theP2);
 
   //! Returns the constructed line.
   //! Exceptions StdFail_NotDone if no line is constructed.
+  //! @return resulting line
   Standard_EXPORT const occ::handle<Geom_Line>& Value() const;
 
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
   operator const occ::handle<Geom_Line>&() const { return Value(); }
 
 private:

@@ -31,17 +31,3 @@ const gp_Trsf& gce_MakeScale::Value() const
 {
   return TheScale;
 }
-
-//=================================================================================================
-
-const gp_Trsf& gce_MakeScale::Operator() const
-{
-  return TheScale;
-}
-
-//=================================================================================================
-
-gce_MakeScale::operator gp_Trsf() const
-{
-  return TheScale;
-}

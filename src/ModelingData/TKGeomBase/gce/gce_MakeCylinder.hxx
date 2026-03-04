@@ -28,61 +28,66 @@ class gp_Pnt;
 class gp_Ax1;
 class gp_Circ;
 
-//! This class implements the following algorithms used
-//! to create a Cylinder from gp.
-//! * Create a Cylinder coaxial to another and passing
-//! through a point.
-//! * Create a Cylinder coaxial to another at a distance
-//! <Dist>.
-//! * Create a Cylinder with 3 points.
-//! * Create a Cylinder by its axis and radius.
-//! * Create a cylinder by its circular base.
+//! This class implements construction algorithms for `gp_Cylinder`.
+//! Supported constructions include:
+//! - cylinder from axis placement and radius;
+//! - cylinder coaxial to another, through point or at signed offset;
+//! - cylinder from three points;
+//! - cylinder from axis and radius;
+//! - cylinder from circular base.
 class gce_MakeCylinder : public gce_Root
 {
 public:
   DEFINE_STANDARD_ALLOC
 
-  //! <A2> is the local cartesian coordinate system of <me>.
-  //! The status is "NegativeRadius" if R < 0.0
+  //! Creates a cylinder from axis placement and radius.
+  //! @note Construction fails with `gce_NegativeRadius` if `Radius` is negative.
+  //! @param[in] A2 local coordinate system
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCylinder(const gp_Ax2& A2, const double Radius);
 
-  //! Makes a Cylinder from gp <TheCylinder> coaxial to another
-  //! Cylinder <Cylinder> and passing through a Pnt <Point>.
+  //! Creates a cylinder coaxial to input cylinder and passing through a point.
+  //! @param[in] Cyl source cylinder
+  //! @param[in] Point reference point
   Standard_EXPORT gce_MakeCylinder(const gp_Cylinder& Cyl, const gp_Pnt& Point);
 
-  //! Makes a Cylinder from gp <TheCylinder> coaxial to another
-  //! Cylinder <Cylinder> at the distance <Dist> which can
-  //! be greater or lower than zero.
-  //! The radius of the result is the absolute value of the
-  //! radius of <Cyl> plus <Dist>
+  //! Creates a cylinder coaxial to input cylinder at signed distance.
+  //! @note Construction fails with `gce_NegativeRadius` if resulting radius is negative.
+  //! @param[in] Cyl source cylinder
+  //! @param[in] Dist signed distance
   Standard_EXPORT gce_MakeCylinder(const gp_Cylinder& Cyl, const double Dist);
 
-  //! Makes a Cylinder from gp <TheCylinder> with 3 points
-  //! <P1>,<P2>,<P3>.
-  //! Its axis is <P1P2> and its radius is the distance
-  //! between <P3> and <P1P2>
+  //! Creates a cylinder from three points.
+  //! @note Axis is defined by points `P1` and `P2`.
+  //! @note Radius is the distance from `P3` to that axis.
+  //! @param[in] P1 first point
+  //! @param[in] P2 second point
+  //! @param[in] P3 third point
   Standard_EXPORT gce_MakeCylinder(const gp_Pnt& P1, const gp_Pnt& P2, const gp_Pnt& P3);
 
   //! Makes a Cylinder by its axis <Axis> and radius <Radius>.
+  //! @param[in] Axis axis definition
+  //! @param[in] Radius radius value
   Standard_EXPORT gce_MakeCylinder(const gp_Ax1& Axis, const double Radius);
 
-  //! Makes a Cylinder by its circular base.
-  //! Warning
-  //! If an error occurs (that is, when IsDone returns
-  //! false), the Status function returns:
-  //! -   gce_NegativeRadius if:
-  //! -   Radius is less than 0.0, or
-  //! -   Dist is negative and has an absolute value
-  //! which is greater than the radius of Cyl; or
-  //! -   gce_ConfusedPoints if points P1 and P2 are coincident.
+  //! Creates a cylinder from circular base.
+  //! @note The resulting cylinder axis equals the circle axis.
+  //! @note This constructor succeeds for any valid `Circ`.
+  //! @param[in] Circ source circle
   Standard_EXPORT gce_MakeCylinder(const gp_Circ& Circ);
 
   //! Returns the constructed cylinder.
   //! Exceptions StdFail_NotDone if no cylinder is constructed.
+  //! @return resulting cylinder
   Standard_EXPORT const gp_Cylinder& Value() const;
 
-  Standard_EXPORT const gp_Cylinder& Operator() const;
-  Standard_EXPORT                    operator gp_Cylinder() const;
+  //! Alias for Value() returning a copy.
+  //! @return resulting object
+  gp_Cylinder Operator() const { return Value(); }
+
+  //! Conversion operator returning the constructed object.
+  //! @return resulting object
+  operator gp_Cylinder() const { return Operator(); }
 
 private:
   gp_Cylinder TheCylinder;

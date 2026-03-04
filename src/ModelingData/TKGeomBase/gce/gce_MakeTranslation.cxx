@@ -39,17 +39,3 @@ const gp_Trsf& gce_MakeTranslation::Value() const
 {
   return TheTranslation;
 }
-
-//=================================================================================================
-
-const gp_Trsf& gce_MakeTranslation::Operator() const
-{
-  return TheTranslation;
-}
-
-//=================================================================================================
-
-gce_MakeTranslation::operator gp_Trsf() const
-{
-  return TheTranslation;
-}

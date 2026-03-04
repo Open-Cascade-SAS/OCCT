@@ -20,7 +20,7 @@
 #include <Bisector_BisecCC.hxx>
 #include <Bisector_BisecPC.hxx>
 #include <Bisector_Curve.hxx>
-#include <GCE2d_MakeSegment.hxx>
+#include <GC_MakeSegment2d.hxx>
 #include <Geom2d_BSplineCurve.hxx>
 #include <Geom2d_CartesianPoint.hxx>
 #include <Geom2d_Circle.hxx>
@@ -103,7 +103,7 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
     {
       if (aBS->Pole(1).Distance(aBS->Pole(2)) < 1.e-4)
       {
-        afirstcurve1 = GCE2d_MakeSegment(aBS->Pole(1), aBS->Pole(2)).Value();
+        afirstcurve1 = GC_MakeSegment2d(aBS->Pole(1), aBS->Pole(2)).Value();
         Type1        = STANDARD_TYPE(Geom2d_Line);
       }
     }
@@ -125,7 +125,7 @@ void Bisector_Bisec::Perform(const occ::handle<Geom2d_Curve>& afirstcurve,
     {
       if (aBS->Pole(1).Distance(aBS->Pole(2)) < 1.e-4)
       {
-        asecondcurve1 = GCE2d_MakeSegment(aBS->Pole(1), aBS->Pole(2)).Value();
+        asecondcurve1 = GC_MakeSegment2d(aBS->Pole(1), aBS->Pole(2)).Value();
         Type2         = STANDARD_TYPE(Geom2d_Line);
       }
     }

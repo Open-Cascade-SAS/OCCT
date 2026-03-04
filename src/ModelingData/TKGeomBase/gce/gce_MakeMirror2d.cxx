@@ -55,17 +55,3 @@ const gp_Trsf2d& gce_MakeMirror2d::Value() const
 {
   return TheMirror2d;
 }
-
-//=================================================================================================
-
-const gp_Trsf2d& gce_MakeMirror2d::Operator() const
-{
-  return TheMirror2d;
-}
-
-//=================================================================================================
-
-gce_MakeMirror2d::operator gp_Trsf2d() const
-{
-  return TheMirror2d;
-}

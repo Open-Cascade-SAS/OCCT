@@ -34,7 +34,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(MAT2d_Circuit, Standard_Transient)
 
 #ifdef OCCT_DEBUG
-  #include <GCE2d_MakeSegment.hxx>
+  #include <GC_MakeSegment2d.hxx>
   #include <Geom2d_Curve.hxx>
   #include <Geom2d_Parabola.hxx>
   #include <Geom2d_Hyperbola.hxx>
@@ -191,8 +191,8 @@ void MAT2d_Circuit::Perform(
     for (i = 1; i <= NbConnexions; i++)
     {
       occ::handle<Geom2d_TrimmedCurve> edge;
-      edge = GCE2d_MakeSegment(Road.Path().Value(i)->PointOnFirst(),
-                               Road.Path().Value(i)->PointOnSecond());
+      edge = GC_MakeSegment2d(Road.Path().Value(i)->PointOnFirst(),
+                              Road.Path().Value(i)->PointOnSecond());
       MAT2d_DrawCurve(edge, 2);
     }
   }

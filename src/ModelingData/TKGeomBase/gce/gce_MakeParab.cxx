@@ -45,13 +45,3 @@ const gp_Parab& gce_MakeParab::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeParab::Value() - no result");
   return TheParab;
 }
-
-const gp_Parab& gce_MakeParab::Operator() const
-{
-  return Value();
-}
-
-gce_MakeParab::operator gp_Parab() const
-{
-  return Value();
-}

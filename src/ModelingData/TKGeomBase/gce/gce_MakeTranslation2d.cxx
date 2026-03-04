@@ -39,17 +39,3 @@ const gp_Trsf2d& gce_MakeTranslation2d::Value() const
 {
   return TheTranslation2d;
 }
-
-//=================================================================================================
-
-const gp_Trsf2d& gce_MakeTranslation2d::Operator() const
-{
-  return TheTranslation2d;
-}
-
-//=================================================================================================
-
-gce_MakeTranslation2d::operator gp_Trsf2d() const
-{
-  return TheTranslation2d;
-}

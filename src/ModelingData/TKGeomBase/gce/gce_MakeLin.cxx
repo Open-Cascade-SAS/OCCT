@@ -68,17 +68,3 @@ const gp_Lin& gce_MakeLin::Value() const
   StdFail_NotDone_Raise_if(TheError != gce_Done, "gce_MakeLin::Value() - no result");
   return TheLin;
 }
-
-//=================================================================================================
-
-const gp_Lin& gce_MakeLin::Operator() const
-{
-  return Value();
-}
-
-//=================================================================================================
-
-gce_MakeLin::operator gp_Lin() const
-{
-  return Value();
-}
