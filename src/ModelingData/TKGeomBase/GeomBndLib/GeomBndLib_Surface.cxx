@@ -27,6 +27,8 @@
 #include <Geom_SurfaceOfRevolution.hxx>
 #include <Geom_ToroidalSurface.hxx>
 #include <GeomAdaptor_Surface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
+#include <gp_TrsfForm.hxx>
 
 #include <type_traits>
 
@@ -74,12 +76,31 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
     }
     case GeomAbs_SurfaceOfRevolution: {
       // Try to get the underlying Geom_SurfaceOfRevolution from the adaptor.
-      const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef);
-      if (aGA != nullptr)
+      // GeomAdaptor_Surface and GeomAdaptor_TransformedSurface (base of BRepAdaptor_Surface)
+      // both expose GeomSurface() giving direct access to the Geom handle.
+      occ::handle<Geom_Surface> aGeomSurf;
+      const gp_Trsf*            aTrsf = nullptr;
+      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef))
       {
-        auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aGA->Surface());
+        aGeomSurf = aGA->Surface();
+      }
+      else if (const GeomAdaptor_TransformedSurface* aGTS =
+                 dynamic_cast<const GeomAdaptor_TransformedSurface*>(myAdaptorRef))
+      {
+        aGeomSurf = aGTS->GeomSurface();
+        if (aGTS->Trsf().Form() != gp_Identity)
+          aTrsf = &aGTS->Trsf();
+      }
+      if (!aGeomSurf.IsNull())
+      {
+        auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aGeomSurf);
         if (!aRev.IsNull())
         {
+          if (aTrsf != nullptr)
+          {
+            aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aRev->Copy());
+            aRev->Transform(*aTrsf);
+          }
           myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRev);
           break;
         }
@@ -89,12 +110,29 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
       break;
     }
     case GeomAbs_SurfaceOfExtrusion: {
-      const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef);
-      if (aGA != nullptr)
+      occ::handle<Geom_Surface> aGeomSurf;
+      const gp_Trsf*            aTrsf = nullptr;
+      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef))
       {
-        auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aGA->Surface());
+        aGeomSurf = aGA->Surface();
+      }
+      else if (const GeomAdaptor_TransformedSurface* aGTS =
+                 dynamic_cast<const GeomAdaptor_TransformedSurface*>(myAdaptorRef))
+      {
+        aGeomSurf = aGTS->GeomSurface();
+        if (aGTS->Trsf().Form() != gp_Identity)
+          aTrsf = &aGTS->Trsf();
+      }
+      if (!aGeomSurf.IsNull())
+      {
+        auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aGeomSurf);
         if (!anExtr.IsNull())
         {
+          if (aTrsf != nullptr)
+          {
+            anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(anExtr->Copy());
+            anExtr->Transform(*aTrsf);
+          }
           myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtr);
           break;
         }
@@ -104,12 +142,29 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
       break;
     }
     case GeomAbs_OffsetSurface: {
-      const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef);
-      if (aGA != nullptr)
+      occ::handle<Geom_Surface> aGeomSurf;
+      const gp_Trsf*            aTrsf = nullptr;
+      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef))
       {
-        auto anOff = occ::down_cast<Geom_OffsetSurface>(aGA->Surface());
+        aGeomSurf = aGA->Surface();
+      }
+      else if (const GeomAdaptor_TransformedSurface* aGTS =
+                 dynamic_cast<const GeomAdaptor_TransformedSurface*>(myAdaptorRef))
+      {
+        aGeomSurf = aGTS->GeomSurface();
+        if (aGTS->Trsf().Form() != gp_Identity)
+          aTrsf = &aGTS->Trsf();
+      }
+      if (!aGeomSurf.IsNull())
+      {
+        auto anOff = occ::down_cast<Geom_OffsetSurface>(aGeomSurf);
         if (!anOff.IsNull())
         {
+          if (aTrsf != nullptr)
+          {
+            anOff = occ::down_cast<Geom_OffsetSurface>(anOff->Copy());
+            anOff->Transform(*aTrsf);
+          }
           myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOff);
           break;
         }

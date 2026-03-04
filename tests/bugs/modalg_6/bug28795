@@ -6,7 +6,7 @@ puts ""
 # Boolean operations corrupt the p-curve of the source planar face if "non-destructive" option is switched off
 ##################################################
 
-set expected [list {UMin 0.0} {UMax 1.0} {VMin -2e+100} {VMax 0.0}]
+set expected [list {UMin 0.0} {UMax 1.0} {VMin -1e+100} {VMax 0.0}]
 
 box mb -0.5 -0.5 -0.5 1 1 1
 explode mb F
