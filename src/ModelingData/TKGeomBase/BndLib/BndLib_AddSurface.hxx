@@ -112,18 +112,6 @@ public:
                                          const double             VMax,
                                          const double             Tol,
                                          Bnd_Box&                 B);
-
-  //! Adds to the bounding box B the surface S
-  //! using numerical minimization algorithms
-  //! This method is used in AddOptimal for not analytical surfaces and torus.
-  //! if Tol < Precision::Confusion(), Precision::Confusion is used as computation tolerance
-  Standard_EXPORT static void AddGenSurf(const Adaptor3d_Surface& S,
-                                         const double             UMin,
-                                         const double             UMax,
-                                         const double             VMin,
-                                         const double             VMax,
-                                         const double             Tol,
-                                         Bnd_Box&                 B);
 };
 
 #endif // _BndLib_AddSurface_HeaderFile

@@ -350,5 +350,6 @@ TEST(GeomBndLib_OffsetCurveTest, InfiniteRange_OpennessPreserved)
   EXPECT_FALSE(aNewBox.IsOpenYmax());
   EXPECT_FALSE(aNewBox.IsOpenZmin());
   EXPECT_FALSE(aNewBox.IsOpenZmax());
-  EXPECT_FALSE(anOldBox.IsOpenXmin());
+  // BndLib now delegates to GeomBndLib, so it also correctly computes the open X min.
+  EXPECT_TRUE(anOldBox.IsOpenXmin());
 }

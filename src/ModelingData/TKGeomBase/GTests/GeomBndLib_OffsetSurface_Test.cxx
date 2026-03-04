@@ -294,6 +294,67 @@ TEST(GeomBndLib_OffsetSurfaceTest, Torus_Patch_CompareWithBndLib)
 }
 
 // =========================================================================
+// BoxOptimal - plane (analytic equivalent path)
+// =========================================================================
+
+TEST(GeomBndLib_OffsetSurfaceTest, Plane_BoxOptimal_TighterThanBox)
+{
+  Handle(Geom_Plane)         aPlane = new Geom_Plane(gp::XOY());
+  Handle(Geom_OffsetSurface) anOff  = new Geom_OffsetSurface(aPlane, 3.0);
+
+  Bnd_Box aFastBox;
+  GeomBndLib_Surface(anOff).Add(-5.0, 5.0, -5.0, 5.0, Precision::Confusion(), aFastBox);
+
+  Bnd_Box aOptBox;
+  GeomBndLib_Surface(anOff).AddOptimal(-5.0, 5.0, -5.0, 5.0, Precision::Confusion(), aOptBox);
+
+  // Offset plane is a plane - BoxOptimal should be at least as tight as Box.
+  ExpectNoLarger(aOptBox, aFastBox, Precision::Confusion());
+  ExpectContainsOffsetSurface(aOptBox, anOff, -5.0, 5.0, -5.0, 5.0, 10, 10);
+}
+
+// =========================================================================
+// BoxOptimal - torus (PSO fallback path)
+// =========================================================================
+
+TEST(GeomBndLib_OffsetSurfaceTest, Torus_BoxOptimal_ContainsSurface)
+{
+  Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(gp::XOY(), 10.0, 3.0);
+  Handle(Geom_OffsetSurface)   anOff  = new Geom_OffsetSurface(aTorus, 1.0);
+
+  Bnd_Box aFastBox;
+  GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, Precision::Confusion(), aFastBox);
+
+  Bnd_Box aOptBox;
+  GeomBndLib_Surface(anOff)
+    .AddOptimal(0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, Precision::Confusion(), aOptBox);
+
+  // PSO optimal should not exceed the fast box and must contain the actual surface.
+  ExpectNoLarger(aOptBox, aFastBox, Precision::Confusion());
+  ExpectContainsOffsetSurface(aOptBox, anOff, 0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, 36, 36);
+}
+
+// =========================================================================
+// BoxOptimal - sphere (analytic equivalent: offset sphere -> sphere)
+// =========================================================================
+
+TEST(GeomBndLib_OffsetSurfaceTest, Sphere_BoxOptimal_ContainsSurface)
+{
+  Handle(Geom_SphericalSurface) aSphere = new Geom_SphericalSurface(gp::XOY(), 5.0);
+  Handle(Geom_OffsetSurface)    anOff   = new Geom_OffsetSurface(aSphere, 2.0);
+
+  Bnd_Box aFastBox;
+  GeomBndLib_Surface(anOff).Add(Precision::Confusion(), aFastBox);
+
+  Bnd_Box aOptBox;
+  GeomBndLib_Surface(anOff).AddOptimal(Precision::Confusion(), aOptBox);
+
+  // Analytic path: offset sphere -> sphere, so BoxOptimal should be at least as tight.
+  ExpectNoLarger(aOptBox, aFastBox, Precision::Confusion());
+  ExpectContainsOffsetSurface(aOptBox, anOff, 0.0, 2.0 * M_PI, -M_PI / 2.0, M_PI / 2.0, 36, 18);
+}
+
+// =========================================================================
 // Large offset
 // =========================================================================
 

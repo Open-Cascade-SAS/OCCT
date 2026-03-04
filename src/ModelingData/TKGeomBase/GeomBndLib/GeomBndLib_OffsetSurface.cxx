@@ -13,6 +13,8 @@
 
 #include <GeomBndLib_OffsetSurface.hxx>
 
+#include <GeomAdaptor_Surface.hxx>
+#include <GeomBndLib_OtherSurface.hxx>
 #include <GeomBndLib_Surface.hxx>
 #include <Geom_Surface.hxx>
 
@@ -54,4 +56,29 @@ Bnd_Box GeomBndLib_OffsetSurface::Box(double theUMin,
   aLocalBox.Enlarge(anOffset);
   aLocalBox.Enlarge(theTol);
   return aLocalBox;
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_OffsetSurface::BoxOptimal(double theUMin,
+                                             double theUMax,
+                                             double theVMin,
+                                             double theVMax,
+                                             double theTol) const
+{
+  // Try the analytic equivalent surface first (e.g. offset plane -> plane).
+  const occ::handle<Geom_Surface> anEquiv = myGeom->Surface();
+  if (!anEquiv.IsNull())
+  {
+    GeomBndLib_Surface aSurfEval(anEquiv);
+    if (aSurfEval.GetType() != GeomAbs_OtherSurface)
+    {
+      return aSurfEval.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+    }
+  }
+
+  // Sample the actual offset surface directly for a tight bounding box.
+  GeomAdaptor_Surface     anAdaptor(myGeom);
+  GeomBndLib_OtherSurface anOther(anAdaptor);
+  return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
 }
