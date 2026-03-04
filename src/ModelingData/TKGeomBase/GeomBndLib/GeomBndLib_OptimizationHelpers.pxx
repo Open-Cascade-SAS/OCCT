@@ -15,13 +15,12 @@
 #define GeomBndLib_OptimizationHelpers_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
+#include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Surface.hxx>
 #include <Precision.hxx>
-#include <math_BrentMinimum.hxx>
-#include <math_Function.hxx>
-#include <math_MultipleVarFunction.hxx>
-#include <math_PSO.hxx>
-#include <math_Powell.hxx>
+#include <MathOpt_Brent.hxx>
+#include <MathOpt_PSO.hxx>
+#include <MathOpt_Powell.hxx>
 #include <math_Vector.hxx>
 #include <math_Matrix.hxx>
 
@@ -36,7 +35,7 @@ namespace GeomBndLib_OptimizationHelpers
 // ============================================================
 
 //! 1D function object for coordinate minimization/maximization along a 3D curve.
-class CurveCoordFunc : public math_Function
+class CurveCoordFunc
 {
 public:
   CurveCoordFunc(const Adaptor3d_Curve& theCurve,
@@ -52,14 +51,14 @@ public:
   {
   }
 
-  bool Value(const double theX, double& theF) override
+  bool Value(const double theX, double& theF)
   {
     if (theX < myUMin || theX > myUMax)
     {
       return false;
     }
     gp_Pnt aP = myCurve.Value(theX);
-    theF       = mySign * aP.Coord(myCoordIdx);
+    theF      = mySign * aP.Coord(myCoordIdx);
     return true;
   }
 
@@ -74,7 +73,7 @@ private:
 };
 
 //! Multi-variable function for PSO on a 3D curve.
-class CurveCoordMVarFunc : public math_MultipleVarFunction
+class CurveCoordMVarFunc
 {
 public:
   CurveCoordMVarFunc(const Adaptor3d_Curve& theCurve,
@@ -90,18 +89,18 @@ public:
   {
   }
 
-  bool Value(const math_Vector& theX, double& theF) override
+  bool Value(const math_Vector& theX, double& theF)
   {
     if (theX(1) < myUMin || theX(1) > myUMax)
     {
       return false;
     }
     gp_Pnt aP = myCurve.Value(theX(1));
-    theF       = mySign * aP.Coord(myCoordIdx);
+    theF      = mySign * aP.Coord(myCoordIdx);
     return true;
   }
 
-  int NbVariables() const override { return 1; }
+  int NbVariables() const { return 1; }
 
 private:
   CurveCoordMVarFunc& operator=(const CurveCoordMVarFunc&) = delete;
@@ -113,8 +112,86 @@ private:
   double                 mySign;
 };
 
+//! 1D function object for coordinate minimization/maximization along a 2D curve.
+class Curve2dCoordFunc
+{
+public:
+  Curve2dCoordFunc(const Adaptor2d_Curve2d& theCurve,
+                   const double             theUMin,
+                   const double             theUMax,
+                   const int                theCoordIdx,
+                   const double             theSign)
+      : myCurve(theCurve),
+        myUMin(theUMin),
+        myUMax(theUMax),
+        myCoordIdx(theCoordIdx),
+        mySign(theSign)
+  {
+  }
+
+  bool Value(const double theX, double& theF)
+  {
+    if (theX < myUMin || theX > myUMax)
+    {
+      return false;
+    }
+    const gp_Pnt2d aP = myCurve.Value(theX);
+    theF              = mySign * aP.Coord(myCoordIdx);
+    return true;
+  }
+
+private:
+  Curve2dCoordFunc& operator=(const Curve2dCoordFunc&) = delete;
+
+  const Adaptor2d_Curve2d& myCurve;
+  double                   myUMin;
+  double                   myUMax;
+  int                      myCoordIdx;
+  double                   mySign;
+};
+
+//! Multi-variable function for PSO on a 2D curve.
+class Curve2dCoordMVarFunc
+{
+public:
+  Curve2dCoordMVarFunc(const Adaptor2d_Curve2d& theCurve,
+                       const double             theUMin,
+                       const double             theUMax,
+                       const int                theCoordIdx,
+                       const double             theSign)
+      : myCurve(theCurve),
+        myUMin(theUMin),
+        myUMax(theUMax),
+        myCoordIdx(theCoordIdx),
+        mySign(theSign)
+  {
+  }
+
+  bool Value(const math_Vector& theX, double& theF)
+  {
+    if (theX(1) < myUMin || theX(1) > myUMax)
+    {
+      return false;
+    }
+    const gp_Pnt2d aP = myCurve.Value(theX(1));
+    theF              = mySign * aP.Coord(myCoordIdx);
+    return true;
+  }
+
+  int NbVariables() const { return 1; }
+
+private:
+  Curve2dCoordMVarFunc& operator=(const Curve2dCoordMVarFunc&) = delete;
+
+  const Adaptor2d_Curve2d& myCurve;
+  double                   myUMin;
+  double                   myUMax;
+  int                      myCoordIdx;
+  double                   mySign;
+};
+
 //! Multi-variable function for PSO+Powell on a surface.
-class SurfCoordFunc : public math_MultipleVarFunction
+class SurfCoordFunc
 {
 public:
   SurfCoordFunc(const Adaptor3d_Surface& theSurf,
@@ -151,12 +228,12 @@ public:
     myPenalty  = std::max(myPenalty, 1.);
   }
 
-  bool Value(const math_Vector& theX, double& theF) override
+  bool Value(const math_Vector& theX, double& theF)
   {
     if (theX(1) >= myUMin && theX(1) <= myUMax && theX(2) >= myVMin && theX(2) <= myVMax)
     {
       gp_Pnt aP = mySurf.Value(theX(1), theX(2));
-      theF       = mySign * aP.Coord(myCoordIdx);
+      theF      = mySign * aP.Coord(myCoordIdx);
     }
     else
     {
@@ -190,12 +267,12 @@ public:
         v0 = theX(2);
       }
       gp_Pnt aP = mySurf.Value(u0, v0);
-      theF       = mySign * aP.Coord(myCoordIdx) + aUPen + aVPen;
+      theF      = mySign * aP.Coord(myCoordIdx) + aUPen + aVPen;
     }
     return true;
   }
 
-  int NbVariables() const override { return 2; }
+  int NbVariables() const { return 2; }
 
 private:
   SurfCoordFunc& operator=(const SurfCoordFunc&) = delete;
@@ -237,44 +314,176 @@ inline double AdjustExtrCurve(const Adaptor3d_Curve& theCurve,
   double uTol = std::max(theCurve.Resolution(theTol), Precision::PConfusion());
   double Du   = (theCurve.LastParameter() - theCurve.FirstParameter());
 
-  double reltol = uTol / std::max(std::abs(theUMin), std::abs(theUMax));
+  double          reltol = uTol / std::max(std::abs(theUMin), std::abs(theUMax));
+  MathOpt::Config aBrentCfg;
+  aBrentCfg.XTolerance    = reltol;
+  aBrentCfg.FTolerance    = uTol;
+  aBrentCfg.MaxIterations = 100;
+
   if (theUMax - theUMin < 0.01 * Du)
   {
-    math_BrentMinimum anOptLoc(reltol, 100, uTol);
-    CurveCoordFunc    aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
-    anOptLoc.Perform(aFunc, theUMin, (theUMin + theUMax) / 2., theUMax);
-    if (anOptLoc.IsDone())
+    CurveCoordFunc        aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+    MathOpt::ScalarResult anOptLoc = MathOpt::Brent(aFunc, theUMin, theUMax, aBrentCfg);
+    if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
     {
-      extr = anOptLoc.Minimum();
+      if (anOptLoc.Value.has_value())
+      {
+        extr = anOptLoc.Value.value();
+      }
       return aSign * extr;
     }
   }
 
   int         aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
-  double      aMaxStep     = (theUMax - theUMin) / (aNbParticles + 1);
-  math_Vector aT(1, 1);
   math_Vector aLowBorder(1, 1);
   math_Vector aUppBorder(1, 1);
-  math_Vector aSteps(1, 1);
   aLowBorder(1) = theUMin;
   aUppBorder(1) = theUMax;
-  aSteps(1)     = std::min(0.1 * Du, aMaxStep);
 
-  CurveCoordMVarFunc aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
-  math_PSO           aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
-  aFinder.Perform(aSteps, extr, aT);
+  CurveCoordMVarFunc    aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  MathOpt::PSOConfig    aPsoCfg(aNbParticles);
+  MathOpt::VectorResult aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
 
-  math_BrentMinimum anOptLoc(reltol, 100, uTol);
-  CurveCoordFunc    aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
-  anOptLoc.Perform(aFunc1,
-                   std::max(aT(1) - aSteps(1), theUMin),
-                   aT(1),
-                   std::min(aT(1) + aSteps(1), theUMax));
-
-  if (anOptLoc.IsDone())
+  math_Vector aT(1, 1);
+  if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
   {
-    extr = anOptLoc.Minimum();
-    return aSign * extr;
+    if (aPsoRes.Solution.has_value())
+    {
+      aT(1) = aPsoRes.Solution.value()(1);
+    }
+    else
+    {
+      aT(1) = (theUMin + theUMax) / 2.0;
+    }
+    if (aPsoRes.Value.has_value())
+    {
+      extr = aPsoRes.Value.value();
+    }
+  }
+  else
+  {
+    aT(1) = (theUMin + theUMax) / 2.0;
+  }
+
+  CurveCoordFunc        aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  double                aStep    = std::min(0.1 * Du, (theUMax - theUMin) / (aNbParticles + 1));
+  MathOpt::ScalarResult anOptLoc = MathOpt::Brent(aFunc1,
+                                                  std::max(aT(1) - aStep, theUMin),
+                                                  std::min(aT(1) + aStep, theUMax),
+                                                  aBrentCfg);
+
+  if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
+  {
+    if (anOptLoc.Value.has_value())
+    {
+      extr = anOptLoc.Value.value();
+      // Only blend it with PSO result if both were valid
+      if (aPsoRes.Value.has_value() && aPsoRes.Solution.has_value()
+          && aT(1) == aPsoRes.Solution.value()(1))
+      {
+        extr = std::min(extr, aPsoRes.Value.value());
+      }
+      return aSign * extr;
+    }
+  }
+
+  return aSign * extr;
+}
+
+//! Adjust coordinate extremum using PSO + Brent for 1D parameter 2D curves.
+//! @param[in] theCurve    the adaptor curve
+//! @param[in] theUMin     lower parameter bound for search
+//! @param[in] theUMax     upper parameter bound for search
+//! @param[in] theExtr0    current extremum value
+//! @param[in] theCoordIdx coordinate index (1=X, 2=Y)
+//! @param[in] theTol      tolerance
+//! @param[in] theIsMin    true if looking for minimum, false for maximum
+//! @return adjusted extremum value
+inline double AdjustExtrCurve2d(const Adaptor2d_Curve2d& theCurve,
+                                const double             theUMin,
+                                const double             theUMax,
+                                const double             theExtr0,
+                                const int                theCoordIdx,
+                                const double             theTol,
+                                const bool               theIsMin)
+{
+  double aSign = theIsMin ? 1. : -1.;
+  double extr  = aSign * theExtr0;
+
+  const double uTol = std::max(theCurve.Resolution(theTol), Precision::PConfusion());
+  const double Du   = (theCurve.LastParameter() - theCurve.FirstParameter());
+
+  const double reltol = uTol / std::max(std::abs(theUMin), std::abs(theUMax));
+
+  MathOpt::Config aBrentCfg;
+  aBrentCfg.XTolerance    = reltol;
+  aBrentCfg.FTolerance    = uTol;
+  aBrentCfg.MaxIterations = 100;
+
+  if (theUMax - theUMin < 0.01 * Du)
+  {
+    Curve2dCoordFunc      aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+    MathOpt::ScalarResult anOptLoc = MathOpt::Brent(aFunc, theUMin, theUMax, aBrentCfg);
+    if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
+    {
+      if (anOptLoc.Value.has_value())
+      {
+        extr = anOptLoc.Value.value();
+      }
+      return aSign * extr;
+    }
+  }
+
+  const int    aNbParticles = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
+  math_Vector aLowBorder(1, 1);
+  math_Vector aUppBorder(1, 1);
+  aLowBorder(1) = theUMin;
+  aUppBorder(1) = theUMax;
+
+  Curve2dCoordMVarFunc   aFunc(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  MathOpt::PSOConfig     aPsoCfg(aNbParticles);
+  MathOpt::VectorResult  aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
+
+  math_Vector aT(1, 1);
+  if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
+  {
+    if (aPsoRes.Solution.has_value())
+    {
+      aT(1) = aPsoRes.Solution.value()(1);
+    }
+    else
+    {
+      aT(1) = (theUMin + theUMax) / 2.0;
+    }
+    if (aPsoRes.Value.has_value())
+    {
+      extr = aPsoRes.Value.value();
+    }
+  }
+  else
+  {
+    aT(1) = (theUMin + theUMax) / 2.0;
+  }
+
+  const double           aStep = std::min(0.1 * Du, (theUMax - theUMin) / (aNbParticles + 1));
+  Curve2dCoordFunc       aFunc1(theCurve, theUMin, theUMax, theCoordIdx, aSign);
+  MathOpt::ScalarResult  anOptLoc = MathOpt::Brent(aFunc1,
+                                                   std::max(aT(1) - aStep, theUMin),
+                                                   std::min(aT(1) + aStep, theUMax),
+                                                   aBrentCfg);
+
+  if (anOptLoc.Status == MathOpt::Status::OK || anOptLoc.Status == MathOpt::Status::MaxIterations)
+  {
+    if (anOptLoc.Value.has_value())
+    {
+      extr = anOptLoc.Value.value();
+      if (aPsoRes.Value.has_value() && aPsoRes.Solution.has_value()
+          && aT(1) == aPsoRes.Solution.value()(1))
+      {
+        extr = std::min(extr, aPsoRes.Value.value());
+      }
+      return aSign * extr;
+    }
   }
 
   return aSign * extr;
@@ -311,38 +520,61 @@ inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
   double Du = (theSurf.LastUParameter() - theSurf.FirstUParameter());
   double Dv = (theSurf.LastVParameter() - theSurf.FirstVParameter());
 
-  math_Vector aT(1, 2);
   math_Vector aLowBorder(1, 2);
   math_Vector aUppBorder(1, 2);
-  math_Vector aSteps(1, 2);
   aLowBorder(1) = theUMin;
   aUppBorder(1) = theUMax;
   aLowBorder(2) = theVMin;
   aUppBorder(2) = theVMax;
 
-  int    aNbU         = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
-  int    aNbV         = std::max(8, RealToInt(32 * (theVMax - theVMin) / Dv));
-  int    aNbParticles = aNbU * aNbV;
-  double aMaxUStep    = (theUMax - theUMin) / (aNbU + 1);
-  aSteps(1)           = std::min(0.1 * Du, aMaxUStep);
-  double aMaxVStep    = (theVMax - theVMin) / (aNbV + 1);
-  aSteps(2)           = std::min(0.1 * Dv, aMaxVStep);
+  int aNbU         = std::max(8, RealToInt(32 * (theUMax - theUMin) / Du));
+  int aNbV         = std::max(8, RealToInt(32 * (theVMax - theVMin) / Dv));
+  int aNbParticles = aNbU * aNbV;
 
-  SurfCoordFunc aFunc(theSurf, theUMin, theUMax, theVMin, theVMax, theCoordIdx, aSign);
-  math_PSO      aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
-  aFinder.Perform(aSteps, extr, aT);
+  SurfCoordFunc         aFunc(theSurf, theUMin, theUMax, theVMin, theVMax, theCoordIdx, aSign);
+  MathOpt::PSOConfig    aPsoCfg(aNbParticles);
+  MathOpt::VectorResult aPsoRes = MathOpt::PSO(aFunc, aLowBorder, aUppBorder, aPsoCfg);
+
+  math_Vector aT(1, 2);
+  if (aPsoRes.Status == MathOpt::Status::OK || aPsoRes.Status == MathOpt::Status::MaxIterations)
+  {
+    if (aPsoRes.Solution.has_value())
+    {
+      aT = aPsoRes.Solution.value();
+    }
+    else
+    {
+      aT(1) = (theUMin + theUMax) / 2.0;
+      aT(2) = (theVMin + theVMax) / 2.0;
+    }
+    if (aPsoRes.Value.has_value())
+    {
+      extr = aPsoRes.Value.value();
+    }
+  }
+  else
+  {
+    aT(1) = (theUMin + theUMax) / 2.0;
+    aT(2) = (theVMin + theVMax) / 2.0;
+  }
 
   math_Matrix aDir(1, 2, 1, 2, 0.0);
   aDir(1, 1) = 1.;
   aDir(2, 2) = 1.;
 
-  math_Powell powell(aFunc, relTol, 200, theTol);
-  powell.Perform(aFunc, aT, aDir);
+  MathOpt::Config aPowellCfg;
+  aPowellCfg.XTolerance    = relTol;
+  aPowellCfg.FTolerance    = theTol;
+  aPowellCfg.MaxIterations = 200;
 
-  if (powell.IsDone())
+  MathOpt::VectorResult powell = MathOpt::PowellWithDirections(aFunc, aT, aDir, aPowellCfg);
+
+  if (powell.Status == MathOpt::Status::OK || powell.Status == MathOpt::Status::MaxIterations)
   {
-    powell.Location(aT);
-    extr = powell.Minimum();
+    if (powell.Value.has_value())
+    {
+      extr = std::min(extr, powell.Value.value());
+    }
   }
 
   return aSign * extr;

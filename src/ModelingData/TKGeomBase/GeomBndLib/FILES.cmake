@@ -56,6 +56,7 @@ set(OCCT_GeomBndLib_FILES
   GeomBndLib_Parabola2d.hxx
   GeomBndLib_Plane.hxx
   GeomBndLib_SamplingHelpers.pxx
+  GeomBndLib_SplineHelpers.pxx
   GeomBndLib_Sphere.cxx
   GeomBndLib_Sphere.hxx
   GeomBndLib_Surface.cxx

@@ -66,32 +66,32 @@ Bnd_Box GeomBndLib_BSplineSurface::Box(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_BSplineSurface::Box(double   theUMin,
-                                       double   theUMax,
-                                       double   theVMin,
-                                       double   theVMax,
-                                       double   theTol) const
+Bnd_Box GeomBndLib_BSplineSurface::Box(double theUMin,
+                                       double theUMax,
+                                       double theVMin,
+                                       double theVMax,
+                                       double theTol) const
 {
-  Bnd_Box aBox;
-  const double PTol = Precision::Parametric(Precision::Confusion());
+  Bnd_Box      aBox;
+  const double aPTol = Precision::Parametric(Precision::Confusion());
 
   // Get geometry bounds.
   double anUMinParam, anUMaxParam, aVMinParam, aVMaxParam;
   myGeom->Bounds(anUMinParam, anUMaxParam, aVMinParam, aVMaxParam);
 
   // Check if parameters lie inside geometry bounds for convex hull applicability.
-  const bool isOutOfBounds = ((theUMin - anUMinParam) < -PTol || (theVMin - aVMinParam) < -PTol
-                              || (theUMax - anUMaxParam) > PTol || (theVMax - aVMaxParam) > PTol);
+  const bool isOutOfBounds = ((theUMin - anUMinParam) < -aPTol || (theVMin - aVMinParam) < -aPTol
+                              || (theUMax - anUMaxParam) > aPTol || (theVMax - aVMaxParam) > aPTol);
 
   if (!isOutOfBounds)
   {
     // Use convex hull algorithm with poles.
-    const int aNbUPoles = myGeom->NbUPoles();
-    const int aNbVPoles = myGeom->NbVPoles();
-    const NCollection_Array2<gp_Pnt>& aPoles = myGeom->Poles();
+    const int                         aNbUPoles = myGeom->NbUPoles();
+    const int                         aNbVPoles = myGeom->NbVPoles();
+    const NCollection_Array2<gp_Pnt>& aPoles    = myGeom->Poles();
 
-    int        UMinIdx     = 1, UMaxIdx = aNbUPoles;
-    int        VMinIdx     = 1, VMaxIdx = aNbVPoles;
+    int        anUMinIdx = 1, anUMaxIdx = aNbUPoles;
+    int        aVMinIdx = 1, aVMaxIdx = aNbVPoles;
     const bool isUPeriodic = myGeom->IsUPeriodic();
     const bool isVPeriodic = myGeom->IsVPeriodic();
 
@@ -99,34 +99,46 @@ Bnd_Box GeomBndLib_BSplineSurface::Box(double   theUMin,
     {
       const NCollection_Array1<int>&    aMults = myGeom->UMultiplicities();
       const NCollection_Array1<double>& aKnots = myGeom->UKnots();
-      ComputePolesIndexes(aKnots, aMults, myGeom->UDegree(),
-                          theUMin, theUMax, aNbUPoles, isUPeriodic,
-                          UMinIdx, UMaxIdx);
+      ComputePolesIndexes(aKnots,
+                          aMults,
+                          myGeom->UDegree(),
+                          theUMin,
+                          theUMax,
+                          aNbUPoles,
+                          isUPeriodic,
+                          anUMinIdx,
+                          anUMaxIdx);
     }
 
     if (theVMin > aVMinParam || theVMax < aVMaxParam)
     {
       const NCollection_Array1<int>&    aMults = myGeom->VMultiplicities();
       const NCollection_Array1<double>& aKnots = myGeom->VKnots();
-      ComputePolesIndexes(aKnots, aMults, myGeom->VDegree(),
-                          theVMin, theVMax, aNbVPoles, isVPeriodic,
-                          VMinIdx, VMaxIdx);
+      ComputePolesIndexes(aKnots,
+                          aMults,
+                          myGeom->VDegree(),
+                          theVMin,
+                          theVMax,
+                          aNbVPoles,
+                          isVPeriodic,
+                          aVMinIdx,
+                          aVMaxIdx);
     }
 
     // Iterate over selected pole range.
-    for (int i = UMinIdx; i <= UMaxIdx; i++)
+    for (int anI = anUMinIdx; anI <= anUMaxIdx; anI++)
     {
-      int ip = i;
-      if (isUPeriodic && ip > aNbUPoles)
-        ip = ip - aNbUPoles;
+      int anIP = anI;
+      if (isUPeriodic && anIP > aNbUPoles)
+        anIP = anIP - aNbUPoles;
 
-      for (int j = VMinIdx; j <= VMaxIdx; j++)
+      for (int aJ = aVMinIdx; aJ <= aVMaxIdx; aJ++)
       {
-        int jp = j;
-        if (isVPeriodic && jp > aNbVPoles)
-          jp = jp - aNbVPoles;
+        int aJP = aJ;
+        if (isVPeriodic && aJP > aNbVPoles)
+          aJP = aJP - aNbVPoles;
 
-        aBox.Add(aPoles(ip, jp));
+        aBox.Add(aPoles(anIP, aJP));
       }
     }
     aBox.Enlarge(theTol);
@@ -135,28 +147,28 @@ Bnd_Box GeomBndLib_BSplineSurface::Box(double   theUMin,
 
   // Out of geometry bounds: fall back to grid sampling.
   GeomAdaptor_Surface aGASurf(myGeom);
-  const int           Nu = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
-  const int           Nv = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
+  const int aNbUSamples = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
+  const int aNbVSamples = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
 
-  NCollection_Array1<double> aUParams(1, Nu);
-  NCollection_Array1<double> aVParams(1, Nv);
+  NCollection_Array1<double> aUParams(1, aNbUSamples);
+  NCollection_Array1<double> aVParams(1, aNbVSamples);
 
-  for (int i = 1; i <= Nu; i++)
+  for (int anI = 1; anI <= aNbUSamples; anI++)
   {
-    aUParams.SetValue(i, theUMin + ((theUMax - theUMin) * (i - 1) / (Nu - 1)));
+    aUParams.SetValue(anI, theUMin + ((theUMax - theUMin) * (anI - 1) / (aNbUSamples - 1)));
   }
-  for (int j = 1; j <= Nv; j++)
+  for (int aJ = 1; aJ <= aNbVSamples; aJ++)
   {
-    aVParams.SetValue(j, theVMin + ((theVMax - theVMin) * (j - 1) / (Nv - 1)));
+    aVParams.SetValue(aJ, theVMin + ((theVMax - theVMin) * (aJ - 1) / (aNbVSamples - 1)));
   }
 
-  GeomGridEval_Surface                anEvaluator(aGASurf);
+  const GeomGridEval_Surface       anEvaluator(aGASurf);
   const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
-  for (int i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
+  for (int anI = aGrid.LowerRow(); anI <= aGrid.UpperRow(); anI++)
   {
-    for (int j = aGrid.LowerCol(); j <= aGrid.UpperCol(); j++)
+    for (int aJ = aGrid.LowerCol(); aJ <= aGrid.UpperCol(); aJ++)
     {
-      aBox.Add(aGrid.Value(i, j));
+      aBox.Add(aGrid.Value(anI, aJ));
     }
   }
   aBox.Enlarge(theTol);
@@ -174,147 +186,159 @@ Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theTol) const
 
 //=================================================================================================
 
-Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double   theUMin,
-                                              double   theUMax,
-                                              double   theVMin,
-                                              double   theVMax,
-                                              double   theTol) const
+Bnd_Box GeomBndLib_BSplineSurface::BoxOptimal(double theUMin,
+                                              double theUMax,
+                                              double theVMin,
+                                              double theVMax,
+                                              double theTol) const
 {
-  Bnd_Box aBox;
+  Bnd_Box             aBox;
   GeomAdaptor_Surface aGASurf(myGeom);
-  const int           Nu = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
-  const int           Nv = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
+  const int aNbUSamples = GeomBndLib_SamplingHelpers::ComputeNbUSamples(aGASurf, theUMin, theUMax);
+  const int aNbVSamples = GeomBndLib_SamplingHelpers::ComputeNbVSamples(aGASurf, theVMin, theVMax);
 
-  double CoordMin[3] = {RealLast(), RealLast(), RealLast()};
-  double CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
-  double DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
+  double aCoordMin[3] = {RealLast(), RealLast(), RealLast()};
+  double aCoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
+  double aDeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
 
-  const double du  = (theUMax - theUMin) / (Nu - 1);
-  const double du2 = du / 2.;
-  const double dv  = (theVMax - theVMin) / (Nv - 1);
-  const double dv2 = dv / 2.;
+  const double aDU  = (theUMax - theUMin) / (aNbUSamples - 1);
+  const double aDU2 = aDU / 2.;
+  const double aDV  = (theVMax - theVMin) / (aNbVSamples - 1);
+  const double aDV2 = aDV / 2.;
 
   // Use batch grid evaluation with finer grid to include midpoints.
-  const int NuFine = 2 * Nu - 1;
-  const int NvFine = 2 * Nv - 1;
+  const int aNuFine = 2 * aNbUSamples - 1;
+  const int aNvFine = 2 * aNbVSamples - 1;
 
-  NCollection_Array1<double> aUParams(1, NuFine);
-  NCollection_Array1<double> aVParams(1, NvFine);
+  NCollection_Array1<double> aUParams(1, aNuFine);
+  NCollection_Array1<double> aVParams(1, aNvFine);
 
-  for (int i = 1; i <= NuFine; i++)
+  for (int anI = 1; anI <= aNuFine; anI++)
   {
-    aUParams.SetValue(i, theUMin + (i - 1) * du2);
+    aUParams.SetValue(anI, theUMin + (anI - 1) * aDU2);
   }
-  for (int j = 1; j <= NvFine; j++)
+  for (int aJ = 1; aJ <= aNvFine; aJ++)
   {
-    aVParams.SetValue(j, theVMin + (j - 1) * dv2);
+    aVParams.SetValue(aJ, theVMin + (aJ - 1) * aDV2);
   }
 
-  GeomGridEval_Surface                anEvaluator(aGASurf);
+  const GeomGridEval_Surface       anEvaluator(aGASurf);
   const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
 
-  NCollection_Array2<gp_XYZ> aPnts(1, Nu, 1, Nv);
+  NCollection_Array2<gp_XYZ> aPnts(1, aNbUSamples, 1, aNbVSamples);
 
-  for (int i = 1; i <= Nu; i++)
+  for (int anI = 1; anI <= aNbUSamples; anI++)
   {
-    const int iFine = 2 * i - 1;
-    for (int j = 1; j <= Nv; j++)
+    const int anIFine = 2 * anI - 1;
+    for (int aJ = 1; aJ <= aNbVSamples; aJ++)
     {
-      const int     jFine = 2 * j - 1;
-      const gp_Pnt& P     = aFineGrid.Value(iFine, jFine);
-      aPnts(i, j)         = P.XYZ();
+      const int    aJFine = 2 * aJ - 1;
+      const gp_Pnt aP     = aFineGrid.Value(anIFine, aJFine);
+      aPnts(anI, aJ)      = aP.XYZ();
 
-      for (int k = 0; k < 3; ++k)
+      for (int aK = 0; aK < 3; ++aK)
       {
-        if (CoordMin[k] > P.Coord(k + 1))
-          CoordMin[k] = P.Coord(k + 1);
-        if (CoordMax[k] < P.Coord(k + 1))
-          CoordMax[k] = P.Coord(k + 1);
+        if (aCoordMin[aK] > aP.Coord(aK + 1))
+          aCoordMin[aK] = aP.Coord(aK + 1);
+        if (aCoordMax[aK] < aP.Coord(aK + 1))
+          aCoordMax[aK] = aP.Coord(aK + 1);
       }
 
       // U-midpoint deflection.
-      if (i > 1)
+      if (anI > 1)
       {
-        const gp_XYZ  aPm = 0.5 * (aPnts(i - 1, j) + aPnts(i, j));
-        const gp_Pnt& PM  = aFineGrid.Value(iFine - 1, jFine);
-        const gp_XYZ  aD  = (PM.XYZ() - aPm);
-        for (int k = 0; k < 3; ++k)
+        const gp_XYZ aPm = 0.5 * (aPnts(anI - 1, aJ) + aPnts(anI, aJ));
+        const gp_Pnt aPM = aFineGrid.Value(anIFine - 1, aJFine);
+        const gp_XYZ aD  = (aPM.XYZ() - aPm);
+        for (int aK = 0; aK < 3; ++aK)
         {
-          if (CoordMin[k] > PM.Coord(k + 1))
-            CoordMin[k] = PM.Coord(k + 1);
-          if (CoordMax[k] < PM.Coord(k + 1))
-            CoordMax[k] = PM.Coord(k + 1);
-          const double d = std::abs(aD.Coord(k + 1));
-          if (DeflMax[k] < d)
-            DeflMax[k] = d;
+          if (aCoordMin[aK] > aPM.Coord(aK + 1))
+            aCoordMin[aK] = aPM.Coord(aK + 1);
+          if (aCoordMax[aK] < aPM.Coord(aK + 1))
+            aCoordMax[aK] = aPM.Coord(aK + 1);
+          const double aDiff = std::abs(aD.Coord(aK + 1));
+          if (aDeflMax[aK] < aDiff)
+            aDeflMax[aK] = aDiff;
         }
       }
       // V-midpoint deflection.
-      if (j > 1)
+      if (aJ > 1)
       {
-        const gp_XYZ  aPm = 0.5 * (aPnts(i, j - 1) + aPnts(i, j));
-        const gp_Pnt& PM  = aFineGrid.Value(iFine, jFine - 1);
-        const gp_XYZ  aD  = (PM.XYZ() - aPm);
-        for (int k = 0; k < 3; ++k)
+        const gp_XYZ aPm = 0.5 * (aPnts(anI, aJ - 1) + aPnts(anI, aJ));
+        const gp_Pnt aPM = aFineGrid.Value(anIFine, aJFine - 1);
+        const gp_XYZ aD  = (aPM.XYZ() - aPm);
+        for (int aK = 0; aK < 3; ++aK)
         {
-          if (CoordMin[k] > PM.Coord(k + 1))
-            CoordMin[k] = PM.Coord(k + 1);
-          if (CoordMax[k] < PM.Coord(k + 1))
-            CoordMax[k] = PM.Coord(k + 1);
-          const double d = std::abs(aD.Coord(k + 1));
-          if (DeflMax[k] < d)
-            DeflMax[k] = d;
+          if (aCoordMin[aK] > aPM.Coord(aK + 1))
+            aCoordMin[aK] = aPM.Coord(aK + 1);
+          if (aCoordMax[aK] < aPM.Coord(aK + 1))
+            aCoordMax[aK] = aPM.Coord(aK + 1);
+          const double aDiff = std::abs(aD.Coord(aK + 1));
+          if (aDeflMax[aK] < aDiff)
+            aDeflMax[aK] = aDiff;
         }
       }
     }
   }
 
   // Adjust minmax using PSO + Powell optimization.
-  double eps = std::max(theTol, Precision::Confusion());
-  for (int k = 0; k < 3; ++k)
+  double anEps = std::max(theTol, Precision::Confusion());
+  for (int aK = 0; aK < 3; ++aK)
   {
-    double d = DeflMax[k];
-    if (d <= eps)
+    double aDiff = aDeflMax[aK];
+    if (aDiff <= anEps)
       continue;
 
-    double CMin = CoordMin[k];
-    double CMax = CoordMax[k];
-    for (int i = 1; i <= Nu; ++i)
+    double aCMin = aCoordMin[aK];
+    double aCMax = aCoordMax[aK];
+    for (int anI = 1; anI <= aNbUSamples; ++anI)
     {
-      for (int j = 1; j <= Nv; ++j)
+      for (int aJ = 1; aJ <= aNbVSamples; ++aJ)
       {
-        if (aPnts(i, j).Coord(k + 1) - CMin < d)
+        if (aPnts(anI, aJ).Coord(aK + 1) - aCMin < aDiff)
         {
-          double umin = theUMin + std::max(0, i - 2) * du;
-          double umax = theUMin + std::min(Nu - 1, i) * du;
-          double vmin = theVMin + std::max(0, j - 2) * dv;
-          double vmax = theVMin + std::min(Nv - 1, j) * dv;
-          double cmin =
-            GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aGASurf, umin, umax, vmin, vmax,
-                                                       CMin, k + 1, eps, true);
-          if (cmin < CMin)
-            CMin = cmin;
+          double anUMin  = theUMin + std::max(0, anI - 2) * aDU;
+          double anUMax  = theUMin + std::min(aNbUSamples - 1, anI) * aDU;
+          double aVMin   = theVMin + std::max(0, aJ - 2) * aDV;
+          double aVMax   = theVMin + std::min(aNbVSamples - 1, aJ) * aDV;
+          double aLocMin = GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aGASurf,
+                                                                          anUMin,
+                                                                          anUMax,
+                                                                          aVMin,
+                                                                          aVMax,
+                                                                          aCMin,
+                                                                          aK + 1,
+                                                                          anEps,
+                                                                          true);
+          if (aLocMin < aCMin)
+            aCMin = aLocMin;
         }
-        else if (CMax - aPnts(i, j).Coord(k + 1) < d)
+        else if (aCMax - aPnts(anI, aJ).Coord(aK + 1) < aDiff)
         {
-          double umin = theUMin + std::max(0, i - 2) * du;
-          double umax = theUMin + std::min(Nu - 1, i) * du;
-          double vmin = theVMin + std::max(0, j - 2) * dv;
-          double vmax = theVMin + std::min(Nv - 1, j) * dv;
-          double cmax =
-            GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aGASurf, umin, umax, vmin, vmax,
-                                                       CMax, k + 1, eps, false);
-          if (cmax > CMax)
-            CMax = cmax;
+          double anUMin  = theUMin + std::max(0, anI - 2) * aDU;
+          double anUMax  = theUMin + std::min(aNbUSamples - 1, anI) * aDU;
+          double aVMin   = theVMin + std::max(0, aJ - 2) * aDV;
+          double aVMax   = theVMin + std::min(aNbVSamples - 1, aJ) * aDV;
+          double aLocMax = GeomBndLib_OptimizationHelpers::AdjustExtrSurf(aGASurf,
+                                                                          anUMin,
+                                                                          anUMax,
+                                                                          aVMin,
+                                                                          aVMax,
+                                                                          aCMax,
+                                                                          aK + 1,
+                                                                          anEps,
+                                                                          false);
+          if (aLocMax > aCMax)
+            aCMax = aLocMax;
         }
       }
     }
-    CoordMin[k] = CMin;
-    CoordMax[k] = CMax;
+    aCoordMin[aK] = aCMin;
+    aCoordMax[aK] = aCMax;
   }
 
-  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  aBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(aCoordMin[0], aCoordMin[1], aCoordMin[2]));
+  aBox.Add(gp_Pnt(aCoordMax[0], aCoordMax[1], aCoordMax[2]));
+  aBox.Enlarge(anEps);
   return aBox;
 }

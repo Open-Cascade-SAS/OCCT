@@ -15,78 +15,13 @@
 
 #include <GeomBndLib_OptimizationHelpers.pxx>
 #include <GeomBndLib_SamplingHelpers.pxx>
+#include "GeomBndLib_SplineHelpers.pxx"
 #include <GeomAdaptor_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 
 namespace
 {
-
-//! Fill box with sampled points and return maximum deflection.
-double FillBox(Bnd_Box&               theBox,
-               const Adaptor3d_Curve& theCurve,
-               const double           theFirst,
-               const double           theLast,
-               const int              theN)
-{
-  gp_Pnt aP1, aP2, aP3;
-  theCurve.D0(theFirst, aP1);
-  theBox.Add(aP1);
-  double p = theFirst, dp = theLast - theFirst, tol = 0.;
-  if (std::abs(dp) > Precision::PConfusion())
-  {
-    dp /= 2 * theN;
-    for (int i = 1; i <= theN; i++)
-    {
-      p += dp;
-      theCurve.D0(p, aP2);
-      theBox.Add(aP2);
-      p += dp;
-      theCurve.D0(p, aP3);
-      theBox.Add(aP3);
-      gp_Pnt aPc((aP1.XYZ() + aP3.XYZ()) / 2.0);
-      tol = std::max(tol, aPc.Distance(aP2));
-      aP1 = aP3;
-    }
-  }
-  else
-  {
-    theCurve.D0(theFirst, aP1);
-    theBox.Add(aP1);
-    theCurve.D0(theLast, aP3);
-    theBox.Add(aP3);
-  }
-  return tol;
-}
-
-//! Reduce box using poles convex hull.
-void ReduceSplineBox(const occ::handle<Geom_BezierCurve>& theCurve,
-                     const Bnd_Box&                       theOrigBox,
-                     Bnd_Box&                             theReducedBox)
-{
-  Bnd_Box                       aPolesBox;
-  const NCollection_Array1<gp_Pnt>& aPoles = theCurve->Poles();
-  for (int anIdx = aPoles.Lower(); anIdx <= aPoles.Upper(); ++anIdx)
-  {
-    aPolesBox.Add(aPoles.Value(anIdx));
-  }
-
-  const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = theOrigBox.Get();
-  if (!aPolesBox.IsVoid())
-  {
-    const auto [aPXMin, aPXMax, aPYMin, aPYMax, aPZMin, aPZMax] = aPolesBox.Get();
-    theReducedBox.Update(std::max(aXMin, aPXMin),
-                         std::max(aYMin, aPYMin),
-                         std::max(aZMin, aPZMin),
-                         std::min(aXMax, aPXMax),
-                         std::min(aYMax, aPYMax),
-                         std::min(aZMax, aPZMax));
-  }
-  else
-  {
-    theReducedBox.Update(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
-  }
-}
 
 } // namespace
 
@@ -101,14 +36,15 @@ Bnd_Box GeomBndLib_BezierCurve::Box(double theTol) const
 
 Bnd_Box GeomBndLib_BezierCurve::Box(double theU1, double theU2, double theTol) const
 {
-  Bnd_Box          aBox;
-  constexpr double weakness = 1.5;
-  int              N        = myGeom->Degree();
+  Bnd_Box           aBox;
+  constexpr double  aWeakness = 1.5;
+  const int         aDegree   = myGeom->Degree();
   GeomAdaptor_Curve aGACurve(myGeom);
   Bnd_Box           aB1;
-  double            tol = FillBox(aB1, aGACurve, theU1, theU2, N);
-  aB1.Enlarge(weakness * tol);
-  ReduceSplineBox(myGeom, aB1, aBox);
+  const double      aTol = GeomBndLib_SplineHelpers::FillBox<Bnd_Box, GeomAdaptor_Curve, gp_Pnt>(
+    aB1, aGACurve, theU1, theU2, aDegree);
+  aB1.Enlarge(aWeakness * aTol);
+  GeomBndLib_SplineHelpers::ReduceSplineBox(myGeom->Poles(), aB1, aBox);
   aBox.Enlarge(theTol);
   return aBox;
 }
@@ -119,81 +55,90 @@ Bnd_Box GeomBndLib_BezierCurve::BoxOptimal(double theU1, double theU2, double th
 {
   Bnd_Box           aBox;
   GeomAdaptor_Curve aGACurve(myGeom);
-  int               Nu = GeomBndLib_SamplingHelpers::ComputeNbSamples(aGACurve, theU1, theU2);
+  const int aNbSamples = GeomBndLib_SamplingHelpers::ComputeNbSamples(aGACurve, theU1, theU2);
 
-  double CoordMin[3] = {RealLast(), RealLast(), RealLast()};
-  double CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
-  double DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
+  double aCoordMin[3] = {RealLast(), RealLast(), RealLast()};
+  double aCoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
+  double aDeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
 
-  gp_Pnt                     P;
-  double                     du = (theU2 - theU1) / (Nu - 1), du2 = du / 2.;
-  NCollection_Array1<gp_XYZ> aPnts(1, Nu);
-  double                     u;
-  for (int i = 1, j = 0; i <= Nu; i++, j++)
+  const double               aDU = (theU2 - theU1) / (aNbSamples - 1), aDU2 = aDU / 2.;
+  NCollection_Array1<gp_XYZ> aPnts(1, aNbSamples);
+  double                     aU;
+  for (int anI = 1, aJ = 0; anI <= aNbSamples; anI++, aJ++)
   {
-    u = theU1 + j * du;
-    aGACurve.D0(u, P);
-    aPnts(i) = P.XYZ();
-    for (int k = 0; k < 3; ++k)
+    aU              = theU1 + aJ * aDU;
+    const gp_Pnt aP = aGACurve.EvalD0(aU);
+    aPnts(anI)      = aP.XYZ();
+    for (int aK = 0; aK < 3; ++aK)
     {
-      if (CoordMin[k] > P.Coord(k + 1))
-        CoordMin[k] = P.Coord(k + 1);
-      if (CoordMax[k] < P.Coord(k + 1))
-        CoordMax[k] = P.Coord(k + 1);
+      if (aCoordMin[aK] > aP.Coord(aK + 1))
+        aCoordMin[aK] = aP.Coord(aK + 1);
+      if (aCoordMax[aK] < aP.Coord(aK + 1))
+        aCoordMax[aK] = aP.Coord(aK + 1);
     }
-    if (i > 1)
+    if (anI > 1)
     {
-      gp_XYZ aPm = 0.5 * (aPnts(i - 1) + aPnts(i));
-      aGACurve.D0(u - du2, P);
-      gp_XYZ aD = (P.XYZ() - aPm);
-      for (int k = 0; k < 3; ++k)
+      const gp_XYZ aPm   = 0.5 * (aPnts(anI - 1) + aPnts(anI));
+      const gp_Pnt aPMid = aGACurve.EvalD0(aU - aDU2);
+      const gp_XYZ aD    = (aPMid.XYZ() - aPm);
+      for (int aK = 0; aK < 3; ++aK)
       {
-        if (CoordMin[k] > P.Coord(k + 1))
-          CoordMin[k] = P.Coord(k + 1);
-        if (CoordMax[k] < P.Coord(k + 1))
-          CoordMax[k] = P.Coord(k + 1);
-        double d = std::abs(aD.Coord(k + 1));
-        if (DeflMax[k] < d)
-          DeflMax[k] = d;
+        if (aCoordMin[aK] > aPMid.Coord(aK + 1))
+          aCoordMin[aK] = aPMid.Coord(aK + 1);
+        if (aCoordMax[aK] < aPMid.Coord(aK + 1))
+          aCoordMax[aK] = aPMid.Coord(aK + 1);
+        const double aDiff = std::abs(aD.Coord(aK + 1));
+        if (aDeflMax[aK] < aDiff)
+          aDeflMax[aK] = aDiff;
       }
     }
   }
 
-  double eps = std::max(theTol, Precision::Confusion());
-  for (int k = 0; k < 3; ++k)
+  const double anEps = std::max(theTol, Precision::Confusion());
+  for (int aK = 0; aK < 3; ++aK)
   {
-    double d = DeflMax[k];
-    if (d <= eps)
+    const double aDiff = aDeflMax[aK];
+    if (aDiff <= anEps)
       continue;
-    double CMin = CoordMin[k];
-    double CMax = CoordMax[k];
-    for (int i = 1; i <= Nu; ++i)
+    double aCMin = aCoordMin[aK];
+    double aCMax = aCoordMax[aK];
+    for (int anI = 1; anI <= aNbSamples; ++anI)
     {
-      if (aPnts(i).Coord(k + 1) - CMin < d)
+      if (aPnts(anI).Coord(aK + 1) - aCMin < aDiff)
       {
-        double umin = theU1 + std::max(0, i - 2) * du;
-        double umax = theU1 + std::min(Nu - 1, i) * du;
-        double cmin =
-          GeomBndLib_OptimizationHelpers::AdjustExtrCurve(aGACurve, umin, umax, CMin, k + 1, eps, true);
-        if (cmin < CMin)
-          CMin = cmin;
+        const double anUMin  = theU1 + std::max(0, anI - 2) * aDU;
+        const double anUMax  = theU1 + std::min(aNbSamples - 1, anI) * aDU;
+        const double aLocMin = GeomBndLib_OptimizationHelpers::AdjustExtrCurve(aGACurve,
+                                                                               anUMin,
+                                                                               anUMax,
+                                                                               aCMin,
+                                                                               aK + 1,
+                                                                               anEps,
+                                                                               true);
+        if (aLocMin < aCMin)
+          aCMin = aLocMin;
       }
-      else if (CMax - aPnts(i).Coord(k + 1) < d)
+      else if (aCMax - aPnts(anI).Coord(aK + 1) < aDiff)
       {
-        double umin = theU1 + std::max(0, i - 2) * du;
-        double umax = theU1 + std::min(Nu - 1, i) * du;
-        double cmax =
-          GeomBndLib_OptimizationHelpers::AdjustExtrCurve(aGACurve, umin, umax, CMax, k + 1, eps, false);
-        if (cmax > CMax)
-          CMax = cmax;
+        const double anUMin  = theU1 + std::max(0, anI - 2) * aDU;
+        const double anUMax  = theU1 + std::min(aNbSamples - 1, anI) * aDU;
+        const double aLocMax = GeomBndLib_OptimizationHelpers::AdjustExtrCurve(aGACurve,
+                                                                               anUMin,
+                                                                               anUMax,
+                                                                               aCMax,
+                                                                               aK + 1,
+                                                                               anEps,
+                                                                               false);
+        if (aLocMax > aCMax)
+          aCMax = aLocMax;
       }
     }
-    CoordMin[k] = CMin;
-    CoordMax[k] = CMax;
+    aCoordMin[aK] = aCMin;
+    aCoordMax[aK] = aCMax;
   }
 
-  aBox.Add(gp_Pnt(CoordMin[0], CoordMin[1], CoordMin[2]));
-  aBox.Add(gp_Pnt(CoordMax[0], CoordMax[1], CoordMax[2]));
-  aBox.Enlarge(eps);
+  aBox.Add(gp_Pnt(aCoordMin[0], aCoordMin[1], aCoordMin[2]));
+  aBox.Add(gp_Pnt(aCoordMax[0], aCoordMax[1], aCoordMax[2]));
+  aBox.Enlarge(anEps);
   return aBox;
 }
