@@ -16,6 +16,7 @@
 
 #include <Bnd_Box.hxx>
 #include <Bnd_Box2d.hxx>
+#include <BSplCLib.hxx>
 #include <NCollection_Array1.hxx>
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
@@ -95,6 +96,90 @@ void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
   for (int anIdx = thePoles.Lower(); anIdx <= thePoles.Upper(); ++anIdx)
   {
     aPolesBox.Add(thePoles.Value(anIdx));
+  }
+
+  if constexpr (std::is_same_v<TBox, Bnd_Box>)
+  {
+    const auto [aXMin, aXMax, aYMin, aYMax, aZMin, aZMax] = theOrigBox.Get();
+    if (!aPolesBox.IsVoid())
+    {
+      const auto [aPXMin, aPXMax, aPYMin, aPYMax, aPZMin, aPZMax] = aPolesBox.Get();
+      theReducedBox.Update(std::max(aXMin, aPXMin),
+                           std::max(aYMin, aPYMin),
+                           std::max(aZMin, aPZMin),
+                           std::min(aXMax, aPXMax),
+                           std::min(aYMax, aPYMax),
+                           std::min(aZMax, aPZMax));
+    }
+    else
+    {
+      theReducedBox.Update(aXMin, aYMin, aZMin, aXMax, aYMax, aZMax);
+    }
+  }
+  else
+  {
+    const auto [aXMin, aXMax, aYMin, aYMax] = theOrigBox.Get();
+    if (!aPolesBox.IsVoid())
+    {
+      const auto [aPXMin, aPXMax, aPYMin, aPYMax] = aPolesBox.Get();
+      theReducedBox.Update(std::max(aXMin, aPXMin),
+                           std::max(aYMin, aPYMin),
+                           std::min(aXMax, aPXMax),
+                           std::min(aYMax, aPYMax));
+    }
+    else
+    {
+      theReducedBox.Update(aXMin, aYMin, aXMax, aYMax);
+    }
+  }
+}
+
+//! Compute the pole index range [theOutMinIdx, theOutMaxIdx] that covers the parameter
+//! interval [theMin, theMax] in a B-spline defined by theKnots/theMults/theDegree.
+//! For periodic curves theOutMaxIdx may exceed theMaxPoleIdx (wraps into [1, theMaxPoleIdx]).
+inline void ComputePoleIndexRange(const NCollection_Array1<double>& theKnots,
+                                  const NCollection_Array1<int>&    theMults,
+                                  const int                         theDegree,
+                                  const double                      theMin,
+                                  const double                      theMax,
+                                  const int                         theMaxPoleIdx,
+                                  const bool                        theIsPeriodic,
+                                  int&                              theOutMinIdx,
+                                  int&                              theOutMaxIdx)
+{
+  BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
+  theOutMinIdx = std::clamp(theOutMinIdx, theKnots.Lower(), theKnots.Upper());
+
+  BSplCLib::Hunt(theKnots, theMax, theOutMaxIdx);
+  theOutMaxIdx++;
+  theOutMaxIdx          = std::clamp(theOutMaxIdx, theKnots.Lower(), theKnots.Upper());
+  const int aMultiplier = theMults(theOutMaxIdx);
+
+  theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
+  theOutMinIdx = std::max(theOutMinIdx, 1);
+  theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
+  theOutMaxIdx += theDegree - aMultiplier;
+  if (!theIsPeriodic)
+    theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
+}
+
+//! Reduce box using a selected range of poles [theMinIdx, theMaxIdx].
+//! For periodic curves, indices beyond the array upper bound wrap around.
+template <typename TPoint, typename TBox>
+void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
+                     const int                         theMinIdx,
+                     const int                         theMaxIdx,
+                     const TBox&                       theOrigBox,
+                     TBox&                             theReducedBox)
+{
+  TBox      aPolesBox;
+  const int aNbPoles = thePoles.Size();
+  for (int anIdx = theMinIdx; anIdx <= theMaxIdx; ++anIdx)
+  {
+    int anI = anIdx;
+    if (anI > thePoles.Upper())
+      anI -= aNbPoles;
+    aPolesBox.Add(thePoles.Value(anI));
   }
 
   if constexpr (std::is_same_v<TBox, Bnd_Box>)
