@@ -49,18 +49,15 @@ public:
                                             double theVMax,
                                             double theTol) const;
 
-  //! For analytical surfaces, BoxOptimal is same as Box.
-  [[nodiscard]] Bnd_Box BoxOptimal(double theUMin,
-                                   double theUMax,
-                                   double theVMin,
-                                   double theVMax,
-                                   double theTol) const
-  {
-    return Box(theUMin, theUMax, theVMin, theVMax, theTol);
-  }
+  //! Compute precise bounding box for torus patch using PSO + Powell optimization.
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theUMin,
+                                                   double theUMax,
+                                                   double theVMin,
+                                                   double theVMax,
+                                                   double theTol) const;
 
-  //! Compute optimal bounding box for full surface.
-  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const { return Box(theTol); }
+  //! Compute precise bounding box for full torus.
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theTol) const;
 
 private:
   occ::handle<Geom_ToroidalSurface> myGeom;

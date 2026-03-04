@@ -15,7 +15,9 @@
 
 #include <ElCLib.hxx>
 #include <ElSLib.hxx>
+#include <GeomAdaptor_Surface.hxx>
 #include <GeomBndLib_Circle.hxx>
+#include <GeomBndLib_OtherSurface.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Torus.hxx>
 #include <Precision.hxx>
@@ -222,4 +224,26 @@ Bnd_Box GeomBndLib_Torus::Box(double   theUMin,
 
   aBox.Enlarge(theTol);
   return aBox;
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_Torus::BoxOptimal(double theUMin,
+                                     double theUMax,
+                                     double theVMin,
+                                     double theVMax,
+                                     double theTol) const
+{
+  GeomAdaptor_Surface     anAdaptor(myGeom);
+  GeomBndLib_OtherSurface anOther(anAdaptor);
+  return anOther.BoxOptimal(theUMin, theUMax, theVMin, theVMax, theTol);
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_Torus::BoxOptimal(double theTol) const
+{
+  GeomAdaptor_Surface     anAdaptor(myGeom);
+  GeomBndLib_OtherSurface anOther(anAdaptor);
+  return anOther.BoxOptimal(theTol);
 }

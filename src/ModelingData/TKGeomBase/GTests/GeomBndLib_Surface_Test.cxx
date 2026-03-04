@@ -31,6 +31,8 @@
 #include <gp_Cone.hxx>
 #include <gp_Pnt.hxx>
 
+#include <cmath>
+
 #include <gtest/gtest.h>
 
 namespace
@@ -472,6 +474,46 @@ TEST(GeomBndLib_SurfaceTest, AddOptimal_CompareWithBndLib)
   BndLib_AddSurface::AddOptimal(anAdaptor, Precision::Confusion(), anOldBox);
 
   CompareBoxes(aNewBox, anOldBox, Precision::Confusion());
+}
+
+TEST(GeomBndLib_SurfaceTest, AddOptimal_Torus_TiltedBetterThanFast)
+{
+  // Tilted torus: axis is (1,0,1)/sqrt(2), Ra=8, Rmi=3.
+  // For a tilted torus the PI/4 circle-sampling used by Box() misses the true
+  // extremum, so BoxOptimal (PSO) must give a tighter result.
+  // Analytic: for axis n=(1/sqrt(2), 0, 1/sqrt(2)),
+  //   Xmax = Zmax = Ra/sqrt(2) + Rmi = 4*sqrt(2)+3 ~= 8.657
+  //   Ymax = Ra + Rmi = 11  (ny=0, so full equatorial radius applies)
+  gp_Ax3 aTiltedAx(gp::Origin(), gp_Dir(1.0, 0.0, 1.0));
+  Handle(Geom_ToroidalSurface) aTorus = new Geom_ToroidalSurface(aTiltedAx, 8.0, 3.0);
+
+  Bnd_Box aFastBox;
+  GeomBndLib_Surface(aTorus).Add(Precision::Confusion(), aFastBox);
+
+  Bnd_Box aOptBox;
+  GeomBndLib_Surface(aTorus).AddOptimal(Precision::Confusion(), aOptBox);
+
+  const auto [aXminF, aXmaxF, aYminF, aYmaxF, aZminF, aZmaxF] = aFastBox.Get();
+  const auto [aXminO, aXmaxO, aYminO, aYmaxO, aZminO, aZmaxO] = aOptBox.Get();
+
+  // Optimal must be no larger than the fast (conservative) box.
+  EXPECT_GE(aXminO, aXminF - Precision::Confusion()) << "OptXmin outside FastBox";
+  EXPECT_LE(aXmaxO, aXmaxF + Precision::Confusion()) << "OptXmax outside FastBox";
+  EXPECT_GE(aYminO, aYminF - Precision::Confusion()) << "OptYmin outside FastBox";
+  EXPECT_LE(aYmaxO, aYmaxF + Precision::Confusion()) << "OptYmax outside FastBox";
+  EXPECT_GE(aZminO, aZminF - Precision::Confusion()) << "OptZmin outside FastBox";
+  EXPECT_LE(aZmaxO, aZmaxF + Precision::Confusion()) << "OptZmax outside FastBox";
+
+  // PSO must converge to the analytic tight bound.
+  const double aTrueXZ = 8.0 / std::sqrt(2.0) + 3.0; // ~= 8.6569
+  const double aTrueY  = 8.0 + 3.0;                   // = 11.0
+  const double aTol    = 10.0 * Precision::Confusion(); // PSO converges to ~Confusion()
+  EXPECT_NEAR(aXmaxO,  aTrueXZ, aTol) << "Xmax";
+  EXPECT_NEAR(-aXminO, aTrueXZ, aTol) << "Xmin";
+  EXPECT_NEAR(aYmaxO,  aTrueY,  aTol) << "Ymax";
+  EXPECT_NEAR(-aYminO, aTrueY,  aTol) << "Ymin";
+  EXPECT_NEAR(aZmaxO,  aTrueXZ, aTol) << "Zmax";
+  EXPECT_NEAR(-aZminO, aTrueXZ, aTol) << "Zmin";
 }
 
 TEST(GeomBndLib_SurfaceTest, AdaptorConstructor_TrimmedRangeUsedForFullAdd)
