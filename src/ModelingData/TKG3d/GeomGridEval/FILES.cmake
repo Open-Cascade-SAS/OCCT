@@ -21,6 +21,8 @@ set(OCCT_GeomGridEval_FILES
   GeomGridEval_OtherCurve.cxx
   GeomGridEval_OffsetCurve.hxx
   GeomGridEval_OffsetCurve.cxx
+  GeomGridEval_CurveOnSurface.hxx
+  GeomGridEval_CurveOnSurface.cxx
   GeomGridEval_Curve.hxx
   GeomGridEval_Curve.cxx
   # Surface evaluators
