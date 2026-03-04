@@ -13,9 +13,11 @@
 
 #include <GeomBndLib_OffsetCurve2d.hxx>
 
-#include <GeomBndLib_Curve2d.hxx>
+#include <Geom2dAdaptor_Curve.hxx>
 #include <GeomBndLib_Circle2d.hxx>
+#include <GeomBndLib_Curve2d.hxx>
 #include <GeomBndLib_Line2d.hxx>
+#include <GeomBndLib_OtherCurve2d.hxx>
 #include <ElCLib.hxx>
 #include <Geom2d_Circle.hxx>
 #include <Geom2d_Curve.hxx>
@@ -30,8 +32,9 @@ Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1,
                                         double theU2,
                                         double theTol) const
 {
-  // Compute the bounding box of the basis curve and enlarge by |offset|.
-  const occ::handle<Geom2d_Curve>& aBasis  = myGeom->BasisCurve();
+  // Specialized fast paths for line and circle.
+  // For the general fallback, enlarge the basis curve box by |offset|.
+  const occ::handle<Geom2d_Curve>& aBasis   = myGeom->BasisCurve();
   const double                     anOffset = std::abs(myGeom->Offset());
 
   if (const occ::handle<Geom2d_Line> aLine = occ::down_cast<Geom2d_Line>(aBasis))
@@ -91,10 +94,22 @@ Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1,
     }
   }
 
+  // Generic fallback: enlarge basis curve box by the offset distance.
   GeomBndLib_Curve2d aCurveEval(aBasis);
-  Bnd_Box2d aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
-
+  Bnd_Box2d          aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
   aLocalBox.Enlarge(anOffset);
   aLocalBox.Enlarge(theTol);
   return aLocalBox;
+}
+
+//=================================================================================================
+
+Bnd_Box2d GeomBndLib_OffsetCurve2d::BoxOptimal(double theU1,
+                                               double theU2,
+                                               double theTol) const
+{
+  // Sample the actual offset curve directly for a tight bounding box.
+  Geom2dAdaptor_Curve     anAdaptor(myGeom);
+  GeomBndLib_OtherCurve2d anOther(anAdaptor);
+  return anOther.BoxOptimal(theU1, theU2, theTol);
 }

@@ -165,20 +165,19 @@ TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Full_CompareWithBndLib)
   ExpectContainsCurve2d(aNewBox, anOff, 0.0, 2.0 * M_PI, 100);
 }
 
-TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Arc_CompareWithBndLib)
+TEST(GeomBndLib_OffsetCurve2dTest, Ellipse_Arc_OptimalCompareWithBndLib)
 {
   Handle(Geom2d_Ellipse) anEllipse =
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                        8.0,
                        3.0);
   Handle(Geom2d_OffsetCurve) anOff = new Geom2d_OffsetCurve(anEllipse, 1.5);
-  Geom2dAdaptor_Curve        anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
-  GeomBndLib_Curve2d(anOff).Add(0.0, M_PI, Precision::Confusion(), aNewBox);
+  GeomBndLib_Curve2d(anOff).AddOptimal(0.0, M_PI, Precision::Confusion(), aNewBox);
 
   Bnd_Box2d anOldBox;
-  BndLib_Add2dCurve::Add(anAdaptor, 0.0, M_PI, Precision::Confusion(), anOldBox);
+  BndLib_Add2dCurve::AddOptimal(anOff, 0.0, M_PI, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger2d(aNewBox, anOldBox, Precision::Confusion());
   ExpectContainsCurve2d(aNewBox, anOff, 0.0, M_PI, 50);
@@ -208,7 +207,7 @@ TEST(GeomBndLib_OffsetCurve2dTest, Line_CompareWithBndLib)
 // BSpline offset
 // =========================================================================
 
-TEST(GeomBndLib_OffsetCurve2dTest, BSpline_CompareWithBndLib)
+TEST(GeomBndLib_OffsetCurve2dTest, BSpline_OptimalCompareWithBndLib)
 {
   NCollection_Array1<gp_Pnt2d> aPoles(1, 4);
   aPoles.SetValue(1, gp_Pnt2d(0.0, 0.0));
@@ -228,13 +227,12 @@ TEST(GeomBndLib_OffsetCurve2dTest, BSpline_CompareWithBndLib)
 
   Handle(Geom2d_BSplineCurve)  aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
   Handle(Geom2d_OffsetCurve)   anOff = new Geom2d_OffsetCurve(aBSpl, 1.0);
-  Geom2dAdaptor_Curve          anAdaptor(anOff);
 
   Bnd_Box2d aNewBox;
-  GeomBndLib_Curve2d(anOff).Add(Precision::Confusion(), aNewBox);
+  GeomBndLib_Curve2d(anOff).AddOptimal(Precision::Confusion(), aNewBox);
 
   Bnd_Box2d anOldBox;
-  BndLib_Add2dCurve::Add(anAdaptor, Precision::Confusion(), anOldBox);
+  BndLib_Add2dCurve::AddOptimal(anOff, 0.0, 1.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger2d(aNewBox, anOldBox, Precision::Confusion());
   ExpectContainsCurve2d(aNewBox, anOff, 0.0, 1.0, 50);

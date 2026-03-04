@@ -20,6 +20,104 @@
 #include <gp_Pnt.hxx>
 #include <Precision.hxx>
 
+namespace
+{
+
+//! Build the extrusion box from a pre-computed basis curve box.
+Bnd_Box buildExtrusionBox(const Bnd_Box& theCurveBox,
+                          const gp_Dir&  theDir,
+                          const gp_XYZ&  theDirXYZ,
+                          double         theVMin,
+                          double         theVMax,
+                          double         theTol)
+{
+  Bnd_Box aBox;
+
+  if (theCurveBox.IsVoid())
+  {
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  const bool isVMinInf = Precision::IsNegativeInfinite(theVMin);
+  const bool isVMaxInf = Precision::IsPositiveInfinite(theVMax);
+
+  if (theCurveBox.IsOpen())
+  {
+    // Propagate curve openness through the extrusion rather than returning whole space.
+    if (theCurveBox.IsOpenXmin()) aBox.OpenXmin();
+    if (theCurveBox.IsOpenXmax()) aBox.OpenXmax();
+    if (theCurveBox.IsOpenYmin()) aBox.OpenYmin();
+    if (theCurveBox.IsOpenYmax()) aBox.OpenYmax();
+    if (theCurveBox.IsOpenZmin()) aBox.OpenZmin();
+    if (theCurveBox.IsOpenZmax()) aBox.OpenZmax();
+    if (isVMinInf && isVMaxInf)
+      GeomBndLib_InfiniteHelpers::OpenMinMax(theDir, aBox);
+    else if (isVMinInf)
+      GeomBndLib_InfiniteHelpers::OpenMin(theDir, aBox);
+    else if (isVMaxInf)
+      GeomBndLib_InfiniteHelpers::OpenMax(theDir, aBox);
+    if (theCurveBox.HasFinitePart())
+    {
+      const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theCurveBox.FinitePart().Get();
+      if (!isVMinInf)
+      {
+        const gp_XYZ aShift = theVMin * theDirXYZ;
+        aBox.Add(gp_Pnt(aXmin + aShift.X(), aYmin + aShift.Y(), aZmin + aShift.Z()));
+        aBox.Add(gp_Pnt(aXmax + aShift.X(), aYmax + aShift.Y(), aZmax + aShift.Z()));
+      }
+      if (!isVMaxInf)
+      {
+        const gp_XYZ aShift = theVMax * theDirXYZ;
+        aBox.Add(gp_Pnt(aXmin + aShift.X(), aYmin + aShift.Y(), aZmin + aShift.Z()));
+        aBox.Add(gp_Pnt(aXmax + aShift.X(), aYmax + aShift.Y(), aZmax + aShift.Z()));
+      }
+    }
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  if (isVMinInf && isVMaxInf)
+  {
+    aBox.Add(theCurveBox);
+    GeomBndLib_InfiniteHelpers::OpenMinMax(theDir, aBox);
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theCurveBox.Get();
+
+  if (isVMinInf)
+  {
+    GeomBndLib_InfiniteHelpers::OpenMin(theDir, aBox);
+    const gp_XYZ aShift = theVMax * theDirXYZ;
+    aBox.Add(gp_Pnt(aXmin + aShift.X(), aYmin + aShift.Y(), aZmin + aShift.Z()));
+    aBox.Add(gp_Pnt(aXmax + aShift.X(), aYmax + aShift.Y(), aZmax + aShift.Z()));
+  }
+  else if (isVMaxInf)
+  {
+    GeomBndLib_InfiniteHelpers::OpenMax(theDir, aBox);
+    const gp_XYZ aShift = theVMin * theDirXYZ;
+    aBox.Add(gp_Pnt(aXmin + aShift.X(), aYmin + aShift.Y(), aZmin + aShift.Z()));
+    aBox.Add(gp_Pnt(aXmax + aShift.X(), aYmax + aShift.Y(), aZmax + aShift.Z()));
+  }
+  else
+  {
+    const gp_XYZ aShiftMin = theVMin * theDirXYZ;
+    aBox.Add(gp_Pnt(aXmin + aShiftMin.X(), aYmin + aShiftMin.Y(), aZmin + aShiftMin.Z()));
+    aBox.Add(gp_Pnt(aXmax + aShiftMin.X(), aYmax + aShiftMin.Y(), aZmax + aShiftMin.Z()));
+
+    const gp_XYZ aShiftMax = theVMax * theDirXYZ;
+    aBox.Add(gp_Pnt(aXmin + aShiftMax.X(), aYmin + aShiftMax.Y(), aZmin + aShiftMax.Z()));
+    aBox.Add(gp_Pnt(aXmax + aShiftMax.X(), aYmax + aShiftMax.Y(), aZmax + aShiftMax.Z()));
+  }
+
+  aBox.Enlarge(theTol);
+  return aBox;
+}
+
+} // namespace
+
 //=================================================================================================
 
 Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double theTol) const
@@ -37,76 +135,30 @@ Bnd_Box GeomBndLib_SurfaceOfExtrusion::Box(double   theUMin,
                                            double   theVMax,
                                            double   theTol) const
 {
-  Bnd_Box aBox;
   // P(U, V) = BasisCurve(U) + V * Direction
-  // The bounding box = basis curve box shifted by V * Direction for V in [VMin, VMax].
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
   const gp_Dir&                  aDir        = myGeom->Direction();
   const gp_XYZ&                  aDirXYZ     = aDir.XYZ();
 
-  // Compute basis curve bounding box for [UMin, UMax].
   GeomBndLib_Curve aCurveEval(aBasisCurve);
-  Bnd_Box          aCurveBox = aCurveEval.Box(theUMin, theUMax, 0.);
+  const Bnd_Box    aCurveBox = aCurveEval.Box(theUMin, theUMax, 0.);
+  return buildExtrusionBox(aCurveBox, aDir, aDirXYZ, theVMin, theVMax, theTol);
+}
 
-  if (aCurveBox.IsVoid())
-  {
-    aBox.Enlarge(theTol);
-    return aBox;
-  }
-  if (aCurveBox.IsOpen())
-  {
-    aBox.SetWhole();
-    aBox.Enlarge(theTol);
-    return aBox;
-  }
+//=================================================================================================
 
-  const bool isVMinInf = Precision::IsNegativeInfinite(theVMin);
-  const bool isVMaxInf = Precision::IsPositiveInfinite(theVMax);
+Bnd_Box GeomBndLib_SurfaceOfExtrusion::BoxOptimal(double   theUMin,
+                                                  double   theUMax,
+                                                  double   theVMin,
+                                                  double   theVMax,
+                                                  double   theTol) const
+{
+  // Use the tight basis curve box for a more precise result.
+  const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
+  const gp_Dir&                  aDir        = myGeom->Direction();
+  const gp_XYZ&                  aDirXYZ     = aDir.XYZ();
 
-  if (isVMinInf && isVMaxInf)
-  {
-    // Fully infinite in V: add basis curve box and open along direction.
-    aBox.Add(aCurveBox);
-    GeomBndLib_InfiniteHelpers::OpenMinMax(aDir, aBox);
-    aBox.Enlarge(theTol);
-    return aBox;
-  }
-
-  // Get basis curve box limits.
-  auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aCurveBox.Get();
-
-  if (isVMinInf)
-  {
-    // V goes to -infinity: open in the negative direction sense.
-    GeomBndLib_InfiniteHelpers::OpenMin(aDir, aBox);
-    // Add the finite endpoint (VMax).
-    const gp_XYZ aShift = theVMax * aDirXYZ;
-    aBox.Add(gp_Pnt(aXmin + aShift.X(), aYmin + aShift.Y(), aZmin + aShift.Z()));
-    aBox.Add(gp_Pnt(aXmax + aShift.X(), aYmax + aShift.Y(), aZmax + aShift.Z()));
-  }
-  else if (isVMaxInf)
-  {
-    // V goes to +infinity: open in the positive direction sense.
-    GeomBndLib_InfiniteHelpers::OpenMax(aDir, aBox);
-    // Add the finite endpoint (VMin).
-    const gp_XYZ aShift = theVMin * aDirXYZ;
-    aBox.Add(gp_Pnt(aXmin + aShift.X(), aYmin + aShift.Y(), aZmin + aShift.Z()));
-    aBox.Add(gp_Pnt(aXmax + aShift.X(), aYmax + aShift.Y(), aZmax + aShift.Z()));
-  }
-  else
-  {
-    // Both V values are finite.
-    // Add basis curve box shifted by VMin * Direction.
-    const gp_XYZ aShiftMin = theVMin * aDirXYZ;
-    aBox.Add(gp_Pnt(aXmin + aShiftMin.X(), aYmin + aShiftMin.Y(), aZmin + aShiftMin.Z()));
-    aBox.Add(gp_Pnt(aXmax + aShiftMin.X(), aYmax + aShiftMin.Y(), aZmax + aShiftMin.Z()));
-
-    // Add basis curve box shifted by VMax * Direction.
-    const gp_XYZ aShiftMax = theVMax * aDirXYZ;
-    aBox.Add(gp_Pnt(aXmin + aShiftMax.X(), aYmin + aShiftMax.Y(), aZmin + aShiftMax.Z()));
-    aBox.Add(gp_Pnt(aXmax + aShiftMax.X(), aYmax + aShiftMax.Y(), aZmax + aShiftMax.Z()));
-  }
-
-  aBox.Enlarge(theTol);
-  return aBox;
+  GeomBndLib_Curve aCurveEval(aBasisCurve);
+  const Bnd_Box    aCurveBox = aCurveEval.BoxOptimal(theUMin, theUMax, 0.);
+  return buildExtrusionBox(aCurveBox, aDir, aDirXYZ, theVMin, theVMax, theTol);
 }

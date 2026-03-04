@@ -50,18 +50,20 @@ public:
                                             double theVMax,
                                             double theTol) const;
 
-  //! For this surface type, BoxOptimal is same as Box.
-  [[nodiscard]] Bnd_Box BoxOptimal(double theUMin,
-                                   double theUMax,
-                                   double theVMin,
-                                   double theVMax,
-                                   double theTol) const
-  {
-    return Box(theUMin, theUMax, theVMin, theVMax, theTol);
-  }
+  //! Compute precise bounding box using tight basis curve bounds.
+  [[nodiscard]] Standard_EXPORT Bnd_Box BoxOptimal(double theUMin,
+                                                   double theUMax,
+                                                   double theVMin,
+                                                   double theVMax,
+                                                   double theTol) const;
 
-  //! Compute optimal bounding box for full surface.
-  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const { return Box(theTol); }
+  //! Compute precise bounding box for full surface.
+  [[nodiscard]] Bnd_Box BoxOptimal(double theTol) const
+  {
+    double aU1 = 0., aU2 = 0., aV1 = 0., aV2 = 0.;
+    myGeom->Bounds(aU1, aU2, aV1, aV2);
+    return BoxOptimal(aU1, aU2, aV1, aV2, theTol);
+  }
 
 private:
   occ::handle<Geom_SurfaceOfRevolution> myGeom;

@@ -169,10 +169,10 @@ TEST(GeomBndLib_OffsetCurveTest, CircleOffsetDiagonal_CompareWithBndLib)
   GeomAdaptor_Curve anAdaptor(anOff);
 
   Bnd_Box aNewBox;
-  GeomBndLib_Curve(anOff).Add(Precision::Confusion(), aNewBox);
+  GeomBndLib_Curve(anOff).AddOptimal(Precision::Confusion(), aNewBox);
 
   Bnd_Box anOldBox;
-  BndLib_Add3dCurve::Add(anAdaptor, Precision::Confusion(), anOldBox);
+  BndLib_Add3dCurve::AddOptimal(anAdaptor, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
   ExpectContainsCurve(aNewBox, anOff, 0.0, 2.0 * M_PI, 100);
@@ -282,10 +282,10 @@ TEST(GeomBndLib_OffsetCurveTest, BSplineOffset_CompareWithBndLib)
   GeomAdaptor_Curve          anAdaptor(anOff);
 
   Bnd_Box aNewBox;
-  GeomBndLib_Curve(anOff).Add(Precision::Confusion(), aNewBox);
+  GeomBndLib_Curve(anOff).AddOptimal(Precision::Confusion(), aNewBox);
 
   Bnd_Box anOldBox;
-  BndLib_Add3dCurve::Add(anAdaptor, Precision::Confusion(), anOldBox);
+  BndLib_Add3dCurve::AddOptimal(anAdaptor, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
   ExpectContainsCurve(aNewBox, anOff, 0.0, 1.0, 50);

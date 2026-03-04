@@ -25,6 +25,8 @@
 #include <Precision.hxx>
 #include <gp_Pnt.hxx>
 
+#include <cmath>
+
 #include <gtest/gtest.h>
 
 namespace
@@ -120,12 +122,14 @@ TEST(GeomBndLib_ExtrusionTest, CircleAlongZ_Arc_CompareWithBndLib)
   ExpectContainsSurface(aNewBox, anExtr, 0.0, M_PI, 0.0, 5.0, 18, 5);
 }
 
-TEST(GeomBndLib_ExtrusionTest, InfiniteU_ConservativeWholeBox)
+TEST(GeomBndLib_ExtrusionTest, InfiniteU_OpenInExtrusionBasisDirection)
 {
+  // Line along Z through (5, 0, 0) extruded along X.
+  // P(U, V) = (5 + V, 0, U); U in (-inf, +inf), V in [0, 10].
+  // Expected: X in [5, 15], Y finite (= 0), Z open both ways.
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aLine, gp::DX());
-  GeomAdaptor_Surface anAdaptor(anExtr);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anExtr).Add(-Precision::Infinite(),
@@ -135,17 +139,20 @@ TEST(GeomBndLib_ExtrusionTest, InfiniteU_ConservativeWholeBox)
                                   Precision::Confusion(),
                                   aNewBox);
 
-  Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor,
-                         -Precision::Infinite(),
-                         Precision::Infinite(),
-                         0.0,
-                         10.0,
-                         Precision::Confusion(),
-                         anOldBox);
-
-  EXPECT_TRUE(aNewBox.IsWhole());
-  EXPECT_EQ(aNewBox.IsWhole(), anOldBox.IsWhole());
+  EXPECT_FALSE(aNewBox.IsVoid());
+  EXPECT_FALSE(aNewBox.IsWhole());
+  EXPECT_FALSE(aNewBox.IsOpenXmin());
+  EXPECT_FALSE(aNewBox.IsOpenXmax());
+  EXPECT_FALSE(aNewBox.IsOpenYmin());
+  EXPECT_FALSE(aNewBox.IsOpenYmax());
+  EXPECT_TRUE(aNewBox.IsOpenZmin());
+  EXPECT_TRUE(aNewBox.IsOpenZmax());
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aNewBox.Get();
+  const double aTol = 2.0 * Precision::Confusion(); // box is enlarged by theTol on construction
+  EXPECT_NEAR(aXmin, 5.0,  aTol) << "Xmin";
+  EXPECT_NEAR(aXmax, 15.0, aTol) << "Xmax";
+  EXPECT_NEAR(aYmin, 0.0,  aTol) << "Ymin";
+  EXPECT_NEAR(aYmax, 0.0,  aTol) << "Ymax";
 }
 
 // =========================================================================
@@ -277,10 +284,10 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongZ_CompareWithBndLib)
   GeomAdaptor_Surface anAdaptor(anExtr);
 
   Bnd_Box aNewBox;
-  GeomBndLib_Surface(anExtr).Add(0.0, 1.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
+  GeomBndLib_Surface(anExtr).AddOptimal(0.0, 1.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
 
   Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor, 0.0, 1.0, 0.0, 5.0, Precision::Confusion(), anOldBox);
+  BndLib_AddSurface::AddOptimal(anAdaptor, 0.0, 1.0, 0.0, 5.0, Precision::Confusion(), anOldBox);
 
   ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
   ExpectContainsSurface(aNewBox, anExtr, 0.0, 1.0, 0.0, 5.0, 10, 5);
@@ -307,15 +314,23 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongDiagonal_CompareWithBndLib)
   Handle(Geom_BSplineCurve) aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   Handle(Geom_SurfaceOfLinearExtrusion) anExtr =
     new Geom_SurfaceOfLinearExtrusion(aBSpl, gp_Dir(1.0, 1.0, 1.0));
-  GeomAdaptor_Surface anAdaptor(anExtr);
-
   Bnd_Box aNewBox;
-  GeomBndLib_Surface(anExtr).Add(0.0, 1.0, -3.0, 7.0, Precision::Confusion(), aNewBox);
+  GeomBndLib_Surface(anExtr).AddOptimal(0.0, 1.0, -3.0, 7.0, Precision::Confusion(), aNewBox);
 
-  Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor, 0.0, 1.0, -3.0, 7.0, Precision::Confusion(), anOldBox);
-
-  ExpectNoLarger(aNewBox, anOldBox, Precision::Confusion());
+  // P(u,v) = C(u) + v*(1,1,1)/sqrt(3), u in [0,1], v in [-3, 7].
+  // BSpline C(0)=(0,0,0), C(1)=(10,3,0). Extrusion shifts: v_min/sqrt(3) = -sqrt(3),
+  // v_max/sqrt(3) = 7/sqrt(3). Reference bounds derive from endpoint extremes + extrusion range.
+  const double aSqrt3     = std::sqrt(3.0);
+  const double aVminShift = -3.0 / aSqrt3; // ≈ -1.7321
+  const double aVmaxShift =  7.0 / aSqrt3; // ≈  4.0415
+  const double aTolRef    = 1e-3;
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aNewBox.Get();
+  EXPECT_NEAR(aXmin,  0.0 + aVminShift, aTolRef) << "Xmin";
+  EXPECT_NEAR(aXmax, 10.0 + aVmaxShift, aTolRef) << "Xmax";
+  EXPECT_NEAR(aYmin,  0.0 + aVminShift, aTolRef) << "Ymin";
+  EXPECT_NEAR(aYmax,  3.0 + aVmaxShift, aTolRef) << "Ymax";
+  EXPECT_NEAR(aZmin,        aVminShift,  aTolRef) << "Zmin";
+  EXPECT_NEAR(aZmax,        aVmaxShift,  aTolRef) << "Zmax";
   ExpectContainsSurface(aNewBox, anExtr, 0.0, 1.0, -3.0, 7.0, 10, 10);
 }
 

@@ -122,12 +122,14 @@ TEST(GeomBndLib_RevolutionTest, LineAroundZ_HalfTurn_CompareWithBndLib)
   ExpectContainsSurface(aNewBox, aRevSurf, 0.0, M_PI, 0.0, 5.0, 18, 5);
 }
 
-TEST(GeomBndLib_RevolutionTest, InfiniteV_ConservativeWholeBox)
+TEST(GeomBndLib_RevolutionTest, InfiniteV_OpenInAxisDirection)
 {
+  // Line along Z through (5, 0, 0) revolved around Z axis (full 2*pi).
+  // P(U, V) = (5*cos(U), 5*sin(U), V); V in (-inf, +inf).
+  // Expected: X in [-5, 5], Y in [-5, 5], Z open both ways.
   Handle(Geom_Line) aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
   gp_Ax1 anAxis(gp::Origin(), gp::DZ());
   Handle(Geom_SurfaceOfRevolution) aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0,
@@ -137,17 +139,20 @@ TEST(GeomBndLib_RevolutionTest, InfiniteV_ConservativeWholeBox)
                                    Precision::Confusion(),
                                    aNewBox);
 
-  Bnd_Box anOldBox;
-  BndLib_AddSurface::Add(anAdaptor,
-                         0.0,
-                         2.0 * M_PI,
-                         -Precision::Infinite(),
-                         Precision::Infinite(),
-                         Precision::Confusion(),
-                         anOldBox);
-
-  EXPECT_TRUE(aNewBox.IsWhole());
-  EXPECT_EQ(aNewBox.IsWhole(), anOldBox.IsWhole());
+  EXPECT_FALSE(aNewBox.IsVoid());
+  EXPECT_FALSE(aNewBox.IsWhole());
+  EXPECT_FALSE(aNewBox.IsOpenXmin());
+  EXPECT_FALSE(aNewBox.IsOpenXmax());
+  EXPECT_FALSE(aNewBox.IsOpenYmin());
+  EXPECT_FALSE(aNewBox.IsOpenYmax());
+  EXPECT_TRUE(aNewBox.IsOpenZmin());
+  EXPECT_TRUE(aNewBox.IsOpenZmax());
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aNewBox.Get();
+  const double aTol = 2.0 * Precision::Confusion(); // box is enlarged by theTol on construction
+  EXPECT_NEAR(aXmin, -5.0, aTol) << "Xmin";
+  EXPECT_NEAR(aXmax,  5.0, aTol) << "Xmax";
+  EXPECT_NEAR(aYmin, -5.0, aTol) << "Ymin";
+  EXPECT_NEAR(aYmax,  5.0, aTol) << "Ymax";
 }
 
 TEST(GeomBndLib_RevolutionTest, LineAroundZ_QuarterTurn_CompareWithBndLib)

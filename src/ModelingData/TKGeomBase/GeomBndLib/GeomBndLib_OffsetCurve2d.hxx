@@ -53,11 +53,10 @@ public:
     return BoxOptimal(myGeom->FirstParameter(), myGeom->LastParameter(), theTol);
   }
 
-  //! Compute precise bounding box for arc [theU1, theU2].
-  [[nodiscard]] Bnd_Box2d BoxOptimal(double theU1, double theU2, double theTol) const
-  {
-    return Box(theU1, theU2, theTol);
-  }
+  //! Compute precise bounding box for arc [theU1, theU2] by sampling the offset curve.
+  [[nodiscard]] Standard_EXPORT Bnd_Box2d BoxOptimal(double theU1,
+                                                     double theU2,
+                                                     double theTol) const;
 
 private:
   occ::handle<Geom2d_OffsetCurve> myGeom;

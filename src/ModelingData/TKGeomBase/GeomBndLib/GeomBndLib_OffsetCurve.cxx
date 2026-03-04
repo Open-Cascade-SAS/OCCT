@@ -13,134 +13,201 @@
 
 #include <GeomBndLib_OffsetCurve.hxx>
 
-#include <GeomBndLib_Curve.hxx>
+#include <GeomAdaptor_Curve.hxx>
 #include <GeomBndLib_Circle.hxx>
+#include <GeomBndLib_Curve.hxx>
 #include <GeomBndLib_Line.hxx>
+#include <GeomBndLib_OtherCurve.hxx>
 #include <ElCLib.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <Precision.hxx>
 
-#include <cmath>
 #include <algorithm>
+#include <cmath>
+
+namespace
+{
+
+//! Try the exact line fast path. Returns a non-void box on success.
+Bnd_Box tryOffsetLine(const occ::handle<Geom_Curve>&       theBasis,
+                      const occ::handle<Geom_OffsetCurve>& theOff,
+                      double                               theU1,
+                      double                               theU2,
+                      double                               theTol)
+{
+  const occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(theBasis);
+  if (aLine.IsNull())
+  {
+    return Bnd_Box{};
+  }
+  const gp_Dir& aDir      = theOff->Direction();
+  const gp_Lin  aBasisLin = aLine->Lin();
+  gp_Vec        aShift    = gp_Vec(aBasisLin.Direction()).Crossed(gp_Vec(aDir));
+  if (aShift.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box{};
+  }
+  aShift.Normalize();
+  aShift *= theOff->Offset();
+  const gp_Pnt aLoc = aBasisLin.Location().Translated(aShift);
+  Bnd_Box      aBox = GeomBndLib_Line::Box(gp_Lin(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
+  aBox.Enlarge(theTol);
+  return aBox;
+}
+
+//! Try the exact axis-aligned circle fast path. Returns a non-void box on success.
+Bnd_Box tryOffsetCircle(const occ::handle<Geom_Curve>&       theBasis,
+                        const occ::handle<Geom_OffsetCurve>& theOff,
+                        double                               theU1,
+                        double                               theU2,
+                        double                               theTol)
+{
+  const occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(theBasis);
+  if (aCircle.IsNull())
+  {
+    return Bnd_Box{};
+  }
+  const gp_Dir& aDir       = theOff->Direction();
+  const gp_Circ aBasisCirc = aCircle->Circ();
+  const double  aDotAxis   = std::abs(aBasisCirc.Axis().Direction().Dot(aDir));
+  if (std::abs(1.0 - aDotAxis) > Precision::Angular())
+  {
+    return Bnd_Box{};
+  }
+  const double aUMid = 0.5 * (theU1 + theU2);
+  gp_Pnt       aP;
+  gp_Vec       aV1;
+  ElCLib::D1(aUMid, aBasisCirc, aP, aV1);
+  if (aV1.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box{};
+  }
+  gp_Vec aNormal = aV1.Crossed(gp_Vec(aDir));
+  if (aNormal.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box{};
+  }
+  aNormal.Normalize();
+  gp_Vec aRadial(aBasisCirc.Location(), aP);
+  if (aRadial.SquareMagnitude() <= Precision::SquareConfusion())
+  {
+    return Bnd_Box{};
+  }
+  aRadial.Normalize();
+  const double aSign = aNormal.Dot(aRadial);
+  if (std::abs(std::abs(aSign) - 1.0) > 1e-9)
+  {
+    return Bnd_Box{};
+  }
+  const double aNewRadius = aBasisCirc.Radius() + theOff->Offset() * aSign;
+  Bnd_Box      aBox;
+  if (aNewRadius > Precision::Confusion())
+  {
+    gp_Circ aOffsetCirc = aBasisCirc;
+    aOffsetCirc.SetRadius(aNewRadius);
+    aBox = GeomBndLib_Circle::Box(aOffsetCirc, theU1, theU2, 0.);
+  }
+  else if (std::abs(aNewRadius) <= Precision::Confusion())
+  {
+    aBox.Add(aBasisCirc.Location());
+  }
+  else
+  {
+    return Bnd_Box{};
+  }
+  aBox.Enlarge(theTol);
+  return aBox;
+}
+
+} // namespace
 
 //=================================================================================================
 
 Bnd_Box GeomBndLib_OffsetCurve::Box(double theU1, double theU2, double theTol) const
 {
-  // For a 3D offset curve: P_off(t) = P(t) + d * (T(t) x V) / |T(t) x V|
-  // The displacement vector (T x V)/|T x V| is always perpendicular to
-  // the reference direction V. Its max component along coordinate axis k
-  // is sqrt(1 - V_k^2). So per-coordinate enlargement is: |d| * sqrt(1 - V_k^2).
-  const occ::handle<Geom_Curve>& aBasis   = myGeom->BasisCurve();
-  const double                   anOffset = std::abs(myGeom->Offset());
-  const gp_Dir&                  aDir     = myGeom->Direction();
-  Bnd_Box                        aLocalBox;
+  // Specialized fast paths for line and axis-aligned circle.
+  const occ::handle<Geom_Curve>& aBasis = myGeom->BasisCurve();
 
-  if (const occ::handle<Geom_Line> aLine = occ::down_cast<Geom_Line>(aBasis))
+  Bnd_Box aBox = tryOffsetLine(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
   {
-    const gp_Lin aBasisLin = aLine->Lin();
-    gp_Vec       aShift    = gp_Vec(aBasisLin.Direction()).Crossed(gp_Vec(aDir));
-    if (aShift.SquareMagnitude() > Precision::SquareConfusion())
-    {
-      aShift.Normalize();
-      aShift *= myGeom->Offset();
-      gp_Pnt aLoc = aBasisLin.Location().Translated(aShift);
-      aLocalBox = GeomBndLib_Line::Box(gp_Lin(aLoc, aBasisLin.Direction()), theU1, theU2, 0.);
-      aLocalBox.Enlarge(theTol);
-      return aLocalBox;
-    }
+    return aBox;
+  }
+  aBox = tryOffsetCircle(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
+  {
+    return aBox;
   }
 
-  if (const occ::handle<Geom_Circle> aCircle = occ::down_cast<Geom_Circle>(aBasis))
-  {
-    const gp_Circ aBasisCirc = aCircle->Circ();
-    const double  aDotAxis   = std::abs(aBasisCirc.Axis().Direction().Dot(aDir));
-    if (std::abs(1.0 - aDotAxis) <= Precision::Angular())
-    {
-      const double aUMid = 0.5 * (theU1 + theU2);
-      gp_Pnt       aP;
-      gp_Vec       aV1;
-      ElCLib::D1(aUMid, aBasisCirc, aP, aV1);
-      if (aV1.SquareMagnitude() > Precision::SquareConfusion())
-      {
-        gp_Vec aNormal = aV1.Crossed(gp_Vec(aDir));
-        if (aNormal.SquareMagnitude() > Precision::SquareConfusion())
-        {
-          aNormal.Normalize();
-          gp_Vec aRadial(aBasisCirc.Location(), aP);
-          if (aRadial.SquareMagnitude() > Precision::SquareConfusion())
-          {
-            aRadial.Normalize();
-            const double aSign = aNormal.Dot(aRadial);
-            if (std::abs(std::abs(aSign) - 1.0) <= 1e-9)
-            {
-              const double aNewRadius = aBasisCirc.Radius() + myGeom->Offset() * aSign;
-              if (aNewRadius > Precision::Confusion())
-              {
-                gp_Circ aOffsetCirc = aBasisCirc;
-                aOffsetCirc.SetRadius(aNewRadius);
-                aLocalBox = GeomBndLib_Circle::Box(aOffsetCirc, theU1, theU2, 0.);
-                aLocalBox.Enlarge(theTol);
-                return aLocalBox;
-              }
-              if (std::abs(aNewRadius) <= Precision::Confusion())
-              {
-                aLocalBox.Add(aBasisCirc.Location());
-                aLocalBox.Enlarge(theTol);
-                return aLocalBox;
-              }
-            }
-          }
-        }
-      }
-    }
-  }
+  // Generic fallback: enlarge basis curve box per coordinate.
+  // The offset displacement magnitude per coordinate k is bounded by |d| * sqrt(1 - Vk^2).
+  const double  anOffset = std::abs(myGeom->Offset());
+  const gp_Dir& aDir     = myGeom->Direction();
 
   GeomBndLib_Curve aCurveEval(aBasis);
-  aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
+  aBox = aCurveEval.Box(theU1, theU2, 0.);
 
-  if (aLocalBox.IsVoid())
+  if (aBox.IsVoid())
   {
-    return aLocalBox;
+    return aBox;
   }
 
-  // Per-coordinate enlargement based on reference direction.
-  const double aDx = aDir.X();
-  const double aDy = aDir.Y();
-  const double aDz = aDir.Z();
+  const double aDx       = aDir.X();
+  const double aDy       = aDir.Y();
+  const double aDz       = aDir.Z();
   const double aEnlargeX = anOffset * std::sqrt(std::max(0.0, 1.0 - aDx * aDx));
   const double aEnlargeY = anOffset * std::sqrt(std::max(0.0, 1.0 - aDy * aDy));
   const double aEnlargeZ = anOffset * std::sqrt(std::max(0.0, 1.0 - aDz * aDz));
 
-  const bool isOpenXmin = aLocalBox.IsOpenXmin();
-  const bool isOpenXmax = aLocalBox.IsOpenXmax();
-  const bool isOpenYmin = aLocalBox.IsOpenYmin();
-  const bool isOpenYmax = aLocalBox.IsOpenYmax();
-  const bool isOpenZmin = aLocalBox.IsOpenZmin();
-  const bool isOpenZmax = aLocalBox.IsOpenZmax();
+  const bool isOpenXmin = aBox.IsOpenXmin();
+  const bool isOpenXmax = aBox.IsOpenXmax();
+  const bool isOpenYmin = aBox.IsOpenYmin();
+  const bool isOpenYmax = aBox.IsOpenYmax();
+  const bool isOpenZmin = aBox.IsOpenZmin();
+  const bool isOpenZmax = aBox.IsOpenZmax();
 
-  if (aLocalBox.HasFinitePart())
+  if (aBox.HasFinitePart())
   {
-    auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aLocalBox.FinitePart().Get();
-    aLocalBox.Update(aXmin - aEnlargeX, aYmin - aEnlargeY, aZmin - aEnlargeZ,
-                     aXmax + aEnlargeX, aYmax + aEnlargeY, aZmax + aEnlargeZ);
+    const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aBox.FinitePart().Get();
+    aBox.Update(aXmin - aEnlargeX, aYmin - aEnlargeY, aZmin - aEnlargeZ,
+                aXmax + aEnlargeX, aYmax + aEnlargeY, aZmax + aEnlargeZ);
   }
 
-  if (isOpenXmin)
-    aLocalBox.OpenXmin();
-  if (isOpenXmax)
-    aLocalBox.OpenXmax();
-  if (isOpenYmin)
-    aLocalBox.OpenYmin();
-  if (isOpenYmax)
-    aLocalBox.OpenYmax();
-  if (isOpenZmin)
-    aLocalBox.OpenZmin();
-  if (isOpenZmax)
-    aLocalBox.OpenZmax();
+  if (isOpenXmin) aBox.OpenXmin();
+  if (isOpenXmax) aBox.OpenXmax();
+  if (isOpenYmin) aBox.OpenYmin();
+  if (isOpenYmax) aBox.OpenYmax();
+  if (isOpenZmin) aBox.OpenZmin();
+  if (isOpenZmax) aBox.OpenZmax();
 
-  aLocalBox.Enlarge(theTol);
-  return aLocalBox;
+  aBox.Enlarge(theTol);
+  return aBox;
+}
+
+//=================================================================================================
+
+Bnd_Box GeomBndLib_OffsetCurve::BoxOptimal(double theU1,
+                                           double theU2,
+                                           double theTol) const
+{
+  // Reuse exact fast paths.
+  const occ::handle<Geom_Curve>& aBasis = myGeom->BasisCurve();
+
+  Bnd_Box aBox = tryOffsetLine(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
+  {
+    return aBox;
+  }
+  aBox = tryOffsetCircle(aBasis, myGeom, theU1, theU2, theTol);
+  if (!aBox.IsVoid())
+  {
+    return aBox;
+  }
+
+  // Sampling fallback for precise result on general offset curves.
+  GeomAdaptor_Curve     anAdaptor(myGeom);
+  GeomBndLib_OtherCurve anOther(anAdaptor);
+  return anOther.BoxOptimal(theU1, theU2, theTol);
 }

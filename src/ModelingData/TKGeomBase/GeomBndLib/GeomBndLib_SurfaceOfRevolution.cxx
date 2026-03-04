@@ -15,6 +15,7 @@
 
 #include <GeomBndLib_Circle.hxx>
 #include <GeomBndLib_Curve.hxx>
+#include <GeomBndLib_InfiniteHelpers.pxx>
 #include <Geom_Curve.hxx>
 #include <gp_Ax1.hxx>
 #include <gp_Circ.hxx>
@@ -58,6 +59,72 @@ void addRevolutionCircle(const gp_Pnt& theOrigin,
   theBox.Add(GeomBndLib_Circle::Box(aCirc, theUMin, theUMax, 0.));
 }
 
+//! Build the revolution box from a pre-computed basis curve box.
+static Bnd_Box buildRevolutionBox(const Bnd_Box& theCurveBox,
+                                  const gp_Pnt&  theOrigin,
+                                  const gp_Dir&  theAxisDir,
+                                  double         theUMin,
+                                  double         theUMax,
+                                  double         theTol)
+{
+  Bnd_Box aBox;
+
+  if (theCurveBox.IsVoid())
+  {
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  if (theCurveBox.IsOpen())
+  {
+    // Revolve the finite part corners for the bounded portion.
+    if (theCurveBox.HasFinitePart())
+    {
+      const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theCurveBox.FinitePart().Get();
+      const double aXVals[2] = {aXmin, aXmax};
+      const double aYVals[2] = {aYmin, aYmax};
+      const double aZVals[2] = {aZmin, aZmax};
+      for (int ix = 0; ix < 2; ++ix)
+        for (int iy = 0; iy < 2; ++iy)
+          for (int iz = 0; iz < 2; ++iz)
+          {
+            addRevolutionCircle(theOrigin, theAxisDir,
+                                gp_Pnt(aXVals[ix], aYVals[iy], aZVals[iz]),
+                                theUMin, theUMax, aBox);
+          }
+    }
+    // Propagate curve openness: open directions remain open after revolution.
+    if (theCurveBox.IsOpenXmin()) aBox.OpenXmin();
+    if (theCurveBox.IsOpenXmax()) aBox.OpenXmax();
+    if (theCurveBox.IsOpenYmin()) aBox.OpenYmin();
+    if (theCurveBox.IsOpenYmax()) aBox.OpenYmax();
+    if (theCurveBox.IsOpenZmin()) aBox.OpenZmin();
+    if (theCurveBox.IsOpenZmax()) aBox.OpenZmax();
+    aBox.Enlarge(theTol);
+    return aBox;
+  }
+
+  // Get() returns {Xmin, Xmax, Ymin, Ymax, Zmin, Zmax}.
+  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = theCurveBox.Get();
+
+  // Revolve all 8 corners of the basis curve bounding box.
+  const double aXVals[2] = {aXmin, aXmax};
+  const double aYVals[2] = {aYmin, aYmax};
+  const double aZVals[2] = {aZmin, aZmax};
+
+  for (int ix = 0; ix < 2; ++ix)
+    for (int iy = 0; iy < 2; ++iy)
+      for (int iz = 0; iz < 2; ++iz)
+      {
+        addRevolutionCircle(theOrigin, theAxisDir,
+                            gp_Pnt(aXVals[ix], aYVals[iy], aZVals[iz]),
+                            theUMin, theUMax, aBox);
+      }
+
+  aBox.Enlarge(theTol);
+  return aBox;
+}
+
 } // namespace
 
 //=================================================================================================
@@ -77,7 +144,6 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double   theUMin,
                                             double   theVMax,
                                             double   theTol) const
 {
-  Bnd_Box aBox;
   const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
   const gp_Ax1                   anAxis      = myGeom->Axis();
   const gp_Pnt&                  anOrigin    = anAxis.Location();
@@ -89,45 +155,33 @@ Bnd_Box GeomBndLib_SurfaceOfRevolution::Box(double   theUMin,
   const double aVMin   = Precision::IsNegativeInfinite(theVMin) ? aVFirst : theVMin;
   const double aVMax   = Precision::IsPositiveInfinite(theVMax) ? aVLast : theVMax;
 
-  // Compute the basis curve bounding box for [VMin, VMax].
-  // Then revolve all 8 corners of the box around the axis.
-  // This is conservative: the curve is inside its box, so the revolved box
-  // contains the revolved curve. It avoids sampling and captures all curve features.
+  // Compute the basis curve bounding box, then revolve all 8 corners around the axis.
   GeomBndLib_Curve aCurveEval(aBasisCurve);
-  Bnd_Box          aCurveBox = aCurveEval.Box(aVMin, aVMax, 0.);
+  const Bnd_Box    aCurveBox = aCurveEval.Box(aVMin, aVMax, 0.);
+  return buildRevolutionBox(aCurveBox, anOrigin, anAxisDir, theUMin, theUMax, theTol);
+}
 
-  if (aCurveBox.IsVoid())
-  {
-    aBox.Enlarge(theTol);
-    return aBox;
-  }
-  if (aCurveBox.IsOpen())
-  {
-    aBox.SetWhole();
-    aBox.Enlarge(theTol);
-    return aBox;
-  }
+//=================================================================================================
 
-  // Get() returns {Xmin, Xmax, Ymin, Ymax, Zmin, Zmax}.
-  const auto [aXmin, aXmax, aYmin, aYmax, aZmin, aZmax] = aCurveBox.Get();
+Bnd_Box GeomBndLib_SurfaceOfRevolution::BoxOptimal(double   theUMin,
+                                                   double   theUMax,
+                                                   double   theVMin,
+                                                   double   theVMax,
+                                                   double   theTol) const
+{
+  const occ::handle<Geom_Curve>& aBasisCurve = myGeom->BasisCurve();
+  const gp_Ax1                   anAxis      = myGeom->Axis();
+  const gp_Pnt&                  anOrigin    = anAxis.Location();
+  const gp_Dir&                  anAxisDir   = anAxis.Direction();
 
-  // Revolve all 8 corners of the basis curve bounding box.
-  const double aXVals[2] = {aXmin, aXmax};
-  const double aYVals[2] = {aYmin, aYmax};
-  const double aZVals[2] = {aZmin, aZmax};
+  // Clamp V range to basis curve bounds.
+  const double aVFirst = aBasisCurve->FirstParameter();
+  const double aVLast  = aBasisCurve->LastParameter();
+  const double aVMin   = Precision::IsNegativeInfinite(theVMin) ? aVFirst : theVMin;
+  const double aVMax   = Precision::IsPositiveInfinite(theVMax) ? aVLast : theVMax;
 
-  for (int ix = 0; ix < 2; ++ix)
-  {
-    for (int iy = 0; iy < 2; ++iy)
-    {
-      for (int iz = 0; iz < 2; ++iz)
-      {
-        const gp_Pnt aCorner(aXVals[ix], aYVals[iy], aZVals[iz]);
-        addRevolutionCircle(anOrigin, anAxisDir, aCorner, theUMin, theUMax, aBox);
-      }
-    }
-  }
-
-  aBox.Enlarge(theTol);
-  return aBox;
+  // Use the tight basis curve box for a more precise result.
+  GeomBndLib_Curve aCurveEval(aBasisCurve);
+  const Bnd_Box    aCurveBox = aCurveEval.BoxOptimal(aVMin, aVMax, 0.);
+  return buildRevolutionBox(aCurveBox, anOrigin, anAxisDir, theUMin, theUMax, theTol);
 }
