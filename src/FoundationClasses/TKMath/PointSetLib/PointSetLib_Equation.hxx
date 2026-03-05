@@ -103,9 +103,9 @@ private:
   gp_Vec myV2; //!< Box edge (Space type only)
   gp_Vec myV3; //!< Box edge (Space type only)
 
-  gp_Pnt myBarycentre;    //!< Centre of mass (always valid)
-  gp_Vec myAxes[3];       //!< Principal axis unit vectors
-  double myExtents[3] {}; //!< Extent along each principal axis
+  gp_Pnt myBarycentre;   //!< Centre of mass (always valid)
+  gp_Vec myAxes[3];      //!< Principal axis unit vectors
+  double myExtents[3]{}; //!< Extent along each principal axis
 };
 
 #endif // _PointSetLib_Equation_HeaderFile

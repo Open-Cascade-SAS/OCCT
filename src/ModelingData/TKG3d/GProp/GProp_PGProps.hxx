@@ -23,8 +23,8 @@ Standard_HEADER_DEPRECATED("Deprecated since OCCT 8.0.0. Use PointSetLib_Props i
 
 #include <PointSetLib_Props.hxx>
 
-//! @deprecated This class is deprecated since OCCT 8.0.0.
-//! Use PointSetLib_Props instead.
-using GProp_PGProps = PointSetLib_Props;
+  //! @deprecated This class is deprecated since OCCT 8.0.0.
+  //! Use PointSetLib_Props instead.
+  using GProp_PGProps = PointSetLib_Props;
 
 #endif // _GProp_PGProps_HeaderFile

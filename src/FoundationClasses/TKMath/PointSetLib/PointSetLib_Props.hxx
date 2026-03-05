@@ -45,13 +45,13 @@ public:
   //! @param[in] thePnts point array
   //! @param[in] theDensity per-point mass array (same length as thePnts)
   Standard_EXPORT PointSetLib_Props(const NCollection_Array1<gp_Pnt>& thePnts,
-                                   const NCollection_Array1<double>& theDensity);
+                                    const NCollection_Array1<double>& theDensity);
 
   //! Creates a point set from 2D arrays of points and corresponding densities.
   //! @param[in] thePnts point array
   //! @param[in] theDensity per-point mass array (same dimensions as thePnts)
   Standard_EXPORT PointSetLib_Props(const NCollection_Array2<gp_Pnt>& thePnts,
-                                   const NCollection_Array2<double>& theDensity);
+                                    const NCollection_Array2<double>& theDensity);
 
   //! Adds a point with unit mass.
   Standard_EXPORT void AddPoint(const gp_Pnt& thePnt);
@@ -94,9 +94,9 @@ public:
                                          gp_Pnt&                           theG);
 
 private:
-  double myMass = 0.0;        //!< Total mass
-  gp_Pnt myCentreOfMass;      //!< Weighted centre of mass
-  gp_Mat myInertiaAtOrigin;   //!< Inertia matrix accumulated at the origin
+  double myMass = 0.0;      //!< Total mass
+  gp_Pnt myCentreOfMass;    //!< Weighted centre of mass
+  gp_Mat myInertiaAtOrigin; //!< Inertia matrix accumulated at the origin
 };
 
 #endif // _PointSetLib_Props_HeaderFile

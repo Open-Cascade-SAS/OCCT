@@ -97,7 +97,7 @@ TEST(PointSetLib_PropsTest, MatrixOfInertia_SymmetricPoints)
   aPnts(4) = gp_Pnt(0.0, -1.0, 0.0);
 
   PointSetLib_Props aProps(aPnts);
-  const gp_Mat     anInertia = aProps.MatrixOfInertia();
+  const gp_Mat      anInertia = aProps.MatrixOfInertia();
 
   // Ixx = sum(yi^2 + zi^2) at centroid
   // For these points, centroid = origin, so inertia at origin = inertia at centroid

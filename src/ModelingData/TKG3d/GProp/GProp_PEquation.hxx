@@ -23,8 +23,8 @@ Standard_HEADER_DEPRECATED("Deprecated since OCCT 8.0.0. Use PointSetLib_Equatio
 
 #include <PointSetLib_Equation.hxx>
 
-//! @deprecated This class is deprecated since OCCT 8.0.0.
-//! Use PointSetLib_Equation instead.
-using GProp_PEquation = PointSetLib_Equation;
+  //! @deprecated This class is deprecated since OCCT 8.0.0.
+  //! Use PointSetLib_Equation instead.
+  using GProp_PEquation = PointSetLib_Equation;
 
 #endif // _GProp_PEquation_HeaderFile

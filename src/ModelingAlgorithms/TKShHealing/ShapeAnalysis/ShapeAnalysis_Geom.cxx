@@ -38,30 +38,27 @@ bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& thePnts,
   const double aDev2 = anEq.Extent(2);
   const double aDev3 = anEq.Extent(3);
 
-  // Find the axis with the smallest extent — that's the plane normal candidate
+  // Find the axis with the smallest extent - that's the plane normal candidate
   int anAxis = (aDev1 < aDev2) ? ((aDev1 < aDev3) ? 1 : 3) : ((aDev2 < aDev3) ? 2 : 3);
 
   // Check if the smallest extent is significantly smaller than the other two
   switch (anAxis)
   {
-    case 1:
-    {
+    case 1: {
       if ((2.0 * aDev1 > aDev2) || (2.0 * aDev1 > aDev3))
         anAxis = 0;
       else
         thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(1));
       break;
     }
-    case 2:
-    {
+    case 2: {
       if ((2.0 * aDev2 > aDev1) || (2.0 * aDev2 > aDev3))
         anAxis = 0;
       else
         thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(2));
       break;
     }
-    case 3:
-    {
+    case 3: {
       if ((2.0 * aDev3 > aDev2) || (2.0 * aDev3 > aDev1))
         anAxis = 0;
       else
@@ -116,7 +113,7 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
 
   if (m1 < prec || m2 < prec || m3 < prec)
     return false;
-  double mm = (m1 + m2 + m3) / 3.;
+  double mm  = (m1 + m2 + m3) / 3.;
   double pmm = prec * mm;
   if (std::abs(m1 - mm) > pmm || std::abs(m2 - mm) > pmm || std::abs(m3 - mm) > pmm)
     return false;

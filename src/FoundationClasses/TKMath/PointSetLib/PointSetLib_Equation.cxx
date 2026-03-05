@@ -49,9 +49,9 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
   }
 
   const math_Matrix& aVecs = *anEigen.EigenVectors;
-  myAxes[0] = gp_Vec(aVecs(1, 1), aVecs(2, 1), aVecs(3, 1));
-  myAxes[1] = gp_Vec(aVecs(1, 2), aVecs(2, 2), aVecs(3, 2));
-  myAxes[2] = gp_Vec(aVecs(1, 3), aVecs(2, 3), aVecs(3, 3));
+  myAxes[0]                = gp_Vec(aVecs(1, 1), aVecs(2, 1), aVecs(3, 1));
+  myAxes[1]                = gp_Vec(aVecs(1, 2), aVecs(2, 2), aVecs(3, 2));
+  myAxes[2]                = gp_Vec(aVecs(1, 3), aVecs(2, 3), aVecs(3, 3));
 
   // Project all points onto principal axes to find extents
   const double aXg = myG.X();
@@ -69,16 +69,22 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
     const double aDZ = thePnts(i).Z() - aZg;
 
     const double aD1 = aDX * myAxes[0].X() + aDY * myAxes[0].Y() + aDZ * myAxes[0].Z();
-    if (aD1 > aMax1) aMax1 = aD1;
-    if (aD1 < aMin1) aMin1 = aD1;
+    if (aD1 > aMax1)
+      aMax1 = aD1;
+    if (aD1 < aMin1)
+      aMin1 = aD1;
 
     const double aD2 = aDX * myAxes[1].X() + aDY * myAxes[1].Y() + aDZ * myAxes[1].Z();
-    if (aD2 > aMax2) aMax2 = aD2;
-    if (aD2 < aMin2) aMin2 = aD2;
+    if (aD2 > aMax2)
+      aMax2 = aD2;
+    if (aD2 < aMin2)
+      aMin2 = aD2;
 
     const double aD3 = aDX * myAxes[2].X() + aDY * myAxes[2].Y() + aDZ * myAxes[2].Z();
-    if (aD3 > aMax3) aMax3 = aD3;
-    if (aD3 < aMin3) aMin3 = aD3;
+    if (aD3 > aMax3)
+      aMax3 = aD3;
+    if (aD3 < aMin3)
+      aMin3 = aD3;
   }
 
   myExtents[0] = aMax1 - aMin1;
@@ -106,13 +112,11 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
 
   switch (aDimension)
   {
-    case 0:
-    {
+    case 0: {
       myType = Type::Point;
       break;
     }
-    case 1:
-    {
+    case 1: {
       myType = Type::Line;
       if (aDimCode == 4)
         myV1 = myAxes[2];
@@ -122,8 +126,7 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
         myV1 = myAxes[0];
       break;
     }
-    case 2:
-    {
+    case 2: {
       myType = Type::Plane;
       if (aDimCode == 1)
         myV1 = myAxes[0];
@@ -133,12 +136,10 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
         myV1 = myAxes[2];
       break;
     }
-    case 3:
-    {
+    case 3: {
       myType = Type::Space;
-      myG.SetXYZ(myG.XYZ() + aMin1 * myAxes[0].XYZ()
-                            + aMin2 * myAxes[1].XYZ()
-                            + aMin3 * myAxes[2].XYZ());
+      myG.SetXYZ(myG.XYZ() + aMin1 * myAxes[0].XYZ() + aMin2 * myAxes[1].XYZ()
+                 + aMin3 * myAxes[2].XYZ());
       myV1 = myExtents[0] * myAxes[0];
       myV2 = myExtents[1] * myAxes[1];
       myV3 = myExtents[2] * myAxes[2];
@@ -182,10 +183,7 @@ gp_Pnt PointSetLib_Equation::Point() const
 
 //=================================================================================================
 
-void PointSetLib_Equation::Box(gp_Pnt& theP,
-                              gp_Vec& theV1,
-                              gp_Vec& theV2,
-                              gp_Vec& theV3) const
+void PointSetLib_Equation::Box(gp_Pnt& theP, gp_Vec& theV1, gp_Vec& theV2, gp_Vec& theV3) const
 {
   if (!IsSpace())
   {

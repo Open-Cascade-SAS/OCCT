@@ -28,8 +28,8 @@ static gp_Mat huygensOperator(const gp_Pnt& theG, const gp_Pnt& theQ, double the
   const double aY  = aQG.Y();
   const double aZ  = aQG.Z();
   gp_Mat       aMat(gp_XYZ(aY * aY + aZ * aZ, -aX * aY, -aX * aZ),
-                     gp_XYZ(-aX * aY, aX * aX + aZ * aZ, -aY * aZ),
-                     gp_XYZ(-aX * aZ, -aY * aZ, aX * aX + aY * aY));
+              gp_XYZ(-aX * aY, aX * aX + aZ * aZ, -aY * aZ),
+              gp_XYZ(-aX * aZ, -aY * aZ, aX * aX + aY * aY));
   aMat.Multiply(theMass);
   return aMat;
 }
@@ -71,12 +71,13 @@ PointSetLib_Props::PointSetLib_Props(const NCollection_Array2<gp_Pnt>& thePnts)
 //=================================================================================================
 
 PointSetLib_Props::PointSetLib_Props(const NCollection_Array1<gp_Pnt>& thePnts,
-                                   const NCollection_Array1<double>& theDensity)
+                                     const NCollection_Array1<double>& theDensity)
     : PointSetLib_Props()
 {
   if (thePnts.Length() != theDensity.Length())
   {
-    throw Standard_DomainError("PointSetLib_Props: points and density arrays have different lengths");
+    throw Standard_DomainError(
+      "PointSetLib_Props: points and density arrays have different lengths");
   }
   int aPntIdx  = thePnts.Lower();
   int aDensIdx = theDensity.Lower();
@@ -89,7 +90,7 @@ PointSetLib_Props::PointSetLib_Props(const NCollection_Array1<gp_Pnt>& thePnts,
 //=================================================================================================
 
 PointSetLib_Props::PointSetLib_Props(const NCollection_Array2<gp_Pnt>& thePnts,
-                                   const NCollection_Array2<double>& theDensity)
+                                     const NCollection_Array2<double>& theDensity)
     : PointSetLib_Props()
 {
   if (thePnts.ColLength() != theDensity.ColLength()
@@ -121,14 +122,14 @@ void PointSetLib_Props::AddPoint(const gp_Pnt& thePnt)
 
   // Inertia contribution at origin
   const gp_Mat aMp(gp_XYZ(aY * aY + aZ * aZ, -aX * aY, -aX * aZ),
-                    gp_XYZ(-aX * aY, aX * aX + aZ * aZ, -aY * aZ),
-                    gp_XYZ(-aX * aZ, -aY * aZ, aX * aX + aY * aY));
+                   gp_XYZ(-aX * aY, aX * aX + aZ * aZ, -aY * aZ),
+                   gp_XYZ(-aX * aZ, -aY * aZ, aX * aX + aY * aY));
 
   if (myMass == 0.0)
   {
-    myMass             = 1.0;
-    myCentreOfMass     = thePnt;
-    myInertiaAtOrigin  = aMp;
+    myMass            = 1.0;
+    myCentreOfMass    = thePnt;
+    myInertiaAtOrigin = aMp;
   }
   else
   {
@@ -156,14 +157,14 @@ void PointSetLib_Props::AddPoint(const gp_Pnt& thePnt, double theDensity)
   const double aZ = thePnt.Z();
 
   gp_Mat aMp(gp_XYZ(aY * aY + aZ * aZ, -aX * aY, -aX * aZ),
-              gp_XYZ(-aX * aY, aX * aX + aZ * aZ, -aY * aZ),
-              gp_XYZ(-aX * aZ, -aY * aZ, aX * aX + aY * aY));
+             gp_XYZ(-aX * aY, aX * aX + aZ * aZ, -aY * aZ),
+             gp_XYZ(-aX * aZ, -aY * aZ, aX * aX + aY * aY));
 
   if (myMass == 0.0)
   {
-    myMass             = theDensity;
-    myCentreOfMass     = thePnt;
-    myInertiaAtOrigin  = aMp * theDensity;
+    myMass            = theDensity;
+    myCentreOfMass    = thePnt;
+    myInertiaAtOrigin = aMp * theDensity;
   }
   else
   {
@@ -221,9 +222,9 @@ gp_Pnt PointSetLib_Props::Barycentre(const NCollection_Array2<gp_Pnt>& thePnts)
 //=================================================================================================
 
 void PointSetLib_Props::Barycentre(const NCollection_Array1<gp_Pnt>& thePnts,
-                                  const NCollection_Array1<double>& theDensity,
-                                  double&                           theMass,
-                                  gp_Pnt&                           theG)
+                                   const NCollection_Array1<double>& theDensity,
+                                   double&                           theMass,
+                                   gp_Pnt&                           theG)
 {
   if (thePnts.Length() != theDensity.Length())
   {
@@ -231,10 +232,10 @@ void PointSetLib_Props::Barycentre(const NCollection_Array1<gp_Pnt>& thePnts,
       "PointSetLib_Props::Barycentre: points and density arrays have different lengths");
   }
 
-  int    aPntIdx  = thePnts.Lower();
-  int    aDensIdx = theDensity.Lower();
-  theMass         = theDensity(aDensIdx);
-  gp_XYZ aSum     = thePnts(aPntIdx).XYZ();
+  int aPntIdx  = thePnts.Lower();
+  int aDensIdx = theDensity.Lower();
+  theMass      = theDensity(aDensIdx);
+  gp_XYZ aSum  = thePnts(aPntIdx).XYZ();
   aSum.Multiply(theMass);
   ++aPntIdx;
   ++aDensIdx;
@@ -250,9 +251,9 @@ void PointSetLib_Props::Barycentre(const NCollection_Array1<gp_Pnt>& thePnts,
 //=================================================================================================
 
 void PointSetLib_Props::Barycentre(const NCollection_Array2<gp_Pnt>& thePnts,
-                                  const NCollection_Array2<double>& theDensity,
-                                  double&                           theMass,
-                                  gp_Pnt&                           theG)
+                                   const NCollection_Array2<double>& theDensity,
+                                   double&                           theMass,
+                                   gp_Pnt&                           theG)
 {
   if (thePnts.RowLength() != theDensity.RowLength()
       || thePnts.ColLength() != theDensity.ColLength())
