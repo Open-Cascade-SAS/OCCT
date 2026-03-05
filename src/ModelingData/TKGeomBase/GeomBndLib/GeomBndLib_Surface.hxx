@@ -27,9 +27,11 @@
 #include <GeomBndLib_Torus.hxx>
 #include <Bnd_Box.hxx>
 #include <GeomAbs_SurfaceType.hxx>
+#include <gp_Trsf.hxx>
 #include <Standard.hxx>
 #include <Standard_DefineAlloc.hxx>
 
+#include <optional>
 #include <variant>
 
 class Adaptor3d_Surface;
@@ -116,6 +118,8 @@ private:
   occ::handle<Adaptor3d_Surface> myAdaptorOwned;
   EvaluatorVariant               myEvaluator;
   GeomAbs_SurfaceType            mySurfType;
+  //!< Non-identity trsf from GeomAdaptor_TransformedSurface; applied to Box/BoxOptimal results.
+  std::optional<gp_Trsf> myTrsf;
 };
 
 #endif // GeomBndLib_Surface_HeaderFile

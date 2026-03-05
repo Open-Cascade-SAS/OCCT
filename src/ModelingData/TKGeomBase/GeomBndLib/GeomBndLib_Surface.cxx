@@ -32,6 +32,68 @@
 
 #include <type_traits>
 
+namespace
+{
+//! Applies theTrsf to theBox and returns the result.
+//! - Translation: exact (shifts bounds, preserves open flags).
+//! - Finite box + general transform: 8-corner approximation (valid AABB, may be slightly larger).
+//! - Open box + non-translation: returns whole box (safe upper bound).
+Bnd_Box transformedBox(const Bnd_Box& theBox, const gp_Trsf& theTrsf)
+{
+  if (theBox.IsVoid() || theBox.IsWhole())
+    return theBox;
+
+  double xMin, yMin, zMin, xMax, yMax, zMax;
+  theBox.Get(xMin, yMin, zMin, xMax, yMax, zMax);
+
+  if (theTrsf.Form() == gp_Translation)
+  {
+    // Exact for pure translations: shift bounds and preserve open flags.
+    const gp_XYZ aVec = theTrsf.TranslationPart();
+    Bnd_Box      aResult;
+    aResult.Update(xMin + aVec.X(),
+                   yMin + aVec.Y(),
+                   zMin + aVec.Z(),
+                   xMax + aVec.X(),
+                   yMax + aVec.Y(),
+                   zMax + aVec.Z());
+    if (theBox.IsOpenXmin())
+      aResult.OpenXmin();
+    if (theBox.IsOpenXmax())
+      aResult.OpenXmax();
+    if (theBox.IsOpenYmin())
+      aResult.OpenYmin();
+    if (theBox.IsOpenYmax())
+      aResult.OpenYmax();
+    if (theBox.IsOpenZmin())
+      aResult.OpenZmin();
+    if (theBox.IsOpenZmax())
+      aResult.OpenZmax();
+    return aResult;
+  }
+
+  // For general transforms with open directions: cannot represent correctly as AABB.
+  const bool isOpen = theBox.IsOpenXmin() || theBox.IsOpenXmax() || theBox.IsOpenYmin()
+                      || theBox.IsOpenYmax() || theBox.IsOpenZmin() || theBox.IsOpenZmax();
+  if (isOpen)
+  {
+    Bnd_Box aResult;
+    aResult.SetWhole();
+    return aResult;
+  }
+
+  // Finite box: transform all 8 corners and build a new AABB.
+  Bnd_Box aResult;
+  for (int i = 0; i < 8; ++i)
+  {
+    gp_Pnt aCorner((i & 1) ? xMax : xMin, (i & 2) ? yMax : yMin, (i & 4) ? zMax : zMin);
+    aCorner.Transform(theTrsf);
+    aResult.Add(aCorner);
+  }
+  return aResult;
+}
+} // namespace
+
 //=================================================================================================
 
 GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
@@ -39,135 +101,125 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
 {
   myAdaptorRef = &theSurf;
 
+  // Detect the adaptor type ONCE and extract the underlying Geom_Surface handle.
+  // For GeomAdaptor_TransformedSurface (which BRepAdaptor_Surface inherits from):
+  //   - use the inner GeomAdaptor_Surface as myAdaptorRef (untransformed UV bounds / eval)
+  //   - store the transformation in myTrsf for application at the Box/BoxOptimal level
+  //   - no Copy+Transform of the geometry — transformation is deferred to box post-processing
+  occ::handle<Geom_Surface> aGeomSurf;
+  if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurf))
+  {
+    aGeomSurf = aGA->Surface();
+  }
+  else if (const GeomAdaptor_TransformedSurface* aGTS =
+             dynamic_cast<const GeomAdaptor_TransformedSurface*>(&theSurf))
+  {
+    // Use the inner adaptor so all evaluations / UV bounds are in local coordinates.
+    // myAdaptorRef now points to the inner GeomAdaptor_Surface (valid as long as theSurf lives).
+    myAdaptorRef         = &aGTS->Surface();
+    aGeomSurf            = aGTS->GeomSurface(); // untransformed Geom handle
+    const gp_Trsf& aTrsf = aGTS->Trsf();
+    if (aTrsf.Form() != gp_Identity)
+      myTrsf = aTrsf; // deferred to Box/BoxOptimal output
+  }
+
+  // Unwrap a trimmed surface so that down_casts below match the surface type
+  // that the adaptor already resolved via GetType().
+  occ::handle<Geom_Surface> aBaseGeom = aGeomSurf;
+  if (!aBaseGeom.IsNull())
+    if (const auto aTrim = occ::down_cast<Geom_RectangularTrimmedSurface>(aBaseGeom))
+      aBaseGeom = aTrim->BasisSurface();
+
   switch (mySurfType)
   {
     case GeomAbs_Plane: {
-      occ::handle<Geom_Plane> aPlane = new Geom_Plane(theSurf.Plane());
-      myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
+      if (auto aPlane = occ::down_cast<Geom_Plane>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
+        break;
+      }
+      myEvaluator.emplace<GeomBndLib_Plane>(new Geom_Plane(theSurf.Plane()));
       break;
     }
     case GeomAbs_Cylinder: {
-      occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(theSurf.Cylinder());
-      myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
+      if (auto aCyl = occ::down_cast<Geom_CylindricalSurface>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
+        break;
+      }
+      myEvaluator.emplace<GeomBndLib_Cylinder>(new Geom_CylindricalSurface(theSurf.Cylinder()));
       break;
     }
     case GeomAbs_Cone: {
-      occ::handle<Geom_ConicalSurface> aCone = new Geom_ConicalSurface(theSurf.Cone());
-      myEvaluator.emplace<GeomBndLib_Cone>(aCone);
+      if (auto aCone = occ::down_cast<Geom_ConicalSurface>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_Cone>(aCone);
+        break;
+      }
+      myEvaluator.emplace<GeomBndLib_Cone>(new Geom_ConicalSurface(theSurf.Cone()));
       break;
     }
     case GeomAbs_Sphere: {
-      occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(theSurf.Sphere());
-      myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
+      if (auto aSphere = occ::down_cast<Geom_SphericalSurface>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
+        break;
+      }
+      myEvaluator.emplace<GeomBndLib_Sphere>(new Geom_SphericalSurface(theSurf.Sphere()));
       break;
     }
     case GeomAbs_Torus: {
-      occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(theSurf.Torus());
-      myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
+      if (auto aTorus = occ::down_cast<Geom_ToroidalSurface>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
+        break;
+      }
+      myEvaluator.emplace<GeomBndLib_Torus>(new Geom_ToroidalSurface(theSurf.Torus()));
       break;
     }
     case GeomAbs_BezierSurface: {
+      if (auto aBez = occ::down_cast<Geom_BezierSurface>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_BezierSurface>(aBez);
+        break;
+      }
       myEvaluator.emplace<GeomBndLib_BezierSurface>(theSurf.Bezier());
       break;
     }
     case GeomAbs_BSplineSurface: {
+      if (auto aBSpl = occ::down_cast<Geom_BSplineSurface>(aBaseGeom))
+      {
+        myEvaluator.emplace<GeomBndLib_BSplineSurface>(aBSpl);
+        break;
+      }
       myEvaluator.emplace<GeomBndLib_BSplineSurface>(theSurf.BSpline());
       break;
     }
     case GeomAbs_SurfaceOfRevolution: {
-      // Try to get the underlying Geom_SurfaceOfRevolution from the adaptor.
-      // GeomAdaptor_Surface and GeomAdaptor_TransformedSurface (base of BRepAdaptor_Surface)
-      // both expose GeomSurface() giving direct access to the Geom handle.
-      occ::handle<Geom_Surface> aGeomSurf;
-      const gp_Trsf*            aTrsf = nullptr;
-      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef))
+      if (auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aBaseGeom))
       {
-        aGeomSurf = aGA->Surface();
-      }
-      else if (const GeomAdaptor_TransformedSurface* aGTS =
-                 dynamic_cast<const GeomAdaptor_TransformedSurface*>(myAdaptorRef))
-      {
-        aGeomSurf = aGTS->GeomSurface();
-        if (aGTS->Trsf().Form() != gp_Identity)
-          aTrsf = &aGTS->Trsf();
-      }
-      if (!aGeomSurf.IsNull())
-      {
-        auto aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aGeomSurf);
-        if (!aRev.IsNull())
-        {
-          if (aTrsf != nullptr)
-          {
-            aRev = occ::down_cast<Geom_SurfaceOfRevolution>(aRev->Copy());
-            aRev->Transform(*aTrsf);
-          }
-          myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRev);
-          break;
-        }
+        myEvaluator.emplace<GeomBndLib_SurfaceOfRevolution>(aRev);
+        break;
       }
       mySurfType = GeomAbs_OtherSurface;
       myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
       break;
     }
     case GeomAbs_SurfaceOfExtrusion: {
-      occ::handle<Geom_Surface> aGeomSurf;
-      const gp_Trsf*            aTrsf = nullptr;
-      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef))
+      if (auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aBaseGeom))
       {
-        aGeomSurf = aGA->Surface();
-      }
-      else if (const GeomAdaptor_TransformedSurface* aGTS =
-                 dynamic_cast<const GeomAdaptor_TransformedSurface*>(myAdaptorRef))
-      {
-        aGeomSurf = aGTS->GeomSurface();
-        if (aGTS->Trsf().Form() != gp_Identity)
-          aTrsf = &aGTS->Trsf();
-      }
-      if (!aGeomSurf.IsNull())
-      {
-        auto anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(aGeomSurf);
-        if (!anExtr.IsNull())
-        {
-          if (aTrsf != nullptr)
-          {
-            anExtr = occ::down_cast<Geom_SurfaceOfLinearExtrusion>(anExtr->Copy());
-            anExtr->Transform(*aTrsf);
-          }
-          myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtr);
-          break;
-        }
+        myEvaluator.emplace<GeomBndLib_SurfaceOfExtrusion>(anExtr);
+        break;
       }
       mySurfType = GeomAbs_OtherSurface;
       myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
       break;
     }
     case GeomAbs_OffsetSurface: {
-      occ::handle<Geom_Surface> aGeomSurf;
-      const gp_Trsf*            aTrsf = nullptr;
-      if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(myAdaptorRef))
+      if (auto anOff = occ::down_cast<Geom_OffsetSurface>(aBaseGeom))
       {
-        aGeomSurf = aGA->Surface();
-      }
-      else if (const GeomAdaptor_TransformedSurface* aGTS =
-                 dynamic_cast<const GeomAdaptor_TransformedSurface*>(myAdaptorRef))
-      {
-        aGeomSurf = aGTS->GeomSurface();
-        if (aGTS->Trsf().Form() != gp_Identity)
-          aTrsf = &aGTS->Trsf();
-      }
-      if (!aGeomSurf.IsNull())
-      {
-        auto anOff = occ::down_cast<Geom_OffsetSurface>(aGeomSurf);
-        if (!anOff.IsNull())
-        {
-          if (aTrsf != nullptr)
-          {
-            anOff = occ::down_cast<Geom_OffsetSurface>(anOff->Copy());
-            anOff->Transform(*aTrsf);
-          }
-          myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOff);
-          break;
-        }
+        myEvaluator.emplace<GeomBndLib_OffsetSurface>(anOff);
+        break;
       }
       mySurfType = GeomAbs_OtherSurface;
       myEvaluator.emplace<GeomBndLib_OtherSurface>(*myAdaptorRef);
@@ -375,7 +427,7 @@ Bnd_Box GeomBndLib_Surface::Box(double theUMin,
                                 double theVMax,
                                 double theTol) const
 {
-  return std::visit(
+  Bnd_Box aBox = std::visit(
     [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
@@ -385,6 +437,9 @@ Bnd_Box GeomBndLib_Surface::Box(double theUMin,
       return Bnd_Box{};
     },
     myEvaluator);
+  if (myTrsf.has_value())
+    aBox = transformedBox(aBox, *myTrsf);
+  return aBox;
 }
 
 //=================================================================================================
@@ -416,7 +471,7 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theUMin,
                                        double theVMax,
                                        double theTol) const
 {
-  return std::visit(
+  Bnd_Box aBox = std::visit(
     [theUMin, theUMax, theVMin, theVMax, theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
@@ -426,6 +481,9 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theUMin,
       return Bnd_Box{};
     },
     myEvaluator);
+  if (myTrsf.has_value())
+    aBox = transformedBox(aBox, *myTrsf);
+  return aBox;
 }
 
 //=================================================================================================
