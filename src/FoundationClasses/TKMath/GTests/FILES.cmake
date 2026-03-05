@@ -120,6 +120,8 @@ set(OCCT_TKMath_GTests_FILES
   MathSys_Newton3D_Test.cxx
   MathSys_Newton4D_Test.cxx
   MathSys_Comparison_Test.cxx
+  # PointSetLib tests
+  PointSetLib_Test.cxx
   PLib_Test.cxx
   PLib_JacobiPolynomial_Test.cxx
   PLib_HermitJacobi_Test.cxx

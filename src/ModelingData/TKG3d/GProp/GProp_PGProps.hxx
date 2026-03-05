@@ -17,134 +17,14 @@
 #ifndef _GProp_PGProps_HeaderFile
 #define _GProp_PGProps_HeaderFile
 
-#include <Standard.hxx>
-#include <Standard_DefineAlloc.hxx>
-#include <Standard_Handle.hxx>
+#include <Standard_Macro.hxx>
 
-#include <GProp_GProps.hxx>
-#include <gp_Pnt.hxx>
-#include <NCollection_Array1.hxx>
-#include <NCollection_Array2.hxx>
-class gp_Pnt;
+Standard_HEADER_DEPRECATED("Deprecated since OCCT 8.0.0. Use PointSetLib_Props instead")
 
-//! A framework for computing the global properties of a
-//! set of points.
-//! A point mass is attached to each point. The global
-//! mass of the system is the sum of each individual
-//! mass. By default, the point mass is equal to 1 and the
-//! mass of a system composed of N points is equal to N.
-//! Warning
-//! A framework of this sort provides functions to handle
-//! sets of points easily. But, like any GProp_GProps
-//! object, by using the Add function, it can theoretically
-//! bring together the computed global properties and
-//! those of a system more complex than a set of points .
-//! The mass of each point and the density of each
-//! component of the composed system must be
-//! coherent. Note that this coherence cannot be checked.
-//! Nonetheless, you are advised to restrict your use of a
-//! GProp_PGProps object to a set of points and to
-//! create a GProp_GProps object in order to bring
-//! together global properties of different systems.
-class GProp_PGProps : public GProp_GProps
-{
-public:
-  DEFINE_STANDARD_ALLOC
+#include <PointSetLib_Props.hxx>
 
-  //! Initializes a framework to compute global properties
-  //! on a set of points.
-  //! The point relative to which the inertia of the system is
-  //! computed will be the origin (0, 0, 0) of the
-  //! absolute Cartesian coordinate system.
-  //! At initialization, the framework is empty, i.e. it retains
-  //! no dimensional information such as mass and inertia.
-  //! It is, however, now able to keep global properties of a
-  //! set of points while new points are added using the
-  //! AddPoint function.
-  //! The set of points whose global properties are brought
-  //! together by this framework will then be referred to as
-  //! the current system. The current system is, however,
-  //! not kept by this framework, which only keeps that
-  //! system's global properties. Note that the current
-  //! system may be more complex than a set of points.
-  Standard_EXPORT GProp_PGProps();
-
-  //! Brings together the global properties already
-  //! retained by this framework with those induced by
-  //! the point Pnt. Pnt may be the first point of the current system.
-  //! A point mass is attached to the point Pnt, it is either
-  //! equal to 1. or to Density.
-  Standard_EXPORT void AddPoint(const gp_Pnt& P);
-
-  //! Adds a new point P with its density in the system of points
-  //! Exceptions
-  //! Standard_DomainError if the mass value Density
-  //! is less than gp::Resolution().
-  Standard_EXPORT void AddPoint(const gp_Pnt& P, const double Density);
-
-  //! computes the global properties of the system of points Pnts.
-  //! The density of the points are defaulted to all being 1
-  Standard_EXPORT GProp_PGProps(const NCollection_Array1<gp_Pnt>& Pnts);
-
-  //! computes the global properties of the system of points Pnts.
-  //! The density of the points are defaulted to all being 1
-  Standard_EXPORT GProp_PGProps(const NCollection_Array2<gp_Pnt>& Pnts);
-
-  //! computes the global properties of the system of points Pnts.
-  //! A density is associated with each point.
-  //!
-  //! raises if a density is lower or equal to Resolution from package
-  //! gp.
-  //!
-  //! raises if the length of Pnts and the length of Density
-  //! is not the same.
-  Standard_EXPORT GProp_PGProps(const NCollection_Array1<gp_Pnt>& Pnts,
-                                const NCollection_Array1<double>& Density);
-
-  //! computes the global properties of the system of points Pnts.
-  //! A density is associated with each point.
-  //!
-  //! Raised if a density is lower or equal to Resolution from package
-  //! gp.
-  //!
-  //! Raised if the length of Pnts and the length of Density
-  //! is not the same.
-  Standard_EXPORT GProp_PGProps(const NCollection_Array2<gp_Pnt>& Pnts,
-                                const NCollection_Array2<double>& Density);
-
-  //! Computes the barycentre of a set of points. The density of the
-  //! points is defaulted to 1.
-  Standard_EXPORT static gp_Pnt Barycentre(const NCollection_Array1<gp_Pnt>& Pnts);
-
-  //! Computes the barycentre of a set of points. The density of the
-  //! points is defaulted to 1.
-  Standard_EXPORT static gp_Pnt Barycentre(const NCollection_Array2<gp_Pnt>& Pnts);
-
-  //! Computes the barycentre of a set of points. A density is associated
-  //! with each point.
-  //!
-  //! raises if a density is lower or equal to Resolution from package
-  //! gp.
-  //!
-  //! Raised if the length of Pnts and the length of Density
-  //! is not the same.
-  Standard_EXPORT static void Barycentre(const NCollection_Array1<gp_Pnt>& Pnts,
-                                         const NCollection_Array1<double>& Density,
-                                         double&                           Mass,
-                                         gp_Pnt&                           G);
-
-  //! Computes the barycentre of a set of points. A density is associated
-  //! with each point.
-  //!
-  //! Raised if a density is lower or equal to Resolution from package
-  //! gp.
-  //!
-  //! Raised if the length of Pnts and the length of Density
-  //! is not the same.
-  Standard_EXPORT static void Barycentre(const NCollection_Array2<gp_Pnt>& Pnts,
-                                         const NCollection_Array2<double>& Density,
-                                         double&                           Mass,
-                                         gp_Pnt&                           G);
-};
+//! @deprecated This class is deprecated since OCCT 8.0.0.
+//! Use PointSetLib_Props instead.
+using GProp_PGProps = PointSetLib_Props;
 
 #endif // _GProp_PGProps_HeaderFile
