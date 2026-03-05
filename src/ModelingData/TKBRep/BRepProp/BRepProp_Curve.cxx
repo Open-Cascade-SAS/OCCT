@@ -155,13 +155,13 @@ GeomAbs_Shape BRepProp_Curve::Continuity(const BRepAdaptor_Curve& theCurve1,
     aN1 = 3;
   else if (aCont1 == 4)
     aN1 = 2;
-  else if (aCont1 == 2)
+  else if (aCont1 >= 2)
     aN1 = 1;
   if (aCont2 >= 5)
     aN2 = 3;
   else if (aCont2 == 4)
     aN2 = 2;
-  else if (aCont2 == 2)
+  else if (aCont2 >= 2)
     aN2 = 1;
 
   // Evaluate properties at junction points.
