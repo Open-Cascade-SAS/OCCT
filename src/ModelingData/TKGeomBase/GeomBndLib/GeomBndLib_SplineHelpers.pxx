@@ -237,6 +237,14 @@ TBox BezierCurveBox(const occ::handle<TBezier>& theGeom,
   constexpr double aSub = Precision::PConfusion();
   if (theU1 - theGeom->FirstParameter() > aSub || theGeom->LastParameter() - theU2 > aSub)
   {
+    if (theU2 - theU1 <= aSub)
+    {
+      // Degenerate (zero-length) sub-range: just evaluate the endpoint.
+      TBox aBox;
+      aBox.Add(theGeom->EvalD0(theU1));
+      aBox.Enlarge(theTol);
+      return aBox;
+    }
     occ::handle<TBezier> aBz = occ::down_cast<TBezier>(theGeom->Copy());
     aBz->Segment(theU1, theU2);
     TBox aBox;
@@ -289,6 +297,14 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
     const double aMinDiff = std::min(aDirectDiff, std::min(aCrossPeriodDiff1, aCrossPeriodDiff2));
     if (aMinDiff < aSegmentTol)
       aSegmentTol = aMinDiff * 0.01;
+    if (aU2 - aU1 <= Precision::PConfusion())
+    {
+      // Degenerate (zero-length) sub-range: just evaluate the endpoint.
+      TBox aBox;
+      aBox.Add(aBs->EvalD0(aU1));
+      aBox.Enlarge(theTol);
+      return aBox;
+    }
     aBs->Segment(aU1, aU2, aSegmentTol);
 
     const int                         aK1    = aBs->FirstUKnotIndex();
@@ -314,9 +330,8 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
     else
     {
       // Degenerate parameter range: evaluate endpoints directly.
-      TAdaptor aGA(aBs);
-      aBox.Add(aGA.EvalD0(aU1));
-      aBox.Add(aGA.EvalD0(aU2));
+      aBox.Add(aBs->EvalD0(aU1));
+      aBox.Add(aBs->EvalD0(aU2));
       aBox.Enlarge(theTol);
     }
     return aBox;
@@ -332,6 +347,14 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
   constexpr double aSub = Precision::PConfusion();
   if (aU1 - theGeom->FirstParameter() > aSub || theGeom->LastParameter() - aU2 > aSub)
   {
+    if (aU2 - aU1 <= aSub)
+    {
+      // Degenerate (zero-length) sub-range: just evaluate the endpoint.
+      TBox aBox;
+      aBox.Add(theGeom->EvalD0(aU1));
+      aBox.Enlarge(theTol);
+      return aBox;
+    }
     occ::handle<TBSpline> aBs = occ::down_cast<TBSpline>(theGeom->Copy());
     aBs->Segment(aU1, aU2, 2.0 * Precision::PConfusion());
     TBox aBox;

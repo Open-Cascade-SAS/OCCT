@@ -138,7 +138,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_Plane>(aPlane);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_Plane>(new Geom_Plane(theSurf.Plane()));
+      myEvaluator.emplace<GeomBndLib_Plane>(new Geom_Plane(myAdaptorRef->Plane()));
       break;
     }
     case GeomAbs_Cylinder: {
@@ -147,7 +147,8 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_Cylinder>(aCyl);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_Cylinder>(new Geom_CylindricalSurface(theSurf.Cylinder()));
+      myEvaluator.emplace<GeomBndLib_Cylinder>(
+        new Geom_CylindricalSurface(myAdaptorRef->Cylinder()));
       break;
     }
     case GeomAbs_Cone: {
@@ -156,7 +157,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_Cone>(aCone);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_Cone>(new Geom_ConicalSurface(theSurf.Cone()));
+      myEvaluator.emplace<GeomBndLib_Cone>(new Geom_ConicalSurface(myAdaptorRef->Cone()));
       break;
     }
     case GeomAbs_Sphere: {
@@ -165,7 +166,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_Sphere>(aSphere);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_Sphere>(new Geom_SphericalSurface(theSurf.Sphere()));
+      myEvaluator.emplace<GeomBndLib_Sphere>(new Geom_SphericalSurface(myAdaptorRef->Sphere()));
       break;
     }
     case GeomAbs_Torus: {
@@ -174,7 +175,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_Torus>(aTorus);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_Torus>(new Geom_ToroidalSurface(theSurf.Torus()));
+      myEvaluator.emplace<GeomBndLib_Torus>(new Geom_ToroidalSurface(myAdaptorRef->Torus()));
       break;
     }
     case GeomAbs_BezierSurface: {
@@ -183,7 +184,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_BezierSurface>(aBez);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_BezierSurface>(theSurf.Bezier());
+      myEvaluator.emplace<GeomBndLib_BezierSurface>(myAdaptorRef->Bezier());
       break;
     }
     case GeomAbs_BSplineSurface: {
@@ -192,7 +193,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
         myEvaluator.emplace<GeomBndLib_BSplineSurface>(aBSpl);
         break;
       }
-      myEvaluator.emplace<GeomBndLib_BSplineSurface>(theSurf.BSpline());
+      myEvaluator.emplace<GeomBndLib_BSplineSurface>(myAdaptorRef->BSpline());
       break;
     }
     case GeomAbs_SurfaceOfRevolution: {
