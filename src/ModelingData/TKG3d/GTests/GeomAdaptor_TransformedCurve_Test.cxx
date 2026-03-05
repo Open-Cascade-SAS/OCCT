@@ -12,7 +12,6 @@
 // commercial license or contractual agreement.
 
 #include <Geom_BezierCurve.hxx>
-#include <Geom_BSplineCurve.hxx>
 #include <Geom_Circle.hxx>
 #include <Geom_Ellipse.hxx>
 #include <Geom_Hyperbola.hxx>
@@ -48,25 +47,6 @@ NCollection_Array1<double> CreateUniformParams(double theFirst, double theLast, 
     aParams.SetValue(i, theFirst + (i - 1) * aStep);
   }
   return aParams;
-}
-
-//! Helper function to create a simple B-spline curve.
-occ::handle<Geom_BSplineCurve> CreateSimpleBSpline()
-{
-  NCollection_Array1<gp_Pnt> aPoles(1, 4);
-  aPoles.SetValue(1, gp_Pnt(0, 0, 0));
-  aPoles.SetValue(2, gp_Pnt(1, 2, 0));
-  aPoles.SetValue(3, gp_Pnt(3, 2, 0));
-  aPoles.SetValue(4, gp_Pnt(4, 0, 0));
-
-  NCollection_Array1<double> aKnots(1, 2);
-  NCollection_Array1<int>    aMults(1, 2);
-  aKnots.SetValue(1, 0.0);
-  aKnots.SetValue(2, 1.0);
-  aMults.SetValue(1, 4);
-  aMults.SetValue(2, 4);
-
-  return new Geom_BSplineCurve(aPoles, aKnots, aMults, 3);
 }
 
 //! Helper function to create a translation transformation.
