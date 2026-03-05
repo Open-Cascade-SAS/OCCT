@@ -27,6 +27,7 @@ set(OCCT_TKG3d_GTests_FILES
   GeomEval_TBezierSurface_Test.cxx
   GeomAPI_ExtremaCurveCurve_Test.cxx
   GeomAPI_Interpolate_Test.cxx
+  GeomAdaptor_TransformedCurve_Test.cxx
   GeomGridEval_BezierCurve_Test.cxx
   GeomGridEval_BezierSurface_Test.cxx
   GeomGridEval_BSplineSurface_Test.cxx

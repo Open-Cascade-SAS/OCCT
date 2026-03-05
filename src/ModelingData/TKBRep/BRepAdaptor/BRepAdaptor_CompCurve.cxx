@@ -21,6 +21,7 @@
 #include <GCPnts_AbscissaPoint.hxx>
 #include <Geom_BezierCurve.hxx>
 #include <Geom_BSplineCurve.hxx>
+#include <Geom_Curve.hxx>
 #include <gp_Circ.hxx>
 #include <gp_Elips.hxx>
 #include <gp_Hypr.hxx>
@@ -319,59 +320,53 @@ double BRepAdaptor_CompCurve::Period() const
   return (TLast - TFirst);
 }
 
-gp_Pnt BRepAdaptor_CompCurve::Value(const double U) const
+gp_Pnt BRepAdaptor_CompCurve::EvalD0(double theU) const
 {
-  double u     = U, d;
+  double u     = theU, d;
   int    index = CurIndex;
   Prepare(u, d, index);
-  return myCurves->Value(index).Value(u);
+  return myCurves->Value(index).EvalD0(u);
 }
 
-void BRepAdaptor_CompCurve::D0(const double U, gp_Pnt& P) const
+Geom_Curve::ResD1 BRepAdaptor_CompCurve::EvalD1(double theU) const
 {
-  double u     = U, d;
+  double u     = theU, d;
   int    index = CurIndex;
   Prepare(u, d, index);
-  myCurves->Value(index).D0(u, P);
+  Geom_Curve::ResD1 aRes = myCurves->Value(index).EvalD1(u);
+  aRes.D1 *= d;
+  return aRes;
 }
 
-void BRepAdaptor_CompCurve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
+Geom_Curve::ResD2 BRepAdaptor_CompCurve::EvalD2(double theU) const
 {
-  double u     = U, d;
+  double u     = theU, d;
   int    index = CurIndex;
   Prepare(u, d, index);
-  myCurves->Value(index).D1(u, P, V);
-  V *= d;
+  Geom_Curve::ResD2 aRes = myCurves->Value(index).EvalD2(u);
+  aRes.D1 *= d;
+  aRes.D2 *= d * d;
+  return aRes;
 }
 
-void BRepAdaptor_CompCurve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+Geom_Curve::ResD3 BRepAdaptor_CompCurve::EvalD3(double theU) const
 {
-  double u     = U, d;
+  double u     = theU, d;
   int    index = CurIndex;
   Prepare(u, d, index);
-  myCurves->Value(index).D2(u, P, V1, V2);
-  V1 *= d;
-  V2 *= d * d;
+  Geom_Curve::ResD3 aRes = myCurves->Value(index).EvalD3(u);
+  aRes.D1 *= d;
+  aRes.D2 *= d * d;
+  aRes.D3 *= d * d * d;
+  return aRes;
 }
 
-void BRepAdaptor_CompCurve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+gp_Vec BRepAdaptor_CompCurve::EvalDN(double theU, int theN) const
 {
-  double u     = U, d;
+  double u     = theU, d;
   int    index = CurIndex;
   Prepare(u, d, index);
-  myCurves->Value(index).D3(u, P, V1, V2, V3);
-  V1 *= d;
-  V2 *= d * d;
-  V3 *= d * d * d;
-}
-
-gp_Vec BRepAdaptor_CompCurve::DN(const double U, const int N) const
-{
-  double u     = U, d;
-  int    index = CurIndex;
-  Prepare(u, d, index);
-
-  return (myCurves->Value(index).DN(u, N) * std::pow(d, N));
+  return myCurves->Value(index).EvalDN(u, theN) * std::pow(d, theN);
 }
 
 double BRepAdaptor_CompCurve::Resolution(const double R3d) const

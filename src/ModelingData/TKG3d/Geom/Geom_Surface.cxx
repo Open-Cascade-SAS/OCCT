@@ -82,15 +82,6 @@ double Geom_Surface::VPeriod() const
 
 //=================================================================================================
 
-gp_Pnt Geom_Surface::Value(const double U, const double V) const
-{
-  gp_Pnt P;
-  D0(U, V, P);
-  return P;
-}
-
-//=================================================================================================
-
 void Geom_Surface::DumpJson(Standard_OStream& theOStream, int theDepth) const
 {
   OCCT_DUMP_TRANSIENT_CLASS_BEGIN(theOStream)

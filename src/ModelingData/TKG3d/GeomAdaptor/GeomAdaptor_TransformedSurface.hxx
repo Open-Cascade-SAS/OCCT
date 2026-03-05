@@ -143,54 +143,26 @@ public:
 
   double VPeriod() const override { return mySurf.VPeriod(); }
 
-  //! Computes the point of parameters U,V on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Pnt Value(const double theU, const double theV) const final;
+  //! Point evaluation. Applies transformation after evaluation.
+  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(const double theU, const double theV) const final;
 
-  //! Computes the point of parameters U,V on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT void D0(const double theU, const double theV, gp_Pnt& theP) const final;
+  //! D1 evaluation. Applies transformation after evaluation.
+  [[nodiscard]] Standard_EXPORT Geom_Surface::ResD1 EvalD1(const double theU,
+                                                           const double theV) const final;
 
-  //! Computes the point and the first derivatives on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT void D1(const double theU,
-                          const double theV,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theD1U,
-                          gp_Vec&      theD1V) const final;
+  //! D2 evaluation. Applies transformation after evaluation.
+  [[nodiscard]] Standard_EXPORT Geom_Surface::ResD2 EvalD2(const double theU,
+                                                           const double theV) const final;
 
-  //! Computes the point, the first and second derivatives on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT void D2(const double theU,
-                          const double theV,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theD1U,
-                          gp_Vec&      theD1V,
-                          gp_Vec&      theD2U,
-                          gp_Vec&      theD2V,
-                          gp_Vec&      theD2UV) const final;
+  //! D3 evaluation. Applies transformation after evaluation.
+  [[nodiscard]] Standard_EXPORT Geom_Surface::ResD3 EvalD3(const double theU,
+                                                           const double theV) const final;
 
-  //! Computes the point, the first, second and third derivatives on the surface.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT void D3(const double theU,
-                          const double theV,
-                          gp_Pnt&      theP,
-                          gp_Vec&      theD1U,
-                          gp_Vec&      theD1V,
-                          gp_Vec&      theD2U,
-                          gp_Vec&      theD2V,
-                          gp_Vec&      theD2UV,
-                          gp_Vec&      theD3U,
-                          gp_Vec&      theD3V,
-                          gp_Vec&      theD3UUV,
-                          gp_Vec&      theD3UVV) const final;
-
-  //! Computes the derivative of order Nu in the direction U and Nv in the direction V.
-  //! Applies transformation after evaluation.
-  Standard_EXPORT gp_Vec DN(const double theU,
-                            const double theV,
-                            const int    theNu,
-                            const int    theNv) const final;
+  //! DN evaluation. Applies transformation after evaluation.
+  [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(const double theU,
+                                              const double theV,
+                                              const int    theNu,
+                                              const int    theNv) const final;
 
   double UResolution(const double theR3d) const override { return mySurf.UResolution(theR3d); }
 

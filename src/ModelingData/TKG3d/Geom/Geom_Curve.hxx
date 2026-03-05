@@ -243,8 +243,7 @@ public:
   inline gp_Vec DN(const double U, const int N) const { return EvalDN(U, N); }
 
   //! Computes the point of parameter U on <me>.
-  //! It is implemented with D0.
-  Standard_EXPORT gp_Pnt Value(const double U) const;
+  gp_Pnt Value(const double U) const { return EvalD0(U); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;

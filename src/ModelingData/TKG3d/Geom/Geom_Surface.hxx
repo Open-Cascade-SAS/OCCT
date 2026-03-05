@@ -326,8 +326,8 @@ public:
     return EvalDN(U, V, Nu, Nv);
   }
 
-  //! Computes the point of parameter (U, V) on the surface. Implemented with D0.
-  Standard_EXPORT gp_Pnt Value(const double U, const double V) const;
+  //! Computes the point of parameter (U, V) on the surface.
+  gp_Pnt Value(const double U, const double V) const { return EvalD0(U, V); }
 
   //! Dumps the content of me into the stream
   Standard_EXPORT void DumpJson(Standard_OStream& theOStream, int theDepth = -1) const override;

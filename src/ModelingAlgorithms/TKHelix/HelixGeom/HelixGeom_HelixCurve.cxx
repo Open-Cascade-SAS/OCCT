@@ -13,6 +13,7 @@
 
 #include <HelixGeom_HelixCurve.hxx>
 
+#include <Geom_Curve.hxx>
 #include <gp_Pnt.hxx>
 #include <gp_Vec.hxx>
 #include <Standard_ConstructionError.hxx>
@@ -160,13 +161,13 @@ double HelixGeom_HelixCurve::Period() const
 
 //=================================================================================================
 
-gp_Pnt HelixGeom_HelixCurve::Value(const double aT) const
+gp_Pnt HelixGeom_HelixCurve::EvalD0(double theT) const
 {
   double aST, aCT, aX, aY, aZ, a1;
   // Calculate trigonometric values and radius
-  aCT = cos(aT);
-  aST = sin(aT);
-  a1  = myRStart + myC1 * myTgBeta * aT;
+  aCT = cos(theT);
+  aST = sin(theT);
+  a1  = myRStart + myC1 * myTgBeta * theT;
   // Calculate Cartesian coordinates
   aX = a1 * aCT;
   aY = a1 * aST;
@@ -174,27 +175,20 @@ gp_Pnt HelixGeom_HelixCurve::Value(const double aT) const
   {
     aY = -aY;
   }
-  aZ = myC1 * aT;
+  aZ = myC1 * theT;
   return gp_Pnt(aX, aY, aZ);
 }
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::D0(const double aT, gp_Pnt& aP) const
-{
-  aP = Value(aT);
-}
-
-//=================================================================================================
-
-void HelixGeom_HelixCurve::D1(const double aT, gp_Pnt& aP, gp_Vec& aV1) const
+Geom_Curve::ResD1 HelixGeom_HelixCurve::EvalD1(double theT) const
 {
   double aST, aCT, aX, aY, aZ, a1, a2;
   // Calculate point and first derivative
-  aCT = cos(aT);
-  aST = sin(aT);
+  aCT = cos(theT);
+  aST = sin(theT);
   // Calculate radius at parameter t
-  a1 = myRStart + myC1 * myTgBeta * aT;
+  a1 = myRStart + myC1 * myTgBeta * theT;
   // Calculate point coordinates
   aX = a1 * aCT;
   aY = a1 * aST;
@@ -202,11 +196,11 @@ void HelixGeom_HelixCurve::D1(const double aT, gp_Pnt& aP, gp_Vec& aV1) const
   {
     aY = -aY;
   }
-  aZ = myC1 * aT;
-  aP.SetCoord(aX, aY, aZ);
+  aZ = myC1 * theT;
+  gp_Pnt aP(aX, aY, aZ);
   // Calculate first derivative coefficients
   a1 = myC1 * myTgBeta;
-  a2 = myRStart + a1 * aT;
+  a2 = myRStart + a1 * theT;
   // Calculate first derivative components
   aX = a1 * aCT - a2 * aST;
   aY = a1 * aST + a2 * aCT;
@@ -215,19 +209,20 @@ void HelixGeom_HelixCurve::D1(const double aT, gp_Pnt& aP, gp_Vec& aV1) const
     aY = -aY;
   }
   aZ = myC1;
-  aV1.SetCoord(aX, aY, aZ);
+  gp_Vec aV1(aX, aY, aZ);
+  return {aP, aV1};
 }
 
 //=================================================================================================
 
-void HelixGeom_HelixCurve::D2(const double aT, gp_Pnt& aP, gp_Vec& aV1, gp_Vec& aV2) const
+Geom_Curve::ResD2 HelixGeom_HelixCurve::EvalD2(double theT) const
 {
   double aST, aCT, aX, aY, aZ, a1, a2;
   // Calculate point, first and second derivatives
-  aCT = cos(aT);
-  aST = sin(aT);
+  aCT = cos(theT);
+  aST = sin(theT);
   // Calculate radius at parameter t
-  a1 = myRStart + myC1 * myTgBeta * aT;
+  a1 = myRStart + myC1 * myTgBeta * theT;
   // Calculate point coordinates
   aX = a1 * aCT;
   aY = a1 * aST;
@@ -235,11 +230,11 @@ void HelixGeom_HelixCurve::D2(const double aT, gp_Pnt& aP, gp_Vec& aV1, gp_Vec& 
   {
     aY = -aY;
   }
-  aZ = myC1 * aT;
-  aP.SetCoord(aX, aY, aZ);
+  aZ = myC1 * theT;
+  gp_Pnt aP(aX, aY, aZ);
   // Calculate first derivative coefficients
   a1 = myC1 * myTgBeta;
-  a2 = myRStart + a1 * aT;
+  a2 = myRStart + a1 * theT;
   // Calculate first derivative components
   aX = a1 * aCT - a2 * aST;
   aY = a1 * aST + a2 * aCT;
@@ -248,7 +243,7 @@ void HelixGeom_HelixCurve::D2(const double aT, gp_Pnt& aP, gp_Vec& aV1, gp_Vec& 
     aY = -aY;
   }
   aZ = myC1;
-  aV1.SetCoord(aX, aY, aZ);
+  gp_Vec aV1(aX, aY, aZ);
   // Calculate second derivative
   a1 = 2. * a1;
   aX = -a2 * aCT - a1 * aST;
@@ -258,27 +253,28 @@ void HelixGeom_HelixCurve::D2(const double aT, gp_Pnt& aP, gp_Vec& aV1, gp_Vec& 
     aY = -aY;
   }
   aZ = 0.;
-  aV2.SetCoord(aX, aY, aZ);
+  gp_Vec aV2(aX, aY, aZ);
+  return {aP, aV1, aV2};
 }
 
 //=================================================================================================
 
-gp_Vec HelixGeom_HelixCurve::DN(const double aT, const int aN) const
+gp_Vec HelixGeom_HelixCurve::EvalDN(double theT, int theN) const
 {
-  gp_Pnt aP;
-  gp_Vec aV1, aV2;
   // Compute derivative based on order
-  switch (aN)
+  switch (theN)
   {
-    case 1:
-      D1(aT, aP, aV1);
-      break;
-    case 2:
-      D2(aT, aP, aV1, aV2);
-      break;
+    case 1: {
+      const Geom_Curve::ResD1 aRes = EvalD1(theT);
+      return aRes.D1;
+    }
+    case 2: {
+      const Geom_Curve::ResD2 aRes = EvalD2(theT);
+      return aRes.D2;
+    }
     default:
-      throw Standard_NotImplemented("HelixGeom_HelixCurve::DN");
+      throw Standard_NotImplemented("HelixGeom_HelixCurve::EvalDN");
       break;
   }
-  return (aN == 1) ? aV1 : aV2;
+  return gp_Vec();
 }

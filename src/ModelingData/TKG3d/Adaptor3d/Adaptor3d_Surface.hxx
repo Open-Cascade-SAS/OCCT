@@ -122,60 +122,84 @@ public:
 
   //! Computes the point of parameters U,V on the surface.
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  Standard_EXPORT virtual gp_Pnt Value(const double U, const double V) const;
+  gp_Pnt Value(const double theU, const double theV) const { return EvalD0(theU, theV); }
 
   //! Computes the point of parameters U,V on the surface.
-  Standard_EXPORT virtual void D0(const double U, const double V, gp_Pnt& P) const;
+  void D0(const double theU, const double theV, gp_Pnt& theP) const { theP = EvalD0(theU, theV); }
 
   //! Computes the point and the first derivatives on the surface.
   //! Raised if the continuity of the current intervals is not C1.
   //!
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  Standard_EXPORT virtual void D1(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V) const;
+  void D1(const double theU, const double theV, gp_Pnt& theP, gp_Vec& theD1U, gp_Vec& theD1V) const
+  {
+    const Geom_Surface::ResD1 aRes = EvalD1(theU, theV);
+    theP                           = aRes.Point;
+    theD1U                         = aRes.D1U;
+    theD1V                         = aRes.D1V;
+  }
 
   //! Computes the point, the first and second
   //! derivatives on the surface.
   //! Raised if the continuity of the current
   //! intervals is not C2.
-  Standard_EXPORT virtual void D2(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV) const;
+  void D2(const double theU,
+          const double theV,
+          gp_Pnt&      theP,
+          gp_Vec&      theD1U,
+          gp_Vec&      theD1V,
+          gp_Vec&      theD2U,
+          gp_Vec&      theD2V,
+          gp_Vec&      theD2UV) const
+  {
+    const Geom_Surface::ResD2 aRes = EvalD2(theU, theV);
+    theP                           = aRes.Point;
+    theD1U                         = aRes.D1U;
+    theD1V                         = aRes.D1V;
+    theD2U                         = aRes.D2U;
+    theD2V                         = aRes.D2V;
+    theD2UV                        = aRes.D2UV;
+  }
 
   //! Computes the point, the first, second and third
   //! derivatives on the surface.
   //! Raised if the continuity of the current
   //! intervals is not C3.
-  Standard_EXPORT virtual void D3(const double U,
-                                  const double V,
-                                  gp_Pnt&      P,
-                                  gp_Vec&      D1U,
-                                  gp_Vec&      D1V,
-                                  gp_Vec&      D2U,
-                                  gp_Vec&      D2V,
-                                  gp_Vec&      D2UV,
-                                  gp_Vec&      D3U,
-                                  gp_Vec&      D3V,
-                                  gp_Vec&      D3UUV,
-                                  gp_Vec&      D3UVV) const;
+  void D3(const double theU,
+          const double theV,
+          gp_Pnt&      theP,
+          gp_Vec&      theD1U,
+          gp_Vec&      theD1V,
+          gp_Vec&      theD2U,
+          gp_Vec&      theD2V,
+          gp_Vec&      theD2UV,
+          gp_Vec&      theD3U,
+          gp_Vec&      theD3V,
+          gp_Vec&      theD3UUV,
+          gp_Vec&      theD3UVV) const
+  {
+    const Geom_Surface::ResD3 aRes = EvalD3(theU, theV);
+    theP                           = aRes.Point;
+    theD1U                         = aRes.D1U;
+    theD1V                         = aRes.D1V;
+    theD2U                         = aRes.D2U;
+    theD2V                         = aRes.D2V;
+    theD2UV                        = aRes.D2UV;
+    theD3U                         = aRes.D3U;
+    theD3V                         = aRes.D3V;
+    theD3UUV                       = aRes.D3UUV;
+    theD3UVV                       = aRes.D3UVV;
+  }
 
   //! Computes the derivative of order Nu in the direction U and Nv
   //! in the direction V at the point P(U, V).
   //! Raised if the current U interval is not not CNu
   //! and the current V interval is not CNv.
   //! Raised if Nu + Nv < 1 or Nu < 0 or Nv < 0.
-  Standard_EXPORT virtual gp_Vec DN(const double U,
-                                    const double V,
-                                    const int    Nu,
-                                    const int    Nv) const;
+  gp_Vec DN(const double theU, const double theV, const int theNu, const int theNv) const
+  {
+    return EvalDN(theU, theV, theNu, theNv);
+  }
 
   //! Returns the parametric U resolution corresponding
   //! to the real space resolution <R3d>.

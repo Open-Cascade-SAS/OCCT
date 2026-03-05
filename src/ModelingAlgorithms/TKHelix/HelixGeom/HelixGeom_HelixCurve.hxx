@@ -15,6 +15,7 @@
 #define _HelixGeom_HelixCurve_HeaderFile
 
 #include <Adaptor3d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAbs_Shape.hxx>
 
 class gp_Pnt;
@@ -80,20 +81,17 @@ public:
   //! Returns 2*PI
   Standard_EXPORT double Period() const override;
 
-  //! Gets curve point for parameter U
-  Standard_EXPORT gp_Pnt Value(const double U) const override;
+  //! Computes the point of parameter theU on the curve.
+  [[nodiscard]] Standard_EXPORT gp_Pnt EvalD0(double theU) const final;
 
-  //! Gets curve point for parameter U
-  Standard_EXPORT void D0(const double U, gp_Pnt& P) const override;
+  //! Computes the point and first derivative at parameter theU.
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD1 EvalD1(double theU) const final;
 
-  //! Gets curve point and first derivatives for parameter U
-  Standard_EXPORT void D1(const double U, gp_Pnt& P, gp_Vec& V1) const override;
+  //! Computes the point and first two derivatives at parameter theU.
+  [[nodiscard]] Standard_EXPORT Geom_Curve::ResD2 EvalD2(double theU) const final;
 
-  //! Gets curve point, first and second derivatives for parameter U
-  Standard_EXPORT void D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const override;
-
-  //! Gets curve derivative of demanded order for parameter U
-  Standard_EXPORT gp_Vec DN(const double U, const int N) const override;
+  //! Returns the derivative of order theN at parameter theU.
+  [[nodiscard]] Standard_EXPORT gp_Vec EvalDN(double theU, int theN) const final;
 
 protected:
   double myFirst;

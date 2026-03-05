@@ -46,15 +46,6 @@ double Geom_Curve::Period() const
 
 //=================================================================================================
 
-gp_Pnt Geom_Curve::Value(const double U) const
-{
-  gp_Pnt P;
-  D0(U, P);
-  return P;
-}
-
-//=================================================================================================
-
 double Geom_Curve::TransformedParameter(const double U, const gp_Trsf&) const
 {
   return U;
