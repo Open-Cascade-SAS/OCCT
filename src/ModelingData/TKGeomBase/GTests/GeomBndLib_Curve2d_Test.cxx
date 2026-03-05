@@ -68,7 +68,7 @@ void ExpectConservativeEnvelope2d(const Bnd_Box2d& theNew,
 
 TEST(GeomBndLib_Curve2dTest, Line_FiniteSegment)
 {
-  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 1.0));
   GeomBndLib_Curve2d  aCurve(aLine);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Line);
 
@@ -87,7 +87,7 @@ TEST(GeomBndLib_Curve2dTest, Line_FiniteSegment)
 
 TEST(GeomBndLib_Curve2dTest, Line_CompareWithBndLib)
 {
-  Handle(Geom2d_Line) aLine = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
+  occ::handle<Geom2d_Line> aLine = new Geom2d_Line(gp_Pnt2d(1.0, 2.0), gp_Dir2d(0.0, 1.0));
   Geom2dAdaptor_Curve anAdaptor(aLine);
 
   Bnd_Box2d aNewBox;
@@ -106,7 +106,7 @@ TEST(GeomBndLib_Curve2dTest, Line_CompareWithBndLib)
 TEST(GeomBndLib_Curve2dTest, Circle_Full)
 {
   const double          aRadius = 5.0;
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aRadius);
   GeomBndLib_Curve2d aCurve(aCircle);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Circle);
@@ -125,7 +125,7 @@ TEST(GeomBndLib_Curve2dTest, Circle_Full)
 TEST(GeomBndLib_Curve2dTest, Circle_Arc)
 {
   const double          aRadius = 10.0;
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aRadius);
   GeomBndLib_Curve2d aCurve(aCircle);
 
@@ -143,7 +143,7 @@ TEST(GeomBndLib_Curve2dTest, Circle_Arc)
 
 TEST(GeomBndLib_Curve2dTest, Circle_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 7.5);
   Geom2dAdaptor_Curve anAdaptor(aCircle);
 
@@ -164,7 +164,7 @@ TEST(GeomBndLib_Curve2dTest, Ellipse_Full)
 {
   const double           aMajR = 10.0;
   const double           aMinR = 5.0;
-  Handle(Geom2d_Ellipse) anEllipse =
+  occ::handle<Geom2d_Ellipse> anEllipse =
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                        aMajR,
                        aMinR);
@@ -184,7 +184,7 @@ TEST(GeomBndLib_Curve2dTest, Ellipse_Full)
 
 TEST(GeomBndLib_Curve2dTest, Ellipse_CompareWithBndLib)
 {
-  Handle(Geom2d_Ellipse) anEllipse =
+  occ::handle<Geom2d_Ellipse> anEllipse =
     new Geom2d_Ellipse(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                        8.0,
                        3.0);
@@ -207,7 +207,7 @@ TEST(GeomBndLib_Curve2dTest, Hyperbola_FiniteArc)
 {
   const double             aMajR = 5.0;
   const double             aMinR = 3.0;
-  Handle(Geom2d_Hyperbola) aHyp =
+  occ::handle<Geom2d_Hyperbola> aHyp =
     new Geom2d_Hyperbola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                          aMajR,
                          aMinR);
@@ -231,7 +231,7 @@ TEST(GeomBndLib_Curve2dTest, Hyperbola_FiniteArc)
 
 TEST(GeomBndLib_Curve2dTest, Hyperbola_CompareWithBndLib)
 {
-  Handle(Geom2d_Hyperbola) aHyp =
+  occ::handle<Geom2d_Hyperbola> aHyp =
     new Geom2d_Hyperbola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                          5.0,
                          3.0);
@@ -253,7 +253,7 @@ TEST(GeomBndLib_Curve2dTest, Hyperbola_CompareWithBndLib)
 TEST(GeomBndLib_Curve2dTest, Parabola_FiniteArc)
 {
   const double            aFocal = 2.0;
-  Handle(Geom2d_Parabola) aParab =
+  occ::handle<Geom2d_Parabola> aParab =
     new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)),
                         aFocal);
   GeomBndLib_Curve2d aCurve(aParab);
@@ -275,7 +275,7 @@ TEST(GeomBndLib_Curve2dTest, Parabola_FiniteArc)
 
 TEST(GeomBndLib_Curve2dTest, Parabola_CompareWithBndLib)
 {
-  Handle(Geom2d_Parabola) aParab =
+  occ::handle<Geom2d_Parabola> aParab =
     new Geom2d_Parabola(gp_Ax22d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0), gp_Dir2d(0.0, 1.0)), 2.0);
   Geom2dAdaptor_Curve anAdaptor(aParab);
 
@@ -299,7 +299,7 @@ TEST(GeomBndLib_Curve2dTest, BezierCurve_Simple)
   aPoles.SetValue(2, gp_Pnt2d(5.0, 10.0));
   aPoles.SetValue(3, gp_Pnt2d(10.0, 0.0));
 
-  Handle(Geom2d_BezierCurve) aBez = new Geom2d_BezierCurve(aPoles);
+  occ::handle<Geom2d_BezierCurve> aBez = new Geom2d_BezierCurve(aPoles);
   GeomBndLib_Curve2d         aCurve(aBez);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_BezierCurve);
 
@@ -322,7 +322,7 @@ TEST(GeomBndLib_Curve2dTest, BezierCurve_CompareWithBndLib)
   aPoles.SetValue(3, gp_Pnt2d(7.0, 2.0));
   aPoles.SetValue(4, gp_Pnt2d(10.0, 5.0));
 
-  Handle(Geom2d_BezierCurve) aBez = new Geom2d_BezierCurve(aPoles);
+  occ::handle<Geom2d_BezierCurve> aBez = new Geom2d_BezierCurve(aPoles);
   Geom2dAdaptor_Curve        anAdaptor(aBez);
 
   Bnd_Box2d aNewBox;
@@ -362,7 +362,7 @@ TEST(GeomBndLib_Curve2dTest, BSplineCurve_Simple)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom2d_BSplineCurve> aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
   GeomBndLib_Curve2d          aCurve(aBSpl);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_BSplineCurve);
 
@@ -395,7 +395,7 @@ TEST(GeomBndLib_Curve2dTest, BSplineCurve_CompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom2d_BSplineCurve> aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, 2);
   Geom2dAdaptor_Curve         anAdaptor(aBSpl);
 
   Bnd_Box2d aNewBox;
@@ -414,7 +414,7 @@ TEST(GeomBndLib_Curve2dTest, BSplineCurve_CompareWithBndLib)
 TEST(GeomBndLib_Curve2dTest, AdaptorConstructor_Circle)
 {
   const double          aRadius = 5.0;
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aRadius);
 
   // Construct from handle
@@ -440,7 +440,7 @@ TEST(GeomBndLib_Curve2dTest, AdaptorConstructor_Circle)
 TEST(GeomBndLib_Curve2dTest, AddOptimal_Circle)
 {
   const double          aRadius = 5.0;
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), aRadius);
   GeomBndLib_Curve2d aCurve(aCircle);
 
@@ -458,7 +458,7 @@ TEST(GeomBndLib_Curve2dTest, AddOptimal_Circle)
 
 TEST(GeomBndLib_Curve2dTest, AdaptorConstructor_TrimmedRangeUsedForFullAdd)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0);
   Geom2dAdaptor_Curve anAdaptor(aCircle, 0.0, M_PI / 2.0);
 
@@ -473,9 +473,9 @@ TEST(GeomBndLib_Curve2dTest, AdaptorConstructor_TrimmedRangeUsedForFullAdd)
 
 TEST(GeomBndLib_Curve2dTest, TrimmedCurveHandle_Fallback_CompareWithBndLib)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0);
-  Handle(Geom2d_TrimmedCurve) aTrim = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
+  occ::handle<Geom2d_TrimmedCurve> aTrim = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
   Geom2dAdaptor_Curve         anAdaptor(aTrim);
 
   Bnd_Box2d aNewBox;
@@ -490,9 +490,9 @@ TEST(GeomBndLib_Curve2dTest, TrimmedCurveHandle_Fallback_CompareWithBndLib)
 
 TEST(GeomBndLib_Curve2dTest, TrimmedCurveHandle_UsesBasisSpecialization)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0);
-  Handle(Geom2d_TrimmedCurve) aTrim = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
+  occ::handle<Geom2d_TrimmedCurve> aTrim = new Geom2d_TrimmedCurve(aCircle, 0.0, M_PI / 2.0);
   GeomBndLib_Curve2d          aCurve(aTrim);
   EXPECT_EQ(aCurve.GetType(), GeomAbs_Circle);
 
@@ -506,7 +506,7 @@ TEST(GeomBndLib_Curve2dTest, TrimmedCurveHandle_UsesBasisSpecialization)
 
 TEST(GeomBndLib_Curve2dTest, SamplingHelpers2d_MatchesLegacyPolicy)
 {
-  Handle(Geom2d_Circle) aCircle =
+  occ::handle<Geom2d_Circle> aCircle =
     new Geom2d_Circle(gp_Ax2d(gp_Pnt2d(0.0, 0.0), gp_Dir2d(1.0, 0.0)), 10.0);
   Geom2dAdaptor_Curve aCircleGA(aCircle);
   EXPECT_EQ(GeomBndLib_SamplingHelpers::ComputeNbSamples2d(aCircleGA, 0.0, 1.0), 17);
@@ -533,7 +533,7 @@ TEST(GeomBndLib_Curve2dTest, SamplingHelpers2d_MatchesLegacyPolicy)
   }
   aMults.SetValue(aNbKnots, aDegree + 1);
 
-  Handle(Geom2d_BSplineCurve) aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aDegree);
+  occ::handle<Geom2d_BSplineCurve> aBSpl = new Geom2d_BSplineCurve(aPoles, aKnots, aMults, aDegree);
   Geom2dAdaptor_Curve         aBSplGA(aBSpl);
   EXPECT_EQ(GeomBndLib_SamplingHelpers::ComputeNbSamples2d(aBSplGA,
                                                            aBSpl->FirstParameter(),

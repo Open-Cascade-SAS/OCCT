@@ -15,6 +15,7 @@
 #include <Adaptor2d_Curve2d.hxx>
 #include <Bnd_Box2d.hxx>
 #include <BndLib_Add2dCurve.hxx>
+#include "BndLib_LegacyCheck.hxx"
 #include <Geom2d_Curve.hxx>
 #include <Geom2dAdaptor_Curve.hxx>
 #include <GeomBndLib_Curve2d.hxx>
@@ -67,7 +68,9 @@ void BndLib_Add2dCurve::Add(const occ::handle<Geom2d_Curve>& aC2D,
                             const double                     aTol,
                             Bnd_Box2d&                       aBox2D)
 {
-  GeomBndLib_Curve2d(aC2D).Add(aTol, aBox2D);
+  const double aT1 = aC2D->FirstParameter();
+  const double aT2 = aC2D->LastParameter();
+  BndLib_Add2dCurve::Add(aC2D, aT1, aT2, aTol, aBox2D);
 }
 
 //=================================================================================================
@@ -78,7 +81,10 @@ void BndLib_Add2dCurve::Add(const occ::handle<Geom2d_Curve>& aC2D,
                             const double                     aTol,
                             Bnd_Box2d&                       aBox2D)
 {
-  GeomBndLib_Curve2d(aC2D).Add(aT1, aT2, aTol, aBox2D);
+  Bnd_Box2d aNewBox;
+  GeomBndLib_Curve2d(aC2D).Add(aT1, aT2, aTol, aNewBox);
+  BndLib_LegacyCheck::Compare2dCurveAdd(aC2D, aT1, aT2, aTol, aNewBox);
+  aBox2D.Add(aNewBox);
 }
 
 //=================================================================================================
@@ -89,5 +95,8 @@ void BndLib_Add2dCurve::AddOptimal(const occ::handle<Geom2d_Curve>& aC2D,
                                    const double                     aTol,
                                    Bnd_Box2d&                       aBox2D)
 {
-  GeomBndLib_Curve2d(aC2D).AddOptimal(aT1, aT2, aTol, aBox2D);
+  Bnd_Box2d aNewBox;
+  GeomBndLib_Curve2d(aC2D).AddOptimal(aT1, aT2, aTol, aNewBox);
+  BndLib_LegacyCheck::Compare2dCurveAddOptimal(aC2D, aT1, aT2, aTol, aNewBox);
+  aBox2D.Add(aNewBox);
 }

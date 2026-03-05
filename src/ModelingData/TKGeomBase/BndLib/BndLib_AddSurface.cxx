@@ -17,6 +17,7 @@
 #include <Adaptor3d_Surface.hxx>
 #include <Bnd_Box.hxx>
 #include <BndLib_AddSurface.hxx>
+#include "BndLib_LegacyCheck.hxx"
 #include <GeomBndLib_Surface.hxx>
 
 //=================================================================================================
@@ -42,7 +43,10 @@ void BndLib_AddSurface::Add(const Adaptor3d_Surface& S,
                             const double             Tol,
                             Bnd_Box&                 B)
 {
-  GeomBndLib_Surface(S).Add(UMin, UMax, VMin, VMax, Tol, B);
+  Bnd_Box aNewBox;
+  GeomBndLib_Surface(S).Add(UMin, UMax, VMin, VMax, Tol, aNewBox);
+  BndLib_LegacyCheck::CompareSurfaceAdd(S, UMin, UMax, VMin, VMax, Tol, aNewBox);
+  B.Add(aNewBox);
 }
 
 //=================================================================================================
@@ -68,5 +72,8 @@ void BndLib_AddSurface::AddOptimal(const Adaptor3d_Surface& S,
                                    const double             Tol,
                                    Bnd_Box&                 B)
 {
-  GeomBndLib_Surface(S).AddOptimal(UMin, UMax, VMin, VMax, Tol, B);
+  Bnd_Box aNewBox;
+  GeomBndLib_Surface(S).AddOptimal(UMin, UMax, VMin, VMax, Tol, aNewBox);
+  BndLib_LegacyCheck::CompareSurfaceAddOptimal(S, UMin, UMax, VMin, VMax, Tol, aNewBox);
+  B.Add(aNewBox);
 }
