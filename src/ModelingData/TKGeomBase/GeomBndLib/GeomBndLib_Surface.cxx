@@ -407,7 +407,7 @@ Bnd_Box GeomBndLib_Surface::Box(double theTol) const
     return Box(effectiveU1(), effectiveU2(), effectiveV1(), effectiveV2(), theTol);
   }
 
-  return std::visit(
+  Bnd_Box aBox = std::visit(
     [theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
@@ -417,6 +417,9 @@ Bnd_Box GeomBndLib_Surface::Box(double theTol) const
       return Bnd_Box{};
     },
     myEvaluator);
+  if (myTrsf.has_value())
+    aBox = transformedBox(aBox, *myTrsf);
+  return aBox;
 }
 
 //=================================================================================================
@@ -451,7 +454,7 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theTol) const
     return BoxOptimal(effectiveU1(), effectiveU2(), effectiveV1(), effectiveV2(), theTol);
   }
 
-  return std::visit(
+  Bnd_Box aBox = std::visit(
     [theTol](const auto& theEval) -> Bnd_Box {
       using T = std::decay_t<decltype(theEval)>;
       if constexpr (!std::is_same_v<T, std::monostate>)
@@ -461,6 +464,9 @@ Bnd_Box GeomBndLib_Surface::BoxOptimal(double theTol) const
       return Bnd_Box{};
     },
     myEvaluator);
+  if (myTrsf.has_value())
+    aBox = transformedBox(aBox, *myTrsf);
+  return aBox;
 }
 
 //=================================================================================================

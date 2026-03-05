@@ -133,13 +133,11 @@ Bnd_Box2d GeomBndLib_OffsetCurve2d::Box(double theU1, double theU2, double theTo
     return aBox;
   }
 
-  // Generic fallback: enlarge basis curve box by the offset distance.
-  const double       anOffset = std::abs(myGeom->Offset());
-  GeomBndLib_Curve2d aCurveEval(aBasis);
-  Bnd_Box2d          aLocalBox = aCurveEval.Box(theU1, theU2, 0.);
-  aLocalBox.Enlarge(anOffset);
-  aLocalBox.Enlarge(theTol);
-  return aLocalBox;
+  // Generic fallback: sample the actual offset curve for a tight bounding box.
+  // This avoids the large over-inflation of basis_box + Enlarge(|offset|).
+  Geom2dAdaptor_Curve     anAdaptor(myGeom);
+  GeomBndLib_OtherCurve2d anOther(anAdaptor);
+  return anOther.Box(theU1, theU2, theTol);
 }
 
 //=================================================================================================
