@@ -105,7 +105,7 @@ GeomBndLib_Surface::GeomBndLib_Surface(const Adaptor3d_Surface& theSurf)
   // For GeomAdaptor_TransformedSurface (which BRepAdaptor_Surface inherits from):
   //   - use the inner GeomAdaptor_Surface as myAdaptorRef (untransformed UV bounds / eval)
   //   - store the transformation in myTrsf for application at the Box/BoxOptimal level
-  //   - no Copy+Transform of the geometry — transformation is deferred to box post-processing
+  //   - no Copy+Transform of the geometry - transformation is deferred to box post-processing
   occ::handle<Geom_Surface> aGeomSurf;
   if (const GeomAdaptor_Surface* aGA = dynamic_cast<const GeomAdaptor_Surface*>(&theSurf))
   {
