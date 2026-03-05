@@ -36,6 +36,23 @@ class BRep_CurveRepresentation : public Standard_Transient
 {
 
 public:
+  //! Type discriminator enum for fast type checks without virtual dispatch.
+  enum TypeEnum : uint8_t
+  {
+    Type_Curve3D = 0,
+    Type_CurveOnSurface,
+    Type_CurveOnClosedSurface,
+    Type_CurveOn2Surfaces,
+    Type_Polygon3D,
+    Type_PolygonOnSurface,
+    Type_PolygonOnClosedSurface,
+    Type_PolygonOnTriangulation,
+    Type_PolygonOnClosedTriangulation
+  };
+
+  //! Returns the type discriminator of this representation.
+  TypeEnum Type() const { return myType; }
+
   //! A 3D curve representation.
   Standard_EXPORT virtual bool IsCurve3D() const;
 
@@ -150,9 +167,12 @@ public:
   DEFINE_STANDARD_RTTIEXT(BRep_CurveRepresentation, Standard_Transient)
 
 protected:
-  Standard_EXPORT BRep_CurveRepresentation(const TopLoc_Location& L);
+  Standard_EXPORT BRep_CurveRepresentation(TypeEnum theType, const TopLoc_Location& L);
 
   TopLoc_Location myLocation;
+
+private:
+  TypeEnum myType;
 };
 
 #include <BRep_CurveRepresentation.lxx>

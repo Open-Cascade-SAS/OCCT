@@ -53,7 +53,7 @@ static bool NeedCopied(
   TopoDS_Iterator itv(theShape);
   for (; itv.More(); itv.Next())
   {
-    if (myBounds.Contains(itv.Value()))
+    if (myBounds.Seek(itv.Value()) != nullptr)
     {
       IsCopied = true;
       break;
@@ -76,9 +76,10 @@ static void CopyShape(
   for (; itv.More(); itv.Next())
   {
     const TopoDS_Shape& V = itv.Value();
-    if (myBounds.Contains(V))
+    const TopoDS_Shape* aBoundV = myBounds.Seek(V);
+    if (aBoundV != nullptr)
     {
-      B.Add(NE, myBounds.FindFromKey(V).Oriented(V.Orientation()));
+      B.Add(NE, aBoundV->Oriented(V.Orientation()));
     }
     else
     {
@@ -234,9 +235,10 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
         {
           const TopoDS_Edge& E  = TopoDS::Edge(ite.Value());
           TopAbs_Orientation OE = E.Orientation();
-          if (myBounds.Contains(E))
+          const TopoDS_Shape* aBoundE = myBounds.Seek(E);
+          if (aBoundE != nullptr)
           {
-            const TopoDS_Edge& NE = TopoDS::Edge(myBounds.FindFromKey(E));
+            const TopoDS_Edge& NE = TopoDS::Edge(*aBoundE);
             // pcurve.
             if (NE.Orientation() == TopAbs_FORWARD)
             {
@@ -348,12 +350,12 @@ void BRepTools_Quilt::Bind(const TopoDS_Edge& Eold, const TopoDS_Edge& Enew)
 
 bool BRepTools_Quilt::IsCopied(const TopoDS_Shape& S) const
 {
-  if (myBounds.Contains(S))
+  const TopoDS_Shape* aBound = myBounds.Seek(S);
+  if (aBound != nullptr)
   {
-    return !S.IsSame(myBounds.FindFromKey(S));
+    return !S.IsSame(*aBound);
   }
-  else
-    return false;
+  return false;
 }
 
 //=================================================================================================
@@ -548,9 +550,10 @@ TopoDS_Shape BRepTools_Quilt::Shells() const
     MapOtherShape); // gka version for free edges
   for (; itother.More(); itother.Next())
   {
-    if (!EdgesFaces.Contains(itother.Key()) && myBounds.Contains(itother.Key()))
+    const TopoDS_Shape* aBoundOther = myBounds.Seek(itother.Key());
+    if (!EdgesFaces.Contains(itother.Key()) && aBoundOther != nullptr)
     {
-      TopoDS_Shape aSh = myBounds.FindFromKey(itother.Key());
+      const TopoDS_Shape& aSh = *aBoundOther;
       B.Add(result, aSh);
     }
   }

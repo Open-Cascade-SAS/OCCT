@@ -334,7 +334,8 @@ bool BRepTools_History::prepareGenerated(const TopoDS_Shape& theInitial,
                          myMsgUnsupportedType,
                          false);
 
-  if (myShapeToModified.IsBound(theInitial) && myShapeToModified(theInitial).Remove(theGenerated))
+  NCollection_List<TopoDS_Shape>* aModList = myShapeToModified.ChangeSeek(theInitial);
+  if (aModList != nullptr && aModList->Remove(theGenerated))
   {
     Standard_ASSERT_INVOKE_(, myMsgGeneratedAndModified);
   }
@@ -354,7 +355,8 @@ bool BRepTools_History::prepareModified(const TopoDS_Shape& theInitial,
     Standard_ASSERT_INVOKE_(, myMsgModifiedAndRemoved);
   }
 
-  if (myShapeToGenerated.IsBound(theInitial) && myShapeToGenerated(theInitial).Remove(theModified))
+  NCollection_List<TopoDS_Shape>* aGenList = myShapeToGenerated.ChangeSeek(theInitial);
+  if (aGenList != nullptr && aGenList->Remove(theModified))
   {
     Standard_ASSERT_INVOKE_(, myMsgGeneratedAndModified);
   }

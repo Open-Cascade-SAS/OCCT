@@ -227,9 +227,10 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
 
     if (!V1.IsNull())
     {
-      if (!myMap.IsBound(V1))
-        myMap.Bind(V1, empty);
-      myMap(V1).Append(E);
+      NCollection_List<TopoDS_Shape>* aV1List = myMap.ChangeSeek(V1);
+      if (aV1List == nullptr)
+        aV1List = myMap.Bound(V1, empty);
+      aV1List->Append(E);
 
       // add or remove in the vertex map
       V1.Orientation(TopAbs_FORWARD);
@@ -344,10 +345,11 @@ void BRepTools_WireExplorer::Init(const TopoDS_Wire& W,
 
   if (V1.IsNull())
     return;
-  if (!myMap.IsBound(V1))
+  NCollection_List<TopoDS_Shape>* aListPtr = myMap.ChangeSeek(V1);
+  if (aListPtr == nullptr)
     return;
 
-  NCollection_List<TopoDS_Shape>& l = myMap(V1);
+  NCollection_List<TopoDS_Shape>& l = *aListPtr;
   myEdge                            = TopoDS::Edge(l.First());
   l.RemoveFirst();
   myVertex = TopExp::FirstVertex(myEdge, true);
@@ -371,13 +373,14 @@ void BRepTools_WireExplorer::Next()
     myEdge = TopoDS_Edge();
     return;
   }
-  if (!myMap.IsBound(myVertex))
+  NCollection_List<TopoDS_Shape>* aVertListPtr = myMap.ChangeSeek(myVertex);
+  if (aVertListPtr == nullptr)
   {
     myEdge = TopoDS_Edge();
     return;
   }
 
-  NCollection_List<TopoDS_Shape>& l = myMap(myVertex);
+  NCollection_List<TopoDS_Shape>& l = *aVertListPtr;
 
   if (l.IsEmpty())
   {

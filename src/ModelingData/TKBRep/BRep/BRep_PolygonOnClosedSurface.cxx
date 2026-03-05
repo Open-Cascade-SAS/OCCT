@@ -29,7 +29,7 @@ BRep_PolygonOnClosedSurface::BRep_PolygonOnClosedSurface(const occ::handle<Poly_
                                                          const occ::handle<Poly_Polygon2D>& P2,
                                                          const occ::handle<Geom_Surface>&   S,
                                                          const TopLoc_Location&             L)
-    : BRep_PolygonOnSurface(P1, S, L),
+    : BRep_PolygonOnSurface(Type_PolygonOnClosedSurface, P1, S, L),
       myPolygon2(P2)
 {
 }

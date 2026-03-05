@@ -26,7 +26,8 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_Curve3D, BRep_GCurve)
 //=================================================================================================
 
 BRep_Curve3D::BRep_Curve3D(const occ::handle<Geom_Curve>& C, const TopLoc_Location& L)
-    : BRep_GCurve(L,
+    : BRep_GCurve(Type_Curve3D,
+                  L,
                   C.IsNull() ? RealFirst() : C->FirstParameter(),
                   C.IsNull() ? RealLast() : C->LastParameter()),
       myCurve(C)

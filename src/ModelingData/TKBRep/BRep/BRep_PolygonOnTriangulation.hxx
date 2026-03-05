@@ -60,6 +60,13 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnTriangulation, BRep_CurveRepresentation)
 
+protected:
+  Standard_EXPORT BRep_PolygonOnTriangulation(
+    TypeEnum                                        theType,
+    const occ::handle<Poly_PolygonOnTriangulation>& thePolygon,
+    const occ::handle<Poly_Triangulation>&          theTriangulation,
+    const TopLoc_Location&                          theLocation);
+
 private:
   occ::handle<Poly_PolygonOnTriangulation> myPolygon;
   occ::handle<Poly_Triangulation>          myTriangulation;

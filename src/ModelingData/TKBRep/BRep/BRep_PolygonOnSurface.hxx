@@ -58,6 +58,12 @@ public:
 
   DEFINE_STANDARD_RTTIEXT(BRep_PolygonOnSurface, BRep_CurveRepresentation)
 
+protected:
+  Standard_EXPORT BRep_PolygonOnSurface(TypeEnum                           theType,
+                                        const occ::handle<Poly_Polygon2D>& thePolygon,
+                                        const occ::handle<Geom_Surface>&   theSurface,
+                                        const TopLoc_Location&             theLocation);
+
 private:
   occ::handle<Poly_Polygon2D> myPolygon2D;
   occ::handle<Geom_Surface>   mySurface;

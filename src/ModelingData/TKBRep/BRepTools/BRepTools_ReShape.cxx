@@ -533,6 +533,8 @@ occ::handle<BRepTools_History> BRepTools_ReShape::History() const
   occ::handle<BRepTools_History> aHistory = new BRepTools_History;
 
   // Fill the history.
+  NCollection_IndexedMap<TopoDS_Shape> aIntermediates;
+  NCollection_Map<TopoDS_Shape>        aModified;
   for (TShapeToReplacement::Iterator aRIt(myShapeToReplacement); aRIt.More(); aRIt.Next())
   {
     const TopoDS_Shape& aShape = aRIt.Key();
@@ -541,8 +543,8 @@ occ::handle<BRepTools_History> BRepTools_ReShape::History() const
       continue;
     }
 
-    NCollection_IndexedMap<TopoDS_Shape> aIntermediates;
-    NCollection_Map<TopoDS_Shape>        aModified;
+    aIntermediates.Clear();
+    aModified.Clear();
     aIntermediates.Add(aShape);
     for (int aI = 1; aI <= aIntermediates.Size(); ++aI)
     {
