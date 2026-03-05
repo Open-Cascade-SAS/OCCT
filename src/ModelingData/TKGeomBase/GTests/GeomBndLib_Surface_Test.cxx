@@ -60,7 +60,7 @@ void CompareBoxes(const Bnd_Box& theNew, const Bnd_Box& theOld, const double the
 TEST(GeomBndLib_SurfaceTest, Plane_FinitePatch)
 {
   occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp::XOY());
-  GeomBndLib_Surface aSurf(aPlane);
+  GeomBndLib_Surface      aSurf(aPlane);
   EXPECT_EQ(aSurf.GetType(), GeomAbs_Plane);
 
   Bnd_Box aBox;
@@ -78,8 +78,8 @@ TEST(GeomBndLib_SurfaceTest, Plane_FinitePatch)
 
 TEST(GeomBndLib_SurfaceTest, Plane_CompareWithBndLib)
 {
-  occ::handle<Geom_Plane>  aPlane = new Geom_Plane(gp::XOY());
-  GeomAdaptor_Surface anAdaptor(aPlane);
+  occ::handle<Geom_Plane> aPlane = new Geom_Plane(gp::XOY());
+  GeomAdaptor_Surface     anAdaptor(aPlane);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aPlane).Add(-5.0, 5.0, -3.0, 3.0, Precision::Confusion(), aNewBox);
@@ -96,9 +96,9 @@ TEST(GeomBndLib_SurfaceTest, Plane_CompareWithBndLib)
 
 TEST(GeomBndLib_SurfaceTest, Cylinder_Patch)
 {
-  const double                    aRadius = 3.0;
+  const double                         aRadius = 3.0;
   occ::handle<Geom_CylindricalSurface> aCyl    = new Geom_CylindricalSurface(gp::XOY(), aRadius);
-  GeomBndLib_Surface              aSurf(aCyl);
+  GeomBndLib_Surface                   aSurf(aCyl);
   EXPECT_EQ(aSurf.GetType(), GeomAbs_Cylinder);
 
   Bnd_Box aBox;
@@ -117,7 +117,7 @@ TEST(GeomBndLib_SurfaceTest, Cylinder_Patch)
 TEST(GeomBndLib_SurfaceTest, Cylinder_CompareWithBndLib)
 {
   occ::handle<Geom_CylindricalSurface> aCyl = new Geom_CylindricalSurface(gp::XOY(), 4.0);
-  GeomAdaptor_Surface             anAdaptor(aCyl);
+  GeomAdaptor_Surface                  anAdaptor(aCyl);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aCyl).Add(0.0, 2.0 * M_PI, -5.0, 5.0, Precision::Confusion(), aNewBox);
@@ -134,11 +134,11 @@ TEST(GeomBndLib_SurfaceTest, Cylinder_CompareWithBndLib)
 
 TEST(GeomBndLib_SurfaceTest, Cone_Patch)
 {
-  const double                aRefRadius = 2.0;
-  const double                aSemiAngle = M_PI / 4.0;
-  gp_Cone                     aCone(gp::XOY(), aSemiAngle, aRefRadius);
+  const double                     aRefRadius = 2.0;
+  const double                     aSemiAngle = M_PI / 4.0;
+  gp_Cone                          aCone(gp::XOY(), aSemiAngle, aRefRadius);
   occ::handle<Geom_ConicalSurface> aConeSurf = new Geom_ConicalSurface(aCone);
-  GeomBndLib_Surface          aSurf(aConeSurf);
+  GeomBndLib_Surface               aSurf(aConeSurf);
   EXPECT_EQ(aSurf.GetType(), GeomAbs_Cone);
 
   Bnd_Box aBox;
@@ -157,9 +157,9 @@ TEST(GeomBndLib_SurfaceTest, Cone_Patch)
 
 TEST(GeomBndLib_SurfaceTest, Cone_CompareWithBndLib)
 {
-  gp_Cone                     aCone(gp::XOY(), M_PI / 6.0, 3.0);
+  gp_Cone                          aCone(gp::XOY(), M_PI / 6.0, 3.0);
   occ::handle<Geom_ConicalSurface> aConeSurf = new Geom_ConicalSurface(aCone);
-  GeomAdaptor_Surface         anAdaptor(aConeSurf);
+  GeomAdaptor_Surface              anAdaptor(aConeSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aConeSurf).Add(0.0, 2.0 * M_PI, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -176,9 +176,9 @@ TEST(GeomBndLib_SurfaceTest, Cone_CompareWithBndLib)
 
 TEST(GeomBndLib_SurfaceTest, Sphere_Full)
 {
-  const double                  aRadius = 5.0;
+  const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), aRadius);
-  GeomBndLib_Surface            aSurf(aSphere);
+  GeomBndLib_Surface                 aSurf(aSphere);
   EXPECT_EQ(aSurf.GetType(), GeomAbs_Sphere);
 
   Bnd_Box aBox;
@@ -196,9 +196,9 @@ TEST(GeomBndLib_SurfaceTest, Sphere_Full)
 
 TEST(GeomBndLib_SurfaceTest, Sphere_Patch)
 {
-  const double                  aRadius = 5.0;
+  const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), aRadius);
-  GeomBndLib_Surface            aSurf(aSphere);
+  GeomBndLib_Surface                 aSurf(aSphere);
 
   Bnd_Box aBox;
   // U in [0, PI/2], V in [0, PI/2] (first octant patch)
@@ -218,7 +218,7 @@ TEST(GeomBndLib_SurfaceTest, Sphere_Patch)
 TEST(GeomBndLib_SurfaceTest, Sphere_CompareWithBndLib)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 7.0);
-  GeomAdaptor_Surface           anAdaptor(aSphere);
+  GeomAdaptor_Surface                anAdaptor(aSphere);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aSphere).Add(Precision::Confusion(), aNewBox);
@@ -232,7 +232,7 @@ TEST(GeomBndLib_SurfaceTest, Sphere_CompareWithBndLib)
 TEST(GeomBndLib_SurfaceTest, Sphere_Patch_CompareWithBndLib)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 7.0);
-  GeomAdaptor_Surface           anAdaptor(aSphere);
+  GeomAdaptor_Surface                anAdaptor(aSphere);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aSphere)
@@ -256,10 +256,10 @@ TEST(GeomBndLib_SurfaceTest, Sphere_Patch_CompareWithBndLib)
 
 TEST(GeomBndLib_SurfaceTest, Torus_Full)
 {
-  const double                 aMajR  = 10.0;
-  const double                 aMinR  = 3.0;
+  const double                      aMajR  = 10.0;
+  const double                      aMinR  = 3.0;
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp::XOY(), aMajR, aMinR);
-  GeomBndLib_Surface           aSurf(aTorus);
+  GeomBndLib_Surface                aSurf(aTorus);
   EXPECT_EQ(aSurf.GetType(), GeomAbs_Torus);
 
   Bnd_Box aBox;
@@ -279,7 +279,7 @@ TEST(GeomBndLib_SurfaceTest, Torus_Full)
 TEST(GeomBndLib_SurfaceTest, Torus_CompareWithBndLib)
 {
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp::XOY(), 10.0, 3.0);
-  GeomAdaptor_Surface          anAdaptor(aTorus);
+  GeomAdaptor_Surface               anAdaptor(aTorus);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aTorus).Add(Precision::Confusion(), aNewBox);
@@ -302,7 +302,7 @@ TEST(GeomBndLib_SurfaceTest, Torus_CompareWithBndLib)
 TEST(GeomBndLib_SurfaceTest, Torus_Patch_CompareWithBndLib)
 {
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp::XOY(), 10.0, 3.0);
-  GeomAdaptor_Surface          anAdaptor(aTorus);
+  GeomAdaptor_Surface               anAdaptor(aTorus);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aTorus).Add(0.0, M_PI, 0.0, M_PI, Precision::Confusion(), aNewBox);
@@ -335,7 +335,7 @@ TEST(GeomBndLib_SurfaceTest, BezierSurface_Simple)
   aPoles.SetValue(2, 2, gp_Pnt(10.0, 10.0, 5.0));
 
   occ::handle<Geom_BezierSurface> aBezSurf = new Geom_BezierSurface(aPoles);
-  GeomBndLib_Surface         aSurf(aBezSurf);
+  GeomBndLib_Surface              aSurf(aBezSurf);
   EXPECT_EQ(aSurf.GetType(), GeomAbs_BezierSurface);
 
   Bnd_Box aBox;
@@ -360,7 +360,7 @@ TEST(GeomBndLib_SurfaceTest, BezierSurface_CompareWithBndLib)
   aPoles.SetValue(2, 2, gp_Pnt(10.0, 10.0, 5.0));
 
   occ::handle<Geom_BezierSurface> aBezSurf = new Geom_BezierSurface(aPoles);
-  GeomAdaptor_Surface        anAdaptor(aBezSurf);
+  GeomAdaptor_Surface             anAdaptor(aBezSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aBezSurf).Add(Precision::Confusion(), aNewBox);
@@ -420,7 +420,7 @@ TEST(GeomBndLib_SurfaceTest, BSplineSurface_CompareWithBndLib)
 
 TEST(GeomBndLib_SurfaceTest, AdaptorConstructor_Sphere)
 {
-  const double                  aRadius = 5.0;
+  const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), aRadius);
 
   // Construct from handle
@@ -445,9 +445,9 @@ TEST(GeomBndLib_SurfaceTest, AdaptorConstructor_Sphere)
 
 TEST(GeomBndLib_SurfaceTest, AddOptimal_Sphere)
 {
-  const double                  aRadius = 5.0;
+  const double                       aRadius = 5.0;
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), aRadius);
-  GeomBndLib_Surface            aSurf(aSphere);
+  GeomBndLib_Surface                 aSurf(aSphere);
 
   Bnd_Box aBox;
   aSurf.Add(Precision::Confusion(), aBox);
@@ -470,7 +470,7 @@ TEST(GeomBndLib_SurfaceTest, AddOptimal_Sphere)
 TEST(GeomBndLib_SurfaceTest, AddOptimal_CompareWithBndLib)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 7.0);
-  GeomAdaptor_Surface           anAdaptor(aSphere);
+  GeomAdaptor_Surface                anAdaptor(aSphere);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aSphere).AddOptimal(Precision::Confusion(), aNewBox);
@@ -489,7 +489,7 @@ TEST(GeomBndLib_SurfaceTest, AddOptimal_Torus_TiltedBetterThanFast)
   // Analytic: for axis n=(1/sqrt(2), 0, 1/sqrt(2)),
   //   Xmax = Zmax = Ra/sqrt(2) + Rmi = 4*sqrt(2)+3 ~= 8.657
   //   Ymax = Ra + Rmi = 11  (ny=0, so full equatorial radius applies)
-  gp_Ax3                       aTiltedAx(gp::Origin(), gp_Dir(1.0, 0.0, 1.0));
+  gp_Ax3                            aTiltedAx(gp::Origin(), gp_Dir(1.0, 0.0, 1.0));
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(aTiltedAx, 8.0, 3.0);
 
   Bnd_Box aFastBox;
@@ -524,7 +524,7 @@ TEST(GeomBndLib_SurfaceTest, AddOptimal_Torus_TiltedBetterThanFast)
 TEST(GeomBndLib_SurfaceTest, AdaptorConstructor_TrimmedRangeUsedForFullAdd)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 7.0);
-  GeomAdaptor_Surface           anAdaptor(aSphere, 0.0, M_PI, -M_PI / 4.0, M_PI / 4.0);
+  GeomAdaptor_Surface                anAdaptor(aSphere, 0.0, M_PI, -M_PI / 4.0, M_PI / 4.0);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anAdaptor).Add(Precision::Confusion(), aNewBox);
@@ -572,10 +572,10 @@ TEST(GeomBndLib_SurfaceTest, RectangularTrimmedSurface_UsesBasisSpecialization)
 TEST(GeomBndLib_SurfaceTest, Torus_NegativeVMin_NoUnderBounding)
 {
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp::XOY(), 10.0, 3.0);
-  const double                 aU1    = 0.0;
-  const double                 aU2    = 2.0 * M_PI;
-  const double                 aV1    = -M_PI / 8.0;
-  const double                 aV2    = M_PI / 8.0;
+  const double                      aU1    = 0.0;
+  const double                      aU2    = 2.0 * M_PI;
+  const double                      aV1    = -M_PI / 8.0;
+  const double                      aV2    = M_PI / 8.0;
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aTorus).Add(aU1, aU2, aV1, aV2, Precision::Confusion(), aNewBox);

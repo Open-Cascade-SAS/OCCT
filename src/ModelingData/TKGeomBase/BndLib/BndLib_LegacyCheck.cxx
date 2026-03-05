@@ -75,16 +75,26 @@ static const char* curveTypeName(GeomAbs_CurveType theType)
 {
   switch (theType)
   {
-    case GeomAbs_Line:         return "Line";
-    case GeomAbs_Circle:       return "Circle";
-    case GeomAbs_Ellipse:      return "Ellipse";
-    case GeomAbs_Hyperbola:    return "Hyperbola";
-    case GeomAbs_Parabola:     return "Parabola";
-    case GeomAbs_BezierCurve:  return "BezierCurve";
-    case GeomAbs_BSplineCurve: return "BSplineCurve";
-    case GeomAbs_OffsetCurve:  return "OffsetCurve";
-    case GeomAbs_OtherCurve:   return "OtherCurve";
-    default:                   return "Unknown";
+    case GeomAbs_Line:
+      return "Line";
+    case GeomAbs_Circle:
+      return "Circle";
+    case GeomAbs_Ellipse:
+      return "Ellipse";
+    case GeomAbs_Hyperbola:
+      return "Hyperbola";
+    case GeomAbs_Parabola:
+      return "Parabola";
+    case GeomAbs_BezierCurve:
+      return "BezierCurve";
+    case GeomAbs_BSplineCurve:
+      return "BSplineCurve";
+    case GeomAbs_OffsetCurve:
+      return "OffsetCurve";
+    case GeomAbs_OtherCurve:
+      return "OtherCurve";
+    default:
+      return "Unknown";
   }
 }
 
@@ -92,18 +102,30 @@ static const char* surfaceTypeName(GeomAbs_SurfaceType theType)
 {
   switch (theType)
   {
-    case GeomAbs_Plane:                   return "Plane";
-    case GeomAbs_Cylinder:                return "Cylinder";
-    case GeomAbs_Cone:                    return "Cone";
-    case GeomAbs_Sphere:                  return "Sphere";
-    case GeomAbs_Torus:                   return "Torus";
-    case GeomAbs_BezierSurface:           return "BezierSurface";
-    case GeomAbs_BSplineSurface:          return "BSplineSurface";
-    case GeomAbs_SurfaceOfRevolution:     return "SurfaceOfRevolution";
-    case GeomAbs_SurfaceOfExtrusion:      return "SurfaceOfExtrusion";
-    case GeomAbs_OffsetSurface:           return "OffsetSurface";
-    case GeomAbs_OtherSurface:            return "OtherSurface";
-    default:                              return "Unknown";
+    case GeomAbs_Plane:
+      return "Plane";
+    case GeomAbs_Cylinder:
+      return "Cylinder";
+    case GeomAbs_Cone:
+      return "Cone";
+    case GeomAbs_Sphere:
+      return "Sphere";
+    case GeomAbs_Torus:
+      return "Torus";
+    case GeomAbs_BezierSurface:
+      return "BezierSurface";
+    case GeomAbs_BSplineSurface:
+      return "BSplineSurface";
+    case GeomAbs_SurfaceOfRevolution:
+      return "SurfaceOfRevolution";
+    case GeomAbs_SurfaceOfExtrusion:
+      return "SurfaceOfExtrusion";
+    case GeomAbs_OffsetSurface:
+      return "OffsetSurface";
+    case GeomAbs_OtherSurface:
+      return "OtherSurface";
+    default:
+      return "Unknown";
   }
 }
 
@@ -180,10 +202,10 @@ static void printBox2d(const char* thePrefix, const Bnd_Box2d& theBox)
 //=============================================================================
 
 static double LegacyFillBox3d(Bnd_Box&               B,
-                               const Adaptor3d_Curve& C,
-                               const double           first,
-                               const double           last,
-                               const int              N)
+                              const Adaptor3d_Curve& C,
+                              const double           first,
+                              const double           last,
+                              const int              N)
 {
   gp_Pnt P1, P2, P3;
   C.D0(first, P1);
@@ -217,8 +239,8 @@ static double LegacyFillBox3d(Bnd_Box&               B,
 }
 
 static void LegacyReduceSplineBox3d(const Adaptor3d_Curve& theCurve,
-                                     const Bnd_Box&         theOrigBox,
-                                     Bnd_Box&               theReducedBox)
+                                    const Bnd_Box&         theOrigBox,
+                                    Bnd_Box&               theReducedBox)
 {
   Bnd_Box aPolesBox;
   if (theCurve.GetType() == GeomAbs_BSplineCurve)
@@ -254,12 +276,12 @@ static void LegacyReduceSplineBox3d(const Adaptor3d_Curve& theCurve,
 
 // forward declaration
 static double LegacyAdjustExtr3d(const Adaptor3d_Curve& C,
-                                   double                 UMin,
-                                   double                 UMax,
-                                   double                 Extr0,
-                                   int                    CoordIndx,
-                                   double                 Tol,
-                                   bool                   IsMin);
+                                 double                 UMin,
+                                 double                 UMax,
+                                 double                 Extr0,
+                                 int                    CoordIndx,
+                                 double                 Tol,
+                                 bool                   IsMin);
 
 static int LegacyNbSamples3d(const Adaptor3d_Curve& C, const double Umin, const double Umax)
 {
@@ -268,7 +290,7 @@ static int LegacyNbSamples3d(const Adaptor3d_Curve& C, const double Umin, const 
   switch (Type)
   {
     case GeomAbs_BezierCurve: {
-      N       = 2 * C.NbPoles();
+      N         = 2 * C.NbPoles();
       double du = Umax - Umin;
       if (du < .9)
       {
@@ -299,10 +321,10 @@ class Legacy3dCurvMaxMinCoordMVar : public math_MultipleVarFunction
 {
 public:
   Legacy3dCurvMaxMinCoordMVar(const Adaptor3d_Curve& theCurve,
-                               double                 UMin,
-                               double                 UMax,
-                               int                    CoordIndx,
-                               double                 Sign)
+                              double                 UMin,
+                              double                 UMax,
+                              int                    CoordIndx,
+                              double                 Sign)
       : myCurve(theCurve),
         myUMin(UMin),
         myUMax(UMax),
@@ -310,6 +332,7 @@ public:
         mySign(Sign)
   {
   }
+
   bool Value(const math_Vector& X, double& F) override
   {
     if (X(1) < myUMin || X(1) > myUMax)
@@ -318,24 +341,25 @@ public:
     F         = mySign * aP.Coord(myCoordIndx);
     return true;
   }
+
   int NbVariables() const override { return 1; }
 
 private:
   Legacy3dCurvMaxMinCoordMVar& operator=(const Legacy3dCurvMaxMinCoordMVar&) = delete;
-  const Adaptor3d_Curve& myCurve;
-  double                 myUMin, myUMax;
-  int                    myCoordIndx;
-  double                 mySign;
+  const Adaptor3d_Curve&       myCurve;
+  double                       myUMin, myUMax;
+  int                          myCoordIndx;
+  double                       mySign;
 };
 
 class Legacy3dCurvMaxMinCoord : public math_Function
 {
 public:
   Legacy3dCurvMaxMinCoord(const Adaptor3d_Curve& theCurve,
-                           double                 UMin,
-                           double                 UMax,
-                           int                    CoordIndx,
-                           double                 Sign)
+                          double                 UMin,
+                          double                 UMax,
+                          int                    CoordIndx,
+                          double                 Sign)
       : myCurve(theCurve),
         myUMin(UMin),
         myUMax(UMax),
@@ -343,6 +367,7 @@ public:
         mySign(Sign)
   {
   }
+
   bool Value(const double X, double& F) override
   {
     if (X < myUMin || X > myUMax)
@@ -354,24 +379,24 @@ public:
 
 private:
   Legacy3dCurvMaxMinCoord& operator=(const Legacy3dCurvMaxMinCoord&) = delete;
-  const Adaptor3d_Curve& myCurve;
-  double                 myUMin, myUMax;
-  int                    myCoordIndx;
-  double                 mySign;
+  const Adaptor3d_Curve&   myCurve;
+  double                   myUMin, myUMax;
+  int                      myCoordIndx;
+  double                   mySign;
 };
 
 static double LegacyAdjustExtr3d(const Adaptor3d_Curve& C,
-                                   double                 UMin,
-                                   double                 UMax,
-                                   double                 Extr0,
-                                   int                    CoordIndx,
-                                   double                 Tol,
-                                   bool                   IsMin)
+                                 double                 UMin,
+                                 double                 UMax,
+                                 double                 Extr0,
+                                 int                    CoordIndx,
+                                 double                 Tol,
+                                 bool                   IsMin)
 {
-  double aSign = IsMin ? 1. : -1.;
-  double extr  = aSign * Extr0;
-  double uTol  = std::max(C.Resolution(Tol), Precision::PConfusion());
-  double Du    = (C.LastParameter() - C.FirstParameter());
+  double aSign  = IsMin ? 1. : -1.;
+  double extr   = aSign * Extr0;
+  double uTol   = std::max(C.Resolution(Tol), Precision::PConfusion());
+  double Du     = (C.LastParameter() - C.FirstParameter());
   double reltol = uTol / std::max(std::abs(UMin), std::abs(UMax));
   if (UMax - UMin < 0.01 * Du)
   {
@@ -384,13 +409,13 @@ static double LegacyAdjustExtr3d(const Adaptor3d_Curve& C,
   int         aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
   double      maxstep      = (UMax - UMin) / (aNbParticles + 1);
   math_Vector aT(1, 1), aLowBorder(1, 1), aUppBorder(1, 1), aSteps(1, 1);
-  aLowBorder(1)                    = UMin;
-  aUppBorder(1)                    = UMax;
-  aSteps(1)                        = std::min(0.1 * Du, maxstep);
+  aLowBorder(1) = UMin;
+  aUppBorder(1) = UMax;
+  aSteps(1)     = std::min(0.1 * Du, maxstep);
   Legacy3dCurvMaxMinCoordMVar aFunc(C, UMin, UMax, CoordIndx, aSign);
   math_PSO                    aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
   aFinder.Perform(aSteps, extr, aT);
-  math_BrentMinimum        anOptLoc(reltol, 100, uTol);
+  math_BrentMinimum       anOptLoc(reltol, 100, uTol);
   Legacy3dCurvMaxMinCoord aFunc1(C, UMin, UMax, CoordIndx, aSign);
   anOptLoc.Perform(aFunc1,
                    std::max(aT(1) - aSteps(1), UMin),
@@ -402,28 +427,31 @@ static double LegacyAdjustExtr3d(const Adaptor3d_Curve& C,
 }
 
 static void LegacyAddGenCurv3d(const Adaptor3d_Curve& C,
-                                double                 UMin,
-                                double                 UMax,
-                                double                 Tol,
-                                Bnd_Box&               B)
+                               double                 UMin,
+                               double                 UMax,
+                               double                 Tol,
+                               Bnd_Box&               B)
 {
-  int Nu = LegacyNbSamples3d(C, UMin, UMax);
-  double CoordMin[3] = {RealLast(), RealLast(), RealLast()};
-  double CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
-  double DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
+  int                        Nu          = LegacyNbSamples3d(C, UMin, UMax);
+  double                     CoordMin[3] = {RealLast(), RealLast(), RealLast()};
+  double                     CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
+  double                     DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
   gp_Pnt                     P;
   double                     du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
   NCollection_Array1<gp_XYZ> aPnts(1, Nu);
   double                     u;
   for (int i = 1; i <= Nu; i++, u += du)
   {
-    if (i == 1) u = UMin;
+    if (i == 1)
+      u = UMin;
     C.D0(u, P);
     aPnts(i) = P.XYZ();
     for (int k = 0; k < 3; ++k)
     {
-      if (CoordMin[k] > P.Coord(k + 1)) CoordMin[k] = P.Coord(k + 1);
-      if (CoordMax[k] < P.Coord(k + 1)) CoordMax[k] = P.Coord(k + 1);
+      if (CoordMin[k] > P.Coord(k + 1))
+        CoordMin[k] = P.Coord(k + 1);
+      if (CoordMax[k] < P.Coord(k + 1))
+        CoordMax[k] = P.Coord(k + 1);
     }
     if (i > 1)
     {
@@ -432,10 +460,13 @@ static void LegacyAddGenCurv3d(const Adaptor3d_Curve& C,
       gp_XYZ aD = (P.XYZ() - aPm);
       for (int k = 0; k < 3; ++k)
       {
-        if (CoordMin[k] > P.Coord(k + 1)) CoordMin[k] = P.Coord(k + 1);
-        if (CoordMax[k] < P.Coord(k + 1)) CoordMax[k] = P.Coord(k + 1);
+        if (CoordMin[k] > P.Coord(k + 1))
+          CoordMin[k] = P.Coord(k + 1);
+        if (CoordMax[k] < P.Coord(k + 1))
+          CoordMax[k] = P.Coord(k + 1);
         double d = std::abs(aD.Coord(k + 1));
-        if (DeflMax[k] < d) DeflMax[k] = d;
+        if (DeflMax[k] < d)
+          DeflMax[k] = d;
       }
     }
   }
@@ -443,7 +474,8 @@ static void LegacyAddGenCurv3d(const Adaptor3d_Curve& C,
   for (int k = 0; k < 3; ++k)
   {
     double d = DeflMax[k];
-    if (d <= eps) continue;
+    if (d <= eps)
+      continue;
     double CMin = CoordMin[k];
     double CMax = CoordMax[k];
     for (int i = 1; i <= Nu; ++i)
@@ -453,14 +485,16 @@ static void LegacyAddGenCurv3d(const Adaptor3d_Curve& C,
         double umin = UMin + std::max(0, i - 2) * du;
         double umax = UMin + std::min(Nu - 1, i) * du;
         double cmin = LegacyAdjustExtr3d(C, umin, umax, CMin, k + 1, eps, true);
-        if (cmin < CMin) CMin = cmin;
+        if (cmin < CMin)
+          CMin = cmin;
       }
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
         double umin = UMin + std::max(0, i - 2) * du;
         double umax = UMin + std::min(Nu - 1, i) * du;
         double cmax = LegacyAdjustExtr3d(C, umin, umax, CMax, k + 1, eps, false);
-        if (cmax > CMax) CMax = cmax;
+        if (cmax > CMax)
+          CMax = cmax;
       }
     }
     CoordMin[k] = CMin;
@@ -471,10 +505,7 @@ static void LegacyAddGenCurv3d(const Adaptor3d_Curve& C,
   B.Enlarge(eps);
 }
 
-static Bnd_Box LegacyAdd3dCurveImpl(const Adaptor3d_Curve& C,
-                                     double                 U1,
-                                     double                 U2,
-                                     double                 Tol)
+static Bnd_Box LegacyAdd3dCurveImpl(const Adaptor3d_Curve& C, double U1, double U2, double Tol)
 {
   constexpr double weakness = 1.5;
   double           tol      = 0.0;
@@ -523,18 +554,22 @@ static Bnd_Box LegacyAdd3dCurveImpl(const Adaptor3d_Curve& C,
                                  u2);
         else
         {
-          if (Bsaux->FirstParameter() > U1) u1 = Bsaux->FirstParameter();
-          if (Bsaux->LastParameter() < U2) u2 = Bsaux->LastParameter();
+          if (Bsaux->FirstParameter() > U1)
+            u1 = Bsaux->FirstParameter();
+          if (Bsaux->LastParameter() < U2)
+            u2 = Bsaux->LastParameter();
         }
         double aSegmentTol = 2. * Precision::PConfusion();
         if (Bsaux->IsPeriodic())
         {
-          const double aPeriod       = Bsaux->LastParameter() - Bsaux->FirstParameter();
-          const double aDirectDiff   = std::abs(u2 - u1);
+          const double aPeriod           = Bsaux->LastParameter() - Bsaux->FirstParameter();
+          const double aDirectDiff       = std::abs(u2 - u1);
           const double aCrossPeriodDiff1 = std::abs(u2 - aPeriod - u1);
           const double aCrossPeriodDiff2 = std::abs(u1 - aPeriod - u2);
-          const double aMinDiff = std::min(aDirectDiff, std::min(aCrossPeriodDiff1, aCrossPeriodDiff2));
-          if (aMinDiff < aSegmentTol) aSegmentTol = aMinDiff * 0.01;
+          const double aMinDiff =
+            std::min(aDirectDiff, std::min(aCrossPeriodDiff1, aCrossPeriodDiff2));
+          if (aMinDiff < aSegmentTol)
+            aSegmentTol = aMinDiff * 0.01;
         }
         else if (std::abs(u2 - u1) < aSegmentTol)
           aSegmentTol = std::abs(u2 - u1) * 0.01;
@@ -575,9 +610,9 @@ static Bnd_Box LegacyAdd3dCurveImpl(const Adaptor3d_Curve& C,
 }
 
 static Bnd_Box LegacyAddOptimal3dCurveImpl(const Adaptor3d_Curve& C,
-                                            double                 U1,
-                                            double                 U2,
-                                            double                 Tol)
+                                           double                 U1,
+                                           double                 U2,
+                                           double                 Tol)
 {
   Bnd_Box B;
   switch (C.GetType())
@@ -647,18 +682,26 @@ static int LegacyNbUSampleRange(const Adaptor3d_Surface& S, const double Umin, c
   switch (S.GetType())
   {
     case GeomAbs_BezierSurface: {
-      N       = 2 * S.NbUPoles();
+      N         = 2 * S.NbUPoles();
       double du = Umax - Umin;
-      if (du < .9) { N = RealToInt(du * N) + 1; N = std::max(N, 5); }
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
       break;
     }
     case GeomAbs_BSplineSurface: {
       const occ::handle<Geom_BSplineSurface>& BS = S.BSpline();
-      N = 2 * (BS->UDegree() + 1) * (BS->NbUKnots() - 1);
+      N                                          = 2 * (BS->UDegree() + 1) * (BS->NbUKnots() - 1);
       double umin, umax, vmin, vmax;
       BS->Bounds(umin, umax, vmin, vmax);
       double du = (Umax - Umin) / (umax - umin);
-      if (du < .9) { N = RealToInt(du * N) + 1; N = std::max(N, 5); }
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
       break;
     }
     default:
@@ -673,18 +716,26 @@ static int LegacyNbVSampleRange(const Adaptor3d_Surface& S, const double Vmin, c
   switch (S.GetType())
   {
     case GeomAbs_BezierSurface: {
-      N       = 2 * S.NbVPoles();
+      N         = 2 * S.NbVPoles();
       double dv = Vmax - Vmin;
-      if (dv < .9) { N = RealToInt(dv * N) + 1; N = std::max(N, 5); }
+      if (dv < .9)
+      {
+        N = RealToInt(dv * N) + 1;
+        N = std::max(N, 5);
+      }
       break;
     }
     case GeomAbs_BSplineSurface: {
       const occ::handle<Geom_BSplineSurface>& BS = S.BSpline();
-      N = 2 * (BS->VDegree() + 1) * (BS->NbVKnots() - 1);
+      N                                          = 2 * (BS->VDegree() + 1) * (BS->NbVKnots() - 1);
       double umin, umax, vmin, vmax;
       BS->Bounds(umin, umax, vmin, vmax);
       double dv = (Vmax - Vmin) / (vmax - vmin);
-      if (dv < .9) { N = RealToInt(dv * N) + 1; N = std::max(N, 5); }
+      if (dv < .9)
+      {
+        N = RealToInt(dv * N) + 1;
+        N = std::max(N, 5);
+      }
       break;
     }
     default:
@@ -694,14 +745,14 @@ static int LegacyNbVSampleRange(const Adaptor3d_Surface& S, const double Vmin, c
 }
 
 static void LegacyComputePolesIndexes(const NCollection_Array1<double>& theKnots,
-                                       const NCollection_Array1<int>&    theMults,
-                                       const int                         theDegree,
-                                       const double                      theMin,
-                                       const double                      theMax,
-                                       const int                         theMaxPoleIdx,
-                                       const bool                        theIsPeriodic,
-                                       int&                              theOutMinIdx,
-                                       int&                              theOutMaxIdx)
+                                      const NCollection_Array1<int>&    theMults,
+                                      const int                         theDegree,
+                                      const double                      theMin,
+                                      const double                      theMax,
+                                      const int                         theMaxPoleIdx,
+                                      const bool                        theIsPeriodic,
+                                      int&                              theOutMinIdx,
+                                      int&                              theOutMaxIdx)
 {
   BSplCLib::Hunt(theKnots, theMin, theOutMinIdx);
   theOutMinIdx = std::clamp(theOutMinIdx, theKnots.Lower(), theKnots.Upper());
@@ -709,90 +760,135 @@ static void LegacyComputePolesIndexes(const NCollection_Array1<double>& theKnots
   theOutMaxIdx++;
   theOutMaxIdx          = std::clamp(theOutMaxIdx, theKnots.Lower(), theKnots.Upper());
   const int aMultiplier = theMults(theOutMaxIdx);
-  theOutMinIdx = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
-  theOutMinIdx = std::max(theOutMinIdx, 1);
-  theOutMaxIdx = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
+  theOutMinIdx          = BSplCLib::PoleIndex(theDegree, theOutMinIdx, theIsPeriodic, theMults) + 1;
+  theOutMinIdx          = std::max(theOutMinIdx, 1);
+  theOutMaxIdx          = BSplCLib::PoleIndex(theDegree, theOutMaxIdx, theIsPeriodic, theMults) + 1;
   theOutMaxIdx += theDegree - aMultiplier;
-  if (!theIsPeriodic) theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
+  if (!theIsPeriodic)
+    theOutMaxIdx = std::min(theOutMaxIdx, theMaxPoleIdx);
 }
 
 static gp_Pnt LegacyBaryCenter(const gp_Pln& aPlane,
-                                 const double  aUMin,
-                                 const double  aUMax,
-                                 const double  aVMin,
-                                 const double  aVMax)
+                               const double  aUMin,
+                               const double  aUMax,
+                               const double  aVMin,
+                               const double  aVMax)
 {
   double aU, aV;
   bool   isU1Inf = Precision::IsInfinite(aUMin);
   bool   isU2Inf = Precision::IsInfinite(aUMax);
   bool   isV1Inf = Precision::IsInfinite(aVMin);
   bool   isV2Inf = Precision::IsInfinite(aVMax);
-  if (isU1Inf && isU2Inf) aU = 0;
-  else if (isU1Inf) aU = aUMax - 10.;
-  else if (isU2Inf) aU = aUMin + 10.;
-  else aU = (aUMin + aUMax) / 2.;
-  if (isV1Inf && isV2Inf) aV = 0;
-  else if (isV1Inf) aV = aVMax - 10.;
-  else if (isV2Inf) aV = aVMin + 10.;
-  else aV = (aVMin + aVMax) / 2.;
+  if (isU1Inf && isU2Inf)
+    aU = 0;
+  else if (isU1Inf)
+    aU = aUMax - 10.;
+  else if (isU2Inf)
+    aU = aUMin + 10.;
+  else
+    aU = (aUMin + aUMax) / 2.;
+  if (isV1Inf && isV2Inf)
+    aV = 0;
+  else if (isV1Inf)
+    aV = aVMax - 10.;
+  else if (isV2Inf)
+    aV = aVMin + 10.;
+  else
+    aV = (aVMin + aVMax) / 2.;
   return ElSLib::Value(aU, aV, aPlane);
 }
 
 static void LegacyTreatInfinitePlane(const gp_Pln& aPlane,
-                                      const double  aUMin,
-                                      const double  aUMax,
-                                      const double  aVMin,
-                                      const double  aVMax,
-                                      const double  aTol,
-                                      Bnd_Box&      aB)
+                                     const double  aUMin,
+                                     const double  aUMax,
+                                     const double  aVMin,
+                                     const double  aVMax,
+                                     const double  aTol,
+                                     Bnd_Box&      aB)
 {
   const gp_Dir&    aNorm        = aPlane.Axis().Direction();
   constexpr double anAngularTol = RealEpsilon();
-  gp_Pnt           aLocation   = LegacyBaryCenter(aPlane, aUMin, aUMax, aVMin, aVMax);
+  gp_Pnt           aLocation    = LegacyBaryCenter(aPlane, aUMin, aUMax, aVMin, aVMax);
   if (aNorm.IsParallel(gp::DX(), anAngularTol))
   {
-    aB.Add(aLocation); aB.OpenYmin(); aB.OpenYmax(); aB.OpenZmin(); aB.OpenZmax();
+    aB.Add(aLocation);
+    aB.OpenYmin();
+    aB.OpenYmax();
+    aB.OpenZmin();
+    aB.OpenZmax();
   }
   else if (aNorm.IsParallel(gp::DY(), anAngularTol))
   {
-    aB.Add(aLocation); aB.OpenXmin(); aB.OpenXmax(); aB.OpenZmin(); aB.OpenZmax();
+    aB.Add(aLocation);
+    aB.OpenXmin();
+    aB.OpenXmax();
+    aB.OpenZmin();
+    aB.OpenZmax();
   }
   else if (aNorm.IsParallel(gp::DZ(), anAngularTol))
   {
-    aB.Add(aLocation); aB.OpenXmin(); aB.OpenXmax(); aB.OpenYmin(); aB.OpenYmax();
+    aB.Add(aLocation);
+    aB.OpenXmin();
+    aB.OpenXmax();
+    aB.OpenYmin();
+    aB.OpenYmax();
   }
   else
   {
-    aB.SetWhole(); return;
+    aB.SetWhole();
+    return;
   }
   aB.Enlarge(aTol);
 }
 
 // forward declaration
 static double LegacyAdjustExtrSurf(const Adaptor3d_Surface& S,
-                                     double UMin, double UMax, double VMin, double VMax,
-                                     double Extr0, int CoordIndx, double Tol, bool IsMin);
+                                   double                   UMin,
+                                   double                   UMax,
+                                   double                   VMin,
+                                   double                   VMax,
+                                   double                   Extr0,
+                                   int                      CoordIndx,
+                                   double                   Tol,
+                                   bool                     IsMin);
 
 class LegacySurfMaxMinCoord : public math_MultipleVarFunction
 {
 public:
   LegacySurfMaxMinCoord(const Adaptor3d_Surface& theSurf,
-                         double UMin, double UMax, double VMin, double VMax,
-                         int CoordIndx, double Sign)
-      : mySurf(theSurf), myUMin(UMin), myUMax(UMax), myVMin(VMin), myVMax(VMax),
-        myCoordIndx(CoordIndx), mySign(Sign), myPenalty(0.)
+                        double                   UMin,
+                        double                   UMax,
+                        double                   VMin,
+                        double                   VMax,
+                        int                      CoordIndx,
+                        double                   Sign)
+      : mySurf(theSurf),
+        myUMin(UMin),
+        myUMax(UMax),
+        myVMin(VMin),
+        myVMax(VMax),
+        myCoordIndx(CoordIndx),
+        mySign(Sign),
+        myPenalty(0.)
   {
     math_Vector X(1, 2);
-    X(1) = UMin; X(2) = (VMin + VMax) / 2.;
+    X(1) = UMin;
+    X(2) = (VMin + VMax) / 2.;
     double F1, F2;
-    Value(X, F1); X(1) = UMax; Value(X, F2);
+    Value(X, F1);
+    X(1) = UMax;
+    Value(X, F2);
     double DU = std::abs((F2 - F1) / (UMax - UMin));
-    X(1) = (UMin + UMax) / 2.; X(2) = VMin;
-    Value(X, F1); X(2) = VMax; Value(X, F2);
+    X(1)      = (UMin + UMax) / 2.;
+    X(2)      = VMin;
+    Value(X, F1);
+    X(2) = VMax;
+    Value(X, F2);
     double DV = std::abs((F2 - F1) / (VMax - VMin));
     myPenalty = 10. * std::max(DU, DV);
     myPenalty = std::max(myPenalty, 1.);
   }
+
   bool Value(const math_Vector& X, double& F) override
   {
     if (X(1) >= myUMin && X(1) <= myUMax && X(2) >= myVMin && X(2) <= myVMax)
@@ -803,71 +899,110 @@ public:
     else
     {
       double UPen = 0., VPen = 0., u0, v0;
-      if (X(1) < myUMin) { UPen = myPenalty * (myUMin - X(1)); u0 = myUMin; }
-      else if (X(1) > myUMax) { UPen = myPenalty * (X(1) - myUMax); u0 = myUMax; }
-      else u0 = X(1);
-      if (X(2) < myVMin) { VPen = myPenalty * (myVMin - X(2)); v0 = myVMin; }
-      else if (X(2) > myVMax) { VPen = myPenalty * (X(2) - myVMax); v0 = myVMax; }
-      else v0 = X(2);
+      if (X(1) < myUMin)
+      {
+        UPen = myPenalty * (myUMin - X(1));
+        u0   = myUMin;
+      }
+      else if (X(1) > myUMax)
+      {
+        UPen = myPenalty * (X(1) - myUMax);
+        u0   = myUMax;
+      }
+      else
+        u0 = X(1);
+      if (X(2) < myVMin)
+      {
+        VPen = myPenalty * (myVMin - X(2));
+        v0   = myVMin;
+      }
+      else if (X(2) > myVMax)
+      {
+        VPen = myPenalty * (X(2) - myVMax);
+        v0   = myVMax;
+      }
+      else
+        v0 = X(2);
       gp_Pnt aP = mySurf.Value(u0, v0);
       F         = mySign * aP.Coord(myCoordIndx) + UPen + VPen;
     }
     return true;
   }
+
   int NbVariables() const override { return 2; }
 
 private:
-  LegacySurfMaxMinCoord& operator=(const LegacySurfMaxMinCoord&) = delete;
+  LegacySurfMaxMinCoord&   operator=(const LegacySurfMaxMinCoord&) = delete;
   const Adaptor3d_Surface& mySurf;
-  double myUMin, myUMax, myVMin, myVMax;
-  int    myCoordIndx;
-  double mySign, myPenalty;
+  double                   myUMin, myUMax, myVMin, myVMax;
+  int                      myCoordIndx;
+  double                   mySign, myPenalty;
 };
 
 static double LegacyAdjustExtrSurf(const Adaptor3d_Surface& S,
-                                     double UMin, double UMax, double VMin, double VMax,
-                                     double Extr0, int CoordIndx, double Tol, bool IsMin)
+                                   double                   UMin,
+                                   double                   UMax,
+                                   double                   VMin,
+                                   double                   VMax,
+                                   double                   Extr0,
+                                   int                      CoordIndx,
+                                   double                   Tol,
+                                   bool                     IsMin)
 {
   double aSign  = IsMin ? 1. : -1.;
   double extr   = aSign * Extr0;
   double relTol = 2. * Tol;
-  if (std::abs(extr) > Tol) relTol /= std::abs(extr);
-  double Du = (S.LastUParameter() - S.FirstUParameter());
-  double Dv = (S.LastVParameter() - S.FirstVParameter());
+  if (std::abs(extr) > Tol)
+    relTol /= std::abs(extr);
+  double      Du = (S.LastUParameter() - S.FirstUParameter());
+  double      Dv = (S.LastVParameter() - S.FirstVParameter());
   math_Vector aT(1, 2), aLowBorder(1, 2), aUppBorder(1, 2), aSteps(1, 2);
-  aLowBorder(1) = UMin; aUppBorder(1) = UMax;
-  aLowBorder(2) = VMin; aUppBorder(2) = VMax;
-  int    aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
-  int    aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
-  int    aNbParticles = aNbU * aNbV;
-  aSteps(1) = std::min(0.1 * Du, (UMax - UMin) / (aNbU + 1));
-  aSteps(2) = std::min(0.1 * Dv, (VMax - VMin) / (aNbV + 1));
+  aLowBorder(1)    = UMin;
+  aUppBorder(1)    = UMax;
+  aLowBorder(2)    = VMin;
+  aUppBorder(2)    = VMax;
+  int aNbU         = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
+  int aNbV         = std::max(8, RealToInt(32 * (VMax - VMin) / Dv));
+  int aNbParticles = aNbU * aNbV;
+  aSteps(1)        = std::min(0.1 * Du, (UMax - UMin) / (aNbU + 1));
+  aSteps(2)        = std::min(0.1 * Dv, (VMax - VMin) / (aNbV + 1));
   LegacySurfMaxMinCoord aFunc(S, UMin, UMax, VMin, VMax, CoordIndx, aSign);
   math_PSO              aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
   aFinder.Perform(aSteps, extr, aT);
   math_Matrix aDir(1, 2, 1, 2, 0.0);
-  aDir(1, 1) = 1.; aDir(2, 2) = 1.;
+  aDir(1, 1) = 1.;
+  aDir(2, 2) = 1.;
   math_Powell powell(aFunc, relTol, 200, Tol);
   powell.Perform(aFunc, aT, aDir);
-  if (powell.IsDone()) { powell.Location(aT); extr = powell.Minimum(); }
+  if (powell.IsDone())
+  {
+    powell.Location(aT);
+    extr = powell.Minimum();
+  }
   return aSign * extr;
 }
 
 static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
-                              double UMin, double UMax, double VMin, double VMax,
-                              double Tol, Bnd_Box& B)
+                             double                   UMin,
+                             double                   UMax,
+                             double                   VMin,
+                             double                   VMax,
+                             double                   Tol,
+                             Bnd_Box&                 B)
 {
-  const int Nu = LegacyNbUSampleRange(S, UMin, UMax);
-  const int Nv = LegacyNbVSampleRange(S, VMin, VMax);
-  double CoordMin[3] = {RealLast(), RealLast(), RealLast()};
-  double CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
-  double DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
-  const double du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
-  const double dv = (VMax - VMin) / (Nv - 1), dv2 = dv / 2.;
-  const int    NuFine = 2 * Nu - 1, NvFine = 2 * Nv - 1;
+  const int                  Nu          = LegacyNbUSampleRange(S, UMin, UMax);
+  const int                  Nv          = LegacyNbVSampleRange(S, VMin, VMax);
+  double                     CoordMin[3] = {RealLast(), RealLast(), RealLast()};
+  double                     CoordMax[3] = {-RealLast(), -RealLast(), -RealLast()};
+  double                     DeflMax[3]  = {-RealLast(), -RealLast(), -RealLast()};
+  const double               du = (UMax - UMin) / (Nu - 1), du2 = du / 2.;
+  const double               dv = (VMax - VMin) / (Nv - 1), dv2 = dv / 2.;
+  const int                  NuFine = 2 * Nu - 1, NvFine = 2 * Nv - 1;
   NCollection_Array1<double> aUParams(1, NuFine), aVParams(1, NvFine);
-  for (int i = 1; i <= NuFine; i++) aUParams.SetValue(i, UMin + (i - 1) * du2);
-  for (int j = 1; j <= NvFine; j++) aVParams.SetValue(j, VMin + (j - 1) * dv2);
+  for (int i = 1; i <= NuFine; i++)
+    aUParams.SetValue(i, UMin + (i - 1) * du2);
+  for (int j = 1; j <= NvFine; j++)
+    aVParams.SetValue(j, VMin + (j - 1) * dv2);
   GeomGridEval_Surface             anEvaluator(S);
   const NCollection_Array2<gp_Pnt> aFineGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
   NCollection_Array2<gp_XYZ>       aPnts(1, Nu, 1, Nv);
@@ -881,8 +1016,10 @@ static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
       aPnts(i, j)         = P.XYZ();
       for (int k = 0; k < 3; ++k)
       {
-        if (CoordMin[k] > P.Coord(k + 1)) CoordMin[k] = P.Coord(k + 1);
-        if (CoordMax[k] < P.Coord(k + 1)) CoordMax[k] = P.Coord(k + 1);
+        if (CoordMin[k] > P.Coord(k + 1))
+          CoordMin[k] = P.Coord(k + 1);
+        if (CoordMax[k] < P.Coord(k + 1))
+          CoordMax[k] = P.Coord(k + 1);
       }
       if (i > 1)
       {
@@ -891,10 +1028,13 @@ static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
         const gp_XYZ  aD  = (PM.XYZ() - aPm);
         for (int k = 0; k < 3; ++k)
         {
-          if (CoordMin[k] > PM.Coord(k + 1)) CoordMin[k] = PM.Coord(k + 1);
-          if (CoordMax[k] < PM.Coord(k + 1)) CoordMax[k] = PM.Coord(k + 1);
+          if (CoordMin[k] > PM.Coord(k + 1))
+            CoordMin[k] = PM.Coord(k + 1);
+          if (CoordMax[k] < PM.Coord(k + 1))
+            CoordMax[k] = PM.Coord(k + 1);
           const double d = std::abs(aD.Coord(k + 1));
-          if (DeflMax[k] < d) DeflMax[k] = d;
+          if (DeflMax[k] < d)
+            DeflMax[k] = d;
         }
       }
       if (j > 1)
@@ -904,10 +1044,13 @@ static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
         const gp_XYZ  aD  = (PM.XYZ() - aPm);
         for (int k = 0; k < 3; ++k)
         {
-          if (CoordMin[k] > PM.Coord(k + 1)) CoordMin[k] = PM.Coord(k + 1);
-          if (CoordMax[k] < PM.Coord(k + 1)) CoordMax[k] = PM.Coord(k + 1);
+          if (CoordMin[k] > PM.Coord(k + 1))
+            CoordMin[k] = PM.Coord(k + 1);
+          if (CoordMax[k] < PM.Coord(k + 1))
+            CoordMax[k] = PM.Coord(k + 1);
           const double d = std::abs(aD.Coord(k + 1));
-          if (DeflMax[k] < d) DeflMax[k] = d;
+          if (DeflMax[k] < d)
+            DeflMax[k] = d;
         }
       }
     }
@@ -916,7 +1059,8 @@ static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
   for (int k = 0; k < 3; ++k)
   {
     double d = DeflMax[k];
-    if (d <= eps) continue;
+    if (d <= eps)
+      continue;
     double CMin = CoordMin[k];
     double CMax = CoordMax[k];
     for (int i = 1; i <= Nu; ++i)
@@ -928,14 +1072,16 @@ static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
           double umin = UMin + std::max(0, i - 2) * du, umax = UMin + std::min(Nu - 1, i) * du;
           double vmin = VMin + std::max(0, j - 2) * dv, vmax = VMin + std::min(Nv - 1, j) * dv;
           double cmin = LegacyAdjustExtrSurf(S, umin, umax, vmin, vmax, CMin, k + 1, eps, true);
-          if (cmin < CMin) CMin = cmin;
+          if (cmin < CMin)
+            CMin = cmin;
         }
         else if (CMax - aPnts(i, j).Coord(k + 1) < d)
         {
           double umin = UMin + std::max(0, i - 2) * du, umax = UMin + std::min(Nu - 1, i) * du;
           double vmin = VMin + std::max(0, j - 2) * dv, vmax = VMin + std::min(Nv - 1, j) * dv;
           double cmax = LegacyAdjustExtrSurf(S, umin, umax, vmin, vmax, CMax, k + 1, eps, false);
-          if (cmax > CMax) CMax = cmax;
+          if (cmax > CMax)
+            CMax = cmax;
         }
       }
     }
@@ -949,17 +1095,23 @@ static void LegacyAddGenSurf(const Adaptor3d_Surface& S,
 
 // forward declaration for recursive OffsetSurface case
 static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
-                                     double UMin, double UMax, double VMin, double VMax,
-                                     double Tol);
+                                    double                   UMin,
+                                    double                   UMax,
+                                    double                   VMin,
+                                    double                   VMax,
+                                    double                   Tol);
 
 static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
-                                     double UMin, double UMax, double VMin, double VMax,
-                                     double Tol)
+                                    double                   UMin,
+                                    double                   UMax,
+                                    double                   VMin,
+                                    double                   VMax,
+                                    double                   Tol)
 {
-  Bnd_Box              B;
-  GeomAbs_SurfaceType  Type = S.GetType();
-  if (Precision::IsInfinite(VMin) || Precision::IsInfinite(VMax)
-      || Precision::IsInfinite(UMin)  || Precision::IsInfinite(UMax))
+  Bnd_Box             B;
+  GeomAbs_SurfaceType Type = S.GetType();
+  if (Precision::IsInfinite(VMin) || Precision::IsInfinite(VMax) || Precision::IsInfinite(UMin)
+      || Precision::IsInfinite(UMax))
   {
     if (Type == GeomAbs_Plane)
       LegacyTreatInfinitePlane(S.Plane(), UMin, UMax, VMin, VMax, Tol, B);
@@ -971,8 +1123,10 @@ static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
   {
     case GeomAbs_Plane: {
       gp_Pln Plan = S.Plane();
-      B.Add(ElSLib::Value(UMin, VMin, Plan)); B.Add(ElSLib::Value(UMin, VMax, Plan));
-      B.Add(ElSLib::Value(UMax, VMin, Plan)); B.Add(ElSLib::Value(UMax, VMax, Plan));
+      B.Add(ElSLib::Value(UMin, VMin, Plan));
+      B.Add(ElSLib::Value(UMin, VMax, Plan));
+      B.Add(ElSLib::Value(UMax, VMin, Plan));
+      B.Add(ElSLib::Value(UMax, VMax, Plan));
       B.Enlarge(Tol);
       break;
     }
@@ -996,7 +1150,7 @@ static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
     }
     case GeomAbs_OffsetSurface: {
       occ::handle<Adaptor3d_Surface> HS = S.BasisSurface();
-      B = LegacyAddSurfaceImpl(*HS, UMin, UMax, VMin, VMax, Tol);
+      B                                 = LegacyAddSurfaceImpl(*HS, UMin, UMax, VMin, VMax, Tol);
       B.Enlarge(S.OffsetValue());
       B.Enlarge(Tol);
       break;
@@ -1027,40 +1181,62 @@ static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
       {
         int                        aNbUPoles = S.NbUPoles(), aNbVPoles = S.NbVPoles();
         NCollection_Array2<gp_Pnt> Tp(1, aNbUPoles, 1, aNbVPoles);
-        int UMinIdx = 0, UMaxIdx = 0, VMinIdx = 0, VMaxIdx = 0;
-        bool isUPeriodic = S.IsUPeriodic(), isVPeriodic = S.IsVPeriodic();
+        int                        UMinIdx = 0, UMaxIdx = 0, VMinIdx = 0, VMaxIdx = 0;
+        bool                       isUPeriodic = S.IsUPeriodic(), isVPeriodic = S.IsVPeriodic();
         if (Type == GeomAbs_BezierSurface)
         {
-          Tp = S.Bezier()->Poles();
-          UMinIdx = 1; UMaxIdx = aNbUPoles; VMinIdx = 1; VMaxIdx = aNbVPoles;
+          Tp      = S.Bezier()->Poles();
+          UMinIdx = 1;
+          UMaxIdx = aNbUPoles;
+          VMinIdx = 1;
+          VMaxIdx = aNbVPoles;
         }
         else
         {
-          Tp = aBS->Poles();
-          UMinIdx = 1; UMaxIdx = aNbUPoles; VMinIdx = 1; VMaxIdx = aNbVPoles;
+          Tp      = aBS->Poles();
+          UMinIdx = 1;
+          UMaxIdx = aNbUPoles;
+          VMinIdx = 1;
+          VMaxIdx = aNbVPoles;
           if (UMin > anUMinParam || UMax < anUMaxParam)
           {
             const NCollection_Array1<int>&    aMults = aBS->UMultiplicities();
             const NCollection_Array1<double>& aKnots = aBS->UKnots();
-            LegacyComputePolesIndexes(aKnots, aMults, aBS->UDegree(), UMin, UMax, aNbUPoles,
-                                       isUPeriodic, UMinIdx, UMaxIdx);
+            LegacyComputePolesIndexes(aKnots,
+                                      aMults,
+                                      aBS->UDegree(),
+                                      UMin,
+                                      UMax,
+                                      aNbUPoles,
+                                      isUPeriodic,
+                                      UMinIdx,
+                                      UMaxIdx);
           }
           if (VMin > aVMinParam || VMax < aVMaxParam)
           {
             const NCollection_Array1<int>&    aMults = aBS->VMultiplicities();
             const NCollection_Array1<double>& aKnots = aBS->VKnots();
-            LegacyComputePolesIndexes(aKnots, aMults, aBS->VDegree(), VMin, VMax, aNbVPoles,
-                                       isVPeriodic, VMinIdx, VMaxIdx);
+            LegacyComputePolesIndexes(aKnots,
+                                      aMults,
+                                      aBS->VDegree(),
+                                      VMin,
+                                      VMax,
+                                      aNbVPoles,
+                                      isVPeriodic,
+                                      VMinIdx,
+                                      VMaxIdx);
           }
         }
         for (int i = UMinIdx; i <= UMaxIdx; i++)
         {
           int ip = i;
-          if (isUPeriodic && ip > aNbUPoles) ip -= aNbUPoles;
+          if (isUPeriodic && ip > aNbUPoles)
+            ip -= aNbUPoles;
           for (int j = VMinIdx; j <= VMaxIdx; j++)
           {
             int jp = j;
-            if (isVPeriodic && jp > aNbVPoles) jp -= aNbVPoles;
+            if (isVPeriodic && jp > aNbVPoles)
+              jp -= aNbVPoles;
             B.Add(Tp(ip, jp));
           }
         }
@@ -1070,11 +1246,13 @@ static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
     }
       [[fallthrough]];
     default: {
-      const int Nu = LegacyNbUSamples(S);
-      const int Nv = LegacyNbVSamples(S);
+      const int                  Nu = LegacyNbUSamples(S);
+      const int                  Nv = LegacyNbVSamples(S);
       NCollection_Array1<double> aUParams(1, Nu), aVParams(1, Nv);
-      for (int i = 1; i <= Nu; i++) aUParams.SetValue(i, UMin + ((UMax - UMin) * (i - 1) / (Nu - 1)));
-      for (int j = 1; j <= Nv; j++) aVParams.SetValue(j, VMin + ((VMax - VMin) * (j - 1) / (Nv - 1)));
+      for (int i = 1; i <= Nu; i++)
+        aUParams.SetValue(i, UMin + ((UMax - UMin) * (i - 1) / (Nu - 1)));
+      for (int j = 1; j <= Nv; j++)
+        aVParams.SetValue(j, VMin + ((VMax - VMin) * (j - 1) / (Nv - 1)));
       GeomGridEval_Surface             anEvaluator(S);
       const NCollection_Array2<gp_Pnt> aGrid = anEvaluator.EvaluateGrid(aUParams, aVParams);
       for (int i = aGrid.LowerRow(); i <= aGrid.UpperRow(); i++)
@@ -1087,13 +1265,16 @@ static Bnd_Box LegacyAddSurfaceImpl(const Adaptor3d_Surface& S,
 }
 
 static Bnd_Box LegacyAddOptimalSurfaceImpl(const Adaptor3d_Surface& S,
-                                            double UMin, double UMax, double VMin, double VMax,
-                                            double Tol)
+                                           double                   UMin,
+                                           double                   UMax,
+                                           double                   VMin,
+                                           double                   VMax,
+                                           double                   Tol)
 {
   Bnd_Box             B;
   GeomAbs_SurfaceType Type = S.GetType();
-  if (Precision::IsInfinite(VMin) || Precision::IsInfinite(VMax)
-      || Precision::IsInfinite(UMin)  || Precision::IsInfinite(UMax))
+  if (Precision::IsInfinite(VMin) || Precision::IsInfinite(VMax) || Precision::IsInfinite(UMin)
+      || Precision::IsInfinite(UMax))
   {
     if (Type == GeomAbs_Plane)
       LegacyTreatInfinitePlane(S.Plane(), UMin, UMax, VMin, VMax, Tol, B);
@@ -1105,8 +1286,10 @@ static Bnd_Box LegacyAddOptimalSurfaceImpl(const Adaptor3d_Surface& S,
   {
     case GeomAbs_Plane: {
       gp_Pln Plan = S.Plane();
-      B.Add(ElSLib::Value(UMin, VMin, Plan)); B.Add(ElSLib::Value(UMin, VMax, Plan));
-      B.Add(ElSLib::Value(UMax, VMin, Plan)); B.Add(ElSLib::Value(UMax, VMax, Plan));
+      B.Add(ElSLib::Value(UMin, VMin, Plan));
+      B.Add(ElSLib::Value(UMin, VMax, Plan));
+      B.Add(ElSLib::Value(UMax, VMin, Plan));
+      B.Add(ElSLib::Value(UMax, VMax, Plan));
       B.Enlarge(Tol);
       break;
     }
@@ -1133,71 +1316,105 @@ class LegacyCurv2dMaxMinCoordMVar : public math_MultipleVarFunction
 {
 public:
   LegacyCurv2dMaxMinCoordMVar(const occ::handle<Geom2d_Curve>& theCurve,
-                               double UMin, double UMax, int CoordIndx, double Sign)
-      : myCurve(theCurve), myUMin(UMin), myUMax(UMax), myCoordIndx(CoordIndx), mySign(Sign) {}
+                              double                           UMin,
+                              double                           UMax,
+                              int                              CoordIndx,
+                              double                           Sign)
+      : myCurve(theCurve),
+        myUMin(UMin),
+        myUMax(UMax),
+        myCoordIndx(CoordIndx),
+        mySign(Sign)
+  {
+  }
+
   bool Value(const math_Vector& X, double& F) override
   {
-    if (X(1) < myUMin || X(1) > myUMax) return false;
+    if (X(1) < myUMin || X(1) > myUMax)
+      return false;
     gp_Pnt2d aP = myCurve->Value(X(1));
-    F = mySign * aP.Coord(myCoordIndx);
+    F           = mySign * aP.Coord(myCoordIndx);
     return true;
   }
+
   int NbVariables() const override { return 1; }
+
 private:
-  LegacyCurv2dMaxMinCoordMVar& operator=(const LegacyCurv2dMaxMinCoordMVar&) = delete;
+  LegacyCurv2dMaxMinCoordMVar&     operator=(const LegacyCurv2dMaxMinCoordMVar&) = delete;
   const occ::handle<Geom2d_Curve>& myCurve;
-  double myUMin, myUMax;
-  int    myCoordIndx;
-  double mySign;
+  double                           myUMin, myUMax;
+  int                              myCoordIndx;
+  double                           mySign;
 };
 
 class LegacyCurv2dMaxMinCoord : public math_Function
 {
 public:
   LegacyCurv2dMaxMinCoord(const occ::handle<Geom2d_Curve>& theCurve,
-                           double UMin, double UMax, int CoordIndx, double Sign)
-      : myCurve(theCurve), myUMin(UMin), myUMax(UMax), myCoordIndx(CoordIndx), mySign(Sign) {}
+                          double                           UMin,
+                          double                           UMax,
+                          int                              CoordIndx,
+                          double                           Sign)
+      : myCurve(theCurve),
+        myUMin(UMin),
+        myUMax(UMax),
+        myCoordIndx(CoordIndx),
+        mySign(Sign)
+  {
+  }
+
   bool Value(const double X, double& F) override
   {
-    if (X < myUMin || X > myUMax) return false;
+    if (X < myUMin || X > myUMax)
+      return false;
     gp_Pnt2d aP = myCurve->Value(X);
-    F = mySign * aP.Coord(myCoordIndx);
+    F           = mySign * aP.Coord(myCoordIndx);
     return true;
   }
+
 private:
-  LegacyCurv2dMaxMinCoord& operator=(const LegacyCurv2dMaxMinCoord&) = delete;
+  LegacyCurv2dMaxMinCoord&         operator=(const LegacyCurv2dMaxMinCoord&) = delete;
   const occ::handle<Geom2d_Curve>& myCurve;
-  double myUMin, myUMax;
-  int    myCoordIndx;
-  double mySign;
+  double                           myUMin, myUMax;
+  int                              myCoordIndx;
+  double                           mySign;
 };
 
 class LegacyBox2dCurve
 {
 public:
   LegacyBox2dCurve();
+
   void SetCurve(const occ::handle<Geom2d_Curve>& aC) { myCurve = aC; }
-  void SetRange(const double aT1, const double aT2) { myT1 = aT1; myT2 = aT2; }
+
+  void SetRange(const double aT1, const double aT2)
+  {
+    myT1 = aT1;
+    myT2 = aT2;
+  }
+
   const Bnd_Box2d& Box() const { return myBox; }
-  int              ErrorStatus() const { return myErrorStatus; }
+
+  int ErrorStatus() const { return myErrorStatus; }
+
   void Perform();
   void PerformOptimal(const double Tol);
 
 private:
-  void     CheckData();
-  void     GetInfoBase();
-  void     PerformOnePoint();
-  void     PerformLineConic();
-  void     PerformBezier();
-  void     PerformBSpline();
-  void     PerformOther();
-  void     PerformGenCurv(const double Tol);
-  void     D0(const double, gp_Pnt2d&);
-  void     Compute(const occ::handle<Geom2d_Conic>&, GeomAbs_CurveType, double, double, Bnd_Box2d&);
+  void CheckData();
+  void GetInfoBase();
+  void PerformOnePoint();
+  void PerformLineConic();
+  void PerformBezier();
+  void PerformBSpline();
+  void PerformOther();
+  void PerformGenCurv(const double Tol);
+  void D0(const double, gp_Pnt2d&);
+  void Compute(const occ::handle<Geom2d_Conic>&, GeomAbs_CurveType, double, double, Bnd_Box2d&);
   static int    Compute(const occ::handle<Geom2d_Conic>&, GeomAbs_CurveType, double*);
   static bool   IsTypeBase(const occ::handle<Geom2d_Curve>&, GeomAbs_CurveType&);
   static double AdjustToPeriod(double, double);
-  int    NbSamples();
+  int           NbSamples();
   double AdjustExtr(double UMin, double UMax, double Extr0, int CoordIndx, double Tol, bool IsMin);
 
   occ::handle<Geom2d_Curve> myCurve;
@@ -1212,8 +1429,12 @@ private:
 };
 
 LegacyBox2dCurve::LegacyBox2dCurve()
-    : myErrorStatus(-1), myOffsetBase(0.), myOffsetFlag(false),
-      myT1(0.), myT2(0.), myTypeBase(GeomAbs_OtherCurve)
+    : myErrorStatus(-1),
+      myOffsetBase(0.),
+      myOffsetFlag(false),
+      myT1(0.),
+      myT2(0.),
+      myTypeBase(GeomAbs_OtherCurve)
 {
   myBox.SetVoid();
 }
@@ -1221,8 +1442,16 @@ LegacyBox2dCurve::LegacyBox2dCurve()
 void LegacyBox2dCurve::CheckData()
 {
   myErrorStatus = 0;
-  if (myCurve.IsNull()) { myErrorStatus = 10; return; }
-  if (myT1 > myT2) { myErrorStatus = 12; return; }
+  if (myCurve.IsNull())
+  {
+    myErrorStatus = 10;
+    return;
+  }
+  if (myT1 > myT2)
+  {
+    myErrorStatus = 12;
+    return;
+  }
 }
 
 void LegacyBox2dCurve::Perform()
@@ -1233,13 +1462,18 @@ void LegacyBox2dCurve::Perform()
   myOffsetBase  = 0.;
   myOffsetFlag  = false;
   CheckData();
-  if (myErrorStatus) return;
-  if (myT1 == myT2) { PerformOnePoint(); return; }
+  if (myErrorStatus)
+    return;
+  if (myT1 == myT2)
+  {
+    PerformOnePoint();
+    return;
+  }
   GetInfoBase();
-  if (myErrorStatus) return;
-  if (myTypeBase == GeomAbs_Line || myTypeBase == GeomAbs_Circle
-      || myTypeBase == GeomAbs_Ellipse || myTypeBase == GeomAbs_Parabola
-      || myTypeBase == GeomAbs_Hyperbola)
+  if (myErrorStatus)
+    return;
+  if (myTypeBase == GeomAbs_Line || myTypeBase == GeomAbs_Circle || myTypeBase == GeomAbs_Ellipse
+      || myTypeBase == GeomAbs_Parabola || myTypeBase == GeomAbs_Hyperbola)
     PerformLineConic();
   else if (myTypeBase == GeomAbs_BezierCurve)
     PerformBezier();
@@ -1257,13 +1491,18 @@ void LegacyBox2dCurve::PerformOptimal(const double Tol)
   myOffsetBase  = 0.;
   myOffsetFlag  = false;
   CheckData();
-  if (myErrorStatus) return;
-  if (myT1 == myT2) { PerformOnePoint(); return; }
+  if (myErrorStatus)
+    return;
+  if (myT1 == myT2)
+  {
+    PerformOnePoint();
+    return;
+  }
   GetInfoBase();
-  if (myErrorStatus) return;
-  if (myTypeBase == GeomAbs_Line || myTypeBase == GeomAbs_Circle
-      || myTypeBase == GeomAbs_Ellipse || myTypeBase == GeomAbs_Parabola
-      || myTypeBase == GeomAbs_Hyperbola)
+  if (myErrorStatus)
+    return;
+  if (myTypeBase == GeomAbs_Line || myTypeBase == GeomAbs_Circle || myTypeBase == GeomAbs_Ellipse
+      || myTypeBase == GeomAbs_Parabola || myTypeBase == GeomAbs_Hyperbola)
     PerformLineConic();
   else
     PerformGenCurv(Tol);
@@ -1278,29 +1517,42 @@ void LegacyBox2dCurve::PerformOnePoint()
 
 void LegacyBox2dCurve::PerformBezier()
 {
-  if (myOffsetFlag) { PerformOther(); return; }
+  if (myOffsetFlag)
+  {
+    PerformOther();
+    return;
+  }
   occ::handle<Geom2d_BezierCurve> aCBz = occ::down_cast<Geom2d_BezierCurve>(myCurveBase);
-  double aT1 = aCBz->FirstParameter(), aT2 = aCBz->LastParameter();
-  double aTb[2] = {std::max(myT1, aT1), std::min(myT2, aT2)};
-  constexpr double anEps = Precision::PConfusion();
+  double                          aT1 = aCBz->FirstParameter(), aT2 = aCBz->LastParameter();
+  double                          aTb[2] = {std::max(myT1, aT1), std::min(myT2, aT2)};
+  constexpr double                anEps  = Precision::PConfusion();
   if (std::abs(aT1 - aTb[0]) > anEps || std::abs(aT2 - aTb[1]) > anEps)
   {
-    occ::handle<Geom2d_Geometry>    aG = aCBz->Copy();
+    occ::handle<Geom2d_Geometry>    aG      = aCBz->Copy();
     occ::handle<Geom2d_BezierCurve> aCBzSeg = occ::down_cast<Geom2d_BezierCurve>(aG);
     aCBzSeg->Segment(aTb[0], aTb[1]);
     aCBz = aCBzSeg;
   }
   int aNbPoles = aCBz->NbPoles();
-  for (int i = 1; i <= aNbPoles; ++i) myBox.Add(aCBz->Pole(i));
+  for (int i = 1; i <= aNbPoles; ++i)
+    myBox.Add(aCBz->Pole(i));
 }
 
 void LegacyBox2dCurve::PerformBSpline()
 {
-  if (myOffsetFlag) { PerformOther(); return; }
+  if (myOffsetFlag)
+  {
+    PerformOther();
+    return;
+  }
   occ::handle<Geom2d_BSplineCurve> aCBS = occ::down_cast<Geom2d_BSplineCurve>(myCurveBase);
-  double aT1 = aCBS->FirstParameter(), aT2 = aCBS->LastParameter();
-  double aTb[2] = {std::max(myT1, aT1), std::min(myT2, aT2)};
-  if (aTb[1] < aTb[0]) { aTb[0] = aT1; aTb[1] = aT2; }
+  double                           aT1 = aCBS->FirstParameter(), aT2 = aCBS->LastParameter();
+  double                           aTb[2] = {std::max(myT1, aT1), std::min(myT2, aT2)};
+  if (aTb[1] < aTb[0])
+  {
+    aTb[0] = aT1;
+    aTb[1] = aT2;
+  }
   constexpr double eps = Precision::PConfusion();
   if (std::abs(aT1 - aTb[0]) > eps || std::abs(aT2 - aTb[1]) > eps)
   {
@@ -1310,7 +1562,8 @@ void LegacyBox2dCurve::PerformBSpline()
     aCBS = aCBSs;
   }
   int aNbPoles = aCBS->NbPoles();
-  for (int i = 1; i <= aNbPoles; ++i) myBox.Add(aCBS->Pole(i));
+  for (int i = 1; i <= aNbPoles; ++i)
+    myBox.Add(aCBS->Pole(i));
 }
 
 void LegacyBox2dCurve::PerformOther()
@@ -1318,7 +1571,11 @@ void LegacyBox2dCurve::PerformOther()
   constexpr int aNb = 33;
   double        dT  = (myT2 - myT1) / (aNb - 1);
   gp_Pnt2d      aP2D;
-  for (int j = 0; j < aNb; ++j) { myCurve->D0(myT1 + j * dT, aP2D); myBox.Add(aP2D); }
+  for (int j = 0; j < aNb; ++j)
+  {
+    myCurve->D0(myT1 + j * dT, aP2D);
+    myBox.Add(aP2D);
+  }
   myCurve->D0(myT2, aP2D);
   myBox.Add(aP2D);
 }
@@ -1330,17 +1587,25 @@ int LegacyBox2dCurve::NbSamples()
   {
     case GeomAbs_BezierCurve: {
       occ::handle<Geom2d_BezierCurve> aCBz = occ::down_cast<Geom2d_BezierCurve>(myCurveBase);
-      N = aCBz->NbPoles();
-      double du = myT2 - myT1;
-      if (du < .9) { N = RealToInt(du * N) + 1; N = std::max(N, 5); }
+      N                                    = aCBz->NbPoles();
+      double du                            = myT2 - myT1;
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
       break;
     }
     case GeomAbs_BSplineCurve: {
       occ::handle<Geom2d_BSplineCurve> aCBS = occ::down_cast<Geom2d_BSplineCurve>(myCurveBase);
-      N = (aCBS->Degree() + 1) * (aCBS->NbKnots() - 1);
+      N                                     = (aCBS->Degree() + 1) * (aCBS->NbKnots() - 1);
       double umin = aCBS->FirstParameter(), umax = aCBS->LastParameter();
       double du = (myT2 - myT1) / (umax - umin);
-      if (du < .9) { N = RealToInt(du * N) + 1; N = std::max(N, 5); }
+      if (du < .9)
+      {
+        N = RealToInt(du * N) + 1;
+        N = std::max(N, 5);
+      }
       break;
     }
     default:
@@ -1349,44 +1614,53 @@ int LegacyBox2dCurve::NbSamples()
   return std::min(23, N);
 }
 
-double LegacyBox2dCurve::AdjustExtr(double UMin, double UMax, double Extr0,
-                                      int CoordIndx, double Tol, bool IsMin)
+double LegacyBox2dCurve::AdjustExtr(double UMin,
+                                    double UMax,
+                                    double Extr0,
+                                    int    CoordIndx,
+                                    double Tol,
+                                    bool   IsMin)
 {
-  double aSign = IsMin ? 1. : -1.;
-  double extr  = aSign * Extr0;
-  double Du    = (myCurve->LastParameter() - myCurve->FirstParameter());
+  double              aSign = IsMin ? 1. : -1.;
+  double              extr  = aSign * Extr0;
+  double              Du    = (myCurve->LastParameter() - myCurve->FirstParameter());
   Geom2dAdaptor_Curve aGAC(myCurve);
-  double UTol   = std::max(aGAC.Resolution(Tol), Precision::PConfusion());
-  double reltol = UTol / std::max(std::abs(UMin), std::abs(UMax));
+  double              UTol   = std::max(aGAC.Resolution(Tol), Precision::PConfusion());
+  double              reltol = UTol / std::max(std::abs(UMin), std::abs(UMax));
   if (UMax - UMin < 0.01 * Du)
   {
-    math_BrentMinimum         anOptLoc(reltol, 100, UTol);
-    LegacyCurv2dMaxMinCoord   aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
+    math_BrentMinimum       anOptLoc(reltol, 100, UTol);
+    LegacyCurv2dMaxMinCoord aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
     anOptLoc.Perform(aFunc, UMin, (UMin + UMax) / 2., UMax);
-    if (anOptLoc.IsDone()) return aSign * anOptLoc.Minimum();
+    if (anOptLoc.IsDone())
+      return aSign * anOptLoc.Minimum();
   }
   int         aNbParticles = std::max(8, RealToInt(32 * (UMax - UMin) / Du));
   double      maxstep      = (UMax - UMin) / (aNbParticles + 1);
   math_Vector aT(1, 1), aLowBorder(1, 1), aUppBorder(1, 1), aSteps(1, 1);
-  aLowBorder(1) = UMin; aUppBorder(1) = UMax;
+  aLowBorder(1) = UMin;
+  aUppBorder(1) = UMax;
   aSteps(1)     = std::min(0.1 * Du, maxstep);
   LegacyCurv2dMaxMinCoordMVar aFunc(myCurve, UMin, UMax, CoordIndx, aSign);
   math_PSO                    aFinder(&aFunc, aLowBorder, aUppBorder, aSteps, aNbParticles);
   aFinder.Perform(aSteps, extr, aT);
-  math_BrentMinimum         anOptLoc(reltol, 100, UTol);
-  LegacyCurv2dMaxMinCoord   aFunc1(myCurve, UMin, UMax, CoordIndx, aSign);
-  anOptLoc.Perform(aFunc1, std::max(aT(1) - aSteps(1), UMin), aT(1),
+  math_BrentMinimum       anOptLoc(reltol, 100, UTol);
+  LegacyCurv2dMaxMinCoord aFunc1(myCurve, UMin, UMax, CoordIndx, aSign);
+  anOptLoc.Perform(aFunc1,
+                   std::max(aT(1) - aSteps(1), UMin),
+                   aT(1),
                    std::min(aT(1) + aSteps(1), UMax));
-  if (anOptLoc.IsDone()) extr = anOptLoc.Minimum();
+  if (anOptLoc.IsDone())
+    extr = anOptLoc.Minimum();
   return aSign * extr;
 }
 
 void LegacyBox2dCurve::PerformGenCurv(const double Tol)
 {
-  int    Nu = NbSamples();
-  double CoordMin[2] = {RealLast(), RealLast()};
-  double CoordMax[2] = {-RealLast(), -RealLast()};
-  double DeflMax[2]  = {-RealLast(), -RealLast()};
+  int                       Nu          = NbSamples();
+  double                    CoordMin[2] = {RealLast(), RealLast()};
+  double                    CoordMax[2] = {-RealLast(), -RealLast()};
+  double                    DeflMax[2]  = {-RealLast(), -RealLast()};
   gp_Pnt2d                  P;
   double                    du = (myT2 - myT1) / (Nu - 1), du2 = du / 2.;
   NCollection_Array1<gp_XY> aPnts(1, Nu);
@@ -1397,8 +1671,10 @@ void LegacyBox2dCurve::PerformGenCurv(const double Tol)
     aPnts(i) = P.XY();
     for (int k = 0; k < 2; ++k)
     {
-      if (CoordMin[k] > P.Coord(k + 1)) CoordMin[k] = P.Coord(k + 1);
-      if (CoordMax[k] < P.Coord(k + 1)) CoordMax[k] = P.Coord(k + 1);
+      if (CoordMin[k] > P.Coord(k + 1))
+        CoordMin[k] = P.Coord(k + 1);
+      if (CoordMax[k] < P.Coord(k + 1))
+        CoordMax[k] = P.Coord(k + 1);
     }
     if (i > 1)
     {
@@ -1407,17 +1683,21 @@ void LegacyBox2dCurve::PerformGenCurv(const double Tol)
       gp_XY aD = (P.XY() - aPm);
       for (int k = 0; k < 2; ++k)
       {
-        if (CoordMin[k] > P.Coord(k + 1)) CoordMin[k] = P.Coord(k + 1);
-        if (CoordMax[k] < P.Coord(k + 1)) CoordMax[k] = P.Coord(k + 1);
+        if (CoordMin[k] > P.Coord(k + 1))
+          CoordMin[k] = P.Coord(k + 1);
+        if (CoordMax[k] < P.Coord(k + 1))
+          CoordMax[k] = P.Coord(k + 1);
         double d = std::abs(aD.Coord(k + 1));
-        if (DeflMax[k] < d) DeflMax[k] = d;
+        if (DeflMax[k] < d)
+          DeflMax[k] = d;
       }
     }
   }
   for (int k = 0; k < 2; ++k)
   {
     double d = DeflMax[k];
-    if (d <= Tol) continue;
+    if (d <= Tol)
+      continue;
     double CMin = CoordMin[k], CMax = CoordMax[k];
     for (int i = 1; i <= Nu; ++i)
     {
@@ -1426,14 +1706,16 @@ void LegacyBox2dCurve::PerformGenCurv(const double Tol)
         double tmin = myT1 + std::max(0, i - 2) * du;
         double tmax = myT1 + std::min(Nu - 1, i) * du;
         double cmin = AdjustExtr(tmin, tmax, CMin, k + 1, Tol, true);
-        if (cmin < CMin) CMin = cmin;
+        if (cmin < CMin)
+          CMin = cmin;
       }
       else if (CMax - aPnts(i).Coord(k + 1) < d)
       {
         double tmin = myT1 + std::max(0, i - 2) * du;
         double tmax = myT1 + std::min(Nu - 1, i) * du;
         double cmax = AdjustExtr(tmin, tmax, CMax, k + 1, Tol, false);
-        if (cmax > CMax) CMax = cmax;
+        if (cmax > CMax)
+          CMax = cmax;
       }
     }
     CoordMin[k] = CMin;
@@ -1451,12 +1733,19 @@ void LegacyBox2dCurve::D0(const double aU, gp_Pnt2d& aP2D)
   if (myOffsetFlag)
   {
     int    aIndex = 2, aMaxDegree = 9;
-    double aRes   = gp::Resolution();
+    double aRes = gp::Resolution();
     while (aV1.Magnitude() <= aRes && aIndex <= aMaxDegree)
-    { aV1 = myCurveBase->DN(aU, aIndex); ++aIndex; }
+    {
+      aV1 = myCurveBase->DN(aU, aIndex);
+      ++aIndex;
+    }
     double aA = aV1.Y(), aB = -aV1.X();
     double aR = std::sqrt(aA * aA + aB * aB);
-    if (aR <= aRes) { myErrorStatus = 13; return; }
+    if (aR <= aRes)
+    {
+      myErrorStatus = 13;
+      return;
+    }
     aR = myOffsetBase / aR;
     aP2D.SetCoord(aP2D.X() + aA * aR, aP2D.Y() + aB * aR);
   }
@@ -1464,29 +1753,44 @@ void LegacyBox2dCurve::D0(const double aU, gp_Pnt2d& aP2D)
 
 void LegacyBox2dCurve::GetInfoBase()
 {
-  myErrorStatus = 0;
-  myTypeBase    = GeomAbs_OtherCurve;
-  myOffsetBase  = 0;
+  myErrorStatus                   = 0;
+  myTypeBase                      = GeomAbs_OtherCurve;
+  myOffsetBase                    = 0;
   occ::handle<Geom2d_Curve> aC2DB = myCurve;
   GeomAbs_CurveType         aTypeB;
-  bool bIsTypeBase = IsTypeBase(aC2DB, aTypeB);
-  if (bIsTypeBase) { myTypeBase = aTypeB; myCurveBase = myCurve; return; }
+  bool                      bIsTypeBase = IsTypeBase(aC2DB, aTypeB);
+  if (bIsTypeBase)
+  {
+    myTypeBase  = aTypeB;
+    myCurveBase = myCurve;
+    return;
+  }
   while (!bIsTypeBase)
   {
-    int iTrimmed = 0, iOffset = 0;
+    int                              iTrimmed = 0, iOffset = 0;
     occ::handle<Geom2d_TrimmedCurve> aCT2D = occ::down_cast<Geom2d_TrimmedCurve>(aC2DB);
-    if (!aCT2D.IsNull()) { aC2DB = aCT2D->BasisCurve(); ++iTrimmed; }
+    if (!aCT2D.IsNull())
+    {
+      aC2DB = aCT2D->BasisCurve();
+      ++iTrimmed;
+    }
     occ::handle<Geom2d_OffsetCurve> aCF2D = occ::down_cast<Geom2d_OffsetCurve>(aC2DB);
     if (!aCF2D.IsNull())
     {
       myOffsetBase += aCF2D->Offset();
-      myOffsetFlag  = true;
-      aC2DB         = aCF2D->BasisCurve();
+      myOffsetFlag = true;
+      aC2DB        = aCF2D->BasisCurve();
       ++iOffset;
     }
-    if (!(iTrimmed || iOffset)) break;
+    if (!(iTrimmed || iOffset))
+      break;
     bIsTypeBase = IsTypeBase(aC2DB, aTypeB);
-    if (bIsTypeBase) { myTypeBase = aTypeB; myCurveBase = aC2DB; return; }
+    if (bIsTypeBase)
+    {
+      myTypeBase  = aTypeB;
+      myCurveBase = aC2DB;
+      return;
+    }
   }
   myErrorStatus = 11;
 }
@@ -1494,13 +1798,41 @@ void LegacyBox2dCurve::GetInfoBase()
 bool LegacyBox2dCurve::IsTypeBase(const occ::handle<Geom2d_Curve>& aC2D, GeomAbs_CurveType& aTypeB)
 {
   occ::handle<Standard_Type> aType = aC2D->DynamicType();
-  if (aType == STANDARD_TYPE(Geom2d_Line))           { aTypeB = GeomAbs_Line; return true; }
-  if (aType == STANDARD_TYPE(Geom2d_Circle))         { aTypeB = GeomAbs_Circle; return true; }
-  if (aType == STANDARD_TYPE(Geom2d_Ellipse))        { aTypeB = GeomAbs_Ellipse; return true; }
-  if (aType == STANDARD_TYPE(Geom2d_Parabola))       { aTypeB = GeomAbs_Parabola; return true; }
-  if (aType == STANDARD_TYPE(Geom2d_Hyperbola))      { aTypeB = GeomAbs_Hyperbola; return true; }
-  if (aType == STANDARD_TYPE(Geom2d_BezierCurve))    { aTypeB = GeomAbs_BezierCurve; return true; }
-  if (aType == STANDARD_TYPE(Geom2d_BSplineCurve))   { aTypeB = GeomAbs_BSplineCurve; return true; }
+  if (aType == STANDARD_TYPE(Geom2d_Line))
+  {
+    aTypeB = GeomAbs_Line;
+    return true;
+  }
+  if (aType == STANDARD_TYPE(Geom2d_Circle))
+  {
+    aTypeB = GeomAbs_Circle;
+    return true;
+  }
+  if (aType == STANDARD_TYPE(Geom2d_Ellipse))
+  {
+    aTypeB = GeomAbs_Ellipse;
+    return true;
+  }
+  if (aType == STANDARD_TYPE(Geom2d_Parabola))
+  {
+    aTypeB = GeomAbs_Parabola;
+    return true;
+  }
+  if (aType == STANDARD_TYPE(Geom2d_Hyperbola))
+  {
+    aTypeB = GeomAbs_Hyperbola;
+    return true;
+  }
+  if (aType == STANDARD_TYPE(Geom2d_BezierCurve))
+  {
+    aTypeB = GeomAbs_BezierCurve;
+    return true;
+  }
+  if (aType == STANDARD_TYPE(Geom2d_BSplineCurve))
+  {
+    aTypeB = GeomAbs_BSplineCurve;
+    return true;
+  }
   aTypeB = GeomAbs_OtherCurve;
   return false;
 }
@@ -1514,20 +1846,24 @@ void LegacyBox2dCurve::PerformLineConic()
   {
     D0(aTb[i], aP2D);
     myBox.Add(aP2D);
-    if (Precision::IsNegativeInfinite(aTb[i])) ++iInf[0];
-    else if (Precision::IsPositiveInfinite(aTb[i])) ++iInf[1];
+    if (Precision::IsNegativeInfinite(aTb[i]))
+      ++iInf[0];
+    else if (Precision::IsPositiveInfinite(aTb[i]))
+      ++iInf[1];
   }
-  if (myTypeBase == GeomAbs_Line) return;
-  if (iInf[0] && iInf[1]) return;
+  if (myTypeBase == GeomAbs_Line)
+    return;
+  if (iInf[0] && iInf[1])
+    return;
   occ::handle<Geom2d_Conic> aConic2D = occ::down_cast<Geom2d_Conic>(myCurveBase);
   Compute(aConic2D, myTypeBase, aTb[0], aTb[1], myBox);
 }
 
 void LegacyBox2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
-                                 const GeomAbs_CurveType          aType,
-                                 const double                     aT1,
-                                 const double                     aT2,
-                                 Bnd_Box2d&                       aBox2D)
+                               const GeomAbs_CurveType          aType,
+                               const double                     aT1,
+                               const double                     aT2,
+                               Bnd_Box2d&                       aBox2D)
 {
   double pT[10];
   int    aNbT = Compute(aConic2D, aType, pT);
@@ -1537,73 +1873,87 @@ void LegacyBox2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
     for (int i = 0; i < aNbT; ++i)
     {
       double aT = pT[i];
-      if (aT > aT1 && aT < aT2) { D0(aT, aP2D); aBox2D.Add(aP2D); }
+      if (aT > aT1 && aT < aT2)
+      {
+        D0(aT, aP2D);
+        aBox2D.Add(aP2D);
+      }
     }
     return;
   }
   double aEps = Precision::Angular(), aTwoPI = 2. * M_PI, dT = aT2 - aT1;
   double aT1z = AdjustToPeriod(aT1, aTwoPI);
-  if (std::abs(aT1z) < aEps) aT1z = 0.;
+  if (std::abs(aT1z) < aEps)
+    aT1z = 0.;
   double aT2z = aT1z + dT;
-  if (std::abs(aT2z - aTwoPI) < aEps) aT2z = aTwoPI;
+  if (std::abs(aT2z - aTwoPI) < aEps)
+    aT2z = aTwoPI;
   gp_Pnt2d aP2D;
   for (int i = 0; i < aNbT; ++i)
   {
     double aT = pT[i];
-    aT = (aT < aT1z ? aT + aTwoPI : aT);
-    if (aT <= aT2z) { D0(aT, aP2D); aBox2D.Add(aP2D); }
+    aT        = (aT < aT1z ? aT + aTwoPI : aT);
+    if (aT <= aT2z)
+    {
+      D0(aT, aP2D);
+      aBox2D.Add(aP2D);
+    }
   }
 }
 
 int LegacyBox2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
-                                const GeomAbs_CurveType          aType,
-                                double*                          pT)
+                              const GeomAbs_CurveType          aType,
+                              double*                          pT)
 {
-  int    iRet = 0;
-  const gp_Ax22d& aPos  = aConic2D->Position();
-  const gp_XY&    aXDir = aPos.XDirection().XY();
-  const gp_XY&    aYDir = aPos.YDirection().XY();
-  double aCosBt = aXDir.X(), aSinBt = aXDir.Y();
-  double aCosGm = aYDir.X(), aSinGm = aYDir.Y();
+  int             iRet   = 0;
+  const gp_Ax22d& aPos   = aConic2D->Position();
+  const gp_XY&    aXDir  = aPos.XDirection().XY();
+  const gp_XY&    aYDir  = aPos.YDirection().XY();
+  double          aCosBt = aXDir.X(), aSinBt = aXDir.Y();
+  double          aCosGm = aYDir.X(), aSinGm = aYDir.Y();
   if (aType == GeomAbs_Circle || aType == GeomAbs_Ellipse)
   {
     double aR1 = 0., aR2 = 0., aTwoPI = M_PI + M_PI;
     if (aType == GeomAbs_Ellipse)
     {
       occ::handle<Geom2d_Ellipse> aEL2D = occ::down_cast<Geom2d_Ellipse>(aConic2D);
-      aR1 = aEL2D->MajorRadius(); aR2 = aEL2D->MinorRadius();
+      aR1                               = aEL2D->MajorRadius();
+      aR2                               = aEL2D->MinorRadius();
     }
     else
     {
       occ::handle<Geom2d_Circle> aCR2D = occ::down_cast<Geom2d_Circle>(aConic2D);
-      aR1 = aCR2D->Radius(); aR2 = aR1;
+      aR1                              = aCR2D->Radius();
+      aR2                              = aR1;
     }
     double aA11 = -aR1 * aCosBt, aA12 = aR2 * aCosGm;
     double aA21 = -aR1 * aSinBt, aA22 = aR2 * aSinGm;
     for (int i = 0; i < 2; ++i)
     {
       double aLx = (!i) ? 0. : 1., aLy = (!i) ? 1. : 0.;
-      double aBx  = aLx * aA21 - aLy * aA11;
-      double aBy  = aLx * aA22 - aLy * aA12;
-      double aB   = std::sqrt(aBx * aBx + aBy * aBy);
-      double aFi  = std::acos(aBx / aB);
-      if (aBy / aB < 0.) aFi = aTwoPI - aFi;
-      int j  = 2 * i;
-      pT[j]  = AdjustToPeriod(aTwoPI - aFi, aTwoPI);
-      pT[j+1]= AdjustToPeriod(M_PI - aFi, aTwoPI);
+      double aBx = aLx * aA21 - aLy * aA11;
+      double aBy = aLx * aA22 - aLy * aA12;
+      double aB  = std::sqrt(aBx * aBx + aBy * aBy);
+      double aFi = std::acos(aBx / aB);
+      if (aBy / aB < 0.)
+        aFi = aTwoPI - aFi;
+      int j     = 2 * i;
+      pT[j]     = AdjustToPeriod(aTwoPI - aFi, aTwoPI);
+      pT[j + 1] = AdjustToPeriod(M_PI - aFi, aTwoPI);
     }
     iRet = 4;
   }
   else if (aType == GeomAbs_Parabola)
   {
     occ::handle<Geom2d_Parabola> aPR2D = occ::down_cast<Geom2d_Parabola>(aConic2D);
-    double aFc = aPR2D->Focal(), aEps = Precision::Angular();
-    int j = 0;
+    double                       aFc = aPR2D->Focal(), aEps = Precision::Angular();
+    int                          j = 0;
     for (int i = 0; i < 2; i++)
     {
       double aLx = (!i) ? 0. : 1., aLy = (!i) ? 1. : 0.;
       double aA2 = aLx * aSinBt - aLy * aCosBt;
-      if (std::abs(aA2) < aEps) continue;
+      if (std::abs(aA2) < aEps)
+        continue;
       double aA1 = aLy * aCosGm - aLx * aSinGm;
       pT[j++]    = 2. * aFc * aA1 / aA2;
     }
@@ -1612,25 +1962,31 @@ int LegacyBox2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
   else if (aType == GeomAbs_Hyperbola)
   {
     occ::handle<Geom2d_Hyperbola> aHP2D = occ::down_cast<Geom2d_Hyperbola>(aConic2D);
-    double aR1 = aHP2D->MajorRadius(), aR2 = aHP2D->MinorRadius();
-    double aEps = Precision::Angular();
-    int j = 0;
+    double                        aR1 = aHP2D->MajorRadius(), aR2 = aHP2D->MinorRadius();
+    double                        aEps = Precision::Angular();
+    int                           j    = 0;
     for (int i = 0; i < 2; i++)
     {
       double aLx = (!i) ? 0. : 1., aLy = (!i) ? 1. : 0.;
       double aB1 = aR1 * (aLx * aSinBt - aLy * aCosBt);
       double aB2 = aR2 * (aLx * aSinGm - aLy * aCosGm);
-      if (std::abs(aB1) < aEps) continue;
-      if (std::abs(aB2) < aEps) { pT[j++] = 0.; }
+      if (std::abs(aB1) < aEps)
+        continue;
+      if (std::abs(aB2) < aEps)
+      {
+        pT[j++] = 0.;
+      }
       else
       {
         double aB12 = aB1 * aB1, aB22 = aB2 * aB2;
-        if (!(aB12 > aB22)) continue;
+        if (!(aB12 > aB22))
+          continue;
         double aD = std::sqrt(aB12 - aB22);
         for (int k = -1; k < 2; k += 2)
         {
           double aZ = (aB1 + k * aD) / aB2;
-          if (std::abs(aZ) < 1.) pT[j++] = -std::log((1. + aZ) / (1. - aZ));
+          if (std::abs(aZ) < 1.)
+            pT[j++] = -std::log((1. + aZ) / (1. - aZ));
         }
       }
     }
@@ -1642,16 +1998,23 @@ int LegacyBox2dCurve::Compute(const occ::handle<Geom2d_Conic>& aConic2D,
 double LegacyBox2dCurve::AdjustToPeriod(const double aT, const double aPeriod)
 {
   double aTRet = aT;
-  if (aT < 0.) { aTRet = aT + (1 + static_cast<int>(-aT / aPeriod)) * aPeriod; }
-  else if (aT > aPeriod) { aTRet = aT - static_cast<int>(aT / aPeriod) * aPeriod; }
-  if (aTRet == aPeriod) aTRet = 0.;
+  if (aT < 0.)
+  {
+    aTRet = aT + (1 + static_cast<int>(-aT / aPeriod)) * aPeriod;
+  }
+  else if (aT > aPeriod)
+  {
+    aTRet = aT - static_cast<int>(aT / aPeriod) * aPeriod;
+  }
+  if (aTRet == aPeriod)
+    aTRet = 0.;
   return aTRet;
 }
 
 static Bnd_Box2d LegacyAdd2dCurveImpl(const occ::handle<Geom2d_Curve>& aC2D,
-                                        double                           aT1,
-                                        double                           aT2,
-                                        double                           aTol)
+                                      double                           aT1,
+                                      double                           aT2,
+                                      double                           aTol)
 {
   LegacyBox2dCurve aBC;
   aBC.SetCurve(aC2D);
@@ -1663,9 +2026,9 @@ static Bnd_Box2d LegacyAdd2dCurveImpl(const occ::handle<Geom2d_Curve>& aC2D,
 }
 
 static Bnd_Box2d LegacyAddOptimal2dCurveImpl(const occ::handle<Geom2d_Curve>& aC2D,
-                                              double                           aT1,
-                                              double                           aT2,
-                                              double                           aTol)
+                                             double                           aT1,
+                                             double                           aT2,
+                                             double                           aTol)
 {
   LegacyBox2dCurve aBC;
   aBC.SetCurve(aC2D);
@@ -1774,7 +2137,7 @@ void Compare2dCurveAdd(const Handle(Geom2d_Curve)& theC,
                        double                      theTol,
                        const Bnd_Box2d&            theNewBox)
 {
-  const Bnd_Box2d         aOldBox  = LegacyAdd2dCurveImpl(theC, theT1, theT2, theTol);
+  const Bnd_Box2d aOldBox = LegacyAdd2dCurveImpl(theC, theT1, theT2, theTol);
   if (!boxesEqual2d(aOldBox, theNewBox))
   {
     std::cerr << "[BndLib_LegacyCheck] Add2dCurve"
@@ -1792,7 +2155,7 @@ void Compare2dCurveAddOptimal(const Handle(Geom2d_Curve)& theC,
                               double                      theTol,
                               const Bnd_Box2d&            theNewBox)
 {
-  const Bnd_Box2d     aOldBox   = LegacyAddOptimal2dCurveImpl(theC, theT1, theT2, theTol);
+  const Bnd_Box2d aOldBox = LegacyAddOptimal2dCurveImpl(theC, theT1, theT2, theTol);
   if (!boxesEqual2d(aOldBox, theNewBox))
   {
     std::cerr << "[BndLib_LegacyCheck] AddOptimal2dCurve"

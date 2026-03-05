@@ -63,17 +63,17 @@ void CompareSurfaceAddOptimal(const Adaptor3d_Surface& theS,
 
 //! Compare old Add2dCurve result with new; print to std::cerr if different.
 void Compare2dCurveAdd(const occ::handle<Geom2d_Curve>& theC,
-                       double                      theT1,
-                       double                      theT2,
-                       double                      theTol,
-                       const Bnd_Box2d&            theNewBox);
+                       double                           theT1,
+                       double                           theT2,
+                       double                           theTol,
+                       const Bnd_Box2d&                 theNewBox);
 
 //! Compare old AddOptimal2dCurve result with new; print to std::cerr if different.
 void Compare2dCurveAddOptimal(const occ::handle<Geom2d_Curve>& theC,
-                              double                      theT1,
-                              double                      theT2,
-                              double                      theTol,
-                              const Bnd_Box2d&            theNewBox);
+                              double                           theT1,
+                              double                           theT2,
+                              double                           theTol,
+                              const Bnd_Box2d&                 theNewBox);
 
 } // namespace BndLib_LegacyCheck
 

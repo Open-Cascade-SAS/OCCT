@@ -43,14 +43,14 @@ void ExpectNoLarger(const Bnd_Box& theNew, const Bnd_Box& theOld, const double t
 }
 
 //! Helper: verify box contains all sampled points of the offset surface.
-void ExpectContainsOffsetSurface(const Bnd_Box&                    theBox,
+void ExpectContainsOffsetSurface(const Bnd_Box&                         theBox,
                                  const occ::handle<Geom_OffsetSurface>& theSurf,
-                                 const double                      theUMin,
-                                 const double                      theUMax,
-                                 const double                      theVMin,
-                                 const double                      theVMax,
-                                 const int                         theNbU,
-                                 const int                         theNbV)
+                                 const double                           theUMin,
+                                 const double                           theUMax,
+                                 const double                           theVMin,
+                                 const double                           theVMax,
+                                 const int                              theNbU,
+                                 const int                              theNbV)
 {
   double aXmin = 0., aYmin = 0., aZmin = 0., aXmax = 0., aYmax = 0., aZmax = 0.;
   theBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
@@ -89,7 +89,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_PositiveOffset_Full_CompareWithBndLib)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 5.0);
   occ::handle<Geom_OffsetSurface>    anOff   = new Geom_OffsetSurface(aSphere, 2.0);
-  GeomAdaptor_Surface           anAdaptor(anOff);
+  GeomAdaptor_Surface                anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(Precision::Confusion(), aNewBox);
@@ -105,7 +105,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_PositiveOffset_Patch_CompareWithBndLib
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 5.0);
   occ::handle<Geom_OffsetSurface>    anOff   = new Geom_OffsetSurface(aSphere, 2.0);
-  GeomAdaptor_Surface           anAdaptor(anOff);
+  GeomAdaptor_Surface                anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff)
@@ -132,7 +132,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_NegativeOffset_Full_CompareWithBndLib)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 10.0);
   occ::handle<Geom_OffsetSurface>    anOff   = new Geom_OffsetSurface(aSphere, -3.0);
-  GeomAdaptor_Surface           anAdaptor(anOff);
+  GeomAdaptor_Surface                anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(Precision::Confusion(), aNewBox);
@@ -152,7 +152,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_Full_CompareWithBndLib)
 {
   occ::handle<Geom_CylindricalSurface> aCyl  = new Geom_CylindricalSurface(gp::XOY(), 4.0);
   occ::handle<Geom_OffsetSurface>      anOff = new Geom_OffsetSurface(aCyl, 1.5);
-  GeomAdaptor_Surface             anAdaptor(anOff);
+  GeomAdaptor_Surface                  anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, -5.0, 5.0, Precision::Confusion(), aNewBox);
@@ -168,7 +168,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_Patch_CompareWithBndLib)
 {
   occ::handle<Geom_CylindricalSurface> aCyl  = new Geom_CylindricalSurface(gp::XOY(), 4.0);
   occ::handle<Geom_OffsetSurface>      anOff = new Geom_OffsetSurface(aCyl, 1.5);
-  GeomAdaptor_Surface             anAdaptor(anOff);
+  GeomAdaptor_Surface                  anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, M_PI, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -184,7 +184,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Cylinder_NegativeOffset_CompareWithBndLib)
 {
   occ::handle<Geom_CylindricalSurface> aCyl  = new Geom_CylindricalSurface(gp::XOY(), 8.0);
   occ::handle<Geom_OffsetSurface>      anOff = new Geom_OffsetSurface(aCyl, -2.0);
-  GeomAdaptor_Surface             anAdaptor(anOff);
+  GeomAdaptor_Surface                  anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, 0.0, 10.0, Precision::Confusion(), aNewBox);
@@ -204,7 +204,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Plane_PositiveOffset_CompareWithBndLib)
 {
   occ::handle<Geom_Plane>         aPlane = new Geom_Plane(gp::XOY());
   occ::handle<Geom_OffsetSurface> anOff  = new Geom_OffsetSurface(aPlane, 3.0);
-  GeomAdaptor_Surface        anAdaptor(anOff);
+  GeomAdaptor_Surface             anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(-5.0, 5.0, -5.0, 5.0, Precision::Confusion(), aNewBox);
@@ -239,7 +239,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Plane_NegativeOffset_CompareWithBndLib)
 {
   occ::handle<Geom_Plane>         aPlane = new Geom_Plane(gp::XOY());
   occ::handle<Geom_OffsetSurface> anOff  = new Geom_OffsetSurface(aPlane, -5.0);
-  GeomAdaptor_Surface        anAdaptor(anOff);
+  GeomAdaptor_Surface             anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(-10.0, 10.0, -10.0, 10.0, Precision::Confusion(), aNewBox);
@@ -259,7 +259,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Torus_PositiveOffset_CompareWithBndLib)
 {
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp::XOY(), 10.0, 3.0);
   occ::handle<Geom_OffsetSurface>   anOff  = new Geom_OffsetSurface(aTorus, 1.0);
-  GeomAdaptor_Surface          anAdaptor(anOff);
+  GeomAdaptor_Surface               anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, 2.0 * M_PI, 0.0, 2.0 * M_PI, Precision::Confusion(), aNewBox);
@@ -281,7 +281,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Torus_Patch_CompareWithBndLib)
 {
   occ::handle<Geom_ToroidalSurface> aTorus = new Geom_ToroidalSurface(gp::XOY(), 10.0, 3.0);
   occ::handle<Geom_OffsetSurface>   anOff  = new Geom_OffsetSurface(aTorus, 1.0);
-  GeomAdaptor_Surface          anAdaptor(anOff);
+  GeomAdaptor_Surface               anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(0.0, M_PI, 0.0, M_PI, Precision::Confusion(), aNewBox);
@@ -362,7 +362,7 @@ TEST(GeomBndLib_OffsetSurfaceTest, Sphere_LargeOffset_CompareWithBndLib)
 {
   occ::handle<Geom_SphericalSurface> aSphere = new Geom_SphericalSurface(gp::XOY(), 2.0);
   occ::handle<Geom_OffsetSurface>    anOff   = new Geom_OffsetSurface(aSphere, 20.0);
-  GeomAdaptor_Surface           anAdaptor(anOff);
+  GeomAdaptor_Surface                anAdaptor(anOff);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anOff).Add(Precision::Confusion(), aNewBox);

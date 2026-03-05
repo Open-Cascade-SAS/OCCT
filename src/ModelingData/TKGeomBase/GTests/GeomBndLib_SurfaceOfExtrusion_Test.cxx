@@ -46,14 +46,14 @@ void ExpectNoLarger(const Bnd_Box& theNew, const Bnd_Box& theOld, const double t
 }
 
 //! Helper: verify box contains all sampled points of the surface.
-void ExpectContainsSurface(const Bnd_Box&                               theBox,
+void ExpectContainsSurface(const Bnd_Box&                                    theBox,
                            const occ::handle<Geom_SurfaceOfLinearExtrusion>& theSurf,
-                           const double                                 theUMin,
-                           const double                                 theUMax,
-                           const double                                 theVMin,
-                           const double                                 theVMax,
-                           const int                                    theNbU,
-                           const int                                    theNbV)
+                           const double                                      theUMin,
+                           const double                                      theUMax,
+                           const double                                      theVMin,
+                           const double                                      theVMax,
+                           const int                                         theNbU,
+                           const int                                         theNbV)
 {
   double aXmin = 0., aYmin = 0., aZmin = 0., aXmax = 0., aYmax = 0., aZmax = 0.;
   theBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
@@ -127,8 +127,9 @@ TEST(GeomBndLib_ExtrusionTest, InfiniteU_OpenInExtrusionBasisDirection)
   // Line along Z through (5, 0, 0) extruded along X.
   // P(U, V) = (5 + V, 0, U); U in (-inf, +inf), V in [0, 10].
   // Expected: X in [5, 15], Y finite (= 0), Z open both ways.
-  occ::handle<Geom_Line>                     aLine  = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr = new Geom_SurfaceOfLinearExtrusion(aLine, gp::DX());
+  occ::handle<Geom_Line>                     aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr =
+    new Geom_SurfaceOfLinearExtrusion(aLine, gp::DX());
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anExtr)
@@ -216,8 +217,9 @@ TEST(GeomBndLib_ExtrusionTest, EllipseAlongZ_Arc_CompareWithBndLib)
 TEST(GeomBndLib_ExtrusionTest, LineAlongZ_CompareWithBndLib)
 {
   occ::handle<Geom_Line> aLine = new Geom_Line(gp_Pnt(0.0, 0.0, 0.0), gp_Dir(1.0, 0.0, 0.0));
-  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr = new Geom_SurfaceOfLinearExtrusion(aLine, gp::DZ());
-  GeomAdaptor_Surface                   anAdaptor(anExtr);
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr =
+    new Geom_SurfaceOfLinearExtrusion(aLine, gp::DZ());
+  GeomAdaptor_Surface anAdaptor(anExtr);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anExtr).Add(0.0, 10.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -272,9 +274,10 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongZ_CompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  occ::handle<Geom_BSplineCurve>             aBSpl  = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr = new Geom_SurfaceOfLinearExtrusion(aBSpl, gp::DZ());
-  GeomAdaptor_Surface                   anAdaptor(anExtr);
+  occ::handle<Geom_BSplineCurve> aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr =
+    new Geom_SurfaceOfLinearExtrusion(aBSpl, gp::DZ());
+  GeomAdaptor_Surface anAdaptor(anExtr);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(anExtr).AddOptimal(0.0, 1.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -304,7 +307,7 @@ TEST(GeomBndLib_ExtrusionTest, BSplineAlongDiagonal_CompareWithBndLib)
   aMults.SetValue(2, 1);
   aMults.SetValue(3, 3);
 
-  occ::handle<Geom_BSplineCurve>             aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
+  occ::handle<Geom_BSplineCurve> aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
   occ::handle<Geom_SurfaceOfLinearExtrusion> anExtr =
     new Geom_SurfaceOfLinearExtrusion(aBSpl, gp_Dir(1.0, 1.0, 1.0));
   Bnd_Box aNewBox;

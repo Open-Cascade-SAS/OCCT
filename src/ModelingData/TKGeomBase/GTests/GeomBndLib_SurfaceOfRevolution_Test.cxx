@@ -46,14 +46,14 @@ void ExpectNoLarger(const Bnd_Box& theNew, const Bnd_Box& theOld, const double t
 }
 
 //! Helper: verify box contains all sampled points of the surface.
-void ExpectContainsSurface(const Bnd_Box&                          theBox,
+void ExpectContainsSurface(const Bnd_Box&                               theBox,
                            const occ::handle<Geom_SurfaceOfRevolution>& theSurf,
-                           const double                            theUMin,
-                           const double                            theUMax,
-                           const double                            theVMin,
-                           const double                            theVMax,
-                           const int                               theNbU,
-                           const int                               theNbV)
+                           const double                                 theUMin,
+                           const double                                 theUMax,
+                           const double                                 theVMin,
+                           const double                                 theVMax,
+                           const int                                    theNbU,
+                           const int                                    theNbV)
 {
   double aXmin = 0., aYmin = 0., aZmin = 0., aXmax = 0., aYmax = 0., aZmax = 0.;
   theBox.Get(aXmin, aYmin, aZmin, aXmax, aYmax, aZmax);
@@ -91,9 +91,9 @@ void ExpectContainsSurface(const Bnd_Box&                          theBox,
 TEST(GeomBndLib_RevolutionTest, LineAroundZ_Full_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, 0.0, 10.0, Precision::Confusion(), aNewBox);
@@ -108,9 +108,9 @@ TEST(GeomBndLib_RevolutionTest, LineAroundZ_Full_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, LineAroundZ_HalfTurn_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, M_PI, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -128,7 +128,7 @@ TEST(GeomBndLib_RevolutionTest, InfiniteV_OpenInAxisDirection)
   // P(U, V) = (5*cos(U), 5*sin(U), V); V in (-inf, +inf).
   // Expected: X in [-5, 5], Y in [-5, 5], Z open both ways.
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
 
   Bnd_Box aNewBox;
@@ -158,9 +158,9 @@ TEST(GeomBndLib_RevolutionTest, InfiniteV_OpenInAxisDirection)
 TEST(GeomBndLib_RevolutionTest, LineAroundZ_QuarterTurn_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, M_PI / 2.0, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -179,9 +179,9 @@ TEST(GeomBndLib_RevolutionTest, LineAroundZ_QuarterTurn_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, LineAroundX_Full_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(0.0, 3.0, 0.0), gp::DX());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DX());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DX());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, 0.0, 8.0, Precision::Confusion(), aNewBox);
@@ -200,9 +200,9 @@ TEST(GeomBndLib_RevolutionTest, LineAroundX_Full_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, LineAroundTiltedAxis_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(4.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp_Dir(1.0, 1.0, 0.0));
+  gp_Ax1                                anAxis(gp::Origin(), gp_Dir(1.0, 1.0, 0.0));
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, 0.0, 5.0, Precision::Confusion(), aNewBox);
@@ -221,11 +221,11 @@ TEST(GeomBndLib_RevolutionTest, LineAroundTiltedAxis_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, CircleAroundZ_Full_CompareWithBndLib)
 {
   // Circle in XZ plane, center at (5, 0, 0), radius 2
-  gp_Ax2                           aCircAx(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX());
+  gp_Ax2                                aCircAx(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX());
   occ::handle<Geom_Circle>              aCircle = new Geom_Circle(aCircAx, 2.0);
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aCircle, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf)
@@ -246,11 +246,11 @@ TEST(GeomBndLib_RevolutionTest, CircleAroundZ_Full_CompareWithBndLib)
 
 TEST(GeomBndLib_RevolutionTest, CircleAroundZ_HalfTurn_CompareWithBndLib)
 {
-  gp_Ax2                           aCircAx(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX());
+  gp_Ax2                                aCircAx(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX());
   occ::handle<Geom_Circle>              aCircle = new Geom_Circle(aCircAx, 2.0);
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aCircle, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, M_PI, 0.0, 2.0 * M_PI, Precision::Confusion(), aNewBox);
@@ -269,9 +269,9 @@ TEST(GeomBndLib_RevolutionTest, CircleAroundZ_HalfTurn_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, ParabolaAroundZ_CompareWithBndLib)
 {
   occ::handle<Geom_Parabola>            aParab = new Geom_Parabola(gp::XOY(), 2.0);
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aParab, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, -3.0, 3.0, Precision::Confusion(), aNewBox);
@@ -290,11 +290,11 @@ TEST(GeomBndLib_RevolutionTest, ParabolaAroundZ_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, EllipseAroundZ_CompareWithBndLib)
 {
   // Ellipse in XZ plane
-  gp_Ax2                           anElAx(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX());
+  gp_Ax2                                anElAx(gp_Pnt(5.0, 0.0, 0.0), gp::DY(), gp::DX());
   occ::handle<Geom_Ellipse>             anEllipse = new Geom_Ellipse(anElAx, 3.0, 1.5);
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(anEllipse, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf)
@@ -336,9 +336,9 @@ TEST(GeomBndLib_RevolutionTest, BSplineAroundZ_CompareWithBndLib)
   aMults.SetValue(3, 3);
 
   occ::handle<Geom_BSplineCurve>        aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aBSpl, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, 0.0, 1.0, Precision::Confusion(), aNewBox);
@@ -369,9 +369,9 @@ TEST(GeomBndLib_RevolutionTest, BSplineAroundZ_HalfTurn_CompareWithBndLib)
   aMults.SetValue(3, 3);
 
   occ::handle<Geom_BSplineCurve>        aBSpl = new Geom_BSplineCurve(aPoles, aKnots, aMults, 2);
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aBSpl, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, M_PI, 0.0, 1.0, Precision::Confusion(), aNewBox);
@@ -390,9 +390,9 @@ TEST(GeomBndLib_RevolutionTest, BSplineAroundZ_HalfTurn_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, LineSmallRadius_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(0.5, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, -5.0, 5.0, Precision::Confusion(), aNewBox);
@@ -407,9 +407,9 @@ TEST(GeomBndLib_RevolutionTest, LineSmallRadius_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, LineLargeRadius_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(100.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   Bnd_Box aNewBox;
   GeomBndLib_Surface(aRevSurf).Add(0.0, 2.0 * M_PI, 0.0, 10.0, Precision::Confusion(), aNewBox);
@@ -428,9 +428,9 @@ TEST(GeomBndLib_RevolutionTest, LineLargeRadius_CompareWithBndLib)
 TEST(GeomBndLib_RevolutionTest, LineAroundZ_PartialV_CompareWithBndLib)
 {
   occ::handle<Geom_Line>                aLine = new Geom_Line(gp_Pnt(5.0, 0.0, 0.0), gp::DZ());
-  gp_Ax1                           anAxis(gp::Origin(), gp::DZ());
+  gp_Ax1                                anAxis(gp::Origin(), gp::DZ());
   occ::handle<Geom_SurfaceOfRevolution> aRevSurf = new Geom_SurfaceOfRevolution(aLine, anAxis);
-  GeomAdaptor_Surface              anAdaptor(aRevSurf);
+  GeomAdaptor_Surface                   anAdaptor(aRevSurf);
 
   // Only part of V range
   Bnd_Box aNewBox;
