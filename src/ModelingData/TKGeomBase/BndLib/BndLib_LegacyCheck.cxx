@@ -1715,7 +1715,9 @@ void LegacyBox2dCurve::PerformGenCurv(const double Tol)
         double tmax = myT1 + std::min(Nu - 1, i) * du;
         double cmax = AdjustExtr(tmin, tmax, CMax, k + 1, Tol, false);
         if (cmax > CMax)
+        {
           CMax = cmax;
+        }
       }
     }
     CoordMin[k] = CMin;
