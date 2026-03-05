@@ -36,7 +36,7 @@ using TypeEnum = BRep_CurveRepresentation::TypeEnum;
 
 TEST(BRep_CurveRepresentationTest, Curve3D_Type)
 {
-  occ::handle<Geom_Line> aLine    = new Geom_Line(gp_Pnt(), gp_Dir(1, 0, 0));
+  occ::handle<Geom_Line>    aLine  = new Geom_Line(gp_Pnt(), gp_Dir(1, 0, 0));
   occ::handle<BRep_Curve3D> aCurve = new BRep_Curve3D(aLine, TopLoc_Location());
   EXPECT_EQ(aCurve->Type(), TypeEnum::Type_Curve3D);
   EXPECT_TRUE(aCurve->IsCurve3D());
@@ -44,10 +44,9 @@ TEST(BRep_CurveRepresentationTest, Curve3D_Type)
 
 TEST(BRep_CurveRepresentationTest, CurveOnSurface_Type)
 {
-  occ::handle<Geom2d_Line> aPC   = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0));
-  occ::handle<Geom_Plane>  aPlane = new Geom_Plane(gp::XOY());
-  occ::handle<BRep_CurveOnSurface> aCOS =
-    new BRep_CurveOnSurface(aPC, aPlane, TopLoc_Location());
+  occ::handle<Geom2d_Line>         aPC    = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0));
+  occ::handle<Geom_Plane>          aPlane = new Geom_Plane(gp::XOY());
+  occ::handle<BRep_CurveOnSurface> aCOS   = new BRep_CurveOnSurface(aPC, aPlane, TopLoc_Location());
   EXPECT_EQ(aCOS->Type(), TypeEnum::Type_CurveOnSurface);
   EXPECT_TRUE(aCOS->IsCurveOnSurface());
   EXPECT_FALSE(aCOS->IsCurveOnClosedSurface());
@@ -55,9 +54,9 @@ TEST(BRep_CurveRepresentationTest, CurveOnSurface_Type)
 
 TEST(BRep_CurveRepresentationTest, CurveOnClosedSurface_Type)
 {
-  occ::handle<Geom2d_Line> aPC1   = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0));
-  occ::handle<Geom2d_Line> aPC2   = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(0, 1));
-  occ::handle<Geom_Plane>  aPlane = new Geom_Plane(gp::XOY());
+  occ::handle<Geom2d_Line>               aPC1   = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(1, 0));
+  occ::handle<Geom2d_Line>               aPC2   = new Geom2d_Line(gp_Pnt2d(), gp_Dir2d(0, 1));
+  occ::handle<Geom_Plane>                aPlane = new Geom_Plane(gp::XOY());
   occ::handle<BRep_CurveOnClosedSurface> aCOCS =
     new BRep_CurveOnClosedSurface(aPC1, aPC2, aPlane, TopLoc_Location(), GeomAbs_C0);
   EXPECT_EQ(aCOCS->Type(), TypeEnum::Type_CurveOnClosedSurface);
@@ -68,8 +67,8 @@ TEST(BRep_CurveRepresentationTest, CurveOnClosedSurface_Type)
 
 TEST(BRep_CurveRepresentationTest, CurveOn2Surfaces_Type)
 {
-  occ::handle<Geom_Plane> aP1 = new Geom_Plane(gp::XOY());
-  occ::handle<Geom_Plane> aP2 = new Geom_Plane(gp::ZOX());
+  occ::handle<Geom_Plane>            aP1 = new Geom_Plane(gp::XOY());
+  occ::handle<Geom_Plane>            aP2 = new Geom_Plane(gp::ZOX());
   occ::handle<BRep_CurveOn2Surfaces> aC2S =
     new BRep_CurveOn2Surfaces(aP1, aP2, TopLoc_Location(), TopLoc_Location(), GeomAbs_C0);
   EXPECT_EQ(aC2S->Type(), TypeEnum::Type_CurveOn2Surfaces);
@@ -79,8 +78,8 @@ TEST(BRep_CurveRepresentationTest, CurveOn2Surfaces_Type)
 TEST(BRep_CurveRepresentationTest, Polygon3D_Type)
 {
   NCollection_Array1<gp_Pnt> aNodes(1, 2);
-  aNodes(1) = gp_Pnt(0, 0, 0);
-  aNodes(2) = gp_Pnt(1, 0, 0);
+  aNodes(1)                         = gp_Pnt(0, 0, 0);
+  aNodes(2)                         = gp_Pnt(1, 0, 0);
   occ::handle<Poly_Polygon3D> aPoly = new Poly_Polygon3D(aNodes);
   occ::handle<BRep_Polygon3D> aRep  = new BRep_Polygon3D(aPoly, TopLoc_Location());
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_Polygon3D);
@@ -90,10 +89,10 @@ TEST(BRep_CurveRepresentationTest, Polygon3D_Type)
 TEST(BRep_CurveRepresentationTest, PolygonOnSurface_Type)
 {
   NCollection_Array1<gp_Pnt2d> aNodes(1, 2);
-  aNodes(1) = gp_Pnt2d(0, 0);
-  aNodes(2) = gp_Pnt2d(1, 0);
-  occ::handle<Poly_Polygon2D> aPoly  = new Poly_Polygon2D(aNodes);
-  occ::handle<Geom_Plane>     aPlane = new Geom_Plane(gp::XOY());
+  aNodes(1)                                 = gp_Pnt2d(0, 0);
+  aNodes(2)                                 = gp_Pnt2d(1, 0);
+  occ::handle<Poly_Polygon2D>        aPoly  = new Poly_Polygon2D(aNodes);
+  occ::handle<Geom_Plane>            aPlane = new Geom_Plane(gp::XOY());
   occ::handle<BRep_PolygonOnSurface> aRep =
     new BRep_PolygonOnSurface(aPoly, aPlane, TopLoc_Location());
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnSurface);
@@ -104,11 +103,11 @@ TEST(BRep_CurveRepresentationTest, PolygonOnSurface_Type)
 TEST(BRep_CurveRepresentationTest, PolygonOnClosedSurface_Type)
 {
   NCollection_Array1<gp_Pnt2d> aNodes(1, 2);
-  aNodes(1) = gp_Pnt2d(0, 0);
-  aNodes(2) = gp_Pnt2d(1, 0);
-  occ::handle<Poly_Polygon2D> aP1    = new Poly_Polygon2D(aNodes);
-  occ::handle<Poly_Polygon2D> aP2    = new Poly_Polygon2D(aNodes);
-  occ::handle<Geom_Plane>     aPlane = new Geom_Plane(gp::XOY());
+  aNodes(1)                                       = gp_Pnt2d(0, 0);
+  aNodes(2)                                       = gp_Pnt2d(1, 0);
+  occ::handle<Poly_Polygon2D>              aP1    = new Poly_Polygon2D(aNodes);
+  occ::handle<Poly_Polygon2D>              aP2    = new Poly_Polygon2D(aNodes);
+  occ::handle<Geom_Plane>                  aPlane = new Geom_Plane(gp::XOY());
   occ::handle<BRep_PolygonOnClosedSurface> aRep =
     new BRep_PolygonOnClosedSurface(aP1, aP2, aPlane, TopLoc_Location());
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnClosedSurface);
@@ -119,8 +118,8 @@ TEST(BRep_CurveRepresentationTest, PolygonOnClosedSurface_Type)
 TEST(BRep_CurveRepresentationTest, PolygonOnTriangulation_Type)
 {
   NCollection_Array1<int> aNodes(1, 2);
-  aNodes(1) = 1;
-  aNodes(2) = 2;
+  aNodes(1)                                      = 1;
+  aNodes(2)                                      = 2;
   occ::handle<Poly_PolygonOnTriangulation> aPoly = new Poly_PolygonOnTriangulation(aNodes);
   occ::handle<Poly_Triangulation>          aTri  = new Poly_Triangulation(2, 1, false);
   occ::handle<BRep_PolygonOnTriangulation> aRep =
@@ -133,11 +132,11 @@ TEST(BRep_CurveRepresentationTest, PolygonOnTriangulation_Type)
 TEST(BRep_CurveRepresentationTest, PolygonOnClosedTriangulation_Type)
 {
   NCollection_Array1<int> aNodes(1, 2);
-  aNodes(1) = 1;
-  aNodes(2) = 2;
-  occ::handle<Poly_PolygonOnTriangulation> aP1  = new Poly_PolygonOnTriangulation(aNodes);
-  occ::handle<Poly_PolygonOnTriangulation> aP2  = new Poly_PolygonOnTriangulation(aNodes);
-  occ::handle<Poly_Triangulation>          aTri = new Poly_Triangulation(2, 1, false);
+  aNodes(1)                                           = 1;
+  aNodes(2)                                           = 2;
+  occ::handle<Poly_PolygonOnTriangulation>       aP1  = new Poly_PolygonOnTriangulation(aNodes);
+  occ::handle<Poly_PolygonOnTriangulation>       aP2  = new Poly_PolygonOnTriangulation(aNodes);
+  occ::handle<Poly_Triangulation>                aTri = new Poly_Triangulation(2, 1, false);
   occ::handle<BRep_PolygonOnClosedTriangulation> aRep =
     new BRep_PolygonOnClosedTriangulation(aP1, aP2, aTri, TopLoc_Location());
   EXPECT_EQ(aRep->Type(), TypeEnum::Type_PolygonOnClosedTriangulation);

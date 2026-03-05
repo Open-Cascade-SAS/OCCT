@@ -418,9 +418,9 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
             isClosed = (!newgeom || BRepTools::IsReallyClosed(edge, face));
             if (!isClosed)
             {
-              TopLoc_Location aLoc;
+              TopLoc_Location     aLoc;
               const TopoDS_Shape* aResFacePtr = myMap.Seek(face);
-              TopoDS_Shape        resface    = (aResFacePtr != nullptr ? *aResFacePtr : face);
+              TopoDS_Shape        resface     = (aResFacePtr != nullptr ? *aResFacePtr : face);
               if (resface.IsNull())
                 resface = face;
               occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(TopoDS::Face(resface), aLoc);
@@ -432,7 +432,7 @@ bool BRepTools_Modifier::Rebuild(const TopoDS_Shape&                        S,
                 if (anOther.IsSame(face))
                   continue;
                 const TopoDS_Shape* aResFace2Ptr = myMap.Seek(anOther);
-                TopoDS_Shape        resface2    = (aResFace2Ptr != nullptr ? *aResFace2Ptr : anOther);
+                TopoDS_Shape        resface2 = (aResFace2Ptr != nullptr ? *aResFace2Ptr : anOther);
                 if (resface2.IsNull())
                   resface2 = anOther;
                 TopLoc_Location           anOtherLoc;
@@ -747,7 +747,7 @@ void BRepTools_Modifier::CreateOtherVertices(
       NCollection_List<TopoDS_Shape>::Iterator it(aLEdges);
       for (; it.More() && !toReplace; it.Next())
       {
-        const TopoDS_Edge& anE = TopoDS::Edge(it.Value());
+        const TopoDS_Edge&  anE     = TopoDS::Edge(it.Value());
         const NewCurveInfo* aNCSeek = myNCInfo.Seek(anE);
         if (aNCSeek != nullptr && !aNCSeek->myCurve.IsNull())
           toReplace = true;

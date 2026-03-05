@@ -237,8 +237,8 @@ bool BRep_Tool::IsGeometric(const TopoDS_Edge& E)
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum aType = cr->Type();
+    const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_Curve3D)
     {
       const BRep_Curve3D* GC = static_cast<const BRep_Curve3D*>(cr.get());
@@ -441,7 +441,7 @@ void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum      aType = cr->Type();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_CurveOnSurface
         || aType == BRep_CurveRepresentation::Type_CurveOnClosedSurface)
     {
@@ -480,8 +480,8 @@ void BRep_Tool::CurveOnSurface(const TopoDS_Edge&         E,
   NCollection_List<occ::handle<BRep_CurveRepresentation>>::Iterator itcr(TE->Curves());
   for (; itcr.More(); itcr.Next())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum aType = cr->Type();
+    const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_CurveOnSurface
         || aType == BRep_CurveRepresentation::Type_CurveOnClosedSurface)
     {
@@ -581,8 +581,8 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum aType = cr->Type();
+    const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_PolygonOnSurface
         || aType == BRep_CurveRepresentation::Type_PolygonOnClosedSurface)
     {
@@ -617,7 +617,7 @@ void BRep_Tool::PolygonOnSurface(const TopoDS_Edge&           E,
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum      aType = cr->Type();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_PolygonOnSurface
         || aType == BRep_CurveRepresentation::Type_PolygonOnClosedSurface)
     {
@@ -691,8 +691,8 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum aType = cr->Type();
+    const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_PolygonOnTriangulation
         || aType == BRep_CurveRepresentation::Type_PolygonOnClosedTriangulation)
     {
@@ -728,7 +728,7 @@ void BRep_Tool::PolygonOnTriangulation(const TopoDS_Edge&                       
   while (itcr.More())
   {
     const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum      aType = cr->Type();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_PolygonOnTriangulation
         || aType == BRep_CurveRepresentation::Type_PolygonOnClosedTriangulation)
     {
@@ -896,8 +896,8 @@ void BRep_Tool::Range(const TopoDS_Edge& E, double& First, double& Last)
 
   while (itcr.More())
   {
-    const occ::handle<BRep_CurveRepresentation>& cr = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum aType = cr->Type();
+    const occ::handle<BRep_CurveRepresentation>& cr    = itcr.Value();
+    const BRep_CurveRepresentation::TypeEnum     aType = cr->Type();
     if (aType == BRep_CurveRepresentation::Type_Curve3D)
     {
       const BRep_Curve3D* CR = static_cast<const BRep_Curve3D*>(cr.get());
@@ -1218,7 +1218,7 @@ bool BRep_Tool::HasContinuity(const TopoDS_Edge& E)
   for (; itcr.More(); itcr.Next())
   {
     const occ::handle<BRep_CurveRepresentation>& CR = itcr.Value();
-    const BRep_CurveRepresentation::TypeEnum      aT = CR->Type();
+    const BRep_CurveRepresentation::TypeEnum     aT = CR->Type();
     if (aT == BRep_CurveRepresentation::Type_CurveOn2Surfaces
         || aT == BRep_CurveRepresentation::Type_CurveOnClosedSurface)
       return true;
@@ -1237,7 +1237,7 @@ GeomAbs_Shape BRep_Tool::MaxContinuity(const TopoDS_Edge& theEdge)
        aReprIter.Next())
   {
     const occ::handle<BRep_CurveRepresentation>& aRepr = aReprIter.Value();
-    const BRep_CurveRepresentation::TypeEnum      aT    = aRepr->Type();
+    const BRep_CurveRepresentation::TypeEnum     aT    = aRepr->Type();
     if (aT == BRep_CurveRepresentation::Type_CurveOn2Surfaces
         || aT == BRep_CurveRepresentation::Type_CurveOnClosedSurface)
     {

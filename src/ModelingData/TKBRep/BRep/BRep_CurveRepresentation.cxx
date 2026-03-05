@@ -29,8 +29,7 @@ IMPLEMENT_STANDARD_RTTIEXT(BRep_CurveRepresentation, Standard_Transient)
 
 //=================================================================================================
 
-BRep_CurveRepresentation::BRep_CurveRepresentation(TypeEnum           theType,
-                                                   const TopLoc_Location& L)
+BRep_CurveRepresentation::BRep_CurveRepresentation(TypeEnum theType, const TopLoc_Location& L)
     : myLocation(L),
       myType(theType)
 {

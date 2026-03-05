@@ -107,8 +107,7 @@ static occ::handle<Geom2d_Curve> newCurve(
   double&                                                            theLast)
 {
   occ::handle<Geom2d_Curve> aC2d = BRep_Tool::CurveOnSurface(theEdge, theFace, theFirst, theLast);
-  const occ::handle<Standard_Transient>* aC2dFound =
-    (!aC2d.IsNull()) ? theMap.Seek(aC2d) : nullptr;
+  const occ::handle<Standard_Transient>* aC2dFound = (!aC2d.IsNull()) ? theMap.Seek(aC2d) : nullptr;
   return (aC2dFound != nullptr) ? occ::down_cast<Geom2d_Curve>(*aC2dFound)
                                 : occ::handle<Geom2d_Curve>();
 }
@@ -121,8 +120,8 @@ static occ::handle<Geom_Surface> newSurface(
 {
   occ::handle<Geom_Surface> aNewSurf;
 
-  TopLoc_Location           aLoc;
-  occ::handle<Geom_Surface> aSurf = BRep_Tool::Surface(theFace, aLoc);
+  TopLoc_Location                        aLoc;
+  occ::handle<Geom_Surface>              aSurf = BRep_Tool::Surface(theFace, aLoc);
   const occ::handle<Standard_Transient>* aSurfFound =
     (!aSurf.IsNull()) ? theMap.Seek(aSurf) : nullptr;
   if (aSurfFound != nullptr)

@@ -264,8 +264,7 @@ void TopExp::Vertices(const TopoDS_Wire& W, TopoDS_Vertex& Vfirst, TopoDS_Vertex
   }
   else if (vmap.Extent() == 2)
   { // open
-    for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ite(vmap);
-         ite.More();
+    for (NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>::Iterator ite(vmap); ite.More();
          ite.Next())
     {
       if (ite.Key().Orientation() == TopAbs_FORWARD)

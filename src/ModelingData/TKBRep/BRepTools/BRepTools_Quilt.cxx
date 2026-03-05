@@ -75,7 +75,7 @@ static void CopyShape(
   itv.Initialize(E, false); // TCollection_DataMap
   for (; itv.More(); itv.Next())
   {
-    const TopoDS_Shape& V = itv.Value();
+    const TopoDS_Shape& V       = itv.Value();
     const TopoDS_Shape* aBoundV = myBounds.Seek(V);
     if (aBoundV != nullptr)
     {
@@ -233,8 +233,8 @@ void BRepTools_Quilt::Add(const TopoDS_Shape& S)
 
         for (; ite.More(); ite.Next())
         {
-          const TopoDS_Edge& E  = TopoDS::Edge(ite.Value());
-          TopAbs_Orientation OE = E.Orientation();
+          const TopoDS_Edge&  E       = TopoDS::Edge(ite.Value());
+          TopAbs_Orientation  OE      = E.Orientation();
           const TopoDS_Shape* aBoundE = myBounds.Seek(E);
           if (aBoundE != nullptr)
           {
