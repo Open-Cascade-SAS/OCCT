@@ -102,100 +102,59 @@ occ::handle<Adaptor3d_Surface> GeomAdaptor_TransformedSurface::VTrim(const doubl
 
 //=================================================================================================
 
-gp_Pnt GeomAdaptor_TransformedSurface::Value(const double theU, const double theV) const
+gp_Pnt GeomAdaptor_TransformedSurface::EvalD0(double theU, double theV) const
 {
-  return mySurf.Value(theU, theV).Transformed(myTrsf);
+  return mySurf.EvalD0(theU, theV).Transformed(myTrsf);
 }
 
 //=================================================================================================
 
-void GeomAdaptor_TransformedSurface::D0(const double theU, const double theV, gp_Pnt& theP) const
+Geom_Surface::ResD1 GeomAdaptor_TransformedSurface::EvalD1(double theU, double theV) const
 {
-  mySurf.D0(theU, theV, theP);
-  theP.Transform(myTrsf);
+  Geom_Surface::ResD1 aRes = mySurf.EvalD1(theU, theV);
+  aRes.Point.Transform(myTrsf);
+  aRes.D1U.Transform(myTrsf);
+  aRes.D1V.Transform(myTrsf);
+  return aRes;
 }
 
 //=================================================================================================
 
-void GeomAdaptor_TransformedSurface::D1(const double theU,
-                                        const double theV,
-                                        gp_Pnt&      theP,
-                                        gp_Vec&      theD1U,
-                                        gp_Vec&      theD1V) const
+Geom_Surface::ResD2 GeomAdaptor_TransformedSurface::EvalD2(double theU, double theV) const
 {
-  mySurf.D1(theU, theV, theP, theD1U, theD1V);
-  theP.Transform(myTrsf);
-  theD1U.Transform(myTrsf);
-  theD1V.Transform(myTrsf);
+  Geom_Surface::ResD2 aRes = mySurf.EvalD2(theU, theV);
+  aRes.Point.Transform(myTrsf);
+  aRes.D1U.Transform(myTrsf);
+  aRes.D1V.Transform(myTrsf);
+  aRes.D2U.Transform(myTrsf);
+  aRes.D2V.Transform(myTrsf);
+  aRes.D2UV.Transform(myTrsf);
+  return aRes;
 }
 
 //=================================================================================================
 
-void GeomAdaptor_TransformedSurface::D2(const double theU,
-                                        const double theV,
-                                        gp_Pnt&      theP,
-                                        gp_Vec&      theD1U,
-                                        gp_Vec&      theD1V,
-                                        gp_Vec&      theD2U,
-                                        gp_Vec&      theD2V,
-                                        gp_Vec&      theD2UV) const
+Geom_Surface::ResD3 GeomAdaptor_TransformedSurface::EvalD3(double theU, double theV) const
 {
-  mySurf.D2(theU, theV, theP, theD1U, theD1V, theD2U, theD2V, theD2UV);
-  theP.Transform(myTrsf);
-  theD1U.Transform(myTrsf);
-  theD1V.Transform(myTrsf);
-  theD2U.Transform(myTrsf);
-  theD2V.Transform(myTrsf);
-  theD2UV.Transform(myTrsf);
+  Geom_Surface::ResD3 aRes = mySurf.EvalD3(theU, theV);
+  aRes.Point.Transform(myTrsf);
+  aRes.D1U.Transform(myTrsf);
+  aRes.D1V.Transform(myTrsf);
+  aRes.D2U.Transform(myTrsf);
+  aRes.D2V.Transform(myTrsf);
+  aRes.D2UV.Transform(myTrsf);
+  aRes.D3U.Transform(myTrsf);
+  aRes.D3V.Transform(myTrsf);
+  aRes.D3UUV.Transform(myTrsf);
+  aRes.D3UVV.Transform(myTrsf);
+  return aRes;
 }
 
 //=================================================================================================
 
-void GeomAdaptor_TransformedSurface::D3(const double theU,
-                                        const double theV,
-                                        gp_Pnt&      theP,
-                                        gp_Vec&      theD1U,
-                                        gp_Vec&      theD1V,
-                                        gp_Vec&      theD2U,
-                                        gp_Vec&      theD2V,
-                                        gp_Vec&      theD2UV,
-                                        gp_Vec&      theD3U,
-                                        gp_Vec&      theD3V,
-                                        gp_Vec&      theD3UUV,
-                                        gp_Vec&      theD3UVV) const
+gp_Vec GeomAdaptor_TransformedSurface::EvalDN(double theU, double theV, int theNu, int theNv) const
 {
-  mySurf.D3(theU,
-            theV,
-            theP,
-            theD1U,
-            theD1V,
-            theD2U,
-            theD2V,
-            theD2UV,
-            theD3U,
-            theD3V,
-            theD3UUV,
-            theD3UVV);
-  theP.Transform(myTrsf);
-  theD1U.Transform(myTrsf);
-  theD1V.Transform(myTrsf);
-  theD2U.Transform(myTrsf);
-  theD2V.Transform(myTrsf);
-  theD2UV.Transform(myTrsf);
-  theD3U.Transform(myTrsf);
-  theD3V.Transform(myTrsf);
-  theD3UUV.Transform(myTrsf);
-  theD3UVV.Transform(myTrsf);
-}
-
-//=================================================================================================
-
-gp_Vec GeomAdaptor_TransformedSurface::DN(const double theU,
-                                          const double theV,
-                                          const int    theNu,
-                                          const int    theNv) const
-{
-  return mySurf.DN(theU, theV, theNu, theNv).Transformed(myTrsf);
+  return mySurf.EvalDN(theU, theV, theNu, theNv).Transformed(myTrsf);
 }
 
 //=================================================================================================

@@ -26,6 +26,7 @@
 #include <Geom_BezierCurve.hxx>
 #include <ElCLib.hxx>
 #include <Adaptor3d_Curve.hxx>
+#include <Geom_Curve.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <Geom_Line.hxx>
 #include <GeomConvert.hxx>
@@ -1081,85 +1082,80 @@ double ProjLib_ProjectOnPlane::Period() const
 
 //=================================================================================================
 
-gp_Pnt ProjLib_ProjectOnPlane::Value(const double U) const
+gp_Pnt ProjLib_ProjectOnPlane::EvalD0(double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
-    return myResult->Value(U);
+    return myResult->EvalD0(theU);
   }
   else
   {
-    return OnPlane_Value(U, myCurve, myPlane, myDirection);
+    return OnPlane_Value(theU, myCurve, myPlane, myDirection);
   }
 }
 
 //=================================================================================================
 
-void ProjLib_ProjectOnPlane::D0(const double U, gp_Pnt& P) const
+Geom_Curve::ResD1 ProjLib_ProjectOnPlane::EvalD1(double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
-    myResult->D0(U, P);
+    return myResult->EvalD1(theU);
   }
   else
   {
-    P = OnPlane_Value(U, myCurve, myPlane, myDirection);
+    gp_Pnt aP;
+    gp_Vec aV;
+    OnPlane_D1(theU, aP, aV, myCurve, myPlane, myDirection);
+    return {aP, aV};
   }
 }
 
 //=================================================================================================
 
-void ProjLib_ProjectOnPlane::D1(const double U, gp_Pnt& P, gp_Vec& V) const
+Geom_Curve::ResD2 ProjLib_ProjectOnPlane::EvalD2(double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
-    myResult->D1(U, P, V);
+    return myResult->EvalD2(theU);
   }
   else
   {
-    OnPlane_D1(U, P, V, myCurve, myPlane, myDirection);
+    gp_Pnt aP;
+    gp_Vec aV1, aV2;
+    OnPlane_D2(theU, aP, aV1, aV2, myCurve, myPlane, myDirection);
+    return {aP, aV1, aV2};
   }
 }
 
 //=================================================================================================
 
-void ProjLib_ProjectOnPlane::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+Geom_Curve::ResD3 ProjLib_ProjectOnPlane::EvalD3(double theU) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
-    myResult->D2(U, P, V1, V2);
+    return myResult->EvalD3(theU);
   }
   else
   {
-    OnPlane_D2(U, P, V1, V2, myCurve, myPlane, myDirection);
+    gp_Pnt aP;
+    gp_Vec aV1, aV2, aV3;
+    OnPlane_D3(theU, aP, aV1, aV2, aV3, myCurve, myPlane, myDirection);
+    return {aP, aV1, aV2, aV3};
   }
 }
 
 //=================================================================================================
 
-void ProjLib_ProjectOnPlane::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+gp_Vec ProjLib_ProjectOnPlane::EvalDN(double theU, int theN) const
 {
   if (myType != GeomAbs_OtherCurve)
   {
-    myResult->D3(U, P, V1, V2, V3);
+    return myResult->EvalDN(theU, theN);
   }
   else
   {
-    OnPlane_D3(U, P, V1, V2, V3, myCurve, myPlane, myDirection);
-  }
-}
-
-//=================================================================================================
-
-gp_Vec ProjLib_ProjectOnPlane::DN(const double U, const int DerivativeRequest) const
-{
-  if (myType != GeomAbs_OtherCurve)
-  {
-    return myResult->DN(U, DerivativeRequest);
-  }
-  else
-  {
-    return OnPlane_DN(U, DerivativeRequest, myCurve, myPlane, myDirection);
+    return OnPlane_DN(theU, theN, myCurve, myPlane, myDirection);
   }
 }
 

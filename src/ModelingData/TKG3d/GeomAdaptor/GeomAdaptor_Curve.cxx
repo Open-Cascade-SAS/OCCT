@@ -646,22 +646,6 @@ bool GeomAdaptor_Curve::IsBoundary(const double theU, int& theSpanStart, int& th
 
 //=================================================================================================
 
-gp_Pnt GeomAdaptor_Curve::Value(const double U) const
-{
-  gp_Pnt aValue;
-  D0(U, aValue);
-  return aValue;
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Curve::D0(const double U, gp_Pnt& P) const
-{
-  P = EvalD0(U);
-}
-
-//=================================================================================================
-
 gp_Pnt GeomAdaptor_Curve::EvalD0(double U) const
 {
   gp_Pnt P;
@@ -739,15 +723,6 @@ gp_Pnt GeomAdaptor_Curve::EvalD0(double U) const
     default:
       return myCurve->EvalD0(U);
   }
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Curve::D1(const double U, gp_Pnt& P, gp_Vec& V) const
-{
-  const Geom_Curve::ResD1 aResult = EvalD1(U);
-  P                               = aResult.Point;
-  V                               = aResult.D1;
 }
 
 //=================================================================================================
@@ -834,16 +809,6 @@ Geom_Curve::ResD1 GeomAdaptor_Curve::EvalD1(double U) const
 
 //=================================================================================================
 
-void GeomAdaptor_Curve::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
-{
-  const Geom_Curve::ResD2 aResult = EvalD2(U);
-  P                               = aResult.Point;
-  V1                              = aResult.D1;
-  V2                              = aResult.D2;
-}
-
-//=================================================================================================
-
 Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(double U) const
 {
   Geom_Curve::ResD2 aResult;
@@ -924,17 +889,6 @@ Geom_Curve::ResD2 GeomAdaptor_Curve::EvalD2(double U) const
     default:
       return myCurve->EvalD2(U);
   }
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Curve::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
-{
-  const Geom_Curve::ResD3 aResult = EvalD3(U);
-  P                               = aResult.Point;
-  V1                              = aResult.D1;
-  V2                              = aResult.D2;
-  V3                              = aResult.D3;
 }
 
 //=================================================================================================
@@ -1038,13 +992,6 @@ Geom_Curve::ResD3 GeomAdaptor_Curve::EvalD3(double U) const
     default:
       return myCurve->EvalD3(U);
   }
-}
-
-//=================================================================================================
-
-gp_Vec GeomAdaptor_Curve::DN(const double U, const int N) const
-{
-  return EvalDN(U, N);
 }
 
 //=================================================================================================

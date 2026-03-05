@@ -1009,22 +1009,6 @@ void GeomAdaptor_Surface::RebuildCache(const double theU, const double theV) con
 
 //=================================================================================================
 
-gp_Pnt GeomAdaptor_Surface::Value(const double U, const double V) const
-{
-  gp_Pnt aValue;
-  D0(U, V, aValue);
-  return aValue;
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Surface::D0(const double U, const double V, gp_Pnt& P) const
-{
-  P = EvalD0(U, V);
-}
-
-//=================================================================================================
-
 gp_Pnt GeomAdaptor_Surface::EvalD0(double U, double V) const
 {
   gp_Pnt P;
@@ -1105,20 +1089,6 @@ gp_Pnt GeomAdaptor_Surface::EvalD0(double U, double V) const
     default:
       return mySurface->EvalD0(U, V);
   }
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Surface::D1(const double U,
-                             const double V,
-                             gp_Pnt&      P,
-                             gp_Vec&      D1U,
-                             gp_Vec&      D1V) const
-{
-  const Geom_Surface::ResD1 aResult = EvalD1(U, V);
-  P                                 = aResult.Point;
-  D1U                               = aResult.D1U;
-  D1V                               = aResult.D1V;
 }
 
 //=================================================================================================
@@ -1249,26 +1219,6 @@ Geom_Surface::ResD1 GeomAdaptor_Surface::EvalD1(double U, double V) const
     default:
       return mySurface->EvalD1(u, v);
   }
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Surface::D2(const double U,
-                             const double V,
-                             gp_Pnt&      P,
-                             gp_Vec&      D1U,
-                             gp_Vec&      D1V,
-                             gp_Vec&      D2U,
-                             gp_Vec&      D2V,
-                             gp_Vec&      D2UV) const
-{
-  const Geom_Surface::ResD2 aResult = EvalD2(U, V);
-  P                                 = aResult.Point;
-  D1U                               = aResult.D1U;
-  D1V                               = aResult.D1V;
-  D2U                               = aResult.D2U;
-  D2V                               = aResult.D2V;
-  D2UV                              = aResult.D2UV;
 }
 
 //=================================================================================================
@@ -1462,34 +1412,6 @@ Geom_Surface::ResD2 GeomAdaptor_Surface::EvalD2(double U, double V) const
     default:
       return mySurface->EvalD2(u, v);
   }
-}
-
-//=================================================================================================
-
-void GeomAdaptor_Surface::D3(const double U,
-                             const double V,
-                             gp_Pnt&      P,
-                             gp_Vec&      D1U,
-                             gp_Vec&      D1V,
-                             gp_Vec&      D2U,
-                             gp_Vec&      D2V,
-                             gp_Vec&      D2UV,
-                             gp_Vec&      D3U,
-                             gp_Vec&      D3V,
-                             gp_Vec&      D3UUV,
-                             gp_Vec&      D3UVV) const
-{
-  const Geom_Surface::ResD3 aResult = EvalD3(U, V);
-  P                                 = aResult.Point;
-  D1U                               = aResult.D1U;
-  D1V                               = aResult.D1V;
-  D2U                               = aResult.D2U;
-  D2V                               = aResult.D2V;
-  D2UV                              = aResult.D2UV;
-  D3U                               = aResult.D3U;
-  D3V                               = aResult.D3V;
-  D3UUV                             = aResult.D3UUV;
-  D3UVV                             = aResult.D3UVV;
 }
 
 //=================================================================================================
@@ -1704,13 +1626,6 @@ Geom_Surface::ResD3 GeomAdaptor_Surface::EvalD3(double U, double V) const
     default:
       return mySurface->EvalD3(u, v);
   }
-}
-
-//=================================================================================================
-
-gp_Vec GeomAdaptor_Surface::DN(const double U, const double V, const int Nu, const int Nv) const
-{
-  return EvalDN(U, V, Nu, Nv);
 }
 
 //=================================================================================================

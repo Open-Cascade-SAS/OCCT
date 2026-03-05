@@ -97,79 +97,51 @@ double GeomFill_SnglrFunc::Period() const
   return myHCurve->Period();
 }
 
-gp_Pnt GeomFill_SnglrFunc::Value(const double U) const
+gp_Pnt GeomFill_SnglrFunc::EvalD0(double theU) const
 {
-  gp_Pnt C;
-  gp_Vec DC, D2C;
-  myHCurve->D2(U, C, DC, D2C);
-  DC *= ratio;
-  return gp_Pnt(DC.Crossed(D2C).XYZ());
+  const Geom_Curve::ResD2 aRes = myHCurve->EvalD2(theU);
+  return gp_Pnt((aRes.D1 * ratio).Crossed(aRes.D2).XYZ());
 }
 
-void GeomFill_SnglrFunc::D0(const double U, gp_Pnt& P) const
+Geom_Curve::ResD1 GeomFill_SnglrFunc::EvalD1(double theU) const
 {
-  gp_Pnt C;
-  gp_Vec DC, D2C;
-  myHCurve->D2(U, C, DC, D2C);
-  DC *= ratio;
-  P = gp_Pnt(DC.Crossed(D2C).XYZ());
+  const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
+  const gp_Vec             aDC = aRes.D1 * ratio;
+  return {gp_Pnt(aDC.Crossed(aRes.D2).XYZ()), aDC.Crossed(aRes.D3)};
 }
 
-void GeomFill_SnglrFunc::D1(const double U, gp_Pnt& P, gp_Vec& V) const
+Geom_Curve::ResD2 GeomFill_SnglrFunc::EvalD2(double theU) const
 {
-  gp_Pnt C;
-  gp_Vec DC, D2C, D3C;
-  myHCurve->D3(U, C, DC, D2C, D3C);
-  DC *= ratio;
-  P = gp_Pnt(DC.Crossed(D2C).XYZ());
-  V = DC.Crossed(D3C);
+  const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
+  const gp_Vec             aD4 = myHCurve->EvalDN(theU, 4);
+  return {gp_Pnt((aRes.D1.Crossed(aRes.D2) * ratio).XYZ()),
+          aRes.D1.Crossed(aRes.D3) * ratio,
+          (aRes.D2.Crossed(aRes.D3) + aRes.D1.Crossed(aD4)) * ratio};
 }
 
-void GeomFill_SnglrFunc::D2(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2) const
+Geom_Curve::ResD3 GeomFill_SnglrFunc::EvalD3(double theU) const
 {
-  gp_Pnt C;
-  gp_Vec DC, D2C, D3C, D4C;
-  myHCurve->D3(U, C, DC, D2C, D3C);
-  P   = gp_Pnt(DC.Crossed(D2C).XYZ());
-  V1  = DC.Crossed(D3C);
-  D4C = myHCurve->DN(U, 4);
-  V2  = D2C.Crossed(D3C) + DC.Crossed(D4C);
-
-  P.ChangeCoord() *= ratio;
-  V1 *= ratio;
-  V2 *= ratio;
+  const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
+  const gp_Vec             aD4 = myHCurve->EvalDN(theU, 4);
+  const gp_Vec             aD5 = myHCurve->EvalDN(theU, 5);
+  return {gp_Pnt((aRes.D1.Crossed(aRes.D2) * ratio).XYZ()),
+          aRes.D1.Crossed(aRes.D3) * ratio,
+          (aRes.D2.Crossed(aRes.D3) + aRes.D1.Crossed(aD4)) * ratio,
+          (aRes.D1.Crossed(aD5) + aRes.D2.Crossed(aD4) * 2) * ratio};
 }
 
-void GeomFill_SnglrFunc::D3(const double U, gp_Pnt& P, gp_Vec& V1, gp_Vec& V2, gp_Vec& V3) const
+gp_Vec GeomFill_SnglrFunc::EvalDN(double theU, int theN) const
 {
-  gp_Vec DC, D2C, D3C, D4C, D5C;
-  myHCurve->D3(U, P, DC, D2C, D3C);
-  D4C = myHCurve->DN(U, 4);
-  D5C = myHCurve->DN(U, 5);
-  P   = gp_Pnt(DC.Crossed(D2C).XYZ()).ChangeCoord() * ratio;
-  V1  = DC.Crossed(D3C) * ratio;
-  V2  = (D2C.Crossed(D3C) + DC.Crossed(D4C)) * ratio;
-  V3  = (DC.Crossed(D5C) + D2C.Crossed(D4C) * 2) * ratio;
-}
+  Standard_RangeError_Raise_if(theN < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
 
-gp_Vec GeomFill_SnglrFunc::DN(const double U, const int N) const
-{
-  Standard_RangeError_Raise_if(N < 1, "Exception: Geom2d_OffsetCurve::DN(). N<1.");
-
-  gp_Vec D1C, D2C, D3C;
-  gp_Pnt C;
-
-  switch (N)
+  switch (theN)
   {
     case 1:
-      D1(U, C, D1C);
-      return D1C;
+      return EvalD1(theU).D1;
     case 2:
-      D2(U, C, D1C, D2C);
-      return D2C;
+      return EvalD2(theU).D2;
     case 3:
-      D3(U, C, D1C, D2C, D3C);
-      return D3C;
+      return EvalD3(theU).D3;
     default:
       throw Standard_NotImplemented("Exception: Derivative order is greater than 3. "
                                     "Cannot compute of derivative.");

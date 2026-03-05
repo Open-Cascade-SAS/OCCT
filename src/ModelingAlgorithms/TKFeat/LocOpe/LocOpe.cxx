@@ -143,8 +143,6 @@ bool LocOpe::TgtFaces(const TopoDS_Edge& E, const TopoDS_Face& F1, const TopoDS_
   HC2d->Initialize(e, F1);
   HC2d2->Initialize(e, F2);
 
-  //  Adaptor3d_CurveOnSurface C1(HC2d,HS1);
-
   bool   rev1 = (F1.Orientation() == TopAbs_REVERSED);
   bool   rev2 = (F2.Orientation() == TopAbs_REVERSED);
   double f, l, eps, angmin = M_PI, angmax = -M_PI, ang;
