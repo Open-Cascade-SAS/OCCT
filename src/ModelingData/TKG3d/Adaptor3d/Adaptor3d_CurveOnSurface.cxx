@@ -1302,10 +1302,14 @@ gp_Vec Adaptor3d_CurveOnSurface::EvalDN(const double theU, const int theN) const
 {
   switch (theN)
   {
-    case 1: return EvalD1(theU).D1;
-    case 2: return EvalD2(theU).D2;
-    case 3: return EvalD3(theU).D3;
-    default: throw Standard_NotImplemented("Adaptor3d_CurveOnSurface:EvalDN");
+    case 1:
+      return EvalD1(theU).D1;
+    case 2:
+      return EvalD2(theU).D2;
+    case 3:
+      return EvalD3(theU).D3;
+    default:
+      throw Standard_NotImplemented("Adaptor3d_CurveOnSurface:EvalDN");
   }
 }
 

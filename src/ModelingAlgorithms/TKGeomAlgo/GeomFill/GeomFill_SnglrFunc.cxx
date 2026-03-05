@@ -106,14 +106,14 @@ gp_Pnt GeomFill_SnglrFunc::EvalD0(double theU) const
 Geom_Curve::ResD1 GeomFill_SnglrFunc::EvalD1(double theU) const
 {
   const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
-  const gp_Vec             aDC = aRes.D1 * ratio;
+  const gp_Vec            aDC  = aRes.D1 * ratio;
   return {gp_Pnt(aDC.Crossed(aRes.D2).XYZ()), aDC.Crossed(aRes.D3)};
 }
 
 Geom_Curve::ResD2 GeomFill_SnglrFunc::EvalD2(double theU) const
 {
   const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
-  const gp_Vec             aD4 = myHCurve->EvalDN(theU, 4);
+  const gp_Vec            aD4  = myHCurve->EvalDN(theU, 4);
   return {gp_Pnt((aRes.D1.Crossed(aRes.D2) * ratio).XYZ()),
           aRes.D1.Crossed(aRes.D3) * ratio,
           (aRes.D2.Crossed(aRes.D3) + aRes.D1.Crossed(aD4)) * ratio};
@@ -122,8 +122,8 @@ Geom_Curve::ResD2 GeomFill_SnglrFunc::EvalD2(double theU) const
 Geom_Curve::ResD3 GeomFill_SnglrFunc::EvalD3(double theU) const
 {
   const Geom_Curve::ResD3 aRes = myHCurve->EvalD3(theU);
-  const gp_Vec             aD4 = myHCurve->EvalDN(theU, 4);
-  const gp_Vec             aD5 = myHCurve->EvalDN(theU, 5);
+  const gp_Vec            aD4  = myHCurve->EvalDN(theU, 4);
+  const gp_Vec            aD5  = myHCurve->EvalDN(theU, 5);
   return {gp_Pnt((aRes.D1.Crossed(aRes.D2) * ratio).XYZ()),
           aRes.D1.Crossed(aRes.D3) * ratio,
           (aRes.D2.Crossed(aRes.D3) + aRes.D1.Crossed(aD4)) * ratio,

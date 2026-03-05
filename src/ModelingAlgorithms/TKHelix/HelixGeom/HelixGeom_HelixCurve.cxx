@@ -264,13 +264,11 @@ gp_Vec HelixGeom_HelixCurve::EvalDN(double theT, int theN) const
   // Compute derivative based on order
   switch (theN)
   {
-    case 1:
-    {
+    case 1: {
       const Geom_Curve::ResD1 aRes = EvalD1(theT);
       return aRes.D1;
     }
-    case 2:
-    {
+    case 2: {
       const Geom_Curve::ResD2 aRes = EvalD2(theT);
       return aRes.D2;
     }

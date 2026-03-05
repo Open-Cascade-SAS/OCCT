@@ -26,9 +26,8 @@ GeomAdaptor_TransformedCurve::GeomAdaptor_TransformedCurve() = default;
 
 //==================================================================================================
 
-GeomAdaptor_TransformedCurve::GeomAdaptor_TransformedCurve(
-  const occ::handle<Geom_Curve>& theCurve,
-  const gp_Trsf&                 theTrsf)
+GeomAdaptor_TransformedCurve::GeomAdaptor_TransformedCurve(const occ::handle<Geom_Curve>& theCurve,
+                                                           const gp_Trsf&                 theTrsf)
     : myCurve(theCurve),
       myTrsf(theTrsf)
 {
@@ -36,11 +35,10 @@ GeomAdaptor_TransformedCurve::GeomAdaptor_TransformedCurve(
 
 //==================================================================================================
 
-GeomAdaptor_TransformedCurve::GeomAdaptor_TransformedCurve(
-  const occ::handle<Geom_Curve>& theCurve,
-  const double                   theFirst,
-  const double                   theLast,
-  const gp_Trsf&                 theTrsf)
+GeomAdaptor_TransformedCurve::GeomAdaptor_TransformedCurve(const occ::handle<Geom_Curve>& theCurve,
+                                                           const double                   theFirst,
+                                                           const double                   theLast,
+                                                           const gp_Trsf&                 theTrsf)
     : myCurve(theCurve, theFirst, theLast),
       myTrsf(theTrsf)
 {

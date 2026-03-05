@@ -39,7 +39,7 @@ public:
   //! @param theCurve underlying geometry
   //! @param theTrsf transformation to apply
   Standard_EXPORT GeomAdaptor_TransformedCurve(const occ::handle<Geom_Curve>& theCurve,
-                                               const gp_Trsf&                theTrsf);
+                                               const gp_Trsf&                 theTrsf);
 
   //! Creates a curve adaptor with transformation and parameter bounds.
   //! @param theCurve underlying geometry
@@ -47,9 +47,9 @@ public:
   //! @param theLast maximum parameter
   //! @param theTrsf transformation to apply
   Standard_EXPORT GeomAdaptor_TransformedCurve(const occ::handle<Geom_Curve>& theCurve,
-                                               const double                  theFirst,
-                                               const double                  theLast,
-                                               const gp_Trsf&                theTrsf);
+                                               const double                   theFirst,
+                                               const double                   theLast,
+                                               const gp_Trsf&                 theTrsf);
 
   //! Shallow copy of adaptor.
   Standard_EXPORT occ::handle<Adaptor3d_Curve> ShallowCopy() const override;
@@ -124,8 +124,8 @@ public:
                                  const GeomAbs_Shape         theS) const override;
 
   Standard_EXPORT occ::handle<Adaptor3d_Curve> Trim(const double theFirst,
-                                                     const double theLast,
-                                                     const double theTol) const override;
+                                                    const double theLast,
+                                                    const double theTol) const override;
 
   bool IsClosed() const override
   {

@@ -131,11 +131,7 @@ public:
   //! Raised if the continuity of the current intervals is not C1.
   //!
   //! Tip: use GeomLib::NormEstim() to calculate surface normal at specified (U, V) point.
-  void D1(const double theU,
-          const double theV,
-          gp_Pnt&      theP,
-          gp_Vec&      theD1U,
-          gp_Vec&      theD1V) const
+  void D1(const double theU, const double theV, gp_Pnt& theP, gp_Vec& theD1U, gp_Vec& theD1V) const
   {
     const Geom_Surface::ResD1 aRes = EvalD1(theU, theV);
     theP                           = aRes.Point;
