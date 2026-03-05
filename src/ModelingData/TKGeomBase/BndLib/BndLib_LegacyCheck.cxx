@@ -2133,11 +2133,11 @@ void CompareSurfaceAddOptimal(const Adaptor3d_Surface& theS,
 
 //=================================================================================================
 
-void Compare2dCurveAdd(const Handle(Geom2d_Curve)& theC,
-                       double                      theT1,
-                       double                      theT2,
-                       double                      theTol,
-                       const Bnd_Box2d&            theNewBox)
+void Compare2dCurveAdd(const occ::handle<Geom2d_Curve>& theC,
+                       double                           theT1,
+                       double                           theT2,
+                       double                           theTol,
+                       const Bnd_Box2d&                 theNewBox)
 {
   const Bnd_Box2d aOldBox = LegacyAdd2dCurveImpl(theC, theT1, theT2, theTol);
   if (!boxesEqual2d(aOldBox, theNewBox))
@@ -2151,11 +2151,11 @@ void Compare2dCurveAdd(const Handle(Geom2d_Curve)& theC,
 
 //=================================================================================================
 
-void Compare2dCurveAddOptimal(const Handle(Geom2d_Curve)& theC,
-                              double                      theT1,
-                              double                      theT2,
-                              double                      theTol,
-                              const Bnd_Box2d&            theNewBox)
+void Compare2dCurveAddOptimal(const occ::handle<Geom2d_Curve>& theC,
+                              double                           theT1,
+                              double                           theT2,
+                              double                           theTol,
+                              const Bnd_Box2d&                 theNewBox)
 {
   const Bnd_Box2d aOldBox = LegacyAddOptimal2dCurveImpl(theC, theT1, theT2, theTol);
   if (!boxesEqual2d(aOldBox, theNewBox))

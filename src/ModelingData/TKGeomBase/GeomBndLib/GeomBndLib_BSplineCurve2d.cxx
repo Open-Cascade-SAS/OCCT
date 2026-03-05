@@ -28,10 +28,11 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::Box(double theTol) const
 
 Bnd_Box2d GeomBndLib_BSplineCurve2d::Box(double theU1, double theU2, double theTol) const
 {
-  return GeomBndLib_SplineHelpers::BSplineCurveBox<Geom2d_BSplineCurve,
-                                                   Geom2dAdaptor_Curve,
-                                                   Bnd_Box2d,
-                                                   gp_Pnt2d>(myGeom, theU1, theU2, theTol);
+  return GeomBndLib_SplineHelpers::
+    BSplineCurveBox<Geom2d_BSplineCurve, Geom2dAdaptor_Curve, Bnd_Box2d, gp_Pnt2d>(myGeom,
+                                                                                   theU1,
+                                                                                   theU2,
+                                                                                   theTol);
 }
 
 //=================================================================================================
@@ -40,5 +41,8 @@ Bnd_Box2d GeomBndLib_BSplineCurve2d::BoxOptimal(double theU1, double theU2, doub
 {
   Geom2dAdaptor_Curve aGACurve(myGeom);
   return GeomBndLib_SplineHelpers::CurveBoxOptimal<Geom2dAdaptor_Curve, Bnd_Box2d, gp_Pnt2d>(
-    aGACurve, theU1, theU2, theTol);
+    aGACurve,
+    theU1,
+    theU2,
+    theTol);
 }

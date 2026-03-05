@@ -228,9 +228,9 @@ void ReduceSplineBox(const NCollection_Array1<TPoint>& thePoles,
 //! For the full range, uses FillBox sampling + ReduceSplineBox.
 template <typename TBezier, typename TAdaptor, typename TBox, typename TPoint>
 TBox BezierCurveBox(const occ::handle<TBezier>& theGeom,
-                    const double                 theU1,
-                    const double                 theU2,
-                    const double                 theTol)
+                    const double                theU1,
+                    const double                theU2,
+                    const double                theTol)
 {
   // For a strict sub-range, segment the curve so ReduceSplineBox uses the exact sub-curve
   // poles. Without segmentation, the full poles' convex hull may exceed the sub-range extent.
@@ -263,9 +263,9 @@ TBox BezierCurveBox(const occ::handle<TBezier>& theGeom,
 //! and full-range via knot-span FillBox + ComputePoleIndexRange + ReduceSplineBox.
 template <typename TBSpline, typename TAdaptor, typename TBox, typename TPoint>
 TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
-                     const double                  theU1,
-                     const double                  theU2,
-                     const double                  theTol)
+                     const double                 theU1,
+                     const double                 theU2,
+                     const double                 theTol)
 {
   constexpr double aWeakness = 1.5;
   const int        aDegree   = theGeom->Degree();
@@ -301,8 +301,7 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
     for (int aK = aK1 + 1; aK <= aK2; aK++)
     {
       aLast = aKnots(aK);
-      aTol =
-        std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
+      aTol = std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
       aFirst = aLast;
     }
     TBox aBox;
@@ -362,8 +361,7 @@ TBox BSplineCurveBox(const occ::handle<TBSpline>& theGeom,
   {
     const double aLast = (aK < aKMax) ? std::min(aU2, aKnots(aK)) : aU2;
     if (aLast > aFirst + Precision::PConfusion())
-      aTol =
-        std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
+      aTol = std::max(FillBox<TBox, TAdaptor, TPoint>(aB1, aGACurve, aFirst, aLast, aDegree), aTol);
     aFirst = aLast;
     if (aFirst >= aU2 - Precision::PConfusion())
       break;
@@ -395,10 +393,9 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
                      const double theU2,
                      const double theTol)
 {
-  using TCoord              = std::conditional_t<std::is_same_v<TPoint, gp_Pnt>, gp_XYZ, gp_XY>;
-  constexpr int NDim        = std::is_same_v<TBox, Bnd_Box> ? 3 : 2;
-  const int     aNbSamples  =
-    GeomBndLib_SamplingHelpers::ComputeNbSamplesT(theAdaptor, theU1, theU2);
+  using TCoord         = std::conditional_t<std::is_same_v<TPoint, gp_Pnt>, gp_XYZ, gp_XY>;
+  constexpr int NDim   = std::is_same_v<TBox, Bnd_Box> ? 3 : 2;
+  const int aNbSamples = GeomBndLib_SamplingHelpers::ComputeNbSamplesT(theAdaptor, theU1, theU2);
 
   double aCoordMin[NDim], aCoordMax[NDim], aDeflMax[NDim];
   for (int aK = 0; aK < NDim; ++aK)
@@ -460,31 +457,29 @@ TBox CurveBoxOptimal(TAdaptor&    theAdaptor,
     {
       if (aPnts(anI).Coord(aK + 1) - aCMin < aDiff)
       {
-        const double anUMin = theU1 + std::max(0, anI - 2) * aDU;
-        const double anUMax = theU1 + std::min(aNbSamples - 1, anI) * aDU;
-        const double aLocMin =
-          GeomBndLib_OptimizationHelpers::AdjustExtrT(theAdaptor,
-                                                      anUMin,
-                                                      anUMax,
-                                                      aCMin,
-                                                      aK + 1,
-                                                      anEps,
-                                                      true);
+        const double anUMin  = theU1 + std::max(0, anI - 2) * aDU;
+        const double anUMax  = theU1 + std::min(aNbSamples - 1, anI) * aDU;
+        const double aLocMin = GeomBndLib_OptimizationHelpers::AdjustExtrT(theAdaptor,
+                                                                           anUMin,
+                                                                           anUMax,
+                                                                           aCMin,
+                                                                           aK + 1,
+                                                                           anEps,
+                                                                           true);
         if (aLocMin < aCMin)
           aCMin = aLocMin;
       }
       else if (aCMax - aPnts(anI).Coord(aK + 1) < aDiff)
       {
-        const double anUMin = theU1 + std::max(0, anI - 2) * aDU;
-        const double anUMax = theU1 + std::min(aNbSamples - 1, anI) * aDU;
-        const double aLocMax =
-          GeomBndLib_OptimizationHelpers::AdjustExtrT(theAdaptor,
-                                                      anUMin,
-                                                      anUMax,
-                                                      aCMax,
-                                                      aK + 1,
-                                                      anEps,
-                                                      false);
+        const double anUMin  = theU1 + std::max(0, anI - 2) * aDU;
+        const double anUMax  = theU1 + std::min(aNbSamples - 1, anI) * aDU;
+        const double aLocMax = GeomBndLib_OptimizationHelpers::AdjustExtrT(theAdaptor,
+                                                                           anUMin,
+                                                                           anUMax,
+                                                                           aCMax,
+                                                                           aK + 1,
+                                                                           anEps,
+                                                                           false);
         if (aLocMax > aCMax)
           aCMax = aLocMax;
       }

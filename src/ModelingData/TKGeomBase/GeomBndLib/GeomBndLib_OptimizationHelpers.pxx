@@ -585,12 +585,12 @@ inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
 //! Dispatch to AdjustExtrCurve or AdjustExtrCurve2d based on adaptor type.
 template <typename TAdaptor>
 inline double AdjustExtrT(const TAdaptor& theCurve,
-                           const double    theUMin,
-                           const double    theUMax,
-                           const double    theExtr0,
-                           const int       theCoordIdx,
-                           const double    theTol,
-                           const bool      theIsMin)
+                          const double    theUMin,
+                          const double    theUMax,
+                          const double    theExtr0,
+                          const int       theCoordIdx,
+                          const double    theTol,
+                          const bool      theIsMin)
 {
   if constexpr (std::is_base_of_v<Adaptor3d_Curve, TAdaptor>)
     return AdjustExtrCurve(theCurve, theUMin, theUMax, theExtr0, theCoordIdx, theTol, theIsMin);

@@ -27,10 +27,11 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theTol) const
 
 Bnd_Box2d GeomBndLib_BezierCurve2d::Box(double theU1, double theU2, double theTol) const
 {
-  return GeomBndLib_SplineHelpers::BezierCurveBox<Geom2d_BezierCurve,
-                                                  Geom2dAdaptor_Curve,
-                                                  Bnd_Box2d,
-                                                  gp_Pnt2d>(myGeom, theU1, theU2, theTol);
+  return GeomBndLib_SplineHelpers::
+    BezierCurveBox<Geom2d_BezierCurve, Geom2dAdaptor_Curve, Bnd_Box2d, gp_Pnt2d>(myGeom,
+                                                                                 theU1,
+                                                                                 theU2,
+                                                                                 theTol);
 }
 
 //=================================================================================================
@@ -39,5 +40,8 @@ Bnd_Box2d GeomBndLib_BezierCurve2d::BoxOptimal(double theU1, double theU2, doubl
 {
   Geom2dAdaptor_Curve aGACurve(myGeom);
   return GeomBndLib_SplineHelpers::CurveBoxOptimal<Geom2dAdaptor_Curve, Bnd_Box2d, gp_Pnt2d>(
-    aGACurve, theU1, theU2, theTol);
+    aGACurve,
+    theU1,
+    theU2,
+    theTol);
 }
