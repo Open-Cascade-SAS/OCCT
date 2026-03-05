@@ -17,6 +17,8 @@
 #include <Adaptor3d_Curve.hxx>
 #include <Adaptor2d_Curve2d.hxx>
 #include <Adaptor3d_Surface.hxx>
+
+#include <type_traits>
 #include <Precision.hxx>
 #include <MathOpt_Brent.hxx>
 #include <MathOpt_PSO.hxx>
@@ -578,6 +580,22 @@ inline double AdjustExtrSurf(const Adaptor3d_Surface& theSurf,
   }
 
   return aSign * extr;
+}
+
+//! Dispatch to AdjustExtrCurve or AdjustExtrCurve2d based on adaptor type.
+template <typename TAdaptor>
+inline double AdjustExtrT(const TAdaptor& theCurve,
+                           const double    theUMin,
+                           const double    theUMax,
+                           const double    theExtr0,
+                           const int       theCoordIdx,
+                           const double    theTol,
+                           const bool      theIsMin)
+{
+  if constexpr (std::is_base_of_v<Adaptor3d_Curve, TAdaptor>)
+    return AdjustExtrCurve(theCurve, theUMin, theUMax, theExtr0, theCoordIdx, theTol, theIsMin);
+  else
+    return AdjustExtrCurve2d(theCurve, theUMin, theUMax, theExtr0, theCoordIdx, theTol, theIsMin);
 }
 
 } // namespace GeomBndLib_OptimizationHelpers

@@ -23,6 +23,8 @@
 #include <GeomAbs_CurveType.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 
+#include <type_traits>
+
 //! @file GeomBndLib_SamplingHelpers.pxx
 //! Unified sample count computation for curves and surfaces.
 
@@ -219,6 +221,16 @@ inline int ComputeNbVSamples(const Adaptor3d_Surface& theSurf)
       N = 33;
   }
   return std::min(50, N);
+}
+
+//! Compute number of samples for a curve (dispatches to 3D or 2D variant based on adaptor type).
+template <typename TAdaptor>
+inline int ComputeNbSamplesT(const TAdaptor& theCurve, const double theU1, const double theU2)
+{
+  if constexpr (std::is_base_of_v<Adaptor3d_Curve, TAdaptor>)
+    return ComputeNbSamples(theCurve, theU1, theU2);
+  else
+    return ComputeNbSamples2d(theCurve, theU1, theU2);
 }
 
 } // namespace GeomBndLib_SamplingHelpers
