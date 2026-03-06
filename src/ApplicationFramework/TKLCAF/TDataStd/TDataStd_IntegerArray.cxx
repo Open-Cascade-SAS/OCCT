@@ -36,10 +36,8 @@ const Standard_GUID& TDataStd_IntegerArray::GetID()
   return TDataStd_IntegerArrayID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_IntegerArray> SetAttr(const TDF_Label&     label,
                                                   const int            lower,
                                                   const int            upper,
@@ -79,10 +77,7 @@ void TDataStd_IntegerArray::Init(const int lower, const int upper)
   myValue = new NCollection_HArray1<int>(lower, upper, 0);
 }
 
-//=======================================================================
-// function : Set
-// purpose  : isDelta applicable only for new attributes
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label& label,
                                                               const int        lower,
@@ -93,10 +88,7 @@ occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label& l
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDataStd_IntegerArray> TDataStd_IntegerArray::Set(const TDF_Label&     label,
                                                               const Standard_GUID& theGuid,
@@ -156,12 +148,7 @@ int TDataStd_IntegerArray::Length() const
   return myValue->Length();
 }
 
-//=======================================================================
-// function : ChangeArray
-// purpose  : If value of <newArray> differs from <myValue>, Backup
-//         : performed and myValue refers to new instance of HArray1OfInteger
-//         : that holds <newArray>
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_IntegerArray::ChangeArray(const occ::handle<NCollection_HArray1<int>>& newArray,
                                         const bool                                   isCheckItems)

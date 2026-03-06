@@ -24,20 +24,15 @@
 
 IMPLEMENT_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
 
-//=======================================================================
-// function : GetID
-// purpose  : Static method to get an ID
-//=======================================================================
+//=================================================================================================
+
 const Standard_GUID& TFunction_Logbook::GetID()
 {
   static Standard_GUID TFunction_LogbookID("CF519724-5CA4-4B90-835F-8919BE1DDE4B");
   return TFunction_LogbookID;
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Finds or creates a Scope attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TFunction_Logbook> TFunction_Logbook::Set(const TDF_Label& Access)
 {
@@ -50,10 +45,7 @@ occ::handle<TFunction_Logbook> TFunction_Logbook::Set(const TDF_Label& Access)
   return S;
 }
 
-//=======================================================================
-// function : ID
-// purpose  : Returns GUID of the function
-//=======================================================================
+//=================================================================================================
 
 const Standard_GUID& TFunction_Logbook::ID() const
 {
@@ -67,10 +59,7 @@ TFunction_Logbook::TFunction_Logbook()
 {
 }
 
-//=======================================================================
-// function : Clear
-// purpose  : Clears the valid and modified labels
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Logbook::Clear()
 {
@@ -83,20 +72,14 @@ void TFunction_Logbook::Clear()
   }
 }
 
-//=======================================================================
-// function : IsEmpty
-// purpose  : Returns true if the nothing is recorded in the logbook
-//=======================================================================
+//=================================================================================================
 
 bool TFunction_Logbook::IsEmpty() const
 {
   return (myTouched.IsEmpty() && myImpacted.IsEmpty() && myValid.IsEmpty());
 }
 
-//=======================================================================
-// function : IsModified
-// purpose  : Returns true if the label is modified
-//=======================================================================
+//=================================================================================================
 
 bool TFunction_Logbook::IsModified(const TDF_Label& L, const bool WithChildren) const
 {
@@ -174,10 +157,7 @@ void TFunction_Logbook::GetValid(NCollection_Map<TDF_Label>& Ls) const
   }
 }
 
-//=======================================================================
-// function : Restore
-// purpose  : Undos (and redos) the attribute.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Logbook::Restore(const occ::handle<TDF_Attribute>& other)
 {
@@ -204,10 +184,7 @@ void TFunction_Logbook::Restore(const occ::handle<TDF_Attribute>& other)
   }
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Method for Copy mechanism
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
                               const occ::handle<TDF_RelocationTable>& RT) const
@@ -266,10 +243,7 @@ void TFunction_Logbook::Paste(const occ::handle<TDF_Attribute>&       into,
   }
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Returns new empty graph node attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> TFunction_Logbook::NewEmpty() const
 {

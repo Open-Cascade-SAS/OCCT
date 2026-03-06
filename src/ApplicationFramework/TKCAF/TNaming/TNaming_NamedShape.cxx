@@ -300,10 +300,7 @@ void TNaming_NamedShape::BeforeRemoval()
   Clear();
 }
 
-//=======================================================================
-// function : BeforeUndo
-// purpose  : before application of a TDF_Delta.
-//=======================================================================
+//=================================================================================================
 
 bool TNaming_NamedShape::BeforeUndo(const occ::handle<TDF_AttributeDelta>& /*anAttDelta*/,
                                     const bool /*forceIt*/)
@@ -314,10 +311,7 @@ bool TNaming_NamedShape::BeforeUndo(const occ::handle<TDF_AttributeDelta>& /*anA
   return true;
 }
 
-//=======================================================================
-// function : AfterUndo
-// purpose  : After application of a TDF_Delta.
-//=======================================================================
+//=================================================================================================
 
 bool TNaming_NamedShape::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
                                    const bool /*forceIt*/)
@@ -390,7 +384,7 @@ void TNaming_NamedShape::Restore(const occ::handle<TDF_Attribute>& anAttribute)
 {
   Clear();
 
-  TNaming_NamedShape* PAtt = (TNaming_NamedShape*)anAttribute.operator->();
+  TNaming_NamedShape* PAtt = static_cast<TNaming_NamedShape*>(anAttribute.get());
   myNode                   = PAtt->myNode;
   myEvolution              = PAtt->myEvolution;
   myVersion                = PAtt->myVersion;
@@ -913,13 +907,7 @@ TNaming_Evolution TNaming_Iterator::Evolution() const
 // Methods of the TNaming_NewShapeIterator class
 //**********************************************************************
 
-//=======================================================================
-// function : SelectSameShape
-// purpose  : Selectionne le prochain noeud ou le shape est le meme que celui
-//           de RS. Old = 0 si il doit etre new dans le noeud a chercher.
-//           selection dans la transaction valide.
-//           On saute aussi les noeud ou OS = NS;
-//=======================================================================
+//=================================================================================================
 
 static void SelectSameShape(TNaming_Node*&     myNode,
                             bool               Old,
@@ -1370,10 +1358,7 @@ TDF_Label TNaming_Tool::Label(const TDF_Label& access, const TopoDS_Shape& S, in
   return TNaming_Tool::Label(US, S, Trans);
 }
 
-//=======================================================================
-// function : IsValidInTrans
-// purpose  : un shape est valid tant que l attribut ou il est cree est valid
-//=======================================================================
+//=================================================================================================
 
 int TNaming_Tool::ValidUntil(const TDF_Label& access, const TopoDS_Shape& S)
 {
@@ -1460,10 +1445,7 @@ occ::handle<TNaming_NamedShape> TNaming_Tool::NamedShape(const TopoDS_Shape& S,
   //  return res->myAtt;
 }
 
-//=======================================================================
-// function : IsValidInTrans
-// purpose  : un shape est valid tant que l attribut ou il est cree est valid
-//=======================================================================
+//=================================================================================================
 
 int TNaming_Tool::ValidUntil(const TopoDS_Shape& S, const occ::handle<TNaming_UsedShapes>& US)
 {

@@ -30,6 +30,7 @@
 #include <Standard_Failure.hxx>
 #include <Standard_NoSuchObject.hxx>
 #include <Standard_NullObject.hxx>
+#include <Standard_ProgramError.hxx>
 #include <Standard_Type.hxx>
 #include <UTL.hxx>
 class CDM_MetaData;
@@ -101,12 +102,11 @@ void CDM_Document::Extensions(NCollection_Sequence<TCollection_ExtendedString>& 
 
 int CDM_Document::CreateReference(const occ::handle<CDM_Document>& anOtherDocument)
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-
-  for (; it.More(); it.Next())
+  for (NCollection_List<int>::Iterator it(myToReferencesOrder); it.More(); it.Next())
   {
-    if (anOtherDocument == it.Value()->Document())
-      return it.Value()->ReferenceIdentifier();
+    const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(it.Value());
+    if (aRefPtr != nullptr && anOtherDocument == (*aRefPtr)->Document())
+      return (*aRefPtr)->ReferenceIdentifier();
   }
 
   occ::handle<CDM_Reference> r = new CDM_Reference(this,
@@ -122,12 +122,13 @@ int CDM_Document::CreateReference(const occ::handle<CDM_Document>& anOtherDocume
 
 void CDM_Document::RemoveAllReferences()
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-
-  for (; it.More(); it.Next())
+  for (NCollection_List<int>::Iterator it(myToReferencesOrder); it.More(); it.Next())
   {
-    it.Value()->ToDocument()->RemoveFromReference(it.Value()->ReferenceIdentifier());
+    const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(it.Value());
+    if (aRefPtr != nullptr)
+      (*aRefPtr)->ToDocument()->RemoveFromReference((*aRefPtr)->ReferenceIdentifier());
   }
+  myToReferencesOrder.Clear();
   myToReferences.Clear();
 }
 
@@ -135,16 +136,20 @@ void CDM_Document::RemoveAllReferences()
 
 void CDM_Document::RemoveReference(const int aReferenceIdentifier)
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-
-  for (; it.More(); it.Next())
+  const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(aReferenceIdentifier);
+  if (aRefPtr != nullptr)
   {
-    if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
+    (*aRefPtr)->ToDocument()->RemoveFromReference(aReferenceIdentifier);
+    for (NCollection_List<int>::Iterator anOrderIt(myToReferencesOrder); anOrderIt.More();
+         anOrderIt.Next())
     {
-      it.Value()->ToDocument()->RemoveFromReference(aReferenceIdentifier);
-      myToReferences.Remove(it);
-      return;
+      if (anOrderIt.Value() == aReferenceIdentifier)
+      {
+        myToReferencesOrder.Remove(anOrderIt);
+        break;
+      }
     }
+    myToReferences.UnBind(aReferenceIdentifier);
   }
 }
 
@@ -170,19 +175,10 @@ occ::handle<CDM_Document> CDM_Document::Document(const int aReferenceIdentifier)
 
 occ::handle<CDM_Reference> CDM_Document::Reference(const int aReferenceIdentifier) const
 {
-  occ::handle<CDM_Reference> theReference;
-
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-
-  bool found = false;
-
-  for (; it.More() && !found; it.Next())
-  {
-    found = aReferenceIdentifier == it.Value()->ReferenceIdentifier();
-    if (found)
-      theReference = it.Value();
-  }
-  return theReference;
+  const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(aReferenceIdentifier);
+  if (aRefPtr != nullptr)
+    return *aRefPtr;
+  return occ::handle<CDM_Reference>();
 }
 
 //=================================================================================================
@@ -290,10 +286,10 @@ int CDM_Document::FromReferencesNumber() const
 
 bool CDM_Document::ShallowReferences(const occ::handle<CDM_Document>& aDocument) const
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences);
-  for (; it.More(); it.Next())
+  for (NCollection_List<int>::Iterator it(myToReferencesOrder); it.More(); it.Next())
   {
-    if (it.Value()->Document() == aDocument)
+    const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(it.Value());
+    if (aRefPtr != nullptr && IsReferenceTarget(*aRefPtr, aDocument))
       return true;
   }
   return false;
@@ -303,19 +299,53 @@ bool CDM_Document::ShallowReferences(const occ::handle<CDM_Document>& aDocument)
 
 bool CDM_Document::DeepReferences(const occ::handle<CDM_Document>& aDocument) const
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences);
-  for (; it.More(); it.Next())
+  NCollection_Map<const CDM_Document*> aVisited;
+  return deepReferences(aDocument, aVisited);
+}
+
+//=================================================================================================
+
+bool CDM_Document::deepReferences(const occ::handle<CDM_Document>&      aDocument,
+                                  NCollection_Map<const CDM_Document*>& theVisited) const
+{
+  if (!theVisited.Add(this))
+    return false;
+  for (NCollection_List<int>::Iterator it(myToReferencesOrder); it.More(); it.Next())
   {
-    occ::handle<CDM_Document> theToDocument = it.Value()->Document();
-    if (!theToDocument.IsNull())
+    const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(it.Value());
+    if (aRefPtr == nullptr)
+      continue;
+
+    const occ::handle<CDM_Reference>& aReference = *aRefPtr;
+    if (IsReferenceTarget(aReference, aDocument))
+      return true;
+
+    occ::handle<CDM_Document> aRefDoc = aReference->Document();
+    if (!aRefDoc.IsNull() && aRefDoc->deepReferences(aDocument, theVisited))
     {
-      if (theToDocument == aDocument)
-        return true;
-      if (theToDocument->DeepReferences(aDocument))
-        return true;
+      return true;
     }
   }
   return false;
+}
+
+//=================================================================================================
+
+bool CDM_Document::IsReferenceTarget(const occ::handle<CDM_Reference>& theReference,
+                                     const occ::handle<CDM_Document>&  theDocument) const
+{
+  if (theReference.IsNull() || theDocument.IsNull())
+    return false;
+
+  // Use non-retrieving access to keep graph checks free from lazy-load side effects.
+  const occ::handle<CDM_Document> aRefDoc = theReference->Document();
+  if (!aRefDoc.IsNull())
+    return aRefDoc == theDocument;
+
+  if (!theDocument->IsStored())
+    return false;
+
+  return !theReference->MetaData().IsNull() && theReference->MetaData() == theDocument->MetaData();
 }
 
 //=================================================================================================
@@ -451,11 +481,14 @@ void CDM_Document::SetMetaData(const occ::handle<CDM_MetaData>& aMetaData)
       const occ::handle<CDM_MetaData>& theMetaData = it.Value();
       if (theMetaData != aMetaData && theMetaData->IsRetrieved())
       {
-        NCollection_List<occ::handle<CDM_Reference>>::Iterator rit(
-          theMetaData->Document()->myToReferences);
-        for (; rit.More(); rit.Next())
+        for (NCollection_List<int>::Iterator rit(theMetaData->Document()->myToReferencesOrder);
+             rit.More();
+             rit.Next())
         {
-          rit.Value()->Update(aMetaData);
+          const occ::handle<CDM_Reference>* aRefPtr = theMetaData->Document()->myToReferences.Seek(
+            rit.Value());
+          if (aRefPtr != nullptr)
+            (*aRefPtr)->Update(aMetaData);
         }
       }
     }
@@ -611,13 +644,9 @@ bool CDM_Document::IsOpened() const
 
 bool CDM_Document::IsOpened(const int aReferenceIdentifier) const
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-
-  for (; it.More(); it.Next())
-  {
-    if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
-      return it.Value()->IsOpened();
-  }
+  const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(aReferenceIdentifier);
+  if (aRefPtr != nullptr)
+    return (*aRefPtr)->IsOpened();
   return false;
 }
 
@@ -763,12 +792,11 @@ int CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
                                   const int                           aDocumentVersion,
                                   const bool                          UseStorageConfiguration)
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-
-  for (; it.More(); it.Next())
+  for (NCollection_List<int>::Iterator it(myToReferencesOrder); it.More(); it.Next())
   {
-    if (aMetaData == it.Value()->MetaData())
-      return it.Value()->ReferenceIdentifier();
+    const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(it.Value());
+    if (aRefPtr != nullptr && aMetaData == (*aRefPtr)->MetaData())
+      return (*aRefPtr)->ReferenceIdentifier();
   }
   occ::handle<CDM_Reference> r = new CDM_Reference(this,
                                                    aMetaData,
@@ -784,7 +812,12 @@ int CDM_Document::CreateReference(const occ::handle<CDM_MetaData>&    aMetaData,
 
 void CDM_Document::AddToReference(const occ::handle<CDM_Reference>& aReference)
 {
-  myToReferences.Append(aReference);
+  const int aReferenceId = aReference->ReferenceIdentifier();
+  if (myToReferences.IsBound(aReferenceId))
+    throw Standard_ProgramError("CDM_Document::AddToReference(): duplicate reference identifier");
+
+  myToReferences.Bind(aReferenceId, aReference);
+  myToReferencesOrder.Append(aReferenceId);
 }
 
 //=================================================================================================
@@ -798,11 +831,10 @@ void CDM_Document::AddFromReference(const occ::handle<CDM_Reference>& aReference
 
 void CDM_Document::RemoveFromReference(const int aReferenceIdentifier)
 {
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences);
-
-  for (; it.More(); it.Next())
+  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences); it.More();
+       it.Next())
   {
-    if (aReferenceIdentifier == it.Value()->ReferenceIdentifier())
+    if (it.Value()->ReferenceIdentifier() == aReferenceIdentifier)
     {
       myFromReferences.Remove(it);
       return;
@@ -974,12 +1006,12 @@ void CDM_Document::DumpJson(Standard_OStream& theOStream, int theDepth) const
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aFromReference.get())
   }
 
-  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator aToReferenceIt(myToReferences);
-       aToReferenceIt.More();
+  for (NCollection_List<int>::Iterator aToReferenceIt(myToReferencesOrder); aToReferenceIt.More();
        aToReferenceIt.Next())
   {
-    const occ::handle<CDM_Reference>& aToReference = aToReferenceIt.Value().get();
-    OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aToReference.get())
+    const occ::handle<CDM_Reference>* aRefPtr = myToReferences.Seek(aToReferenceIt.Value());
+    if (aRefPtr != nullptr)
+      OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aRefPtr->get())
   }
 
   OCCT_DUMP_FIELD_VALUE_NUMERICAL(theOStream, myVersion)

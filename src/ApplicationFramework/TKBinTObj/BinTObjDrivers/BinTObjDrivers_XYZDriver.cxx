@@ -31,21 +31,14 @@ BinTObjDrivers_XYZDriver::BinTObjDrivers_XYZDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> BinTObjDrivers_XYZDriver::NewEmpty() const
 {
   return new TObj_TXYZ;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Retrieve. Translate the contents of <theSource> and put it
-//           into <theTarget>.
-//=======================================================================
+//=================================================================================================
 
 bool BinTObjDrivers_XYZDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                      const occ::handle<TDF_Attribute>& theTarget,
@@ -59,11 +52,7 @@ bool BinTObjDrivers_XYZDriver::Paste(const BinObjMgt_Persistent&       theSource
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Store. Translate the contents of <theSource> and put it
-//           into <theTarget>
-//=======================================================================
+//=================================================================================================
 
 void BinTObjDrivers_XYZDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                      BinObjMgt_Persistent&             theTarget,

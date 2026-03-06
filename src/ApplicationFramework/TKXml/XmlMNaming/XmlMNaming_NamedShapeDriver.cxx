@@ -69,10 +69,7 @@ occ::handle<TDF_Attribute> XmlMNaming_NamedShapeDriver::NewEmpty() const
   return (new TNaming_NamedShape());
 }
 
-//=======================================================================
-// function : Paste()
-// purpose  : retrieval of TNaming_NamedShape
-//=======================================================================
+//=================================================================================================
 
 bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                         const occ::handle<TDF_Attribute>& theTarget,
@@ -167,10 +164,7 @@ bool XmlMNaming_NamedShapeDriver::Paste(const XmlObjMgt_Persistent&       theSou
   return true;
 }
 
-//=======================================================================
-// function : Paste()
-// purpose  : storage of TNaming_NamedShape
-//=======================================================================
+//=================================================================================================
 
 void XmlMNaming_NamedShapeDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         XmlObjMgt_Persistent&             theTarget,
@@ -299,10 +293,7 @@ static void doTranslate(const TopoDS_Shape& theShape,
   }
 }
 
-//=======================================================================
-// function : doTranslate
-// purpose  : shape retrieval from XML
-//=======================================================================
+//=================================================================================================
 
 static int doTranslate(const XmlMNaming_Shape1& thePShape,
                        TopoDS_Shape&            theResult,
@@ -375,7 +366,7 @@ void XmlMNaming_NamedShapeDriver::WriteShapeSection(XmlObjMgt_Element&    theEle
       return;
 
     aStream << std::ends;
-    char*     aStr  = (char*)aStream.str();
+    char*     aStr  = const_cast<char*>(aStream.str());
     LDOM_Text aText = aDoc.createTextNode(aStr);
     delete[] aStr;
     aText.SetValueClear(); // There are no characters '<' and '&' and like

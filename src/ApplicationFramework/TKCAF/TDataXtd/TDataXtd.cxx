@@ -41,10 +41,7 @@ void TDataXtd::IDList(NCollection_List<Standard_GUID>& anIDList)
   anIDList.Append(TDataXtd_Shape::GetID());
 }
 
-//=======================================================================
-// function :
-// purpose  : print the name of the constraint
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TDataXtd::Print(const TDataXtd_ConstraintEnum C, Standard_OStream& s)
 {
@@ -169,10 +166,7 @@ Standard_OStream& TDataXtd::Print(const TDataXtd_ConstraintEnum C, Standard_OStr
   return s;
 }
 
-//=======================================================================
-// function :
-// purpose  : print the name of the real dimension
-//=======================================================================
+//=================================================================================================
 
 Standard_OStream& TDataXtd::Print(const TDataXtd_GeometryEnum G, Standard_OStream& s)
 {

@@ -36,10 +36,8 @@ const Standard_GUID& TDataStd_ExtStringArray::GetID()
   return anExtStringArrayID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_ExtStringArray> SetAttr(const TDF_Label&     label,
                                              const int            lower,
                                              const int            upper,
@@ -90,10 +88,7 @@ occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Labe
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDataStd_ExtStringArray> TDataStd_ExtStringArray::Set(const TDF_Label&     label,
                                                                   const Standard_GUID& theGuid,
@@ -156,12 +151,7 @@ int TDataStd_ExtStringArray::Length() const
   return myValue->Length();
 }
 
-//=======================================================================
-// function : ChangeArray
-// purpose  : If value of <newArray> differs from <myValue>, Backup
-//         : performed and myValue refers to new instance of HArray1OfExtendedString
-//         : that holds <newArray>
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_ExtStringArray::ChangeArray(
   const occ::handle<NCollection_HArray1<TCollection_ExtendedString>>& newArray,

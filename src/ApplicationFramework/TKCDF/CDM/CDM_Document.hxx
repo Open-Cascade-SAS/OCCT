@@ -21,7 +21,9 @@
 #include <Standard_Type.hxx>
 
 #include <CDM_Reference.hxx>
+#include <NCollection_DataMap.hxx>
 #include <NCollection_List.hxx>
+#include <NCollection_Map.hxx>
 #include <CDM_CanCloseStatus.hxx>
 #include <TCollection_ExtendedString.hxx>
 #include <NCollection_Sequence.hxx>
@@ -356,31 +358,43 @@ private:
   //! used to search for the following resource items.
   Standard_EXPORT occ::handle<Resource_Manager> StorageResource();
 
+  //! Internal recursive implementation of DeepReferences with cycle detection.
+  Standard_EXPORT bool deepReferences(const occ::handle<CDM_Document>&      aDocument,
+                                      NCollection_Map<const CDM_Document*>& theVisited) const;
+
+  //! Checks if a reference points to the specified document without forcing retrieval.
+  //! @param[in] theReference reference to inspect
+  //! @param[in] theDocument expected target document
+  //! @return true if reference target matches theDocument
+  Standard_EXPORT bool IsReferenceTarget(const occ::handle<CDM_Reference>& theReference,
+                                         const occ::handle<CDM_Document>&  theDocument) const;
+
   Standard_EXPORT void AddToReference(const occ::handle<CDM_Reference>& aReference);
 
   Standard_EXPORT void AddFromReference(const occ::handle<CDM_Reference>& aReference);
 
   Standard_EXPORT void RemoveFromReference(const int aReferenceIdentifier);
 
-  NCollection_Sequence<TCollection_ExtendedString> myComments;
-  NCollection_List<occ::handle<CDM_Reference>>     myFromReferences;
-  NCollection_List<occ::handle<CDM_Reference>>     myToReferences;
-  int                                              myVersion;
-  int                                              myActualReferenceIdentifier;
-  int                                              myStorageVersion;
-  occ::handle<CDM_MetaData>                        myMetaData;
-  TCollection_ExtendedString                       myRequestedComment;
-  TCollection_ExtendedString                       myRequestedFolder;
-  bool                                             myRequestedFolderIsDefined;
-  TCollection_ExtendedString                       myRequestedName;
-  bool                                             myRequestedNameIsDefined;
-  bool                                             myRequestedPreviousVersionIsDefined;
-  TCollection_ExtendedString                       myRequestedPreviousVersion;
-  TCollection_ExtendedString                       myFileExtension;
-  TCollection_ExtendedString                       myDescription;
-  bool                                             myFileExtensionWasFound;
-  bool                                             myDescriptionWasFound;
-  occ::handle<CDM_Application>                     myApplication;
+  NCollection_Sequence<TCollection_ExtendedString>     myComments;
+  NCollection_List<occ::handle<CDM_Reference>>         myFromReferences;
+  NCollection_List<int>                                myToReferencesOrder;
+  NCollection_DataMap<int, occ::handle<CDM_Reference>> myToReferences;
+  int                                                  myVersion;
+  int                                                  myActualReferenceIdentifier;
+  int                                                  myStorageVersion;
+  occ::handle<CDM_MetaData>                            myMetaData;
+  TCollection_ExtendedString                           myRequestedComment;
+  TCollection_ExtendedString                           myRequestedFolder;
+  bool                                                 myRequestedFolderIsDefined;
+  TCollection_ExtendedString                           myRequestedName;
+  bool                                                 myRequestedNameIsDefined;
+  bool                                                 myRequestedPreviousVersionIsDefined;
+  TCollection_ExtendedString                           myRequestedPreviousVersion;
+  TCollection_ExtendedString                           myFileExtension;
+  TCollection_ExtendedString                           myDescription;
+  bool                                                 myFileExtensionWasFound;
+  bool                                                 myDescriptionWasFound;
+  occ::handle<CDM_Application>                         myApplication;
 };
 
 #endif // _CDM_Document_HeaderFile

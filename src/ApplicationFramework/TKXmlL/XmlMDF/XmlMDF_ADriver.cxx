@@ -41,10 +41,7 @@ XmlMDF_ADriver::XmlMDF_ADriver(const occ::handle<Message_Messenger>& theMsgDrive
     myTypeName += theName;
 }
 
-//=======================================================================
-// function : VersionNumber
-// purpose  : default version number from which the driver is available
-//=======================================================================
+//=================================================================================================
 
 int XmlMDF_ADriver::VersionNumber() const
 {

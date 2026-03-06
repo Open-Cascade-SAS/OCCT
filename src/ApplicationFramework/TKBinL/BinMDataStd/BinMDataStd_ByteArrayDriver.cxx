@@ -106,7 +106,7 @@ void BinMDataStd_ByteArrayDriver::Paste(
   {
     aSourceArray.SetValue(i, bytes->Value(i));
   }
-  uint8_t* aPtr = (uint8_t*)&aSourceArray(lower);
+  uint8_t* aPtr = &aSourceArray(lower);
   theTarget.PutByteArray(aPtr, bytes->Length());
   theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
 

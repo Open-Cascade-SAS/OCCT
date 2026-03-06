@@ -98,7 +98,7 @@ void BinMDataStd_IntegerArrayDriver::Paste(
   const int                          aLastInd     = aSourceArray.Upper();
   const int                          aLength      = aLastInd - aFirstInd + 1;
   theTarget << aFirstInd << aLastInd;
-  int* aPtr = (int*)&aSourceArray(aFirstInd);
+  int* aPtr = const_cast<int*>(&aSourceArray(aFirstInd));
   theTarget.PutIntArray(aPtr, aLength);
   theTarget << (uint8_t)(anAtt->GetDelta() ? 1 : 0);
 

@@ -287,7 +287,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
     // retrieve SHAPESECTION_POS string
     char aShapeSecLabel[SIZEOFSHAPELABEL + 1];
     aShapeSecLabel[SIZEOFSHAPELABEL] = 0x00;
-    theIStream.read((char*)&aShapeSecLabel, SIZEOFSHAPELABEL); // SHAPESECTION_POS
+    theIStream.read(reinterpret_cast<char*>(&aShapeSecLabel), SIZEOFSHAPELABEL); // SHAPESECTION_POS
     TCollection_AsciiString aShapeLabel(aShapeSecLabel);
     // detect if a file was written in old fashion (version 2 without shapes)
     // and if so then skip reading ShapeSection
@@ -303,7 +303,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
 
       // retrieve ShapeSection Position
       int aShapeSectionPos; // go to ShapeSection
-      theIStream.read((char*)&aShapeSectionPos, sizeof(int));
+      theIStream.read(reinterpret_cast<char*>(&aShapeSectionPos), sizeof(int));
 
 #ifdef DO_INVERSE
       aShapeSectionPos = InverseInt(aShapeSectionPos);
@@ -334,7 +334,7 @@ void BinLDrivers_DocumentRetrievalDriver::Read(Standard_IStream&                
 
   // read the header (tag) of the root label
   int aTag;
-  theIStream.read((char*)&aTag, sizeof(int));
+  theIStream.read(reinterpret_cast<char*>(&aTag), sizeof(int));
 
   if (aQuickPart)
     myPAtt.SetIStream(theIStream); // for reading shapes data from the stream directly
@@ -417,7 +417,7 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
   if (theQuickPart)
   {
     uint64_t aLabelSize = 0;
-    theIS.read((char*)&aLabelSize, sizeof(uint64_t));
+    theIS.read(reinterpret_cast<char*>(&aLabelSize), sizeof(uint64_t));
 #if DO_INVERSE
     aLabelSize = InverseUint64(aLabelSize);
 #endif
@@ -459,7 +459,7 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
       if (myPAtt.IsDirect()) // skip direct written stream
       {
         uint64_t aStreamSize = 0;
-        theIS.read((char*)&aStreamSize, sizeof(uint64_t));
+        theIS.read(reinterpret_cast<char*>(&aStreamSize), sizeof(uint64_t));
         aStreamSize -= sizeof(uint64_t); // size is already passed, so, reduce it by size
         theIS.seekg(aStreamSize, std::ios_base::cur);
       }
@@ -484,7 +484,7 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
         if (myPAtt.IsDirect()) // skip direct written stream
         {
           uint64_t aStreamSize = 0;
-          theIS.read((char*)&aStreamSize, sizeof(uint64_t));
+          theIS.read(reinterpret_cast<char*>(&aStreamSize), sizeof(uint64_t));
           aStreamSize -= sizeof(uint64_t); // size is already passed, so, reduce it by size
           theIS.seekg(aStreamSize, std::ios_base::cur);
         }
@@ -558,7 +558,7 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
   // Read children:
   // read the tag of a child label
   int aTag = BinLDrivers_ENDLABEL;
-  theIS.read((char*)&aTag, sizeof(int));
+  theIS.read(reinterpret_cast<char*>(&aTag), sizeof(int));
 #ifdef DO_INVERSE
   aTag = InverseInt(aTag);
 #endif
@@ -583,7 +583,7 @@ int BinLDrivers_DocumentRetrievalDriver::ReadSubTree(
     nbRead += nbSubRead;
 
     // read the tag of the next child
-    theIS.read((char*)&aTag, sizeof(int));
+    theIS.read(reinterpret_cast<char*>(&aTag), sizeof(int));
 #ifdef DO_INVERSE
     aTag = InverseInt(aTag);
 #endif

@@ -43,10 +43,8 @@ TDataStd_ByteArray::TDataStd_ByteArray()
 {
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_ByteArray> SetAttr(const TDF_Label&     label,
                                                const int            lower,
                                                const int            upper,
@@ -88,10 +86,8 @@ occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label& label,
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_ByteArray> TDataStd_ByteArray::Set(const TDF_Label&     label,
                                                         const Standard_GUID& theGuid,
                                                         const int            lower,
@@ -148,12 +144,8 @@ int TDataStd_ByteArray::Length() const
   return myValue->Length();
 }
 
-//=======================================================================
-// function : ChangeArray
-// purpose  : If value of <newArray> differs from <myValue>, Backup
-//         : performed and myValue refers to new instance of HArray1OfByte
-//         : that holds <newArray>
-//=======================================================================
+//=================================================================================================
+
 void TDataStd_ByteArray::ChangeArray(const occ::handle<NCollection_HArray1<uint8_t>>& newArray,
                                      const bool                                       isCheckItems)
 {

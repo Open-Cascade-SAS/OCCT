@@ -13,10 +13,8 @@
 
 #include <StdPersistent_PPrsStd.hxx>
 
-//=======================================================================
-// function : Import
-// purpose  : Import transient attribute from the persistent data
-//=======================================================================
+//=================================================================================================
+
 void StdPersistent_PPrsStd::AISPresentation::Import(
   const occ::handle<TDataXtd_Presentation>& theAttribute) const
 {
@@ -47,10 +45,8 @@ void StdPersistent_PPrsStd::AISPresentation::Import(
     theAttribute->UnsetWidth();
 }
 
-//=======================================================================
-// function : Import
-// purpose  : Import transient attribute from the persistent data
-//=======================================================================
+//=================================================================================================
+
 void StdPersistent_PPrsStd::AISPresentation_1::Import(
   const occ::handle<TDataXtd_Presentation>& theAttribute) const
 {

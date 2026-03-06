@@ -59,11 +59,7 @@ bool TDF_RelocationTable::AfterRelocate() const
   return myAfterRelocate;
 }
 
-//=======================================================================
-// function : SetRelocation
-// purpose  : Sets the relocation value of <aSourceLabel>
-//           to <aTargetLabel>.
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::SetRelocation(const TDF_Label& aSourceLabel,
                                         const TDF_Label& aTargetLabel)
@@ -72,11 +68,7 @@ void TDF_RelocationTable::SetRelocation(const TDF_Label& aSourceLabel,
     myLabelTable.Bind(aSourceLabel, aTargetLabel);
 }
 
-//=======================================================================
-// function : HasRelocation
-// purpose  : Finds the relocation value of <aSourceLabel>
-//           and returns it into <aTargetLabel>.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_RelocationTable::HasRelocation(const TDF_Label& aSourceLabel,
                                         TDF_Label&       aTargetLabel) const
@@ -95,11 +87,7 @@ bool TDF_RelocationTable::HasRelocation(const TDF_Label& aSourceLabel,
   return false;
 }
 
-//=======================================================================
-// function : SetRelocation
-// purpose  : Sets the relocation value of <aSourceAttribute>
-//           to <aTargetAttribute>.
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::SetRelocation(const occ::handle<TDF_Attribute>& aSourceAttribute,
                                         const occ::handle<TDF_Attribute>& aTargetAttribute)
@@ -108,11 +96,7 @@ void TDF_RelocationTable::SetRelocation(const occ::handle<TDF_Attribute>& aSourc
     myAttributeTable.Bind(aSourceAttribute, aTargetAttribute);
 }
 
-//=======================================================================
-// function : HasRelocation
-// purpose  : Finds the relocation value of <aSourceAttribute>
-//           and returns it into <aTargetAttribute>.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_RelocationTable::HasRelocation(const occ::handle<TDF_Attribute>& aSourceAttribute,
                                         occ::handle<TDF_Attribute>&       aTargetAttribute) const
@@ -131,11 +115,7 @@ bool TDF_RelocationTable::HasRelocation(const occ::handle<TDF_Attribute>& aSourc
   return false;
 }
 
-//=======================================================================
-// function : SetTransientRelocation
-// purpose  : Sets the relocation value of <aSourceTransient>
-//           to <aTargetTransient>.
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::SetTransientRelocation(
   const occ::handle<Standard_Transient>& aSourceTransient,
@@ -145,11 +125,7 @@ void TDF_RelocationTable::SetTransientRelocation(
     myTransientTable.Add(aSourceTransient, aTargetTransient);
 }
 
-//=======================================================================
-// function : HasTransientRelocation
-// purpose  : Finds the relocation value of <aSourceTransient>
-//           and returns it into <aTargetTransient>.
-//=======================================================================
+//=================================================================================================
 
 bool TDF_RelocationTable::HasTransientRelocation(
   const occ::handle<Standard_Transient>& aSourceTransient,
@@ -169,10 +145,7 @@ bool TDF_RelocationTable::HasTransientRelocation(
   return false;
 }
 
-//=======================================================================
-// function : Clear
-// purpose  : Clears the relocation dictionary.
-//=======================================================================
+//=================================================================================================
 
 void TDF_RelocationTable::Clear()
 {

@@ -31,10 +31,8 @@ enum
   ConvexMask     = 64
 };
 
-//=======================================================================
-// function : Read
-// purpose  : Read persistent data from a file
-//=======================================================================
+//=================================================================================================
+
 void ShapePersistent_TopoDS::HShape::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myEntry;
@@ -109,10 +107,8 @@ template class ShapePersistent_TopoDS::pTSimple<TopoDS_TSolid>;
 template class ShapePersistent_TopoDS::pTSimple<TopoDS_TCompSolid>;
 template class ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>;
 
-//=======================================================================
-// function : Translate
-// purpose  : Creates a persistent object from a shape
-//=======================================================================
+//=================================================================================================
+
 Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
   const TopoDS_Shape&                                                                      theShape,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,

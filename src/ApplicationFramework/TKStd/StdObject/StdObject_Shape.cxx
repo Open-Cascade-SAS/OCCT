@@ -13,10 +13,8 @@
 
 #include <StdObject_Shape.hxx>
 
-//=======================================================================
-// function : Import
-// purpose  : Import transient object from the persistent data
-//=======================================================================
+//=================================================================================================
+
 TopoDS_Shape StdObject_Shape::Import() const
 {
   TopoDS_Shape aShape;

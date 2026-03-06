@@ -94,7 +94,7 @@ void BinMDataStd_BooleanArrayDriver::Paste(
   {
     aSourceArray.SetValue(i, bytes->Value(i));
   }
-  uint8_t* aPtr = (uint8_t*)&aSourceArray(lower);
+  uint8_t* aPtr = &aSourceArray(lower);
   theTarget.PutByteArray(aPtr, upper - lower + 1);
 
   // process user defined guid

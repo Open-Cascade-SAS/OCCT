@@ -30,10 +30,7 @@ void TFunction_Driver::Init(const TDF_Label& L)
   myLabel = L;
 }
 
-//=======================================================================
-// function : Validate
-// purpose  : Validates labels of a function
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Driver::Validate(occ::handle<TFunction_Logbook>& log) const
 {
@@ -47,10 +44,7 @@ void TFunction_Driver::Validate(occ::handle<TFunction_Logbook>& log) const
   }
 }
 
-//=======================================================================
-// function : MustExecute
-// purpose  : Analyzes the labels in the logbook
-//=======================================================================
+//=================================================================================================
 
 bool TFunction_Driver::MustExecute(const occ::handle<TFunction_Logbook>& log) const
 {
@@ -67,18 +61,10 @@ bool TFunction_Driver::MustExecute(const occ::handle<TFunction_Logbook>& log) co
   return false;
 }
 
-//=======================================================================
-// function : Arguments
-// purpose  : The method fills-in the list by labels,
-//           where the arguments of the function are located.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Driver::Arguments(NCollection_List<TDF_Label>&) const {}
 
-//=======================================================================
-// function : Results
-// purpose  : The method fills-in the list by labels,
-//           where the results of the function are located.
-//=======================================================================
+//=================================================================================================
 
 void TFunction_Driver::Results(NCollection_List<TDF_Label>&) const {}

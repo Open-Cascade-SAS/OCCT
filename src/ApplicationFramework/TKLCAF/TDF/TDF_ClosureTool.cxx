@@ -29,10 +29,7 @@
 #include <NCollection_Map.hxx>
 #include <NCollection_List.hxx>
 
-//=======================================================================
-// function : Closure
-// purpose  : Builds the transitive closure without attribute filter.
-//=======================================================================
+//=================================================================================================
 
 void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet)
 {
@@ -41,10 +38,7 @@ void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet)
   TDF_ClosureTool::Closure(aDataSet, Filter, Mode);
 }
 
-//=======================================================================
-// function : Closure
-// purpose  : Builds the transitive closure with an attribute filter.
-//=======================================================================
+//=================================================================================================
 
 void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet,
                               const TDF_IDFilter&             aFilter,
@@ -72,10 +66,7 @@ void TDF_ClosureTool::Closure(const occ::handle<TDF_DataSet>& aDataSet,
   }
 }
 
-//=======================================================================
-// function : Closure
-// purpose  : Internal closure method.
-//=======================================================================
+//=================================================================================================
 
 void TDF_ClosureTool::Closure(const TDF_Label&                             aLabel,
                               NCollection_Map<TDF_Label>&                  aLabMap,
@@ -100,10 +91,7 @@ void TDF_ClosureTool::Closure(const TDF_Label&                             aLabe
   }
 }
 
-//=======================================================================
-// function : LabelAttributes
-// purpose  : Internal method: adds the attributes to <aDataSet>.
-//=======================================================================
+//=================================================================================================
 
 void TDF_ClosureTool::LabelAttributes(const TDF_Label&                             aLabel,
                                       NCollection_Map<TDF_Label>&                  aLabMap,

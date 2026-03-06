@@ -66,10 +66,7 @@ void TNaming_UsedShapes::BeforeRemoval()
   Destroy();
 }
 
-//=======================================================================
-// function : AfterUndo
-// purpose  : After application of a TDF_Delta.
-//=======================================================================
+//=================================================================================================
 
 bool TNaming_UsedShapes::AfterUndo(const occ::handle<TDF_AttributeDelta>& anAttDelta,
                                    const bool /*forceIt*/)

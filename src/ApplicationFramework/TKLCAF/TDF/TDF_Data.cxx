@@ -101,10 +101,7 @@ TDF_Data::TDF_Data()
   myRoot = new (anIncAllocator) TDF_LabelNode(this);
 }
 
-//=======================================================================
-// function : Destroy
-// purpose  : Used to implement the destructor ~.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Data::Destroy()
 {
@@ -131,10 +128,7 @@ int TDF_Data::OpenTransaction()
   return ++myTransaction;
 }
 
-//=======================================================================
-// function : CommitTransaction
-// purpose  : Commits the current transaction.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Delta> TDF_Data::CommitTransaction(const bool withDelta)
 {
@@ -182,11 +176,7 @@ occ::handle<TDF_Delta> TDF_Data::CommitTransaction(const bool withDelta)
   return delta;
 }
 
-//=======================================================================
-// function : CommitUntilTransaction
-// purpose  : Commits the transactions until AND including
-//           the given transaction index.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Delta> TDF_Data::CommitUntilTransaction(const int  untilTransaction,
                                                         const bool withDelta)
@@ -203,10 +193,7 @@ occ::handle<TDF_Delta> TDF_Data::CommitUntilTransaction(const int  untilTransact
   return delta;
 }
 
-//=======================================================================
-// function : CommitTransaction
-// purpose  : Recursive method used to implement the commit action.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
                                 const occ::handle<TDF_Delta>& aDelta,
@@ -341,10 +328,7 @@ int TDF_Data::CommitTransaction(const TDF_Label&              aLabel,
   return nbTouchedAtt;
 }
 
-//=======================================================================
-// function : AbortTransaction
-// purpose  : Aborts the current transaction.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Data::AbortTransaction()
 {
@@ -353,10 +337,7 @@ void TDF_Data::AbortTransaction()
   TDF_Data_DebugModified("New ABORT");
 }
 
-//=======================================================================
-// function : AbortUntilTransaction
-// purpose  : Aborts the transactions until AND including the given index.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Data::AbortUntilTransaction(const int untilTransaction)
 {
@@ -375,35 +356,32 @@ bool TDF_Data::IsApplicable(const occ::handle<TDF_Delta>& aDelta) const
 
 void TDF_Data::FixOrder(const occ::handle<TDF_Delta>& theDelta)
 {
-  // make all OnRemoval (which will cause addition of the attribute) are in the end
-  // to do not put two attributes with the same GUID at one label during undo/redo
+  // Make all OnRemoval (which will cause addition of the attribute) are in the end
+  // to not put two attributes with the same GUID at one label during undo/redo.
+  // Single-pass partition: non-removals go directly to the ordered list,
+  // removals are collected separately and appended at the end.
   NCollection_List<occ::handle<TDF_AttributeDelta>> anOrderedList;
+  NCollection_List<occ::handle<TDF_AttributeDelta>> aRemovalList;
 
-  const NCollection_List<occ::handle<TDF_AttributeDelta>>&    attList = theDelta->AttributeDeltas();
-  NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIt(attList);
-  for (; anIt.More(); anIt.Next())
-  { // append not-removal
-    occ::handle<TDF_AttributeDelta> attDelta = anIt.Value();
-    if (!attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
+  const NCollection_List<occ::handle<TDF_AttributeDelta>>& anAttList = theDelta->AttributeDeltas();
+  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIt(anAttList); anIt.More();
+       anIt.Next())
+  {
+    const occ::handle<TDF_AttributeDelta>& anAttDelta = anIt.Value();
+    if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
     {
-      anOrderedList.Append(attDelta);
+      aRemovalList.Append(anAttDelta);
+    }
+    else
+    {
+      anOrderedList.Append(anAttDelta);
     }
   }
-  for (anIt.Initialize(attList); anIt.More(); anIt.Next())
-  { // append removal
-    occ::handle<TDF_AttributeDelta> attDelta = anIt.Value();
-    if (attDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
-    {
-      anOrderedList.Append(attDelta);
-    }
-  }
+  anOrderedList.Append(aRemovalList);
   theDelta->ReplaceDeltaList(anOrderedList);
 }
 
-//=======================================================================
-// function : Undo
-// purpose  : Applies a delta to undo  actions.
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Delta> TDF_Data::Undo(const occ::handle<TDF_Delta>& aDelta, const bool withDelta)
 {

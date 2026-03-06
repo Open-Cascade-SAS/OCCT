@@ -134,7 +134,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
   }
 
   LDOM_Node           aCurNode = anElement.getFirstChild() /*.getNextSibling().getNextSibling()*/;
-  LDOM_Element*       aCurElement = (LDOM_Element*)&aCurNode;
+  const LDOM_Element* aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
   XmlObjMgt_DOMString aValueStr;
   while (*aCurElement != anElement.getLastChild())
   {
@@ -142,7 +142,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
     if (aValueStr == nullptr)
     {
       aCurNode    = aCurElement->getNextSibling();
-      aCurElement = (LDOM_Element*)&aCurNode;
+      aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
       continue;
     }
     TCollection_AsciiString anEntry;
@@ -161,7 +161,7 @@ bool XmlMFunction_ScopeDriver::Paste(const XmlObjMgt_Persistent&       theSource
     }
     Labels.Append(tLab);
     aCurNode    = aCurElement->getNextSibling();
-    aCurElement = (LDOM_Element*)&aCurNode;
+    aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
   }
 
   // Last reference

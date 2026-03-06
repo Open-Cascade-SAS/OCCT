@@ -34,10 +34,8 @@ const Standard_GUID& TDataStd_ExtStringList::GetID()
   return TDataStd_ExtStringListID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_ExtStringList> SetAttr(const TDF_Label&     label,
                                                    const Standard_GUID& theGuid)
 {
@@ -65,10 +63,8 @@ occ::handle<TDataStd_ExtStringList> TDataStd_ExtStringList::Set(const TDF_Label&
   return SetAttr(label, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_ExtStringList> TDataStd_ExtStringList::Set(const TDF_Label&     label,
                                                                 const Standard_GUID& theGuid)
 {
@@ -123,10 +119,8 @@ bool TDataStd_ExtStringList::InsertBefore(const TCollection_ExtendedString& valu
   return false;
 }
 
-//=======================================================================
-// function : InsertBefore
-// purpose  : Inserts the <value> before the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_ExtStringList::InsertBefore(const int                         index,
                                           const TCollection_ExtendedString& before_value)
 {
@@ -164,10 +158,8 @@ bool TDataStd_ExtStringList::InsertAfter(const TCollection_ExtendedString& value
   return false;
 }
 
-//=======================================================================
-// function : InsertAfter
-// purpose  : Inserts the <value> after the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_ExtStringList::InsertAfter(const int                         index,
                                          const TCollection_ExtendedString& after_value)
 {
@@ -204,10 +196,8 @@ bool TDataStd_ExtStringList::Remove(const TCollection_ExtendedString& value)
   return false;
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : Removes a value at <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_ExtStringList::Remove(const int index)
 {
   int                                                    i(1);

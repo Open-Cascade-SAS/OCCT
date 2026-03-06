@@ -49,10 +49,8 @@ occ::handle<TDF_Attribute> XmlMDataXtd_PresentationDriver::NewEmpty() const
   return (new TDataXtd_Presentation());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
+
 bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
                                            XmlObjMgt_RRelocationTable&) const
@@ -177,10 +175,8 @@ bool XmlMDataXtd_PresentationDriver::Paste(const XmlObjMgt_Persistent&       the
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
+
 void XmlMDataXtd_PresentationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const

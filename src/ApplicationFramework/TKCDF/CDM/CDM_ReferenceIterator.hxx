@@ -46,7 +46,8 @@ public:
   Standard_EXPORT int DocumentVersion() const;
 
 private:
-  NCollection_List<occ::handle<CDM_Reference>>::Iterator myIterator;
+  occ::handle<CDM_Document> myDocument;
+  NCollection_List<int>::Iterator myIterator;
 };
 
 #endif // _CDM_ReferenceIterator_HeaderFile

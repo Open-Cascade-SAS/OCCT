@@ -42,10 +42,8 @@ occ::handle<TDF_Attribute> XmlMDataStd_RealListDriver::NewEmpty() const
   return new TDataStd_RealList();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
+
 bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                        const occ::handle<TDF_Attribute>& theTarget,
                                        XmlObjMgt_RRelocationTable&) const
@@ -137,10 +135,8 @@ bool XmlMDataStd_RealListDriver::Paste(const XmlObjMgt_Persistent&       theSour
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
+
 void XmlMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                        XmlObjMgt_Persistent&             theTarget,
                                        XmlObjMgt_SRelocationTable&) const
@@ -164,7 +160,7 @@ void XmlMDataStd_RealListDriver::Paste(const occ::handle<TDF_Attribute>& theSour
       iChar += Sprintf(&(str[iChar]), "%.17g ", realValue);
     }
   }
-  XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+  XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
 
   if (aRealList->ID() != TDataStd_RealList::GetID())
   {

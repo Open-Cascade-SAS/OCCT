@@ -36,10 +36,8 @@ const Standard_GUID& TDataStd_RealArray::GetID()
   return TDataStd_RealArrayID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_RealArray> SetAttr(const TDF_Label&     label,
                                                const int            lower,
                                                const int            upper,
@@ -89,10 +87,7 @@ occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label& label,
   return SetAttr(label, lower, upper, isDelta, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDataStd_RealArray> TDataStd_RealArray::Set(const TDF_Label&     label,
                                                         const Standard_GUID& theGuid,
@@ -152,12 +147,7 @@ int TDataStd_RealArray::Length() const
   return myValue->Length();
 }
 
-//=======================================================================
-// function : ChangeArray
-// purpose  : If value of <newArray> differs from <myValue>, Backup
-//         : performed and myValue refers to new instance of HArray1OfReal
-//         : that holds <newArray>
-//=======================================================================
+//=================================================================================================
 
 void TDataStd_RealArray::ChangeArray(const occ::handle<NCollection_HArray1<double>>& newArray,
                                      const bool                                      isCheckItems)

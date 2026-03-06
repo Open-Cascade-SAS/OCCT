@@ -117,7 +117,7 @@ void BinMFunction_GraphNodeDriver::Paste(
     {
       aSourceArray.SetValue(i, itr.Key());
     }
-    int* aPtr = (int*)&aSourceArray(1);
+    int* aPtr = &aSourceArray(1);
     theTarget.PutIntArray(aPtr, nb);
   }
 
@@ -131,7 +131,7 @@ void BinMFunction_GraphNodeDriver::Paste(
     {
       aSourceArray.SetValue(i, itr.Key());
     }
-    int* aPtr = (int*)&aSourceArray(1);
+    int* aPtr = &aSourceArray(1);
     theTarget.PutIntArray(aPtr, nb);
   }
 }

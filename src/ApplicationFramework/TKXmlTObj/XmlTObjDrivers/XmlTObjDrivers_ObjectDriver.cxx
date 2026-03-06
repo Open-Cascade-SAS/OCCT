@@ -33,22 +33,14 @@ XmlTObjDrivers_ObjectDriver::XmlTObjDrivers_ObjectDriver(
 {
 }
 
-//=======================================================================
-// function : NewEmpty
-// purpose  : Creates a new attribute
-//=======================================================================
+//=================================================================================================
 
 occ::handle<TDF_Attribute> XmlTObjDrivers_ObjectDriver::NewEmpty() const
 {
   return new TObj_TObject;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <aSource> and put it
-//           into <aTarget>, using the relocation table
-//           <aRelocTable> to keep the sharings.
-//=======================================================================
+//=================================================================================================
 
 bool XmlTObjDrivers_ObjectDriver::Paste(const XmlObjMgt_Persistent&       Source,
                                         const occ::handle<TDF_Attribute>& Target,
@@ -67,13 +59,7 @@ bool XmlTObjDrivers_ObjectDriver::Paste(const XmlObjMgt_Persistent&       Source
   return false;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : Translate the contents of <aSource> and put it
-//           into <aTarget>, using the relocation table
-//           <aRelocTable> to keep the sharings.
-//           anObject is stored as a Name of class derived from TObj_Object
-//=======================================================================
+//=================================================================================================
 
 void XmlTObjDrivers_ObjectDriver::Paste(const occ::handle<TDF_Attribute>& Source,
                                         XmlObjMgt_Persistent&             Target,

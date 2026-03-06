@@ -165,16 +165,14 @@ void BinDrivers_DocumentStorageDriver::SetWithNormals(
   aShapesDriver->SetWithNormals(theWithNormals);
 }
 
-//=======================================================================
-// function : WriteShapeSection
-// purpose  : Implements WriteShapeSection
-//=======================================================================
+//=================================================================================================
+
 void BinDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSection& theSection,
                                                          Standard_OStream&            theOS,
                                                          const TDocStd_FormatVersion  theDocVer,
                                                          const Message_ProgressRange& theRange)
 {
-  const size_t aShapesSectionOffset = (size_t)theOS.tellp();
+  const size_t aShapesSectionOffset = static_cast<size_t>(theOS.tellp());
 
   occ::handle<BinMDF_ADriver> aDriver;
   if (myDrivers->GetDriver(STANDARD_TYPE(TNaming_NamedShape), aDriver))
