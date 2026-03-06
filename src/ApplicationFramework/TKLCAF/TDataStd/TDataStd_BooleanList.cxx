@@ -33,10 +33,8 @@ const Standard_GUID& TDataStd_BooleanList::GetID()
   return TDataStd_BooleanListID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_BooleanList> SetAttr(const TDF_Label&     label,
                                                  const Standard_GUID& theGuid)
 {
@@ -64,10 +62,8 @@ occ::handle<TDataStd_BooleanList> TDataStd_BooleanList::Set(const TDF_Label& lab
   return SetAttr(label, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_BooleanList> TDataStd_BooleanList::Set(const TDF_Label&     label,
                                                             const Standard_GUID& theGuid)
 {
@@ -133,10 +129,8 @@ const NCollection_List<uint8_t>& TDataStd_BooleanList::List() const
   return myList;
 }
 
-//=======================================================================
-// function : InsertBefore
-// purpose  : Inserts the <value> before the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_BooleanList::InsertBefore(const int index, const bool before_value)
 {
   int                                 i(1);
@@ -155,10 +149,8 @@ bool TDataStd_BooleanList::InsertBefore(const int index, const bool before_value
   return found;
 }
 
-//=======================================================================
-// function : InsertAfter
-// purpose  : Inserts the <value> after the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_BooleanList::InsertAfter(const int index, const bool after_value)
 {
   int                                 i(1);
@@ -177,10 +169,8 @@ bool TDataStd_BooleanList::InsertAfter(const int index, const bool after_value)
   return found;
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : Removes the <value> at the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_BooleanList::Remove(const int index)
 {
   int                                 i(1);

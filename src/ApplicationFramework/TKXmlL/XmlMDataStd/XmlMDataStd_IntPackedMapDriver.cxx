@@ -47,10 +47,8 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntPackedMapDriver::NewEmpty() const
   return (new TDataStd_IntPackedMap());
 }
 
-//=======================================================================
-// function : Paste()
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
+
 bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
                                            XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -133,10 +131,8 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
   return false;
 }
 
-//=======================================================================
-// function : Paste()
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
+
 void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const
@@ -167,6 +163,6 @@ void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& the
     }
 
     // No occurrence of '&', '<' and other irregular XML characters
-    XmlObjMgt::SetStringValue(theTarget, (char*)str, true);
+    XmlObjMgt::SetStringValue(theTarget, static_cast<char*>(str), true);
   }
 }

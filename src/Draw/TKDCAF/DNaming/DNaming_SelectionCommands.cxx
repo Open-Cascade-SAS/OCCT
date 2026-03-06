@@ -125,12 +125,7 @@ bool FillValidMap(const TDF_Label& theLabel, NCollection_Map<TDF_Label>& theVali
 {
   bool                                        extRefFound = false;
   NCollection_Map<occ::handle<TDF_Attribute>> anExtMap;
-#ifdef OCCT_DEBUG_SELN
-  TCollection_AsciiString entr1;
-  TDF_Tool::Entry(theLabel, entr1);
-  std::cout << "\tNaming Attribute at = " << entr1 << std::endl;
-#endif
-  TDF_ChildIterator itr(theLabel, true);
+  TDF_ChildIterator                           itr(theLabel, true);
   for (; itr.More(); itr.Next())
   {
     const TDF_Label&            aLabel = itr.Value();
@@ -139,20 +134,11 @@ bool FillValidMap(const TDF_Label& theLabel, NCollection_Map<TDF_Label>& theVali
       aLabel.FindAttribute(TNaming_Naming::GetID(), aNaming);
     if (aNaming.IsNull())
       continue;
-#ifdef OCCT_DEBUG_SELN
-    TDF_Tool::Entry(aLabel, entr1);
-    std::cout << "\tNaming Attribute at = " << entr1 << std::endl;
-#endif
     TDF_Tool::OutReferences(aLabel, anExtMap);
     for (NCollection_Map<occ::handle<TDF_Attribute>>::Iterator attMItr(anExtMap); attMItr.More();
          attMItr.Next())
     {
       const occ::handle<TDF_Attribute>& att = attMItr.Key();
-#ifdef OCCT_DEBUG_SELN
-      TDF_Tool::Entry(att->Label(), entr1);
-      std::cout << "## References attribute dynamic type = " << att->DynamicType()
-                << " at Label = " << entr1 << std::endl;
-#endif
       if (att->Label().IsDifferent(aLabel) && !att->Label().IsDescendant(theLabel))
       {
         theValidMap.Add(att->Label());
@@ -192,17 +178,6 @@ static int DNaming_SolveSelection(Draw_Interpretor& di, int n, const char** a)
     NCollection_Map<TDF_Label> aValidMap;
     if (!FillValidMap(L, aValidMap))
       di << "Valid map is empty\n";
-#ifdef OCCT_DEBUG_SELN
-    std::cout << "== Valid Label map ==" << std::endl;
-    for (NCollection_Map<TDF_Label>::Iterator mapItr(aValidMap); mapItr.More(); mapItr.Next())
-    {
-      const TDF_Label& aLab = mapItr.Key();
-
-      TCollection_AsciiString entr1;
-      TDF_Tool::Entry(aLab, entr1);
-      std::cout << "  Label = " << entr1 << std::endl;
-    }
-#endif
 
     TNaming_Selector SL(L);
     bool             isSolved = SL.Solve(aValidMap);

@@ -57,10 +57,7 @@ static void TDF_Tool_OutReferences(const TDF_Label&                             
                                    const TDF_IDFilter&             aFilterForReferences,
                                    const occ::handle<TDF_DataSet>& ds);
 
-//=======================================================================
-// function : NbLabels
-// purpose  : Returns the numbers of labels of the tree.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Tool::NbLabels(const TDF_Label& aLabel)
 {
@@ -70,10 +67,7 @@ int TDF_Tool::NbLabels(const TDF_Label& aLabel)
   return n;
 }
 
-//=======================================================================
-// function : NbAttributes
-// purpose  : Returns the number of attributes of the tree.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Tool::NbAttributes(const TDF_Label& aLabel)
 {
@@ -83,11 +77,7 @@ int TDF_Tool::NbAttributes(const TDF_Label& aLabel)
   return n;
 }
 
-//=======================================================================
-// function : NbAttributes
-// purpose  : Returns the number of attributes of the tree,
-//           selected by an IDFilter.
-//=======================================================================
+//=================================================================================================
 
 int TDF_Tool::NbAttributes(const TDF_Label& aLabel, const TDF_IDFilter& aFilter)
 {
@@ -339,10 +329,7 @@ void TDF_Tool::RelocateLabel(const TDF_Label& aSourceLabel,
   TDF_Tool::Label(toRoot.Data(), labelTags, aTargetLabel, create);
 }
 
-//=======================================================================
-// function : Entry
-// purpose  : Returns the entry as an ascii string.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::Entry(const TDF_Label& aLabel, TCollection_AsciiString& anEntry)
 {
@@ -383,10 +370,7 @@ void TDF_Tool::Entry(const TDF_Label& aLabel, TCollection_AsciiString& anEntry)
     anEntry.Clear();
 }
 
-//=======================================================================
-// function : TagList
-// purpose  : Returns the entry of a label as a list of integers.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::TagList(const TDF_Label& aLabel, NCollection_List<int>& aTagList)
 {
@@ -404,14 +388,11 @@ void TDF_Tool::TagList(const TDF_Label& aLabel, NCollection_List<int>& aTagList)
   }
 }
 
-//=======================================================================
-// function : TagList
-// purpose  : Returns the entry expressed as a string as a list of integers.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::TagList(const TCollection_AsciiString& anEntry, NCollection_List<int>& aTagList)
 {
-  char* cc = (char*)anEntry.ToCString();
+  char* cc = const_cast<char*>(anEntry.ToCString());
   int   n  = 0;
   aTagList.Clear();
   while (*cc != '\0')
@@ -436,10 +417,7 @@ void TDF_Tool::TagList(const TCollection_AsciiString& anEntry, NCollection_List<
   }
 }
 
-//=======================================================================
-// function : Label
-// purpose  : Returns the label expressed by <anEntry>.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::Label(const occ::handle<TDF_Data>&   aDF,
                      const TCollection_AsciiString& anEntry,
@@ -454,11 +432,7 @@ void TDF_Tool::Label(const occ::handle<TDF_Data>&   aDF,
     TDF_Tool::Label(aDF, anEntry.ToCString(), aLabel, create);
 }
 
-//=======================================================================
-// function : Label
-// purpose  : Returns the label expressed by <anEntry>,
-//           and creates it if <create> is true.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::Label(const occ::handle<TDF_Data>& aDF,
                      const char* const            anEntry,
@@ -477,11 +451,7 @@ void TDF_Tool::Label(const occ::handle<TDF_Data>& aDF,
   }
 }
 
-//=======================================================================
-// function : Label
-// purpose  : Returns the label expressed by <anEntry>,
-//           and creates it if <create> is true.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::Label(const occ::handle<TDF_Data>& aDF,
                      const NCollection_List<int>& aTagList,
@@ -574,10 +544,7 @@ void TDF_Tool::DeepDump(Standard_OStream& anOS, const occ::handle<TDF_Data>& aDF
   TDF_Tool::DeepDump(anOS, aDF->Root());
 }
 
-//=======================================================================
-// function : ExtendedDeepDump
-// purpose  : Extended deep dump of a DF.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::ExtendedDeepDump(Standard_OStream&            anOS,
                                 const occ::handle<TDF_Data>& aDF,
@@ -600,10 +567,7 @@ void TDF_Tool::DeepDump(Standard_OStream& anOS, const TDF_Label& aLabel)
   }
 }
 
-//=======================================================================
-// function : ExtendedDeepDump
-// purpose  : Extended deep dump of a label.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Tool::ExtendedDeepDump(Standard_OStream&   anOS,
                                 const TDF_Label&    aLabel,

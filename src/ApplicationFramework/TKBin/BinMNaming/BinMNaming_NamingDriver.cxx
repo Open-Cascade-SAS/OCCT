@@ -176,10 +176,7 @@ occ::handle<TDF_Attribute> BinMNaming_NamingDriver::NewEmpty() const
   return new TNaming_Naming();
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 
 bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                     const occ::handle<TDF_Attribute>& theTarget,
@@ -374,10 +371,7 @@ bool BinMNaming_NamingDriver::Paste(const BinObjMgt_Persistent&       theSource,
   return ok;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
 
 void BinMNaming_NamingDriver::Paste(
   const occ::handle<TDF_Attribute>&                        theSource,

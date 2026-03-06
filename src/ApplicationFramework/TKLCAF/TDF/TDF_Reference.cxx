@@ -106,10 +106,7 @@ void TDF_Reference::Paste(const occ::handle<TDF_Attribute>&       Into,
   occ::down_cast<TDF_Reference>(Into)->Set(tLab);
 }
 
-//=======================================================================
-// function : References
-// purpose  : Adds the referenced attributes or labels.
-//=======================================================================
+//=================================================================================================
 
 void TDF_Reference::References(const occ::handle<TDF_DataSet>& aDataSet) const
 {

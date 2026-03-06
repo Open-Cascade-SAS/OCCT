@@ -54,10 +54,8 @@ XmlObjMgt_Persistent::XmlObjMgt_Persistent(const XmlObjMgt_Element&   theElement
   }
 }
 
-//=======================================================================
-// function : CreateElement
-// purpose  : <theType id="theID"/>
-//=======================================================================
+//=================================================================================================
+
 void XmlObjMgt_Persistent::CreateElement(XmlObjMgt_Element&         theParent,
                                          const XmlObjMgt_DOMString& theType,
                                          const int                  theID)

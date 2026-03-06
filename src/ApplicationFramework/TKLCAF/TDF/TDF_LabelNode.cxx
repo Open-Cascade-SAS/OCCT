@@ -18,17 +18,14 @@
 #include <TDF_Data.hxx>
 #include <TDF_Label.hxx>
 
-//=======================================================================
-// function : TDF_LabelNode
-// purpose  : Constructor with TDF_Data*, only used for root node.
-//=======================================================================
+//=================================================================================================
 
 TDF_LabelNode::TDF_LabelNode(TDF_Data* aDataPtr)
     : myFather(nullptr), // The sign it is the root.
 #ifdef KEEP_LOCAL_ROOT
       myBrother(nullptr),
 #else
-      myBrother((TDF_LabelNode*)aDataPtr),
+      myBrother(reinterpret_cast<TDF_LabelNode*>(aDataPtr)),
 #endif
       myFirstChild(nullptr),
       myLastFoundChild(nullptr), // jfa 10.01.2003
@@ -90,10 +87,7 @@ void TDF_LabelNode::Destroy(const TDF_HAllocator& theAllocator)
   theAllocator->Free(this);
 }
 
-//=======================================================================
-// function : AddAttribute
-// purpose  : Adds an attribute at the first or the specified position.
-//=======================================================================
+//=================================================================================================
 
 void TDF_LabelNode::AddAttribute(const occ::handle<TDF_Attribute>& afterAtt,
                                  const occ::handle<TDF_Attribute>& newAtt)
@@ -112,10 +106,7 @@ void TDF_LabelNode::AddAttribute(const occ::handle<TDF_Attribute>& afterAtt,
   }
 }
 
-//=======================================================================
-// function : RemoveAttribute
-// purpose  : Removes an attribute from the first or the specified position.
-//=======================================================================
+//=================================================================================================
 
 void TDF_LabelNode::RemoveAttribute(const occ::handle<TDF_Attribute>& afterAtt,
                                     const occ::handle<TDF_Attribute>& oldAtt)
@@ -134,10 +125,7 @@ void TDF_LabelNode::RemoveAttribute(const occ::handle<TDF_Attribute>& afterAtt,
   // oldAtt->myNext.Nullify();
 }
 
-//=======================================================================
-// function : RootNode
-// purpose  : used for non const object.
-//=======================================================================
+//=================================================================================================
 
 TDF_LabelNode* TDF_LabelNode::RootNode()
 {
@@ -151,10 +139,7 @@ TDF_LabelNode* TDF_LabelNode::RootNode()
 #endif
 }
 
-//=======================================================================
-// function : RootNode
-// purpose  : used for const object.
-//=======================================================================
+//=================================================================================================
 
 const TDF_LabelNode* TDF_LabelNode::RootNode() const
 {

@@ -58,10 +58,8 @@ const Standard_GUID& TDataStd_BooleanArray::GetID()
   return TDataStd_BooleanArrayID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_BooleanArray> SetAttr(const TDF_Label&     label,
                                                   const int            lower,
                                                   const int            upper,
@@ -109,10 +107,8 @@ occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label& l
   return SetAttr(label, lower, upper, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_BooleanArray> TDataStd_BooleanArray::Set(const TDF_Label&     label,
                                                               const Standard_GUID& theGuid,
                                                               const int            lower,

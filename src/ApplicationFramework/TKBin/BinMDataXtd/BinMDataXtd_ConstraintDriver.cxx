@@ -41,10 +41,7 @@ occ::handle<TDF_Attribute> BinMDataXtd_ConstraintDriver::NewEmpty() const
   return (new TDataXtd_Constraint());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
 
 bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                          const occ::handle<TDF_Attribute>& theTarget,
@@ -126,10 +123,8 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//=======================================================================
+//=================================================================================================
+
 void BinMDataXtd_ConstraintDriver::Paste(
   const occ::handle<TDF_Attribute>&                        theSource,
   BinObjMgt_Persistent&                                    theTarget,

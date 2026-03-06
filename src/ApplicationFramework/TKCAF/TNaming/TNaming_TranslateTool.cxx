@@ -192,10 +192,7 @@ void TNaming_TranslateTool::UpdateVertex(
   UpdateShape(S1, S2);
 }
 
-//=======================================================================
-// function : UpdateEdge
-// purpose  : Transient->Transient
-//=======================================================================
+//=================================================================================================
 
 void TNaming_TranslateTool::UpdateEdge(
   const TopoDS_Shape& S1,
@@ -339,10 +336,7 @@ void TNaming_TranslateTool::UpdateEdge(
   UpdateShape(S1, S2);
 }
 
-//=======================================================================
-// function : UpdateFace
-// purpose  : Transient->Transient
-//=======================================================================
+//=================================================================================================
 
 void TNaming_TranslateTool::UpdateFace(
   const TopoDS_Shape& S1,

@@ -96,7 +96,7 @@ void BinMDataStd_IntegerListDriver::Paste(
     {
       aSourceArray.SetValue(i, itr.Value());
     }
-    int* aPtr = (int*)&aSourceArray(aFirstInd);
+    int* aPtr = &aSourceArray(aFirstInd);
     theTarget.PutIntArray(aPtr, aLength);
   }
 

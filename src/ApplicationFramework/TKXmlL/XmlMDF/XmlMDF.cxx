@@ -47,10 +47,8 @@ static NCollection_Map<occ::handle<Standard_Transient>>& UnsuppTypesMap()
   return anUnsuppTypes;
 }
 
-//=======================================================================
-// function : FromTo
-// purpose  : Paste transient data into DOM_Element
-//=======================================================================
+//=================================================================================================
+
 void XmlMDF::FromTo(const occ::handle<TDF_Data>&            theData,
                     XmlObjMgt_Element&                      theElement,
                     XmlObjMgt_SRelocationTable&             theRelocTable,
@@ -141,10 +139,8 @@ int XmlMDF::WriteSubTree(const TDF_Label&                        theLabel,
   return count;
 }
 
-//=======================================================================
-// function : FromTo
-// purpose  : Paste data from DOM_Element into transient document
-//=======================================================================
+//=================================================================================================
+
 bool XmlMDF::FromTo(const XmlObjMgt_Element&                theElement,
                     occ::handle<TDF_Data>&                  theData,
                     XmlObjMgt_RRelocationTable&             theRelocTable,

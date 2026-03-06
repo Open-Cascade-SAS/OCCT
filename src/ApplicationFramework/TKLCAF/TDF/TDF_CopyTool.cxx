@@ -111,10 +111,7 @@ void TDF_CopyTool::Copy(const occ::handle<TDF_DataSet>&         aSourceDataSet,
   }
 }
 
-//=======================================================================
-// function : CopyLabels
-// purpose  : Internal root label copy recursive method.
-//=======================================================================
+//=================================================================================================
 
 void TDF_CopyTool::CopyLabels(
   const TDF_Label&                                                             aSLabel,
@@ -153,10 +150,7 @@ void TDF_CopyTool::CopyLabels(
   }
 }
 
-//=======================================================================
-// function : CopyAttributes
-// purpose  : Internal attribute copy method.
-//=======================================================================
+//=================================================================================================
 
 void TDF_CopyTool::CopyAttributes(
   const TDF_Label&                                                             aSLabel,

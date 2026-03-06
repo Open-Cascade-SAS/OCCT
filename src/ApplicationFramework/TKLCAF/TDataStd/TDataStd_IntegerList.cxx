@@ -34,10 +34,8 @@ const Standard_GUID& TDataStd_IntegerList::GetID()
   return TDataStd_IntegerListID;
 }
 
-//=======================================================================
-// function : SetAttr
-// purpose  : Implements Set functionality
-//=======================================================================
+//=================================================================================================
+
 static occ::handle<TDataStd_IntegerList> SetAttr(const TDF_Label&     label,
                                                  const Standard_GUID& theGuid)
 {
@@ -65,10 +63,8 @@ occ::handle<TDataStd_IntegerList> TDataStd_IntegerList::Set(const TDF_Label& lab
   return SetAttr(label, GetID());
 }
 
-//=======================================================================
-// function : Set
-// purpose  : Set user defined attribute with specific ID
-//=======================================================================
+//=================================================================================================
+
 occ::handle<TDataStd_IntegerList> TDataStd_IntegerList::Set(const TDF_Label&     label,
                                                             const Standard_GUID& theGuid)
 {
@@ -196,10 +192,8 @@ bool TDataStd_IntegerList::Remove(const int value)
   return false;
 }
 
-//=======================================================================
-// function : Remove
-// purpose  : Removes the <value> at the <index> position.
-//=======================================================================
+//=================================================================================================
+
 bool TDataStd_IntegerList::RemoveByIndex(const int index)
 {
   int                             i(1);

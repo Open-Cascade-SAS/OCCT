@@ -118,7 +118,7 @@ void BinMFunction_ScopeDriver::Paste(const occ::handle<TDF_Attribute>& theSource
     {
       aSourceArray.SetValue(i, itr.Key1());
     }
-    int* aPtr = (int*)&aSourceArray(1);
+    int* aPtr = &aSourceArray(1);
     theTarget.PutIntArray(aPtr, nb);
   }
 

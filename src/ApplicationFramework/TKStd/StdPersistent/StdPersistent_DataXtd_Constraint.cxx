@@ -16,10 +16,8 @@
 #include <TNaming_NamedShape.hxx>
 #include <TDataStd_Real.hxx>
 
-//=======================================================================
-// function : Import
-// purpose  : Import transient attribute from the persistent data
-//=======================================================================
+//=================================================================================================
+
 void StdPersistent_DataXtd_Constraint::Import(
   const occ::handle<TDataXtd_Constraint>& theAttribute) const
 {

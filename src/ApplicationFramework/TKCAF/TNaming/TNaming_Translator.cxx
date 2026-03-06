@@ -63,10 +63,7 @@ const NCollection_DataMap<TopoDS_Shape, TopoDS_Shape, TopTools_ShapeMapHasher>& 
   return myDataMapOfResults;
 }
 
-//=======================================================================
-// function : Copied
-// purpose  : find bind shape if it is in the Map
-//=======================================================================
+//=================================================================================================
 
 const TopoDS_Shape TNaming_Translator::Copied(const TopoDS_Shape& aShape) const
 {

@@ -40,5 +40,5 @@ void BinObjMgt_Position::WriteSize(Standard_OStream& theStream, const bool theDu
 #if DO_INVERSE
   aSize = FSD_BinaryFile::InverseUint64(aSize);
 #endif
-  theStream.write((char*)&aSize, sizeof(uint64_t));
+  theStream.write(reinterpret_cast<char*>(&aSize), sizeof(uint64_t));
 }

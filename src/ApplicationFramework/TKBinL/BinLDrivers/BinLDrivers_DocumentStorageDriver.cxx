@@ -168,7 +168,7 @@ void BinLDrivers_DocumentStorageDriver::Write(const occ::handle<CDM_Document>& t
     for (anIterS.Init(mySections); anIterS.More(); anIterS.Next())
     {
       BinLDrivers_DocumentSection& aSection       = anIterS.ChangeValue();
-      const size_t                 aSectionOffset = (size_t)theOStream.tellp();
+      const size_t                 aSectionOffset = static_cast<size_t>(theOStream.tellp());
       WriteSection(aSection.Name(), aDoc, theOStream);
       aSection.Write(theOStream, aSectionOffset, aDocVer);
     }
@@ -250,7 +250,7 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree(const TDF_Label&           
 #ifdef DO_INVERSE
   aTag = InverseInt(aTag);
 #endif
-  theOS.write((char*)&aTag, sizeof(int));
+  theOS.write(reinterpret_cast<char*>(&aTag), sizeof(int));
 
   occ::handle<BinObjMgt_Position> aPosition;
   if (theQuickPart)
@@ -306,9 +306,9 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree(const TDF_Label&           
   // Write the end attributes list marker
   BinLDrivers_Marker anEndAttr = BinLDrivers_ENDATTRLIST;
 #ifdef DO_INVERSE
-  anEndAttr = (BinLDrivers_Marker)InverseInt(anEndAttr);
+  anEndAttr = static_cast<BinLDrivers_Marker>(InverseInt(anEndAttr));
 #endif
-  theOS.write((char*)&anEndAttr, sizeof(anEndAttr));
+  theOS.write(reinterpret_cast<char*>(&anEndAttr), sizeof(anEndAttr));
 
   // Process sub-labels
   TDF_ChildIterator itChld(theLabel);
@@ -326,9 +326,9 @@ void BinLDrivers_DocumentStorageDriver::WriteSubTree(const TDF_Label&           
   // Write the end label marker
   BinLDrivers_Marker anEndLabel = BinLDrivers_ENDLABEL;
 #ifdef DO_INVERSE
-  anEndLabel = (BinLDrivers_Marker)InverseInt(anEndLabel);
+  anEndLabel = static_cast<BinLDrivers_Marker>(InverseInt(anEndLabel));
 #endif
-  theOS.write((char*)&anEndLabel, sizeof(anEndLabel));
+  theOS.write(reinterpret_cast<char*>(&anEndLabel), sizeof(anEndLabel));
   if (theQuickPart)
     aPosition->StoreSize(theOS);
 }
@@ -558,7 +558,7 @@ void BinLDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSe
                                                           const TDocStd_FormatVersion  theDocVer,
                                                           const Message_ProgressRange& /*theRange*/)
 {
-  const size_t aShapesSectionOffset = (size_t)theOS.tellp();
+  const size_t aShapesSectionOffset = static_cast<size_t>(theOS.tellp());
   theSection.Write(theOS, aShapesSectionOffset, theDocVer);
 }
 

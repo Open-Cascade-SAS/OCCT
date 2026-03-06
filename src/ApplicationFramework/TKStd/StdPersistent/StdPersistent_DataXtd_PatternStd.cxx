@@ -17,10 +17,8 @@
 #include <TDataStd_Real.hxx>
 #include <TDataStd_Integer.hxx>
 
-//=======================================================================
-// function : Import
-// purpose  : Import transient attribute from the persistent data
-//=======================================================================
+//=================================================================================================
+
 void StdPersistent_DataXtd_PatternStd::Import(
   const occ::handle<TDataXtd_PatternStd>& theAttribute) const
 {

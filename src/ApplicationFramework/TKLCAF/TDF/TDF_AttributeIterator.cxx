@@ -80,10 +80,7 @@ void TDF_AttributeIterator::Next()
   }
 }
 
-//=======================================================================
-// function : goToNext
-// purpose  : private method, used by the above
-//=======================================================================
+//=================================================================================================
 
 void TDF_AttributeIterator::goToNext(const occ::handle<TDF_Attribute>& anAttr)
 {

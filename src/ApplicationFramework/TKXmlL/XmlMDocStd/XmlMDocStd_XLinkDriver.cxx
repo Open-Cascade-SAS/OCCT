@@ -39,10 +39,8 @@ occ::handle<TDF_Attribute> XmlMDocStd_XLinkDriver::NewEmpty() const
   return (new TDocStd_XLink());
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : persistent -> transient (retrieve)
-//=======================================================================
+//=================================================================================================
+
 bool XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                    const occ::handle<TDF_Attribute>& theTarget,
                                    XmlObjMgt_RRelocationTable&) const
@@ -75,16 +73,8 @@ bool XmlMDocStd_XLinkDriver::Paste(const XmlObjMgt_Persistent&       theSource,
   return true;
 }
 
-//=======================================================================
-// function : Paste
-// purpose  : transient -> persistent (store)
-//           <label tag='1'>     <This is label entry 0:4:1>
-//           ...
-//           <label tag='8'>     <This is label entry 0:4:1:8>
-//
-//           <TDocStd_XLink id="621"> /document/label/label[@tag="4"]/label[@tag="1"]
-//           </TDocStd_XLink>    <This is reference to label 0:4:1>
-//=======================================================================
+//=================================================================================================
+
 void XmlMDocStd_XLinkDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    XmlObjMgt_Persistent&             theTarget,
                                    XmlObjMgt_SRelocationTable&) const

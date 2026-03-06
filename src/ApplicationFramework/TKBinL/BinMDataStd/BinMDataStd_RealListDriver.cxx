@@ -96,7 +96,7 @@ void BinMDataStd_RealListDriver::Paste(
     {
       aSourceArray.SetValue(i, itr.Value());
     }
-    double* aPtr = (double*)&aSourceArray(aFirstInd);
+    double* aPtr = &aSourceArray(aFirstInd);
     theTarget.PutRealArray(aPtr, aLength);
   }
 
