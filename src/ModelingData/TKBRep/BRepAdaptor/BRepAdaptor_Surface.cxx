@@ -44,8 +44,9 @@ occ::handle<Adaptor3d_Surface> BRepAdaptor_Surface::ShallowCopy() const
   const GeomAdaptor_Surface& aGeomSurface       = *occ::down_cast<GeomAdaptor_Surface>(aSurface);
   aCopy->mySurf                                 = aGeomSurface;
 
-  aCopy->myTrsf = myTrsf;
-  aCopy->myFace = myFace;
+  aCopy->myTrsf            = myTrsf;
+  aCopy->myFace            = myFace;
+  aCopy->myTransformedData = myTransformedData;
 
   return aCopy;
 }
@@ -69,11 +70,12 @@ void BRepAdaptor_Surface::Initialize(const TopoDS_Face& F, const bool Restrictio
   {
     double umin, umax, vmin, vmax;
     BRepTools::UVBounds(F, umin, umax, vmin, vmax);
-    mySurf.Load(aSurface, umin, umax, vmin, vmax);
+    Load(aSurface, umin, umax, vmin, vmax, 0.0, 0.0, L.Transformation());
   }
   else
-    mySurf.Load(aSurface);
-  myTrsf = L.Transformation();
+  {
+    Load(aSurface, L.Transformation());
+  }
 }
 
 //=================================================================================================

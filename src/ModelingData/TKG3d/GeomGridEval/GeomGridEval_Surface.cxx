@@ -152,7 +152,7 @@ void GeomGridEval_Surface::initialization(const Adaptor3d_Surface& theSurface)
     }
 
     // Initialize with the underlying Geom_Surface
-    initialization(aTransformed.GeomSurface());
+    initialization(aTransformed.GeomSurfaceOriginal());
     return;
   }
 

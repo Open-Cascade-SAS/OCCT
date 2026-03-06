@@ -103,6 +103,133 @@ double ChFi3d_InPeriod(const double U, const double UFirst, const double ULast, 
   return u;
 }
 
+namespace
+{
+const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const GeomAdaptor_Surface& theSurface)
+{
+  return theSurface.Surface();
+}
+
+const occ::handle<Geom_Surface>& ChFi3d_BaseSurface(const BRepAdaptor_Surface& theSurface)
+{
+  return theSurface.Surface().Surface();
+}
+
+void ChFi3d_ApplyBounds(GeomAdaptor_Surface&             theSurface,
+                        const occ::handle<Geom_Surface>& theGeomSurface,
+                        const double                     theUFirst,
+                        const double                     theULast,
+                        const double                     theVFirst,
+                        const double                     theVLast)
+{
+  theSurface.Load(theGeomSurface,
+                  theUFirst,
+                  theULast,
+                  theVFirst,
+                  theVLast,
+                  theSurface.ToleranceU(),
+                  theSurface.ToleranceV());
+}
+
+void ChFi3d_ApplyBounds(BRepAdaptor_Surface&             theSurface,
+                        const occ::handle<Geom_Surface>& theGeomSurface,
+                        const double                     theUFirst,
+                        const double                     theULast,
+                        const double                     theVFirst,
+                        const double                     theVLast)
+{
+  const GeomAdaptor_Surface& aGeomSurface = theSurface.Surface();
+  theSurface.Load(theGeomSurface,
+                  theUFirst,
+                  theULast,
+                  theVFirst,
+                  theVLast,
+                  aGeomSurface.ToleranceU(),
+                  aGeomSurface.ToleranceV(),
+                  theSurface.Trsf());
+}
+
+template <class SurfaceAdaptor>
+void ChFi3d_BoundSrfImpl(SurfaceAdaptor& theSurface,
+                         const double    theUmin,
+                         const double    theUmax,
+                         const double    theVmin,
+                         const double    theVmax,
+                         const bool      theCheckNaturalBounds)
+{
+  double                                      aUmin    = theUmin;
+  double                                      aUmax    = theUmax;
+  double                                      aVmin    = theVmin;
+  double                                      aVmax    = theVmax;
+  occ::handle<Geom_Surface>                   aSurface = ChFi3d_BaseSurface(theSurface);
+  occ::handle<Geom_RectangularTrimmedSurface> aTrimmedSurface =
+    occ::down_cast<Geom_RectangularTrimmedSurface>(aSurface);
+  if (!aTrimmedSurface.IsNull())
+  {
+    aSurface = aTrimmedSurface->BasisSurface();
+  }
+
+  double aU1, aU2, aV1, aV2;
+  aSurface->Bounds(aU1, aU2, aV1, aV2);
+
+  double aPeriodU = 0.0;
+  double aPeriodV = 0.0;
+  if (aSurface->IsUPeriodic())
+  {
+    aPeriodU = aSurface->UPeriod();
+  }
+  if (aSurface->IsVPeriodic())
+  {
+    aPeriodV = aSurface->VPeriod();
+  }
+
+  double       aStepU   = aUmax - aUmin;
+  double       aStepV   = aVmax - aVmin;
+  const double aScaleU  = theSurface.UResolution(1.0);
+  const double aScaleV  = theSurface.VResolution(1.0);
+  const double aStep3dU = aStepU / aScaleU;
+  const double aStep3dV = aStepV / aScaleV;
+
+  if (aStep3dU > aStep3dV)
+  {
+    aStepV = aStep3dU * aScaleV;
+  }
+  if (aStep3dV > aStep3dU)
+  {
+    aStepU = aStep3dV * aScaleU;
+  }
+
+  if (aPeriodU > 0.0)
+  {
+    aStepU = 0.1 * (aPeriodU - (aUmax - aUmin));
+  }
+  if (aPeriodV > 0.0)
+  {
+    aStepV = 0.1 * (aPeriodV - (aVmax - aVmin));
+  }
+
+  double aUU1 = aUmin - aStepU;
+  double aUU2 = aUmax + aStepU;
+  double aVV1 = aVmin - aStepV;
+  double aVV2 = aVmax + aStepV;
+  if (theCheckNaturalBounds)
+  {
+    if (!theSurface.IsUPeriodic())
+    {
+      aUU1 = std::max(aUU1, aU1);
+      aUU2 = std::min(aUU2, aU2);
+    }
+    if (!theSurface.IsVPeriodic())
+    {
+      aVV1 = std::max(aVV1, aV1);
+      aVV2 = std::min(aVV2, aV2);
+    }
+  }
+
+  ChFi3d_ApplyBounds(theSurface, aSurface, aUU1, aUU2, aVV1, aVV2);
+}
+} // namespace
+
 //=======================================================================
 // function : Box
 // purpose  : Calculation of min/max uv of the fillet to intersect.
@@ -537,7 +664,7 @@ void ChFi3d_BoundFac(BRepAdaptor_Surface& S,
                      const double         vvmax,
                      const bool           checknaturalbounds)
 {
-  ChFi3d_BoundSrf(S.ChangeSurface(), uumin, uumax, vvmin, vvmax, checknaturalbounds);
+  ChFi3d_BoundSrfImpl(S, uumin, uumax, vvmin, vvmax, checknaturalbounds);
 }
 
 //=======================================================================
@@ -552,62 +679,7 @@ void ChFi3d_BoundSrf(GeomAdaptor_Surface& S,
                      const double         vvmax,
                      const bool           checknaturalbounds)
 {
-  double                    umin = uumin, umax = uumax, vmin = vvmin, vmax = vvmax;
-  occ::handle<Geom_Surface> surface = S.Surface();
-  occ::handle<Geom_RectangularTrimmedSurface> trs =
-    occ::down_cast<Geom_RectangularTrimmedSurface>(surface);
-  if (!trs.IsNull())
-    surface = trs->BasisSurface();
-  double u1, u2, v1, v2;
-  surface->Bounds(u1, u2, v1, v2);
-  double peru = 0, perv = 0;
-  if (surface->IsUPeriodic())
-  {
-    peru = surface->UPeriod();
-  }
-  if (surface->IsVPeriodic())
-  {
-    perv = surface->VPeriod();
-  }
-  double Stepu = umax - umin;
-  double Stepv = vmax - vmin;
-
-  // It is supposed that box uv is not null in at least
-  // one direction.
-  double scalu = S.UResolution(1.);
-  double scalv = S.VResolution(1.);
-
-  double step3du = Stepu / scalu;
-  double step3dv = Stepv / scalv;
-
-  if (step3du > step3dv)
-    Stepv = step3du * scalv;
-  if (step3dv > step3du)
-    Stepu = step3dv * scalu;
-
-  if (peru > 0)
-    Stepu = 0.1 * (peru - (umax - umin));
-  if (perv > 0)
-    Stepv = 0.1 * (perv - (vmax - vmin));
-
-  double uu1 = umin - Stepu;
-  double uu2 = umax + Stepu;
-  double vv1 = vmin - Stepv;
-  double vv2 = vmax + Stepv;
-  if (checknaturalbounds)
-  {
-    if (!S.IsUPeriodic())
-    {
-      uu1 = std::max(uu1, u1);
-      uu2 = std::min(uu2, u2);
-    }
-    if (!S.IsVPeriodic())
-    {
-      vv1 = std::max(vv1, v1);
-      vv2 = std::min(vv2, v2);
-    }
-  }
-  S.Load(surface, uu1, uu2, vv1, vv2);
+  ChFi3d_BoundSrfImpl(S, uumin, uumax, vvmin, vvmax, checknaturalbounds);
 }
 
 //=================================================================================================

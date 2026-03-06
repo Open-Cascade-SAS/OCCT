@@ -203,6 +203,12 @@ public:
     theV2 = LastVParameter();
   }
 
+  //! Returns tolerance in U direction.
+  double ToleranceU() const { return myTolU; }
+
+  //! Returns tolerance in V direction.
+  double ToleranceV() const { return myTolV; }
+
   Standard_EXPORT GeomAbs_Shape UContinuity() const override;
 
   Standard_EXPORT GeomAbs_Shape VContinuity() const override;
