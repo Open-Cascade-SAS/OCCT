@@ -15,7 +15,6 @@
 // commercial license or contractual agreement.
 
 #include <gp_Vec.hxx>
-#include <GProp_PEquation.hxx>
 #include <HLRAlgo_Projector.hxx>
 #include <HLRBRep_Surface.hxx>
 #include <gp_Pnt.hxx>
