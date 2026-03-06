@@ -6,12 +6,9 @@ set(OCCT_GProp_FILES
   GProp.hxx
   GProp_CelGProps.cxx
   GProp_CelGProps.hxx
-  GProp_EquaType.hxx
   GProp_GProps.cxx
   GProp_GProps.hxx
-  GProp_PEquation.cxx
   GProp_PEquation.hxx
-  GProp_PGProps.cxx
   GProp_PGProps.hxx
   GProp_PrincipalProps.cxx
   GProp_PrincipalProps.hxx

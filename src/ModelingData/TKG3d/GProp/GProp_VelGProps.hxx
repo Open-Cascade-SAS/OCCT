@@ -30,7 +30,9 @@ class gp_Torus;
 //! Computes the global properties and the volume of a geometric solid
 //! (3D closed region of space)
 //! The solid can be elementary(definition in the gp package)
-class GProp_VelGProps : public GProp_GProps
+//! @deprecated This class is deprecated since OCCT 8.0.0 and will be removed in a future release.
+class Standard_DEPRECATED("Deprecated since OCCT 8.0.0, will be removed in a future release")
+  GProp_VelGProps : public GProp_GProps
 {
 public:
   DEFINE_STANDARD_ALLOC

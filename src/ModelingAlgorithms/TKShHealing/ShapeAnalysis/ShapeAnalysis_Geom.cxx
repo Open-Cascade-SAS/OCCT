@@ -11,7 +11,7 @@
 // Alternatively, this file may be used under the terms of Open CASCADE
 // commercial license or contractual agreement.
 
-// szv#4 S4163
+#include <ShapeAnalysis_Geom.hxx>
 
 #include <gp_GTrsf.hxx>
 #include <gp_Pln.hxx>
@@ -19,106 +19,66 @@
 #include <gp_Trsf.hxx>
 #include <gp_Vec.hxx>
 #include <gp_XYZ.hxx>
-#include <GProp_PGProps.hxx>
-#include <GProp_PrincipalProps.hxx>
-#include <ShapeAnalysis_Geom.hxx>
+#include <PointSetLib_Equation.hxx>
 #include <Standard_ErrorHandler.hxx>
 
 //=================================================================================================
 
-bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& Pnts,
-                                      gp_Pln&                           aPln,
-                                      double&                           Dmax)
+bool ShapeAnalysis_Geom::NearestPlane(const NCollection_Array1<gp_Pnt>& thePnts,
+                                      gp_Pln&                           thePln,
+                                      double&                           theMaxDist)
 {
-  // szv#4:S4163:12Mar99 warning
-  GProp_PGProps Pmat(Pnts);
-  gp_Pnt        g = Pmat.CentreOfMass();
-  double        Xg, Yg, Zg;
-  g.Coord(Xg, Yg, Zg);
-
-  GProp_PrincipalProps Pp = Pmat.PrincipalProperties();
-  gp_Vec               V1 = Pp.FirstAxisOfInertia();
-  double               Xv1, Yv1, Zv1;
-  V1.Coord(Xv1, Yv1, Zv1);
-  gp_Vec V2 = Pp.SecondAxisOfInertia();
-  double Xv2, Yv2, Zv2;
-  V2.Coord(Xv2, Yv2, Zv2);
-  gp_Vec V3 = Pp.ThirdAxisOfInertia();
-  double Xv3, Yv3, Zv3;
-  V3.Coord(Xv3, Yv3, Zv3);
-
-  double D, X, Y, Z;
-  double Dmx1 = RealFirst();
-  double Dmn1 = RealLast();
-  double Dmx2 = RealFirst();
-  double Dmn2 = RealLast();
-  double Dmx3 = RealFirst();
-  double Dmn3 = RealLast();
-
-  int ilow = Pnts.Lower(), iup = Pnts.Upper();
-  int i; // svv Jan11 2000 : porting on DEC
-  for (i = ilow; i <= iup; i++)
+  PointSetLib_Equation anEq(thePnts, 0.0);
+  if (anEq.GetType() == PointSetLib_Equation::Type::None)
   {
-    Pnts(i).Coord(X, Y, Z);
-    D = (X - Xg) * Xv1 + (Y - Yg) * Yv1 + (Z - Zg) * Zv1;
-    if (D > Dmx1)
-      Dmx1 = D;
-    if (D < Dmn1)
-      Dmn1 = D;
-    D = (X - Xg) * Xv2 + (Y - Yg) * Yv2 + (Z - Zg) * Zv2;
-    if (D > Dmx2)
-      Dmx2 = D;
-    if (D < Dmn2)
-      Dmn2 = D;
-    D = (X - Xg) * Xv3 + (Y - Yg) * Yv3 + (Z - Zg) * Zv3;
-    if (D > Dmx3)
-      Dmx3 = D;
-    if (D < Dmn3)
-      Dmn3 = D;
+    return false;
   }
 
-  // szv#4:S4163:12Mar99 optimized
-  double Dev1 = Dmx1 - Dmn1, Dev2 = Dmx2 - Dmn2, Dev3 = Dmx3 - Dmn3;
-  int    It = (Dev1 < Dev2) ? ((Dev1 < Dev3) ? 1 : 3) : ((Dev2 < Dev3) ? 2 : 3);
+  const double aDev1 = anEq.Extent(1);
+  const double aDev2 = anEq.Extent(2);
+  const double aDev3 = anEq.Extent(3);
 
-  switch (It)
+  // Find the axis with the smallest extent - that's the plane normal candidate
+  int anAxis = (aDev1 < aDev2) ? ((aDev1 < aDev3) ? 1 : 3) : ((aDev2 < aDev3) ? 2 : 3);
+
+  // Check if the smallest extent is significantly smaller than the other two
+  switch (anAxis)
   {
     case 1: {
-      // szv#4:S4163:12Mar99 optimized
-      if ((2. * Dev1 > Dev2) || (2. * Dev1 > Dev3))
-        It = 0;
+      if ((2.0 * aDev1 > aDev2) || (2.0 * aDev1 > aDev3))
+        anAxis = 0;
       else
-        aPln = gp_Pln(g, V1);
+        thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(1));
       break;
     }
     case 2: {
-      // szv#4:S4163:12Mar99 optimized
-      if ((2. * Dev2 > Dev1) || (2. * Dev2 > Dev3))
-        It = 0;
+      if ((2.0 * aDev2 > aDev1) || (2.0 * aDev2 > aDev3))
+        anAxis = 0;
       else
-        aPln = gp_Pln(g, V2);
+        thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(2));
       break;
     }
     case 3: {
-      // szv#4:S4163:12Mar99 optimized
-      if ((2. * Dev3 > Dev2) || (2. * Dev3 > Dev1))
-        It = 0;
+      if ((2.0 * aDev3 > aDev2) || (2.0 * aDev3 > aDev1))
+        anAxis = 0;
       else
-        aPln = gp_Pln(g, V3);
+        thePln = gp_Pln(anEq.Barycentre(), anEq.PrincipalAxis(3));
       break;
     }
   }
 
-  Dmax = RealFirst();
-  if (It != 0) // szv#4:S4163:12Mar99 anti-exception
-    for (i = ilow; i <= iup; i++)
+  theMaxDist = RealFirst();
+  if (anAxis != 0)
+  {
+    for (int i = thePnts.Lower(); i <= thePnts.Upper(); ++i)
     {
-      D = aPln.Distance(Pnts(i));
-      if (Dmax < D)
-        Dmax = D;
+      const double aD = thePln.Distance(thePnts(i));
+      if (theMaxDist < aD)
+        theMaxDist = aD;
     }
+  }
 
-  return (It != 0);
+  return (anAxis != 0);
 }
 
 //=================================================================================================
@@ -130,10 +90,10 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
 {
   bool result = true;
 
-  trsf = gp_Trsf(); // szv#4:S4163:12Mar99 moved
+  trsf = gp_Trsf();
 
   if (coefs.IsNull())
-    return true; // szv#4:S4163:12Mar99 moved
+    return true;
 
   gp_GTrsf gtrsf;
   for (int i = 1; i <= 3; i++)
@@ -144,42 +104,28 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
     }
   }
 
-  // try { //szv#4:S4163:12Mar99 waste try
-  ////    trsf = gtrsf.Trsf();
-  // ---  Prec et Unit ont ete lues suite aux StepFile_Read
-  //      Valables pour tous les composants d un assemblage transmis
-  // trsf = gp_Trsf();  // Identite forcee au depart //szv#4:S4163:12Mar99 not needed
-  //  On prend le contenu de <gtrsf>. Attention a l adressage
   gp_XYZ v1(gtrsf.Value(1, 1), gtrsf.Value(2, 1), gtrsf.Value(3, 1));
   gp_XYZ v2(gtrsf.Value(1, 2), gtrsf.Value(2, 2), gtrsf.Value(3, 2));
   gp_XYZ v3(gtrsf.Value(1, 3), gtrsf.Value(2, 3), gtrsf.Value(3, 3));
-  //  A-t-on affaire a une similitude ?
   double m1 = v1.Modulus();
   double m2 = v2.Modulus();
   double m3 = v3.Modulus();
 
-  //    D abord est-elle singuliere cette matrice ?
   if (m1 < prec || m2 < prec || m3 < prec)
     return false;
-  double mm = (m1 + m2 + m3) / 3.; // voici la Norme moyenne, cf Scale
-  // szv#4:S4163:12Mar99 optimized
+  double mm  = (m1 + m2 + m3) / 3.;
   double pmm = prec * mm;
   if (std::abs(m1 - mm) > pmm || std::abs(m2 - mm) > pmm || std::abs(m3 - mm) > pmm)
     return false;
-  // szv#4:S4163:12Mar99 warning
   v1.Divide(m1);
   v2.Divide(m2);
   v3.Divide(m3);
-  // szv#4:S4163:12Mar99 optimized
   if (std::abs(v1.Dot(v2)) > prec || std::abs(v2.Dot(v3)) > prec || std::abs(v3.Dot(v1)) > prec)
     return false;
 
-  //  Ici, Orthogonale et memes normes. En plus on l a Normee
-  //  On isole le cas de l Identite (tellement facile et avantageux)
   if (v1.X() != 1 || v1.Y() != 0 || v1.Z() != 0 || v2.X() != 0 || v2.Y() != 1 || v2.Z() != 0
       || v3.X() != 0 || v3.Y() != 0 || v3.Z() != 1)
   {
-    //  Pas Identite : vraie construction depuis un Ax3
     gp_Dir d1(v1);
     gp_Dir d2(v2);
     gp_Dir d3(v3);
@@ -190,19 +136,13 @@ bool ShapeAnalysis_Geom::PositionTrsf(const occ::handle<NCollection_HArray2<doub
     trsf.SetTransformation(axes);
   }
 
-  //  Restent les autres caracteristiques :
   if (std::abs(mm - 1.) > prec)
-    trsf.SetScale(gp_Pnt(0, 0, 0), mm); // szv#4:S4163:12Mar99 optimized
+    trsf.SetScale(gp_Pnt(0, 0, 0), mm);
   gp_Vec tp(gtrsf.TranslationPart());
   if (unit != 1.)
     tp.Multiply(unit);
   if (tp.X() != 0 || tp.Y() != 0 || tp.Z() != 0)
     trsf.SetTranslationPart(tp);
-  /* }
-  catch(Standard_Failure) {
-    trsf = gp_Trsf();
-    result = false;
-  } */
 
   return result;
 }
