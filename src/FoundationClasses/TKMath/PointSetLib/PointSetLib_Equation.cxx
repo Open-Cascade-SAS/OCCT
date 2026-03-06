@@ -44,7 +44,14 @@ PointSetLib_Equation::PointSetLib_Equation(const NCollection_Array1<gp_Pnt>& the
   const MathUtils::EigenResult anEigen = MathLin::Jacobi(aMat, true);
   if (!anEigen.IsDone())
   {
-    myType = Type::None;
+    // Jacobi failed: mark type as None and initialize PCA data to safe defaults.
+    myType      = Type::None;
+    myAxes[0]   = gp_Vec(1.0, 0.0, 0.0);
+    myAxes[1]   = gp_Vec(0.0, 1.0, 0.0);
+    myAxes[2]   = gp_Vec(0.0, 0.0, 1.0);
+    myExtents[0] = 0.0;
+    myExtents[1] = 0.0;
+    myExtents[2] = 0.0;
     return;
   }
 
