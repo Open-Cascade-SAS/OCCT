@@ -128,7 +128,6 @@ public:
 
   //! Returns the underlying Geom_Surface.
   Standard_DEPRECATED("Use GeomSurfaceOriginal() or GeomSurfaceTransformed() instead")
-
   const occ::handle<Geom_Surface>& GeomSurface() const { return GeomSurfaceOriginal(); }
 
   // Parameter range methods - delegate to underlying surface
