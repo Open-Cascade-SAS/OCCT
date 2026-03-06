@@ -125,7 +125,7 @@ bool FillValidMap(const TDF_Label& theLabel, NCollection_Map<TDF_Label>& theVali
 {
   bool                                        extRefFound = false;
   NCollection_Map<occ::handle<TDF_Attribute>> anExtMap;
-  TDF_ChildIterator itr(theLabel, true);
+  TDF_ChildIterator                           itr(theLabel, true);
   for (; itr.More(); itr.Next())
   {
     const TDF_Label&            aLabel = itr.Value();
