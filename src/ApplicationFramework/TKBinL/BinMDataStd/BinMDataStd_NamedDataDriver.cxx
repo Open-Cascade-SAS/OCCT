@@ -280,7 +280,6 @@ void BinMDataStd_NamedDataDriver::Paste(
       theTarget << anArr1.Lower() << anArr1.Upper(); // value Arr1 dimensions
       int* aPtr = const_cast<int*>(&anArr1(anArr1.Lower()));
 
-
       theTarget.PutIntArray(aPtr, anArr1.Length());
     }
   }

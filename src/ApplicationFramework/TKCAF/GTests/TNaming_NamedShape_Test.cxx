@@ -164,7 +164,7 @@ TEST_F(TNaming_NamedShapeTest, Evolution_ReflectsBuilder)
   EXPECT_EQ(aNS->Evolution(), TNaming_MODIFY);
 
   // Rebuild with GENERATED on a new label
-  TDF_Label       aLabel2   = myDoc->Main().FindChild(2);
+  TDF_Label       aLabel2 = myDoc->Main().FindChild(2);
   TNaming_Builder aBuilder2(aLabel2);
   aBuilder2.Generated(anOldBox, aNewBox);
 
@@ -269,7 +269,7 @@ TEST_F(TNaming_NamedShapeTest, Iterator_IsModification)
   }
 
   // GENERATED evolution should report IsModification = false
-  TDF_Label       aLabel2   = myDoc->Main().FindChild(2);
+  TDF_Label       aLabel2 = myDoc->Main().FindChild(2);
   TNaming_Builder aBuilder2(aLabel2);
   aBuilder2.Generated(anOldBox, aNewBox);
 

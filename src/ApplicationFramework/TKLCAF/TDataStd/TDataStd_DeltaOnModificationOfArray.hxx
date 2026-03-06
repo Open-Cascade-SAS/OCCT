@@ -47,8 +47,8 @@ public:
     theUp1 = theOldArr->Upper();
     theUp2 = theCurArr->Upper();
 
-    int       aN    = 0;
-    int       aCase = 0;
+    int aN    = 0;
+    int aCase = 0;
     if (theUp1 == theUp2)
     {
       aCase = 1;
@@ -100,7 +100,7 @@ public:
   template <typename ValueType>
   static occ::handle<NCollection_HArray1<ValueType>> ApplyDelta(
     const occ::handle<NCollection_HArray1<ValueType>>& theCurArr,
-    const occ::handle<NCollection_HArray1<int>>&        theIndxes,
+    const occ::handle<NCollection_HArray1<int>>&       theIndxes,
     const occ::handle<NCollection_HArray1<ValueType>>& theValues,
     const int                                          theUp1,
     const int                                          theUp2)

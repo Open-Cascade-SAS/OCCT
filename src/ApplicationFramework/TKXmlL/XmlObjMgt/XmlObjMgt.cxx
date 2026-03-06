@@ -69,10 +69,10 @@ XmlObjMgt_DOMString XmlObjMgt::GetStringValue(const XmlObjMgt_Element& theElemen
 
 void SprintfExtStr(char* out, const TCollection_ExtendedString& theString)
 {
-  const unsigned short* p = reinterpret_cast<const unsigned short*>(theString.ToExtString());
-  int             len     = theString.Length();
-  int             i       = 0;
-  unsigned short  mask[4] = {0xf000, 0x0f00, 0x00f0, 0x000f};
+  const unsigned short* p       = reinterpret_cast<const unsigned short*>(theString.ToExtString());
+  int                   len     = theString.Length();
+  int                   i       = 0;
+  unsigned short        mask[4] = {0xf000, 0x0f00, 0x00f0, 0x000f};
   while (len)
   {
     for (int j = 0, k = 3; j < 4; j++, k--)

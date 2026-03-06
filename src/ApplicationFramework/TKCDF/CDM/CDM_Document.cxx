@@ -101,8 +101,7 @@ void CDM_Document::Extensions(NCollection_Sequence<TCollection_ExtendedString>& 
 
 int CDM_Document::CreateReference(const occ::handle<CDM_Document>& anOtherDocument)
 {
-  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-       it.More();
+  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences); it.More();
        it.Next())
   {
     if (anOtherDocument == it.Value()->Document())
@@ -122,8 +121,7 @@ int CDM_Document::CreateReference(const occ::handle<CDM_Document>& anOtherDocume
 
 void CDM_Document::RemoveAllReferences()
 {
-  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-       it.More();
+  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences); it.More();
        it.Next())
   {
     it.Value()->ToDocument()->RemoveFromReference(it.Value()->ReferenceIdentifier());
@@ -276,8 +274,7 @@ int CDM_Document::FromReferencesNumber() const
 
 bool CDM_Document::ShallowReferences(const occ::handle<CDM_Document>& aDocument) const
 {
-  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-       it.More();
+  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences); it.More();
        it.Next())
   {
     if (it.Value()->ToDocument() == aDocument)
@@ -296,13 +293,12 @@ bool CDM_Document::DeepReferences(const occ::handle<CDM_Document>& aDocument) co
 
 //=================================================================================================
 
-bool CDM_Document::deepReferences(const occ::handle<CDM_Document>&    aDocument,
+bool CDM_Document::deepReferences(const occ::handle<CDM_Document>&      aDocument,
                                   NCollection_Map<const CDM_Document*>& theVisited) const
 {
   if (!theVisited.Add(this))
     return false;
-  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences);
-       it.More();
+  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator it(myToReferences); it.More();
        it.Next())
   {
     occ::handle<CDM_Document> aRefDoc = it.Value()->ToDocument();
@@ -793,8 +789,7 @@ void CDM_Document::AddFromReference(const occ::handle<CDM_Reference>& aReference
 
 void CDM_Document::RemoveFromReference(const int aReferenceIdentifier)
 {
-  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences);
-       it.More();
+  for (NCollection_List<occ::handle<CDM_Reference>>::Iterator it(myFromReferences); it.More();
        it.Next())
   {
     if (it.Value()->ReferenceIdentifier() == aReferenceIdentifier)
@@ -969,7 +964,8 @@ void CDM_Document::DumpJson(Standard_OStream& theOStream, int theDepth) const
     OCCT_DUMP_FIELD_VALUES_DUMPED(theOStream, theDepth, aFromReference.get())
   }
 
-  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator aToReferenceIt(myToReferences);
+  for (NCollection_DataMap<int, occ::handle<CDM_Reference>>::Iterator aToReferenceIt(
+         myToReferences);
        aToReferenceIt.More();
        aToReferenceIt.Next())
   {

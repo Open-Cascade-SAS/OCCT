@@ -170,9 +170,9 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
         myMessageDriver->Send(aMessageString, Message_Fail);
         return false;
       }
-      aCurNode                                                         = anElement.getFirstChild();
-      const LDOM_Element*                                  aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
-      TCollection_ExtendedString                           aValueStr, aKey;
+      aCurNode                               = anElement.getFirstChild();
+      const LDOM_Element*        aCurElement = static_cast<const LDOM_Element*>(&aCurNode);
+      TCollection_ExtendedString aValueStr, aKey;
       NCollection_DataMap<TCollection_ExtendedString, int> aMap;
       for (ind = aFirstInd; ind < aLastInd; ind++)
       {

@@ -177,9 +177,8 @@ TopoDS_Shape TNaming::MakeShape(
 
 //=================================================================================================
 
-void TNaming::ApplyOrientation(
-  NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS,
-  const TopAbs_Orientation                                      theOrientation)
+void TNaming::ApplyOrientation(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS,
+                               const TopAbs_Orientation theOrientation)
 {
   for (int anIdx = 1; anIdx <= theMS.Extent(); ++anIdx)
   {
@@ -189,8 +188,7 @@ void TNaming::ApplyOrientation(
 
 //=================================================================================================
 
-bool TNaming::IsForbidden(const NCollection_Map<TDF_Label>& theForbiden,
-                          const TDF_Label&                  theLabel)
+bool TNaming::IsForbidden(const NCollection_Map<TDF_Label>& theForbiden, const TDF_Label& theLabel)
 {
   if (theLabel.IsRoot())
   {

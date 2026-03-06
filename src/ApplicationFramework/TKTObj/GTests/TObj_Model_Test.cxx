@@ -115,8 +115,8 @@ TEST_F(TObj_ModelTest, GetApplication_ReturnsNonNull)
 
 TEST_F(TObj_ModelTest, GetDocumentModel_FromLabel_ReturnsSameModel)
 {
-  TDF_Label                aLabel      = myModel->GetLabel();
-  occ::handle<TObj_Model>  aFoundModel = TObj_Model::GetDocumentModel(aLabel);
+  TDF_Label               aLabel      = myModel->GetLabel();
+  occ::handle<TObj_Model> aFoundModel = TObj_Model::GetDocumentModel(aLabel);
   ASSERT_FALSE(aFoundModel.IsNull());
   EXPECT_EQ(myModel.get(), aFoundModel.get());
 }
@@ -254,8 +254,8 @@ protected:
     return new TObj_TestObject(aLabel);
   }
 
-  occ::handle<TObj_TestModel>  myModel;
-  occ::handle<TObj_Partition>  myPartition;
+  occ::handle<TObj_TestModel> myModel;
+  occ::handle<TObj_Partition> myPartition;
 };
 
 TEST_F(TObj_ObjectTest, CreateObject_IsAlive)
@@ -324,8 +324,7 @@ TEST_F(TObj_ObjectTest, SetName_Duplicate_ReturnsFalse)
   occ::handle<TObj_TestObject> anObj2 = createObject();
   myModel->CommitCommand();
 
-  occ::handle<TCollection_HExtendedString> aName =
-    new TCollection_HExtendedString("UniqueName");
+  occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString("UniqueName");
 
   myModel->OpenCommand();
   EXPECT_TRUE(anObj1->SetName(aName));
@@ -433,8 +432,8 @@ TEST_F(TObj_ObjectTest, GetObj_StaticLookup)
   occ::handle<TObj_TestObject> anObj = createObject();
   myModel->CommitCommand();
 
-  TDF_Label                  aLabel = anObj->GetLabel();
-  occ::handle<TObj_Object>   aFound;
+  TDF_Label                aLabel = anObj->GetLabel();
+  occ::handle<TObj_Object> aFound;
   EXPECT_TRUE(TObj_Object::GetObj(aLabel, aFound));
   ASSERT_FALSE(aFound.IsNull());
   EXPECT_EQ(anObj.get(), aFound.get());
@@ -500,8 +499,7 @@ TEST_F(TObj_ObjectTest, FindObject_ByName)
   myModel->CommitCommand();
 
   myModel->OpenCommand();
-  occ::handle<TCollection_HExtendedString> aName =
-    new TCollection_HExtendedString("FindMe");
+  occ::handle<TCollection_HExtendedString> aName = new TCollection_HExtendedString("FindMe");
   anObj->SetName(aName);
   myModel->CommitCommand();
 

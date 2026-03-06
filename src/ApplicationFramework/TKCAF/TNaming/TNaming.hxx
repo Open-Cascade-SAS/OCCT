@@ -173,7 +173,7 @@ public:
   //! @param[in] theOrientation orientation to apply
   Standard_EXPORT static void ApplyOrientation(
     NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS,
-    const TopAbs_Orientation                                      theOrientation);
+    const TopAbs_Orientation                                       theOrientation);
 
   //! Checks whether the given label or any of its ancestors is contained
   //! in the forbidden labels map.

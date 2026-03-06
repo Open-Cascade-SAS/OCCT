@@ -364,8 +364,8 @@ void TDF_Data::FixOrder(const occ::handle<TDF_Delta>& theDelta)
   NCollection_List<occ::handle<TDF_AttributeDelta>> aRemovalList;
 
   const NCollection_List<occ::handle<TDF_AttributeDelta>>& anAttList = theDelta->AttributeDeltas();
-  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIt(anAttList);
-       anIt.More(); anIt.Next())
+  for (NCollection_List<occ::handle<TDF_AttributeDelta>>::Iterator anIt(anAttList); anIt.More();
+       anIt.Next())
   {
     const occ::handle<TDF_AttributeDelta>& anAttDelta = anIt.Value();
     if (anAttDelta->IsKind(STANDARD_TYPE(TDF_DeltaOnRemoval)))
