@@ -45,6 +45,7 @@
 #include <Geom_BezierSurface.hxx>
 #include <Geom_BSplineCurve.hxx>
 #include <Geom_BSplineSurface.hxx>
+#include <GeomAdaptor_TransformedSurface.hxx>
 #include <GeomAdaptor_Curve.hxx>
 #include <GeomAbs_SurfaceType.hxx>
 #include <GeomGridEval_Surface.hxx>
@@ -195,6 +196,59 @@ static void printBox2d(const char* thePrefix, const Bnd_Box2d& theBox)
   theBox.Get(xMin, yMin, xMax, yMax);
   std::cerr << thePrefix << " [" << xMin << ", " << yMin << "] - [" << xMax << ", " << yMax
             << "]\n";
+}
+
+static void printTorusDetails(const Adaptor3d_Surface& theS,
+                              double                   theUMin,
+                              double                   theUMax,
+                              double                   theVMin,
+                              double                   theVMax,
+                              double                   theTol)
+{
+  if (theS.GetType() != GeomAbs_Torus)
+  {
+    return;
+  }
+
+  const gp_Torus& aTorus = theS.Torus();
+  const gp_Ax3&   aPos   = aTorus.Position();
+  const gp_Pnt&   aLoc   = aPos.Location();
+  const gp_Dir&   aAxis  = aPos.Direction();
+  const gp_Dir&   aXDir  = aPos.XDirection();
+  const gp_Dir&   aYDir  = aPos.YDirection();
+  std::cerr << "  Torus: major=" << aTorus.MajorRadius() << " minor=" << aTorus.MinorRadius()
+            << " direct=" << (aTorus.Direct() ? "true" : "false") << "\n";
+  std::cerr << "  Torus Pos: origin=[" << aLoc.X() << ", " << aLoc.Y() << ", " << aLoc.Z()
+            << "] axis=[" << aAxis.X() << ", " << aAxis.Y() << ", " << aAxis.Z() << "]\n";
+  std::cerr << "             xdir=[" << aXDir.X() << ", " << aXDir.Y() << ", " << aXDir.Z()
+            << "] ydir=[" << aYDir.X() << ", " << aYDir.Y() << ", " << aYDir.Z() << "]\n";
+  std::cerr << "  Params: U=[" << theUMin << ", " << theUMax << "] V=[" << theVMin << ", "
+            << theVMax << "] Tol=" << theTol << "\n";
+}
+
+static void printAppliedTransformation(const Adaptor3d_Surface& theS)
+{
+  if (!theS.IsKind(STANDARD_TYPE(GeomAdaptor_TransformedSurface)))
+  {
+    return;
+  }
+
+  const GeomAdaptor_TransformedSurface& aTransformedSurf =
+    static_cast<const GeomAdaptor_TransformedSurface&>(theS);
+  const gp_Trsf& aTrsf = aTransformedSurf.Trsf();
+  if (aTrsf.Form() == gp_Identity)
+  {
+    return;
+  }
+
+  std::cerr << "  Applied Trsf (" << static_cast<int>(aTrsf.Form())
+            << "), scale=" << aTrsf.ScaleFactor() << ":\n";
+  std::cerr << "    [" << aTrsf.Value(1, 1) << ", " << aTrsf.Value(1, 2) << ", "
+            << aTrsf.Value(1, 3) << ", " << aTrsf.Value(1, 4) << "]\n";
+  std::cerr << "    [" << aTrsf.Value(2, 1) << ", " << aTrsf.Value(2, 2) << ", "
+            << aTrsf.Value(2, 3) << ", " << aTrsf.Value(2, 4) << "]\n";
+  std::cerr << "    [" << aTrsf.Value(3, 1) << ", " << aTrsf.Value(3, 2) << ", "
+            << aTrsf.Value(3, 3) << ", " << aTrsf.Value(3, 4) << "]\n";
 }
 
 //=============================================================================
@@ -2104,6 +2158,8 @@ void CompareSurfaceAdd(const Adaptor3d_Surface& theS,
     std::cerr << "[BndLib_LegacyCheck] AddSurface"
               << " geom=" << surfaceTypeName(theS.GetType())
               << " adaptor=" << theS.DynamicType()->Name() << ":\n";
+    printTorusDetails(theS, theUMin, theUMax, theVMin, theVMax, theTol);
+    printAppliedTransformation(theS);
     printBox("  Old:", aOldBox);
     printBox("  New:", theNewBox);
   }
@@ -2126,6 +2182,8 @@ void CompareSurfaceAddOptimal(const Adaptor3d_Surface& theS,
     std::cerr << "[BndLib_LegacyCheck] AddOptimalSurface"
               << " geom=" << surfaceTypeName(theS.GetType())
               << " adaptor=" << theS.DynamicType()->Name() << ":\n";
+    printTorusDetails(theS, theUMin, theUMax, theVMin, theVMax, theTol);
+    printAppliedTransformation(theS);
     printBox("  Old:", aOldBox);
     printBox("  New:", theNewBox);
   }
