@@ -24,14 +24,12 @@
 #include <TopoDS_Shape.hxx>
 #include <TopTools_ShapeMapHasher.hxx>
 #include <NCollection_DataMap.hxx>
-#include <NCollection_IndexedMap.hxx>
 #include <NCollection_Map.hxx>
 #include <NCollection_Array1.hxx>
 #include <NCollection_HArray1.hxx>
 #include <Standard_GUID.hxx>
 #include <NCollection_List.hxx>
 #include <Standard_OStream.hxx>
-#include <TopAbs_Orientation.hxx>
 #include <TNaming_Evolution.hxx>
 #include <TNaming_NameType.hxx>
 class TDF_Label;
@@ -159,29 +157,6 @@ public:
   //! Builds shape from map content
   Standard_EXPORT static TopoDS_Shape MakeShape(
     const NCollection_Map<TopoDS_Shape, TopTools_ShapeMapHasher>& MS);
-
-  //! Builds shape from indexed map content.
-  //! If the map contains a single shape, it is returned directly.
-  //! If it contains multiple shapes, they are combined into a compound.
-  //! If the map is empty, an empty shape is returned.
-  Standard_EXPORT static TopoDS_Shape MakeShape(
-    const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS);
-
-  //! Applies the given orientation to all shapes in the indexed map.
-  //! Each shape in the map is replaced by the same shape with the specified orientation.
-  //! @param[in,out] theMS indexed map of shapes to reorient
-  //! @param[in] theOrientation orientation to apply
-  Standard_EXPORT static void ApplyOrientation(
-    NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& theMS,
-    const TopAbs_Orientation                                       theOrientation);
-
-  //! Checks whether the given label or any of its ancestors is contained
-  //! in the forbidden labels map.
-  //! @param[in] theForbiden map of forbidden labels
-  //! @param[in] theLabel label to check
-  //! @return true if the label or one of its ancestors is forbidden
-  Standard_EXPORT static bool IsForbidden(const NCollection_Map<TDF_Label>& theForbiden,
-                                          const TDF_Label&                  theLabel);
 
   //! Find unique context of shape <S>
   Standard_EXPORT static TopoDS_Shape FindUniqueContext(const TopoDS_Shape& S,

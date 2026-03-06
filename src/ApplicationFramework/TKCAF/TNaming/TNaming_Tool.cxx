@@ -18,7 +18,6 @@
 #include <TDF_ChildIterator.hxx>
 #include <TDF_Label.hxx>
 #include <TDF_Tool.hxx>
-#include <TNaming.hxx>
 #include <TNaming_Iterator.hxx>
 #include <TNaming_Localizer.hxx>
 #include <TNaming_NamedShape.hxx>
@@ -110,6 +109,32 @@ static void LastModif(TNaming_NewShapeIterator&                                 
 
 //=================================================================================================
 
+static TopoDS_Shape MakeShape(
+  const NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS)
+{
+  if (!MS.IsEmpty())
+  {
+    if (MS.Extent() == 1)
+    {
+      return MS(1);
+    }
+    else
+    {
+      TopoDS_Compound C;
+      BRep_Builder    B;
+      B.MakeCompound(C);
+      for (int anItMS = 1; anItMS <= MS.Extent(); ++anItMS)
+      {
+        B.Add(C, MS(anItMS));
+      }
+      return C;
+    }
+  }
+  return TopoDS_Shape();
+}
+
+//=================================================================================================
+
 TopoDS_Shape TNaming_Tool::GetShape(const occ::handle<TNaming_NamedShape>& NS)
 {
   TNaming_Iterator                                              itL(NS);
@@ -171,7 +196,7 @@ TopoDS_Shape TNaming_Tool::GetShape(const occ::handle<TNaming_NamedShape>& NS)
       if (!itL.NewShape().IsNull())
         MS.Add(itL.NewShape());
     }
-  return TNaming::MakeShape(MS);
+  return MakeShape(MS);
 }
 
 //=================================================================================================
@@ -184,7 +209,17 @@ TopoDS_Shape TNaming_Tool::OriginalShape(const occ::handle<TNaming_NamedShape>& 
   {
     MS.Add(itL.OldShape());
   }
-  return TNaming::MakeShape(MS);
+  return MakeShape(MS);
+}
+
+//=======================================================================
+static void ApplyOrientation(NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS,
+                             const TopAbs_Orientation OrientationToApply)
+{
+  for (int anItMS = 1; anItMS <= MS.Extent(); ++anItMS)
+  {
+    MS.Substitute(anItMS, MS(anItMS).Oriented(OrientationToApply));
+  }
 }
 
 //=================================================================================================
@@ -249,12 +284,12 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS2; // to be optimized later
       LastModif(it, MS2, S, Deleted);
       if (YaOrientationToApply)
-        TNaming::ApplyOrientation(MS2, OrientationToApply);
+        ApplyOrientation(MS2, OrientationToApply);
       for (int anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
         MS.Add(MS2(anItMS2));
     }
   }
-  return TNaming::MakeShape(MS);
+  return MakeShape(MS);
 }
 
 //=================================================================================================
@@ -327,12 +362,12 @@ TopoDS_Shape TNaming_Tool::CurrentShape(const occ::handle<TNaming_NamedShape>& A
       NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher> MS2; // to be optimized later
       LastModif(it, S, MS2, Updated, Deleted);
       if (YaOrientationToApply)
-        TNaming::ApplyOrientation(MS2, OrientationToApply);
+        ApplyOrientation(MS2, OrientationToApply);
       for (int anItMS2 = 1; anItMS2 <= MS2.Extent(); ++anItMS2)
         MS.Add(MS2(anItMS2));
     }
   }
-  return TNaming::MakeShape(MS);
+  return MakeShape(MS);
 }
 
 //=================================================================================================
@@ -410,7 +445,7 @@ TopoDS_Shape TNaming_Tool::GeneratedShape(const TopoDS_Shape&                   
     TNaming_NewShapeIterator it2(S, US);
     FindModifUntil(it2, MS, Generation);
   }
-  return TNaming::MakeShape(MS);
+  return MakeShape(MS);
 }
 
 //=================================================================================================
@@ -470,7 +505,7 @@ TopoDS_Shape TNaming_Tool::InitialShape(const TopoDS_Shape&          S,
   {
     FirstOlds(US, S, it, MS, Labels);
   }
-  return TNaming::MakeShape(MS);
+  return MakeShape(MS);
 }
 
 //=================================================================================================

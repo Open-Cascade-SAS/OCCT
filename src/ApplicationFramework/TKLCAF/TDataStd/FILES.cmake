@@ -23,7 +23,6 @@ set(OCCT_TDataStd_FILES
   TDataStd_GenericExtString.cxx
   TDataStd_GenericExtString.hxx
 
-  TDataStd_DeltaOnModificationOfArray.hxx
   TDataStd_DeltaOnModificationOfByteArray.cxx
   TDataStd_DeltaOnModificationOfByteArray.hxx
   TDataStd_DeltaOnModificationOfExtStringArray.cxx

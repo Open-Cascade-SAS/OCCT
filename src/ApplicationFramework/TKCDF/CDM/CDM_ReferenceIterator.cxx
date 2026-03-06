@@ -19,8 +19,7 @@
 #include <CDM_ReferenceIterator.hxx>
 
 CDM_ReferenceIterator::CDM_ReferenceIterator(const occ::handle<CDM_Document>& aDocument)
-    : myDocument(aDocument),
-      myIterator(aDocument->myToReferencesOrder)
+    : myIterator(aDocument->myToReferences)
 {
 }
 
@@ -36,17 +35,15 @@ void CDM_ReferenceIterator::Next()
 
 int CDM_ReferenceIterator::ReferenceIdentifier() const
 {
-  return myIterator.Value();
+  return myIterator.Value()->ReferenceIdentifier();
 }
 
 occ::handle<CDM_Document> CDM_ReferenceIterator::Document() const
 {
-  const occ::handle<CDM_Reference>* aRefPtr = myDocument->myToReferences.Seek(myIterator.Value());
-  return aRefPtr != nullptr ? (*aRefPtr)->ToDocument() : occ::handle<CDM_Document>();
+  return myIterator.Value()->ToDocument();
 }
 
 int CDM_ReferenceIterator::DocumentVersion() const
 {
-  const occ::handle<CDM_Reference>* aRefPtr = myDocument->myToReferences.Seek(myIterator.Value());
-  return aRefPtr != nullptr ? (*aRefPtr)->DocumentVersion() : -1;
+  return myIterator.Value()->DocumentVersion();
 }

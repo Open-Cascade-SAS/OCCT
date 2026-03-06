@@ -16,13 +16,19 @@
 #include <TDataStd_DeltaOnModificationOfByteArray.hxx>
 
 #include <Standard_Type.hxx>
-#include <TDataStd_DeltaOnModificationOfArray.hxx>
+#include <NCollection_Array1.hxx>
+#include <NCollection_HArray1.hxx>
+#include <Standard_Integer.hxx>
+#include <NCollection_List.hxx>
 #include <TDataStd_ByteArray.hxx>
 #include <TDF_DeltaOnModification.hxx>
 #include <TDF_Label.hxx>
 
 IMPLEMENT_STANDARD_RTTIEXT(TDataStd_DeltaOnModificationOfByteArray, TDF_DeltaOnModification)
 
+#ifdef OCCT_DEBUG
+  #define MAXUP 1000
+#endif
 //=================================================================================================
 
 TDataStd_DeltaOnModificationOfByteArray::TDataStd_DeltaOnModificationOfByteArray(
@@ -34,13 +40,68 @@ TDataStd_DeltaOnModificationOfByteArray::TDataStd_DeltaOnModificationOfByteArray
   occ::handle<TDataStd_ByteArray> CurrAtt;
   if (Label().FindAttribute(OldAtt->ID(), CurrAtt))
   {
-    TDataStd_DeltaOnModificationOfArray::ComputeDelta(OldAtt->InternalArray(),
-                                                      CurrAtt->InternalArray(),
-                                                      myIndxes,
-                                                      myValues,
-                                                      myUp1,
-                                                      myUp2);
+    {
+      occ::handle<NCollection_HArray1<uint8_t>> Arr1, Arr2;
+      Arr1 = OldAtt->InternalArray();
+      Arr2 = CurrAtt->InternalArray();
+#ifdef OCCT_DEBUG_DELTA
+      if (Arr1.IsNull())
+        std::cout << "DeltaOnModificationOfByteArray:: Old ByteArray is Null" << std::endl;
+      if (Arr2.IsNull())
+        std::cout << "DeltaOnModificationOfByteArray:: Current ByteArray is Null" << std::endl;
+#endif
+
+      if (Arr1.IsNull() || Arr2.IsNull())
+        return;
+      if (Arr1 != Arr2)
+      {
+        myUp1 = Arr1->Upper();
+        myUp2 = Arr2->Upper();
+        int i, N = 0, aCase = 0;
+        if (myUp1 == myUp2)
+        {
+          aCase = 1;
+          N     = myUp1;
+        }
+        else if (myUp1 < myUp2)
+        {
+          aCase = 2;
+          N     = myUp1;
+        }
+        else
+        {
+          aCase = 3;
+          N     = myUp2;
+        } // Up1 > Up2
+
+        NCollection_List<int> aList;
+        for (i = Arr1->Lower(); i <= N; i++)
+          if (Arr1->Value(i) != Arr2->Value(i))
+            aList.Append(i);
+        if (aCase == 3)
+        {
+          for (i = N + 1; i <= myUp1; i++)
+            aList.Append(i);
+        }
+
+        if (aList.Extent())
+        {
+          myIndxes = new NCollection_HArray1<int>(1, aList.Extent());
+          myValues = new NCollection_HArray1<uint8_t>(1, aList.Extent());
+          NCollection_List<int>::Iterator anIt(aList);
+          for (i = 1; anIt.More(); anIt.Next(), i++)
+          {
+            myIndxes->SetValue(i, anIt.Value());
+            myValues->SetValue(i, Arr1->Value(anIt.Value()));
+          }
+        }
+      }
+    }
     OldAtt->RemoveArray();
+#ifdef OCCT_DEBUG
+    if (OldAtt->InternalArray().IsNull())
+      std::cout << "BackUp Arr is Nullified" << std::endl;
+#endif
   }
 }
 
@@ -48,26 +109,88 @@ TDataStd_DeltaOnModificationOfByteArray::TDataStd_DeltaOnModificationOfByteArray
 
 void TDataStd_DeltaOnModificationOfByteArray::Apply()
 {
+
   occ::handle<TDF_Attribute>      TDFAttribute = Attribute();
   occ::handle<TDataStd_ByteArray> BackAtt      = occ::down_cast<TDataStd_ByteArray>(TDFAttribute);
   if (BackAtt.IsNull())
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "DeltaOnModificationOfByteArray::Apply: OldAtt is Null" << std::endl;
+#endif
     return;
+  }
 
   occ::handle<TDataStd_ByteArray> aCurAtt;
   if (!Label().FindAttribute(BackAtt->ID(), aCurAtt))
+  {
+
     Label().AddAttribute(BackAtt);
+  }
 
   if (aCurAtt.IsNull())
+  {
+#ifdef OCCT_DEBUG
+    std::cout << "DeltaOnModificationOfByteArray::Apply: CurAtt is Null" << std::endl;
+#endif
+    return;
+  }
+  else
+    aCurAtt->Backup();
+
+  int aCase;
+  if (myUp1 == myUp2)
+    aCase = 1;
+  else if (myUp1 < myUp2)
+    aCase = 2;
+  else
+    aCase = 3; // Up1 > Up2
+
+  if (aCase == 1 && (myIndxes.IsNull() || myValues.IsNull()))
     return;
 
-  aCurAtt->Backup();
+  int                                       i;
+  occ::handle<NCollection_HArray1<uint8_t>> BArr = aCurAtt->InternalArray();
+  if (BArr.IsNull())
+    return;
+  if (aCase == 1)
+    for (i = 1; i <= myIndxes->Upper(); i++)
+      BArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+  else if (aCase == 2)
+  {
+    occ::handle<NCollection_HArray1<uint8_t>> byteArr =
+      new NCollection_HArray1<uint8_t>(BArr->Lower(), myUp1);
+    for (i = BArr->Lower(); i <= myUp1 && i <= BArr->Upper(); i++)
+      byteArr->SetValue(i, BArr->Value(i));
+    if (!myIndxes.IsNull() && !myValues.IsNull())
+      for (i = 1; i <= myIndxes->Upper(); i++)
+        byteArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+    aCurAtt->myValue = byteArr;
+  }
+  else
+  { // aCase == 3
+    int                                       low = BArr->Lower();
+    occ::handle<NCollection_HArray1<uint8_t>> byteArr =
+      new NCollection_HArray1<uint8_t>(low, myUp1);
+    for (i = BArr->Lower(); i <= myUp2 && i <= BArr->Upper(); i++)
+      byteArr->SetValue(i, BArr->Value(i));
+    if (!myIndxes.IsNull() && !myValues.IsNull())
+      for (i = 1; i <= myIndxes->Upper(); i++)
+      {
+#ifdef OCCT_DEBUG
+        std::cout << "i = " << i << "  myIndxes->Upper = " << myIndxes->Upper() << std::endl;
+        std::cout << "myIndxes->Value(i) = " << myIndxes->Value(i) << std::endl;
+        std::cout << "myValues->Value(i) = " << myValues->Value(i) << std::endl;
+#endif
+        byteArr->ChangeArray1().SetValue(myIndxes->Value(i), myValues->Value(i));
+      }
+    aCurAtt->myValue = byteArr;
+  }
 
-  occ::handle<NCollection_HArray1<uint8_t>> aNewArr =
-    TDataStd_DeltaOnModificationOfArray::ApplyDelta(aCurAtt->InternalArray(),
-                                                    myIndxes,
-                                                    myValues,
-                                                    myUp1,
-                                                    myUp2);
-  if (!aNewArr.IsNull())
-    aCurAtt->myValue = aNewArr;
+#ifdef OCCT_DEBUG
+  std::cout << " << Array Dump after Delta Apply >>" << std::endl;
+  occ::handle<NCollection_HArray1<uint8_t>> BArr2 = aCurAtt->InternalArray();
+  for (i = BArr2->Lower(); i <= BArr2->Upper() && i <= MAXUP; i++)
+    std::cout << BArr2->Value(i) << "  ";
+  std::cout << std::endl;
+#endif
 }
