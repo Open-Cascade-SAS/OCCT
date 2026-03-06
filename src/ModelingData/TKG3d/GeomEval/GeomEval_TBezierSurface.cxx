@@ -379,14 +379,14 @@ GeomAbs_Shape GeomEval_TBezierSurface::Continuity() const
 
 //=================================================================================================
 
-bool GeomEval_TBezierSurface::IsCNu(int /*N*/) const
+bool GeomEval_TBezierSurface::IsCNu(const int /*N*/) const
 {
   return true;
 }
 
 //=================================================================================================
 
-bool GeomEval_TBezierSurface::IsCNv(int /*N*/) const
+bool GeomEval_TBezierSurface::IsCNv(const int /*N*/) const
 {
   return true;
 }

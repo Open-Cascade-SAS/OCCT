@@ -132,10 +132,10 @@ public:
   Standard_EXPORT GeomAbs_Shape Continuity() const final;
 
   //! Returns true for all N. T-Bezier surfaces are infinitely differentiable in U.
-  Standard_EXPORT bool IsCNu(int N) const final;
+  Standard_EXPORT bool IsCNu(const int N) const final;
 
   //! Returns true for all N. T-Bezier surfaces are infinitely differentiable in V.
-  Standard_EXPORT bool IsCNv(int N) const final;
+  Standard_EXPORT bool IsCNv(const int N) const final;
 
   //! Isoparametric curve extraction is not supported for this eval surface.
   //! @throw Standard_NotImplemented
