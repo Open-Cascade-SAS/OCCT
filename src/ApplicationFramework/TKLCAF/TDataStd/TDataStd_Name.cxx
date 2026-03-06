@@ -28,6 +28,7 @@ const Standard_GUID& TDataStd_Name::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_Name> SetAttr(const TDF_Label&                  label,
                                           const TCollection_ExtendedString& theString,
                                           const Standard_GUID&              theGuid)

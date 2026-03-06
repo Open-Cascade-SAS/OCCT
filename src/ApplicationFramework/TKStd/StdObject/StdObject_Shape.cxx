@@ -14,6 +14,7 @@
 #include <StdObject_Shape.hxx>
 
 //=================================================================================================
+
 TopoDS_Shape StdObject_Shape::Import() const
 {
   TopoDS_Shape aShape;

@@ -25,6 +25,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(TFunction_Logbook, TDF_Attribute)
 
 //=================================================================================================
+
 const Standard_GUID& TFunction_Logbook::GetID()
 {
   static Standard_GUID TFunction_LogbookID("CF519724-5CA4-4B90-835F-8919BE1DDE4B");

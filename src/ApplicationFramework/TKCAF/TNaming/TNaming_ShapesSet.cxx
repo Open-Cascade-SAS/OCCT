@@ -27,9 +27,6 @@ TNaming_ShapesSet::TNaming_ShapesSet(const TopoDS_Shape& CS, const TopAbs_ShapeE
 {
   if (CS.IsNull())
     return;
-#ifdef OCCT_DEBUG_INT
-  std::cout << "ShapeSet: CS TShape = " << CS.TShape() << " Type = " << Type << std::endl;
-#endif
   if (Type == TopAbs_SHAPE)
   {
     if (CS.ShapeType() == TopAbs_SOLID || CS.ShapeType() == TopAbs_FACE
@@ -54,9 +51,6 @@ TNaming_ShapesSet::TNaming_ShapesSet(const TopoDS_Shape& CS, const TopAbs_ShapeE
       for (TopExp_Explorer exp(CS, Type); exp.More(); exp.Next())
       {
         Add(exp.Current());
-#ifdef OCCT_DEBUG_INT
-        std::cout << "ShapeSet: sub-shape TShape = " << exp.Current().TShape() << std::endl;
-#endif
       }
     }
     else

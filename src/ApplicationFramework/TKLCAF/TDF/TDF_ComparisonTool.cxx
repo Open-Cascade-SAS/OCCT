@@ -29,6 +29,7 @@
 #include <TDF_RelocationTable.hxx>
 
 //=================================================================================================
+
 void TDF_ComparisonTool::Compare(const occ::handle<TDF_DataSet>&         aSourceDataSet,
                                  const occ::handle<TDF_DataSet>&         aTargetDataSet,
                                  const TDF_IDFilter&                     aFilter,

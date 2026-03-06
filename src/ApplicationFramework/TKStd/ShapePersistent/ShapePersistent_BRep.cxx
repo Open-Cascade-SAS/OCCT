@@ -596,6 +596,7 @@ occ::handle<BRep_CurveRepresentation> ShapePersistent_BRep::CurveOn2Surfaces::im
 }
 
 //=================================================================================================
+
 occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTVertex::createTShape() const
 {
   occ::handle<BRep_TVertex> aTVertex = new BRep_TVertex;
@@ -610,6 +611,7 @@ occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTVertex::createTShape() const
 }
 
 //=================================================================================================
+
 occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTEdge::createTShape() const
 {
   occ::handle<BRep_TEdge> aTEdge = new BRep_TEdge;
@@ -626,6 +628,7 @@ occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTEdge::createTShape() const
 }
 
 //=================================================================================================
+
 occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTFace::createTShape() const
 {
   occ::handle<BRep_TFace> aTFace = new BRep_TFace;
@@ -644,6 +647,7 @@ occ::handle<TopoDS_TShape> ShapePersistent_BRep::pTFace::createTShape() const
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::TVertex::pTObjectT) ShapePersistent_BRep::Translate(
   const TopoDS_Vertex& theVertex,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
@@ -691,6 +695,7 @@ Handle(ShapePersistent_BRep::TVertex::pTObjectT) ShapePersistent_BRep::Translate
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::TEdge::pTObjectT) ShapePersistent_BRep::Translate(
   const TopoDS_Edge&                                                                       theEdge,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
@@ -849,6 +854,7 @@ Handle(ShapePersistent_BRep::TEdge::pTObjectT) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::TFace::pTObjectT) ShapePersistent_BRep::Translate(
   const TopoDS_Face&                                                                       theFace,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,
@@ -875,6 +881,7 @@ Handle(ShapePersistent_BRep::TFace::pTObjectT) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PointOnCurve) ShapePersistent_BRep::Translate(
   double                                                                                   theParam,
   const occ::handle<Geom_Curve>&                                                           theCurve,
@@ -889,6 +896,7 @@ Handle(ShapePersistent_BRep::PointOnCurve) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PointOnCurveOnSurface) ShapePersistent_BRep::Translate(
   double                                                                                   theParam,
   const occ::handle<Geom2d_Curve>&                                                         theCurve,
@@ -905,6 +913,7 @@ Handle(ShapePersistent_BRep::PointOnCurveOnSurface) ShapePersistent_BRep::Transl
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PointOnSurface) ShapePersistent_BRep::Translate(
   double                           theParam,
   double                           theParam2,
@@ -921,6 +930,7 @@ Handle(ShapePersistent_BRep::PointOnSurface) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::CurveOnSurface) ShapePersistent_BRep::Translate(
   const occ::handle<Geom2d_Curve>& theCurve,
   const double                     theFirstParam,
@@ -939,6 +949,7 @@ Handle(ShapePersistent_BRep::CurveOnSurface) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::CurveOnClosedSurface) ShapePersistent_BRep::Translate(
   const occ::handle<Geom2d_Curve>& theCurve,
   const occ::handle<Geom2d_Curve>& theCurve2,
@@ -961,6 +972,7 @@ Handle(ShapePersistent_BRep::CurveOnClosedSurface) ShapePersistent_BRep::Transla
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::CurveOn2Surfaces) ShapePersistent_BRep::Translate(
   const occ::handle<Geom_Surface>& theSurf,
   const occ::handle<Geom_Surface>& theSurf2,
@@ -979,6 +991,7 @@ Handle(ShapePersistent_BRep::CurveOn2Surfaces) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::Curve3D) ShapePersistent_BRep::Translate(
   const occ::handle<Geom_Curve>& theCurve,
   const double                   theFirstParam,
@@ -995,6 +1008,7 @@ Handle(ShapePersistent_BRep::Curve3D) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::Polygon3D) ShapePersistent_BRep::Translate(
   const occ::handle<Poly_Polygon3D>&                                                       thePoly,
   const TopLoc_Location&                                                                   theLoc,
@@ -1007,6 +1021,7 @@ Handle(ShapePersistent_BRep::Polygon3D) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PolygonOnClosedSurface) ShapePersistent_BRep::Translate(
   const occ::handle<Poly_Polygon2D>&                                                       thePoly,
   const occ::handle<Poly_Polygon2D>&                                                       thePoly2,
@@ -1023,6 +1038,7 @@ Handle(ShapePersistent_BRep::PolygonOnClosedSurface) ShapePersistent_BRep::Trans
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PolygonOnSurface) ShapePersistent_BRep::Translate(
   const occ::handle<Poly_Polygon2D>&                                                       thePoly,
   const occ::handle<Geom_Surface>&                                                         theSurf,
@@ -1037,6 +1053,7 @@ Handle(ShapePersistent_BRep::PolygonOnSurface) ShapePersistent_BRep::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PolygonOnClosedTriangulation) ShapePersistent_BRep::Translate(
   const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang,
   const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang2,
@@ -1053,6 +1070,7 @@ Handle(ShapePersistent_BRep::PolygonOnClosedTriangulation) ShapePersistent_BRep:
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_BRep::PolygonOnTriangulation) ShapePersistent_BRep::Translate(
   const occ::handle<Poly_PolygonOnTriangulation>& thePolyOnTriang,
   const occ::handle<Poly_Triangulation>&          thePolyTriang,

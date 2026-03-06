@@ -59,6 +59,7 @@ const Standard_GUID& TDataStd_BooleanArray::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_BooleanArray> SetAttr(const TDF_Label&     label,
                                                   const int            lower,
                                                   const int            upper,

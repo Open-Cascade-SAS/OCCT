@@ -44,6 +44,7 @@ TDataStd_ByteArray::TDataStd_ByteArray()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_ByteArray> SetAttr(const TDF_Label&     label,
                                                const int            lower,
                                                const int            upper,

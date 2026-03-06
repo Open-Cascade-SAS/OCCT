@@ -35,6 +35,7 @@ const Standard_GUID& TDataStd_ExtStringList::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_ExtStringList> SetAttr(const TDF_Label&     label,
                                                    const Standard_GUID& theGuid)
 {

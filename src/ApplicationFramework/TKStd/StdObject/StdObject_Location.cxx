@@ -15,6 +15,7 @@
 #include <StdPersistent_TopLoc.hxx>
 
 //=================================================================================================
+
 StdObject_Location StdObject_Location::Translate(
   const TopLoc_Location&                                                                   theLoc,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
@@ -26,12 +27,14 @@ StdObject_Location StdObject_Location::Translate(
 }
 
 //=================================================================================================
+
 void StdObject_Location::PChildren(StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
   theChildren.Append(myData);
 }
 
 //=================================================================================================
+
 TopLoc_Location StdObject_Location::Import() const
 {
   Handle(StdPersistent_TopLoc::ItemLocation) anItemLocation =

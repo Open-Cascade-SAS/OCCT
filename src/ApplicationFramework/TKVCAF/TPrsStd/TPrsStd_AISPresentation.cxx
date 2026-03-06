@@ -496,6 +496,7 @@ void TPrsStd_AISPresentation::UnsetMode()
 }
 
 //=================================================================================================
+
 int TPrsStd_AISPresentation::GetNbSelectionModes() const
 {
   return getData()->GetNbSelectionModes();
@@ -643,6 +644,7 @@ void TPrsStd_AISPresentation::AfterResume()
 }
 
 //=================================================================================================
+
 bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& AD, const bool)
 {
   occ::handle<TPrsStd_AISPresentation> P;
@@ -666,6 +668,7 @@ bool TPrsStd_AISPresentation::BeforeUndo(const occ::handle<TDF_AttributeDelta>& 
 }
 
 //=================================================================================================
+
 bool TPrsStd_AISPresentation::AfterUndo(const occ::handle<TDF_AttributeDelta>& AD, const bool)
 {
   occ::handle<TPrsStd_AISPresentation> P;
@@ -897,6 +900,7 @@ occ::handle<AIS_InteractiveContext> TPrsStd_AISPresentation::getAISContext() con
 }
 
 //=================================================================================================
+
 void TPrsStd_AISPresentation::ActivateSelectionMode()
 {
   if (!myAIS.IsNull() && HasOwnSelectionMode())

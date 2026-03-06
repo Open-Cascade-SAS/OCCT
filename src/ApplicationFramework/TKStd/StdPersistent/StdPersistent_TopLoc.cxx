@@ -17,6 +17,7 @@
 #include <StdObject_gp_Trsfs.hxx>
 
 //=================================================================================================
+
 void StdPersistent_TopLoc::Datum3D::Read(StdObjMgt_ReadData& theReadData)
 {
   gp_Trsf aTrsf;
@@ -30,18 +31,21 @@ void StdPersistent_TopLoc::Datum3D::Write(StdObjMgt_WriteData& theWriteData) con
 }
 
 //=================================================================================================
+
 void StdPersistent_TopLoc::ItemLocation::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myDatum >> myPower >> myNext;
 }
 
 //=================================================================================================
+
 void StdPersistent_TopLoc::ItemLocation::Write(StdObjMgt_WriteData& theWriteData) const
 {
   theWriteData << myDatum << myPower << myNext;
 }
 
 //=================================================================================================
+
 void StdPersistent_TopLoc::ItemLocation::PChildren(
   StdObjMgt_Persistent::SequenceOfPersistent& theChildren) const
 {
@@ -50,6 +54,7 @@ void StdPersistent_TopLoc::ItemLocation::PChildren(
 }
 
 //=================================================================================================
+
 TopLoc_Location StdPersistent_TopLoc::ItemLocation::Import() const
 {
   TopLoc_Location aNext = myNext.Import();
@@ -60,6 +65,7 @@ TopLoc_Location StdPersistent_TopLoc::ItemLocation::Import() const
 }
 
 //=================================================================================================
+
 Handle(StdPersistent_TopLoc::ItemLocation) StdPersistent_TopLoc::Translate(
   const TopLoc_Location&                                                                   theLoc,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
@@ -72,6 +78,7 @@ Handle(StdPersistent_TopLoc::ItemLocation) StdPersistent_TopLoc::Translate(
 }
 
 //=================================================================================================
+
 Handle(StdPersistent_TopLoc::Datum3D) StdPersistent_TopLoc::Translate(
   const occ::handle<TopLoc_Datum3D>&                                                       theDatum,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)

@@ -64,6 +64,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_ExtStringArrayDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                              const occ::handle<TDF_Attribute>& theTarget,
                                              XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -209,6 +210,7 @@ bool XmlMDataStd_ExtStringArrayDriver::Paste(const XmlObjMgt_Persistent&       t
 }
 
 //=================================================================================================
+
 void XmlMDataStd_ExtStringArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                              XmlObjMgt_Persistent&             theTarget,
                                              XmlObjMgt_SRelocationTable&       theRelocTable) const

@@ -40,6 +40,7 @@ occ::handle<TDF_Attribute> BinMDataXtd_GeometryDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                        const occ::handle<TDF_Attribute>& theTarget,
                                        BinObjMgt_RRelocationTable&) const
@@ -55,6 +56,7 @@ bool BinMDataXtd_GeometryDriver::Paste(const BinObjMgt_Persistent&       theSour
 }
 
 //=================================================================================================
+
 void BinMDataXtd_GeometryDriver::Paste(
   const occ::handle<TDF_Attribute>& theSource,
   BinObjMgt_Persistent&             theTarget,

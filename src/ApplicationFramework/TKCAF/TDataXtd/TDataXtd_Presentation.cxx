@@ -460,7 +460,8 @@ void TDataXtd_Presentation::SetMode(const int theMode)
 }
 
 //=================================================================================================
-Standard_EXPORT int TDataXtd_Presentation::GetNbSelectionModes() const
+
+int TDataXtd_Presentation::GetNbSelectionModes() const
 {
   return mySelectionModes.Extent();
 }
@@ -744,6 +745,7 @@ void TDataXtd_Presentation::Paste(const occ::handle<TDF_Attribute>& theInto,
 }
 
 //=================================================================================================
+
 bool TDataXtd_Presentation::HasSelectionMode(const int theSelectionMode) const
 {
   bool                            ret(false);

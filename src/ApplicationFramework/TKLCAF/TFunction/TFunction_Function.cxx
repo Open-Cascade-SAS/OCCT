@@ -25,6 +25,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(TFunction_Function, TDF_Attribute)
 
 //=================================================================================================
+
 const Standard_GUID& TFunction_Function::GetID()
 {
   static Standard_GUID TFunction_FunctionID("5b35ca00-5b78-11d1-8940-080009dc3333");

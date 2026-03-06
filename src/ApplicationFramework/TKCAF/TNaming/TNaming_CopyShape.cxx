@@ -20,6 +20,7 @@
 #include <TopoDS_Shape.hxx>
 
 //=================================================================================================
+
 void TNaming_CopyShape::CopyTool(const TopoDS_Shape& aShape,
                                  NCollection_IndexedDataMap<occ::handle<Standard_Transient>,
                                                             occ::handle<Standard_Transient>>& aMap,

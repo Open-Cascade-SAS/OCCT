@@ -43,6 +43,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_BooleanArrayDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
                                            XmlObjMgt_RRelocationTable&) const
@@ -122,6 +123,7 @@ bool XmlMDataStd_BooleanArrayDriver::Paste(const XmlObjMgt_Persistent&       the
 }
 
 //=================================================================================================
+
 void XmlMDataStd_BooleanArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const

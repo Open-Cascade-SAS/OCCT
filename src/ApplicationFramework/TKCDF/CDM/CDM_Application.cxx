@@ -105,6 +105,7 @@ TCollection_AsciiString CDM_Application::Version() const
 }
 
 //=================================================================================================
+
 NCollection_DataMap<TCollection_ExtendedString, occ::handle<CDM_MetaData>>& CDM_Application::
   MetaDataLookUpTable()
 {

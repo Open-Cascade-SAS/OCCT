@@ -377,6 +377,7 @@ private:
 
   NCollection_Sequence<TCollection_ExtendedString>     myComments;
   NCollection_List<occ::handle<CDM_Reference>>         myFromReferences;
+  NCollection_List<int>                                myToReferencesOrder;
   NCollection_DataMap<int, occ::handle<CDM_Reference>> myToReferences;
   int                                                  myVersion;
   int                                                  myActualReferenceIdentifier;

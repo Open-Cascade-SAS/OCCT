@@ -166,6 +166,7 @@ void BinDrivers_DocumentStorageDriver::SetWithNormals(
 }
 
 //=================================================================================================
+
 void BinDrivers_DocumentStorageDriver::WriteShapeSection(BinLDrivers_DocumentSection& theSection,
                                                          Standard_OStream&            theOS,
                                                          const TDocStd_FormatVersion  theDocVer,

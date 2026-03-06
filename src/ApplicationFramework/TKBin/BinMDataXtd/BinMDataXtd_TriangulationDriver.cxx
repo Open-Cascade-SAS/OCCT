@@ -38,6 +38,7 @@ occ::handle<TDF_Attribute> BinMDataXtd_TriangulationDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&       theSource,
                                             const occ::handle<TDF_Attribute>& theTarget,
                                             BinObjMgt_RRelocationTable&) const
@@ -101,6 +102,7 @@ bool BinMDataXtd_TriangulationDriver::Paste(const BinObjMgt_Persistent&       th
 }
 
 //=================================================================================================
+
 void BinMDataXtd_TriangulationDriver::Paste(
   const occ::handle<TDF_Attribute>& theSource,
   BinObjMgt_Persistent&             theTarget,

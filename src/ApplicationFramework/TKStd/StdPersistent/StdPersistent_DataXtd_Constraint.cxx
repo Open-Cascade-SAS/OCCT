@@ -17,6 +17,7 @@
 #include <TDataStd_Real.hxx>
 
 //=================================================================================================
+
 void StdPersistent_DataXtd_Constraint::Import(
   const occ::handle<TDataXtd_Constraint>& theAttribute) const
 {

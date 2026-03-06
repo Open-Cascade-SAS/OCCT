@@ -48,6 +48,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntPackedMapDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                            const occ::handle<TDF_Attribute>& theTarget,
                                            XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -131,6 +132,7 @@ bool XmlMDataStd_IntPackedMapDriver::Paste(const XmlObjMgt_Persistent&       the
 }
 
 //=================================================================================================
+
 void XmlMDataStd_IntPackedMapDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                            XmlObjMgt_Persistent&             theTarget,
                                            XmlObjMgt_SRelocationTable&) const

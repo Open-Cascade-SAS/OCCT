@@ -44,6 +44,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_BooleanListDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                           const occ::handle<TDF_Attribute>& theTarget,
                                           XmlObjMgt_RRelocationTable&) const
@@ -126,6 +127,7 @@ bool XmlMDataStd_BooleanListDriver::Paste(const XmlObjMgt_Persistent&       theS
 }
 
 //=================================================================================================
+
 void XmlMDataStd_BooleanListDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                           XmlObjMgt_Persistent&             theTarget,
                                           XmlObjMgt_SRelocationTable&) const

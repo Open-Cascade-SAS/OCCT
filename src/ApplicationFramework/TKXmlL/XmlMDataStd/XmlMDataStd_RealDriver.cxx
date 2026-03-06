@@ -42,6 +42,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_RealDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                    const occ::handle<TDF_Attribute>& theTarget,
                                    XmlObjMgt_RRelocationTable&) const
@@ -73,6 +74,7 @@ bool XmlMDataStd_RealDriver::Paste(const XmlObjMgt_Persistent&       theSource,
 }
 
 //=================================================================================================
+
 void XmlMDataStd_RealDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                    XmlObjMgt_Persistent&             theTarget,
                                    XmlObjMgt_SRelocationTable&) const

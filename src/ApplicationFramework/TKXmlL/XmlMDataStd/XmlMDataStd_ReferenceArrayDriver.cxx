@@ -46,6 +46,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_ReferenceArrayDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                              const occ::handle<TDF_Attribute>& theTarget,
                                              XmlObjMgt_RRelocationTable&) const
@@ -162,6 +163,7 @@ bool XmlMDataStd_ReferenceArrayDriver::Paste(const XmlObjMgt_Persistent&       t
 }
 
 //=================================================================================================
+
 void XmlMDataStd_ReferenceArrayDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                              XmlObjMgt_Persistent&             theTarget,
                                              XmlObjMgt_SRelocationTable&) const

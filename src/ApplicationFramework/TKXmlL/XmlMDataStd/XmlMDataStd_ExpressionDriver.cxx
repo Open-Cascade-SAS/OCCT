@@ -42,6 +42,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_ExpressionDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                          const occ::handle<TDF_Attribute>& theTarget,
                                          XmlObjMgt_RRelocationTable&       theRelocTable) const
@@ -100,6 +101,7 @@ bool XmlMDataStd_ExpressionDriver::Paste(const XmlObjMgt_Persistent&       theSo
 }
 
 //=================================================================================================
+
 void XmlMDataStd_ExpressionDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                          XmlObjMgt_Persistent&             theTarget,
                                          XmlObjMgt_SRelocationTable&       theRelocTable) const

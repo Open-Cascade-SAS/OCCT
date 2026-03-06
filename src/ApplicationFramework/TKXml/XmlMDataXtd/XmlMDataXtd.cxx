@@ -42,12 +42,14 @@ void XmlMDataXtd::AddDrivers(const occ::handle<XmlMDF_ADriverTable>& aDriverTabl
 }
 
 //=================================================================================================
+
 void XmlMDataXtd::SetDocumentVersion(const int theVersion)
 {
   myDocumentVersion = theVersion;
 }
 
 //=================================================================================================
+
 int XmlMDataXtd::DocumentVersion()
 {
   return myDocumentVersion;

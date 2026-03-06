@@ -33,52 +33,6 @@
 #include <NCollection_IndexedMap.hxx>
 #include <NCollection_List.hxx>
 
-// #define MDTV_DEB_SEL
-#ifdef OCCT_DEBUG_SEL
-  // #define MDTV_DEB_BNP
-  #include <TopExp_Explorer.hxx>
-  #include <TCollection_AsciiString.hxx>
-  #include <TNaming_Tool.hxx>
-  #include <BRep_Tool.hxx>
-  #include <TopoDS.hxx>
-  #include <TNaming_UsedShapes.hxx>
-
-void PrintEntry(const TDF_Label& label, const bool allLevels)
-{
-  TCollection_AsciiString entry;
-  TDF_Tool::Entry(label, entry);
-  std::cout << "LabelEntry = " << entry << std::endl;
-  if (allLevels)
-  {
-    TDF_ChildIterator it(label, allLevels);
-    for (; it.More(); it.Next())
-    {
-      TDF_Tool::Entry(it.Value(), entry);
-      std::cout << "ChildLabelEntry = " << entry << std::endl;
-    }
-  }
-}
-
-  #include <BRepTools.hxx>
-
-static void Write(const TopoDS_Shape& shape, const char* const filename)
-{
-  TCollection_AsciiString aBuf(filename);
-  for (int i = 1; i <= aBuf.Length(); i++)
-  {
-    if (aBuf.Value(i) == ':')
-      aBuf.SetValue(i, '-');
-  }
-  std::ofstream save(aBuf.ToCString());
-  if (!save)
-    std::cout << "File " << aBuf << " was not created: rdstate = " << save.rdstate() << std::endl;
-  save << "DBRep_DrawableShape" << std::endl << std::endl;
-  if (!shape.IsNull())
-    BRepTools::Write(shape, save);
-  save.close();
-}
-#endif
-
 #define ORIENTATION_DSOPT
 #ifdef ORIENTATION_DSOPT
   #include <NCollection_Map.hxx>
@@ -139,9 +93,6 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
   NCollection_Map<TopoDS_Shape> shapesOfContext;
   MapOfOrientedShapes(Context, shapesOfContext);
   occ::handle<TNaming_NamedShape> CNS = TNaming_Tool::NamedShape(Context, F);
-  #ifdef OCCT_DEBUG_BNP
-  PrintEntry(CNS->Label(), 0);
-  #endif
   if (!CNS.IsNull())
   {
     NCollection_List<occ::handle<TNaming_NamedShape>> aLNS;
@@ -154,9 +105,6 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
       // clang-format on
       if (!aNS.IsNull())
       {
-  #ifdef OCCT_DEBUG_BNP
-        PrintEntry(aNS->Label(), 0);
-  #endif
         cit.Initialize(aNS->Label(), TNaming_NamedShape::GetID(), false);
       }
       else
@@ -171,11 +119,6 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
         TopoDS_Shape aS = TNaming_Tool::CurrentShape(NS);
         if (aS.IsNull())
           continue;
-  #ifdef OCCT_DEBUG_BNP
-        PrintEntry(NS->Label(), 0);
-        std::cout << "ShapeType =" << aS.ShapeType() << std::endl;
-        Write(aS, "BNProblem.brep");
-  #endif
         if (aS.ShapeType() != TopAbs_COMPOUND)
         { // single shape at the child label
           if (!shapesOfContext.Contains(aS))
@@ -193,18 +136,6 @@ static bool IsSpecificCase(const TDF_Label& F, const TopoDS_Shape& Context)
           {
             if (!shapesOfContext.Contains(it.Key()))
             {
-  #ifdef OCCT_DEBUG_BNP
-              std::cout << "BNProblem: ShapeType in AtomicMap = " << it.Key().ShapeType()
-                        << " TShape = " << it.Key().TShape() << " OR = " << it.Key().Orientation()
-                        << std::endl;
-              Write(it.Key(), "BNProblem_AtomicMap_Item.brep");
-              NCollection_Map<TopoDS_Shape>::Iterator itC(shapesOfContext);
-              for (; itC.More(); itC.Next())
-                std::cout << " ShapeType = " << itC.Key().ShapeType()
-                          << " TShape = " << itC.Key().TShape()
-                          << " OR = " << itC.Key().Orientation() << std::endl;
-
-  #endif
               isFound = true;
               break;
             }
@@ -227,9 +158,6 @@ static bool IsSpecificCase2(const TDF_Label& F, const TopoDS_Shape& Selection)
     occ::handle<TNaming_NamedShape> aNS = TNaming_Tool::NamedShape(Selection, F);
     if (!aNS.IsNull())
     { // presented in DF
-  #ifdef OCCT_DEBUG_BNP
-      PrintEntry(aNS->Label(), 0);
-  #endif
       const TopoDS_Shape& aS = TNaming_Tool::CurrentShape(aNS);
       if (!aS.IsNull() && aS.ShapeType() == Selection.ShapeType())
       {
@@ -357,31 +285,6 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
     if (isVertex)
       aKeepOrientation = false;
   }
-  /*
- // for debug opposite orientation
- TopoDS_Shape selection;
- bool found(false);
- TopExp_Explorer exp(Context,TopAbs_EDGE);
- for(;exp.More();exp.Next()) {
-   TopoDS_Shape E = exp.Current();
-   if(E.IsSame(Selection) && E.Orientation() != Selection.Orientation()) {
-     selection = E;
-   found = true;
-   std::cout <<" FOUND: Entity orientation = " << selection.Orientation() <<std::endl;
-   }
- }
- if (!found)
-   selection = Selection;
-  */
-
-#ifdef OCCT_DEBUG_SEL
-  std::cout << "SELECTION ORIENTATION = " << Selection.Orientation()
-            << ", TShape = " << Selection.TShape() << std::endl;
-  // std::cout << "SELECTION ORIENTATION = " << selection.Orientation() <<", TShape = " <<
-  // selection.TShape() <<std::endl;
-  PrintEntry(myLabel, 0);
-  TNaming::Print(myLabel, std::cout);
-#endif
 
   if (aKeepOrientation)
   {
@@ -406,16 +309,6 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
   // mpv: if oldShape for selection is some shape from used map of shapes,
   //      then naming structure becomes more complex, can be cycles
   const TopoDS_Shape& aSelection = TNaming_Tool::CurrentShape(NS); // szy
-#ifdef OCCT_DEBUG_CHECK_TYPE
-  if (!Selection.IsSame(aSelection) && Selection.ShapeType() != TopAbs_COMPOUND)
-  {
-    TCollection_AsciiString entry;
-    TDF_Tool::Entry(NS->Label(), entry);
-    std::cout << "Selection is Not Same (NSLabel = " << entry
-              << "): TShape1 = " << Selection.TShape()->This()
-              << " TShape2 = " << aSelection.TShape()->This() << std::endl;
-  }
-#endif
   if (aSelection.ShapeType() == TopAbs_COMPOUND && aSelection.ShapeType() != Selection.ShapeType())
     B.Select(aSelection, aSelection); // type migration
   else
@@ -452,10 +345,6 @@ bool TNaming_Selector::Select(const TopoDS_Shape& Selection,
 bool TNaming_Selector::Solve(NCollection_Map<TDF_Label>& Valid) const
 {
   occ::handle<TNaming_Naming> name;
-#ifdef OCCT_DEBUG_SEL
-  std::cout << "TNaming_Selector::Solve==> ";
-  PrintEntry(myLabel, 0);
-#endif
   if (myLabel.FindAttribute(TNaming_Naming::GetID(), name))
   {
     return name->Solve(Valid);

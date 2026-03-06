@@ -63,6 +63,7 @@ static std::mutex& Mutex()
 } // namespace TDF_DerivedAttributeGlobals
 
 //=================================================================================================
+
 TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived  theNewAttributeFunction,
                                                                 const char* theNameSpace,
                                                                 const char* theTypeName)
@@ -76,6 +77,7 @@ TDF_DerivedAttribute::NewDerived TDF_DerivedAttribute::Register(NewDerived  theN
 }
 
 //=================================================================================================
+
 static void Initialize()
 {
   if (!TDF_DerivedAttributeGlobals::Creators().IsEmpty())

@@ -49,6 +49,7 @@ const Standard_GUID& TDataStd_AsciiString::ID() const
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_AsciiString> SetAttr(const TDF_Label&               label,
                                                  const TCollection_AsciiString& theString,
                                                  const Standard_GUID&           theGuid)

@@ -43,6 +43,7 @@ occ::handle<TDF_Attribute> XmlMDataXtd_TriangulationDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                             const occ::handle<TDF_Attribute>& theTarget,
                                             XmlObjMgt_RRelocationTable&) const
@@ -112,6 +113,7 @@ bool XmlMDataXtd_TriangulationDriver::Paste(const XmlObjMgt_Persistent&       th
 }
 
 //=================================================================================================
+
 void XmlMDataXtd_TriangulationDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                             XmlObjMgt_Persistent&             theTarget,
                                             XmlObjMgt_SRelocationTable&) const

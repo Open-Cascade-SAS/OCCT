@@ -24,6 +24,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(TFunction_GraphNode, TDF_Attribute)
 
 //=================================================================================================
+
 const Standard_GUID& TFunction_GraphNode::GetID()
 {
   static Standard_GUID TFunction_GraphNodeID("DD51FA86-E171-41a4-A2C1-3A0FBF286798");

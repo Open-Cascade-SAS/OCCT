@@ -35,6 +35,7 @@ const Standard_GUID& TDataStd_ReferenceArray::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_ReferenceArray> SetAttr(const TDF_Label&     label,
                                                     const int            lower,
                                                     const int            upper,

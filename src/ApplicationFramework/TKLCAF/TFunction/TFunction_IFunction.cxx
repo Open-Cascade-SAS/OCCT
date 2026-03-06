@@ -23,6 +23,7 @@
 #include <TFunction_Scope.hxx>
 
 //=================================================================================================
+
 bool TFunction_IFunction::NewFunction(const TDF_Label& L, const Standard_GUID& ID)
 {
   // Set Function (ID, code of failure)

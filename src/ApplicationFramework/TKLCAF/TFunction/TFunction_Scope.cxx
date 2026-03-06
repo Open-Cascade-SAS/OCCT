@@ -22,6 +22,7 @@
 IMPLEMENT_STANDARD_RTTIEXT(TFunction_Scope, TDF_Attribute)
 
 //=================================================================================================
+
 const Standard_GUID& TFunction_Scope::GetID()
 {
   static Standard_GUID TFunction_ScopeID("F2DE4EFF-7FE8-40a3-AAD5-5B6DDEA83469");

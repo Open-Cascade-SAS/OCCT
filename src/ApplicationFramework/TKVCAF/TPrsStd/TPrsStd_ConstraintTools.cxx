@@ -228,6 +228,7 @@ void TPrsStd_ConstraintTools::UpdateOnlyValue(const occ::handle<TDataXtd_Constra
 }
 
 //=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeDistance(const occ::handle<TDataXtd_Constraint>& theConst,
                                               occ::handle<AIS_InteractiveObject>&     theAIS)
 {
@@ -816,6 +817,7 @@ void TPrsStd_ConstraintTools::ComputeTangent(const occ::handle<TDataXtd_Constrai
 }
 
 //=================================================================================================
+
 void TPrsStd_ConstraintTools::ComputeAngleForOneFace(const occ::handle<TDataXtd_Constraint>& aConst,
                                                      occ::handle<AIS_InteractiveObject>&     anAIS)
 {
@@ -1579,6 +1581,7 @@ void TPrsStd_ConstraintTools::ComputeEqualDistance(const occ::handle<TDataXtd_Co
 }
 
 //=================================================================================================
+
 static bool CheckShapesPair(const TopoDS_Shape& aShape1, const TopoDS_Shape& aShape2)
 {
   // Check whether the shapes form a correct pair.

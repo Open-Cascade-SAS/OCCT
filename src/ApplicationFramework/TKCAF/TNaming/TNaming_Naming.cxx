@@ -1522,9 +1522,6 @@ static int RepeatabilityInContext(const TopoDS_Shape& Selection, const TopoDS_Sh
       }
     }
   }
-#ifdef OCCT_DEBUG_OR
-  std::cout << "RepeatabilityInContext: = " << aNum << std::endl;
-#endif
   return aNum;
 }
 

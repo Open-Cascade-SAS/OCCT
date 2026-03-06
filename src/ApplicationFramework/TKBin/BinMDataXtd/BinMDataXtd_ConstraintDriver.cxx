@@ -124,6 +124,7 @@ bool BinMDataXtd_ConstraintDriver::Paste(const BinObjMgt_Persistent&       theSo
 }
 
 //=================================================================================================
+
 void BinMDataXtd_ConstraintDriver::Paste(
   const occ::handle<TDF_Attribute>&                        theSource,
   BinObjMgt_Persistent&                                    theTarget,

@@ -17,15 +17,19 @@
 #include <StdObject_gp_Vectors.hxx>
 
 //=================================================================================================
+
 void ShapePersistent_Geom::Geometry::Read(StdObjMgt_ReadData&) {}
 
 //=================================================================================================
+
 void ShapePersistent_Geom::Geometry::Write(StdObjMgt_WriteData&) const {}
 
 //=================================================================================================
+
 void ShapePersistent_Geom::Geometry::PChildren(SequenceOfPersistent&) const {}
 
 //=================================================================================================
+
 Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom::Translate(
   const occ::handle<Geom_Curve>&                                                           theCurve,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)
@@ -91,6 +95,7 @@ Handle(ShapePersistent_Geom::Curve) ShapePersistent_Geom::Translate(
 }
 
 //=================================================================================================
+
 Handle(ShapePersistent_Geom::Surface) ShapePersistent_Geom::Translate(
   const occ::handle<Geom_Surface>&                                                         theSurf,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap)

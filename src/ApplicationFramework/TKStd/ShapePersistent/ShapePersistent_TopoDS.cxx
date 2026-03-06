@@ -32,6 +32,7 @@ enum
 };
 
 //=================================================================================================
+
 void ShapePersistent_TopoDS::HShape::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myEntry;
@@ -107,6 +108,7 @@ template class ShapePersistent_TopoDS::pTSimple<TopoDS_TCompSolid>;
 template class ShapePersistent_TopoDS::pTSimple<TopoDS_TCompound>;
 
 //=================================================================================================
+
 Handle(ShapePersistent_TopoDS::HShape) ShapePersistent_TopoDS::Translate(
   const TopoDS_Shape&                                                                      theShape,
   NCollection_DataMap<occ::handle<Standard_Transient>, occ::handle<StdObjMgt_Persistent>>& theMap,

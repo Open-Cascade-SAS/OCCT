@@ -20,6 +20,7 @@
 #include <TDF_RelocationTable.hxx>
 
 //=================================================================================================
+
 const Standard_GUID& TDataXtd_Triangulation::GetID()
 {
   static Standard_GUID TDataXtd_TriangulationID("27AE2C44-60B0-41AE-AC18-BA3FDA538D03");
@@ -27,6 +28,7 @@ const Standard_GUID& TDataXtd_Triangulation::GetID()
 }
 
 //=================================================================================================
+
 occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(const TDF_Label& theLabel)
 {
   occ::handle<TDataXtd_Triangulation> A;
@@ -39,6 +41,7 @@ occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(const TDF_Label&
 }
 
 //=================================================================================================
+
 occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(
   const TDF_Label&                       theLabel,
   const occ::handle<Poly_Triangulation>& theMesh)
@@ -49,9 +52,11 @@ occ::handle<TDataXtd_Triangulation> TDataXtd_Triangulation::Set(
 }
 
 //=================================================================================================
+
 TDataXtd_Triangulation::TDataXtd_Triangulation() = default;
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::Set(const occ::handle<Poly_Triangulation>& theTriangulation)
 {
   Backup();
@@ -59,6 +64,7 @@ void TDataXtd_Triangulation::Set(const occ::handle<Poly_Triangulation>& theTrian
 }
 
 //=================================================================================================
+
 const occ::handle<Poly_Triangulation>& TDataXtd_Triangulation::Get() const
 {
   return myTriangulation;
@@ -71,12 +77,14 @@ const occ::handle<Poly_Triangulation>& TDataXtd_Triangulation::Get() const
 // The most of the methods are considered as "inline" by the compiler in release mode.
 
 //=================================================================================================
+
 double TDataXtd_Triangulation::Deflection() const
 {
   return myTriangulation->Deflection();
 }
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::Deflection(const double theDeflection)
 {
   Backup();
@@ -84,6 +92,7 @@ void TDataXtd_Triangulation::Deflection(const double theDeflection)
 }
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::RemoveUVNodes()
 {
   Backup();
@@ -91,30 +100,35 @@ void TDataXtd_Triangulation::RemoveUVNodes()
 }
 
 //=================================================================================================
+
 int TDataXtd_Triangulation::NbNodes() const
 {
   return myTriangulation->NbNodes();
 }
 
 //=================================================================================================
+
 int TDataXtd_Triangulation::NbTriangles() const
 {
   return myTriangulation->NbTriangles();
 }
 
 //=================================================================================================
+
 bool TDataXtd_Triangulation::HasUVNodes() const
 {
   return myTriangulation->HasUVNodes();
 }
 
 //=================================================================================================
+
 gp_Pnt TDataXtd_Triangulation::Node(const int theIndex) const
 {
   return myTriangulation->Node(theIndex);
 }
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::SetNode(const int theIndex, const gp_Pnt& theNode)
 {
   Backup();
@@ -122,12 +136,14 @@ void TDataXtd_Triangulation::SetNode(const int theIndex, const gp_Pnt& theNode)
 }
 
 //=================================================================================================
+
 gp_Pnt2d TDataXtd_Triangulation::UVNode(const int theIndex) const
 {
   return myTriangulation->UVNode(theIndex);
 }
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::SetUVNode(const int theIndex, const gp_Pnt2d& theUVNode)
 {
   Backup();
@@ -135,12 +151,14 @@ void TDataXtd_Triangulation::SetUVNode(const int theIndex, const gp_Pnt2d& theUV
 }
 
 //=================================================================================================
+
 Poly_Triangle TDataXtd_Triangulation::Triangle(const int theIndex) const
 {
   return myTriangulation->Triangle(theIndex);
 }
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::SetTriangle(const int theIndex, const Poly_Triangle& theTriangle)
 {
   Backup();
@@ -148,6 +166,7 @@ void TDataXtd_Triangulation::SetTriangle(const int theIndex, const Poly_Triangle
 }
 
 //=================================================================================================
+
 void TDataXtd_Triangulation::SetNormal(const int theIndex, const gp_Dir& theNormal)
 {
   Backup();
@@ -155,12 +174,14 @@ void TDataXtd_Triangulation::SetNormal(const int theIndex, const gp_Dir& theNorm
 }
 
 //=================================================================================================
+
 bool TDataXtd_Triangulation::HasNormals() const
 {
   return myTriangulation->HasNormals();
 }
 
 //=================================================================================================
+
 gp_Dir TDataXtd_Triangulation::Normal(const int theIndex) const
 {
   return myTriangulation->Normal(theIndex);

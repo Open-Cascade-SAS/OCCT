@@ -34,6 +34,7 @@ const Standard_GUID& TDataStd_BooleanList::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_BooleanList> SetAttr(const TDF_Label&     label,
                                                  const Standard_GUID& theGuid)
 {

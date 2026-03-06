@@ -40,6 +40,7 @@ occ::handle<TDF_Attribute> XmlMDataStd_IntegerDriver::NewEmpty() const
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                       const occ::handle<TDF_Attribute>& theTarget,
                                       XmlObjMgt_RRelocationTable&) const
@@ -71,6 +72,7 @@ bool XmlMDataStd_IntegerDriver::Paste(const XmlObjMgt_Persistent&       theSourc
 }
 
 //=================================================================================================
+
 void XmlMDataStd_IntegerDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                       XmlObjMgt_Persistent&             theTarget,
                                       XmlObjMgt_SRelocationTable&) const

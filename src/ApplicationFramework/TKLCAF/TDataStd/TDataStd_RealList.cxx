@@ -34,6 +34,7 @@ const Standard_GUID& TDataStd_RealList::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_RealList> SetAttr(const TDF_Label& label, const Standard_GUID& theGuid)
 {
   occ::handle<TDataStd_RealList> A;

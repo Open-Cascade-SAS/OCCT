@@ -24,38 +24,6 @@
 #include <TNaming_Tool.hxx>
 #include <TopoDS_Shape.hxx>
 
-#ifdef OCCT_DEBUG_DESC
-  #include <TCollection_AsciiString.hxx>
-  #include <TDF_Tool.hxx>
-  #include <BRepTools.hxx>
-
-static void WriteS(const TopoDS_Shape& shape, const char* const filename)
-{
-  char buf[256];
-  if (strlen(filename) > 255)
-    return;
-  #ifdef _MSC_VER
-  strcpy_s(buf, filename);
-  #else
-  strcpy(buf, filename);
-  #endif
-  char* p = buf;
-  while (*p)
-  {
-    if (*p == ':')
-      *p = '-';
-    p++;
-  }
-  std::ofstream save(buf);
-  if (!save)
-    std::cout << "File " << buf << " was not created: rdstate = " << save.rdstate() << std::endl;
-  save << "DBRep_DrawableShape" << std::endl << std::endl;
-  if (!shape.IsNull())
-    BRepTools::Write(shape, save);
-  save.close();
-}
-#endif
-
 //=================================================================================================
 
 static void LastModif(TNaming_NewShapeIterator&                                      it,
@@ -68,11 +36,6 @@ static void LastModif(TNaming_NewShapeIterator&                                 
   for (; it.More(); it.Next())
   {
     const TDF_Label& Lab = it.Label();
-#ifdef OCCT_DEBUG_DESC
-    TCollection_AsciiString entry;
-    TDF_Tool::Entry(Lab, entry);
-    std::cout << "NamingTool:: LastModif LabelEntry = " << entry << std::endl;
-#endif
     if (!Updated.IsEmpty() && !Updated.Contains(Lab))
       continue;
     if (TNaming::IsForbidden(Forbiden, Lab))
@@ -103,18 +66,8 @@ void TNaming_NamingTool::CurrentShape(
   NCollection_IndexedMap<TopoDS_Shape, TopTools_ShapeMapHasher>& MS)
 {
   TDF_Label Lab = Att->Label();
-#ifdef OCCT_DEBUG_DESC
-  TCollection_AsciiString entry;
-  TDF_Tool::Entry(Lab, entry);
-  std::cout << "NamingTool:: LabelEntry = " << entry << std::endl;
-#endif
   if (!Valid.IsEmpty() && !Valid.Contains(Lab))
   {
-#ifdef OCCT_DEBUG_DESC
-    TCollection_AsciiString entry;
-    TDF_Tool::Entry(Lab, entry);
-    std::cout << "NamingTool:: LabelEntry = " << entry << " is out of Valid map" << std::endl;
-#endif
     return;
   }
 
@@ -124,13 +77,6 @@ void TNaming_NamingTool::CurrentShape(
     const TopoDS_Shape& S = itL.NewShape();
     if (S.IsNull())
       continue;
-#ifdef OCCT_DEBUG_DESC
-    WriteS(S, "CS_NewShape.brep");
-    if (itL.OldShape().IsNull())
-      std::cout << "OldShape is Null" << std::endl;
-    else
-      WriteS(itL.OldShape(), "CS_OldShape.brep");
-#endif
     bool               YaOrientationToApply(false);
     TopAbs_Orientation OrientationToApply(TopAbs_FORWARD);
     if (Att->Evolution() == TNaming_SELECTED)
@@ -219,11 +165,6 @@ static void MakeDescendants(TNaming_NewShapeIterator& it, NCollection_Map<TDF_La
   for (; it.More(); it.Next())
   {
     Descendants.Add(it.Label());
-#ifdef OCCT_DEBUG_DESC
-    TCollection_AsciiString entry;
-    TDF_Tool::Entry(it.Label(), entry);
-    std::cout << "MakeDescendants: Label = " << entry << std::endl;
-#endif
     if (!it.Shape().IsNull())
     {
       TNaming_NewShapeIterator it2(it);
@@ -244,11 +185,6 @@ void BuildDescendants2(const occ::handle<TNaming_NamedShape>& NS,
   {
     if (!it.NamedShape().IsNull())
     {
-#ifdef OCCT_DEBUG_DESC
-      TCollection_AsciiString entry;
-      TDF_Tool::Entry(it.Label(), entry);
-      std::cout << "MakeDescendants2: Label = " << entry << std::endl;
-#endif
       if (ForbLab == it.Label())
         continue;
       Descendants.Add(it.Label());
@@ -267,11 +203,6 @@ void TNaming_NamingTool::BuildDescendants(const occ::handle<TNaming_NamedShape>&
     return;
   Descendants.Add(NS->Label());
   TNaming_NewShapeIterator it(NS);
-#ifdef OCCT_DEBUG_DESC
-  TCollection_AsciiString entry;
-  TDF_Tool::Entry(NS->Label(), entry);
-  std::cout << "MakeDescendants: Label = " << entry << std::endl;
-#endif
   MakeDescendants(it, Descendants);
   TNaming_OldShapeIterator it2(NS);
   for (; it2.More(); it2.Next())
@@ -281,11 +212,6 @@ void TNaming_NamingTool::BuildDescendants(const occ::handle<TNaming_NamedShape>&
       occ::handle<TNaming_NamedShape> ONS = TNaming_Tool::NamedShape(it2.Shape(), NS->Label());
       if (!ONS.IsNull())
       {
-#ifdef OCCT_DEBUG_DESC
-        TCollection_AsciiString entry;
-        TDF_Tool::Entry(ONS->Label(), entry);
-        std::cout << "MakeDescendants_Old: Label = " << entry << std::endl;
-#endif
         BuildDescendants2(ONS, NS->Label(), Descendants);
       }
     }

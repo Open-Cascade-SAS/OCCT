@@ -35,6 +35,7 @@ const Standard_GUID& TDataStd_Integer::GetID()
 }
 
 //=================================================================================================
+
 static occ::handle<TDataStd_Integer> SetAttr(const TDF_Label&     label,
                                              const int            V,
                                              const Standard_GUID& theGuid)

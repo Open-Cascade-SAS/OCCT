@@ -16,6 +16,7 @@
 #include <CDM_MetaData.hxx>
 #include <CDM_Reference.hxx>
 #include <CDM_ReferenceIterator.hxx>
+#include <Standard_ProgramError.hxx>
 #include <TDocStd_Application.hxx>
 #include <TDocStd_Document.hxx>
 
@@ -230,4 +231,44 @@ TEST_F(CDM_DocumentTest, ReferenceIterator_IteratesAll)
     EXPECT_FALSE(anIt.Document().IsNull());
   }
   EXPECT_EQ(2, aCount);
+}
+
+TEST_F(CDM_DocumentTest, ReferenceIterator_PreservesInsertionOrder)
+{
+  const int aRefId1 = myDoc1->CreateReference(myDoc2);
+  const int aRefId2 = myDoc1->CreateReference(myDoc3);
+
+  int aPosition = 0;
+  for (CDM_ReferenceIterator anIt(myDoc1); anIt.More(); anIt.Next())
+  {
+    ++aPosition;
+    if (aPosition == 1)
+      EXPECT_EQ(aRefId1, anIt.ReferenceIdentifier());
+    else if (aPosition == 2)
+      EXPECT_EQ(aRefId2, anIt.ReferenceIdentifier());
+  }
+  EXPECT_EQ(2, aPosition);
+}
+
+TEST_F(CDM_DocumentTest, CreateReference_WithDuplicateIdentifier_Throws)
+{
+  occ::handle<CDM_TestApplication> aLazyApp = new CDM_TestApplication();
+  occ::handle<CDM_MetaData>        aMeta1   = CDM_MetaData::LookUp(aLazyApp->MetaDataLookUpTable(),
+                                                         "Folder",
+                                                         "Doc1",
+                                                         "/tmp",
+                                                         "Doc1.cbf",
+                                                         false);
+  occ::handle<CDM_MetaData>        aMeta2   = CDM_MetaData::LookUp(aLazyApp->MetaDataLookUpTable(),
+                                                         "Folder",
+                                                         "Doc2",
+                                                         "/tmp",
+                                                         "Doc2.cbf",
+                                                         false);
+  ASSERT_FALSE(aMeta1.IsNull());
+  ASSERT_FALSE(aMeta2.IsNull());
+
+  myDoc1->CreateReference(aMeta1, 42, aLazyApp, 1, false);
+  EXPECT_THROW(myDoc1->CreateReference(aMeta2, 42, aLazyApp, 1, false), Standard_ProgramError);
+  EXPECT_EQ(1, myDoc1->ToReferencesNumber());
 }

@@ -42,12 +42,14 @@ void BinMDataXtd::AddDrivers(const occ::handle<BinMDF_ADriverTable>& theDriverTa
 }
 
 //=================================================================================================
+
 void BinMDataXtd::SetDocumentVersion(const int theVersion)
 {
   myDocumentVersion = theVersion;
 }
 
 //=================================================================================================
+
 int BinMDataXtd::DocumentVersion()
 {
   return myDocumentVersion;

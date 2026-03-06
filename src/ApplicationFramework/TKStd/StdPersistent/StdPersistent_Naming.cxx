@@ -19,6 +19,7 @@
 #include <TNaming_Iterator.hxx>
 
 //=================================================================================================
+
 void StdPersistent_Naming::NamedShape::Import(
   const occ::handle<TNaming_NamedShape>& theAttribute) const
 {
@@ -61,18 +62,21 @@ void StdPersistent_Naming::NamedShape::Import(
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name::Read(StdObjMgt_ReadData& theReadData)
 {
   theReadData >> myType >> myShapeType >> myArgs >> myStop >> myIndex;
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name::Write(StdObjMgt_WriteData& theWriteData) const
 {
   theWriteData << myType << myShapeType << myArgs << myStop << myIndex;
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name::Import(TNaming_Name& theName, const occ::handle<TDF_Data>&) const
 {
   theName.Type(static_cast<TNaming_NameType>(myType));
@@ -102,6 +106,7 @@ void StdPersistent_Naming::Name::Import(TNaming_Name& theName, const occ::handle
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name_1::Read(StdObjMgt_ReadData& theReadData)
 {
   Name::Read(theReadData);
@@ -109,6 +114,7 @@ void StdPersistent_Naming::Name_1::Read(StdObjMgt_ReadData& theReadData)
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name_1::Write(StdObjMgt_WriteData& theWriteData) const
 {
   Name::Write(theWriteData);
@@ -116,6 +122,7 @@ void StdPersistent_Naming::Name_1::Write(StdObjMgt_WriteData& theWriteData) cons
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name_1::Import(TNaming_Name&                theName,
                                           const occ::handle<TDF_Data>& theDF) const
 {
@@ -125,6 +132,7 @@ void StdPersistent_Naming::Name_1::Import(TNaming_Name&                theName,
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name_2::Read(StdObjMgt_ReadData& theReadData)
 {
   Name_1::Read(theReadData);
@@ -132,6 +140,7 @@ void StdPersistent_Naming::Name_2::Read(StdObjMgt_ReadData& theReadData)
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name_2::Write(StdObjMgt_WriteData& theWriteData) const
 {
   Name_1::Write(theWriteData);
@@ -139,6 +148,7 @@ void StdPersistent_Naming::Name_2::Write(StdObjMgt_WriteData& theWriteData) cons
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Name_2::Import(TNaming_Name&                theName,
                                           const occ::handle<TDF_Data>& theDF) const
 {
@@ -147,6 +157,7 @@ void StdPersistent_Naming::Name_2::Import(TNaming_Name&                theName,
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Naming::ImportAttribute()
 {
   occ::handle<Name> aName = occ::down_cast<Name>(myData);
@@ -158,6 +169,7 @@ void StdPersistent_Naming::Naming::ImportAttribute()
 }
 
 //=================================================================================================
+
 void StdPersistent_Naming::Naming_1::ImportAttribute()
 {
   Naming::ImportAttribute();

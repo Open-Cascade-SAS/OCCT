@@ -14,6 +14,7 @@
 #include <StdPersistent_PPrsStd.hxx>
 
 //=================================================================================================
+
 void StdPersistent_PPrsStd::AISPresentation::Import(
   const occ::handle<TDataXtd_Presentation>& theAttribute) const
 {
@@ -45,6 +46,7 @@ void StdPersistent_PPrsStd::AISPresentation::Import(
 }
 
 //=================================================================================================
+
 void StdPersistent_PPrsStd::AISPresentation_1::Import(
   const occ::handle<TDataXtd_Presentation>& theAttribute) const
 {

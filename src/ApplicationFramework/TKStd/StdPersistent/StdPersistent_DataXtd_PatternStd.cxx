@@ -18,6 +18,7 @@
 #include <TDataStd_Integer.hxx>
 
 //=================================================================================================
+
 void StdPersistent_DataXtd_PatternStd::Import(
   const occ::handle<TDataXtd_PatternStd>& theAttribute) const
 {

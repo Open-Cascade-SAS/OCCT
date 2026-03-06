@@ -119,6 +119,7 @@ occ::handle<NCollection_HArray1<double>> BuildRealArray(const TCollection_AsciiS
 }
 
 //=================================================================================================
+
 bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSource,
                                         const occ::handle<TDF_Attribute>& theTarget,
                                         XmlObjMgt_RRelocationTable&) const
@@ -671,6 +672,7 @@ bool XmlMDataStd_NamedDataDriver::Paste(const XmlObjMgt_Persistent&       theSou
 }
 
 //=================================================================================================
+
 void XmlMDataStd_NamedDataDriver::Paste(const occ::handle<TDF_Attribute>& theSource,
                                         XmlObjMgt_Persistent&             theTarget,
                                         XmlObjMgt_SRelocationTable&) const
