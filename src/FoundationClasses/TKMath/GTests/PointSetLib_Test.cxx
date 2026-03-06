@@ -14,6 +14,8 @@
 #include <PointSetLib_Equation.hxx>
 #include <PointSetLib_Props.hxx>
 #include <Precision.hxx>
+#include <gp_Lin.hxx>
+#include <gp_Pln.hxx>
 
 #include <gtest/gtest.h>
 
